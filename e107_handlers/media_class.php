@@ -447,6 +447,12 @@ class e_media
 		return $this->getImages('_common_video', $from, $amount, $search);
 	}
 
+
+	public function getAudios($from=0, $amount = null, $search = null)
+	{
+		return $this->getImages('_common_audio', $from, $amount, $search);
+	}
+
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
@@ -1285,6 +1291,7 @@ class e_media
 			'tagid'			=> '',
 			'saveValue'		=> '',
 			'previewUrl'	=> $defaultThumb ,
+			'previewHtml'   => null,
 			'thumbUrl'		=> $defaultThumb,
 			'title'			=> '',
 			'gridClass'		=> 'span2 col-md-2',
@@ -1309,36 +1316,43 @@ class e_media
 		
 			<div class='well clearfix'>\n";
 
-				$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+				$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : $data['previewUrl'];
+
+				$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$dataPreview."'  title=\"".$data['title']."\" style='float:left' href='#' >";
 
 				switch($data['type'])
 				{
 					case "video":
-						$mime = vartrue($data['mime'],"video/mp4");
+						// $mime = vartrue($data['mime'],"video/mp4");
 
-						$text .= '<video width="'.$data['width'].'" height="'.$data['height'].'" controls >
+						$text .= $tp->toVideo($data['thumbUrl'], array('w'=>$data['width'],'h'=>'', 'mime'=>$data['mime']));
+					/*	$text .= '<video width="'.$data['width'].'" height="'.$data['height'].'" controls >
 						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
 						  Your browser does not support the video tag.
-						</video>
-						<div class="clearfix" style="text-align:center">';
+						</video>';*/
+
+						$text .= "<div><small class='media-carousel-item-caption'>";
 
 						$text .= $linkTag;
 						$text .= "\n".$data['title'];
-						$text .= "\n</a></div>\n\n";
+						$text .= "\n</a></small></div>\n\n";
 						break;
 
 					case "audio":
-						$mime = vartrue($data['mime'],"audio/mpeg");
-						$text .= '<audio controls>
+					//	$mime = vartrue($data['mime'],"audio/mpeg");
+
+						$text .= $tp->toAudio($data['thumbUrl'], array('mime'=>$data['mime']));
+					/*	$text .= '<audio controls>
 						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
 	
 						  Your browser does not support the audio tag.
-						</audio>
-						<div class="clearfix" style="text-align:center">';
+						</audio>';*/
+
+							$text .= "<div><small class='media-carousel-item-caption'>";
 
 						$text .= $linkTag;
 						$text .= "\n".$data['title'];
-						$text .= "\n</a></div>\n\n";
+						$text .= "\n</a></small></div>\n\n";
 
 						break;
 
@@ -1456,7 +1470,7 @@ class e_media
 			/* Fix for Bootstrap2 margin-left issue when wrapping */
 		e107::css('inline','
 				
-		.media-carousel { margin-bottom:15px }
+		
 		
 		.row-fluid .media-carousel.span6:nth-child(2n + 3) { margin-left : 0px; }
 		.row-fluid .media-carousel.span4:nth-child(3n + 4) { margin-left : 0px; }
@@ -1497,7 +1511,7 @@ class e_media
 			
 				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false">';
 				$text .= '{INDICATORS}';
-				$text .= '<div style="margin-top:10px" class="carousel-inner">';	
+				$text .= '<div style="margin-top:10px" class="row admingrid carousel-inner">';
 			
 			
 			//	$text .= "<div class='item active'>";

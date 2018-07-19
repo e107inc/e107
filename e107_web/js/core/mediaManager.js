@@ -313,6 +313,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var $preview = $('#preview');
 		var $path = $('#path');
 
+
+
 		// Remove "selected" class from elements.
 		$('.e-media-select').removeClass('media-select-active');
 
@@ -320,25 +322,25 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		$this.addClass('media-select-active');
 		$this.closest('img').addClass('active');
 
-		if(bbcode == "file" && $bbcodeHolder.length > 0) // not needed for Tinymce
+		if(bbcode === "file" && $bbcodeHolder.length > 0) // not needed for Tinymce
 		{
 			bbpath = '[file=' + id + ']' + name + '[/file]';
 			$bbcodeHolder.val(bbpath);
 			return;
 		}
 
-		if(bbcode == "video" && $bbcodeHolder.length > 0)
+		if(bbcode === "video" && $bbcodeHolder.length > 0)
 		{
 			bbpath = '[' + bbcode + ']' + path + '[/' + bbcode + ']';
 			$bbcodeHolder.val(bbpath);
 		}
 
-		if(bbcode == "glyph" && $bbcodeHolder.length > 0)
+		if(bbcode === "glyph" && $bbcodeHolder.length > 0)
 		{
 			var $target = $('div#' + target + "_prev", window.top.document);
 
 			// Only if  the triggering element is not an icon-picker.
-			if($target.length == 0 || !$target.hasClass('image-selector'))
+			if($target.length === 0 || !$target.hasClass('image-selector'))
 			{
 				bbpath = '[' + bbcode + ']' + path + '[/' + bbcode + ']';
 				$bbcodeHolder.val(bbpath);
@@ -367,7 +369,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 		$('img#' + target + "_prev", window.top.document).attr('src', preview); // set new value
 
-		if(type == 'glyph')
+		if(type === 'glyph')
 		{
 			preview = "<span class='" + src + "'>&nbsp;</span>";
 
@@ -381,11 +383,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				$path.attr('value', path);
 			}
 		}
-		else if(type == 'file')
+		else if(type === 'file')
 		{
 			preview = name;
 		}
-		else // image and video
+		else if(type === 'video' || type === 'audio') // mediapicker() method. 
+		{
+			console.log("Preview 392: "+preview);
+
+			if($htmlHolder.length > 0)
+			{
+				$htmlHolder.val(preview);
+			}
+
+			preview = atob(preview).trim();
+		}
+		else // image
 		{
 			e107.mediaManager.eMediaAttribute($this, bbcode);
 
@@ -402,14 +415,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				preview = preview.replace(e107_plugins_directory, '');
 			}
-
+			console.log("Mode: Image/Video");
 		}
+
+
+		console.log("Preview: "+preview);
+		console.log("Save Path: "+path);
+
+
 
 		$('div#' + target + "_prev", window.top.document).html(preview); // set new value
 		$('span#' + target + "_prev", window.top.document).html(preview); // set new value
 
 		// @see $frm->filepicker()
-		if(target != '')
+		if(target !== '')
 		{
 			if($('input#' + target) !== undefined)
 			{

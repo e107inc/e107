@@ -1006,7 +1006,12 @@ class e_form
 		if(!empty($extras['video']))
 		{
 			$url .= ($extras['video'] == 2) ? "&amp;video=2" : "&amp;video=1";
-		}			
+		}
+
+		if(!empty($extras['audio']))
+		{
+			$url .= "&amp;audio=1";
+		}
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
 		{
@@ -1380,14 +1385,14 @@ class e_form
 		}
 
 		$title = !empty($parms['help']) ? "title='".$parms['help']."'" : "";
-		$width = vartrue($parms['w'], 210);
+		$width = vartrue($parms['w'], 220);
 		$height = vartrue($parms['h'], 190);
 	// e107::getDebug()->log($parms);
 
 		// Test Files...
 	//	$default = '{e_MEDIA_VIDEO}2018-07/samplevideo_720x480_2mb.mp4';
 	//	$default = '{e_MEDIA_FILE}2016-03/Colony_Harry_Gregson_Williams.mp3';
-	//	$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
+		$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
 	//	$default = 'NuIAYHVeFYs.youtube';
 	//	$default = ''; // empty
 

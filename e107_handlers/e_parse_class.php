@@ -4635,8 +4635,10 @@ class e_parser
 
 		$file = $this->replaceConstants($file, 'abs');
 
+		$mime = varset($parm['mime'], 'audio/mpeg');
+
 		$text = '<audio controls style="max-width:100%">
-					<source src="'.$file.'" type="audio/mpeg">
+					<source src="'.$file.'" type="'.$mime .'">
 					  Your browser does not support the audio tag.
 				</audio>';
 
@@ -4658,7 +4660,7 @@ class e_parser
 			return false;
 		}
 
-		list($id,$type) = explode(".",$file,2);
+		$type = pathinfo($file, PATHINFO_EXTENSION);
 
 		$thumb = vartrue($parm['thumb']);
 		$mode = varset($parm['mode'],false); // tag, url
@@ -4784,11 +4786,12 @@ class e_parser
 
 			$width = varset($parm['w'], 320);
 			$height = varset($parm['h'], 240);
+			$mime = varset($parm['mime'], 'video/mp4');
 
 			return '
 			<div class="video-responsive">
 			<video width="'.$width.'" height="'.$height.'" controls>
-			  <source src="'.$file.'" type="video/mp4">
+			  <source src="'.$file.'" type="'.$mime.'">
 		
 			  Your browser does not support the video tag.
 			</video>

@@ -876,7 +876,7 @@ class media_admin_ui extends e_admin_ui
 				'text'			=> e_MEDIA_FILE,
 				'multipart'		=> e_MEDIA_FILE,
 				'application'	=> e_MEDIA_FILE,
-			//	'audio'			=> e_MEDIA_FILE,
+				'audio'			=> e_MEDIA_FILE,
 				'image'			=> e_MEDIA_IMAGE,
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
@@ -1385,7 +1385,13 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Videos</a></li>\n";
 
 		}
-		
+
+		if($this->getQuery('audio') == 1 || $this->getQuery('bbcode') == 'audio')
+		{
+			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-audio'>Audio</a></li>\n";
+
+		}
+
 		
 		if(varset($_GET['from']))
 		{
@@ -1525,7 +1531,7 @@ class media_admin_ui extends e_admin_ui
 
 		}
 			
-		// todo
+
 		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
 		{
 				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
@@ -1596,7 +1602,57 @@ class media_admin_ui extends e_admin_ui
 		
 	function audioTab($parm=array())
 	{
-		//todo (@see videoTab)
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340,
+			'height'	=> 220,
+			'type'		=>'audio',
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'audio', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 12,
+			'gridClass'	=> 'col-md-2 col-sm-3 media-carousel-item-audio',
+			'bbcode'	=> 'audio',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$audios = e107::getMedia()->getAudios();
+
+		foreach($audios as $val)
+		{
+			$items[] = array(
+					'previewHtml'	=> $tp->toAudio($val['media_url'], array('mime'=>$val['media_type'], 'w'=>210, 'h'=>140)),
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $val['media_url'],
+					'title'			=> $val['media_name'],
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+		if(!empty($parm['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $parm['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
 
 	}
 
@@ -1613,7 +1669,7 @@ class media_admin_ui extends e_admin_ui
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'video', 								// Used by AJAX to identify correct function.
 			'perPage'	=> 12,
-			'gridClass'	=> 'media-carousel-item-video pull-left',
+			'gridClass'	=> 'col-md-2 col-sm-3 admin-ui-grid media-carousel-item-video',
 			'bbcode'	=> 'video',
 			'close'		=> 'true'
 
@@ -1626,9 +1682,9 @@ class media_admin_ui extends e_admin_ui
 		foreach($videos as $val)
 		{
 			$items[] = array(
-					'previewUrl'	=> e_IMAGE_ABS."generic/playlist_120.png", //todo place entire video tag into imagepicker when saving.
+					'previewHtml'	=> $tp->toVideo($val['media_url'], array('w'=>210, 'h'=>140)), // e_IMAGE_ABS."generic/playlist_120.png", //todo place entire video tag into imagepicker when saving.
 					'saveValue'		=> $val['media_url'],
-					'thumbUrl'		=> $tp->replaceConstants($val['media_url']),
+					'thumbUrl'		=> $val['media_url'],
 					'title'			=> $val['media_name'],
 					'slideCaption'	=> '',
 					'slideCategory'	=> 'bootstrap',
