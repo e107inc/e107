@@ -1982,8 +1982,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('GUEST', false);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
-		define('USERCLASS_LIST', '');
-		define('USERCLASS', '');
+		define('USERCLASS_LIST', '253,254,250,251,0'); // needed to run some queries.
 		define('USERJOINED', '');
 		return;
 	}
