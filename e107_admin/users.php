@@ -2834,7 +2834,8 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		    'gen_datestamp' 	=> array ( 'title' => 'Special', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'gen_user_id' 		=> array ( 'title' => USRLAN_210, 'type' => 'boolean', 'batch'=>true, 'data' => 'int', 'inline'=>true, 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'dropdown', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		    //'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'dropdown', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'method', 'data' => 'str', 'inline'=>!true, 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
 
 
 		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
@@ -2961,6 +2962,25 @@ class users_admin_form_ui extends e_admin_form_ui
 			}
 		}
 
+		function gen_chardata($curVal, $mode, $parms=null)
+		{
+			switch($mode)
+			{
+				case 'read':
+					return '<img src="'.e_IMAGE.'ranks/'.$curVal.'"/><br/>'.$curVal;
+					break;
+
+				case 'write':
+					$opts = $this->getController()->getFields()['gen_chardata']['writeParms']['optArray'];
+					return e107::getForm()->select('gen_chardata', $opts, $curVal);
+
+				case 'filter':
+				case 'batch':
+					return null;
+					break;
+
+			}
+		}
 
 
 	}
