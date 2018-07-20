@@ -1303,7 +1303,7 @@ class e107plugin
 				continue;
 			}
 
-			if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
+			if(!is_array($path, $this->core_plugins)) // check non-core plugins for sql file changes.
 			{
 				$dbv->errors = array();
 				$dbv->compare($path);
@@ -1315,40 +1315,35 @@ class e107plugin
 				}
 			}
 
-			//	$curVal = floatval($version);
-				$curVal = $version;
-				$fileVal = $plg->getVersion(); // floatval($data['@attributes']['version']);
-			//	$fileVal = floatval($fileVal);
+			$curVal = $version;
+			$fileVal = $plg->getVersion();
 
-				
-				if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
+			if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required.
+			{
+				$mes->addDebug("Plugin Update(s) Required in ".$path."_setup.php [".$path."]");
+
+				if($mode === 'boolean')
 				{
-					$mes->addDebug("Plugin Update(s) Required in ".$path."_seup.php [".$path."]");
+					return TRUE;
+				}
 
-					if($mode === 'boolean')
-					{
+				$needed[$path] = $data;
+			}
 
-						return TRUE;	
-					}
+			if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
+			{
+				$mes->addDebug("Plugin Update(s) Required - different version [".$path."]");
 
-					$needed[$path] = $data;		
-				} 
-				
-				if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
+				if($mode === 'boolean')
 				{
-					$mes->addDebug("Plugin Update(s) Required - different version [".$path."]");
+					return TRUE;
+				}
 
-					if($mode === 'boolean')
-					{
-						return TRUE;
-					}
+			//	$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
 
-				//	$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
-					
-				//	$log->flushMessages();
-					$needed[$path] = $data;
-				}	
-
+			//	$log->flushMessages();
+				$needed[$path] = $data;
+			}
 
 		}
 
@@ -1357,8 +1352,6 @@ class e107plugin
 		{
 			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
 		}	
-
-
 
 
 		if($mode === 'boolean')
