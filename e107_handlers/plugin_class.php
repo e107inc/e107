@@ -4524,7 +4524,7 @@ class e107plugin
 			echo $plugin_path." = ".implode(",", $p_addons)."<br />";
 		}
 
-		$this->log("Detected Addons: ".print_a($p_addons,true));
+		$this->log("Detected Addons: ".print_r($p_addons,true));
 
 		return implode(",", $p_addons);
 	}
