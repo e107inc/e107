@@ -3,7 +3,7 @@ version: "2"
 plugins:
   csslint:
     enabled: false
-    duplication:
+  duplication:
     enabled: true
     checks:
       Identical code:
@@ -51,6 +51,7 @@ exclude_patterns:
 - "**/*.d.ts"
 - "e107_admin/core_image.php"
 - "e107_plugins/log/js/awesomechart.js"
+- "e107_core/**/*.sc"
 - "e107_docs/**/*"
 - "e107_images/**/*"
 - "e107_handlers/hybridauth/**/*"
