@@ -57,4 +57,44 @@
 
 			$this->assertTrue($res);
 		}
+
+		public function testVerifyE107_INIT()
+		{
+		    $res = true;
+
+		    if(!defined('e107_INIT'))
+		    {
+		        $res = false;
+		    }
+
+			$this->assertTrue($res);
+		}
+
+
+		public function testVerifyUSERCLASS_LIST()
+		{
+			$res = true;
+
+			if(!defined('USERCLASS_LIST'))
+			{
+				 $res = false;
+			}
+
+			$this->assertTrue($res);
+		}
+
+
+		public function testVerifye_ROOT()
+		{
+			$res = true;
+
+			if(!defined('e_ROOT'))
+			{
+				 $res = false;
+			}
+
+			$this->assertTrue($res);
+
+
+		}
 	}
