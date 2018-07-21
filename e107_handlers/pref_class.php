@@ -845,7 +845,7 @@ final class e_core_pref extends e_pref
 		parent::__construct($pref_id, $pref_alias);
 		if($load && $pref_id)
 		{
-			$this->load();
+			$this->load($pref_id, $load);
 		}
 
 
