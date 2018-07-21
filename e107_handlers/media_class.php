@@ -1276,6 +1276,20 @@ class e_media
 	}
 
 
+	private function browserCarouselItemSelector($data)
+	{
+		$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
+		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
+		$style  = varset($data['style'],'float:left');
+		$class  = varset($data['class'],'');
+		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : $data['previewUrl'];
+
+		$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$dataPreview."'  title=\"".$data['title']."\" style='".$style."' href='#' >";
+
+		return $linkTag;
+
+	}
+
 	
 	function browserCarouselItem($row = array())
 	{
@@ -1307,8 +1321,7 @@ class e_media
 		}
 		
 			
-		$close = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
-		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
+
 
 		$text = "\n\n<!-- Start Item -->
 		
@@ -1316,46 +1329,40 @@ class e_media
 		
 			<div class='well clearfix'>\n";
 
-				$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : $data['previewUrl'];
 
-				$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$dataPreview."'  title=\"".$data['title']."\" style='float:left' href='#' >";
+
+				$linkTag = $this->browserCarouselItemSelector($data);
+
 
 				switch($data['type'])
 				{
 					case "video":
-						// $mime = vartrue($data['mime'],"video/mp4");
-
-						$text .= $tp->toVideo($data['thumbUrl'], array('w'=>$data['width'],'h'=>'', 'mime'=>$data['mime']));
-					/*	$text .= '<video width="'.$data['width'].'" height="'.$data['height'].'" controls >
-						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
-						  Your browser does not support the video tag.
-						</video>';*/
-
-						$text .= "<div><small class='media-carousel-item-caption'>";
-
-						$text .= $linkTag;
-						$text .= "\n".$data['title'];
-						$text .= "\n</a></small></div>\n\n";
-						break;
-
 					case "audio":
-					//	$mime = vartrue($data['mime'],"audio/mpeg");
 
-						$text .= $tp->toAudio($data['thumbUrl'], array('mime'=>$data['mime']));
-					/*	$text .= '<audio controls>
-						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
-	
-						  Your browser does not support the audio tag.
-						</audio>';*/
+						if($data['type'] === 'video') // video
+						{
+							$text .= $tp->toVideo($data['thumbUrl'], array('w'=>$data['width'],'h'=>'', 'mime'=>$data['mime']));
+						}
+						else    // audio
+						{
+							$text .= $tp->toAudio($data['thumbUrl'], array('mime'=>$data['mime']));
+						}
 
-							$text .= "<div><small class='media-carousel-item-caption'>";
+						$text .= "<div class='row' style='margin-top:5px'>
+									<div class='col-md-8'><small class='media-carousel-item-caption'>";
 
-						$text .= $linkTag;
+						$text .= $this->browserCarouselItemSelector($data);
 						$text .= "\n".$data['title'];
-						$text .= "\n</a></small></div>\n\n";
+						$text .= "\n</a></small></div>";
 
+						$data['style'] = 'float:right';
+
+						$text .= "<div class='col-md-4 text-right'>".
+						$this->browserCarouselItemSelector($data).
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>Select</button></a></div>
+								</div>\n\n";
 						break;
-
+						
 
 					case "image":
 						$text .= $linkTag;
