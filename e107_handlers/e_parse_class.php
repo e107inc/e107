@@ -487,7 +487,7 @@ class e_parse extends e_parser
 	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
 	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
-	 * @param boolean $original_author [optional]
+	 * @param mixed $parm [optional]
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
@@ -501,7 +501,7 @@ class e_parse extends e_parser
 			foreach ($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
-				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $original_author)] = $this->toDB($var, $nostrip, $no_encode, $mod, $original_author);
+				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $parm)] = $this->toDB($var, $nostrip, $no_encode, $mod, $parm);
 			}
 			return $ret;
 		}

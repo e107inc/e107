@@ -3036,7 +3036,22 @@ class e_form
 
 		if(!empty($current_value) && !is_numeric($current_value)) // convert name to id.
 		{
-			$current_value = $this->_uc->getID($current_value);
+			//$current_value = $this->_uc->getID($current_value);
+			// issue #3249 Accept also comma separated values
+			if (!is_array($current_value))
+			{
+				$current_value = explode(',', $current_value);
+			}
+			$tmp = array();
+			foreach($current_value as $val)
+			{
+				if (!empty($val))
+				{
+					$tmp[] = !is_numeric($val) ? $this->_uc->getID(trim($val)) : (int) $val;
+				}
+			}
+			$current_value = implode(',', $tmp);
+			unset($tmp);
 		}
 
 		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
