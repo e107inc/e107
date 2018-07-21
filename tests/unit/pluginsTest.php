@@ -81,6 +81,10 @@
 				$addon_pref_is_present = !empty($corePref[$key][$pluginDir]);
 				$debug_addon_pref_is_present = ($addon_pref_is_present) ? 'YES' : 'NO';
 
+				if($key === 'e_admin_events_list')
+				{
+					$debug_addon_pref_is_present = "DEPRECATED by Admin-UI events";
+				}
 				if($key === 'e_help_list')
 				{
 					$debug_addon_pref_is_present = "DEPRECATED by Admin-UI renderHelp()";
