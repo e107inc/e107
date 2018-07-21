@@ -26,86 +26,79 @@
 			}*/
 		}
 
-		private function checkPlugin($plugin, $debug=false)
+		private function makePluginReport($pluginDir, $debug=false)
 		{
-
-			
-
-			$text = "\n\n---- Log \n\n";
+			$debug_text = "\n\n---- Log \n\n";
 			$log = e107::getPlugin()->getLog();
 
 			foreach($log as $line)
 			{
-				$text .= " - ".$line."\n";
+				$debug_text .= " - ".$line."\n";
 			}
 
-			$text .= "----------------------------------------\n\n";
+			$debug_text .= "----------------------------------------\n\n";
 
-			$text .= "---- Pref: plug_installed (version)\n\n";
+			$debug_text .= "---- Pref: plug_installed (version)\n\n";
 			$pref = e107::getConfig('core',true,true)->get('plug_installed');
 
-			$text .= print_r($pref[$plugin],true);
+			$debug_text .= print_r($pref[$pluginDir],true);
 
-			$installedPref = isset($pref[$plugin]) ? $pref[$plugin] : false;
+			$installedPref = isset($pref[$pluginDir]) ? $pref[$pluginDir] : false;
 
-			$text .= "\n\n---- Plugin Prefs: \n\n";
-			$pluginPref = e107::pref($plugin);
-			$text .= print_r($pluginPref,true);
+			$debug_text .= "\n\n---- Plugin Prefs: \n\n";
+			$pluginPref = e107::pref($pluginDir);
+			$debug_text .= print_r($pluginPref,true);
 
 
-			$text .= "\n---- Plugin Table: ".$plugin."\n\n";
-			$pluginTable = e107::getDb()->retrieve('plugin','*', "plugin_path='".$plugin."' LIMIT 1", true);
-			$text .= print_r($pluginTable,true);
+			$debug_text .= "\n---- Plugin Table: ".$pluginDir."\n\n";
+			$pluginTable = e107::getDb()->retrieve('plugin','*', "plugin_path='".$pluginDir."' LIMIT 1", true);
+			$debug_text .= print_r($pluginTable,true);
 
-			$text .= "\n---- Menu Table: ".$plugin."\n\n";
-			$menuTable = e107::getDb()->retrieve('menus','*', "menu_location = 0 AND menu_path='".$plugin."/' LIMIT 10", true);
-			$text .= print_r($menuTable, true);
+			$debug_text .= "\n---- Menu Table: ".$pluginDir."\n\n";
+			$menuTable = e107::getDb()->retrieve('menus','*', "menu_location = 0 AND menu_path='".$pluginDir."/' LIMIT 10", true);
+			$debug_text .= print_r($menuTable, true);
 
-			$text .= "\n---- Site Links Table: ".$plugin."\n\n";
-			$linksTable = e107::getDb()->retrieve('links','*', "link_owner='".$plugin."' ", true);
-			$text .= print_r($linksTable, true);
+			$debug_text .= "\n---- Site Links Table: ".$pluginDir."\n\n";
+			$linksTable = e107::getDb()->retrieve('links','*', "link_owner='".$pluginDir."' ", true);
+			$debug_text .= print_r($linksTable, true);
 
-			$dir = scandir(e_PLUGIN.$plugin);
+			$files_in_plugin_directory = scandir(e_PLUGIN.$pluginDir);
 			$corePref = e107::getConfig('core',true,true)->getPref();
 
 
-			$text .= "\n---- Addons\n\n";
-			$text .= "-------------------------------------------------------------------\n";
-			$text .= "Addon file                  In Core pref e_xxxx_list  \n";
-			$text .= "-------------------------------------------------------------------\n";
+			$debug_text .= "\n---- Addons\n\n";
+			$debug_text .= "-------------------------------------------------------------------\n";
+			$debug_text .= "Addon file                  In Core pref e_xxxx_list  \n";
+			$debug_text .= "-------------------------------------------------------------------\n";
 
 			$addonPref = array();
 
-			foreach($dir as $file)
+			$plugin_addon_names = $this->pluginFileListToPluginAddonNames($files_in_plugin_directory);
+
+			foreach($plugin_addon_names as $plugin_addon_name)
 			{
-				$name = basename($file,".php");
+				$key = $plugin_addon_name."_list";
+				$addon_pref_is_present = !empty($corePref[$key][$pluginDir]);
+				$debug_addon_pref_is_present = ($addon_pref_is_present) ? 'YES' : 'NO';
 
-				if(substr($file,0,2) === 'e_')
+				if($key === 'e_help_list')
 				{
-
-
-					$key = $name."_list";
-					$status = !empty($corePref[$key][$plugin]) ? 'YES' : 'NO';
-
-					if($key === 'e_help_list')
-					{
-						$status = "DEPRECATED by Admin-UI renderHelp()";
-					}
-					else
-					{
-						$addonPref[$name] = ($status === 'YES') ? true : false;
-					}
-
-					$text .= str_pad($file,20)."\t\t".$status."\n";
-
+					$debug_addon_pref_is_present = "DEPRECATED by Admin-UI renderHelp()";
 				}
+				else
+				{
+					$addonPref[$plugin_addon_name] = $addon_pref_is_present;
+				}
+
+				$debug_text .= str_pad("$plugin_addon_name.php",20)
+					."\t\t$debug_addon_pref_is_present\n";
 			}
 
-			$text .= "-------------------------------------------------------------------\n";
+			$debug_text .= "-------------------------------------------------------------------\n";
 
 			if($debug === true)
 			{
-				echo $text;
+				codecept_debug($debug_text);
 			}
 
 			return array(
@@ -117,9 +110,6 @@
 				'linksTable'    => $linksTable,
 				'addonPref'     => $addonPref
 			);
-
-
-
 		}
 
 		public function testBanner()
@@ -132,9 +122,10 @@
 			$this->assertContains("<img class='e-banner img-responsive img-fluid'",$result);
 
 			$this->pluginUninstall('banner');
-			$result2 = $tp->parseTemplate("{BANNER=e107promo}",true); // should return null since plugin is uninstalled.
+			$result2 = $tp->parseTemplate("{BANNER=e107promo}",true);
 
-
+			// The expected value below was the actual observed output when the assertion was written:
+			$this->assertEquals('&nbsp;', $result2);
 		}
 
 		public function testChatbox_Menu()
@@ -228,9 +219,7 @@
 
 			e107::getPlugin()->install($pluginDir);
 
-			$install = $this->checkPlugin($pluginDir, false); // set to true to see more info
-
-		//	print_r($install);
+			$install = $this->makePluginReport($pluginDir, false); // set to true to see more info
 
 			//todo additional checks
 
@@ -238,9 +227,6 @@
 			{
 				$this->assertTrue($val, $key." list pref is missing for ".$pluginDir);
 			}
-
-
-
 		}
 
 		private function pluginUninstall($pluginDir)
@@ -252,9 +238,7 @@
 
 			e107::getPlugin()->uninstall($pluginDir, $opts);
 
-			$uninstall = $this->checkPlugin($pluginDir, false); // set to true to see more info
-
-		//	print_r($uninstall);
+			$uninstall = $this->makePluginReport($pluginDir, false); // set to true to see more info
 
 			//todo additional checks
 
@@ -265,15 +249,32 @@
 				$message = $key." list pref still contains '".$pluginDir."' after uninstall of ".$pluginDir.". ";
 				$this->assertEmpty($val, $message);
 			}
-
-
-
-
 		}
 
+		/**
+		 * @param $plugin_file_list
+		 * @return array
+		 */
+		private function pluginFileListToPluginAddonNames($plugin_file_list): array
+		{
+			$plugin_addon_names = array_map(function ($addon_path) {
+				return basename($addon_path, '.php');
+			}, $plugin_file_list);
 
+			$class_name_that_has_plugin_addons_array = 'e107plugin';
+			try {
+				$reflectionClass = new ReflectionClass($class_name_that_has_plugin_addons_array);
+			} catch (ReflectionException $e) {
+				$this->fail("Could not instantiate $class_name_that_has_plugin_addons_array to get \$plugin_addons");
+			}
+			$reflectionProperty = $reflectionClass->getProperty('plugin_addons');
+			$reflectionProperty->setAccessible(true);
+			$valid_plugin_addon_names = $reflectionProperty->getValue(new $class_name_that_has_plugin_addons_array());
 
+			$plugin_addon_names = array_filter($plugin_addon_names, function ($plugin_addon_name) use ($valid_plugin_addon_names) {
+				return in_array($plugin_addon_name, $valid_plugin_addon_names);
+			});
 
-
-
+			return $plugin_addon_names;
+		}
 	}
