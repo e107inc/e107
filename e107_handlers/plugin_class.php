@@ -1631,32 +1631,21 @@ class e107plugin
 	 * @param int $id
 	 * @return array plugin info
 	 */
-	function getinfo($id, $force = false)
+	static function getPluginRecord($id)
 	{
 		$sql = e107::getDb();
-		static $getinfo_results;
-		if (!is_array($getinfo_results))
-		{
-			$getinfo_results = array();
+		$getinfo_results = array();
+
+		$path = (!is_numeric($id)) ? $id : false;
+		$id = (int)$id;
+
+		$qry = "plugin_id = " . $id;
+		$qry .= ($path != false) ? " OR plugin_path = '" . $path . "' " : "";
+
+		if ($sql->select('plugin', '*', $qry)) {
+			$getinfo_results[$id] = $sql->fetch();
 		}
 
-		$path = (!is_numeric($id)) ?  $id : false;
-		$id = (int) $id;
-		
-		$qry = "plugin_id = ".$id;
-		$qry .= ($path != false) ? " OR plugin_path = '".$path."' " : "";
-		
-		if (!isset($getinfo_results[$id]) || $force == true)
-		{
-			if ($sql->select('plugin', '*', $qry))
-			{
-				$getinfo_results[$id] = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
-		}
 		return $getinfo_results[$id];
 	}
 	
@@ -1945,7 +1934,7 @@ class e107plugin
 	function manage_userclass($action, $class_name, $class_description='')
 	{
 		$this->log("Running ".__FUNCTION__);
-		global $e107;
+		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
@@ -2501,12 +2490,12 @@ class e107plugin
 		elseif(is_numeric($id)) // plugin database id
 		{
 			$id = (int) $id;
-			$plug = $this->getinfo($id); // Get plugin info from DB	
+			$plug = e107plugin::getPluginRecord($id); // Get plugin info from DB
 		}
 		else // Plugin Path.
 		{
 			$id = $this->getId($id);
-			$plug = $this->getinfo($id); // Get plugin info from DB
+			$plug = e107plugin::getPluginRecord($id); // Get plugin info from DB
 		}
 				
 		$this->current_plug = $plug;
@@ -3885,7 +3874,7 @@ class e107plugin
 		}
 		else
 		{	
-			$plug = $this->getinfo($id);
+			$plug = e107plugin::getPluginRecord($id);
 		}
 		
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
@@ -4018,7 +4007,7 @@ class e107plugin
 		$sql = e107::getDb();
 		$tp = e107::getParser();		
 		
-		$plug = $this->getinfo($dir);
+		$plug = e107plugin::getPluginRecord($dir);
 		
 		$this->options = array('nolinks'=>true);
 		
@@ -4071,7 +4060,7 @@ class e107plugin
 		$text = '';
 
 		// install plugin ...
-		$plug = $this->getinfo($id);
+		$plug = e107plugin::getPluginRecord($id);
 		
 		if(!is_array($plug))
 		{
@@ -4119,7 +4108,7 @@ class e107plugin
 		$tp = e107::getParser();
 
 		$sql = e107::getDb();
-		$plug = $this->getinfo($id);
+		$plug = e107plugin::getPluginRecord($id);
 
 		$this->log("Uninstalling :".$plug['plugin_path']." with options: ".print_r($options, true));
 
