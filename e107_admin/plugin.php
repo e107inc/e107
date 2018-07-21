@@ -631,7 +631,7 @@ class plugin_ui extends e_admin_ui
 
 				$eplug_addons = $plugin -> getAddons($eplug_folder);
 
-				$info = $plugin->getinfo($this->id);
+				$info = e107plugin::getPluginRecord($this->id);
 
 				$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$eplug_version. "({e_PLUGIN}".$info['plugin_path'].")";
 
