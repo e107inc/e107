@@ -563,6 +563,27 @@ function update_core_database($type = '')
 	return $just_check;
 }
 
+
+	function update_218_to_219($type='')
+	{
+		$sql = e107::getDb();
+
+		// add common video and audio media categories if missing.
+		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
+		if(!$count)
+		{
+			if ($type !== 'do') return update_needed('Media-Manager is missing the video and audio categories and needs to be updated.');
+
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		}
+
+
+	}
+
+
+
+
 	/**
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
