@@ -255,7 +255,7 @@
 		 * @param $plugin_file_list
 		 * @return array
 		 */
-		private function pluginFileListToPluginAddonNames($plugin_file_list): array
+		private function pluginFileListToPluginAddonNames($plugin_file_list)
 		{
 			$plugin_addon_names = array_map(function ($addon_path) {
 				return basename($addon_path, '.php');
