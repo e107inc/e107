@@ -553,3 +553,4 @@ define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
 define("LAN_UI_FILTER_IS_EMPTY", "Is Empty");
 define("LAN_RECALCULATE_COMMENT_COUNT", "Recalculate comment count");
 define("LAN_SUCC_RECALCULATE_COMMENT_COUNT", "Comment count successfully recalculated!");
+define("LAN_NO_RESULTS_FOUND", "No Results Found.");
