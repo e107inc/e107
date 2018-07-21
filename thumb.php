@@ -26,6 +26,13 @@ define('e107_INIT', true);
 
 // error_reporting(E_ALL);
 
+function thumbErrorHandler()
+{
+	echo "Fatal Thumbnail Error";
+	http_response_code(500);
+}
+
+set_exception_handler('thumbErrorHandler'); // disable to troubleshoot.
 
 
 error_reporting(0); // suppress all errors or image will be corrupted.
