@@ -1584,7 +1584,7 @@ class e_media
 				}
 				else
 				{
-					$text .= "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";
+					$text .= "<div class='alert alert-info alert-block text-center'>".LAN_NO_RESULTS_FOUND."</div>";
 				}
 
 				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
