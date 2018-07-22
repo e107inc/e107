@@ -1073,8 +1073,10 @@ $(document).ready(function()
 			{
 				pos = 'bottom';
 			}
-
-			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
+            if(typeof $.fn.tooltip !== 'undefined')
+            {
+                $(this).tooltip({opacity: 1.0, fade: true, placement: pos, container: 'body'});
+            }
 			// $(this).css( 'cursor', 'pointer' )
 		});
 
