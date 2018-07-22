@@ -11,8 +11,8 @@
 
 	class e_arrayTest extends \Codeception\Test\Unit
 	{
+		/** @var e_array */
 		private $arrObj;
-
 
 		protected function _before()
 		{

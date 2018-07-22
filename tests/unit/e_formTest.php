@@ -11,6 +11,7 @@
 
 	class e_formTest extends \Codeception\Test\Unit
 	{
+		/** @var e_form */
 		protected $_frm;
 
 		protected $_id = 567; // simulated record number.
@@ -704,7 +705,7 @@
 				$result = str_replace("\n", "", $result);
 
 
-				if(empty($expected[$field]))
+			//	if(empty($expected[$field]))
 				{
 				//	$this->expectExceptionMessage('\$expected value for \$field not set in script');
 				//	$this->expectExceptionMessage($result);
