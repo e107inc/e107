@@ -420,7 +420,7 @@ class e_array {
     * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
     *
     * @param string $ArrayData
-    * @return array stored data
+    * @return array|bool stored data
     */
     public function unserialize($ArrayData) 
     {
@@ -461,12 +461,17 @@ class e_array {
 
         $ArrayData = trim($ArrayData);
 
+        if(strpos($ArrayData, "\$data = ") === 0) // Fix for buggy old value.
+		{
+			$ArrayData = substr($ArrayData,8);
+		}
+
         if(strtolower(substr($ArrayData,0,5)) != 'array')
         {
             return false;
         }
 
-		if(strpos($ArrayData,"0 => \'")!=false)
+		if(strpos($ArrayData," => \'") !== false)
 		{
              $ArrayData = stripslashes($ArrayData);
 		}
