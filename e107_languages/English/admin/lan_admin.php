@@ -201,6 +201,12 @@ define("ADLAN_186", "The following old files can be safely deleted from your sys
 define("ADLAN_187", "Unable to create [x]. Please check your folder permissions.");
 define("ADLAN_188", "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.");
 define("ADLAN_189", "The following plugins are not compatible with this version of e107 and should be uninstalled: ");
+define("ADLAN_190", "Need Help?");
+define("ADLAN_191", "Connect with our community for [x] with any upgrading issues you may encounter.");
+define("ADLAN_192", "Connect with our community for [x] with any e107 issues you may encounter.");
+define("ADLAN_193", "free support");
+define("ADLAN_194", "The folder [x] is not writable. Please correct before proceeding.");
+define("ADLAN_195", "Legacy avatars folder detected. Please make sure [x]avatars/ is writable. Please correct before proceeding.");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -537,6 +543,8 @@ define("LAN_LOCK", "Lock");
 define("LAN_SYSTEM_USER", "System user");
 define("LAN_ENGINE", "Engine");
 define("LAN_SOURCE", "Source");
+define("LAN_UPGRADING", "Upgrading?");
+define("LAN_DONT_SHOW_AGAIN", "Don't show again");
 
 define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firewall and/or internet connection.");
 
