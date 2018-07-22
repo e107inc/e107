@@ -92,10 +92,11 @@
 			try
 			{
 				$this->_frm = $this->make('e_form');
+				$this->_frm->__construct();
 			}
 			catch (Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_parser object");
+				$this->assertTrue(false, "Couldn't load e_form object");
 			}
 		}
 
@@ -402,22 +403,73 @@
 		{
 
 		}
-
-		public function testUc_select()
-		{
-
-		}
-
-		public function test_uc_select_cb()
-		{
-
-		}
-
-		public function testOptgroup_open()
-		{
-
-		}
 */
+		public function testUc_select_single_numeric()
+		{
+			$uc_options = 'admin';
+			$select_options = array('multiple' => false);
+			$opt_options = array();
+			$actual = $this->_frm->uc_select('uc', 254, $uc_options, $select_options, $opt_options);
+			$expected = "<select name='uc' id='uc' class='tbox select form-control'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n\n<optgroup label=\"Everyone but..\">\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n</optgroup>\n\n</select>";
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testUc_select_single_string()
+		{
+			$uc_options = 'admin';
+			$select_options = array('multiple' => false);
+			$opt_options = array();
+			$actual = $this->_frm->uc_select('uc', 'Admin', $uc_options, $select_options, $opt_options);
+			$expected = "<select name='uc' id='uc' class='tbox select form-control'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n\n<optgroup label=\"Everyone but..\">\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n</optgroup>\n\n</select>";
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testUc_select_multi_numeric()
+		{
+			$uc_options = 'member,admin';
+			$select_options = array('multiple' => true);
+			$opt_options = array();
+			$actual = $this->_frm->uc_select('uc', '254,253', $uc_options, $select_options, $opt_options);
+			$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label=\"Everyone but..\">\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testUc_select_multi_string()
+		{
+			$uc_options = 'member,admin';
+			$select_options = array('multiple' => true);
+			$opt_options = array();
+			$actual = $this->_frm->uc_select('uc', 'Admin,Members', $uc_options, $select_options, $opt_options);
+			$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label=\"Everyone but..\">\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testUc_select_multi_mixed()
+		{
+			$uc_options = 'member,admin';
+			$select_options = array('multiple' => true);
+			$opt_options = array();
+			$actual = $this->_frm->uc_select('uc', 'Admin,253', $uc_options, $select_options, $opt_options);
+			$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label=\"Everyone but..\">\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		/*
+				public function test_uc_select_cb()
+				{
+
+				}
+
+				public function testOptgroup_open()
+				{
+
+				}
+		*/
 		public function testOption()
 		{
 			$options = array('disabled'=>true);
