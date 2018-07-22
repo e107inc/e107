@@ -266,6 +266,9 @@ td.right, th.right 			{ text-align:right }
 
 
 /* media picker */
+.media-carousel-item-image .well  { height: 200px; overflow:hidden }
+.media-carousel-item-image span  { display:block; height:150px;  }
+.media-carousel-item-image img  { width:100%; max-height: 100%;  }
 .media-carousel-item-video .video-responsive { padding-top: 0; }
 .media-carousel-item-video video { max-width: 100%; max-height: 200px; }
 
