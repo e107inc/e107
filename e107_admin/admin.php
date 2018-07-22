@@ -454,13 +454,15 @@ TMPO;
 
 		if($numDays < 3) // installed in the past 3 days.
 		{
-			echo e107::getMessage()->setTitle('Need Help?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any e107 issues you may encounter. </p>")->render();
+			$link = '<a href="http://e107help.org" rel="external">'.ADLAN_193.'</a>';
+			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_192, true), array('x'=>$link))."</p>")->render();
 		}
 		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
-			$message = "Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any upgrading issues you may encounter.";
-			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>Don't show again</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
-			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo($message)->render();
+			$link = '<a href="http://e107help.org" rel="external">'.ADLAN_193.'</a>';
+			$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_191, true), array('x'=>$link));
+			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			echo e107::getMessage()->setTitle(LAN_UPGRADING',E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
 		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
@@ -476,12 +478,14 @@ TMPO;
 		
 		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
-			$mes->addWarning("The folder ".e_MEDIA." is not writable. Please correct before proceeding.");			
+			$message = str_replace("[x]", e_MEDIA, ADLAN_194);
+			$mes->addWarning($message);			
 		}	
 		
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
-			$mes->addWarning("The folder ".e_SYSTEM." is not writable. Please correct before proceeding.");			
+			$message = str_replace("[x]", e_SYSTEM, ADLAN_194);
+			$mes->addWarning($message);			
 		}
 
 		$files = e107::getFile()->scandir(e_IMAGE."avatars",'jpg,gif,png,jpeg');
@@ -489,7 +493,8 @@ TMPO;
 
 		if(is_dir(e_IMAGE."avatars") && !is_writable(e_IMAGE."avatars") && !empty($files))
 		{
-			$mes->addWarning("Legacy avatars folder detected. Please make sure ".e_IMAGE."avatars/ is writable. Please correct before proceeding.");
+			$message = str_replace("[x]", e_IMAGE, ADLAN_195);
+			$mes->addWarning($message);
 		}
 		
 	}
