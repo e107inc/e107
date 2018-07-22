@@ -26,12 +26,12 @@
 			}
 		}
 
-
+/*
 		public function testLoad()
 		{
 
 		}
-
+*/
 		public function testUnserialize()
 		{
 			// Buggy value test.
@@ -67,26 +67,7 @@
 
 
 		}
-
-		public function testWriteArray()
-		{
-
-		}
-
-		public function testReadArray()
-		{
-
-		}
-
-		public function testWrite()
-		{
-
-		}
-
-		public function testRead()
-		{
-
-		}
+/*
 
 		public function testStore()
 		{
@@ -96,5 +77,5 @@
 		public function testSerialize()
 		{
 
-		}
+		}*/
 	}
