@@ -495,7 +495,7 @@ class e_media
 		
 		if($search)
 		{
-			$searchinc[] = "media_name LIKE '%".$search."%' "; 
+			$searchinc[] = "media_name LIKE '%".$search."%' ";
 			$searchinc[] = "media_description LIKE '%".$search."%' "; 
 			$searchinc[] = "media_caption LIKE '%".$search."%' ";
 			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
@@ -537,7 +537,7 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 
-	//	e107::getDebug()->log($query);
+		e107::getDebug()->log($query);
 
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
@@ -1366,9 +1366,28 @@ class e_media
 
 					case "image":
 						$text .= $linkTag;
+						$text .= "<span>";
 						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+						$text .= "</span>";
 						$text .= "\n</a>\n\n";
-						$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
+
+							$text .= "<div class='row' style='margin-top:5px'>
+									<div class='col-md-8'><small class='media-carousel-item-caption'>";
+
+						$text .= $this->browserCarouselItemSelector($data);
+						$text .= "\n".$data['title'];
+						$text .= "\n</a></small></div>";
+
+						$data['style'] = 'float:right';
+
+						$text .= "<div class='col-md-4 text-right'>".
+						$this->browserCarouselItemSelector($data).
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>Select</button></a></div>
+</div>";
+
+
+
+					//	$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
 						break;
 
 
@@ -1489,8 +1508,8 @@ class e_media
 		
 	//	$text .= print_a($_GET,true);
 	
-			$data_src = $this->mediaSelectNav($category,$parm['tagid'], $parm);
-			$carouselID = 'myCarousel-'.$parm['action'];
+			$data_src = $this->mediaSelectNav($parm['category'], $parm['tagid'], $parm);
+			$carouselID = 'media-carousel-'.$parm['action'];
 			$searchToolttip = (empty($parm['searchTooltip'])) ? "Enter some text to filter results" : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 					
@@ -1504,8 +1523,18 @@ class e_media
 				$text .= "<input type='text' class='form-control e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
 		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
-				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
-				$text .= "</span>";		
+			//	$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
+
+
+				$text .= '&nbsp;<div class="btn-group" >
+			<a id="'.$carouselID.'-prev" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="'.$carouselID.'-index" class="btn btn-primary btn-secondary">1</a>
+			<a id="'.$carouselID.'-next" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="next"><i class="fa fa-forward"></i></a>
+			</div>';
+
+
+
+				$text .= "</span>";
 				$text .= "</div>";
 				$text .= "<div id='media-browser-container-".$parm['action']."' class='form-inline clearfix row-fluid'>";
 			}
@@ -1517,7 +1546,7 @@ class e_media
 			
 			
 				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false">';
-				$text .= '{INDICATORS}';
+			//	$text .= '{INDICATORS}';
 				$text .= '<div style="margin-top:10px" class="row admingrid carousel-inner">';
 			
 			

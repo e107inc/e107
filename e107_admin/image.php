@@ -1104,6 +1104,14 @@ class media_admin_ui extends e_admin_ui
 			echo $this->audioTab($parm);
 			exit;
 		}
+
+		if($this->getAction() === 'image2')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			$cat = $tp->filter($_GET['for']);
+			echo $this->imageTab2($cat,$parm);
+			exit;
+		}
 		
 		if($this->getAction() == 'nav' )
 		{
@@ -1594,13 +1602,90 @@ class media_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail				
+			if(deftrue('e_DEBUG_MEDIAPICKER'))
+			{
+				$text  = $this->imageTab2($this->getQuery('for'),$options); // todo test with tinymce etc.
+			}
+			else
+			{
+				$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail
+			}
 		}
 		
 		return $text;
 	}
+
+	private function imageTab2($category,$option=array())
+	{
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340,
+			'height'	=> 220,
+			'type'		=>'image',
+			'category'  => $category,
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'image2', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 8,
+			'gridClass'	=> 'col-sm-3 media-carousel-item-image',
+			'bbcode'	=> 'image',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$frm 		= !empty($option['from']) ? $option['from'] : 0;
+		$limit 		= !empty($option['limit']) ? $option['limit'] : 200;
+	//	$newfrm 	= $frm + $limit;
+	//	$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
+	//	$navMode	= varset($option['nav']) ? TRUE : FALSE;
+		$search		= !empty($option['search']) ? $option['search'] : null;
+
+
+		$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category.
+		$images = e107::getMedia()->getImages($cat,$frm,$limit,$search);
+
+		foreach($images as $val)
+		{
+			$items[] = array(
+				//	'previewHtml'	=> $tp->toImage($val['media_url'], array('w'=>210, 'h'=>140)),
+					'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $tp->thumbUrl($val['media_url'], array('w'=>340, 'h'=>220)),
+					'title'			=> $val['media_name'],
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+		if(!empty($option['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $option['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+
+
+
+	}
+
 		
-	function audioTab($parm=array())
+	private function audioTab($parm=array())
 	{
 		$tp = e107::getParser();
 
@@ -1682,7 +1767,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($videos as $val)
 		{
 			$items[] = array(
-					'previewHtml'	=> $tp->toVideo($val['media_url'], array('w'=>210, 'h'=>140)), // e_IMAGE_ABS."generic/playlist_120.png", //todo place entire video tag into imagepicker when saving.
+					'previewHtml'	=> $tp->toVideo($val['media_url'], array('w'=>210, 'h'=>140)), // e_IMAGE_ABS."generic/playlist_120.png",
 					'saveValue'		=> $val['media_url'],
 					'thumbUrl'		=> $val['media_url'],
 					'title'			=> $val['media_name'],

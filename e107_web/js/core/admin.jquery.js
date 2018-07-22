@@ -786,7 +786,9 @@ $(document).ready(function()
 		$('.carousel').on('slid.bs.carousel', function () {
 		  var currentIndex = $(this).find('.active').index();
 		  var text = (currentIndex + 1);
-		  $('#admin-ui-carousel-index').text(text);
+		  var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
+
+		  $('#'+id).text(text);
 		});
 		
 
