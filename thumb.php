@@ -28,8 +28,9 @@ define('e107_INIT', true);
 
 function thumbErrorHandler()
 {
-	echo "Fatal Thumbnail Error";
 	http_response_code(500);
+	echo "Fatal Thumbnail Error";
+
 }
 
 set_exception_handler('thumbErrorHandler'); // disable to troubleshoot.
@@ -150,7 +151,7 @@ class e_thumbpage
 		$e107->file_path = $e107->fix_windows_paths($self)."/";
 		$e107->set_base_path();
 		$e107->set_request(false);
-		$e107->set_urls(false);
+		$e107->set_urls(false); //todo check if this is still required after the 'prepare' issue is fixed.
 		unset($tmp, $self);
 	
 		// basic Admin area detection - required for proper path parsing
