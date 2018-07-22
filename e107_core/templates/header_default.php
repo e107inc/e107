@@ -194,7 +194,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-if(THEME_LEGACY === true)
+if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
 }
