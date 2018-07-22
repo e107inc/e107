@@ -1751,17 +1751,17 @@ class e107
     * Return a string containg exported array data. - preferred. 
     *
     * @param array $ArrayData array to be stored
-    * @param bool $AddSlashes default false, add slashes for db storage, else false
-    * @return string
+    * @param bool|string $mode true = var_export with addedslashes, false = var_export (default), 'json' = json encoded
+    * @return array|string
     */
-    public static function serialize($ArrayData, $AddSlashes = false) 
+    public static function serialize($ArrayData, $mode = false)
     {
     	if(empty($ArrayData))
 		{
 			return array();	
 		}			
 		       
-		return self::getArrayStorage()->serialize($ArrayData, $AddSlashes); 
+		return self::getArrayStorage()->serialize($ArrayData, $mode);
     }
 	
 	  /**
