@@ -55,7 +55,7 @@ You may report any bugs or feature requests on GitHub (https://github.com/e107in
 * Make sure you are using rebase on your local .git/config file. 
 ie. [branch "master"]
 	rebase = true`
-* Here's a small tutorial to give you a start on [How to contribute](HowToContribute.md)
+* Here's a small tutorial to give you a start on [CONTRIBUTING](CONTRIBUTING.md)
 
 ### Donations
 If you like e107 and wish to help it to improve - please consider making a small donation.
