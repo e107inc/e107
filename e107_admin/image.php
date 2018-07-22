@@ -1610,8 +1610,8 @@ class media_admin_ui extends e_admin_ui
 			'type'		=>'audio',
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'audio', 	// Used by AJAX to identify correct function.
-			'perPage'	=> 12,
-			'gridClass'	=> 'col-md-2 col-sm-3 media-carousel-item-audio',
+			'perPage'	=> 8,
+			'gridClass'	=> 'col-sm-3 media-carousel-item-audio',
 			'bbcode'	=> 'audio',
 			'close'		=> 'true'
 
@@ -1668,8 +1668,8 @@ class media_admin_ui extends e_admin_ui
 			'type'		=>'video',
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'video', 								// Used by AJAX to identify correct function.
-			'perPage'	=> 12,
-			'gridClass'	=> 'col-md-2 col-sm-3 admin-ui-grid media-carousel-item-video',
+			'perPage'	=> 8,
+			'gridClass'	=> ' col-sm-3 admin-ui-grid media-carousel-item-video',
 			'bbcode'	=> 'video',
 			'close'		=> 'true'
 
