@@ -62,7 +62,7 @@
 			// json value test.
 
 			$string_4 = '{ "json": "some value" }';
-			$actual = $this->arrObj->unserialize(stripslashes($string_4));
+			$actual = $this->arrObj->unserialize($string_4);
 			$this->assertArrayHasKey('json', $actual);
 
 
