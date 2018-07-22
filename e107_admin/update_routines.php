@@ -122,12 +122,12 @@ if (!$dont_check_update)
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
+	$dbupdate['218_to_219'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.8','2.1.9')), 'message'=> null, 'hide_when_complete'=>true);
+
 	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
 
-
 	$dbupdate['214_to_215'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.4','2.1.5')), 'message'=> null, 'hide_when_complete'=>true);
-
-
+	
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 
