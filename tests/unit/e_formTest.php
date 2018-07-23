@@ -353,6 +353,7 @@
 */
 		public function testSelect()
 		{
+			$this->_frm->__construct(true);
 			$options = array('optDisabled'=>array('opt_2'));
 			$selected =  'opt_3';
 			$opt_array = array('opt_1'=>"Option 1", 'opt_2'=>"Option 2", 'opt_3'=>"Option 3");
@@ -673,6 +674,7 @@
 		public function testRenderElement()
 		{
 			$frm = $this->_frm;
+			$frm->__construct(true);
 
 			$expected = array(
 				'text_001' => "<input type='text' name='text_001' value='some text' maxlength=255  id='text-001' class='tbox form-control input-xlarge' tabindex='1' />",
