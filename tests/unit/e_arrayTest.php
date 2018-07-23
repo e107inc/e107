@@ -65,6 +65,22 @@
 			$actual = $this->arrObj->unserialize($string_4);
 			$this->assertArrayHasKey('json', $actual);
 
+			// case linkwords prefs.
+			$string_5 = "array (
+				'OLDDEFAULT' => '',
+				'TITLE' => '',
+				'SUMMARY' => 1,
+				'BODY' => 1,
+				'DESCRIPTION'=> 1,
+				'USER_TITLE' => '',
+				'USER_BODY' => 1,
+				'LINKTEXT' => '',
+				'RAWTEXT' => ''
+			)";
+
+			$actual = $this->arrObj->unserialize($string_5);
+			$this->assertArrayHasKey('TITLE', $actual);
+
 
 		}
 /*

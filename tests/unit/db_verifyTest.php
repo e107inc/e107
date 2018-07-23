@@ -11,7 +11,7 @@
 
 	class db_verifyTest extends \Codeception\Test\Unit
 	{
-
+/*
 		public function testGetFields()
 		{
 
@@ -115,5 +115,5 @@
 		public function testGetSqlLanguages()
 		{
 
-		}
+		}*/
 	}
