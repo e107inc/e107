@@ -12,7 +12,7 @@
 	class pluginsTest extends \Codeception\Test\Unit
 	{
 
-	//	protected $_plg;
+		protected $_debugPlugin = false; // 'linkwords'; // add plugin-dir for full report.
 
 		protected function _before()
 		{
@@ -26,8 +26,9 @@
 			}*/
 		}
 
-		private function makePluginReport($pluginDir, $debug=false)
+		private function makePluginReport($pluginDir)
 		{
+			$debug = $this->_debugPlugin;
 			$debug_text = "\n\n---- Log \n\n";
 			$log = e107::getPlugin()->getLog();
 
@@ -100,9 +101,10 @@
 
 			$debug_text .= "-------------------------------------------------------------------\n";
 
-			if($debug === true)
+			if(!empty($debug) &&  $pluginDir === $debug)
 			{
 				codecept_debug($debug_text);
+				echo $debug_text;
 			}
 
 			return array(
@@ -185,7 +187,17 @@
 		public function testLinkwords()
 		{
 			$this->pluginInstall('linkwords');
+
+			$pref1 = e107::pref('core', 'lw_custom_class');
+			$this->assertNotEmpty($pref1);
+
+			$pref2 = e107::pref('core', 'lw_context_visibility');
+			$this->assertNotEmpty($pref2['SUMMARY']);
+
 			$this->pluginUninstall('linkwords');
+
+			$pref2 = e107::pref('core', 'lw_context_visibility');
+			$this->assertEmpty($pref2);
 		}
 
 		public function testPm()
@@ -223,7 +235,7 @@
 
 			e107::getPlugin()->install($pluginDir);
 
-			$install = $this->makePluginReport($pluginDir, false); // set to true to see more info
+			$install = $this->makePluginReport($pluginDir);
 
 			//todo additional checks
 
@@ -242,7 +254,7 @@
 
 			e107::getPlugin()->uninstall($pluginDir, $opts);
 
-			$uninstall = $this->makePluginReport($pluginDir, false); // set to true to see more info
+			$uninstall = $this->makePluginReport($pluginDir);
 
 			//todo additional checks
 
