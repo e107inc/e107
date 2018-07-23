@@ -3651,7 +3651,6 @@ class e107plugin
 	{
 		$this->log("Running ".__FUNCTION__);
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
-		//TODO array support for prefs. <key>? or array() as used in xml site export?
 
 		$mes = e107::getMessage();
 
@@ -3674,6 +3673,10 @@ class e107plugin
 			if(substr($value,0,5) == "e_UC_") // Convert Userclass constants. 
 			{
 				$value = constant($value);	
+			}
+			elseif($tmp = e107::unserialize($value)) // check for array data and convert when required. .
+			{
+				$value = $tmp;
 			}
 			
 			$remove = (varset($tag['@attributes']['deprecate']) == 'true') ? TRUE : FALSE;
