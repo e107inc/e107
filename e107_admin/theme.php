@@ -327,7 +327,7 @@ class theme_admin_ui extends e_admin_ui
 			{
 				$name = e107::getPref('sitetheme');
 				e107::getMedia()->import('_common_image', e_THEME.$name, '', 'min-size=10000');
-				e107::getMessage()->addInfo('Developer/Debug Mode: Scanning theme images folder for new media to import. ');
+				e107::getMessage()->addInfo('Developer/Debug Mode: Scanning theme images folder for new media to import.');
 			}
 
 			$message = e107::getMessage()->render();
