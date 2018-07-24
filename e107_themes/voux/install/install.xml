@@ -164,7 +164,6 @@
   ),
 )]]></core>
 		<core name="url_main_module">page</core>
-		<core name="use_coppa">0</core>
 		<core name="xurl"><![CDATA[array (
   'facebook' => 'http://facebook.com/themexpose',
   'twitter' => '#',
