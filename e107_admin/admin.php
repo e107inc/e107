@@ -454,13 +454,15 @@ TMPO;
 
 		if($numDays < 3) // installed in the past 3 days.
 		{
-			$link = '<a href="http://e107help.org" rel="external">'.ADLAN_193.'</a>';
-			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_192, true), array('x'=>$link))."</p>")->render();
+			$srch = array('[',']');
+			$repl = array("<a href='http://e107help.org' rel='external'>","</a>");
+			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_192, true), (str_replace($srch,$repl)))."</p>")->render();
 		}
 		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
-			$link = '<a href="http://e107help.org" rel="external">'.ADLAN_193.'</a>';
-			$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_191, true), array('x'=>$link));
+			$srch = array('[',']');
+			$repl = array("<a href='http://e107help.org' rel='external'>","</a>");
+			$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_191, true), (str_replace($srch,$repl)));
 			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle(LAN_UPGRADING',E_MESSAGE_INFO)->addInfo($message)->render();
 		}
@@ -478,13 +480,13 @@ TMPO;
 		
 		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
-			$message = str_replace("[x]", e_MEDIA, ADLAN_194);
+			$message = str_replace("[x]", e_MEDIA, ADLAN_193);
 			$mes->addWarning($message);			
 		}	
 		
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
-			$message = str_replace("[x]", e_SYSTEM, ADLAN_194);
+			$message = str_replace("[x]", e_SYSTEM, ADLAN_193);
 			$mes->addWarning($message);			
 		}
 
@@ -493,7 +495,7 @@ TMPO;
 
 		if(is_dir(e_IMAGE."avatars") && !is_writable(e_IMAGE."avatars") && !empty($files))
 		{
-			$message = str_replace("[x]", e_IMAGE, ADLAN_195);
+			$message = str_replace("[x]", e_IMAGE, ADLAN_194);
 			$mes->addWarning($message);
 		}
 		
