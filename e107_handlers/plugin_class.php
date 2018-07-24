@@ -1303,7 +1303,7 @@ class e107plugin
 				continue;
 			}
 
-			if(!is_array($path, $this->core_plugins)) // check non-core plugins for sql file changes.
+			if(!in_array($path, $this->core_plugins)) // check non-core plugins for sql file changes.
 			{
 				$dbv->errors = array();
 				$dbv->compare($path);
@@ -3566,7 +3566,7 @@ class e107plugin
 					}
 					else
 					{
-						$mes->add('Userclass: '.$name.' left in place', $status);
+						$mes->add('Userclass: '.$name.' left in place', E_MESSAGE_DEBUG);
 					}
 
 					break;
