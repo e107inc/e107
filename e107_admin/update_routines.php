@@ -567,6 +567,7 @@ function update_core_database($type = '')
 	function update_218_to_219($type='')
 	{
 		$sql = e107::getDb();
+		$just_check = ($type == 'do') ? false : true;
 
 		// add common video and audio media categories if missing.
 		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
@@ -579,6 +580,8 @@ function update_core_database($type = '')
 		}
 
 
+
+		return $just_check;
 	}
 
 
