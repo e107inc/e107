@@ -462,9 +462,9 @@ TMPO;
 		{
 			$srch = array('[',']');
 			$repl = array("<a href='http://e107help.org' rel='external'>","</a>");
-			$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_191, true), (str_replace($srch,$repl)));
+			$message = str_replace($srch,$repl,ADLAN_191);
 			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
-			echo e107::getMessage()->setTitle(LAN_UPGRADING',E_MESSAGE_INFO)->addInfo($message)->render();
+			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
 		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
