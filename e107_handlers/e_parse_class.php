@@ -814,8 +814,8 @@ class e_parse extends e_parser
 		}
 	//	return htmlentities($text);
 
-		$search = array('&#036;', '&quot;', '<', '>');
-		$replace = array('$', '"', '&lt;', '&gt;');
+		$search = array('&#036;', '&quot;', '<', '>', '+');
+		$replace = array('$', '"', '&lt;', '&gt;', '%2B');
 		$text = str_replace($search, $replace, $text);
 		if (e107::wysiwyg() !== true && is_string($text))
 		{
@@ -841,7 +841,7 @@ class e_parse extends e_parser
 		{
 			$text = stripslashes($text);
 		}
-		return str_replace(array("'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
+		return str_replace(array("'", '"', "<", ">", '+'), array("&#039;", "&quot;", "&lt;", "&gt;", '%2B'), $text);
 	}
 
 
