@@ -19,11 +19,38 @@ class InstallCest
 		$I->see("Language Selection");
 	}
 
-	public function installRun(AcceptanceTester $I)
+	public function installDefault(AcceptanceTester $I)
 	{
-		$I->wantTo("Install e107");
+		$I->wantTo("Install e107 with default settings");
+		$this->installe107($I);
+		$this->testNoUpdatesRequired($I);
 
+	}
+
+	public function installBootstrap3(AcceptanceTester $I)
+	{
+		$I->wantTo("Install e107 with bootstrap3");
+		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
+		$this->testNoUpdatesRequired($I);
+
+	}
+
+	public function installLandingZero(AcceptanceTester $I)
+	{
+		$I->wantTo("Install e107 with landingzero");
+		$this->installe107($I, array('sitetheme'=>'landingzero'));
+		$this->testNoUpdatesRequired($I);
+
+	}
+
+	private function installe107(AcceptanceTester $I, $parms=array())
+	{
 		// Step 1
+
+		if(file_exists(APP_PATH."/e107_config.php")) // because we do mutliple installation scenarios.
+		{
+			unlink(APP_PATH."/e107_config.php");
+		}
 
 		$I->amOnPage('/install.php');
 		$I->selectOption("language", 'English');
@@ -83,6 +110,11 @@ class InstallCest
 		$I->see("Website Preferences", 'h3');
 		$I->fillField('sitename',     'Test Site');
 
+		if(!empty($parms['sitetheme']))
+		{
+			$I->selectOption('sitetheme', $parms['sitetheme']);
+		}
+
 		$I->click('submit');
 
 		// Step 7
@@ -94,5 +126,37 @@ class InstallCest
 		// Step 8
 
 		$I->see("Installation Complete", 'h3');
+
+
+		$I->amOnPage('/index.php');
+
+		if(!empty($parms['sitetheme']))
+		{
+			$I->seeInSource('e107_themes/'.$parms['sitetheme']);
+		}
+
 	}
+
+
+	private function loginToAdmin(AcceptanceTester $I)
+	{
+		$I->amOnPage('/e107_admin/admin.php');
+		$I->fillField('authname', 'admin');
+		$I->fillField('authpass', 'admin');
+		$I->click('authsubmit');
+		$I->dontSeeInSource('Unauthorized access!');
+	}
+
+	private function testNoUpdatesRequired(AcceptanceTester $I)
+	{
+		// first Login
+		$this->loginToAdmin($I);
+
+		$I->amOnPage('/e107_admin/e107_update.php?[debug=basic+]');
+		$I->wantTo("Check there are no updates required after install");
+
+		$I->dontSee("Update", 'button span');
+
+	}
+
 }
