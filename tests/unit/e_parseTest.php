@@ -89,12 +89,20 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testToForm()
 		{
 
-		}
+			$orig = "lr.src = window._lr.url + '/Scripts/api.js';";
 
+			$db = $this->tp->toDB($orig);
+
+			$actual = $this->tp->toForm($db);
+
+			$this->assertEquals($db,$actual);
+			
+		}
+/*
 		public function testUstristr()
 		{
 
