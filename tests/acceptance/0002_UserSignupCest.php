@@ -27,6 +27,11 @@ class UserSignupCest
 		// Go to signup page.
 		$I->amOnPage('/signup.php');
 		$I->wantTo("Test user signup process");
+
+		$I->selectOption('coppa',1);
+		$I->click('newver');
+
+
 		$I->see("You are currently logged in as Main Admin");
 		$I->checkOption('simulation');
 
