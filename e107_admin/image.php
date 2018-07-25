@@ -1390,7 +1390,7 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
 			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>Youtube</a></li>\n";
-			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Videos</a></li>\n";
+			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>".IMALAN_163."</a></li>\n";
 
 		}
 
