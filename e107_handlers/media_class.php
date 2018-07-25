@@ -1359,7 +1359,7 @@ class e_media
 
 						$text .= "<div class='col-md-4 text-right'>".
 						$this->browserCarouselItemSelector($data).
-						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>Select</button></a></div>
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
 								</div>\n\n";
 						break;
 						
@@ -1382,7 +1382,7 @@ class e_media
 
 						$text .= "<div class='col-md-4 text-right'>".
 						$this->browserCarouselItemSelector($data).
-						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>Select</button></a></div>
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
 </div>";
 
 
@@ -1620,7 +1620,7 @@ class e_media
 				}
 				else
 				{
-					$text .= "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";
+					$text .= "<div class='alert alert-info alert-block text-center'>".LAN_NO_RESULTS_FOUND."</div>";
 				}
 
 				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
