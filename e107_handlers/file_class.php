@@ -1506,7 +1506,7 @@ class e_file
 					$time = date("YmdHi");
 					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
 					{
-						$mes->addSuccess("Old folder moved to backup directory");
+						$mes->addSuccess(ADLAN_195);
 					}
 				}
 			}
