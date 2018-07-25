@@ -3720,7 +3720,8 @@ class e_parse extends e_parser
 /**
  * New v2 Parser 
  * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
- * Cameron's DOM-based parser. 
+ * Cameron's DOM-based parser.
+ *
  */
 class e_parser
 {
@@ -4662,6 +4663,8 @@ class e_parser
 
 		$type = pathinfo($file, PATHINFO_EXTENSION);
 
+		$id = str_replace(".".$type, "", $file);
+
 		$thumb = vartrue($parm['thumb']);
 		$mode = varset($parm['mode'],false); // tag, url
 
@@ -4692,6 +4695,7 @@ class e_parser
 
 		if($type === 'youtube')
 		{
+
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';

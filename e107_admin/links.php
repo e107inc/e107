@@ -679,7 +679,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				$cats	= $this->getController()->getLinkArray($catid);
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
-				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT));
+				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
 			break;
 
 			case 'batch':

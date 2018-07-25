@@ -528,7 +528,7 @@ class banner_form_ui extends e_admin_form_ui
 				$text = '';
 				if (count($this->clients)) 
 				{
-					$text = $frm->select('banner_clientname_sel',$this->clients, $curVal,'', LAN_SELECT);
+					$text = $frm->select('banner_clientname_sel',$this->clients, $curVal,'', LAN_SELECT."...");
 					$text .= $frm->text('banner_clientname','','',array('placeholder'=> 'Or enter a new client'));	
 				}
 				else
@@ -611,7 +611,7 @@ class banner_form_ui extends e_admin_form_ui
 			case 'write': // Edit Page
 				if (count($this->campaigns)) 
 				{
-					$text = $frm->select('banner_campaign_sel',$this->campaigns, $curVal,'',LAN_SELECT);
+					$text = $frm->select('banner_campaign_sel',$this->campaigns, $curVal,'',LAN_SELECT."...");
 					$text .= $frm->text('banner_campaign','','',array('size'=>'xlarge', 'class'=>'e-hideme','placeholder'=> 'Enter a campaign name'));
 				}
 				else
@@ -1030,7 +1030,7 @@ if ($action == "create")
 
 	if (count($campaigns)) 
 	{
-		$text .= $frm->select('banner_campaign_sel',$campaigns,$_POST['banner_campaign'],'',LAN_SELECT);
+		$text .= $frm->select('banner_campaign_sel',$campaigns,$_POST['banner_campaign'],'',LAN_SELECT."...");
 		$text .= $frm->text('banner_campaign','','',array('placeholder'=> 'Or enter a new campaign'));	
 	}
 	else
@@ -1048,7 +1048,7 @@ if ($action == "create")
 
 	if (count($clients)) 
 	{
-		$text .= $frm->select('banner_client_sel',$clients, $_POST['client_name'],'', LAN_SELECT);
+		$text .= $frm->select('banner_client_sel',$clients, $_POST['client_name'],'', LAN_SELECT."...");
 		$text .= $frm->text('client_name','','',array('placeholder'=> 'Or enter a new client'));	
 		
 		

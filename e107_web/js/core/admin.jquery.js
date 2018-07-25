@@ -787,8 +787,24 @@ $(document).ready(function()
 		  var currentIndex = $(this).find('.active').index();
 		  var text = (currentIndex + 1);
 		  var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
-
 		  $('#'+id).text(text);
+
+			// this takes commented content for each carousel slide and enables it, one slide at a time as we scroll.
+
+			$(this).find('.item').each(function(index, node)
+			{
+				var content = $(this).contents();
+
+				var item = content[0];
+
+				if(item.nodeType === 8) // commented code @see e_media::browserCarousel() using '<!--'
+				{
+					$(item).replaceWith(item.nodeValue);
+					return false;
+				}
+
+			});
+
 		});
 		
 

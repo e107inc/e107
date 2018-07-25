@@ -323,7 +323,7 @@ define("LAN_ORDER","Order");
 define("LAN_ASC","ASC");
 define("LAN_DESC","DESC");
 
-define("LAN_SELECT","Select ...");
+define("LAN_SELECT","Select");
 define("LAN_ADMIN","Admin");
 define("LAN_ROOT","Root");
 define("LAN_LINE","Line");
