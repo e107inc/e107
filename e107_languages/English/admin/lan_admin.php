@@ -206,6 +206,7 @@ define("ADLAN_191", "Connect with our community for [free support] with any upgr
 define("ADLAN_192", "Connect with our community for [free support] with any e107 issues you may encounter.");
 define("ADLAN_193", "The folder [x] is not writable. Please correct before proceeding.");
 define("ADLAN_194", "Legacy avatars folder detected. Please make sure [x]avatars/ is writable. Please correct before proceeding.");
+define("ADLAN_195", "Old folder moved to backup directory");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -560,3 +561,4 @@ define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
 define("LAN_UI_FILTER_IS_EMPTY", "Is Empty");
 define("LAN_RECALCULATE_COMMENT_COUNT", "Recalculate comment count");
 define("LAN_SUCC_RECALCULATE_COMMENT_COUNT", "Comment count successfully recalculated!");
+define("LAN_NO_RESULTS_FOUND", "No Results Found.");
