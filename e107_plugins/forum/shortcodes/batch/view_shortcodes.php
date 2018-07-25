@@ -1196,17 +1196,38 @@
 					$urlParms = array('f' => 'rp', 'id' => $this->var['thread_id'], 'post' => $this->var['thread_id']);
 					$url = e107::url('forum', 'post', null, array('query' => $urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
-					return "
-					<form action='" . $url . "' method='post'>
-					<div class='form-group'>
-						<textarea cols='80' placeholder='" . LAN_FORUM_2007 . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-					</div>
-					<div class='center text-center form-group'>
-						<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
-						<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
-					</div>
+					$qr = e107::getPlugPref('forum', 'quickreply', 'default');
+					if ($qr == 'default')
+					{
 
-					</form>";
+						return "
+						<form action='" . $url . "' method='post'>
+						<div class='form-group'>
+							<textarea cols='80' placeholder='" . LAN_FORUM_2007 . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+						</div>
+						<div class='center text-center form-group'>
+							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
+							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
+						</div>
+	
+						</form>";
+					}
+					else
+					{
+						$text = "
+						<form action='" . $url . "' method='post'>
+						<div class='form-group'>" .
+						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text')) .
+						"</div>
+						<div class='center text-center form-group'>
+							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
+							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
+						</div>
+	
+						</form>";
+
+						return $text;
+					}
 
 					if(E107_DEBUG_LEVEL > 0)
 					{

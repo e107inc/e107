@@ -183,6 +183,9 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'popular'	            => array('title' => FORLAN_55, 'type'=>'number', 'data' => 'int','help'=>FORLAN_56),
 			'postspage'	            => array('title' => FORLAN_57, 'type'=>'number', 'data' => 'int','help'=>FORLAN_58),
 			'threadspage'	        => array('title' => FORLAN_186, 'type'=>'number', 'data' => 'int','help'=>FORLAN_187),
+
+			'editor'                => array('title' => 'Post editor', 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => 'Which editor should be used to create/edit posts?'),
+			'quickreply'            => array('title' => 'Quick replay editor', 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => '')
 		);
 
 		public $forumParents = array();
@@ -224,6 +227,19 @@ if(!deftrue('OLD_FORUMADMIN'))
 		{
 
 			$this->checkOrder();
+
+
+			$this->prefs['editor']['writeParms']['optArray']['default'] = 'System editor';
+			$this->prefs['editor']['writeParms']['optArray']['bbcode'] = 'BBCode';
+			if (e107::isInstalled('tinymce4'))
+			{
+				$this->prefs['editor']['writeParms']['optArray']['tinymce4'] = 'TinyMCE';
+			}
+
+			$this->prefs['quickreply']['writeParms']['optArray'] = array(
+				'default' => 'Textarea',
+				'wysiwyg' => 'Editor'
+			);
 
 			if(e107::isInstalled('poll') == false)
 			{
