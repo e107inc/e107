@@ -233,7 +233,7 @@ class _system_cron
 
 		if(empty($file))
 		{
-			e107::getLog()->addError('Database Backup Failed:'.basename($file))->save('BACKUP');
+			e107::getLog()->addError(LAN_CRON_55.SEP.basename($file))->save('BACKUP');
 			return;
 		}
 
@@ -242,7 +242,7 @@ class _system_cron
 
 		if(file_exists($zipFile))
 		{
-			e107::getLog()->addSuccess('Database Backup Complete: '.basename($zipFile))->save('BACKUP');
+			e107::getLog()->addSuccess(LAN_CRON_56.SEP.basename($zipFile))->save('BACKUP');
 
 			if(is_file($file))
 			{
