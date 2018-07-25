@@ -87,6 +87,8 @@ define("LAN_CRON_51", "Hour(s):");
 define("LAN_CRON_52", "Day(s):");
 define("LAN_CRON_53", "Month(s):");   
 define("LAN_CRON_54", "Weekday(s):");
+define("LAN_CRON_55", "Database Backup Failed");
+define("LAN_CRON_56", "Database Backup Complete");
 
 define("LAN_CRON_60", "Go to cPanel");
 define("LAN_CRON_61", "Generate new cron password");
