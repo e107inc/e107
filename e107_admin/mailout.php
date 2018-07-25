@@ -1516,9 +1516,17 @@ class mailout_main_ui extends e_admin_ui
 		$temp['mail_bounce_pass'] = $tp->toDB($_POST['mail_bounce_pass']);
 		$temp['mail_bounce_type'] = $tp->toDB($_POST['mail_bounce_type']);
 		$temp['mail_bounce_delete'] = intval(varset($_POST['mail_bounce_delete'], 0));
+
+		if(empty($_POST['mail_mailer_enabled']))
+		{
+			$_POST['mail_mailer_enabled'] = array('user'); // set default when empty.
+		}
 	
 		$temp['mailout_enabled'] = implode(',', varset($_POST['mail_mailer_enabled'], ''));
 		$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
+
+
+
 
 		if(empty($temp['mailout_enabled']))
 		{
