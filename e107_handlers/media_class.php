@@ -1323,7 +1323,7 @@ class e_media
 			
 
 
-		$text = "\n\n<!-- Start Item -->
+		$text = "\n\n
 		
 		<div class='media-carousel ".$data['gridClass']."'>
 		
@@ -1405,7 +1405,10 @@ class e_media
 			
 			$text .= "</div>
 			
-			</div>\n<!-- End Item -->\n\n";
+			</div>\n\n\n";
+
+
+
 		
 		return $text;
 
@@ -1545,7 +1548,7 @@ class e_media
 		//	$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
 			
 			
-				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false">';
+				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false" data-wrap="false">';
 			//	$text .= '{INDICATORS}';
 				$text .= '<div style="margin-top:10px" class="row admingrid carousel-inner">';
 			
@@ -1555,6 +1558,7 @@ class e_media
 				$perPage = vartrue($parm['perPage'],12);
 				
 				$c=0;
+
 				
 				$slides = array();
 
@@ -1567,10 +1571,17 @@ class e_media
 						if($c == 0)
 						{
 							$active = (count($slides) <1) ? ' active' : '';
+
 							$text .= '
 
 							<!-- Start Slide -->
 							<div class="item'.$active.'">';
+
+							if(count($slides)  > 1)
+							{
+
+								$text .= "<!-- ";
+							}
 
 							if(vartrue($val['slideCaption']))
 							{
@@ -1586,9 +1597,11 @@ class e_media
 						$val['bbcode']	= $parm['bbcode'];
 						$val['gridClass'] = $parm['gridClass'];
 
+
 						$text .= $this->browserCarouselItem($val);
 
 						$c++;
+
 
 						if(varset($val['slideCategory']) && isset($prevCat))
 						{
@@ -1603,14 +1616,25 @@ class e_media
 
 						if($c == $perPage)
 						{
+							if(count($slides) > 1)
+							{
+								$text .= " -->";
+							}
+
+
 							$text .= '
 							</div>
 							<!-- End Slide -->
 
 							';
+
+
+
 							$slides[] = 1;
 							$c = 0;
 						}
+
+
 					}
 				
 				}

@@ -501,7 +501,7 @@ class import_main_ui extends e_admin_ui
 			$text .= "
 			<tr>
 			<td >$importType ".LAN_CONVERT_22."</td>
-			<td >".$frm->select('dbParamDatabase', $databases, null, array('required'=>1), LAN_SELECT)."</td>
+			<td >".$frm->select('dbParamDatabase', $databases, null, array('required'=>1), LAN_SELECT."...")."</td>
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_23."</td>
