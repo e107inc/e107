@@ -1357,7 +1357,7 @@ class e_media
 						}
 
 						$text .= "<div class='row media-carousel-item-controls'>
-									<div class='col-md-8'><small class='media-carousel-item-caption'>";
+									<div class='col-sm-8'><small class='media-carousel-item-caption'>";
 
 						$text .= $this->browserCarouselItemSelector($data);
 						$text .= "\n".$caption;
@@ -1365,7 +1365,7 @@ class e_media
 
 						$data['style'] = 'float:right';
 
-						$text .= "<div class='col-md-4 text-right'>".
+						$text .= "<div class='col-sm-4 text-right'>".
 						$this->browserCarouselItemSelector($data).
 						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
 								</div>\n\n";
@@ -1382,7 +1382,7 @@ class e_media
 						$text .= "\n</a>\n\n";
 
 							$text .= "<div class='row media-carousel-item-controls'>
-									<div class='col-md-8'><small class='media-carousel-item-caption'>";
+									<div class='col-sm-8'><small class='media-carousel-item-caption'>";
 
 						$text .= $this->browserCarouselItemSelector($data);
 						$text .= "\n".$caption;
@@ -1390,7 +1390,7 @@ class e_media
 
 						$data['style'] = 'float:right';
 
-						$text .= "<div class='col-md-4 text-right'>".
+						$text .= "<div class='col-sm-4 text-right'>".
 						$this->browserCarouselItemSelector($data).
 						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
 </div>";
