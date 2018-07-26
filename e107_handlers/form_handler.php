@@ -512,9 +512,10 @@ class e_form
 	function tabs($array,$options = array())
 	{
 		$initTab = varset($options['active'],false);
+		$id = !empty($options['id']) ? 'id="'.$options['id'].'"' : '';
 		$text  ='
 		<!-- Nav tabs -->
-			<ul class="nav nav-tabs">';
+			<ul '.$id.' class="nav nav-tabs">';
 
 		$c = 0;
 
@@ -998,10 +999,20 @@ class e_form
 			$url .= "&amp;w=".$extras['w'];	
 		}
 
+		if(!empty($extras['image']))
+		{
+			$url .= "&amp;image=1";
+		}
+
 		if(!empty($extras['glyphs']))
 		{
 			$url .= "&amp;glyphs=1";	
-		}	
+		}
+
+		if(!empty($extras['youtube']))
+		{
+			$url .= "&amp;youtube=1";
+		}
 		
 		if(!empty($extras['video']))
 		{
@@ -1206,6 +1217,20 @@ class e_form
 	 */
 	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
+
+		if(deftrue('e_DEBUG_MEDIAPICKER'))
+		{
+			$sc_parameters .= '&image=1';
+			if(strpos($sc_parameters, 'video=1')!==false) // bc fix
+			{
+				$sc_parameters .= '&youtube=1';
+			}
+
+			return $this->mediapicker($name, $default, $sc_parameters);
+		}
+
+
+
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id."-meta";
@@ -1365,6 +1390,8 @@ class e_form
 	 */
 	function mediapicker($name, $default, $parms = '')
 	{
+
+
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id."-meta";
@@ -1379,6 +1406,7 @@ class e_form
 			$parms = array();
 		}
 
+
 		if(empty($parms['media']))
 		{
 			$parms['media'] = '_common';
@@ -1392,7 +1420,7 @@ class e_form
 		// Test Files...
 	//	$default = '{e_MEDIA_VIDEO}2018-07/samplevideo_720x480_2mb.mp4';
 	//	$default = '{e_MEDIA_FILE}2016-03/Colony_Harry_Gregson_Williams.mp3';
-		$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
+	//	$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
 	//	$default = 'NuIAYHVeFYs.youtube';
 	//	$default = ''; // empty
 
@@ -1402,6 +1430,7 @@ class e_form
 
 		switch($type)
 		{
+
 			case "video":
 				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
 				$previewURL = $tp->toVideo($default, array('mode'=>'url'));
@@ -1434,11 +1463,11 @@ class e_form
 			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
 			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
 				break;
-			/*
+
 			case "glyph":
 				$preview = $tp->toGlyph($default, array('size'=>'3x'));
 				$previewURL = false;
-			break;*/
+			break;
 
 			default: // blank
 

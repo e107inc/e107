@@ -80,12 +80,18 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			// Ajax keyup search. Used by media-browser.
 			$(context).find('.e-ajax-keyup').once('media-manager-e-ajax-keyup').each(function ()
 			{
+
+
 				$(this).keyup(function ()
 				{
+
 					var that = this;
 
 					e107.callbacks.waitForFinalEvent(function ()
 					{
+
+						$(that).closest('div').find('.media-carousel-index').text('1'); // reset counter when searching.
+
 						e107.mediaManager.eAjaxKeyUp(that);
 					}, 300, "eAjaxKeyUp");
 				});
@@ -610,6 +616,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var id = $this.attr("data-target");
 		var src = $this.attr("data-src");
 		var search = $this.val();
+
+
 
 		if(search !== null)
 		{

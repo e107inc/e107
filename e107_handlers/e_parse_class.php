@@ -4109,8 +4109,9 @@ class e_parser
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
+		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : "<!-- -->";
 
-		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}><!-- --></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}>".$placeholder."</".$tag.">" ;
 		$text .= ($options !== false) ? $options : "";
 
 		return $text;

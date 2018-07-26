@@ -1329,10 +1329,65 @@ class media_admin_ui extends e_admin_ui
 		return $text;
 	}
 
+	/**
+	 * Media-Manager Tabs (new in v2.1.9)
+	 * Replacement for mediaSelectUpload()
+	 * @return string
+	 */
+	function mediaManagerTabs()
+	{
+		$frm = e107::getForm();
+		$tp = e107::getParser();
 
+		$options = array();
+		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
+
+		if(isset($_GET['from']))
+		{
+			$options['from'] .= intval($_GET['from']);
+		}
+
+		$cat = $this->getQuery('for');
+
+		$tabOptions = array(
+			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'text' => $this->imageTab2($cat,$options) ),
+			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'text' => $this->videoTab()),
+			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'text' => $this->audioTab()),
+			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'text' => $this->youtubeTab() ),
+			'core-media-glyphs'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'text' => $this->glyphTab()),
+		);
+
+		$tabs = array();
+
+		// check tab options against URL
+		foreach($tabOptions as $key=>$val)
+		{
+			$id = str_replace('core-media-', '', $key);
+			if($this->getQuery($id) == 1 || $this->getQuery('bbcode') == $id)
+			{
+				$tabs[$key] = $val;
+			}
+
+		}
+
+		if(getperms('A|A1'))
+		{
+			$tabs['core-media-upload']  = array('caption'=> $tp->toGlyph('fa-upload').IMALAN_150, 'text' => $this->uploadTab());
+		}
+
+		return $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
+
+	}
+
+	/**
+	 * @deprecated by mediaManagerTabs
+	 * @param string $type
+	 * @return string
+	 */
 	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 
 		if($type === 'video')
 		{
@@ -1343,7 +1398,10 @@ class media_admin_ui extends e_admin_ui
 			return $frm->tabs($tabs, array('class'=>'media-manager'));
 		}
 
-
+		if(deftrue('e_DEBUG_MEDIAPICKER'))
+		{
+			return $this->mediaManagerTabs();
+		}
 
 
 		$youtubeActive = 'inactive';
@@ -1356,11 +1414,11 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{
-			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>".IMALAN_151."</a></li>\n";	
+			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>".ADLAN_105."</a></li>\n";
 		}
 		else
 		{
-			if($this->getQuery('bbcode') == 'glyph')
+			if($this->getQuery('bbcode') == 'glyphs')
 			{
 				$glyphActive = 'active';	
 			}
@@ -1372,32 +1430,27 @@ class media_admin_ui extends e_admin_ui
 					
 		}
 		
-		if(getperms('A|A1') && ($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph'))
-		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>".IMALAN_150."</a></li>";
-		}
+
 		
 		if(varset($options['bbcode']) == 'img')
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";	
+			$text .= "<li><a data-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";
 		}
-		
-		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
-		{
-			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
-		}
-		
+
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
-			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>Youtube</a></li>\n";
-			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>".IMALAN_163."</a></li>\n";
-
+			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>"."Youtube</a></li>\n";
 		}
 
-		if($this->getQuery('audio') == 1 || $this->getQuery('bbcode') == 'audio')
-		{
-			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-audio'>Audio</a></li>\n";
 
+		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
+		{
+			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>"."Glyphs</a></li>\n";
+		}
+
+		if(getperms('A|A1') && ($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph'))
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>".IMALAN_150."</a></li>";
 		}
 
 		
@@ -1447,7 +1500,7 @@ class media_admin_ui extends e_admin_ui
 		 * 
 		 */
 		
-		if($options['bbcode']) //TODO LAN lan_image.php
+		if($options['bbcode']) //TODO move to imagestyleTab();
 		{
 			$text .= "<div class='tab-pane' id='core-media-style'>
 				
@@ -1511,31 +1564,13 @@ class media_admin_ui extends e_admin_ui
 			</div>";
 		}	
 		
-		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
-		{
-			//TODO 
-			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
-	
-			$text .= $this->glyphTab();
-			
-			$text .= "</div>
-			";
-		
-		
-		}
+
 		
 		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
 		{
 			$text .= "<div class='tab-pane clearfix {$youtubeActive}' id='core-media-youtube' >";
-		//	$text .= "<div class='row-fluid'>";
 			$text .= $this->youtubeTab();
 			$text .= "</div>";
-
-			$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
-			//	$text .= "<div class='row-fluid'>";
-				$text .= $this->videoTab();
-				$text .= "</div>";
-
 
 		}
 			
@@ -1543,11 +1578,18 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
 		{
 				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
-			//	$text .= "<div class='row-fluid'>";
 				$text .= $this->audioTab();
 				$text .= "</div>";
 		}
-		
+
+		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
+		{
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
+			$text .= $this->glyphTab();
+			$text .= "</div>
+			";
+
+		}
 		
 		
 		$text .= "</div>";
@@ -1654,6 +1696,7 @@ class media_admin_ui extends e_admin_ui
 					'saveValue'		=> $val['media_url'],
 					'thumbUrl'		=> $tp->thumbUrl($val['media_url'], array('w'=>340, 'h'=>220)),
 					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$val['media_dimensions'].")",
 					'slideCaption'	=> '',
 					'slideCategory'	=> 'bootstrap',
 					'mime'          => $val['media_type']
@@ -1742,7 +1785,7 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-	function videoTab($parm=array())
+	private function videoTab($parm=array())
 	{
 
 		$tp = e107::getParser();
@@ -1764,13 +1807,18 @@ class media_admin_ui extends e_admin_ui
 
 		$videos = e107::getMedia()->getVideos();
 
+
+
 		foreach($videos as $val)
 		{
+			$size = e107::getFile()->file_size_encode($val['media_size']);
+
 			$items[] = array(
 					'previewHtml'	=> $tp->toVideo($val['media_url'], array('w'=>210, 'h'=>140)), // e_IMAGE_ABS."generic/playlist_120.png",
 					'saveValue'		=> $val['media_url'],
 					'thumbUrl'		=> $val['media_url'],
 					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$size.")",
 					'slideCaption'	=> '',
 					'slideCategory'	=> 'bootstrap',
 					'mime'          => $val['media_type']
@@ -2053,7 +2101,9 @@ class media_admin_ui extends e_admin_ui
 			else // empty key.
 			{
 			    $link = '<a style="color:black" target="_blank" href="'.e_ADMIN.'image.php?mode=main&action=prefs#/tab2">'.IMALAN_177.'</a>';
-			    $items = "<div class='alert alert-info'><p>".e107::getParser()->lanVars(e107::getParser()->toHTML(IMALAN_174, true), array('x'=>$link))."</p></div>";
+			    $items = "
+					<div class='alert alert-info' style='margin-left: 15px;'><p>".e107::getParser()->lanVars(e107::getParser()->toHTML(IMALAN_174, true), array('x'=>$link))."</p>
+					</div>";
 				
 				
 			}
