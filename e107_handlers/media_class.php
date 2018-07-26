@@ -1309,7 +1309,8 @@ class e_media
 			'thumbUrl'		=> $defaultThumb,
 			'title'			=> '',
 			'gridClass'		=> 'span2 col-md-2',
-			'bbcode'		=> ''
+			'bbcode'		=> '',
+			'tooltip'       => '',
 			
 		);
 		
@@ -1327,11 +1328,18 @@ class e_media
 		
 		<div class='media-carousel ".$data['gridClass']."'>
 		
-			<div class='well clearfix'>\n";
+			<div class='well clearfix media-carousel-item-container'>\n";
 
 
+				$caption = $data['title'];
+
+				if(!empty($data['tooltip']))
+				{
+					$data['title'] = $data['tooltip'];
+				}
 
 				$linkTag = $this->browserCarouselItemSelector($data);
+
 
 
 				switch($data['type'])
@@ -1348,11 +1356,11 @@ class e_media
 							$text .= $tp->toAudio($data['thumbUrl'], array('mime'=>$data['mime']));
 						}
 
-						$text .= "<div class='row' style='margin-top:5px'>
+						$text .= "<div class='row media-carousel-item-controls'>
 									<div class='col-md-8'><small class='media-carousel-item-caption'>";
 
 						$text .= $this->browserCarouselItemSelector($data);
-						$text .= "\n".$data['title'];
+						$text .= "\n".$caption;
 						$text .= "\n</a></small></div>";
 
 						$data['style'] = 'float:right';
@@ -1365,17 +1373,19 @@ class e_media
 						
 
 					case "image":
+
+
 						$text .= $linkTag;
 						$text .= "<span>";
 						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
 						$text .= "</span>";
 						$text .= "\n</a>\n\n";
 
-							$text .= "<div class='row' style='margin-top:5px'>
+							$text .= "<div class='row media-carousel-item-controls'>
 									<div class='col-md-8'><small class='media-carousel-item-caption'>";
 
 						$text .= $this->browserCarouselItemSelector($data);
-						$text .= "\n".$data['title'];
+						$text .= "\n".$caption;
 						$text .= "\n</a></small></div>";
 
 						$data['style'] = 'float:right';
@@ -1393,8 +1403,9 @@ class e_media
 
 					case "glyph":
 						$text .= $linkTag;
-						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";
+						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],array('placeholder'=>''))."</span>";
 						$text .= "\n</a>\n\n";
+
 						break;
 
 
@@ -1531,7 +1542,7 @@ class e_media
 
 				$text .= '&nbsp;<div class="btn-group" >
 			<a id="'.$carouselID.'-prev" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="prev"><i class="fa fa-backward"></i></a>
-			<a id="'.$carouselID.'-index" class="btn btn-primary btn-secondary">1</a>
+			<a id="'.$carouselID.'-index" class="media-carousel-index btn btn-primary btn-secondary">1</a>
 			<a id="'.$carouselID.'-next" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="next"><i class="fa fa-forward"></i></a>
 			</div>';
 
@@ -1558,9 +1569,11 @@ class e_media
 				$perPage = vartrue($parm['perPage'],12);
 				
 				$c=0;
+				$count = 0;
 
 				
 				$slides = array();
+				$totalSlides = 0;
 
 				if(is_array($data) && count($data) > 0)
 				{
@@ -1568,20 +1581,23 @@ class e_media
 
 					foreach($data as $key=>$val)
 					{
+
 						if($c == 0)
 						{
 							$active = (count($slides) <1) ? ' active' : '';
+							$totalSlides++;
 
 							$text .= '
 
-							<!-- Start Slide -->
+							<!-- Start Slide '.$parm['action'].' '.$totalSlides.' -->
 							<div class="item'.$active.'">';
 
-							if(count($slides)  > 1)
+							if($totalSlides  > 2)
 							{
-
 								$text .= "<!-- ";
 							}
+
+
 
 							if(vartrue($val['slideCaption']))
 							{
@@ -1614,9 +1630,12 @@ class e_media
 
 						}
 
-						if($c == $perPage)
+						$count++;
+
+						if($c == $perPage || (count($data) == $count))
 						{
-							if(count($slides) > 1)
+
+							if($totalSlides > 2)
 							{
 								$text .= " -->";
 							}
@@ -1624,9 +1643,7 @@ class e_media
 
 							$text .= '
 							</div>
-							<!-- End Slide -->
-
-							';
+							<!-- End Slide '.$parm['action'].' '.$totalSlides.' -->';
 
 
 
