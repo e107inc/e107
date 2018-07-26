@@ -1479,7 +1479,7 @@ class e_form
 
 
 		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
-		$ret .= "<div id='{$name_id}_prev' class='mediaselector-preview'>";
+
 
 		$parms['class'] = 'btn btn-sm btn-default';
 
@@ -1488,6 +1488,7 @@ class e_form
 			$parms['title'] = LAN_ADD;
 			$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$parms);
 			$previewIcon     = '';
+			$previewClass    = 'mediaselector-preview mediaselector-preview-empty';
 
 			// @todo drag-n-drop upload code in here.
 		}
@@ -1495,7 +1496,10 @@ class e_form
 		{
 			$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$parms);
 			$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$previewURL."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+			$previewClass    = 'mediaselector-preview';
 		}
+
+		$ret .= "<div id='{$name_id}_prev' class='".$previewClass."'>";
 
 		$ret .= $preview; // image, video. audo tag etc.
 
