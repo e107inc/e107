@@ -276,7 +276,7 @@ td.right, th.right 			{ text-align:right }
 .media-carousel .well:hover { border:1px solid silver }
 
 .media-carousel-item-container { position: relative; min-height:100px; }
-.media-carousel-item-controls { /*position: absolute;bottom:7px; right: 10px */  margin-top:5px;}
+.media-carousel-item-controls { /*position: absolute;bottom:7px; right: 10px */  margin-top:5px; clear: both;}
 .media-carousel-item-container audio { width: 100% }
 .media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:5px }
 
