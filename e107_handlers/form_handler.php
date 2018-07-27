@@ -969,12 +969,12 @@ class e_form
 	}
 
 	/**
-	 * Internal Function used by imagepicker and filepicker
+	 * Internal Function used by imagepicker, filepicker, mediapicker()
 	 */ 
 	private function mediaUrl($category = '', $label = '', $tagid='', $extras=null)
 	{
 		
-		$cat = ($category) ? '&amp;for='.$category : "";
+		$cat = ($category) ? '&amp;for='.urlencode($category) : "";
 		if(!$label) $label = ' Upload an image or file';
 		if($tagid) $cat .= '&amp;tagid='.$tagid; 
 		

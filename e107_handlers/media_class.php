@@ -436,9 +436,9 @@ class e_media
 	}
 	
 	
-	public function getFiles($from=0, $amount = null, $search = null)
+	public function getFiles($cat, $from=0, $amount = null, $search = null)
 	{
-		return $this->getImages('_common_file', $from, $amount, $search);	
+		return $this->getMedia('application', $from, $amount, $search);
 	}
 
 
@@ -484,9 +484,6 @@ class e_media
 		if(strpos($cat,"+") || !$cat)
 		{
 			$cat = str_replace("+","",$cat);
-			// $inc[] = "media_category = '_common_image' ";
-		//	$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
-		//		$inc[] = "media_category LIKE '%_common_image%' "; 
 			$catArray[] = '_common_'.$type;
 		}
 		if($cat)
@@ -499,13 +496,8 @@ class e_media
 			{
 				$catArray[] = $cat; 
 			}
-	//		$inc[] = "media_category LIKE '%".$cat."%' "; // for multiple category field. 
-		//	$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
-		
-		
-	//	$inc[] = "media_category REGEXP '(^|,)_common_image|banner_image(,|$)' ";
-		
+
 		// TODO check the category is valid. 
 		
 		if($search)
@@ -525,9 +517,6 @@ class e_media
 		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' 
 		AND `media_userclass` IN (".USERCLASS_LIST.") 
 		AND `media_type` LIKE '".$type."/%' " ;
-	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-
-
 
 		if($search)
 		{
