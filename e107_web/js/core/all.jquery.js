@@ -295,9 +295,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eDialogClose = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
-			{
-				$(this).click(function ()
+			//$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
+			//{
+			//	$(this).click(function ()
+            $(context).on('click', '.e-dialog-close', function()
 				{
 					var $modal = $('.modal');
 					var $parentModal = parent.$('.modal');
@@ -318,7 +319,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$parentDismiss.trigger({type: 'click'});
 					}
 				});
-			});
+			//});
 		}
 	};
 
