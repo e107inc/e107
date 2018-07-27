@@ -37,7 +37,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					e107.mediaManager.eMediaSelectFileNone(this);
 				});
 			});
-
+/*
 			$(context).find('.e-media-select').once('media-manager-e-media-select').each(function ()
 			{
 				$(this).on('click', function ()
@@ -45,8 +45,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					e107.mediaManager.eMediaSelect(this);
 				});
 			});
+*/
+            $(context).on('click', '.e-media-select', function ()
+            {
+                e107.mediaManager.eMediaSelect(this);
+            });
 
 			// Must be defined after e-media-select.
+			/*
 			$(context).find('.e-dialog-save').once('media-manager-e-dialog-save').each(function ()
 			{
 				$(this).click(function ()
@@ -54,6 +60,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					e107.mediaManager.eDialogSave(this);
 				});
 			});
+			*/
+            $(context).on('click', '.e-dialog-save', function ()
+            {
+                e107.mediaManager.eDialogSave(this);
+            });
+
 
 			// Must be defined after e-media-select.
 			$(context).find('.e-media-nav').once('media-manager-e-media-nav').each(function ()
