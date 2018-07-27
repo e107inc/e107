@@ -310,19 +310,86 @@ class e_file
 	}
 
 
+	/**
+	 * Return an extension for a specific mime-type.
+	 * @param $mimeType
+	 * @return mixed|null
+	 */
 	function getFileExtension($mimeType)
 	{
 		$extensions = array(
-			'image/jpeg'=>'.jpg',
-			'image/png'	=> '.png',
-			'image/gif'	=> '.gif'
-		);	
-		
+		  'application/ecmascript'          => '.es',
+		  'application/epub+zip'            => '.epub',
+		  'application/java-archive'        => '.jar',
+		  'application/javascript'          => '.js',
+		  'application/json'                => '.json',
+		  'application/msword'              => '.doc',
+		  'application/octet-stream'        => '.bin',
+		  'application/ogg'                 => '.ogx',
+		  'application/pdf'                 => '.pdf',
+		  'application/rtf'                 => '.rtf',
+		  'application/typescript'          => '.ts',
+		  'application/vnd.amazon.ebook'    => '.azw',
+		  'application/vnd.apple.installer+xml' => '.mpkg',
+		  'application/vnd.mozilla.xul+xml' => '.xul',
+		  'application/vnd.ms-excel'        => '.xls',
+		  'application/vnd.ms-fontobject'   => '.eot',
+		  'application/vnd.ms-powerpoint'   => '.ppt',
+		  'application/vnd.oasis.opendocument.presentation' => '.odp',
+		  'application/vnd.oasis.opendocument.spreadsheet' => '.ods',
+		  'application/vnd.oasis.opendocument.text' => '.odt',
+		  'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+		  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => '.xlsx',
+		  'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => '.docx',
+		  'application/vnd.visio'           => '.vsd',
+		  'application/x-7z-compressed'     => '.7z',
+		  'application/x-abiword'           => '.abw',
+		  'application/x-bzip'              => '.bz',
+		  'application/x-bzip2'             => '.bz2',
+		  'application/x-csh'               => '.csh',
+		  'application/x-rar-compressed'    => '.rar',
+		  'application/x-sh'                => '.sh',
+		  'application/x-shockwave-flash'   => '.swf',
+		  'application/x-tar'               => '.tar',
+		  'application/xhtml+xml'           => '.xhtml',
+		  'application/xml'                 => '.xml',
+		  'application/zip'                 => '.zip',
+		  'audio/aac'                       => '.aac',
+		  'audio/midi'                      => '.midi',
+		  'audio/mpeg'                      => '.mp3',
+		  'audio/ogg'                       => '.oga',
+		  'audio/wav'                       => '.wav',
+		  'audio/webm'                      => '.weba',
+		  'font/otf'                        => '.otf',
+		  'font/ttf'                        => '.ttf',
+		  'font/woff'                       => '.woff',
+		  'font/woff2'                      => '.woff2',
+		  'image/bmp'                       => '.bmp',
+		  'image/gif'                       => '.gif',
+		  'image/jpeg'                      => '.jpg',
+		  'image/png'                       => '.png',
+		  'image/svg+xml'                   => '.svg',
+		  'image/tiff'                      => '.tiff',
+		  'image/webp'                      => '.webp',
+		  'image/x-icon'                    => '.ico',
+		  'text/calendar'                   => '.ics',
+		  'text/css'                        => '.css',
+		  'text/csv'                        => '.csv',
+		  'text/html'                       => '.html',
+		  'text/plain'                      => '.txt',
+		  'video/mp4'                       => '.mp4',
+		  'video/mpeg'                      => '.mpeg',
+		  'video/ogg'                       => '.ogv',
+		  'video/webm'                      => '.webm',
+		  'video/x-msvideo'                 => '.avi',
+		);
+
 		if(isset($extensions[$mimeType]))
 		{
 			return $extensions[$mimeType];		
 		}
-		
+
+		return null;
 	}
 
 
@@ -413,6 +480,10 @@ class e_file
 		{
 			switch($finfo['pathinfo']['extension'])
 			{
+				case "svg":
+					$finfo['mime'] = 'image/svg+xml';
+					break;
+
 				case "mp3":
 					$finfo['mime'] = 'audio/mpeg';
 					break;

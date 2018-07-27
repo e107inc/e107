@@ -348,7 +348,7 @@ class e_media
 	{
 		if($owner == '')
 		{
-			return;	
+			return null;
 		}
 		
 		$sql = e107::getDb();
@@ -653,7 +653,13 @@ class e_media
 	}
 
 
-
+	/**
+	 * @deprecated by browserCarousel
+	 * @param string $category
+	 * @param null   $tagid
+	 * @param null   $att
+	 * @return string
+	 */
 	public function mediaSelect($category='',$tagid=null,$att=null)
 	{
 	
@@ -1324,20 +1330,19 @@ class e_media
 	 * @param $mime
 	 * @return string
 	 */
-	private function checkFileExtension($path, $mime)
+	public function checkFileExtension($path, $mime)
 	{
 		if(empty($mime))
 		{
 			return $path;
 		}
 
-		list($type,$ext) = explode("/",$mime);
 
-		$ext = str_replace("jpeg",'jpg',$ext);
+		$ext = e107::getFile()->getFileExtension($mime);
 
-		if($type == 'image' && (substr($path,-3) != $ext))
+		if($ext && (substr($path,-4) != $ext))
 		{
-			return $path.".".$ext;
+			return $path.$ext;
 		}
 		else
 		{
