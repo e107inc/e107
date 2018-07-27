@@ -1629,7 +1629,12 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-
+	/**
+	 * @deprecated to be replaced by imageTab2
+	 * @param $type
+	 * @param $options
+	 * @return string
+	 */
 	function imageTab($type,$options)
 	{
 		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
