@@ -40,7 +40,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 			$(context).find('.e-media-select').once('media-manager-e-media-select').each(function ()
 			{
-				$(this).click(function ()
+				$(this).on('click', function ()
 				{
 					e107.mediaManager.eMediaSelect(this);
 				});
