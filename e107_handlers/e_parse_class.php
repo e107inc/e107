@@ -2745,6 +2745,13 @@ class e_parse extends e_parser
 	{
 		$this->staticCount++; // increment counter.
 
+		$ext = pathinfo($url, PATHINFO_EXTENSION);
+
+		if($ext === 'svg')
+		{
+			return $this->replaceConstants($url, 'abs');
+		}
+
 		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
@@ -2764,6 +2771,8 @@ class e_parse extends e_parser
 			unset($options['scale']);
 			return $this->thumbSrcSet($url,$options);
 		}
+
+
 
 
 		
@@ -4375,7 +4384,7 @@ class e_parser
 			$path       = null;
 			$file       = trim($file);
 			$ext        = pathinfo($file, PATHINFO_EXTENSION);
-			$accepted   = array('jpg','gif','png','jpeg');
+			$accepted   = array('jpg','gif','png','jpeg', 'svg');
 
 
 			if(!in_array($ext,$accepted))
