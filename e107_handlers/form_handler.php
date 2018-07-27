@@ -69,7 +69,6 @@ class e_form
 	protected $_field_warnings = array();
 
 
-
 	/**
 	 * @var user_class
 	 */
@@ -1413,6 +1412,7 @@ class e_form
 		}
 
 		$title = !empty($parms['help']) ? "title='".$parms['help']."'" : "";
+
 		$width = vartrue($parms['w'], 220);
 		$height = vartrue($parms['h'], 190);
 	// e107::getDebug()->log($parms);
@@ -1423,63 +1423,15 @@ class e_form
 	//	$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
 	//	$default = 'NuIAYHVeFYs.youtube';
 	//	$default = ''; // empty
-
-		$type = e107::getMedia()->detectType($default);
+	//	$default = '{e_MEDIA_IMAGE}2018-07/Jellyfish.jpg';
 
 		$class = '';
 
-		switch($type)
-		{
-
-			case "video":
-				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
-				$previewURL = $tp->toVideo($default, array('mode'=>'url'));
-				break;
-
-			case "audio":
-				$preview = $tp->toAudio($default);
-				$previewURL = false;
-				break;
-
-			case "image":
-				/*
-
-				if('{' != $default[0]) // legacy path or one without {}
-				{
-					list($default_thumb,$default) = $this->imagepickerDefault($default, $parms);
-				}
-
-				$default = $tp->replaceConstants($default, 'abs');
-
-				*/
-
-				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
-				$previewURL = $tp->thumbUrl($default, array('w'=>800));
-
-
-				break;
-
-			case "application": // file.
-			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
-			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
-				break;
-
-			case "glyph":
-				$preview = $tp->toGlyph($default, array('size'=>'3x'));
-				$previewURL = false;
-			break;
-
-			default: // blank
-
-		}
-
-
+		$preview = e107::getMedia()->previewTag($default,array('w'=>$width, 'h'=>$height));
 
 		$cat = $tp->toDB(vartrue($parms['media']));
 
-
 		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
-
 
 		$parms['class'] = 'btn btn-sm btn-default';
 
@@ -1488,20 +1440,20 @@ class e_form
 			$parms['title'] = LAN_ADD;
 			$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$parms);
 			$previewIcon     = '';
-			$previewClass    = 'mediaselector-preview mediaselector-preview-empty';
+			$previewClass    = 'mediaselector-preview dropzone';
 
-			// @todo drag-n-drop upload code in here.
 		}
 		else
 		{
 			$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$parms);
-			$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$previewURL."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
-			$previewClass    = 'mediaselector-preview';
+		//	$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$previewURL."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+			$previewClass   = 'mediaselector-preview';
+			$previewIcon    = '';
 		}
 
 		$ret .= "<div id='{$name_id}_prev' class='".$previewClass."'>";
 
-		$ret .= $preview; // image, video. audo tag etc.
+		$ret .= $preview; // image, video. audio tag etc.
 
 		$ret .= '</div><div class="overlay">
 				    <div class="text">'.$editIcon.$previewIcon.'</div>
@@ -1510,6 +1462,56 @@ class e_form
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />";
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />";
+
+		// Drag-n-Drop Upload
+		// @see https://www.dropzonejs.com/#server-side-implementation
+
+		e107::js('footer', e_WEB_ABS."lib/dropzone/dropzone.min.js");
+		e107::css('url', e_WEB_ABS."lib/dropzone/dropzone.min.css");
+		e107::css('inline', "
+			.dropzone { background: transparent; border:0 }
+		");
+
+			$INLINEJS = "
+				Dropzone.autoDiscover = false;
+				$(function() {
+				    $('#".$name_id."_prev').dropzone({ 
+				        url: '".e_JS."plupload/upload.php?for=".$cat."',
+				        createImageThumbnails: false,
+				        maxFilesize: ".(int) ini_get('upload_max_filesize').",
+				         success: function (file, response) {
+				            
+				            file.previewElement.classList.add('dz-success');
+				    
+				         //   console.log(response);
+				            
+				            if(response)
+				            {   
+				                var decoded = jQuery.parseJSON(response);
+				                console.log(decoded);
+				                if(decoded.preview && decoded.result)
+				                {
+				                    $('#".$name_id."').val(decoded.result);
+				                    $('#".$name_id."_prev').html(decoded.preview);
+				                }
+								else if(decoded.error)
+								{
+									file.previewElement.classList.add('dz-error');
+									$('#".$name_id."_prev').html(decoded.error.message);
+								}				            
+				            }
+				            
+				        },
+				        error: function (file, response) {
+				            file.previewElement.classList.add('dz-error');
+				        }
+				    });
+				});
+			
+			";
+
+
+		e107::js('footer-inline', $INLINEJS);
 
 		return $ret;
 

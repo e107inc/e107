@@ -442,15 +442,15 @@ class e_media
 	}
 
 
-	public function getVideos($from=0, $amount = null, $search = null)
+	public function getVideos($cat, $from=0, $amount = null, $search = null)
 	{
-		return $this->getImages('_common_video', $from, $amount, $search);
+		return $this->getMedia('video', $cat, $from, $amount, $search);
 	}
 
 
-	public function getAudios($from=0, $amount = null, $search = null)
+	public function getAudios($cat='', $from=0, $amount = null, $search = null)
 	{
-		return $this->getImages('_common_audio', $from, $amount, $search);
+		return $this->getMedia('audio', $cat, $from, $amount, $search);
 	}
 
 	/**
@@ -463,6 +463,21 @@ class e_media
 	 */
 	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
+		return $this->getMedia('image', $cat, $from, $amount, $search, $orderby);
+	}
+
+
+	/**
+	 * Return an array of Images in a particular category
+	 * @param string $type image|audio|video
+	 * @param string $cat : category name. use + to include _common eg. 'news+'
+	 * @param $from
+	 * @param $amount
+	 * @param $search
+	 * @return array
+	 */
+	private function getMedia($type, $cat='', $from=0, $amount=null, $search=null, $orderby=null)
+	{
 		$inc 		= array();
 		$searchinc 	= array();
 		
@@ -472,7 +487,7 @@ class e_media
 			// $inc[] = "media_category = '_common_image' ";
 		//	$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
 		//		$inc[] = "media_category LIKE '%_common_image%' "; 
-			$catArray[] = '_common_image';
+			$catArray[] = '_common_'.$type;
 		}
 		if($cat)
 		{
@@ -507,7 +522,9 @@ class e_media
 		
 		$fields = ($amount == 'all') ? "media_id" : "*";
 		
-		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
+		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' 
+		AND `media_userclass` IN (".USERCLASS_LIST.") 
+		AND `media_type` LIKE '".$type."/%' " ;
 	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
 
 
@@ -1104,6 +1121,71 @@ class e_media
 	}
 
 
+	/**
+	 * @param string $default eg. {e_MEDIA_VIDEO}2018-10/myvideo.mp4
+	 * @param array $options
+	 * @return bool|string
+	 */
+	public function previewTag($default, $options=array())
+	{
+		$tp = e107::getParser();
+
+		$type = $this->detectType($default);
+
+		$width = vartrue($options['w'], 220);
+		$height = vartrue($options['h'], 190);
+
+		switch($type)
+		{
+
+			case "video":
+				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
+			//	$previewURL = $tp->toVideo($default, array('mode'=>'url'));
+				break;
+
+			case "audio":
+				$preview = $tp->toAudio($default);
+			//	$previewURL = false;
+				break;
+
+			case "image":
+				/*
+
+				if('{' != $default[0]) // legacy path or one without {}
+				{
+					list($default_thumb,$default) = $this->imagepickerDefault($default, $parms);
+				}
+
+				$default = $tp->replaceConstants($default, 'abs');
+
+				*/
+
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
+
+
+				break;
+
+			case "application": // file.
+			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
+				break;
+
+			case "glyph":
+				$preview = $tp->toGlyph($default, array('size'=>'3x'));
+			//	$previewURL = false;
+			break;
+
+			default: // blank
+				$preview = null;
+
+		}
+
+		return $preview;
+	}
+
+
+
 
 	public function mediaData($sc_path)
 	{
@@ -1280,11 +1362,11 @@ class e_media
 	{
 		$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
 		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
-		$style  = varset($data['style'],'float:left');
+		$style  = varset($data['style'],'');
 		$class  = varset($data['class'],'');
-		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : $data['previewUrl'];
+		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
 
-		$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$dataPreview."'  title=\"".$data['title']."\" style='".$style."' href='#' >";
+		$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
 
 		return $linkTag;
 
@@ -1377,7 +1459,7 @@ class e_media
 
 						$text .= $linkTag;
 						$text .= "<span>";
-						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="display:inline-block" />';
 						$text .= "</span>";
 						$text .= "\n</a>\n\n";
 

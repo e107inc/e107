@@ -1094,14 +1094,17 @@ class media_admin_ui extends e_admin_ui
 		if($this->getAction() === 'video')
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));
-			echo $this->videoTab($parm);
+			$cat = $tp->filter($_GET['for']);
+			echo $this->videoTab($cat, $parm);
+
 			exit;
 		}
 
 		if($this->getAction() === 'audio')
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));
-			echo $this->audioTab($parm);
+			$cat = $tp->filter($_GET['for']);
+			echo $this->audioTab($cat, $parm);
 			exit;
 		}
 
@@ -1351,8 +1354,8 @@ class media_admin_ui extends e_admin_ui
 
 		$tabOptions = array(
 			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'text' => $this->imageTab2($cat,$options) ),
-			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'text' => $this->videoTab()),
-			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'text' => $this->audioTab()),
+			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'text' => $this->videoTab($cat,$options)),
+			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'text' => $this->audioTab($cat,$options)),
 			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'text' => $this->youtubeTab() ),
 			'core-media-glyphs'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'text' => $this->glyphTab()),
 		);
@@ -1644,14 +1647,7 @@ class media_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			if(deftrue('e_DEBUG_MEDIAPICKER'))
-			{
-				$text  = $this->imageTab2($this->getQuery('for'),$options); // todo test with tinymce etc.
-			}
-			else
-			{
-				$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail
-			}
+			$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail
 		}
 		
 		return $text;
@@ -1691,8 +1687,8 @@ class media_admin_ui extends e_admin_ui
 		foreach($images as $val)
 		{
 			$items[] = array(
-				//	'previewHtml'	=> $tp->toImage($val['media_url'], array('w'=>210, 'h'=>140)),
-					'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
+					'previewHtml'	=> $tp->toImage($val['media_url'], array('w'=>210, 'h'=>140)),
+				//	'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
 					'saveValue'		=> $val['media_url'],
 					'thumbUrl'		=> $tp->thumbUrl($val['media_url'], array('w'=>340, 'h'=>220)),
 					'title'			=> $val['media_name'],
@@ -1728,7 +1724,7 @@ class media_admin_ui extends e_admin_ui
 	}
 
 		
-	private function audioTab($parm=array())
+	private function audioTab($cat='', $parm=array())
 	{
 		$tp = e107::getParser();
 
@@ -1747,7 +1743,7 @@ class media_admin_ui extends e_admin_ui
 
 		$items = array();
 
-		$audios = e107::getMedia()->getAudios();
+		$audios = e107::getMedia()->getAudios($cat);
 
 		foreach($audios as $val)
 		{
@@ -1785,7 +1781,7 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-	private function videoTab($parm=array())
+	private function videoTab($cat='', $parm=array())
 	{
 
 		$tp = e107::getParser();
@@ -1805,7 +1801,7 @@ class media_admin_ui extends e_admin_ui
 
 		$items = array();
 
-		$videos = e107::getMedia()->getVideos();
+		$videos = e107::getMedia()->getVideos($cat);
 
 
 
