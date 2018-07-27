@@ -1440,18 +1440,15 @@ class e_form
 			$parms['title'] = LAN_ADD;
 			$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$parms);
 			$previewIcon     = '';
-			$previewClass    = 'mediaselector-preview dropzone';
-
 		}
 		else
 		{
 			$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$parms);
 		//	$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$previewURL."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
-			$previewClass   = 'mediaselector-preview';
 			$previewIcon    = '';
 		}
 
-		$ret .= "<div id='{$name_id}_prev' class='".$previewClass."'>";
+		$ret .= "<div id='{$name_id}_prev' class='mediaselector-preview dropzone'>";
 
 		$ret .= $preview; // image, video. audio tag etc.
 
