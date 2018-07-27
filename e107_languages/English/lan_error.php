@@ -13,11 +13,11 @@ define("PAGE_NAME", "Error");
 define("LAN_ERROR_TITLE", "Oops!");
 
 define("LAN_ERROR_1", "Error 401 - Authentication Failed");
-define("LAN_ERROR_2", "The URL you've requested requires a correct username and password. Either you entered an incorrect username/password, or your browser doesn't support this feature.");
+define("LAN_ERROR_2", "The URL you've requested requires a username and password. Either you entered one incorrectly, or your browser doesn't support this feature.");
 define("LAN_ERROR_3", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 
 define("LAN_ERROR_4", "Error 403 - Access forbidden");
-define("LAN_ERROR_5", "You are not permitted to retrieve the URL or link you requested.");
+define("LAN_ERROR_5", "You are not permitted to retrieve the document or page you requested.");
 define("LAN_ERROR_6", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 
 define("LAN_ERROR_7", "Error 404 - Document Not Found");
@@ -52,7 +52,7 @@ define("LAN_ERROR_33", "Processing error! Normally, I would redirect to the home
 define("LAN_ERROR_34", "Unknown error! Please inform the site administrator you saw this:");
 
 define("LAN_ERROR_35", "Error 400 - Bad Request");
-define("LAN_ERROR_36", "There is a formatting error in the web page you are trying to access.");
+define("LAN_ERROR_36", "There is a formatting error in the URL you are trying to access.");
 define("LAN_ERROR_37", "Error Icon");
 define("LAN_ERROR_38", "Sorry, but the site is unavailable due to a temporary fault");
 define("LAN_ERROR_39", "Please try again in a few minutes");
