@@ -11,7 +11,7 @@
 
 	class e_dateTest extends \Codeception\Test\Unit
 	{
-
+		/** @var e_date  */
 		protected $dateObj;
 
 		protected function _before()
