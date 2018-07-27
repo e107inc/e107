@@ -299,6 +299,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// Path of the Media Manager Item.
 		var path = $this.attr('data-path');
 		var preview = $this.attr('data-preview');
+		var previewHTML = $this.attr('data-preview-html');
 		var src = $this.attr('data-src');
 		// TinyMce/Textarea insert mode-
 		var bbcode = $this.attr('data-bbcode');
@@ -375,7 +376,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 		$('img#' + target + "_prev", window.top.document).attr('src', preview); // set new value
 
-		if(type === 'glyph')
+
+		if(previewHTML) // mediapicker() method. New in v2.1.9
+		{
+			console.log("Mode: MediaPicker");
+			console.log("Preview Raw: "+previewHTML);
+
+			if($htmlHolder.length > 0)
+			{
+				$htmlHolder.val(previewHTML);
+			}
+
+			preview = atob(previewHTML).trim();
+		}
+		else if(type === 'glyph')
 		{
 			preview = "<span class='" + src + "'>&nbsp;</span>";
 
@@ -392,17 +406,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		else if(type === 'file')
 		{
 			preview = name;
-		}
-		else if(type === 'video' || type === 'audio') // mediapicker() method. 
-		{
-			console.log("Preview 392: "+preview);
-
-			if($htmlHolder.length > 0)
-			{
-				$htmlHolder.val(preview);
-			}
-
-			preview = atob(preview).trim();
 		}
 		else // image
 		{
@@ -421,7 +424,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				preview = preview.replace(e107_plugins_directory, '');
 			}
-			console.log("Mode: Image/Video");
+			console.log("Mode: Image");
 		}
 
 

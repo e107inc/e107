@@ -269,17 +269,19 @@ td.right, th.right 			{ text-align:right }
 #media-browser-container-glyph{ margin-left: 15px }
 
 .media-carousel-item-image .well  { height: 200px; overflow:hidden }
-.media-carousel-item-image span  { display:block; height:150px;  }
-.media-carousel-item-image img  { width:100%; max-height: 100%;  }
+.media-carousel-item-image span  { display:block; height:150px; text-align: center; }
+.media-carousel-item-image img  { max-height: 100%;  }
 .media-carousel-item-video .video-responsive { padding-top: 0; }
 .media-carousel-item-video video { max-width: 100%; max-height: 200px; }
 .media-carousel .well:hover { border:1px solid silver }
 
 .media-carousel-item-container { position: relative; min-height:100px; }
 .media-carousel-item-controls { /*position: absolute;bottom:7px; right: 10px */  margin-top:5px; clear: both;}
+.media-carousel-item-container video,
 .media-carousel-item-container audio { width: 100% }
 .media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:5px }
 
+.mediaselector-preview { height: 140px; overflow: hidden }
 .mediaselector-preview img,
 .mediaselector-preview video,
 .mediaselector-preview audio {	max-width: 100% 	}
@@ -296,6 +298,22 @@ display: block;
 width: 100%;
 right: 10px;
 }
+
+/* dropzone */
+
+.dropzone { min-height: 100px; padding: 0 }
+.dropzone .dz-preview { display: block }
+.dropzone .dz-preview .dz-image { width: auto }
+.dropzone .dz-filename { margin-top: 30px; }
+.dz-message span {
+	display: block;
+	margin-top: 35%;
+	text-align: center;
+	opacity: 0.2;
+	}
+
+.dz-drag-hover { outline:2px dotted silver }
+
 
 /* image picker */
 

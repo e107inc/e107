@@ -47,8 +47,16 @@
 	$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
 
+
 // Clean the fileName for security reasons
 	$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
+
+	$fileName= 'hello.jpg';
+
+	if(!empty($_FILES['file']['name'])) // dropzone support v2.1.9
+	{
+		$fileName = $_FILES['file']['name'];
+	}
 
 // Make sure the fileName is unique but only if chunking is disabled
 	if($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName))
@@ -143,8 +151,10 @@
 		}
 		else
 		{
-			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file. '.ini_get('upload_max_filesize').'"}, "id" : "id"}');
 		}
+
+
 	}
 	else
 	{
@@ -211,6 +221,11 @@
 	$log['filename'] = $fileName;
 	$log['filesize'] = $fileSize;
 	$log['status'] = ($result) ? 'ok' : 'failed';
+	$log['_files'] = $_FILES;
+//	$log['_get'] = $_GET;
+//	$log['_post'] = $_POST;
+
+
 
 	
 
@@ -218,7 +233,9 @@
 
 	e107::getLog()->add('LAN_AL_MEDIA_01', print_r($log, true), $type, 'MEDIA_01');
 
-	$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id");
+
+	$preview = e107::getMedia()->previewTag($result);
+	$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id", 'preview' => $preview, 'data'=>$_FILES );
 
 	echo json_encode($array);
 // Return JSON-RPC response
