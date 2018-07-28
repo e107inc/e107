@@ -227,12 +227,26 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testThumbUrl()
 		{
+			$urls = array(
+				array('path'    => '{e_PLUGIN}gallery/images/butterfly.jpg', 'expected'=>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=200'),
+				array('path'    => '{e_PLUGIN}dummy/Freesample.svg', 'expected'=>'/e107_plugins/dummy/Freesample.svg'),
+			);
+
+			foreach($urls as $val)
+			{
+
+				$actual = $this->tp->thumbUrl($val['path'], array('w'=>300, 'h'=>200));
+
+				$this->assertContains($val['expected'], $actual);
+				//echo $$actual."\n\n";
+			}
+
 
 		}
-
+/*
 		public function testParseBBCodes()
 		{
 
