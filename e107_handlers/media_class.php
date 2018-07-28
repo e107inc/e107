@@ -582,7 +582,7 @@ class e_media
 		}
 		
 		e107::getDb()->gen($query);
-		while($row = e107::getDb()->fetch(mySQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
@@ -1125,7 +1125,7 @@ class e_media
 	{
 		$tp = e107::getParser();
 
-		$type = $this->detectType($default);
+		$type = !empty($options['type']) ? $options['type'] : $this->detectType($default);
 
 		$width = vartrue($options['w'], 220);
 		$height = vartrue($options['h'], 190);
@@ -1167,7 +1167,12 @@ class e_media
 				break;
 
 			case "glyph":
-				$preview = $tp->toGlyph($default, array('size'=>'3x'));
+				$preview = "<span class='icon-preview'>".$tp->toGlyph($default)."</span>";
+			//	$previewURL = false;
+			break;
+
+			case "icon":
+				$preview = $tp->toIcon($default);
 			//	$previewURL = false;
 			break;
 
@@ -1484,6 +1489,12 @@ class e_media
 
 						break;
 
+					case "icon":
+						$text .= $linkTag;
+						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toIcon($data['thumbUrl'],array('placeholder'=>''))."</span>";
+						$text .= "\n</a>\n\n";
+
+						break;
 
 					default:
 						// code to be executed if n is different from all labels;
