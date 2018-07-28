@@ -1353,12 +1353,12 @@ class media_admin_ui extends e_admin_ui
 		$cat = $this->getQuery('for');
 
 		$tabOptions = array(
-			'core-media-icons'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,    'text' => $this->iconTab() ),
-			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'text' => $this->imageTab2($cat,$options) ),
-			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'text' => $this->videoTab($cat,$options)),
-			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'text' => $this->audioTab($cat,$options)),
-			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'text' => $this->youtubeTab() ),
-			'core-media-glyphs'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'text' => $this->glyphTab()),
+			'core-media-icons'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,    'method' => 'iconTab' ),
+			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'method' => 'imageTab2' ),
+			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'method' => 'videoTab'),
+			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'method' => 'audioTab'),
+			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'method' => 'youtubeTab' ),
+			'core-media-glyphs'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'method' => 'glyphTab'),
 		);
 
 		$tabs = array();
@@ -1369,7 +1369,9 @@ class media_admin_ui extends e_admin_ui
 			$id = str_replace('core-media-', '', $key);
 			if($this->getQuery($id) == 1 || $this->getQuery('bbcode') == $id)
 			{
-				$tabs[$key] = $val;
+				$tabMethod = $val['method'];
+				$text = $this->$tabMethod($cat,$options);
+				$tabs[$key] = array('caption'=>$val['caption'], 'text'=>$text);
 			}
 
 		}
