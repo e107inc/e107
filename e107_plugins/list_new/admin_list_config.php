@@ -29,6 +29,8 @@ if(!getperms("1") || !e107::isInstalled('list_new'))
 	e107::redirect('admin');
 	exit ;
 }
+e107::includeLan(e_PLUGIN."list_new/languages/".e_LANGUAGE."_admin_list_new.php");
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
