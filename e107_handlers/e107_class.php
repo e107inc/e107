@@ -3628,7 +3628,7 @@ class e107
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
 	 * @param bool $val if null, return current value, otherwise set value to registry
-	 * @return bool|mixed|void
+	 * @return bool|mixed
 	 */
 	public static function wysiwyg($val=null)
 	{
@@ -3637,27 +3637,6 @@ class e107
 		{
 			return false; 	
 		}
-
-
-		if (defined('e_CURRENT_PLUGIN') && e_CURRENT_PLUGIN != '')
-		{
-			$editor = e107::getPlugPref(e_CURRENT_PLUGIN, 'editor', 'default');
-			if ($editor != 'default' && $editor != 'bbcode' && !e107::isInstalled($editor))
-			{
-				$editor = 'default';
-			}
-			switch ($editor)
-			{
-				case 'bbcode':
-					return false;
-				case 'tinymce4':
-					return true;
-				default:
-					break;
-			}
-
-		}
-
 
 		if(is_null($val))
 		{

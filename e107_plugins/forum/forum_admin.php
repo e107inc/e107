@@ -229,16 +229,19 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->checkOrder();
 
 
-			$this->prefs['editor']['writeParms']['optArray']['default'] = 'System editor';
+			$this->prefs['editor']['writeParms']['optArray']['default'] = 'System default'; //todo LAN
 			$this->prefs['editor']['writeParms']['optArray']['bbcode'] = 'BBCode';
+
+			//@ global pref should override plugins due to security considerations and allowance of posting html.
+			/*
 			if (e107::isInstalled('tinymce4'))
 			{
 				$this->prefs['editor']['writeParms']['optArray']['tinymce4'] = 'TinyMCE';
-			}
+			}*/
 
 			$this->prefs['quickreply']['writeParms']['optArray'] = array(
-				'default' => 'Textarea',
-				'wysiwyg' => 'Editor'
+				'default' => 'Textarea', //todo LAN
+				'wysiwyg' => 'Rich Text Editor' //TODO LAN
 			);
 
 			if(e107::isInstalled('poll') == false)

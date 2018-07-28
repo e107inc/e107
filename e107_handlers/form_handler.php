@@ -2302,12 +2302,15 @@ class e_form
 	/**
 	 * Bbcode Area. Name, value, template, media-Cat, size, options array eg. counter
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
-	 * @param $name
-	 * @param $value
-	 * @param $template
-	 * @param $mediaCat _common
-	 * @param $size : small | medium | large
-	 * @param $options array(); 
+	 * @param string $name
+	 * @param mixed $value
+	 * @param string $template
+	 * @param string $mediaCat _common
+	 * @param string $size : small | medium | large
+	 * @param array $options array();
+	 * @param bool $options['wysiwyg'] when set to false will disable wysiwyg if active.
+	 * @param string $options['class'] override class.
+	 * @param string $options['id']
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
 	{
@@ -2349,8 +2352,22 @@ class e_form
 		}
 
 		// auto-height support
-	   	$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight form-control';
+
 		$bbbar 				= '';
+		$wysiwyg = null;
+		$wysiwygClass = ' e-wysiwyg';
+
+		if(isset($options['wysiwyg']))
+		{
+			$wysiwyg = $options['wysiwyg'];
+		}
+
+		if($wysiwyg === false)
+		{
+			$wysiwygClass = '';
+		}
+
+		$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').$wysiwygClass.' e-autoheight form-control';
 
 
 		if (isset($options['id']) && !empty($options['id']))
@@ -2363,7 +2380,7 @@ class e_form
 		}
 
 
-		if(e107::wysiwyg(true) === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		if(e107::wysiwyg(true) === false || $wysiwyg === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
 		{
 			$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
 		}
@@ -2372,14 +2389,14 @@ class e_form
 			$options['other'] 	= " ".$height;
 		}
 
-	
+
 		$counter 			= vartrue($options['counter'],false); 
 		
 		$ret = "<div class='bbarea {$size}'>
 		<div class='field-spacer'><!-- --></div>\n";
 
 
-		if(e107::wysiwyg() === true)
+		if(e107::wysiwyg() === true && $wysiwyg !== false)
 		{
 			$eParseList = e107::getConfig()->get('e_parse_list');
 

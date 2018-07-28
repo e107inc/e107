@@ -177,7 +177,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$text = '';
 		}
 
-		return e107::getForm()->bbarea('post',$text,'forum');
+		$editor = $this->forum->prefs->get('editor');
+
+		$wysiwyg = ($editor === 'bbcode') ? false : null;
+
+		return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
 
 	}
 
