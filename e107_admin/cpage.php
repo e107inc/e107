@@ -642,6 +642,7 @@ class page_admin_ui extends e_admin_ui
 
 			$mode = $this->getMode();
 
+			$this->perPage = (int) e107::pref('core','admin_page_perpage', 10);
 
 			if($mode !== 'menu')
 			{
