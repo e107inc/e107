@@ -321,8 +321,8 @@ if(deftrue('BOOTSTRAP'))
 	$USER_WRAPPER['view']['USER_SIGNATURE']         = '<div>{---}</div>';
 	$USER_WRAPPER['view']['USER_RATING']            = '<div>{---}</div>';
 	$USER_WRAPPER['view']['USER_SENDPM']            = '<div>{---}</div>';
-	$USER_WRAPPER['view']['PROFILE_COMMENTS']       = '<div class="panel panel-default clearfix">{---}';
-	$USER_WRAPPER['view']['PROFILE_COMMENT_FORM']   = '{---} </div>';
+	$USER_WRAPPER['view']['PROFILE_COMMENTS']       = '<div class="clearfix">{---}</div>';
+//	$USER_WRAPPER['view']['PROFILE_COMMENT_FORM']   = '{---} </div>';
 
 	$USER_TEMPLATE['view'] 				= '
 	{SETIMAGE: w=600}
@@ -372,12 +372,16 @@ if(deftrue('BOOTSTRAP'))
 	                </ul>
 	            </div>
 	        </div>
-
-	            {PROFILE_COMMENTS}
-	            {PROFILE_COMMENT_FORM}
-
+			
+	          
+		
+		
 	    </div>
 	</div>
+		<!-- Start Comments -->
+	  {PROFILE_COMMENTS}
+	  <!-- End Comments -->
+	 
 	';
 }
 
