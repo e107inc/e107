@@ -2351,9 +2351,16 @@ class e_form
 		// auto-height support
 	   	$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight form-control';
 		$bbbar 				= '';
-		
 
-		$help_tagid 		= $this->name2id($name)."--preview";
+
+		if (isset($options['id']) && !empty($options['id']))
+		{
+			$help_tagid 		= $this->name2id($options['id'])."--preview";
+		}
+		else
+		{
+			$help_tagid 		= $this->name2id($name)."--preview";
+		}
 
 
 		if(e107::wysiwyg(true) === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
