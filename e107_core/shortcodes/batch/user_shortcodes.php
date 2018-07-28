@@ -764,13 +764,15 @@ function sc_user_email($parm='')
 	
 	function sc_profile_comments($parm) 
 	{
-		if(e107::getPref('profile_comments'))
+		if(!e107::getPref('profile_comments'))
 		{
-			$ret = e107::getComment()->compose_comment('profile', 'comment', $this->var['user_id'], null, $this->var['user_name'], FALSE,true);
-		
-		 	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
+			return '';
 		}
-		return "";
+
+		return e107::getComment()->compose_comment('profile', 'comment', $this->var['user_id'], null, $this->var['user_name'], false,'html');
+
+	//	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
+
 	}
 	
 	

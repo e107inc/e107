@@ -162,7 +162,10 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$com = $this->var['comments'];
 		//if($parm && isset($com[$parm])) return $com[$parm];
-		return $com['comment'].$com['comment_form'];
+
+		return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);
+
+	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 	
 	function sc_cpagenav()

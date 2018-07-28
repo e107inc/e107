@@ -1174,11 +1174,9 @@ class comment
 		{
 			$text = "<ul class='media-list' id='comments-container'><li><!-- --></li></ul>";	
 		}
-		
-		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
-		$pagination = '';
-		$replace = array($modcomment,$text,$comment,$pagination);
-		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
+
+
+		$TEMPL = $this->parseLayout($text,$comment,$modcomment);
 
 
 	//	$return = null;
@@ -1209,8 +1207,8 @@ class comment
 		}
 
 		
-		
 
+		$ret = array();
 		$ret['comment'] = $text;
 		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
@@ -1219,7 +1217,22 @@ class comment
 		return (!$return) ? "" : $ret;
 	}
 
+	/**
+	 * Parse the Comment Layout template
+	 * @param $comment
+	 * @param $form
+	 * @param $modcomment
+	 * @return mixed
+	 */
+	public function parseLayout($comment, $form, $modcomment)
+	{
+		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
+		$pagination = '';
+		$replace = array($modcomment,$comment,$form,$pagination);
 
+		return str_replace($search,$replace,$this->template['layout']);
+
+	}
 
 
 	
