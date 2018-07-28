@@ -1353,6 +1353,7 @@ class media_admin_ui extends e_admin_ui
 		$cat = $this->getQuery('for');
 
 		$tabOptions = array(
+			'core-media-icons'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,    'text' => $this->iconTab() ),
 			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'text' => $this->imageTab2($cat,$options) ),
 			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'text' => $this->videoTab($cat,$options)),
 			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'text' => $this->audioTab($cat,$options)),
@@ -1378,7 +1379,9 @@ class media_admin_ui extends e_admin_ui
 			$tabs['core-media-upload']  = array('caption'=> $tp->toGlyph('fa-upload').IMALAN_150, 'text' => $this->uploadTab());
 		}
 
-		return $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
+		$text = $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
+
+		return $text;
 
 	}
 
@@ -1587,7 +1590,7 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
-			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs'>";
 			$text .= $this->glyphTab();
 			$text .= "</div>
 			";
@@ -1657,6 +1660,76 @@ class media_admin_ui extends e_admin_ui
 		
 		return $text;
 	}
+
+
+	private function iconTab($category='',$option=array())
+	{
+			$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 64,
+			'height'	=> 64,
+			'type'		=>'icon', // how should it be rendered?
+			'category'  => $category,
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'icons', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 80,
+			'gridClass'	=> 'media-carousel-item-glyph pull-left',
+			'bbcode'	=> 'image',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$frm 		= !empty($option['from']) ? $option['from'] : 0;
+		$limit 		= !empty($option['limit']) ? $option['limit'] : 200;
+
+	//	$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category.
+		$images = e107::getMedia()->getIcons('',$frm,$limit);
+
+
+
+		foreach($images as $val)
+		{
+			$items[] = array(
+					'previewHtml'	=> $tp->toIcon($val['media_url']),
+					'previewUrl'    => '',
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $val['media_url'],
+					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$val['media_dimensions'].")",
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+
+
+		if(!empty($option['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $option['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+
+
+	}
+
 
 	private function imageTab2($category,$option=array())
 	{
@@ -1861,7 +1934,7 @@ class media_admin_ui extends e_admin_ui
 			'tagid'		=> $this->getQuery('tagid'), 
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
 			'perPage'	=> 80,
-			'gridClass'	=> 'media-carousel-item-glyph pull-left',
+			'gridClass'	=> 'media-carousel-item-glyph pull-left icon-preview',
 			'bbcode'	=>'glyph',
 			'close'		=> 'true'		
 		
@@ -1870,10 +1943,13 @@ class media_admin_ui extends e_admin_ui
 		$items = array();
 
 		$bs2 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
+
+		$md = e107::getMedia();
 		
 		foreach($bs2 as $val)
 		{
-			$items[] = array( 
+			$items[] = array(
+					'previewHtml'   => $md->previewTag('glyphicon '.$val,array('type'=>'glyph')),
 					'previewUrl'	=> 'glyphicon '.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
@@ -1890,7 +1966,8 @@ class media_admin_ui extends e_admin_ui
 
 		foreach($fa4 as $val)
 		{
-			$items[] = array( 
+			$items[] = array(
+					'previewHtml'   => $md->previewTag('fa fa-'.$val,array('type'=>'glyph')),
 					'previewUrl'	=> 'fa fa-'.$val,
 					'saveValue'		=> 'fa-'.$val.'.glyph',
 					'thumbUrl'		=> 'fa-'.$val,
@@ -1918,6 +1995,7 @@ class media_admin_ui extends e_admin_ui
 					foreach($tmp as $val)
 					{
 						$items[] = array(
+							'previewHtml'   => $md->previewTag($glyphConfig['class']." ".$val,array('type'=>'glyph')),
 							'previewUrl'	=> $glyphConfig['class']." ".$val,
 							'saveValue'		=> $val.'.glyph',
 							'thumbUrl'		=> $val,
@@ -2653,7 +2731,7 @@ class media_admin_ui extends e_admin_ui
 		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
 	}
 
-	function iconsPage()
+	function iconsTab()
 	{
 		// $this->icon_editor();
 	}

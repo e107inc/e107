@@ -958,7 +958,15 @@ class e_form
 	 */
 	function iconpicker($name, $default, $label, $options = array(), $ajax = true)
 	{
+		if(deftrue('e_DEBUG_MEDIAPICKER'))
+		{
+			$options['icons'] = 1;
+			$options['glyphs'] = 1;
+			$options['w'] = 64;
+			$options['h'] = 64;
 
+			return $this->mediapicker($name, $default, $options);
+		}
 
 		$options['media'] = '_icon';
 		$options['legacyPath'] = "{e_IMAGE}icons";
@@ -1008,6 +1016,11 @@ class e_form
 			$url .= "&amp;glyphs=1";	
 		}
 
+		if(!empty($extras['icons']))
+		{
+			$url .= "&amp;icons=1";
+		}
+
 		if(!empty($extras['youtube']))
 		{
 			$url .= "&amp;youtube=1";
@@ -1022,6 +1035,8 @@ class e_form
 		{
 			$url .= "&amp;audio=1";
 		}
+
+
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
 		{
@@ -1217,19 +1232,6 @@ class e_form
 	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
 
-		if(deftrue('e_DEBUG_MEDIAPICKER'))
-		{
-			$sc_parameters .= '&image=1';
-			if(strpos($sc_parameters, 'video=1')!==false) // bc fix
-			{
-				$sc_parameters .= '&youtube=1';
-			}
-
-			return $this->mediapicker($name, $default, $sc_parameters);
-		}
-
-
-
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id."-meta";
@@ -1242,6 +1244,21 @@ class e_form
 		elseif(empty($sc_parameters))
 		{
 			$sc_parameters = array();
+		}
+
+		$cat = $tp->toDB(vartrue($sc_parameters['media']));
+
+		if(deftrue('e_DEBUG_MEDIAPICKER'))
+		{
+
+			$sc_parameters['image'] = 1;
+			$sc_parameters['dropzone'] = 1;
+			if(!empty($sc_parameters['video'])) // bc fix
+			{
+				$sc_parameters['youtube'] = 1;
+			}
+
+			return $this->mediapicker($name, $default, $sc_parameters);
 		}
 
 
@@ -1299,7 +1316,7 @@ class e_form
 		
 
 		//$width = intval(vartrue($sc_parameters['width'], 150));
-		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
+
 		
 		if($cat == '_icon') // ICONS
 		{
@@ -1413,8 +1430,19 @@ class e_form
 
 		$title = !empty($parms['help']) ? "title='".$parms['help']."'" : "";
 
-		$width = vartrue($parms['w'], 220);
-		$height = vartrue($parms['h'], 190);
+		if(!isset($parms['w']))
+		{
+			$parms['w'] = 220;
+		}
+
+		if(!isset($parms['h']))
+		{
+			$parms['h'] = 190;
+		}
+
+
+	//	$width = vartrue($parms['w'], 220);
+	//	$height = vartrue($parms['h'], 190);
 	// e107::getDebug()->log($parms);
 
 		// Test Files...
@@ -1427,13 +1455,22 @@ class e_form
 
 		$class = '';
 
-		$preview = e107::getMedia()->previewTag($default,array('w'=>$width, 'h'=>$height));
+		if($parms['icons'])
+		{
+			$class = 'mediaselector-container-icons';
+			$parms['type'] = 'icon';
+		}
+
+		$preview = e107::getMedia()->previewTag($default,$parms);
 
 		$cat = $tp->toDB(vartrue($parms['media']));
 
-		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$parms['w']."px;min-height:".$parms['h']."px;'>";
 
 		$parms['class'] = 'btn btn-sm btn-default';
+
+		$dropzone = !empty($parms['dropzone']) ? " dropzone" : "";
+	//	$parms['modal-delete-label'] = LAN_DELETE;
 
 		if(empty($preview))
 		{
@@ -1448,7 +1485,14 @@ class e_form
 			$previewIcon    = '';
 		}
 
-		$ret .= "<div id='{$name_id}_prev' class='mediaselector-preview dropzone'>";
+
+		if(!empty($parms['icons'])) // empty overlay without button.
+		{
+			$parms['class'] = '';
+			$editIcon = $this->mediaUrl($cat, "<span><!-- --></span>", $name_id,$parms);
+		}
+
+		$ret .= "<div id='{$name_id}_prev' class='mediaselector-preview".$dropzone."'>";
 
 		$ret .= $preview; // image, video. audio tag etc.
 
@@ -1460,6 +1504,10 @@ class e_form
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />";
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />";
 
+		if(empty($dropzone))
+		{
+			return $ret;
+		}
 		// Drag-n-Drop Upload
 		// @see https://www.dropzonejs.com/#server-side-implementation
 
