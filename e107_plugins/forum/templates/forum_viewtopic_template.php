@@ -402,7 +402,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 	</div>
 </div>
 <div class='row'>
-	<div class='col-xs-12 col-md-6 col-md-offset-3'>
+	<div class='col-xs-12 col-md-8 col-md-offset-2'>
 		{QUICKREPLY}
 	</div>
 </div>
