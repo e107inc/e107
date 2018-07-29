@@ -179,7 +179,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 		$editor = $this->forum->prefs->get('editor');
 
-		$wysiwyg = ($editor === 'bbcode') ? false : null;
+		//$wysiwyg = ($editor === 'bbcode') ? false : null;
+		$wysiwyg = is_null($editor) ? 'default' : $editor;
 
 		return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
 
