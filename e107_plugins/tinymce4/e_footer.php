@@ -13,7 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 $pref = e107::getPref();
 
 
-if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
+if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
 	{

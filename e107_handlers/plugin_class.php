@@ -127,6 +127,34 @@ class e_plugin
 		return $this;
 	}
 
+	public function getInstalledWysiwygEditors()
+	{
+		$result = array();
+
+		foreach($this->getInstalled() as $k=>$v)
+		{
+			$pl = new e_plugin();
+			$pl->load($k);
+			$keys = $pl->getKeywords();
+			if (is_array($keys))
+			{
+				if (in_array('wysiwyg', $keys['word']))
+				{
+					if (in_array('default', $keys['word']))
+					{
+						$result = array_merge(array($k => $pl->getName()), $result);
+					}
+					else
+					{
+						$result[$k] = $pl->getName();
+					}
+				}
+			}
+
+		}
+		return $result;
+	}
+
 	public function getInstalled()
 	{
 		return $this->_installed;
@@ -226,6 +254,17 @@ class e_plugin
 		}
 
 		return (string) $this->_data[$this->_plugdir]['category'];
+
+	}
+
+	public function getKeywords()
+	{
+		if(!isset($this->_data[$this->_plugdir]['keywords']))
+		{
+			return false;
+		}
+
+		return $this->_data[$this->_plugdir]['keywords'];
 
 	}
 
