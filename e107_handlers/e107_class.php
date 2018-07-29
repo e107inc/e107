@@ -3627,38 +3627,54 @@ class e107
 
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
-	 * @param bool $val if null, return current value, otherwise set value to registry
+	 * @param bool/string $val if null, return current value, otherwise define editor to use
+	 * @param bool $returnEditor true = return name of active editor, false = return "false" for non wysiwyg editor, return "true" if wysiwyg editor should be used
 	 * @return bool|mixed|void
 	 */
-	public static function wysiwyg($val=null)
+	public static function wysiwyg($val=null, $returnEditor=false)
 	{
+		static $editor;
+		static $availEditors;
+		$fallbackEditor = 'bbcode';
+
 		// Check the general wysiwyg setting
 		if (self::getPref('wysiwyg',false) != true)
 		{
-			return false; 	
+			$editor = $fallbackEditor;
+			return $returnEditor ? $editor : false;
 		}
 
+		if (!isset($editor)) $editor = true;
 
-		if (defined('e_CURRENT_PLUGIN') && e_CURRENT_PLUGIN != '')
+		if (!is_null($val))
 		{
-			$editor = e107::getPlugPref(e_CURRENT_PLUGIN, 'editor', 'default');
-			if ($editor != 'default' && $editor != 'bbcode' && !e107::isInstalled($editor))
-			{
-				$editor = 'default';
-			}
-			switch ($editor)
-			{
-				case 'bbcode':
-					return false;
-				case 'tinymce4':
-					return true;
-				default:
-					break;
-			}
-
+			$editor = empty($val) ? $fallbackEditor : ($val === 'default' ? true : $val);
 		}
 
+		// get list of installed wysiwyg editors
+		if (!isset($availEditors))
+		{
+			// todo: maybe a new plugin category 'wysiwyg' ? Instead of hardcoding editors...?!
+			$availEditors = array();
+			if (e107::isInstalled('tinymce4')) $availEditors[] = 'tinymce4';
+			if (e107::isInstalled('simplemde')) $availEditors[] = 'simplemde';
+		}
 
+		// check if choosen editor is installed,
+		// if not, but a different editor is available use that one (e.g. tinymce4 choosen, but only simplemde available available, use simplemde)
+		// if no wysiwyg editor available, use fallback editor (bbcode)
+		if (is_bool($editor) || ($editor !== $fallbackEditor && !in_array($editor, $availEditors)))
+		{
+			$editor = count($availEditors)>0 ? $availEditors[0] : $fallbackEditor;
+		}
+
+		// $returnEditor => false:
+		// false => fallback editor (bbcode)
+		// true => default wysiwyg editor
+		// $returnEditor => true:
+		// return name of the editor
+		return $returnEditor ? $editor : ($editor === $fallbackEditor || $editor === false ? false : true);
+		/*
 		if(is_null($val))
 		{
 			return self::getRegistry('core/e107/wysiwyg');
@@ -3668,7 +3684,7 @@ class e107
 			self::setRegistry('core/e107/wysiwyg',$val);
 			return true;
 		}	
-		
+		*/
 	}
 
 

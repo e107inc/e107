@@ -1214,10 +1214,11 @@
 					}
 					else
 					{
+						$editor = e107::getPlugPref('forum', 'editor', 'default');
 						$text = "
 						<form action='" . $url . "' method='post'>
 						<div class='form-group'>" .
-						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text')) .
+						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'editor' => $editor)) .
 						"</div>
 						<div class='center text-center form-group'>
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />

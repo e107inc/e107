@@ -177,7 +177,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$text = '';
 		}
 
-		return e107::getForm()->bbarea('post',$text,'forum');
+		$editor = e107::getPlugPref('forum', 'editor', 'default');
+		return e107::getForm()->bbarea('post',$text,'forum','_common', 'large', array('editor' => $editor));
 
 	}
 

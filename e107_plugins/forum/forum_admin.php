@@ -235,6 +235,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 			{
 				$this->prefs['editor']['writeParms']['optArray']['tinymce4'] = 'TinyMCE';
 			}
+			if (e107::isInstalled('simplemde'))
+			{
+				$this->prefs['editor']['writeParms']['optArray']['simplemde'] = 'Simple MDE';
+			}
 
 			$this->prefs['quickreply']['writeParms']['optArray'] = array(
 				'default' => 'Textarea',

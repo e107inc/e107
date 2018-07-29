@@ -2311,8 +2311,13 @@ class e_form
 			$help_tagid 		= $this->name2id($name)."--preview";
 		}
 
+		if (!isset($options['editor']))
+		{
+			$options['editor'] = true;
+		}
 
-		if(e107::wysiwyg(true) === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		//if(e107::wysiwyg(true) === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		if(e107::wysiwyg($options['editor'], true) === 'bbcode') // bbarea loaded, so activate wysiwyg (if enabled in preferences)
 		{
 			$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
 		}
