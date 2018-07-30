@@ -131,23 +131,23 @@ class e_plugin
 	{
 		$result = array();
 
-		foreach($this->getInstalled() as $k=>$v)
+		foreach(array_keys($this->_installed) as $k)
 		{
 			$pl = new e_plugin();
 			$pl->load($k);
 			$keys = $pl->getKeywords();
-			if (is_array($keys))
+			// check the keywords
+			if (is_array($keys) && in_array('wysiwyg', $keys['word']))
 			{
-				if (in_array('wysiwyg', $keys['word']))
+				if (in_array('default', $keys['word']))
 				{
-					if (in_array('default', $keys['word']))
-					{
-						$result = array_merge(array($k => $pl->getName()), $result);
-					}
-					else
-					{
-						$result[$k] = $pl->getName();
-					}
+					// add "default" editor to the beginning of the array
+					$result = array_merge(array($k => $pl->getName()), $result);
+				}
+				else
+				{
+					// add all "wysiwyg" editors to the array
+					$result[$k] = $pl->getName();
 				}
 			}
 
