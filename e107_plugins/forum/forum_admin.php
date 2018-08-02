@@ -232,12 +232,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->prefs['editor']['writeParms']['optArray']['default'] = FORLAN_217; 
 			$this->prefs['editor']['writeParms']['optArray']['bbcode'] = 'BBCode';
 
-			//@ global pref should override plugins due to security considerations and allowance of posting html.
-			/*
-			if (e107::isInstalled('tinymce4'))
+			$editors = e107::getPlug()->getInstalledWysiwygEditors();
+			if (!empty($editors))
 			{
-				$this->prefs['editor']['writeParms']['optArray']['tinymce4'] = 'TinyMCE';
-			}*/
+				$this->prefs['editor']['writeParms']['optArray'] = array_merge($this->prefs['editor']['writeParms']['optArray'], $editors);
+			}
 
 			$this->prefs['quickreply']['writeParms']['optArray'] = array(
 				'default' => FORLAN_218, 

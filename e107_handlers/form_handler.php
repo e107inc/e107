@@ -2352,7 +2352,7 @@ class e_form
 		}
 
 		// auto-height support
-
+/*
 		$bbbar 				= '';
 		$wysiwyg = null;
 		$wysiwygClass = ' e-wysiwyg';
@@ -2368,7 +2368,8 @@ class e_form
 		}
 
 		$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').$wysiwygClass.' e-autoheight form-control';
-
+*/
+		$options['class'] 	= 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg e-autoheight form-control';
 
 		if (isset($options['id']) && !empty($options['id']))
 		{
@@ -2379,8 +2380,13 @@ class e_form
 			$help_tagid 		= $this->name2id($name)."--preview";
 		}
 
+		if (!isset($options['wysiwyg']))
+		{
+			$options['wysiwyg'] = true;
+		}
 
-		if(e107::wysiwyg(true) === false || $wysiwyg === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		//if(e107::wysiwyg(true) === false || $wysiwyg === false) // bbarea loaded, so activate wysiwyg (if enabled in preferences)
+		if(e107::wysiwyg($options['wysiwyg'],true) === 'bbcode') // bbarea loaded, so activate wysiwyg (if enabled in preferences)
 		{
 			$options['other'] 	= "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' {$height}";
 		}
@@ -2396,7 +2402,7 @@ class e_form
 		<div class='field-spacer'><!-- --></div>\n";
 
 
-		if(e107::wysiwyg() === true && $wysiwyg !== false)
+		if(e107::wysiwyg() === true) // && $wysiwyg !== false)
 		{
 			$eParseList = e107::getConfig()->get('e_parse_list');
 
