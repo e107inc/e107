@@ -26,7 +26,8 @@ class forum_notify extends notify
 	
 		$config[] = array(
 			'name'			=> LAN_FORUM_NT_NEWTOPIC,
-			'function'		=> "forum_nt",
+			// 'function'		=> "forum_nt",
+			'function'		=> "user_forum_topic_created",
 			'category'		=> ''
 		);	
 
@@ -63,10 +64,42 @@ class forum_notify extends notify
 		return $config;
 	}
 	
-	function forum_nt($data) 
+	//function forum_nt($data) 
+	function user_forum_topic_created($data) 
 	{
-		$message = 'todo';
-		$this->send('forum_nt', LAN_PLUGIN_FORUM_NAME, $message);
+		/*
+			[u] = username / realname?
+			[f] = forumname
+			[l] = link / url
+			[s] = subject
+			[m] = message
+			[d] = deleted by
+		*/
+
+		if (!isset($data['post_id']) || intval($data['post_id']) < 1) return;
+
+		$threadid = $data['thread_id'];
+
+		$sql = e107::getDb();
+		$tmp = $sql->gen('SELECT u.user_loginname, f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
+		FROM `#forum_post` AS p
+		LEFT JOIN `#user` AS u ON (p.post_user = u.user_id)
+		LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
+		LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+		WHERE p.post_id = '.intval($data['post_id']));
+
+		if ($tmp) $data = $sql->fetch();
+		else return;
+
+
+		$message = e107::getParser()->lanVars(LAN_FORUM_NT_NEWTOPIC_MSG, array(
+			'u' => USERNAME,
+			'f' => $data['forum_name'],
+			's' => $data['thread_name'],
+			'm' => $data['post_entry'],
+			'l' => e107::url('forum', 'topic', array('thread_id'=>$data['thread_id'], 'thread_name'=>$data['thread_name'], 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+		));
+		$this->send('user_forum_topic_created', LAN_PLUGIN_FORUM_NAME, $message);
 	}
 
 	function forum_ntp($data)
