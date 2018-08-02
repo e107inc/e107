@@ -870,7 +870,15 @@ class e107forum
 			$triggerData['thread_sef']  = $threadInfo['thread_sef'];
 			$triggerData['post_id']     = $newPostId;
 
-			e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+
+			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 0)
+			{
+				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+			}
+			else
+			{
+				e107::getEvent()->trigger('user_forum_topic_created_probationary', $triggerData);
+			}
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
@@ -2344,7 +2352,7 @@ class e107forum
 			if($sql->delete('forum_thread', 'thread_id='.$threadId))
 			{
 				$status = true;
-			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadId);
+			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadInfo);
 			}
 
 			//Delete any thread tracking
@@ -2376,9 +2384,11 @@ class e107forum
 		$postId 	= (int)$postId;
 		$e107 		= e107::getInstance();		
 		$sql 		= e107::getDb();
-		$deleted 	= false; 
-		
-		if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+		$deleted 	= false;
+
+		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
+		//if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+		if(!is_array($postInfo) || empty($postInfo))
 		{
 			echo 'NOT FOUND!'; return;
 		}
@@ -2396,7 +2406,7 @@ class e107forum
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true;
-		  	e107::getEvent()->trigger('user_forum_post_deleted', $postId);
+		  	e107::getEvent()->trigger('user_forum_post_deleted', $postInfo);
 		}
 
 		// update statistics
