@@ -309,10 +309,13 @@ class forum_post_handler
 
 		$link = "{e_PLUGIN}forum/forum_admin.php?mode=post&action=list&id=".intval($result);
 
+
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
 					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
-		$subject = LAN_FORUM_2020." ". SITENAME;
-		e107::getNotify()->send('forum_post_rep', $subject, $report);
+		//$subject = LAN_FORUM_2020." ". SITENAME;
+
+		//e107::getNotify()->send('forum_post_rep', $subject, $report);
+		e107::getEvent()->trigger('user_forum_post_report', $report);
 		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 	}
 
