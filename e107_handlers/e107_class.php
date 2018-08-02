@@ -3627,27 +3627,52 @@ class e107
 
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
-	 * @param bool $val if null, return current value, otherwise set value to registry
+	 *
+	 * @param bool/string $val if null, return current value, otherwise define editor to use
+	 * @param bool $returnEditor true = return name of active editor, false = return "false" for non wysiwyg editor, return "true" if wysiwyg editor should be used
 	 * @return bool|mixed
 	 */
-	public static function wysiwyg($val=null)
+	public static function wysiwyg($val=null, $returnEditor=false)
 	{
-		// Check the general wysiwyg setting
+		static $editor = 'bbcode';
+		static $availEditors;
+		$fallbackEditor = 'bbcode';
+
 		if (self::getPref('wysiwyg',false) != true)
 		{
-			return false; 	
-		}
-
-		if(is_null($val))
-		{
-			return self::getRegistry('core/e107/wysiwyg');
+			// wysiwyg disabled by global pref
+			$editor = $fallbackEditor;
 		}
 		else
 		{
-			self::setRegistry('core/e107/wysiwyg',$val);
-			return true;
-		}	
-		
+			if(!isset($availEditors))
+			{
+				// init list of installed wysiwyg editors
+				$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors());
+			}
+
+			if(!is_null($val))
+			{
+				// set editor if value given
+				$editor = empty($val) ? $fallbackEditor : ($val === 'default' ? true : $val);
+			}
+
+
+			// check if choosen editor is installed,
+			// if not, but a different editor is available use that one (e.g. tinymce4 choosen, but only simplemde available available, use simplemde)
+			// if no wysiwyg editor available, use fallback editor (bbcode)
+			if(is_bool($editor) || ($editor !== $fallbackEditor && !in_array($editor, $availEditors)))
+			{
+				$editor = count($availEditors) > 0 ? $availEditors[0] : $fallbackEditor;
+			}
+		}
+		// $returnEditor => false:
+		// false => fallback editor (bbcode)
+		// true => default wysiwyg editor
+		// $returnEditor => true:
+		// return name of the editor
+		//return $returnEditor ? $editor : ($editor === $fallbackEditor || $editor === false ? false : true);
+		return $returnEditor ? $editor : ($editor !== $fallbackEditor);
 	}
 
 
