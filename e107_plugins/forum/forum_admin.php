@@ -184,8 +184,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'postspage'	            => array('title' => FORLAN_57, 'type'=>'number', 'data' => 'int','help'=>FORLAN_58),
 			'threadspage'	        => array('title' => FORLAN_186, 'type'=>'number', 'data' => 'int','help'=>FORLAN_187),
 
-			'editor'                => array('title' => 'Post editor', 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => 'Which editor should be used to create/edit posts?'),
-			'quickreply'            => array('title' => 'Quick replay editor', 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => '')
+			'editor'                => array('title' => FORLAN_220, 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => FORLAN_221),
+			'quickreply'            => array('title' => FORLAN_222, 'type' => 'dropdown', 'data' => 'str', 'readParms' => array(), 'writeParms' => array('optArray' => array(), 'defaultValue' => 'default'), 'help' => '')
 		);
 
 		public $forumParents = array();
@@ -229,7 +229,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->checkOrder();
 
 
-			$this->prefs['editor']['writeParms']['optArray']['default'] = 'System default'; //todo LAN
+			$this->prefs['editor']['writeParms']['optArray']['default'] = FORLAN_217; 
 			$this->prefs['editor']['writeParms']['optArray']['bbcode'] = 'BBCode';
 
 			//@ global pref should override plugins due to security considerations and allowance of posting html.
@@ -240,8 +240,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 			}*/
 
 			$this->prefs['quickreply']['writeParms']['optArray'] = array(
-				'default' => 'Textarea', //todo LAN
-				'wysiwyg' => 'Rich Text Editor' //TODO LAN
+				'default' => FORLAN_218, 
+				'wysiwyg' => FORLAN_219 
 			);
 
 			if(e107::isInstalled('poll') == false)
