@@ -525,11 +525,30 @@ class e_bbcode
 	
 	
 	
-	// NEW bbcode button rendering function. replacing displayHelp(); 
-	function renderButtons($template, $id='', $options=array())
+	//
+
+	/**
+	 * NEW bbcode button rendering function. replacing displayHelp();
+	 * @param string (optional) $template eg. news, submitnews, extended, admin, mailout, page, comment, signature
+	 * @param string $id
+	 * @param array  $options
+	 * @return string
+	 */
+	function renderButtons($template='', $id='', $options=array())
 	{
 		
 		$tp = e107::getParser();
+
+		// Notice Removal
+		$BBCODE_TEMPLATE_SUBMITNEWS = '';
+		$BBCODE_TEMPLATE_NEWSPOST = '';
+		$BBCODE_TEMPLATE_MAILOUT = '';
+		$BBCODE_TEMPLATE_CPAGE = '';
+		$BBCODE_TEMPLATE_ADMIN = '';
+		$BBCODE_TEMPLATE_COMMENT = '';
+		$BBCODE_TEMPLATE_SIGNATURE = '';
+
+
 		require(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
 
 		$pref = e107::getPref('e_bb_list');
@@ -569,10 +588,10 @@ class e_bbcode
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
 		}
-		else // Front-end
-		{
-			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;	
-		}
+	//	else // Front-end
+	//	{
+		//	$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;
+	//	}
 	
 		
 		$bbcode_shortcodes = e107::getScBatch('bbcode');	
