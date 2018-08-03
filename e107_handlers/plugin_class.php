@@ -484,15 +484,16 @@ class e_plugin
 			if(!isset($this->_ids[$path]) && !empty($this->_data[$path]['@attributes']))
 			{
 				$this->load($path);
-				$row = $this->_getFields();
+				$row = $this->getFields();
 
 //var_dump($row);
-				if(!$sql->insert('plugin',$row))
+				if(!$id = $sql->insert('plugin',$row))
 				{
 					e107::getDebug()->log("Unable to insert plugin data into table".print_a($row,true));
 				}
 				else
 				{
+					$this->_ids[$path] = (int) $id;
 					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;
 					$runUpdate = true;
 
@@ -518,7 +519,7 @@ class e_plugin
 
 	}
 
-	private function _getFields()
+	public function getFields($includeID = false)
 	{
 
 		$ret = array(
@@ -529,6 +530,11 @@ class e_plugin
 			 'plugin_addons'        => $this->getAddons(),
 			 'plugin_category'      => $this->getCategory()
 		);
+
+		if($includeID)
+		{
+			$ret['plugin_id'] = $this->getId();
+		}
 
 		return $ret;
 
@@ -669,9 +675,16 @@ class e_plugin
 
 	public function getName($mode=null)
 	{
-		if(!empty($this->_data[$this->_plugdir]['@attributes']['lan']) && defined($this->_data[$this->_plugdir]['@attributes']['lan']))
+		if(!empty($this->_data[$this->_plugdir]['@attributes']['lan']))
 		{
-			return ($mode === 'db') ? $this->_data[$this->_plugdir]['@attributes']['lan'] : constant($this->_data[$this->_plugdir]['@attributes']['lan']);
+			if($mode === 'db')
+			{
+				return $this->_data[$this->_plugdir]['@attributes']['lan'];
+			}
+			elseif(defined(	$this->_data[$this->_plugdir]['@attributes']['lan']))
+			{
+				return constant($this->_data[$this->_plugdir]['@attributes']['lan']);
+			}
 		}
 
 		if(isset($this->_data[$this->_plugdir]['@attributes']['name']))
@@ -1051,7 +1064,7 @@ class e_plugin
 			}
 
 
-		$core->save(FALSE, false, false);
+		$core->save(false, false, false);
 
 
 
@@ -1067,7 +1080,9 @@ class e_plugin
 
 
 
-
+/**
+ * @deprecated in part. To eventually be replaced with e_plugin above.
+ */
 class e107plugin
 {
 	// Reserved Addon names.
@@ -1246,7 +1261,7 @@ class e107plugin
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
-	 * @return array plugin details
+	 * @return array|bool plugin details
 	 */
 	function getall($flag)
 	{
@@ -1266,6 +1281,7 @@ class e107plugin
 			$ret = $sql->db_getList();
 			return $ret;
 		}
+
 		return false;
 	}
 
@@ -1666,17 +1682,29 @@ class e107plugin
 
 	/**
 	 * Returns details of a plugin from the plugin table from it's ID
-	 *
-	 * @param int $id
+	 * @deprecated
+	 * @param int|string $id
 	 * @return array plugin info
 	 */
 	static function getPluginRecord($id)
 	{
-		$sql = e107::getDb();
-		$getinfo_results = array();
 
 		$path = (!is_numeric($id)) ? $id : false;
 		$id = (int)$id;
+
+		if(!empty($path))
+		{
+		//	$bla = e107::getPlug()->load($path);
+		//	if($tmp = e107::getPlug()->load($path)->getFields(true))
+			{
+			//	var_dump($tmp);
+		//		return $tmp; // XXX TODO Same data as below but will break installation for most plugins.
+			}
+		}
+
+		$sql = e107::getDb();
+		$getinfo_results = array();
+
 
 		$qry = "plugin_id = " . $id;
 		$qry .= ($path != false) ? " OR plugin_path = '" . $path . "' " : "";
@@ -2375,6 +2403,7 @@ class e107plugin
 			}
 		if (vartrue($install_comments))
 		{
+			$comments_type_id = '';
 			require_once(e_PLUGIN.$eplug_folder.'/search/search_comments.php');
 			$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'class' => 0, 'dir' => $eplug_folder);
 		}
@@ -2717,6 +2746,7 @@ class e107plugin
 		if ($function == 'uninstall' && isset($plug_vars['commentID']))
 		{
 			$txt .= 'Removing all plugin comments: ('.implode(', ', $plug_vars['commentID']).')<br />';
+			$commentArray = array();
 			$this->manage_comments('remove', $commentArray);
 		}
 
@@ -4111,7 +4141,9 @@ class e107plugin
 		
 		if(!is_array($plug))
 		{
-			return "'{$id}' is missing from the plugin db table";	
+			$message = $id." is missing from the plugin db table";
+			$this->log($message);
+			return $message;
 		}
 		
 		$plug['plug_action'] = !empty($options['function']) ? $options['function'] : 'install';
@@ -4319,6 +4351,10 @@ class e107plugin
 	function save_addon_prefs($mode = 'upgrade') 
 	{
 		$this->log('Running save_addon_prefs('.$mode.')');
+
+	//	e107::getPlug()->buildAddonPrefLists(); // XXX TODO Breaks plugin installation in most cases.
+
+	//	return;
 		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
