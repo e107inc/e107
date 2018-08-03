@@ -4318,6 +4318,7 @@ class e107plugin
 				if(!empty($eplug_folder))
 				{
 					$result = e107::getFile()->rmtree(e_PLUGIN.$eplug_folder);
+					e107::getDb()->delete('plugin', "plugin_path='".$eplug_folder."'");
 					$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
 				}
 			}
