@@ -12,14 +12,14 @@
 	class e107pluginTest extends \Codeception\Test\Unit
 	{
 
-
+		/** @var e107plugin */
 		protected $ep;
 
 		protected function _before()
 		{
 			try
 			{
-				$this->tp = $this->make('e107_plugin');
+				$this->ep = $this->make('e107plugin');
 			}
 			catch (Exception $e)
 			{
@@ -27,6 +27,18 @@
 			}
 
 		}
+
+
+		public function testGetPluginRecord()
+		{
+			$result = $this->ep::getPluginRecord('banner');
+
+		//	print_r($result);
+
+			$this->assertEquals("LAN_PLUGIN_BANNER_NAME", $result['plugin_name']);
+
+		}
+
 
 /*
 
