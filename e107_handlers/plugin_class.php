@@ -2288,6 +2288,8 @@ class e107plugin
 		 else
 		 {
 		 */
+		$pref = e107::getPref();
+
 		$prefvals[] = $varArray;
 		//			$prefvals[] = $plugin_folder;
 		//		}
@@ -2416,9 +2418,12 @@ class e107plugin
 						$install_notify = $e_notify ? TRUE : FALSE;
 					}
 				}
+
+		$config_events = array(); // Notice removal
 		if (vartrue($install_notify))
 		{
 			$notify_prefs->setPref('plugins/'.$eplug_folder, 1); //$notify_prefs['plugins'][$eplug_folder] = TRUE;
+
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
 			foreach ($config_events as $event_id => $event_text)
 			{
@@ -2780,22 +2785,22 @@ class e107plugin
 
 		}
 
-		if ($function == 'install')
+		if($function === 'install')
 		{
 			$event->trigger('admin_plugin_install', $plug);
 		}
 
-		if ($function == 'uninstall')
+		if($function === 'uninstall')
 		{
 			$event->trigger('admin_plugin_uninstall', $plug);
 		}
 
-		if ($function == 'upgrade')
+		if($function === 'upgrade')
 		{
 			$event->trigger('admin_plugin_upgrade', $plug);
 		}
 
-		if ($function == 'refresh')
+		if($function === 'refresh')
 		{
 			$event->trigger('admin_plugin_refresh', $plug);
 		}
