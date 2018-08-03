@@ -12,7 +12,7 @@
 	class pluginsTest extends \Codeception\Test\Unit
 	{
 
-		protected $_debugPlugin = false; // 'linkwords'; // add plugin-dir for full report.
+		protected $_debugPlugin = ''; // 'linkwords'; // add plugin-dir for full report.
 
 		protected function _before()
 		{
@@ -131,7 +131,7 @@
 			$result2 = $tp->parseTemplate("{BANNER=e107promo}",true);
 
 			// The expected value below was the actual observed output when the assertion was written:
-			$this->assertEquals('&nbsp;', $result2);
+			$this->assertEquals('&nbsp;', $result2, "Banner shortcode is not returning an empty value, despite banner being uninstalled");
 		}
 
 		public function testChatbox_Menu()
@@ -230,6 +230,36 @@
 			$this->pluginUninstall('tagcloud');
 		}
 
+
+		public function testRemotePlugin()
+		{
+			require_once(e_HANDLER."e_marketplace.php");
+			$mp = new e_marketplace;
+
+			$id = 912; // No-follow plugin on e107.org
+			$status = $mp->download($id, '', 'plugin');
+
+		//	$messages = e107::getMessage()->render('default',false,true,true);
+
+		//	print_r($messages);
+		//	var_dump($status);
+
+		//	$this->assertTrue($status, "Couldn't download/move remote plugin");
+
+			$this->pluginInstall('nofollow');
+
+			$opts = array(
+					'delete_tables' => 1,
+					'delete_files'   => 1
+			);
+
+			$this->pluginUninstall('nofollow',$opts);
+
+		}
+
+
+
+
 		private function pluginInstall($pluginDir)
 		{
 
@@ -245,12 +275,15 @@
 			}
 		}
 
-		private function pluginUninstall($pluginDir)
+		private function pluginUninstall($pluginDir, $opts=array())
 		{
-			$opts = array(
-				'delete_tables' => 1,
-				'delete_files'   => 0
-			);
+			if(empty($opts))
+			{
+				$opts = array(
+					'delete_tables' => 1,
+					'delete_files'   => 0
+				);
+			}
 
 			e107::getPlugin()->uninstall($pluginDir, $opts);
 
