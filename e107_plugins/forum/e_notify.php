@@ -39,11 +39,23 @@ class forum_notify extends notify
 		);
 
 		$config[] = array(
+			'name'			=> LAN_FORUM_NT_TOPIC_UPDATED,
+			'function'		=> "user_forum_topic_updated",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
 			'name'			=> LAN_FORUM_NT_TOPIC_DELETED,
 			//'function'		=> "forum_topic_del",
 			'function'		=> "user_forum_topic_deleted",
 			'category'		=> ''
-		);	
+		);
+
+		$config[] = array(
+			'name'			=> LAN_FORUM_NT_TOPIC_MOVED,
+			'function'		=> "user_forum_topic_moved",
+			'category'		=> ''
+		);
 /*
 	    // todo: implement thread split
 		$config[] = array(
@@ -54,11 +66,23 @@ class forum_notify extends notify
 		);	
 */
 		$config[] = array(
+			'name'			=> LAN_FORUM_NT_POST_CREATED,
+			'function'		=> "user_forum_post_created",
+			'category'		=> ''
+		);	
+
+		$config[] = array(
+			'name'			=> LAN_FORUM_NT_POST_UPDATED,
+			'function'		=> "user_forum_post_updated",
+			'category'		=> ''
+		);
+
+		$config[] = array(
 			'name'			=> LAN_FORUM_NT_POST_DELETED,
 			//'function'		=> "forum_post_del",
 			'function'		=> "user_forum_post_deleted",
 			'category'		=> ''
-		);	
+		);
 
 		$config[] = array(
 			'name'			=> LAN_FORUM_NT_POST_REPORTED,
@@ -91,7 +115,7 @@ class forum_notify extends notify
 		{
 			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
 			{
-				return;
+				return false;
 			}
 
 			$sef = $data['thread_sef'];
@@ -107,7 +131,7 @@ class forum_notify extends notify
 			}
 			else
 			{
-				return;
+				return false;
 			}
 
 
@@ -134,7 +158,7 @@ class forum_notify extends notify
 		{
 			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
 			{
-				return;
+				return false;
 			}
 
 			$sef = $data['thread_sef'];
@@ -150,7 +174,7 @@ class forum_notify extends notify
 			}
 			else
 			{
-				return;
+				return false;
 			}
 
 
@@ -164,6 +188,34 @@ class forum_notify extends notify
 		}
 
 		$this->send('user_forum_topic_created_probationary', LAN_FORUM_NT_7, $message);
+		return true;
+	}
+
+	function user_forum_topic_moved($data)
+	{
+		if (isset($data['id']) && isset($data['data']))
+		{
+			$message = 'Notify test: Thread moved';
+		}
+		else
+		{
+			if(!isset($data['old']) || !isset($data['new']))
+			{
+				return false;
+			}
+
+
+			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_MOVED_MSG, array(
+				'u' => USERNAME,
+				'f' => $data['old']['forum_id'],
+				'f1' => $data['new']['forum_id'],
+				's' => $data['thread_name'],
+				'l' => e107::url('forum', 'forum', array('forum_sef' => $data['new']['forum_sef'], 'forum_id' => $data['new']['forum_id']), array('mode' => 'full'))
+			));
+		}
+
+		$this->send('user_forum_topic_moved', LAN_FORUM_NT_13, $message);
+		return true;
 	}
 
 	//function forum_topic_del($data)
@@ -177,7 +229,7 @@ class forum_notify extends notify
 		{
 			if(isset($data['thread_id']) && intval($data['thread_id']) < 1)
 			{
-				return;
+				return false;
 			}
 
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_DELETED_MSG, array(
@@ -189,6 +241,47 @@ class forum_notify extends notify
 		}
 
 		$this->send('user_forum_topic_deleted', LAN_FORUM_NT_8, $message);
+		return true;
+	}
+
+	function user_forum_topic_updated($data)
+	{
+		if (isset($data['id']) && isset($data['data']))
+		{
+			$message = 'Notify test: Thread updated';
+		}
+		else
+		{
+			if(!isset($data['thread_id']) || intval($data['thread_id']) < 1)
+			{
+				return false;
+			}
+
+			$sql = e107::getDb();
+			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name
+				FROM `#forum_thread` AS t
+				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+				WHERE t.thread_id = ' . intval($data['thread_id'])))
+			{
+				$data = $sql->fetch();
+			}
+			else
+			{
+				return false;
+			}
+
+			$sef = eHelper::title2sef($data['thread_name'],'dashl');
+
+			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_UPDATED_MSG, array(
+				'u' => USERNAME,
+				'f' => $data['forum_name'],
+				's' => $data['thread_name'],
+				'm' => $data['post_entry'],
+				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+			));
+		}
+		$this->send('user_forum_topic_updated', LAN_FORUM_NT_12, $message);
+		return true;
 	}
 
 	//function forum_topic_split($data)
@@ -206,6 +299,88 @@ class forum_notify extends notify
 		$this->send('forum_topic_split', LAN_FORUM_NT_9, $message);
 	}
 
+	function user_forum_post_created($data)
+	{
+		if (isset($data['id']) && isset($data['data']))
+		{
+			$message = 'Notify test: Post created';
+		}
+		else
+		{
+			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
+			{
+				return false;
+			}
+
+			$sql = e107::getDb();
+			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
+				FROM `#forum_post` AS p
+				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
+				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+				WHERE p.post_id = ' . intval($data['post_id'])))
+			{
+				$data = $sql->fetch();
+			}
+			else
+			{
+				return false;
+			}
+
+			$sef = eHelper::title2sef($data['thread_name'],'dashl');
+
+			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_CREATED_MSG, array(
+				'u' => USERNAME,
+				'f' => $data['forum_name'],
+				's' => $data['thread_name'],
+				'm' => $data['post_entry'],
+				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+			));
+		}
+		$this->send('user_forum_post_created', LAN_FORUM_NT_14, $message);
+		return true;
+	}
+
+	function user_forum_post_updated($data)
+	{
+		if (isset($data['id']) && isset($data['data']))
+		{
+			$message = 'Notify test: Post updated';
+		}
+		else
+		{
+			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
+			{
+				return false;
+			}
+
+			$sql = e107::getDb();
+			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
+				FROM `#forum_post` AS p
+				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
+				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+				WHERE p.post_id = ' . intval($data['post_id'])))
+			{
+				$data = $sql->fetch();
+			}
+			else
+			{
+				return false;
+			}
+
+			$sef = eHelper::title2sef($data['thread_name'],'dashl');
+
+			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_UPDATED_MSG, array(
+				'u' => USERNAME,
+				'f' => $data['forum_name'],
+				's' => $data['thread_name'],
+				'm' => $data['post_entry'],
+				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+			));
+		}
+		$this->send('user_forum_post_updated', LAN_FORUM_NT_15, $message);
+		return true;
+	}
+
 	//function forum_post_del($data)
 	function user_forum_post_deleted($data)
 	{
@@ -217,7 +392,7 @@ class forum_notify extends notify
 		{
 			if(isset($data['post_id']) && intval($data['post_id']) < 1)
 			{
-				return;
+				return false;
 			}
 
 			$entry = $data['post_entry'];
@@ -233,7 +408,7 @@ class forum_notify extends notify
 			}
 			else
 			{
-				return;
+				return false;
 			}
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
@@ -248,6 +423,7 @@ class forum_notify extends notify
 			));
 		}
 		$this->send('user_forum_post_deleted', LAN_FORUM_NT_10, $message);
+		return true;
 	}
 
 	//function forum_post_rep($data)
@@ -266,6 +442,3 @@ class forum_notify extends notify
 	}
 	
 }
-
-
-?>
