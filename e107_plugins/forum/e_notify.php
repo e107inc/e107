@@ -100,7 +100,7 @@ class forum_notify extends notify
 		/*
 			[u] = username / realname?
 			[f] = forumname
-			[l] = link / url
+			[f2] = forumname 2
 			[s] = subject
 			[m] = message
 			[d] = deleted by
@@ -134,13 +134,12 @@ class forum_notify extends notify
 				return false;
 			}
 
-
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_NEWTOPIC_MSG, array(
 				'u' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'm' => $data['post_entry'],
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_topic_created', LAN_PLUGIN_FORUM_NAME, $message);
@@ -178,12 +177,12 @@ class forum_notify extends notify
 			}
 
 
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_NEWTOPIC_PROB_MSG, array(
 				'u' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'm' => $data['post_entry'],
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 
@@ -204,13 +203,12 @@ class forum_notify extends notify
 				return false;
 			}
 
-
+			$url = e107::url('forum', 'forum', array('forum_sef' => $data['new']['forum_sef'], 'forum_id' => $data['new']['forum_id']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_MOVED_MSG, array(
 				'u' => USERNAME,
-				'f' => $data['old']['forum_id'],
-				'f1' => $data['new']['forum_id'],
-				's' => $data['thread_name'],
-				'l' => e107::url('forum', 'forum', array('forum_sef' => $data['new']['forum_sef'], 'forum_id' => $data['new']['forum_id']), array('mode' => 'full'))
+				'f' => $data['old']['forum_name'],
+				'f2' => sprintf('<a href="%s">%s</a>', $url, $data['new']['forum_name']),
+				's' => $data['thread_name']
 			));
 		}
 
@@ -232,11 +230,11 @@ class forum_notify extends notify
 				return false;
 			}
 
+			$url = e107::url('forum', 'forum', array('forum_id' => $data['forum_id'], 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_DELETED_MSG, array(
 				'd' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'l' => e107::url('forum', 'forum', array('forum_id' => $data['forum_id'], 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				'f' => sprintf('<a href="%s">%s</a>', $url, $data['forum_name']),
+				's' => $data['thread_name']
 			));
 		}
 
@@ -272,12 +270,12 @@ class forum_notify extends notify
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
 
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_UPDATED_MSG, array(
 				'u' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'm' => $data['post_entry'],
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_topic_updated', LAN_FORUM_NT_12, $message);
@@ -327,13 +325,12 @@ class forum_notify extends notify
 			}
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
-
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_CREATED_MSG, array(
 				'u' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'm' => $data['post_entry'],
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_post_created', LAN_FORUM_NT_14, $message);
@@ -368,13 +365,12 @@ class forum_notify extends notify
 			}
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
-
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_UPDATED_MSG, array(
 				'u' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
-				'm' => $data['post_entry'],
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_post_updated', LAN_FORUM_NT_15, $message);
@@ -395,7 +391,7 @@ class forum_notify extends notify
 				return false;
 			}
 
-			$entry = $data['post_entry'];
+			$entry = e107::getParser()->toHTML($data['post_entry'], true, 'BODY');
 			$postid = $data['post_id'];
 
 			$sql = e107::getDb();
@@ -412,14 +408,13 @@ class forum_notify extends notify
 			}
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
-
+			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
 			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_DELETED_MSG, array(
 				'd' => USERNAME,
 				'f' => $data['forum_name'],
-				's' => $data['thread_name'],
+				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
 				'p' => $postid,
-				'm' => $entry,
-				'l' => e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'))
+				'm' => $entry
 			));
 		}
 		$this->send('user_forum_post_deleted', LAN_FORUM_NT_10, $message);

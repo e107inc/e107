@@ -24,12 +24,12 @@ define("LAN_FORUM_NT_POST_DELETED", "Post deleted");
 define("LAN_FORUM_NT_POST_REPORTED", "Post reported");
 
 
-define("LAN_FORUM_NT_NEWTOPIC_MSG", "New thread in forum [f] created by: [u]<br/>Subject: <a href=\"[l]\">[s]</a><br/><br/>Message:<br/>[m]<br/><br/>");
-define("LAN_FORUM_NT_NEWTOPIC_PROB_MSG", "New thread in forum [f] created by new user: [u]<br/>Subject: <a href=\"[l]\">[s]</a><br/><br/>Message:<br/>[m]<br/><br/>");
-define("LAN_FORUM_NT_TOPIC_UPDATED_MSG", "Thread <a href=\"[l]\">[s]</a> (Forum name: [f]) has been updated by: [u]<br/><br/>");
-define("LAN_FORUM_NT_TOPIC_DELETED_MSG", "Thread [s] in forum <a href=\"[l]\">[f]</a> deleted by: [d]<br/><br/>");
-define("LAN_FORUM_NT_TOPIC_MOVED_MSG", "Thread [s] has been moved from [f] to forum <a href=\"[l]\">[f2]</a> by: [u]<br/><br/>");
+define("LAN_FORUM_NT_NEWTOPIC_MSG", "New thread in forum [f] created by: [u]<br/>Subject: [s]<br/><br/>Message:<br/>[m]<br/><br/>");
+define("LAN_FORUM_NT_NEWTOPIC_PROB_MSG", "New thread in forum [f] created by new user: [u]<br/>Subject: [s]<br/><br/>Message:<br/>[m]<br/><br/>");
+define("LAN_FORUM_NT_TOPIC_UPDATED_MSG", "Thread [s] (Forum name: [f]) has been updated by: [u]<br/><br/>");
+define("LAN_FORUM_NT_TOPIC_DELETED_MSG", "Thread [s] in forum [f] deleted by: [d]<br/><br/>");
+define("LAN_FORUM_NT_TOPIC_MOVED_MSG", "Thread [s] has been moved from [f] to forum [f2] by: [u]<br/><br/>");
 
-define("LAN_FORUM_NT_POST_CREATED_MSG", "New message in thread <a href=\"[l]\">[s]</a> (Forum name: [f]) created by: [u]<br/>Message:<br/>[m]<br/><br/>");
-define("LAN_FORUM_NT_POST_UPDATED_MSG", "Message in thread <a href=\"[l]\">[s]</a> (Forum name: [f]) updated by: [u]<br/>Message:<br/>[m]<br/><br/>");
-define("LAN_FORUM_NT_POST_DELETED_MSG", "Message #[p] of thread <a href=\"[l]\">[s]</a> in forum [f] deleted by: [d]<br/><br/>Message:<br/>[m]<br/><br/>");
+define("LAN_FORUM_NT_POST_CREATED_MSG", "New message in thread [s] (Forum name: [f]) created by: [u]<br/>Message:<br/>[m]<br/><br/>");
+define("LAN_FORUM_NT_POST_UPDATED_MSG", "Message in thread [s] (Forum name: [f]) updated by: [u]<br/>Message:<br/>[m]<br/><br/>");
+define("LAN_FORUM_NT_POST_DELETED_MSG", "Message #[p] of thread [s] in forum [f] deleted by: [d]<br/><br/>Message:<br/>[m]<br/><br/>");
