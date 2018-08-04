@@ -40,7 +40,7 @@ require_once("../../class2.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-e107::lan('import', true, true);
+e107::lan('import', true);
 
 //XXX A Fresh Start 
 class import_admin extends e_admin_dispatcher
