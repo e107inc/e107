@@ -144,6 +144,7 @@ if(!empty($_GET['iframe']))
 
 		private function loadPackInfo()
 		{
+			/** @var lancheck $lck */
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
 
 			$this->onlinePacks  = $lck->getOnlineLanguagePacks();
@@ -272,15 +273,15 @@ if(!empty($_GET['iframe']))
 				<colgroup>
 					<col style='width:20%' />
 					<col style='width:20%' />
-					<col style='width:20%' />
-					<col style='width:15%' />
+					<col style='width:auto' />
+					<col style='width:10%' />
 					<col style='width:25%' />
 				</colgroup>";
 			$text .= "<thead>
 			<tr>
 			<th>".ADLAN_132."</th>
-			<th class='text-center'>".$release_diz."</th>
-			<th class='text-center'>".$compat_diz."</th>
+			<th class='text-left'>".$release_diz."</th>
+			<th class='text-left'>".$compat_diz."</th>
 			<th class='text-center'>".LAN_STATUS."</td>
 			<th class='text-right' style='white-space:nowrap'>".LAN_OPTIONS."</td>
 			</tr>
@@ -300,8 +301,8 @@ if(!empty($_GET['iframe']))
 
 				$text .= "<tr>
 				<td><span class='language-name'>".$language."</a></td>
-				<td class='text-center'>".$value['date']."</td>
-				<td class='text-center'>".$value['compatibility']."</td>
+				<td class='text-left'>".$value['date']."</td>
+				<td class='text-left'>".$value['compatibility']."</td>
 				<td class='text-center'>".( $errFound ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON )."</td>
 				<td class='text-right'>";
 
@@ -378,6 +379,7 @@ if(!empty($_GET['iframe']))
 
 			$tp = e107::getParser();
 
+
 			foreach($this->onlinePacks as $lan=>$value)
 			{
 
@@ -402,10 +404,7 @@ if(!empty($_GET['iframe']))
 				$text .= "<tr>
 					<td><span class='language-name'><a rel='external' href='".$value['infoURL']."' title=\"".LAN_MOREINFO."\">".$value['name']."</a></span>";
 
-					if(strpos($value['tag'],'-') !==false)
-					{
-						$text .= " <span class='label label-warning'>".LANG_LAN_153."</span>";
-					}
+
 
 
 					$text .= "</td>";
@@ -418,8 +417,15 @@ if(!empty($_GET['iframe']))
 				$url = 'language.php?mode=main&action=download&id='.$value['name']; // $value['url']
 
 				$text .= "
-					<td class='text-center'>".$value['date']."</td>
-					<td class='text-center'>".$value['compatibility']."</td>
+					<td class='text-left'>".$value['date']."</td>
+					<td class='text-left'>".$value['version'];
+
+					if(strpos($value['tag'],'-') !==false)
+					{
+						$text .= " <span class='label label-warning'>".LANG_LAN_153."</span>";
+					}
+
+					$text .="</td>
 					<td class='text-center'>".$status."</td>
 					<td class='text-right'><a  class='btn ".$class."' href='".$url."'><i class='fa fa-arrow-down'></i> ".ADLAN_121."</a></td>
 					</tr>";
