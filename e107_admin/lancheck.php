@@ -915,8 +915,16 @@ class lancheck
 
 			foreach($rawData['language'] as $key => $att)
 			{
+				// issue #3059 in case array @attributes is in $att
+				if (is_int($key) && is_array($att) && array_key_exists('@attributes', $att))
+				{
+					$att = $att['@attributes'];
+				}
 				// issue #3059 Language list didn't load
-				if ($key != '@attributes') continue;
+				elseif ($key != '@attributes')
+				{
+					continue;
+				}
 
 				$id = $att['name'];
 
