@@ -13,8 +13,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-
-require_once ('tagcloud_class.php');
+ 
 
 // v2.x Standard
 
