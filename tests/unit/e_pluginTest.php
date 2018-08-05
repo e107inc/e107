@@ -45,12 +45,30 @@
 		{
 
 		}
+*/
 
-		public function testIsInstalled()
+		public function testSetInstalled()
 		{
+			$this->ep->setInstalled('some-plugin', '1.3');
+
+			$arr = $this->ep->getInstalled();
+
+			$this->assertArrayHasKey('some-plugin', $arr);
+
+			// print_r($arr);
 
 		}
 
+
+		public function testIsInstalled()
+		{
+			$this->ep->setInstalled('some-plugin', '1.3');
+
+			$val = $this->ep->load('some-plugin')->isInstalled();
+
+			var_dump($val);
+		}
+/*
 		public function testGetDetected()
 		{
 
