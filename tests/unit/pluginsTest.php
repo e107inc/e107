@@ -120,6 +120,7 @@
 
 		public function testBanner()
 		{
+
 			$this->pluginInstall('banner');
 
 			$tp = e107::getParser();
@@ -230,6 +231,95 @@
 			$this->pluginUninstall('tagcloud');
 		}
 
+		public function testplugInstalledStatus()
+		{
+			$sql = e107::getDb();
+
+			$plg = e107::getPlug()->clearCache();
+			$plg->load('tagcloud');
+
+			// check it's NOT installed.
+			$status = $plg->isInstalled();
+			$dbStatus = (bool) $sql->retrieve('plugin', "plugin_installflag", "plugin_path='tagcloud'");
+			$this->assertEquals($status,$dbStatus,"e_plugin:isInstalled() doesn't match plugin_installflag in db table.");
+			$this->assertFalse($status, "Status for tagcloud being installed should be false");
+
+
+			e107::getPlugin()->install('tagcloud');
+
+			// check it's installed.
+			$status = (int) $plg->isInstalled();
+			$actual = (bool) $status;
+			$dbStatus = (int) $sql->retrieve('plugin', "plugin_installflag", "plugin_path='tagcloud'");
+			$this->assertEquals($status,$dbStatus,"e_plugin:isInstalled() = ".$status." but plugin_installflag = ".$dbStatus." after install.");
+			$this->assertTrue($actual, "Status for tagcloud being installed should be true after being installed.");
+
+
+			e107::getPlugin()->uninstall('tagcloud');
+
+
+			// check it's NOT installed.
+			$status = (int) $plg->isInstalled();
+			$actual = (bool) $status;
+			$dbStatus = (int) $sql->retrieve('plugin', "plugin_installflag", "plugin_path='tagcloud'");
+			$this->assertEquals($status,$dbStatus,"e_plugin:isInstalled() = ".$status." but plugin_installflag = ".$dbStatus." after uninstall.");
+			$this->assertFalse($actual, "Status for tagcloud being installed should be false after being uninstalled.");
+
+		}
+
+
+		public function testPluginAddons()
+		{
+			$plg = e107::getPlug()->clearCache();
+
+			$plg->buildAddonPrefLists();
+
+			$errors = array(
+				1   => 'PHP tag Syntax issue',
+				2   => "File Missing",
+			);
+
+			foreach($plg->getCorePluginList() as $folder)
+			{
+				$plg->load($folder);
+
+				$errMsg = '';
+
+				$addons = $plg->getAddons();
+
+					foreach(explode(',', $addons) as $this_addon)
+					{
+						if(empty($this_addon))
+						{
+							continue;
+						}
+
+						$result = $plg->getAddonErrors($this_addon);
+
+						if(is_numeric($result))
+						{
+							$errMsg = " (".$errors[$result].")";
+						}
+						elseif(isset($result['msg']))
+						{
+							$errMsg = " (".$result['msg'].")";
+						}
+
+						$this->assertEmpty($result, $folder." > ".$this_addon." returned error #".$result.$errMsg);
+					//	echo $folder;
+					//	var_dump($result);
+					}
+
+
+
+
+
+			}
+
+
+		}
+
+
 
 		public function testRemotePlugin()
 		{
@@ -254,6 +344,12 @@
 			);
 
 			$this->pluginUninstall('nofollow',$opts);
+
+			$status = is_dir(e_PLUGIN."nofollow");
+
+			$this->assertFalse($status,"nofollow plugin still exists, despite opt to have it removed during uninstall.");
+
+
 
 		}
 
@@ -285,6 +381,8 @@
 				);
 			}
 
+
+
 			e107::getPlugin()->uninstall($pluginDir, $opts);
 
 			$uninstall = $this->makePluginReport($pluginDir);
@@ -296,8 +394,12 @@
 			foreach($uninstall['addonPref'] as $key=>$val)
 			{
 				$message = $key." list pref still contains '".$pluginDir."' after uninstall of ".$pluginDir.". ";
+				$message .= print_r($uninstall,true);
+
 				$this->assertEmpty($val, $message);
 			}
+
+			return $uninstall;
 		}
 
 		/**
@@ -306,21 +408,31 @@
 		 */
 		private function pluginFileListToPluginAddonNames($plugin_file_list)
 		{
-			$plugin_addon_names = array_map(function ($addon_path) {
+
+			$plugin_addon_names = array_map(function ($addon_path)
+			{
+
 				return basename($addon_path, '.php');
 			}, $plugin_file_list);
 
 			$class_name_that_has_plugin_addons_array = 'e107plugin';
-			try {
+
+			try
+			{
 				$reflectionClass = new ReflectionClass($class_name_that_has_plugin_addons_array);
-			} catch (ReflectionException $e) {
+			}
+			catch(ReflectionException $e)
+			{
 				$this->fail("Could not instantiate $class_name_that_has_plugin_addons_array to get \$plugin_addons");
 			}
+
 			$reflectionProperty = $reflectionClass->getProperty('plugin_addons');
 			$reflectionProperty->setAccessible(true);
 			$valid_plugin_addon_names = $reflectionProperty->getValue(new $class_name_that_has_plugin_addons_array());
 
-			$plugin_addon_names = array_filter($plugin_addon_names, function ($plugin_addon_name) use ($valid_plugin_addon_names) {
+			$plugin_addon_names = array_filter($plugin_addon_names, function ($plugin_addon_name) use ($valid_plugin_addon_names)
+			{
+
 				return in_array($plugin_addon_name, $valid_plugin_addon_names);
 			});
 
