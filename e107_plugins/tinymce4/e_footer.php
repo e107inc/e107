@@ -60,7 +60,7 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 		}
 		
 	}
-	else
+//	else
 	{
 	//	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
@@ -188,4 +188,3 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 
 }
 
-?>
