@@ -79,7 +79,16 @@ class e_plugin
 		'e_output', //hook into all pages at the end (after closing </html>)
 	);
 
-
+	protected $_core_plugins = array(
+		"_blank","admin_menu","banner","blogcalendar_menu",
+		"chatbox_menu",	"clock_menu","comment_menu",
+		"contact", "download", "featurebox", "forum","gallery",
+		"gsitemap","import", "linkwords", "list_new", "log", "login_menu",
+		"metaweblog", "newforumposts_main", "news", "newsfeed",
+		"newsletter","online", "page", "pm","poll",
+		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
+		"trackback","tree_menu","user"
+	);
 
 
 
@@ -119,6 +128,10 @@ class e_plugin
 		return array_keys($this->_data);
 	}
 
+	public function getCorePluginList()
+	{
+		return $this->_core_plugins;
+	}
 
 	public function clearCache()
 	{
@@ -374,9 +387,21 @@ class e_plugin
 	 */
 	public function getAddonErrors($e_xxx)
 	{
-		if (is_readable(e_PLUGIN.$this->_plugdir."/".$e_xxx.".php"))
+
+		if(substr($e_xxx, -3) === '.sc')
 		{
-			$content = file_get_contents(e_PLUGIN.$this->_plugdir."/".$e_xxx.".php");
+			$filename =  $e_xxx;
+			$sc = true;
+		}
+		else
+		{
+			$filename =   $e_xxx.".php";
+			$sc = false;
+		}
+
+		if (is_readable(e_PLUGIN.$this->_plugdir."/".$filename))
+		{
+			$content = file_get_contents(e_PLUGIN.$this->_plugdir."/".$filename);
 		}
 		else
 		{
@@ -397,7 +422,7 @@ class e_plugin
 		}
 
 		// Generic markup check
-		if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+		if ($sc === false && (substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
 		{
 			return 1;
 		}
