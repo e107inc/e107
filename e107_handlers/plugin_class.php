@@ -135,6 +135,9 @@ class e_plugin
 
 	public function clearCache()
 	{
+		$this->_installed = array();
+		$this->_addons = array();
+
 		$this->_init(true);
 		$this->_initIDs();
 		return $this;
@@ -365,6 +368,14 @@ class e_plugin
 	}
 
 
+	function setInstalled($plug,$version)
+	{
+		$this->_installed[$plug] = $version;
+
+		return $this;
+	}
+
+
 	/**
 	 * Check if the currently loaded plugin is installed
 	 * @return mixed
@@ -376,13 +387,13 @@ class e_plugin
 			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
 		}
 
-
 		return in_array($this->_plugdir, array_keys($this->_installed));
 	}
 
 
 	/**
 	 * Check if the currently loaded plugin's addon has errors.
+	 * @param string e_xxxx addon
 	 * @return mixed
 	 */
 	public function getAddonErrors($e_xxx)
@@ -544,7 +555,7 @@ class e_plugin
 
 	}
 
-	public function getFields($includeID = false)
+	public function getFields($currentStatus = false)
 	{
 
 		$ret = array(
@@ -556,8 +567,9 @@ class e_plugin
 			 'plugin_category'      => $this->getCategory()
 		);
 
-		if($includeID)
+		if($currentStatus)
 		{
+			$ret['plugin_installflag'] = (int) $this->isInstalled();
 			$ret['plugin_id'] = $this->getId();
 		}
 
@@ -682,7 +694,7 @@ class e_plugin
 
 		$this->_data = $arr;
 
-
+		return null;
 	}
 
 
@@ -724,7 +736,7 @@ class e_plugin
 
 	private function parse_plugin_xml($plugName)
 	{
-		$tp = e107::getParser();
+		// $tp = e107::getParser();
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
@@ -812,9 +824,10 @@ class e_plugin
 	}
 
 
-
-
-
+	/**
+	 * @param $plugName
+	 * @return array
+	 */
 	private function parse_plugin_php($plugName)
 	{
 		$tp = e107::getParser();
@@ -836,14 +849,12 @@ class e_plugin
 
 
 		ob_start();
-		if (include(e_PLUGIN.$plugName.'/plugin.php'))
-		{
-			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);
-		}
+		include(e_PLUGIN.$plugName.'/plugin.php');
 		ob_end_clean();
 		$ret = array();
 
-		//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+		unset($sql);
+		unset($PLUGINS_FOLDER);
 
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['lan'] = varset($eplug_name);
@@ -1089,7 +1100,7 @@ class e_plugin
 			}
 
 
-		$core->save(false, false, false);
+		$core->save(false, true, false);
 
 
 
@@ -1678,7 +1689,7 @@ class e107plugin
 		$this->log("Running ".__FUNCTION__);
 		if ($plugin == '')
 		{
-			return;
+			return null;
 		}
 
 		$mes = e107::getMessage();
@@ -1689,7 +1700,7 @@ class e107plugin
 		if ($function == 'install' || $function == 'upgrade')
 		{
 			$med->importIcons(e_PLUGIN.$plugin);
-			return;
+			return null;
 		}
 
 		if ($function == 'uninstall')
@@ -1700,7 +1711,7 @@ class e107plugin
 				$mes->add(IMALAN_164, $status);
 				$this->log("Deleted Icons from Media-Manager "); // No LANS
 			}
-			return;
+			return null;
 		}
 
 	}
@@ -1720,10 +1731,9 @@ class e107plugin
 		if(!empty($path))
 		{
 		//	$bla = e107::getPlug()->load($path);
-		//	if($tmp = e107::getPlug()->load($path)->getFields(true))
+			if($tmp = e107::getPlug()->load($path)->getFields(true))
 			{
-			//	var_dump($tmp);
-		//		return $tmp; // XXX TODO Same data as below but will break installation for most plugins.
+				return $tmp;
 			}
 		}
 
@@ -2148,17 +2158,26 @@ class e107plugin
 		}
 	}
 
-	// DEPRECATED in 0.8 - See XmlPrefs(); Left for BC.
+	// DEPRECATED in 0.8 -
 	// Update prefs array according to $action
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
+	/**
+	 * @deprecated See XmlPrefs(); Left for BC.
+	 * @param        $action
+	 * @param        $var
+	 * @param string $prefType
+	 * @param string $path
+	 * @param bool   $unEscape
+	 * @return null|void
+	 */
 	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
 	{
 		$this->log("Running ".__FUNCTION__);
 		global $pref;
 		if (!is_array($var))
-			return;
+			return null;
 		if (($prefType == 'arrayPref') && ($path == ''))
-			return;
+			return null;
 		foreach ($var as $k => $v)
 		{
 			if ($unEscape)
@@ -2237,7 +2256,8 @@ class e107plugin
 
 		e107::getConfig('core')->setPref($pref)->save(true,false,false);
 
-		//	 e107::getConfig()->loadData($pref, false)->save(false, true);
+		return null;
+
 	}
 
 	function manage_comments($action, $comment_id)
@@ -2662,59 +2682,6 @@ class e107plugin
 		
 		// Handle tables
 		$this->XmlTables($function, $plug, $options);
-/*
-		if ($canContinue && count($sql_list)) // TODO - move more of it to $this->XmlTables(). 
-		{
-			
-			require_once(e_HANDLER.'db_table_admin_class.php');
-			$dbHandler = new db_table_admin;
-			foreach ($sql_list as $sqlFile)
-			{
-				$tableList = $dbHandler->get_table_def('', $path.$sqlFile);
-				if (!is_array($tableList))
-				{
-					$mes->addError("Can't read SQL definition: ".$path.$sqlFile);
-					break;
-				}
-				// Got the required definition here
-
-				foreach ($tableList as $ct)
-				{ // Process one table at a time (but they could be multi-language)
-					switch ($function)
-					{
-						case 'install':
-							$sqlTable = str_replace("CREATE TABLE ".MPREFIX.'`', "CREATE TABLE `".MPREFIX, preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]));
-							$txt = "Adding Table: {$ct[1]} ... ";
-							$status = $this->manage_tables('add', array($sqlTable)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; // Pass the statement to create the table
-							$mes->add($txt, $status);
-						break;
-						
-						
-						
-
-						
-						
-						case 'refresh': // Leave things alone
-						case 'upgrade':
-						break;
-						
-						case 'uninstall':
-							if (vartrue($options['delete_tables'], FALSE))
-							{
-								$txt = "Removing Table: {$ct[1]} <br />";
-								$status = $this->manage_tables('remove', array($ct[1])) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; // Delete the table
-								$mes->add($txt, $status);
-							}
-							else
-							{
-								$mes->addSuccess("Table {$ct[1]} left in place.");
-							}
-							break;
-					}
-				}
-			}
-		}
-*/
 
 		if (varset($plug_vars['adminLinks']))
 		{
@@ -2811,8 +2778,20 @@ class e107plugin
 		$this->log("Updated 'plug_installed' core pref. ");
 
 		e107::getConfig('core')->save(true, false, false);
+/*
+		e107::getPlug()->clearCache()->buildAddonPrefLists();
 
-		$this->save_addon_prefs('update');
+		if($function === 'install')
+		{
+			e107::getPlug()->setInstalled($plug_vars['folder'],$plug_vars['@attributes']['version']);
+		}
+*/
+
+	//	e107::getPlug()->setInstalled($plug_vars['folder'],$plug_vars['@attributes']['version'])->buildAddonPrefLists();
+
+	//	e107::getPlug()->clearCache()->setInstalled($plug_vars['folder'],$plug_vars['@attributes']['version'])->buildAddonPrefLists();
+
+		$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly. 
 
 		/*	if($function == 'install')
 		 {
@@ -2840,26 +2819,7 @@ class e107plugin
 
 		}
 
-		if($function === 'install')
-		{
-			$event->trigger('admin_plugin_install', $plug);
-		}
-
-		if($function === 'uninstall')
-		{
-			$event->trigger('admin_plugin_uninstall', $plug);
-		}
-
-		if($function === 'upgrade')
-		{
-			$event->trigger('admin_plugin_upgrade', $plug);
-		}
-
-		if($function === 'refresh')
-		{
-			$event->trigger('admin_plugin_refresh', $plug);
-		}
-
+		$event->trigger('admin_plugin_'.$function, $plug);
 
 
 		return null;
@@ -2966,14 +2926,14 @@ class e107plugin
 		if(!file_exists($sqlFile)) // No File, so return;
 		{
 			$this->log("No SQL File Found at: ".$sqlFile);
-			return;
+			return null;
 		}
 
 		if(!is_readable($sqlFile)) // File Can't be read.
 		{
 			e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
 			$this->log("Can't read SQL definition: ".$sqlFile);
-			return; 
+			return null;
 		}
 
 		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
@@ -2990,7 +2950,7 @@ class e107plugin
 			{
 				e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
 				$this->log("Can't read SQL definition: ".$sqlFile);
-				return;
+				return null;
 			}
 
 			$tableData = $dbv->getSqlFileTables($contents);
@@ -3302,10 +3262,11 @@ class e107plugin
 
 	/**
 	 * Process XML Tag <LanguageFiles> // Tag is DEPRECATED - using _install _log and _global
-	 * @param object $function - should $when have been used?
+	 * @deprecated
+	 * @param string $function install|uninstall|upgrade|refresh- should $when have been used?
 	 * @param object $tag (not used?)
-	 *	@param string $when = install|upgrade|refresh|uninstall
-	 * @return none
+	 * @param string $when = install|upgrade|refresh|uninstall
+	 * @return null
 	 */
 	function XmlLanguageFiles($function, $tag='', $when = '')
 	{
@@ -3371,14 +3332,15 @@ class e107plugin
 			$this->log("Prefs saved");
 			$core->save(true,false,false);	//FIXME do this quietly without an s-message
 		}
-	
+
+		return null;
 	}
 
 	/**
 	 * Process XML Tag <siteLinks>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return none
+	 * @return null
 	 */
 	function XmlSiteLinks($function, $plug_vars)
 	{
@@ -3388,7 +3350,7 @@ class e107plugin
 		
 		if(vartrue($this->options['nolinks']))
 		{
-			return;	
+			return null;
 		}
 
 		if($function == 'refresh')
@@ -3455,11 +3417,13 @@ class e107plugin
 					break;
 			}
 		}
+
+		return null;
 	}
 
 	/**
 	 * Process XML Tag <adminLinks>
-	 * @return none
+	 * @return null
 	 */
 	function XmlAdminLinks($function, $tag)
 	{
@@ -3474,6 +3438,8 @@ class e107plugin
 				$this->plugConfigFile = $url;
 			}
 		}
+
+		return null;
 	}
 
 
@@ -3573,14 +3539,14 @@ class e107plugin
 		
 		}	
 		
-		
+		return null;
 	}
 
 
 	
 	/**
 	 * Process XML Tag <bbcodes>
-	 * @return none
+	 * @return null
 	 */
 	function XmlBBcodes($function, $tag)
 	{
@@ -3609,7 +3575,7 @@ class e107plugin
 		}
 		
              
-		return;
+		return null;
 
 	}
 
@@ -3617,7 +3583,7 @@ class e107plugin
 	 * Process XML Tag <userClasses>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return none
+	 * @return null
 	 */
 	function XmlUserClasses($function, $array)
 	{
@@ -3671,6 +3637,8 @@ class e107plugin
 					break;
 			}
 		}
+
+		return null;
 	}
 
 
@@ -3678,7 +3646,7 @@ class e107plugin
 	 * Process XML Tag <extendedFields>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return none
+	 * @return null
 	 */
 	function XmlExtendedFields($function, $array)
 	{
@@ -3736,31 +3704,30 @@ class e107plugin
 					break;
 			}
 		}
+
+		return null;
 	}
 
 
 	/**
 	 * Process XML tags <mainPrefs> and <pluginPrefs>
-	 * @param object $mode 'core' or the folder name of the plugin.
-	 * @param object $function install|uninstall|upgrade|refresh
-	 * @param object $prefArray XML array of prefs. eg. mainPref() or pluginPref();
-	 * @return none
+	 * @param string $mode 'core' or the folder name of the plugin.
+	 * @param string $function install|uninstall|upgrade|refresh
+	 * @param array $prefArray XML array of prefs. eg. mainPref() or pluginPref();
+	 * @return null
 	 */
-	function XmlPrefs($mode = 'core', $function, $prefArray)
+	function XmlPrefs($mode = 'core', $function='', $prefArray=array())
 	{
 		$this->log("Running ".__FUNCTION__);
-		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
 
 		$mes = e107::getMessage();
 
-		if (!varset($prefArray) || !varset($prefArray))
+		if(empty($prefArray))
 		{
-			return;
+			return null;
 		}
 
-		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
-
-
+		$config = ($mode === 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
 
 		foreach ($prefArray['pref'] as $tag)
 		{
@@ -3801,7 +3768,7 @@ class e107plugin
 					if ($remove) // remove active='false' prefs.
 
 					{
-						$config->remove($key, $value);
+						$config->remove($key);
 						$mes->addSuccess(EPL_ADLAN_242, $key);
 					}
 					else
@@ -3813,7 +3780,7 @@ class e107plugin
 					break;
 
 				case 'uninstall':
-					$config->remove($key, $value);
+					$config->remove($key);
 					$mes->addSuccess(EPL_ADLAN_242, $key);
 					$this->log("Removing Pref: ".$key);
 					break;
@@ -3824,7 +3791,8 @@ class e107plugin
 		{
 			$config->save(true, false, false);
 		}
-		return;
+
+		return null;
 	}
 
 	/**
@@ -4216,6 +4184,8 @@ class e107plugin
 
 		$this->log("Uninstalling :".$plug['plugin_path']." with options: ".print_r($options, true));
 
+		$this->log("e107plugin::getPluginRecord() returned: ".print_r($plug, true));
+
 		// Check if plugin is being used by another plugin before uninstalling it.
 		if(isset($plug['plugin_path']))
 		{
@@ -4230,6 +4200,8 @@ class e107plugin
 			//Uninstall Plugin
 			if ($plug['plugin_installflag'] == true )
 			{
+				$this->log("plugin_installflag = true, proceeding to uninstall");
+
 				$eplug_folder = $plug['plugin_path'];
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
 
@@ -4337,8 +4309,12 @@ class e107plugin
 				$logInfo = deftrue($plug['plugin_name'],$plug['plugin_name']). " v".$plug['plugin_version']." ({e_PLUGIN}".$plug['plugin_path'].")";
 				e107::getLog()->add('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
 			}
+			else
+			{
+				$this->log("plugin_installflag = false, uninstall skipped.");
+			}
 
-			if(!empty($_POST['delete_files'])  && ($plug['plugin_installflag'] == true))
+			if(!empty($options['delete_files'])  && ($plug['plugin_installflag'] == true))
 			{
 				if(!empty($eplug_folder))
 				{
@@ -4352,11 +4328,13 @@ class e107plugin
 				$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 			}
 
-			$this->save_addon_prefs('update');
+		e107::getPlug()->clearCache()->buildAddonPrefLists();
+
+	//	$this->save_addon_prefs('update');
 
 		$this->log("Uninstall completed");
 
-		e107::getPlug()->clearCache();
+
 
 		return $text;
 	}
@@ -4509,7 +4487,7 @@ class e107plugin
 		{
 			// echo "didn't work!";
 			}
-		return;
+		return null;
 	}
 
 	public function getAddonsList()
@@ -4854,6 +4832,13 @@ class e107plugin
 	}
 
 	// Called to parse the plugin.xml file if it exists
+
+	/**
+	 * @deprecated To eventually be replaced by e_plugin::parse_plugin_xml.
+	 * @param      $plugName
+	 * @param null $where
+	 * @return bool
+	 */
 	function parse_plugin_xml($plugName, $where = null)
 	{
 
@@ -4868,6 +4853,8 @@ class e107plugin
 			unset($dbgArr[0]);
 			e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName. print_a($dbgArr,true));
 		}
+
+
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
