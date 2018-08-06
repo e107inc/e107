@@ -683,7 +683,7 @@ class e_media
 		
 		if($category !='_icon')
 		{
-			$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
+			$cat 	= ($category) ? $category : ""; // the '+' loads category '_common' as well as the chosen category.
 			$images = $this->getImages($cat,$frm,$limit,$search);
 			$class 	= "media-select-image";
 			$classN = "media-select-image-none";
