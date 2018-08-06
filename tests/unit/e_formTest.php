@@ -64,6 +64,9 @@
 			'layout_002' =>   array ( 'title' => 'Layouts 002', 'type' => 'layouts', 'inline' => true, 'writeParms'=>array('plugin'=>'news', 'id'=>'news_view', 'area'=> 'front', 'merge'=>false)), // 'news', 'news_view', 'front'
 		//	'layout_003' =>   array ( 'title' => 'Layouts 003', 'type' => 'layouts', 'inline' => true, 'writeParms'=>array('plugin'=>'news', 'id'=>'news_view', 'area'=> 'front', 'merge'=>false)), // 'news', 'news_view', 'front'
 
+			'image_001' 			=> array('title'=>"Image 001",	'type' => 'image', 	'data' => 'str', 'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadimages', 'readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
+			'image_002' 			=> array('title'=>"Image 001",	'type' => 'image', 	'data' => 'str', 'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadimages', 'readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
+
 		);
 
 		// simulated database/form values.
@@ -81,7 +84,10 @@
 			'textarea_001' => "the quick brown fox jumps over the lazy dog",
 
 			'layout_001'    => 'default',
-			'layout_002'    => 'default'
+			'layout_002'    => 'default',
+
+			'image_001'     => '{e_THEME}bootstrap3/images/e107_adminlogo.png',
+			'image_002'     => 'butterfly.jpg',
 
 		);
 
@@ -99,6 +105,25 @@
 			{
 				$this->assertTrue(false, "Couldn't load e_form object");
 			}
+
+			$legacyDir = APP_PATH."/e107_files/downloadimages/";
+			$legacyFile = APP_PATH."/e107_files/downloadimages/butterfly.jpg";
+
+			if(!is_dir($legacyDir))
+			{
+				mkdir($legacyDir, 0775, true);
+			}
+
+			if(!file_exists($legacyFile))
+			{
+				copy(APP_PATH."/e107_plugins/gallery/images/butterfly.jpg", $legacyFile);
+			}
+
+			if(!file_exists($legacyFile))
+			{
+				$this->assertTrue(false,"Couldn't copy legacy image 'butterfly.jpg' to e107_files folder");
+			}
+
 		}
 
 	    protected function _after()
@@ -647,10 +672,11 @@
 				'textarea_001' => "the quick brown fox jumps over the lazy dog",
 
 				'layout_001'    => 'default',
-				'layout_002'    => "<a class='e-tip e-editable editable-click ' data-name='layout_002' data-source='{\"default\":\"Default\",\"videos\":\"Videos (experimental)\"}'   title=\"Edit Layouts 002\" data-type='select' data-inputclass='x-editable-layout-002 ' data-value=\"default\"   href='#'  data-url='".e_SELF."?mode=&amp;action=inline&amp;id=0&amp;ajax_used=1'>Default</a>"
+				'layout_002'    => "<a class='e-tip e-editable editable-click ' data-name='layout_002' data-source='{\"default\":\"Default\",\"videos\":\"Videos (experimental)\"}'   title=\"Edit Layouts 002\" data-type='select' data-inputclass='x-editable-layout-002 ' data-value=\"default\"   href='#'  data-url='".e_SELF."?mode=&amp;action=inline&amp;id=0&amp;ajax_used=1'>Default</a>",
 
+				'image_001'    => "<a href=\"".e_HTTP."e107_themes/bootstrap3/images/e107_adminlogo.png\" data-modal-caption=\"e107_adminlogo.png\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"e107_adminlogo.png\" rel=\"external\"><img class='thumbnail e-thumb' src='".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=60&amp;h=0' alt=\"e107_adminlogo.png\" srcset=\"".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=240&amp;h=0 240w\" width=\"60\"  /></a>",
+				'image_002'     => "<a href=\"".e_HTTP."e107_files/downloadimages/butterfly.jpg\" data-modal-caption=\"butterfly.jpg\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"butterfly.jpg\" rel=\"external\"><img class='thumbnail e-thumb' src='".e_HTTP."e107_files/downloadimages/butterfly.jpg' alt=\"butterfly.jpg\" width=\"60\"  /></a>",
 			);
-
 
 
 
@@ -693,7 +719,11 @@
 				'textarea_001' => "<textarea name='textarea_001' rows='5' cols='40' id='textarea-001' class='form-control input-xlarge' tabindex='6'>the quick brown fox jumps over the lazy dog</textarea>",
 
 				'layout_001'    => "<select name='layout_001' id='news_view' class='tbox select form-control' tabindex='7'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option></select>",
-				'layout_002'    => "<select name='layout_002' id='news_view' class='tbox select form-control' tabindex='8'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option></select>"
+				'layout_002'    => "<select name='layout_002' id='news_view' class='tbox select form-control' tabindex='8'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option></select>",
+
+				'image_001'     => "<a href=\"".e_HTTP."e107_themes/bootstrap3/images/e107_adminlogo.png\" data-modal-caption=\"e107_adminlogo.png\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"e107_adminlogo.png\" rel=\"external\"><img class='thumbnail e-thumb' src='".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=60&amp;h=0' alt=\"e107_adminlogo.png\" srcset=\"".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=240&amp;h=0 240w\" width=\"60\"  /></a><input type='hidden' name='image_001' value='{e_THEME}bootstrap3/images/e107_adminlogo.png' id='image-001-e-THEME-bootstrap3-images-e107-adminlogo-png' />",
+				'image_002'     => "<a href=\"".e_HTTP."e107_files/downloadimages/butterfly.jpg\" data-modal-caption=\"butterfly.jpg\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"butterfly.jpg\" rel=\"external\"><img class='thumbnail e-thumb' src='".e_HTTP."e107_files/downloadimages/butterfly.jpg' alt=\"butterfly.jpg\" width=\"60\"  /></a><input type='hidden' name='image_002' value='butterfly.jpg' id='image-002-butterfly-jpg' />",
+
 
 			);
 
