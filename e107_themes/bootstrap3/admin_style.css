@@ -1098,6 +1098,11 @@ ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
 .nav ul li ul.dropdown-menu > li a 			{ padding-top:5px; padding-bottom:5px; color: rgb(200,200,200); }
 .nav ul li ul.dropdown-menu > li a:hover 	{ color: rgb(255, 255, 255); }
 
+.nav ul.dropdown-menu.oversized             { width: 420px }
+.nav ul.dropdown-menu.oversized li          { width: 50%; float:left; }
+
+
+
 
 .navbar .btn-navbar{ margin-top:12px }
 
