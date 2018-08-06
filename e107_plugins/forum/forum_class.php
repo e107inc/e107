@@ -870,7 +870,15 @@ class e107forum
 			$triggerData['thread_sef']  = $threadInfo['thread_sef'];
 			$triggerData['post_id']     = $newPostId;
 
-			e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+
+			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 0)
+			{
+				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+			}
+			else
+			{
+				e107::getEvent()->trigger('user_forum_topic_created_probationary', $triggerData);
+			}
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
@@ -922,6 +930,11 @@ class e107forum
 		$this->forumUpdateLastpost('forum', $oldForumId, false);
 		$this->forumUpdateLastpost('forum', $newForumId, false);
 
+		e107::getEvent()->trigger('user_forum_topic_moved', array(
+			'old_thread' => $threadInfo,
+			'new_thread' => $this->threadGet($threadId)
+			));
+
 	}
 
 
@@ -944,9 +957,9 @@ class e107forum
 	  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 	}
 
-	
-	
-	function postUpdate($postId, $postInfo)
+
+
+		function postUpdate($postId, $postInfo)
 	{
 		$info = array();
 		$info['data'] = $postInfo;
@@ -960,11 +973,11 @@ class e107forum
 
 		$triggerData = $postInfo;
 		$triggerData['post_id'] = intval($postId);
-	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
+	  	e107::getEvent()->trigger('user_forum_post_updated', $triggerData);
 	}
 
-	
-	
+
+
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
 		$id = (int)$id;
@@ -1103,7 +1116,7 @@ class e107forum
 		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
 
 		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
-		{	
+		{
 			$postids = array();
 
 			foreach($rows as $row)
@@ -1114,7 +1127,7 @@ class e107forum
 			if($postId == min($postids))
 			{
 				return true;
-			}			 
+			}
 		}
 		return false;
 	}
@@ -1499,6 +1512,7 @@ class e107forum
 	{
 		$sql = e107::getDb();
 
+		$where = '';
 		if(!empty($this->permList['view_list']))
 		{
 			$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
@@ -2047,8 +2061,11 @@ class e107forum
 			if ($sql->select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
 			{
 				$threadList = $sql->db_getList();
+				$thread_count = count($threadList);
+				$reply_count = 0;
 				foreach($threadList as $thread)
 				{
+					$reply_count += (int)$sql->count('forum_post', '(*)', 'WHERE post_thread = '.$thread['thread_id']);
 					$this->threadDelete($thread['thread_id'], false);
 				}
 				foreach($forumArray as $fid)
@@ -2057,6 +2074,7 @@ class e107forum
 					$this->forumUpdateCounts($fid);
 				}
 				return FORLAN_8." ( ".$thread_count." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
+				return FORLAN_8." ( ".count($threadList)." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
 			}
 			else
 			{
@@ -2344,7 +2362,7 @@ class e107forum
 			if($sql->delete('forum_thread', 'thread_id='.$threadId))
 			{
 				$status = true;
-			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadId);
+			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadInfo);
 			}
 
 			//Delete any thread tracking
@@ -2376,9 +2394,11 @@ class e107forum
 		$postId 	= (int)$postId;
 		$e107 		= e107::getInstance();		
 		$sql 		= e107::getDb();
-		$deleted 	= false; 
-		
-		if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+		$deleted 	= false;
+
+		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
+		//if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+		if(!is_array($postInfo) || empty($postInfo))
 		{
 			echo 'NOT FOUND!'; return;
 		}
@@ -2396,7 +2416,7 @@ class e107forum
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true;
-		  	e107::getEvent()->trigger('user_forum_post_deleted', $postId);
+		  	e107::getEvent()->trigger('user_forum_post_deleted', $postInfo);
 		}
 
 		// update statistics
