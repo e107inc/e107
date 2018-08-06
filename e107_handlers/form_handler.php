@@ -5194,16 +5194,23 @@ class e_form
 							$parms['pre'] = rtrim($parms['legacyPath'],'/').'/';
 						}
 					//	return print_a($thparms,true); 
-					
-						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
-				//		$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
+
+						if(!empty($value[0]) && $value[0] === '{') // full path to convert.
+						{
+							$src = $tp->replaceConstants($value, 'abs');
+						}
+						else // legacy link without {e_XXX} path. eg. downloads thumbs.
+						{
+							$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
+						}
+
 						$alt = basename($src);
-					//	$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
+
 
 						$thparms['alt'] = $alt;
 						$thparms['class'] = "thumbnail e-thumb";
 
-
+						e107::getDebug()->log($value);
 
 						$ttl = $tp->toImage($value, $thparms);
 

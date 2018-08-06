@@ -1295,11 +1295,12 @@ class e107plugin
 	}
 
 	/**
+	 * @deprecated to be removed. Use e_plugin instead.
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @return array|bool plugin details
 	 */
-	function getall($flag)
+	private function getall($flag)
 	{
 		$sql = e107::getDb();
 
@@ -1346,7 +1347,7 @@ class e107plugin
 	 * @param string $path
 	 * @return int
 	 */
-	function getId($path)
+	private function getId($path)
 	{
 		$sql = e107::getDb();
 
@@ -1364,25 +1365,20 @@ class e107plugin
 	 * @param string $mode  'boolean' for a quick true/false or null for full array returned. 
 	 * @return mixed 
 	 */
-	function updateRequired($mode=null)
+	public function updateRequired($mode=null)
 	{
-		$xml 			= e107::getXml();
+	//	$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
 		$log 			= e107::getAdminLog();
 
 		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
 		{
-
 			return FALSE;
 		}
 
-
 		$dbv = e107::getObject('db_verify', null, e_HANDLER."db_verify_class.php");
-
 		$plg = e107::getPlug();
-
-
 
 		foreach($plugVersions as $path=>$version)
 		{
@@ -1458,7 +1454,7 @@ class e107plugin
 
 	/**
 	 * Check for new plugins, create entry in plugin table and remove deleted plugins
-	 *
+	 * @deprecated by e_plugin::init() some parts might still need to be integrated into the new method.
 	 *	@param string $mode = install|upgrade|refresh|uninstall - defines the intent of the call
 	 *
 	 *	'upgrade' and 'refresh' are very similar in intent, and often take the same actions:
@@ -1631,7 +1627,7 @@ class e107plugin
 						}
 					}
 			}
-			else
+		//	else
 			{ // May be useful that we ignore what will usually be copies/backups of plugins - but don't normally say anything
 				//						    echo "Plugin copied to wrong directory. Is in: {$plugin_path} Should be: {$plug_info['folder']}<br /><br />";
 			}
@@ -1671,7 +1667,7 @@ class e107plugin
 		));
 	}
 
-	function manage_category($cat)
+	private function manage_category($cat)
 	{
 		$this->log("Running ".__FUNCTION__);
 		if (vartrue($cat) && in_array($cat, $this->accepted_categories))
@@ -1684,7 +1680,7 @@ class e107plugin
 		}
 	}
 
-	function manage_icons($plugin = '', $function = '')
+	private function manage_icons($plugin = '', $function = '')
 	{
 		$this->log("Running ".__FUNCTION__);
 		if ($plugin == '')
@@ -1736,6 +1732,13 @@ class e107plugin
 				return $tmp;
 			}
 		}
+		else // log all deprecated calls made using an integer so they can be removed in future.
+		{
+			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,3);
+			unset($dbgArr[0]);
+			e107::getLog()->addDebug("Deprecated call to getPluginRecord() using integer.".print_a($dbgArr,true));
+
+		}
 
 		$sql = e107::getDb();
 		$getinfo_results = array();
@@ -1751,7 +1754,7 @@ class e107plugin
 		return $getinfo_results[$id];
 	}
 	
-	public function setUe()
+	private function setUe()
 	{
 		if (!isset($this->module['ue']))
 		{
@@ -1767,7 +1770,7 @@ class e107plugin
 	 * @param string $name field name
 	 * @return string  field name
 	 */
-	public function ue_field_name($folder, $type, $name)
+	private function ue_field_name($folder, $type, $name)
 	{
 		if($type == EUF_PREFIELD || $type == EUF_CATEGORY)
 		{
@@ -1781,7 +1784,7 @@ class e107plugin
 	 * @param array $attrib parsed from XML user field definitions
 	 * @return integer type ID
 	 */
-	public function ue_field_type($attrib)
+	private function ue_field_type($attrib)
 	{
 		$field_type = $attrib['type'];
 		$type = defined($field_type) ? constant($field_type) : $field_type;
@@ -1799,7 +1802,7 @@ class e107plugin
 	 * @param integer $typeId
 	 * @return string type name
 	 */
-	public function ue_field_type_name($typeId)
+	private function ue_field_type_name($typeId)
 	{
 		if(is_numeric($typeId))
 		{
@@ -1831,7 +1834,7 @@ class e107plugin
 	 *
 	 * @return boolean success
 	 */
-	function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
+	private function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
 	{
 		$this->log("Running ".__FUNCTION__);
 		$mes = e107::getMessage();
@@ -1976,7 +1979,7 @@ class e107plugin
 		return false;
 	}
 
-	function manage_extended_field_sql($action, $field_name)
+	private function manage_extended_field_sql($action, $field_name)
 	{
 		$this->log("Running ".__FUNCTION__);
 		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
@@ -2033,7 +2036,7 @@ class e107plugin
 		}
 	}
 
-	function manage_userclass($action, $class_name, $class_description='')
+	private function manage_userclass($action, $class_name, $class_description='')
 	{
 		$this->log("Running ".__FUNCTION__);
 		$e107 = e107::getInstance();
@@ -2046,7 +2049,8 @@ class e107plugin
 		if (!$e107->user_class->isAdmin())
 		{
 			$e107->user_class = new user_class_admin; // We need the extra methods of the admin extension
-			}
+		}
+
 		$class_name = strip_tags(strtoupper($class_name));
 		if ($action == 'add')
 		{
@@ -2088,9 +2092,11 @@ class e107plugin
 				return FALSE;
 			}
 		}
+
+		return null;
 	}
 
-	function manage_link($action, $link_url, $link_name, $link_class = 0, $options=array())
+	private function manage_link($action, $link_url, $link_name, $link_class = 0, $options=array())
 	{
 
 		$sql = e107::getDb();
@@ -2791,7 +2797,7 @@ class e107plugin
 
 	//	e107::getPlug()->clearCache()->setInstalled($plug_vars['folder'],$plug_vars['@attributes']['version'])->buildAddonPrefLists();
 
-		$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly. 
+		$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly.
 
 		/*	if($function == 'install')
 		 {
