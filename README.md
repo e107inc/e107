@@ -36,9 +36,9 @@ e107 Test Suites
      ```
    * **All tests with code coverage report:**
      ```sh
-     /opt/cpanel/ea-php71/root/usr/bin/php -d zend_extension=/opt/alt/php71/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+     /opt/cpanel/ea-php72/root/usr/bin/php -d zend_extension=/opt/alt/php72/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
      ```
-     > **Note:** This command is specific to cPanel EasyApache PHP 7.1 and CloudLinux PHP Selector.  See the "Code Coverage" section below for details.
+     > **Note:** This command is specific to cPanel EasyApache PHP 7.2 and CloudLinux PHP Selector.  See the "Code Coverage" section below for details.
    * **Unit tests:**
      ```sh
      ./vendor/bin/codecept run unit
@@ -144,9 +144,9 @@ The reports may take minutes to be generated.
 
 These commands run all tests and generate a code coverage report in HTML format and [Clover](https://bitbucket.org/atlassian/clover) XML format:
 
-* Using [cPanel EasyApache 4](https://documentation.cpanel.net/display/EA4/PHP+Home) with PHP 7.1 and Xdebug from [CloudLinux PHP Selector](https://docs.cloudlinux.com/php_selector.html):
+* Using [cPanel EasyApache 4](https://documentation.cpanel.net/display/EA4/PHP+Home) with PHP 7.2 and Xdebug from [CloudLinux PHP Selector](https://docs.cloudlinux.com/php_selector.html):
   ```sh
-  /opt/cpanel/ea-php71/root/usr/bin/php -d zend_extension=/opt/alt/php71/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+  /opt/cpanel/ea-php72/root/usr/bin/php -d zend_extension=/opt/alt/php72/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
   ```
 * Using the Xdebug module that you installed with PECL:
   ```sh

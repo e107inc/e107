@@ -4,6 +4,18 @@
 # Absolute path begins with "/"; relative path does not begin with "/"
 app_path: 'e107/'
 
+# Configure this section to customize the database populator
+db_dump:
+
+  # If set to true, the populator will populate the database with the dump specified in the "path" key
+  # If set to false, the test database needs to be set up separately
+  # Affects all modes of deployment
+  enabled: true
+
+  # Path (absolute or relative) to the database dump of a testable installation of the app
+  # Absolute path begins with "/"; relative path does not begin with "/"
+  path: 'tests/_data/e107_v2.1.8.sample.sql'
+
 # Configure this section for automated test deployments to cPanel
 cpanel:
 

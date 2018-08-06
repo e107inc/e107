@@ -10,8 +10,8 @@ settings:
 coverage:
     enabled: true
     include:
-        - e107/*.php
-        - e107/**/*.php
+        - '%app_path%/*.php'
+        - '%app_path%/**/*.php'
 params:
     - lib/config.php
 extensions:
@@ -30,5 +30,5 @@ modules:
             dsn: 'mysql:host=%manual.db.host%;port=%manual.db.port%;dbname=%manual.db.dbname%'
             user: '%manual.db.user%'
             password: '%manual.db.password%'
-            populate: true
-            dump: 'tests/_data/e107_v2.1.8.sample.sql'
+            populate: '%db_dump.enabled%'
+            dump: '%db_dump.path%'
