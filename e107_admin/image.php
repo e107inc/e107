@@ -1761,8 +1761,10 @@ class media_admin_ui extends e_admin_ui
 		$search		= !empty($option['search']) ? $option['search'] : null;
 
 
-		$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category.
-		$images = e107::getMedia()->getImages($cat,$frm,$limit,$search);
+	//	$cat 	= ($category) ? $category."+" : "";
+		$images = e107::getMedia()->getImages($category,$frm,$limit,$search);
+
+
 
 		foreach($images as $val)
 		{

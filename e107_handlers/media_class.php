@@ -494,7 +494,12 @@ class e_media
 			}
 			else
 			{
-				$catArray[] = $cat; 
+				$catArray[] = $cat;
+
+				if($type === 'image')
+				{
+					$catArray[] = $cat.'_image'; // BC Fix. 
+				}
 			}
 		}
 
@@ -1155,7 +1160,7 @@ class e_media
 
 				*/
 
-				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
 			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
 
 
