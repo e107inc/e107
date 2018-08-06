@@ -10,8 +10,6 @@
  *
 */
 
-// TODO - create notify messages + LAN
-
 if (!defined('e107_INIT')) { exit; }
 
 e107::lan('forum','notify',true); 
@@ -93,53 +91,62 @@ class forum_notify extends notify
 
 		return $config;
 	}
+
+
+	private function getData($type, $id)
+	{
+		if (intval($id) < 1) return false;
+		$qry = '';
+		switch($type)
+		{
+			case 'post':
+				$qry = 'SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
+						FROM `#forum_post` AS p
+						LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
+						LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+						WHERE p.post_id = ' . intval($id);
+				break;
+
+			case 'thread':
+				$qry = 'SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name
+						FROM `#forum_thread` AS t
+						LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
+						WHERE t.thread_id = ' . intval($id);
+				break;
+
+			default:
+				return false;
+		}
+
+		$sql = e107::getDb();
+		if($sql->gen($qry))
+		{
+			return $sql->fetch();
+		}
+		return false;
+
+	}
 	
 	//function forum_nt($data) 
 	function user_forum_topic_created($data) 
 	{
-		/*
-			[u] = username / realname?
-			[f] = forumname
-			[f2] = forumname 2
-			[s] = subject
-			[m] = message
-			[d] = deleted by
-			[p] = post id
-		*/
-
 		if (isset($data['id']) && isset($data['data']))
 		{
 			$message = 'Notify test: New thread created';
 		}
 		else
 		{
-			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
-			{
-				return false;
-			}
-
 			$sef = $data['thread_sef'];
 
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
-				FROM `#forum_post` AS p
-				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE p.post_id = ' . intval($data['post_id'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
+			$data = $this->getData('post', vartrue($data['post_id'], 0));
+			if ($data === false) return false;
 
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_NEWTOPIC_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_NEWTOPIC_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_topic_created', LAN_PLUGIN_FORUM_NAME, $message);
@@ -155,34 +162,17 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
-			{
-				return false;
-			}
-
 			$sef = $data['thread_sef'];
 
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
-				FROM `#forum_post` AS p
-				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE p.post_id = ' . intval($data['post_id'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
-
+			$data = $this->getData('post', vartrue($data['post_id'], 0));
+			if ($data === false) return false;
 
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_NEWTOPIC_PROB_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_NEWTOPIC_PROB_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 
@@ -198,17 +188,17 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(!isset($data['old']) || !isset($data['new']))
+			if(!isset($data['old_thread']) || !isset($data['new_thread']))
 			{
 				return false;
 			}
 
-			$url = e107::url('forum', 'forum', array('forum_sef' => $data['new']['forum_sef'], 'forum_id' => $data['new']['forum_id']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_MOVED_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['old']['forum_name'],
-				'f2' => sprintf('<a href="%s">%s</a>', $url, $data['new']['forum_name']),
-				's' => $data['thread_name']
+			$url = e107::url('forum', 'forum', array('forum_sef' => $data['new_thread']['forum_sef'], 'forum_id' => $data['new_thread']['forum_id']), array('mode' => 'full'));
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_TOPIC_MOVED_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['old_thread']['forum_name'],
+				'forum2' => sprintf('<a href="%s">%s</a>', $url, $data['new_thread']['forum_name']),
+				'thread' => $data['new_thread']['thread_name']
 			));
 		}
 
@@ -231,10 +221,10 @@ class forum_notify extends notify
 			}
 
 			$url = e107::url('forum', 'forum', array('forum_id' => $data['forum_id'], 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_DELETED_MSG, array(
-				'd' => USERNAME,
-				'f' => sprintf('<a href="%s">%s</a>', $url, $data['forum_name']),
-				's' => $data['thread_name']
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_TOPIC_DELETED_MSG), array(
+				'user' => USERNAME,
+				'forum' => sprintf('<a href="%s">%s</a>', $url, $data['forum_name']),
+				'thread' => $data['thread_name']
 			));
 		}
 
@@ -250,32 +240,17 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(!isset($data['thread_id']) || intval($data['thread_id']) < 1)
-			{
-				return false;
-			}
-
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name
-				FROM `#forum_thread` AS t
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE t.thread_id = ' . intval($data['thread_id'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
+			$data = $this->getData('thread', vartrue($data['thread_id'],0));
+			if ($data === false) return false;
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
 
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_TOPIC_UPDATED_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_TOPIC_UPDATED_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_topic_updated', LAN_FORUM_NT_12, $message);
@@ -305,32 +280,16 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
-			{
-				return false;
-			}
-
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
-				FROM `#forum_post` AS p
-				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE p.post_id = ' . intval($data['post_id'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
+			$data = $this->getData('post', vartrue($data['post_id'], 0));
+			if ($data === false) return false;
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_CREATED_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_CREATED_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_post_created', LAN_FORUM_NT_14, $message);
@@ -345,32 +304,16 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(!isset($data['post_id']) || intval($data['post_id']) < 1)
-			{
-				return false;
-			}
-
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
-				FROM `#forum_post` AS p
-				LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE p.post_id = ' . intval($data['post_id'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
+			$data = $this->getData('post', vartrue($data['post_id'], 0));
+			if ($data === false) return false;
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_UPDATED_MSG, array(
-				'u' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'm' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_UPDATED_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
 		$this->send('user_forum_post_updated', LAN_FORUM_NT_15, $message);
@@ -386,35 +329,20 @@ class forum_notify extends notify
 		}
 		else
 		{
-			if(isset($data['post_id']) && intval($data['post_id']) < 1)
-			{
-				return false;
-			}
-
 			$entry = e107::getParser()->toHTML($data['post_entry'], true, 'BODY');
 			$postid = $data['post_id'];
 
-			$sql = e107::getDb();
-			if($sql->gen('SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name 
-				FROM `#forum_thread` AS t
-				LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-				WHERE t.thread_id = ' . intval($data['post_thread'])))
-			{
-				$data = $sql->fetch();
-			}
-			else
-			{
-				return false;
-			}
+			$data = $this->getData('thread', vartrue($data['post_thread'], 0));
+			if ($data === false) return false;
 
 			$sef = eHelper::title2sef($data['thread_name'],'dashl');
 			$url = e107::url('forum', 'topic', array('thread_id' => $data['thread_id'], 'thread_sef' => $sef, 'forum_sef' => $data['forum_sef']), array('mode' => 'full'));
-			$message = e107::getParser()->lanVars(LAN_FORUM_NT_POST_DELETED_MSG, array(
-				'd' => USERNAME,
-				'f' => $data['forum_name'],
-				's' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
-				'p' => $postid,
-				'm' => $entry
+			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_DELETED_MSG), array(
+				'user' => USERNAME,
+				'forum' => $data['forum_name'],
+				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'postid' => $postid,
+				'post' => $entry
 			));
 		}
 		$this->send('user_forum_post_deleted', LAN_FORUM_NT_10, $message);

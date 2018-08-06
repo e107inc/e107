@@ -930,7 +930,7 @@ class e107forum
 		$this->forumUpdateLastpost('forum', $oldForumId, false);
 		$this->forumUpdateLastpost('forum', $newForumId, false);
 
-		e107::getEvent()->trigger('user_forum_thread_moved', array(
+		e107::getEvent()->trigger('user_forum_topic_moved', array(
 			'old_thread' => $threadInfo,
 			'new_thread' => $this->threadGet($threadId)
 			));
