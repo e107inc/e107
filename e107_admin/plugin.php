@@ -3653,7 +3653,7 @@ class pluginBuilder
 			{
 				$createData = str_replace("`".MPREFIX, '`', $data[1]);
 				$createData .= ";";
-				if(!file_exists($file) && empty($this->createFiles))
+				if(!file_exists($file)/* && empty($this->createFiles)*/)
 				{
 					file_put_contents($file,$createData);
 				}
@@ -3676,7 +3676,7 @@ class pluginBuilder
 			$mes = e107::getMessage();
 			$tp = e107::getParser();
 
-			
+
 			$newplug = $tp->filter($_GET['newplugin'],'file');
 			$this->pluginName = $newplug;
 
