@@ -1438,7 +1438,17 @@ class e107forum
 				$this->threadMarkAsRead($newIdList);
 			}
 		}
-		header('location:'.e_SELF);
+		//header('location:'.e_SELF);
+		// issue #3338: using e_SELF runs caused an infinite loop
+		if (empty($forum_id))
+		{
+			header('location: '.e107::url('forum', 'index'));
+		}
+		else
+		{
+			$forum_sef = e107::getDb()->retrieve('forum', 'forum_sef', 'WHERE forum_id='.$forum_id);
+			header('location: '.e107::url('forum', 'forum', array('forum_id' => $forum_id, 'forum_sef' => $forum_sef)));
+		}
 		exit;
 	}
 
@@ -1455,7 +1465,8 @@ class e107forum
 			$_tmp[] = (int)$tid;
 		}
 		$tmp = array_unique($_tmp);
-		$viewed = trim(implode(',', $_tmp), ',');
+		// issue #3338 fixed typo, that caused issue with not marking threads are read
+		$viewed = trim(implode(',', $tmp), ',');
 		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
