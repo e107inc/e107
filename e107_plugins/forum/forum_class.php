@@ -1376,7 +1376,9 @@ class e107forum
 				$lp_user = 'NULL';
 				if($updateThreads == true)
 				{
-					if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
+					//if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
+					//  issue #3337 fixed usage of old v1 table names
+					if ($sql2->select('forum_thread', 'thread_id', "thread_forum_id = $id"))
 					{
 						while ($row = $sql2->fetch())
 						{
@@ -2026,10 +2028,11 @@ class e107forum
 			$viewed = implode(',', $this->threadGetUserViewed($uid));
 			if($viewed != '')
 			{
-				$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
+				//$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
+				$viewed = " AND t.thread_forum_id NOT IN ({$viewed})";
 			}
 		}
-
+		/*
 		$qry = "
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
@@ -2047,8 +2050,17 @@ class e107forum
 		WHERE t.thread_lastpost > ".USERLV. "
 		{$viewed}
 		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
+		*/
 
+		//  issue #3337 fixed usage of old v1 table names
+		$qry = "SELECT t.*, u.user_name 
+		FROM `#forum_thread` AS t
+		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
+		WHERE t.thread_lastpost > ".USERLV. "
+		{$viewed}
+		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
 
+		$ret = array();
 		if($sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
