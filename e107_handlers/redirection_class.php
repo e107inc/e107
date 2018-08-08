@@ -391,7 +391,8 @@ class redirection
 			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', true);
 			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true); 
 		}
-		if(null === $http_response_code)
+		// issue #3179 redirect with response code >= 400 doesn't work. Only response codes below 400.
+		if(null === $http_response_code || $http_response_code >= 400)
 		{
 			header('Location: '.$url, $replace);
 		}
