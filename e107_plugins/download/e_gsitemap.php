@@ -13,11 +13,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-
-// e107::plugLan('news', true);
-// solution from news.php:
-e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/lan_news.php'); // Temporary
-
+ 
 // v2.x Standard
 // there is missing lan for Download category in global lan file
 
