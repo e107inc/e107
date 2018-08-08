@@ -366,7 +366,7 @@ class media_form_ui extends e_admin_form_ui
 		}
 		asort($this->cats);*/
 	//	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
-				
+		/*
 		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
@@ -390,13 +390,13 @@ class media_form_ui extends e_admin_form_ui
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->convertImagesToJpeg($ids);
 		}
-		
+
 		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_all_to_jpeg' ))
 		{
 		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->convertImagesToJpeg($ids,'all');
-		}
+		}*/
 		
 	}
 	
@@ -543,7 +543,7 @@ class media_form_ui extends e_admin_form_ui
 		
 	}
 
-	private function convertImagesToJpeg($ids,$mode=null)
+	public function convertImagesToJpeg($ids,$mode=null)
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -564,7 +564,7 @@ class media_form_ui extends e_admin_form_ui
 
 			if($jpegFile = $mm->convertImageToJpeg($path,true))
 			{
-				$url = $tp->createConstants($jpegFile);
+				$url = $tp->createConstants($jpegFile, 1);
 				$size = filesize($jpegFile);
 
 				$update = array (
@@ -848,9 +848,9 @@ class media_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_preview'			=> array('title'=> LAN_PREVIEW, 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
-      		'media_url' 			=> array('title'=> IMALAN_110,			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
+      		'media_preview'			=> array('title'=> LAN_PREVIEW, 	'type' => 'method', 	'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
+      		'media_url' 			=> array('title'=> IMALAN_110,		'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	    'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
@@ -1177,6 +1177,45 @@ class media_admin_ui extends e_admin_ui
 	
 	}
 
+	/**
+	 * Handle Batch options as defined in media_form_ui::options();  handle+action+field+Batch
+	 * @param $selected
+	 * @param $type
+	 */
+	function handleListOptionsBatch($selected, $type)
+	{
+
+		/** @var media_form_ui $frm */
+		$frm = $this->getUI();
+
+		$ids = implode(",", $selected);
+
+		switch($type)
+		{
+			case "resize_2048":
+				$frm->resizeImages($ids,$type);
+				break;
+
+			case "rotate_cw":
+			case "rotate_ccw":
+				$frm->rotateImages($ids,$type);
+				break;
+
+			case "convert_to_jpeg":
+
+				$frm->convertImagesToJpeg($ids);
+				break;
+
+			case "convert_all_to_jpeg":
+				$frm->convertImagesToJpeg($ids,'all');
+			break;
+
+			default:
+				// code to be executed if n is different from all labels;
+		}
+
+
+	}
 
 	function navPage() // no functioning correctly - see e_AJAX_REQUEST above. 
 	{

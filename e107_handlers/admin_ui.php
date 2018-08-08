@@ -3471,7 +3471,8 @@ class e_admin_controller_ui extends e_admin_controller
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
 
-				e107::getDebug()->log("Checking for batch method: ".$method);
+				e107::getMessage()->addDebug("Searching for custom batch method: ".$method."(".$selected.",".$value.")");
+
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
@@ -3506,7 +3507,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			return array();
 		}
-		$filter = $tp->toDB(explode('__', $filter_value));
+		$filter = (array) $tp->toDB(explode('__', $filter_value));
 		$res = array();
 		switch($filter[0])
 		{
@@ -3542,12 +3543,17 @@ class e_admin_controller_ui extends e_admin_controller
 			default:
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
+				$args = array_slice($filter, 1);
+
+				e107::getMessage()->addDebug("Searching for custom filter method: ".$method."(".implode(', ', $args).")");
+
+
 				if(method_exists($this, $method)) // callback handling
 				{
 					//return $this->$method($filter[1], $selected); selected?
 					// better approach - pass all values as method arguments
 					// NOTE - callbacks are allowed to return QUERY as a string, it'll be added in the WHERE clause
-					$args = array_slice($filter, 1);
+
 					e107::getMessage()->addDebug('Executing filter callback <strong>'.get_class($this).'::'.$method.'('.implode(', ', $args).')</strong>');
 
 					return call_user_func_array(array($this, $method), $args);
