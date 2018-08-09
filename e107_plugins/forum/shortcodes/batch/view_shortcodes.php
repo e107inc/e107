@@ -1029,20 +1029,14 @@
 				{
 					$thread->page = 1;
 				}
-//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
 
-//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
-				$url = e107::url('forum', 'topic', $this->var) . "&amp;p=[FROM]";
+				// issue #3171 old method produced an invalid url: /forum/subforum/35/forum-topic/&p=2
+				// moved additional parameter p= to the options/query array
+				$url = e107::url('forum', 'topic', $this->var, array('query' => array('p' => '--FROM--'))); // . "&amp;p=[FROM]";
 
 				$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=" . urlencode($url) . "&caption=off&tmpl=default&navcount=4&glyphs=1";
 
-				//XXX FIXME - pull-down template not practical here. Can we force another?
-
-//	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 				return e107::getParser()->parseTemplate("{NEXTPREV={$parms}}");
-				/*
-					$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
-					$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
 			}
 		}
 
