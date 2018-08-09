@@ -586,7 +586,7 @@ class e_bbcode
 			$BBCODE_TEMPLATE = $template;	
 			$template = 'comment';	
 		}
-		elseif(ADMIN_AREA)
+		elseif(deftrue('ADMIN_AREA'))
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
 		}
