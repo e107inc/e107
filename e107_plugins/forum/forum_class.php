@@ -796,7 +796,7 @@ class e107forum
 			$qry = '
 			INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
 			VALUES ('.USERID.', 1)
-			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = user_plugin_forum_posts + 1
+			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = IFNULL(user_plugin_forum_posts, 0) + 1
 			';
 			$result = $sql->gen($qry);
 		}
