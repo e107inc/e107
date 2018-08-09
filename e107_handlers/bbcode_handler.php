@@ -547,6 +547,7 @@ class e_bbcode
 		$BBCODE_TEMPLATE_ADMIN = '';
 		$BBCODE_TEMPLATE_COMMENT = '';
 		$BBCODE_TEMPLATE_SIGNATURE = '';
+		$BBCODE_TEMPLATE_FORUM = '';
 
 
 		require(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
@@ -574,7 +575,8 @@ class e_bbcode
 		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 		$temp['comment'] 	= $BBCODE_TEMPLATE_COMMENT;
 		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
-	
+		$temp['forum'] 	    = $BBCODE_TEMPLATE_FORUM;
+
 		if(isset($temp[$template]))
 		{
 	        $BBCODE_TEMPLATE = $temp[$template];
