@@ -160,11 +160,13 @@ class e_url
 				if($newLocation != $this->_request)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
-					list($file,$query) = explode("?",$redirect,2);
+					list($file,$query) = explode("?", $redirect,2);
 
 					$get = array();
 					if(!empty($query))
 					{
+						// issue #3171 fix double ampersand in case of wrong query definition
+						$query = str_replace('&&', '&', $query);
 						parse_str($query,$get);
 					}
 
@@ -179,7 +181,7 @@ class e_url
 					if(file_exists($file))
 					{
 						define('e_CURRENT_PLUGIN', $plug);
-						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
 						define('e_URL_LEGACY', $redirect);
 
 						$this->_include= $file;
