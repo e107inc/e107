@@ -50,14 +50,6 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 ";
 
 
-$BBCODE_TEMPLATE_FORUM = "
-	<div class='field-spacer'><!-- --></div>
-    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
-	<div class='field-spacer'><!-- --></div>
-";
-
-
 // --------   Admin Templates ----------------------
 
 $BBCODE_TEMPLATE_ADMIN = "
