@@ -58,12 +58,40 @@
 		{
 
 		}
-
-		public function testTitle2sef()
+*/
+		public function testTitle2sefFromPlainText()
 		{
+			$actual = $this->hp->title2sef('Plain text test');
+			$expected = 'plain-text-test';
 
+			$this->assertEquals($expected, $actual);
 		}
 
+		public function testTitle2sefFromPlainTextStripSpecialChars()
+		{
+			$actual = $this->hp->title2sef('Plain text test with special chars !()+*+#"\'\\');
+			$expected = 'plain-text-test-with-special-chars';
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testTitle2sefFromBbcodeText()
+		{
+			$actual = $this->hp->title2sef('BBCode [b]text[/b] test [img]logo.png[/img]');
+			$expected = 'bbcode-text-test';
+
+			$this->assertEquals($expected, $actual);
+		}
+
+		public function testTitle2sefFromHtmlText()
+		{
+			$actual = $this->hp->title2sef('HTML <b>text</b> test <img src="logo.png" />');
+			$expected = 'html-text-test';
+
+			$this->assertEquals($expected, $actual);
+		}
+
+/*
 		public function testCamelize()
 		{
 
