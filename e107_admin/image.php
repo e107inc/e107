@@ -1382,7 +1382,7 @@ class media_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$options = array();
-		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
+		$options['bbcode'] = ($this->getQuery('bbcode')) ? $this->getQuery('bbcode') : FALSE;
 
 		if(isset($_GET['from']))
 		{
@@ -1400,6 +1400,13 @@ class media_admin_ui extends e_admin_ui
 			'core-media-glyphs'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'method' => 'glyphTab'),
 		);
 
+		if(!empty($options['bbcode']))
+		{
+			$tabOptions['core-media-img'] = $tabOptions['core-media-image'];
+			$tabOptions['core-media-glyph'] = $tabOptions['core-media-glyphs'];
+
+		}
+
 		$tabs = array();
 
 		// check tab options against URL
@@ -1415,12 +1422,26 @@ class media_admin_ui extends e_admin_ui
 
 		}
 
+		if($options['bbcode'] === 'img')
+		{
+			$tabs['core-media-attributes']  = array('caption'=> $tp->toGlyph('fa-image').IMALAN_152, 'text' => $this->imageAttributesTab());
+		}
+
 		if(getperms('A|A1'))
 		{
 			$tabs['core-media-upload']  = array('caption'=> $tp->toGlyph('fa-upload').IMALAN_150, 'text' => $this->uploadTab());
 		}
 
+
+
 		$text = $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
+
+		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
+		{
+			$text .= $this->mediaManagerSaveButtons($options);
+		}
+
+		$text .= $this->mediaManagerPlaceholders();
 
 		return $text;
 
@@ -1547,11 +1568,60 @@ class media_admin_ui extends e_admin_ui
 		 * 
 		 */
 		
-		if($options['bbcode']) //TODO move to imagestyleTab();
+		if($options['bbcode'])
 		{
-			$text .= "<div class='tab-pane' id='core-media-style'>
+			$text .= "<div class='tab-pane' id='core-media-style'>".$this->imageAttributesTab()."</div>";
+		}	
+		
+
+		
+		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
+		{
+			$text .= "<div class='tab-pane clearfix {$youtubeActive}' id='core-media-youtube' >";
+			$text .= $this->youtubeTab();
+			$text .= "</div>";
+
+		}
+			
+
+		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
+		{
+				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
+				$text .= $this->audioTab();
+				$text .= "</div>";
+		}
+
+		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
+		{
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs'>";
+			$text .= $this->glyphTab();
+			$text .= "</div>
+			";
+
+		}
+		
+		
+		$text .= "</div>";
+		
+		// For BBCODE/TinyMce mode.
+		// e-dialog-save
 				
-				<div class='row'>
+		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
+		{
+			$text .= $this->mediaManagerSaveButtons($options);
+		}
+		
+		$text .= $this->mediaManagerPlaceholders();
+		
+		return $text;
+	}
+
+
+	private function imageAttributesTab()
+	{
+		$frm = e107::getForm();
+
+		$text = "<div class='row'>
 				<div class='col-md-6 span6'>
 				<table class='table'>
 				<colgroup>
@@ -1607,47 +1677,33 @@ class media_admin_ui extends e_admin_ui
 			
 		
 			</div>
-			</div>
 			</div>";
-		}	
-		
 
-		
-		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
-		{
-			$text .= "<div class='tab-pane clearfix {$youtubeActive}' id='core-media-youtube' >";
-			$text .= $this->youtubeTab();
-			$text .= "</div>";
+		return $text;
 
-		}
-			
+	}
 
-		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
-		{
-				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
-				$text .= $this->audioTab();
-				$text .= "</div>";
-		}
 
-		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
-		{
-			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs'>";
-			$text .= $this->glyphTab();
-			$text .= "</div>
-			";
+	private function mediaManagerPlaceholders()
+	{
+			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
 
-		}
-		
-		
-		$text .= "</div>";
-		
-		// For BBCODE/TinyMce mode.
-		// e-dialog-save
-				
-		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
-		{
-						
-			$text .= "<div style='text-align:right;padding:5px'>
+		$text = "
+		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
+		".$br."<input title='html/wysiwyg' type='{$type}' class='span11 col-md-11' readonly='readonly' id='html_holder' name='html_holder' value='' />
+		".$br."<input title='(preview) src' type='{$type}' class='span11 col-md-11' readonly='readonly' id='src' name='src' value='' />
+		".$br."<input title='path (saved to db)' type='{$type}' class='span11 col-md-11' readonly='readonly' id='path' name='path' value='' />
+		";
+
+		return $text;
+	}
+
+
+
+	private function mediaManagerSaveButtons($options = array())
+	{
+		$text = "<div style='text-align:right;padding:5px'>
 			
 			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>".LAN_SAVE."</span>
@@ -1657,20 +1713,10 @@ class media_admin_ui extends e_admin_ui
 			</button>
 			</div>";
 
-		}
-		
-		$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
 
-		$text .= "
-		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
-		".$br."<input title='html/wysiwyg' type='{$type}' class='span11 col-md-11' readonly='readonly' id='html_holder' name='html_holder' value='' />
-		".$br."<input title='(preview) src' type='{$type}' class='span11 col-md-11' readonly='readonly' id='src' name='src' value='' />
-		".$br."<input title='path (saved to db)' type='{$type}' class='span11 col-md-11' readonly='readonly' id='path' name='path' value='' />
-		";		
-		
 		return $text;
 	}
+
 
 
 	/**
@@ -1785,7 +1831,7 @@ class media_admin_ui extends e_admin_ui
 			'action'	=>'image2', 	// Used by AJAX to identify correct function.
 			'perPage'	=> 8,
 			'gridClass'	=> 'col-sm-3 media-carousel-item-image',
-			'bbcode'	=> 'image',
+			'bbcode'	=> 'img', // bbcode tag.
 			'close'		=> 'true'
 
 		);
