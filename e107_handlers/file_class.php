@@ -1936,8 +1936,13 @@ class e_file
 	 *		8 - unknown file type
 	 *		9 - unacceptable file type (prone to exploits)
 	 */
-	function isClean($filename, $target_name, $allowed_filetypes = array(), $unknown = false)
+	function isClean($filename, $target_name='', $allowed_filetypes = array(), $unknown = false)
 	{
+		if(empty($target_name)) // no temp file, just use the filename.
+		{
+			$target_name = $filename;
+		}
+
 		$this->setErrorNum(null);
 		// 1. Start by checking against filetypes - that's the easy one!
 		$file_ext = pathinfo($target_name, PATHINFO_EXTENSION);
