@@ -137,7 +137,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		protected $fields 		= array (
 			'checkboxes'                =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		    'forum_id'                  =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_name'                =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'forum_name'                =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => FORLAN_223, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_sef'                 =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'batch'=>true, 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'sef=forum_name&size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
             'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_parent'              =>   array ( 'title' => FORLAN_75, 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -354,9 +354,20 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			$new_data['forum_order'] = $parentOrder + 50;
 
+			if (!empty($new_data['forum_name']))
+			{
+				// make sure the forum_name contains only plain text, no bbcode or html
+				$new_data['forum_name'] = trim(e107::getParser()->toText($new_data['forum_name']));
+			}
+
 			if(empty($new_data['forum_sef']))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
+			}
+			else
+			{
+				// issue #3245 correct any possible errors/misformatting in the forum_sef
+				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_sef']);
 			}
 
 			return $new_data;
@@ -378,9 +389,19 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
+			if (!empty($new_data['forum_name']))
+			{
+				// make sure the forum_name contains only plain text, no bbcode or html
+				$new_data['forum_name'] = trim(e107::getParser()->toText($new_data['forum_name']));
+			}
 			if(empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
+			}
+			elseif(!empty($new_data['forum_sef']))
+			{
+				// issue #3245 correct any possible errors/misformatting in the forum_sef
+				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_sef']);
 			}
 
 			return $new_data;
