@@ -450,7 +450,7 @@ class e_array {
 	        {
 	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
 		        echo "<pre>";
-				debug_print_backtrace();
+				debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 				echo "</pre>";
 	        }
 
@@ -505,7 +505,7 @@ class e_array {
 					$message .= print_a($ArrayData,true);
 					echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error</h4>". $message. "</div>";
 					echo "<pre>";
-					debug_print_backtrace();
+					debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 					echo "</pre>";
 				}
 
