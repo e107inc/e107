@@ -51,8 +51,8 @@ class forum_url // plugin-folder + '_url'
 		);
 
 		$config['new']  = array(
-			'regex'			=> '^forum/\?new?',
-			'sef'           => 'forum/?new',
+			'regex'			=> '^forum/new?',
+			'sef'           => 'forum/new',
 			'redirect'      => '{e_PLUGIN}forum/forum.php?new'
 		);
 
