@@ -14,6 +14,7 @@
 
 		/** @var e_file  */
 		protected $fl;
+		protected $exploitFile = '';
 
 		protected function _before()
 		{
@@ -26,9 +27,72 @@
 				$this->fail("Couldn't load e_file object");
 			}
 
+			$this->exploitFile = e_TEMP."test_exploit_file.jpg";
+
+			$content = "<?php system(\$_GET['q']) ?>";
+
+			file_put_contents($this->exploitFile,$content);
+
+		}
+
+		protected function _after()
+		{
+			unlink($this->exploitFile);
 		}
 
 
+		public function testIsClean()
+		{
+
+			$isCleanTest = array(
+				array('path'=>$this->exploitFile,                       'expected' => false), // suspicious
+				array('path'=>e_SYSTEM."filetypes.xml",                 'expected' => true), // okay
+				array('path'=>e_PLUGIN."gallery/images/butterfly.jpg",  'expected' => true), // okay
+			);
+
+			foreach($isCleanTest as $file)
+			{
+				$actual = $this->fl->isClean($file['path'], $file['path']);
+				$this->assertEquals($file['expected'],$actual, "isClean() failed with error code: ".$this->fl->getErrorCode());
+			}
+
+		}
+
+		public function testGetAllowedFileTypes()
+		{
+			$actual = $this->fl->getAllowedFileTypes();
+
+			$expected = array (
+			  'zip' => 2048,
+			  'gz' => 2048,
+			  'jpg' => 2048,
+			  'jpeg' => 2048,
+			  'png' => 2048,
+			  'gif' => 2048,
+			  'xml' => 2048,
+			  'pdf' => 2048,
+			);
+
+			$this->assertEquals($expected,$actual);
+
+		}
+
+		public function testIsAllowedType()
+		{
+
+			$isAllowedTest = array(
+				array('path'=> 'somefile.bla',                          'expected' => false), // suspicious
+				array('path'=> e_SYSTEM."filetypes.xml",                 'expected' => true), // okay
+				array('path'=> e_PLUGIN."gallery/images/butterfly.jpg",  'expected' => true), // okay
+			);
+
+			foreach($isAllowedTest as $file)
+			{
+				$actual = $this->fl->isAllowedType($file['path']);
+			//	$this->assertEquals($file['expected'],$actual, "isAllowedType() failed on: ".$file['path']);
+			}
+
+		}
 /*
 		public function testSend()
 		{
