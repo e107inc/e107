@@ -574,7 +574,21 @@ class e_bbcode
 		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 		$temp['comment'] 	= $BBCODE_TEMPLATE_COMMENT;
 		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
-	
+		
+		if(!isset($temp[$template]))
+		{
+			// if template not yet defined, assume that $template is the name of a plugin
+			// and load the specific bbcode template from the plugin
+			// see forum plugin "templates/bbcode_template.php" for an example of the definition
+			$tpl = e107::getTemplate($template, 'bbcode', $template);
+			if (!empty($tpl))
+			{
+				// If the plugin has a template defined for bbcode, add it to the list
+				$temp[$template] = $tpl;
+			}
+			unset($tpl);
+		}
+
 		if(isset($temp[$template]))
 		{
 	        $BBCODE_TEMPLATE = $temp[$template];
@@ -584,7 +598,7 @@ class e_bbcode
 			$BBCODE_TEMPLATE = $template;	
 			$template = 'comment';	
 		}
-		elseif(ADMIN_AREA)
+		elseif(deftrue('ADMIN_AREA'))
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
 		}
