@@ -4690,6 +4690,9 @@ class eHelper
 
 		$tp = e107::getParser();
 
+		// issue #3245: strip all html and bbcode before processing
+		$title = $tp->toText($title);
+
 		$title = $tp->toASCII($title);
 
 		$title = str_replace(array('/',' ',","),' ',$title);
