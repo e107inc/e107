@@ -46,12 +46,8 @@
 	$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 	$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-
-
 // Clean the fileName for security reasons
 	$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
-
-	$fileName= 'hello.jpg';
 
 	if(!empty($_FILES['file']['name'])) // dropzone support v2.1.9
 	{
@@ -195,6 +191,14 @@
 
 	$filePath = str_replace('//','/',$filePath); // cleanup .
 
+
+	if(e107::getFile()->isClean($filePath) !== true)
+	{
+		@unlink($filePath);
+		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Bad File Detected."}, "id" : "id"}');
+	}
+
+
 	$convertToJpeg = e107::getPref('convert_to_jpeg', 0);
 	$fileSize = filesize($filePath);
 
@@ -208,6 +212,9 @@
 		}
 
 	}
+
+
+
 
 	if($_GET['for'] != '') // leave in upload directory if no category given.
 	{
