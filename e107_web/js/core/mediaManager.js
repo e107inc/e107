@@ -411,6 +411,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			}
 
 			preview = atob(previewHTML).trim();
+			e107.mediaManager.eMediaAttribute($this, bbcode);
 		}
 		else if(type === 'glyph')
 		{

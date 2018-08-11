@@ -1364,8 +1364,17 @@ class e_media
 
 	private function browserCarouselItemSelector($data)
 	{
-		$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
-		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
+	//	$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
+	//	$select = (E107_DEBUG_LEVEL > 0) ? '' : " ";
+		$close = '';
+		$select = '';
+
+		if(!empty($data['close']) && E107_DEBUG_LEVEL < 1)
+		{
+			$select .= " e-dialog-save e-dialog-close";
+			$close = "  data-close='true' ";
+		}
+
 		$style  = varset($data['style'],'');
 		$class  = varset($data['class'],'');
 		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
@@ -1397,6 +1406,7 @@ class e_media
 			'gridClass'		=> 'span2 col-md-2',
 			'bbcode'		=> '',
 			'tooltip'       => '',
+			'close'         => true // close modal window after item selected
 			
 		);
 		

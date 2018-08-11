@@ -276,7 +276,7 @@ class media_cat_ui extends e_admin_ui
 
 
 	
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		// XXX temporary disable when there is no owners, discuss
 		if(!$new_data['media_cat_owner'])
@@ -1583,13 +1583,13 @@ class media_admin_ui extends e_admin_ui
 
 		}
 			
-
+/*
 		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
 		{
 				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
 				$text .= $this->audioTab();
 				$text .= "</div>";
-		}
+		}*/
 
 		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
 		{
@@ -1832,9 +1832,15 @@ class media_admin_ui extends e_admin_ui
 			'perPage'	=> 8,
 			'gridClass'	=> 'col-sm-3 media-carousel-item-image',
 			'bbcode'	=> 'img', // bbcode tag.
-			'close'		=> 'true'
-
 		);
+
+		$close = true;
+
+		if(!empty($option['bbcode']))
+		{
+			$close = false;
+		}
+
 
 		$items = array();
 
@@ -1855,14 +1861,15 @@ class media_admin_ui extends e_admin_ui
 		{
 			$items[] = array(
 					'previewHtml'	=> $tp->toImage($val['media_url'], array('w'=>210, 'h'=>140)),
-				//	'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
+					'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
 					'saveValue'		=> $val['media_url'],
 					'thumbUrl'		=> $tp->thumbUrl($val['media_url'], array('w'=>340, 'h'=>220)),
 					'title'			=> $val['media_name'],
 					'tooltip'       => basename($val['media_url'])." (".$val['media_dimensions'].")",
 					'slideCaption'	=> '',
 					'slideCategory'	=> 'bootstrap',
-					'mime'          => $val['media_type']
+					'mime'          => $val['media_type'],
+					'close'         => $close
 			);
 
 		}
@@ -2701,6 +2708,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div  id='core-image-show-avatars' class='row'>";
 
 			$count = 0;
+			$prevType  = '';
 			while (list($key, $image_name) = each($dirlist))
 			{
 				//$users = IMALAN_21." | ";
@@ -2831,7 +2839,7 @@ class media_admin_ui extends e_admin_ui
 	 * Invoked just before item create event
 	 * @return array
 	 */
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		// print_a($_POST);
 		// return data to be merged with posted model data
@@ -3007,7 +3015,7 @@ class media_admin_ui extends e_admin_ui
 		return true;
 	}
 
-	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
+	function afterDelete($deleted_data, $id, $deleted_check) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
 
 		if(!empty($deleted_data['media_url']))

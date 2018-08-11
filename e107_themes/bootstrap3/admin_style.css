@@ -290,6 +290,7 @@ td.right, th.right 			{ text-align:right }
 
 .mediaselector-preview video { position: absolute; top: 0; }
 .mediaselector-preview audio { height: 70px }
+.mediaselector-preview img { max-height: 100%; width: auto; margin-left: auto; margin-right: auto; }
 .mediaselector-preview  i   { /*padding: 20% 40%;*/ }
 
 .mediaselector-container .overlay {
