@@ -502,9 +502,9 @@ class e_media
 			{
 				$catArray[] = $cat;
 
-				if($type === 'image')
+				if($type === 'image' || $type === 'audio'|| $type === 'video')
 				{
-					$catArray[] = $cat.'_image'; // BC Fix. 
+					$catArray[] = $cat.'_'.$type; // BC Fix.
 				}
 			}
 		}
@@ -1370,7 +1370,7 @@ class e_media
 		$class  = varset($data['class'],'');
 		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
 
-		$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
+		$linkTag = "<a data-toggle='context' class='e-media-select ".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
 
 		return $linkTag;
 

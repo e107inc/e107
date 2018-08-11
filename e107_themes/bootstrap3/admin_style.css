@@ -267,7 +267,7 @@ td.right, th.right 			{ text-align:right }
 
 /* media picker New in v2.1.9 */
 #media-browser-container-glyph,
-#media-browser-container-icons { margin-left: 15px }
+#media-browser-container-icon { margin-left: 15px }
 
 .media-carousel-item-image .well  { height: 200px; overflow:hidden }
 .media-carousel-item-image span  { display:block; height:150px; text-align: center; }
@@ -281,6 +281,9 @@ td.right, th.right 			{ text-align:right }
 .media-carousel-item-container video,
 .media-carousel-item-container audio { width: 100% }
 .media-carousel-item-glyph { width: 64px; height:64px; overflow:hidden; margin-right:5px; margin-bottom:5px }
+.media-carousel-item-glyph .media-carousel-item-container { min-height:64px; height:64px}
+.media-carousel-item-glyph a { height: 100%; display: block; }
+
 
 .mediaselector-preview { height: 140px; overflow: hidden }
 .mediaselector-preview img,
@@ -294,10 +297,10 @@ td.right, th.right 			{ text-align:right }
 
 .mediaselector-container .overlay { position: absolute; bottom: 5px; text-align: right; display: block; width: 100%; right: 5px; }
 
-.mediaselector-container-icons { height: 64px; margin:0; }
-.mediaselector-container-icons .overlay { top:0; left:0; }
-.mediaselector-container-icons .overlay span { width:64px; height:64px; display:block; }
-.mediaselector-container-icons .mediaselector-preview { height: auto; padding: 0; text-align: center; }
+.mediaselector-container-icon { height: 64px; margin:0; }
+.mediaselector-container-icon .overlay { top:0; left:0; }
+.mediaselector-container-icon .overlay span { width:64px; height:64px; display:block; }
+.mediaselector-container-icon .mediaselector-preview { height: auto; padding: 0; text-align: center; }
 
 /* dropzone new in v2.1.9 */
 

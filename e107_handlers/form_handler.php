@@ -976,29 +976,45 @@ class e_form
 
 	}
 
+
 	/**
 	 * Internal Function used by imagepicker, filepicker, mediapicker()
-	 */ 
+	 * @param string $category
+	 * @param string $label
+	 * @param string $tagid
+	 * @param null   $extras
+	 * @return string
+	 */
 	private function mediaUrl($category = '', $label = '', $tagid='', $extras=null)
 	{
-		
-		$cat = ($category) ? '&amp;for='.urlencode($category) : "";
-		if(!$label) $label = ' Upload an image or file';
-		if($tagid) $cat .= '&amp;tagid='.$tagid; 
-		
 		if(is_string($extras))
 		{
 			parse_str($extras,$extras);
 		}
-		
-		if(vartrue($extras['bbcode'])) $cat .= '&amp;bbcode=1'; 	
-		$mode = vartrue($extras['mode'],'main');
-		$action = vartrue($extras['action'],'dialog'); 
-		// $tabs // TODO - option to choose which tabs to display.  
-		
-		//TODO Parse selection data back to parent form. 
+
+		$cat    = ($category) ? '&amp;for='.urlencode($category) : "";
+		$mode   = vartrue($extras['mode'],'main');
+		$action = vartrue($extras['action'],'dialog');
+
+		if(empty($label))
+		{
+			 $label = ' Upload an image or file';
+		}
+
+		// TODO - option to choose which tabs to display by default.
 
 		$url = e_ADMIN_ABS."image.php?mode={$mode}&amp;action={$action}".$cat;
+
+		if(!empty($tagid))
+		{
+			$url .= '&amp;tagid='.$tagid;
+		}
+
+		if(!empty($extras['bbcode']))
+		{
+			$url .= '&amp;bbcode=1';
+		}
+
 		$url .= "&amp;iframe=1";
 		
 		if(vartrue($extras['w']))
@@ -1011,14 +1027,14 @@ class e_form
 			$url .= "&amp;image=1";
 		}
 
-		if(!empty($extras['glyphs']))
+		if(!empty($extras['glyphs']) || !empty($extras['glyph']))
 		{
-			$url .= "&amp;glyphs=1";	
+			$url .= "&amp;glyph=1";
 		}
 
-		if(!empty($extras['icons']))
+		if(!empty($extras['icons']) || !empty($extras['icon']))
 		{
-			$url .= "&amp;icons=1";
+			$url .= "&amp;icon=1";
 		}
 
 		if(!empty($extras['youtube']))
@@ -1035,8 +1051,6 @@ class e_form
 		{
 			$url .= "&amp;audio=1";
 		}
-
-
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
 		{
@@ -1056,37 +1070,13 @@ class e_form
 		$class = !empty($extras['class']) ? $extras['class']." " : '';
 		$title = !empty($extras['title']) ? $extras['title'] : $title;
 
-
-	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
 	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap.
 
-	
-	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
-	$footer = '';
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
-			/*
-			e107::js('core','core/admin.js','prototype');
-			e107::js('core','core/dialog.js','prototype');
-			e107::js('core','core/draggable.js','prototype');
-			e107::css('core','core/dialog/dialog.css','prototype');
-			e107::css('core','core/dialog/e107/e107.css','prototype');
-			e107::js('footer-inline','
-			$$("a.e-dialog").invoke("observe", "click", function(ev) {
-					var element = ev.findElement("a");
-					ev.stop();
-					new e107Widgets.URLDialog(element.href, {
-						id: element["id"] || "e-dialog",
-						width: 890,
-						height: 680
-		
-					}).center().setHeader("Media Manager : '.$category.'").setFooter('.$footer.').activate().show();
-				});
-			
-			','prototype');
-			*/
 			e107::setRegistry('core/form/mediaurl', true);
 		}
+
 		return $ret;
 	}
 
@@ -1394,13 +1384,16 @@ class e_form
 	 * @param string $name input name
 	 * @param string $default default value
 	 * @param string $parms shortcode parameters
-	 *  --- SC Parameter list ---
+	 *  --- $parms list ---
 	 * - media: if present - load from media category table
 	 * - w: preview width in pixels
 	 * - h: preview height in pixels
 	 * - help: tooltip
-	 * - video: when set to true, will enable the Youtube  (video) tab.
-	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images.
+	 * - youtube=1 (Enables the Youtube tab)
+     * - image=1 (Enable the Images tab)
+	 * - video=1 (Enable the Video tab)
+	 * - audio=1  (Enable the Audio tab)
+     * - glyph=1 (Enable the Glyphs tab).
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
@@ -5238,6 +5231,11 @@ class e_form
 					return $tp->toImage($value, $thparms);
 				}
 			break;
+
+
+			case 'media':
+				return e107::getMedia()->previewTag($value, $parms);
+			break;
 			
 			case 'files':
 				$ret = '<ol>';
@@ -5876,6 +5874,28 @@ class e_form
 					$ret .=  $this->imagepicker($k, $ival, defset($label, $label), $parms);		
 				}
 				
+			break;
+
+			/** Generic Media Pick for combinations of images, audio, video, glyphs, files, etc. Field Type = json */
+			case 'media':
+
+				if(!deftrue('e_DEBUG_MEDIAPICKER'))
+				{
+					return null;
+				}
+
+				$max = varset($parms['max'],1);
+
+				$ret = '';
+				for ($i=0; $i < $max; $i++)
+				{
+					$k 		= $key.'['.$i.'][path]';
+					$ival 	= $value[$i]['path'];
+
+					$ret .=  $this->mediapicker($k, $ival, $parms);
+				}
+
+				return $ret;
 			break;
 			
 			case 'files':
