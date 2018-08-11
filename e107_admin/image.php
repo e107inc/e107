@@ -1823,7 +1823,7 @@ class media_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$parms = array(
-			'width'	 	=> 340,
+			'width'	 	=> 340, // when inserting into wysiwyg
 			'height'	=> 220,
 			'type'		=>'image',
 			'category'  => $category,
@@ -1839,6 +1839,10 @@ class media_admin_ui extends e_admin_ui
 		if(!empty($option['bbcode']))
 		{
 			$close = false;
+			e107::getBB()->setClass($category);
+			$parms['width'] = (int) e107::getBB()->resizeWidth(); // resize the image according to prefs.
+			$parms['height'] = (int) e107::getBB()->resizeHeight();
+			e107::getBB()->clearclass();
 		}
 
 

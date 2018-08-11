@@ -30,6 +30,7 @@ class e_media
 				'other'			=> e_MEDIA_FILE
 		);
 
+	/** @var array  */
 	protected $mimeExtensions = array(
 				'text'			=> array('txt'),
 				'multipart'		=> array(),
@@ -64,10 +65,11 @@ class e_media
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
 	 * @param string $epath path to file.
-	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask. 
+	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask.
+	 * @param array $options
 	 * @return e_media
 	 */
-	public function import($cat='', $epath, $fmask='', $options=array())
+	public function import($cat='', $epath='', $fmask='', $options=array())
 	{
 		if(!vartrue($cat)){ return $this;}
 		
@@ -156,7 +158,8 @@ class e_media
 				}
 			}
 		}
-		if($count)
+
+	//	if($count)
 		{
 			// $mes->addSuccess("Imported {$count} Media items.");
 		}
@@ -194,20 +197,21 @@ class e_media
 	/**
 	 * Remove Media from media table
 	 * @param string $cat [optional] remove a full category of media
-	 * @return 
+	 * @return bool
 	 */
 	function removeCat($cat)
 	{
-		$tp = e107::getParser();
+		if(empty($cat))
+		{
+			return false;
+		}
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-						
-		if(vartrue($cat))
-		{
-			$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? TRUE : FALSE;
-			$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
-			return $status;	
-		}	
+
+		$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? true : false;
+		$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
+		return $status;
 	}
 
 
@@ -216,7 +220,7 @@ class e_media
 	 * Remove Media from media table
 	 * @param string $epath remove media in the specified path.
 	 * @param string $type [optional] image|icon
-	 * @return 
+	 * @return bool
 	 */
 	function removePath($epath, $type='image')
 	{
@@ -225,15 +229,18 @@ class e_media
 		$mes = e107::getMessage();
 		
 		$qry = ($type == 'icon') ? " AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' " : " AND NOT media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-								
-		if(vartrue($epath))
+
+		if(empty($epath))
 		{
-			$path = $tp->createConstants($epath, 'rel');
-			$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
-			$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
-			$mes->add($message, E_MESSAGE_DEBUG);
-			return $status;	
-		}			
+			return false;
+		}
+
+		$path = $tp->createConstants($epath, 'rel');
+		$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
+		$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
+		$mes->add($message, E_MESSAGE_DEBUG);
+		return $status;
+
 	}
 	
 	
@@ -245,7 +252,7 @@ class e_media
 	 */
 	function listIcons($epath)
 	{
-		if(!$epath) return;
+		if(!$epath) return array();
 		
 		$ret = array();
 		$sql = e107::getDb();
@@ -253,7 +260,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ")) ? TRUE : FALSE;
+		$sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ");
 		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
@@ -266,7 +273,7 @@ class e_media
 	 * Create media category.
 	 * 'class' data is optional, 'id' key is ignored
 	 * 
-	 * @param array $data associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
+	 * @param array $datas associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
 	 * @return integer last inserted ID or false on error
 	 */
 	public function createCategory($datas)
@@ -299,6 +306,8 @@ class e_media
 		{
 			return false;
 		}
+
+		unset($parms); // remove later if $parms becomes used.
 				
 		$cat = 'user_'.$type.'_'.intval($userId);
 		
@@ -326,7 +335,7 @@ class e_media
 	
 	/**
 	 * Create multiple media categories in once
-	 * @param array $data
+	 * @param array $multi_data
 	 * @return integer number of successfully inserted records
 	 */
 	public function createCategories($multi_data)
@@ -368,9 +377,12 @@ class e_media
 		
 		return FALSE; 
 	}
-	
+
 	/**
 	 * Return an Array of Media Categories
+	 *
+	 * @param string $owner
+	 * @return array
 	 */
 	public function getCategories($owner='')
 	{
@@ -390,64 +402,53 @@ class e_media
 		}
 		return $ret;	
 	}
-	
+
 	/**
 	 * Return the total number of Images in a particular category
-	 * 
-	 */	
+	 *
+	 * @param string $cat
+	 * @param string $search
+	 * @return array
+	 */
 	public function countImages($cat,$search=null)
 	{
-		
 		return $this->getImages($cat, 0, 'all',$search);
-		
-		/*
-		
-		$inc 		= array();
-		$searchinc 	= array();
-		
-		if(strpos($cat,"+") || !$cat)
-		{
-			$cat = str_replace("+","",$cat);
-			$inc[] = "media_category = '_common_image' ";
-		}
-		if($cat)
-		{
-			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
-		}
-		
-		if($search)
-		{
-			$searchinc[] = "media_name LIKE '%".$search."%' "; 
-			$searchinc[] = "media_description LIKE '%".$search."%' "; 
-			$searchinc[] = "media_caption LIKE '%".$search."%' ";
-			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
-		}
-		
-		
-		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." )" ;
-		
-		if($search)
-		{
-			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
-		}
-		
-		return e107::getDb()->gen($query);
-		*/
 	}
-	
-	
+
+
+	/**
+	 * @param string $cat
+	 * @param int  $from
+	 * @param int $amount
+	 * @param string $search
+	 * @return array
+	 */
 	public function getFiles($cat, $from=0, $amount = null, $search = null)
 	{
-		return $this->getMedia('application', $from, $amount, $search);
+		return $this->getMedia('application', $cat, $from, $amount, $search);
 	}
 
 
+	/**
+	 * @param string $cat
+	 * @param int  $from
+	 * @param int $amount
+	 * @param string $search
+	 * @return array
+	 */
 	public function getVideos($cat, $from=0, $amount = null, $search = null)
 	{
 		return $this->getMedia('video', $cat, $from, $amount, $search);
 	}
 
 
+	/**
+	 * @param string $cat
+	 * @param int   $from
+	 * @param int  $amount
+	 * @param string  $search
+	 * @return array
+	 */
 	public function getAudios($cat='', $from=0, $amount = null, $search = null)
 	{
 		return $this->getMedia('audio', $cat, $from, $amount, $search);
@@ -455,10 +456,12 @@ class e_media
 
 	/**
 	 * Return an array of Images in a particular category
+	 *
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
-	 * @param $from
-	 * @param $amount
-	 * @param $search
+	 * @param int    $from
+	 * @param  int      $amount
+	 * @param  string      $search
+	 * @param null   $orderby
 	 * @return array
 	 */
 	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
@@ -469,17 +472,20 @@ class e_media
 
 	/**
 	 * Return an array of Images in a particular category
+	 *
 	 * @param string $type image|audio|video
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
-	 * @param $from
-	 * @param $amount
-	 * @param $search
-	 * @return array
+	 * @param int    $from
+	 * @param int|string     $amount
+	 * @param string  $search
+	 * @param string   $orderby
+	 * @return array|bool
 	 */
 	private function getMedia($type, $cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
-		$inc 		= array();
+	//	$inc 		= array();
 		$searchinc 	= array();
+		$catArray   = array();
 		
 		if(strpos($cat,"+") || !$cat)
 		{
@@ -599,12 +605,16 @@ class e_media
 
 		
 	/**
-	 * Generate Simple Thumbnail window for image -selection 
+	 * Generate Simple Thumbnail window for image -selection
+	 * @deprecated Currently used only by ren_help PreImage_Select
+	 * @param string $cat
+	 * @param string $formid
+	 * @return string
 	 */
-	private function imageSelect($cat,$formid='imageSel')
+	public function imageSelect($cat,$formid='imageSel')
 	{
 		$sql = e107::getDb();
-		$tp = e107::getParser();
+	//	$tp = e107::getParser();
 		
 		$text = "<div style='margin-left:500px;text-align:center; position:relative;z-index:1000;float:left;display:none' id='{$formid}'>";
 		$text .="<div style='-moz-box-shadow: 3px 3px 3px #808080;
@@ -612,7 +622,7 @@ class e_media
 			box-shadow: 3px 3px 3px #808080;
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
-		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
+		$sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ");
 		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
@@ -680,7 +690,7 @@ class e_media
 			
 		$frm 		= varset($option['from']) ? $option['from'] : 0;
 		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
-		$newfrm 	= $frm + $limit; 
+	//	$newfrm 	= $frm + $limit;
 		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
 		$navMode	= varset($option['nav']) ? TRUE : FALSE;
 		$search		= varset($option['search']) ? $option['search'] : null;
@@ -693,7 +703,7 @@ class e_media
 			$class 	= "media-select-image";
 			$classN = "media-select-image-none";
 			$w		= 120;
-			$h		= 100;
+		//	$h		= 100;
 			$total	= $this->countImages($cat,$search);
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/nomedia.png';
@@ -706,13 +716,13 @@ class e_media
 			$class 	= "media-select-icon";
 			$classN = "media-select-icon-none";
 			$w		= 64;
-			$h		= 64;
-			$total 	= 500;
+		//	$h		= 64;
+		//	$total 	= 500;
 			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg",$search);
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').innerHTML= '';
 		 	 return false;";
-			// $total	= $this->countIcons($cat); //TODO
+
 		}
 		
 		
@@ -760,12 +770,12 @@ class e_media
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
-			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<span>".$tp->toGlyph('fa-ban')."</span>
 			</a>";		
 		}
 
-		$w	= false; //
+		//$w	= false; //
 		$h = false;
 		$defaultResizeWidth = 400;
 			
@@ -788,7 +798,8 @@ class e_media
 
 		foreach($images as $im)
 		{
-			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);	
+			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);
+			unset($dbHeight);
 				
 			$w = ($dbWidth > $defaultResizeWidth) ? $defaultResizeWidth : intval($dbWidth);
 
@@ -824,12 +835,6 @@ class e_media
 			}
 			else // TinyMce and textarea bbcode  
 			{
-				//TODO Add a preview window 
-				$onclicki = "document.getElementById('src').value = '{$im['media_url']}';
-				document.getElementById('preview').src = '{$realPath}';
-		 		
-				return false;";	
-				//$onclicki = "";
 				$class .= " e-media-select";
 				$onclicki = "";
 				
@@ -917,11 +922,7 @@ class e_media
 
 
 	/**
-	 * @param string|array $type
-	 * @param $type['name']
-	 * @param $type[['type']
-	 * @param $type['path'] URL or e107 path {e_THEME} etc.
-	 * @param $type['prefix']
+	 * @param string|array $type array('prefix'=>'', 'pattern'=>'', 'path'=>'', 'name'=>'')
 	 * @param string $addPrefix
 	 * @return array
 	 */
@@ -1037,11 +1038,14 @@ class e_media
 
 		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
 
-		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
-
-		foreach($matches as $match)
+		if(!empty($pattern) && !empty($subject))
 		{
-		    $icons[] = $addPrefix.substr($match[1],$prefixLength);
+			preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
+
+			foreach($matches as $match)
+			{
+			    $icons[] = $addPrefix.substr($match[1],$prefixLength);
+			}
 		}
 
 		if(empty($icons)) // failed to produce a result so don't cache it. .
@@ -1060,11 +1064,12 @@ class e_media
 
 
 
-	function getPath($mime, $path=null)
+	public function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
 
 		list($pmime,$tmp) = explode('/',$mime);
+		unset($tmp);
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
@@ -1100,12 +1105,13 @@ class e_media
 
 	/**
 	 * detected Media Type from Media URL
-	 * @param $file
+	 * @param string $mediaURL
 	 * @return int|string
 	 */
 	public function detectType($mediaURL)
 	{
 		list($id,$type) = explode(".",$mediaURL,2);
+		unset($id);
 
 		foreach($this->mimeExtensions as $key=>$exts)
 		{
@@ -1134,6 +1140,7 @@ class e_media
 
 		$width = vartrue($options['w'], 220);
 		$height = vartrue($options['h'], 190);
+		$preview = '';
 
 		switch($type)
 		{
@@ -1149,21 +1156,8 @@ class e_media
 				break;
 
 			case "image":
-				/*
-
-				if('{' != $default[0]) // legacy path or one without {}
-				{
-					list($default_thumb,$default) = $this->imagepickerDefault($default, $parms);
-				}
-
-				$default = $tp->replaceConstants($default, 'abs');
-
-				*/
-
 				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
 			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
-
-
 				break;
 
 			case "application": // file.
@@ -1246,11 +1240,8 @@ class e_media
 	 * Import a file into the Media Manager
 	 * @param string $file Path to file
 	 * @param string $category media-category to import into
-	 * @param null|array $opts
-	 * @param string $opts['path'] Custom Folder (optional)
+	 * @param null|array $opts('path'=> Custom Folder (optional))
 	 * @param array $new_data - Additional media info to save.
-	 * @param string $new_data['media_caption']
-	 * @param string $new_data['media_descrption']
 	 * @return bool|string
 	 */
 	public function importFile($file='', $category='_common_image', $opts = null, $new_data = array())
@@ -1526,13 +1517,18 @@ class e_media
 		return $text;
 
 	}
-	
-	function browserIndicators($slides=array(),$uniqueID)
+
+	/**
+	 * @param $slides
+	 * @param $uniqueID
+	 * @return string
+	 */
+	function browserIndicators($slides, $uniqueID)
 	{
 	
 		if(count($slides)<1)
 		{
-			return;	
+			return '';
 		}
 		
 		 $indicators = '<ol class="carousel-indicators col-md-2 span2" style="top:-40px">
@@ -1620,7 +1616,7 @@ class e_media
 		.row-fluid .media-carousel.span2:nth-child(6n + 7) { margin-left : 0px; }
 		');
 			
-		$frm = e107::getForm();
+	//	$frm = e107::getForm();
 		
 	//	$text .= print_a($_GET,true);
 	
@@ -1629,7 +1625,7 @@ class e_media
 			$searchToolttip = (empty($parm['searchTooltip'])) ? "Enter some text to filter results" : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 					
-					
+			$text = '';
 						
 			if(!e_AJAX_REQUEST)
 			{
@@ -1781,7 +1777,7 @@ class e_media
 			
 			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides,$carouselID), $text);
 
-			if(E107_DEBUG_LEVEL > 0)
+			//if(E107_DEBUG_LEVEL > 0)
 			{
 		//		print_a($parm);
 			}
@@ -1836,6 +1832,7 @@ class e_media
 		{
 			return $destFilePath;
 		}
+
 
 		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
