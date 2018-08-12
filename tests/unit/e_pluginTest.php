@@ -59,15 +59,15 @@
 
 		}
 
-
+/*
 		public function testIsInstalled()
 		{
 			$this->ep->setInstalled('some-plugin', '1.3');
 
 			$val = $this->ep->load('some-plugin')->isInstalled();
 
-			var_dump($val);
-		}
+		//	var_dump($val);
+		}*/
 /*
 		public function testGetDetected()
 		{
