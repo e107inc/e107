@@ -26,6 +26,17 @@
 			}
 		}
 
+
+		private function getSitePrefExample()
+		{
+			$data = "";
+
+			return $data;
+		}
+
+
+
+
 /*
 		public function testLoad()
 		{
@@ -81,6 +92,13 @@
 			$actual = $this->arrObj->unserialize($string_5);
 			$this->assertArrayHasKey('TITLE', $actual);
 
+
+			define('e_DEBUG', true);
+			// case sitePrefs
+			$string_6 = $this->getSitePrefExample();
+			$actual = $this->arrObj->unserialize($string_6);
+
+		//	var_dump($actual);
 
 		}
 /*

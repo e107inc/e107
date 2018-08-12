@@ -128,7 +128,7 @@
 
 	    protected function _after()
 	    {
-
+			unlink(APP_PATH."/e107_files/downloadimages/butterfly.jpg");
 	    }
 
 
