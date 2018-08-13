@@ -23,6 +23,7 @@
 */
 // error_reporting(E_ALL);
 // define('e107_INIT', true);
+$_E107 = array();
 $_E107['no_online'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
