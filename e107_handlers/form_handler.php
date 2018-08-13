@@ -960,8 +960,8 @@ class e_form
 	{
 		if(deftrue('e_DEBUG_MEDIAPICKER'))
 		{
-			$options['icons'] = 1;
-			$options['glyphs'] = 1;
+			$options['icon'] = 1;
+			$options['glyph'] = 1;
 			$options['w'] = 64;
 			$options['h'] = 64;
 
@@ -1448,9 +1448,9 @@ class e_form
 
 		$class = '';
 
-		if($parms['icons'])
+		if($parms['icon'])
 		{
-			$class = 'mediaselector-container-icons';
+			$class = 'mediaselector-container-icon';
 			$parms['type'] = 'icon';
 		}
 
@@ -1479,7 +1479,7 @@ class e_form
 		}
 
 
-		if(!empty($parms['icons'])) // empty overlay without button.
+		if(!empty($parms['icon'])) // empty overlay without button.
 		{
 			$parms['class'] = '';
 			$editIcon = $this->mediaUrl($cat, "<span><!-- --></span>", $name_id,$parms);

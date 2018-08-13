@@ -2777,7 +2777,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 *
-	 * @param string $field
+	 * @param string|array $field
 	 * @param string $key attribute name
 	 * @param mixed $value default value if not set, default is null
 	 * @return e_admin_controller_ui
