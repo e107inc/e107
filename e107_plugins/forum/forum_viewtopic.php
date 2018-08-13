@@ -164,7 +164,8 @@ if(count($postList))
 {
 	define("META_DESCRIPTION", $tp->text_truncate(
 		str_replace(
-			array('"', "'"), '', strip_tags($tp->toHTML($postList[0]['post_entry']))
+			//array('"', "'"), '', strip_tags($tp->toHTML($postList[0]['post_entry']))
+			array('"', "'"), '', $tp->toText($postList[0]['post_entry'])
 	), 250, '...'));
 }
 
