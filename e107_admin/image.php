@@ -916,9 +916,9 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>"")),
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('size'=>'xxlarge','post'=>"")),
 
-		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
+		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('size'=>'xxlarge','post'=>"")),
 
 		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_showinfo'				=> array('title'=> IMALAN_101, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
@@ -1737,7 +1737,7 @@ class media_admin_ui extends e_admin_ui
 			'width'	 	=> 64,
 			'height'	=> 64,
 			'type'		=>'icon', // how should it be rendered?
-			'category'  => $category,
+		//	'category'  => $category,
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'icon', 	// Used by AJAX to identify correct function.
 			'perPage'	=> 80,
@@ -1810,7 +1810,7 @@ class media_admin_ui extends e_admin_ui
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'image2', 	// Used by AJAX to identify correct function.
 			'perPage'	=> 8,
-			'gridClass'	=> 'col-sm-3 media-carousel-item-image',
+			'gridClass'	=> 'col-xs-6 col-sm-3 media-carousel-item-image',
 			'bbcode'	=> 'img', // bbcode tag.
 		);
 
@@ -1951,7 +1951,7 @@ class media_admin_ui extends e_admin_ui
 			'tagid'		=> $this->getQuery('tagid'),
 			'action'	=>'video', 								// Used by AJAX to identify correct function.
 			'perPage'	=> 8,
-			'gridClass'	=> ' col-sm-3 admin-ui-grid media-carousel-item-video',
+			'gridClass'	=> 'col-xs-6 col-sm-3 admin-ui-grid media-carousel-item-video',
 			'bbcode'	=> 'video',
 			'close'		=> 'true'
 
@@ -2294,7 +2294,19 @@ class media_admin_ui extends e_admin_ui
 		}
 	//	return print_a($data,true);
 
-		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>IMALAN_175 );
+		$parms = array(
+			'width' => 200,
+			'height'=>113,
+			'type'=>'image',
+			'bbcode'=>'video',
+			'tagid'=> $this->getQuery('tagid'),
+			'action'=>'youtube',
+			'searchPlaceholder'=>IMALAN_175,
+			'gridClass'	=> 'col-xs-6 col-sm-3 media-carousel-item-youtube',
+			'perPage'	=> 8,
+		);
+
+
 		$text = e107::getMedia()->browserCarousel($items, $parms);
 		
 		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
