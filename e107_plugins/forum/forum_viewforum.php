@@ -195,7 +195,8 @@ if(!empty($forumInfo['forum_description']))
 {
 	define("META_DESCRIPTION", $tp->text_truncate(
 		str_replace(
-			array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
+			//array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
+			array('"', "'"), '', $tp->toText($forumInfo['forum_description'])
 	), 250, '...'));
 }
 
