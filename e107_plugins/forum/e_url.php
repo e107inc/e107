@@ -50,6 +50,12 @@ class forum_url // plugin-folder + '_url'
 			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&id={forum_id}'
 		);
 
+		$config['new']  = array(
+			'regex'			=> '^forum/new?',
+			'sef'           => 'forum/new',
+			'redirect'      => '{e_PLUGIN}forum/forum.php?new'
+		);
+
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',
