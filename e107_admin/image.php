@@ -1688,7 +1688,7 @@ class media_admin_ui extends e_admin_ui
 			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>".LAN_SAVE."</span>
 			</button>
-			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel' >
+			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel'  data-close='true'>
 			<span>".LAN_CANCEL."</span>
 			</button>
 			</div>";
@@ -1742,7 +1742,7 @@ class media_admin_ui extends e_admin_ui
 			'action'	=>'icon', 	// Used by AJAX to identify correct function.
 			'perPage'	=> 80,
 			'gridClass'	=> 'media-carousel-item-glyph pull-left',
-			'bbcode'	=> 'image',
+			'bbcode'	=> 'icon',
 			'close'		=> 'true'
 
 		);
@@ -1754,7 +1754,6 @@ class media_admin_ui extends e_admin_ui
 
 	//	$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category.
 		$images = e107::getMedia()->getIcons('',$frm,$limit);
-
 
 
 		foreach($images as $val)
