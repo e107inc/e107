@@ -49,7 +49,23 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
             $(context).on('click', '.e-media-select', function (e)
             {
             	e.preventDefault();
-                e107.mediaManager.eMediaSelect(this);
+
+            	var previewHTML = $(this).attr('data-preview-html');
+
+            //	console.log(previewHTML);
+
+            	if(previewHTML) // MediaPicker v2.1.9
+				{
+					 e107.mediaManager.eMediaSelectProcess(this);
+				//	 e107.mediaManager.eMediaSelect(this);
+				}
+				else // imagepicker, iconpicker
+				{
+					 e107.mediaManager.eMediaSelect(this);
+				}
+
+
+
             });
 
 			// Must be defined after e-media-select.
@@ -297,7 +313,153 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		}
 	};
 
+
 	/**
+	 * New in v2.1.9 to eventually replace the eMediaSelect
+	 * Handle Media-Picker selection.
+	 * @param {object} that
+	 *  Element that was clicked.
+	 *
+	 * @returns {boolean}
+	 */
+	e107.mediaManager.eMediaSelectProcess = function (that)
+	{
+
+		var $this = $(that);
+
+		var id 				= $this.attr('data-id'); 	// ID of the Media Manager Item.
+		var target 			= $this.attr('data-target'); // Path of the Media Manager Item.
+		var path 			= $this.attr('data-path');
+		var preview 		= $this.attr('data-preview');
+		var previewHTML 	= $this.attr('data-preview-html');
+		var src 			= $this.attr('data-src');
+		var bbcode 			= $this.attr('data-bbcode'); // TinyMce/Textarea insert mode-
+		var name 			= $this.attr('data-name'); // Title of the Media Manager Item.
+		var width 			= $this.attr('data-width');
+		var height 			= ''; // Disable for now - will be updated by bb parser. $this.attr('data-height');
+		var type 			= $this.attr('data-type');
+		var alt 			= $this.attr('data-alt');
+
+		var bbpath 			= '';
+
+		// variable placeholders.
+		var $bbcodeHolder 	= $('#bbcode_holder');
+		var $htmlHolder 	= $('#html_holder');
+		var $srcHolder 		= $('#src');
+		var $pathHolder 	= $('#path');
+		var $preview 		= $('img#preview');
+
+
+
+		// Remove "selected" class from elements.
+		$('.e-media-select').removeClass('media-select-active');
+
+		// Add "selected" class to clicked element.
+		$this.addClass('media-select-active');
+		$this.closest('img').addClass('active');
+
+		// convert base64 encoded HTML preview information to HTML.
+		if(previewHTML)
+		{
+			var previewSrc = atob(previewHTML).trim();
+		}
+		
+		if($htmlHolder.length > 0)
+		{
+			$htmlHolder.val(previewSrc);
+		}
+
+		if($pathHolder.length > 0)
+		{
+			$pathHolder.attr('value', path);
+		}
+
+		switch(type) {
+
+			case 'file':
+				bbpath = '[file=' + id + ']' + name + '[/file]';
+				$bbcodeHolder.val(bbpath);
+				break;
+
+			case 'video':
+			case 'glyph':
+			case 'icon':
+			case 'audio':
+				$srcHolder.val('');
+				bbpath = '[' + bbcode + ']' + path + '[/' + bbcode + ']';
+				$bbcodeHolder.val(bbpath);
+				break;
+
+
+			case 'image':
+				$srcHolder.attr('value', src);
+
+				// Populate Attributes Tab with Info.
+				
+				$('#width').val(width);
+				$('#height').val(height);
+				$('#alt').val(alt);
+
+				e107.mediaManager.eMediaAttribute($this, bbcode);
+				$preview.attr('src',src);
+			//	$preview.val(preview);
+				$srcHolder.attr('value', src);
+
+				break;
+
+		}
+
+		console.log("Mode: MediaPicker");
+		console.log("Src:" + src);
+		console.log("Bbpath: " + $bbcodeHolder.val());
+		console.log("Preview: "+preview);
+		console.log("Save Path: "+path);
+
+		// Update mediapicker preview with html content.
+		$('div#' + target + "_prev", window.top.document).html(previewSrc); // set new value
+		$('span#' + target + "_prev", window.top.document).html(previewSrc); // set new value
+
+		// Update hidden form targets with data that can be saved to the DB.
+		if(target !== '')
+		{
+			if($('input#' + target) !== undefined)
+			{
+				$('input#' + target, window.top.document).attr('value', path); // set new value
+			}
+
+			// Array mode:
+			var pathTarget = target + '-path';
+			var nameTarget = target + '-name';
+			var idTarget = target + '-id';
+
+			if($('input#' + pathTarget) !== undefined)
+			{
+				$('input#' + pathTarget, window.top.document).attr('value', path); // set new value
+			}
+
+			if($('input#' + nameTarget) !== undefined)
+			{
+				$('input#' + nameTarget, window.top.document).attr('value', name); // set new value
+			}
+
+			if($('input#' + idTarget) !== undefined)
+			{
+				$('input#' + idTarget, window.top.document).attr('value', id); // set new value
+			}
+		}
+
+		return false;
+
+	};
+
+
+
+
+
+
+
+	/**
+	 * @deprecated - to eventually be replaced by the method above.
 	 * @param {object} that
 	 *  Element that was clicked.
 	 *
@@ -368,7 +530,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		if(bbcode === "glyph" && $bbcodeHolder.length > 0)
 		{
 			var $target = $('div#' + target + "_prev", window.top.document);
-
+			
 			// Only if  the triggering element is not an icon-picker.
 			if($target.length === 0 || !$target.hasClass('image-selector'))
 			{
@@ -451,9 +613,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			console.log("Mode: Image");
 		}
 
-		console.log("Bbpath: " + bbpath);
-		console.log("Preview: "+preview);
-		console.log("Save Path: "+path);
 
 
 

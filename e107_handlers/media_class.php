@@ -1362,9 +1362,11 @@ class e_media
 
 		if(!empty($data['close']) && E107_DEBUG_LEVEL < 1)
 		{
-			$select .= " e-dialog-save e-dialog-close";
+			$select .= "e-dialog-close";
 			$close = "  data-close='true' ";
 		}
+
+		// e-dialog-save
 
 		$style  = varset($data['style'],'');
 		$class  = varset($data['class'],'');

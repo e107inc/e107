@@ -4315,7 +4315,7 @@ class e_parser
 		}
 		elseif($icon[0] === '{')
 		{
-			$path = $this->replaceConstants($icon,'full');		
+			$path = $this->replaceConstants($icon,'abs');
 		}
 		elseif(!empty($parm['legacy']))
 		{
