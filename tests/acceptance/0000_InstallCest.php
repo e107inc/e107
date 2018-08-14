@@ -5,6 +5,7 @@ class InstallCest
 {
 	public function _before(AcceptanceTester $I)
 	{
+		$I->unlinkE107ConfigFromTestEnvironment();
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -43,14 +44,9 @@ class InstallCest
 
 	}
 
-	private function installe107(AcceptanceTester $I, $parms=array())
+	private function installe107(AcceptanceTester $I, $params = array())
 	{
 		// Step 1
-
-		if(file_exists(APP_PATH."/e107_config.php")) // because we do mutliple installation scenarios.
-		{
-			unlink(APP_PATH."/e107_config.php");
-		}
 
 		$I->amOnPage('/install.php');
 		$I->selectOption("language", 'English');
@@ -60,7 +56,7 @@ class InstallCest
 
 		$I->see("MySQL Server Details", 'h3');
 
-		$db = $I->getHelperDb();
+		$db = $I->getDbModule();
 
 		$I->fillField('server',     $db->_getDbHostname());
 		$I->fillField('name',       $db->_getDbUsername());
@@ -110,9 +106,9 @@ class InstallCest
 		$I->see("Website Preferences", 'h3');
 		$I->fillField('sitename',     'Test Site');
 
-		if(!empty($parms['sitetheme']))
+		if(!empty($params['sitetheme']))
 		{
-			$I->selectOption('sitetheme', $parms['sitetheme']);
+			$I->selectOption('sitetheme', $params['sitetheme']);
 		}
 
 		$I->click('submit');
@@ -130,13 +126,12 @@ class InstallCest
 
 		$I->amOnPage('/index.php');
 
-		if(!empty($parms['sitetheme']))
+		if(!empty($params['sitetheme']))
 		{
-			$I->seeInSource('e107_themes/'.$parms['sitetheme']);
+			$I->seeInSource('e107_themes/'.$params['sitetheme']);
 		}
 
 	}
-
 
 	private function loginToAdmin(AcceptanceTester $I)
 	{
@@ -156,7 +151,6 @@ class InstallCest
 		$I->wantTo("Check there are no updates required after install");
 
 		$I->dontSee("Update", 'button span');
-
 	}
 
 }
