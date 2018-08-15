@@ -23,6 +23,7 @@ class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
 	private $chapterData = array();
+	private $cpageFieldName = null;
 	
 	// Grab all book/chapter data. 
 	function __construct()
@@ -602,7 +603,7 @@ class cpage_shortcodes extends e_shortcode
 		
 		if(empty($brow['chapter_sef']))
 		{
-			return;
+			return null;
 		}
 		
 		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();		
@@ -672,6 +673,8 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagefieldtitle($parm=null)
 	{
 
+		$this->cpageFieldName = null;
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
@@ -679,6 +682,8 @@ class cpage_shortcodes extends e_shortcode
 
 		$chap       = $this->var['page_chapter'];
 		$key        = $parm['name'];
+
+		$this->cpageFieldName = $key;
 
 		$arr = array('name'=>$parm['name']);
 		$value = $this->sc_cpagefield($arr);
@@ -712,10 +717,14 @@ class cpage_shortcodes extends e_shortcode
 	 */
 	function sc_cpagefield($parm=null)
 	{
+		$this->cpageFieldName = null;
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
 		}
+
+		$this->cpageFieldName = $parm['name'];
 
 		$chap       = $this->var['page_chapter'];
 		$fields     = $this->chapterData[$chap]['chapter_fields'];
@@ -723,6 +732,15 @@ class cpage_shortcodes extends e_shortcode
 		return e107::getCustomFields()->loadConfig($fields)->loadData($this->var['page_fields'])->getFieldValue($parm['name'],$parm);
 
 
+	}
+
+	/**
+	 * Return the last custom-page field name used.
+	 * @return string|null
+	 */
+	function sc_cpagefieldname()
+	{
+		return $this->cpageFieldName;
 	}
 
 
