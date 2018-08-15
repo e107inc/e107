@@ -134,7 +134,8 @@ class bbcode_shortcodes extends e_shortcode
 
 		if (ADMIN)
 		{
-			$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_HTTP . e_ADMIN . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video'  >";
+			//$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_HTTP . e_ADMIN . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video'  >";
+			$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_ADMIN_ABS . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video'  >";
 		}
 		else
 		{
@@ -220,8 +221,9 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=img'  >";
-		
+		// $text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=img'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert an Image from the Media Manager : ".$this->var['template']."' id='{$id}' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=img'  >";
+
 		$text .= $this->button(e_IMAGE_ABS."bbcode/preimage.png",'picture-o');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/preimage.png' title='".LANHELP_45."' alt='' />";
 		$text .= "</a>\n";
@@ -238,8 +240,9 @@ class bbcode_shortcodes extends e_shortcode
 		{
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
-		
+		//$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
+
 		$text .= $this->button(e_IMAGE_ABS."bbcode/prefile.png", 'file');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
 		$text .= "</a>\n";
@@ -600,8 +603,9 @@ class bbcode_shortcodes extends e_shortcode
 
 		if($_onclick_func == 'e-dialog')
 		{  //  $tagid = "news-body";
-			$pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
-			$post = "</a>\n";	
+			// $pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
+			$pre = "\n<a href='".e_ADMIN_ABS."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
+			$post = "</a>\n";
 		}
 		else
 		{
