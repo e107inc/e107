@@ -33,6 +33,12 @@ class InstallCest
 		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
 		$this->testNoUpdatesRequired($I);
 
+		// Check install.xml Custom Fields in Page table.
+		$I->amOnPage('/page.php?id=4');
+		$I->see("22 Aug 2018");
+		$I->see("United States");
+		$I->see("Blue");
+
 	}
 
 	public function installLandingZero(AcceptanceTester $I)
