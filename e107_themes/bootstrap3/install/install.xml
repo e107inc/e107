@@ -374,7 +374,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_visibility">0</field>
 			<field name="chapter_fields">{
     "__tabs__": {
-        "additional": "Additional"
+        "additional": "Custom Fields"
     },
     "mybbarea": {
         "title": "Rich Text",

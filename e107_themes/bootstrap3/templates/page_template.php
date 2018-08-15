@@ -154,7 +154,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 	$PAGE_TEMPLATE['customfields']['body'] = ' 
  	
- 		<div class="col-md-5 pull-right" style="margin-right:-15px">
+ 		<div class="col-xs-12 col-md-5 pull-right" style="margin-right:-15px">
  		<table class="table table-striped table-bordered">
  			<tr>
  				<th class="text-center" colspan="2">Custom Fields</th>
