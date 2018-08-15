@@ -189,6 +189,10 @@
 					break;
 
 				case "file":
+					if(empty($value))
+					{
+						return null; 
+					}
 					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
 					break;
 
