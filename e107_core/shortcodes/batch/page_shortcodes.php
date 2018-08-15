@@ -680,6 +680,14 @@ class cpage_shortcodes extends e_shortcode
 		$chap       = $this->var['page_chapter'];
 		$key        = $parm['name'];
 
+		$arr = array('name'=>$parm['name']);
+		$value = $this->sc_cpagefield($arr);
+
+		if(empty($value) && !isset($parm['force']))
+		{
+			return null;
+		}
+
 
 		if(!empty($this->chapterData[$chap]['chapter_fields']) && is_string($this->chapterData[$chap]['chapter_fields']))
 		{
@@ -726,6 +734,23 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagefields($parm=null)
 	{
 		$fieldData  = e107::unserialize($this->var['page_fields']);
+
+		if(isset($parm['generate'])) // use to generate all fields for use in template file.
+		{
+			$text = '<pre>';
+
+			foreach($fieldData as $ok=>$v)
+			{
+
+				$text .= "&#123;CPAGEFIELDTITLE: name=".$ok."&#125;\n";
+				$text .= "&#123;CPAGEFIELD: name=".$ok."&#125;\n";
+			}
+
+			$text .= "</pre>";
+
+			return $text;
+		}
+
 
 
 		$text = '<table class="table table-bordered table-striped">
