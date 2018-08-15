@@ -281,7 +281,8 @@ class download_main_admin_ui extends e_admin_ui
 		protected $pluginName = 'download';
 		protected $eventName = 'download';
 		protected $table = "download"; // DB Table, table alias is supported. Example: 'r.release'
-		protected $listQry = "SELECT m.*,u.user_id,u.user_name FROM #download AS m LEFT JOIN #user AS u ON m.download_author = u.user_id "; // without any Order or Limit.
+		protected $listQry = "SELECT m.*, c.download_category_sef, u.user_id,u.user_name FROM #download AS m
+			lEFT JOIN #download_category AS c on m.download_category = c.download_category_id LEFT JOIN #user AS u ON m.download_author = u.user_id "; // without any Order or Limit.
 		
 		//required - default column user prefs
 		protected $fieldpref = array('checkboxes', 'download_image', 'download_id', 'download_datestamp', 'download_category', 'download_name', 'download_active', 'download_class', 'fb_order', 'options');
@@ -304,13 +305,14 @@ class download_main_admin_ui extends e_admin_ui
 		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
 
-		protected $url         		= array('route'=>'download/view/item', 'vars' => array('id' => 'download_id', 'name' => 'download_sef'), 'name' => 'download_name', 'description' => ''); // 'link' only needed if profile not provided.
+		/** @deprecated see writeParms() on download_id below. */
+	//	protected $url         		= array('route'=>'download/view/item', 'vars' => array('id' => 'download_id', 'name' => 'download_sef'), 'name' => 'download_name', 'description' => ''); // 'link' only needed if profile not provided.
 
 
 	
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
-			'download_id'				=> array('title'=> LAN_ID, 				'type' => 'text',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'readParms'=>'link=sef&target=blank', 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
+			'download_id'				=> array('title'=> LAN_ID, 				'type' => 'text',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'readParms'=>'url=item&target=blank', 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE, 'writeParms'=>'sef=download_name'),
