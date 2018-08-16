@@ -1,6 +1,6 @@
 <?php
 
-class DummyDeployer extends Deployer
+class NoopDeployer extends Deployer
 {
 
 	public function start()

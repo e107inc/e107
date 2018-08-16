@@ -12,7 +12,7 @@ foreach ([
 {
 	$absolute_config_path = codecept_root_dir() . '/' . $config_filename;
 	if (file_exists($absolute_config_path))
-		$params = array_merge($params, Yaml::parse(file_get_contents($absolute_config_path)));
+		$params = array_replace_recursive($params, Yaml::parse(file_get_contents($absolute_config_path)));
 }
 
 return $params;
