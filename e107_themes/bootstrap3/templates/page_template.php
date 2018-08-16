@@ -152,6 +152,9 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_WRAPPER['customfields']['CPAGEFIELDTITLE'] = "<tr id='customfields-{CPAGEFIELDNAME}'><td>{---}</td>";
 	$PAGE_WRAPPER['customfields']['CPAGEFIELD'] = "<td>{---}</td></tr>";
 
+	// Override the wrapper above for {CPAGEFIELD: name=myvideo}
+	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myvideo'] = "<tr><td colspan='2'>{---}</td></tr>";
+
 	$PAGE_TEMPLATE['customfields']['body'] = ' 
  	
  		<div class="col-xs-12 col-md-5 pull-right" style="margin-right:-15px">
@@ -159,6 +162,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
  			<tr>
  				<th class="text-center" colspan="2">Custom Fields</th>
  			</tr>
+			{CPAGEFIELD: name=myvideo}
 	       	{CPAGEFIELDTITLE: name=mybbarea}
 			{CPAGEFIELD: name=mybbarea}
 			{CPAGEFIELDTITLE: name=myboolean}
@@ -191,8 +195,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 			{CPAGEFIELD: name=mytext}
 			{CPAGEFIELDTITLE: name=myurl}
 			{CPAGEFIELD: name=myurl}
-			{CPAGEFIELDTITLE: name=myvideo}
-			{CPAGEFIELD: name=myvideo}
+			
  		</table>
  		{CPAGEEDIT}
  		</div>
