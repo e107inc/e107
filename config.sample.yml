@@ -4,7 +4,7 @@
 # Absolute path begins with "/"; relative path does not begin with "/"
 app_path: 'e107/'
 
-# Which deployer to use for acceptance tests. Options:
+# Which deployer to use to set up tests. Options:
 #
 # 'none'
 #   Dummy deployer that does nothing. Tests that depend on a deployer will fail.
@@ -16,21 +16,20 @@ app_path: 'e107/'
 #   Configure the "url", "db", and "fs" sections.
 # 'cpanel'
 #   Deploys the files in "app_path" to a cPanel account's main domain.
-#   Configure the "cpanel" section.
+#   Configure the "hosting" section.
 deployer: 'local'
 
-# Configure this section for fully automated test deployments to cPanel
-cpanel:
+# Configure this section for fully automated test deployments to a hosting control panel
+hosting:
 
-  # cPanel domain without the port number
+  # Control panel domain without the port number
   hostname: ''
 
-  # cPanel account username
+  # Control panel account username
   username: ''
 
-  # cPanel account password
+  # Control panel account password
   password: ''
-
 
 # URL (with trailing slash) at which the app can be reached for acceptance tests
 url: 'http://set-this-to-your-acceptance-test-url.local/'
