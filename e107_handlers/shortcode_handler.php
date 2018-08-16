@@ -74,7 +74,7 @@ if (!defined('e107_INIT'))
 	 */
 	function initShortcodeClass($class, $force = false, $eVars = null)
 	{
-		return e107::getScParser()->initShortcodeClass($class, $eVars, $force);
+		return e107::getScParser()->initShortcodeClass($class,  $force);
 	}
 
 
@@ -93,6 +93,8 @@ class e_parse_shortcode
 	private   $legacyBatch          = array();  // List of legacy batch file codes. eg. using SC_BEGIN etc.
 	private   $legacyBatchFile       = null;
 	private   $debug_legacy         = array();
+
+	/** @var e_vars  */
 	protected $eVars                = null;
 	protected $wrappers             = array();  // Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
 	protected $wrapper              = null;     // current wrapper being processed.
@@ -1429,13 +1431,13 @@ class e_parse_shortcode
 	{
 		$pre = $post = '';
 
-		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
-		{
-			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
-		}
-		elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
+		}
+		elseif(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
+		{
+			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
 		}
 		else
 		{
