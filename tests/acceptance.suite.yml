@@ -10,5 +10,5 @@ coverage:
 modules:
     enabled:
         - PhpBrowser:
-            url: '%manual.url%'
+            url: '%url%'
         - \Helper\Acceptance:

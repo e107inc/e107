@@ -19,16 +19,9 @@ extensions:
         - Codeception\Extension\RunFailed
 modules:
     enabled:
-        - \Helper\DeployerFactory:
-            secrets:
-                cpanel:
-                    enabled:  '%cpanel.enabled%'
-                    hostname: '%cpanel.hostname%'
-                    username: '%cpanel.username%'
-                    password: '%cpanel.password%'
         - \Helper\DelayedDb:
-            dsn: 'mysql:host=%manual.db.host%;port=%manual.db.port%;dbname=%manual.db.dbname%'
-            user: '%manual.db.user%'
-            password: '%manual.db.password%'
-            populate: '%db_dump.enabled%'
-            dump: '%db_dump.path%'
+            dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
+            user: '%db.user%'
+            password: '%db.password%'
+            populate: '%db.populate%'
+            dump: '%db.dump_path%'

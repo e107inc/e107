@@ -55,8 +55,8 @@ abstract class E107Base extends Base
 	{
 		$descriptorspec = [
 			1 => ['pipe', 'w'],
-			  2 => ['pipe', 'w'],
-			  ];
+			2 => ['pipe', 'w'],
+		];
 		$pipes = [];
 		$resource = proc_open('git clean -fdx', $descriptorspec, $pipes, APP_PATH);
 		//$stdout = stream_get_contents($pipes[1]);

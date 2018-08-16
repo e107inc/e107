@@ -1,5 +1,6 @@
 <?php
 namespace Helper;
+include_once(codecept_root_dir() . "lib/deployers/DeployerFactory.php");
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
@@ -9,11 +10,9 @@ abstract class Base extends \Codeception\Module
 	protected $deployer;
 	protected $deployer_components = ['db', 'fs'];
 
-	protected $db;
-
 	public function getDbModule()
 	{
-		return $this->db ?: $this->db = $this->getModule('\Helper\DelayedDb');
+		return $this->getModule('\Helper\DelayedDb');
 	}
 
 	public function getBrowserModule()
@@ -23,7 +22,7 @@ abstract class Base extends \Codeception\Module
 
 	public function _beforeSuite($settings = array())
 	{
-		$this->deployer = $this->getModule('\Helper\DeployerFactory')->create();
+		$this->deployer = \DeployerFactory::create();
 		$this->deployer->setComponents($this->deployer_components);
 
 		$this->deployer->start();
@@ -31,8 +30,10 @@ abstract class Base extends \Codeception\Module
 
 		foreach ($this->getModules() as $module)
 		{
-			if (get_class($module) !== get_class($this))
+			if (!$module instanceof $this)
+			{
 				$module->_beforeSuite();
+			}
 		}
 	}
 

@@ -17,9 +17,10 @@ class cPanelDeployer extends Deployer
 	protected $domain;
 	private $skip_mysql_remote_hosts = false;
 
-	function __construct($credentials)
+	function __construct($params = [])
 	{
-		$this->credentials = $credentials;
+		parent::__construct($params);
+		$this->credentials = $params['cpanel'];
 	}
 
 	public function start()
@@ -31,8 +32,7 @@ class cPanelDeployer extends Deployer
 			!$creds['username'] ||
 			!$creds['password'])
 		{
-			self::println("Cannot deploy cPanel environment because credentials are missing. Falling back to manual mode…");
-			return false;
+			throw new Exception("Cannot deploy cPanel environment because credentials are missing.");
 		}
 
 		$this->prepare();
@@ -42,8 +42,7 @@ class cPanelDeployer extends Deployer
 			$method = "prepare_${component}";
 			if (!method_exists($this, $method))
 			{
-				self::println("Unsupported component \"${component}\" requested. Falling back to manual mode…");
-				return false;
+				throw new Exception("Unsupported component \"${component}\" requested.");
 			}
 		}
 		foreach ($this->components as $component)
@@ -51,18 +50,6 @@ class cPanelDeployer extends Deployer
 			$method = "prepare_${component}";
 			$this->$method();
 		}
-
-		return true;
-	}
-
-	private static function println($text = '')
-	{
-		codecept_debug($text);
-
-		//echo("${text}\n");
-
-		//$prefix = debug_backtrace()[1]['function'];
-		//echo("[\033[1m${prefix}\033[0m] ${text}\n");
 	}
 
 	private function prepare()
@@ -288,6 +275,13 @@ class cPanelDeployer extends Deployer
 		return "http://".$this->domain."/".$this->run_id."/";
 	}
 
+	public function unlinkAppFile($relative_path)
+	{
+		self::println("Deleting file \"$relative_path\" from deployed test location…");
+		$this->cPanel->api2->Fileman->fileop(['op' => 'unlink',
+			'sourcefiles' => self::TARGET_RELPATH.$this->run_id."/".$relative_path]);
+	}
+
 	private function prepare_db()
 	{
 		$cPanel = $this->cPanel;
@@ -372,12 +366,5 @@ class cPanelDeployer extends Deployer
 		$archive->close();
 
 		return $tmp_file;
-	}
-
-	public function unlinkAppFile($relative_path)
-	{
-		self::println("Deleting file \"$relative_path\" from deployed test location…");
-		$this->cPanel->api2->Fileman->fileop(['op' => 'unlink',
-			'sourcefiles' => self::TARGET_RELPATH.$this->run_id."/".$relative_path]);
 	}
 }
