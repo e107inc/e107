@@ -20,7 +20,7 @@ class cPanelDeployer extends Deployer
 	function __construct($params = [])
 	{
 		parent::__construct($params);
-		$this->credentials = $params['cpanel'];
+		$this->credentials = $params['hosting'];
 	}
 
 	public function start()
