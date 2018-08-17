@@ -212,6 +212,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$htmlHolder.val($img.prop('outerHTML'));
 		}
 
+		// prevent empty tags
+		if (path == '') return;
+
 		// Only Do width/height styling on bbcodes --
 		if(width != '' && width !== undefined)
 		{
@@ -240,7 +243,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			bb = bb + ']';
 			bb = bb + path;
 			bb = bb + '[/img]';
-
+/*
 			if(target && target.charAt(0) != "#" && target.charAt(0) != ".")
 			{
 				target = "#" + target;
@@ -268,6 +271,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					}
 				}
 			}
+*/
+            // above code did directly write the tag to the target, without having clicked on "Save"
+            if($bbcodeHolder.length > 0)
+            {
+                $bbcodeHolder.val(bb); // Set the BBcode Value.
+            }
+
 		}
 	};
 
