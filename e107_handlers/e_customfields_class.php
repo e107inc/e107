@@ -164,7 +164,7 @@
 
 
 				case "image":
-					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
+					return ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
 					break;
 
 				case "icon":
