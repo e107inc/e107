@@ -823,12 +823,12 @@ class db_verify
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
 		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-	 			
-		$table = preg_match_all($regex,$sql_data,$match);
-		
 
+		// also support non-alphanumeric chars.
+	 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
-			
+		preg_match_all($regex,$sql_data,$match);
+
 		$tables = array();
 			
 		foreach($match[1] as $c=>$k)
@@ -843,7 +843,19 @@ class db_verify
 				
 				
 		$ret['tables'] = $tables;
-		$ret['data'] = $match[2];
+
+		$data = array();
+
+		if(!empty($match[2])) // clean/trim data.
+		{
+			foreach($match[2] as $dat)
+			{
+				$dat = str_replace("\t", '', $dat); // remove tab chars.
+				$data[] = trim($dat);
+			}
+		}
+
+		$ret['data'] = $data;
 		$ret['engine'] = $match[4];
 		
 		if(empty($ret['tables']))
