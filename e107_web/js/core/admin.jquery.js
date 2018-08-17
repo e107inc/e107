@@ -48,7 +48,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						if($this.attr('data-modal-submit'))
 						{
 							var buttonCaption = $('#e-modal-iframe').contents().find('#etrigger-submit').text(); // copy submit button caption from iframe form.
-							$('#e-modal-submit').text(buttonCaption).fadeIn(); // display the button in the modal footer.
+
+							if(buttonCaption)
+							{
+								$('#e-modal-submit').text(buttonCaption).fadeIn(); // display the button in the modal footer.
+							}
 							$('#e-modal-iframe').contents().find('.buttons-bar').hide(); // hide buttons in the iframe's form.
 						}
 

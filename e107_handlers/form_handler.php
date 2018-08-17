@@ -985,7 +985,7 @@ class e_form
 	 * @param null   $extras
 	 * @return string
 	 */
-	private function mediaUrl($category = '', $label = '', $tagid='', $extras=null)
+	public function mediaUrl($category = '', $label = '', $tagid='', $extras=null)
 	{
 		if(is_string($extras))
 		{
@@ -1012,7 +1012,7 @@ class e_form
 
 		if(!empty($extras['bbcode']))
 		{
-			$url .= '&amp;bbcode=1';
+			$url .= '&amp;bbcode='.$extras['bbcode'];
 		}
 
 		$url .= "&amp;iframe=1";
@@ -1070,7 +1070,7 @@ class e_form
 		$class = !empty($extras['class']) ? $extras['class']." " : '';
 		$title = !empty($extras['title']) ? $extras['title'] : $title;
 
-	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap.
+	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-submit='true' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap.
 
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{

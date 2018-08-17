@@ -1303,7 +1303,7 @@ class media_admin_ui extends e_admin_ui
 	}
 	
 	
-	function uploadTab()
+	private function uploadTab()
 	{
 		if(!ADMIN){ exit; }
 
@@ -1358,7 +1358,7 @@ class media_admin_ui extends e_admin_ui
 	 * Replacement for mediaSelectUpload()
 	 * @return string
 	 */
-	function mediaManagerTabs()
+	private function mediaManagerTabs()
 	{
 		$frm = e107::getForm();
 		$tp = e107::getParser();
@@ -1374,9 +1374,10 @@ class media_admin_ui extends e_admin_ui
 		$cat = $this->getQuery('for');
 
 		$tabOptions = array(
-			'core-media-icon'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,    'method' => 'iconTab' ),
+			'core-media-icon'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,     'method' => 'iconTab' ),
 			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'method' => 'imageTab2' ),
 			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'method' => 'videoTab'),
+			'core-media-file'   => array('caption'=> $tp->toGlyph('fa-file').ADLAN_CL_5,            'method' => 'fileTab'),
 			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'method' => 'audioTab'),
 			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'method' => 'youtubeTab' ),
 			'core-media-glyph'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'method' => 'glyphTab'),
@@ -1455,8 +1456,25 @@ class media_admin_ui extends e_admin_ui
 		$youtubeActive = 'inactive';
 		
 		$options = array();
-		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
-		
+
+		switch($this->getQuery('bbcode'))
+		{
+			case "img":
+				$options['bbcode'] = 'img';
+				break;
+
+			case "video":
+				$options['bbcode'] = 'video';
+				break;
+
+			case "glyph":
+				$options['bbcode'] = 'glyph';
+				break;
+
+			default:
+				$options['bbcode'] = false;
+		}
+
 						
 		$text = "<ul id='admin-ui-media-manager' class='nav nav-tabs'>\n";
 		
@@ -1683,9 +1701,16 @@ class media_admin_ui extends e_admin_ui
 
 	private function mediaManagerSaveButtons($options = array())
 	{
-		$text = "<div style='text-align:right;padding:5px'>
+		if(empty($options['bbcode']))
+		{
+			return null;
+		}
+
+		// hidden from view but used by javascript to re-create the button in the modal-footer.
+		// Tinymce will remove the 'display:none' when loaded.
+		$text = "<div id='media-manager-submit-buttons' class='buttons-bar' style='text-align:right;padding-right:15px;display:none;'>
 			
-			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<button id='etrigger-submit' type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>".LAN_SAVE."</span>
 			</button>
 			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel'  data-close='true'>
@@ -1729,9 +1754,9 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
-	private function iconTab($option=array())
+	private function iconTab($cat, $option=array())
 	{
-			$tp = e107::getParser();
+		$tp = e107::getParser();
 
 		$parms = array(
 			'width'	 	=> 64,
@@ -1880,6 +1905,22 @@ class media_admin_ui extends e_admin_ui
 
 	}
 
+	private function fileTab($cat='', $parm=array())
+	{
+		$this->perPage = 0;
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+
+		$this->setFileListMode($cat);
+		$text = $this->getUI()->getList();
+
+		$tagid = e107::getParser()->filter($this->getQuery('tagid'));
+
+	//	$text .= '<div class="media-select-file-footer"><a class="btn btn-danger e-media-select-file-none e-dialog-close" data-target="'.$tagid.'"  data-target-label="'.LAN_CHOOSE_FILE.'" href="#" ><span><i class="fa fa-ban"></i> '.IMALAN_167.'</span></a></div>';
+
+		return $text;
+	}
+
+
 		
 	private function audioTab($cat='', $parm=array())
 	{
@@ -1952,9 +1993,12 @@ class media_admin_ui extends e_admin_ui
 			'perPage'	=> 8,
 			'gridClass'	=> 'col-xs-6 col-sm-3 admin-ui-grid media-carousel-item-video',
 			'bbcode'	=> 'video',
-			'close'		=> 'true'
 
 		);
+
+
+		$close = (!empty($this->getQuery('bbcode'))) ? false : true; // only close on 'select' when bbcodes are not in use.
+
 
 		$items = array();
 
@@ -1974,7 +2018,8 @@ class media_admin_ui extends e_admin_ui
 					'tooltip'       => basename($val['media_url'])." (".$size.")",
 					'slideCaption'	=> '',
 					'slideCategory'	=> 'bootstrap',
-					'mime'          => $val['media_type']
+					'mime'          => $val['media_type'],
+					'close'         => $close
 			);
 
 		}
@@ -2003,7 +2048,7 @@ class media_admin_ui extends e_admin_ui
 
 	
 	
-	function glyphTab($parm=array())
+	private function glyphTab($cat='', $parm=array())
 	{
 
 		$parms = array(
@@ -2159,7 +2204,7 @@ class media_admin_ui extends e_admin_ui
 	 * @return mixed|string
 	 * @see https://www.googleapis.com/youtube/v3/search
 	 */
-	function youtubeTab($parm='')
+	private function youtubeTab($parm='')
 	{
 		$apiKey = e107::pref('core','youtube_apikey');
 
@@ -2269,6 +2314,8 @@ class media_admin_ui extends e_admin_ui
 		}
 
 
+		$close = (!empty($this->getQuery('bbcode'))) ? false : true; // only close on 'select' when bbcodes are not in use.
+
 		if(!empty($data))
 		{
 			foreach($data['items'] as $value)
@@ -2281,7 +2328,8 @@ class media_admin_ui extends e_admin_ui
 					'previewUrl'	=> $thumbnail,
 					'saveValue'		=> $id.".".$extension, // youtube",
 					'thumbUrl'		=> $thumbnail,
-					'title'			=> varset($value['snippet']['title'],'')
+					'title'			=> varset($value['snippet']['title'],''),
+					'close'         => $close
 				);
 
 				if($extension == 'youtubepl') // save Image for background.
@@ -2304,6 +2352,8 @@ class media_admin_ui extends e_admin_ui
 			'gridClass'	=> 'col-xs-6 col-sm-3 media-carousel-item-youtube',
 			'perPage'	=> 8,
 		);
+
+
 
 
 		$text = e107::getMedia()->browserCarousel($items, $parms);
