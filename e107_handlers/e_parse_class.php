@@ -841,7 +841,7 @@ class e_parse extends e_parser
 		{
 			$text = stripslashes($text);
 		}
-		return str_replace(array("'", '"', "<", ">", '+'), array("&#039;", "&quot;", "&lt;", "&gt;", '%2B'), $text);
+		return str_replace(array("'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
 	}
 
 
