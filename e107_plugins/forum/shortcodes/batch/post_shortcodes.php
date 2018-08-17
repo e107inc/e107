@@ -122,7 +122,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		elseif($this->var['action'] == 'edit')
 		{
 			$_POST['subject'] = $this->var['thread_name'];
-			if($this->var['thread_user'] != USERID && !deftrue('MODERATOR'))
+			if($this->var['thread_user'] != USERID && !deftrue('MODERATOR') || !$this->var['initial_post'])
 			{
 				$opts['disabled'] = 1;
 			}
@@ -196,11 +196,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			// This user created the thread and is editing the original post.
 			if($this->var['thread_datestamp'] == $this->var['post_datestamp'] && $this->var['thread_user'] == $this->var['post_user'])
 			{
-				return  "<input class='btn btn-primary button' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />";
+				return $ret . "<input class='btn btn-primary button' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />";
 			}
 			else // editing a reply.
 			{
-				return "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_FORUM_3024."' />";
+				return $ret . "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_FORUM_3024."' />";
 			}
 		}
 

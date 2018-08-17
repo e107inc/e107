@@ -155,6 +155,7 @@ class forum_post_handler
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
 				$data['action']         = $this->action;
+				$data['initial_post']   = $this->forumObj->threadDetermineInitialPost($this->post);
 				$this->setPageTitle($data);
 				return $data;
 				break;
@@ -1025,6 +1026,11 @@ class forum_post_handler
 		$postdate = e107::getDate()->convert_date(time(), "forum");
 		$tsubject = $tp->post_toHTML($_POST['subject'], true);
 		$tpost = $tp->post_toHTML($_POST['post'], true);
+
+		if (empty($tsubject))
+		{
+			$tsubject = $this->data['thread_name'];
+		}
 
 		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))
 		{

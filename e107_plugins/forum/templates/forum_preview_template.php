@@ -27,8 +27,9 @@ $FORUM_PREVIEW = "<div>
 
 //v2.x Bootstrap
 $FORUM_PREVIEW_TEMPLATE['item'] = "<div class='alert alert-warning alert-block'>
-									<div><b>{PREVIEW_SUBJECT}</b></div>
-										{PREVIEW_POST}
+									<div><h4>{PREVIEW_SUBJECT}</h4></div>
+									<br>
+									{PREVIEW_POST}
 									</div>";
 
 ?>
