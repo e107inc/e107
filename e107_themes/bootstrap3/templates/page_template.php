@@ -184,6 +184,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 			{CPAGEFIELD: name=myfile}
 			{CPAGEFIELDTITLE: name=myicon}
 			{CPAGEFIELD: name=myicon}
+			{SETIMAGE: w=200} <!-- Set the default image size -->
 			{CPAGEFIELDTITLE: name=myimage}
 			{CPAGEFIELD: name=myimage}
 			{CPAGEFIELDTITLE: name=mylanguage}
