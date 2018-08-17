@@ -185,7 +185,7 @@ $PM_TEMPLATE['outbox']['start'] = "
 
 //$PM_OUTBOX_TABLE = "
 $PM_TEMPLATE['outbox']['item'] = "
-<tr>
+<tr class='{PM_STATUS_CLASS}'>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link,outbox}</td>
