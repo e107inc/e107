@@ -113,7 +113,7 @@ class bbcode_shortcodes extends e_shortcode
 		$event = $this->getEvent('addtext',$data,LANHELP_36);
 		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_36)."'>";
 		
-		$text .= $this->button(e_IMAGE_ABS."bbcode/list.png", 'list', LANHELP_36);
+		$text .= $this->button(e_IMAGE_ABS."bbcode/list.png", 'list'); // , LANHELP_36
 		
 	//	$text .= "<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/list.png' alt='' title='".nl2br(LANHELP_36)."' />";
 		
@@ -135,7 +135,7 @@ class bbcode_shortcodes extends e_shortcode
 		if (ADMIN)
 		{
 			//$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_HTTP . e_ADMIN . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video'  >";
-			$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_ADMIN_ABS . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video'  >";
+			$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Youtube video via Media Manager : " . $this->var['template'] . "' id='{$id}' href='" . e_ADMIN_ABS . "image.php?mode=main&amp;action=dialog&amp;for=" . $this->var['template'] . "&amp;tagid=" . $tag . "&amp;iframe=1&amp;bbcode=video&amp;youtube=1'  >";
 		}
 		else
 		{
@@ -143,7 +143,7 @@ class bbcode_shortcodes extends e_shortcode
 			$event = $this->getEvent('addtext',$data,LANHELP_48);
 			$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_48)."'>";
 		}
-		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
+		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube'); // , LANHELP_48
 		
 		$text .= "</a>";
 		return $text;
@@ -163,7 +163,7 @@ class bbcode_shortcodes extends e_shortcode
 				
 			
 		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' title='Insert a Glyphicon via Media Manager : ".$this->var['template']."' id='{$id}' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=".$this->var['template']."&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=glyph'  >";
-		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube', LANHELP_48);
+		$text .= $this->button(e_IMAGE_ABS."bbcode/youtube.png", 'youtube'); //  LANHELP_48
 		
 		$text .= "</a>";
 		return $text;
