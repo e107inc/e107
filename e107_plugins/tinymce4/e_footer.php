@@ -108,6 +108,9 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 
 			});
+			
+			$('#media-manager-submit-buttons').show();
+
 
 			$('.tinyInsert').click(function() {
 
