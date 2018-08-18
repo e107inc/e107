@@ -4535,7 +4535,7 @@ TEMPLATE;
 			}
 
 
-			if($this->createFiles == true)
+			if($this->createFiles == true || !file_exists($path))
 			{
 				if(file_put_contents($path,$result) )
 				{
@@ -5149,34 +5149,7 @@ $text .= "
 			// print_a($_POST);
 
 			
-			$srch = array(
-				
-				"\n",
-				"),",
-				"    ",
-				"'batch' => '1'",
-				"'filter' => '1'",
-				"'inline' => '1'",
-				"'validate' => '1'",
-				", 'fieldpref' => '1'",
-				"'type' => ''",
-				"'data' => ''"
-			 );
-			 
-			$repl = array(
-				
-				 "",
-				 "),\n\t\t",
-				 " ",
-				"'batch' => true",
-				"'filter' => true",
-				"'inline' => true",
-				"'validate' => true",
-				"",
-				"'type' => null",
-				"'data' => null"
-				  );
-			
+
 	
 			
 			 
@@ -5195,27 +5168,7 @@ $text .= "
 				}
 				
 				
-				foreach($vars['fields'] as $key=>$val)
-				{
-					if($val['type'] == 'image' && empty($val['readParms']))
-					{	
-						$vars['fields'][$key]['readParms'] = 'thumb=80x80'; // provide a thumbnail preview by default. 
-					}
-
-					if(empty($vars['fields'][$key]['readParms']))
-					{
-						$vars['fields'][$key]['readParms'] = array();
-					}
-
-					if(empty($vars['fields'][$key]['writeParms']))
-					{
-						$vars['fields'][$key]['writeParms'] = array();
-					}
-				}
-						
-
-				$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
-				$FIELDS = preg_replace("#('([A-Z0-9_]*?LAN[_A-Z0-9]*)')#","$2",$FIELDS); // remove quotations from LANs. 
+				$FIELDS = $this->buildAdminUIFields($vars);
 				$FIELDPREF = array();
 				
 				foreach($vars['fields'] as $k=>$v)
@@ -5268,7 +5221,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 		
 		foreach($_POST['pluginPrefs'] as $k=>$val)
 		{
-			if(vartrue($val['index']))
+			if(!empty($val['index']))
 			{
 				$index = $tp->filter($val['index']);
 				$type = vartrue($val['type'],'text');
@@ -5289,6 +5242,12 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 $text .= "	
 		public function init()
 		{
+			// This code may be removed once plugin development is complete. 
+			if(!e107::isInstalled('".$vars['pluginName']."'))
+			{
+				e107::getMessage()->addWarning(\"This plugin is not yet installed. Saving and loading of preference or table data will fail.\");
+			}
+			
 			// Set drop-down values (if any). 
 ";
 			
@@ -5343,7 +5302,7 @@ $text .= "
 			// do something		
 		}		
 		
-		// left-panel help menu area. 
+		// left-panel help menu area. (replaces e_help.php used in old plugins)
 		public function renderHelp()
 		{
 			\$caption = LAN_HELP;
@@ -5363,7 +5322,13 @@ $text .= "
 			
 		}
 		
-	
+";
+
+
+$text .= $this->buildAdminUIBatchFilter($vars['fields'], $table, 'batch');
+$text .= $this->buildAdminUIBatchFilter($vars['fields'], $table, 'filter');
+
+$text .= "	
 		
 		
 	*/
@@ -5401,13 +5366,57 @@ $text .= "
 			break;
 			
 			case 'filter':
+				return array('customfilter_1' => 'Custom Filter 1', 'customfilter_2' => 'Custom Filter 2');
+			break;
+			
 			case 'batch':
-				return  array();
+				return array('custombatch_1' => 'Custom Batch 1', 'custombatch_2' => 'Custom Batch 2');
 			break;
 		}
+		
+		return null;
 	}
 ";
 }
+
+
+foreach($_POST['pluginPrefs'] as $fld=>$val)
+{
+	if(varset($val['type']) !== 'method' || empty($val['index']))
+	{
+		continue;
+	}
+
+	$index = $tp->filter($val['index']);
+
+$text .= "
+	
+	// Custom Method/Function (pref)
+	function ".$index."(\$curVal,\$mode)
+	{
+
+		 		
+		switch(\$mode)
+		{			
+			case 'write': // Edit Page
+				return \$this->text('".$index."',\$curVal, 255, 'size=large');
+			break;
+			
+		}
+		
+		return null;
+	}
+";
+}
+
+
+
+
+
+
+
+
+
 
 $text .= "
 }		
@@ -5437,7 +5446,7 @@ exit;
 			$generatedFile = e_PLUGIN.$thePlugin."/admin_config.php";
 			
 			$startPHP = chr(60)."?php";		
-			$endPHP =  "?>";
+			$endPHP =  '';
 
 			if(!empty($addonResults))
 			{
@@ -5472,10 +5481,200 @@ exit;
 			$ret .= "<h3>admin_config.php</h3>";
 			$ret .= "<pre style='font-size:80%'>".$text."</pre>";
 
+			e107::getPlug()->clearCache();
+
 			return array('caption'=>EPL_ADLAN_253, 'text'=> $ret);
 
 	
 		}
+
+
+		/**
+		 * @param array  $fields
+		 * @param string $table
+		 * @param string $type
+		 * @return string
+		 */
+		private function buildAdminUIBatchFilter($fields, $table, $type='batch')
+	{
+		$text = '';
+
+		$typeUpper = ucfirst($type);
+
+		$params = ($type === 'batch') ? "\$selected, \$type" : "\$type";
+
+		foreach($fields as $fld=>$val)
+		{
+			if(varset($val['type']) !== 'method')
+			{
+				continue;
+			}
+
+
+
+			$text .= "
+	
+	 // Handle ".$type." options as defined in ".str_replace("_ui", "_form_ui", $table)."::".$fld.";  'handle' + action + field + '".$typeUpper."'
+	 // @important \$fields['".$fld."']['".$type."'] must be true for this method to be detected. 
+	 // @param \$selected
+	 // @param \$type
+	function handleList".eHelper::camelize($fld,true).$typeUpper."(".$params.")
+	{
+";
+
+	if($type === 'filter')
+	{
+		$text .= "
+		\$this->listOrder = '".$fld." ASC';
+	";
+
+	}
+	else
+	{
+		$text .= "
+		\$ids = implode(',', \$selected);\n";
+
+	}
+
+$text .= "
+		switch(\$type)
+		{
+			case 'custom".$type."_1':
+";
+
+$text .= ($type === 'batch') ? "				// do something" : "				// return ' ".$fld." != 'something' '; ";
+
+
+$text .= "
+				e107::getMessage()->addSuccess('Executed custom".$type."_1');
+				break;
+
+			case 'custom".$type."_2':
+";
+
+$text .= ($type === 'batch') ? "				// do something" : "				// return ' ".$fld." != 'something' '; ";
+
+$text .= "
+				e107::getMessage()->addSuccess('Executed custom".$type."_2');
+				break;
+
+		}
+
+
+	}
+";
+		}
+
+
+		return $text;
+
+	}
+
+
+		/**
+		 * @param array $vars
+		 * @return null|string|string[]
+		 */
+		private function buildAdminUIFields($vars)
+	{
+			$srch = array(
+
+				"\n",
+			//	"),",
+				"    ",
+				"'forced' => '1'",
+				"'batch' => '1'",
+				"'filter' => '1'",
+				"'batch' => '0'",
+				"'filter' => '0'",
+				"'inline' => '1'",
+				"'validate' => '1'",
+			//	", 'fieldpref' => '1'",
+				"'type' => ''",
+				"'data' => ''",
+				" array (  )",
+			 );
+
+			$repl = array(
+
+				 "",
+			//	 "),\n\t\t",
+				 " ",
+				"'forced' => true",
+				"'batch' => true",
+				"'filter' => true",
+				"'batch' => false",
+				"'filter' => false",
+				"'inline' => true",
+				"'validate' => true",
+			//	"",
+				"'type' => null",
+				"'data' => null",
+				"array ()"
+				  );
+
+
+
+			foreach($vars['fields'] as $key=>$val)
+			{
+
+				if(($val['type'] === 'dropdown' || $val['type'] === 'method') && empty($val['filter']))
+				{
+					$vars['fields'][$key]['filter'] = '0';
+				}
+
+				if(($val['type'] === 'dropdown' || $val['type'] === 'method') && empty($val['batch']))
+				{
+					$vars['fields'][$key]['batch'] = '0';
+				}
+
+				if($val['type'] == 'image' && empty($val['readParms']))
+				{
+					$vars['fields'][$key]['readParms'] = 'thumb=80x80'; // provide a thumbnail preview by default.
+				}
+
+				if(empty($vars['fields'][$key]['readParms']))
+				{
+					$vars['fields'][$key]['readParms'] = array();
+				}
+
+				if(empty($vars['fields'][$key]['writeParms']))
+				{
+					$vars['fields'][$key]['writeParms'] = array();
+				}
+
+
+				unset($vars['fields'][$key]['fieldpref']);
+
+			}
+
+			$FIELDS = "array (\n";
+
+			foreach($vars['fields'] as $key=>$val)
+			{
+				$FIELDS .= "\t\t\t'".str_pad($key."'",25," ",STR_PAD_RIGHT)."=> ".str_replace($srch,$repl,var_export($val,true)).",\n";
+			}
+
+			$FIELDS .= "\t\t)";
+
+		//	$FIELDS = var_export($vars['fields'],true);
+		//	$FIELDS = str_replace($srch,$repl,var_export($vars['fields'],true));
+			$FIELDS = preg_replace("#('([A-Z0-9_]*?LAN[_A-Z0-9]*)')#","$2",$FIELDS); // remove quotations from LANs.
+
+
+		return $FIELDS;
+
+
+
+
+	}
+
+
+
+
 }
+
+
+
 
 ?>
