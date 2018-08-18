@@ -3527,7 +3527,8 @@ class e107plugin
 					$data['class'] 		= $this->getPerm(varset($v['@attributes']['perm']), 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$message = str_replace('[x]', $data['category'], EPL_ADLAN_245);
+					$message = e107::getParser()->lanVars(EPL_ADLAN_245,$data['category'],true);
+				//	$message = str_replace('[x]', $data['category'], EPL_ADLAN_245);
 					$mes->add($message, $status); 				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
 					$c++;
@@ -3538,7 +3539,8 @@ class e107plugin
 			
 			case 'uninstall': // Probably best to leave well alone
 				$status = e107::getMedia()->deleteAllCategories($folder)? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$message = str_replace('[x]', $folder, EPL_ADLAN_246);		
+			//	$message = str_replace('[x]', $folder, EPL_ADLAN_246);
+				$message = e107::getParser()->lanVars(EPL_ADLAN_246,$folder,true);
 				$mes->add($message, $status);	
 			break;
 		
