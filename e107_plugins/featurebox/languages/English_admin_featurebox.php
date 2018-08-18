@@ -47,4 +47,12 @@ define("FBLAN_31", "Random");
 define("FBLAN_32", "Parameters (optional)"); 
 define("FBLAN_33", "Optional Javascript Parameters (format subject to change)"); 
 
-?>
+
+// Install/uninstall messages
+
+define("FBLAN_34", "Unassigned");
+define("FBLAN_35", "Carousel");
+define("FBLAN_36", "Tabs");
+
+
+

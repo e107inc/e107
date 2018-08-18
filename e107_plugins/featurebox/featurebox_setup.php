@@ -32,9 +32,9 @@ class featurebox_setup
 		$mes = e107::getMessage();
 		
 		$e107_featurebox_category = array(
- 			array('fb_category_id'=> 1,'fb_category_title'=>FBLAN_INSTALL_04,'fb_category_icon'=>'','fb_category_template'=>'bootstrap3_carousel','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
-			array('fb_category_id'=> 2,'fb_category_title'=>FBLAN_INSTALL_05,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_tabs','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
-			array('fb_category_id'=> 3,'fb_category_title'=>FBLAN_INSTALL_03,'fb_category_icon'=>'','fb_category_template'=>'unassigned','fb_category_random'=>'0','fb_category_class'=>'255','fb_category_limit'=>'0','fb_category_parms'=>'')
+ 			array('fb_category_id'=> 1,'fb_category_title'=>FBLAN_34,'fb_category_icon'=>'','fb_category_template'=>'bootstrap3_carousel','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 2,'fb_category_title'=>FBLAN_35,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_tabs','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 3,'fb_category_title'=>FBLAN_36,'fb_category_icon'=>'','fb_category_template'=>'unassigned','fb_category_random'=>'0','fb_category_class'=>'255','fb_category_limit'=>'0','fb_category_parms'=>'')
 		);
 		
 		$count = 0;
@@ -46,7 +46,7 @@ class featurebox_setup
 	
 		$status = ($count == 3) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 		
-		$mes->add(FBLAN_INSTALL_01, $status);
+		$mes->add(LAN_DEFAULT_TABLE_DATA." <strong>featurebox_category</strong>", $status);
 		
 		if($status)
 		{
@@ -62,12 +62,12 @@ class featurebox_setup
 			{
 				$status = e107::getDb('sql2')->insert('featurebox', $qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 	
 			}
-			$mes->add(FBLAN_INSTALL_02, $status);
+
+			$mes->add(LAN_DEFAULT_TABLE_DATA." <strong>featurebox</strong>", $status);
 		}
 		else 
 		{
-			$status = E_MESSAGE_ERROR;
-			$mes->add(FBLAN_INSTALL_02, $status);
+			$mes->addError(LAN_DEFAULT_TABLE_DATA);
 		}
 		
 	}
