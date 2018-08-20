@@ -158,6 +158,9 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	// Make image clickable for the display of a larger image in a modal window.
 	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myimage'] = "<td><a class='e-modal' data-modal-caption='{CPAGEFIELDTITLE: name=myimage}' target='_blank' href='{CPAGEFIELD: name=myimage&mode=raw&w=800}'>{---}</a></td></tr>";
 
+	//Custom description for URL link.
+	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myurl&mode=raw'] = "<td><a class='btn btn-primary' target='_blank' href='{---}'>View Website</a></td></tr>";
+
 	$PAGE_TEMPLATE['customfields']['body'] = ' 
  	
  		<div id="custom-fields-example" class="col-xs-12 col-md-5 pull-right" style="margin-right:-15px">
@@ -179,6 +182,10 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 			{CPAGEFIELDTITLE: name=mydropdown}
 			{CPAGEFIELD: name=mydropdown}
 			{CPAGEFIELDTITLE: name=myemail}
+			{CPAGEFIELD: name=myemail&mode=raw}
+			
+			<!-- Variation of above -->
+			{CPAGEFIELDTITLE: name=myemail}
 			{CPAGEFIELD: name=myemail}
 			{CPAGEFIELDTITLE: name=myfile}
 			{CPAGEFIELD: name=myfile}
@@ -199,6 +206,10 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 			{CPAGEFIELD: name=mytext}
 			{CPAGEFIELDTITLE: name=myurl}
 			{CPAGEFIELD: name=myurl}
+			
+			<!-- Variation of above -->
+			{CPAGEFIELDTITLE: name=myurl} 
+			{CPAGEFIELD: name=myurl&mode=raw}
 			
  		</table>
  		{CPAGEEDIT}
