@@ -163,12 +163,27 @@
 		{
 
 		}
-
+*/
 		public function testFile_size_decode()
 		{
+			$arr = array(
+				'1024'  => 1024,
+				'2kb'   => 2048,
+				'1KB'   => 1024,
+				'1M'    => 1048576,
+				'1G'    => 1073741824,
+				'1Gb'   => 1073741824,
+				'1TB'   => 1099511627776,
+			);
+
+			foreach($arr as $key => $expected)
+			{
+				$actual = $this->fl->file_size_decode($key);
+				$this->assertEquals($expected,$actual, $key." does not equal ".$expected." bytes");
+			}
 
 		}
-
+/*
 		public function testZip()
 		{
 
