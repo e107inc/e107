@@ -1692,19 +1692,19 @@ $text .= "
 	<table class='table table-striped table-bordered'>
 	<tr><th>".LAN_TYPE."</th><th>".UPLLAN_33."</th>
 	";
-	
+
 	$fl = e107::getFile();
-	$data = $fl->getFiletypeLimits(); 
-	 
+	$data = $fl->getAllowedFileTypes();
+
 	foreach($data as $k=>$v)
 	{
 		$text .= "<tr><td>".$k."</td>
 		<td>".$fl->file_size_encode($v)."</td>
 		</tr>";	
-		
+
 		
 	}
-//	$text .= print_a($data,true); 
+	// $text .= print_a($data,true);
 	
 
 	
