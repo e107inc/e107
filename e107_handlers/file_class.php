@@ -837,47 +837,53 @@ class e_file
 	 *	@param int $compare - a 'compare' value
 	 *	@param string $action - values (gt|lt)
 	 *
-	 *	@return int file size value.
+	 *	@return int file size value in bytes.
 	 *		If the decoded value evaluates to zero, returns the value of $compare
 	 *		If $action == 'gt', return the larger of the decoded value and $compare
 	 *		If $action == 'lt', return the smaller of the decoded value and $compare
 	 */
 	function file_size_decode($source, $compare = 0, $action = '')
 	{
+
 		$source = trim($source);
-		if (strtolower(substr($source, -1, 1)) == 'b')
-			$source = substr($source, 0, -1); // Trim a trailing byte indicator
-		//$mult = 1;
-		if (strlen($source) && (strtoupper(substr($source, -1, 1)) == 'B'))
-			$source = substr($source, 0, -1);
-		if (!$source || is_numeric($source))
+		$source = strtoupper($source);
+
+		list($val, $unit) = preg_split('#(?<=\d)(?=[a-z])#i', $source);
+
+		$val = (int) $val;
+
+		if(!$source || is_numeric($source))
 		{
-			$val = $source;
+			$val = (int) $source;
 		}
 		else
 		{
-			$val = substr($source, 0, -1);
-			switch (substr($source, -1, 1))
+			switch($unit)
 			{
 				case 'T':
-					$val = $val * 1024;
+				case 'TB':
+					$val = $val * 1024 * 1024 * 1024 * 1024;
 					break;
 				case 'G':
-					$val = $val * 1024;
+				case 'GB':
+					$val = $val * 1024 * 1024 * 1024;
 					break;
 				case 'M':
-					$val = $val * 1024;
+				case 'MB':
+					$val = $val * 1024 * 1024;
 					break;
 				case 'K':
-				case 'k':
+				case 'KB':
 					$val = $val * 1024;
-				break;
+					break;
 			}
 		}
-		if ($val == 0)
+		if($val == 0)
+		{
 			return $compare;
+		}
 
-		switch ($action)
+		switch($action)
 		{
 			case 'lt':
 				return min($val, $compare);
@@ -886,7 +892,7 @@ class e_file
 			default:
 				return $val;
 		}
-	//	return 0;
+		//	return 0;
 	}
 
 	/**
