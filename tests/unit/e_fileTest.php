@@ -63,14 +63,14 @@
 			$actual = $this->fl->getAllowedFileTypes();
 
 			$expected = array (
-			  'zip' => 2048,
-			  'gz' => 2048,
-			  'jpg' => 2048,
-			  'jpeg' => 2048,
-			  'png' => 2048,
-			  'gif' => 2048,
-			  'xml' => 2048,
-			  'pdf' => 2048,
+			  'zip' => 2097152, // 2M in bytes
+			  'gz' => 2097152,
+			  'jpg' => 2097152,
+			  'jpeg' => 2097152,
+			  'png' => 2097152,
+			  'gif' => 2097152,
+			  'xml' => 2097152,
+			  'pdf' => 2097152,
 			);
 
 			$this->assertEquals($expected,$actual);
