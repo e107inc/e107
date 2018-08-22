@@ -10,6 +10,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$e107info['e107_version'] = "2.1.9 (git)";
+$e107info['e107_version'] = "2.2.0 (git)";
 
 ?>
