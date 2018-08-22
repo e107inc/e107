@@ -749,7 +749,7 @@ class e_bbcode
 				$cls = array();
 				foreach($tmp as $v)
 				{
-					if($v === 'img-rounded' || $v === 'rounded' || strpos($v,'bbcode') === 0 )
+					if($v === 'img-rounded' || $v === 'rounded' || (strpos($v,'bbcode') === 0 && $v !== 'bbcode-img-right' && $v !== 'bbcode-img-left' ))
 					{
 						continue;
 					}
