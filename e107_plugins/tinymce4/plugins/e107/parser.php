@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'))
+if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	header('Content-Length: 0');
 	exit;
@@ -20,7 +20,7 @@ $_E107['no_forceuserupdate'] = true;
 $_E107['no_maintenance'] = true;
 
 define('e_ADMIN_AREA', true);
-if(!defined('TINYMCE_DEBUG'))
+if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	require_once("../../../../class2.php");
 }
@@ -44,7 +44,7 @@ class e107TinyMceParser
 	{
 		$html = '';
 
-		if(defined('TINYMCE_DEBUG'))
+		if(defined('TINYMCE_DEBUG') || defined('TINYMCE_UNIT_TEST'))
 		{
 			$this->gzipCompression = false;
 		}
