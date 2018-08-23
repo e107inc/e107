@@ -1425,7 +1425,7 @@ class media_admin_ui extends e_admin_ui
 
 		}*/
 
-		$text .= $this->mediaManagerSaveButtons($options);
+			$text .= $this->mediaManagerSaveButtons($options);
 
 		$text .= $this->mediaManagerPlaceholders();
 
@@ -2014,8 +2014,8 @@ class media_admin_ui extends e_admin_ui
 
 		);
 
-
-		$close = (!empty($this->getQuery('bbcode'))) ? false : true; // only close on 'select' when bbcodes are not in use.
+		$bbcode = $this->getQuery('bbcode');
+		$close = (!empty($bbcode)) ? false : true; // only close on 'select' when bbcodes are not in use.
 
 
 		$items = array();
@@ -2331,8 +2331,8 @@ class media_admin_ui extends e_admin_ui
 
 		}
 
-
-		$close = (!empty($this->getQuery('bbcode'))) ? false : true; // only close on 'select' when bbcodes are not in use.
+		$bbcode = $this->getQuery('bbcode');
+		$close = (!empty($bbcode)) ? false : true; // only close on 'select' when bbcodes are not in use.
 
 		if(!empty($data))
 		{
