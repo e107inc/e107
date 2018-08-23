@@ -337,6 +337,7 @@ $fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modUser);
 $fVars->BROWSERS = '';
 --*/
 		$forumSCvars['forum_name']= $forumInfo['forum_name'];
+		$forumSCvars['forum_image']= $forumInfo['forum_image'];
 		$forumSCvars['modUser']= $modUser;
 		$forumSCvars['track_online']= varset($pref['track_online']);
 
