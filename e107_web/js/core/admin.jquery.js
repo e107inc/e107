@@ -49,10 +49,18 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						{
 							var buttonCaption = $('#e-modal-iframe').contents().find('#etrigger-submit').text(); // copy submit button caption from iframe form.
 
+							var buttonClass = $('#e-modal-iframe').contents().find('#etrigger-submit').attr('data-modal-submit-class'); // co
 							if(buttonCaption)
 							{
 								$('#e-modal-submit').text(buttonCaption).fadeIn(); // display the button in the modal footer.
 							}
+
+							if(buttonClass)
+							{
+								$('#e-modal-submit').addClass(buttonClass);
+							}
+
+
 							$('#e-modal-iframe').contents().find('.buttons-bar').hide(); // hide buttons in the iframe's form.
 						}
 

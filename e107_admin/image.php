@@ -1268,7 +1268,8 @@ class media_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			echo $this->mediaSelectUpload();		
+			return $this->mediaManagerTabs();
+			//  echo $this->mediaSelectUpload();
 		}	
 		
 	}
@@ -1417,10 +1418,12 @@ class media_admin_ui extends e_admin_ui
 
 		$text = $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
 
-		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
+	/*	if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
 		{
-			$text .= $this->mediaManagerSaveButtons($options);
-		}
+
+		}*/
+
+		$text .= $this->mediaManagerSaveButtons($options);
 
 		$text .= $this->mediaManagerPlaceholders();
 
@@ -1435,6 +1438,9 @@ class media_admin_ui extends e_admin_ui
 	 */
 	function mediaSelectUpload($type='image') 
 	{
+	//	return $this->mediaManagerTabs();
+
+
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 
@@ -1449,7 +1455,7 @@ class media_admin_ui extends e_admin_ui
 
 		if(deftrue('e_DEBUG_MEDIAPICKER'))
 		{
-			return $this->mediaManagerTabs();
+		//	return $this->mediaManagerTabs();
 		}
 
 
@@ -1701,10 +1707,20 @@ class media_admin_ui extends e_admin_ui
 
 	private function mediaManagerSaveButtons($options = array())
 	{
-		if(empty($options['bbcode']))
+		if(empty($options['bbcode'])) // media picker mode.
 		{
-			return null;
+			$text = "<div class='buttons-bar' style='display:none;text-align:right;padding-right:15px;'>
+			
+			<button id='etrigger-submit' style='display:none' type='submit' data-modal-submit-class='btn-danger' class=' submit e-media-select-file-none e-dialog-close' data-target-label='' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='reset_value' value='reset'  >
+			<span>".LAN_CLEAR."</span>
+			</button>
+		
+			</div>";
+
+			return $text;
 		}
+
+		// bbcode/wysiwyg mode.
 
 		// hidden from view but used by javascript to re-create the button in the modal-footer.
 		// Tinymce will remove the 'display:none' when loaded.
