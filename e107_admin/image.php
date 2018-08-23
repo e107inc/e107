@@ -1374,6 +1374,8 @@ class media_admin_ui extends e_admin_ui
 
 		$cat = $this->getQuery('for');
 
+		$cat = urldecode($cat);
+
 		$tabOptions = array(
 			'core-media-icon'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,     'method' => 'iconTab' ),
 			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'method' => 'imageTab2' ),
@@ -1691,10 +1693,10 @@ class media_admin_ui extends e_admin_ui
 	private function mediaManagerPlaceholders()
 	{
 			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br style='clear:both' />" : "";
 
 		$text = "
-		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
+		".$br."<input title='bbcode' type='{$type}' style=readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
 		".$br."<input title='html/wysiwyg' type='{$type}' class='span11 col-md-11' readonly='readonly' id='html_holder' name='html_holder' value='' />
 		".$br."<input title='(preview) src' type='{$type}' class='span11 col-md-11' readonly='readonly' id='src' name='src' value='' />
 		".$br."<input title='path (saved to db)' type='{$type}' class='span11 col-md-11' readonly='readonly' id='path' name='path' value='' />
