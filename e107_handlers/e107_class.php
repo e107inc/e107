@@ -3559,7 +3559,7 @@ class e107
 	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3
 	 * @see https://tools.ietf.org/html/draft-reschke-http-status-308-07
 	 */
-	public static function redirect($url = '', $http_response_code = 302)
+	public static function redirect($url = '', $http_response_code = 301)
 	{
 		self::getRedirect()->go($url, true, $http_response_code);
 	}
