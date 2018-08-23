@@ -474,7 +474,7 @@ class e_media
 	 * Return an array of Images in a particular category
 	 *
 	 * @param string $type image|audio|video
-	 * @param string $cat : category name. use + to include _common eg. 'news+'
+	 * @param string $cat : category name. use ^ to include _common eg. 'news^'
 	 * @param int    $from
 	 * @param int|string     $amount
 	 * @param string  $search
@@ -483,18 +483,21 @@ class e_media
 	 */
 	private function getMedia($type, $cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
+
+	//	print_a($cat);
 	//	$inc 		= array();
 		$searchinc 	= array();
 		$catArray   = array();
 		
-		if(strpos($cat,"+") || !$cat)
+		if(strpos($cat,"^") || !$cat)
 		{
-			$cat = str_replace("+","",$cat);
+			$cat = str_replace("^","",$cat);
 			$catArray[] = '_common_'.$type;
 		}
+
 		if($cat)
 		{
-			if(strpos($cat, "|") && !strpos($cat,"+") )
+			if(strpos($cat, "|") && !strpos($cat,"^") )
 			{
 				$catArray = explode("|",$cat);	
 			}
@@ -508,6 +511,7 @@ class e_media
 				}
 			}
 		}
+
 
 		// TODO check the category is valid. 
 		
@@ -540,7 +544,7 @@ class e_media
 		}
 		else
 		{
-			$query .= " ORDER BY media_id DESC";
+			$query .= " ORDER BY media_category ASC, media_id DESC"; // places the specified category before the _common categories.
 		}
 
 		if($amount == 'all')

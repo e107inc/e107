@@ -991,9 +991,13 @@ class e_form
 			parse_str($extras,$extras);
 		}
 
+		$category = str_replace('+', '^', $category); // Bc Fix.
+
 		$cat    = ($category) ? '&amp;for='.urlencode($category) : "";
 		$mode   = vartrue($extras['mode'],'main');
 		$action = vartrue($extras['action'],'dialog');
+
+
 
 		if(empty($label))
 		{
