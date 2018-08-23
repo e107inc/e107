@@ -471,7 +471,7 @@ class e_array {
             return false;
         }
 
-		if(strpos($ArrayData," => \'") !== false)
+		if(strpos($ArrayData,"0 => \'")!=false)
 		{
              $ArrayData = stripslashes($ArrayData);
 		}
