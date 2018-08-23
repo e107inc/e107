@@ -300,6 +300,11 @@ class news_shortcodes extends e_shortcode
 	{
 		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
 	}
+	
+	public function sc_news_title_url($parm=null)
+	{
+		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newsurltitle($parm);
+	}
 
 	public function sc_news_body($parm=null)
 	{
