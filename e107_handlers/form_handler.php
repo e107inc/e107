@@ -958,20 +958,19 @@ class e_form
 	 */
 	function iconpicker($name, $default, $label, $options = array(), $ajax = true)
 	{
-		if(deftrue('e_DEBUG_MEDIAPICKER'))
-		{
+		//v2.2.0
 			$options['icon'] = 1;
 			$options['glyph'] = 1;
 			$options['w'] = 64;
 			$options['h'] = 64;
 
 			return $this->mediapicker($name, $default, $options);
-		}
 
-		$options['media'] = '_icon';
+
+	/*	$options['media'] = '_icon';
 		$options['legacyPath'] = "{e_IMAGE}icons";
 		
-		return $this->imagepicker($name, $default, $label, $options);
+		return $this->imagepicker($name, $default, $label, $options);*/
 		
 
 	}
@@ -1238,9 +1237,9 @@ class e_form
 
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));
 
-		if(deftrue('e_DEBUG_MEDIAPICKER'))
-		{
-
+	//	if(deftrue('e_DEBUG_MEDIAPICKER'))
+	//	{
+			// v2.2.0
 			$sc_parameters['image'] = 1;
 			$sc_parameters['dropzone'] = 1;
 			if(!empty($sc_parameters['video'])) // bc fix
@@ -1249,7 +1248,7 @@ class e_form
 			}
 
 			return $this->mediapicker($name, $default, $sc_parameters);
-		}
+	//	}
 
 
 		if(empty($sc_parameters['media']))
@@ -5878,11 +5877,6 @@ class e_form
 
 			/** Generic Media Pick for combinations of images, audio, video, glyphs, files, etc. Field Type = json */
 			case 'media':
-
-				if(!deftrue('e_DEBUG_MEDIAPICKER'))
-				{
-					return null;
-				}
 
 				$max = varset($parms['max'],1);
 
