@@ -1775,6 +1775,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				{
 					return '<div class="dropdown-menu">'.$text.'</div>'; // @todo use template?
 				}
+
+				e107::getDebug()->log("Theme shortcode (".$method.") could not be found for use in sitelink");
+				return array();
 			}
 			
 			if(strpos($method,"("))
@@ -1782,6 +1785,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				list($method,$prm) = explode("(",$method);
 				$parm = rtrim($prm,")");	
 			}
+
+			if(!file_exists(e_PLUGIN.$path."/e_sitelink.php"))
+			{
+
+			}
+
 
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
