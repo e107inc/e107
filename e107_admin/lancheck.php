@@ -896,12 +896,12 @@ class lancheck
 
 		$feed = 'https://e107.org/languagepacks.xml';
 
-		if(!empty(e_VERSION))
+		$version = e_VERSION;
+
+		if(!empty($version))
 		{
 			$feed .= "?ver=". preg_replace('/[^\d\.]/','',e_VERSION);
 		}
-
-
 
 		$languages = array();
 
