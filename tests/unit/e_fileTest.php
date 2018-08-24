@@ -53,7 +53,7 @@
 			foreach($isCleanTest as $file)
 			{
 				$actual = $this->fl->isClean($file['path'], $file['path']);
-				$this->assertEquals($file['expected'],$actual, "isClean() failed with error code: ".$this->fl->getErrorCode());
+				$this->assertEquals($file['expected'],$actual, "isClean() failed on {$file['path']} with error code: ".$this->fl->getErrorCode());
 			}
 
 		}
