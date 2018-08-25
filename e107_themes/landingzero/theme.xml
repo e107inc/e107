@@ -7,6 +7,7 @@
 	<plugins>
 		<plugin name='gallery' url='core' />
 		<plugin name='rss_menu' url='core' />
+		<plugin name='tinymce4' url='core' />
 		<plugin name='social' url='core' />
 	</plugins>
 	<keywords>
