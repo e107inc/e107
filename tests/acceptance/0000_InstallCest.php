@@ -25,6 +25,7 @@ class InstallCest
 		$I->wantTo("Install e107 with default settings");
 		$this->installe107($I);
 		$this->testNoUpdatesRequired($I);
+		$this->checkTinyMceIsInstalled($I);
 
 	}
 
@@ -33,6 +34,7 @@ class InstallCest
 		$I->wantTo("Install e107 with bootstrap3");
 		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
 		$this->testNoUpdatesRequired($I);
+		$this->checkTinyMceIsInstalled($I);
 
 		// Check install.xml Custom Fields in Page table.
 		$I->amOnPage('/page.php?id=4');
@@ -47,6 +49,7 @@ class InstallCest
 		$I->wantTo("Install e107 with landingzero");
 		$this->installe107($I, array('sitetheme'=>'landingzero'));
 		$this->testNoUpdatesRequired($I);
+		$this->checkTinyMceIsInstalled($I);
 
 	}
 
@@ -157,6 +160,18 @@ class InstallCest
 		$I->wantTo("Check there are no updates required after install");
 
 		$I->dontSee("Update", 'button span');
+	}
+
+
+	private function checkTinyMceIsInstalled(AcceptanceTester $I)
+	{
+		$I->amOnPage('/e107_admin/admin.php');
+		$I->seeInSource('TinyMce4');
+		$I->amOnPage('/e107_plugins/tinymce4/admin_config.php');
+		$I->see("Paste as text by default");
+
+
+
 	}
 
 }
