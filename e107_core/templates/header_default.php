@@ -140,12 +140,22 @@ else
 // C: Send start of HTML
 //
 
-if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
-if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-$siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
-if($pref['sitebutton']) e107::meta('og:image',$siteButton);
+if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
+if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
+if(!empty($pref['sitebutton']))
+{
+	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitebutton'],'w=800',false, true) : $tp->replaceConstants($pref['sitebutton'],'full');
+	e107::meta('og:image',$siteButton);
+	unset($siteButton);
+}
+elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
+{
+	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+	e107::meta('og:image',$siteLogo);
+	unset($siteLogo);
+}
+
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
-unset($siteButton);
 
 
 // Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg

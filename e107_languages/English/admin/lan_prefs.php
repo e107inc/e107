@@ -234,7 +234,7 @@ define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers 
 
 define("PRFLAN_224", "User registration system");
 
-define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 144px in width and height.");
+define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 800px in width and height.");
 define("PRFLAN_226", "Used by some themes as the header image on some pages.");
 define("PRFLAN_227", "Used by some themes. Place 'SITETAG' in your theme to use this value.");
 define("PRFLAN_228", "Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.");
