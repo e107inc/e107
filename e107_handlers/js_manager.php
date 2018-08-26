@@ -1343,7 +1343,8 @@ class e_jsmanager
 
 					$insertID ='';
 
-					if(strpos($path, 'http') !== 0) // local file.
+					// issue #3390 Fix for protocol-less path
+					if(strpos($path, 'http') !== 0 && strpos($path, '//') !== 0) // local file.
 					{
 
 						if($label === 'Theme CSS') // add an id for local theme stylesheets. 
