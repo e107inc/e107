@@ -551,18 +551,18 @@ class e_bbcode
 
 		require(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
 
-		$pref = e107::getPref('e_bb_list');
-		    
-		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
-		{
-			foreach($pref as $val)
-			{
-				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
-				{
-					require(e_PLUGIN.$val."/e_bb.php");
-				}
-			}
-		}
+//		$pref = e107::getPref('e_bb_list');
+//
+//		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
+//		{
+//			foreach($pref as $val)
+//			{
+//				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+//				{
+//					require(e_PLUGIN.$val."/e_bb.php");
+//				}
+//			}
+//		}
 	
 		$temp = array();
 	    $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
@@ -606,8 +606,21 @@ class e_bbcode
 	//	{
 		//	$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;
 	//	}
-	
-		
+
+
+		$pref = e107::getPref('e_bb_list');
+
+		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
+		{
+			foreach($pref as $val)
+			{
+				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+				{
+					require(e_PLUGIN.$val."/e_bb.php");
+				}
+			}
+		}
+
 		$bbcode_shortcodes = e107::getScBatch('bbcode');	
 				
 		$data = array(
