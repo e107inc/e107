@@ -1731,7 +1731,7 @@ class media_admin_ui extends e_admin_ui
 			<button id='etrigger-submit' type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>".LAN_SAVE."</span>
 			</button>
-			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel'  data-close='true'>
+			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close e-dialog-cancel' name='cancel_image' value='Cancel'  data-close='true'>
 			<span>".LAN_CANCEL."</span>
 			</button>
 			</div>";
@@ -2439,14 +2439,15 @@ class media_admin_ui extends e_admin_ui
 			}
 		}
 	}
-			
-		
-	
-	
-	
 
+
+	/**
+	 * @deprecated by $prefs.
+	 * @return bool|void
+	 */
 	function settingsPage()
 	{
+		return false;
 		global $pref;
 
 		$frm = e107::getForm();

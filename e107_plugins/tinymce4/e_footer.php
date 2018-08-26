@@ -170,9 +170,9 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 
 			});
 
-			$('.e-dialog-close').click(function(){
+			$('.e-dialog-cancel').click(function(){
 
-				// top.tinymce.activeEditor.windowManager.close();
+				top.tinymce.activeEditor.windowManager.close();
 
 			});
 
