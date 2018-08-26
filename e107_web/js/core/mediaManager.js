@@ -216,12 +216,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		if (path == '') return;
 
 		// Only Do width/height styling on bbcodes --
-		if(width != '' && width !== undefined)
+		if(width != '' && width != 0 && width !== undefined)
 		{
+			console.log('Width: '+ width);
 			style = style + 'width:' + width + 'px;';
 		}
 
-		if(height != '' && height !== undefined)
+		if(height != '' && height != 0 && height !== undefined)
 		{
 			style = style + 'height:' + height + 'px;';
 		}
