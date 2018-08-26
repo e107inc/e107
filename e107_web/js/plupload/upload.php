@@ -54,6 +54,10 @@
 		$fileName = $_FILES['file']['name'];
 	}
 
+//	$array = array("jsonrpc" => "2.0", "error" => array('code'=>$_FILES['file']['error'], 'message'=>'Failed to move file'), "id" => "id",  'data'=>$_FILES );
+
+
+
 // Make sure the fileName is unique but only if chunking is disabled
 	if($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName))
 	{
@@ -145,9 +149,25 @@
 				die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 			}
 		}
-		else
+		else // Misc Error. 
 		{
-			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file. '.ini_get('upload_max_filesize').'"}, "id" : "id"}');
+			$phpFileUploadErrors = array(
+			    0 => 'There is no error, the file uploaded with success',
+			    1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+			    2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+			    3 => 'The uploaded file was only partially uploaded',
+			    4 => 'No file was uploaded',
+			    6 => 'Missing a temporary folder',
+			    7 => 'Failed to write file to disk.',
+			    8 => 'A PHP extension stopped the file upload.',
+			);
+
+			$err = (int) $_FILES['file']['error'];
+
+			$array = array("jsonrpc" => "2.0", "error" => array('code'=>$err, 'message'=> $phpFileUploadErrors[$err]), "id" => "id",  'data'=>$_FILES );
+
+			echo json_encode($array);
+			exit;
 		}
 
 
@@ -195,7 +215,7 @@
 	if(e107::getFile()->isClean($filePath) !== true)
 	{
 		@unlink($filePath);
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Bad File Detected."}, "id" : "id"}');
+		die('{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected."}, "id" : "id"}');
 	}
 
 

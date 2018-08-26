@@ -1519,8 +1519,8 @@ class e_form
 				    $('#".$name_id."_prev').dropzone({ 
 				        url: '".e_JS."plupload/upload.php?for=".$cat."',
 				        createImageThumbnails: false,
-				        uploadMultiple :true,
-						  dictDefaultMessage: \"".defset('LAN_UI_DROPZONE_DROP_FILES', "Drop files here to upload")."\",
+				        uploadMultiple :false,
+						dictDefaultMessage: \"".defset('LAN_UI_DROPZONE_DROP_FILES', "Drop files here to upload")."\",
 				        maxFilesize: ".(int) ini_get('upload_max_filesize').",
 				         success: function (file, response) {
 				            
