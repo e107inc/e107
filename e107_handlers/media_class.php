@@ -1114,8 +1114,7 @@ class e_media
 	 */
 	public function detectType($mediaURL)
 	{
-		list($id,$type) = explode(".",$mediaURL,2);
-		unset($id);
+		$type = pathinfo($mediaURL,PATHINFO_EXTENSION);
 
 		foreach($this->mimeExtensions as $key=>$exts)
 		{
