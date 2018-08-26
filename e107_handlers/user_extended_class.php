@@ -862,106 +862,73 @@ class e107_user_extended
 			
 				return $ret;
 				
-		  break;
+		    break;
 
-        case EUF_CHECKBOX : //checkboxes
+	        case EUF_CHECKBOX : //checkboxes
 
-		//	print_a($choices);
-			if(!is_array($curval))
-			{
-				$curval = e107::unserialize($curval);
-			}
+				if(!is_array($curval))
+				{
+					$curval = e107::unserialize($curval);
+				}
 
+				return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
 
+			break;
 
-			return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
-/*
-
-			foreach($choices as $choice)
-			{
+			case EUF_DROPDOWN : //dropdown
+			  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} {$title} >\n";
+			  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+			  foreach($choices as $choice)
+			  {
 				$choice = trim($choice);
-				
-				if(strpos($choice,"|")!==FALSE)
+				$choice = deftrue($choice, $choice);
+				$sel = ($curval == $choice) ? " selected='selected' " : "";
+				$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+			  }
+			  $ret .= "</select>\n";
+			  return $ret;
+			  break;
+
+			case EUF_PREDEFINED : // predefined list, shown in dropdown
+				$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
+				$filename = e_CORE.'sql/extended_'.$listRoot.'.php';
+				if (!is_readable($filename)) return 'No file: '.$filename;
+				require_once($filename);
+				$className = 'extended_'.$listRoot;
+				if (!class_exists($className)) return '?????';
+				$temp = new $className();
+				if (!method_exists($className, 'getValue')) return '???-???';
+				$temp->pointerReset();
+
+				$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required} >\n";
+				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chooses it.
+				while (FALSE !== ($row = $temp->getValue(0, 'next')))
 				{
-	            	list($val,$label) = explode("|",$choice);
+					$val = key($row);
+					$choice = $temp->getValue($val, 'display');
+					$sel = ($curval == $val) ? " selected='selected' " : '';
+					$ret .= "<option value='{$val}' {$sel}>{$choice}</option>\n";
 				}
-				elseif(strpos($choice," => ")!==FALSE) // new in v2.x
+				$ret .= "</select>\n";
+				return $ret;
+
+			case EUF_DB_FIELD : //db_field
+
+				if(empty($choices))
 				{
-	            	list($val,$label) = explode(" => ",$choice);
+					e107::getDebug()->log("DB Field Choices is empty");
 				}
-				else
-				{
-	            	$val = $choice;
-					$label = $choice;
-				}
-				$label = deftrue($label, $label);
-				
-				if(deftrue('BOOTSTRAP'))
-				{
-					$ret .= $frm->checkbox($fname.'[]',$val,($curval == $val), array('label'=>$label));
-				}
-				else 
-				{
-					$chk = ($curval == $val)? " checked='checked' " : "";
-					$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
-				}
-			}
 
-
-			
-			return $ret;
-
-*/
-
-		break;
-
-		case EUF_DROPDOWN : //dropdown
-		  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} {$title} >\n";
-		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
-		  foreach($choices as $choice)
-		  {
-			$choice = trim($choice);
-			$choice = deftrue($choice, $choice);
-			$sel = ($curval == $choice) ? " selected='selected' " : "";
-			$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
-		  }
-		  $ret .= "</select>\n";
-		  return $ret;
-		  break;
-
-		case EUF_PREDEFINED : // predefined list, shown in dropdown
-			$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
-			$filename = e_CORE.'sql/extended_'.$listRoot.'.php';
-			if (!is_readable($filename)) return 'No file: '.$filename;
-			require_once($filename);
-			$className = 'extended_'.$listRoot;
-			if (!class_exists($className)) return '?????';
-			$temp = new $className();
-			if (!method_exists($className, 'getValue')) return '???-???';
-			$temp->pointerReset();
-			
-			$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required} >\n";
-			$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chooses it.
-			while (FALSE !== ($row = $temp->getValue(0, 'next')))
-			{
-				$val = key($row);
-				$choice = $temp->getValue($val, 'display');
-				$sel = ($curval == $val) ? " selected='selected' " : '';
-				$ret .= "<option value='{$val}' {$sel}>{$choice}</option>\n";
-			}
-			$ret .= "</select>\n";
-			return $ret;
-
-		case EUF_DB_FIELD : //db_field
-				
-		
 				$sql = e107::getDb('ue');
-				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
-				if($sql->select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
-					$choiceList = $sql->db_getList('ALL',FALSE);
-					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  >\n";
+				$order = ($choices[3]) ? "ORDER BY " . $tp->toDB($choices[3], true) : "";
+
+				if($sql->select($tp->toDB($choices[0], true), $tp->toDB($choices[1], true) . "," . $tp->toDB($choices[2], true), "1 $order"))
+				{
+					$choiceList = $sql->db_getList('ALL', false);
+					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  {$title}>\n";
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+
 					foreach($choiceList as $cArray)
 					{
 						$cID = trim($cArray[$choices[1]]);
@@ -969,47 +936,52 @@ class e107_user_extended
 						$sel = ($curval == $cID) ? " selected='selected' " : "";
 						$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
 					}
+
 					$ret .= "</select>\n";
+
 					return $ret;
-				} else {
-					return "";
 				}
+				else
+				{
+					return "<span class='label label-danger'>Failed to load</span>";
+				}
+
 				break;
 
 			case EUF_TEXTAREA : //textarea
-				return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
-				break;
+					return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
+					break;
 
 			case EUF_DATE : //date
-			
-				if($curval == '0000-00-00') // Quick datepicker fix. 
-				{
-					$curval = '';
-				}
 
-				if(THEME_LEGACY === true)
-				{
-					return e107::getForm()->text($fname,$curval,10,array('placeholder'=>'yyyy-mm-dd'));
-				}
-			
-				return e107::getForm()->datepicker($fname,$curval,array('format'=>'yyyy-mm-dd','return'=>'string'));
-				break;
+					if($curval == '0000-00-00') // Quick datepicker fix.
+					{
+						$curval = '';
+					}
+
+					if(THEME_LEGACY === true)
+					{
+						return e107::getForm()->text($fname,$curval,10,array('placeholder'=>'yyyy-mm-dd'));
+					}
+
+					return e107::getForm()->datepicker($fname,$curval,array('format'=>'yyyy-mm-dd','return'=>'string'));
+					break;
 
 			case EUF_LANGUAGE : // language
-				$lanlist = e107::getLanguage()->installed();
-				sort($lanlist);
-				
-            	$ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
-				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
-				foreach($lanlist as $choice)
-				{
-					$choice = trim($choice);
-					$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
-					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
-				}
-				$ret .= "</select>\n";
-				
-           	break;
+					$lanlist = e107::getLanguage()->installed();
+					sort($lanlist);
+
+	                $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
+					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+					foreach($lanlist as $choice)
+					{
+						$choice = trim($choice);
+						$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
+						$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+					}
+					$ret .= "</select>\n";
+
+	            break;
 
 		}
 
