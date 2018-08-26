@@ -671,7 +671,7 @@ class e_db_mysql
 	 * @param boolean $multi if true, fetch all (multi mode)
 	 * @param string $indexField field name to be used for indexing when in multi mode
 	 * @param boolean $debug
-	 * @return array
+	 * @return string|array
 	 */
 	public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
