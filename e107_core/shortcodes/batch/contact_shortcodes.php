@@ -168,6 +168,27 @@ class contact_shortcodes extends e_shortcode
 		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='".$class."' />";	
 	}
 
+	function sc_contact_gdpr_check($parm='')
+	{
+		$parm['class'] = (!empty($parm['class'])) ? $parm['class'] : '';
+		$parm = array_merge(array('required'=>1), $parm);
+		return e107::getForm()->checkbox('gdpr', 1,false, $parm);
+	}
+
+	function sc_contact_gdpr_link($parm='')
+	{
+		$pp = e107::getPref('contact_privacypolicy', '');
+		if (!$pp)
+		{
+			return '';
+		}
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		$link = e107::getParser()->lanVars('<span class="[x]"><a href="[y]" target="_blank">[z]</a></span>', array($class, $pp, LANCONTACT_22));
+		$text = e107::getParser()->lanVars(LANCONTACT_23, $link);
+		return $text;
+	}
+
+
 }
 
 ?>
