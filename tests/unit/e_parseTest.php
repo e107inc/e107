@@ -99,7 +99,7 @@ TMP;
 
 			$actual = $this->tp->toForm($db);
 
-			$this->assertEquals($db,$actual);
+			$this->assertEquals($orig, $actual);
 			
 		}
 /*
