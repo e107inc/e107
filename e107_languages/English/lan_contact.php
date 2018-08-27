@@ -37,5 +37,9 @@ define("LANCONTACT_17", "Please enter your name.");
 define("LANCONTACT_18", "Please enter your e-mail address.");
 define("LANCONTACT_19", "Please enter the subject for your e-mail.");
 define("LANCONTACT_20", "Please enter your message for us.");
+define("LANCONTACT_21", "I consent to having this website store my submitted information so they can respond to my inquiry"); //   By using this form, you agree to the storage and processing of your data through this site.");
+define("LANCONTACT_22", "Privacy policy");
+define("LANCONTACT_23", "You can find our privacy policy here: [x]");
+define("LANCONTACT_24", "GDPR Agreement");
 
 
