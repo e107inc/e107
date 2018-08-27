@@ -516,14 +516,22 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							<div class='smalltext field-help'>".PRFLAN_274."</div>
 						</td>
 					</tr>
-						<tr>
+
+					<tr>
+						<td><label for='contact-privacypolicy'>".PRFLAN_277."</label></td>
+						<td>
+							".$frm->text('contact_privacypolicy', $pref['contact_privacypolicy'], 200, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_278."</div>
+						</td>
+					</tr>
+
+					<tr>
 						<td><label for='contact-filter'>".PRFLAN_270."</label></td>
 						<td>
 							".$frm->textarea('contact_filter', $pref['contact_filter'], 5, 59, array('size'=>'xxlarge'))."
 							<div class='smalltext field-help'>".PRFLAN_271."</div>
 						</td>
 					</tr>
-
 
 
 
@@ -1112,6 +1120,13 @@ else
 		$pref['post_script'] = 255; //set to userclass "no one" if the old class isn't part of the list of allowed userclasses
 		$savePrefs = true;
 	}
+}
+
+// add new pref contact_privacypolicy
+if (!isset($pref['contact_privacypolicy']))
+{
+	$pref['contact_privacypolicy'] = '';
+	$savePrefs = true;
 }
 
 if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
