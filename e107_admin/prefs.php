@@ -518,14 +518,6 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					</tr>
 
 					<tr>
-						<td><label for='contact-privacypolicy'>".PRFLAN_277."</label></td>
-						<td>
-							".$frm->text('contact_privacypolicy', $pref['contact_privacypolicy'], 200, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_278."</div>
-						</td>
-					</tr>
-
-					<tr>
 						<td><label for='contact-filter'>".PRFLAN_270."</label></td>
 						<td>
 							".$frm->textarea('contact_filter', $pref['contact_filter'], 5, 59, array('size'=>'xxlarge'))."
@@ -556,6 +548,39 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			</table>
 			".pref_submit('email')."
 		</fieldset>";
+
+
+// GDPR Settings -----------------------------
+$text .= "
+		<fieldset class='e-hideme' id='core-prefs-gdpr'>
+			<legend>".PRFLAN_277."</legend>
+			<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td><label for='gdpr-privacypolicy'>".PRFLAN_278."</label></td>
+						<td>
+							".$frm->text('gdpr_privacypolicy', $pref['gdpr_privacypolicy'], 200, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_279."</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td><label for='gdpr-termsandconditions'>".PRFLAN_280."</label></td>
+						<td>
+							".$frm->text('gdpr_termsandconditions', $pref['gdpr_termsandconditions'], 200, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_281."</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			".pref_submit('display')."
+		</fieldset>
+";
+
 
 
 $text .= "
@@ -1120,13 +1145,6 @@ else
 		$pref['post_script'] = 255; //set to userclass "no one" if the old class isn't part of the list of allowed userclasses
 		$savePrefs = true;
 	}
-}
-
-// add new pref contact_privacypolicy
-if (!isset($pref['contact_privacypolicy']))
-{
-	$pref['contact_privacypolicy'] = '';
-	$savePrefs = true;
 }
 
 if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
@@ -2058,6 +2076,7 @@ function prefs_adminmenu()
 		$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
 	$var['core-prefs-main']['text'] = PRFLAN_1;
 	$var['core-prefs-email']['text'] = PRFLAN_254;
+	$var['core-prefs-gdpr']['text'] = PRFLAN_277;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 //	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.
