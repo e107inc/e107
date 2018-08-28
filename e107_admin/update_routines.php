@@ -122,8 +122,6 @@ if (!$dont_check_update)
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
-	$dbupdate['219_to_220'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.9','2.2.0')), 'message'=> null, 'hide_when_complete'=>true);
-
 	$dbupdate['218_to_219'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.8','2.1.9')), 'message'=> null, 'hide_when_complete'=>true);
 
 	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
@@ -564,21 +562,6 @@ function update_core_database($type = '')
 
 	return $just_check;
 }
-
-
-	function update_219_to_220($type='')
-	{
-		$sql = e107::getDb();
-		$just_check = ($type == 'do') ? false : true;
-
-		// add new pref contact_privacypolicy
-		if (!e107::getPref('contact_privacypolicy', ''))
-		{
-			e107::getConfig()->setPref('contact_privacypolicy', '')->save(false, true);
-		}
-
-		return $just_check;
-	}
 
 
 	function update_218_to_219($type='')
