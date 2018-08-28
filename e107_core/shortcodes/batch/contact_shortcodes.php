@@ -177,13 +177,13 @@ class contact_shortcodes extends e_shortcode
 
 	function sc_contact_gdpr_link($parm='')
 	{
-		$pp = e107::getPref('contact_privacypolicy', '');
+		$pp = e107::getPref('gdpr_privacypolicy', '');
 		if (!$pp)
 		{
 			return '';
 		}
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		$link = e107::getParser()->lanVars('<span class="[x]"><a href="[y]" target="_blank">[z]</a></span>', array($class, $pp, LANCONTACT_22));
+		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LANCONTACT_22);
 		$text = e107::getParser()->lanVars(LANCONTACT_23, $link);
 		return $text;
 	}
