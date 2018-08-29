@@ -1,0 +1,48 @@
+# This file is a template, and might need editing before it works on your project.
+# Select image from https://hub.docker.com/_/php/
+image: php:apache
+
+# Select what we should cache between builds
+cache:
+  paths:
+  - vendor/
+
+before_script:
+- apt-get update -y
+- apt-get install -y git unzip #libmcrypt-dev libpq-dev libcurl4-gnutls-dev libicu-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev   libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev
+## Install PHP extensions
+#- docker-php-ext-install mbstring mcrypt pdo_pgsql curl json intl gd xml zip bz2 opcache
+# Install & enable Xdebug for code coverage reports
+- pecl install xdebug
+- docker-php-ext-enable xdebug
+# Install and run Composer
+- curl -sS https://getcomposer.org/installer | php
+- php composer.phar install
+- git submodule update --init --recursive --remote
+#- yum install -y epel-release yum-utils
+#- yum install -y "http://rpms.remirepo.net/enterprise/remi-release-$(rpm -q --queryformat '%{VERSION}' centos-release).rpm"
+#- yum list -q 'php[0-9][0-9]' | awk '/php/ {print $1}' | xargs yum install -y
+#- yum install -y mariadb
+#- service mariadb restart
+#- yum install -y httpd
+#- sed -i 's/AllowOverride None/AllowOverride All/ig' /etc/httpd/conf/httpd.conf
+#- curl -sS https://getcomposer.org/installer | php
+#- php composer.phar install
+
+# Bring in any services we need http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
+# See http://docs.gitlab.com/ce/ci/services/README.html for examples.
+services:
+- mysql:5.7
+
+# Set any variables we need
+variables:
+  # Configure mysql environment variables (https://hub.docker.com/r/_/mysql/)
+  MYSQL_DATABASE: mysql_database
+  MYSQL_ROOT_PASSWORD: mysql_strong_password
+
+# Run our tests
+# If Xdebug was installed you can generate a coverage report and see code coverage metrics.
+test:php7.0:
+  image: php:7.0-apache
+  script:
+  - ./vendor/bin/codecept run --steps --debug --coverage --coverage-xml --coverage-html
