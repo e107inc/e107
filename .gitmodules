@@ -1,8 +1,8 @@
 [submodule "e107"]
 	path = e107
 	url = https://github.com/e107inc/e107.git
-	branch = .
+	branch = master
 [submodule "lib/cpaneluapi"]
 	path = lib/cpaneluapi
 	url = https://github.com/N1ghteyes/cpanel-UAPI-php-class.git
-	branch = .
+	branch = master
