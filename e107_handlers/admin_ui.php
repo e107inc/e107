@@ -5578,14 +5578,16 @@ class e_admin_ui extends e_admin_controller_ui
 		$_value = $_POST['value'];
 		$parms = $this->fields[$_name]['readParms'] ? $this->fields[$_name]['readParms'] : '';
 		if(!is_array($parms)) parse_str($parms, $parms);
-		if(vartrue($parms['editable'])) $this->fields[$_name]['inline'] = true;
+		if(!empty($parms['editable'])) $this->fields[$_name]['inline'] = true;
 		
-		if(vartrue($this->fields[$_name]['noedit']) || vartrue($this->fields[$_name]['nolist']) || !vartrue($this->fields[$_name]['inline']))
+		if(vartrue($this->fields[$_name]['noedit']) || vartrue($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']))
 		{
 			header($protocol.': 403 Forbidden', true, 403);
 			header("Status: 403 Forbidden", true, 403);
 			echo ADLAN_86; //Forbidden
-			$this->logajax("Forbidden");
+
+			$result = var_export($this->fields[$_name], true);
+			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField:\n".$result);
 			return;
 		}
 		
