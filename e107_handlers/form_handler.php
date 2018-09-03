@@ -5871,6 +5871,8 @@ class e_form
 				$label = varset($parms['label'], 'LAN_EDIT');
 				$max = varset($parms['max'],5);
 
+				$ret .= "<div class='mediaselector-multi field-element-images'>";
+
 				for ($i=0; $i < $max; $i++)
 				{				
 					$k 		= $key.'['.$i.'][path]';
@@ -5878,7 +5880,8 @@ class e_form
 					
 					$ret .=  $this->imagepicker($k, $ival, defset($label, $label), $parms);		
 				}
-				
+
+				$ret .= "</div>";
 			break;
 
 			/** Generic Media Pick for combinations of images, audio, video, glyphs, files, etc. Field Type = json */
@@ -5886,7 +5889,7 @@ class e_form
 
 				$max = varset($parms['max'],1);
 
-				$ret = '';
+				$ret = "<div class='mediaselector-multi field-element-media'>";
 				for ($i=0; $i < $max; $i++)
 				{
 					$k 		= $key.'['.$i.'][path]';
@@ -5894,6 +5897,8 @@ class e_form
 
 					$ret .=  $this->mediapicker($k, $ival, $parms);
 				}
+
+				$ret .= "</div>";
 
 				return $ret;
 			break;
