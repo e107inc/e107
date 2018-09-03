@@ -324,7 +324,7 @@ class e107
 	 * @param $e107_paths
 	 * @param $e107_root_path
 	 * @param array $e107_config_override
-	 * @return e107
+	 * @return object|false  e107
 	 */
 	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
 	{
@@ -1265,7 +1265,7 @@ class e107
 	/**
 	 * Retrieve text parser singleton object
 	 *
-	 * @return e_parse
+	 * @return object e_parse
 	 */
 	public static function getParser()
 	{
@@ -1275,7 +1275,7 @@ class e107
 	/**
 	 * Retrieve sc parser singleton object
 	 *
-	 * @return e_parse_shortcode
+	 * @return object e_parse_shortcode
 	 */
 	public static function getScParser()
 	{
@@ -1286,7 +1286,7 @@ class e107
 	/**
 	 * Retrieve secure_image singleton object
 	 *
-	 * @return secure_image
+	 * @return object secure_image
 	 */
 	public static function getSecureImg()
 	{
@@ -1333,7 +1333,7 @@ class e107
 	 * $instance_id
 	 *
 	 * @param string $instance_id
-	 * @return e_db_mysql
+	 * @return object e_db_mysql
 	 */
 	public static function getDb($instance_id = '')
 	{
@@ -1343,7 +1343,7 @@ class e107
 	/**
 	 * Retrieve cache singleton object
 	 *
-	 * @return ecache
+	 * @return object ecache
 	 */
 	public static function getCache()
 	{
@@ -1353,7 +1353,7 @@ class e107
 	/**
 	 * Retrieve bbcode singleton object
 	 *
-	 * @return e_bbcode
+	 * @return object e_bbcode
 	 */
 	public static function getBB()
 	{
@@ -1363,7 +1363,7 @@ class e107
 	/**
 	 * Retrieve user-session singleton object
 	 *
-	 * @return UserHandler
+	 * @return object UserHandler
 	 */
 	public static function getUserSession()
 	{
@@ -1374,7 +1374,7 @@ class e107
 	 * Retrieve core session singleton object(s)
 	 *
 	 * @param null $namespace
-	 * @return e_core_session
+	 * @return object e_core_session
 	 */
 	public static function getSession($namespace = null)
 	{
@@ -1391,7 +1391,7 @@ class e107
 	/**
 	 * Retrieve redirection singleton object
 	 *
-	 * @return redirection
+	 * @return object redirection
 	 */
 	public static function getRedirect()
 	{
@@ -1402,7 +1402,7 @@ class e107
 	/**
 	 * Retrieve rater singleton object
 	 *
-	 * @return rater
+	 * @return object rater
 	 */
 	public static function getRate()
 	{
@@ -1412,7 +1412,7 @@ class e107
 	/**
 	 * Retrieve sitelinks singleton object
 	 *
-	 * @return sitelinks
+	 * @return object sitelinks
 	 */
 	public static function getSitelinks()
 	{
@@ -1423,7 +1423,7 @@ class e107
 	/**
 	 * Retrieve render singleton object
 	 *
-	 * @return e107table
+	 * @return object e107table
 	 */
 	public static function getRender()
 	{
@@ -1433,7 +1433,7 @@ class e107
 	/**
 	 * Retrieve e107Email singleton object
 	 *
-	 * @return e107Email
+	 * @return object e107Email
 	 */
 	public static function getEmail($overrides=null)
 	{
@@ -1444,7 +1444,7 @@ class e107
 	/**
 	 * Retrieve e107Email mail mailer object.
 	 *
-	 * @return e107MailManager
+	 * @return object e107MailManager
 	 */
 	public static function getBulkEmail()
 	{
@@ -1454,7 +1454,7 @@ class e107
 	/**
 	 * Retrieve event singleton object
 	 *
-	 * @return e107_event
+	 * @return object e107_event
 	 */
 	public static function getEvent()
 	{
@@ -1464,7 +1464,7 @@ class e107
 	/**
 	 * Retrieve array storage singleton object
 	 *
-	 * @return e_array
+	 * @return object e_array
 	 */
 	public static function getArrayStorage()
 	{
@@ -1474,7 +1474,7 @@ class e107
 	/**
 	 * Retrieve menu handler singleton object
 	 *
-	 * @return e_menu
+	 * @return object e_menu
 	 */
 	public static function getMenu()
 	{
@@ -1484,7 +1484,7 @@ class e107
 
 	/**
 	 * Retrieve e_theme singleton object
-	 * @return e_theme
+	 * @return object e_theme
 	 */
 	public static function getTheme($themedir='front', $clearCache=false)
 	{
@@ -1524,7 +1524,7 @@ class e107
 	/**
 	 * Retrieve URL singleton object
 	 *
-	 * @return eURL
+	 * @return object eURL
 	 */
 	public static function getUrl()
 	{
@@ -1535,7 +1535,7 @@ class e107
 	 * Retrieve file handler singleton or new fresh object
 	 *
 	 * @param boolean $singleton default true
-	 * @return e_file
+	 * @return object e_file
 	 */
 	public static function getFile($singleton = false)
 	{
@@ -1551,7 +1551,7 @@ class e107
 	 *
 	 * @param boolean $singleton default false
 	 * @param boolean $tabindex passed to e_form when initialized as an object (not singleton)
-	 * @return e_form
+	 * @return object e_form
 	 */
 	public static function getForm($singleton = false, $tabindex = false)
 	{
@@ -1565,7 +1565,7 @@ class e107
 	/**
 	 * Retrieve admin log singleton object
 	 * @Deprecated - use e107::getLog();
-	 * @return e_admin_log
+	 * @return object e_admin_log
 	 */
 	public static function getAdminLog()
 	{
@@ -1575,7 +1575,7 @@ class e107
 	/**
 	 * Retrieve admin log singleton object
 	 *
-	 * @return e_admin_log
+	 * @return object e_admin_log
 	 */
 	public static function getLog()
 	{
@@ -1585,7 +1585,7 @@ class e107
 	/**
 	 * Retrieve date handler singleton object
 	 *
-	 * @return convert
+	 * @return object convert
 	 */
 	public static function getDateConvert()
 	{
@@ -1595,7 +1595,7 @@ class e107
 	/**
 	 * Retrieve date handler singleton object - preferred method. 
 	 *
-	 * @return convert
+	 * @return object convert
 	 */
 	public static function getDate()
 	{
@@ -1606,7 +1606,7 @@ class e107
     /**
      * Retrieve date handler singleton object - preferred method. 
      *
-     * @return e107_db_debug
+     * @return object e107_db_debug
      */
     public static function getDebug() //XXX Discuss  - possible with current setup?
     {
@@ -1616,7 +1616,7 @@ class e107
 	/**
 	 * Retrieve notify handler singleton object
 	 *
-	 * @return notify
+	 * @return object notify
 	 */
 	public static function getNotify()
 	{
@@ -1627,7 +1627,7 @@ class e107
 	/**
 	 * Retrieve override handler singleton object
 	 *
-	 * @return override
+	 * @return object override
 	 */
 	public static function getOverride()
 	{
@@ -1639,7 +1639,7 @@ class e107
 	/**
 	 * Retrieve Language handler singleton object
 	 *
-	 * @return language
+	 * @return object language
 	 */
 	public static function getLanguage()
 	{
@@ -1649,7 +1649,7 @@ class e107
 	/**
 	 * Retrieve IP/ban handler singleton object
 	 *
-	 * @return eIPHandler
+	 * @return object eIPHandler
 	 */
 	public static function getIPHandler()
 	{
@@ -1659,7 +1659,7 @@ class e107
 	/**
 	 * Retrieve Xml handler singleton or new instance object
 	 * @param mixed $singleton false - new instance, true - singleton from default registry location, 'string' - registry path
-	 * @return xmlClass
+	 * @return object xmlClass
 	 */
 	public static function getXml($singleton = true)
 	{
@@ -1692,7 +1692,7 @@ class e107
 	/**
 	 * Retrieve userclass singleton object
 	 *
-	 * @return user_class
+	 * @return object user_class
 	 */
 	public static function getUserClass()
 	{
@@ -1705,7 +1705,7 @@ class e107
 	 * @param integer $user_id target user
 	 * @param boolean $checkIfCurrent if tru user_id will be compared to current user, if there is a match
 	 * 	current user object will be returned
-	 * @return e_system_user
+	 * @return object e_system_user
 	 */
 	public static function getSystemUser($user_id, $checkIfCurrent = true)
 	{
@@ -1728,7 +1728,7 @@ class e107
 	/**
 	 * Simple replacement for deprecated get_user_data(). e107::user();
 	 * @param $uid integer user_id or leave empty for currently logged in user. 
-	 * @return array of user data
+	 * @return array|bool of user data
 	 */
 	public static function user($uid=null)
 	{
@@ -1817,7 +1817,7 @@ class e107
 	 * Retrieve user model object.
 	 *
 	 * @param integer $user_id target user
-	 * @return e_user_extended_structure_tree
+	 * @return object e_user_extended_structure_tree
 	 */
 	public static function getUserStructure()
 	{
@@ -1826,7 +1826,7 @@ class e107
 
 	/**
 	 * Retrieve User Extended handler singleton object
-	 * @return e107_user_extended
+	 * @return object e107_user_extended
 	 */
 	public static function getUserExt()
 	{
@@ -1835,7 +1835,7 @@ class e107
 
 	/**
 	 * Retrieve User Perms (admin perms) handler singleton object
-	 * @return e_userperms
+	 * @return object e_userperms
 	 */
 	public static function getUserPerms()
 	{
@@ -1844,7 +1844,7 @@ class e107
 
 	/**
 	 * Retrieve online users handler singleton object
-	 * @return e_ranks
+	 * @return object e_ranks
 	 */
 	public static function getRank()
 	{
@@ -1853,7 +1853,7 @@ class e107
 	
 	/**
 	 * Retrieve plugin handler singleton object
-	 * @return e107plugin
+	 * @return object e107plugin
 	 */
 	public static function getPlugin()
 	{
@@ -1864,7 +1864,7 @@ class e107
 
 	/**
 	 * Retrieve plugin class singleton object
-	 * @return e_plugin
+	 * @return object e_plugin
 	 */
 	public static function getPlug()
 	{
@@ -1873,7 +1873,7 @@ class e107
 
 	/**
 	 * Retrieve online users handler singleton object
-	 * @return e_online
+	 * @return object e_online
 	 */
 	public static function getOnline()
 	{
@@ -1883,7 +1883,7 @@ class e107
 
 	/**
 	 * Retrieve chart handler singleton object
-	 * @return e_chart
+	 * @return object e_chart
 	 */
 	public static function getChart()
 	{
@@ -1893,7 +1893,7 @@ class e107
 
 	/**
 	 * Retrieve comments handler singleton object
-	 * @return comment
+	 * @return object comment
 	 */
 	public static function getComment()
 	{
@@ -1902,7 +1902,7 @@ class e107
 
 	/**
 	 * Retrieve comments handler singleton object
-	 * @return e_customfields
+	 * @return object e_customfields
 	 */
 	public static function getCustomFields()
 	{
@@ -1911,7 +1911,7 @@ class e107
 
 	/**
 	 * Retrieve Media handler singleton object
-	 * @return e_media
+	 * @return object e_media
 	 */
 	public static function getMedia()
 	{
@@ -1920,7 +1920,7 @@ class e107
 	
 	/**
 	 * Retrieve Navigation Menu handler singleton object
-	 * @return e_navigation
+	 * @return object e_navigation
 	 */
 	public static function getNav()
 	{
@@ -1929,7 +1929,7 @@ class e107
 
 	/**
 	 * Retrieve message handler singleton
-	 * @return eMessage
+	 * @return object eMessage
 	 */
 	public static function getMessage()
 	{
@@ -1946,7 +1946,7 @@ class e107
 	/**
 	 * Retrieve ajax singleton object
 	 *
-	 * @return e_ajax_class
+	 * @return object e_ajax_class
 	 */
 	public static function getAjax()
 	{
@@ -1956,7 +1956,7 @@ class e107
 	/**
 	 * Retrieve Library Manager singleton object (internal use only. Use e107::library())
 	 *
-	 * @return e_library_manager
+	 * @return object e_library_manager
 	 */
 	public static function getLibrary()
 	{
@@ -2328,7 +2328,7 @@ class e107
 	 * Retrieve JS Helper object
 	 *
 	 * @param boolean|string $singleton if true return singleton, if string return singleton object, use string as namespace, default false
-	 * @return e_jshelper
+	 * @return object e_jshelper
 	 */
 	public static function getJshelper($singleton = false)
 	{
@@ -2911,7 +2911,7 @@ class e107
 	 * @param boolean $merge
 	 * @return array
 	 */
-	public static function getTemplateInfo($plug_name = null, $id, $key = null, $override = true, $merge = false)
+	public static function getTemplateInfo($plug_name = null, $id=null, $key = null, $override = true, $merge = false)
 	{
 		if($plug_name)
 		{
@@ -3568,7 +3568,7 @@ class e107
 	/**
 	 * Retrieve error page handler.
 	 *
-	 * @return error_page
+	 * @return object  error_page
 	 */
 	public static function getError()
 	{
@@ -3581,7 +3581,7 @@ class e107
 	 * rawurlencode() (instead of urlencode()) all query parameters.
 	 * @param array $query The query parameter array to be processed, e.g. $_GET.
 	 * @param string $parent Internal use only. Used to build the $query array key for nested items.
-	 * @return array A rawurlencoded string which can be used as or appended to the URL query string.
+	 * @return string A rawurlencoded string which can be used as or appended to the URL query string.
 	 */
 	public static function httpBuildQuery(array $query, $parent = '')
 	{
@@ -3612,7 +3612,13 @@ class e107
 	}
 
 
-	public static function minify($js,$options=array())
+	/**
+	 * @param       $js
+	 * @param array $options
+	 * @return bool|null|string
+	 * @throws Exception
+	 */
+	public static function minify($js, $options=array())
 	{
 		if(empty($js))
 		{
@@ -3851,7 +3857,7 @@ class e107
 	 * @param string $key array key
 	 * @param string $type array type _SESSION, _GET etc.
 	 * @param bool $base64
-	 * @return bool|void
+	 * @return bool|null
 	 */
 	public static function filter_request($input,$key,$type,$base64=FALSE)
 	{
@@ -4603,7 +4609,7 @@ class e107
 	 * If string is passed, it's asumed to be aboslute request path (e_REQUEST_URI alike)
 	 * If true is passed, e_REQUEST_URI is registered
 	 * @param null $set
-	 * @return bool|void
+	 * @return bool|null
 	 */
 	public static function canCache($set = null)
 	{
