@@ -303,6 +303,7 @@ td.right, th.right 			{ text-align:right }
 .mediaselector-container-icon .mediaselector-preview { height: auto; padding: 0; text-align: center; }
 
 td .mediaselector-container { margin-bottom:0 }
+td .mediaselector-multi .mediaselector-container { margin-bottom: 20px }
 
 
 /* dropzone new in v2.1.9 */
