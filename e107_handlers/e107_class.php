@@ -2083,7 +2083,7 @@ class e107
 	/**
 	 * JS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
-	 * @param string $data depends on the type - path/url or inline js source
+	 * @param string|array $data depends on the type - path/url or inline js source
 	 * @param integer $zone [optional] leave it null for default zone
 	 * @param string $dep dependence :  null | prototype | jquery
 	 */
