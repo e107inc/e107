@@ -149,6 +149,8 @@
 		<core name="frontpage_force"><![CDATA[array (
   0 => '',
 )]]></core>
+		<core name="gdpr_privacypolicy"></core>
+		<core name="gdpr_termsandconditions"></core>
 		<core name="html_abuse">0</core>
 		<core name="im_height">80</core>
 		<core name="im_path">/usr/X11R6/bin/</core>

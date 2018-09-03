@@ -516,14 +516,14 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							<div class='smalltext field-help'>".PRFLAN_274."</div>
 						</td>
 					</tr>
-						<tr>
+
+					<tr>
 						<td><label for='contact-filter'>".PRFLAN_270."</label></td>
 						<td>
 							".$frm->textarea('contact_filter', $pref['contact_filter'], 5, 59, array('size'=>'xxlarge'))."
 							<div class='smalltext field-help'>".PRFLAN_271."</div>
 						</td>
 					</tr>
-
 
 
 
@@ -548,6 +548,39 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 			</table>
 			".pref_submit('email')."
 		</fieldset>";
+
+
+// GDPR Settings -----------------------------
+$text .= "
+		<fieldset class='e-hideme' id='core-prefs-gdpr'>
+			<legend>".PRFLAN_277."</legend>
+			<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td><label for='gdpr-privacypolicy'>".PRFLAN_278."</label></td>
+						<td>
+							".$frm->text('gdpr_privacypolicy', $pref['gdpr_privacypolicy'], 200, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_279."</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td><label for='gdpr-termsandconditions'>".PRFLAN_280."</label></td>
+						<td>
+							".$frm->text('gdpr_termsandconditions', $pref['gdpr_termsandconditions'], 200, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_281."</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			".pref_submit('display')."
+		</fieldset>
+";
+
 
 
 $text .= "
@@ -2043,6 +2076,7 @@ function prefs_adminmenu()
 		$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
 	$var['core-prefs-main']['text'] = PRFLAN_1;
 	$var['core-prefs-email']['text'] = PRFLAN_254;
+	$var['core-prefs-gdpr']['text'] = PRFLAN_277;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 //	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.

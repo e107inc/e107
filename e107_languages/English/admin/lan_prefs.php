@@ -295,3 +295,9 @@ define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
 define("PRFLAN_274", "Contact form will only be visible to this userclass group.");
 define("PRFLAN_275", "View this page using https (SSL) to modify this option");
 define("PRFLAN_276", "PHP Default (Preferred)");
+
+define("PRFLAN_277", "GDPR Settings");
+define("PRFLAN_278", "URL to the Privacy Policy");
+define("PRFLAN_279", "Make sure the url exists! It's best to use an absolute url. This setting will be used on all places that require a consent from the user (e.g. signup, contact form/menu, etc.).");
+define("PRFLAN_280", "URL to the website terms and conditions");
+define("PRFLAN_281", "Make sure the url exists! It's best to use an absolute url. This setting will be used on all places that require a consent from the user (e.g. signup, contact form/menu, etc.).");
