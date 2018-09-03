@@ -525,6 +525,7 @@ function update_core_database($type = '')
 //	require_once(e_HANDLER."db_verify_class.php");
 //	$dbv = new db_verify;
 
+	/** @var db_verify $dbv */
 	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 
 	$log = e107::getAdminLog();
@@ -1560,7 +1561,8 @@ function update_706_to_800($type='')
 	}
 
 
-	// Media Update - core media and core-file. 
+	// Media Update - core media and core-file.
+	/*
 	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
 	if($count ==1)
 	{
@@ -1568,7 +1570,7 @@ function update_706_to_800($type='')
 		$sql->update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
 		$log->addDebug("core-media _common Category updated");
 	}
-	
+	*/
 	
 	
 	// Media Update - core media and core-file. CATEGORY
