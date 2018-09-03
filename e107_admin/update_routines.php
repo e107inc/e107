@@ -599,15 +599,15 @@ function update_core_database($type = '')
 
 		$e_user_list = e107::getPref('e_user_list');
 
-		if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
-		{
-			if($just_check)
-			{
-				return update_needed("user/e_user.php need to be registered"); // NO LAN.
-			}
-
 			e107::getPlug()->clearCache()->buildAddonPrefLists();
-		}
+			if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
+			{
+				if($just_check)
+				{
+					return update_needed("user/e_user.php need to be registered"); // NO LAN.
+				}
+
+			}
 
 
 		// Make sure, that the pref "post_script" contains one of the allowed userclasses
