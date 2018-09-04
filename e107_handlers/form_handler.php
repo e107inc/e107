@@ -4414,14 +4414,23 @@ class e_form
 	}
 
 	/**
+	 * Inline Token
+	 * @return string
+	 */
+	private function inlineToken()
+	{
+		return password_hash(session_id(), PASSWORD_DEFAULT);
+	}
+
+	/**
 	 * Create an Inline Edit link. 
-	 * @param $dbField : field being edited //TODO allow for an array of all data here. 
-	 * @param $pid : primary ID of the row being edited. 
-	 * @param $fieldName - Description of the field name (caption)
-	 * @param $curVal : existing value of in the field
-	 * @param $linkText : existing value displayed
-	 * @param $type text|textarea|select|date|checklist
-	 * @param $array : array data used in dropdowns etc. 
+	 * @param string $dbField : field being edited
+	 * @param int $pid : primary ID of the row being edited.
+	 * @param string $fieldName - Description of the field name (caption)
+	 * @param mixed $curVal : existing value of in the field
+	 * @param mixed $linkText : existing value displayed
+	 * @param string $type text|textarea|select|date|checklist
+	 * @param array $array : array data used in dropdowns etc.
 	 */
 	public function renderInline($dbField, $pid, $fieldName, $curVal, $linkText, $type='text', $array=null, $options=array())
 	{
@@ -4457,6 +4466,8 @@ class e_form
 		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source='".$source."'  " : "";
 		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)." ".$class."' data-value=\"{$curVal}\"   href='#' ";
+
+		$options['token'] = $this->inlineToken();
 
 		if(!empty($options))
 		{
@@ -4724,19 +4735,18 @@ class e_form
 		{
 			case 'number':
 				if(!$value) $value = '0';
+
 				if($parms)
 				{
 					if(!isset($parms['sep'])) $value = number_format($value, varset($parms['decimals'],0));
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
-				
-				
+
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&action=inline&id={$id}&ajax_used=1' href='#'>".$value."</a>";
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
 				}
-				else
+				elseif(!empty($parms['link']))
 				{
 					$value = $this->renderLink($value,$parms,$id);
 				}
@@ -4747,7 +4757,19 @@ class e_form
 			break;
 
 			case 'country':
-				$value = $this->getCountry($value);
+
+				$_value = $this->getCountry($value);
+
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$arr = $this->getCountry();
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $_value, 'select', $arr);
+				}
+				else
+				{
+					$value = $_value;
+				}
+
 			break;
 
 			case 'ip':
@@ -4776,7 +4798,7 @@ class e_form
 
 					$layouts    = e107::getLayouts($location, $ilocation, $where, $filter, $merge, false);
 
-					$label      = varset($layouts[$value], $value);
+					$label   = varset($layouts[$value], $value);
 
 					$value = $this->renderInline($field, $id, $attributes['title'], $value, $label, 'select', $layouts);
 				}
@@ -4842,15 +4864,9 @@ class e_form
 			
 				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
 				
-				// Inline Editing.  
-				// Inline Editing with 'comma' @SecretR - please FIXME - empty values added. @see news 'render type' or 'media-manager' category for test examples. 
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{				
 					$xtype = ($attributes['type'] == 'dropdown') ? 'select' : 'checklist';
-					
-				//	$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-value='{$_value}' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='".$xtype."' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
-					
-			
 					$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $wparms);
 				}
 								
@@ -4858,7 +4874,9 @@ class e_form
 			break;
 
 			case 'radio':
-				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
+
+
+				if($parms && isset($parms[$value])) // FIXME - add support for multi-level arrays (option groups)
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 					break;
@@ -4869,6 +4887,11 @@ class e_form
 				if(!empty($attributes['writeParms']['optArray']))
 				{
 					$radioValue = $attributes['writeParms']['optArray'][$value];
+
+					if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
+					{
+						$radioValue = $this->renderInline($field, $id, $attributes['title'], $value, $radioValue, 'select', $attributes['writeParms']['optArray']);
+					}
 				}
 				else
 				{
@@ -4962,7 +4985,7 @@ class e_form
 					$tpl = $this->text($field, $value, 80, $options);
 
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a id='" . $field . '_' . $id . "' class='e-tip e-editable editable-click editable-tags' data-emptytext='-' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $id . "' " . $setValue . " data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>" . $value . "</a>";
+					$value = "<a id='" . $field . '_' . $id . "' class='e-tip e-editable editable-click editable-tags' data-emptytext='-' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' data-token='".$this->inlineToken()."' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $id . "' " . $setValue . " data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>" . $value . "</a>";
 				}
 
 				$value = vartrue($parms['pre']) . $value . vartrue($parms['post']);
@@ -5033,13 +5056,10 @@ class e_form
 					}
 				}
 
-
-
 					
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a class='e-tip e-editable editable-click' data-emptytext='-' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' ".$setValue." data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
 				}
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
@@ -5259,25 +5279,28 @@ class e_form
 			break;
 			
 			case 'date':
+
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
+				{
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
+				}
+
 				// just show original value
 			break;
 
 			case 'userclass':
-				$dispvalue = $this->_uc->uc_get_classname($value);
+				$dispvalue = $this->_uc->getName($value);
 					// Inline Editing.  
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					// $mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
 					$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 					unset($parms['classlist']);
 
 					$array = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
-					$source = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
-					
-					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a class='e-tip e-editable editable-click' data-placement='left' data-value='".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
-					
+
+					$value = $this->renderInline($field, $id, $attributes['title'], $value, $dispvalue, 'select', $array, array('placement'=>'left'));
 				}
 				else 
 				{
@@ -5316,7 +5339,7 @@ class e_form
 					$source     = str_replace('"',"'",json_encode($array, JSON_FORCE_OBJECT));
 
 					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a class='e-tip e-editable editable-click' data-placement='bottom' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
+					$value = "<a class='e-tip e-editable editable-click' data-placement='bottom' data-value=',".$value."' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='checklist' data-pk='".$id."' data-token='".$this->inlineToken()." data-url='".e_SELF."?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$dispvalue."</a>";
 				}
 				else 
 				{
@@ -5403,7 +5426,7 @@ class e_form
 
 					$tpl = $this->userpicker($fieldID, array('user_id'=>$id, 'user_name'=>$ttl),  array('id' => $fieldID, 'inline' => $eEditableID));
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
+					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-token='".$this->inlineToken()."' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
 				}
 				
 			break;

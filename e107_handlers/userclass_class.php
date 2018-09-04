@@ -487,7 +487,9 @@ class user_class
 			}
 			else
 			{
-				$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$text .= "\n";
+				$text .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$text .= "\n";
 			}
 			foreach ($show_classes as $k => $v)
 			{
@@ -724,7 +726,9 @@ class user_class
 		{
 			if ($notCheckbox)
 			{
-				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$ret .= "\n";
+				$ret .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$ret .= "\n";
 			}
 			else
 			{
