@@ -287,8 +287,14 @@ $(document).ready(function()
 		});
 
 
+
+
 	$('div.e-container').editable({
 		selector: '.e-editable',
+		params: function(params) {
+			params.token = $(this).attr('data-token');
+           return params;
+		},
 		display: function (value, sourceData)
 		{
 			// HTML entities decoding... fix for:

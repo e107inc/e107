@@ -5576,11 +5576,13 @@ class e_admin_ui extends e_admin_controller_ui
 		
 		$_name = $_POST['name'];
 		$_value = $_POST['value'];
+		$_token = $_POST['token'];
+
 		$parms = $this->fields[$_name]['readParms'] ? $this->fields[$_name]['readParms'] : '';
 		if(!is_array($parms)) parse_str($parms, $parms);
 		if(!empty($parms['editable'])) $this->fields[$_name]['inline'] = true;
 		
-		if(vartrue($this->fields[$_name]['noedit']) || vartrue($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']))
+		if(!empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
 		{
 			header($protocol.': 403 Forbidden', true, 403);
 			header("Status: 403 Forbidden", true, 403);
@@ -5590,12 +5592,16 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField:\n".$result);
 			return;
 		}
-		
+
+
+
 
 		
 		$model = $this->getModel()->load($this->getId());
 		$_POST = array(); //reset post
 		$_POST[$_name] = $_value; // set current field only
+
+	//	print_r($_POST);
 		
 		// generic handler - same as regular edit form submit
 
@@ -5641,6 +5647,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$message .= print_r($_POST,true);
 		$message .= "\n_GET\n";
 		$message .= print_r($_GET,true);
+
 		$message .= "---------------";
 		
 		file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);
