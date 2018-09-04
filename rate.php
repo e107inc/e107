@@ -17,7 +17,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if(!e_AJAX_REQUEST) // Legacy method. 
 {	
-	$qs = explode("^", e_QUERY);
+	$qs = explode("^", str_replace('&amp;', '&', e_QUERY));
 	
 	if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1 || strpos($qs[2], '://') !== false)
 	{
