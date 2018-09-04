@@ -1849,7 +1849,7 @@ class lancheck
 			<td style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
 			$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
 			$text .= ($writable) ? "<textarea  class='input-xxlarge' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
-			$text .= str_replace("ndef++","",$trans['tran'][$sk]);
+			$text .= htmlentities(str_replace("ndef++","",$trans['tran'][$sk]));
 			$text .= ($writable) ? "</textarea>" : "";
 			//echo "orig --> ".$trans['orig'][$sk]."<br />";
 			if (strpos($trans['orig'][$sk],"ndef++") !== False)
