@@ -5229,7 +5229,7 @@ class e_form
 						$thparms['alt'] = $alt;
 						$thparms['class'] = "thumbnail e-thumb";
 
-						e107::getDebug()->log($value);
+					//	e107::getDebug()->log($value);
 
 						$ttl = $tp->toImage($value, $thparms);
 
