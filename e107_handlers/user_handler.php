@@ -736,7 +736,7 @@ class UserHandler
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
-			if (!in_array($c, vartrue($classList)))
+			if (!in_array($c, vartrue($classList, array())))
 			{
 				$classList[] = $c;
 			}
