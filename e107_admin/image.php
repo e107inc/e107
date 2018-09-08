@@ -1022,11 +1022,11 @@ class media_admin_ui extends e_admin_ui
 					break;
 
 				case "glyph":
-					echo $this->glyphTab($parm);
+					echo $this->glyphTab(null, $parm);
 					break;
 
 				case "icon":
-					echo $this->iconTab($parm);
+					echo $this->iconTab(null, $parm);
 					break;
 
 				case "image2":
