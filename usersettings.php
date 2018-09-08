@@ -666,24 +666,21 @@ class usersettings_front // Begin Usersettings rewrite.
 				}
 			}
 
-			// Save extended field values
-			if (isset($changedEUFData['data']) && count($changedEUFData['data']))
-			{
-				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
-				$changedEUFData['WHERE'] = '`user_extended_id` = '.$inp;
 
-				//print_a($changedEUFData);
-				if (false === $sql->retrieve('user_extended', 'user_extended_id', 'user_extended_id='.$inp))
-				{
-					// ***** Next line creates a record which presumably should be there anyway, so could generate an error if no test first
-					$sql->gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".$inp."', '')");
-					//print_a('New extended fields added: '.$inp.'<br />');
-				}
-				if (false === $sql->update('user_extended', $changedEUFData))
+			// Save extended field values
+			if (!empty($changedEUFData['data']))
+			{
+
+				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
+
+				$changedEUFData['_DUPLICATE_KEY_UPDATE'] = true; // update record if key found, otherwise INSERT.
+				$changedEUFData['data']['user_extended_id'] = $inp;
+
+				if (false === $sql->insert('user_extended', $changedEUFData))
 				{
 					$message .= '<br />Error updating EUF';
 				}
-
+				
 			}
 
 			// Now see if we need to log anything. First check the options and class membership
