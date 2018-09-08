@@ -1453,7 +1453,7 @@ class e_form
 
 		if($parms['icon'])
 		{
-			$class = 'mediaselector-container-icon';
+			$class = 'icon-preview mediaselector-container-icon';
 			$parms['type'] = 'icon';
 		}
 

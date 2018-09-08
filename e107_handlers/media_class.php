@@ -1169,8 +1169,7 @@ class e_media
 				break;
 
 			case "glyph":
-				$preview = "<span class='icon-preview'>".$tp->toGlyph($default)."</span>";
-			//	$previewURL = false;
+				$preview = $tp->toGlyph($default);
 			break;
 
 			case "icon":

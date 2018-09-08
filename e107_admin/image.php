@@ -2091,7 +2091,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($bs2 as $val)
 		{
 			$items[] = array(
-					'previewHtml'   => $md->previewTag('glyphicon '.$val,array('type'=>'glyph')),
+					'previewHtml'   => $md->previewTag($val, array('type'=>'glyph')),
 					'previewUrl'	=> 'glyphicon '.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
@@ -2109,7 +2109,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($fa4 as $val)
 		{
 			$items[] = array(
-					'previewHtml'   => $md->previewTag('fa fa-'.$val,array('type'=>'glyph')),
+					'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
 					'previewUrl'	=> 'fa fa-'.$val,
 					'saveValue'		=> 'fa-'.$val.'.glyph',
 					'thumbUrl'		=> 'fa-'.$val,
