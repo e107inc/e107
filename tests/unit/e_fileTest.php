@@ -15,6 +15,7 @@
 		/** @var e_file  */
 		protected $fl;
 		protected $exploitFile = '';
+		protected $filetypesFile = '';
 
 		protected function _before()
 		{
@@ -33,11 +34,21 @@
 
 			file_put_contents($this->exploitFile,$content);
 
+			$this->filetypesFile = e_SYSTEM."filetypes.xml";
+
+			$content = '<?xml version="1.0" encoding="utf-8"?>
+						<e107Filetypes>
+							<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
+						</e107Filetypes>';
+
+			file_put_contents($this->filetypesFile, $content);
+
 		}
 
 		protected function _after()
 		{
 			unlink($this->exploitFile);
+			unlink($this->filetypesFile);
 		}
 
 
@@ -89,7 +100,7 @@
 			foreach($isAllowedTest as $file)
 			{
 				$actual = $this->fl->isAllowedType($file['path']);
-			//	$this->assertEquals($file['expected'],$actual, "isAllowedType() failed on: ".$file['path']);
+				$this->assertEquals($file['expected'],$actual, "isAllowedType() failed on: ".$file['path']);
 			}
 
 		}

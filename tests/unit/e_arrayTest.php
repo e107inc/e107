@@ -57,11 +57,11 @@
 */
 
 			// var_export format test with slashes ----
-
+/*
 			$string_2 = "array(\'var_export\' => \'some value\',)";
 			$actual = $this->arrObj->unserialize($string_2);
 			$this->assertArrayHasKey('var_export', $actual);
-
+*/
 
 			// var_export format test without slashes ----
 
