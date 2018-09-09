@@ -99,7 +99,9 @@ TMP;
 
 			$actual = $this->tp->toForm($db);
 
-			$this->assertEquals($orig, $actual);
+			$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
+
+			$this->assertEquals($expected, $actual);
 			
 		}
 /*
