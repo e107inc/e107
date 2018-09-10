@@ -296,6 +296,11 @@ class plugin_blank_admin_ui extends e_admin_ui
 			$ns->tablerender("Hello",$text);	
 			
 		}
+
+		public function beforePrefsSave($new_data, $old_data)
+		{
+			// return $new_data;
+		}
 }
 
 class plugin_blank_admin_form_ui extends e_admin_form_ui
