@@ -5947,8 +5947,17 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
- * User defined error handling, return true to suppress model messages
- */
+	 * User defined before pref saving logic
+	 * @param $new_data
+	 * @param $old_data
+	 */
+	public function beforePrefsSave($new_data, $old_data)
+	{
+	}
+
+	/**
+    * User defined error handling, return true to suppress model messages
+    */
 	public function onUpdateError($new_data, $old_data, $id)
 	{
 	}
@@ -6006,6 +6015,16 @@ class e_admin_ui extends e_admin_controller_ui
 	public function PrefsSaveTrigger()
 	{
 		$data = $this->getPosted();
+
+		$beforePref = $data;
+		unset($beforePref['e-token'],$beforePref['etrigger_save']);
+
+		$tmp = $this->beforePrefsSave($beforePref, $this->getConfig()->getPref());
+
+		if(!empty($tmp))
+		{
+			$data = $tmp;
+		}
 
 		foreach($this->prefs as $k=>$v) // fix for empty checkboxes - need to save a value.
 		{
@@ -6704,6 +6723,7 @@ class e_admin_form_ui extends e_form
 			$fieldsets['confirm']['triggers']['hidden'] = $this->hidden('etrigger_batch', 'delete');
 		}
 
+		$id = null;
 		$forms[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'url' => e_REQUEST_SELF, // default
