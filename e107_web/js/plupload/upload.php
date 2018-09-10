@@ -232,14 +232,15 @@
 		}
 
 	}
+	
 
-
-
-
-	if($_GET['for'] != '') // leave in upload directory if no category given.
+	if(!empty($_GET['for'])) // leave in upload directory if no category given.
 	{
 		$uploadPath = varset($_GET['path'],null);
-		$result = e107::getMedia()->importFile($fileName, $_GET['for'], array('path'=>$uploadPath));
+		$for = $tp->filter($_GET['for']);
+		$for = str_replace(array('+','^'),'', $for);
+
+		$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath));
 	}
 
 
