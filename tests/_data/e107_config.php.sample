@@ -34,5 +34,6 @@ $HELP_DIRECTORY      = 'e107_docs/help/';
 $MEDIA_DIRECTORY     = 'e107_media/';
 $SYSTEM_DIRECTORY    = 'e107_system/';
 
+$E107_CONFIG = array('site_path' => '000000test');
 
 define('e_MOD_REWRITE',true);

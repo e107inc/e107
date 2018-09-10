@@ -12,18 +12,44 @@
 	class e107Test extends \Codeception\Test\Unit
 	{
 
-/*		public function testGetInstance()
+		/** @var e107 */
+		private $e107;
+
+		protected function _before()
 		{
-			$res = null;
-			$this->assertTrue($res);
+			try
+			{
+				$this->e107 = e107::getInstance();
+			}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load e107 object");
+			}
+
+			// var_dump($this->e107);
+		}
+
+		public function testGetInstance()
+		{
+		//	$this->e107->getInstance();
+			//$res = $this->e107::getInstance();
+		//	$this->assertTrue($res);
 		}
 
 		public function testInitCore()
 		{
-			$res = null;
-			$this->assertTrue($res);
+			//$res = null;
+			require(APP_PATH.'e107_config.php'); // contains $E107_CONFIG = array('site_path' => '000000test');
+
+			$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
+			$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
+			$res = $this->e107->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
+
+			$this->assertEquals('000000test', $res->site_path);
+
 		}
 
+/*
 		public function testInitInstall()
 		{
 			$res = null;

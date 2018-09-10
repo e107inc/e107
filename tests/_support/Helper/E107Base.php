@@ -9,14 +9,65 @@ abstract class E107Base extends Base
 	const TEST_IN_PROGRESS = 'TEST-IN-PROGRESS';
 	const TEST_IN_PROGRESS_FILE = APP_PATH."/".self::TEST_IN_PROGRESS;
 	const APP_PATH_E107_CONFIG = APP_PATH."/e107_config.php";
+	const TEST_HASH = '000000test'; // see e107_config.php
 	public $e107_mySQLprefix = 'e107_';
 
 	public function _beforeSuite($settings = array())
 	{
 		$this->backupLocalE107Config();
-		$this->setVcsInProgress();
+		$this->deleteHashDirs();
+	//	$this->setVcsInProgress();
 		parent::_beforeSuite($settings);
 		$this->writeLocalE107Config();
+	}
+
+	protected function deleteHashDirs()
+	{
+		$system = APP_PATH."/e107_system/".self::TEST_HASH;
+		$this->deleteDir($system);
+
+		$media = APP_PATH."/e107_media/".self::TEST_HASH;
+		$this->deleteDir($media);
+
+		if(is_dir($system))
+		{
+			echo "Couldn't delete ".$system;
+		}
+
+	}
+
+	private function deleteDir($dirPath)
+	{
+
+		if(!is_dir($dirPath))
+		{
+		//	echo ($dirPath . "must be a directory");
+			return null;
+		}
+
+		if(substr($dirPath, strlen($dirPath) - 1, 1) != '/')
+		{
+			$dirPath .= '/';
+		}
+
+		$files = glob($dirPath . '*', GLOB_MARK);
+
+		foreach($files as $file)
+		{
+			if(is_dir($file))
+			{
+				$this->deleteDir($file);
+			}
+			else
+			{
+				unlink($file);
+			}
+		}
+
+		if(is_dir($dirPath))
+		{
+			rmdir($dirPath);
+		}
 	}
 
 	protected function backupLocalE107Config()
@@ -140,8 +191,9 @@ abstract class E107Base extends Base
 	{
 		parent::_afterSuite();
 		$this->revokeLocalE107Config();
-		$this->unsetVcsInProgress();
+	//	$this->unsetVcsInProgress();
 		$this->restoreLocalE107Config();
+		$this->deleteHashDirs();
 	}
 
 	protected function revokeLocalE107Config()
