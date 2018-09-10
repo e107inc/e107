@@ -1959,7 +1959,11 @@ class e_parse extends e_parser
 										}
 
 									}
-									$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
+
+									if(is_object($this->e_hook[$hook])) // precaution for old plugins. 
+									{
+										$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
+									}
 								}
 							}
 
