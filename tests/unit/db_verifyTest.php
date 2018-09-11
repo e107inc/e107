@@ -67,12 +67,26 @@
 		{
 
 		}
-
+*/
 		public function testCompare()
 		{
+			e107::getDB()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
+			e107::getDB()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
 
+
+			$this->dbv->__construct();
+
+			print_r($this->dbv);
+
+		//	$this->dbv->compare('e107_submitnews');
+
+			$result = $this->dbv->errors['submitnews'];
+
+			print_r($this->dbv->errors);
+
+		//	print_r($this->dbv->results);
 		}
-
+/*
 		public function testToMysql()
 		{
 
@@ -111,6 +125,26 @@
 		public function testGetSqlFileTables()
 		{
 			$tests = array(
+
+			'missing_index' =>
+				"CREATE TABLE `e107_submitnews` (
+				 `submitnews_id` int(10) unsigned NOT NULL,
+				 `submitnews_name` varchar(100) NOT NULL DEFAULT '',
+				 `submitnews_email` varchar(100) NOT NULL DEFAULT '',
+				 `submitnews_title` varchar(200) NOT NULL DEFAULT '',
+				 `submitnews_category` tinyint(3) unsigned NOT NULL DEFAULT '0',
+				 `submitnews_item` text NOT NULL,
+				 `submitnews_datestamp` int(10) unsigned NOT NULL DEFAULT '0',
+				 `submitnews_ip` varchar(45) NOT NULL DEFAULT '',
+				 `submitnews_auth` tinyint(3) unsigned NOT NULL DEFAULT '0',
+				 `submitnews_file` text NOT NULL,
+				 `submitnews_keywords` varchar(255) NOT NULL DEFAULT '',
+				 `submitnews_description` text,
+				 `submitnews_summary` text,
+				 `submitnews_media` text,
+				 `submitnews_user` int(10) unsigned NOT NULL DEFAULT '0'
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8;",
+
 
 			'user_extended' =>
 				"CREATE TABLE `e107_user_extended` (
@@ -183,6 +217,37 @@
 			);
 
 			$expected = array(
+
+				'missing_index' => array (
+					  'tables' =>
+					  array (
+					    0 => 'submitnews',
+					  ),
+					  'data' =>
+					  array (
+					    0 => '`submitnews_id` int(10) unsigned NOT NULL,
+					 `submitnews_name` varchar(100) NOT NULL DEFAULT \'\',
+					 `submitnews_email` varchar(100) NOT NULL DEFAULT \'\',
+					 `submitnews_title` varchar(200) NOT NULL DEFAULT \'\',
+					 `submitnews_category` tinyint(3) unsigned NOT NULL DEFAULT \'0\',
+					 `submitnews_item` text NOT NULL,
+					 `submitnews_datestamp` int(10) unsigned NOT NULL DEFAULT \'0\',
+					 `submitnews_ip` varchar(45) NOT NULL DEFAULT \'\',
+					 `submitnews_auth` tinyint(3) unsigned NOT NULL DEFAULT \'0\',
+					 `submitnews_file` text NOT NULL,
+					 `submitnews_keywords` varchar(255) NOT NULL DEFAULT \'\',
+					 `submitnews_description` text,
+					 `submitnews_summary` text,
+					 `submitnews_media` text,
+					 `submitnews_user` int(10) unsigned NOT NULL DEFAULT \'0\'',
+					  ),
+					  'engine' =>
+					  array (
+					    0 => 'MyISAM',
+					  ),
+					),
+
+
 				'user_extended' => array (
 					  'tables' =>
 						  array (
@@ -294,10 +359,13 @@
 
 			);
 
+
 			foreach($tests as $table => $sql)
 			{
 
 				$actual = $this->dbv->getSqlFileTables($sql);
+
+
 
 				$this->assertEquals($actual['tables'], $expected[$table]['tables'], "Table ".$table." could not be parsed.");
 
