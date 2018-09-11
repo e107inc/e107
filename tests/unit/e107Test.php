@@ -39,7 +39,7 @@
 		public function testInitCore()
 		{
 			//$res = null;
-			require(APP_PATH.'e107_config.php'); // contains $E107_CONFIG = array('site_path' => '000000test');
+			include(APP_PATH.'/e107_config.php'); // contains $E107_CONFIG = array('site_path' => '000000test');
 
 			$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 			$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
