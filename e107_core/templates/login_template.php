@@ -85,7 +85,7 @@ if(!isset($LOGIN_TABLE_FOOTER))
 $LOGIN_TEMPLATE['page']['header'] = "
 	<div id='login-template'>
 		<div class='center'>
-			{LOGO=login}
+			{LOGO: login}
 		</div>";
 
 $LOGIN_TEMPLATE['page']['body'] = '

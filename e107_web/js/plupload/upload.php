@@ -232,7 +232,7 @@
 		}
 
 	}
-	
+
 
 	if(!empty($_GET['for'])) // leave in upload directory if no category given.
 	{
