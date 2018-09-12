@@ -783,7 +783,7 @@ class system_tools
 	{
 		$config = e107::getMySQLConfig();
 		$dbtable = $config['mySQLdefaultdb'];
-		
+
 		//TODO Add a check to be sure the database is not already utf-8.
 		// yep, needs more methods - possibly a class in e107_handler
 

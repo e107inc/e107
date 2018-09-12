@@ -103,6 +103,7 @@ class bb_img extends e_bb_base
     private function processParm($code_text, $parm, $mode='')
     {      
 
+		$tp = e107::getParser();
         $imgParms               = array();
 
         $parm = preg_replace('#onerror *=#i','',$parm);
@@ -144,7 +145,7 @@ class bb_img extends e_bb_base
 			$text = '';
 			foreach($imgParms as $key => $val)
 			{
-				$text .= $key."=\"".$val."\" ";	
+				$text .= $key."='".$tp->toAttribute($val)."' ";
 			}	
 			return $text;
 		}
