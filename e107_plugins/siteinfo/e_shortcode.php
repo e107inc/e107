@@ -93,7 +93,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return $this->sc_logo($parm);	
 	}
 
-	function sc_logo($parm = '')
+	function sc_logo($parm = array())
 	{
 		if(is_string($parm))
 		{
@@ -105,7 +105,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		$logopref = e107::getConfig('core')->get('sitelogo');
 		$logop = $tp->replaceConstants($logopref);
 
-		if($parm == 'login' || isset($parm['login'])) // Login Page. BC fix.
+		if(isset($parm['login'])) // Login Page. BC fix.
 		{
 
 			if(!empty($logopref) && is_readable($logop))
