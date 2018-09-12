@@ -57,6 +57,14 @@ TMP;
 		$this->assertEquals($expected,$actual, "BBcode parsing failed");
 
 
+		$src = "[center][img]{e_IMAGE}generic/blank_avatar.jpg[/img][/center]";
+		
+		$actual = $this->tp->toHTML($src,true);
+
+		$expected = "<div class='bbcode-center' style='text-align:center'><img src='".e_HTTP."e107_images/generic/blank_avatar.jpg' width='' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
+
+		$this->assertEquals($expected, $actual, "BBcode parsing failed on [img]");
+
 
 		}
 /*
