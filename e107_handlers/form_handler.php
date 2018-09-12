@@ -3534,7 +3534,8 @@ class e_form
 		}
 		else
 		{
-			$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
+			// $include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
+			$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' " : ""; // data-disable breaks db.php charset Fix.
 		}
 
 		$confirmation = LAN_JSCONFIRM;

@@ -162,8 +162,6 @@ class system_tools
 		
 		$this->_utf8_exclude = array(MPREFIX."core");
 
-		
-
 		$this->_options = array(
 			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
 			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
@@ -231,12 +229,13 @@ class system_tools
 		if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update') // Requires further testing. 
 		{
 		//	header("location: ".e_ADMIN."e107_update.php");
+			$dbupdate = null;
 			require_once(e_ADMIN."update_routines.php");
 			new e107Update($dbupdate);
 			return;
 		}
 		
-		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode']=='convert_to_utf8')
+		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode'] =='convert_to_utf8')
 		{
 			$this->convertUTF8Form();
 		}
@@ -557,7 +556,7 @@ class system_tools
 		define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
 
 
-		e107::getMySQLConfig('user'); // prefix|server|user|password|
+		$config = e107::getMySQLConfig(); // prefix|server|user|password|defaultdb
 		
 		if(!isset($POST['create_multisite']))
 		{
@@ -784,7 +783,7 @@ class system_tools
 	{
 		$config = e107::getMySQLConfig();
 		$dbtable = $config['mySQLdefaultdb'];
-
+		
 		//TODO Add a check to be sure the database is not already utf-8.
 		// yep, needs more methods - possibly a class in e107_handler
 

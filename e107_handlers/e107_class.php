@@ -732,7 +732,7 @@ class e107
 	 * Example: <code>$e107->getMySQLConfig('prefix');</code>
 	 *
 	 * @param string $for prefix|server|user|password|defaultdb - leave blank for full array.
-	 * @return string or array
+	 * @return string|array
 	 */
 	public static function getMySQLConfig($for='')
 	{
