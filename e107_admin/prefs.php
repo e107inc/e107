@@ -572,7 +572,7 @@ $text .= "
 						<td><label for='gdpr-termsandconditions'>".PRFLAN_280."</label></td>
 						<td>
 							".$frm->text('gdpr_termsandconditions', $pref['gdpr_termsandconditions'], 200, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_281."</div>
+							<div class='smalltext field-help'>".PRFLAN_279."</div>
 						</td>
 					</tr>
 				</tbody>
@@ -711,7 +711,7 @@ $text .= "
 						<td>
 							".$frm->text('forumdate', $pref['forumdate'], 50)."
 							<div class='field-help'>".PRFLAN_83.": {$date3}</div>
-							<div class='field-help'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
+							<div class='field-help'>".PRFLAN_25." <a target='_blank' href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
 						</td>
 					</tr>";
 					
@@ -1039,7 +1039,7 @@ $text .= "
 						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
 						<td>
 							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a></div>
+							<div class='field-help'>".PRFLAN_46." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a></div>
 						</td>
 					</tr>";
 
