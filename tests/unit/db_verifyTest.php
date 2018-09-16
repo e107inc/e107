@@ -73,17 +73,20 @@
 			e107::getDB()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
 			e107::getDB()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
 
+			define('e_DEBUG', true);
 
 			$this->dbv->__construct();
 
-			print_r($this->dbv);
+		//	print_r($this->dbv->sqlFileTables);
 
-		//	$this->dbv->compare('e107_submitnews');
+			$this->dbv->compare('core');
 
-			$result = $this->dbv->errors['submitnews'];
 
-			print_r($this->dbv->errors);
+			//FIXME
 
+		//	print_r($this->dbv->errors);
+		//	print_r($this->dbv->results['submitnews']);
+		//	print_r($this->dbv->indices['submitnews']);
 		//	print_r($this->dbv->results);
 		}
 /*
