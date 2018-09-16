@@ -22,7 +22,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 class db_verify
 {
 	var $backUrl       = "";
-	var $sqlFileTables = array();
+	public $sqlFileTables = array();
 	private $sqlDatabaseTables   = array();
 
 	var $sqlLanguageTables = array();
@@ -163,7 +163,7 @@ class db_verify
 	function verify()
 	{
 		
-		if(vartrue($_POST['verify_table']))
+		if(!empty($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
 			
@@ -273,6 +273,8 @@ class db_verify
 
 		$this->currentTable = $selection;
 
+	//	var_dump($this->sqlFileTables[$selection]);
+
 		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
 		// e107::getMessage()->addDebug("No SQL File for ".$selection);
@@ -321,6 +323,8 @@ class db_verify
 			
 			$fileData['index']	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlData['index']	= $this->getIndex($sqlDataArr['data'][0]);
+
+
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
@@ -757,6 +761,7 @@ class db_verify
 							break;
 							
 							case 'index':
+								$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
 								$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
 							break;
 							
