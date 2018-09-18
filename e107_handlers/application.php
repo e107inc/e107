@@ -257,6 +257,9 @@ class eFront
 	 * @var eRouter
 	 */
 	protected $_router;
+
+
+	protected $_response;
 	
 	/**
 	 * @var string path to file to include - the old deprecated way of delivering content
@@ -391,7 +394,7 @@ class eFront
 		$router = new eRouter();
 		$this->setRouter($router);
 		
-	//	$response = new eResponse();
+		/** @var eResponse $response */
 		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);
 		
@@ -1626,9 +1629,9 @@ class eRouter
 	 */
 	public function getAliases($lanCode = null)
 	{
-		if($lan) 
+		if($lanCode)
 		{
-			return e107::findPref('url_aliases/'.$lan, array());
+			return e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		return $this->_aliases;
 	}
@@ -4133,7 +4136,7 @@ class eResponse
 	
 	/**
 	 * Get content
-	 * @param str $ns
+	 * @param string $ns
 	 * @param boolean $reset
 	 * @return string
 	 */
@@ -4150,8 +4153,8 @@ class eResponse
 	}
 	
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function setTitle($title, $ns = 'default')
@@ -4169,8 +4172,8 @@ class eResponse
 	}
 
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function appendTitle($title, $ns = 'default')
@@ -4192,8 +4195,8 @@ class eResponse
 	}
 
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function prependTitle($title, $ns = 'default')
@@ -4216,7 +4219,7 @@ class eResponse
 
 	/**
 	 * Assemble title
-	 * @param str $ns
+	 * @param string $ns
 	 * @param bool $reset
 	 * @return string
 	 */

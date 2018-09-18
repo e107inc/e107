@@ -524,23 +524,40 @@ function sc_user_email($parm='')
 	
 	function sc_user_update_link($parm) 
 	{
-		$url = e107::getUrl();
+		$label = null;
+
 		if (USERID == $this->var['user_id']) 
 		{
-			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			//return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
-			return "<a class='btn btn-default' href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			$label = LAN_USER_38;
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
-			$editUrl =  e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
-
-			return "<a class='btn btn-default' href='".$editUrl."'>".LAN_USER_39."</a>";
-
-			//	return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
-
+			$label = LAN_USER_39;
 		}
+
+		if(empty($label))
+		{
+			return null;
+		}
+
+		return "<a class='btn btn-default' href='".$this->sc_user_settings_url()."'>".$label."</a>";
+
 	}
+
+	function sc_user_settings_url($parm=null)
+	{
+
+		if (USERID == $this->var['user_id'])
+		{
+			return e107::getUrl()->create('user/myprofile/edit');
+		}
+		else if(ADMIN && getperms("4") && !$this->var['user_admin'])
+		{
+			return e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
+		}
+
+	}
+
 	
 	
 	
