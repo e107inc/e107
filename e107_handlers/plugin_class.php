@@ -2135,7 +2135,7 @@ class e107plugin
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
 						'link_class'		 => vartrue($link_class,'0'),
-						'link_function'		 => (vartrue($options['link_function']) ? $this->plugFolder ."::".$options['link_function'] : ""),
+						'link_function'		 => vartrue($options['link_function']),
 						'link_sefurl'		 => vartrue($options['link_sef']),
 						'link_owner'		 => vartrue($options['link_owner'])
 					);
@@ -2143,7 +2143,7 @@ class e107plugin
 			}
 			else
 			{
-				return ;
+				return null;
 			}
 		}
 		if ($action == 'remove') 
@@ -3378,7 +3378,7 @@ class e107plugin
 			$sef		= vartrue($attrib['sef']);
 			
 			$options 	= array(
-				'link_function'	=>	vartrue($attrib['function']),
+				'link_function'	=>	!empty($attrib['function']) ? $plug_vars['folder'].'::'.$attrib['function'] : null,
 				'link_owner'	=> 	vartrue($plug_vars['folder']),
 				'link_sef'		=> $sef,
 				'link_icon'     => vartrue($attrib['icon']),
@@ -3424,7 +3424,7 @@ class e107plugin
 			}
 		}
 
-		return null;
+		return ($status === E_MESSAGE_SUCCESS) ? true : false;
 	}
 
 	/**
