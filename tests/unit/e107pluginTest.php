@@ -186,12 +186,180 @@
 		{
 
 		}
-
+*/
 		public function testXmlSiteLinks()
 		{
+			$plugVars = array (
+				  '@attributes' =>
+				  array (
+				    'name' => 'Multiple Languages',
+				    'lan' => '',
+				    'version' => '1.0.3',
+				    'date' => '2015-06-04',
+				    'compatibility' => '2.0',
+				    'installRequired' => 'true',
+				  ),
+				  'author' =>
+				  array (
+				    '@attributes' =>
+				    array (
+				      'name' => 'cameron',
+				      'url' => 'http://e107.org',
+				    ),
+				    '@value' => '',
+				  ),
+				  'summary' =>
+				  array (
+				    '@attributes' =>
+				    array (
+				      'lan' => '',
+				    ),
+				    '@value' => 'Multi-Language tools for e107',
+				  ),
+				  'description' =>
+				  array (
+				    '@attributes' =>
+				    array (
+				      'lan' => '',
+				    ),
+				    '@value' => 'Multi-Language tools for e107',
+				  ),
+				  'keywords' =>
+				  array (
+				    'word' =>
+				    array (
+				      0 => 'multilanguage',
+				      1 => 'sync',
+				    ),
+				  ),
+				  'category' => 'manage',
+				  'copyright' => '',
+				  'adminLinks' =>
+				  array (
+				    'link' =>
+				    array (
+				      0 =>
+				      array (
+				        '@attributes' =>
+				        array (
+				          'url' => 'admin_config.php',
+				          'description' => '',
+				          'icon' => 'images/multilan_32.png',
+				          'iconSmall' => 'images/multilan_16.png',
+				          'icon128' => 'images/multilan_128.png',
+				          'primary' => 'true',
+				        ),
+				        '@value' => 'LAN_CONFIGURE',
+				      ),
+				    ),
+				  ),
+				  'siteLinks' =>
+				  array (
+				    'link' =>
+				    array (
+				      0 =>
+				      array (
+				        '@attributes' =>
+				        array (
+				          'url' => '#',
+				          'function' => 'language',
+				          'icon' => '',
+				          'description' => 'Choose Language',
+				          'perm' => 'admin',
+				        ),
+				        '@value' => 'LAN_MULTILAN_NAVICON',
+				      ),
+				    ),
+				  ),
+				  'userClasses' =>
+				  array (
+				    'class' =>
+				    array (
+				      0 =>
+				      array (
+				        '@attributes' =>
+				        array (
+				          'name' => 'TRANSLATE_ME',
+				          'description' => 'Items requiring translation and the team members who do it.',
+				        ),
+				        '@value' => '',
+				      ),
+				      1 =>
+				      array (
+				        '@attributes' =>
+				        array (
+				          'name' => 'REVIEW_ME',
+				          'description' => 'Items that have been auto-translated and require reivew and the team members who do it.',
+				        ),
+				        '@value' => '',
+				      ),
+				    ),
+				  ),
+				  'folder' => 'multilan',
+				  'files' =>
+				  array (
+				    3 => 'admin_config.php',
+				    4 => 'bing.class.php',
+				    5 => 'e_admin.php',
+				    6 => 'e_footer.php',
+				    7 => 'e_help.php',
+				    8 => 'e_meta.php',
+				    9 => 'e_module.php',
+				    10 => 'e_shortcode.php',
+				    11 => 'e_sitelink.php',
+				    12 => 'images',
+				    13 => 'multilan.css',
+				    14 => 'multilan.zip',
+				    15 => 'plugin.xml',
+				    16 => 'README.md',
+				    17 => 'test.php',
+				  ),
+				  'administration' =>
+				  array (
+				    'icon' => 'images/multilan_32.png',
+				    'caption' => '',
+				    'iconSmall' => 'images/multilan_16.png',
+				    'configFile' => 'admin_config.php',
+				  ),
+				);
+
+			$status = $this->ep->XmlSiteLinks('install', $plugVars);
+
+			$this->assertTrue($status, "Site link insertion failed");
+
+			$actual = e107::getDb()->retrieve('links', '*', "link_owner = 'multilan' ");
+
+			$expected = array (
+			  'link_id' => '12',
+			  'link_name' => 'LAN_MULTILAN_NAVICON',
+			  'link_url' => '#',
+			  'link_description' => '',
+			  'link_button' => '',
+			  'link_category' => '1',
+			  'link_order' => '11',
+			  'link_parent' => '0',
+			  'link_open' => '0',
+			  'link_class' => '254',
+			  'link_function' => 'multilan::language',
+			  'link_sefurl' => '',
+			  'link_owner' => 'multilan',
+			);
+
+			$this->assertEquals($expected,$actual);
+
+			$status = $this->ep->XmlSiteLinks('uninstall',$plugVars);
+
+			$this->assertTrue($status);
+
+			$tmp = e107::getDb()->retrieve('links', '*', "link_owner = 'multilan' ");
+
+			$actual = (empty($tmp)) ? true : false;
+
+			$this->assertTrue($actual, "Link still exists after supposed removal");
+
 
 		}
-
+/*
 		public function testGetIcon()
 		{
 
