@@ -5205,7 +5205,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListBoolBatch($selected, $field, $value)
 	{
-		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+		$cnt = $this->getTreeModel()->batchUpdate($field, $value, $selected, $value, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, $cnt, true);
@@ -5222,7 +5222,7 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListBoolreverseBatch($selected, $field, $value)
 	{
 		$tree = $this->getTreeModel();
-		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
+		$cnt = $tree->batchUpdate($field, "1-{$field}", $selected, null, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
@@ -5292,7 +5292,7 @@ class e_admin_ui extends e_admin_controller_ui
 						$value = implode(',', array_map('trim', $value));
 					}
 					
-					$cnt = $this->getTreeModel()->update($field, $value, $selected, true, true);
+					$cnt = $this->getTreeModel()->batchUpdate($field, $value, $selected, true, true);
 				}
 				else
 				{
@@ -5305,7 +5305,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$allowed = !is_array($value) ? explode(',', $value) : $value;
 				if(!$allowed)
 				{
-					$rcnt = $this->getTreeModel()->update($field, '', $selected, '', true);
+					$rcnt = $this->getTreeModel()->batchUpdate($field, '', $selected, '', true);
 				}
 				else
 				{
@@ -5393,7 +5393,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 
 
-		$cnt = $this->getTreeModel()->update($field, $val, $selected, true, false);
+		$cnt = $this->getTreeModel()->batchUpdate($field, $val, $selected, true, false);
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
