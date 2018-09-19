@@ -2849,10 +2849,10 @@ class e_front_model extends e_model
 
     /**
      * Update record
-     *
+     * @see save()
      * @param boolen $from_post
      * @return boolean|integer
-     */
+     *//*
     public function update($from_post = true, $force = false, $session_messages = false)
     {
     	if(!$this->getFieldIdName())
@@ -2867,7 +2867,7 @@ class e_front_model extends e_model
 		}
 
 		return $this->dbUpdate($force, $session_messages);
-    }
+    }*/
 
     /**
      * Exactly what it says - your debug helper
@@ -3165,7 +3165,7 @@ class e_tree_model extends e_front_model
 	/**
 	 * Set table name
 	 * @param object $table
-	 * @return e_admin_tree_model
+	 * @return e_tree_model
 	 */
 	public function setModelTable($table)
 	{
@@ -3840,7 +3840,7 @@ class e_front_tree_model extends e_tree_model
 	 * @param boolean $session_messages [optional] default false
 	 * @return integer updated count or false on error
 	 */
-	public function update($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
+	public function batchUpdate($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
