@@ -249,7 +249,7 @@ class comment_shortcodes extends e_shortcode
 			{
 				$form = e107::getForm();
 
-				$inputclass = (!empty($parm['class'])) ? $parm['class'] : 'comment author form-control';
+				$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment author form-control';
         		$class = (!empty($parm['class'])) ? $parm['class'] : 'form-group';
 
 				$options = array(
