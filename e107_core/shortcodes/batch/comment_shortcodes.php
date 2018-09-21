@@ -217,7 +217,8 @@ class comment_shortcodes extends e_shortcode
 		 * */
 	}
 
-
+  	/* example {COMMENT_BUTTON} */
+  	/* example {COMMENT_BUTTON: class=btn btn-default pull-right} */
 	function sc_comment_button($parm = '')
 	{
 		$pref = e107::getPref('comments_sort');
@@ -228,8 +229,9 @@ class comment_shortcodes extends e_shortcode
 			$value = (varset($this->var['eaction']) == "edit" ? COMLAN_320 : COMLAN_9);
 			$pid = ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 
+			$class = (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right';
 			$options = array(
-				'class'       => 'button btn btn-primary e-comment-submit pull-right',
+				'class'       => $class,
 				'data-pid'    => $pid,
 				'data-sort'   => $pref,
 				'data-target' => e_HTTP . 'comment.php',
