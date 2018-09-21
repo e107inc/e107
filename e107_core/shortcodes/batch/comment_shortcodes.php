@@ -287,15 +287,19 @@ class comment_shortcodes extends e_shortcode
 		return e107::getRate()->renderLike("comments",$this->var['comment_id'],$curVal);
 	}
 
-
+  /* example {COMMENT_INPUT} */
+  /* example {COMMENT_INPUT: inputclass=form-control&class=form-group} */
 	function sc_comment_input($parm = '')
 	{
+		
+		$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment-input form-control';
+    	$class = (!empty($parm['class'])) ? $parm['class'] : 'form-group';
 		$options = array(
-			'class'       => 'comment-input form-control',
+			'class'       => $inputclass,
 			'placeholder' => COMLAN_403,
 		);
 
-		$text = '<div class="form-group">';
+		$text = '<div class="'.$class.'">';
 
 		if($parm == 'bbcode')
 		{
