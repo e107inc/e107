@@ -67,7 +67,7 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 	protected $_field_warnings = array();
-
+    protected $_inline_token = null;
 
 	/**
 	 * @var user_class
@@ -4420,7 +4420,9 @@ class e_form
 	 */
 	private function inlineToken()
 	{
-		return password_hash(session_id(), PASSWORD_DEFAULT);
+		$this->_inline_token = $this->_inline_token ?:
+			password_hash(session_id(), PASSWORD_DEFAULT, ['cost' => 04]);
+		return $this->_inline_token;
 	}
 
 	/**
