@@ -68,7 +68,11 @@ class sitelinks_alt
 			}
 			else
 			{
-				$link_icon = $lk['link_button'] ? e_IMAGE_ABS.'icons/'.$lk['link_button'] : $icon;
+				$link_icon = $lk['link_button']
+					? (($lk['link_button'][0] == "{")
+						? $tp->replaceConstants($lk['link_button'],'abs')
+						: e_IMAGE_ABS.'icons/'.$lk['link_button'])
+					: $icon;
 			}
 			
 			$main_linkid = $lk['link_id'];
