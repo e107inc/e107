@@ -935,4 +935,19 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}*/
+
+	public function testInlineTokenGeneratedOnlyOnce()
+	{
+		$class = new \ReflectionClass('e_form');
+
+		$method = $class->getMethod('inlineToken');
+		$method->setAccessible(true);
+
+		$results = [];
+		$results[] = $method->invoke($this->_frm);
+		$results[] = $method->invoke($this->_frm);
+
+		$this->assertEquals($results[0], $results[1],
+			"Generated tokens differ. Watch out for performance penalty!");
+	}
 }
