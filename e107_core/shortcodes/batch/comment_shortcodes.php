@@ -242,7 +242,8 @@ class comment_shortcodes extends e_shortcode
 		}
 	}
 
-
+  /* example {AUTHOR_INPUT} */
+  /* example {AUTHOR_INPUT: inputclass=form-control&class=form-group} */
 	function sc_author_input($parm = '')
 	{
 		if($this->mode == 'edit')
@@ -251,8 +252,11 @@ class comment_shortcodes extends e_shortcode
 			{
 				$form = e107::getForm();
 
+				$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment author form-control';
+        		$class = (!empty($parm['class'])) ? $parm['class'] : 'form-group';
+
 				$options = array(
-					'class'       => 'comment author form-control',
+					'class'       => $inputclass,
 					'placeholder' => COMLAN_16,
 					'size'        => 61,
 				);
@@ -263,7 +267,7 @@ class comment_shortcodes extends e_shortcode
 					$options['disabled'] = 'disabled';
 				}
 
-				$text = '<div class="form-group">';
+				$text = '<div class="'.$class.'">';
 				$text .= $form->text('author_name', $_SESSION['comment_author_name'], 100, $options);
 				$text .= '</div>';
 
