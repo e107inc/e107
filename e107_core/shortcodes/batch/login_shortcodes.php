@@ -151,15 +151,22 @@ class login_shortcodes extends e_shortcode
 
 	}
 	
+	/* example: {LOGIN_TABLE_SUBMIT=large} */
+	/* example: {LOGIN_TABLE_SUBMIT: class=btn submit_but}  */
+	
 	function sc_login_table_submit($parm="") //FIXME use $frm
 	{
+ 
 		if(empty($this->userReg))
 		{
 			return null;
 		}
 
-		$class = ($parm == 'large') ? "btn-large btn-lg" : "";
-		return "<input class='btn btn-primary ".$class." button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
+		$oldclass = ($parm == 'large') ? "btn-large btn-lg" : "";     
+		
+		$class = (!empty($parm['class'])) ? $parm['class'] : "btn btn-primary ".$oldclass." button";
+ 
+		return "<input class='".$class."' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 	}
 	
 	
