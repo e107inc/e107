@@ -2929,11 +2929,11 @@ class e_form
 		if(!is_array($options)) parse_str($options, $options);
 
 
-		if(vartrue($options['size']) && !is_numeric($options['size']))
+		if(!empty($options['size']) && !is_numeric($options['size']))
 		{
 			if(!empty($options['class']))
 			{
-				$options['class'] .= "form-control input-".$options['size'];
+				$options['class'] .= " form-control input-".$options['size'];
 			}
 			else
 			{
