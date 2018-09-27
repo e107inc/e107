@@ -67,7 +67,7 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 	protected $_field_warnings = array();
-    protected $_inline_token = null;
+	private $_inline_token = null;
 
 	/**
 	 * @var user_class
