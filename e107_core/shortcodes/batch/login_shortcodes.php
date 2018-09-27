@@ -201,14 +201,16 @@ class login_shortcodes extends e_shortcode
 	}
 
 
+	/* example {LOGIN_TABLE_FPW_LINK} */
+	/* example {LOGIN_TABLE_FPW_LINK: class=dg-btn-2 btn-white radius-3px hover-white size-xl} */
 	function sc_login_table_fpw_link($parm='')
 	{
 		if(empty($this->userReg))
 		{
 			return null;
 		}
-
-		return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
+    $class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : "";
+		return "<a href='".e_HTTP."fpw.php' ".$class.">".LAN_LOGIN_12."</a>";
 	}
 	
 
