@@ -185,11 +185,16 @@ class login_shortcodes extends e_shortcode
 
 	}
 
+	/* example {LOGIN_TABLE_SIGNUP_LINK} */
+	/* example {LOGIN_TABLE_SIGNUP_LINK: class=hover-black dg-btn-2 radius-3px btn-white hover-accent size-lg} */
 	function sc_login_table_signup_link($parm='')
 	{
+	
 		if($this->userReg === 1)
 		{
-			return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
+		  $class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : "";
+		  
+			return "<a href='".e_SIGNUP."' ".$class.">".LAN_LOGIN_11."</a>";
 		}
 
 		return null;
