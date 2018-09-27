@@ -1014,6 +1014,9 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeCreate($newdata,$olddata)
 		{
+
+			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
+
 			$newdata['menu_name'] = preg_replace('/[^\w-*]/','-',$newdata['menu_name']);
 
 			if(empty($newdata['page_sef']))
