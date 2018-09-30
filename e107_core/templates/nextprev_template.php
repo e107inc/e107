@@ -15,7 +15,7 @@
  
 $NEXTPREV_TEMPLATE['default_start'] = '
 <!-- Start of Next/Prev -->
-<div class="btn-group nextprev ">
+<div class="nextprev ">
 ';
 
 $NEXTPREV_TEMPLATE['default_end'] = '
