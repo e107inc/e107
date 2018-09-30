@@ -6,6 +6,7 @@ class InstallCest
 	public function _before(AcceptanceTester $I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
+		$this->dropAllDbTables($I);
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -172,6 +173,15 @@ class InstallCest
 
 
 
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 */
+	private function dropAllDbTables(AcceptanceTester $I)
+	{
+		$db = $I->getDbModule();
+		$db->_cleanup();
 	}
 
 }
