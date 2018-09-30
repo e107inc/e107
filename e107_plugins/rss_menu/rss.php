@@ -137,7 +137,7 @@ if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$ch
 	if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 	{
 		require_once(HEADERF);
-		$repl  = array("<a href='".e_REQUEST_SELF."'>", "</a>");
+		$repl  = array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
 		$message = str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
 		$ns->tablerender('', $message);
 		require_once(FOOTERF);
