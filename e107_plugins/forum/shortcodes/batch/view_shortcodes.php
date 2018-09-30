@@ -859,6 +859,17 @@
 
 			}
 
+			// Delete own post, if it is the last in the thread
+			if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID)
+			{
+				/* only show delete button when post is not the initial post of the topic
+				 * AND if this post is the last post in the thread */
+				if($this->thread->threadInfo['thread_active'] && empty($this->postInfo['thread_start']) )
+				{
+					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
+				}
+			}
+
 			if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 			{
 				$url = e107::url('forum', 'post') . "?f=quote&amp;id=" . $this->postInfo['post_thread'] . "&amp;post=" . $this->postInfo['post_id'];

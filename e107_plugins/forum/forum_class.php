@@ -369,6 +369,47 @@ class e107forum
 
 
 	/**
+	 * Allow a user to delete their own post, if it is the last post in the thread.
+	 */
+	function usersLastPostDeletion()
+	{
+		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
+		$actionAllowed = false;
+
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$sql = e107::getDb();
+			$query = "SELECT fp.post_user
+                  FROM #forum_post AS fp
+                  WHERE fp.post_id = ". $postId;
+			if ($sql->gen($query) > 0)
+			{
+				$row = $sql->fetch();
+				if (USERID == $row['post_user']) $actionAllowed = true;
+			}
+		}
+
+		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		{
+			if ($this->postDelete($postId))
+			{
+				$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
+				$ret['hide'] 	= true;
+				$ret['status'] 	= 'ok';
+			}
+			else
+			{
+				$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+				$ret['status'] 	= 'error';
+			}
+		}
+		echo json_encode($ret);
+		exit();
+	}
+
+
+	/**
 	 * get user ids with moderator permissions for the given $postId
 	 * @param $postId id of a forum post
 	 * @return an array with user ids how have moderator permissions for the $postId
