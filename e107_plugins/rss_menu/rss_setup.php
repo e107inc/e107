@@ -9,6 +9,7 @@
 * Custom FAQ install/uninstall/update routines
 *
 */
+e107::includeLan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
 
 class rss_menu_setup
 {
@@ -26,11 +27,11 @@ class rss_menu_setup
 
 		$insert = array(
 			'rss_id'        => 0,
-			'rss_name'      => 'News',
+			'rss_name'      => RSS_NEWS,
 			'rss_url'       => 'news',
 			'rss_topicid'   => '',
 			'rss_path'      => 'news',
-			'rss_text'      => 'The rss feed of the news',
+			'rss_text'      => RSS_PLUGIN_LAN_7,
 			'rss_datestamp' => time(),
 			'rss_class'     => '0',
 			'rss_limit'     => '9'
