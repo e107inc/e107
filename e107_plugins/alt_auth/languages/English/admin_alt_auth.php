@@ -103,6 +103,12 @@ define('LAN_ALT_76', 'User class restriction (a numeric value - zero or blank fo
 define('LAN_ALT_77', 'Only users in this class (on the database set above) are permitted access');
 define('LAN_ALT_78', 'Failed password action');
 define('LAN_ALT_79', 'If user exists in primary DB, but enters an incorrect password, how should that be handled?');
+define('LAN_ALT_80', "Port: ");
+
+
+
+
+
 
 define('IMPORTDB_LAN_2', 'Plain Text');
 define('IMPORTDB_LAN_3', 'Joomla salted');
