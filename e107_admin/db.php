@@ -383,7 +383,8 @@ class system_tools
 
 		if(!empty($error))
 		{
-			e107::getMessage()->addError(print_a($error,true));
+			//e107::getMessage()->addError(print_a($error,true));
+			e107::getMessage()->setTitle("Ignored",E_MESSAGE_WARNING)->addWarning(print_a($error,true));
 		}
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());

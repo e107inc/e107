@@ -38,7 +38,7 @@ class admin_shortcodes
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
 				
 				$mes->addInfo($text);
-				return; //  $mes->render(); 
+				return null; //  $mes->render();
 			}
             
             if($parm=='icon')
@@ -144,6 +144,7 @@ class admin_shortcodes
 			return  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
+		return null;
 	}
 
 	function sc_admin_help()
