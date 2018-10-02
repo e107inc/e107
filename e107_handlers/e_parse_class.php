@@ -5122,7 +5122,7 @@ return;
 
 		if($type === 'file')
 		{
-			return preg_replace('/[^\w\d_\.-]/',"",$text);
+			return preg_replace('/[^\w\d_\.-]/',"-",$text);
 		}
 
 
