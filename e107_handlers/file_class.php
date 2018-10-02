@@ -1964,13 +1964,15 @@ class e_file
 			return false;
 		}
 
-		if(stripos($tstr, '<?php') !== false)
+		$archives = array('zip', 'gzip', 'gz', 'tar', 'bzip', '7z', 'rar');
+
+		if(!in_array($file_ext,$archives) && stripos($tstr, '<?php') !== false)
 		{
 			$this->setErrorNum(3); // Pretty certain exploit
 			return false;
 		}
 
-		if(strpos($tstr, '<?') !== false)                // Bit more tricky - can sometimes be OK
+		if(!in_array($file_ext,$archives) && strpos($tstr, '<?') !== false)                // Bit more tricky - can sometimes be OK
 		{
 			if(stripos($tstr, '<?xpacket') === false && stripos($tstr, '<?xml ') === false)    // Allow the XMP header produced by CS4 and xml files.
 			{
