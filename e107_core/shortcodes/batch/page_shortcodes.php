@@ -341,7 +341,7 @@ class cpage_shortcodes extends e_shortcode
 			return $this->sc_cpageurl();
 		}
 
-		return e107::getParser()->replaceConstants($this->var['menu_button_url']);
+		return e107::getParser()->replaceConstants($this->var['menu_button_url'], 'abs');
 	}
 	
 	
