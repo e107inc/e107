@@ -268,7 +268,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		);
 
 		//required - default column user prefs
-		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_type', 'blank_url', 'blank_compatibility', 'blank_class', 'options');
+		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_date', 'blank_type', 'blank_url', 'blank_compatibility', 'blank_class', 'options');
 
 		// FORMAT field_name=>type - optional if fields 'data' attribute is set or if custom model is set in init()
 		/*protected $dataFields = array();*/
