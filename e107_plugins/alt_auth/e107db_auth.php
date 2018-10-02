@@ -97,7 +97,8 @@ class auth_login extends alt_auth_base
 		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
 	  */
 
-		$dsn = 'mysql:dbname=' . $this->conf['e107db_database'] . ';host=' . $this->conf['e107db_server'];
+	//	$dsn = 'mysql:dbname=' . $this->conf['e107db_database'] . ';host=' . $this->conf['e107db_server'];
+		$dsn = "mysql:host=".$this->conf['e107db_server'].";port=".varset($this->conf['e107db_port'],3306).";dbname=".$this->conf['e107db_database'];
 
 		try
 		{

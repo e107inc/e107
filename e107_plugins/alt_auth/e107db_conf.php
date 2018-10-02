@@ -60,7 +60,7 @@ class alt_auth_e107db extends alt_auth_admin
 		$tab1 .= E107DB_LAN_1;
 		$tab1 .= "</td></tr>";
 
-		$tab1 .= $this->alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db|prefix|classfilt');
+		$tab1 .= $this->alt_auth_get_db_fields('e107db', $frm, $parm, 'server|port|uname|pwd|db|prefix|classfilt');
 
 		$tab1 .= "<tr><td>".E107DB_LAN_9."</td><td>";
 		$tab1 .= $this->altAuthGetPasswordSelector('e107db_password_method', $frm, $parm['e107db_password_method'], FALSE);
