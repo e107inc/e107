@@ -889,7 +889,7 @@
 				//	if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id']))
 				if(empty($this->postInfo['thread_start']))
 				{
-					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-thread='" . $this->postInfo['post_thread'] . "' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
 				}
 
 				if($type == 'thread')
