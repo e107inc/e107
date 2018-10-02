@@ -217,12 +217,16 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testReplaceConstants()
 		{
+			$actual = $this->tp->replaceConstants('{e_BASE}news','abs');
 
+			$this->assertContains(e_HTTP,$actual);
+
+			
 		}
-
+/*
 		public function testHtmlwrap()
 		{
 
