@@ -370,29 +370,39 @@ class e107forum
 	
 	public function ajaxModerate()
 	{
-		
-		if(!$this->isModerator(USERID)) //FIXME check permissions per forum. 
+		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
+		$modArray = array();
+
+		// get moderator-class for the thread to check permissions of the user
+		if (isset($_POST['thread']))
 		{
-			exit; 	
+			$threadId = intval($_POST['thread']);
+
+			$sql = e107::getDb();
+			$query = "SELECT f.forum_moderators
+	                  FROM #forum AS f
+	                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+	                  WHERE ft.thread_id = ". $threadId;
+			$sql->gen($query);
+			$row = $sql->fetch();
+			$modArray = $this->forumGetMods($row[forum_moderators]);
 		}
-		
-			if(!vartrue($_POST['thread']) && !vartrue($_POST['post']))
-			{
-				exit;	
-			}
-			
-			$id = intval($_POST['thread']);
-			
-		//	print_r($_POST);
-			
-			$ret = array('hide' => false, 'msg' => '', 'status' => null); 
-			
+
+		// Check if user has moderator permissions for this thread
+		if(!in_array(USERID, array_keys($modArray)))
+		{
+			$ret['msg'] 	= ''.LAN_FORUM_8030.' '. json_encode($_POST);
+			$ret['hide'] 	= false;
+			$ret['status'] 	= 'error';
+		}
+		else
+		{
 			switch ($_POST['action']) 
 			{
 				case 'delete':
-					if($this->threadDelete($id))
+					if($this->threadDelete($threadId))
 					{
-						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$id;
+						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$threadId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
@@ -426,7 +436,7 @@ class e107forum
 				break;
 				
 				case 'lock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] 	= LAN_FORUM_CLOSE; 
 						$ret['status'] 	= 'ok';	
@@ -439,7 +449,7 @@ class e107forum
 				break;
 
 				case 'unlock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_OPEN; 
 						$ret['status'] 	= 'ok';	
@@ -452,7 +462,7 @@ class e107forum
 				break;
 
 				case 'stick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_STICK; 
 						$ret['status'] 	= 'ok';	
@@ -465,7 +475,7 @@ class e107forum
 				break;
 
 				case 'unstick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_UNSTICK; 
 						$ret['status'] 	= 'ok';		
@@ -486,10 +496,10 @@ class e107forum
 					$ret['msg'] 	= LAN_FORUM_8027;
 				break;
 			}
-						
-			echo json_encode($ret);  
+		}
+		echo json_encode($ret);
 			
-			exit;
+		exit();
 	}
 				
 				
