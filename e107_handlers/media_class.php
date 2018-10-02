@@ -1289,7 +1289,7 @@ class e_media
 		}
 
 
-		if(!$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file))
+		if(!$newpath = $this->checkDupe($oldpath,$typePath.'/'. $tp->filter($file,'file')))
 		{
 			return $tp->createConstants($typePath.'/'.$file,'rel');
 		}
