@@ -390,6 +390,49 @@ class e107forum
 	}
 
 
+	/**
+	 * get user ids with moderator permissions for the given $threadId
+	 * @param $threadId id of a forum thread
+	 * @return an array with user ids how have moderator permissions for the $threadId
+	 */
+	public function getModeratorUserIdsByThreadId($threadId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  WHERE ft.thread_id = ". $threadId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $forumId
+	 * @param $forumId id of a forum
+	 * @return an array with user ids how have moderator permissions for the $forumId
+	 */
+	public function getModeratorUserIdsByForumId($forumId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  WHERE f.forum_id = ". $forumId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
@@ -398,8 +441,13 @@ class e107forum
 		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
 		{
 			$threadId = intval($_POST['thread']);
+			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
 		}
 
+		/* If both, a thread-operation and a post-operation is submitted, the
+		 * thread-permissions MUST be overwritten by the post-permissions!
+		 * Otherwise it is possible that a moderator can transfer his
+		 * permissions from one forum to another forum, where he has no permissions. */
 		if (isset($_POST['post']) && is_numeric($_POST['post']))
 		{
 			$postId = intval($_POST['post']);

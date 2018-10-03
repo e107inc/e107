@@ -200,21 +200,15 @@ if(!empty($forumInfo['forum_description']))
 	), 250, '...'));
 }
 
-//define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
-//$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+$moderatorUserIds = $forum->getModeratorUserIdsByForumId($forumId);
+define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
-// $thread???
-$modArray = $forum->forumGetMods($thread->forum_info['forum_moderators']);
-define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
-
-//----$message = '';
 if (MODERATOR)
 {
 	if ($_POST)
 	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
-//--		$message = forum_thread_moderate($_POST);
-    $forumSCvars['message']=forum_thread_moderate($_POST);
+		$forumSCvars['message'] = forum_thread_moderate($_POST);
 	}
 }
 

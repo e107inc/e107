@@ -971,18 +971,18 @@
 
 		function sc_adminoptions()
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_admin_icons;
-			  }
-				if (MODERATOR)
-				{
-					return fadminoptions($this->var);
-			  }
-			  return '';
-			--*/
-			return (!deftrue('BOOTSTRAP') ? $this->sc_admin_icons() : ((MODERATOR) ? fadminoptions($this->var) : ''));
+			if(!deftrue('BOOTSTRAP'))
+			{
+				return $this->sc_admin_icons();
+			}
+			else if (MODERATOR)
+			{
+				return fadminoptions($this->var);
+			}
+			else
+			{
+				return '';
+			}
 		}
 
 
