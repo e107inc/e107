@@ -142,8 +142,12 @@ if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo
 }
 
 define('e_PAGETITLE', strip_tags($tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off')).' / '.$tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_FORUM_1001);
+
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
-define('MODERATOR', (USER && $forum->isModerator(USERID)));
+
+/* Check if use has moderator permissions for this thread */
+$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($thread->threadInfo['thread_id']);
+define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
 e107::getScBatch('view', 'forum')->setScVar('forum', $forum);
 //var_dump(e107::getScBatch('forum', 'forum'));

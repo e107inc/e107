@@ -66,8 +66,9 @@ class forum_post_handler
 		$this->id       = (int) $_GET['id']; // forum thread/topic id.
 		$this->post     = (int) $_GET['post']; // post ID if needed.
 
-		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
 
+		$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
+		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
 
 		$this->data = $this->processGet();
