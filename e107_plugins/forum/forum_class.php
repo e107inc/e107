@@ -366,30 +366,48 @@ class e107forum
 		exit;
 
 	}
-	
-	
+
+
+	/**
+	 * get user ids with moderator permissions for the given $postId
+	 * @param $postId id of a forum post
+	 * @return an array with user ids how have moderator permissions for the $postId
+	 */
+	public function getModeratorUserIdsByPostId($postId)
+	{
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  INNER JOIN #forum_post AS fp ON ft.thread_id = fp.post_thread
+                  WHERE fp.post_id = ". $postId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
-		$modArray = array();
+		$moderatorUserIds = array();
 
-		// get moderator-class for the thread to check permissions of the user
-		if (isset($_POST['thread']))
+		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
 		{
 			$threadId = intval($_POST['thread']);
+		}
 
-			$sql = e107::getDb();
-			$query = "SELECT f.forum_moderators
-	                  FROM #forum AS f
-	                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
-	                  WHERE ft.thread_id = ". $threadId;
-			$sql->gen($query);
-			$row = $sql->fetch();
-			$modArray = $this->forumGetMods($row[forum_moderators]);
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
 		}
 
 		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, array_keys($modArray)))
+		if(!in_array(USERID, $moderatorUserIds))
 		{
 			$ret['msg'] 	= ''.LAN_FORUM_8030.' '. json_encode($_POST);
 			$ret['hide'] 	= false;
@@ -414,7 +432,7 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId = vartrue($_POST['post']))
+					if(!$postId)
 					{
 						// echo "No Post";
 						// exit;
