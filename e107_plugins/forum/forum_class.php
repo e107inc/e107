@@ -409,7 +409,7 @@ class e107forum
 		// Check if user has moderator permissions for this thread
 		if(!in_array(USERID, $moderatorUserIds))
 		{
-			$ret['msg'] 	= ''.LAN_FORUM_8030.' '. json_encode($_POST);
+			$ret['msg'] 	= ''.LAN_FORUM_8030.'';
 			$ret['hide'] 	= false;
 			$ret['status'] 	= 'error';
 		}
