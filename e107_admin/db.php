@@ -321,37 +321,40 @@ class system_tools
 	}
 
 
-
-
-
-	// Developer Mode ONly.. No LANS.
+	// Developer Mode ONly.. No LANS required. 
 	private function githubSync()
 	{
 
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-	//	$message = DBLAN_70;
-	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
-
-		$message = $frm->open('githubSync');
-		$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
-		$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
-		$message .= $frm->close();
+		//	$message = DBLAN_70;
+		//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
 
 
-		$mes->addInfo($message);
+		// Check for minimum required PHP version, and display warning instead of sync button to avoid broken functionality after syncing
+		// MIN_PHP_VERSION constant only defined in install.php, thus hardcoded here
+		$php_version = phpversion();
+		$min_php_version = '5.6'; 
 
-	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
-
+		if(version_compare($php_version, $min_php_version, "<"))
+		{
+			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".$php_version."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
+		}
+		else 
+		{
+			$message = $frm->open('githubSync');
+			$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
+			$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
+			$message .= $frm->close();
+			
+			$mes->addInfo($message);
+		} 
+		
+		//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
-
-
-
 	}
-
-
 
 
 
