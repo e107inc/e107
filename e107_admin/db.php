@@ -334,10 +334,9 @@ class system_tools
 
 		// Check for minimum required PHP version, and display warning instead of sync button to avoid broken functionality after syncing
 		// MIN_PHP_VERSION constant only defined in install.php, thus hardcoded here
-		$php_version = phpversion();
 		$min_php_version = '5.6'; 
-
-		if(version_compare($php_version, $min_php_version, "<"))
+		
+		if(version_compare(PHP_VERSION, $min_php_version, "<"))
 		{
 			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".$php_version."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
 		}
