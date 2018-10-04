@@ -2527,27 +2527,24 @@ class e107forum
 	 * Delete a Post
 	 * @param $postId integer
 	 * @param $updateCounts boolean
-	 * 
+	 * @return "null" if this post does not exist, "true" if post could deleted, otherwise "false"
 	 */
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId 	= (int)$postId;
-		$e107 		= e107::getInstance();		
+
 		$sql 		= e107::getDb();
 		$deleted 	= false;
 
 		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
-		//if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+
 		if(!is_array($postInfo) || empty($postInfo))
 		{
-			echo 'NOT FOUND!'; return;
+			return null;
 		}
-		
-
-		$row = $sql->fetch();
 
 		//delete attachments if they exist
-		if($row['post_attachments'])
+		if($postInfo['post_attachments'])
 		{
 			$this->postDeleteAttachments('post', $postId);
 		}
@@ -2563,24 +2560,24 @@ class e107forum
 		if($updateCounts)
 		{
 			// decrement user post counts
-			if ($row['post_user'])
+			if ($postInfo['post_user'])
 			{
-				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
+				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$postInfo['post_user']);
 			}
 
 			// update thread with correct reply counts
-			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$postInfo['post_thread']);
 
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$postInfo['post_forum']);
 
 			// update thread lastpost info
-			$this->forumUpdateLastpost('thread', $row['post_thread']);
+			$this->forumUpdateLastpost('thread', $postInfo['post_thread']);
 
 			// update forum lastpost info
-			$this->forumUpdateLastpost('forum', $row['post_forum']);
+			$this->forumUpdateLastpost('forum', $postInfo['post_forum']);
 		}
-		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
+		return $deleted;
 	}
 
 
