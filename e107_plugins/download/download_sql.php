@@ -3,7 +3,7 @@
 #
 CREATE TABLE download (
   download_id int(10) unsigned NOT NULL auto_increment,
-  download_name varchar(100) NOT NULL default '',
+  download_name varchar(255) NOT NULL default '',
   download_url varchar(255) NOT NULL default '',
   download_sef varchar(255) NOT NULL default '',
   download_author varchar(100) NOT NULL default '',
