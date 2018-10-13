@@ -30,16 +30,16 @@ class bbcode_shortcodes extends e_shortcode
 	function bb_format($id)
 	{
 		$formats = array(
-			0 => array('[p][/p]','Paragraph'),
-			1 => array('[h=2][/h]','Heading 2'),
-			2 => array('[h=3][/h]','Heading 3'),
-			3 => array('[h=4][/h]','Heading 4'),
-			4 => array('[h=5][/h]','Heading 5'),
-			5 => array('[h=6][/h]','Heading 6'),
-			6 => array('[block][/block]','Block'),
-			7 => array('[blockquote][/blockquote]', 'Quote'),
-			8 => array('[code][/code]', 'Code Block'),
-			9 => array('[code=inline][/code]', 'Code Inline')
+			0 => array('[p][/p]',LANHELP_62),
+			1 => array('[h=2][/h]',LANHELP_57.' 2'),
+			2 => array('[h=3][/h]',LANHELP_57.' 3'),
+			3 => array('[h=4][/h]',LANHELP_57.' 4'),
+			4 => array('[h=5][/h]',LANHELP_57.' 5'),
+			5 => array('[h=6][/h]',LANHELP_57.' 6'),
+			6 => array('[block][/block]',LANHELP_58),
+			7 => array('[blockquote][/blockquote]', LANHELP_59),
+			8 => array('[code][/code]', LANHELP_60),
+			9 => array('[code=inline][/code]', LANHELP_61)
 		); 
 		
 		
@@ -47,7 +47,7 @@ class bbcode_shortcodes extends e_shortcode
 		{
 				$text = '<div class="btn-group">';
 				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="">';
-				$text .= "Format";
+				$text .= LANHELP_55;
 				$text .= ' <span class="caret"></span></a>';
 				$text .= "<ul class='dropdown-menu'>\n";
 	
@@ -84,7 +84,7 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[table]\n[tr]\n\t[td]Cell 1[/td]\n\t[td]Cell 2[/td]\n[/tr]\n[/table]"; // works with jquery, but not onclick. 
 		$data = "[table][tr][td]Cell 1[/td][td]Cell 2[/td][/tr][/table]";
 		$event = $this->getEvent('addtext',$data,'Insert a table',1);
-		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='Insert a table' data-bbcode='{$data}'>";
+		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' title='".LANHELP_56."' data-bbcode='{$data}'>";
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/table.png' alt='' title='Insert a table' />";
 			$text .= $this->button(e_IMAGE_ABS."bbcode/table.png", 'table' );
 		$text .= "</a>";
@@ -192,7 +192,7 @@ class bbcode_shortcodes extends e_shortcode
 		$opts = array(
 			'bbcode'    => 'img',
 			'class'     => 'btn btn-small btn-primary bbcode bbcode_buttons e-pointer',
-			'title'     => "Insert an Image from the Media Manager : ".$this->var['template']
+			'title'     => LANHELP_63." : ".$this->var['template']
 		);
 
 		$text = e107::getForm()->mediaUrl($this->var['template'],$label, $tag, $opts);
@@ -259,7 +259,7 @@ class bbcode_shortcodes extends e_shortcode
 		$opts = array(
 			'bbcode'    => 'img',
 			'class'     => 'btn btn-small btn-primary bbcode bbcode_buttons e-pointer',
-			'title'     => "Insert an Image from the Media Manager : ".$this->var['template']
+			'title'     => LANHELP_63." : ".$this->var['template']
 		);
 
 		$text = e107::getForm()->mediaUrl($this->var['template'],$label, $tag, $opts);
@@ -278,7 +278,7 @@ class bbcode_shortcodes extends e_shortcode
 			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		//$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
-		$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
+		$text = "<a class='e-modal btn btn-primary' data-modal-caption='".LAN_MEDIAMANAGER."' data-target='#uiModal' id='{$id}' title='".LANHELP_64."' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
 
 		$text .= $this->button(e_IMAGE_ABS."bbcode/prefile.png", 'file');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
@@ -305,7 +305,7 @@ class bbcode_shortcodes extends e_shortcode
 
 			foreach($sizes as $s)
 			{
-				$text .= "<li><a href=\"javascript:addtext('[size=".$s."][/size]')\">".$tp->toHtml("[size=".$s."]Size ".$s."[/size]",true)."</a></li>\n";	
+				$text .= "<li><a href=\"javascript:addtext('[size=".$s."][/size]')\">".$tp->toHtml("[size=".$s."]".LANHELP_65." ".$s."[/size]",true)."</a></li>\n";	
 			}
 			
 			$text .= "</ul>";
