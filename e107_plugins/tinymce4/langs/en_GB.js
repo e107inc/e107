@@ -268,7 +268,7 @@ tinymce.addI18n('en_GB',{
 "e107 BBcode": "e107 BBcode",
 "Small": "Small",
 "Code Highlighted": "Code Highlighted",
-"Background color": "Background color",
+"Background color": "Background colour",
 "Custom...": "Custom...",
 "Custom color": "Custom colour",
 "No color": "No colour",
