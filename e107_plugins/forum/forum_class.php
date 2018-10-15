@@ -366,32 +366,139 @@ class e107forum
 		exit;
 
 	}
-	
-	
+
+
+	/**
+	 * Allow a user to delete their own post, if it is the last post in the thread.
+	 */
+	function usersLastPostDeletion()
+	{
+		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
+		$actionAllowed = false;
+
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$sql = e107::getDb();
+			$query = "SELECT fp.post_user
+                  FROM #forum_post AS fp
+                  WHERE fp.post_id = ". $postId;
+			if ($sql->gen($query) > 0)
+			{
+				$row = $sql->fetch();
+				if (USERID == $row['post_user']) $actionAllowed = true;
+			}
+		}
+
+		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		{
+			if ($this->postDelete($postId))
+			{
+				$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
+				$ret['hide'] 	= true;
+				$ret['status'] 	= 'ok';
+			}
+			else
+			{
+				$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+				$ret['status'] 	= 'error';
+			}
+		}
+		echo json_encode($ret);
+		exit();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $postId
+	 * @param $postId id of a forum post
+	 * @return an array with user ids how have moderator permissions for the $postId
+	 */
+	public function getModeratorUserIdsByPostId($postId)
+	{
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  INNER JOIN #forum_post AS fp ON ft.thread_id = fp.post_thread
+                  WHERE fp.post_id = ". $postId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $threadId
+	 * @param $threadId id of a forum thread
+	 * @return an array with user ids how have moderator permissions for the $threadId
+	 */
+	public function getModeratorUserIdsByThreadId($threadId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  WHERE ft.thread_id = ". $threadId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $forumId
+	 * @param $forumId id of a forum
+	 * @return an array with user ids how have moderator permissions for the $forumId
+	 */
+	public function getModeratorUserIdsByForumId($forumId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  WHERE f.forum_id = ". $forumId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
-		$modArray = array();
+		$moderatorUserIds = array();
 
-		// get moderator-class for the thread to check permissions of the user
-		if (isset($_POST['thread']))
+		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
 		{
 			$threadId = intval($_POST['thread']);
+			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
+		}
 
-			$sql = e107::getDb();
-			$query = "SELECT f.forum_moderators
-	                  FROM #forum AS f
-	                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
-	                  WHERE ft.thread_id = ". $threadId;
-			$sql->gen($query);
-			$row = $sql->fetch();
-			$modArray = $this->forumGetMods($row[forum_moderators]);
+		/* If both, a thread-operation and a post-operation is submitted, the
+		 * thread-permissions MUST be overwritten by the post-permissions!
+		 * Otherwise it is possible that a moderator can transfer his
+		 * permissions from one forum to another forum, where he has no permissions. */
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
 		}
 
 		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, array_keys($modArray)))
+		if(!in_array(USERID, $moderatorUserIds))
 		{
-			$ret['msg'] 	= ''.LAN_FORUM_8030.' '. json_encode($_POST);
+			$ret['msg'] 	= ''.LAN_FORUM_8030.'';
 			$ret['hide'] 	= false;
 			$ret['status'] 	= 'error';
 		}
@@ -414,7 +521,7 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId = vartrue($_POST['post']))
+					if(!$postId)
 					{
 						// echo "No Post";
 						// exit;
@@ -2420,27 +2527,24 @@ class e107forum
 	 * Delete a Post
 	 * @param $postId integer
 	 * @param $updateCounts boolean
-	 * 
+	 * @return "null" if this post does not exist, "true" if post could deleted, otherwise "false"
 	 */
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId 	= (int)$postId;
-		$e107 		= e107::getInstance();		
+
 		$sql 		= e107::getDb();
 		$deleted 	= false;
 
 		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
-		//if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
+
 		if(!is_array($postInfo) || empty($postInfo))
 		{
-			echo 'NOT FOUND!'; return;
+			return null;
 		}
-		
-
-		$row = $sql->fetch();
 
 		//delete attachments if they exist
-		if($row['post_attachments'])
+		if($postInfo['post_attachments'])
 		{
 			$this->postDeleteAttachments('post', $postId);
 		}
@@ -2456,24 +2560,24 @@ class e107forum
 		if($updateCounts)
 		{
 			// decrement user post counts
-			if ($row['post_user'])
+			if ($postInfo['post_user'])
 			{
-				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
+				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$postInfo['post_user']);
 			}
 
 			// update thread with correct reply counts
-			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$postInfo['post_thread']);
 
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$postInfo['post_forum']);
 
 			// update thread lastpost info
-			$this->forumUpdateLastpost('thread', $row['post_thread']);
+			$this->forumUpdateLastpost('thread', $postInfo['post_thread']);
 
 			// update forum lastpost info
-			$this->forumUpdateLastpost('forum', $row['post_forum']);
+			$this->forumUpdateLastpost('forum', $postInfo['post_forum']);
 		}
-		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
+		return $deleted;
 	}
 
 
