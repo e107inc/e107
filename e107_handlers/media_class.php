@@ -1302,6 +1302,11 @@ class e_media
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 			return false;
 		};
+
+		if($category === '_icon') // convert to _icon_16, _icon_32 etc.
+		{
+			$category = $this->getIconCategory($img_data);
+		}
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
@@ -1325,6 +1330,41 @@ class e_media
 		
 		
 	}
+
+
+	/**
+	 * Calculate Icon Category from image meta data. 
+	 * @param array $img image meta data.
+	 * @return string
+	 */
+	private function getIconCategory($img)
+	{
+
+		if($img['media_type'] == 'image/svg+xml')
+		{
+			return "_icon_svg";
+		}
+
+		$sizes = array(16,32,48,64);
+
+		$dimensions = $img['media_dimensions'];
+
+		foreach($sizes as $dim)
+		{
+			list($w,$h) = explode(" x ", $dimensions);
+
+			if($w == $dim || $h == $dim)
+			{
+				return "_icon_".$dim;
+			}
+
+		}
+
+		return "_icon_64"; // default.
+
+	}
+
+
 
 
 	/**
