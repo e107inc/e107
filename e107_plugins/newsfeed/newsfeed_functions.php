@@ -409,7 +409,8 @@ class newsfeedClass
 
 			if ($where == 'main')
 			{
-				$vars['BACKLINK'] = "<a href='".e_SELF."'>".NFLAN_31."</a>";
+			//	$vars['BACKLINK'] = "<a href='".e_SELF."'>".NFLAN_31."</a>";
+				$vars['BACKLINK'] = "<a href=../>".NFLAN_31."</a>";
 				$text = $tp->simpleParse($NEWSFEED_MAIN_START, $vars).$data.$tp->simpleParse( $NEWSFEED_MAIN_END, $vars);
 			}
 			else
