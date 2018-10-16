@@ -963,6 +963,12 @@ class e_form
 			$options['glyph'] = 1;
 			$options['w'] = 64;
 			$options['h'] = 64;
+			$options['media'] = '_icon';
+
+			if(!isset($options['legacyPath']))
+			{
+		        $options['legacyPath'] = "{e_IMAGE}icons";
+			}
 
 			return $this->mediapicker($name, $default, $options);
 
