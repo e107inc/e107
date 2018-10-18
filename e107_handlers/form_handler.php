@@ -4604,7 +4604,7 @@ class e_form
 			if(!empty($parms['target']) && $parms['target']=='modal')
 			{
 				$eModal = " e-modal ";
-				$eModalCap = "data-modal-caption='#".$id."'";
+				$eModalCap = !empty($parms['modalCaption']) ? "data-modal-caption='".$parms['modalCaption']."'" : "data-modal-caption='#".$id."'";
 				$query['iframe'] = 1;
 			}
 			else
