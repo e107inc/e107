@@ -338,7 +338,7 @@ class system_tools
 		
 		if(version_compare(PHP_VERSION, $min_php_version, "<"))
 		{
-			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".$php_version."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
+			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
 		}
 		else 
 		{
