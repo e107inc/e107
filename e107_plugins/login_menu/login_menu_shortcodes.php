@@ -78,6 +78,35 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			}
 
+
+			/**
+			 *
+			 * @param array $parm
+			 * @return null|string
+			 */
+			function sc_lm_active($parm=array())
+			{
+			//	$request = e_REQUEST_URI;
+
+				$ret = null;
+
+				$mode = varset($parm['mode']);
+
+				if($mode === 'usersettings' && e_PAGE === 'usersettings.php')
+				{
+					 return 'active';
+				}
+				elseif($mode === 'profile' && e_PAGE === 'user.php')
+				{
+					return 'active';
+				}
+
+
+				return null;
+			}
+
+
+
 			function sc_lm_username_input($parm='')
 			{
 				$pref = e107::getPref();
