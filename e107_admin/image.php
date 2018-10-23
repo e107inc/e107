@@ -2336,6 +2336,7 @@ class media_admin_ui extends e_admin_ui
 
 		if(!empty($data))
 		{
+			$tp = e107::getParser();
 			foreach($data['items'] as $value)
 			{
 
@@ -2343,6 +2344,7 @@ class media_admin_ui extends e_admin_ui
 				$thumbnail = $value['snippet']['thumbnails']['medium']['url'];
 
 				$items[] = array(
+					'previewHtml'	=> $tp->toVideo($id.".".$extension, array('w'=>210, 'h'=>140)),
 					'previewUrl'	=> $thumbnail,
 					'saveValue'		=> $id.".".$extension, // youtube",
 					'thumbUrl'		=> $thumbnail,
