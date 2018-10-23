@@ -347,7 +347,7 @@ class admin_log_ui extends e_admin_ui
 				}
 
 
-				e107::getMessage()->addDebug("Back delete, oldest date = {$old_string}  Query = {$qry}");
+				e107::getMessage()->addDebug("Back delete, <br />oldest date = {$old_string} <br />Query = {$qry}");
 
 				if($del_count = $sql->delete($db_table, $qry))
 				{
