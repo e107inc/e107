@@ -19,6 +19,7 @@ CREATE TABLE forum (
   `forum_options` text,
   `forum_sef` varchar(250) default NULL,
   PRIMARY KEY  (`forum_id`),
+  UNIQUE KEY `forum_sef` (`forum_sef`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
