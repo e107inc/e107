@@ -2540,9 +2540,13 @@ class e107
 						$obj = $class_name;
 						$class_name = get_class($obj);
 					}
-					else
+					elseif(class_exists($class_name))
 					{
 						$obj = new $class_name;
+					}
+					else
+					{
+						return array();
 					}
 
 					if($mode === 'alias')
