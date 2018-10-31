@@ -111,7 +111,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 				{
 					if (($result = mimeFromFilename($source_file)) === FALSE) { return FALSE; }
 					header($result);
-					if (@readfile($source_file) === FALSE) { return FALSE; }
+					if (eShims::readfile($source_file) === FALSE) { return FALSE; }
 				}
 				else
 				{
