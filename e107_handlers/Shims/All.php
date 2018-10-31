@@ -9,10 +9,9 @@
  * Shims for PHP internal functions
  */
 
-// e107 v2-style classes
-namespace
+namespace e107\Shims;
+
+class All
 {
-	class e_shims extends \e107\Shims\All
-	{
-	}
+	use InternalShims;
 }
