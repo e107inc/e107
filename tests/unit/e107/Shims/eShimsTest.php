@@ -8,16 +8,16 @@
  *
  */
 
-class e_shimsTest extends \Codeception\Test\Unit
+class eShimsTest extends \Codeception\Test\Unit
 {
 	public function testReadfile()
 	{
-		$this->testReadfileImplementation(array(e_shims::class, 'readfile'));
+		$this->testReadfileImplementation(array(eShims::class, 'readfile'));
 	}
 
 	public function testReadfileAlt()
 	{
-		$this->testReadfileImplementation(array(e_shims::class, 'readfile_alt'));
+		$this->testReadfileImplementation(array(eShims::class, 'readfile_alt'));
 	}
 
 	private function testReadfileImplementation($implementation)
