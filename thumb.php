@@ -324,11 +324,12 @@ class e_thumbpage
 
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 
-		if(($this->_cache === true) && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
+		$cache_filename = e_CACHE_IMAGE . $fname;
+		if(($this->_cache === true) && is_file($cache_filename) && is_readable($cache_filename) && ($this->_debug !== true))
 		{
-			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
-			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
-			$thumbnfo['fsize'] = filesize(e_CACHE_IMAGE.$fname);
+			$thumbnfo['lmodified'] = filemtime($cache_filename);
+			$thumbnfo['md5s'] = md5_file($cache_filename);
+			$thumbnfo['fsize'] = filesize($cache_filename);
 			
 			// Send required headers
 			if($this->_debug !== true)
@@ -349,9 +350,7 @@ class e_thumbpage
 			// Send required headers
 			//$this->sendHeaders($thumbnfo);
 
-
-
-			@readfile(e_CACHE_IMAGE.$fname);
+			eShims::readfile($cache_filename);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
 			
 			exit;
@@ -443,7 +442,7 @@ class e_thumbpage
 	//exit;
 
 		// set cache
-		$thumb->save(e_CACHE_IMAGE.$fname);
+		$thumb->save($cache_filename);
 
 
 		

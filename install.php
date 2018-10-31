@@ -163,18 +163,6 @@ if($e107->initInstall($e107_paths, $ebase, $override)===false)
 	
 unset($e107_paths,$override,$ebase);
 
-
-
-### NEW Register Autoload - do it asap
-if(!function_exists('spl_autoload_register'))
-{
-	// PHP >= 5.1.2 required
-	die_fatal_error('Fatal exception - spl_autoload_* required.');
-}
-
-// register core autoload
-e107::autoload_register(array('e107', 'autoload'));
-
 // NEW - session handler
 require_once(e_HANDLER.'session_handler.php');
 define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_NONE);

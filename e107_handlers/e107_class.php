@@ -226,6 +226,7 @@ class e107
 		'eRequest'                       => '{e_HANDLER}application.php',
 		'eResponse'                      => '{e_HANDLER}application.php',
 		'eRouter'                        => '{e_HANDLER}application.php',
+		'eShims'                         => '{e_HANDLER}Shims/eShims.php',
 		'eUrl'                           => '{e_HANDLER}e107Url.php',
 		'eUrlConfig'                     => '{e_HANDLER}application.php',
 		'eUrlRule'                       => '{e_HANDLER}application.php',
@@ -4613,31 +4614,31 @@ class e107
 	{
 		$_data = self::getSession()->get('__sessionBrowserCache');
 		if(!is_array($_data)) $_data = array();
-		
+
 		if(null === $set)
 		{
 			return in_array(e_REQUEST_URI, $_data);
 		}
-		
+
 		// remove e_REQUEST_URI from the set
 		if(false === $set)
 		{
 			$check = array_search(e_REQUEST_URI, $_data);
-			if(false !== $check) 
+			if(false !== $check)
 			{
 				unset($_data[$check]);
 				self::getSession()->set('__sessionBrowserCache', $_data);
 				return;
 			}
 		}
-		
+
 		if(true === $set)
 		{
 			$set = e_REQUEST_URI;
 		}
-		
+
 		if(empty($set) || !is_string($set) || in_array($set, $_data)) return;
-		
+
 		$_data[]  = $set;
 		self::getSession()->set('__sessionBrowserCache', array_unique($_data));
 	}
@@ -4669,7 +4670,7 @@ class e107
 	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
 	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
 	 * FIXME - moved to ban helper, replace all calls
-	 * 
+	 *
 	 *
 	 * @param string $query
 	 * @param boolean $show_error
@@ -4720,11 +4721,11 @@ class e107
 	 * @param string $div divider
 	 * @return string encoded IP
 	 */
-	 
+
 	public function ipEncode($ip, $div = ':')
 	{
 		return self::getIPHandler()->ipEncode($ip);
-	} 
+	}
 
 	/**
 	 * Takes an encoded IP address - returns a displayable one
@@ -4829,18 +4830,25 @@ class e107
 	 */
 	public static function autoload_register($function, $prepend = false)
 	{
+		### NEW Register Autoload - do it asap
+		if(!function_exists('spl_autoload_register'))
+		{
+			// PHP >= 5.1.2 required
+			die_fatal_error('Fatal exception - spl_autoload_* required.');
+		}
+
 		if(!$prepend || false === ($registered = spl_autoload_functions()))
 		{
 			return spl_autoload_register($function);
 		}
-		
-		foreach ($registered as $r) 
+
+		foreach ($registered as $r)
 		{
 			spl_autoload_unregister($r);
 		}
-		
+
 		$result = spl_autoload_register($function);
-		foreach ($registered as $r) 
+		foreach ($registered as $r)
 		{
 			if(!spl_autoload_register($r)) $result = false;
 		}
@@ -4849,7 +4857,7 @@ class e107
 
 	/**
 	 * Former __autoload, generic core autoload logic
-	 * 
+	 *
 	 * Magic class autoload.
 	 * We are raising plugin structure standard here - plugin auto-loading works ONLY if
 	 * classes live inside 'includes' folder.
@@ -4886,6 +4894,14 @@ class e107
 		{
 	        return;
 	    }
+
+		// Detect namespaced class
+		if (strpos($className, '\\') !== false)
+		{
+			self::autoload_namespaced($className);
+			return;
+		}
+
 		$tmp = explode('_', $className);
 
 		//echo 'autoloding...'.$className.'<br />';
@@ -4894,7 +4910,7 @@ class e107
 			case 'plugin': // plugin handlers/shortcode batches
 				array_shift($tmp); // remove 'plugin'
 				$end = array_pop($tmp); // check for 'shortcodes' end phrase
-	
+
 				if (!isset($tmp[0]) || !$tmp[0])
 				{
 					if($end)
@@ -4905,7 +4921,7 @@ class e107
 					}
 					return; // In case we get an empty class part
 				}
-	
+
 				// Currently only batches inside shortcodes/ folder are auto-detected,
 				// read the todo for e_shortcode.php related problems
 				if('shortcodes' == $end)
@@ -4919,13 +4935,13 @@ class e107
 				{
 					$tmp[] = $end; // not a shortcode batch - append the end phrase again
 				}
-	
+
 				// Handler check
 				$tmp[0] .= '/includes'; //folder 'includes' is not part of the class name
 				$filename = e_PLUGIN.implode('/', $tmp).'.php';
 				//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
 			break;
-	
+
 			default: //core libraries, core shortcode batches
 				// core SC batch check
 				$end = array_pop($tmp);
@@ -4934,16 +4950,37 @@ class e107
 					$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
 					break;
 				}
-	
+
 				$filename = self::getHandlerPath($className, true);
 				//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
 			break;
 		}
-	
+
 		if(!empty($filename) && is_file($filename)) // Test with chatbox_menu
 		{
 			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 			include($filename);
+		}
+	}
+
+	/**
+	 * Autoloading logic for namespaced classes
+	 *
+	 * @param $className
+	 * @return void
+	 */
+	private static function autoload_namespaced($className)
+	{
+		$levels = explode('\\', $className);
+
+		// Guard against classes that are not ours
+		if ($levels[0] != 'e107') return;
+
+		$levels[0] = e_HANDLER;
+		$classPath = implode('/', $levels).'.php';
+		if (is_file($classPath) && is_readable($classPath))
+		{
+			include($classPath);
 		}
 	}
 
@@ -5125,3 +5162,5 @@ class e107
 
 
 }
+
+e107::autoload_register(array(e107::class, 'autoload'));
