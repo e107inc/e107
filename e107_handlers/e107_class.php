@@ -4830,6 +4830,13 @@ class e107
 	 */
 	public static function autoload_register($function, $prepend = false)
 	{
+		### NEW Register Autoload - do it asap
+		if(!function_exists('spl_autoload_register'))
+		{
+			// PHP >= 5.1.2 required
+			die_fatal_error('Fatal exception - spl_autoload_* required.');
+		}
+
 		if(!$prepend || false === ($registered = spl_autoload_functions()))
 		{
 			return spl_autoload_register($function);
@@ -5155,3 +5162,5 @@ class e107
 
 
 }
+
+e107::autoload_register(array(e107::class, 'autoload'));

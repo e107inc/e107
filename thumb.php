@@ -156,7 +156,6 @@ class e_thumbpage
 		@require($tmp.DIRECTORY_SEPARATOR.'core_functions.php');
 		//e107 class
 		@require($tmp.DIRECTORY_SEPARATOR.'e107_class.php');
-		e107::autoload_register(array('e107', 'autoload'));
 
 		$e107_paths = compact(
 			'ADMIN_DIRECTORY',
