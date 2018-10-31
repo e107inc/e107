@@ -350,7 +350,7 @@ class e_thumbpage
 			// Send required headers
 			//$this->sendHeaders($thumbnfo);
 
-			e_shims::readfile($cache_filename);
+			eShims::readfile($cache_filename);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
 			
 			exit;
