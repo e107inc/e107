@@ -7,11 +7,13 @@ class GitPreparer implements Preparer
 
 	public function snapshot()
 	{
+		$this->debug('Snapshot requested');
 		return $this->setVcsInProgress();
 	}
 
 	public function rollback()
 	{
+		$this->debug('Rollback requested');
 		return $this->unsetVcsInProgress();
 	}
 
@@ -88,6 +90,12 @@ class GitPreparer implements Preparer
 
 	protected function unsetVcsInProgress()
 	{
+		if (!$this->isVcsInProgress())
+		{
+			$this->debug('No test locks found');
+			return;
+		}
+
 		$this->debug('Rolling back Git repo to pre-test state…');
 		$this->runCommand('git reset --hard HEAD');
 		$this->runCommand('git clean -fdx');
