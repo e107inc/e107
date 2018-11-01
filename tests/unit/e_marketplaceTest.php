@@ -20,7 +20,44 @@
 
 			try
 			{
-				$this->mp = $this->make('e_marketplace');
+				$mock_adapter = $this->make('e_marketplace_adapter_wsdl',
+					[
+						'getRemoteFile' => function($remote_url, $local_file, $type='temp')
+						{
+							file_put_contents(e_TEMP.$local_file,
+								/**
+								 * Zip file containing:
+								 *   thing/
+								 *   thing/plugin.php
+								 *   thing/theme.php
+								 *   thing/index.php
+								 *   thing/README.md
+								 */
+								base64_decode(
+									<<<DATA
+UEsDBAoAAAAAAHaVYU0AAAAAAAAAAAAAAAAGABwAdGhpbmcvVVQJAAOvj9tbuI/bW3V4CwABBOgD
+AAAE6AMAAFBLAwQKAAAAAABxlWFNAAAAAAAAAAAAAAAAEAAcAHRoaW5nL3BsdWdpbi5waHBVVAkA
+A6aP21umj9tbdXgLAAEE6AMAAAToAwAAUEsDBAoAAAAAAHOVYU0AAAAAAAAAAAAAAAAPABwAdGhp
+bmcvdGhlbWUucGhwVVQJAAOpj9tbqY/bW3V4CwABBOgDAAAE6AMAAFBLAwQKAAAAAAB0lWFNAAAA
+AAAAAAAAAAAADwAcAHRoaW5nL2luZGV4LnBocFVUCQADrI/bW6yP21t1eAsAAQToAwAABOgDAABQ
+SwMECgAAAAAAdpVhTQAAAAAAAAAAAAAAAA8AHAB0aGluZy9SRUFETUUubWRVVAkAA6+P21uvj9tb
+dXgLAAEE6AMAAAToAwAAUEsBAh4DCgAAAAAAdpVhTQAAAAAAAAAAAAAAAAYAGAAAAAAAAAAQAP1B
+AAAAAHRoaW5nL1VUBQADr4/bW3V4CwABBOgDAAAE6AMAAFBLAQIeAwoAAAAAAHGVYU0AAAAAAAAA
+AAAAAAAQABgAAAAAAAAAAAC0gUAAAAB0aGluZy9wbHVnaW4ucGhwVVQFAAOmj9tbdXgLAAEE6AMA
+AAToAwAAUEsBAh4DCgAAAAAAc5VhTQAAAAAAAAAAAAAAAA8AGAAAAAAAAAAAALSBigAAAHRoaW5n
+L3RoZW1lLnBocFVUBQADqY/bW3V4CwABBOgDAAAE6AMAAFBLAQIeAwoAAAAAAHSVYU0AAAAAAAAA
+AAAAAAAPABgAAAAAAAAAAAC0gdMAAAB0aGluZy9pbmRleC5waHBVVAUAA6yP21t1eAsAAQToAwAA
+BOgDAABQSwECHgMKAAAAAAB2lWFNAAAAAAAAAAAAAAAADwAYAAAAAAAAAAAAtIEcAQAAdGhpbmcv
+UkVBRE1FLm1kVVQFAAOvj9tbdXgLAAEE6AMAAAToAwAAUEsFBgAAAAAFAAUAoQEAAGUBAAAAAA==
+DATA
+								));
+							return true;
+						}
+					]);
+				$this->mp = $this->make('e_marketplace',
+					[
+						'adapter' => $mock_adapter
+					]);
 				$this->mp->__construct();
 			}
 			catch (Exception $e)
@@ -37,9 +74,9 @@
 */
 		public function testDownload()
 		{
-			$path = e_PLUGIN."nofollow";
-			$tempPath = e_TEMP."nofollow";
-			$id = 912; // No-follow plugin on e107.org
+			$path = e_PLUGIN."thing";
+			$tempPath = e_TEMP."thing";
+			$id = 912;
 
 			if(is_dir($path))
 			{
@@ -51,12 +88,7 @@
 				rename($tempPath, $tempPath."_old_".time());
 			}
 
-		//	e107::getMessage()->reset();
-
 			$status = $this->mp->download($id,'','plugin' );
-
-		//	$messages = e107::getMessage()->render( 'default',false,  true, true);
-		//	print_r($messages);
 
 			$this->assertTrue($status,"Couldn't download plugin or move to plugin folder.");
 
