@@ -1612,7 +1612,7 @@ class e107forum
 		{
 			return $this->modArray;
 		}
-		if($uclass == e_UC_ADMIN || trim($uclass) == '')
+		if($uclass == e_UC_MAINADMIN || trim($uclass) == '')
 		{
 			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
 			while($row = $sql->fetch())
