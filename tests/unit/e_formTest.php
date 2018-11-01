@@ -704,6 +704,7 @@ class e_formTest extends \Codeception\Test\Unit
 	*/
 	public function testRenderValue()
 	{
+		date_default_timezone_set('America/Los_Angeles');
 
 		$frm = $this->_frm;
 
