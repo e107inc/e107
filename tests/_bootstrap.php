@@ -12,3 +12,6 @@ if (substr($app_path, 0, 1) !== '/')
 
 define('APP_PATH', realpath($app_path));
 define('PARAMS_SERIALIZED', serialize($params));
+
+// Provide a way to register callbacks that execute before Codeception's
+include(codecept_root_dir()."/lib/PriorityCallbacks.php");

@@ -17,6 +17,9 @@ class GitPreparer implements Preparer
 
 	protected function setVcsInProgress()
 	{
+		// Cleanup in case of a fatal error
+		PriorityCallbacks::instance()->register_shutdown_function([$this, 'rollback']);
+
 		if ($this->isVcsInProgress())
 		{
 			$this->debug('Git repo shows test in progress. Probably crashed test.');
