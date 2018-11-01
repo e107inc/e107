@@ -84,6 +84,20 @@ class e_form
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
 	}
 
+	/**
+	 * @return array
+	 * @see https://github.com/e107inc/e107/issues/3533
+	 */
+	private static function sort_get_files_output($tmp)
+	{
+		usort($tmp, function ($left, $right) {
+			$left_full_path = $left['path'] . $left['fname'];
+			$right_full_path = $right['path'] . $right['fname'];
+			return strcmp($left_full_path, $right_full_path);
+		});
+		return $tmp;
+	}
+
 
 	public function addWarning($field)
 	{
@@ -6046,7 +6060,7 @@ class e_form
 				$location = vartrue($parms['plugin']) ? e_PLUGIN.$parms['plugin'].'/' : e_THEME;
 				$ilocation = vartrue($parms['location']);
 				$tmp = e107::getFile()->get_files($location.'templates/'.$ilocation, vartrue($parms['fmask'], '_template\.php$'), vartrue($parms['omit'], 'standard'), vartrue($parms['recurse_level'], 0));
-				foreach($tmp as $files)
+				foreach(self::sort_get_files_output($tmp) as $files)
 				{
 					$k = str_replace('_template.php', '', $files['fname']);
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
@@ -6056,7 +6070,7 @@ class e_form
 				$where = vartrue($parms['area'], 'front');
 				$location = vartrue($parms['plugin']) ? $parms['plugin'].'/' : '';
 				$tmp = e107::getFile()->get_files(e107::getThemeInfo($where, 'rel').'templates/'.$location.$ilocation, vartrue($parms['fmask']), vartrue($parms['omit'], 'standard'), vartrue($parms['recurse_level'], 0));
-				foreach($tmp as $files)
+				foreach(self::sort_get_files_output($tmp) as $files)
 				{
 					$k = str_replace('_template.php', '', $files['fname']);
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
