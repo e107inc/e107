@@ -18,6 +18,7 @@
 		{
 			// Expected values made using the C locale
 			setlocale(LC_TIME, 'C');
+			date_default_timezone_set('UTC');
 
 			try
 			{
