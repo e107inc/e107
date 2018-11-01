@@ -998,8 +998,19 @@ class e_plugin
 			 ->set('shortcode_legacy_list', array())
 			 ->set('shortcode_list', array());
 
+		$paths = $this->getDetected();
 
-		foreach($this->getDetected() as $path)
+		/**
+		 * Prevent this method from wiping out the variable that is tracking
+		 * the currently loaded plugin by moving the currently loaded plugin to
+		 * the end of the iterated array.
+		 * @see https://github.com/e107inc/e107/issues/3531
+		 * @see https://github.com/e107inc/e107-test/issues/9
+		 */
+		$paths = array_diff($paths, [$this->_plugdir]);
+		$paths[] = $this->_plugdir;
+
+		foreach($paths as $path)
 		{
 
 			$this->load($path);
