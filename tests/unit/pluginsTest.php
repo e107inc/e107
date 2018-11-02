@@ -123,6 +123,11 @@
 
 			$this->pluginInstall('banner');
 
+			// App needs e_parse_shortcode to be reloaded because another test
+			// could have initialized e_parse_shortcode already before the
+			// "banner" plugin was installed.
+			e107::getScParser()->__construct();
+
 			$tp = e107::getParser();
 
 			$result = $tp->parseTemplate("{BANNER=e107promo}",true);
@@ -348,8 +353,8 @@
 			$id = 912; // No-follow plugin on e107.org
 
 			$this->assertFalse(is_dir(e_PLUGIN."nofollow"), "Plugin nofollow exists before download");
-
 			$mp->download($id, '', 'plugin');
+			$this->assertTrue(is_dir(e_PLUGIN."nofollow"), "Plugin nofollow is missing after download");
 
 			$this->pluginInstall('nofollow');
 
