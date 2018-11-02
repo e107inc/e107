@@ -105,10 +105,15 @@ TMP;
 
 			$db = $this->tp->toDB($orig);
 
+			e107::wysiwyg('default');
+			e107::getConfig()->updatePref('wysiwyg', true);
 			$actual = $this->tp->toForm($db);
+			$expected = 'lr.src = window._lr.url %2B &#039;/Scripts/api.js&#039;;';
+			$this->assertEquals($expected, $actual);
 
+			e107::getConfig()->updatePref('wysiwyg', false);
+			$actual = $this->tp->toForm($db);
 			$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
-
 			$this->assertEquals($expected, $actual);
 			
 		}
