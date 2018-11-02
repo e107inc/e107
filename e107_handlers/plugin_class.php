@@ -4148,15 +4148,19 @@ class e107plugin
 
 		$text = '';
 
+		e107::getPlug()->clearCache();
+
 		// install plugin ...
 		$plug = e107plugin::getPluginRecord($id);
-		
+
+		// XXX: The code below does not actually check if the plugin is in the database table.
 		if(!is_array($plug))
 		{
 			$message = $id." is missing from the plugin db table";
 			$this->log($message);
 			return $message;
 		}
+		// XXX: The code above does not actually check if the plugin is in the database table.
 		
 		$plug['plug_action'] = !empty($options['function']) ? $options['function'] : 'install';
 
