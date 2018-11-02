@@ -345,6 +345,13 @@
 			  'link_owner' => 'multilan',
 			);
 
+			$unimportant_keys = ['link_id', 'link_order'];
+			foreach ($unimportant_keys as $unimportant_key)
+			{
+				unset($expected[$unimportant_key]);
+				unset($actual[$unimportant_key]);
+			}
+
 			$this->assertEquals($expected,$actual);
 
 			$status = $this->ep->XmlSiteLinks('uninstall',$plugVars);
