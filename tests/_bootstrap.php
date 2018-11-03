@@ -1,4 +1,5 @@
 <?php
+Codeception\Util\Autoload::addNamespace('', codecept_root_dir().'/tests/unit');
 
 define('PARAMS_GENERATOR', realpath(codecept_root_dir()."/lib/config.php"));
 
