@@ -11,7 +11,7 @@
 
 namespace e107\Shims;
 
-class Internal
+class AllShims
 {
-	use InternalShims;
+	use InternalShimsTrait;
 }
