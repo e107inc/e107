@@ -4155,7 +4155,7 @@ class e_admin_controller_ui extends e_admin_controller
 			// filter for WHERE and FROM clauses
 			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
 			
-			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str'))
+			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str' || $var['data'] === 'int'))
 			{
 				$searchable_types[] = 'method';
 			}
