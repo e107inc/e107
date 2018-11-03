@@ -12,7 +12,7 @@
 // e107 v2-style classes
 namespace
 {
-	class eShims extends \e107\Shims\All
+	class eShims extends \e107\Shims\AllShims
 	{
 	}
 }
