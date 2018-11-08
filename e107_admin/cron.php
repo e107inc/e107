@@ -194,13 +194,15 @@ class cron_admin_ui extends e_admin_ui
 		/**
 		 * Import Cron Settings into Database. 
 		*/
-		public function cronImport($new_cron = FALSE)
+		public function cronImport($new_cron = array())
 		{
-			if(!$new_cron)
+			if(empty($new_cron))
 			{
-				return;
+				return null;
 			}
-			
+
+			$tp = e107::getParser();
+
 			foreach($new_cron as $class => $ecron)
 			{
 				foreach($ecron as $val)
@@ -209,7 +211,7 @@ class cron_admin_ui extends e_admin_ui
 						'cron_id'			=> 0,
 						'cron_name'			=> $val['name'],
 						'cron_category'		=> $val['category'],
-						'cron_description' 	=> $val['description'],
+						'cron_description' 	=> $tp->toDB($val['description']),
 						'cron_function'		=> $class."::".$val['function'],
 						'cron_tab'			=> varset($val['tab'], '* * * * *'),
 						'cron_active'		=> varset($val['active'], '0'),
