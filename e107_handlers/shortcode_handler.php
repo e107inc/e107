@@ -763,8 +763,7 @@ class e_parse_shortcode
 		$saveVars = $this->eVars; // In case of nested call
 		$saveCodes = $this->addedCodes;
 		$this->eVars = $eVars;
-		$this->addedCodes = NULL;
-		
+
 		// former $sc_style - do it once here and not on every doCode loop - performance
 
 		$this->sc_style = e107::scStyle(); 	//FIXME - BC Problems and conflicts.
