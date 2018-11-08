@@ -385,12 +385,13 @@ class e107
 		$this->e107_config_mysql_info = $e107_config_mysql_info;
 
 		// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
-		if (!empty($e107_config_override['site_path']))
+	/*	if (!empty($e107_config_override['site_path']))
 		{
 			// $E107_CONFIG['site_path']
 			$this->site_path = $e107_config_override['site_path'];
-		}
-		else
+		}*/
+
+		if(empty($e107_config_override['site_path']))
 		{
 			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
 		}
@@ -457,6 +458,11 @@ class e107
 	 */
 	public function setDirs($e107_dirs, $e107_config_override = array())
 	{
+		if(!empty($e107_config_override['site_path'])) // $E107_CONFIG['site_path']
+		{
+			$this->site_path = $e107_config_override['site_path'];
+		}
+
 		$override = array_merge((array) $e107_dirs, (array) $e107_config_override);
 
 		// override all
