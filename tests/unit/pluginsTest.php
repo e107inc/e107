@@ -118,6 +118,9 @@
 			);
 		}
 
+		/**
+		 * @see https://github.com/e107inc/e107/issues/3547
+		 */
 		public function testBanner()
 		{
 
@@ -130,7 +133,6 @@
 
 			$tp = e107::getParser();
 
-			// XXX: Contradicts https://github.com/e107inc/e107/issues/3547#issuecomment-437163733
 			$result = $tp->parseTemplate("{BANNER=e107promo}",true);
 			$this->assertContains("<img class='e-banner img-responsive img-fluid'", $result);
 
