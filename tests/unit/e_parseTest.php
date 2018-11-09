@@ -77,12 +77,70 @@ TMP;
 		{
 
 		}
+*/
 
-		public function testParseTemplate()
+		public function testParseTemplateWithEnabledCoreShortcodes()
 		{
-
+			$needle = '<ul class="nav navbar-nav nav-main">';
+			$result = $this->tp->parseTemplate('{NAVIGATION}', true);
+			$this->assertContains($needle, $result);
 		}
 
+		public function testParseTemplateWithDisabledCoreShortcodes()
+		{
+			$result = $this->tp->parseTemplate('{NAVIGATION}', false);
+			$this->assertEmpty($result);
+		}
+
+		public function testParseTemplateWithCoreAddonShortcodes()
+		{
+			e107::getPlugin()->uninstall('online');
+			e107::getScParser()->__construct();
+
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
+			$this->assertEmpty($result);
+
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
+			$this->assertEmpty($result);
+
+			$shortcodeObject = e107::getScBatch('online', true);
+
+			$expected = "<a href=''>lost</a>";
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false, $shortcodeObject);
+			$this->assertEquals($expected, $result);
+
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
+			$this->assertEmpty($result);
+
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
+			$this->assertEquals($expected, $result);
+		}
+
+		public function testParseTemplateWithNonCoreShortcodes()
+		{
+			e107::getPlugin()->uninstall('download');
+			e107::getScParser()->__construct();
+
+			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false);
+			$this->assertEmpty($result);
+
+			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', true);
+			$this->assertEmpty($result);
+
+			$shortcodeObject = e107::getScBatch('download', true);
+
+			$needle = "<form class='form-search form-inline' ";
+			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false, $shortcodeObject);
+			$this->assertContains($needle, $result);
+
+			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false);
+			$this->assertEmpty($result);
+
+			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', true);
+			$this->assertEmpty($result);
+		}
+
+/*
 		public function testCreateConstants()
 		{
 
