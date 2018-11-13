@@ -110,9 +110,11 @@ TEMPL;
 
 
 
-	function toHtml($content)
+	public function toHtml($content)
 	{
-		global $pref, $tp; //XXX faster?
+		// global $pref; //XXX faster?
+		$pref = e107::getPref();
+		$tp = e107::getParser();
 		// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 		$content = stripslashes($content);
 
@@ -124,12 +126,15 @@ TEMPL;
 
 			//	$content = $tp->replaceConstants($content,'abs');
 
-			if(strstr($content,"[html]") === false) // BC - convert old BB code text to html.
+			if(strpos($content,"[html]") === false) // BC - convert old BB code text to html.
 			{
 				e107::getBB()->clearClass();
 
-				//$content = str_replace('\r\n',"<br />",$content);
-				//$content =  nl2br($content, true);
+				if($tp->isHtml($content) === false) // plain text or BBcode to HTML
+				{
+					$content =  nl2br($content, true);
+				}
+
 				$content = $tp->toHtml($content, true, 'WYSIWYG');
 			}
 
@@ -188,7 +193,9 @@ TEMPL;
 	function toBBcode($content)
 	{
 		// echo $_POST['content'];
-		global $pref, $tp;
+	//	global $pref;
+		$pref = e107::getPref();
+	//	$tp = e107::getParser();
 
 			e107::getBB()->setClass($_SESSION['media_category']);
 
