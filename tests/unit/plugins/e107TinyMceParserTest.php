@@ -32,8 +32,44 @@
 
 
 
-		public function testToHtml()
+		public function testToHtmlOnPlain()
 		{
+			$test = 'Plain text paragraph 1
+
+Plain text &quot;paragraph&quot; 2
+
+Plain text paragraph 3
+';
+
+			$actual = $this->tm->toHtml($test);
+			$expected = 'Plain text paragraph 1<br />
+<br />
+Plain text "paragraph" 2<br />
+<br />
+Plain text paragraph 3<br />';
+
+			$this->assertEquals($expected, $actual, "Plain text line-breaks to HTML failed in the TinyMce editor." );
+		}
+
+
+
+		public function testToHtmlOnBbcode()
+		{
+			$test = '[b]Bold text[/b]
+			
+			paragraph 2
+			
+			paragraph 3';
+
+			$actual = $this->tm->toHtml($test);
+
+			$expected = "<strong class='bbcode bold bbcode-b'>Bold text</strong><br />
+			<br />
+			paragraph 2<br />
+			<br />
+			paragraph 3";
+
+			$this->assertEquals($expected, $actual, "Bbcode to HTML failed in the TinyMce editor." );
 
 		}
 
