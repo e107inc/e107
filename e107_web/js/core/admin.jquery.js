@@ -755,12 +755,13 @@ $(document).ready(function()
 			
 		
 	
-		// Basic Delete Confirmation	
+		// Basic Delete Confirmation
+		/*
 		$('input.delete,button.delete,a[data-confirm]').click(function(){
   			answer = confirm($(this).attr("data-confirm"));
   			return answer; // answer is a boolean
 		});
-		
+	*/
 		$(".e-confirm").click(function(){
   			answer = confirm($(this).attr("title"));
   			return answer; // answer is a boolean
