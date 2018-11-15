@@ -863,8 +863,12 @@ class xmlClass
 
 		if(is_array($val))
 		{
-		//	$val = "<![CDATA[".e107::serialize($val,false)."]]>";
 			$val = e107::serialize($val,false);
+
+			if($val === null)
+			{
+				return '<![CDATA[array ()]]>';
+			}
 		}
 
 		if($this->convertFilePaths)
@@ -873,14 +877,10 @@ class xmlClass
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
 
-
-
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
 			return "<![CDATA[". $val."]]>";
 		}
-
-
 
 		$val = str_replace(chr(1),'{\u0001}',$val);
 

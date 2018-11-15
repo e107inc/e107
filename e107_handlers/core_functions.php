@@ -536,13 +536,13 @@ class e_array {
     *
     * @param array $ArrayData array to be stored
     * @param bool|string $mode true = var_export with addedslashes, false = var_export (default), 'json' = json encoded
-    * @return string
+    * @return null|string
     */
     public function serialize($ArrayData, $mode = false)
     {       
         if (!is_array($ArrayData) || empty($ArrayData))
         {
-            return false;
+            return null;
         }
 
         if($mode === 'json')

@@ -1763,11 +1763,6 @@ class e107
     */
     public static function serialize($ArrayData, $mode = false)
     {
-    	if(empty($ArrayData))
-		{
-			return array();
-		}
-
 		return self::getArrayStorage()->serialize($ArrayData, $mode);
     }
 
