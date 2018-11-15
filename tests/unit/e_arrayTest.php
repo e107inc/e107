@@ -107,9 +107,36 @@
 		{
 
 		}
-
+*/
 		public function testSerialize()
 		{
 
-		}*/
+			$pref1      = array('hello'=>'world');
+			$result1    = $this->arrObj->serialize($pref1);
+			$expected1  = "array (\n  'hello' => 'world',\n)";
+			$this->assertEquals($expected1,$result1);
+
+			$pref2      = array();
+			$result2    = $this->arrObj->serialize($pref2);
+			$expected2  = null;
+			$this->assertEquals($expected2,$result2);
+
+
+			$pref3      = array();
+			$result3    = $this->arrObj->serialize($pref3,true);
+			$expected3  = null;
+			$this->assertEquals($expected3,$result3);
+
+
+			$pref4      = array();
+			$result4    = $this->arrObj->serialize($pref4,'json');
+			$expected4  = null;
+			$this->assertEquals($expected4,$result4);
+
+			$pref5      = array('hello'=>'world');
+			$result5    = $this->arrObj->serialize($pref5,'json');
+			$expected5  = "{\n    \"hello\": \"world\"\n}";
+			$this->assertEquals($expected5,$result5);
+
+		}
 	}
