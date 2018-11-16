@@ -473,18 +473,19 @@ class rater
 					"rate_down"		=> ($type == 'down') ? 1 : 0
 			);
 				
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->db_Insert("rate", $insert))
 			{
-                $row = $sql->db_Fetch();
+                //$row = $sql->db_Fetch();
                 $edata = array(
-                    'like_pid' => $row['rate_id'],
+                    'like_pid' => $row,
                     'like_table' => $table,
                     'like_item_id' => $itemid,
                     'like_author_id' => USERID,
                     'like_author_name' => USERNAME,
-                    'like_old_up' => $row['rate_up'],
-                    'like_old_down' => $row['rate_down'],
-                    'like_totalvotes' => 1
+                    'like_up_count' => ($type == 'up') ? 1 : 0,
+                    'like_down_count' => ($type == 'down') ? 1 : 0,
+                    'like_totalvotes' => 1,
+                    'like_type' => $type
                 );
                 e107::getEvent()->trigger('user_like_sent', $edata);
 
@@ -588,12 +589,11 @@ class rater
 			);
 			
 			
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->db_Insert("rate", $insert))
 		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
 			{
-                $row = $sql->db_Fetch();
                 $edata = array(
-                    'rate_pid' => $row['rate_id'],
+                    'rate_pid' => $row,
                     'rate_table' => $table,
                     'rate_item_id' => $itemid,
                     'rate_author_id' => USERID,
