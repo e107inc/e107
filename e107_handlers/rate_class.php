@@ -443,6 +443,19 @@ class rater
 					$up 	= $totalUp;
 					$down 	= $totalDown;	
 				}
+
+                $edata = array(
+                    'like_pid' => $row['rate_id'],
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_up_count' => $totalUp,
+                    'like_down_count' => $totalDown,
+                    'like_totalvotes' => $totalVotes,
+                    'like_type' => $type
+                );
+                e107::getEvent()->trigger('user_like_sent', $edata);
 					
 				return $up."|".$down;
 			}		
@@ -462,6 +475,19 @@ class rater
 				
 			if($sql->db_Insert("rate", $insert))
 			{
+                $row = $sql->db_Fetch();
+                $edata = array(
+                    'like_pid' => $row['rate_id'],
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_old_up' => $row['rate_up'],
+                    'like_old_down' => $row['rate_down'],
+                    'like_totalvotes' => 1
+                );
+                e107::getEvent()->trigger('user_like_sent', $edata);
+
 				if($perc == true) // Percentage Mode
 				{
 					return ($type == 'up') ? "100%|0%" : "0%|100%";
@@ -527,6 +553,18 @@ class rater
 			
 			if($sql->db_Update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
 			{
+                $edata = array(
+                    'rate_pid' => $row['rate_id'],
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => $row['rate_votes'],
+                    'rate_new_votes' => $new_votes,
+                    'rate_old_rating' => $row['rate_rating'],
+                    'rate_new_rating' => $new_rating
+                    );
+                e107::getEvent()->trigger('user_rate_sent', $edata);
 				return RATELAN_3."|".$this->renderVotes($new_votes,$statR);	// Thank you for your vote. 
 			}
 			else
@@ -553,6 +591,20 @@ class rater
 			if($sql->db_Insert("rate", $insert))
 		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
 			{
+                $row = $sql->db_Fetch();
+                $edata = array(
+                    'rate_pid' => $row['rate_id'],
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => 0,
+                    'rate_new_votes' => 1,
+                    'rate_old_rating' => null,
+                    'rate_new_rating' => $rate
+                );
+                e107::getEvent()->trigger('user_rate_sent', $edata);
+
 				$stat = ($rate /1)/2;
 				$statR = round($stat,1);
 				return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
