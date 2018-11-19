@@ -32,7 +32,7 @@ class GitPreparer implements Preparer
 
 		touch(self::TEST_IN_PROGRESS_FILE);
 		$this->runCommand('git add -f '.escapeshellarg(self::TEST_IN_PROGRESS_FILE));
-		$this->runCommand('git add -A');
+		$this->runCommand('git add -A -f');
 
 		$commit_command = 'git commit -a --no-gpg-sign ' .
 			"-m '".self::TEST_IN_PROGRESS."! If test crashed, run `git log -1` for instructions' " .
@@ -41,7 +41,7 @@ class GitPreparer implements Preparer
 		$unsetVcsInProgress_commands = [
 			'git reset --hard HEAD',
 			'git clean -fdx',
-			'git stash pop',
+//			'git stash pop',
 			'git reset --mixed HEAD^',
 			'rm -fv '.escapeshellarg(self::TEST_IN_PROGRESS)
 		];
@@ -50,7 +50,7 @@ class GitPreparer implements Preparer
 			$commit_command .= "-m ".escapeshellarg($command)." ";
 		}
 		$this->runCommand($commit_command);
-		$this->runCommand('git stash push --all -m '.escapeshellarg(self::TEST_IN_PROGRESS));
+//		$this->runCommand('git stash push --all -m '.escapeshellarg(self::TEST_IN_PROGRESS));
 	}
 
 	protected function isVcsInProgress($case = '')
