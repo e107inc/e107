@@ -222,7 +222,7 @@ $PM_TEMPLATE['outbox']['end'] = "
 	{PM_DELETE_SELECTED}
 	</td>
 	<td class='forumheader text-right' colspan='3'>
-	{PM_NEXTPREV=inbox}
+	{PM_NEXTPREV=outbox}
 	</td>
 </tr>
 </tbody>
