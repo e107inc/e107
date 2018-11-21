@@ -148,7 +148,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						// Old way - href='myscript.php#id-to-target.
 						href: $element.attr("href"),
 						// Wait for final event. Useful for keyUp, keyDown... etc.
-						wait: $element.attr('data-event-wait')
+						wait: $element.attr('data-event-wait'),
+						// Optional confirmation message - requires user input before proceeding. 
+						confirm: $element.attr('data-confirm'),
 					};
 
 					// If this is a navigation controller, e.g. pager.
@@ -538,6 +540,17 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$loadingImage = $(options.loading);
 			$element.after($loadingImage);
 		}
+
+		if(options.confirm != null)
+		{
+			answer = confirm(options.confirm);
+
+			if(answer === false)
+			{
+				return null;
+			}
+		}
+
 
 		// Old way - href='myscript.php#id-to-target.
 		if(options.target == null || options.url == null)
