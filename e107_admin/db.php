@@ -203,13 +203,15 @@ class system_tools
 			$this->del_pref_val($_POST['pref_type']);
 		}
 		
-		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
+		if(isset($_POST['verify_sql']) || !empty($_POST['verify_table']) || varset($_GET['mode']) =='verify_sql')
 		{
 			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
 			$dbv->backUrl = e_SELF."?mode=verify_sql";
 			$dbv->verify();
+
+			//echo e107::getMessage()->render();
 			return;
 		}
 		

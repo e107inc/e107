@@ -372,7 +372,7 @@ if (!function_exists('multiarray_sort'))
 	 * @param $order
 	 * @param $natsort
 	 * @param $case
-	 * @return sorted array. 
+	 * @return array sorted array.
 	 */
     function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
     {
@@ -397,14 +397,20 @@ if (!function_exists('multiarray_sort'))
 
         if(!isset($sort_values))
         {
-            return;             
+            return $array;
         }
             
         reset ($sort_values);
-
+/*
         while (list ($arr_key, $arr_val) = each ($sort_values))
         {
  			$key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys. 
+ 			$sorted_arr[$key] = $array[$arr_key];
+        }*/
+
+        foreach($sort_values as $arr_key=>$arr_val)
+        {
+            $key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys.
  			$sorted_arr[$key] = $array[$arr_key];
         }
         return $sorted_arr;

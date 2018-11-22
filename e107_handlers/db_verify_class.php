@@ -162,21 +162,18 @@ class db_verify
 	 */
 	function verify()
 	{
-		
+		if(!empty($_POST['runfix']))
+		{
+			$this->runFix($_POST['fix']);
+		}
+
 		if(!empty($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
-			
 		}
 		else
 		{
-			if(isset($_POST['runfix']))
-			{
-				$this->runFix($_POST['fix']);
-			
-			} 
-			
-			$this->renderTableSelect();	
+			$this->renderTableSelect();
 		}	
 
 	}
@@ -199,7 +196,7 @@ class db_verify
 		{
 			$message = str_replace("[x]",$cnt,DBVLAN_26); // Found [x] issues.
 			$mes->add($message, E_MESSAGE_WARNING); 
-			$this->renderResults();	
+			$this->renderResults($fileArray);
 		}
 		else
 		{
@@ -456,8 +453,8 @@ class db_verify
 	}
 
 	
-	
-	function renderResults()
+
+	function renderResults($fileArray=array())
 	{
 		
 		$frm = e107::getForm();
@@ -466,8 +463,8 @@ class db_verify
 		
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<fieldset id='core-db-verify-{$selection}'>
-				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16."</legend>
+			<fieldset id='core-db-verify-results'>
+				<legend id='core-db-verify-results-legend'>".DBVLAN_16."</legend>
 
 				<table class='table adminlist'>
 					<colgroup>
@@ -479,7 +476,7 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".DBVLAN_4.": {$k}</th>
+							<th>".DBVLAN_4."</th>
 							<th>".DBVLAN_5."</th>
 							<th class='center'>".DBVLAN_6."</th>
 							<th>".DBVLAN_7."</th>
@@ -577,7 +574,14 @@ class db_verify
 			<div class='buttons-bar right'>
 				".$frm->admin_button('runfix', DBVLAN_21, 'execute', '', array('id'=>false))."
 				".$frm->admin_button('check_all', 'jstarget:fix', 'action', LAN_CHECKALL, array('id'=>false))."
-				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false));
+
+		foreach($fileArray as $tab)
+		{
+			$text .= $frm->hidden('verify_table[]',$tab);
+		}
+
+		$text .= "
 			</div>
 			
 			</fieldset>
