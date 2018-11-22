@@ -802,7 +802,7 @@ if ($e107_popup != 1) {
 
 	if(deftrue('BOOTSTRAP'))
 	{
-		echo "<div id='uiAlert' class='notifications center'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
+		echo "<div id='uiAlert' class='notifications'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
 	}
 
     /**

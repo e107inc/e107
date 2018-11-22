@@ -372,6 +372,7 @@ cursor: pointer;
 
 #uiAlert    { z-index: 10001 }
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
+#uiAlert.notifications { top: 48%; left: 0; width: 100%; }
 
 div.e-debug { margin-top:50px; background-color: white }
 div.e-debug td { color: black }
