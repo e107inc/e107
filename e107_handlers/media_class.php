@@ -1982,9 +1982,7 @@ class e_media
 	{
 
 		// Settings
-		// $targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
 		$targetDir = e_IMPORT;
-
 		$cleanupTargetDir = true; // Remove old files
 		$maxFileAge = 5 * 3600; // Temp file age in seconds
 
@@ -1997,7 +1995,7 @@ class e_media
 		// Clean the fileName for security reasons
 		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
 
-		if(!empty($_FILES['file']['name'])) // dropzone support v2.1.9
+		if(!empty($_FILES['file']['name']) && $_FILES['file']['name'] !== 'blob' ) // dropzone support v2.1.9
 		{
 			$fileName = $_FILES['file']['name'];
 		}
@@ -2007,14 +2005,14 @@ class e_media
 
 
 		// Make sure the fileName is unique but only if chunking is disabled
-		if($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName))
+		if($chunks < 2 && file_exists($targetDir . $fileName))
 		{
 			$ext = strrpos($fileName, '.');
 			$fileName_a = substr($fileName, 0, $ext);
 			$fileName_b = substr($fileName, $ext);
 
 			$count = 1;
-			while(file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
+			while(file_exists($targetDir .  $fileName_a . '_' . $count . $fileName_b))
 			{
 				$count++;
 			}
@@ -2022,7 +2020,7 @@ class e_media
 			$fileName = $fileName_a . '_' . $count . $fileName_b;
 		}
 
-		$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+		$filePath = $targetDir .  $fileName;
 
 		// Create target dir
 		if(!file_exists($targetDir))
@@ -2035,7 +2033,7 @@ class e_media
 		{
 			while(($file = readdir($dir)) !== false)
 			{
-				$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+				$tmpfilePath = $targetDir .  $file;
 
 				// Remove temp file if it is older than the max age and is not the current file
 				if(preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part"))
@@ -2153,6 +2151,8 @@ class e_media
 			}
 		}
 
+		$filePath = str_replace('//','/',$filePath); // cleanup .
+
 		// Check if file has been uploaded
 		if(!$chunks || $chunk == $chunks - 1)
 		{
@@ -2160,13 +2160,11 @@ class e_media
 			rename("{$filePath}.part", $filePath);
 		}
 
-		$filePath = str_replace('//','/',$filePath); // cleanup .
-
-
 		if(e107::getFile()->isClean($filePath) !== true)
 		{
+			$this->ajaxUploadLog($filePath,$fileName, filesize($filePath), false);
 			@unlink($filePath);
-			return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected."}, "id" : "id"}';
+			return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected. '.$filePath.'"}, "id" : "id"}';
 		}
 
 
@@ -2184,8 +2182,6 @@ class e_media
 
 		}
 
-		$result = false;
-
 		if(!empty($_GET['for'])) // leave in upload directory if no category given.
 		{
 			$uploadPath = varset($_GET['path'],null);
@@ -2194,21 +2190,13 @@ class e_media
 
 			$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath));
 		}
+		else
+		{
+			$result = true; // uploaded but not imported.
+		}
 
 
-		$log = e107::getParser()->filter($_GET,'str');
-		$log['filepath'] = str_replace('../','',$filePath);
-		$log['filename'] = $fileName;
-		$log['filesize'] = $fileSize;
-		$log['status'] = ($result) ? 'ok' : 'failed';
-		$log['_files'] = $_FILES;
-		//	$log['_get'] = $_GET;
-		//	$log['_post'] = $_POST;
-
-
-		$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING;
-
-		e107::getLog()->add('LAN_AL_MEDIA_01', print_r($log, true), $type, 'MEDIA_01');
+		$this->ajaxUploadLog($filePath,$fileName,$fileSize,$result);
 
 
 		$preview = $this->previewTag($result);
@@ -2220,5 +2208,21 @@ class e_media
 	}
 
 
+	private function ajaxUploadLog($filePath,$fileName,$fileSize,$result)
+	{
+		$log = e107::getParser()->filter($_GET,'str');
+		$log['filepath'] = str_replace('../','',$filePath);
+		$log['filename'] = $fileName;
+		$log['filesize'] = $fileSize;
+		$log['status'] = ($result) ? 'ok' : 'failed';
+		$log['_files'] = $_FILES;
+		$log['_request'] = $_REQUEST;
+		//	$log['_get'] = $_GET;
+		//	$log['_post'] = $_POST;
+		$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING;
+
+		e107::getLog()->add('LAN_AL_MEDIA_01', print_r($log, true), $type, 'MEDIA_01');
+
+	}
 
 }
