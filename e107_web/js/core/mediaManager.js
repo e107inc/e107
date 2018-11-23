@@ -911,6 +911,16 @@ console.log('Bbcode: '+bbcode);
 				}
 			},
 			init: {
+				BeforeUpload: function(e,file)
+				{
+
+
+				},
+				BeforeChunkUpload: function(uploader, file, post, currentBlob, currentOffset)
+				{
+					//console.log(file);
+              		// currentBlob.name=file.name;
+       			},
 				FilesAdded: function (up, files)
 				{
 
