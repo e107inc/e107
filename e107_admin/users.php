@@ -381,7 +381,7 @@ class users_admin_ui extends e_admin_ui
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
+				$this->fields[$field] = array('__tableField'=>'ue.'.$field, 'title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
 				$this->extendedData[$field] = $row;
