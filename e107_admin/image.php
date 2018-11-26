@@ -3207,7 +3207,7 @@ class media_admin_ui extends e_admin_ui
 
 			$c = md5($f['path'].$f['fname']);
 			
-			if($f['error'])
+			if(!empty($f['error']))
 			{
 				$text = str_replace('[x]', $f['fname'], IMALAN_122);
 				$mes->addWarning($text);
