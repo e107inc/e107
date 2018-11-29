@@ -585,7 +585,7 @@ class e_plugin
 	public function getAddons()
 	{
 
-		$allFiles = $this->_data[$this->_plugdir]['files'];
+		$allFiles = isset($this->_data[$this->_plugdir]) ? $this->_data[$this->_plugdir]['files']: array();
 
 		$addons = array();
 
