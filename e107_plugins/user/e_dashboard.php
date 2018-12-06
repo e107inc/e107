@@ -111,7 +111,11 @@ class user_dashboard // plugin-folder + '_url'
 
 			foreach($array as $key => $value)
 			{
-				extract($value);
+
+				$log_id = $value['log_id'];
+				$log_data = $value['log_data'];
+			//	extract($value);
+
 				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
@@ -331,7 +335,7 @@ class user_dashboard // plugin-folder + '_url'
 		
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
-		$this->title = ''.UC_LAN_9.' ('.$sum.')';
+		$this->title = UC_LAN_9.' ('.$sum.')';
 	
 		$totalDays = date('t', $month_start);
 	
