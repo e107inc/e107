@@ -331,7 +331,7 @@ class user_dashboard // plugin-folder + '_url'
 		
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
-		$this->title = 'New Users ('.$sum.')';
+		$this->title = ''.UC_LAN_9.' ('.$sum.')';
 	
 		$totalDays = date('t', $month_start);
 	
@@ -348,7 +348,7 @@ class user_dashboard // plugin-folder + '_url'
 		$options = array(
 			'chartArea'	=>array('left'=>'60', 'width'=>'90%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
-			'vAxis'		=> array('title'=>'New Users', 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
+			'vAxis'		=> array('title'=> UC_LAN_9, 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
 			'hAxis'		=> array('title'=>date('M Y', $month_start), 'slantedText'=>true, 'slantedTextAngle'=>60, 'ticks'=>$ticks, 'titleFontSize'=>14, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines' => array('color'=>'transparent'), 'textStyle'=>array('color' => '#ccc') ),
 			'colors'	=> array('#77acd9','#EDA0B6', '#EE8D21', '#5CB85C'),
 			'animation'	=> array('duration'=>1000, 'easing' => 'out'), 
