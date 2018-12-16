@@ -1528,8 +1528,9 @@ class news_front
 			//    $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 			//    $text=''.$text.'<center>'.$nextprev.'</center>';
 
-			echo $text;
+		//	echo $text;
 			$this->setNewsCache($this->cacheString, $text);
+			return $text;
 		}
 		else
 		{
