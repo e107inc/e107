@@ -60,18 +60,16 @@ else
 	$e107CorePage->processViewPage();
     $e107CorePage->setPage();
 
-
-
 	require_once(HEADERF);
 
 	$ns = e107::getRender();
 
 	if(!empty($e107CorePage->pageOutput['title']))
 	{
-		$ns->setContent('title',$e107CorePage->pageOutput['title']);
+		$ns->setContent('title', $e107CorePage->pageOutput['title']);
 	}
 
-	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage');
+	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], $e107CorePage->pageOutput['mode']);
 	require_once(FOOTERF);
 	exit;
 }
