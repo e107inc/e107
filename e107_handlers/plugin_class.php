@@ -988,6 +988,8 @@ class e_plugin
 	{
 		$core = e107::getConfig('core');
 
+		$urlsBefore = $core->get('e_url_list', array()); // get URL settings to be restored after.
+
 		foreach ($this->_addon_types as $var) // clear all existing prefs.
 		{
 			$core->update($var.'_list', "");
@@ -1110,12 +1112,18 @@ class e_plugin
 				}
 			}
 
+		// Restore e_url settings
+		$urlsAfter = $core->get('e_url_list', array());
+		foreach($urlsAfter as $k=>$v)
+		{
+			if(isset($urlsBefore[$k]))
+			{
+				$core->setPref('e_url_list/'.$k, $urlsBefore[$k]);
+			}
+		}
+
 
 		$core->save(false, true, false);
-
-
-
-
 
 	}
 
