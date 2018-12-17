@@ -30,6 +30,29 @@
 			}
 		}
 
+
+		public function testBuildAddonPrefList()
+		{
+
+
+            $newUrls = array('gallery'=>0, 'news'=>'news', 'rss_menu'=>0);
+
+            e107::getConfig()->setData('e_url_list', $newUrls)->save(false,false,false);
+
+			$urlsBefore = e107::pref('core', 'e_url_list');
+
+		//	print_r($urlsBefore);
+
+			$this->ep->buildAddonPrefLists();
+
+			$urlsAfter = e107::pref('core', 'e_url_list');
+
+		//	print_r($urlsAfter);
+
+			$this->assertEquals($urlsBefore['gallery'],$urlsAfter['gallery']);
+
+		}
+
 /*
 		public function testGetInstallRequired()
 		{
