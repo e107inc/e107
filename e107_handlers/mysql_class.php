@@ -927,7 +927,7 @@ class e_db_mysql
 			foreach($arg['data'] as $fk => $fv)
 			{
 				$tmp[] = ($this->pdo == true) ? ':'.$fk : $this->_getFieldValue($fk, $fv, $fieldTypes);
-				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk]));
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk],$this->_getPDOValue($fieldTypes[$fk],$fv)));
 			}
 
 			$valList= implode(', ', $tmp);
@@ -1148,7 +1148,7 @@ class e_db_mysql
 
 				if($ftype != 'cmd')
 				{
-					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype));
+					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
 				}
 			}
 
@@ -1360,7 +1360,11 @@ class e_db_mysql
 			break;
 
 			case 'null':
-				return null;
+			    return (
+                    is_string($fieldValue) && (
+                        ($fieldValue !== '_NULL_') && ($fieldValue !== '')
+                    )
+                ) ? $fieldValue : null;
 				break;
 
 			case 'array':
@@ -1397,7 +1401,7 @@ class e_db_mysql
 	 * @param $type
 	 * @return int
 	 */
-	private function _getPDOType($type)
+	private function _getPDOType($type, $value = null)
 	{
 		switch($type)
 		{
@@ -1407,7 +1411,7 @@ class e_db_mysql
 				break;
 
 			case 'null':
-				return PDO::PARAM_NULL;
+				return ($value === null) ? PDO::PARAM_NULL : PDO::PARAM_STR;
 				break;
 
 			case 'cmd':
