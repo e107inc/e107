@@ -1466,6 +1466,9 @@ class news_front
 			// }
 		}
 
+		/**
+		 * @deprecated - for BC only. May be removed in future without further notice.
+		 */
 		if(isset($this->pref['news_unstemplate']) && $this->pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 		{
 			// theme specific template required ...
@@ -1502,13 +1505,23 @@ class news_front
 					$loop = 1;
 				}
 			}
+
 			$loop = 1;
-			foreach($newsdata as $data) {
-				$var = "ITEMS{$loop}";
-				$$var = $data;
+
+			$items = array();
+
+			foreach($newsdata as $data)
+			{
+				$var = "ITEMS".$loop;
+			//	$$var = $data;
+				$items[$var] = $data;
 				$loop ++;
 			}
-			$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
+
+
+			$text = $tp->parseTemplate($NEWSCLAYOUT, false, $items);
+
+		//	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
 
 
 			// Deprecated
