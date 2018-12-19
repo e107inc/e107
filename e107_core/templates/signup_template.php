@@ -268,4 +268,14 @@ if(!defined($SIGNUP_END))
 {
 	$SIGNUP_END = '';
 }
-?>
+
+
+
+
+// v2.x to-do
+$SIGNUP_TEMPLATE = array();
+$SIGNUP_TEMPLATE['start'] = $SIGNUP_BEGIN;
+$SIGNUP_TEMPLATE['end'] = $SIGNUP_END;
+$SIGNUP_TEMPLATE['body'] = $SIGNUP_BODY;
+$SIGNUP_TEMPLATE['extended-user-fields'] = $SIGNUP_EXTENDED_USER_FIELDS;
+$SIGNUP_TEMPLATE['coppa']= '';

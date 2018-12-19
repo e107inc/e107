@@ -178,6 +178,17 @@ class signup
 			}
 		}
 
+
+
+	}
+
+
+	private function renderForm()
+	{
+
+
+
+
 	}
 
 
@@ -584,13 +595,16 @@ class signup
 
 }
 
-	if(e_QUERY && e_QUERY != 'stage1')
-	{
-		require_once(HEADERF);
-		new signup;
-		require_once(FOOTERF);
-		exit;
-	}
+
+
+
+if(e_QUERY && e_QUERY != 'stage1')
+{
+	require_once(HEADERF);
+	new signup;
+	require_once(FOOTERF);
+	exit;
+}
 
 
 
@@ -1055,6 +1069,8 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+
+// e107::getCoreTemplate('signup', 'signup');
 
 $text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
 $ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text, 'signup' );
