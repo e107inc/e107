@@ -174,7 +174,8 @@ class contact_shortcodes extends e_shortcode
 		$parm = array_merge(array('required'=>1), $parm);
 		return e107::getForm()->checkbox('gdpr', 1,false, $parm);
 	}
-
+     
+	/* {CONTACT_GDPR_LINK} */
 	function sc_contact_gdpr_link($parm='')
 	{
 		$pp = e107::getPref('gdpr_privacypolicy', '');
@@ -182,6 +183,7 @@ class contact_shortcodes extends e_shortcode
 		{
 			return '';
 		}
+		$pp = e107::getParser()->replaceConstants($pp, 'full'); 
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
 		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LANCONTACT_22);
 		$text = e107::getParser()->lanVars(LANCONTACT_23, $link);
