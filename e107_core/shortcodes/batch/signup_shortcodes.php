@@ -519,14 +519,15 @@ class signup_shortcodes extends e_shortcode
 		}
 	}
 	
-	
-	function sc_signup_images() // AVATARS
+	/* {SIGNUP_IMAGES}  */
+	/* {SIGNUP_IMAGES: class=img-circle} */ 
+	function sc_signup_images($parm = '') // AVATARS
 	{
 		$pref 	= e107::getPref();
 		
 		if($pref['signup_option_image'])
 		{
-			return e107::getForm()->avatarpicker('avatar');
+			return e107::getForm()->avatarpicker('avatar', '', $parm);
 		}
 	}
 	
