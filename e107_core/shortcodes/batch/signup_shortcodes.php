@@ -159,7 +159,7 @@ class signup_shortcodes extends e_shortcode
 	
 	/* example: {SIGNUP_SIGNUP_TEXT}
 	/* example: {SIGNUP_SIGNUP_TEXT: class=custom} */
-	function sc_signup_signup_text()
+	function sc_signup_signup_text($parm='')
 	{		
 		$pref = e107::getPref();
 		$tp = e107::getParser();
