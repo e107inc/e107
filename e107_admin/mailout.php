@@ -987,6 +987,7 @@ class mailout_main_ui extends e_admin_ui
 
 		require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
 
+		/** @var SMTP $smtp */
 		$smtp = new SMTP;
 		$smtp->do_debug = SMTP::DEBUG_CONNECTION;
 
@@ -996,6 +997,11 @@ class mailout_main_ui extends e_admin_ui
 		$username = $pref['smtp_username'];
 		$pwd     = $pref['smtp_password'];
 		$port = ($pref['smtp_port'] != 465) ? $pref['smtp_port'] : 25;
+//		$port = vartrue($pref['smtp_port'], 25);
+
+	//	var_dump($pref['smtp_port']);
+
+	//	return null;
 
 	//	var_dump($pref['smtp_password']);
 	//	print_a($pref['smtp_password']);
@@ -1007,7 +1013,7 @@ class mailout_main_ui extends e_admin_ui
 			//Connect to an SMTP server
 			if(!$smtp->connect($pref['smtp_server'], $port))
 			{
-				$mes->addError('Connect failed');
+				$mes->addError('Connect failed using '.$pref['smtp_server'] .' on port '.$port);
 			}
 			//Say hello
 			if(!$smtp->hello(gethostname()))

@@ -1055,16 +1055,18 @@ class comment
 	}
 
 
-
 	/**
 	 * Displays existing comments, and a comment entry form
 	 *
-	 * @param string $table - the source table for the associated item
-	 * @param string $action - usually 'comment' or 'reply'
+	 * @param string  $table - the source table for the associated item
+	 * @param string  $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param int $width - appears to not be used
-	 * @param string $subject
+	 * @param int     $width - appears to not be used
+	 * @param string  $subject
 	 * @param boolean $rate
+	 * @param boolean|string $return true, false or 'html'
+	 * @param boolean $tablerender
+	 * @return array|null|string|void
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
