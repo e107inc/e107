@@ -164,7 +164,8 @@ class forum_shortcodes extends e_shortcode
 		  return $text;
 	}
 
-	function sc_search()
+	/* example: {SEARCH: buttonclass=btn btn-fill btn-danger} */
+	function sc_search($parm = '')
 	{
 
 		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
@@ -172,6 +173,8 @@ class forum_shortcodes extends e_shortcode
 			$srchIcon = LAN_SEARCH;
 		}
 
+		$buttonclass = (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']." '" : " class='btn btn-default btn-secondary button ";
+		
 		// String candidate for USERLIST wrapper
 		return "
 		<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
@@ -181,7 +184,7 @@ class forum_shortcodes extends e_shortcode
 		<input type='hidden' name='forum' value='all' />
 		<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
 		<span class='input-group-btn'>
-		<button class='btn btn-default btn-secondary button' type='submit' name='s' value='search' >".$srchIcon."</button>
+		<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
 		</span>
 		</div>
 
