@@ -3474,7 +3474,7 @@ class e_form
 		
 		$opt = array();
 		
-		$homeicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-home' : 'icon-home.glyph'; 
+		$homeicon = (deftrue('BOOTSTRAP') === 4 || deftrue('FONTAWESOME') ) ? 'fa-home' : 'icon-home.glyph';
 		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
