@@ -5234,7 +5234,12 @@ class e107
 
 e107::autoload_register(array(e107::class, 'autoload'));
 
-
+// Forward compatibility with e107 v3 Composer autoloading
+$vendor_autoload_file = __DIR__."/vendor/autoload.php";
+if (file_exists($vendor_autoload_file))
+{
+	include_once($vendor_autoload_file);
+}
 
 /**
  * Interface e_admin_addon_interface @move to separate addons file?
