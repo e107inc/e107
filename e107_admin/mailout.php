@@ -1014,6 +1014,10 @@ class mailout_main_ui extends e_admin_ui
 			if(!$smtp->connect($pref['smtp_server'], $port))
 			{
 				$mes->addError('Connect failed using '.$pref['smtp_server'] .' on port '.$port);
+				$content = ob_get_contents();
+				ob_end_clean();
+				print_a($content);
+				return null;
 			}
 			//Say hello
 			if(!$smtp->hello(gethostname()))
@@ -1474,9 +1478,9 @@ class mailout_main_ui extends e_admin_ui
 		}
 
 		$temp['bulkmailer']     = $tp->filter($_POST['bulkmailer']);
-		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
-		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
-		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
+		$temp['smtp_server'] 	= $tp->toDB(trim($_POST['smtp_server']));
+		$temp['smtp_username'] 	= $tp->toDB(trim($_POST['smtp_username']));
+		$temp['smtp_password'] 	= $tp->toDB(trim($_POST['smtp_password']));
 		$temp['smtp_port'] 	    = intval($_POST['smtp_port']);
 	
 		$smtp_opts = array();
