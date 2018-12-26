@@ -1140,7 +1140,7 @@ class siteStats
 			}
 			else
 			{
-				$text .= $tp->simpleParse($template['nostatistic']);
+				$text .= $tp->simpleParse($template['nostatistic'], null);
 			}
 		}
 		return $text;
@@ -1275,7 +1275,7 @@ class siteStats
 			}
 			else
 			{
-				$text .= $tp->simpleParse($template['nostatistic']);
+				$text .= $tp->simpleParse($template['nostatistic'], null);
 			}
 		}
 		return $text;
@@ -1364,7 +1364,7 @@ class siteStats
 			}
 			else
 			{
-				$text .= $tp->simpleParse($template['nostatistic']);
+				$text .= $tp->simpleParse($template['nostatistic'], null);
 			}
 		}
 		return $text;
@@ -1468,7 +1468,7 @@ class siteStats
 			}
 			else
 			{
-				$text .= $tp->simpleParse($template['nostatistic']);
+				$text .= $tp->simpleParse($template['nostatistic'], null);
 			}
  
 		}
@@ -1565,7 +1565,7 @@ class siteStats
 			}
 			else
 			{
-				$text .= $tp->simpleParse($template['nostatistic']);
+				$text .= $tp->simpleParse($template['nostatistic'], null);
 			}
 		}
 		return $text;
