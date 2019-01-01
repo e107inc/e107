@@ -362,6 +362,7 @@ class cPanelDeployer extends Deployer
 				empty($relpath)) continue;
 			$relpath = $prefix . $relpath;
 			$archive->addFile($realpath, $relpath);
+			$archive->setExternalAttributesName($relpath, ZipArchive::OPSYS_UNIX, fileperms($realpath) << 16);
 		}
 		$archive->close();
 
