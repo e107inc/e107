@@ -939,7 +939,7 @@ class e_db_mysql
 
 			if($REPLACE === false)
 			{
-				$query = "INSERT".$IGNORE." INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+				$query = "INSERT".$IGNORE." INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
 
 				if($DUPEKEY_UPDATE === true)
 				{
@@ -950,7 +950,7 @@ class e_db_mysql
 			}
 			else
 			{
-				$query = "REPLACE INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+				$query = "REPLACE INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
 			}
 
 
@@ -1479,14 +1479,14 @@ class e_db_mysql
 	 */
 	function truncate($table=null)
 	{
-		if($table == null){ return; }
-		return $this->gen("TRUNCATE TABLE `#".$table."` "); 	
+		if($table == null){ return null; }
+		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
 	}
 
 
 	/**
 	 * @param string $type assoc|num|both
-	* @return array MySQL row
+	* @return array|bool MySQL row
 	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
 	* @example
 	* Example :<br />
@@ -1596,7 +1596,7 @@ class e_db_mysql
 			{
 				$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_ASSOC) : @mysql_fetch_array($this->mySQLresult);
 				$this->dbError('db_Count');
-				return $rows['COUNT(*)'];
+				return (int) $rows['COUNT(*)'];
 			}
 			else
 			{
@@ -1616,7 +1616,7 @@ class e_db_mysql
 		{
 			$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_NUM) : @mysql_fetch_array($this->mySQLresult);
 			$this->dbError('db_Count');
-			return $rows[0];
+			return (int) $rows[0];
 		}
 		else
 		{
@@ -2484,7 +2484,7 @@ class e_db_mysql
 			return false;
 		}
 
-		$result = $this->gen("SELECT NULL FROM `#".$table."` LIMIT 1");
+		$result = $this->gen("SELECT NULL FROM ".$this->mySQLPrefix.$table." LIMIT 1");
 
 		if($result === 0)
 		{
@@ -2641,7 +2641,7 @@ class e_db_mysql
 			$fieldList = $fields;
 		}
 			
-		$id = $this->gen("INSERT INTO #".$table."(".$fieldList.") SELECT ".$fieldList." FROM #".$table." WHERE ".$args);
+		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
 		$lastInsertId = $this->lastInsertId();
 		return ($id && $lastInsertId) ? $lastInsertId : false;
 
