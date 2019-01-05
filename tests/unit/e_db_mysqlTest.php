@@ -46,6 +46,124 @@
 				$this->assertTrue(true);
 			}
 		}
+
+		/**
+		 * Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
+		 * TODO Split into separate methods? Order needs to be respected.
+		 */
+		public function testSecondaryDatabase()
+		{
+			$xql = e107::getDb('newdb');
+			$config =  e107::getMySQLConfig();
+
+			$database = 'e107_tests_tmp';
+			$table = 'test';
+
+			// cleanup
+			$xql->gen("DROP DATABASE `".$database."`");
+
+			// create database
+			if($xql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
+			{
+				$xql->gen("GRANT ALL ON `".$database."`.* TO ".$config['mySQLuser']."@'".$config['mySQLserver']."';");
+				$xql->gen("FLUSH PRIVILEGES;");
+			}
+			else
+			{
+				$this->fail("Failed to create secondary database");
+			}
+
+			// use new database
+			$use = $xql->database($database,MPREFIX,true);
+
+			if($use === false)
+			{
+				$this->fail("Failed to select new database");
+			}
+
+			$create = "CREATE TABLE `".$database."`.".MPREFIX.$table." (
+					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
+					 `test_var` varchar(255) NOT NULL,
+					 PRIMARY KEY (`test_id`)
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			";
+
+			// create secondary database
+			if(!$xql->gen($create))
+			{
+				$this->fail("Failed to create table in secondary database");
+			}
+
+
+			// Insert
+			$arr = array('test_id'=>0, 'test_var'=>'Example insert');
+			if(!$xql->insert($table, $arr))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to insert into secondary database: ".$err);
+			}
+
+			// Copy Row.
+			if(!$copied = $xql->db_CopyRow($table, '*', "test_id = 1"))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to copy row into secondary database table: ".$err);
+			}
+
+
+			// Select
+			if(!$xql->select($table,'*','test_id !=0'))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to select from secondary database: ".$err);
+			}
+
+
+			// fetch
+			$row = $xql->fetch();
+			$this->assertNotEmpty($row['test_var'], "Failed to fetch from secondary database");
+			$this->assertEquals('Example insert',$row['test_var'], $xql->getLastErrorText());
+
+
+			// update
+			$upd = array('test_var' => "Updated insert",'WHERE' => "test_id = 1");
+			if(!$xql->update($table,$upd))
+			{
+			    $err = $xql->getLastErrorText();
+				$this->fail("Failed to update secondary database table: ".$err);
+			}
+
+			// update (legacy)
+			$upd2 = $xql->update($table, "test_var = 'Updated legacy' WHERE test_id = 1");
+			$this->assertNotEmpty($upd2, "UPDATE (legacy) failed on secondary database table: ".$xql->getLastErrorText());
+
+
+			// primary database retrieve
+			$username = e107::getDb()->retrieve('user','user_name', 'user_id  = 1');
+			$this->assertNotEmpty($username, "Lost connection with primary database.");
+
+
+			// count
+			$count = $xql->count($table, "(*)", "test_id = 1");
+			$this->assertNotEmpty($count, "COUNT failed on secondary database table: ".$xql->getLastErrorText());
+
+			// delete
+			if(!$xql->delete($table, "test_id = 1"))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to delete secondary database table row: ".$err);
+			}
+
+			// Truncate & isEmpty
+			$xql->truncate($table);
+			$empty = $xql->isEmpty($table);
+			$this->assertTrue($empty,"isEmpty() or truncate() failed");
+
+
+
+		}
+
+
 /*
 		public function testGetServerInfo()
 		{
