@@ -1586,6 +1586,7 @@ class e107forum
 		$tmp = array_unique($_tmp);
 		// issue #3338 fixed typo, that caused issue with not marking threads are read
 		$viewed = trim(implode(',', $tmp), ',');
+		$currentUser['user_plugin_forum_viewed'] =  $viewed;
 		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
