@@ -805,13 +805,35 @@
 			$res = null;
 			$this->assertTrue($res);
 		}
+*/
+
+		public function testBase64DecodeOnAjaxURL()
+		{
+			$query = "mode=main&iframe=1&action=info&src=aWQ9ODgzJnVybD1odHRwcyUzQSUyRiUyRmUxMDcub3JnJTJGZTEwN19wbHVnaW5zJTJGYWRkb25zJTJGYWRkb25zLnBocCUzRmlkJTNEODgzJTI2YW1wJTNCbW9kYWwlM0QxJm1vZGU9YWRkb24mcHJpY2U9";
+
+			$result = base64_decode($query, true);
+
+			$this->assertFalse($result); // correct result is 'false'.
+		}
+
 
 		public function testFilter_request()
 		{
-			$res = null;
-			$this->assertTrue($res);
-		}
 
+		//	define('e_DEBUG', true);
+		//	$_SERVER['QUEST_STRING'] = "mode=main&iframe=1&action=info&src=aWQ9ODgzJnVybD1odHRwcyUzQSUyRiUyRmUxMDcub3JnJTJGZTEwN19wbHVnaW5zJTJGYWRkb25zJTJGYWRkb25zLnBocCUzRmlkJTNEODgzJTI2YW1wJTNCbW9kYWwlM0QxJm1vZGU9YWRkb24mcHJpY2U9";
+
+			//$result = $this->e107::filter_request($test,'QUERY_STRING','_SERVER');
+
+		//	$this->e107->prepare_request();
+
+		//	var_dump($_SERVER['QUEST_STRING']);
+
+
+		// 	$res = null;
+			// $this->assertTrue($res);
+		}
+/*
 		public function testSet_base_path()
 		{
 			$res = null;
