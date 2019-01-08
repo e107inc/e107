@@ -3874,7 +3874,7 @@ class e107
 
 		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 		{
-			if($type == "_POST" && ($base64 == FALSE))
+			if($type == "_POST" && ($base64 === false))
 			{
 				$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 			}
@@ -4009,7 +4009,7 @@ class e107
 
 		if($base64 != true)
 		{
-			self::filter_request(base64_decode($input),$key,$type,true);
+			self::filter_request(base64_decode($input, true),$key,$type,true);
 		}
 
 
