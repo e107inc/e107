@@ -131,6 +131,9 @@
   'news' => 'news',
   'rss_menu' => 'rss_menu',
 )]]></core>
+		<core name="e_user_list"><![CDATA[array (
+  'user' => 'user',
+)]]></core>
 		<core name="email_text"></core>
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>
