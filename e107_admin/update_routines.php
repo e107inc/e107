@@ -693,7 +693,7 @@ function update_core_database($type = '')
 					return update_needed("user/e_user.php need to be registered"); // NO LAN.
 				}
 
-				e107::getConfig()->setPref('e_url_list/user', 'user')->save(false,true,false);
+				e107::getConfig()->setPref('e_user_list/user', 'user')->save(false,true,false);
 			}
 
 
