@@ -112,7 +112,7 @@ class e_db_mysql
 		global $pref, $db_defaultPrefix;
 
 
-		if((PHP_MAJOR_VERSION > 6) || (defined('e_PDO') && e_PDO === true))
+		if((PHP_MAJOR_VERSION > 6) || !function_exists('mysql_connect') ||  (defined('e_PDO') && e_PDO === true))
 		{
 			$this->pdo = true;	
 		}
