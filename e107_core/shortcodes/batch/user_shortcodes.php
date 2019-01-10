@@ -747,8 +747,9 @@ function sc_user_email($parm='')
 				{
 					
 					$key = $f['user_extended_struct_name'];
-
-					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
+					$field = 'user_'.$key; 
+								
+					if($ue->hasPermission($field) && $ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
 
 						$extended_record = str_replace("EXTENDED_ICON","USER_EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
@@ -991,4 +992,3 @@ function sc_user_email($parm='')
 	
 
 }
-?>
