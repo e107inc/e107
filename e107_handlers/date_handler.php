@@ -6,15 +6,12 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
- * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
- * 
 */
+
 if (!defined('e107_INIT')) { exit; }
 
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+//e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+e107::lan('date'); 
 
 class e_date
 {
@@ -693,7 +690,16 @@ class e_date
 			return deftrue('LANDT_10',"Just now");
 		}
 
-		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
+		// Check if it is 'past' or 'future'
+		if($older_date > $newer_date) // past
+		{
+			return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);	
+		}	
+		else // future
+		{
+			return ($mode ? $outputArray : LANDT_IN ." ". implode(", ", $outputArray));
+		}
+		
 	}
 
 
