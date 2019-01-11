@@ -213,7 +213,7 @@ class e_plugin
 
 		if(isset($this->_data[$this->_plugdir]['@attributes']['installRequired']))
 		{
-			return ($this->_data[$this->_plugdir]['@attributes']['installRequired'] === 'true') ? true : false;
+			return ($this->_data[$this->_plugdir]['@attributes']['installRequired'] === 'false') ? false : true;
 		}
 
 		return false;
@@ -488,7 +488,9 @@ class e_plugin
 	private function _initIDs()
 	{
 		$sql = e107::getDb();
+		$cfg = e107::getConfig();
 
+		$save = false;
 		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != '' ORDER by plugin_path ", true))
 		{
 
@@ -500,12 +502,17 @@ class e_plugin
 				if(!empty($row['plugin_installflag']))
 				{
 					$this->_installed[$path] = $row['plugin_version'];
+					$cfg->setPref('plug_installed/'.$path, $row['plugin_version']);
+					$save = true;
 				}
 
 				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;// $path;
 			}
 
-
+			if($save)
+			{
+				$cfg->save(false,true,false);
+			}
 		}
 
 
@@ -557,6 +564,11 @@ class e_plugin
 
 	public function getFields($currentStatus = false)
 	{
+		/*if(!isset($this->_data[$this->_plugdir]['@attributes']['name']))
+		{
+			return false;
+		}*/
+
 
 		$ret = array(
 			 'plugin_name'          => $this->getName('db'),
@@ -677,7 +689,7 @@ class e_plugin
 				$ret = $this->parse_plugin_php($plugName);
 			}
 
-			if(!empty($ret))
+			if(!empty($ret['@attributes']['name'])) // make sure it's a valid plugin.
 			{
 				$arr[$plugName] = $ret;
 			}
