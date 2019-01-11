@@ -11,7 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 //e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
-e107::lan('date'); 
+e107::coreLan('date'); 
 
 class e_date
 {
