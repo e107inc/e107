@@ -31,6 +31,36 @@
 		}
 
 
+		/**
+		 * Creates a dummy plugin entry to make sure such plugins are ignored
+		 */
+		public function testIgnoringOfInvalidPlugin()
+		{
+
+			$dir = e_PLUGIN."temptest";
+			$file = e_PLUGIN."temptest/plugin.php";
+
+			mkdir($dir,0755);
+			file_put_contents($file, "\n");
+
+			$detected = $this->ep->clearCache()->getDetected();
+
+			foreach($detected as $path)
+			{
+				if($path == 'temptest')
+				{
+					$this->assertFalse(true);
+				}
+			}
+
+			unlink($file);
+			rmdir($dir);
+
+			$this->assertFalse(false);
+
+
+		}
+
 		public function testBuildAddonPrefList()
 		{
 
@@ -40,25 +70,33 @@
             e107::getConfig()->setData('e_url_list', $newUrls)->save(false,false,false);
 
 			$urlsBefore = e107::pref('core', 'e_url_list');
+			$userBefore = e107::pref('core', 'e_user_list');
 
-		//	print_r($urlsBefore);
+		//	print_r($userBefore);
 
-			$this->ep->buildAddonPrefLists();
+			$this->ep->clearCache()->buildAddonPrefLists();
 
 			$urlsAfter = e107::pref('core', 'e_url_list');
+			$userAfter = e107::pref('core', 'e_user_list');
 
-		//	print_r($urlsAfter);
+		//	print_r($userAfter);
 
 			$this->assertEquals($urlsBefore['gallery'],$urlsAfter['gallery']);
+			$this->assertEquals($userBefore['user'],$userAfter['user']);
 
 		}
 
-/*
+
 		public function testGetInstallRequired()
 		{
+			$this->ep->load('user');
+
+			$result = $this->ep->clearCache()->getInstallRequired();
+
+			$this->assertFalse($result);
 
 		}
-
+/*
 		public function testGetUpgradableList()
 		{
 
@@ -82,21 +120,27 @@
 
 		}
 
-/*
+
 		public function testIsInstalled()
 		{
-			$this->ep->setInstalled('some-plugin', '1.3');
+			$result = $this->ep->clearCache()->load('user')->isInstalled();
 
-			$val = $this->ep->load('some-plugin')->isInstalled();
-
-		//	var_dump($val);
-		}*/
-/*
-		public function testGetDetected()
-		{
-
+			$this->assertTrue($result);
 		}
 
+		public function testGetDetected()
+		{
+			$result = $this->ep->clearCache()->getDetected();
+
+			$hasBanner = in_array("banner", $result);
+
+			$this->assertTrue($hasBanner);
+
+			$hasUser = in_array("user", $result);
+
+			$this->assertTrue($hasUser);
+		}
+/*
 		public function testGetCompat()
 		{
 
@@ -136,12 +180,15 @@
 		{
 
 		}
-
+*/
 		public function testGetInstalled()
 		{
+			$result = $this->ep->clearCache()->getInstalled();
+
+			$this->assertNotEmpty($result['user']);
 
 		}
-
+/*
 		public function testGetVersion()
 		{
 
@@ -149,7 +196,7 @@
 
 		public function testGetFields()
 		{
-			$result = $this->ep->load('forum')->getFields(true);
+			$result = $this->ep->clearCache()->load('forum')->getFields(true);
 
 		//	print_r($result);
 
