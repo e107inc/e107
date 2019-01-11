@@ -111,7 +111,7 @@
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
-				$text .= '<li><a href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
+				$text .= '<li><a class="dropdown-item" href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
 			}
 
 			$text .= '
