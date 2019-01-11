@@ -929,13 +929,15 @@
 			$res = null;
 			$this->assertTrue($res);
 		}
-
+*/
 		public function testIsInstalled()
 		{
-			$res = null;
+			$result = $this->e107::isInstalled('user');
+
+			// var_dump($result);
 			$this->assertTrue($res);
 		}
-
+/*
 		public function testIni_set()
 		{
 			$res = null;

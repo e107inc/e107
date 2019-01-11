@@ -169,11 +169,15 @@
 			$expected = '1 day, 22 hours, 49 minutes, 55 seconds ago';
 			$this->assertEquals($expected, $actual);
 
+			$actual = $this->dateObj->computeLapse($older, $newer, false, true, 'short');
+			$expected = '1 day ago';
+			$this->assertEquals($expected, $actual);
+
 
 			//FIXME fails with future dates. Expected: "In 2 weeks" or "2 weeks from now"
 			$newer = strtotime("+2 weeks");
 			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'short');
-
+			$expected = 'in 2 weeks';
 		//	var_dump($actual);
 		}
 
