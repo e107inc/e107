@@ -17,6 +17,9 @@ if (!getperms('P'))
 	e107::redirect('admin');
 	exit;
 }
+
+e107::lan('newsletter',true);
+
 $e_sub_cat = 'newsletter';
 require_once(e_ADMIN.'auth.php');
 // Include ren_help for display_help (while showing BBcodes)
