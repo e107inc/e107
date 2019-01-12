@@ -73,7 +73,9 @@ class list_forum
 				extract($forumInfo);
 
 				$record = array();
-				
+
+/* Fixes #3601 Removed unused vars, fixed userid extraction
+
 				//last user
 				$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 				$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
@@ -87,12 +89,16 @@ class list_forum
 				$u_id = substr($thread_user, 0, strpos($thread_user, "."));
 				$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
 				$thread_user = $u_id;
+*/
 
 				if (isset($thread_anon)) 
 				{
+					/*
 					$tmp = explode(chr(1), $thread_anon);
 					$thread_user = $tmp[0];
 					$thread_user_ip = $tmp[1];
+					*/
+					$thread_user = $thread_anon;
 				}
 				
 				$gen = new convert;
