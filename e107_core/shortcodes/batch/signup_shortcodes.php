@@ -609,6 +609,53 @@ class signup_shortcodes extends e_shortcode
 
 	}
 
+	/**
+	 * Create Privacy policy link
+	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK}
+	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK: class=label label-info}
+	 */
+	function sc_signup_gdpr_privacypolicy_link($parm='')
+	{
+		$pp = e107::getPref('gdpr_privacypolicy', '');
+		if (!$pp)
+		{
+			return '';
+		}
+		$pp = e107::getParser()->replaceConstants($pp, 'full');
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_122);
+		return $text;
+	}
+
+	/**
+	 * Create Terms and conditions link
+	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK}
+	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK: class=label label-info}
+	 */
+	function sc_signup_gdpr_termsandconditions_link($parm='')
+	{
+		$pp = e107::getPref('gdpr_termsandconditions', '');
+		if (!$pp)
+		{
+			return '';
+		}
+		$pp = e107::getParser()->replaceConstants($pp, 'full');
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_123);
+		return $text;
+	}
+
+	/**
+	 * Print message "By signing up you agree to our Privacy policy and our Terms and conditions."
+	 * @example {SIGNUP_GDPR_INFO}
+	 */
+	function sc_signup_gdpr_info()
+	{
+		$text = e107::getParser()->lanVars(LAN_SIGNUP_124,
+			array($this->sc_signup_gdpr_privacypolicy_link(), $this->sc_signup_gdpr_termsandconditions_link()));
+		return $text;
+	}
+
 }
 
 ?>
