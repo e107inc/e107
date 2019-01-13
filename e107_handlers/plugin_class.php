@@ -506,6 +506,8 @@ class e_plugin
 		$sql = e107::getDb();
 		$cfg = e107::getConfig();
 
+		$pref = $cfg->get('plug_installed');
+
 		$save = false;
 		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != '' ORDER by plugin_path ", true))
 		{
@@ -515,7 +517,7 @@ class e_plugin
 				$path = $row['plugin_path'];
 				$this->_ids[$path] = (int) $row['plugin_id'];
 
-				if(!empty($row['plugin_installflag']))
+				if(!empty($row['plugin_installflag']) && !isset($pref[$path]))
 				{
 					$this->_installed[$path] = $row['plugin_version'];
 					$cfg->setPref('plug_installed/'.$path, $row['plugin_version']);

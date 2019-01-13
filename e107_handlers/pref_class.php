@@ -585,6 +585,7 @@ class e_pref extends e_front_model
 					{
 						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
+						e107::getDebug()->log(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2));
 					}
 					
 				}
