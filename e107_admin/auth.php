@@ -429,6 +429,11 @@ class auth
 				$row = $sql_auth->db_Fetch();
 				$authname = $row['user_loginname'];
 			}
+			elseif ($sql_auth->db_Select("user", "*", "user_email='{$authname}' AND user_admin='1' "))
+			{
+				$row = $sql_auth->db_Fetch();
+				$authname = $row['user_loginname'];
+			}
 			else
 			{
 				$reason = 'iu';
