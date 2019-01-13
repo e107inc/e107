@@ -6926,7 +6926,7 @@ class e_form
 				{
 
 					$required = $this->getRequiredString();
-					$required_class = ' class="required-label" title="'.LAN_REQUIRED.'"'; 
+					$required_class = ' class="required-label" title="'.LAN_REQUIRED.'"';
 					$required_help = true;
 
 					if(!empty($att['validate']))
