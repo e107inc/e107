@@ -101,6 +101,8 @@ class e_plugin
 
 		if(empty($this->_ids))
 		{
+		//	e107::getDebug()->log("Running e_plugin::_initIDs()");
+		//	e107::getDebug()->log(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
 			$this->_initIDs();
 		}
 
@@ -517,11 +519,15 @@ class e_plugin
 				$path = $row['plugin_path'];
 				$this->_ids[$path] = (int) $row['plugin_id'];
 
-				if(!empty($row['plugin_installflag']) && !isset($pref[$path]))
+				if(!empty($row['plugin_installflag']) )
 				{
 					$this->_installed[$path] = $row['plugin_version'];
-					$cfg->setPref('plug_installed/'.$path, $row['plugin_version']);
-					$save = true;
+
+					if(!isset($pref[$path]))
+					{
+						$cfg->setPref('plug_installed/'.$path, $row['plugin_version']);
+						$save = true;
+					}
 				}
 
 				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;// $path;
