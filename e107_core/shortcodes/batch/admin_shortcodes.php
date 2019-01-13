@@ -172,9 +172,9 @@ class admin_shortcodes
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
 		{
-			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
+			if (is_readable(e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE))
 			{
-				$helpfile = e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE;
+				$helpfile = e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE;
 			}
 			elseif (is_readable(e_LANGUAGEDIR.'English/admin/help/'.e_PAGE))
 			{
