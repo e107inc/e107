@@ -237,11 +237,33 @@
 
 		}
 
-		public function testGetMeta()
-		{
 
+
+
+*/
+
+		/**
+		 * Test check for global lan file.
+		 */
+		public function testHasLanGlobal()
+		{
+			$result = $this->ep->clearCache()->load('chatbox_menu')->hasLanGlobal();
+
+			$this->assertEquals('chatbox_menu', $result);
+
+			$result = $this->ep->clearCache()->load('alt_auth')->hasLanGlobal();
+
+			$this->assertFalse($result);
 		}
 
+		public function testGetMeta()
+		{
+			$result = $this->ep->clearCache()->load('news')->getMeta();
+
+			$this->assertEquals('news', $result['folder']);
+			$this->assertEquals('menu', $result['category']);
+		}
+/*
 		public function testLoad()
 		{
 
