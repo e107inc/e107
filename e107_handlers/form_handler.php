@@ -81,7 +81,7 @@ class e_form
 		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_form_handler.php");
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
-		$this->setRequiredString('<span class="required">*&nbsp;</span>');
+		$this->setRequiredString('<span class="required text-warning">&nbsp;*</span>');
 	}
 
 	/**
@@ -6922,12 +6922,14 @@ class e_form
 			{
 				$required = '';
 				$required_class = '';
-				if(isset($model_required[$key]) || vartrue($att['validate']))
+				if(isset($model_required[$key]) || vartrue($att['validate']) || !empty($att['writeParms']['required']))
 				{
+
 					$required = $this->getRequiredString();
-					$required_class = ' class="required-label"'; // TODO - add 'required-label' to the core CSS definitions
+					$required_class = ' class="required-label" title="'.LAN_REQUIRED.'"'; 
 					$required_help = true;
-					if(vartrue($att['validate']))
+
+					if(!empty($att['validate']))
 					{
 						// override
 						$model_required[$key] = array();
@@ -6963,7 +6965,7 @@ class e_form
 
 				}
 
-				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
+				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$required.$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 
 				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
