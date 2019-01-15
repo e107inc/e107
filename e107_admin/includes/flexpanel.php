@@ -198,12 +198,13 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$mainPanel .= "<div class='left'>";
 		foreach($this->iconlist as $key => $val)
 		{
-			if(!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+			if(empty($myE107) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
 				$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 			}
 		}
 		$mainPanel .= "</div></div>";
+
 		// Rendering the saved configuration.
 		$ns->setStyle('flexpanel');
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
