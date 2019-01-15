@@ -945,6 +945,59 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
     }
 
 
+	/**
+	 * Return the default array of icon identifiers for the admin "Control Panel". (infopanel and flexpanel)
+	 * @return array
+	 */
+	public function getDefaultAdminPanelArray()
+	{
+		$iconlist = $this->adminLinks();
+
+		$defArray = array();
+
+		$exclude = array (
+				'e-administrator',
+				'e-updateadmin',
+				'e-banlist',
+				'e-cache',
+				'e-comment',
+				'e-credits',
+				'e-db',
+				'e-docs',
+				'e-emoticon',
+				'e-users_extended',
+				'e-fileinspector',
+				'e-language',
+				'e-ugflag',
+				'e-notify',
+				'e-phpinfo',
+				'e-upload',
+				'e-cron',
+				'e-search',
+				'e-admin_log',
+				'e-eurl'
+			);
+
+		$count = 0;
+
+		foreach($iconlist as $k=>$v)
+		{
+			if($count === 20)
+			{
+				break;
+			}
+
+			if(!in_array($k,$exclude))
+			{
+				$defArray[] = $k;
+				$count++;
+			}
+		}
+
+		return $defArray;
+	}
+
+
 
 
 	private function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
