@@ -261,34 +261,12 @@ class adminstyle_infopanel
 		$mainPanel = "
 		<div id='core-infopanel_mye107' >
 		";
-		
-		/*
-		$mainPanel .= '<span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-right">
-		                <li>'.$this->render_infopanel_icons().'</li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>';
-		
-		*/
-		
-	//	print_a($user_pref['core-infopanel-mye107']);
-        
-		$mainPanel .= "
-		
-		
-		
-		
-			
-				<div class='left'>";
+
+		$mainPanel .= "<div class='left'>";
 			
 			foreach ($this->iconlist as $key=>$val)
 			{
-				if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+				if (empty($myE107) || in_array($key, $user_pref['core-infopanel-mye107']))
 				{
 					$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 				}
@@ -298,6 +276,8 @@ class adminstyle_infopanel
 			$mainPanel .= "</div>
 	      
 			</div>";
+
+		e107::getDebug()->log($this->iconlist);
 
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 
