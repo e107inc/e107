@@ -67,7 +67,17 @@ class forum_post_handler
 		$this->post     = (int) $_GET['post']; // post ID if needed.
 
 
-		$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
+		// issue #3619: In case the post id is not set
+		// use the thread id to look for the moderator ids
+		if (!empty($this->post))
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
+		}
+		else
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($this->id);
+		}
+
 		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
 
@@ -810,8 +820,16 @@ class forum_post_handler
 	 */
 	private function renderFormMove()
 	{
+		if (isset($_POST['forum_move']))
+		{
+			// Forum just moved. No need to display the forum move form again.
+			return;
+		}
+
 		if(!deftrue('MODERATOR'))
 		{
+			$mes = e107::getMessage();
+			echo $mes->addWarning(LAN_NO_PERMISSIONS)->render();
 			return;
 		}
 
