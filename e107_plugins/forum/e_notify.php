@@ -358,10 +358,11 @@ class forum_notify extends notify
 		}
 		else
 		{
-			$message = $data;
+			$message = $data['notify_message'];
 		}
 
-		$this->send('forum_post_rep', LAN_FORUM_NT_11, $message);
+		$this->send('user_forum_post_report', LAN_FORUM_NT_11, $message);
+		return true;
 	}
 	
 }
