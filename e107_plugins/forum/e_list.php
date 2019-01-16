@@ -31,7 +31,7 @@ class list_forum
 			$lvisit = $this->parent->getlvisit();
 			$qry = "
 			SELECT t.thread_name AS parent_name, t.thread_id as parent_id,
-			f.forum_id, f.forum_name, f.forum_class, 
+			f.forum_id, f.forum_name, f.forum_class, f.forum_sef,
 			u.user_name, lp.user_name AS lp_name, 
 			t.thread_id, t.thread_views as tviews, t.thread_name, t.thread_datestamp, t.thread_user,
 			tp.post_thread, tp.post_user, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies
@@ -49,7 +49,7 @@ class list_forum
 		{	// Most recently updated threads up to limit
 			$qry = "
 			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, 
-			t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
+			t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, f.forum_sef, u.user_name, lp.user_name AS lp_name
 			FROM #forum_thread AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 			LEFT JOIN #user AS u ON t.thread_user = u.user_id
@@ -73,7 +73,9 @@ class list_forum
 				extract($forumInfo);
 
 				$record = array();
-				
+
+/* Fixes #3601 Removed unused vars, fixed userid extraction
+
 				//last user
 				$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 				$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
@@ -87,12 +89,16 @@ class list_forum
 				$u_id = substr($thread_user, 0, strpos($thread_user, "."));
 				$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
 				$thread_user = $u_id;
+*/
 
 				if (isset($thread_anon)) 
 				{
+					/*
 					$tmp = explode(chr(1), $thread_anon);
 					$thread_user = $tmp[0];
 					$thread_user_ip = $tmp[1];
+					*/
+					$thread_user = $thread_anon;
 				}
 				
 				$gen = new convert;
@@ -131,14 +137,16 @@ class list_forum
 					$parent_name = $thread_name;
 				}
 				$rowheading	= $this->parent->parse_heading($parent_name);
-				$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
+				//$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
 				//"<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>"
 				$uparams = array('id' => $thread_user, 'name' => $user_name);
 				$link = e107::getUrl()->create('user/profile/view', $uparams);
 				$userlink = "<a href='".$link."'>".$user_name."</a>";
-				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
+				//$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
+				$record['heading'] = '<a href="'.e107::url('forum', 'topic', array('thread_id' => $thread_id, 'thread_sef' => eHelper::title2sef($parent_name), 'forum_sef' => $forum_sef)).'">'.$rowheading.'</a>';
 				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : $userlink) : "");
-				$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
+				//$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
+				$record['category'] = ($this->parent->settings['category'] ? '<a href="'.e107::url('forum', 'forum', array('forum_sef' => $forum_sef)).'">'.$forum_name.'</a>' : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($thread_datestamp) : "");
 				$record['icon'] = $bullet;
 				$VIEWS = $thread_views;
