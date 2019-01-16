@@ -988,7 +988,7 @@ class e107forum
 			$triggerData['post_id']     = $newPostId;
 
 
-			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 0)
+			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 1)
 			{
 				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
 			}
