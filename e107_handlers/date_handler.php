@@ -592,12 +592,13 @@ class e_date
 	 * @return array|string according to $mode, array or string detailing the time difference
 	 */
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
-	{	/*
-		$mode = TRUE :: return array
-		$mode = FALSE :: return string
-		*/
+	{
+		if($newer_date === false)
+		{
+			$newer_date = time();
+		}
 
-		if($format == 'short')
+		if($format === 'short')
 		{
 			$sec = LANDT_09;
 			$secs = LANDT_09s;
@@ -611,11 +612,71 @@ class e_date
 			$min = LANDT_06;
 			$mins = LANDT_06s;
 		}
+
+		$dateString1 = date("Y-m-d H:i:s", $older_date);
+		$dateString2 = date("Y-m-d H:i:s", $newer_date);
+
+		$date1 = new DateTime($dateString1);
+		$date2 = new DateTime($dateString2);
+
+		$interval = $date1->diff($date2);
+
+		$result = array(
+			'years'     => array($interval->y, LANDT_01,LANDT_01s),
+			'months'    => array($interval->m, LANDT_02, LANDT_02s),
+			'weeks'     => array(floor($interval->d/7), LANDT_03, LANDT_03s),
+			'days'      => array($interval->d % 7,LANDT_04, LANDT_04s),
+			'hours'     => array($interval->h, LANDT_05, LANDT_05s),
+			'minutes'   => array($interval->i, $min, $mins),
+			'seconds'   => array($interval->s, $sec, $secs),
+		);
+
+		if($show_secs !== true)
+		{
+			unset($result['seconds']);
+		}
+
+		$ret = array();
+
+		foreach($result as $val)
+		{
+			if($val[0] < 1)
+			{
+				continue;
+			}
+
+			$ret[] = ($val[0] == 1) ? $val[0]." ".$val[1] : $val[0]." ".$val[2];
+
+			if($format === 'short') { break; }
+		}
+
+		if(strpos($ret[0],$secs) !== false)
+		{
+			$justNow = deftrue('LANDT_10',"Just now");
+			return $mode ? array($justNow) : $justNow;
+		}
+
+
+		if($older_date < $newer_date) // past
+		{
+			return ($mode ? $ret : implode(", ", $ret) . " " . LANDT_AGO);
+		}
+		else // future
+		{
+			return ($mode ? $ret : LANDT_IN ." ". implode(", ", $ret));
+		}
+
+
+
+	//	print_r($ret);
+
+
 /*
   If we want an absolutely accurate result, main problems arise from the varying numbers of days in a month.
   If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
   If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
 */
+/*
 		$newer_date = ($newer_date === FALSE ? (time()) : $newer_date);
 		if($older_date>$newer_date)
 		{  // Just in case the wrong way round
@@ -699,7 +760,7 @@ class e_date
 		{
 			return ($mode ? $outputArray : LANDT_IN ." ". implode(", ", $outputArray));
 		}
-		
+		*/
 	}
 
 
