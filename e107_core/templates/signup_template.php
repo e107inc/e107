@@ -243,6 +243,13 @@ if(!defined($SIGNUP_BODY))
 			{SIGNUP_SIGNATURE}
 			{SIGNUP_IMAGES}
 			{SIGNUP_IMAGECODE}
+			
+			<tr style='vertical-align:top'>
+				<td class='forumheader' colspan='2'  style='text-align:center'>
+					{SIGNUP_GDPR_INFO}
+				</td>
+			</tr>
+			
 			<tr style='vertical-align:top'>
 				<td class='forumheader' colspan='2'  style='text-align:center'>
 					<input class='button btn btn-success' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
