@@ -69,7 +69,7 @@ class forum_post_handler
 
 		// issue #3619: In case the post id is not set
 		// use the thread id to look for the moderator ids
-		if (isset($this->post))
+		if (!empty($this->post))
 		{
 			$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
 		}
