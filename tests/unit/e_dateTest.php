@@ -163,22 +163,27 @@
 
 		public function testComputeLapse()
 		{
-			$older = mktime(15, 30,45,12, 9, 2003);
+			$older = mktime(15, 30,45,12, 9, 2002);
 			$newer = mktime(14, 20,40,12, 11, 2003);
 			$actual = $this->dateObj->computeLapse($older, $newer, false, true, 'long');
-			$expected = '1 day, 22 hours, 49 minutes, 55 seconds ago';
+			$expected = '1 year, 1 day, 22 hours, 49 minutes, 55 seconds ago';
 			$this->assertEquals($expected, $actual);
 
 			$actual = $this->dateObj->computeLapse($older, $newer, false, true, 'short');
-			$expected = '1 day ago';
+			$expected = '1 year ago';
 			$this->assertEquals($expected, $actual);
 
-
-			//FIXME fails with future dates. Expected: "In 2 weeks" or "2 weeks from now"
 			$newer = strtotime("+2 weeks");
 			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'short');
 			$expected = 'in 2 weeks';
-		//	var_dump($actual);
+			$this->assertEquals($expected, $actual);
+
+			$actual = $this->dateObj->computeLapse($newer, time(), true, true, 'short');
+			$this->assertEquals(array(0=>'2 weeks'), $actual);
+
+			$newer = strtotime("+10 seconds");
+			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'long');
+			$this->assertEquals("Just now", $actual);
 		}
 
 		/**
