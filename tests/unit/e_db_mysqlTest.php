@@ -12,11 +12,30 @@
 	class e_db_mysqlTest extends \Codeception\Test\Unit
 	{
 
-	/*	public function testGetPDO()
+		/** @var e_db_mysql  */
+		protected $db;
+
+		protected function _before()
 		{
+			try
+			{
+				$this->db = $this->make('e_db_mysql');
+			}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load e_db_mysql object");
+			}
+
+			$this->db->__construct();
 
 		}
 
+		public function testGetPDO()
+		{
+			$result = $this->db->getPDO();
+			$this->assertTrue($result);
+		}
+/*
 		public function testGetMode()
 		{
 
@@ -194,12 +213,21 @@
 		{
 
 		}
-
+*/
 		public function testDb_Query()
 		{
 
+
+			$userp = "3, 'Display Name', 'Username', '', 'password-hash', '', 'email@address.com', '', '', 0, ".time().", 0, 0, 0, 0, 0, '127.0.0.1', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
+			$this->db->db_Query("REPLACE INTO ".MPREFIX."user VALUES ({$userp})" );
+
+			$res = $this->db->db_Query("SELECT user_email FROM ".MPREFIX."user WHERE user_id = 3");
+			$result = $res->fetch();
+			$this->assertEquals('email@address.com', $result['user_email']);
+
 		}
 
+/*
 		public function testRetrieve()
 		{
 
