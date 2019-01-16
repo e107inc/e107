@@ -820,9 +820,8 @@ class forum_post_handler
 
 		if(!deftrue('MODERATOR'))
 		{
-			// todo: LAN for new error message
 			$mes = e107::getMessage();
-			echo $mes->addWarning('You do not have access to this area!')->render();
+			echo $mes->addWarning(LAN_NO_PERMISSIONS)->render();
 			return;
 		}
 
