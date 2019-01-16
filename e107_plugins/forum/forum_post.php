@@ -314,10 +314,18 @@ class forum_post_handler
 
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
 					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
-		//$subject = LAN_FORUM_2020." ". SITENAME;
 
-		//e107::getNotify()->send('forum_post_rep', $subject, $report);
-		e107::getEvent()->trigger('user_forum_post_report', $report);
+		$eventData = array(
+			'reporter_id' => USERID,
+			'reporter_name' => USERNAME,
+			'report_time' => $insert['gen_datestamp'],
+			'thread_id' => $insert['gen_intdata'],
+			'thread_name' => $insert['gen_ip'],
+			'report_message' => $report_add,
+			'notify_message' => $report
+		);
+
+		e107::getEvent()->trigger('user_forum_post_report', $eventData);
 		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 	}
 
