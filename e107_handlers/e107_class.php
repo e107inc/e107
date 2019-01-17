@@ -3084,13 +3084,15 @@ class e107
 				return false;
 			}
 
+			self::getDebug()->log("Couldn't load language file: " . $path);
 
 			$path = str_replace(e_LANGUAGE, 'English', $path);
 
-			self::getDebug()->log("Couldn't load language file: ".$path);
+			self::getDebug()->log("Attempts to load default language file: " . $path);
 
 			if(!is_readable($path))
 			{
+				self::getDebug()->log("Couldn't load default language file: " . $path);
 				return false;
 			}
 		}
