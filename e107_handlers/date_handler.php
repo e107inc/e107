@@ -976,7 +976,7 @@ class e_date
 		    'W' => 'A numeric representation of the week of the year, starting with the first Monday as the first week',
 		    'X' => 'Preferred time representation based on locale, without the date',
 		    'Y' => 'Four digit representation for the year',
-		    'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
+		    //'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
 		    'a' => 'An abbreviated textual representation of the day',
 		    'b' => 'Abbreviated month name, based on the locale',
 		    'c' => 'Preferred date and time stamp based on local',
@@ -1002,9 +1002,16 @@ class e_date
 		    'w' => 'Numeric representation of the day of the week',
 		    'x' => 'Preferred date representation based on locale, without the time',
 		    'y' => 'Two digit representation of the year',
-		    'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
+		    //'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
 		    '%' => 'A literal percentage character ("%")',
 		);
+
+		if (stripos(PHP_OS, 'WIN') === false)
+		{
+			// This formats are not avaiilable on windows and will make the script fail on use.
+			$strftimeFormats['Z'] = 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)';
+			$strftimeFormats['z'] = 'Either the time zone offset from UTC or the abbreviation (depends on operating system)';
+		}
 		
 		// Results.
 		$strftimeValues = array();
@@ -1012,7 +1019,9 @@ class e_date
 		// Evaluate the formats whilst suppressing any errors.
 		foreach($strftimeFormats as $format => $description)
 		{
-		    if (False !== ($value = @strftime("%{$format}")))
+		    //if (False !== ($value = @strftime("%{$format}")))
+			$value = @strftime("%{$format}");
+		    if (False !== $value)
 		    {
 		        $strftimeValues[$format] = $value;
 		    }
