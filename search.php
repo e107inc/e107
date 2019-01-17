@@ -1170,7 +1170,7 @@ $text .= "</div>";*/
 	//print_a($search_prefs);
 //$
 
-$text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
+// $text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
 $text .= $SEARCH_VARS->SEARCH_MESSAGE ? $tp->simpleParse($SEARCH_TABLE_MSG, $SEARCH_VARS) : "";
 //$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 $text .= $tp->simpleParse($SEARCH_BOT_TABLE, $SEARCH_VARS);

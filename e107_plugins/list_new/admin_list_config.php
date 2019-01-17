@@ -55,8 +55,8 @@ $rc->list_pref = $rc->getListPrefs();
 //render message if set
 if(isset($message))
 {
-	$MESSAGE = $message;
-	$t = preg_replace("/\{(.*?)\}/e", '$\1', $rc->template['ADMIN_MESSAGE']);
+	$scArray = array('MESSAGE' => $message);
+	$t = $tp->parseTemplate($rc->template['ADMIN_MESSAGE'], false, $scArray);
 	$mes->addInfo($message);
 	//$rc->e107->ns->tablerender('', $t);
 }
@@ -73,7 +73,7 @@ e107::getRender()->tablerender(LAN_PLUGIN_LIST_NEW_NAME, $mes->render(). $text);
  */
 function admin_list_config_adminmenu()
 {
-	$act = "";
+
 	unset($var);
 	$var=array();
 	//$var['general']['text'] = LIST_ADMIN_OPT_1;
@@ -82,8 +82,10 @@ function admin_list_config_adminmenu()
 	$var['list-new-new-page']['text'] = LIST_ADMIN_OPT_4;
 	$var['list-new-new-menu']['text'] = LIST_ADMIN_OPT_5;
 	e107::getNav()->admin(LAN_OPTIONS.'--id--list_new', 'list-new-recent-page', $var);
+
+	return null;
 }
 
 require_once(e_ADMIN."footer.php");
 
-?>
+
