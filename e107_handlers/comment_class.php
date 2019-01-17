@@ -926,8 +926,8 @@ class comment
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $table
-	 * @return unknown
+	 * @param string $table
+	 * @return string|int
 	 */
 	function getCommentType($table)
 	{

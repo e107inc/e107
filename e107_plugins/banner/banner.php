@@ -42,9 +42,14 @@ if(e_QUERY)
 	exit;
 }
 
-if (!$BANNER_LOGIN_TABLE) 
+if (empty($BANNER_LOGIN_TABLE) || empty($BANNER_TABLE) || empty($BANNER_TABLE_START) || empty($BANNER_TABLE_END))
 {
-	if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 
+	$BANNER_TABLE_START = '';
+	$BANNER_TABLE_END = '';
+	$BANNER_TABLE = '';
+	$BANNER_LOGIN_TABLE = '';
+
+	if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location.
 	{
 		require_once (THEME.'templates/banner/banner_template.php');
 	}
@@ -93,35 +98,36 @@ if (isset($_POST['clientsubmit']))
 		{			 
 			$start_date = ($row['banner_startdate'] ? strftime("%d %B %Y", $row['banner_startdate']) : BANNERLAN_31);
 			$end_date 	= ($row['banner_enddate'] ? strftime("%d %B %Y", $row['banner_enddate']) : BANNERLAN_31);
-			 
-			$BANNER_TABLE_CLICKPERCENTAGE 		= ($row['banner_clicks'] && $row['banner_impressions'] ? round(($row['banner_clicks'] / $row['banner_impressions']) * 100)."%" : "-");
-			$BANNER_TABLE_IMPRESSIONS_LEFT 		= ($row['banner_impurchased'] ? $row['banner_impurchased'] - $row['banner_impressions'] : BANNERLAN_30);
-			$BANNER_TABLE_IMPRESSIONS_PURCHASED = ($row['banner_impurchased'] ? $row['banner_impurchased'] : BANNERLAN_30);
-			$BANNER_TABLE_CLIENTNAME 			= $row['banner_clientname'];
-			$BANNER_TABLE_BANNER_ID 			= $row['banner_id'];
-			$BANNER_TABLE_BANNER_CLICKS 		= $row['banner_clicks'];
-			$BANNER_TABLE_BANNER_IMPRESSIONS 	= $row['banner_impressions'];
-			$BANNER_TABLE_ACTIVE 				= LAN_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
-			$BANNER_TABLE_STARTDATE				= LAN_START." ".$start_date;
-			$BANNER_TABLE_ENDDATE				= LAN_END." ".$end_date;
+
+			$scArray = array();
+			$scArray['BANNER_TABLE_CLICKPERCENTAGE'] 		= ($row['banner_clicks'] && $row['banner_impressions'] ? round(($row['banner_clicks'] / $row['banner_impressions']) * 100)."%" : "-");
+			$scArray['BANNER_TABLE_IMPRESSIONS_LEFT']		= ($row['banner_impurchased'] ? $row['banner_impurchased'] - $row['banner_impressions'] : BANNERLAN_30);
+			$scArray['BANNER_TABLE_IMPRESSIONS_PURCHASED'] = ($row['banner_impurchased'] ? $row['banner_impurchased'] : BANNERLAN_30);
+			$scArray['BANNER_TABLE_CLIENTNAME'] 			= $row['banner_clientname'];
+			$scArray['BANNER_TABLE_BANNER_ID']			= $row['banner_id'];
+			$scArray['BANNER_TABLE_BANNER_CLICKS'] 		= $row['banner_clicks'];
+			$scArray['BANNER_TABLE_BANNER_IMPRESSIONS'] 	= $row['banner_impressions'];
+			$scArray['BANNER_TABLE_ACTIVE'] 				= LAN_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
+			$scArray['BANNER_TABLE_STARTDATE']				= LAN_START." ".$start_date;
+			$scArray['BANNER_TABLE_ENDDATE']				= LAN_END." ".$end_date;
 			
 			if ($row['banner_ip']) 
 			{
 				$tmp = explode("^", $row['banner_ip']);
-				$BANNER_TABLE_IP_LAN = (count($tmp)-1);
+				$scArray['BANNER_TABLE_IP_LAN'] = (count($tmp)-1);
 				
 				for($a = 0; $a <= (count($tmp)-2); $a++) {
-					$BANNER_TABLE_IP .= $tmp[$a]."<br />";
+					$scArray['BANNER_TABLE_IP'] .= $tmp[$a]."<br />";
 				}
 			}
 
-			$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE);
+			$textstring .= $tp->parseTemplate($BANNER_TABLE, true, $scArray);
 		}
 	}
 	
 
-	$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE_START);
-	$textend = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_TABLE_END);
+	$textstart = $tp->parseTemplate($BANNER_TABLE_START, true, $scArray);
+	$textend = $tp->parseTemplate($BANNER_TABLE_END, true, $scArray);
 	$text = $textstart.$textstring.$textend;
 	 
 	$ns->tablerender(PAGE_NAME, $text);
@@ -130,15 +136,16 @@ if (isset($_POST['clientsubmit']))
 	exit;
 }
 	
+$scArray = array();
+$scArray['BANNER_LOGIN_TABLE_LOGIN'] 	= $frm->text("clientlogin", $id);
+$scArray['BANNER_LOGIN_TABLE_PASSW'] 	= $frm->password("clientpassword", '');
+$scArray['BANNER_LOGIN_TABLE_SUBMIT'] 	= $frm->button("clientsubmit", LAN_CONTINUE, "submit");
 
-$BANNER_LOGIN_TABLE_LOGIN 	= $frm->text("clientlogin", $id);
-$BANNER_LOGIN_TABLE_PASSW 	= $frm->password("clientpassword", $pw);
-$BANNER_LOGIN_TABLE_SUBMIT 	= $frm->button("clientsubmit", LAN_CONTINUE, "submit");
-	
+$text = $tp->parseTemplate($BANNER_LOGIN_TABLE, true, $scArray);
 
-
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_LOGIN_TABLE);
 $ns->tablerender(BANNERLAN_19, $text);
 	
 require_once(FOOTERF);
-?>
+
+
+
