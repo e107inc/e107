@@ -978,19 +978,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				'e-eurl'
 			);
 
-		$count = 0;
-
 		foreach($iconlist as $k=>$v)
 		{
-			if($count === 20)
-			{
-				break;
-			}
-
 			if(!in_array($k,$exclude))
 			{
 				$defArray[] = $k;
-				$count++;
 			}
 		}
 
