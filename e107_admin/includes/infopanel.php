@@ -245,12 +245,22 @@ class adminstyle_infopanel
 		";
 
 		$mainPanel .= "<div class='left'>";
-			
+			$count = 0;
 			foreach ($this->iconlist as $key=>$val)
 			{
-				if (in_array($key, $user_pref['core-infopanel-mye107']))
+				if(in_array($key, $user_pref['core-infopanel-mye107']))
 				{
-					$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+					if($tmp = e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div"))
+					{
+						$mainPanel .= $tmp;
+						$count++;
+					}
+
+				}
+
+				if($count == 20)
+				{
+					break;
 				}
 			}
 	
@@ -259,7 +269,7 @@ class adminstyle_infopanel
 	      
 			</div>";
 
-		e107::getDebug()->log($this->iconlist);
+	//	e107::getDebug()->log($this->iconlist);
 
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 
