@@ -200,9 +200,15 @@ class e_tohtml_linkwords
 		if(is_string($this->area_opts))
 		{
 			$this->area_opts = e107::unserialize($this->area_opts);	
-		}	
-			
-		if (!$this->lw_enabled || !count($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
+		}
+
+		if($this->area_opts === null)
+		{
+			$this->area_opts = array();
+		}
+
+
+		if (!$this->lw_enabled || empty($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
 	
 // Split up by HTML tags and process the odd bits here
 		$ptext = "";

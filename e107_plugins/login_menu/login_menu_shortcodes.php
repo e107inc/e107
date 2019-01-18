@@ -92,11 +92,11 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				$mode = varset($parm['mode']);
 
-				if($mode === 'usersettings' && e_PAGE === 'usersettings.php')
+				if($mode === 'usersettings' && defset('e_PAGE') === 'usersettings.php')
 				{
 					 return 'active';
 				}
-				elseif($mode === 'profile' && e_PAGE === 'user.php')
+				elseif($mode === 'profile' && defset('e_PAGE') === 'user.php')
 				{
 					return 'active';
 				}
