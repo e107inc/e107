@@ -249,7 +249,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?mode=avail&action=list'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
@@ -503,8 +503,6 @@ class user_dashboard // plugin-folder + '_url'
 		}
 		return $val;
 	}
-
-
 
 	
 }
