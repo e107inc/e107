@@ -651,6 +651,11 @@ class signup_shortcodes extends e_shortcode
 	 */
 	function sc_signup_gdpr_info()
 	{
+		if (!e107::getPref('gdpr_termsandconditions', '') || !e107::getPref('gdpr_privacypolicy', ''))
+		{
+			return '';
+		}
+
 		$text = e107::getParser()->lanVars(LAN_SIGNUP_124,
 			array($this->sc_signup_gdpr_privacypolicy_link(), $this->sc_signup_gdpr_termsandconditions_link()));
 		return $text;
