@@ -575,6 +575,13 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_279."</div>
 						</td>
 					</tr>
+
+					<tr>
+						<td><label>".LAN_DESCRIPTION."</label></td>
+						<td>
+							<div class='field-help'>".nl2br(PRFLAN_281)."</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			".pref_submit('display')."
