@@ -935,7 +935,7 @@
 			$result = $this->e107::isInstalled('user');
 
 			// var_dump($result);
-			$this->assertTrue($res);
+			$this->assertTrue($result);
 		}
 /*
 		public function testIni_set()
