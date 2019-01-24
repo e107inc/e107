@@ -625,7 +625,7 @@ class e_admin_log
 	/**
 	 *	Add a message to the queue
 	 *
-	 *	@param string $text - the message text for logging/display
+	 *	@param string|array $text - the message text for logging/display
 	 *	@param int $type - the 'importance' of the message. E_MESSAGE_SUCCESS|E_MESSAGE_ERROR|E_MESSAGE_INFO|E_MESSAGE_DEBUG|E_MESSAGE_NODISPLAY
 	 *				(Values as used in message handler, apart from the last, which causes the message to not be passed to the message handler
 	 *	@param boolean|int $logLevel - TRUE to give same importance as for message display. FALSE to not log.
@@ -685,7 +685,7 @@ class e_admin_log
 	/**
 	 * Add a success message to the log queue
 	 *
-	 * @param string $text
+	 * @param string|array $text
 	 * @param boolean $message if true - register with eMessage handler
 	 * @param boolean $session add session message
 	 * @return e_admin_log

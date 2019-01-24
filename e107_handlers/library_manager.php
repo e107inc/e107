@@ -2066,7 +2066,7 @@ class e_library_manager
 		{
 			$excludedLibraries = array();
 
-			$exclude = e107::getTheme('current', true)->cssAttribute('auto', 'exclude');
+			$exclude = e107::getTheme('current', false)->cssAttribute('auto', 'exclude');
 
 			if($exclude)
 			{

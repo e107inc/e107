@@ -1321,7 +1321,7 @@ $sql->db_Mark_Time('Find/Load Theme-Layout'); // needs to run after checkvalidth
 
 if(!defined("THEME_LAYOUT"))
 {
-    $def = "";   // no custom pages found yet.
+ /*   $def = "";   // no custom pages found yet.
     $cusPagePref = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
 
 	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
@@ -1330,6 +1330,8 @@ if(!defined("THEME_LAYOUT"))
 		$c_url = str_replace(array('&amp;'), array('&'), e_REQUEST_URL);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
 		// FIX - check against urldecoded strings
 		$c_url = rtrim(rawurldecode($c_url), '?');
+
+
 		
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
@@ -1362,7 +1364,7 @@ if(!defined("THEME_LAYOUT"))
 				}
 			}
 		}
-	}
+	}*/
 
 	/* Done via e_IFRAME and USER_AREA force combination, check moved to menu.php
 	if(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')!==FALSE)
@@ -1384,7 +1386,7 @@ if(!defined("THEME_LAYOUT"))
 	{
 		define("THEME_STYLE", 'style.css');
 	}	
-
+/*
     if($def) // custom-page layout.
 	{
     	define("THEME_LAYOUT",$def);
@@ -1392,11 +1394,12 @@ if(!defined("THEME_LAYOUT"))
 	else // default layout.
 	{
     	$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
-		/**
-		 * @ignore
-		 */
+
 		define("THEME_LAYOUT",$deflayout);  // default layout.
-	}
+	}*/
+
+	$deflayout = e107::getTheme()->getThemeLayout();
+	define("THEME_LAYOUT",$deflayout);
 
     unset($def,$lyout,$cusPagePref,$menus_equery,$deflayout);
 

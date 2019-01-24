@@ -71,7 +71,6 @@ class e_theme
 
 		if(empty($this->_data) || $options['force'] === true)
 		{
-
 			$this->load($options['force']);
 		}
 
@@ -279,6 +278,85 @@ class e_theme
 
 		return isset($this->_data[$this->_current][$var]) ? $this->_data[$this->_current][$var] : false;
 	}
+
+
+	/**
+	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
+	 * @param null $url
+	 * @return string
+	 */
+	public function getThemeLayout($request_url = null)
+	{
+		if($request_url === null)
+		{
+			$request_url = e_REQUEST_URL;
+		}
+
+		$user_pref = e107::getUser()->getPref();
+		$pref = e107::getPref();
+
+
+		$def = "";   // no custom pages found yet.
+	    $cusPagePref = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
+
+		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
+		{
+		    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
+			$c_url = str_replace(array('&amp;'), array('&'), $request_url);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
+			// FIX - check against urldecoded strings
+			$c_url = rtrim(rawurldecode($c_url), '?');
+
+	        foreach($cusPagePref as $lyout=>$cusPageArray)
+			{
+				if(!is_array($cusPageArray)) { continue; }
+
+				// NEW - Front page template check - early
+				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
+				{
+					$def = $lyout;
+					break;
+				}
+	            foreach($cusPageArray as $kpage)
+				{
+					if(substr($kpage, -1) === '!' )
+					{
+						$kpage = rtrim($kpage, '!');
+						if(substr($c_url, - strlen($kpage)) === $kpage)
+						{
+							$def =  $lyout;
+							break 2;
+						}
+						continue;
+					}
+
+					if ($kpage && ($kpage == defset('e_PAGE') || strpos($c_url, $kpage) !== false))
+					{
+	                 //	$def = ($lyout) ? $lyout : "legacyCustom";
+						$def =  $lyout;
+						break 2;
+					}
+				}
+			}
+		}
+
+
+	    if($def) // custom-page layout.
+		{
+			$layout = $def;
+		}
+		else // default layout.
+		{
+	        $layout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+		}
+
+		return $layout;
+
+	}
+
+
+
+
+
 
 	/**
 	 * Return a list of all local themes in various formats.
