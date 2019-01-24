@@ -279,6 +279,29 @@ class e_theme
 		return isset($this->_data[$this->_current][$var]) ? $this->_data[$this->_current][$var] : false;
 	}
 
+	/**
+	 * Rebuild URL without trackers, for matching against theme_layout prefs.
+	 * @param string $url
+	 * @return string
+	 */
+	private function filterTrackers($url)
+	{
+		if(strpos($url,'?') === false || empty($url))
+		{
+			return $url;
+		}
+
+		list($site,$query) = explode('?',$url);
+
+		parse_str($query,$get);
+
+		$get = eHelper::removeTrackers($get);
+
+		$ret = empty($get) ? $site : $site.'?'.http_build_query($get);
+
+		return $ret;
+	}
+
 
 	/**
 	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
@@ -305,6 +328,8 @@ class e_theme
 			$c_url = str_replace(array('&amp;'), array('&'), $request_url);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
 			// FIX - check against urldecoded strings
 			$c_url = rtrim(rawurldecode($c_url), '?');
+
+			$c_url = $this->filterTrackers($c_url);
 
 	        foreach($cusPagePref as $lyout=>$cusPageArray)
 			{
