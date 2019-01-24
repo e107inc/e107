@@ -1028,7 +1028,7 @@ class eRouter
 	 */
 	public $notFoundUrl = 'system/error/404?type=routeError';
 
-	protected $_trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign');
+
 
 	
 	public function __construct()
@@ -1090,11 +1090,6 @@ class eRouter
 	}
 
 
-	public function getTrackers()
-	{
-		return $this->_trackers;
-	}
-	
 	/**
 	 * Load config and url rules, if not available - build it on the fly
 	 * @return eRouter
@@ -1805,16 +1800,7 @@ class eRouter
 
 
 		// Ignore social trackers when determining route.
-		$get = $_GET;
-		$trackers = $this->getTrackers();
-
-		foreach($trackers as $val)
-		{
-			if(isset($get[$val]))
-			{
-				unset($get[$val]);
-			}
-		}
+		$get = eHelper::removeTrackers($_GET);
 
 		// Route to front page - index/index/index route
 		if(!$rawPathInfo && (!$this->getMainModule() || empty($get)))
@@ -4949,4 +4935,28 @@ class eHelper
 
 		return array(1 => $multi, 2 => $params, 3 => $parmstr);
 	}
+
+
+	/**
+	 * Remove Social Media Trackers from a $_GET array based on key matches.
+	 * @param array $get
+	 * @return array
+	 */
+	public static function removeTrackers($get = array())
+	{
+		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign');
+
+		foreach($trackers as $val)
+		{
+			if(isset($get[$val]))
+			{
+				unset($get[$val]);
+			}
+		}
+
+		return $get;
+
+	}
+
+
 }
