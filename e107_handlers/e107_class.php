@@ -1523,7 +1523,16 @@ class e107
 			}
 		}
 
-		return self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
+	//	e107::getDb()->db_Mark_time('start e_theme');
+		/** @var e_theme $ret */
+		$ret = self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
+
+	//	e107::getDb()->db_Mark_time('end e_theme');
+	/*	echo "<pre>";
+		debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		echo "</pre>";*/
+
+		return $ret;
 	}
 
 
