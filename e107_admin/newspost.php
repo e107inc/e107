@@ -1160,7 +1160,7 @@ class news_admin_ui extends e_admin_ui
 
 			$newsTemplates = array();
 
-			if($newInfo = e107::getTemplateInfo('news', 'news'))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
+			if($newInfo = e107::getTemplateInfo('news', 'news', null, 'front', true))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
 			{
 				foreach($newInfo as $k=>$val)
 				{
