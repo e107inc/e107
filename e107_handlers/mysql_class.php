@@ -74,6 +74,8 @@ class e_db_mysql
 	protected   $mySQLdefaultdb;
 	protected   $mySQLport = 3306;
 	public      $mySQLPrefix;
+
+	/** @var PDO */
 	protected   $mySQLaccess;
 	public      $mySQLresult;
 	public      $mySQLrows;
@@ -408,6 +410,7 @@ class e_db_mysql
 	{
 		if (E107_DEBUG_LEVEL > 0)
 		{
+			/** @var e107_db_debug $db_debug */
 			global $db_debug;
 			$db_debug->Mark_Time($sMarker);
 		}
@@ -452,7 +455,7 @@ class e_db_mysql
 	* @param string $query['PREPARE'] PDO Format query.
 	 *@param array $query['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
 	* @param unknown $rli
-	* @return boolean | resource - as mysql_query() function.
+	* @return boolean|PDOStatement | resource - as mysql_query() function.
 	*			FALSE indicates an error
 	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
 	*			TRUE indicates success in other cases
@@ -487,6 +490,7 @@ class e_db_mysql
 
 			if(is_array($query) && !empty($query['PREPARE']) && !empty($query['BIND']))
 			{
+				/** @var PDOStatement $prep */
 				$prep = $this->mySQLaccess->prepare($query['PREPARE']);
 				foreach($query['BIND'] as $k=>$v)
 				{
@@ -513,6 +517,7 @@ class e_db_mysql
 
 					if(preg_match('#^(CREATE TABLE|DROP TABLE|ALTER TABLE|RENAME TABLE|CREATE DATABASE|CREATE INDEX)#',$query, $matches))
 					{
+						/** @var PDO $rli */
 						$sQryRes = is_null($rli) ? $this->mySQLaccess->exec($query) : $rli->exec($query);
 
 						if($sQryRes !==false)
@@ -523,6 +528,7 @@ class e_db_mysql
 					}
 					else
 					{
+						/** @var PDO $rli */
 						$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
 					}
 
@@ -579,7 +585,7 @@ class e_db_mysql
 
 		if (E107_DEBUG_LEVEL)
 		{
-
+			/** @var $db_debug e107_db_debug */
 			global $db_debug;
 			$aTrace = debug_backtrace();
 			$pTable = $this->mySQLcurTable;
@@ -608,10 +614,12 @@ class e_db_mysql
 
 				if($this->pdo == true && $buglink instanceof PDO)
 				{
+
 					$db_debug->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
 				}
 				else
 				{
+
 					$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 				}
 			}
@@ -841,17 +849,19 @@ class e_db_mysql
 	}
 
 	/**
-	* @return int Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
-	* @param string $tableName - Name of table to access, without any language or general DB prefix
-	* @param string/array $arg
-	* @param string $debug
-	* @desc Insert a row into the table<br />
-	* <br />
-	* Example:<br />
-	* <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
-	*
-	* @access public
-	*/
+	 * @param string $tableName - Name of table to access, without any language or general DB prefix
+	 * @param        $arg
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return int Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
+	 * @desc Insert a row into the table<br />
+	 * <br />
+	 * Example:<br />
+	 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	 *
+	 * @access public
+	 */
 	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($tableName);
@@ -1055,7 +1065,9 @@ class e_db_mysql
 
 		}
 
-		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_num_rows($this->mySQLresult);
+		/** @var PDOStatement $resource */
+		$resource = $this->mySQLresult;
+		$rows = $this->mySQLrows = ($this->pdo) ? $resource->rowCount() :  mysql_num_rows($this->mySQLresult);
 		$this->dbError('db_Rows');
 		return $rows;	
 	}
@@ -1075,17 +1087,19 @@ class e_db_mysql
 	}
 
 	/**
-	* @return int Last insert ID or false on error
-	* @param string $table
-	* @param array $arg
-	* @param string $debug
-	* @desc Insert/REplace a row into the table<br />
-	* <br />
-	* Example:<br />
-	* <code>e107::getDb()->replace("links", $array);</code>
-	*
-	* @access public
-	*/
+	 * @param string $table
+	 * @param array  $arg
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return int Last insert ID or false on error
+	 * @desc Insert/REplace a row into the table<br />
+	 * <br />
+	 * Example:<br />
+	 * <code>e107::getDb()->replace("links", $array);</code>
+	 *
+	 * @access public
+	 */
 	function replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$arg['_REPLACE'] = TRUE;
@@ -1550,9 +1564,12 @@ class e_db_mysql
 
 
 		$b = microtime();
+
 		if($this->mySQLresult)
 		{
-			$row = ($this->pdo) ? $this->mySQLresult->fetch($type) :  @mysql_fetch_array($this->mySQLresult,$type);
+			/** @var PDOStatement $resource */
+			$resource = $this->mySQLresult;
+			$row = ($this->pdo) ? $resource->fetch($type) :  @mysql_fetch_array($this->mySQLresult,$type);
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 			if ($row)
 			{
@@ -1574,17 +1591,20 @@ class e_db_mysql
 	}
 
 	/**
-	* @return int number of affected rows or false on error
-	* @param string $table
-	* @param string $fields
-	* @param string $arg
-	* @desc Count the number of rows in a select<br />
-	* <br />
-	* Example:<br />
-	* <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
-	*
-	* @access public
-	*/
+	 * @param string $table
+	 * @param string $fields
+	 * @param string $arg
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return int number of affected rows or false on error
+	 * @desc Count the number of rows in a select<br />
+	 * <br />
+	 * Example:<br />
+	 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
+	 *
+	 * @access public
+	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$table = $this->db_IsLang($table);
@@ -1786,7 +1806,9 @@ class e_db_mysql
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
 			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
+				/** @var PDOStatement $resource */
+				$resource = $this->mySQLresult;
+				$tmp = ($this->pdo) ? $resource->rowCount() : mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Select_gen');
 				return $tmp;
 			}
@@ -2259,7 +2281,9 @@ class e_db_mysql
 	{
 		if($this->pdo)
 		{
-			return $this->mySQLresult->columnCount();
+			/** @var PDOStatement $resource */
+			$resource = $this->mySQLresult;
+			return $resource->columnCount();
 		}
 		else
 		{
