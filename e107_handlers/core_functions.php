@@ -410,19 +410,8 @@ if (!function_exists('multiarray_sort'))
 
         foreach($sort_values as $arr_key=>$arr_val)
         {
-        	// Issue #3603: multiarray_sort returns only the last array item in case the $arr_key is numeric
-//          $key = is_numeric($arr_key) ? count($sorted_arr) : $arr_key; // retain assoc-array keys.
-// 			$sorted_arr[$key] = $array[$arr_key];
-
- 			if (is_numeric($arr_key))
-		    {
-			    $sorted_arr[] = $array[$arr_key];
-		    }
-		    else
-		    {
-			    $sorted_arr[$key] = $array[$arr_key];
-		    }
-
+            $key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys.
+ 			$sorted_arr[$key] = $array[$arr_key];
         }
         return $sorted_arr;
     }
