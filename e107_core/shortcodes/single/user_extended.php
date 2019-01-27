@@ -169,8 +169,13 @@
 					}
 
 				break;
-
-
+				case EUF_COUNTRY:
+					if(!empty($uVal))
+					{
+						return e107::getForm()->getCountry($uVal);
+					}
+					return false;
+				break; 
 				case EUF_DB_FIELD :		// check for db_lookup type
 					$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
 					$sql_ue = new db;			// Use our own DB object to avoid conflicts
@@ -204,4 +209,3 @@
 		return FALSE;
 
 	}
-
