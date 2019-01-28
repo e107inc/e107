@@ -69,5 +69,4 @@ define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from
 define("LANG_LAN_151", "Available");
 define("LANG_LAN_152", "Courtesy of the [e107 translations team]");
 define("LANG_LAN_153", "Pre-release");
-
-define("LANG_LAN_154", "The Language Pack has been created. You can now submit it to the Github repository as instructed [here].")
+define("LANG_LAN_154", "The Language Pack has been created. You can now submit it to the Github repository as instructed [here].");
