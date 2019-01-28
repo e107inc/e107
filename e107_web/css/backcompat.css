@@ -61,3 +61,24 @@ table.table { width: 100% }
 .e-debug .table-striped > tbody > tr:nth-of-type(2n+1) {
     background-color: #f9f9f9;
 }
+
+/* Bootstrap classes that hide content for all devices except screen readers (accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
