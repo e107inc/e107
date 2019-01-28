@@ -703,10 +703,18 @@ function getip()
 $developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
 
 // for multi-language these definitions needs to come after the language loaded.
-define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
+{
+	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+}
+if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
+{
+	define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
+}
+
 define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
 define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
-define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
+
 define('SITEADMIN', $pref['siteadmin']);
 define('SITEADMINEMAIL', $pref['siteadminemail']);
 define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
