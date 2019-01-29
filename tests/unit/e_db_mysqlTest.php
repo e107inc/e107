@@ -472,12 +472,27 @@
 		{
 
 		}
-
+*/
 		public function testBackup()
 		{
+			$opts = array(
+				'gzip'      => false,
+				'nologs'    => false,
+				'droptable' => false,
+			);
+
+			$result = $this->db->backup('user,core_media_cat', null, $opts);
+
+			$tmp = file_get_contents($result);
+
+			$this->assertNotContains("DROP TABLE IF EXISTS `e107_user`;", $tmp);
+			$this->assertContains("CREATE TABLE `e107_user` (", $tmp);
+			$this->assertContains("INSERT INTO `e107_user` VALUES (1", $tmp);
+			$this->assertContains("CREATE TABLE `e107_core_media_cat`", $tmp);
+
 
 		}
-
+/*
 		public function testDbError()
 		{
 
