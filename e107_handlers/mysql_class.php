@@ -2747,6 +2747,11 @@ class e_db_mysql
 			$tableList 	= explode(",",$table);
 		}
 
+		if(!empty($options['gzip']))
+		{
+			$backupFile .= '.gz';
+		}
+
 
         include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
 
