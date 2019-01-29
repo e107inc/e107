@@ -2769,7 +2769,7 @@ class e_db_mysql
 		    'disable-foreign-keys-check'    => true,
 		    'skip-triggers'                 => false,
 		    'add-drop-trigger'              => true,
-		    'databases'                     => true,
+		    'databases'                     => false,
 		    'add-drop-database'             => false,
 		    'hex-blob'                      => true,
 		    'reset-auto-increment'          => false,
