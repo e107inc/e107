@@ -2720,26 +2720,76 @@ class e_db_mysql
 	 * @param $table string - name without the prefix or '*' for all
 	 * @param $file string - optional file name. or leave blank to generate. 
 	 * @param $options - additional preferences. 
-	 * @return backup file path. 
+	 * @return string|bool backup file path.
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
-		$dbtable 		= $this->mySQLdefaultdb; 
+
+		if($this->pdo === false)
+		{
+			$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
+			return false;
+		}
+
+	//	$dbtable 		= $this->mySQLdefaultdb;
 		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table; 
 		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
 		
 		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
 		
-		if($table=='*') 
+		if($table === '*')
 		{
 			$nolog 		= vartrue($options['nologs']) ? 'nologs' : 'all';
 			$tableList 	= $this->tables($nolog);
 		}
 		else
 		{
-			$tableList 		= explode(",",$table); 
+			$tableList 	= explode(",",$table);
 		}
-		
+
+
+        include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
+
+        $config = e107::getMySQLConfig();
+
+		$dumpSettings = array(
+	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
+	        'include-tables'                => array(),
+		    'no-data'                       => false,
+		    'add-drop-table'                => !empty($options['droptable']) ? true : false,
+		    'single-transaction'            => true,
+		    'lock-tables'                   => true,
+		    'add-locks'                     => true,
+		    'extended-insert'               => true,
+		    'disable-foreign-keys-check'    => true,
+		    'skip-triggers'                 => false,
+		    'add-drop-trigger'              => true,
+		    'databases'                     => true,
+		    'add-drop-database'             => false,
+		    'hex-blob'                      => true,
+		    'reset-auto-increment'          => false,
+	    );
+
+        foreach($tableList as $tab)
+        {
+            $dumpSettings['include-tables'][] = $config['mySQLprefix'].trim($tab);
+        }
+
+
+        try {
+            $dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host='.$config['mySQLserver'].';dbname='.$config['mySQLdefaultdb'], $config['mySQLuser'], $config['mySQLpassword'], $dumpSettings);
+		    $dump->start($backupFile);
+		    return $backupFile;
+		}
+		catch (\Exception $e)
+		{
+			$this->mysqlLastErrText = 'mysqldump-php error: ' .$e->getMessage();
+		    return false;
+		}
+
+
+/*
+
 				
 		$header = "-- e107 Database Backup File \n";	
 		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
@@ -2791,7 +2841,7 @@ class e_db_mysql
 		
 		return $backupFile;		
 		// file_put_contents('memory.log', 'memory used in line ' . __LINE__ . ' is: ' . memory_get_usage() . PHP_EOL, FILE_APPEND);
-		
+		*/
 	}
 
 
