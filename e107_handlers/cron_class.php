@@ -224,87 +224,30 @@ class _system_cron
 		}
 	}
 	
-	// Very basic and needs improvement. (for large DBs)
-	function dbBackup()
+
+	/**
+	 * Creates a backup of the entire database and gzips it into the backup folder.
+	 * Also works with large databases.
+	 * @return null|void
+	 */
+	public function dbBackup()
 	{
 		
 		$sql = e107::getDb();
-		$file = $sql->backup('*');
+		$file = $sql->backup('*', null, array('gzip'=>true));
 
 		if(empty($file))
 		{
-			e107::getLog()->addError(LAN_CRON_55.SEP.basename($file))->save('BACKUP');
+			e107::getLog()->addError(LAN_CRON_55)->save('BACKUP');
 			return;
 		}
-
-		$zipFile = $file.".zip";
-		e107::getFile()->zip(array($file),$zipFile, array('remove_path'=>e_BACKUP));
-
-		if(file_exists($zipFile))
+		elseif(file_exists($file))
 		{
-			e107::getLog()->addSuccess(LAN_CRON_56.SEP.basename($zipFile))->save('BACKUP');
-
-			if(is_file($file))
-			{
-				unlink($file);
-			}
+			e107::getLog()->addSuccess(LAN_CRON_56.SEP.basename($file))->save('BACKUP');
 		}
-		
-		return;
-		
-		/*
-		require(e_BASE."e107_config.php");
 
-		$sql = e107::getDb();
-		$dbtable = $mySQLdefaultdb; //
-	
-		$backupFile = e_BACKUP.SITENAME."_".date("Y-m-d-H-i-s").".sql";
-		$result = mysql_list_tables($dbtable);
-		
-		while ($tab = mysql_fetch_array($result, MYSQL_NUM))
-		{
-			$table = $tab[0];
-			$text = "";
-			
-			$sql->gen("SHOW CREATE TABLE `".$table."`");
-			$row2 = $sql->db_Fetch();
-			$text .= $row2['Create Table'];
-			$text .= ";\n\n";
-			
-			ob_end_clean(); // prevent memory exhaustian 
-			
-			$count = $sql->gen("SELECT * FROM `".$table."`");
-			$data_array = "";
-		
-			while($row = $sql->db_Fetch())
-			{
-				if(!$fields)
-				{
-					$fields = array_keys($row);	
-					$text = "\nINSERT INTO `".$table."` (`".implode("` ,`",$fields)."`) VALUES \n";	
-					file_put_contents($backupFile,$text,FILE_APPEND);	
-				}
-				
-				$d = array();
-				foreach($fields as $val)
-				{
-					$d[] = "'".mysql_real_escape_string($row[$val])."'"; 				
-				}
-	
-				$data_array = "(".implode(", ",$d)."),\n"; //XXX extra ',' at the end may be an issue. - to be tested. 
-				file_put_contents($backupFile,$data_array,FILE_APPEND);
-	
-			}
-				
-			$text = ";\n\n\n";		
-			$c++;		
-		    
-			file_put_contents($backupFile,$text,FILE_APPEND);
-			unset($fields);	
-			
-		}
-				
-		*/
+		return null;
+
 		
 	}
 	
