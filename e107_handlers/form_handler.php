@@ -5784,7 +5784,7 @@ class e_form
 			break;
 
 			case 'country':
-				$ret = vartrue($parms['pre']).$this->country($key, $value).vartrue($parms['post']);
+				$ret = vartrue($parms['pre']).$this->country($key, $value, $parms).vartrue($parms['post']);
 			break;
 
 			case 'ip':
