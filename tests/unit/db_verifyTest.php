@@ -26,6 +26,8 @@
 			{
 				$this->fail("Couldn't load db_verify object");
 			}
+
+			$this->dbv->__construct();
 		}
 /*
 		public function testGetFields()
@@ -180,6 +182,17 @@
 					 KEY `banlist_ip` (`banlist_ip`)
 					) ENGINE=MyISAM AUTO_INCREMENT=182 DEFAULT CHARSET=utf8;",
 
+			'test_json' =>
+					"CREATE TABLE `e107_test_comment` (
+					`eml_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+					`eml_hash` varchar(20) NOT NULL,
+					`eml_datestamp` int(11) unsigned NOT NULL,
+					`eml_json` JSON NOT NULL,
+					`eml_to` varchar(50) NOT NULL,
+					PRIMARY KEY (`eml_id`),
+					UNIQUE KEY `eml_hash` (`eml_hash`)
+				  	) ENGINE=MyISAM DEFAULT CHARSET=utf8;",
+
 			'test_comment' =>
 					"CREATE TABLE `e107_test_comment` (
 					`eml_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -302,6 +315,28 @@
 						  ),
 				),
 
+
+				'test_json'     => array (
+				  'tables' =>
+				  array (
+				    0 => 'test_comment',
+				  ),
+				  'data' =>
+				  array (
+				    0 => '`eml_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+				`eml_hash` varchar(20) NOT NULL,
+				`eml_datestamp` int(11) unsigned NOT NULL,
+				`eml_json` JSON NOT NULL,
+				`eml_to` varchar(50) NOT NULL,
+				PRIMARY KEY (`eml_id`),
+				UNIQUE KEY `eml_hash` (`eml_hash`)',
+				  ),
+				  'engine' =>
+				  array (
+				    0 => 'MyISAM',
+				  ),
+				),
+
 				'test_comment'  => array (
 					  'tables' =>
 						  array (
@@ -368,7 +403,10 @@
 
 				$actual = $this->dbv->getSqlFileTables($sql);
 
-
+			/*	if($table == 'test_json')
+				{
+					var_export($actual);
+				}*/
 
 				$this->assertEquals($actual['tables'], $expected[$table]['tables'], "Table ".$table." could not be parsed.");
 
