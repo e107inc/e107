@@ -198,7 +198,8 @@ class e_form
 
 	/**
 	 * Get a list of countries.
-	 * @param null $iso
+	 * @param null|string $iso ISO code.
+	 * @return array|mixed|string
 	 */
 	public function getCountry($iso=null)  // move to parser?
 	{
@@ -465,7 +466,7 @@ class e_form
         }
 
 
-		return $c;
+		return ($iso === null) ? $c : '';
 
 	}
 
