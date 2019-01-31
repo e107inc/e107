@@ -215,7 +215,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+					//		$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 
 							$query = array(
 							//	'online_timestamp' => time(),
