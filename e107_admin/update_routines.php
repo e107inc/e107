@@ -659,6 +659,8 @@ function update_core_database($type = '')
 
 		}
 
+
+
 		if(isset($pref['e_header_list']['social']))
 		{
 			if($just_check)
@@ -681,20 +683,18 @@ function update_core_database($type = '')
 		}
 
 
-
-
-		$e_user_list = e107::getPref('e_user_list');
-
-			e107::getPlug()->clearCache()->buildAddonPrefLists();
-			if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
+		// User is marked as not installed.
+		if($sql->select('plugin', 'plugin_id', "plugin_path = 'user' AND plugin_installflag != 1 LIMIT 1"))
+		{
+			if($just_check)
 			{
-				if($just_check)
-				{
-					return update_needed("user/e_user.php need to be registered"); // NO LAN.
-				}
-
-				e107::getConfig()->setPref('e_user_list/user', 'user')->save(false,true,false);
+				return update_needed("Plugin table 'user' value needs to be reset.");
 			}
+
+			$sql->delete('plugin', "plugin_path = 'user'");
+
+			//e107::getPlug()->clearCache();
+		}
 
 
 		// Make sure, that the pref "post_script" contains one of the allowed userclasses
