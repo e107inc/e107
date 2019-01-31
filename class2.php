@@ -1070,10 +1070,12 @@ if (!class_exists('e107table', false))
 		
 			if(class_exists($this->adminThemeClass) && ($this->frontend == false))
 			{
-				$thm = new $this->adminThemeClass();	
+				/** @var e_theme_render $thm */
+				$thm = new $this->adminThemeClass();
 			}
 			elseif(class_exists($this->themeClass)) // disabled at the moment. 
 			{
+				/** @var e_theme_render $thm */
 				$thm = new $this->themeClass();
 			}
 
@@ -1468,7 +1470,14 @@ elseif (!in_array('lan_'.e_PAGE,$exclude_lan) && !$isPluginDir)
 }
 */
 
-if ($pref['anon_post'] ? define('ANON', true) : define('ANON', false));
+if ($pref['anon_post'])
+{
+	define('ANON', true);
+}
+else
+{
+	define('ANON', false);
+}
 
 if (empty($pref['newsposts']) ? define('ITEMVIEW', 15) : define('ITEMVIEW', $pref['newsposts']));
 

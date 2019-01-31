@@ -1402,7 +1402,7 @@ class themeHandler
 		$frm = e107::getForm();
 		
 		return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
-		
+		/*
 		$text = '<span class="input-append e-search"><i class="icon-search"></i>
     		'.$frm->text($name, $searchVal,20,'class=search-query').'
    			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
@@ -1411,7 +1411,7 @@ class themeHandler
 	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
 		
 		return $text;
-		
+		*/
 	}
 
 	/**
@@ -3124,6 +3124,10 @@ class themeHandler
 
 }
 
+
+
+
+
 interface e_theme_config
 {
 	/**
@@ -3144,3 +3148,23 @@ interface e_theme_config
 	 */
 //	public function help();
 }
+
+
+/**
+ * Interface e_theme_render
+ * @see e107_themes/bootstrap3/admin_theme.php
+ */
+interface e_theme_render
+{
+	public function tablestyle($caption, $text, $mode, $data);
+
+}
+
+
+/**
+* Interface e_theme_library
+*//*
+interface e_theme_library
+{
+	public function config();
+}*/
