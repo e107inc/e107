@@ -936,6 +936,11 @@
 
 			// var_dump($result);
 			$this->assertTrue($result);
+
+			$result = $this->e107::isInstalled('news');
+
+			// var_dump($result);
+			$this->assertTrue($result);
 		}
 /*
 		public function testIni_set()
