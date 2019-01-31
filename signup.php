@@ -204,11 +204,11 @@ class signup
 		// 'resend_newemail' - corrected email address
 		// 'resend_password' - password (required if changing email address)
 
-		$clean_email = $tp->toDB($_POST['resend_email']);
-		if(!check_email($clean_email))
+		$clean_email = $tp->toDB($_POST['resend_email']); // may also be username
+		/*if(!check_email($clean_email))
 		{
 			$clean_email = "xxx";
-		}
+		}*/
 
 		$new_email = $tp->toDB(varset($_POST['resend_newemail'], ''));
 		if(!check_email($new_email ))
@@ -290,7 +290,7 @@ class signup
 
 		if(!$result)
 		{
-			e107::getMessage()->setTitle(LAN_SIGNUP_43,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
+			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
 			$ns->tablerender(null, e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
@@ -1108,6 +1108,3 @@ function headerjs()
 	//$script_txt .= $cal->load_files();
 	return $script_txt;
 }
-
-
-?>
