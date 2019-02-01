@@ -278,7 +278,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore'),
-			'pref_classes' 				=> array('title'=> 'classes', 'type' => 'userclasses', 'data' => 'array')
+			'pref_classes' 				=> array('title'=> 'classes', 'type' => 'userclasses', 'inline'=>true,)
 
 		);
 
