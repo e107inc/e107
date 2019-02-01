@@ -37,7 +37,7 @@ if(!class_exists("_blank_setup"))
 				'blank_name'			=>'My Name',
 				'blank_folder'			=>'Folder Value',
 				'blank_version'			=>'1',
-				'blank_author'			=>'bill',
+				'blank_author'			=>'1',
 				'blank_authorURL'		=>'http://e107.org',
 				'blank_date'			=>'1352871240',
 				'blank_compatibility'	=>'2',
