@@ -172,9 +172,6 @@ class admin_start
 		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
 		$this->checkIncompatiblePlugins();
 
-		e107::getDb()->db_Mark_Time('Check Filetypes');
-		$this->checkFileTypes();
-
 		e107::getDb()->db_Mark_Time('Check Suspect Files');
 		$this->checkSuspiciousFiles();
 
@@ -189,6 +186,9 @@ class admin_start
 
 		e107::getDb()->db_Mark_Time('Check Core Update');
 		$this->checkCoreUpdate();
+
+		e107::getDb()->db_Mark_Time('Check Filetypes');
+		$this->checkFileTypes();
 
 		if($this->exit === true)
 		{
