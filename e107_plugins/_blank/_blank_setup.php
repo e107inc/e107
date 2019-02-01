@@ -44,7 +44,7 @@ if(!class_exists("_blank_setup"))
 				'blank_url'				=>'http://e107.org'
 			);
 
-			if($sql->insert('blank',$e107_blank))
+			if($sql->insert('_blank', $e107_blank))
 			{
 				$mes->add("Custom - Install Message.", E_MESSAGE_SUCCESS);
 			}
