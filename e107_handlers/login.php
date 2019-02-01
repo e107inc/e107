@@ -579,9 +579,16 @@ class userlogin
 				$this->logNote('LAN_ROLL_LOG_02', $username);
 				break;
 			case LOGIN_NOT_ACTIVATED :
-				$srch = array("[", "]");
-				$repl = array("<a href='" . e_HTTP . "signup.php?resend'>", "</a>");
-				$message = str_replace($srch, $repl, LAN_LOGIN_22);
+				if($pref['user_reg_veri'] == 2)
+				{
+					$message = LAN_LOGIN_37;
+				}
+				else
+				{
+					$srch = array("[", "]");
+					$repl = array("<a href='" . e_HTTP . "signup.php?resend'>", "</a>");
+					$message = str_replace($srch, $repl, LAN_LOGIN_22);
+				}
 				$this->logNote('LAN_ROLL_LOG_05', $username);
 				$this->genNote($username, LAN_LOGIN_27);
 				$doCheck = true;
