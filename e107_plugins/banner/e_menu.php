@@ -18,7 +18,7 @@ class banner_menu
 {
 	function __construct()
 	{
-		e107::lan('banner','admin', 'true');
+		e107::lan('banner', true);
 	}
 
 
@@ -67,6 +67,3 @@ class banner_menu_form extends e_form
 	}
 
 }
-
-
-?>
