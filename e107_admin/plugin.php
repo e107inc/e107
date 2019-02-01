@@ -3565,9 +3565,9 @@ class pluginBuilder
 
 			$info = EPL_ADLAN_102;
 			$info .= "<ul>";
-			$info .= "<li>".str_replace('[x]', e_PLUGIN, EPL_ADLAN_103)."</li>";
+			$info .= "<li>".str_replace(array('[x]', '[b]', '[/b]'), array(e_PLUGIN, '<strong>', '</strong>'), EPL_ADLAN_103)."</li>";
 		//	$info .= "<li>".EPL_ADLAN_104."</li>";
-			$info .= "<li>".EPL_ADLAN_105."</li>";
+			$info .= "<li>".str_replace(array('[b]', '[/b]'), array('<strong>', '</strong>'), EPL_ADLAN_105)."</li>";
 			$info .= "<li>".EPL_ADLAN_106."</li>";
 			$info .= "</ul>";
 
@@ -5673,8 +5673,3 @@ $text .= "
 
 
 }
-
-
-
-
-?>
