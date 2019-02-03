@@ -133,14 +133,7 @@ if ($fs) {
 $sql->select("chatbox", "*",
 	"{$qry_where} ORDER BY cb_datestamp DESC LIMIT " . intval($from) . ", 30");
 
-$obj2 = new convert;
-
 $chatList = $sql->rows();
-
-$frm = e107::getForm();
-$vars = [];
-$flag = false;
-
 
 
 $CHATBOX_LIST_TEMPLATE =
