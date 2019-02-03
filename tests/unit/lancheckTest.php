@@ -41,12 +41,34 @@
 		{
 
 		}
-
+*/
 		public function testFill_phrases_array()
 		{
 
+			$strings =
+				'define("LAN1", "Főadminisztrátor");'."\n".
+				'define("LAN2", "Hői");'."\n".
+				'define("LAN3", "Rendszerinformáció");'."\n".
+				'define("LAN4", "Felhasználó");'."\n".
+				'define("LAN5", "Regisztrált felhasználó");';
+
+			$expected = array (
+				'orig' =>
+					array (
+						'LAN1' => 'Főadminisztrátor',
+						'LAN2' => 'Hői',
+						'LAN3' => 'Rendszerinformáció',
+						'LAN4' => 'Felhasználó',
+						'LAN5' => 'Regisztrált felhasználó',
+					),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() failed.');
+
 		}
 
+/*
 		public function testThirdPartyPlugins()
 		{
 
@@ -79,7 +101,20 @@
 */
 		public function testIs_utf8()
 		{
-			// @todo please use multiple assertions in here rather than multiple methods.
+			$strings = array(
+				"Főadminisztrátor",
+				"Hői",
+				"Rendszerinformáció",
+				"Felhasználó",
+				"Regisztrált felhasználó");
+
+			foreach($strings as $expected)
+			{
+				$actual = $this->lan->is_utf8($expected);
+				$this->assertEquals(true, $actual, 'is_utf8() failed on '.$expected.'.');
+			}
+
+
 		}
 
 /*
