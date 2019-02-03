@@ -1460,6 +1460,7 @@ if($this->pdo == true)
 		$this->template->SetTag("bartype", 'success');
 	
 		$htaccessError = $this->htaccess();
+		$this->saveFileTypes();
 
 		$e_forms->start_form("confirmation", "index.php");
 
@@ -1492,6 +1493,18 @@ if($this->pdo == true)
 
 		e107::getMessage()->reset(false, false, true);
 	}
+
+	private function saveFileTypes()
+	{
+		$data = '<?xml version="1.0" encoding="utf-8"?>
+<e107Filetypes>
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
+</e107Filetypes>';
+
+		return file_put_contents($this->e107->e107_dirs['SYSTEM_DIRECTORY']."filetypes.xml",$data);
+
+	}
+
 
 
 	protected function stats()
