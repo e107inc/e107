@@ -3,7 +3,7 @@
 
 ## How to contribute 
 
-Contributing to e107 is quite easy if you keep in mind the following tips, to avoid some pifalls.
+Contributing to e107 is quite easy if you keep in mind the following tips, to avoid some pitfalls.
 
 ### The big picture
 
@@ -25,7 +25,7 @@ Contributing to e107 is quite easy if you keep in mind the following tips, to av
 
 ##### Make sure ... 
 
-..., you have installed git on your local computer. You can gownload it [here](https://git-scm.com/downloads).
+..., you have installed git on your local computer. You can download it [here](https://git-scm.com/downloads).
 As i work on windows, i can only tell what to do on windows, but the git command itself are independent of the operating system.
       
 
@@ -53,7 +53,7 @@ This command has to be run only once!
 
 ##### Create branches for each issue you're working on
 
-Now you are ready to fix whatever issue you find, add whatver feature the world is waiting for... nearly!
+Now you are ready to fix whatever issue you find, add whatever feature the world is waiting for... nearly!
 Before creating a new branch, make sure you are at the "master" branch. 
 So first run `git checkout master` to make this sure!
 Now create a new branch `git checkout [branch name e.g. fix_IssueNr]` where "IssueNr" stands for the issue number on GitHub. But it's up to you how you name your branches.
