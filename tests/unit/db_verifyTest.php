@@ -29,12 +29,165 @@
 
 			$this->dbv->__construct();
 		}
-/*
+
 		public function testGetFields()
 		{
+			$data = "table_id int(10) unsigned NOT NULL auto_increment,
+  table_name varchar(100) NOT NULL default '',
+  table_email varchar(100) NOT NULL default '',
+  table_user int(10) unsigned NOT NULL default '0',
+  table_title varchar(200) NOT NULL default '',
+  table_category tinyint(3) unsigned NOT NULL default '0',
+  table_json JSON NOT NULL,
+  table_item text NOT NULL,
+  table_datestamp int(10) unsigned NOT NULL default '0',
+  table_ip varchar(45) NOT NULL default '',
+  table_auth tinyint(3) unsigned NOT NULL default '0',
+  table_file text NOT NULL,
+  table_keywords  varchar(255) NOT NULL default '',
+  table_description text,
+  table_summary text,
+  table_media text,
+  PRIMARY KEY  (table_id)";
+
+	$expected = array (
+		  'table_id' =>
+		  array (
+		    'type' => 'INT',
+		    'value' => '10',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'AUTO_INCREMENT',
+		  ),
+		  'table_name' =>
+		  array (
+		    'type' => 'VARCHAR',
+		    'value' => '100',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+		  ),
+		  'table_email' =>
+		  array (
+		    'type' => 'VARCHAR',
+		    'value' => '100',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+		  ),
+		  'table_user' =>
+		  array (
+		    'type' => 'INT',
+		    'value' => '10',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'0\'',
+		  ),
+		  'table_title' =>
+		  array (
+		    'type' => 'VARCHAR',
+		    'value' => '200',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+		  ),
+		  'table_category' =>
+		  array (
+		    'type' => 'TINYINT',
+		    'value' => '3',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'0\'',
+		  ),
+		  'table_json' =>
+		  array (
+		    'type' => 'JSON',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => '',
+		  ),
+		  'table_item' =>
+		  array (
+		    'type' => 'TEXT',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => '',
+		  ),
+		  'table_datestamp' =>
+		  array (
+		    'type' => 'INT',
+		    'value' => '10',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'0\'',
+		  ),
+		  'table_ip' =>
+		  array (
+		    'type' => 'VARCHAR',
+		    'value' => '45',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+		  ),
+		  'table_auth' =>
+		  array (
+		    'type' => 'TINYINT',
+		    'value' => '3',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'0\'',
+		  ),
+		  'table_file' =>
+		  array (
+		    'type' => 'TEXT',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => '',
+		  ),
+		  'table_keywords' =>
+		  array (
+		    'type' => 'VARCHAR',
+		    'value' => '255',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+		  ),
+		  'table_description' =>
+		  array (
+		    'type' => 'TEXT',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => '',
+		    'default' => '',
+		  ),
+		  'table_summary' =>
+		  array (
+		    'type' => 'TEXT',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => '',
+		    'default' => '',
+		  ),
+		  'table_media' =>
+		  array (
+		    'type' => 'TEXT',
+		    'value' => '',
+		    'attributes' => '',
+		    'null' => '',
+		    'default' => '',
+		  ),
+		);
+
+           $actual =  $this->dbv->getFields($data);
+           $this->assertEquals($expected,$actual);
+
+
 
 		}
-
+/*
 		public function testClearCache()
 		{
 
@@ -82,6 +235,7 @@
 		//	print_r($this->dbv->sqlFileTables);
 
 			$this->dbv->compare('core');
+			$this->dbv->compileResults();
 
 
 			//FIXME
@@ -91,12 +245,83 @@
 		//	print_r($this->dbv->indices['submitnews']);
 		//	print_r($this->dbv->results);
 		}
-/*
-		public function testToMysql()
+
+
+		public function testGetFixQuery()
 		{
+
+			$sqlFileData = "table_id int(10) unsigned NOT NULL auto_increment,
+  table_name varchar(100) NOT NULL default '',
+  table_email varchar(100) NOT NULL default '',
+  table_user int(10) unsigned NOT NULL default '0',
+  table_title varchar(200) NOT NULL default '',
+  table_category tinyint(3) unsigned NOT NULL default '0',
+  table_json JSON NOT NULL,
+  table_item text NOT NULL,
+  table_datestamp int(10) unsigned NOT NULL default '0',
+  table_ip varchar(45) NOT NULL default '',
+  table_auth tinyint(3) unsigned NOT NULL default '0',
+  table_file text NOT NULL,
+  table_keywords  varchar(255) NOT NULL default '',
+  table_description text,
+  table_summary text,
+  table_media text,
+  PRIMARY KEY  (table_id)";
+
+			$actual = $this->dbv->getFixQuery('alter', 'table', 'table_ip', $sqlFileData);
+			$expected = "ALTER TABLE `e107_table` CHANGE `table_ip` `table_ip` VARCHAR(45)  NOT NULL DEFAULT ''";
+			$this->assertEquals($expected,$actual);
+
+
+			$actual = $this->dbv->getFixQuery('insert', 'table', 'table_auth', $sqlFileData);
+			$expected = "ALTER TABLE `e107_table` ADD `table_auth` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'";
+			$this->assertEquals($expected,$actual);
+
+			$actual = $this->dbv->getFixQuery('insert', 'table', 'table_json', $sqlFileData);
+			$expected = "ALTER TABLE `e107_table` ADD `table_json` JSON NOT NULL";
+			$this->assertEquals($expected,$actual);
+		//	echo $actual;
+
 
 		}
 
+		public function testToMysql()
+		{
+			$tests = array(
+				0 =>
+					  array (
+					    'type' => 'TINYINT',
+					    'value' => '3',
+					    'attributes' => 'UNSIGNED',
+					    'null' => 'NOT NULL',
+					    'default' => 'DEFAULT \'0\'',
+					  ),
+				 1 =>
+					  array (
+					    'type' => 'JSON',
+					    'value' => '',
+					    'attributes' => '',
+					    'null' => 'NOT NULL',
+					    'default' => '',
+					  ),
+				);
+
+
+			$expected = array(
+				"TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'",
+				"JSON NOT NULL",
+			);
+
+
+			foreach($tests as $k=>$data)
+			{
+				$result = $this->dbv->toMysql($data);
+				$this->assertEquals($expected[$k], $result);
+
+			}
+
+		}
+/*
 		public function testRunFix()
 		{
 
@@ -403,10 +628,11 @@
 
 				$actual = $this->dbv->getSqlFileTables($sql);
 
-			/*	if($table == 'test_json')
+				if($table == 'test_json')
 				{
-					var_export($actual);
-				}*/
+					print_r($actual);
+					print_r($this->dbv->results);
+				}
 
 				$this->assertEquals($actual['tables'], $expected[$table]['tables'], "Table ".$table." could not be parsed.");
 
@@ -414,6 +640,9 @@
 				{
 					$data = str_replace("\t", '', $data);
 					$this->assertEquals($actual['data'][$k], $data, "Table ".$table."['data'][".$k."] did not match.");
+
+					$fields	= $this->dbv->getFields($actual['data'][$k]);
+					print_r($fields);
 				}
 
 				$this->assertEquals($actual['engine'], $expected[$table]['engine']);
