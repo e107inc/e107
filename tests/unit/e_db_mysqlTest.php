@@ -242,12 +242,13 @@
 		{
 
 		}
-
+*/
 		public function testInsert()
 		{
-
+			$actual = e107::getDb()->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test insert'));
+			$this->assertEquals(1, $actual, 'Unable to add record to table #tmp');
 		}
-
+/*
 		public function testLastInsertId()
 		{
 
@@ -277,12 +278,24 @@
 		{
 
 		}
-
+*/
 		public function testUpdate()
 		{
+			$db = e107::getDb();
+
+			$db->delete('tmp');
+
+			// Test 1
+			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 1', 'WHERE' => 'tmp_ip="127.0.0.1"'));
+			$this->assertEmpty($expected, "Test update() failed (not empty {$expected})");
+
+			// Test 2
+			$actual = $db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
+			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
+			$this->assertEquals($actual, $expected, "Test update() failed ({$actual} != {$expected}");
 
 		}
-
+/*
 		public function testDb_Update()
 		{
 
@@ -337,12 +350,14 @@
 		{
 
 		}
-
+*/
 		public function testDelete()
 		{
-
+			$expected = e107::getDB()->count('tmp');
+			$actual = e107::getDb()->delete('tmp');
+			$this->assertEquals($expected, $actual, 'Unable to delete all records.');
 		}
-
+/*
 		public function testDb_Delete()
 		{
 
