@@ -245,7 +245,7 @@
 */
 		public function testInsert()
 		{
-			$actual = e107::getDb()->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test insert'));
+			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test insert'));
 			$this->assertEquals(1, $actual, 'Unable to add record to table #tmp');
 		}
 /*
@@ -281,7 +281,7 @@
 */
 		public function testUpdate()
 		{
-			$db = e107::getDb();
+			$db = $this->db;
 
 			$db->delete('tmp');
 
@@ -353,9 +353,10 @@
 */
 		public function testDelete()
 		{
-			$expected = e107::getDB()->count('tmp');
-			$actual = e107::getDb()->delete('tmp');
+			$expected = $this->db->count('tmp');
+			$actual = $this->db->delete('tmp');
 			$this->assertEquals($expected, $actual, 'Unable to delete all records.');
+
 		}
 /*
 		public function testDb_Delete()
