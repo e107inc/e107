@@ -33,7 +33,7 @@ class db_verify
 	private $internalError = false;
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date', 'json');
 							
 	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
 		'real','double','float','decimal','numeric','varchar','char ','binary','varbinary','enum','set'); // space after 'char' required. 
@@ -639,7 +639,7 @@ class db_verify
 	
 	
 	
-	function toMysql($data,$mode = 'field')
+	public function toMysql($data,$mode = 'field')
 	{
 		
 		if(!$data) return;
@@ -663,11 +663,17 @@ class db_verify
 		
 		if(!in_array(strtolower($data['type']), $this->fieldTypes))
 		{
-			return $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];	
+			$ret = $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];
+			return trim($ret);
 		}
 		else
 		{
-			return $data['type']." ".$data['attributes']." ".$data['null']." ".$data['default'];
+			$ret = $data['type'];
+			$ret .= !empty($data['attributes']) ? " ".$data['attributes'] : '';
+			$ret .= !empty($data['null']) ? " ".$data['null'] : '';
+			$ret .= !empty($data['default']) ? " ".$data['default'] : '';
+
+			return $ret;
 		}
            
 	}
@@ -707,7 +713,66 @@ class db_verify
 		} 
 
 	}
-	
+
+
+	/**
+	 * @param string $mode index|alter|insert|drop|create|indexdrop
+	 * @param string $table eg. submitnews
+	 * @param string $field eg. submitnews_id
+	 * @param string $sqlFileData (after CREATE)  eg. dblog_id int(10) unsigned NOT NULL auto_increment, ..... KEY....
+	 * @param int    $id
+	 * @return string SQL query
+	 */
+	function getFixQuery($mode,$table,$field,$sqlFileData)
+	{
+
+		if(substr($mode,0,5)== 'index')
+		{
+			$fdata = $this->getIndex($sqlFileData);
+			$newval = $this->toMysql($fdata[$field],'index');
+		}
+		else
+		{
+			$fdata = $this->getFields($sqlFileData);
+			$newval = $this->toMysql($fdata[$field]);
+		}
+
+
+		switch($mode)
+		{
+			case 'alter':
+				$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+			break;
+
+			case 'insert':
+				$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+			break;
+
+			case 'drop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+			break;
+
+			case 'index':
+				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
+			break;
+
+			case 'indexdrop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+			break;
+
+			case 'create':
+				$query = "CREATE TABLE `".MPREFIX.$table."` (".$sqlFileData.") ENGINE=MyISAM;";
+			break;
+		}
+
+
+		return $query;
+	}
+
+
+
 	/**
 	 * Fix tables
 	 * FixArray eg. [core][table][field] = alter|create|index| etc. 
@@ -736,47 +801,8 @@ class db_verify
 				{
 					foreach($fixes as $mode)
 					{				
-						if(substr($mode,0,5)== 'index')
-						{
-							$fdata = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field],'index');	
-						}
-						else
-						{
-							
-							$fdata = $this->getFields($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field]);	
-						}
-						
-						
-						switch($mode)
-						{
-							case 'alter':
-								$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
-							break;
-				
-							case 'insert':
-								$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
-							break;
-							
-							case 'drop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
-							break;
-							
-							case 'index':
-								$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
-							break;
-							
-							case 'indexdrop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
-							break;
-							
-							case 'create':
-								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->sqlFileTables[$j]['data'][$id].") ENGINE=MyISAM;";
-							break;
-						}
+
+						$query = $this->getFixQuery($mode,$table,$field,$this->sqlFileTables[$j]['data'][$id]);
 						
 				
 						// $mes->addDebug("Query: ".$query);		
