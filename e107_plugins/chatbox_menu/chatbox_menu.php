@@ -112,7 +112,7 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 				$emessage = CHATBOX_L15;
 			}
 		} else {
-			$emessage = CHATBOX_L19;
+			$emessage = $tp->lanVars(CHATBOX_L19, FLOODPROTECT ?: 'n/a');
 		}
 	}
 }
