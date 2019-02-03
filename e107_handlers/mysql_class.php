@@ -1118,6 +1118,7 @@ class e_db_mysql
 
 	private function _prepareUpdateArg($tableName, $arg)
 	{
+		$this->pdoBind = array();
 		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
 
@@ -1147,7 +1148,7 @@ class e_db_mysql
 
 
 			$new_data = '';
-			$this->pdoBind = array();
+			//$this->pdoBind = array(); // moved up to the beginning of the method to make sure it is initialized properly
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
@@ -1221,7 +1222,8 @@ class e_db_mysql
 			{
 				if(is_object($result))
 				{
-				//	$result = $this->rowCount();
+					// make sure to return the number of records affected, instead of an object
+					$result = $this->rowCount();
 				}
 			}
 			else
@@ -1708,8 +1710,10 @@ class e_db_mysql
 		{
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
+				// return the number of records deleted instead of an object
+				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
-				return $result;
+				return $tmp;
 			}
 			else
 			{
