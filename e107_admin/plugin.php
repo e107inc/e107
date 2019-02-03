@@ -247,7 +247,11 @@ class plugin_ui extends e_admin_ui
 
 				$plg = e107::getPlug();
 
-	            foreach ($tree->getTree() as $id => $model)
+			/**
+			 * @var  $id
+			 * @var e_model $model
+			 */
+			foreach ($tree->getTree() as $id => $model)
 	            {
 					$path = $model->get('plugin_path');
 
