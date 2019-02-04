@@ -161,11 +161,15 @@ class cpage_shortcodes extends e_shortcode
 	// Not a shortcode really, as it shouldn't be cached at all :/
 	function cpagecomments()
 	{
-		$com = $this->var['comments'];
+		$com 		= $this->var['comments'];
+		$comflag 	= $this->var['page_comment_flag'];
+		
 		//if($parm && isset($com[$parm])) return $com[$parm];
-
-		return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);
-
+		if($comflag)
+		{
+			return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);	
+		}
+		
 	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 	
