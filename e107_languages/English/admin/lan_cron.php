@@ -104,5 +104,3 @@ define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
 define("LAN_CRON_RUNNING", "Running");
 
-
-?>

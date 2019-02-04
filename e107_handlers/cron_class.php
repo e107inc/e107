@@ -22,7 +22,12 @@ define ('CRON_RETRIGGER_DEBUG', false);
 
 class _system_cron 
 {
-	
+	function __construct()
+	{
+		e107::coreLan('cron', true);
+
+
+	}
 	// See admin/cron.php to configure more core cron function to be added below.  
 	
 	
@@ -88,7 +93,7 @@ class _system_cron
 
 		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
 
-	
+		return null;
 	}
 	
 		
@@ -243,7 +248,7 @@ class _system_cron
 		}
 		elseif(file_exists($file))
 		{
-			e107::getLog()->addSuccess(LAN_CRON_56.SEP.basename($file))->save('BACKUP');
+			e107::getLog()->addSuccess(LAN_CRON_56." ".basename($file))->save('BACKUP');
 		}
 
 		return null;
@@ -940,6 +945,8 @@ class cronScheduler
 		{
 			$this->runJob($job);
 		}
+
+		return null;
 	}
 
 	/**
