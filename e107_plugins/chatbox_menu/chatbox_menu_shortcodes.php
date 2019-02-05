@@ -21,8 +21,8 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function init()
 	{
-		if ( ! $this->var['user_image'] ) {
-			$this->addVars($this->retrieveUserDataByNick($this->var['cb_nick']));
+		if ( ! isset($this->var['user_image'], $this->var['user_id'], $this->var['user_name']) ) {
+			$this->addVars($this->retrieveUserDataByNick());
 		}
 
 	}
@@ -31,18 +31,38 @@ class chatbox_menu_shortcodes extends e_shortcode
 	/**
 	 * Returns extended user data from user object
 	 *
-	 * @param $nick string
-	 *
 	 * @return array user data
 	 */
-	protected function retrieveUserDataByNick($nick)
+	protected function retrieveUserDataByNick()
 	{
 
-		$tmp = explode('.', $nick);
-		$userId = (int)$tmp[0];
+		$userId = $this->getUserIdFromNick();
 
 		return e107::user($userId);
 
+	}
+
+	/**
+	 * Returns user_id from cb_nick
+	 *
+	 * @return mixed
+	 */
+	protected function getUserIdFromNick()
+	{
+		$temp = explode('.', $this->var['cb_nick']);
+		return $temp[0];
+	}
+
+
+	/**
+	 * Returns user_name from cb_nick
+	 *
+	 * @return mixed
+	 */
+	protected function getUserNameFromNick()
+	{
+		$temp = explode('.', $this->var['cb_nick']);
+		return $temp[1];
 	}
 
 
@@ -51,16 +71,20 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 *
 	 * @param $parm
 	 *
-	 * @return \
+	 * @return <img> tag of avatar
 	 */
 	public function sc_cb_avatar($parm = null)
 	{
-		$this->init();
-
-		$size = $parm['size'] ?: 40;
 		$tp = e107::getParser();
+		$size = $parm['size'] ?: 40;
+		$options = array('h' => $size, 'w' => $size, 'crop' => 'C');
 
-		return $tp->toAvatar($this->var, ['h' => $size, 'w' => $size, 'crop' => 'C']);
+		if ( ! isset($this->var['user_image']) ) {
+			$this->init();
+			return $tp->toAvatar($this->var, $options);
+		}
+
+		return $tp->toAvatar($this->var, $options);
 	}
 
 
@@ -74,28 +98,30 @@ class chatbox_menu_shortcodes extends e_shortcode
 	public function sc_cb_username($parm = null)
 	{
 
-		if (! $this->var['user_id'] && ! $this->var['user_name']) {
+		if ( ! isset($this->var['user_id'], $this->var['user_name']) ) {
 
-			$tmp = explode('.', $this->var['cb_nick']);
+			$userData = array(
+				'id'   => $this->getUserIdFromNick(),
+				'name' => $this->getUserNameFromNick(),
+			);
 
-			$link = e107::getUrl()->create('user/profile/view', array('id' => $tmp[0], 'name' => $tmp[1]));
+			$userLink = e107::getUrl()->create('user/profile/view', $userData);
 
-			$userName = str_replace('Anonymous', LAN_ANONYMOUS, $tmp[1]);
+			$userName = str_replace('Anonymous', LAN_ANONYMOUS, $userData['name']);
 
-			return '<a href="' . $link . '">' . $userName . '</a>';
-
+			return '<a href="' . $userLink . '">' . $userName . '</a>';
 		}
 
-		$this->init();
-
-		$userData = [
+		$userData = array(
 			'id'   => $this->var['user_id'],
 			'name' => $this->var['user_name'],
-		];
+		);
 
-		$link = e107::getUrl()->create('user/profile/view', $userData);
+		$userLink = e107::getUrl()->create('user/profile/view', $userData);
 
-		return '<a href="' . $link . '">' . $this->var['user_name'] . '</a>';
+		$userName = str_replace('Anonymous', LAN_ANONYMOUS, $this->var['user_name']);
+
+		return '<a href="' . $userLink . '">' . $userName . '</a>';
 	}
 
 
@@ -123,8 +149,6 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_message($parm = null)
 	{
-		$this->init();
-
 		if ($this->var['cb_blocked']) {
 			return CHATBOX_L6;
 		}
@@ -135,7 +159,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 
 		$cb_message = e107::getParser()
 			->toHTML($this->var['cb_message'], false, $emotes_active,
-				$this->var['user_id'], $pref['menu_wordwrap']);
+				$this->getUserIdFromNick(), $pref['menu_wordwrap']);
 
 		return $cb_message;
 	}
@@ -182,14 +206,14 @@ class chatbox_menu_shortcodes extends e_shortcode
 			$modControls .= "<span class='checkbox'>";
 
 			$modControls .= $frm->checkbox('delete[' . $id . ']', 1, false,
-				['inline' => true, 'label' => LAN_DELETE]);
+				array( 'inline' => true, 'label' => LAN_DELETE ));
 
 			if ($this->var['cb_blocked']) {
 				$modControls .= $frm->checkbox('unblock[' . $id . ']', 1, false,
-					['inline' => true, 'label' => CHATBOX_L7]);
+					array( 'inline' => true, 'label' => CHATBOX_L7 ));
 			} else {
 				$modControls .= $frm->checkbox('block[' . $id . ']', 1, false,
-					['inline' => true, 'label' => CHATBOX_L9]);
+					array( 'inline' => true, 'label' => CHATBOX_L9 ));
 			}
 
 			$modControls .= '</span>';
