@@ -551,6 +551,10 @@ img.S32:hover 				{}
 .adminlist th.last,
 .adminlist td.last 							{ border-right: 0 solid;}
 .adminlist tr.last td						{ border-bottom: 0 solid;}
+.adminlist th a.sorted-asc,
+.adminlist th a.sorted-desc                 { text-decoration: none }
+.adminlist th a.sorted-asc:after            { padding-left:5px;  font-family: FontAwesome; content: '\f0d8' }
+.adminlist th a.sorted-desc:after            { padding-left:5px; font-family: FontAwesome; content: '\f0d7' }
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 table.adminlist								{ margin-bottom: 0 }

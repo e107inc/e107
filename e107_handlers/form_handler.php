@@ -4156,13 +4156,17 @@ class e_form
 
 		if(!varset($fromval)){ $fromval = 0; }
 
-        $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
+		$sorted = varset($ascdesc);
+        $ascdesc = ($sorted == 'desc') ? 'asc' : 'desc';
 
 		foreach($fieldarray as $key=>$val)
 		{
      		if ((in_array($key, $columnPref) || ($key === 'options' && isset($val['title'])) || (vartrue($val['forced']))) && !vartrue($val['nolist']))
 			{
 				$cl = (vartrue($val['thclass'])) ? " class='".$val['thclass']."'" : "";
+
+				$aClass = ($key === $field) ? "class='sorted-".$sorted."'" : "";
+
 				$text .= "
 					<th id='e-column-".str_replace('_', '-', $key)."'{$cl}>
 				";
@@ -4175,7 +4179,9 @@ class e_form
                 	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
 				}
 
-				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
+
+
+				$text .= (vartrue($val['url'])) ? "<a ".$aClass." title=\"".LAN_SORT."\" href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= defset($val['title'], $val['title']);
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key === "options" && !vartrue($val['noselector'])) ? $this->columnSelector($fieldarray, $columnPref) : "";
