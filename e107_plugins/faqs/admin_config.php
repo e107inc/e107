@@ -208,8 +208,8 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',					            'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,				'tab' => 0, 'type' => null,				'width' =>'5%', 'forced'=> TRUE),
-			'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,	'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1', 'writeParms'=>'maxlength=1000&size=block-level'),
-			'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0, 'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
+			'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,	'tab' => 0, 'type' => 'text',			'data' => 'str', 'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1', 'writeParms'=>'maxlength=1000&size=block-level'),
+			'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0, 'type' => 'bbarea',			'data' => 'str', 'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'),
 		 	'faq_parent' 			=> array('title'=> LAN_CATEGORY,		'tab' => 0, 'type' => 'dropdown',		'data'=> 'int', 'inline'=>true,'width' => '10%', 'filter'=>TRUE, 'batch'=>TRUE),
 
 			'faq_tags' 				=> array('title'=> LANA_FAQ_TAGS,		'tab' => 1, 'type' => 'tags',			'data' => 'str',	'width' => 'auto', 'inline'=> true, 'help' => LANA_FAQ_TAGS_HELP),	// User id
