@@ -287,12 +287,16 @@
 
 			// Test 1
 			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 1', 'WHERE' => 'tmp_ip="127.0.0.1"'));
-			$this->assertEmpty($expected, "Test update() failed (not empty {$expected})");
+			$this->assertEmpty($expected, "Test 1 update() failed (not empty {$expected})");
 
 			// Test 2
 			$actual = $db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
-			$this->assertEquals($actual, $expected, "Test update() failed ({$actual} != {$expected}");
+			$this->assertEquals(1, $expected, "Test 2 update() failed ({$actual} != {$expected}");
+
+			// Test 3
+			$expected = $db->update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
+			$this->assertEquals(1, $expected, "Test 3 update() failed ({$actual} != {$expected}");
 
 		}
 /*
