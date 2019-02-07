@@ -350,7 +350,7 @@ class plugin_ui extends e_admin_ui
 
 		function installPage()
 		{
-			$id = $this->getId();
+			$id = $this->getQuery('path');
 
 			$text = e107::getPlugin()->install($id);
 
@@ -404,12 +404,17 @@ class plugin_ui extends e_admin_ui
 
 		function uninstallPage()
 		{
-			$id = $this->getId();
+
+
+			$id = $this->getQuery('path');
+
 
 			if(empty($_POST['uninstall_confirm']))
 			{
 
 				$plug_vars = e107::getPlug()->load($id)->getMeta();
+
+
 
 				$name = e107::getPlug()->getName();
 				$this->addTitle(EPL_ADLAN_63);
@@ -429,6 +434,8 @@ class plugin_ui extends e_admin_ui
 
 			$text = e107::getPlugin()->uninstall($id, $post);
 
+
+
 			// make sure ALL plugin/addon pref lists get update and are current
 			e107::getPlug()->clearCache()->buildAddonPrefLists();
 
@@ -443,7 +450,7 @@ class plugin_ui extends e_admin_ui
 
 		function repairPage()
 		{
-			$id = $this->getId();
+			$id = $this->getQuery('path');
 
 			if(!is_dir(e_PLUGIN.$id))
 			{
@@ -462,7 +469,7 @@ class plugin_ui extends e_admin_ui
 
 		function pullPage()
 		{
-			$id = $this->getId();
+			$id = $this->getQuery('path');
 
 			if(!e107::isInstalled($id))
 			{
@@ -555,7 +562,7 @@ class plugin_ui extends e_admin_ui
 		    $sql 		= e107::getDb();
 	        $mes 		= e107::getMessage();
 
-	        $id         = $this->getId();
+	        $id         = $this->getQuery('path');
 
 			$plug 		= e107::getPlug()->load($id)->getMeta();
 
@@ -956,11 +963,11 @@ class plugin_form_ui extends e_admin_form_ui
 
 			if($var['plugin_installflag'])
 			{
-				$text .= ($var['plugin_installflag'] ? "<a class='btn btn-default' href=\"" . e_SELF . "?mode=".$mode."&action=uninstall&id={$var['plugin_path']}\" title='" . EPL_ADLAN_1 . "'  >" . ADMIN_UNINSTALLPLUGIN_ICON . "</a>" : "<a class='btn' href=\"" . e_SELF . "?install.{$var['plugin_id']}\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>");
+				$text .= ($var['plugin_installflag'] ? "<a class='btn btn-default' href=\"" . e_SELF . "?mode=".$mode."&action=uninstall&path={$var['plugin_path']}\" title='" . EPL_ADLAN_1 . "'  >" . ADMIN_UNINSTALLPLUGIN_ICON . "</a>" : "<a class='btn' href=\"" . e_SELF . "?install.{$var['plugin_id']}\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>");
 			}
 			else
 			{
-				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=installed&action=install&id={$var['plugin_path']}\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>";
+				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=installed&action=install&path={$var['plugin_path']}\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>";
 			}
 
 		}
@@ -982,17 +989,17 @@ class plugin_form_ui extends e_admin_form_ui
 
 		if($var['plugin_version'] != $var['plugin_version_file'] && $var['plugin_installflag'])
 		{
-			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&id={$var['plugin_path']}' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version_file'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
+			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&path={$var['plugin_path']}' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version_file'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
 		}
 
 		if($var['plugin_installflag'] && e_DEBUG == true)
 		{
-			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=repair&id={$var['plugin_path']}' title='" . LAN_REPAIR_PLUGIN_SETTINGS . "'> " . ADMIN_REPAIRPLUGIN_ICON . "</a>";
+			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=repair&path={$var['plugin_path']}' title='" . LAN_REPAIR_PLUGIN_SETTINGS . "'> " . ADMIN_REPAIRPLUGIN_ICON . "</a>";
 		}
 
 		if($var['plugin_installflag'] && is_dir($_path . ".git"))
 		{
-			$text .= "<a class='plugin-manager btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=pull&id={$var['plugin_path']}' title='" . LAN_SYNC_WITH_GIT_REPO . "'> " . ADMIN_GITSYNC_ICON . "</a>";
+			$text .= "<a class='plugin-manager btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=pull&path={$var['plugin_path']}' title='" . LAN_SYNC_WITH_GIT_REPO . "'> " . ADMIN_GITSYNC_ICON . "</a>";
 		}
 
 
