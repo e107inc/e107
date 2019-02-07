@@ -9,7 +9,7 @@ e107 is a free (open-source) content management system which allows you to easil
 
    #### Minimum
 
-   * A Web-Server (Apache or Microsoft IIS) running PHP v5.4 or higher and MySQL 4.x or 5.x.
+   * A Web-Server (Apache or Microsoft IIS) running PHP v5.6 or higher and MySQL 4.x or 5.x.
    * FTP access to your webserver and an FTP program such as Filezilla
    * Username/Password to your MySQL Database
 
