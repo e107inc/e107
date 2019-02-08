@@ -245,7 +245,7 @@
 */
 		public function testInsert()
 		{
-			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test insert'));
+			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Insert test'));
 			$this->assertEquals(1, $actual, 'Unable to add record to table #tmp');
 		}
 /*
@@ -286,17 +286,18 @@
 			$db->delete('tmp');
 
 			// Test 1
-			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 1', 'WHERE' => 'tmp_ip="127.0.0.1"'));
+			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Update test 1', 'WHERE' => 'tmp_ip="127.0.0.1"'));
 			$this->assertEmpty($expected, "Test 1 update() failed (not empty {$expected})");
 
+			$actual = 1;
 			// Test 2
-			$actual = $db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
-			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
-			$this->assertEquals(1, $expected, "Test 2 update() failed ({$actual} != {$expected}");
+			$db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
+			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Update test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
+			$this->assertEquals($actual, $expected, "Test 2 update() failed ({$actual} != {$expected}");
 
 			// Test 3
-			$expected = $db->update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
-			$this->assertEquals(1, $expected, "Test 3 update() failed ({$actual} != {$expected}");
+			$expected = $db->update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "Update test 3" WHERE tmp_ip="127.0.0.1"');
+			$this->assertEquals($actual, $expected, "Test 3 update() failed ({$actual} != {$expected}");
 
 		}
 /*
@@ -357,10 +358,29 @@
 */
 		public function testDelete()
 		{
-			$expected = $this->db->count('tmp');
+			// make sure the table is empty
 			$actual = $this->db->delete('tmp');
-			$this->assertEquals($expected, $actual, 'Unable to delete all records.');
+			$this->assertNotEmpty($actual, 'Unable to empty the table.');
 
+			// Insert some records
+			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Delete test 1'));
+			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => time(), 'tmp_info' => 'Delete test 2'));
+			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.3', 'tmp_time' => time(), 'tmp_info' => 'Delete test 3'));
+
+
+			// Delete 1 record
+			$expected = 1;
+			$actual = $this->db->delete('tmp', 'tmp_ip="127.0.0.1"');
+			$this->assertEquals($expected, $actual, 'Unable to delete 1 records.');
+
+			// Delete all remaining (2) records
+			$expected = 2;
+			$actual = $this->db->delete('tmp');
+			$this->assertEquals($expected, $actual, 'Unable to delete the remaining records.');
+
+			// Delete from an table that doesn't exist
+			$actual = $this->db->delete('tmp_unknown_table');
+			$this->assertFalse($actual, 'Trying to delete records from an invalid table should return FALSE!');
 		}
 /*
 		public function testDb_Delete()
