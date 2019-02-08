@@ -245,9 +245,11 @@
 */
 		public function testInsert()
 		{
+			// Test 1
 			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => '12345435', 'tmp_info' => 'Insert test'));
 			$this->assertEquals(1, $actual, 'Unable to add record to table #tmp');
 
+			// Test 2 Verify content
 			$expected = array(
 				'tmp_ip' => '127.0.0.1',
 				'tmp_time' => '12345435',
@@ -300,12 +302,21 @@
 			$actual = 1;
 			// Test 2
 			$db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
-			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Update test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
+			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => '1234567', 'tmp_info' => 'Update test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
 			$this->assertEquals($expected, $actual, "Test 2 update() failed ({$actual} != {$expected}");
 
 			// Test 3
 			$expected = $db->update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "Update test 3" WHERE tmp_ip="127.0.0.1"');
 			$this->assertEquals($expected, $actual, "Test 3 update() failed ({$actual} != {$expected}");
+
+			// Test 4: Verify content
+			$expected = array(
+				'tmp_ip' => '127.0.0.1',
+				'tmp_time' => '1234568',
+				'tmp_info' => 'Update test 3'
+			);
+			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1"');
+			$this->assertEquals($expected, $actual, 'Test 4: Updated content doesn\'t match the retrieved content');
 
 		}
 /*
@@ -375,6 +386,10 @@
 			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => time(), 'tmp_info' => 'Delete test 2'));
 			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.3', 'tmp_time' => time(), 'tmp_info' => 'Delete test 3'));
 
+			// Count records
+			$expected = 3;
+			$actual = $this->db->count('tmp');
+			$this->assertEquals($expected, $actual, "Number of inserted records is wrong ({$expected} != {$actual}");
 
 			// Delete 1 record
 			$expected = 1;
