@@ -1424,8 +1424,8 @@ class user_class_admin extends user_class
 				  case 'UPDATE' :
 					$this->save_edited_class($tree);
 					break;
-				  default :
-					continue;
+
+
 				}
 			}
 		}
