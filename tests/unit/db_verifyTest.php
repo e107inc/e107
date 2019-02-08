@@ -628,21 +628,12 @@
 
 				$actual = $this->dbv->getSqlFileTables($sql);
 
-				if($table == 'test_json')
-				{
-					print_r($actual);
-					print_r($this->dbv->results);
-				}
-
 				$this->assertEquals($actual['tables'], $expected[$table]['tables'], "Table ".$table." could not be parsed.");
 
 				foreach($expected[$table]['data'] as $k=>$data)
 				{
 					$data = str_replace("\t", '', $data);
 					$this->assertEquals($actual['data'][$k], $data, "Table ".$table."['data'][".$k."] did not match.");
-
-					$fields	= $this->dbv->getFields($actual['data'][$k]);
-					print_r($fields);
 				}
 
 				$this->assertEquals($actual['engine'], $expected[$table]['engine']);
