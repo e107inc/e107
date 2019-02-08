@@ -416,7 +416,7 @@
 								if(file_exists($baseDir . $file))
 								{
 									$thumb = $tp->thumbUrl($baseDir . $file, $thumbAtt, true);
-									$full = $tp->thumbUrl($baseDir . $file, 'w=1000&x=1', true);
+									$full = $tp->thumbUrl($baseDir . $file, 'w=0&x=1', true);
 
 									//TODO Use jQuery zoom instead.
 
@@ -1186,7 +1186,7 @@
 
 		function sc_quickreply()
 		{
-			global $forum, $forum_quickreply;
+			global $forum, $forum_quickreply, $thread;
 
 			if($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 			{
