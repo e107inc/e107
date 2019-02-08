@@ -91,5 +91,16 @@
 		}
 
 
+		function db_getList($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false)
+		{
+			return $this->rows($fields, $amount, $maximum, $ordermode);
+		}
+
+
+		function db_IsLang($table, $multiple=false)
+		{
+			$this->hasLanguage($table, $multiple);
+		}
+
 
 	}
