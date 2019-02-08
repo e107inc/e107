@@ -245,8 +245,16 @@
 */
 		public function testInsert()
 		{
-			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Insert test'));
+			$actual = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => '12345435', 'tmp_info' => 'Insert test'));
 			$this->assertEquals(1, $actual, 'Unable to add record to table #tmp');
+
+			$expected = array(
+				'tmp_ip' => '127.0.0.1',
+				'tmp_time' => '12345435',
+				'tmp_info' => 'Insert test'
+			);
+			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1" AND tmp_time = 12345435');
+			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
 		}
 /*
 		public function testLastInsertId()
@@ -293,11 +301,11 @@
 			// Test 2
 			$db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$expected = $db->update('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Update test 2a', 'WHERE' => 'tmp_ip="127.0.0.1"'));
-			$this->assertEquals($actual, $expected, "Test 2 update() failed ({$actual} != {$expected}");
+			$this->assertEquals($expected, $actual, "Test 2 update() failed ({$actual} != {$expected}");
 
 			// Test 3
 			$expected = $db->update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "Update test 3" WHERE tmp_ip="127.0.0.1"');
-			$this->assertEquals($actual, $expected, "Test 3 update() failed ({$actual} != {$expected}");
+			$this->assertEquals($expected, $actual, "Test 3 update() failed ({$actual} != {$expected}");
 
 		}
 /*
