@@ -85,6 +85,10 @@
 		}
 
 
+		function db_Field($table, $fieldid = "", $key = "", $retinfo = false)
+		{
+			return $this->field($table, $fieldid, $key, $retinfo);
+		}
 
 
 
