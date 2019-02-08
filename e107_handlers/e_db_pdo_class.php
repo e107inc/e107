@@ -2131,12 +2131,12 @@ class e_db_pdo implements e_db
 		return $ret;
 	}
 
-
+/*
 	function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
 	{
 		return $this->field($table,$fieldid,$key, $retinfo);
 	}
-
+*/
 
 	function columnCount()
 	{
