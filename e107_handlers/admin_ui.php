@@ -135,7 +135,7 @@ class e_admin_request
 		// Set current id
 		if(isset($this->_request_qry[$this->_id_key]))
 		{
-			$this->_id = preg_replace('/[^\w-:.]/', '', $this->_request_qry[$this->_id_key]);
+			$this->_id = preg_replace('/[^\w\-:\.]/', '', $this->_request_qry[$this->_id_key]);
 		}
 
 		$this->_posted_qry =& $_POST; //raw?
