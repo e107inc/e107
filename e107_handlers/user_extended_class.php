@@ -66,7 +66,7 @@ class e107_user_extended
 		define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
 		define('EUF_CHECKBOX',10);
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
-		define('EUF_ADDON', 12);  // defined within e_user.php addon
+		define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
 		define('EUF_COUNTRY', 13);  // $frm->country()
 
 		$this->typeArray = array(
@@ -567,6 +567,10 @@ class e107_user_extended
 		 
 		case EUF_CATEGORY:
 			return '';
+		 break;
+
+		 case EUF_ADDON:
+		    return 'JSON';
 		 break;
 		 
 		default:
