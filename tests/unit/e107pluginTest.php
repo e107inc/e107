@@ -23,7 +23,7 @@
 			}
 			catch (Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't e107_plugi object");
+				$this->assertTrue(false, "Couldn't e107_plugin object");
 			}
 
 		}
