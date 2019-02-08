@@ -378,8 +378,15 @@
 		public function testDelete()
 		{
 			// make sure the table is empty
+			// table may contain data, so number of deleted records is unknown,
+			// but should always be >= 0
 			$actual = $this->db->delete('tmp');
-			$this->assertNotEmpty($actual, 'Unable to empty the table.');
+			$this->assertGreaterThanOrEqual(0, $actual, 'Unable to empty the table.');
+
+			// Check if the returned value is equal to the number of affected records
+			$expected = $actual;
+			$actual = $this->db->rowCount();
+			$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
 
 			// Insert some records
 			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Delete test 1'));
@@ -396,10 +403,20 @@
 			$actual = $this->db->delete('tmp', 'tmp_ip="127.0.0.1"');
 			$this->assertEquals($expected, $actual, 'Unable to delete 1 records.');
 
+			// Check if the returned value is equal to the number of affected records
+			$expected = $actual;
+			$actual = $this->db->rowCount();
+			$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
+
 			// Delete all remaining (2) records
 			$expected = 2;
 			$actual = $this->db->delete('tmp');
 			$this->assertEquals($expected, $actual, 'Unable to delete the remaining records.');
+
+			// Check if the returned value is equal to the number of affected records
+			$expected = $actual;
+			$actual = $this->db->rowCount();
+			$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
 
 			// Delete from an table that doesn't exist
 			$actual = $this->db->delete('tmp_unknown_table');
