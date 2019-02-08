@@ -253,13 +253,26 @@ $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
+/** @note compact() causes issues with PHP7.3 */
+$dirPaths = array('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
+$e107_paths = array();
+foreach($dirPaths as $v)
+{
+	if(isset($$v))
+	{
+		$e107_paths[$v] = $$v;
+	}
+}
 
-
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
-$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
+// $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
+$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+if(isset($mySQLport))
+{
+	$sql_info['mySQLport'] = $mySQLport;
+}
 $e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
-
 e107::getSingleton('eIPHandler');			// This auto-handles bans etc
+unset($dirPaths,$sql_info,$e107_paths);
 
 /**
  * NEW - system security levels
@@ -874,6 +887,7 @@ if (!function_exists('checkvalidtheme'))
 					}
 				}
 				closedir($handle);
+				return null;
 			}
 
 			$e107tmp_theme = 'bootstrap3'; // set to bootstrap3 by default.  search_validtheme();
@@ -940,7 +954,9 @@ if (!class_exists('e107table', false))
 
 		/**
 		 * Set a unique id for use in tablestyle() method/function
+		 *
 		 * @param string $id
+		 * @return e107table
 		 */
 		public function setUniqueId($id)
 		{
@@ -962,6 +978,8 @@ if (!class_exists('e107table', false))
 			}
 
 			$this->content[$type] = (string) $val;
+
+			return $this;
 		}
 
 
@@ -1002,12 +1020,11 @@ if (!class_exists('e107table', false))
 		}
 
 
-
 		/**
-		 * @param $caption string caption text
-		 * @param $text string
-		 * @param $mode unique identifier
-		 * @param $return boolean : return the html instead of echo it. 
+		 * @param string $caption caption text
+		 * @param string $text
+		 * @param string $mode unique identifier
+		 * @param boolean $return  : return the html instead of echo it.
 		 * @return null
 		 */
 		public function tablerender($caption, $text, $mode = 'default', $return = false)
@@ -1120,7 +1137,7 @@ e107::getIPHandler()->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout')
 {
-	if(force_userupdate($currentUser))
+	if(isset($currentUser) && force_userupdate($currentUser))
 	{
 	  header('Location: '.SITEURL.'usersettings.php?update');
 	  exit();
@@ -1165,7 +1182,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	{
 		if (check_class(varset($pref['user_audit_class'],''))) // Need to note in user audit trail
 		{
-			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, '', USERID, USERNAME);
+			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, null, USERID, USERNAME);
 		}
 	}
 
@@ -1479,7 +1496,14 @@ else
 	define('ANON', false);
 }
 
-if (empty($pref['newsposts']) ? define('ITEMVIEW', 15) : define('ITEMVIEW', $pref['newsposts']));
+if(empty($pref['newsposts']))
+{
+	define('ITEMVIEW', 15);
+}
+else
+{
+	define('ITEMVIEW', $pref['newsposts']);
+}
 
 if ($pref['antiflood1'] == 1 && !defined('FLOODPROTECT'))
 {
@@ -1575,12 +1599,14 @@ function check_email($email)
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
-/**
- * @param $var is a single class number or name, or a comma-separated list of the same.
- * @param $userclass a custom list of userclasses or leave blank for the current user's permissions. 
-* If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
-* Otherwise returns TRUE if the user is in any of the classes listed in $var.
- */
+	/**
+	 * @param mixed $var is a single class number or name, or a comma-separated list of the same.
+	 * @param mixed $userclass a custom list of userclasses or leave blank for the current user's permissions.
+	 * If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
+	 * Otherwise returns TRUE if the user is in any of the classes listed in $var.
+	 * @param int   $uid
+	 * @return bool
+	 */
 function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
 	$e107 = e107::getInstance();
@@ -1614,7 +1640,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 		$v = trim($v);
 		$invert = FALSE;
 		//value to test is a userclass name (or garbage, of course), go get the id
-		if( ! is_numeric($v))
+		if(!is_numeric($v))
 		{
 			if (substr($v, 0, 1) == '-')
 			{
@@ -1650,14 +1676,18 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 }
 
 
-
+/**
+ * @param                   $arg
+ * @param bool|mixed|string $ap
+ * @return bool
+ */
 function getperms($arg, $ap = ADMINPERMS)
 {
 	// $ap = "4"; // Just for testing.
 
 	if(!ADMIN || trim($ap) === '')
 	{
-		return FALSE;
+		return false;
 	}
 
 	if($arg === 0) // Common-error avoidance with getperms(0)
@@ -1667,7 +1697,7 @@ function getperms($arg, $ap = ADMINPERMS)
 
 	if ($ap === '0' || $ap === '0.') // BC fix.
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
@@ -1686,7 +1716,7 @@ function getperms($arg, $ap = ADMINPERMS)
 
 	if(in_array($arg,$ap_array,FALSE))
 	{
-		return TRUE;
+		return true;
 	}
     elseif(strpos($arg, "|")) // check for multiple perms - separated by '|'.
 	{
@@ -1695,13 +1725,13 @@ function getperms($arg, $ap = ADMINPERMS)
 		{
 		   	if(in_array($val,$ap_array))
 			{
-				return TRUE;
+				return true;
 			}
 		}
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 }
 
@@ -1709,6 +1739,8 @@ function getperms($arg, $ap = ADMINPERMS)
  * @deprecated
  * Get the user data from user and user_extended tables
  * SO MUCH DEPRECATED! Use e107::user($uid);
+ * @param  int $uid
+ * @param string $extra
  * @return array
  */
 function get_user_data($uid, $extra = '')
@@ -1739,6 +1771,10 @@ function get_user_data($uid, $extra = '')
 /**
  * @deprecated
  * @example Use instead: e107::getConfig(alias)->->setPref($array)->save();  Not to be used for saving plugin or theme prefs!
+ * @param string    $table
+ * @param int|mixed $uid
+ * @param string    $row_val
+ * @return bool|int|string
  */
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
@@ -2041,7 +2077,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
    				->remove('sitetheme')
    				->remove('sitetheme_custompages')
    				->remove('sitetheme_deflayout')
-   				->save(false);
+   				->save();
 		}
 
 
@@ -2067,12 +2103,13 @@ $sql->db_Mark_Time('(After Go online)');
 
 /**
  * Set Cookie
- * @param string $name
- * @param string $value
+ *
+ * @param string  $name
+ * @param string  $value
  * @param integer $expire seconds
- * @param string $path
- * @param string $domain
- * @param boolean $secure
+ * @param string  $path
+ * @param string  $domain
+ * @param int     $secure
  * @return void
  */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
@@ -2213,7 +2250,7 @@ function class_list($uid = '')
  * @Deprecated  by e107::lan();
  * @param string $path
  * @param boolean $force [optional] Please use the default
- * @return void
+ * @return bool
  */
 function include_lan($path, $force = false)
 {
@@ -2323,6 +2360,7 @@ class error_handler
 	protected $xdebug = false;
 	protected $docroot = '';
 	protected $label = array();
+	protected $color = null;
 
 	function __construct()
 	{
@@ -2363,6 +2401,14 @@ class error_handler
 		}
 	}
 
+	/**
+	 * @param $type
+	 * @param $message
+	 * @param $file
+	 * @param $line
+	 * @param $context
+	 * @return bool
+	 */
 	function handle_error($type, $message, $file, $line, $context) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
 
@@ -2425,6 +2471,8 @@ class error_handler
 				$error['trace'] = $backtrace;
 				$this->errors[] = $error;
 			}
+			break;
+
 			default:
 			return true;
 			break;
@@ -2502,6 +2550,10 @@ class error_handler
 		return ($ret) ? "<table class='table table-condensed fborder'>\n".$ret."</table>" : FALSE;
 	}
 
+	/**
+	 * @param $information
+	 * @param $level
+	 */
 	function trigger_error($information, $level)
 	{
 		trigger_error($information);
@@ -2644,8 +2696,11 @@ class e_http_header
 
 		echo $text;
 		
-	}			
+	}
 
+	/**
+	 * @param $header
+	 */
 	private function unsetHeader($header)
 	{
 		header_remove($header);
