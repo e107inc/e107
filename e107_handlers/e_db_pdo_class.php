@@ -666,7 +666,7 @@ class e_db_pdo implements e_db
 	{
 		global $db_mySQLQueryCount;
 
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 
 		$this->mySQLcurTable = $table;
 
@@ -711,15 +711,7 @@ class e_db_pdo implements e_db
 		}
 	}
 
-	/**
-	 * select() alias
-	 *
-	 * @deprecated
-	 *//*
-	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->select($table, $fields, $arg, $mode !== 'default', $debug, $log_type, $log_remark);
-	}*/
+
 
 	/**
 	 * @param string $tableName - Name of table to access, without any language or general DB prefix
@@ -737,7 +729,7 @@ class e_db_pdo implements e_db
 	 */
 	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($tableName);
+		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
 		$DUPEKEY_UPDATE = false;
@@ -940,15 +932,7 @@ class e_db_pdo implements e_db
 
 
 
-	/**
-	 * insert() alias
-	 * @deprecated
-	 */
-	 /*
-	function db_Insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->insert($tableName, $arg, $debug, $log_type, $log_remark);
-	}*/
+
 
 	/**
 	 * @param string $table
@@ -970,14 +954,7 @@ class e_db_pdo implements e_db
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
 
-	/**
-	 * replace() alias
-	 * @deprecated
-	 *//*
-	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->replace($table, $arg, $debug, $log_type, $log_remark);
-	}*/
+
 
 
 	private function _prepareUpdateArg($tableName, $arg)
@@ -1060,7 +1037,7 @@ class e_db_pdo implements e_db
 	*/
 	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($tableName);
+		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1100,14 +1077,7 @@ class e_db_pdo implements e_db
 		}
 	}
 
-	/**
-	 * update() alias
-	 * @deprecated
-	 *//*
-	function db_Update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->update($tableName, $arg, $debug, $log_type, $log_remark);
-	}*/
+
 
 	function _getTypes(&$arg)
 	{
@@ -1316,7 +1286,7 @@ class e_db_pdo implements e_db
 	*/
 	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-	  $table = $this->db_IsLang($table);
+	  $table = $this->hasLanguage($table);
 	  $this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1440,14 +1410,7 @@ class e_db_pdo implements e_db
 		return FALSE;				// Failure
 	}
 
-	/**
-	 * fetch() alias
-	 * @deprecated
-	 *//*
-	function db_Fetch($type = null)
-	{
-		return $this->fetch($type);
-	}*/
+
 
 	/**
 	 * @param string $table
@@ -1466,7 +1429,7 @@ class e_db_pdo implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
 		{
@@ -1535,13 +1498,7 @@ class e_db_pdo implements e_db
 	}
 
 
-	/**
-	 * BC Alias of close()
-	 *//*
-	function db_Close()
-	{
-		$this->close();
-	}*/
+
 
 
 	/**
@@ -1557,7 +1514,7 @@ class e_db_pdo implements e_db
 	*/
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1683,18 +1640,11 @@ class e_db_pdo implements e_db
 		}
 	}
 
-	/**
-	 * gen() alias
-	 * @deprecated
-	 *//*
-	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->gen($query, $debug, $log_type, $log_remark);
-	}*/
+
 
 	function ml_check($matches)
 	{
-		$table = $this->db_IsLang($matches[1]);
+		$table = $this->hasLanguage($matches[1]);
 		if($this->tabset == false)
 		{
 			$this->mySQLcurTable = $table;
@@ -1754,7 +1704,7 @@ class e_db_pdo implements e_db
 	* @access private
 	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
-	function db_IsLang($table, $multiple=false)
+	function hasLanguage($table, $multiple=false)
 	{
 		//When running a multi-language site with english included. English must be the main site language.
 		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
@@ -1819,15 +1769,6 @@ class e_db_pdo implements e_db
 	// -------------------------
 
 
-	}
-
-
-	/**
-	 * Deprecated alias of the rows() function below.
-	 */
-	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
-	{
-		return $this->rows($fields, $amount, $maximum, $ordermode);
 	}
 
 
@@ -2061,7 +2002,7 @@ class e_db_pdo implements e_db
 
      // Loop thru relevant language tables and replace each tablename within the query.
 
-        if($tablist = $this->db_IsLang($table, true))
+        if($tablist = $this->hasLanguage($table, true))
 		{
 			foreach($tablist as $key=>$tab)
 			{
@@ -2286,18 +2227,6 @@ class e_db_pdo implements e_db
 	}
 
 
-	/**
-	 * Legacy Alias of isTable();
-	 * @deprecated
-	 * @param $table
-	 * @param string $language
-	 * @return bool
-	 *//*
-	public function db_Table_exists($table,$language='')
-	{
-		return $this->isTable($table, $language);
-	}*/
-
 
 
 	/**
@@ -2418,22 +2347,15 @@ class e_db_pdo implements e_db
 		}
 	}
 
+
+
 	public function db_ResetTableList()
 	{
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
 	}
 
-	/**
-	 * Legacy Alias of tables
-	 * @deprecated
-	 * @param string $mode
-	 * @return array
-	 *//*
-	public function db_TableList($mode='all')
-	{
-		return $this->tables($mode);
-	}*/
+
 
 
 	/**
@@ -2852,7 +2774,7 @@ class e_db_pdo implements e_db
 			else
 			{		// Need to try and find a table definition
 				$searchArray = array(e_CORE.'sql/db_field_defs.php');
-				// e107::getPref() shouldn't be used inside db handler! See db_IsLang() comments
+				// e107::getPref() shouldn't be used inside db handler! See hasLanguage() comments
 				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
 				foreach ($sqlFiles as $p => $f)
 				{
