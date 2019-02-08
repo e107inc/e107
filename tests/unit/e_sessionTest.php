@@ -11,12 +11,44 @@
 
 	class e_sessionTest extends \Codeception\Test\Unit
 	{
-/*
-		public function testSetOption()
+		/** @var e_session  */
+		private $sess;
+
+		protected function _before()
 		{
+			try
+			{
+				$this->sess = $this->make('e_session');
+			}
+			catch (Exception $e)
+			{
+				$this->assertTrue(false, "Couldn't load e_session object");
+			}
 
 		}
 
+		public function testSetOption()
+		{
+			$opt = array(
+				'lifetime'	 => 3600 ,
+				'path'		 => '/',
+				'domain'	 => 'test.com',
+				'secure'	 => false,
+				'httponly'	 => true,
+				'_dummy'    => 'not here'
+			);
+
+			$this->sess->setOptions($opt);
+
+			$newOpt = $this->sess->getOptions();
+
+			unset($opt['_dummy']);
+
+			$this->assertEquals($opt,$newOpt);
+
+
+		}
+/*
 		public function testGetOption()
 		{
 
