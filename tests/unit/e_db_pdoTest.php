@@ -492,12 +492,13 @@
 		{
 
 		}
-
+*/
 		public function testDb_Field()
 		{
-
+			$result = $this->db->db_Field('plugin', 'plugin_path');
+			$this->assertTrue($result);
 		}
-
+/*
 		public function testColumnCount()
 		{
 
