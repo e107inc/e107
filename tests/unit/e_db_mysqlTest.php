@@ -12,6 +12,8 @@
 	class e_db_mysqlTest extends \Codeception\Test\Unit
 	{
 
+		protected $dbConfig = array();
+
 		/** @var e_db_mysql  */
 		protected $db;
 
@@ -27,7 +29,29 @@
 			}
 
 			$this->db->__construct();
+			$this->loadConfig();
 
+		}
+
+		private function loadConfig()
+		{
+			/** @var Helper\DelayedDb $db */
+			try
+			{
+				$db = $this->getModule('\Helper\DelayedDb');
+			}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load eHelper\DelayedDb object");
+			}
+
+			$config = array();
+			$config['mySQLserver']      = $db->_getDbHostname();
+			$config['mySQLuser']        = $db->_getDbUsername();
+			$config['mySQLpassword']    = $db->_getDbPassword();
+			$config['mySQLdefaultdb']   = $db->_getDbName();
+
+			$this->dbConfig = $config;
 		}
 
 		public function testGetPDO()
@@ -35,7 +59,7 @@
 			$result = $this->db->getPDO();
 			$this->assertTrue($result);
 		}
-/*
+
 		public function testGetMode()
 		{
 
@@ -43,28 +67,18 @@
 
 		public function testDb_Connect()
 		{
-
-		}*/
+			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
+			$this->assertTrue($result);
+		}
 
 		/**
 		 * TODO
 		 */
 		public function testConnect()
 		{
-			try
-			{
-				$class = $this->make('e_db_mysql');
+			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($result);
 			}
-			catch (Exception $e)
-			{
-				$this->assertTrue(false, "Couldn't load e_db_mysql object");
-			}
-
-			if(is_object($class))
-			{
-				$this->assertTrue(true);
-			}
-		}
 
 		/**
 		 * Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
@@ -191,9 +205,22 @@
 
 		public function testDatabase()
 		{
+			$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$result = $this->db->database($this->dbConfig['mySQLdefaultdb']);
+
+			$this->assertTrue($result);
 
 		}
 
+		public function testGetCharSet()
+		{
+			$this->db->setCharset();
+			$result = $this->db->getCharset();
+
+			$this->assertEquals('utf8', $result);
+		}
+
+/*
 		public function testGetConfig()
 		{
 
@@ -208,12 +235,27 @@
 		{
 
 		}
-
+*/
 		public function testDb_Write_log()
 		{
+			$log_type = 127;
+			$remark =  'e_db_pdoTest';
+			$query = 'query goes here';
 
+			$this->db->db_Write_log($log_type, $remark, $query);
+
+			$data = $this->db->retrieve('dblog','dblog_title, dblog_user_id', "dblog_type = ".$log_type. " AND dblog_title = '".$remark ."' ");
+
+			$expected = array (
+			  'dblog_title' => 'e_db_pdoTest',
+			  'dblog_user_id' => '1',
+			);
+
+			$this->assertEquals($data, $expected);
 		}
-*/
+
+
+
 		public function testDb_Query()
 		{
 
@@ -273,12 +315,13 @@
 		{
 
 		}
-
+*/
 		public function testDb_Insert()
 		{
-
+			$actual = $this->db->db_Insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
+			$this->assertTrue($actual);
 		}
-
+/*
 		public function testReplace()
 		{
 
@@ -322,9 +365,12 @@
 /*
 		public function testDb_Update()
 		{
-
+			$this->db->delete('tmp', "tmp_ip = '127.0.0.1'");
+			$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
+			$actual = $this->db->db_Update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
+			$this->assertEquals(1,$actual);
 		}
-
+/*
 		public function test_getTypes()
 		{
 
@@ -334,12 +380,34 @@
 		{
 
 		}
-
+*/
 		public function testDb_UpdateArray()
 		{
 
-		}
+			$array = array(
+				'user_comments' => 28,
+			);
 
+			$result = $this->db->db_UpdateArray('user', $array, ' WHERE user_id = 1');
+
+			$this->assertEquals(1,$result);
+
+			$actual = $this->db->retrieve('user', 'user_comments', 'user_id = 1');
+
+			$expected = '28';
+
+			$this->assertEquals($expected,$actual);
+
+			$reset = array(
+				'user_comments' => 0,
+				'WHERE'=> "user_id = 1"
+			);
+
+			$this->db->update('user', $reset);
+
+
+		}
+/*
 		public function testTruncate()
 		{
 
@@ -359,12 +427,13 @@
 		{
 
 		}
-
+*/
 		public function testDb_Count()
 		{
-
+			$result = $this->db->db_Count('user','(*)', 'user_id = 1');
+			$this->assertEquals(1,$result);
 		}
-
+/*
 		public function testClose()
 		{
 
@@ -425,9 +494,11 @@
 /*
 		public function testDb_Delete()
 		{
-
+			$expected = $this->db->count('tmp');
+			$actual = $this->db->db_Delete('tmp');
+			$this->assertEquals($expected, $actual, 'Unable to delete all records.');
 		}
-
+/*
 		public function testDb_Rows()
 		{
 
@@ -492,22 +563,24 @@
 		{
 
 		}
-
+*/
 		public function testDb_Field()
 		{
-
+			$result = $this->db->db_Field('plugin', 'plugin_path');
+			$this->assertTrue($result);
 		}
-
+/*
 		public function testColumnCount()
 		{
 
 		}
-
+*/
 		public function testField()
 		{
-
+			$result = $this->db->field('plugin', 'plugin_path');
+			$this->assertTrue($result);
 		}
-
+/*
 		public function testEscape()
 		{
 
