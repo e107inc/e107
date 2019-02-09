@@ -246,10 +246,7 @@
 
 		}
 
-		public function testDb_Show_Performance()
-		{
 
-		}
 */
 		public function testDb_Write_log()
 		{
@@ -298,32 +295,49 @@
 
 
 			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', ),);
-			$result = $result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
+			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
 
-			$result = $result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1", true);
+			$result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1", true);
 			$this->assertEquals($expected,$result);
 
 
 			$expected = array();
-			$result = $result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
+			$result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
 
 
 		}
-/*
+
 		public function testSelect()
 		{
+
+			$result = $this->db->select('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals(1, $result);
+
+			$result = $this->db->select('user', 'user_id, user_name', 'user_id = 999');
+			$this->assertEquals(0, $result);
+
+			$result = $this->db->select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
+			$this->assertEquals(1, $result);
+
 
 		}
 
 		public function testDb_Select()
 		{
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals(1, $result);
 
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'user_id = 999');
+			$this->assertEquals(0, $result);
+
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
+			$this->assertEquals(1, $result);
 		}
-*/
+
 		public function testInsert()
 		{
 			// Test 1
@@ -399,6 +413,10 @@
 			);
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1"');
 			$this->assertEquals($expected, $actual, 'Test 4: Updated content doesn\'t match the retrieved content');
+
+			// Test for Error response.
+			$actual = $this->db->update('tmp', 'tmp_ip = "127.0.0.0 WHERE tmp_ip = "125.123.123.13"');
+			$this->assertFalse($actual);
 
 		}
 /*
