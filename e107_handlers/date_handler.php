@@ -183,7 +183,7 @@ class e_date
 			break;
 			
 			case 'relative':
-				return $this->computeLapse($datestamp, time(), false, false, 'short') ;
+				return $this->computeLapse($datestamp, time(), false, true, 'short') ;
 			break;
 			
 			default:
@@ -649,6 +649,7 @@ class e_date
 
 			if($format === 'short') { break; }
 		}
+
 
 		if(strpos($ret[0],$secs) !== false)
 		{
