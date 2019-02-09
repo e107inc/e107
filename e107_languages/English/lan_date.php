@@ -21,5 +21,7 @@ define("LANDT_09", "sec");
 define("LANDT_09s", "secs");
 define("LANDT_AGO", "ago");
 define("LANDT_IN", "in");
+define("LANDT_XAGO", "[x] ago");
+define("LANDT_INX", "in [x]");
 
 define("LANDT_10", "Just now");
