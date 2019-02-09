@@ -14,6 +14,7 @@
 
 		/** @var e_db_pdo  */
 		protected $db;
+		protected $dbConfig = array();
 
 		protected function _before()
 		{
@@ -29,8 +30,31 @@
 				$this->fail("Couldn't load e_db_pdo object");
 			}
 
-			$this->db->__construct();
 
+			$this->db->__construct();
+			$this->loadConfig();
+
+		}
+
+		private function loadConfig()
+		{
+			/** @var Helper\DelayedDb $db */
+			try
+			{
+				$db = $this->getModule('\Helper\DelayedDb');
+			}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load eHelper\DelayedDb object");
+			}
+
+			$config = array();
+			$config['mySQLserver']      = $db->_getDbHostname();
+			$config['mySQLuser']        = $db->_getDbUsername();
+			$config['mySQLpassword']    = $db->_getDbPassword();
+			$config['mySQLdefaultdb']   = $db->_getDbName();
+
+			$this->dbConfig = $config;
 		}
 
 		public function testGetPDO()
@@ -38,24 +62,25 @@
 			$result = $this->db->getPDO();
 			$this->assertTrue($result);
 		}
-/*
+
 		public function testGetMode()
 		{
-
+			
 		}
 
 		public function testDb_Connect()
 		{
-
-		}*/
+			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
+			$this->assertTrue($result);
+		}
 
 		/**
 		 * TODO
 		 */
 		public function testConnect()
 		{
-
-			// $this->db->connect();
+			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($result);
 		}
 
 		/**
@@ -174,9 +199,9 @@
 
 
 		}
+*/
 
 
-/*
 		public function testGetServerInfo()
 		{
 
@@ -184,9 +209,22 @@
 
 		public function testDatabase()
 		{
+			$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$result = $this->db->database($this->dbConfig['mySQLdefaultdb']);
+
+			$this->assertTrue($result);
 
 		}
 
+		public function testGetCharSet()
+		{
+			$this->db->setCharset();
+			$result = $this->db->getCharset();
+
+			$this->assertEquals('utf8', $result);
+		}
+
+/*
 		public function testGetConfig()
 		{
 
@@ -201,12 +239,27 @@
 		{
 
 		}
-
+*/
 		public function testDb_Write_log()
 		{
+			$log_type = 127;
+			$remark =  'e_db_pdoTest';
+			$query = 'query goes here';
 
+			$this->db->db_Write_log($log_type, $remark, $query);
+
+			$data = $this->db->retrieve('dblog','dblog_title, dblog_user_id', "dblog_type = ".$log_type. " AND dblog_title = '".$remark ."' ");
+
+			$expected = array (
+			  'dblog_title' => 'e_db_pdoTest',
+			  'dblog_user_id' => '1',
+			);
+
+			$this->assertEquals($data, $expected);
 		}
-*/
+
+
+
 		public function testDb_Query()
 		{
 
@@ -331,12 +384,34 @@
 		{
 
 		}
-
+*/
 		public function testDb_UpdateArray()
 		{
 
-		}
+			$array = array(
+				'user_comments' => 28,
+			);
 
+			$result = $this->db->db_UpdateArray('user', $array, ' WHERE user_id = 1');
+
+			$this->assertEquals(1,$result);
+
+			$actual = $this->db->retrieve('user', 'user_comments', 'user_id = 1');
+
+			$expected = '28';
+
+			$this->assertEquals($expected,$actual);
+
+			$reset = array(
+				'user_comments' => 0,
+				'WHERE'=> "user_id = 1"
+			);
+
+			$this->db->update('user', $reset);
+
+
+		}
+/*
 		public function testTruncate()
 		{
 
