@@ -214,6 +214,9 @@
 
 			$this->assertTrue($result);
 
+			$result = $this->db->database("missing_database");
+			$this->assertFalse($result);
+
 		}
 
 		public function testGetCharSet()
@@ -273,12 +276,36 @@
 
 		}
 
-/*
+
 		public function testRetrieve()
 		{
+			$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
+			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals($expected,$result);
+
+
+			$this->db->select('user', 'user_id, user_name', 'user_id = 1');
+			$result = $this->db->retrieve(null);
+			$this->assertEquals($expected,$result);
+
+
+			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', ),);
+			$result = $result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
+			$this->assertEquals($expected,$result);
+
+
+			$result = $result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1", true);
+			$this->assertEquals($expected,$result);
+
+
+			$expected = array();
+			$result = $result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
+			$this->assertEquals($expected,$result);
+
+
 
 		}
-
+/*
 		public function testSelect()
 		{
 
