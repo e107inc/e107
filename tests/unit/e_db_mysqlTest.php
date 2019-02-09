@@ -503,12 +503,12 @@
 		{
 
 		}
-
+*/
 		public function testDb_SetErrorReporting()
 		{
-
+			$this->db->db_SetErrorReporting(false);
 		}
-
+/*
 		public function testGen()
 		{
 

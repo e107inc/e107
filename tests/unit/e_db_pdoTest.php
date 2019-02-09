@@ -507,12 +507,13 @@
 		{
 
 		}
-
+*/
 		public function testDb_SetErrorReporting()
 		{
-
+			$this->db->db_SetErrorReporting(false);
+			// fixme - getErrorReporting.
 		}
-
+/*
 		public function testGen()
 		{
 
