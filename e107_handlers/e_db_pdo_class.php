@@ -122,7 +122,7 @@ class e_db_pdo implements e_db
 	 * @param string $newLink force a new link connection if TRUE. Default FALSE
 	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
 	 * @return null|string error code
-	 */
+	 *//*
 	public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
 	{
 		global $db_ConnectionID, $db_defaultPrefix;
@@ -137,31 +137,27 @@ class e_db_pdo implements e_db
 
 
 
-			if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
-			{
-				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
-			}
+		if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
+		{
+			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
+		}
 
-			try
-			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-
-			}
-			catch(PDOException $ex)
-			{
-				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
-
-				return 'e1';
-			}
-
-
+		try
+		{
+			$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		}
+		catch(PDOException $ex)
+		{
+			$this->mySQLlastErrText = $ex->getMessage();
+			$this->mySQLlastErrNum = $ex->getCode();
+			return 'e1';
+		}
 
 		$this->mySqlServerInfo = $this->mySQLaccess->query('select version()')->fetchColumn();		// We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
-		$this->db_Set_Charset();
+		$this->setCharset();
 		$this->setSQLMode();
 
 	//	if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
@@ -181,7 +177,7 @@ class e_db_pdo implements e_db
 
 		return true;
 	}
-
+*/
 
 
 
@@ -233,7 +229,7 @@ class e_db_pdo implements e_db
 		//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
 		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
 
-		$this->db_Set_Charset();
+		$this->setCharset();
 		$this->setSQLMode();
 
 
@@ -318,32 +314,37 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* @deprecated
-	* @return void
-	* @desc Enter description here...
-	* @access private
-	*/
-	function db_Show_Performance()
-	{
-	//	e107::getDebug()-Show_P
-	//	return $db_debug->Show_Performance();
-	}
-
-
-	/**
 	* @return void
 	* @desc add query to dblog table
 	* @access private
 	*/
-	function db_Write_log($log_type = '', $log_remark = '', $log_query = '')
+	function log($log_type = '', $log_remark = '', $log_query = '')
 	{
-		global $tp, $e107;
+		$tp = e107::getParser();
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
 		$ip = e107::getIPHandler()->getIP(FALSE);
 		$qry = $tp->toDB($log_query);
-		$this->insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
+
+		$insert = array(
+			// 'dblog_id'          => 0,
+			'dblog_datestamp'   => $time_sec,
+			'dblog_microtime'   => $time_usec,
+			'dblog_type'        => $log_type,
+			'dblog_eventcode'   => 'DBDEBUG',
+			'dblog_user_id'     => $uid,
+			'dblog_user_name'   => $userstring,
+			'dblog_ip'          => $ip,
+			'dblog_caller'      => '',
+			'dblog_title'       => $log_remark,
+			'dblog_remarks'     => $qry
+
+		);
+
+		$this->insert('dblog', $insert);
+
+		// $this->insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
 	}
 
 
@@ -378,7 +379,7 @@ class e_db_pdo implements e_db
 		}
 		if ($log_type != '')
 		{
-			$this->db_Write_log($log_type, $log_remark, $query);
+			$this->log($log_type, $log_remark, $query);
 		}
 
 		$this->provide_mySQLaccess();
@@ -1079,7 +1080,7 @@ class e_db_pdo implements e_db
 
 
 
-	function _getTypes(&$arg)
+	private function _getTypes(&$arg)
 	{
 		if(isset($arg['_FIELD_TYPES']))
 		{
@@ -1105,7 +1106,7 @@ class e_db_pdo implements e_db
 	*
 	* @access private
 	*/
-	function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
+	private function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
 	{
 		if($fieldValue === '_NULL_') { return 'NULL';}
 		$type = (isset($fieldTypes[$fieldKey]) ? $fieldTypes[$fieldKey] : $fieldTypes['_DEFAULT']);
@@ -1275,46 +1276,6 @@ class e_db_pdo implements e_db
 	}
 
 
-	/**
-	 *  @DEPRECATED
-	 	Similar to db_Update(), but splits the variables and the 'WHERE' clause.
-		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
-		$arg is usually a 'WHERE' clause
-		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be
-			converted simply by changing the function name - it will still work.
-		Deprecated routine - use db_Update() with array parameters
-	*/
-	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-	  $table = $this->hasLanguage($table);
-	  $this->mySQLcurTable = $table;
-
-		$this->provide_mySQLaccess();
-
-	  $new_data = '';
-	  if (is_array($vars))
-	  {
-		$spacer = '';
-		foreach ($vars as $fn => $fv)
-		{
-		  $new_data .= $spacer."`{$fn}`='{$fv}'";
-		  $spacer = ', ';
-		}
-		$vars = '';
-	  }
-	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
-	  {
-		$result = $this->mySQLresult->rowCount();
-		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
-		return $result;
-	  }
-	  else
-	  {
-	    $query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg;
-		$this->dbError("Error in deprecated db_UpdateArray method query:($query)");
-		return FALSE;
-	  }
-	}
 
 	/**
 	 * Truncate a table
@@ -1655,47 +1616,8 @@ class e_db_pdo implements e_db
 	}
 
 
-	/**
-	* @return unknown
-	* @param unknown $offset
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Fieldname($offset)
-	{
-		$result = @mysql_field_name($this->mySQLresult, $offset);
-		return $result;
-	}
-	*/
 
 
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/*
-	function db_Field_info()
-	{
-		$result = @mysql_fetch_field($this->mySQLresult);
-		return $result;
-	}
-	*/
-
-
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Num_fields()
-	{
-		$result = @mysql_num_fields($this->mySQLresult);
-		return $result;
-	}
-	*/
 
 
 	/**
@@ -1778,7 +1700,7 @@ class e_db_pdo implements e_db
 	* @param string fields to retrieve
 	* @desc returns fields as structured array
 	* @access public
-	* @return rows of the database as an array.
+	* @return array rows of the database as an array.
 	*/
 	function rows($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
 	{
@@ -1931,33 +1853,12 @@ class e_db_pdo implements e_db
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/**
 	* @return integer
 	* @desc returns total number of queries made so far
 	* @access public
 	*/
-	function db_QueryCount()
+	public function queryCount()
 	{
 		global $db_mySQLQueryCount;
 		return $db_mySQLQueryCount;
@@ -1970,7 +1871,7 @@ class e_db_pdo implements e_db
 	 * @param bool $debug
 	 * @return bool
 	 */
-	function db_Query_all($query, $debug=false)
+	public function db_Query_all($query, $debug=false)
 	{
         $error = "";
 
@@ -2037,7 +1938,7 @@ class e_db_pdo implements e_db
 	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
 	 *	@return array|boolean - FALSE on error, field list array on success
 	 */
-	function db_FieldList($table, $prefix = '', $retinfo = FALSE)
+	public function fields($table, $prefix = '', $retinfo = FALSE)
 	{
 		if(!$this->mySQLdefaultdb)
 		{
@@ -2348,8 +2249,10 @@ class e_db_pdo implements e_db
 	}
 
 
-
-	public function db_ResetTableList()
+	/**
+	 *
+	 */
+	public function resetTableList()
 	{
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
@@ -2418,7 +2321,7 @@ class e_db_pdo implements e_db
 	/**
 	 * Duplicate a Table Row in a table.
 	 */
-	function db_CopyRow($table,$fields = '*', $args='')
+	function copyRow($table,$fields = '*', $args='')
 	{
 		if(!$table || !$args )
 		{
@@ -2443,8 +2346,14 @@ class e_db_pdo implements e_db
 	}
 
 
-
-	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
+	/**
+	 * @param string $oldtable
+	 * @param string $newtable
+	 * @param bool $drop
+	 * @param bool $data
+	 * @return bool|int|PDOStatement|resource
+	 */
+	public function copyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{
 		$old = $this->mySQLPrefix.strtolower($oldtable);
 		$new = $this->mySQLPrefix.strtolower($newtable);
@@ -2641,14 +2550,12 @@ class e_db_pdo implements e_db
 
 		$this->mySQLerror = true;
 
-		if($this->mySQLlastErrNum == 0)
+		if($this->mySQLlastErrNum === 0)
 		{
 			return null;
 		}
 
-		return $this->mySQLlastErrText;
-
-
+		return $from." :: ".$this->mySQLlastErrText;
 
 
 	}
@@ -2687,57 +2594,23 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * Check if MySQL version is utf8 compatible and may be used as it accordingly to the user choice
+	 * Set Database charset to utf8
 	 *
-	 * @TODO Simplify when the conversion script will be available
-	 * @access public
-	 * @param string    MySQL charset may be forced in special circumstances
-	 *                  UTF-8 encoding and decoding is left to the progammer
-	 * @param bool      TRUE enter debug mode. default FALSE
-	 * @return string   hardcoded error message
+	 * @access private
 	 */
-	function db_Set_Charset($charset = '', $debug = FALSE)
+	public function setCharset($charset = 'utf8')
 	{
-		// Get the default user choice
-		global $mySQLcharset;
-		if (isset($mySQLcharset) && $mySQLcharset != 'utf8')
-		{
-			// Only utf8 is accepted
-			$mySQLcharset = '';
-		}
-		$charset = ($charset ? $charset : $mySQLcharset);
-		$message = (( ! $charset && $debug) ? 'Empty charset!' : '');
-		if($charset)
-		{
-			if (!$debug)
-			{
-			   $this->db_Query("SET NAMES `$charset`");
-			}
-			else
-			{
-				// Check if MySQL version is utf8 compatible
-				preg_match('/^(.*?)($|-)/', $this->mySqlServerInfo, $mysql_version);
-				if (version_compare($mysql_version[1], '4.1.2', '<'))
-				{
-					// reset utf8
-					//@TODO reset globally? $mySQLcharset = '';
-					$charset      = '';
-					$message      = 'MySQL version is not utf8 compatible!';
-				}
-				else
-				{
-					// Use db_Query() debug handler
-					$this->db_Query("SET NAMES `$charset`", NULL, '', $debug);
-				}
-			}
-		}
+		$this->db_Query("SET NAMES `$charset`");
 
-		// Save mySQLcharset for further uses within this connection
 		$this->mySQLcharset = $charset;
-		return $message;
+
 	}
 
 
+	public function getCharset()
+	{
+		return $this->mySQLcharset;
+	}
 
 	/**
 	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table

@@ -103,4 +103,58 @@
 		}
 
 
+		public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = false, $mySQLPrefix = MPREFIX)
+		{
+			if(!$this->connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink))
+			{
+				return 'e1';
+			}
+
+			if (!$this->database($mySQLdefaultdb,$mySQLPrefix))
+			{
+				return 'e2';
+			}
+
+			return true;
+		}
+
+		public function db_UpdateArray($table, $vars=array(), $arg='', $debug = false, $log_type = '', $log_remark = '')
+		{
+			$vars['WHERE'] = str_replace('WHERE', '', $arg);
+
+			return $this->update($table,$vars,$debug,$log_type,$log_remark);
+		}
+
+		public function db_CopyRow($table, $fields = '*', $args='')
+		{
+			return $this->copyRow($table,$fields,$args);
+		}
+
+		public function db_CopyTable($oldtable, $newtable, $drop = false, $data = false)
+		{
+			return $this->copyTable($oldtable, $newtable, $drop, $data);
+		}
+
+
+		public function db_FieldList($table, $prefix = '', $retinfo = FALSE)
+		{
+			return $this->fields($table, $prefix, $retinfo);
+		}
+
+		public function db_ResetTableList()
+		{
+			return $this->resetTableList();
+
+		}
+
+		public function db_QueryCount()
+		{
+			return $this->queryCount();
+		}
+
+		public function db_Write_log($log_type = '', $log_remark = '', $log_query = '')
+		{
+			$this->log($log_type, $log_remark, $log_query);
+		}
+
 	}
