@@ -72,14 +72,22 @@
 		{
 			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
 			$this->assertTrue($result);
+
+
 		}
 
 		/**
-		 * TODO
+		 * connect() test.
 		 */
 		public function testConnect()
 		{
+			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], "wrong Password");
+			$this->assertFalse($result);
+
 			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($result);
+
+			$result = $this->db->connect($this->dbConfig['mySQLserver'].":3306", $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
 			$this->assertTrue($result);
 		}
 
