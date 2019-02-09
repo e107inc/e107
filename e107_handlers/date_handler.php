@@ -657,19 +657,17 @@ class e_date
 			return $mode ? array($justNow) : $justNow;
 		}
 
+
 		if($older_date < $newer_date) // past
 		{
-
-            $replace = implode(", ", $ret);
-            $xago = e107::getParser()->lanVars(LANDT_XAGO, $replace);
-            return ($mode ? $ret : $xago);
+			return ($mode ? $ret : implode(", ", $ret) . " " . LANDT_AGO);
 		}
 		else // future
 		{
-            $replace = implode(", ", $ret);
-            $inx = e107::getParser()->lanVars(LANDT_INX, $replace);
-            return ($mode ? $ret : $inx);
+			return ($mode ? $ret : LANDT_IN ." ". implode(", ", $ret));
 		}
+
+
 
 	//	print_r($ret);
 
