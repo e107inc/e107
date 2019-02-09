@@ -437,7 +437,8 @@ class e_db_mysql
 	*/
 	function db_Write_log($log_type = '', $log_remark = '', $log_query = '')
 	{
-		global $tp, $e107;
+
+		$tp = e107::getParser();
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
