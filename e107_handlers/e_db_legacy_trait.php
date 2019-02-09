@@ -157,4 +157,9 @@
 			$this->log($log_type, $log_remark, $log_query);
 		}
 
+		public function db_SetErrorReporting($mode)
+		{
+			$this->setErrorReporting($mode);
+		}
+
 	}

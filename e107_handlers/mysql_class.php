@@ -1765,7 +1765,7 @@ class e_db_mysql
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_SetErrorReporting($mode)
+	public function db_SetErrorReporting($mode)
 	{
 		$this->mySQLerror = $mode;
 	}

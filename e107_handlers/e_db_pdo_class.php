@@ -26,8 +26,8 @@ class e_db_pdo implements e_db
 	/** @var PDO */
 	protected   $mySQLaccess;
 	public      $mySQLresult;
-	public      $mySQLrows;
-	public      $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	protected   $mySQLrows;
+	protected   $mySQLerror = false;			// Error reporting mode - TRUE shows messages
 
 	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
 	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
@@ -48,8 +48,8 @@ class e_db_pdo implements e_db
 
 	public      $total_results = false;			// Total number of results
 
-	private     $pdo = true; // using PDO or not.
-	private     $pdoBind= false;
+	private     $pdo            = true; // using PDO or not.
+	private     $pdoBind        = false;
 
 
 	/**
@@ -1539,7 +1539,7 @@ class e_db_pdo implements e_db
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_SetErrorReporting($mode)
+	function setErrorReporting($mode)
 	{
 		$this->mySQLerror = $mode;
 	}
