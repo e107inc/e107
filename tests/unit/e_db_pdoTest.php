@@ -683,7 +683,8 @@
 		{
 
 		}
-*//*
+*/
+
 		public function testBackup()
 		{
 			$opts = array(
@@ -702,28 +703,41 @@
 			$this->assertContains("CREATE TABLE `e107_core_media_cat`", $tmp);
 
 
-		}*/
+		}
 /*
 		public function testDbError()
 		{
 
 		}
-
+*/
 		public function testGetLastErrorNumber()
 		{
+			$this->db->select('doesnt_exists');
+			$result = $this->db->getLastErrorNumber();
+			$this->assertEquals("42S02", $result);
 
 		}
 
 		public function testGetLastErrorText()
 		{
+			$this->db->select('doesnt_exists');
+			$result = $this->db->getLastErrorText();
 
+			$actual = (strpos($result,"doesn't exist")!== false );
+
+			$this->assertTrue($actual);
 		}
 
 		public function testResetLastError()
 		{
+			$this->db->select('doesnt_exists');
+			$this->db->resetLastError();
+
+			$num = $this->db->getLastErrorNumber();
+			$this->assertEquals(0, $num);
 
 		}
-
+/*
 		public function testGetLastQuery()
 		{
 
