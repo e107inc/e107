@@ -222,7 +222,7 @@ class e_db_pdo implements e_db
 		{
 			$this->mySQLlastErrText = $ex->getMessage();
 			$this->mySQLLastErrNum = $ex->getCode();
-			e107::getDebug()->log($ex);	// Useful for Debug.
+		//	e107::getDebug()->log($ex);	// Useful for Debug. breaks testing.
 			return false;
 		}
 
