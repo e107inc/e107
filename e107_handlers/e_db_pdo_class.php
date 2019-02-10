@@ -51,6 +51,8 @@ class e_db_pdo implements e_db
 	private     $pdo            = true; // using PDO or not.
 	private     $pdoBind        = false;
 
+	private     $traffic;
+
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -58,16 +60,16 @@ class e_db_pdo implements e_db
 	*/
 	public function __construct()
 	{
-
-		global $pref, $db_defaultPrefix;
-
 /*
 		if((PHP_MAJOR_VERSION > 6) || !function_exists('mysql_connect') ||  (defined('e_PDO') && e_PDO === true))
 		{
 			$this->pdo = true;
 		}
 
-		*/e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);
+		*/
+		$this->traffic = e107::getSingleton('e107_traffic');
+
+		$this->traffic->BumpWho('Create db object', 1);
 
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
 
@@ -76,17 +78,7 @@ class e_db_pdo implements e_db
 			$this->mySQLport = intval($port);
 		}
 
-		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
-		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
-		{
-			if (!isset($_SESSION[$langid])) { return; }
-			$this->mySQLlanguage = $_SESSION[$langid];
-		}
-		else
-		{
-			if (!isset($_COOKIE[$langid])) { return; }
-			$this->mySQLlanguage = $_COOKIE[$langid];
-		}*/
+
 		// Detect is already done in language handler, use it if not too early
 		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
 	}
@@ -196,7 +188,7 @@ class e_db_pdo implements e_db
 	{
 		global $db_ConnectionID, $db_defaultPrefix;
 
-		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
+		$this->traffic->BumpWho('db Connect', 1);
 
 		$this->mySQLserver 		= $mySQLserver;
 		$this->mySQLuser 		= $mySQLuser;
@@ -441,8 +433,8 @@ class e_db_pdo implements e_db
 
 		$e = microtime();
 
-		e107::getSingleton('e107_traffic')->Bump('db_Query', $b, $e);
-		$mytime = e107::getSingleton('e107_traffic')->TimeDelta($b,$e);
+		$this->traffic->Bump('db_Query', $b, $e);
+		$mytime = $this->traffic->TimeDelta($b,$e);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
@@ -1360,7 +1352,7 @@ class e_db_pdo implements e_db
 			/** @var PDOStatement $resource */
 			$resource = $this->mySQLresult;
 			$row = $resource->fetch($type);
-			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
+			$this->traffic->Bump('db_Fetch', $b);
 			if ($row)
 			{
 				$this->dbError('db_Fetch');
@@ -1453,7 +1445,7 @@ class e_db_pdo implements e_db
 	function close()
 	{
 		$this->provide_mySQLaccess();
-		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
+		$this->traffic->BumpWho('db Close', 1);
 		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}
