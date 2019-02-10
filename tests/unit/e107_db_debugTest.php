@@ -13,6 +13,11 @@
 		/** @var e107_db_debug */
 		protected $dbg;
 
+		protected function _beforeSuite()
+		{
+			define('E107_DBG_BASIC', true);
+		}
+
 		protected function _before()
 		{
 
@@ -55,7 +60,7 @@
 		public function testLog()
 		{
 
-			define('E107_DBG_BASIC', true); // fails , already defined?
+			 // fails , already defined?
 
 			$res = $this->dbg->log('hello world');
 
