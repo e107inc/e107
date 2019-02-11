@@ -356,6 +356,14 @@
 			$this->assertEquals(1, $result);
 		}
 
+
+		public function testDb_Select_gen()
+		{
+			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.2' WHERE user_id = 1");
+			$this->assertEquals(1,$result);
+
+		}
+
 		public function testInsert()
 		{
 			// Test 1
@@ -377,7 +385,7 @@
 		{
 			$result = $this->db->index('plugin', 'plugin_path');
 			$this->assertTrue($result);
-			
+
 		}
 
 		public function testLastInsertId()
