@@ -5,6 +5,11 @@
  * Time: 11:46 AM
  */
 
+// Legacy Fix.
+define('MYSQL_ASSOC', 'assoc');
+define('MYSQL_NUM', 'num');
+define('MYSQL_BOTH', 'both');
+
 
 /**
  * PDO MySQL class. All legacy mysql_ methods removed.
@@ -2104,7 +2109,7 @@ class e_db_pdo implements e_db
 	 * @param $table
 	 * @return bool
 	 */
-	function isEmpty($table)
+	function isEmpty($table=null)
 	{
 		if(empty($table))
 		{
