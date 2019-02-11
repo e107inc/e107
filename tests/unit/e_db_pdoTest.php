@@ -593,7 +593,21 @@
 			$this->assertEquals("e107", $row['user_name']);
 			$this->assertEquals("e107", $row[1]);
 
+			// legacy tests
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch(MYSQL_ASSOC);
+			$this->assertArrayHasKey('user_ip', $row);
 
+			$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
+			$this->db->gen($qry);
+
+			$row = $this->db->db_Fetch(MYSQL_NUM);
+			$this->assertEquals('e107_user', $row[0]);
+
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch(MYSQL_BOTH);
+			$this->assertEquals("e107", $row['user_name']);
+			$this->assertEquals("e107", $row[1]);
 
 		}
 
@@ -793,6 +807,9 @@
 
 			$result = $this->db->isEmpty('comments');
 			$this->assertTrue($result);
+
+			$result = $this->db->isEmpty();
+			$this->assertFalse($result);
 
 		}
 
