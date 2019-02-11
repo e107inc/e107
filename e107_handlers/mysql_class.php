@@ -103,6 +103,9 @@ class e_db_mysql
 	private     $pdo = false; // using PDO or not.
 	private     $pdoBind= false;
 
+	/** @var e107_db_debug */
+	protected   $dbg = null;
+
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -141,6 +144,12 @@ class e_db_mysql
 		}*/
 		// Detect is already done in language handler, use it if not too early
 		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
+
+		if (E107_DEBUG_LEVEL > 0)
+		{
+			$this->dbg = e107::getDebug();
+		}
+
 	}
 
 	function getPDO()
@@ -408,12 +417,13 @@ class e_db_mysql
 	*/
 	function db_Mark_Time($sMarker)
 	{
-		if (E107_DEBUG_LEVEL > 0)
+		if($this->dbg === null)
 		{
-			/** @var e107_db_debug $db_debug */
-			global $db_debug;
-			$db_debug->Mark_Time($sMarker);
+			return null;
 		}
+
+		$this->dbg->Mark_Time($sMarker);
+
 	}
 
 
