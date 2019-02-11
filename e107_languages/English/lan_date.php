@@ -23,3 +23,6 @@ define("LANDT_AGO", "ago");
 define("LANDT_IN", "in");
 
 define("LANDT_10", "Just now");
+
+define("LANDT_XAGO", "[x] ago");
+define("LANDT_INX", "in [x]");

@@ -658,15 +658,19 @@ class e_date
 		}
 
 
-		if($older_date < $newer_date) // past
-		{
-			return ($mode ? $ret : implode(", ", $ret) . " " . LANDT_AGO);
-		}
-		else // future
-		{
-			return ($mode ? $ret : LANDT_IN ." ". implode(", ", $ret));
-		}
+        if($older_date < $newer_date) // past
+        {
 
+            $replace = implode(", ", $ret);
+            $xago = e107::getParser()->lanVars(LANDT_XAGO, $replace);
+            return ($mode ? $ret : $xago);
+        }
+        else // future
+        {
+            $replace = implode(", ", $ret);
+            $inx = e107::getParser()->lanVars(LANDT_INX, $replace);
+            return ($mode ? $ret : $inx);
+        }
 
 
 	//	print_r($ret);
