@@ -1385,7 +1385,6 @@ class e_install
 // define('e_GIT', 'path-to-git');  // Path to GIT for developers
 // define('X-FRAME-SAMEORIGIN', false); // Option to override X-Frame-Options 
 // define('e_PDO, true); // Enable PDO mode (used in PHP > 7 and when mysql_* methods are not available)
-// define('e_DEBUG_MEDIAPICKER', true) // Enable experimental features in the Media Manager
 
 ";
 /*
