@@ -65,15 +65,14 @@
 
 		public function testGetMode()
 		{
-			
+			$actual = $this->db->getMode();
+			$this->assertEquals('NO_ENGINE_SUBSTITUTION', $actual);
 		}
 
 		public function testDb_Connect()
 		{
 			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
 			$this->assertTrue($result);
-
-
 		}
 
 		/**
@@ -240,14 +239,25 @@
 		{
 
 		}
-
+*/
 		public function testDb_Mark_Time()
 		{
+			$this->db->debugMode(true);
+
+			$this->db->db_Mark_Time("Testing");
+
+			$actual = e107::getDebug()->getTimeMarkers();
+
+			$this->assertIsArray($actual);
+			$this->assertEquals('Testing', $actual[1]['What']);
+			$this->assertArrayHasKey('Index', $actual[1]);
+			$this->assertArrayHasKey('Time', $actual[1]);
+			$this->assertArrayHasKey('Memory', $actual[1]);
 
 		}
 
 
-*/
+
 		public function testDb_Write_log()
 		{
 			$log_type = 127;
@@ -353,12 +363,25 @@
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1" AND tmp_time = 12345435');
 			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
 		}
-/*
+
 		public function testLastInsertId()
 		{
+			$insert = array(
+				'gen_id'    => 0,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
+		
+			$this->db->insert('generic', $insert);
+			$actual = $this->db->lastInsertId();
+			$this->assertEquals(2,$actual);
 
 		}
-
+/*
 		public function testFoundRows()
 		{
 
