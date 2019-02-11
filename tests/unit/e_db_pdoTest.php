@@ -372,6 +372,14 @@
 			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
 		}
 
+
+		public function testIndex()
+		{
+			$result = $this->db->index('plugin', 'plugin_path');
+			$this->assertTrue($result);
+			
+		}
+
 		public function testLastInsertId()
 		{
 			$insert = array(
@@ -581,16 +589,19 @@
 
 		}
 
-		public function testCount()
-		{
-			$count = $this->db->count('user');
-			$this->assertGreaterThan(0, $count);
-		}
 
 		public function testDb_Count()
 		{
+			$count = $this->db->count('user');
+			$this->assertGreaterThan(0, $count);
+
 			$result = $this->db->db_Count('user','(*)', 'user_id = 1');
 			$this->assertEquals(1,$result);
+
+			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'plugin ','generic');
+			$this->assertGreaterThan(20, $result);
+		//var_dump($result);
+			//$this->assertEquals(1,$result);
 		}
 /*
 		public function testClose()
@@ -771,6 +782,10 @@
 		{
 			$result = $this->db->isEmpty('plugin');
 			$this->assertFalse($result);
+
+			$result = $this->db->isEmpty('comments');
+			$this->assertTrue($result);
+
 		}
 
 		public function testDb_ResetTableList()
