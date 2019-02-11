@@ -2419,7 +2419,7 @@ class error_handler
 			case E_DEPRECATED:
 		//	case E_STRICT:
 
-			if ($startup_error || E107_DBG_ALLERRORS || E107_DBG_ERRBACKTRACE)
+			if ($startup_error || deftrue('E107_DBG_ALLERRORS') || deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 
 
@@ -2441,7 +2441,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
-			if ($startup_error || E107_DBG_BASIC || E107_DBG_ERRBACKTRACE)
+			if ($startup_error || deftrue('E107_DBG_BASIC') || deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
 				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
