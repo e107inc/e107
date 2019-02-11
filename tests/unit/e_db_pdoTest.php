@@ -746,17 +746,21 @@
 			$this->assertFalse($present);
 
 		}
-/*
+
 		public function testDb_CopyRow()
 		{
-
+			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
+			$this->assertEquals(2,$result);
 		}
 
 		public function testDb_CopyTable()
 		{
+			$this->db->db_CopyTable('news', 'news_bak', false, true);
+			$result = $this->db->retrieve('news_bak', 'news_title', 'news_id = 1');
 
+			$this->assertEquals('Welcome to e107', $result);
 		}
-*/
+
 
 		public function testBackup()
 		{
