@@ -47,6 +47,17 @@
 
 		}
 
+
+		/**
+		 * Return a list of all registered time markers.
+		 * @return array
+		 */
+		public function getTimeMarkers()
+		{
+			return $this->aTimeMarks;
+		}
+
+
 		function e107_db_debug()
 		{
 

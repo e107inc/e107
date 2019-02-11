@@ -162,4 +162,10 @@
 			$this->setErrorReporting($mode);
 		}
 
+
+		public function db_Mark_Time($sMarker)
+		{
+			$this->markTime($sMarker);
+		}
+
 	}

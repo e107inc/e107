@@ -1624,7 +1624,7 @@ class e107
      *
      * @return e107_db_debug
      */
-    public static function getDebug() //XXX Discuss  - possible with current setup?
+    public static function getDebug()
     {
         return self::getSingleton('e107_db_debug', true);
     }
