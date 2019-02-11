@@ -689,13 +689,17 @@
 		{
 			$result = $this->db->db_Field('plugin', 'plugin_path');
 			$this->assertTrue($result);
+
+			$result = $this->db->db_Field('plugin', 2);
+			$this->assertEquals('plugin_version', $result);
+
 		}
 /*
 		public function testColumnCount()
 		{
+			$this->db->columnCount();
+		}*/
 
-		}
-*/
 		public function testField()
 		{
 			$result = $this->db->field('plugin', 'plugin_path');
