@@ -49,7 +49,7 @@ class e_db_pdo implements e_db
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	public      $mySQLcharset;
-	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
+	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	public      $total_results = false;			// Total number of results
 
@@ -161,9 +161,6 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
-		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
-
 		$this->setCharset();
 		$this->setSQLMode();
 
@@ -181,6 +178,11 @@ class e_db_pdo implements e_db
 	 */
 	public function getServerInfo()
 	{
+
+	//	var_dump($this->mySQLaccess);
+		$this->provide_mySQLaccess();
+		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
+	//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_VERSION);
 		return $this->mySqlServerInfo;
 	}
 
@@ -1589,7 +1591,7 @@ class e_db_pdo implements e_db
 
 			if(!$this->mySQLtableList)
 			{
-				$this->mySQLtableList = $this->db_mySQLtableList();
+				$this->mySQLtableList = $this->_getTableList();
 			}
 
 			$lanlist = array();
@@ -1882,17 +1884,20 @@ class e_db_pdo implements e_db
 
 		$this->provide_mySQLaccess();
 
-		if ($prefix == '') $prefix = $this->mySQLPrefix;
-
-		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
+		if ($prefix == '')
 		{
-			return FALSE;		// Error return
+			 $prefix = $this->mySQLPrefix;
+		}
+
+		if (false === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
+		{
+			return false;		// Error return
 		}
 		$ret = array();
 
         if ($this->rowCount() > 0)
 		{
-			while ($row = $this->fetch($result))
+			while ($row = $this->fetch())
 			{
 				if ($retinfo)
 				{
@@ -2086,7 +2091,7 @@ class e_db_pdo implements e_db
 
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
-				$this->mySQLtableListLanguage = $this->db_mySQLtableList($language);
+				$this->mySQLtableListLanguage = $this->_getTableList($language);
 			}
 
 			return in_array('lan_'.strtolower($language)."_".$table,$this->mySQLtableListLanguage[$language]);
@@ -2095,7 +2100,7 @@ class e_db_pdo implements e_db
 		{
 			if(!$this->mySQLtableList)
 			{
-				$this->mySQLtableList = $this->db_mySQLtableList();
+				$this->mySQLtableList = $this->_getTableList();
 			}
 
 			return in_array($table,$this->mySQLtableList);
@@ -2134,18 +2139,28 @@ class e_db_pdo implements e_db
 	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
 	 * @return array
 	 */
-	private function db_mySQLtableList($language='')
+	private function _getTableList($language='')
 	{
+
+		$database = !empty($this->mySQLdefaultdb) ? "FROM  ".$this->mySQLdefaultdb : "";
+		$prefix = $this->mySQLPrefix;
+
+		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
+		{
+			$tmp = explode(".",$prefix);
+			$prefix = $tmp[1];
+		}
+
 		if($language)
 		{
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$table = array();
-				if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."lan_".strtolower($language)."%' "))
+				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
 				{
 					while($rows = $this->fetch('num'))
 					{
-						$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
+						$table[] = str_replace($prefix,"",$rows[0]);
 					}
 				}
 				$ret = array($language=>$table);
@@ -2161,9 +2176,9 @@ class e_db_pdo implements e_db
 		{
 			$table = array();
 
-			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
+			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
 			{
-				$length = strlen($this->mySQLPrefix);
+				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
 					$table[] = substr($rows[0],$length);
@@ -2200,7 +2215,7 @@ class e_db_pdo implements e_db
 
 		if(!$this->mySQLtableList)
 		{
-			$this->mySQLtableList = $this->db_mySQLtableList();
+			$this->mySQLtableList = $this->_getTableList();
 		}
 
 		if($mode == 'nologs')
@@ -2251,14 +2266,14 @@ class e_db_pdo implements e_db
 	/**
 	 * Duplicate a Table Row in a table.
 	 */
-	function copyRow($table,$fields = '*', $args='')
+	function copyRow($table, $fields = '*', $args='')
 	{
 		if(!$table || !$args )
 		{
 			return false;
 		}
 
-		if($fields == '*')
+		if($fields === '*')
 		{
 			$fields = $this->db_FieldList($table);
 			unset($fields[0]); // Remove primary_id.
@@ -2267,6 +2282,12 @@ class e_db_pdo implements e_db
 		else
 		{
 			$fieldList = $fields;
+		}
+
+		if(empty($fields))
+		{
+			$this->mysqlLastErrText = "copyRow \$fields list was empty";
+			return false;
 		}
 
 		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
@@ -2302,7 +2323,7 @@ class e_db_pdo implements e_db
 			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1); // More selective search
+			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
 		}
 		else
 		{
