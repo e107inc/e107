@@ -91,13 +91,21 @@
 		}
 
 		/**
-		 * Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
-		 * TODO Split into separate methods? Order needs to be respected.
+		 * @desc Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
 		 */
-		 /*
 		public function testSecondaryDatabase()
 		{
-			$xql = e107::getDb('newdb');
+
+			try
+			{
+				$xql = $this->make('e_db_pdo');
+			}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load e_db_pdo object");
+			}
+
+			$xql->__construct();
 			$config =  e107::getMySQLConfig();
 
 			$database = 'e107_tests_tmp';
@@ -183,7 +191,7 @@
 
 
 			// primary database retrieve
-			$username = e107::getDb()->retrieve('user','user_name', 'user_id  = 1');
+			$username = $this->db->retrieve('user','user_name', 'user_id  = 1');
 			$this->assertNotEmpty($username, "Lost connection with primary database.");
 
 
@@ -206,7 +214,7 @@
 
 
 		}
-*/
+
 
 
 		public function testGetServerInfo()
@@ -494,6 +502,17 @@
 
 		}
 */
+		public function testDb_QueryCount()
+		{
+			$this->db->select('user', '*');
+			$this->db->select('plugin','*');
+
+			$result = $this->db->db_QueryCount();
+			$this->assertEquals(2,$result);
+
+		}
+
+
 		public function testDb_UpdateArray()
 		{
 
@@ -716,10 +735,16 @@
 
 		}
 */
-		public function testIsTable()
+		public function testDb_Table_exists()
 		{
-			$result = $this->db->isTable('plugin');
+			$result = $this->db->db_Table_exists('plugin');
 			$this->assertTrue($result);
+
+			$result = $this->db->db_Table_exists('plugin', 'French');
+			$this->assertFalse($result);
+
+			$result = $this->db->db_Table_exists('plugin', 'English');
+			$this->assertFalse($result);
 		}
 
 		public function testIsEmpty()
@@ -727,17 +752,29 @@
 			$result = $this->db->isEmpty('plugin');
 			$this->assertFalse($result);
 		}
-/*
+
 		public function testDb_ResetTableList()
 		{
-
+			$this->db->Db_ResetTableList();
 		}
 
 		public function testDb_TableList()
 		{
+			$list = $this->db->db_TableList();
+
+			$present = in_array('banlist', $list);
+			$this->assertTrue($present);
+
+			$list = $this->db->db_TableList('nologs');
+			$present = in_array('admin_log', $list);
+			$this->assertFalse($present);
+
+			$list = $this->db->db_TableList('lan');
+			$this->assertEmpty($list);
+			//var_dump($list);
 
 		}
-*/
+
 		public function testTables()
 		{
 			$list = $this->db->tables();
@@ -823,14 +860,15 @@
 		{
 
 		}
+*/
 
-		public function testDb_Set_Charset()
+		public function testDb_ResetTableList()
 		{
-
+			$this->db->db_ResetTableList();
 		}
 
 		public function testGetFieldDefs()
 		{
 
-		}*/
+		}
 	}

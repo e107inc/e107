@@ -11,7 +11,13 @@ coverage:
     enabled: true
     include:
         - '%app_path%/*.php'
-        - '%app_path%/**/*.php'
+        - '%app_path%/e107_admin/**/*.php'
+        - '%app_path%/e107_core/**/*.php'
+        - '%app_path%/e107_handlers/**/*.php'
+        - '%app_path%/e107_images/**/*.php'
+        - '%app_path%/e107_plugins/**/*.php'
+        - '%app_path%/e107_themes/**/*.php'
+        - '%app_path%/e107_web/**/*.php'
 params:
     - lib/config.php
 extensions:
