@@ -125,6 +125,13 @@
 			return $this->update($table,$vars,$debug,$log_type,$log_remark);
 		}
 
+		/**
+		 * @deprecated
+		 * @param        $table
+		 * @param string $fields
+		 * @param string $args
+		 * @return mixed
+		 */
 		public function db_CopyRow($table, $fields = '*', $args='')
 		{
 			return $this->copyRow($table,$fields,$args);

@@ -1902,12 +1902,7 @@ class e_db_pdo implements e_db
 		return $ret;
 	}
 
-/*
-	function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
-	{
-		return $this->field($table,$fieldid,$key, $retinfo);
-	}
-*/
+
 
 	function columnCount()
 	{
@@ -2283,7 +2278,7 @@ class e_db_pdo implements e_db
 	 * @param bool $data
 	 * @return bool|int|PDOStatement|resource
 	 */
-	public function copyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
+	public function copyTable($oldtable, $newtable, $drop = false, $data = false)
 	{
 		$old = $this->mySQLPrefix.strtolower($oldtable);
 		$new = $this->mySQLPrefix.strtolower($newtable);
