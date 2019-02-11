@@ -60,9 +60,13 @@
 			$this->assertTrue($result);
 		}
 
+
+
+
 		public function testGetMode()
 		{
-
+			$actual = $this->db->getMode();
+			$this->assertEquals('NO_ENGINE_SUBSTITUTION', $actual);
 		}
 
 		public function testDb_Connect()
@@ -71,137 +75,35 @@
 			$this->assertTrue($result);
 		}
 
-		/**
-		 * TODO
-		 */
-		public function testConnect()
-		{
-			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
-			$this->assertTrue($result);
-			}
-
-		/**
-		 * Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
-		 * TODO Split into separate methods? Order needs to be respected.
-		 */
-		public function testSecondaryDatabase()
-		{
-			$xql = e107::getDb('newdb');
-			$config =  e107::getMySQLConfig();
-
-			$database = 'e107_tests_tmp';
-			$table = 'test';
-
-			// cleanup
-			$xql->gen("DROP DATABASE `".$database."`");
-
-			// create database
-			if($xql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
-			{
-				$xql->gen("GRANT ALL ON `".$database."`.* TO ".$config['mySQLuser']."@'".$config['mySQLserver']."';");
-				$xql->gen("FLUSH PRIVILEGES;");
-			}
-			else
-			{
-				$this->fail("Failed to create secondary database");
-			}
-
-			// use new database
-			$use = $xql->database($database,MPREFIX,true);
-
-			if($use === false)
-			{
-				$this->fail("Failed to select new database");
-			}
-
-			$create = "CREATE TABLE `".$database."`.".MPREFIX.$table." (
-					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
-					 `test_var` varchar(255) NOT NULL,
-					 PRIMARY KEY (`test_id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-			";
-
-			// create secondary database
-			if(!$xql->gen($create))
-			{
-				$this->fail("Failed to create table in secondary database");
-			}
-
-
-			// Insert
-			$arr = array('test_id'=>0, 'test_var'=>'Example insert');
-			if(!$xql->insert($table, $arr))
-			{
-				$err = $xql->getLastErrorText();
-				$this->fail("Failed to insert into secondary database: ".$err);
-			}
-
-			// Copy Row.
-			if(!$copied = $xql->db_CopyRow($table, '*', "test_id = 1"))
-			{
-				$err = $xql->getLastErrorText();
-				$this->fail("Failed to copy row into secondary database table: ".$err);
-			}
-
-
-			// Select
-			if(!$xql->select($table,'*','test_id !=0'))
-			{
-				$err = $xql->getLastErrorText();
-				$this->fail("Failed to select from secondary database: ".$err);
-			}
-
-
-			// fetch
-			$row = $xql->fetch();
-			$this->assertNotEmpty($row['test_var'], "Failed to fetch from secondary database");
-			$this->assertEquals('Example insert',$row['test_var'], $xql->getLastErrorText());
-
-
-			// update
-			$upd = array('test_var' => "Updated insert",'WHERE' => "test_id = 1");
-			if(!$xql->update($table,$upd))
-			{
-			    $err = $xql->getLastErrorText();
-				$this->fail("Failed to update secondary database table: ".$err);
-			}
-
-			// update (legacy)
-			$upd2 = $xql->update($table, "test_var = 'Updated legacy' WHERE test_id = 1");
-			$this->assertNotEmpty($upd2, "UPDATE (legacy) failed on secondary database table: ".$xql->getLastErrorText());
-
-
-			// primary database retrieve
-			$username = e107::getDb()->retrieve('user','user_name', 'user_id  = 1');
-			$this->assertNotEmpty($username, "Lost connection with primary database.");
-
-
-			// count
-			$count = $xql->count($table, "(*)", "test_id = 1");
-			$this->assertNotEmpty($count, "COUNT failed on secondary database table: ".$xql->getLastErrorText());
-
-			// delete
-			if(!$xql->delete($table, "test_id = 1"))
-			{
-				$err = $xql->getLastErrorText();
-				$this->fail("Failed to delete secondary database table row: ".$err);
-			}
-
-			// Truncate & isEmpty
-			$xql->truncate($table);
-			$empty = $xql->isEmpty($table);
-			$this->assertTrue($empty,"isEmpty() or truncate() failed");
-
-
-
-		}
-
-
 /*
 		public function testGetServerInfo()
 		{
 
-		}
+			$result = $this->db->getServerInfo();
+			$this->assertNotContains('?',$result);
+		}*/
+
+		/**
+		 * connect() test.
+		 */
+		public function testConnect()
+		{
+			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], "wrong Password");
+			$this->assertFalse($result);
+
+			$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($result);
+
+			$result = $this->db->connect($this->dbConfig['mySQLserver'].":3306", $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($result);
+			}
+
+
+
+
+
+
+
 
 		public function testDatabase()
 		{
@@ -210,32 +112,43 @@
 
 			$this->assertTrue($result);
 
-		}
+			$result = $this->db->database("missing_database");
+			$this->assertFalse($result);
 
+		}
+/*
 		public function testGetCharSet()
 		{
 			$this->db->setCharset();
 			$result = $this->db->getCharset();
 
 			$this->assertEquals('utf8', $result);
-		}
+		}*/
 
 /*
 		public function testGetConfig()
 		{
 
 		}
-
+*/
 		public function testDb_Mark_Time()
 		{
+			$this->db->debugMode(true);
+
+			$this->db->db_Mark_Time("Testing");
+
+			$actual = e107::getDebug()->getTimeMarkers();
+
+			$this->assertIsArray($actual);
+			$this->assertEquals('Testing', $actual[1]['What']);
+			$this->assertArrayHasKey('Index', $actual[1]);
+			$this->assertArrayHasKey('Time', $actual[1]);
+			$this->assertArrayHasKey('Memory', $actual[1]);
 
 		}
 
-		public function testDb_Show_Performance()
-		{
 
-		}
-*/
+
 		public function testDb_Write_log()
 		{
 			$log_type = 127;
@@ -269,22 +182,71 @@
 
 		}
 
-/*
+
 		public function testRetrieve()
 		{
+			$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
+			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals($expected,$result);
+
+
+			$this->db->select('user', 'user_id, user_name', 'user_id = 1');
+			$result = $this->db->retrieve(null);
+			$this->assertEquals($expected,$result);
+
+
+			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', ),);
+			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
+			$this->assertEquals($expected,$result);
+
+
+			$result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1", true);
+			$this->assertEquals($expected,$result);
+
+
+			$expected = array();
+			$result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
+			$this->assertEquals($expected,$result);
+
+
 
 		}
 
 		public function testSelect()
 		{
 
+			$result = $this->db->select('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals(1, $result);
+
+			$result = $this->db->select('user', 'user_id, user_name', 'user_id = 999');
+			$this->assertEquals(0, $result);
+
+			$result = $this->db->select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
+			$this->assertEquals(1, $result);
+
+
 		}
 
 		public function testDb_Select()
 		{
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'user_id = 1');
+			$this->assertEquals(1, $result);
+
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'user_id = 999');
+			$this->assertEquals(0, $result);
+
+			$result = $this->db->db_Select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
+			$this->assertEquals(1, $result);
+		}
+
+
+		public function testDb_Select_gen()
+		{
+			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.2' WHERE user_id = 1");
+			$this->assertEquals(1,$result);
 
 		}
-*/
+
 		public function testInsert()
 		{
 			// Test 1
@@ -300,38 +262,94 @@
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1" AND tmp_time = 12345435');
 			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
 		}
-/*
+
+
+		public function testIndex()
+		{
+			$result = $this->db->index('plugin', 'plugin_path');
+			$this->assertTrue($result);
+
+		}
+
 		public function testLastInsertId()
 		{
+			$insert = array(
+				'gen_id'    => 0,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
+
+			$this->db->insert('generic', $insert);
+			$actual = $this->db->lastInsertId();
+			$this->assertEquals(2,$actual);
 
 		}
 
 		public function testFoundRows()
 		{
+			$this->db->debugMode(false);
+			$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = 1');
+			$row = $this->db->fetch();
+			$this->assertArrayHasKey('user_name', $row);
+			$result = $this->db->foundRows();
+			$this->assertEquals(1, $result);
 
 		}
 
 		public function testRowCount()
 		{
+			$this->db->retrieve('plugin', '*');
+			$result = $this->db->rowCount();
+
+			$this->assertGreaterThan(10,$result);
 
 		}
-*/
+
 		public function testDb_Insert()
 		{
 			$actual = $this->db->db_Insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$this->assertTrue($actual);
 		}
-/*
+
 		public function testReplace()
 		{
+			$insert = array(
+				'gen_id'    => 1,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
+
+			$result = $this->db->replace('generic', $insert);
+
+			$this->assertNotEmpty($result);
 
 		}
 
 		public function testDb_Replace()
 		{
+			$insert = array(
+				'gen_id'    => 1,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
 
+			$result = $this->db->db_Replace('generic', $insert);
+
+			$this->assertNotEmpty($result);
 		}
-*/
+
 		public function testUpdate()
 		{
 			$db = $this->db;
@@ -361,8 +379,12 @@
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1"');
 			$this->assertEquals($expected, $actual, 'Test 4: Updated content doesn\'t match the retrieved content');
 
+			// Test for Error response.
+			$actual = $this->db->update('tmp', 'tmp_ip = "127.0.0.0 WHERE tmp_ip = "125.123.123.13"');
+			$this->assertFalse($actual);
+
 		}
-/*
+
 		public function testDb_Update()
 		{
 			$this->db->delete('tmp', "tmp_ip = '127.0.0.1'");
@@ -381,6 +403,17 @@
 
 		}
 */
+		public function testDb_QueryCount()
+		{
+			$this->db->select('user', '*');
+			$this->db->select('plugin','*');
+
+			$result = $this->db->db_QueryCount();
+			$this->assertGreaterThan(1,$result);
+
+		}
+
+
 		public function testDb_UpdateArray()
 		{
 
@@ -407,31 +440,75 @@
 
 
 		}
-/*
+
 		public function testTruncate()
 		{
+			$this->db->truncate('generic');
+
+			$count = $this->db->count('generic');
+
+			$this->assertEquals(0, $count);
 
 		}
 
+/*
 		public function testFetch()
 		{
 
 		}
-
+*/
 		public function testDb_Fetch()
 		{
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch();
+			$this->assertArrayHasKey('user_ip', $row);
+
+			$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
+			$this->db->gen($qry);
+
+			$row = $this->db->db_Fetch('num');
+			$this->assertEquals('e107_user', $row[0]);
+
+			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
+			$this->assertTrue($check);
+
+			define('e_LEGACY_MODE', true);
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch();
+			$this->assertEquals("e107", $row['user_name']);
+			$this->assertEquals("e107", $row[1]);
+
+			// legacy tests
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch(MYSQL_ASSOC);
+			$this->assertArrayHasKey('user_ip', $row);
+
+			$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
+			$this->db->gen($qry);
+
+			$row = $this->db->db_Fetch(MYSQL_NUM);
+			$this->assertEquals('e107_user', $row[0]);
+
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch(MYSQL_BOTH);
+			$this->assertEquals("e107", $row['user_name']);
+			$this->assertEquals("e107", $row[1]);
 
 		}
 
-		public function testCount()
-		{
 
-		}
-*/
 		public function testDb_Count()
 		{
+			$count = $this->db->count('user');
+			$this->assertGreaterThan(0, $count);
+
 			$result = $this->db->db_Count('user','(*)', 'user_id = 1');
 			$this->assertEquals(1,$result);
+
+			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'plugin ','generic');
+			$this->assertGreaterThan(20, $result);
+		//var_dump($result);
+			//$this->assertEquals(1,$result);
 		}
 /*
 		public function testClose()
@@ -507,6 +584,7 @@
 		public function testDb_SetErrorReporting()
 		{
 			$this->db->db_SetErrorReporting(false);
+			// fixme - getErrorReporting.
 		}
 /*
 		public function testGen()
@@ -558,23 +636,28 @@
 		{
 
 		}
-
+*/
 		public function testDb_FieldList()
 		{
+			$this->db->db_FieldList('user');
 
 		}
-*/
+
 		public function testDb_Field()
 		{
 			$result = $this->db->db_Field('plugin', 'plugin_path');
 			$this->assertTrue($result);
+
+			$result = $this->db->db_Field('plugin', 2);
+			$this->assertEquals('plugin_version', $result);
+
 		}
 /*
 		public function testColumnCount()
 		{
+			$this->db->columnCount();
+		}*/
 
-		}
-*/
 		public function testField()
 		{
 			$result = $this->db->field('plugin', 'plugin_path');
@@ -590,42 +673,88 @@
 		{
 
 		}
-
-		public function testIsTable()
+*/
+		public function testDb_Table_exists()
 		{
+			$result = $this->db->db_Table_exists('plugin');
+			$this->assertTrue($result);
 
+			$result = $this->db->db_Table_exists('plugin', 'French');
+			$this->assertFalse($result);
+
+			$result = $this->db->db_Table_exists('plugin', 'English');
+			$this->assertFalse($result);
 		}
 
 		public function testIsEmpty()
 		{
+			$result = $this->db->isEmpty('plugin');
+			$this->assertFalse($result);
+
+			$result = $this->db->isEmpty('comments');
+			$this->assertTrue($result);
+
+			$result = $this->db->isEmpty();
+			$this->assertFalse($result);
 
 		}
 
 		public function testDb_ResetTableList()
 		{
-
+			$this->db->Db_ResetTableList();
 		}
 
 		public function testDb_TableList()
 		{
+			$list = $this->db->db_TableList();
+
+			$present = in_array('banlist', $list);
+			$this->assertTrue($present);
+
+			$list = $this->db->db_TableList('nologs');
+			$present = in_array('admin_log', $list);
+			$this->assertFalse($present);
+
+			$list = $this->db->db_TableList('lan');
+			$this->assertEmpty($list);
+			//var_dump($list);
 
 		}
 
 		public function testTables()
 		{
+			$list = $this->db->tables();
+
+			if(empty($list))
+			{
+				$error = $this->db->getLastQuery();
+				$this->assertNotEmpty($list,"tables() didn't return a list of database tables.\n".$error);
+		}
+
+			$present = in_array('banlist', $list);
+			$this->assertTrue($present);
+
+			$list = $this->db->tables('nologs');
+			$present = in_array('admin_log', $list);
+			$this->assertFalse($present);
 
 		}
 
 		public function testDb_CopyRow()
 		{
-
+			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
+			$this->assertEquals(2,$result);
 		}
 
 		public function testDb_CopyTable()
 		{
+			$this->db->db_CopyTable('news', 'news_bak', false, true);
+			$result = $this->db->retrieve('news_bak', 'news_title', 'news_id = 1');
 
+			$this->assertEquals('Welcome to e107', $result);
 		}
-*/
+
+
 		public function testBackup()
 		{
 			$opts = array(
@@ -650,34 +779,189 @@
 		{
 
 		}
-
+*/
 		public function testGetLastErrorNumber()
 		{
+			$this->db->select('doesnt_exists');
+			$result = $this->db->getLastErrorNumber();
+			$this->assertEquals("42S02", $result);
 
 		}
 
 		public function testGetLastErrorText()
 		{
+			$this->db->select('doesnt_exists');
+			$result = $this->db->getLastErrorText();
 
+			$actual = (strpos($result,"doesn't exist")!== false );
+
+			$this->assertTrue($actual);
 		}
 
 		public function testResetLastError()
 		{
+			$this->db->select('doesnt_exists');
+			$this->db->resetLastError();
+
+			$num = $this->db->getLastErrorNumber();
+			$this->assertEquals(0, $num);
 
 		}
-
+/*
 		public function testGetLastQuery()
 		{
 
 		}
+*/
 
-		public function testDb_Set_Charset()
-		{
-
-		}
 
 		public function testGetFieldDefs()
 		{
 
-		}*/
+		}
+
+
+			/**
+		 * @desc Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
+		 */
+		public function testSecondaryDatabase()
+		{
+
+			try
+			{
+				$xql = $this->make('e_db_mysql');
+	}
+			catch (Exception $e)
+			{
+				$this->fail("Couldn't load e_db_mysql object");
+			}
+
+			$xql->__construct();
+
+			$config =  e107::getMySQLConfig();
+
+		//	$xql = $this->db;
+
+			$database = 'e107_tests_tmp';
+			$table = 'test';
+
+			// cleanup
+			$xql->gen("DROP DATABASE `".$database."`");
+
+			// create database
+			if($xql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
+			{
+				$xql->gen("GRANT ALL ON `".$database."`.* TO ".$config['mySQLuser']."@'".$config['mySQLserver']."';");
+				$xql->gen("FLUSH PRIVILEGES;");
+			}
+			else
+			{
+				$this->fail("Failed to create secondary database");
+			}
+
+			// use new database
+			$use = $xql->database($database,MPREFIX,true);
+
+			if($use === false)
+			{
+				$this->fail("Failed to select new database");
+			}
+
+			$create = "CREATE TABLE `".$database."`.".MPREFIX.$table." (
+					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
+					 `test_var` varchar(255) NOT NULL,
+					 PRIMARY KEY (`test_id`)
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			";
+
+			// create secondary database
+			if(!$xql->gen($create))
+			{
+				$this->fail("Failed to create table in secondary database");
+			}
+
+			if(!$res = $xql->db_FieldList($table))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to get field list from secondary database:\n".$err);
+
+			}
+
+			$this->assertEquals('test_id', $res[0]);
+
+			if(!$tabs = $xql->tables())
+			{
+				$err = $xql->getLastQuery();
+				$this->fail("Failed to get table list from secondary database:\n".$err);
+			}
+
+
+			// Insert
+			$arr = array('test_id'=>0, 'test_var'=>'Example insert');
+			if(!$xql->insert($table, $arr))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to insert into secondary database: ".$err);
+			}
+
+			// Copy Row.
+			if(!$copied = $xql->db_CopyRow($table, '*', "test_id = 1"))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to copy row into secondary database table: ".$err);
+			}
+
+
+			// Select
+			if(!$xql->select($table,'*','test_id !=0'))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to select from secondary database: ".$err);
+			}
+
+
+			// fetch
+			$row = $xql->fetch();
+			$this->assertNotEmpty($row['test_var'], "Failed to fetch from secondary database");
+			$this->assertEquals('Example insert',$row['test_var'], $xql->getLastErrorText());
+
+
+			// update
+			$upd = array('test_var' => "Updated insert",'WHERE' => "test_id = 1");
+			if(!$xql->update($table,$upd))
+			{
+			    $err = $xql->getLastErrorText();
+				$this->fail("Failed to update secondary database table: ".$err);
+			}
+
+			// update (legacy)
+			$upd2 = $xql->update($table, "test_var = 'Updated legacy' WHERE test_id = 1");
+			$this->assertNotEmpty($upd2, "UPDATE (legacy) failed on secondary database table: ".$xql->getLastErrorText());
+
+
+			// primary database retrieve
+			$username = $this->db->retrieve('user','user_name', 'user_id  = 1');
+			$this->assertNotEmpty($username, "Lost connection with primary database.");
+
+
+			// count
+			$count = $xql->count($table, "(*)", "test_id = 1");
+			$this->assertNotEmpty($count, "COUNT failed on secondary database table: ".$xql->getLastErrorText());
+
+			// delete
+			if(!$xql->delete($table, "test_id = 1"))
+			{
+				$err = $xql->getLastErrorText();
+				$this->fail("Failed to delete secondary database table row: ".$err);
+			}
+
+			// Truncate & isEmpty
+			$xql->truncate($table);
+			$empty = $xql->isEmpty($table);
+			$this->assertTrue($empty,"isEmpty() or truncate() failed");
+
+
+
+		}
+
 	}
