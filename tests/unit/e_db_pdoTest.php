@@ -555,12 +555,32 @@
 		{
 
 		}
-
+*/
 		public function testDb_Fetch()
 		{
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch();
+			$this->assertArrayHasKey('user_ip', $row);
+
+			$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
+			$this->db->gen($qry);
+
+			$row = $this->db->db_Fetch('num');
+			$this->assertEquals('e107_user', $row[0]);
+
+			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
+			$this->assertTrue($check);
+
+			define('e_LEGACY_MODE', true);
+			$this->db->select('user', '*', 'user_id = 1');
+			$row = $this->db->db_Fetch();
+			$this->assertEquals("e107", $row['user_name']);
+			$this->assertEquals("e107", $row[1]);
+
+
 
 		}
-*/
+
 		public function testCount()
 		{
 			$count = $this->db->count('user');
@@ -862,10 +882,6 @@
 		}
 */
 
-		public function testDb_ResetTableList()
-		{
-			$this->db->db_ResetTableList();
-		}
 
 		public function testGetFieldDefs()
 		{
