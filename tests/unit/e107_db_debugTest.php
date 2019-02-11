@@ -13,10 +13,6 @@
 		/** @var e107_db_debug */
 		protected $dbg;
 
-		protected function _beforeSuite()
-		{
-			define('E107_DBG_BASIC', true);
-		}
 
 		protected function _before()
 		{
@@ -59,17 +55,13 @@
 
 		public function testLog()
 		{
-
-			 // fails , already defined?
-
 			$res = $this->dbg->log('hello world');
-
 			$this->assertTrue($res, 'db_debug->log() method returned false.');
 
 
 			$result = $this->dbg->Show_Log();
+			$this->assertContains('e107_db_debugTest->testLog()',$result);
 
-			// var_dump($result);
 		}
 /*
 		public function testLogCode()

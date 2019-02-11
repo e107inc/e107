@@ -381,33 +381,66 @@
 			$this->assertEquals(2,$actual);
 
 		}
-/*
+
 		public function testFoundRows()
 		{
+			$this->db->debugMode(false);
+			$this->db->select('SQL_CALC_FOUND_ROWS SELECT * FROM #user WHERE user_id = 1');
+			$result = $this->db->foundRows();
+			$this->assertEquals(1, $result);
 
 		}
 
 		public function testRowCount()
 		{
+			$this->db->retrieve('plugin', '*');
+			$result = $this->db->rowCount();
+
+			$this->assertGreaterThan(10,$result);
 
 		}
-*/
+
 		public function testDb_Insert()
 		{
 			$actual = $this->db->db_Insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$this->assertTrue($actual);
 		}
-/*
+
 		public function testReplace()
 		{
+			$insert = array(
+				'gen_id'    => 1,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
+
+			$result = $this->db->replace('generic', $insert);
+
+			$this->assertNotEmpty($result);
 
 		}
 
 		public function testDb_Replace()
 		{
+			$insert = array(
+				'gen_id'    => 1,
+				'gen_type'  => 'whatever',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
 
+			$result = $this->db->db_Replace('generic', $insert);
+
+			$this->assertNotEmpty($result);
 		}
-*/
+
 		public function testUpdate()
 		{
 			$db = $this->db;
@@ -442,7 +475,7 @@
 			$this->assertFalse($actual);
 
 		}
-/*
+
 		public function testDb_Update()
 		{
 			$this->db->delete('tmp', "tmp_ip = '127.0.0.1'");
@@ -487,12 +520,18 @@
 
 
 		}
-/*
+
 		public function testTruncate()
 		{
+			$this->db->truncate('generic');
+
+			$count = $this->db->count('generic');
+
+			$this->assertEquals(0, $count);
 
 		}
 
+/*
 		public function testFetch()
 		{
 
@@ -502,12 +541,13 @@
 		{
 
 		}
-
+*/
 		public function testCount()
 		{
-
+			$count = $this->db->count('user');
+			$this->assertGreaterThan(0, $count);
 		}
-*/
+
 		public function testDb_Count()
 		{
 			$result = $this->db->db_Count('user','(*)', 'user_id = 1');
@@ -671,17 +711,19 @@
 		{
 
 		}
-
+*/
 		public function testIsTable()
 		{
-
+			$result = $this->db->isTable('plugin');
+			$this->assertTrue($result);
 		}
 
 		public function testIsEmpty()
 		{
-
+			$result = $this->db->isEmpty('plugin');
+			$this->assertFalse($result);
 		}
-
+/*
 		public function testDb_ResetTableList()
 		{
 
@@ -691,12 +733,20 @@
 		{
 
 		}
-
+*/
 		public function testTables()
 		{
+			$list = $this->db->tables();
+
+			$present = in_array('banlist', $list);
+			$this->assertTrue($present);
+
+			$list = $this->db->tables('nologs');
+			$present = in_array('admin_log', $list);
+			$this->assertFalse($present);
 
 		}
-
+/*
 		public function testDb_CopyRow()
 		{
 

@@ -19,6 +19,7 @@ class Unit extends E107Base
 		#$_E107['debug'] = true;
 
 		codecept_debug("Loading ".APP_PATH."/class2.php…");
+		define('E107_DBG_BASIC', true);
 		require_once(APP_PATH."/class2.php");
 	}
 }
