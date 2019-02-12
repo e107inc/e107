@@ -123,7 +123,7 @@ class e_db_pdo implements e_db
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
 	 * @param string $mySQLdefaultdb The database schema to connect to
-	 * @param string $newLink force a new link connection if TRUE. Default FALSE
+	 * @param string $newLink force a new link connection if TRUE. Default false
 	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
 	 * @return boolean true on success, false on error.
 	 */
@@ -261,7 +261,7 @@ class e_db_pdo implements e_db
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$ip = e107::getIPHandler()->getIP(FALSE);
+		$ip = e107::getIPHandler()->getIP(false);
 		$qry = $tp->toDB($log_query);
 
 		$insert = array(
@@ -294,11 +294,11 @@ class e_db_pdo implements e_db
 	 *@param array $query['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
 	* @param object $rli
 	* @return boolean|PDOStatement | resource - as mysql_query() function.
-	*			FALSE indicates an error
+	*			false indicates an error
 	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
 	*			TRUE indicates success in other cases
 	*/
-	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		global $db_time, $queryinfo;
 		$this->queryCount++;
@@ -309,7 +309,7 @@ class e_db_pdo implements e_db
 		{
 			echo "<pre>** $query</pre><br />\n";
 		}
-		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
+		if ($debug !== false || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -603,7 +603,7 @@ class e_db_pdo implements e_db
 	*
 	* @return integer Number of rows or false on error
 	*/
-	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = FALSE, $log_type = '', $log_remark = '')
+	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
 
 		$table = $this->hasLanguage($table);
@@ -620,7 +620,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError("db_Select (SELECT $fields FROM ".$this->mySQLPrefix."{$table} WHERE {$arg})");
-				return FALSE;
+				return false;
 			}
 		}
 		elseif ($arg != '' && ($noWhere !== false) && ($noWhere !== 'default')) // 'default' for BC.
@@ -633,7 +633,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError("db_Select (SELECT {$fields} FROM ".$this->mySQLPrefix."{$table} {$arg})");
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -646,7 +646,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError("db_Select (SELECT {$fields} FROM ".$this->mySQLPrefix."{$table})");
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -667,7 +667,7 @@ class e_db_pdo implements e_db
 	 *
 	 * @access public
 	 */
-	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
@@ -829,7 +829,7 @@ class e_db_pdo implements e_db
 		else
 		{
 		//	$this->dbError("db_Insert ({$query})");
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -888,7 +888,7 @@ class e_db_pdo implements e_db
 	 *
 	 * @access public
 	 */
-	function replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$arg['_REPLACE'] = TRUE;
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
@@ -975,7 +975,7 @@ class e_db_pdo implements e_db
 	*
 	* @access public
 	*/
-	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
@@ -1013,7 +1013,7 @@ class e_db_pdo implements e_db
 		else
 		{
 			$this->dbError("db_Update ({$query})");
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -1307,7 +1307,7 @@ class e_db_pdo implements e_db
 			}
 		}
 		$this->dbError('db_Fetch');
-		return FALSE;				// Failure
+		return false;				// Failure
 	}
 
 
@@ -1327,7 +1327,7 @@ class e_db_pdo implements e_db
 	 *
 	 * @access public
 	 */
-	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($table);
 
@@ -1343,7 +1343,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError("db_Count ({$query})");
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -1363,17 +1363,9 @@ class e_db_pdo implements e_db
 		else
 		{
 			$this->dbError("db_Count({$query})");
-			return FALSE;
+			return false;
 		}
 	}
-
-	/**
-	 * @deprecated use count()
-	 *//*
-	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->count($table, $fields, $arg, $debug, $log_type, $log_remark);
-	}*/
 
 
 	/**
@@ -1412,7 +1404,7 @@ class e_db_pdo implements e_db
 	* <br />
 	* @access public
 	*/
-	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
@@ -1432,7 +1424,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError("db_Delete({$arg})");
-				return FALSE;
+				return false;
 			}
 		}
 		else
@@ -1446,7 +1438,7 @@ class e_db_pdo implements e_db
 			else
 			{
 				$this->dbError('db_Delete ('.$arg.')');
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -1454,7 +1446,7 @@ class e_db_pdo implements e_db
 	/**
 	 * @deprecated use $sql->delete();
 	 *//*
-	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
+	function db_Delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		return $this->delete($table, $arg, $debug, $log_type, $log_remark);
 	}*/
@@ -1490,33 +1482,33 @@ class e_db_pdo implements e_db
 	*		Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
 	*			likely that this will become mandatory at some point
 	* @return boolean | integer
-	*		Returns FALSE if there is an error in the query
+	*		Returns false if there is an error in the query
 	*		Returns TRUE if the query is successful, and it does not return a row count
 	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
 	*/
-	public function gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
+	public function gen($query, $debug = false, $log_type = '', $log_remark = '')
 	{
-		$this->tabset = FALSE;
+		$this->tabset = false;
 
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
 
-		if(strpos($query,'`#') !== FALSE)
+		if(strpos($query,'`#') !== false)
 		{
 			//$query = str_replace('`#','`'.$this->mySQLPrefix,$query);	// This simple substitution should be OK when backticks used
 			// SecretR - reverted back - breaks multi-language
 			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
-		elseif(strpos($query,'#') !== FALSE)
+		elseif(strpos($query,'#') !== false)
 		{	// Deprecated scenario - caused problems when '#' appeared in data - hence use of backticks
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
 
 		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys
 																// the point of requiring backticks round table names - wrecks &#039;, for example
-		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE)
+		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === false)
 		{	// Failed query
 			$this->dbError('db_Select_gen('.$query.')');
-			return FALSE;
+			return false;
 		}
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
@@ -1566,18 +1558,18 @@ class e_db_pdo implements e_db
 	public function hasLanguage($table, $multiple=false)
 	{
 		//When running a multi-language site with english included. English must be the main site language.
-		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
+		// WARNING!!! false is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
 		// Temporary solution, better one is needed
 		$core_pref = $this->getConfig();
-		//if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE)
-		if ((!$this->mySQLlanguage || !$core_pref->get('multilanguage') || !$core_pref->get('sitelanguage') /*|| $this->mySQLlanguage==$core_pref->get('sitelanguage')*/) && $multiple==FALSE)
+		//if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==false)
+		if ((!$this->mySQLlanguage || !$core_pref->get('multilanguage') || !$core_pref->get('sitelanguage') /*|| $this->mySQLlanguage==$core_pref->get('sitelanguage')*/) && $multiple==false)
 		{
 		  	return $table;
 		}
 
 		$this->provide_mySQLaccess();
 
-		if($multiple == FALSE)
+		if($multiple == false)
 		{
 			$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
 			return ($this->isTable($table,$this->mySQLlanguage) ? $mltable : $table);
@@ -1639,7 +1631,7 @@ class e_db_pdo implements e_db
 	* @access public
 	* @return array rows of the database as an array.
 	*/
-	function rows($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
+	function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false)
 	{
 		$list = array();
 		$counter = 1;
@@ -1871,10 +1863,10 @@ class e_db_pdo implements e_db
 	 *
 	 *	@param string $table - table name (no prefix)
 	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
-	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
-	 *	@return array|boolean - FALSE on error, field list array on success
+	 *	@param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
+	 *	@return array|boolean - false on error, field list array on success
 	 */
-	public function fields($table, $prefix = '', $retinfo = FALSE)
+	public function fields($table, $prefix = '', $retinfo = false)
 	{
 		if(!$this->mySQLdefaultdb)
 		{
@@ -1930,10 +1922,10 @@ class e_db_pdo implements e_db
 	 *	@param string $table - table name (no prefix)
 	 *	@param string $fieldid - Numeric offset or field/key name
 	 *	@param string $key - PRIMARY|INDEX|UNIQUE - type of key when searching for key name
-	 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all field info
-	 *	@return array|boolean - FALSE on error, field information on success
+	 *	@param boolean $retinfo = false - just returns true|false. TRUE - returns all field info
+	 *	@return array|boolean - false on error, field information on success
 	 */
-    function field($table,$fieldid="",$key="", $retinfo = FALSE)
+    function field($table,$fieldid="",$key="", $retinfo = false)
 	{
 		if(!$this->mySQLdefaultdb)
 		{
@@ -1970,7 +1962,7 @@ class e_db_pdo implements e_db
 				$c++;
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 
@@ -1980,10 +1972,10 @@ class e_db_pdo implements e_db
 	 *	@param string $table - table name (no prefix)
 	 *	@param string $keyname - Name of the key to
 	 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
-	 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
-	 *	@return array|boolean - FALSE on error, key information on success
+	 *	@param boolean $retinfo = false - just returns true|false. TRUE - returns all key info
+	 *	@return array|boolean - false on error, key information on success
 	 */
-	function index($table, $keyname, $fields=null, $retinfo = FALSE)
+	function index($table, $keyname, $fields=null, $retinfo = false)
 	{
 		if(!$this->mySQLdefaultdb)
 		{
@@ -2037,7 +2029,7 @@ class e_db_pdo implements e_db
 				return true;
 			}
 		}
-		return FALSE;
+		return false;
 	}
 
 
@@ -2327,7 +2319,7 @@ class e_db_pdo implements e_db
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 
 		if(!$this->isTable($newtable))
@@ -2610,7 +2602,7 @@ class e_db_pdo implements e_db
 	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
 	 *</code>
 	 *	@param string $tableName - table name, without any prefixes (language or general)
-	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
+	 *	@return boolean|array - false if not found/not to be used. Array of field names and processing types and null overrides if found
 	 */
 	public function getFieldDefs($tableName)
 	{
@@ -2619,7 +2611,7 @@ class e_db_pdo implements e_db
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
 				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php', FILE_TEXT);
-				if ($temp !== FALSE)
+				if ($temp !== false)
 				{
 					$typeDefs = e107::unserialize($temp);
 					unset($temp);
@@ -2636,7 +2628,7 @@ class e_db_pdo implements e_db
 					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
 				}
 				unset($sqlFiles);
-				$found = FALSE;
+				$found = false;
 				foreach ($searchArray as $defFile)
 				{
 					//echo "Check: {$defFile}, {$tableName}<br />";
@@ -2659,10 +2651,10 @@ class e_db_pdo implements e_db
 	/**
 	 *	Search the specified file for a field type definition of the specified table.
 	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
-	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
+	 *	Always also update $this->dbFieldDefs[$tableName] - false if not found, data if found
 	 *	@param	string $defFile - file name, including path
 	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
+	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
 	 */
 	protected function loadTableDef($defFile, $tableName)
 	{
@@ -2671,7 +2663,7 @@ class e_db_pdo implements e_db
 		if (is_readable($defFile))
 		{
 			// Read the file using the array handler routines
-			// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
+			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
 			$temp = file_get_contents($defFile);
 			// Strip any comments  (only /*...*/ supported)
 			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
@@ -2689,7 +2681,7 @@ class e_db_pdo implements e_db
 					$fileData = e107::serialize($typeDefs[$tableName], false);
 
 					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
-					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 
 					}
 
@@ -2709,9 +2701,9 @@ class e_db_pdo implements e_db
 	/**
 	 *	Creates a field type definition from the structure of the table in the DB
 	 *	Generate and save a cache file in the e_CACHE_DB directory,
-	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
+	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
 	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
+	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
 	 */
 	protected function makeTableDef($tableName)
 	{
@@ -2777,8 +2769,8 @@ class e_db_pdo implements e_db
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
-		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
-		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+		if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
+		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 			$mes = e107::getMessage();
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
 			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
