@@ -117,6 +117,12 @@
 			$result = $this->db->database("missing_database");
 			$this->assertFalse($result);
 
+			$result = $this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX,  true);
+			$this->assertTrue($result);
+			$this->assertEquals("`e107_tests`.e107_", $this->db->mySQLPrefix);
+
+
+
 		}
 
 		public function testGetCharSet()
@@ -146,6 +152,11 @@
 			$this->assertArrayHasKey('Index', $actual[1]);
 			$this->assertArrayHasKey('Time', $actual[1]);
 			$this->assertArrayHasKey('Memory', $actual[1]);
+
+			$this->db->debugMode(false);
+			$result = $this->db->db_Mark_Time("Testing");
+			$this->assertNull($result);
+			
 
 		}
 
@@ -217,7 +228,7 @@
 			$this->assertEquals($expected,$result);
 
 
-			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', ),);
+			$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => 'e107', ),);
 			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
