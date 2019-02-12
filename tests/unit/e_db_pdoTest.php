@@ -156,7 +156,7 @@
 			$this->db->debugMode(false);
 			$result = $this->db->db_Mark_Time("Testing");
 			$this->assertNull($result);
-			
+
 
 		}
 
@@ -241,6 +241,12 @@
 			$result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
+			$this->db->select('plugin');
+			$result = $this->db->retrieve(null, null, null, true);
+			$this->assertArrayHasKey('plugin_name', $result[14]);
+
+			$result = $this->db->retrieve('plugin', '*', null, true);
+			$this->assertArrayHasKey('plugin_name', $result[14]);
 
 
 		}
