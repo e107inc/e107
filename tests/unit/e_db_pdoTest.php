@@ -150,6 +150,26 @@
 		}
 
 
+		public function testDb_IsLang()
+		{
+			$result = $this->db->db_IsLang('news', false);
+			$this->assertEquals('news', $result);
+
+			$this->db->copyTable('news','lan_spanish_news',true, true);
+
+			e107::getConfig()->set('multilanguage',true)->save();
+
+			$this->db->setLanguage('Spanish');
+
+			$result = $this->db->db_IsLang('news', false);
+			$this->assertEquals('lan_spanish_news', $result);
+
+			$this->db->setLanguage('English');
+
+			$this->db->dropTable('lan_spanish_news');
+		}
+
+
 
 		public function testDb_Write_log()
 		{
@@ -413,6 +433,14 @@
 			$result = $this->db->db_QueryCount();
 			$this->assertEquals(2,$result);
 
+		}
+
+
+		public function testGetLastQuery()
+		{
+			$this->db->select('user');
+			$result = $this->db->getLastQuery();
+			$this->assertEquals("SELECT * FROM e107_user", $result);
 		}
 
 
@@ -719,8 +747,6 @@
 
 			$list = $this->db->db_TableList('lan');
 			$this->assertEmpty($list);
-			//var_dump($list);
-
 		}
 
 		public function testTables()
@@ -819,6 +845,27 @@
 
 		public function testGetFieldDefs()
 		{
+			$actual = $this->db->getFieldDefs('plugin');
+
+			$expected = array (
+			  '_FIELD_TYPES' =>
+			  array (
+			    'plugin_id' => 'int',
+			    'plugin_name' => 'escape',
+			    'plugin_version' => 'escape',
+			    'plugin_path' => 'escape',
+			    'plugin_installflag' => 'int',
+			    'plugin_addons' => 'escape',
+			    'plugin_category' => 'escape',
+			  ),
+			  '_NOTNULL' =>
+			  array (
+			    'plugin_id' => '',
+			    'plugin_addons' => '',
+			  ),
+			);
+
+			$this->assertEquals($expected, $actual);
 
 		}
 
