@@ -10,7 +10,7 @@ use Codeception\Lib\ModuleContainer;
 abstract class E107Base extends Base
 {
 	const APP_PATH_E107_CONFIG = APP_PATH."/e107_config.php";
-	public $e107_mySQLprefix = 'e107_';
+	const E107_MYSQL_PREFIX = 'e107_';
 	protected $preparer = null;
 
 	public function __construct(ModuleContainer $moduleContainer, $config = null)
@@ -49,7 +49,7 @@ abstract class E107Base extends Base
 		$e107_config['mySQLuser'] = $db->_getDbUsername();
 		$e107_config['mySQLpassword'] = $db->_getDbPassword();
 		$e107_config['mySQLdefaultdb'] = $db->_getDbName();
-		$e107_config['mySQLprefix'] = $this->e107_mySQLprefix;
+		$e107_config['mySQLprefix'] = self::E107_MYSQL_PREFIX;
 
 		$e107_config_contents = $twig->render('e107_config.php', $e107_config);
 		file_put_contents(self::APP_PATH_E107_CONFIG, $e107_config_contents);
