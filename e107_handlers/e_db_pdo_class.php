@@ -495,13 +495,24 @@ class e_db_pdo implements e_db
 		// fetch mode
 		if(empty($table))
 		{
+
+			if(!$multi)
+			{
+				 return $this->fetch();
+			}
+
 			$ret = array();
-			if(!$multi) return $this->fetch();
 
 			while($row = $this->fetch())
 			{
-				if(null !== $indexField) $ret[$row[$indexField]] = $row;
-				else $ret[] = $row;
+				if(null !== $indexField)
+				{
+					 $ret[$row[$indexField]] = $row;
+				}
+				else
+				{
+					 $ret[] = $row;
+				}
 			}
 			return $ret;
 		}
@@ -511,14 +522,22 @@ class e_db_pdo implements e_db
 		if($table && !$where && is_bool($fields))
 		{
 			// table is the query, fields used for multi
-			if($fields) $mode = 'multi';
-			else $mode = 'single';
+			if($fields)
+			{
+				 $mode = 'multi';
+			}
+			else
+			{
+				 $mode = 'single';
+			}
+
 			$fields = null;
 		}
 		elseif($fields && '*' !== $fields && strpos($fields, ',') === false && $where)
 		{
 			$mode = 'single';
 		}
+
 		if($multi)
 		{
 			$mode = 'multi';
@@ -1492,7 +1511,7 @@ class e_db_pdo implements e_db
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
-			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
+			{
 				/** @var PDOStatement $resource */
 				$resource = $this->mySQLresult;
 				$tmp = $resource->rowCount();
