@@ -234,12 +234,12 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	* @return void
+	*
 	* @param string $sMarker
 	* @desc Enter description here...
-	* @access private
+	 * @return null|true
 	*/
-	function markTime($sMarker)
+	public function markTime($sMarker)
 	{
 		if($this->debugMode !== true)
 		{
@@ -247,6 +247,8 @@ class e_db_pdo implements e_db
 		}
 
 		$this->dbg->Mark_Time($sMarker);
+
+		return true;
 	}
 
 
@@ -1246,51 +1248,25 @@ class e_db_pdo implements e_db
 			$type='both';
 		}
 
-		if(defined('MYSQL_ASSOC'))
+
+		switch ($type)
 		{
-			switch ($type)
-			{
-					case 'both':
-					case 3: // MYSQL_BOTH:
-						$type = PDO::FETCH_BOTH; // 3
-					break;
+				case 'both':
+				case 3: // MYSQL_BOTH:
+					$type = PDO::FETCH_BOTH; // 3
+				break;
 
-					case 'num':
-					case 2; // MYSQL_NUM: // 2
-						$type = PDO::FETCH_NUM;
-					break;
+				case 'num':
+				case 2; // MYSQL_NUM: // 2
+					$type = PDO::FETCH_NUM;
+				break;
 
-					default:
-					case 'assoc':
-					case 1; //: // 1
-
-						$type =  PDO::FETCH_ASSOC;
-					break;
-				}
+				default:
+				case 'assoc':
+				case 1; // MYSQL_ASSOC // 1
+					$type =  PDO::FETCH_ASSOC;
+				break;
 		}
-		else
-		{
-
-			// convert type to PDO.
-
-				switch ($type)
-				{
-					case 'both': // 3
-						$type = PDO::FETCH_BOTH;
-					break;
-
-					case 'num': // 2
-						$type = PDO::FETCH_NUM;
-					break;
-
-					case 'assoc': // 1
-					default:
-						$type = PDO::FETCH_ASSOC;
-					break;
-				}
-
-		}
-
 
 		$b = microtime();
 
@@ -1300,14 +1276,17 @@ class e_db_pdo implements e_db
 			$resource = $this->mySQLresult;
 			$row = $resource->fetch($type);
 			$this->traffic->Bump('db_Fetch', $b);
+
 			if ($row)
 			{
 				$this->dbError('db_Fetch');
 				return $row;		// Success - return data
 			}
 		}
+
 		$this->dbError('db_Fetch');
-		return false;				// Failure
+
+		return false;
 	}
 
 
