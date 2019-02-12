@@ -1563,7 +1563,7 @@ class e_db_pdo implements e_db
 	* @access private
 	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
-	function hasLanguage($table, $multiple=false)
+	public function hasLanguage($table, $multiple=false)
 	{
 		//When running a multi-language site with english included. English must be the main site language.
 		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
@@ -2344,7 +2344,16 @@ class e_db_pdo implements e_db
 	}
 
 
-
+	/**
+	 * Drop/delete table and all it's data
+	 * @param string $table name without the prefix
+	 * @return bool|int
+	 */
+	public function dropTable($table)
+	{
+		$name = $this->mySQLPrefix.strtolower($table);
+		return $this->gen("DROP TABLE IF EXISTS ".$name);
+	}
 
 	/**
 	 * Dump MySQL Table(s) to a file in the Backup folder.
@@ -2530,16 +2539,20 @@ class e_db_pdo implements e_db
 		$this->mySQLlastErrText = '';
 	}
 
-	function getLastQuery()
+	/**
+	 * Returns the last database query used.
+	 * @return string
+	 */
+	public function getLastQuery()
 	{
 		return $this->mySQLlastQuery;
 	}
 
+
+
 	private function setSQLMode()
 	{
-
 		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
-
 	}
 
 
@@ -2554,13 +2567,31 @@ class e_db_pdo implements e_db
 		$this->db_Query("SET NAMES `$charset`");
 
 		$this->mySQLcharset = $charset;
-
 	}
 
 
 	public function getCharset()
 	{
 		return $this->mySQLcharset;
+	}
+
+
+	/**
+	 * Set the database language
+	 * @param string $lang French, German etc.
+	 */
+	public function setLanguage($lang)
+	{
+		$this->mySQLlanguage = $lang;
+	}
+
+	/**
+	 * Get the current database language. eg. English, French etc.
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return $this->mySQLlanguage;
 	}
 
 	/**

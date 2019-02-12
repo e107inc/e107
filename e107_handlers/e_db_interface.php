@@ -369,7 +369,37 @@
 		public function columnCount();
 
 
+		/**
+		 * Set the current database language
+		 * @param string $lang English, French etc.
+		 * @return null
+		 */
+		public function setLanguage($lang);
 
 
+
+		/**
+		 * Get the current database language
+		 * @return string $lang English, French etc.
+		 */
+		public function getLanguage();
+
+
+
+		/**
+		 * Drop/delete table and all it's data
+		 * @param string $table name without the prefix
+		 * @return bool|int
+		 */
+		public function dropTable($table);
+
+
+
+
+		/**
+		 * Returns the last database query used.
+		 * @return string
+		 */
+		function getLastQuery();
 
 }

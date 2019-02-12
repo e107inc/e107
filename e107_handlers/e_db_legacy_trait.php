@@ -99,7 +99,7 @@
 
 		function db_IsLang($table, $multiple=false)
 		{
-			$this->hasLanguage($table, $multiple);
+			return $this->hasLanguage($table, $multiple);
 		}
 
 
