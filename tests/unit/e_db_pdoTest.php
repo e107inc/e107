@@ -770,7 +770,7 @@
 		public function testDb_CopyRow()
 		{
 			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
-			$this->assertEquals(3,$result);
+			$this->assertGreaterThan(1,$result);
 
 			$result = $this->db->db_CopyRow('bla');
 			$this->assertFalse($result);
