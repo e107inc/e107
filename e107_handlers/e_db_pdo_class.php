@@ -6,9 +6,9 @@
  */
 
 // Legacy Fix.
-define('MYSQL_ASSOC', 'assoc');
-define('MYSQL_NUM', 'num');
-define('MYSQL_BOTH', 'both');
+define('MYSQL_ASSOC', 1);
+define('MYSQL_NUM', 2);
+define('MYSQL_BOTH', 3);
 
 
 /**
