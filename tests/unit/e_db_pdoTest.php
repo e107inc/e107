@@ -282,7 +282,7 @@
 
 		public function testDb_Select_gen()
 		{
-			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.2' WHERE user_id = 1");
+			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.3' WHERE user_id = 1");
 			$this->assertEquals(1,$result);
 
 		}
@@ -325,7 +325,7 @@
 		
 			$this->db->insert('generic', $insert);
 			$actual = $this->db->lastInsertId();
-			$this->assertEquals(2,$actual);
+			$this->assertGreaterThan(0,$actual);
 
 		}
 
@@ -769,7 +769,7 @@
 		public function testDb_CopyRow()
 		{
 			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
-			$this->assertEquals(2,$result);
+			$this->assertEquals(3,$result);
 
 			$result = $this->db->db_CopyRow('bla');
 			$this->assertFalse($result);
