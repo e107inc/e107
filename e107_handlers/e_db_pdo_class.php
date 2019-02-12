@@ -1262,12 +1262,6 @@ class e_db_pdo implements e_db
 	*/
 	function fetch($type = null)
 	{
-		if(defined('e_LEGACY_MODE') && !is_int($type))
-		{
-			$type='both';
-		}
-
-
 		switch ($type)
 		{
 				case 'both':
