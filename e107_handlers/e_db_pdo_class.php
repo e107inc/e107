@@ -490,7 +490,7 @@ class e_db_pdo implements e_db
 	 * @param boolean $debug
 	 * @return mixed
 	 */
-	public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
+	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
 		// fetch mode
 		if(empty($table))
