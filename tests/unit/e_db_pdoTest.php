@@ -119,7 +119,8 @@
 
 			$result = $this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX,  true);
 			$this->assertTrue($result);
-			$this->assertEquals("`e107_tests`.e107_", $this->db->mySQLPrefix);
+			$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
+				$this->db->mySQLPrefix);
 
 
 
@@ -197,7 +198,7 @@
 			  'dblog_user_id' => '1',
 			);
 
-			$this->assertEquals($data, $expected);
+			$this->assertEquals($expected, $data);
 		}
 
 
