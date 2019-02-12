@@ -246,6 +246,7 @@
 			$this->assertArrayHasKey('plugin_name', $result[14]);
 
 			$result = $this->db->retrieve('plugin', '*', null, true);
+
 			$this->assertArrayHasKey('plugin_name', $result[14]);
 
 
@@ -339,10 +340,10 @@
 
 		}
 
-		public function testRowCount()
+		public function testDb_Rows()
 		{
 			$this->db->retrieve('plugin', '*');
-			$result = $this->db->rowCount();
+			$result = $this->db->db_Rows();
 
 			$this->assertGreaterThan(10,$result);
 
@@ -615,54 +616,36 @@
 			$actual = $this->db->delete('tmp_unknown_table');
 			$this->assertFalse($actual, 'Trying to delete records from an invalid table should return FALSE!');
 		}
-/*
+
 		public function testDb_Delete()
 		{
 			$expected = $this->db->count('tmp');
 			$actual = $this->db->db_Delete('tmp');
 			$this->assertEquals($expected, $actual, 'Unable to delete all records.');
 		}
-/*
-		public function testDb_Rows()
-		{
 
-		}
-*/
+/*
 		public function testDb_SetErrorReporting()
 		{
 			$this->db->db_SetErrorReporting(false);
 			// fixme - getErrorReporting.
 		}
-/*
-		public function testGen()
-		{
 
-		}
-
-		public function testDb_Select_gen()
-		{
-
-		}
 
 		public function testMl_check()
 		{
 
 		}
 
-		public function testDb_IsLang()
-		{
 
-		}
-
+*/
 		public function testDb_getList()
 		{
-
+			$this->db->select('plugin', '*');
+			$rows = $this->db->db_getList();
+			$this->assertArrayHasKey('plugin_name', $rows[2]);
 		}
-
-		public function testRows()
-		{
-
-		}
+/*
 
 		public function testMax()
 		{
@@ -670,11 +653,6 @@
 		}
 
 		public function testSelectTree()
-		{
-
-		}
-
-		public function testDb_QueryCount()
 		{
 
 		}
@@ -699,11 +677,14 @@
 			$this->assertEquals('plugin_version', $result);
 
 		}
-/*
+
 		public function testColumnCount()
 		{
-			$this->db->columnCount();
-		}*/
+			$this->db->select('user');
+			$result = $this->db->columnCount();
+			$this->assertEquals(27, $result);
+
+		}
 
 		public function testField()
 		{
