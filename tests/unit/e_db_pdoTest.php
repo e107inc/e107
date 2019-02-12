@@ -172,9 +172,15 @@
 			e107::getConfig()->set('multilanguage',true)->save();
 
 			$this->db->setLanguage('Spanish');
+			$this->db->resetTableList(); // reload the table list so it includes the copied table above.
 
 			$result = $this->db->db_IsLang('news', false);
 			$this->assertEquals('lan_spanish_news', $result);
+
+
+			$result = $this->db->db_IsLang('news', true);
+			$expected = array ('spanish' => array ('e107_news' => 'e107_lan_spanish_news', ),);
+			$this->assertEquals($expected, $result);
 
 			$this->db->setLanguage('English');
 
@@ -832,6 +838,8 @@
 			$compressedSize = filesize($result);
 			$this->assertLessThan($uncompressedSize, $compressedSize);
 
+			$result = $this->db->backup('missing_table', null, $opts);
+			$this->assertFalse($result);
 
 		}
 
