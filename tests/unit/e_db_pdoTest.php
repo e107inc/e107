@@ -777,6 +777,12 @@
 			$result = $this->db->db_CopyRow('bla', 'non_exist');
 			$this->assertFalse($result);
 
+			$result = $this->db->db_CopyRow(null);
+			$this->assertFalse($result);
+
+			$result = $this->db->db_CopyRow('news', null);
+			$this->assertFalse($result);
+
 		}
 
 		public function testDb_CopyTable()
@@ -802,6 +808,7 @@
 			);
 
 			$result = $this->db->backup('user,core_media_cat', null, $opts);
+			$uncompressedSize = filesize($result);
 
 			$tmp = file_get_contents($result);
 
@@ -810,6 +817,32 @@
 			$this->assertContains("INSERT INTO `e107_user` VALUES (1", $tmp);
 			$this->assertContains("CREATE TABLE `e107_core_media_cat`", $tmp);
 
+			$result = $this->db->backup('*', null, $opts);
+			$size = filesize($result);
+			$this->assertGreaterThan(100000,$size);
+
+			$opts = array(
+				'gzip'      => true,
+				'nologs'    => false,
+				'droptable' => false,
+			);
+
+			$result = $this->db->backup('user,core_media_cat', null, $opts);
+			$compressedSize = filesize($result);
+			$this->assertLessThan($uncompressedSize, $compressedSize);
+
+
+		}
+
+
+		public function testGetLanguage()
+		{
+			$result = $this->db->getLanguage();
+			$this->assertEquals('English', $result);
+
+			$this->db->setLanguage('French');
+			$result = $this->db->getLanguage();
+			$this->assertEquals('French', $result);
 
 		}
 /*
