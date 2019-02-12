@@ -772,6 +772,13 @@
 		{
 			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
 			$this->assertEquals(2,$result);
+
+			$result = $this->db->db_CopyRow('bla');
+			$this->assertFalse($result);
+
+			$result = $this->db->db_CopyRow('bla', 'non_exist');
+			$this->assertFalse($result);
+
 		}
 
 		public function testDb_CopyTable()
@@ -780,6 +787,11 @@
 			$result = $this->db->retrieve('news_bak', 'news_title', 'news_id = 1');
 
 			$this->assertEquals('Welcome to e107', $result);
+
+
+			$result = $this->db->db_CopyTable('non_exist', 'news_bak', false, true);
+			$this->assertFalse($result);
+
 		}
 
 
