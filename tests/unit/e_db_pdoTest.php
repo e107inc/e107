@@ -790,6 +790,9 @@
 
 			$list = $this->db->db_TableList('lan');
 			$this->assertEmpty($list);
+
+			$list = $this->db->db_TableList('invalid');
+			$this->assertEmpty($list);
 		}
 
 		public function testTables()
