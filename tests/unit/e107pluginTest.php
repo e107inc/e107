@@ -26,16 +26,20 @@
 				$this->assertTrue(false, "Couldn't e107_plugin object");
 			}
 
+
+
 		}
 
 
 		public function testGetPluginRecord()
 		{
-			$result = $this->ep::getPluginRecord('banner');
+			$obj = $this->ep;
+			$result = $obj::getPluginRecord('banner');
 
 		//	print_r($result);
 
 			$this->assertEquals("LAN_PLUGIN_BANNER_NAME", $result['plugin_name']);
+
 
 		}
 
