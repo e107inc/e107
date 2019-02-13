@@ -230,6 +230,12 @@
 			$this->assertEquals($expected,$result);
 
 
+			$result = $this->db->retrieve('user', 'missing_field, user_name', 'user_id = 1');
+			$this->assertEquals(array(),$result);
+
+			$result = $this->db->retrieve('user', 'missing_field', 'user_id = 1');
+			$this->assertEmpty($result);
+
 			$this->db->select('user', 'user_id, user_name', 'user_id = 1');
 			$result = $this->db->retrieve(null);
 			$this->assertEquals($expected,$result);
@@ -253,9 +259,12 @@
 			$this->assertArrayHasKey('plugin_name', $result[14]);
 
 			$result = $this->db->retrieve('plugin', '*', null, true);
-
 			$this->assertArrayHasKey('plugin_name', $result[14]);
 
+
+			$result = $this->db->retrieve('plugin', 'plugin_id, plugin_name, plugin_path', '', true, 'plugin_path');
+			$this->assertArrayHasKey('banner', $result);
+			$this->assertArrayHasKey('plugin_name', $result['banner']);
 
 		}
 
@@ -284,6 +293,10 @@
 
 			$result = $this->db->db_Select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
 			$this->assertEquals(1, $result);
+
+			$result = $this->db->db_Select('user', 'missing_field, user_name', 'WHERE user_id = 1', true);
+			$this->assertFalse($result);
+
 		}
 
 
@@ -561,6 +574,12 @@
 
 			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'plugin ','generic');
 			$this->assertGreaterThan(20, $result);
+
+			$result = $this->db->db_Count('user','(*)', 'user_missing = 1');
+			$this->assertFalse($result);
+
+			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
+			$this->assertFalse($result);
 		//var_dump($result);
 			//$this->assertEquals(1,$result);
 		}
