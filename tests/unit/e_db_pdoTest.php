@@ -297,6 +297,22 @@
 			$result = $this->db->db_Select('user', 'missing_field, user_name', 'WHERE user_id = 1', true);
 			$this->assertFalse($result);
 
+
+			$result = $this->db->db_Select('user', 'user_id', 'WHERE user_id = 1', true, true); // debug enabled
+			$log = e107::getDebug()->getLog();
+			$this->assertEquals(1, $result);
+
+			$found = false;
+			foreach($log as $val)
+			{
+				if($val['Message'] === "SELECT user_id FROM e107_user WHERE user_id = 1")
+				{
+					$found = true;
+				}
+			}
+
+			$this->assertTrue($found, "Couldn't find debug log message for db_Select() item.");
+
 		}
 
 
@@ -373,6 +389,10 @@
 		{
 			$actual = $this->db->db_Insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$this->assertTrue($actual);
+
+			$actual = $this->db->db_Insert('missing_table', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
+			$this->assertFalse($actual);
+
 		}
 
 		public function testReplace()
