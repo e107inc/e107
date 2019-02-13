@@ -2265,15 +2265,16 @@ class e_db_mysql
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
 
-		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
+		if (false ===  $this->gen('SHOW COLUMNS FROM '.$prefix.$table))
 		{
-			return FALSE;		// Error return
+			return false;		// Error return
 		}
+		
 		$ret = array();
 		
         if ($this->rowCount() > 0)
 		{
-			while ($row = $this->fetch($result))
+			while ($row = $this->fetch())
 			{
 				if ($retinfo)
 				{
@@ -2285,6 +2286,7 @@ class e_db_mysql
 				}
 			}
 		}
+
 		return $ret;
 	}
 
