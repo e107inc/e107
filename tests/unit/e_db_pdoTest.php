@@ -30,7 +30,7 @@
 				$this->fail("Couldn't load e_db_pdo object");
 			}
 
-
+			define('e_LEGACY_MODE', true);
 			$this->db->__construct();
 			$this->loadConfig();
 
@@ -527,7 +527,6 @@
 			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
 			$this->assertTrue($check);
 
-			define('e_LEGACY_MODE', true);
 			$this->db->select('user', '*', 'user_id = 1');
 			$row = $this->db->db_Fetch();
 			$this->assertEquals("e107", $row['user_name']);

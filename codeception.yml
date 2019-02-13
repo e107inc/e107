@@ -6,6 +6,7 @@ paths:
     envs: tests/_envs
 actor_suffix: Tester
 settings:
+    shuffle: true
     bootstrap: _bootstrap.php
 coverage:
     enabled: true
