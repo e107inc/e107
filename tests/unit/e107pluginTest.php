@@ -352,6 +352,12 @@
 				unset($actual[$unimportant_key]);
 			}
 
+			// Filter out cruft from e_LEGACY_MODE database output
+			foreach ($actual as $key => $value)
+			{
+				if (is_int($key)) unset($actual[$key]);
+			}
+
 			$this->assertEquals($expected,$actual);
 
 			$status = $this->ep->XmlSiteLinks('uninstall',$plugVars);

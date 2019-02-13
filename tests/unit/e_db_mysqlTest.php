@@ -28,6 +28,7 @@
 				$this->fail("Couldn't load e_db_mysql object");
 			}
 
+			define('e_LEGACY_MODE', true);
 			$this->db->__construct();
 			$this->loadConfig();
 
@@ -180,11 +181,13 @@
 			$data = $this->db->retrieve('dblog','dblog_title, dblog_user_id', "dblog_type = ".$log_type. " AND dblog_title = '".$remark ."' ");
 
 			$expected = array (
-			  'dblog_title' => 'e_db_pdoTest',
-			  'dblog_user_id' => '1',
+				'dblog_title' => 'e_db_pdoTest',
+				'dblog_user_id' => '1',
+				0 => 'e_db_pdoTest',
+				1 => '1'
 			);
 
-			$this->assertEquals($data, $expected);
+			$this->assertEquals($expected, $data);
 		}
 
 
@@ -205,7 +208,7 @@
 
 		public function testRetrieve()
 		{
-			$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
+			$expected = array ('user_id' => '1', 'user_name' => 'e107', 0 => '1', 1 => 'e107');
 			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
 			$this->assertEquals($expected,$result);
 
@@ -215,7 +218,7 @@
 			$this->assertEquals($expected,$result);
 
 
-			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', ),);
+			$expected = array (  0 =>   array (   'user_id' => '1', 'user_name' => 'e107', 0 => '1', 1 => 'e107'),);
 			$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
@@ -277,7 +280,10 @@
 			$expected = array(
 				'tmp_ip' => '127.0.0.1',
 				'tmp_time' => '12345435',
-				'tmp_info' => 'Insert test'
+				'tmp_info' => 'Insert test',
+				0 => '127.0.0.1',
+				1 => '12345435',
+				2 => 'Insert test'
 			);
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1" AND tmp_time = 12345435');
 			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
@@ -304,8 +310,10 @@
 				);
 
 			$this->db->insert('generic', $insert);
-			$actual = $this->db->lastInsertId();
-			$this->assertEquals(2,$actual);
+			$first = $this->db->lastInsertId();
+			$this->db->insert('generic', $insert);
+			$next = $this->db->lastInsertId();
+			$this->assertEquals(1, $next - $first);
 
 		}
 
@@ -394,7 +402,10 @@
 			$expected = array(
 				'tmp_ip' => '127.0.0.1',
 				'tmp_time' => '1234568',
-				'tmp_info' => 'Update test 3'
+				'tmp_info' => 'Update test 3',
+				0 => '127.0.0.1',
+				1 => '1234568',
+				2 => 'Update test 3'
 			);
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1"');
 			$this->assertEquals($expected, $actual, 'Test 4: Updated content doesn\'t match the retrieved content');
@@ -500,7 +511,6 @@
 			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
 			$this->assertTrue($check);
 
-			define('e_LEGACY_MODE', true);
 			$this->db->select('user', '*', 'user_id = 1');
 			$row = $this->db->db_Fetch();
 			$this->assertEquals("e107", $row['user_name']);
@@ -770,8 +780,13 @@
 
 		public function testDb_CopyRow()
 		{
-			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
-			$this->assertEquals(2,$result);
+			$count_args = ['news', '(*)', ''];
+			$copy_args = ['news', '*', 'news_id = 1'];
+
+			$initial_count = $this->db->count(...$count_args);
+			$this->db->db_CopyRow(...$copy_args);
+			$next_count = $this->db->count(...$count_args);
+			$this->assertEquals(1, $next_count - $initial_count);
 		}
 
 		public function testDb_CopyTable()
