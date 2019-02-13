@@ -266,6 +266,12 @@
 			$this->assertArrayHasKey('banner', $result);
 			$this->assertArrayHasKey('plugin_name', $result['banner']);
 
+			// Fetch only mode
+			$this->db->select('plugin');
+			$result = $this->db->retrieve(null, 'plugin_id, plugin_name, plugin_path', '', true, 'plugin_path');
+			$this->assertArrayHasKey('banner', $result);
+			$this->assertArrayHasKey('plugin_name', $result['banner']);
+
 		}
 
 		public function testSelect()
@@ -390,10 +396,10 @@
 			$actual = $this->db->db_Insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$this->assertTrue($actual);
 
-		//	$this->db->debugMode(true);// todo causes a hang while testing. (see db_Query() )
+			$this->db->debugMode(true);// todo causes a hang while testing. (see db_Query() )
 			$actual = $this->db->db_Insert('missing_table', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'test 2'));
 			$this->assertFalse($actual);
-		//	$this->db->debugMode(false);
+			$this->db->debugMode(false);
 
 		}
 
@@ -746,7 +752,7 @@
 
 			$result = $this->db->escape("Can't", true);
 			$this->assertEquals("Can't", $result);
-		
+
 		}
 
 
