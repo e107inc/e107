@@ -309,7 +309,7 @@ class e_db_pdo implements e_db
 
 		if ($debug == 'now')
 		{
-			echo "<pre>** $query</pre><br />\n";
+			$this->dbg->log($query);
 		}
 		if ($debug !== false || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{

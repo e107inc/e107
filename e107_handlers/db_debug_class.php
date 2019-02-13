@@ -57,6 +57,15 @@
 			return $this->aTimeMarks;
 		}
 
+		/**
+		 * Return a list of currently logged items
+		 * @return array
+		 */
+		public function getLog()
+		{
+			return $this->aLog;
+		}
+
 
 		function e107_db_debug()
 		{
