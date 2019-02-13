@@ -1672,11 +1672,11 @@ class e_db_pdo implements e_db
 	 * @param $table (without the prefix)
 	 * @param $field
 	 * @param string $where (optional)
-	 * @return bool|resource
+	 * @return mixed
 	 */
 	public function max($table, $field, $where='')
 	{
-		$qry = "SELECT MAX(".$field.") FROM `".$this->mySQLPrefix.$table."` ";
+		$qry = "SELECT MAX(".$field.") FROM ".$this->mySQLPrefix.$table;
 
 		if(!empty($where))
 		{
