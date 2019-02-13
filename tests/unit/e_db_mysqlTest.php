@@ -28,6 +28,7 @@
 				$this->fail("Couldn't load e_db_mysql object");
 			}
 
+			define('e_LEGACY_MODE', true);
 			$this->db->__construct();
 			$this->loadConfig();
 
@@ -184,7 +185,8 @@
 			  'dblog_user_id' => '1',
 			);
 
-			$this->assertEquals($data, $expected);
+
+			$this->assertEquals($expected, $data);
 		}
 
 
@@ -304,8 +306,10 @@
 				);
 
 			$this->db->insert('generic', $insert);
-			$actual = $this->db->lastInsertId();
-			$this->assertEquals(2,$actual);
+			$first = $this->db->lastInsertId();
+			$this->db->insert('generic', $insert);
+			$next = $this->db->lastInsertId();
+			$this->assertEquals(1, $next - $first);
 
 		}
 
@@ -500,7 +504,6 @@
 			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
 			$this->assertTrue($check);
 /*
-			define('e_LEGACY_MODE', true);
 			$this->db->select('user', '*', 'user_id = 1');
 			$row = $this->db->db_Fetch();
 			$this->assertEquals("e107", $row['user_name']);
@@ -770,8 +773,13 @@
 
 		public function testDb_CopyRow()
 		{
-			$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
-			$this->assertGreaterThan(1,$result);
+			$count_args = ['news', '(*)', ''];
+			$copy_args = ['news', '*', 'news_id = 1'];
+
+			$initial_count = $this->db->count(...$count_args);
+			$this->db->db_CopyRow(...$copy_args);
+			$next_count = $this->db->count(...$count_args);
+			$this->assertEquals(1, $next_count - $initial_count);
 		}
 
 		public function testDb_CopyTable()
@@ -936,6 +944,7 @@
 				$this->fail("Failed to get field list from secondary database:\n".$err);
 
 			}
+
 
 			$this->assertEquals('test_id', $res[0], print_r($res,true));
 
