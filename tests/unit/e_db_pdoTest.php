@@ -698,13 +698,17 @@
 			$rows = $this->db->db_getList();
 			$this->assertArrayHasKey('plugin_name', $rows[2]);
 		}
-/*
+
 
 		public function testMax()
 		{
+			$result = $this->db->max('user', 'user_pwchange');
+			$this->assertEquals('1541074253', $result);
 
 		}
 
+
+/*
 		public function testSelectTree()
 		{
 
@@ -1010,6 +1014,7 @@
 			{
 				$this->fail("Failed to create secondary database");
 			}
+
 
 			// use new database
 			$use = $xql->database($database,MPREFIX,true);
