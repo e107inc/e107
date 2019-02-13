@@ -28,7 +28,11 @@
 				$this->fail("Couldn't load e_db_mysql object");
 			}
 
-			define('e_LEGACY_MODE', true);
+
+			// Simulate PHP 5.6
+			define('MYSQL_ASSOC', 1);
+			define('MYSQL_NUM', 2);
+			define('MYSQL_BOTH', 3);
 			$this->db->__construct();
 			$this->loadConfig();
 
@@ -115,6 +119,13 @@
 
 			$result = $this->db->database("missing_database");
 			$this->assertFalse($result);
+
+			$result = $this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX,  true);
+			$this->assertTrue($result);
+			$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
+				$this->db->mySQLPrefix);
+
+
 
 		}
 /*
@@ -212,6 +223,12 @@
 			$this->assertEquals($expected,$result);
 
 
+			$result = $this->db->retrieve('user', 'missing_field, user_name', 'user_id = 1');
+			$this->assertEquals(array(),$result);
+
+			$result = $this->db->retrieve('user', 'missing_field', 'user_id = 1');
+			$this->assertEmpty($result);
+
 			$this->db->select('user', 'user_id, user_name', 'user_id = 1');
 			$result = $this->db->retrieve(null);
 			$this->assertEquals($expected,$result);
@@ -230,7 +247,23 @@
 			$result = $this->db->retrieve('missing_table', 'user_id, user_name', 'user_id = 1', true);
 			$this->assertEquals($expected,$result);
 
+			$this->db->select('plugin');
+			$result = $this->db->retrieve(null, null, null, true);
+			$this->assertArrayHasKey('plugin_name', $result[14]);
 
+			$result = $this->db->retrieve('plugin', '*', null, true);
+			$this->assertArrayHasKey('plugin_name', $result[14]);
+
+
+			$result = $this->db->retrieve('plugin', 'plugin_id, plugin_name, plugin_path', '', true, 'plugin_path');
+			$this->assertArrayHasKey('banner', $result);
+			$this->assertArrayHasKey('plugin_name', $result['banner']);
+
+			// Fetch only mode
+			$this->db->select('plugin');
+			$result = $this->db->retrieve(null, 'plugin_id, plugin_name, plugin_path', '', true, 'plugin_path');
+			$this->assertArrayHasKey('banner', $result);
+			$this->assertArrayHasKey('plugin_name', $result['banner']);
 
 		}
 
@@ -259,12 +292,18 @@
 
 			$result = $this->db->db_Select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
 			$this->assertEquals(1, $result);
+
+			$result = $this->db->db_Select('user', 'missing_field, user_name', 'WHERE user_id = 1', true);
+			$this->assertFalse($result);
+
+
+
 		}
 
 
 		public function testDb_Select_gen()
 		{
-			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.2' WHERE user_id = 1");
+			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.3' WHERE user_id = 1");
 			$this->assertEquals(1,$result);
 
 		}
@@ -498,7 +537,7 @@
 			$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
 			$this->db->gen($qry);
 
-			$row = $this->db->db_Fetch('num');
+			$row = $this->db->db_Fetch(MYSQL_NUM);
 			$this->assertEquals('e107_user', $row[0]);
 
 			$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
@@ -518,7 +557,8 @@
 			$this->db->gen($qry);
 
 			$row = $this->db->db_Fetch(MYSQL_NUM);
-			$this->assertEquals('e107_user', $row[0]);
+			var_dump($row);
+		//	$this->assertEquals('e107_user', $row[0]);
 
 			$this->db->select('user', '*', 'user_id = 1');
 			$row = $this->db->db_Fetch(MYSQL_BOTH);
@@ -538,6 +578,12 @@
 
 			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'plugin ','generic');
 			$this->assertGreaterThan(20, $result);
+
+			$result = $this->db->db_Count('user','(*)', 'user_missing = 1');
+			$this->assertFalse($result);
+
+			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
+			$this->assertFalse($result);
 		//var_dump($result);
 			//$this->assertEquals(1,$result);
 		}
@@ -640,7 +686,9 @@
 
 		public function testDb_getList()
 		{
-
+			$this->db->select('plugin', '*');
+			$rows = $this->db->db_getList();
+			$this->assertArrayHasKey('plugin_name', $rows[2]);
 		}
 
 		public function testRows()
@@ -650,6 +698,8 @@
 
 		public function testMax()
 		{
+			$result = $this->db->max('user', 'user_pwchange');
+			$this->assertEquals('1541074253', $result);
 
 		}
 
@@ -683,28 +733,33 @@
 			$this->assertEquals('plugin_version', $result);
 
 		}
-/*
+
 		public function testColumnCount()
 		{
-			$this->db->columnCount();
-		}*/
+			$this->db->select('user');
+			$result = $this->db->columnCount();
+			$this->assertEquals(27, $result);
+
+		}
 
 		public function testField()
 		{
 			$result = $this->db->field('plugin', 'plugin_path');
 			$this->assertTrue($result);
 		}
-/*
+
 		public function testEscape()
 		{
+			$result = $this->db->escape(123);
+			$this->assertEquals(123,$result);
+
+			$result = $this->db->escape("Can't", true);
+			$this->assertEquals("Can't", $result);
 
 		}
 
-		public function testDb_Table_exists()
-		{
 
-		}
-*/
+
 		public function testDb_Table_exists()
 		{
 			$result = $this->db->db_Table_exists('plugin');
@@ -748,8 +803,9 @@
 
 			$list = $this->db->db_TableList('lan');
 			$this->assertEmpty($list);
-			//var_dump($list);
 
+			$list = $this->db->db_TableList('invalid');
+			$this->assertEmpty($list);
 		}
 
 		public function testTables()
@@ -780,6 +836,11 @@
 			$this->db->db_CopyRow(...$copy_args);
 			$next_count = $this->db->count(...$count_args);
 			$this->assertEquals(1, $next_count - $initial_count);
+			$result = $this->db->db_CopyRow(null);
+			$this->assertFalse($result);
+
+			$result = $this->db->db_CopyRow('news', null);
+			$this->assertFalse($result);
 		}
 
 		public function testDb_CopyTable()
@@ -788,6 +849,11 @@
 			$result = $this->db->retrieve('news_bak', 'news_title', 'news_id = 1');
 
 			$this->assertEquals('Welcome to e107', $result);
+
+
+			$result = $this->db->db_CopyTable('non_exist', 'news_bak', false, true);
+			$this->assertFalse($result);
+
 		}
 
 
@@ -800,6 +866,7 @@
 			);
 
 			$result = $this->db->backup('user,core_media_cat', null, $opts);
+			$uncompressedSize = filesize($result);
 
 			$tmp = file_get_contents($result);
 
@@ -808,6 +875,22 @@
 			$this->assertContains("INSERT INTO `e107_user` VALUES (1", $tmp);
 			$this->assertContains("CREATE TABLE `e107_core_media_cat`", $tmp);
 
+			$result = $this->db->backup('*', null, $opts);
+			$size = filesize($result);
+			$this->assertGreaterThan(100000,$size);
+
+			$opts = array(
+				'gzip'      => true,
+				'nologs'    => false,
+				'droptable' => false,
+			);
+
+			$result = $this->db->backup('user,core_media_cat', null, $opts);
+			$compressedSize = filesize($result);
+			$this->assertLessThan($uncompressedSize, $compressedSize);
+
+			$result = $this->db->backup('missing_table', null, $opts);
+			$this->assertFalse($result);
 
 		}
 /*
