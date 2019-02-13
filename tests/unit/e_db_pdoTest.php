@@ -738,17 +738,19 @@
 			$result = $this->db->field('plugin', 'plugin_path');
 			$this->assertTrue($result);
 		}
-/*
+
 		public function testEscape()
 		{
+			$result = $this->db->escape(123);
+			$this->assertEquals(123,$result);
 
+			$result = $this->db->escape("Can't", true);
+			$this->assertEquals("Can't", $result);
+		
 		}
 
-		public function testDb_Table_exists()
-		{
 
-		}
-*/
+
 		public function testDb_Table_exists()
 		{
 			$result = $this->db->db_Table_exists('plugin');
