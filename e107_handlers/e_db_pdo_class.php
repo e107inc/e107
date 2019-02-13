@@ -67,6 +67,8 @@ class e_db_pdo implements e_db
 	private     $queryCount     = 0;
 
 
+
+
 	/**
 	* Constructor - gets language options from the cookie or session
 	* @access public
@@ -76,12 +78,24 @@ class e_db_pdo implements e_db
 
 		$this->traffic = e107::getSingleton('e107_traffic');
 		$this->traffic->BumpWho('Create db object', 1);
-		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
+						// Set the default prefix - may be overridden
+
+		$config =  e107::getMySQLConfig();
+
+
+		$this->mySQLserver      = $config['mySQLserver'];
+		$this->mySQLuser        = $config['mySQLuser'];
+		$this->mySQLpassword    = $config['mySQLpassword'];
+		$this->mySQLdefaultdb   = $config['mySQLdefaultdb'];
+		$this->mySQLport        = varset($config['port'], 3306);
+		$this->mySQLPrefix      = varset($config['mySQLprefix'], 'e107_');
+
+		/*
 
 		if($port = e107::getMySQLConfig('port'))
 		{
 			$this->mySQLport = intval($port);
-		}
+		}*/
 
 		// Detect is already done in language handler, use it if not too early
 		if(defined('e_LANGUAGE'))
@@ -129,7 +143,6 @@ class e_db_pdo implements e_db
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
 	{
-		global $db_ConnectionID;
 
 		$this->traffic->BumpWho('db Connect', 1);
 
@@ -164,10 +177,6 @@ class e_db_pdo implements e_db
 		$this->setCharset();
 		$this->setSQLMode();
 
-
-		$db_ConnectionID = $this->mySQLaccess;
-
-
 		return true;
 	}
 
@@ -180,7 +189,7 @@ class e_db_pdo implements e_db
 	{
 
 	//	var_dump($this->mySQLaccess);
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
 	//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_VERSION);
 		return $this->mySqlServerInfo;
@@ -321,7 +330,7 @@ class e_db_pdo implements e_db
 			$this->log($log_type, $log_remark, $query);
 		}
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 		$b = microtime();
 
@@ -803,7 +812,7 @@ class e_db_pdo implements e_db
 			$query = 'INSERT INTO '.$this->mySQLPrefix."{$table} VALUES ({$arg})";
 		}
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
 
@@ -1001,7 +1010,7 @@ class e_db_pdo implements e_db
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 		$arg = $this->_prepareUpdateArg($tableName, $arg);
 
@@ -1375,7 +1384,7 @@ class e_db_pdo implements e_db
 	 */
 	function close()
 	{
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 		$this->traffic->BumpWho('db Close', 1);
 		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
@@ -1401,7 +1410,7 @@ class e_db_pdo implements e_db
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 
 		if (!$arg)
@@ -1559,7 +1568,7 @@ class e_db_pdo implements e_db
 		  	return $table;
 		}
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 		if($multiple == false)
 		{
@@ -1860,13 +1869,9 @@ class e_db_pdo implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-		if(!$this->mySQLdefaultdb)
-		{
-			global $mySQLdefaultdb;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}
 
-		$this->provide_mySQLaccess();
+
+		$this->_getMySQLaccess();
 
 		if ($prefix == '')
 		{
@@ -1919,15 +1924,11 @@ class e_db_pdo implements e_db
 	 */
     function field($table,$fieldid="",$key="", $retinfo = false)
 	{
-		if(!$this->mySQLdefaultdb)
-		{
-			global $mySQLdefaultdb;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}
+
 		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
 		$key = (isset($convert[$key])) ? $convert[$key] : "OFF";
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
         $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
         if ($result && ($this->rowCount() > 0))
@@ -1969,13 +1970,9 @@ class e_db_pdo implements e_db
 	 */
 	function index($table, $keyname, $fields=null, $retinfo = false)
 	{
-		if(!$this->mySQLdefaultdb)
-		{
-			global $mySQLdefaultdb;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}
 
-		$this->provide_mySQLaccess();
+
+		$this->_getMySQLaccess();
 
 		if (!empty($fields) && !is_array($fields))
 		{
@@ -2039,7 +2036,7 @@ class e_db_pdo implements e_db
 			$data = strip_if_magic($data);
 		}
 
-		$this->provide_mySQLaccess();
+		$this->_getMySQLaccess();
 
 		return $data;
 
@@ -2061,7 +2058,7 @@ class e_db_pdo implements e_db
 	 */
 	public function isTable($table, $language='')
 	{
-		// global $pref;
+
 		$table = strtolower($table); // precaution for multilanguage
 
 		if(!empty($language)) //ie. is it a language table?
@@ -2778,14 +2775,21 @@ class e_db_pdo implements e_db
 	 * When the global variable has been unset like in https://github.com/e107inc/e107-test/issues/6 ,
 	 * use the "mySQLaccess" from the default e_db_mysql instance singleton.
 	 */
-	private function provide_mySQLaccess()
+	private function _getMySQLaccess()
 	{
-		if (!$this->mySQLaccess) {
+		/*if (!$this->mySQLaccess) {
 			global $db_ConnectionID;
 			$this->mySQLaccess = $db_ConnectionID;
-		}
-		if (!$this->mySQLaccess) {
-			$this->mySQLaccess = e107::getDb()->get_mySQLaccess();
+			debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+
+		}*/
+		
+		if (!$this->mySQLaccess)
+		{
+		//	debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+			$this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
+			$this->database($this->mySQLdefaultdb);
+			//$this->mySQLaccess = e107::getDb()->get_mySQLaccess();
 		}
 	}
 
