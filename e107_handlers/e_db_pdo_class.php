@@ -2268,7 +2268,7 @@ class e_db_pdo implements e_db
 			$fieldList = $fields;
 		}
 
-		if(empty($fields))
+		if(empty($fieldList))
 		{
 			$this->mysqlLastErrText = "copyRow \$fields list was empty";
 			return false;
