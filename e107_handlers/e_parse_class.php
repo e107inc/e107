@@ -4517,7 +4517,7 @@ class e_parser
 	function isHtml($text)
 	{
 
-		if(strpos($text,'[html]'))
+		if(strpos($text,'[html]') !==false)
 		{
 			return true;
 		}
