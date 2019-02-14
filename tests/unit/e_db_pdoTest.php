@@ -330,7 +330,9 @@
 
 		public function testDb_Select_gen()
 		{
-			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.3' WHERE user_id = 1");
+			$result = $this->db->db_Select_gen(
+				"UPDATE `#user` SET user_signature = 'e_db_pdo' WHERE user_id = 1"
+			);
 			$this->assertEquals(1,$result);
 
 		}
@@ -614,8 +616,6 @@
 
 			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
 			$this->assertFalse($result);
-		//var_dump($result);
-			//$this->assertEquals(1,$result);
 		}
 /*
 		public function testClose()
@@ -740,7 +740,6 @@
 
 			$result = $this->db->max('generic', 'gen_user_id');
 			$this->assertEquals('555', $result, "gen_ip = '127.0.0.1'");
-		//	var_dump($result);
 		}
 
 
