@@ -76,6 +76,12 @@
 		{
 			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
 			$this->assertTrue($result);
+
+			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], "wrong password", $this->dbConfig['mySQLdefaultdb']);
+			$this->assertEquals('e1', $result);
+
+			$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], "wrong database");
+			$this->assertEquals('e2', $result);
 		}
 
 		public function testGetServerInfo()
@@ -616,12 +622,13 @@
 		{
 
 		}
-
+*/
 		public function testDb_Close()
 		{
+			$this->db->db_Close();
 
 		}
-*/
+
 		public function testDelete()
 		{
 			// make sure the table is empty
@@ -702,9 +709,22 @@
 
 		public function testMax()
 		{
-			$result = $this->db->max('user', 'user_pwchange');
-			$this->assertEquals('1541074253', $result);
+			$insert = array(
+				'gen_id'    => 0,
+				'gen_type'  => 'testMax',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => 555,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
 
+			$this->db->insert('generic', $insert);
+
+
+			$result = $this->db->max('generic', 'gen_user_id');
+			$this->assertEquals('555', $result);
+		//	var_dump($result);
 		}
 
 
