@@ -514,17 +514,56 @@ TMP;
 		{
 
 		}
+*/
+
 
 		public function testIsBBcode()
 		{
+			$tests = array(
+				0   => array("My Simple Text", false), // input , expected result
+				1   => array("<hr />", false),
+				2   => array("[b]Bbcode[/b]", true),
+				3   => array("<div class='something'>[code]something[/code]</div>", false),
+				4   => array("[code]&lt;b&gt;someting&lt;/b&gt;[/code]", true),
+				5   => array("[html]something[/html]", false),
+				6   => array("http://something.com/index.php?what=ever", false)
+			);
+
+
+			foreach($tests as $val)
+			{
+				list($input, $expected) = $val;
+				$actual = $this->tp->isBbcode($input);
+
+				$this->assertEquals($expected, $actual, $input);
+			}
 
 		}
 
 		public function testIsHtml()
 		{
+			$tests = array(
+				0   => array("My Simple Text", false), // input , expected result
+				1   => array("<hr />", true),
+				2   => array("[b]Bbcode[/b]", false),
+				3   => array("<div class='something'>[code]something[/code]</div>", true),
+				4   => array("[code]&lt;b&gt;someting&lt;/b&gt;[/code]", false),
+				5   => array("[html]something[/html]", true),
+				6   => array("http://something.com/index.php?what=ever", false)
+			);
+
+
+			foreach($tests as $val)
+			{
+				list($input, $expected) = $val;
+				$actual = $this->tp->isHtml($input);
+
+				$this->assertEquals($expected, $actual, $input);
+			}
+
 
 		}
-
+/*
 		public function testIsJSON()
 		{
 
@@ -560,7 +599,7 @@ TMP;
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => '[email]'));
 
-			$this->assertContains('[email]</a>', $result);
+			$this->assertContains('[email]</>', $result);
 
 			// -----
 
