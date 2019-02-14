@@ -1188,6 +1188,12 @@
 		{
 			global $forum, $forum_quickreply, $thread;
 
+			// Define which tinymce4 template should be used, depending if the current user is registered or a guest
+			if (!deftrue('e_TINYMCE_TEMPLATE'))
+			{
+				define('e_TINYMCE_TEMPLATE', (USER ? 'member' : 'public')); // allow images / videos.
+			}
+			
 			if($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 			{
 				//XXX Show only on the last page??
@@ -1224,7 +1230,8 @@
 						$text = "
 						<form action='" . $url . "' method='post'>
 						<div class='form-group'>" .
-						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
+//						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
+						e107::getForm()->bbarea('post','','forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
 						"</div>
 						<div class='center text-center form-group'>
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />

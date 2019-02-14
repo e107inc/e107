@@ -153,7 +153,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-
+		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
+		if (!deftrue('e_TINYMCE_TEMPLATE'))
+		{
+			define('e_TINYMCE_TEMPLATE', (USER ? 'member' : 'public')); // allow images / videos.
+		}
+		
+		
 		if(!empty($_POST['post']))
 		{
 			$text = $tp->post_toForm($_POST['post']);
@@ -182,7 +188,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		//$wysiwyg = ($editor === 'bbcode') ? false : null;
 		$wysiwyg = is_null($editor) ? 'default' : $editor;
 
-		return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
+		//return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
+		return e107::getForm()->bbarea('post',$text,'forum','forum','large', array('wysiwyg' => $wysiwyg));
 
 	}
 

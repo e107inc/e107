@@ -16,14 +16,15 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 
-if(USER)
-{
-	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
-}
-else
-{
-	define('e_TINYMCE_TEMPLATE', 'public');
-}
+// Now defined in shortcodes that handle the editors
+// if(USER)
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
+// }
+// else
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'public');
+// }
 
 define('NAVIGATION_ACTIVE','forum'); // ??
 
