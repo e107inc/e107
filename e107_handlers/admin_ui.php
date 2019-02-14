@@ -6164,7 +6164,7 @@ class e_admin_ui extends e_admin_controller_ui
 		if($this->pluginName !== 'core' && !e107::isInstalled($this->pluginName))
 		{
 			$obj = get_class($this);
-			e107::getMessage()->addError($obj." \$pluginName: is not valid. (".$this->pluginName. ")"); // debug only.
+			e107::getMessage()->addWarning($obj."The plugin is not installed or \$pluginName: is not valid. (".$this->pluginName. ")"); // debug only.
 			return $this;
 		}
 
