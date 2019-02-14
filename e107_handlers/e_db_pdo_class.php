@@ -314,6 +314,7 @@ class e_db_pdo implements e_db
 		global $db_time, $queryinfo;
 		$this->queryCount++;
 
+		$this->_getMySQLaccess();
 		$this->mySQLlastQuery = $query;
 
 		if ($debug == 'now')
@@ -330,10 +331,7 @@ class e_db_pdo implements e_db
 			$this->log($log_type, $log_remark, $query);
 		}
 
-		$this->_getMySQLaccess();
-
 		$b = microtime();
-
 
 		if(is_array($query) && !empty($query['PREPARE']) && !empty($query['BIND']))
 		{
