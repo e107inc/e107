@@ -713,6 +713,19 @@
 				'gen_id'    => 0,
 				'gen_type'  => 'testMax',
 				'gen_datestamp' => time(),
+				'gen_user_id'   => 333,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => '',
+				'gen_chardata'   => ''
+				);
+
+			$this->db->insert('generic', $insert);
+
+
+			$insert = array(
+				'gen_id'    => 0,
+				'gen_type'  => 'testMax',
+				'gen_datestamp' => time(),
 				'gen_user_id'   => 555,
 				'gen_ip'        => '127.0.0.1',
 				'gen_intdata'   => '',
@@ -724,6 +737,9 @@
 
 			$result = $this->db->max('generic', 'gen_user_id');
 			$this->assertEquals('555', $result);
+
+			$result = $this->db->max('generic', 'gen_user_id');
+			$this->assertEquals('555', $result, "gen_ip = '127.0.0.1'");
 		//	var_dump($result);
 		}
 
@@ -856,7 +872,7 @@
 			$result = $this->db->db_CopyRow('bla');
 			$this->assertFalse($result);
 
-			$result = $this->db->db_CopyRow('bla', 'non_exist');
+			$result = $this->db->db_CopyRow('bla', 'non_exist',  "news_id = 1");
 			$this->assertFalse($result);
 
 			$result = $this->db->db_CopyRow(null);
