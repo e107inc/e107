@@ -246,7 +246,9 @@ $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
 
 
 
-// Bootstrap 3 only. 
+// Bootstrap 3 only.
+
+$USERSETTINGS_TEMPLATE = array();
 
 $USERSETTINGS_TEMPLATE['edit'] = "
 
@@ -309,7 +311,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 
 $USERSETTINGS_TEMPLATE['extended-category'] = "<h3>{CATNAME}</h3>";
 $USERSETTINGS_TEMPLATE['extended-field'] = "<div class='form-group'>
-	<label class='col-sm-3 control-label'>{FIELDNAME}</label>
+	<label class='col-sm-3 control-label'>{FIELDNAME} {REQUIRED}</label>
 	<div class='col-sm-9'>
 	{FIELDVAL} {HIDEFIELD}
 	</div>
@@ -317,5 +319,3 @@ $USERSETTINGS_TEMPLATE['extended-field'] = "<div class='form-group'>
 											";
 
 
-
-?>

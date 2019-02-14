@@ -1110,7 +1110,7 @@ function req($field)
 	$ret = "";
 	if ($field == 2)
 	{
-		$ret = "<span class='required'> *</span>";
+		$ret = "<span class='required'><!-- empty --></span>";
 	}
 	return $ret;
 }
