@@ -932,12 +932,14 @@
 */
 		public function testIsInstalled()
 		{
-			$result = $this->e107::isInstalled('user');
+			$obj = $this->e107;
+
+			$result = $obj::isInstalled('user');
 
 			// var_dump($result);
 			$this->assertTrue($result);
 
-			$result = $this->e107::isInstalled('news');
+			$result = $obj::isInstalled('news');
 
 			// var_dump($result);
 			$this->assertTrue($result);
