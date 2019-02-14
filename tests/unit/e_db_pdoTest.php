@@ -757,7 +757,14 @@
 */
 		public function testDb_FieldList()
 		{
-			$this->db->db_FieldList('user');
+			$result = $this->db->db_FieldList('user');
+			$this->assertEquals('user_id', $result[0]);
+
+			$result = $this->db->db_FieldList('user', null, true);
+			$this->assertEquals('user_id', $result['user_id']);
+
+			$result = $this->db->db_FieldList('missing_table');
+			$this->assertFalse($result);
 
 		}
 
