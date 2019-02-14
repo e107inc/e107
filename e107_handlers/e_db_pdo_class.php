@@ -38,7 +38,7 @@ class e_db_pdo implements e_db
 	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
 	protected   $mySQLlastQuery = '';
 
-	protected      $mySQLcurTable;
+	protected   $mySQLcurTable;
 	public      $mySQLlanguage;
 	public      $mySQLinfo;
 	public      $tabset;
@@ -170,7 +170,7 @@ class e_db_pdo implements e_db
 		{
 			$this->mySQLlastErrText = $ex->getMessage();
 			$this->mySQLLastErrNum = $ex->getCode();
-			$this->dbg->log($this->mySQLlastErrText);	// Useful for Debug. breaks testing.
+			$this->dbg->log($this->mySQLlastErrText);
 			return false;
 		}
 
@@ -314,6 +314,7 @@ class e_db_pdo implements e_db
 		global $db_time, $queryinfo;
 		$this->queryCount++;
 
+		$this->_getMySQLaccess();
 		$this->mySQLlastQuery = $query;
 
 		if ($debug == 'now')
@@ -329,8 +330,6 @@ class e_db_pdo implements e_db
 		{
 			$this->log($log_type, $log_remark, $query);
 		}
-
-		$this->_getMySQLaccess();
 
 		$b = microtime();
 
@@ -437,13 +436,13 @@ class e_db_pdo implements e_db
 				if(isset($ex) && is_object($ex))
 				{
 					$query = $ex->getMessage();
-					$query .= print_a($ex->getTrace(), true);
+				 // 	 $arr = $ex->getTrace(); // @todo runs out of memory when tested.
+				  // $query .= print_a($arr, true);
 				}
 
 
 				if($buglink instanceof PDO)
 				{
-
 					$this->dbg->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
 				}
 
@@ -1386,7 +1385,7 @@ class e_db_pdo implements e_db
 	{
 		$this->_getMySQLaccess();
 		$this->traffic->BumpWho('db Close', 1);
-		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
+		$this->mySQLaccess = null; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}
 
