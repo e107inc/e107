@@ -2371,8 +2371,12 @@ class themeHandler
 											<td style='vertical-align:top'>";
 							// Default
 
-							if($pref['sitetheme_deflayout'] != $key)
-							{
+							// issue #3663: 1. custompages are "deleted" for the current selected layout
+							// issue #3663: 2. custompages of the selected layout are not editable
+
+							//if($pref['sitetheme_deflayout'] != $key)
+							//if(isset($pref['sitetheme_custompages'][$key]))
+							//{
 								$itext .= $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'>
 										<textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
 
@@ -2386,11 +2390,11 @@ class themeHandler
 
 								$itext .= "
 								</div>\n";
-							}
-							else
-							{
-								$itext .= TPVLAN_55;
-							}
+							//}
+							//else
+							//{
+							//	$itext .= TPVLAN_55;
+							//}
 
 
 							
