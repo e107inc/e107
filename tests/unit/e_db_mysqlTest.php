@@ -303,7 +303,9 @@
 
 		public function testDb_Select_gen()
 		{
-			$result = $this->db->db_Select_gen("UPDATE `#user` SET user_ip = '127.0.0.3' WHERE user_id = 1");
+			$result = $this->db->db_Select_gen(
+				"UPDATE `#user` SET user_signature = 'e_db_mysql' WHERE user_id = 1"
+			);
 			$this->assertEquals(1,$result);
 
 		}
