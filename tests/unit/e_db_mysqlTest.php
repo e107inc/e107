@@ -559,8 +559,6 @@
 			$this->db->gen($qry);
 
 			$row = $this->db->db_Fetch(MYSQL_NUM);
-			var_dump($row);
-		//	$this->assertEquals('e107_user', $row[0]);
 
 			$this->db->select('user', '*', 'user_id = 1');
 			$row = $this->db->db_Fetch(MYSQL_BOTH);
@@ -586,8 +584,6 @@
 
 			$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
 			$this->assertFalse($result);
-		//var_dump($result);
-			//$this->assertEquals(1,$result);
 		}
 /*
 		public function testClose()
