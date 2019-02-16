@@ -2022,6 +2022,33 @@ class e_db_pdo implements e_db
 
 
 	/**
+	 * @param $table
+	 * @return array  field name => key name
+	 */
+	private function _getUnique($table)
+	{
+
+		$unique = array();
+
+		$result = $this->retrieve("SHOW INDEXES FROM #".$table, true);
+		foreach($result as $row)
+		{
+			$notUnique = (int) $row['Non_unique'];
+
+			if(!$notUnique)
+			{
+				$field = $row['Column_name'];
+				$unique[$field] = $row['Key_name'];
+			}
+
+		}
+
+		return $unique;
+	}
+
+
+
+	/**
 	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
 	 *
 	 * @param string $data
@@ -2256,12 +2283,28 @@ class e_db_pdo implements e_db
 		if($fields === '*')
 		{
 			$fields = $this->db_FieldList($table);
-			unset($fields[0]); // Remove primary_id.
-			$fieldList = implode(",",$fields);
+			$unique = $this->_getUnique($table);
+
+			$flds = array();
+			// randomize fields that must be unique.
+			foreach($fields as $fld)
+			{
+				if(isset($unique[$fld]))
+				{
+					$flds[] = $unique[$fld] === 'PRIMARY' ? 0 : "'rand-".rand(0,999)."'"; // keep it short.
+					continue;
+				}
+
+				$flds[] = $fld;
+			}
+
+			$fieldList = implode(",", $fields);
+			$fieldList2 = implode(",", $flds);
 		}
 		else
 		{
 			$fieldList = $fields;
+			$fieldList2 = $fieldList;
 		}
 
 		if(empty($fieldList))
@@ -2270,8 +2313,9 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
+		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList2." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
 		$lastInsertId = $this->lastInsertId();
+
 		return ($id && $lastInsertId) ? $lastInsertId : false;
 
 	}
