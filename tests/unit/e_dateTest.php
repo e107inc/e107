@@ -241,13 +241,21 @@
 		public function testTerms()
 		{
 
-			$data = $this->dateObj->terms();
+			$tests = array(
+				0   => array('day-shortest', 'We'),
+				1   => array('day-short', 'Wed'),
+				2   => array('day', 'Wednesday'),
+				3   => array('month', 'February'),
+				4   => array('month-short', 'Feb'),
+			);
 
-			$result = ($data[1] === 'January' && $data[12] === 'December') ? true : false;
-
-			$this->assertTrue($result);
-
-		//	$this->fail(print_r($result,true));
+			foreach($tests as $var)
+			{
+				list($input, $expected) = $var;
+				$data = $this->dateObj->terms($input);
+				$this->assertEquals($expected, $data[2]);
+			}
+			
 		}
 
 
