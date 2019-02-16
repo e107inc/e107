@@ -255,7 +255,7 @@
 				$data = $this->dateObj->terms($input);
 				$this->assertEquals($expected, $data[2]);
 			}
-			
+
 		}
 
 
