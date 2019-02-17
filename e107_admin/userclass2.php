@@ -141,7 +141,7 @@ e107::coreLan('userclass2', true);
 			return e107::getSingleton('user_class_admin');
 		}
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			return $new_data;
 		}
@@ -156,7 +156,6 @@ e107::coreLan('userclass2', true);
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-
 
 			if(!empty($new_data['perms']))
 			{
@@ -173,7 +172,7 @@ e107::coreLan('userclass2', true);
 			e107::getUserClass()->clearCache();
 		}
 
-		public function afterDelete($data,$id)
+		public function afterDelete($data,$id, $check = false)
 		{
 			e107::getUserClass()->clearCache();
 		}
