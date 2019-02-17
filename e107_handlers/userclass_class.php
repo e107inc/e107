@@ -1486,8 +1486,8 @@ class user_class_admin extends user_class
 	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
-			
-		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
+		$tree = vartrue($this->class_tree[$listnum]['class_children'], array());
+		$num_children = count($tree);
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 
