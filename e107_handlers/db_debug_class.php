@@ -899,7 +899,7 @@
 		 * @desc Simple debug-level 'console' log
 		 * Record a "nice" debug message with
 		 * $db_debug->log("message");
-		 * @param string    $message
+		 * @param string|array    $message
 		 * @param int $TraceLev
 		 * @return bool  true on success , false on error
 		 */
