@@ -760,6 +760,11 @@
 
 			$result = $this->db->max('generic', 'gen_user_id');
 			$this->assertEquals('555', $result, "gen_ip = '127.0.0.1'");
+
+			$result = $this->db->max('generic', 'gen_user_id', "gen_ip = '127.0.0.1'");
+			$this->assertEquals('555', $result);
+
+			
 		}
 
 
