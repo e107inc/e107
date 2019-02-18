@@ -1443,26 +1443,6 @@ class e_db_pdo implements e_db
 		}
 	}
 
-	/**
-	 * @deprecated use $sql->delete();
-	 *//*
-	function db_Delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
-	{
-		return $this->delete($table, $arg, $debug, $log_type, $log_remark);
-	}*/
-
-
-	/**
-	* @deprecated
-	* @desc Enter description here...
-	* @access private
-	*//*
-	function db_Rows()
-	{
-		return $this->rowCount();
-
-	}*/
-
 
 	/**
 	* @return void
@@ -2445,7 +2425,8 @@ class e_db_pdo implements e_db
         }
 
 
-        try {
+        try
+        {
             $dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host='.$config['mySQLserver'].';dbname='.$config['mySQLdefaultdb'], $config['mySQLuser'], $config['mySQLpassword'], $dumpSettings);
 		    $dump->start($backupFile);
 		    return $backupFile;
@@ -2457,60 +2438,6 @@ class e_db_pdo implements e_db
 		}
 
 
-/*
-
-
-		$header = "-- e107 Database Backup File \n";
-		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
-		$header .= "-- Generation Time: ".date('r')."\n";
-		$header .= "-- Encoding: UTF-8\n\n\n";
-
-		file_put_contents($backupFile,$header, FILE_APPEND);
-
-		foreach ($tableList as $table)
-		{
-			unset($text);
-			$text = "";
-			$text .= vartrue($options['droptable']) ? "DROP TABLE IF EXISTS `".$this->mySQLPrefix.$table."`;\n" : "";
-			$this->gen("SHOW CREATE TABLE `".$this->mySQLPrefix.$table."`");
-			$row2 = $this->fetch();
-			$text .= $row2['Create Table'];
-			$text .= ";\n\n";
-
-			file_put_contents($backupFile,$text,FILE_APPEND);
-		//	echo $text;
-		//	ob_end_clean(); // prevents memory exhaustian on large databases but breaks layout. .
-
-			$count = $this->gen("SELECT * FROM `#".$table."`");
-			$data_array = "";
-
-			//TODO After so many rows (50,000?), make a new files to avoid overly large inserts.
-			while($row = $this->fetch())
-			{
-				$fields = array_keys($row);
-				$text = "\nINSERT INTO `".$this->mySQLPrefix.$table."` (`".implode("` ,`",$fields)."`) VALUES \n";
-				file_put_contents($backupFile,$text,FILE_APPEND);
-
-				$d = array();
-				foreach($fields as $val)
-				{
-					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".$this->escape($row[$val])."'";
-				}
-
-				$data_array = "(".implode(", ",$d).");\n";
-				file_put_contents($backupFile, $data_array, FILE_APPEND); // Do this here to save memory.
-
-			}
-
-			$text = "\n\n\n";
-			file_put_contents($backupFile, $text, FILE_APPEND);
-			unset($fields);
-
-		}
-
-		return $backupFile;
-		// file_put_contents('memory.log', 'memory used in line ' . __LINE__ . ' is: ' . memory_get_usage() . PHP_EOL, FILE_APPEND);
-		*/
 	}
 
 
@@ -2836,14 +2763,7 @@ class e_db_pdo implements e_db
 		}
 	}
 
-	/**
-	 * @deprecated 2.1.9 Used only to provide $mySQLaccess to other instances of e_db_mysql scattered around
-	 * @return PDO
-	 */
-	public function get_mySQLaccess()
-	{
-		return $this->mySQLaccess;
-	}
+
 
 }
 

@@ -180,4 +180,13 @@
 			return $this->markTime($sMarker);
 		}
 
+		/**
+		 * @deprecated 2.1.9 Used only to provide $mySQLaccess to other instances of e_db_mysql scattered around
+		 * @return PDO
+		 */
+		public function get_mySQLaccess()
+		{
+			return $this->mySQLaccess;
+		}
+
 	}
