@@ -1679,7 +1679,7 @@ class e_db_pdo implements e_db
 
 		if(!empty($where))
 		{
-			$qry .= "WHERE ".$where;
+			$qry .= " WHERE ".$where;
 		}
 
 		return $this->retrieve($qry);
