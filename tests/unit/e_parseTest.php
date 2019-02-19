@@ -599,7 +599,7 @@ TMP;
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => '[email]'));
 
-			$this->assertContains('[email]</>', $result);
+			$this->assertContains('[email]</a>', $result);
 
 			// -----
 
