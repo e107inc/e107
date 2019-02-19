@@ -43,9 +43,9 @@
 		{
 			$result = $this->js->isInAdmin();
 			$this->assertFalse($result);
-			
+
 		}
-/*
+
 		public function testRequireCoreLib()
 		{
 
@@ -251,6 +251,6 @@
 
 		}
 
-	*/
+
 
 	}
