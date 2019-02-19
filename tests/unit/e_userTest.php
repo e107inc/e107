@@ -26,7 +26,7 @@
 			}
 		}
 
-/*
+
 
 		public function testIsCurrent()
 		{
@@ -121,5 +121,5 @@
 		public function testHasSessionError()
 		{
 
-		}*/
+		}
 	}
