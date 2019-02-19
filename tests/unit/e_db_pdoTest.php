@@ -342,7 +342,7 @@
 
 
 			$qry = "INSERT INTO #core_media_cat(media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM #core_media_cat WHERE media_cat_id = 1";
-			$result = $this->db->db_Select_gen($qry);
+			$this->db->db_Select_gen($qry);
 
 
 			$qry = "INSERT INTO #core_media_cat(media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM #core_media_cat WHERE media_cat_id = 1";
@@ -352,7 +352,7 @@
 
 			$result = $this->db->db_Query("INSERT INTO ".MPREFIX."core_media_cat(media_cat_owner,media_cat_title,media_cat_category,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_category,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM ".MPREFIX."core_media_cat WHERE media_cat_id = 1");
 			$err = $this->db->getLastErrorText();
-			$this->assertFalse($result);
+			$this->assertFalse($result, $err);
 
 
 		}
@@ -764,7 +764,7 @@
 			$result = $this->db->max('generic', 'gen_user_id', "gen_ip = '127.0.0.1'");
 			$this->assertEquals('555', $result);
 
-			
+
 		}
 
 
@@ -1054,7 +1054,7 @@
 		}
 
 
-			/**
+		/**
 		 * @desc Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
 		 */
 		public function testSecondaryDatabase()
