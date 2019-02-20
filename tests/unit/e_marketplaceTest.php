@@ -80,12 +80,14 @@ DATA
 
 			if(is_dir($path))
 			{
-				rename($path, $path."_old_".time());
+				e107::getFile()->removeDir($path);
+			//	rename($path, $path."_old_".time());
 			}
 
 			if(is_dir($tempPath))
 			{
-				rename($tempPath, $tempPath."_old_".time());
+				e107::getFile()->removeDir($tempPath);
+				// rename($tempPath, $tempPath."_old_".time());
 			}
 
 			$status = $this->mp->download($id,'','plugin' );
