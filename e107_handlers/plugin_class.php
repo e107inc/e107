@@ -394,6 +394,9 @@ class e_plugin
 	}
 
 
+
+
+
 	/**
 	 * Check if the currently loaded plugin is installed
 	 * @return mixed
@@ -509,6 +512,9 @@ class e_plugin
 		$cfg = e107::getConfig();
 
 		$pref = $cfg->get('plug_installed');
+		$detected = $this->getDetected();
+
+		$toRemove = array();
 
 		$save = false;
 		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != '' ORDER by plugin_path ", true))
@@ -516,7 +522,16 @@ class e_plugin
 
 			foreach($rows as $row)
 			{
+
 				$path = $row['plugin_path'];
+
+				if(!in_array($path,$detected))
+				{
+					$toRemove[] = (int) $row['plugin_id'];
+					continue;
+				}
+
+
 				$this->_ids[$path] = (int) $row['plugin_id'];
 
 				if(!empty($row['plugin_installflag']) )
@@ -540,8 +555,20 @@ class e_plugin
 		}
 
 
-		$detected = $this->getDetected();
 		$runUpdate = false;
+
+		if(!empty($toRemove))
+		{
+			$runUpdate = true;
+			$delList = implode(",", $toRemove);
+
+			if($sql->delete('plugin', "plugin_id IN (".$delList.")"))
+			{
+				e107::getDebug()->log("Deleted missing plugins with id(s): ".$delList);
+			}
+		}
+
+
 
 
 
