@@ -61,6 +61,37 @@
 
 		}
 
+		public function testClearCache()
+		{
+
+			$detected = $this->ep->clearCache()->getDetected();
+			$num = e107::getDb()->count('plugin','(*)');
+			$det = count($detected);
+			$this->assertEquals($num,$det);
+
+			// Simulate an orphaned plugin entry.
+			$insert = array(
+			 'plugin_name'          => "testClearCache",
+			 'plugin_version'       => 1,
+			 'plugin_path'          => 'missing_path',
+			 'plugin_installflag'   => 1,
+			 'plugin_addons'        => '',
+			 'plugin_category'      => 'tools'
+			);
+
+			e107::getDb()->insert('plugin', $insert);
+
+
+			$detected = $this->ep->clearCache()->getDetected();
+			$num = e107::getDb()->count('plugin','(*)');
+			$det = count($detected);
+			$this->assertEquals($num,$det);
+
+		}
+
+
+
+
 		public function testBuildAddonPrefList()
 		{
 
