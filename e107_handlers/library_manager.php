@@ -326,7 +326,7 @@ class core_library
 			),
 			// Override library path to CDN.
 		//	https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0',
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1',
 			'path'              => '',
 		);
 
