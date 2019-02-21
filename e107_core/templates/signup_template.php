@@ -192,7 +192,7 @@ if(!defined($COPPA_TEMPLATE))
 {
 	$COPPA_TEMPLATE = 
 	LAN_SIGNUP_77." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
-	.LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."<br />
+	.LAN_SIGNUP_15." ".e107::getParser()->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."<br />
 	<br />
 	<div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
 		{SIGNUP_COPPA_FORM}
