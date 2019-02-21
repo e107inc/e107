@@ -345,7 +345,7 @@ class UserHandler
 	 * Detect Password Hash Algorythm type
 	 * @param string $hash - Password hash to analyse
 	 * @param string $mode - (optional) set to 'text' for a plain-text description.
-	 * @return bool|int
+	 * @return bool|int|array
 	 */
 	public function getHashType($hash, $mode='constant')
 	{
@@ -1333,7 +1333,8 @@ class e_user_provider
 			$userdata['user_perms'] = '';
 			$userdata['user_realm'] = '';
 			$userdata['user_pwchange'] = $now;
-			
+
+			/** @var e_system_user' $user */
 			$user = e107::getSystemUser(0, false);
 			$user->setData($userdata);
 			$user->getExtendedModel(); // init
