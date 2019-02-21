@@ -275,7 +275,7 @@ if (isset($id))
 		$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $sc);
 	}
 
-	$ns->tablerender(LAN_USER_52, $text);
+	$ns->tablerender(LAN_USER_52, $text, 'user-list');
 
 	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
 	echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
