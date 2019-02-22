@@ -278,7 +278,7 @@ class userlogin
 			{	// 'New user' probationary period expired - we can take them out of the class
 				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
 //				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
-				$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']);
+				$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']. " LIMIT 1");
 				unset($class_list[e_UC_NEWUSER]);
 				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'user_email'=> $user_email);
 				$e_event->trigger('userNotNew', $edata_li);

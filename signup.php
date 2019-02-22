@@ -996,7 +996,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			if ($init_class = $userMethods->userClassUpdate($row, 'userpartial'))
 			{
 				$allData['data']['user_class'] = $init_class;
-				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}'");
+				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}' LIMIT 1");
 				
 				if($user_class_update === FALSE)
 				{
