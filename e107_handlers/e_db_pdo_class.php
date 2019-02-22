@@ -297,18 +297,21 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* This is the 'core' routine which handles much of the interface between other functions and the DB
-	*
-	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
-	* @param string|array $query
-	* @param string $query['PREPARE'] PDO Format query.
-	 *@param array $query['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
-	* @param object $rli
-	* @return boolean|PDOStatement | resource - as mysql_query() function.
-	*			false indicates an error
-	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
-	*			TRUE indicates success in other cases
-	*/
+	 * This is the 'core' routine which handles much of the interface between other functions and the DB
+	 *
+	 * If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
+	 *
+	 * @param string|array  $query ['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
+	 * @param object $rli connection resource.
+	 * @param string $qry_from eg. SELECT, INSERT, UPDATE mode.
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return boolean|PDOStatement | resource - as mysql_query() function.
+	 *            false indicates an error
+	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
+	 *            TRUE indicates success in other cases
+	 */
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		global $db_time, $queryinfo;
@@ -334,19 +337,25 @@ class e_db_pdo implements e_db
 		$b = microtime();
 
 
-		if(is_array($query) && !empty($query['PREPARE']) && !empty($query['BIND']))
+		if(is_array($query) && !empty($query['PREPARE']))
 		{
 			/** @var PDOStatement $prep */
 			$prep = $this->mySQLaccess->prepare($query['PREPARE']);
-			foreach($query['BIND'] as $k=>$v)
+
+			if(!empty($query['BIND']))
 			{
-				$prep->bindValue(':'.$k, $v['value'],$v['type']);
+				foreach($query['BIND'] as $k=>$v)
+				{
+					$prep->bindValue(':'.$k, $v['value'],$v['type']);
+				}
 			}
+
+			$execute = !empty($query['EXECUTE']) ? $query['EXECUTE'] : null;
 
 			try
 			{
-				$prep->execute();
-				$sQryRes = $prep->rowCount();
+				$prep->execute($execute);
+				$sQryRes = ($qry_from == 'db_Select') ? $prep : $prep->rowCount();
 			}
 			catch(PDOException $ex)
 			{
@@ -619,17 +628,15 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	* Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
-	* <br />
-	* If you need more requests think to call the class.<br />
-	* <br />
-	* Example using a unique connection to database:<br />
-	* <code>e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
-	* <br />
-	* OR as second connection:<br />
-	* <code>
-	* e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
+	* Perform a SELECT  using the arguments suplpied by calling db::db_Query()
 	*
+	* @param string $table
+	* @param string $fields
+	* @param string|array $arg;
+	*
+	* @example e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");
+	* @example e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
+	* @example select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
 	* @return integer Number of rows or false on error
 	*/
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
@@ -639,7 +646,30 @@ class e_db_pdo implements e_db
 
 		$this->mySQLcurTable = $table;
 
-		if ($arg != '' && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC.
+		// e107 v2.2 PDO bind params.
+		if(!empty($arg) && is_array($noWhere))
+		{
+
+			$query = array(
+				'PREPARE'   => 'SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg,
+				'EXECUTE'   => $noWhere
+			);
+
+			if ($this->mySQLresult = $this->db_Query($query, null, 'db_Select', $debug, $log_type, $log_remark))
+			{
+				$this->dbError('dbQuery');
+				return $this->rowCount();
+			}
+			else
+			{
+				$this->dbError('select() with prepare/execute');
+				return false;
+			}
+
+		}
+
+
+		if (!empty($arg) && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC.
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
