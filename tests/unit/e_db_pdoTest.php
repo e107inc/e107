@@ -255,7 +255,7 @@
 			);
 
 
-			$result = $this->db->db_Query($query, null, 'INSERT');
+			$result = $this->db->db_Query($query, null, 'db_Insert');
 			$this->assertGreaterThan(0,$result);
 
 
@@ -280,6 +280,12 @@
 						  ),
 				  ),
 			);
+
+
+			$result = $this->db->db_Query($query, null, 'db_Insert');
+			$this->assertGreaterThan(0,$result);
+
+
 
 			$query = array(
 				'PREPARE'   => 'SELECT * FROM '.MPREFIX.'user WHERE user_id=:user_id AND user_name=:user_name',
