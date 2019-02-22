@@ -231,6 +231,69 @@
 			$err = $this->db->getLastErrorText();
 			$this->assertFalse($result, $err);
 
+
+			$query = array (
+			  'PREPARE' => 'INSERT INTO '.MPREFIX.'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
+			  'BIND' =>
+				  array(
+					  'tmp_ip'   =>
+						  array(
+							  'value' => '127.0.0.1',
+							  'type'  => PDO::PARAM_STR,
+						  ),
+					  'tmp_time' =>
+						  array(
+							  'value' => 12345435,
+							  'type'  => PDO::PARAM_INT,
+						  ),
+					  'tmp_info' =>
+						  array(
+							  'value' => 'Insert test',
+							  'type'  => PDO::PARAM_STR,
+						  ),
+				  ),
+			);
+
+
+			$result = $this->db->db_Query($query, null, 'INSERT');
+			$this->assertGreaterThan(0,$result);
+
+
+			$query = array (
+			  'PREPARE' => 'INSERT INTO '.MPREFIX.'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
+			  'BIND' =>
+				  array(
+					  'tmp_ip'   =>
+						  array(
+							  'value' => '127.0.0.1',
+							  'type'  => PDO::PARAM_STR,
+						  ),
+					  'tmp_time' =>
+						  array(
+							  'value' => 12345435,
+							  'type'  => PDO::PARAM_INT,
+						  ),
+					  'tmp_info' =>
+						  array(
+							  'value' => 'Insert test',
+							  'type'  => PDO::PARAM_STR,
+						  ),
+				  ),
+			);
+
+			$query = array(
+				'PREPARE'   => 'SELECT * FROM '.MPREFIX.'user WHERE user_id=:user_id AND user_name=:user_name',
+				'EXECUTE'      => array(
+					'user_id'   => 1,
+					'user_name' => 'e107'
+				)
+			);
+
+
+			$res = $this->db->db_Query($query, null, 'db_Select');
+			$result = $res->fetch();
+			$this->assertArrayHasKey('user_password', $result);
+
 		}
 
 
@@ -295,6 +358,9 @@
 			$this->assertEquals(0, $result);
 
 			$result = $this->db->select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
+			$this->assertEquals(1, $result);
+
+			$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
 			$this->assertEquals(1, $result);
 
 
