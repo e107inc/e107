@@ -105,7 +105,8 @@ class admin_start
 			array('forumthanks',    0.5),
 			array('eclassifieds',   1.11),
 			array('jshelpers',      '0.3b'),
-			array('akismet',        7.0)
+			array('akismet',        7.0),
+			array('newforumposts_main', 1),
 	);
 
 
