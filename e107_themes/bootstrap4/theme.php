@@ -9,9 +9,6 @@ e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 
 e107::css("url", "https://bootswatch.com/4/slate/bootstrap.min.css" );
 
-$HEADER = array();
-$FOOTER = array();
-
 
 
 class bootstrap4_theme
@@ -20,6 +17,8 @@ class bootstrap4_theme
 	function tablestyle($caption, $text, $mode, $options)
 	{
 	    global $style;
+
+
 
 		if($mode == 'wmessage')
 		{
@@ -61,6 +60,16 @@ class bootstrap4_theme
 // IMPORTANT: make sure there are no characters after <<<TMPL or TMPL;
 
 // DEFAULT
+$LAYOUT = array();
+
+// TODO Add navigation
+$LAYOUT['_header_'] = '
+<div class="container">
+';
+
+$LAYOUT['_footer_'] = '
+</div>
+';
 
 $LAYOUT['default'] = <<<TMPL
 
@@ -97,9 +106,16 @@ $LAYOUT['full'] = <<<TMPL
 	   {SETIMAGE: w=0} 
 	   
 	   {---}
-	   
+
 TMPL;
 
+$LAYOUT['glyphs'] = '
+
+ {---}
+     
+	{THEME_BS4_GLYPHS}
+
+';
 
 $LAYOUT['test'] = <<<TMPL
  <div class="container">
@@ -1489,57 +1505,4 @@ $LAYOUT['test'] = <<<TMPL
 TMPL;
 
 
-
-
-// News item styling
-$NEWSSTYLE = '
-{NEWSTITLE}
-{NEWSAUTHOR}
-{NEWSDATE=short}
-{NEWSIMAGE}
-{NEWSBODY} {EXTENDED}
-
-';
-
-// Comment Styling
-$COMMENTSTYLE = '
-{AVATAR} 
-{USERNAME}
-{REPLY}
-{TIMEDATE}
-{COMMENT} 
-';
-
-// news.php?cat.1
-$NEWSLISTSTYLE = '
-{NEWSTITLE}
-{NEWSDATE=short}
-{NEWSAUTHOR}
-{NEWSIMAGE}
-{NEWSBODY} 
-{EXTENDED}
-{EMAILICON} 
-{PRINTICON}
-{PDFICON}
-{ADMINOPTIONS}
-{NEWSCOMMENTS}
-';
-
-$NEWSARCHIVE ='
-{ARCHIVE_BULLET}
-{ARCHIVE_LINK}
-{ARCHIVE_AUTHOR}
-{ARCHIVE_DATESTAMP}
-{ARCHIVE_CATEGORY}
-';
-//Render news categories on the bottom of the page
-$NEWSCAT = '
-{NEWSCATEGORY}
-{NEWSCAT_ITEM}
-';
-//Loop for news items in category
-$NEWSCAT_ITEM = '
-{NEWSTITLELINK}
-    
-';
 

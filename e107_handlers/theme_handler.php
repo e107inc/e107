@@ -103,6 +103,7 @@ class e_theme
 			return;
 		}
 
+
 		foreach($libraries as $library)
 		{
 			if(empty($library['name']))
@@ -115,11 +116,20 @@ class e_theme
 			{
 				if($library['name'] === 'bootstrap' && varset($library['version']) == 4) // quick fix.
 				{
-					$library['name'] .= '4';
+					$library['name'] .= (string) $library['version'];
 
 					if(!defined('BOOTSTRAP'))
 					{
-						define('BOOTSTRAP', 4);
+						define('BOOTSTRAP', (int) $library['version']);
+					}
+				}
+				elseif($library['name'] === 'fontawesome' && !empty($library['version'])) // quick fix.
+				{
+					$library['name'] .= (string) $library['version'];
+
+					if(!defined('FONTAWESOME'))
+					{
+						define('FONTAWESOME', (int) $library['version']);
 					}
 				}
 
@@ -2140,7 +2150,7 @@ class themeHandler
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
 			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-			$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+			$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('fa-download',array('size'=>'2x'))."</a>";
 		
 			
 		

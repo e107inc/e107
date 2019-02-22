@@ -648,9 +648,9 @@ class core_library
 			'library_path'      => '{e_WEB}lib/bootstrap-switch',
 		);
 
-		// Font-Awesome (CDN).
+		// Font-Awesome 4 (CDN).
 		$libraries['cdn.fontawesome'] = array(
-			'name'              => 'Font-Awesome (CDN)',
+			'name'              => 'Font-Awesome 4 (CDN)',
 			'vendor_url'        => 'http://fontawesome.io/',
 			'version_arguments' => array(
 				'file'    => 'css/font-awesome.min.css',
@@ -683,7 +683,7 @@ class core_library
 
 		// Font-Awesome (local).
 		$libraries['fontawesome'] = array(
-			'name'              => 'Font-Awesome (local)',
+			'name'              => 'Font-Awesome 4 (local)',
 			'vendor_url'        => 'http://fontawesome.io/',
 			'version_arguments' => array(
 				'file'    => 'css/font-awesome.min.css',
@@ -715,7 +715,88 @@ class core_library
 		);
 
 
-			// Font-Awesome (local).
+
+
+
+		// Font-Awesome 5 (CDN).
+		$libraries['cdn.fontawesome5'] = array(
+			'name'              => 'Font-Awesome 5 (CDN)',
+			'vendor_url'        => 'https://fontawesome.com/',
+			'version_arguments' => array(
+				'file'    => 'css/all.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 10,
+			),
+			'files'             => array(
+				'css' => array(
+					'css/all.min.css' => array(
+						'zone' => 2,
+					),
+					'css/v4-shims.min.css' => array(
+						'zone' => 2,
+					),
+				),
+
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://use.fontawesome.com/releases',
+			'path'              => 'v5.7.2',
+		);
+
+		// Font-Awesome (local).
+		$libraries['fontawesome5'] = array(
+			'name'              => 'Font-Awesome 5 (local)',
+			'vendor_url'        => 'https://fontawesome.com/',
+			'version_arguments' => array(
+				'file'    => 'VERSION.txt',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 1,
+			),
+			'files'             => array(
+				'css' => array(
+					'css/all.min.css' => array(
+						'zone' => 2,
+					),
+					'css/v4-shims.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/all.css' => array(
+								'zone' => 2,
+							),
+							'css/v4-shims.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/font-awesome',
+			'path'              => '5',
+		);
+
+
+
+			// Animate (local).
 		$libraries['animate.css'] = array(
 			'name'              => 'Animate.css (local)',
 			'vendor_url'        => 'https://daneden.github.io/animate.css/',
@@ -747,7 +828,6 @@ class core_library
 			'library_path'      => '{e_WEB}lib/animate.css',
 		//	'path'              => '3.5.2',
 		);
-
 
 
 
