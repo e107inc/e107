@@ -1063,7 +1063,7 @@ class user_class
 	 */
 	public function ucGetClassIDFromName($name)
 	{
-		return $this->getId($name);
+		return $this->getID($name);
 
 	}
 

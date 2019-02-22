@@ -380,8 +380,8 @@ class rater
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$upImg = $tp->toGlyph('icon-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
-			$upDown = $tp->toGlyph('icon-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
+			$upImg = $tp->toGlyph('fa-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
+			$upDown = $tp->toGlyph('fa-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
 		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>

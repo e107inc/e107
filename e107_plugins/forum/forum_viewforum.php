@@ -1003,10 +1003,10 @@ function fadminoptions($thread_info)
 	
 	$lan = array('stick'=>LAN_FORUM_8007,'unstick'=>LAN_FORUM_8008,'lock'=>LAN_FORUM_8009, 'unlock'=>LAN_FORUM_8010);
 	$icon = array(
-		'unstick'	=>	$tp->toGlyph('chevron-down'),
-		'stick'		=>	$tp->toGlyph('chevron-up'),
-		'lock'		=>	$tp->toGlyph('lock'),
-		'unlock'	=>	$tp->toGlyph('unlock'),
+		'unstick'	=>	$tp->toGlyph('fa-chevron-down'),
+		'stick'		=>	$tp->toGlyph('fa-chevron-up'),
+		'lock'		=>	$tp->toGlyph('fa-lock'),
+		'unlock'	=>	$tp->toGlyph('fa-unlock'),
 	);
 	
 

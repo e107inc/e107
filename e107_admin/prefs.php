@@ -2209,12 +2209,12 @@ function libraryGetStatus($details)
 
 	if($details['installed'] == true)
 	{
-		$icon = $tp->toGlyph('glyphicon-ok');
+		$icon = $tp->toGlyph('fa-check');
 		$text = LAN_OK;
 		return '<span class="text-success" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 	}
 
-	$icon = $tp->toGlyph('glyphicon-remove');
+	$icon = $tp->toGlyph('fa-remove');
 	$text = $details['error'];
 	return '<span class="text-danger" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 }

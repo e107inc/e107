@@ -572,7 +572,7 @@ class news_shortcodes extends e_shortcode
 		{
 
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);

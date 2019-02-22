@@ -407,7 +407,7 @@ class rssCreate
 
 		header('Content-type: application/xml', TRUE);
 
-		$rss_title = $tp->toRss($tp->toHtml($pref['sitename'],'','defs')." : ".$tp->toHtml($rss_title,'','defs'));
+		$rss_title = $tp->toRss($tp->toHTML($pref['sitename'],'','defs')." : ".$tp->toHTML($rss_title,'','defs'));
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : '';
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : '';
 		$time = time();
@@ -466,7 +466,7 @@ class rssCreate
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>\n";
 
-				echo $tp->toHtml($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
+				echo $tp->toHTML($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
 
 				echo "
 				<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
