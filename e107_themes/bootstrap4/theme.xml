@@ -14,7 +14,7 @@
 	</keywords>
 	<libraries>
 		<library name="bootstrap" version="4" scope="all"/>
-		<library name="fontawesome" scope="all"/>
+		<library name="fontawesome" version="5" scope="all"/>
 	</libraries>
 	<stylesheets>
 		<css file="style.css" name="Default"/>
@@ -25,5 +25,6 @@
 		<layout name='default' title='Default'  />
 		<layout name='home' title='Home' />
 		<layout name='full' title='Full' />
+		<layout name='glyphs' title='Glyphs (test)' />
 	</layouts>
 </e107Theme>
