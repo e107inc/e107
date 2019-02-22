@@ -23,7 +23,7 @@ $eplug_author = "e107 Inc.";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = "This plugin displays a list of new forum posts on your front page";
-$eplug_compatible = "e107v6";
+$eplug_compatible = "1.x";
 $eplug_date = "2012-08-01";
 $eplug_readme = "";
 // leave blank if no readme file
