@@ -437,6 +437,18 @@
 			);
 			$actual = $this->db->retrieve('tmp', '*','tmp_ip = "127.0.0.1" AND tmp_time = 12345435');
 			$this->assertEquals($expected, $actual, 'Inserted content doesn\'t match the retrieved content');
+
+			// Test with auto-update on duplicate key found.
+			$insert = array(
+				'media_cat_category'    => '_common_image', // unique key.
+				'media_cat_diz'         => "modified by pdo->insert test",
+				'_DUPLICATE_KEY_UPDATE' => true
+			);
+
+			$this->db->insert('core_media_cat', $insert);
+			$actual = $this->db->retrieve('core_media_cat', 'media_cat_diz','media_cat_category = "_common_image" ');
+			$this->assertEquals("modified by pdo->insert test", $actual);
+
 		}
 
 
