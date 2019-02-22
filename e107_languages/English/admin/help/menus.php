@@ -53,7 +53,7 @@ If you find the menus are not updating correctly, clicking the refresh button be
 ".$frm->admin_button('reset','Refresh','cancel')."</div>
 </form>
 [br]
-".e107::getParser()->toGlyph('search')." indicates that the menu's visibility has been modified.
+".e107::getParser()->toGlyph('fa-search')." indicates that the menu's visibility has been modified.
 [/html]
 ";
 

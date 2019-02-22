@@ -838,14 +838,14 @@
     	<ul class="dropdown-menu pull-right text-right">';
 
 
-			$text .= "<li class='text-right'><a href='" . e_HTTP . "email.php?plugin:forum." . $this->postInfo['post_thread'] . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('envelope') . "</a></li>";
-			$text .= "<li class='text-right'><a href='" . e_HTTP . "print.php?plugin:forum." . $this->postInfo['post_thread'] . "'>" . LAN_FORUM_2045 . " " . $tp->toGlyph('print') . "</a></li>"; // FIXME
+			$text .= "<li class='text-right'><a href='" . e_HTTP . "email.php?plugin:forum." . $this->postInfo['post_thread'] . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
+			$text .= "<li class='text-right'><a href='" . e_HTTP . "print.php?plugin:forum." . $this->postInfo['post_thread'] . "'>" . LAN_FORUM_2045 . " " . $tp->toGlyph('fa-print') . "</a></li>"; // FIXME
 
 			if(USER) // Report
 			{
 				$urlReport = e107::url('forum', 'post') . "?f=report&amp;id=" . $this->postInfo['post_thread'] . "&amp;post=" . $this->postInfo['post_id'];
 				//	$urlReport = $this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}");
-				$text .= "<li class='text-right'><a href='" . $urlReport . "'>" . LAN_FORUM_2046 . " " . $tp->toGlyph('flag') . "</a></li>";
+				$text .= "<li class='text-right'><a href='" . $urlReport . "'>" . LAN_FORUM_2046 . " " . $tp->toGlyph('fa-flag') . "</a></li>";
 			}
 
 			// Edit
@@ -855,7 +855,7 @@
 
 				$url = e107::url('forum', 'post') . "?f=edit&amp;id=" . $this->postInfo['post_thread'] . "&amp;post=" . $this->postInfo['post_id'];
 				//$url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
-				$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('edit') . "</a></li>";
+				$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
 
 			}
 
@@ -866,7 +866,7 @@
 				 * AND if this post is the last post in the thread */
 				if($this->thread->threadInfo['thread_active'] && empty($this->postInfo['thread_start']) )
 				{
-					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 				}
 			}
 
@@ -874,7 +874,7 @@
 			{
 				$url = e107::url('forum', 'post') . "?f=quote&amp;id=" . $this->postInfo['post_thread'] . "&amp;post=" . $this->postInfo['post_id'];
 				//$url = e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
-				$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2041 . " " . $tp->toGlyph('share-alt') . "</a></li>";
+				$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2041 . " " . $tp->toGlyph('fa-share-alt') . "</a></li>";
 
 				//	$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
 			}
@@ -893,24 +893,24 @@
 					$url = e107::url('forum', 'post') . "?f=edit&amp;id=" . $this->postInfo['post_thread'] . "&amp;post=" . $this->postInfo['post_id'];
 					// $url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
 
-					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('edit') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
 				}
 
 				// only show delete button when post is not the initial post of the topic
 				//	if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id']))
 				if(empty($this->postInfo['thread_start']))
 				{
-					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 				}
 
 				if($type == 'thread')
 				{
 					$url = e107::url('forum', 'move', array('thread_id' => $this->postInfo['post_thread']));
-					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
 				}
 				elseif(e_DEVELOPER === true) //TODO
 				{
-					$text .= "<li class='text-right'><a href='" . e107::url('forum', 'split', array('thread_id' => $this->postInfo['post_thread'], 'post_id' => $this->postInfo['post_id'])) . "'>" . LAN_FORUM_2043 . " " . $tp->toGlyph('cut') . "</a></li>";
+					$text .= "<li class='text-right'><a href='" . e107::url('forum', 'split', array('thread_id' => $this->postInfo['post_thread'], 'post_id' => $this->postInfo['post_id'])) . "'>" . LAN_FORUM_2043 . " " . $tp->toGlyph('fa-cut') . "</a></li>";
 
 				}
 			}
