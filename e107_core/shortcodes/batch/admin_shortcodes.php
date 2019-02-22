@@ -1363,6 +1363,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$class .= $info;
 		}
+		else
+		{
+			$class .= 'label-default';
+		}
 
 		if(deftrue('BOOTSTRAP') !== 3)
 		{
