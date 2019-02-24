@@ -517,7 +517,7 @@ class e_plugin
 		$toRemove = array();
 
 		$save = false;
-		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != '' ORDER by plugin_path ", true))
+		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != 0 ORDER by plugin_path ", true))
 		{
 
 			foreach($rows as $row)

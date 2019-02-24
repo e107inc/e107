@@ -889,7 +889,7 @@ class eIPHandler
 		// do other checks - main IP check is in _construct()
 		if($this->actionCount)
 		{
-			$ip = $this->getip(); // This will be in normalised IPV6 form
+			$ip = $this->getIP(); // This will be in normalised IPV6 form
 
 			if ($ip !== e107::LOCALHOST_IP && ($ip !== e107::LOCALHOST_IP2) && ($ip !== $this->serverIP)) // Check host name, user email to see if banned
 			{
@@ -1049,7 +1049,7 @@ class eIPHandler
 		}
 		if (!$ban_ip)
 		{
-			$ban_ip = $this->getip();
+			$ban_ip = $this->getIP();
 		}
 		$ban_ip = preg_replace('/[^\w@\.:]*/', '', urldecode($ban_ip)); // Make sure no special characters
 		if (!$ban_ip)
@@ -1636,8 +1636,8 @@ class banlistManager
 		// Now run through the database updating times
 		$numRet = 0;
 		$pref['ban_durations'] = e107::getPref('ban_durations');
-		$ourDb = e107::getDB();		// Should be able to use $sql, $sql2 at this point
-		$writeDb = e107::getDB('sql2');
+		$ourDb = e107::getDb();		// Should be able to use $sql, $sql2 at this point
+		$writeDb = e107::getDb('sql2');
 
 		foreach ($ipAction as $ipKey => $ipInfo)
 		{
