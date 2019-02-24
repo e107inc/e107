@@ -757,10 +757,10 @@ class db_verify
 	 * @param string $table eg. submitnews
 	 * @param string $field eg. submitnews_id
 	 * @param string $sqlFileData (after CREATE)  eg. dblog_id int(10) unsigned NOT NULL auto_increment, ..... KEY....
-	 * @param int    $id
+	 * @param string $engine MyISAM|InnoDB
 	 * @return string SQL query
 	 */
-	function getFixQuery($mode,$table,$field,$sqlFileData)
+	function getFixQuery($mode, $table, $field, $sqlFileData, $engine = 'MyISAM' )
 	{
 
 		if(substr($mode,0,5)== 'index')
@@ -787,12 +787,12 @@ class db_verify
 			break;
 
 			case 'drop':
-				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field`";
 			break;
 
 			case 'index':
 				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
-				$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD ".$newval;
 			break;
 
 			case 'indexdrop':
@@ -800,7 +800,7 @@ class db_verify
 			break;
 
 			case 'create':
-				$query = "CREATE TABLE `".MPREFIX.$table."` (".$sqlFileData.") ENGINE=MyISAM;";
+				$query = "CREATE TABLE `".MPREFIX.$table."` (".$sqlFileData.") ENGINE=".$engine.";";
 			break;
 		}
 
@@ -839,7 +839,7 @@ class db_verify
 					foreach($fixes as $mode)
 					{				
 
-						$query = $this->getFixQuery($mode,$table,$field,$this->sqlFileTables[$j]['data'][$id]);
+						$query = $this->getFixQuery($mode,$table,$field,$this->sqlFileTables[$j]['data'][$id],$this->sqlFileTables[$j]['engine'][$id]);
 						
 				
 						// $mes->addDebug("Query: ".$query);		
