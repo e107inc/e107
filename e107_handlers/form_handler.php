@@ -5896,7 +5896,7 @@ class e_form
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
 				// Media = media-category owner used by media-manager. 
-				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media'],'_common_image'), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
 			case 'video':
