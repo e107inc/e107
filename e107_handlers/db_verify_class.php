@@ -125,19 +125,17 @@ class db_verify
 	}
 
 
-
-	private function loadCreateTableData()
-	{
-
-
-
-	}
-
 	/**
 	 * Permissive field validation
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
+		if($expected['type'] === 'JSON') // Fix for JSON alias MySQL 5.7+
+		{
+			$expected['type'] = 'LONGTEXT';
+		}
+
+
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
 		if(0 === strcasecmp($expected['type'], $actual['type']) &&
@@ -265,7 +263,7 @@ class db_verify
 	
 	
 	
-	function compare($selection,$language='')
+	public function compare($selection,$language='')
 	{
 
 		$this->currentTable = $selection;
@@ -354,41 +352,7 @@ class db_verify
 			 	$tbl = "lan_".$language."_".$tbl;
 			}
 			
-			// Check field and index data
-			foreach(['field', 'index'] as $type)
-			{
-				$results = 'results';
-				if ($type === 'index') $results = 'indices';
-				foreach($fileData[$type] as $key => $value)
-				{
-					$this->{$results}[$tbl][$key]['_status'] = 'ok';
-
-					//print("EXPECTED");
-					//print_a($value);
-					//print("ACTUAL");
-					//print_a($sqlData[$type][$key]);
-
-					if(!is_array($sqlData[$type][$key]))
-					{
-						$this->errors[$tbl]['_status'] = 'error'; // table status
-						$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
-						$this->{$results}[$tbl][$key]['_valid'] = $value;
-						$this->{$results}[$tbl][$key]['_file'] = $selection;
-					}
-					elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
-					{
-						$this->errors[$tbl]['_status'] = "mismatch_$type";
-						$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
-						$this->{$results}[$tbl][$key]['_diff'] = $diff;
-						$this->{$results}[$tbl][$key]['_valid'] = $value;
-						$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
-						$this->{$results}[$tbl][$key]['_file'] = $selection;
-					}
-
-					// TODO Check for additional fields in SQL that should be removed.
-					// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-				}
-			}
+			$this->prepareResults($tbl, $selection, $sqlData, $fileData);
 
 			unset($data);
 			
@@ -396,6 +360,79 @@ class db_verify
 		
 
 	}
+
+
+	/**
+	 * @param string $type fields|indices
+	 * @return array
+	 */
+	public function getResults($type='fields')
+	{
+		if($type === 'indices')
+		{
+			return $this->indices;
+		}
+
+		return $this->results;
+
+	}
+
+
+
+	/**
+	 * @param string $tbl table name without prefix.
+	 * @param string $selection 'core' OR plugin-folder name.
+	 * @param array $sqlData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @param array $fileData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @todo Check for additional fields in SQL that should be removed.
+	 * @todo Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	 */
+	public function prepareResults($tbl, $selection, $sqlData, $fileData)
+	{
+				// Check field and index data
+		foreach(['field', 'index'] as $type)
+		{
+			$results = 'results';
+
+			if ($type === 'index')
+			{
+				 $results = 'indices';
+			}
+
+			foreach($fileData[$type] as $key => $value)
+			{
+				$this->{$results}[$tbl][$key]['_status'] = 'ok';
+
+				if(!is_array($sqlData[$type][$key]))
+				{
+					$this->errors[$tbl]['_status'] = 'error'; // table status
+					$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+				elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
+				{
+					$this->errors[$tbl]['_status'] = "mismatch_$type";
+					$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
+					$this->{$results}[$tbl][$key]['_diff'] = $diff;
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+
+
+			}
+
+		}
+
+		return null;
+
+	}
+
+
+
+
+
 	
 	/**
 	 * Compile Results into a complete list of Fixes that could be run without the need of a form selection. 
