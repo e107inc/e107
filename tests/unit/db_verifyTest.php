@@ -217,16 +217,48 @@
 		{
 
 		}
-
+*/
 		public function testGetIndex()
 		{
 
+			$data = "`schedule_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+			  `schedule_cust_id` int(11) NOT NULL,
+			  `schedule_complete` int(1) unsigned NOT NULL DEFAULT 0,
+			  PRIMARY KEY (`schedule_id`),
+			  UNIQUE KEY `schedule_cust_id` (`schedule_cust_id`),
+			  KEY `schedule_invoice_id` (`schedule_invoice_id`)";
+
+			$expected = array(
+				'schedule_id'         =>
+					array(
+					'type'    => 'PRIMARY',
+					'keyname' => 'schedule_id',
+					'field'   => 'schedule_id',
+				),
+				'schedule_cust_id'    =>
+					array(
+						'type'    => 'UNIQUE',
+						'keyname' => 'schedule_cust_id',
+						'field'   => 'schedule_cust_id',
+					),
+				'schedule_invoice_id' =>
+					array(
+						'type'    => '',
+						'keyname' => 'schedule_invoice_id',
+						'field'   => 'schedule_invoice_id',
+					),
+			);
+
+
+			$result = $this->dbv->getIndex($data);
+			$this->assertEquals($expected,$result);
 		}
-*/
+
 		public function testCompare()
 		{
-			e107::getDB()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
-			e107::getDB()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
+
+			e107::getDb()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
+			e107::getDb()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
 
 			define('e_DEBUG', true);
 
@@ -266,7 +298,10 @@
   table_description text,
   table_summary text,
   table_media text,
-  PRIMARY KEY  (table_id)";
+  PRIMARY KEY  (table_id)
+  UNIQUE KEY `table_email` (`table_email`),
+  KEY `table_user` (`table_user`)
+  ";
 
 			$actual = $this->dbv->getFixQuery('alter', 'table', 'table_ip', $sqlFileData);
 			$expected = "ALTER TABLE `e107_table` CHANGE `table_ip` `table_ip` VARCHAR(45)  NOT NULL DEFAULT ''";
@@ -280,6 +315,43 @@
 			$actual = $this->dbv->getFixQuery('insert', 'table', 'table_json', $sqlFileData);
 			$expected = "ALTER TABLE `e107_table` ADD `table_json` JSON NOT NULL";
 			$this->assertEquals($expected,$actual);
+
+			$actual = $this->dbv->getFixQuery('index', 'table', 'table_email', $sqlFileData);
+			$expected = 'ALTER TABLE `e107_table` ADD UNIQUE `table_email` (table_email);';
+			$this->assertEquals($expected,$actual);
+
+			$actual = $this->dbv->getFixQuery('index', 'table', 'table_user', $sqlFileData);
+			$expected = 'ALTER TABLE `e107_table` ADD INDEX `table_user` (table_user);';
+			$this->assertEquals($expected,$actual);
+
+			$actual = $this->dbv->getFixQuery('create', 'table', 'table_user', $sqlFileData, 'InnoDB');
+			$expected = 'CREATE TABLE `e107_table` (table_id int(10) unsigned NOT NULL auto_increment,
+				  table_name varchar(100) NOT NULL default \'\',
+				  table_email varchar(100) NOT NULL default \'\',
+				  table_user int(10) unsigned NOT NULL default \'0\',
+				  table_title varchar(200) NOT NULL default \'\',
+				  table_category tinyint(3) unsigned NOT NULL default \'0\',
+				  table_json JSON NOT NULL,
+				  table_item text NOT NULL,
+				  table_datestamp int(10) unsigned NOT NULL default \'0\',
+				  table_ip varchar(45) NOT NULL default \'\',
+				  table_auth tinyint(3) unsigned NOT NULL default \'0\',
+				  table_file text NOT NULL,
+				  table_keywords  varchar(255) NOT NULL default \'\',
+				  table_description text,
+				  table_summary text,
+				  table_media text,
+				  PRIMARY KEY  (table_id)
+				  UNIQUE KEY `table_email` (`table_email`),
+				  KEY `table_user` (`table_user`)
+				  ) ENGINE=InnoDB;';
+
+			$expected = str_replace("\t", "",$expected);
+			$actual = str_replace("\t", "",$actual);
+
+			$this->assertEquals($expected,$actual);
+
+		//
 		//	echo $actual;
 
 
@@ -427,7 +499,7 @@
 					`eml_to` varchar(50) NOT NULL,
 					PRIMARY KEY (`eml_id`),
 					UNIQUE KEY `eml_hash` (`eml_hash`)
-				  	) ENGINE=MyISAM DEFAULT CHARSET=utf8;",
+				  	) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
 
 			'multiple'  =>
 
@@ -579,7 +651,7 @@
 						  ),
 					  'engine' =>
 						  array (
-						    0 => 'MyISAM',
+						    0 => 'InnoDB',
 						  ),
 				),
 
@@ -641,6 +713,160 @@
 			}
 
 		}
+
+
+		public function testPrepareResults()
+		{
+
+			$fileData = array();
+			$sqlData = array();
+
+			$sql = "`schedule_id` int(10) unsigned NOT NULL auto_increment,
+				`schedule_user_id`  int(11) NOT NULL,
+				`schedule_invoice_id` int(11) NOT NULL,
+				`schedule_name`  varchar(50) NOT NULL default '',
+				`schedule_location`  varchar(50) NOT NULL default '',
+				`schedule_data` LONGTEXT DEFAULT NULL,
+				`schedule_results` text NOT NULL,
+				PRIMARY KEY  (`schedule_id`);";
+
+			$file = "`schedule_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+			  `schedule_user_id` int(11) NOT NULL,
+			  `schedule_invoice_id` int(11) NOT NULL,
+			  `schedule_name` varchar(100) NOT NULL DEFAULT '',
+			  `schedule_location` varchar(50) NOT NULL DEFAULT '',
+			  `schedule_begin_date` int(11) NOT NULL,
+			  `schedule_data` JSON DEFAULT NULL,
+			  `schedule_results` text NOT NULL,
+			  PRIMARY KEY (`schedule_id`),
+			  UNIQUE KEY `schedule_user_id` (`schedule_user_id`),
+			  KEY `schedule_invoice_id` (`schedule_invoice_id`)
+            ";
+
+
+			$fileData['field']	= $this->dbv->getFields($file);
+			$sqlData['field']	= $this->dbv->getFields($sql);
+
+			$fileData['index']	= $this->dbv->getIndex($file);
+			$sqlData['index']	= $this->dbv->getIndex($sql);
+
+
+			$this->dbv->prepareResults('schedule', 'myplugin', $sqlData, $fileData);
+
+			$resultFields = $this->dbv->getResults('fields');
+			$expected = array(
+				'schedule' =>
+					array(
+						'schedule_id'         =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_user_id'    =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_invoice_id' =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_name'       =>
+							array(
+								'_status'  => 'mismatch',
+								'_diff'    =>
+									array(
+										'value' => '100',
+									),
+								'_valid'   =>
+									array(
+										'type'       => 'VARCHAR',
+										'value'      => '100',
+										'attributes' => '',
+										'null'       => 'NOT NULL',
+										'default'    => 'DEFAULT \'\'',
+									),
+								'_invalid' =>
+									array(
+										'type'       => 'VARCHAR',
+										'value'      => '50',
+										'attributes' => '',
+										'null'       => 'NOT NULL',
+										'default'    => 'DEFAULT \'\'',
+									),
+								'_file'    => 'myplugin',
+							),
+						'schedule_location'   =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_begin_date' =>
+							array(
+								'_status' => 'missing_field',
+								'_valid'  =>
+									array(
+										'type'       => 'INT',
+										'value'      => '11',
+										'attributes' => '',
+										'null'       => 'NOT NULL',
+										'default'    => '',
+									),
+								'_file'   => 'myplugin',
+							),
+						'schedule_data'       =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_results'    =>
+							array(
+								'_status' => 'ok',
+							),
+					),
+			);
+
+
+
+
+			$this->assertEquals($expected, $resultFields);
+
+
+			$resultIndices = $this->dbv->getResults('indices');
+			$expected = array(
+				'schedule' =>
+					array(
+						'schedule_id'         =>
+							array(
+								'_status' => 'ok',
+							),
+						'schedule_user_id'    =>
+							array(
+								'_status' => 'missing_index',
+								'_valid'  =>
+									array(
+										'type'    => 'UNIQUE',
+										'keyname' => 'schedule_user_id',
+										'field'   => 'schedule_user_id',
+									),
+								'_file'   => 'myplugin',
+							),
+						'schedule_invoice_id' =>
+							array(
+								'_status' => 'missing_index',
+								'_valid'  =>
+									array(
+										'type'    => '',
+										'keyname' => 'schedule_invoice_id',
+										'field'   => 'schedule_invoice_id',
+									),
+								'_file'   => 'myplugin',
+							),
+					),
+			);
+
+			$this->assertEquals($expected, $resultIndices);
+
+		}
+
+
+
 /*
 		public function testFixForm()
 		{
