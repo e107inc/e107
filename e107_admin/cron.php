@@ -64,9 +64,9 @@ class cron_admin_ui extends e_admin_ui
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
        		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
-         	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'width' => '35%',	'readonly' => 1),
-         	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
+       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'data'=>'str', 'width' => 'auto',	'readonly' => 1),
+         	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'data'=>'str', 'width' => '35%',	'readonly' => 1),
+         	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'data'=>'str', 'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1),
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
