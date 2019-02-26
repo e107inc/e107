@@ -112,7 +112,7 @@ class theme_shortcodes extends e_shortcode
 	  $text = '&copy; '. $copyYear . (($copyYear != $curYear) ? ' - ' . $curYear : '');
  
 	  $text .= ' '.$sitedisclaimer;        
-		return e107::getParser()->toHtml($text, true, 'SUMMARY');	
+		return e107::getParser()->toHTML($text, true, 'SUMMARY');	
 	}
 
 

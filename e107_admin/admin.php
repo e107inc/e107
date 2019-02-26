@@ -701,7 +701,7 @@ TMPO;
 		if (isset($potential))
 		{
 			//$text = ADLAN_ERR_3."<br /><br />";
-			$mes->addWarning($tp->toHtml(ADLAN_ERR_3, true));
+			$mes->addWarning($tp->toHTML(ADLAN_ERR_3, true));
 			$text = '<ul>';
 			foreach ($potential as $p_file)
 			{

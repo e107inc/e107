@@ -305,7 +305,7 @@ class bbcode_shortcodes extends e_shortcode
 
 			foreach($sizes as $s)
 			{
-				$text .= "<li><a href=\"javascript:addtext('[size=".$s."][/size]')\">".$tp->toHtml("[size=".$s."]".LANHELP_65." ".$s."[/size]",true)."</a></li>\n";	
+				$text .= "<li><a href=\"javascript:addtext('[size=".$s."][/size]')\">".$tp->toHTML("[size=".$s."]".LANHELP_65." ".$s."[/size]",true)."</a></li>\n";	
 			}
 			
 			$text .= "</ul>";

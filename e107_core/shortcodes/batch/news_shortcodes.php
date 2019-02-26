@@ -224,7 +224,7 @@ class news_shortcodes extends e_shortcode
 		$caption = vartrue($parm['text'],LAN_BACK);
 		
 		$text = '<ul class="pager hidden-print">
-  			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
+  			<li><a href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
 		</ul>';
 		
 		return $text;
@@ -322,7 +322,7 @@ class news_shortcodes extends e_shortcode
 
 		if(!empty($user['user_signature']))
 		{
-			return e107::getParser()->toHtml($user['user_signature'], true, 'DESCRIPTION');
+			return e107::getParser()->toHTML($user['user_signature'], true, 'DESCRIPTION');
 		}
 	}
 
@@ -639,7 +639,7 @@ class news_shortcodes extends e_shortcode
 		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
-			$text = $tp->toHtml($this->news_item['news_body'],true);
+			$text = $tp->toHTML($this->news_item['news_body'],true);
 			$breaks = array('<br />','<br>');
 			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
@@ -1188,7 +1188,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsmetadiz($parm=null)
 	{
-  		$text = e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+  		$text = e107::getParser()->toHTML($this->news_item['news_meta_description'],true);
 
 		if(!empty($parm['limit']))
 		{

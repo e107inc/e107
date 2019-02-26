@@ -380,7 +380,7 @@ class users_admin_ui extends e_admin_ui
 			{
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
-				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
+				$label = $tp->toHTML($row['user_extended_struct_text'],false,'defs');
 				$this->fields[$field] = array('__tableField'=>'ue.'.$field, 'title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
@@ -943,9 +943,9 @@ class users_admin_ui extends e_admin_ui
 			$rplc_from = array('[x]', '[y]', '[z]');
 			$rplc_to = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'));
 			$message = str_replace($rplc_from, $rplc_to, USRLAN_228);
-			$message = e107::getParser()->toHtml($message,true);
+			$message = e107::getParser()->toHTML($message,true);
 			$mes->addWarning($message);
-			$mes->addWarning(e107::getParser()->toHtml(USRLAN_229,true));
+			$mes->addWarning(e107::getParser()->toHTML(USRLAN_229,true));
 		}
 		
 	}
@@ -1414,7 +1414,7 @@ class users_admin_ui extends e_admin_ui
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
 				$message = str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237);
-				$message = e107::getParser()->toHtml($message,true);
+				$message = e107::getParser()->toHTML($message,true);
 				$mes->addWarning($message);
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}

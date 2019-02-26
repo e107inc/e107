@@ -344,7 +344,7 @@ class e107_user_extended
 						$err = $this->user_extended_validate_entry($val, $defs); 
 						if ($err === true)
 						{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-							$eufVals['errortext'][$f] = str_replace('[x]',$tp->toHtml(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
+							$eufVals['errortext'][$f] = str_replace('[x]',$tp->toHTML(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
 							$eufVals['errors'][$f] = ERR_GENERIC;
 						}
 						elseif ($err)
@@ -788,7 +788,7 @@ class e107_user_extended
 		}
 		
 		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
-		$include 	= preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
+		$include 	= preg_replace("/\n/", " ", $tp->toHTML($parms[0]));
 		$regex 		= $tp->toText(varset($parms[1]));
 		$regexfail 	= $tp->toText(varset($parms[2]));
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";

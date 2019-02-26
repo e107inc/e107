@@ -57,7 +57,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 		$text = str_replace("YYYY", date('Y'), $text);
 
-		return e107::getParser()->toHtml($text, true, 'SUMMARY');
+		return e107::getParser()->toHTML($text, true, 'SUMMARY');
 	}
 
 	

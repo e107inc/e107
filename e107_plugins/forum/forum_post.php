@@ -950,7 +950,7 @@ class forum_post_handler
 								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
@@ -975,7 +975,7 @@ class forum_post_handler
 							<td  style='width:50%'>
 							".LAN_FORUM_2025.': '.$thread_name." <a  class='e-expandit' href='#post-info'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
 							<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 							</div>
 							</td>
 							<td style='text-align:center;width:50%'></td>

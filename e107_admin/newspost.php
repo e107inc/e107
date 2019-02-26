@@ -321,7 +321,7 @@ class news_sub_form_ui extends e_admin_form_ui
              <div class="modal-content">
 			    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
+			   <h4>'.$tp->toHTML($submitnews_title,false,'TITLE').'</h4>
 			    </div>
 			    <div class="submitnews modal-body">
 			    <p>';

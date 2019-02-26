@@ -252,7 +252,7 @@ class e107Update
 
 		foreach($list as $path=>$val)
 		{
-			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHTML($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
 
 			$text .= "<tr>
 					<td>".$name."</td>

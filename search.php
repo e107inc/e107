@@ -536,7 +536,7 @@ class search extends e_shortcode
 			$ret['chars'] 			= $this->search_prefs[$type.'_handlers'][$id]['chars'];
 			$ret['results'] 		= $this->search_prefs[$type.'_handlers'][$id]['results'];
 			$ret['pre_title'] 		= $this->search_prefs[$type.'_handlers'][$id]['pre_title'];
-			$ret['pre_title_alt'] 	= $tp -> toHtml($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
+			$ret['pre_title_alt'] 	= $tp -> toHTML($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
 		//	$ret['order'] 			= (isset($this->search_prefs[$type.'_handlers'][$id]['order']) && $this->search_prefs[$type.'_handlers'][$id]['order']) ? $this->search_prefs[$type.'_handlers'][$id]['order'] : $this->auto_order;
 			
 			$this->auto_order++;

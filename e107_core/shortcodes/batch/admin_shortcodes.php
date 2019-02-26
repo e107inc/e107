@@ -2126,8 +2126,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$subid = $c;
 				$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
 								
-				$tmp[$c]['text'] = $tp->toHtml($lk['link_name'],'','defs');
-				$tmp[$c]['description'] = $tp->toHtml($lk['link_description'],'','defs');
+				$tmp[$c]['text'] = $tp->toHTML($lk['link_name'],'','defs');
+				$tmp[$c]['description'] = $tp->toHTML($lk['link_description'],'','defs');
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
 				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';

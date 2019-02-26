@@ -626,7 +626,7 @@ class admin_log_form_ui extends e_admin_form_ui
 			case 'read': // List Page
 			
 				$text = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $curVal);
-				$text = $tp->toHtml($text,false,'E_BODY');
+				$text = $tp->toHTML($text,false,'E_BODY');
 				
 				if(strpos($text,'Array')!==false || strlen($text)>300)
 				{

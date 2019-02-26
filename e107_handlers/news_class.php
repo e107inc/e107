@@ -938,7 +938,7 @@ class e_news_category_item extends e_front_model
 			 return e107::getParser()->toAttribute($this->cat('name'));
 		}
 
-		return e107::getParser()->toHtml($this->cat('name'),true,'TITLE_PLAIN');
+		return e107::getParser()->toHTML($this->cat('name'),true,'TITLE_PLAIN');
 	}
 
 	public function sc_news_category_url($parm = '')

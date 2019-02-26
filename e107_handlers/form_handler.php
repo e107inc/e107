@@ -4315,7 +4315,7 @@ class e_form
 						'RELATED_URL'       => $tp->replaceConstants($val['url'],'full'),
 						'RELATED_TITLE'     => $val['title'],
 						'RELATED_IMAGE'     => $tp->toImage($val['image']),
-						'RELATED_SUMMARY'   => $tp->toHtml($val['summary'],true,'BODY')
+						'RELATED_SUMMARY'   => $tp->toHTML($val['summary'],true,'BODY')
 					);
 
 					$list[] = $tp->simpleParse($TEMPLATE['item'], $row);
@@ -6298,7 +6298,7 @@ class e_form
 		}
 		else
 		{
-			$ret .= vartrue($parms['help']) ? '<div class="field-help">'.$tp->toHtml($parms['help'],false,'defs').'</div>' : '';	
+			$ret .= vartrue($parms['help']) ? '<div class="field-help">'.$tp->toHTML($parms['help'],false,'defs').'</div>' : '';	
 		}
 
 		return $ret;

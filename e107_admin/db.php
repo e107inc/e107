@@ -761,7 +761,7 @@ class system_tools
 			$message .= '<li>'.DBLAN_88.'</li>';
 			$message .= '</ul>';
 
-			$mes->add($tp->toHtml($message,true), E_MESSAGE_WARNING);
+			$mes->add($tp->toHTML($message,true), E_MESSAGE_WARNING);
 	
 			$text .= "
 				<form method='post' action='".e_SELF."' id='linkform'>
@@ -1601,7 +1601,7 @@ class system_tools
 
 			$text .= "
 								<tr>
-									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
+									<td>".$tp->toHTML($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
 	               					<td>".$row['plugin_path']."</td>
 									<td>";
 

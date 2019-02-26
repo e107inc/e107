@@ -6108,7 +6108,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// Option for working with tables having no PID
 		if(!varset($this->pid) && vartrue($this->fields) && false !== $this->pid)
 		{
-			$message = e107::getParser()->toHtml(LAN_UI_NOPID_ERROR,true);
+			$message = e107::getParser()->toHTML(LAN_UI_NOPID_ERROR,true);
 			e107::getMessage()->add($message, E_MESSAGE_WARNING);
 		}
 

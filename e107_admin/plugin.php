@@ -732,7 +732,7 @@ class plugin_ui extends e_admin_ui
 			$text = "
 			<form action='".e_SELF."?".e_QUERY."' method='post'>
 			<fieldset id='core-plugin-confirmUninstall'>
-			<legend>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
+			<legend>".EPL_ADLAN_54." ".$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
             <table class='table adminform'>
             	<colgroup>
             		<col class='col-label' />
@@ -861,7 +861,7 @@ class plugin_ui extends e_admin_ui
 			";
 
 			return $text;
-		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 	/*
@@ -2165,7 +2165,7 @@ class pluginmanager_form extends e_form
 		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
 		{
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-		    e107::getMessage()->addInfo("<b>".$tp->toHtml($this->plug['plugin_name'],false,'TITLE')."</b> is ready to be upgraded. (see below)"); // TODO LAN
+		    e107::getMessage()->addInfo("<b>".$tp->toHTML($this->plug['plugin_name'],false,'TITLE')."</b> is ready to be upgraded. (see below)"); // TODO LAN
 			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
 
@@ -3289,7 +3289,7 @@ class pluginManager{
 			$text = "
 			<form action='".e_SELF."?".e_QUERY."' method='post'>
 			<fieldset id='core-plugin-confirmUninstall'>
-			<legend>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
+			<legend>".EPL_ADLAN_54." ".$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
             <table class='table adminform'>
             	<colgroup>
             		<col class='col-label' />
@@ -3411,7 +3411,7 @@ class pluginManager{
 			</fieldset>
 			</form>
 			";
-		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 
@@ -3582,7 +3582,7 @@ class pluginBuilder
 			$info .= "<li>".EPL_ADLAN_106."</li>";
 			$info .= "</ul>";
 
-		//	$mes->addInfo($tp->toHtml($info,true));
+		//	$mes->addInfo($tp->toHTML($info,true));
 			
 			$text = $frm->open('createPlugin','get', e_SELF);
 			$text .= $frm->hidden('action', 'build');

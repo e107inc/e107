@@ -473,7 +473,7 @@ class news_front
 				break;
 
 			case "list":
-				$title = $tp->toHtml($news['category_name'],false,'TITLE_PLAIN');
+				$title = $tp->toHTML($news['category_name'],false,'TITLE_PLAIN');
 				if(!defined('e_PAGETITLE'))
 				{
 					define('e_PAGETITLE', $title );
@@ -599,7 +599,7 @@ class news_front
 
 		if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'cat')
 		{
-			define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
+			define('e_PAGETITLE', $tp->toHTML($news['category_name'],false,'TITLE_PLAIN'));
 		}
 
 		if($news['category_meta_keywords'] && !defined('META_KEYWORDS'))
