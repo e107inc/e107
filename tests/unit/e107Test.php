@@ -757,13 +757,20 @@
 			$res = null;
 			$this->assertTrue($res);
 		}
-
+*/
 		public function testUrl()
 		{
-			$res = null;
-			$this->assertTrue($res);
-		}
+			$obj = $this->e107;
 
+			$result = $obj::url('news','index', array(), array('mode'=>'full'));
+
+			$this->assertEquals("https://localhost/e107/news", $result);
+		//	var_dump(SITEURL);
+			
+
+		//	$this->assertTrue($res);
+		}
+/*
 		public function testRedirect()
 		{
 			$res = null;
