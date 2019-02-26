@@ -740,7 +740,7 @@ class e_form
 			$options['class'] = "tbox";		
 		}
 
-		if(deftrue('BOOTSTRAP') === 3)
+		if(deftrue('BOOTSTRAP'))
 		{
 			$options['class'] .= ' form-control';
 		}
