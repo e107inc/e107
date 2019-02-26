@@ -3752,14 +3752,19 @@ class e_parser
     /**
      * @var DOMDocument
      */
-    public $domObj                = null;
+    public $domObj                  = null;
 	public $isHtml                  = false;
-    protected $removedList        = array();
-    protected $nodesToDelete      = array();
-    protected $nodesToConvert     = array();
-    protected $nodesToDisableSC = array();
-    protected $pathList           = array();
-    protected $allowedAttributes  = array(
+
+
+	protected $bootstrap            = null;
+	protected $fontawesome          = null;
+
+    protected $removedList          = array();
+    protected $nodesToDelete        = array();
+    protected $nodesToConvert       = array();
+    protected $nodesToDisableSC     = array();
+    protected $pathList             = array();
+    protected $allowedAttributes    = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
@@ -3816,6 +3821,16 @@ class e_parser
     {
         $this->domObj = new DOMDocument();
 
+		if(defined('FONTAWESOME'))
+		{
+			$this->fontawesome = (int) FONTAWESOME;
+		}
+
+		if(defined('BOOTSTRAP'))
+		{
+			$this->bootstrap = (int) BOOTSTRAP;
+
+		}
 
     }
 
@@ -3886,6 +3901,24 @@ class e_parser
     {
         $this->scriptTags = $array;
     }
+
+
+	/**
+	 * @param int $version
+	 */
+	public function setFontAwesome($version)
+    {
+        $this->fontawesome = (int) $version;
+    }
+
+	/**
+	 * @param int $version
+	 */
+	public function setBootstrap($version)
+    {
+        $this->bootstrap = (int) $version;
+    }
+
 
 	/**
 	 * Add leading zeros to a number. eg. 3 might become 000003
@@ -4089,7 +4122,7 @@ class e_parser
 
 		}
 		*/
-		if(strpos($text, 'fa-') === 0) // Font-Awesome
+		if(strpos($text, 'fa-') === 0) // Font-Awesome 4 & 5
 		{
 			$prefix = 'fa ';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
@@ -4097,6 +4130,25 @@ class e_parser
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
+
+			if($this->fontawesome === 5)
+			{
+				$fab = e107::getMedia()->getGlyphs('fab');
+				$fas = e107::getMedia()->getGlyphs('fas');;
+
+				$code = substr($id,3);
+
+				if(in_array($code,$fab))
+				{
+					$prefix = "fab ";
+				}
+				elseif(in_array($code,$fas))
+				{
+					$prefix = "fas ";
+				}
+
+			}
+
 		}
 		elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
 		{
@@ -4106,7 +4158,7 @@ class e_parser
 		}
 		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
 		{
-			if(deftrue('BOOTSTRAP') != 2) // bootrap 2 icon but running bootstrap3.
+			if($this->bootstrap !== 2) // bootrap 2 icon but running bootstrap3.
 			{
 				$prefix = 'glyphicon ';
 				$tag = 'span';
@@ -4721,7 +4773,7 @@ class e_parser
 
 		$ytqry = http_build_query($ytpref, null, '&amp;');
 
-		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
+		$defClass = !empty($this->bootstrap) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
 
 		if($type === 'youtube')
