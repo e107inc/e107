@@ -62,7 +62,7 @@ if(!$OTHERNEWS_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			$template['caption'] =  e107::getParser()->toHTML($parms['caption'],true,'TITLE');
 		}
 
 		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
@@ -74,7 +74,7 @@ if(!$OTHERNEWS_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$caption =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+			$caption =  e107::getParser()->toHTML($parms['caption'], true,'TITLE');
 		}
 			
 		$template['start'] = '';

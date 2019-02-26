@@ -150,10 +150,10 @@ class gallery_shortcodes extends e_shortcode
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		if($parm == 'title')
 		{
-			return $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+			return $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		}
 		$text = "<a href='" . $url . "'>";
-		$text .= $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+		$text .= $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		$text .= "</a>";
 		return $text;
 	}

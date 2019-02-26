@@ -2021,7 +2021,7 @@ class navigation_shortcodes extends e_shortcode
 			$link = $this->var['link_name'];	
 		}
 		
-		return e107::getParser()->toHtml($link, false,'defs');		
+		return e107::getParser()->toHTML($link, false,'defs');		
 	}
 
 	

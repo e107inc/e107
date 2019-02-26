@@ -140,7 +140,7 @@ class gallery
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cat, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cat]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cat]['media_cat_title'], false, 'defs');
 
 		$inner = "";
 

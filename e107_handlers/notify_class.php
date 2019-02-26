@@ -406,9 +406,9 @@ class notify
 
 		$shortcodes = array(
 			'NEWS_URL'      => e107::getUrl()->create('news/view/item', $data,'full=1&encode=0'),
-			'NEWS_TITLE'    => $tp->toHtml($data['news_title']),
+			'NEWS_TITLE'    => $tp->toHTML($data['news_title']),
 			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary']),
-			'NEWS_AUTHOR'   => $tp->toHtml($author)
+			'NEWS_AUTHOR'   => $tp->toHTML($author)
 		);
 
 		$img = explode(",",$data['news_thumbnail']);

@@ -233,7 +233,7 @@ class faqs_shortcodes extends e_shortcode
 
 		if(!empty($customCaption))
 		{
-			return e107::getParser()->toHtml($customCaption,true);
+			return e107::getParser()->toHTML($customCaption,true);
 		}
 
 		return LAN_PLUGIN_FAQS_FRONT_NAME;
@@ -346,7 +346,7 @@ class faqs_shortcodes extends e_shortcode
 
 				foreach($list as $row)
 				{
-					$text .= "<li>".$tp->toHtml($row['faq_question'],true)."</li>";
+					$text .= "<li>".$tp->toHTML($row['faq_question'],true)."</li>";
 				}
 
 				$text .= "</ul>";

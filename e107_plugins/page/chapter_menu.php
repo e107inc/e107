@@ -36,7 +36,7 @@ foreach($data as $row)
 	$sc->setVars($row);
 
 	$sc->setChapter($row['chapter_id']); 
-	$title = $tp->toHtml($row['chapter_name'],false,'TITLE'); // Used when tablerender style includes the caption. 
+	$title = $tp->toHTML($row['chapter_name'],false,'TITLE'); // Used when tablerender style includes the caption. 
 	$body .= $tp->parseTemplate($template['listChapters']['item'], true, $sc);
 	
 	// check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles. 

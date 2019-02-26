@@ -55,7 +55,7 @@ class _blank_front
 			//	$sc->setVars($value); // if shortcodes are enabled.
 			//	$text .= $tp->parseTemplate($template['item'],true, $sc);
 
-				$text .=  $tp->toHtml($value['blank_type'])."<br />";
+				$text .=  $tp->toHTML($value['blank_type'])."<br />";
 			}
 
 		//	$text .= $tp->parseTemplate($template['end'],true, $sc);

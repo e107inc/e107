@@ -43,7 +43,7 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$text = "<a href='".e_SELF."?cat=".$this->var['media_cat_category']."'>";
-		$text .= $tp->toHtml($this->var['media_cat_title']);
+		$text .= $tp->toHTML($this->var['media_cat_title']);
 		$text .= "</a>";
 		return $text;	
 	}

@@ -443,7 +443,7 @@ class cron_admin_ui extends e_admin_ui
 				if (method_exists($obj, $method_name))
 				{
 					$message = str_replace('[x]', $class_name." : ".$method_name, LAN_CRON_62);//Executing config function [b][x][/b]
-					$message = e107::getParser()->toHtml($message,true);
+					$message = e107::getParser()->toHTML($message,true);
 					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
@@ -458,7 +458,7 @@ class cron_admin_ui extends e_admin_ui
 				else
 				{
 					$message = str_replace('[x]', $method_name."()", LAN_CRON_63 );//Config function [b][x][/b] NOT found.
-					$message = e107::getParser()->toHtml($message,true);
+					$message = e107::getParser()->toHTML($message,true);
 					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
@@ -861,7 +861,7 @@ class cron
 				{
 					if ($func['function'] == $method)
 					{
-						return $tp->toHtml($func['name']);
+						return $tp->toHTML($func['name']);
 					}
 				}
 			}

@@ -72,7 +72,7 @@ class download_search extends e_search // include plugin-folder in the name.
 		$datestamp = $tp->toDate($row['download_datestamp'], "long");
 		
 		$res['link'] 		= e107::url('download', 'item', $row);
-		$res['pre_title'] 	= $tp->toHtml($row['download_category_name'],false,'TITLE_PLAIN')." | ";
+		$res['pre_title'] 	= $tp->toHTML($row['download_category_name'],false,'TITLE_PLAIN')." | ";
 		$res['title'] 		= $row['download_name'];
 		$res['pre_summary'] = "<div class='smalltext'><a href='download.php'>".LAN_197."</a> -> <a href='download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a></div>";
 		$res['summary'] 	= $row['download_description'];

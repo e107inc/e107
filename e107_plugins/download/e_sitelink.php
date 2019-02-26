@@ -65,7 +65,7 @@ class download_sitelink // include plugin-folder in the name.
 			}
 
 			$sublinks[] = array(
-				'link_name'			=> $tp->toHtml($row['download_category_name'],'','TITLE'),
+				'link_name'			=> $tp->toHTML($row['download_category_name'],'','TITLE'),
 				'link_url'			=> e107::url('download', 'category', $row),
 				'link_description'	=> '',
 				'link_button'		=> $row['download_category_icon'],

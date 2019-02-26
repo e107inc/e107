@@ -900,7 +900,7 @@ class mailoutAdminClass extends e107MailManager
 			if($k == 'mail_body')
 			{
 			//	$text .= print_a($mailSource,true);
-			//	$text .= $tp->toHtml($val,true);
+			//	$text .= $tp->toHTML($val,true);
 				$text .= "<iframe src='".e_ADMIN."mailout.php?mode=main&action=preview&id=".$mailSource['mail_source_id']."' width='100%' height='350'>Loading...</iframe>";	
 				continue;
 			}

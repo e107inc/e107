@@ -800,7 +800,7 @@ class e_parse extends e_parser
 
 		if(is_string($text) && substr($text,0,6) == '[html]')
 		{
-			// $text = $this->toHtml($text,true);
+			// $text = $this->toHTML($text,true);
 			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
 			$replace = array('"',"'","\\", '&amp;');
 
@@ -1751,6 +1751,7 @@ class e_parse extends e_parser
 
 					if ($className)
 					{
+						/** @var e_bb_base $tempCode */
 						$tempCode = new $className();
 
 						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
@@ -2368,7 +2369,7 @@ class e_parse extends e_parser
 	{
 		if($tags != true)
 		{
-			$text = $this -> toHTML($text, true);
+			$text = $this->toHTML($text, true);
 			$text = strip_tags($text);
 		}
 
@@ -2438,14 +2439,14 @@ class e_parse extends e_parser
 	function toText($text)
 	{
 
-		if($this->isBbcode($text) === true) // convert any bbcodes to html
+		if($this->isBBcode($text) === true) // convert any bbcodes to html
 		{
-			$text = $this->toHtml($text,true);
+			$text = $this->toHTML($text,true);
 		}
 
 		if($this->isHtml($text) === true) // strip any html.
 		{
-			$text = $this->toHtml($text,true);
+			$text = $this->toHTML($text,true);
 			$text = strip_tags($text);
 		}
 
@@ -3730,12 +3731,15 @@ class e_parse extends e_parser
 }
 
 
-/**
- * New v2 Parser 
- * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
- * Cameron's DOM-based parser.
- *
- */
+	/**
+	 * New v2 Parser
+	 * Start Fresh and Build on it over time to become eventual replacement to e_parse.
+	 * Cameron's DOM-based parser.
+	 *
+	 * @method replaceConstants($file, $string)
+	 * @method toAttribute($title)
+	 * @method thumbUrl($icon)
+	 */
 class e_parser
 {
     /**
@@ -3946,7 +3950,10 @@ class e_parser
 		{
 	        $tmp = $doc->getElementsByTagName($find);
 			
-			 
+			 /**
+			  * @var  $k
+			  * @var DOMDocument $node
+			  */
 			foreach($tmp as $k=>$node)
 			{
 				$tag = $node->nodeName;
@@ -4399,6 +4406,7 @@ class e_parser
 			}
 		}
 
+		/** @var e_parse $tp */
 		$tp  = $this;
 
 	//		e107::getDebug()->log($file);
@@ -4904,7 +4912,7 @@ TMPL;
         // -------------------- Encoding ----------------
 
 		$acc = $this->getScriptAccess();
-		$accName = e107::getUserclass()->uc_get_classname($acc);
+		$accName = e107::getUserClass()->uc_get_classname($acc);
 
 		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
 		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
@@ -4978,11 +4986,11 @@ TMPL;
 
 	    }
 
-	    echo "<h3>toDB() &gg; toHtml()</h3>";
-		$html = $tp->toHtml($dbText,true);
+	    echo "<h3>toDB() &gg; toHTML()</h3>";
+		$html = $tp->toHTML($dbText,true);
 	    print_a($html);
 
-	    echo "<h3>toDB &gg; toHtml() <small>(rendered)</small></h3>";
+	    echo "<h3>toDB &gg; toHTML() <small>(rendered)</small></h3>";
 	    echo $html;
 
 	    echo "<h3>toDB &gg; toForm()</h3>";
@@ -5063,7 +5071,7 @@ return;
         print_a($tp->dataFilter($html));
         $sql->db_Mark_Time('tp->dataFilter');
          
-        echo "<h3>\$tp->toHtml()</h3>";
+        echo "<h3>\$tp->toHTML()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($tp->toHTML($html));
         $sql->db_Mark_Time('tp->toHtml');     
@@ -5534,10 +5542,10 @@ EOF;
 return $html;            
             
     }
-        
-    
-    
-    
+
+
+
+
 }
 
 

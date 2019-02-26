@@ -32,7 +32,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 	if(deftrue('BOOTSTRAP'))
 	{
 		$bread = array(
-			0 => array('text' => $tp->toHtml(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
+			0 => array('text' => $tp->toHTML(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
 		);
 		$text = e107::getForm()->breadcrumb($bread);
 	}

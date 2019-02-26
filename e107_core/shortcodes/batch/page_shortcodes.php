@@ -455,7 +455,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 	
 	function sc_book_anchor()
@@ -479,7 +479,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 	
 	function sc_book_url()
@@ -510,7 +510,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 
 	/**
@@ -561,7 +561,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 
 	/**

@@ -83,7 +83,7 @@ class _blank_sitelink // include plugin-folder in the name.
 		while($row = $sql->fetch())
 		{
 			$sublinks[] = array(
-				'link_name'			=> $tp->toHtml($row['blank_name'],'','TITLE'),
+				'link_name'			=> $tp->toHTML($row['blank_name'],'','TITLE'),
 				'link_url'			=> e107::url('_blank', 'other', $row),
 				'link_description'	=> '',
 				'link_button'		=> $row['blank_icon'],

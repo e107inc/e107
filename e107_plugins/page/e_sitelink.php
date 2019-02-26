@@ -240,7 +240,7 @@ class page_sitelink // include plugin-folder in the name.
 				$sef['book_sef']	= $this->getSef($row['chapter_parent']);
 				
 				$chapters[$id] = array(
-					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
+					'link_name'			=> $tp->toHTML($row['chapter_name'],'','TITLE'),
 					'link_url'			=> e107::getUrl()->create('page/chapter/index', $sef), // 'page.php?ch='.$row['chapter_id'],
 					'link_description'	=> '',
 					'link_button'		=> $row['chapter_icon'],
