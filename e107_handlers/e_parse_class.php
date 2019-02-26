@@ -488,7 +488,7 @@ class e_parse extends e_parser
 	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
 	 * @param mixed $parm [optional]
-	 * @return string
+	 * @return string|array
 	 * @todo complete the documentation of this essential method
 	 */
 	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
@@ -498,11 +498,13 @@ class e_parse extends e_parser
 		if (is_array($data))
 		{
 			$ret = array();
+
 			foreach ($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
 				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $parm)] = $this->toDB($var, $nostrip, $no_encode, $mod, $parm);
 			}
+
 			return $ret;
 		}
 
@@ -1980,14 +1982,18 @@ class e_parse extends e_parser
 										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
 										{
 											require_once(e_PLUGIN.$hook."/e_tohtml.php");
+
 											$hook_class = "e_tohtml_".$hook;
+
 											$this->e_hook[$hook] = new $hook_class;
 										}
 									}
 
 									if(is_object( $this->e_hook[$hook]))
 									{
-										$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
+										/** @var e_tohtml_linkwords $deprecatedHook */
+										$deprecatedHook = $this->e_hook[$hook];
+										$sub_blk = $deprecatedHook->to_html($sub_blk, $opts['context']);
 									}
 								}
 							}
@@ -3736,9 +3742,10 @@ class e_parse extends e_parser
 	 * Start Fresh and Build on it over time to become eventual replacement to e_parse.
 	 * Cameron's DOM-based parser.
 	 *
-	 * @method replaceConstants($file, $string)
+	 * @method replaceConstants($text, $mode = '', $all = false)
 	 * @method toAttribute($title)
 	 * @method thumbUrl($icon)
+	 * @method thumbDimensions()
 	 */
 class e_parser
 {
@@ -3884,11 +3891,11 @@ class e_parser
 	 * Add leading zeros to a number. eg. 3 might become 000003
 	 * @param $num integer 
 	 * @param $numDigits - total number of digits
-	 * @return number with leading zeros. 
+	 * @return string number with leading zeros.
 	 */
 	public function leadingZeros($num,$numDigits)
 	{
-		return sprintf("%0".$numDigits."d",$num);
+		return (string) sprintf("%0".$numDigits."d",$num);
 	}
 
 	/**
@@ -5057,6 +5064,8 @@ return;
 
 		$html = $text;
 
+		$sql = e107::getDb();
+		$tp = e107::getParser();
         
       //  $html = $this->getXss();
                    

@@ -315,22 +315,22 @@ class e_theme
 
 	/**
 	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
-	 * @param null $url
-	 * @return string
+	 *
+	 * @param array  $cusPagePref
+	 * @param string $defaultLayout
+	 * @param string $request_url (optional) defaults to e_REQUEST_URL;
+	 * @return int|string
 	 */
-	public function getThemeLayout($request_url = null)
+	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null)
 	{
+
 		if($request_url === null)
 		{
 			$request_url = e_REQUEST_URL;
 		}
 
-		$user_pref = e107::getUser()->getPref();
-		$pref = e107::getPref();
-
 
 		$def = "";   // no custom pages found yet.
-	    $cusPagePref = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
 
 		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 		{
@@ -381,7 +381,7 @@ class e_theme
 		}
 		else // default layout.
 		{
-	        $layout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+	      $layout = $defaultLayout;
 		}
 
 		return $layout;

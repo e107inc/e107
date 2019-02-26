@@ -1346,90 +1346,30 @@ $theme_pref = varset($pref['sitetheme_pref']);
 // --------------------------------------------------------------
 $sql->db_Mark_Time('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
 
+if(deftrue('e_ADMIN_AREA'))
+{
+	define("THEME_STYLE", $pref['admincss']);
+}
+elseif(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+{
+	define("THEME_STYLE", $pref['themecss']);
+}
+else
+{
+	define("THEME_STYLE", 'style.css');
+}
+
 if(!defined("THEME_LAYOUT"))
 {
- /*   $def = "";   // no custom pages found yet.
-    $cusPagePref = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
+	$user_pref      = e107::getUser()->getPref();
+	$pref           = e107::getPref();
+	$cusPagePref    = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
+	$cusPageDef     = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef);
 
-	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
-	{
-	    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
-		$c_url = str_replace(array('&amp;'), array('&'), e_REQUEST_URL);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
-		// FIX - check against urldecoded strings
-		$c_url = rtrim(rawurldecode($c_url), '?');
-
-
-		
-    	foreach($cusPagePref as $lyout=>$cusPageArray)
-		{
-			if(!is_array($cusPageArray)) { continue; }
-			
-			// NEW - Front page template check - early
-			if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
-			{
-				$def = $lyout;
-				break;
-			}
-   			foreach($cusPageArray as $kpage)
-			{
-				if(substr($kpage, -1) === '!' )
-				{
-					$kpage = rtrim($kpage, '!');
-					if(substr($c_url, - strlen($kpage)) === $kpage)
-					{
-						$def =  $lyout;
-						break 2;
-					}
-					continue;
-				}
-
-				if ($kpage && ($kpage == defset('e_PAGE') || strpos($c_url, $kpage) !== false))
-				{
-            	 //	$def = ($lyout) ? $lyout : "legacyCustom";
-					$def =  $lyout;
-					break 2;
-				}
-			}
-		}
-	}*/
-
-	/* Done via e_IFRAME and USER_AREA force combination, check moved to menu.php
-	if(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')!==FALSE)
-	{
-		$menus_equery = explode('.', e_QUERY);
-		$def = $menus_equery[1];
-	}
-	*/
-
-	if(deftrue('e_ADMIN_AREA'))
-	{
-		define("THEME_STYLE", $pref['admincss']);
-	}
-	elseif(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
-	{
-		define("THEME_STYLE", $pref['themecss']);
-	}
-	else
-	{
-		define("THEME_STYLE", 'style.css');
-	}	
-/*
-    if($def) // custom-page layout.
-	{
-    	define("THEME_LAYOUT",$def);
-	}
-	else // default layout.
-	{
-    	$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
-
-		define("THEME_LAYOUT",$deflayout);  // default layout.
-	}*/
-
-	$deflayout = e107::getTheme()->getThemeLayout();
 	define("THEME_LAYOUT",$deflayout);
 
-    unset($def,$lyout,$cusPagePref,$menus_equery,$deflayout);
-
+    unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
 }
 
 // -----------------------------------------------------------------------
