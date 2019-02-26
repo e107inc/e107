@@ -1018,6 +1018,9 @@ class e_db_mysql
 			elseif($this->mySQLresult === 2 || $this->mySQLresult === true) // updated
 			{
 				$result = true;
+				// reset auto-increment to prevent gaps.
+				$this->db_Query("ALTER TABLE ".$this->mySQLPrefix.$table."  AUTO_INCREMENT=1", NULL, 'db_Insert', $debug, $log_type, $log_remark);
+
 			}
 			elseif($this->mySQLresult === 0) // updated (no change)
 			{
