@@ -66,7 +66,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
-		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
+		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perm' => '4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
