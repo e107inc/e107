@@ -362,12 +362,12 @@ if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug))
 //
 // I: Sanity check on e107_config.php
 //     e107_config.php upgrade check
-// FIXME - obsolete check, rewrite it
-if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
-{
-	message_handler('CRITICAL_ERROR', 8, ': generic, ', 'e107_config.php');
-	exit;
-}
+// obsolete check, rewrite it
+// if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
+// {
+	// message_handler('CRITICAL_ERROR', 8, ': generic, ', 'e107_config.php');
+// 	exit;
+// }
 
 //
 // J: MYSQL INITIALIZATION
@@ -685,7 +685,7 @@ $sql->db_Mark_Time('Misc resources. Online user tracking, cache');
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
 //DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
-$override = e107::getSingleton('override', true); //TODO - find & replace $override, $e107->override
+$override = e107::getSingleton('override', true);
 
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
@@ -851,12 +851,12 @@ if (!function_exists('checkvalidtheme'))
 			$legacy = (file_exists( e_THEME_ABS.$themeArray[$id].'/theme.xml') === false);
 
 			define('THEME_LEGACY',$legacy);
-	
+			unset($action);
 			
 			return;
 		}
 
-		$sql->db_Mark_time("Theme Check");
+		$sql->db_Mark_Time("Theme Check");
 
 		if (@fopen(e_THEME.$theme_check.'/theme.php', 'r'))
 	//	if (is_readable(e_THEME.$theme_check.'/theme.php'))
@@ -903,7 +903,7 @@ if (!function_exists('checkvalidtheme'))
 				
 			}
 		}
-		$sql->db_Mark_time("Theme Check End");
+		$sql->db_Mark_Time("Theme Check End");
 
 		$themes_dir = $e107->getFolder('themes');
 		$e107->http_theme_dir = "{$e107->server_path}{$themes_dir}{$e107->site_theme}/";
@@ -967,8 +967,10 @@ if (!class_exists('e107table', false))
 
 		/**
 		 * Set Advanced Page/Menu content (beyond just $caption and $text)
+		 *
 		 * @param string $type header|footer|text|title|image|list
 		 * @param string $val
+		 * @return bool|e107table
 		 */
 		public function setContent($type, $val)
 		{
@@ -1363,8 +1365,8 @@ if(!defined("THEME_LAYOUT"))
 {
 	$user_pref      = e107::getUser()->getPref();
 	$pref           = e107::getPref();
-	$cusPagePref    = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
-	$cusPageDef     = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+	$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
+	$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout'],'') : $user_pref['sitetheme_deflayout'];
 	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef);
 
 	define("THEME_LAYOUT",$deflayout);
@@ -1696,6 +1698,8 @@ function get_user_data($uid, $extra = '')
 		// TODO - debug screen Deprecated Functions (e107)
 		e107::getMessage()->addDebug('Deprecated get_user_data() backtrace:<pre>'."\n".print_r(debug_backtrace(null,2), true).'</pre>');
 	}
+
+	unset($extra);
 
 	$var = array();
 	$user = e107::getSystemUser($uid, true);
@@ -2496,7 +2500,7 @@ class error_handler
 	 */
 	function trigger_error($information, $level)
 	{
-		trigger_error($information);
+		trigger_error($information, $level);
 	}
 }
 
