@@ -54,18 +54,27 @@ switch ($action)
   default :
 	$text = "This page shows a list of your registered members. You can update their settings, give them administrator status and set their user class 
 	among other things.<br /><br />
-	The sort order can be changed by clicking on the column heading.<br />
-	
+
+	The sort order can be changed by clicking on the column heading.<br /><br />
+
+	<b>Userclasses</b><br />
+	Userclasses can be set in two ways: either 'inline' by clicking in the 'userclass' column, or by selecting one/multiple user(s) and using the 'batch' options at the bottom of the table. <br /><br />
+
 	<b>Edit</b><br />
-	View and edit all settings for this user. Here you can also set the class membership for a user. <br /><br />
+	View and edit all settings for this user. <br /><br />
+
 	<b>Ban/Unban</b><br />
 	Determine whether the user can access the site. <br /><br />
+
 	<b>Activate</b><br />
 	This activates a user who would normally have replied to the activation email.<br /><br />
+
 	<b>Resend Email</b><br />
 	Resends the activation email to the user.<br /><br />
+
 	<b>Test email</b><br />
 	Check user's email address for validity (doesn't send an email)<br /><br />
+
 	<b>Delete</b><br />
 	Totally removes the user from membership of the site (any forum posts, comments etc remain, and are flagged as from a 'Deleted User')
 	";
