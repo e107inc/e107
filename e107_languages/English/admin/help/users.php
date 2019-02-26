@@ -55,11 +55,9 @@ switch ($action)
 	$text = "This page shows a list of your registered members. You can update their settings, give them administrator status and set their user class 
 	among other things.<br /><br />
 	The sort order can be changed by clicking on the column heading.<br />
-	The displayed columns can be changed by clicking on 'Edit Display Options', selecting the required columns, then clicking on 'Search/Refresh'<br /><br />
-	<b>Info</b><br />
-	Show this user's profile (can also click on their display name)<br /><br />
+	
 	<b>Edit</b><br />
-	Edit the settings for this user. <br /><br />
+	View and edit all settings for this user. Here you can also set the class membership for a user. <br /><br />
 	<b>Ban/Unban</b><br />
 	Determine whether the user can access the site. <br /><br />
 	<b>Activate</b><br />
@@ -68,8 +66,6 @@ switch ($action)
 	Resends the activation email to the user.<br /><br />
 	<b>Test email</b><br />
 	Check user's email address for validity (doesn't send an email)<br /><br />
-	<b>Set Class</b><br />
-	Set class membership for a user<br /><br />
 	<b>Delete</b><br />
 	Totally removes the user from membership of the site (any forum posts, comments etc remain, and are flagged as from a 'Deleted User')
 	";
