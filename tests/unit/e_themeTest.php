@@ -67,10 +67,13 @@
 				'jumbotron_home' =>
 					array (
 						0 => 'FRONTPAGE',
+						1 => 'page.php?3!'
 					),
 				'jumbotron_full' =>
 					array (
 						0 => 'forum',
+						1 => 'user.php',
+						2 => '/user',
 					),
 				'jumbotron_sidebar_right' =>
 					array (
@@ -90,6 +93,10 @@
 				5 => array('url' => SITEURL."forum",   'expected'=> 'jumbotron_full'),
 				6 => array('url' => SITEURL."other/page",   'expected'=> 'jumbotron_sidebar_right'),
 				7 => array('url' => SITEURL."news.php?5.3",   'expected'=> 'jumbotron_sidebar_right'),
+				8 => array('url' => SITEURL."usersettings.php",   'expected'=> 'jumbotron_sidebar_right'),
+				9 => array('url' => SITEURL."user.php",   'expected'=> 'jumbotron_full'),
+				10 => array('url' => SITEURL."page.php",   'expected'=> 'jumbotron_sidebar_right'),
+				11 => array('url' => SITEURL."page.php?3",   'expected'=> 'jumbotron_home'),
 			);
 
 
