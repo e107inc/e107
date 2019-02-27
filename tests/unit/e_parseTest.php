@@ -477,11 +477,17 @@ TMP;
 */
 		public function testToGlyph()
 		{
+
 			$result = $this->tp->toGlyph('fa-envelope.glyph');
-
 			$expected = "<i class='fa fa-envelope' ><!-- --></i> ";
-
 			$this->assertEquals($expected,$result);
+
+			$this->tp->setFontAwesome(5);
+
+			$result = $this->tp->toGlyph('fa-mailchimp');
+			$expected = "<i class='fab fa-mailchimp' ><!-- --></i> ";
+			$this->assertEquals($expected, $result);
+
 
 		}
 /*
@@ -533,7 +539,7 @@ TMP;
 			foreach($tests as $val)
 			{
 				list($input, $expected) = $val;
-				$actual = $this->tp->isBbcode($input);
+				$actual = $this->tp->isBBcode($input);
 
 				$this->assertEquals($expected, $actual, $input);
 			}

@@ -151,12 +151,21 @@
 		{
 
 		}
-
+*/
 		public function testGetGlyphs()
 		{
+			$result = $this->md->getGlyphs('bs3');
+			$this->assertEquals('adjust', $result[0]);
+			$this->assertEquals('zoom-out', $result[198]);
+
+			$result = $this->md->getGlyphs('fab');
+			$this->assertTrue(in_array('xbox', $result));
+
+			$result = $this->md->getGlyphs('fas');
+			$this->assertTrue(in_array('check-circle', $result));
 
 		}
-
+/*
 		public function testImportIcons()
 		{
 

@@ -41,7 +41,7 @@ Plain text &quot;paragraph&quot; 2
 Plain text paragraph 3
 ';
 
-			$actual = $this->tm->toHtml($test);
+			$actual = $this->tm->toHTML($test);
 			$expected = 'Plain text paragraph 1<br />
 <br />
 Plain text "paragraph" 2<br />
@@ -61,7 +61,7 @@ Plain text paragraph 3<br />';
 			
 			paragraph 3';
 
-			$actual = $this->tm->toHtml($test);
+			$actual = $this->tm->toHTML($test);
 
 			$expected = "<strong class='bbcode bold bbcode-b'>Bold text</strong><br />
 			<br />
