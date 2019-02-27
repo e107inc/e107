@@ -62,9 +62,24 @@
 
 		public function testGetThemeLayout()
 		{
-			// FRONTPAGE    = jumbotron_home
-			// /news        = jumbotron_sidebar_right
-			// forum        = jumbotron_full
+
+			$pref = array (
+				'jumbotron_home' =>
+					array (
+						0 => 'FRONTPAGE',
+					),
+				'jumbotron_full' =>
+					array (
+						0 => 'forum',
+					),
+				'jumbotron_sidebar_right' =>
+					array (
+						0 => '/news',
+					),
+			);
+
+			$defaultLayout = "jumbotron_sidebar_right";
+
 
 			$tests = array(
 				0 => array('url' => SITEURL."index.php",   'expected'=> 'jumbotron_home'),
@@ -81,7 +96,7 @@
 
 			foreach($tests as $var)
 			{
-				$result = $this->tm->getThemeLayout($var['url']);
+				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url']);
 				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for ".$var['url']);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}

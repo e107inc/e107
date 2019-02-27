@@ -766,7 +766,7 @@
 
 			$this->assertEquals("https://localhost/e107/news", $result);
 		//	var_dump(SITEURL);
-			
+
 
 		//	$this->assertTrue($res);
 		}
