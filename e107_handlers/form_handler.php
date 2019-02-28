@@ -2044,6 +2044,8 @@ class e_form
 			$defValues[] = $val['value'];
 		}
 
+		$parms = array_merge($parms, $options);
+		
 		$ret = $this->text($name, implode(",",$defValues), 100, $parms);
 
 		return $ret;
