@@ -12,3 +12,5 @@ modules:
         - PhpBrowser:
             url: '%url%'
         - \Helper\Acceptance:
+settings:
+    shuffle: false
