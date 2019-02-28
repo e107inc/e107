@@ -1465,11 +1465,12 @@ class e_parse extends e_parser
 
 			case "url":
 
-				$linktext = (!empty($textReplace)) ? $textReplace : '\\2';
-				$external = (!empty($opts['ext'])) ? 'rel="external"' : '';
+				$linktext = (!empty($textReplace)) ? $textReplace : '$3';
+				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
 
-				$text = preg_replace("#(^|[\s]|&nbsp;)([\w]+?:\/\/(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$|&nbsp;)#is", "\\1<a class=\"e-url\" href=\"\\2\" ".$external.">".$linktext."</a>", $text);
-				$text = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a class=\"e-url\" href=\"http://\\2\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<a class=\"e-url\" href=\"$3\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", "$1$2<a class=\"e-url\" href=\"http://$3\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", "$1$2<a class=\"e-url\" href=\"$4://$3\" ".$external.">".$linktext."</a>", $text);
 
 				break;
 
