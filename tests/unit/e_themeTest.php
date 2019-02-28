@@ -78,6 +78,12 @@
 				'jumbotron_sidebar_right' =>
 					array (
 						0 => '/news',
+						1 => '/usersettings.php'
+					),
+				'other_layout'  =>
+					array(
+						0 => 'myplugin.php',
+						1 => 'forum/index.php'
 					),
 			);
 
@@ -85,26 +91,28 @@
 
 
 			$tests = array(
-				0 => array('url' => SITEURL."index.php",   'expected'=> 'jumbotron_home'),
-				1 => array('url' => SITEURL."index.php?",   'expected'=> 'jumbotron_home'),
-				2 => array('url' => SITEURL."index.php?fbclid=asdlkjasdlakjsdasd",   'expected'=> 'jumbotron_home'),
-				3 => array('url' => SITEURL."index.php?utm_source=asdlkajsdasd&utm_medium=asdlkjasd",   'expected'=> 'jumbotron_home'),
-				4 => array('url' => SITEURL."news",   'expected'=> 'jumbotron_sidebar_right'),
-				5 => array('url' => SITEURL."forum",   'expected'=> 'jumbotron_full'),
-				6 => array('url' => SITEURL."other/page",   'expected'=> 'jumbotron_sidebar_right'),
-				7 => array('url' => SITEURL."news.php?5.3",   'expected'=> 'jumbotron_sidebar_right'),
-				8 => array('url' => SITEURL."usersettings.php",   'expected'=> 'jumbotron_sidebar_right'),
-				9 => array('url' => SITEURL."user.php",   'expected'=> 'jumbotron_full'),
-				10 => array('url' => SITEURL."page.php",   'expected'=> 'jumbotron_sidebar_right'),
-				11 => array('url' => SITEURL."page.php?3",   'expected'=> 'jumbotron_home'),
+				0 => array('url' => SITEURL."index.php",                                    'expected' => 'jumbotron_home'),
+				1 => array('url' => SITEURL."index.php?",                                   'expected' => 'jumbotron_home'),
+				2 => array('url' => SITEURL."index.php?fbclid=asdlkjasdlakjsdasd",          'expected' => 'jumbotron_home'),
+				3 => array('url' => SITEURL."index.php?utm_source=asdd&utm_medium=asdsd",   'expected' => 'jumbotron_home'),
+				4 => array('url' => SITEURL."news",                                         'expected' => 'jumbotron_sidebar_right'),
+				5 => array('url' => SITEURL."forum",            'script' => "index.php",    'expected' => 'jumbotron_full'),
+				6 => array('url' => SITEURL."other/page",       'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				7 => array('url' => SITEURL."news.php?5.3",     'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				8 => array('url' => SITEURL."usersettings.php", 'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				9 => array('url' => SITEURL."user.php",         'script' => null,           'expected' => 'jumbotron_full'),
+				10 => array('url' => SITEURL."page.php",        'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				11 => array('url' => SITEURL."page.php?3",      'script' => null,           'expected' => 'jumbotron_home'),
+				12 => array('url' => SITEURL."somepage/",       'script' => "user.php",     'expected' => 'jumbotron_full'),
+				13 => array('url' => SITEURL."plugin/",         'script' => "myplugin.php", 'expected' => 'other_layout'),
+				14 => array('url' => SITEURL."forum/index.php", 'script' => "index.php",    'expected' => 'other_layout'),
 			);
 
-
-
-			foreach($tests as $var)
+			foreach($tests as $item=>$var)
 			{
-				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url']);
-				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for ".$var['url']);
+
+				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url'], $var['script']);
+				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}
 
