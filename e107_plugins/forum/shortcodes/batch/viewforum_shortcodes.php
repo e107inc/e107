@@ -207,7 +207,7 @@
 				</table>";
 			--*/
 
-			return (defset('BOOTSTRAP') == 3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
+			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
 				<table class='table table-bordered' style='width:100%'>
 				<tr>
 				<td style='vertical-align:middle; text-align:center; width:2%'>" . IMAGE_new_small . "</td>
