@@ -118,6 +118,8 @@ class e_theme
 				{
 					$library['name'] .= (string) $library['version'];
 
+					 e107::getParser()->setBootstrap($library['version']);
+
 					if(!defined('BOOTSTRAP'))
 					{
 						define('BOOTSTRAP', (int) $library['version']);
@@ -126,6 +128,8 @@ class e_theme
 				elseif($library['name'] === 'fontawesome' && !empty($library['version'])) // quick fix.
 				{
 					$library['name'] .= (string) $library['version'];
+
+					e107::getParser()->setFontAwesome($library['version']);
 
 					if(!defined('FONTAWESOME'))
 					{
@@ -321,7 +325,7 @@ class e_theme
 	 * @param string $request_url (optional) defaults to e_REQUEST_URL;
 	 * @return int|string
 	 */
-	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null)
+	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null, $request_script = null)
 	{
 
 		if($request_url === null)
@@ -332,6 +336,7 @@ class e_theme
 
 		$def = "";   // no custom pages found yet.
 
+
 		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 		{
 		    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
@@ -341,34 +346,58 @@ class e_theme
 
 			$c_url = $this->filterTrackers($c_url);
 
+			// First check all layouts for exact matches - possible fix for future issues?.
+			/*
+			foreach($cusPagePref as $lyout=>$cusPageArray)
+			{
+				if(!is_array($cusPageArray)) { continue; }
+
+				$base = basename($request_url);
+
+				if(in_array("/".$base, $cusPageArray) || in_array($base, $cusPageArray))
+				{
+					return $lyout;
+				}
+			}*/
+
 	        foreach($cusPagePref as $lyout=>$cusPageArray)
 			{
+
 				if(!is_array($cusPageArray)) { continue; }
 
 				// NEW - Front page template check - early
 				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
 				{
-					$def = $lyout;
-					break;
+					return $lyout;
 				}
+
 	            foreach($cusPageArray as $kpage)
 				{
 					if(substr($kpage, -1) === '!' )
 					{
+
 						$kpage = rtrim($kpage, '!');
-						if(substr($c_url, - strlen($kpage)) === $kpage)
+
+						if(basename($request_url) === $kpage) // exact match specified by '!'.
 						{
-							$def =  $lyout;
-							break 2;
+							$def = $lyout;
 						}
+						elseif(substr($c_url, - strlen($kpage)) === $kpage)
+						{
+							$def = $lyout;
+						}
+
 						continue;
 					}
 
-					if ($kpage && ($kpage == defset('e_PAGE') || strpos($c_url, $kpage) !== false))
+
+					if (!empty($kpage) && (strpos($c_url, $kpage) !== false)) // partial URL match
 					{
-	                 //	$def = ($lyout) ? $lyout : "legacyCustom";
-						$def =  $lyout;
-						break 2;
+						$def = $lyout;
+					}
+					elseif(!empty($request_script) && $kpage === $request_script) // exact script match
+					{
+						$def = $lyout;
 					}
 				}
 			}

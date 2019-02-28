@@ -1367,7 +1367,7 @@ if(!defined("THEME_LAYOUT"))
 	$pref           = e107::getPref();
 	$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
 	$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout'],'') : $user_pref['sitetheme_deflayout'];
-	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef);
+	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, defset('e_PAGE',''));
 
 	define("THEME_LAYOUT",$deflayout);
 
