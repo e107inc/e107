@@ -610,11 +610,59 @@ TMP;
 			// -----
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => 'fa-envelope.glyph'));
-
 			$this->assertContains("<i class='fa fa-envelope' ><!-- --></i></a>", $result);
 
-			// -----
+			// links standard.
+			$tests = array(
+				array("before www.somewhere.com after",     'before <a class="e-url" href="http://www.somewhere.com" >www.somewhere.com</a> after'),
+				array("before http://something.com after",  'before <a class="e-url" href="http://something.com" >http://something.com</a> after'),
+				array("before https://someplace.com after", 'before <a class="e-url" href="https://someplace.com" >https://someplace.com</a> after'),
+				array("before (www.something.com) after",   'before (<a class="e-url" href="http://www.something.com" >www.something.com</a>) after'),
+			);
+
+			foreach($tests as $row)
+			{
+				list($sample,$expected) = $row;
+				$result = $tp->makeClickable($sample, 'url');
+				$this->assertEquals($expected, $result);
+			}
+
+			// links with substituion..
+			$tests = array(
+				array("before www.somewhere.com after",     'before <a class="e-url" href="http://www.somewhere.com" >[link]</a> after'),
+				array("before http://something.com after",  'before <a class="e-url" href="http://something.com" >[link]</a> after'),
+				array("before https://someplace.com after", 'before <a class="e-url" href="https://someplace.com" >[link]</a> after'),
+				array("before (www.something.com) after",   'before (<a class="e-url" href="http://www.something.com" >[link]</a>) after'),
+			);
+
+			foreach($tests as $row)
+			{
+				list($sample,$expected) = $row;
+				$result = $tp->makeClickable($sample, 'url',array('sub' => '[link]'));
+				$this->assertEquals($expected, $result);
+			}
+
+			// links with substituion and target.
+			$tests = array(
+				array("before www.somewhere.com after",     'before <a class="e-url" href="http://www.somewhere.com" target="_blank">[link]</a> after'),
+				array("before http://something.com after",  'before <a class="e-url" href="http://something.com" target="_blank">[link]</a> after'),
+				array("before https://someplace.com after", 'before <a class="e-url" href="https://someplace.com" target="_blank">[link]</a> after'),
+				array("before (www.something.com) after",   'before (<a class="e-url" href="http://www.something.com" target="_blank">[link]</a>) after'),
+			);
+
+			foreach($tests as $row)
+			{
+				list($sample,$expected) = $row;
+				$result = $tp->makeClickable($sample, 'url',array('sub' => '[link]', 'ext'=>true));
+				$this->assertEquals($expected, $result);
+			}
+
+
 		}
+
+
+
+
 
 		public function testToDate()
 		{
