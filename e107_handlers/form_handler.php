@@ -3147,26 +3147,40 @@ class e_form
 						</span>	
 		
 		*/
-	}	
-	
-	
-	
-	
-	
-	
+	}
 
-	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
+
+	/**
+	 * @param       $name
+	 * @param null  $current_value
+	 * @param null  $uc_options
+	 * @param array $select_options multiple, default
+	 * @param array $opt_options
+	 * @return string
+	 */
+	function uc_select($name, $current_value=null, $uc_options=null, $select_options = array(), $opt_options = array())
 	{
+
+/*	var_dump($name);
+	var_dump($current_value);
+var_dump($uc_options);
+var_dump($select_options);*/
+
 
 		if(!empty($select_options['multiple']) && substr($name,-1) != ']')
 		{
 			$name .= '[]';
 		}
 
-		if(empty($current_value) && !empty($uc_options)) // make the first in the opt list the default value.
+		if(($current_value === null || $current_value === '') && !empty($uc_options)) // make the first in the opt list the default value.
 		{
 			$tmp = explode(",", $uc_options);
 			$current_value =  e107::getUserClass()->getClassFromKey($tmp[0]);
+
+			if(isset($select_options['default']))
+			{
+				$current_value = (int) $select_options['default'];
+			}
 		}
 
 		if(!empty($current_value) && !is_numeric($current_value)) // convert name to id.
@@ -3189,7 +3203,11 @@ class e_form
 			unset($tmp);
 		}
 
-		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
+		$text = $this->select_open($name, $select_options)."\n";
+		$text .= $this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n";
+		$text .= $this->select_close();
+
+		return $text;
 	}
 
 	// Callback for vetted_tree - Creates the option list for a selection box
@@ -5720,7 +5738,7 @@ class e_form
 			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>".varset($parms['post']);
 			$key = $key.'['.e_LANGUAGE.']';
 		}
-		
+
 		if(empty($value) && !empty($parms['default']) && $attributes['type'] !== 'dropdown') // Allow writeParms to set default value.
 		{
 			$value = $parms['default'];
