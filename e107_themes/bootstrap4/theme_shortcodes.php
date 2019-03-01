@@ -18,6 +18,9 @@ class theme_shortcodes extends e_shortcode
 
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		$mes = e107::getMessage();
+
+		$mes->addSuccess("Message");
 
 		$text = "<h4>Hardcoded</h4>";
 
@@ -31,7 +34,8 @@ class theme_shortcodes extends e_shortcode
 		$arr = array(
 			'fa-edit',
 			'fa-check',
-			'fa-cog'
+			'fa-cog',
+			'fa-mailchimp'
 		);
 
 		foreach($arr as $f)
@@ -40,7 +44,7 @@ class theme_shortcodes extends e_shortcode
 			$text .= "&nbsp;";
 		}
 
-		return $ns->tablerender("Glyphs", $text);
+		return $ns->tablerender("Glyphs", $mes->render(). $text);
 
 	}
 
