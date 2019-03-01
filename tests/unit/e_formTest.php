@@ -91,6 +91,7 @@ class e_formTest extends \Codeception\Test\Unit
 		'hidden_001'        => array('title'=>'Hidden',     'type'=>'hidden',       'inline'=>false),
 		//	'method_001'        => array('title'=>'Method' ,    'type'=>'method',       'inline'=>false),
 		'language_001'      => array('title'=>'Language' ,  'type'=>'language'),
+		'userclass_002'     => array('title'=>'Userclass',   'type'=>'userclass', 'writeParms'=>array('default'=>255 /* e_UC_NOBODY*/)),
 		//	'lanlist_001'       => array('title'=>'Lanlist' ,   'type'=>'lanlist',      'inline'=>false),
 
 
@@ -140,6 +141,7 @@ class e_formTest extends \Codeception\Test\Unit
 		'hidden_001'        => 'hidden-value',
 		'method_001'        => 'custom-value',
 		'language_001'      => 'fr',
+		'userclass_002'     => '',
 		//		'lanlist_001'       => 'German',
 	);
 
@@ -160,6 +162,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$legacyDir = APP_PATH."/e107_files/downloadimages/";
 		$legacyFile = APP_PATH."/e107_files/downloadimages/butterfly.jpg";
+
+
 
 		if(!is_dir($legacyDir))
 		{
@@ -500,6 +504,34 @@ class e_formTest extends \Codeception\Test\Unit
 
 			}
 	*/
+
+	public function testUcSelect()
+	{
+
+		// 'nobody,public,main,admin,classes,matchclass,member, no-excludes'; // 255, 0, 250, 254,
+
+		$tests = array(
+			0   => array('value' => '', 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='255' selected"),
+			1   => array('value' => 0, 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='0' selected"),
+			2   => array('value' => '0', 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='0' selected"),
+			3   => array('value' => null, 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='255' selected"),
+			4   => array('value' => null, 'default'=>254, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='254' selected"),
+
+		);
+
+		foreach($tests as $var)
+		{
+			$result = $this->_frm->uc_select('uc', $var['value'], $var['options'], array('default'=>$var['default']));
+			$this->assertContains($var['expected'],$result);
+		}
+
+
+
+
+	}
+
+
+
 	public function testUc_select_single_numeric()
 	{
 		$uc_options = 'admin';
@@ -769,6 +801,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'hidden_001'        => '',
 			//	'method_001'        => 'custom-value',
 			'language_001'      => 'French',
+			'userclass_002'     => 'Everyone (public)',
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 
 
