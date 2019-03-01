@@ -152,6 +152,13 @@ class db_verify
 			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
 		}
 
+		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
+		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', $expected['default']))
+		{
+			$expected['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $expected['default']);
+			$actual['default']   = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $actual['default']  );
+		}
+
 		return array_diff_assoc($expected, $actual);
 	}
 	
