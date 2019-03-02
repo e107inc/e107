@@ -240,12 +240,90 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testToDB()
 		{
 
-		}
+			$tests = array(
+				0  => array(
+					'input'     => "<svg/onload=prompt(1)//",
+					'expected'  => ''
+				),
+				1  => array(
+					'input'     => "some plain text with a\nline break",
+					'expected'  => "some plain text with a\nline break"
+				),
+				2  => array(
+					'input'     => "some [b]text[/b] with bbcodes",
+					'expected'  => "some [b]text[/b] with bbcodes"
+				),
+				3  => array(
+					'input'     => 'some "quoted text" with a $ sign',
+					'expected'  => "some &quot;quoted text&quot; with a &#036; sign"
+				),
+				4  => array(
+					'input'     => 'some <div>simple html</div><a href="http://somewhere.com">link</a>',
+					'expected'  => 'some <div>simple html</div><a href=&quot;http://somewhere.com&quot;>link</a>'
+				),
+				5  => array(
+					'input'     => "[img]http://something.com[/img]",
+					'expected'  => "[img]http://something.com[/img]"
+				),
+				6  => array(
+					'input'     => "<p>日本語 简体中文</p>",
+					'expected'  => "<p>日本語 简体中文</p>"
+				),
+				7  => array(
+					'input'     => "<frameset onload=alert(1) data-something=where>",
+					'expected'  => "" // stripped xss
+				),
+				8  => array(
+					'input'     => '<table background="javascript:alert(1)"><tr><td><a href="something.php" onclick="alert(1)">Hi there</a></td></tr></table>',
+					'expected'  => "<table><tr><td><a href=&quot;something.php&quot;>Hi there</a></td></tr></table>"
+				),
+				9  => array(
+					'input'     => '<!--<img src="--><img src=x onerror=alert(1)//">',
+					'expected'  => "<!--<img src=&quot;--><img src=&quot;x&quot;>"
+				),
+				10 => array(
+					'input'     => '<div style=content:url(data:image/svg+xml,%3Csvg/%3E);visibility:hidden onload=alert(1)>',
+					'expected'  => '<div style=&quot;#---sanitized---#&quot;></div>'),
+				11 => array(
+					'input'     => '<a href="{e_PLUGIN}myplugin/index.php">Test</a>',
+					'expected'  => '<a href=&quot;{e_PLUGIN}myplugin/index.php&quot;>Test</a>'
+				),
+				12 => array(
+					'input'     => "From here > to there",
+					'expected'  => "From here &gt; to there"
+				),
+				13 => array(
+					'input'     => "[html]<div style='text-align:center'>Hello World!</div>[/html]",
+					'expected'  => '[html]<div style=&quot;text-align:center&quot;>Hello World!</div>[/html]'
+				),
+				14 => array(
+					'input'     => "Something & something",
+					'expected'  => 'Something &amp; something'
+				),
 
+			);
+
+			foreach($tests as $var)
+			{
+				if(empty($var['input']))
+				{
+					continue;
+				}
+
+				$result = $this->tp->toDB($var['input']);
+				$this->assertEquals($var['expected'], $result);
+			//	var_dump($result);
+			}
+
+
+
+
+		}
+/*
 		public function testHtml_truncate_old()
 		{
 
@@ -698,12 +776,24 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testCleanHtml()
 		{
+			$tests = array(
+				0   => array('html' => "<svg/onload=prompt(1)//", 'expected' => ''),
+
+
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->cleanHtml($var['html']);
+				var_dump($result);
+			}
+
 
 		}
-
+/*
 		public function testSecureAttributeValue()
 		{
 
