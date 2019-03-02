@@ -54,6 +54,11 @@
 			$result = check_class(254, "253,254,250,251,0");
 			$this->assertTrue($result);
 
+			$result = check_class('0', "253,254,250,251,0");
+			$this->assertTrue($result);
+
+			$result = check_class(null, "253,254,250,251,0");
+			$this->assertTrue($result);
 
 		}
 
