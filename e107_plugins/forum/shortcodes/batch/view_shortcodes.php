@@ -395,7 +395,7 @@
 
 								$url = e_REQUEST_SELF . "?id=" . $this->postInfo['post_id'] . "&amp;dl=" . $key;
 
-								$saveicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-save' : 'icon-save.glyph'; 
+								$saveicon = (deftrue('FONTAWESOME')) ? 'fa-save' : 'icon-save.glyph';
                 				$saveicon = e107::getParser()->toGlyph($saveicon,false);
 								
 								if(defset("BOOTSTRAP"))

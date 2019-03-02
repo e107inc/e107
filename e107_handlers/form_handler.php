@@ -2141,7 +2141,7 @@ class e_form
 	        });
 	    ');
 
-		if(deftrue('BOOTSTRAP') == 3)
+		if(deftrue('BOOTSTRAP'))
 		{
 			$options['class'] .= ' form-control';
 		}
@@ -3495,7 +3495,7 @@ var_dump($select_options);*/
 		
 		$opt = array();
 		
-		$homeicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-home' : 'icon-home.glyph'; 
+		$homeicon = (deftrue('FONTAWESOME')) ? 'fa-home' : 'icon-home.glyph';
 		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
@@ -6173,11 +6173,15 @@ var_dump($select_options);*/
 
 			case 'userclass':
 			case 'userclasses':
+
+
 				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
 
+
 			//	$method = ($attributes['type'] == 'userclass') ? 'uc_select' : 'uc_select';
 				if(vartrue($attributes['type']) == 'userclasses'){ $parms['multiple'] = true; }
+
 				$ret =   vartrue($parms['pre']).$this->uc_select($key, $value, $uc_options, vartrue($parms, array())). vartrue($parms['post']);
 			break;
 
