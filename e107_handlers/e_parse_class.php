@@ -491,9 +491,12 @@ class e_parse extends e_parser
 	 * @return string|array
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
+	public function toDB($data = null, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
 	{
-		$core_pref = e107::getConfig();
+		if($data === null)
+		{
+			return null;
+		}
 
 		if (is_array($data))
 		{
@@ -508,9 +511,7 @@ class e_parse extends e_parser
 
 			return $ret;
 		}
-
-
-
+		
 		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 		{
 			$data = stripslashes($data);
@@ -520,6 +521,8 @@ class e_parse extends e_parser
 		{
 			return $data;
 		}
+
+		$core_pref = e107::getConfig();
 
 		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
