@@ -4050,7 +4050,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		var_dump($searchFilter);
+
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
 			e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
