@@ -516,7 +516,7 @@ class e_formTest extends \Codeception\Test\Unit
 			2   => array('value' => '0', 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='0' selected"),
 			3   => array('value' => null, 'default'=>null, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='255' selected"),
 			4   => array('value' => null, 'default'=>254, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='254' selected"),
-
+			5   => array('value' => '', 'default'=>254, 'options'=>'nobody,public,main,admin,member,no-excludes', 'expected' => "value='254' selected"),
 		);
 
 		foreach($tests as $var)
