@@ -1875,7 +1875,7 @@ class e_admin_controller
 	 *
 	 * @param string $title if boolean true - current menu caption will be used
 	 * @param boolean $meta add to meta as well
-	 * @return e_admin_controller
+	 * @return object e_admin_controller
 	 */
 	public function addTitle($title = true, $meta = true)
 	{
@@ -1932,6 +1932,7 @@ class e_admin_controller
 	//	print_a($title);
 		$this->getResponse()->appendTitle($title);
 		if($meta) $this->addMetaTitle($title);
+
 		return $this;
 	}
 
@@ -3072,6 +3073,10 @@ class e_admin_controller_ui extends e_admin_controller
 		$orderField = $this->getSortField();
 
 		$arr = array();
+		/**
+		 * @var  $id
+		 * @var e_tree_model $model
+		 */
 		foreach ($tree->getTree() as $id => $model)
 		{
 			$parent = $model->get($parentField);
@@ -3461,7 +3466,10 @@ class e_admin_controller_ui extends e_admin_controller
 						unset($classes[$id],$msg);
 					}
 				}
-				$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
+				if(method_exists($this, 'handleCommaBatch'))
+				{
+					$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
+				}
 			break;
 			
 			default:
@@ -4042,7 +4050,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		
+		var_dump($searchFilter);
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
 			e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
@@ -4173,7 +4181,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				if($var['type'] === 'ip')
 				{
-					$ipSearch = e107::getIpHandler()->ipEncode($searchQuery);
+					$ipSearch = e107::getIPHandler()->ipEncode($searchQuery);
 					if(!empty($ipSearch))
 					{
 						$filter[] = $var['__tableField']." LIKE '%".$ipSearch."%'";
@@ -5237,7 +5245,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$tree = $this->getTreeModel();
 		$cnt = $rcnt = 0;
-		$value = e107::getParser()->toDb($value);
+		$value = e107::getParser()->toDB($value);
 		
 		switch ($type) 
 		{
@@ -5297,7 +5305,7 @@ class e_admin_ui extends e_admin_controller_ui
 				else
 				{
 					$this->getTreeModel()->addMessageWarning(LAN_UPDATED_FAILED)->setMessages();//"Comma list is empty, aborting."
-					$this->getTreeModel()->addDebug(LAN_UPDATED_FAILED.": Comma list is empty, aborting.")->setMessages();
+					$this->getTreeModel()->addMessageDebug(LAN_UPDATED_FAILED.": Comma list is empty, aborting.")->setMessages();
 				}
 			break;
 				

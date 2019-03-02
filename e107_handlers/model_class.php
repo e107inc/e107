@@ -64,7 +64,7 @@ class e_object
      * @see getId()
      *
      * @param   string $name
-     * @return  e_object
+     * @return object e_object
      */
     public function setFieldIdName($name)
     {
@@ -238,7 +238,7 @@ class e_object
 	/**
 	 * Update parameter array
 	 * @param array $params
-	 * @return e_object
+	 * @return object e_object
 	 */
 	public function updateParams(array $params)
 	{
@@ -265,7 +265,7 @@ class e_object
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return e_object
+	 * @return e_tree_model
 	 */
 	public function setParam($key, $value)
 	{
@@ -747,7 +747,7 @@ class e_model extends e_object
 
     /**
      * Set Predefined data fields in format key => type
-     * @return e_model
+     * @return object e_model
      */
     public function setDataFields($data_fields)
     {
