@@ -83,7 +83,8 @@
 				'other_layout'  =>
 					array(
 						0 => 'myplugin.php',
-						1 => 'forum/index.php'
+						1 => 'forum/index.php',
+						2 => 'page.php'
 					),
 			);
 
@@ -101,11 +102,12 @@
 				7 => array('url' => SITEURL."news.php?5.3",     'script' => null,           'expected' => 'jumbotron_sidebar_right'),
 				8 => array('url' => SITEURL."usersettings.php", 'script' => null,           'expected' => 'jumbotron_sidebar_right'),
 				9 => array('url' => SITEURL."user.php",         'script' => null,           'expected' => 'jumbotron_full'),
-				10 => array('url' => SITEURL."page.php",        'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				10 => array('url' => SITEURL."page.php",        'script' => null,           'expected' => 'other_layout'),
 				11 => array('url' => SITEURL."page.php?3",      'script' => null,           'expected' => 'jumbotron_home'),
 				12 => array('url' => SITEURL."somepage/",       'script' => "user.php",     'expected' => 'jumbotron_full'),
 				13 => array('url' => SITEURL."plugin/",         'script' => "myplugin.php", 'expected' => 'other_layout'),
 				14 => array('url' => SITEURL."forum/index.php", 'script' => "index.php",    'expected' => 'other_layout'),
+				15 => array('url' => SITEURL."my-sef-page-chapter/my-sef-page-url", 'script' => "page.php",    'expected' => 'other_layout'),
 			);
 
 			foreach($tests as $item=>$var)

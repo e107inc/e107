@@ -304,6 +304,18 @@ TMP;
 					'input'     => "Something & something",
 					'expected'  => 'Something &amp; something'
 				),
+				15 => array(
+					'input'     => array('news_category', '2'),
+					'expected'  => array('news_category', '2')
+				),
+				16 => array(
+					'input'     => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5),
+					'expected'  => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5),
+				),
+				17 => array(
+					'input'     => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
+					'expected'  => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
+				),
 
 			);
 
