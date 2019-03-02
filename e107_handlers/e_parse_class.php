@@ -519,17 +519,14 @@ class e_parse extends e_parser
 		{
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
+			$data = $this->cleanHtml($data); // clean it regardless of if it is text or html. (html could have missing closing tags)
 
-		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
 			if(($this->isHtml($data)) && strpos($mod, 'no_html') === false)
 			{
 				$this->isHtml = true;
-				$data = $this->cleanHtml($data); // sanitize all html.
+			//	$data = $this->cleanHtml($data); // sanitize all html. (moved above to include everything)
 
 				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
-
-			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
-
 			}
 			else // caused double-encoding of '&'
 			{
@@ -537,13 +534,13 @@ class e_parse extends e_parser
 				//$data = str_replace('>','&gt;',$data);
 			}
 
+
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html.
 				$data = str_replace(array('[html]','[/html]'),'',$data);
 			}
-
-
+			
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
 
@@ -3781,6 +3778,7 @@ class e_parser
 		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
 									'x-bbcode'  => array('alt'),
 									'label'		=> array('for'),
+
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
