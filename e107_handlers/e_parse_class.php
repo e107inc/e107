@@ -516,7 +516,7 @@ class e_parse extends e_parser
 			$data = stripslashes($data);
 		}
 
-		if(intval($data) === $data) // simple integer.
+		if(intval($data) === $data || $data === '0') // simple integer.
 		{
 			return $data;
 		}
