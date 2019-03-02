@@ -378,9 +378,9 @@ class e_theme
 
 						$kpage = rtrim($kpage, '!');
 
-						if(basename($request_url) === $kpage) // exact match specified by '!'.
+						if(basename($request_url) === $kpage) // exact match specified by '!', skip other processing.
 						{
-							$def = $lyout;
+							return $lyout;
 						}
 						elseif(substr($c_url, - strlen($kpage)) === $kpage)
 						{
