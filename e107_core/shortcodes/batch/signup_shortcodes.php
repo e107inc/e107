@@ -20,6 +20,8 @@ e107::coreLan('signup');
 
 class signup_shortcodes extends e_shortcode
 {
+
+
 	
 	function sc_signup_coppa_form($parm)
 	{
@@ -455,7 +457,7 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_extended_user_fields()
 	{ 
-		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $EXTENDED_USER_FIELD_REQUIRED, $SIGNUP_EXTENDED_CAT;
+		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
 		$text = "";
 		
 		$search = array(
@@ -486,26 +488,31 @@ class signup_shortcodes extends e_shortcode
 		  {
 			continue;	
 		  }
-		  
-		  foreach($extList as $ext)
-		  {
-		  	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
-		   	{
-		      if(!$done_heading  && ($cat['user_extended_struct_id'] > 0))
-		      {	// Add in a heading
-				$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
-				if(defined($catName)) $catName = constant($catName);
-				$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, FALSE, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
-				$done_heading = TRUE;
-			  }
-		  	  $replace = array(
-		    			$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, 'emotes_off,defs'),
-		    			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
-		    			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
-		        );
-		      $text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
-		    }
-		  }
+
+			foreach($extList as $ext)
+			{
+				if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
+				{
+					if(!$done_heading && ($cat['user_extended_struct_id'] > 0))
+					{    // Add in a heading
+						$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
+						if(defined($catName))
+						{
+							$catName = constant($catName);
+						}
+						$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
+						$done_heading = true;
+					}
+
+					$replace = array(
+						$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs'),
+						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
+						$usere->user_extended_edit($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']])
+					);
+
+					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
+				}
+			}
 		}
 		return $text;
 	}
@@ -561,17 +568,46 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_signup_is_mandatory($parm='')
+	function sc_signup_is_mandatory($parm=null)
 	{
-		global $pref;
-		if (isset($parm))
+		$pref = e107::pref('core');
+
+		$mandatory = array(
+			'realname'  => 'signup_option_realname',
+			'subscribe' => 'signup_option_class',
+			'avatar'    => 'signup_option_image',
+			'signature' => 'signup_option_signature',
+		);
+
+		if((!empty($mandatory[$parm]) && (int) $pref[$mandatory[$parm]] === 2) || $parm === 'true' || ($parm === 'email' && empty($pref['disable_emailcheck'])))
 		{
-		  switch ($parm)
-		  {
-		    case 'email' : if (varset($pref['disable_emailcheck'],FALSE)) return '';
-		  }
+			return "<span class='required'><!-- empty --></span>";
 		}
-		return " *";
+
+
+
+		if(!empty($parm))
+		{
+			switch($parm)
+			{
+
+
+				case 'email' :
+					if(varset($pref['disable_emailcheck'], false))
+					{
+						return '';
+					}
+				break;
+
+			}
+		}
+
+	//	if((int) $val === 2)
+		{
+		//	return "<span class='required'><!-- empty --><</span>";
+		}
+
+		//return "<span class='required'></span>";
 	}
 
 

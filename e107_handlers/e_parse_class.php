@@ -540,7 +540,7 @@ class e_parse extends e_parser
 				$data = strip_tags($data); // remove tags from cleaned html.
 				$data = str_replace(array('[html]','[/html]'),'',$data);
 			}
-			
+
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
 
