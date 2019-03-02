@@ -1084,7 +1084,7 @@ exit;
 // Function returns an image if a field is required.
 function req($field)
 {
-	return ($field == 2 ? REQUIRED_FIELD_MARKER : "");
+	return ($field == 2 ? "<span class='required'></span>" : "");
 }
 //----------------------------------
 
