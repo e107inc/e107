@@ -943,7 +943,11 @@ class rss
 	// Db:create/update
 	function dbrss($mode='create')
 	{
-		global $sql, $ns, $tp, $e107cache, $admin_log;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$cache = e107::getCache();
+		$log = e107::getLog();
+
 
 		if($_POST['rss_name'] && $_POST['rss_url'] && $_POST['rss_path'])
 		{
@@ -956,27 +960,21 @@ class rss
 			$rssVals['rss_class']		= (intval($_POST['rss_class']) ? intval($_POST['rss_class']) : '0');
 			$rssVals['rss_limit']		= intval($_POST['rss_limit']);
 		//	$rssVals['rss_exclude_class'] = intval($_POST['rss_exclude_class']);
-			if(isset($_POST['rss_datestamp']) && $_POST['rss_datestamp']!='')
-			{
-				$rssVals['rss_datestamp'] = intval($_POST['rss_datestamp']);
-			}
-			else
-			{
-				$rssVals['rss_datestamp'] = time();
-			}
+			$rssVals['rss_datestamp'] = !empty($_POST['rss_datestamp']) ? (int) $_POST['rss_datestamp'] : time();
+			$rssVals['WHERE']           = " rss_id = ".intval($_POST['rss_id']);
 
 			switch ($mode)
 			{
 				case 'create' :
-					$message = ($sql -> db_Insert('rss',$rssVals)) ? LAN_CREATED : LAN_CREATED_FAILED;
-					$admin_log->logArrayAll('RSS_02',$rssVals, $message);
-					$e107cache->clear('rss');
+					$message = ($sql ->insert('rss',$rssVals)) ? LAN_CREATED : LAN_CREATED_FAILED;
+					$log->logArrayAll('RSS_02',$rssVals, $message);
+					$cache->clear('rss');
 					break;
 
 				case  'update' :
-					$message = ($sql -> db_UpdateArray('rss', $rssVals, " WHERE rss_id = ".intval($_POST['rss_id']))) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-					$admin_log->logArrayAll('RSS_03',$rssVals, $message);
-					$e107cache->clear('rss');
+					$message = ($sql ->update('rss', $rssVals)) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+					$log->logArrayAll('RSS_03',$rssVals, $message);
+					$cache->clear('rss');
 					break;
 			}
 		}
@@ -984,6 +982,7 @@ class rss
 		{
 			$message = RSS_LAN_ERROR_7;
 		}
+
 		return $message;
 	}
 
