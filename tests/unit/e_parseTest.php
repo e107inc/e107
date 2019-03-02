@@ -305,12 +305,12 @@ TMP;
 					'expected'  => 'Something &amp; something'
 				),
 				15 => array(
-					'input'     => array('news_category', '2'),
-					'expected'  => array('news_category', '2')
+					'input'     => array('news_category', '2', '0'),
+					'expected'  => array('news_category', '2', '0')
 				),
 				16 => array(
-					'input'     => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5),
-					'expected'  => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5),
+					'input'     => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5, 'true'=>true, 'false'=>false, 'empty'=>''),
+					'expected'  => array('my/customer/key'=>'news_category', 3=>'2', 'bla'=>5, 'true'=>true, 'false'=>false, 'empty'=>''),
 				),
 				17 => array(
 					'input'     => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
@@ -800,7 +800,7 @@ TMP;
 			foreach($tests as $var)
 			{
 				$result = $this->tp->cleanHtml($var['html']);
-				var_dump($result);
+			//	var_dump($result);
 			}
 
 
