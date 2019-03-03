@@ -134,7 +134,7 @@ define("LAN_RELATED", "Related");
 define("LAN_CLOSE", "Close");
 define("LAN_EXPAND", "Expand");
 define("LAN_LIST", "List");
-define("LAN_DATESTAMP","Datestamp");
+define("LAN_DATESTAMP","Date stamp");
 define("LAN_SUBJECT","Subject");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name

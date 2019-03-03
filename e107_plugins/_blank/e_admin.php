@@ -4,8 +4,38 @@
 //v2.x Standard for extending admin areas.
 
 
-class _blank_admin
+class _blank_admin implements e_admin_addon_interface
 {
+
+
+	public function load($event, $ids)
+	{
+
+	//	$data = e107::getDb()->retrieve("blank","*", "blank_table='".$event."' AND blank_pid IN(".$ids.")",true);
+
+	/*	$ret = array();
+
+		foreach($data as $row)
+		{
+			$id = (int) $row['can_pid'];
+			$ret[$id]['url'] = $row['can_url'];
+
+		}
+
+		return $ret;
+	*/
+
+
+
+		return array(
+			3   => array('url'=>'http://myurl.com'),
+		);
+
+
+	}
+
+
+
 	/**
 	 * Extend Admin-ui Parameters
 	 * @param $ui admin-ui object
