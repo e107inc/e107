@@ -3980,6 +3980,14 @@ class e_admin_tree_model extends e_front_tree_model
 	 */
 	public function copy($ids, $session_messages = false)
 	{
+		if(empty($ids[0]))
+		{
+			$this->addMessageError('No IDs provided', $session_messages); //TODO - Lan
+			$this->addMessageDebug(print_a(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true),$session_messages); //TODO - Lan
+			return false;
+		}
+
+
 		$tp = e107::getParser();
 		$ids = array_map(array($tp, 'toDB'), $ids);
 		$idstr = implode(', ', $ids);
@@ -3996,6 +4004,7 @@ class e_admin_tree_model extends e_front_tree_model
 			{
 				$this->addMessageError('SQL Copy Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+				$this->addMessageDebug('$SQL Query'.print_a($sql->getLastQuery(),true));
 			}
 		}
 		$this->_db_errno = $sql->getLastErrorNumber();

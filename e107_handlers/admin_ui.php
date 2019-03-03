@@ -3093,7 +3093,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$tree->setTree($arr,true); // set the newly ordered tree.
 
-		var_dump($arr);
+	//	var_dump($arr);
 
 		return $this->_tree_model;
 	}
@@ -3307,14 +3307,15 @@ class e_admin_controller_ui extends e_admin_controller
 				return $this;
 			}
 		}
-		
+
 		if($selected)
 		{
 			foreach ($selected as $i => $_sel) 
 			{
-				$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
+				$selected[$i] = (int) $_sel; // preg_replace('/[^\w-:.]/', '', $_sel); // php 7.3 doesn't like this.
 			}
 		}
+
 
 		if(substr($batch_trigger, 0, 6) === 'batch_')
 		{
@@ -3471,7 +3472,8 @@ class e_admin_controller_ui extends e_admin_controller
 					$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
 				}
 			break;
-			
+
+			// handleListCopyBatch etc.
 			default:
 				$field = $trigger[0];
 				$value = $trigger[1];
