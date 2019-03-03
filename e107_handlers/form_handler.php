@@ -6412,6 +6412,7 @@ var_dump($select_options);*/
 		
 		foreach ($form_options as $fid => $options)
 		{
+			/** @var e_tree_model $tree_model */
 			$tree_model = $tree_models[$fid];
 			$tree = $tree_model->getTree();
 			$total = $tree_model->getTotal();
@@ -6457,9 +6458,11 @@ var_dump($select_options);*/
 			}
 			else
 			{
-
+				/** @var e_model $model */
 				foreach($tree as $model)
 				{
+				//	$model->set('x_canonical_url', 'whatever');
+			//		var_dump($model);
 					e107::setRegistry('core/adminUI/currentListModel', $model);
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}

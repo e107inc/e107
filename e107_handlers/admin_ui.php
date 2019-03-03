@@ -4723,6 +4723,8 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 
+		$opts = null;
+
 		foreach($tmp as $plug=>$config)
 		{
 
@@ -4730,11 +4732,18 @@ class e_admin_ui extends e_admin_controller_ui
 
 			if(!empty($config['fields']))
 			{
+				if(!empty($this->fields['options']))
+				{
+					$opts = $this->fields['options'];
+					unset($this->fields['options']);
+				}
+
 				foreach($config['fields'] as $k=>$v)
 				{
 					$v['data'] = false; // disable data-saving to db table. .
 
 					$fieldName = 'x_'.$plug.'_'.$k;
+					e107::getDebug()->log($fieldName." initiated by ".$plug);
 
 					if($v['type'] === 'method' && method_exists($form,$fieldName))
 					{
@@ -4746,6 +4755,11 @@ class e_admin_ui extends e_admin_controller_ui
 
 					$this->fields[$fieldName] = $v; // ie. x_plugin_key
 
+				}
+
+				if(!empty($opts)) // move options field to the end.
+				{
+					$this->fields['options'] = $opts;
 				}
 			}
 
@@ -6565,7 +6579,71 @@ class e_admin_form_ui extends e_form
 	}
 
 
+	/**
+	 * Integrate e_addon data into the list model.
+	 * @param e_tree_model $tree
+	 * @param array $fields
+	 * @param string $pid
+	 * @return null
+	 */
+	private function setAdminAddonModel(e_tree_model $tree, $fields, $pid)
+	{
 
+		$event= $this->getController()->getEventName();
+
+		$arr = array();
+
+		/** @var e_tree_model $model */
+		foreach($tree->getTree() as $model)
+		{
+			foreach($fields as $fld)
+			{
+
+				if(strpos($fld,'x_') !== 0)
+				{
+					continue;
+				}
+
+				list($prefix,$plug,$field) = explode("_",$fld,3);
+
+				if($prefix !== 'x' || empty($field) || empty($plug))
+				{
+					continue;
+				}
+
+				$id = $model->get($pid);
+
+				if(!empty($id))
+				{
+					$arr[$plug][$field][$id] = $model;
+				}
+			}
+
+
+		}
+
+
+		foreach($arr as $plug=>$field)
+		{
+
+			if($obj = e107::getAddon($plug, 'e_admin'))
+			{
+				foreach($field as $fld=>$var)
+				{
+					$ids = implode(",", array_keys($var));
+
+					$value = (array) $obj->load($event, $ids);
+
+					foreach($var as $id=>$model)
+					{
+						$model->set("x_".$plug."_".$fld, varset($value[$id][$fld],null));
+					}
+				}
+			}
+
+		}
+
+	}
 
 
 	/**
@@ -6583,8 +6661,11 @@ class e_admin_form_ui extends e_form
 
 		$request = $controller->getRequest();
 		$id = $this->getElementId();
+		$pid = $controller->getPrimaryName();
 		$tree = $options = array();
 		$tree[$id] = $controller->getTreeModel();
+
+
 
 
 		if(deftrue('e_DEBUG_TREESORT') && $view === 'default')
@@ -6596,6 +6677,8 @@ class e_admin_form_ui extends e_form
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
 		$fields = $controller->getFields();
+
+		$this->setAdminAddonModel($tree[$id], array_keys($fields), $pid);
 
 		// checks dispatcher acess/perms for create/edit/delete access in list mode.
 		$mode           = $controller->getMode();
@@ -6658,7 +6741,7 @@ class e_admin_form_ui extends e_form
 
 		$options[$id] = array(
 			'id'            => $this->getElementId(), // unique string used for building element ids, REQUIRED
-			'pid'           => $controller->getPrimaryName(), // primary field name, REQUIRED
+			'pid'           => $pid, // primary field name, REQUIRED
 			'query'	        => $controller->getFormQuery(), // work around - see form in newspost.php (submitted news)
 			'head_query'    => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query'      => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
@@ -7477,6 +7560,42 @@ class e_admin_form_ui extends e_form
 		return $this->_controller;
 	}
 }
+
+
+/**
+ * Interface e_admin_addon_interface @move to separate addons file?
+ */
+interface e_admin_addon_interface
+{
+
+	/**
+	* Return a list of values for the currently viewed list page.
+	* @param string $event
+	* @param string $ids comma separated primary ids to return in the array.
+	* @return array with primary id as keys and array of fields key/pair values.
+	*/
+	public function load($event, $ids);
+
+
+	/**
+	* Extend Admin-ui Parameters
+	* @param $ui admin-ui object
+	* @return array
+	*/
+	public function config(e_admin_ui $ui);
+
+
+	/**
+	* Process Posted Data.
+	* @param $ui admin-ui object
+	* @param int $id
+	*/
+	public function process(e_admin_ui $ui, $id=0);
+
+
+
+}
+
 
 
 include_once(e107::coreTemplatePath('admin_icons'));
