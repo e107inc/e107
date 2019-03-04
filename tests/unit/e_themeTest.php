@@ -79,7 +79,7 @@
 				'jumbotron_sidebar_right' =>
 					array (
 						0 => '/news',
-						1 => '/usersettings.php'
+						//1 => '/usersettings.php'
 					),
 				'other_layout'  =>
 					array(
