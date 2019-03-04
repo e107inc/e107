@@ -2394,6 +2394,7 @@ class e107
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
+	 * @param mixed $param [optional] construct() param
 	 * @return object
 	 */
 	public static function getAddon($pluginName, $addonName, $className = true)
@@ -5176,3 +5177,39 @@ class e107
 }
 
 e107::autoload_register(array(e107::class, 'autoload'));
+
+
+
+/**
+ * Interface e_admin_addon_interface @move to separate addons file?
+ */
+interface e_admin_addon_interface
+{
+
+	/**
+	* Return a list of values for the currently viewed list page.
+	* @param string $event
+	* @param string $ids comma separated primary ids to return in the array.
+	* @return array with primary id as keys and array of fields key/pair values.
+	*/
+	public function load($event, $ids);
+
+
+	/**
+	* Extend Admin-ui Parameters
+	* @param $ui admin-ui object
+	* @return array
+	*/
+	public function config(e_admin_ui $ui);
+
+
+	/**
+	* Process Posted Data.
+	* @param $ui admin-ui object
+	* @param int $id
+	*/
+	public function process(e_admin_ui $ui, $id=0);
+
+
+
+}

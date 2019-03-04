@@ -7564,39 +7564,6 @@ class e_admin_form_ui extends e_form
 }
 
 
-/**
- * Interface e_admin_addon_interface @move to separate addons file?
- */
-interface e_admin_addon_interface
-{
-
-	/**
-	* Return a list of values for the currently viewed list page.
-	* @param string $event
-	* @param string $ids comma separated primary ids to return in the array.
-	* @return array with primary id as keys and array of fields key/pair values.
-	*/
-	public function load($event, $ids);
-
-
-	/**
-	* Extend Admin-ui Parameters
-	* @param $ui admin-ui object
-	* @return array
-	*/
-	public function config(e_admin_ui $ui);
-
-
-	/**
-	* Process Posted Data.
-	* @param $ui admin-ui object
-	* @param int $id
-	*/
-	public function process(e_admin_ui $ui, $id=0);
-
-
-
-}
 
 
 
