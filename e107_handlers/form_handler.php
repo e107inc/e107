@@ -5559,15 +5559,25 @@ var_dump($select_options);*/
 
 				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $method;
 
-				if(method_exists($this,$meth))
+				if(strpos($meth,'::')!==false)
 				{
-					$parms['field'] = $field;
-					$mode = (!empty($attributes['mode'])) ? $attributes['mode'] :'read';
-					$value = call_user_func_array(array($this, $meth), array($value, $mode, $parms));
+					list($className,$meth) = explode('::', $meth);
+					$cls = new $className();
 				}
 				else
 				{
-					$className = get_class($this);
+					$cls = $this;
+				}
+
+				if(method_exists($cls,$meth))
+				{
+					$parms['field'] = $field;
+					$mode = (!empty($attributes['mode'])) ? $attributes['mode'] :'read';
+					$value = call_user_func_array(array($cls, $meth), array($value, $mode, $parms));
+				}
+				else
+				{
+					$className = get_class($cls);
 					e107::getDebug()->log("Missing Method: ".$className."::".$meth." ".print_a($attributes,true));
 					return "<span class='label label-important label-danger'>Missing Method</span>";
 				}
