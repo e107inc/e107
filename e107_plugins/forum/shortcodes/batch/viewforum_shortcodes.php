@@ -111,7 +111,7 @@
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
-				$text .= '<li><a href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
+				$text .= '<li><a class="dropdown-item" href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
 			}
 
 			$text .= '
@@ -138,6 +138,16 @@
 		function sc_forum_crumb()
 		{
 			return $this->var['forum_crumb'];
+		}
+
+		function sc_forumimage($parms=null)
+		{
+			if(empty($this->var['forum_image'])) return '';
+			if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+			if (empty($parms)) $parms = array();
+			$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+			$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+			return $text."&nbsp;";
 		}
 
 		function sc_forumtitle()
@@ -197,7 +207,7 @@
 				</table>";
 			--*/
 
-			return (defset('BOOTSTRAP') == 3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
+			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
 				<table class='table table-bordered' style='width:100%'>
 				<tr>
 				<td style='vertical-align:middle; text-align:center; width:2%'>" . IMAGE_new_small . "</td>
@@ -484,6 +494,16 @@
 			}
 		------*/
 
+
+		function sc_sub_forumimage($parms=null)
+		{
+			if(empty($this->var['forum_image'])) return '';
+			if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+			if (empty($parms)) $parms = array();
+			$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+			$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+			return "<a href='".e107::url('forum', 'forum', $this->var)."'>{$text}</a>&nbsp;";
+		}
 
 		function sc_sub_forumtitle()
 		{
@@ -951,18 +971,18 @@
 
 		function sc_adminoptions()
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_admin_icons;
-			  }
-				if (MODERATOR)
-				{
-					return fadminoptions($this->var);
-			  }
-			  return '';
-			--*/
-			return (!deftrue('BOOTSTRAP') ? $this->sc_admin_icons() : ((MODERATOR) ? fadminoptions($this->var) : ''));
+			if(!deftrue('BOOTSTRAP'))
+			{
+				return $this->sc_admin_icons();
+			}
+			else if (MODERATOR)
+			{
+				return fadminoptions($this->var);
+			}
+			else
+			{
+				return '';
+			}
 		}
 
 

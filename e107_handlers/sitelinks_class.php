@@ -945,6 +945,51 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
     }
 
 
+	/**
+	 * Return the default array of icon identifiers for the admin "Control Panel". (infopanel and flexpanel)
+	 * @return array
+	 */
+	public function getDefaultAdminPanelArray()
+	{
+		$iconlist = $this->adminLinks();
+
+		$defArray = array();
+
+		$exclude = array (
+				'e-administrator',
+				'e-updateadmin',
+				'e-banlist',
+				'e-cache',
+				'e-comment',
+				'e-credits',
+				'e-db',
+				'e-docs',
+				'e-emoticon',
+				'e-users_extended',
+				'e-fileinspector',
+				'e-language',
+				'e-ugflag',
+				'e-notify',
+				'e-phpinfo',
+				'e-upload',
+				'e-cron',
+				'e-search',
+				'e-admin_log',
+				'e-eurl'
+			);
+
+		foreach($iconlist as $k=>$v)
+		{
+			if(!in_array($k,$exclude))
+			{
+				$defArray[] = $k;
+			}
+		}
+
+		return $defArray;
+	}
+
+
 
 
 	private function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
@@ -1775,6 +1820,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				{
 					return '<div class="dropdown-menu">'.$text.'</div>'; // @todo use template?
 				}
+
+				e107::getDebug()->log("Theme shortcode (".$method.") could not be found for use in sitelink");
+				return array();
 			}
 			
 			if(strpos($method,"("))
@@ -1782,6 +1830,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				list($method,$prm) = explode("(",$method);
 				$parm = rtrim($prm,")");	
 			}
+
+			if(!file_exists(e_PLUGIN.$path."/e_sitelink.php"))
+			{
+
+			}
+
 
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
@@ -1967,7 +2021,7 @@ class navigation_shortcodes extends e_shortcode
 			$link = $this->var['link_name'];	
 		}
 		
-		return e107::getParser()->toHtml($link, false,'defs');		
+		return e107::getParser()->toHTML($link, false,'defs');		
 	}
 
 	

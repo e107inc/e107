@@ -162,8 +162,6 @@ class system_tools
 		
 		$this->_utf8_exclude = array(MPREFIX."core");
 
-		
-
 		$this->_options = array(
 			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
 			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
@@ -205,13 +203,15 @@ class system_tools
 			$this->del_pref_val($_POST['pref_type']);
 		}
 		
-		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
+		if(isset($_POST['verify_sql']) || !empty($_POST['verify_table']) || varset($_GET['mode']) =='verify_sql')
 		{
 			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
 			$dbv->backUrl = e_SELF."?mode=verify_sql";
 			$dbv->verify();
+
+			//echo e107::getMessage()->render();
 			return;
 		}
 		
@@ -231,12 +231,13 @@ class system_tools
 		if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update') // Requires further testing. 
 		{
 		//	header("location: ".e_ADMIN."e107_update.php");
+			$dbupdate = null;
 			require_once(e_ADMIN."update_routines.php");
 			new e107Update($dbupdate);
 			return;
 		}
 		
-		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode']=='convert_to_utf8')
+		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode'] =='convert_to_utf8')
 		{
 			$this->convertUTF8Form();
 		}
@@ -322,37 +323,39 @@ class system_tools
 	}
 
 
-
-
-
-	// Developer Mode ONly.. No LANS.
+	// Developer Mode ONly.. No LANS required. 
 	private function githubSync()
 	{
 
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-	//	$message = DBLAN_70;
-	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
-
-		$message = $frm->open('githubSync');
-		$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
-		$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
-		$message .= $frm->close();
+		//	$message = DBLAN_70;
+		//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
 
 
-		$mes->addInfo($message);
-
-	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
-
+		// Check for minimum required PHP version, and display warning instead of sync button to avoid broken functionality after syncing
+		// MIN_PHP_VERSION constant only defined in install.php, thus hardcoded here
+		$min_php_version = '5.6'; 
+		
+		if(version_compare(PHP_VERSION, $min_php_version, "<"))
+		{
+			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
+		}
+		else 
+		{
+			$message = $frm->open('githubSync');
+			$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
+			$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
+			$message .= $frm->close();
+			
+			$mes->addInfo($message);
+		} 
+		
+		//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
-
-
-
 	}
-
-
 
 
 
@@ -384,7 +387,8 @@ class system_tools
 
 		if(!empty($error))
 		{
-			e107::getMessage()->addError(print_a($error,true));
+			//e107::getMessage()->addError(print_a($error,true));
+			e107::getMessage()->setTitle("Ignored",E_MESSAGE_WARNING)->addWarning(print_a($error,true));
 		}
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
@@ -557,7 +561,7 @@ class system_tools
 		define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
 
 
-		e107::getMySQLConfig('user'); // prefix|server|user|password|
+		$config = e107::getMySQLConfig(); // prefix|server|user|password|defaultdb
 		
 		if(!isset($POST['create_multisite']))
 		{
@@ -757,7 +761,7 @@ class system_tools
 			$message .= '<li>'.DBLAN_88.'</li>';
 			$message .= '</ul>';
 
-			$mes->add($tp->toHtml($message,true), E_MESSAGE_WARNING);
+			$mes->add($tp->toHTML($message,true), E_MESSAGE_WARNING);
 	
 			$text .= "
 				<form method='post' action='".e_SELF."' id='linkform'>
@@ -1597,7 +1601,7 @@ class system_tools
 
 			$text .= "
 								<tr>
-									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
+									<td>".$tp->toHTML($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
 	               					<td>".$row['plugin_path']."</td>
 									<td>";
 

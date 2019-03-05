@@ -97,7 +97,7 @@ $text .= "
 $text .= "
 					<tr>
 						<td>".UGFLAN_5."</td>
-						<td>".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', 'small')."<div class='smalltext clear'>".UGFLAN_6."</div></td>
+						<td>".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', '_common', 'small')."<div class='smalltext clear'>".UGFLAN_6."</div></td>
 					</tr>
 				</tbody>
 			</table>
@@ -159,4 +159,3 @@ function headerjs()
 }
 
  */
-?>

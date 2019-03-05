@@ -94,7 +94,7 @@ class banner_shortcodes extends e_shortcode
 	
 			if(!empty($row['banner_description']))
 			{
-				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
+				$text .= "<div class='e-banner-description'>".$start.$tp->toHTML($row['banner_description'], true).$end. "</div>";
 			}
 
 			return $text;

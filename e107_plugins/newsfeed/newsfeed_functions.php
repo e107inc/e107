@@ -316,7 +316,7 @@ class newsfeedClass
 					// $url = e_PLUGIN_ABS."newsfeed/newsfeed.php?show.".$feed['newsfeed_id'];
 					$url = e107::url('newsfeed','source',$feed);
 
-					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
+					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHTML($feed['newsfeed_name'],false,'TITLE')."</a>";
 					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
 					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
 					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];

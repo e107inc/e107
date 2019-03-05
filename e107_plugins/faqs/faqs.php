@@ -250,7 +250,7 @@ class faq
 
 			if($sql->insert('faqs',$insert))
 			{
-				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
+				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHTML($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
 				e107::getMessage()->addSuccess($message);
 			}
 
@@ -289,7 +289,7 @@ class faq
 
 		if (!empty($this->pref['page_title'][e_LANGUAGE]))
 		{
-			$ret['caption'] = e107::getParser()->toHtml($this->pref['page_title'][e_LANGUAGE], true, 'TITLE');
+			$ret['caption'] = e107::getParser()->toHTML($this->pref['page_title'][e_LANGUAGE], true, 'TITLE');
 		}
 		else
 		{

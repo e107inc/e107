@@ -16,8 +16,8 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::css('inline','
 	a.e-wysiwyg-toggle { margin-top:5px }
-	.mce-tinymce.mce-fullscreen {   z-index: 1050;  !important }
+	.mce-tinymce.mce-fullscreen {   z-index: 1050 !important;  }
 ');
 
 
-?>
+

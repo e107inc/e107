@@ -13,8 +13,6 @@
  *
  *	Handles the display and sequencing of banners on web pages, including counting impressions
  *
- *	@package	e107_plugins
- *	@subpackage	banner
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -33,17 +31,13 @@ else
 	require(e_PLUGIN.'banner/banner_template.php');
 }
 
-
-
-
 $menu_pref = e107::getConfig('menu')->getPref(''); // legacy preference lookup.
 
 if(defset('BOOTSTRAP'))
 {
 	$BANNER_MENU_START = $BANNER_TEMPLATE['menu']['start'];
 	$BANNER_MENU_ITEM = $BANNER_TEMPLATE['menu']['item'];
-	$BANNER_MENU_END = $BANNER_TEMPLATE['menu']['end'];
-	
+	$BANNER_MENU_END = $BANNER_TEMPLATE['menu']['end']; 
 }
 else
 {
@@ -74,10 +68,10 @@ else
 
 
 
-// print_a($menu_pref);
+//print_a($menu_pref);
 
 
-if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
+if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount'])*/)
 {
 		$sc = e107::getScBatch('banner');	
 		
@@ -124,7 +118,11 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		$ord[] = " 	RAND($seed) ASC";
 
 		$query .= implode(', ',$ord);
-		$query .= " LIMIT ".intval($menu_pref['banner_amount']);
+
+		if(!empty($menu_pref['banner_amount'])) // if empty, show unlimited
+		{
+			$query .= " LIMIT ".intval($menu_pref['banner_amount']);
+		}
 		
 		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign, banner_description', $query,true))
 		{
@@ -201,4 +199,3 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 	
 
 }
-?>

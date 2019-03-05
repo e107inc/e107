@@ -9,7 +9,7 @@ e107 is a free (open-source) content management system which allows you to easil
 
    #### Minimum
 
-   * A Web-Server (Apache or Microsoft IIS) running PHP v5.4 or higher and MySQL 4.x or 5.x.
+   * A Web-Server (Apache or Microsoft IIS) running PHP v5.6 or higher and MySQL 4.x or 5.x.
    * FTP access to your webserver and an FTP program such as Filezilla
    * Username/Password to your MySQL Database
 
@@ -55,7 +55,7 @@ You may report any bugs or feature requests on GitHub (https://github.com/e107in
 * Make sure you are using rebase on your local .git/config file. 
 ie. [branch "master"]
 	rebase = true`
-* Here's a small tutorial to give you a start on [How to contribute](HowToContribute.md)
+* Here's a small tutorial to give you a start on [CONTRIBUTING](CONTRIBUTING.md)
 
 ### Donations
 If you like e107 and wish to help it to improve - please consider making a small donation.

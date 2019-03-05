@@ -9,9 +9,6 @@ e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 
 e107::css("url", "https://bootswatch.com/4/slate/bootstrap.min.css" );
 
-$HEADER = array();
-$FOOTER = array();
-
 
 
 class bootstrap4_theme
@@ -20,6 +17,8 @@ class bootstrap4_theme
 	function tablestyle($caption, $text, $mode, $options)
 	{
 	    global $style;
+
+
 
 		if($mode == 'wmessage')
 		{
@@ -61,6 +60,53 @@ class bootstrap4_theme
 // IMPORTANT: make sure there are no characters after <<<TMPL or TMPL;
 
 // DEFAULT
+$LAYOUT = array();
+
+// TODO Add navigation
+$LAYOUT['_header_'] = '
+ <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{SITEURL}">{SITENAME}</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+      {NAVIGATION=main}
+       <!-- <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>-->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+';
+
+$LAYOUT['_footer_'] = '
+</div>
+ <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">{SITEDISCLAIMER}</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+';
 
 $LAYOUT['default'] = <<<TMPL
 
@@ -97,9 +143,16 @@ $LAYOUT['full'] = <<<TMPL
 	   {SETIMAGE: w=0} 
 	   
 	   {---}
-	   
+
 TMPL;
 
+$LAYOUT['glyphs'] = '
+
+ {---}
+     
+	{THEME_BS4_GLYPHS}
+
+';
 
 $LAYOUT['test'] = <<<TMPL
  <div class="container">
@@ -1489,57 +1542,4 @@ $LAYOUT['test'] = <<<TMPL
 TMPL;
 
 
-
-
-// News item styling
-$NEWSSTYLE = '
-{NEWSTITLE}
-{NEWSAUTHOR}
-{NEWSDATE=short}
-{NEWSIMAGE}
-{NEWSBODY} {EXTENDED}
-
-';
-
-// Comment Styling
-$COMMENTSTYLE = '
-{AVATAR} 
-{USERNAME}
-{REPLY}
-{TIMEDATE}
-{COMMENT} 
-';
-
-// news.php?cat.1
-$NEWSLISTSTYLE = '
-{NEWSTITLE}
-{NEWSDATE=short}
-{NEWSAUTHOR}
-{NEWSIMAGE}
-{NEWSBODY} 
-{EXTENDED}
-{EMAILICON} 
-{PRINTICON}
-{PDFICON}
-{ADMINOPTIONS}
-{NEWSCOMMENTS}
-';
-
-$NEWSARCHIVE ='
-{ARCHIVE_BULLET}
-{ARCHIVE_LINK}
-{ARCHIVE_AUTHOR}
-{ARCHIVE_DATESTAMP}
-{ARCHIVE_CATEGORY}
-';
-//Render news categories on the bottom of the page
-$NEWSCAT = '
-{NEWSCATEGORY}
-{NEWSCAT_ITEM}
-';
-//Loop for news items in category
-$NEWSCAT_ITEM = '
-{NEWSTITLELINK}
-    
-';
 

@@ -50,7 +50,7 @@ require_once(e_ADMIN."auth.php");
 	                        Nuvolo Icons, PHPMailer, TCPDF, PHP UTF8
 	                    </p>
                    
-                    	<div class="copyright">Copyright <a target="_blank" href="http://e107.org/community" title="e107 Team">e107 Inc.</a> 2008-2017</div>
+                    	<div class="copyright">Copyright <a target="_blank" href="http://e107.org/community" title="e107 Team">e107 Inc.</a> 2008-'.date('Y').'</div>
                		 </div>
 			    </div>
             </div>
@@ -62,5 +62,3 @@ $ns->tablerender("",$text);
 require_once(e_ADMIN."footer.php");
 
 exit;
-
-?>

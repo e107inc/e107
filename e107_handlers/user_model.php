@@ -1072,7 +1072,10 @@ class e_user_model extends e_admin_model
 	//	$this->setCore('user_class',$insert );
 	//	$this->saveDebug(false);
 
-		$uid = $this->getData('user_id');
+		if(!$uid = $this->getData('user_id'))
+		{
+			return false;
+		}
 
 		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
 

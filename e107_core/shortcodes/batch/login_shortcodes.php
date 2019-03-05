@@ -151,15 +151,22 @@ class login_shortcodes extends e_shortcode
 
 	}
 	
+	/* example: {LOGIN_TABLE_SUBMIT=large} */
+	/* example: {LOGIN_TABLE_SUBMIT: class=btn submit_but}  */
+	
 	function sc_login_table_submit($parm="") //FIXME use $frm
 	{
+ 
 		if(empty($this->userReg))
 		{
 			return null;
 		}
 
-		$class = ($parm == 'large') ? "btn-large btn-lg" : "";
-		return "<input class='btn btn-primary ".$class." button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
+		$oldclass = ($parm == 'large') ? "btn-large btn-lg" : "";     
+		
+		$class = (!empty($parm['class'])) ? $parm['class'] : "btn btn-primary ".$oldclass." button";
+ 
+		return "<input class='".$class."' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 	}
 	
 	
@@ -178,25 +185,32 @@ class login_shortcodes extends e_shortcode
 
 	}
 
+	/* example {LOGIN_TABLE_SIGNUP_LINK} */
+	/* example {LOGIN_TABLE_SIGNUP_LINK: class=hover-black dg-btn-2 radius-3px btn-white hover-accent size-lg} */
 	function sc_login_table_signup_link($parm='')
 	{
+	
 		if($this->userReg === 1)
 		{
-			return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
+		  $class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : "";
+		  
+			return "<a href='".e_SIGNUP."' ".$class.">".LAN_LOGIN_11."</a>";
 		}
 
 		return null;
 	}
 
 
+	/* example {LOGIN_TABLE_FPW_LINK} */
+	/* example {LOGIN_TABLE_FPW_LINK: class=dg-btn-2 btn-white radius-3px hover-white size-xl} */
 	function sc_login_table_fpw_link($parm='')
 	{
 		if(empty($this->userReg))
 		{
 			return null;
 		}
-
-		return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
+    $class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : "";
+		return "<a href='".e_HTTP."fpw.php' ".$class.">".LAN_LOGIN_12."</a>";
 	}
 	
 

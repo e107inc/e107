@@ -234,7 +234,7 @@ define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers 
 
 define("PRFLAN_224", "User registration system");
 
-define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 144px in width and height.");
+define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 800px in width and height.");
 define("PRFLAN_226", "Used by some themes as the header image on some pages.");
 define("PRFLAN_227", "Used by some themes. Place 'SITETAG' in your theme to use this value.");
 define("PRFLAN_228", "Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.");
@@ -295,3 +295,9 @@ define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
 define("PRFLAN_274", "Contact form will only be visible to this userclass group.");
 define("PRFLAN_275", "View this page using https (SSL) to modify this option");
 define("PRFLAN_276", "PHP Default (Preferred)");
+
+define("PRFLAN_277", "GDPR Settings");
+define("PRFLAN_278", "URL to the Privacy Policy");
+define("PRFLAN_279", "Make sure the url exists! It's best to use an absolute url. This setting will be used on all places that require a consent from the user (e.g. signup, contact form/menu, etc.).");
+define("PRFLAN_280", "URL to the website terms and conditions");
+define("PRFLAN_281", "The 2 links above are used on various page on this site (e.g. signup and contact form/menu).\nPlease create 2 pages (if not already done) that contain your 'Privacy Policy' and the websites 'Terms and conditions'.\nThere are several websites that can generate those text for you.\nCopy the urls of this websites into the fields above (e.g. /page/privacy-policy or /page/terms-and-conditions).\nJust make sure, the pages and urls exist and are working!");

@@ -6,15 +6,12 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
- * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
- * 
 */
+
 if (!defined('e107_INIT')) { exit; }
 
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+//e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+e107::coreLan('date'); 
 
 class e_date
 {
@@ -186,7 +183,7 @@ class e_date
 			break;
 			
 			case 'relative':
-				return $this->computeLapse($datestamp, time(), false, false, 'short') ;
+				return $this->computeLapse($datestamp, time(), false, true, 'short') ;
 			break;
 			
 			default:
@@ -595,12 +592,13 @@ class e_date
 	 * @return array|string according to $mode, array or string detailing the time difference
 	 */
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
-	{	/*
-		$mode = TRUE :: return array
-		$mode = FALSE :: return string
-		*/
+	{
+		if($newer_date === false)
+		{
+			$newer_date = time();
+		}
 
-		if($format == 'short')
+		if($format === 'short')
 		{
 			$sec = LANDT_09;
 			$secs = LANDT_09s;
@@ -614,11 +612,76 @@ class e_date
 			$min = LANDT_06;
 			$mins = LANDT_06s;
 		}
+
+		$dateString1 = date("Y-m-d H:i:s", $older_date);
+		$dateString2 = date("Y-m-d H:i:s", $newer_date);
+
+		$date1 = new DateTime($dateString1);
+		$date2 = new DateTime($dateString2);
+
+		$interval = $date1->diff($date2);
+
+		$result = array(
+			'years'     => array($interval->y, LANDT_01,LANDT_01s),
+			'months'    => array($interval->m, LANDT_02, LANDT_02s),
+			'weeks'     => array(floor($interval->d/7), LANDT_03, LANDT_03s),
+			'days'      => array($interval->d % 7,LANDT_04, LANDT_04s),
+			'hours'     => array($interval->h, LANDT_05, LANDT_05s),
+			'minutes'   => array($interval->i, $min, $mins),
+			'seconds'   => array($interval->s, $sec, $secs),
+		);
+
+		if($show_secs !== true)
+		{
+			unset($result['seconds']);
+		}
+
+		$ret = array();
+
+		foreach($result as $val)
+		{
+			if($val[0] < 1)
+			{
+				continue;
+			}
+
+			$ret[] = ($val[0] == 1) ? $val[0]." ".$val[1] : $val[0]." ".$val[2];
+
+			if($format === 'short') { break; }
+		}
+
+
+		if(strpos($ret[0],$secs) !== false)
+		{
+			$justNow = deftrue('LANDT_10',"Just now");
+			return $mode ? array($justNow) : $justNow;
+		}
+
+
+        if($older_date < $newer_date) // past
+        {
+
+            $replace = implode(", ", $ret);
+            $xago = e107::getParser()->lanVars(LANDT_XAGO, $replace);
+            return ($mode ? $ret : $xago);
+        }
+        else // future
+        {
+            $replace = implode(", ", $ret);
+            $inx = e107::getParser()->lanVars(LANDT_INX, $replace);
+            return ($mode ? $ret : $inx);
+        }
+
+
+	//	print_r($ret);
+
+
 /*
   If we want an absolutely accurate result, main problems arise from the varying numbers of days in a month.
   If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
   If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
 */
+/*
 		$newer_date = ($newer_date === FALSE ? (time()) : $newer_date);
 		if($older_date>$newer_date)
 		{  // Just in case the wrong way round
@@ -693,7 +756,16 @@ class e_date
 			return deftrue('LANDT_10',"Just now");
 		}
 
-		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
+		// Check if it is 'past' or 'future'
+		if($older_date > $newer_date) // past
+		{
+			return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);	
+		}	
+		else // future
+		{
+			return ($mode ? $outputArray : LANDT_IN ." ". implode(", ", $outputArray));
+		}
+		*/
 	}
 
 
@@ -909,7 +981,7 @@ class e_date
 		    'W' => 'A numeric representation of the week of the year, starting with the first Monday as the first week',
 		    'X' => 'Preferred time representation based on locale, without the date',
 		    'Y' => 'Four digit representation for the year',
-		    'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
+		    //'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
 		    'a' => 'An abbreviated textual representation of the day',
 		    'b' => 'Abbreviated month name, based on the locale',
 		    'c' => 'Preferred date and time stamp based on local',
@@ -935,9 +1007,16 @@ class e_date
 		    'w' => 'Numeric representation of the day of the week',
 		    'x' => 'Preferred date representation based on locale, without the time',
 		    'y' => 'Two digit representation of the year',
-		    'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
+		    //'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
 		    '%' => 'A literal percentage character ("%")',
 		);
+
+		if (stripos(PHP_OS, 'WIN') === false)
+		{
+			// This formats are not avaiilable on windows and will make the script fail on use.
+			$strftimeFormats['Z'] = 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)';
+			$strftimeFormats['z'] = 'Either the time zone offset from UTC or the abbreviation (depends on operating system)';
+		}
 		
 		// Results.
 		$strftimeValues = array();
@@ -945,7 +1024,9 @@ class e_date
 		// Evaluate the formats whilst suppressing any errors.
 		foreach($strftimeFormats as $format => $description)
 		{
-		    if (False !== ($value = @strftime("%{$format}")))
+		    //if (False !== ($value = @strftime("%{$format}")))
+			$value = @strftime("%{$format}");
+		    if (False !== $value)
 		    {
 		        $strftimeValues[$format] = $value;
 		    }

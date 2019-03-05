@@ -20,8 +20,22 @@ require_once (e_HANDLER.'userclass_class.php');
 e107::includeLan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 require_once (e_ADMIN.'auth.php');
 
+e107::getMessage()->addWarning("This plugin is no longer compatible with e107 v2.x and should be uninstalled.<br />Instead, please enable the <b>forum</b> plugin's <b>newforumposts_menu</b> using the Menu Manager.");
+
+echo e107::getMessage()->render();
+
+require_once (e_ADMIN."footer.php");
+
+
+
+
+/*
 $frm = e107::getForm();
 $mes = e107::getMessage();
+
+
+
+
 
 if(isset($_POST['updatesettings']))
 {
@@ -74,4 +88,5 @@ $text = "
 $ns->tablerender(NFPM_L12, $text);
 
 require_once (e_ADMIN."footer.php");
-?>
+*/
+

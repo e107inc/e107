@@ -46,8 +46,14 @@ class forum_url // plugin-folder + '_url'
 		$config['markread']  = array(
 			'sef'           => '^forum/markread/{forum_id}',
 			'regex'			=> 'forum/markread/([\d]*)',
-			'redirect'      => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id=$1',
-			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id={forum_id}'
+			'redirect'      => '{e_PLUGIN}forum/forum.php?f=mfar&id=$1',
+			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&id={forum_id}'
+		);
+
+		$config['new']  = array(
+            'regex'			=> '^forum/new$/?',
+			'sef'           => 'forum/new',
+			'redirect'      => '{e_PLUGIN}forum/forum.php?new'
 		);
 
 		$config['post'] = array(
@@ -58,15 +64,15 @@ class forum_url // plugin-folder + '_url'
 
 		// only create url  - parsed above.
 		$config['move'] = array(
-			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
-			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=move&amp;id={thread_id}'
+			'sef'           => 'forum/post/?f=move&id={thread_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=move&id={thread_id}'
 		);
 
 
 
 		$config['split'] = array(
-			'sef'           => 'forum/post/?f=split&amp;id={thread_id}&amp;post={post_id}',
-			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=split&amp;id={thread_id}&amp;post={post_id}'
+			'sef'           => 'forum/post/?f=split&id={thread_id}&post={post_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=split&id={thread_id}&post={post_id}'
 		);
 
 		$config['topic'] = array(

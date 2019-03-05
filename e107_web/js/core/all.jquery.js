@@ -143,12 +143,18 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						method: $element.attr('data-method'),
 						// Image to show loading.
 						loading: $element.attr('data-loading'),
+						// FontAwesome icon name.
+						loadingIcon: $element.attr('data-loading-icon'),
+						// ID or class of container to place loading-icon within. eg. #mycontainer or .mycontainer
+						loadingTarget: $element.attr('data-loading-target'),
 						// If this is a navigation controller, e.g. pager.
 						nav: $element.attr('data-nav-inc'),
 						// Old way - href='myscript.php#id-to-target.
 						href: $element.attr("href"),
 						// Wait for final event. Useful for keyUp, keyDown... etc.
-						wait: $element.attr('data-event-wait')
+						wait: $element.attr('data-event-wait'),
+						// Optional confirmation message - requires user input before proceeding. 
+						confirm: $element.attr('data-confirm'),
 					};
 
 					// If this is a navigation controller, e.g. pager.
@@ -295,9 +301,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eDialogClose = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
-			{
-				$(this).click(function ()
+			//$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
+			//{
+			//	$(this).click(function ()
+            $(context).on('click', '.e-dialog-close', function()
 				{
 					var $modal = $('.modal');
 					var $parentModal = parent.$('.modal');
@@ -318,7 +325,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$parentDismiss.trigger({type: 'click'});
 					}
 				});
-			});
+			//});
 		}
 	};
 
@@ -538,6 +545,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$element.after($loadingImage);
 		}
 
+		if(options.confirm != null)
+		{
+			answer = confirm(options.confirm);
+
+			if(answer === false)
+			{
+				return null;
+			}
+		}
+
+		if(options.loadingIcon != null && options.loadingTarget != null)
+		{
+			var loadHtml = '<i class="e-ajax-loading fa fa-spin '+ options.loadingIcon +'"></i>';
+			$(options.loadingTarget).html(loadHtml);
+		}
+
 		// Old way - href='myscript.php#id-to-target.
 		if(options.target == null || options.url == null)
 		{
@@ -573,6 +596,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			data: data,
 			complete: function ()
 			{
+				if(loadHtml)
+				{
+					$('.e-ajax-loading').hide();
+				}
+
 				if($loadingImage)
 				{
 					$loadingImage.remove();
@@ -1073,8 +1101,10 @@ $(document).ready(function()
 			{
 				pos = 'bottom';
 			}
-
-			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
+            if(typeof $.fn.tooltip !== 'undefined')
+            {
+                $(this).tooltip({opacity: 1.0, fade: true, placement: pos, container: 'body'});
+            }
 			// $(this).css( 'cursor', 'pointer' )
 		});
 

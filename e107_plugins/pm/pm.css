@@ -1,5 +1,5 @@
 
-tr.pm-unread  { font-weight: bold }
+tr.pm-unread  { font-weight: bold; border-left: 4px solid; }
 
 .pm-show h3 { margin-top:5px }
 .pm-show h3 small { margin-top:5px }

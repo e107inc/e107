@@ -160,11 +160,13 @@ class e_url
 				if($newLocation != $this->_request)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
-					list($file,$query) = explode("?",$redirect,2);
+					list($file,$query) = explode("?", $redirect,2);
 
 					$get = array();
 					if(!empty($query))
 					{
+						// issue #3171 fix double ampersand in case of wrong query definition
+						$query = str_replace('&&', '&', $query);
 						parse_str($query,$get);
 					}
 
@@ -179,7 +181,7 @@ class e_url
 					if(file_exists($file))
 					{
 						define('e_CURRENT_PLUGIN', $plug);
-						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
 						define('e_URL_LEGACY', $redirect);
 
 						$this->_include= $file;
@@ -255,6 +257,9 @@ class eFront
 	 * @var eRouter
 	 */
 	protected $_router;
+
+
+	protected $_response;
 	
 	/**
 	 * @var string path to file to include - the old deprecated way of delivering content
@@ -389,7 +394,7 @@ class eFront
 		$router = new eRouter();
 		$this->setRouter($router);
 		
-	//	$response = new eResponse();
+		/** @var eResponse $response */
 		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);
 		
@@ -519,7 +524,7 @@ class eFront
 			if(!empty($status[0]) && ($status[0] === '{'))
 			{
 				$status = e107::getParser()->replaceConstants($status);
-			} 
+			}
 			self::$_legacy = $status;
 		}
 		return self::$_legacy;
@@ -1022,6 +1027,9 @@ class eRouter
 	 * @var string
 	 */
 	public $notFoundUrl = 'system/error/404?type=routeError';
+
+
+
 	
 	public function __construct()
 	{
@@ -1080,7 +1088,8 @@ class eRouter
 	{
 		return $this->_urlFormat;
 	}
-	
+
+
 	/**
 	 * Load config and url rules, if not available - build it on the fly
 	 * @return eRouter
@@ -1624,9 +1633,9 @@ class eRouter
 	 */
 	public function getAliases($lanCode = null)
 	{
-		if($lan) 
+		if($lanCode)
 		{
-			return e107::findPref('url_aliases/'.$lan, array());
+			return e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		return $this->_aliases;
 	}
@@ -1787,9 +1796,14 @@ class eRouter
 			$rawPathInfo = rawurldecode($request->getPathInfo());
 			//$this->_urlFormat = self::FORMAT_PATH;
 		}
-		
+
+
+
+		// Ignore social trackers when determining route.
+		$get = eHelper::removeTrackers($_GET);
+
 		// Route to front page - index/index/index route
-		if(!$rawPathInfo && (!$this->getMainModule() || empty($_GET)))
+		if(!$rawPathInfo && (!$this->getMainModule() || empty($get)))
 		{
 			// front page settings will be detected and front page will be rendered
 			$request->setRoute('index/index/index');
@@ -4131,7 +4145,7 @@ class eResponse
 	
 	/**
 	 * Get content
-	 * @param str $ns
+	 * @param string $ns
 	 * @param boolean $reset
 	 * @return string
 	 */
@@ -4148,8 +4162,8 @@ class eResponse
 	}
 	
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function setTitle($title, $ns = 'default')
@@ -4167,8 +4181,8 @@ class eResponse
 	}
 
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function appendTitle($title, $ns = 'default')
@@ -4190,8 +4204,8 @@ class eResponse
 	}
 
 	/**
-	 * @param str $title
-	 * @param str $ns
+	 * @param string $title
+	 * @param string $ns
 	 * @return eResponse
 	 */
 	function prependTitle($title, $ns = 'default')
@@ -4214,7 +4228,7 @@ class eResponse
 
 	/**
 	 * Assemble title
-	 * @param str $ns
+	 * @param string $ns
 	 * @param bool $reset
 	 * @return string
 	 */
@@ -4688,6 +4702,9 @@ class eHelper
 
 		$tp = e107::getParser();
 
+		// issue #3245: strip all html and bbcode before processing
+		$title = $tp->toText($title);
+
 		$title = $tp->toASCII($title);
 
 		$title = str_replace(array('/',' ',","),' ',$title);
@@ -4918,4 +4935,28 @@ class eHelper
 
 		return array(1 => $multi, 2 => $params, 3 => $parmstr);
 	}
+
+
+	/**
+	 * Remove Social Media Trackers from a $_GET array based on key matches.
+	 * @param array $get
+	 * @return array
+	 */
+	public static function removeTrackers($get = array())
+	{
+		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign','elan');
+
+		foreach($trackers as $val)
+		{
+			if(isset($get[$val]))
+			{
+				unset($get[$val]);
+			}
+		}
+
+		return $get;
+
+	}
+
+
 }

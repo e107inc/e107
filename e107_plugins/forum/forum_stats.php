@@ -127,8 +127,8 @@ class forumStats
 		ORDER BY post_count DESC LIMIT 0,10";
 
 		$sql->gen($query);
-	// 	$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
-		$top_repliers_data = $sql->retrieve($query,true);
+	 	$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
+//		$top_repliers_data = $sql->retrieve($query,true);
 
 		// build top posters meanwhile
 		$top_posters = array();

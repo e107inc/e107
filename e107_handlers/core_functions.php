@@ -372,7 +372,7 @@ if (!function_exists('multiarray_sort'))
 	 * @param $order
 	 * @param $natsort
 	 * @param $case
-	 * @return sorted array. 
+	 * @return array sorted array.
 	 */
     function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
     {
@@ -397,14 +397,20 @@ if (!function_exists('multiarray_sort'))
 
         if(!isset($sort_values))
         {
-            return;             
+            return $array;
         }
             
         reset ($sort_values);
-
+/*
         while (list ($arr_key, $arr_val) = each ($sort_values))
         {
  			$key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys. 
+ 			$sorted_arr[$key] = $array[$arr_key];
+        }*/
+
+        foreach($sort_values as $arr_key=>$arr_val)
+        {
+            $key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys.
  			$sorted_arr[$key] = $array[$arr_key];
         }
         return $sorted_arr;
@@ -420,7 +426,7 @@ class e_array {
     * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
     *
     * @param string $ArrayData
-    * @return array stored data
+    * @return array|bool stored data
     */
     public function unserialize($ArrayData) 
     {
@@ -450,7 +456,7 @@ class e_array {
 	        {
 	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
 		        echo "<pre>";
-				debug_print_backtrace();
+				debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 				echo "</pre>";
 	        }
 
@@ -460,6 +466,11 @@ class e_array {
 		// below is var_export() format using eval();
 
         $ArrayData = trim($ArrayData);
+
+        if(strpos($ArrayData, "\$data = ") === 0) // Fix for buggy old value.
+		{
+			$ArrayData = substr($ArrayData,8);
+		}
 
         if(strtolower(substr($ArrayData,0,5)) != 'array')
         {
@@ -500,7 +511,7 @@ class e_array {
 					$message .= print_a($ArrayData,true);
 					echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error</h4>". $message. "</div>";
 					echo "<pre>";
-					debug_print_backtrace();
+					debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 					echo "</pre>";
 				}
 
@@ -531,13 +542,13 @@ class e_array {
     *
     * @param array $ArrayData array to be stored
     * @param bool|string $mode true = var_export with addedslashes, false = var_export (default), 'json' = json encoded
-    * @return string
+    * @return null|string
     */
     public function serialize($ArrayData, $mode = false)
     {       
         if (!is_array($ArrayData) || empty($ArrayData))
         {
-            return false;
+            return null;
         }
 
         if($mode === 'json')

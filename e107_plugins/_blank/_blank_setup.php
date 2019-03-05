@@ -31,26 +31,44 @@ if(!class_exists("_blank_setup"))
 			$mes = e107::getMessage();
 
 			$e107_blank = array(
-				'blank_id'				=>'1',
+				'blank_id'				=> 0,
 				'blank_icon'			=>'{e_PLUGIN}_blank/images/blank_32.png',
 				'blank_type'			=>'type_1',
 				'blank_name'			=>'My Name',
 				'blank_folder'			=>'Folder Value',
 				'blank_version'			=>'1',
-				'blank_author'			=>'bill',
+				'blank_author'			=>'1',
 				'blank_authorURL'		=>'http://e107.org',
 				'blank_date'			=>'1352871240',
 				'blank_compatibility'	=>'2',
-				'blank_url'				=>'http://e107.org'
+				'blank_url'				=>'http://e107.org',
+				'blank_class'           => 0
 			);
 
-			if($sql->insert('blank',$e107_blank))
+			/*
+			 *   `blank_id` int(10) NOT NULL AUTO_INCREMENT,
+				  `blank_icon` varchar(255) NOT NULL,
+				  `blank_type` varchar(10) NOT NULL,
+				  `blank_name` varchar(50) NOT NULL,
+				  `blank_folder` varchar(50) NOT NULL,
+				  `blank_version` varchar(5) NOT NULL,
+				  `blank_author` varchar(50) NOT NULL,
+				  `blank_authorURL` varchar(255) NOT NULL,
+				  `blank_date` int(10) NOT NULL,
+				  `blank_compatibility` varchar(5) NOT NULL,
+				  `blank_url` varchar(255) NOT NULL,
+				  `blank_class` int(10) NOT NULL,
+			 */
+
+			if($sql->insert('blank', $e107_blank))
 			{
 				$mes->add("Custom - Install Message.", E_MESSAGE_SUCCESS);
 			}
 			else
 			{
+				$message = $sql->getLastErrorText();
 				$mes->add("Custom - Failed to add default table data.", E_MESSAGE_ERROR);
+				$mes->add($message, E_MESSAGE_ERROR);
 			}
 
 		}

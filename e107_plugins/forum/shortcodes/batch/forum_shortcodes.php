@@ -64,7 +64,7 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_statlink()
 	{
-		 return "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
+		return "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_0017."</a>\n";
 	}
 
 	function sc_iconkey()
@@ -328,6 +328,16 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
+	function sc_parentimage($parms=null)
+	{
+		if (empty($this->var['forum_image'])) return '';
+		if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+		if (empty($parms)) $parms = array();
+		$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+		$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+		return $text.'&nbsp;';
+	}
+
 	function sc_parentname()
 	{
 		return $this->var['forum_name'];
@@ -362,10 +372,20 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
+	function sc_forumimage($parms=null)
+	{
+		if(empty($this->var['forum_image'])) return '';
+
+		if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+		if (empty($parms)) $parms = array();
+		$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+		$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+		return "<a href='".e107::url('forum', 'forum', $this->var)."'>{$text}</a>&nbsp;";
+
+	}
+
 	function sc_forumname()
 	{
-		//    global $f;
-		//	$tp = e107::getParser();
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
 			$this->var['forum_name'] = substr($this->var['forum_name'], 1);

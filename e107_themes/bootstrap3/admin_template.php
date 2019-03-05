@@ -27,7 +27,7 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE} <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+		 {LINK_IMAGE} <span class="hidden-lg">{LINK_TEXT}</span>
 
 		</a> 
 		{SUB_MENU}
@@ -39,7 +39,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE}  <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+		 {LINK_IMAGE}  <span class="hidden-lg">{LINK_TEXT}</span>
 
 		</a>
 		{SUB_MENU}
@@ -174,6 +174,7 @@ $ADMIN_MODAL = '
 				<p>'.LAN_LOADING.'</p>
 			</div>
 			<div class="modal-footer">
+				<button type="button" id="e-modal-submit" class="btn btn-success" style="display:none" data-loading-icon="fa-spinner"><!-- placeholder --></button>
 				<button type="button" class="btn btn-primary" data-dismiss="modal">'.LAN_CLOSE.'</button>
 			</div>
 		</div>

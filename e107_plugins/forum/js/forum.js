@@ -27,7 +27,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var action = $this.attr('data-forum-action');
 					var thread = $this.attr('data-forum-thread');
 					var post = $this.attr('data-forum-post');
-					var text = $('#forum-quickreply-text').val();
+					if (typeof tinymce == 'undefined')
+					{
+                        var text = $('#forum-quickreply-text').val();
+					}
+                    else
+					{
+                        var text = tinymce.get('forum-quickreply-text').getContent();
+					}
 					var insert = $this.attr('data-forum-insert');
 					var token = $this.attr('data-token');
 					var script = $this.attr("src");
@@ -109,7 +116,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 									e107.attachBehaviors();
 								}
 
-								$('#forum-quickreply-text').val('');
+                                if (typeof tinymce == 'undefined')
+                                {
+                                    $('#forum-quickreply-text').val('');
+                                }
+                                else
+                                {
+                                    tinymce.get('forum-quickreply-text').setContent('');
+                                }
 								return;
 							}
 

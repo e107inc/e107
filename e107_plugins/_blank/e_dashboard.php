@@ -47,7 +47,7 @@ class _blank_dashboard // include plugin-folder in the name.
 
 		$label          = date('M Y', $month_start)." - ".date('M Y', $month_end);
 
-		if(!$sql->gen("SELECT id,datestamp,referred FROM `#_blank` WHERE datestamp BETWEEN ".$month_start." AND ".$month_end))
+		if(!$sql->gen("SELECT blank_id,blank_date,blank_folder FROM `#blank` WHERE blank_date BETWEEN ".$month_start." AND ".$month_end))
 		{
 			return false;
 		}
@@ -55,9 +55,9 @@ class _blank_dashboard // include plugin-folder in the name.
 		while($row = $sql->fetch())
 		{
 
-			$key = date('Y-n-j', $row['datestamp']);
+			$key = date('Y-n-j', $row['blank_date']);
 
-			switch($row['referred'])
+			switch($row['blank_folder'])
 			{
 				case "Facebook":
 					$amt[$key]['facebook'] += 1;
@@ -80,7 +80,7 @@ class _blank_dashboard // include plugin-folder in the name.
 
 			}
 
-			$dateName[$key] = date('jS', $row['datestamp']);
+			$dateName[$key] = date('jS', $row['blank_date']);
 		}
 
 		$sum = array_sum($amt);
@@ -147,4 +147,3 @@ class _blank_dashboard // include plugin-folder in the name.
 	
 	
 }
-?>

@@ -13,7 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 $pref = e107::getPref();
 
 
-if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
+if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
 	{
@@ -60,7 +60,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		}
 		
 	}
-	else
+//	else
 	{
 	//	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
@@ -108,6 +108,9 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 
 			});
+			
+			$('#media-manager-submit-buttons').show();
+
 
 			$('.tinyInsert').click(function() {
 
@@ -167,9 +170,9 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 			});
 
-			$('.e-dialog-close').click(function(){
+			$('.e-dialog-cancel').click(function(){
 
-				// top.tinymce.activeEditor.windowManager.close();
+				top.tinymce.activeEditor.windowManager.close();
 
 			});
 
@@ -188,4 +191,3 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 }
 
-?>

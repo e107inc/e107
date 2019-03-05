@@ -22,7 +22,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 class db_verify
 {
 	var $backUrl       = "";
-	var $sqlFileTables = array();
+	public $sqlFileTables = array();
 	private $sqlDatabaseTables   = array();
 
 	var $sqlLanguageTables = array();
@@ -33,7 +33,7 @@ class db_verify
 	private $internalError = false;
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date', 'json');
 							
 	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
 		'real','double','float','decimal','numeric','varchar','char ','binary','varbinary','enum','set'); // space after 'char' required. 
@@ -125,19 +125,17 @@ class db_verify
 	}
 
 
-
-	private function loadCreateTableData()
-	{
-
-
-
-	}
-
 	/**
 	 * Permissive field validation
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
+		if($expected['type'] === 'JSON') // Fix for JSON alias MySQL 5.7+
+		{
+			$expected['type'] = 'LONGTEXT';
+		}
+
+
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
 		if(0 === strcasecmp($expected['type'], $actual['type']) &&
@@ -154,6 +152,13 @@ class db_verify
 			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
 		}
 
+		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
+		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', $expected['default']))
+		{
+			$expected['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $expected['default']);
+			$actual['default']   = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $actual['default']  );
+		}
+
 		return array_diff_assoc($expected, $actual);
 	}
 	
@@ -162,21 +167,18 @@ class db_verify
 	 */
 	function verify()
 	{
-		
-		if(vartrue($_POST['verify_table']))
+		if(!empty($_POST['runfix']))
+		{
+			$this->runFix($_POST['fix']);
+		}
+
+		if(!empty($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
-			
 		}
 		else
 		{
-			if(isset($_POST['runfix']))
-			{
-				$this->runFix($_POST['fix']);
-			
-			} 
-			
-			$this->renderTableSelect();	
+			$this->renderTableSelect();
 		}	
 
 	}
@@ -199,7 +201,7 @@ class db_verify
 		{
 			$message = str_replace("[x]",$cnt,DBVLAN_26); // Found [x] issues.
 			$mes->add($message, E_MESSAGE_WARNING); 
-			$this->renderResults();	
+			$this->renderResults($fileArray);
 		}
 		else
 		{
@@ -268,10 +270,12 @@ class db_verify
 	
 	
 	
-	function compare($selection,$language='')
+	public function compare($selection,$language='')
 	{
 
 		$this->currentTable = $selection;
+
+	//	var_dump($this->sqlFileTables[$selection]);
 
 		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
@@ -321,6 +325,8 @@ class db_verify
 			
 			$fileData['index']	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlData['index']	= $this->getIndex($sqlDataArr['data'][0]);
+
+
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
@@ -353,41 +359,7 @@ class db_verify
 			 	$tbl = "lan_".$language."_".$tbl;
 			}
 			
-			// Check field and index data
-			foreach(['field', 'index'] as $type)
-			{
-				$results = 'results';
-				if ($type === 'index') $results = 'indices';
-				foreach($fileData[$type] as $key => $value)
-				{
-					$this->{$results}[$tbl][$key]['_status'] = 'ok';
-
-					//print("EXPECTED");
-					//print_a($value);
-					//print("ACTUAL");
-					//print_a($sqlData[$type][$key]);
-
-					if(!is_array($sqlData[$type][$key]))
-					{
-						$this->errors[$tbl]['_status'] = 'error'; // table status
-						$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
-						$this->{$results}[$tbl][$key]['_valid'] = $value;
-						$this->{$results}[$tbl][$key]['_file'] = $selection;
-					}
-					elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
-					{
-						$this->errors[$tbl]['_status'] = "mismatch_$type";
-						$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
-						$this->{$results}[$tbl][$key]['_diff'] = $diff;
-						$this->{$results}[$tbl][$key]['_valid'] = $value;
-						$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
-						$this->{$results}[$tbl][$key]['_file'] = $selection;
-					}
-
-					// TODO Check for additional fields in SQL that should be removed.
-					// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-				}
-			}
+			$this->prepareResults($tbl, $selection, $sqlData, $fileData);
 
 			unset($data);
 			
@@ -395,6 +367,79 @@ class db_verify
 		
 
 	}
+
+
+	/**
+	 * @param string $type fields|indices
+	 * @return array
+	 */
+	public function getResults($type='fields')
+	{
+		if($type === 'indices')
+		{
+			return $this->indices;
+		}
+
+		return $this->results;
+
+	}
+
+
+
+	/**
+	 * @param string $tbl table name without prefix.
+	 * @param string $selection 'core' OR plugin-folder name.
+	 * @param array $sqlData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @param array $fileData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @todo Check for additional fields in SQL that should be removed.
+	 * @todo Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	 */
+	public function prepareResults($tbl, $selection, $sqlData, $fileData)
+	{
+				// Check field and index data
+		foreach(['field', 'index'] as $type)
+		{
+			$results = 'results';
+
+			if ($type === 'index')
+			{
+				 $results = 'indices';
+			}
+
+			foreach($fileData[$type] as $key => $value)
+			{
+				$this->{$results}[$tbl][$key]['_status'] = 'ok';
+
+				if(!is_array($sqlData[$type][$key]))
+				{
+					$this->errors[$tbl]['_status'] = 'error'; // table status
+					$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+				elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
+				{
+					$this->errors[$tbl]['_status'] = "mismatch_$type";
+					$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
+					$this->{$results}[$tbl][$key]['_diff'] = $diff;
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+
+
+			}
+
+		}
+
+		return null;
+
+	}
+
+
+
+
+
 	
 	/**
 	 * Compile Results into a complete list of Fixes that could be run without the need of a form selection. 
@@ -452,8 +497,8 @@ class db_verify
 	}
 
 	
-	
-	function renderResults()
+
+	function renderResults($fileArray=array())
 	{
 		
 		$frm = e107::getForm();
@@ -462,8 +507,8 @@ class db_verify
 		
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<fieldset id='core-db-verify-{$selection}'>
-				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16."</legend>
+			<fieldset id='core-db-verify-results'>
+				<legend id='core-db-verify-results-legend'>".DBVLAN_16."</legend>
 
 				<table class='table adminlist'>
 					<colgroup>
@@ -475,7 +520,7 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".DBVLAN_4.": {$k}</th>
+							<th>".DBVLAN_4."</th>
 							<th>".DBVLAN_5."</th>
 							<th class='center'>".DBVLAN_6."</th>
 							<th>".DBVLAN_7."</th>
@@ -573,7 +618,14 @@ class db_verify
 			<div class='buttons-bar right'>
 				".$frm->admin_button('runfix', DBVLAN_21, 'execute', '', array('id'=>false))."
 				".$frm->admin_button('check_all', 'jstarget:fix', 'action', LAN_CHECKALL, array('id'=>false))."
-				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false));
+
+		foreach($fileArray as $tab)
+		{
+			$text .= $frm->hidden('verify_table[]',$tab);
+		}
+
+		$text .= "
 			</div>
 			
 			</fieldset>
@@ -631,7 +683,7 @@ class db_verify
 	
 	
 	
-	function toMysql($data,$mode = 'field')
+	public function toMysql($data,$mode = 'field')
 	{
 		
 		if(!$data) return;
@@ -655,11 +707,17 @@ class db_verify
 		
 		if(!in_array(strtolower($data['type']), $this->fieldTypes))
 		{
-			return $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];	
+			$ret = $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];
+			return trim($ret);
 		}
 		else
 		{
-			return $data['type']." ".$data['attributes']." ".$data['null']." ".$data['default'];
+			$ret = $data['type'];
+			$ret .= !empty($data['attributes']) ? " ".$data['attributes'] : '';
+			$ret .= !empty($data['null']) ? " ".$data['null'] : '';
+			$ret .= !empty($data['default']) ? " ".$data['default'] : '';
+
+			return $ret;
 		}
            
 	}
@@ -699,7 +757,66 @@ class db_verify
 		} 
 
 	}
-	
+
+
+	/**
+	 * @param string $mode index|alter|insert|drop|create|indexdrop
+	 * @param string $table eg. submitnews
+	 * @param string $field eg. submitnews_id
+	 * @param string $sqlFileData (after CREATE)  eg. dblog_id int(10) unsigned NOT NULL auto_increment, ..... KEY....
+	 * @param string $engine MyISAM|InnoDB
+	 * @return string SQL query
+	 */
+	function getFixQuery($mode, $table, $field, $sqlFileData, $engine = 'MyISAM' )
+	{
+
+		if(substr($mode,0,5)== 'index')
+		{
+			$fdata = $this->getIndex($sqlFileData);
+			$newval = $this->toMysql($fdata[$field],'index');
+		}
+		else
+		{
+			$fdata = $this->getFields($sqlFileData);
+			$newval = $this->toMysql($fdata[$field]);
+		}
+
+
+		switch($mode)
+		{
+			case 'alter':
+				$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+			break;
+
+			case 'insert':
+				$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+			break;
+
+			case 'drop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field`";
+			break;
+
+			case 'index':
+				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD ".$newval;
+			break;
+
+			case 'indexdrop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+			break;
+
+			case 'create':
+				$query = "CREATE TABLE `".MPREFIX.$table."` (".$sqlFileData.") ENGINE=".$engine.";";
+			break;
+		}
+
+
+		return $query;
+	}
+
+
+
 	/**
 	 * Fix tables
 	 * FixArray eg. [core][table][field] = alter|create|index| etc. 
@@ -728,46 +845,8 @@ class db_verify
 				{
 					foreach($fixes as $mode)
 					{				
-						if(substr($mode,0,5)== 'index')
-						{
-							$fdata = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field],'index');	
-						}
-						else
-						{
-							
-							$fdata = $this->getFields($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field]);	
-						}
-						
-						
-						switch($mode)
-						{
-							case 'alter':
-								$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
-							break;
-				
-							case 'insert':
-								$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
-							break;
-							
-							case 'drop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
-							break;
-							
-							case 'index':
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
-							break;
-							
-							case 'indexdrop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
-							break;
-							
-							case 'create':
-								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->sqlFileTables[$j]['data'][$id].") ENGINE=MyISAM;";
-							break;
-						}
+
+						$query = $this->getFixQuery($mode,$table,$field,$this->sqlFileTables[$j]['data'][$id],$this->sqlFileTables[$j]['engine'][$id]);
 						
 				
 						// $mes->addDebug("Query: ".$query);		
@@ -823,12 +902,12 @@ class db_verify
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
 		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-	 			
-		$table = preg_match_all($regex,$sql_data,$match);
-		
 
+		// also support non-alphanumeric chars.
+	 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
-			
+		preg_match_all($regex,$sql_data,$match);
+
 		$tables = array();
 			
 		foreach($match[1] as $c=>$k)
@@ -843,7 +922,19 @@ class db_verify
 				
 				
 		$ret['tables'] = $tables;
-		$ret['data'] = $match[2];
+
+		$data = array();
+
+		if(!empty($match[2])) // clean/trim data.
+		{
+			foreach($match[2] as $dat)
+			{
+				$dat = str_replace("\t", '', $dat); // remove tab chars.
+				$data[] = trim($dat);
+			}
+		}
+
+		$ret['data'] = $data;
 		$ret['engine'] = $match[4];
 		
 		if(empty($ret['tables']))

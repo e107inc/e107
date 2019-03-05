@@ -193,7 +193,8 @@ if ($action == 'top')
 		$text .= "</table>\n</div>";
 		if ($subaction == 'forum') 
 		{
-			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
+			//$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
+			$ftotal = $sql->count('user_extended', '(*)', 'WHERE `user_plugin_forum_posts` > 0');
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
 			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		}

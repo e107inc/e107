@@ -111,13 +111,13 @@ class page_shortcodes extends e_shortcode
 		
 		function sc_page_chapter_name($parm='')
 		{			
-			return e107::getParser()->toHtml($this->var['chapter_name']);	
+			return e107::getParser()->toHTML($this->var['chapter_name']);	
 		}		
 		
 		
 		function sc_page_chapter_description($parm='')
 		{
-			return e107::getParser()->toHtml($this->var['chapter_meta_description'],true);		
+			return e107::getParser()->toHTML($this->var['chapter_meta_description'],true);		
 		}
 		
 		/**

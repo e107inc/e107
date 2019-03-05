@@ -178,6 +178,17 @@ class signup
 			}
 		}
 
+
+
+	}
+
+
+	private function renderForm()
+	{
+
+
+
+
 	}
 
 
@@ -193,11 +204,11 @@ class signup
 		// 'resend_newemail' - corrected email address
 		// 'resend_password' - password (required if changing email address)
 
-		$clean_email = $tp->toDB($_POST['resend_email']);
-		if(!check_email($clean_email))
+		$clean_email = $tp->toDB($_POST['resend_email']); // may also be username
+		/*if(!check_email($clean_email))
 		{
 			$clean_email = "xxx";
-		}
+		}*/
 
 		$new_email = $tp->toDB(varset($_POST['resend_newemail'], ''));
 		if(!check_email($new_email ))
@@ -279,7 +290,7 @@ class signup
 
 		if(!$result)
 		{
-			e107::getMessage()->setTitle(LAN_SIGNUP_43,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
+			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
 			$ns->tablerender(null, e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
@@ -584,13 +595,16 @@ class signup
 
 }
 
-	if(e_QUERY && e_QUERY != 'stage1')
-	{
-		require_once(HEADERF);
-		new signup;
-		require_once(FOOTERF);
-		exit;
-	}
+
+
+
+if(e_QUERY && e_QUERY != 'stage1')
+{
+	require_once(HEADERF);
+	new signup;
+	require_once(FOOTERF);
+	exit;
+}
 
 
 
@@ -982,7 +996,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			if ($init_class = $userMethods->userClassUpdate($row, 'userpartial'))
 			{
 				$allData['data']['user_class'] = $init_class;
-				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}'");
+				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}' LIMIT 1");
 				
 				if($user_class_update === FALSE)
 				{
@@ -1056,6 +1070,8 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
+// e107::getCoreTemplate('signup', 'signup');
+
 $text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
 $ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text, 'signup' );
 
@@ -1068,7 +1084,7 @@ exit;
 // Function returns an image if a field is required.
 function req($field)
 {
-	return ($field == 2 ? REQUIRED_FIELD_MARKER : "");
+	return ($field == 2 ? "<span class='required'></span>" : "");
 }
 //----------------------------------
 
@@ -1092,6 +1108,3 @@ function headerjs()
 	//$script_txt .= $cal->load_files();
 	return $script_txt;
 }
-
-
-?>

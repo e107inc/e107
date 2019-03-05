@@ -199,7 +199,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cid, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cid]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cid]['media_cat_title'], false, 'defs');
 		$cat = $this->catList[$cid];
 
 		$inner = "";

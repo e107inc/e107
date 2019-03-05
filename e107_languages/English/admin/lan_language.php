@@ -31,8 +31,8 @@ define("LANG_LAN_21", "Language-Packs");
 define("LANG_LAN_25", "Language-Pack Creation Status");
 define("LANG_LAN_26", "Load language files only for current language");
 define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
-define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
-define("LANG_LAN_EML", "Please email your language pack to:");
+//define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
+//define("LANG_LAN_EML", "Please email your language pack to:");
 define("LANG_LAN_32", "Installed Languages");
 define("LANG_LAN_33", "Display only errors during verification");
 define("LANG_LAN_50", "Admin-Area Interface Language");
@@ -69,4 +69,4 @@ define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from
 define("LANG_LAN_151", "Available");
 define("LANG_LAN_152", "Courtesy of the [e107 translations team]");
 define("LANG_LAN_153", "Pre-release");
-?>
+define("LANG_LAN_154", "The Language Pack has been created. You can now submit it to the Github repository as instructed [here].");

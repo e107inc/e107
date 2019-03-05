@@ -24,7 +24,7 @@ $sql = e107::getDb();
 $sql->db_Mark_Time('(Header Top)');
 
 // Load library dependencies.
-e107::getTheme('current', true)->loadLibrary();
+e107::getTheme('current')->loadLibrary();
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 // e107::css('core',	'bootstrap/css/tooltip.css','jquery');
@@ -140,12 +140,22 @@ else
 // C: Send start of HTML
 //
 
-if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
-if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-$siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
-if($pref['sitebutton']) e107::meta('og:image',$siteButton);
+if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
+if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
+if(!empty($pref['sitebutton']))
+{
+	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitebutton'],'w=800',false, true) : $tp->replaceConstants($pref['sitebutton'],'full');
+	e107::meta('og:image',$siteButton);
+	unset($siteButton);
+}
+elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
+{
+	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+	e107::meta('og:image',$siteLogo);
+	unset($siteLogo);
+}
+
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
-unset($siteButton);
 
 
 // Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg
@@ -194,7 +204,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-if(THEME_LEGACY === true)
+if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
 }
@@ -792,7 +802,7 @@ if ($e107_popup != 1) {
 
 	if(deftrue('BOOTSTRAP'))
 	{
-		echo "<div id='uiAlert' class='notifications center'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
+		echo "<div id='uiAlert' class='notifications'></div>"; // Popup Alert Message holder. @see http://nijikokun.github.io/bootstrap-notify/
 	}
 
     /**

@@ -278,7 +278,13 @@ class userlogin
 			{	// 'New user' probationary period expired - we can take them out of the class
 				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
 //				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
-				$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']);
+
+				/**
+				 * issue e107inc/e107#3657: Third argument of update() function is for debugging purposes and NOT used for the WHERE clause.
+				 * Therefore the query was run without WHERE, which resulted into applyiing the new classes to all users....
+				 */
+				//$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']. " LIMIT 1");
+				$sql->update('user',"`user_class` = '" . $this->userData['user_class'] . "' WHERE `user_id`=" . $this->userData['user_id'] . " LIMIT 1");
 				unset($class_list[e_UC_NEWUSER]);
 				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'user_email'=> $user_email);
 				$e_event->trigger('userNotNew', $edata_li);
@@ -579,9 +585,16 @@ class userlogin
 				$this->logNote('LAN_ROLL_LOG_02', $username);
 				break;
 			case LOGIN_NOT_ACTIVATED :
-				$srch = array("[", "]");
-				$repl = array("<a href='" . e_HTTP . "signup.php?resend'>", "</a>");
-				$message = str_replace($srch, $repl, LAN_LOGIN_22);
+				if($pref['user_reg_veri'] == 2)
+				{
+					$message = LAN_LOGIN_37;
+				}
+				else
+				{
+					$srch = array("[", "]");
+					$repl = array("<a href='" . e_HTTP . "signup.php?resend'>", "</a>");
+					$message = str_replace($srch, $repl, LAN_LOGIN_22);
+				}
 				$this->logNote('LAN_ROLL_LOG_05', $username);
 				$this->genNote($username, LAN_LOGIN_27);
 				$doCheck = true;

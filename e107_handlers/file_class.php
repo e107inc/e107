@@ -109,7 +109,7 @@ class e_file
 	
 	
 	
-	private $authKey = false; // Used when retrieving files from e107.org.
+//	private $authKey = false; // Used when retrieving files from e107.org.
 
 
 	private $error = null;
@@ -310,19 +310,86 @@ class e_file
 	}
 
 
+	/**
+	 * Return an extension for a specific mime-type.
+	 * @param $mimeType
+	 * @return mixed|null
+	 */
 	function getFileExtension($mimeType)
 	{
 		$extensions = array(
-			'image/jpeg'=>'.jpg',
-			'image/png'	=> '.png',
-			'image/gif'	=> '.gif'
-		);	
-		
+		  'application/ecmascript'          => '.es',
+		  'application/epub+zip'            => '.epub',
+		  'application/java-archive'        => '.jar',
+		  'application/javascript'          => '.js',
+		  'application/json'                => '.json',
+		  'application/msword'              => '.doc',
+		  'application/octet-stream'        => '.bin',
+		  'application/ogg'                 => '.ogx',
+		  'application/pdf'                 => '.pdf',
+		  'application/rtf'                 => '.rtf',
+		  'application/typescript'          => '.ts',
+		  'application/vnd.amazon.ebook'    => '.azw',
+		  'application/vnd.apple.installer+xml' => '.mpkg',
+		  'application/vnd.mozilla.xul+xml' => '.xul',
+		  'application/vnd.ms-excel'        => '.xls',
+		  'application/vnd.ms-fontobject'   => '.eot',
+		  'application/vnd.ms-powerpoint'   => '.ppt',
+		  'application/vnd.oasis.opendocument.presentation' => '.odp',
+		  'application/vnd.oasis.opendocument.spreadsheet' => '.ods',
+		  'application/vnd.oasis.opendocument.text' => '.odt',
+		  'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+		  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => '.xlsx',
+		  'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => '.docx',
+		  'application/vnd.visio'           => '.vsd',
+		  'application/x-7z-compressed'     => '.7z',
+		  'application/x-abiword'           => '.abw',
+		  'application/x-bzip'              => '.bz',
+		  'application/x-bzip2'             => '.bz2',
+		  'application/x-csh'               => '.csh',
+		  'application/x-rar-compressed'    => '.rar',
+		  'application/x-sh'                => '.sh',
+		  'application/x-shockwave-flash'   => '.swf',
+		  'application/x-tar'               => '.tar',
+		  'application/xhtml+xml'           => '.xhtml',
+		  'application/xml'                 => '.xml',
+		  'application/zip'                 => '.zip',
+		  'audio/aac'                       => '.aac',
+		  'audio/midi'                      => '.midi',
+		  'audio/mpeg'                      => '.mp3',
+		  'audio/ogg'                       => '.oga',
+		  'audio/wav'                       => '.wav',
+		  'audio/webm'                      => '.weba',
+		  'font/otf'                        => '.otf',
+		  'font/ttf'                        => '.ttf',
+		  'font/woff'                       => '.woff',
+		  'font/woff2'                      => '.woff2',
+		  'image/bmp'                       => '.bmp',
+		  'image/gif'                       => '.gif',
+		  'image/jpeg'                      => '.jpg',
+		  'image/png'                       => '.png',
+		  'image/svg+xml'                   => '.svg',
+		  'image/tiff'                      => '.tiff',
+		  'image/webp'                      => '.webp',
+		  'image/x-icon'                    => '.ico',
+		  'text/calendar'                   => '.ics',
+		  'text/css'                        => '.css',
+		  'text/csv'                        => '.csv',
+		  'text/html'                       => '.html',
+		  'text/plain'                      => '.txt',
+		  'video/mp4'                       => '.mp4',
+		  'video/mpeg'                      => '.mpeg',
+		  'video/ogg'                       => '.ogv',
+		  'video/webm'                      => '.webm',
+		  'video/x-msvideo'                 => '.avi',
+		);
+
 		if(isset($extensions[$mimeType]))
 		{
 			return $extensions[$mimeType];		
 		}
-		
+
+		return null;
 	}
 
 
@@ -332,7 +399,7 @@ class e_file
 	 * @param string $path_to_file
 	 * @param boolean $imgcheck
 	 * @param boolean $auto_fix_ext
-	 * @return array
+	 * @return array|bool
 	 */
 	function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 	{
@@ -354,6 +421,8 @@ class e_file
 			{
 				$finfo['mime'] = $mime;	
 			}
+
+			unset($other);
 			
 		}
 
@@ -411,7 +480,32 @@ class e_file
 
 		if(empty($finfo['mime'])) // last resort. 
 		{
-			$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+			switch($finfo['pathinfo']['extension'])
+			{
+				case "svg":
+					$finfo['mime'] = 'image/svg+xml';
+					break;
+
+				case "mp3":
+					$finfo['mime'] = 'audio/mpeg';
+					break;
+
+				case "ogg":
+					$finfo['mime'] = 'audio/ogg';
+					break;
+
+				case "mp4":
+					$finfo['mime'] = 'video/mp4';
+					break;
+
+				case "3gp":
+					$finfo['mime'] = 'video/3gpp';
+					break;
+
+				default:
+					$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+			}
+
 		}
 	
 		
@@ -422,9 +516,9 @@ class e_file
 
 	/**
 	 *	 Grab a remote file and save it in the /temp directory. requires CURL
-	 *	@param $remote_url
+	 *	@param string $remote_url
 	 *	@param $local_file string filename to save as
-	 *	@param $type  media, temp, or import
+	 *	@param string $type  media, temp, or import
 	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
@@ -451,15 +545,6 @@ class e_file
         $cp = $this->initCurl($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
 		curl_setopt($cp, CURLOPT_TIMEOUT, 40);//FIXME Make Pref - avoids get file timeout on slow connections
-       	/*
-       	$cp = curl_init($remote_url);
-
-		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
-		curl_setopt($cp, CURLOPT_HEADER, 0);
-		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
-		curl_setopt($cp, CURLOPT_SSL_VERIFYPEER, FALSE);
-       	*/
 
         $buffer = curl_exec($cp);
 		//FIXME addDebug curl_error output - here see #1936
@@ -554,11 +639,11 @@ class e_file
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
 
-		$fileContents = '';
+	//	$fileContents = '';
 		$this->error = '';
-		$this->errornum = null;
-		
-		$mes = e107::getMessage();
+		$this->setErrorNum(null);
+
+	//	$mes = e107::getMessage();
 			
 		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
 		// ... and there shouldn't be unprintable characters in the URL anyway		
@@ -575,8 +660,9 @@ class e_file
 			$fileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
-				$this->errornum = curl_errno($cu);
-				$this->error = "Curl error: ".$this->errornum.", ".curl_error($cu);
+				$errorCode = curl_errno($cu);
+				$this->setErrorNum($errorCode);
+				$this->error = "Curl error: ".$errorCode.", ".curl_error($cu);
 				return FALSE;
 			}
 			curl_close($cu);
@@ -608,7 +694,7 @@ class e_file
 			}
 			if ($data !== FALSE)
 			{
-				$fileContents = $data;
+			//	$fileContents = $data;
 				return $data;
 			}
 			$this->error = "File_get_contents(XML) error";		// Fill in more info later
@@ -661,7 +747,7 @@ class e_file
 	 * Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()
 	 * N.B. - no recursion - just looks in the specified directory.
 	 * @param string $path
-	 * @param strig $fmask
+	 * @param string $fmask
 	 * @param string $omit
 	 * @return array
 	 */
@@ -751,43 +837,53 @@ class e_file
 	 *	@param int $compare - a 'compare' value
 	 *	@param string $action - values (gt|lt)
 	 *
-	 *	@return int file size value.
+	 *	@return int file size value in bytes.
 	 *		If the decoded value evaluates to zero, returns the value of $compare
 	 *		If $action == 'gt', return the larger of the decoded value and $compare
 	 *		If $action == 'lt', return the smaller of the decoded value and $compare
 	 */
 	function file_size_decode($source, $compare = 0, $action = '')
 	{
+
 		$source = trim($source);
-		if (strtolower(substr($source, -1, 1)) == 'b')
-			$source = substr($source, 0, -1); // Trim a trailing byte indicator
-		$mult = 1;
-		if (strlen($source) && (strtoupper(substr($source, -1, 1)) == 'B'))
-			$source = substr($source, 0, -1);
-		if (!$source || is_numeric($source))
+		$source = strtoupper($source);
+
+		list($val, $unit) = preg_split('#(?<=\d)(?=[a-z])#i', $source);
+
+		$val = (int) $val;
+
+		if(!$source || is_numeric($source))
 		{
-			$val = $source;
+			$val = (int) $source;
 		}
 		else
 		{
-			$val = substr($source, 0, -1);
-			switch (substr($source, -1, 1))
+			switch($unit)
 			{
 				case 'T':
-					$val = $val * 1024;
+				case 'TB':
+					$val = $val * 1024 * 1024 * 1024 * 1024;
+					break;
 				case 'G':
-					$val = $val * 1024;
+				case 'GB':
+					$val = $val * 1024 * 1024 * 1024;
+					break;
 				case 'M':
-					$val = $val * 1024;
+				case 'MB':
+					$val = $val * 1024 * 1024;
+					break;
 				case 'K':
-				case 'k':
+				case 'KB':
 					$val = $val * 1024;
-				break;
+					break;
 			}
 		}
-		if ($val == 0)
+		if($val == 0)
+		{
 			return $compare;
-		switch ($action)
+		}
+
+		switch($action)
 		{
 			case 'lt':
 				return min($val, $compare);
@@ -796,7 +892,7 @@ class e_file
 			default:
 				return $val;
 		}
-		return 0;
+		//	return 0;
 	}
 
 	/**
@@ -804,7 +900,7 @@ class e_file
 	 * Former Download page function
 	 * @param mixed $size file size in bytes or file path if $retrieve is true
 	 * @param boolean $retrieve defines the type of $size
-	 *
+	 * @param integer $decimal
 	 * @return string formatted size
 	 */
 	function file_size_encode($size, $retrieve = false, $decimal =2)
@@ -845,9 +941,9 @@ class e_file
 	
 	
 	/** Recursive Chmod function. 
-	 * @param string path to folder
-	 * @param string perms for files
-	 * @param string perms for directories
+	 * @param string $path to folder
+	 * @param integer $filemode perms for files
+	 * @param integer $dirmode perms for directories
 	 * @example chmod_R('mydir', 0644, 0755); 
 	 */
 	function chmod($path, $filemode=0644, $dirmode=0755) 
@@ -941,7 +1037,7 @@ class e_file
 	{
 		global $e107;
 		
-		$pref 					= e107::getPref();
+	//	$pref 					= e107::getPref();
 		$tp 					= e107::getParser();
 		
 		$DOWNLOADS_DIR 			= e107::getFolder('DOWNLOADS');		
@@ -956,7 +1052,7 @@ class e_file
 		@set_time_limit(10 * 60);
 		@session_write_close();
 		@e107_ini_set("max_execution_time", 10 * 60);
-		while (@ob_end_clean()); // kill all output buffering else it eats server resources
+		while(@ob_end_clean()); // kill all output buffering else it eats server resources
 		@ob_implicit_flush(TRUE);
 		
 		
@@ -1006,7 +1102,7 @@ class e_file
 				ignore_user_abort(true);
 				$data_len = filesize($filename);
 				if ($seek > ($data_len - 1)) { $seek = 0; }
-				if ($filename == null) { $filename = basename($this->data); }
+			//	if ($filename == null) { $filename = basename($this->data); }
 				$res =& fopen($filename, 'rb');
 				if ($seek)
 				{
@@ -1053,9 +1149,10 @@ class e_file
 
 	/**
 	 * Return a user specific file directory for the current plugin with the option to create one if it does not exist.
-	 * @param $baseDir
-	 * @param $user - user_id
-	 * @param bool|false $create
+	 *
+	 * @param int     $user userid
+	 * @param boolean $create
+	 * @param null|string    $subDir
 	 * @return bool|string
 	 */
 	public function getUserDir($user, $create = false, $subDir = null)
@@ -1084,10 +1181,13 @@ class e_file
 
 		return $baseDir;
 	}
-		
-		
+
+
 	/**
-	 * Runs through the zip archive array and finds the root directory. 
+	 * Runs through the zip archive array and finds the root directory.
+	 *
+	 * @param $unarc
+	 * @return bool|string
 	 */
 	public function getRootFolder($unarc)
 	{
@@ -1116,15 +1216,17 @@ class e_file
 		
 		return false;
 						
-	}		
-		
-	
-	/**
-	 * Zip up folders and files 
-	 * @param array $filePaths
-	 * @param string $newFile
+	}
 
-	 */	
+
+	/**
+	 * Zip up folders and files
+	 *
+	 * @param array  $filePaths
+	 * @param string $newFile
+	 * @param array  $options
+	 * @return bool|string
+	 */
 	public function zip($filePaths=null, $newFile='', $options=array())
 	{
 		if(empty($newFile))
@@ -1179,9 +1281,10 @@ class e_file
 	}
 
 
-	
 	/**
-	 * Recursive Directory removal . 
+	 * Recursive Directory removal .
+	 *
+	 * @param $dir
 	 */
 	public function removeDir($dir) 
 	{ 
@@ -1300,7 +1403,9 @@ class e_file
 
 	/**
 	 * Quickly scan and return a list of files in a directory.
-	 * @param $dir
+	 *
+	 * @param string $dir
+	 * @param null $extensions
 	 * @return array
 	 */
 	public function scandir($dir, $extensions=null)
@@ -1330,7 +1435,11 @@ class e_file
 	}
 
 
-
+	/**
+	 * @param string $folder
+	 * @param null   $type
+	 * @return bool|string
+	 */
 	public function gitPull($folder='', $type=null)
 	{
 		$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
@@ -1404,16 +1513,20 @@ class e_file
 
 
 	/**
-	 * Unzip Plugin or Theme zip file and move to plugin or theme folder. 
+	 * Unzip Plugin or Theme zip file and move to plugin or theme folder.
+	 *
 	 * @param string $localfile - filename located in e_TEMP
-	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
-	 * @return string unzipped folder name on success or false. 
+	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future).
+	 * @param bool   $overwrite
+	 * @return string unzipped folder name on success or false.
 	 */
 	public function unzipArchive($localfile, $type, $overwrite=false)
 	{
 		$mes = e107::getMessage();
 		
 		chmod(e_TEMP.$localfile, 0755);
+
+		$fileinfo = array();
 
 		$dir = false;
 
@@ -1472,7 +1585,7 @@ class e_file
 
 
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
-		$typeDiz 	= ucfirst($type);
+	//	$typeDiz 	= ucfirst($type);
 		
 		@copy(e_TEMP.$localfile, e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
 		
@@ -1485,7 +1598,7 @@ class e_file
 					$time = date("YmdHi");
 					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
 					{
-						$mes->addSuccess("Old folder moved to backup directory");
+						$mes->addSuccess(ADLAN_195);
 					}
 				}
 			}
@@ -1539,7 +1652,7 @@ class e_file
 	 *	Get an array of permitted filetypes according to a set hierarchy.
 	 *	If a specific file name given, that's used. Otherwise the default hierarchy is used
 	 *
-	 *	@param string $file_mask - comma-separated list of allowed file types
+	 *	@param string|boolean $file_mask - comma-separated list of allowed file types
 	 *	@param string $filename - optional override file name - defaults ignored
 	 *
 	 *	@return array of filetypes
@@ -1742,7 +1855,7 @@ class e_file
 	 * @return bool
 	 *   TRUE for success, FALSE in the event of an error.
 	 */
-	public function _chMod($path, $mode = null)
+	private function _chMod($path, $mode = null)
 	{
 		if(!isset($mode))
 		{
@@ -1795,5 +1908,323 @@ class e_file
 			return mkdir($path, $mode, $recursive, $context);
 		}
 	}
+
+
+	/**
+	 * @param int|null $int
+	 */
+	private function setErrorNum($int)
+	{
+		$this->errornum = $int;
+	}
+
+
+
+	/**
+	 * New in v2.1.9
+	 * Check uploaded file to try and identify dodgy content.
+	 *	@param string $filename is the full path+name to the uploaded file on the server
+	 *	@param string $target_name is the intended name of the file once transferred
+	 *	@param array $allowed_filetypes is an array of permitted file extensions, in lower case, no leading '.'
+	 *			(usually generated from filetypes.xml/filetypes.php)
+	 *	@param boolean|string $unknown - handling of file types unknown to us/define additional types
+	 *			if FALSE, rejects totally unknown file extensions (even if in $allowed_filetypes).
+	 *			if $unknown is TRUE, accepts totally unknown file extensions.
+	 *			otherwise $unknown is a comma-separated list of additional permitted file extensions
+	 *	@return boolean - TRUE if file acceptable, FALSE if unacceptable. Use getErrorCode() immediately after to retrieve error code:
+	 *		1 - file type not allowed
+	 *		2 - can't read file contents
+	 *		3 - illegal file contents (usually '<?php')
+	 *		4 - not an image file
+	 *		5 - bad image parameters - REMOVED
+	 *		6 - not in supplementary list
+	 *		7 - suspicious file contents
+	 *		8 - unknown file type
+	 *		9 - unacceptable file type (prone to exploits)
+	 */
+	function isClean($filename, $target_name='', $allowed_filetypes = array(), $unknown = false)
+	{
+		if(empty($target_name)) // no temp file, just use the filename.
+		{
+			$target_name = $filename;
+		}
+
+		$this->setErrorNum(null);
+		// 1. Start by checking against filetypes - that's the easy one!
+		$file_ext = pathinfo($target_name, PATHINFO_EXTENSION);
+
+		// 2. For all files, read the first little bit to check for any flags etc
+		$res = fopen($filename, 'rb');
+		$tstr = fread($res, 2048);
+		fclose($res);
+
+		if($tstr === false)
+		{
+			$this->setErrorNum(2); // If can't read file, not much use carrying on!
+			return false;
+		}
+
+		$archives = array('zip', 'gzip', 'gz', 'tar', 'bzip', '7z', 'rar');
+
+		if(!in_array($file_ext,$archives) && stripos($tstr, '<?php') !== false)
+		{
+			$this->setErrorNum(3); // Pretty certain exploit
+			return false;
+		}
+
+		if(!in_array($file_ext,$archives) && strpos($tstr, '<?') !== false)                // Bit more tricky - can sometimes be OK
+		{
+			if(stripos($tstr, '<?xpacket') === false && stripos($tstr, '<?xml ') === false)    // Allow the XMP header produced by CS4 and xml files.
+			{
+				$this->setErrorNum(7);
+				return false;
+			}
+		}
+
+		// 3. Now do what we can based on file extension
+		switch($file_ext)
+		{
+
+			case 'jpg':
+			case 'gif':
+			case 'png':
+			case 'jpeg':
+			case 'pjpeg':
+			case 'bmp':
+			case 'swf':
+			case 'fla':
+	//		case 'flv':
+			case 'swc':
+			case 'psd':
+			case 'ai':
+			case 'eps':
+			case 'svg':
+			case 'tiff':
+			case 'jpc': // http://fileinfo.com/extension/jpc
+			case 'jpx': // http://fileinfo.com/extension/jpx
+			case 'jb2': // http://fileinfo.com/extension/jb2
+			case 'jp2': // http://fileinfo.com/extension/jp2
+			case 'iff':
+			case 'wbmp':
+			case 'xbm':
+			case 'ico':
+
+				$ret = $this->getImageMime($filename);
+
+				if($ret === false)
+				{
+					$this->setErrorNum(4);  // exif_imagetype didn't recognize the image mime
+					return false;
+				}
+
+				// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
+				//	return 5; // Zero size picture or bad file format
+				break;
+
+			case 'zip':
+			case 'gzip':
+			case 'gz':
+			case 'tar':
+			case 'bzip':
+			case 'pdf':
+			case 'doc':
+			case 'docx':
+			case 'xls':
+			case 'xlsx':
+			case 'rar':
+			case '7z':
+			case 'csv':
+			case 'mp3':
+			case 'wav':
+			case 'mp4':
+			case 'mpg':
+			case 'mpa':
+			case 'wma':
+			case 'wmv':
+			case 'flv': //Flash stream
+			case 'f4v': //Flash stream
+			case 'mov': //media
+			case 'avi': //media
+			case 'xml':
+
+				break; // Just accept these
+
+			case 'php':
+			case 'php5':
+			case 'php7':
+			case 'htm':
+			case 'html':
+			case 'cgi':
+			case 'pl':
+
+				$this->setErrorNum(9); // Never accept these! Whatever the user thinks!
+				return false;
+
+			default: // Unknown file type.
+
+				$this->setErrorNum(8);
+				return false;
+		}
+
+		return true; // Accepted here
+	}
+
+
+
+
+	/**
+	 * New in v2.1.9
+	 * Check filename or path against filetypes.xml
+	 * @param $file - real path to file.
+	 * @return boolean
+	 */
+	public function isAllowedType($file,$targetFile='')
+	{
+		if(empty($targetFile))
+		{
+			$targetFile = $file;
+		}
+
+		$ext = pathinfo($targetFile, PATHINFO_EXTENSION);
+
+		$types = $this->getAllowedFileTypes();
+
+		if(isset($types[$ext]))
+		{
+			$maxSize = $types[$ext] * 1024;
+			$fileSize = filesize($file);
+
+		//	echo "\nisAllowedType(".basename($file).") ".$fileSize ." / ".$maxSize;
+
+			if($fileSize  <= $maxSize)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+
+
+
+
+
+	/**
+	 * New in v2.1.9
+	 * Get image (string) mime type
+	 * or when extended - array [(string) mime-type, (array) associated extensions)].
+	 * A much faster way to retrieve mimes than getimagesize()
+	 *
+	 * @param $filename
+	 * @param bool|false $extended
+	 * @return array|string|false
+	 */
+	function getImageMime($filename, $extended = false)
+	{
+		// mime types as returned from image_type_to_mime_type()
+		// and associated file extensions
+		$imageExtensions = array(
+			'image/gif' 					=> array('gif'),
+			'image/jpeg' 					=> array('jpg'),
+			'image/png' 					=> array('png'),
+			'application/x-shockwave-flash' => array('swf', 'swc'),
+			'image/psd' 					=> array('psd'),
+			'image/bmp' 					=> array('bmp'),
+			'image/tiff' 					=> array('tiff'),
+			'application/octet-stream' 		=> array('jpc', 'jpx', 'jb2'),
+			'image/jp2' 					=> array('jp2'),
+			'image/iff' 					=> array('iff'),
+			'image/vnd.wap.wbmp' 			=> array('wbmp'),
+			'image/xbm' 					=> array('xbm'),
+			'image/vnd.microsoft.icon' 		=> array('ico')
+		);
+
+		$ret = image_type_to_mime_type(exif_imagetype($filename));
+
+		if($extended)
+		{
+			return array(
+				$ret,
+				$ret && isset($imageExtensions[$ret]) ? $imageExtensions[$ret]: array()
+			);
+		}
+
+		return $ret;
+
+	}
+
+
+
+
+
+	/**
+	 *	New in v2.1.9
+	 *  Get array of file types (file extensions) which are permitted - reads an XML-formatted definition file.
+	 *	(Similar to @See{get_allowed_filetypes()}, but expects an XML file)
+	 *
+	 *	@param string $file_mask - comma-separated list of allowed file types - only those specified in both $file_mask and $def_file are returned
+	 *	@return array - where key is the file type (extension); value is max upload size
+	 */
+	public function getAllowedFileTypes($file_mask = '')
+	{
+		$ret = array();
+		$file_array = array();
+
+		if ($file_mask)
+		{
+			$file_array = explode(',', $file_mask);
+			foreach ($file_array as $k=>$f)
+			{
+				$file_array[$k] = trim($f);
+			}
+		}
+
+		if(!is_readable(e_SYSTEM."filetypes.xml"))
+		{
+			return array();
+		}
+
+		$xml = e107::getXml();
+		$xml->setOptArrayTags('class'); // class tag should be always array
+		$temp_vars = $xml->loadXMLfile(e_SYSTEM."filetypes.xml", 'filetypes', false);
+
+		if ($temp_vars === false)
+		{
+			echo "Error reading filetypes.xml<br />";
+			return $ret;
+		}
+
+		foreach ($temp_vars['class'] as $v1)
+		{
+			$v = $v1['@attributes'];
+			if (check_class($v['name']))
+			{
+				$current_perms[$v['name']] = array('type'=>$v['type'], 'maxupload'=>$v['maxupload']	);
+				$a_filetypes = explode(',', $v['type']);
+				foreach ($a_filetypes as $ftype)
+				{
+					$ftype = strtolower(trim(str_replace('.', '', $ftype))); // File extension
+
+					if (!$file_mask || in_array($ftype, $file_array)) // We can load this extension
+					{
+						if (isset($ret[$ftype]))
+						{
+							$ret[$ftype] = $this->file_size_decode($v['maxupload'], $ret[$ftype], 'gt'); // Use largest value
+						}
+						else
+						{
+							$ret[$ftype] = $this->file_size_decode($v['maxupload']);
+						}
+					}
+				}
+			}
+		}
+
+		return $ret;
+	}
+
+
 
 }

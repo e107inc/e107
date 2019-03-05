@@ -44,6 +44,3 @@ define("LANG_LAN_119", "Please check that CORE_LC and CORE_LC2 have values in [x
 define("LANG_LAN_120", "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.");
 
 define("LANG_LAN_AGR", "Note: By using these tools you agree to share your language pack(s) with the e107 community.");
-
-
-?>

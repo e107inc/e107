@@ -120,18 +120,18 @@ if(false === $cached)
 	{
 		$xmonth = date("n", $news['news_datestamp']);
 		$xyear = date("Y", $news['news_datestamp']);
-		if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
+		if (!isset($month_links[$xmonth]) || empty($month_links[$xmonth]))
 		{
-			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
+			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'id='.formatDate($xyear, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}
 	//	if(($news['news_datestamp'] >= $month_start && $news['news_datestamp'] <= $month_end) || (deftrue('BOOTSTRAP') && $news['news_datestamp'] >= $year_start && $news['news_datestamp'] <= $year_end))
 		{
 			$xday = date("j", $news['news_datestamp']);
 			if (!isset($links[$xyear][$xmonth][$xday]))
 			{
-				$links[$xyear][$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+				$links[$xyear][$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($xyear, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 	
-				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($xyear, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 			}
 		}
 		
