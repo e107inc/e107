@@ -20,6 +20,8 @@ e107::coreLan('signup');
 
 class signup_shortcodes extends e_shortcode
 {
+
+
 	
 	function sc_signup_coppa_form($parm)
 	{
@@ -157,15 +159,18 @@ class signup_shortcodes extends e_shortcode
 		return "<form action='".e_SELF."' method='post' id='signupform' autocomplete='off'><div>".e107::getForm()->token()."</div>";
 	}
 	
-	
-	function sc_signup_signup_text()
+	/* example: {SIGNUP_SIGNUP_TEXT}
+	/* example: {SIGNUP_SIGNUP_TEXT: class=custom} */
+	function sc_signup_signup_text($parm='')
 	{		
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 			
 		if(!empty($pref['signup_text']))
 		{
-			return "<div id='signup-custom-text' class='alert alert-block alert-warning'>".$tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs')."</div>";
+			$class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : " class='alert alert-block alert-warning' ";
+			
+			return "<div id='signup-custom-text'  ".$class." >".$tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs')."</div>";
 		}
 		
 		/*
@@ -452,7 +457,7 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_extended_user_fields()
 	{ 
-		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $EXTENDED_USER_FIELD_REQUIRED, $SIGNUP_EXTENDED_CAT;
+		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
 		$text = "";
 		
 		$search = array(
@@ -483,26 +488,31 @@ class signup_shortcodes extends e_shortcode
 		  {
 			continue;	
 		  }
-		  
-		  foreach($extList as $ext)
-		  {
-		  	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
-		   	{
-		      if(!$done_heading  && ($cat['user_extended_struct_id'] > 0))
-		      {	// Add in a heading
-				$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
-				if(defined($catName)) $catName = constant($catName);
-				$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, FALSE, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
-				$done_heading = TRUE;
-			  }
-		  	  $replace = array(
-		    			$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, 'emotes_off,defs'),
-		    			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
-		    			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
-		        );
-		      $text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
-		    }
-		  }
+
+			foreach($extList as $ext)
+			{
+				if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
+				{
+					if(!$done_heading && ($cat['user_extended_struct_id'] > 0))
+					{    // Add in a heading
+						$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
+						if(defined($catName))
+						{
+							$catName = constant($catName);
+						}
+						$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
+						$done_heading = true;
+					}
+
+					$replace = array(
+						$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs'),
+						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
+						$usere->user_extended_edit($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']])
+					);
+
+					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
+				}
+			}
 		}
 		return $text;
 	}
@@ -519,14 +529,15 @@ class signup_shortcodes extends e_shortcode
 		}
 	}
 	
-	
-	function sc_signup_images() // AVATARS
+	/* {SIGNUP_IMAGES}  */
+	/* {SIGNUP_IMAGES: class=img-circle} */ 
+	function sc_signup_images($parm = '') // AVATARS
 	{
 		$pref 	= e107::getPref();
 		
 		if($pref['signup_option_image'])
 		{
-			return e107::getForm()->avatarpicker('avatar');
+			return e107::getForm()->avatarpicker('avatar', '', $parm);
 		}
 	}
 	
@@ -557,17 +568,46 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_signup_is_mandatory($parm='')
+	function sc_signup_is_mandatory($parm=null)
 	{
-		global $pref;
-		if (isset($parm))
+		$pref = e107::pref('core');
+
+		$mandatory = array(
+			'realname'  => 'signup_option_realname',
+			'subscribe' => 'signup_option_class',
+			'avatar'    => 'signup_option_image',
+			'signature' => 'signup_option_signature',
+		);
+
+		if((!empty($mandatory[$parm]) && (int) $pref[$mandatory[$parm]] === 2) || $parm === 'true' || ($parm === 'email' && empty($pref['disable_emailcheck'])))
 		{
-		  switch ($parm)
-		  {
-		    case 'email' : if (varset($pref['disable_emailcheck'],FALSE)) return '';
-		  }
+			return "<span class='required'><!-- empty --></span>";
 		}
-		return " *";
+
+
+
+		if(!empty($parm))
+		{
+			switch($parm)
+			{
+
+
+				case 'email' :
+					if(varset($pref['disable_emailcheck'], false))
+					{
+						return '';
+					}
+				break;
+
+			}
+		}
+
+	//	if((int) $val === 2)
+		{
+		//	return "<span class='required'><!-- empty --><</span>";
+		}
+
+		//return "<span class='required'></span>";
 	}
 
 
@@ -603,6 +643,58 @@ class signup_shortcodes extends e_shortcode
 
 		return false;
 
+	}
+
+	/**
+	 * Create Privacy policy link
+	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK}
+	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK: class=label label-info}
+	 */
+	function sc_signup_gdpr_privacypolicy_link($parm='')
+	{
+		$pp = e107::getPref('gdpr_privacypolicy', '');
+		if (!$pp)
+		{
+			return '';
+		}
+		$pp = e107::getParser()->replaceConstants($pp, 'full');
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_122);
+		return $text;
+	}
+
+	/**
+	 * Create Terms and conditions link
+	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK}
+	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK: class=label label-info}
+	 */
+	function sc_signup_gdpr_termsandconditions_link($parm='')
+	{
+		$pp = e107::getPref('gdpr_termsandconditions', '');
+		if (!$pp)
+		{
+			return '';
+		}
+		$pp = e107::getParser()->replaceConstants($pp, 'full');
+		$class = (!empty($parm['class'])) ? $parm['class'] : '';
+		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_123);
+		return $text;
+	}
+
+	/**
+	 * Print message "By signing up you agree to our Privacy policy and our Terms and conditions."
+	 * @example {SIGNUP_GDPR_INFO}
+	 */
+	function sc_signup_gdpr_info()
+	{
+		if (!e107::getPref('gdpr_termsandconditions', '') || !e107::getPref('gdpr_privacypolicy', ''))
+		{
+			return '';
+		}
+
+		$text = e107::getParser()->lanVars(LAN_SIGNUP_124,
+			array($this->sc_signup_gdpr_privacypolicy_link(), $this->sc_signup_gdpr_termsandconditions_link()));
+		return $text;
 	}
 
 }

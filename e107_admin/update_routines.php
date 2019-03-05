@@ -122,10 +122,12 @@ if (!$dont_check_update)
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
+//	$dbupdate['218_to_219'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.8','2.1.9')), 'message'=> null, 'hide_when_complete'=>true);
 
-	$dbupdate['214_to_215'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.4','2.1.5')), 'message'=> null, 'hide_when_complete'=>true);
+//	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
 
-
+	$dbupdate['20x_to_220'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
+	
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 
@@ -250,7 +252,7 @@ class e107Update
 
 		foreach($list as $path=>$val)
 		{
-			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHTML($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
 
 			$text .= "<tr>
 					<td>".$name."</td>
@@ -523,6 +525,7 @@ function update_core_database($type = '')
 //	require_once(e_HANDLER."db_verify_class.php");
 //	$dbv = new db_verify;
 
+	/** @var db_verify $dbv */
 	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 
 	$log = e107::getAdminLog();
@@ -561,11 +564,80 @@ function update_core_database($type = '')
 	return $just_check;
 }
 
+/*
+	function update_218_to_219($type='')
+	{
+		$sql = e107::getDb();
+		$just_check = ($type == 'do') ? false : true;
+
+		// add common video and audio media categories if missing.
+		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
+
+		if(!$count)
+		{
+			if ($just_check) return update_needed('Media-Manager is missing the video and audio categories and needs to be updated.');
+
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		}
+
+
+
+		return $just_check;
+	}*/
+
+
+
+
 	/**
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_214_to_215($type='')
+/*	 function update_217_to_218($type='')
+	{
+		$just_check = ($type == 'do') ? false : true;
+
+		$e_user_list = e107::getPref('e_user_list');
+
+			e107::getPlug()->clearCache()->buildAddonPrefLists();
+			if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
+			{
+				if($just_check)
+				{
+					return update_needed("user/e_user.php need to be registered"); // NO LAN.
+				}
+
+			}
+
+
+		// Make sure, that the pref "post_script" contains one of the allowed userclasses
+		// Close possible security hole
+		if (!array_key_exists(e107::getPref('post_script'), e107::getUserClass()->uc_required_class_list('nobody,admin,main,classes,no-excludes', true)))
+		{
+			if ($just_check)
+			{
+				return update_needed("Pref 'Class which can post < script > and similar tags' contains an invalid value"); // NO LAN.
+			}
+			else
+			{
+				e107::getConfig()->setPref('post_script', 255)->save(false, true);
+			}
+		}
+
+
+		return $just_check;
+
+
+
+	}*/
+
+
+
+	/**
+	 * @param string $type
+	 * @return bool true = no update required, and false if update required.
+	 */
+	 function update_20x_to_220($type='')
 	{
 
 		$sql = e107::getDb();
@@ -586,6 +658,8 @@ function update_core_database($type = '')
 			$sql->gen($query);
 
 		}
+
+
 
 		if(isset($pref['e_header_list']['social']))
 		{
@@ -609,32 +683,51 @@ function update_core_database($type = '')
 		}
 
 
+		// User is marked as not installed.
+		if($sql->select('plugin', 'plugin_id', "plugin_path = 'user' AND plugin_installflag != 1 LIMIT 1"))
+		{
+			if($just_check)
+			{
+				return update_needed("Plugin table 'user' value needs to be reset.");
+			}
+
+			$sql->delete('plugin', "plugin_path = 'user'");
+
+			//e107::getPlug()->clearCache();
+		}
+
+
+		// Make sure, that the pref "post_script" contains one of the allowed userclasses
+		// Close possible security hole
+		if (!array_key_exists(e107::getPref('post_script'), e107::getUserClass()->uc_required_class_list('nobody,admin,main,classes,no-excludes', true)))
+		{
+			if ($just_check)
+			{
+				return update_needed("Pref 'Class which can post < script > and similar tags' contains an invalid value"); // NO LAN.
+			}
+			else
+			{
+				e107::getConfig()->setPref('post_script', 255)->save(false, true);
+			}
+		}
+
+
+		// add common video and audio media categories if missing.
+		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
+
+		if(!$count)
+		{
+			if ($just_check) return update_needed('Media-Manager is missing the video and audio categories and needs to be updated.');
+
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+		}
+
 
 
 		return $just_check;
 
-			// List of changed menu locations.
-			/*
-		$changeMenuPaths = array(
 
-			array('oldpath'	=> 'comment_menu',		'newpath' => 'comment',		'menu' => 'comment_menu'),
-		);
-
-		if(!empty($changeMenuPaths))
-		{
-			foreach($changeMenuPaths as $val)
-			{
-				$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
-				if($sql->gen($qry))
-				{
-					if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
-					$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-					$status = $sql->update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-					$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;
-					// catch_error($sql);
-				}
-			}
-		}*/
 
 
 
@@ -1489,7 +1582,8 @@ function update_706_to_800($type='')
 	}
 
 
-	// Media Update - core media and core-file. 
+	// Media Update - core media and core-file.
+	/*
 	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
 	if($count ==1)
 	{
@@ -1497,7 +1591,7 @@ function update_706_to_800($type='')
 		$sql->update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
 		$log->addDebug("core-media _common Category updated");
 	}
-	
+	*/
 	
 	
 	// Media Update - core media and core-file. CATEGORY

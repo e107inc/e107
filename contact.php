@@ -24,7 +24,7 @@ if(!check_class($active) && empty($contactInfo))
 require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;
 
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::lan('core','contact');
 
 define('PAGE_NAME', LANCONTACT_00);
 

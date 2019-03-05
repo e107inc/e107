@@ -415,7 +415,7 @@ class download_shortcodes extends e_shortcode
       
 		if(deftrue('BOOTSTRAP'))
 		{
-			$img = e107::getParser()->toGlyph('icon-download.glyph',false); 
+			$img = e107::getParser()->toGlyph('fa-download',false);
 		//	$img = '<i class="icon-download"></i>'; 
 		}
 	  	
@@ -653,7 +653,16 @@ class download_shortcodes extends e_shortcode
       }
       elseif($this->var['download_image'])
       {
-         return "<a href='" . $url . "'>" . LAN_dl_40 . "</a>";
+	      $opts = array(
+		      //'legacy' => "{e_FILE}downloadthumbs/",
+		      'class'  => 'download-image dl_image img-responsive img-fluid',
+		      'w' => 200
+	      );
+	      $image = $tp->toImage($this->var['download_image'], $opts);
+
+
+	      return "<a href='" . $url . "'>" . $image . "</a>";
+          //return "<a href='" . $url . "'>" . LAN_dl_40 . "</a>";
       }
       else
       {
@@ -695,7 +704,7 @@ class download_shortcodes extends e_shortcode
       
 		if(deftrue('BOOTSTRAP'))
 		{
-			$img = e107::getParser()->toGlyph('download',$parm); // '<i class="icon-download"></i>'; 
+			$img = e107::getParser()->toGlyph('fa-download',$parm); // '<i class="icon-download"></i>';
 		}	
 		
 		if ($pref['agree_flag'] == 1) 
@@ -946,7 +955,7 @@ class download_shortcodes extends e_shortcode
 			
 			$url = e107::url('download', 'item', $dlrowrow);
 
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
 			
 	    	return "<a class='e-tip' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_PREVIOUS."</a>\n";
    		
@@ -973,7 +982,7 @@ class download_shortcodes extends e_shortcode
 			extract($dlrowrow);
 			$url = 	$url = e107::url('download', 'item', $dlrowrow);
 
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
 
 			return "<a class='e-tip' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_NEXT." ".$icon."</a>\n";
    		 

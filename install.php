@@ -11,7 +11,7 @@
 */
 
 // minimal software version
-define('MIN_PHP_VERSION',   '5.4');
+define('MIN_PHP_VERSION',   '5.6');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', true);
 
@@ -162,18 +162,6 @@ if($e107->initInstall($e107_paths, $ebase, $override)===false)
 }
 	
 unset($e107_paths,$override,$ebase);
-
-
-
-### NEW Register Autoload - do it asap
-if(!function_exists('spl_autoload_register'))
-{
-	// PHP >= 5.1.2 required
-	die_fatal_error('Fatal exception - spl_autoload_* required.');
-}
-
-// register core autoload
-e107::autoload_register(array('e107', 'autoload'));
 
 // NEW - session handler
 require_once(e_HANDLER.'session_handler.php');
@@ -1390,11 +1378,13 @@ class e_install
 
 
 // -- Optional --
+// define('e_DEBUG', true); // Enable debug mode to allow displaying of errors
 // define('e_HTTP_STATIC', 'https://static.mydomain.com/');  // Use a static subdomain for js/css/images etc. 
 // define('e_MOD_REWRITE_STATIC', true); // Rewrite static image urls. 
 // define('e_LOG_CRITICAL', true); // log critical errors but do not display them to user. 
 // define('e_GIT', 'path-to-git');  // Path to GIT for developers
-
+// define('X-FRAME-SAMEORIGIN', false); // Option to override X-Frame-Options 
+// define('e_PDO, true); // Enable PDO mode (used in PHP > 7 and when mysql_* methods are not available)
 
 ";
 /*
@@ -1472,6 +1462,7 @@ if($this->pdo == true)
 		$this->template->SetTag("bartype", 'success');
 	
 		$htaccessError = $this->htaccess();
+		$this->saveFileTypes();
 
 		$e_forms->start_form("confirmation", "index.php");
 
@@ -1504,6 +1495,18 @@ if($this->pdo == true)
 
 		e107::getMessage()->reset(false, false, true);
 	}
+
+	private function saveFileTypes()
+	{
+		$data = '<?xml version="1.0" encoding="utf-8"?>
+<e107Filetypes>
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
+</e107Filetypes>';
+
+		return file_put_contents($this->e107->e107_dirs['SYSTEM_DIRECTORY']."filetypes.xml",$data);
+
+	}
+
 
 
 	protected function stats()

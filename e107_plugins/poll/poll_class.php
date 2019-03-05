@@ -673,9 +673,9 @@ class poll
 					// //	break;
 					// }
 					
-					$opt = ($count==1) ? "id='poll_answer'" : "";
+					$opt = ($count==1) ? "poll_answer" : "";
 
-					$text .= "<div class='form-group' ".$opt.">
+					$text .= "<div class='form-group' id='".$opt."'>
 								".$frm->text('poll_option[]', $_POST['poll_option'][($count-1)], '200', array('placeholder' => POLLAN_4, 'id' => $opt))."
 							  </div>";
 				}

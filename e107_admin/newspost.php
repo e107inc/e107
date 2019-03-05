@@ -321,7 +321,7 @@ class news_sub_form_ui extends e_admin_form_ui
              <div class="modal-content">
 			    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
+			   <h4>'.$tp->toHTML($submitnews_title,false,'TITLE').'</h4>
 			    </div>
 			    <div class="submitnews modal-body">
 			    <p>';
@@ -1160,7 +1160,7 @@ class news_admin_ui extends e_admin_ui
 
 			$newsTemplates = array();
 
-			if($newInfo = e107::getTemplateInfo('news', 'news'))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
+			if($newInfo = e107::getTemplateInfo('news', 'news', null, 'front', true))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
 			{
 				foreach($newInfo as $k=>$val)
 				{
@@ -1752,12 +1752,13 @@ class news_form_ui extends e_admin_form_ui
 				}
 			}
 
-			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
-			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
-			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
-			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
-			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
-
+			$text = "<div class='mediaselector-multi'>";
+			$text .= $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));
+			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));
+			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));
+			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));
+			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));
+			$text .= "</div>";
 		//	$text .= "<div class='field-help'>Insert image/video into designated area of template.</div>";
 			return $text;
 		}

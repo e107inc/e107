@@ -370,7 +370,7 @@ class download
 		$tp = e107::getParser();
 
 		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
-		$metaDescription                = $tp->toHtml($row['download_description'],true);
+		$metaDescription                = $tp->toHTML($row['download_description'],true);
 
 		e107::meta('description',       $tp->toText($metaDescription));
 		e107::meta('keywords',          $row['download_keywords']);
@@ -563,7 +563,8 @@ class download
 		$ns = e107::getRender();
 		$sc = $this->sc;
 
-		$count = $sc->getVars();
+		// @see: #3056 fixes fatal error in case $sc is empty (what happens, if no record was found)
+		$count = empty($sc) ? 0 : $sc->getVars();
 
 		if(empty($count))
 		{

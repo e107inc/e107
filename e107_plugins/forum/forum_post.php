@@ -16,14 +16,15 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 
-if(USER)
-{
-	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
-}
-else
-{
-	define('e_TINYMCE_TEMPLATE', 'public');
-}
+// Now defined in shortcodes that handle the editors
+// if(USER)
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
+// }
+// else
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'public');
+// }
 
 define('NAVIGATION_ACTIVE','forum'); // ??
 
@@ -66,8 +67,19 @@ class forum_post_handler
 		$this->id       = (int) $_GET['id']; // forum thread/topic id.
 		$this->post     = (int) $_GET['post']; // post ID if needed.
 
-		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
 
+		// issue #3619: In case the post id is not set
+		// use the thread id to look for the moderator ids
+		if (!empty($this->post))
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
+		}
+		else
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($this->id);
+		}
+
+		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
 
 		$this->data = $this->processGet();
@@ -155,6 +167,7 @@ class forum_post_handler
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
 				$data['action']         = $this->action;
+				$data['initial_post']   = $this->forumObj->threadDetermineInitialPost($this->post);
 				$this->setPageTitle($data);
 				return $data;
 				break;
@@ -309,10 +322,21 @@ class forum_post_handler
 
 		$link = "{e_PLUGIN}forum/forum_admin.php?mode=post&action=list&id=".intval($result);
 
+
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
 					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
-		$subject = LAN_FORUM_2020." ". SITENAME;
-		e107::getNotify()->send('forum_post_rep', $subject, $report);
+
+		$eventData = array(
+			'reporter_id' => USERID,
+			'reporter_name' => USERNAME,
+			'report_time' => $insert['gen_datestamp'],
+			'thread_id' => $insert['gen_intdata'],
+			'thread_name' => $insert['gen_ip'],
+			'report_message' => $report_add,
+			'notify_message' => $report
+		);
+
+		e107::getEvent()->trigger('user_forum_post_report', $eventData);
 		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 	}
 
@@ -797,8 +821,16 @@ class forum_post_handler
 	 */
 	private function renderFormMove()
 	{
+		if (isset($_POST['forum_move']))
+		{
+			// Forum just moved. No need to display the forum move form again.
+			return;
+		}
+
 		if(!deftrue('MODERATOR'))
 		{
+			$mes = e107::getMessage();
+			echo $mes->addWarning(LAN_NO_PERMISSIONS)->render();
 			return;
 		}
 
@@ -918,7 +950,7 @@ class forum_post_handler
 								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
@@ -943,7 +975,7 @@ class forum_post_handler
 							<td  style='width:50%'>
 							".LAN_FORUM_2025.': '.$thread_name." <a  class='e-expandit' href='#post-info'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
 							<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 							</div>
 							</td>
 							<td style='text-align:center;width:50%'></td>
@@ -1022,6 +1054,11 @@ class forum_post_handler
 		$postdate = e107::getDate()->convert_date(time(), "forum");
 		$tsubject = $tp->post_toHTML($_POST['subject'], true);
 		$tpost = $tp->post_toHTML($_POST['post'], true);
+
+		if (empty($tsubject))
+		{
+			$tsubject = $this->data['thread_name'];
+		}
 
 		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))
 		{

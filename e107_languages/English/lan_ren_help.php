@@ -67,3 +67,15 @@ define("LANHELP_51", "Disable HTML new lines for enclosed text: [nobr]text[/nobr
 define("LANHELP_52", "New line (HTML): [br]");
 define("LANHELP_53", "Justify align:\n[justify]This text will be justified[/justify]");
 define("LANHELP_54", "HTML block (div tag): [block]Your content[/block]");
+define("LANHELP_55", "Format");
+define("LANHELP_56", "Insert a table");
+define("LANHELP_57", "Heading");
+define("LANHELP_58", "Block");
+define("LANHELP_59", "Quote");
+
+define("LANHELP_60", "Code Block");
+define("LANHELP_61", "Code Inline");
+define("LANHELP_62", "Paragraph");
+define("LANHELP_63", "Insert an Image from the Media Manager");
+define("LANHELP_64", "Insert a file from the Media-Manager");
+define("LANHELP_65", "Size");

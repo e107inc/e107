@@ -231,5 +231,11 @@ define("FORLAN_213", "Post");
 define("FORLAN_214", "Leave blank to auto-generate it from the title above.");
 define("FORLAN_215", "Not installed!");
 define("FORLAN_216", "(New Parent)");
-
+define("FORLAN_217", "System default");
+define("FORLAN_218", "Textarea");
+define("FORLAN_219", "Rich Text Editor");
+define("FORLAN_220", "Post editor");
+define("FORLAN_221", "Which editor should be used to create/edit posts?");
+define("FORLAN_222", "Quick reply editor");
+define("FORLAN_223", "Use only plain text (no bbcode or html allowed!)")
 ?>

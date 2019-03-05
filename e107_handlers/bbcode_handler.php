@@ -525,25 +525,44 @@ class e_bbcode
 	
 	
 	
-	// NEW bbcode button rendering function. replacing displayHelp(); 
-	function renderButtons($template, $id='', $options=array())
+	//
+
+	/**
+	 * NEW bbcode button rendering function. replacing displayHelp();
+	 * @param string (optional) $template eg. news, submitnews, extended, admin, mailout, page, comment, signature
+	 * @param string $id
+	 * @param array  $options
+	 * @return string
+	 */
+	function renderButtons($template='', $id='', $options=array())
 	{
 		
 		$tp = e107::getParser();
+
+		// Notice Removal
+		$BBCODE_TEMPLATE_SUBMITNEWS = '';
+		$BBCODE_TEMPLATE_NEWSPOST = '';
+		$BBCODE_TEMPLATE_MAILOUT = '';
+		$BBCODE_TEMPLATE_CPAGE = '';
+		$BBCODE_TEMPLATE_ADMIN = '';
+		$BBCODE_TEMPLATE_COMMENT = '';
+		$BBCODE_TEMPLATE_SIGNATURE = '';
+
+
 		require(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
 
-		$pref = e107::getPref('e_bb_list');
-		    
-		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
-		{
-			foreach($pref as $val)
-			{
-				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
-				{
-					require(e_PLUGIN.$val."/e_bb.php");
-				}
-			}
-		}
+//		$pref = e107::getPref('e_bb_list');
+//
+//		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
+//		{
+//			foreach($pref as $val)
+//			{
+//				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+//				{
+//					require(e_PLUGIN.$val."/e_bb.php");
+//				}
+//			}
+//		}
 	
 		$temp = array();
 	    $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
@@ -555,7 +574,21 @@ class e_bbcode
 		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 		$temp['comment'] 	= $BBCODE_TEMPLATE_COMMENT;
 		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
-	
+		
+		if(!isset($temp[$template]))
+		{
+			// if template not yet defined, assume that $template is the name of a plugin
+			// and load the specific bbcode template from the plugin
+			// see forum plugin "templates/bbcode_template.php" for an example of the definition
+			$tpl = e107::getTemplate($template, 'bbcode', $template);
+			if (!empty($tpl))
+			{
+				// If the plugin has a template defined for bbcode, add it to the list
+				$temp[$template] = $tpl;
+			}
+			unset($tpl);
+		}
+
 		if(isset($temp[$template]))
 		{
 	        $BBCODE_TEMPLATE = $temp[$template];
@@ -565,16 +598,29 @@ class e_bbcode
 			$BBCODE_TEMPLATE = $template;	
 			$template = 'comment';	
 		}
-		elseif(ADMIN_AREA)
+		elseif(deftrue('ADMIN_AREA'))
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
 		}
-		else // Front-end
+	//	else // Front-end
+	//	{
+		//	$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;
+	//	}
+
+
+		$pref = e107::getPref('e_bb_list');
+
+		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
 		{
-			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;	
+			foreach($pref as $val)
+			{
+				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+				{
+					require(e_PLUGIN.$val."/e_bb.php");
+				}
+			}
 		}
-	
-		
+
 		$bbcode_shortcodes = e107::getScBatch('bbcode');	
 				
 		$data = array(
@@ -716,7 +762,7 @@ class e_bbcode
 				$cls = array();
 				foreach($tmp as $v)
 				{
-					if($v === 'img-rounded' || $v === 'rounded' || strpos($v,'bbcode') === 0 )
+					if($v === 'img-rounded' || $v === 'rounded' || (strpos($v,'bbcode') === 0 && $v !== 'bbcode-img-right' && $v !== 'bbcode-img-left' ))
 					{
 						continue;
 					}

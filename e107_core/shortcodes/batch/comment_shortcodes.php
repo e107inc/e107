@@ -217,7 +217,8 @@ class comment_shortcodes extends e_shortcode
 		 * */
 	}
 
-
+  	/* example {COMMENT_BUTTON} */
+  	/* example {COMMENT_BUTTON: class=btn btn-default pull-right} */
 	function sc_comment_button($parm = '')
 	{
 		$pref = e107::getPref('comments_sort');
@@ -228,8 +229,10 @@ class comment_shortcodes extends e_shortcode
 			$value = (varset($this->var['eaction']) == "edit" ? COMLAN_320 : COMLAN_9);
 			$pid = ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 
+			$class = "e-comment-submit ";
+			$class .= (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right';
 			$options = array(
-				'class'       => 'button btn btn-primary e-comment-submit pull-right',
+				'class'       => $class,
 				'data-pid'    => $pid,
 				'data-sort'   => $pref,
 				'data-target' => e_HTTP . 'comment.php',
@@ -239,7 +242,8 @@ class comment_shortcodes extends e_shortcode
 		}
 	}
 
-
+  /* example {AUTHOR_INPUT} */
+  /* example {AUTHOR_INPUT: inputclass=form-control&class=form-group} */
 	function sc_author_input($parm = '')
 	{
 		if($this->mode == 'edit')
@@ -248,8 +252,11 @@ class comment_shortcodes extends e_shortcode
 			{
 				$form = e107::getForm();
 
+				$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment author form-control';
+        		$class = (!empty($parm['class'])) ? $parm['class'] : 'form-group';
+
 				$options = array(
-					'class'       => 'comment author form-control',
+					'class'       => $inputclass,
 					'placeholder' => COMLAN_16,
 					'size'        => 61,
 				);
@@ -260,7 +267,7 @@ class comment_shortcodes extends e_shortcode
 					$options['disabled'] = 'disabled';
 				}
 
-				$text = '<div class="form-group">';
+				$text = '<div class="'.$class.'">';
 				$text .= $form->text('author_name', $_SESSION['comment_author_name'], 100, $options);
 				$text .= '</div>';
 
@@ -287,15 +294,19 @@ class comment_shortcodes extends e_shortcode
 		return e107::getRate()->renderLike("comments",$this->var['comment_id'],$curVal);
 	}
 
-
+  /* example {COMMENT_INPUT} */
+  /* example {COMMENT_INPUT: inputclass=form-control&class=form-group} */
 	function sc_comment_input($parm = '')
 	{
+		
+		$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment-input form-control';
+    	$class = (!empty($parm['class'])) ? $parm['class'] : 'form-group';
 		$options = array(
-			'class'       => 'comment-input form-control',
+			'class'       => $inputclass,
 			'placeholder' => COMLAN_403,
 		);
 
-		$text = '<div class="form-group">';
+		$text = '<div class="'.$class.'">';
 
 		if($parm == 'bbcode')
 		{

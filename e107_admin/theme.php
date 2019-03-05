@@ -327,7 +327,7 @@ class theme_admin_ui extends e_admin_ui
 			{
 				$name = e107::getPref('sitetheme');
 				e107::getMedia()->import('_common_image', e_THEME.$name, '', 'min-size=10000');
-				e107::getMessage()->addInfo('Developer/Debug Mode: Scanning theme images folder for new media to import. ');
+				e107::getMessage()->addInfo('Developer/Debug Mode: Scanning theme images folder for new media to import.');
 			}
 
 			$message = e107::getMessage()->render();
@@ -913,7 +913,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 	//	$viewUrl = $theme['url'];
 
 		$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-		$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+		$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('fa-download',array('size'=>'2x'))."</a>";
 
 		$info_icon 	= "<a class='btn btn-default btn-secondary btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 

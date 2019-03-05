@@ -452,7 +452,7 @@ class xmlClass
 	 *
 	 * @param string $xml [optional]
 	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
-	 * @return string
+	 * @return array|string
 	 */
 	function parseXml($xmlData = '', $simple = true)
 	{
@@ -478,7 +478,14 @@ class xmlClass
 		);
 
 		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
-		
+
+		if(strpos($xmlData,'<html lang=')!==false)
+		{
+			$this->errors = "HTML cannot be parsed as XML";
+			return false;
+		}
+
+
 		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
@@ -863,8 +870,12 @@ class xmlClass
 
 		if(is_array($val))
 		{
-		//	$val = "<![CDATA[".e107::serialize($val,false)."]]>";
 			$val = e107::serialize($val,false);
+
+			if($val === null)
+			{
+				return '<![CDATA[array ()]]>';
+			}
 		}
 
 		if($this->convertFilePaths)
@@ -873,14 +884,10 @@ class xmlClass
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
 
-
-
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
 			return "<![CDATA[". $val."]]>";
 		}
-
-
 
 		$val = str_replace(chr(1),'{\u0001}',$val);
 

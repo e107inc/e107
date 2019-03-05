@@ -366,33 +366,150 @@ class e107forum
 		exit;
 
 	}
-	
-	
+
+
+	/**
+	 * Allow a user to delete their own post, if it is the last post in the thread.
+	 */
+	function usersLastPostDeletion()
+	{
+		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
+		$actionAllowed = false;
+
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$sql = e107::getDb();
+			$query = "SELECT fp.post_user
+                  FROM #forum_post AS fp
+                  WHERE fp.post_id = ". $postId;
+			if ($sql->gen($query) > 0)
+			{
+				$row = $sql->fetch();
+				if (USERID == $row['post_user']) $actionAllowed = true;
+			}
+		}
+
+		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		{
+			if ($this->postDelete($postId))
+			{
+				$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
+				$ret['hide'] 	= true;
+				$ret['status'] 	= 'ok';
+			}
+			else
+			{
+				$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+				$ret['status'] 	= 'error';
+			}
+		}
+		echo json_encode($ret);
+		exit();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $postId
+	 * @param $postId id of a forum post
+	 * @return an array with user ids how have moderator permissions for the $postId
+	 */
+	public function getModeratorUserIdsByPostId($postId)
+	{
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  INNER JOIN #forum_post AS fp ON ft.thread_id = fp.post_thread
+                  WHERE fp.post_id = ". $postId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $threadId
+	 * @param $threadId id of a forum thread
+	 * @return an array with user ids how have moderator permissions for the $threadId
+	 */
+	public function getModeratorUserIdsByThreadId($threadId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
+                  WHERE ft.thread_id = ". $threadId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
+	/**
+	 * get user ids with moderator permissions for the given $forumId
+	 * @param $forumId id of a forum
+	 * @return an array with user ids how have moderator permissions for the $forumId
+	 */
+	public function getModeratorUserIdsByForumId($forumId)
+	{
+		// get moderator-class for the thread to check permissions of the user
+		$sql = e107::getDb();
+		$query = "SELECT f.forum_moderators
+                  FROM #forum AS f
+                  WHERE f.forum_id = ". $forumId;
+		if ($sql->gen($query) > 0)
+		{
+			$row = $sql->fetch();
+			return array_keys($this->forumGetMods($row['forum_moderators']));
+		}
+		return array();
+	}
+
+
 	public function ajaxModerate()
 	{
-		
-		if(!$this->isModerator(USERID)) //FIXME check permissions per forum. 
+		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
+		$moderatorUserIds = array();
+
+		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
 		{
-			exit; 	
+			$threadId = intval($_POST['thread']);
+			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
 		}
-		
-			if(!vartrue($_POST['thread']) && !vartrue($_POST['post']))
-			{
-				exit;	
-			}
-			
-			$id = intval($_POST['thread']);
-			
-		//	print_r($_POST);
-			
-			$ret = array('hide' => false, 'msg' => '', 'status' => null); 
-			
+
+		/* If both, a thread-operation and a post-operation is submitted, the
+		 * thread-permissions MUST be overwritten by the post-permissions!
+		 * Otherwise it is possible that a moderator can transfer his
+		 * permissions from one forum to another forum, where he has no permissions. */
+		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		{
+			$postId = intval($_POST['post']);
+			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
+		}
+
+		// Check if user has moderator permissions for this thread
+		if(!in_array(USERID, $moderatorUserIds))
+		{
+			$ret['msg'] 	= ''.LAN_FORUM_8030.'';
+			$ret['hide'] 	= false;
+			$ret['status'] 	= 'error';
+		}
+		else
+		{
 			switch ($_POST['action']) 
 			{
 				case 'delete':
-					if($this->threadDelete($id))
+					if($this->threadDelete($threadId))
 					{
-						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$id;
+						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$threadId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
@@ -404,7 +521,7 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId = vartrue($_POST['post']))
+					if(!$postId)
 					{
 						// echo "No Post";
 						// exit;
@@ -426,7 +543,7 @@ class e107forum
 				break;
 				
 				case 'lock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] 	= LAN_FORUM_CLOSE; 
 						$ret['status'] 	= 'ok';	
@@ -439,7 +556,7 @@ class e107forum
 				break;
 
 				case 'unlock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_OPEN; 
 						$ret['status'] 	= 'ok';	
@@ -452,7 +569,7 @@ class e107forum
 				break;
 
 				case 'stick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_STICK; 
 						$ret['status'] 	= 'ok';	
@@ -465,7 +582,7 @@ class e107forum
 				break;
 
 				case 'unstick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
+					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$threadId))
 					{
 						$ret['msg'] = LAN_FORUM_UNSTICK; 
 						$ret['status'] 	= 'ok';		
@@ -486,10 +603,10 @@ class e107forum
 					$ret['msg'] 	= LAN_FORUM_8027;
 				break;
 			}
-						
-			echo json_encode($ret);  
+		}
+		echo json_encode($ret);
 			
-			exit;
+		exit();
 	}
 				
 				
@@ -796,7 +913,7 @@ class e107forum
 			$qry = '
 			INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
 			VALUES ('.USERID.', 1)
-			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = user_plugin_forum_posts + 1
+			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = IFNULL(user_plugin_forum_posts, 0) + 1
 			';
 			$result = $sql->gen($qry);
 		}
@@ -870,7 +987,15 @@ class e107forum
 			$triggerData['thread_sef']  = $threadInfo['thread_sef'];
 			$triggerData['post_id']     = $newPostId;
 
-			e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+
+			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 1)
+			{
+				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
+			}
+			else
+			{
+				e107::getEvent()->trigger('user_forum_topic_created_probationary', $triggerData);
+			}
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
@@ -922,6 +1047,11 @@ class e107forum
 		$this->forumUpdateLastpost('forum', $oldForumId, false);
 		$this->forumUpdateLastpost('forum', $newForumId, false);
 
+		e107::getEvent()->trigger('user_forum_topic_moved', array(
+			'old_thread' => $threadInfo,
+			'new_thread' => $this->threadGet($threadId)
+			));
+
 	}
 
 
@@ -944,9 +1074,9 @@ class e107forum
 	  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 	}
 
-	
-	
-	function postUpdate($postId, $postInfo)
+
+
+		function postUpdate($postId, $postInfo)
 	{
 		$info = array();
 		$info['data'] = $postInfo;
@@ -960,11 +1090,11 @@ class e107forum
 
 		$triggerData = $postInfo;
 		$triggerData['post_id'] = intval($postId);
-	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
+	  	e107::getEvent()->trigger('user_forum_post_updated', $triggerData);
 	}
 
-	
-	
+
+
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
 		$id = (int)$id;
@@ -1103,7 +1233,7 @@ class e107forum
 		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
 
 		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
-		{	
+		{
 			$postids = array();
 
 			foreach($rows as $row)
@@ -1114,7 +1244,7 @@ class e107forum
 			if($postId == min($postids))
 			{
 				return true;
-			}			 
+			}
 		}
 		return false;
 	}
@@ -1363,7 +1493,9 @@ class e107forum
 				$lp_user = 'NULL';
 				if($updateThreads == true)
 				{
-					if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
+					//if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
+					//  issue #3337 fixed usage of old v1 table names
+					if ($sql2->select('forum_thread', 'thread_id', "thread_forum_id = $id"))
 					{
 						while ($row = $sql2->fetch())
 						{
@@ -1425,7 +1557,17 @@ class e107forum
 				$this->threadMarkAsRead($newIdList);
 			}
 		}
-		header('location:'.e_SELF);
+		//header('location:'.e_SELF);
+		// issue #3338: using e_SELF runs caused an infinite loop
+		if (empty($forum_id))
+		{
+			header('location: '.e107::url('forum', 'index'));
+		}
+		else
+		{
+			$forum_sef = e107::getDb()->retrieve('forum', 'forum_sef', 'WHERE forum_id='.$forum_id);
+			header('location: '.e107::url('forum', 'forum', array('forum_id' => $forum_id, 'forum_sef' => $forum_sef)));
+		}
 		exit;
 	}
 
@@ -1442,7 +1584,9 @@ class e107forum
 			$_tmp[] = (int)$tid;
 		}
 		$tmp = array_unique($_tmp);
-		$viewed = trim(implode(',', $_tmp), ',');
+		// issue #3338 fixed typo, that caused issue with not marking threads are read
+		$viewed = trim(implode(',', $tmp), ',');
+		$currentUser['user_plugin_forum_viewed'] =  $viewed;
 		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
@@ -1499,6 +1643,7 @@ class e107forum
 	{
 		$sql = e107::getDb();
 
+		$where = '';
 		if(!empty($this->permList['view_list']))
 		{
 			$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
@@ -2001,10 +2146,11 @@ class e107forum
 			$viewed = implode(',', $this->threadGetUserViewed($uid));
 			if($viewed != '')
 			{
-				$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
+				//$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
+				$viewed = " AND t.thread_forum_id NOT IN ({$viewed})";
 			}
 		}
-
+		/*
 		$qry = "
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
@@ -2022,8 +2168,17 @@ class e107forum
 		WHERE t.thread_lastpost > ".USERLV. "
 		{$viewed}
 		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
+		*/
 
+		//  issue #3337 fixed usage of old v1 table names
+		$qry = "SELECT t.*, u.user_name 
+		FROM `#forum_thread` AS t
+		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
+		WHERE t.thread_lastpost > ".USERLV. "
+		{$viewed}
+		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
 
+		$ret = array();
 		if($sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
@@ -2047,8 +2202,11 @@ class e107forum
 			if ($sql->select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
 			{
 				$threadList = $sql->db_getList();
+				$thread_count = count($threadList);
+				$reply_count = 0;
 				foreach($threadList as $thread)
 				{
+					$reply_count += (int)$sql->count('forum_post', '(*)', 'WHERE post_thread = '.$thread['thread_id']);
 					$this->threadDelete($thread['thread_id'], false);
 				}
 				foreach($forumArray as $fid)
@@ -2057,6 +2215,7 @@ class e107forum
 					$this->forumUpdateCounts($fid);
 				}
 				return FORLAN_8." ( ".$thread_count." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
+				return FORLAN_8." ( ".count($threadList)." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
 			}
 			else
 			{
@@ -2344,7 +2503,7 @@ class e107forum
 			if($sql->delete('forum_thread', 'thread_id='.$threadId))
 			{
 				$status = true;
-			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadId);
+			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadInfo);
 			}
 
 			//Delete any thread tracking
@@ -2369,25 +2528,24 @@ class e107forum
 	 * Delete a Post
 	 * @param $postId integer
 	 * @param $updateCounts boolean
-	 * 
+	 * @return "null" if this post does not exist, "true" if post could deleted, otherwise "false"
 	 */
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId 	= (int)$postId;
-		$e107 		= e107::getInstance();		
-		$sql 		= e107::getDb();
-		$deleted 	= false; 
-		
-		if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
-		{
-			echo 'NOT FOUND!'; return;
-		}
-		
 
-		$row = $sql->fetch();
+		$sql 		= e107::getDb();
+		$deleted 	= false;
+
+		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
+
+		if(!is_array($postInfo) || empty($postInfo))
+		{
+			return null;
+		}
 
 		//delete attachments if they exist
-		if($row['post_attachments'])
+		if($postInfo['post_attachments'])
 		{
 			$this->postDeleteAttachments('post', $postId);
 		}
@@ -2396,31 +2554,31 @@ class e107forum
 		if($sql->delete('forum_post', 'post_id='.$postId))
 		{
 			$deleted = true;
-		  	e107::getEvent()->trigger('user_forum_post_deleted', $postId);
+		  	e107::getEvent()->trigger('user_forum_post_deleted', $postInfo);
 		}
 
 		// update statistics
 		if($updateCounts)
 		{
 			// decrement user post counts
-			if ($row['post_user'])
+			if ($postInfo['post_user'])
 			{
-				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$row['post_user']);
+				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$postInfo['post_user']);
 			}
 
 			// update thread with correct reply counts
-			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$postInfo['post_thread']);
 
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$postInfo['post_forum']);
 
 			// update thread lastpost info
-			$this->forumUpdateLastpost('thread', $row['post_thread']);
+			$this->forumUpdateLastpost('thread', $postInfo['post_thread']);
 
 			// update forum lastpost info
-			$this->forumUpdateLastpost('forum', $row['post_forum']);
+			$this->forumUpdateLastpost('forum', $postInfo['post_forum']);
 		}
-		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
+		return $deleted;
 	}
 
 

@@ -122,7 +122,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		elseif($this->var['action'] == 'edit')
 		{
 			$_POST['subject'] = $this->var['thread_name'];
-			if($this->var['thread_user'] != USERID && !deftrue('MODERATOR'))
+			if($this->var['thread_user'] != USERID && !deftrue('MODERATOR') || !$this->var['initial_post'])
 			{
 				$opts['disabled'] = 1;
 			}
@@ -153,7 +153,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-
+		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
+		if (!deftrue('e_TINYMCE_TEMPLATE'))
+		{
+			define('e_TINYMCE_TEMPLATE', (USER ? 'member' : 'public')); // allow images / videos.
+		}
+		
+		
 		if(!empty($_POST['post']))
 		{
 			$text = $tp->post_toForm($_POST['post']);
@@ -177,7 +183,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$text = '';
 		}
 
-		return e107::getForm()->bbarea('post',$text,'forum');
+		$editor = $this->forum->prefs->get('editor');
+
+		//$wysiwyg = ($editor === 'bbcode') ? false : null;
+		$wysiwyg = is_null($editor) ? 'default' : $editor;
+
+		//return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
+		return e107::getForm()->bbarea('post',$text,'forum','forum','large', array('wysiwyg' => $wysiwyg));
 
 	}
 
@@ -191,11 +203,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			// This user created the thread and is editing the original post.
 			if($this->var['thread_datestamp'] == $this->var['post_datestamp'] && $this->var['thread_user'] == $this->var['post_user'])
 			{
-				return  "<input class='btn btn-primary button' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />";
+				return $ret . "<input class='btn btn-primary button' type='submit' name='update_thread' value='".LAN_FORUM_3023."' />";
 			}
 			else // editing a reply.
 			{
-				return "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_FORUM_3024."' />";
+				return $ret . "<input class='btn btn-primary button' type='submit' name='update_reply' value='".LAN_FORUM_3024."' />";
 			}
 		}
 

@@ -92,7 +92,8 @@ class UserHandler
 */
 	$this->userVettingInfo = array(
 		'user_name' => array('niceName'=> LAN_USER_01, 'fieldType' => 'string', 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'fixedBlock' => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
-		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^a-z0-9_\.]#i', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		//'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^a-z0-9_\.]#i', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^\p{L}\p{M}a-z0-9_\.]#ui', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
 		'user_login' => array('niceName'=> LAN_USER_03, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),				// Real name (no real vetting)
 		'user_customtitle' => array('niceName'=> LAN_USER_04, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),		// No real vetting
 		'user_password' => array('niceName'=> LAN_PASSWORD, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
@@ -344,7 +345,7 @@ class UserHandler
 	 * Detect Password Hash Algorythm type
 	 * @param string $hash - Password hash to analyse
 	 * @param string $mode - (optional) set to 'text' for a plain-text description.
-	 * @return bool|int
+	 * @return bool|int|array
 	 */
 	public function getHashType($hash, $mode='constant')
 	{
@@ -735,7 +736,7 @@ class UserHandler
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
-			if (!in_array($c, vartrue($classList)))
+			if (!in_array($c, vartrue($classList, array())))
 			{
 				$classList[] = $c;
 			}
@@ -1332,7 +1333,8 @@ class e_user_provider
 			$userdata['user_perms'] = '';
 			$userdata['user_realm'] = '';
 			$userdata['user_pwchange'] = $now;
-			
+
+			/** @var e_system_user' $user */
 			$user = e107::getSystemUser(0, false);
 			$user->setData($userdata);
 			$user->getExtendedModel(); // init

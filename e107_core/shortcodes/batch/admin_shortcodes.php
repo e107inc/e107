@@ -38,7 +38,7 @@ class admin_shortcodes
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
 				
 				$mes->addInfo($text);
-				return; //  $mes->render(); 
+				return null; //  $mes->render();
 			}
             
             if($parm=='icon')
@@ -144,6 +144,7 @@ class admin_shortcodes
 			return  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
+		return null;
 	}
 
 	function sc_admin_help()
@@ -171,9 +172,9 @@ class admin_shortcodes
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
 		{
-			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
+			if (is_readable(e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE))
 			{
-				$helpfile = e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE;
+				$helpfile = e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE;
 			}
 			elseif (is_readable(e_LANGUAGEDIR.'English/admin/help/'.e_PAGE))
 			{
@@ -1362,6 +1363,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$class .= $info;
 		}
+		else
+		{
+			$class .= 'label-default';
+		}
 
 		if(deftrue('BOOTSTRAP') !== 3)
 		{
@@ -2121,8 +2126,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$subid = $c;
 				$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
 								
-				$tmp[$c]['text'] = $tp->toHtml($lk['link_name'],'','defs');
-				$tmp[$c]['description'] = $tp->toHtml($lk['link_description'],'','defs');
+				$tmp[$c]['text'] = $tp->toHTML($lk['link_name'],'','defs');
+				$tmp[$c]['description'] = $tp->toHTML($lk['link_description'],'','defs');
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
 				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';

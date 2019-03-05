@@ -8,11 +8,6 @@
  *
  * e107 blank Plugin
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/blank/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
 */
 
 require_once("../../class2.php");
@@ -89,14 +84,14 @@ class plugin_blank_admin_ui extends e_admin_ui
 		 *
 		 * @var string
 		 */
-		protected $pluginName = 'blank';
+		protected $pluginName = '_blank';
 
 		/**
 		 * DB Table, table alias is supported
 		 * Example: 'r.blank'
 		 * @var string
 		 */
-		protected $table = "blank";
+		protected $table = "_blank";
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
@@ -256,17 +251,19 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
             'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
 			'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 			'blank_url' 				=> array('title'=> LAN_URL,		'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),
-			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => false,		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+			'blank_class'               => array('title'=> LAN_VISIBILITY,      'type' => 'userclass',  'data'=>'int', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'width'=>'auto'),
+
 			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => null, 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 
 		//required - default column user prefs
-		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_type', 'blank_url', 'blank_compatibility', 'options');
+		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_date', 'blank_type', 'blank_url', 'blank_compatibility', 'blank_class', 'options');
 
 		// FORMAT field_name=>type - optional if fields 'data' attribute is set or if custom model is set in init()
 		/*protected $dataFields = array();*/
@@ -280,12 +277,17 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $prefs = array(
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore'),
+			'pref_classes' 				=> array('title'=> 'classes', 'type' => 'userclasses', 'inline'=>true,)
+
 		);
 
 		// optional
 		public function init()
 		{
+			$pref = e107::pref('_blank');
+			e107::getDebug()->log($pref);
+
 		}
 		
 		
@@ -295,6 +297,11 @@ class plugin_blank_admin_ui extends e_admin_ui
 			$text = "Hello World!";
 			$ns->tablerender("Hello",$text);	
 			
+		}
+
+		public function beforePrefsSave($new_data, $old_data)
+		{
+			// return $new_data;
 		}
 }
 
@@ -368,4 +375,3 @@ function headerjs() // needed for the checkboxes - how can we remove the need to
 	return e107::getAdminUI()->getHeader();
 }
 */
-?>

@@ -201,18 +201,27 @@ class rater
 		$id = intval($id);
 
 		$sql = new db;
-		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
-			return FALSE;
-		} else {
-			$row = $sql->db_Fetch();
 
-			if (preg_match("/\.".USERID."\./", $row['rate_voters'])) {
-				return TRUE;
-			//added option to split an individual users rating
-			}else if (preg_match("/\.".USERID.chr(1)."([0-9]{1,2})\./", $row['rate_voters'])) {
-				return TRUE;
-			} else {
-				return FALSE;
+		if(!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' "))
+		{
+			return false;
+		}
+		else
+		{
+			$row = $sql->fetch();
+
+			if(preg_match("/\." . USERID . "\./", $row['rate_voters']))
+			{
+				return true;
+				//added option to split an individual users rating
+			}
+			elseif(preg_match("/\." . USERID . chr(1) . "([0-9]{1,2})\./", $row['rate_voters']))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}
@@ -371,8 +380,8 @@ class rater
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$upImg = $tp->toGlyph('icon-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
-			$upDown = $tp->toGlyph('icon-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
+			$upImg = $tp->toGlyph('fa-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
+			$upDown = $tp->toGlyph('fa-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
 		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>
@@ -388,9 +397,9 @@ class rater
 	protected function getLikes($table,$itemid,$perc=false)
 	{
 		$sql = e107::getDb();
-		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
-			$row 		= $sql->db_Fetch();	
+			$row 		= $sql->fetch();
 			if($perc == true) // Percentage Mode
 			{
 				$up 	= round(($row['rate_up'] / $row['rate_votes']) * 100) . "%";
@@ -413,9 +422,9 @@ class rater
 	{	
 		$sql 	= e107::getDb();
 			
-		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
-			$row 		= $sql->db_Fetch();
+			$row 		= $sql->fetch();
 			
 			if(preg_match("/\.". USERID."\./",$row['rate_voters'])) // already voted. 
 			{		
@@ -431,7 +440,7 @@ class rater
 			$qry .= ", rate_voters = '{$newvoters}', rate_votes = {$totalVotes} ";
 			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}'";
 			
-			if($sql->db_Update("rate",$qry))
+			if($sql->update("rate",$qry))
 			{
 				if($perc == true) // Percentage Mode
 				{
@@ -443,6 +452,19 @@ class rater
 					$up 	= $totalUp;
 					$down 	= $totalDown;	
 				}
+
+                $edata = array(
+                    'like_pid' => $row['rate_id'],
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_up_count' => $totalUp,
+                    'like_down_count' => $totalDown,
+                    'like_totalvotes' => $totalVotes,
+                    'like_type' => $type
+                );
+                e107::getEvent()->trigger('user_like_submitted', $edata);
 					
 				return $up."|".$down;
 			}		
@@ -460,8 +482,22 @@ class rater
 					"rate_down"		=> ($type == 'down') ? 1 : 0
 			);
 				
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->insert("rate", $insert))
 			{
+                //$row = $sql->db_Fetch();
+                $edata = array(
+                    'like_pid' => $row,
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_up_count' => ($type == 'up') ? 1 : 0,
+                    'like_down_count' => ($type == 'down') ? 1 : 0,
+                    'like_totalvotes' => 1,
+                    'like_type' => $type
+                );
+                e107::getEvent()->trigger('user_like_submitted', $edata);
+
 				if($perc == true) // Percentage Mode
 				{
 					return ($type == 'up') ? "100%|0%" : "0%|100%";
@@ -471,7 +507,9 @@ class rater
 					return ($type == 'up') ? "1|0" : "0|1";	
 				}
 			}		
-		}		
+		}
+
+		return null;
 	}
 
 
@@ -507,10 +545,10 @@ class rater
 		$sep = chr(1); // problematic - invisible in phpmyadmin. 
 		$voter = USERID.$sep.intval($qs[3]);
 
-		if ($sql->db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
+		if ($sql->select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
 		{
 		
-			$row = $sql -> db_Fetch();
+			$row = $sql -> fetch();
 			$rate_voters = $row['rate_voters'].".".$voter.".";
 			$new_votes = $row['rate_votes'] + 1;
 			$new_rating = $row['rate_rating'] + $rate;
@@ -525,8 +563,20 @@ class rater
 			}
 			
 			
-			if($sql->db_Update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
+			if($sql->update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
 			{
+                $edata = array(
+                    'rate_pid' => $row['rate_id'],
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => $row['rate_votes'],
+                    'rate_new_votes' => $new_votes,
+                    'rate_old_rating' => $row['rate_rating'],
+                    'rate_new_rating' => $new_rating
+                    );
+                e107::getEvent()->trigger('user_rate_submitted', $edata);
 				return RATELAN_3."|".$this->renderVotes($new_votes,$statR);	// Thank you for your vote. 
 			}
 			else
@@ -550,19 +600,33 @@ class rater
 			);
 			
 			
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->insert("rate", $insert))
 		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
 			{
+                $edata = array(
+                    'rate_pid' => $row,
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => 0,
+                    'rate_new_votes' => 1,
+                    'rate_old_rating' => null,
+                    'rate_new_rating' => $rate
+                );
+                e107::getEvent()->trigger('user_rate_submitted', $edata);
+
 				$stat = ($rate /1)/2;
 				$statR = round($stat,1);
-				return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
+				return RATELAN_3."|".$this->renderVotes(1,$statR);	// Thank you for your vote.
 			}
 			elseif(getperms('0'))
 			{
 				return RATELAN_11;
 			}
 		}
-		
+
+		return null;
 	}
 
 
@@ -620,6 +684,6 @@ class rater
 		global $tp, $sql;
 		$table = $tp->toDB($table, true);
 		$id = intval($id);
-		return $sql -> db_Delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
+		return $sql -> delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
 	}
 }

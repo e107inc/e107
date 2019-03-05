@@ -94,7 +94,7 @@ define("IMALAN_66", "Filename");
 define("IMALAN_68", "Close");
 define("IMALAN_69", "Folder");
 define("IMALAN_70", "Non-system folder is found!");
-// define("IMALAN_72", "Icons");
+define("IMALAN_72", "Icons");
 define("IMALAN_73", "Thumbnail Quality");
 define("IMALAN_74", "Set this as low as possible before quality loss is apparent. Max. 100");
 define("IMALAN_75", "Avatar Width");

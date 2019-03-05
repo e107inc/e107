@@ -170,7 +170,7 @@ class e107_traffic
 		$this->aTrafficWho[$sWhat][] = "$sFile($sLine)";
 	}
 	
-	function Calibrate($tObject, $count = 10)
+	function Calibrate(e107_traffic $tObject, $count = 10)
 	{
 		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC)
 		{

@@ -265,7 +265,9 @@ class secure_image
 		}
 		else
 		{
+
 			echo "Render Failed";
+			http_response_code(500);
 			exit;
 		}
 

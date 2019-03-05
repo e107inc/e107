@@ -299,19 +299,20 @@ class gsitemap
 			'gsitemap_lastmod' 	=> $_POST['gsitemap_lastmod'],
 			'gsitemap_freq' 	=> $_POST['gsitemap_freq'],
 			'gsitemap_order' 	=> $_POST['gsitemap_order'],
-			'gsitemap_active' 	=> $_POST['gsitemap_active']
+			'gsitemap_active' 	=> $_POST['gsitemap_active'],
+			'WHERE'             => ' gsitemap_id= '.intval($_POST['gsitemap_id'])
 			);
 
-		if(isset($_POST['gsitemap_id']))
+		if(!empty($_POST['gsitemap_id']))
 		{
-			$this -> message = $sql -> db_UpdateArray("gsitemap", $gmap, ' WHERE gsitemap_id= '.intval($_POST['gsitemap_id'])) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$this -> message = $sql->update("gsitemap", $gmap) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 			$log->logArrayAll('GSMAP_04',$gmap);
 		}
 		else
 		{
 			$gmap['gsitemap_img'] = $_POST['gsitemap_img'];
 			$gmap['gsitemap_cat'] = $_POST['gsitemap_cat'];
-			$this -> message = ($sql -> db_Insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$this -> message = ($sql->insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
 			$log->logArrayAll('GSMAP_03',$gmap);
 		}
 	}

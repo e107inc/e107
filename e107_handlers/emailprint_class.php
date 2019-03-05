@@ -60,7 +60,7 @@ class emailprint
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$genericMail = $tp->toGlyph('icon-envelope',false); // "<i class='icon-envelope'></i>"; 
+			$genericMail = $tp->toGlyph('fa-envelope',false); // "<i class='icon-envelope'></i>";
 			$genericPrint = $tp->toGlyph('fa-print',false); // "<i class='icon-print'></i>"; 
 			$class = varset($parm['class']) ? $parm['class'] : "";
 		}

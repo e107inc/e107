@@ -23,6 +23,7 @@ class cpage_shortcodes extends e_shortcode
 {
 	// var $var; // parsed DB values
 	private $chapterData = array();
+	private $cpageFieldName = null;
 	
 	// Grab all book/chapter data. 
 	function __construct()
@@ -160,9 +161,16 @@ class cpage_shortcodes extends e_shortcode
 	// Not a shortcode really, as it shouldn't be cached at all :/
 	function cpagecomments()
 	{
-		$com = $this->var['comments'];
+		$com 		= $this->var['comments'];
+		$comflag 	= $this->var['page_comment_flag'];
+		
 		//if($parm && isset($com[$parm])) return $com[$parm];
-		return $com['comment'].$com['comment_form'];
+		if($comflag)
+		{
+			return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);	
+		}
+		
+	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 	
 	function sc_cpagenav()
@@ -291,7 +299,7 @@ class cpage_shortcodes extends e_shortcode
 		}
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
-		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
+		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url'], 'abs');
 		$buttonTarget = (empty($this->var['menu_button_target'])) ? '' : ' target="'.$this->var['menu_button_target'].'" '; //TODO add pref to admin area.
 
 		$text = vartrue($options['text'], $buttonText);
@@ -337,7 +345,7 @@ class cpage_shortcodes extends e_shortcode
 			return $this->sc_cpageurl();
 		}
 
-		return e107::getParser()->replaceConstants($this->var['menu_button_url']);
+		return e107::getParser()->replaceConstants($this->var['menu_button_url'], 'abs');
 	}
 	
 	
@@ -447,7 +455,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 	
 	function sc_book_anchor()
@@ -471,7 +479,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 	
 	function sc_book_url()
@@ -502,7 +510,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 
 	/**
@@ -553,7 +561,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 
 	/**
@@ -599,7 +607,7 @@ class cpage_shortcodes extends e_shortcode
 		
 		if(empty($brow['chapter_sef']))
 		{
-			return;
+			return null;
 		}
 		
 		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();		
@@ -669,6 +677,8 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagefieldtitle($parm=null)
 	{
 
+		$this->cpageFieldName = null;
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
@@ -676,6 +686,16 @@ class cpage_shortcodes extends e_shortcode
 
 		$chap       = $this->var['page_chapter'];
 		$key        = $parm['name'];
+
+		$this->cpageFieldName = $key;
+
+		$arr = array('name'=>$parm['name']);
+		$value = $this->sc_cpagefield($arr);
+
+		if(empty($value) && !isset($parm['force']))
+		{
+			return null;
+		}
 
 
 		if(!empty($this->chapterData[$chap]['chapter_fields']) && is_string($this->chapterData[$chap]['chapter_fields']))
@@ -701,10 +721,14 @@ class cpage_shortcodes extends e_shortcode
 	 */
 	function sc_cpagefield($parm=null)
 	{
+		$this->cpageFieldName = null;
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
 		}
+
+		$this->cpageFieldName = $parm['name'];
 
 		$chap       = $this->var['page_chapter'];
 		$fields     = $this->chapterData[$chap]['chapter_fields'];
@@ -712,6 +736,15 @@ class cpage_shortcodes extends e_shortcode
 		return e107::getCustomFields()->loadConfig($fields)->loadData($this->var['page_fields'])->getFieldValue($parm['name'],$parm);
 
 
+	}
+
+	/**
+	 * Return the last custom-page field name used.
+	 * @return string|null
+	 */
+	function sc_cpagefieldname()
+	{
+		return $this->cpageFieldName;
 	}
 
 
@@ -723,6 +756,23 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagefields($parm=null)
 	{
 		$fieldData  = e107::unserialize($this->var['page_fields']);
+
+		if(isset($parm['generate'])) // use to generate all fields for use in template file.
+		{
+			$text = '<pre>';
+
+			foreach($fieldData as $ok=>$v)
+			{
+
+				$text .= "&#123;CPAGEFIELDTITLE: name=".$ok."&#125;\n";
+				$text .= "&#123;CPAGEFIELD: name=".$ok."&#125;\n";
+			}
+
+			$text .= "</pre>";
+
+			return $text;
+		}
+
 
 
 		$text = '<table class="table table-bordered table-striped">

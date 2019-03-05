@@ -7,7 +7,9 @@ e107::lan('theme');
 e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 //e107::meta('apple-mobile-web-app-capable','yes');
 
-e107::library('load', 'bootstrap');
+//e107::library('load', 'bootstrap');
+
+define('BOOTSTRAP', 3);
 
 //e107::js('theme', 'js/theme.js');
 

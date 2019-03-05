@@ -64,7 +64,7 @@ class e_object
      * @see getId()
      *
      * @param   string $name
-     * @return  e_object
+     * @return object e_object
      */
     public function setFieldIdName($name)
     {
@@ -238,7 +238,7 @@ class e_object
 	/**
 	 * Update parameter array
 	 * @param array $params
-	 * @return e_object
+	 * @return object e_object
 	 */
 	public function updateParams(array $params)
 	{
@@ -265,7 +265,7 @@ class e_object
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return e_object
+	 * @return e_tree_model
 	 */
 	public function setParam($key, $value)
 	{
@@ -747,7 +747,7 @@ class e_model extends e_object
 
     /**
      * Set Predefined data fields in format key => type
-     * @return e_model
+     * @return object e_model
      */
     public function setDataFields($data_fields)
     {
@@ -2849,10 +2849,10 @@ class e_front_model extends e_model
 
     /**
      * Update record
-     *
+     * @see save()
      * @param boolen $from_post
      * @return boolean|integer
-     */
+     *//*
     public function update($from_post = true, $force = false, $session_messages = false)
     {
     	if(!$this->getFieldIdName())
@@ -2867,7 +2867,7 @@ class e_front_model extends e_model
 		}
 
 		return $this->dbUpdate($force, $session_messages);
-    }
+    }*/
 
     /**
      * Exactly what it says - your debug helper
@@ -3165,7 +3165,7 @@ class e_tree_model extends e_front_model
 	/**
 	 * Set table name
 	 * @param object $table
-	 * @return e_admin_tree_model
+	 * @return e_tree_model
 	 */
 	public function setModelTable($table)
 	{
@@ -3840,7 +3840,7 @@ class e_front_tree_model extends e_tree_model
 	 * @param boolean $session_messages [optional] default false
 	 * @return integer updated count or false on error
 	 */
-	public function update($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
+	public function batchUpdate($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -3980,6 +3980,14 @@ class e_admin_tree_model extends e_front_tree_model
 	 */
 	public function copy($ids, $session_messages = false)
 	{
+		if(empty($ids[0]))
+		{
+			$this->addMessageError('No IDs provided', $session_messages); //TODO - Lan
+			$this->addMessageDebug(print_a(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true),$session_messages); //TODO - Lan
+			return false;
+		}
+
+
 		$tp = e107::getParser();
 		$ids = array_map(array($tp, 'toDB'), $ids);
 		$idstr = implode(', ', $ids);
@@ -3996,6 +4004,7 @@ class e_admin_tree_model extends e_front_tree_model
 			{
 				$this->addMessageError('SQL Copy Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+				$this->addMessageDebug('$SQL Query'.print_a($sql->getLastQuery(),true));
 			}
 		}
 		$this->_db_errno = $sql->getLastErrorNumber();

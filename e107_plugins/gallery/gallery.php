@@ -29,6 +29,12 @@ e107::css('gallery', 'css/gallery.css');
 // Load prettyPhoto settings and files.
 gallery_load_prettyphoto();
 
+// @see: Issue #2938 Missing pagetitle in case of default urls.
+if (!class_exists('plugin_gallery_index_controller') && !deftrue('e_PAGETITLE'))
+{
+	define('e_PAGETITLE', LAN_PLUGIN_GALLERY_TITLE);
+}
+
 require_once(HEADERF);
 
 
@@ -134,7 +140,7 @@ class gallery
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cat, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cat]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cat]['media_cat_title'], false, 'defs');
 
 		$inner = "";
 

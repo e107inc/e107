@@ -500,7 +500,7 @@ echo getAlert();
   function getModal($caption = '', $type='')
     {
 
-        if(deftrue('BOOTSTRAP') === 3)  // see bootstrap3/admin_template.php
+        if(deftrue('BOOTSTRAP'))  // see bootstrap3/admin_template.php
         {
             return '';
         }

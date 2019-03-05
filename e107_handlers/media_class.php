@@ -29,6 +29,18 @@ class e_media
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
 		);
+
+	/** @var array  */
+	protected $mimeExtensions = array(
+				'text'			=> array('txt'),
+				'multipart'		=> array(),
+				'application'	=> array('zip','doc','gz'),
+				'audio'			=> array('mp3','wav'),
+				'image'			=> array('jpeg','jpg','png','gif', 'svg'),
+				'video'			=> array('mp4', 'youtube','youtubepl'),
+				'other'			=> array(),
+			//	'glyph'         => array('glyph')
+		);
 	
 	function __construct()
 	{
@@ -53,10 +65,11 @@ class e_media
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
 	 * @param string $epath path to file.
-	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask. 
+	 * @param string $fmask [optional] filetypes eg. .jpg|.gif IMAGES is the default mask.
+	 * @param array $options
 	 * @return e_media
 	 */
-	public function import($cat='', $epath, $fmask='', $options=array())
+	public function import($cat='', $epath='', $fmask='', $options=array())
 	{
 		if(!vartrue($cat)){ return $this;}
 		
@@ -145,7 +158,8 @@ class e_media
 				}
 			}
 		}
-		if($count)
+
+	//	if($count)
 		{
 			// $mes->addSuccess("Imported {$count} Media items.");
 		}
@@ -183,20 +197,21 @@ class e_media
 	/**
 	 * Remove Media from media table
 	 * @param string $cat [optional] remove a full category of media
-	 * @return 
+	 * @return bool
 	 */
 	function removeCat($cat)
 	{
-		$tp = e107::getParser();
+		if(empty($cat))
+		{
+			return false;
+		}
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-						
-		if(vartrue($cat))
-		{
-			$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? TRUE : FALSE;
-			$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
-			return $status;	
-		}	
+
+		$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? true : false;
+		$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
+		return $status;
 	}
 
 
@@ -205,7 +220,7 @@ class e_media
 	 * Remove Media from media table
 	 * @param string $epath remove media in the specified path.
 	 * @param string $type [optional] image|icon
-	 * @return 
+	 * @return bool
 	 */
 	function removePath($epath, $type='image')
 	{
@@ -214,15 +229,18 @@ class e_media
 		$mes = e107::getMessage();
 		
 		$qry = ($type == 'icon') ? " AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' " : " AND NOT media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-								
-		if(vartrue($epath))
+
+		if(empty($epath))
 		{
-			$path = $tp->createConstants($epath, 'rel');
-			$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
-			$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
-			$mes->add($message, E_MESSAGE_DEBUG);
-			return $status;	
-		}			
+			return false;
+		}
+
+		$path = $tp->createConstants($epath, 'rel');
+		$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
+		$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
+		$mes->add($message, E_MESSAGE_DEBUG);
+		return $status;
+
 	}
 	
 	
@@ -234,7 +252,7 @@ class e_media
 	 */
 	function listIcons($epath)
 	{
-		if(!$epath) return;
+		if(!$epath) return array();
 		
 		$ret = array();
 		$sql = e107::getDb();
@@ -242,7 +260,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ")) ? TRUE : FALSE;
+		$sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ");
 		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
@@ -255,7 +273,7 @@ class e_media
 	 * Create media category.
 	 * 'class' data is optional, 'id' key is ignored
 	 * 
-	 * @param array $data associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
+	 * @param array $datas associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
 	 * @return integer last inserted ID or false on error
 	 */
 	public function createCategory($datas)
@@ -288,6 +306,8 @@ class e_media
 		{
 			return false;
 		}
+
+		unset($parms); // remove later if $parms becomes used.
 				
 		$cat = 'user_'.$type.'_'.intval($userId);
 		
@@ -315,7 +335,7 @@ class e_media
 	
 	/**
 	 * Create multiple media categories in once
-	 * @param array $data
+	 * @param array $multi_data
 	 * @return integer number of successfully inserted records
 	 */
 	public function createCategories($multi_data)
@@ -337,7 +357,7 @@ class e_media
 	{
 		if($owner == '')
 		{
-			return;	
+			return null;
 		}
 		
 		$sql = e107::getDb();
@@ -357,9 +377,12 @@ class e_media
 		
 		return FALSE; 
 	}
-	
+
 	/**
 	 * Return an Array of Media Categories
+	 *
+	 * @param string $owner
+	 * @return array
 	 */
 	public function getCategories($owner='')
 	{
@@ -379,101 +402,122 @@ class e_media
 		}
 		return $ret;	
 	}
-	
+
 	/**
 	 * Return the total number of Images in a particular category
-	 * 
-	 */	
+	 *
+	 * @param string $cat
+	 * @param string $search
+	 * @return array
+	 */
 	public function countImages($cat,$search=null)
 	{
-		
 		return $this->getImages($cat, 0, 'all',$search);
-		
-		/*
-		
-		$inc 		= array();
-		$searchinc 	= array();
-		
-		if(strpos($cat,"+") || !$cat)
-		{
-			$cat = str_replace("+","",$cat);
-			$inc[] = "media_category = '_common_image' ";
-		}
-		if($cat)
-		{
-			$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
-		}
-		
-		if($search)
-		{
-			$searchinc[] = "media_name LIKE '%".$search."%' "; 
-			$searchinc[] = "media_description LIKE '%".$search."%' "; 
-			$searchinc[] = "media_caption LIKE '%".$search."%' ";
-			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
-		}
-		
-		
-		$query = "SELECT * FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." )" ;
-		
-		if($search)
-		{
-			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
-		}
-		
-		return e107::getDb()->gen($query);
-		*/
 	}
-	
-	
-	public function getFiles($from=0, $amount = null, $search = null)
+
+
+	/**
+	 * @param string $cat
+	 * @param int  $from
+	 * @param int $amount
+	 * @param string $search
+	 * @return array
+	 */
+	public function getFiles($cat, $from=0, $amount = null, $search = null)
 	{
-		return $this->getImages('_common_file', $from, $amount, $search);	
+		return $this->getMedia('application', $cat, $from, $amount, $search);
+	}
+
+
+	/**
+	 * @param string $cat
+	 * @param int  $from
+	 * @param int $amount
+	 * @param string $search
+	 * @return array
+	 */
+	public function getVideos($cat, $from=0, $amount = null, $search = null)
+	{
+		return $this->getMedia('video', $cat, $from, $amount, $search);
+	}
+
+
+	/**
+	 * @param string $cat
+	 * @param int   $from
+	 * @param int  $amount
+	 * @param string  $search
+	 * @return array
+	 */
+	public function getAudios($cat='', $from=0, $amount = null, $search = null)
+	{
+		return $this->getMedia('audio', $cat, $from, $amount, $search);
+	}
+
+	/**
+	 * Return an array of Images in a particular category
+	 *
+	 * @param string $cat : category name. use + to include _common eg. 'news+'
+	 * @param int    $from
+	 * @param  int      $amount
+	 * @param  string      $search
+	 * @param null   $orderby
+	 * @return array
+	 */
+	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
+	{
+		return $this->getMedia('image', $cat, $from, $amount, $search, $orderby);
 	}
 
 
 	/**
 	 * Return an array of Images in a particular category
-	 * @param string $cat : category name. use + to include _common eg. 'news+'
-	 * @param $from
-	 * @param $amount
-	 * @param $search
-	 * @return array
+	 *
+	 * @param string $type image|audio|video
+	 * @param string $cat : category name. use ^ to include _common eg. 'news^'
+	 * @param int    $from
+	 * @param int|string     $amount
+	 * @param string  $search
+	 * @param string   $orderby
+	 * @return array|bool
 	 */
-	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
+	private function getMedia($type, $cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
-		$inc 		= array();
+
+	//	print_a($cat);
+	//	$inc 		= array();
 		$searchinc 	= array();
+		$catArray   = array();
 		
-		if(strpos($cat,"+") || !$cat)
+		if(strpos($cat,"^") || !$cat)
 		{
-			$cat = str_replace("+","",$cat);
-			// $inc[] = "media_category = '_common_image' ";
-		//	$inc[] = "media_category REGEXP '(^|,)(_common_image)(,|$)' "; 
-		//		$inc[] = "media_category LIKE '%_common_image%' "; 
-			$catArray[] = '_common_image';
+			$cat = str_replace("^","",$cat);
+			$catArray[] = '_common_'.$type;
 		}
+
 		if($cat)
 		{
-			if(strpos($cat, "|") && !strpos($cat,"+") )
+			if(strpos($cat, "|") && !strpos($cat,"^") )
 			{
 				$catArray = explode("|",$cat);	
 			}
 			else
 			{
-				$catArray[] = $cat; 
+				$catArray[] = $cat;
+
+				if($type === 'image' || $type === 'audio'|| $type === 'video')
+				{
+					$catArray[] = $cat.'_'.$type; // BC Fix.
+				}
 			}
-	//		$inc[] = "media_category LIKE '%".$cat."%' "; // for multiple category field. 
-		//	$inc[] = "media_category REGEXP '(^|,)(".$cat.")(,|$)' "; // for multiple category field. 
 		}
-		
-		
-	//	$inc[] = "media_category REGEXP '(^|,)_common_image|banner_image(,|$)' ";
-		
+
+
 		// TODO check the category is valid. 
 		
 		if($search)
 		{
-			$searchinc[] = "media_name LIKE '%".$search."%' "; 
+			$searchinc[] = "media_name LIKE '%".$search."%' ";
 			$searchinc[] = "media_description LIKE '%".$search."%' "; 
 			$searchinc[] = "media_caption LIKE '%".$search."%' ";
 			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
@@ -485,10 +529,9 @@ class e_media
 		
 		$fields = ($amount == 'all') ? "media_id" : "*";
 		
-		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
-	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-
-
+		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' 
+		AND `media_userclass` IN (".USERCLASS_LIST.") 
+		AND `media_type` LIKE '".$type."/%' " ;
 
 		if($search)
 		{
@@ -501,7 +544,7 @@ class e_media
 		}
 		else
 		{
-			$query .= " ORDER BY media_id DESC";
+			$query .= " ORDER BY media_category ASC, media_id DESC"; // places the specified category before the _common categories.
 		}
 
 		if($amount == 'all')
@@ -515,7 +558,7 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 
-	//	e107::getDebug()->log($query);
+		e107::getDebug()->log($query);
 
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
@@ -554,7 +597,7 @@ class e_media
 		}
 		
 		e107::getDb()->gen($query);
-		while($row = e107::getDb()->fetch(mySQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
@@ -566,12 +609,16 @@ class e_media
 
 		
 	/**
-	 * Generate Simple Thumbnail window for image -selection 
+	 * Generate Simple Thumbnail window for image -selection
+	 * @deprecated Currently used only by ren_help PreImage_Select
+	 * @param string $cat
+	 * @param string $formid
+	 * @return string
 	 */
-	private function imageSelect($cat,$formid='imageSel')
+	public function imageSelect($cat,$formid='imageSel')
 	{
 		$sql = e107::getDb();
-		$tp = e107::getParser();
+	//	$tp = e107::getParser();
 		
 		$text = "<div style='margin-left:500px;text-align:center; position:relative;z-index:1000;float:left;display:none' id='{$formid}'>";
 		$text .="<div style='-moz-box-shadow: 3px 3px 3px #808080;
@@ -579,7 +626,7 @@ class e_media
 			box-shadow: 3px 3px 3px #808080;
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
-		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
+		$sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ");
 		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
@@ -625,7 +672,13 @@ class e_media
 	}
 
 
-
+	/**
+	 * @deprecated by browserCarousel
+	 * @param string $category
+	 * @param null   $tagid
+	 * @param null   $att
+	 * @return string
+	 */
 	public function mediaSelect($category='',$tagid=null,$att=null)
 	{
 	
@@ -641,7 +694,7 @@ class e_media
 			
 		$frm 		= varset($option['from']) ? $option['from'] : 0;
 		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
-		$newfrm 	= $frm + $limit; 
+	//	$newfrm 	= $frm + $limit;
 		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
 		$navMode	= varset($option['nav']) ? TRUE : FALSE;
 		$search		= varset($option['search']) ? $option['search'] : null;
@@ -649,12 +702,12 @@ class e_media
 		
 		if($category !='_icon')
 		{
-			$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
+			$cat 	= ($category) ? $category : ""; // the '+' loads category '_common' as well as the chosen category.
 			$images = $this->getImages($cat,$frm,$limit,$search);
 			$class 	= "media-select-image";
 			$classN = "media-select-image-none";
 			$w		= 120;
-			$h		= 100;
+		//	$h		= 100;
 			$total	= $this->countImages($cat,$search);
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/nomedia.png';
@@ -667,13 +720,13 @@ class e_media
 			$class 	= "media-select-icon";
 			$classN = "media-select-icon-none";
 			$w		= 64;
-			$h		= 64;
-			$total 	= 500;
+		//	$h		= 64;
+		//	$total 	= 500;
 			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg",$search);
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').innerHTML= '';
 		 	 return false;";
-			// $total	= $this->countIcons($cat); //TODO
+
 		}
 		
 		
@@ -721,12 +774,12 @@ class e_media
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
-			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<span>".$tp->toGlyph('fa-ban')."</span>
 			</a>";		
 		}
 
-		$w	= false; //
+		//$w	= false; //
 		$h = false;
 		$defaultResizeWidth = 400;
 			
@@ -735,7 +788,7 @@ class e_media
 			e107::getBB()->setClass($category);
 			$defaultResizeWidth = e107::getBB()->resizeWidth(); // resize the image according to prefs.
 			$h = e107::getBB()->resizeHeight();
-			e107::getBB()->clearclass();
+			e107::getBB()->clearClass();
 
 		}
 		
@@ -749,7 +802,8 @@ class e_media
 
 		foreach($images as $im)
 		{
-			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);	
+			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);
+			unset($dbHeight);
 				
 			$w = ($dbWidth > $defaultResizeWidth) ? $defaultResizeWidth : intval($dbWidth);
 
@@ -785,12 +839,6 @@ class e_media
 			}
 			else // TinyMce and textarea bbcode  
 			{
-				//TODO Add a preview window 
-				$onclicki = "document.getElementById('src').value = '{$im['media_url']}';
-				document.getElementById('preview').src = '{$realPath}';
-		 		
-				return false;";	
-				//$onclicki = "";
 				$class .= " e-media-select";
 				$onclicki = "";
 				
@@ -878,11 +926,7 @@ class e_media
 
 
 	/**
-	 * @param string|array $type
-	 * @param $type['name']
-	 * @param $type[['type']
-	 * @param $type['path'] URL or e107 path {e_THEME} etc.
-	 * @param $type['prefix']
+	 * @param string|array $type array('prefix'=>'', 'pattern'=>'', 'path'=>'', 'name'=>'')
 	 * @param string $addPrefix
 	 * @return array
 	 */
@@ -890,9 +934,12 @@ class e_media
 	{
 		$icons = array();
 		
-		if($type === 'bs2')
+		if($type === 'bs2' || $type === 'bs3' || $type === 'fab' || $type === 'fas')
 		{
-			$matches = array(
+
+			$matches = array();
+
+			$matches['bs2'] = array(
 				'glass','music','search','envelope','heart','star','star-empty','user','film','th-large','th','th-list','ok',
 				'remove','zoom-in','zoom-out','off','signal','cog','trash','home','file','time','road','download-alt','download',
 				'upload','inbox','play-circle','repeat','refresh','list-alt','lock','flag','headphones','volume-off','volume-down',
@@ -909,18 +956,9 @@ class e_media
 				'circle-arrow-right','circle-arrow-left','circle-arrow-up','circle-arrow-down','globe','wrench','tasks',
 				'filter','briefcase','fullscreen'
 			);
-				
-			foreach($matches as $match)
-			{
-			    $icons[] = $addPrefix.$match;
-			}
-			
-			return $icons;
-		}
-					
-		if($type === 'bs3')
-		{
-			$matches = array(
+
+
+			$matches['bs3'] = array(
 			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
 			','bookmark','briefcase','bullhorn','calendar','camera','certificate','check','chevron-down','chevron-left','chevron-right','chevron-up','circle-arrow-down','circle-arrow-left','circle-arrow-right
 			','circle-arrow-up','cloud','cloud-download','cloud-upload','cog','collapse-down','collapse-up','comment','compressed','copyright-mark','credit-card','cutlery','dashboard','download','download-alt
@@ -933,15 +971,73 @@ class e_media
 			','sort-by-attributes','sort-by-attributes-alt','sort-by-order','sort-by-order-alt','sound-5-1','sound-6-1','sound-7-1','sound-dolby','sound-stereo','star','stats','step-backward','step-forward','stop
 			','subtitles','tag','tags','tasks','text-height','text-width','th','th-large','th-list','thumbs-down','thumbs-up','time','tint','tower','transfer','trash','tree-conifer','tree-deciduous','unchecked','upload
 			','usd','user','volume-down','volume-off','volume-up','warning-sign','wrench','zoom-in','zoom-out'
-			);	
-			
-			foreach($matches as $match)
+			);
+
+
+
+			$matches['fab'] =  array( "500px", "accessible-icon", "accusoft", "acquisitions-incorporated", "adn", "adobe", "adversal", "affiliatetheme", "algolia", "alipay", "amazon", "amazon-pay", "amilia", "android", "angellist",
+			 "angrycreative", "angular", "app-store", "app-store-ios", "apper", "apple", "apple-pay", "artstation", "asymmetrik", "atlassian", "audible", "autoprefixer", "avianex", "aviato", "aws", "bandcamp", "behance", "behance-square",
+			 "bimobject", "bitbucket", "bitcoin", "bity", "black-tie", "blackberry", "blogger", "blogger-b", "bluetooth", "bluetooth-b", "btc", "buromobelexperte", "buysellads", "canadian-maple-leaf", "cc-amazon-pay", "cc-amex",
+			 "cc-apple-pay", "cc-diners-club", "cc-discover", "cc-jcb", "cc-mastercard", "cc-paypal", "cc-stripe", "cc-visa", "centercode", "centos", "chrome", "cloudscale", "cloudsmith", "cloudversify", "codepen", "codiepie",
+			 "confluence", "connectdevelop", "contao", "cpanel", "creative-commons", "creative-commons-by", "creative-commons-nc", "creative-commons-nc-eu", "creative-commons-nc-jp", "creative-commons-nd", "creative-commons-pd",
+			 "creative-commons-pd-alt", "creative-commons-remix", "creative-commons-sa", "creative-commons-sampling", "creative-commons-sampling-plus", "creative-commons-share", "creative-commons-zero", "critical-role", "css3",
+			 "css3-alt", "cuttlefish", "d-and-d", "d-and-d-beyond", "dashcube", "delicious", "deploydog", "deskpro", "dev", "deviantart", "dhl", "diaspora", "digg", "digital-ocean", "discord", "discourse", "dochub", "docker",
+			 "draft2digital", "dribbble", "dribbble-square", "dropbox", "drupal", "dyalog", "earlybirds", "ebay", "edge", "elementor", "ello", "ember", "empire", "envira", "erlang", "ethereum", "etsy", "expeditedssl", "facebook",
+			 "facebook-f", "facebook-messenger", "facebook-square", "fantasy-flight-games", "fedex", "fedora", "figma", "firefox", "first-order", "first-order-alt", "firstdraft", "flickr", "flipboard", "fly", "font-awesome",
+			 "font-awesome-alt", "font-awesome-flag", "font-awesome-logo-full", "fonticons", "fonticons-fi", "fort-awesome", "fort-awesome-alt", "forumbee", "foursquare", "free-code-camp", "freebsd", "fulcrum", "galactic-republic",
+			 "galactic-senate", "get-pocket", "gg", "gg-circle", "git", "git-square", "github", "github-alt", "github-square", "gitkraken", "gitlab", "gitter", "glide", "glide-g", "gofore", "goodreads", "goodreads-g", "google",
+			 "google-drive", "google-play", "google-plus", "google-plus-g", "google-plus-square", "google-wallet", "gratipay", "grav", "gripfire", "grunt", "gulp", "hacker-news", "hacker-news-square", "hackerrank", "hips",
+			 "hire-a-helper", "hooli", "hornbill", "hotjar", "houzz", "html5", "hubspot", "imdb", "instagram", "intercom", "internet-explorer", "invision", "ioxhost", "itunes", "itunes-note", "java", "jedi-order", "jenkins",
+			 "jira", "joget", "joomla", "js", "js-square", "jsfiddle", "kaggle", "keybase", "keycdn", "kickstarter", "kickstarter-k", "korvue", "laravel", "lastfm", "lastfm-square", "leanpub", "less", "line", "linkedin",
+			 "linkedin-in", "linode", "linux", "lyft", "magento", "mailchimp", "mandalorian", "markdown", "mastodon", "maxcdn", "medapps", "medium", "medium-m", "medrt", "meetup", "megaport", "mendeley", "microsoft", "mix",
+			 "mixcloud", "mizuni", "modx", "monero", "napster", "neos", "nimblr", "nintendo-switch", "node", "node-js", "npm", "ns8", "nutritionix", "odnoklassniki", "odnoklassniki-square", "old-republic", "opencart",
+			 "openid", "opera", "optin-monster", "osi", "page4", "pagelines", "palfed", "patreon", "paypal", "penny-arcade", "periscope", "phabricator", "phoenix-framework", "phoenix-squadron", "php", "pied-piper",
+			 "pied-piper-alt", "pied-piper-hat", "pied-piper-pp", "pinterest", "pinterest-p", "pinterest-square", "playstation", "product-hunt", "pushed", "python", "qq", "quinscape", "quora", "r-project", "raspberry-pi",
+			 "ravelry", "react", "reacteurope", "readme", "rebel", "red-river", "reddit", "reddit-alien", "reddit-square", "redhat", "renren", "replyd", "researchgate", "resolving", "rev", "rocketchat", "rockrms", "safari",
+			 "sass", "schlix", "scribd", "searchengin", "sellcast", "sellsy", "servicestack", "shirtsinbulk", "shopware", "simplybuilt", "sistrix", "sith", "sketch", "skyatlas", "skype", "slack", "slack-hash", "slideshare",
+			 "snapchat", "snapchat-ghost", "snapchat-square", "soundcloud", "sourcetree", "speakap", "spotify", "squarespace", "stack-exchange", "stack-overflow", "staylinked", "steam", "steam-square", "steam-symbol",
+			 "sticker-mule", "strava", "stripe", "stripe-s", "studiovinari", "stumbleupon", "stumbleupon-circle", "superpowers", "supple", "suse", "teamspeak", "telegram", "telegram-plane", "tencent-weibo", "the-red-yeti",
+			 "themeco", "themeisle", "think-peaks", "trade-federation", "trello", "tripadvisor", "tumblr", "tumblr-square", "twitch", "twitter", "twitter-square", "typo3", "uber", "ubuntu", "uikit", "uniregistry",
+			 "untappd", "ups", "usb", "usps", "ussunnah", "vaadin", "viacoin", "viadeo", "viadeo-square", "viber", "vimeo", "vimeo-square", "vimeo-v", "vine", "vk", "vnv", "vuejs", "weebly", "weibo", "weixin",
+			 "whatsapp", "whatsapp-square", "whmcs", "wikipedia-w", "windows", "wix", "wizards-of-the-coast", "wolf-pack-battalion", "wordpress", "wordpress-simple", "wpbeginner", "wpexplorer", "wpforms", "wpressr",
+			 "xbox", "xing", "xing-square", "y-combinator", "yahoo", "yandex", "yandex-international", "yarn", "yelp", "yoast", "youtube", "youtube-square", "zhihu",
+			 );
+
+			 $matches['fas'] = array(
+			   "ad", "address-book", "address-card", "adjust", "air-freshener", "align-center", "align-justify", "align-left", "align-right", "allergies", "ambulance", "american-sign-language-interpreting", "anchor",
+			   "angle-double-down", "angle-double-left", "angle-double-right", "angle-double-up", "angle-down", "angle-left", "angle-right", "angle-up", "angry", "ankh", "apple-alt", "archive", "archway", "arrow-alt-circle-down",
+			   "arrow-alt-circle-left", "arrow-alt-circle-right", "arrow-alt-circle-up", "arrow-circle-down", "arrow-circle-left", "arrow-circle-right", "arrow-circle-up", "arrow-down", "arrow-left", "arrow-right", "arrow-up",
+			   "arrows-alt", "arrows-alt-h", "arrows-alt-v", "assistive-listening-systems", "asterisk", "at", "atlas", "atom", "audio-description", "award", "baby", "baby-carriage", "backspace", "backward", "bacon", "balance-scale",
+			   "ban", "band-aid", "barcode", "bars", "baseball-ball", "basketball-ball", "bath", "battery-empty", "battery-full", "battery-half", "battery-quarter", "battery-three-quarters", "bed", "beer", "bell", "bell-slash",
+			   "bezier-curve", "bible", "bicycle", "binoculars", "biohazard", "birthday-cake", "blender", "blender-phone", "blind", "blog", "bold", "bolt", "bomb", "bone", "bong", "book", "book-dead", "book-medical", "book-open",
+			   "book-reader", "bookmark", "bowling-ball", "box", "box-open", "boxes", "braille", "brain", "bread-slice", "briefcase", "briefcase-medical", "broadcast-tower", "broom", "brush", "bug", "building", "bullhorn", "bullseye",
+			   "burn", "bus", "bus-alt", "business-time", "calculator", "calendar", "calendar-alt", "calendar-check", "calendar-day", "calendar-minus", "calendar-plus", "calendar-times", "calendar-week", "camera", "camera-retro",
+			   "campground", "candy-cane", "cannabis", "capsules", "car", "car-alt", "car-battery", "car-crash", "car-side", "caret-down", "caret-left", "caret-right", "caret-square-down", "caret-square-left", "caret-square-right",
+			   "caret-square-up", "caret-up", "carrot", "cart-arrow-down", "cart-plus", "cash-register", "cat", "certificate", "chair", "chalkboard", "chalkboard-teacher", "charging-station", "chart-area", "chart-bar", "chart-line",
+			   "chart-pie", "check", "check-circle", "check-double", "check-square", "cheese", "chess", "chess-bishop", "chess-board", "chess-king", "chess-knight", "chess-pawn", "chess-queen", "chess-rook", "chevron-circle-down",
+			   "chevron-circle-left", "chevron-circle-right", "chevron-circle-up", "chevron-down", "chevron-left", "chevron-right", "chevron-up", "child", "church", "circle", "circle-notch", "city", "clinic-medical", "clipboard",
+			   "clipboard-check", "clipboard-list", "clock", "clone", "closed-captioning", "cloud", "cloud-download-alt", "cloud-meatball", "cloud-moon", "cloud-moon-rain", "cloud-rain", "cloud-showers-heavy", "cloud-sun",
+			   "cloud-sun-rain", "cloud-upload-alt", "cocktail", "code", "code-branch", "coffee", "cog", "cogs", "coins", "columns", "comment", "comment-alt", "comment-dollar", "comment-dots", "comment-medical", "comment-slash",
+			   "comments", "comments-dollar", "compact-disc", "compass", "compress", "compress-arrows-alt", "concierge-bell", "cookie", "cookie-bite", "copy", "copyright", "couch", "credit-card", "crop", "crop-alt", "cross",
+			   "crosshairs", "crow", "crown", "crutch", "cube", "cubes", "cut", "database", "deaf", "democrat", "desktop", "dharmachakra", "diagnoses", "dice", "dice-d20", "dice-d6", "dice-five", "dice-four", "dice-one", "dice-six",
+			   "dice-three", "dice-two", "digital-tachograph", "directions", "divide", "dizzy", "dna", "dog", "dollar-sign", "dolly", "dolly-flatbed", "donate", "door-closed", "door-open", "dot-circle", "dove", "download",
+			   "drafting-compass", "dragon", "draw-polygon", "drum", "drum-steelpan", "drumstick-bite", "dumbbell", "dumpster", "dumpster-fire", "dungeon", "edit", "egg", "eject", "ellipsis-h", "ellipsis-v", "envelope",
+			   "envelope-open", "envelope-open-text", "envelope-square", "equals", "eraser", "ethernet", "euro-sign", "exchange-alt", "exclamation", "exclamation-circle", "exclamation-triangle", "expand", "expand-arrows-alt",
+			   "external-link-alt", "external-link-square-alt", "eye", "eye-dropper", "eye-slash", "fast-backward", "fast-forward", "fax", "feather", "feather-alt", "female", "fighter-jet", "file", "file-alt", "file-archive",
+			   "file-audio", "file-code", "file-contract", "file-csv", "file-download", "file-excel", "file-export", "file-image", "file-import", "file-invoice", "file-invoice-dollar", "file-medical", "file-medical-alt", "file-pdf",
+			   "file-powerpoint", "file-prescription", "file-signature", "file-upload", "file-video", "file-word", "fill", "fill-drip", "film", "filter", "fingerprint", "fire", "fire-alt", "fire-extinguisher", "first-aid", "fish", "fist-raised", "flag", "flag-checkered", "flag-usa", "flask", "flushed", "folder", "folder-minus", "folder-open", "folder-plus", "font", "font-awesome-logo-full", "football-ball", "forward", "frog", "frown", "frown-open", "funnel-dollar", "futbol", "gamepad", "gas-pump", "gavel", "gem", "genderless", "ghost", "gift", "gifts", "glass-cheers", "glass-martini", "glass-martini-alt", "glass-whiskey", "glasses", "globe", "globe-africa", "globe-americas", "globe-asia", "globe-europe", "golf-ball", "gopuram", "graduation-cap", "greater-than", "greater-than-equal", "grimace", "grin", "grin-alt", "grin-beam", "grin-beam-sweat", "grin-hearts", "grin-squint", "grin-squint-tears", "grin-stars", "grin-tears", "grin-tongue", "grin-tongue-squint", "grin-tongue-wink", "grin-wink", "grip-horizontal", "grip-lines", "grip-lines-vertical", "grip-vertical", "guitar", "h-square", "hamburger", "hammer", "hamsa", "hand-holding", "hand-holding-heart", "hand-holding-usd", "hand-lizard", "hand-middle-finger", "hand-paper", "hand-peace", "hand-point-down", "hand-point-left", "hand-point-right", "hand-point-up", "hand-pointer", "hand-rock", "hand-scissors", "hand-spock", "hands", "hands-helping", "handshake", "hanukiah", "hard-hat", "hashtag", "hat-wizard", "haykal", "hdd", "heading", "headphones", "headphones-alt", "headset", "heart", "heart-broken", "heartbeat", "helicopter", "highlighter", "hiking", "hippo", "history", "hockey-puck", "holly-berry", "home", "horse", "horse-head", "hospital", "hospital-alt", "hospital-symbol", "hot-tub", "hotdog", "hotel", "hourglass", "hourglass-end", "hourglass-half", "hourglass-start", "house-damage", "hryvnia", "i-cursor", "ice-cream", "icicles", "id-badge", "id-card", "id-card-alt", "igloo", "image", "images", "inbox", "indent", "industry", "infinity", "info", "info-circle", "italic", "jedi", "joint", "journal-whills", "kaaba", "key", "keyboard", "khanda", "kiss", "kiss-beam", "kiss-wink-heart", "kiwi-bird", "landmark", "language", "laptop", "laptop-code", "laptop-medical", "laugh", "laugh-beam", "laugh-squint", "laugh-wink", "layer-group", "leaf", "lemon", "less-than", "less-than-equal", "level-down-alt", "level-up-alt", "life-ring", "lightbulb", "link", "lira-sign", "list", "list-alt", "list-ol", "list-ul", "location-arrow", "lock", "lock-open", "long-arrow-alt-down", "long-arrow-alt-left", "long-arrow-alt-right", "long-arrow-alt-up", "low-vision", "luggage-cart", "magic", "magnet", "mail-bulk", "male", "map", "map-marked", "map-marked-alt", "map-marker", "map-marker-alt", "map-pin", "map-signs", "marker", "mars", "mars-double", "mars-stroke", "mars-stroke-h", "mars-stroke-v", "mask", "medal", "medkit", "meh", "meh-blank", "meh-rolling-eyes", "memory", "menorah", "mercury", "meteor", "microchip", "microphone", "microphone-alt", "microphone-alt-slash", "microphone-slash", "microscope", "minus", "minus-circle", "minus-square", "mitten", "mobile", "mobile-alt", "money-bill", "money-bill-alt", "money-bill-wave", "money-bill-wave-alt", "money-check", "money-check-alt", "monument", "moon", "mortar-pestle", "mosque", "motorcycle", "mountain", "mouse-pointer", "mug-hot", "music", "network-wired", "neuter", "newspaper", "not-equal", "notes-medical", "object-group", "object-ungroup", "oil-can", "om", "otter", "outdent", "pager", "paint-brush", "paint-roller", "palette", "pallet", "paper-plane", "paperclip", "parachute-box", "paragraph", "parking", "passport", "pastafarianism", "paste", "pause", "pause-circle", "paw", "peace", "pen", "pen-alt", "pen-fancy", "pen-nib", "pen-square", "pencil-alt", "pencil-ruler", "people-carry", "pepper-hot", "percent", "percentage", "person-booth", "phone", "phone-slash", "phone-square", "phone-volume", "piggy-bank", "pills", "pizza-slice", "place-of-worship", "plane", "plane-arrival", "plane-departure", "play", "play-circle", "plug", "plus", "plus-circle", "plus-square", "podcast", "poll", "poll-h", "poo", "poo-storm", "poop", "portrait", "pound-sign", "power-off", "pray", "praying-hands", "prescription", "prescription-bottle", "prescription-bottle-alt", "print", "procedures", "project-diagram", "puzzle-piece", "qrcode", "question", "question-circle", "quidditch", "quote-left", "quote-right", "quran", "radiation", "radiation-alt", "rainbow", "random", "receipt", "recycle", "redo", "redo-alt", "registered", "reply", "reply-all", "republican", "restroom", "retweet", "ribbon", "ring", "road", "robot", "rocket", "route", "rss", "rss-square", "ruble-sign", "ruler", "ruler-combined", "ruler-horizontal", "ruler-vertical", "running", "rupee-sign", "sad-cry", "sad-tear", "satellite", "satellite-dish", "save", "school", "screwdriver", "scroll", "sd-card", "search", "search-dollar", "search-location", "search-minus", "search-plus", "seedling", "server", "shapes", "share", "share-alt", "share-alt-square", "share-square", "shekel-sign", "shield-alt", "ship", "shipping-fast", "shoe-prints", "shopping-bag", "shopping-basket", "shopping-cart", "shower", "shuttle-van", "sign", "sign-in-alt", "sign-language", "sign-out-alt", "signal", "signature", "sim-card", "sitemap", "skating", "skiing", "skiing-nordic", "skull", "skull-crossbones", "slash", "sleigh", "sliders-h", "smile", "smile-beam", "smile-wink", "smog", "smoking", "smoking-ban", "sms", "snowboarding", "snowflake", "snowman", "snowplow", "socks", "solar-panel", "sort", "sort-alpha-down", "sort-alpha-up", "sort-amount-down", "sort-amount-up", "sort-down", "sort-numeric-down", "sort-numeric-up", "sort-up", "spa", "space-shuttle", "spider", "spinner", "splotch", "spray-can", "square", "square-full", "square-root-alt", "stamp", "star", "star-and-crescent", "star-half", "star-half-alt", "star-of-david", "star-of-life", "step-backward", "step-forward", "stethoscope", "sticky-note", "stop", "stop-circle", "stopwatch", "store", "store-alt", "stream", "street-view", "strikethrough", "stroopwafel", "subscript", "subway", "suitcase", "suitcase-rolling", "sun", "superscript", "surprise", "swatchbook", "swimmer", "swimming-pool", "synagogue", "sync", "sync-alt", "syringe", "table", "table-tennis", "tablet", "tablet-alt", "tablets", "tachometer-alt", "tag", "tags", "tape", "tasks", "taxi", "teeth", "teeth-open", "temperature-high", "temperature-low", "tenge", "terminal", "text-height", "text-width", "th", "th-large", "th-list", "theater-masks", "thermometer", "thermometer-empty", "thermometer-full", "thermometer-half", "thermometer-quarter", "thermometer-three-quarters", "thumbs-down", "thumbs-up", "thumbtack", "ticket-alt", "times", "times-circle", "tint", "tint-slash", "tired", "toggle-off", "toggle-on", "toilet", "toilet-paper", "toolbox", "tools", "tooth", "torah", "torii-gate", "tractor", "trademark", "traffic-light", "train", "tram", "transgender", "transgender-alt", "trash", "trash-alt", "trash-restore", "trash-restore-alt", "tree", "trophy", "truck", "truck-loading", "truck-monster", "truck-moving", "truck-pickup", "tshirt", "tty", "tv", "umbrella", "umbrella-beach", "underline", "undo", "undo-alt", "universal-access", "university", "unlink", "unlock", "unlock-alt", "upload", "user", "user-alt", "user-alt-slash", "user-astronaut", "user-check", "user-circle", "user-clock", "user-cog", "user-edit", "user-friends", "user-graduate", "user-injured", "user-lock", "user-md", "user-minus", "user-ninja", "user-nurse", "user-plus", "user-secret", "user-shield", "user-slash", "user-tag", "user-tie", "user-times", "users", "users-cog", "utensil-spoon", "utensils", "vector-square", "venus", "venus-double", "venus-mars", "vial", "vials", "video", "video-slash", "vihara", "volleyball-ball", "volume-down", "volume-mute", "volume-off", "volume-up", "vote-yea", "vr-cardboard", "walking", "wallet", "warehouse", "water", "weight", "weight-hanging", "wheelchair", "wifi", "wind", "window-close", "window-maximize", "window-minimize", "window-restore", "wine-bottle", "wine-glass", "wine-glass-alt", "won-sign", "wrench", "x-ray", "yen-sign", "yin-yang",
+
+			 );
+				
+			foreach($matches[$type] as $match)
 			{
 			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
+					
+
 
 		if(is_array($type))
 		{
@@ -998,11 +1094,14 @@ class e_media
 
 		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
 
-		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
-
-		foreach($matches as $match)
+		if(!empty($pattern) && !empty($subject))
 		{
-		    $icons[] = $addPrefix.substr($match[1],$prefixLength);
+			preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
+
+			foreach($matches as $match)
+			{
+			    $icons[] = $addPrefix.substr($match[1],$prefixLength);
+			}
 		}
 
 		if(empty($icons)) // failed to produce a result so don't cache it. .
@@ -1021,11 +1120,12 @@ class e_media
 
 
 
-	function getPath($mime, $path=null)
+	public function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
 
 		list($pmime,$tmp) = explode('/',$mime);
+		unset($tmp);
 
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
@@ -1058,9 +1158,88 @@ class e_media
 		}
 		return $dir;
 	}
-	
-	
-	
+
+	/**
+	 * detected Media Type from Media URL
+	 * @param string $mediaURL
+	 * @return int|string
+	 */
+	public function detectType($mediaURL)
+	{
+		$type = pathinfo($mediaURL,PATHINFO_EXTENSION);
+
+		foreach($this->mimeExtensions as $key=>$exts)
+		{
+			if(!in_array($type, $exts))
+			{
+				continue;
+			}
+
+			return $key;
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param string $default eg. {e_MEDIA_VIDEO}2018-10/myvideo.mp4
+	 * @param array $options
+	 * @return bool|string
+	 */
+	public function previewTag($default, $options=array())
+	{
+		$tp = e107::getParser();
+
+		$type = !empty($options['type']) ? $options['type'] : $this->detectType($default);
+
+		$width = vartrue($options['w'], 220);
+		$height = vartrue($options['h'], 190);
+		$preview = '';
+
+		switch($type)
+		{
+
+			case "video":
+				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
+			//	$previewURL = $tp->toVideo($default, array('mode'=>'url'));
+				break;
+
+			case "audio":
+				$preview = $tp->toAudio($default);
+			//	$previewURL = false;
+				break;
+
+			case "image":
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
+			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
+				break;
+
+			case "application": // file.
+			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
+				break;
+
+			case "glyph":
+				$preview = $tp->toGlyph($default);
+			break;
+
+			case "icon":
+				$preview = $tp->toIcon($default);
+			//	$previewURL = false;
+			break;
+
+			default: // blank
+				$preview = null;
+
+		}
+
+		return $preview;
+	}
+
+
+
+
 	public function mediaData($sc_path)
 	{
 		if(!$sc_path) return array();
@@ -1115,11 +1294,8 @@ class e_media
 	 * Import a file into the Media Manager
 	 * @param string $file Path to file
 	 * @param string $category media-category to import into
-	 * @param null|array $opts
-	 * @param string $opts['path'] Custom Folder (optional)
+	 * @param null|array $opts('path'=> Custom Folder (optional))
 	 * @param array $new_data - Additional media info to save.
-	 * @param string $new_data['media_caption']
-	 * @param string $new_data['media_descrption']
 	 * @return bool|string
 	 */
 	public function importFile($file='', $category='_common_image', $opts = null, $new_data = array())
@@ -1165,7 +1341,7 @@ class e_media
 		}
 
 
-		if(!$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file))
+		if(!$newpath = $this->checkDupe($oldpath,$typePath.'/'. $tp->filter($file,'file')))
 		{
 			return $tp->createConstants($typePath.'/'.$file,'rel');
 		}
@@ -1178,6 +1354,11 @@ class e_media
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 			return false;
 		};
+
+		if($category === '_icon') // convert to _icon_16, _icon_32 etc.
+		{
+			$category = $this->getIconCategory($img_data);
+		}
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
@@ -1204,25 +1385,59 @@ class e_media
 
 
 	/**
+	 * Calculate Icon Category from image meta data. 
+	 * @param array $img image meta data.
+	 * @return string
+	 */
+	private function getIconCategory($img)
+	{
+
+		if($img['media_type'] == 'image/svg+xml')
+		{
+			return "_icon_svg";
+		}
+
+		$sizes = array(16,32,48,64);
+
+		$dimensions = $img['media_dimensions'];
+
+		foreach($sizes as $dim)
+		{
+			list($w,$h) = explode(" x ", $dimensions);
+
+			if($w == $dim || $h == $dim)
+			{
+				return "_icon_".$dim;
+			}
+
+		}
+
+		return "_icon_64"; // default.
+
+	}
+
+
+
+
+	/**
 	 * Check File-name against mime-type and add missing extension if necessary.
 	 * @param $path
 	 * @param $mime
 	 * @return string
 	 */
-	private function checkFileExtension($path, $mime)
+	public function checkFileExtension($path, $mime)
 	{
 		if(empty($mime))
 		{
 			return $path;
 		}
 
-		list($type,$ext) = explode("/",$mime);
 
-		$ext = str_replace("jpeg",'jpg',$ext);
+		$ext = e107::getFile()->getFileExtension($mime);
 
-		if($type == 'image' && (substr($path,-3) != $ext))
+		if($ext && (substr($path,-4) != $ext))
 		{
-			return $path.".".$ext;
+			return $path.$ext;
 		}
 		else
 		{
@@ -1231,6 +1446,31 @@ class e_media
 
 	}
 
+
+	private function browserCarouselItemSelector($data)
+	{
+	//	$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
+	//	$select = (E107_DEBUG_LEVEL > 0) ? '' : " ";
+		$close = '';
+		$select = '';
+
+		if(!empty($data['close']) && E107_DEBUG_LEVEL < 1)
+		{
+			$select .= "e-dialog-close";
+			$close = "  data-close='true' ";
+		}
+
+		// e-dialog-save
+
+		$style  = varset($data['style'],'');
+		$class  = varset($data['class'],'');
+		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
+
+		$linkTag = "<a data-toggle='context' class='e-media-select ".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
+
+		return $linkTag;
+
+	}
 
 	
 	function browserCarouselItem($row = array())
@@ -1247,10 +1487,13 @@ class e_media
 			'tagid'			=> '',
 			'saveValue'		=> '',
 			'previewUrl'	=> $defaultThumb ,
+			'previewHtml'   => null,
 			'thumbUrl'		=> $defaultThumb,
 			'title'			=> '',
 			'gridClass'		=> 'span2 col-md-2',
-			'bbcode'		=> ''
+			'bbcode'		=> '',
+			'tooltip'       => '',
+			'close'         => true // close modal window after item selected
 			
 		);
 		
@@ -1262,46 +1505,126 @@ class e_media
 		}
 		
 			
-		$close = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
-		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
 
 
-
-		$text = "\n\n<!-- Start Item -->\n<div class='media-carousel ".$data['gridClass']."'>
+		$text = "\n\n
 		
-			<div class='well clearfix'>
-
-				<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+		<div class='media-carousel ".$data['gridClass']."'>
 		
-				if($data['type'] == 'image')
+			<div class='well clearfix media-carousel-item-container'>\n";
+
+
+				$caption = $data['title'];
+
+				if(!empty($data['tooltip']))
 				{
-					$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+					$data['title'] = $data['tooltip'];
 				}
-				elseif($data['type'] == 'glyph')
+
+				$linkTag = $this->browserCarouselItemSelector($data);
+
+
+
+				switch($data['type'])
 				{
-					$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";	
-				}		
-				$text .= "\n</a>\n\n";
-				
-				if($data['type'] == 'image')
-				{
-					$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
+					case "video":
+					case "audio":
+
+						if($data['type'] === 'video') // video
+						{
+							$text .= $tp->toVideo($data['thumbUrl'], array('w'=>$data['width'],'h'=>'', 'mime'=>$data['mime']));
+						}
+						else    // audio
+						{
+							$text .= $tp->toAudio($data['thumbUrl'], array('mime'=>$data['mime']));
+						}
+
+						$text .= "<div class='row media-carousel-item-controls'>
+									<div class='col-sm-8'><small class='media-carousel-item-caption'>";
+
+						$text .= $this->browserCarouselItemSelector($data);
+						$text .= "\n".$caption;
+						$text .= "\n</a></small></div>";
+
+						$data['style'] = 'float:right';
+
+						$text .= "<div class='col-sm-4 text-right'>".
+						$this->browserCarouselItemSelector($data).
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
+								</div>\n\n";
+						break;
+						
+
+					case "image":
+
+
+						$text .= $linkTag;
+						$text .= "<span>";
+						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="display:inline-block" />';
+						$text .= "</span>";
+						$text .= "\n</a>\n\n";
+
+							$text .= "<div class='row media-carousel-item-controls'>
+									<div class='col-sm-8'><small class='media-carousel-item-caption'>";
+
+						$text .= $this->browserCarouselItemSelector($data);
+						$text .= "\n".$caption;
+						$text .= "\n</a></small></div>";
+
+						$data['style'] = 'float:right';
+
+						$text .= "<div class='col-sm-4 text-right'>".
+						$this->browserCarouselItemSelector($data).
+						"<button class='btn btn-xs btn-primary' style='margin-top:7px'>".LAN_SELECT."</button></a></div>
+</div>";
+
+
+
+					//	$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
+						break;
+
+
+					case "glyph":
+						$text .= $linkTag;
+						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],array('placeholder'=>''))."</span>";
+						$text .= "\n</a>\n\n";
+
+						break;
+
+					case "icon":
+						$text .= $linkTag;
+						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toIcon($data['thumbUrl'],array('placeholder'=>''))."</span>";
+						$text .= "\n</a>\n\n";
+
+						break;
+
+					default:
+						// code to be executed if n is different from all labels;
 				}
+
 			
 			$text .= "</div>
 			
-			</div>\n<!-- End Item -->\n\n";
+			</div>\n\n\n";
+
+
+
 		
 		return $text;
 
 	}
-	
-	function browserIndicators($slides=array(),$uniqueID)
+
+	/**
+	 * @param $slides
+	 * @param $uniqueID
+	 * @return string
+	 */
+	function browserIndicators($slides, $uniqueID)
 	{
 	
 		if(count($slides)<1)
 		{
-			return;	
+			return '';
 		}
 		
 		 $indicators = '<ol class="carousel-indicators col-md-2 span2" style="top:-40px">
@@ -1381,7 +1704,7 @@ class e_media
 			/* Fix for Bootstrap2 margin-left issue when wrapping */
 		e107::css('inline','
 				
-		.media-carousel { margin-bottom:15px }
+		
 		
 		.row-fluid .media-carousel.span6:nth-child(2n + 3) { margin-left : 0px; }
 		.row-fluid .media-carousel.span4:nth-child(3n + 4) { margin-left : 0px; }
@@ -1389,16 +1712,16 @@ class e_media
 		.row-fluid .media-carousel.span2:nth-child(6n + 7) { margin-left : 0px; }
 		');
 			
-		$frm = e107::getForm();
+	//	$frm = e107::getForm();
 		
 	//	$text .= print_a($_GET,true);
 	
-			$data_src = $this->mediaSelectNav($category,$parm['tagid'], $parm);
-			$carouselID = 'myCarousel-'.$parm['action'];
+			$data_src = $this->mediaSelectNav($parm['category'], $parm['tagid'], $parm);
+			$carouselID = 'media-carousel-'.$parm['action'];
 			$searchToolttip = (empty($parm['searchTooltip'])) ? "Enter some text to filter results" : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 					
-					
+			$text = '';
 						
 			if(!e_AJAX_REQUEST)
 			{
@@ -1408,8 +1731,18 @@ class e_media
 				$text .= "<input type='text' class='form-control e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
 		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
-				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
-				$text .= "</span>";		
+			//	$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
+
+
+				$text .= '&nbsp;<div class="btn-group" >
+			<a id="'.$carouselID.'-prev" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="'.$carouselID.'-index" class="media-carousel-index btn btn-primary btn-secondary">1</a>
+			<a id="'.$carouselID.'-next" class="btn btn-primary btn-secondary" href="#'.$carouselID.'" data-slide="next"><i class="fa fa-forward"></i></a>
+			</div>';
+
+
+
+				$text .= "</span>";
 				$text .= "</div>";
 				$text .= "<div id='media-browser-container-".$parm['action']."' class='form-inline clearfix row-fluid'>";
 			}
@@ -1420,9 +1753,9 @@ class e_media
 		//	$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
 			
 			
-				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false">';
-				$text .= '{INDICATORS}';
-				$text .= '<div style="margin-top:10px" class="carousel-inner">';	
+				$text .= '<div id="'.$carouselID.'"  class="carousel slide" data-interval="false" data-wrap="false">';
+			//	$text .= '{INDICATORS}';
+				$text .= '<div style="margin-top:10px" class="row admingrid carousel-inner">';
 			
 			
 			//	$text .= "<div class='item active'>";
@@ -1430,8 +1763,11 @@ class e_media
 				$perPage = vartrue($parm['perPage'],12);
 				
 				$c=0;
+				$count = 0;
+
 				
 				$slides = array();
+				$totalSlides = 0;
 
 				if(is_array($data) && count($data) > 0)
 				{
@@ -1439,20 +1775,29 @@ class e_media
 
 					foreach($data as $key=>$val)
 					{
+
 						if($c == 0)
 						{
 							$active = (count($slides) <1) ? ' active' : '';
+							$totalSlides++;
+
 							$text .= '
 
-							<!-- Start Slide -->
+							<!-- Start Slide '.$parm['action'].' '.$totalSlides.' -->
 							<div class="item'.$active.'">';
+
+							if($totalSlides  > 2)
+							{
+								$text .= "<!-- ";
+							}
+
+
 
 							if(vartrue($val['slideCaption']))
 							{
 								$text .= "<h4>".$val['slideCaption']."</h4>";
 							}
 						}
-
 
 						$val['width']	= $parm['width'];
 						$val['height']	= $parm['height'];
@@ -1462,9 +1807,11 @@ class e_media
 						$val['bbcode']	= $parm['bbcode'];
 						$val['gridClass'] = $parm['gridClass'];
 
+
 						$text .= $this->browserCarouselItem($val);
 
 						$c++;
+
 
 						if(varset($val['slideCategory']) && isset($prevCat))
 						{
@@ -1477,16 +1824,28 @@ class e_media
 
 						}
 
-						if($c == $perPage)
+						$count++;
+
+						if($c == $perPage || (count($data) == $count))
 						{
+
+							if($totalSlides > 2)
+							{
+								$text .= " -->";
+							}
+
+
 							$text .= '
 							</div>
-							<!-- End Slide -->
+							<!-- End Slide '.$parm['action'].' '.$totalSlides.' -->';
 
-							';
+
+
 							$slides[] = 1;
 							$c = 0;
 						}
+
+
 					}
 				
 				}
@@ -1496,7 +1855,7 @@ class e_media
 				}
 				else
 				{
-					$text .= "<div class='alert alert-info alert-block text-center'>No Results Found.</div>";
+					$text .= "<div class='alert alert-info alert-block text-center'>".LAN_NO_RESULTS_FOUND."</div>";
 				}
 
 				$text .= ($c != 0) ? "</div>\n<!-- End Slide -->\n" : "";
@@ -1514,7 +1873,7 @@ class e_media
 			
 			$ret = str_replace('{INDICATORS}', $this->browserIndicators($slides,$carouselID), $text);
 
-			if(E107_DEBUG_LEVEL > 0)
+			//if(E107_DEBUG_LEVEL > 0)
 			{
 		//		print_a($parm);
 			}
@@ -1569,6 +1928,7 @@ class e_media
 		{
 			return $destFilePath;
 		}
+
 
 		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
@@ -1665,5 +2025,256 @@ class e_media
 		return $jpgFile;
 	}
 
+
+	/**
+	 * Media-Manager Upload processing - drag-n-drop and plupload
+	* @return string
+	*/
+	public function processAjaxUpload()
+	{
+
+		// Settings
+		$targetDir = e_IMPORT;
+		$cleanupTargetDir = true; // Remove old files
+		$maxFileAge = 5 * 3600; // Temp file age in seconds
+
+
+		// Get parameters
+		$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
+		$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
+		$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+		// Clean the fileName for security reasons
+		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
+
+		if(!empty($_FILES['file']['name']) && $_FILES['file']['name'] !== 'blob' ) // dropzone support v2.1.9
+		{
+			$fileName = $_FILES['file']['name'];
+		}
+
+		//	$array = array("jsonrpc" => "2.0", "error" => array('code'=>$_FILES['file']['error'], 'message'=>'Failed to move file'), "id" => "id",  'data'=>$_FILES );
+
+
+
+		// Make sure the fileName is unique but only if chunking is disabled
+		if($chunks < 2 && file_exists($targetDir . $fileName))
+		{
+			$ext = strrpos($fileName, '.');
+			$fileName_a = substr($fileName, 0, $ext);
+			$fileName_b = substr($fileName, $ext);
+
+			$count = 1;
+			while(file_exists($targetDir .  $fileName_a . '_' . $count . $fileName_b))
+			{
+				$count++;
+			}
+
+			$fileName = $fileName_a . '_' . $count . $fileName_b;
+		}
+
+		$filePath = $targetDir .  $fileName;
+
+		// Create target dir
+		if(!file_exists($targetDir))
+		{
+			@mkdir($targetDir);
+		}
+
+		// Remove old temp files
+		if($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir)))
+		{
+			while(($file = readdir($dir)) !== false)
+			{
+				$tmpfilePath = $targetDir .  $file;
+
+				// Remove temp file if it is older than the max age and is not the current file
+				if(preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part"))
+				{
+					@unlink($tmpfilePath);
+				}
+			}
+
+			closedir($dir);
+		}
+		else
+		{
+			return '{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}';
+		}
+
+
+		// Look for the content type header
+
+		$contentType = null;
+
+		if(isset($_SERVER["HTTP_CONTENT_TYPE"]))
+		{
+			$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+		}
+
+		if(isset($_SERVER["CONTENT_TYPE"]))
+		{
+			$contentType = $_SERVER["CONTENT_TYPE"];
+		}
+
+		// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
+		if(strpos($contentType, "multipart") !== false)
+		{
+			if(isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
+			{
+				// Open temp file
+				$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
+
+				if($out)
+				{
+					// Read binary input stream and append it to temp file
+					$tmpName = e107::getParser()->filter($_FILES['file']['tmp_name'],'str');
+					$in = fopen($tmpName, "rb");
+
+					if($in)
+					{
+						while($buff = fread($in, 4096))
+						{
+							fwrite($out, $buff);
+						}
+					}
+					else
+					{
+						return '{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}';
+					}
+					fclose($in);
+					fclose($out);
+					@unlink($tmpName);
+				}
+				else
+				{
+					return '{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}';
+				}
+			}
+			else // Misc Error.
+			{
+				$phpFileUploadErrors = array(
+				    0 => 'There is no error, the file uploaded with success',
+				    1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+				    2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+				    3 => 'The uploaded file was only partially uploaded',
+				    4 => 'No file was uploaded',
+				    6 => 'Missing a temporary folder',
+				    7 => 'Failed to write file to disk.',
+				    8 => 'A PHP extension stopped the file upload.',
+				);
+
+				$err = (int) $_FILES['file']['error'];
+
+				$array = array("jsonrpc" => "2.0", "error" => array('code'=>$err, 'message'=> $phpFileUploadErrors[$err]), "id" => "id",  'data'=>$_FILES );
+
+				return json_encode($array);
+
+			}
+
+
+		}
+		else
+		{
+			// Open temp file
+			$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
+			if($out)
+			{
+				// Read binary input stream and append it to temp file
+				$in = fopen("php://input", "rb");
+
+				if($in)
+				{
+					while($buff = fread($in, 4096))
+					{
+						fwrite($out, $buff);
+					}
+				}
+				else
+				{
+					return '{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}';
+				}
+
+				fclose($in);
+				fclose($out);
+			}
+			else
+			{
+				return '{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}';
+			}
+		}
+
+		$filePath = str_replace('//','/',$filePath); // cleanup .
+
+		// Check if file has been uploaded
+		if(!$chunks || $chunk == $chunks - 1)
+		{
+			// Strip the temp .part suffix off
+			rename("{$filePath}.part", $filePath);
+		}
+
+		if(e107::getFile()->isClean($filePath) !== true)
+		{
+			$this->ajaxUploadLog($filePath,$fileName, filesize($filePath), false);
+			@unlink($filePath);
+			return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected. '.$filePath.'"}, "id" : "id"}';
+		}
+
+
+		$convertToJpeg = e107::getPref('convert_to_jpeg', 0);
+		$fileSize = filesize($filePath);
+
+		if(varset($_GET['for']) !== '_icon' && !empty($convertToJpeg))
+		{
+			if($jpegFile = e107::getMedia()->convertImageToJpeg($filePath, true))
+			{
+				$filePath = $jpegFile;
+				$fileName = basename($filePath);
+				$fileSize = filesize($jpegFile);
+			}
+
+		}
+
+		if(!empty($_GET['for'])) // leave in upload directory if no category given.
+		{
+			$uploadPath = varset($_GET['path'],null);
+			$for = e107::getParser()->filter($_GET['for']);
+			$for = str_replace(array('+','^'),'', $for);
+
+			$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath));
+		}
+		else
+		{
+			$result = true; // uploaded but not imported.
+		}
+
+
+		$this->ajaxUploadLog($filePath,$fileName,$fileSize,$result);
+
+
+		$preview = $this->previewTag($result);
+		$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id", 'preview' => $preview, 'data'=>$_FILES );
+
+		return json_encode($array);
+
+
+	}
+
+
+	private function ajaxUploadLog($filePath,$fileName,$fileSize,$result)
+	{
+		$log = e107::getParser()->filter($_GET,'str');
+		$log['filepath'] = str_replace('../','',$filePath);
+		$log['filename'] = $fileName;
+		$log['filesize'] = $fileSize;
+		$log['status'] = ($result) ? 'ok' : 'failed';
+		$log['_files'] = $_FILES;
+		$log['_request'] = $_REQUEST;
+		//	$log['_get'] = $_GET;
+		//	$log['_post'] = $_POST;
+		$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING;
+
+		e107::getLog()->add('LAN_AL_MEDIA_01', print_r($log, true), $type, 'MEDIA_01');
+
+	}
 
 }

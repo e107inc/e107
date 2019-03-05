@@ -550,7 +550,8 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 //====================================================================
 
 /**
- * Get image (string) mime type
+ * @deprecated Get image (string) mime type
+ * @see e_file::getImageMime();
  * or when extended - array [(string) mime-type, (array) associated extensions)].
  * A much faster way to retrieve mimes than getimagesize()
  *
@@ -812,6 +813,7 @@ function get_image_mime($filename, $extended = false)
 
 
 	/**
+	 * @deprecated @see e_file::getAllowedFileTypes();
 	 *	Get array of file types (file extensions) which are permitted - reads an XML-formatted definition file.
 	 *	(Similar to @See{get_allowed_filetypes()}, but expects an XML file)
 	 *

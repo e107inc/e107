@@ -487,7 +487,9 @@ class user_class
 			}
 			else
 			{
-				$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$text .= "\n";
+				$text .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$text .= "\n";
 			}
 			foreach ($show_classes as $k => $v)
 			{
@@ -724,7 +726,9 @@ class user_class
 		{
 			if ($notCheckbox)
 			{
-				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$ret .= "\n";
+				$ret .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$ret .= "\n";
 			}
 			else
 			{
@@ -1059,7 +1063,7 @@ class user_class
 	 */
 	public function ucGetClassIDFromName($name)
 	{
-		return $this->getId($name);
+		return $this->getID($name);
 
 	}
 
@@ -1420,8 +1424,8 @@ class user_class_admin extends user_class
 				  case 'UPDATE' :
 					$this->save_edited_class($tree);
 					break;
-				  default :
-					continue;
+
+
 				}
 			}
 		}
@@ -1482,8 +1486,8 @@ class user_class_admin extends user_class
 	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
-			
-		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
+		$tree = vartrue($this->class_tree[$listnum]['class_children'], array());
+		$num_children = count($tree);
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 
@@ -1810,13 +1814,13 @@ class user_class_admin extends user_class
 	{
 		if (self::delete_class($classID) === TRUE)
 		{
-			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
+			if ($this->sql_r->select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
 			{
 				$sql2 = e107::getDb('sql2');
-				while ($row = $this->sql_r->db_Fetch())
+				while ($row = $this->sql_r->fetch())
 				{
 					$newClass = self::ucRemove($classID, $row['user_class']);
-					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
+					$sql2->update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']} LIMIT 1");
 				}
 			}
 			return TRUE;
@@ -1848,7 +1852,7 @@ class user_class_admin extends user_class
 			{
 				$new_userclass = $cid;
 			}
-			$uc_sql->db_Update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 
@@ -1863,13 +1867,12 @@ class user_class_admin extends user_class
 	 */
 	public function class_remove($cid, $uinfoArray)
 	{
-		$e107 = e107::getInstance();
-		$uc_sql = new db;
+		$uc_sql = e107::getDb();
 		foreach($uinfoArray as $uid => $curclass)
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
 			$new_userclass = implode(',', $newarray);
-			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 

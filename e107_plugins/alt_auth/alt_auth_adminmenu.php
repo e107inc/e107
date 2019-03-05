@@ -246,6 +246,8 @@ class alt_auth_admin extends alt_auth_base
 	 */
 	private $common_fields = array(
 	  'server' => array('fieldname' => 'server',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_32, 'help' => ''),
+	   'port' => array('fieldname' => 'port',	'size' => 4, 'max_size' => 7, 'prompt' => LAN_ALT_80, 'help' => 'eg. 3306'),
+
 	  'uname'  => array('fieldname' => 'username',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_33, 'help' => ''),
 	  'pwd'    => array('fieldname' => 'password',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_34, 'help' => ''),
 	  'db'     => array('fieldname' => 'database',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_35, 'help' => ''),

@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'))
+if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	header('Content-Length: 0');
 	exit;
@@ -20,7 +20,7 @@ $_E107['no_forceuserupdate'] = true;
 $_E107['no_maintenance'] = true;
 
 define('e_ADMIN_AREA', true);
-if(!defined('TINYMCE_DEBUG'))
+if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	require_once("../../../../class2.php");
 }
@@ -44,7 +44,7 @@ class e107TinyMceParser
 	{
 		$html = '';
 
-		if(defined('TINYMCE_DEBUG'))
+		if(defined('TINYMCE_DEBUG') || defined('TINYMCE_UNIT_TEST'))
 		{
 			$this->gzipCompression = false;
 		}
@@ -79,7 +79,7 @@ TEMPL;
 
 		if($_POST['mode'] == 'tohtml')
 		{
-			$html =  $this->toHtml($_POST['content']);
+			$html =  $this->toHTML($_POST['content']);
 		}
 
 		if($_POST['mode'] == 'tobbcode')
@@ -110,9 +110,11 @@ TEMPL;
 
 
 
-	function toHtml($content)
+	public function toHTML($content)
 	{
-		global $pref, $tp; //XXX faster?
+		// global $pref; //XXX faster?
+		$pref = e107::getPref();
+		$tp = e107::getParser();
 		// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 		$content = stripslashes($content);
 
@@ -124,13 +126,16 @@ TEMPL;
 
 			//	$content = $tp->replaceConstants($content,'abs');
 
-			if(strstr($content,"[html]") === false) // BC - convert old BB code text to html.
+			if(strpos($content,"[html]") === false) // BC - convert old BB code text to html.
 			{
 				e107::getBB()->clearClass();
 
-				//$content = str_replace('\r\n',"<br />",$content);
-				//$content =  nl2br($content, true);
-				$content = $tp->toHtml($content, true, 'WYSIWYG');
+				if($tp->isHtml($content) === false) // plain text or BBcode to HTML
+				{
+					$content =  nl2br($content, true);
+				}
+
+				$content = $tp->toHTML($content, true, 'WYSIWYG');
 			}
 
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
@@ -161,10 +166,10 @@ TEMPL;
 		{
 
 			// XXX @Cam this breaks new lines, currently we use \n instead [br]
-			//echo $tp->toHtml(str_replace("\n","",$content), true);
+			//echo $tp->toHTML(str_replace("\n","",$content), true);
 
 			$content = str_replace("{e_BASE}",e_HTTP, $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-			$content = $tp->toHtml($content, true, 'WYSIWYG');
+			$content = $tp->toHTML($content, true, 'WYSIWYG');
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";
@@ -188,7 +193,9 @@ TEMPL;
 	function toBBcode($content)
 	{
 		// echo $_POST['content'];
-		global $pref, $tp;
+	//	global $pref;
+		$pref = e107::getPref();
+	//	$tp = e107::getParser();
 
 			e107::getBB()->setClass($_SESSION['media_category']);
 

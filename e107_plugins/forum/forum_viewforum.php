@@ -195,25 +195,20 @@ if(!empty($forumInfo['forum_description']))
 {
 	define("META_DESCRIPTION", $tp->text_truncate(
 		str_replace(
-			array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
+			//array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
+			array('"', "'"), '', $tp->toText($forumInfo['forum_description'])
 	), 250, '...'));
 }
 
-//define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
-//$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+$moderatorUserIds = $forum->getModeratorUserIdsByForumId($forumId);
+define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
 
-// $thread???
-$modArray = $forum->forumGetMods($thread->forum_info['forum_moderators']);
-define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
-
-//----$message = '';
 if (MODERATOR)
 {
 	if ($_POST)
 	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
-//--		$message = forum_thread_moderate($_POST);
-    $forumSCvars['message']=forum_thread_moderate($_POST);
+		$forumSCvars['message'] = forum_thread_moderate($_POST);
 	}
 }
 
@@ -336,6 +331,7 @@ $fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modUser);
 $fVars->BROWSERS = '';
 --*/
 		$forumSCvars['forum_name']= $forumInfo['forum_name'];
+		$forumSCvars['forum_image']= $forumInfo['forum_image'];
 		$forumSCvars['modUser']= $modUser;
 		$forumSCvars['track_online']= varset($pref['track_online']);
 
@@ -1007,19 +1003,19 @@ function fadminoptions($thread_info)
 	
 	$lan = array('stick'=>LAN_FORUM_8007,'unstick'=>LAN_FORUM_8008,'lock'=>LAN_FORUM_8009, 'unlock'=>LAN_FORUM_8010);
 	$icon = array(
-		'unstick'	=>	$tp->toGlyph('chevron-down'),
-		'stick'		=>	$tp->toGlyph('chevron-up'),
-		'lock'		=>	$tp->toGlyph('lock'),
-		'unlock'	=>	$tp->toGlyph('unlock'),
+		'unstick'	=>	$tp->toGlyph('fa-chevron-down'),
+		'stick'		=>	$tp->toGlyph('fa-chevron-up'),
+		'lock'		=>	$tp->toGlyph('fa-lock'),
+		'unlock'	=>	$tp->toGlyph('fa-unlock'),
 	);
 	
 
 
-	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>".LAN_DELETE." ".$tp->toGlyph('trash')."</a></li>";
-	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
-	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
+	$text .= "<li class='text-right'><a class='dropdown-item' href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>".LAN_DELETE." ".$tp->toGlyph('trash')."</a></li>";
+	$text .= "<li class='text-right'><a class='dropdown-item' href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
+	$text .= "<li class='text-right'><a class='dropdown-item' href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
-	$text .= "<li class='text-right'><a href='{$moveUrl}'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></li>";
+	$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></li>";
 
 	if(e_DEVELOPER)
 	{

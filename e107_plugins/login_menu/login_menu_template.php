@@ -198,8 +198,8 @@ if ( ! isset($LOGIN_MENU_LOGGED))
 	<ul class="login-menu-logged nav nav-list">
 		{LM_MAINTENANCE}
 		{LM_ADMINLINK}
-		<li class="login-menu-usersettings">{LM_USERSETTINGS}</li>
-		<li class="login-menu-profile">{LM_PROFILE}</li>
+		<li class="login-menu-usersettings {LM_ACTIVE: mode=usersettings}">{LM_USERSETTINGS}</li>
+		<li class="login-menu-profile {LM_ACTIVE: mode=profile}">{LM_PROFILE}</li>
 		{LM_ADMIN_CONFIGURE}
 		{LM_EXTERNAL_LINKS}
 		{LM_LOGOUT}

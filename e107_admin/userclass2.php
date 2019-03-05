@@ -90,9 +90,9 @@ e107::coreLan('userclass2', true);
 			'userclass_description'   	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
 			'userclass_type' 			=> array('title'=> LAN_TYPE,	'type' => 'dropdown',	'tab'=>0,'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
 			'userclass_editclass' 		=> array('title'=> LAN_MANAGER,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
-			'userclass_visibility' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_visibility' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array()),
 			'userclass_parent' 			=> array('title'=> LAN_PARENT,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'main,admin,nobody,public,classes,matchclass,member, no-excludes')),
-			'userclass_perms' 			=> array('title'=> "Perms",	'type' => 'hidden',	'tab'=>0,'data'=>'str', 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_perms' 			=> array('title'=> "Perms",	'type' => 'hidden',	'tab'=>0,'data'=>'str', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array()),
 
 			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => 'method',		'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'right', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
@@ -141,7 +141,7 @@ e107::coreLan('userclass2', true);
 			return e107::getSingleton('user_class_admin');
 		}
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			return $new_data;
 		}
@@ -156,7 +156,6 @@ e107::coreLan('userclass2', true);
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-
 
 			if(!empty($new_data['perms']))
 			{
@@ -173,7 +172,7 @@ e107::coreLan('userclass2', true);
 			e107::getUserClass()->clearCache();
 		}
 
-		public function afterDelete($data,$id)
+		public function afterDelete($data,$id, $check = false)
 		{
 			e107::getUserClass()->clearCache();
 		}

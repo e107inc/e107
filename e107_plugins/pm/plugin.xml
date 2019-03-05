@@ -25,6 +25,9 @@
 		<pref name="allow_userclass">1</pref>
 		<pref name="pm_limits">0</pref>
 		<pref name="pm_max_send">100</pref>
-		<pref name="sent_to_class">matchclass</pref>
+		<pref name="send_to_class">matchclass</pref>
+		<pref name="maxlength">0</pref>
+		<pref name="opt_userclass">e_UC_NOBODY</pref>
+		<pref name="vip_class">e_UC_NOBODY</pref>
 	</pluginPrefs>
 </e107Plugin>

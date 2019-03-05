@@ -16,6 +16,10 @@
 		<word>empty</word>
 		<word>template</word>
 	</keywords>
+	<libraries>
+		<library name="bootstrap" version="3" scope="all"/>
+		<library name="fontawesome" scope="all"/>
+	</libraries>
 	<layouts>
 		<layout name='default' title='Default' default='true' />
 		<layout name='home' title='Home'>

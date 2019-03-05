@@ -926,8 +926,8 @@ class comment
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $table
-	 * @return unknown
+	 * @param string $table
+	 * @return string|int
 	 */
 	function getCommentType($table)
 	{
@@ -1055,16 +1055,18 @@ class comment
 	}
 
 
-
 	/**
 	 * Displays existing comments, and a comment entry form
 	 *
-	 * @param string $table - the source table for the associated item
-	 * @param string $action - usually 'comment' or 'reply'
+	 * @param string  $table - the source table for the associated item
+	 * @param string  $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param int $width - appears to not be used
-	 * @param string $subject
+	 * @param int     $width - appears to not be used
+	 * @param string  $subject
 	 * @param boolean $rate
+	 * @param boolean|string $return true, false or 'html'
+	 * @param boolean $tablerender
+	 * @return array|null|string|void
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
@@ -1174,11 +1176,9 @@ class comment
 		{
 			$text = "<ul class='media-list' id='comments-container'><li><!-- --></li></ul>";	
 		}
-		
-		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
-		$pagination = '';
-		$replace = array($modcomment,$text,$comment,$pagination);
-		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
+
+
+		$TEMPL = $this->parseLayout($text,$comment,$modcomment);
 
 
 	//	$return = null;
@@ -1209,8 +1209,8 @@ class comment
 		}
 
 		
-		
 
+		$ret = array();
 		$ret['comment'] = $text;
 		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
@@ -1219,7 +1219,22 @@ class comment
 		return (!$return) ? "" : $ret;
 	}
 
+	/**
+	 * Parse the Comment Layout template
+	 * @param $comment
+	 * @param $form
+	 * @param $modcomment
+	 * @return mixed
+	 */
+	public function parseLayout($comment, $form, $modcomment)
+	{
+		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
+		$pagination = '';
+		$replace = array($modcomment,$comment,$form,$pagination);
 
+		return str_replace($search,$replace,$this->template['layout']);
+
+	}
 
 
 	

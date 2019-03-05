@@ -42,7 +42,8 @@ class core_user_url extends eUrlConfig
 	 */
 	public function create($route, $params = array(), $options = array())
 	{
-		if(!$params) return 'user.php';
+		// Some routes require no params
+		//if(!$params) return 'user.php';
 		
 		if(is_string($route)) $route = explode('/', $route, 2);
 		if(!varset($route[1])) $route[1] = 'index';
@@ -56,6 +57,9 @@ class core_user_url extends eUrlConfig
 		
 		if($route[0] == 'profile')
 		{
+			// Params required for user view, list & edit
+			if(!$params) return 'user.php';
+
 			switch ($route[1]) 
 			{
 				case '':
@@ -68,7 +72,8 @@ class core_user_url extends eUrlConfig
 				break;
 				
 				case 'edit':
-					$url = e_ADMIN_ABS."user.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
+					//$url = e_ADMIN_ABS."user.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
+					$url = e_ADMIN."users.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
 				break;
 			}
 		}

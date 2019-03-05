@@ -390,7 +390,7 @@ class auth
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
 		echo "<div class='row-fluid'>
-						<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>".ADLAN_165."</a></span> <a href='".e_BASE."index.php'>".ADLAN_166."</a></div>
+						<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a target='_blank' href='http://e107.org'>".ADLAN_165."</a></span> <a href='".e_BASE."index.php'>".ADLAN_166."</a></div>
 			</div>";
 	}
 
@@ -420,13 +420,13 @@ class auth
 
 		if (!$reason)
 		{
-			if ($sql_auth->db_Select("user", "*", "user_loginname='{$authname}' AND user_admin='1' "))
+			if ($sql_auth->select("user", "*", "user_loginname='{$authname}' AND user_admin = 1 "))
 			{
-				$row = $sql_auth->db_Fetch();
+				$row = $sql_auth->fetch();
 			}
-			elseif ($sql_auth->db_Select("user", "*", "user_name='{$authname}' AND user_admin='1' "))
+			elseif ($sql_auth->select("user", "*", "(user_name='{$authname}' OR user_email='{$authname}' ) AND user_admin=1 "))
 			{
-				$row = $sql_auth->db_Fetch();
+				$row = $sql_auth->fetch();
 				$authname = $row['user_loginname'];
 			}
 			else

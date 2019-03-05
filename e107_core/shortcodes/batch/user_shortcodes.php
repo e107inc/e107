@@ -161,22 +161,19 @@ class user_shortcodes extends e_shortcode
 	function sc_user_level($parm) 
 	{
 		$pref = e107::getPref();
-		//FIXME - new level handler, currently commented to avoid parse errors
-		//require_once(e_HANDLER."level_handler.php");
-		//$ldata = get_level($this->var['user_id'], $this->var['user_forums'], $this->var['user_comments'], $this->var['user_chats'], $this->var['user_visits'], $this->var['user_join'], $this->var['user_admin'], $this->var['user_perms'], $pref);
-		$ldata = array();
-		if (isset($ldata[0]) && strstr($ldata[0], "IMAGE_rank_main_admin_image"))
+
+		$ldata = e107::getRank()->getRanks($this->var['user_id']); //, (USER && $forum->isModerator(USERID)));
+		if(vartrue($ldata['special']))
 		{
-			return LAN_USER_31;
+			$r = $ldata['special'];
 		}
-		elseif(isset($ldata[0]) && strstr($ldata[0], "IMAGE"))
+		else
 		{
-			return LAN_USER_32;
+			$r = $ldata['pic'] ? $ldata['pic'] : varset($ldata['name'], $ldata['name']);
 		}
-		elseif(isset($ldata[1]))
-		{
-			return $ldata[1];
-		}
+		if(!$r) $r = 'n/a';
+		return $r;
+
 	}
 	
 	
@@ -265,23 +262,29 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_email($parm='')
+function sc_user_email($parm='')
+{
+
+	$tp = e107::getParser();
+	
+	$aCurUserData = e107::user(USERID);
+
+	if( ($this->var['user_hideemail'] && !ADMIN ) && ( $this->var['user_email']!=$aCurUserData['user_email'] ) )
 	{
-
-		$tp = e107::getParser();
-
-		if($this->var['user_hideemail'] && !ADMIN)
-		{
-			return "<i>".LAN_USER_35."</i>";
-		}
-		else
-		{
+		return "<i>".LAN_USER_35."</i>";
+	}
+	else
+	{
+		if($this->var['user_email']!=$aCurUserData['user_email']){
 			return $tp->emailObfuscate($this->var['user_email']);
 			//list($user,$dom) = explode('@', $this->var['user_email']);
 			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
+		}else{
+			return $this->var['user_email'];
 		}
-
 	}
+
+}
 
 
 	/**
@@ -299,41 +302,41 @@ class user_shortcodes extends e_shortcode
 		switch ($parm) 
 		{
 			case 'email':
-				return ($boot) ? $tp->toGlyph('envelope') : $this->sc_user_email_icon();	
+				return ($boot) ? $tp->toGlyph('fa-envelope') : $this->sc_user_email_icon();
 			break;
 			
 			case 'lastvisit':
-				return ($boot) ? $tp->toGlyph('time') : '';		 	
+				return ($boot) ? $tp->toGlyph('fa fa-clock-o') : '';
 			break;
 			
 			case 'birthday':
-				return ($boot) ? $tp->toGlyph('calendar') : $this->sc_user_birthday_icon();		
+				return ($boot) ? $tp->toGlyph('fa-calendar') : $this->sc_user_birthday_icon();
 			break;
 
 			case 'level':
-				return ($boot) ? $tp->toGlyph('signal') : '';	
+				return ($boot) ? $tp->toGlyph('fa-signal') : '';
 			break;
 			
 			case 'website':
-				return ($boot) ? $tp->toGlyph('home') : '';		
+				return ($boot) ? $tp->toGlyph('fa-home') : '';
 			break;
 			
 			case 'location':
-				return ($boot) ? $tp->toGlyph('map-marker') : '';		
+				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
 			
 			case 'icq':
-				return ($boot) ? $tp->toGlyph('comment') : '';		
+				return ($boot) ? $tp->toGlyph('fa-comment') : '';
 			break;	
 				
 			case 'msn':
-				return ($boot) ? $tp->toGlyph('comment') : '';		
+				return ($boot) ? $tp->toGlyph('fa-comment') : '';
 			break;		
 
 			default:
 			case 'realname':
 			case 'user':
-				return ($boot) ? $tp->toGlyph('user') : $this->sc_user_realname_icon();		
+				return ($boot) ? $tp->toGlyph('fa-user') : $this->sc_user_realname_icon();
 			break;
 		}
 
@@ -521,21 +524,40 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_update_link($parm) 
 	{
-		$url = e107::getUrl();
+		$label = null;
+
 		if (USERID == $this->var['user_id']) 
 		{
-			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			$label = LAN_USER_38;
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
-			$editUrl =  e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
-
-			return "<a class='btn btn-default' href='".$editUrl."'>".LAN_USER_39."</a>";
-
-			//	return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
+			$label = LAN_USER_39;
 		}
+
+		if(empty($label))
+		{
+			return null;
+		}
+
+		return "<a class='btn btn-default' href='".$this->sc_user_settings_url()."'>".$label."</a>";
+
 	}
+
+	function sc_user_settings_url($parm=null)
+	{
+
+		if (USERID == $this->var['user_id'])
+		{
+			return e107::getUrl()->create('user/myprofile/edit');
+		}
+		else if(ADMIN && getperms("4") && !$this->var['user_admin'])
+		{
+			return e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
+		}
+
+	}
+
 	
 	
 	
@@ -571,7 +593,7 @@ class user_shortcodes extends e_shortcode
 		if($parm == 'prev')
 		{
 		
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';			
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
 	    	return isset($userjump['prev']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
 		
 			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
@@ -579,7 +601,7 @@ class user_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
 			return isset($userjump['next']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
 			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 		}
@@ -725,8 +747,9 @@ class user_shortcodes extends e_shortcode
 				{
 					
 					$key = $f['user_extended_struct_name'];
-
-					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
+					$field = 'user_'.$key; 
+								
+					if($ue->hasPermission($field) && $ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
 
 						$extended_record = str_replace("EXTENDED_ICON","USER_EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
@@ -759,13 +782,15 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_profile_comments($parm) 
 	{
-		if(e107::getPref('profile_comments'))
+		if(!e107::getPref('profile_comments'))
 		{
-			$ret = e107::getComment()->compose_comment('profile', 'comment', $this->var['user_id'], null, $this->var['user_name'], FALSE,true);
-		
-		 	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
+			return '';
 		}
-		return "";
+
+		return e107::getComment()->compose_comment('profile', 'comment', $this->var['user_id'], null, $this->var['user_name'], false,'html');
+
+	//	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
+
 	}
 	
 	
@@ -967,4 +992,3 @@ class user_shortcodes extends e_shortcode
 	
 
 }
-?>

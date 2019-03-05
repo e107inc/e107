@@ -37,7 +37,7 @@ if($_GET['action'] == 'youtube' )
 }
 
 // TODO use library manager
-e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
+e107::js('core', 'plupload/plupload.full.min.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.min.js', 'jquery', 2);
 e107::js('core', 'core/mediaManager.js',"jquery",5);
@@ -276,7 +276,7 @@ class media_cat_ui extends e_admin_ui
 
 
 	
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		// XXX temporary disable when there is no owners, discuss
 		if(!$new_data['media_cat_owner'])
@@ -366,7 +366,7 @@ class media_form_ui extends e_admin_form_ui
 		}
 		asort($this->cats);*/
 	//	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
-				
+		/*
 		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
@@ -390,13 +390,13 @@ class media_form_ui extends e_admin_form_ui
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->convertImagesToJpeg($ids);
 		}
-		
+
 		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_all_to_jpeg' ))
 		{
 		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->convertImagesToJpeg($ids,'all');
-		}
+		}*/
 		
 	}
 	
@@ -543,7 +543,7 @@ class media_form_ui extends e_admin_form_ui
 		
 	}
 
-	private function convertImagesToJpeg($ids,$mode=null)
+	public function convertImagesToJpeg($ids,$mode=null)
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -564,7 +564,7 @@ class media_form_ui extends e_admin_form_ui
 
 			if($jpegFile = $mm->convertImageToJpeg($path,true))
 			{
-				$url = $tp->createConstants($jpegFile);
+				$url = $tp->createConstants($jpegFile, 1);
 				$size = filesize($jpegFile);
 
 				$update = array (
@@ -848,9 +848,9 @@ class media_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE, 'nolist'=>TRUE),
-      		'media_preview'			=> array('title'=> LAN_PREVIEW, 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
-      		'media_url' 			=> array('title'=> IMALAN_110,			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
-			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
+      		'media_preview'			=> array('title'=> LAN_PREVIEW, 	'type' => 'method', 	'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
+      		'media_url' 			=> array('title'=> IMALAN_110,		'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
+			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	    'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
@@ -876,7 +876,7 @@ class media_admin_ui extends e_admin_ui
 				'text'			=> e_MEDIA_FILE,
 				'multipart'		=> e_MEDIA_FILE,
 				'application'	=> e_MEDIA_FILE,
-			//	'audio'			=> e_MEDIA_FILE,
+				'audio'			=> e_MEDIA_FILE,
 				'image'			=> e_MEDIA_IMAGE,
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
@@ -916,9 +916,9 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>"")),
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('size'=>'xxlarge','post'=>"")),
 
-		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
+		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('size'=>'xxlarge','post'=>"")),
 
 		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
 		'youtube_showinfo'				=> array('title'=> IMALAN_101, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
@@ -931,66 +931,6 @@ class media_admin_ui extends e_admin_ui
 	);
 	
 
-	
-
-	/*
-
-	<tr>
-								<td>
-									".IMALAN_1."
-								</td>
-								<td>
-									<div class='auto-toggle-area autocheck'>
-										".$frm->checkbox('image_post', 1, $pref['image_post'])."
-										<div class='field-help'>".IMALAN_2."</div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									".IMALAN_10."
-								</td>
-								<td>
-									".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
-									<div class='field-help'>".IMALAN_11."</div>
-								</td>
-							</tr>
-	
-							<tr>
-								<td>
-									".IMALAN_12."
-								</td>
-								<td>
-									".$frm->select_open('image_post_disabled_method')."
-										".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
-										".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
-									".$frm->select_close()."
-									<div class='field-help'>".IMALAN_13."</div>
-								</td>
-							</tr>";
-							
-							list($img_import_w,$img_import_h) = explode("x",$pref['img_import_resize']);
-
-							$text .= "						
-							<tr>
-								<td>".IMALAN_105."<div class='label-note'>".IMALAN_106."</div></td>
-								<td>
-									".$frm->text('img_import_resize_w', $img_import_w,4)."px X ".$frm->text('img_import_resize_h', $img_import_h,4)."px
-								</td>
-							</tr>
-	
-							<tr>
-								<td>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
-								<td>
-									".$frm->select_open('resize_method')."
-										".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
-										".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
-										".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
-									".$frm->select_close()."
-									<div class='field-help'>".IMALAN_4."</div>
-								</td>
-							</tr>";
-	*/
 	protected $cats = array();
 	protected $owner = array();
 	protected $ownercats = array();
@@ -1071,26 +1011,93 @@ class media_admin_ui extends e_admin_ui
 		e107::getCache()->clearAll('image');
 		
 	//	print_a($_GET);
-
-
-
-
-
-		
-		if($this->getAction() == 'youtube')
+		if(e_AJAX_REQUEST)
 		{
-			$parm = array('search' => $tp->filter($_GET['search']));	
-			echo $this->videoTab($parm);
+			$parm = array('search' => $tp->filter($_GET['search']));
+
+			switch($this->getAction())
+			{
+				case "youtube":
+					echo $this->youtubeTab($parm);
+					break;
+
+				case "glyph":
+					echo $this->glyphTab(null, $parm);
+					break;
+
+				case "icon":
+					echo $this->iconTab(null, $parm);
+					break;
+
+				case "image2":
+					$cat = $tp->filter($_GET['for']);
+					echo $this->imageTab2($cat,$parm);
+					break;
+
+				case "video":
+					$cat = $tp->filter($_GET['for']);
+					echo $this->videoTab($cat, $parm);
+				break;
+
+				case "audio":
+					$cat = $tp->filter($_GET['for']);
+					echo $this->audioTab($cat, $parm);
+				break;
+
+				default:
+					// code to be executed if n is different from all labels;
+			}
+
+			exit;
+		}
+
+/*
+		if($this->getAction() === 'youtube')
+		{
+
+			echo $this->youtubeTab($parm);
+			exit;
+		}
+
+			if($this->getAction() === 'glyph')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			echo $this->glyphTab($parm);
 			exit;
 		}
 		
-		if($this->getAction() == 'glyph')
+		if($this->getAction() === 'glyph')
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));	
 			echo $this->glyphTab($parm);
 			exit;
 		}
-		
+
+		if($this->getAction() === 'video')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			$cat = $tp->filter($_GET['for']);
+			echo $this->videoTab($cat, $parm);
+
+			exit;
+		}
+
+		if($this->getAction() === 'audio')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			$cat = $tp->filter($_GET['for']);
+			echo $this->audioTab($cat, $parm);
+			exit;
+		}
+
+		if($this->getAction() === 'image2')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			$cat = $tp->filter($_GET['for']);
+			echo $this->imageTab2($cat,$parm);
+			exit;
+		}
+	*/
 		if($this->getAction() == 'nav' )
 		{
 			//echo $this->navPage();\
@@ -1152,6 +1159,45 @@ class media_admin_ui extends e_admin_ui
 	
 	}
 
+	/**
+	 * Handle Batch options as defined in media_form_ui::options();  handle+action+field+Batch
+	 * @param $selected
+	 * @param $type
+	 */
+	function handleListOptionsBatch($selected, $type)
+	{
+
+		/** @var media_form_ui $frm */
+		$frm = $this->getUI();
+
+		$ids = implode(",", $selected);
+
+		switch($type)
+		{
+			case "resize_2048":
+				$frm->resizeImages($ids,$type);
+				break;
+
+			case "rotate_cw":
+			case "rotate_ccw":
+				$frm->rotateImages($ids,$type);
+				break;
+
+			case "convert_to_jpeg":
+
+				$frm->convertImagesToJpeg($ids);
+				break;
+
+			case "convert_all_to_jpeg":
+				$frm->convertImagesToJpeg($ids,'all');
+			break;
+
+			default:
+				// code to be executed if n is different from all labels;
+		}
+
+
+	}
 
 	function navPage() // no functioning correctly - see e_AJAX_REQUEST above. 
 	{
@@ -1222,7 +1268,8 @@ class media_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			echo $this->mediaSelectUpload();		
+			return $this->mediaManagerTabs();
+			//  echo $this->mediaSelectUpload();
 		}	
 		
 	}
@@ -1257,7 +1304,7 @@ class media_admin_ui extends e_admin_ui
 	}
 	
 	
-	function uploadTab()
+	private function uploadTab()
 	{
 		if(!ADMIN){ exit; }
 
@@ -1307,34 +1354,141 @@ class media_admin_ui extends e_admin_ui
 		return $text;
 	}
 
-
-	function mediaSelectUpload($type='image') 
+	/**
+	 * Media-Manager Tabs (new in v2.1.9)
+	 * Replacement for mediaSelectUpload()
+	 * @return string
+	 */
+	private function mediaManagerTabs()
 	{
 		$frm = e107::getForm();
+		$tp = e107::getParser();
+
+		$options = array();
+		$options['bbcode'] = ($this->getQuery('bbcode')) ? $this->getQuery('bbcode') : FALSE;
+
+		if(isset($_GET['from']))
+		{
+			$options['from'] .= intval($_GET['from']);
+		}
+
+		$cat = $this->getQuery('for');
+
+		$cat = urldecode($cat);
+
+		$tabOptions = array(
+			'core-media-icon'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').IMALAN_72,     'method' => 'iconTab' ),
+			'core-media-image'   => array('caption'=> $tp->toGlyph('fa-file-photo-o').ADLAN_105,    'method' => 'imageTab2' ),
+			'core-media-video'   => array('caption'=> $tp->toGlyph('fa-file-video-o').IMALAN_163,   'method' => 'videoTab'),
+			'core-media-file'   => array('caption'=> $tp->toGlyph('fa-file').ADLAN_CL_5,            'method' => 'fileTab'),
+			'core-media-audio'   => array('caption'=> $tp->toGlyph('fa-file-audio-o')."Audio",      'method' => 'audioTab'),
+			'core-media-youtube' => array('caption'=> $tp->toGlyph('fa-youtube-play')."Youtube",    'method' => 'youtubeTab' ),
+			'core-media-glyph'   => array('caption'=> $tp->toGlyph('fa-flag')."Glyphs",             'method' => 'glyphTab'),
+		);
+
+		if(!empty($options['bbcode']))
+		{
+			$tabOptions['core-media-img'] = $tabOptions['core-media-image'];
+		}
+
+		$tabs = array();
+
+		// check tab options against URL
+		foreach($tabOptions as $key=>$val)
+		{
+			$id = str_replace('core-media-', '', $key);
+			if($this->getQuery($id) == 1 || $this->getQuery('bbcode') == $id)
+			{
+				$tabMethod = $val['method'];
+				$text = $this->$tabMethod($cat,$options);
+				$tabs[$key] = array('caption'=>$val['caption'], 'text'=>$text);
+			}
+
+		}
+
+		if($options['bbcode'] === 'img')
+		{
+			$tabs['core-media-attributes']  = array('caption'=> $tp->toGlyph('fa-image').IMALAN_152, 'text' => $this->imageAttributesTab());
+		}
+
+		if(getperms('A|A1'))
+		{
+			$tabs['core-media-upload']  = array('caption'=> $tp->toGlyph('fa-upload').IMALAN_150, 'text' => $this->uploadTab());
+		}
+
+
+
+		$text = $frm->tabs($tabs, array('id'=>'admin-ui-media-manager', 'class'=>'media-manager'));
+
+	/*	if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
+		{
+
+		}*/
+
+			$text .= $this->mediaManagerSaveButtons($options);
+
+		$text .= $this->mediaManagerPlaceholders();
+
+		return $text;
+
+	}
+
+	/**
+	 * @deprecated by mediaManagerTabs
+	 * @param string $type
+	 * @return string
+	 */
+	function mediaSelectUpload($type='image') 
+	{
+	//	return $this->mediaManagerTabs();
+
+
+		$frm = e107::getForm();
+		$tp = e107::getParser();
 
 		if($type === 'video')
 		{
 			$tabs = array(
-				'youtube' => array('caption'=>'Youtube', 'text' => $this->videoTab())
+				'youtube' => array('caption'=>'Youtube', 'text' => $this->youtubeTab())
 			);
 
 			return $frm->tabs($tabs, array('class'=>'media-manager'));
 		}
 
+		if(deftrue('e_DEBUG_MEDIAPICKER'))
+		{
+		//	return $this->mediaManagerTabs();
+		}
 
 
-
-		$videoActive = 'inactive';
+		$youtubeActive = 'inactive';
 		
 		$options = array();
-		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
-		
+
+		switch($this->getQuery('bbcode'))
+		{
+			case "img":
+				$options['bbcode'] = 'img';
+				break;
+
+			case "video":
+				$options['bbcode'] = 'video';
+				break;
+
+			case "glyph":
+				$options['bbcode'] = 'glyph';
+				break;
+
+			default:
+				$options['bbcode'] = false;
+		}
+
 						
 		$text = "<ul id='admin-ui-media-manager' class='nav nav-tabs'>\n";
 		
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{
-			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>".IMALAN_151."</a></li>\n";	
+			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>".ADLAN_105."</a></li>\n";
 		}
 		else
 		{
@@ -1344,32 +1498,35 @@ class media_admin_ui extends e_admin_ui
 			}
 			else 
 			{
-				$videoActive = 'active';		
+				$youtubeActive = 'active';
 			}
 				
 					
 		}
 		
+
+		
+		if(varset($options['bbcode']) == 'img')
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";
+		}
+
+		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
+		{
+			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>"."Youtube</a></li>\n";
+		}
+
+
+		if($this->getQuery('glyph') == 1 || $this->getQuery('bbcode') == 'glyph')
+		{
+			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>"."Glyphs</a></li>\n";
+		}
+
 		if(getperms('A|A1') && ($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') !='glyph'))
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>".IMALAN_150."</a></li>";
 		}
-		
-		if(varset($options['bbcode']) == 'img')
-		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";	
-		}
-		
-		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
-		{
-			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>Glyphs</a></li>\n";	
-		}
-		
-		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
-		{
-			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
-		}
-		
+
 		
 		if(varset($_GET['from']))
 		{
@@ -1417,11 +1574,60 @@ class media_admin_ui extends e_admin_ui
 		 * 
 		 */
 		
-		if($options['bbcode']) //TODO LAN lan_image.php
+		if($options['bbcode'])
 		{
-			$text .= "<div class='tab-pane' id='core-media-style'>
+			$text .= "<div class='tab-pane' id='core-media-style'>".$this->imageAttributesTab()."</div>";
+		}	
+		
+
+		
+		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
+		{
+			$text .= "<div class='tab-pane clearfix {$youtubeActive}' id='core-media-youtube' >";
+			$text .= $this->youtubeTab();
+			$text .= "</div>";
+
+		}
+			
+/*
+		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
+		{
+				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
+				$text .= $this->audioTab();
+				$text .= "</div>";
+		}*/
+
+		if($this->getQuery('glyph') == 1 || $this->getQuery('bbcode') == 'glyph')
+		{
+			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs'>";
+			$text .= $this->glyphTab();
+			$text .= "</div>
+			";
+
+		}
+		
+		
+		$text .= "</div>";
+		
+		// For BBCODE/TinyMce mode.
+		// e-dialog-save
 				
-				<div class='row'>
+		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
+		{
+			$text .= $this->mediaManagerSaveButtons($options);
+		}
+		
+		$text .= $this->mediaManagerPlaceholders();
+		
+		return $text;
+	}
+
+
+	private function imageAttributesTab()
+	{
+		$frm = e107::getForm();
+
+		$text = "<div class='row'>
 				<div class='col-md-6 span6'>
 				<table class='table'>
 				<colgroup>
@@ -1477,72 +1683,71 @@ class media_admin_ui extends e_admin_ui
 			
 		
 			</div>
-			</div>
-			</div>";
-		}	
-		
-		if($this->getQuery('glyphs') == 1 || $this->getQuery('bbcode') == 'glyph')
-		{
-			//TODO 
-			$text .= "<div class='tab-pane clearfix {$glyphActive}' id='core-media-glyphs' style='font-size:24px'>";
-	
-			$text .= $this->glyphTab();
-			
-			$text .= "</div>
-			";
-		
-		
-		}
-		
-		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
-		{
-			$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
-		//	$text .= "<div class='row-fluid'>";
-			$text .= $this->videoTab();
-			$text .= "</div>";	
-		//	$text .= "</div>";	
-		}
-			
-		
-		
-		
-		
-		
-		$text .= "</div>";
-		
-		// For BBCODE/TinyMce mode.
-		// e-dialog-save
-				
-		if($options['bbcode'] || E107_DEBUG_LEVEL > 0)
-		{
-						
-			$text .= "<div style='text-align:right;padding:5px'>
-			
-			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
-			<span>".LAN_SAVE."</span>
-			</button>
-			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel' >
-			<span>".LAN_CANCEL."</span>
-			</button>
 			</div>";
 
-		}
-		
-		$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br />" : "";
+		return $text;
 
-		$text .= "
-		".$br."<input title='bbcode' type='{$type}' readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
+	}
+
+
+	private function mediaManagerPlaceholders()
+	{
+			$type = (E107_DEBUG_LEVEL > 0) ?  "text" : "hidden";
+		$br = (E107_DEBUG_LEVEL > 0) ?  "<br style='clear:both' />" : "";
+
+		$text = "
+		".$br."<input title='bbcode' type='{$type}' style=readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
 		".$br."<input title='html/wysiwyg' type='{$type}' class='span11 col-md-11' readonly='readonly' id='html_holder' name='html_holder' value='' />
 		".$br."<input title='(preview) src' type='{$type}' class='span11 col-md-11' readonly='readonly' id='src' name='src' value='' />
 		".$br."<input title='path (saved to db)' type='{$type}' class='span11 col-md-11' readonly='readonly' id='path' name='path' value='' />
-		";		
-		
+		";
+
 		return $text;
 	}
 
 
 
+	private function mediaManagerSaveButtons($options = array())
+	{
+		if(empty($options['bbcode'])) // media picker mode.
+		{
+			$text = "<div class='buttons-bar' style='display:none;text-align:right;padding-right:15px;'>
+			
+			<button id='etrigger-submit' style='display:none' type='submit' data-modal-submit-class='btn-danger' class=' submit e-media-select-file-none e-dialog-close' data-target-label='' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='reset_value' value='reset'  >
+			<span>".LAN_CLEAR."</span>
+			</button>
+		
+			</div>";
+
+			return $text;
+		}
+
+		// bbcode/wysiwyg mode.
+
+		// hidden from view but used by javascript to re-create the button in the modal-footer.
+		// Tinymce will remove the 'display:none' when loaded.
+		$text = "<div id='media-manager-submit-buttons' class='buttons-bar' style='text-align:right;padding-right:15px;display:none;'>
+			
+			<button id='etrigger-submit' type='submit' class='btn btn-success submit e-dialog-save e-dialog-close' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
+			<span>".LAN_SAVE."</span>
+			</button>
+			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close e-dialog-cancel' name='cancel_image' value='Cancel'  data-close='true'>
+			<span>".LAN_CANCEL."</span>
+			</button>
+			</div>";
+
+
+		return $text;
+	}
+
+
+
+	/**
+	 * @deprecated to be replaced by imageTab2
+	 * @param $type
+	 * @param $options
+	 * @return string
+	 */
 	function imageTab($type,$options)
 	{
 		$tag = ($options['bbcode']) ? "" : $this->getQuery('tagid');
@@ -1560,19 +1765,308 @@ class media_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail				
+			$text = e107::getMedia()->mediaSelect($this->getQuery('for'),$this->getQuery('tagid'), $options); // eg. news, news-thumbnail
 		}
 		
 		return $text;
 	}
+
+
+	private function iconTab($cat, $option=array())
+	{
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 64,
+			'height'	=> 64,
+			'type'		=>'icon', // how should it be rendered?
+		//	'category'  => $category,
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'icon', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 80,
+			'gridClass'	=> 'media-carousel-item-glyph pull-left',
+			'bbcode'	=> 'icon',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$frm 		= !empty($option['from']) ? $option['from'] : 0;
+		$limit 		= !empty($option['limit']) ? $option['limit'] : 200;
+
+	//	$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category.
+		$images = e107::getMedia()->getIcons('',$frm,$limit);
+
+
+		foreach($images as $val)
+		{
+			$items[] = array(
+					'previewHtml'	=> $tp->toIcon($val['media_url']),
+					'previewUrl'    => '',
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $val['media_url'],
+					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$val['media_dimensions'].")",
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+
+
+		if(!empty($option['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $option['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+
+
+	}
+
+
+	private function imageTab2($category,$option=array())
+	{
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340, // when inserting into wysiwyg
+			'height'	=> 220,
+			'type'		=>'image',
+			'category'  => $category,
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'image2', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 8,
+			'gridClass'	=> 'col-xs-6 col-sm-3 media-carousel-item-image',
+			'bbcode'	=> 'img', // bbcode tag.
+		);
+
+		$close = true;
+
+		if(!empty($option['bbcode']))
+		{
+			$close = false;
+			e107::getBB()->setClass($category);
+			$parms['width'] = (int) e107::getBB()->resizeWidth(); // resize the image according to prefs.
+			$parms['height'] = (int) e107::getBB()->resizeHeight();
+			e107::getBB()->clearclass();
+		}
+
+
+		$items = array();
+
+		$frm 		= !empty($option['from']) ? $option['from'] : 0;
+		$limit 		= !empty($option['limit']) ? $option['limit'] : 200;
+	//	$newfrm 	= $frm + $limit;
+	//	$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
+	//	$navMode	= varset($option['nav']) ? TRUE : FALSE;
+		$search		= !empty($option['search']) ? $option['search'] : null;
+
+
+	//	$cat 	= ($category) ? $category."+" : "";
+		$images = e107::getMedia()->getImages($category,$frm,$limit,$search);
+
+
+
+		foreach($images as $val)
+		{
+			$items[] = array(
+					'previewHtml'	=> $tp->toImage($val['media_url'], array('w'=>210, 'h'=>140)),
+					'previewUrl'    => $tp->thumbUrl($val['media_url'], array('w'=>210, 'h'=>140)),
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $tp->thumbUrl($val['media_url'], array('w'=>340, 'h'=>220)),
+					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$val['media_dimensions'].")",
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type'],
+					'close'         => $close
+			);
+
+		}
+
+
+		if(!empty($option['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $option['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+
+
+
+	}
+
+	private function fileTab($cat='', $parm=array())
+	{
+		$this->perPage = 0;
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+
+		$this->setFileListMode($cat);
+		$text = $this->getUI()->getList();
+
+		$tagid = e107::getParser()->filter($this->getQuery('tagid'));
+
+	//	$text .= '<div class="media-select-file-footer"><a class="btn btn-danger e-media-select-file-none e-dialog-close" data-target="'.$tagid.'"  data-target-label="'.LAN_CHOOSE_FILE.'" href="#" ><span><i class="fa fa-ban"></i> '.IMALAN_167.'</span></a></div>';
+
+		return $text;
+	}
+
+
 		
-		
+	private function audioTab($cat='', $parm=array())
+	{
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340,
+			'height'	=> 220,
+			'type'		=>'audio',
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'audio', 	// Used by AJAX to identify correct function.
+			'perPage'	=> 8,
+			'gridClass'	=> 'col-sm-3 media-carousel-item-audio',
+			'bbcode'	=> 'audio',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$audios = e107::getMedia()->getAudios($cat);
+
+		foreach($audios as $val)
+		{
+			$items[] = array(
+					'previewHtml'	=> $tp->toAudio($val['media_url'], array('mime'=>$val['media_type'], 'w'=>210, 'h'=>140)),
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $val['media_url'],
+					'title'			=> $val['media_name'],
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+		if(!empty($parm['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $parm['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+
+	}
+
+
+	private function videoTab($cat='', $parm=array())
+	{
+
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340,
+			'height'	=> 220,
+			'type'		=>'video',
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'video', 								// Used by AJAX to identify correct function.
+			'perPage'	=> 8,
+			'gridClass'	=> 'col-xs-6 col-sm-3 admin-ui-grid media-carousel-item-video',
+			'bbcode'	=> 'video',
+
+		);
+
+		$bbcode = $this->getQuery('bbcode');
+		$close = (!empty($bbcode)) ? false : true; // only close on 'select' when bbcodes are not in use.
+
+
+		$items = array();
+
+		$videos = e107::getMedia()->getVideos($cat);
+
+
+
+		foreach($videos as $val)
+		{
+			$size = e107::getFile()->file_size_encode($val['media_size']);
+
+			$items[] = array(
+					'previewHtml'	=> $tp->toVideo($val['media_url'], array('w'=>210, 'h'=>140)), // e_IMAGE_ABS."generic/playlist_120.png",
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $val['media_url'],
+					'title'			=> $val['media_name'],
+					'tooltip'       => basename($val['media_url'])." (".$size.")",
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type'],
+					'close'         => $close
+			);
+
+		}
+
+
+		if(!empty($parm['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $parm['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+	}
 		
 		
 
 	
 	
-	function glyphTab($parm='')
+	private function glyphTab($cat='', $parm=array())
 	{
 
 		$parms = array(
@@ -1582,7 +2076,7 @@ class media_admin_ui extends e_admin_ui
 			'tagid'		=> $this->getQuery('tagid'), 
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
 			'perPage'	=> 80,
-			'gridClass'	=> 'media-carousel-item-glyph pull-left',
+			'gridClass'	=> 'media-carousel-item-glyph pull-left icon-preview',
 			'bbcode'	=>'glyph',
 			'close'		=> 'true'		
 		
@@ -1591,10 +2085,13 @@ class media_admin_ui extends e_admin_ui
 		$items = array();
 
 		$bs2 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
+
+		$md = e107::getMedia();
 		
 		foreach($bs2 as $val)
 		{
-			$items[] = array( 
+			$items[] = array(
+					'previewHtml'   => $md->previewTag($val, array('type'=>'glyph')),
 					'previewUrl'	=> 'glyphicon '.$val,
 					'saveValue'		=> $val.'.glyph',
 					'thumbUrl'		=> $val,
@@ -1611,7 +2108,8 @@ class media_admin_ui extends e_admin_ui
 
 		foreach($fa4 as $val)
 		{
-			$items[] = array( 
+			$items[] = array(
+					'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
 					'previewUrl'	=> 'fa fa-'.$val,
 					'saveValue'		=> 'fa-'.$val.'.glyph',
 					'thumbUrl'		=> 'fa-'.$val,
@@ -1639,6 +2137,7 @@ class media_admin_ui extends e_admin_ui
 					foreach($tmp as $val)
 					{
 						$items[] = array(
+							'previewHtml'   => $md->previewTag($glyphConfig['class']." ".$val,array('type'=>'glyph')),
 							'previewUrl'	=> $glyphConfig['class']." ".$val,
 							'saveValue'		=> $val.'.glyph',
 							'thumbUrl'		=> $val,
@@ -1661,9 +2160,6 @@ class media_admin_ui extends e_admin_ui
 
 
 		}
-
-
-
 
 
 		
@@ -1726,7 +2222,7 @@ class media_admin_ui extends e_admin_ui
 	 * @return mixed|string
 	 * @see https://www.googleapis.com/youtube/v3/search
 	 */
-	function videoTab($parm='')
+	private function youtubeTab($parm='')
 	{
 		$apiKey = e107::pref('core','youtube_apikey');
 
@@ -1826,16 +2322,21 @@ class media_admin_ui extends e_admin_ui
 			else // empty key.
 			{
 			    $link = '<a style="color:black" target="_blank" href="'.e_ADMIN.'image.php?mode=main&action=prefs#/tab2">'.IMALAN_177.'</a>';
-			    $items = "<div class='alert alert-info'><p>".e107::getParser()->lanVars(e107::getParser()->toHTML(IMALAN_174, true), array('x'=>$link))."</p></div>";
+			    $items = "
+					<div class='alert alert-info' style='margin-left: 15px;'><p>".e107::getParser()->lanVars(e107::getParser()->toHTML(IMALAN_174, true), array('x'=>$link))."</p>
+					</div>";
 				
 				
 			}
 
 		}
 
+		$bbcode = $this->getQuery('bbcode');
+		$close = (!empty($bbcode)) ? false : true; // only close on 'select' when bbcodes are not in use.
 
 		if(!empty($data))
 		{
+			$tp = e107::getParser();
 			foreach($data['items'] as $value)
 			{
 
@@ -1843,10 +2344,12 @@ class media_admin_ui extends e_admin_ui
 				$thumbnail = $value['snippet']['thumbnails']['medium']['url'];
 
 				$items[] = array(
+					'previewHtml'	=> $bbcode ? null : $tp->toVideo($id.".".$extension, array('w'=>210, 'h'=>140)),
 					'previewUrl'	=> $thumbnail,
 					'saveValue'		=> $id.".".$extension, // youtube",
 					'thumbUrl'		=> $thumbnail,
-					'title'			=> varset($value['snippet']['title'],'')
+					'title'			=> varset($value['snippet']['title'],''),
+					'close'         => $close
 				);
 
 				if($extension == 'youtubepl') // save Image for background.
@@ -1858,7 +2361,21 @@ class media_admin_ui extends e_admin_ui
 		}
 	//	return print_a($data,true);
 
-		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>IMALAN_175 );
+		$parms = array(
+			'width' => 200,
+			'height'=>113,
+			'type'=>'image',
+			'bbcode'=>'video',
+			'tagid'=> $this->getQuery('tagid'),
+			'action'=>'youtube',
+			'searchPlaceholder'=>IMALAN_175,
+			'gridClass'	=> 'col-xs-6 col-sm-3 media-carousel-item-youtube',
+			'perPage'	=> 8,
+		);
+
+
+
+
 		$text = e107::getMedia()->browserCarousel($items, $parms);
 		
 		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
@@ -1924,14 +2441,15 @@ class media_admin_ui extends e_admin_ui
 			}
 		}
 	}
-			
-		
-	
-	
-	
 
+
+	/**
+	 * @deprecated by $prefs.
+	 * @return bool|void
+	 */
 	function settingsPage()
 	{
+		return false;
 		global $pref;
 
 		$frm = e107::getForm();
@@ -2256,6 +2774,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div  id='core-image-show-avatars' class='row'>";
 
 			$count = 0;
+			$prevType  = '';
 			while (list($key, $image_name) = each($dirlist))
 			{
 				//$users = IMALAN_21." | ";
@@ -2375,18 +2894,12 @@ class media_admin_ui extends e_admin_ui
 		// $ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
 	}
 
-	function iconsPage()
-	{
-		// $this->icon_editor();
-	}
-
-
 
 	/**
 	 * Invoked just before item create event
 	 * @return array
 	 */
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		// print_a($_POST);
 		// return data to be merged with posted model data
@@ -2562,7 +3075,7 @@ class media_admin_ui extends e_admin_ui
 		return true;
 	}
 
-	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
+	function afterDelete($deleted_data, $id, $deleted_check) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
 
 		if(!empty($deleted_data['media_url']))
@@ -2691,10 +3204,10 @@ class media_admin_ui extends e_admin_ui
 
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
-			
+
 			$c = md5($f['path'].$f['fname']);
 			
-			if($f['error'])
+			if(!empty($f['error']))
 			{
 				$text = str_replace('[x]', $f['fname'], IMALAN_122);
 				$mes->addWarning($text);
@@ -3079,20 +3592,6 @@ e107::getAdminUI()->runPage();
 $action = e_QUERY;
 
 
-if(varset($_GET['action']) == "icons")
-{
-	// icon_editor();
-}
-
-if(varset($_GET['action']) == "avatars")
-{
-	// show_avatars();
-}
-
-if(varset($_GET['action']) == 'settings')
-{
-	// main_config();
-}
 /*
  * DELETE CHECKED AVATARS - SHOW AVATAR SCREEN
  */

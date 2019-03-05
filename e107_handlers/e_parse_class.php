@@ -487,47 +487,55 @@ class e_parse extends e_parser
 	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
 	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
-	 * @param boolean $original_author [optional]
-	 * @return string
+	 * @param mixed $parm [optional]
+	 * @return string|array
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
+	public function toDB($data = null, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
 	{
-		$core_pref = e107::getConfig();
+		if($data === null)
+		{
+			return null;
+		}
 
 		if (is_array($data))
 		{
 			$ret = array();
+
 			foreach ($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
-				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $original_author)] = $this->toDB($var, $nostrip, $no_encode, $mod, $original_author);
+				$key = filter_var($key,FILTER_SANITIZE_STRING);
+				$ret[$key] = $this->toDB($var, $nostrip, $no_encode, $mod, $parm);
 			}
+
 			return $ret;
 		}
-
-
-
+		
 		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 		{
 			$data = stripslashes($data);
 		}
 
+		if(intval($data) === $data || $data === '0') // simple integer.
+		{
+			return $data;
+		}
+
+		$core_pref = e107::getConfig();
+
 		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
+			$data = $this->cleanHtml($data); // clean it regardless of if it is text or html. (html could have missing closing tags)
 
-		//	if(strlen($data) != strlen(strip_tags($data))) // html tags present. // strip_tags()  doesn't function doesnt look for unclosed '>'.
 			if(($this->isHtml($data)) && strpos($mod, 'no_html') === false)
 			{
 				$this->isHtml = true;
-				$data = $this->cleanHtml($data); // sanitize all html.
+			//	$data = $this->cleanHtml($data); // sanitize all html. (moved above to include everything)
 
 				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
-
-			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
-
 			}
 			else // caused double-encoding of '&'
 			{
@@ -535,12 +543,12 @@ class e_parse extends e_parser
 				//$data = str_replace('>','&gt;',$data);
 			}
 
+
 			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html.
 				$data = str_replace(array('[html]','[/html]'),'',$data);
 			}
-
 
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
 		}
@@ -551,7 +559,7 @@ class e_parse extends e_parser
 		{
 			$no_encode = true;
 		}
-				
+
 		if($parm !== null && is_numeric($parm) && !check_class($core_pref->get('post_html'), '', $parm))
 		{
 			$no_encode = false;
@@ -572,8 +580,8 @@ class e_parse extends e_parser
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
-		
-		// XXX - php_bbcode has been deprecated. 
+
+		// XXX - php_bbcode has been deprecated.
 		if ((strpos($mod, 'no_php') !== false) || !check_class($core_pref->get('php_bbcode')))
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
@@ -800,7 +808,7 @@ class e_parse extends e_parser
 
 		if(is_string($text) && substr($text,0,6) == '[html]')
 		{
-			// $text = $this->toHtml($text,true);
+			// $text = $this->toHTML($text,true);
 			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
 			$replace = array('"',"'","\\", '&amp;');
 
@@ -814,8 +822,8 @@ class e_parse extends e_parser
 		}
 	//	return htmlentities($text);
 
-		$search = array('&#036;', '&quot;', '<', '>');
-		$replace = array('$', '"', '&lt;', '&gt;');
+		$search = array('&#036;', '&quot;', '<', '>', '+');
+		$replace = array('$', '"', '&lt;', '&gt;', '%2B');
 		$text = str_replace($search, $replace, $text);
 		if (e107::wysiwyg() !== true && is_string($text))
 		{
@@ -1463,11 +1471,12 @@ class e_parse extends e_parser
 
 			case "url":
 
-				$linktext = (!empty($textReplace)) ? $textReplace : '\\2';
-				$external = (!empty($opts['ext'])) ? 'rel="external"' : '';
+				$linktext = (!empty($textReplace)) ? $textReplace : '$3';
+				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
 
-				$text = preg_replace("#(^|[\s]|&nbsp;)([\w]+?:\/\/(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$|&nbsp;)#is", "\\1<a class=\"e-url\" href=\"\\2\" ".$external.">".$linktext."</a>", $text);
-				$text = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a class=\"e-url\" href=\"http://\\2\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<a class=\"e-url\" href=\"$3\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", "$1$2<a class=\"e-url\" href=\"http://$3\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", "$1$2<a class=\"e-url\" href=\"$4://$3\" ".$external.">".$linktext."</a>", $text);
 
 				break;
 
@@ -1751,6 +1760,7 @@ class e_parse extends e_parser
 
 					if ($className)
 					{
+						/** @var e_bb_base $tempCode */
 						$tempCode = new $className();
 
 						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
@@ -1959,7 +1969,11 @@ class e_parse extends e_parser
 										}
 
 									}
-									$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
+
+									if(is_object($this->e_hook[$hook])) // precaution for old plugins. 
+									{
+										$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
+									}
 								}
 							}
 
@@ -1975,14 +1989,18 @@ class e_parse extends e_parser
 										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
 										{
 											require_once(e_PLUGIN.$hook."/e_tohtml.php");
+
 											$hook_class = "e_tohtml_".$hook;
+
 											$this->e_hook[$hook] = new $hook_class;
 										}
 									}
 
 									if(is_object( $this->e_hook[$hook]))
 									{
-										$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
+										/** @var e_tohtml_linkwords $deprecatedHook */
+										$deprecatedHook = $this->e_hook[$hook];
+										$sub_blk = $deprecatedHook->to_html($sub_blk, $opts['context']);
 									}
 								}
 							}
@@ -2364,7 +2382,7 @@ class e_parse extends e_parser
 	{
 		if($tags != true)
 		{
-			$text = $this -> toHTML($text, true);
+			$text = $this->toHTML($text, true);
 			$text = strip_tags($text);
 		}
 
@@ -2434,14 +2452,14 @@ class e_parse extends e_parser
 	function toText($text)
 	{
 
-		if($this->isBbcode($text) === true) // convert any bbcodes to html
+		if($this->isBBcode($text) === true) // convert any bbcodes to html
 		{
-			$text = $this->toHtml($text,true);
+			$text = $this->toHTML($text,true);
 		}
 
 		if($this->isHtml($text) === true) // strip any html.
 		{
-			$text = $this->toHtml($text,true);
+			$text = $this->toHTML($text,true);
 			$text = strip_tags($text);
 		}
 
@@ -2745,6 +2763,13 @@ class e_parse extends e_parser
 	{
 		$this->staticCount++; // increment counter.
 
+		$ext = pathinfo($url, PATHINFO_EXTENSION);
+
+		if($ext === 'svg')
+		{
+			return $this->replaceConstants($url, 'abs');
+		}
+
 		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
@@ -2764,6 +2789,8 @@ class e_parse extends e_parser
 			unset($options['scale']);
 			return $this->thumbSrcSet($url,$options);
 		}
+
+
 
 
 		
@@ -3189,7 +3216,7 @@ class e_parse extends e_parser
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
-	 * @return string
+	 * @return array|string
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
@@ -3717,24 +3744,34 @@ class e_parse extends e_parser
 }
 
 
-/**
- * New v2 Parser 
- * Start Fresh and Build on it over time to become eventual replacement to e_parse. 
- * Cameron's DOM-based parser. 
- */
+	/**
+	 * New v2 Parser
+	 * Start Fresh and Build on it over time to become eventual replacement to e_parse.
+	 * Cameron's DOM-based parser.
+	 *
+	 * @method replaceConstants($text, $mode = '', $all = false)
+	 * @method toAttribute($title)
+	 * @method thumbUrl($icon)
+	 * @method thumbDimensions()
+	 */
 class e_parser
 {
     /**
      * @var DOMDocument
      */
-    public $domObj                = null;
+    public $domObj                  = null;
 	public $isHtml                  = false;
-    protected $removedList        = array();
-    protected $nodesToDelete      = array();
-    protected $nodesToConvert     = array();
-    protected $nodesToDisableSC = array();
-    protected $pathList           = array();
-    protected $allowedAttributes  = array(
+
+
+	protected $bootstrap            = null;
+	protected $fontawesome          = null;
+
+    protected $removedList          = array();
+    protected $nodesToDelete        = array();
+    protected $nodesToConvert       = array();
+    protected $nodesToDisableSC     = array();
+    protected $pathList             = array();
+    protected $allowedAttributes    = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
@@ -3749,6 +3786,8 @@ class e_parser
 	                                'col'       => array('id', 'span', 'class','style'),
 		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
 									'x-bbcode'  => array('alt'),
+									'label'		=> array('for'),
+
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -3760,7 +3799,7 @@ class e_parser
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode'
+                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
 	
@@ -3790,6 +3829,16 @@ class e_parser
     {
         $this->domObj = new DOMDocument();
 
+		if(defined('FONTAWESOME'))
+		{
+			$this->fontawesome = (int) FONTAWESOME;
+		}
+
+		if(defined('BOOTSTRAP'))
+		{
+			$this->bootstrap = (int) BOOTSTRAP;
+
+		}
 
     }
 
@@ -3861,15 +3910,33 @@ class e_parser
         $this->scriptTags = $array;
     }
 
+
+	/**
+	 * @param int $version
+	 */
+	public function setFontAwesome($version)
+    {
+        $this->fontawesome = (int) $version;
+    }
+
+	/**
+	 * @param int $version
+	 */
+	public function setBootstrap($version)
+    {
+        $this->bootstrap = (int) $version;
+    }
+
+
 	/**
 	 * Add leading zeros to a number. eg. 3 might become 000003
 	 * @param $num integer 
 	 * @param $numDigits - total number of digits
-	 * @return number with leading zeros. 
+	 * @return string number with leading zeros.
 	 */
 	public function leadingZeros($num,$numDigits)
 	{
-		return sprintf("%0".$numDigits."d",$num);
+		return (string) sprintf("%0".$numDigits."d",$num);
 	}
 
 	/**
@@ -3931,7 +3998,10 @@ class e_parser
 		{
 	        $tmp = $doc->getElementsByTagName($find);
 			
-			 
+			 /**
+			  * @var  $k
+			  * @var DOMDocument $node
+			  */
 			foreach($tmp as $k=>$node)
 			{
 				$tag = $node->nodeName;
@@ -4060,7 +4130,7 @@ class e_parser
 
 		}
 		*/
-		if(strpos($text, 'fa-') === 0) // Font-Awesome
+		if(strpos($text, 'fa-') === 0) // Font-Awesome 4 & 5
 		{
 			$prefix = 'fa ';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
@@ -4068,6 +4138,25 @@ class e_parser
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
+
+			if($this->fontawesome === 5)
+			{
+				$fab = e107::getMedia()->getGlyphs('fab');
+				$fas = e107::getMedia()->getGlyphs('fas');;
+
+				$code = substr($id,3);
+
+				if(in_array($code,$fab))
+				{
+					$prefix = "fab ";
+				}
+				elseif(in_array($code,$fas))
+				{
+					$prefix = "fas ";
+				}
+
+			}
+
 		}
 		elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
 		{
@@ -4077,7 +4166,7 @@ class e_parser
 		}
 		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
 		{
-			if(deftrue('BOOTSTRAP') != 2) // bootrap 2 icon but running bootstrap3.
+			if($this->bootstrap !== 2) // bootrap 2 icon but running bootstrap3.
 			{
 				$prefix = 'glyphicon ';
 				$tag = 'span';
@@ -4108,8 +4197,10 @@ class e_parser
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
+		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : "<!-- -->";
+		$title = (!empty($parm['title'])) ? " title='".$this->toAttribute($parm['title'])."' " : '';
 
-		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}><!-- --></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' ".$style.$title.">".$placeholder."</".$tag.">" ;
 		$text .= ($options !== false) ? $options : "";
 
 		return $text;
@@ -4304,7 +4395,7 @@ class e_parser
 		}
 		elseif($icon[0] === '{')
 		{
-			$path = $this->replaceConstants($icon,'full');		
+			$path = $this->replaceConstants($icon,'abs');
 		}
 		elseif(!empty($parm['legacy']))
 		{
@@ -4373,7 +4464,7 @@ class e_parser
 			$path       = null;
 			$file       = trim($file);
 			$ext        = pathinfo($file, PATHINFO_EXTENSION);
-			$accepted   = array('jpg','gif','png','jpeg');
+			$accepted   = array('jpg','gif','png','jpeg', 'svg');
 
 
 			if(!in_array($ext,$accepted))
@@ -4382,6 +4473,7 @@ class e_parser
 			}
 		}
 
+		/** @var e_parse $tp */
 		$tp  = $this;
 
 	//		e107::getDebug()->log($file);
@@ -4500,7 +4592,7 @@ class e_parser
 	function isHtml($text)
 	{
 
-		if(strpos($text,'[html]'))
+		if(strpos($text,'[html]') !==false)
 		{
 			return true;
 		}
@@ -4624,6 +4716,29 @@ class e_parser
 		return ($ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg') ? true : false;
 	}
 
+
+	/**
+	 * @param $file
+	 * @param array $parm
+	 * @return string
+	 */
+	public function toAudio($file, $parm=array())
+	{
+
+		$file = $this->replaceConstants($file, 'abs');
+
+		$mime = varset($parm['mime'], 'audio/mpeg');
+
+		$text = '<audio controls style="max-width:100%">
+					<source src="'.$file.'" type="'.$mime .'">
+					  Your browser does not support the audio tag.
+				</audio>';
+
+		return $text;
+
+	}
+
+
 	
 	/**
 	 * Display a Video file. 
@@ -4637,9 +4752,13 @@ class e_parser
 			return false;
 		}
 
-		list($id,$type) = explode(".",$file,2);
+		$type = pathinfo($file, PATHINFO_EXTENSION);
+
+		$id = str_replace(".".$type, "", $file);
 
 		$thumb = vartrue($parm['thumb']);
+		$mode = varset($parm['mode'],false); // tag, url
+
 
 
 		$pref = e107::getPref();
@@ -4662,14 +4781,22 @@ class e_parser
 
 		$ytqry = http_build_query($ytpref, null, '&amp;');
 
-		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
+		$defClass = !empty($this->bootstrap) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
 
 		if($type === 'youtube')
 		{
+
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
+			$url 	= 'http://youtu.be/'.$id;
+
+
+			if($mode === 'url')
+			{
+				return $url;
+			}
 
 		
 			if($thumb === 'tag')
@@ -4682,7 +4809,7 @@ class e_parser
 				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
 				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
 				$filepath = e_MEDIA.$filename;
-				$url 	= 'http://youtu.be/'.$id;
+
 				
 				if(!file_exists($filepath))
 				{
@@ -4742,12 +4869,24 @@ class e_parser
 			return '<div class="'.$defClass.' '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				
-		if($type === 'mp4') //TODO FIXME
+		if($type === 'mp4')
 		{
+			$file = $this->replaceConstants($file, 'abs');
+
+			if($mode === 'url')
+			{
+				return $file;
+			}
+
+
+			$width = varset($parm['w'], 320);
+			$height = varset($parm['h'], 240);
+			$mime = varset($parm['mime'], 'video/mp4');
+
 			return '
 			<div class="video-responsive">
-			<video width="320" height="240" controls>
-			  <source src="'.$file.'" type="video/mp4">
+			<video width="'.$width.'" height="'.$height.'" controls>
+			  <source src="'.$file.'" type="'.$mime.'">
 		
 			  Your browser does not support the video tag.
 			</video>
@@ -4840,7 +4979,7 @@ TMPL;
         // -------------------- Encoding ----------------
 
 		$acc = $this->getScriptAccess();
-		$accName = e107::getUserclass()->uc_get_classname($acc);
+		$accName = e107::getUserClass()->uc_get_classname($acc);
 
 		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
 		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
@@ -4914,11 +5053,11 @@ TMPL;
 
 	    }
 
-	    echo "<h3>toDB() &gg; toHtml()</h3>";
-		$html = $tp->toHtml($dbText,true);
+	    echo "<h3>toDB() &gg; toHTML()</h3>";
+		$html = $tp->toHTML($dbText,true);
 	    print_a($html);
 
-	    echo "<h3>toDB &gg; toHtml() <small>(rendered)</small></h3>";
+	    echo "<h3>toDB &gg; toHTML() <small>(rendered)</small></h3>";
 	    echo $html;
 
 	    echo "<h3>toDB &gg; toForm()</h3>";
@@ -4985,6 +5124,8 @@ return;
 
 		$html = $text;
 
+		$sql = e107::getDb();
+		$tp = e107::getParser();
         
       //  $html = $this->getXss();
                    
@@ -4999,7 +5140,7 @@ return;
         print_a($tp->dataFilter($html));
         $sql->db_Mark_Time('tp->dataFilter');
          
-        echo "<h3>\$tp->toHtml()</h3>";
+        echo "<h3>\$tp->toHTML()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($tp->toHTML($html));
         $sql->db_Mark_Time('tp->toHtml');     
@@ -5059,7 +5200,7 @@ return;
 
 		if($type === 'file')
 		{
-			return preg_replace('/[^\w\d_\.-]/',"",$text);
+			return preg_replace('/[^\w\d_\.-]/',"-",$text);
 		}
 
 
@@ -5470,10 +5611,10 @@ EOF;
 return $html;            
             
     }
-        
-    
-    
-    
+
+
+
+
 }
 
 

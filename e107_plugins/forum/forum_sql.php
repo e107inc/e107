@@ -2,6 +2,7 @@ CREATE TABLE forum (
   `forum_id` int(10) unsigned NOT NULL auto_increment,
   `forum_name` varchar(250) NOT NULL default '',
   `forum_description` text,
+  `forum_image` varchar(250) DEFAULT NULL,
   `forum_parent` int(10) unsigned NOT NULL default '0',
   `forum_sub` int(10) unsigned NOT NULL default '0',
   `forum_datestamp` int(10) unsigned NOT NULL default '0',
@@ -18,6 +19,7 @@ CREATE TABLE forum (
   `forum_options` text,
   `forum_sef` varchar(250) default NULL,
   PRIMARY KEY  (`forum_id`),
+  UNIQUE KEY `forum_sef` (`forum_sef`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;

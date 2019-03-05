@@ -132,7 +132,7 @@ if(e_QUERY)
 		$from = $tp->toDate($row['poll_datestamp'], "short");
 		$to = $tp->toDate($row['poll_end_datestamp'], "short");
 
-		$poll_title = $tp->toHtml($row['poll_title'], true, 'TITLE');
+		$poll_title = $tp->toHTML($row['poll_title'], true, 'TITLE');
 
 		$uparams = array('id' => $row['poll_admin_id'], 'name' => $row['user_name']);
 
