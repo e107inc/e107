@@ -6332,6 +6332,7 @@ var_dump($select_options);*/
 		}
 		else
 		{
+			/** @deprecated usage @see renderCreateFieldset() should be attributes['help'] */
 			$ret .= vartrue($parms['help']) ? '<div class="field-help">'.$tp->toHTML($parms['help'],false,'defs').'</div>' : '';	
 		}
 
@@ -6909,9 +6910,8 @@ var_dump($select_options);*/
 
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
-			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
-			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
-
+			$label = !empty($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+			$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
 
 
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
@@ -7010,7 +7010,7 @@ var_dump($select_options);*/
 				}
 
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$required.$label;
-				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
+				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." ".$help;
 
 				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
 				{
