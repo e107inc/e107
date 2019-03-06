@@ -4388,7 +4388,7 @@ class e_parser
 			return $this->toGlyph($icon,$parm);
 		}
 		
-		if(strpos($icon,'e_MEDIA')!==FALSE)
+		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
 		{
 			$path = $this->thumbUrl($icon);
 			$dimensions = $this->thumbDimensions();
