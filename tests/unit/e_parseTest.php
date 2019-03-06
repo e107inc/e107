@@ -81,7 +81,7 @@ TMP;
 
 		public function testParseTemplateWithEnabledCoreShortcodes()
 		{
-			$needle = '<ul class="nav navbar-nav nav-main">';
+			$needle = '<ul class="nav navbar-nav nav-main ml-auto">';
 			$result = $this->tp->parseTemplate('{NAVIGATION}', true);
 			$this->assertContains($needle, $result);
 		}
@@ -600,12 +600,35 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testToIcon()
 		{
+			$icon = codecept_data_dir()."icon_64.png";
 
+			if(!copy($icon,e_MEDIA_IMAGE."icon_64.png"))
+			{
+				echo "Couldn't copy the icon";
+			}
+			if(!copy($icon,e_MEDIA_ICON."icon_64.png"))
+			{
+				echo "Couldn't copy the icon";
+			}
+
+			$tests = array(
+				0   => array('input'=> '{e_IMAGE}e107_icon_32.png',                 'expected'  => '/e107_images/e107_icon_32.png'),
+				1   => array('input'=> '{e_MEDIA_IMAGE}icon_64.png',                'expected'  => 'thumb.php?src=e_MEDIA_IMAGE'),
+				2   => array('input'=> '{e_MEDIA_ICON}icon_64.png',                 'expected'  => '/e107_media/000000test/icons/icon_64.png'),
+				3   => array('input'=> '{e_PLUGIN}gallery/images/gallery_32.png',   'expected'  => '/e107_plugins/gallery/images/gallery_32.png'),
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->toIcon($var['input']);
+				$this->assertContains($var['expected'],$result);
+		//		var_dump($var['expected']);
+			}
 		}
-
+/*
 		public function testToImage()
 		{
 
