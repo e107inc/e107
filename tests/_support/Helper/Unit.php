@@ -21,5 +21,20 @@ class Unit extends E107Base
 		codecept_debug("Loading ".APP_PATH."/class2.php…");
 		define('E107_DBG_BASIC', true);
 		require_once(APP_PATH."/class2.php");
+
+		$create_dir = array(e_MEDIA,e_MEDIA_IMAGE,e_MEDIA_ICON,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
+
+		foreach($create_dir as $dr)
+		{
+			if(!is_dir($dr))
+			{
+				if(mkdir($dr, 0755))
+				{
+				//	echo "\n(Creating ".$dr.")";
+				}
+
+			}
+
+		}
 	}
 }

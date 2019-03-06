@@ -96,12 +96,31 @@
 		{
 
 		}
-
+*/
 		public function testImportFile()
 		{
+			$icon = codecept_data_dir()."icon_64.png";
+			$dest = e_IMPORT."icon_64.png";
+			copy($icon,$dest);
+
+			if(!file_exists($dest))
+			{
+				$this->fail("Couldn't copy icon to ".$dest);
+			}
+
+			$tests = array(
+				0   => array('file'=> 'icon_64.png', 'cat'  => '_icon',  'expected'=>"{e_MEDIA_ICON}icon_64.png"),
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->md->importFile($var['file'], $var['cat']);
+				$this->assertEquals($var['expected'],$result);
+			}
+
 
 		}
-
+/*
 		public function testBrowserCarousel()
 		{
 
@@ -240,9 +259,10 @@
 		{
 
 		}
-
+*/
 		public function testGetPath()
 		{
-
-		}*/
+			$result = $this->md->getPath('image/jpeg');
+			var_dump($result);
+		}
 	}
