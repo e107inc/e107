@@ -210,7 +210,7 @@ td .file.well                              { margin-bottom:0 }
 
 #admin-ui-edit                          { }
 #admin-ui-edit-db-language              { margin-top: -35px; padding-bottom:5px; padding-right:5px }
-#admin-ui-edit-db-language.tabs         { margin-top: 0; margin-bottom: -30px; }
+#admin-ui-edit-db-language.tabs         { margin-top: 0; margin-bottom: -30px; padding-top: 5px; }
 
 #admin-ui-list-db-language span,
 #admin-ui-edit-db-language span          { color: #FAA732; cursor: help; }
