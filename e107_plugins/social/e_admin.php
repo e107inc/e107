@@ -27,7 +27,7 @@ class social_admin
 	 * @param $ui admin-ui object
 	 * @return array
 	 */
-	public function config($ui)
+	public function config(e_admin_ui $ui)
 	{
 		$action     = $ui->getAction(); // current mode: create, edit, list
 		$type       = $ui->getEventName(); // 'wmessage', 'news' etc.
@@ -85,7 +85,7 @@ class social_admin
 			$data['news_id'] = $id;
 
 			$shareData = array(
-				'title'     => 	$data['news_title'],
+				'title'     => $tp->post_toHTML($data['news_title']),
 				'url'       => e107::getUrl()->create('news/view/item', $data, 'full=1'),
 				'hashtags'  => $data['news_meta_keywords']
 			);
@@ -96,8 +96,8 @@ class social_admin
 						<div class="media">
 							<div class="media-left">'.$tp->toImage($data['news_thumbnail'][0], array('w'=>100, 'h'=>100, 'class'=>'media-object')).'</div>
 							<div class="media-body">
-								<h4 class="media-header">'.$data['news_title'].'</h4>
-								<p><small>'.$data['news_meta_description']."</small></p>".$this->share($shareData).'
+								<h4 class="media-header">'.$tp->post_toHTML($data['news_title']).'</h4>
+								<p><small>'.$tp->post_toHTML($data['news_meta_description'])."</small></p>".$this->share($shareData).'
 							</div>	
 						</div>
 					</div>
@@ -118,6 +118,7 @@ class social_admin
 	{
 	//	$pref = e107::pref('social');
 
+		/** @var social_shortcodes $soc */
 		$soc = e107::getScBatch('social');
 		$tp = e107::getParser();
 

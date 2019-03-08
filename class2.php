@@ -1559,7 +1559,11 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 	if(e107::isCli())
 	{
-		return true;
+		global $_E107;
+		if(empty($_E107['phpunit']))
+		{
+			return true;
+		}
 	}
 
 	if(is_numeric($uid) && $uid > 0)
