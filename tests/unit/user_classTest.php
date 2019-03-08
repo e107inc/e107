@@ -62,7 +62,15 @@
 		 */
 		public function testUcAdd()
 		{
+			$expected = '1,4,6,9,247';
+			$actual = $this->uc->ucAdd(e_UC_NEWUSER, '1,4,6,9');
 
+			$this->assertEquals($expected, $actual, 'ucAdd returned a wrong result');
+
+			$expected = array(1, 4, 6, 9, 247);
+			$actual = $this->uc->ucAdd(e_UC_NEWUSER, '1,4,6,9', true);
+
+			$this->assertEquals($expected, $actual, 'ucAdd returned a wrong result');
 		}
 /*
 		public function testUc_get_classlist()
@@ -114,12 +122,20 @@
 		{
 
 		}
-
+*/
 		public function testUcRemove()
 		{
+			$expected = '1,4,6,9';
+			$actual = $this->uc->ucRemove(e_UC_NEWUSER, '1,4,6,9,247');
 
+			$this->assertEquals($expected, $actual, 'ucRemove return a wrong result');
+
+			$expected = array(1, 4, 6, 9);
+			$actual = $this->uc->ucRemove(e_UC_NEWUSER, '1,4,6,9,247', true);
+
+			$this->assertEquals($expected, $actual, 'ucRemove returned a wrong result');
 		}
-
+/*
 		public function testReadTree()
 		{
 
