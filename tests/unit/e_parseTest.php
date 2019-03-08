@@ -316,6 +316,12 @@ TMP;
 					'input'     => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
 					'expected'  => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
 				),
+				18 => array(
+					'input'     => '"><script>alert(123)</script>',
+					'expected'  => '',
+					'mode'      => 'model',
+					'parm'      => array('type'=>'text', 'field'=>'news_title')
+				)
 
 			);
 
@@ -326,9 +332,12 @@ TMP;
 					continue;
 				}
 
-				$result = $this->tp->toDB($var['input']);
-				$this->assertEquals($var['expected'], $result);
-			//	var_dump($result);
+				$mode = varset($var['mode']);
+				$parm = varset($var['parm']);
+
+				$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
+			//	$this->assertEquals($var['expected'], $result);
+				var_dump($result);
 			}
 
 
@@ -472,7 +481,7 @@ TMP;
 		public function testToText()
 		{
 
-		}
+			}
 
 		public function testUstrtolower()
 		{
@@ -816,14 +825,15 @@ TMP;
 		{
 			$tests = array(
 				0   => array('html' => "<svg/onload=prompt(1)//", 'expected' => ''),
-
+				1   => array('html' => '<script>alert(123)</script>', 'expected'=>''),
+				2   => array('html' => '"><script>alert(123)</script>', 'expected'=>'"&gt;'),
 
 			);
 
 			foreach($tests as $var)
 			{
 				$result = $this->tp->cleanHtml($var['html']);
-			//	var_dump($result);
+				var_dump($result);
 			}
 
 

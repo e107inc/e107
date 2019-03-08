@@ -58,7 +58,10 @@
 			$this->assertTrue($result);
 
 			$result = check_class(null, "253,254,250,251,0");
-			$this->assertTrue($result);
+			$this->assertFalse($result);
+
+			$result = check_class(e_UC_NOBODY, "253,254,250,251,0");
+			$this->assertFalse($result);
 
 		}
 
