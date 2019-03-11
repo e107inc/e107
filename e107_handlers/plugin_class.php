@@ -48,6 +48,7 @@ class e_plugin
 
 		'e_meta', // @Deprecated
 		'e_emailprint',
+		'e_print', // new v2.2
 		'e_frontpage',
 		'e_latest', /* @deprecated  - see e_dashboard */
 		'e_status', /* @deprecated  - see e_dashboard */
@@ -1237,6 +1238,7 @@ class e107plugin
 		
 		'e_meta', // @Deprecated 
 		'e_emailprint',
+		'e_print', // new v2.2
 		'e_frontpage',
 		'e_latest', /* @deprecated  - see e_dashboard */
 		'e_status', /* @deprecated  - see e_dashboard */
