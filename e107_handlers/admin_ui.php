@@ -6634,7 +6634,9 @@ class e_admin_form_ui extends e_form
 				{
 					$ids = implode(",", array_keys($var));
 
-					$value = (array) $obj->load($event, $ids);
+					$value = (array) e107::callMethod($obj,'load', $event,$ids);
+
+				//	$value = (array) $obj->load($event, $ids);
 
 					foreach($var as $id=>$model)
 					{
