@@ -73,13 +73,13 @@
 				'jumbotron_full' =>
 					array (
 						0 => 'forum',
-						1 => 'user.php',
-						2 => '/user',
+						1 => 'user.php', // <-- match user.php script or URL
+						2 => '/user', // <-- Expecting URL to match both user and usersetting since it contains no "!"
 					),
 				'jumbotron_sidebar_right' =>
 					array (
 						0 => '/news',
-						//1 => '/usersettings.php'
+				//		1 => '/usersettings.php'
 					),
 				'other_layout'  =>
 					array(
@@ -101,7 +101,7 @@
 				5 => array('url' => SITEURL."forum",                    'script' => "index.php",    'expected' => 'jumbotron_full'),
 				6 => array('url' => SITEURL."other/page",               'script' => null,           'expected' => 'jumbotron_sidebar_right'),
 				7 => array('url' => SITEURL."news.php?5.3",             'script' => null,           'expected' => 'jumbotron_sidebar_right'),
-				8 => array('url' => SITEURL."usersettings.php",         'script' => null,           'expected' => 'jumbotron_sidebar_right'),
+				8 => array('url' => SITEURL."usersettings.php",         'script' => null,           'expected' => 'jumbotron_full'),
 				9 => array('url' => SITEURL."user.php",                 'script' => null,           'expected' => 'jumbotron_full'),
 				10 => array('url' => SITEURL."page.php",                'script' => null,           'expected' => 'other_layout'),
 				11 => array('url' => SITEURL."page.php?3",              'script' => null,           'expected' => 'jumbotron_home'),
