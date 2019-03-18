@@ -373,17 +373,39 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testCheckbox()
 			{
+
+				$result = $this->_frm->checkbox('name', 2, 2);
+				$expected = "<input type='checkbox' name='name' value='2' id='name-2' checked='checked' />";
+				$this->assertEquals($expected,$result);
 
 			}
 
 			public function testCheckboxes()
 			{
+				$opts = array(
+					1   => "one",
+					2   => "two",
+					3   => "three"
+				);
+
+
+				$result = $this->_frm->checkboxes('name', $opts, array(2=>'two'));
+				$expected = "<div class='checkboxes' style='display:inline-block'><label class='checkbox'><input type='checkbox' name='name[1]' value='1' id='name-1-1' />one</label><label class='checkbox'><input type='checkbox' name='name[2]' value='1' id='name-2-1' checked='checked' />two</label><label class='checkbox'><input type='checkbox' name='name[3]' value='1' id='name-3-1' />three</label></div>";
+				$this->assertEquals($expected,$result);
+
+				$result = $this->_frm->checkboxes('name', $opts, 2, array('useKeyValues'=> 1));
+				$expected = "<div class='checkboxes' style='display:inline-block'><label class='checkbox'><input type='checkbox' name='name[]' value='1' id='name-1' />one</label><label class='checkbox active'><input type='checkbox' name='name[]' value='2' id='name-2' checked='checked' />two</label><label class='checkbox'><input type='checkbox' name='name[]' value='3' id='name-3' />three</label></div>";
+				$this->assertEquals($expected,$result);
+
+				$result = $this->_frm->checkboxes('name', $opts, 'two', array('useLabelValues'=> 1));
+				$expected= "<div class='checkboxes' style='display:inline-block'><label class='checkbox'><input type='checkbox' name='name[]' value='one' id='name-one' />one</label><label class='checkbox active'><input type='checkbox' name='name[]' value='two' id='name-two' checked='checked' />two</label><label class='checkbox'><input type='checkbox' name='name[]' value='three' id='name-three' />three</label></div>";
+				$this->assertEquals($expected,$result);
 
 			}
-
+/*
 			public function testCheckbox_label()
 			{
 
