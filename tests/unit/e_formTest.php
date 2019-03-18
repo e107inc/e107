@@ -924,7 +924,6 @@ class e_formTest extends \Codeception\Test\Unit
 
 		foreach($this->_fields as $field=>$att)
 		{
-			//if ($field != 'checkboxes_001') continue;
 			$value = $this->_values[$field];
 			$result  = $frm->renderElement($field, $value, $att);
 
