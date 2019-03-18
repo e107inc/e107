@@ -2550,7 +2550,7 @@ class e_form
 	{
 		$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 
-		if(!is_array($checked)) $checked = explode(",",$checked);
+		if(!is_array($checked)) $checked = explode(",", $checked);
 		
 		$text = "";
 
