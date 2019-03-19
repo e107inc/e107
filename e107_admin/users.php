@@ -1176,6 +1176,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$key || !$sysuser->getValue('ban'))
 		{
 			$mes->addError(USRLAN_232);
+			$mes->addDebug("key: ".$key." ban: ".$sysuser->getValue('ban'));
 			return false;
 		}
 		
