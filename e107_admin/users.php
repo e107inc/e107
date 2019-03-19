@@ -403,7 +403,7 @@ class users_admin_ui extends e_admin_ui
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
 		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
-		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
+		$this->fields['options'] = array('title'=> LAN_OPTIONS."&nbsp;",	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'right last', 'class' => 'left');
 
 				
 		if(!getperms('4|U0')) // Quick Add User Access Only. 
@@ -1813,6 +1813,7 @@ class users_admin_ui extends e_admin_ui
 		$e107 = e107::getInstance();
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
+		/** @var users_admin_form_ui $ui */
 		$ui = $this->getUI();
 		$tp = e107::getParser();
 
