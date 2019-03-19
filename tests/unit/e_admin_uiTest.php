@@ -23,7 +23,7 @@
 
 			foreach($tests as $var)
 			{
-				$result = preg_replace('/[^\w-:.]/', '', $var['text']); // this pattern used in parts of the admin-ui.
+				$result = preg_replace('/[^\w\-:.]/', '', $var['text']); // this pattern used in parts of the admin-ui.
 				$this->assertEquals($var['expected'], $result);
 				//var_dump($result);
 			}
