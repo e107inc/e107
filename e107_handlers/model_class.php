@@ -2754,6 +2754,8 @@ class e_front_model extends e_model
 		return null;
 	}
 
+
+
 	public function destroy()
 	{
 		parent::destroy();
@@ -2783,17 +2785,18 @@ class e_front_model extends e_model
 
 
 		if($this->hasError()) return false;
-		if(!$this->data_has_changed && !$force)
+
+		if(!$this->data_has_changed && $force === false)
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
-
 			return 0;
 		}
+
 		$sql = e107::getDb();
 		$qry = $this->toSqlQuery('update');
 		$table = $this->getModelTable();
 
-		$res = $sql->db_Update($table, $qry, $this->getParam('db_debug', false));
+		$res = $sql->update($table, $qry, $this->getParam('db_debug', false));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -2807,7 +2810,16 @@ class e_front_model extends e_model
 				return false;
 			}
 
-			$this->addMessageInfo(LAN_NO_CHANGE);
+			if($force === false)
+			{
+				$this->addMessageInfo(LAN_NO_CHANGE);
+			}
+			else
+			{
+				$this->addMessageDebug(LAN_NO_CHANGE);
+			}
+
+
 			return 0;
 		}
 		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
