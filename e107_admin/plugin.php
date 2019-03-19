@@ -5019,17 +5019,26 @@ TEMPLATE;
 			$type = $val['type'];
 			
 			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date','varchar','char');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 			
-			
+
+
+
+
 			if(in_array(strtolower($type),$strings))
 			{
 				$value = 'str';	
-			}	
+			}
+			elseif($type === 'varchar' || $type === 'char')
+			{
+				$value = 'safestr';
+			}
 			else 
 			{
 				$value = 'int';
 			}
+
+
 			
 			
 			$fname = $this->table."[fields][".$name."][data]";
