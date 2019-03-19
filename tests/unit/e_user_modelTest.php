@@ -31,7 +31,7 @@
 
 		}
 
-		public function testSave()
+/*		public function testSave()
 		{
 
 		}
@@ -39,7 +39,7 @@
 		public function testGetAdminEmail()
 		{
 
-		}
+		}*/
 
 		public function testGetClassList()
 		{
@@ -53,7 +53,7 @@
 
 		}
 
-		public function testIsNewUser()
+/*		public function testIsNewUser()
 		{
 
 		}
@@ -151,14 +151,14 @@
 		public function testIsWritable()
 		{
 
-		}
+		}*/
 
 		public function testGetName()
 		{
 			$result = $this->usr->getName();
 			$this->assertEquals('e107', $result);
 		}
-
+/*
 		public function testGetAdminPerms()
 		{
 
@@ -247,13 +247,18 @@
 		public function testGetExtendedModel()
 		{
 
-		}
+		}*/
 
 		public function testRandomKey()
 		{
+			$obj = $this->usr;
+
+			$result = $obj::randomKey();
+
+			$this->assertEquals(32,strlen($result));
 
 		}
-
+/*
 		public function testGetSignatureValue()
 		{
 
@@ -347,14 +352,14 @@
 		public function testGetLoginName()
 		{
 
-		}
+		}*/
 
 		public function testIsBot()
 		{
 			$result = $this->usr->isBot();
 			$this->assertFalse($result);
 		}
-
+/*
 		public function testSetExtended()
 		{
 
@@ -369,7 +374,7 @@
 		{
 
 		}
-
+*/
 
 
 
