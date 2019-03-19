@@ -3312,7 +3312,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			foreach ($selected as $i => $_sel) 
 			{
-				$selected[$i] = (int) $_sel; // preg_replace('/[^\w-:.]/', '', $_sel); // php 7.3 doesn't like this.
+				$selected[$i] = preg_replace('/[^\w\-:.]/', '', $_sel);
 			}
 		}
 
@@ -3734,7 +3734,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			default:
 				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
-				$this->redirectAction(preg_replace('/[^\w-:.]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
+				$this->redirectAction(preg_replace('/[^\w\-:.]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
 			break;
 		}
 		return;
@@ -4891,7 +4891,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$selected = explode(',', $this->getPosted('delete_confirm_value'));
 				foreach ($selected as $i => $_sel) 
 				{
-					$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
+					$selected[$i] = preg_replace('/[^\w\-:.]/', '', $_sel);
 				}
 			}
 		}
@@ -5702,7 +5702,7 @@ class e_admin_ui extends e_admin_controller_ui
 		
 		$sql    = e107::getDb();
 		$step   = $this->orderStep ? intval($this->orderStep) : 1;
-		$from   = ($_GET['from']) ? intval($_GET['from']) * $step : 0;
+		$from   = !empty($_GET['from']) ? (int) $_GET['from'] * $step : $step;
 
 		$c = $from;
 		$updated = array();
@@ -5711,14 +5711,15 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 
 			list($tmp,$id) = explode("-", $row, 2);
-			$id = preg_replace('/[^\w-:.]/', '', $id);
+			$id = preg_replace('/[^\w\-:.]/', '', $id);
 			if(!is_numeric($id)) $id = "'{$id}'";
 			if($sql->update($this->table, $this->sortField." = {$c} WHERE ".$this->pid." = ".$id)!==false)
 			{
 				$updated[] = "#".$id."  --  ".$this->sortField." = ".$c;
 			}
+
 			// echo($sql->getLastQuery()."\n");
-			$c++; //  += $step;
+			$c += $step;
 
 		}
 
@@ -5728,7 +5729,7 @@ class e_admin_ui extends e_admin_controller_ui
 			return null;
 		}
 
-	//file_put_contents(e_LOG."sortAjax.log", print_r($_POST['all'],true));
+//	file_put_contents(e_LOG."sortAjax.log", print_r($updated,true));
 
 		// Increment every other record after the current page of records.
 	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
