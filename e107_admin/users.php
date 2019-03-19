@@ -290,17 +290,17 @@ class users_admin_ui extends e_admin_ui
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
 		'user_ban' 			=> array('title' => LAN_STATUS,		'tab'=>0, 'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
-		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto','thclass' => 'left first'), // Display name
- 		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
- 		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
- 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
+		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto','thclass' => 'left first'), // Display name
+ 		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'safestr', 'width' => 'auto'), // User name
+ 		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto'), // Real name (no real vetting)
+ 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => LAN_SESSION,	'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
- 		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
+ 		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'safestr',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'str', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'safestr', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
@@ -368,6 +368,7 @@ class users_admin_ui extends e_admin_ui
 
 
 
+
 		
 		// Extended fields - FIXME - better field types
 		
@@ -375,13 +376,16 @@ class users_admin_ui extends e_admin_ui
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
-			e107::coreLan('user_extended'); 	
+			e107::coreLan('user_extended');
+
+			$dataMode = ($this->getAction() === 'list') ? 'str' : false;  // allow for search of extended fields.
+
 			foreach ($rows as $row)
 			{
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHTML($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('__tableField'=>'ue.'.$field, 'title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
+				$this->fields[$field] = array('__tableField'=>'ue.'.$field, 'title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>$dataMode, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
 				$this->extendedData[$field] = $row;
@@ -429,16 +433,6 @@ class users_admin_ui extends e_admin_ui
 			define('e_IFRAME', true);
 		}
 
-
-		//FIXME - handle user extended search...
-		//$this->_alias_parsed = false;
-		//$this->parseAliases();
-
-		// if(isset ($_POST['adduser']))
-		// {
-			// addUser();		
-		// }	
-		
 
 
 	}
@@ -580,7 +574,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed pull/1816
+					 e107::getMessage()->reset(E_MESSAGE_SUCCESS)->addSuccess(LAN_UPDATED); 
 					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
 				}
 			}
@@ -1375,6 +1369,13 @@ class users_admin_ui extends e_admin_ui
 		
 		e107::getMessage()->addError(USRLAN_236);
 	}
+
+	public function EditSubmitTrigger()
+	{
+		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit', true); // force update.
+	}
+
+
 
 	/**
 	 * Quick Add user submit trigger
@@ -2430,10 +2431,6 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			return e107::getUserExt()->renderValue($data, $att['ueType']);
 
-			return print_a($att,true);
-
-
-			return $data;
 
 		}
 		if($mode == 'write')

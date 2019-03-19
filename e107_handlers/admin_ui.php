@@ -4436,7 +4436,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $noredirectAction passed to doAfterSubmit()
 	 * @return boolean
 	 */
-	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '')
+	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '', $forceSave=false)
 	{
 
 		$model = $this->getModel();
@@ -4522,7 +4522,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false) // insert() or update() dbInsert();
-			->save(true);
+			->save(true, $forceSave);
 
 
 
