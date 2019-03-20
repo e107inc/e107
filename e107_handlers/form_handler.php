@@ -2576,8 +2576,12 @@ class e_form
 				$c = vartrue($checked[$k]);
 			}
 
-
-			$text .= $this->checkbox($cname, $key, $c, $label);
+			/**
+			 * Label overwrote the other supplied options (if any)
+			 * and also failed in case it contained a "=" character
+			 */
+			$options['label'] = $label;
+			$text .= $this->checkbox($cname, $key, $c, $options);
 		}
 
 	//	return print_a($checked,true);
