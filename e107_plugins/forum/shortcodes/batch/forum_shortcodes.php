@@ -384,16 +384,22 @@ class forum_shortcodes extends e_shortcode
 
 	}
 
-	function sc_forumname()
+	function sc_forumname($parm = '')
 	{
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
 			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
 		}
+
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
 
+		if(!empty($parm['class']))
+		{
+			$class = $parm['class']; 
+		}
+
 		$url = e107::url('forum', 'forum', $this->var);
-		return "<a href='".$url."'>{$this->var['forum_name']}</a>";
+		return "<a href='".$url."' class='".$class."'>{$this->var['forum_name']}</a>";
 
 	}
 
@@ -414,21 +420,36 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
-	function sc_replies()
+	function sc_replies($parm = '')
 	{
-		return $this->sc_repliesx();
+		return $this->sc_repliesx($parm);
 	}
 
 
-	function sc_threadsx() // EQUAL TO SC_THREADS.......................
+	function sc_threadsx($parm = '') // EQUAL TO SC_THREADS.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_threads']);
+		$val = ($this->var['forum_threads']) ? $this->var['forum_threads'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 
-	function sc_repliesx() // EQUAL TO SC_REPLIES.......................
+	function sc_repliesx($parm = '') // EQUAL TO SC_REPLIES.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_replies']);
+		//print_a($parm);
+		$val = ($this->var['forum_replies']) ? $this->var['forum_replies'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 
