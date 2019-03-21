@@ -395,11 +395,11 @@ class forum_shortcodes extends e_shortcode
 
 		if(!empty($parm['class']))
 		{
-			$class = $parm['class']; 
+			$class = "class='".$parm['class']."'"; 
 		}
 
 		$url = e107::url('forum', 'forum', $this->var);
-		return "<a href='".$url."' class='".$class."'>{$this->var['forum_name']}</a>";
+		return "<a href='".$url."' ".$class.">{$this->var['forum_name']}</a>";
 
 	}
 
