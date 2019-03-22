@@ -58,7 +58,9 @@ class login_shortcodes extends e_shortcode
 		
 		return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
 	}
-	
+		
+	/* example: {LOGIN_TABLE_PASSWORD} */
+	/* example: {LOGIN_TABLE_PASSWORD: class=form-control}  */
 	function sc_login_table_password($parm='') //FIXME use $frm
 	{
 		if(empty($this->userReg))
@@ -67,7 +69,9 @@ class login_shortcodes extends e_shortcode
 		}
 
 		$pref = e107::getPref();
-		$text = "<input class='tbox form-control input-block-level' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
+		$class = (!empty($parm['class'])) ? $parm['class'] : "tbox form-control input-block-level";
+		
+		$text = "<input class='".$class."' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 		
 		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
 		{
