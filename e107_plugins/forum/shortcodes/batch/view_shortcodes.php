@@ -309,7 +309,7 @@
 
 			if($parm == 'relative')
 			{
-				return $gen->computeLapse($this->postInfo['post_datestamp'], time(), false, false, 'short');
+				return $gen->computeLapse($this->postInfo['post_datestamp'], time(), false, true, 'short');
 			}
 
 			// XXX what is this line meant to do?
