@@ -52,11 +52,19 @@ class fpw_shortcodes extends e_shortcode
 		return e107::getForm()->text('username'); // $frm->userpicker()?
 	}
 
+    /* example {FPW_USEREMAIL} */
+    /* example {FPW_USEREMAIL: class=form-control form-control-lg} */
 	function sc_fpw_useremail($parm=null)
 	{
 		// return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
 		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
-		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
+	  $options = array(
+	  'required' => true,
+      'placeholder' => vartrue($parm['placeholder']) ? $parm['placeholder']  : LAN_EMAIL,
+      'class' =>  vartrue($parm['class']) ? $parm['class']  : '',
+		);
+
+		return e107::getForm()->email('email', '', 200,  $options); 
 	}
 
 	function sc_fpw_submit($parm=null)
