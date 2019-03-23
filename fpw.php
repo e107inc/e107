@@ -59,12 +59,19 @@ class fpw_shortcodes extends e_shortcode
 		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
 	}
 
+	/* example: {FPW_SUBMIT} */
+	/* example: {FPW_SUBMIT: class=btn btn-warning btn-round btn-lg btn-block}  */
 	function sc_fpw_submit($parm=null)
 	{
 		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
 		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
 		$label = deftrue('LAN_FPW_102', LAN_SUBMIT);
-		return e107::getForm()->button('pwsubmit', $label); 
+
+		$options = array(
+      'class' =>  vartrue($parm['class']) ? $parm['class']  : '',
+		);
+        
+		return e107::getForm()->button('pwsubmit', $label, 'submit', '', $options); 
 	}
 
 	function sc_fpw_captcha_lan($parm=null)
