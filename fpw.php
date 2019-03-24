@@ -435,6 +435,6 @@ $text = $tp->parseTemplate($FPW_TABLE, true, $sc);
 
 // $text = $tp->simpleParse($FPW_TABLE, $sc);
 
-$ns->tablerender($caption, $text);
+$ns->tablerender($caption, $text, 'fpw');
 require_once(FOOTERF);
 
