@@ -32,14 +32,8 @@ define("UE_LAN_HIDE", "Hide from users");
 
 define("UE_LAN_LOCATION", "Location");
 define("UE_LAN_LOCATION_DESC", "User location");
-define("UE_LAN_AIM", "AIM Address");
-define("UE_LAN_AIM_DESC", "AIM Address");
 define("UE_LAN_ICQ", "ICQ Number");
 define("UE_LAN_ICQ_DESC", "ICQ Number");
-define("UE_LAN_YAHOO", "Yahoo! Address");
-define("UE_LAN_YAHOO_DESC", "Yahoo! Address");
-define("UE_LAN_MSN", "MSN");
-define("UE_LAN_MSN_DESC", "MSN Address");
 define("UE_LAN_HOMEPAGE", "Homepage");
 define("UE_LAN_HOMEPAGE_DESC", "User homepage (url)");
 define("UE_LAN_BIRTHDAY", "Birthday");
