@@ -2443,7 +2443,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$field = $att['field'];
 			/** @var users_admin_ui $controller */
 			$controller = $this->getController();
-			$extData = -$controller->getExtended();
+			$extData = $controller->getExtended();
 			$extData[$field]['user_extended_struct_required'] = 0;
 
 			return e107::getUserExt()->user_extended_edit($extData[$field],$curval);
