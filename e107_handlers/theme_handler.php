@@ -373,7 +373,20 @@ class e_theme
 
 	            foreach($cusPageArray as $kpage)
 				{
-					if(substr($kpage, -1) === '!' )
+					$lastChar = substr($kpage, -1);
+
+					if($lastChar === '$') // script name match.
+					{
+						$kpage = rtrim($kpage, '$');
+						if(!empty($request_script) && $kpage === $request_script)
+						{
+							return $lyout;
+						}
+					}
+
+
+
+					if($lastChar === '!')
 					{
 
 						$kpage = rtrim($kpage, '!');
@@ -395,10 +408,7 @@ class e_theme
 					{
 						$def = $lyout;
 					}
-					elseif(!empty($request_script) && $kpage === $request_script) // exact script match
-					{
-						$def = $lyout;
-					}
+
 				}
 			}
 		}
