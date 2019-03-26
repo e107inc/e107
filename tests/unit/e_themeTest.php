@@ -73,19 +73,23 @@
 				'jumbotron_full' =>
 					array (
 						0 => 'forum',
-						1 => 'user.php', // <-- match user.php script or URL
+						1 => 'user.php!', // <-- exact match of URL
 			//			2 => '/user', // <-- Expecting URL to match both user and usersetting since it contains no "!"
 					),
 				'jumbotron_sidebar_right' =>
 					array (
 						0 => '/news',
+						1 => '/user/',
+						2 => 'user.php?id',
 				//		1 => '/usersettings.php'
 					),
 				'other_layout'  =>
 					array(
-						0 => 'myplugin.php',
+						0 => 'myplugin.php$', // <-- $ = script name match
 						1 => 'forum/index.php',
-						2 => 'page.php'
+						2 => 'page.php$', // <-- $ = script name match
+						3 => '/user/settings?',
+						4 => 'script.php$',
 					),
 			);
 
@@ -105,13 +109,16 @@
 				9 => array('url' => SITEURL."user.php",                 'script' => 'user.php',             'expected' => 'jumbotron_full'),
 				10 => array('url' => SITEURL."page.php",                'script' => 'page.php',             'expected' => 'other_layout'),
 				11 => array('url' => SITEURL."page.php?3",              'script' => 'page.php',             'expected' => 'jumbotron_home'),
-				12 => array('url' => SITEURL."somepage/",               'script' => "user.php",             'expected' => 'jumbotron_full'),
+				12 => array('url' => SITEURL."somepage/",               'script' => "script.php",           'expected' => 'other_layout'),
 				13 => array('url' => SITEURL."plugin/",                 'script' => "myplugin.php",         'expected' => 'other_layout'),
 				14 => array('url' => SITEURL."forum/index.php",         'script' => "index.php",            'expected' => 'other_layout'),
 				15 => array('url' => SITEURL."my-chapter/my-title",     'script' => "page.php",             'expected' => 'other_layout'),
 				16 => array('url' => SITEURL."my-sef-url",              'script' => 'index.php',            'expected' => 'jumbotron_home'),
-				17 => array('url' => SITEURL."/user/settings?id=1",     'script' => 'usersettings.php',     'expected' => 'jumbotron_sidebar_right'),
-				18 => array('url' => SITEURL."/user/Tijn",              'script' => 'user.php',             'expected' => 'jumbotron_full'),
+				17 => array('url' => SITEURL."/user/settings?id=1",     'script' => 'usersettings.php',     'expected' => 'other_layout'),
+				18 => array('url' => SITEURL."/user/Tijn",              'script' => 'user.php',             'expected' => 'jumbotron_sidebar_right'),
+				19 => array('url' => SITEURL."user.php?id.1",           'script' => 'user.php',             'expected' => 'jumbotron_sidebar_right'),
+
+
 			);
 
 			foreach($tests as $item=>$var)
