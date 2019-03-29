@@ -34,6 +34,7 @@ test:php7.3-mysql8.0:
   image: php:7.3
   script: "php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml --coverage-html"
   artifacts:
+    when: always
     paths:
       - ./tests/_output/
 
@@ -43,6 +44,7 @@ pages:
     - test:php7.3-mysql8.0
   script:
     - mv ./tests/_output/ ./public/
+  when: always
   artifacts:
     paths:
       - ./public/
