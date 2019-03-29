@@ -42,6 +42,8 @@ pages:
   stage: deploy
   dependencies:
     - test:php7.3-mysql8.0
+  image: ruby:latest
+  before_script: []
   script:
     - mv ./tests/_output/ ./public/
   when: always
