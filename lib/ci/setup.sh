@@ -14,6 +14,7 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 
 php composer.phar install
+php composer.phar update
 
 git submodule update --init --recursive --remote
 
