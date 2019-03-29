@@ -336,8 +336,8 @@ TMP;
 				$parm = varset($var['parm']);
 
 				$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
-			//	$this->assertEquals($var['expected'], $result);
-				var_dump($result);
+				//	$this->assertEquals($var['expected'], $result);
+				// FIXME: This test doesn't do anything?
 			}
 
 
@@ -833,7 +833,7 @@ TMP;
 			foreach($tests as $var)
 			{
 				$result = $this->tp->cleanHtml($var['html']);
-				var_dump($result);
+				// FIXME: This test doesn't do anything?
 			}
 
 
