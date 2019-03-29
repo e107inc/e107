@@ -154,7 +154,7 @@
 
 			$actual = e107::getDebug()->getTimeMarkers();
 
-			$this->assertIsArray($actual);
+			$this->assertTrue(is_array($actual));
 			$this->assertEquals('Testing', $actual[1]['What']);
 			$this->assertArrayHasKey('Index', $actual[1]);
 			$this->assertArrayHasKey('Time', $actual[1]);
