@@ -171,11 +171,18 @@ class admin_shortcodes
 		$helpfile = '';
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
-		{
-			if (is_readable(e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE))
+		{	
+			// check if admin area language pref is set to follow 'Default Site Language
+			if(!$pref['adminlanguage'] && is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
+			{
+				$helpfile = e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE;
+			}
+			// language is set to specific language
+			elseif(is_readable(e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE))
 			{
 				$helpfile = e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE;
 			}
+			// fallback to default English files (in case help texts are missing)
 			elseif (is_readable(e_LANGUAGEDIR.'English/admin/help/'.e_PAGE))
 			{
 				$helpfile = e_LANGUAGEDIR.'English/admin/help/'.e_PAGE;
