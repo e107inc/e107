@@ -574,9 +574,12 @@ class e_parse extends e_parser
 		else // add entities for everything. we want to save the code.
 		{
 
+			$search = array('&gt;', '&lt;');
+			$replace = array('>', '<');
+			$data = str_replace($search, $replace, $data); // prevent &amp;gt; etc.
+
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 			$data = str_replace('\\', '&#092;', $data);
-
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
