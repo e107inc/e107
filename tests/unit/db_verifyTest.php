@@ -309,11 +309,11 @@
 
 
 			$actual = $this->dbv->getFixQuery('insert', 'table', 'table_auth', $sqlFileData);
-			$expected = "ALTER TABLE `e107_table` ADD `table_auth` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'";
+			$expected = "ALTER TABLE `e107_table` ADD `table_auth` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' AFTER table_ip";
 			$this->assertEquals($expected,$actual);
 
 			$actual = $this->dbv->getFixQuery('insert', 'table', 'table_json', $sqlFileData);
-			$expected = "ALTER TABLE `e107_table` ADD `table_json` JSON NOT NULL";
+			$expected = "ALTER TABLE `e107_table` ADD `table_json` JSON NOT NULL AFTER table_category";
 			$this->assertEquals($expected,$actual);
 
 			$actual = $this->dbv->getFixQuery('index', 'table', 'table_email', $sqlFileData);

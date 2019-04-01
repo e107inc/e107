@@ -1,0 +1,54 @@
+before_script:
+  - bash ./lib/ci/setup.sh
+
+cache:
+  paths:
+    - ./vendor/
+
+variables:
+  MYSQL_DATABASE: app
+  MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+
+test:php5.6-mysql5.5:
+  services:
+    - mysql:5.5
+  image: php:5.6
+  script: "php ./vendor/bin/codecept run unit --steps --debug"
+
+test:php7.1-mysql5.6:
+  services:
+    - mysql:5.6
+  image: php:7.1
+  script: "php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml --coverage-html"
+
+test:php7.2-mysql5.7:
+  services:
+    - mysql:5.6
+  image: php:7.2
+  script: "php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml --coverage-html"
+
+test:php7.3-mysql8.0:
+  services:
+    - name: mysql:8.0
+      command: ["mysqld", "--default-authentication-plugin=mysql_native_password"]
+  image: php:7.3
+  script: "php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml --coverage-html"
+  artifacts:
+    when: always
+    paths:
+      - ./tests/_output/
+
+pages:
+  stage: deploy
+  dependencies:
+    - test:php7.3-mysql8.0
+  image: ruby:latest
+  before_script: []
+  script:
+    - mv ./tests/_output/ ./public/
+  when: always
+  artifacts:
+    paths:
+      - ./public/
+  only:
+    - master
