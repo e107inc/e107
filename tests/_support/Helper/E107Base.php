@@ -6,6 +6,9 @@ include_once(codecept_root_dir() . "lib/preparers/PreparerFactory.php");
 // all public methods declared in helper class will be available in $I
 
 use Codeception\Lib\ModuleContainer;
+use PreparerFactory;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 
 abstract class E107Base extends Base
 {
@@ -16,7 +19,7 @@ abstract class E107Base extends Base
 	public function __construct(ModuleContainer $moduleContainer, $config = null)
 	{
 		parent::__construct($moduleContainer, $config);
-		$this->preparer = \PreparerFactory::create();
+		$this->preparer = PreparerFactory::create();
 	}
 
 	public function _beforeSuite($settings = array())
@@ -37,10 +40,10 @@ abstract class E107Base extends Base
 
 	protected function writeLocalE107Config()
 	{
-		$twig_loader = new \Twig_Loader_Array([
+		$twig_loader = new ArrayLoader([
 			'e107_config.php' => file_get_contents(codecept_data_dir()."/e107_config.php.sample")
 		]);
-		$twig = new \Twig_Environment($twig_loader);
+		$twig = new Environment($twig_loader);
 
 		$db = $this->getModule('\Helper\DelayedDb');
 

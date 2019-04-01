@@ -263,6 +263,6 @@
 		public function testGetPath()
 		{
 			$result = $this->md->getPath('image/jpeg');
-			var_dump($result);
+			// FIXME: This test doesn't do anything?
 		}
 	}
