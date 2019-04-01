@@ -316,16 +316,31 @@ TMP;
 					'input'     => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
 					'expected'  => array('Some long string & stuff'=> 0, 'other'=>null, 'extra'=>0.3, 'null'=>null),
 				),
-				18 => array(
+			/*	18 => array(
 					'input'     => '"><script>alert(123)</script>',
 					'expected'  => '',
 					'mode'      => 'model',
 					'parm'      => array('type'=>'text', 'field'=>'news_title')
-				)
+				),*/
+				19  => array( // admin log simulation
+					'input'     => "Array[!br!]([!br!]    [0] => zero[!br!]    [1] => one[!br!]    [2] => two[!br!])[!br!]",
+					'expected'  => "Array[!br!]([!br!]    [0] =&gt; zero[!br!]    [1] =&gt; one[!br!]    [2] =&gt; two[!br!])[!br!]",
+					'mode'      => 'no_html',
+				),
+				20  => array(
+					'input'     => '\\',
+					'expected'  => '&#092;',
+					'mode'      => 'no_html',
+				),
+				21 => array(
+					'input'     => '<a href="">Hello</a>',
+					'expected'  => '&lt;a href=&quot;&quot;&gt;Hello&lt;/a&gt;',
+					'mode'      => 'no_html',
+				),
 
 			);
 
-			foreach($tests as $var)
+			foreach($tests as $k=>$var)
 			{
 				if(empty($var['input']))
 				{
@@ -336,10 +351,9 @@ TMP;
 				$parm = varset($var['parm']);
 
 				$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
-				//	$this->assertEquals($var['expected'], $result);
-				// FIXME: This test doesn't do anything?
-			}
+				$this->assertEquals($var['expected'], $result, 'Test #'.$k." failed.");
 
+			}
 
 
 
