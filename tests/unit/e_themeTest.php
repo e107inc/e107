@@ -91,6 +91,11 @@
 						3 => '/user/settings?',
 						4 => 'script.php$',
 					),
+				'script_match' =>
+					array(
+					 0  => 'myplugin/index.php$', // <-- $ = script name match
+
+					),
 			);
 
 			$defaultLayout = "jumbotron_sidebar_right";
@@ -117,6 +122,7 @@
 				17 => array('url' => SITEURL."/user/settings?id=1",     'script' => 'usersettings.php',     'expected' => 'other_layout'),
 				18 => array('url' => SITEURL."/user/Tijn",              'script' => 'user.php',             'expected' => 'jumbotron_sidebar_right'),
 				19 => array('url' => SITEURL."user.php?id.1",           'script' => 'user.php',             'expected' => 'jumbotron_sidebar_right'),
+				20 => array('url' => SITEURL."pluginpage/",             'script' => 'e107_plugins/myplugin/index.php',   'expected' => 'script_match'),
 
 
 			);
@@ -129,6 +135,8 @@
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}
 
+
+			// print_r($_SERVER);
 
 		}
 /*
