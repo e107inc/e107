@@ -395,6 +395,7 @@ class rssCreate
 
 	function debug()
 	{
+		unset($this->e107);
 		print_a($this);
 	//	print_a($this -> rssItems);
 	}
