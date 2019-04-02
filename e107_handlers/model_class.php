@@ -2580,7 +2580,8 @@ class e_front_model extends e_model
 		if($this->_db_errno)
 		{
 			$data = array(
-				'error_no' => $this->_db_errno,
+				'TABLE'     => $this->getModelTable(),
+				'error_no'  => $this->_db_errno,
 				'error_msg' => $this->_db_errmsg,
 				'qry'       => $this->_db_qry,
 				'url'       => e_REQUEST_URI,
@@ -2815,6 +2816,7 @@ class e_front_model extends e_model
 			if($this->_db_errno)
 			{
 				$data = array(
+					'TABLE'     => $table,
 					'error_no' => $this->_db_errno,
 					'error_msg' => $this->_db_errmsg,
 					'qry'       => $this->_db_qry,
@@ -3388,6 +3390,7 @@ class e_tree_model extends e_front_model
 			{
 
 				$data = array(
+					'TABLE'     => $this->getModelTable(),
 					'error_no' => $sql->getLastErrorNumber(),
 					'error_msg' => $sql->getLastErrorText(),
 					'qry'       => $sql->getLastQuery(),
@@ -3902,7 +3905,9 @@ class e_front_tree_model extends e_tree_model
 		}
 		$idstr = implode(', ', $ids);
 
-		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
+		$table = $this->getModelTable();
+
+		$res = $sql->update($table, "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
@@ -3912,6 +3917,7 @@ class e_front_tree_model extends e_tree_model
 			if($sql->getLastErrorNumber())
 			{
 				$data = array(
+					'TABLE'     => $table ,
 					'error_no' => $this->_db_errno,
 					'error_msg' => $this->_db_errmsg,
 					'qry'       => $this->_db_qry,
@@ -3992,6 +3998,7 @@ class e_admin_tree_model extends e_front_tree_model
 			if($sql->getLastErrorNumber())
 			{
 				$data = array(
+					'TABLE'     => $table,
 					'error_no' => $this->_db_errno,
 					'error_msg' => $this->_db_errmsg,
 					'qry'       => $this->_db_qry,
