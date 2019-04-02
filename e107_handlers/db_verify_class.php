@@ -726,17 +726,8 @@ class db_verify
 	function getPrevious($array,$cur)
 	{
 		$fkeys = array_keys($array);
-		
-		foreach($fkeys as $fields)
-		{
-			if($fields == $cur)
-			{
-				$current = prev($fkeys); // required. 
-				$previous = prev($fkeys);
-				return $previous;
-			}
-		}
-						
+		$cur_key = array_search($cur, $fkeys);
+		return @$fkeys[$cur_key - 1];
 	}
 	
 	/**
