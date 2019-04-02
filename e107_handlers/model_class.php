@@ -3386,8 +3386,16 @@ class e_tree_model extends e_front_model
 
 			if($sql->getLastErrorNumber())
 			{
-				// TODO - admin log?
-				$this->addMessageError('Application Error - DB query failed.') // TODO LAN
+
+				$data = array(
+					'error_no' => $sql->getLastErrorNumber(),
+					'error_msg' => $sql->getLastErrorText(),
+					'qry'       => $sql->getLastQuery(),
+					'url'       => e_REQUEST_URI,
+				);
+
+
+				$this->addMessageError('Application Error - DB query failed.', false, $data) // TODO LAN
 					->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText())
 					->addMessageDebug($sql->getLastQuery());
 			}
