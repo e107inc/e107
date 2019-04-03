@@ -1049,6 +1049,9 @@ function fpages($thread_info, $replies)
 
 	$replies        = (int) $replies;
 	$postsPerPage   = (int) $forum->prefs->get('postspage');
+
+	// Add 1 for the first post in the topic (which technically is not a reply), to make it consistent with the nextprev in the forum_viewtopic page
+	$replies = $replies + 1; 
 	
 	$pages = ceil(($replies)/$postsPerPage);
 
