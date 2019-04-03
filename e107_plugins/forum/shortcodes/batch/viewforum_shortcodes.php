@@ -295,16 +295,26 @@
 
 		function sc_search()
 		{
-			return "
-			<form method='get' class='form-inline input-append' action='" . e_BASE . "search.php'>
-			<p>
-			<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-			<button class='btn btn-default btn-secondary button' type='submit' name='s' >" . LAN_SEARCH . "</button>
-			<input type='hidden' name='r' value='0' />
-			<input type='hidden' name='ref' value='forum' />
-			</p>
-			</form>";
 
+			if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
+			{
+				$srchIcon = LAN_SEARCH;
+			}
+
+			// String candidate for USERLIST wrapper
+			return "
+			<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
+			<div class='input-group'>
+			<input type='hidden' name='r' value='0' />
+			<input type='hidden' name='t' value='forum' />
+			<input type='hidden' name='forum' value='all' />
+			<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+			<span class='input-group-btn'>
+			<button class='btn btn-default btn-secondary button' type='submit' name='s' value='search' >".$srchIcon."</button>
+			</span>
+			</div>
+
+			</form>\n";
 		}
 
 
