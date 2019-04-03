@@ -2698,13 +2698,11 @@ class e_form
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
-			$defaultClass = (deftrue('BOOTSTRAP') === 3) ? 'radio-inline' : 'radio inline';
+			$defaultClass = (deftrue('BOOTSTRAP')) ? 'radio-inline' : 'radio inline';
 			$dis = (!empty($options['disabled'])) ? " disabled" : "";
 			$text .= "<label class='{$defaultClass}{$dis}'>";
 			
 		}
-		
-	
 		
 		
 		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
@@ -2716,10 +2714,8 @@ class e_form
 		
 		if($labelFound)
 		{
-			$text .= "<span>".$labelFound."</span></label>";
+			$text .= " <span>".$labelFound."</span></label>";
 		}
-
-
 		
 		return $text;
 	}
