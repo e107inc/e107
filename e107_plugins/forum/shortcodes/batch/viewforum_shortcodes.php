@@ -155,6 +155,15 @@
 			return $this->var['forum_name'];
 		}
 
+		function sc_forumdescription()
+		{
+			//    global $f, $restricted_string;
+		    global $restricted_string;
+			//	$tp = e107::getParser();
+			$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
+			return $this->var['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
+	    }
+
 		function sc_moderators()
 		{
 			return is_array($this->var['modUser']) ? implode(", ",$this->var['modUser']) : $this->var['modUser'];
