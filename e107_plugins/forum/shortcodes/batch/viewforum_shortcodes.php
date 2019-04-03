@@ -749,7 +749,7 @@
 //----		$tVars['LASTPOSTDATE'] .= "<a href='".$url."'>".  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short')."</a>";
 
 
-				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, false, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
+				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, true, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
 
 			}
 
