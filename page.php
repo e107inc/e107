@@ -365,6 +365,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
+					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $tmp['text'],
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
@@ -422,7 +423,7 @@ class pageClass
 		$frm 			= e107::getForm();
 
 		// retrieve the template to use for this chapter. 
-		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
 		
 		if($this->displayAllMode === true)
 		{
@@ -467,6 +468,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
+					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'], true,'BODY'),
 					'CHAPTER_BREADCRUMB'	=> !empty($_GET['ch']) ? $frm->breadcrumb($bread) : ''
 		);		
