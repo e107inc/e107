@@ -652,7 +652,7 @@
 		------*/
 
 
-		function sc_views()
+		function sc_views($parm='')
 		{
 			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
 
