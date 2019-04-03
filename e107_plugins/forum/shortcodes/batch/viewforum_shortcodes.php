@@ -941,7 +941,7 @@
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			$ret = fpages($this->var, $this->sc_replies('raw'));
+			$ret = fpages($this->var, $this->var['thread_total_replies']);
 
 			if(!empty($ret))
 			{
