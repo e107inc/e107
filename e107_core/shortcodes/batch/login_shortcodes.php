@@ -42,6 +42,8 @@ class login_shortcodes extends e_shortcode
 		return LOGINMESSAGE;
 	}
 	
+	/* example: {LOGIN_TABLE_USERNAME} */
+	/* example: {LOGIN_TABLE_USERNAME: class=form-control}  */
 	function sc_login_table_username($parm='') //FIXME use $frm
 	{
 
@@ -54,9 +56,9 @@ class login_shortcodes extends e_shortcode
 		$allowEmailLogin = varset($pref['allowEmailLogin'],0);
 		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
 		$placeholder =  $ulabel[$allowEmailLogin];	
+		$class = (!empty($parm['class'])) ? $parm['class'] : "tbox form-control input-block-level";
 		
-		
-		return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+		return "<input class='".$class."' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
 	}
 		
 	/* example: {LOGIN_TABLE_PASSWORD} */
