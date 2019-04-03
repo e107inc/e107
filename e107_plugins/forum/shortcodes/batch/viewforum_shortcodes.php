@@ -655,15 +655,8 @@
 		function sc_views()
 		{
 			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
-			return e107::getParser()->toBadge($val);
-		}
 
-
-		function sc_replies($parm='')
-		{
-			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
-
-			if($parm === 'raw')
+			if(!empty($parm['raw']))
 			{
 				return $val;
 			}
@@ -672,15 +665,28 @@
 		}
 
 
-		function sc_viewsx()
+		function sc_replies($parm='')
 		{
-			return $this->sc_views();
+			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+			if(!empty($parm['raw']))
+			{
+				return $val;
+			}
+
+			return e107::getParser()->toBadge($val);
 		}
 
 
-		function sc_repliesx()
+		function sc_viewsx($parm='')
 		{
-			return $this->sc_replies();
+			return $this->sc_views($parm);
+		}
+
+
+		function sc_repliesx($parm='')
+		{
+			return $this->sc_replies($parm);
 		}
 
 //	function sc__wrapper_()	{	return 'forum_viewforum';}
