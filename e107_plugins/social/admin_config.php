@@ -453,7 +453,6 @@ class social_ui extends e_admin_ui
 				'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
 				'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
 				'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
-				'google'		=>	array('label'=>"Google+",	"placeholder"=>""),
 				'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
 				'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
 				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
