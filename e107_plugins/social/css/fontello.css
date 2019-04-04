@@ -56,6 +56,7 @@
 }
  
 .e-social-gplus:before { content: '\e800'; } /* '' */
+.e-social-google-plus:before { content: '\e800'; } /* '' */
 .e-social-stumbleupon:before { content: '\e801'; } /* '' */
 .e-social-pinterest:before { content: '\e802'; } /* '' */
 .e-social-digg:before { content: '\e803'; } /* '' */
