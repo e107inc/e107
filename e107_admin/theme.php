@@ -1101,7 +1101,7 @@ class theme_builder extends e_admin_ui
 
 			return array('caption'=>TPVLAN_88, 'text'=>$mes->render() . $text);
 
-			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);
+		//	$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);
 
 		}
 
