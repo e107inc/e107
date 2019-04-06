@@ -47,7 +47,7 @@
 			<field name="gen_user_id">1</field>
 			<field name="gen_ip">Simple, One Page Design</field>
 			<field name="gen_intdata">0</field>
-			<field name="gen_chardata"><![CDATA[[html]<p>A free landing page theme with video background. &nbsp;The text you are reading is the &quot;Welcome Message&quot;.<br>Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
+			<field name="gen_chardata"><![CDATA[[html]<p>A free landing page theme with video background. &nbsp;The text you are reading is the &quot;Welcome Message&quot;.<br>Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;{e_ADMIN}admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
 		</item>
 	</dbTable>
 	<dbTable name="core_media">
@@ -253,7 +253,7 @@
 			<field name="media_cat_order">1</field>
 		</item>
 		<item>
-			<field name="media_cat_id">6/field>
+			<field name="media_cat_id">6</field>
 			<field name="media_cat_owner">page</field>
 			<field name="media_cat_category">page</field>
 			<field name="media_cat_title">Custom Pages</field>
