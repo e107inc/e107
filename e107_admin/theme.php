@@ -587,10 +587,51 @@ class theme_admin_ui extends e_admin_ui
 		}
 
 
+		/**
+		 * Check theme.php code for methods incompatible with PHP7.
+		 * @param $code
+		 * @return bool
+		 */
+		private function containsErrors($code)
+		{
+			if(PHP_MAJOR_VERSION < 6)
+			{
+				return false;
+			}
+
+			$dep = array('call_user_method(', 'call_user_method_array(', 'define_syslog_variables', 'ereg(','ereg_replace(',
+			'eregi(', 'eregi_replace(', 'set_magic_quotes_runtime(', 'magic_quotes_runtime(', 'session_register(', 'session_unregister(', 'session_is_registered(',
+			'set_socket_blocking(', 'split(', 'spliti(', 'sql_regcase(', 'mysql_db_query(', 'mysql_escape_string(');
+
+			foreach($dep as $test)
+			{
+				if(strpos($code, $test) !== false)
+				{
+					e107::getMessage()->addDebug("Incompatible function <b>".rtrim($test,"(")."</b> found in theme.php");
+					return true;
+				}
+
+			}
+
+			return false;
+
+		}
+
+
+
+
 		private function renderThemeConfig($type = 'front')
 		{
 			$frm = e107::getForm();
 			$themeMeta  = e107::getTheme($type)->get();
+
+			$themeFileContent = file_get_contents(e_THEME.$themeMeta['path']."/theme.php");
+
+
+			if($this->containsErrors($themeFileContent))
+			{
+				e107::getMessage()->setTitle("Incompatibility Detected", E_MESSAGE_ERROR)->addError("This theme is not compatible with your version of PHP.");
+			}
 
 			$this->addTitle("<span class='text-warning'>".$themeMeta['name']."</span>");
 
