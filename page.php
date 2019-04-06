@@ -744,7 +744,10 @@ class pageClass
 		if($this->cacheData['COMMENT_FLAG'])
 		{
 			$vars = new e_vars(array('comments' => $this->pageComment(true)));
-			$comments = e107::getScBatch('page',null,'cpage')->setVars($vars)->cpagecomments();
+			/** @var cpage_shortcodes $sc */
+			$sc = e107::getScBatch('page',null,'cpage');
+			$sc->setVars($vars);
+			$comments = $sc->cpagecomments();
 		} 
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
 		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
@@ -996,6 +999,7 @@ class pageClass
 
 			if (isset($_POST['commentsubmit']))
 			{
+				$pid = null; //FIXME ?
 				$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this->pageID, $pid, $_POST['subject']);
 				$e107cache = e107::getCache();
 				$e107cache->clear("comment.page.".$this->pageID);

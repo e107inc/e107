@@ -322,7 +322,8 @@ class e_theme
 	 *
 	 * @param array  $cusPagePref
 	 * @param string $defaultLayout
-	 * @param string $request_url (optional) defaults to e_REQUEST_URL;
+	 * @param string $request_url (optional) defaults to e_REQUEST_URL
+	 * @param string $request_script $_SERVER['SCRIPT_FILENAME'];
 	 * @return int|string
 	 */
 	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null, $request_script = null)
@@ -378,7 +379,7 @@ class e_theme
 					if($lastChar === '$') // script name match.
 					{
 						$kpage = rtrim($kpage, '$');
-						if(!empty($request_script) && $kpage === $request_script)
+						if(!empty($request_script) && strpos($request_script, '/'.$kpage) !== false)
 						{
 							return $lyout;
 						}
@@ -2367,7 +2368,7 @@ class themeHandler
 						$itext .= ($mode == self::RENDER_SITEPREFS) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
 						$itext .= "
 										<th>".TPVLAN_52."</th>
-										<th>".TPVLAN_56."</th>
+										<th>".TPVLAN_56."&nbsp;<a href='#' class='e-tip' title=\"".TPVLAN_96."\">".ADMIN_INFO_ICON."</a></th>
 										<th class='text-right' style='text-align:right'>".TPVLAN_54."</th>
 			
 									</tr>\n";
@@ -2401,7 +2402,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-secondary btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-default btn-secondary btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -2412,7 +2413,7 @@ class themeHandler
 							}
 							else
 							{
-								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-secondary btn-mini e-expandit'>".LAN_NONE."</a> ";
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' class='e-tip btn btn-xs btn-default btn-secondary btn-mini e-expandit'>".LAN_NONE."</a> ";
 							}
 			
 							
@@ -2428,6 +2429,7 @@ class themeHandler
 							//{
 								$itext .= $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'>
 										<textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
+
 
 
 								//TODO Later.

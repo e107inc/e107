@@ -131,3 +131,11 @@ define("TPVLAN_93", "Selection");
 define("TPVLAN_94", "Site theme changed to [x].");
 define("TPVLAN_95", "Skin");
 
+define("TPVLAN_96", "Set URLs/script-paths which should automatically use this layout. One per line.");
+
+define("TPVLANHELP_01", "The theme manager allows you to set your site's public theme and your admin areas theme.");
+define("TPVLANHELP_02", "Look at the tooltips (when available) for more details.");
+
+define("TPVLANHELP_03", "By default, the visibility filter will change the theme's layout based on a partial URL match.");
+define("TPVLANHELP_04", "End lines with a [b]![/b] to exactly match against the end of URL.");
+define("TPVLANHELP_05", "End lines with a [b]$[/b] to exactly match against the end of script path.");

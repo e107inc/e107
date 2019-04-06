@@ -629,6 +629,43 @@ class theme_admin_ui extends e_admin_ui
 		{
 			return $this->GridAjaxPage();
 		}
+
+
+		public function renderHelp()
+		{
+
+			$tp = e107::getParser();
+
+			$type= $this->getMode()."/".$this->getAction();
+
+			switch($type)
+			{
+				case "main/main":
+					$text = "<b>".TPVLAN_56."</b><br />"; // Visbility Filter
+					$text .= "<br />".$tp->toHTML(TPVLANHELP_03,true);
+					$text .= "<ul style='padding-left:10px;margin-top:10px'><li>".$tp->toHTML(TPVLANHELP_04,true)."</li>";
+					$text .= "<li>".$tp->toHTML(TPVLANHELP_05,true)."</li></ul>";
+					break;
+
+				case "label2":
+					//  code
+					break;
+
+				default:
+					$text = TPVLANHELP_01."<br /><br />".TPVLANHELP_02;
+			}
+
+
+
+
+			return array('caption'=>LAN_HELP, 'text'=>$text);
+
+
+
+
+		}
+
+
 }
 
 
