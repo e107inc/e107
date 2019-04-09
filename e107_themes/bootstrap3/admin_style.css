@@ -183,6 +183,7 @@ table  label.checkbox                   { margin-left: 20px }
 #admin-ui-list-batch                    { padding: 10px 15px }
 #admin-ui-list-batch img                { padding-top:5px }
 #admin-ui-list-filter                   { margin-bottom: 15px }
+#admin-ui-list-search #searchquery       { padding-right:5px }
 #admin-ui-list-search:before            { content: "\f002"; margin-left:12px; position:absolute; top: 50%; transform: translateY(-50%); font-family: "FontAwesome"  }
 
 .form-control-feedback-left              { left:0; top:0 }

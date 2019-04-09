@@ -4190,8 +4190,32 @@ class e_admin_controller_ui extends e_admin_controller
 					}
 					// Continue below for BC check also.
 				}
-							
-				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
+
+
+				if(strpos($searchQuery, " ") !==false) // search multiple words across fields.
+				{
+					$tmp = explode(" ", $searchQuery);
+
+					if(count($tmp) < 4) // avoid excessively long query.
+					{
+						foreach($tmp as $splitSearchQuery)
+						{
+							if(!empty($splitSearchQuery))
+							{
+								$filter[] = $var['__tableField']." LIKE '%".$splitSearchQuery."%'";
+							}
+						}
+					}
+					else
+					{
+						$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
+					}
+
+				}
+				else
+				{
+					$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
+				}
 
 
 				if($isfilter)
@@ -6877,7 +6901,7 @@ class e_admin_form_ui extends e_form
 			parse_str($input_options, $input_options);
 		}
 		$input_options['id'] = false;
-		$input_options['class'] = 'tbox input-text filter ';
+		$input_options['class'] = 'tbox input-text filter input-xlarge ';
 		$controller = $this->getController();
 		$filter_pre = vartrue($controller->preFiliterMarkup);
 		$filter_post = vartrue($controller->postFiliterMarkup);
