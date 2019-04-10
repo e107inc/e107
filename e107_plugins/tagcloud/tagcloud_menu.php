@@ -44,9 +44,11 @@ class tagcloud_menu
 		{
 			return $text;	
 		}
+
+		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		
-		
-		if($result = $sql->retrieve('news','news_id,news_meta_keywords', "news_meta_keywords !='' ", true))
+		if($result = $sql->retrieve('news','news_id,news_meta_keywords', "news_meta_keywords !='' AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")
+				AND news_start < ".time()." AND (news_end=0 || news_end>".time().")", true))
 		{
 			foreach($result as $row)
 			{
