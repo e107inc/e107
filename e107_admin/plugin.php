@@ -572,6 +572,7 @@ class plugin_ui extends e_admin_ui
 			if(file_exists($_path.'plugin.xml'))
 			{
 				$plugin->install_plugin_xml($id, 'upgrade');
+				$text = LAN_UPGRADE_SUCCESSFUL;
 			}
 			else
 			{
@@ -656,12 +657,16 @@ class plugin_ui extends e_admin_ui
 				e107::getConfig('core')->save();
 			}
 
-
 			$mes->addSuccess($text);
 			//$plugin->save_addon_prefs('update');
 
 			// make sure ALL plugin/addon pref lists get update and are current
 			e107::getPlug()->clearCache()->buildAddonPrefLists();
+
+			// clear infopanel in admin dashboard.
+			e107::getCache()->clear('Infopanel_plugin', true);
+			e107::getSession()->clear('addons-update-status');
+			e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
 			$this->redirectAction('list');
 	   }

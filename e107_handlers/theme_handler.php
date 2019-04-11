@@ -447,7 +447,7 @@ class e_theme
 		{
 			foreach($this->_data as $dir=>$v)
 			{
-				$arr[$dir] = $v['version'];
+				$arr[$dir] = array('version'=>$v['version'], 'author'=>$v['author']);
 			}
 
 		}

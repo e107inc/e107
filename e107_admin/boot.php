@@ -56,6 +56,7 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 {
 	e107::getSession()->set('addons-update-checked',true);
 
+	/** @var admin_shortcodes $sc */
 	$sc = e107::getScBatch('admin');
 
 	$themes = $sc->getUpdateable('theme');
@@ -63,6 +64,7 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 	$text = $sc->renderAddonUpdate($plugins);
 	$text .= $sc->renderAddonUpdate($themes);
+
 
 	if(empty($text))
 	{

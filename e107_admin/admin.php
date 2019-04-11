@@ -62,8 +62,10 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 	}
 }
 
-
-
+// DEBUG THE ADDON_UPDATED INFOPANEL
+//e107::getCache()->clear('Infopanel_plugin', true);
+//e107::getSession()->clear('addons-update-status');
+//e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
 define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
