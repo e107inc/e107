@@ -127,7 +127,8 @@
 		$count++;
 	}
 
-	$header = $template['start'];
+	
+	$header = str_replace("{NAV}", implode("\n", $nav), $template['start']);
 
 	$footer = str_replace("{NAV}", implode("\n", $nav), $template['end']);
 
