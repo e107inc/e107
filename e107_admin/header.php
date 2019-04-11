@@ -91,8 +91,6 @@ function loadJSAddons()
     }
 }
 
-// Load library dependencies.
-e107::getTheme('current', true)->loadLibrary();
 
 // Load other JS files.
 loadJSAddons();
@@ -497,26 +495,26 @@ echo "</head>
 echo getModal();
 echo getAlert();
 
-  function getModal($caption = '', $type='')
+function getModal()
+{
+
+	if(deftrue('BOOTSTRAP'))  // see bootstrap3/admin_template.php
     {
+		return '';
+	}
 
-        if(deftrue('BOOTSTRAP'))  // see bootstrap3/admin_template.php
-        {
-            return '';
-        }
-
-    	if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Menu Manager iFrame disable
-		{
+	if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Menu Manager iFrame disable
+	{
+		return null;
+	}
+	/*
+	if(e_PAGE == "image.php")
+	{
 			return;
-		}
+	}
+		*/
 		
-		if(e_PAGE == "image.php")
-		{
-	//		return;	
-		}
-		
-		
-        return '
+	return '
        
          <div id="uiModal" class="modal  fade" tabindex="-1" role="dialog"  aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -537,16 +535,11 @@ echo getAlert();
 		    </div>
         </div>';        
             
-    }
+}
 
-function getAlert($caption='')
+function getAlert()
 {
-	//  style="box-shadow:0px 15px 8px #000;width:300px;position:absolute;left:40%;right:40%;top:15%;z-index:10000"
-
-
-
 	return '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
-
 }
 
 
