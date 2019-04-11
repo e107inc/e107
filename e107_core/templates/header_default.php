@@ -23,8 +23,7 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
-// Load library dependencies.
-e107::getTheme('current')->loadLibrary();
+
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 // e107::css('core',	'bootstrap/css/tooltip.css','jquery');

@@ -1374,6 +1374,15 @@ if(!defined("THEME_LAYOUT"))
     unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
 }
 
+// Load library dependencies.
+if(deftrue('e_ADMIN_AREA'))
+{
+	e107::getTheme('current', true)->loadLibrary();
+}
+else
+{
+	e107::getTheme('current')->loadLibrary();
+}
 // -----------------------------------------------------------------------
 
 
