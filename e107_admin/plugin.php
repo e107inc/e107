@@ -1385,7 +1385,7 @@ class plugin_online_ui extends e_admin_ui
 
 			$text = "
 				<form class='form-search form-inline' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-				<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
+				<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go').$frm->hidden('mode','online')."
 				</div>
 				</form>
 
@@ -5252,7 +5252,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 				$type = vartrue($val['type'],'text');
 				$help = str_replace("'",'', vartrue($val['help']));
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."', 'writeParms' => array()),\n";
 			}	
 	
 		}
