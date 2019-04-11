@@ -21,10 +21,10 @@
            <css file="*" name="*"/>
 	</stylesheets>
 	<layouts>
-		<layout name='test' title='Test' default='true' />
-		<layout name='default' title='Default'  />
+		<layout name='default' title='Default'  default='true' />
 		<layout name='home' title='Home' />
 		<layout name='full' title='Full' />
+		<layout name='test' title='Test'  />
 		<layout name='glyphs' title='Glyphs (test)' />
 	</layouts>
 </e107Theme>
