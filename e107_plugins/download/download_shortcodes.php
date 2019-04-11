@@ -63,15 +63,15 @@ class download_shortcodes extends e_shortcode
 
 				if(!empty($this->grandparent))
 				{
-					$breadcrumb[]	= array('text' => $this->grandparent['download_category_name'],	'url' => ($this->grandparent['download_category_id']) ? e107::url('download', 'category', $this->grandparent) : null); // 'download/list/category', array('id'=>$this->grandparent['download_category_id'],'name'=>$this->grandparent['download_category_sef'])) : null);
+					$breadcrumb[]	= array('text' => $this->grandparent['download_category_name'],	'url' => ($this->grandparent['download_category_id']) ? e107::url('download', 'category', $this->grandparent) : null);
 				}
 
 				if(!empty($this->parent))
 				{
-					$breadcrumb[]	= array('text' => $this->parent['download_category_name'],	'url' => ($this->parent['download_category_id']) ?  e107::url('download', 'category', $this->parent) : null); //  e107::url('download/list/category', array('id'=>$this->parent['download_category_id'],'name'=>$this->parent['download_category_sef'])) : null);
+					$breadcrumb[]	= array('text' => $this->parent['download_category_name'],	'url' => ($this->parent['download_category_id']) ?  e107::url('download', 'category', $this->parent) : null);
 				}
 
-				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ?  e107::url('download', 'category', $this->var) : null); // e107::url('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef'])) : null);
+				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ?  e107::url('download', 'category', $this->var) : null);
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
 			break;
 		}
@@ -1043,7 +1043,7 @@ class download_shortcodes extends e_shortcode
               <span class="input-group-btn">
               <button class="btn btn-default btn-secondary" type="submit" name="s"  value="1">';
               
-              $text .= $tp->toIcon('glyphicon-search.glyph');
+              $text .= $tp->toIcon('fa-search.glyph');
 
              $text .= '</button>
              </span>
