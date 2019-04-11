@@ -290,8 +290,12 @@ class theme_admin_ui extends e_admin_ui
 
 				if($this->themeObj->setTheme($id))
 				{
-
 					$mes->addSuccess($message);
+
+					// clear infopanel in admin dashboard.
+					e107::getCache()->clear('Infopanel_theme', true);
+					e107::getSession()->clear('addons-update-status');
+					e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 				}
 				else
 				{

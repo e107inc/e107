@@ -131,6 +131,8 @@ class admin_shortcodes
 			$e107_var['x'.$key]['link'] = e_ADMIN.'docs.php?'.$key;
 		}
 
+		$act = null; // FIXME
+
 		$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
 		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 	}
@@ -1131,7 +1133,7 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
-			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+			$sqlMode = str_replace(",", ", ", e107::getDb()->getMode());
 
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
@@ -1152,10 +1154,10 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
+			".e107::getDb()->getServerInfo(). // mySqlServerInfo.
 
 			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
-			<br />PDO: ".((e107::getDB()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
+			<br />PDO: ".((e107::getDb()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
 			<br />Mode: <small>".$sqlMode."</small>
 
 			<br /><br />
@@ -1411,7 +1413,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$res = e107::getSession()->get('addons-update-status');
 
-		if($res !== null)
+		if($res !== null) // cached version.
 		{
 			return $res;
 		}
@@ -1469,20 +1471,31 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			case "plugin":
 				$versions = $mp->getVersionList('plugin');
-				$list = e107::getPref('plug_installed');
+				$plg = e107::getPlug();
+				$tmp = $plg->getInstalled();
+				$list = array();
+				foreach($tmp as $folder=>$version)
+				{
+					$plg->load($folder);
+					$list[$folder] = array('version'=>$version, 'author'=>$plg->getAuthor());
+				}
+
 				break;
 		}
 
 		$ret = array();
 
-		foreach($list as $folder=>$version)
+		foreach($list as $folder=>$var)
 		{
+			$version = $var['version'];
+			$author = $var['author'];
 
-			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<') && ($versions[$folder]['author'] === $author))
 			{
 				$versions[$folder]['modalDownload'] = $mp->getDownloadModal($type, $versions[$folder]);
 				$ret[] = $versions[$folder];
 				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+				e107::getMessage()->addDebug("Local author: ".$$author." Remote author: ".$versions[$folder]['author']);
 			}
 
 		}
