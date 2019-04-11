@@ -85,7 +85,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
 		$ret['error'] 	= true;
-		$ret['msg'] 	= COMLAN_336;
+		$ret['msg'] 	= COMLAN_336." - ".implode(" ",$_GET);
 		echo json_encode($ret);
 		exit; 	
 	}
