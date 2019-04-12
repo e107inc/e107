@@ -1108,7 +1108,7 @@ class e107forum
 			SELECT t.*, f.*,
 			fp.forum_id AS parent_id, fp.forum_name AS parent_name,
 			sp.forum_id AS forum_sub, sp.forum_name AS sub_parent,
-			sp.forum_sef AS parent_sef,
+			fp.forum_sef AS parent_sef,
 			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
