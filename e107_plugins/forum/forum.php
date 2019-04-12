@@ -390,7 +390,9 @@ foreach ($forumList['parents'] as $parent)
 //				$sc->fparent = $parent;
 
 	$sc->setVars($parent);
+	$sc->setScVar('forumParent', $parent);
 	$sc->wrapper('forum/main/parent');
+
 	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, true, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
