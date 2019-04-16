@@ -2235,7 +2235,7 @@ class e_form
 			<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>";
 		}
 			
-		$class = vartrue($options['class'],'');	
+		$class = vartrue($options['class'],'');
 		$target = $this->name2id($name);
 		
 		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
@@ -2261,8 +2261,9 @@ class e_form
 			$label = $options['label'];
 		}
 
+		$id = !empty($options['id']) ? "id='".$options['id']."'" : '';
 
-		$text =	"<div class='progress ".$class."{$striped}' >
+		$text =	"<div {$id} class='progress {$striped}' >
    		 	<div id='".$target."' class='progress-bar bar ".$class."' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
    		$text .= $label;
    		 	$text .= "</div>
