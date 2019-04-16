@@ -49,10 +49,15 @@
 			$this->source = $source;
 		}
 
-		public function process()
+		/**
+		 * @param bool $sendEmail true | false
+		 * @return mixed|null
+		 */
+		public function process($sendEmail=true)
 		{
 
 			$pref = e107::getPref();
+			$e107_userid = null;
 
 			e107::getCache()->CachePageMD5 = '_';
 			e107::getCache()->set('emailLastBounce', time(), true, false, true);
@@ -75,7 +80,8 @@
 				}
 				else
 				{
-					$message = "Failed: Unable to read email!";
+				//	$message = "Failed: Unable to read email!";
+					return false;
 				}
 
 			}
@@ -89,7 +95,7 @@
 			}
 
 
-			if($this->debug === true)
+			if($this->debug === true) // admin is sending a bounce-handler test email.
 			{
 				require_once(e_HANDLER . "mail.php");
 				$message = "Your Bounce Handler is working. The data of the email you sent is displayed below.<br />";
@@ -104,13 +110,7 @@
 				//	$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
 
 				$message .= "<pre>" . $strEmail . "</pre>";
-
-				if(!empty($this->source))
-				{
-					echo $message;
-				}
-
-
+				
 			}
 
 
@@ -128,7 +128,7 @@
 
 			}
 
-			if(!empty($message))
+			if(!empty($message) && ($sendEmail === true))
 			{
 
 				$eml = array(
@@ -143,10 +143,12 @@
 
 
 				e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME . " :: Bounce-Handler.", $eml);
-				//	e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 			}
 
-			return;
+
+			return $e107_userid;
+
+
 			/*		echo "<pre>";
 					print_r($multiArray);
 					echo "</pre>";
