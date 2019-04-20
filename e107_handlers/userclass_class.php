@@ -1201,7 +1201,7 @@ class user_class
 
 		$ret = array();
 
-		$query = "SELECT user_id,{$fields} FROM `#user` WHERE ".implode(" OR ",$qry);
+		$query = "SELECT user_id,{$fields} FROM `#user` WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
 
 		if ($sql->gen($query))
 		{
