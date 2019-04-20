@@ -11,6 +11,7 @@
 
 	class user_classTest extends \Codeception\Test\Unit
 	{
+		/** @var user_class */
 		protected $uc;
 
 
@@ -82,12 +83,49 @@
 		{
 
 		}
-
-		public function testGet_users_in_class()
+*/
+		public function testGetUsersInClass()
 		{
 
-		}
+			$result = $this->uc->getUsersInClass(e_UC_MEMBER);
+			$expected = array (
+				  1 =>
+				  array (
+				    'user_id' => '1',
+				    'user_name' => 'e107',
+				    'user_loginname' => 'e107',
+				  ),
+				);
 
+			$this->assertEquals($expected, $result);
+
+
+
+			$result = $this->uc->getUsersInClass(e_UC_ADMIN.",5,4,3", 'user_perms');
+			$expected = array (
+			  1 =>
+			  array (
+			    'user_id' => '1',
+			    'user_perms' => '0',
+			  ),
+			);
+
+			$this->assertEquals($expected, $result);
+
+			$result = $this->uc->getUsersInClass(e_UC_MAINADMIN);
+			$expected = array (
+				  1 =>
+				  array (
+				    'user_id' => '1',
+				    'user_name' => 'e107',
+				    'user_loginname' => 'e107',
+				  ),
+				);
+
+			$this->assertEquals($expected, $result);
+
+		}
+/*
 		public function testGet_editable_classes()
 		{
 
