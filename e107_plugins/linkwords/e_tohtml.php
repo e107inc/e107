@@ -50,6 +50,7 @@ class e_tohtml_linkwords
 
 	protected $customClass  = '';
 	protected $wordCount    = array();
+	protected $word_limit   = array();
 //	protected $maxPerWord   = 3;
 
 	
@@ -119,7 +120,7 @@ class e_tohtml_linkwords
 				while($row = $link_sql->fetch())
 				{
 
-					$lw = $tp->uStrToLower($row['linkword_word']);					// It was trimmed when saved		*utf
+					$lw = $tp->ustrtolower($row['linkword_word']);					// It was trimmed when saved		*utf
 
 					if($row['linkword_active'] == 2)
 					{
@@ -208,7 +209,11 @@ class e_tohtml_linkwords
 		}
 
 
-		if (!$this->lw_enabled || empty($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
+		if (!$this->lw_enabled || empty($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area])
+		{
+		//	e107::getDebug()->log("Link words skipped on ".substr($text, 0, 50));
+		    return $text;		// No linkwords in disabled areas
+		}
 	
 // Split up by HTML tags and process the odd bits here
 		$ptext = "";
@@ -346,7 +351,7 @@ class e_tohtml_linkwords
 		foreach ($split_line as $count=>$sl)
 		{
 
-			if ($tp->uStrToLower($sl) == $lw && $this->wordCount[$hash] < $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
+			if ($tp->ustrtolower($sl) == $lw && $this->wordCount[$hash] < $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
 			{
 				$this->wordCount[$hash]++;
 

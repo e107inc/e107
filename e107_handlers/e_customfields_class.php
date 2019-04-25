@@ -220,7 +220,7 @@
 
 				case "textarea":
 				case "bbarea":
-					return $tp->toHTML($value, true);
+					return $tp->toHTML($value, true, "BODY");
 					break;
 
 
