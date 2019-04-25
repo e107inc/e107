@@ -125,41 +125,42 @@ class plugin_download_admin extends e_admin_dispatcher
 
 
 class download_cat_ui extends e_admin_ui
-{ 	 	 
-		protected $pluginTitle	    = LAN_PLUGIN_DOWNLOAD_NAME;
-		protected $pluginName	    = 'download';
-		protected $table 		    = "download_category";
-		protected $pid			    = "download_category_id";
-		protected $perPage 		    = 0; //no limit
+{
 
-		protected $batchCopy		= true;
+	protected $pluginTitle = LAN_PLUGIN_DOWNLOAD_NAME;
+	protected $pluginName  = 'download';
+	protected $table       = "download_category";
+	protected $pid         = "download_category_id";
+	protected $perPage     = 0; //no limit
+	protected $eventName   = 'download_category';
+	protected $batchCopy   = true;
 
-		// initiate as a parent/child tree.
-		protected $sortField		= 'download_category_order';
-		protected $sortParent       = 'download_category_parent';
-		protected $treePrefix       = 'download_category_name';
+	// initiate as a parent/child tree.
+	protected $sortField  = 'download_category_order';
+	protected $sortParent = 'download_category_parent';
+	protected $treePrefix = 'download_category_name';
 	//	protected $orderStep		= // automatic
 	//	protected $listOrder		= // automatic
 
-		//legacy URL scheme
-		protected $url         		= array('route'=>'download/list/category', 'vars' => array('id' => 'download_category_id', 'name' => 'download_category_sef'), 'name' => 'download_category_name', 'description' => ''); // 'link' only needed if profile not provided.
+	//legacy URL scheme
+	protected $url = array('route' => 'download/list/category', 'vars' => array('id' => 'download_category_id', 'name' => 'download_category_sef'), 'name' => 'download_category_name', 'description' => ''); // 'link' only needed if profile not provided.
 
-	 	 	
-		protected $fields = array(
-			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
-			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
-         	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=>'str',	'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
-       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',		'data'=>'str',	'batch'=>true, 'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'sef=download_category_name&size=xxlarge'),
-         
-	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
-			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
-			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'nolist'=>true, 'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
-			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort'=>1)
-		);	
 
-		protected $fieldpref = array('download_category_icon', 'download_category_id', 'download_category_name', 'download_category_sef', 'download_category_class', 'download_category_order');
+	protected $fields = array(
+		'checkboxes'             => array('title' => '', 'type' => null, 'width' => '5%', 'forced' => true, 'thclass' => 'center', 'class' => 'center'),
+		'download_category_icon' => array('title' => LAN_ICON, 'type' => 'method', 'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'writeParms' => 'glyphs=1'),
+		'download_category_id'   => array('title' => LAN_ID, 'type' => 'number', 'width' => '5%', 'forced' => true, 'readParms' => 'link=sef&target=blank'),
+		'download_category_name' => array('title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'size=xxlarge'),
+		'download_category_sef'  => array('title' => LAN_SEFURL, 'type' => 'text', 'data' => 'str', 'batch' => true, 'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'sef=download_category_name&size=xxlarge'),
+
+		'download_category_description' => array('title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+		'download_category_parent'      => array('title' => LAN_PARENT, 'type' => 'method', 'width' => '5%', 'batch' => true, 'filter' => true),
+		'download_category_class'       => array('title' => LAN_VISIBILITY, 'type' => 'userclass', 'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => true, 'filter' => true),
+		'download_category_order'       => array('title' => LAN_ORDER, 'type' => 'number', 'nolist' => true, 'data' => 'int', 'width' => '5%', 'thclass' => 'right', 'class' => 'right'),
+		'options'                       => array('title' => LAN_OPTIONS, 'type' => null, 'width' => '10%', 'forced' => true, 'thclass' => 'center last', 'class' => 'center', 'sort' => 1)
+	);
+
+	protected $fieldpref = array('download_category_icon', 'download_category_id', 'download_category_name', 'download_category_sef', 'download_category_class', 'download_category_order');
 
 	protected $downloadCats = array();
 
@@ -171,14 +172,10 @@ class download_cat_ui extends e_admin_ui
 		}
 
 		$this->setDownloadCategoryTree();
-
 	}
-
 
 	private function setDownloadCategoryTree()
 	{
-
-
 		$sql = e107::getDb();
 		$qry = $this->getParentChildQry(true);
 		$sql->gen($qry);
@@ -189,7 +186,7 @@ class download_cat_ui extends e_admin_ui
 		{
 			$num = $row['_depth'] - 1;
 			$id = $row['download_category_id'];
-			$this->downloadCats[$id] = str_repeat("&nbsp;&nbsp;",$num).$row['download_category_name'];
+			$this->downloadCats[$id] = str_repeat("&nbsp;&nbsp;", $num) . $row['download_category_name'];
 		}
 
 		if($this->getAction() === 'edit') // make sure parent is not the same as ID.
@@ -197,22 +194,18 @@ class download_cat_ui extends e_admin_ui
 			$r = $this->getId();
 			unset($this->downloadCats[$r]);
 		}
-
 	}
-
-
 
 	function getDownloadCategoryTree($id = false)
 	{
-
 		if($id)
 		{
 			return $this->downloadCats[$id];
 		}
-		
+
 		return $this->downloadCats;
-	}	
-		
+	}
+
 }
 
 class download_cat_form_ui extends e_admin_form_ui
