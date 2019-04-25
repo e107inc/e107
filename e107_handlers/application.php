@@ -4285,7 +4285,6 @@ class eResponse
 	 * addMeta('og:title', 'My Title');
 	 * addMeta(null, 30, array('http-equiv' => 'refresh'));
 	 * addMeta(null, null, array('http-equiv' => 'refresh', 'content' => 30)); // same as above
-	 * addMeta(null, $href, array('tag'  => 'link', 'rel'  => $rel)); // <link rel="canonical" href="..." />
 	 * @param string $name 'name' attribute value, or null to avoid it
 	 * @param string $content 'content' attribute value, or null to avoid it
 	 * @param array $extended format 'attribute_name' => 'value'
@@ -4293,7 +4292,7 @@ class eResponse
 	 */
 	public function addMeta($name = null, $content = null, $extended = array())
 	{
-		if(empty($content) && empty($extended['content'])){ return $this; } // content is required, otherwise ignore.
+		if(empty($content)){ return $this; } // content is required, otherwise ignore. 
 		
 		//TODO need an option that allows subsequent entries to overwrite existing ones. 
 		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data. 
@@ -4340,15 +4339,7 @@ class eResponse
 
 		foreach ($this->_meta as $attr)
 		{
-			$tag = 'meta';
-			// Support for: <link rel="canonical" href="http://e107.org/" />
-			if (isset($attr['tag']) && $attr['tag'] == 'link') {
-				$tag = $attr['tag'];
-				$attr['href'] = $attr['content'];
-				unset($attr['tag']);
-				unset($attr['content']);
-			}
-			$attrData .= '<' . $tag;
+			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
 			{
 				$attrData .= ' '.preg_replace('/[^\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
