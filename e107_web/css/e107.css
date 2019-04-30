@@ -142,8 +142,8 @@ h1.bbcode, h2.bbcode, h3.bbcode, h4.bbcode, h5.bbcode, h6.bbcode {  }/* override
 
 div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
-#comments-container { list-style: none outside none; margin:0px }
-#comments-container > li { padding: 5px 0px }
+.comments-container { list-style: none outside none; margin:0px }
+.comments-container > li { padding: 5px 0px }
 .comment-text           { padding: 8px 0 }
 
 .e-email:before {    content: attr(data-user);    }
@@ -256,7 +256,7 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-rate-down img									{ opacity: 0.4 }
 
 /*
-#comments-container .comment-box:nth-child(even) {
+.comments-container .comment-box:nth-child(even) {
      background: red;
 }
  */   
