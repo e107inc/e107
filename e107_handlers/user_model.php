@@ -367,6 +367,10 @@ class e_user_model extends e_admin_model
 		return $this;
 	}
 
+	/**
+	 * @param bool $toString
+	 * @return string|array
+	 */
 	final public function getClassList($toString = false)
 	{
 		if (null === $this->_class_list)
