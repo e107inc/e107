@@ -1005,6 +1005,8 @@ class news_front
 
 	private function renderViewTemplate()
 	{
+		global $NEWSSTYLE; // v1.x backward compatibility.
+
 		$this->addDebug("Method",'renderViewTemplate()');
 
 		if($newsCachedPage = $this->checkCache($this->cacheString))
@@ -1126,9 +1128,10 @@ class news_front
 			$param['current_action'] = $action;
 			$param['template_key'] = 'news/view';
 
-			if(vartrue($NEWSSTYLE))
+			if(!empty($NEWSSTYLE))
 			{
 				$template =  $NEWSSTYLE;
+
 			}
 			elseif(function_exists("news_style")) // BC
 			{
