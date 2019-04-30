@@ -491,8 +491,8 @@ div.comments-form-login div { padding-bottom:10px }
 .pager { margin-bottom: 40px; }
 img.news-image-1 { margin-bottom:15px }
 
-#comments-container li { padding:20px 8px }
-#comments-container li:nth-child(even) { background-color: #F8F8F8;  }
+.comments-container li { padding:20px 8px }
+.comments-container li:nth-child(even) { background-color: #F8F8F8;  }
 
 .signup-xup { width:64px; height:64px; margin:0 5px; padding:12px;  }
 .signup-xup i { font-size: 3em; }

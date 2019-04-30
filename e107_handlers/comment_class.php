@@ -1173,11 +1173,11 @@ class comment
 		if($text)
 		{
 			//XXX Do NOT add to template - too important to allow for modification. 
-			$text = "<ul class='media-list comments-container' id='".$containerTarget."'>\n".$text."\n</ul>";
+			$text = "<ul class='comments-container media-list' id='".$containerTarget."'>\n".$text."\n</ul>";
 		}
 		else
 		{
-			$text = "<ul class='media-list comments-container' id='".$containerTarget."'><li><!-- --></li></ul>";
+			$text = "<ul class='comments-container media-list' id='".$containerTarget."'><li><!-- --></li></ul>";
 		}
 
 
