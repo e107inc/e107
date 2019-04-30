@@ -239,7 +239,7 @@ class e107_event
 	/**
 	 * @Deprecated
 	 */
-	function triggerAdminEvent($type, $parms=array())
+	function triggerAdminEvent($type, $parms=null)
 	{
 		global $pref;
 		if(!is_array($parms))
@@ -290,9 +290,9 @@ class e107_event
 	* @param string $function identifier for the calling function
 	* @return string $text string of rendered html, or message from db handler
 	*/
-	function triggerHook($data='')
+	function triggerHook($data=array())
 	{
-		$text = ''; 
+		$text = null;
 		$e_event_list = e107::getPref('e_event_list');
 		
 		if(is_array($e_event_list))
