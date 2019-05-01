@@ -114,6 +114,9 @@ $FOOTER = '
 	</div>
 </div>
 ';
+
+$CUSTOMHEADER = array();
+
 $CUSTOMHEADER['HOME'] = '
 <div class="wrapper">
 	<div class="headerbg">
