@@ -2245,9 +2245,11 @@ class e_form
 			$label = $value;
 			list($score,$denom) = explode('/',$value);
 
-			$multiplier = 100 / (int) $denom;
+		//	$multiplier = 100 / (int) $denom;
 
-			$value = (int) $score * (int) $multiplier;
+			$value = ((int) $score / (int) $denom) * 100;
+
+		//	$value = (int) $score * (int) $multiplier;
 			$percVal = number_format($value,0).'%';
 		}
 		else
