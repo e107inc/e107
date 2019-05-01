@@ -638,17 +638,18 @@ TMP;
 			}
 
 			$tests = array(
-				0   => array('input'=> '{e_IMAGE}e107_icon_32.png',                 'expected'  => '/e107_images/e107_icon_32.png'),
-				1   => array('input'=> '{e_MEDIA_IMAGE}icon_64.png',                'expected'  => 'thumb.php?src=e_MEDIA_IMAGE'),
-				2   => array('input'=> '{e_MEDIA_ICON}icon_64.png',                 'expected'  => '/e107_media/000000test/icons/icon_64.png'),
-				3   => array('input'=> '{e_PLUGIN}gallery/images/gallery_32.png',   'expected'  => '/e107_plugins/gallery/images/gallery_32.png'),
+				0   => array('input'=> '{e_IMAGE}e107_icon_32.png',    'parms'=>null,             'expected'  => '/e107_images/e107_icon_32.png'),
+				1   => array('input'=> '{e_MEDIA_IMAGE}icon_64.png',   'parms'=>null,             'expected'  => 'thumb.php?src=e_MEDIA_IMAGE'),
+				2   => array('input'=> '{e_MEDIA_ICON}icon_64.png',     'parms'=>null,            'expected'  => '/e107_media/000000test/icons/icon_64.png'),
+				3   => array('input'=> '{e_PLUGIN}gallery/images/gallery_32.png',  'parms'=>null, 'expected'  => '/e107_plugins/gallery/images/gallery_32.png'),
+				4   => array('input'=> 'config_16.png', 'parms'=>array('legacy'=> "{e_IMAGE}icons/"), 'expected' => '/e107_images/icons/config_16.png'),
 			);
 
 			foreach($tests as $var)
 			{
-				$result = $this->tp->toIcon($var['input']);
+				$result = $this->tp->toIcon($var['input'],$var['parms']);
 				$this->assertContains($var['expected'],$result);
-		//		var_dump($var['expected']);
+				//var_dump($result);
 			}
 		}
 /*

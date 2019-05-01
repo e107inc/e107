@@ -358,12 +358,24 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testProgressBar()
 			{
+				$tests = array(
+					0   => array('value' => '10/20',    'expected' => 'width: 50%'),
+					1   => array('value' => '4/5',      'expected' => 'width: 80%'),
+					2   => array('value' => '150/300',  'expected' => 'width: 50%'),
+					3   => array('value' => '30%',      'expected' => 'width: 30%'),
+				);
+
+				foreach($tests as $var)
+				{
+					$result = $this->_frm->progressBar('progress', $var['value']);
+					$this->assertContains($var['expected'],$result);
+				}
 
 			}
-
+/*
 			public function testTextarea()
 			{
 
