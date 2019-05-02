@@ -268,11 +268,13 @@ class user_class
 		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1, e_UC_BOTS => 1);
 		$possibles = array_flip(explode(',',$classList));
 		unset($possibles[e_UC_READONLY]);
+
 		foreach ($this->class_tree as $uc => $uv)
 		{
 			if (!isset($blockers[$uc]))
 			{
 				$ec = $uv['userclass_editclass'];
+			//	$ec = $uv['userclass_visibility'];
 				if (isset($possibles[$ec]))
 				{
 					$ret[] = $uc;
@@ -1189,7 +1191,7 @@ class user_class
 		{
 			$class_regex = implode('|', array_flip($classList));
 			$regex = "(^|,)(".e107::getParser()->toDB($class_regex).")(,|$)";
-			$qry[] = "user_class REGEXP '{$regex}' ORDER BY '{$orderBy}'";
+			$qry[] = "user_class REGEXP '{$regex}' ";
 		}
 
 		if(empty($qry))
