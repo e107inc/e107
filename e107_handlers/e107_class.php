@@ -2799,8 +2799,8 @@ class e107
 	 *
 	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
 	 * Will search for:
-	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
-	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
+	 * - e107_themes/{current_frontend_theme}/templates/user_template.php (if $override is true) - this is the default.
+	 * - e107_core/templates/user_template.php (if override not found or $override is false)
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 *
