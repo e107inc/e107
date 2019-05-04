@@ -685,13 +685,36 @@
 			$res = null;
 			$this->assertTrue($res);
 		}
-
+*/
+		/**
+		 * This test checks getTemplate() use on loading between the core download plugin template and the _blank theme download template
+		 */
 		public function testGetTemplate()
 		{
-			$res = null;
-			$this->assertTrue($res);
-		}
+			e107::getConfig()->set('sitetheme', '_blank');
 
+			$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
+			$this->assertEquals('{DOWNLOAD_BREADCRUMB} Custom', $template['header']); // ie. should be from _blank theme download template (override of plugin).
+			$footer = is_null($template['footer']); // theme overrides everything, since merge is not enabled. theme does not contain 'footer'.
+			$this->assertTrue($footer);
+
+			$template = e107::getTemplate('download', null, null, false); // theme override is disabled.
+			$this->assertEquals("{DOWNLOAD_BREADCRUMB}", $template['header']); // ie. should be from plugin template, not theme.
+			$this->assertEquals('', $template['footer']); // main plugin template is active, since override is false. 'footer' is set.
+
+			$template = e107::getTemplate('download', null, null, true, true); // theme override is enabled, and theme merge is enabled.
+			$this->assertEquals("{DOWNLOAD_BREADCRUMB} Custom", $template['header']); //from theme
+			$this->assertEquals("", $template['footer']); // 'footer' missing from theme, so plugin template used. ie. arrays have been merged.
+
+			$template = e107::getTemplate('download', null, null, false, true); // theme override is disabled, theme merge is enabled.
+			$this->assertEquals("{DOWNLOAD_BREADCRUMB}", $template['header']); // ie. should be from plugin template, not theme.
+		//	$this->assertEquals("test", $template['other']); // 'test' is missing from plugin template, but merge is enabled. Not an override of plugin template key so merge is okay.
+			// FIXME above..
+		//	var_dump($template['other']);
+
+
+		}
+/*
 		public function testTemplateWrapper()
 		{
 			$res = null;
