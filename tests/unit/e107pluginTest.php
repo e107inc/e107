@@ -170,12 +170,61 @@
 		{
 
 		}
-
+*/
 		public function testXmlExtendedFields()
 		{
+			// $ret = $this->ep->parse_plugin_xml('_blank');
+			//	var_export($this->ep->plug_vars);
+
+			$this->ep->plugFolder = 'test';
+
+			$extendedVars = array (
+		    'field' =>   array (
+			      0 =>   array (
+			        '@attributes' => array ('name' => 'custom', 'type' => 'EUF_TEXTAREA',    'default' => '0',   'active' => 'true',),
+			        '@value' => '',
+			      ),
+			      1 =>  array (
+			        '@attributes' => array ('name' => 'custom2', 'type' => 'EUF_ADDON', 'data' => 'str', 'default' => '0', 'active' => 'true', 'system' => 'false', 'text' => 'My Label' ),
+			        '@value' => '',
+			      ),
+
+			      2 =>  array (
+			        '@attributes' => array ('name' => 'custom3', 'type' => 'EUF_ADDON', 'data' => 'str', 'default' => 'hello', 'active' => 'true', 'system' => 'true', 'text' => 'Another Label' ),
+			        '@value' => '',
+			      ),
+		     )
+			);
+			
+			$expected = array ( 
+				0 => array (  
+					'name' => 'plugin_test_custom',  
+					'attrib' =>array ( 'name' => 'custom', 'type' => 'EUF_TEXTAREA', 'default' => '0', 'active' => 'true', 'deprecate' => NULL, 'system' => true,  ),  
+					'source' => 'plugin_test',
+				),
+				1 => array (  
+					'name' => 'plugin_test_custom2',  
+					'attrib' =>array ( 'name' => 'custom2', 'type' => 'EUF_ADDON', 'data' => 'str', 'default' => '0', 'active' => 'true', 'system' => false, 'text' => 'My Label', 'deprecate' => NULL,  ),  
+					'source' => 'plugin_test',
+				),
+				2 => array (  
+					'name' => 'plugin_test_custom3',  
+					'attrib' =>array ( 'name' => 'custom3', 'type' => 'EUF_ADDON', 'data' => 'str', 'default' => 'hello', 'active' => 'true', 'system' => true, 'text' => 'Another Label', 'deprecate' => NULL,  ),  
+					'source' => 'plugin_test',
+				), 
+			); 
+			
+			
+
+			$result = $this->ep->XmlExtendedFields('test', $extendedVars);
+
+			$this->assertEquals($expected, $result);
+
+		//	var_export($result);
+
 
 		}
-
+/*
 		public function testGetAddons()
 		{
 
