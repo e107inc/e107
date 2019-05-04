@@ -3768,6 +3768,8 @@ class e107plugin
 		$mes = e107::getMessage();
 		$this->setUe();
 
+		$ret = array();
+
 		foreach ($array['field'] as $efield)
 		{
 			$attrib = $efield['@attributes'];
@@ -3780,8 +3782,14 @@ class e107plugin
 			$source = 'plugin_'.$this->plugFolder;
 			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
 
-			if(!isset($attrib['system'])) $attrib['system'] = true; // default true
-			else $attrib['system'] = $attrib['system'] === 'true' ? true : false;
+			if(!isset($attrib['system']))
+			{
+				 $attrib['system'] = true; // default true
+			}
+			else
+			{
+				$attrib['system'] = ($attrib['system'] === 'true') ? true : false;
+			}
 
 			switch ($function)
 			{
@@ -3816,7 +3824,16 @@ class e107plugin
 						$mes->add(EPL_ADLAN_251 .$name, E_MESSAGE_SUCCESS);
 					}
 					break;
+
+				case 'test': // phpunit
+					$ret[] = array('name' => $name, 'attrib' => $attrib, 'source' => $source);
+				break;
 			}
+		}
+
+		if(!empty($ret))
+		{
+			return $ret;
 		}
 
 		return null;
