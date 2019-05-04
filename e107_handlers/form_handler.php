@@ -4801,7 +4801,7 @@ var_dump($select_options);*/
 
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value, 'number');
 				}
 				elseif(!empty($parms['link']))
 				{
