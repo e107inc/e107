@@ -691,6 +691,7 @@
 		 */
 		public function testGetTemplate()
 		{
+
 			e107::getConfig()->set('sitetheme', '_blank');
 
 			$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
@@ -711,6 +712,8 @@
 		//	$this->assertEquals("test", $template['other']); // 'test' is missing from plugin template, but merge is enabled. Not an override of plugin template key so merge is okay.
 			// FIXME above..
 		//	var_dump($template['other']);
+
+			e107::getConfig()->set('sitetheme', 'bootstrap3');
 
 
 		}
