@@ -79,6 +79,12 @@ class eMessage
 	 */
 	static $_customTitle = array();
 
+	/**
+	 * Custom font-awesome icon
+	 * @var array
+	 */
+	static $_customIcon = array();
+
 
 	static $_close = array('info'=>true,'success'=>true,'warning'=>true,'error'=>true,'debug'=>true);
 	/**
@@ -398,6 +404,22 @@ class eMessage
 		return $this;
 	}
 
+	/**
+	 * Set a custom icon (useful for front-end)
+	 *
+	 * @param string $fa FontAwesome reference. eg. fa-cog
+	 * @param string $type E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @return $this
+	 * @example e107::getMessage()->setIcon('fa-cog', E_MESSAGE_INFO);
+	 */
+	public function setIcon($fa, $type)
+	{
+		$tp = e107::getParser();
+		self::$_customIcon[$type] = $tp->toText($fa);
+
+		return $this;
+	}
+
 
 	/**
 	 * Enable the 'x' close functionality of an alert.
@@ -567,10 +589,13 @@ class eMessage
 			//$message = array_unique($message); // quick fix for duplicates. 
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
+
+		$icon = !empty(self::$_customIcon[$type]) ? "s-message-empty fa fa-2x ".self::$_customIcon[$type] : "s-message-".$type;
+
 		
 		$text = "<div class='s-message alert alert-block fade in {$type} {$bclass}'>";
 		$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert'>×</a>" : "";
-		$text .= "<i class='s-message-icon s-message-".$type."'></i>
+		$text .= "<i class='s-message-icon ".$icon."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
 					{$message}
