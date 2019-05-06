@@ -1409,6 +1409,9 @@ class users_admin_ui extends e_admin_ui
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST, $userMethods->userVettingInfo, true);
 		
+		// #1728 - Default value, because user will always be part of 'Members' 
+		$allData['data']['user_class'] = '253';  
+		
 		// Fix Display and user name
 		if (!check_class($pref['displayname_class'], $allData['data']['user_class']))
 		{
