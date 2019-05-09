@@ -311,6 +311,7 @@ function renderuser($uid, $mode = "verbose")
 	}
 
 	$user_shortcodes->setVars($user);
+	$user_shortcodes->setScVar('userProfile', $user);
 
 	e107::setRegistry('core/user/profile', $user);
 
