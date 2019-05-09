@@ -294,7 +294,7 @@
 
 		
 		/**
-			* @example {JOINED: dateformat=relative}
+			* @example {JOINED: dateformat=relative} - long|short|relative
 		*/
 		function sc_joined($parm = '')
 		{
