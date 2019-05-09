@@ -2188,6 +2188,11 @@ class e_form
 		{
 			return '';
 		}
+		
+		if(BOOTSTRAP === 4)
+		{
+			return '<a class="pager-button btn btn-primary" href="'.$url.'">'.$total.'</a>';
+		}
 
 		if(!is_numeric($total))
 		{
