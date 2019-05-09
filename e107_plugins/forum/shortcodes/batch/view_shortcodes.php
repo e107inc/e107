@@ -292,13 +292,24 @@
 			return "<a href='" . e_SELF . '?' . e_QUERY . "#top' onclick=\"window.scrollTo(0,0);\">" . $text . '</a>';
 		}
 
-		function sc_joined()
+		
+		/**
+			* @example {JOINED: dateformat=relative}
+		*/
+		function sc_joined($parm = '')
 		{
-
 			$gen = e107::getDate();
 			if($this->postInfo['post_user'])
 			{
-				return LAN_FORUM_2031 . ': ' . $gen->convert_date($this->postInfo['user_join'], 'forum') . '<br />';
+
+				if(empty($parm['dateformat']))
+				{
+					return LAN_FORUM_2031 . ': ' . $gen->convert_date($this->postInfo['user_join'], 'forum') . '<br />';
+				}
+				else
+				{
+					return LAN_FORUM_2031 . ': ' . $gen->convert_date($this->postInfo['user_join'], $parm['dateformat']) . '<br />';
+				}
 			}
 		}
 
