@@ -55,4 +55,4 @@ class news_related // include plugin-folder in the name.
 
 
 
-?>
+
