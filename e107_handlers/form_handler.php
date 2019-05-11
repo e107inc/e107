@@ -1251,6 +1251,7 @@ class e_form
 	{
 
 		$tp = e107::getParser();
+
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id."-meta";
 		
@@ -1266,20 +1267,18 @@ class e_form
 
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));
 
-	//	if(deftrue('e_DEBUG_MEDIAPICKER'))
-	//	{
-			// v2.2.0
-			$sc_parameters['image'] = 1;
-			$sc_parameters['dropzone'] = 1;
-			if(!empty($sc_parameters['video'])) // bc fix
-			{
-				$sc_parameters['youtube'] = 1;
-			}
+		// v2.2.0
+		$sc_parameters['image'] = 1;
+		$sc_parameters['dropzone'] = 1;
+		if(!empty($sc_parameters['video'])) // bc fix
+		{
+			$sc_parameters['youtube'] = 1;
+		}
 
-			return $this->mediapicker($name, $default, $sc_parameters);
-	//	}
+		return $this->mediapicker($name, $default, $sc_parameters);
 
 
+/*
 		if(empty($sc_parameters['media']))
 		{
 			$sc_parameters['media'] = '_common';	
@@ -1401,7 +1400,7 @@ class e_form
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
 
-		return $ret;
+		return $ret;*/
 
 	}
 
@@ -4554,55 +4553,71 @@ var_dump($select_options);*/
 	 * @param mixed $value
 	 * @param array $parms
 	 * @param $id
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php?id=[id]','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php?id=[field-name]','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'db-field-name','target'=>'blank')
+	 * @example $frm->renderLink('label', array('url'=>'e_url.php key','title'=>'click here');
 	 * @return string
 	 */
-	private function renderLink($value, $parms, $id=null)
+	public function renderLink($value, $parms, $id=null)
 	{
 		if(empty($parms['link']) && empty($parms['url']))
 		{
 			return $value;
 		}
 
+		/** @var e_admin_model $model */
+		$model = e107::getRegistry('core/adminUI/currentListModel');
+
 		$dialog     = vartrue($parms['target']) =='dialog' ? " e-modal" : ""; // iframe
 		$ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
 		$modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
 
+		$link = null;
 
-		if(!empty($parms['url'])) // ie. use e_url.php
+		if(!empty($parms['url']) && !empty($model)) // ie. use e_url.php
 		{
-			$plugin = $this->getController()->getPluginName();
-			$data = $this->getController()->getListModel()->getData();
-			$link = e107::url($plugin,$parms['url'],$data);
+			//$plugin = $this->getController()->getPluginName();
+			if($plugin = e107::getRegistry('core/adminUI/currentPlugin'))
+			{
+				$data = $model->getData();
+				$link = e107::url($plugin,$parms['url'],$data);
+			}
 		}
-		else // old way.
+		elseif(!empty($model)) // old way.
 		{
 			$tp = e107::getParser();
+
+			$data = $model->getData();
 
 			$link       = str_replace('[id]',$id,$parms['link']);
 			$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
 
-
-			if($parms['link'] === 'sef' && $this->getController()->getListModel())
+			if($parms['link'] === 'sef' )
 			{
-				$model = $this->getController()->getListModel();
-
 				if(!$model->getUrl())
 				{
 					$model->setUrl($this->getController()->getUrl());
 				}
-							// assemble the url
+
+				// assemble the url
 				$link = $model->url(null);
 			}
 			elseif(!empty($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
 			{
-				$data = $this->getController()->getListModel()->getData();
 				$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
+			}
+			elseif(strpos($link,'[')!==false && preg_match('/\[(\w+)\]/',$link, $match)) // field-name within [ ] brackets.
+			{
+				$field = $match[1];
+				$link = str_replace($match[0], $data[$field],$link);
 			}
 		}
 					// in case something goes wrong...
 		if($link)
 		{
-			return "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
+			return "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".varset($parms['title'],LAN_EFORM_010)."' >".$value."</a>";
 		}
 
 		return $value;
@@ -4985,39 +5000,6 @@ var_dump($select_options);*/
 				}
 
 				$value = $this->renderLink($value,$parms,$id);
-				/*
-				if(!empty($parms['link']) && $id)
-				{
-					$link = str_replace('[id]', $id, $parms['link']);
-					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-
-					$dialog = vartrue($parms['target']) == 'dialog' ? " e-dialog" : ""; // iframe
-					$ext = vartrue($parms['target']) == 'blank' ? " rel='external' " : ""; // new window
-					$modal = vartrue($parms['target']) == 'modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
-
-					if($parms['link'] == 'sef' && $this->getController()->getListModel())
-					{
-						$model = $this->getController()->getListModel();
-						// copy url config
-						if(!$model->getUrl())
-						{
-							$model->setUrl($this->getController()->getUrl());
-						}
-						// assemble the url
-						$link = $model->url();
-					}
-
-					elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
-					{
-						$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
-					}
-
-					// in case something goes wrong...
-					if($link)
-					{
-						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='".LAN_EFORM_010."' >" . $value . "</a>";
-					}
-				}*/
 
 				if(empty($value))
 				{
@@ -5076,32 +5058,6 @@ var_dump($select_options);*/
 
 				$value = $this->renderLink($value,$parms,$id);
 
-				/*
-				if(vartrue($parms['link']) && $id)
-				{
-					$link       = str_replace('[id]',$id,$parms['link']);
-					$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-					
-					$dialog     = vartrue($parms['target']) =='dialog' ? " e-dialog" : ""; // iframe
-                    $ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
-                    $modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
-            
-                    if($parms['link'] == 'sef' && $this->getController()->getListModel()) 
-                    {
-                    	$model = $this->getController()->getListModel();
-						// copy url config
-						if(!$model->getUrl()) $model->setUrl($this->getController()->getUrl());
-						// assemble the url
-                    	$link = $model->url(null);
-                    }
-                    elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
-                    {
-                        $link = $tp->replaceConstants(vartrue($data[$parms['link']]));        
-                    }
-                    
-					// in case something goes wrong...
-                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
-				}*/
 
 				if(empty($value))
 				{
@@ -6427,15 +6383,21 @@ var_dump($select_options);*/
 		$tp = e107::getParser();
 		$text = '';
 		
-		
-		// print_a($form_options);
+
 		
 		foreach ($form_options as $fid => $options)
 		{
+			list($type,$plugin) = explode('-',$fid,2);
+
+			$plugin = str_replace('-','_',$plugin);
+
+			e107::setRegistry('core/adminUI/currentPlugin', $plugin);
+
 			/** @var e_tree_model $tree_model */
 			$tree_model = $tree_models[$fid];
 			$tree = $tree_model->getTree();
 			$total = $tree_model->getTotal();
+
 		
 			$amount = $options['perPage'];
 			$from = vartrue($options['from'], 0);
@@ -6482,10 +6444,11 @@ var_dump($select_options);*/
 				foreach($tree as $model)
 				{
 				//	$model->set('x_canonical_url', 'whatever');
-			//		var_dump($model);
+
 					e107::setRegistry('core/adminUI/currentListModel', $model);
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
+
 
 				e107::setRegistry('core/adminUI/currentListModel', null);
 				
@@ -6527,6 +6490,8 @@ var_dump($select_options);*/
 				</div>
 				</form>
 			";
+
+			e107::setRegistry('core/adminUI/currentPlugin', null);
 		}
 		if(!$nocontainer)
 		{
