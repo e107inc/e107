@@ -489,6 +489,11 @@ class news {
 
 			}
 
+			if(empty($parms['mode']))
+			{
+				$parms['mode'] = 'news_grid_menu';
+			}
+
 		//	$gridSize       = vartrue($parms['layout'],'col-md-4');
 
 			$parmSrch       = array(
@@ -531,7 +536,7 @@ class news {
 
 			if(!empty($parms['order']))
 			{
-				$treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
+				$treeparm['db_order'] = e107::getParser()->toDB($parms['order']);
 			}
 
 			$parms['return'] = true;
