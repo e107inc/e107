@@ -663,7 +663,7 @@ class e_form
 		foreach($array as $key=>$tab)
 		{
 			$active = ($c == $act) ? ' active' : '';
-			$inner .= '<div class="item'.$active.'" id="'.$key.'">';
+			$inner .= '<div class="carousel-item item'.$active.'" id="'.$key.'">';
 			$inner .= $tab['text'];
 			
 			if(!empty($tab['caption']))
@@ -681,10 +681,10 @@ class e_form
 		if(count($array) > 1)
 		{
 			$controls = '
-			<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
+			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev">
 	        <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
-			<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
+			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" data-slide="next">
 			<span class="glyphicon glyphicon-chevron-right"></span>
 			</a>';
 		}
