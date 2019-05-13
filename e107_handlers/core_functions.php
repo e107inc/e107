@@ -425,11 +425,14 @@ class e_array {
     /**
     * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
     *
-    * @param string $ArrayData
+    * @param string $sourceArrayData
     * @return array|bool stored data
     */
-    public function unserialize($ArrayData) 
+    public function unserialize($sourceArrayData)
     {
+        $ArrayData = $sourceArrayData;
+
+
         if ($ArrayData == ""){
             return false;
         }
@@ -469,7 +472,7 @@ class e_array {
 
         if(strpos($ArrayData, "\$data = ") === 0) // Fix for buggy old value.
 		{
-			$ArrayData = substr($ArrayData,8);
+			$ArrayData = (string) substr($ArrayData,8);
 		}
 
         if(strtolower(substr($ArrayData,0,5)) != 'array')
@@ -513,7 +516,10 @@ class e_array {
 					echo "<pre>";
 					debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 					echo "</pre>";
+
 				}
+
+				e107::getAdminLog()->addError($sourceArrayData)->toFile('unserializeError_'.time().'.log','e107::unserialize',false);
 
 			    return array();
 
