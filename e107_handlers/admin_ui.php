@@ -2426,6 +2426,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array UI field data
 	 */
 
+	protected $listQry;
 
 	protected $pid;
 
@@ -2976,7 +2977,13 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($this->getAction() === 'list' || $this->getAction() === 'grid')
 		{
-			return $this->getListModel()->get($key);
+			$obj = $this->getListModel();
+			if(is_object($obj))
+			{
+				return $obj->get($key);
+			}
+
+			return null;
 		}
 
 		return $this->getModel()->get($key);
@@ -4078,9 +4085,12 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSJoinArr = array(); // FROM for join tables
 		$filter = array();
 
+		$this->listQry = $listQry;
 
 		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
+
+		$listQry = $this->listQry; // check for modification during parseFilterRequest();
 
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
