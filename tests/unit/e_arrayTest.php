@@ -29,9 +29,14 @@
 
 		private function getSitePrefExample()
 		{
-			$data = "";
+			$data = '
+$data = array (
+  \'email_password\' => \'$2y$10$IpizFx.gp5USl98SLXwwbeod3SYF3M3raAQX0y01ETexzoutvdyWW\',
+);
+';
 
-			return $data;
+
+			return (string) $data;
 		}
 
 
@@ -65,6 +70,10 @@
 
 			// var_export format test without slashes ----
 
+
+
+
+
 			$string_3 = "array('var_export' => 'some value',)";
 			$actual = $this->arrObj->unserialize($string_3);
 			$this->assertArrayHasKey('var_export', $actual);
@@ -95,9 +104,24 @@
 
 			define('e_DEBUG', true);
 			// case sitePrefs
-			$string_6 = $this->getSitePrefExample();
-			$actual = $this->arrObj->unserialize($string_6);
+		//	$string_6 = $this->getSitePrefExample();
+		//	$actual = $this->arrObj->unserialize($string_6);
 
+
+			$tests = array(
+				0   => array('string' => $this->getSitePrefExample(),
+						'expected' => array('email_password' => '$2y$10$IpizFx.gp5USl98SLXwwbeod3SYF3M3raAQX0y01ETexzoutvdyWW' )
+						),
+
+
+
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->arrObj->unserialize($var['string']);
+				$this->assertEquals($var['expected'], $result);
+			}
 		//	var_dump($actual);
 
 		}
