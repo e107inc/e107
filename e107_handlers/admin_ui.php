@@ -6034,6 +6034,14 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
+	 * User defined before pref saving logic
+	 */
+	public function afterPrefsSave()
+	{
+
+	}
+
+	/**
     * User defined error handling, return true to suppress model messages
     */
 	public function onUpdateError($new_data, $old_data, $id)
@@ -6083,7 +6091,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 *
-	 * @return TBD
+	 * @return string
 	 */
 	public function CreatePage()
 	{
@@ -6139,6 +6147,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->getConfig()->save(true);
 
+		$this->afterPrefsSave();
 
 /*
 		$this->getConfig()
