@@ -2537,7 +2537,7 @@ class e_form
 		}
 
 		$pre = (vartrue($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
-		$post = (vartrue($options['label'])) ? $options['label']."</label>" : "";
+		$post = (vartrue($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
 		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
@@ -2559,7 +2559,7 @@ class e_form
 
 		if(!is_array($checked)) $checked = explode(",",$checked);
 		
-		$text = "";
+		$text = array();
 
 		$cname = $name;
 
@@ -2588,14 +2588,21 @@ class e_form
 			 * and also failed in case it contained a "=" character
 			 */
 			$options['label'] = $label;
-			$text .= $this->checkbox($cname, $key, $c, $options);
+			$text[] = $this->checkbox($cname, $key, $c, $options);
 		}
 
+		$id = empty($options['id']) ? $this->name2id($name).'-container' : $options['id'];
+
 	//	return print_a($checked,true);
+		if($options['list'])
+		{
+			return "<ul id='".$id."' class='checkboxes'><li>".implode("</li><li>",$text)."</li></ul>";
+		}
+
 
 		if(!empty($text))
 		{
-			return "<div class='checkboxes' style='display:inline-block'>".$text."</div>";
+			return "<div id='".$id."' class='checkboxes' style='display:inline-block'>".implode("",$text)."</div>";
 		}
 
 		return $text;
