@@ -113,14 +113,14 @@ class login_shortcodes extends e_shortcode
 		// return e107::getSecureImg()->r_image();	
 	}
 	
-	function sc_login_table_secimg_textboc($parm='')
+	function sc_login_table_secimg_textboc($parm=null)
 	{
 		if(empty($this->userReg))
 		{
 			return null;
 		}
 
-		if(!$this->secImg){ return; }
+		if(!$this->secImg){ return null; }
 		return 	e107::getSecureImg()->renderInput();
 		// return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";	
 	}
@@ -136,7 +136,7 @@ class login_shortcodes extends e_shortcode
 	}
 	
 
-	function sc_login_table_autologin_lan($parm='')
+	function sc_login_table_autologin_lan($parm=null)
 	{
 		if(empty($this->userReg))
 		{
@@ -146,14 +146,19 @@ class login_shortcodes extends e_shortcode
 		return LAN_LOGIN_8;	
 	}
 
-	function sc_login_table_rememberme($parm=null)
+	function sc_login_table_rememberme($parm=array())
 	{
 		if(empty($this->userReg))
 		{
 			return null;
 		}
 
-		return e107::getForm()->checkbox('autologin',1,false,LAN_LOGIN_8);
+		if(!isset($parm['label']))
+		{
+			$parm['label'] = LAN_LOGIN_8;
+		}
+
+		return e107::getForm()->checkbox('autologin',1,false,$parm);
 
 	}
 	
