@@ -4269,13 +4269,14 @@ class e_parser
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
 	 * @param @array  - user data from e107_user. 
-	 * @return <img> tag of avatar.  
+	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData=null, $options=array())
 	{
 		$tp 		= e107::getParser();
 		$width 		= !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
-		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
+		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
+		$crop       = !empty($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart  = '';
 		$linkEnd    =  '';
 
@@ -4310,11 +4311,11 @@ class e_parser
 			{
 				
 				$image = substr($image,8); // strip the -upload- from the beginning. 
-				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height) : $genericImg;
+				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height."&crop=".$crop) : $genericImg;
 			}
 			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
 			{
-				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height);		
+				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height."&crop=".$crop);
 			}
 			else // Image Missing. 
 			{
