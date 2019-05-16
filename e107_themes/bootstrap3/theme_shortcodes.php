@@ -203,7 +203,7 @@ class theme_shortcodes extends e_shortcode
 		}
 		
 		$text .= '
-		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
+		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{USER_AVATAR: w=30&h=30&crop=1&shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
 			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
