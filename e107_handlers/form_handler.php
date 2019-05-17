@@ -1485,7 +1485,7 @@ class e_form
 
 		$cat = $tp->toDB(vartrue($parms['media']));
 
-		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$parms['w']."px;min-height:".$parms['h']."px;'>";
+		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:15px; display:inline-block; width:".$parms['w']."px;min-height:".$parms['h']."px;'>";
 
 		$parms['class'] = 'btn btn-sm btn-default';
 
