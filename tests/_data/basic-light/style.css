@@ -1,0 +1,204 @@
+@import url(http://fonts.googleapis.com/css?family=Geo);
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+body {
+    font-size: 16px;
+}
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+}
+.navbar-wrapper > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.navbar-wrapper .navbar .container {
+  width: auto;
+}
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+.carousel {
+  margin-bottom: 30px;
+  overflow: hidden;
+  width: 100%;
+}
+.carousel-inner,
+.carousel .item {
+    overflow: hidden;
+}
+.carousel-caption {
+  z-index: 10;
+}
+.carousel-inner > .item > .slader-img {
+  position: relative;
+  width: 100%;
+}
+.carousel-indicators li {
+    border: 2px solid #2a9fd6;
+}
+.carousel-indicators li:hover,
+.carousel-indicators li.active {
+    background-color: #2a9fd6;
+}
+.carousel-control {
+    color: #2a9fd6!important;
+}
+/* CONTENT
+-------------------------------------------------- */
+
+ul.nav-list {
+    border-top: 1px solid #ddd;
+}
+ul.nav-list li {
+    border-top: 1px solid #ddd;
+}
+ul.nav-list li a:hover {
+    background: #eee;
+}
+.menus.panel,
+.article.panel,
+.view-item.panel {
+    padding: 15px;    
+}
+.header {
+    background: #3f51b5;
+    height: 95px;
+    margin-bottom: 30px;
+    display: block;
+}
+.n-img {
+    padding-left: 0;
+}
+.article .info,
+.view-item .info {
+    font-size: 12px;
+    padding: 10px;
+    background: #ddd;
+}
+.article .options {
+    text-align: center;
+}
+.view-item .article-body,
+.news-images-1 .col-md-6,
+.news-images-2 .col-md-6{
+    margin-bottom: 30px;
+}
+.comment-box-left {
+    margin-bottom: 15px;
+}
+#comment {
+    margin-bottom: 5px;
+}
+.menus.other_news .othernews-block {
+    margin-bottom: 0;
+}
+.menus .blogcalendar-block {
+    margin-bottom: 0;
+}
+.footer-right {
+    text-align: center;
+    padding-bottom: 30px;
+    font-size: 12px;
+}
+.menus .text ul:not(.media-list) {
+    list-style: inside;
+    padding-left: 0;
+}
+.list-unstyled li,
+.dropdown-menu li{
+    list-style: none;
+}
+.menus-caption {
+    margin-bottom: 15px;
+    color: #2A9FD6;
+}
+#copyright {
+    font-family: 'Geo', sans-serif;
+    background-color: rgba(100, 100, 100, 0.2);
+    padding: 2px 5px;
+    color: #aaa;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+#copyright:hover {
+    background-color: #444; 
+    color: #fff;   
+}
+/* FORUM 
+-------------------------------------*/
+#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #ddd;  padding:15px 10px }
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #f1f1f1 }
+#forum, #forum-stats, #forum-rules                  { min-height: 0px;  }
+.forum-thread-text {
+    background: rgba(33,150,243,0.06);
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+.label.label-info {
+    overflow: hidden;
+    display: table;
+    margin: 5px auto;
+    text-align: center;
+    padding: 0 10px;
+    line-height: 2;
+}
+.label.label-info.smalltext {
+    display: block;
+    padding: 0 2px;
+}
+.label-info:after {
+    content: '';
+    display: block;
+    clear: both;
+    visibility: hidden;
+}
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (max-width: 992px) { 
+.n-img {
+    padding-right: 0;
+    margin-bottom: 20px;
+}
+ 
+}
+
+@media (min-width: 768px) {
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 20px;
+  }
+  .navbar-wrapper .container {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+
+}
+
+
+@media (max-width: 768px) { 
+.carousel {
+  margin-top: 50px;
+}
+ 
+}
