@@ -22,7 +22,7 @@
 
 		private function copydir( $src, $dst )
 		{
-			if(!is_dir($src))
+			if(!is_dir($src) || is_dir($dst))
 			{
 				return false;
 			}
@@ -74,6 +74,11 @@
 
 			$this->copydir($src2,$dest2);
 
+			$src3 = codecept_data_dir()."basic-light";
+			$dest3 = e_THEME."basic-light";
+
+			$this->copydir($src3,$dest3);
+
 			$tests = array(
 
 				'bootstrap3'   => array (
@@ -114,15 +119,36 @@
 						'FULL' => array(),
 						'legacyDefault'=> array('1', '2', '3', '4','5','6')
 					),
-				)
+				),
+
+				'basic-light' => array(
+					'templates' => array(
+						'default'       => 3359,
+						'default-home'  => 3359,
+						'simple-page'   => 1604,
+						'wide-page'     => 1272
+					),
+					'menus' => array(
+						'default'       => array('1', '2', '3', '4'),
+						'default-home'  => array('1', '2', '3', '4'),
+						'simple-page'   => array('1', '2', '3', '4'),
+						'wide-page'     => array(),
+					),
+
+
+				),
 			);
 
 			foreach($tests as $theme=>$vars)
 			{
 				$result = e_menu_layout::getLayouts($theme);
 
-			//	var_dump($result['templates']);
-			//	var_export($result['menus']);
+			/*	if($theme === 'basic-light')
+				{
+					var_dump($result['templates']);
+					var_dump($result['menus']);
+				}*/
+
 
 				foreach($vars['templates'] as $key=>$length)
 				{
@@ -130,12 +156,12 @@
 					$expectedLength = $length;
 					$actualLength = strlen($result['templates'][$key]);
 
-					$this->assertEquals($expectedLength, $actualLength);
+					$this->assertEquals($expectedLength, $actualLength, $key. " is different");
 				}
 
 				foreach($vars['menus'] as $key=>$arr)
 				{
-					$this->assertEquals($arr, $result['menus'][$key]);
+					$this->assertEquals($arr, $result['menus'][$key], $key." is different");
 				}
 
 
