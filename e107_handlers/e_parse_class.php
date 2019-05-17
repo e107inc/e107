@@ -5197,6 +5197,11 @@ return;
 			return preg_replace('/[^\w]/',"",$text);
 		}
 
+		if($type === 'wd') // words and digits only.
+		{
+			return preg_replace('/[^\w\d]/',"",$text);
+		}
+
 		if($type === 'wds') // words, digits and spaces only.
 		{
 			return preg_replace('/[^\w\d ]/',"",$text);

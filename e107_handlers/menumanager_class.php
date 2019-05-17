@@ -2002,7 +2002,7 @@ class e_menu_layout
 
 		$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "'.$theme.'/" .', str_replace($srch, '', $themeFileContent));
 
-		$themeFileContent = str_replace('tablestyle', $theme."_tablestyle",$themeFileContent); // rename function to avoid conflicts while parsing.
+		$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd')."_tablestyle",$themeFileContent); // rename function to avoid conflicts while parsing.
 
 		try
 		{
