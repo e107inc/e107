@@ -395,7 +395,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 				// make sure the forum_name contains only plain text, no bbcode or html
 				$new_data['forum_name'] = trim(e107::getParser()->toText($new_data['forum_name']));
 			}
-			if(empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
+			if(isset($new_data['forum_sef']) && empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
 			}
