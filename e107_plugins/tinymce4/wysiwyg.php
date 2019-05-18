@@ -310,14 +310,14 @@ class wysiwyg
 
 		if(!isset($tinylang[$lang]))
 		{
-			$tinylang[$lang] = "en";
+			$tinylang[$lang] = "en_GB";
 		}
 
 		// If language file is not present, use default.
 		$jsFile = e_PLUGIN . 'tinymce4/langs/' . $tinylang[$lang] . '.js';
-		if($tinylang[$lang] != 'en' && !file_exists($jsFile))
+		if($tinylang[$lang] != 'en_GB' && !file_exists($jsFile))
 		{
-			$tinylang[$lang] = "en";
+			$tinylang[$lang] = "en_GB";
 		}
 
 		return $tinylang[$lang];
