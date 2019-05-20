@@ -1696,7 +1696,7 @@ class users_ext
 
 	}
 
-	function show_extended($current = '')  // Show Add fields List.
+	function show_extended($current = null)  // Show Add fields List.
 	{
         global $ue, $curtype,$mySQLdefaultdb, $action, $sub_action;
 

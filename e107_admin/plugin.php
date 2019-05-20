@@ -4808,7 +4808,7 @@ TEMPLATE;
 		}
 
 		// Guess Default Field Type based on name of field. 
-		function guess($data, $val='',$mode = 'type')
+		function guess($data, $val=null,$mode = 'type')
 		{
 			$tmp = explode("_",$data);	
 			

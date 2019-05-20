@@ -90,7 +90,7 @@ class theme_shortcodes extends e_shortcode
 
 
 
-	function sc_bootstrap_usernav($parm='')
+	function sc_bootstrap_usernav($parm=null)
 	{
 
 		$placement = e107::pref('theme', 'usernav_placement', 'bottom');

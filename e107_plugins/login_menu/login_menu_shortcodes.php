@@ -94,7 +94,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 
 
-			function sc_lm_username_input($parm='')
+			function sc_lm_username_input($parm=null)
 			{
 				$pref = e107::getPref();
 
@@ -113,7 +113,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-			function sc_lm_password_input($parm='')
+			function sc_lm_password_input($parm=null)
 			{
 				$pref = e107::getPref();
 				$t_password = "

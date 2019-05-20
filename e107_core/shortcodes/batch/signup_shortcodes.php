@@ -161,7 +161,7 @@ class signup_shortcodes extends e_shortcode
 	
 	/* example: {SIGNUP_SIGNUP_TEXT}
 	/* example: {SIGNUP_SIGNUP_TEXT: class=custom} */
-	function sc_signup_signup_text($parm='')
+	function sc_signup_signup_text($parm=null)
 	{		
 		$pref = e107::getPref();
 		$tp = e107::getParser();
@@ -650,7 +650,7 @@ class signup_shortcodes extends e_shortcode
 	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK}
 	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK: class=label label-info}
 	 */
-	function sc_signup_gdpr_privacypolicy_link($parm='')
+	function sc_signup_gdpr_privacypolicy_link($parm=null)
 	{
 		$pp = e107::getPref('gdpr_privacypolicy', '');
 		if (!$pp)
@@ -668,7 +668,7 @@ class signup_shortcodes extends e_shortcode
 	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK}
 	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK: class=label label-info}
 	 */
-	function sc_signup_gdpr_termsandconditions_link($parm='')
+	function sc_signup_gdpr_termsandconditions_link($parm=null)
 	{
 		$pp = e107::getPref('gdpr_termsandconditions', '');
 		if (!$pp)

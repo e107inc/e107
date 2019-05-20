@@ -1628,7 +1628,7 @@ class e_form
 	 * @param string label
 	 * @param mixed sc_parameters
 	 */		
-	function filepicker($name, $default, $label = '', $sc_parameters = '')
+	function filepicker($name, $default, $label = '', $sc_parameters = null)
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
