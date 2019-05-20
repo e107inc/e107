@@ -25,6 +25,7 @@ class InstallCest
 	{
 		$I->wantTo("Install e107 with default settings");
 		$this->installe107($I);
+		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
@@ -34,6 +35,7 @@ class InstallCest
 	{
 		$I->wantTo("Install e107 with bootstrap3");
 		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
+		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
@@ -49,6 +51,7 @@ class InstallCest
 	{
 		$I->wantTo("Install e107 with landingzero");
 		$this->installe107($I, array('sitetheme'=>'landingzero'));
+		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
@@ -170,8 +173,12 @@ class InstallCest
 		$I->seeInSource('TinyMce4');
 		$I->amOnPage('/e107_plugins/tinymce4/admin_config.php');
 		$I->see("Paste as text by default");
+	}
 
 
+	private function checkAdminButtonWelcomeMessage(AcceptanceTester $I)
+	{
+		$I->seeInSource('btn-large " href="e107_admin/admin.php">Go to Admin area</a>');
 
 	}
 
