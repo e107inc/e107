@@ -336,6 +336,22 @@ class news_shortcodes extends e_shortcode
 		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
 	}
 
+	/**
+	 * @example {NEWS_AUTHOR_EUF: field=biography} - returns the 'value' of the User Extended Field 'biography' ('type' defaults to 'value')
+	 * @example {NEWS_AUTHOR_EUF: field=biography&type=icon} - returns the 'icon' of the User Extended Field 'biography' - [text|value|icon|text_value]
+	*/
+	public function sc_news_author_euf($parm=null)
+	{
+		$userid = $this->news_item['user_id'];		
+		$field 	= (!empty($parm['field'])) ? $parm['field'] : '';
+		$type 	= (!empty($parm['type'])) ? $parm['type'] : 'value';
+		
+		if($field)
+		{
+			return e107::getParser()->parseTemplate("{USER_EXTENDED={$field}.{$type}.{$userid}}");
+		}
+	}
+
 	public function sc_news_summary($parm=null)
 	{
 		return $this->sc_newssummary($parm);
