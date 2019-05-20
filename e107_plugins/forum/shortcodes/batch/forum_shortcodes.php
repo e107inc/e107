@@ -99,7 +99,7 @@ class forum_shortcodes extends e_shortcode
 		$text = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 		if(USER)
 		{
-			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php ?id.".USERID."'>".LAN_FORUM_0014."</a>";
+			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php?id.".USERID."'>".LAN_FORUM_0014."</a>";
 		// To be reworked to get the $forum var
 			if($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 			{
@@ -154,7 +154,7 @@ class forum_shortcodes extends e_shortcode
 				{
 					list($oid, $oname) = explode(".", $uinfo, 2);
 					$c ++;
-					$text .= "<a href='".e_HTTP."user.php ?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 				}
 
 			}
@@ -164,7 +164,7 @@ class forum_shortcodes extends e_shortcode
 		  return $text;
 	}
 
-	function sc_search($parm='')
+	function sc_search($parm=null)
 	{
 
 		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
@@ -215,7 +215,7 @@ class forum_shortcodes extends e_shortcode
 		{
 			$total_new_threads = e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 				$total_read_threads = 0;
-			if (USERVIEWED != "")
+			if (defset('USERVIEWED') != "")
 			{
 				$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
 				$total_read_threads = count($tmp);
@@ -314,7 +314,7 @@ class forum_shortcodes extends e_shortcode
 		}
 
 		return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
-		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
+		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 	}
 
 
@@ -387,7 +387,7 @@ class forum_shortcodes extends e_shortcode
 
 	}
 
-	function sc_forumname($parm = '')
+	function sc_forumname($parm = null)
 	{
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
@@ -429,7 +429,7 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
-	function sc_threadsx($parm = '') // EQUAL TO SC_THREADS.......................
+	function sc_threadsx($parm = null) // EQUAL TO SC_THREADS.......................
 	{
 		$val = ($this->var['forum_threads']) ? $this->var['forum_threads'] : '0';
 
@@ -442,7 +442,7 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
-	function sc_repliesx($parm = '') // EQUAL TO SC_REPLIES.......................
+	function sc_repliesx($parm = null) // EQUAL TO SC_REPLIES.......................
 	{
 		//print_a($parm);
 		$val = ($this->var['forum_replies']) ? $this->var['forum_replies'] : '0';
