@@ -9,7 +9,7 @@
 			<field name="gen_user_id">1</field>
 			<field name="gen_ip">Hello World!</field>
 			<field name="gen_intdata">0</field>
-			<field name="gen_chardata"><![CDATA[[html]This is a twitter bootstrap template for a simple marketing or informational website. The only difference is that e107 is managing the content. ie. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;{e_ADMIN}admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
+			<field name="gen_chardata"><![CDATA[[html]This is a twitter bootstrap template for a simple marketing or informational website. The only difference is that e107 is managing the content. ie. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
 		</item>
 	</dbTable>
 	<dbTable name="menus">
