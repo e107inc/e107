@@ -1143,7 +1143,12 @@
 			$text = '<div class="btn-group">
    ' . $replyUrl . '
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
+    ';
+	if(BOOTSTRAP !== 4)
+	{
+    	$text .= '<span class="caret"></span>';
+    }
+    $text .= '
     <span class="sr-only">Toggle Dropdown</span>
     </button>
     <ul class="dropdown-menu pull-right">
