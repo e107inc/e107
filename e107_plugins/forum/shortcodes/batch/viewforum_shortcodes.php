@@ -307,7 +307,7 @@
 		}
 
 
-		function sc_search($parm='')
+		function sc_search($parm=null)
 		{
 
 			if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
@@ -679,7 +679,7 @@
 		------*/
 
 
-		function sc_views($parm='')
+		function sc_views($parm=null)
 		{
 			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
 
@@ -692,7 +692,7 @@
 		}
 
 
-		function sc_replies($parm='')
+		function sc_replies($parm=null)
 		{
 			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
 

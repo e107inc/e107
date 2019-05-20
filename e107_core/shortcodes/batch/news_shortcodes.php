@@ -1150,7 +1150,7 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm='')
+	function sc_newstags($parm=null)
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();

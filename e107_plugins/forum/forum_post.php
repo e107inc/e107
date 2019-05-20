@@ -278,7 +278,7 @@ class forum_post_handler
 		$poll = new poll;
 
 		require_once(HEADERF);
-		$template = $this->getTemplate('posted');
+		$template = (array) $this->getTemplate('posted');
 		echo $template['poll'];
 		require_once(FOOTERF);
 		exit;
@@ -389,7 +389,7 @@ class forum_post_handler
 
 
 	/**
-	 * @return string
+	 * @return array|string
 	 */
 	function getTemplate($type = 'post')
 	{

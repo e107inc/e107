@@ -132,7 +132,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * @param string $parm parameters
 	 * @param string $mod category template
 	 */
-	function sc_featurebox_navigation($parm, $mod = '')
+	function sc_featurebox_navigation($parm=null, $mod = '')
 	{
 		// TODO cache	
 		//TODO default $parm values. eg. assume 'tabs' when included in the 'tabs' template. 	

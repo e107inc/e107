@@ -46,7 +46,7 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_title($parm = '')
+	public function sc_featurebox_title($parm = null)
 	{
 		if(!empty($parm) && is_string($parm))
 		{
@@ -77,7 +77,7 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_url($parm = '')
+	public function sc_featurebox_url($parm = null)
 	{
 		$tp = e107::getParser();
 		$url = $tp->replaceConstants($this->get('fb_imageurl'), 'full');
@@ -126,7 +126,7 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_image($parm = '')
+	public function sc_featurebox_image($parm = null)
 	{
 		if(!$this->get('fb_image') && $parm != 'placeholder')
 		{
@@ -168,7 +168,7 @@ class plugin_featurebox_item extends e_model
 		return '<a id="featurebox-imageurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$tag.'</a>';
 	}
 	
-	public function sc_featurebox_thumb($parm='')
+	public function sc_featurebox_thumb($parm=null)
 	{
 		$tp = e107::getParser();
 		if(!$this->get('fb_image'))

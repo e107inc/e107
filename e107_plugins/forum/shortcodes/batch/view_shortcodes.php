@@ -296,7 +296,7 @@
 		/**
 			* @example {JOINED: dateformat=relative} - long|short|relative
 		*/
-		function sc_joined($parm = '')
+		function sc_joined($parm = null)
 		{
 			$gen = e107::getDate();
 			if($this->postInfo['post_user'])

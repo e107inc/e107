@@ -229,7 +229,7 @@ class theme_shortcodes extends e_shortcode
 		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='btn btn-primary btn-block btn-lg' />";	
 	}
 	
-	function sc_bootstrap_usernav($parm='')
+	function sc_bootstrap_usernav($parm=null)
 	{
 
 		$placement = e107::pref('theme', 'usernav_placement', 'top');
