@@ -306,7 +306,10 @@
 			return empty($viewable) ? '' : $viewable;
 		}
 
-
+		/**
+		 * @example {SEARCH: placeholder=Search forums} - sets placeholder 'Search forums'
+		 * @example {SEARCH: buttonclass=btn btn-small} - sets button class 'btn btn-small'
+		*/
 		function sc_search($parm=null)
 		{
 
@@ -315,8 +318,8 @@
 				$srchIcon = LAN_SEARCH;
 			}
 
-			$buttonclass = (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
-
+			$buttonclass 	= (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
+			$placeholder    = (!empty($parm['placeholder'])) ? $parm['placeholder'] : LAN_SEARCH;
 
 			// String candidate for USERLIST wrapper
 			return "
@@ -325,7 +328,7 @@
 			<input type='hidden' name='r' value='0' />
 			<input type='hidden' name='t' value='forum' />
 			<input type='hidden' name='forum' value='all' />
-			<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+			<input class='tbox form-control' type='text' name='q' size='20' value='' placeholder='".$placeholder."' maxlength='50' />
 			<span class='input-group-btn'>
 			<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
 			</span>
