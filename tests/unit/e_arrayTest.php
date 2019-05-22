@@ -50,8 +50,14 @@ $data = array (
 */
 		public function testUnserialize()
 		{
-			// Buggy value test.
-/*
+
+			$src = codecept_data_dir()."unserializeTest.log";
+			$string_0 = file_get_contents($src);
+			$actual = $this->arrObj->unserialize($string_0);
+			$this->assertArrayHasKey('email_password', $actual);
+
+
+			// Buggy value test -------.
 			$string_1 = "\$data = array(
 			\'buggy_array\' => \'some value\',
 			);
@@ -59,28 +65,21 @@ $data = array (
 
 			$actual = $this->arrObj->unserialize($string_1);
 			$this->assertArrayHasKey('buggy_array', $actual);
-*/
+
 
 			// var_export format test with slashes ----
-/*
 			$string_2 = "array(\'var_export\' => \'some value\',)";
 			$actual = $this->arrObj->unserialize($string_2);
 			$this->assertArrayHasKey('var_export', $actual);
-*/
+
 
 			// var_export format test without slashes ----
-
-
-
-
-
 			$string_3 = "array('var_export' => 'some value',)";
 			$actual = $this->arrObj->unserialize($string_3);
 			$this->assertArrayHasKey('var_export', $actual);
 
 
 			// json value test.
-
 			$string_4 = '{ "json": "some value" }';
 			$actual = $this->arrObj->unserialize($string_4);
 			$this->assertArrayHasKey('json', $actual);
