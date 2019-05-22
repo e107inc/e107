@@ -209,6 +209,7 @@ class e107Update
 						else
 						{
 							 $mes->add($message, E_MESSAGE_SUCCESS);
+							 e107::getCache()->clear_sys('Update_core');
 						}
 					}
 				}	
