@@ -392,7 +392,7 @@ CREATE TABLE page (
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
   page_fields mediumtext,
-  menu_name varchar(50) NOT NULL default '',  
+  menu_name varchar(50) default '',
   menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext,
   menu_image varchar(250) NOT NULL default '',
