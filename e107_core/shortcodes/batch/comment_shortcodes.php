@@ -121,6 +121,13 @@ class comment_shortcodes extends e_shortcode
 		//	$url = $tp->thumbUrl($this->var['user_image']);
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");
+		
+		// Comment form - no user_id, assume current user
+		if(!$this->var['user_id'])
+		{
+			$userdata = e107::user(USERID); 
+			$this->var = array_merge($this->var, $userdata); 
+		}
 
 		$text = $tp->toAvatar($this->var);
 
