@@ -2372,6 +2372,22 @@ class error_handler
 	}
 
 	/**
+	 * Deftrue function independent of core function.
+	 * @param $value
+	 * @return bool
+	 */
+	private function deftrue($value)
+	{
+		if (defined($value) && constant($value))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * @param $type
 	 * @param $message
 	 * @param $file
@@ -2389,7 +2405,7 @@ class error_handler
 			case E_DEPRECATED:
 		//	case E_STRICT:
 
-			if ($startup_error || deftrue('E107_DBG_ALLERRORS') || deftrue('E107_DBG_ERRBACKTRACE'))
+			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 
 
@@ -2411,7 +2427,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
-			if ($startup_error || deftrue('E107_DBG_BASIC') || deftrue('E107_DBG_ERRBACKTRACE'))
+			if ($startup_error || $this->deftrue('E107_DBG_BASIC') || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
 				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
