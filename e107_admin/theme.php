@@ -721,7 +721,7 @@ class theme_admin_tree_model extends e_tree_model
 	 * Load data from theme meta file.
 	 * @param bool $force
 	 */
-	function load()
+	function load($force=false)
 	{
 		$themeList  = e107::getTheme()->getList();
 		$newArray   = array();
@@ -786,7 +786,7 @@ class theme_admin_online_tree_model extends e_tree_model
 	 * Load data from theme meta file.
 	 * @param bool $force
 	 */
-	function load()
+	function load($force=false)
 	{
 		$themeList  = e107::getTheme()->getList();
 
