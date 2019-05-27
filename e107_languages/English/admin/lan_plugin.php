@@ -271,8 +271,7 @@ define ("EPL_ADLAN_229","Refresh");
 define ("EPL_ADLAN_230", "Downloading and Installing: ");
 define ("EPL_ADLAN_231", "Remove icons from Media-Manager");
 define ("EPL_ADLAN_232", "Create Files");
-define ("TPVLAN_81", "Downloading...");
-define ("TPVLAN_82", "Download Complete!");
+
 define ("EPL_ADLAN_233", "Adding Link:"); 
 define ("EPL_ADLAN_234", "Removing Link:"); 
 define ("EPL_ADLAN_235", "Automated download not possible.");

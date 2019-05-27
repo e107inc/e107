@@ -564,3 +564,5 @@ define("LAN_SUCC_RECALCULATE_COMMENT_COUNT", "Comment count successfully recalcu
 define("LAN_NO_RESULTS_FOUND", "No Results Found.");
 
 define("LAN_UI_DROPZONE_DROP_FILES", "Drop files here to upload");
+
+define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");

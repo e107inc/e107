@@ -577,7 +577,7 @@ class e_menuManager {
 		$menu_perm['mainadmin'] = e_UC_MAINADMIN;
 		$menu_perm['admin'] = e_UC_ADMIN;
 		$menu_perm['nobody'] = e_UC_NOBODY;
-		$link_class = ($menu_perm[$link_class]) ? $menu_perm[$link_class] : e_UC_PUBLIC;
+		$link_class = isset($menu_perm[$link_class]) ? $menu_perm[$link_class] : e_UC_PUBLIC;
 
 		return $link_class;
 	}
@@ -926,11 +926,13 @@ class e_menuManager {
 			$areaID = $menus['@attributes']['id'];	
 			foreach($menus['menu'] as $k=>$v)
 			{
+				$perm = isset($v['@attributes']['perm']) ? $v['@attributes']['perm'] : null;
+
 				$menuArea[] = array(
 					'menu_location' => $areaID,
 					'menu_order'	=> $k,
 					'menu_name'		=> $v['@attributes']['name']."_menu",
-					'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
+					'menu_class'	=> $this->menuPresetPerms($perm)
 				);	
 			}
 		}

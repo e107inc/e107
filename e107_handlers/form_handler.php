@@ -5521,7 +5521,7 @@ var_dump($select_options);*/
 			break;
 
 			case 'method': // Custom Function			
-				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method.
+				$method = varset($attributes['field']); // prevents table alias in method names. ie. u.my_method.
 				$_value = $value;
 
 				if(!empty($attributes['data']) && $attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.

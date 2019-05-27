@@ -54,7 +54,7 @@ if (isset($_POST['active']))
 
 }
 
-e107::getRender()->tablerender($caption, $mes->render() . $text);
+//e107::getRender()->tablerender($caption, $mes->render() . $text);
 
 /* get packs */
 require_once(e_HANDLER."file_class.php");
@@ -102,7 +102,7 @@ foreach($filtered as $key => $value)
 	}
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+// $ns->tablerender($caption, $mes->render() . $text);
 
 
 $check = TRUE;

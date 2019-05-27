@@ -613,7 +613,7 @@ class e_theme
 
 	public static function parse_theme_php($path)
 	{
-		$CUSTOMPAGES = "";
+		$CUSTOMPAGES = null;
 
 		$tp = e107::getParser(); // could be used by a theme file.
 		$sql = e107::getDb(); // could be used by a theme file.
@@ -2038,7 +2038,7 @@ class themeHandler
 					}
 
 					$tdClass = !empty($val['writeParms']['post']) ? 'form-inline' : '';
-					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div></td></tr>";
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".varset($val['help'])."</div></td></tr>";
 				}
 			}
 
@@ -2114,13 +2114,15 @@ class themeHandler
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		$tp = e107::getParser();
+
+
 		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".varset($_GET['mode'])."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 
@@ -2670,9 +2672,10 @@ class themeHandler
 				unset($detected[$vl['name']]);
 			}
 
-			switch($mode)
-			{
-				case 1: // frontend
+
+				 // frontend
+				if($mode === self::RENDER_SITEPREFS)
+				{
 
 					if(substr($vl['name'], 0, 6) == "admin_")
 					{
@@ -2692,10 +2695,10 @@ class themeHandler
 						continue;
 					}
 
-				break;
+				}
 
-				case 2: // admin
-
+				if($mode === self::RENDER_ADMINPREFS)
+				{
 
 					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
 					{
@@ -2716,10 +2719,10 @@ class themeHandler
 					{
 						$remove[$k] = $vl['name'];
 					}
-				break;
+				}
 
 
-			}
+
 
 		}
 
@@ -2838,6 +2841,14 @@ class themeHandler
 	{
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
+
+		$srch = array(
+			'{PREVIEWTHEMENAME}' => PREVIEWTHEMENAME,
+			'{e_ADMIN}' => e_ADMIN
+		);
+
+		$text = str_replace(array_keys($srch),$srch,$text);
+
 		global $ns;
 		$ns->tablerender(TPVLAN_2, $text);
 	}
