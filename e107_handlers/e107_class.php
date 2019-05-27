@@ -78,10 +78,10 @@ class e107
 	/**
 	 * User login name
 	 *
-	 * @var string
+	 * @var array
 	 * @see init_session()
 	 */
-	public $currentUser = '';
+	public $currentUser;
 
 	/**
 	 * Run once load core shortcodes

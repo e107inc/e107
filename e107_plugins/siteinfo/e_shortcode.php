@@ -88,7 +88,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return SITETAG;
 	}
 	
-	function sc_sitelogo($parm='')
+	function sc_sitelogo($parm=null)
 	{
 		return $this->sc_logo($parm);	
 	}
@@ -168,7 +168,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		{
 			//
 			$dimensions[0] = $parm['w'];
-			$dimensions[1] = $parm['h'];
+			$dimensions[1] = !empty($parm['h']) ? $parm['h'] : 0;
 
 			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.
 			{
