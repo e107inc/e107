@@ -400,10 +400,7 @@ class forum_shortcodes extends e_shortcode
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
 
-		if(!empty($parm['class']))
-		{
-			$class = "class='".$parm['class']."'"; 
-		}
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
 		$url = e107::url('forum', 'forum', $this->var);
 		return "<a href='".$url."' ".$class.">{$this->var['forum_name']}</a>";
