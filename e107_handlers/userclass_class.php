@@ -1162,7 +1162,7 @@ class user_class
 
 		if($includeAncestors === true)
 		{
-			$classList = $this->get_all_user_classes($classes);
+			$classList = $this->get_all_user_classes($classes, true);
 		}
 
 		$classList = array_flip($classList);
