@@ -2161,7 +2161,7 @@ class e_db_pdo implements e_db
 	private function _getTableList($language='')
 	{
 
-		$database = !empty($this->mySQLdefaultdb) ? "FROM  ".$this->mySQLdefaultdb : "";
+		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
 		$prefix = $this->mySQLPrefix;
 
 		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
