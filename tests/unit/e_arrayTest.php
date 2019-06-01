@@ -52,9 +52,16 @@ $data = array (
 		{
 
 			$src = codecept_data_dir()."unserializeTest.log";
-			$string_0 = file_get_contents($src);
-			$actual = $this->arrObj->unserialize($string_0);
+			$stringFile_0 = file_get_contents($src);
+			$actual = $this->arrObj->unserialize($stringFile_0);
 			$this->assertArrayHasKey('email_password', $actual);
+
+
+			// Check for legacy (corrupted) link-words preferences.
+			$src = codecept_data_dir()."unserializeTest2.log";
+			$stringFile_1 = file_get_contents($src);
+			$actual = $this->arrObj->unserialize($stringFile_1);
+			$this->assertArrayHasKey('lw_context_visibility', $actual);
 
 
 			// Buggy value test -------.
