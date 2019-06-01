@@ -486,7 +486,7 @@ class e_array {
 		{
              $ArrayData = stripslashes($ArrayData);
 		}
-		elseif(strpos($ArrayData,'array') === 0 && strpos($ArrayData,"\' => \'") !== false)
+		elseif(strpos($ArrayData,'array') === 0 && strpos($ArrayData,"\' => \'") !== false && strpos($ArrayData,"' => 'array") === false) // FIX for old corrupted link-words preference.
 		{
 			$ArrayData = stripslashes($ArrayData);
 		}
