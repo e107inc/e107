@@ -985,10 +985,10 @@ class xmlClass
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
-				e107::getDB()->select($eTable, "*", $eQry);
+				e107::getDb()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				$count = 1;
-				while($row = e107::getDB()->fetch())
+				while($row = e107::getDb()->fetch())
 				{
 
 					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
@@ -1115,8 +1115,9 @@ class xmlClass
 
 		if($sql == null)
 		{
-			$sql = e107::getDB();	
+			$sql = e107::getDb();
 		}
+
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
