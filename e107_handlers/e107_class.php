@@ -162,7 +162,8 @@ class e107
 		'comment'                        => '{e_HANDLER}comment_class.php',
 		'e_date'                         => '{e_HANDLER}date_handler.php',
 		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix.
-		'db'                             => '{e_HANDLER}mysql_class.php',
+		'db'                             => '{e_HANDLER}e_db_pdo_class.php',
+	//	'db'                             => '{e_HANDLER}mysql_class.php',
 		'e107Email'                      => '{e_HANDLER}mail.php',
 		'e107_event'                     => '{e_HANDLER}event_class.php',
 		'e107_db_debug'                  => '{e_HANDLER}db_debug_class.php',
@@ -1344,7 +1345,7 @@ class e107
 	 */
 	public static function getDb($instance_id = '')
 	{
-		return self::getSingleton('db', true, $instance_id);
+		 return self::getSingleton('db', true, $instance_id);
 	}
 
 	/**
@@ -4047,7 +4048,10 @@ class e107
 	 */
 	public function set_constants()
 	{
-		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		if(!defined('MAGIC_QUOTES_GPC'))
+		{
+			define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		}
 
 		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix
 
