@@ -167,6 +167,14 @@
 
 		}
 
+	/*	public function testMakeTableDef()
+		{
+
+			$result = $this->db->makeTableDef('userclass_classes');
+
+			var_export($result);
+		}*/
+
 
 		public function testDb_IsLang()
 		{
@@ -939,7 +947,7 @@
 
 		public function testDb_ResetTableList()
 		{
-			$this->db->Db_ResetTableList();
+			$this->db->db_ResetTableList();
 		}
 
 		public function testDb_TableList()
@@ -1135,6 +1143,9 @@
 
 			$this->assertEquals($expected, $actual);
 
+
+			//$actual = $this->db->getFieldDefs('userclass_classes');
+			//var_dump($actual);
 		}
 
 

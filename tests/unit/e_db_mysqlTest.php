@@ -19,6 +19,7 @@
 
 		protected function _before()
 		{
+			require_once(e_HANDLER."mysql_class.php");
 			try
 			{
 				$this->db = $this->make('e_db_mysql');
