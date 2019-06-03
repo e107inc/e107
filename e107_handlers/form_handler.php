@@ -4816,6 +4816,12 @@ var_dump($select_options);*/
 			break;
 		}
 
+		if(empty($attributes['type']))
+		{
+			e107::getDebug()->log("Field '".$field."' is missing a value for 'type'.");
+		}
+
+
 		switch($attributes['type'])
 		{
 			case 'number':

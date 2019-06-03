@@ -471,7 +471,7 @@ class news {
 				$parms['caption'] = constant($parms['caption']);
 			}
 
-
+			/** @var e_news_tree $ntree */
 			$ntree = e107::getObject('e_news_tree');
 
 			if($legacyTemplate  = e107::getTemplate('news', 'news_menu', 'grid')) // BC
