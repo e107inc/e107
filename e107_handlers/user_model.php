@@ -2668,7 +2668,7 @@ class e_user_extended_structure_tree extends e_tree_model
 	 */
 	public function __construct()
 	{
-		$this->load();
+		$this->loadBatch();
 	}
 
 	/**
@@ -2738,12 +2738,12 @@ class e_user_extended_structure_tree extends e_tree_model
 	 *
 	 * @param boolean $force
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		$this->setParam('nocount', true)
 			->setParam('model_class', 'e_user_extended_structure_model')
 			->setParam('db_order', 'user_extended_struct_order ASC');
-		parent::load($force);
+		parent::loadBatch($force);
 
 		return $this;
 	}

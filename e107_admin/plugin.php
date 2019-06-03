@@ -276,7 +276,7 @@ class plugin_ui extends e_admin_ui
 		public function ListAjaxObserver()
 		{
 
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 
 			$this->setPlugData();
 		}
@@ -1976,7 +1976,7 @@ class pluginLanguage extends e_admin_ui
 				//	continue;
 				}
 
-				if(empty($row) || $skip == true || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
+				if(empty($row) /*|| $skip == true*/ || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
 				{
 					continue;
 				}

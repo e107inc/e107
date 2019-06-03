@@ -1229,7 +1229,7 @@ class media_admin_ui extends e_admin_ui
 			$this->setFileListMode($cat);
 		}
 
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 	}
 
 
@@ -1760,7 +1760,7 @@ class media_admin_ui extends e_admin_ui
 		if($type == 'file')
 		{
 			$this->perPage = 0;
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 			$text = $this->getUI()->getList();	
 		}
 		else 
@@ -1926,7 +1926,7 @@ class media_admin_ui extends e_admin_ui
 	private function fileTab($cat='', $parm=array())
 	{
 		$this->perPage = 0;
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 
 		$this->setFileListMode($cat);
 		$text = $this->getUI()->getList();

@@ -744,7 +744,7 @@ class e_news_tree extends e_front_tree_model
 	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
-	 * @return e_news_tree
+	 * @return e_news_tree|e_tree_model
 	 */
 	public function loadJoin($category_id = 0, $force = false, $params = array())
 	{
@@ -785,7 +785,7 @@ class e_news_tree extends e_front_tree_model
 
 		$this->setParam('db_query', $query);
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**
@@ -1025,9 +1025,9 @@ class e_news_category_tree extends e_front_tree_model
 	 * Load category data from the DB
 	 *
 	 * @param boolean $force
-	 * @return e_news_category_tree
+	 * @return e_tree_model
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		$this->setParam('model_class', 'e_news_category_item')
 			->setParam('nocount', true)
@@ -1036,7 +1036,7 @@ class e_news_category_tree extends e_front_tree_model
 			->setCacheString('news_category_tree')
 			->setModelTable('news_category');
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**
@@ -1070,7 +1070,7 @@ class e_news_category_tree extends e_front_tree_model
 		
 		$this->setModelTable('news_category');
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**

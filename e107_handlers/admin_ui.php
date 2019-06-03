@@ -5315,7 +5315,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
 			$tree->addMessageSuccess($caption);
 			//sync models
-			$tree->load(true);
+			$tree->loadBatch(true);
 		}
 		$this->getTreeModel()->setMessages();
 	}
@@ -5487,7 +5487,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$msg = e107::getParser()->lanVars(LAN_UI_BATCH_UPDATE_SUCCESS, array('x' => $vttl, 'y' => $cnt), true);
 			$this->getTreeModel()->addMessageSuccess($msg);
 			// force reload the collection from DB, fix some issues as 'observer' is executed before the batch handler
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load(true);
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch(true);
 		}
 		$this->getTreeModel()->setMessages();
 		return $cnt;
@@ -5608,7 +5608,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			return;
 		}
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 
 		$this->addTitle();
 
@@ -5631,7 +5631,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			return;
 		}
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 	}
 
 	/**
@@ -5888,7 +5888,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListAjaxObserver()
 	{
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 	}
 
 

@@ -1738,7 +1738,7 @@ class e_model extends e_object
 	 * - clearModelCache: e_tree_model class/subclasses - clear cache per node after successful DB operation
 	 * - noCacheStringModify: e_tree_model class/subclasses - do not add additional md5 sum to tree cache string
 	 * @param array $params
-	 * @return e_model
+	 * @return e_model|e_tree_model
 	 */
 	public function setParams(array $params)
 	{
@@ -3194,7 +3194,7 @@ class e_tree_model extends e_front_model
 
 	/**
 	 * Set table name
-	 * @param object $table
+	 * @param string $table
 	 * @return e_tree_model
 	 */
 	public function setModelTable($table)
@@ -3328,7 +3328,7 @@ class e_tree_model extends e_front_model
 	 *
 	 * @return e_tree_model
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		if ($force)
 		{

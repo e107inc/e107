@@ -612,7 +612,7 @@ class users_admin_ui extends e_admin_ui
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
 		
 		// List data reload
-		$this->getTreeModel()->load(true);
+		$this->getTreeModel()->loadBatch(true);
 	}
 	
 	/**
@@ -676,7 +676,7 @@ class users_admin_ui extends e_admin_ui
 		}
 		
 		// List data reload
-		$this->getTreeModel()->load(true);
+		$this->getTreeModel()->loadBatch(true);
 	}
 
 	/**
@@ -724,7 +724,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
-			$this->getTreeModel()->load(true);
+			$this->getTreeModel()->loadBatch(true);
 
 			if ((int) e107::pref('core', 'user_reg_veri') == 2)
 			{
@@ -866,7 +866,7 @@ class users_admin_ui extends e_admin_ui
 
 				e107::getAdminLog()->log_event('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
 				$mes->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
-				$this->getTreeModel()->load(true);
+				$this->getTreeModel()->loadBatch(true);
 			}
 			else
 			{
@@ -1363,7 +1363,7 @@ class users_admin_ui extends e_admin_ui
 			//FIXME admin log
 			
 			// Reload tree
-			$this->getTreeModel()->load(true);
+			$this->getTreeModel()->loadBatch(true);
 			return;
 		}
 		
