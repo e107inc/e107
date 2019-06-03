@@ -312,7 +312,7 @@ class theme_admin_ui extends e_admin_ui
 			$param['limitTo']   = 0 ; // (int) $this->getPerPage();
 			$param['searchqry'] = $this->getQuery('searchquery', '');
 
-			$this->getTreeModel()->setParams($param)->load(); // load the tree model above from the class below.
+			$this->getTreeModel()->setParams($param)->loadBatch(); // load the tree model above from the class below.
 		}
 
 		public function OnlineObserver()
