@@ -566,3 +566,7 @@ define("LAN_NO_RESULTS_FOUND", "No Results Found.");
 define("LAN_UI_DROPZONE_DROP_FILES", "Drop files here to upload");
 
 define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");
+
+define("LAN_UI_FILTER_SEARCH_IN_FIELD", "Search in Field");
+
+
