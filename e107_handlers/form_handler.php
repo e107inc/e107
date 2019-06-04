@@ -4816,9 +4816,16 @@ var_dump($select_options);*/
 			break;
 		}
 
+		if(!empty($attributes['grid']) && empty($attributes['type']))
+		{
+			return null;
+		}
+
 		if(empty($attributes['type']))
 		{
 			e107::getDebug()->log("Field '".$field."' is missing a value for 'type'.");
+		//	e107::getDebug()->log($value);
+		//	e107::getDebug()->log($attributes);
 		}
 
 
