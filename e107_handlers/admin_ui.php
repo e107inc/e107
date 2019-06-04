@@ -5468,7 +5468,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if(empty($string))
 		{
-			return null; 
+			return null;
 		}
 
 		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));

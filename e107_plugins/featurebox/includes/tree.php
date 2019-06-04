@@ -45,7 +45,7 @@ class plugin_featurebox_tree extends e_tree_model
 		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($category_id).' AND fb_class IN('.USERCLASS_LIST.')'.$where.$order.$limit;
 		$this->setParam('db_query', $qry);
 		
-		parent::load($force);
+		parent::loadBatch($force);
 		
 		return $this;
 	}
