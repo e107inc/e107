@@ -103,19 +103,25 @@ class fb_category_ui extends e_admin_ui
 			}
 		}
 	}
-	
+
 	/**
 	 * Prevent deletion of categories in use
+	 *
+	 * @param $data
+	 * @param $id
+	 * @return bool
 	 */
 	public function beforeDelete($data, $id)
 	{
-		// FIXME lan
+
 		if($data['fb_category_template'] === 'unassigned')
 		{
+			// FIXME lan
 			$this->getTreeModel()->addMessageError("<strong>".FBLAN_INSTALL_03."</strong> is system category and can't be deleted.");
 			return false;
 		}
-		if (e107::getDb()->db_Count('featurebox', '(*)', 'fb_category='.intval($id)))
+
+		if (e107::getDb()->count('featurebox', '(*)', 'fb_category='.intval($id)))
 		{
 			$this->getTreeModel()->addMessageWarning("Can't delete <strong>{$data['fb_category_title']}</strong> - category is in use!");
 			return false;
@@ -125,9 +131,12 @@ class fb_category_ui extends e_admin_ui
 	
 	/**
 	 * Some default values
+	 * @param array $new_data
+	 * @param array $old_data
 	 * TODO - 'default' fields attribute (default value on init)
+	 * @return array
 	 */
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		if(!is_numeric($new_data['fb_category_limit']))
 		{
@@ -137,10 +146,11 @@ class fb_category_ui extends e_admin_ui
 		{
 			$new_data['fb_category_template'] = 'default';
 		}
+
 		return $new_data;
 	}
 	
-	public function beforeUpdate($new_data)
+	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		if(!varset($new_data['fb_category_template']))
 		{
@@ -148,17 +158,26 @@ class fb_category_ui extends e_admin_ui
 		}
 		return $new_data;
 	}
-	
+
 	/**
 	 * Create error callback
+	 *
+	 * @param $new_data
+	 * @param $old_data
+	 * @return bool
 	 */
 	public function onCreateError($new_data, $old_data)
 	{
 		return $this->_handleUnique($new_data, 'create');
 	}
-	
+
 	/**
 	 * Create error callback
+	 *
+	 * @param array $new_data
+	 * @param array $old_data
+	 * @param int   $id
+	 * @return bool
 	 */
 	public function onUpdateError($new_data, $old_data, $id)
 	{
@@ -169,6 +188,8 @@ class fb_category_ui extends e_admin_ui
 	 * Provide user friendly message on mysql duplicate entry error #1062 
 	 * No need of beforeCreate callback and additional SQL query - mysql error number give us
 	 * enough info
+	 * @param array $new_data
+	 * @param string $mod
 	 * @return boolean true - suppress model errors
 	 */
 	protected function _handleUnique($new_data, $mod)
@@ -177,8 +198,8 @@ class fb_category_ui extends e_admin_ui
 		{
 			$templates = e107::getLayouts('featurebox', 'featurebox_category', 'front', '', true, false);
 			$msg = e107::getMessage();
-			$msg->error('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
-			$msg->error($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
+			$msg->addError('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
+			$msg->addError($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
 			
 			return (!E107_DEBUG_LEVEL); // suppress messages (TRUE) only when not in debug mod
 		}
@@ -192,7 +213,6 @@ class fb_category_ui extends e_admin_ui
 
 class fb_main_ui extends e_admin_ui
 {
-	//TODO Move to Class above. 
 	protected $pluginTitle		= 'Feature Box';
 	protected $pluginName		= 'featurebox';
 	protected $table			= "featurebox";	
@@ -233,6 +253,8 @@ class fb_main_ui extends e_admin_ui
 	function init()
 	{
 		$categories = array();
+		$menuCat = array();
+
 		if(e107::getDb()->select('featurebox_category'))
 		{
 			while ($row = e107::getDb()->fetch())
@@ -270,4 +292,3 @@ e107::getAdminUI()->runPage();
 require_once(e_ADMIN."footer.php");
 exit;
 
-?>
