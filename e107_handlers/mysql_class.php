@@ -3247,8 +3247,8 @@ class e_db_mysql
 
 /**
  * Backwards compatibility
- *//*
+ */
 class db extends e_db_mysql
 {
 
-}*/
+}
