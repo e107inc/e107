@@ -3,6 +3,7 @@ CREATE TABLE forum (
   `forum_name` varchar(250) NOT NULL default '',
   `forum_description` text,
   `forum_image` varchar(250) DEFAULT NULL,
+  `forum_icon` varchar(250) DEFAULT NULL,
   `forum_parent` int(10) unsigned NOT NULL default '0',
   `forum_sub` int(10) unsigned NOT NULL default '0',
   `forum_datestamp` int(10) unsigned NOT NULL default '0',
