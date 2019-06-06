@@ -1149,6 +1149,15 @@ class news_front
 				}
 
 				$template = $tmp['item'];
+
+				if(isset($tmp['caption']) && $tmp['caption'] !== null) // to initiate tablerender() usage.
+				{
+					$this->addDebug('Internal Route', $this->route);
+					$this->route = 'news/view'; // used for tablerender id.
+					$this->templateKey = $newsViewTemplate; // used for tablerender id.
+					$this->caption = e107::getParser()->parseTemplate($tmp['caption'], true, $news);
+				}
+
 				unset($tmp);
 			}
 

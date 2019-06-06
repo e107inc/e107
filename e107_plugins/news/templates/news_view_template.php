@@ -21,6 +21,8 @@ $NEWS_VIEW_INFO = array(
 // Default
 $NEWS_VIEW_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
+
+$NEWS_VIEW_TEMPLATE['default']['caption'] = null; // add a value to user tablerender()
 $NEWS_VIEW_TEMPLATE['default']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
