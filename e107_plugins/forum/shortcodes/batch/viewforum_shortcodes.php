@@ -155,6 +155,16 @@
 			return $text."&nbsp;";
 		}
 
+		/**
+		* @example: {FORUMICON: size=2x} 
+		*/
+		function sc_forumicon($parms = null)
+		{
+			if(empty($this->var['forum_icon'])) return '';
+
+			return e107::getParser()->toIcon($this->var['forum_icon'], $parms);
+		}
+
 		function sc_forumtitle()
 		{
 			return $this->var['forum_name'];
