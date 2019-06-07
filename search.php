@@ -163,8 +163,13 @@ class search extends e_shortcode
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
 		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>
-		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'><span class='caret'></span></button>
+		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'>
 		";
+
+		if(BOOTSTRAP !== 4)
+		{
+			$text .= "<span class='caret'></span></button>";
+		}
 		
 		$text .= '<ul class="dropdown-menu pull-right">
           <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
