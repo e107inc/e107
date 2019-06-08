@@ -8,18 +8,11 @@
 *
 * Extended user field handler
 *
-* $URL$
-* $Id$
-*
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 /**
- *	@package     e107
- *	@subpackage	e107_handlers
- *	@version 	$Id$;
- *
  *	Extended user field handler
  *
  *	@todo: - change some routines to access the cached variables rather than DB
@@ -42,7 +35,7 @@ e107::coreLan('user_extended');
 class e107_user_extended
 {
 	public $user_extended_types;	// Text description corresponding to each field type
-	private $extended_xml = FALSE;
+	private $extended_xml 		= FALSE;
 	public $typeArray;				// Cross-reference between names of field types, and numeric ID (must be public)
 	private $reserved_names;		// List of field names used in main user DB - not allowed in extended DB
 	public $fieldDefinitions    = array();	// Array initialised from DB by constructor - currently all fields
@@ -50,7 +43,7 @@ class e107_user_extended
 	private $nameIndex          = array();	// Array for field name lookup - initialised by constructor
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
-	private $fieldAttributes   = array(); // Field Permissionss with field name as key.
+	private $fieldAttributes   	= array(); // Field Permissionss with field name as key.
 
 	public function __construct()
 	{
@@ -68,6 +61,7 @@ class e107_user_extended
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
 		define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
 		define('EUF_COUNTRY', 13);  // $frm->country()
+		define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()
 
 		$this->typeArray = array(
 			'text'          => EUF_TEXT,
@@ -83,21 +77,24 @@ class e107_user_extended
 			'predefined'    => EUF_PREFIELD, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
 			'addon'         => EUF_ADDON,
 			'country'       => EUF_COUNTRY,
+			'richtextarea' 	=> EUF_RICHTEXTAREA, 
 		);
 
 		$this->user_extended_types = array(
-			1 => UE_LAN_1,
-			2 => UE_LAN_2,
-			3 => UE_LAN_3,
-			4 => UE_LAN_4,
-			5 => UE_LAN_5,
-			6 => UE_LAN_6,
-			7 => LAN_DATE,
-			8 => UE_LAN_8,
-			9 => UE_LAN_9,
-			10=> UE_LAN_10,
-			13=> UE_LAN_13
+			1 	=> UE_LAN_1,
+			2 	=> UE_LAN_2,
+			3 	=> UE_LAN_3,
+			4 	=> UE_LAN_4,
+			5 	=> UE_LAN_5,
+			14 	=> UE_LAN_14,
+			6 	=> UE_LAN_6,
+			7 	=> LAN_DATE,
+			8 	=> UE_LAN_8,
+			9 	=> UE_LAN_9,
+			10 	=> UE_LAN_10,
+			13 	=> UE_LAN_13,
 		//	12=> UE_LAN_10
+			
 		);
 
 		//load array with field names from main user table, so we can disallow these
@@ -193,6 +190,7 @@ class e107_user_extended
 					case EUF_TEXT :
 					case EUF_DB_FIELD :
 					case EUF_TEXTAREA :
+					case EUF_RICHTEXTAREA :
 					case EUF_DROPDOWN :
 					case EUF_DATE :
 					case EUF_LANGUAGE :
@@ -236,6 +234,7 @@ class e107_user_extended
 					case EUF_TEXT :
 					case EUF_DB_FIELD :
 					case EUF_TEXTAREA :
+					case EUF_RICHTEXTAREA :
 					case EUF_DROPDOWN :
 					case EUF_DATE :
 					case EUF_LANGUAGE :
@@ -551,6 +550,7 @@ class e107_user_extended
 		  break;
 
 		case EUF_TEXTAREA:
+		case EUF_RICHTEXTAREA :
 		case EUF_CHECKBOX :
 		  $db_type = 'TEXT';
 		 break;
@@ -561,7 +561,6 @@ class e107_user_extended
 		case EUF_DB_FIELD :
 		case EUF_LANGUAGE :
 		case EUF_PREDEFINED :
-
 		  $db_type = 'VARCHAR(255)';
 		 break;
 		 
@@ -579,7 +578,7 @@ class e107_user_extended
 		break;
 
 	  }
-	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_CHECKBOX) && !empty($default))
+	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_RICHTEXTAREA) &&  ($type != EUF_CHECKBOX) && !empty($default))
 	  {
 		$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
 	  }
@@ -590,8 +589,6 @@ class e107_user_extended
 
 
 	  return $db_type.$default_text;
-
-
 	}
 
 
@@ -956,6 +953,9 @@ class e107_user_extended
 					return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
 					break;
 
+			case EUF_RICHTEXTAREA : // rich textarea (using WYSIWYG editor)
+					return e107::getForm()->bbarea($fname, $curval);
+
 			case EUF_DATE : //date
 
 					if($curval == '0000-00-00') // Quick datepicker fix.
@@ -1247,6 +1247,9 @@ class e107_user_extended
 					return $value;
 					break;
 
+			case EUF_RICHTEXTAREA:
+				return e107::getParser()->toHTML($value);
+				break;
 
 			default:
 				return $value;
