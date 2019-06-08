@@ -399,7 +399,7 @@ class e_signup_class
 
 					if($newID === false)
 					{
-						$log->e_log_event(10,debug_backtrace(),'USER','Verification Fail', print_r($row,true),false, LOG_TO_ROLLING);
+						$log->addEvent(10,debug_backtrace(),'USER','Verification Fail', print_r($row,true),false, LOG_TO_ROLLING);
 						return 'failed';
 					}
 
@@ -424,7 +424,7 @@ class e_signup_class
 			else
 			{
 				// Invalid activation code
-				$log->e_log_event(10,debug_backtrace(),'USER','Invalid Verification URL', print_r($qs,true),false, LOG_TO_ROLLING);
+				$log->addEvent(10,debug_backtrace(),'USER','Invalid Verification URL', print_r($qs,true),false, LOG_TO_ROLLING);
 			}
 		}
 
@@ -434,10 +434,11 @@ class e_signup_class
 	}
 
 
-
 	/**
 	 * Create email to send to user who just registered.
+	 *
 	 * @param array $userInfo is the array of user-related DB variables
+	 * @param bool  $preview
 	 * @return array of data for mailer - field names directly compatible
 	 */
 	function render_email($userInfo, $preview = FALSE)
