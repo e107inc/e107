@@ -1377,7 +1377,7 @@ class e107_user_extended
 					break;
 
 			case EUF_RICHTEXTAREA:
-				return e107::getParser()->toHTML($value);
+				return e107::getParser()->toHTML($value, true);
 				break;
 
 			default:
