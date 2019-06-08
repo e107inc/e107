@@ -1110,7 +1110,7 @@ class e107_user_extended
 	 */
 	function user_extended_getStruct($orderby="user_extended_struct_order")
 	{
-		return $this->user_extended_getStruct($orderby);	
+		return $this->getStructure($orderby);
 	}
 
 
