@@ -108,7 +108,7 @@ class e107_user_extended
 		'xup'
 		);
 
-		$sql = e107::getDB();
+		$sql = e107::getDb();
 
 		// Read in all the field and category fields
 		// At present we load all fields into common array - may want to split system and non-system
@@ -167,7 +167,7 @@ class e107_user_extended
 	/**
 	 *	Check for reserved field names.
 	 *	(Names which clash with the 'normal' user table aren't allowed)
-	 *	@param string $name - name of field bweing checked (no 'user_' prefix)
+	 *	@param array $name - name of field bweing checked (no 'user_' prefix)
 	 *	@return boolean TRUE if disallowed name
 	 */
 	public function user_extended_reserved($name)
@@ -375,7 +375,9 @@ class e107_user_extended
 
 	/**
 	 * alias of user_extended_get_categories();
-	 * 
+	 *
+	 * @param bool $byID
+	 * @return array
 	 */
 	function getCategories($byID = TRUE)
 	{
@@ -405,10 +407,13 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	/**
 	 * BC Alias of getFields();
+	 * @param string $cat
+	 * @return mixed
 	 */
-	function getFields($cat = "")
+	public function getFields($cat = "")
 	{
 		return $this->user_extended_get_fieldList($cat);	
 	}
@@ -431,9 +436,12 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	/**
-	 * Alias of getFieldList(). 
-	 * 
+	 * Alias of user_extended_get_fieldList().
+	 * @param string $cat
+	 * @param string $indexField
+	 * @return mixed
 	 */
 	function getFieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
@@ -601,8 +609,7 @@ class e107_user_extended
 
 	function clear_cache()
 	{
-		$e107 = e107::getInstance();
-		$e107->ecache->clear_sys('nomd5_extended_struct');
+		e107::getCache()->clear_sys('nomd5_extended_struct');
 	}
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
@@ -732,6 +739,8 @@ class e107_user_extended
 			";
 			return $sql->update("user_extended_struct", $newfield_info);
 		}
+
+		return false;
 	}
 
 	function user_extended_remove($id, $name)
@@ -748,14 +757,16 @@ class e107_user_extended
 			
 			if(is_numeric($id))
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
+				$sql->delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
 			}
 			else
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
+				$sql->delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
 			}
 			return !($this->user_extended_field_exist($name));
 		}
+
+		return false;
 	}
 
 	function user_extended_hide($struct, $curval)
@@ -766,8 +777,23 @@ class e107_user_extended
 	}
 
 
-
+	/**
+	 * BC alias of renderElement
+	 * @param $struct
+	 * @param $curval
+	 */
 	function user_extended_edit($struct, $curval)
+	{
+		return $this->renderElement($struct, $curval);
+	}
+
+
+	/**
+	 * @param $struct
+	 * @param $curval
+	 * @return array|string
+	 */
+	function renderElement($struct, $curval)
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
@@ -1137,7 +1163,7 @@ class e107_user_extended
 				break;
 
 			case 'escape':
-				$newvalue = "'".mysql_real_escape_string($newvalue)."'";
+				$newvalue = "'".$sql->escape($newvalue)."'";
 				break;
 
 			default:
