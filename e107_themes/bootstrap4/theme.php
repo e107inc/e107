@@ -16,8 +16,10 @@ class bootstrap4_theme
 
 	function tablestyle($caption, $text, $mode, $options)
 	{
-	    global $style;
 
+	    $style = varset($options['setStyle'], 'default');
+
+		echo "\n<!-- tablestyle:  style=". $style."  mode=".$mode."  UniqueId=".varset($options['uniqueId'])." -->\n\n";
 
 
 		if($mode == 'wmessage')
