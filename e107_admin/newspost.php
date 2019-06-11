@@ -152,7 +152,7 @@ class news_cat_ui extends e_admin_ui
 	
 		function init()
 		{
-			$this->fields['category_template']['writeParms'] = array('plugin' => 'news', 'id' => 'news', 'merge' => false, 'default' => '('.LAN_OPTIONAL.')'); 
+			$this->fields['category_template']['writeParms'] = array('plugin' => 'news', 'id' => 'news', 'merge' => false, 'default' => '('.LAN_OPTIONAL.')');
 			// $this->newspost = new admin_newspost;
 		}
 
@@ -1098,8 +1098,11 @@ class news_admin_ui extends e_admin_ui
 		}
 		
         $this->log_ping($response_value->serialize(), true);
-		
+
+		/** @var xmlrpcval $fl_error */
 		$fl_error 	= $response_value->structmem('flerror');
+
+		/** @var xmlrpcval $message */
 		$message 	= $response_value->structmem('message');
 
         // read the response
@@ -1392,7 +1395,7 @@ class news_admin_ui extends e_admin_ui
 		if($qry !== e_QUERY)
 		{
 			$mes = e107::getMessage();
-			$this->show_message('Insufficient permissions!', E_MESSAGE_ERROR, true);
+			$mes->add('Insufficient permissions!', E_MESSAGE_ERROR, true);
 			session_write_close();
 			header('Location: '.$url);
 		}
