@@ -1471,17 +1471,20 @@ class e_file
 		$cmd3 = 'cd '.$dir.'; '.$gitPath.' pull'; 	// Run Pull request
 
 
-	//	$mes->addDebug($cmd1);
+
+		$text = '';
+
+
 		$mes->addDebug($cmd2);
 		$mes->addDebug($cmd3);
 
-	//	return false;
-
 	//	$text = `$cmd1 2>&1`;
-		$text = `$cmd2 2>&1`;
+		$text .= `$cmd2 2>&1`;
 		$text .= `$cmd3 2>&1`;
 
-		if(deftrue('e_DEBUG'))
+
+
+		if(deftrue('e_DEBUG') || deftrue('e_GIT_DEBUG'))
 		{
 			$message = date('r')."\t\tgitPull()\t\t".$text;
 			file_put_contents(e_LOG."fileClass.log",$message,FILE_APPEND);
