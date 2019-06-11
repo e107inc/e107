@@ -641,70 +641,6 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 	
 		return e_menu_layout::menuSelector();
 
-/*
-		$text = '
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#plugins" data-toggle="tab">'.ADLAN_CL_7.'</a></li>	
-				<li><a href="#custom" data-toggle="tab">'.LAN_CUSTOM.'</a></li>	
-			</ul>
-			<div class="tab-content">';	
-		
-				$text .= "
-				<div class='active tab-pane' id='plugins'>
-				<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
-				
-				$c = 500; // start high to prevent overwriting of keys after we drag and drop. 
-				
-				foreach($p as $menu => $folder)
-				{
-					$text .= "<div id='{$menu}' class='item draggable regularMenu' style='cursor:move'>";
-				//	$text .= str_replace("_menu","",$menu);
-				
-					$defaults = array(
-						'name'	=> $menu,
-						'path'	=> $folder,
-						'class'	=> '0'
-					);
-					
-					$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
-					
-					$text .= "</div>";
-					$c++;
-					
-				}
-				
-				$text .= "</div>
-				</div>
-				
-				<div class='tab-pane' id='custom'>";
-	
-				if($sql->select('page','*',"menu_name !='' ORDER BY menu_name"))
-				{
-					$text .= "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
-					while($row = $sql->fetch())
-					{
-						$text .= "<div id='".$row['page_id']."' class='item draggable regularMenu' style='cursor:move'>";
-					//	$text .= $row['menu_name'];
-						
-						$defaults = array(
-							'name'	=> $row['menu_name'],
-							'path'	=> $row['page_id'],
-							'class'	=> '0'
-						);
-						
-						$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
-						
-						$text .= "</div>";
-					}
-						
-					$text .= "</div>";
-				}
-					
-				$text .= "</div>
-				
-			</div>";
-
-		return array('caption'=>MENLAN_57,'text'=>$text);*/
 	}
 //}
 
@@ -779,6 +715,8 @@ class e_layout
 		{
 									
 			global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style;
+
+
 			
 			$this->HEADER 		= $HEADER;
 			$this->FOOTER 		= $FOOTER;
@@ -1509,6 +1447,7 @@ if($_POST)
 		//BC - configure and dot delimiter deprecated
 		if (!isset($_GET['configure']))
 		{
+
 //			$men->menuScanMenus();   // - Runs 2x - Is already called by menuModify() in menumanager_class.php
             $text = $men->menuRenderMessage();
          //   $text .= $men->menuSelectLayout();

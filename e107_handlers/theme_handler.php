@@ -57,7 +57,6 @@ class e_theme
 
 	function __construct($options=array())
 	{
-
 		if(!empty($options['themedir']))
 		{
 			$this->_current = $options['themedir'];
@@ -76,6 +75,33 @@ class e_theme
 
 
 
+	}
+
+	/**
+	 * Load theme layout from html files
+	 * Required theme.html file in the theme root directory.
+	 * @param string $key layout name
+	 * @return array|bool
+	 */
+	public static function loadLayout($key)
+	{
+		$theme = e107::pref('core','sitetheme');
+
+		if(!is_readable(e_THEME.$theme."/layouts/".$key."_layout.html") || !is_readable(e_THEME.$theme."/theme.html"))
+		{
+			return false;
+		}
+
+		e107::getDebug()->log("Using HTML layout: ".$key.".html");
+
+		$tmp = file_get_contents(e_THEME.$theme."/theme.html");
+		$LAYOUT = array();
+
+		list($LAYOUT['_header_'], $LAYOUT['_footer_']) = explode("{---LAYOUT---}", $tmp, 2);
+
+		$LAYOUT[$key] = file_get_contents(e_THEME.$theme."/layouts/".$key."_layout.html");
+
+		return $LAYOUT;
 	}
 
 	/**

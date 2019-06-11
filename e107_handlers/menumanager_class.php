@@ -232,7 +232,13 @@ class e_menuManager {
     function menuGrabLayout()
 	{
 		global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$LAYOUT;
-			
+
+		// new v2.2.2 experimental
+		if($tmp = e_theme::loadLayout($this->curLayout))
+		{
+			$LAYOUT = $tmp;
+		}
+
 		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
 		{
 			foreach($LAYOUT as $key=>$template)
@@ -255,8 +261,8 @@ class e_menuManager {
 		elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMFOOTER[$this->curLayout]))) // 0.7 themes
 		{
 		 // 	echo " MODE 0.7 ".$this->curLayout;
-			$HEADER = ($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
-			$FOOTER = ($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
+			$HEADER = isset($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
+			$FOOTER = isset($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
 		}
 	    elseif($this->curLayout && is_array($HEADER) && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
 		{
@@ -1212,7 +1218,6 @@ class e_menuManager {
 		$pref   = e107::getPref();  
 		$sql    = e107::getDb();     
 		$tp     = e107::getParser();
-		
 
 
 	//	echo "<div id='portal'>";
@@ -2023,6 +2028,12 @@ class e_menu_layout
 
 		$head = array();
 		$foot = array();
+
+		if(!isset($LAYOUT))
+		{
+			$LAYOUT = e_theme::loadLayout(THEME_LAYOUT);
+		}
+
 
 		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))
 		{

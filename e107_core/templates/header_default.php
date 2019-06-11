@@ -227,7 +227,7 @@ if (is_array($pref['e_meta_list']))
 		
 		if(is_readable($fname))
 		{
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}	
 	}
 	// content will be added later
@@ -621,7 +621,18 @@ echo "</head>\n";
 
 // ---------- New in 2.0 -------------------------------------------------------
 
-	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
+
+    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
+
+	// v2.2.2 --- Experimental --
+	if($tmp = e_theme::loadLayout(THEME_LAYOUT))
+	{
+		$LAYOUT = $tmp;
+		unset($tmp);
+	}
+
+
+	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
@@ -645,7 +656,6 @@ echo "</head>\n";
 	}
 
 
-    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 
   //  echo "DEF = ".$def."<br />";
 
