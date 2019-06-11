@@ -63,6 +63,39 @@ class _system_cron
 		$fl->chmod(e_BASE."cron.php",0755);
 		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
 	}
+
+
+
+
+	/**
+	 * Update the current Theme Repo
+	 * When using private repos on Github, you'll need to get a personal access token @see https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line
+	 * (with 'repo' access) and then modify the .git/config file :
+	 * @example:
+	 * [remote "origin"]
+	 * url = https://[TOKEN]@github.com/[USER]/[REPO].git
+	 */
+	function gitrepoTheme()
+	{
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		$theme = e107::getPref('sitetheme');
+
+		if(is_dir(e_THEME.$theme."/.git")) // Check it's a Git Repo
+		{
+			$return = $fl->gitPull($theme, 'theme');
+
+			$mes->addSuccess($return);
+
+		}
+		else
+		{
+			$mes->addError("No git repo found in theme folder");	//TODO LAN
+		}
+
+	}
+
+
 	
 	
 	
