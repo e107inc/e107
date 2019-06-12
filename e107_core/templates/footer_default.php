@@ -397,11 +397,12 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 //$length = ob_get_length();
 //$page = ob_get_clean();
 
-
+$search = array('{---CAPTION---}');
+$replace = array(print_a(e107::getRender()->renders,true));
 
 // New - see class2.php 
 $ehd = new e_http_header;
-$ehd->setContent('buffer');
+$ehd->setContent('buffer', $search, $replace);
 $ehd->send();
 // $ehd->debug();
 
@@ -412,6 +413,8 @@ $page = $ehd->getOutput();
 
 // real output
 echo $page;
+
+
 
 unset($In_e107_Footer);
 

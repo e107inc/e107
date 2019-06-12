@@ -947,6 +947,7 @@ if (!class_exists('e107table', false))
 		private $uniqueId = null;
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
+		public  $renders = array(); // all render vars.
 
 		
 		function __construct()
@@ -1044,6 +1045,8 @@ if (!class_exists('e107table', false))
 		 */
 		public function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
+
+
 			$override_tablerender = e107::getSingleton('override', e_HANDLER.'override_class.php')->override_check('tablerender');
 
 			if ($override_tablerender)
@@ -1118,6 +1121,10 @@ if (!class_exists('e107table', false))
 			$options['menuCount'] = $this->eMenuCount;
 			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
 			$options['setStyle'] = $this->eSetStyle;
+			$options['caption'] = $caption;
+
+			$this->renders[] = $options;
+
 
 			
 			if(is_object(vartrue($thm)))
