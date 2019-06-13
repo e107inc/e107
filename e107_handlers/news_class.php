@@ -406,7 +406,7 @@ class news {
 
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
-		if ($mode == 'return')
+		if ($mode == 'return' || !empty($param['return']))
 		{
 			return $text;
 		}

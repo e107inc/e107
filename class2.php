@@ -957,6 +957,37 @@ if (!class_exists('e107table', false))
 		}
 
 
+		function getMagicShortcodes()
+		{
+			$ret = array();
+
+		//	$ret['{---CAPTION1---}'] = varset($this->renders[0]['caption']);
+		//	$ret['{---CAPTION2---}'] = varset($this->renders[1]['caption']);
+
+			$types = array('caption') + $this->contentTypes;
+
+
+
+			$c = 1;
+
+			foreach($this->renders as $k => $val)
+			{
+
+				foreach($types as $var)
+				{
+					$sc = '{---'.strtoupper($var).$c.'---}';
+					$ret[$sc] = $val[$var];
+				}
+
+				$c++;
+			}
+
+
+
+			return $ret;
+
+		}
+
 		/**
 		 * Set the style mode for use in tablestyle() method/function
 		 * @param string $style
@@ -1121,11 +1152,11 @@ if (!class_exists('e107table', false))
 			$options['menuCount'] = $this->eMenuCount;
 			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
 			$options['setStyle'] = $this->eSetStyle;
-			$options['caption'] = $caption;
+			$options['caption'] = strip_tags($caption);
 
 			$this->renders[] = $options;
 
-
+			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();
 			
 			if(is_object(vartrue($thm)))
 			{
