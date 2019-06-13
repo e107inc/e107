@@ -231,7 +231,7 @@ class faqs_shortcodes extends e_shortcode
 
 		$customCaption = e107::pref('faqs', 'page_title');
 
-		if(!empty($customCaption))
+		if(!empty($customCaption[e_LANGUAGE]))
 		{
 			return e107::getParser()->toHTML($customCaption,true);
 		}
