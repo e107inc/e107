@@ -18,6 +18,9 @@ if (!defined('e107_INIT'))
 }
 $In_e107_Footer = TRUE; // For registered shutdown function
 
+$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---CAPTION1---} etc.
+
+
 global $error_handler,$db_time,$FOOTER;
 
 
@@ -171,9 +174,15 @@ if (varset($e107_popup) != 1)
 //
 if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
 {
-	global $db_debug;
+	$tmp = array();
+	foreach($magicSC as $k=>$v)
+	{
+		$k = str_replace(array('{','}'),'',$k);
+		$tmp[$k] = $v;
+	}
+	e107::getDebug()->log("<b>Magic Shortcodes</b><small> Replace [  ] with {  }</small><br />".print_a($tmp,true));
 	echo "\n<!-- DEBUG -->\n<div class='e-debug debug-info'>";
-	$db_debug->Show_All();
+	e107::getDebug()->Show_All();
 	echo "</div>\n";
 }
 
@@ -289,7 +298,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 		if(is_readable($fname))
 		{
 			
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 
 		}	
 	}
@@ -397,8 +406,9 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 //$length = ob_get_length();
 //$page = ob_get_clean();
 
-$search = array('{---CAPTION---}');
-$replace = array(print_a(e107::getRender()->renders,true));
+
+$search = array_keys($magicSC);
+$replace = array_values($magicSC);
 
 // New - see class2.php 
 $ehd = new e_http_header;
@@ -407,8 +417,6 @@ $ehd->send();
 // $ehd->debug();
 
 $page = $ehd->getOutput();
-//$ehd->setContent($page);
-//$ehd->send($length);
 
 
 // real output

@@ -1082,43 +1082,6 @@ class news_front
 
 			//More SEO
 			$this->setNewsFrontMeta($news);
-			/*
-			if($news['news_title'])
-			{
-			if($this->pref['meta_news_summary'] && $news['news_title'])
-			{
-			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
-			}
-			define("e_PAGETITLE",$news['news_title']);
-			}*/
-			/* FIXME - better implementation: cache, shortcodes, do it inside the model/shortcode class itself.
-			if (TRUE)
-			{
-			// Added by nlStart - show links to previous and next news
-			if (!isset($news['news_extended'])) $news['news_extended'] = '';
-			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
-			$prev_query = "SELECT news_id, news_title FROM `#news`
-			WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-			AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-			AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
-			$sql->db_Select_gen($prev_query);
-			$prev_news = $sql->db_Fetch();
-			if ($prev_news)
-			{
-			$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
-			}
-			$next_query = "SELECT news_id, news_title FROM `#news` AS n
-			WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-			AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-			AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
-			$sql->db_Select_gen($next_query);
-			$next_news = $sql->db_Fetch();
-			if ($next_news)
-			{
-			$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
-			}
-			$news['news_extended'].="<br /><br />";
-			}*/
 
 			$currentNewsAction = $this->action;
 
@@ -1127,6 +1090,10 @@ class news_front
 			$param = array();
 			$param['current_action'] = $action;
 			$param['template_key'] = 'news/view';
+			$param['return'] = true;
+
+			$caption = null;
+			$render = false;
 
 			if(!empty($NEWSSTYLE))
 			{
@@ -1150,25 +1117,45 @@ class news_front
 
 				$template = $tmp['item'];
 
+
+
 				if(isset($tmp['caption']) && $tmp['caption'] !== null) // to initiate tablerender() usage.
 				{
 					$this->addDebug('Internal Route', $this->route);
 					$this->route = 'news/view'; // used for tablerender id.
 					$this->templateKey = $newsViewTemplate; // used for tablerender id.
-					$this->caption = e107::getParser()->parseTemplate($tmp['caption'], true, $news);
+
+					$nsc = e107::getScBatch('news')->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
+					$caption = e107::getParser()->parseTemplate($tmp['caption'], true, $nsc);
+					$render = true;
 				}
 
 				unset($tmp);
 			}
 
-			ob_start();
-				$this->ix->render_newsitem($news, 'extend', '', $template, $param);
-				$cache_data = ob_get_contents();
-			ob_end_clean();
+
+
+			$cache_data =	$this->ix->render_newsitem($news, 'extend', '', $template, $param);
 
 			$this->setNewsCache($this->cacheString, $cache_data, $news);
 
-			$text = $cache_data;
+			if($render === true)
+			{
+				$unique = $this->getRenderId();
+
+				$ns = e107::getRender();
+				$ns->setUniqueId($unique);
+				$ns->setContent('title', e107::getParser()->toText($news['news_title']));
+				$ns->setContent('text', e107::getParser()->toText($news['news_summary']));
+
+				// TODO add 'image' and 'icon'?
+				$text = $ns->tablerender($caption, $cache_data, 'news', true);
+			}
+			else
+			{
+				$text = $cache_data;
+			}
+
 			$text .= $this->renderComments($news);
 
 			return $text;
