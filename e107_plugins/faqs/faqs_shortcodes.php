@@ -231,9 +231,9 @@ class faqs_shortcodes extends e_shortcode
 
 		$customCaption = e107::pref('faqs', 'page_title');
 
-		if(!empty($customCaption))
+		if(!empty($customCaption[e_LANGUAGE]))
 		{
-			return e107::getParser()->toHTML($customCaption,true);
+			return e107::getParser()->toHTML($customCaption[e_LANGUAGE],true);
 		}
 
 		return LAN_PLUGIN_FAQS_FRONT_NAME;
