@@ -107,6 +107,57 @@ class faqs_shortcodes extends e_shortcode
 			";
 
 		}
+		elseif($param == 'accordion' && !empty($this->var['faq_answer']))
+		{
+
+			$id         = "faq_".$this->var['faq_id'];
+			$url        = e107::url('faqs','item', $this->var, 'full');
+			$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+			$hide       = ($this->item != $this->var['faq_id']) ? 'e-hideme' : '';
+
+      		$share = '';
+      		$datestamp  = '';
+     		$tags = '';
+      		$category_id= $this->var['faq_parent'];
+      
+			$text = "
+			<a class='e-expandit faq-question{$faqNew}' href='#{$id}'>".$question."</a>
+			<div id='{$id}' class='".$hide." faq-answer faq_answer clearfix {$faqNew}'>";
+
+			$answer =  $tp->toHTML($this->var['faq_answer'],true,'BODY');
+
+			if(vartrue($params['tags']) && $this->var['faq_tags'])
+			{
+				$tags = "<div class='faq-tags'>".LAN_FAQS_001.": ".$this->sc_faq_tags()."</div>";
+			}
+
+			if($this->datestamp == true)
+			{
+				$datestamp = "<div class='faq-datestamp'>".$tp->toDate($this->var['faq_datestamp'])."</div>";
+			}
+
+			if($this->share == true)
+			{
+				$share = "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
+			}
+
+			$text = "
+			<div class='card'>
+				<div class='card-header faq-question{$faqNew}' role='tab' id='heading{$id}'>
+				  <h5 class='mb-0'>
+					<a class='collapsed' data-toggle='collapse' data-parent='#accordion{$category_id}' 
+								href='#collapse{$id}' aria-expanded='false' aria-controls='collapse{$id}'>{$question}
+					</a>
+				  </h5>
+				</div>
+				<div id='collapse{$id}' class='collapse' role='tabpanel' aria-labelledby='heading{$id}'>
+				  <div class='card-body'>   {$answer}
+							  <div class='faq-extras'>{$tags}{$datestamp}{$share}</div>  
+				  </div>
+				</div>
+			</div>
+		";
+		}
 		else
 		{
 			$text = $tp->toHTML($this->var['faq_question'],true, 'BODY');
