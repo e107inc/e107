@@ -69,7 +69,7 @@ class download_shortcodes extends e_shortcode
 				}
 
 				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ?  e107::url('download', 'category', $this->var) : null);
-				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
+				$breadcrumb[]	= array('text' => varset($this->var['download_name']),			'url' => null);
 			break;
 		}
 
