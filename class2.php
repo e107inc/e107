@@ -961,11 +961,8 @@ if (!class_exists('e107table', false))
 		{
 			$ret = array();
 
-		//	$ret['{---CAPTION1---}'] = varset($this->renders[0]['caption']);
-		//	$ret['{---CAPTION2---}'] = varset($this->renders[1]['caption']);
 
 			$types = array('caption') + $this->contentTypes;
-
 
 
 			$c = 1;
@@ -976,7 +973,7 @@ if (!class_exists('e107table', false))
 				foreach($types as $var)
 				{
 					$sc = '{---'.strtoupper($var).$c.'---}';
-					$ret[$sc] = $val[$var];
+					$ret[$sc] = varset($val[$var]);
 				}
 
 				$c++;
