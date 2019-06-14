@@ -461,12 +461,12 @@ class faq
 		$sc 	= e107::getScBatch('faqs',TRUE);
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE f.faq_parent = '$id' ";
-		$sql->db_Select_gen($query);
+		$sql->gen($query);
 		$sc->setVars($row);
 
 		$text = $tp->parseTemplate($FAQ_LIST_START, true);
 
-		while ($rw = $sql->db_Fetch())
+		while ($rw = $sql->fetch())
 		{
 			$sc->setVars($rw);
 			$text .= $tp->parseTemplate($FAQ_LIST_LOOP, true);
@@ -508,8 +508,8 @@ class faq
 
 		$text .= $FAQ_CAT_START;
 
-		$sql->db_Select_gen($qry);
-		while ($row = $sql->db_Fetch())
+		$sql->gen($qry);
+		while ($row = $sql->fetch())
 		{
 			$sc->setVars($row);
 
@@ -551,8 +551,8 @@ class faq
 		
 		$sc = e107::getScBatch('faqs',TRUE);
 
-		$sql->db_Select("faqs", "*", "faq_id='$idx' LIMIT 1");
-		$row = $sql->db_Fetch();
+		$sql->select("faqs", "*", "faq_id='$idx' LIMIT 1");
+		$row = $sql->fetch();
 
 		$sc->setVars($row);
 
@@ -581,10 +581,10 @@ class faq
 			{
 				$sql2 = new db;
 			}
-			if ($comment_total = $sql2->db_Select("comments", "*", $query))
+			if ($comment_total = $sql2->select("comments", "*", $query))
 			{
 				$width = 0;
-				while ($row = $sql2->db_Fetch())
+				while ($row = $sql2->fetch())
 				{
 					if ($pref['nested_comments'])
 					{
@@ -642,14 +642,14 @@ class faq
 		$text .= "<table class='fborder' style=\"".USER_WIDTH."\" >
         <tr>
         <td colspan='2' class='forumheader3' style=\"width:80%; padding:0px\">";
-		$sql->db_Select("faqs", "*", "faq_parent='$id' AND faq_author = '$userid' ORDER BY faq_id ASC");
+		$sql->select("faqs", "*", "faq_parent='$id' AND faq_author = '$userid' ORDER BY faq_id ASC");
 		$text .= "<div style='width : auto; height : 110px; overflow : auto; '>
         <table class='fborder' style=\"width:100%\">
         <tr>
         <td class='fcaption' style=\"width:70%\">".FAQ_ADLAN_49."</td>
 		<td class='fcaption' style='text-align:center'>".LAN_SETTINGS."</td></tr>
         ";
-		while ($rw = $sql->db_Fetch())
+		while ($rw = $sql->fetch())
 		{
 			// list($pfaq_id, $pfaq_parent, $pfaq_question, $pfaq_answer, $pfaq_comment);
 			$rw['faq_question'] = substr($rw['faq_question'], 0, 50)." ... ";
@@ -667,8 +667,8 @@ class faq
 
 		if ($action == "edit")
 		{
-			$sql->db_Select("faqs", "*", " faq_id = '$idx' ");
-			$row = $sql->db_Fetch();
+			$sql->select("faqs", "*", " faq_id = '$idx' ");
+			$row = $sql->fetch();
 			extract($row);
 			$data = $faq_answer;
 		}
@@ -688,8 +688,8 @@ class faq
         <td class='forumheader3' style=\"width:80%\">";
 
 		$text .= "<select style='width:150px' class='tbox' id='faq_parent' name='faq_parent' >";
-		$sql->db_Select("faqs_info", "*", "faq_info_parent !='0' ");
-		while ($prow = $sql->db_Fetch())
+		$sql->select("faqs_info", "*", "faq_info_parent !='0' ");
+		while ($prow = $sql->fetch())
 		{
 			//extract($row);
 			$selected = $prow['faq_info_id'] == $id ? " selected='selected'" : "";
@@ -757,8 +757,8 @@ class faq
 
 		if(varset($faq))
 		{
-			$sql->db_Select("faqs_info", "*", "faq_info_id='$faq'");
-			$row = $sql->db_Fetch();
+			$sql->select("faqs_info", "*", "faq_info_id='$faq'");
+			$row = $sql->fetch();
 			extract($row);
 		}
 		$ns->tablerender( LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title, "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
