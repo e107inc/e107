@@ -137,7 +137,7 @@ if (varset($e107_popup) != 1)
 	}
 	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
 	{
-		$rinfo .= $cachestring.".";
+	//	$rinfo .= $cachestring.".";
 	}
 	
 	if ($pref['log_page_accesses'])
@@ -409,6 +409,9 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 
 $search = array_keys($magicSC);
 $replace = array_values($magicSC);
+$bread = e107::breadcrumb();
+$search[] = '{---BREADCRUMB---}';
+$replace[] = e107::getForm()->breadcrumb($bread);
 
 // New - see class2.php 
 $ehd = new e_http_header;

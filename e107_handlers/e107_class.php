@@ -143,6 +143,11 @@ class e107
 	 */
 	protected static $_js_enabled = true;
 
+
+
+
+	protected static $_breadcrumb = array();
+
 	/**
 	 * Core handlers array
 	 * For new/missing handler add
@@ -3345,6 +3350,24 @@ class e107
 			break;
 		}
 
+	}
+
+
+	/**
+	 * Set or Get the current breadcrumb array.
+	 * @param array $array
+	 * @return array|null
+	 */
+	public static function breadcrumb($array = array())
+	{
+		if(empty($array))
+		{
+			return self::$_breadcrumb;
+		}
+
+		self::$_breadcrumb = $array;
+
+		return null;
 	}
 
 	/**

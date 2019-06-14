@@ -36,16 +36,13 @@ class download_shortcodes extends e_shortcode
 	{
 
 	}
-	
-	function sc_download_breadcrumb($parm='')
-	{
-		$tp = e107::getParser();
-		$frm = e107::getForm();
 
+
+	public function breadcrumb()
+	{
 		$breadcrumb 	= array();
 
-
-		switch ($this->qry['action']) 
+		switch ($this->qry['action'])
 		{
 			case 'mirror':
 				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,					'url' => e107::url('download', 'index'));
@@ -53,11 +50,11 @@ class download_shortcodes extends e_shortcode
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			    'url' => e107::url('download', 'item', $this->var)); //  e_SELF."?action=view&id=".$this->var['download_id']);
 				$breadcrumb[]	= array('text' => LAN_dl_67,							    'url' => null);
 			break;
-			
+
 			case 'maincats':
 				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download','index'));
 			break;
-			
+
 			default:
 				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download','index'));
 
@@ -75,6 +72,18 @@ class download_shortcodes extends e_shortcode
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
 			break;
 		}
+
+
+		e107::breadcrumb($breadcrumb);
+
+	}
+	
+	function sc_download_breadcrumb($parm='')
+	{
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+
+		$breadcrumb = e107::breadcrumb();
 
 		return $frm->breadcrumb($breadcrumb);
 		
