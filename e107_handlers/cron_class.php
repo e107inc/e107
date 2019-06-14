@@ -57,7 +57,7 @@ class _system_cron
 		}
 		else
 		{
-			$mes->addError("No git repo found");	//TODO LAN
+			$mes->addError(LAN_CRON_66);
 		}
 		
 		$fl->chmod(e_BASE."cron.php",0755);
@@ -90,7 +90,7 @@ class _system_cron
 		}
 		else
 		{
-			$mes->addError("No git repo found in theme folder");	//TODO LAN
+			$mes->addError(LAN_CRON_67);
 		}
 
 	}
