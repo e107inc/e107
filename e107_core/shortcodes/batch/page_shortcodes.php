@@ -593,31 +593,36 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
+	function breadcrumb()
+	{
+		$breadcrumb = array();
+
+		$row = $this->getChapter();
+		$brow = $this->getBook($row['chapter_parent']);
+
+		if(empty($brow['chapter_sef']))
+		{
+			return null;
+		}
+
+		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
+
+		$breadcrumb[] = array('text'=> $brow['chapter_name'], 'url'=> e107::getUrl()->create('page/book/index', $brow,'allow=chapter_id,chapter_sef,book_sef,page_sef'));
+		$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
+
+		e107::breadcrumb($breadcrumb);
+	}
+
 
 
 
 	function sc_chapter_breadcrumb()
 	{
-		$tp = e107::getParser();
-		
-		$breadcrumb = array();
-		
-		$row = $this->getChapter();
-		$brow = $this->getBook($row['chapter_parent']);
-		
-		if(empty($brow['chapter_sef']))
-		{
-			return null;
-		}
-		
-		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();		
 
-		
-		$breadcrumb[] = array('text'=> $brow['chapter_name'], 'url'=> e107::getUrl()->create('page/book/index', $brow,'allow=chapter_id,chapter_sef,book_sef,page_sef'));
-		$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
-	//	$breadcrumb[] = array('text'=> $this->var['page_title'], 'url'=> null);
-		
-		
+	//	$this->breadcrumb();
+
+		$breadcrumb = e107::breadcrumb();
+
 		return e107::getForm()->breadcrumb($breadcrumb);
 	
 		

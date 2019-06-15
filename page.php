@@ -509,6 +509,7 @@ class pageClass
 					
 				//	$this->page = $page;
 					$this->batch->setVars($page);
+					$this->batch->breadcrumb();
 				//	$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
 
 
@@ -591,7 +592,7 @@ class pageClass
 
 
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
-
+			$this->batch->breadcrumb();
 			
 			
 			define("e_PAGETITLE", $this->page['page_title']);
@@ -636,6 +637,7 @@ class pageClass
 		$this->batch = e107::getScBatch('page',null,'cpage');
 		$this->batch->wrapper('page/'.$this->templateID );
 		$this->batch->editable($editable);
+		$this->batch->breadcrumb();
 
 		$this->pageText = $this->page['page_text'];
 
@@ -688,6 +690,7 @@ class pageClass
 		e107::getEvent()->trigger('user_page_item_viewed',$this->page);
 
 		$this->batch->setVars($this->page);
+		$this->batch->breadcrumb();
 
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
@@ -747,6 +750,7 @@ class pageClass
 			/** @var cpage_shortcodes $sc */
 			$sc = e107::getScBatch('page',null,'cpage');
 			$sc->setVars($vars);
+			$sc->breadcrumb();
 			$comments = $sc->cpagecomments();
 		} 
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
