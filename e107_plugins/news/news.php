@@ -1471,6 +1471,7 @@ class news_front
 		if(isset($this->pref['news_unstemplate']) && $this->pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 		{
 			// theme specific template required ...
+			$this->addDebug("Template Mode",'News Preferences: Non-standard Template (Legacy)');
 
 			$ALTERNATECLASSES = null;
 			$NEWSCLAYOUT = null;
