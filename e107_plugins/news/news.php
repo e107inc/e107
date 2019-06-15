@@ -38,7 +38,10 @@ class news_front
 	private $cacheRefreshTime = false;
 	private $caption = null;
 	private $templateKey = null;
-	private $categorySEF = null;
+
+	private $currentRow = array();
+	private $dayMonth = null;
+	private $tagAuthor = null;
 //	private $interval = 1;
 
 	function __construct()
@@ -68,8 +71,69 @@ class news_front
 		$this->setActions();
 		$this->setRoute();
 		$this->detect();
+		$this->setBreadcrumb();
 
 		return null;
+	}
+
+
+	private function setBreadcrumb()
+	{
+
+		$breadcrumb = array();
+
+		$breadcrumb[] = array('text'=> PAGE_NAME, 'url'=>e107::url('news', 'index'));
+
+		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
+
+		switch($this->route)
+		{
+			case "news/list/all":
+			case "news/list/item":
+				$breadcrumb[0]['url'] = null;
+				break;
+
+			case "news/view":
+
+				$itemName = e107::getParser()->toHTML($this->currentRow['news_title'],true, 'TITLE');
+
+				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', $this->currentRow));
+				$breadcrumb[] = array('text'=> $itemName, 'url'=> null);
+				break;
+
+
+			case 'news/list/category':
+			case 'news/list/short':
+				$breadcrumb[] = array('text'=> $categoryName, 'url'=>null);
+				break;
+
+			case 'news/list/tag':
+				$breadcrumb[] = array('text'=> defset('LAN_NEWS_309', "Tag"), 'url'=>null);
+				$breadcrumb[] = array('text'=> $this->tagAuthor, 'url'=>null);
+				break;
+
+
+			case 'news/list/author':
+				$breadcrumb[] = array('text'=> LAN_AUTHOR, 'url'=>null);
+				$breadcrumb[] = array('text'=> $this->tagAuthor, 'url'=>null);
+				break;
+
+			case 'news/list/month':
+			case 'news/list/day':
+				$breadcrumb[] = array('text'=> LAN_DATE, 'url'=>null);
+				$breadcrumb[] = array('text' => $this->dayMonth, 'url'=>null);
+				break;
+
+			default:
+				if(ADMIN)
+				{
+					$breadcumb[] = array('text'=> "Missing News breadcrumb for route: ".$this->route);
+				}
+			break;
+		}
+
+		e107::breadcrumb($breadcrumb);
+
 	}
 
 
@@ -494,7 +558,11 @@ class news_front
 
 				$title = e107::getParser()->toDate($unix, $format);
 
+
+
 				$title = strip_tags($title);
+
+				$this->dayMonth = $title;
 
 				if(!defined('e_PAGETITLE'))
 				{
@@ -809,7 +877,9 @@ class news_front
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
-			$category_name = 'Tag: "'.$tagsearch.'"';
+			$category_name = defset('LAN_NEWS_309','Tag').': "'.$tagsearch.'"';
+
+			$this->tagAuthor = $tagsearch;
 
 		}
 		elseif($this->action === 'author')
@@ -827,9 +897,9 @@ class news_front
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
-			$category_name = 'Author: "'.$authorSearch.'"';
+			$category_name = LAN_AUTHOR.': "'.$authorSearch.'"';
 
-
+			$this->tagAuthor = $authorSearch;
 
 		}
 
@@ -941,6 +1011,7 @@ class news_front
 				$tpl = ($c === 1 && !empty($template['first']) && $this->from === 0) ? $template['first'] : $template['item'];
 
 				$text .= $this->ix->render_newsitem($row, 'return', '', $tpl, $param);
+				$this->currentRow = $row;
 				$c++;
 			}
 		}
@@ -956,11 +1027,6 @@ class news_front
 
 		$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
-		// Deprecated.
-		// $parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
-		//	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
-		//
-		//	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 		$amount 	= NEWSLIST_LIMIT;
 		$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
@@ -971,6 +1037,7 @@ class news_front
 		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
 		$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
+
 
 		if(isset($template['caption'])) // v2.x
 		{
@@ -1132,6 +1199,9 @@ class news_front
 
 				unset($tmp);
 			}
+
+
+			$this->currentRow = $news;
 
 
 
@@ -1620,6 +1690,8 @@ class news_front
 					$this->templateKey = 'default';
 				}
 
+				$this->currentRow = $newsAr[1];
+
 				$this->addDebug('Template key',$this->templateKey);
 
 				$template = $tmpl['item'];
@@ -1631,6 +1703,8 @@ class news_front
 			{
 				$row = $newsAr[1];
 
+				$this->currentRow = $row;
+
 				if(empty($this->action)) // default page.
 				{
 					$row['category_name'] = PAGE_NAME;
@@ -1638,6 +1712,7 @@ class news_front
 
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);
 				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
+
 			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
@@ -1649,6 +1724,7 @@ class news_front
 			{
 				// we know category name - pass it to the nexprev url
 				$category_name = $newsAr[1]['category_name'];
+
 				if(vartrue($newsAr[1]['category_sef'])) $newsUrlparms['name'] = $newsAr[1]['category_sef'];
 				if(!isset($NEWSLISTCATTITLE))
 				{
