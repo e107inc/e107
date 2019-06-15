@@ -42,6 +42,7 @@ class news_front
 	private $currentRow = array();
 	private $dayMonth = null;
 	private $tagAuthor = null;
+	private $comments = array();
 //	private $interval = 1;
 
 	function __construct()
@@ -217,6 +218,7 @@ class news_front
 	*/
 	public function render($return = false)
 	{
+
 		$unique = $this->getRenderId();
 
 		if($this->caption !== null)
@@ -225,13 +227,27 @@ class news_front
 
 			$this->addDebug("tablerender ID", $unique);
 
+
+
 			e107::getRender()->setUniqueId($unique)->tablerender($this->caption, $this->text, 'news');
+
+			if(!empty($this->comments))
+			{
+				echo $this->renderComments($this->comments);
+			}
+
 			return true;
 		}
+
 
 		$this->addDebug("tablerender ID (not used)", $unique);
 
 		echo $this->text;
+
+		if(!empty($this->comments))
+		{
+			echo $this->renderComments($this->comments);
+		}
 	}
 
 	private function setActions()
@@ -1074,6 +1090,7 @@ class news_front
 	{
 		global $NEWSSTYLE; // v1.x backward compatibility.
 
+
 		$this->addDebug("Method",'renderViewTemplate()');
 
 		if($newsCachedPage = $this->checkCache($this->cacheString))
@@ -1085,7 +1102,7 @@ class news_front
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
 			$this->setNewsFrontMeta($rows);
 			$text = $this->renderCache($caption, $newsCachedPage);		// This exits if cache used
-			$text .= $this->renderComments($rows);
+			$this->comments = $rows;
 			return $text;
 		}
 		else
@@ -1194,6 +1211,7 @@ class news_front
 
 					$nsc = e107::getScBatch('news')->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
 					$caption = e107::getParser()->parseTemplate($tmp['caption'], true, $nsc);
+
 					$render = true;
 				}
 
@@ -1203,30 +1221,36 @@ class news_front
 
 			$this->currentRow = $news;
 
-
-
 			$cache_data =	$this->ix->render_newsitem($news, 'extend', '', $template, $param);
 
 			$this->setNewsCache($this->cacheString, $cache_data, $news);
 
 			if($render === true)
 			{
+
+
 				$unique = $this->getRenderId();
 
 				$ns = e107::getRender();
 				$ns->setUniqueId($unique);
-				$ns->setContent('title', e107::getParser()->toText($news['news_title']));
-				$ns->setContent('text', e107::getParser()->toText($news['news_summary']));
+				$ns->setContent('title', $news['news_title']);
+				$ns->setContent('text', $news['news_summary']);
 
 				// TODO add 'image' and 'icon'?
-				$text = $ns->tablerender($caption, $cache_data, 'news', true);
+				$this->caption = $caption;
+				$text = $cache_data;
+
+				$this->comments = $news;
+
+				//$text = $ns->tablerender($caption, $cache_data, 'news', true);
 			}
 			else
 			{
 				$text = $cache_data;
+				$text .= $news;
 			}
 
-			$text .= $this->renderComments($news);
+
 
 			return $text;
 		}
@@ -1827,7 +1851,9 @@ class news_front
 }
 
 $newsObj = new news_front;
+$content = e107::getRender()->getContent(); // get tablerender content
 require_once(HEADERF);
+e107::getRender()->setContent($content,null); // reassign tablerender content if HEADERF uses render.
 $newsObj->render();
 if(E107_DBG_BASIC && ADMIN)
 {

@@ -18,7 +18,7 @@ if (!defined('e107_INIT'))
 }
 $In_e107_Footer = TRUE; // For registered shutdown function
 
-$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---CAPTION1---} etc.
+$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
 
 global $error_handler,$db_time,$FOOTER;

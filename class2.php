@@ -947,7 +947,7 @@ if (!class_exists('e107table', false))
 		private $uniqueId = null;
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
-		public  $renders = array(); // all render vars.
+		private  $mainRenders = array(); // all renderered with style = 'default' or 'main'.
 
 		
 		function __construct()
@@ -957,28 +957,37 @@ if (!class_exists('e107table', false))
 		}
 
 
+
+
+		/**
+		 * Return content options for the main render that uses {SETSTYLE=default} or {SETSTYLE=main}
+		 * @return array
+		 */
+		private function getMainRender()
+		{
+			if(isset($this->mainRenders[0]))
+			{
+				return $this->mainRenders[0];
+			}
+
+			return array();
+
+		}
+
+
 		function getMagicShortcodes()
 		{
 			$ret = array();
 
+			$val = $this->getMainRender();
 
 			$types = array('caption') + $this->contentTypes;
 
-
-			$c = 1;
-
-			foreach($this->renders as $k => $val)
+			foreach($types as $var)
 			{
-
-				foreach($types as $var)
-				{
-					$sc = '{---'.strtoupper($var).$c.'---}';
-					$ret[$sc] = varset($val[$var]);
-				}
-
-				$c++;
+				$sc = '{---'.strtoupper($var).'---}';
+				$ret[$sc] = isset($val[$var]) ? (string) $val[$var] : null;
 			}
-
 
 
 			return $ret;
@@ -1010,12 +1019,21 @@ if (!class_exists('e107table', false))
 		/**
 		 * Set Advanced Page/Menu content (beyond just $caption and $text)
 		 *
-		 * @param string $type header|footer|text|title|image|list
+		 * @param string|array $type header|footer|text|title|image|list
 		 * @param string $val
 		 * @return bool|e107table
 		 */
 		public function setContent($type, $val)
 		{
+			if(is_array($type))
+			{
+				foreach($this->contentTypes as $t)
+				{
+					$this->content[$t] = (string) $type[$t];
+				}
+			}
+
+
 			if(!in_array($type,$this->contentTypes))
 			{
 				return false;
@@ -1149,9 +1167,13 @@ if (!class_exists('e107table', false))
 			$options['menuCount'] = $this->eMenuCount;
 			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
 			$options['setStyle'] = $this->eSetStyle;
-			$options['caption'] = strip_tags($caption);
 
-			$this->renders[] = $options;
+			$options['caption'] = $caption; // TODO FIXME strip HTML but retain text that may be inside tags.
+
+			if($this->eSetStyle === 'default' || $this->eSetStyle === 'main')
+			{
+				$this->mainRenders[] = $options;
+			}
 
 			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();
 			

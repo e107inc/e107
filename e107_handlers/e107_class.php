@@ -3360,12 +3360,31 @@ class e107
 	 */
 	public static function breadcrumb($array = array())
 	{
-		if(empty($array))
+
+		if(empty($array)) // read
 		{
+
+			if(empty(self::$_breadcrumb)) //Guess what it should be..
+			{
+				if(defined('PAGE_NAME'))  // BC search for "PAGE_NAME"
+				{
+					return array(0=> array('text'=>PAGE_NAME, 'url'=>null));
+				}
+				elseif($caption = e107::getRender()->getPrimaryCaption()) // BC search for primary render caption
+				{
+					return array(0=> array('text'=>$caption, 'url'=>null));
+				}
+
+			}
+
 			return self::$_breadcrumb;
 		}
 
-		self::$_breadcrumb = $array;
+
+
+
+
+		self::$_breadcrumb = $array; // write.
 
 		return null;
 	}
