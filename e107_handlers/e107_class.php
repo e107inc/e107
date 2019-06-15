@@ -3383,7 +3383,7 @@ class e107
 	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
 	 * @return string
 	 */
-	public static function url($plugin='',$key, $row=array(), $options = array())
+	public static function url($plugin='', $key=null, $row=array(), $options = array())
 	{
 
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
