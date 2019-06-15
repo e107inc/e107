@@ -975,6 +975,21 @@ if (!class_exists('e107table', false))
 		}
 
 
+		/**
+		 * Return the first caption rendered with {SETSTYLE=default} or {SETSTYLE=main}
+		 * @return |null
+		 */
+		public function getMainCaption()
+		{
+			if(isset($this->mainRenders[0]['caption']))
+			{
+				return $this->mainRenders[0]['caption'];
+			}
+
+			return null;
+		}
+
+
 		function getMagicShortcodes()
 		{
 			$ret = array();

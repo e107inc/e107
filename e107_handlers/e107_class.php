@@ -3370,7 +3370,7 @@ class e107
 				{
 					return array(0=> array('text'=>PAGE_NAME, 'url'=>null));
 				}
-				elseif($caption = e107::getRender()->getPrimaryCaption()) // BC search for primary render caption
+				elseif($caption = e107::getRender()->getMainCaption()) // BC search for primary render caption
 				{
 					return array(0=> array('text'=>$caption, 'url'=>null));
 				}
