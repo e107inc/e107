@@ -462,6 +462,7 @@ class forumStats
 			);
 
 			$text = $frm->breadcrumb($breadarray);
+			e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 
 
 			$text = "<div id='forum-stats'>". $text . e107::getForm()->tabs($tabs)."</div>";

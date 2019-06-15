@@ -326,6 +326,7 @@ $breadarray = array(
 					array('text'=> $forum->prefs->get('title'), 'url' => e107::url('forum','index') )
 );
 
+e107::breadcrumb($breadarray);
 
 $sc->wrapper('forum/main/start');
 $forum_main_start = $tp->parseTemplate($FORUM_MAIN_START, true, $sc);
@@ -383,6 +384,7 @@ function forum_rules($action = 'check')
 		);
 
 		$text = e107::getForm()->breadcrumb($breadarray);
+		e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 	}
 
 	$text .= "<div id='forum-rules'>".$rules_text."</div>";
@@ -494,6 +496,8 @@ function forum_track()
 				array('text'=> e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME), 'url' => e107::url('forum','index') ),
 				array('text'=>LAN_FORUM_0030, 'url'=>null)
 			);
+
+			e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 
 			$data['FORUM_BREADCRUMB'] = e107::getForm()->breadcrumb($breadarray);
 		}
