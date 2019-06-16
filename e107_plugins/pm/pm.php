@@ -709,6 +709,8 @@
 				$array[2] = array('text' => $other, 'url' => null);
 			}
 
+			e107::breadcrumb($array);
+
 			return e107::getForm()->breadcrumb($array);
 
 		}
