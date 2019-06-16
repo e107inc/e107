@@ -152,6 +152,11 @@ if (USER == TRUE || ADMIN == TRUE)
 	}
 	
 	//render
+	if(strpos($text,'<ul ') !== false)
+	{
+		$ns->setUniqueId('login-menu')->setContent('list', true);
+	}
+
 	$ns->tablerender($caption, $text, 'login');
 
 // END LOGGED CODE	
@@ -188,6 +193,7 @@ else
 	} else {
 		$caption = LAN_LOGINMENU_5;
 	}
+
 	$ns->tablerender($caption, $text, 'login');
 }
 // END NOT LOGGED CODE
