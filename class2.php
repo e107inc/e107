@@ -1030,10 +1030,6 @@ if (!class_exists('e107table', false))
 			return $this;
 		}
 
-		public function debugContent()
-		{
-			return $this->content;
-		}
 
 		/**
 		 * Set Advanced Page/Menu content (beyond just $caption and $text)

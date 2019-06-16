@@ -27,6 +27,7 @@ if(false === $cached)
 		$parms['caption'] = $parms['caption'][e_LANGUAGE];
 	}
 
+	/** @var e_news_tree $ntree */
 	$ntree = e107::getObject('e_news_tree', null, e_HANDLER.'news_class.php');
 
 	if(empty($parms['tmpl']))
