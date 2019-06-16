@@ -459,7 +459,7 @@ class e_session
 	public function start($sessionName = null)
 	{
 	
-		if (isset($_SESSION) || ($this->_sessionStarted == true))
+		if (isset($_SESSION) && ($this->_sessionStarted == true))
 		{
 			return $this;
 		}
