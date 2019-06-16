@@ -151,11 +151,6 @@ if (USER == TRUE || ADMIN == TRUE)
 		$caption = LAN_LOGINMENU_5.' '.USERNAME;
 	}
 	
-	//render
-	if(strpos($text,'<ul ') !== false)
-	{
-		$ns->setUniqueId('login-menu')->setContent('list', true);
-	}
 
 	$ns->tablerender($caption, $text, 'login');
 

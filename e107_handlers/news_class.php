@@ -908,17 +908,7 @@ class e_news_tree extends e_front_tree_model
 				}
 
 				$mod = true === $tablerender ? 'news_latest_menu' : $tablerender;
-
-				if(strpos($ret,'<ul ') !== false)
-				{
-					e107::getRender()->setUniqueId(varset($parms['mode'], $mod))->setContent('list', true);
-				}
-
-				$text = e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
-
-
-
-				return $text;
+				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
 
 			if($return) return $ret;
@@ -1144,17 +1134,7 @@ class e_news_category_tree extends e_front_tree_model
 				}
 
 				$mod = true === $tablerender ? 'news_categories_menu' : $tablerender;
-
-				if(strpos($ret,'<ul ') !== false)
-				{
-					e107::getRender()->setUniqueId($mod)->setContent('list', true);
-				}
-
-				$text = e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
-
-
-
-				return $text;
+				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
 
 			if($return) return $ret;
