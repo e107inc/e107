@@ -1026,7 +1026,7 @@ if (!class_exists('e107table', false))
 		 */
 		public function setUniqueId($id)
 		{
-			$this->uniqueId = !empty($id) ? $id : null;
+			$this->uniqueId = !empty($id) ? eHelper::dasherize($id) : null;
 			return $this;
 		}
 
