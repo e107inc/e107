@@ -947,7 +947,7 @@ if (!class_exists('e107table', false))
 		private $uniqueId = null;
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
-		private  $mainRenders = array(); // all renderered with style = 'default' or 'main'.
+		private $mainRenders = array(); // all renderered with style = 'default' or 'main'.
 
 		
 		function __construct()
@@ -1026,10 +1026,14 @@ if (!class_exists('e107table', false))
 		 */
 		public function setUniqueId($id)
 		{
-			$this->uniqueId = $id;
+			$this->uniqueId = !empty($id) ? $id : null;
 			return $this;
 		}
 
+		public function debugContent()
+		{
+			return $this->content;
+		}
 
 		/**
 		 * Set Advanced Page/Menu content (beyond just $caption and $text)
@@ -1054,7 +1058,17 @@ if (!class_exists('e107table', false))
 				return false;
 			}
 
-			$this->content[$type] = (string) $val;
+			if($this->uniqueId !== null)
+			{
+				$key = $this->uniqueId;
+			}
+			else
+			{
+				$key = '_generic_';
+				e107::getMessage()->addDebug("Possible issue: Missing a Unique Tablerender ID. Use \$ns->setUniqueId() in the plugin script prior to setContent(). "); // debug only, no LAN.
+			}
+
+			$this->content[$key][$type] = (string) $val;
 
 			return $this;
 		}
@@ -1067,12 +1081,15 @@ if (!class_exists('e107table', false))
 		 */
 		public function getContent($type='')
 		{
+			$key = ($this->uniqueId !== null) ? $this->uniqueId : '_generic_';
+
 			if(empty($type))
 			{
-				return $this->content;
+				return $this->content[$key];
 			}
 
-			return $this->content[$type];
+
+			return $this->content[$key][$type];
 
 		}
 
@@ -1175,7 +1192,7 @@ if (!class_exists('e107table', false))
 				$thm = new $this->themeClass();
 			}
 
-			$options = $this->content;
+			$options = $this->getContent();
 
 			$options['uniqueId'] = $this->uniqueId;
 			$options['menuArea'] = $this->eMenuArea;
@@ -1201,8 +1218,10 @@ if (!class_exists('e107table', false))
 				tablestyle($caption, $text, $mode, $options);
 			}
 
+			$key = ($this->uniqueId !== null) ? $this->uniqueId : '_generic_';
+			$this->content[$key] = array();
 			$this->uniqueId = null;
-			$this->content = array();
+
 		}
 
 

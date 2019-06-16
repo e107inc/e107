@@ -1231,10 +1231,12 @@ class news_front
 
 				$unique = $this->getRenderId();
 
+
 				$ns = e107::getRender();
 				$ns->setUniqueId($unique);
 				$ns->setContent('title', $news['news_title']);
 				$ns->setContent('text', $news['news_summary']);
+				$ns->setUniqueId(null); // prevent other tablerenders from using this content.
 
 				// TODO add 'image' and 'icon'?
 				$this->caption = $caption;
@@ -1851,9 +1853,9 @@ class news_front
 }
 
 $newsObj = new news_front;
-$content = e107::getRender()->getContent(); // get tablerender content
+//$content = e107::getRender()->getContent(); // get tablerender content
 require_once(HEADERF);
-e107::getRender()->setContent($content,null); // reassign tablerender content if HEADERF uses render.
+//e107::getRender()->setContent($content,null); // reassign tablerender content if HEADERF uses render.
 $newsObj->render();
 if(E107_DBG_BASIC && ADMIN)
 {
