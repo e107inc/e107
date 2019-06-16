@@ -1188,6 +1188,10 @@ if (!class_exists('e107table', false))
 				$thm = new $this->themeClass();
 			}
 
+			// Automatic list detection .
+			$isList = (strpos(ltrim($text), '<ul ') !== false) ? true : false;
+			$this->setContent('list', $isList);
+
 			$options = $this->getContent();
 
 			$options['uniqueId'] = $this->uniqueId;

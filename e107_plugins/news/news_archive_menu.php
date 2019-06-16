@@ -104,12 +104,6 @@ e107::plugLan('news');
 
 $caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_NEWSARCHIVE_MENU_TITLE;
 
-
-if(strpos($start,'<ul ') !== false)
-{
-	e107::getRender()->setUniqueId('news-archive-menu')->setContent('list', true);
-}
-
 e107::getRender()->tablerender($caption, $start.$text.$end, 'news-archive-menu');
 
 

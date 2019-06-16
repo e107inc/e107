@@ -135,11 +135,6 @@ if(false === $cached)
 
 		}
 
-		if(strpos($cached,'<ul ') !== false)
-		{
-			e107::getRender()->setUniqueId('news-months-menu')->setContent('list', true);
-		}
-
 		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
 
 
