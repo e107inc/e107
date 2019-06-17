@@ -71,7 +71,7 @@ $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 $NEWS_MENU_TEMPLATE['other2']['caption'] 	= TD_MENU_L2;
 $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled list-unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions.
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
-										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span> 
+										<span class='media-object pull-left float-left'>{NEWSTHUMBNAIL=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
 										<p class='text-right'><a class='btn btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
 										</div>
@@ -104,7 +104,7 @@ $NEWS_MENU_TEMPLATE['carousel']['end'] = '
 										      </div><!-- End Carousel Inner -->
 											</div>
 												<div id="news-carousel-titles" class="col-md-4 ">
-													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right ">{NAV}</ul>
+													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right float-right">{NAV}</ul>
 												</div>
 											</div><!-- End Carousel -->
 											</div>

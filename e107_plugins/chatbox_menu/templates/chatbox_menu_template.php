@@ -45,11 +45,11 @@ $CHATBOX_MENU_TEMPLATE['list']['item']  = '
 </div>
 <div class="media-body">
 	<h4 class="media-heading" style="display: inline !important;">{CB_USERNAME}</h4>
-	<small class="label label-default pull-right">{CB_TIMEDATE}</small><br>
+	<small class="label label-default pull-right float-right">{CB_TIMEDATE}</small><br>
 	<p>{CB_MESSAGE}</p>
 	<div>
-		<div class="pull-left">{CB_BLOCKED}</div>
-		<div class="pull-right">{CB_MOD}</div>
+		<div class="pull-left float-left">{CB_BLOCKED}</div>
+		<div class="pull-right float-right">{CB_MOD}</div>
 	</div>
 </div>
 </li>'. PHP_EOL;

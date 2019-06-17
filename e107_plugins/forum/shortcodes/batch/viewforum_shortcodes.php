@@ -110,7 +110,7 @@
 		    $text .= '
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
-		    	<ul class="dropdown-menu pull-right">
+		    	<ul class="dropdown-menu pull-right float-right">
 		    	';
 			
 			//--	foreach($jumpList as $key => $val)

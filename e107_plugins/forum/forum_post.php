@@ -947,7 +947,7 @@ class forum_post_handler
 								<div class='alert alert-block alert-warning'>
 								<h4>".LAN_FORUM_2025.': '.$thread_name."</h4>
 									".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."
-								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
+								<a class='pull-right float-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
 									".$tp->toHTML($this->data['post_entry'],true)."

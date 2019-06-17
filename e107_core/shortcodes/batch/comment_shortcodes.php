@@ -237,7 +237,7 @@ class comment_shortcodes extends e_shortcode
 			$pid = ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 
 			$class = "e-comment-submit ";
-			$class .= (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right';
+			$class .= (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right float-right';
 			$options = array(
 				'class'         => $class,
 				'data-pid'      => $pid,

@@ -288,8 +288,8 @@ $FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "<div id='forum-viewforum'>";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
-													<div class='col-md-9 span9 pull-left'><h3>{FORUMIMAGE:h=60}{FORUMTITLE}</h3></div>
-													<div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
+													<div class='col-md-9 span9 pull-left float-left'><h3>{FORUMIMAGE:h=60}{FORUMTITLE}</h3></div>
+													<div class='col-md-3 span3 pull-right float-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
 													<table class='table table-hover table-striped table-bordered'>
 													<colgroup>
 													<col style='width:3%' />
@@ -313,7 +313,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 												        </div>
 												    </td>
 												    <td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
-												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
+												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right float-right pull-right'>{ADMINOPTIONS}</div></td>
 												</tr>\n";
 
 
@@ -350,7 +350,7 @@ $SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row row-fluid'>
 
-												<div class='col-md-5 span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
+												<div class='col-md-5 span5 pull-left float-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
 
 												</div>
 

@@ -521,7 +521,7 @@ class news_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+		$class = !empty($parm['class']) ? " ".$parm['class'] : " btn btn-default btn-secondary";
 
 		if(empty($this->param['commentlink']))
 		{
@@ -598,7 +598,7 @@ class news_shortcodes extends e_shortcode
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);
 			
-			$class = varset($parm['class']);
+			$class = varset($parm['class'], 'btn btn-default btn-secondary');
 			
 			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}

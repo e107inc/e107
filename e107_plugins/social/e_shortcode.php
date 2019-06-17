@@ -400,7 +400,7 @@ class social_shortcodes extends e_shortcode
 		
 		if(vartrue($parm['dropdown']))
 		{
-			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
+			$dir = ($parm['dropdown'] == 'right') ? 'pull-right float-right' : '';
 			$class = varset($parm['class'],'btn-group');
 
 

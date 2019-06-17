@@ -273,9 +273,9 @@ $PM_TEMPLATE['show'] =
 <table class='table table-bordered table-striped fborder'>
 <tr>
 	<td class='fcaption text-left'>
-	<h3>{PM_SUBJECT} <small class='pull-right'>{PM_DATE}</small></h3>
+	<h3>{PM_SUBJECT} <small class='pull-right float-right'>{PM_DATE}</small></h3>
 	<small>{PM_FROM_TO}</small>
-	<small class='pull-right' >{PM_READ} {PM_DELETE}</small></td>
+	<small class='pull-right float-right'>{PM_READ} {PM_DELETE}</small></td>
 </tr>
 <tr>
 	<td class='forumheader3 text-left' style='vertical-align:top'>
