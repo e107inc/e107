@@ -841,7 +841,7 @@
 			$tp = e107::getParser();
 			// {EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
 
-			$text = '<div class="btn-group pull-right">
+			$text = '<div class="btn-group pull-right float-right">
     	<button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     	' . LAN_FORUM_8013 . '
     	';
@@ -851,7 +851,7 @@
     	}
     	$text .= '
     	</button>
-    	<ul class="dropdown-menu pull-right text-right">';
+    	<ul class="dropdown-menu pull-right float-right text-right">';
 
 
 			$text .= "<li class='text-right float-right float-right'><a href='" . e_HTTP . "email.php?plugin:forum." . $this->postInfo['post_thread'] . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
@@ -1148,7 +1148,7 @@
     $text .= '
     <span class="sr-only">Toggle Dropdown</span>
     </button>
-    <ul class="dropdown-menu pull-right">
+    <ul class="dropdown-menu pull-right float-right">
     ';
 
 			foreach($options as $key => $val)

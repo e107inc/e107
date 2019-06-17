@@ -4053,7 +4053,7 @@ var_dump($select_options);*/
 		
 	// navbar-header nav-header
 	// navbar-header nav-header
-		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
+		$text = '<div class="col-selection dropdown e-tip pull-right float-right" data-placement="left">
     <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    

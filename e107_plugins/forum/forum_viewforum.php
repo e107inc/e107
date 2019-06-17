@@ -493,7 +493,7 @@
 		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu pull-right">	
+    <ul class="dropdown-menu pull-right float-right">	
    ';
 
 		//FIXME - not fully working.
@@ -639,7 +639,7 @@
 	    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 	    <span class="caret"></span>
 	    </button>
-	    <ul class="dropdown-menu pull-right">
+	    <ul class="dropdown-menu pull-right float-right">
 	    ';
 
 			foreach($jumpList as $key => $val)

@@ -93,7 +93,7 @@ else
 		$ONLINE_TEMPLATE['disabled'] = "{ONLINE_TRACKING_DISABLED}";
 
 		//##### ONLINE MEMBER LIST EXTENDED -------------------------------------------
-		$ONLINE_TEMPLATE['online_members_list_extended'] = "{SETIMAGE: w=40}<li class='media'><span class='media-object pull-left'>{ONLINE_MEMBER_IMAGE=avatar}</span><span class='media-body'>{ONLINE_MEMBER_USER} ".LAN_ONLINE_7." {ONLINE_MEMBER_PAGE}</span></li>";
+		$ONLINE_TEMPLATE['online_members_list_extended'] = "{SETIMAGE: w=40}<li class='media'><span class='media-object pull-left float-left'>{ONLINE_MEMBER_IMAGE=avatar}</span><span class='media-body'>{ONLINE_MEMBER_USER} ".LAN_ONLINE_7." {ONLINE_MEMBER_PAGE}</span></li>";
 
 
 
@@ -142,7 +142,7 @@ $caption = $img.' '.vartrue($menu_pref['online_caption'], LAN_ONLINE_4);
 if (getperms('1')) 
 {
 	$path = e_PLUGIN_ABS."online/config.php?iframe=1";
-	$caption .= "<a class='e-modal pull-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='glyphicon glyphicon-cog'></i></a>";
+	$caption .= "<a class='e-modal pull-right float-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='glyphicon glyphicon-cog'></i></a>";
 }
 
 
