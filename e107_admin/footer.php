@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2019 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -74,19 +74,19 @@ if (varset($e107_popup) != 1)
 	{
 		if ($pref['cachestatus'])
 		{
-			if (!$sql->db_Select('generic', '*', "gen_type='empty_cache'"))
+			if (!$sql->select('generic', '*', "gen_type='empty_cache'"))
 			{
-				$sql->db_Insert('generic', "0,'empty_cache','".time()."','0','','0',''");
+				$sql->insert('generic', "0,'empty_cache','".time()."','0','','0',''");
 			}
 			else
 			{
-				$row = $sql->db_Fetch();
+				$row = $sql->fetch();
 				if (($row['gen_datestamp'] + 604800) < time()) // If cache not cleared in last 7 days, clear it.
 				{
 					require_once (e_HANDLER."cache_handler.php");
 					$ec = new ecache;
 					$ec->clear();
-					$sql->db_Update('generic', "gen_datestamp='".time()."' WHERE gen_type='empty_cache'");
+					$sql->update('generic', "gen_datestamp='".time()."' WHERE gen_type='empty_cache'");
 				}
 			}
 		}
@@ -112,7 +112,7 @@ if (varset($e107_popup) != 1)
 	$memuse = eHelper::getMemoryUsage(); // Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 	
-	if (function_exists('getrusage'))
+	if (function_exists('getrusage') && !empty($eTimingStartCPU))
 	{
 		$ru = getrusage();
 		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * (1e-6));
@@ -157,11 +157,11 @@ if (varset($e107_popup) != 1)
 	{
 		$rinfo .= CORE_LAN15.$sql->db_QueryCount().". ";
 	}
-	if (isset($pref['display_memory_usage']) && $pref['display_memory_usage'])
+	if (!empty($pref['display_memory_usage']))
 	{
 		$rinfo .= CORE_LAN16.$memuse;
 	}
-	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
+	if (!empty($pref['displaycacheinfo']) && !empty($cachestring))
 	{
 		$rinfo .= $cachestring.".";
 	}
@@ -186,9 +186,9 @@ if (varset($e107_popup) != 1)
 //
 if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
 {
-	global $db_debug;
+	// global $db_debug;
 	echo "\n<!-- DEBUG -->\n<div class='e-debug debug-info'>";
-	$db_debug->Show_All();
+	e107::getDebug()->Show_All();
 	echo "</div>\n";
 }
 
@@ -306,7 +306,7 @@ if (is_array($pref['e_footer_list']))
 		if(is_readable($fname))
 		{
 			
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}	
 	}
 
@@ -314,9 +314,6 @@ if (is_array($pref['e_footer_list']))
 //	ob_end_clean();
 	unset($ret);
 }
-
-
-
 
 
 // [JSManager] Load JS Footer Includes by priority
@@ -329,30 +326,9 @@ e107::getJs()->renderJs('footer', true);
 // G final JS script keeps user and server time in sync.
 //   It must be the last thing created before sending the page to the user.
 //
-// see e107.js and class2.php
-// This must be done as late as possible in page processing.
-$_serverTime = time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? $_COOKIE['e107_tdSetTime'] : 0;
-$_serverPath = e_HTTP;
-$_serverDomain = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
-if (abs($_serverTime - $lastSet) > 120)
-{
-	/* update time delay every couple of minutes.
-	 * Benefit: account for user time corrections and changes in internet delays
-	 * Drawback: each update may cause all server times to display a bit different
-	 */
-	// echo "<script type='text/javascript'>\n";
-	
-//	e107::js('footer-inline',"SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');",'prototype');
-	
-	//echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
-     //  </script>\n";
-}
 
-// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
-// afterwards.
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear afterwards.
 e107::getJs()->renderJs('settings');
-
 e107::getJs()->renderJs('footer_inline', true);
 
 //
@@ -363,9 +339,13 @@ echo "</body></html>";
 //
 // I Send the buffered page data, along with appropriate headers
 //
-
-// SecretR - EXPERIMENT! SEND CSS data to header. Performance tests in progress.
 $tmp = array();
+
+$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
+
+$tmp['search'] = array_keys($magicSC);
+$tmp['replace'] = array_values($magicSC);
+
 $e_js =  e107::getJs();
 
 $tmp0 = $e_js->renderJs('library_css', false, 'css', true);
@@ -419,22 +399,6 @@ if($tmp1)
 
 // Shutdown
 $e107->destruct();
-/*
-if($tmp)
-{
-	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
-}
-else
-{*/
-
-//$length = ob_get_length();
-// $page = ob_get_clean();
-// }
-
-
-
-
-// $page = ob_get_clean();
 
 // New - see class2.php
 $ehd = new e_http_header;
@@ -457,4 +421,5 @@ echo $page;
 
 unset($In_e107_Footer);
 $e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
-?>
+
+
