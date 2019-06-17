@@ -1992,8 +1992,8 @@ class e_menu_layout
 		$CUSTOMHEADER   = null;
 		$CUSTOMFOOTER   = null;
 
-
-		$file = e_THEME.$theme."/theme.php";
+		$path = e_THEME.$theme.'/';
+		$file = $path."theme.php";
 
 		if(!is_readable($file))
 		{
@@ -2029,9 +2029,28 @@ class e_menu_layout
 		$head = array();
 		$foot = array();
 
-		if(!isset($LAYOUT))
+		// new v2.2.2 HTML layout support.
+		if(empty($LAYOUT) && is_dir($path."layouts"))
 		{
-			$LAYOUT = e_theme::loadLayout(THEME_LAYOUT);
+			$lyt = scandir($path."layouts");
+			$LAYOUT = array();
+
+			foreach($lyt as $lays)
+			{
+				if($lays === '.' || $lays === '..')
+				{
+					continue;
+				}
+
+				$key = str_replace("_layout.html", '', $lays);
+
+				if($lm = e_theme::loadLayout($key, $theme))
+				{
+					$LAYOUT  = $LAYOUT + $lm;
+				}
+
+			}
+
 		}
 
 
@@ -2217,12 +2236,10 @@ class e_menu_layout
 		$text .= "<input type='hidden' id='curLayout' value='".$defLayout."' />";
 
 
-		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
-
 		$layouts = self::getLayouts();
 		$tp = e107::getParser();
 
-	//	$text .= print_a($layouts['menus'],true);
+	//	 var_dump($layouts['menus']);
 
 
 		$text .= '

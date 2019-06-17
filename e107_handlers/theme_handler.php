@@ -83,9 +83,12 @@ class e_theme
 	 * @param string $key layout name
 	 * @return array|bool
 	 */
-	public static function loadLayout($key)
+	public static function loadLayout($key=null, $theme = null)
 	{
-		$theme = e107::pref('core','sitetheme');
+		if($theme === null)
+		{
+			$theme = e107::pref('core','sitetheme');
+		}
 
 		if(!is_readable(e_THEME.$theme."/layouts/".$key."_layout.html") || !is_readable(e_THEME.$theme."/theme.html"))
 		{
@@ -103,6 +106,7 @@ class e_theme
 
 		return $LAYOUT;
 	}
+
 
 	/**
 	 * Load library dependencies.
