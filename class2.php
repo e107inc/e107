@@ -1004,6 +1004,8 @@ if (!class_exists('e107table', false))
 				$ret[$sc] = isset($val[$var]) ? (string) $val[$var] : null;
 			}
 
+			$bread = e107::breadcrumb();
+			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread);
 
 			return $ret;
 

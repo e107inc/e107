@@ -2863,7 +2863,7 @@ class themeHandler
 		exit;
 	}
 	
-	function showPreview()
+	static function showPreview()
 	{
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
