@@ -163,4 +163,16 @@
 
 
 
+		public function testLoadLayout()
+		{
+			// $res = e_theme::loadLayout('full', 'bootstrap4');
+
+		//	var_dump($res);
+
+
+		}
+
+
+
+
 	}
