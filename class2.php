@@ -1196,13 +1196,13 @@ if (!class_exists('e107table', false))
 
 			$options = $this->getContent();
 
-			$options['uniqueId'] = $this->uniqueId;
-			$options['menuArea'] = $this->eMenuArea;
-			$options['menuCount'] = $this->eMenuCount;
-			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
-			$options['setStyle'] = $this->eSetStyle;
+			$options['uniqueId'] = (string) $this->uniqueId;
+			$options['menuArea'] = (int) $this->eMenuArea;
+			$options['menuCount'] = (int) $this->eMenuCount;
+			$options['menuTotal'] = (int) varset($this->eMenuTotal[$this->eMenuArea]);
+			$options['setStyle'] = (string) $this->eSetStyle;
 
-			$options['caption'] = $caption; // TODO FIXME strip HTML but retain text that may be inside tags.
+			$options['caption'] = e107::getParser()->toText($caption);
 
 			if($this->eSetStyle === 'default' || $this->eSetStyle === 'main')
 			{
