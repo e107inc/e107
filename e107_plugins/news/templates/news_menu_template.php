@@ -32,6 +32,10 @@ $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
 	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} <span class="badge">{count}</span></a></li>
 ';
+
+// sends value to tablestyle / $options['footer'];
+// $NEWS_MENU_TEMPLATE['months']['footer']   = '<div class="e-menu-link news-menu-archive" ><a class="btn btn-default btn-secondary btn-sm btn-block" href="{e_PLUGIN}blogcalendar_menu/archive.php">{LAN=BLOGCAL_L2}</a></div>';;
+
 //$NEWS_MENU_TEMPLATE['months']['separator']   = '<br />';
 
  
@@ -131,19 +135,17 @@ $NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="news-archive-menu">'
 $NEWS_MENU_TEMPLATE['archive']['end']         = '</ul>';
 
 $NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li>
-<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
-<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
-";
+												<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
+												<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
+												";
 $NEWS_MENU_TEMPLATE['archive']['year_end']        = '</ul></li>';
 
 $NEWS_MENU_TEMPLATE['archive']['month_start']        = "<li>
- <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
- <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
- ";
+													 <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
+													 <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
+													 ";
 $NEWS_MENU_TEMPLATE['archive']['month_end']        = '</ul></li>';
 
-$NEWS_MENU_TEMPLATE['archive']['item']        = "
-	<li><a href='{ITEM_URL}'>{ITEM_TITLE}</a></li>
-";
+$NEWS_MENU_TEMPLATE['archive']['item']        = "<li><a href='{ITEM_URL}'>{ITEM_TITLE}</a></li>\n";
 
 
