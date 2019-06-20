@@ -1000,7 +1000,7 @@ class e_news_category_item extends e_front_model
 		}
 	}
 
-	public function sc_news_category_news_count($parm = '')
+	public function sc_news_category_news_count($parm = null)
 	{
 		if(!$this->is('category_news_count'))
 		{
@@ -1012,7 +1012,7 @@ class e_news_category_item extends e_front_model
 			return (string) $this->cat('news_count');
 		}
 
-		return (string) e107::getParser()->toBadge( $this->cat('news_count'));
+		return (string) e107::getParser()->toBadge( $this->cat('news_count'), $parm);
 	}
 }
 
