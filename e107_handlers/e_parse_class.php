@@ -4213,16 +4213,20 @@ class e_parser
 
 
 	/**
+	 * Return a Bootstrap Badge tag
 	 * @param $text
 	 * @return string
 	 */
-	public function toBadge($text)
+	public function toBadge($text, $parm=null)
 	{
-		return "<span class='badge'>".$text."</span>";
+		$class = !empty($parm['class']) ? " ".$parm['class'] : ' badge-secondary';
+
+		return "<span class='badge".$class."'>".$text."</span>";
 	}
 
 
 	/**
+	 * Return a Bootstrap Label tag
 	 * @param $text
 	 * @return string
 	 */
