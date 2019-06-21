@@ -1191,7 +1191,7 @@ if (!class_exists('e107table', false))
 			}
 
 			// Automatic list detection .
-			$isList = (strpos(ltrim($text), '<ul ') !== false) ? true : false;
+			$isList = (strpos(ltrim($text), '<ul') === 0 ) ? true : false;
 			$this->setContent('list', $isList);
 
 			$options = $this->getContent();
