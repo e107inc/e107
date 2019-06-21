@@ -1345,7 +1345,7 @@ class e_menuManager {
         echo $rs->form_close();
 		echo "</div>";
 
-
+		$FOOTER = str_replace('</body>','', $FOOTER);
 
 		$this->parseheader($FOOTER);
 		if($this->debug)
@@ -1402,11 +1402,20 @@ class e_menuManager {
 	{
 
 		//  $tmp = explode("\n", $LAYOUT);
+
+		if(strpos($LAYOUT,'<body ') !== false) // FIXME Find a way to remove the <body> tag from the admin header when menu-manager is active.
+		{
+			$LAYOUT = preg_replace('/<body[^>]*>/','', $LAYOUT);
+		}
+
 		// Split up using the same function as the shortcode handler
 		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		$str = array();
 		for($c = 0; $c < count($tmp); $c++)
 		{
+
+
+
 			if(preg_match("/[\{|\}]/", $tmp[$c]))
 			{
 				if($check)
@@ -1501,6 +1510,12 @@ class e_menuManager {
 	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
 		//	echo "<span class='label label-info'>Navigation Area</span>";
 	//	}
+		elseif(strstr($str, '{---MODAL---}'))
+		{
+			echo "\n<!-- Modal would appear here --> \n";
+			//echo '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
+			//echo getAlert();
+		}
 		elseif(strstr($str, "ALERT"))
 		{
 			//echo "[Navigation Area]";
