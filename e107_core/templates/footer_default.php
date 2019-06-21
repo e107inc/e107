@@ -68,7 +68,12 @@ if (varset($e107_popup) != 1)
 	//
 	if(!deftrue('e_IFRAME'))
     {
-	   parseheader($FOOTER);
+
+        $psc = array(
+         '</body>'       => '',
+        );
+
+	   parseheader($FOOTER, $psc);
     }
     
 	$eTimingStop = microtime();
