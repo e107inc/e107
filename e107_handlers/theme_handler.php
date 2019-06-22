@@ -765,6 +765,7 @@ class e_theme
 	//	 echo "<h2>".$themeArray['name']."</h2>";
 	//	 print_a($lays);
 		$themeArray['legacy'] = true;
+		$themeArray['html'] = false;
 
 		return $themeArray;
 	}
@@ -808,6 +809,7 @@ class e_theme
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
+		$vars['html']           = file_exists(e_THEME.$path.'/theme.html') && is_dir(e_THEME.$path.'/layouts') ? true : false;
 
 
 		if(!empty($vars['themePrefs']))
