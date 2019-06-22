@@ -3515,8 +3515,8 @@ var_dump($select_options);*/
 		
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
-		$text = '<ul class="breadcrumb">
-			<li class="breadcrumb-item">';
+		$text = "\n<ul class=\"breadcrumb\">\n";
+		$text .= "<li class=\"breadcrumb-item\">";
 
 		foreach($array as $val)
 		{
@@ -3526,7 +3526,7 @@ var_dump($select_options);*/
 			}
 
 			$ret = "";
-			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
+			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";
 			$ret .= vartrue($val['text'],'');
 			$ret .= vartrue($val['url']) ? "</a>" : "";
 			
@@ -3538,9 +3538,9 @@ var_dump($select_options);*/
 	
 		$sep = (deftrue('BOOTSTRAP')) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
+		$text .= implode($sep."</li>\n<li class='breadcrumb-item'>",$opt);
 	
-		$text .= "</li></ul>";
+		$text .= "</li>\n</ul>";
 		
 	//	return print_a($opt,true);
 	
