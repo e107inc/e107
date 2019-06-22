@@ -1405,7 +1405,7 @@ class e_menuManager {
 
 		if(strpos($LAYOUT,'<body ') !== false) // FIXME Find a way to remove the <body> tag from the admin header when menu-manager is active.
 		{
-			$LAYOUT = preg_replace('/<body[^>]*>/','', $LAYOUT);
+		//	$LAYOUT = preg_replace('/<body[^>]*>/','', $LAYOUT);
 		}
 
 		// Split up using the same function as the shortcode handler
@@ -1512,9 +1512,40 @@ class e_menuManager {
 	//	}
 		elseif(strstr($str, '{---MODAL---}'))
 		{
-			echo "\n<!-- Modal would appear here --> \n";
-			//echo '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
-			//echo getAlert();
+			//echo "\n<!-- Modal would appear here --> \n";
+			echo '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
+
+			//TODO Store in a central area - currently used in header.php, header_default.php and here.
+			echo '
+       
+	         <div id="uiModal" class="modal  fade" tabindex="-1" role="dialog"  aria-hidden="true">
+	            <div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                        <h4 class="modal-caption">&nbsp;</h4>
+	                     </div>
+	
+	                    <div class="modal-body">
+	                        <p>Loading…</p>
+	                    </div>
+	
+	                    <div class="modal-footer">
+	                        <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+	                    </div>
+	               </div>
+			    </div>
+	        </div>';
+
+			//echo getModal();
+		}
+		elseif(strstr($str, '{---CAPTION---}'))
+		{
+			echo LAN_CAPTION;
+		}
+		elseif(strstr($str, '{LAYOUT_ID}'))
+		{
+			echo 'layout-'.e107::getForm()->name2id($this->curLayout);
 		}
 		elseif(strstr($str, "ALERT"))
 		{

@@ -489,11 +489,20 @@ e107Event.trigger('loaded', null, document);
 
 e107::getJs()->renderJs('header_inline', 5);
 
-echo "</head>
-<body".$body_onload.">\n";
+echo "</head>";
 
-echo getModal();
-echo getAlert();
+if(deftrue('e_MENUMANAGER_ACTIVE') && defset('THEME_LAYOUT') && e_theme::loadLayout(THEME_LAYOUT)) // v2.2.2+ html layout is active which contains <body> tag.
+{
+	echo "\n\n<!-- Start theme.html -->\n";
+}
+else
+{
+	echo "
+	<body".$body_onload.">\n";
+
+	echo getModal();
+	echo getAlert();
+}
 
 function getModal()
 {
