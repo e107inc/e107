@@ -289,13 +289,13 @@ $E_ADMIN_MENU['start'] = '
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
+		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
@@ -306,13 +306,13 @@ $E_ADMIN_MENU['start_sub'] = '
 
 $E_ADMIN_MENU['button_sub'] = '
 			<li>
-				<a class="link" href="{LINK_URL}">&nbsp;{LINK_TEXT}</a>
+				<a class="link" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 				{SUB_MENU}
 			</li>
 ';
 $E_ADMIN_MENU['button_active_sub'] = '
 			<li>
-				<a class="link-active" href="{LINK_URL}">&nbsp;{LINK_TEXT}</a>
+				<a class="link-active" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 				{SUB_MENU}
 			</li>
 ';
