@@ -1506,6 +1506,7 @@ class e_admin_dispatcher
 					case 'caption':
 						$k2 = 'text';
 						$v = defset($v, $v);
+
 					break;
 
 					case 'url':
@@ -1523,6 +1524,12 @@ class e_admin_dispatcher
 							$selected = $key;
 						}
 
+					break;
+
+
+					case 'badge': // array('value'=> int, 'type'=>'warning');
+						$k2 = 'badge';
+						$v = (array) $v;
 					break;
 
 					default:

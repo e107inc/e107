@@ -1330,6 +1330,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	{
 			
 		global $E_ADMIN_MENU; //TODO remove me?
+
+
 		$tp = e107::getParser();
 		
 		if (!$tmpl)
@@ -1392,7 +1394,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 	
 		//FIXME - e_parse::array2sc()
-		$search = array();
+/*		$search = array();
 		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
 		$search[1] = '/\{LINK_URL\}(.*?)/si';
 		$search[2] = '/\{ONCLICK\}(.*?)/si';
@@ -1404,7 +1406,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 		$search[10] = '/\{LINK_SUB_OVERSIZED\}/si';
-		$search[11] = '/\{LINK_DATA\}/si';
+		$search[11] = '/\{LINK_DATA\}/si';*/
+
 
 
 		foreach (array_keys($e107_vars) as $act)
@@ -1461,7 +1464,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		//	echo " act = ".$act."<br /><br />";
 
 
-
 		
 			if($rid == 'adminhome')
 			{
@@ -1477,34 +1479,36 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 	
 
-			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+
 			// valid URLs
-			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
-			$replace[2] = '';
+			$replace['LINK_URL'] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
+			$replace['ONCLICK'] = '';
+
 			if (vartrue($e107_vars[$act]['include']))
 			{
-				$replace[2] = $e107_vars[$act]['include'];
+				$replace['ONCLICK'] = $e107_vars[$act]['include'];
 				//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
 			}
-			$replace[3] = $title;
-			$replace[4] = '';
+			$replace['SUB_HEAD'] = $title;
+			$replace['SUB_MENU'] = '';
 			
-			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
-			$replace[6] = $rid;
+			$replace['ID'] = $id ? " id='eplug-nav-{$rid}'" : '';
+			$replace['SUB_ID'] = $rid;
 		
-			$replace[7] = varset($e107_vars[$act]['link_class']);
-			$replace[8] = '';
+			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
+			$replace['SUB_CLASS'] = '';
 			
 			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
 			{
-				$replace[9] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
+				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
 			}
 			else
 			{
-				$replace[9] = varset($e107_vars[$act]['image']);	
+				$replace['LINK_IMAGE'] = varset($e107_vars[$act]['image']);
 			}
 
-			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
+			$replace['LINK_SUB_OVERSIZED'] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
 
 			if(!empty($e107_vars[$act]['link_data']))
 			{
@@ -1515,13 +1519,14 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					$dataTmp[] = $k.'="'.$v.'"';
 				}
 
-				$replace[11] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
+				$replace['LINK_DATA'] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
 
 			}
 
 
+			$replace['LINK_BADGE'] = isset($e107_vars[$act]['badge']['value']) ? $tp->toLabel($e107_vars[$act]['badge']['value'], varset($e107_vars[$act]['badge']['type'])) : '';
 
-			
+
 			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
 				$START_SUB = $tmpl['start_other_sub'];
@@ -1533,15 +1538,17 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 			if(!empty($e107_vars[$act]['sub']))
 			{
-				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
-				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
-				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
-				$replace[4] = preg_replace($search, $replace, $START_SUB);
-				$replace[4] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace[4] .= $tmpl['end_sub'];
+				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
+				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
+				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+				$replace['SUB_MENU'] = str_replace(array_keys($replace), array_values($replace), $START_SUB);
+				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+				$replace['SUB_MENU'] .= $tmpl['end_sub'];
 			}
-	
-			$text .= preg_replace($search, $replace, $temp);
+
+
+		//	$text .= preg_replace($search, $replace, $temp);
+			$text .= $tp->parseTemplate($temp, false, $replace); // ($search, $replace, $temp);
 		//	echo "<br />".$title." act=".$act;
 			//print_a($e107_vars[$act]);
 		}
@@ -1556,6 +1563,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$ns = e107::getRender();
 		$ns->setUniqueId($id);
 		$ns->tablerender($title, $text);
+		$ns->setUniqueId(null);
 		return '';
 	}
 			
