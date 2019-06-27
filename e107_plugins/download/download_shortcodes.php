@@ -524,7 +524,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_admin_edit()
    {
-   		$icon = (deftrue('BOOTSTRAP')) ? e107::getParser()->toGlyph('edit') : "<img src='".e_IMAGE_ABS."generic/edit.png' alt='*' style='padding:0px;border:0px' />";
+   		$icon = (deftrue('BOOTSTRAP')) ? e107::getParser()->toGlyph('fa-edit') : "<img src='".e_IMAGE_ABS."generic/edit.png' alt='*' style='padding:0px;border:0px' />";
 	
 		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
 	
