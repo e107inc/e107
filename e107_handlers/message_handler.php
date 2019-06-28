@@ -156,7 +156,7 @@ class eMessage
 	
 	/**
 	 * Get session handler
-	 * @return eMessage
+	 * @return e_core_session
 	 */
 	public function getSessionHandler()
 	{
@@ -228,7 +228,7 @@ class eMessage
 	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
 	 * @param string $type [optional]
-	 * @param boolean $sesion [optional]
+	 * @param boolean $session [optional]
 	 * @return eMessage
 	 */
 	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $session = false)
@@ -334,7 +334,7 @@ class eMessage
 		if($this->isType($type)) 
 		{
 			// unique messages only
-			if(in_array($mstack, $this->_unique) && in_array($msg, $SESSION[$type][$mstack])) return $this;
+			if(in_array($mstack, $this->_unique) && in_array($message, $SESSION[$type][$mstack])) return $this;
 			
 			$SESSION[$type][$mstack][] = $message;
 			$this->getSessionHandler()->set($this->_session_id, $SESSION);
@@ -350,7 +350,6 @@ class eMessage
 	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
 	 * @param string $type [optional]
-	 * @param boolean $sesion [optional]
 	 * @return eMessage
 	 */
 	public function addSessionStack($message, $mstack = 'default', $type = E_MESSAGE_INFO)
@@ -536,8 +535,7 @@ class eMessage
 			$this->mergeWithSession(true, $mstack);
 		}
 		$ret = array();
-		$unique = array(); 
-		
+
 		$typesArray = (is_string($options) && in_array($options, $this->_get_types()))  ? array($options) : $this->_get_types();		
 		
 		foreach ($typesArray as $type)
@@ -698,6 +696,7 @@ class eMessage
 	 * Merge _SESSION message array with the current messages
 	 * 
 	 * @param boolean $reset
+	 * @param boolean $mstack
 	 * @return eMessage
 	 */
 	public function mergeWithSession($reset = true, $mstack = false)
@@ -735,9 +734,9 @@ class eMessage
 	/**
 	 * Convert current messages to Session messages 
 	 *
-	 * @param string $mstack false - move all message stacks
-	 * @param string $message_type false - move all types
-	 * @return unknown
+	 * @param bool $mstack false - move all message stacks
+	 * @param bool $message_type false - move all types
+	 * @return eMessage
 	 */
 	public function moveToSession($mstack = false, $message_type = false)
 	{
@@ -774,8 +773,8 @@ class eMessage
 	 * 
 	 * @param string $from_stack source stack
 	 * @param string $to_stack [optional] destination stack
-	 * @param string $type [optional] merge for a given type only
-	 * @param string $session [optional] merge session as well
+	 * @param bool $type [optional] merge for a given type only
+	 * @param bool $session [optional] merge session as well
 	 * @return eMessage
 	 */
 	public function moveStack($from_stack, $to_stack = 'default', $type = false, $session = true)
@@ -818,7 +817,7 @@ class eMessage
 	 * 
 	 * @param string $from_stack source stack
 	 * @param string $to_stack [optional] destination stack
-	 * @param string $type [optional] merge for a given type only
+	 * @param string|bool $type [optional] merge for a given type only
 	 * @return eMessage
 	 */
 	public function moveSessionStack($from_stack, $to_stack = 'default', $type = false)
@@ -863,7 +862,7 @@ class eMessage
 	 * Check for messages
 	 *
 	 * @param mixed $type
-	 * @param string $mstack
+	 * @param string|bool $mstack
 	 * @param boolean $session
 	 * @return boolean
 	 */
@@ -943,8 +942,8 @@ class eMessage
 	 *
 	 * @param integer|bool $update return result of db::db_Query
 	 * @param string $type update|insert|update
-	 * @param string $success forced success message
-	 * @param string $failed forced error message
+	 * @param string|bool $success forced success message
+	 * @param string|bool $failed forced error message
 	 * @param bool $output false suppress any function output
 	 * @return integer|bool db::db_Query result
 	 */
@@ -1143,7 +1142,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			break;
 
 		case "ALERT":
-			$message = $emessage[$message] ? $emessage[$message] : $message;
+			$message = isset($emessage[$message]) ? $emessage[$message] : $message;
 			echo "<noscript>$message</noscript><script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); window.history.go(-1); </script>\n"; exit;
 			break;
 
@@ -1168,4 +1167,4 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 	}
 }
 
-?>
+
