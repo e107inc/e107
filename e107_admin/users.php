@@ -255,6 +255,7 @@ class users_admin_ui extends e_admin_ui
 	protected $pid 			= "user_id";
 	protected $perPage 		= 10;
 	protected $batchDelete 	= true;
+	protected $batchExport	= true; 
 	protected $listOrder 	= 'user_id DESC'; 
 	
 	/**
