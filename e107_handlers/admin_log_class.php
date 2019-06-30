@@ -216,6 +216,24 @@ class e_admin_log
 	}
 
 	/**
+	 * Alias for deprecated e_log_event
+	 * @param        $importance
+	 * @param        $source_call
+	 * @param string $eventcode
+	 * @param string $event_title
+	 * @param string $explain
+	 * @param bool   $finished
+	 * @param int    $target_logs
+	 * @param null   $userData
+	 * @return none
+	 */
+	public function addEvent($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
+	{
+		return $this->e_log_event($importance, $source_call, $eventcode, $event_title, $explain, $finished, $target_logs, $userData);
+
+	}
+
+	/**
 	 Generic log entry point
 	 -----------------------
 	 Example call: (Deliberately pick separators that shouldn't be in file names)
@@ -242,7 +260,7 @@ class e_admin_log
 	 *	@return none
 
 	 * @todo - check microtime() call
-	 * @deprecated - use add() method instead.
+	 * @deprecated - use add() method instead or addEvent() as a direct replacement.
 	 */
 	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
 	{

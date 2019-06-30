@@ -59,7 +59,7 @@ class social_shortcodes extends e_shortcode
 	 * {XURL_ICONS: size=2x}
 	 * {XURL_ICONS: type=facebook,twitter,vimeo}
 	 */	
-	function sc_xurl_icons($parm='')
+	function sc_xurl_icons($parm=null)
 	{
 		$tp = e107::getParser();
 		$tmpl = !empty($parm['template']) ? $parm['template'] : 'default';
@@ -400,7 +400,7 @@ class social_shortcodes extends e_shortcode
 		
 		if(vartrue($parm['dropdown']))
 		{
-			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
+			$dir = ($parm['dropdown'] == 'right') ? 'pull-right float-right' : '';
 			$class = varset($parm['class'],'btn-group');
 
 

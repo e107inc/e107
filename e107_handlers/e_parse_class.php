@@ -574,9 +574,12 @@ class e_parse extends e_parser
 		else // add entities for everything. we want to save the code.
 		{
 
+			$search = array('&gt;', '&lt;');
+			$replace = array('>', '<');
+			$data = str_replace($search, $replace, $data); // prevent &amp;gt; etc.
+
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 			$data = str_replace('\\', '&#092;', $data);
-
 
 			$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 		}
@@ -4210,16 +4213,20 @@ class e_parser
 
 
 	/**
+	 * Return a Bootstrap Badge tag
 	 * @param $text
 	 * @return string
 	 */
-	public function toBadge($text)
+	public function toBadge($text, $parm=null)
 	{
-		return "<span class='badge'>".$text."</span>";
+		$class = !empty($parm['class']) ? " ".$parm['class'] : ' badge-secondary';
+
+		return "<span class='badge".$class."'>".$text."</span>";
 	}
 
 
 	/**
+	 * Return a Bootstrap Label tag
 	 * @param $text
 	 * @return string
 	 */
@@ -4266,13 +4273,14 @@ class e_parser
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
 	 * @param @array  - user data from e107_user. 
-	 * @return <img> tag of avatar.  
+	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData=null, $options=array())
 	{
 		$tp 		= e107::getParser();
 		$width 		= !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
-		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
+		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
+		$crop       = !empty($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart  = '';
 		$linkEnd    =  '';
 
@@ -4307,11 +4315,11 @@ class e_parser
 			{
 				
 				$image = substr($image,8); // strip the -upload- from the beginning. 
-				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height) : $genericImg;
+				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height."&crop=".$crop) : $genericImg;
 			}
 			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
 			{
-				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height);		
+				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height."&crop=".$crop);
 			}
 			else // Image Missing. 
 			{
@@ -4388,7 +4396,7 @@ class e_parser
 			return $this->toGlyph($icon,$parm);
 		}
 		
-		if(strpos($icon,'e_MEDIA')!==FALSE)
+		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
 		{
 			$path = $this->thumbUrl($icon);
 			$dimensions = $this->thumbDimensions();
@@ -5191,6 +5199,11 @@ return;
 		if($type === 'w') // words only.
 		{
 			return preg_replace('/[^\w]/',"",$text);
+		}
+
+		if($type === 'wd') // words and digits only.
+		{
+			return preg_replace('/[^\w\d]/',"",$text);
 		}
 
 		if($type === 'wds') // words, digits and spaces only.

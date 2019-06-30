@@ -32,6 +32,10 @@ $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
 	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} <span class="badge">{count}</span></a></li>
 ';
+
+// sends value to tablestyle / $options['footer'];
+// $NEWS_MENU_TEMPLATE['months']['footer']   = '<div class="e-menu-link news-menu-archive" ><a class="btn btn-default btn-secondary btn-sm btn-block" href="{e_PLUGIN}blogcalendar_menu/archive.php">{LAN=BLOGCAL_L2}</a></div>';;
+
 //$NEWS_MENU_TEMPLATE['months']['separator']   = '<br />';
 
  
@@ -71,7 +75,7 @@ $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 $NEWS_MENU_TEMPLATE['other2']['caption'] 	= TD_MENU_L2;
 $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled list-unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions.
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
-										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span> 
+										<span class='media-object pull-left float-left'>{NEWSTHUMBNAIL=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
 										<p class='text-right'><a class='btn btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
 										</div>
@@ -104,7 +108,7 @@ $NEWS_MENU_TEMPLATE['carousel']['end'] = '
 										      </div><!-- End Carousel Inner -->
 											</div>
 												<div id="news-carousel-titles" class="col-md-4 ">
-													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right ">{NAV}</ul>
+													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right float-right">{NAV}</ul>
 												</div>
 											</div><!-- End Carousel -->
 											</div>
@@ -131,19 +135,17 @@ $NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="news-archive-menu">'
 $NEWS_MENU_TEMPLATE['archive']['end']         = '</ul>';
 
 $NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li>
-<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
-<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
-";
+												<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
+												<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
+												";
 $NEWS_MENU_TEMPLATE['archive']['year_end']        = '</ul></li>';
 
 $NEWS_MENU_TEMPLATE['archive']['month_start']        = "<li>
- <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
- <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
- ";
+													 <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
+													 <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
+													 ";
 $NEWS_MENU_TEMPLATE['archive']['month_end']        = '</ul></li>';
 
-$NEWS_MENU_TEMPLATE['archive']['item']        = "
-	<li><a href='{ITEM_URL}'>{ITEM_TITLE}</a></li>
-";
+$NEWS_MENU_TEMPLATE['archive']['item']        = "<li><a href='{ITEM_URL}'>{ITEM_TITLE}</a></li>\n";
 
 

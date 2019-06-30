@@ -48,6 +48,7 @@ class e_plugin
 
 		'e_meta', // @Deprecated
 		'e_emailprint',
+		'e_print', // new v2.2
 		'e_frontpage',
 		'e_latest', /* @deprecated  - see e_dashboard */
 		'e_status', /* @deprecated  - see e_dashboard */
@@ -92,7 +93,7 @@ class e_plugin
 
 
 
-	private $_accepted_categories = array('settings'=>LAN_SETTINGS, 'users'=>ADLAN_36, 'content'=>ADLAN_CL_3,'tools'=> ADLAN_CL_6, 'manage'=>LAN_MANAGE,'misc'=> ADLAN_CL_8, 'menu'=>'menu', 'about'=> 'about');
+	private $_accepted_categories = array('settings'=>EPL_ADLAN_147, 'users'=>EPL_ADLAN_148, 'content'=>EPL_ADLAN_149,'tools'=> EPL_ADLAN_150, 'manage'=>EPL_ADLAN_151,'misc'=> EPL_ADLAN_152, 'menu'=>EPL_ADLAN_153, 'about'=> EPL_ADLAN_154);
 
 	function __construct()
 	{
@@ -1237,6 +1238,7 @@ class e107plugin
 		
 		'e_meta', // @Deprecated 
 		'e_emailprint',
+		'e_print', // new v2.2
 		'e_frontpage',
 		'e_latest', /* @deprecated  - see e_dashboard */
 		'e_status', /* @deprecated  - see e_dashboard */
@@ -3766,6 +3768,8 @@ class e107plugin
 		$mes = e107::getMessage();
 		$this->setUe();
 
+		$ret = array();
+
 		foreach ($array['field'] as $efield)
 		{
 			$attrib = $efield['@attributes'];
@@ -3778,8 +3782,14 @@ class e107plugin
 			$source = 'plugin_'.$this->plugFolder;
 			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
 
-			if(!isset($attrib['system'])) $attrib['system'] = true; // default true
-			else $attrib['system'] = $attrib['system'] === 'true' ? true : false;
+			if(!isset($attrib['system']))
+			{
+				 $attrib['system'] = true; // default true
+			}
+			else
+			{
+				$attrib['system'] = ($attrib['system'] === 'true') ? true : false;
+			}
 
 			switch ($function)
 			{
@@ -3814,7 +3824,16 @@ class e107plugin
 						$mes->add(EPL_ADLAN_251 .$name, E_MESSAGE_SUCCESS);
 					}
 					break;
+
+				case 'test': // phpunit
+					$ret[] = array('name' => $name, 'attrib' => $attrib, 'source' => $source);
+				break;
 			}
+		}
+
+		if(!empty($ret))
+		{
+			return $ret;
 		}
 
 		return null;

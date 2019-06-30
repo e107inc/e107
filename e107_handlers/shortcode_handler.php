@@ -1672,6 +1672,12 @@ class e_shortcode
 
 
 	/**
+	 * Breadcrumb calculations should occur in here.
+	 */
+	public function breadcrumb() {}
+
+
+	/**
 	 * Sets wrapper id (to be retrieved from the registry while parsing)
 	 * Example e107::getScBatch('contact')->wrapper('contact/form');
 	 * which results in using the $CONTACT_WRAPPER['form'] wrapper in the parsing phase

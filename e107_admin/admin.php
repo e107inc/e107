@@ -62,8 +62,10 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 	}
 }
 
-
-
+// DEBUG THE ADDON_UPDATED INFOPANEL
+//e107::getCache()->clear('Infopanel_plugin', true);
+//e107::getSession()->clear('addons-update-status');
+//e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
 define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
@@ -130,7 +132,8 @@ class admin_start
 			e_PLUGIN."tinymce4/e_meta.php",
 			e_THEME."bootstrap3/css/bootstrap_dark.css",
 			e_PLUGIN."search_menu/languages/English.php",
-			e_LANGUAGEDIR."English/lan_parser_functions.php",
+			e_LANGUAGEDIR.e_LANGUAGE."/lan_parser_functions.php",
+			e_LANGUAGEDIR.e_LANGUAGE."/admin/help/theme.php",
 			e_HANDLER."np_class.php",
 			e_CORE."shortcodes/single/user_extended.sc",
 			e_ADMIN."download.php",

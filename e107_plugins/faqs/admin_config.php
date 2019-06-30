@@ -161,6 +161,8 @@ class faq_cat_form_ui extends e_admin_form_ui
 	{
 		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter 
 		// Get UI instance
+
+		/** @var faq_cat_ui $controller */
 		$controller = $this->getController();
 		switch($mode)
 		{
@@ -188,18 +190,17 @@ class faq_main_ui extends e_admin_ui
 		protected $eventName	    = 'faqs';
 		protected $table			= "faqs";
 		// without any Order or Limit. 
-		
-		//FIXME JOIN should occur automatically. We have all the data necessary to build the query. 
-		// ie. faq_author is a 'user' field. 
-		
+
 		protected $listQry		= "SELECT  f.*, u.* FROM #faqs AS f LEFT JOIN #user AS u ON f.faq_author = u.user_id "; // Should not be necessary.
 		
 		protected $editQry		= "SELECT * FROM #faqs WHERE faq_id = {ID}";
 		
 		protected $pid 			= "faq_id";
-		protected $perPage 		= 10;
+		protected $perPage 		= 15;
 		protected $batchDelete	= true;
 		protected $batchCopy	= true;
+		protected $batchExport	= true;
+
 		protected $listOrder	= 'faq_order ASC';
 		protected $sortField	= 'faq_order';
 		protected $tabs			= array(LANA_FAQ_QUESTION, LAN_DETAILS); // Simpler method than 'fieldsets'. Allows for easy moving of fields between tabs and works as required by 'news' and 'custom pages'. 
@@ -354,22 +355,24 @@ class faq_admin_form_ui extends e_admin_form_ui
 	function faq_parent($curVal,$mode)
 	{ 
 		// Get UI instance
+
+		/** @var faq_cat_ui $controller */
 		$controller = $this->getController();
 		
 		switch($mode)
 		{
 			case 'read':
-				return e107::getParser()->toHTML($controller->getFaqCategory($curVal), false, 'TITLE');
+				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
 			break;
 			
 			case 'write':
 
-				return $this->selectbox('faq_parent', $controller->getFaqCategory(), $curVal).$this->hidden('pending', $pending);
+				return $this->selectbox('faq_parent', $controller->getFaqCategoryTree(), $curVal).$this->hidden('pending', $pending);
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return $controller->getFaqCategory();
+				return $controller->getFaqCategoryTree();
 			break;
 		}
 	}

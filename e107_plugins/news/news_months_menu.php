@@ -129,12 +129,24 @@ if(false === $cached)
 	{
 		if(!$parms['showarchive'])
 		{
-			$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-secondary btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
-			$ns->setContent('footer', $footer);
-			$cached .= $footer;
+			if(isset($template['footer']))
+			{
+				$footer = $tp->replaceConstants($template['footer'],'abs');
+				$footer = $tp->parseTemplate($footer,true);
+				$ns->setUniqueId('news-months-menu')->setContent('footer', $footer);
+			}
+			else
+			{
+				$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-secondary btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
+				$cached .= $footer;
+			}
 
 		}
+
 		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
+		$ns->setUniqueId(null);
+
+
 	}
 	e107::getCache()->set($cString, $cached);
 }

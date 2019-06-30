@@ -64,6 +64,12 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			$forumList = implode(',', $this->forumObj->getForumPermList('view'));
 
+			// if forumlist is empty (no forum categories created yet), return false;
+			if(!$forumList)
+			{
+				return false;
+			}
+
 			$qry = '';
 
 			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
@@ -156,106 +162,43 @@ if(!class_exists('forum_newforumposts_menu'))
 			}
 
 
-
-			if($results = $sql->gen($qry))
+			if($qry)
 			{
-
-			/*	if($tp->thumbWidth()  > 250) // Fix for unset image size.
+				if($results = $sql->gen($qry))
 				{
-					$tp->setThumbSize(40,40,true);
-				}*/
-
-				$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
-
-				$list = $tp->parseTemplate($template['start'], true);
-
-				while($row = $sql->fetch())
-				{
-					$row['thread_sef'] = $this->forumObj->getThreadSef($row);
-
-
-
-					$sc->setScVar('postInfo', $row);
-					$sc->setVars($row);
-					$list .= $tp->parseTemplate($template['item'], true, $sc);
-
-
-	/*
-					$datestamp 	= $tp->toDate($row['post_datestamp'], 'relative');
-					$id 		= $row['thread_id'];
-					$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
-					$topic 		.= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
-
-					$row['thread_sef'] = $this->forumObj->getThreadSef($row);
-
-					if($row['post_user_anon'])
+					/*	if($tp->thumbWidth()  > 250) // Fix for unset image size.
 					{
-						$poster = $row['post_user_anon'];
-					}
-					else
+						$tp->setThumbSize(40,40,true);
+					}*/
+
+					$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
+
+					$list = $tp->parseTemplate($template['start'], true);
+
+					while($row = $sql->fetch())
 					{
-						if($row['user_name'])
-						{
-							$poster = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
-						}
-						else
-						{
-							$poster = '[deleted]';
-						}
+						$row['thread_sef'] = $this->forumObj->getThreadSef($row);
+
+						$sc->setScVar('postInfo', $row);
+						$sc->setVars($row);
+						$list .= $tp->parseTemplate($template['item'], true, $sc);
 					}
 
-					$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-					$post = $tp->text_truncate($post, varset($this->menuPref['characters'],120), varset($this->menuPref['postfix'],'...'));
+					$TOTALS = array('TOTAL_TOPICS'=>$this->total['topics'], 'TOTAL_VIEWS'=>$this->total['views'], 'TOTAL_REPLIES'=>$this->total['replies']);
 
-					// Count previous posts for calculating proper (topic) page number for the current post.
-					//	$postNum = $sql2->count('forum_post', '(*)', "WHERE post_id <= " . $row['post_id'] . " AND post_thread = " . $row['thread_id'] . " ORDER BY post_id ASC");
-					//	$postPage = ceil($postNum / vartrue($this->plugPref['postspage'], 10)); // Calculate (topic) page number for the current post.
-					//	$thread = $sql->retrieve('forum_thread', '*', 'thread_id = ' . $row['thread_id']); 	// Load thread for passing it to e107::url().
+					$list .= $tp->parseTemplate($template['end'], true, $TOTALS);
 
-					// Create URL for post.
-					// like: e107_plugins/forum/forum_viewtopic.php?f=post&id=1
-					$url = e107::url('forum', 'topic', $row, array(
-						'query'    => array(
-							'f' => 'post',
-							'id'    => intval($row['post_id']) // proper page number
-						),
-					));
-
-
-					$list .= "<li class='media'>";
-
-					$list .= "<div class='media-left'>";
-					$list .= "<a href='".$url."'>".$tp->toAvatar($row, array('shape'=>'circle'))."</a>";
-					$list .= "</div>";
-
-					$list .= "<div class='media-body'>";
-
-					if (!empty($this->menuPref['title']))
-					{
-						$list .= "<h4 class='media-heading'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
-					}
-					else
-					{
-						$list .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='text-muted muted'>{$datestamp}</small><br />{$post}<br />";
-					}
-
-					$list .= "</div></li>";
-	*/
-
-
+					$text = $list;
 				}
-
-				$TOTALS = array('TOTAL_TOPICS'=>$this->total['topics'], 'TOTAL_VIEWS'=>$this->total['views'], 'TOTAL_REPLIES'=>$this->total['replies']);
-
-				$list .= $tp->parseTemplate($template['end'], true, $TOTALS);
-
-				$text = $list;
+				else
+				{
+					$text = LAN_FORUM_MENU_002;
+				}
 			}
 			else
 			{
-				$text = LAN_FORUM_MENU_002;
+				$text = LAN_FORUM_MENU_016;
 			}
-
 
 			if(!empty($this->menuPref['caption']))
 			{

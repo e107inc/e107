@@ -107,7 +107,7 @@ class eIPHandler
 	 *	Host name of current user
 	 *	Initialised when requested
 	 */
-	private $_host_name_cache = '';
+	private $_host_name_cache = array();
 
 
 	/**

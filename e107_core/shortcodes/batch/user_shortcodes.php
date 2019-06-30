@@ -666,7 +666,7 @@ function sc_user_email($parm='')
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_user_euf($parm='')
+	function sc_user_euf($parm=null)
 	{
 
 		if(!empty($parm['field']))

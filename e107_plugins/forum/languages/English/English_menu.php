@@ -26,4 +26,4 @@ define("LAN_FORUM_MENU_013", "Use zero on a quiet site; setting a value in days 
 define("LAN_FORUM_MENU_014", "Scrolling layer height (in pixels)");
 define("LAN_FORUM_MENU_015", "Leave blank for no scrolling");
 	
-?>
+define("LAN_FORUM_MENU_016", "No forum categories created yet!");

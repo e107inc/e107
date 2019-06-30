@@ -19,8 +19,10 @@ $NEWS_VIEW_INFO = array(
 
 
 // Default
-$NEWS_VIEW_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+$NEWS_VIEW_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left float-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
+
+$NEWS_VIEW_TEMPLATE['default']['caption'] = null; // add a value to user tablerender()
 $NEWS_VIEW_TEMPLATE['default']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
@@ -73,7 +75,7 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 		<hr>
 		
 		<div class="options hidden-print ">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
+			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments}{PRINTICON}{ADMINOPTIONS}{SOCIALSHARE}</div>
 		</div>
 
 	</div>
@@ -84,6 +86,20 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 	{NEWSNAVLINK}
 
 ';
+
+
+/*
+ * 	<hr />
+	<h3>About the Author</h3>
+	<div class="media">
+			<div class="media-left">{SETIMAGE: w=80&h=80&crop=1}{NEWS_AUTHOR_AVATAR: shape=circle}</div>
+			<div class="media-body">
+				<h4>{NEWS_AUTHOR}</h4>
+					{NEWS_AUTHOR_SIGNATURE}
+					<a class="btn btn-xs btn-primary" href="{NEWS_AUTHOR_ITEMS_URL}">My Articles</a>
+			</div>
+	</div>
+ */
 
 
 // @todo add more templates. eg. 'videos' , 'slideshow images', 'full width image'  - help and ideas always appreciated.

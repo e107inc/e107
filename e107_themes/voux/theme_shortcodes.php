@@ -90,7 +90,7 @@ class theme_shortcodes extends e_shortcode
 
 
 
-	function sc_bootstrap_usernav($parm='')
+	function sc_bootstrap_usernav($parm=null)
 	{
 
 		$placement = e107::pref('theme', 'usernav_placement', 'bottom');
@@ -211,14 +211,14 @@ class theme_shortcodes extends e_shortcode
 		{
 			$text = '
 			<ul class="nav navbar-nav navbar-right'.$direction.'">
-			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30&h=30} {USER_AVATAR: shape=circle} '.USERNAME.' <b class="caret"></b></a>';
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown"> {USER_AVATAR: w=30&h=30&crop=1&shape=circle} '.USERNAME.' <b class="caret"></b></a>';
 		}
 		else
 		{
 
 			$text = '
 			<ul class="nav navbar-nav navbar-right'.$direction.'">
-			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20&h=20} {USER_AVATAR: shape=circle} <b class="caret"></b></a>';
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown"> {USER_AVATAR: w=20&h=20&crop=1&shape=circle} <b class="caret"></b></a>';
 
 		}
 

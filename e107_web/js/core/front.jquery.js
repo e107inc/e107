@@ -155,9 +155,13 @@ $(document).ready(function()
 			var sort	= $(this).attr("data-sort");
 			var pid 	= parseInt($(this).attr("data-pid"));
 			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
-			var data 	= $('form'+formid).serialize() ;
-			var total 	= parseInt($("#e-comment-total").text());		
-				
+			var data 	= $('form'+formid).serializeArray() ;
+			var total 	= parseInt($("#e-comment-total").text());
+			var container =  '#' + $(this).attr("data-container");
+			var input 	=  '#' + $(this).attr("data-input");
+
+			//TODO replace _POST['comment'] with $(input).val() so we can rename 'comment' in the form to something unique. 
+
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=submit',
@@ -167,14 +171,8 @@ $(document).ready(function()
 			//  	alert(data);
 			 // 	console.log(data);
 			  	var a = $.parseJSON(data);
-	
-				$("#comment").val('');
-				
-				if($('#comments-container').length){
-				//	alert('true');
-				}else{
-			//		$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
-				}
+
+				$(input).val('');
 				
 				if(pid != 0)
 				{
@@ -182,17 +180,18 @@ $(document).ready(function()
 				}
 				else if(sort == 'desc')
 				{
-					$('#comments-container').prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
+					$(container).prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
 				}
 				else
 				{
-					$('#comments-container').append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
+					$(container).append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
 					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
 				}  
 				
 				if(!a.error)
 				{
 					$("#e-comment-total").text(total + 1);
+
 					if(pid != '0')
 					{
 						$(formid).hide();		

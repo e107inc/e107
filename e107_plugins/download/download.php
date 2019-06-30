@@ -54,18 +54,21 @@ if (!e107::isInstalled('download'))
 	if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')) { define("USER_WIDTH","width:100%"); }
 
 	/* define images */
-
-	if(deftrue('BOOTSTRAP'))
+	if(deftrue('BOOTSTRAP') && BOOTSTRAP === 3)
 	{
 		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : 'icon-download.glyph'));
 		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : 'icon-star.glyph'));	
 	}
+	elseif(deftrue('BOOTSTRAP') && BOOTSTRAP === 4)
+	{
+		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : 'fa-download.glyph'));
+		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : 'fa-star.glyph'));	
+	}	
 	else 
 	{
 		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/download.png"));
 		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/new.png"));
 	}
-	
 
 
 	$dl->init();

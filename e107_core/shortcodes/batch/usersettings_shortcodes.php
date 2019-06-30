@@ -392,7 +392,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		
 		
-		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP')===3)
+		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP'))
 		{
 			return e107::getForm()->tabs($tabs);		
 		}

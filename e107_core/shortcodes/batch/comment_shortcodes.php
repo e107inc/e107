@@ -21,7 +21,7 @@ class comment_shortcodes extends e_shortcode
 {
 	var $var;
 
-	function sc_subject_input($parm = '')
+	function sc_subject_input($parm = null)
 	{
 		$tp = e107::getParser();
 		$pref = e107::getPref();
@@ -65,7 +65,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_username($parm='')
+	function sc_username($parm = null)
 	{
 		global $USERNAME;
 		if (isset($this->var['comment_author_id']) && $this->var['comment_author_id'])
@@ -82,7 +82,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_timedate($parm='')
+	function sc_timedate($parm = null)
 	{
 		if($parm == 'relative')
 		{
@@ -93,7 +93,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_reply($parm='')
+	function sc_reply($parm = null)
 	{
 		global $REPLY, $action, $table, $id, $thisaction, $thistable, $thisid;
 
@@ -121,6 +121,13 @@ class comment_shortcodes extends e_shortcode
 		//	$url = $tp->thumbUrl($this->var['user_image']);
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");
+		
+		// Comment form - no user_id, assume current user
+		if(!$this->var['user_id'])
+		{
+			$userdata = e107::user(USERID); 
+			$this->var = array_merge($this->var, $userdata); 
+		}
 
 		$text = $tp->toAvatar($this->var);
 
@@ -136,7 +143,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_avatar($parm='')
+	function sc_avatar($parm = null)
 	{
 		return $this->sc_comment_avatar($parm);
 
@@ -162,14 +169,14 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_comments($parm='')
+	function sc_comments($parm = null)
 	{
 		global $COMMENTS;
 		return (isset($this->var['user_id']) && $this->var['user_id'] ? LAN_COMMENTS.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
 	}
 
 
-	function sc_joined($parm='')
+	function sc_joined($parm = null)
 	{
 		global $JOINED, $gen;
 		$JOINED = '';
@@ -181,17 +188,17 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_comment_itemid($parm='') // for ajax item id. 
+	function sc_comment_itemid($parm = null) // for ajax item id.
 	{
 		return 'comment-'.intval($this->var['comment_id']);
 	}
 
 
-	function sc_comment_moderate($parm='')
+	function sc_comment_moderate($parm = null)
 	{
 		if(!getperms('0') && !getperms("B"))
 		{
-			return;
+			return null;
 		}
 
 		// TODO put into a <ul> drop-down format.
@@ -219,7 +226,7 @@ class comment_shortcodes extends e_shortcode
 
   	/* example {COMMENT_BUTTON} */
   	/* example {COMMENT_BUTTON: class=btn btn-default pull-right} */
-	function sc_comment_button($parm = '')
+	function sc_comment_button($parm = null)
 	{
 		$pref = e107::getPref('comments_sort');
 		$form = e107::getForm();
@@ -230,12 +237,14 @@ class comment_shortcodes extends e_shortcode
 			$pid = ($this->var['action'] == 'reply') ? $this->var['pid'] : 0;
 
 			$class = "e-comment-submit ";
-			$class .= (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right';
+			$class .= (!empty($parm['class'])) ? $parm['class'] : 'button btn btn-primary e-comment-submit pull-right float-right';
 			$options = array(
-				'class'       => $class,
-				'data-pid'    => $pid,
-				'data-sort'   => $pref,
-				'data-target' => e_HTTP . 'comment.php',
+				'class'         => $class,
+				'data-pid'      => $pid,
+				'data-sort'     => $pref,
+				'data-target'   => e_HTTP . 'comment.php',
+				'data-container' => 'comments-container-'.$form->name2id($this->var['table']),
+				'data-input'    => 'comment-input-'.$form->name2id($this->var['table'])
 			);
 
 			return $form->submit($this->var['action'] . 'submit', $value, $options);
@@ -244,7 +253,7 @@ class comment_shortcodes extends e_shortcode
 
   /* example {AUTHOR_INPUT} */
   /* example {AUTHOR_INPUT: inputclass=form-control&class=form-group} */
-	function sc_author_input($parm = '')
+	function sc_author_input($parm = null)
 	{
 		if($this->mode == 'edit')
 		{
@@ -277,12 +286,12 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_comment_rate($parm='')
+	function sc_comment_rate($parm = null)
 	{
 
 		if($this->var['comment_blocked'] > 0 || $this->var['rating_enabled'] == false)
 		{
-			return;
+			return null;
 		}
 
 		$curVal = array(
@@ -296,7 +305,7 @@ class comment_shortcodes extends e_shortcode
 
   /* example {COMMENT_INPUT} */
   /* example {COMMENT_INPUT: inputclass=form-control&class=form-group} */
-	function sc_comment_input($parm = '')
+	function sc_comment_input($parm = null)
 	{
 		
 		$inputclass = (!empty($parm['inputclass'])) ? $parm['inputclass'] : 'comment-input form-control';
@@ -304,6 +313,7 @@ class comment_shortcodes extends e_shortcode
 		$options = array(
 			'class'       => $inputclass,
 			'placeholder' => COMLAN_403,
+			'id'          => 'comment-input-'.e107::getForm()->name2id($this->var['table'])
 		);
 
 		$text = '<div class="'.$class.'">';
@@ -324,7 +334,7 @@ class comment_shortcodes extends e_shortcode
 
 
 	/*
-	function sc_user_avatar($parm='')
+	function sc_user_avatar($parm = null)
 	{
 		$this->var['user_id'] = USERID;
 		$this->var['user_image'] = USERIMAGE;
@@ -333,7 +343,7 @@ class comment_shortcodes extends e_shortcode
 	*/
 
 
-	function sc_comment($parm='')
+	function sc_comment($parm=null)
 	{
 		// global $COMMENT, $pref;	
 		$tp = e107::getParser();
@@ -346,7 +356,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_comment_status($parm='')
+	function sc_comment_status($parm = null)
 	{
 		switch ($this->var['comment_blocked'])
 		{
@@ -359,7 +369,7 @@ class comment_shortcodes extends e_shortcode
 				break;
 
 			default:
-				return;
+				return null;
 				break;
 		}
 
@@ -368,7 +378,7 @@ class comment_shortcodes extends e_shortcode
 
 
 
-	function sc_commentedit($parm='')
+	function sc_commentedit($parm = null)
 	{
 		global $COMMENTEDIT, $comment_edit_query;
 		$pref = e107::getPref();
@@ -394,14 +404,14 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_rating($parm='')
+	function sc_rating($parm = null)
 	{
 		global $RATING;
 		return $RATING;
 	}
 
 
-	function sc_ipaddress($parm='')
+	function sc_ipaddress($parm = null)
 	{
 		global $IPADDRESS, $e107;
 		//require_once(e_HANDLER."encrypt_handler.php");
@@ -409,16 +419,16 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_level($parm='')
+	function sc_level($parm = null)
 	{
 		global $LEVEL, $pref;
 		//FIXME - new level handler, currently commented to avoid parse errors
 		//$ldata = get_level($this->var['user_id'], $this->var['user_forums'], $this->var['user_comments'], $this->var['user_chats'], $this->var['user_visits'], $this->var['user_join'], $this->var['user_admin'], $this->var['user_perms'], $pref);
-		return ($this->var['user_admin'] ? vartrue($ldata[0]) : vartrue($ldata[1]));
+		//return ($this->var['user_admin'] ? vartrue($ldata[0]) : vartrue($ldata[1]));
 	}
 
 
-	function sc_location($parm='')
+	function sc_location($parm = null)
 	{
 		global $LOCATION;
 		$tp = e107::getParser();
@@ -426,7 +436,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_signature($parm='')
+	function sc_signature($parm = null)
 	{
 		global $SIGNATURE;
 		$tp = e107::getParser();
@@ -435,11 +445,11 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_comment_share($parm='')
+	function sc_comment_share($parm = null)
 	{
 		if(!$xup = e107::getUser()->getProviderName())
 		{
-			return;
+			return null;
 		}
 
 		list($prov,$id) = explode("_",$xup);

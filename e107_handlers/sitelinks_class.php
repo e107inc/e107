@@ -245,12 +245,12 @@ class sitelinks
 	/**
 	 * Manage Sublink Rendering
 	 * @param string $main_linkid
-	 * @param string $aSubStyle
+	 * @param array $aSubStyle
 	 * @param string $css_class
 	 * @param object $level [optional]
 	 * @return 
 	 */
-	function subLink($main_linkid,$aSubStyle,$css_class='',$level=0)
+	function subLink($main_linkid,$aSubStyle=array(),$css_class='',$level=0)
 	{
 		global $pref;
 
@@ -294,7 +294,7 @@ class sitelinks
 	
 	
 
-	function makeLink($linkInfo, $submenu = FALSE, $style='', $css_class = false)
+	function makeLink($linkInfo=array(), $submenu = FALSE, $style=array(), $css_class = false)
 	{
 		global $pref,$tp;
 
@@ -403,15 +403,17 @@ class sitelinks
 		if ($linkInfo['link_button'])
 		{
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
+			$linkstart .= $tp->toIcon($linkInfo['link_button'],array('legacy'=> "{e_IMAGE}icons/"));
 			
-			if($linkInfo['link_button'][0]=='{')
+		/*	if($linkInfo['link_button'][0]=='{')
 			{
 				$linkstart .= "<img src='".$tp->replaceConstants($linkInfo['link_button'],'abs')."' alt='' style='vertical-align:middle' />";	
 			}
 			else 
 			{
-				$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";	
-			}
+
+				$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
+			}*/
 		}
 
 		// mobile phone support.
@@ -460,8 +462,10 @@ class sitelinks
 	 */
 	function hilite($link,$enabled = FALSE)
 	{
-		global $PLUGINS_DIRECTORY,$tp,$pref;
+		global $PLUGINS_DIRECTORY;
 		if(!$enabled){ return FALSE; }
+
+		$tp = e107::getParser();
 
 		$link = $tp->replaceConstants($link, '', TRUE);			// The link saved in the DB
 		$tmp = explode('?',$link);
@@ -492,7 +496,9 @@ class sitelinks
 		// See if we're on whatever is set as 'home' page for this user
 
 		// Although should be just 'index.php', allow for the possibility that there might be a query part
-		global $pref;
+	//	global $pref;
+		$pref = e107::pref();
+
 		if (($link_slf == e_HTTP."index.php") && count($pref['frontpage']))
 		{	// Only interested if the displayed page is index.php - see whether its the user's home (front) page
 			$full_url = 'news.php';					// Set a default in case
@@ -1324,6 +1330,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	{
 			
 		global $E_ADMIN_MENU; //TODO remove me?
+
+
 		$tp = e107::getParser();
 		
 		if (!$tmpl)
@@ -1386,7 +1394,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 	
 		//FIXME - e_parse::array2sc()
-		$search = array();
+/*		$search = array();
 		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
 		$search[1] = '/\{LINK_URL\}(.*?)/si';
 		$search[2] = '/\{ONCLICK\}(.*?)/si';
@@ -1398,7 +1406,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 		$search[10] = '/\{LINK_SUB_OVERSIZED\}/si';
-		$search[11] = '/\{LINK_DATA\}/si';
+		$search[11] = '/\{LINK_DATA\}/si';*/
+
 
 
 		foreach (array_keys($e107_vars) as $act)
@@ -1455,7 +1464,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		//	echo " act = ".$act."<br /><br />";
 
 
-
 		
 			if($rid == 'adminhome')
 			{
@@ -1471,34 +1479,36 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 	
 
-			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+
 			// valid URLs
-			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
-			$replace[2] = '';
+			$replace['LINK_URL'] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
+			$replace['ONCLICK'] = '';
+
 			if (vartrue($e107_vars[$act]['include']))
 			{
-				$replace[2] = $e107_vars[$act]['include'];
+				$replace['ONCLICK'] = $e107_vars[$act]['include'];
 				//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
 			}
-			$replace[3] = $title;
-			$replace[4] = '';
+			$replace['SUB_HEAD'] = $title;
+			$replace['SUB_MENU'] = '';
 			
-			$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
-			$replace[6] = $rid;
+			$replace['ID'] = $id ? " id='eplug-nav-{$rid}'" : '';
+			$replace['SUB_ID'] = $rid;
 		
-			$replace[7] = varset($e107_vars[$act]['link_class']);
-			$replace[8] = '';
+			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
+			$replace['SUB_CLASS'] = '';
 			
 			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
 			{
-				$replace[9] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
+				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
 			}
 			else
 			{
-				$replace[9] = varset($e107_vars[$act]['image']);	
+				$replace['LINK_IMAGE'] = varset($e107_vars[$act]['image']);
 			}
 
-			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
+			$replace['LINK_SUB_OVERSIZED'] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
 
 			if(!empty($e107_vars[$act]['link_data']))
 			{
@@ -1509,13 +1519,14 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					$dataTmp[] = $k.'="'.$v.'"';
 				}
 
-				$replace[11] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
+				$replace['LINK_DATA'] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
 
 			}
 
 
+			$replace['LINK_BADGE'] = isset($e107_vars[$act]['badge']['value']) ? $tp->toLabel($e107_vars[$act]['badge']['value'], varset($e107_vars[$act]['badge']['type'])) : '';
 
-			
+
 			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
 				$START_SUB = $tmpl['start_other_sub'];
@@ -1527,15 +1538,17 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 			if(!empty($e107_vars[$act]['sub']))
 			{
-				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
-				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
-				$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
-				$replace[4] = preg_replace($search, $replace, $START_SUB);
-				$replace[4] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace[4] .= $tmpl['end_sub'];
+				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
+				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
+				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+				$replace['SUB_MENU'] = str_replace(array_keys($replace), array_values($replace), $START_SUB);
+				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+				$replace['SUB_MENU'] .= $tmpl['end_sub'];
 			}
-	
-			$text .= preg_replace($search, $replace, $temp);
+
+
+		//	$text .= preg_replace($search, $replace, $temp);
+			$text .= $tp->parseTemplate($temp, false, $replace); // ($search, $replace, $temp);
 		//	echo "<br />".$title." act=".$act;
 			//print_a($e107_vars[$act]);
 		}
@@ -1550,6 +1563,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$ns = e107::getRender();
 		$ns->setUniqueId($id);
 		$ns->tablerender($title, $text);
+		$ns->setUniqueId(null);
 		return '';
 	}
 			
@@ -1671,7 +1685,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	{
 		if(empty($data) || empty($template) || !is_array($template)) return '';
 		
-		$sc 			= e107::getScBatch('navigation');	
+		/** @var navigation_shortcodes $sc */
+		$sc 			= e107::getScBatch('navigation');
 		$sc->template 	= $template; 
 		$head			= e107::getParser()->parseTemplate($template['start'],true);
 		$foot 			= e107::getParser()->parseTemplate($template['end'],true);
@@ -1854,9 +1869,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	* TODO Extensive Active Link Detection; 
 	* 
 	*/
-	public function isActive(&$data='', $removeOnly = false, $exactMatch = false)
+	public function isActive(&$data=array(), $removeOnly = false, $exactMatch = false)
 	{
-		if(empty($data)) return;
+		if(empty($data)) return null;
 
 		
 		### experimental active match added to the URL (and removed after parsing)
@@ -1868,7 +1883,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if($removeOnly)
 			{
 				$data['link_url'] = array_shift(explode('#?', $data['link_url'], 2));
-				return;
+				return null;
 			}
 			
 			$_temp = explode('#?', $data['link_url'], 2);
@@ -1884,7 +1899,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 		
 		// No need of further checks
-		if($removeOnly) return; 
+		if($removeOnly) return null;
 		
 		// already checked by compile() or external source
 		if(isset($data['link_active'])) return $data['link_active'];
@@ -1983,13 +1998,14 @@ class navigation_shortcodes extends e_shortcode
 	 * Return the primary_id number for the current link
 	 * @return integer
 	 */
-	function sc_link_id($parm='')
+	function sc_link_id($parm=null)
 	{
 		return intval($this->var['link_id']);		
 	}
 
-	function sc_link_depth($parm='')
+	function sc_link_depth($parm=null)
 	{
+		unset($parm);
 		return isset($this->var['link_depth']) ? intval($this->var['link_depth']) : $this->depth;
 	}
 
@@ -2005,7 +2021,7 @@ class navigation_shortcodes extends e_shortcode
 	 * @return string 
 	 * @example {LINK_NAME}
 	 */
-	function sc_link_name($parm='')
+	function sc_link_name($parm=null)
 	{
 		if(empty($this->var['link_name']))
 		{
@@ -2014,7 +2030,8 @@ class navigation_shortcodes extends e_shortcode
 		
 		if(substr($this->var['link_name'],0,8) == 'submenu.') // BC Fix. 
 		{
-			list($tmp,$tmp2,$link) = explode('.',$this->var['link_name'],3);	
+			list($tmp,$tmp2,$link) = explode('.',$this->var['link_name'],3);
+			unset($tmp,$tmp2);
 		}
 		else
 		{
@@ -2029,13 +2046,13 @@ class navigation_shortcodes extends e_shortcode
 	 * Return the parent of the current link
 	 * @return integer
 	 */
-	function sc_link_parent($parm='')
+	function sc_link_parent($parm=null)
 	{
 		return intval($this->var['link_parent']);
 	}
 
 
-	function sc_link_identifier($parm='')
+	function sc_link_identifier($parm=null)
 	{
 		return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
 	}
@@ -2044,7 +2061,7 @@ class navigation_shortcodes extends e_shortcode
 	 * Return the URL of the current link
 	 * @return string
 	 */
-	function sc_link_url($parm='')
+	function sc_link_url($parm=null)
 	{
 		$tp = e107::getParser();
 
@@ -2093,7 +2110,7 @@ class navigation_shortcodes extends e_shortcode
 
 	/**
 	 * Returns only the anchor target in the URL if one is found.
-	 * @param null $parm
+	 * @param array $parm
 	 * @return null|string
 	 */
 	function sc_link_target($parm=null)

@@ -365,6 +365,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
+					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $tmp['text'],
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
@@ -422,7 +423,7 @@ class pageClass
 		$frm 			= e107::getForm();
 
 		// retrieve the template to use for this chapter. 
-		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
 		
 		if($this->displayAllMode === true)
 		{
@@ -467,6 +468,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
+					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'], true,'BODY'),
 					'CHAPTER_BREADCRUMB'	=> !empty($_GET['ch']) ? $frm->breadcrumb($bread) : ''
 		);		
@@ -507,6 +509,7 @@ class pageClass
 					
 				//	$this->page = $page;
 					$this->batch->setVars($page);
+					$this->batch->breadcrumb();
 				//	$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
 
 
@@ -589,7 +592,7 @@ class pageClass
 
 
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
-
+			$this->batch->breadcrumb();
 			
 			
 			define("e_PAGETITLE", $this->page['page_title']);
@@ -634,6 +637,7 @@ class pageClass
 		$this->batch = e107::getScBatch('page',null,'cpage');
 		$this->batch->wrapper('page/'.$this->templateID );
 		$this->batch->editable($editable);
+		$this->batch->breadcrumb();
 
 		$this->pageText = $this->page['page_text'];
 
@@ -686,6 +690,7 @@ class pageClass
 		e107::getEvent()->trigger('user_page_item_viewed',$this->page);
 
 		$this->batch->setVars($this->page);
+		$this->batch->breadcrumb();
 
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
@@ -742,7 +747,11 @@ class pageClass
 		if($this->cacheData['COMMENT_FLAG'])
 		{
 			$vars = new e_vars(array('comments' => $this->pageComment(true)));
-			$comments = e107::getScBatch('page',null,'cpage')->setVars($vars)->cpagecomments();
+			/** @var cpage_shortcodes $sc */
+			$sc = e107::getScBatch('page',null,'cpage');
+			$sc->setVars($vars);
+			$sc->breadcrumb();
+			$comments = $sc->cpagecomments();
 		} 
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
 		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
@@ -994,6 +1003,7 @@ class pageClass
 
 			if (isset($_POST['commentsubmit']))
 			{
+				$pid = null; //FIXME ?
 				$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this->pageID, $pid, $_POST['subject']);
 				$e107cache = e107::getCache();
 				$e107cache->clear("comment.page.".$this->pageID);

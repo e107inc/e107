@@ -23,6 +23,7 @@ if(false === $cached)
 		$parms = $parm;
 	}
 
+	/** @var e_news_category_tree $ctree */
 	$ctree = e107::getObject('e_news_category_tree', null, e_HANDLER.'news_class.php');
 
 	$parms['tmpl']      = 'news_menu';

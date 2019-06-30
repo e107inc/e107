@@ -641,7 +641,11 @@ class private_message
 	 */
 	function get_users_inclass($class)
 	{
-		$sql = e107::getDb();
+
+		return e107::getUserClass()->getUsersInClass($class, 'user_name, user_email, user_class');
+
+
+		/*$sql = e107::getDb();
 
 		if($class == e_UC_MEMBER)
 		{
@@ -663,7 +667,7 @@ class private_message
 			$ret = $sql->db_getList();
 			return $ret;
 		}
-		return FALSE;
+		return FALSE;*/
 	}
 
 
