@@ -5,7 +5,7 @@
 * Theme manager language file
 */
 
-define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
+define("TPVLAN_1", "You are looking at a preview of the <b>{PREVIEWTHEMENAME}</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='{e_ADMIN}theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='{e_ADMIN}theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
 define("TPVLAN_3", "Site theme changed.");
 //define("TPVLAN_4", "Author");//LAN_AUTHOR
@@ -114,8 +114,7 @@ define("TPVLAN_CONV_15", "Give this stylesheet a name");
 define("TPVLAN_CONV_16", "URL to a live-demo of this theme.");
 
 //marketplace
-define("TPVLAN_81","Downloading..."); 
-define("TPVLAN_82","Download Complete!");
+
 define("TPVLAN_83","Automated download not possible!");
 define("TPVLAN_84","[Please Download Manually]");
 define("TPVLAN_85","Connecting...");
@@ -131,3 +130,11 @@ define("TPVLAN_93", "Selection");
 define("TPVLAN_94", "Site theme changed to [x].");
 define("TPVLAN_95", "Skin");
 
+define("TPVLAN_96", "Set URLs/script-paths which should automatically use this layout. One per line.");
+
+define("TPVLANHELP_01", "The theme manager allows you to set your site's public theme and your admin areas theme.");
+define("TPVLANHELP_02", "Look at the tooltips (when available) for more details.");
+
+define("TPVLANHELP_03", "By default, the visibility filter will change the theme's layout based on a partial URL match.");
+define("TPVLANHELP_04", "End lines with a [b]![/b] to exactly match against the end of URL.");
+define("TPVLANHELP_05", "End lines with a [b]$[/b] to exactly match against the end of script path.");

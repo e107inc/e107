@@ -441,7 +441,7 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$mes->addSuccess(TPVLAN_81); 
+		$mes->addSuccess(LAN_DOWNLOADING."...");
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
@@ -479,7 +479,8 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($fl->unzipArchive($localfile,$type, true))
 		{
-			$mes->addSuccess(TPVLAN_82); 
+			$lan = defset('LAN_DOWNLOAD_COMPLETE', 'Download Complete!');
+			$mes->addSuccess($lan);
 			return true; 
 		}
 		else 

@@ -1,276 +1,671 @@
 <?php
 
-if (!defined('e107_INIT')) { exit; }
+	if(!defined('e107_INIT'))
+	{
+		exit;
+	}
 
-//FIXME TODO - Use v2 method. See chatbox_menu/e_rss.php
+
+// v2.x Standard 
+class forum_rss // plugin-folder + '_rss'
+{
+	private $rssQuery;
+
+	/**
+	 * Admin RSS Configuration 
+	 */		
+	function config() 
+	{
+		$config = array();
+	
+
+		$config[] = array(
+			'name' => "Forum / threads",
+			'url' => '6',
+			'topic_id' => '',
+			'path' => 'forum|threads',
+			'text' => 'this is the rss feed for the forum_threads entries',
+			'class' => '1',
+			'limit' => '9',
+		);
+	
+
+		//forum threads (new url)
+		$config[] = array(
+			'name' => "Forum / threads",
+			'url' => 'forumthreads',
+			'topic_id' => '',
+		//	'path' => 'forum|threads',
+			'text' => 'this is the rss feed for the forum_threads entries',
+			'class' => '0',
+			'limit' => '9',
+		);
+
+
+		//forum posts (old url)
+		$config[] = array(
+			'name' => "Forum / posts",
+			'url' => '7',
+			'topic_id' => '',
+		//	'path' => 'forum|posts',
+			'text' => 'this is the rss feed for the forum_posts entries',
+			'class' => '1',
+			'limit' => '9',
+		);
+
+
+		//forum posts (new url)
+		$config[] = array(
+			'name' => "Forum / posts",
+			'url' => 'forumposts',
+			'topic_id' => '',
+		//	'path' => 'forum|posts',
+			'text' => 'this is the rss feed for the forum_posts entries',
+			'class' => '0',
+			'limit' => '9',
+		);
+
+
+		//forum topic (old url)
+		$config[] = array(
+			'name' => "Forum / topic",
+			'url' => '8',
+			'topic_id' => '*',
+		//	'path' => 'forum|topic',
+			'text' => 'this is the rss feed for the forum_topic entries',
+			'class' => '1',
+			'limit' => '9',
+		);
+
+
+		//forum topic (new url)
+		$config[] = array(
+			'name' => "Forum / topic",
+			'url' => 'forumtopic',
+			'topic_id' => '*',
+		//	'path' => 'forum|topic',
+			'text' => 'this is the rss feed for the forum_topic entries',
+			'class' => '0',
+			'limit' => '9',
+		);
+
+
+		//forum name (old url)
+		$config[] = array(
+			'name' => "Forum / name",
+			'url' => '11',
+			'topic_id' => '*',
+		//	'path' => 'forum|name',
+			'text' => 'this is the rss feed for the forum_name entries',
+			'class' => '1',
+			'limit' => '9',
+		);
+
+
+		//forum name (new url)
+		$config[] = array(
+			'name' => "Forum / name",
+			'url' => 'forumname',
+			'topic_id' => '*',
+		//	'path' => 'forum|name',
+			'text' => 'this is the rss feed for the forum_name entries',
+			'class' => '0',
+			'limit' => '9',
+		);
+		
+		return $config;
+	}
+	
+	/**
+	 * Compile RSS Data
+	 * @param $parms array	url, limit, id
+	 * @return array|bool
+	 */
+	function data($parms=null)
+	{
+		$sqlrss = e107::getDb();
+
+		$rss = array();
+		$limit = $parms['limit'];
+		$topicid = $parms['id'];
+
+
+
+		switch($parms['url'])
+		{
+
+			case 'forumthreads':
+			case 6:
+
+				$rssQuery =
+					"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
+				LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE f.forum_class IN (" . USERCLASS_LIST . ") AND t.thread_parent=0
+				ORDER BY t.thread_datestamp DESC LIMIT 0," . $limit;
+
+				$sqlrss->gen($rssQuery);
+				$tmp = $sqlrss->db_getList();
+
+				$rss = array();
+				$i = 0;
+
+				foreach($tmp as $value)
+				{
+
+					if($value['user_name'])
+					{
+						$rss[$i]['author'] = $value['user_name'];
+						$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+					}
+					else
+					{
+						$tmp = explode(".", $value['thread_user'], 2);
+						list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+						unset($ip);
+					}
+
+					$rss[$i]['title'] = $value['thread_name'];
+					$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'];
+					$rss[$i]['description'] = $value['thread_thread'];
+					$rss[$i]['datestamp'] = $value['thread_datestamp'];
+
+					$i++;
+				}
+				break;
+
+			case 'forumposts':
+			case 7:
+				$rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email FROM #forum_t AS t
+				LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE f.forum_class  IN (" . USERCLASS_LIST . ")
+				ORDER BY t.thread_datestamp DESC LIMIT 0," . $limit;
+
+				$sqlrss->gen($rssQuery);
+				$tmp = $sqlrss->db_getList();
+				$rss = array();
+				$i = 0;
+
+				foreach($tmp as $value)
+				{
+
+					if($value['user_name'])
+					{
+						$rss[$i]['author'] = $value['user_name'];
+						$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+					}
+					else
+					{
+						$tmp = explode(".", $value['thread_user'], 2);
+						list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+						unset($ip);
+					}
+
+					if($value['parent_name'])
+					{
+						$rss[$i]['title'] = "Re: " . $value['parent_name'];
+						$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_parent'];
+					}
+					else
+					{
+						$rss[$i]['title'] = $value['thread_name'];
+						$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'];
+					}
+
+					$rss[$i]['description'] = $value['thread_thread'];
+					$rss[$i]['datestamp'] = $value['thread_datestamp'];
+
+					$i++;
+				}
+				break;
+
+			case 'forumtopic':
+			case 8:
+				if(!$topicid)
+				{
+					return false;
+				}
+
+				/* get thread ...  */
+				$this->rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
+				FROM #forum_t AS t
+				LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE f.forum_class  IN (" . USERCLASS_LIST . ") AND t.thread_id=" . intval($topicid);
+
+				$sqlrss->gen($this->rssQuery);
+				$topic = $sqlrss->fetch();
+
+				/* get replies ...  */
+				$this->rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email
+				FROM #forum_t AS t
+				LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE f.forum_class  IN (" . USERCLASS_LIST . ") AND t.thread_parent=" . intval($topicid);
+
+				$sqlrss->gen($this->rssQuery);
+				$replies = $sqlrss->db_getList();
+
+				$rss = array();
+				$i = 0;
+
+				// FIXME
+/*
+				if($value['user_name'])
+				{
+					$rss[$i]['author'] = $value['user_name'] . " ( " . SITEURLBASE . "user.php?id." . intval($value['thread_user']) . " )";
+				}
+				else
+				{
+					$tmp = explode(".", $value['thread_user'], 2);
+					list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+					unset($ip);
+				}*/
+
+				$rss[$i]['title'] = $topic['thread_name'];
+				$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $topic['thread_id'];
+				$rss[$i]['description'] = $topic['thread_thread'];
+				$rss[$i]['datestamp'] = $topic['thread_datestamp'];
+				$i++;
+
+				foreach($replies as $value)
+				{
+					if($value['user_name'])
+					{
+						$rss[$i]['author'] = $value['user_name'];
+						$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+					}
+					else
+					{
+						$tmp = explode(".", $value['thread_user'], 2);
+						list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+						unset($ip);
+					}
+					$rss[$i]['title'] = "Re: " . $topic['thread_name'];
+					$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $topicid;
+					$rss[$i]['description'] = $value['thread_thread'];
+					$rss[$i]['datestamp'] = $value['thread_datestamp'];
+					$i++;
+				}
+				break;
+
+			case 'forumname':
+			case 11:
+				if(empty($parm['id']))
+				{
+					return false;
+				}
+
+				$this->rssQuery = "
+			SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name, u.user_email
+			FROM #forum_t as t
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE t.thread_forum_id = " . intval($topicid) . " AND f.forum_class IN (0, 251, 255)
+			ORDER BY t.thread_datestamp DESC LIMIT 0," . $limit;
+
+				$sqlrss->gen($this->rssQuery);
+				$tmp = $sqlrss->db_getList();
+			//	$this->contentType = $this->contentType . " : " . $tmp[1]['forum_name'];
+				$rss = array();
+				$i = 0;
+
+				foreach($tmp as $value)
+				{
+					if($value['user_name'])
+					{
+						$rss[$i]['author'] = $value['user_name'];
+						$rss[$i]['author_email'] = $value['user_email'];
+					}
+					else
+					{
+						$tmp = explode(".", $value['thread_user'], 2);
+						list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+						unset($ip);
+					}
+
+					if($value['parent_name'])
+					{
+						$rss[$i]['title'] = "Re: " . $value['parent_name'];
+						$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'] . ".post";
+					}
+					else
+					{
+						$rss[$i]['title'] = $value['thread_name'];
+						$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'];
+					}
+					$rss[$i]['description'] = $value['thread_thread'];
+					$rss[$i]['datestamp'] = $value['thread_datestamp'];
+					$i++;
+				}
+				break;
+		}
+
+		return $rss;
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
-$feed = get_forum_rss();
-foreach($feed as $k=>$v){
-	$eplug_rss_feed[] = $v;
-}
 
-function get_forum_rss(){
-	$rss = array();
+/*
+	$feed = get_forum_rss();
+	foreach($feed as $k => $v)
+	{
+		$eplug_rss_feed[] = $v;
+	}
 
-	//forum threads (old url)
-	$feed['name']			= "Forum / threads";
-	$feed['url']			= '6';
-	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|threads'; //FIXME
-	$feed['text']			= 'this is the rss feed for the forum_threads entries';
-	$feed['class']			= '1';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+	function get_forum_rss()
+	{
 
-	//forum threads (new url)
-	$feed['name']			= "Forum / threads";
-	$feed['url']			= 'forumthreads';
-	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|threads';//FIXME
-	$feed['text']			= 'this is the rss feed for the forum_threads entries';
-	$feed['class']			= '0';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		$rss = array();
 
-	//forum posts (old url)
-	$feed['name']			= "Forum / posts";
-	$feed['url']			= '7';
-	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|posts';//FIXME
-	$feed['text']			= 'this is the rss feed for the forum_posts entries';
-	$feed['class']			= '1';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum threads (old url)
+		$feed['name'] = "Forum / threads";
+		$feed['url'] = '6';
+		$feed['topic_id'] = '';
+		$feed['path'] = 'forum|threads';
+		$feed['text'] = 'this is the rss feed for the forum_threads entries';
+		$feed['class'] = '1';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	//forum posts (new url)
-	$feed['name']			= "Forum / posts";
-	$feed['url']			= 'forumposts';
-	$feed['topic_id']		= '';
-	$feed['path']			= 'forum|posts';//FIXME
-	$feed['text']			= 'this is the rss feed for the forum_posts entries';
-	$feed['class']			= '0';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum threads (new url)
+		$feed['name'] = "Forum / threads";
+		$feed['url'] = 'forumthreads';
+		$feed['topic_id'] = '';
+		$feed['path'] = 'forum|threads';
+		$feed['text'] = 'this is the rss feed for the forum_threads entries';
+		$feed['class'] = '0';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	//forum topic (old url)
-	$feed['name']			= "Forum / topic";
-	$feed['url']			= '8';
-	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|topic';//FIXME
-	$feed['text']			= 'this is the rss feed for the forum_topic entries';
-	$feed['class']			= '1';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum posts (old url)
+		$feed['name'] = "Forum / posts";
+		$feed['url'] = '7';
+		$feed['topic_id'] = '';
+		$feed['path'] = 'forum|posts';
+		$feed['text'] = 'this is the rss feed for the forum_posts entries';
+		$feed['class'] = '1';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	//forum topic (new url)
-	$feed['name']			= "Forum / topic";
-	$feed['url']			= 'forumtopic';
-	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|topic'; //FIXME
-	$feed['text']			= 'this is the rss feed for the forum_topic entries';
-	$feed['class']			= '0';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum posts (new url)
+		$feed['name'] = "Forum / posts";
+		$feed['url'] = 'forumposts';
+		$feed['topic_id'] = '';
+		$feed['path'] = 'forum|posts';
+		$feed['text'] = 'this is the rss feed for the forum_posts entries';
+		$feed['class'] = '0';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	//forum name (old url)
-	$feed['name']			= "Forum / name";
-	$feed['url']			= '11';
-	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|name'; //FIXME
-	$feed['text']			= 'this is the rss feed for the forum_name entries';
-	$feed['class']			= '1';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum topic (old url)
+		$feed['name'] = "Forum / topic";
+		$feed['url'] = '8';
+		$feed['topic_id'] = '*';
+		$feed['path'] = 'forum|topic';
+		$feed['text'] = 'this is the rss feed for the forum_topic entries';
+		$feed['class'] = '1';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	//forum name (new url)
-	$feed['name']			= "Forum / name";
-	$feed['url']			= 'forumname';
-	$feed['topic_id']		= '*';
-	$feed['path']			= 'forum|name'; //FIXME
-	$feed['text']			= 'this is the rss feed for the forum_name entries';
-	$feed['class']			= '0';
-	$feed['limit']			= '9';
-	$rss[] = $feed;
+		//forum topic (new url)
+		$feed['name'] = "Forum / topic";
+		$feed['url'] = 'forumtopic';
+		$feed['topic_id'] = '*';
+		$feed['path'] = 'forum|topic';
+		$feed['text'] = 'this is the rss feed for the forum_topic entries';
+		$feed['class'] = '0';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
 
-	return $rss;
-}
+		//forum name (old url)
+		$feed['name'] = "Forum / name";
+		$feed['url'] = '11';
+		$feed['topic_id'] = '*';
+		$feed['path'] = 'forum|name';
+		$feed['text'] = 'this is the rss feed for the forum_name entries';
+		$feed['class'] = '1';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
+
+		//forum name (new url)
+		$feed['name'] = "Forum / name";
+		$feed['url'] = 'forumname';
+		$feed['topic_id'] = '*';
+		$feed['path'] = 'forum|name';
+		$feed['text'] = 'this is the rss feed for the forum_name entries';
+		$feed['class'] = '0';
+		$feed['limit'] = '9';
+		$rss[] = $feed;
+
+		return $rss;
+	}
+
 //##### ------------------------------------------------------------------------------------
 
 
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
-$sqlrss = new db;
+	$sqlrss = new db;
 
-switch($this->parm){ //FIXME use v2.x standard and replace this with $parm['url'] check. 
 
-	case threads:
-	case 6:
-		$this -> rssQuery =
-		"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class IN (".USERCLASS_LIST.") AND t.thread_parent=0
-		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
-		$sqlrss->db_Select_gen($this -> rssQuery);
-		$tmp = $sqlrss->db_getList();
+	switch($this->parm)
+	{
 
-		$rss = array();
-		$i=0;
-		foreach($tmp as $value) {
+		case 'threads':
+		case 6:
+			$this->rssQuery =
+				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE f.forum_class IN (" . USERCLASS_LIST . ") AND t.thread_parent=0
+			ORDER BY t.thread_datestamp DESC LIMIT 0," . $this->limit;
 
-			if($value['user_name']) {
-				$rss[$i]['author'] = $value['user_name'];
-				$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
-		} else {
-				$tmp=explode(".", $value['thread_user'], 2);
-				list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
-			}
+			$sqlrss->gen($this->rssQuery);
+			$tmp = $sqlrss->db_getList();
 
-			$rss[$i]['title'] = $value['thread_name'];
-			$rss[$i]['link'] = SITEURLBASE.e_PLUGIN_ABS."forum/forum_viewtopic.php?".$value['thread_id'];
-			$rss[$i]['description'] = $value['thread_thread'];
-			$rss[$i]['datestamp'] = $value['thread_datestamp'];
+			$rss = array();
+			$i = 0;
+			foreach($tmp as $value)
+			{
 
-			$i++;
-		}
-	break;
+				if($value['user_name'])
+				{
+					$rss[$i]['author'] = $value['user_name'];
+					$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+				}
+				else
+				{
+					$tmp = explode(".", $value['thread_user'], 2);
+					list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+				}
 
-	case posts:
-	case 7:
-		$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email FROM #forum_t AS t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
-		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (".USERCLASS_LIST.")
-		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
-		$sqlrss->db_Select_gen($this -> rssQuery);
-		$tmp = $sqlrss->db_getList();
-		$rss = array();
-		$i=0;
-		foreach($tmp as $value) {
-
-			if($value['user_name']) {
-				$rss[$i]['author'] = $value['user_name'];
-				$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
-			} else {
-				$tmp=explode(".", $value['thread_user'], 2);
-				list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
-			}
-
-			if($value['parent_name']) {
-				$rss[$i]['title'] = "Re: ".$value['parent_name'];
-				$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
-			} else {
 				$rss[$i]['title'] = $value['thread_name'];
-				$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+				$rss[$i]['link'] = SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'];
+				$rss[$i]['description'] = $value['thread_thread'];
+				$rss[$i]['datestamp'] = $value['thread_datestamp'];
+
+				$i++;
+			}
+			break;
+
+		case 'posts':
+		case 7:
+			$this->rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email FROM #forum_t AS t
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE f.forum_class  IN (" . USERCLASS_LIST . ")
+			ORDER BY t.thread_datestamp DESC LIMIT 0," . $this->limit;
+
+			$sqlrss->gen($this->rssQuery);
+			$tmp = $sqlrss->db_getList();
+			$rss = array();
+			$i = 0;
+			foreach($tmp as $value)
+			{
+
+				if($value['user_name'])
+				{
+					$rss[$i]['author'] = $value['user_name'];
+					$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+				}
+				else
+				{
+					$tmp = explode(".", $value['thread_user'], 2);
+					list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+				}
+
+				if($value['parent_name'])
+				{
+					$rss[$i]['title'] = "Re: " . $value['parent_name'];
+					$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $value['thread_parent'];
+				}
+				else
+				{
+					$rss[$i]['title'] = $value['thread_name'];
+					$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $value['thread_id'];
+				}
+
+				$rss[$i]['description'] = $value['thread_thread'];
+				$rss[$i]['datestamp'] = $value['thread_datestamp'];
+
+				$i++;
+			}
+			break;
+
+		case 'topic':
+		case 8:
+			if(!$this->topicid)
+			{
+				return false;
 			}
 
-			$rss[$i]['description'] = $value['thread_thread'];
-			$rss[$i]['datestamp'] = $value['thread_datestamp'];
+			// get thread ...
+			$this->rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
+			FROM #forum_t AS t
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE f.forum_class  IN (" . USERCLASS_LIST . ") AND t.thread_id=" . intval($this->topicid);
 
-			$i++;
-		}
-	break;
+			$sqlrss->gen($this->rssQuery);
+			$topic = $sqlrss->db_Fetch();
 
-	case topic:
-	case 8:
-		if(!$this -> topicid) {
-			return FALSE;
-		}
+			//  get replies ...
+			$this->rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email
+			FROM #forum_t AS t
+			LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE f.forum_class  IN (" . USERCLASS_LIST . ") AND t.thread_parent=" . intval($this->topicid);
 
-		/* get thread ...  */
-		$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
-		FROM #forum_t AS t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (".USERCLASS_LIST.") AND t.thread_id=".intval($this -> topicid);
-		$sqlrss->db_Select_gen($this -> rssQuery);
-		$topic = $sqlrss->db_Fetch();
+			$sqlrss->gen($this->rssQuery);
+			$replies = $sqlrss->db_getList();
 
-		/* get replies ...  */
-		$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email
-		FROM #forum_t AS t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE f.forum_class  IN (".USERCLASS_LIST.") AND t.thread_parent=".intval($this -> topicid);
-		$sqlrss->db_Select_gen($this -> rssQuery);
-		$replies = $sqlrss->db_getList();
+			$rss = array();
+			$i = 0;
 
-		$rss = array();
-		$i = 0;
-
-		if($value['user_name']) {
-			$rss[$i]['author'] = $value['user_name'] . " ( ".$e107->base_path."user.php?id.".intval($value['thread_user'])." )";
-		} else {
-			$tmp=explode(".", $value['thread_user'], 2);
-			list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
-		}
-
-		$rss[$i]['title'] = $topic['thread_name'];
-		$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
-		$rss[$i]['description'] = $topic['thread_thread'];
-		$rss[$i]['datestamp'] = $topic['thread_datestamp'];
-		$i ++;
-		foreach($replies as $value) {
-			if($value['user_name']) {
-				$rss[$i]['author'] = $value['user_name'];
-				$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
-			} else {
-				$tmp=explode(".", $value['thread_user'], 2);
+			if($value['user_name'])
+			{
+				$rss[$i]['author'] = $value['user_name'] . " ( " . $e107->base_path . "user.php?id." . intval($value['thread_user']) . " )";
+			}
+			else
+			{
+				$tmp = explode(".", $value['thread_user'], 2);
 				list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
 			}
-			$rss[$i]['title'] = "Re: ".$topic['thread_name'];
-			$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
-			$rss[$i]['description'] = $value['thread_thread'];
-			$rss[$i]['datestamp'] = $value['thread_datestamp'];
+
+			$rss[$i]['title'] = $topic['thread_name'];
+			$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $topic['thread_id'];
+			$rss[$i]['description'] = $topic['thread_thread'];
+			$rss[$i]['datestamp'] = $topic['thread_datestamp'];
 			$i++;
-		}
-	break;
 
-	case name:
-	case 11:
-		if(!$this -> topicid) {
-			return FALSE;
-		}
+			foreach($replies as $value)
+			{
+				if($value['user_name'])
+				{
+					$rss[$i]['author'] = $value['user_name'];
+					$rss[$i]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+				}
+				else
+				{
+					$tmp = explode(".", $value['thread_user'], 2);
+					list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+				}
+				$rss[$i]['title'] = "Re: " . $topic['thread_name'];
+				$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $this->topicid;
+				$rss[$i]['description'] = $value['thread_thread'];
+				$rss[$i]['datestamp'] = $value['thread_datestamp'];
+				$i++;
+			}
+			break;
 
-		$this -> rssQuery = "
+		case 'name':
+		case 11:
+			if(!$this->topicid)
+			{
+				return false;
+			}
+
+			$this->rssQuery = "
 		SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name, u.user_email
 		FROM #forum_t as t
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-		WHERE t.thread_forum_id = ".intval($this->topicid)." AND f.forum_class IN (0, 251, 255)
-		ORDER BY t.thread_datestamp DESC LIMIT 0,".$this -> limit;
+		WHERE t.thread_forum_id = " . intval($this->topicid) . " AND f.forum_class IN (0, 251, 255)
+		ORDER BY t.thread_datestamp DESC LIMIT 0," . $this->limit;
 
-		$sqlrss->db_Select_gen($this -> rssQuery);
-		$tmp = $sqlrss->db_getList();
-		$this -> contentType = $this -> contentType." : ".$tmp[1]['forum_name'];
-		$rss = array();
-		$i=0;
-		foreach($tmp as $value) {
-			if($value['user_name']) {
-				$rss[$i]['author'] = $value['user_name'];
-				$rss[$i]['author_email'] = $value['user_email'];
-			} else {
-				$tmp=explode(".", $value['thread_user'], 2);
-				list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+			$sqlrss->db_Select_gen($this->rssQuery);
+			$tmp = $sqlrss->db_getList();
+			$this->contentType = $this->contentType . " : " . $tmp[1]['forum_name'];
+			$rss = array();
+			$i = 0;
+
+			foreach($tmp as $value)
+			{
+				if($value['user_name'])
+				{
+					$rss[$i]['author'] = $value['user_name'];
+					$rss[$i]['author_email'] = $value['user_email'];
+				}
+				else
+				{
+					$tmp = explode(".", $value['thread_user'], 2);
+					list($rss[$i]['author'], $ip) = explode(chr(1), $tmp[1]);
+				}
+
+				if($value['parent_name'])
+				{
+					$rss[$i]['title'] = "Re: " . $value['parent_name'];
+					$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $value['thread_id'] . ".post";
+				}
+				else
+				{
+					$rss[$i]['title'] = $value['thread_name'];
+					$rss[$i]['link'] = $e107->base_path . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $value['thread_id'];
+				}
+				$rss[$i]['description'] = $value['thread_thread'];
+				$rss[$i]['datestamp'] = $value['thread_datestamp'];
+				$i++;
 			}
+			break;
+	}
 
-			if($value['parent_name']) {
-				$rss[$i]['title'] = "Re: ".$value['parent_name'];
-				$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'].".post";
-			} else {
-				$rss[$i]['title'] = $value['thread_name'];
-				$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
-			}
-			$rss[$i]['description'] = $value['thread_thread'];
-			$rss[$i]['datestamp'] = $value['thread_datestamp'];
-			$i++;
-		}
-	break;
-}
+	$eplug_rss_data[] = $rss;
 
-$eplug_rss_data[] = $rss;
-//##### ------------------------------------------------------------------------------------
-
-?>
+*/

@@ -723,22 +723,21 @@ class core_library
 			'name'              => 'Font-Awesome 5 (CDN)',
 			'vendor_url'        => 'https://fontawesome.com/',
 			'version_arguments' => array(
-				'file'    => 'css/all.min.css',
+				'file'    => 'css/all.css',
 				'pattern' => '/(\d\.\d\.\d+)/',
 				'lines'   => 10,
 			),
 			'files'             => array(
 				'css' => array(
-					'css/all.min.css' => array(
+					'css/all.css' => array(
 						'zone' => 2,
 					),
-					'css/v4-shims.min.css' => array(
+					'css/v4-shims.css' => array(
 						'zone' => 2,
 					),
 				),
-
 			),
-			'variants'          => array(
+		/*	'variants'          => array(
 				// 'unminified' version for debugging.
 				'dev' => array(
 					'files' => array(
@@ -749,10 +748,10 @@ class core_library
 						),
 					),
 				),
-			),
+			),*/
 			// Override library path to CDN.
 			'library_path'      => 'https://use.fontawesome.com/releases',
-			'path'              => 'v5.7.2',
+			'path'              => 'v5.8.1',
 		);
 
 		// Font-Awesome (local).
@@ -760,9 +759,9 @@ class core_library
 			'name'              => 'Font-Awesome 5 (local)',
 			'vendor_url'        => 'https://fontawesome.com/',
 			'version_arguments' => array(
-				'file'    => 'VERSION.txt',
+				'file'    => 'css/all.css',
 				'pattern' => '/(\d\.\d\.\d+)/',
-				'lines'   => 1,
+				'lines'   => 3,
 			),
 			'files'             => array(
 				'css' => array(

@@ -89,7 +89,7 @@ class news_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $parm (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 	

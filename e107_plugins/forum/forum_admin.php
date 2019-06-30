@@ -140,7 +140,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'forum_name'                =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => FORLAN_223, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_sef'                 =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'batch'=>true, 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'sef=forum_name&size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'forum_image'               =>   array ( 'title' => LAN_ICON, 'type' => 'image', 'batch'=>false, 'inline'=>false, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Will be displayed next to the forum name', 'readParms' => '', 'writeParms' => 'media=forum&max=1', 'class' => 'center', 'thclass' => 'center',  ),
+			'forum_image'               =>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'batch'=>false, 'inline'=>false, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Image that will be displayed using {FORUMIMAGE}', 'readParms' => '', 'writeParms' => 'media=forum&max=1', 'class' => 'center', 'thclass' => 'center',  ),
+			'forum_icon'               	=> 	 array ('title' => LAN_ICON, 'type' => 'icon', 'data' => 'str', 'width' => 'auto', 'help' => 'Icon that will be displayed using {FORUMICON}', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'center',),
 			'forum_parent'              =>   array ( 'title' => FORLAN_75, 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_sub'                 =>   array ( 'title' => LAN_FORUM_1002, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 			'forum_moderators'          =>   array ( 'title' => LAN_FORUM_2003, 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
@@ -348,7 +349,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			$sql = e107::getDb();
 			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
@@ -395,7 +396,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 				// make sure the forum_name contains only plain text, no bbcode or html
 				$new_data['forum_name'] = trim(e107::getParser()->toText($new_data['forum_name']));
 			}
-			if(empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
+			if(isset($new_data['forum_sef']) && empty($new_data['forum_sef']) && !empty($new_data['forum_name']))
 			{
 				$new_data['forum_sef'] = eHelper::title2sef($new_data['forum_name']);
 			}
@@ -415,7 +416,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		}
 
 
-		public function afterDelete($del_data,$id)
+		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('forum_perms');
 		}
@@ -1035,7 +1036,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		}
 
-		public function afterDelete($data)
+		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			//	$sql2->db_Delete('banlist', "banlist_ip='{$banIP}'");
 		}
@@ -1159,7 +1160,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			}
 		}
 
-		public function afterDelete($data)
+		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			//	$sql2->db_Delete('banlist', "banlist_ip='{$banIP}'");
 		}

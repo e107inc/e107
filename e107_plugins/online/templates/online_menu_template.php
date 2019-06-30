@@ -41,7 +41,7 @@ $ONLINE_MENU_TEMPLATE['default']['enabled']                         = "
 																	";
 
 $ONLINE_MENU_TEMPLATE['default']['disabled']                        = "{ONLINE_TRACKING_DISABLED}";
-$ONLINE_MENU_TEMPLATE['default']['online_members_list_extended']    = "{SETIMAGE: w=40}<li class='media'><span class='media-object pull-left'>{ONLINE_MEMBER_IMAGE=avatar}</span><span class='media-body'>{ONLINE_MEMBER_USER} ".LAN_ONLINE_7." {ONLINE_MEMBER_PAGE}</span></li>";
+$ONLINE_MENU_TEMPLATE['default']['online_members_list_extended']    = "{SETIMAGE: w=40}<li class='media'><span class='media-object pull-left float-left'>{ONLINE_MEMBER_IMAGE=avatar}</span><span class='media-body'>{ONLINE_MEMBER_USER} ".LAN_ONLINE_7." {ONLINE_MEMBER_PAGE}</span></li>";
 
 
 
@@ -89,16 +89,16 @@ $ONLINE_MENU_TEMPLATE['extended']['online_member_newest']           = "{SETIMAGE
 
 
 // Shortcode wrappers
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_GUESTS']                   = "<li class='online-menu-extended-label'>".LAN_ONLINE_1."<span class='label label-primary pull-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS']                  = "<li class='online-menu-extended-label'>".LAN_ONLINE_2."<span class='label label-primary pull-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_GUESTS']                   = "<li class='online-menu-extended-label'>".LAN_ONLINE_1."<span class='label label-primary pull-right float-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS']                  = "<li class='online-menu-extended-label'>".LAN_ONLINE_2."<span class='label label-primary pull-right float-right'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST']             = "<ul>{---}</ul>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST_EXTENDED']    = "<li><ul class='unstyled list-unstyled'>{---}</ul></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_ONPAGE']                   = "<li>".LAN_ONLINE_3."<span class='label label-default pull-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_TOTAL']             = "<li>".LAN_ONLINE_11."<span class='label label-default pull-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_ONPAGE']                   = "<li>".LAN_ONLINE_3."<span class='label label-default pull-right float-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_TOTAL']             = "<li>".LAN_ONLINE_11."<span class='label label-default pull-right float-right'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_NEWEST']            = "<li class='online-menu-extended-label'>".LAN_ONLINE_6."</li><li><ul class='unstyled list-unstyled'>{---}</ul></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class='e-expandit' href='#online-menu-extended-most'>".LAN_ONLINE_8."</a><span class='label label-default pull-right'>{---}</span><br />";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class='e-expandit' href='#online-menu-extended-most'>".LAN_ONLINE_8."</a><span class='label label-default pull-right float-right'>{---}</span><br />";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_MEMBERS']             = LAN_ONLINE_2."{---}";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_GUESTS']              = LAN_ONLINE_1."{---}";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_DATESTAMP']           = "{---}";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='online-menu-extended-label'>".LAN_ONLINE_11."<span class='label label-default pull-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='online-menu-extended-label'>".LAN_ONLINE_11."<span class='label label-default pull-right float-right'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_PAGE']              = LAN_ONLINE_7." {---}";

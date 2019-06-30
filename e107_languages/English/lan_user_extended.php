@@ -22,6 +22,8 @@ define("UE_LAN_9", "Predefined list");
 define("UE_LAN_10", "Checkboxes");
 //v2.1.5
 define("UE_LAN_13", "Country");
+//v2.2.2
+define("UE_LAN_14", "Rich Textarea (WYSIWYG)");
 
 // Leave a gap to allow for more field types
 define("UE_LAN_21", "Name");

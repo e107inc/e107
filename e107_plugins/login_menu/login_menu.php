@@ -151,7 +151,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		$caption = LAN_LOGINMENU_5.' '.USERNAME;
 	}
 	
-	//render
+
 	$ns->tablerender($caption, $text, 'login');
 
 // END LOGGED CODE	
@@ -188,6 +188,7 @@ else
 	} else {
 		$caption = LAN_LOGINMENU_5;
 	}
+
 	$ns->tablerender($caption, $text, 'login');
 }
 // END NOT LOGGED CODE

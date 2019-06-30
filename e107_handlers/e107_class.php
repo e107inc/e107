@@ -78,10 +78,10 @@ class e107
 	/**
 	 * User login name
 	 *
-	 * @var string
+	 * @var array
 	 * @see init_session()
 	 */
-	public $currentUser = '';
+	public $currentUser;
 
 	/**
 	 * Run once load core shortcodes
@@ -143,6 +143,11 @@ class e107
 	 */
 	protected static $_js_enabled = true;
 
+
+
+
+	protected static $_breadcrumb = array();
+
 	/**
 	 * Core handlers array
 	 * For new/missing handler add
@@ -162,7 +167,8 @@ class e107
 		'comment'                        => '{e_HANDLER}comment_class.php',
 		'e_date'                         => '{e_HANDLER}date_handler.php',
 		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix.
-		'db'                             => '{e_HANDLER}mysql_class.php',
+		'db'                             => '{e_HANDLER}e_db_pdo_class.php',
+	//	'db'                             => '{e_HANDLER}mysql_class.php',
 		'e107Email'                      => '{e_HANDLER}mail.php',
 		'e107_event'                     => '{e_HANDLER}event_class.php',
 		'e107_db_debug'                  => '{e_HANDLER}db_debug_class.php',
@@ -1344,7 +1350,7 @@ class e107
 	 */
 	public static function getDb($instance_id = '')
 	{
-		return self::getSingleton('db', true, $instance_id);
+		 return self::getSingleton('db', true, $instance_id);
 	}
 
 	/**
@@ -2799,8 +2805,8 @@ class e107
 	 *
 	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
 	 * Will search for:
-	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
-	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
+	 * - e107_themes/{current_frontend_theme}/templates/user_template.php (if $override is true) - this is the default.
+	 * - e107_core/templates/user_template.php (if override not found or $override is false)
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 *
@@ -3346,6 +3352,43 @@ class e107
 
 	}
 
+
+	/**
+	 * Set or Get the current breadcrumb array.
+	 * @param array $array
+	 * @return array|null
+	 */
+	public static function breadcrumb($array = array())
+	{
+
+		if(empty($array)) // read
+		{
+
+			if(empty(self::$_breadcrumb)) //Guess what it should be..
+			{
+				if(defined('PAGE_NAME'))  // BC search for "PAGE_NAME"
+				{
+					return array(0=> array('text'=>PAGE_NAME, 'url'=>null));
+				}
+				elseif($caption = e107::getRender()->getMainCaption()) // BC search for primary render caption
+				{
+					return array(0=> array('text'=>$caption, 'url'=>null));
+				}
+
+			}
+
+			return self::$_breadcrumb;
+		}
+
+
+
+
+
+		self::$_breadcrumb = $array; // write.
+
+		return null;
+	}
+
 	/**
 	 * Static (easy) sef-url creation method (works with e_url.php @see /index.php)
 	 *
@@ -3359,7 +3402,7 @@ class e107
 	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
 	 * @return string
 	 */
-	public static function url($plugin='',$key, $row=array(), $options = array())
+	public static function url($plugin='', $key=null, $row=array(), $options = array())
 	{
 
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
@@ -4047,7 +4090,10 @@ class e107
 	 */
 	public function set_constants()
 	{
-		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		if(!defined('MAGIC_QUOTES_GPC'))
+		{
+			define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		}
 
 		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix
 

@@ -636,6 +636,7 @@ class page_admin_ui extends e_admin_ui
 		protected $cats = array(0 => LAN_NONE);
 		protected $templates = array();
 		protected $chapterFields = array();
+		protected $chapters = array();
 
 		function init()
 		{
@@ -703,7 +704,7 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline' || $this->getAction() == 'grid'))
 			{
 			
-				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_title != '' OR p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
 		//	$this->gridQry = $this->listQry;
 				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
@@ -790,10 +791,15 @@ class page_admin_ui extends e_admin_ui
 			
 			$sql = e107::getDb();
 
-			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
+			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_sef, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
 			while($row = $sql->fetch())
 			{
 				$cat = $row['chapter_id'];
+
+				$chrow = $row;
+				unset($chrow['chapter_fields']);
+
+				$this->chapters[$cat] = $chrow;
 
 				if($row['chapter_parent'] == 0)
 				{
@@ -978,13 +984,20 @@ class page_admin_ui extends e_admin_ui
             /** @var e_admin_model $model */
             foreach ($tree->getTree() as $id => $model)
             {
-                // No chapter, override route
-                if(!$model->get('page_chapter'))
-                {
+
+				if($chap = $model->get('page_chapter'))
+				{
+                    $model->set('chapter_sef', $this->chapters[$chap]['chapter_sef']);
+                    $parent = (int) $this->chapters[$chap]['chapter_parent'];
+                    $model->set('book_sef', $this->chapters[$parent]['chapter_sef']);
+				}
+				else
+				{
                     $urlData = $this->url;
                     $urlData['route'] = 'page/view/other';
                     $model->setUrl($urlData);
                 }
+
             }
         }
 

@@ -12,6 +12,8 @@
 define("PAGE_NAME", "News");
 
 
+
+
 define("LAN_NEWS_1", "News for specific members only");
 define("LAN_NEWS_2", "You are not allowed to see this news");
 //define("LAN_NEWS_5", "Error! Was unable to update news item into database!");
@@ -52,4 +54,4 @@ define("LAN_NEWS_307", "Total posts in this category: ");
 
 define("LAN_NEWS_308", "Perhaps you're looking for one of the news items below?");
 
-?>
+define("LAN_NEWS_309", "Tag");

@@ -166,6 +166,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						ajaxOptions.url = $element.attr('data-src');
 						// Set Ajax type to "GET".
 						ajaxOptions.type = 'GET';
+
 					}
 
 					if(ajaxOptions.wait != null)
@@ -428,6 +429,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var val = src.match(/from=(\d+)/);
 		var amt = parseInt(val[1]);
 
+
 		var oldVal = 'from=' + amt;
 		var newVal = null;
 
@@ -454,6 +456,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		else
 		{
 			newVal = 'from=' + add;
+		}
+
+		if($(e).attr("data-nav-id"))
+		{
+			navid = '.' + $(e).attr("data-nav-id");
 		}
 
 		if(newVal)

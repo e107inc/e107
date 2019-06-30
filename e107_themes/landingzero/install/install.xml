@@ -253,7 +253,7 @@
 			<field name="media_cat_order">1</field>
 		</item>
 		<item>
-			<field name="media_cat_id">6/field>
+			<field name="media_cat_id">6</field>
 			<field name="media_cat_owner">page</field>
 			<field name="media_cat_category">page</field>
 			<field name="media_cat_title">Custom Pages</field>

@@ -227,9 +227,19 @@ if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
 	 require_once(e_ROOT.$CLASS2_INCLUDE);
 }
 
+if(empty($HANDLERS_DIRECTORY))
+{
+	$HANDLERS_DIRECTORY = 'e107_handlers/';
+}
+
+if(empty($PLUGINS_DIRECTORY))
+{
+	$PLUGINS_DIRECTORY = 'e107_plugins/';
+}
+
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(!isset($ADMIN_DIRECTORY))
+if(empty($mySQLdefaultdb))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
   header('Location: install.php');
@@ -246,6 +256,9 @@ unset($tmpPlugDir);
 //
 // clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
+
+
+
 $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 
 //Core functions - now API independent
@@ -934,6 +947,7 @@ if (!class_exists('e107table', false))
 		private $uniqueId = null;
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
+		private $mainRenders = array(); // all renderered with style = 'default' or 'main'.
 
 		
 		function __construct()
@@ -942,6 +956,60 @@ if (!class_exists('e107table', false))
 			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
 		}
 
+
+
+
+		/**
+		 * Return content options for the main render that uses {SETSTYLE=default} or {SETSTYLE=main}
+		 * @return array
+		 */
+		private function getMainRender()
+		{
+			if(isset($this->mainRenders[0]))
+			{
+				return $this->mainRenders[0];
+			}
+
+			return array();
+
+		}
+
+
+		/**
+		 * Return the first caption rendered with {SETSTYLE=default} or {SETSTYLE=main}
+		 * @return |null
+		 */
+		public function getMainCaption()
+		{
+			if(isset($this->mainRenders[0]['caption']))
+			{
+				return $this->mainRenders[0]['caption'];
+			}
+
+			return null;
+		}
+
+
+		function getMagicShortcodes()
+		{
+			$ret = array();
+
+			$val = $this->getMainRender();
+
+			$types = array('caption') + $this->contentTypes;
+
+			foreach($types as $var)
+			{
+				$sc = '{---'.strtoupper($var).'---}';
+				$ret[$sc] = isset($val[$var]) ? (string) $val[$var] : null;
+			}
+
+			$bread = e107::breadcrumb();
+			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread);
+
+			return $ret;
+
+		}
 
 		/**
 		 * Set the style mode for use in tablestyle() method/function
@@ -960,7 +1028,7 @@ if (!class_exists('e107table', false))
 		 */
 		public function setUniqueId($id)
 		{
-			$this->uniqueId = $id;
+			$this->uniqueId = !empty($id) ? eHelper::dasherize($id) : null;
 			return $this;
 		}
 
@@ -968,18 +1036,37 @@ if (!class_exists('e107table', false))
 		/**
 		 * Set Advanced Page/Menu content (beyond just $caption and $text)
 		 *
-		 * @param string $type header|footer|text|title|image|list
+		 * @param string|array $type header|footer|text|title|image|list
 		 * @param string $val
 		 * @return bool|e107table
 		 */
 		public function setContent($type, $val)
 		{
+			if(is_array($type))
+			{
+				foreach($this->contentTypes as $t)
+				{
+					$this->content[$t] = (string) $type[$t];
+				}
+			}
+
+
 			if(!in_array($type,$this->contentTypes))
 			{
 				return false;
 			}
 
-			$this->content[$type] = (string) $val;
+			if($this->uniqueId !== null)
+			{
+				$key = $this->uniqueId;
+			}
+			else
+			{
+				$key = '_generic_';
+				e107::getMessage()->addDebug("Possible issue: Missing a Unique Tablerender ID. Use \$ns->setUniqueId() in the plugin script prior to setContent(). "); // debug only, no LAN.
+			}
+
+			$this->content[$key][$type] = (string) $val;
 
 			return $this;
 		}
@@ -992,12 +1079,15 @@ if (!class_exists('e107table', false))
 		 */
 		public function getContent($type='')
 		{
+			$key = ($this->uniqueId !== null) ? $this->uniqueId : '_generic_';
+
 			if(empty($type))
 			{
-				return $this->content;
+				return $this->content[$key];
 			}
 
-			return $this->content[$type];
+
+			return $this->content[$key][$type];
 
 		}
 
@@ -1031,6 +1121,8 @@ if (!class_exists('e107table', false))
 		 */
 		public function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
+
+
 			$override_tablerender = e107::getSingleton('override', e_HANDLER.'override_class.php')->override_check('tablerender');
 
 			if ($override_tablerender)
@@ -1098,14 +1190,26 @@ if (!class_exists('e107table', false))
 				$thm = new $this->themeClass();
 			}
 
-			$options = $this->content;
+			// Automatic list detection .
+			$isList = (strpos(ltrim($text), '<ul') === 0 ) ? true : false;
+			$this->setContent('list', $isList);
 
-			$options['uniqueId'] = $this->uniqueId;
-			$options['menuArea'] = $this->eMenuArea;
-			$options['menuCount'] = $this->eMenuCount;
-			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
-			$options['setStyle'] = $this->eSetStyle;
+			$options = $this->getContent();
 
+			$options['uniqueId'] = (string) $this->uniqueId;
+			$options['menuArea'] = (int) $this->eMenuArea;
+			$options['menuCount'] = (int) $this->eMenuCount;
+			$options['menuTotal'] = (int) varset($this->eMenuTotal[$this->eMenuArea]);
+			$options['setStyle'] = (string) $this->eSetStyle;
+
+			$options['caption'] = e107::getParser()->toText($caption);
+
+			if($this->eSetStyle === 'default' || $this->eSetStyle === 'main')
+			{
+				$this->mainRenders[] = $options;
+			}
+
+			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();
 			
 			if(is_object(vartrue($thm)))
 			{
@@ -1116,8 +1220,10 @@ if (!class_exists('e107table', false))
 				tablestyle($caption, $text, $mode, $options);
 			}
 
+			$key = ($this->uniqueId !== null) ? $this->uniqueId : '_generic_';
+			$this->content[$key] = array();
 			$this->uniqueId = null;
-			$this->content = array();
+
 		}
 
 
@@ -1367,13 +1473,22 @@ if(!defined("THEME_LAYOUT"))
 	$pref           = e107::getPref();
 	$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
 	$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout'],'') : $user_pref['sitetheme_deflayout'];
-	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, defset('e_PAGE',''));
+	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, $_SERVER['SCRIPT_FILENAME']);
 
 	define("THEME_LAYOUT",$deflayout);
 
     unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
 }
 
+// Load library dependencies.
+if(deftrue('e_ADMIN_AREA'))
+{
+	e107::getTheme('current', true)->loadLibrary();
+}
+else
+{
+	e107::getTheme('current')->loadLibrary();
+}
 // -----------------------------------------------------------------------
 
 
@@ -1559,7 +1674,11 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 	if(e107::isCli())
 	{
-		return true;
+		global $_E107;
+		if(empty($_E107['phpunit']))
+		{
+			return true;
+		}
 	}
 
 	if(is_numeric($uid) && $uid > 0)
@@ -2346,6 +2465,22 @@ class error_handler
 	}
 
 	/**
+	 * Deftrue function independent of core function.
+	 * @param $value
+	 * @return bool
+	 */
+	private function deftrue($value)
+	{
+		if (defined($value) && constant($value))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * @param $type
 	 * @param $message
 	 * @param $file
@@ -2363,7 +2498,7 @@ class error_handler
 			case E_DEPRECATED:
 		//	case E_STRICT:
 
-			if ($startup_error || deftrue('E107_DBG_ALLERRORS') || deftrue('E107_DBG_ERRBACKTRACE'))
+			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 
 
@@ -2385,7 +2520,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
-			if ($startup_error || deftrue('E107_DBG_BASIC') || deftrue('E107_DBG_ERRBACKTRACE'))
+			if ($startup_error || $this->deftrue('E107_DBG_BASIC') || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
 				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";

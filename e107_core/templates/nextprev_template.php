@@ -46,14 +46,14 @@ $NEXTPREV_TEMPLATE['bootstrap_start']			= "<!-- Start of Next/Prev -->\n<nav>\n<
 $NEXTPREV_TEMPLATE['bootstrap_end'] 			= "</ul></nav><!-- End of Next/Prev -->";
 $NEXTPREV_TEMPLATE['bootstrap_nav_caption'] 	= '';
 
-$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li><a class="first hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_prev'] 		= '<li><a class="prev" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li><a class="last hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li><a class="next" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li class="page-item"><a class="page-link first hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_prev'] 		= '<li class="page-item"><a class="page-link prev" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li class="page-item"><a class="page-link last hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li class="page-item"><a class="page-link next" href="{url}" title="{url_label}">{label}</a></li>';
 
 $NEXTPREV_TEMPLATE['bootstrap_items_start'] 	= '';
-$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li><a class="hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="active disabled"><a  href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li class="page-item"><a class="page-link hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="page-item active disabled"><a class="page-link" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_items_end'] 		= '';
 
 $NEXTPREV_TEMPLATE['bootstrap_separator'] 		= '';

@@ -94,7 +94,7 @@ class contact_shortcodes extends e_shortcode
 	/* example {CONTACT_NAME: class=form-control} */
 	/* example {CONTACT_NAME: class=col-md-12&placeholder=".LANCONTACT_03." *} */
 		
-	function sc_contact_name($parm='')
+	function sc_contact_name($parm=null)
 	{
 		$userName = deftrue('USERNAME');
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
@@ -109,7 +109,7 @@ class contact_shortcodes extends e_shortcode
 	/* example {CONTACT_EMAIL: class=form-control} */
 	/* example {CONTACT_EMAIL: class=col-md-12&placeholder=".LANCONTACT_04." *} */
 
-	function sc_contact_email($parm='')
+	function sc_contact_email($parm=null)
 	{
 		$userEmail = deftrue('USEREMAIL');
 		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
@@ -126,7 +126,7 @@ class contact_shortcodes extends e_shortcode
 	/* example {CONTACT_SUBJECT: class=form-control} */
 	/* example {CONTACT_SUBJECT: class=col-md-12&placeholder=".LANCONTACT_05." *} */
 	
-	function sc_contact_subject($parm='')
+	function sc_contact_subject($parm=null)
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
@@ -161,14 +161,14 @@ class contact_shortcodes extends e_shortcode
 	
 	/* example {CONTACT_SUBMIT_BUTTON} */
 	/* example {CONTACT_SUBMIT_BUTTON: class=contact submit btn btn-minimal} */
-	function sc_contact_submit_button($parm='')
+	function sc_contact_submit_button($parm=null)
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-primary button';
 		
 		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='".$class."' />";	
 	}
 
-	function sc_contact_gdpr_check($parm='')
+	function sc_contact_gdpr_check($parm=null)
 	{
 		$parm['class'] = (!empty($parm['class'])) ? $parm['class'] : '';
 		$parm = array_merge(array('required'=>1), $parm);
@@ -176,7 +176,7 @@ class contact_shortcodes extends e_shortcode
 	}
      
 	/* {CONTACT_GDPR_LINK} */
-	function sc_contact_gdpr_link($parm='')
+	function sc_contact_gdpr_link($parm=null)
 	{
 		$pp = e107::getPref('gdpr_privacypolicy', '');
 		if (!$pp)

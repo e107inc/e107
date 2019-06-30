@@ -301,10 +301,12 @@ if (!function_exists('asortbyindex'))
        }
        asort ($sort_values);
        reset ($sort_values);
-       while (list ($arr_key, $arr_val) = each ($sort_values))
+
+       foreach($sort_values as $arr_key =>$arr_val)
        {
               $sorted_arr[] = $array[$arr_key];
        }
+
        return $sorted_arr;
     }
 }
@@ -425,12 +427,16 @@ class e_array {
     /**
     * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
     *
-    * @param string $ArrayData
+    * @param string $sourceArrayData
     * @return array|bool stored data
     */
-    public function unserialize($ArrayData) 
+    public function unserialize($sourceArrayData)
     {
-        if ($ArrayData == ""){
+        $ArrayData = $sourceArrayData;
+
+
+        if ($ArrayData == "")
+        {
             return false;
         }
 
@@ -445,8 +451,7 @@ class e_array {
             $dat = unserialize($ArrayData);
             $ArrayData = $this->WriteArray($dat,FALSE);
         }
-
-	    if(substr($ArrayData,0,1) === '{' || substr($ArrayData,0,1) === '[') // json
+		elseif(strpos($ArrayData,'{') === 0 || strpos($ArrayData,'[') === 0) // json
 	    {
 	        $dat = json_decode($ArrayData, true);
 
@@ -469,7 +474,7 @@ class e_array {
 
         if(strpos($ArrayData, "\$data = ") === 0) // Fix for buggy old value.
 		{
-			$ArrayData = substr($ArrayData,8);
+			$ArrayData = (string) substr($ArrayData,8);
 		}
 
         if(strtolower(substr($ArrayData,0,5)) != 'array')
@@ -480,6 +485,10 @@ class e_array {
 		if(strpos($ArrayData,"0 => \'")!=false)
 		{
              $ArrayData = stripslashes($ArrayData);
+		}
+		elseif(strpos($ArrayData,'array') === 0 && strpos($ArrayData,"\' => \'") !== false && strpos($ArrayData,"' => 'array") === false) // FIX for old corrupted link-words preference.
+		{
+			$ArrayData = stripslashes($ArrayData);
 		}
 
 	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
@@ -513,7 +522,11 @@ class e_array {
 					echo "<pre>";
 					debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 					echo "</pre>";
+					file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
 				}
+
+			//	e107::getAdminLog()->addError($sourceArrayData)->toFile('unserializeError_'.time().'.log','e107::unserialize',false);
+
 
 			    return array();
 
@@ -527,6 +540,12 @@ class e_array {
 	        if (!isset($data) || !is_array($data))
 	        {
 	            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
+
+	            if(e_DEBUG === true)
+				{
+	                file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
+				}
+
 	            return false;
 	        }
 

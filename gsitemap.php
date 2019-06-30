@@ -35,6 +35,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 			0 => array('text' => $tp->toHTML(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
 		);
 		$text = e107::getForm()->breadcrumb($bread);
+		e107::breadcrumb($bread);
 	}
 	else
 	{

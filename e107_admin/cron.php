@@ -173,6 +173,19 @@ class cron_admin_ui extends e_admin_ui
 				);
 
 			}
+
+
+			if(is_dir(e_THEME.$pref['sitetheme']."/.git"))
+			{
+				$cronDefaults['_system'][8] = array(
+					'name' 			=> LAN_CRON_65,
+					'category'		=> 'update',
+					'function' 		=> 'gitrepoTheme',
+					'description' 	=> LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_WARNING."</span> ".LAN_CRON_20_8,
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				);
+
+			}
 			
 			
 			

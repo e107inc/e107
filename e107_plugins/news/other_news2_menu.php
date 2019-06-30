@@ -142,6 +142,11 @@ if(!defined("OTHERNEWS2_SPACING")){
 	// define("OTHERNEWS2_SPACING","0");
 }
 
+if(!isset($param))
+{
+	$param = array();
+}
+
 $param['itemlink'] 		= defset('OTHERNEWS2_ITEMLINK','');
 $param['thumbnail'] 	= OTHERNEWS2_THUMB;
 $param['catlink'] 		= defset('OTHERNEWS2_CATLINK','');

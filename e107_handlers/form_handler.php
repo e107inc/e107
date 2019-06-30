@@ -663,7 +663,7 @@ class e_form
 		foreach($array as $key=>$tab)
 		{
 			$active = ($c == $act) ? ' active' : '';
-			$inner .= '<div class="item'.$active.'" id="'.$key.'">';
+			$inner .= '<div class="carousel-item item'.$active.'" id="'.$key.'">';
 			$inner .= $tab['text'];
 			
 			if(!empty($tab['caption']))
@@ -681,10 +681,10 @@ class e_form
 		if(count($array) > 1)
 		{
 			$controls = '
-			<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
+			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev">
 	        <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
-			<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
+			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" data-slide="next">
 			<span class="glyphicon glyphicon-chevron-right"></span>
 			</a>';
 		}
@@ -1251,6 +1251,7 @@ class e_form
 	{
 
 		$tp = e107::getParser();
+
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id."-meta";
 		
@@ -1266,20 +1267,18 @@ class e_form
 
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));
 
-	//	if(deftrue('e_DEBUG_MEDIAPICKER'))
-	//	{
-			// v2.2.0
-			$sc_parameters['image'] = 1;
-			$sc_parameters['dropzone'] = 1;
-			if(!empty($sc_parameters['video'])) // bc fix
-			{
-				$sc_parameters['youtube'] = 1;
-			}
+		// v2.2.0
+		$sc_parameters['image'] = 1;
+		$sc_parameters['dropzone'] = 1;
+		if(!empty($sc_parameters['video'])) // bc fix
+		{
+			$sc_parameters['youtube'] = 1;
+		}
 
-			return $this->mediapicker($name, $default, $sc_parameters);
-	//	}
+		return $this->mediapicker($name, $default, $sc_parameters);
 
 
+/*
 		if(empty($sc_parameters['media']))
 		{
 			$sc_parameters['media'] = '_common';	
@@ -1401,7 +1400,7 @@ class e_form
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
 
-		return $ret;
+		return $ret;*/
 
 	}
 
@@ -1486,7 +1485,7 @@ class e_form
 
 		$cat = $tp->toDB(vartrue($parms['media']));
 
-		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$parms['w']."px;min-height:".$parms['h']."px;'>";
+		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:15px; display:inline-block; width:".$parms['w']."px;min-height:".$parms['h']."px;'>";
 
 		$parms['class'] = 'btn btn-sm btn-default';
 
@@ -1629,7 +1628,7 @@ class e_form
 	 * @param string label
 	 * @param mixed sc_parameters
 	 */		
-	function filepicker($name, $default, $label = '', $sc_parameters = '')
+	function filepicker($name, $default, $label = '', $sc_parameters = null)
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
@@ -2188,6 +2187,11 @@ class e_form
 		{
 			return '';
 		}
+		
+		if(BOOTSTRAP === 4)
+		{
+			return '<a class="pager-button btn btn-primary" href="'.$url.'">'.$total.'</a>';
+		}
 
 		if(!is_numeric($total))
 		{
@@ -2235,7 +2239,7 @@ class e_form
 			<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>";
 		}
 			
-		$class = vartrue($options['class'],'');	
+		$class = vartrue($options['class'],'');
 		$target = $this->name2id($name);
 		
 		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
@@ -2245,9 +2249,11 @@ class e_form
 			$label = $value;
 			list($score,$denom) = explode('/',$value);
 
-			$multiplier = 100 / (int) $denom;
+		//	$multiplier = 100 / (int) $denom;
 
-			$value = (int) $score * (int) $multiplier;
+			$value = ((int) $score / (int) $denom) * 100;
+
+		//	$value = (int) $score * (int) $multiplier;
 			$percVal = number_format($value,0).'%';
 		}
 		else
@@ -2261,8 +2267,9 @@ class e_form
 			$label = $options['label'];
 		}
 
+		$id = !empty($options['id']) ? "id='".$options['id']."'" : '';
 
-		$text =	"<div class='progress ".$class."{$striped}' >
+		$text =	"<div {$id} class='progress {$striped}' >
    		 	<div id='".$target."' class='progress-bar bar ".$class."' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
    		$text .= $label;
    		 	$text .= "</div>
@@ -2530,7 +2537,7 @@ class e_form
 		}
 
 		$pre = (vartrue($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
-		$post = (vartrue($options['label'])) ? $options['label']."</label>" : "";
+		$post = (vartrue($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
 		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
@@ -2552,7 +2559,7 @@ class e_form
 
 		if(!is_array($checked)) $checked = explode(",",$checked);
 		
-		$text = "";
+		$text = array();
 
 		$cname = $name;
 
@@ -2576,15 +2583,26 @@ class e_form
 				$c = vartrue($checked[$k]);
 			}
 
-
-			$text .= $this->checkbox($cname, $key, $c, $label);
+			/**
+			 * Label overwrote the other supplied options (if any)
+			 * and also failed in case it contained a "=" character
+			 */
+			$options['label'] = $label;
+			$text[] = $this->checkbox($cname, $key, $c, $options);
 		}
 
+		$id = empty($options['id']) ? $this->name2id($name).'-container' : $options['id'];
+
 	//	return print_a($checked,true);
+		if($options['list'])
+		{
+			return "<ul id='".$id."' class='checkboxes'><li>".implode("</li><li>",$text)."</li></ul>";
+		}
+
 
 		if(!empty($text))
 		{
-			return "<div class='checkboxes' style='display:inline-block'>".$text."</div>";
+			return "<div id='".$id."' class='checkboxes' style='display:inline-block'>".implode("",$text)."</div>";
 		}
 
 		return $text;
@@ -2694,13 +2712,11 @@ class e_form
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
-			$defaultClass = (deftrue('BOOTSTRAP') === 3) ? 'radio-inline' : 'radio inline';
+			$defaultClass = (deftrue('BOOTSTRAP')) ? 'radio-inline' : 'radio inline';
 			$dis = (!empty($options['disabled'])) ? " disabled" : "";
 			$text .= "<label class='{$defaultClass}{$dis}'>";
 			
 		}
-		
-	
 		
 		
 		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
@@ -2712,10 +2728,8 @@ class e_form
 		
 		if($labelFound)
 		{
-			$text .= "<span>".$labelFound."</span></label>";
+			$text .= " <span>".$labelFound."</span></label>";
 		}
-
-
 		
 		return $text;
 	}
@@ -3501,8 +3515,8 @@ var_dump($select_options);*/
 		
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
-		$text = '<ul class="breadcrumb">
-			<li class="breadcrumb-item">';
+		$text = "\n<ul class=\"breadcrumb\">\n";
+		$text .= "<li class=\"breadcrumb-item\">";
 
 		foreach($array as $val)
 		{
@@ -3512,7 +3526,7 @@ var_dump($select_options);*/
 			}
 
 			$ret = "";
-			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
+			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";
 			$ret .= vartrue($val['text'],'');
 			$ret .= vartrue($val['url']) ? "</a>" : "";
 			
@@ -3524,9 +3538,9 @@ var_dump($select_options);*/
 	
 		$sep = (deftrue('BOOTSTRAP')) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
+		$text .= implode($sep."</li>\n<li class='breadcrumb-item'>",$opt);
 	
-		$text .= "</li></ul>";
+		$text .= "</li>\n</ul>";
 		
 	//	return print_a($opt,true);
 	
@@ -4039,7 +4053,7 @@ var_dump($select_options);*/
 		
 	// navbar-header nav-header
 	// navbar-header nav-header
-		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
+		$text = '<div class="col-selection dropdown e-tip pull-right float-right" data-placement="left">
     <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
@@ -4335,7 +4349,8 @@ var_dump($select_options);*/
 						'RELATED_URL'       => $tp->replaceConstants($val['url'],'full'),
 						'RELATED_TITLE'     => $val['title'],
 						'RELATED_IMAGE'     => $tp->toImage($val['image']),
-						'RELATED_SUMMARY'   => $tp->toHTML($val['summary'],true,'BODY')
+						'RELATED_SUMMARY'   => $tp->toHTML($val['summary'],true,'BODY'),
+						'RELATED_DATE'		=> $val['date'],	
 					);
 
 					$list[] = $tp->simpleParse($TEMPLATE['item'], $row);
@@ -4545,55 +4560,71 @@ var_dump($select_options);*/
 	 * @param mixed $value
 	 * @param array $parms
 	 * @param $id
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php?id=[id]','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'{e_PLUGIN}myplugin/myurl.php?id=[field-name]','target'=>'blank')
+	 * @example $frm->renderLink('label', array('link'=>'db-field-name','target'=>'blank')
+	 * @example $frm->renderLink('label', array('url'=>'e_url.php key','title'=>'click here');
 	 * @return string
 	 */
-	private function renderLink($value, $parms, $id=null)
+	public function renderLink($value, $parms, $id=null)
 	{
 		if(empty($parms['link']) && empty($parms['url']))
 		{
 			return $value;
 		}
 
+		/** @var e_admin_model $model */
+		$model = e107::getRegistry('core/adminUI/currentListModel');
+
 		$dialog     = vartrue($parms['target']) =='dialog' ? " e-modal" : ""; // iframe
 		$ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
 		$modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
 
+		$link = null;
 
-		if(!empty($parms['url'])) // ie. use e_url.php
+		if(!empty($parms['url']) && !empty($model)) // ie. use e_url.php
 		{
-			$plugin = $this->getController()->getPluginName();
-			$data = $this->getController()->getListModel()->getData();
-			$link = e107::url($plugin,$parms['url'],$data);
+			//$plugin = $this->getController()->getPluginName();
+			if($plugin = e107::getRegistry('core/adminUI/currentPlugin'))
+			{
+				$data = $model->getData();
+				$link = e107::url($plugin,$parms['url'],$data);
+			}
 		}
-		else // old way.
+		elseif(!empty($model)) // old way.
 		{
 			$tp = e107::getParser();
+
+			$data = $model->getData();
 
 			$link       = str_replace('[id]',$id,$parms['link']);
 			$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
 
-
-			if($parms['link'] === 'sef' && $this->getController()->getListModel())
+			if($parms['link'] === 'sef' )
 			{
-				$model = $this->getController()->getListModel();
-
 				if(!$model->getUrl())
 				{
 					$model->setUrl($this->getController()->getUrl());
 				}
-							// assemble the url
+
+				// assemble the url
 				$link = $model->url(null);
 			}
 			elseif(!empty($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
 			{
-				$data = $this->getController()->getListModel()->getData();
 				$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
+			}
+			elseif(strpos($link,'[')!==false && preg_match('/\[(\w+)\]/',$link, $match)) // field-name within [ ] brackets.
+			{
+				$field = $match[1];
+				$link = str_replace($match[0], $data[$field],$link);
 			}
 		}
 					// in case something goes wrong...
 		if($link)
 		{
-			return "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
+			return "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".varset($parms['title'],LAN_EFORM_010)."' >".$value."</a>";
 		}
 
 		return $value;
@@ -4785,6 +4816,19 @@ var_dump($select_options);*/
 			break;
 		}
 
+		if(!empty($attributes['grid']) && empty($attributes['type']))
+		{
+			return null;
+		}
+
+		if(empty($attributes['type']))
+		{
+			e107::getDebug()->log("Field '".$field."' is missing a value for 'type'.");
+		//	e107::getDebug()->log($value);
+		//	e107::getDebug()->log($attributes);
+		}
+
+
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -4798,7 +4842,7 @@ var_dump($select_options);*/
 
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
+					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value, 'number');
 				}
 				elseif(!empty($parms['link']))
 				{
@@ -4976,39 +5020,6 @@ var_dump($select_options);*/
 				}
 
 				$value = $this->renderLink($value,$parms,$id);
-				/*
-				if(!empty($parms['link']) && $id)
-				{
-					$link = str_replace('[id]', $id, $parms['link']);
-					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-
-					$dialog = vartrue($parms['target']) == 'dialog' ? " e-dialog" : ""; // iframe
-					$ext = vartrue($parms['target']) == 'blank' ? " rel='external' " : ""; // new window
-					$modal = vartrue($parms['target']) == 'modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
-
-					if($parms['link'] == 'sef' && $this->getController()->getListModel())
-					{
-						$model = $this->getController()->getListModel();
-						// copy url config
-						if(!$model->getUrl())
-						{
-							$model->setUrl($this->getController()->getUrl());
-						}
-						// assemble the url
-						$link = $model->url();
-					}
-
-					elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
-					{
-						$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
-					}
-
-					// in case something goes wrong...
-					if($link)
-					{
-						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='".LAN_EFORM_010."' >" . $value . "</a>";
-					}
-				}*/
 
 				if(empty($value))
 				{
@@ -5067,32 +5078,6 @@ var_dump($select_options);*/
 
 				$value = $this->renderLink($value,$parms,$id);
 
-				/*
-				if(vartrue($parms['link']) && $id)
-				{
-					$link       = str_replace('[id]',$id,$parms['link']);
-					$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
-					
-					$dialog     = vartrue($parms['target']) =='dialog' ? " e-dialog" : ""; // iframe
-                    $ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
-                    $modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
-            
-                    if($parms['link'] == 'sef' && $this->getController()->getListModel()) 
-                    {
-                    	$model = $this->getController()->getListModel();
-						// copy url config
-						if(!$model->getUrl()) $model->setUrl($this->getController()->getUrl());
-						// assemble the url
-                    	$link = $model->url(null);
-                    }
-                    elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
-                    {
-                        $link = $tp->replaceConstants(vartrue($data[$parms['link']]));        
-                    }
-                    
-					// in case something goes wrong...
-                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
-				}*/
 
 				if(empty($value))
 				{
@@ -5549,7 +5534,7 @@ var_dump($select_options);*/
 			break;
 
 			case 'method': // Custom Function			
-				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method.
+				$method = varset($attributes['field']); // prevents table alias in method names. ie. u.my_method.
 				$_value = $value;
 
 				if(!empty($attributes['data']) && $attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
@@ -6332,6 +6317,7 @@ var_dump($select_options);*/
 		}
 		else
 		{
+			/** @deprecated usage @see renderCreateFieldset() should be attributes['help'] */
 			$ret .= vartrue($parms['help']) ? '<div class="field-help">'.$tp->toHTML($parms['help'],false,'defs').'</div>' : '';	
 		}
 
@@ -6417,15 +6403,21 @@ var_dump($select_options);*/
 		$tp = e107::getParser();
 		$text = '';
 		
-		
-		// print_a($form_options);
+
 		
 		foreach ($form_options as $fid => $options)
 		{
+			list($type,$plugin) = explode('-',$fid,2);
+
+			$plugin = str_replace('-','_',$plugin);
+
+			e107::setRegistry('core/adminUI/currentPlugin', $plugin);
+
 			/** @var e_tree_model $tree_model */
 			$tree_model = $tree_models[$fid];
 			$tree = $tree_model->getTree();
 			$total = $tree_model->getTotal();
+
 		
 			$amount = $options['perPage'];
 			$from = vartrue($options['from'], 0);
@@ -6472,10 +6464,11 @@ var_dump($select_options);*/
 				foreach($tree as $model)
 				{
 				//	$model->set('x_canonical_url', 'whatever');
-			//		var_dump($model);
+
 					e107::setRegistry('core/adminUI/currentListModel', $model);
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
+
 
 				e107::setRegistry('core/adminUI/currentListModel', null);
 				
@@ -6517,6 +6510,8 @@ var_dump($select_options);*/
 				</div>
 				</form>
 			";
+
+			e107::setRegistry('core/adminUI/currentPlugin', null);
 		}
 		if(!$nocontainer)
 		{
@@ -6909,9 +6904,8 @@ var_dump($select_options);*/
 
 			$parms = vartrue($att['formparms'], array());
 			if(!is_array($parms)) parse_str($parms, $parms);
-			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
-			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
-
+			$label = !empty($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+			$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
 
 
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
@@ -7010,7 +7004,7 @@ var_dump($select_options);*/
 				}
 
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$required.$label;
-				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
+				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." ".$help;
 
 				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
 				{

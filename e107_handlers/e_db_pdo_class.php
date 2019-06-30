@@ -9,6 +9,11 @@
 define('MYSQL_ASSOC', 1);
 define('MYSQL_NUM', 2);
 define('MYSQL_BOTH', 3);
+define('ALLOW_AUTO_FIELD_DEFS', true);
+
+require_once('e_db_interface.php');
+require_once('e_db_legacy_trait.php');
+
 
 
 /**
@@ -136,9 +141,7 @@ class e_db_pdo implements e_db
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
-	 * @param string $mySQLdefaultdb The database schema to connect to
 	 * @param string $newLink force a new link connection if TRUE. Default false
-	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
 	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
@@ -772,7 +775,7 @@ class e_db_pdo implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']) && defined('ALLOW_AUTO_FIELD_DEFS') && ALLOW_AUTO_FIELD_DEFS === true)
 			{
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
@@ -1151,7 +1154,7 @@ class e_db_pdo implements e_db
 			case 'array':
 				if(is_array($fieldValue))
 				{
-					return "'".e107::getArrayStorage()->writeArray($fieldValue, true)."'";
+					return "'".e107::serialize($fieldValue, true)."'";
 				}
 				return "'". (string) $fieldValue."'";
 			break;
@@ -2161,7 +2164,7 @@ class e_db_pdo implements e_db
 	private function _getTableList($language='')
 	{
 
-		$database = !empty($this->mySQLdefaultdb) ? "FROM  ".$this->mySQLdefaultdb : "";
+		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
 		$prefix = $this->mySQLPrefix;
 
 		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
@@ -2694,7 +2697,7 @@ class e_db_pdo implements e_db
 	 *	Generate and save a cache file in the e_CACHE_DB directory,
 	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
 	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
+	 *	@return array|boolean array on success, false on not found (some errors intentionally ignored)
 	 */
 	protected function makeTableDef($tableName)
 	{
@@ -2723,6 +2726,7 @@ class e_db_pdo implements e_db
 					{
 						case 'int' :
 						case 'integer':
+						case 'smallint':
 						case 'shortint' :
 						case 'tinyint' :
 						case 'mediumint':
@@ -2767,6 +2771,8 @@ class e_db_pdo implements e_db
 			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
 		}
 
+		return empty($outDefs) ? false : $outDefs;
+
 	}
 
 	/**
@@ -2799,4 +2805,10 @@ class e_db_pdo implements e_db
 
 }
 
+/**
+ * Backwards compatibility
+ */
+class db extends e_db_pdo
+{
 
+}

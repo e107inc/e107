@@ -163,7 +163,7 @@ if (CB_MOD) {
 	$text =
 		"<form method='post' action='" . e_SELF . "'>"
 		. $text .
-		"<input type='submit' class='btn btn-danger btn-secondary button pull-right' name='moderate' value='" . CHATBOX_L13 . "' />
+		"<input type='submit' class='btn btn-danger btn-secondary button float-right pull-right' name='moderate' value='" . CHATBOX_L13 . "' />
 		</form>";
 
 }

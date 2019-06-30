@@ -276,7 +276,7 @@ class plugin_ui extends e_admin_ui
 		public function ListAjaxObserver()
 		{
 
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 
 			$this->setPlugData();
 		}
@@ -572,6 +572,7 @@ class plugin_ui extends e_admin_ui
 			if(file_exists($_path.'plugin.xml'))
 			{
 				$plugin->install_plugin_xml($id, 'upgrade');
+				$text = LAN_UPGRADE_SUCCESSFUL;
 			}
 			else
 			{
@@ -656,12 +657,16 @@ class plugin_ui extends e_admin_ui
 				e107::getConfig('core')->save();
 			}
 
-
 			$mes->addSuccess($text);
 			//$plugin->save_addon_prefs('update');
 
 			// make sure ALL plugin/addon pref lists get update and are current
 			e107::getPlug()->clearCache()->buildAddonPrefLists();
+
+			// clear infopanel in admin dashboard.
+			e107::getCache()->clear('Infopanel_plugin', true);
+			e107::getSession()->clear('addons-update-status');
+			e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
 			$this->redirectAction('list');
 	   }
@@ -1380,7 +1385,7 @@ class plugin_online_ui extends e_admin_ui
 
 			$text = "
 				<form class='form-search form-inline' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-				<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online')."
+				<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go').$frm->hidden('mode','online')."
 				</div>
 				</form>
 
@@ -1971,7 +1976,7 @@ class pluginLanguage extends e_admin_ui
 				//	continue;
 				}
 
-				if(empty($row) || $skip == true || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
+				if(empty($row) /*|| $skip == true*/ || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
 				{
 					continue;
 				}
@@ -4803,7 +4808,7 @@ TEMPLATE;
 		}
 
 		// Guess Default Field Type based on name of field. 
-		function guess($data, $val='',$mode = 'type')
+		function guess($data, $val=null,$mode = 'type')
 		{
 			$tmp = explode("_",$data);	
 			
@@ -5019,17 +5024,26 @@ TEMPLATE;
 			$type = $val['type'];
 			
 			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date','varchar','char');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 			
-			
+
+
+
+
 			if(in_array(strtolower($type),$strings))
 			{
 				$value = 'str';	
-			}	
+			}
+			elseif($type === 'varchar' || $type === 'char')
+			{
+				$value = 'safestr';
+			}
 			else 
 			{
 				$value = 'int';
 			}
+
+
 			
 			
 			$fname = $this->table."[fields][".$name."][data]";
@@ -5238,7 +5252,7 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 				$type = vartrue($val['type'],'text');
 				$help = str_replace("'",'', vartrue($val['help']));
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."', 'writeParms' => array()),\n";
 			}	
 	
 		}

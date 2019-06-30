@@ -19,7 +19,7 @@ if(defined("POLLRENDERED"))
 
 if (!e107::isInstalled('poll'))
 {
-	e107::redirect();
+	return null;
 }
 
 if(!defined("POLLCLASS"))

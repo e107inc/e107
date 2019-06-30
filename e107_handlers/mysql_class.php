@@ -2552,7 +2552,7 @@ class e_db_mysql
 	private function db_mySQLtableList($language='')
 	{
 
-		$database = !empty($this->mySQLdefaultdb) ? "FROM  ".$this->mySQLdefaultdb : "";
+		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
 		$prefix = $this->mySQLPrefix;
 
 		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
@@ -3248,7 +3248,11 @@ class e_db_mysql
 /**
  * Backwards compatibility
  */
-class db extends e_db_mysql
-{
 
+if(!class_exists('db'))
+{
+	class db extends e_db_mysql
+	{
+
+	}
 }

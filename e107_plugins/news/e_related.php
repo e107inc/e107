@@ -38,7 +38,8 @@ class news_related // include plugin-folder in the name.
 					'title'			=> varset($row['news_title']),
 					'url'			=> e107::getUrl()->create('news/view/item',$row), // '{e_BASE}news.php?extend.'.$row['news_id'],
 					'summary'		=> varset($row['news_summary']),
-					'image'			=> $thumbs[0]
+					'image'			=> $thumbs[0],
+					'date'			=> e107::getParser()->toDate(varset($row['news_datestamp']), 'short'),
 				);
 			}
 			
@@ -54,4 +55,4 @@ class news_related // include plugin-folder in the name.
 
 
 
-?>
+

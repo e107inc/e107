@@ -64,7 +64,7 @@ class news_rss // plugin-folder + '_rss'
 	 * @param string $parms
 	 * @return array
 	 */
-	function data($parms='')
+	function data($parms=null)
 	{
 
 		$pref                       = e107::getConfig()->getPref();

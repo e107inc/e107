@@ -1332,8 +1332,12 @@ class e_media
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
 
-		
-		if(!$typePath = $this->getPath($img_data['media_type'], $uploadPath))
+
+		if($category === '_icon')
+		{
+			$typePath = rtrim(e_MEDIA_ICON,'/');
+		}
+		elseif(!$typePath = $this->getPath($img_data['media_type'], $uploadPath))
 		{		
 				$this->log("Line: ".__LINE__." Couldn't generate path from file info:".$oldpath);
 				$mes->addError("Couldn't generate path from file info:".$oldpath);
@@ -1365,7 +1369,7 @@ class e_media
 		$img_data['media_caption'] 		= vartrue($new_data['media_caption']);
 		$img_data['media_category'] 	= vartrue($category,'_common_image');
 		$img_data['media_description'] 	= vartrue($new_data['media_description']);
-		$img_data['media_userclass'] 	= '0';	
+		$img_data['media_userclass'] 	= '0';
 
 		if($sql->insert("core_media",$img_data))
 		{		

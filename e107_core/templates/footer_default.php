@@ -18,9 +18,9 @@ if (!defined('e107_INIT'))
 }
 $In_e107_Footer = TRUE; // For registered shutdown function
 
+$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
+
 global $error_handler,$db_time,$FOOTER;
-
-
 
 
 
@@ -68,7 +68,12 @@ if (varset($e107_popup) != 1)
 	//
 	if(!deftrue('e_IFRAME'))
     {
-	   parseheader((varset($ph) ? $cust_footer : $FOOTER));
+
+        $psc = array(
+         '</body>'       => '',
+        );
+
+	   parseheader($FOOTER, $psc);
     }
     
 	$eTimingStop = microtime();
@@ -88,7 +93,7 @@ if (varset($e107_popup) != 1)
 		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."','".$_SERVER['HTTP_USER_AGENT']."','{$_SERVER["REQUEST_METHOD"]}'";
 	}
 	
-	if (function_exists('getrusage'))
+	if (function_exists('getrusage') && !empty($eTimingStartCPU))
 	{
 		$ru = getrusage();
 		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
@@ -132,11 +137,11 @@ if (varset($e107_popup) != 1)
 	{
 		$rinfo .= CORE_LAN16.$memuse;
 	}
-	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
+/*	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
 	{
 		$rinfo .= $cachestring.".";
 	}
-	
+	*/
 	if ($pref['log_page_accesses'])
 	{
 		// Need to log the page info to a text file as CSV data
@@ -171,9 +176,15 @@ if (varset($e107_popup) != 1)
 //
 if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
 {
-	global $db_debug;
+	$tmp = array();
+	foreach($magicSC as $k=>$v)
+	{
+		$k = str_replace(array('{','}'),'',$k);
+		$tmp[$k] = $v;
+	}
+	e107::getDebug()->log("<b>Magic Shortcodes</b><small> Replace [  ] with {  }</small><br />".print_a($tmp,true));
 	echo "\n<!-- DEBUG -->\n<div class='e-debug debug-info'>";
-	$db_debug->Show_All();
+	e107::getDebug()->Show_All();
 	echo "</div>\n";
 }
 
@@ -289,7 +300,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 		if(is_readable($fname))
 		{
 			
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 
 		}	
 	}
@@ -305,7 +316,7 @@ if(deftrue('e_DEVELOPER'))
 {
 	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 }
-$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
+$CSSORDER = defined('CSSORDER') && deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
 {
@@ -385,7 +396,7 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 		if(is_readable($fname))
 		{
 			
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}
 	}
 	unset($ret);
@@ -398,20 +409,22 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 //$page = ob_get_clean();
 
 
+$search = array_keys($magicSC);
+$replace = array_values($magicSC);
 
 // New - see class2.php 
 $ehd = new e_http_header;
-$ehd->setContent('buffer');
+$ehd->setContent('buffer', $search, $replace);
 $ehd->send();
 // $ehd->debug();
 
 $page = $ehd->getOutput();
-//$ehd->setContent($page);
-//$ehd->send($length);
 
 
 // real output
 echo $page;
+
+
 
 unset($In_e107_Footer);
 
@@ -421,4 +434,5 @@ e107::getSession()->shutdown(); // moved from the top of footer_default.php to f
 // Shutdown
 $e107->destruct();
 $e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
-?>
+
+
