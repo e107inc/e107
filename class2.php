@@ -1063,7 +1063,7 @@ if (!class_exists('e107table', false))
 			else
 			{
 				$key = '_generic_';
-				e107::getMessage()->addDebug("Possible issue: Missing a Unique Tablerender ID. Use \$ns->setUniqueId() in the plugin script prior to setContent(). See 'source code' for more information."); // debug only, no LAN.
+				e107::getDebug()->log("Possible issue: Missing a Unique Tablerender ID. Use \$ns->setUniqueId() in the plugin script prior to setContent(). See 'source code' for more information."); // debug only, no LAN.
 			}
 
 			$this->content[$key][$type] = (string) $val;
