@@ -1541,7 +1541,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
 				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
-				$replace['SUB_MENU'] = str_replace(array_keys($replace), array_values($replace), $START_SUB);
+
+				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 				$replace['SUB_MENU'] .= $tmpl['end_sub'];
 			}
