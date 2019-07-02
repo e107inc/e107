@@ -679,8 +679,11 @@
 			$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
 			// FIXME - level handler!!!
 
-
 			//	print_a($rankInfo);
+			if(empty($rankInfo))
+			{
+				return null;
+			}
 
 			if($parm == 'badge')
 			{
