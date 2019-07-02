@@ -366,6 +366,7 @@ class e_theme
 
 
 		$def = "";   // no custom pages found yet.
+		$matches = array();
 
 
 		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
@@ -390,6 +391,7 @@ class e_theme
 					return $lyout;
 				}
 			}*/
+
 
 	        foreach($cusPagePref as $lyout=>$cusPageArray)
 			{
@@ -437,13 +439,21 @@ class e_theme
 
 					if (!empty($kpage) && (strpos($c_url, $kpage) !== false)) // partial URL match
 					{
-						$def = $lyout;
+						similar_text($c_url,$kpage,$perc);
+						$matches[$lyout] = round($perc,2); // rank the match
+					//	echo $c_url." : ".$kpage."  --- ".$perc."\n";
 					}
 
 				}
 			}
 		}
 
+		if(!empty($matches)) // return the highest ranking match.
+		{
+			$top = array_keys($matches, max($matches));
+			$def = $top[0];
+			//print_r($matches);
+		}
 
 	    if($def) // custom-page layout.
 		{
