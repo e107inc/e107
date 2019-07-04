@@ -1353,6 +1353,8 @@ class e_user_provider
 			//$user->set('provider', $this->getProvider());
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
+
+            $userdata['callback_data'] = $profile;
 			
 		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
 			
