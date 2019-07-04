@@ -51,7 +51,7 @@ class gallery_shortcodes extends e_shortcode
 			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
 		}
 
-		var_dump($breadcrumb);
+		//var_dump($breadcrumb);
 
 		e107::breadcrumb($breadcrumb);
 	}
