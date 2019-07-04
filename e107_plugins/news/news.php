@@ -1242,17 +1242,13 @@ class news_front
 				$this->caption = $caption;
 				$text = $cache_data;
 
-				$this->comments = $news;
-
-				//$text = $ns->tablerender($caption, $cache_data, 'news', true);
 			}
 			else
 			{
 				$text = $cache_data;
-				$text .= $news;
 			}
 
-
+			$this->comments = $news;
 
 			return $text;
 		}
