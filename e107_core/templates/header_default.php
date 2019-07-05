@@ -175,8 +175,8 @@ if ($e_headers && is_array($e_headers))
 }
 unset($e_headers);
 
-// echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
-echo e107::getSingleton('eResponse')->renderMeta()."\n";
+
+echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 
 if (deftrue('e_FRONTPAGE'))
 {
