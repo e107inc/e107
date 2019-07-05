@@ -3979,7 +3979,7 @@ class eResponse
 		'jsonNoTitle' => false,
 		'jsonRender' => false,
 	);
-	
+
 	public function setParam($key, $value)
 	{
 		$this->_params[$key] = $value;
@@ -4048,8 +4048,8 @@ class eResponse
 	
 	/**
 	 * Append content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	public function appendBody($body, $ns = 'default')
@@ -4065,8 +4065,8 @@ class eResponse
 	
 	/**
 	 * Set content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	public function setBody($body, $ns = 'default')
@@ -4128,8 +4128,8 @@ class eResponse
 	
 	/**
 	 * Prepend content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	function prependBody($body, $ns = 'default')
@@ -4138,7 +4138,7 @@ class eResponse
 		{
 			$this->_body[$ns] = '';
 		}
-		$this->_body[$ns] = $content.$this->_body[$ns];
+		// $this->_body[$ns] = $content.$this->_body[$ns];
 		
 		return $this;
 	}
@@ -4336,6 +4336,19 @@ class eResponse
 		$attrData = '';
 
 		e107::getEvent()->trigger('system_meta_pre', $this->_meta);
+
+		$pref = e107::getPref();
+
+		if(!empty($pref['meta_keywords'][e_LANGUAGE])) // Always append (global) meta keywords to the end.
+		{
+			$tmp1 = (array) explode(",", $this->getMetaKeywords());
+			$tmp2 = (array) explode(",", $pref['meta_keywords'][e_LANGUAGE]);
+
+			$tmp3 = array_unique(array_merge($tmp1,$tmp2));
+
+			$this->setMeta('keywords', implode(',',$tmp3));
+		}
+
 
 		foreach ($this->_meta as $attr)
 		{
@@ -4562,7 +4575,7 @@ class eResponse
 		$override = array_merge(array(
 			'header' => $title,
 			'body' => $content,
-			'footer' => $statusText,
+		//	'footer' => $statusText, // FIXME $statusText has no value.
 		), $override);
 		echo $jshelper->buildJsonResponse($override);
 		$jshelper->sendJsonResponse(null);

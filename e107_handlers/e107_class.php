@@ -2365,6 +2365,7 @@ class e107
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
 	{
+		/** @var eResponse $response */
 		$response = self::getSingleton('eResponse');
 
 		if($name === 'description')
