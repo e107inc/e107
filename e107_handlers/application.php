@@ -4322,8 +4322,10 @@ class eResponse
 			if(!empty($attr))  $attr = array_merge($attr, $extended);
 			else $attr = $extended;
 		}
+
+		$key = ($name === 'keywords') ? $name : null; // prevent multiple tags.
 		
-		if(!empty($attr)) $this->_meta[] = $attr;
+		if(!empty($attr)) $this->_meta[$key] = $attr;
 		return $this;
 	}
 	
@@ -4349,6 +4351,7 @@ class eResponse
 			$this->setMeta('keywords', implode(',',$tmp3));
 		}
 
+		e107::getDebug()->log($this->_meta);
 
 		foreach ($this->_meta as $attr)
 		{

@@ -695,7 +695,10 @@ class pageClass
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
-		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
+		if(!empty($this->page['page_metakeys']))
+		{
+			e107::meta('keywords', eHelper::formatMetaKeys($this->page['page_metakeys']));
+		}
 
 		$tp = e107::getParser();
 
