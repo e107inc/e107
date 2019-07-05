@@ -71,6 +71,7 @@ if (varset($e107_popup) != 1)
 
         $psc = array(
          '</body>'       => '',
+         '{THEME}'       => THEME_ABS,
         );
 
 	   parseheader($FOOTER, $psc);
