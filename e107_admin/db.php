@@ -68,7 +68,7 @@ if(isset($_POST['exportXmlFile']))
 {
 
 
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'], $_POST['package_images'], false))
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'],$_POST['xml_themeprefs'], $_POST['package_images'], false))
 	{
 		$mes = e107::getMessage();
 		$mes->add(LAN_CREATED, E_MESSAGE_SUCCESS);
@@ -1203,6 +1203,42 @@ class system_tools
 					}
 
 
+				// theme preferences
+					$sitetheme = e107::pref('core','sitetheme'); // currently just sitetheme, but could easily be expanded.
+					$themelist = array($sitetheme);
+
+					$text .= "</tbody><thead><tr>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_plugprefs')." &nbsp;Theme ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
+
+					</tr></thead><tbody>";
+
+				//	ksort($themelist);
+
+					foreach($themelist as $plug)
+					{
+						$data = e107::getThemeConfig($plug)->getPref();
+
+						$key = $plug;
+
+						$checked = false;
+
+						if(!empty($data))
+						{
+							$rows = count($data);
+
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_themeprefs[".$key."]",$key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
+							<td class='text-right'>".$rows."</td>
+
+							</tr>";
+						}
+					}
+
+
+
 
 					$text .= "</tbody>
 				</table>
@@ -1642,7 +1678,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  * @param object $debug [optional]
  * @return bool|null
  */
-function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=FALSE)
+function exportXmlFile($prefs,$tables=array(),$plugPrefs=array(), $themePrefs=array(), $package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getXml();
 	$tp = e107::getParser();
@@ -1673,7 +1709,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=
 
 	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
-	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
+	if($xml->e107Export($prefs,$tables,$plugPrefs, $themePrefs, $mode))
 	{
 		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))

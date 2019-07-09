@@ -825,7 +825,7 @@ class xmlClass
 			}
 			if ($parse)
 			{
-				return $this->parseXML('', ($parse === true));
+				return $this->parseXml('', ($parse === true));
 			}
 			else
 			{
@@ -903,7 +903,7 @@ class xmlClass
 	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
+	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
 	{
 	//	error_reporting(0);
 	//	$e107info = array();
@@ -973,6 +973,28 @@ class xmlClass
 			}
 
 			$text .= "\t</pluginPrefs>\n";
+		}
+
+		if(!empty($themePrefs))
+		{
+			$text .= "\t<themePrefs>\n";
+
+			foreach($themePrefs as $plug)
+			{
+				$prefs = e107::getThemeConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</themePrefs>\n";
 		}
 
 
@@ -1071,7 +1093,22 @@ class xmlClass
 	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
 
-		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+		switch($mode)
+		{
+			case "plugin":
+				$key = 'pluginPrefs';
+				break;
+
+			case "theme":
+				$key = 'themePrefs';
+				break;
+
+			case "core":
+			default:
+				$key = 'core';
+		}
+
+	//	$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
 
 		if(!vartrue($XMLData[$key][$prefType]))
 		{
@@ -1191,6 +1228,35 @@ class xmlClass
 			}
 		}
 
+		 // ---------------   Save Theme Prefs  ---------------------
+
+		if(!empty($xmlArray['themePrefs']))
+		{
+			foreach($xmlArray['themePrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'theme');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getThemeConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getThemeConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getThemeConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
 
 
 
