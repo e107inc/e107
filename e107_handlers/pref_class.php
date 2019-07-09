@@ -798,7 +798,7 @@ final class e_core_pref extends e_pref
 		'menu' 			=> 'menu_pref',
 		'search' 		=> 'search_prefs',
 		'notify' 		=> 'notify_prefs',
-		'history'		=> 'history_prefs'
+		'history'		=> 'history_prefs',
 	);
 
 	/**

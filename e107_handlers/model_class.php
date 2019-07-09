@@ -4112,7 +4112,7 @@ class e_admin_tree_model extends e_front_tree_model
 	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
 	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
 
-		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+		e107::getXml()->e107Export(null,$table,null,null, array('file'=>$filename,'query'=>$query));
 
 		return null;
 
