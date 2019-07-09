@@ -7321,7 +7321,7 @@ var_dump($select_options);*/
 					{
 						foreach ($triggers as $trigger => $tdata)
 						{
-							$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
+							$text .= ($trigger == 'submit') ? "<div class='etrigger-submit-group btn-group'>" : "";
 							$text .= $this->admin_button('etrigger_'.$trigger, $tdata[1], $tdata[1], $tdata[0]);
 
 							if($trigger == 'submit' && $submitopt)
