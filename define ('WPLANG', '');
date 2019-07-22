@@ -1,0 +1,4 @@
+define ('WPLANG', '');
+E mude para:
+
+define ('WPLANG', 'pt_BR');
