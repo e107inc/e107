@@ -5481,7 +5481,9 @@ var_dump($select_options);*/
 						$false = $parms['false'];	
 					}
 					else
-					{	
+					{
+						// https://stackoverflow.com/questions/2965971/how-to-add-images-in-select-list
+
 						$false = ($value === '') ? "&square;" : "&cross;";
 					}
 					
