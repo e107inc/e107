@@ -602,6 +602,7 @@ class cpage_shortcodes extends e_shortcode
 
 		if(empty($brow['chapter_sef']))
 		{
+			//e107::getDebug()->log($this);
 			return null;
 		}
 
@@ -618,8 +619,14 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_chapter_breadcrumb()
 	{
+		
+		$row = $this->getChapter();
+		$brow = $this->getBook($row['chapter_parent']);
 
-	//	$this->breadcrumb();
+		if(empty($brow['chapter_sef']))
+		{
+			return null;
+		}
 
 		$breadcrumb = e107::breadcrumb();
 
