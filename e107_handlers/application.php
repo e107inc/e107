@@ -4296,7 +4296,10 @@ class eResponse
 		
 		//TODO need an option that allows subsequent entries to overwrite existing ones. 
 		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data. 
-		
+
+
+
+
 		$attr = array();
 				
 		if(null !== $name)
@@ -4323,9 +4326,19 @@ class eResponse
 			else $attr = $extended;
 		}
 
-		$key = ($name === 'keywords') ? $name : null; // prevent multiple tags.
-		
-		if(!empty($attr)) $this->_meta[$key] = $attr;
+
+		if(!empty($attr))
+		{
+			if($name === 'keywords') // prevent multiple keyword tags.
+			{
+			    $this->_meta['keywords'] = $attr;
+			}
+			else
+			{
+				$this->_meta[] = $attr;
+			}
+		}
+
 		return $this;
 	}
 	
@@ -4350,6 +4363,8 @@ class eResponse
 
 			$this->setMeta('keywords', implode(',',$tmp3));
 		}
+
+
 
 		e107::getDebug()->log($this->_meta);
 
