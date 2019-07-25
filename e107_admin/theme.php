@@ -58,7 +58,7 @@ class theme_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0'),
+		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0|1'),
 		'main/admin' 		=> array('caption'=> TPVLAN_34, 'perm' => '0'),
 		'main/choose' 		=> array('caption'=> TPVLAN_51, 'perm' => '0'),
 		'main/online'		=> array('caption'=> TPVLAN_62, 'perm' => '0'),
