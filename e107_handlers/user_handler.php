@@ -1558,7 +1558,8 @@ class e_userperms
 		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas. 
 		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_UPLOAD."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Upload/Add/Import)
 		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
-		
+
+		"TMP"=> array(ADLAN_140." (".LAN_PREFS.")",E_16_THEMEMANAGER, E_32_THEMEMANAGER),
 		
 		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
 		
