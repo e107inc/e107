@@ -5201,6 +5201,11 @@ return;
 			return preg_replace('/[^\w]/',"",$text);
 		}
 
+		if($type === 'd') // digits only.
+		{
+			return preg_replace('/[^\d]/',"",$text);
+		}
+
 		if($type === 'wd') // words and digits only.
 		{
 			return preg_replace('/[^\w\d]/',"",$text);
