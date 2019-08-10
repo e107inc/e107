@@ -3341,23 +3341,15 @@ class e_admin_controller_ui extends e_admin_controller
 		$selected = array_values($this->getPosted($multi_name, array()));
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
-		if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
-		{
-			$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
-			if(!is_array($params)) parse_str($params, $params);
-			if(!vartrue($params['batchNoCheck']))
-			{
-				return $this;
-			}
-		}
-
-		if($selected)
+		if(!empty($selected))
 		{
 			foreach ($selected as $i => $_sel) 
 			{
 				$selected[$i] = preg_replace('/[^\w\-:.]/', '', $_sel);
 			}
 		}
+
+		// XXX An empty selection should always be permitted for custom batch methods which may apply changes to all records, not only selected ones.
 
 
 		if(substr($batch_trigger, 0, 6) === 'batch_')
@@ -3408,10 +3400,21 @@ class e_admin_controller_ui extends e_admin_controller
 
 			break;
 
-			case 'delete': //FIXME - confirmation popup
+			case 'delete':
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
+
+				if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
+				{
+					$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
+					if(!is_array($params)) parse_str($params, $params);
+					if(!vartrue($params['batchNoCheck']))
+					{
+						return $this;
+					}
+				}
+
 				$method = 'handle'.$actionName.'DeleteBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -3447,6 +3450,7 @@ class e_admin_controller_ui extends e_admin_controller
 			case 'deattach':
 			case 'addAll':
 			case 'clearAll':
+				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				$value = $trigger[2];
 				
@@ -3469,7 +3473,7 @@ class e_admin_controller_ui extends e_admin_controller
 			// append to userclass list
 			case 'ucadd':
 			case 'ucremove':
-				//if(empty($selected)) return $this;
+				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				$class = $trigger[2];
 				$user = e107::getUser();
@@ -3492,6 +3496,7 @@ class e_admin_controller_ui extends e_admin_controller
 			// clear userclass list
 			case 'ucaddall':
 			case 'ucdelall':
+				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				$user = e107::getUser();
 				$e_userclass = e107::getUserClass(); 
@@ -3533,7 +3538,7 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 
 				//handleListBatch(); for custom handling of all field names
-				if(empty($selected)) return $this;
+				//if(empty($selected)) return $this;
 				$method = 'handle'.$actionName.'Batch';
 				e107::getDebug()->log("Checking for batch method: ".$method);
 				if(method_exists($this, $method))
