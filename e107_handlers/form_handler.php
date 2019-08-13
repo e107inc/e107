@@ -1743,7 +1743,10 @@ class e_form
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
+		$placeholder = vartrue($options['placeholder']) ? 'placeholder="'.$options['placeholder'].'"' : '';
 		$timezone    = '';
+
+
 
 		if(!empty($options['timezone'])) // since datetimepicker does not support timezones and assumes the browser timezone is the intended timezone.
 		{
@@ -1762,7 +1765,7 @@ class e_form
 		}
 		else
 		{
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$timezone} />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$placeholder} {$timezone} />";
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
