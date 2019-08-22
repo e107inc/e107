@@ -113,6 +113,19 @@ class faqs_shortcodes extends e_shortcode
 		}
 		return $text;
 	}
+
+
+	function sc_faq_share($parm=null)
+	{
+		$tp = e107::getParser();
+
+		$url        = e107::url('faqs','item', $this->var, 'full');
+		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+
+		return $tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
+
+	}
+
 	
 	function sc_faq_question_link($parm='')
 	{
