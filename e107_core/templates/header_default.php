@@ -804,6 +804,8 @@ if ($e107_popup != 1) {
 		'{BODY_ONLOAD}' => $body_onload,
 		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
 		'{---MODAL---}' => $LAYOUT['_modal_'],
+		'{---HEADER---}'  => $tp->parseTemplate('{HEADER}',true),
+        '{---FOOTER---}'  => $tp->parseTemplate('{FOOTER}',true),
 		);
 		
    		parseheader($HEADER, $psc);

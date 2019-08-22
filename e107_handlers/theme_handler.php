@@ -102,6 +102,19 @@ class e_theme
 
 		list($LAYOUT['_header_'], $LAYOUT['_footer_']) = explode("{---LAYOUT---}", $tmp, 2);
 
+		$tp = e107::getParser();
+		e107::getScParser()->loadThemeShortcodes($theme);
+
+		if(strpos($LAYOUT['_header_'], '{---HEADER---}')!==false)
+		{
+			$LAYOUT['_header_'] = str_replace('{---HEADER---}', $tp->parseTemplate('{HEADER}', true), $LAYOUT['_header_']);
+		}
+
+		if(strpos($LAYOUT['_footer_'], '{---FOOTER---}')!==false)
+		{
+			$LAYOUT['_footer_'] = str_replace('{---FOOTER---}', $tp->parseTemplate('{FOOTER}', true), $LAYOUT['_footer_']);
+		}
+
 		$LAYOUT[$key] = file_get_contents(e_THEME.$theme."/layouts/".$key."_layout.html");
 
 		return $LAYOUT;
