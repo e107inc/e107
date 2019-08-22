@@ -419,6 +419,8 @@ class e_theme
 
 	            foreach($cusPageArray as $kpage)
 				{
+					$kpage = str_replace('&#036;', '$', $kpage); // convert database encoding.
+
 					$lastChar = substr($kpage, -1);
 
 					if($lastChar === '$') // script name match.
