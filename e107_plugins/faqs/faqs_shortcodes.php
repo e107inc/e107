@@ -109,7 +109,7 @@ class faqs_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true, 'BODY');
+			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
 		}
 		return $text;
 	}
@@ -120,7 +120,7 @@ class faqs_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 
 		$url        = e107::url('faqs','item', $this->var, 'full');
-		$question   = $tp->toHTML($this->var['faq_question'],true,'BODY');
+		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
 
 		return $tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
 
