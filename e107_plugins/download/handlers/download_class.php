@@ -573,7 +573,7 @@ class download
 		$ns = e107::getRender();
 		/** @var download_shortcodes $sc */
 		$sc = $this->sc;
-		$sc->breadcrumb();
+
 
 		// @see: #3056 fixes fatal error in case $sc is empty (what happens, if no record was found)
 		$count = empty($sc) ? 0 : $sc->getVars();
@@ -582,6 +582,8 @@ class download
 		{
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>", 'download-view', true);
 		}
+
+		$sc->breadcrumb();
 
 		$DL_TEMPLATE = $this->template['start'].$this->template['item'].$this->template['end'];
 		
