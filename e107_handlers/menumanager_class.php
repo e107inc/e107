@@ -1420,11 +1420,11 @@ class e_menuManager {
 			{
 				if($check)
 				{
-					if(strstr($tmp[$c], "{MENU="))
+					if(strpos($tmp[$c], "{MENU=")!==false || strpos($tmp[$c], "{MENUAREA=")!==false)
 					{
 						$matches = array();
 						// Match all menu areas, menu number is limited to tinyint(3)
-						preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $tmp[$c], $matches);
+						preg_match_all("/\{(?:MENU|MENUAREA)=([\d]{1,3})(:[\w\d]*)?\}/", $tmp[$c], $matches);
 						$this->menuSetCode($matches, $str);
 					}
 				}
@@ -1613,13 +1613,13 @@ class e_menuManager {
 		{
 
 			$matches = array();
-			if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches))
+			if(preg_match_all("/\{(?:MENU|MENUAREA)=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches)) //
 			{
 
 				$menuText = "";
 				foreach($matches[1] as $menu)
 				{
-					$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
+					$menu = preg_replace("/\{(?:MENU|MENUAREA)=(.*?)(:.*?)?\}/si", "\\1", $str);
 					if(isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false)
 					{
 						$menuText .= $sc_style['MENU']['pre'];
@@ -2202,7 +2202,7 @@ class e_menu_layout
 
 	private static function countMenus($template, $name)
 	{
-		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
+		if(preg_match_all("/\{(?:MENU|MENUAREA)=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
 		{
 			sort($matches[1]);
 			return $matches[1];
