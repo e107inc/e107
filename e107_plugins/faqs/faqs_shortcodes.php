@@ -57,6 +57,16 @@ class faqs_shortcodes extends e_shortcode
 	{
 		return $this->counter;	
 	}
+
+	function sc_faq_hide($parm=null)
+	{
+		if(empty($parm))
+		{
+			$parm = 'collapse';
+		}
+
+		return ($this->item != $this->var['faq_id']) ? $parm : '';
+	}
 	
 	
 	function sc_faq_question($parm='')
