@@ -2186,6 +2186,8 @@ class e_menu_layout
 
 		$layout = array();
 
+
+
 		foreach($head as $k=>$v)
 		{
 			$template = $head[$k]."\n{---}".$foot[$k];
