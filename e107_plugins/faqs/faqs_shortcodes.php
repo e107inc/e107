@@ -110,7 +110,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if($this->share == true)
 			{
-				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
+				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
 			}
 
 			$text .= "</div></div>
@@ -132,7 +132,7 @@ class faqs_shortcodes extends e_shortcode
 		$url        = e107::url('faqs','item', $this->var, 'full');
 		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
 
-		return $tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
+		return $tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
 
 	}
 
