@@ -17,7 +17,7 @@
 
 require_once("../class2.php");
 
-if (!getperms("1"))
+if (!getperms("1|TMP"))
 {
 	e107::redirect('admin');
 	exit;
@@ -58,7 +58,7 @@ class theme_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0'),
+		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0|1|TMP'),
 		'main/admin' 		=> array('caption'=> TPVLAN_34, 'perm' => '0'),
 		'main/choose' 		=> array('caption'=> TPVLAN_51, 'perm' => '0'),
 		'main/online'		=> array('caption'=> TPVLAN_62, 'perm' => '0'),
@@ -290,8 +290,12 @@ class theme_admin_ui extends e_admin_ui
 
 				if($this->themeObj->setTheme($id))
 				{
-
 					$mes->addSuccess($message);
+
+					// clear infopanel in admin dashboard.
+					e107::getCache()->clear('Infopanel_theme', true);
+					e107::getSession()->clear('addons-update-status');
+					e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 				}
 				else
 				{
@@ -308,7 +312,7 @@ class theme_admin_ui extends e_admin_ui
 			$param['limitTo']   = 0 ; // (int) $this->getPerPage();
 			$param['searchqry'] = $this->getQuery('searchquery', '');
 
-			$this->getTreeModel()->setParams($param)->load(); // load the tree model above from the class below.
+			$this->getTreeModel()->setParams($param)->loadBatch(); // load the tree model above from the class below.
 		}
 
 		public function OnlineObserver()
@@ -587,10 +591,51 @@ class theme_admin_ui extends e_admin_ui
 		}
 
 
+		/**
+		 * Check theme.php code for methods incompatible with PHP7.
+		 * @param $code
+		 * @return bool
+		 */
+		private function containsErrors($code)
+		{
+			if(PHP_MAJOR_VERSION < 6)
+			{
+				return false;
+			}
+
+			$dep = array('call_user_method(', 'call_user_method_array(', 'define_syslog_variables', 'ereg(','ereg_replace(',
+			'eregi(', 'eregi_replace(', 'set_magic_quotes_runtime(', 'magic_quotes_runtime(', 'session_register(', 'session_unregister(', 'session_is_registered(',
+			'set_socket_blocking(', 'split(', 'spliti(', 'sql_regcase(', 'mysql_db_query(', 'mysql_escape_string(');
+
+			foreach($dep as $test)
+			{
+				if(strpos($code, $test) !== false)
+				{
+					e107::getMessage()->addDebug("Incompatible function <b>".rtrim($test,"(")."</b> found in theme.php");
+					return true;
+				}
+
+			}
+
+			return false;
+
+		}
+
+
+
+
 		private function renderThemeConfig($type = 'front')
 		{
 			$frm = e107::getForm();
 			$themeMeta  = e107::getTheme($type)->get();
+
+			$themeFileContent = file_get_contents(e_THEME.$themeMeta['path']."/theme.php");
+
+
+			if($this->containsErrors($themeFileContent))
+			{
+				e107::getMessage()->setTitle("Incompatibility Detected", E_MESSAGE_ERROR)->addError("This theme is not compatible with your version of PHP.");
+			}
 
 			$this->addTitle("<span class='text-warning'>".$themeMeta['name']."</span>");
 
@@ -629,6 +674,43 @@ class theme_admin_ui extends e_admin_ui
 		{
 			return $this->GridAjaxPage();
 		}
+
+
+		public function renderHelp()
+		{
+
+			$tp = e107::getParser();
+
+			$type= $this->getMode()."/".$this->getAction();
+
+			switch($type)
+			{
+				case "main/main":
+					$text = "<b>".TPVLAN_56."</b><br />"; // Visbility Filter
+					$text .= "<br />".$tp->toHTML(TPVLANHELP_03,true);
+					$text .= "<ul style='padding-left:10px;margin-top:10px'><li>".$tp->toHTML(TPVLANHELP_04,true)."</li>";
+					$text .= "<li>".$tp->toHTML(TPVLANHELP_05,true)."</li></ul>";
+					break;
+
+				case "label2":
+					//  code
+					break;
+
+				default:
+					$text = TPVLANHELP_01."<br /><br />".TPVLANHELP_02;
+			}
+
+
+
+
+			return array('caption'=>LAN_HELP, 'text'=>$text);
+
+
+
+
+		}
+
+
 }
 
 
@@ -639,7 +721,7 @@ class theme_admin_tree_model extends e_tree_model
 	 * Load data from theme meta file.
 	 * @param bool $force
 	 */
-	function load()
+	function loadBatch($force=false)
 	{
 		$themeList  = e107::getTheme()->getList();
 		$newArray   = array();
@@ -704,7 +786,7 @@ class theme_admin_online_tree_model extends e_tree_model
 	 * Load data from theme meta file.
 	 * @param bool $force
 	 */
-	function load()
+	function loadBatch($force=false)
 	{
 		$themeList  = e107::getTheme()->getList();
 
@@ -1064,7 +1146,7 @@ class theme_builder extends e_admin_ui
 
 			return array('caption'=>TPVLAN_88, 'text'=>$mes->render() . $text);
 
-			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);
+		//	$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);
 
 		}
 

@@ -118,6 +118,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
+		$sc->breadcrumb();
 
 		$text = "";
 
@@ -186,6 +187,7 @@ class plugin_gallery_index_controller extends eControllerFront
 
 		$sc = e107::getScBatch('gallery', true);
 
+
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
 		{
 			$template['list_start'] = str_replace('row', 'row-fluid', $template['list_start']);
@@ -196,13 +198,18 @@ class plugin_gallery_index_controller extends eControllerFront
 		$sc->curCat = $cid;
 		$sc->from = $request->getRequestParam('frm', 0);
 
+
+
+
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cid, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cid]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cid]['media_cat_title'], false, 'defs');
 		$cat = $this->catList[$cid];
 
 		$inner = "";
+
+
 
 		foreach($list as $row)
 		{
@@ -211,6 +218,8 @@ class plugin_gallery_index_controller extends eControllerFront
 
 			$inner .= $tp->parseTemplate($template['list']['item'], true, $sc);
 		}
+
+		$sc->breadcrumb();
 
 		$text = $tp->parseTemplate($template['list']['start'], true, $sc);
 		$text .= $inner;

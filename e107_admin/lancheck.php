@@ -15,12 +15,13 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
-
+/*
 if (!getperms("L")) 
 {
 	e107::redirect('admin');
 	exit;
 }
+*/
 
 e107::coreLan('lancheck', true);
 
@@ -458,6 +459,8 @@ class lancheck
 	{
 		$mes = e107::getMessage();
 
+		/* NO LONGER USED
+
 		$certVal = isset($_POST['contribute_pack']) ? 1 : 0;
 
 		if(!varset($_COOKIE['e107_certified']))
@@ -467,39 +470,44 @@ class lancheck
 		else
 		{
 			$_COOKIE['e107_certified'] = $certVal;
-		}
+		}*/
 
 		//	$_POST['language'] = key($_POST['ziplang']);
 
-			// If no session data, scan before zipping.
+		// If no session data, scan before zipping.
 		if(!isset($_SESSION['lancheck'][$language]['total']) || $_SESSION['lancheck'][$language]['total']!='0')
 		{
 			$this->check_all('norender', $language);
 		}
 
 		$status = $this->makeLanguagePack($language);
+		//print_a($status);
 
-		if($status['error']==FALSE)
+		if($status['error'] == FALSE)
 		{
-			$text = $status['message']."<br />";
-			$text .= $this->share($status['file']);
-			$mes->addSuccess($text);
-			//$ns->tablerender(LAN_CREATED, $text );
+			$srch = array('[', ']');
+			$rpl = array("<a href='https://github.com/e107translations/Translator-Information' target='_blank'>", "</a>");
+
+			$text = str_replace($srch, $rpl, LANG_LAN_154);
+			$text .= "<br />"; 
+			$text .= $status['message'];
+			//$text .= $this->share($status['file']); // no longer notify by email, but only offer to download 
+			$mes->addSuccess($text); 
 		}
 		else
 		{
-			$mes->addError($status['message']);
-			//$ns->tablerender(LAN_CREATED_FAILED, $status['message']);
+			$mes->addError($status['error']);
 		}
 
-		return array('text'=>$mes->render(), 'caption'=>'');
-
+		return array('text'=> $mes->render(), 'caption'=>'');
 	}
-
 
 
 	/**
 	 * Share Language File
+	 *
+	 * DEPRECATED - NO LONGER USED AS TRANSLATIONS ARE NOW MANAGED THROUGH GITHUB REPOSITORIES (https://github.com/e107translations)
+	 * 
 	 * @param object $newfile
 	 * Usage of e107 is granted to you provided that this function is not modified or removed in any way.
 	 * @return
@@ -1922,7 +1930,7 @@ class lancheck
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
 				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/im',$data,$matches))
+		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
 		{
 			$def = $matches[2];
 			$values = $matches[5];	
@@ -2038,15 +2046,4 @@ class lancheck
 
 	}
 
-
-
 }
-
-
-
-
-
-
-
-
-

@@ -452,7 +452,7 @@ class xmlClass
 	 *
 	 * @param string $xml [optional]
 	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
-	 * @return string
+	 * @return array|string
 	 */
 	function parseXml($xmlData = '', $simple = true)
 	{
@@ -478,7 +478,14 @@ class xmlClass
 		);
 
 		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
-		
+
+		if(strpos($xmlData,'<html lang=')!==false)
+		{
+			$this->errors = "HTML cannot be parsed as XML";
+			return false;
+		}
+
+
 		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
@@ -818,7 +825,7 @@ class xmlClass
 			}
 			if ($parse)
 			{
-				return $this->parseXML('', ($parse === true));
+				return $this->parseXml('', ($parse === true));
 			}
 			else
 			{
@@ -896,7 +903,7 @@ class xmlClass
 	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
+	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
 	{
 	//	error_reporting(0);
 	//	$e107info = array();
@@ -968,6 +975,28 @@ class xmlClass
 			$text .= "\t</pluginPrefs>\n";
 		}
 
+		if(!empty($themePrefs))
+		{
+			$text .= "\t<themePrefs>\n";
+
+			foreach($themePrefs as $plug)
+			{
+				$prefs = e107::getThemeConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</themePrefs>\n";
+		}
+
 
 
 
@@ -978,10 +1007,10 @@ class xmlClass
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
-				e107::getDB()->select($eTable, "*", $eQry);
+				e107::getDb()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				$count = 1;
-				while($row = e107::getDB()->fetch())
+				while($row = e107::getDb()->fetch())
 				{
 
 					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
@@ -1064,7 +1093,22 @@ class xmlClass
 	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
 
-		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+		switch($mode)
+		{
+			case "plugin":
+				$key = 'pluginPrefs';
+				break;
+
+			case "theme":
+				$key = 'themePrefs';
+				break;
+
+			case "core":
+			default:
+				$key = 'core';
+		}
+
+	//	$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
 
 		if(!vartrue($XMLData[$key][$prefType]))
 		{
@@ -1108,8 +1152,9 @@ class xmlClass
 
 		if($sql == null)
 		{
-			$sql = e107::getDB();	
+			$sql = e107::getDb();
 		}
+
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
@@ -1183,6 +1228,35 @@ class xmlClass
 			}
 		}
 
+		 // ---------------   Save Theme Prefs  ---------------------
+
+		if(!empty($xmlArray['themePrefs']))
+		{
+			foreach($xmlArray['themePrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'theme');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getThemeConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getThemeConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getThemeConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
 
 
 

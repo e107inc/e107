@@ -56,7 +56,7 @@ class rss_menu_shortcodes extends e_shortcode
 		$url4 = e107::url('rss_menu','atom', $row);
 
 
-		if(deftrue('BOOTSTRAP') === 3) // v2.x
+		if(deftrue('BOOTSTRAP')) // v2.x
 		{
 			$text = "
 			<div>

@@ -115,7 +115,7 @@ class ecache {
 		{
 			$CheckTag = ''; // no MD5 on system cache. XXX To be Checked. 
 		}
-		
+
 		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
 		return $fname;
@@ -198,6 +198,11 @@ class ecache {
 	 */
 	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false)
 	{
+		if(defined('E107_INSTALL') && E107_INSTALL === true)
+		{
+			return null;
+		}
+
 		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));

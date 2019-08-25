@@ -926,8 +926,8 @@ class comment
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $table
-	 * @return unknown
+	 * @param string $table
+	 * @return string|int
 	 */
 	function getCommentType($table)
 	{
@@ -1055,16 +1055,18 @@ class comment
 	}
 
 
-
 	/**
 	 * Displays existing comments, and a comment entry form
 	 *
-	 * @param string $table - the source table for the associated item
-	 * @param string $action - usually 'comment' or 'reply'
+	 * @param string  $table - the source table for the associated item
+	 * @param string  $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param int $width - appears to not be used
-	 * @param string $subject
+	 * @param int     $width - appears to not be used
+	 * @param string  $subject
 	 * @param boolean $rate
+	 * @param boolean|string $return true, false or 'html'
+	 * @param boolean $tablerender
+	 * @return array|null|string|void
 	 */
 	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
 	{
@@ -1076,6 +1078,7 @@ class comment
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+		$frm = e107::getForm();
 
 		if ($this->getCommentPermissions() === FALSE) return;
 
@@ -1164,15 +1167,17 @@ class comment
 		{
 			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
 		}
-		
+
+		$containerTarget = "comments-container-".$frm->name2id($table);
+
 		if($text)
 		{
 			//XXX Do NOT add to template - too important to allow for modification. 
-			$text = "<ul class='media-list' id='comments-container'>\n".$text."\n</ul>";
+			$text = "<ul class='comments-container media-list' id='".$containerTarget."'>\n".$text."\n</ul>";
 		}
 		else
 		{
-			$text = "<ul class='media-list' id='comments-container'><li><!-- --></li></ul>";	
+			$text = "<ul class='comments-container media-list' id='".$containerTarget."'><li><!-- --></li></ul>";
 		}
 
 
@@ -1320,6 +1325,9 @@ class comment
 		//return "table=".$table."  id=".$id."  from=".$from;
 		//$from = $from + $this->commentsPerPage;
 
+		$target = "comments-container-".e107::getForm()->name2id($table);
+
+		$navid = 'comments-nav-'.e107::getForm()->name2id($table);
 
 		// from calculations are done by eNav() js.
 		if($this->totalComments > $this->commentsPerPage)
@@ -1327,8 +1335,8 @@ class comment
 			$prev = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
 			$next = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
 
-			return "<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
-			<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$next}'>" . LAN_NEXT . "</a>";
+			return "<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
+			<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$next}'>" . LAN_NEXT . "</a>";
 		}
 		
 	}

@@ -455,8 +455,8 @@ class e107forum
 
 	/**
 	 * get user ids with moderator permissions for the given $forumId
-	 * @param $forumId id of a forum
-	 * @return an array with user ids how have moderator permissions for the $forumId
+	 * @param int $forumId id of a forum
+	 * @return array with user ids how have moderator permissions for the $forumId
 	 */
 	public function getModeratorUserIdsByForumId($forumId)
 	{
@@ -980,7 +980,7 @@ class e107forum
 			}
 
 			$this->threadMarkAsRead($newThreadId);
-			$threadInfo['thread_sef'] = $this->getThreadsef($threadInfo);
+			$threadInfo['thread_sef'] = $this->getThreadSef($threadInfo);
 
 			$triggerData                = $info['data'];
 			$triggerData['thread_id']   = $newThreadId;
@@ -988,7 +988,7 @@ class e107forum
 			$triggerData['post_id']     = $newPostId;
 
 
-			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 0)
+			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 1)
 			{
 				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
 			}
@@ -1108,7 +1108,7 @@ class e107forum
 			SELECT t.*, f.*,
 			fp.forum_id AS parent_id, fp.forum_name AS parent_name,
 			sp.forum_id AS forum_sub, sp.forum_name AS sub_parent,
-			sp.forum_sef AS parent_sef,
+			fp.forum_sef AS parent_sef,
 			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
@@ -1377,45 +1377,6 @@ class e107forum
 	   		// Empty the post_attachments field for this post in the database (prevents loop when deleting entire thread)
 	   		$sql->update("forum_post", "post_attachments = NULL WHERE post_id = ".$id);
 
-	    		
-			/* Old code when attachments were still stored in plugin folder. 
-			Left for review but may be deleted in future.  
-
-			foreach($attachments as $k => $a)
-			{
-				$info = explode('*', $a);
-				if('' == $f || $info[1] == $f)
-				{
-					$fname = e_PLUGIN."forum/attachments/{$info[1]}";
-					@unlink($fname);
-
-					//If attachment is an image and there is a thumb, remove it
-					if('img' == $info[0] && $info[2])
-					{
-						$fname = e_PLUGIN."forum/attachments/thumb/{$info[2]}";
-						@unlink($fname);
-					}
-				}
-				unset($attachments[$k]);
-			}
-
-			$tmp = array();
-			if(count($attachments))
-			{
-				$tmp['post_attachments'] = implode(',', $attachments);
-			}
-			else
-			{
-				$tmp['post_attachments'] = '_NULL_';
-			}
-
-			$info = array();
-			$info['data'] = $tmp;
-			$info['_FILE_TYPES']['post_attachments'] = 'array';
-			$info['WHERE'] = 'post_id = '.$id;
-			$sql->update('forum_post', $info);
-
-			*/
 		}
 	}
 
@@ -1586,6 +1547,7 @@ class e107forum
 		$tmp = array_unique($_tmp);
 		// issue #3338 fixed typo, that caused issue with not marking threads are read
 		$viewed = trim(implode(',', $tmp), ',');
+		$currentUser['user_plugin_forum_viewed'] =  $viewed;
 		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
@@ -1746,7 +1708,7 @@ class e107forum
 	* Get a list of forum IDs that have unread threads.
 	* If a forum is a subforum, also ensure the parent is in the list.
 	*
-	* @return 	type	description
+	* @return 	array|bool	description
 	* @access 	public
 	*/
 	function forumGetUnreadForums()
@@ -2214,7 +2176,7 @@ class e107forum
 					$this->forumUpdateCounts($fid);
 				}
 				return FORLAN_8." ( ".$thread_count." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
-				return FORLAN_8." ( ".count($threadList)." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
+			//	return FORLAN_8." ( ".count($threadList)." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
 			}
 			else
 			{
@@ -2356,7 +2318,10 @@ class e107forum
 			$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
 			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
 			$replace 	= array(vartrue($threadInfo['thread_name']), ''); // $thread->threadInfo - no reference found
-			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
+
+
+			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, varset($FORUM_CRUMB['thread']['value']));
+
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
 
@@ -2415,13 +2380,12 @@ class e107forum
 		if($forumInfo['forum_sub'])
 		{
 			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['parent_sef'])));
-			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
+			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 
 		}
 		else
 		{
-			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (e_PAGE !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
-
+			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 		}
 
 		if(vartrue($forumInfo['thread_name']))
@@ -2433,6 +2397,7 @@ class e107forum
 		if(deftrue('BOOTSTRAP'))
 		{
 			$BREADCRUMB =  $frm->breadcrumb($breadcrumb);
+			e107::breadcrumb($breadcrumb); // assign to {---BREADCRUMB---}
 		}
 		
 		

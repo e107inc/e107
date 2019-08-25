@@ -10,22 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 
-/**
- *	e107 Login menu plugin
- *
- *	Shortcodes for login menu
- *
- *	@package	e107_plugins
- *	@subpackage	login
- *
- */
 
 if (!defined('e107_INIT')) { exit(); }
 global $tp;
@@ -92,11 +79,11 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				$mode = varset($parm['mode']);
 
-				if($mode === 'usersettings' && e_PAGE === 'usersettings.php')
+				if($mode === 'usersettings' && defset('e_PAGE') === 'usersettings.php')
 				{
 					 return 'active';
 				}
-				elseif($mode === 'profile' && e_PAGE === 'user.php')
+				elseif($mode === 'profile' && defset('e_PAGE') === 'user.php')
 				{
 					return 'active';
 				}
@@ -107,14 +94,16 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 
 
-			function sc_lm_username_input($parm='')
+			function sc_lm_username_input($parm=null)
 			{
 				$pref = e107::getPref();
 
 				// If logging in with email address - ignore pref and increase to 100 chars.
 				$maxLength  = ($this->allowEmailLogin == 1 || $this->allowEmailLogin) ? 100 : varset($pref['loginname_maxlength'],30);
 
-				return "<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='".vartrue( $parm['idprefix'] )."username' size='15' value='' maxlength='".$maxLength."' />\n";
+				return "
+				<label class='sr-only' for='".vartrue( $parm['idprefix'] )."username'>".$this->usernameLabel."</label>
+				<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='".vartrue( $parm['idprefix'] )."username' size='15' value='' maxlength='".$maxLength."' />\n";
 			}
 
 
@@ -124,11 +113,16 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-			function sc_lm_password_input($parm='')
+			function sc_lm_password_input($parm=null)
 			{
 				$pref = e107::getPref();
-				$t_password = "<input class='form-control tbox login pass' type='password' placeholder='".LAN_PASSWORD."' required='required' name='userpass' id='".vartrue( $parm['idprefix'] )."userpass' size='15' value='' maxlength='30' />\n";
-				if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
+				$t_password = "
+				<label class='sr-only' for='".vartrue( $parm['idprefix'] )."userpass'>".LAN_PASSWORD."</label>
+				<input class='form-control tbox login pass' type='password' placeholder='".LAN_PASSWORD."' required='required' name='userpass' id='".vartrue( $parm['idprefix'] )."userpass' size='15' value='' maxlength='30' />\n";
+
+				if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0))
+					 $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
+
 				return $t_password;
 			}
 
@@ -499,15 +493,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-
-
 		}
 	}
 
-
-
 	$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
-
-
-?>

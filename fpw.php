@@ -41,24 +41,25 @@ class fpw_shortcodes extends e_shortcode
 	
 	function __construct()
 	{
+		parent::__construct();
 		global $sec_img; 
 		$this->secImg = $sec_img;	
 	}
 
-	function sc_fpw_username($parm='') // used when email login is disabled
+	function sc_fpw_username($parm=null) // used when email login is disabled
 	{
 		// return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
 		return e107::getForm()->text('username'); // $frm->userpicker()?
 	}
 
-	function sc_fpw_useremail($parm='') 
+	function sc_fpw_useremail($parm=null)
 	{
 		// return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
 		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
 		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
 	}
 
-	function sc_fpw_submit($parm='') 
+	function sc_fpw_submit($parm=null)
 	{
 		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
 		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
@@ -66,12 +67,12 @@ class fpw_shortcodes extends e_shortcode
 		return e107::getForm()->button('pwsubmit', $label); 
 	}
 
-	function sc_fpw_captcha_lan($parm='')
+	function sc_fpw_captcha_lan($parm=null)
 	{
 		return LAN_ENTER_CODE;
 	}
 	
-	function sc_fpw_captcha_hidden($parm='')
+	function sc_fpw_captcha_hidden($parm=null)
 	{
 		return; // no longer required - included in renderInput();
 	}
@@ -94,7 +95,7 @@ class fpw_shortcodes extends e_shortcode
 	 * @param string $parm
 	 * @return mixed|null|string
 	 */
-	function sc_fpw_captcha_input($parm='')
+	function sc_fpw_captcha_input($parm=null)
 	{
 		if(USE_IMAGECODE)
 		{
@@ -109,7 +110,7 @@ class fpw_shortcodes extends e_shortcode
 		// Unused at the moment. 	
 	}
 	
-	function sc_fpw_text($parm='')
+	function sc_fpw_text($parm=null)
 	{
 		return deftrue('LAN_FPW_101',"Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");	
 	}
@@ -187,8 +188,15 @@ if(e_QUERY)
 	{
 		$row = $sql->fetch();
 
-		// Delete the record 
-		$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+		// Delete the record
+
+		if(time() > (int) $row['tmp_time'])
+		{
+			$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
+		}
+
+		$sql->delete('tmp', "tmp_time < ".time()); // cleanup table.
 
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
@@ -218,6 +226,7 @@ if(e_QUERY)
 		$do_log['activation_code']      = $tmpinfo;
 		$do_log['user_password']        = $newpw;
 		$do_log['user_password_hash']   = $pwdArray['hash'];
+		$do_log['expires']              = date(DATE_W3C,$row['tmp_time']);
 
 
 		// Prepare new information to display to user
@@ -248,7 +257,7 @@ if(e_QUERY)
 		$txt = "<div class='fpw-message'>".LAN_FPW8."</div>
 		<table class='fpw-info'>
 		<tr><td>".LAN_218."</td><td style='font-weight:bold'>{$loginName}</td></tr>
-		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
+		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'> {$newpw}</td></tr>
 		</table>
 		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_LOGIN."</a>. "; // .LAN_FPW12;
 		
@@ -323,14 +332,16 @@ if (!empty($_POST['pwsubmit']))
 
 		// Set unique reset code
 		$datekey 	= microtime(true);
-		$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
+		$rcode =  e107::getUserSession()->generateRandomString( '############' );
+	//	$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
 
 		// Prepare email
 		$link 		= SITEURL.'fpw.php?'.$rcode;
 		$message 	= LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		// Set timestamp two days ahead so it doesn't get auto-deleted
-		$deltime = time()+86400 * 2;			
+	//	$deltime = time()+86400 * 2;
+		$deltime = strtotime("+ 10 minutes");
 		
 		// Insert the password reset request into the database
 
@@ -424,7 +435,6 @@ $text = $tp->parseTemplate($FPW_TABLE, true, $sc);
 
 // $text = $tp->simpleParse($FPW_TABLE, $sc);
 
-$ns->tablerender($caption, $text);
+$ns->tablerender($caption, $text, 'fpw');
 require_once(FOOTERF);
 
-?>

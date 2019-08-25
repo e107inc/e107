@@ -66,7 +66,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
-		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
+		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perm' => '4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
@@ -255,6 +255,7 @@ class users_admin_ui extends e_admin_ui
 	protected $pid 			= "user_id";
 	protected $perPage 		= 10;
 	protected $batchDelete 	= true;
+	protected $batchExport	= true; 
 	protected $listOrder 	= 'user_id DESC'; 
 	
 	/**
@@ -290,17 +291,17 @@ class users_admin_ui extends e_admin_ui
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
 		'user_ban' 			=> array('title' => LAN_STATUS,		'tab'=>0, 'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
-		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto','thclass' => 'left first'), // Display name
- 		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
- 		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
- 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
+		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto','thclass' => 'left first'), // Display name
+ 		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'safestr', 'width' => 'auto'), // User name
+ 		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto'), // Real name (no real vetting)
+ 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => LAN_SESSION,	'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
- 		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
+ 		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'safestr',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'str', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'safestr', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
@@ -368,6 +369,7 @@ class users_admin_ui extends e_admin_ui
 
 
 
+
 		
 		// Extended fields - FIXME - better field types
 		
@@ -375,13 +377,16 @@ class users_admin_ui extends e_admin_ui
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
-			e107::coreLan('user_extended'); 	
+			e107::coreLan('user_extended');
+
+			$dataMode = ($this->getAction() === 'list') ? 'str' : false;  // allow for search of extended fields.
+
 			foreach ($rows as $row)
 			{
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
-				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
+				$label = $tp->toHTML($row['user_extended_struct_text'],false,'defs');
+				$this->fields[$field] = array('__tableField'=>'ue.'.$field, 'title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>$dataMode, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
 				$this->extendedData[$field] = $row;
@@ -399,7 +404,7 @@ class users_admin_ui extends e_admin_ui
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
 		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
-		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
+		$this->fields['options'] = array('title'=> LAN_OPTIONS."&nbsp;",	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'right last', 'class' => 'left');
 
 				
 		if(!getperms('4|U0')) // Quick Add User Access Only. 
@@ -429,16 +434,6 @@ class users_admin_ui extends e_admin_ui
 			define('e_IFRAME', true);
 		}
 
-
-		//FIXME - handle user extended search...
-		//$this->_alias_parsed = false;
-		//$this->parseAliases();
-
-		// if(isset ($_POST['adduser']))
-		// {
-			// addUser();		
-		// }	
-		
 
 
 	}
@@ -580,7 +575,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed pull/1816
+					 e107::getMessage()->reset(E_MESSAGE_SUCCESS)->addSuccess(LAN_UPDATED); 
 					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
 				}
 			}
@@ -618,7 +613,7 @@ class users_admin_ui extends e_admin_ui
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
 		
 		// List data reload
-		$this->getTreeModel()->load(true);
+		$this->getTreeModel()->loadBatch(true);
 	}
 	
 	/**
@@ -682,7 +677,7 @@ class users_admin_ui extends e_admin_ui
 		}
 		
 		// List data reload
-		$this->getTreeModel()->load(true);
+		$this->getTreeModel()->loadBatch(true);
 	}
 
 	/**
@@ -730,7 +725,7 @@ class users_admin_ui extends e_admin_ui
 			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
-			$this->getTreeModel()->load(true);
+			$this->getTreeModel()->loadBatch(true);
 
 			if ((int) e107::pref('core', 'user_reg_veri') == 2)
 			{
@@ -872,7 +867,7 @@ class users_admin_ui extends e_admin_ui
 
 				e107::getAdminLog()->log_event('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
 				$mes->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
-				$this->getTreeModel()->load(true);
+				$this->getTreeModel()->loadBatch(true);
 			}
 			else
 			{
@@ -943,9 +938,9 @@ class users_admin_ui extends e_admin_ui
 			$rplc_from = array('[x]', '[y]', '[z]');
 			$rplc_to = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'));
 			$message = str_replace($rplc_from, $rplc_to, USRLAN_228);
-			$message = e107::getParser()->toHtml($message,true);
+			$message = e107::getParser()->toHTML($message,true);
 			$mes->addWarning($message);
-			$mes->addWarning(e107::getParser()->toHtml(USRLAN_229,true));
+			$mes->addWarning(e107::getParser()->toHTML(USRLAN_229,true));
 		}
 		
 	}
@@ -1176,6 +1171,7 @@ class users_admin_ui extends e_admin_ui
 		if(!$key || !$sysuser->getValue('ban'))
 		{
 			$mes->addError(USRLAN_232);
+			$mes->addDebug("key: ".$key." ban: ".$sysuser->getValue('ban'));
 			return false;
 		}
 		
@@ -1368,12 +1364,19 @@ class users_admin_ui extends e_admin_ui
 			//FIXME admin log
 			
 			// Reload tree
-			$this->getTreeModel()->load(true);
+			$this->getTreeModel()->loadBatch(true);
 			return;
 		}
 		
 		e107::getMessage()->addError(USRLAN_236);
 	}
+
+	public function EditSubmitTrigger()
+	{
+		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit', true); // force update.
+	}
+
+
 
 	/**
 	 * Quick Add user submit trigger
@@ -1407,6 +1410,9 @@ class users_admin_ui extends e_admin_ui
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST, $userMethods->userVettingInfo, true);
 		
+		// #1728 - Default value, because user will always be part of 'Members' 
+		$allData['data']['user_class'] = '253';  
+		
 		// Fix Display and user name
 		if (!check_class($pref['displayname_class'], $allData['data']['user_class']))
 		{
@@ -1414,7 +1420,7 @@ class users_admin_ui extends e_admin_ui
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
 				$message = str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237);
-				$message = e107::getParser()->toHtml($message,true);
+				$message = e107::getParser()->toHTML($message,true);
 				$mes->addWarning($message);
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}
@@ -1811,6 +1817,7 @@ class users_admin_ui extends e_admin_ui
 		$e107 = e107::getInstance();
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
+		/** @var users_admin_form_ui $ui */
 		$ui = $this->getUI();
 		$tp = e107::getParser();
 
@@ -2167,6 +2174,8 @@ class users_admin_ui extends e_admin_ui
 	//  'clearemailbounce' - delete email address for any user whose emails bounced
 	//	'delchecked' - delete the emails whose comma-separated IDs are in $bounce_arr
 	//	'delall' - delete all bounced emails
+
+	/*
 	function check_bounces($bounce_act = 'first_check',$bounce_arr = '')
 	{
 		### old Trigger code for bounce check
@@ -2259,7 +2268,7 @@ class users_admin_ui extends e_admin_ui
 		$tot = $obj->getTotalMails();
 		$found = false;
 		$DEL = ($pref['mail_bounce_delete']) ? true : false;
-		$text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table>
+		$text = "<br /><div><form  method='post' action='".e_REQUEST_URI."'><table>
 		<tr><td style='width:5%'>#</td><td>e107-id</td><td>email</td><td>Subject</td><td>Bounce</td></tr>\n";
 		
 		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
@@ -2348,7 +2357,7 @@ class users_admin_ui extends e_admin_ui
 			$ed = '0';
 		$this->show_message(str_replace(array('[w]','[x]','[y]','[z]'),array($tot,$del_count,$ed,$found),USRLAN_155).$text);
 	}
-	
+	*/
 // ------- FIXME  Prune Users move to cron --------------
 // if (isset ($_POST['prune']))
 // {
@@ -2429,10 +2438,6 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			return e107::getUserExt()->renderValue($data, $att['ueType']);
 
-			return print_a($att,true);
-
-
-			return $data;
 
 		}
 		if($mode == 'write')
@@ -2440,7 +2445,9 @@ class users_admin_form_ui extends e_admin_form_ui
 			// e107::getUserExt()->user_extended_edit
 		//	return 'hello';
 			$field = $att['field'];
-			$extData = $this->getController()->getExtended();
+			/** @var users_admin_ui $controller */
+			$controller = $this->getController();
+			$extData = $controller->getExtended();
 			$extData[$field]['user_extended_struct_required'] = 0;
 
 			return e107::getUserExt()->user_extended_edit($extData[$field],$curval);
@@ -2578,7 +2585,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		}*/
 		
 	
-	
+	/*
 	function user_status($curval,$mode)
 	{
 	
@@ -2618,7 +2625,8 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 		
 	}
-	
+	*/
+
 	//TODO Reduce to simple edit/delete buttons only Other options included on edit page or available via inline or batch editing. 
 	function options($val, $mode) // old drop-down options. 
 	{
@@ -2758,7 +2766,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		$btn =  '<div class="btn-group pull-right">
 
 		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown">
-		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('cog').'</span>
+		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('fa-cog').'</span>
 		<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu">
@@ -2943,7 +2951,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			if($attributes['mode'] == 'read')
 			{
-				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+				parse_str(str_replace('&amp;', '&', e_QUERY), $query);
 				$query['action'] = 'edit';
 				$query['id'] = $id;
 				$query = http_build_query($query, null, '&amp;');
@@ -2955,7 +2963,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 				if($special == 0)
 				{
-					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 				}
 
 				return $text;

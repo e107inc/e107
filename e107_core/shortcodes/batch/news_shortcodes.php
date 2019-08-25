@@ -224,8 +224,13 @@ class news_shortcodes extends e_shortcode
 		$caption = vartrue($parm['text'],LAN_BACK);
 		
 		$text = '<ul class="pager hidden-print">
-  			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
+  			<li><a href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
 		</ul>';
+		
+		if(BOOTSTRAP === 4)
+		{
+			$text = '<a class="pager-button btn btn-primary hidden-print" href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a>';
+		}
 		
 		return $text;
 	}
@@ -322,13 +327,29 @@ class news_shortcodes extends e_shortcode
 
 		if(!empty($user['user_signature']))
 		{
-			return e107::getParser()->toHtml($user['user_signature'], true, 'DESCRIPTION');
+			return e107::getParser()->toHTML($user['user_signature'], true, 'DESCRIPTION');
 		}
 	}
 
 	public function sc_news_author_items_url($parm=null)
 	{
 		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
+	}
+
+	/**
+	 * @example {NEWS_AUTHOR_EUF: field=biography} - returns the 'value' of the User Extended Field 'biography' ('type' defaults to 'value')
+	 * @example {NEWS_AUTHOR_EUF: field=biography&type=icon} - returns the 'icon' of the User Extended Field 'biography' - [text|value|icon|text_value]
+	*/
+	public function sc_news_author_euf($parm=null)
+	{
+		$userid = $this->news_item['user_id'];		
+		$field 	= (!empty($parm['field'])) ? $parm['field'] : '';
+		$type 	= (!empty($parm['type'])) ? $parm['type'] : 'value';
+		
+		if($field)
+		{
+			return e107::getParser()->parseTemplate("{USER_EXTENDED={$field}.{$type}.{$userid}}");
+		}
 	}
 
 	public function sc_news_summary($parm=null)
@@ -500,7 +521,7 @@ class news_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+		$class = !empty($parm['class']) ? " ".$parm['class'] : " btn btn-default btn-secondary";
 
 		if(empty($this->param['commentlink']))
 		{
@@ -572,12 +593,12 @@ class news_shortcodes extends e_shortcode
 		{
 
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);
 			
-			$class = varset($parm['class']);
+			$class = varset($parm['class'], 'btn btn-default btn-secondary');
 			
 			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
@@ -639,7 +660,7 @@ class news_shortcodes extends e_shortcode
 		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
-			$text = $tp->toHtml($this->news_item['news_body'],true);
+			$text = $tp->toHTML($this->news_item['news_body'],true);
 			$breaks = array('<br />','<br>');
 			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
@@ -1129,7 +1150,7 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm='')
+	function sc_newstags($parm=null)
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
@@ -1188,7 +1209,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsmetadiz($parm=null)
 	{
-  		$text = e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+  		$text = e107::getParser()->toHTML($this->news_item['news_meta_description'],true);
 
 		if(!empty($parm['limit']))
 		{

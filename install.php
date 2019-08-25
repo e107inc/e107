@@ -27,11 +27,111 @@ header('Content-type: text/html; charset=utf-8');
 define("e107_INIT", TRUE);
 define("DEFAULT_INSTALL_THEME", 'voux');
 
+$e107info = array();
 require_once("e107_admin/ver.php");
 
 define("e_VERSION", $e107info['e107_version']);
 
+$e_ROOT = realpath(dirname(__FILE__)."/");
+if ((substr($e_ROOT,-1) !== '/') && (substr($e_ROOT,-1) !== '\\') )
+{
+	$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now.
+}
+define('e_ROOT', $e_ROOT);
+unset($e_ROOT);
 
+
+class installLog
+{
+
+	const logFile = "e107InstallLog.log";
+
+
+	static function exceptionHandler(Exception $exception)
+	{
+		$message = $exception->getMessage();
+		self::add($message, "error");
+	}
+
+	static function errorHandler($errno, $errstr, $errfile, $errline)
+	{
+
+		$error = "Error on line $errline in file ".$errfile." : ".$errstr;
+
+		switch($errno)
+		{
+			case E_ERROR:
+		    case E_CORE_ERROR:
+		    case E_COMPILE_ERROR:
+		    case E_PARSE:
+		        self::add($error, "fatal");
+		        break;
+		    case E_USER_ERROR:
+		    case E_RECOVERABLE_ERROR:
+		        self::add($error, "error");
+		        break;
+		    case E_WARNING:
+		    case E_CORE_WARNING:
+		    case E_COMPILE_WARNING:
+		    case E_USER_WARNING:
+		        self::add($error, "warn");
+		        break;
+		    case E_NOTICE:
+		    case E_USER_NOTICE:
+		        self::add($error, "notice");
+		        break;
+		    case E_STRICT:
+		        self::add($error, "debug");
+		        break;
+		    default:
+		        self::add($error, "warn");
+
+		}
+
+	}
+
+
+	static function clear()
+	{
+		if(!is_writable(dirname(__FILE__)) || !MAKE_INSTALL_LOG)
+		{
+			return null;
+		}
+
+		$logFile = dirname(__FILE__).'/'.self::logFile;
+		file_put_contents($logFile,'');
+
+	}
+
+	/**
+	 * Write a line of text to the log file (if enabled) - prepend time/date, append \n
+	 * @param string $message
+	 * @param string $type
+	 * @return null
+	 */
+	static function add($message, $type='info')
+	{
+		if(!is_writable(dirname(__FILE__)) || !MAKE_INSTALL_LOG)
+		{
+			return null;
+		}
+
+		$logFile = dirname(__FILE__).'/'.self::logFile; // e107InstallLog.log';
+
+		$now    = time();
+		$message = $now.', '.gmstrftime('%y-%m-%d %H:%M:%S',$now)."\t".$type."\t".$message."\n";
+
+		file_put_contents($logFile, $message, FILE_APPEND);
+
+		return null;
+	}
+
+
+}
+
+set_exception_handler(array('installLog','exceptionHandler'));
+set_error_handler(array('installLog',"errorHandler"));
+register_shutdown_function(array('installLog',"errorHandler"));
 
 /*define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -41,7 +141,7 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);*/
 
- define("E107_INSTALL",true);
+define("E107_INSTALL",true);
 
 if($_SERVER['QUERY_STRING'] != "debug")
 {
@@ -49,7 +149,7 @@ if($_SERVER['QUERY_STRING'] != "debug")
 }
 else
 {
-	error_reporting(E_ALL);	
+	error_reporting(E_ALL);
 }
 
 if($_SERVER['QUERY_STRING'] == 'clear')
@@ -134,11 +234,13 @@ include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
 function check_class($whatever='')
 {
+	unset($whatever);
 	return true;
 }
 
 function getperms($arg, $ap = '')
 {
+	unset($arg,$ap);
 	return true;
 }
 
@@ -172,6 +274,7 @@ e107::getSession(); // starts session, creates default namespace
 
 function include_lan($path, $force = false)
 {
+	unset($force);
 	return include($path);
 }
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
@@ -203,9 +306,9 @@ $e_install->renderPage();
  * @param boolean $secure
  * @return void
  */
-function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = false)
 {
-	setcookie($name, $value, $expire, $path, $domain, $secure);
+	setcookie($name, $value, $expire, $path, $domain, (bool) $secure);
 }
 
 class e_install
@@ -218,8 +321,7 @@ class e_install
 	var $previous_steps;
 	var $stage;
 	var $post_data;
-	var $required = array(); 		//TODO - use for highlighting required fields with css/js.
-	var $logFile;			// Name of log file, empty string if logging disabled
+	var $required = array();
 	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
 	var $session = null;
 	protected $pdo = false;
@@ -232,7 +334,7 @@ class e_install
 		define('USERID', 1);
 		define('USER', true);
 		define('ADMIN', true);
-		define('e_UC_MAINADMIN', 250);
+	//	define('e_UC_MAINADMIN', 250);
 		define('E107_DEBUG_LEVEL',0);
 
 		if($_SERVER['QUERY_STRING'] == "debug")
@@ -256,17 +358,16 @@ class e_install
 		// session instance
 		$this->session = e107::getSession();
 
-		$this->logFile = '';
-		if (MAKE_INSTALL_LOG)
-		{
-			if(is_writable(dirname(__FILE__)))
-			{
-				$this->logFile = dirname(__FILE__).'/e107InstallLog.log';
-			}
-		}
 		// $this->logLine('Query string: ');
 		$this->template = new SimpleTemplate();
-		while (@ob_end_clean());
+
+		if(ob_get_level() > 1)
+		{
+			while (@ob_end_clean())
+			{
+				unset($whatever);
+			}
+		}
 		global $e107;
 		$this->e107 = $e107;
 		if(isset($_POST['previous_steps']))
@@ -291,21 +392,6 @@ class e_install
 			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 		}
-	}
-
-	/**
-	 *	Write a line of text to the log file (if enabled) - prepend time/date, append \n
-	 *	Can always call this routine - it will return if logging disabled
-	 *
-	 *	@param	string $logLine - text to log
-	 *	@return none
-	 */
-	protected function logLine($logLine)
-	{
-		if (!MAKE_INSTALL_LOG || ($this->logFile == '')) return;
-		$logfp = fopen($this->logFile, 'a+');
-		fwrite($logfp, ($now = time()).', '.gmstrftime('%y-%m-%d %H:%M:%S',$now).'  '.$logLine."\n");
-		fclose($logfp);
 	}
 
 
@@ -378,7 +464,7 @@ class e_install
 		}
 		else
 		{
-			$this->template->SetTag("debug_info", (count($this->debug_info) ? print_a($this->debug_info,TRUE)."Backtrace:<br />".print_a($this,TRUE) : ""));
+			$this->template->SetTag("debug_info", (!empty($this->debug_info) ? print_a($this->debug_info,TRUE)."Backtrace:<br />".print_a($this,TRUE) : ""));
 		}
 
 		echo $this->template->ParseTemplate(template_data(), TEMPLATE_TYPE_DATA);
@@ -408,11 +494,17 @@ class e_install
 		}
 	}
 
+	/**
+	 * Stage 1
+	 * @return null
+	 */
 	private function stage_1()
 	{
 		global $e_forms;
 		$this->stage = 1;
-		$this->logLine('Stage 1 started');
+		installLog::clear();
+		installLog::add('Stage 1 started');
+	//	installLog::add('Stage 1 started');
 
 
 		
@@ -438,14 +530,16 @@ class e_install
 				</div><br />
 			</div>";
 		$this->template->SetTag("stage_content", $output);
-		$this->logLine('Stage 1 completed');
+		installLog::add('Stage 1 completed');
+
+		return null;
 	}
 
 	private function stage_2()
 	{
 		global $e_forms;
 		$this->stage = 2;
-		$this->logLine('Stage 2 started');
+		installLog::add('Stage 2 started');
 
 		if(!empty($_POST['language']))
 		{
@@ -499,7 +593,7 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z][a-zA-Z0-9_-]*' />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
@@ -524,14 +618,13 @@ class e_install
 		$this->finish_form();
 		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
-		$this->logLine('Stage 2 completed');
+		installLog::add('Stage 2 completed');
 	}
 
 	/**
 	 *	Replace hash paths and create folders if needed.
 	 *
-	 *	@param	none
-	 *	@return none
+	 *	@return null
 	 */	
 	private function updatePaths()
 	{
@@ -539,6 +632,8 @@ class e_install
 		$this->e107->site_path = $hash;	
 		
 		$this->previous_steps['paths']['hash'] = $hash;
+
+		installLog::add("Directory Hash Set: ".$hash);
 
 		$omit = array('FILES_DIRECTORY','WEB_IMAGES_DIRECTORY');
 		
@@ -553,15 +648,18 @@ class e_install
 				@mkdir($this->e107->e107_dirs[$dir]);	
 			}					
 		}
+
+		return null;
 	}
 
 	private function stage_3()
 	{
 
 		global $e_forms;
-		$success = TRUE;
+
 		$this->stage = 3;
-		$this->logLine('Stage 3 started');
+		$alertType = 'warning';
+		installLog::add('Stage 3 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -579,6 +677,8 @@ class e_install
 			$this->previous_steps['mysql']['db']        = trim($tp->filter($_POST['db']));
 			$this->previous_steps['mysql']['createdb']  = (isset($_POST['createdb']) && $_POST['createdb'] == true ? true : false);
 			$this->previous_steps['mysql']['prefix']    = trim($tp->filter($_POST['prefix']));
+
+			$this->setDb();
 		}
 		
 		if(!empty($_POST['overwritedb']))
@@ -601,7 +701,7 @@ class e_install
 			$head = LANINS_039."<br /><br />\n";
 			$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
-			<table cellspacing='0'>
+			<table class='table table-bordered table-striped'>
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
 					<td style='border-top: 1px solid #999;'><input class='form-control' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' required /></td>
@@ -623,7 +723,7 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td><input type='text' name='db' id='db' size='20' value='{$this->previous_steps['mysql']['db']}' maxlength='100' />
-						<br /><label class='defaulttext'><input type='checkbox' name='createdb'".($this->previous_steps['mysql']['createdb'] == 1 ? " checked='checked'" : "")." value='1' />".LANINS_028."</label></td>
+						<br /><label class='defaulttext'><input type='checkbox' name='createdb' " .($this->previous_steps['mysql']['createdb'] == 1 ? " checked='checked'" : "") . " value='1' />".LANINS_028."</label></td>
 					<td>".LANINS_033."</td>
 				</tr>
 
@@ -664,7 +764,6 @@ class e_install
 			}
 			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']))
 			{
-				$success = false; 
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', "<div class='alert alert-warning'>". LANINS_127."</div>");
 				$alertType = 'error';
@@ -676,7 +775,7 @@ class e_install
 
 				$this->finish_form(3);
 				$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$head."</div>".$e_forms->return_form());
-				$this->logLine('Stage 3 completed');
+				installLog::add('Stage 3 completed');
 				return; 
 			}
 			else
@@ -752,13 +851,19 @@ class e_install
 			$head = $page_content;
 		}
 		if ($success)
+		{
 			$this->finish_form();
+		}
 		else
 		{
 			$this->finish_form(3);
 		}
+
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$head."</div>".$e_forms->return_form());
-		$this->logLine('Stage 3 completed');
+
+		installLog::add('Stage 3 completed');
+
+		return null;
 	}
 
 	private function stage_4()
@@ -766,7 +871,7 @@ class e_install
 		global $e_forms;
 
 		$this->stage = 4;
-		$this->logLine('Stage 4 started');
+		installLog::add('Stage 4 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -779,7 +884,9 @@ class e_install
 		$version_fail = false;
 		$perms_errors = "";
 		$mysql_pass = false;
-		
+
+		$this->setDb();
+
 		if(count($not_writable))
 		{
 			$perms_pass = false;
@@ -864,13 +971,7 @@ class e_install
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-danger";
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-danger";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-danger";
-/*
-		if(version_compare($php_version, 7.1, ">=")) // XXX Remove once tested thoroughly
-		{
-			$php_help = "<span class='glyphicon glyphicon-warning-sign'></span> PHP 7.1 may have issues with e107. We recommend using 7.0.x versions instead until further testing has been performed.";
-			$PHPColor = 'text-warning';
-		}
-*/
+
 
 		$extensionCheck = array(
 			'pdo'   => array('label'=> "PDO (MySQL)",       'status' => extension_loaded('pdo_mysql'),          'url'=> ''),
@@ -933,7 +1034,7 @@ class e_install
 
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
-		$this->logLine('Stage 4 completed');
+		installLog::add('Stage 4 completed');
 	}
 
 	/**
@@ -944,11 +1045,13 @@ class e_install
 	private function stage_5()
 	{
 		global $e_forms;
-		
-		$this->updatePaths(); // update dynamic paths and create media and system directories - requires mysql info. 	
+
+		$this->setDb();
+		$this->updatePaths(); // update dynamic paths and create media and system directories - requires mysql info.
+
 		
 		$this->stage = 5;
-		$this->logLine('Stage 5 started');
+		installLog::add('Stage 5 started');
 
 		$this->display_required();
 		$this->template->SetTag("installation_heading", LANINS_001);
@@ -1054,7 +1157,9 @@ class e_install
 		$this->finish_form();
 		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
-		$this->logLine('Stage 5 completed');
+		installLog::add('Stage 5 completed');
+
+		return null;
 	}
 
 	/**
@@ -1067,7 +1172,7 @@ class e_install
 		global $e_forms;
 		$tp = e107::getParser();
 		$this->stage = 6;
-		$this->logLine('Stage 6 started');
+		installLog::add('Stage 6 started');
 
 		// -------------------- Save Step 5 Data -------------------------
 		if(!vartrue($this->previous_steps['admin']['user']) || varset($_POST['u_name']))
@@ -1250,7 +1355,9 @@ class e_install
 		$this->finish_form();
 		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
-		$this->logLine('Stage 6 completed');
+		installLog::add('Stage 6 completed');
+
+		return null;
 	}
 
 
@@ -1301,7 +1408,7 @@ class e_install
 		$this->e107->e107_dirs['MEDIA_DIRECTORY']  = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
 
 		$this->stage = 7;
-		$this->logLine('Stage 7 started');
+		installLog::add('Stage 7 started');
 
 		// required for various core routines
 		if(!defined('USERNAME'))
@@ -1378,11 +1485,13 @@ class e_install
 
 
 // -- Optional --
+// define('e_DEBUG', true); // Enable debug mode to allow displaying of errors
 // define('e_HTTP_STATIC', 'https://static.mydomain.com/');  // Use a static subdomain for js/css/images etc. 
 // define('e_MOD_REWRITE_STATIC', true); // Rewrite static image urls. 
 // define('e_LOG_CRITICAL', true); // log critical errors but do not display them to user. 
 // define('e_GIT', 'path-to-git');  // Path to GIT for developers
-
+// define('X-FRAME-SAMEORIGIN', false); // Option to override X-Frame-Options 
+// define('e_PDO, true); // Enable PDO mode (used in PHP > 7 and when mysql_* methods are not available)
 
 ";
 /*
@@ -1397,11 +1506,12 @@ if($this->pdo == true)
 
 		if ($config_result)
 		{
-			$page = $config_result."<br />";
-			$this->logLine('Error writing config file: '.$config_result);
-			$alertType = 'warning';
-		} else {
-            $this->logLine('Config file written successfully');
+			// $page = $config_result."<br />";
+			installLog::add('Error writing config file: '.$config_result);
+		}
+		else
+		{
+            installLog::add('Config file written successfully');
 		}
 		 
 
@@ -1426,14 +1536,15 @@ if($this->pdo == true)
 
 
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
-		$this->logLine('Stage 7 completed');
-	 
+		installLog::add('Stage 7 completed');
+
+	    return null;
 	}
 
 	/**
 	 *	Stage 8 - actually create database and set up the site
 	 *
-	 *	@return none
+	 *	@return null
 	 */
 	private function stage_8()
 	{
@@ -1449,8 +1560,14 @@ if($this->pdo == true)
 			define('USEREMAIL', $this->previous_steps['admin']['email']);
 		}
 
+		$this->setDb();
+
+		define('THEME', e_THEME.$this->previous_steps['prefs']['sitetheme'].'/');
+		define('THEME_ABS', e_THEME_ABS.$this->previous_steps['prefs']['sitetheme'].'/');
+		define('USERCLASS_LIST', '253,247,254,250,251,0');
+
 		$this->stage = 8;
-		$this->logLine('Stage 8 started');
+		installLog::add('Stage 8 started');
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -1460,20 +1577,21 @@ if($this->pdo == true)
 		$this->template->SetTag("bartype", 'success');
 	
 		$htaccessError = $this->htaccess();
+		$this->saveFileTypes();
 
 		$e_forms->start_form("confirmation", "index.php");
 
 			$errors = $this->create_tables();
-			if ($errors == true)
+			if (!empty($errors))
 			{
-				$this->logLine('Errors creating tables: '.$errors);
+				installLog::add('Errors creating tables: '.$errors);
 				$page = $errors."<br />";
 				$alertType = 'error';
 			}
 			else
 			{
 				$alertType = 'success';
-				$this->logLine('Tables created successfully');
+				installLog::add('Tables created successfully');
 				$this->import_configuration();
 				$page = nl2br(LANINS_125)."<br />";
 				$page .= (is_writable('e107_config.php')) ? "<br />".str_replace("e107_config.php","<b>e107_config.php</b>",LANINS_126) : "";
@@ -1488,10 +1606,24 @@ if($this->pdo == true)
 		$this->finish_form();
 		$this->stats();
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
-		$this->logLine('Stage 8 completed');
+		installLog::add('Stage 8 completed');
 
 		e107::getMessage()->reset(false, false, true);
+
+		return null;
 	}
+
+	private function saveFileTypes()
+	{
+		$data = '<?xml version="1.0" encoding="utf-8"?>
+<e107Filetypes>
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
+</e107Filetypes>';
+
+		return file_put_contents($this->e107->e107_dirs['SYSTEM_DIRECTORY']."filetypes.xml",$data);
+
+	}
+
 
 
 	protected function stats()
@@ -1542,10 +1674,9 @@ if($this->pdo == true)
 	 *
 	 * @return boolean
 	 */
-	 //FIXME always return FALSE???
 	public function import_configuration()
 	{
-		$this->logLine('Starting configuration import');
+		installLog::add('Starting configuration import');
 
 		// PRE-CONFIG start - create and register blank config instances - do not load!
 		$config_aliases = array(
@@ -1600,24 +1731,26 @@ if($this->pdo == true)
 //		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 
-		// [SecretR] should work now - fixed log errors (argument noLogs = true) change to false to enable log
-		
+
 		$coreConfig = $this->e107->e107_dirs['CORE_DIRECTORY']. "xml/default_install.xml";		
 		$ret = e107::getXml()->e107Import($coreConfig, 'replace', true, false); // Add core pref values
-		$this->logLine('Attempting to Write Core Prefs.');
-		$this->logLine(print_r($ret, true));
+		installLog::add('Attempting to Write Core Prefs.');
+		installLog::add(print_r($ret, true));
+
 		/*
 		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
 		{
 			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
-			$this->logLine('Attempting to write Theme Prefs/Tables (install.xml)');
-			$this->logLine(print_r($ret2, true));
+			installLog::add('Attempting to write Theme Prefs/Tables (install.xml)');
+			installLog::add(print_r($ret2, true));
 		}
 		
 	*/	//Create default plugin-table entries.
 		// e107::getConfig('core')->clearPrefCache();
-		e107::getPlugin()->update_plugins_table('update');
-		$this->logLine('Plugins table updated');
+		installLog::add('Updating Plugin Tables');
+		e107::getPlug();
+	//	e107::getPlugin()->update_plugins_table('update');
+		installLog::add('Plugins table updated');
 
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']))
@@ -1629,23 +1762,23 @@ if($this->pdo == true)
 					foreach($themeInfo['plugins']['plugin'] as $k=>$plug)
 					{
 						$this->install_plugin($plug['@attributes']['name']);
-						$this->logLine('Theme-related plugin installed: '.$plug['@attributes']['name']);
+						installLog::add('Theme-related plugin installed: '.$plug['@attributes']['name']);
 					}
 				}
 			}
 		}
 
-
+		installLog::add('Updating addon Prefs');
 
 		e107::getSingleton('e107plugin')->save_addon_prefs('update'); // save plugin addon pref-lists. eg. e_latest_list.
-		$this->logLine('Addon prefs saved');
+		installLog::add('Addon prefs saved');
 
 		// do this AFTER any required plugins are installated. 
 		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'.
 		{
 			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries.
-			$this->logLine('Attempting to write Theme Prefs/Tables (install.xml)');
-			$this->logLine(print_r($ret2, true));
+			installLog::add('Attempting to write Theme Prefs/Tables (install.xml)');
+			installLog::add(print_r($ret2, true));
 		}
 
 
@@ -1691,7 +1824,7 @@ if($this->pdo == true)
 		$this->previous_steps['prefs']['url_modules']		= $url_modules;
 		$this->previous_steps['prefs']['url_locations']		= $url_locations;
 		eRouter::clearCache();
-		$this->logLine('Core URL config set to default state');
+		installLog::add('Core URL config set to default state');
 
 		$us = e107::getUserSession();
 
@@ -1708,7 +1841,7 @@ if($this->pdo == true)
 		// Set prefs, save
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE, FALSE); // save preferences made during install.
-		$this->logLine('Core prefs set to install choices');
+		installLog::add('Core prefs set to install choices');
 
 		// Create the admin user - replacing any that may be been included in the XML.
 
@@ -1716,9 +1849,9 @@ if($this->pdo == true)
 
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".$hash."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
-		$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
+	//	$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
-		$this->logLine('Admin user created');
+		installLog::add('Admin user created');
 
 		// Add Default user-extended values;
 		$extendedQuery = "REPLACE INTO `{$this->previous_steps['mysql']['prefix']}user_extended` (`user_extended_id` ,	`user_hidden_fields`) VALUES ('1', NULL 	);";
@@ -1728,7 +1861,8 @@ if($this->pdo == true)
 	//	mysql_close($this->dbLink);
 		
 		e107::getMessage()->reset(false, false, true);
-		
+
+		unset($tp, $pref);
 		return false;
 	}
 
@@ -1736,17 +1870,16 @@ if($this->pdo == true)
 	 * Install a Theme required plugin.
 	 *
 	 * @param string $plugpath - plugin folder name
-	 * @return void
+	 * @return null
 	 */
-	public function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above.
+	public function install_plugin($plugpath)
 	{
-		e107::getDb()->gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
-		$row = e107::getDb()->fetch();
-		e107::getPlugin()->install_plugin($row['plugin_id']);
+		e107::getPlugin()->install_plugin($plugpath);
+	//	e107::getPlugin()->install_plugin($row['plugin_id']);
 		
 		e107::getMessage()->reset(false, false, true);
 		
-		return;
+		return null;
 	}
 
 	/**
@@ -1820,7 +1953,6 @@ if($this->pdo == true)
 	/**
 	 * get_languages - check language folder for language names
 	 *
-	 * @param none
 	 * @return array $lanlist
 	 */
 	function get_languages()
@@ -1844,7 +1976,6 @@ if($this->pdo == true)
 	/**
 	 * get_themes - check theme folder for theme names
 	 *
-	 * @param none
 	 * @return array $themelist
 	 */
 	function get_themes()
@@ -1894,8 +2025,8 @@ if($this->pdo == true)
 	/**
 	 * finish_form - pass data along forms
 	 *
-	 * @param string $force_stage [optional]
-	 * @return none
+	 * @param bool $force_stage [optional]
+	 * @return null
 	 */	
 	function finish_form($force_stage = false)
 	{
@@ -1905,6 +2036,8 @@ if($this->pdo == true)
 			$e_forms->add_hidden_data("previous_steps", base64_encode(serialize($this->previous_steps)));
 		}
 		$e_forms->add_hidden_data("stage", ($force_stage ? $force_stage : ($this->stage + 1)));
+
+		return null;
 	}
 
 	/**
@@ -1925,6 +2058,10 @@ if($this->pdo == true)
 		
 		$data['can_write'] = '{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}|{$WEB_DIRECTORY}cache|{$WEB_DIRECTORY}lib';
 		if (!isset($data[$list])) return $bad_files;
+
+		$find = array();
+		$replace = array();
+
 		foreach ($system_dirs as $dir_name => $value)
 		{
 			$find[] = "{\${$dir_name}}";
@@ -1951,20 +2088,30 @@ if($this->pdo == true)
 	{
 	//	$link = mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']);
 
-		$link = e107::getDb()->connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']);
+
+
+		$sql = e107::getDb();
+
+		installLog::add("Starting Table Creation");
+
+		$link = $sql->connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']);
 
 		if(!$link)
 		{
-			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
+			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".$sql->getLastErrorText()."</i>");
 		}
+
+		installLog::add("DB Connection made");
 
 		$this->dbLink = $link;		// Needed for mysql_close() to work round bug in PHP 5.3
 	//	$db_selected = mysql_select_db($this->previous_steps['mysql']['db'], $link);
-		$db_selected = e107::getDb()->database($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
+		$db_selected = $sql->database($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
 		if(!$db_selected)
 		{
 			return nl2br(LANINS_085." '{$this->previous_steps['mysql']['db']}'\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 		}
+
+		installLog::add("DB Database Selected");
 
 		$filename = "{$this->e107->e107_dirs['CORE_DIRECTORY']}sql/core_sql.php";
 		$fd = fopen ($filename, "r");
@@ -1994,9 +2141,10 @@ if($this->pdo == true)
 			$drop_table = str_replace($srch,$repl,$tmp[0]);
 			$this->dbqry($drop_table);
 
-			if (!$this->dbqry($sql_table, $link))
+			if (!$this->dbqry($sql_table))
 			{
-				if($this->debug)
+				installLog::add("Query Failed in ".$filename." : ".$sql_table, 'error');
+			/*	if($this->debug)
 				{
 					echo "<h3>filename</h3>";
 					var_dump($filename);
@@ -2005,7 +2153,7 @@ if($this->pdo == true)
 					var_dump($sql_table);
 					echo "<h3>result[0]</h3>";
 					var_dump($result[0]);
-				}
+				}*/
 				return nl2br(LANINS_061."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 			}
 		}
@@ -2028,10 +2176,34 @@ if($this->pdo == true)
 		return false;
 	}
 
-	function dbqry($qry)
+
+
+
+	private function setDb()
+	{
+		$sqlInfo = array(
+				'mySQLserver'       => $this->previous_steps['mysql']['server'],
+				'mySQLuser'         => $this->previous_steps['mysql']['user'],
+				'mySQLpassword'     => $this->previous_steps['mysql']['password'],
+				'mySQLdefaultdb'    => $this->previous_steps['mysql']['db'],
+				'mySQLprefix'       => $this->previous_steps['mysql']['prefix']
+		);
+
+		$this->e107->initInstallSql($sqlInfo);
+	}
+
+
+	private function dbqry($qry)
 	{
 		$sql = e107::getDb();
-		return $sql->db_Query($qry);
+		$return =  $sql->db_Query($qry);
+
+		if($return === false)
+		{
+			installLog::add('Query Failed: '.$qry, 'error');
+		}
+
+		return $return;
 
 		/*if($error = $sql->getLastErrorNumber())
 		{
@@ -2098,6 +2270,10 @@ function create_tables_unattended()
 	}
 
 	$mySQLserver = null;
+	$mySQLuser = null;
+	$mySQLpassword = null;
+	$mySQLdefaultdb = null;
+	$mySQLprefix = null;
 	
 	if(file_exists('e107_config.php'))
 	{
@@ -2283,9 +2459,7 @@ function template_data()
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"m type="text/javascript"></script>
-
-
+		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
 		
@@ -2325,8 +2499,10 @@ function template_data()
 }
 
 /**
- * Render a Fatal error and halt installation. 
- */
+* Render a Fatal error and halt installation.
+*
+* @param $error
+*/
 function die_fatal_error($error)
 {
 		

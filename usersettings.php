@@ -348,8 +348,13 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if (!empty($_POST['updatesettings']))
 		{
+			$ueVals = $_POST['ue'];
 
 			$_POST = e107::getParser()->filter($_POST);
+
+			$_POST['ue'] = $ueVals;
+
+			unset($ueVals);
 
 			if (!vartrue($pref['auth_method']))
 			{
@@ -468,11 +473,17 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		    // Validate Extended User Fields.
 
+
+
 			if (isset($_POST['ue']))
 			{
-				$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],TRUE));		// Validate the extended user fields
+				$eufVals = $ue->sanitizeAll($_POST['ue']);
+				$eufVals = $ue->userExtendedValidateAll($eufVals, varset($_POST['hide'],TRUE));		// Validate the extended user fields
 				$changedEUFData['data'] = validatorClass::findChanges($eufVals['data'], $udata,FALSE);
 			}
+
+			e107::getMessage()->addDebug("<h4>Extended Data - post validation</h4>".print_a($changedEUFData['data'],true));
+
 
 
 			// Determine whether we have an error
@@ -1110,7 +1121,7 @@ function req($field)
 	$ret = "";
 	if ($field == 2)
 	{
-		$ret = "<span class='required'> *</span>";
+		$ret = "<span class='required'><!-- empty --></span>";
 	}
 	return $ret;
 }

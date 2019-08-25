@@ -37,7 +37,7 @@ class _blank_parse
 	 * @param string $context Current context ie.  OLDDEFAULT | BODY | TITLE | SUMMARY | DESCRIPTION | WYSIWYG etc.
 	 * @return string
 	 */
-	function toHtml($text, $context='')
+	function toHTML($text, $context='')
 	{
 		$text = str_replace('****', '<hr>', $text);
 		return $text;

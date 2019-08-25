@@ -36,6 +36,30 @@ class gallery_shortcodes extends e_shortcode
 		$this->attFull = array('w' => $pop_w, 'h' => $pop_h, 'x' => 1, 'crop' => 0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 	}
 
+	function breadcrumb()
+	{
+		$breadcrumb = array();
+
+		$template = e107::getTemplate('gallery', 'gallery', 'cat');
+
+		$caption = isset($template['caption']) ? e107::getParser()->toText($template['caption']) : LAN_PLUGIN_GALLERY_TITLE;
+
+		$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery', $this->var));
+
+		if(vartrue($this->curCat))
+		{
+			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
+		}
+
+		//var_dump($breadcrumb);
+
+		e107::breadcrumb($breadcrumb);
+	}
+
+
+
+
+
 	function sc_gallery_caption($parm = '')
 	{
 		$tp = e107::getParser();
@@ -65,20 +89,13 @@ class gallery_shortcodes extends e_shortcode
 		return $tp->toHTML($this->var['media_description'], true, 'BODY');
 	}
 
+
+
 	function sc_gallery_breadcrumb($parm = '')
 	{
-		$breadcrumb = array();
+	//	$this->breadcrumb();
 
-		$template = e107::getTemplate('gallery', 'gallery', 'cat');
-
-		$caption = isset($template['caption']) ? e107::getParser()->toText($template['caption']) : LAN_PLUGIN_GALLERY_TITLE;
-
-		$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery', $this->var));
-
-		if(vartrue($this->curCat))
-		{
-			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
-		}
+		$breadcrumb = e107::breadcrumb();
 
 		return e107::getForm()->breadcrumb($breadcrumb);
 	}
@@ -150,10 +167,10 @@ class gallery_shortcodes extends e_shortcode
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		if($parm == 'title')
 		{
-			return $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+			return $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		}
 		$text = "<a href='" . $url . "'>";
-		$text .= $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+		$text .= $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		$text .= "</a>";
 		return $text;
 	}

@@ -902,7 +902,7 @@ console.log('Bbcode: '+bbcode);
 				{title: "Zip files", extensions: extArchive || "zip,gz,rar"},
 				{title: "Document files", extensions: extDoc || "pdf,doc,docx,xls,xlsm,xml"},
 				{title: "Media files", extensions: 'mp3,mp4,wav,ogg,webm,mid,midi'},
-				{title: "Other files", extensions: 'torrent,txt'}
+				{title: "Other files", extensions: 'torrent,txt,dmg'}
 			],
 			preinit: {
 				Init: function (up, info)

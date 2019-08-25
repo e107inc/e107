@@ -86,7 +86,7 @@ foreach($arr as $year=>$val)
 			{
 				$url = e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id,category_sef,category_name,category_id'));
 		        $var = array('ITEM_URL'   => $url,
-		                     'ITEM_TITLE' => $tp->toHtml($row['news_title'],false,'TITLE'),
+		                     'ITEM_TITLE' => $tp->toHTML($row['news_title'],false,'TITLE'),
 		        );
 		        $text .=  $tp->simpleParse($template['item'], $var);
 			}
@@ -104,7 +104,7 @@ e107::plugLan('news');
 
 $caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_NEWSARCHIVE_MENU_TITLE;
 
-
 e107::getRender()->tablerender($caption, $start.$text.$end, 'news-archive-menu');
+
 
 //e107::getDebug()->log($arr);

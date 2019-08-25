@@ -39,7 +39,9 @@ class page_shortcodes extends e_shortcode
 			
 		/**
 		 * Page Navigation
-		 * @example {PAGE_NAVIGATION: template=navdoc&auto=1} in your Theme template. 
+		 * @example {PAGE_NAVIGATION: template=navdoc&auto=1} in your Theme template.
+		 * @example {PAGE_NAVIGATION: chapter=4}
+		 * @example {PAGE_NAVIGATION: book=3&pages=true}
 		 */	
 		function sc_page_navigation($parm=null) // TODO when No $parm provided, auto-detect based on URL which book/chapters to display.
 		{
@@ -90,7 +92,7 @@ class page_shortcodes extends e_shortcode
 				$parm = '';
 			}
 			
-		
+			/** @var page_sitelink $links */
 			$links = e107::getAddon('page', 'e_sitelink');
 			
 			$data = $links->pageNav($parm);
@@ -111,13 +113,13 @@ class page_shortcodes extends e_shortcode
 		
 		function sc_page_chapter_name($parm='')
 		{			
-			return e107::getParser()->toHtml($this->var['chapter_name']);	
+			return e107::getParser()->toHTML($this->var['chapter_name']);	
 		}		
 		
 		
 		function sc_page_chapter_description($parm='')
 		{
-			return e107::getParser()->toHtml($this->var['chapter_meta_description'],true);		
+			return e107::getParser()->toHTML($this->var['chapter_meta_description'],true);		
 		}
 		
 		/**

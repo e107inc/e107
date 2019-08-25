@@ -482,8 +482,9 @@ class links_admin_ui extends e_admin_ui
 		{
 			if($this->getAction() != 'list')
 			{
-				$this->getTreeModel()->setParam('order', 'ORDER BY '.$this->listOrder)->load();
+				$this->getTreeModel()->setParam('order', 'ORDER BY '.$this->listOrder)->loadBatch();
 			}
+			/** @var e_tree_modell $tree */
 			$tree = $this->getTreeModel()->getTree();
 			$this->_link_array = array();
 			foreach ($tree as $id => $model)
@@ -613,7 +614,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					$newkey .= "(".$val['parm'].")";	
 				}
-				$func[$newkey] = $tp->toHtml($val['name'],'','TITLE');
+				$func[$newkey] = $tp->toHTML($val['name'],'','TITLE');
 			}
 			$this->linkFunctions[$cat] = $func;
 		}

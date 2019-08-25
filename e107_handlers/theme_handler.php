@@ -57,7 +57,6 @@ class e_theme
 
 	function __construct($options=array())
 	{
-
 		if(!empty($options['themedir']))
 		{
 			$this->_current = $options['themedir'];
@@ -71,13 +70,56 @@ class e_theme
 
 		if(empty($this->_data) || $options['force'] === true)
 		{
-
 			$this->load($options['force']);
 		}
 
 
 
 	}
+
+	/**
+	 * Load theme layout from html files
+	 * Required theme.html file in the theme root directory.
+	 * @param string $key layout name
+	 * @return array|bool
+	 */
+	public static function loadLayout($key=null, $theme = null)
+	{
+		if($theme === null)
+		{
+			$theme = e107::pref('core','sitetheme');
+		}
+
+		if(!is_readable(e_THEME.$theme."/layouts/".$key."_layout.html") || !is_readable(e_THEME.$theme."/theme.html"))
+		{
+			return false;
+		}
+
+		e107::getDebug()->log("Using HTML layout: ".$key.".html");
+
+		$tmp = file_get_contents(e_THEME.$theme."/theme.html");
+		$LAYOUT = array();
+
+		list($LAYOUT['_header_'], $LAYOUT['_footer_']) = explode("{---LAYOUT---}", $tmp, 2);
+
+		$tp = e107::getParser();
+		e107::getScParser()->loadThemeShortcodes($theme);
+
+		if(strpos($LAYOUT['_header_'], '{---HEADER---}')!==false)
+		{
+			$LAYOUT['_header_'] = str_replace('{---HEADER---}', $tp->parseTemplate('{HEADER}', true), $LAYOUT['_header_']);
+		}
+
+		if(strpos($LAYOUT['_footer_'], '{---FOOTER---}')!==false)
+		{
+			$LAYOUT['_footer_'] = str_replace('{---FOOTER---}', $tp->parseTemplate('{FOOTER}', true), $LAYOUT['_footer_']);
+		}
+
+		$LAYOUT[$key] = file_get_contents(e_THEME.$theme."/layouts/".$key."_layout.html");
+
+		return $LAYOUT;
+	}
+
 
 	/**
 	 * Load library dependencies.
@@ -104,6 +146,7 @@ class e_theme
 			return;
 		}
 
+
 		foreach($libraries as $library)
 		{
 			if(empty($library['name']))
@@ -116,11 +159,24 @@ class e_theme
 			{
 				if($library['name'] === 'bootstrap' && varset($library['version']) == 4) // quick fix.
 				{
-					$library['name'] .= '4';
+					$library['name'] .= (string) $library['version'];
+
+					 e107::getParser()->setBootstrap($library['version']);
 
 					if(!defined('BOOTSTRAP'))
 					{
-						define('BOOTSTRAP', 4);
+						define('BOOTSTRAP', (int) $library['version']);
+					}
+				}
+				elseif($library['name'] === 'fontawesome' && !empty($library['version'])) // quick fix.
+				{
+					$library['name'] .= (string) $library['version'];
+
+					e107::getParser()->setFontAwesome($library['version']);
+
+					if(!defined('FONTAWESOME'))
+					{
+						define('FONTAWESOME', (int) $library['version']);
 					}
 				}
 
@@ -281,6 +337,158 @@ class e_theme
 	}
 
 	/**
+	 * Rebuild URL without trackers, for matching against theme_layout prefs.
+	 * @param string $url
+	 * @return string
+	 */
+	private function filterTrackers($url)
+	{
+		if(strpos($url,'?') === false || empty($url))
+		{
+			return $url;
+		}
+
+		list($site,$query) = explode('?',$url);
+
+		parse_str($query,$get);
+
+		$get = eHelper::removeTrackers($get);
+
+		$ret = empty($get) ? $site : $site.'?'.http_build_query($get);
+
+		return $ret;
+	}
+
+
+	/**
+	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
+	 *
+	 * @param array  $cusPagePref
+	 * @param string $defaultLayout
+	 * @param string $request_url (optional) defaults to e_REQUEST_URL
+	 * @param string $request_script $_SERVER['SCRIPT_FILENAME'];
+	 * @return int|string
+	 */
+	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null, $request_script = null)
+	{
+
+		if($request_url === null)
+		{
+			$request_url = e_REQUEST_URL;
+		}
+
+
+		$def = "";   // no custom pages found yet.
+		$matches = array();
+
+
+		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
+		{
+		    //e_SELF.(e_QUERY ? '?'.e_QUERY : '');
+			$c_url = str_replace(array('&amp;'), array('&'), $request_url);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
+			// FIX - check against urldecoded strings
+			$c_url = rtrim(rawurldecode($c_url), '?');
+
+			$c_url = $this->filterTrackers($c_url);
+
+			// First check all layouts for exact matches - possible fix for future issues?.
+			/*
+			foreach($cusPagePref as $lyout=>$cusPageArray)
+			{
+				if(!is_array($cusPageArray)) { continue; }
+
+				$base = basename($request_url);
+
+				if(in_array("/".$base, $cusPageArray) || in_array($base, $cusPageArray))
+				{
+					return $lyout;
+				}
+			}*/
+
+
+	        foreach($cusPagePref as $lyout=>$cusPageArray)
+			{
+
+				if(!is_array($cusPageArray)) { continue; }
+
+				// NEW - Front page template check - early
+				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
+				{
+					return $lyout;
+				}
+
+	            foreach($cusPageArray as $kpage)
+				{
+					$kpage = str_replace('&#036;', '$', $kpage); // convert database encoding.
+
+					$lastChar = substr($kpage, -1);
+
+					if($lastChar === '$') // script name match.
+					{
+						$kpage = rtrim($kpage, '$');
+						if(!empty($request_script) && strpos($request_script, '/'.$kpage) !== false)
+						{
+							return $lyout;
+						}
+					}
+
+
+
+					if($lastChar === '!')
+					{
+
+						$kpage = rtrim($kpage, '!');
+
+						if(basename($request_url) === $kpage) // exact match specified by '!', skip other processing.
+						{
+							return $lyout;
+						}
+						elseif(substr($c_url, - strlen($kpage)) === $kpage)
+						{
+							$def = $lyout;
+						}
+
+						continue;
+					}
+
+
+					if (!empty($kpage) && (strpos($c_url, $kpage) !== false)) // partial URL match
+					{
+						similar_text($c_url,$kpage,$perc);
+						$matches[$lyout] = round($perc,2); // rank the match
+					//	echo $c_url." : ".$kpage."  --- ".$perc."\n";
+					}
+
+				}
+			}
+		}
+
+		if(!empty($matches)) // return the highest ranking match.
+		{
+			$top = array_keys($matches, max($matches));
+			$def = $top[0];
+			//print_r($matches);
+		}
+
+	    if($def) // custom-page layout.
+		{
+			$layout = $def;
+		}
+		else // default layout.
+		{
+	      $layout = $defaultLayout;
+		}
+
+		return $layout;
+
+	}
+
+
+
+
+
+
+	/**
 	 * Return a list of all local themes in various formats.
 	 * Replaces getThemeList
 	 * @param null|string $mode  null, 'version' | 'id'
@@ -294,7 +502,7 @@ class e_theme
 		{
 			foreach($this->_data as $dir=>$v)
 			{
-				$arr[$dir] = $v['version'];
+				$arr[$dir] = array('version'=>$v['version'], 'author'=>$v['author']);
 			}
 
 		}
@@ -460,7 +668,7 @@ class e_theme
 
 	public static function parse_theme_php($path)
 	{
-		$CUSTOMPAGES = "";
+		$CUSTOMPAGES = null;
 
 		$tp = e107::getParser(); // could be used by a theme file.
 		$sql = e107::getDb(); // could be used by a theme file.
@@ -582,6 +790,7 @@ class e_theme
 	//	 echo "<h2>".$themeArray['name']."</h2>";
 	//	 print_a($lays);
 		$themeArray['legacy'] = true;
+		$themeArray['html'] = false;
 
 		return $themeArray;
 	}
@@ -625,6 +834,7 @@ class e_theme
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
+		$vars['html']           = file_exists(e_THEME.$path.'/theme.html') && is_dir(e_THEME.$path.'/layouts') ? true : false;
 
 
 		if(!empty($vars['themePrefs']))
@@ -1299,7 +1509,7 @@ class themeHandler
 		$frm = e107::getForm();
 		
 		return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
-		
+		/*
 		$text = '<span class="input-append e-search"><i class="icon-search"></i>
     		'.$frm->text($name, $searchVal,20,'class=search-query').'
    			 <button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>
@@ -1308,7 +1518,7 @@ class themeHandler
 	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
 		
 		return $text;
-		
+		*/
 	}
 
 	/**
@@ -1885,7 +2095,7 @@ class themeHandler
 					}
 
 					$tdClass = !empty($val['writeParms']['post']) ? 'form-inline' : '';
-					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div></td></tr>";
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".varset($val['help'])."</div></td></tr>";
 				}
 			}
 
@@ -1961,13 +2171,15 @@ class themeHandler
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		$tp = e107::getParser();
+
+
 		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".varset($_GET['mode'])."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 
@@ -2037,7 +2249,7 @@ class themeHandler
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
 			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-			$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+			$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('fa-download',array('size'=>'2x'))."</a>";
 		
 			
 		
@@ -2215,7 +2427,7 @@ class themeHandler
 						$itext .= ($mode == self::RENDER_SITEPREFS) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
 						$itext .= "
 										<th>".TPVLAN_52."</th>
-										<th>".TPVLAN_56."</th>
+										<th>".TPVLAN_56."&nbsp;<a href='#' class='e-tip' title=\"".TPVLAN_96."\">".ADMIN_INFO_ICON."</a></th>
 										<th class='text-right' style='text-align:right'>".TPVLAN_54."</th>
 			
 									</tr>\n";
@@ -2249,7 +2461,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-secondary btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-default btn-secondary btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -2260,7 +2472,7 @@ class themeHandler
 							}
 							else
 							{
-								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-secondary btn-mini e-expandit'>".LAN_NONE."</a> ";
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' class='e-tip btn btn-xs btn-default btn-secondary btn-mini e-expandit'>".LAN_NONE."</a> ";
 							}
 			
 							
@@ -2268,10 +2480,15 @@ class themeHandler
 											<td style='vertical-align:top'>";
 							// Default
 
-							if($pref['sitetheme_deflayout'] != $key)
-							{
+							// issue #3663: 1. custompages are "deleted" for the current selected layout
+							// issue #3663: 2. custompages of the selected layout are not editable
+
+							//if($pref['sitetheme_deflayout'] != $key)
+							//if(isset($pref['sitetheme_custompages'][$key]))
+							//{
 								$itext .= $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'>
 										<textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
+
 
 
 								//TODO Later.
@@ -2283,11 +2500,11 @@ class themeHandler
 
 								$itext .= "
 								</div>\n";
-							}
-							else
-							{
-								$itext .= TPVLAN_55;
-							}
+							//}
+							//else
+							//{
+							//	$itext .= TPVLAN_55;
+							//}
 
 
 							
@@ -2512,9 +2729,10 @@ class themeHandler
 				unset($detected[$vl['name']]);
 			}
 
-			switch($mode)
-			{
-				case 1: // frontend
+
+				 // frontend
+				if($mode === self::RENDER_SITEPREFS)
+				{
 
 					if(substr($vl['name'], 0, 6) == "admin_")
 					{
@@ -2534,10 +2752,10 @@ class themeHandler
 						continue;
 					}
 
-				break;
+				}
 
-				case 2: // admin
-
+				if($mode === self::RENDER_ADMINPREFS)
+				{
 
 					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
 					{
@@ -2558,10 +2776,10 @@ class themeHandler
 					{
 						$remove[$k] = $vl['name'];
 					}
-				break;
+				}
 
 
-			}
+
 
 		}
 
@@ -2676,10 +2894,18 @@ class themeHandler
 		exit;
 	}
 	
-	function showPreview()
+	static function showPreview()
 	{
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
+
+		$srch = array(
+			'{PREVIEWTHEMENAME}' => PREVIEWTHEMENAME,
+			'{e_ADMIN}' => e_ADMIN
+		);
+
+		$text = str_replace(array_keys($srch),$srch,$text);
+
 		global $ns;
 		$ns->tablerender(TPVLAN_2, $text);
 	}
@@ -3021,6 +3247,10 @@ class themeHandler
 
 }
 
+
+
+
+
 interface e_theme_config
 {
 	/**
@@ -3041,3 +3271,23 @@ interface e_theme_config
 	 */
 //	public function help();
 }
+
+
+/**
+ * Interface e_theme_render
+ * @see e107_themes/bootstrap3/admin_theme.php
+ */
+interface e_theme_render
+{
+	public function tablestyle($caption, $text, $mode, $data);
+
+}
+
+
+/**
+* Interface e_theme_library
+*//*
+interface e_theme_library
+{
+	public function config();
+}*/

@@ -57,6 +57,16 @@ class faqs_shortcodes extends e_shortcode
 	{
 		return $this->counter;	
 	}
+
+	function sc_faq_hide($parm=null)
+	{
+		if(empty($parm))
+		{
+			$parm = 'collapse';
+		}
+
+		return ($this->item != $this->var['faq_id']) ? $parm : '';
+	}
 	
 	
 	function sc_faq_question($parm='')
@@ -100,7 +110,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if($this->share == true)
 			{
-				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
+				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
 			}
 
 			$text .= "</div></div>
@@ -109,10 +119,23 @@ class faqs_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true, 'BODY');
+			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
 		}
 		return $text;
 	}
+
+
+	function sc_faq_share($parm=null)
+	{
+		$tp = e107::getParser();
+
+		$url        = e107::url('faqs','item', $this->var, 'full');
+		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+
+		return $tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
+
+	}
+
 	
 	function sc_faq_question_link($parm='')
 	{
@@ -231,9 +254,9 @@ class faqs_shortcodes extends e_shortcode
 
 		$customCaption = e107::pref('faqs', 'page_title');
 
-		if(!empty($customCaption))
+		if(!empty($customCaption[e_LANGUAGE]))
 		{
-			return e107::getParser()->toHtml($customCaption,true);
+			return e107::getParser()->toHTML($customCaption[e_LANGUAGE],true);
 		}
 
 		return LAN_PLUGIN_FAQS_FRONT_NAME;
@@ -346,7 +369,7 @@ class faqs_shortcodes extends e_shortcode
 
 				foreach($list as $row)
 				{
-					$text .= "<li>".$tp->toHtml($row['faq_question'],true)."</li>";
+					$text .= "<li>".$tp->toHTML($row['faq_question'],true)."</li>";
 				}
 
 				$text .= "</ul>";

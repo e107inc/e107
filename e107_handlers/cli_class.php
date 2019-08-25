@@ -20,12 +20,14 @@ if (!defined('e107_INIT')) { exit; }
 
 class eCLI
 {
+
 	/**
-	*  Provided a list of command line arguments, parse them in a unix manner.
-	*  If no args are provided, will default to $_SERVER['argv']
-	*
-	*	 @return array arg values
-	*/
+	 *  Provided a list of command line arguments, parse them in a unix manner.
+	 *  If no args are provided, will default to $_SERVER['argv']
+	 *
+	 * @param string $argv
+	 * @return array arg values
+	 */
 
 	function parse_args($argv='')
 	{
@@ -90,4 +92,3 @@ class eCLI
 	}
 
 }
-?>

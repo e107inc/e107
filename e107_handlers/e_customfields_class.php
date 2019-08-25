@@ -198,7 +198,7 @@
 
 				case "url":
 				case "email":
-					return ($raw) ? $value : $tp->toHtml($value);
+					return ($raw) ? $value : $tp->toHTML($value);
 					break;
 
 				case "user":
@@ -220,7 +220,7 @@
 
 				case "textarea":
 				case "bbarea":
-					return $tp->toHtml($value, true);
+					return $tp->toHTML($value, true, "BODY");
 					break;
 
 
@@ -248,7 +248,7 @@
 					break;
 
 				default:
-					return $tp->toHtml($value);
+					return $tp->toHTML($value);
 			}
 
 		}

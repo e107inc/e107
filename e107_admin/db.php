@@ -68,10 +68,10 @@ if(isset($_POST['exportXmlFile']))
 {
 
 
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'], $_POST['package_images'], false))
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'],$_POST['xml_themeprefs'], $_POST['package_images'], false))
 	{
 		$mes = e107::getMessage();
-		$mes->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
+		$mes->add(LAN_CREATED, E_MESSAGE_SUCCESS);
 	}
 
 }
@@ -505,7 +505,12 @@ class system_tools
 
 		
 	}
-	
+
+	/**
+	 * @param object $sql
+	 * @param $prefix
+	 * @return bool
+	 */
 	private function multiSiteCreateTables($sql, $prefix)
 	{
 		$mes = e107::getMessage();
@@ -519,7 +524,8 @@ class system_tools
 		}
 
 		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
-		
+
+
 		$sql->gen('SET NAMES `utf8`');
 
 		foreach ($result[0] as $sql_table)
@@ -761,7 +767,7 @@ class system_tools
 			$message .= '<li>'.DBLAN_88.'</li>';
 			$message .= '</ul>';
 
-			$mes->add($tp->toHtml($message,true), E_MESSAGE_WARNING);
+			$mes->add($tp->toHTML($message,true), E_MESSAGE_WARNING);
 	
 			$text .= "
 				<form method='post' action='".e_SELF."' id='linkform'>
@@ -949,7 +955,7 @@ class system_tools
 
 	/**
 	 * Delete selected preferences.
-	 * @return none
+	 * @return null
 	 */
 	private function del_pref_val($mode='core')
 	{
@@ -1197,6 +1203,42 @@ class system_tools
 					}
 
 
+				// theme preferences
+					$sitetheme = e107::pref('core','sitetheme'); // currently just sitetheme, but could easily be expanded.
+					$themelist = array($sitetheme);
+
+					$text .= "</tbody><thead><tr>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_plugprefs')." &nbsp;Theme ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
+
+					</tr></thead><tbody>";
+
+				//	ksort($themelist);
+
+					foreach($themelist as $plug)
+					{
+						$data = e107::getThemeConfig($plug)->getPref();
+
+						$key = $plug;
+
+						$checked = false;
+
+						if(!empty($data))
+						{
+							$rows = count($data);
+
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_themeprefs[".$key."]",$key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
+							<td class='text-right'>".$rows."</td>
+
+							</tr>";
+						}
+					}
+
+
+
 
 					$text .= "</tbody>
 				</table>
@@ -1427,7 +1469,7 @@ class system_tools
 
 	/**
 	 * Preferences Editor
-	 * @return none
+	 * @return null
 	 */
 	private function scan_override()
 	{
@@ -1436,7 +1478,6 @@ class system_tools
 		$f = e107::getFile();
 		$config = e107::getConfig();
 
-		$scList = '';
 
 		$fList = $f->get_files(e_CORE.'override/shortcodes/single', '\.php$');
 		$scList = array();
@@ -1478,7 +1519,7 @@ class system_tools
 
 	/**
 	 * Plugin Folder Scanner
-	 * @return none
+	 * @return null
 	 */
 	private function plugin_viewscan($mode = 'update')
 	{
@@ -1590,79 +1631,7 @@ class system_tools
 
 		}
 
-/*
 
-		$sql->select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
-		$previous = '';
-		while($row = $sql->fetch())
-		{
-			e107::loadLanFiles($row['plugin_path'],'admin');
-			e107::plugLan($row['plugin_path'],'global',true);
-
-			$text .= "
-								<tr>
-									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
-	               					<td>".$row['plugin_path']."</td>
-									<td>";
-
-			if(trim($row['plugin_addons']))
-			{
-				//XXX - $nl_code = ''; - OLD VAR?
-				foreach(explode(',', $row['plugin_addons']) as $this_addon)
-				{
-					$ret_code = 3; // Default to 'not checked
-					if((strpos($this_addon, 'e_') === 0) || (substr($this_addon, - 4, 4) == '_sql'))
-					{
-						$ret_code = $ep->checkAddon($row['plugin_path'], $this_addon); // See whether spaces before opening tag or after closing tag
-					}
-					elseif(strpos($this_addon, 'sc_') === 0)
-					{
-						$this_addon = substr($this_addon, 3). ' (sc)';
-					}
-					
-					if(!is_numeric($ret_code)) 
-					{
-						$errorMessage = $ret_code['msg'];	
-						$ret_code = $error_type[$ret_code['type']];	
-					}
-					else 
-					{
-						$errorMessage  = $error_messages[$ret_code];
-					}
-					
-					$text .= "<span class='clear e-tip' style='cursor:pointer' title='".$errorMessage."'>";
-					$text .= $error_glyph[$ret_code]."&nbsp;";
-					
-				//	$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
-					$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
-					$text .= "</span><br />";
-				}
-			}
-
-			$text .= "
-								</td>
-								<td class='center'>
-				";
-
-			if($previous == $row['plugin_path'])
-			{
-				$delid = $row['plugin_id'];
-				$delname = $row['plugin_name'];
-				//Admin delete button
-				$text .= $frm->admin_button("delplug[{$delid}]", DBLAN_52, 'delete', '', array('title' => LAN_CONFIRMDEL." ID:{$delid} [$delname]"));
-				//Or maybe image submit? -
-				//$text .= $frm->submit_image("delplug[{$delid}]", DBLAN_52, 'delete', LAN_CONFIRMDEL." ID:{$delid} [$delname]");
-			}
-			else
-			{
-				$text .= ($row['plugin_installflag'] == 1) ? "<span class='label label-warning'>".DBLAN_27."</span>" : " "; // "Installed and not installed";
-			}
-			$text .= "
-								</td>
-							</tr>
-				";
-			$previous = $row['plugin_path'];
-		}*/
 
 		$text .= "
 							</tbody>
@@ -1672,6 +1641,8 @@ class system_tools
 			";
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_22, $mes->render().$text);
+
+		return null; 
 	}
 
 
@@ -1685,6 +1656,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 {
 	global $st;
 
+	$var = array();
 
 	foreach($st->_options as $key=>$val)
 	{
@@ -1692,8 +1664,8 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
 
-		$icon  = e107::getParser()->toIcon('e-database-24');
-		$caption = $icon."<span>".DBLAN_10."</span>";
+	$icon  = e107::getParser()->toIcon('e-database-24');
+	$caption = $icon."<span>".DBLAN_10."</span>";
 
 	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
@@ -1704,9 +1676,9 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  * @param object $prefs
  * @param object $tables
  * @param object $debug [optional]
- * @return none
+ * @return bool|null
  */
-function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=FALSE)
+function exportXmlFile($prefs,$tables=array(),$plugPrefs=array(), $themePrefs=array(), $package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getXml();
 	$tp = e107::getParser();
@@ -1737,7 +1709,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=
 
 	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
-	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
+	if($xml->e107Export($prefs,$tables,$plugPrefs, $themePrefs, $mode))
 	{
 		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))
@@ -1777,7 +1749,7 @@ function table_list()
 	$exclude[] = "online";
 	$exclude[] = "upload";
 	$exclude[] = "user_extended_country";
-	$exclude[] = "plugin";
+//	$exclude[] = "plugin";
 
 	$coreTables = e107::getDb()->tables('nolan');
 
@@ -1800,433 +1772,5 @@ function table_list()
 
 
 
-/* Still needed?
-
-function backup_core()
-{
-	global $pref, $sql;
-	$tmp = base64_encode((serialize($pref)));
-	if(!$sql->db_Insert("core", "'pref_backup', '{$tmp}' "))
-	{
-		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='pref_backup'");
-	}
-}
-
-*/
-
-/*
-function verify_sql_record() // deprecated by db_verify.php ( i think).
-{
-	global  $e107;
-
-	$sql = e107::getDb();
-	$sql2 = e107::getDb('sql2');
-	$sql3 = e107::getDb('sql3');
-	$frm = e107::getForm();
-	$tp = e107::getParser();
-	$mes = e107::getMessage();
-
-	$tables = array();
-	$tables[] = 'rate';
-	$tables[] = 'comments';
-
-	if(isset($_POST['delete_verify_sql_record']))
-	{
-
-		if(!varset($_POST['del_dbrec']))
-		{
-			$mes->add('Nothing to delete', E_MESSAGE_DEBUG);
-		}
-		else
-		{
-			$msg = "ok, so you want to delete some records? not a problem at all!<br />";
-			$msg .= "but, since this is still an experimental procedure, i won't actually delete anything<br />";
-			$msg .= "instead, i will show you the queries that would be performed<br />";
-			$text .= "<br />";
-			$mes->add($msg, E_MESSAGE_DEBUG);
-
-			foreach($_POST['del_dbrec'] as $k => $v)
-			{
-
-				if($k == 'rate')
-				{
-
-					$keys = implode(", ", array_keys($v));
-					$qry .= "DELETE * FROM rate WHERE rate_id IN (".$keys.")<br />";
-
-				}
-				elseif($k == 'comments')
-				{
-
-					$keys = implode(", ", array_keys($v));
-					$qry .= "DELETE * FROM comments WHERE comment_id IN (".$keys.")<br />";
-
-				}
-
-			}
-
-			$mes->add($qry, E_MESSAGE_DEBUG);
-			$mes->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_DEBUG);
-		}
-	}
-
-	//Nothing selected
-	if(isset($_POST['check_verify_sql_record']) && (!isset($_POST['table_rate']) && !isset($_POST['table_comments'])))
-	{
-		$_POST['check_verify_sql_record'] = '';
-		unset($_POST['check_verify_sql_record']);
-		$mes->add(DBLAN_53, E_MESSAGE_WARNING);
-	}
-
-	if(!isset($_POST['check_verify_sql_record']))
-	{
-		//select table to verify
-		$text = "
-			<form method='post' action='".e_SELF."'>
-				<fieldset id='core-db-verify-sql-tables'>
-					<legend class='e-hideme'>".DBLAN_39."</legend>
-					<table class='table adminlist'>
-						<colgroup>
-							<col style='width: 100%' />
-						</colgroup>
-						<thead>
-							<tr>
-								<th class='last'>".DBLAN_37."</th>
-							</tr>
-						</thead>
-						<tbody>
-		";
-		foreach($tables as $t)
-		{
-			$text .= "
-							<tr>
-								<td>
-									".$frm->checkbox('table_'.$t, $t).$frm->label($t, 'table_'.$t, $t)."
-								</td>
-							</tr>
-					";
-		}
-		$text .= "
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('check_verify_sql_record', DBLAN_38)."
-						".$frm->admin_button('back', LAN_BACK, 'back')."
-					</div>
-				</fieldset>
-			</form>
-		";
-
-		$ns->tablerender(DBLAN_10.SEP.DBLAN_39, $mes->render().$text);
-	}
-	else
-	{
-
-		//function to sort the results
-		function verify_sql_record_cmp($a, $b)
-		{
-
-			$orderby = array('type' => 'asc', 'itemid' => 'asc');
-
-			$result = 0;
-			foreach($orderby as $key => $value)
-			{
-				if($a[$key] == $b[$key])
-					continue;
-				$result = ($a[$key] < $b[$key]) ? - 1 : 1;
-				if($value == 'desc')
-					$result = - $result;
-				break;
-			}
-			return $result;
-		}
-
-		//function to display the results
-		//$err holds the error data
-		//$ctype holds the tablename
-		function verify_sql_record_displayresult($err, $ctype)
-		{
-			global $frm;
-
-			usort($err, 'verify_sql_record_cmp');
-
-			$text = "
-
-					<fieldset id='core-core-db-verify-sql-records-{$ctype}'>
-						<legend>".DBLAN_40." ".$ctype."</legend>
-						<table class='table adminlist'>
-							<colgroup>
-								<col style='width: 20%' />
-								<col style='width: 10%' />
-								<col style='width: 50%' />
-								<col style='width: 20%' />
-							</colgroup>
-							<thead>
-								<tr>
-									<th>".DBLAN_41."</th>
-									<th>".LAN_ID."</th>
-									<th>".DBLAN_43."</th>
-									<th class='center last'>".LAN_OPTIONS."</th>
-								</tr>
-							</thead>
-							<tbody>
-			";
-			if(is_array($err) && !empty($err))
-			{
-
-
-				foreach($err as $k => $v)
-				{
-					$delkey = $v['sqlid'];
-					$text .= "
-									<tr>
-										<td>{$v['type']}</td>
-										<td>{$v['itemid']}</td>
-										<td>".($v['table_exist'] ? DBLAN_45 : DBLAN_46)."</td>
-										<td class='center'>
-											".$frm->checkbox('del_dbrec['.$ctype.']['.$delkey.'][]', '1').$frm->label(LAN_DELETE, 'del_dbrec['.$ctype.']['.$delkey.'][]', '1')."
-										</td>
-									</tr>
-					";
-				}
-
-			}
-			else
-			{
-				$text .= "
-								<tr>
-									<td colspan='4'>{$err}</td>
-								</tr>
-				";
-			}
-			$text .= "
-							</tbody>
-						</table>
-					</fieldset>
-			";
-
-			return $text;
-		}
-
-		function verify_sql_record_gettables()
-		{
-
-			$sql2 = e107::getDb('sql2');
-
-			//array which will hold all db tables
-			$dbtables = array();
-
-			//get all tables in the db
-			$sql2->gen("SHOW TABLES");
-			while($row2 = $sql2->fetch())
-			{
-				$dbtables[] = $row2[0];
-			}
-			return $dbtables;
-		}
-
-		$text = "<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>";
-
-		//validate rate table records
-		if(isset($_POST['table_rate']))
-		{
-
-			$query = "
-			SELECT r.*
-			FROM #rate AS r
-			WHERE r.rate_id!=''
-			ORDER BY r.rate_table, r.rate_itemid";
-			$data = array('type' => 'rate', 'table' => 'rate_table', 'itemid' => 'rate_itemid', 'id' => 'rate_id');
-
-			if(!$sql->gen($query))
-			{
-				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
-			}
-			else
-			{
-				//the master error array
-				$err = array();
-
-				//array which will hold all db tables
-				$dbtables = verify_sql_record_gettables();
-
-				while($row = $sql->fetch())
-				{
-
-					$ctype = $data['type'];
-					$cid = $row[$data['id']];
-					$citemid = $row[$data['itemid']];
-					$ctable = $row[$data['table']];
-
-					//if the rate_table is an existing table, we need to do more validation
-					//else if the rate_table is not an existing table, this is an invalid reference
-					//FIXME Steve: table is never found without MPREFIX; Multi-language tables?
-					if(in_array(MPREFIX.$ctable, $dbtables))
-					{
-
-						$sql3->gen("SHOW COLUMNS FROM ".MPREFIX.$ctable);
-						while($row3 = $sql3->fetch())
-						{
-							//find the auto_increment field, since that's the most likely key used
-							if($row3['Extra'] == 'auto_increment')
-							{
-								$aif = $row3['Field'];
-								break;
-							}
-						}
-
-						//we need to check if the itemid (still) exists in this table
-						//if the record is not found, this could well be an obsolete record
-						//if the record is found, we need to keep this record since it's a valid reference
-						if(!$sql2->db_Select("{$ctable}", "*", "{$aif}='{$citemid}' ORDER BY {$aif} "))
-						{
-							$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-						}
-
-					}
-					else
-					{
-						$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => FALSE);
-					}
-				}
-
-				$text .= verify_sql_record_displayresult(($err ? $err : DBLAN_54), $ctype);
-			}
-		}
-
-		//validate comments table records
-		if(isset($_POST['table_comments']))
-		{
-
-			$query = "
-			SELECT c.*
-			FROM #comments AS c
-			WHERE c.comment_id!=''
-			ORDER BY c.comment_type, c.comment_item_id";
-			$data = array('type' => 'comments', 'table' => 'comment_type', 'itemid' => 'comment_item_id', 'id' => 'comment_id');
-
-			if(!$sql->gen($query))
-			{
-				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
-			}
-			else
-			{
-
-				//the master error array
-				$err = array();
-
-				//array which will hold all db tables
-				$dbtables = verify_sql_record_gettables();
-
-				//get all e_comment files and variables
-				require_once (e_HANDLER."comment_class.php");
-				$cobj = new comment();
-				$e_comment = $cobj->get_e_comment();
-
-				while($row = $sql->fetch())
-				{
-
-					$ctype = $data['type'];
-					$cid = $row[$data['id']];
-					$citemid = $row[$data['itemid']];
-					$ctable = $row[$data['table']];
-
-					//for each comment we need to validate the referencing record exists
-					//we need to check if the itemid (still) exists in this table
-					//if the record is not found, this could well be an obsolete record
-					//if the record is found, we need to keep this record since it's a valid reference
-
-
-					// news
-					if($ctable == "0")
-					{
-						if(!$sql2->db_Select("news", "*", "news_id='{$citemid}' "))
-						{
-							$err[] = array('type' => 'news', 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-						}
-						//	article, review or content page
-					}
-					elseif($ctable == "1")
-					{
-
-					//	downloads
-					}
-					elseif($ctable == "2")
-					{
-						if(!$sql2->db_Select("download", "*", "download_id='{$citemid}' "))
-						{
-							$err[] = array('type' => 'download', 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-						}
-
-					//	poll
-					}
-					elseif($ctable == "4")
-					{
-						if(!$sql2->db_Select("polls", "*", "poll_id='{$citemid}' "))
-						{
-							$err[] = array('type' => 'polls', 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-						}
-
-					//	userprofile
-					}
-					elseif($ctable == "profile")
-					{
-						if(!$sql2->db_Select("user", "*", "user_id='{$citemid}' "))
-						{
-							$err[] = array('type' => 'user', 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-						}
-
-					//else if this is a plugin comment
-					}
-					elseif(isset($e_comment[$ctable]) && is_array($e_comment[$ctable]))
-					{
-						$var = $e_comment[$ctable];
-						$qryp = '';
-						//new method must use the 'qry' variable
-						if(isset($var) && $var['qry'] != '')
-						{
-							if($installed = $sql2->db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
-							{
-								$qryp = str_replace("{NID}", $citemid, $var['qry']);
-								if(!$sql2->gen($qryp))
-								{
-									$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-								}
-							}
-							//old method
-						}
-						else
-						{
-							if(!$sql2->db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '{$citemid}' "))
-							{
-								$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
-							}
-						}
-						//in all other cases
-					}
-					else
-					{
-						$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => FALSE);
-					}
-
-				}
-
-				$text .= verify_sql_record_displayresult(($err ? $err : DBLAN_54), $ctype);
-			}
-		}
-
-		$text .= "
-				<div class='buttons-bar center'>
-					".$frm->admin_button('delete_verify_sql_record', LAN_DELCHECKED, 'delete')."
-					".$frm->admin_button('verify_sql_record', LAN_BACK, 'back')."
-
-				</div>
-			</form>
-		";
-
-		$ns->tablerender(DBLAN_10.SEP.DBLAN_50, $mes->render().$text);
-	}
-}
-*/
 
 ?>

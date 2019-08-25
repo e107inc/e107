@@ -64,7 +64,7 @@ class news_rss // plugin-folder + '_rss'
 	 * @param string $parms
 	 * @return array
 	 */
-	function data($parms='')
+	function data($parms=null)
 	{
 
 		$pref                       = e107::getConfig()->getPref();
@@ -127,12 +127,12 @@ class news_rss // plugin-folder + '_rss'
 
 		if($row['news_summary'] && $this->summaryDescription == true)
 		{
-			$text = $tp->toHtml($row['news_summary'],true);
+			$text = $tp->toHTML($row['news_summary'],true);
 		}
 		else
 		{
 
-			$text= $tp->toHtml($row['news_body'],true). "<br />".$tp->toHtml($row['news_extended'], true);
+			$text= $tp->toHTML($row['news_body'],true). "<br />".$tp->toHTML($row['news_extended'], true);
 		}
 
 		if($this->showImages == true && !empty($row['news_thumbnail']))

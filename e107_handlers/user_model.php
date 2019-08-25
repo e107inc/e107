@@ -367,6 +367,10 @@ class e_user_model extends e_admin_model
 		return $this;
 	}
 
+	/**
+	 * @param bool $toString
+	 * @return string|array
+	 */
 	final public function getClassList($toString = false)
 	{
 		if (null === $this->_class_list)
@@ -1062,17 +1066,23 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		$curClasses = explode(",", $this->getData('user_class'));
-		$curClasses[] = $userClassId;
-		$curClasses = array_unique($curClasses);
-
-		$insert = implode(",", $curClasses);
+//		$curClasses = explode(",", $this->getData('user_class'));
+//		$curClasses[] = $userClassId;
+//		$curClasses = array_unique($curClasses);
+//
+//		$insert = implode(",", $curClasses);
 
 		//FIXME - @SecretR - I'm missing something here with setCore() etc.
 	//	$this->setCore('user_class',$insert );
 	//	$this->saveDebug(false);
 
-		$uid = $this->getData('user_id');
+		// Switched to unified remove user class method
+		$insert = e107::getUserClass()->ucAdd($userClassId, $this->getData('user_class'), false);
+
+		if(!$uid = $this->getData('user_id'))
+		{
+			return false;
+		}
 
 		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
 
@@ -1091,19 +1101,27 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		$curClasses = explode(",", $this->getData('user_class'));
+//		$curClasses = explode(",", $this->getData('user_class'));
+//
+//		foreach($curClasses as $k=>$v)
+//		{
+//			if($v == $userClassId)
+//			{
+//				unset($curClasses[$k]);
+//			}
+//		}
 
-		foreach($curClasses as $k=>$v)
+//		$uid = $this->getData('user_id');
+
+//		$insert = implode(",", $curClasses);
+
+		// Switched to unified remove user class method
+		$insert = e107::getUserClass()->ucRemove($userClassId, $this->getData('user_class'), false);
+
+		if(!$uid = $this->getData('user_id'))
 		{
-			if($v == $userClassId)
-			{
-				unset($curClasses[$k]);
-			}
+			return false;
 		}
-
-		$uid = $this->getData('user_id');
-
-		$insert = implode(",", $curClasses);
 
 		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
 
@@ -1237,7 +1255,8 @@ class e_system_user extends e_user_model
 	 * @return array
 	 */
 	public function renderEmail($type, $userInfo)
-	{	
+	{
+		global $SIGNUPEMAIL_USETHEME, $QUICKADDUSER_TEMPLATE, $NOTIFY_TEMPLATE;
 		$pref = e107::getPref();
 		$ret = array();
 		$tp = e107::getParser();
@@ -1282,10 +1301,10 @@ class e_system_user extends e_user_model
 			$EMAIL_TEMPLATE['signup']['bcc']			= $SIGNUPEMAIL_BCC;
 			$EMAIL_TEMPLATE['signup']['attachments']	= $SIGNUPEMAIL_ATTACHMENTS;		
 			$EMAIL_TEMPLATE['signup']['body']			= $SIGNUPEMAIL_TEMPLATE;
-			
-			$EMAIL_TEMPLATE['quickadduser']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
-			$EMAIL_TEMPLATE['notify']['body']			= $NOTIFY_TEMPLATE['email_body'];
-			
+
+			$EMAIL_TEMPLATE['quickadduser']['body']	= vartrue($QUICKADDUSER_TEMPLATE['email_body'], '');
+			$EMAIL_TEMPLATE['notify']['body']			= vartrue($NOTIFY_TEMPLATE['email_body'], '');
+
 		}
 		
 		$template = '';
@@ -1925,12 +1944,12 @@ class e_user extends e_user_model
 			{
 				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
-				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
 			}
 			else
 			{
 				$this->set('user_currentvisit', time());
-				$sql->db_Update('user', "user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
 			}
 		}
 	}
@@ -2515,7 +2534,7 @@ class e_user_extended_model extends e_admin_model
 	/**
 	 * Doesn't save anything actually...
 	 */
-	public function saveDebug($retrun = false, $undo = true)
+	public function saveDebug($return = false, $undo = true)
 	{
 		$this->_buildManageRules();
 		return parent::saveDebug($return, $undo);
@@ -2649,7 +2668,7 @@ class e_user_extended_structure_tree extends e_tree_model
 	 */
 	public function __construct()
 	{
-		$this->load();
+		$this->loadBatch();
 	}
 
 	/**
@@ -2719,12 +2738,12 @@ class e_user_extended_structure_tree extends e_tree_model
 	 *
 	 * @param boolean $force
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		$this->setParam('nocount', true)
 			->setParam('model_class', 'e_user_extended_structure_model')
 			->setParam('db_order', 'user_extended_struct_order ASC');
-		parent::load($force);
+		parent::loadBatch($force);
 
 		return $this;
 	}
@@ -2839,7 +2858,7 @@ class e_user_pref extends e_front_model
 			{
 				$data = $this->toString(true);
 				$this->apply();
-				return (e107::getDb('user_prefs')->db_Update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
+				return (e107::getDb('user_prefs')->update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
 			}
 			return 0;
 		}

@@ -330,7 +330,7 @@ define("LAN_LINE","Line");
 define("LAN_SHORTCODES","Shortcodes");
 define("LAN_DISPLAYOPT", "Edit Display Options");
 // define("LAN_GOPAGE", "Go to page:");
-define("LAN_DATESTAMP","Date stamp");
+// define("LAN_DATESTAMP","Date stamp"); // moved to English.php
 define("LAN_TIMESTAMP","Timestamp");
 
 define("LAN_PAGE","PAGE");
@@ -428,7 +428,7 @@ define("LAN_TEMPLATE","Template");
 define("LAN_TEMPLATES","Templates");
 
 // define("LAN_NONE", "None");
-define("LAN_CATEGORIES", "Categories");
+// define("LAN_CATEGORIES", "Categories"); // moved to English.php
 define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
 define("LAN_COPYRIGHT", "Copyright");
 define("LAN_MANAGEPERMS", "Manage Permissions");
@@ -537,7 +537,7 @@ define("LAN_CHANGE_LANGUAGE", "Change Language");
 
 define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
 
-define("LAN_SUBJECT", "Subject");
+// define("LAN_SUBJECT", "Subject"); // moved to English.php
 define("LAN_ITEM", "Item");
 define("LAN_LOCK", "Lock");
 define("LAN_SYSTEM_USER", "System user");
@@ -564,3 +564,9 @@ define("LAN_SUCC_RECALCULATE_COMMENT_COUNT", "Comment count successfully recalcu
 define("LAN_NO_RESULTS_FOUND", "No Results Found.");
 
 define("LAN_UI_DROPZONE_DROP_FILES", "Drop files here to upload");
+
+define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");
+
+define("LAN_UI_FILTER_SEARCH_IN_FIELD", "Search in Field");
+
+

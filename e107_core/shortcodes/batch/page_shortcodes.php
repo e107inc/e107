@@ -161,11 +161,15 @@ class cpage_shortcodes extends e_shortcode
 	// Not a shortcode really, as it shouldn't be cached at all :/
 	function cpagecomments()
 	{
-		$com = $this->var['comments'];
+		$com 		= $this->var['comments'];
+		$comflag 	= $this->var['page_comment_flag'];
+		
 		//if($parm && isset($com[$parm])) return $com[$parm];
-
-		return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);
-
+		if($comflag)
+		{
+			return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);	
+		}
+		
 	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 	
@@ -451,7 +455,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 	
 	function sc_book_anchor()
@@ -475,7 +479,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getBook();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 	
 	function sc_book_url()
@@ -506,7 +510,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 
-		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
 	}
 
 	/**
@@ -557,7 +561,7 @@ class cpage_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$row = $this->getChapter();
 		
-		return $tp->toHtml($row['chapter_meta_description'], true, 'BODY');
+		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
 	}
 
 	/**
@@ -589,31 +593,43 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
+	function breadcrumb()
+	{
+		$breadcrumb = array();
+
+		$row = $this->getChapter();
+		$brow = $this->getBook($row['chapter_parent']);
+
+		if(empty($brow['chapter_sef']))
+		{
+			//e107::getDebug()->log($this);
+			return null;
+		}
+
+		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
+
+		$breadcrumb[] = array('text'=> $brow['chapter_name'], 'url'=> e107::getUrl()->create('page/book/index', $brow,'allow=chapter_id,chapter_sef,book_sef,page_sef'));
+		$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
+
+		e107::breadcrumb($breadcrumb);
+	}
+
 
 
 
 	function sc_chapter_breadcrumb()
 	{
-		$tp = e107::getParser();
-		
-		$breadcrumb = array();
 		
 		$row = $this->getChapter();
 		$brow = $this->getBook($row['chapter_parent']);
-		
+
 		if(empty($brow['chapter_sef']))
 		{
 			return null;
 		}
-		
-		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();		
 
-		
-		$breadcrumb[] = array('text'=> $brow['chapter_name'], 'url'=> e107::getUrl()->create('page/book/index', $brow,'allow=chapter_id,chapter_sef,book_sef,page_sef'));
-		$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
-	//	$breadcrumb[] = array('text'=> $this->var['page_title'], 'url'=> null);
-		
-		
+		$breadcrumb = e107::breadcrumb();
+
 		return e107::getForm()->breadcrumb($breadcrumb);
 	
 		

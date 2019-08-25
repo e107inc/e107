@@ -8,11 +8,6 @@
  *
  * e107 blank Plugin
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/blank/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
 */
 
 require_once("../../class2.php");
@@ -89,14 +84,14 @@ class plugin_blank_admin_ui extends e_admin_ui
 		 *
 		 * @var string
 		 */
-		protected $pluginName = 'blank';
+		protected $pluginName = '_blank';
 
 		/**
 		 * DB Table, table alias is supported
 		 * Example: 'r.blank'
 		 * @var string
 		 */
-		protected $table = "blank";
+		protected $table = "_blank";
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
@@ -256,7 +251,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
             'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
 			'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
@@ -282,12 +277,17 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $prefs = array(
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore'),
+			'pref_classes' 				=> array('title'=> 'classes', 'type' => 'userclasses', 'inline'=>true,)
+
 		);
 
 		// optional
 		public function init()
 		{
+			$pref = e107::pref('_blank');
+			e107::getDebug()->log($pref);
+
 		}
 		
 		
@@ -375,4 +375,3 @@ function headerjs() // needed for the checkboxes - how can we remove the need to
 	return e107::getAdminUI()->getHeader();
 }
 */
-?>

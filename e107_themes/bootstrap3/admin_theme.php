@@ -80,7 +80,7 @@ else
 $no_core_css = TRUE;
 
 
-class bootstrap3_admintheme
+class bootstrap3_admintheme implements e_theme_render
 {
 
 	function tablestyle($caption, $text, $mode, $data)

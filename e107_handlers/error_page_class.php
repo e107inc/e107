@@ -241,7 +241,7 @@ class error_page
 		));
 
 		$body = $tp->parseTemplate($tpl, true, $sc);
-		e107::getRender()->tablerender('', $body);
+		e107::getRender()->tablerender('', $body, 'error_page_'.$status_code);
 	}
 
 }

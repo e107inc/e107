@@ -162,9 +162,14 @@ class search extends e_shortcode
 		$text = "<div class='input-group'>
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
-		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('search',false)."</button>
-		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'><span class='caret'></span></button>
+		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>
+		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'>
 		";
+
+		if(BOOTSTRAP !== 4)
+		{
+			$text .= "<span class='caret'></span></button>";
+		}
 		
 		$text .= '<ul class="dropdown-menu pull-right">
           <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
@@ -536,7 +541,7 @@ class search extends e_shortcode
 			$ret['chars'] 			= $this->search_prefs[$type.'_handlers'][$id]['chars'];
 			$ret['results'] 		= $this->search_prefs[$type.'_handlers'][$id]['results'];
 			$ret['pre_title'] 		= $this->search_prefs[$type.'_handlers'][$id]['pre_title'];
-			$ret['pre_title_alt'] 	= $tp -> toHtml($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
+			$ret['pre_title_alt'] 	= $tp -> toHTML($this->search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
 		//	$ret['order'] 			= (isset($this->search_prefs[$type.'_handlers'][$id]['order']) && $this->search_prefs[$type.'_handlers'][$id]['order']) ? $this->search_prefs[$type.'_handlers'][$id]['order'] : $this->auto_order;
 			
 			$this->auto_order++;
@@ -1170,7 +1175,7 @@ $text .= "</div>";*/
 	//print_a($search_prefs);
 //$
 
-$text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
+// $text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
 $text .= $SEARCH_VARS->SEARCH_MESSAGE ? $tp->simpleParse($SEARCH_TABLE_MSG, $SEARCH_VARS) : "";
 //$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 $text .= $tp->simpleParse($SEARCH_BOT_TABLE, $SEARCH_VARS);

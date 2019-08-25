@@ -58,11 +58,11 @@ if(!$OTHERNEWS2_STYLE)
 		{
 			if(isset($parms['caption'][e_LANGUAGE]))
 			{
-				$template['caption'] =  e107::getParser()->toHtml($parms['caption'][e_LANGUAGE], true,'TITLE');
+				$template['caption'] =  e107::getParser()->toHTML($parms['caption'][e_LANGUAGE], true,'TITLE');
 			}
 			else
 			{
-				$template['caption'] =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+				$template['caption'] =  e107::getParser()->toHTML($parms['caption'], true,'TITLE');
 			}
 
 
@@ -76,7 +76,7 @@ if(!$OTHERNEWS2_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			$template['caption'] =  e107::getParser()->toHTML($parms['caption'],true,'TITLE');
 		}
 		else
 		{
@@ -140,6 +140,11 @@ if(!defined("OTHERNEWS2_CELL")){
 
 if(!defined("OTHERNEWS2_SPACING")){
 	// define("OTHERNEWS2_SPACING","0");
+}
+
+if(!isset($param))
+{
+	$param = array();
 }
 
 $param['itemlink'] 		= defset('OTHERNEWS2_ITEMLINK','');

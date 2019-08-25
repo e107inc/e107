@@ -527,14 +527,16 @@ class e_parse_shortcode
 	 *
 	 * @return e_parse_shortcode
 	 */
-	public function loadThemeShortcodes()
+	public function loadThemeShortcodes($theme=null)
 	{
 		global $register_sc;
-		
-		if(file_exists(THEME."theme_shortcodes.php"))
+
+		$themePath = ($theme === null) ? THEME : e_THEME.$theme.'/';
+
+		if(file_exists($themePath."theme_shortcodes.php"))
 		{
 			$classFunc = 'theme_shortcodes';
-			$path = THEME."theme_shortcodes.php";
+			$path = $themePath."theme_shortcodes.php";
 			include_once($path);
 			$this->registerClassMethods($classFunc, $path, false);
 		}
@@ -1669,6 +1671,12 @@ class e_shortcode
 	 * Startup code for child class
 	 */
 	public function init() {}
+
+
+	/**
+	 * Breadcrumb calculations should occur in here.
+	 */
+	public function breadcrumb() {}
 
 
 	/**

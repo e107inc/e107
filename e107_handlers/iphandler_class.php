@@ -107,7 +107,7 @@ class eIPHandler
 	 *	Host name of current user
 	 *	Initialised when requested
 	 */
-	private $_host_name_cache = '';
+	private $_host_name_cache = array();
 
 
 	/**
@@ -889,7 +889,7 @@ class eIPHandler
 		// do other checks - main IP check is in _construct()
 		if($this->actionCount)
 		{
-			$ip = $this->getip(); // This will be in normalised IPV6 form
+			$ip = $this->getIP(); // This will be in normalised IPV6 form
 
 			if ($ip !== e107::LOCALHOST_IP && ($ip !== e107::LOCALHOST_IP2) && ($ip !== $this->serverIP)) // Check host name, user email to see if banned
 			{
@@ -937,7 +937,7 @@ class eIPHandler
 	 * @param boolean $do_return - if TRUE, returns regardless without displaying anything. if FALSE, for a banned user displays any message and exits
 	 * @return boolean TRUE for OK, FALSE for banned.
 	 */
-	public function checkBan($query, $show_error = TRUE, $do_return = FALSE)
+	public function checkBan($query, $show_error = true, $do_return = false)
 	{
 		$sql = e107::getDb();
 		$pref = e107::getPref();
@@ -949,23 +949,32 @@ class eIPHandler
 		{
 			// Any whitelist entries will be first, because they are positive numbers - so we can answer based on the first DB record read
 			$row = $sql->fetch();
-			if ($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
+			if($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
 			{
 				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
-				return TRUE;		// Whitelisted entry
+				return true;        // Whitelisted entry
 			}
+
 			// Found banlist entry in table here
-			if (($row['banlist_banexpires']>0) && ($row['banlist_banexpires']<time()))
+			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 			{ // Ban has expired - delete from DB
 				$sql->delete('banlist', $query);
 				$this->regenerateFiles();
-				return TRUE;
+
+				return true;
 			}
 			
 			// User is banned hereafter - just need to sort out the details.
-			if (vartrue($pref['ban_retrigger']) && vartrue($pref['ban_durations'][$row['banlist_bantype']]))
-			{ // May need to retrigger ban period
-				$sql->update('banlist', "`banlist_banexpires`=".intval(time()+($pref['ban_durations'][$row['banlist_bantype']]*60*60)), "WHERE `banlist_ip`='{$row['banlist_ip']}'");
+			// May need to retrigger ban period
+			if (!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
+			{
+				$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
+				$updateQry = array(
+					'banlist_banexpires'    => (time() + ($dur * 60 * 60)),
+					'WHERE'                 => "banlist_ip ='".$row['banlist_ip']."'"
+				);
+
+				$sql->update('banlist', $updateQry);
 				$this->regenerateFiles();
 				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
@@ -974,13 +983,15 @@ class eIPHandler
 			{
 				header('HTTP/1.1 403 Forbidden', true);
 			}
-			if (isset($pref['ban_messages']))
-			{ // May want to display a message
+			// May want to display a message
+			if (!empty($pref['ban_messages']))
+			{
 				// Ban still current here
 				if($do_return)
 				{
-					return FALSE;
+					return false;
 				}
+
 				echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']])); 	// Show message if one set
 			}
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
@@ -996,6 +1007,7 @@ class eIPHandler
 			{
 				return false;
 			}
+
 			exit();
 		}
 
@@ -1007,7 +1019,7 @@ class eIPHandler
 
 
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
-		return TRUE; 		// Email address OK
+		return true; 		// Email address OK
 	}
 
 
@@ -1049,7 +1061,7 @@ class eIPHandler
 		}
 		if (!$ban_ip)
 		{
-			$ban_ip = $this->getip();
+			$ban_ip = $this->getIP();
 		}
 		$ban_ip = preg_replace('/[^\w@\.:]*/', '', urldecode($ban_ip)); // Make sure no special characters
 		if (!$ban_ip)
@@ -1636,8 +1648,8 @@ class banlistManager
 		// Now run through the database updating times
 		$numRet = 0;
 		$pref['ban_durations'] = e107::getPref('ban_durations');
-		$ourDb = e107::getDB();		// Should be able to use $sql, $sql2 at this point
-		$writeDb = e107::getDB('sql2');
+		$ourDb = e107::getDb();		// Should be able to use $sql, $sql2 at this point
+		$writeDb = e107::getDb('sql2');
 
 		foreach ($ipAction as $ipKey => $ipInfo)
 		{

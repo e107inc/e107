@@ -131,6 +131,9 @@
   'news' => 'news',
   'rss_menu' => 'rss_menu',
 )]]></core>
+		<core name="e_user_list"><![CDATA[array (
+  'user' => 'user',
+)]]></core>
 		<core name="email_text"></core>
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>
@@ -401,7 +404,7 @@ City, State, Country
 		<core name="user_reg_secureveri">1</core>
 		<core name="user_reg_veri">1</core>
 		<core name="user_tracking">cookie</core>
-		<core name="version">2.1.7</core>
+		<core name="version">2.2.0</core>
 		<core name="wm_enclose">1</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
@@ -873,8 +876,8 @@ City, State, Country
 				<field name="link_open">0</field>
 				<field name="link_class">0</field>
 				<field name="link_function"></field>
-				<field name="link_sefurl"></field>
-			    <field name="link_owner"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">contact</field>
 			</item>
 			<item>
 				<field name="link_id">6</field>

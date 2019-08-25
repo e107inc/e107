@@ -131,6 +131,8 @@ class admin_shortcodes
 			$e107_var['x'.$key]['link'] = e_ADMIN.'docs.php?'.$key;
 		}
 
+		$act = null; // FIXME
+
 		$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
 		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 	}
@@ -171,11 +173,18 @@ class admin_shortcodes
 		$helpfile = '';
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
-		{
-			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
+		{	
+			// check if admin area language pref is set to follow 'Default Site Language
+			if(!$pref['adminlanguage'] && is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
 			{
 				$helpfile = e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE;
 			}
+			// language is set to specific language
+			elseif(is_readable(e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE))
+			{
+				$helpfile = e_LANGUAGEDIR.'/'.$pref['adminlanguage'].'/admin/help/'.e_PAGE;
+			}
+			// fallback to default English files (in case help texts are missing)
 			elseif (is_readable(e_LANGUAGEDIR.'English/admin/help/'.e_PAGE))
 			{
 				$helpfile = e_LANGUAGEDIR.'English/admin/help/'.e_PAGE;
@@ -1124,7 +1133,7 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
-			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+			$sqlMode = str_replace(",", ", ", e107::getDb()->getMode());
 
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
@@ -1145,10 +1154,10 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
+			".e107::getDb()->getServerInfo(). // mySqlServerInfo.
 
 			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
-			<br />PDO: ".((e107::getDB()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
+			<br />PDO: ".((e107::getDb()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
 			<br />Mode: <small>".$sqlMode."</small>
 
 			<br /><br />
@@ -1363,6 +1372,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$class .= $info;
 		}
+		else
+		{
+			$class .= 'label-default';
+		}
 
 		if(deftrue('BOOTSTRAP') !== 3)
 		{
@@ -1400,7 +1413,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$res = e107::getSession()->get('addons-update-status');
 
-		if($res !== null)
+		if($res !== null) // cached version.
 		{
 			return $res;
 		}
@@ -1458,20 +1471,31 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			case "plugin":
 				$versions = $mp->getVersionList('plugin');
-				$list = e107::getPref('plug_installed');
+				$plg = e107::getPlug();
+				$tmp = $plg->getInstalled();
+				$list = array();
+				foreach($tmp as $folder=>$version)
+				{
+					$plg->load($folder);
+					$list[$folder] = array('version'=>$version, 'author'=>$plg->getAuthor());
+				}
+
 				break;
 		}
 
 		$ret = array();
 
-		foreach($list as $folder=>$version)
+		foreach($list as $folder=>$var)
 		{
+			$version = $var['version'];
+			$author = $var['author'];
 
-			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<') && ($versions[$folder]['author'] === $author))
 			{
 				$versions[$folder]['modalDownload'] = $mp->getDownloadModal($type, $versions[$folder]);
 				$ret[] = $versions[$folder];
 				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+				e107::getMessage()->addDebug("Local author: ".$$author." Remote author: ".$versions[$folder]['author']);
 			}
 
 		}
@@ -2122,8 +2146,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$subid = $c;
 				$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
 								
-				$tmp[$c]['text'] = $tp->toHtml($lk['link_name'],'','defs');
-				$tmp[$c]['description'] = $tp->toHtml($lk['link_description'],'','defs');
+				$tmp[$c]['text'] = $tp->toHTML($lk['link_name'],'','defs');
+				$tmp[$c]['description'] = $tp->toHTML($lk['link_description'],'','defs');
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
 				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
 				$tmp[$c]['image_large'] = '';

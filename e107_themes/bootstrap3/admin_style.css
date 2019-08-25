@@ -177,12 +177,14 @@ input.input-block-level,
 input.form-control.input-block-level,
 select.input-block-level                { width: 100% }
 table  label.checkbox                   { margin-left: 20px }
+ul.checkboxes { display: inline-block; list-style: none; margin: 0; padding: 0;}
 
 #admin-ui-nav-menu i.fa-chevron-right   { margin-left: -10px }
 
 #admin-ui-list-batch                    { padding: 10px 15px }
 #admin-ui-list-batch img                { padding-top:5px }
 #admin-ui-list-filter                   { margin-bottom: 15px }
+#admin-ui-list-search #searchquery       { padding-right:5px }
 #admin-ui-list-search:before            { content: "\f002"; margin-left:12px; position:absolute; top: 50%; transform: translateY(-50%); font-family: "FontAwesome"  }
 
 .form-control-feedback-left              { left:0; top:0 }
@@ -210,7 +212,7 @@ td .file.well                              { margin-bottom:0 }
 
 #admin-ui-edit                          { }
 #admin-ui-edit-db-language              { margin-top: -35px; padding-bottom:5px; padding-right:5px }
-#admin-ui-edit-db-language.tabs         { margin-top: 0; margin-bottom: -30px; }
+#admin-ui-edit-db-language.tabs         { margin-top: 0; margin-bottom: -30px; padding-top: 5px; }
 
 #admin-ui-list-db-language span,
 #admin-ui-edit-db-language span          { color: #FAA732; cursor: help; }
@@ -551,6 +553,10 @@ img.S32:hover 				{}
 .adminlist th.last,
 .adminlist td.last 							{ border-right: 0 solid;}
 .adminlist tr.last td						{ border-bottom: 0 solid;}
+.adminlist th a.sorted-asc,
+.adminlist th a.sorted-desc                 { text-decoration: none }
+.adminlist th a.sorted-asc:after            { padding-left:5px;  font-family: FontAwesome; content: '\f0d8' }
+.adminlist th a.sorted-desc:after            { padding-left:5px; font-family: FontAwesome; content: '\f0d7' }
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 table.adminlist								{ margin-bottom: 0 }
@@ -578,6 +584,7 @@ i.s-message-error	{ background-position: -925px 0; width: 32px; height: 32px; }
 i.s-message-warning	{ background-position: -777px -37px; width: 32px; height: 32px; }
 i.s-message-info	{ background-position: -1480px 0; width: 32px; height: 32px;  }
 i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  }
+i.s-message-empty   { background:none; }
 
 .s-message .well { background-color: rgba(0,0,0,0.4) }
 .s-message-body { padding-left: 42px; }
@@ -1261,6 +1268,7 @@ a.e-media-select
 ul#e-status						{ margin:0 }
 ul#e-status li 					{ padding-bottom:6px; font-size: 0.9em }
 ul#e-status						{ line-height:20px }
+ul#admin-ui-nav-menu li  a span.label,
 ul#e-status li  a span.badge,
 ul#e-status li  a span.label	{ float:right; font-size:85% }
 ul#e-status li  a:hover  		{ text-decoration: none; }

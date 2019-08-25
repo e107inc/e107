@@ -22,7 +22,7 @@ $sc_style['CPAGESUBTITLE|default']['post'] = '</h2>';
 $sc_style['CPAGEMESSAGE|default']['pre'] = '';
 $sc_style['CPAGEMESSAGE|default']['post'] = '<div class="clear"><!-- --></div>';
 
-$sc_style['CPAGENAV|default']['pre'] = '<div class="f-right pull-right col-md-3">';
+$sc_style['CPAGENAV|default']['pre'] = '<div class="f-right pull-right float-right col-md-3">';
 $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 #### default template - BC ####

@@ -32,9 +32,9 @@ class featurebox_setup
 		$mes = e107::getMessage();
 		
 		$e107_featurebox_category = array(
- 			array('fb_category_id'=> 1,'fb_category_title'=>FBLAN_34,'fb_category_icon'=>'','fb_category_template'=>'bootstrap3_carousel','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
-			array('fb_category_id'=> 2,'fb_category_title'=>FBLAN_35,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_tabs','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
-			array('fb_category_id'=> 3,'fb_category_title'=>FBLAN_36,'fb_category_icon'=>'','fb_category_template'=>'unassigned','fb_category_random'=>'0','fb_category_class'=>'255','fb_category_limit'=>'0','fb_category_parms'=>'')
+ 			array('fb_category_id'=> 1,'fb_category_title'=>FBLAN_35,'fb_category_icon'=>'','fb_category_template'=>'bootstrap3_carousel','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 2,'fb_category_title'=>FBLAN_36,'fb_category_icon'=>'','fb_category_template'=>'bootstrap_tabs','fb_category_random'=>'0','fb_category_class'=>'0','fb_category_limit'=>'0','fb_category_parms'=>''),
+			array('fb_category_id'=> 3,'fb_category_title'=>FBLAN_34,'fb_category_icon'=>'','fb_category_template'=>'unassigned','fb_category_random'=>'0','fb_category_class'=>'255','fb_category_limit'=>'0','fb_category_parms'=>'')
 		);
 		
 		$count = 0;

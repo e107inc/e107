@@ -209,6 +209,7 @@ class e107Update
 						else
 						{
 							 $mes->add($message, E_MESSAGE_SUCCESS);
+							 e107::getCache()->clear_sys('Update_core');
 						}
 					}
 				}	
@@ -252,7 +253,7 @@ class e107Update
 
 		foreach($list as $path=>$val)
 		{
-			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHTML($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
 
 			$text .= "<tr>
 					<td>".$name."</td>
@@ -659,6 +660,8 @@ function update_core_database($type = '')
 
 		}
 
+
+
 		if(isset($pref['e_header_list']['social']))
 		{
 			if($just_check)
@@ -681,19 +684,18 @@ function update_core_database($type = '')
 		}
 
 
-
-
-		$e_user_list = e107::getPref('e_user_list');
-
-			e107::getPlug()->clearCache()->buildAddonPrefLists();
-			if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
+		// User is marked as not installed.
+		if($sql->select('plugin', 'plugin_id', "plugin_path = 'user' AND plugin_installflag != 1 LIMIT 1"))
+		{
+			if($just_check)
 			{
-				if($just_check)
-				{
-					return update_needed("user/e_user.php need to be registered"); // NO LAN.
-				}
-
+				return update_needed("Plugin table 'user' value needs to be reset.");
 			}
+
+			$sql->delete('plugin', "plugin_path = 'user'");
+
+			//e107::getPlug()->clearCache();
+		}
 
 
 		// Make sure, that the pref "post_script" contains one of the allowed userclasses

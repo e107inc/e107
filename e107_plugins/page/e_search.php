@@ -120,7 +120,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		else // Page with book/chapter 
 		{
 			$route = 'page/view/index'; 	
-			$pre = $tp->toHtml($this->getName($book),false,'TITLE').' &raquo; '. $tp->toHtml($this->getName($row['page_chapter']),false,'TITLE'). " | ";
+			$pre = $tp->toHTML($this->getName($book),false,'TITLE').' &raquo; '. $tp->toHTML($this->getName($row['page_chapter']),false,'TITLE'). " | ";
 		}
 		
 				
@@ -128,7 +128,7 @@ class page_search extends e_search // include plugin-folder in the name.
 				
 		$res['link'] 		= e107::getUrl()->create($route, $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef'));
 		$res['pre_title'] 	= $pre; 
-		$res['title'] 		= $tp->toHtml($row['page_title'], false, 'TITLE');
+		$res['title'] 		= $tp->toHTML($row['page_title'], false, 'TITLE');
 		$res['summary'] 	= (!empty($row['page_metadscr'])) ? $row['page_metadscr'] : $row['page_text'];
 		$res['detail'] 		= LAN_SEARCH_3.$tp->toDate($row['page_datestamp'], "long");
 		$res['image']		= $row['menu_image'];

@@ -50,12 +50,47 @@ class e_tohtml_linkwords
 
 	protected $customClass  = '';
 	protected $wordCount    = array();
+	protected $word_limit   = array();
 //	protected $maxPerWord   = 3;
 
-	
+
+	public function enable()
+	{
+		$this->lw_enabled = true;
+	}
+
+
+
+	public function setWordData($arr = array())
+	{
+		foreach($arr as $val)
+		{
+			$this->word_list[] = $val['word'];
+			$this->link_list[] = $val['link'];
+			$this->ext_list[] = $val['ext'];
+			$this->tip_list[] = $val['tip'];
+			$this->word_limit[] = $val['limit'];
+		}
+	}
+
+
+	public function setAreaOpts($arr = array())
+	{
+		$this->area_opts = $arr;
+	}
+
+
+	public function setLink($arr)
+	{
+		$this->word_list = $arr;
+	}
+
+
 	/* constructor */
 	function __construct()
 	{
+
+
 
 		$tp = e107::getParser();
 	    $pref = e107::pref('core');
@@ -119,7 +154,7 @@ class e_tohtml_linkwords
 				while($row = $link_sql->fetch())
 				{
 
-					$lw = $tp->uStrToLower($row['linkword_word']);					// It was trimmed when saved		*utf
+					$lw = $tp->ustrtolower($row['linkword_word']);					// It was trimmed when saved		*utf
 
 					if($row['linkword_active'] == 2)
 					{
@@ -191,18 +226,29 @@ class e_tohtml_linkwords
 			}
 		}
 
+
 	}
 
 
 	function to_html($text,$area = 'olddefault')
 	{
-			
+
 		if(is_string($this->area_opts))
 		{
 			$this->area_opts = e107::unserialize($this->area_opts);	
-		}	
-			
-		if (!$this->lw_enabled || !count($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area]) return $text;		// No linkwords in disabled areas
+		}
+
+		if($this->area_opts === null)
+		{
+			$this->area_opts = array();
+		}
+
+
+		if (!$this->lw_enabled || empty($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area])
+		{
+		//	e107::getDebug()->log("Link words skipped on ".substr($text, 0, 50));
+		    return $text;		// No linkwords in disabled areas
+		}
 	
 // Split up by HTML tags and process the odd bits here
 		$ptext = "";
@@ -210,6 +256,7 @@ class e_tohtml_linkwords
 
 		// Shouldn't need utf-8 on next line - just looking for HTML tags
 		$content = preg_split('#(<.*?>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+
 		foreach($content as $cont)
 		{
 			if ($cont[0] == "<")
@@ -285,6 +332,8 @@ class e_tohtml_linkwords
 		$lw = $this->word_list[$first];		// This is the word we're matching - in lower case in our 'master' list
 		$tooltip = '';
 
+
+
 		if ($this->tip_list[$first])
 		{	// Got tooltip
 			if ($this->lwAjaxEnabled)
@@ -294,7 +343,7 @@ class e_tohtml_linkwords
 			}
 			else
 			{
-				$tooltip = " title='{$this->tip_list[$first]}' ";
+				$tooltip = " title=\"{$this->tip_list[$first]}\" ";
 				$lwClass[] = 'lw-tip '.$this->customClass;
 			}
 		}
@@ -304,7 +353,7 @@ class e_tohtml_linkwords
 			$newLink = $tp->replaceConstants($this->link_list[$first], 'full');
 			if ($doSamePage || ($newLink != e_SELF.'?'.e_QUERY))
 			{
-				$linkwd = " href='".$newLink."' ";
+				$linkwd = " href=\"".$newLink."\" ";
 				if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
 				$lwClass[] = 'lw-link '.$this->customClass;
 			}
@@ -312,8 +361,6 @@ class e_tohtml_linkwords
 		elseif(!empty($this->word_class[$first]))
 		{
 			$lwClass[] = $this->word_class[$first];
-
-
 		}
 
 		if (!count($lwClass))
@@ -340,19 +387,20 @@ class e_tohtml_linkwords
 		foreach ($split_line as $count=>$sl)
 		{
 
-			if ($tp->uStrToLower($sl) == $lw && $this->wordCount[$hash] < $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
+			if ($tp->ustrtolower($sl) == $lw && $this->wordCount[$hash] < (int) $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
 			{
+
 				$this->wordCount[$hash]++;
 
 				$classCount = " lw-".$this->wordCount[$hash];
 
 				if(empty($linkwd))
 				{
-					$ret .= '<span class="'.$class.$classCount.'" '.$tooltip.'>'.$sl.'</span>';
+					$ret .= "<span class=\"".$class.$classCount."\" ".$tooltip.">".$sl."</span>";
 				}
 				else
 				{
-					$ret .= '<a class="'.$class.$classCount.'" '.$linkwd.$tooltip.'>'.$sl.'</a>';
+					$ret .= "<a class=\"".$class.$classCount."\" ".$linkwd.$tooltip.">".$sl."</a>";
 				}
 
 			}

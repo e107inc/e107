@@ -60,9 +60,9 @@ class emailprint
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$genericMail = $tp->toGlyph('icon-envelope',false); // "<i class='icon-envelope'></i>"; 
+			$genericMail = $tp->toGlyph('fa-envelope',false); // "<i class='icon-envelope'></i>";
 			$genericPrint = $tp->toGlyph('fa-print',false); // "<i class='icon-print'></i>"; 
-			$class = varset($parm['class']) ? $parm['class'] : "";
+			$class = !empty($parm['class']) ? $parm['class'] : "btn btn-default btn-secondary";
 		}
 		else // BC
 		{
@@ -76,7 +76,7 @@ class emailprint
 		{
 			$ico_mail = (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL) ? "<img src='".THEME_ABS."images/".ICONMAIL."'  alt='".LAN_EMAIL_7."'  />" : $genericMail);
 			//TDOD CSS class
-			$text_emailprint .= "<a class='e-tip hidden-print".$class."' href='".e_HTTP."email.php?".$email.".".$id."' title='".LAN_EMAIL_7."'>".$ico_mail."</a> ";
+			$text_emailprint .= "<a class='e-tip hidden-print ".$class."' href='".e_HTTP."email.php?".$email.".".$id."' title='".LAN_EMAIL_7."'>".$ico_mail."</a> ";
 		}
 		if ($look == 0 || $look == 2) 
 		{

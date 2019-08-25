@@ -16,7 +16,7 @@ if (!defined('e107_INIT')) { exit; }
 
 if(USER_AREA) // prevents inclusion of JS/CSS/meta in the admin area.
 {
-	e107::js('_blank', 'js/blank.js');      // loads e107_plugins/_blank/js/blank.js on every page.
+	//e107::js('_blank', 'js/blank.js');      // loads e107_plugins/_blank/js/blank.js on every page.
 	e107::css('_blank', 'css/blank.css');    // loads e107_plugins/_blank/css/blank.css on every page
 	e107::meta('keywords', 'blank,words');   // sets meta keywords on every page.
 }

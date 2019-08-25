@@ -223,8 +223,10 @@ if (isset($_POST['updatelimits']))
 			{
 				$vals[$targetFields[$k+1]] = intval($_POST[$lName][$idLim]);
 			}
+			$vals['WHERE'] = "gen_id = ".$idLim;
+
+			$sql->update('generic',$vals);
 			$valString = implode(',',$vals);
-			$sql->db_UpdateArray('generic',$vals," WHERE gen_id = {$idLim}");
 			e107::getLog()->add('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
 			$message .= $idLim." - ".DOWLAN_121."<br/>";
 			unset($vals);

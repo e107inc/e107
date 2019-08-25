@@ -104,5 +104,6 @@ define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
 define("LAN_CRON_RUNNING", "Running");
 
-
-?>
+define("LAN_CRON_65", "Update git theme repository");
+define("LAN_CRON_66", "No git repo found");
+define("LAN_CRON_67", "No git repo found in theme folder");

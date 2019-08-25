@@ -470,6 +470,7 @@ function forumbuttons($thread)
 //---- $tVars->MESSAGE = $thread->message;
 
 		$sc->setVars($thread->threadInfo);
+		$sc->setScVar('threadInfo', $thread->threadInfo);
 //$forum->set_crumb(true, '', $sc); // Set $BREADCRUMB (and BACKLINK)
 
 //---- $forstr = $tp->simpleParse($FORUMSTART, $tVars);
@@ -1056,7 +1057,7 @@ class e107ForumThread
 								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>View Post</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($postInfo['post_entry'],true)."
+									".$tp->toHTML($postInfo['post_entry'],true)."
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>

@@ -178,7 +178,16 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 	</td>
 	</tr>
 	</table>
+	</div>";
+
+	/*
+	<div style='text-align:center' class='spacer'>
+	<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_FORUM_0012."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_FORUM_0013."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 	</div>
+	*/
+
+	
+$FORUMEND .= "	
 	<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
 
 $FORUMREPLYSTYLE = "<tr>
@@ -318,7 +327,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	</div>
 
 	<div class='row row-fluid'>
-		<div class='col-md-9 span9 pull-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
+		<div class='col-md-9 span9 pull-left float-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right float-right right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
 	</div>
 	
 	{MESSAGE}
@@ -357,7 +366,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right '><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
 											<div class='visible-xs col-xs-12'><hr /></div>
@@ -396,7 +405,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 		{GOTOPAGES}
 	</div>
 	<div class='col-xs-12 col-md-4'>
-		<div class='pull-right'>
+		<div class='pull-right float-right'>
 			{BUTTONSX}
 		</div>
 	</div>
@@ -445,7 +454,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right '><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
 											<div class='visible-xs col-xs-12'><hr /></div>

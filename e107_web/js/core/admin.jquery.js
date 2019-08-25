@@ -613,7 +613,9 @@ $(document).ready(function()
 		 $(".plugin-navigation a").click(function () {
 		 	$(".plugin-navigation a").each(function(index) {
     			var ot = $(this).attr("href");
-				$(ot).hide().removeClass('e-hideme');
+    			if (ot.split('#')[1]) {
+                    $(ot).hide().removeClass('e-hideme');
+                }
 				$(this).closest("li").removeClass("active");
 				$(this).switchClass( "link-active", "link", 0 );
 			});
@@ -621,12 +623,12 @@ $(document).ready(function()
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
-	
-			$(id).removeClass('e-hideme').show({
-				effect: "slide"
-			});
+
 			// 'remember' the active navigation pane
 			if(hash) {
+                $(id).removeClass('e-hideme').show({
+                    effect: "slide"
+                });
 				window.location.hash = 'nav-' + hash;
 			  	if(form) {
 

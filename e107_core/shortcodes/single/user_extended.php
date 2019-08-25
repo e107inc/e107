@@ -169,8 +169,13 @@
 					}
 
 				break;
-
-
+				case EUF_COUNTRY:
+					if(!empty($uVal))
+					{
+						return e107::getForm()->getCountry($uVal);
+					}
+					return false;
+				break; 
 				case EUF_DB_FIELD :		// check for db_lookup type
 					$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
 					$sql_ue = new db;			// Use our own DB object to avoid conflicts
@@ -191,6 +196,9 @@
 				case EUF_PREDEFINED :	// Predefined field - have to look up display string in relevant file
 					$ret_data = e107::getUserExt()->user_extended_display_text($ueStruct['user_'.$parms[0]]['user_extended_struct_values'],$uVal);
 					break;
+				case EUF_RICHTEXTAREA :
+					$ret_data = e107::getParser()->toHTML($uVal);
+					break;
 				default :
 					$ret_data = $uVal;
 			}
@@ -204,4 +212,3 @@
 		return FALSE;
 
 	}
-

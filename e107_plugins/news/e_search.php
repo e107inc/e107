@@ -73,7 +73,7 @@ class news_search extends e_search // include plugin-folder in the name.
 		$res = array();
 				
 		$res['link'] 		= e107::getUrl()->create('news/view/item', $row);//$row['news_allow_comments'] ? "news.php?item.".$row['news_id'] : "comment.php?comment.news.".$row['news_id'];
-		$res['pre_title'] 	= $tp->toHtml($row['category_name'],false,'TITLE')." | ";
+		$res['pre_title'] 	= $tp->toHTML($row['category_name'],false,'TITLE')." | ";
 		$res['title'] 		= $row['news_title'];
 		$res['summary'] 	= $row['news_body'].' '.$row['news_extended'];
 		$res['detail'] 		= LAN_SEARCH_3.$tp->toDate($row['news_datestamp'], "long");
@@ -89,7 +89,7 @@ class news_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $parm (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 	

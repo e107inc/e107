@@ -8,18 +8,11 @@
 *
 * Extended user field handler
 *
-* $URL$
-* $Id$
-*
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 /**
- *	@package     e107
- *	@subpackage	e107_handlers
- *	@version 	$Id$;
- *
  *	Extended user field handler
  *
  *	@todo: - change some routines to access the cached variables rather than DB
@@ -42,7 +35,7 @@ e107::coreLan('user_extended');
 class e107_user_extended
 {
 	public $user_extended_types;	// Text description corresponding to each field type
-	private $extended_xml = FALSE;
+	private $extended_xml 		= FALSE;
 	public $typeArray;				// Cross-reference between names of field types, and numeric ID (must be public)
 	private $reserved_names;		// List of field names used in main user DB - not allowed in extended DB
 	public $fieldDefinitions    = array();	// Array initialised from DB by constructor - currently all fields
@@ -50,7 +43,7 @@ class e107_user_extended
 	private $nameIndex          = array();	// Array for field name lookup - initialised by constructor
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
-	private $fieldAttributes   = array(); // Field Permissionss with field name as key.
+	private $fieldAttributes   	= array(); // Field Permissionss with field name as key.
 
 	public function __construct()
 	{
@@ -66,8 +59,9 @@ class e107_user_extended
 		define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
 		define('EUF_CHECKBOX',10);
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
-		define('EUF_ADDON', 12);  // defined within e_user.php addon
+		define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
 		define('EUF_COUNTRY', 13);  // $frm->country()
+		define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()
 
 		$this->typeArray = array(
 			'text'          => EUF_TEXT,
@@ -83,21 +77,24 @@ class e107_user_extended
 			'predefined'    => EUF_PREFIELD, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
 			'addon'         => EUF_ADDON,
 			'country'       => EUF_COUNTRY,
+			'richtextarea' 	=> EUF_RICHTEXTAREA, 
 		);
 
 		$this->user_extended_types = array(
-			1 => UE_LAN_1,
-			2 => UE_LAN_2,
-			3 => UE_LAN_3,
-			4 => UE_LAN_4,
-			5 => UE_LAN_5,
-			6 => UE_LAN_6,
-			7 => LAN_DATE,
-			8 => UE_LAN_8,
-			9 => UE_LAN_9,
-			10=> UE_LAN_10,
-			13=> UE_LAN_13
+			1 	=> UE_LAN_1,
+			2 	=> UE_LAN_2,
+			3 	=> UE_LAN_3,
+			4 	=> UE_LAN_4,
+			5 	=> UE_LAN_5,
+			14 	=> UE_LAN_14,
+			6 	=> UE_LAN_6,
+			7 	=> LAN_DATE,
+			8 	=> UE_LAN_8,
+			9 	=> UE_LAN_9,
+			10 	=> UE_LAN_10,
+			13 	=> UE_LAN_13,
 		//	12=> UE_LAN_10
+			
 		);
 
 		//load array with field names from main user table, so we can disallow these
@@ -111,11 +108,17 @@ class e107_user_extended
 		'xup'
 		);
 
-		$sql = e107::getDB();
+		$this->init();
+
+	}
+
+	public function init()
+	{
+		$sql = e107::getDb();
 
 		// Read in all the field and category fields
 		// At present we load all fields into common array - may want to split system and non-system
-		$this ->catDefinitions = array();		// Categories array
+		$this->catDefinitions = array();		// Categories array
 		$this->nameIndex = array();				// Index of names => field IDs
 		$this->systemCount = 0;
 		$this->userCount = 0;
@@ -151,7 +154,13 @@ class e107_user_extended
 				}
 			}
 		}
+
+		return null;
 	}
+
+
+
+
 
 	/**
 	 * Check read/write access on extended user-fields
@@ -170,7 +179,7 @@ class e107_user_extended
 	/**
 	 *	Check for reserved field names.
 	 *	(Names which clash with the 'normal' user table aren't allowed)
-	 *	@param string $name - name of field bweing checked (no 'user_' prefix)
+	 *	@param array $name - name of field bweing checked (no 'user_' prefix)
 	 *	@return boolean TRUE if disallowed name
 	 */
 	public function user_extended_reserved($name)
@@ -193,6 +202,7 @@ class e107_user_extended
 					case EUF_TEXT :
 					case EUF_DB_FIELD :
 					case EUF_TEXTAREA :
+					case EUF_RICHTEXTAREA :
 					case EUF_DROPDOWN :
 					case EUF_DATE :
 					case EUF_LANGUAGE :
@@ -236,6 +246,7 @@ class e107_user_extended
 					case EUF_TEXT :
 					case EUF_DB_FIELD :
 					case EUF_TEXTAREA :
+					case EUF_RICHTEXTAREA :
 					case EUF_DROPDOWN :
 					case EUF_DATE :
 					case EUF_LANGUAGE :
@@ -344,7 +355,7 @@ class e107_user_extended
 						$err = $this->user_extended_validate_entry($val, $defs); 
 						if ($err === true)
 						{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-							$eufVals['errortext'][$f] = str_replace('[x]',$tp->toHtml(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
+							$eufVals['errortext'][$f] = str_replace('[x]',$tp->toHTML(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
 							$eufVals['errors'][$f] = ERR_GENERIC;
 						}
 						elseif ($err)
@@ -374,9 +385,69 @@ class e107_user_extended
 		return $eufVals;
 	}
 
+
+	/**
+	 * Sanitize User submitted user-extended fields.
+	 * @param $posted
+	 * @return array
+	 */
+	function sanitizeAll($posted)
+	{
+
+		$arr = array();
+
+		foreach($posted as $field => $value)
+		{
+			$type = $this->getFieldType($field);
+
+			switch($type)
+			{
+
+				case EUF_INTEGER :  //integer
+					$arr[$field] = (int) $value;
+			    break;
+
+				case EUF_TEXT :  //textbox
+				case EUF_COUNTRY:
+				case EUF_RADIO : //radio
+				case EUF_CHECKBOX : //checkboxes
+				case EUF_DROPDOWN : //dropdown
+				case EUF_PREDEFINED : // predefined list, shown in dropdown
+				case EUF_DB_FIELD : //db_field
+				case EUF_DATE : //date
+				case EUF_LANGUAGE : // language
+				case EUF_TEXTAREA : //textarea
+				case EUF_PREFIELD:
+				case EUF_ADDON:
+
+					$arr[$field] = filter_var($value,FILTER_SANITIZE_STRING);
+			    break;
+
+				case EUF_RICHTEXTAREA : // rich textarea (using WYSIWYG editor)
+					$arr[$field] = e107::getParser()->cleanHtml($value);
+				break;
+
+				default:
+					e107::getDebug()->log("User extended field: ".$field." is missing a valid field-type.");
+
+			}
+
+
+		}
+
+
+		return $arr;
+
+
+	}
+
+
+
 	/**
 	 * alias of user_extended_get_categories();
-	 * 
+	 *
+	 * @param bool $byID
+	 * @return array
 	 */
 	function getCategories($byID = TRUE)
 	{
@@ -406,10 +477,13 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	/**
 	 * BC Alias of getFields();
+	 * @param string $cat
+	 * @return mixed
 	 */
-	function getFields($cat = "")
+	public function getFields($cat = "")
 	{
 		return $this->user_extended_get_fieldList($cat);	
 	}
@@ -432,9 +506,12 @@ class e107_user_extended
 		return $ret;
 	}
 
+
 	/**
-	 * Alias of getFieldList(). 
-	 * 
+	 * Alias of user_extended_get_fieldList().
+	 * @param string $cat
+	 * @param string $indexField
+	 * @return mixed
 	 */
 	function getFieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
@@ -446,7 +523,8 @@ class e107_user_extended
 	 * Get the definition of all fields, or those in a specific category, indexed by field ID (or some other field by specifying $indexField)
 	 * @param $cat
 	 * @param $indexField;
-	 * @param $system - include system fields. 
+	 * @param $system - include system fields.
+	 * @return array
 	 */
 	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id', $system = false)
 	{
@@ -456,6 +534,8 @@ class e107_user_extended
 		}
 		
 		$sql = e107::getDb('ue');
+
+		$ret = array();
 		
 		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		$sys = ($system == false) ? " AND user_extended_struct_text != '_system_' " : "";
@@ -467,6 +547,7 @@ class e107_user_extended
 				$ret[$row[$indexField]] = $row;
 			}
 		}
+
 		return $ret;
 	}
 
@@ -551,6 +632,7 @@ class e107_user_extended
 		  break;
 
 		case EUF_TEXTAREA:
+		case EUF_RICHTEXTAREA :
 		case EUF_CHECKBOX :
 		  $db_type = 'TEXT';
 		 break;
@@ -562,11 +644,20 @@ class e107_user_extended
 		case EUF_LANGUAGE :
 		case EUF_PREDEFINED :
 
+
 		  $db_type = 'VARCHAR(255)';
+		 break;
+
+		 case EUF_PREFIELD: // FIXME Predefined field - this should be assignable from XML typically.
+		     $db_type = 'VARCHAR(255)';
 		 break;
 		 
 		case EUF_CATEGORY:
 			return '';
+		 break;
+
+		 case EUF_ADDON:
+		    return 'JSON';
 		 break;
 		 
 		default:
@@ -575,7 +666,7 @@ class e107_user_extended
 		break;
 
 	  }
-	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_CHECKBOX) && !empty($default))
+	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_RICHTEXTAREA) &&  ($type != EUF_CHECKBOX) && !empty($default))
 	  {
 		$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
 	  }
@@ -586,8 +677,6 @@ class e107_user_extended
 
 
 	  return $db_type.$default_text;
-
-
 	}
 
 
@@ -600,8 +689,7 @@ class e107_user_extended
 
 	function clear_cache()
 	{
-		$e107 = e107::getInstance();
-		$e107->ecache->clear_sys('nomd5_extended_struct');
+		e107::getCache()->clear_sys('nomd5_extended_struct');
 	}
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
@@ -731,6 +819,8 @@ class e107_user_extended
 			";
 			return $sql->update("user_extended_struct", $newfield_info);
 		}
+
+		return false;
 	}
 
 	function user_extended_remove($id, $name)
@@ -747,14 +837,16 @@ class e107_user_extended
 			
 			if(is_numeric($id))
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
+				$sql->delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
 			}
 			else
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
+				$sql->delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
 			}
 			return !($this->user_extended_field_exist($name));
 		}
+
+		return false;
 	}
 
 	function user_extended_hide($struct, $curval)
@@ -765,8 +857,25 @@ class e107_user_extended
 	}
 
 
-
+	/**
+	 * BC alias of renderElement
+	 *
+	 * @param array $struct
+	 * @param mixed $curval
+	 * @return array|string
+	 */
 	function user_extended_edit($struct, $curval)
+	{
+		return $this->renderElement($struct, $curval);
+	}
+
+
+	/**
+	 * @param $struct
+	 * @param $curval
+	 * @return array|string
+	 */
+	function renderElement($struct, $curval)
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
@@ -784,9 +893,9 @@ class e107_user_extended
 		}
 		
 		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
-		$include 	= preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
-		$regex 		= $tp->toText(varset($parms[1]));
-		$regexfail 	= $tp->toText(varset($parms[2]));
+		$include 	= preg_replace("/\n/", " ", $tp->toHTML($parms[0]));
+		// $regex 		= $tp->toText(varset($parms[1]));
+		// $regexfail 	= $tp->toText(varset($parms[2]));
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
 		$required	= vartrue($struct['user_extended_struct_required']) == 1 ? "required"  : "";
 		$fid		= $frm->name2id($fname);
@@ -809,6 +918,7 @@ class e107_user_extended
 			$include .= " class='".$class."' ";
 		}
 
+		$ret = null;
 
 		switch($struct['user_extended_struct_type'])
 		{
@@ -896,6 +1006,7 @@ class e107_user_extended
 				require_once($filename);
 				$className = 'extended_'.$listRoot;
 				if (!class_exists($className)) return '?????';
+				/** @var extended_timezones $temp */
 				$temp = new $className();
 				if (!method_exists($className, 'getValue')) return '???-???';
 				$temp->pointerReset();
@@ -952,6 +1063,9 @@ class e107_user_extended
 					return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
 					break;
 
+			case EUF_RICHTEXTAREA : // rich textarea (using WYSIWYG editor)
+					return e107::getForm()->bbarea($fname, $curval);
+
 			case EUF_DATE : //date
 
 					if($curval == '0000-00-00') // Quick datepicker fix.
@@ -989,21 +1103,28 @@ class e107_user_extended
 	}
 
 
-	// Alias of getStructure();
-	function getStructure($orderby="user_extended_struct_order")
-	{
-		return $this->user_extended_getStruct($orderby);	
-	}
-
-
-
-
 	/**
-	 * Preferred version of user_extended_getStruct();
+	 * BC Alias for getStructure()
+	 * @param string $orderby
+	 * @return mixed
 	 */
 	function user_extended_getStruct($orderby="user_extended_struct_order")
 	{
-		if($ueStruct = getcachedvars('ue_struct'))
+		return $this->getStructure($orderby);
+	}
+
+
+	/**
+	 * Return all extended-field structure information
+	 * @param string $orderby
+	 * @return array|mixed
+	 */
+	function getStructure($orderby="user_extended_struct_order")
+	{
+
+		$id = 'core/userextended/structure';
+
+		if($ueStruct = e107::getRegistry($id))
 		{
 			return $ueStruct;
 		}
@@ -1026,18 +1147,18 @@ class e107_user_extended
 				$ret['user_'.$row['user_extended_struct_name']] = $row;
 			}
 		}
-		
-		cachevars('ue_struct',$ret);
+
+		e107::setRegistry($id, $ret);
+
 		return $ret;
 	}
 
 
 	/**
-	 * @param $contents
 	 * @param bool|false $no_cache
-	 * @return array
+	 * @return bool
 	 */
-	function parse_extended_xml($contents, $no_cache = FALSE)
+	function parse_extended_xml($no_cache = false)
 	{
 		if($no_cache == FALSE && $this->extended_xml)
 		{
@@ -1085,13 +1206,13 @@ class e107_user_extended
 	/**
 	 * Proxy Method to retrieve the value of an extended field
 	 * @param int $uid
-	 * @param var $field_name
-	 * @param object $ifnotset [optional]
+	 * @param string $field_name
+	 * @param mixed $ifnotset [optional]
 	 * @return mixed
 	 */
 	function get($uid, $field_name, $ifnotset=false)
 	{
-		return user_extended_getvalue($uid, $field_name, $ifnotset);
+		return $this->user_extended_getvalue($uid, $field_name, $ifnotset);
 	}
 
 
@@ -1113,13 +1234,17 @@ class e107_user_extended
 
 
 	/**
-	* Set the value of an extended field
-	*
-	*  $ue = new e107_user_extended;
-	*	 $result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
-	*
-	*
-	*/
+	 * Set the value of an extended field
+	 *
+	 *  $ue = new e107_user_extended;
+	 *     $result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
+	 *
+	 * @param  int  $uid
+	 * @param  string $field_name
+	 * @param mixed $newvalue
+	 * @param string $fieldType
+	 * @return bool|int
+	 */
 	function user_extended_setvalue($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{
 		$sql = e107::getDb();
@@ -1133,7 +1258,7 @@ class e107_user_extended
 				break;
 
 			case 'escape':
-				$newvalue = "'".mysql_real_escape_string($newvalue)."'";
+				$newvalue = "'".$sql->escape($newvalue)."'";
 				break;
 
 			default:
@@ -1154,12 +1279,16 @@ class e107_user_extended
 
 
 	/**
-	* Retrieve the value of an extended field
-	*
-	*  $ue = new e107_user_extended;
-	*	$value = $ue->user_extended_getvalue(2, 'location');
-	*
-	*/
+	 * Retrieve the value of an extended field
+	 *
+	 *  $ue = new e107_user_extended;
+	 *  $value = $ue->user_extended_getvalue(2, 'location');
+	 *
+	 * @param int     $uid
+	 * @param string    $field_name
+	 * @param bool $ifnotset
+	 * @return bool
+	 */
 	function user_extended_getvalue($uid, $field_name, $ifnotset=false)
 	{
 		$uid = intval($uid);
@@ -1174,9 +1303,12 @@ class e107_user_extended
 
 
 	/**
-	 *	Given a predefined list field, returns the display text corresponding to the passed value
 	 *
-	 *	@TODO: consider whether to cache the class object
+	 * Given a predefined list field, returns the display text corresponding to the passed value
+	 *
+	 * TODO: consider whether to cache the class object@param $table
+	 * @param $value
+	 * @return mixed|string
 	 */
 	function user_extended_display_text($table, $value)
 	{
@@ -1185,6 +1317,7 @@ class e107_user_extended
 		require_once($filename);
 		$className = 'extended_'.$table;
 		if (!class_exists($className)) return '?????';
+		/** @var extended_timezones $temp */
 		$temp = new $className();
 		if (!method_exists($className, 'getValue')) return '???-???';
 		return $temp->getValue($value);
@@ -1243,14 +1376,18 @@ class e107_user_extended
 					return $value;
 					break;
 
+			case EUF_RICHTEXTAREA:
+				return e107::getParser()->toHTML($value, true);
+				break;
 
 			default:
 				return $value;
 				// code to be executed if n is different from all labels;
 		}
 
-
+		return null;
 	}
 
 }
-?>
+
+

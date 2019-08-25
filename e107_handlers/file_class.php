@@ -1044,7 +1044,7 @@ class e_file
 		$DOWNLOADS_DIRECTORY 	= ($DOWNLOADS_DIR[0] == DIRECTORY_SEPARATOR) ? $DOWNLOADS_DIR : e_BASE.$DOWNLOADS_DIR; // support for full path eg. /home/account/folder. 
 		$FILES_DIRECTORY 		= e_BASE.e107::getFolder('FILES');
 		$MEDIA_DIRECTORY		= realpath(e_MEDIA); //  could be image, file or other type. 
-		$SYSTEM_DIRECTORY		= realpath(e_SYSTEM); // downloading of logs etc. via browser if required. (Admin-only)
+		$SYSTEM_DIRECTORY		= realpath(e_SYSTEM); // downloading of logs or hidden files etc. via browser if required.
 		
 		$file = $tp->replaceConstants($file);
 		
@@ -1062,11 +1062,6 @@ class e_file
 		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 		$path_public = realpath($FILES_DIRECTORY."public/");
 		
-		if(strstr($path, $SYSTEM_DIRECTORY) && !ADMIN)
-		{
-			header("location: {$e107->base_path}");
-			exit();
-		}
 		
 		if(!strstr($path, $path_downloads) && !strstr($path,$path_public) && !strstr($path, $MEDIA_DIRECTORY) && !strstr($path, $SYSTEM_DIRECTORY)) 
 		{
@@ -1471,17 +1466,20 @@ class e_file
 		$cmd3 = 'cd '.$dir.'; '.$gitPath.' pull'; 	// Run Pull request
 
 
-	//	$mes->addDebug($cmd1);
+
+		$text = '';
+
+
 		$mes->addDebug($cmd2);
 		$mes->addDebug($cmd3);
 
-	//	return false;
-
 	//	$text = `$cmd1 2>&1`;
-		$text = `$cmd2 2>&1`;
+		$text .= `$cmd2 2>&1`;
 		$text .= `$cmd3 2>&1`;
 
-		if(deftrue('e_DEBUG'))
+
+
+		if(deftrue('e_DEBUG') || deftrue('e_GIT_DEBUG'))
 		{
 			$message = date('r')."\t\tgitPull()\t\t".$text;
 			file_put_contents(e_LOG."fileClass.log",$message,FILE_APPEND);

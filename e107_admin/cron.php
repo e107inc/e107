@@ -64,9 +64,9 @@ class cron_admin_ui extends e_admin_ui
 			'checkboxes'		=> array('title'=> '',				'type' => null, 			'width' =>'5%', 	'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'cron_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 	'forced'=> FALSE, 'nolist'=>TRUE),
        		'cron_category'		=> array('title'=> LAN_CATEGORY, 	'type' => 'method', 		'data' => 'str',		'width'=>'auto','readonly' => 1,	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'width' => 'auto',	'readonly' => 1),
-         	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'width' => '35%',	'readonly' => 1),
-         	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1), 
+       		'cron_name'			=> array('title'=> LAN_NAME,		'type' => 'text',			'data'=>'str', 'width' => 'auto',	'readonly' => 1),
+         	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'data'=>'str', 'width' => '35%',	'readonly' => 1),
+         	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'data'=>'str', 'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1),
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
@@ -169,6 +169,19 @@ class cron_admin_ui extends e_admin_ui
 					'category'		=> 'update',
 					'function' 		=> 'gitrepo',
 					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_WARNING."</span> ".LAN_CRON_20_8,
+				//	'available' 	=> e107::getPref('ban_retrigger')
+				);
+
+			}
+
+
+			if(is_dir(e_THEME.$pref['sitetheme']."/.git"))
+			{
+				$cronDefaults['_system'][8] = array(
+					'name' 			=> LAN_CRON_65,
+					'category'		=> 'update',
+					'function' 		=> 'gitrepoTheme',
+					'description' 	=> LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_WARNING."</span> ".LAN_CRON_20_8,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				);
 
@@ -443,7 +456,7 @@ class cron_admin_ui extends e_admin_ui
 				if (method_exists($obj, $method_name))
 				{
 					$message = str_replace('[x]', $class_name." : ".$method_name, LAN_CRON_62);//Executing config function [b][x][/b]
-					$message = e107::getParser()->toHtml($message,true);
+					$message = e107::getParser()->toHTML($message,true);
 					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
@@ -458,7 +471,7 @@ class cron_admin_ui extends e_admin_ui
 				else
 				{
 					$message = str_replace('[x]', $method_name."()", LAN_CRON_63 );//Config function [b][x][/b] NOT found.
-					$message = e107::getParser()->toHtml($message,true);
+					$message = e107::getParser()->toHTML($message,true);
 					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
@@ -861,7 +874,7 @@ class cron
 				{
 					if ($func['function'] == $method)
 					{
-						return $tp->toHtml($func['name']);
+						return $tp->toHTML($func['name']);
 					}
 				}
 			}

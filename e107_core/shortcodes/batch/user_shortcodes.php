@@ -302,41 +302,41 @@ function sc_user_email($parm='')
 		switch ($parm) 
 		{
 			case 'email':
-				return ($boot) ? $tp->toGlyph('envelope') : $this->sc_user_email_icon();	
+				return ($boot) ? $tp->toGlyph('fa-envelope') : $this->sc_user_email_icon();
 			break;
 			
 			case 'lastvisit':
-				return ($boot) ? $tp->toGlyph('time') : '';		 	
+				return ($boot) ? $tp->toGlyph('fa fa-clock-o') : '';
 			break;
 			
 			case 'birthday':
-				return ($boot) ? $tp->toGlyph('calendar') : $this->sc_user_birthday_icon();		
+				return ($boot) ? $tp->toGlyph('fa-calendar') : $this->sc_user_birthday_icon();
 			break;
 
 			case 'level':
-				return ($boot) ? $tp->toGlyph('signal') : '';	
+				return ($boot) ? $tp->toGlyph('fa-signal') : '';
 			break;
 			
 			case 'website':
-				return ($boot) ? $tp->toGlyph('home') : '';		
+				return ($boot) ? $tp->toGlyph('fa-home') : '';
 			break;
 			
 			case 'location':
-				return ($boot) ? $tp->toGlyph('map-marker') : '';		
+				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
 			
 			case 'icq':
-				return ($boot) ? $tp->toGlyph('comment') : '';		
+				return ($boot) ? $tp->toGlyph('fa-comment') : '';
 			break;	
 				
 			case 'msn':
-				return ($boot) ? $tp->toGlyph('comment') : '';		
+				return ($boot) ? $tp->toGlyph('fa-comment') : '';
 			break;		
 
 			default:
 			case 'realname':
 			case 'user':
-				return ($boot) ? $tp->toGlyph('user') : $this->sc_user_realname_icon();		
+				return ($boot) ? $tp->toGlyph('fa-user') : $this->sc_user_realname_icon();
 			break;
 		}
 
@@ -593,7 +593,7 @@ function sc_user_email($parm='')
 		if($parm == 'prev')
 		{
 		
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';			
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
 	    	return isset($userjump['prev']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
 		
 			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
@@ -601,7 +601,7 @@ function sc_user_email($parm='')
 		}
 		else
 		{
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
 			return isset($userjump['next']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
 			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 		}
@@ -666,7 +666,7 @@ function sc_user_email($parm='')
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_user_euf($parm='')
+	function sc_user_euf($parm=null)
 	{
 
 		if(!empty($parm['field']))
@@ -747,8 +747,9 @@ function sc_user_email($parm='')
 				{
 					
 					$key = $f['user_extended_struct_name'];
-
-					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
+					$field = 'user_'.$key; 
+								
+					if($ue->hasPermission($field) && $ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
 
 						$extended_record = str_replace("EXTENDED_ICON","USER_EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
@@ -991,4 +992,3 @@ function sc_user_email($parm='')
 	
 
 }
-?>

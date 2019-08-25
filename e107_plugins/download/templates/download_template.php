@@ -6,12 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/download/templates/download_template.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -38,10 +32,10 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th class='fcaption' colspan='2'>".LAN_CATEGORY."</th>
-                  <th class='fcaption'>".LAN_FILES."</th>
-                  <th class='fcaption'>".LAN_SIZE."</th>
-                  <th class='fcaption'>".LAN_dl_77."</th>
+                  <th class='fcaption' colspan='2'>{LAN=LAN_CATEGORY}</th>
+                  <th class='fcaption'>{LAN=LAN_FILES}</th>
+                  <th class='fcaption'>{LAN=LAN_SIZE}</th>
+                  <th class='fcaption'>{LAN=LAN_dl_77}</th>
                </tr>
             </thead>
             <tfoot>
@@ -196,7 +190,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 		</div>\n";
 }
 // ##### VIEW TABLE -------------------------------------------------------------------------------
-$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+$DL_VIEW_PAGETITLE = "{LAN=LAN_PLUGIN_DOWNLOAD_NAME} / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 
 $DL_VIEW_NEXTPREV = "
 <div style='text-align:center'>
@@ -303,14 +297,14 @@ if(!isset($DOWNLOAD_MIRROR_START))
 	      </colgroup>
 	      <tr>
 	         <th class='fcaption'>{DOWNLOAD_MIRROR_REQUEST_ICON}</th>
-	         <th class='fcaption' colspan='5'>".LAN_dl_72."{DOWNLOAD_MIRROR_REQUEST}</th>
+	         <th class='fcaption' colspan='5'>{LAN=LAN_dl_72}{DOWNLOAD_MIRROR_REQUEST}</th>
 	      </tr>
 	      <tr>
-	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".LAN_ABOUT."</th>
-	         <th class='forumheader'>".LAN_LOCATION."</th>
-	         <th class='forumheader'>".LAN_SIZE."</th>
-	         <th class='forumheader'>".LAN_DOWNLOAD."</th>
+	         <th class='forumheader' colspan='2'>{LAN=LAN_dl_68}</th>
+	         <th class='forumheader'>{LAN=LAN_ABOUT}</th>
+	         <th class='forumheader'>{LAN=LAN_LOCATION}</th>
+	         <th class='forumheader'>{LAN=LAN_SIZE}</th>
+	         <th class='forumheader'>{LAN=LAN_DOWNLOAD}</th>
 	      </tr>
 	";
 }
@@ -361,10 +355,10 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th colspan='2'>".LAN_CATEGORY."</th>
-                  <th>".LAN_FILES."</th>
-                  <th>".LAN_SIZE."</th>
-                  <th>".LAN_dl_77."</th>
+                  <th colspan='2'>{LAN=LAN_CATEGORY}</th>
+                  <th>{LAN=LAN_FILES}</th>
+                  <th>{LAN=LAN_SIZE}</th>
+                  <th>{LAN=LAN_dl_77}</th>
                </tr>
             </thead>
             <tbody>";
@@ -423,8 +417,8 @@ $DOWNLOAD_TEMPLATE['categories']['end'] = "
          </table>
 	</div>
 	<div class='clearfix table'>
-		<div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
-		<div class='pull-right'>{DOWNLOAD_CAT_SEARCH}</div>
+		<div class='pull-left float-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
+		<div class='pull-right float-right'>{DOWNLOAD_CAT_SEARCH}</div>
 	</div>";
 
 // ##### ------------------------------------------------------------------------------------------
@@ -441,8 +435,8 @@ $DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:8
 $DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
-$DOWNLOAD_TEMPLATE['view']['caption']       = LAN_PLUGIN_DOWNLOAD_NAME;
-$DOWNLOAD_TEMPLATE['view']['pagetitle']     = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".LAN_PLUGIN_DOWNLOAD_NAME;
+$DOWNLOAD_TEMPLATE['view']['caption']       = "{LAN=LAN_PLUGIN_DOWNLOAD_NAME}";
+$DOWNLOAD_TEMPLATE['view']['pagetitle']     = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / {LAN=LAN_PLUGIN_DOWNLOAD_NAME}";
 $DOWNLOAD_TEMPLATE['view']['start']         = "";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
@@ -622,11 +616,11 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "
 	         <th class='fcaption' colspan='5'><h4>{DOWNLOAD_MIRROR_REQUEST}</h4></th>
 	      </tr>
 	      <tr>
-	         <th colspan='2'>".LAN_dl_68."</th>
-	         <th>".LAN_ABOUT."</th>
-	         <th>".LAN_LOCATION."</th>
-	         <th>".LAN_SIZE."</th>
-	         <th>".LAN_DOWNLOAD."</th>
+	         <th colspan='2'>{LAN=LAN_dl_68}</th>
+	         <th>{LAN=LAN_ABOUT}</th>
+	         <th>{LAN=LAN_LOCATION}</th>
+	         <th>{LAN=LAN_SIZE}</th>
+	         <th>{LAN=LAN_DOWNLOAD}</th>
 	      </tr>
 	";			
 			
@@ -658,7 +652,5 @@ $DOWNLOAD_TEMPLATE['mirror']['end'] = "
 	
 $DOWNLOAD_TEMPLATE['header'] = '{DOWNLOAD_BREADCRUMB}';
 $DOWNLOAD_TEMPLATE['footer'] = '';
-
-
 
 ?>

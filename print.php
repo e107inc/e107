@@ -72,6 +72,7 @@ else
 {
 	//$con = new convert;
 //	$id = intval($parms);
+	/** @var e_news_item $nws */
 	$nws = e107::getObject('e_news_item');
 	$row = $nws->load($parms)->toArray();
 /*

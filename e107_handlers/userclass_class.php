@@ -268,11 +268,13 @@ class user_class
 		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1, e_UC_BOTS => 1);
 		$possibles = array_flip(explode(',',$classList));
 		unset($possibles[e_UC_READONLY]);
+
 		foreach ($this->class_tree as $uc => $uv)
 		{
 			if (!isset($blockers[$uc]))
 			{
 				$ec = $uv['userclass_editclass'];
+			//	$ec = $uv['userclass_visibility'];
 				if (isset($possibles[$ec]))
 				{
 					$ret[] = $uc;
@@ -1063,7 +1065,7 @@ class user_class
 	 */
 	public function ucGetClassIDFromName($name)
 	{
-		return $this->getId($name);
+		return $this->getID($name);
 
 	}
 
@@ -1123,40 +1125,101 @@ class user_class
 
 
 	/**
+	 * @deprecated Alias of getUsersInClass()
+	 * @param        $classes
+	 * @param string $fieldList
+	 * @param bool   $includeAncestors
+	 * @param string $orderBy
+	 * @return array
+	 */
+	public function get_users_in_class($classes, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
+	{
+		return $this->getUsersInClass($classes, $fieldList, $includeAncestors, $orderBy);
+	}
+
+
+	/**
 	 *	Return all users in a particular class or set of classes.
 	 *
-	 ****** Can be verrrrryyyy slow - has to scan the whole user database at present ******
-	 *
-	 ********* NOT TESTED **********
-	 *
-	 ***** NOT SURE WHETHER THIS IS REALLY A USER OR A USER CLASS FUNCTION *****
-	 *	@param string $classList - comma separated list of classes
-	 *	@param string $fieldList - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
+	 *  Could potentially be verrrrryyyy slow - has to scan the whole user database at present.
+	 *	@param string $$classes - comma separated list of classes
+	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
 	 *	@return array indexed by user_id, each element is an array (database row) containing the requested fields
 	 */
-	public function get_users_in_class($classList, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
+	public function getUsersInClass($classes, $fields = 'user_name, user_loginname', $includeAncestors = false, $orderBy = 'user_id')
 	{
-		$ret = array();
-		$classList = str_replace(' ','', $classList); // clean up white spaces
-		if ($includeAncestors) $classList = $this->get_all_user_classes($classList);
-		$class_regex = '(^|,)('.str_replace(',', '|', $classList).')(,|$)';
-		$qry = "SELECT user_id,{$fieldList} FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
-		if ($this->sql_r->db_Select_gen($qry))
+
+		$classes = str_replace(' ','', $classes); // clean up white spaces
+
+		$classList = explode(",", $classes);
+
+		if(empty($classList))
 		{
-			while ($row = $this->sql_r->db_Fetch())
+			return array();
+		}
+
+		if($includeAncestors === true)
+		{
+			$classList = $this->get_all_user_classes($classes, true);
+		}
+
+		$classList = array_flip($classList);
+
+		$qry = array();
+
+		if(isset($classList[e_UC_MEMBER]))
+		{
+			$qry[] = "user_ban = 0";
+			unset($classList[e_UC_MEMBER]);
+		}
+
+		if(isset($classList[e_UC_ADMIN]))
+		{
+			$qry[] = "user_admin = 1";
+			unset($classList[e_UC_ADMIN]);
+		}
+
+		if(isset($classList[e_UC_MAINADMIN]))
+		{
+			$qry[] = "user_perms = '0' OR user_perms = '0.'";
+			unset($classList[e_UC_MAINADMIN]);
+		}
+
+		if(!empty($classList))
+		{
+			$class_regex = implode('|', array_flip($classList));
+			$regex = "(^|,)(".e107::getParser()->toDB($class_regex).")(,|$)";
+			$qry[] = "user_class REGEXP '{$regex}' ";
+		}
+
+		if(empty($qry))
+		{
+			return array();
+		}
+
+		$sql = e107::getDb('sql_r');
+
+		$ret = array();
+
+		$query = "SELECT user_id,{$fields} FROM `#user` WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
+
+		if ($sql->gen($query))
+		{
+			while ($row = $sql->fetch())
 			{
 				$ret[$row['user_id']] = $row;
 			}
 		}
+
 		return $ret;
 	}
 
 
 	/**
 	 *	Clear user class cache
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearCache()
 	{
@@ -1351,21 +1414,29 @@ class user_class_admin extends user_class
 	 */
 	protected function rebuild_tree($parent, $rights)
 	{
-		if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
+
+		if($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
 		{
 			$this->topdown_tree($parent);
-			return;
+			return null;
 		}
-		if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
+
+		if($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
 		{
-			return;			// Probably just stop here for a group class
+			return null;            // Probably just stop here for a group class
 		}
-		$rights[]  = $parent;
-		$imp_rights = implode(',',$rights);
-		if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
+
+		$rights[] = $parent;
+		$imp_rights = implode(',', $rights);
+
+		if($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
 		{
 			$this->class_tree[$parent]['userclass_accum'] = $imp_rights;
-			if (!isset($this->class_tree[$cp]['change_flag'])) $this->class_tree[$parent]['change_flag'] = 'UPDATE';
+
+			if(!isset($this->class_tree[$parent]['change_flag']))
+			{
+				$this->class_tree[$parent]['change_flag'] = 'UPDATE';
+			}
 		}
 
 
@@ -1424,8 +1495,8 @@ class user_class_admin extends user_class
 				  case 'UPDATE' :
 					$this->save_edited_class($tree);
 					break;
-				  default :
-					continue;
+
+
 				}
 			}
 		}
@@ -1486,8 +1557,8 @@ class user_class_admin extends user_class
 	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
-			
-		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
+		$tree = vartrue($this->class_tree[$listnum]['class_children'], array());
+		$num_children = count($tree);
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 
@@ -1814,13 +1885,13 @@ class user_class_admin extends user_class
 	{
 		if (self::delete_class($classID) === TRUE)
 		{
-			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
+			if ($this->sql_r->select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
 			{
 				$sql2 = e107::getDb('sql2');
-				while ($row = $this->sql_r->db_Fetch())
+				while ($row = $this->sql_r->fetch())
 				{
 					$newClass = self::ucRemove($classID, $row['user_class']);
-					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
+					$sql2->update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']} LIMIT 1");
 				}
 			}
 			return TRUE;
@@ -1852,7 +1923,7 @@ class user_class_admin extends user_class
 			{
 				$new_userclass = $cid;
 			}
-			$uc_sql->db_Update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 
@@ -1867,13 +1938,12 @@ class user_class_admin extends user_class
 	 */
 	public function class_remove($cid, $uinfoArray)
 	{
-		$e107 = e107::getInstance();
-		$uc_sql = new db;
+		$uc_sql = e107::getDb();
 		foreach($uinfoArray as $uid => $curclass)
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
 			$new_userclass = implode(',', $newarray);
-			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 

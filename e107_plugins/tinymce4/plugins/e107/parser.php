@@ -79,7 +79,7 @@ TEMPL;
 
 		if($_POST['mode'] == 'tohtml')
 		{
-			$html =  $this->toHtml($_POST['content']);
+			$html =  $this->toHTML($_POST['content']);
 		}
 
 		if($_POST['mode'] == 'tobbcode')
@@ -110,7 +110,7 @@ TEMPL;
 
 
 
-	public function toHtml($content)
+	public function toHTML($content)
 	{
 		// global $pref; //XXX faster?
 		$pref = e107::getPref();
@@ -135,7 +135,7 @@ TEMPL;
 					$content =  nl2br($content, true);
 				}
 
-				$content = $tp->toHtml($content, true, 'WYSIWYG');
+				$content = $tp->toHTML($content, true, 'WYSIWYG');
 			}
 
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
@@ -166,10 +166,10 @@ TEMPL;
 		{
 
 			// XXX @Cam this breaks new lines, currently we use \n instead [br]
-			//echo $tp->toHtml(str_replace("\n","",$content), true);
+			//echo $tp->toHTML(str_replace("\n","",$content), true);
 
 			$content = str_replace("{e_BASE}",e_HTTP, $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-			$content = $tp->toHtml($content, true, 'WYSIWYG');
+			$content = $tp->toHTML($content, true, 'WYSIWYG');
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";

@@ -59,8 +59,8 @@ class download
 		foreach($data as $row)
 		{
 
-			$id = $row['download_category_parent'];
-			$sub= $row['download_category_id'];
+			$id = (int) $row['download_category_parent'];
+			$sub= (int) $row['download_category_id'];
 
 			$this->subCategories[$id][$sub] = $row;
 			if(check_class($row['download_category_class']))
@@ -69,6 +69,7 @@ class download
 			}
 
 		}
+
 
 		return $this;
 	}
@@ -161,6 +162,8 @@ class download
 	{
 
 		$pref = e107::getPref();
+
+
 
 		if($this->qry['action'] == 'maincats')
 		{
@@ -297,9 +300,11 @@ class download
 				require_once(e_PLUGIN."download/templates/".$template_name);
 			}	
 		}
-		
+
+		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/categories');
+		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;	
 		
 	
@@ -311,6 +316,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
+
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-warning' style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
@@ -370,7 +376,7 @@ class download
 		$tp = e107::getParser();
 
 		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
-		$metaDescription                = $tp->toHtml($row['download_description'],true);
+		$metaDescription                = $tp->toHTML($row['download_description'],true);
 
 		e107::meta('description',       $tp->toText($metaDescription));
 		e107::meta('keywords',          $row['download_keywords']);
@@ -498,8 +504,10 @@ class download
 		$sql = e107::getDb();
 		$gen = new convert;
 
+		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/view');
+		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 
 		$highlight_search = FALSE;
@@ -539,6 +547,8 @@ class download
 		$sc->setVars($dlrow);
 		$this->setMeta($dlrow);
 
+
+
 		$this->sc = $sc;
 		$this->rows = $dlrow;
 
@@ -561,7 +571,9 @@ class download
 
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		/** @var download_shortcodes $sc */
 		$sc = $this->sc;
+
 
 		// @see: #3056 fixes fatal error in case $sc is empty (what happens, if no record was found)
 		$count = empty($sc) ? 0 : $sc->getVars();
@@ -570,6 +582,8 @@ class download
 		{
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>", 'download-view', true);
 		}
+
+		$sc->breadcrumb();
 
 		$DL_TEMPLATE = $this->template['start'].$this->template['item'].$this->template['end'];
 		
@@ -660,11 +674,13 @@ class download
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		
-	//	$sc 		= new download_shortcodes;
+
+		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/list');
+
 		$sc->qry 	= $this->qry;
-		
+
 		
 
 		//if (!isset($this->qry['from'])) $this->qry['from'] = 0;
@@ -685,6 +701,8 @@ class download
 		   {
 		        $sc->grandparent = $this->getParent( $sc->parent['download_category_id']);
 		   }
+
+			$sc->breadcrumb();
 
 	   //	   $type = $dlrow['download_category_name'];
 
@@ -899,6 +917,8 @@ class download
 			$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e107::url('download','category', $dlrow)); // e_SELF."?action=list&id=".$dlrow['download_category_id']);
 			$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => e107::url('download','item', $dlrow)); //e_SELF."?action=view&id=".$dlrow['download_id']);
 			$breadcrumb[]	= array('text' => LAN_dl_45,						'url' => null);
+
+		e107::breadcrumb($breadcrumb);
 	
 		if (isset($_POST['report_download'])) 
 		{
@@ -994,9 +1014,11 @@ class download
 			}	
 		
 		}
-		
+
+		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/mirror');
+		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 		
 	//	$load_template = 'download_template';

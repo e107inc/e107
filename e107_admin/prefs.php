@@ -575,6 +575,13 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_279."</div>
 						</td>
 					</tr>
+
+					<tr>
+						<td><label>".LAN_DESCRIPTION."</label></td>
+						<td>
+							<div class='field-help'>".nl2br(PRFLAN_281)."</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			".pref_submit('display')."
@@ -2202,12 +2209,12 @@ function libraryGetStatus($details)
 
 	if($details['installed'] == true)
 	{
-		$icon = $tp->toGlyph('glyphicon-ok');
+		$icon = $tp->toGlyph('fa-check');
 		$text = LAN_OK;
 		return '<span class="text-success" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 	}
 
-	$icon = $tp->toGlyph('glyphicon-remove');
+	$icon = $tp->toGlyph('fa-remove');
 	$text = $details['error'];
 	return '<span class="text-danger" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 }

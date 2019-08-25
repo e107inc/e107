@@ -392,7 +392,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		
 		
-		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP')===3)
+		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP'))
 		{
 			return e107::getForm()->tabs($tabs);		
 		}
@@ -559,10 +559,14 @@ class usersettings_shortcodes extends e_shortcode
 			$uVal = str_replace(chr(1), "", $this->var['user_' . $parm]);
 			$fval = $ue->user_extended_edit($fInfo, $uVal);
 
+
+			$rVal = !empty($fInfo['user_extended_struct_required']) ;
+
 			$ret = $USEREXTENDED_FIELD;
 			$ret = str_replace("{FIELDNAME}", $fname, $ret);
 			$ret = str_replace("{FIELDVAL}", $fval, $ret);
 			$ret = str_replace("{HIDEFIELD}", $fhide, $ret);
+			$ret = str_replace("{REQUIRED}", $this->required($rVal), $ret);
 		}
 
 		$extended_showed['field'][$parm] = 1;
@@ -576,6 +580,17 @@ class usersettings_shortcodes extends e_shortcode
 		
 		return "<input class='button btn btn-primary' type='submit' name='updatesettings' value='".LAN_USET_37."' />";	
 		
+	}
+
+	private function required($val=null)
+	{
+		if(empty($val))
+		{
+			return '';
+		}
+
+		return "<span class='required'><!-- empty --></span>";
+
 	}
 
 	function sc_deleteaccountbutton($parm=array())

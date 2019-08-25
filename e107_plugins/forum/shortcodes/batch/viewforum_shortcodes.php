@@ -102,16 +102,21 @@
 			style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>
 			'.($this->var['ntUrl'] ?"":"<span>&nbsp;</span>").'
 			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    	<span class="caret"></span>
+			';
+			if(BOOTSTRAP !== 4)
+			{
+		    	$text .= '<span class="caret"></span>';
+		    }
+		    $text .= '
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
-		    	<ul class="dropdown-menu pull-right">
+		    	<ul class="dropdown-menu pull-right float-right">
 		    	';
 			
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
-				$text .= '<li><a href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
+				$text .= '<li><a class="dropdown-item" href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
 			}
 
 			$text .= '
@@ -150,10 +155,29 @@
 			return $text."&nbsp;";
 		}
 
+		/**
+		* @example: {FORUMICON: size=2x} 
+		*/
+		function sc_forumicon($parms = null)
+		{
+			if(empty($this->var['forum_icon'])) return '';
+
+			return e107::getParser()->toIcon($this->var['forum_icon'], $parms);
+		}
+
 		function sc_forumtitle()
 		{
 			return $this->var['forum_name'];
 		}
+
+		function sc_forumdescription()
+		{
+			//    global $f, $restricted_string;
+		    global $restricted_string;
+			//	$tp = e107::getParser();
+			$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
+			return $this->var['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
+	    }
 
 		function sc_moderators()
 		{
@@ -207,7 +231,7 @@
 				</table>";
 			--*/
 
-			return (defset('BOOTSTRAP') == 3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
+			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
 				<table class='table table-bordered' style='width:100%'>
 				<tr>
 				<td style='vertical-align:middle; text-align:center; width:2%'>" . IMAGE_new_small . "</td>
@@ -292,19 +316,35 @@
 			return empty($viewable) ? '' : $viewable;
 		}
 
-
-		function sc_search()
+		/**
+		 * @example {SEARCH: placeholder=Search forums} - sets placeholder 'Search forums'
+		 * @example {SEARCH: buttonclass=btn btn-small} - sets button class 'btn btn-small'
+		*/
+		function sc_search($parm=null)
 		{
-			return "
-			<form method='get' class='form-inline input-append' action='" . e_BASE . "search.php'>
-			<p>
-			<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-			<button class='btn btn-default btn-secondary button' type='submit' name='s' >" . LAN_SEARCH . "</button>
-			<input type='hidden' name='r' value='0' />
-			<input type='hidden' name='ref' value='forum' />
-			</p>
-			</form>";
 
+			if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
+			{
+				$srchIcon = LAN_SEARCH;
+			}
+
+			$buttonclass 	= (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
+			$placeholder    = (!empty($parm['placeholder'])) ? $parm['placeholder'] : LAN_SEARCH;
+
+			// String candidate for USERLIST wrapper
+			return "
+			<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
+			<div class='input-group'>
+			<input type='hidden' name='r' value='0' />
+			<input type='hidden' name='t' value='forum' />
+			<input type='hidden' name='forum' value='all' />
+			<input class='tbox form-control' type='text' name='q' size='20' value='' placeholder='".$placeholder."' maxlength='50' />
+			<span class='input-group-btn'>
+			<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
+			</span>
+			</div>
+
+			</form>\n";
 		}
 
 
@@ -652,18 +692,11 @@
 		------*/
 
 
-		function sc_views()
+		function sc_views($parm=null)
 		{
 			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
-			return e107::getParser()->toBadge($val);
-		}
 
-
-		function sc_replies($parm='')
-		{
-			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
-
-			if($parm === 'raw')
+			if(!empty($parm['raw']))
 			{
 				return $val;
 			}
@@ -672,15 +705,28 @@
 		}
 
 
-		function sc_viewsx()
+		function sc_replies($parm=null)
 		{
-			return $this->sc_views();
+			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+			if(!empty($parm['raw']))
+			{
+				return $val;
+			}
+
+			return e107::getParser()->toBadge($val);
 		}
 
 
-		function sc_repliesx()
+		function sc_viewsx($parm='')
 		{
-			return $this->sc_replies();
+			return $this->sc_views($parm);
+		}
+
+
+		function sc_repliesx($parm='')
+		{
+			return $this->sc_replies($parm);
 		}
 
 //	function sc__wrapper_()	{	return 'forum_viewforum';}
@@ -743,7 +789,7 @@
 //----		$tVars['LASTPOSTDATE'] .= "<a href='".$url."'>".  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short')."</a>";
 
 
-				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, false, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
+				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, true, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
 
 			}
 
@@ -925,7 +971,7 @@
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			$ret = fpages($this->var, $this->sc_replies('raw'));
+			$ret = fpages($this->var, $this->var['thread_total_replies']);
 
 			if(!empty($ret))
 			{

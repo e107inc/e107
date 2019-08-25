@@ -99,7 +99,7 @@ class forum_shortcodes extends e_shortcode
 		$text = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 		if(USER)
 		{
-			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php ?id.".USERID."'>".LAN_FORUM_0014."</a>";
+			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php?id.".USERID."'>".LAN_FORUM_0014."</a>";
 		// To be reworked to get the $forum var
 			if($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 			{
@@ -154,7 +154,7 @@ class forum_shortcodes extends e_shortcode
 				{
 					list($oid, $oname) = explode(".", $uinfo, 2);
 					$c ++;
-					$text .= "<a href='".e_HTTP."user.php ?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 				}
 
 			}
@@ -164,13 +164,20 @@ class forum_shortcodes extends e_shortcode
 		  return $text;
 	}
 
-	function sc_search()
+	/**
+	 * @example {SEARCH: placeholder=Search forums} - sets placeholder 'Search forums'
+	 * @example {SEARCH: buttonclass=btn btn-small} - sets button class 'btn btn-small'
+	*/
+	function sc_search($parm=null)
 	{
 
 		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
 		{
 			$srchIcon = LAN_SEARCH;
 		}
+
+		$buttonclass 	= (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
+		$placeholder    = (!empty($parm['placeholder'])) ? $parm['placeholder'] : LAN_SEARCH;
 
 		// String candidate for USERLIST wrapper
 		return "
@@ -179,9 +186,9 @@ class forum_shortcodes extends e_shortcode
 		<input type='hidden' name='r' value='0' />
 		<input type='hidden' name='t' value='forum' />
 		<input type='hidden' name='forum' value='all' />
-		<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+		<input class='tbox form-control' type='text' name='q' size='20' value='' placeholder='".$placeholder."' maxlength='50' />
 		<span class='input-group-btn'>
-		<button class='btn btn-default btn-secondary button' type='submit' name='s' value='search' >".$srchIcon."</button>
+		<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
 		</span>
 		</div>
 
@@ -212,7 +219,7 @@ class forum_shortcodes extends e_shortcode
 		{
 			$total_new_threads = e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 				$total_read_threads = 0;
-			if (USERVIEWED != "")
+			if (defset('USERVIEWED') != "")
 			{
 				$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
 				$total_read_threads = count($tmp);
@@ -311,7 +318,7 @@ class forum_shortcodes extends e_shortcode
 		}
 
 		return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
-		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
+		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 	}
 
 
@@ -384,16 +391,29 @@ class forum_shortcodes extends e_shortcode
 
 	}
 
-	function sc_forumname()
+	/**
+	* @example: {FORUMICON: size=2x} 
+	*/
+	function sc_forumicon($parms = null)
+	{
+		if(empty($this->var['forum_icon'])) return '';
+
+		return e107::getParser()->toIcon($this->var['forum_icon'], $parms);
+	}
+
+	function sc_forumname($parm = null)
 	{
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
 			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
 		}
+
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
 
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
+
 		$url = e107::url('forum', 'forum', $this->var);
-		return "<a href='".$url."'>{$this->var['forum_name']}</a>";
+		return "<a href='".$url."' ".$class.">{$this->var['forum_name']}</a>";
 
 	}
 
@@ -414,21 +434,36 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
-	function sc_replies()
+	function sc_replies($parm = '')
 	{
-		return $this->sc_repliesx();
+		return $this->sc_repliesx($parm);
 	}
 
 
-	function sc_threadsx() // EQUAL TO SC_THREADS.......................
+	function sc_threadsx($parm = null) // EQUAL TO SC_THREADS.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_threads']);
+		$val = ($this->var['forum_threads']) ? $this->var['forum_threads'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 
-	function sc_repliesx() // EQUAL TO SC_REPLIES.......................
+	function sc_repliesx($parm = null) // EQUAL TO SC_REPLIES.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_replies']);
+		//print_a($parm);
+		$val = ($this->var['forum_replies']) ? $this->var['forum_replies'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 

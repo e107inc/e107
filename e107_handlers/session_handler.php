@@ -167,7 +167,14 @@ class e_session
 		$this->setOptions(array($key => $value));
 		return $this;
 	}
-	
+
+	public function getOptions()
+	{
+		return $this->_options;
+	}
+
+
+
 	/**
 	 * Get session option
 	 * @param string $key
@@ -416,10 +423,14 @@ class e_session
 				break;
 
 				default:
-					continue;
+					$v = null;
 				break;
 			}
-			$this->_options[$k] = $v;
+
+			if($v !== null)
+			{
+				$this->_options[$k] = $v;
+			}
 		}
 		return $this;
 	}
@@ -448,7 +459,7 @@ class e_session
 	public function start($sessionName = null)
 	{
 	
-		if (isset($_SESSION) && ($this->_sessionStarted == true)) 
+		if (isset($_SESSION) && ($this->_sessionStarted == true))
 		{
 			return $this;
 		}

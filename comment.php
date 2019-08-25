@@ -45,7 +45,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
 		
-		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']),$att);	
+		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']));
 		echo $tmp['comments'];
 		exit;
 	}
@@ -85,7 +85,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
 		$ret['error'] 	= true;
-		$ret['msg'] 	= COMLAN_336;
+		$ret['msg'] 	= COMLAN_336." - ".implode(" ",$_GET);
 		echo json_encode($ret);
 		exit; 	
 	}
@@ -196,21 +196,21 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 	switch ($table)
 	{
 		case 'poll' :
-			if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
+			if (!$sql->select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'news' :
-			if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
+			if (!$sql->select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'user' :
-			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id)) 
+			if (!$sql->select('user', 'user_name', '`user_id` ='.$id)) 
 			{
 				e107::redirect();
 				exit;
@@ -323,9 +323,9 @@ if ($action == "reply")
 	
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
 	
-	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'"))
+	if ($sql->select("comments", "comment_subject", "`comment_id` = '{$id}'"))
 	{
-		$comments = $sql->db_Fetch();
+		$comments = $sql->fetch();
 		$subject = $comments['comment_subject'];
 		$subject_header = $tp->toHTML($comments['comment_subject']);
 	}
@@ -335,35 +335,35 @@ if ($action == "reply")
 		switch ($table)
 		{
 			case 'news' :
-				if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' "))
+				if (!$sql->select("news", "news_title", "news_id='{$nid}' "))
 				{ 
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$news = $sql->db_Fetch();
+					$news = $sql->fetch();
 					$subject = $news['news_title'];
 					$title = COMLAN_100;
 				}
 				break;
 			case 'poll' :
-				if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' "))
+				if (!$sql->select("polls", "poll_title", "poll_id='{$nid}' "))
 				{
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$poll = $sql->db_Fetch();
+					$poll = $sql->fetch();
 					$subject = $poll['poll_title'];
 					$title = COMLAN_101;
 				}
 				break;
 			case 'download' :
-				if ($sql->db_Select('download','download_name',"download_id={$nid} "))
+				if ($sql->select('download','download_name',"download_id={$nid} "))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$subject = $row['download_name'];
 					$title = COMLAN_106;
 				}
@@ -374,9 +374,9 @@ if ($action == "reply")
 				}
 				break;
 			case 'user' :
-				if ($sql->db_Select('user','user_name',"user_id={$nid} "))
+				if ($sql->select('user','user_name',"user_id={$nid} "))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$subject = $row['user_name'];
 					$title = COMLAN_12;
 				}
@@ -435,7 +435,7 @@ elseif ($action == 'comment')
 				}
 				else
 				{
-					$news = $sql->db_Fetch();
+					$news = $sql->fetch();
 					$subject = $tp->toForm($news['news_title']);
 					define("e_PAGETITLE", "{$subject} - ".COMLAN_100." / ".LAN_COMMENTS);
 					require_once(HEADERF);
@@ -447,14 +447,14 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'poll' :
-				if (!$sql->db_Select("polls", "*", "poll_id='{$id}'"))
+				if (!$sql->select("polls", "*", "poll_id='{$id}'"))
 				{
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$comments_poll = $row['poll_comment'];
 					$subject = $row['poll_title'];
 					define("e_PAGETITLE", $subject.' - '.COMLAN_101." / ".LAN_COMMENTS);
@@ -470,9 +470,9 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'download' :
-				if ($sql->db_Select('download','download_name',"download_id={$id} "))
+				if ($sql->select('download','download_name',"download_id={$id} "))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$subject = $row['download_name'];
 					$title = COMLAN_106;
 					$field = $id;
@@ -485,9 +485,9 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'user' :
-				if ($sql->db_Select('user','user_name',"user_id={$id} "))
+				if ($sql->select('user','user_name',"user_id={$id} "))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$subject = $row['user_name'];
 					//$title = 'Edit comment about user';
 					$field = $id;
@@ -503,9 +503,9 @@ elseif ($action == 'comment')
 				$e_comment = $cobj->get_e_comment();
 				if ($table == $e_comment[$table]['eplug_comment_ids'])
 				{
-					if ($sql->db_Select($e_comment[$table]['db_table'],$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
+					if ($sql->select($e_comment[$table]['db_table'],$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
 					{
-						$row = $sql->db_Fetch();
+						$row = $sql->fetch();
 						$subject = $row[$e_comment[$table]['db_title']];
 						$title = $e_comment[$table]['plugin_name'];
 						$field = $id;
@@ -553,7 +553,7 @@ $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'news')
 {
-	if($sql->db_Select("trackback", "*", "trackback_pid={$id}"))
+	if($sql->select("trackback", "*", "trackback_pid={$id}"))
 	{
 		$tbArray = $sql -> db_getList();
 
@@ -568,13 +568,15 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 
 		$text = "";
 
-		foreach($tbArray as $trackback)
+		foreach($tbArray as $row)
 		{
-			extract($trackback);
-			$TITLE = $trackback_title;
-			$EXCERPT = $trackback_excerpt;
-			$BLOGNAME = "<a href='{$trackback_url}' rel='external'>{$trackback_blogname}</a>";
-			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TRACKBACK);
+			$scArray = array(
+				'TITLE'     => $row['trackback_title'],
+				'EXCERPT'   => $row['trackback_excerpt'],
+				'BLOGNAME'  => "<a href='{$row['trackback_url']}' rel='external'>{$row['trackback_blogname']}</a>"
+			);
+			
+			$text .= $tp->parseTemplate($TRACKBACK, false, $scArray);
 		}
 
 		if($TRACKBACK_RENDER_METHOD)
@@ -607,4 +609,3 @@ if ($comment_ob_start)
 }
 
 require_once(FOOTERF);
-?>

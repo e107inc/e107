@@ -10,6 +10,7 @@ e107_system/*
 e107_core/override
 test/*
 tmp/*
+phpunit/
 
 # Ignore Vim swap files
 *.swp

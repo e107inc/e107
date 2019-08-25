@@ -31,7 +31,7 @@ class social_shortcodes extends e_shortcode
 			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=> $tp->lanVars(LAN_SOCIAL_001, "Facebook"),	    'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
 			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Facebook"),	    'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
 			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Twitter"),	    'url' => "http://twitter.com/share?url=[u]&text=[t]"),
-			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+		//	'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
 
 			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
 			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "LinkedIn"),	    'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
@@ -59,7 +59,7 @@ class social_shortcodes extends e_shortcode
 	 * {XURL_ICONS: size=2x}
 	 * {XURL_ICONS: type=facebook,twitter,vimeo}
 	 */	
-	function sc_xurl_icons($parm='')
+	function sc_xurl_icons($parm=null)
 	{
 		$tp = e107::getParser();
 		$tmpl = !empty($parm['template']) ? $parm['template'] : 'default';
@@ -400,7 +400,7 @@ class social_shortcodes extends e_shortcode
 		
 		if(vartrue($parm['dropdown']))
 		{
-			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
+			$dir = ($parm['dropdown'] == 'right') ? 'pull-right float-right' : '';
 			$class = varset($parm['class'],'btn-group');
 
 

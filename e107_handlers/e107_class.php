@@ -78,10 +78,10 @@ class e107
 	/**
 	 * User login name
 	 *
-	 * @var string
+	 * @var array
 	 * @see init_session()
 	 */
-	public $currentUser = '';
+	public $currentUser;
 
 	/**
 	 * Run once load core shortcodes
@@ -143,6 +143,11 @@ class e107
 	 */
 	protected static $_js_enabled = true;
 
+
+
+
+	protected static $_breadcrumb = array();
+
 	/**
 	 * Core handlers array
 	 * For new/missing handler add
@@ -162,7 +167,8 @@ class e107
 		'comment'                        => '{e_HANDLER}comment_class.php',
 		'e_date'                         => '{e_HANDLER}date_handler.php',
 		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix.
-		'db'                             => '{e_HANDLER}mysql_class.php',
+		'db'                             => '{e_HANDLER}e_db_pdo_class.php',
+	//	'db'                             => '{e_HANDLER}mysql_class.php',
 		'e107Email'                      => '{e_HANDLER}mail.php',
 		'e107_event'                     => '{e_HANDLER}event_class.php',
 		'e107_db_debug'                  => '{e_HANDLER}db_debug_class.php',
@@ -1344,7 +1350,7 @@ class e107
 	 */
 	public static function getDb($instance_id = '')
 	{
-		return self::getSingleton('db', true, $instance_id);
+		 return self::getSingleton('db', true, $instance_id);
 	}
 
 	/**
@@ -1523,7 +1529,16 @@ class e107
 			}
 		}
 
-		return self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
+	//	e107::getDb()->db_Mark_time('start e_theme');
+		/** @var e_theme $ret */
+		$ret = self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
+
+	//	e107::getDb()->db_Mark_time('end e_theme');
+	/*	echo "<pre>";
+		debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		echo "</pre>";*/
+
+		return $ret;
 	}
 
 
@@ -1615,7 +1630,7 @@ class e107
      *
      * @return e107_db_debug
      */
-    public static function getDebug() //XXX Discuss  - possible with current setup?
+    public static function getDebug()
     {
         return self::getSingleton('e107_db_debug', true);
     }
@@ -2185,10 +2200,10 @@ class e107
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
 
-		if((strpos($data,'bootstrap.css')!==false || strpos($data,'bootstrap.min.css')!==false) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently.
+	/*	if((strpos($data,'bootstrap.css')!==false || strpos($data,'bootstrap.min.css')!==false) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently.
 		{
 			define("BOOTSTRAP", true);
-		}
+		}*/
 
 		if(self::$_css_enabled === false)
 		{
@@ -2350,6 +2365,7 @@ class e107
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
 	{
+		/** @var eResponse $response */
 		$response = self::getSingleton('eResponse');
 
 		if($name === 'description')
@@ -2385,6 +2401,7 @@ class e107
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
+	 * @param mixed $param [optional] construct() param
 	 * @return object
 	 */
 	public static function getAddon($pluginName, $addonName, $className = true)
@@ -2789,8 +2806,8 @@ class e107
 	 *
 	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
 	 * Will search for:
-	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
-	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
+	 * - e107_themes/{current_frontend_theme}/templates/user_template.php (if $override is true) - this is the default.
+	 * - e107_core/templates/user_template.php (if override not found or $override is false)
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 *
@@ -3084,13 +3101,15 @@ class e107
 				return false;
 			}
 
+			self::getDebug()->log("Couldn't load language file: " . $path);
 
 			$path = str_replace(e_LANGUAGE, 'English', $path);
 
-			self::getDebug()->log("Couldn't load language file: ".$path);
+			self::getDebug()->log("Attempts to load default language file: " . $path);
 
 			if(!is_readable($path))
 			{
+				self::getDebug()->log("Couldn't load default language file: " . $path);
 				return false;
 			}
 		}
@@ -3334,6 +3353,43 @@ class e107
 
 	}
 
+
+	/**
+	 * Set or Get the current breadcrumb array.
+	 * @param array $array
+	 * @return array|null
+	 */
+	public static function breadcrumb($array = array())
+	{
+
+		if(empty($array)) // read
+		{
+
+			if(empty(self::$_breadcrumb)) //Guess what it should be..
+			{
+				if(defined('PAGE_NAME'))  // BC search for "PAGE_NAME"
+				{
+					return array(0=> array('text'=>PAGE_NAME, 'url'=>null));
+				}
+				elseif($caption = e107::getRender()->getMainCaption()) // BC search for primary render caption
+				{
+					return array(0=> array('text'=>$caption, 'url'=>null));
+				}
+
+			}
+
+			return self::$_breadcrumb;
+		}
+
+
+
+
+
+		self::$_breadcrumb = $array; // write.
+
+		return null;
+	}
+
 	/**
 	 * Static (easy) sef-url creation method (works with e_url.php @see /index.php)
 	 *
@@ -3347,7 +3403,7 @@ class e107
 	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
 	 * @return string
 	 */
-	public static function url($plugin='',$key, $row=array(), $options = array())
+	public static function url($plugin='', $key=null, $row=array(), $options = array())
 	{
 
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
@@ -3874,7 +3930,7 @@ class e107
 
 		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 		{
-			if($type == "_POST" && ($base64 == FALSE))
+			if($type == "_POST" && ($base64 === false))
 			{
 				$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 			}
@@ -4009,7 +4065,7 @@ class e107
 
 		if($base64 != true)
 		{
-			self::filter_request(base64_decode($input),$key,$type,true);
+			self::filter_request(base64_decode($input, true),$key,$type,true);
 		}
 
 
@@ -4035,7 +4091,10 @@ class e107
 	 */
 	public function set_constants()
 	{
-		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		if(!defined('MAGIC_QUOTES_GPC'))
+		{
+			define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		}
 
 		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix
 
@@ -5165,3 +5224,39 @@ class e107
 }
 
 e107::autoload_register(array(e107::class, 'autoload'));
+
+
+
+/**
+ * Interface e_admin_addon_interface @move to separate addons file?
+ */
+interface e_admin_addon_interface
+{
+
+	/**
+	* Return a list of values for the currently viewed list page.
+	* @param string $event
+	* @param string $ids comma separated primary ids to return in the array.
+	* @return array with primary id as keys and array of fields key/pair values.
+	*/
+	public function load($event, $ids);
+
+
+	/**
+	* Extend Admin-ui Parameters
+	* @param $ui admin-ui object
+	* @return array
+	*/
+	public function config(e_admin_ui $ui);
+
+
+	/**
+	* Process Posted Data.
+	* @param $ui admin-ui object
+	* @param int $id
+	*/
+	public function process(e_admin_ui $ui, $id=0);
+
+
+
+}

@@ -153,7 +153,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-
+		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
+		if (!deftrue('e_TINYMCE_TEMPLATE'))
+		{
+			define('e_TINYMCE_TEMPLATE', (USER ? 'member' : 'public')); // allow images / videos.
+		}
+		
+		
 		if(!empty($_POST['post']))
 		{
 			$text = $tp->post_toForm($_POST['post']);
@@ -182,7 +188,8 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		//$wysiwyg = ($editor === 'bbcode') ? false : null;
 		$wysiwyg = is_null($editor) ? 'default' : $editor;
 
-		return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
+		//return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
+		return e107::getForm()->bbarea('post',$text,'forum','forum','large', array('wysiwyg' => $wysiwyg));
 
 	}
 
@@ -415,7 +422,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_1011, 2 => LAN_FORUM_1013); 
 
-			return "<div class='checkbox'>".e107::getForm()->radio('threadtype',$opts, $thread_sticky)."</div>";
+			return "<div class='radio'>".e107::getForm()->radio('threadtype',$opts, $thread_sticky)."</div>";
 
 		//	return "<br /><span class='defaulttext'>post thread as 
 		//	<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
@@ -441,25 +448,28 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_forum_post_caption()
 	{
-//		global $forumInfo;
-			$tp = e107::getParser();
-//    var_dump ($this);
-//$this->forumObj->threadGet($this->id, false)		
-    if ($this->var['action'] == "rp")
-    {
-      	$pre = LAN_FORUM_1003;
-	$name = $tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off');
-	$url = e107::url('forum', 'topic', $this->var);
-      	$post = LAN_FORUM_2006;
-    }
-    if ($this->var['action'] == "nt")
-    {
-      	$pre = LAN_FORUM_1001;
-	$name = $tp->toHTML($this->var['forum_name'], false, 'no_hook, emotes_off');
-	$url = e107::url('forum', 'forum', $this->var);
-      	$post = LAN_FORUM_2005;
-    }
-    return $pre.($url?": <a {$title} href='".$url."'>{$name}</a> - ":$name).$post;
+
+
+		$tp = e107::getParser();
+
+		if($this->var['action'] == "rp")
+		{
+			$pre = LAN_FORUM_1003;
+			$name = $tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off');
+			$url = e107::url('forum', 'topic', $this->var);
+			$post = LAN_FORUM_2006;
+		}
+		if($this->var['action'] == "nt")
+		{
+			$pre = LAN_FORUM_1001;
+			$name = $tp->toHTML($this->var['forum_name'], false, 'no_hook, emotes_off');
+			$url = e107::url('forum', 'forum', $this->var);
+			$post = LAN_FORUM_2005;
+		}
+
+		$title = ''; // todo?
+
+		return $pre . ($url ? ": <a {$title} href='" . $url . "'>{$name}</a> - " : $name) . $post;
 	}
 	
 	function sc_noemotes()

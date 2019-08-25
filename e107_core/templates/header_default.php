@@ -23,8 +23,7 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
-// Load library dependencies.
-e107::getTheme('current', true)->loadLibrary();
+
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 // e107::css('core',	'bootstrap/css/tooltip.css','jquery');
@@ -82,18 +81,22 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 
 if (!function_exists("parseheader")) 
 {
-	function parseheader($LAYOUT)
+	function parseheader($LAYOUT, $opts=array())
 	{
 		$tp 	= e107::getParser();
 		$tmp 	= explode("\n", $LAYOUT);
 
 		$sc = e107::getScBatch('_theme_');
+
+		$search = array_keys($opts);
+		$replace = array_values($opts);
 		
 		foreach ($tmp as $line) 
 		{
+			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
+
 			if (preg_match("/{.+?}/", $line))
 			{
-				$line = str_replace('{THEME}',THEME_ABS, $line); // Quick-fix allow for use of {THEME} shortcode.
 				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
 			} 
 			else 
@@ -172,8 +175,8 @@ if ($e_headers && is_array($e_headers))
 }
 unset($e_headers);
 
-// echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
-echo e107::getSingleton('eResponse')->renderMeta()."\n";
+
+echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 
 if (deftrue('e_FRONTPAGE'))
 {
@@ -228,7 +231,7 @@ if (is_array($pref['e_meta_list']))
 		
 		if(is_readable($fname))
 		{
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}	
 	}
 	// content will be added later
@@ -622,7 +625,19 @@ echo "</head>\n";
 
 // ---------- New in 2.0 -------------------------------------------------------
 
-	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
+
+    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
+	$noBody = false;
+	// v2.2.2 --- Experimental --
+	if($tmp = e_theme::loadLayout(THEME_LAYOUT))
+	{
+		$LAYOUT = $tmp;
+		$noBody = true;
+		unset($tmp);
+	}
+
+
+	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
@@ -646,7 +661,6 @@ echo "</head>\n";
 	}
 
 
-    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 
   //  echo "DEF = ".$def."<br />";
 
@@ -690,9 +704,11 @@ echo "</head>\n";
 
 	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 
-
-
-if(!deftrue('BODYTAG')) //TODO Discuss a better way?
+if($noBody === true) // New in v2.2.2 - remove need for BODYTAG.
+{
+	echo "\n<!-- Start theme.html -->\n";
+}
+elseif(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
 	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
@@ -737,7 +753,10 @@ if(deftrue('BOOTSTRAP'))
 
 	}
 
-	echo $LAYOUT['_modal_'];
+	if($noBody === false)
+	{
+		echo $LAYOUT['_modal_'];
+	}
 }
 
 
@@ -778,13 +797,23 @@ if ($e107_popup != 1) {
 			$HEADER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $HEADER);	
 			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $FOOTER);	
 		}
+
+
+		$psc = array(
+		'{THEME}'       => THEME_ABS,
+		'{BODY_ONLOAD}' => $body_onload,
+		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
+		'{---MODAL---}' => $LAYOUT['_modal_'],
+		'{---HEADER---}'  => $tp->parseTemplate('{HEADER}',true),
+        '{---FOOTER---}'  => $tp->parseTemplate('{FOOTER}',true),
+		);
 		
-   		parseheader($HEADER);
-		
+   		parseheader($HEADER, $psc);
+
 	//	echo $HEADER;
 	}
 
-	unset($def);
+	unset($def, $noBody, $psc);
 
 // -----------------------------------------------------------------------------
 

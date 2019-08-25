@@ -57,12 +57,12 @@ if(!$OTHERNEWS_STYLE)
 		}
 		$template = e107::getTemplate('news', 'news_menu', 'other', true, true);
 		
-		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="prev">‹</a>  
+		$item_selector = '<div class="btn-group pull-right float-right"><a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="next">›</a></div>';
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			$template['caption'] =  e107::getParser()->toHTML($parms['caption'],true,'TITLE');
 		}
 
 		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
@@ -74,7 +74,7 @@ if(!$OTHERNEWS_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$caption =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+			$caption =  e107::getParser()->toHTML($parms['caption'], true,'TITLE');
 		}
 			
 		$template['start'] = '';
@@ -126,6 +126,11 @@ if(!defined("OTHERNEWS_CELL")){
 
 if(!defined("OTHERNEWS_SPACING")){
 	define("OTHERNEWS_SPACING","0");
+}
+
+if(!isset($param))
+{
+	$param = array();
 }
 
 $param['itemlink'] 		= defset('OTHERNEWS_ITEMLINK');

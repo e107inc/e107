@@ -420,13 +420,13 @@ class auth
 
 		if (!$reason)
 		{
-			if ($sql_auth->db_Select("user", "*", "user_loginname='{$authname}' AND user_admin='1' "))
+			if ($sql_auth->select("user", "*", "user_loginname='{$authname}' AND user_admin = 1 "))
 			{
-				$row = $sql_auth->db_Fetch();
+				$row = $sql_auth->fetch();
 			}
-			elseif ($sql_auth->db_Select("user", "*", "user_name='{$authname}' AND user_admin='1' "))
+			elseif ($sql_auth->select("user", "*", "(user_name='{$authname}' OR user_email='{$authname}' ) AND user_admin=1 "))
 			{
-				$row = $sql_auth->db_Fetch();
+				$row = $sql_auth->fetch();
 				$authname = $row['user_loginname'];
 			}
 			else

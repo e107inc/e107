@@ -402,7 +402,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 		private function gen_select($prompt,$name,$value)
 		{
 			$ret = "<div class='control-group clearfix' >
-	        <span class='pull-left'>".$prompt."</span><span class='pull-right'><select name='{$name}' class='tbox'>\n
+	        <span class='pull-left float-left'>".$prompt."</span><span class='pull-right'><select name='{$name}' class='tbox'>\n
 			<option value='0' ".($value == 0 ? " selected='selected'" : "").">".ADSTAT_LAN_50."</option>\n
 			<option value='1' ".($value == 1 ? " selected='selected'" : "").">".ADSTAT_LAN_49."</option>\n
 			<option value='2' ".($value == 2 ? " selected='selected'" : "").">".ADSTAT_LAN_48."</option>\n
@@ -919,7 +919,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 				.$this->gen_select(ADSTAT_LAN_9, 'statDomain',$pref['statDomain'])
 				.$this->gen_select(ADSTAT_LAN_10, 'statRefer',$pref['statRefer'])
 				.$this->gen_select(ADSTAT_LAN_11, 'statQuery',$pref['statQuery'])
-				."<div class='clearfix' style='padding-bottom: 4px'><span class='pull-left'>".ADSTAT_LAN_19."</span><span class='pull-right'>
+				."<div class='clearfix' style='padding-bottom: 4px'><span class='pull-left float-left'>".ADSTAT_LAN_19."</span><span class='pull-right float-right'>
 				 ".$frm->radio_switch('statRecent', $pref['statRecent'])."</span></div>
 				</td>
 			</tr>

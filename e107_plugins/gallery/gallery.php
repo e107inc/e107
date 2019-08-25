@@ -98,6 +98,8 @@ class gallery
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
+		$sc->breadcrumb();
+
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootstrap3 to bootstrap2 compat.
 		{
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
@@ -137,10 +139,12 @@ class gallery
 		$sc->amount = varset($plugPrefs['perpage'], 12);
 		$sc->curCat = $cat;
 		$sc->from = ($_GET['frm']) ? intval($_GET['frm']) : 0;
+		$sc->breadcrumb();
+
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cat, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cat]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cat]['media_cat_title'], false, 'defs');
 
 		$inner = "";
 

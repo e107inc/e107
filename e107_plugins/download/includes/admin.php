@@ -128,6 +128,7 @@ class download_cat_ui extends e_admin_ui
 { 	 	 
 		protected $pluginTitle	    = LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName	    = 'download';
+		protected $eventName        = 'download-category';
 		protected $table 		    = "download_category";
 		protected $pid			    = "download_category_id";
 		protected $perPage 		    = 0; //no limit

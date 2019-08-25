@@ -111,7 +111,11 @@ class user_dashboard // plugin-folder + '_url'
 
 			foreach($array as $key => $value)
 			{
-				extract($value);
+
+				$log_id = $value['log_id'];
+				$log_data = $value['log_data'];
+			//	extract($value);
+
 				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
@@ -245,7 +249,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?mode=avail&action=list'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
@@ -331,7 +335,7 @@ class user_dashboard // plugin-folder + '_url'
 		
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
-		$this->title = 'New Users ('.$sum.')';
+		$this->title = UC_LAN_9.' ('.$sum.')';
 	
 		$totalDays = date('t', $month_start);
 	
@@ -348,7 +352,7 @@ class user_dashboard // plugin-folder + '_url'
 		$options = array(
 			'chartArea'	=>array('left'=>'60', 'width'=>'90%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
-			'vAxis'		=> array('title'=>'New Users', 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
+			'vAxis'		=> array('title'=> UC_LAN_9, 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
 			'hAxis'		=> array('title'=>date('M Y', $month_start), 'slantedText'=>true, 'slantedTextAngle'=>60, 'ticks'=>$ticks, 'titleFontSize'=>14, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines' => array('color'=>'transparent'), 'textStyle'=>array('color' => '#ccc') ),
 			'colors'	=> array('#77acd9','#EDA0B6', '#EE8D21', '#5CB85C'),
 			'animation'	=> array('duration'=>1000, 'easing' => 'out'), 
@@ -499,8 +503,6 @@ class user_dashboard // plugin-folder + '_url'
 		}
 		return $val;
 	}
-
-
 
 	
 }
