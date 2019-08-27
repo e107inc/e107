@@ -154,5 +154,9 @@ if(!isset($template))
 		$txt .= pm_show_popup($pm_inbox, $pm_prefs['popup_delay']);
 	}
 
-	$ns->tablerender(LAN_PM, $txt, 'pm');
+	
+	//$ns->tablerender(LAN_PM, $txt, 'pm');
+
+	$caption = varset($pm_prefs['title'], LAN_PM);
+	$ns->tablerender($caption, $txt, 'pm');
 }
