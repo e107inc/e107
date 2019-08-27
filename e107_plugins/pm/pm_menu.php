@@ -8,23 +8,16 @@
  *
  *	PM plugin - menu display
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 
-/**
- *	e107 Private messenger plugin
- *
- *	@package	e107_plugins
- *	@subpackage	pm
- *	@version 	$Id$;
- */
 $pm_prefs = e107::getPlugPref('pm');
-if(check_class($pm_prefs['pm_class']))
+
+if(!check_class($pm_prefs['pm_class']))
 {
+	return null; 
+}
+
 if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('pm')) { return ''; }
 
@@ -121,42 +114,37 @@ if(!isset($template))
 	";
 	*/
 	
-//	$pm_menu_template = "
+	//	$pm_menu_template = "
 	$template = "
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
-	{PM_NEWPM_ANIMATE}
-	<br />
-	{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
-	<br />
-	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PLUGIN_PM_OUTBOX."</a><br />
-	{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
-	{PM_SEND_PM_LINK}
-	{PM_BLOCKED_SENDERS_MANAGE}
+		<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
+		<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
+		{PM_NEWPM_ANIMATE}
+		<br />
+		{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
+		<br />
+		<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
+		<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PLUGIN_PM_OUTBOX."</a><br />
+		{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
+		{PM_SEND_PM_LINK}
+		{PM_BLOCKED_SENDERS_MANAGE}
 	";
 }
 
-//if(check_class($pm_prefs['pm_class']))
-//{
-	$tp = e107::getParser();
-	$sc = e107::getScBatch('pm',TRUE, 'pm');
-	
-	$pm_inbox = $pmManager->pm_getInfo('inbox');
-  $sc->wrapper('pm_menu');
+
+$tp = e107::getParser();
+$sc = e107::getScBatch('pm',TRUE, 'pm');
+
+$pm_inbox = $pmManager->pm_getInfo('inbox');
+$sc->wrapper('pm_menu');
 
 //	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
-	$txt = "\n".$tp->parseTemplate($template, TRUE, $sc);
-	
-	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
-	{
-		
-		$txt .= pm_show_popup($pm_inbox, $pm_prefs['popup_delay']);
-	}
+$txt = "\n".$tp->parseTemplate($template, TRUE, $sc);
 
-	
-	//$ns->tablerender(LAN_PM, $txt, 'pm');
-
-	$caption = varset($pm_prefs['title'], LAN_PM);
-	$ns->tablerender($caption, $txt, 'pm');
+if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
+{
+	$txt .= pm_show_popup($pm_inbox, $pm_prefs['popup_delay']);
 }
+
+//$ns->tablerender(LAN_PM, $txt, 'pm');
+$caption = varset($pm_prefs['title'], LAN_PM);
+$ns->tablerender($caption, $txt, 'pm');
