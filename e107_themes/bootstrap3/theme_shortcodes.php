@@ -15,10 +15,7 @@ class theme_shortcodes extends e_shortcode
 {
 	// public $override = true;
 
-	function __construct()
-	{
-		
-	}
+
 
 	/**
 	 * Special Header Shortcode for dynamic menuarea templates.
