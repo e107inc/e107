@@ -3958,7 +3958,7 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
-	protected $_meta_name_only = array('keywords', 'viewport'); // Keep FB happy.
+	protected $_meta_name_only = array('keywords', 'viewport', 'robots'); // Keep FB happy.
 	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
 	protected $_meta = array();
 	protected $_title_separator = ' &raquo; ';

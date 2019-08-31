@@ -75,54 +75,9 @@ else
 	/** @var e_news_item $nws */
 	$nws = e107::getObject('e_news_item');
 	$row = $nws->load($parms)->toArray();
-/*
-	$query = "SELECT n.*, c.*, u.user_id, u.user_name FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id LEFT JOIN `#user` AS u ON n.news_author = u.user_id WHERE n.news_id = " . intval($parms);
 
-	//$sql->db_Select("news", "*", "news_id='{$parms}'");
-	$sql = e107::getDb();
-	$sql->gen($query);
-	$row = $sql->fetch();
-	*/
 
 	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1');
-
-
-//	extract($row);
-//	define("e_PAGETITLE", $news_title);
-	//$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
-
-	/*
-	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
-	if ($news_author == 0)
-	{
-		$a_name = "e107";
-		$category_name = "e107 welcome message";
-	}
-	else
-	{
-		$sql->db_Select("news_category", "category_id, category_name", "category_id='{$news_category}'");
-		list($category_id, $category_name) = $sql->db_Fetch('num');
-		$sql->db_Select("user", "user_id, user_name", "user_id='{$news_author}'");
-		list($a_id, $a_name) = $sql->db_Fetch('num');
-	}
-	$news_datestamp = $con->convert_date($news_datestamp, "long");
-	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<h2>".LAN_PRINT_135.$news_title."</h2>
-	<br />
-	(".LAN_CATEGORY." ".$tp->toHTML($category_name,FALSE,"defs").")
-	<br />
-	".LAN_POSTED_BY." ".$a_name."<br />
-	".$news_datestamp."
-	<br /><br />".
-	$news_body;
-
-	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
-
-	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
-	if (!empty($news_source)){ $print_text .= "<br /><br />".$news_source; }
-	if (!empty($news_url)){ $print_text .= "<br />".$news_url; }
-*/
-
     $tmp = e107::getTemplate('news', 'news', 'view');
 
     if(empty($tmp))
@@ -130,6 +85,10 @@ else
         $newsViewTemplate = !empty($row['news_template']) ? $row['news_template'] : 'default';
         $tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
     }
+
+    $title = $tp->toText($row['news_title']);
+    define('e_PAGETITLE', '[print] '. $title);
+    e107::meta('robots', 'noindex');
 
 	$template = $tmp['item'];
 	unset($tmp);
@@ -163,6 +122,7 @@ require_once(HEADERF);
 //temporary solution - object of future cahges
 if(is_readable(THEME.'print_template.php'))
 {
+	$PRINT_TEMPLATE = '';
 	include_once(THEME.'print_template.php');
 	echo $tp->parseTemplate($PRINT_TEMPLATE);
 }
