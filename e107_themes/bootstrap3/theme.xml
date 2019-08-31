@@ -19,8 +19,8 @@
 		<image>preview_frontend.png</image>
 	</screenshots>
 	<libraries>
-		<library name="bootstrap" scope="all"/>
-		<library name="fontawesome" scope="all"/>
+		<library name="bootstrap" version="3" scope="all"/>
+		<library name="fontawesome" version="4"  scope="all"/>
 		<library name="bootstrap.editable" scope="admin"/>
 	</libraries>
 	<stylesheets>

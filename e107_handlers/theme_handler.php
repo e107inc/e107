@@ -157,9 +157,12 @@ class e_theme
 			// If no scope set, we load library on both areas.
 			if(empty($library['scope']) || $library['scope'] === 'all')
 			{
-				if($library['name'] === 'bootstrap' && varset($library['version']) == 4) // quick fix.
+				if($library['name'] === 'bootstrap' && !empty($library['version']))
 				{
-					$library['name'] .= (string) $library['version'];
+					if(intval($library['version']) > 3) // quick fix.
+					{
+						$library['name'] .= (string) $library['version'];
+					}
 
 					 e107::getParser()->setBootstrap($library['version']);
 
@@ -168,9 +171,12 @@ class e_theme
 						define('BOOTSTRAP', (int) $library['version']);
 					}
 				}
-				elseif($library['name'] === 'fontawesome' && !empty($library['version'])) // quick fix.
+				elseif($library['name'] === 'fontawesome' && !empty($library['version']))
 				{
-					$library['name'] .= (string) $library['version'];
+					if(intval($library['version']) > 4) // quick fix.
+					{
+						$library['name'] .= (string) $library['version'];
+					}
 
 					e107::getParser()->setFontAwesome($library['version']);
 

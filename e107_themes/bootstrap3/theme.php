@@ -16,8 +16,7 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
-define("BOOTSTRAP", 3);
-define("FONTAWESOME", 4);
+
 define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
 // CDN provider for Bootswatch.
@@ -56,7 +55,13 @@ define('OTHERNEWS2_LIMIT', 3); // Limit to 3.
 define('COMMENTOFFSTRING', '');
 
 define('PRE_EXTENDEDSTRING', '<br />');
- 
+
+
+
+
+
+
+
 class bootstrap3_theme
 {
    	
@@ -66,111 +71,108 @@ class bootstrap3_theme
      * @param string $id : id of the current render
      * @param array $info : current style and other menu data. 
      */ 
- 
-  function tablestyle($caption, $text, $id='', $info=array()) 
-  {
-  //	global $style; // no longer needed. 
-  	
-  	$style = $info['setStyle'];
-  	
-  	echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
-  	
-  	$type = $style;
-  	if(empty($caption))
-  	{
-  		$type = 'box';
-  	}
-  	
-  	if($style == 'navdoc' || $style == 'none')
-  	{
-  		echo $text;
-  		return;
-  	}
-  	
-  	/*
-  	if($id == 'wm') // Example - If rendered from 'welcome message' 
-  	{
-  		
-  	}
-  	
-  	if($id == 'featurebox') // Example - If rendered from 'featurebox' 
-  	{
-  		
-  	}	
-  	*/
-  	
-  	
-  	if($style == 'jumbotron')
-  	{
-  		echo '<div class="jumbotron">
-        	<div class="container">';
-          	if(!empty($caption))
-  	        {
-  	            echo '<h1>'.$caption.'</h1>';
-  	        }
-          echo '
-          	'.$text.'
-        	</div>
-      	</div>';	
-  		return;
-  	}
-  	
-  	if($style == 'col-md-4' || $style == 'col-md-6' || $style == 'col-md-8')
-  	{
-  		echo ' <div class="col-xs-12 '.$style.'">';
-  		
-  		if(!empty($caption))
-  		{
-              echo '<h2>'.$caption.'</h2>';
-  		}
-  
-  		echo '
-            '.$text.'
-          </div>';
-  		return;	
-  		
-  	}
-  		
-  	if($style == 'menu')
-  	{
-  		echo '<div class="panel panel-default">
-  	  <div class="panel-heading">'.$caption.'</div>
-  	  <div class="panel-body">
-  	   '.$text.'
-  	  </div>
-  	</div>';
-  		return;
-  		
-  	}	
-  
-  	if($style == 'portfolio')
-  	{
-  		 echo '
-  		 <div class="col-lg-4 col-md-4 col-sm-6">
-              '.$text.'
-  		</div>';	
-  		return;
-  	}
-  
-  
-  
-  	// default.
-  
-  	if(!empty($caption))
-  	{
-  		echo '<h2 class="caption">'.$caption.'</h2>';
-  	}
-  
-  	echo $text;
-  
-  
-  					
-  	return;
-  	
-  	
-  	
-  }
-    
+    function tablestyle($caption, $text, $id='', $info=array())
+	{
+
+
+		$style = $info['setStyle']; //	global $style; // no longer needed.
+
+	    echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
+
+	    /*
+	    if($id == 'wm') // Example - If rendered from 'welcome message'
+	    {
+			$style = '';
+	    }
+
+	    if($id == 'featurebox') // Example - If rendered from 'featurebox'
+	    {
+			$style = '';
+	    }
+	    */
+
+		switch($style)
+		{
+			case "navdoc":
+			case "none":
+
+				echo $text;
+
+				break;
+
+			case "jumbotron":
+
+				echo '<div class="jumbotron">
+	            <div class="container">';
+
+	            if(!empty($caption))
+	            {
+	                echo '<h1>'.$caption.'</h1>';
+	            }
+
+		        echo '
+		        '.$text.'
+		        </div>
+	        	</div>';
+
+				break;
+
+			case "col-md-4":
+			case "col-md-6":
+			case "col-md-8":
+
+				 echo ' <div class="col-xs-12 '.$style.'">';
+
+			     if(!empty($caption))
+			     {
+			        echo '<h2>'.$caption.'</h2>';
+			     }
+
+			     echo '
+			     '.$text.'
+		         </div>';
+
+				break;
+
+
+			case "menu":
+
+				echo '<div class="panel panel-default">
+			    <div class="panel-heading">'.$caption.'</div>
+				    <div class="panel-body">
+				    '.$text.'
+				    </div>
+			    </div>';
+
+				break;
+
+
+			case "portfolio":
+
+				 echo '
+		         <div class="col-lg-4 col-md-4 col-sm-6">
+		              '.$text.'
+		        </div>';
+
+				break;
+
+
+
+			default:
+
+			    if(!empty($caption))
+			    {
+			        echo '<h2 class="caption">'.$caption.'</h2>';
+			    }
+
+			    echo $text;
+				// code to be executed if n is different from all labels;
+		}
+
+	    return null;
+
+	}
+
     
 }
 
@@ -188,7 +190,7 @@ $NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
 
 
 $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
-		<div style='width:100%;display:block'>
+		<div style='width:100%; display:block'>
 		<table style='width:100%'>
 		<tr><td style='width:2px;vertical-align:middle'>&#8226;&nbsp;</td>
 		<td style='text-align:left;height:10px'>
@@ -196,4 +198,3 @@ $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
 		</td></tr></table></div>
 ";
 
-?>                                  
