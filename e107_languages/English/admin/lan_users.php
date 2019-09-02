@@ -278,6 +278,8 @@ define("USRLAN_254", "Reset all passwords");
 define("USRLAN_255", "Notify User");
 define("USRLAN_256", "Dear");
 
+define("USRLAN_257", "Allow members to delete account?");
+
 // These need review - there are duplicates above - they come from admin/lan_userclass.php and are unconsistent with userclass defines. TODO LANS
 define("UCSLAN_1", "Sending notification email to");
 define("UCSLAN_2", "Updated Privileges");
