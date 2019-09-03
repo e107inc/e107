@@ -2046,37 +2046,15 @@ class e_menu_layout
 			return false;
 		}
 
+
+
 		e107::set('css_enabled',false);
 		e107::set('js_enabled',false);
 
-		$themeFileContent = file_get_contents($file);
 
-		$srch = array('<?php','?>');
-
-		$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "'.$theme.'/" .', str_replace($srch, '', $themeFileContent));
-
-		$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd')."_tablestyle",$themeFileContent); // rename function to avoid conflicts while parsing.
-
-		try
-		{
-		   @eval($themeFileContent);
-		}
-		catch (ParseError $e)
-		{
-			echo "<div class='alert alert-danger'>Couldn't parse theme.php: ". $e->getMessage()." </div>";
-		}
-
-
-	//	@eval($themeFileContent);
-
-		e107::set('css_enabled',true);
-		e107::set('js_enabled',true);
-
-		$head = array();
-		$foot = array();
 
 		// new v2.2.2 HTML layout support.
-		if(empty($LAYOUT) && is_dir($path."layouts"))
+		if(is_dir($path."layouts"))
 		{
 			$lyt = scandir($path."layouts");
 			$LAYOUT = array();
@@ -2098,6 +2076,37 @@ class e_menu_layout
 			}
 
 		}
+		else // prior to v2.2.2
+		{
+
+			$themeFileContent = file_get_contents($file);
+
+			$srch = array('<?php','?>');
+
+			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "'.$theme.'/" .', str_replace($srch, '', $themeFileContent));
+
+			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd')."_tablestyle",$themeFileContent); // rename function to avoid conflicts while parsing.
+
+			$themeFileContent = str_replace("class ".$theme."_theme", "class ".$theme."__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
+
+			try
+			{
+			   @eval($themeFileContent);
+			}
+			catch (ParseError $e)
+			{
+				echo "<div class='alert alert-danger'>Couldn't parse theme.php: ". $e->getMessage()." </div>";
+			}
+		}
+
+
+		e107::set('css_enabled',true);
+		e107::set('js_enabled',true);
+
+		$head = array();
+		$foot = array();
+
+
 
 
 		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))

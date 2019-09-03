@@ -56,6 +56,7 @@ if(!defined('e_NOCACHE'))
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 $pref = e107::getPref();
+$tp = e107::getParser();
 
 if (varset($e107_popup) != 1)
 {
