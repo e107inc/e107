@@ -540,9 +540,13 @@ class news_front
 		$this->addDebug('setNewsFrontMeta (type)',$type);
 	//	$this->addDebug('setNewsFrontMeta (data)',$news);
 
-
 		switch($type)
 		{
+
+			case "all":
+				e107::meta('robots', 'noindex');
+			break;
+
 			case "tag":
 			case "author":
 				if(!defined('e_PAGETITLE'))
@@ -550,6 +554,8 @@ class news_front
 					define('e_PAGETITLE', $this->subAction);
 					e107::meta('og:title', $this->subAction);
 				}
+				e107::meta('robots', 'noindex');
+
 				break;
 
 			case "list":
@@ -559,6 +565,7 @@ class news_front
 					define('e_PAGETITLE', $title );
 					e107::meta('og:title', $title);
 				}
+				e107::meta('robots', 'noindex');
 				break;
 
 			case "day":
@@ -585,6 +592,7 @@ class news_front
 					define('e_PAGETITLE', $title );
 					e107::meta('og:title', $title);
 				}
+				e107::meta('robots', 'noindex');
 				break;
 
 
