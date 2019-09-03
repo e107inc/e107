@@ -1105,7 +1105,7 @@ class xmlClass
 
 			case "core":
 			default:
-				$key = 'core';
+				$key = 'prefs';
 		}
 
 	//	$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
