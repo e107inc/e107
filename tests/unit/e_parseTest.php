@@ -491,12 +491,23 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testToText()
 		{
+			$arr = array(
+				0   => array('html'=>"<h1><a href='#'>My Caption</a></h1>", 'expected' => 'My Caption'),
+				1   => array('html'=>"<div><h1><a href='#'>My Caption</a></h1></div>", 'expected' => 'My Caption'),
+			);
 
+
+			foreach($arr as $var)
+			{
+				$result = $this->tp->toText($var['html']);
+				$this->assertEquals($var['expected'],$result);
 			}
 
+		}
+/*
 		public function testUstrtolower()
 		{
 

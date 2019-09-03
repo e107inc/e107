@@ -15,11 +15,14 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	public function _before()
 	{
-		try {
+		try
+		{
 			$this->scParser = $this->make('e_parse_shortcode');
-		} catch (Exception $e) {
+		}
+		catch (Exception $e) {
 			$this->fail("Couldn't create e_parse_shortcode object");
 		}
+
 		$this->scParser->__construct();
 	}
 
@@ -59,12 +62,32 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	{
 
 	}
-
+*/
 	public function testParseCodes()
 	{
+		$text = '<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >';
 
+		$array = array(
+			'LINK_TEXT' => 'Content',
+		    'LINK_URL' => '#',
+		    'ONCLICK' => '',
+		    'SUB_HEAD' => '',
+		    'SUB_MENU' => '',
+
+		    'ID' => '',
+		    'SUB_ID' => '',
+		    'LINK_CLASS' =>  'e-expandit',
+		    'SUB_CLASS' =>  'e-hideme e-expandme',
+		    'LINK_IMAGE' =>  '',
+		    'LINK_SUB_OVERSIZED' => 'oversized',
+		    'LINK_BADGE' => '',
+		);
+
+		$result = $this->scParser->parseCodes($text, false, $array);
+
+		// var_dump($result);
 	}
-
+/*
 	public function testInitShortcodeClass()
 	{
 
