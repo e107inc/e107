@@ -6,12 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /*
@@ -23,7 +17,9 @@ Notes:
 - generic admin icons used. ADMIN_ICON_EDIT etc.
 - using $caption = "whatever", is unneccessary.
 */
+
 require_once("../../class2.php");
+
 if(!getperms("P") || !e107::isInstalled('rss_menu'))
 { 
 	e107::redirect('admin');
@@ -33,9 +29,6 @@ if(!getperms("P") || !e107::isInstalled('rss_menu'))
 
 e107::includeLan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
-
-
-// XXX THIS IS SET UP FOR LATER USE. 
 
 class rss_admin extends e_admin_dispatcher
 {
@@ -55,7 +48,7 @@ class rss_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/import'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		'main/import'		=> array('caption'=> LAN_IMPORT, 'perm' => 'P'),
 
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 		/*
@@ -79,8 +72,6 @@ class rss_admin extends e_admin_dispatcher
 		}
 	}
 }
-
-
 
 
 //TODO - Use this .. .				
