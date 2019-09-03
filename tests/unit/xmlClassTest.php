@@ -175,6 +175,8 @@
 
 			$xmlArray = $this->_xml->loadXMLfile($file, 'advanced');
 
+
+
 			$arr = array();
 
 			foreach($xmlArray['prefs']['core'] as $val)
@@ -229,7 +231,7 @@
 
 		public function testE107Export()
 		{
-			$ret = $this->_xml->e107Export(array('core'), null, null, array('return'=>true));
+			$ret = $this->_xml->e107Export(array('core'), null, null, null, array('return'=>true));
 
 			$incorrect = '<core name="e_jslib_plugin"><![CDATA[Array]]></core>';
 			$correct = '<core name="e_jslib_plugin"><![CDATA[array ()]]></core>';
