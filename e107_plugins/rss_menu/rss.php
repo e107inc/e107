@@ -62,35 +62,34 @@ else
 // Query handler
 if(!empty($_GET['type']))
 {
-	$content_type = $tp->toDB($_GET['cat']);
-	$rss_type = intval(varset($_GET['type'],0));
-	$topic_id = $tp->toDB($_GET['topic'],'');
-
+	$content_type 	= $tp->toDB($_GET['cat']);
+	$rss_type 		= intval(varset($_GET['type'],0));
+	$topic_id 		= $tp->toDB($_GET['topic'],'');
 }
 elseif(e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 
-	$content_type = $tp->toDB($tmp[0]);
-	$rss_type = intval(varset($tmp[1],0));
-	$topic_id = $tp->toDB($tmp[2],'');
+	$content_type 	= $tp->toDB($tmp[0]);
+	$rss_type		= intval(varset($tmp[1],0));
+	$topic_id 		= $tp->toDB($tmp[2],'');
 }
 else
 {
-	$content_type = false;
-	$topic_id = false;
+	$content_type 	= false;
+	$topic_id 		= false;
 }
 
 
 // List available rss feeds
 if (empty($rss_type))
-{	// Display list of all feeds
-
+{	
+	// Display list of all feeds
 	require_once(HEADERF);
 
 	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
 
-	if(!$sql->select('rss', '*', "`rss_class`=0 AND `rss_limit`>0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
+	if(!$sql->select('rss', '*', "`rss_class` = 0 AND `rss_limit` > 0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
 	{
 		$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_4);
 	}
@@ -114,8 +113,8 @@ while (@ob_end_clean());
 
 // Returning feeds here
 // Conversion table for old urls -------
-$conversion[1] = 'news';
-$conversion[5] = 'comments';
+$conversion[1] 	= 'news';
+$conversion[5] 	= 'comments';
 $conversion[10] = 'bugtracker';
 $conversion[12] = 'download';
 //-------------------------------------
@@ -131,15 +130,17 @@ if(is_numeric($content_type) && isset($conversion[$content_type]) )
 
 $check_topic = ($topic_id ? " AND rss_topicid = '".$topic_id."' " : "");
 
-if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
+if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit > 0 "))
 {	// Check if wildcard present for topic_id
 	$check_topic = ($topic_id ? " AND rss_topicid = '".str_replace($topic_id, "*", $topic_id)."' " : "");
-	if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
+	if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit > 0 "))
 	{
 		require_once(HEADERF);
-		$repl  = array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
-		$message = str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
+		
+		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
+		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
 		$ns->tablerender('', $message);
+		
 		require_once(FOOTERF);
 		exit;
 	}
@@ -338,11 +339,14 @@ class rssCreate
 								$this -> rssItems[$k]['link'] = SITEURLBASE.e_PLUGIN_ABS.$row['link'];
 							}
 						}
+
 						$this -> rssItems[$k]['description'] = $row['description'];
+						
 						if($row['enc_url'])
 						{
 							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].$row['item_id'];
 						}
+						
 						if($row['enc_leng'])
 						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
@@ -358,6 +362,7 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['category_name'] = $row['category_name'];
+						
 						if($row['category_link'])
 						{
 							if(stripos($row['category_link'], 'http') !== FALSE)
@@ -369,6 +374,7 @@ class rssCreate
 								$this -> rssItems[$k]['category_link'] = SITEURLBASE.e_PLUGIN_ABS.$row['category_link'];
 							}
 						}
+						
 						if(!empty($row['datestamp']))
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
