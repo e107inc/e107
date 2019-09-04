@@ -19,77 +19,77 @@ class forum_rss // plugin-folder + '_rss'
 	
 
 		$config[] = array(
-			'name' => "Forum / threads",
+			'name' => "Forum / All forum topics",
 			'url' => '6',
 			'topic_id' => '',
 			'path' => 'forum|threads',
-			'text' => 'this is the rss feed for the forum_threads entries',
+			'text' => 'This feed lists all the forum topics.',
 			'class' => '1',
 			'limit' => '9',
 		);
 
 		//forum threads (new url)
 		$config[] = array(
-			'name' => "Forum / threads",
+			'name' => "Forum / All forum topics",
 			'url' => 'forumthreads',
 			'topic_id' => '',
 		//	'path' => 'forum|threads',
-			'text' => 'this is the rss feed for the forum_threads entries',
+			'text' => 'This feeds lists all the forum topics.',
 			'class' => '0',
 			'limit' => '9',
 		);
 
 		//forum posts (old url)
 		$config[] = array(
-			'name' => "Forum / posts",
+			'name' => "Forum / all forum posts",
 			'url' => '7',
 			'topic_id' => '',
 		//	'path' => 'forum|posts',
-			'text' => 'this is the rss feed for the forum_posts entries',
+			'text' => 'This feed lists all the forum posts.',
 			'class' => '1',
 			'limit' => '9',
 		);
 
 		//forum posts (new url)
 		$config[] = array(
-			'name' => "Forum / posts",
+			'name' => "Forum / all forum posts",
 			'url' => 'forumposts',
 			'topic_id' => '',
 		//	'path' => 'forum|posts',
-			'text' => 'this is the rss feed for the forum_posts entries',
+			'text' => 'This feed lists all the forum posts.',
 			'class' => '0',
 			'limit' => '9',
 		);
 
 		//forum topic (old url)
 		$config[] = array(
-			'name' => "Forum / topic",
+			'name' => "Forum / All posts of a specific forum topic",
 			'url' => '8',
 			'topic_id' => '*',
 		//	'path' => 'forum|topic',
-			'text' => 'this is the rss feed for the forum_topic entries',
+			'text' => 'This feed lists all posts in a specific forum topic.',
 			'class' => '1',
 			'limit' => '9',
 		);
 
 		//forum topic (new url)
 		$config[] = array(
-			'name' => "Forum / topic",
+			'name' => "Forum / All posts of a specific forum topic",
 			'url' => 'forumtopic',
 			'topic_id' => '*',
 		//	'path' => 'forum|topic',
-			'text' => 'this is the rss feed for the forum_topic entries',
+			'text' => 'This feed lists all posts in a specific forum topic.',
 			'class' => '0',
 			'limit' => '9',
 		);
 
 		//forum name (old url)
 		$config[] = array(
-			'name' => "Forum / name",
+			'name' => "Forum / All forums",
 			'url' => '11',
 			'topic_id' => '*',
 		//	'path' => 'forum|name',
-			'text' => 'this is the rss feed for the forum_name entries',
+			'text' => 'This feed lists all the forums',
 			'class' => '1',
 			'limit' => '9',
 		);
@@ -100,7 +100,7 @@ class forum_rss // plugin-folder + '_rss'
 			'url' => 'forumname',
 			'topic_id' => '*',
 		//	'path' => 'forum|name',
-			'text' => 'this is the rss feed for the forum_name entries',
+			'text' => 'This feed lists all the forums',
 			'class' => '0',
 			'limit' => '9',
 		);
