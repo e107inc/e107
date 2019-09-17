@@ -303,7 +303,7 @@ class pageClass
 		$frm = e107::getForm();
 		
 		// retrieve book information. 
-		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
+		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description,chapter_meta_keywords','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
 		{
 			$layout = 'default';
 		}
@@ -423,7 +423,7 @@ class pageClass
 		$frm 			= e107::getForm();
 
 		// retrieve the template to use for this chapter. 
-		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_meta_keywords,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
 		
 		if($this->displayAllMode === true)
 		{
