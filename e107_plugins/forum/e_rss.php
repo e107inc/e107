@@ -367,8 +367,11 @@ class forum_rss // plugin-folder + '_rss'
 					t.thread_name, 
 					t.thread_datestamp, 
 					t.thread_user, 
+					t.thread_user_anon,
 					p.post_entry, 
 					p.post_datestamp, 
+					p.post_user, 
+					p.post_user_anon,
 					u.user_name, 
 					u.user_email, 
 					f.forum_sef 
@@ -414,8 +417,23 @@ class forum_rss // plugin-folder + '_rss'
 						);
 
 				
-				$rss[$i]['author'] 			= $topic['user_name'];
-				$rss[$i]['author_email'] 	= $topic['user_email'];  // must include an email address to be valid.
+				// Check if post was done anonymously 
+				if($topic['thread_user_anon']) // Anonymous user entered specific name
+				{
+					$rss[$i]['author'] 			= $topic['thread_user_anon'];
+					$rss[$i]['author_email'] 	= "anonymous@anonymous.com";
+				}
+				elseif(empty($topic['thread_user_anon']) && $topic['thread_user'] == 0) // No specific username entered, use LAN_ANONYMOUS
+				{
+					$rss[$i]['author'] 			= LAN_ANONYMOUS;
+					$rss[$i]['author_email'] 	= "anonymous@anonymous.com";
+				}
+				else // Post by a user who was logged in
+				{	
+					$rss[$i]['author'] 			= $topic['user_name'];
+					$rss[$i]['author_email'] 	= $topic['user_email'];  // must include an email address to be valid.
+				}
+
 				$rss[$i]['title'] 			= $topic['thread_name'];
 				$rss[$i]['link'] 			= $topic_link;
 				$rss[$i]['description'] 	= $topic['post_entry'];
@@ -425,8 +443,23 @@ class forum_rss // plugin-folder + '_rss'
 				foreach($replies as $value)
 				{
 					
-					$rss[$i]['author'] 			= $value['user_name'];
-					$rss[$i]['author_email'] 	= $value['user_email'];  // must include an email address to be valid.
+					// Check if post was done anonymously 
+					if($value['post_user_anon']) // Anonymous user entered specific name
+					{
+						$rss[$i]['author'] 			= $value['post_user_anon'];
+						$rss[$i]['author_email'] 	= "anonymous@anonymous.com";
+					}
+					elseif(empty($value['post_user_anon']) && $value['post_user'] == 0) // No specific username entered, use LAN_ANONYMOUS
+					{
+						$rss[$i]['author'] 			= LAN_ANONYMOUS;
+						$rss[$i]['author_email'] 	= "anonymous@anonymous.com";
+					}
+					else // Post by a user who was logged in
+					{	
+						$rss[$i]['author'] 			= $value['user_name'];
+						$rss[$i]['author_email'] 	= $value['user_email'];  // must include an email address to be valid.
+					}
+					
 					$rss[$i]['title'] 			= "Re: " . $topic['thread_name'];
 					$rss[$i]['link'] 			= $topic_link;
 					$rss[$i]['description'] 	= $value['post_entry'];
