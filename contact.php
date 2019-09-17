@@ -263,7 +263,7 @@ if(SITECONTACTINFO)
 	}
 	
 	$text = $tp->parseTemplate($CONTACT_INFO, true, vartrue($contact_shortcodes));
-	$ns -> tablerender(LANCONTACT_01, $text,"contact");
+	$ns->tablerender(LANCONTACT_01, $text,"contact-info");
 }
 
 
@@ -277,7 +277,7 @@ if(check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts']
 
 	if(trim($text) != "")
 	{
-		$ns -> tablerender(LANCONTACT_02, $text, "contact");
+		$ns->tablerender(LANCONTACT_02, $text, "contact-form");
 	}
 }
 elseif($active == e_UC_MEMBER && ($pref['sitecontacts'] != e_UC_NOBODY))
@@ -286,7 +286,7 @@ elseif($active == e_UC_MEMBER && ($pref['sitecontacts'] != e_UC_NOBODY))
 	$repl = array("<a class='alert-link' href='".e_SIGNUP."'>","</a>");
 	$message = LANCONTACT_16; // "You must be [registered] and signed-in to use this form.";
 
-	$ns -> tablerender(LANCONTACT_02, "<div class='alert alert-info'>".str_replace($srch, $repl, $message)."</div>", "contact");
+	$ns->tablerender(LANCONTACT_02, "<div class='alert alert-info'>".str_replace($srch, $repl, $message)."</div>", "contact");
 }
 
 
