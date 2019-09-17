@@ -680,14 +680,14 @@
 			// FIXME - level handler!!!
 
 			//	print_a($rankInfo);
-			if(empty($rankInfo))
-			{
-				return null;
-			}
+			
 
 			if($parm == 'badge')
 			{
-				return "<span class='label label-info'>" . $rankInfo['name'] . "</span>";
+				if(!empty($rankInfo['name']))
+				{
+					return "<span class='label label-info'>" . $rankInfo['name'] . "</span>";
+				}
 			}
 
 			if(!$parm)
