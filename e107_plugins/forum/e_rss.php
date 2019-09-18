@@ -525,21 +525,21 @@ class forum_rss // plugin-folder + '_rss'
 				$rss 	= array();
 				$i 		= 0;
 
-				$topic_link = 
-					e107::url(
+				foreach($tmp as $value)
+				{
+
+					$topic_link = 
+						e107::url(
 						'forum', 
 						'topic', 
 						array
 							(
-								'forum_sef' 	=> $topic['forum_sef'],
-								'thread_id' 	=> $topic['thread_id'], 
-								'thread_sef' 	=> eHelper::title2sef($topic['thread_name']), 
+								'forum_sef' 	=> $value['forum_sef'],
+								'thread_id' 	=> $value['thread_id'], 
+								'thread_sef' 	=> eHelper::title2sef($value['thread_name']), 
 							),
 						array('mode' => 'full')
 						);
-
-				foreach($tmp as $value)
-				{
 					
 					// Check if post was done anonymously 
 					if($value['thread_user_anon']) // Anonymous user entered specific name
