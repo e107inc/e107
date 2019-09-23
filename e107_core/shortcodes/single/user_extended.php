@@ -90,7 +90,7 @@
 		{
 		//	$_value = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.value}");
 			$_value = user_extended_shortcode($parms[0].".value");
-
+			//print_a($parms);
 
 			if($_value)
 			{
@@ -99,10 +99,10 @@
 
 		//		$_text = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.text}");
 
-				$_text = user_extended_shortcode($parms[0], ".text");
+				$_text = user_extended_shortcode($parms[0].".text");
 
 
-				$_mid = (isset($sc_style['USER_EXTENDED'][$key]['mid']) ? $sc_style['USER_EXTENDED'][$key]['mid'] : '');
+				$_mid = (isset($sc_style['USER_EXTENDED'][$key]['mid']) ? $sc_style['USER_EXTENDED'][$key]['mid'] : ': ');
 				return $__pre.$_text.$_mid.$_value.$__post;
 			}
 			return false;
