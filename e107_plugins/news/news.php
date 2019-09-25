@@ -1420,7 +1420,14 @@ class news_front
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
 				ORDER BY ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 
-				$noNewsMessage = LAN_NEWS_462;
+				if($this->action == 'month')
+				{
+					$noNewsMessage = LAN_NEWS_462;
+				}
+				else
+				{
+					$noNewsMessage = LAN_NEWS_464;
+				}	
 
 				break;
 
