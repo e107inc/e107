@@ -534,6 +534,9 @@ class faq
 
 		$text .= $FAQ_CAT_END;
 
+		$text .= "</div>
+			</div>";
+
 		$ret['text'] = $text.$this->faq_footer();
 		return $ret;
 
