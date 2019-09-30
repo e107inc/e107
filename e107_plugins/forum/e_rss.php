@@ -4,6 +4,43 @@ if(!defined('e107_INIT'))
 {
 	exit;
 }
+/* NOTES 
+
+USERLIST = 253,254,250,251,0
+
+output of forumthreads feed in v1.0.4
+====
+thread_thread (content of first post in topic) 
+thread_id
+thread_name
+thread_datestamp
+thread_parent  (is the id of the thread that the reply belongs to. For forumthreads, the value is 0.)
+thread_user (creator of topic in 'userid.username' format)
+thread_views
+thread_lastpost (datestamp of last post in topic)
+thread_lastuser (user id of user who posted last in the topic. In v1: 'userid.username') 
+thread_total_replies
+user_name (creator of topic in v1 in 'username' format) 
+user_email (email address of user from user table) 
+
+output of forumposts in v1.0.4
+=====
+parent_name (thread name) 
+thread_thread = (content of post, can be reply) 
+thread_id
+thread_name  (empty for reply) 
+thread_datestamp 
+thread parent (value is 0 if it is the first post in a topic, contains the topic number if it is a reply)
+thread_user (creator of topic in 'userid.username' format)
+thread_views
+thread_lastuser (user id of user who posted last in the topic. In v1: 'userid.username'. Empty for replies) 
+thread_total_replies
+forum_id
+forum_name
+forum_class 
+user_name (creator of topic in v1 in 'username' format) 
+user_email (email address of user from user table) 
+*/
 
 // v2.x Standard 
 class forum_rss // plugin-folder + '_rss'
