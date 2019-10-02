@@ -1165,7 +1165,14 @@ class comment
 		}
 		else
 		{
-			$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+			if(BOOTSTRAP)
+			{
+				$comment = e107::getMessage()->addInfo(COMLAN_328)->render(); 
+			}
+			else
+			{
+				$comment = "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+			}
 		}
 
 		$containerTarget = "comments-container-".$frm->name2id($table);
