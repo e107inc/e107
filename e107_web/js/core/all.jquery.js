@@ -1301,7 +1301,7 @@ $(document).ready(function()
 		
     		$('#'+tmp).raty({
     			path		: path,
-    			half  		: false,
+    			half  		: true,
     			score    	: score,
     			readOnly	: readonly,
     			hints		: hintArray,
