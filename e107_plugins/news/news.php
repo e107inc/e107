@@ -1301,11 +1301,11 @@ class news_front
 			{
 				if(BOOTSTRAP)
 				{
-					return e107::getMessage()->addInfo(COMLAN_328)->render(); 
+					return e107::getMessage()->addInfo(LAN_NEWS_13)->render(); 
 				}
 				else
 				{
-					return "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+					return "<br /><div style='text-align:center'><b>".LAN_NEWS_13."</b></div>";
 				}
 			}
 		}
