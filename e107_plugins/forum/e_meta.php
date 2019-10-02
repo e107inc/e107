@@ -13,7 +13,7 @@ if(e107::getPlugPref('forum', 'poll') != '255')
 	$poll_active = true;
 }
 
-if(e_CURRENT_PLUGIN == "forum" && e107::isInstalled('poll') && $poll_active)
+if(defset('e_CURRENT_PLUGIN') == "forum" && e107::isInstalled('poll') && $poll_active)
 {
 	e107::js("footer-inline",  "
 
