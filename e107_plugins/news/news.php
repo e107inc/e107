@@ -1289,12 +1289,25 @@ class news_front
 			$comment_edit_query = 'comment.news.'.$news['news_id'];
 			$text = e107::getComment()->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], false, 'html');
 
-
 			if(!empty($text))
 			{
 				return $text;
 			}
-
+		}
+		else
+		{	
+			// Only show message if global comments are enabled, but current news item comments are disabled
+			if(e107::getPref('comments_disabled') == 0 && $news['news_allow_comments'] == 1)
+			{
+				if(BOOTSTRAP)
+				{
+					return e107::getMessage()->addInfo(COMLAN_328)->render(); 
+				}
+				else
+				{
+					return "<br /><div style='text-align:center'><b>".COMLAN_328."</b></div>";
+				}
+			}
 		}
 
 		$this->addDebug("Failed", "renderComments()");
