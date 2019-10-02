@@ -885,7 +885,7 @@
 				 * AND if this post is the last post in the thread */
 				if($this->thread->threadInfo['thread_active'] && empty($this->postInfo['thread_start']) )
 				{
-					$text .= "<li class='text-right float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+					$text .= "<li class='text-right float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='".LAN_JSCONFIRM."' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 				}
 			}
 
@@ -919,7 +919,7 @@
 				//	if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id']))
 				if(empty($this->postInfo['thread_start']))
 				{
-					$text .= "<li class='text-right float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+					$text .= "<li class='text-right float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-confirm='".LAN_JSCONFIRM."'  data-forum-post='" . $this->postInfo['post_id'] . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 				}
 
 				if($type == 'thread')
