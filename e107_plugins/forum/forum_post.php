@@ -1220,7 +1220,7 @@ class forum_post_handler
 				case 'nt':
 
 					$threadInfo['thread_sticky']    = (MODERATOR ? (int)$_POST['threadtype'] : 0);
-					$threadInfo['thread_name']      = $_POST['subject'];
+					$threadInfo['thread_name']      = e107::getParser()->toDB($_POST['subject']);
 					$threadInfo['thread_forum_id']  = $this->id;
 					$threadInfo['thread_active']    = 1;
 					$threadInfo['thread_datestamp'] = $time;
@@ -1247,8 +1247,6 @@ class forum_post_handler
 						$this->data['thread_id'] = $newThreadId;
 					//	$this->data['thread_sef'] = $postResult['threadsef'];
 						$this->data['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
-
-
 
 						if($_POST['email_notify'])
 						{

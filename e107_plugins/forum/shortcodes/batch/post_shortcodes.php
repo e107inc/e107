@@ -504,7 +504,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 					$chk = ($pref['notify_on'] ? "checked='checked'" : '');
 				}
 			}
-			return "<br /><input type='checkbox' name='notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_FORUM_3040."</span>";
+			return "<br /><input type='checkbox' name='email_notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_FORUM_3040."</span>";
 		}
 
 		return '';
