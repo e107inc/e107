@@ -339,10 +339,12 @@ function step4()
 			$coreConfig -> remove($k);
 		}
 	}
+
+	// Remove old prefs (no longer used in v2)
 	$forumPrefList = array(
 		'reported_post_email',
-		'email_notify',
-		'email_notify_on'
+		//'email_notify',
+		//'email_notify_on'
 	);
 
 	foreach ($forumPrefList as $_fp)
