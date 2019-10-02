@@ -480,14 +480,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_forum_post_email_notify()
 	{
-
-		
 		global $threadInfo, $action, $eaction;
 
 		$pref = e107::getPlugPref('forum');
 
 		if($eaction == true) { return ; }
-		if (vartrue($pref['notify']) && $action == 'nt' && USER)
+
+		if (vartrue($pref['notify']) && $this->var['action'] == 'nt' && USER)
 		{
 			if(isset($_POST['fpreview']))
 			{
@@ -507,6 +506,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			}
 			return "<br /><input type='checkbox' name='notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_FORUM_3040."</span>";
 		}
+
 		return '';
 	}
 
