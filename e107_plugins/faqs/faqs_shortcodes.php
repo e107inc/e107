@@ -199,6 +199,12 @@ class faqs_shortcodes extends e_shortcode
 		}	
 	}
 	
+	/* {FAQ_CATEGORY_ID} */ 
+	function sc_faq_category_id($parm = '')
+	{
+	  return $this->var['faq_parent'];
+	}
+
 	function sc_faq_category($parm = '')
 	{
 	//	$tp = e107::getParser();
