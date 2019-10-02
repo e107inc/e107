@@ -175,6 +175,12 @@ class comments_admin_ui extends e_admin_ui
 		{
 			$sql = e107::getDb();
 			
+			// Update 'user_comments' column in #user table 
+			if(!$sql->update('user', 'user_comments = user_comments - 1 WHERE user_id='.$deleted_data['comment_author_id']))
+			{
+				e107::getMessage()->addError(LAN_DELETED_FAILED)->render();
+			} 
+
 			switch ($deleted_data['comment_type'])
 			{
 				case '0' :
@@ -182,6 +188,8 @@ class comments_admin_ui extends e_admin_ui
 					$sql->update('news', 'news_comment_total = CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED) WHERE news_id='.$deleted_data['comment_item_id']);
 				break;
 			}
+
+			
 		}
 		
 
