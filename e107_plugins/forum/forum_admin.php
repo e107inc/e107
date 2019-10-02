@@ -177,7 +177,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'track'		            => array('title' => FORLAN_200, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_201),
 			'trackemail'		    => array('title' => FORLAN_202, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_203),
 			'redirect'	            => array('title' => FORLAN_112, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_113),
-			'reported_post_email'	=> array('title' => FORLAN_116, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_122),
+			//'reported_post_email'	=> array('title' => FORLAN_116, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_122),
 			'tooltip'	            => array('title' => FORLAN_126, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_127),
 			'ranks'                 => array('title' => FORLAN_63, 'type'=>'boolean', 'data' => 'int','help'=>''),
 			'tiplength'	            => array('title' => FORLAN_128, 'type'=>'number', 'data' => 'int','help'=>FORLAN_129),
@@ -1043,8 +1043,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		public function renderHelp()
 		{
-			return array('caption'=>LAN_HELP, 'text'=>FORLAN_189);
-
+			$help_text = str_replace("[br]", "<br />", FORLAN_189);
+			$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>"), $help_text); 
+			
+			return array('caption' => LAN_HELP, 'text' => $help_text);
 		}
 	}
 
