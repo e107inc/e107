@@ -2575,10 +2575,6 @@ class e107forum
 
 	}
 
-
-
-
-
 }
 
 
@@ -2604,6 +2600,11 @@ function img_path($filename)
 		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename))
 		{
 			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename)) ? THEME_ABS.'forum/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/'.$filename;
+		}
+		// #3948 - added for consistency with plugin folder structure. Also check THEME/forum/images/icons/ folder 
+		elseif(file_exists(THEME.'forum/images/icons/'.$filename) || is_readable(THEME.'forum/images/icons/'.e_LANGUAGE.'_'.$filename))
+		{
+			$image = ($ML && is_readable(THEME.'forum/images/icons/'.e_LANGUAGE.'_'.$filename)) ? THEME_ABS.'forum/images/icons/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/images/icons/'.$filename;
 		}
 		else
 		{
@@ -2634,8 +2635,3 @@ function img_path($filename)
 
 	return $image;
 }
-
-
-
-
-?>
