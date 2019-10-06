@@ -1711,7 +1711,7 @@ class e_form
 		$hiddenValue = null;
 		$useUnix     = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
 		$id          = $this->name2id($name);
-		$classes     = array('date' => 'e-date', 'datetime' => 'e-datetime');
+		$classes     = array('date' => 'tbox e-date', 'datetime' => 'tbox e-datetime');
 
 		if($type == 'datetime' && !varset($options['format']))
 		{
