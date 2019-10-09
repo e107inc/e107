@@ -474,6 +474,9 @@ class users_admin_ui extends e_admin_ui
 
 			e107::getCache()->clear('online_menu_member_newest');
 			e107::getCache()->clear('online_menu_member_total');
+
+			// Trigger admin_user_deleted
+			e107::getEvent()->trigger('admin_user_deleted', $deletedData);
 		}
 
 	}
