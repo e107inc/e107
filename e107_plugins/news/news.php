@@ -595,9 +595,13 @@ class news_front
 				e107::meta('robots', 'noindex');
 				break;
 
+			case "news":
+
+			break;
+
 
 			default:
-				//
+				e107::meta('robots', 'noindex');
 		}
 
 
