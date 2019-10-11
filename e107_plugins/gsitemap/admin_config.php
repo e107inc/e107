@@ -49,47 +49,47 @@ class gsitemap
 
 		if(isset($_POST['edit']))
 		{
-			$this -> editSme();
+			$this->editSme();
 		}
 
 		if(isset($_POST['delete']))
 		{
-			$this -> deleteSme();
+			$this->deleteSme();
 		}
 
 		if(isset($_POST['add_link']))
 		{
-			$this -> addLink();
+			$this->addLink();
 		}
 
 		if(isset($_POST['import_links']))
 		{
-			$this -> importLink();
+			$this->importLink();
 		}
 
 
-		if($this -> message)
+		if($this->message)
 		{
-			$mes->addSuccess($this -> message);
-			// echo "<br /><div style='text-align:center'><b>".$this -> message."</b></div><br />";
+			$mes->addSuccess($this->message);
+			// echo "<br /><div style='text-align:center'><b>".$this->message."</b></div><br />";
 		}
 
 
 		if(e_QUERY == "new")
 		{
-			$this -> doForm();
+			$this->doForm();
 		}
 		else if(e_QUERY == "import")
 		{
-			$this -> importSme();
+			$this->importSme();
 		}
 		else if(e_QUERY == "instructions")
 		{
-			$this -> instructions();
+			$this->instructions();
 		}
 		else if(!vartrue($_POST['edit']))
 		{
-			$this -> showList();
+			$this->showList();
 		}
 	}
 
@@ -97,15 +97,15 @@ class gsitemap
 	function showList()
 	{
 		
-		$mes = e107::getMessage();
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$tp = e107::getParser();
-		$frm = e107::getForm();
+		$mes 	= e107::getMessage();
+		$sql 	= e107::getDb();
+		$ns 	= e107::getRender();
+		$tp 	= e107::getParser();
+		$frm 	= e107::getForm();
 		
 		$gen = new convert;
 		
-		$count = $sql -> select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
+		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
 		if (!$count)
 		{
@@ -117,7 +117,7 @@ class gsitemap
 			
 			$mes->addInfo($text);
 			
-			$ns -> tablerender(GSLAN_24, $mes->render());
+			$ns->tablerender(GSLAN_24, $mes->render());
 			return;
 		}
 		else
@@ -148,7 +148,7 @@ class gsitemap
 				<tbody>
 			";
 
-			$glArray = $sql -> db_getList();
+			$glArray = $sql->db_getList();
 			foreach($glArray as $row2)
 			{
 				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
@@ -175,7 +175,7 @@ class gsitemap
 
 		$text .= "</tbody></table>\n</form>";
 		
-		$ns -> tablerender(GSLAN_24, $mes->render(). $text);
+		$ns->tablerender(GSLAN_24, $mes->render(). $text);
 	}
 
 
@@ -186,13 +186,13 @@ class gsitemap
 		
 		$e_idt = array_keys($_POST['edit']);
 
-		if($sql -> select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
+		if($sql->select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
 		{
-			$foo = $sql -> db_Fetch();
-			$foo['gsitemap_name'] = $tp -> toFORM($foo['gsitemap_name']);
-			$foo['gsitemap_url'] = $tp -> toFORM($foo['gsitemap_url']);
+			$foo = $sql->fetch();
+			$foo['gsitemap_name'] = $tp->toForm($foo['gsitemap_name']);
+			$foo['gsitemap_url'] = $tp->toForm($foo['gsitemap_url']);
 
-			$this -> doForm($foo);
+			$this->doForm($foo);
 		}
 	}
 
@@ -200,13 +200,13 @@ class gsitemap
 
 	function doForm($editArray=FALSE)
 	{
-		$frm = e107::getForm();
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$mes = e107::getMessage();
+		$frm 	= e107::getForm();
+		$sql 	= e107::getDb();
+		$ns 	= e107::getRender();
+		$mes 	= e107::getMessage();
 		
 		
-		$count = $sql -> select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
+		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
 		
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
@@ -281,7 +281,7 @@ class gsitemap
 		</form>
 		";
 
-		$ns -> tablerender(GSLAN_29, $mes->render(). $text);
+		$ns->tablerender(GSLAN_29, $mes->render(). $text);
 	}
 
 
@@ -305,14 +305,14 @@ class gsitemap
 
 		if(!empty($_POST['gsitemap_id']))
 		{
-			$this -> message = $sql->update("gsitemap", $gmap) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$this->message = $sql->update("gsitemap", $gmap) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 			$log->logArrayAll('GSMAP_04',$gmap);
 		}
 		else
 		{
 			$gmap['gsitemap_img'] = $_POST['gsitemap_img'];
 			$gmap['gsitemap_cat'] = $_POST['gsitemap_cat'];
-			$this -> message = ($sql->insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$this->message = ($sql->insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
 			$log->logArrayAll('GSMAP_03',$gmap);
 		}
 	}
@@ -324,7 +324,7 @@ class gsitemap
 		$sql = e107::getDb();
 		
 		$d_idt = array_keys($_POST['delete']);
-		$this -> message = ($sql -> db_Delete("gsitemap", "gsitemap_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
+		$this->message = ($sql->db_Delete("gsitemap", "gsitemap_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
 		$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
 	}
 
@@ -335,14 +335,14 @@ class gsitemap
 	{
 		global $PLUGINS_DIRECTORY;
 		
-		$ns = e107::getRender();
-		$sql = e107::getDb();
-		$sql2 = e107::getDb('sql2');
-		$frm = e107::getForm();
-		$mes = e107::getMessage();
+		$ns 	= e107::getRender();
+		$sql 	= e107::getDb();
+		//$sql2 	= e107::getDb('sql2'); not used?
+		$frm 	= e107::getForm();
+		$mes 	= e107::getMessage();
 		
 		$existing = array(); 
-		$sql -> select("gsitemap", "*");  
+		$sql->select("gsitemap", "*");  
 		while($row = $sql->fetch())
 		{
 			$existing[] = $row['gsitemap_name'];	
@@ -352,8 +352,8 @@ class gsitemap
 		$importArray = array();
 
 		/* sitelinks ... */
-		$sql -> select("links", "*", "ORDER BY link_order ASC", "no-where");
-		$nfArray = $sql -> db_getList();
+		$sql->select("links", "*", "ORDER BY link_order ASC", "no-where");
+		$nfArray = $sql->db_getList();
 		foreach($nfArray as $row)
 		{
 			if(!in_array($row['link_name'], $existing))
@@ -468,7 +468,7 @@ class gsitemap
 		</form>
 		";
 
-		$ns -> tablerender(GSLAN_7, $mes->render(). $text);
+		$ns->tablerender(GSLAN_7, $mes->render(). $text);
 	}
 
 
@@ -482,11 +482,14 @@ class gsitemap
 		foreach($_POST['importid'] as $import)
 		{
 			list($name, $url, $type) = explode("^", $import);
-			$name = $tp -> toDB($name);
-			$url = $tp -> toDB($url);
-			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
+			
+			$name 	= $tp->toDB($name);
+			$url 	= $tp->toDB($url);
+			
+			$sql->insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
 		}
-		$this -> message = count($_POST['importid'])." link(s) imported.";
+
+		$this->message = count($_POST['importid'])." link(s) imported.";
 		$log->log_event('GSMAP_01',$this->message, E_LOG_INFORMATIVE,'');
 	}
 
@@ -523,7 +526,7 @@ class gsitemap
 		<ul>
 		";
 
-		$ns -> tablerender(GSLAN_32, $mes->render(). $text);
+		$ns->tablerender(GSLAN_32, $mes->render(). $text);
 	}
 
 }
