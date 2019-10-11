@@ -27,6 +27,8 @@ class gsitemap
 {
 
 	var $message;
+	var $error; 
+	var $errortext;  
     var $freq_list = array();
 
 	function gsitemap()
@@ -72,6 +74,12 @@ class gsitemap
 		{
 			$mes->addSuccess($this->message);
 			// echo "<br /><div style='text-align:center'><b>".$this->message."</b></div><br />";
+		}
+
+		if($this->error)
+		{
+			$mes->addError($this->error); 
+			$mes->addDebug($this->errortext);
 		}
 
 
@@ -290,7 +298,7 @@ class gsitemap
 	{
 		$log = e107::getAdminLog();
 		$sql = e107::getDb();
-		$tp = e107::getParser();
+		$tp  = e107::getParser();
 		
 		$gmap = array(
 			'gsitemap_name' 	=> $tp->toDB($_POST['gsitemap_name']),
@@ -300,23 +308,47 @@ class gsitemap
 			'gsitemap_freq' 	=> $_POST['gsitemap_freq'],
 			'gsitemap_order' 	=> $_POST['gsitemap_order'],
 			'gsitemap_active' 	=> $_POST['gsitemap_active'],
-			'WHERE'             => ' gsitemap_id= '.intval($_POST['gsitemap_id'])
 			);
 
+		// Check if we are updating an existing record
 		if(!empty($_POST['gsitemap_id']))
 		{
-			$this->message = $sql->update("gsitemap", $gmap) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-			$log->logArrayAll('GSMAP_04',$gmap);
+			// Add where statement to update query 
+			$gmap['WHERE'] = "gsitemap_id= ".intval($_POST['gsitemap_id']); 
+			
+			if($sql->update("gsitemap", $gmap))
+			{
+				$this->message = LAN_UPDATED; 	
+				
+				// Log update
+				$log->logArrayAll('GSMAP_04', $gmap);
+			}
+			else
+			{
+				$this->errortext = $sql->getLastErrorText(); 
+				$this->error = LAN_UPDATED_FAILED;
+			}
 		}
+		// Inserting new record
 		else
 		{
-			$gmap['gsitemap_img'] = $_POST['gsitemap_img'];
-			$gmap['gsitemap_cat'] = $_POST['gsitemap_cat'];
-			$this->message = ($sql->insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
-			$log->logArrayAll('GSMAP_03',$gmap);
+			$gmap['gsitemap_img'] = vartrue($_POST['gsitemap_img'], '');
+			$gmap['gsitemap_cat'] = vartrue($_POST['gsitemap_cat'], '');
+			
+			if($sql->insert('gsitemap', $gmap))
+			{
+				$this->message = LAN_CREATED;
+
+				// Log insert
+				$log->logArrayAll('GSMAP_03',$gmap);
+			}
+			else
+			{
+				$this->errortext = $sql->getLastErrorText(); 
+				$this->error = LAN_CREATED_FAILED;
+			}
 		}
 	}
-
 
 	function deleteSme()
 	{
@@ -324,11 +356,18 @@ class gsitemap
 		$sql = e107::getDb();
 		
 		$d_idt = array_keys($_POST['delete']);
-		$this->message = ($sql->db_Delete("gsitemap", "gsitemap_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
-		$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
+
+		if($sql->delete("gsitemap", "gsitemap_id='".$d_idt[0]."'"))
+		{
+			$this->message = LAN_DELETED;
+			$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
+		}
+		else
+		{
+			$this->errortext = $sql->getLastErrorText();
+			$this->errPr = LAN_DELETED_FAILED;
+		}
 	}
-
-
 
 	// Import site links
 	function importSme()
