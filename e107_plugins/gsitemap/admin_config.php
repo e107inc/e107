@@ -365,7 +365,7 @@ class gsitemap
 		else
 		{
 			$this->errortext = $sql->getLastErrorText();
-			$this->errPr = LAN_DELETED_FAILED;
+			$this->error = LAN_DELETED_FAILED;
 		}
 	}
 
