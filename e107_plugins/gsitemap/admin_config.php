@@ -31,11 +31,11 @@ class gsitemap
 	var $errortext;  
     var $freq_list = array();
 
-	function gsitemap()
+	//function gsitemap()
+	function __construct()
 	{
-		/* constructor */
-		
 		$mes = e107::getMessage();
+
 		
 
 		$this->freq_list = array
