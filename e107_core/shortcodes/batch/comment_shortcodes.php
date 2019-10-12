@@ -7,11 +7,6 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -121,9 +116,9 @@ class comment_shortcodes extends e_shortcode
 		//	$url = $tp->thumbUrl($this->var['user_image']);
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
 		//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");
-		
-		// Comment form - no user_id, assume current user
-		if(!$this->var['user_id'])
+
+		// Posting a new comment (check that it is not an existing comment by anonymous user) - #3813 & 3829
+		if($this->var['comment_author_id'] != '0' && USERID)
 		{
 			$userdata = e107::user(USERID); 
 			$this->var = array_merge($this->var, $userdata); 
@@ -351,7 +346,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			return COMLAN_0;
 		}
-
+		
 		return $tp->toHTML($this->var['comment_comment'], TRUE, FALSE, $this->var['user_id']);
 	}
 
