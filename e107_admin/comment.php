@@ -71,7 +71,7 @@ class comments_admin_ui extends e_admin_ui
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> LAN_ID,			'type' => null,			'width' =>'5%', 'forced'=> TRUE),
+			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
             'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'status center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
@@ -176,10 +176,16 @@ class comments_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			
 			// Update 'user_comments' column in #user table 
-			if(!$sql->update('user', 'user_comments = user_comments - 1 WHERE user_id='.$deleted_data['comment_author_id']))
+			if($deleted_data['comment_author_id'] != '0')
 			{
-				e107::getMessage()->addError(LAN_DELETED_FAILED)->render();
-			} 
+				if(!$sql->update('user', 'user_comments = user_comments - 1 WHERE user_id='.$deleted_data['comment_author_id']))
+				{
+					$commentcount_update_error = $sql->getLastErrorText();
+					
+					e107::getMessage()->addDebug($commentcount_update_error);
+					e107::getMessage()->addError(LAN_DELETED_FAILED)->render();
+				} 
+			}
 
 			switch ($deleted_data['comment_type'])
 			{
