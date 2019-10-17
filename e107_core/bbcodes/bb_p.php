@@ -60,7 +60,8 @@ class bb_p extends e_bb_base
 
 		$parms = eHelper::scParams($parm);
 				
-		$class = " ".e107::getBB()->getClass('p'); // consistent classes across all themes. 
+		$class = vartrue($parms['class']) ? ' class="'.eHelper::secureClassAttr($parms['class']).' ' : ' class="';
+		$class .= e107::getBB()->getClass('p').'"'; // consistent classes across all themes.
 		
 		$id = vartrue($parms['id']) ? ' id="'.eHelper::secureIdAttr($parms['id']).'"' : '';
 		$style = vartrue($parms['style']) ? ' style="'.eHelper::secureStyleAttr($parms['style']).'"' : '';
