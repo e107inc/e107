@@ -60,8 +60,8 @@ if (!defined('e107_INIT')) { exit; }
 		$topic = "";
 	}
 	$path='';
-	$class_list = "0,251,252,253";
-    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".$class_list.") ORDER BY d.download_datestamp DESC LIMIT 0,".$this -> limit;
+	//$class_list = "0,251,252,253";
+    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".$this -> limit;
     $sql -> db_Select_gen($query);
 
 	//	$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,".$this -> limit);
