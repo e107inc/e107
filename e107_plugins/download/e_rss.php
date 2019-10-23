@@ -78,11 +78,8 @@ class download_rss // plugin-folder + '_rss'
 	    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".$limit;
 
 	    $sql->gen($query);
-	   	$error = $sql->getLastErrorText();
-
-		$tmp = $sql->db_getList();
+	 	$tmp = $sql->db_getList();
 				
-
 		foreach($tmp as $value)
 		{
 			if($value['download_author'])
