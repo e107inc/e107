@@ -501,22 +501,7 @@ class forum_shortcodes extends e_shortcode
 		$lastpost       = $forum->threadGetLastpost($lastpost_thread); //FIXME TODO inefficient to have SQL query here.
 		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-		
-		// Registered user 
-		if(!empty($this->var['user_name']))
-		{
-			$lastpost_username = "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-		}
-		// Anonymous but with a custom name entered
-		elseif(empty($this->var['user_name']) && $this->var['forum_lastpost_user_anon'])
-		{
-			$lastpost_username = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
-		}
-		// Anonymous with no name entered
-		else
-		{
-			$lastpost_username = LAN_ANONYMOUS; 
-		}
+		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
 
 
 		$format = !empty($parm['date-format']) ? $parm['date-format'] : 'relative';
