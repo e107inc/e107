@@ -1037,4 +1037,4 @@ class rss
 		}
 	}
 } // End class rss
-?>
+?>*/
