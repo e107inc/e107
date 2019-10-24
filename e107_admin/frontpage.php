@@ -36,12 +36,16 @@ require_once ('auth.php');
 
 $mes = e107::getMessage();
 
-$frontPref = e107::pref('core');              		 	// Get prefs
+$frontPref = e107::pref('core'); // Get prefs
 
 // Get list of possible options for front page
-$front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0); // TODO Move to e107_plugins/news
 
-$front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28, 'diz'=>'index.php');
+	// Welcome message is 'hardcoded' intentionally 
+	$front_page['wmessage'] = array(
+		'page' 	=> 'index.php', 
+		'title' => ADLAN_28, 
+		'diz'	=>'index.php'
+	); 
 
 if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move to e107_plugins/page
 {
