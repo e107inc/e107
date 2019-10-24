@@ -125,16 +125,14 @@ class rss_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-
-
 		foreach($_POST['importid'] as $key=>$value)
 		{
 			$rssVals = array();
-			$rssVals['rss_topicid']		= $tp -> toDB(varset($_POST['topic_id'][$key], ''));
-			$rssVals['rss_url']			= $tp -> toDB(varset($_POST['url'][$key], ''));
-			$rssVals['rss_path']		= $tp -> toDB(varset($_POST['path'][$key], ''));
-			$rssVals['rss_name']		= $tp -> toDB(varset($_POST['name'][$key], ''));
-			$rssVals['rss_text']		= $tp -> toDB(varset($_POST['text'][$key], ''));
+			$rssVals['rss_topicid']		= $tp->toDB(varset($_POST['topic_id'][$key], ''));
+			$rssVals['rss_url']			= $tp->toDB(varset($_POST['url'][$key], ''));
+			$rssVals['rss_path']		= $tp->toDB(varset($_POST['path'][$key], ''));
+			$rssVals['rss_name']		= $tp->toDB(varset($_POST['name'][$key], ''));
+			$rssVals['rss_text']		= $tp->toDB(varset($_POST['text'][$key], ''));
 			$rssVals['rss_datestamp']	= time();
 			$rssVals['rss_class']		= intval(varset($_POST['class'][$key], '0'));
 			$rssVals['rss_limit']		= intval(varset($_POST['limit'][$key], '0'));
@@ -151,12 +149,11 @@ class rss_ui extends e_admin_ui
 	{
 		// Import - put up the list of possible feeds to import
 
-
-			$sql = e107::getDb();
-			$ns = e107::getRender();
-			$mes = e107::getMessage();
-			$tp = e107::getParser();
-			$frm = e107::getForm();
+		$sql 	= e107::getDb();
+		$ns 	= e107::getRender();
+		$mes 	= e107::getMessage();
+		$tp 	= e107::getParser();
+		$frm 	= e107::getForm();
 
 		global $i,$rss_shortcodes, $feed, $pref;
 
@@ -313,13 +310,13 @@ class rss_ui extends e_admin_ui
 			$text = $RSS_ADMIN_IMPORT_HEADER;
 			foreach($feedlist as $k=>$feed)
 			{
-				$feed['topic_id']		= $tp -> toDB($feed['topic_id']);
-				$feed['url']			= $tp -> toDB($feed['url']);
+				$feed['topic_id'] 	= $tp->toDB($feed['topic_id']);
+				$feed['url']		= $tp->toDB($feed['url']);
 
 				// Check if feed is not yet present
 				if(!$sql->select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
 				{
-					$render=TRUE;
+					$render = TRUE;
 					$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_TABLE, FALSE, $rss_shortcodes);
 					$i++;
 				}
@@ -397,7 +394,7 @@ class rss_form_ui extends e_admin_form_ui
 
 
 /// ------------------------------- Legacy Code -------------------------------
-
+/*
 
 
 
@@ -477,6 +474,7 @@ else
 {
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
 }*/
+/*
 
 $frm = e107::getForm();
 
@@ -842,7 +840,7 @@ class rss
 			}
 		}
 */
-		// Comments
+	/*	// Comments
 		$feed['name']		= LAN_COMMENTS;
 		$feed['url']		= 'comments';
 		$feed['topic_id']	= '';
