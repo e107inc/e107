@@ -177,7 +177,7 @@ if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
 else
 {
 	require_once(HEADERF);
-	$ns->tablerender(RSS_LAN_ERROR_0, RSS_LAN_ERROR_1);
+	$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_1);
 	require_once(FOOTERF);
 	exit;
 }
