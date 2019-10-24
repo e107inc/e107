@@ -620,6 +620,12 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$tabs = array();
 
+		// Check for selected email address sources
+		if(!$this->mailHandlers)
+		{
+			$text = "<span class='label label-warning'>".LAN_MAILOUT_259."</span>";
+		}
+	
 		foreach($this->mailHandlers as $key => $m)
 		{
 			
