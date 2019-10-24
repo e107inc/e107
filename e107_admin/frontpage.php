@@ -10,20 +10,13 @@
  *
 */
 
-/**
- *	e107 Front page administration
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- */
-
 if(!empty($_POST) && !isset($_POST['e-token']))
 {
 	$_POST['e-token'] = '';
 }
 require_once ('../class2.php');
-if(! getperms('G'))
+
+if(!getperms('G'))
 {
 	e107::redirect('admin');
 	exit();
@@ -600,7 +593,7 @@ class frontpage
 					if($path == $multipage['page'])
 					{
 						//			  return $front_value['title'].":".$path;
-						return $front_value['title'].":".$multipage['title'];
+						return $front_value['title'].": ".$multipage['title'];
 					}
 				}
 			}
