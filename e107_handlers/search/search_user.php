@@ -12,8 +12,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+// MOVED TO user/e_search.php
 
-//TODO Move to e107_plugins/user/e_search.php and upgrade to v2.x spec.
+/* 
+
 // advanced 
 $advanced_where = "";
 if (isset($_GET['time']) && is_numeric($_GET['time'])) {

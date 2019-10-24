@@ -583,7 +583,7 @@ class search extends e_shortcode
 			}
 		}
 		
-		
+		/* BELOW CODE HAS BEEN MOVED TO e107_plugins/user/e_search.php)
 		if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
 		{
 			if ($search_info['users'] = $this->search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
@@ -594,6 +594,7 @@ class search extends e_shortcode
 				unset($search_info['users']);
 			}
 		}
+		*/
 		
 	/*
 		if ($search_info['pages'] = $this->search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
