@@ -47,26 +47,16 @@ $frontPref = e107::pref('core'); // Get prefs
 		'diz'	=>'index.php'
 	); 
 
-if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) // TODO Move to e107_plugins/page
-{
-	$front_page['custom']['title'] = FRTLAN_30;
-	while($row = $sql->db_Fetch())
-	{
-		$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
-	}
-}
-
 // Now let any plugins add to the options - must append to the $front_page array as above
 
-
-	//v2.x spec. ----------
+	//v2.x specification
 	$new = e107::getAddonConfig('e_frontpage');
 	foreach($new as $k=>$v)
 	{
 		$front_page[$k] = $v;
 	}
 
-	// v1.x spec.---------------
+	// v1.x specification
 	if(!empty($frontPref['e_frontpage_list']))
 	{
 		foreach($frontPref['e_frontpage_list'] as $val)
