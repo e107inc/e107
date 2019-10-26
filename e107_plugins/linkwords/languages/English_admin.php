@@ -8,7 +8,6 @@
  *
  * Linkwords plugin - language file (only needed for admin)
  *
- * $Id*
  */
 
 //define("LWLAN_1", "Field(s) left blank.");
@@ -55,7 +54,6 @@ define("LWLAN_41", "User-entered body text (e.g. forum)");
 // Reserve numbers for further context strings
 
 
-
 define("LWLAN_50", "Tooltip");
 define("LWLAN_51", "Inactive");
 define("LWLAN_52", "Linkword only");
@@ -72,14 +70,6 @@ define("LWLAN_62", "Tooltip ID (LW ID)");
 define("LWLAN_63", "Positive integers only");
 define("LWLAN_64", "Suppress link on current page");
 define("LWLAN_65", "When checked, suppresses clickable link if points to current page");
-
-
-// Installation-related
-//define("LWLANINS_1", "Linkwords");
-//define("LWLANINS_2", "This plugin links specified words with a defined link and/or tooltip");
-//define("LWLANINS_3", "Configure LinkWords");
-//define("LWLANINS_4", "To configure please click on the link in the plugins section of the admin front page");
-//define("LWLANINS_5", "Upgrade complete");
 
 
 // Help text
@@ -108,9 +98,3 @@ define("LAN_LW_HELP_02","Define the words which become clickable links, or which
   <b><u>Activate?</u></b><br />
   Defines which options are active.
   ");
-
-
-
-
-
-?>
