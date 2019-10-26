@@ -6,7 +6,8 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  * 
- * Chatbox e_search addon 
+ * Download e_search addon 
+ * 
  */
  
 
@@ -46,11 +47,34 @@ class download_search extends e_search // include plugin-folder in the name.
 								'author'=> array('type'	=> 'author',		'text' => LAN_SEARCH_61)
 							),
 							
-			'return_fields'	=> array('d.download_id', 'd.download_sef','d.download_category', 'c.download_category_id', 'd.download_name', 'd.download_description', 'd.download_author', 'd.download_author_website', 'd.download_datestamp', 'd.download_class', 'c.download_category_name', 'c.download_category_class'),
-			'search_fields'	=> array('d.download_name'=> '1.2', 'd.download_url' => '0.9', 'd.download_description'=>'0.6', 'd.download_author'=>'0.6', 'd.download_author_website'=>'0.4'), // fields and weights.
+			'return_fields'	=> array(
+					'd.download_id', 
+					'd.download_sef',
+					'd.download_category', 
+					'c.download_category_id', 
+					'd.download_name', 
+					'd.download_description', 
+					'd.download_author', 
+					'd.download_author_website', 
+					'd.download_datestamp', 
+					'd.download_class', 
+					'c.download_category_name', 
+					'c.download_category_class'
+			),
+
+			// fields and weights.
+			'search_fields'	=> array(
+				'd.download_name'			=> '1.2', 
+				'd.download_url' 			=> '0.9', 
+				'd.download_description'	=> '0.6', 
+				'd.download_author'			=> '0.6', 
+				'd.download_author_website'	=> '0.4'
+			), 
 			
 			'order'			=> array('download_datestamp' => 'DESC'),
-			'refpage'		=> e_PLUGIN_ABS.'download/download.php'
+			
+			//'refpage'		=> 'download.php'
+			'refpage'		=> e107::url('download', 'index'), 
 		);
 
 
