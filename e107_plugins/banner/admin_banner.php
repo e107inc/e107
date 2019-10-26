@@ -6,19 +6,9 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Banner Administration
+ * Banner Administration - Handles the display and sequencing of banners on web pages, including counting impressions
  *
 */
-
-/**
- *	e107 Banner management plugin
- *
- *	Handles the display and sequencing of banners on web pages, including counting impressions
- *
- *	@package	e107_plugins
- *	@subpackage	banner
- *
- */
 
 require_once('../../class2.php');
 if (!getperms('D') && !getperms('P'))
@@ -59,8 +49,6 @@ e107::js('footer-inline','
 
 
 ');
-
-
 
 
 class banner_admin extends e_admin_dispatcher
@@ -385,7 +373,12 @@ class banner_ui extends e_admin_ui
 			
 			//	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.BNRLAN_36, $mes->render() . $text);
 		}
-	
+
+		public function renderHelp()
+		{
+			$help_text = str_replace("[br]", "<br />", BNRLAN_HELP_02);
+			return array('caption' => LAN_HELP, 'text' => $help_text);
+		}
 			
 }
 				
