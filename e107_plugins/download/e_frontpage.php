@@ -16,7 +16,7 @@ class download_frontpage // include plugin-folder in the name.
 	function config()
 	{
 
-		$frontPage = array('page' => '{e_PLUGIN}download/download.php', 'title' => LAN_PLUGIN_DOWNLOAD_NAME);
+		$frontPage = array('page' => e107::url('download', 'index'), 'title' => LAN_PLUGIN_DOWNLOAD_NAME);
 
 		return $frontPage;
 	}
