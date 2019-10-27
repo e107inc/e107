@@ -927,7 +927,7 @@ class download
 			$user 		= USER ? USERNAME : LAN_GUEST;
 			$ip 		= e107::getIPHandler()->getIP(false); 
 		
-			// Replaced with e_notify 
+			// Replaced by e_notify 
 			/*
 			if ($pref['download_email']) 
 			{    // this needs to be moved into the NOTIFY, with an event.

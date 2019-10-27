@@ -8,8 +8,6 @@
  *
  * Download Plugin Administration UI
  *
- * $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.8/e107_plugins/release/includes/admin.php $
- * $Id: admin.php 12212 2011-05-11 22:25:02Z e107coders $
 */
 
 if (!defined('e107_INIT')){ exit; } 
@@ -26,21 +24,27 @@ class plugin_download_admin extends e_admin_dispatcher
 	 */
 	protected $modes = array (
 		'main'		=> array (
-					'controller' => 'download_main_admin_ui',
-					'path' => null,
-					'ui' => 'download_main_admin_form_ui',
-					'uipath' => null
+			'controller' 	=> 'download_main_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'download_main_admin_form_ui',
+			'uipath' 		=> null
 		),
 		'cat'		=> array (
-					'controller' 	=> 'download_cat_ui',
-					'path' 			=> null,
-					'ui' 			=> 'download_cat_form_ui',
-					'uipath' 		=> null
+			'controller' 	=> 'download_cat_ui',
+			'path' 			=> null,
+			'ui' 			=> 'download_cat_form_ui',
+			'uipath' 		=> null
 		),
 		'mirror'	=> array(
 			'controller' 	=> 'download_mirror_ui',
 			'path' 			=> null,
 			'ui' 			=> 'download_mirror_form_ui',
+			'uipath' 		=> null
+		),
+		'broken'	=> array(
+			'controller' 	=> 'download_broken_ui',
+			'path' 			=> null,
+			'ui' 			=> 'download_broken_form_ui',
 			'uipath' 		=> null
 		),	
 	);
@@ -70,6 +74,10 @@ class plugin_download_admin extends e_admin_dispatcher
 		'mirror/create'		=> array('caption'=> DOWLAN_143, 'perm' => 'P'),
 		
 		'other2' 		=> array('divider'=> true),
+
+		'broken/list' 		=> array('caption'=> "Broken dowloads", 'perm' => 'P'),
+
+		'other3' 		=> array('divider'=> true),
 			
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 	//	'main/maint' 		=> array('caption'=> DOWLAN_165, 'perm' => 'P'),
@@ -2580,4 +2588,71 @@ class download_mirror_ui extends e_admin_ui
 class download_mirror_form_ui extends e_admin_form_ui
 {
 
+}
+
+class download_broken_ui extends e_admin_ui
+{
+
+	protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
+	protected $pluginName		= 'broken_download';
+	protected $table			= 'generic';
+	protected $pid				= 'gen_id';
+	protected $perPage 			= 10;
+	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='Broken Download' ORDER BY g.gen_datestamp DESC";
+
+	protected $fields 		= array (  
+		'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+        'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+        'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+        //'gen_intdata' 		=> array ( 'title' =>  LAN_ID, 'type' => 'number', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+        'gen_ip' 				=> array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+        'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'text', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', ),
+        'gen_user_id' 		=> array ( 'title' => DOWLAN_199, 'type' => 'user', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
+        'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+	);
+
+	protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata', 'gen_user_id');
+
+	protected $batchOptions = array();
+
+	// optional
+	public function init()
+	{
+	
+	}
+
+	public function afterDelete($data)
+	{
+		
+	}
+
+	public function renderHelp()
+	{
+		$help_text = str_replace("[br]", "<br />", DOWLAN_HELP_11);
+		$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>"), $help_text); 
+		
+		return array('caption' => LAN_HELP, 'text' => $help_text);
+	}
+
+}
+
+
+
+class download_broken_form_ui extends e_admin_form_ui
+{
+
+	function options($att, $value, $id, $attributes)
+	{
+		if($attributes['mode'] == 'read')
+		{
+			$download_id = $this->getController()->getListModel()->get('gen_intdata');
+			
+			$text = "<div class='btn-group'>";
+			$text .= "<a class='btn btn-default' href='".e_SELF."?mode=main&action=edit&id=". $download_id."'>".ADMIN_VIEW_ICON."</a>";
+			$text .= $this->renderValue('options', $value, array('readParms' => 'edit=0'));
+			$text .= "</div>";
+
+			return $text;
+		}
+	}
 }		
