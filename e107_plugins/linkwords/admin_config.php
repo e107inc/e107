@@ -72,25 +72,24 @@ class linkwords_ui extends e_admin_ui
 	protected $fields 		= array (  
 		'checkboxes'             =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
     	'linkword_id'           =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_word'         =>   array ( 'title' => LWLAN_21, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_word'         =>   array ( 'title' => LWLAN_21, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_11, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_12, 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 	    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
-	    'linkword_tooltip'      =>   array ( 'title' => LWLAN_50, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_limit'       =>   array ( 'title' => "Max. links/tips", 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LWLAN_63, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
-	    'linkword_tip_id'       =>   array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LWLAN_63, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
-	    'linkword_newwindow'    =>   array ( 'title' => LWLAN_55, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => '', 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+	    'linkword_tooltip'      =>   array ( 'title' => LWLAN_50, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_13, 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_limit'       =>   array ( 'title' => "Max. links/tips", 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
+	    'linkword_tip_id'       =>   array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LAN_LW_HELP_16, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
+	    'linkword_newwindow'    =>   array ( 'title' => LWLAN_55, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_17, 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 	);
 
 	protected $fieldpref = array();
 
 	protected $prefs = array(
-		'lw_context_visibility'	=> array('title'=> LWLAN_26, 'type'=>'checkboxes', 'help'=>''),
-		'lw_ajax_enable'		=> array('title'=> LWLAN_59, 'type'=>'boolean', 'data' => 'string','help'=>''),
-		'lw_notsamepage'		=> array('title'=> LWLAN_64, 'type'=>'boolean', 'data' => 'string','help'=>LWLAN_65),
-		'linkword_omit_pages'	=> array('title'=> LWLAN_28, 'type'=>'textarea', 'data' => 'string','help'=>''),
-	//	'lw_max_per_word'	    => array('title'=> "Maximum links/tips per word", 'type'=>'number', 'data' => 'string','help'=>'If the same word is found multiple times in a piece of text.'),
-		'lw_custom_class'	    => array('title'=> "Custom CSS Class", 'type'=>'text', 'writeParms'=>array('placeholder'=> LAN_OPTIONAL ), 'data' => 'string','help'=>'Will add this class to all generated links.'),
+		'lw_context_visibility'	=> array('title' => LWLAN_26, 'type' => 'checkboxes', 'help' => LAN_LW_HELP_01),
+		'lw_ajax_enable'		=> array('title' => LWLAN_59, 'type' => 'boolean', 	'data' => 'string', 'help' => LAN_LW_HELP_02),
+		'lw_notsamepage'		=> array('title' => LWLAN_64, 'type' => 'boolean', 	'data' => 'string', 'help' => LAN_LW_HELP_03),
+		'linkword_omit_pages'	=> array('title' => LWLAN_28, 'type' => 'textarea',	'data' => 'string', 'help' => LAN_LW_HELP_04),
+		'lw_custom_class'	    => array('title' => LWLAN_66, 'type' => 'text', 	'writeParms' => array('placeholder' => LAN_OPTIONAL), 'data' => 'string', 'help' => LAN_LW_HELP_05),
 	);
 
 	public function init()
@@ -121,6 +120,14 @@ class linkwords_ui extends e_admin_ui
 		if(!empty($_POST['etrigger_save']))
 		{
 			e107::getCache()->clear_sys(LW_CACHE_TAG);
+		}
+	}
+
+	public function renderHelp()
+	{
+		if($this->getAction() == 'create')
+		{
+			return array('caption' => LAN_HELP, 'text' => LAN_LW_HELP_10);	
 		}
 	}
 
