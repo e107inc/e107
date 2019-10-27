@@ -16,7 +16,7 @@ $e_sub_cat = 'message';
 require_once("auth.php");
 $gen = new convert;
 
-$messageTypes = array("Broken Download", "Dev Team Message");
+$messageTypes = array(/*"Broken Download",*/ "Dev Team Message");
 $queryString = "";
 foreach($messageTypes as $types) {
 	$queryString .= " gen_type='$types' OR";

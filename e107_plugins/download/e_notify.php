@@ -39,7 +39,13 @@ class download_notify extends notify // plugin-folder + '_notify'
 			$message = LAN_DL_NT_02;
 			$message .= " <a href=".$download_url.">".$data['download_name']."</a><br>"; 
 			$message .= str_replace("[x]", $data['user'], LAN_DL_NT_03)."<br>";
-			$message .= $data['report_add']; 
+			$message .= $data['report_add']."<br><br>"; 
+			
+			$admin_url = SITEURLBASE.e_PLUGIN_ABS."download/admin_download.php?mode=broken&action=list"; 
+			$find	 = array('[', ']');
+			$replace = array('<a href="'.$admin_url.'">', '</a>'); 
+
+			$message .= str_replace($find, $replace, LAN_DL_NT_04); 
 		}
 		
 		$this->send('user_download_brokendownload_reported', LAN_DL_NT_01, $message);

@@ -467,7 +467,7 @@ class admin_shortcodes
 
 					$oldconfigs['e-upload'][0] = array('icon'=>E_16_UPLOADS, 'title'=>ADLAN_LAT_7, 'url'=> e_ADMIN."upload.php", 'total'=>$active_uploads);
 				
-					$messageTypes = array('Broken Download', 'Dev Team Message');
+					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
 					$queryString = '';
 					foreach($messageTypes as $types)
 					{
