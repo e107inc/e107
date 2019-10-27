@@ -2229,11 +2229,15 @@ $columnInfo = array(
 		            		      <tr>
 		               		      <td>".DOWLAN_151."</td>
 		               		      <td>". r_userclass("download_reportbroken", $pref['download_reportbroken'])."</td>
-		            		      </tr>
+		            		      </tr>";
+
+		            		      //moved to e_notify
+		            		      /* 
 		            		      <tr>
 		               		      <td>".DOWLAN_150."</td>
 		               		      <td>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked'/>" : "<input type='checkbox' name='download_email' value='1'/>")."</td>
-		            		      </tr>
+		            		      </tr>*/
+		    $text .= " 
 		            		   </table>
 		            		</div>
 				   		</div>
