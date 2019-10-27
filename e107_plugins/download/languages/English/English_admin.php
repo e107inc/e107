@@ -20,6 +20,7 @@ define("LAN_DL_SUBSUB_CAT",            "Show sub-sub-categories");
 define("LAN_DL_SUBSUB_CAT_INFO",       "Checking this will show the sub-sub-categories on the main download page");
 define("LAN_DL_SUBSUB_COUNT",          "Combine category counts");
 define("LAN_DL_SUBSUB_COUNT_INFO",     "Include sub-sub-category counts in sub-category counts");
+define("LAN_DL_BROKENDOWNLOADSREPORTS", "Broken downloads reports");
 
 define("DOWLAN_1",   "Download added to database.");
 define("DOWLAN_2",   "Download updated in database.");
