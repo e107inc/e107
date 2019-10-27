@@ -75,7 +75,7 @@ class plugin_download_admin extends e_admin_dispatcher
 		
 		'other2' 		=> array('divider'=> true),
 
-		'broken/list' 		=> array('caption'=> "Broken dowloads", 'perm' => 'P'),
+		'broken/list' 		=> array('caption'=> LAN_DL_BROKENDOWNLOADSREPORTS, 'perm' => 'P'),
 
 		'other3' 		=> array('divider'=> true),
 			
