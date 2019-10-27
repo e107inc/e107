@@ -1105,7 +1105,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			if($attributes['mode'] == 'read')
 			{
 
-				$topic = $this->getController()->getListModel()->get('gen_chardata');
+				$topic = $this->getController()->getListModel()->get('gen_ip');
 				$topidId = $this->getController()->getListModel()->get('gen_intdata');
 				$text = "<div class='btn-group'>";
 				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='Topic: ".$topic."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".ADMIN_VIEW_ICON."</a>";
