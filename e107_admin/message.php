@@ -8,6 +8,8 @@
  *
  */
 
+// FILE IS DEPRECATED - UP FOR REMOVAL IN THE FUTURE
+
 require_once("../class2.php");
 
 e107::coreLan('message', true);
@@ -15,8 +17,17 @@ e107::coreLan('message', true);
 $e_sub_cat = 'message';
 require_once("auth.php");
 $gen = new convert;
+$mes = e107::getMessage();
 
-$messageTypes = array(/*"Broken Download",*/ "Dev Team Message");
+// DO NOT TRANSLATE - warning for deprecated file. 
+e107::getMessage()->addWarning("This area is no longer in use and will be removed in the future. For reported broken downloads, see the Downloads Admin Area.");
+
+$ns->tablerender("Received Messages", $mes->render());
+
+
+/*
+
+$messageTypes = array("Broken Download", "Dev Team Message");
 $queryString = "";
 foreach($messageTypes as $types) {
 	$queryString .= " gen_type='$types' OR";
@@ -97,7 +108,5 @@ else
 }
 $ns->tablerender(MESSLAN_1, $text);
 
+*/
 require_once("footer.php");
-
-
-?>
