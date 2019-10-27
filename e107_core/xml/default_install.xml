@@ -63,7 +63,6 @@
 		<core name="displayrendertime">0</core>
 		<core name="displaysql">0</core>
 		<core name="displaythemeinfo">1</core>
-		<core name="download_email">0</core>
 		<core name="e_admin_list"><![CDATA[array (
   'social' => 'social',
 )]]></core>

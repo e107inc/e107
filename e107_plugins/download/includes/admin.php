@@ -1143,7 +1143,7 @@ $columnInfo = array(
 
 			$expected_params = array(
 				'download_php', 'download_view', 'download_sort', 'download_order',
-				'mirror_order', 'recent_download_days', 'agree_flag', 'download_email',
+				'mirror_order', 'recent_download_days', 'agree_flag',
 				'agree_text', 'download_denied', 'download_reportbroken',
 				'download_security_mode', 'download_security_expression', 'download_security_link_expiry'
 			);
