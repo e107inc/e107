@@ -43,7 +43,20 @@ class download_setup
 
 	function upgrade_required()
 	{
-			return false;
+		// e107::getPlugPref('download','download_mail') OR e107::getPref('download_mail')
+		//return true;
+
+
+		// Check e_notify
+		$list = e107::getConfig()->get('e_notify_list'); 
+			
+		if(!empty($list) && !in_array('download', $list))
+		{
+			return true;
+			//e107::getPlug()->clearCache()->buildAddonPrefLists();	
+		}	
+
+
 	}
 
 
@@ -64,6 +77,15 @@ class download_setup
 		 * 			$this->upgrade_from_1();
 		 * 		}
 		 */
+
+		// Check e_notify
+		$list = e107::getConfig()->get('e_notify_list'); 
+			
+		if(!empty($list) && !in_array('download', $list))
+		{
+			e107::getPlug()->clearCache()->buildAddonPrefLists();	
+		}	
+		
 
 		$config = e107::getPref('url_config');
 
