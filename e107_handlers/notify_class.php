@@ -42,7 +42,7 @@ class notify
 
 		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
-			e107::getMessage()->addDebug('Notify is disabled!');
+			e107::getMessage()->addDebug('All notifications are inactive!');
 			return false;
 		}
 
