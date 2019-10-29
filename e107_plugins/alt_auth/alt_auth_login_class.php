@@ -209,7 +209,7 @@ class alt_login
 				$userMethods->userClassUpdate($db_vals, 'userall');
 				$newUser = array();
 				$newUser['data'] = $db_vals;
-				$userMethods->addNonDefaulted($newUser);
+				$userMethods->addNonDefaulted($newUser['data']); 
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 				
 				$newID = $aa_sql->insert('user',$newUser);
