@@ -2594,21 +2594,21 @@ class download_broken_ui extends e_admin_ui
 {
 
 	protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
-	protected $pluginName		= 'broken_download';
+	protected $pluginName		= 'download';
 	protected $table			= 'generic';
 	protected $pid				= 'gen_id';
 	protected $perPage 			= 10;
-	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='Broken Download' ORDER BY g.gen_datestamp DESC";
+	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='Broken Download'";
 	protected $listOrder		= 'gen_datestamp ASC';
 
 	protected $fields 		= array (  
 		'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-        'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+        'gen_id' 				=> array ( 'title' => LAN_ID, 'type' => 'number', 'nolist' => true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
         'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
         //'gen_intdata' 		=> array ( 'title' =>  LAN_ID, 'type' => 'number', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
         'gen_ip' 				=> array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
         'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'text', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', ),
-        'gen_user_id' 		=> array ( 'title' => DOWLAN_199, 'type' => 'user', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
+        'gen_user_id' 		=> array ( 'title' => DOWLAN_199, 'type' => 'user', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => 'idField=gen_user_id', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
         'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'edit=0'  ),
 	);
 
@@ -2622,7 +2622,7 @@ class download_broken_ui extends e_admin_ui
 	
 	}
 
-	public function afterDelete($data)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		
 	}
