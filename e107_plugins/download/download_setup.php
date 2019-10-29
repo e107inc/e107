@@ -8,11 +8,6 @@
 *
 * Custom download install/uninstall/update routines
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_setup.php,v $
-* $Revision$
-* $Date$
-* $Author$
-*
 */
 
 class download_setup
@@ -43,19 +38,12 @@ class download_setup
 
 	function upgrade_required()
 	{
-		// e107::getPlugPref('download','download_mail') OR e107::getPref('download_mail')
-		//return true;
 
-
-		// Check e_notify
-		$list = e107::getConfig()->get('e_notify_list'); 
-			
-		if(!empty($list) && !in_array('download', $list))
+		// Check if e_dashboard and e_notify addons are loaded 
+		if(!e107::getAddon('download','e_notify') || !e107::getAddon('download','e_dashboard'))
 		{
 			return true;
-			//e107::getPlug()->clearCache()->buildAddonPrefLists();	
-		}	
-
+		}
 
 	}
 
@@ -78,13 +66,11 @@ class download_setup
 		 * 		}
 		 */
 
-		// Check e_notify
-		$list = e107::getConfig()->get('e_notify_list'); 
-			
-		if(!empty($list) && !in_array('download', $list))
+		// Make sure e_notify and e_dashboard addons are loaded
+		if(!e107::getAddon('download','e_notify') || !e107::getAddon('download','e_dashboard'))
 		{
 			e107::getPlug()->clearCache()->buildAddonPrefLists();	
-		}	
+		}
 		
 
 		$config = e107::getPref('url_config');
