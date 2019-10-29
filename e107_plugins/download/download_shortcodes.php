@@ -749,7 +749,7 @@ class download_shortcodes extends e_shortcode
 
 	function sc_download_view_filesize()
 	{
-      return ($this->var['download_filesize']) ? eHelper::parseMemorySize($this->var['download_filesize']) : "";
+      return ($this->var['download_filesize']) ? eHelper::parseMemorySize($this->var['download_filesize'], 0) : "";
 	}
    
 	function sc_download_view_rating()
