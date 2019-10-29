@@ -1110,7 +1110,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 				$text = "<div class='btn-group'>";
 				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='Topic: ".$topic."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".ADMIN_VIEW_ICON."</a>";
 
-				$text .= $this->renderValue('options',$value,array('readParms'=>'edit=0'));
+				$text .= $this->renderValue('options',$value,array('readParms'=>'edit=0'), $id);
 				$text .= "</div>";
 				return $text;
 			}
