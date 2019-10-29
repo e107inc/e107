@@ -904,10 +904,16 @@ class download
 		$ns 	= e107::getRender();
 		$frm 	= e107::getForm();
 		$pref 	= e107::getPref();
+		$mes 	= e107::getMessage();
 						
 		$dlrow = $this->rows;
-		
-
+	
+		// Check if user is allowed to make reports, and if user is allowed to view the actual download item
+		if(!check_class($dlrow['download_class']) || !check_class($pref['download_reportbroken']))
+		{	
+			$mes->addError(LAN_dl_79);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $mes->render(), 'download-report', true);
+		}
 
 		$download_name 	= $tp->toDB($dlrow['download_name']);
 		$download_sef 	= $dlrow['download_sef'];
@@ -961,7 +967,6 @@ class download
 		}
 		else 
 		{
-
 			$text = $frm->breadcrumb($breadcrumb);
 
 
