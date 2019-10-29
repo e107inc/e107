@@ -2599,6 +2599,7 @@ class download_broken_ui extends e_admin_ui
 	protected $pid				= 'gen_id';
 	protected $perPage 			= 10;
 	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='Broken Download' ORDER BY g.gen_datestamp DESC";
+	protected $listOrder		= 'gen_datestamp ASC';
 
 	protected $fields 		= array (  
 		'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
@@ -2649,7 +2650,7 @@ class download_broken_form_ui extends e_admin_form_ui
 			
 			$text = "<div class='btn-group'>";
 			$text .= "<a class='btn btn-default' href='".e_SELF."?mode=main&action=edit&id=". $download_id."'>".ADMIN_VIEW_ICON."</a>";
-			$text .= $this->renderValue('options', $value, array('readParms' => 'edit=0'));
+			$text .= $this->renderValue('options', $value, array('readParms' => 'edit=0'), $id);
 			$text .= "</div>";
 
 			return $text;
