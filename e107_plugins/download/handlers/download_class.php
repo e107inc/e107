@@ -377,6 +377,8 @@ class download
 
 		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
 		$metaDescription                = $tp->toHTML($row['download_description'],true);
+		$metaDescription 				= trim(preg_replace('/\s+/', ' ', $metaDescription)); // remove line-breaks
+		$metaDescription 				= $tp->text_truncate($metaDescription, 290); // + '...'
 
 		e107::meta('description',       $tp->toText($metaDescription));
 		e107::meta('keywords',          $row['download_keywords']);
