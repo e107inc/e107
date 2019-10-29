@@ -76,7 +76,7 @@ class contact_shortcodes extends e_shortcode
 	function sc_contact_imagecode($parm='') 
 	{
 		//return e107::getSecureImg()->r_image()."<div>".e107::getSecureImg()->renderInput()."</div>"; 
-		return "<input type='hidden' name='rand_num' value='".e107::getSecureImg()->random_number."' />".e107::getSecureImg()->r_image();
+		return e107::getSecureImg()->r_image();
 	}
 	
 	function sc_contact_imagecode_label($parm='')
