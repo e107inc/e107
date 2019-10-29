@@ -103,7 +103,7 @@ class alt_login
 
 			if (MAGIC_QUOTES_GPC == FALSE)
 			{
-				$username = mysql_real_escape_string($username);
+				$username = e107::getParser()->toDB($username);
 			}
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$username = substr($username, 0, e107::getPref('loginname_maxlength'));
