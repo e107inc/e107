@@ -773,7 +773,7 @@ class page_admin_ui extends e_admin_ui
 			
 			$this->fields['page_template']['writeParms'] = $this->templates;			
 			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', true, false); 
-			$this->fields['menu_name']['writeParms'] 	= array('pattern'=>'^[a-z0-9-]*', 'autocomplete' => 'disabled');
+			$this->fields['menu_name']['writeParms'] 	= array('pattern'=>'^[a-z0-9-]*');
 			
 			
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
