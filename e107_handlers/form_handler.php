@@ -6794,7 +6794,7 @@ var_dump($select_options);*/
 
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
-				<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
+				<div style='display:none'><input type='text' name='lastname_74758209201093747' autocomplete='off' id='_no_autocomplete_' /></div>
 				<div id='admin-ui-edit'>
 				".vartrue($form['header'])."
 				".$this->token()."
