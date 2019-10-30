@@ -964,9 +964,10 @@ class download_shortcodes extends e_shortcode
 			
 			$url = e107::url('download', 'item', $dlrowrow);
 
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
-			
-	    	return "<a class='e-tip' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_PREVIOUS."</a>\n";
+			$icon    = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
+			$class   = empty($parm['class']) ? 'e-tip' : $parm['class'];
+
+	    	return "<a class='".$class."' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_PREVIOUS."</a>\n";
    		
       	//	return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
       	}
@@ -986,14 +987,15 @@ class download_shortcodes extends e_shortcode
 		$dlrow_id = intval($this->var['download_id']);
 	  
 		if ($sql->select("download", "*", "download_category='".intval($this->var['download_category_id'])."' AND download_id > {$dlrow_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC LIMIT 1")) 
-      	{
-      		$dlrowrow = $sql->fetch();
+      {
+         $dlrowrow = $sql->fetch();
 			extract($dlrowrow);
 			$url = 	$url = e107::url('download', 'item', $dlrowrow);
 
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
+			$icon    = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
+         $class   = empty($parm['class']) ? 'e-tip' : $parm['class'];
 
-			return "<a class='e-tip' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_NEXT." ".$icon."</a>\n";
+			return "<a class='".$class."' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_NEXT." ".$icon."</a>\n";
    		 
       //		return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
       	}
@@ -1011,10 +1013,10 @@ class download_shortcodes extends e_shortcode
    		$url = e107::url('download', 'category', $this->var);
 		// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']
 		
-		$title = "Back to [x]";
+		$title    = "Back to [x]";
+		$class   = empty($parm['class']) ? 'e-tip' : $parm['class'];
 		
-		
-		return "<a class='e-tip' title=\"".e107::getParser()->lanVars($title,array('x'=>$this->var['download_category_name']))."\" href='".$url."'>".LAN_BACK."</a>";
+		return "<a class='".$class."' title=\"".e107::getParser()->lanVars($title,array('x'=>$this->var['download_category_name']))."\" href='".$url."'>".LAN_BACK."</a>";
    }
    
    function sc_download_back_to_category_list()
