@@ -142,26 +142,31 @@ class download_shortcodes extends e_shortcode
 	}
    
 	// Sub-Category ********************************************************************************
-   function sc_download_cat_sub_name() 
-   {
-	  $tp = e107::getParser();
+   	function sc_download_cat_sub_name($parm = '') 
+   	{
+    	$tp = e107::getParser();
 
-	  $class = 'category-name';
-	  $class .= $this->isNewDownload($this->dlsubrow['d_last']) ? ' new' : '';
+		$class = 'category-name';
+		$class .= $this->isNewDownload($this->dlsubrow['d_last']) ? ' new' : '';
+
+      	if($parm == 'raw') 
+      	{
+      		return $tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE');
+      	}
 	  
-      if ($this->dlsubrow['d_count'])
-      {
+		if ($this->dlsubrow['d_count'])
+      	{
 
-		$url = e107::url('download', 'category', $this->dlsubrow);
-	    return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+			$url = e107::url('download', 'category', $this->dlsubrow);
+			return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
   
-  //       return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
-      }
-      else
-      {
-         return $tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE');
-      }
-   }
+  			// return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+      	}
+      	else
+      	{
+        	return $tp->toHTML($this->dlsubrow['download_category_name'], FALSE, 'TITLE');
+      	}
+	}
 
    function sc_download_cat_sub_description() 
    {
@@ -198,24 +203,30 @@ class download_shortcodes extends e_shortcode
 	// Sub-Sub-Category ****************************************************************************
 	
 	
-   function sc_download_cat_subsub_name() 
-   {
-   	
-	// isNewDownload
+	function sc_download_cat_subsub_name($parm = '') 
+   	{
+   		$tp = e107::getParser();
+
+		// isNewDownload
 		$class = 'category-name';
 		$class .= $this->isNewDownload($this->dlsubsubrow['d_last']) ? ' new' : '';
 	
-	  $tp = e107::getParser();
-      if ($this->dlsubsubrow['d_count'])
-      {
-         $url = e107::url('download', 'category', $this->dlsubsubrow); // /list/category', array('id'=>$this->dlsubsubrow['download_category_id'], 'name'=> vartrue($this->dlsubsubrow['download_category_sef'],'--sef-not-set--')));
+	  	if($parm == 'raw') 
+      	{
+      		return $tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE');
+      	}
+
+      	if ($this->dlsubsubrow['d_count'])
+      	{
+        	$url = e107::url('download', 'category', $this->dlsubsubrow); 
+        	// /list/category', array('id'=>$this->dlsubsubrow['download_category_id'], 'name'=> vartrue($this->dlsubsubrow['download_category_sef'],'--sef-not-set--')));
 			// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubsubrow['download_category_id']
-         return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
-      }
-      else
-      {
-         return $tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE');
-      }
+         	return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+        }
+      	else
+      	{
+         	return $tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE');
+      	}
    }
    
    function sc_download_cat_subsub_description() 
