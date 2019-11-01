@@ -71,7 +71,7 @@ define("LWLAN_59", "Enable Ajax functionality");
 define("LWLAN_64", "Suppress link on current page");
 //define("LWLAN_65", "When checked, suppresses clickable link if points to current page");
 define("LWLAN_66", "Custom CSS class");
-
+define("LWLAN_67", "Max. links/tips");
 
 
 // Help texts
