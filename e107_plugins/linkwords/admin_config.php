@@ -53,7 +53,7 @@ class linkwords_admin extends e_admin_dispatcher
 
 class linkwords_ui extends e_admin_ui
 {
-	protected $pluginTitle		= 'Linkwords';
+	protected $pluginTitle		= LAN_PLUGIN_LINKWORDS_NAME;
 	protected $pluginName		= 'linkwords';
 	//	protected $eventName		= 'linkwords-linkwords'; // remove comment to enable event triggers in admin.
 	protected $table			= 'linkwords';
@@ -76,7 +76,7 @@ class linkwords_ui extends e_admin_ui
 	    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_12, 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 	    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
 	    'linkword_tooltip'      =>   array ( 'title' => LWLAN_50, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_13, 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_limit'       =>   array ( 'title' => "Max. links/tips", 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
+	    'linkword_limit'       =>   array ( 'title' => LWLAN_67, 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
 	    'linkword_tip_id'       =>   array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LAN_LW_HELP_16, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
 	    'linkword_newwindow'    =>   array ( 'title' => LWLAN_55, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_17, 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
