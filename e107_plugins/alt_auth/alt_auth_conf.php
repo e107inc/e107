@@ -173,7 +173,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none,e107')."
 <div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
