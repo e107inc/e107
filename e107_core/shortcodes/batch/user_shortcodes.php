@@ -588,6 +588,7 @@ function sc_user_email($parm='')
 		  e107::setRegistry('userjump', $userjump);
 		}
 		
+		$class  = empty($parms[2]['class']) ? 'e-tip' : $parms[2]['class'];
 
 	
 		if($parm == 'prev')
