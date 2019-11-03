@@ -560,9 +560,14 @@ function sc_user_email($parm='')
 
 	
 	
-	
-	function sc_user_jump_link($parm) 
+	/**
+	* @example {USER_JUMP_LINK=prev|class=btn-secondary} 
+	*/
+	function sc_user_jump_link($parm = null) 
 	{
+		$parms = eHelper::scDualParams($parm);
+
+		//print_a($parms);
 		global $full_perms;
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -591,11 +596,11 @@ function sc_user_email($parm='')
 		$class  = empty($parms[2]['class']) ? 'e-tip' : $parms[2]['class'];
 
 	
-		if($parm == 'prev')
+		if($parms[1] == 'prev')
 		{
 		
 			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
-	    	return isset($userjump['prev']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
+	    	return isset($userjump['prev']['id']) ? "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
 		
 			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
 		
@@ -603,7 +608,7 @@ function sc_user_email($parm='')
 		else
 		{
 			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
-			return isset($userjump['next']['id']) ? "<a class='e-tip' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
+			return isset($userjump['next']['id']) ? "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
 			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 		}
 	}
