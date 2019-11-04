@@ -255,9 +255,18 @@ $override = array();
 if(isset($_POST['previous_steps']))
 {
 	$tmp = unserialize(base64_decode($_POST['previous_steps']));
-	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING);
+
+	// Save unfiltered admin password (#4004) - " are transformed into &#34;
+	$tmpadminpass1 = $tmp['admin']['password']; 
+	
+	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING); 
+
+	// Restore unfiltered admin password
+	$tmp['admin']['password'] = $tmpadminpass1;
+
 	$override = (isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
+	unset($tmpadminpass1);
 }
 
 //$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
@@ -379,8 +388,17 @@ class e_install
 		if(isset($_POST['previous_steps']))
 		{
 			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
+
+			// Save unfiltered admin password (#4004) - " are transformed into &#34;
+			$tmpadminpass2 = $this->previous_steps['admin']['password']; 
+			
 			$this->previous_steps = $tp->filter($this->previous_steps);
+
+			// Restore unfiltered admin password
+			$this->previous_steps['admin']['password'] = $tmpadminpass2;
+
 			unset($_POST['previous_steps']);
+			unset($tmpadminpass2);
 		}
 		else
 		{
