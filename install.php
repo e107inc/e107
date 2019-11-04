@@ -187,6 +187,12 @@ if(version_compare($php_version, MIN_PHP_VERSION, "<"))
 	die_fatal_error('A minimum version of PHP '.MIN_PHP_VERSION.' is required');   // no  LAN DEF translation accepted by lower versions <5.3
 }
 
+// Check needed to continue (extension check in stage 4 is too late)
+if(!class_exists('DOMDocument', false))
+{
+	die_fatal_error("You need to install the DOM extension to install e107."); // NO LAN 
+}
+
 //  Ensure that '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 if($inc_path[0] != ".")
