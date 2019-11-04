@@ -348,13 +348,23 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if (!empty($_POST['updatesettings']))
 		{
-			$ueVals = $_POST['ue'];
-
+			// Do not filter these values (saving)
+			$ueVals   	= $_POST['ue'];
+			$passtemp1 	= $_POST['password1'];
+			$passtemp2  = $_POST['password2'];
+			
+			// Filter the others
 			$_POST = e107::getParser()->filter($_POST);
+			
+			// Pass the original values back (restoring)
+			$_POST['ue'] 		= $ueVals;
+			$_POST['password1']	= $passtemp1;
+			$_POST['password2']	= $passtemp2; 
 
-			$_POST['ue'] = $ueVals;
-
+			// Unset temporary vars
 			unset($ueVals);
+			unset($passtemp1);
+			unset($passtemp2);
 
 			if (!vartrue($pref['auth_method']))
 			{
