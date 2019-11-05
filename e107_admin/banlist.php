@@ -149,7 +149,16 @@ class banlist_ui extends e_admin_ui
 		 */
 		function handleListBanlistIpFilter($srch)
 		{
-			return "banlist_ip = '".e107::getIPHandler()->ipEncode($srch)."' OR banlist_ip = '".$srch."'";
+			$ret = array(
+				"banlist_ip = '".$srch."'"
+			);
+
+			if($ip6 = e107::getIPHandler()->ipEncode($srch))
+			{
+				$ret[] = "banlist_ip = '".$ip6."'";
+			}
+
+			return implode(" OR ",$ret);
 		}
 
 		

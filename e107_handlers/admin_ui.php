@@ -4197,7 +4197,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			e107::getMessage()->addDebug(print_a($searchQry,true));
 		}
-		
+
 		$className = get_class($this);
 
 		// main table should select everything
