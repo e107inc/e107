@@ -4193,11 +4193,12 @@ class e_admin_controller_ui extends e_admin_controller
 			$searchQry[] = $searchFilter;
 		}
 
-	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
 			e107::getMessage()->addDebug(print_a($searchQry,true));
 		}
-
+		
+		$className = get_class($this);
 
 		// main table should select everything
 		$tableSFieldsArr[] = $tablePath.'*';
@@ -4225,6 +4226,20 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
+				// Search for customer filter handler.
+				$cutomerFilterMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Filter';
+				$args = array($searchQuery);
+				e107::getMessage()->addDebug("Searching for custom filter method: ".$className.'::'.$cutomerFilterMethod."(".implode(', ', $args).")");
+
+				if(method_exists($this, $cutomerFilterMethod)) // callback handling
+				{
+					e107::getMessage()->addDebug('Executing filter callback <strong>'.$className.'::'.$cutomerFilterMethod.'('.implode(', ', $args).')</strong>');
+
+					$filter[] = call_user_func_array(array($this, $cutomerFilterMethod), $args);
+					continue;
+				}
+
+
 				if($var['data'] === 'int' || $var['data'] === 'integer' ||  $var['type'] === 'int' || $var['type'] === 'integer')
 				{
 					if(is_numeric($searchQuery))
@@ -4278,6 +4293,7 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
+
 
 		if(strpos($filterOptions,'searchfield__') === 0) // search in specific field, so remove the above filters.
 		{
@@ -5477,6 +5493,8 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListSearchfieldFilter($selected)
 	{
 		$string = $this->getQuery('searchquery');
+
+
 
 		if(empty($string))
 		{

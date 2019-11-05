@@ -141,6 +141,17 @@ class banlist_ui extends e_admin_ui
 			$this->fields['banlist_ip']['title']= BANLAN_5;
 		}
 
+		//
+
+		/**
+		 * Custom filter for banlist_ip filter search.
+		 * @param string $srch
+		 */
+		function handleListBanlistIpFilter($srch)
+		{
+			return "banlist_ip = '".e107::getIPHandler()->ipEncode($srch)."' OR banlist_ip = '".$srch."'";
+		}
+
 		
 		// optional
 		public function init()
