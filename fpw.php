@@ -362,8 +362,8 @@ if (!empty($_POST['pwsubmit']))
 
 		if(getperms('0'))
 		{
-			$message .= "\n\n<a class='btn btn-primary' href='".$link."'>Click to Continue with test</a>";
-
+			$message .= "\n\n<hr><strong>Caution: If you click the button below, you will follow the link the user receives in their email, and the password will actually be reset!</strong>"; // NO LAN
+			$message .= "\n\n<a class='btn btn-primary' href='".$link."'>Click to Continue with test</a>"; // NO LAN
 			$ns->tablerender("Testing Mode", nl2br($message));
 			require_once(FOOTERF);
 			exit;
