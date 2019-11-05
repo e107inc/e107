@@ -72,6 +72,7 @@ if(isset($_GET['scan']))
 	<head>  	
 		<title>Results</title>
 		<script type='text/javascript' src='https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js'></script>
+		<link  rel='stylesheet' media='all' property='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css' />
 	 
 		".$fi->headerCss()." ".headerjs()."
 		<body style='height:100%;background-color:#2F2F2F'>\n";
