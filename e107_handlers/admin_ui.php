@@ -4228,7 +4228,7 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				// Search for customer filter handler.
 				$cutomerFilterMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Filter';
-				$args = array($searchQuery);
+				$args = array($tp->toDB($request->getQuery('searchquery', '')));
 				e107::getMessage()->addDebug("Searching for custom filter method: ".$className.'::'.$cutomerFilterMethod."(".implode(', ', $args).")");
 
 				if(method_exists($this, $cutomerFilterMethod)) // callback handling

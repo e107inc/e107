@@ -153,9 +153,10 @@ class banlist_ui extends e_admin_ui
 				"banlist_ip = '".$srch."'"
 			);
 
-			if($ip6 = e107::getIPHandler()->ipEncode($srch))
+			if($ip6 = e107::getIPHandler()->ipEncode($srch,true))
 			{
-				$ret[] = "banlist_ip = '".$ip6."'";
+				$ip = str_replace('x', '', $ip6);
+				$ret[] = "banlist_ip LIKE '%".$ip."%'";
 			}
 
 			return implode(" OR ",$ret);
