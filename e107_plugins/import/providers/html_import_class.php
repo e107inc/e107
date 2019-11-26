@@ -38,7 +38,8 @@ class html_import extends base_import_class
 	private $localPath	= '';
 	private $content 	= array();
 	private $contentArray = array();
-	
+
+
 	function init()
 	{
 		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
@@ -54,9 +55,13 @@ class html_import extends base_import_class
 		{
 			$import = $this->sortSelection();	
 			$this->doConversion($import);
-
 		}
-		
+
+		if(!extension_loaded("tidy")) 
+		{
+			$this->useTidy = false;
+			e107::getMessage()->addWarning("PHP Tidy extension is NOT loaded!");
+		}
 	}
 
 
@@ -291,10 +296,6 @@ class html_import extends base_import_class
 			
 		return $html;
 	}
-			
-	
-	
-	
 	
 			
 	private function findLinks($content,$type='html')
