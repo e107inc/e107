@@ -44,6 +44,12 @@ class html_import extends base_import_class
 	{
 		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
 		$this->feedUrl 	= rtrim($this->feedUrl,"/");
+
+		if(!extension_loaded("tidy")) 
+		{
+			$this->useTidy = false;
+			e107::getMessage()->addWarning("PHP Tidy extension is NOT loaded!");
+		}
 		
 		if($_POST['preview'])
 		{
@@ -56,12 +62,7 @@ class html_import extends base_import_class
 			$import = $this->sortSelection();	
 			$this->doConversion($import);
 		}
-
-		if(!extension_loaded("tidy")) 
-		{
-			$this->useTidy = false;
-			e107::getMessage()->addWarning("PHP Tidy extension is NOT loaded!");
-		}
+	
 	}
 
 
