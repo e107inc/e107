@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Linkwords" lan="LAN_PLUGIN_LINKWORDS_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<description lan="LAN_PLUGIN_LINKWORDS_DESCRIPTION">This plugin will link specified words with a defined link and/or tooltip.</description>
+	<category>content</category> 
+	<adminLinks>
+		<link url='admin_config.php' description='Configure LinkWords' icon='images/linkwords_32.png' iconSmall='images/linkwords_16.png' primary='true' >Configure LinkWords</link>	
+	</adminLinks>
+	<mainPrefs>
+		<pref name="lw_page_visibility"></pref>
+		<pref name="lw_ajax_enable">0</pref>
+        <pref name="lw_max_per_word">2</pref>
+        <pref name="lw_custom_class">e-tip</pref>
+		<pref name="lw_context_visibility">array (
+				'OLDDEFAULT' => '',
+				'TITLE' => '',
+				'SUMMARY' => 1,
+				'BODY' => 1,
+				'DESCRIPTION'=> 1,
+				'USER_TITLE' => '',
+				'USER_BODY' => 1,
+				'LINKTEXT' => '',
+				'RAWTEXT' => ''
+			)
+		</pref>
+	</mainPrefs>
+</e107Plugin>

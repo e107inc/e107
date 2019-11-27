@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<e107_extended_user_fields version="1.0">
+	<item name="language">
+		<type>language</type>
+		<include_text></include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="country">
+		<type>country</type>
+		<include_text></include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="location">
+		<type>text</type>
+		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="icq">
+		<type>text</type>
+		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="skype">
+		<type>text</type>
+		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="gender">
+		<type>radio</type>
+		<values>M => UE_LAN_MALE,F => UE_LAN_FEMALE</values>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="homepage">
+		<type>text</type>
+		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
+		<regex>#^[a-z0-9]+://#si</regex>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="birthday">
+		<type>date</type>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+		<item name="comment">
+		<type>textarea</type>
+		<include_text>class='form-control tbox' col='80' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+	<item name="timezone">
+		<type>list</type>
+		<values>timezones</values>
+		<default>+0</default>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
+</e107_extended_user_fields>

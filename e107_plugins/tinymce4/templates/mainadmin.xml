@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<tinymce name="Main Admin" version="4">
+	<plugins>advlist autosave lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualchars code fullscreen
+        insertdatetime media nonbreaking table contextmenu directionality emoticons template paste textcolor </plugins>
+	<menubar>edit view format insert table tools</menubar>
+	<toolbar1>undo redo | removeformat | styleselect | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image  template | media | e107-image e107-video e107-glyph smileys | preview | fullscreen | code</toolbar1>
+	<external_plugins>e107</external_plugins>
+	<image_advtab>true</image_advtab>
+	<media_alt_source>false</media_alt_source>
+	<media_dimensions>true</media_dimensions>
+	<media_poster>false</media_poster>
+	<media_filter_html>false</media_filter_html>
+	<media_live_embeds>false</media_live_embeds>
+	<convert_urls>false</convert_urls>
+	<plugin_preview_width>800</plugin_preview_width>
+	<extended_valid_elements>i[*], object[*],embed[*],bbcode[*]</extended_valid_elements>
+	<templates>[
+        {
+            title: "Bootstrap table",
+            url: "{e_PLUGIN}tinymce4/snippets/bootstrap_table.htm",
+            description: "Adds a Bootstrap 3 table"
+        },
+        {
+            title: "Example",
+            content: "Example Content",
+            description: "Adds an example."
+        }
+    ]
+    </templates>
+    <table_default_attributes>{  class: 'table table-striped table-bordered'   }</table_default_attributes>
+</tinymce>

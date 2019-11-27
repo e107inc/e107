@@ -1,0 +1,58 @@
+body {
+	color: #000;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	background-color: #D1CFCF;
+}
+a {
+	color: #035479; 
+	text-decoration: none;
+}
+a:hover {
+	color: #DC6504;
+	text-decoration: none;
+}
+
+.mainbox {
+	border: 1px solid #879397;
+	background-color: #fff;
+	color: #000;
+	padding: 10px;
+}
+
+.smalltext {
+	color: #000;
+	font: 12px verdana, tahoma, arial, sans-serif;
+}
+
+.headertext {
+	color: #DC6504;
+	font: 16px verdana, tahoma, arial, sans-serif;
+	font-weight: bold;
+}
+
+.headertext2 {
+	color: #000;
+	font: 12px verdana, tahoma, arial, sans-serif;
+	font-weight: bold;
+}
+
+.indent {
+	border: 1px solid #D1CFCF;
+	background-color: #efefef;
+	color: #000;
+	padding: 10px;
+}
+
+.tbox {
+	background-color: #fff;
+	border: #b7b5b5 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.button {
+	border: 1px solid #000;
+	color: #000;
+	font: 7pt verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+}

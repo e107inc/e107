@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<tinymce name="Public" version="4">
+	<plugins>advlist autosave lists link charmap print preview hr anchor pagebreak searchreplace wordcount visualchars fullscreen
+        insertdatetime nonbreaking table contextmenu directionality emoticons template paste textcolor </plugins>
+	<menubar>edit view insert format table tools</menubar>
+	<toolbar1>undo redo | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | link table smileys | fullscreen</toolbar1>
+	<external_plugins>e107</external_plugins>
+	<image_advtab>false</image_advtab>
+	<media_alt_source>false</media_alt_source>
+	<media_dimensions>true</media_dimensions>
+	<media_poster>false</media_poster>
+	<plugin_preview_width>800</plugin_preview_width>
+	<extended_valid_elements>i[*], bbcode[*]</extended_valid_elements>
+	<table_default_attributes>{  class: 'table table-striped table-bordered'   }</table_default_attributes>
+</tinymce>

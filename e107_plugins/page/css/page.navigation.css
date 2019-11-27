@@ -1,0 +1,45 @@
+
+/********************/
+/* EXPANDABLE LIST  */
+/********************/
+
+ul.page-nav {
+	margin-left:5px;
+}
+
+ul.page-nav  p {
+   
+    display:block;
+}
+
+ul.page-nav  li {
+    line-height:150%;
+	cursor: pointer;
+    background-position: 1px 6px;
+    background-repeat: no-repeat;
+}
+
+/* Collapsed state for list element */
+ul.page-nav .collapsed {
+	list-style: none;
+	padding-left: 15px;
+	 text-indent:0px;
+	margin:0;
+	margin-left:5px;
+    background-image: url(../img/collapsed.png);
+}
+/* Expanded state for list element
+/* NOTE: This class must be located UNDER the collapsed one */
+ul.page-nav .expanded {
+	list-style: none;
+	padding-left: 15px;
+	text-indent:0px;
+	margin:0;
+	margin-left:5px;
+    background-image: url(../img/expanded.png);
+}
+
+ul.page-nav {
+    clear: both;
+}
+

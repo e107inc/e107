@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<tinymce name="Administrators" version="4">
+    <plugins>advlist lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen
+        insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor emoticons </plugins>
+    <menubar>edit view format insert table tools</menubar>
+    <toolbar1>undo redo | removeformat | styleselect | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image  template | e107-image e107-video fontawesome smileys | preview | fullscreen</toolbar1>
+    <external_plugins>e107 example compat3x</external_plugins>
+    <image_advtab>true</image_advtab>
+    <extended_valid_elements>i[*], object[*],embed[*],bbcode[*]</extended_valid_elements>
+    <media_live_embeds>false</media_live_embeds>
+    <convert_urls>false</convert_urls>
+    <templates>[
+        {
+        title: "Bootstrap table",
+        url: "{e_PLUGIN}tinymce4/snippets/bootstrap_table.htm",
+        description: "Adds a Bootstrap 3 table"
+        },
+        {
+        title: "Example",
+        content: "Example Content",
+        description: "Adds an example."
+        }
+        ]
+    </templates>
+    <table_default_attributes>{  class: 'table table-striped table-bordered'   }</table_default_attributes>
+</tinymce>

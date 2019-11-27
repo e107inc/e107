@@ -1,0 +1,53 @@
+/* info: Light stylesheet */
+body 						{ background-color: #EEEEEE;  }
+
+
+.navbar .navbar-inner {
+    background-color: rgb(27, 27, 27);
+    background-image: linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17));
+    background-repeat: repeat-x;
+    border-color: rgb(37, 37, 37);
+}
+
+.popover,
+.popover-title {
+	background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%);
+	border-bottom: 0px;	
+}
+
+
+.adminlist, .adminform 		{  border:1px solid #ddd; background-color: #F6F6F6}
+
+.adminlist thead 			{ background-color:#f2f2f2; }
+.adminlist tr.even			{ background-color:#f6f6f6; }
+
+.plupload_header_text 		{ color: black; }
+
+.ui-tabs .ui-tabs-nav li a, .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a
+{
+	background-color: rgb(230, 230, 230);
+	border-bottom: 1px solid rgb(221, 221, 221);
+	color: rgb(153, 153, 153);
+}
+
+.nav-tabs li a  				{  background-color: rgb(230, 230, 230); color: rgb(153, 153, 153); 
+    							   border-bottom: 1px solid rgb(221, 221, 221);
+								}
+.nav-tabs li a:hover 			{ background-color: rgb(255, 255, 255); color: rgb(0, 67, 138); }
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus
+{
+	background-color: rgb(246, 246, 246);
+	
+}
+
+.modal-header	{ border-bottom:1px solid #DDDDDD;  background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }
+
+.tooltip-inner 				{ box-shadow: 0 2px 5px #808080; -webkit-box-shadow: 0 2px 5px #808080; -moz-box-shadow: 0 2px 5px #808080; }  
+
+.tab-pane table.adminform td 	{ border-top:0px}
+
+tr.highlight-even			{ background-color: silver; }
+tr.highlight-odd			{ background-color: silver; }
+
+th, .fcaption								{  color: rgb(102, 102, 102); background-image: -moz-linear-gradient(center top , rgb(253, 253, 253) 0%, rgb(234, 234, 234) 100%); }

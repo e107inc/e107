@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<e107Export version="2.0" timestamp="1251856226">
+	<prefs>
+		<core name="admin_alerts_ok">1</core>
+		<core name="admin_alerts_uniquemenu">0</core>
+		<core name="admin_separate_plugins">0</core>
+		<core name="admincode">0</core>		
+		<core name="admincss">admin_dark.css</core>
+		<core name="adminlanguage"></core>
+		<core name="adminpwordchange">0</core>
+		<core name="adminstyle">flexpanel</core>
+		<core name="admintheme">bootstrap3</core>
+		<core name="allowCommentEdit">0</core>
+		<core name="allowEmailLogin">2</core>
+		<core name="anon_post">0</core>
+		<core name="antiflood1">1</core>
+		<core name="antiflood_timeout">10</core>
+		<core name="auth_method"></core>
+		<core name="autoban">1</core>
+		<core name="autologinpostsignup">1</core>
+		<core name="ban_date_format">%H:%M %d-%m-%y</core>
+		<core name="ban_max_online_access">100,200</core>
+		<core name="ban_retrigger">0</core>
+		<core name="cachestatus"></core>
+		<core name="check_updates">1</core>
+		<core name="comments_disabled">0</core>
+		<core name="comments_emoticons">0</core>
+		<core name="comments_engine">e107</core>
+		<core name="comments_icon">0</core>
+		<core name="comments_moderate">247</core>
+		<core name="comments_sort">desc</core>
+		<core name="compress_output">0</core>
+		<core name="contact_emailcopy">0</core>
+        <core name="contact_visibility">0</core>
+        <core name="contact_filter"></core>
+		<core name="cookie_name">e107cookie</core>
+		<core name="core-infopanel-default"><![CDATA[array (
+  0 => 'e-administrator',
+  1 => 'e-cpage',
+  2 => 'e-filemanager',
+  3 => 'e-frontpage',
+  4 => 'e-image',
+  5 => 'e-mailout',
+  6 => 'e-menus',
+  7 => 'e-meta',
+  8 => 'e-newspost',
+  9 => 'e-plugin',
+  10 => 'e-prefs',
+  11 => 'e-links',
+  12 => 'e-theme',
+  13 => 'e-userclass2',
+  14 => 'e-users',
+  15 => 'e-wmessage',
+)]]></core>
+		<core name="db_updates"><![CDATA[array (
+)]]></core>
+		<core name="developer">0</core>
+		<core name="disable_emailcheck">0</core>
+		<core name="disallowMultiLogin">0</core>
+		<core name="display_memory_usage">0</core>
+		<core name="displayname_class">255</core>
+		<core name="displayname_maxlength">20</core>
+		<core name="displayrendertime">0</core>
+		<core name="displaysql">0</core>
+		<core name="displaythemeinfo">1</core>
+		<core name="e_admin_list"><![CDATA[array (
+  'social' => 'social',
+)]]></core>
+		<core name="e_comment_list"><![CDATA[array (
+  'social' => 'social',
+)]]></core>
+		<core name="e_event_list"><![CDATA[array (
+  'social' => 'social',
+)]]></core>
+		<core name="e_featurebox_list"><![CDATA[array (
+  'news' => 'news',
+)]]></core>
+		<core name="e_footer_list"><![CDATA[array (
+  'tinymce4' => 'tinymce4',
+)]]></core>
+		<core name="e_header_list"><![CDATA[array (
+  'news' => 'news',
+  'social' => 'social',
+  'tinymce4' => 'tinymce4',
+)]]></core>
+		<core name="e_jslib_cdn">1</core>
+		<core name="e_jslib_cdn_provider">jsdelivr</core>
+		<core name="e_jslib_browser_cache">0</core>
+		<core name="e_jslib_nobcache">1</core>
+		<core name="e_jslib_nocache">1</core>
+		<core name="e_jslib_gzip">1</core>
+		<core name="e_jslib_nocombine">1</core>
+		<core name="e_jslib_core"><![CDATA[array (
+'prototype' => 'none',
+'jquery' => 'all',
+)]]></core>
+		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
+		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
+		<core name="e_meta_list"><![CDATA[array (
+  'rss_menu' => 'rss_menu',
+)]]></core>
+	<core name="e_module_list"><![CDATA[array ()]]></core>
+		<core name="e_related_list"><![CDATA[array (
+  'news' => 'news',
+  'page' => 'page',
+)]]></core>
+		<core name="e_rss_list"><![CDATA[array (
+  'news' => 'news',
+)]]></core>
+		<core name="e_search_list"><![CDATA[array (
+  'news' => 'news',
+  'page' => 'page',
+)]]></core>
+		<core name="e_shortcode_list"><![CDATA[array (
+  'featurebox' => 'featurebox',
+  'page' => 'page',
+  'siteinfo' => 'siteinfo',
+  'social' => 'social',
+)]]></core>
+		<core name="shortcode_list"><![CDATA[array ()]]></core>
+		<core name="e_sitelink_list"><![CDATA[array (
+  'news' => 'news',
+  'page' => 'page',
+)]]></core>
+		<core name="e_sql_list"><![CDATA[array (
+  'featurebox' => 'featurebox_sql',
+  'rss_menu' => 'rss_sql',
+)]]></core>
+		<core name="e_url_list"><![CDATA[array (
+  'news' => 'news',
+  'rss_menu' => 'rss_menu',
+)]]></core>
+		<core name="e_user_list"><![CDATA[array (
+  'user' => 'user',
+)]]></core>
+		<core name="email_text"></core>
+		<core name="emotepack">default</core>
+		<core name="enable_rdns">0</core>
+		<core name="enable_rdns_on_ban">0</core>
+        <core name="failed_login_limit">10</core>
+		<core name="filter_script">0</core>
+		<core name="flood_hits">100</core>
+		<core name="flood_protect">1</core>
+		<core name="flood_time">30</core>
+		<core name="flood_timeout">5</core>
+		<core name="forumdate">%a %b %d %Y, %I:%M%p</core>
+		<core name="fpwcode">0</core>
+		<core name="frontpage"><![CDATA[array (
+  0 => 'index.php',
+)]]></core>
+		<core name="frontpage_force"><![CDATA[array (
+  0 => '',
+)]]></core>
+		<core name="gdpr_privacypolicy"></core>
+		<core name="gdpr_termsandconditions"></core>
+		<core name="html_abuse">0</core>
+		<core name="im_height">80</core>
+		<core name="im_path">/usr/X11R6/bin/</core>
+		<core name="im_width">80</core>
+		<core name="image_post">1</core>
+		<core name="image_post_class">0</core>
+		<core name="image_preload">0</core>
+		<core name="img_import_resize">1200x800</core>
+		<core name="inline_editing">255</core>
+		<core name="inputdate">%A, %d %b, %Y</core>
+		<core name="inputtime">%I:%M %p</core>
+		<core name="install_date">1251664949</core>
+		<core name="link_replace">0</core>
+		<core name="link_text"></core>
+		<core name="linkpage_screentip">0</core>
+		<core name="links_new_window">1</core>
+		<core name="log_page_accesses">0</core>
+		<core name="log_refertype">1</core>
+		<core name="logcode">0</core>
+		<core name="loginname_maxlength">30</core>
+		<core name="longdate">%A %d %B %Y - %H:%M:%S</core>
+		<core name="mail_pause">3</core>
+		<core name="mail_bounce">none</core>
+		<core name="mail_pausetime">4</core>
+		<core name="mail_sendstyle">texthtml</core>		
+		<core name="mail_workpertick">5</core>
+		<core name="mailer">php</core>
+		<core name="bulkmailer">smtp</core>
+		<core name="main_wordwrap"></core>
+		<core name="maintainance_flag">0</core>
+		<core name="make_clickable">0</core>
+		<core name="memberlist_access">253</core>
+		<core name="membersonly_enabled">0</core>
+		<core name="membersonly_exceptions"><![CDATA[array (
+  0 => '',
+)]]></core>
+		<core name="menu_wordwrap">0</core>
+		<core name="menuconfig_list"><![CDATA[array (
+  'login_menu' => 
+  array (
+    'name' => 'Login',
+    'link' => 'login_menu/config.php',
+  ),
+  'news' => 
+  array (
+    'name' => 'Newsmonths',
+    'link' => 'blogcalendar_menu/config.php',
+  ),
+)]]></core>
+		<core name="membersonly_redirect">login</core>
+		<core name="meta_tag"></core>
+		<core name="multilanguage">0</core>
+		<core name="nbr_cols">1</core>
+		<core name="nested_comments">1</core>
+		<core name="news_cats"></core>
+		<core name="news_default_template">default</core>
+		<core name="news_list_limit">10</core>
+		<core name="news_newdateheader">0</core>
+		<core name="newsposts">10</core>
+		<core name="newsposts_archive">0</core>
+		<core name="newsposts_archive_title"></core>
+		<core name="noLanguageSubs">0</core>
+		<core name="null"></core>
+		<core name="old_np">0</core>
+		<core name="pageCookieExpire">84600</core>
+		<core name="passwordEncoding">0</core>
+		<core name="password_CHAP">0</core>
+		<core name="plug_installed"><![CDATA[array (
+  'news' => '1.0',
+  'page' => '1.0',
+  'siteinfo' => '1.0',
+  'social' => '1.0',
+  'tinymce4' => '1.0',
+
+  'rss_menu' => '1.3',
+  'contact' => '1.0',
+  'user' => '1.0',
+
+)]]></core>
+		<core name="post_html">254</core>
+		<core name="post_script">254</core>
+		<core name="filter_script">1</core>
+		<core name="html_abuse">1</core>
+		<core name="pageCookieExpire">84600</core>	
+		<core name="predefinedLoginName"></core>
+		<core name="profanity_filter">0</core>
+		<core name="profanity_replace">[censored]</core>
+		<core name="profanity_words"></core>
+		<core name="redirectsiteurl">0</core>
+		<core name="replyto_email">registration@yoursite.com</core>
+		<core name="replyto_name">e107 Website System</core>
+		<core name="resize_method">gd2</core>
+		<core name="resize_dimensions"><![CDATA[array ( 
+			'news-image' => array ( 'w' => '300', 'h' => '300', ), 
+			'news-bbcode' => array ( 'w' => '300', 'h' => '300', ), 
+			'page-bbcode' => array ( 'w' => '300', 'h' => '300', ), 
+)]]>
+</core>
+		<core name="search_highlight">1</core>
+		<core name="search_restrict">0</core>
+		<core name="session_lifetime">86400</core>
+		<core name="shortdate">%d %b %Y : %H:%M</core>
+		<core name="signcode">0</core>
+		<core name="signup_disallow_text"></core>
+		<core name="signup_maxip">3</core>
+
+		<core name="signup_option_class">0</core>
+		<core name="signup_option_customtitle">0</core>
+		<core name="signup_option_email_confirm">0</core>
+		<core name="signup_option_hideemail">0</core>
+		<core name="signup_option_image">0</core>
+		<core name="signup_option_password">2</core>
+		<core name="signup_option_realname">0</core>
+		<core name="signup_option_signature">0</core>
+		<core name="signup_pass_len">6</core>
+		<core name="signup_text"></core>
+		<core name="signup_text_after"></core>
+		<core name="siteadmin">admin</core>
+		<core name="siteadminemail">user@yoursite.com</core>
+		<core name="sitebutton">{e_IMAGE}button.png</core>
+		<core name="sitecontactinfo"><![CDATA[[b]My Company[/b]
+13 My Address St.
+City, State, Country
+[b]Phone:[/b] 555-555-5555
+[b]Email:[/b] sales@mydomain.com]]></core>
+		<core name="sitecontacts">255</core>
+		<core name="sitedescription"></core>
+		<core name="sitedisclaimer"><![CDATA[ Copyright Info. All Rights Reserved]]></core>
+		<core name="sitelang_init">English</core>
+		<core name="sitelanguage">English</core>
+		<core name="sitelogo"></core>
+		<core name="sitename">e107 Website System</core>
+		<core name="sitetag">e107 Website System</core>
+		<core name='sitename'>My Website</core>
+		<core name='sitetag'>e107 Website System</core>
+		<core name='sitetheme'>bootstrap</core>
+		<core name='sitetheme_custompages'><![CDATA[array (
+)]]></core>
+		<core name='sitetheme_deflayout'>default</core>
+		<core name='sitetheme_layouts'><![CDATA[array (
+  'default' => 
+  array (
+    '@attributes' => 
+    array (
+      'title' => '2 Columns',
+      'default' => 'true',
+    ),
+    'custompages' => 'usersettings.php',
+    0 => NULL,
+  ),
+)]]></core>
+		<core name="sitetheme_pref"></core>
+		<core name="siteurl">/</core>
+		<core name="smiley_activate">1</core>
+		<core name="smtp_server"></core>
+		<core name="smtp_username"></core>
+		<core name="smtp_password"></core>
+		<core name="smtp_options"></core>
+		<core name="smtp_port">25</core>
+		<core name="social_login_active">0</core>
+		<core name="social_login"><![CDATA[array()]]></core>
+		<core name="ssl_enabled">0</core>
+		<core name="subnews_attach">253</core>
+		<core name="subnews_class">253</core>
+		<core name="subnews_htmlarea">0</core>
+		<core name="subnews_resize"></core>
+		<core name="themecss">style.css</core>
+		<core name="thumbnail_quality">75</core>
+		<core name="timezone">UTC</core>
+		<core name="track_online">1</core>
+		<core name="ue_upgrade">1</core>
+		<core name="upload_class">255</core>
+		<core name="upload_enabled">0</core>
+		<core name="upload_maxfilesize">2M</core>
+		<core name="url_aliases"><![CDATA[array (
+)]]></core>
+		<core name="url_config"><![CDATA[array (
+  'index' => 'core',
+  'news' => 'core',
+  'page' => 'core',
+  'search' => 'core',
+  'system' => 'core',
+  'user' => 'core',
+)]]></core>
+<core name="url_profiles"><![CDATA[array (
+)]]></core>
+		<core name="url_disable_pathinfo">1</core>
+		<core name="url_error_redirect">0</core>
+		<core name="url_locations"><![CDATA[array (
+  'index' => 
+  array (
+    0 => 'core',
+  ),
+  'news' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_full',
+    2 => 'core/sef_noid',
+    3 => 'core/sef',
+  ),
+  'page' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_chapters',
+    2 => 'core/sef_noid',
+    3 => 'core/sef',
+  ),
+  'search' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'system' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'user' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+)]]></core>
+		<core name="url_main_module"></core>
+		<core name="url_modules"><![CDATA[array (
+  'core' => 
+  array (
+    0 => 'index',
+    1 => 'news',
+    2 => 'page',
+    3 => 'search',
+    4 => 'system',
+    5 => 'user',
+  ),
+  'plugin' => 
+  array (
+    0 => 'gallery',
+  ),
+  'override' => 
+  array (
+  ),
+)]]></core>
+		<core name="url_sef_translate">dashl</core> 
+		<core name="useGeshi">0</core>
+		<core name="use_coppa">1</core>
+		<core name="user_new_period">3</core>
+		<core name="user_reg">1</core>
+		<core name="user_reg_secureveri">1</core>
+		<core name="user_reg_veri">1</core>
+		<core name="user_tracking">cookie</core>
+		<core name="version">2.2.0</core>
+		<core name="wm_enclose">1</core>
+		<core name="wmessage_sc">0</core>
+		<core name="wysiwyg">1</core>
+		<core name="xup_enabled">1</core>
+		<core name="xurl"><![CDATA[array ()]]></core>
+		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
+		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>
+		<core name="xurl"><![CDATA[array (
+		  'facebook' => '#',
+		  'twitter' => '#',
+		  'youtube' => '#',
+		  'google' => '#',
+		  'linkedin' => '',
+		  'github' => '',
+		  'flickr' => '',
+		  'instagram' => '',
+		  'pinterest' => '',
+		  'vimeo' => '',
+		)]]></core>
+		<emote name="alien!png">!alien</emote>
+		<emote name="amazed!png">!amazed</emote>
+		<emote name="angry!png">!grr !angry</emote>
+		<emote name="biglaugh!png">!lol</emote>
+		<emote name="cheesey!png">:D :oD :-D</emote>
+		<emote name="confused!png">:? :o? :-?</emote>
+		<emote name="cry!png"><![CDATA[&| &-| &o| :(( !cry]]></emote>
+		<emote name="dead!png">x) xo) x-) x( xo( x-(</emote>
+		<emote name="dodge!png">!dodge</emote>
+		<emote name="frown!png">:( :o( :-(</emote>
+		<emote name="gah!png">:@ :o@ :o@</emote>
+		<emote name="grin!png">:D :oD :-D</emote>
+		<emote name="heart!png">!heart</emote>
+		<emote name="idea!png">:! :o! :-!</emote>
+		<emote name="ill!png">!ill</emote>
+		<emote name="mad!png">~:( ~:o( ~:-(</emote>
+		<emote name="mistrust!png">!mistrust</emote>
+		<emote name="neutral!png">:| :o| :-|</emote>
+		<emote name="question!png">?!</emote>
+		<emote name="rolleyes!png">B) Bo) B-)</emote>
+		<emote name="sad!png">!sad</emote>
+		<emote name="shades!png">8) 8o) 8-)</emote>
+		<emote name="shy!png">!shy</emote>
+		<emote name="smile!png">:) :o) :-)</emote>
+		<emote name="special!png">%-6</emote>
+		<emote name="suprised!png">:O :oO :-O</emote>
+		<emote name="tongue!png">:p :op :-p :P :oP :-P</emote>
+		<emote name="wink!png">;) ;o) ;-)</emote>
+		<menu name="clock_caption">Date / Time</menu>
+		<menu name="comment_caption">Latest Comments</menu>
+		<menu name="comment_characters">50</menu>
+		<menu name="comment_display">10</menu>
+		<menu name="comment_postfix">[more ...]</menu>
+		<menu name="comment_title">0</menu>
+		<menu name="forum_no_characters">20</menu>
+		<menu name="forum_postfix">[more ...]</menu>
+		<menu name="forum_show_topics">1</menu>
+		<menu name="newforumposts_caption">Latest Forum Posts</menu>
+		<menu name="newforumposts_characters">50</menu>
+		<menu name="newforumposts_display">10</menu>
+		<menu name="newforumposts_postfix">[more ...]</menu>
+		<menu name="newforumposts_title">0</menu>
+		<menu name="update_menu">Update menu Settings</menu>
+		<search name="comments_handlers"><![CDATA[array (
+  'news' => 
+  array (
+    'id' => 0,
+    'dir' => 'core',
+    'class' => '0',
+  ),
+  'download' => 
+  array (
+    'id' => 2,
+    'dir' => 'core',
+    'class' => '0',
+  ),
+)]]></search>
+		<search name="core_handlers"><![CDATA[array (
+
+  'comments' => 
+  array (
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '2',
+  ),
+  'users' => 
+  array (
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '3',
+  ),
+
+)]]></search>
+		<search name="google">0</search>
+		<search name="multisearch">1</search>
+		<search name="mysql_sort">1</search>
+		<search name="php_limit"></search>
+		<search name="relevance">0</search>
+		<search name="selector">2</search>
+		<search name="time_restrict">0</search>
+		<search name="time_secs">60</search>
+		<search name="user_select">1</search>
+		<notify name="event"><![CDATA[array (
+  'login' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'logout' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_signup_submitted' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_signup_activated' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_ban_flood' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_news_submit' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_news_created' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_news_updated' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_news_deleted' => 
+  array (
+    'class' => '255',
+    'email' => '',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_xup_login' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_xup_signup' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_ban_failed_login' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_profile_display' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_password_update' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_user_created' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_user_activated' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'admin_news_notify' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'maildone' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+  'user_file_upload' => 
+  array (
+    'class' => '255',
+    'include' => '',
+    'legacy' => '0',
+  ),
+)]]></notify>
+	</prefs>
+	<database>
+		<dbTable name="core_media_cat">
+			<item>
+				<field name="media_cat_id">1</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_image</field>
+				<field name="media_cat_title">(Common Images)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">2</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_file</field>
+				<field name="media_cat_title">(Common Files)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">3</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_video</field>
+				<field name="media_cat_title">(Common Videos)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">4</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_audio</field>
+				<field name="media_cat_title">(Common Audio)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">5</field>
+				<field name="media_cat_owner">news</field>
+				<field name="media_cat_category">news</field>
+				<field name="media_cat_title">News</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Will be available in the news area.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">1</field>
+			</item>
+			<item>
+				<field name="media_cat_id">6</field>
+				<field name="media_cat_owner">page</field>
+				<field name="media_cat_category">page</field>
+				<field name="media_cat_title">Custom Pages</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Will be available in the custom pages area of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">7</field>
+				<field name="media_cat_owner">download</field>
+				<field name="media_cat_category">download_image</field>
+				<field name="media_cat_title">Download Images</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz"></field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">8</field>
+				<field name="media_cat_owner">download</field>
+				<field name="media_cat_category">download_thumb</field>
+				<field name="media_cat_title">Download Thumbnails</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz"></field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">9</field>
+				<field name="media_cat_owner">download</field>
+				<field name="media_cat_category">download_file</field>
+				<field name="media_cat_title">Download Files</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz"></field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">10</field>
+				<field name="media_cat_owner">news</field>
+				<field name="media_cat_category">news_thumb</field>
+				<field name="media_cat_title">News Thumbnails (Legacy)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Legacy news thumbnails.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">1</field>
+			</item>
+			<item>
+				<field name="media_cat_id">11</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_16</field>
+				<field name="media_cat_title">Icons 16px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">12</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_32</field>
+				<field name="media_cat_title">Icons 32px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">13</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_48</field>
+				<field name="media_cat_title">Icons 48px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">14</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_64</field>
+				<field name="media_cat_title">Icons 64px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">15</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_svg</field>
+				<field name="media_cat_title">Icons SVG</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+		</dbTable>
+		<dbTable name="generic">
+			<item>
+				<field name="gen_id">1</field>
+				<field name="gen_type">wmessage</field>
+				<field name="gen_datestamp">1145848343</field>
+				<field name="gen_user_id">1</field>
+				<field name="gen_ip">Hello World!</field>
+				<field name="gen_intdata">0</field>
+				<field name="gen_chardata">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mattis sapien nec velit laoreet pulvinar. Integer sollicitudin risus nec nunc aliquam condimentum. Quisque malesuada posuere vulputate. Aliquam sit amet metus quam? Sed quam sem, condimentum ac convallis vel, posuere at augue. Cras accumsan, erat a laoreet blandit, turpis enim ullamcorper lectus, a tempus justo nunc id orci. Nulla vehicula, dolor vel rhoncus varius, nunc sapien laoreet turpis; id commodo arcu erat fringilla orci. Aenean gravida adipiscing nulla, ut tristique erat interdum porta. Sed at semper felis. Nullam bibendum faucibus gravida. In leo enim, gravida non molestie non, ultricies id nunc. Maecenas placerat interdum luctus. Ut mauris nisi, faucibus eu venenatis ac, lobortis ac velit. Donec sed leo urna, et vehicula neque. Curabitur malesuada auctor ornare.
+				</field>
+			</item>
+		</dbTable>
+		<dbTable name="links">
+			<item>
+				<field name="link_id">1</field>
+				<field name="link_name">Home</field>
+				<field name="link_url">index.php</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">0</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">3</field>
+				<field name="link_name">Members</field>
+				<field name="link_url">user.php</field>
+				<field name="link_description"></field>
+				<field name="link_button">icon-user.glyph</field>
+				<field name="link_category">2</field>
+				<field name="link_order">3</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">4</field>
+				<field name="link_name">Submit News</field>
+				<field name="link_url">submitnews.php</field>
+				<field name="link_description"></field>
+				<field name="link_button">icon-upload.glyph</field>
+				<field name="link_category">2</field>
+				<field name="link_order">4</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">253</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">5</field>
+				<field name="link_name">Contact Us</field>
+				<field name="link_url">contact.php</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">5</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">contact</field>
+			</item>
+			<item>
+				<field name="link_id">6</field>
+				<field name="link_name">News</field>
+				<field name="link_url">news.php</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">1</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">news</field>
+			</item>
+			<item>
+				<field name="link_id">7</field>
+				<field name="link_name">Content</field>
+				<field name="link_url">page.php</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">2</field>
+				<field name="link_parent">0</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">8</field>
+				<field name="link_name">Article 1</field>
+				<field name="link_url">page.php?id=1</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">0</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">9</field>
+				<field name="link_name">Article 2</field>
+				<field name="link_url">page.php?id=2</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">1</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+			   	<field name="link_sefurl"></field>
+			    <field name="link_owner"></field>
+			</item>
+			<item>
+				<field name="link_id">10</field>
+				<field name="link_name">Article 3</field>
+				<field name="link_url">page.php?id=3</field>
+				<field name="link_description"></field>
+				<field name="link_button"></field>
+				<field name="link_category">1</field>
+				<field name="link_order">2</field>
+				<field name="link_parent">7</field>
+				<field name="link_open">0</field>
+				<field name="link_class">0</field>
+				<field name="link_function"></field>
+				<field name="link_sefurl"></field>
+				<field name="link_owner"></field>
+			</item>
+		</dbTable>
+		<dbTable name="menus">
+			<item>
+				<field name="menu_id">1</field>
+				<field name="menu_name">login_menu</field>
+				<field name="menu_location">1</field>
+				<field name="menu_order">1</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">login_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">2</field>
+				<field name="menu_name">online_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">online/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">3</field>
+				<field name="menu_name">blogcalendar_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">blogcalendar_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">5</field>
+				<field name="menu_name">search_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">search_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">6</field>
+				<field name="menu_name">counter_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">siteinfo/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">7</field>
+				<field name="menu_name">userlanguage_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">user/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">8</field>
+				<field name="menu_name">compliance_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">siteinfo/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">9</field>
+				<field name="menu_name">other_news_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">news/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">10</field>
+				<field name="menu_name">clock_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">clock_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">11</field>
+				<field name="menu_name">other_news2_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">news/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">12</field>
+				<field name="menu_name">comment_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">comment_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">13</field>
+				<field name="menu_name">lastseen_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">online/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">14</field>
+				<field name="menu_name">news_months_menu</field>
+				<field name="menu_location">1</field>
+				<field name="menu_order">2</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">news/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">15</field>
+				<field name="menu_name">admin_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">admin_menu/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">16</field>
+				<field name="menu_name">news_categories_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">news/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">17</field>
+				<field name="menu_name">latestnews_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">news/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">18</field>
+				<field name="menu_name">usertheme_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">user/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">19</field>
+				<field name="menu_name">powered_by_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">siteinfo/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+			<item>
+				<field name="menu_id">20</field>
+				<field name="menu_name">sitebutton_menu</field>
+				<field name="menu_location">0</field>
+				<field name="menu_order">0</field>
+				<field name="menu_class">0</field>
+				<field name="menu_pages"></field>
+				<field name="menu_path">siteinfo/</field>
+				<field name="menu_layout"></field>
+				<field name="menu_parms"></field>
+			</item>
+            <item>
+                <field name="menu_id">21</field>
+                <field name="menu_name">news_carousel_menu</field>
+                <field name="menu_location">0</field>
+                <field name="menu_order">0</field>
+                <field name="menu_class">0</field>
+                <field name="menu_pages"></field>
+                <field name="menu_path">news/</field>
+                <field name="menu_layout"></field>
+                <field name="menu_parms"></field>
+            </item>
+            <item>
+                <field name="menu_id">22</field>
+                <field name="menu_name">chapter_menu</field>
+                <field name="menu_location">0</field>
+                <field name="menu_order">0</field>
+                <field name="menu_class">0</field>
+                <field name="menu_pages"></field>
+                <field name="menu_path">page/</field>
+                <field name="menu_layout"></field>
+                <field name="menu_parms"></field>
+            </item>
+            <item>
+                <field name="menu_id">23</field>
+                <field name="menu_name">page_menu</field>
+                <field name="menu_location">0</field>
+                <field name="menu_order">0</field>
+                <field name="menu_class">0</field>
+                <field name="menu_pages"></field>
+                <field name="menu_path">page/</field>
+                <field name="menu_layout"></field>
+                <field name="menu_parms"></field>
+            </item>
+            <item>
+                <field name="menu_id">24</field>
+                <field name="menu_name">page_navigation_menu</field>
+                <field name="menu_location">0</field>
+                <field name="menu_order">0</field>
+                <field name="menu_class">0</field>
+                <field name="menu_pages"></field>
+                <field name="menu_path">page/</field>
+                <field name="menu_layout"></field>
+                <field name="menu_parms"></field>
+            </item>
+            </dbTable>
+            <dbTable name="news">
+            <item>
+                <field name="news_id">1</field>
+                <field name="news_title">Welcome to e107</field>
+                <field name="news_sef">welcome-to-e107</field>
+			<field name="news_body"><![CDATA[[html]<p>Lorem ipsum dolor sit amet, no meis semper dicunt est, petentium eloquentiam quo ne. At vero facer eam. Ex nam altera oportere, nisl natum prima id pro. Rebum augue dissentiet eum te, vel veniam eirmod option ea, at eos velit repudiare. Ius sumo dicit adolescens id, an cum efficiantur concludaturque.<br><br>Summo sensibus cum ne, et duo torquatos conceptam. No aeque elitr constituam qui. Nostro corpora nec no, diam verterem tincidunt has et. Altera accumsan urbanitas pro eu, ei assum voluptaria sed. Eam tibique nominavi consequuntur an.<br><br>Ei perfecto delicata usu, quo eius noster blandit te. Eu doctus volumus pri. Meis argumentum an nam, eos odio prima autem an. Te complectitur intellegebat pro, ius id alterum maiestatis. Ea facer accusata sed, ex illum antiopam quo.<br><br>Altera putent pri ad, in phaedrum dissentiunt per. Te eum everti dolores. Ut mea vero autem viderer, mel brute harum senserit id. Minim senserit eloquentiam duo in, sit ei justo graece petentium. Sea id homero oporteat invenire.<br><br>Pri semper dolorum ad. Cu eius repudiare eos. Eum in eleifend necessitatibus. Ne has mutat intellegebat.</p>[/html]]]></field>
+			<field name="news_extended"><![CDATA[[html]<p><strong>Lorem ipsum</strong> is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It&#039;s also called placeholder (or filler) text. It&#039;s a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout. Lorem ipsum is mostly a part of a Latin text by the classical author and philosopher Cicero. Its words and letters have been changed by addition or removal, so to deliberately render its content nonsensical; it&#039;s not genuine, correct, or comprehensible Latin anymore.</p>
+<p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]]]></field>
+                <field name="news_meta_keywords">welcome,new website</field>
+			<field name="news_meta_description">Description for Facebook and search engines. </field>
+			<field name="news_datestamp">1454367600</field>
+                <field name="news_author">1</field>
+                <field name="news_category">1</field>
+                <field name="news_allow_comments">0</field>
+                <field name="news_start">0</field>
+                <field name="news_end">0</field>
+                <field name="news_class">0</field>
+                <field name="news_render_type">0</field>
+                <field name="news_comment_total">0</field>
+			<field name="news_summary">Summary of the news item</field>
+                <field name="news_thumbnail"></field>
+                <field name="news_sticky">0</field>
+            </item>
+        </dbTable>
+		<dbTable name="news_category">
+			<item>
+				<field name="category_id">1</field>
+				<field name="category_name">Misc</field>
+				<field name="category_sef">misc</field>
+				<field name="category_meta_description"></field>
+				<field name="category_meta_keywords"></field>
+				<field name="category_manager">254</field>
+				<field name="category_icon">news_16.png</field>
+				<field name="category_order">0</field>
+			</item>
+		</dbTable>
+		<dbTable name="userclass_classes">
+			<item>
+				<field name="userclass_id">2</field>
+				<field name="userclass_name">CONTACT PEOPLE</field>
+				<field name="userclass_description">Example contact person class</field>
+				<field name="userclass_editclass">254</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,2</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">3</field>
+				<field name="userclass_name">NEWSLETTER</field>
+				<field name="userclass_description">Subscribe to Newsletter</field>
+				<field name="userclass_editclass">0</field>
+				<field name="userclass_parent">255</field>
+				<field name="userclass_accum">3</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">253</field>
+				<field name="userclass_name">Members</field>
+				<field name="userclass_description">Registered and logged in members</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,253</field>
+				<field name="userclass_visibility">253</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">246</field>
+				<field name="userclass_name">Search Bots</field>
+				<field name="userclass_description">Identified search bots</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,246</field>
+				<field name="userclass_visibility">254</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">254</field>
+				<field name="userclass_name">Admin</field>
+				<field name="userclass_description">Site Administrators</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,254</field>
+				<field name="userclass_visibility">253</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">248</field>
+				<field name="userclass_name">Forum Moderators</field>
+				<field name="userclass_description">Moderators for Forums and other areas</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,248</field>
+				<field name="userclass_visibility">253</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">249</field>
+				<field name="userclass_name">Admins and Mods</field>
+				<field name="userclass_description">Anyone able to administer something, moderate forums etc</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,249</field>
+				<field name="userclass_visibility">253</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">1</field>
+				<field name="userclass_name">PRIVATEMENU</field>
+				<field name="userclass_description">Grants access to private menu items</field>
+				<field name="userclass_editclass">254</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,1</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">247</field>
+				<field name="userclass_name">New Users</field>
+				<field name="userclass_description">Recently joined users</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,247</field>
+				<field name="userclass_visibility">254</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">250</field>
+				<field name="userclass_name">Main Admin</field>
+				<field name="userclass_description">Main site Administrators</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,250</field>
+				<field name="userclass_visibility">253</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">0</field>
+				<field name="userclass_name">Everyone (public)</field>
+				<field name="userclass_description">Fixed class</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">252</field>
+				<field name="userclass_name">Guests</field>
+				<field name="userclass_description">Fixed class</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,252</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">255</field>
+				<field name="userclass_name">No One (inactive)</field>
+				<field name="userclass_description">Fixed class</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">255</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">251</field>
+				<field name="userclass_name">Read Only</field>
+				<field name="userclass_description">Fixed class</field>
+				<field name="userclass_editclass">250</field>
+				<field name="userclass_parent">0</field>
+				<field name="userclass_accum">0,251</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+		</dbTable>
+	</database>
+</e107Export>

@@ -1,0 +1,1322 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.1.2 (git)" timestamp="1465161865" >
+	<prefs>
+		<core name="fb_active">1</core>
+		<core name="frontpage"><![CDATA[array (
+  0 => 'news.php',
+)]]></core>
+
+		<core name="newsposts">3</core>
+		<core name="shortdate">%d %b %Y</core>
+		<core name="sitelogo">{e_THEME}voux/install/logo2B252832529.png</core>
+		<core name="signup_option_class">1</core>
+		<core name="sitetheme_custompages"><![CDATA[array (
+  'jumbotron_full' => 
+  array (
+    0 => 'forum',
+  ),
+  'jumbotron_sidebar_right' => 
+  array (
+    0 => '/news',
+  ),
+)]]></core>
+		<core name="sitetheme_deflayout">jumbotron_sidebar_right</core>
+		<core name="sitetheme_layouts"><![CDATA[array (
+  'jumbotron_home' => 
+  array (
+    '@attributes' => 
+    array (
+      'title' => 'Jumbotron (home)',
+      'default' => 'false',
+    ),
+    '@value' => '',
+  ),
+  'modern_business_home' => 
+  array (
+    '@attributes' => 
+    array (
+      'title' => 'Modern Business: Home page carousel with fixed custom-menus',
+    ),
+    '@value' => '',
+  ),
+  'jumbotron_full' => 
+  array (
+    '@attributes' => 
+    array (
+      'title' => 'Jumbotron (full-width)',
+    ),
+    'custompages' => 'forum',
+  ),
+  'jumbotron_sidebar_right' => 
+  array (
+    '@attributes' => 
+    array (
+      'title' => 'Jumbotron (sidebar-right)',
+      'default' => 'true',
+    ),
+    'custompages' => '/news',
+    'menuPresets' => 
+    array (
+      'area' => 
+      array (
+        0 => 
+        array (
+          '@attributes' => 
+          array (
+            'id' => '1',
+          ),
+          'menu' => 
+          array (
+            0 => 
+            array (
+              '@attributes' => 
+              array (
+                'name' => 'search',
+              ),
+              '@value' => '',
+            ),
+            1 => 
+            array (
+              '@attributes' => 
+              array (
+                'name' => 'news_categories',
+              ),
+              '@value' => '',
+            ),
+            2 => 
+            array (
+              '@attributes' => 
+              array (
+                'name' => 'other_news',
+              ),
+              '@value' => '',
+            ),
+            3 => 
+            array (
+              '@attributes' => 
+              array (
+                'name' => 'other_news2',
+              ),
+              '@value' => '',
+            ),
+            4 => 
+            array (
+              '@attributes' => 
+              array (
+                'name' => 'blogcalendar',
+              ),
+              '@value' => '',
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)]]></core>
+		<core name="sitetheme_version">1.0</core>
+		<core name="url_config"><![CDATA[array (
+  'gallery' => 'plugin',
+  'index' => 'core',
+  'news' => 'core/sef_noid',
+  'page' => 'core/sef_noid',
+  'search' => 'core',
+  'system' => 'core',
+  'user' => 'core',
+)]]></core>
+		<core name="url_locations"><![CDATA[array (
+  'index' => 
+  array (
+    0 => 'core',
+  ),
+  'news' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_full',
+    2 => 'core/sef_noid',
+    3 => 'core/sef',
+  ),
+  'page' => 
+  array (
+    0 => 'core',
+    1 => 'core/sef_chapters',
+    2 => 'core/sef_noid',
+    3 => 'core/sef',
+  ),
+  'search' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'system' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'user' => 
+  array (
+    0 => 'core',
+    1 => 'core/rewrite',
+  ),
+  'gallery' => 
+  array (
+    0 => 'plugin',
+    1 => 'plugin/rewrite',
+  ),
+)]]></core>
+		<core name="url_main_module">page</core>
+		<core name="xurl"><![CDATA[array (
+  'facebook' => 'http://facebook.com/themexpose',
+  'twitter' => '#',
+  'youtube' => '#',
+  'google' => '',
+  'linkedin' => '',
+  'github' => '',
+  'flickr' => '',
+  'instagram' => '#',
+  'pinterest' => '#',
+  'vimeo' => '',
+)]]></core>
+	</prefs>
+	<pluginPrefs>
+		<social name="sharing_providers"><![CDATA[array (
+  'email' => '1',
+  'facebook-like' => '1',
+  'twitter' => '1',
+  'google-plus1' => '1',
+  'pinterest' => '1',
+)]]></social>
+</pluginPrefs>
+	<database>
+	<dbTable name="core_media">
+		<item>
+			<field name="media_id">17</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">2.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629338</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/2.jpg</field>
+			<field name="media_size">136551</field>
+			<field name="media_dimensions">1162 x 775</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">18</field>
+			<field name="media_type">image/png</field>
+			<field name="media_name">logo%2B%25283%2529.png</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629358</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/logo%2B%25283%2529.png</field>
+			<field name="media_size">6167</field>
+			<field name="media_dimensions">482 x 140</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">19</field>
+			<field name="media_type">image/png</field>
+			<field name="media_name">logo2B252832529.png</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629632</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/logo2B252832529.png</field>
+			<field name="media_size">6167</field>
+			<field name="media_dimensions">482 x 140</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">20</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">post5-1080x720.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629746</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/post5-1080x720.jpg</field>
+			<field name="media_size">179902</field>
+			<field name="media_dimensions">1080 x 720</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">21</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">post8-1080x715.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629772</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/post8-1080x715.jpg</field>
+			<field name="media_size">139250</field>
+			<field name="media_dimensions">1080 x 715</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">22</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">DeathtoStock_Portraits-4-840x512.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629805</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/DeathtoStock_Portraits-4-840x512.jpg</field>
+			<field name="media_size">134141</field>
+			<field name="media_dimensions">840 x 512</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">23</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">DeathtoStock_NYC5-840x512.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629821</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/DeathtoStock_NYC5-840x512.jpg</field>
+			<field name="media_size">128655</field>
+			<field name="media_dimensions">840 x 512</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">24</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">gasmask.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629883</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/gasmask.jpg</field>
+			<field name="media_size">91054</field>
+			<field name="media_dimensions">1200 x 830</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">25</field>
+			<field name="media_type">image/png</field>
+			<field name="media_name">sketch-subscribe.png</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">_common_image</field>
+			<field name="media_datestamp">1464629928</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/sketch-subscribe.png</field>
+			<field name="media_size">8432</field>
+			<field name="media_dimensions">400 x 120</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">26</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">2_.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">news</field>
+			<field name="media_datestamp">1464637221</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/2_.jpg</field>
+			<field name="media_size">136551</field>
+			<field name="media_dimensions">1162 x 775</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+		<item>
+			<field name="media_id">27</field>
+			<field name="media_type">image/jpeg</field>
+			<field name="media_name">8.jpg</field>
+			<field name="media_caption"></field>
+			<field name="media_description"></field>
+			<field name="media_category">news</field>
+			<field name="media_datestamp">1464637241</field>
+			<field name="media_author">1</field>
+			<field name="media_url">{e_THEME}voux/install/8.jpg</field>
+			<field name="media_size">73660</field>
+			<field name="media_dimensions">1140 x 678</field>
+			<field name="media_userclass">0</field>
+			<field name="media_usedby"></field>
+			<field name="media_tags"></field>
+		</item>
+	</dbTable>
+	<dbTable name="links">
+		<item>
+			<field name="link_id">1</field>
+			<field name="link_name">Home</field>
+			<field name="link_url">index.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">0</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">3</field>
+			<field name="link_name">Members</field>
+			<field name="link_url">user.php</field>
+			<field name="link_description"></field>
+			<field name="link_button">icon-user.glyph</field>
+			<field name="link_category">2</field>
+			<field name="link_order">8</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">4</field>
+			<field name="link_name">Submit News</field>
+			<field name="link_url">submitnews.php</field>
+			<field name="link_description"></field>
+			<field name="link_button">icon-upload.glyph</field>
+			<field name="link_category">2</field>
+			<field name="link_order">9</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">253</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">5</field>
+			<field name="link_name">Contact</field>
+			<field name="link_url">contact.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">7</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl">index</field>
+			<field name="link_owner">contact</field>
+		</item>
+		<item>
+			<field name="link_id">6</field>
+			<field name="link_name">News</field>
+			<field name="link_url">news.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">2</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">255</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl">index</field>
+			<field name="link_owner">news</field>
+		</item>
+		<item>
+			<field name="link_id">7</field>
+			<field name="link_name">Content</field>
+			<field name="link_url">page.php</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">3</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">8</field>
+			<field name="link_name">Article 1</field>
+			<field name="link_url">page.php?id=1</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">4</field>
+			<field name="link_parent">7</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">9</field>
+			<field name="link_name">Article 2</field>
+			<field name="link_url">page.php?id=2</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">5</field>
+			<field name="link_parent">7</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">10</field>
+			<field name="link_name">Article 3</field>
+			<field name="link_url">page.php?id=3</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">6</field>
+			<field name="link_parent">7</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">11</field>
+			<field name="link_name">About</field>
+			<field name="link_url">page.php?id=1</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">1</field>
+			<field name="link_order">1</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_class">0</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+	</dbTable>
+	<dbTable name="menus">
+		<item>
+			<field name="menu_id">1</field>
+			<field name="menu_name">login_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">login_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">2</field>
+			<field name="menu_name">online_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">online/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">3</field>
+			<field name="menu_name">blogcalendar_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">blogcalendar_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">5</field>
+			<field name="menu_name">search_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">search_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">6</field>
+			<field name="menu_name">counter_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">siteinfo/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">7</field>
+			<field name="menu_name">userlanguage_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">user/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">8</field>
+			<field name="menu_name">compliance_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">siteinfo/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">9</field>
+			<field name="menu_name">other_news_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">10</field>
+			<field name="menu_name">clock_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">clock_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">11</field>
+			<field name="menu_name">other_news2_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">12</field>
+			<field name="menu_name">comment_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">comment_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">13</field>
+			<field name="menu_name">lastseen_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">online/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">14</field>
+			<field name="menu_name">news_months_menu</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">3</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">15</field>
+			<field name="menu_name">admin_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">admin_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">16</field>
+			<field name="menu_name">news_categories_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">17</field>
+			<field name="menu_name">latestnews_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">18</field>
+			<field name="menu_name">usertheme_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">user/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">19</field>
+			<field name="menu_name">powered_by_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">siteinfo/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">20</field>
+			<field name="menu_name">sitebutton_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">siteinfo/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">21</field>
+			<field name="menu_name">news_carousel_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">22</field>
+			<field name="menu_name">chapter_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">page/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">23</field>
+			<field name="menu_name">page_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">page/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">24</field>
+			<field name="menu_name">page_navigation_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">page/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">25</field>
+			<field name="menu_name">jumbotron-menu-2</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">2</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">26</field>
+			<field name="menu_name">jumbotron-menu-3</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">3</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">27</field>
+			<field name="menu_name">feature-menu-1</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">4</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">28</field>
+			<field name="menu_name">feature-menu-2</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">5</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">29</field>
+			<field name="menu_name">feature-menu-3</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">6</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">43</field>
+			<field name="menu_name">latestnews_menu</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">2</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"><![CDATA[array (
+  'caption' => 
+  array (
+    'English' => 'Recent Posts',
+  ),
+  'count' => '7',
+  'category' => '',
+)]]></field>
+		</item>
+		<item>
+			<field name="menu_id">42</field>
+			<field name="menu_name">about-me</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">1</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">41</field>
+			<field name="menu_name">about-me</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">1</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">33</field>
+			<field name="menu_name">contact_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">contact/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">34</field>
+			<field name="menu_name">featurebox_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">featurebox/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">35</field>
+			<field name="menu_name">slideshow_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">gallery/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">36</field>
+			<field name="menu_name">news_grid_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">37</field>
+			<field name="menu_name">rss_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">rss_menu/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">38</field>
+			<field name="menu_name">fb_like_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">39</field>
+			<field name="menu_name">instafeed_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">40</field>
+			<field name="menu_name">twitter_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">44</field>
+			<field name="menu_name">fb_like_menu</field>
+			<field name="menu_location">101</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">46</field>
+			<field name="menu_name">other_news2_menu</field>
+			<field name="menu_location">100</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"><![CDATA[array (
+  'caption' => 
+  array (
+    'English' => 'Featured Posts',
+  ),
+)]]></field>
+		</item>
+	</dbTable>
+	<dbTable name="news">
+		<item>
+			<field name="news_id">1</field>
+			<field name="news_title">Game Mask PC Review</field>
+			<field name="news_sef">welcome-to-e107</field>
+			<field name="news_body"><![CDATA[[html]<p>Lorem ipsum dolor sit amet, no meis semper dicunt est, petentium eloquentiam quo ne. At vero facer eam. Ex nam altera oportere, nisl natum prima id pro. Rebum augue dissentiet eum te, vel veniam eirmod option ea, at eos velit repudiare. Ius sumo dicit adolescens id, an cum efficiantur concludaturque.<br><br>Summo sensibus cum ne, et duo torquatos conceptam. No aeque elitr constituam qui. Nostro corpora nec no, diam verterem tincidunt has et. Altera accumsan urbanitas pro eu, ei assum voluptaria sed. Eam tibique nominavi consequuntur an.<br><br>Ei perfecto delicata usu, quo eius noster blandit te. Eu doctus volumus pri. Meis argumentum an nam, eos odio prima autem an. Te complectitur intellegebat pro, ius id alterum maiestatis. Ea facer accusata sed, ex illum antiopam quo.<br><br>Altera putent pri ad, in phaedrum dissentiunt per. Te eum everti dolores. Ut mea vero autem viderer, mel brute harum senserit id. Minim senserit eloquentiam duo in, sit ei justo graece petentium. Sea id homero oporteat invenire.<br><br>Pri semper dolorum ad. Cu eius repudiare eos. Eum in eleifend necessitatibus. Ne has mutat intellegebat.</p>[/html]]]></field>
+			<field name="news_extended"><![CDATA[[html]<p><strong>Lorem ipsum</strong> is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It&#039;s also called placeholder (or filler) text. It&#039;s a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout. Lorem ipsum is mostly a part of a Latin text by the classical author and philosopher Cicero. Its words and letters have been changed by addition or removal, so to deliberately render its content nonsensical; it&#039;s not genuine, correct, or comprehensible Latin anymore.</p>
+<p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]]]></field>
+			<field name="news_meta_keywords">welcome,new website</field>
+			<field name="news_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec molestie augue ac enim ultricies mattis ut ac massa. Ut malesuada bibendum felis sit amet aliquam. In facilisis nunc id velit egestas luctus. Aliquam dictum dolor et eros sagittis gravida. Vivamus aliquam rutrum fermentum. Pellentesque a eros quis ipsum molestie fringilla. Integer cursus augue in tellus sodales adipiscing. Integer nec orci bibendum, accumsan mauris...</field>
+			<field name="news_datestamp">1454367600</field>
+			<field name="news_author">1</field>
+			<field name="news_category">1</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,3</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary">Summary of the news item</field>
+			<field name="news_thumbnail">{e_THEME}voux/install/gasmask.jpg</field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">2</field>
+			<field name="news_title">Ways To Remember Something</field>
+			<field name="news_sef">ways-to-remember-something</field>
+			<field name="news_body"><![CDATA[[html]<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis</p>[/html]]]></field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords">break,food</field>
+			<field name="news_meta_description">Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim...</field>
+			<field name="news_datestamp">1459822800</field>
+			<field name="news_author">1</field>
+			<field name="news_category">3</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary"></field>
+			<field name="news_thumbnail">{e_THEME}voux/install/DeathtoStock_NYC5-840x512.jpg</field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">3</field>
+			<field name="news_title">My Style Statement</field>
+			<field name="news_sef">my-style-statement</field>
+			<field name="news_body"><![CDATA[[html]<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis</p>[/html]]]></field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords">break,food</field>
+			<field name="news_meta_description">Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim...</field>
+			<field name="news_datestamp">1461259800</field>
+			<field name="news_author">1</field>
+			<field name="news_category">3</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0,2,3</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary"></field>
+			<field name="news_thumbnail">{e_THEME}voux/install/DeathtoStock_Portraits-4-840x512.jpg</field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">4</field>
+			<field name="news_title">Draught Vaein Mynel</field>
+			<field name="news_sef">draught-vaein-mynel</field>
+			<field name="news_body"><![CDATA[[html]<p>Mauris sem sem, maximus ac sem auctor, cursus congue massa. Aliquam erat volutpat. Donec maximus libero turpis, sed consequat sapien semper quis aliquet posuere dui, quis elementum sem maximus quis. Mauris sem sem, maximus ac sem auctor, cursus congue massa. Aliquam erat volutpat. Donec maximus libero turpis, sed consequat sapien semper quis. Ut aliquet posuere dui, quis elementum sem maximus quis. Sed volutpat iaculis augue vitae ullamcorper.<br><br>&nbsp;&nbsp;&nbsp; Aenean dignissim, enim eu condimentum varius, ante justo consequat elit, ut consequat urna leo ut diam. Fusce suscipit urna a dolor ullamcorper, non egestas leo consectetur.<br><br><br>Nam sit amet felis libero. Nullam pharetra justo ac nisi consequat, ac dapibus dolor fermentum. Fusce dolor neque,Quisque id efficitur nibh, in volutpat erat. Morbi vel facilisis nulla, id posuere velit. Maecenas tempor lorem ut molestie malesuada. Nulla facilisi. Pellentesque fermentum, felis vel lacinia pulvinar, erat neque tincidunt sapien, sit amet varius lacus justo id nisi. Nunc euismod lacus lectus, ac ullamcorper neque lacinia eget. Phasellus et odio et justo consectetur egestas.<br><br><br>Phasellus et odio et justo consectetur egestas Donec velit quam, ultricies pharetra elit ut, pharetra vulputate libero. Proin ac justo aliquam, egestas felis vel, feugiat lectus. Nulla vel consequat lacus, ut congue nisl. Fusce sit amet ipsum sit amet dolor imperdiet congue. Vestibulum blandit vel metus vitae vehicula. Aenean fermentum ornare turpis, eget iaculis ligula molestie quis. Phasellus vulputate vestibulum mi, id aliquam odio sagittis nec. Phasellus at sagittis est, quis ullamcorper tortor. Pellentesque est libero, convallis nec sollicitudin non, congue in nulla. Nunc ac tincidunt leo, non convallis purus. Proin sed dui non metus blandit pharetra at eu ante. Suspendisse tristique mauris ac dignissim gravida. Suspendisse nec dolor non ex finibus</p>[/html]]]></field>
+			<field name="news_extended"></field>
+			<field name="news_meta_keywords">food,sport,vimeo</field>
+			<field name="news_meta_description">Mauris sem sem, maximus ac sem auctor, cursus congue massa. Aliquam erat volutpat. Donec maximus libero turpis, sed consequat sapien semper quis aliquet posuere dui, quis elementum sem maximus quis. Mauris sem sem, maximus ac sem auctor, cursus congue massa. Aliquam erat volutpat. Donec maximus libero turpis, sed consequat sapien semper quis. Ut aliquet posuere dui, quis elementum sem maximus quis. Sed volutpat...</field>
+			<field name="news_datestamp">1462469100</field>
+			<field name="news_author">1</field>
+			<field name="news_category">3</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary"></field>
+			<field name="news_thumbnail">{e_THEME}voux/install/post5-1080x720.jpg</field>
+			<field name="news_sticky">0</field>
+		</item>
+		<item>
+			<field name="news_id">5</field>
+			<field name="news_title">Papilion Minter Savior</field>
+			<field name="news_sef">papilion-minter-savior</field>
+			<field name="news_body"><![CDATA[[html]<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>[/html]]]></field>
+			<field name="news_extended"><![CDATA[[html]<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis</p>[/html]]]></field>
+			<field name="news_meta_keywords">fashion,food,slider</field>
+			<field name="news_meta_description">Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis. Ut wisi enim ad minim...</field>
+			<field name="news_datestamp">1464637347</field>
+			<field name="news_author">1</field>
+			<field name="news_category">3</field>
+			<field name="news_allow_comments">0</field>
+			<field name="news_start">0</field>
+			<field name="news_end">0</field>
+			<field name="news_class">0</field>
+			<field name="news_render_type">0</field>
+			<field name="news_comment_total">0</field>
+			<field name="news_summary"></field>
+			<field name="news_thumbnail">{e_THEME}voux/install/2_.jpg,{e_THEME}voux/install/8.jpg</field>
+			<field name="news_sticky">0</field>
+		</item>
+	</dbTable>
+	<dbTable name="generic">
+		<item>
+			<field name="gen_id">1</field>
+			<field name="gen_type">wmessage</field>
+			<field name="gen_datestamp">1145848343</field>
+			<field name="gen_user_id">1</field>
+			<field name="gen_ip">Hello World!</field>
+			<field name="gen_intdata">0</field>
+			<field name="gen_chardata"><![CDATA[[html]This is the voux template for a simple blog/website. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
+		</item>
+	</dbTable>
+	<dbTable name="news_category">
+		<item>
+			<field name="category_id">1</field>
+			<field name="category_name">Technology</field>
+			<field name="category_sef">technology</field>
+			<field name="category_meta_description"></field>
+			<field name="category_meta_keywords"></field>
+			<field name="category_manager">254</field>
+			<field name="category_icon">news_16.png</field>
+			<field name="category_order">0</field>
+		</item>
+		<item>
+			<field name="category_id">2</field>
+			<field name="category_name">Food</field>
+			<field name="category_sef">food</field>
+			<field name="category_meta_description"></field>
+			<field name="category_meta_keywords"></field>
+			<field name="category_manager">254</field>
+			<field name="category_icon"></field>
+			<field name="category_order">1</field>
+		</item>
+		<item>
+			<field name="category_id">3</field>
+			<field name="category_name">Fashion</field>
+			<field name="category_sef">Fashion</field>
+			<field name="category_meta_description"></field>
+			<field name="category_meta_keywords">fashion</field>
+			<field name="category_manager">254</field>
+			<field name="category_icon"></field>
+			<field name="category_order">3</field>
+		</item>
+	</dbTable>
+	<dbTable name="page">
+		<item>
+			<field name="page_id">1</field>
+			<field name="page_title">About Me</field>
+			<field name="page_sef">about</field>
+			<field name="page_chapter">0</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text"><![CDATA[[html]<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero ipsum; imperdiet at risus non, dictum sagittis odio! Nulla facilisi. Pellentesque adipiscing facilisis pharetra. Morbi imperdiet augue in ligula luctus, et iaculis est porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In ultricies vitae nisi ut porttitor. Curabitur lectus tellus, feugiat a elit vel, gravida iaculis dui. Nulla vulputate turpis dui, ac faucibus enim dignissim non. Ut non tellus suscipit, scelerisque orci sed, scelerisque sapien. Aenean convallis sodales nulla in porttitor. In pretium ante sapien, a tempor eros blandit nec.<br><br> Nulla non est nibh? Fusce lacinia quam adipiscing magna posuere dapibus. Sed mollis condimentum rhoncus. Morbi sollicitudin tellus a ligula luctus, ac varius arcu ullamcorper. Mauris in aliquet tellus, nec porttitor dui. Quisque interdum euismod mi sed bibendum. Vivamus non odio quis quam lacinia rhoncus in nec nibh. Integer vitae turpis condimentum, laoreet diam nec viverra fusce.&nbsp; <br></p>
+[/html]]]></field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1371420000</field>
+			<field name="page_rating_flag">1</field>
+			<field name="page_comment_flag">1</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">about-me</field>
+			<field name="menu_title">About Me</field>
+			<field name="menu_text"><![CDATA[[html]<p>Quisque felis quam, sollicitudin in justo non, maximus sagittis ipsum. Aenean sodales tempus turpis, ut pulvinar orci sagittis a.</p>[/html]]]></field>
+			<field name="menu_image">{e_THEME}voux/install/post8-1080x715.jpg</field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">image-text-button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+		<item>
+			<field name="page_id">2</field>
+			<field name="page_title">Article 2</field>
+			<field name="page_sef">article-2</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a nunc eget nulla rutrum fringilla sed vel nisl. Suspendisse at erat a neque pulvinar sodales. Etiam dictum erat erat. Pellentesque dictum convallis massa, eu varius sapien gravida a. Suspendisse auctor, mi a tempor tincidunt, lorem felis gravida libero, nec mattis eros felis eu neque. Etiam vel sagittis ipsum. Morbi at libero accumsan mauris tincidunt adipiscing sed vitae mauris. Aenean suscipit consectetur dignissim. Aliquam ornare diam vitae libero suscipit eget facilisis nisl ultrices? Curabitur luctus turpis ac lorem iaculis id interdum massa blandit! Curabitur placerat massa at neque accumsan porta. Nulla sed tortor id sapien dapibus auctor at eget mi. Sed ultrices lacinia viverra.Mauris in purus mauris. Nulla facilisi. Suspendisse dui enim, dapibus sed accumsan non, gravida eget nulla. Praesent ullamcorper, est ac viverra congue, nisl lacus imperdiet sem, et laoreet velit mauris sed leo. Donec erat mi, luctus quis suscipit pretium, luctus sed orci. Proin eu ultricies sem. Nam mollis turpis non erat fermentum congue.Nullam adipiscing, purus et varius blandit, arcu nisi pretium urna, a euismod eros eros quis turpis! Aliquam quis mi turpis, in varius neque. Aliquam erat volutpat. Vestibulum venenatis ipsum dapibus ante dictum egestas. Pellentesque eget nisi ligula, id accumsan eros. Aenean vitae felis vitae sapien mattis pellentesque non nec dolor. Nulla facilisi.Quisque in tortor turpis, sed venenatis nunc. Nunc tellus elit, suscipit et accumsan ac, mollis et risus. Phasellus consectetur sapien in felis semper non tempor tortor mollis. Ut id leo vel magna rhoncus aliquet. Nunc eget sollicitudin felis. Vestibulum tempor, justo et congue dignissim, augue ipsum malesuada libero, id suscipit felis mi vitae erat. Etiam suscipit lacinia sapien, ac gravida nisi lobortis non. Suspendisse dictum risus in est egestas egestas. Aenean et nisi sed odio sollicitudin placerat vel ut magna. Nulla facilisi. Proin condimentum ultricies vulputate. Morbi dapibus elit a tellus elementum congue! In vitae aliquet leo. Proin tempus tincidunt magna, sit amet malesuada ipsum ornare sed. Sed lorem augue, aliquam sit amet hendrerit sed; venenatis in massa. Sed iaculis amet.</field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1366149600</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">jumbotron-menu-2</field>
+			<field name="menu_title">Heading 2</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</field>
+			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+		<item>
+			<field name="page_id">3</field>
+			<field name="page_title">Article 3</field>
+			<field name="page_sef">article-3</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text"><![CDATA[[html]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor a justo ut tristique. Nam molestie sem at leo lobortis, vel luctus ligula tempus. Sed sagittis rutrum lectus vel suscipit. Sed in ligula vitae massa sagittis adipiscing vitae vel sem. Fusce nec rhoncus purus. Aenean mollis magna tellus; non consequat leo feugiat eu. Donec mauris velit, euismod nec facilisis quis, hendrerit nec lorem. Aliquam et lorem sed enim tempus sodales. Vestibulum ut enim adipiscing ipsum semper eleifend in in dolor. Fusce tempor risus velit, in fringilla tellus faucibus eget. Maecenas aliquet nunc nec nulla auctor, sed tristique est pellentesque. Maecenas tristique blandit dolor, nec egestas ligula aliquam eu.<br><br>Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.[/html]]]></field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1336600800</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">jumbotron-menu-3</field>
+			<field name="menu_title">Heading 3</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</field>
+			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">button</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+		<item>
+			<field name="page_id">4</field>
+			<field name="page_title">Feature 1</field>
+			<field name="page_sef">feature-1</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor a justo ut tristique. Nam molestie sem at leo lobortis, vel luctus ligula tempus. Sed sagittis rutrum lectus vel suscipit. Sed in ligula vitae massa sagittis adipiscing vitae vel sem. Fusce nec rhoncus purus. Aenean mollis magna tellus; non consequat leo feugiat eu. Donec mauris velit, euismod nec facilisis quis, hendrerit nec lorem. Aliquam et lorem sed enim tempus sodales. Vestibulum ut enim adipiscing ipsum semper eleifend in in dolor. Fusce tempor risus velit, in fringilla tellus faucibus eget. Maecenas aliquet nunc nec nulla auctor, sed tristique est pellentesque. Maecenas tristique blandit dolor, nec egestas ligula aliquam eu.
+
+Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.</field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1344549600</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">feature-menu-1</field>
+			<field name="menu_title">Modern Business Feature Menu 1</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?</field>
+			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">2-column_1:1_text-left</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+		<item>
+			<field name="page_id">5</field>
+			<field name="page_title">Feature 2</field>
+			<field name="page_sef">feature-2</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor a justo ut tristique. Nam molestie sem at leo lobortis, vel luctus ligula tempus. Sed sagittis rutrum lectus vel suscipit. Sed in ligula vitae massa sagittis adipiscing vitae vel sem. Fusce nec rhoncus purus. Aenean mollis magna tellus; non consequat leo feugiat eu. Donec mauris velit, euismod nec facilisis quis, hendrerit nec lorem. Aliquam et lorem sed enim tempus sodales. Vestibulum ut enim adipiscing ipsum semper eleifend in in dolor. Fusce tempor risus velit, in fringilla tellus faucibus eget. Maecenas aliquet nunc nec nulla auctor, sed tristique est pellentesque. Maecenas tristique blandit dolor, nec egestas ligula aliquam eu.
+
+Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.</field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1347228000</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">feature-menu-2</field>
+			<field name="menu_title">Modern Business Feature Menu 2</field>
+			<field name="menu_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla iaculis odio sit amet mi consequat varius. Nullam fringilla sodales lacus id mollis. Morbi fermentum turpis quis orci scelerisque, non pellentesque dolor sodales. Nullam luctus ut tellus quis ullamcorper! Suspendisse convallis tortor nec semper condimentum. Proin adipiscing adipiscing elit, ut posuere mauris consequat sed. Maecenas ultrices nisi tortor, sed vehicula urna auctor euismod?</field>
+			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">2-column_1:1_text-right</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+		<item>
+			<field name="page_id">6</field>
+			<field name="page_title">Feature 3</field>
+			<field name="page_sef">feature-3</field>
+			<field name="page_chapter">2</field>
+			<field name="page_metakeys"></field>
+			<field name="page_metadscr"></field>
+			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor a justo ut tristique. Nam molestie sem at leo lobortis, vel luctus ligula tempus. Sed sagittis rutrum lectus vel suscipit. Sed in ligula vitae massa sagittis adipiscing vitae vel sem. Fusce nec rhoncus purus. Aenean mollis magna tellus; non consequat leo feugiat eu. Donec mauris velit, euismod nec facilisis quis, hendrerit nec lorem. Aliquam et lorem sed enim tempus sodales. Vestibulum ut enim adipiscing ipsum semper eleifend in in dolor. Fusce tempor risus velit, in fringilla tellus faucibus eget. Maecenas aliquet nunc nec nulla auctor, sed tristique est pellentesque. Maecenas tristique blandit dolor, nec egestas ligula aliquam eu.
+
+Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor convallis quam, eget tempus neque blandit sit amet. Quisque dictum libero elit, ut vehicula lectus accumsan a. Nam laoreet vulputate massa vel viverra. Sed tempus blandit sapien, in viverra urna aliquet quis. Aliquam erat volutpat. Nulla accumsan posuere.</field>
+			<field name="page_author">1</field>
+			<field name="page_datestamp">1349820000</field>
+			<field name="page_rating_flag">0</field>
+			<field name="page_comment_flag">0</field>
+			<field name="page_password"></field>
+			<field name="page_class">0</field>
+			<field name="page_ip_restrict"></field>
+			<field name="page_template">default</field>
+			<field name="page_order">9999</field>
+			<field name="menu_name">feature-menu-3</field>
+			<field name="menu_title"><![CDATA[&#039;Modern Business&#039; is a ready-to-use, Bootstrap 3 updated, multi-purpose HTML theme!]]></field>
+			<field name="menu_text">For more templates and more page options that you can integrate into this website template, visit Start Bootstrap!</field>
+			<field name="menu_image"></field>
+			<field name="menu_icon"></field>
+			<field name="menu_template">2-column_2:1_text-left</field>
+			<field name="menu_class">0</field>
+			<field name="menu_button_url"></field>
+			<field name="menu_button_text"></field>
+		</item>
+	</dbTable>
+		<dbTable name="userclass_classes">
+			<item>
+				<field name="userclass_id">3</field>
+				<field name="userclass_name">NEWSLETTER</field>
+				<field name="userclass_description">Subscribe to Newsletter</field>
+				<field name="userclass_editclass">0</field>
+				<field name="userclass_parent">255</field>
+				<field name="userclass_accum">3</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+		</dbTable>
+	</database>
+</e107Export>

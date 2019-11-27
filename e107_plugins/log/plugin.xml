@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Statistic Logging" lan="LAN_PLUGIN_LOG_NAME" version="2.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" />
+	<description lan="LAN_PLUGIN_LOG_DESCRIPTION">This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.</description>
+	<adminLinks>
+		<link url='admin_config.php' description='ADSTAT_L33' icon='images/stats_32.png' iconSmall='images/stats_16.png' primary='true' >LAN_PLUGIN_LOG_CONFIGURE</link>	
+	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}log/stats.php?1" sef='index' >LAN_PLUGIN_LOG_LINK</link>
+	</siteLinks>	
+	<mainPrefs>
+		<pref name="statActivate">0</pref>
+		<pref name="statUserclass"></pref>
+		<pref name="statBrowser">1</pref>
+		<pref name="statOs">1</pref>
+		<pref name="statScreen">1</pref>
+		<pref name="statDomain">1</pref>
+		<pref name="statRefer">1</pref>
+		<pref name="statQuery">1</pref>
+		<pref name="statRecent">1</pref>
+		<pref name="statPrevMonth">0</pref>
+	</mainPrefs>
+</e107Plugin>

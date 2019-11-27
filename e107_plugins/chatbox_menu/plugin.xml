@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Chatbox" lan="LAN_PLUGIN_CHATBOX_MENU_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
+	<description lan="LAN_PLUGIN_CHATBOX_MENU_DESCRIPTION">Chatbox Menu</description>
+	<category>content</category>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<adminLinks>
+		<link url='admin_chatbox.php' description='LAN_CONFIGURE' icon='images/chatbox_32.png' iconSmall='images/chatbox_16.png' primary='true' >LAN_CONFIGURE</link>	
+	</adminLinks>
+	<mainPrefs>
+		<pref name="chatbox_posts">10</pref>
+		<pref name="cb_wordwrap">20</pref>
+		<pref name="cb_layer">0</pref>
+		<pref name="cb_layer_height">200</pref>
+		<pref name="cb_emote">0</pref>
+		<pref name="cb_mod">254</pref>
+		<pref name="cb_user_addon">1</pref>
+	</mainPrefs>
+</e107Plugin>
