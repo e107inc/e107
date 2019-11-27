@@ -147,10 +147,10 @@ class banner_ui extends e_admin_ui
 		public function init()
 		{
 
-			if (!empty($_POST['update_menu']))
+			/*if (!empty($_POST['update_menu']))
 			{
 				$this->menuPageSave();
-			}
+			}*/
 		}
 
 		
@@ -227,6 +227,7 @@ class banner_ui extends e_admin_ui
 			// do something		
 		}		
 		
+		/*
 		private function menuPageSave()
 		{
 			$temp = array(); 
@@ -261,10 +262,10 @@ class banner_ui extends e_admin_ui
 				$menu_pref = e107::getConfig('menu')->getPref('');
 				//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
 			}	
+		
 			
 			
-			
-		}
+		}*/
 			
 	
 		public function menuPage()
@@ -273,7 +274,7 @@ class banner_ui extends e_admin_ui
 			return e107::getMessage()->addInfo("The menu is now configured within the menu-manager.")->render();
 
 
-			$ns = e107::getRender();
+			/*$ns = e107::getRender();
 			$sql = e107::getDb();
 			$menu_pref = e107::getConfig('menu')->getPref('');
 			$frm = e107::getForm();
@@ -372,6 +373,7 @@ class banner_ui extends e_admin_ui
 				return $mes->render().$text; 
 			
 			//	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.BNRLAN_36, $mes->render() . $text);
+			*/
 		}
 
 		public function renderHelp()
@@ -485,25 +487,6 @@ class banner_form_ui extends e_admin_form_ui
 			break;
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	
 	// Custom Method/Function 
@@ -643,13 +626,7 @@ class banner_form_ui extends e_admin_form_ui
 		//$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
 	//	$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 	}	
-	
-	
-	
-		
-	
-	
-	
+
 
 }		
 		
@@ -664,17 +641,3 @@ exit;
 
 
 //TODO - Put client/password in a separate table?
-
-
-
-
-
-
-// ---------------------------- UNUSED Below here -------------------------------------------- // 
-
-
-
-
-
-
-
