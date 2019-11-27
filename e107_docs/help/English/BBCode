@@ -1,0 +1,12 @@
+
+Q>	What's BBCode?
+A>	A BBCode is a shortcut to an HTML tag, for example entering &#91;b] I am bold text! &#91;/b] in any of your admin textboxes will make the text inside the &#91;b] and &#91;/b] appear in bold text, so [b]I am bold text![/b] would appear on the screen.
+
+Q>	But what's it for?
+A>	It saves you time when entering HTML tags. You can use normal HTML tags in your text entry boxes but using BBCode will really speed up your text entry.
+
+Q>	When I click one of the BBCode buttons to enter the code, it enters it at the end of my text, not where the cursor is - why?
+A>	There is a bug in Internet Explorer that can cause it to crash if e107 tries to enter the code at the cursor position, so in the interests of compatibility the code is entered at the end of your text.
+
+Q>	What BBCodes can I use?
+A>	Hover your mouse pointer above any of the bbcode boxes; you'll see a small explanation appear just above the buttons. There are also codes for links &#91;url] &#91;/url] and email &#91;email] &#91;/email], although again using normal HTML tags is ok. All web addresses and email addresses entered are automatically made into clickable hyperlinks.

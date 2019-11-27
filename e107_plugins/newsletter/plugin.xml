@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Plugin name="Newsletter" lan="LAN_PLUGIN_NEWSLETTER_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc, nlstart" url="http://e107.org" />
+	<description lan="LAN_PLUGIN_NEWSLETTER_DESCRIPTION">Provides a quick and easy way to configure and send newsletters.</description>
+	<folder>newsletter</folder>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<category>content</category>  
+	<adminLinks>
+		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/nl_32.png' iconSmall='images/nl_16.png' primary='true' />	
+	</adminLinks>
+	<mainPrefs/>
+</e107Plugin>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Trackback" lan="LAN_PLUGIN_TRACKBACK_NAME" version="1.1" date="2012-08-01" compatibility="1.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="devs@e107.org" />
+	<description lan="LAN_PLUGIN_TRACKBACK_DESCRIPTION">This plugin enables you to use trackback in your news posts.</description>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<adminLinks>
+		<link url='admin_config.php' description='TRACKBACK_L1' icon='images/trackback_32.png' iconSmall='images/trackback_16.png' primary='true' >TRACKBACK_L1</link>	
+	</adminLinks>
+	<mainPrefs>
+		<pref name="trackbackEnabled">0</pref>
+		<pref name="trackbackString">Trackback address for this post:</pref>
+	</mainPrefs>
+</e107Plugin>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Blank Plugin" lan="LAN_PLUGIN__BLANK_NAME" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<summary>A Blank Plugin to help you get started in plugin development</summary>
+	<description lan="LAN_PLUGIN__BLANK_DIZ">A Blank Plugin to help you get started in plugin development. More details can be added here.</description>
+	<category>misc</category>
+	<keywords>
+		<word>blank</word>
+		<word>empty</word>
+		<word>template</word>
+	</keywords>
+	<screenshots>
+		<image></image>
+	</screenshots>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' icon128="" primary='true' >LAN_CONGIGURE</link>
+		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>
+	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone' sef='index'>LAN_PLUGIN__BLANK_LINK</link>
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="blank_pref_1">1</pref>
+		<pref name="blank_pref_2">[more...]</pref>
+		<pref name="blank_pref_3">0</pref>
+	</pluginPrefs>
+	<userClasses>
+		<class name="blank_userclass" description="Blank Userclass Description" />		
+	</userClasses>
+	<extendedFields>
+		<field name="custom" type='EUF_TEXTAREA' default='0' active="true" />
+		<field name="custom2" type='EUF_ADDON' data="str" default='0' active="true" system="false" text="My Label" />
+	</extendedFields>
+	<mediaCategories>
+		<category type="image">Blank Images</category>
+	</mediaCategories>
+</e107Plugin>

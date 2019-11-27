@@ -1,0 +1,6 @@
+
+Q>	I'd like to let people upload files to my site but I'm worried about security...
+A>	There are a couple of things to do to improve security. First, use Binary storage, the uploaded files will then be stored in the MySQL database and won't be accessible to anyone apart from to download. Also, set the list of allowed file types, if anyone tries to upload a filetype other than the types you have defined it will be deleted immediately from your server.
+
+Q>	I've had some files uploaded, what do I do now?
+A>	You have the option to copy the file to your Download Manager, to allow others to download it, and to copy the upload information to your newspost section, to make a news item announcement about it.

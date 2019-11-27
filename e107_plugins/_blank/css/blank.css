@@ -1,0 +1,29 @@
+
+/* e_sitelink */
+
+ /* this class name is auto-generated from the plugin name and function name e_sitelink */
+.-blank-megamenu { position: static !important; }
+
+.mega-dropdown-menu {
+  padding: 20px 15px 15px;
+  text-align: center;
+  width: 100%;
+}
+
+
+.-blank-megamenu .nav-list { border-bottom: 0 solid #eee; }
+.-blank-megamenu .nav-list > li {
+  padding: 20px 15px 15px;
+
+}
+.-blank-megamenu .nav-list > li:last-child { border-right: 0 solid #eee; }
+.-blank-megamenu .nav-list > li > a:hover { text-decoration: none; }
+.-blank-megamenu .nav-list > li > a > span {
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+
+
+

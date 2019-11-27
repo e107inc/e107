@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.9 2009-12-08 17:21:31 secretr Exp $ -->
+<e107Plugin name="Featurebox" lan="LAN_PLUGIN_FEATUREBOX_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org"  />
+	<description lan="LAN_PLUGIN_FEATUREBOX_DESCRIPTION">Displays an animated area on the top of your page with news-items and other content you would like to feature.</description>
+	<category>content</category>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure feature box' icon='images/featurebox_32.png' iconSmall='images/featurebox_16.png' primary='true'>Configure feature box</link>
+		<link url="admin_config.php" description="Manage Featurebox Items" icon="manage">Manage Items</link>
+		<link url="admin_config.php?mode=main&amp;action=create" description="Add Featurebox item"  icon="add">Create Item</link>
+		<link url="admin_config.php?mode=category&amp;action=list" description="Manage Featurebox Categories" icon="manage">Manage Categories</link>
+		<link url="admin_config.php?mode=category&amp;action=create" description="Add Featurebox Category" icon="add">Create Category</link>
+	</adminLinks>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<mainPrefs>
+		<pref name="fb_active">1</pref>
+	</mainPrefs>
+	<pluginPrefs>
+		<pref name="menu_category">bootstrap3_carousel</pref>
+	</pluginPrefs>
+	<mediaCategories>
+		<category type="image">Featurebox</category>
+	</mediaCategories>
+</e107Plugin>

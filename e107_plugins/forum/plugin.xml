@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Forum" lan="LAN_PLUGIN_FORUM_NAME" version="2.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" />
+	<description lan="LAN_PLUGIN_FORUM_DESC">This plugin is a fully featured forum system</description>
+	<category>content</category> 
+	<adminLinks>
+		<link url='forum_admin.php' description='Configure Forum' icon='images/forums_32.png' iconSmall='images/forums_16.png' primary='true' >Configure Forum</link>
+		<link url="forum_admin.php" description="Forum Front Page" icon="manage" >Front Page</link>
+		<link url="forum_admin.php?cat" description="Create Forum Parents"  icon="add" >Create Parents</link>
+		<link url="forum_admin.php?create" description="Create Forums"  icon="images/forums_16.png" >Create Forums</link>
+		<link url="forum_admin.php?opt" description="Forum Preferences"  icon="settings" perm="mainadmin" >Preferences</link>
+	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}forum/forum.php" sef='index' perm='everyone' lan='LAN_PLUGIN_FORUM_NAME'>Forum</link>
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="show_topics">1</pref>
+		<pref name="postfix">[more...]</pref>
+		<pref name="poll">255</pref>
+		<pref name="popular">10</pref>
+		<pref name="track">1</pref>
+		<pref name="eprefix">[forum]</pref>
+		<pref name="enclose">1</pref>
+		<pref name="title">Forums</pref>
+		<pref name="postspage">10</pref>
+		<pref name="hilightsticky">1</pref>
+	</pluginPrefs>	
+	<userClasses>
+		<class name="forum_moderator" description="Moderator of all forums" />		
+	</userClasses>
+	<extendedFields>
+		<field name="viewed" type='EUF_TEXTAREA' default='0' active="true" />
+		<field name="posts" type='EUF_INTEGER' default='0' active="true" />
+	</extendedFields>		
+</e107Plugin>

@@ -1,0 +1,217 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+
+#sidebar {
+	padding-top:20px;	
+}
+
+.alert { 
+	margin-top:20px 
+}
+
+img.logo {
+    margin-top: -5px;
+    margin-right: 5px;
+}
+
+/* Make posted content images responsive too */
+.bbcode-img { display: block; 	max-width: 100%; 	height: auto; }
+
+/* Sign in Page */
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+
+/* Page Sections */
+.section,
+.section-colored {
+  padding: 50px 0;
+}
+
+.section-colored {
+  background-color: #e1e1e1; /* change this to change the background color of a colored section */
+  color: #000;
+}
+
+.img-home-portfolio, .img-customer, .portfolio-item {
+    margin-bottom: 30px;
+}
+
+
+.row > .col-md-4:nth-child(4n+1) {  clear:right; }  /* fix wrapping in gallery portfolio */
+
+
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+
+.featurebox.carousel {
+ 	min-height:460px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.featurebox.carousel .item {
+  min-height:460px;
+  background-color: #CCCCCC;
+}
+
+.featurebox-item-image.pull-left, .featurebox-item-image.pull-right {
+
+  margin-top: 25px;
+}
+
+img.featurebox { border-radius: 5px }
+
+.xurl-social-icons a {
+    color: inherit;
+    text-decoration: none;
+    opacity: .7;
+    padding-left:15px;
+    transition: opacity .5s ease-out;
+    -moz-transition: opacity .5s ease-out;
+    -webkit-transition: opacity .5s ease-out;
+    -o-transition: opacity .5s ease-out;
+}
+
+.xurl-social-icons a:hover {
+	opacity: 1;
+}
+
+.btn-featurebox, .btn-cpage { margin-top:10px  }
+
+.tab-pane { padding-top:15px }
+
+
+
+.modal-lg { width: 70% }
+
+
+table label.checkbox {
+    margin-left: 20px;
+}
+
+/* Fix sidebar list alignments */
+#sidebar .panel-body span.badge { float:right}
+#sidebar .panel-body ul { padding-left:15px }
+#sidebar .panel-body ul li { padding-bottom:8px }
+#sidebar .panel-body ul.list-unstyled { padding-left:0}
+
+
+li.dropdown-avatar > a.dropdown-toggle { padding:9px 15px 10px 0; }
+
+
+/* Navigation sub-sub menu - Mega Menu */
+/*
+
+ul.submenu-start.lower { list-style:none; width:500px; margin-left:-200px;} !* Adjust to one's needs *!
+ul.submenu-start.lower li.dropdown-submenu { display:inline-block;  }
+li.dropdown-submenu.lower ul.submenu-start { list-style-type:initial; list-style-position:inside; border:0; position:relative;  display:block; width:auto; padding:0; box-shadow:none; -webkit-box-shadow:none;  }
+li.dropdown-submenu.lower ul.submenu-start li { padding-left:20px; margin-left:0; text-indent:0}
+li.dropdown-submenu.lower ul.submenu-start li a { display:inline-block; padding-left:0; margin-left:0}
+li.dropdown-submenu.lower ul.submenu-start li a:hover { background:none}
+li.dropdown-submenu.lower ul.submenu-start li:hover { background-color:#f5f5f5; }
+*/
+
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;width:100%;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu:hover>.dropdown-menu{display:block;}
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+
+
+.news-grid-default .featured { margin-bottom:30px; }
+.news-grid-other .featured { margin-bottom:30px; }
+
+td .progress { margin-bottom:0 }
+/* MENU MENU Example*/
+
+
+
+.theme-sc-bootstrap-megamenu-example { position: static !important; }
+
+.theme-sc-bootstrap-megamenu-example .dropdown-menu {
+  padding: 20px 15px 15px;
+  width: 100%;
+}
+.theme-sc-bootstrap-megamenu-example .dropdown-menu  ul.media-list {
+margin-bottom: 10px;
+    }
+
+
+
+/* CUSTOM Responsive Styles */
+
+
+/* Extra small devices Phones (<768px)  .col-xs */
+@media all and (max-width: 767px) { 
+	
+	.featurebox .carousel-indicators 										{ top:10px; }	
+	.featurebox-item-image.pull-left, .featurebox-item-image.pull-right 	{ margin-top: 30px; }
+	.news-images-main                                                       { padding-left: 0; padding-bottom:15px; padding-right:0}
+	#custom-fields-example { margin-left:0;margin-right:0 !important; padding:0; clear:both; margin-bottom:15px; }
+}
+
+/* Small devices Tablets .col-sm */
+@media all and (min-width: 768px) and (max-width: 991px)  {
+	.news-images-main       { padding-left: 0; padding-bottom:5px }
+	#custom-fields-example { margin-left:0;margin-right:0 !important; padding:0; clear:both; margin-bottom:15px; }
+}
+
+/* Medium devices Desktops (≥992px)  .col-md */
+@media all and (min-width: 992px) and (max-width: 1199px)  {
+	.news-images-main { padding-left: 0; padding-bottom:5px}
+	
+ }
+
+/* Large devices (large desktops, 1200px and up).col-lg  */
+@media all and (min-width: 1200px) {
+
+	.news-images-main { padding-left: 0; padding-bottom:5px}
+}
+
+

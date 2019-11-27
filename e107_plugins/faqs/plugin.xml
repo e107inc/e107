@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="FAQs" lan="LAN_PLUGIN_FAQS_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc" url="http://www.e107.org" email="security@e107.org" />
+	<summary>Add frequently asked questions to your e107 website.</summary>
+	<description lan="LAN_PLUGIN_FAQS_DESCRIPTION">A simple plugin to add Frequently Asked Questions to your website.</description>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<bbcodes imgResize="true" />	
+	<category>content</category>
+	<keywords>
+		<word>faq</word>
+		<word>question</word>
+		<word>answer</word>
+	</keywords>
+	<adminLinks>
+		<link url="admin_config.php" description="Configure FAQs" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_PLUGIN_FAQS_NAME</link>		
+	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}faqs/faqs.php" sef='index' description="FAQs" perm='everyone' icon="" >LAN_PLUGIN_FAQS_NAME</link>
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="add_faq">255</pref>
+		<pref name="submit_question">255</pref>
+        <pref name="submit_question_limit">3</pref>
+		<pref name="classic_look">0</pref>
+		<pref name="display_social">1</pref>
+        <pref name="display_datestamp">1</pref>
+	</pluginPrefs>
+</e107Plugin>

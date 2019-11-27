@@ -1,0 +1,55 @@
+
+
+
+/* IMAGE LIST */
+
+ul.gallery > li > div > h5 			{ text-align: center }
+ul.gallery-cat > li > div > h3 		{ text-align: center }
+
+/* CATEGORY LIST */
+
+
+
+.lb-dataContainer					{ padding-top:10px; font-size: 110%;}
+
+.lb-caption							{  }
+
+
+/* SLIDESHOW */
+
+#gallery-slideshow-wrapper 			{ display:block; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; width: 664px;  height: 146px;  overflow: hidden; background: #000000; margin-left:auto;margin-right:auto; max-width:100% }
+
+#gallery-slideshow-content 			{ width: 3500px; }
+
+#gallery-slideshow-content .slide 	{ float: left; width: 679px; padding:12px; height: 146px; white-space:nowrap }
+
+.gallery-slideshow-controls			{ clear:both; width: 664px; margin-left:auto; margin-right:auto; padding-top:5px; padding-bottom:10px; max-width:100%; }
+
+.gallery-slide-item					{ margin-right:8px; display: inline-block;  }
+
+.gallery-slideshow-thumb			{ -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;  }
+
+.gallery-slideshow-thumb:hover		{  }
+
+.gallery-slide-jumper-container		{ text-align:center; padding-left:250px;}
+
+.gallery-slide-jumper 				{ padding:3px;}
+
+.gallery-slide-jumper-selected 		{ font-weight:bold }
+
+
+/* Fix for Bootstrap2 margin-left issue when wrapping */
+.row-fluid .gallery div.span6:nth-child(2n + 3) { margin-left : 0px; }
+.row-fluid .gallery div.span4:nth-child(3n + 4) { margin-left : 0px; }
+.row-fluid .gallery div.span3:nth-child(4n + 5) { margin-left : 0px; }
+.row-fluid .gallery div.span2:nth-child(6n + 7) { margin-left : 0px; }
+
+.row-fluid .gallery-cat div.span6:nth-child(2n + 3) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span4:nth-child(3n + 4) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span3:nth-child(4n + 5) { margin-left : 0px; }
+.row-fluid .gallery-cat div.span2:nth-child(6n + 7) { margin-left : 0px; }
+
+/* Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890 */
+.thumbnails .span2:nth-child(6n+1) {
+    margin-left:0;
+}

@@ -1,0 +1,9 @@
+
+Q>	What are these user-classes I keep seeing? What are they for?
+A>	User classes restrict access to certain areas or functions of your site. If you define a class and then add certain users to it, you can choose to make things visible to only the users in that class.
+For example, there is a class already created by default when you install e107 called PRIVATEFORUM. Adding users to this class then creating a forum under that class will make only the users in that class able to access that forum. You can restrict other areas and functions by class, like news items, links, downloads, etc.
+Q>	What does the 'class parent' field do?
+A>	In 2.x, you can set a 'class hierarchy', where users in a certain class also have the rights of the parent class. If you don't want this, just set the parent to 'Everyone'
+Q>	I want new users to start with membership of certain classes.
+A>	You can now set initial class membership through the 'Userclass' menu. You can also determine whether this membership is in force immediately they sign up, or whether it is added when their membership is verified.
+

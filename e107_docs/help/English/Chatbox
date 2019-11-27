@@ -1,0 +1,9 @@
+
+Q>	What is the Replace Links section for?
+A>	You can convert any links entered in your chatbox to other text, or an image. This keeps your chatbox from overflowing with long website addresses. To use an image, tick Replace Links, and in the box below enter &lt;img src='path_to_your_image' alt='' />, now any links entered will be converted to the image you entered.
+
+Q>	What's Wordwrap for?
+A>	If someone entered a very long word in your chatbox it could disrupt the layout of your site. If you were to enter 40 in the Wordwrap box, any works longer than 40 characters would be wrapped so the column wouldn't be extended. You may have to change this value corresponding to the theme you are using, and the width of the column your chatbox is in.
+
+Q>	My site is for all ages yet someone keeps swearing in the chatbox - how can I stop this?
+A>	Go to the Preferences screen in your admin section, and find the Protection of minors options. You can add a list of words here that will be replaced by a word or sentence of your choice, for example CENSORED! Now anytime that work is encountered on your site it will be replaced with the text you entered.

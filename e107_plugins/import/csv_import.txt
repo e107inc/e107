@@ -1,0 +1,2 @@
+extra,add login name,simple,user_name,user_password,user_loginname
+sq,basic information single quotes,simple_sq,user_name,user_password

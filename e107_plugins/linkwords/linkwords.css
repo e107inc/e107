@@ -1,0 +1,5 @@
+
+/* Linkwords */
+a.lw-tip    { cursor: help; text-decoration-style:dotted }
+span.lw-tip { cursor: help; border-bottom:1px dotted; }
+a.lw-link   { cursor: pointer; text-decoration-style:solid }

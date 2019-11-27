@@ -1,0 +1,62 @@
+---
+version: "2"
+plugins:
+  csslint:
+    enabled: false
+  duplication:
+    enabled: true
+    checks:
+      Identical code:
+        enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
+
+    config:
+      languages:
+      - javascript
+      - php
+  eslint:
+    enabled: false
+  fixme:
+    enabled: false
+  phpmd:
+    enabled: true
+    checks:
+      Identical code:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      UnusedFormalParameter:
+        enabled: false
+      Design/TooManyFields:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      CleanCode/ElseExpression:
+        enabled: false
+    config:
+      file_extensions: "php"
+      rulesets: "cleancode,unusedcode,codesize"
+exclude_patterns:
+- "config/"
+- "db/"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
+- "**/*.d.ts"
+- "e107_admin/core_image.php"
+- "e107_plugins/log/js/awesomechart.js"
+- "e107_core/**/*.sc"
+- "e107_docs/**/*"
+- "e107_images/**/*"
+- "e107_handlers/hybridauth/**/*"
+- "e107_handlers/jsshrink/**/*"
+- "e107_handlers/phpmailer/**/*"
+- "e107_handlers/phpthumb/**/*"
+- "e107_handlers/xmlrpc/**/*"
+- "e107_web/**/*"

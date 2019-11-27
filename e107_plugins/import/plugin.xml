@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Import into e107" lan="LAN_PLUGIN_IMPORT_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="devs@e107.org" />
+	<description lan="LAN_PLUGIN_IMPORT_DESCRIPTION">Import data from Wordpress, Joomla, Drupal, Blogpost, RSS and other formats.</description>
+	<category>tools</category>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<adminLinks>
+		<link url='admin_import.php' description='Import into e107' icon='images/import_32.png' iconSmall='images/import_16.png' primary='true' >Import into e107</link>		
+	</adminLinks>	
+</e107Plugin>

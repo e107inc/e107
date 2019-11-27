@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Banners" lan="LAN_PLUGIN_BANNER_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
+	<summary>Add advertising banners to your e107 website</summary>
+	<description lan="LAN_PLUGIN_BANNER_DESCRIPTION">Add advertising banners to your e107 website</description>
+	<keywords>
+	   	<word>banners</word>
+		<word>advertise</word>
+	</keywords>
+	<category>content</category>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<adminLinks>
+		<link url='admin_banner.php' description='Configure Banners' icon='images/banners_32.png' iconSmall='images/banners_16.png' primary='true' >Configure Banners</link>	
+	</adminLinks>
+	<mediaCategories>
+		<category type="image">Banners</category>
+	</mediaCategories>
+</e107Plugin>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Google Sitemap" lan="LAN_PLUGIN_GSITEMAP_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+	<author name="e107 Inc." url="http://e107.org" email="security@e107.org" />
+	<description lan="LAN_PLUGIN_GSITEMAP_DESCRIPTION">Generates a Google Sitemap</description>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure gSitemap' icon='images/icon.png' iconSmall='images/icon_16.png' primary='true' >LAN_CONFIGURE</link>		
+	</adminLinks>
+	<siteLinks>
+		<link name="" url="gsitemap.php?show" sef='index' lan="GSLAN_Name">Sitemap</link>
+	</siteLinks>
+	<pluginPrefs>
+	</pluginPrefs>
+</e107Plugin>

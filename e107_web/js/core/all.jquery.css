@@ -1,0 +1,19 @@
+
+/* CSS File for Javascript library elements in all areas of e107 */
+
+
+a.e-nav 				{ padding:3px; }
+
+
+div.e-rate				{ width:100px; display:inline-block    }
+img.e-rate				{    }
+
+.e-rate-status			{ vertical-align:middle; padding-right:4px; display:inline-block; text-align:right	}
+.e-rate-status-download { text-align:left; }
+.e-rate-votes			{ vertical-align:middle; display:inline-block; width:100px }
+
+select.e-bb				{ margin-top:0px; width:100px }
+.bbcode_buttons			{  }
+.bbcode_buttons:hover	{  }
+
+body.e-iframe			{ padding:15px; margin:0px; }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Pages" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="false" >
+	<category>menu</category>
+</e107Plugin>

@@ -1,0 +1,6 @@
+
+Q>	What's a download parent?
+A>	This allows you to group your downloads into different categories.
+
+Q>	I want to add a download but the file doesn't appear in the list - why?
+A>	Only files in the e107_files/downloads folder appear in the dropdown list. Copy the file into this folder and it will appear. The same applies to images; they must be in the e107_files/downloadimages folder.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Social" lan="LAN_PLUGIN_SOCIAL_NAME" version="1.0" date="2012-12-01" compatibility="2.0" installRequired="true" >
+	<category>settings</category>
+    <author name="e107 Inc." email="devs@e107.org" />
+    <summary lan="LAN_SOCIAL_ADMIN_SUMM">Adds Facebook, Twitter and other social media widgets to e107.</summary>
+    <description lan="LAN_PLUGIN_SOCIAL_DESCR">Adds options to replace the e107 comment engine with Facebook. Add Twitter feeds to your site. etc.</description>
+    <keywords>
+        <word>facebook</word>
+        <word>twitter</word>
+    </keywords>
+    <adminLinks>
+        <link url="admin_config.php" description="" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
+    </adminLinks>
+</e107Plugin>

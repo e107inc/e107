@@ -1,0 +1,6 @@
+
+Q>	What are permissions?
+A>	These allow you to give administrators different access levels to the admin section. For example you might only want to let a certain admin post news items; using permissions you can do this. There are some admin functions that are only accessible to the main site admin, this is for security reasons.
+
+Q>	I want to make an existing registered member into an administrator - how?
+A>	Click on Users in your admin section and search for the registered member, then click on Make Admin. You should then go immediately to the Administrators section and set his permissions. You can also remove admin status from someone in this way.

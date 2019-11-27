@@ -1,0 +1,45 @@
+
+/* ADMIN specific styling */
+/*
+a.media-select-image 		{ margin:5px; border:1px solid rgb(102, 102, 102); width:120px; height:100px; border-radius:4px }
+
+a.media-select-image:hover	{ border:1px solid red; }
+*/
+
+
+a.media-select-image,
+a.media-select-none 		{ margin:5px; margin-left:0; text-decoration:none; width:80px; height:80px; box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset; background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);}
+
+@media (min-height: 500px){ 
+	a.media-select-image,
+	a.media-select-none 		{  width:120px; height:120px; }
+} 
+
+a.media-select-icon			{ text-align:center; vertical-align:middle; margin:4px;  min-width:48px; min-height:48px; max-width:128px; max-height:128px}
+a.media-select-icon:hover	{ border:1px solid red; }
+a.media-select-icon-none    { width:48px; height:48px }
+
+
+.media-select-container 	{ padding:10px; }
+
+ .media-select-active		{ opacity: .5; }
+
+.e-moving 					    { background-color: silver; }
+
+legend 						    { display: none; }
+.chzn-choices				    { width: 350px; }
+.e-autocomplete				    { display: none }
+.e-expandit-container		    { margin-top:10px }
+
+input.helpbox				        { display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
+
+a.media-select-none                 { text-align:center; text-decoration: none }
+a.media-select-image-none span      { font-size:50px }
+a.media-select-icon-none span       { font-size:30px  }
+
+@media (min-height: 500px){
+	a.media-select-image-none span  { font-size:80px }
+}
+
+
+

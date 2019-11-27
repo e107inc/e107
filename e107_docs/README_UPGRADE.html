@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!-- Version Info:
+
+$Source: /cvs_backup/e107_0.8/e107_docs/README_UPGRADE.html,v $
+$Revision: 1.2 $
+$Date: 2007-02-03 17:52:10 $
+$Author: e107steved $
+
+-->
+<title>e107 Readme</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+</head>
+<body>
+<div id='mainbox'> <a href="http://e107.org"><img src="../e107_images/logo.png" alt="Logo" style="border:0" /></a> <br />
+  <br />
+  <span class="smalltext">© Steve Dunstan 2002. See gpl.txt for license details.</span><br />
+  <hr />
+  <br />
+  <a id='latest_info'></a><span class="headertext">Latest Information</span><br />  Please see the documentation at <a href="http://e107.org">e107.org</a> for the latest <a href="http://wiki.e107.org/?title=HOWTO:Install_e107">installation</a> and <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_to_a_newer_version_of_e107_0.7xx">upgrade</a> documents. If you are upgrading from version 0.617 or earlier, there is a separate <a href="http://wiki.e107.org/?title=HOWTO:Upgrade_e107_from_0.6xx">upgrade guide</a>. The information on the web site supercedes any information in this file.
+  
+  There is also additional information on troubleshooting any problems which might arise, and on how to set up and use E107.
+  <br /><br />
+  <hr />
+  <br />
+  <a id='upgrading'></a><span class="headertext">Upgrading</span><br />
+  <br />
+0.6175 -> .7 Upgrade Guide
+<pre>
+e107 has undergone a lot of changes from .617 to .7 and bkwon has compiled a comprehensive list of these over
+at <a href="e107faq.org">e107faq.org</a>. There are also changelogs for the various versions of 0.7 in the documentation at <a href="http://e107.org">e107.org</a>.
+
+Essential Points
+
+    * If you are upgrading an English site from .617 you will need the separate English iso-8859-1 language pack, as the
+      default core English language pack is now in the UTF character set. If you do not do this some characters in your
+      database content will display corrupted.
+    * If your .617 site is non English you will need to make sure the .7 lan pack in your language is both available and in the same
+      character set as your current .617 language pack. If it is not in the same character set as your original,
+      some characters in your content, if not all, will display corrupted.
+    * The plugins you currently use on your .617 site may not work with .7 so you must check this before upgrading your site.
+    * .7 is almost a complete rewrite of .617 and so there are many database changes. For this reason it is essential
+      that you make a backup of your site using PhpMyAdmin or another third party SQL backup - do not use the e107 core
+      database backup system in e107 as this does not work. I know everyone always says you should backup - but for once this
+      time it's really meant as we will not be able to help you if you lose content or it gets corrupted and with such
+      heavy database changes this could be possible.
+
+
+Warning!
+There are files related to htmlArea, the WYSIWYG system in the 0.6xx branch of e107 that are known to be exploitable. These must be
+removed immediately. Please delete the following directories and all their contents from your server:
+e107_handlers/htmlarea/
+e107_admin/htmlarea/
+
+Upgrade process
+
+   1. Download the .7 core zip and your required .7 language pack (English iso-8859-1 for English sites).
+   2. Login to your site and go to the admin area and set your maintenance flag to true (Admin => Maintenance).
+      This will close your site off to visitors whilst you perform the upgrade.
+   3. Check your database validity by using the tool located at Admin => Database => Check Database Validity. If you have
+      any errors do not continue with the upgrade process as these must be fixed first.
+   4. Go back to your admin area frontpage.
+   5. Extract the contents of the core zip and upload the files to your server - overwriting the existing .617 files.
+   6. Extract the contents of the language pack (in this release its just one file - English.php) and upload the file(s) to
+      your server - overwriting the existing one(s).
+   7. Refresh your admin front page in your browser and you will see an update available button appear.
+      Click this to take to you to the update page (Alternatively you can reach the update page through Admin =>Database =>
+      Check For Updates).
+   8. Click the .617 to .7 core update button. This will run the first step in the upgrade process.
+      When it finishes you will see several new buttons appear for the upgrade routines for forum, content
+      and statistics. Even if you do not use these e107 features, run each update anyway.
+   9. Once all updates have been processed you should no longer have buttons on the updates page and you have completed
+      the upgrade process.
+  10. Go back to the database validity tool and check once again that everything passes ok.
+
+
+
+You may notice some e107 elements have gone missing - forum, chatbox, content, links, etc... well don't worry
+they haven't really! A large part of the e107 core has been 'pluginfied' and you will find all these elements are
+now stand alone plugins and can be located under Admin => Plugins. A point to note with links is that your existing
+links page links have been separated from the main 'site links' and the upgrade routine has moved them to the new
+links page plugin.
+
+Reviews, articles and content have also been pluginfied and incorporated into one plugin called 'Content Management'.
+If you used any of these features in 0.6xx or want to use this new plugin for new content, you will need to
+change some additional directory permissions for the new plugin. Please see the relevant entry regards this under
+'Permissions'.
+
+Version .7 comes with a new theme, Jayya, which has been designed for the admin area of the site and is intended to
+make administration more user friendly, implementing several new features for this job. If you would like to try it
+out, go to Admin => Theme Manager and change the admin area theme to 'Jayya'.
+
+Because of the huge number of changes in .7 and on the basis it's an almost total rewrite, there may be some
+problems when you upgrade. If you find a specific bug please post this in the bugtracker here on e107.org so that
+we may fix the issue in the next release of the system. Thanks.
+
+Permissions: Core
+The following permissions should be set for using e107 core (most of these will have already been set this way
+from your previous 0.6xx install):
+
+chmod 777: e107_themes/
+chmod 777: e107_plugins/
+chmod 777: e107_files/public/
+chmod 777: e107_files/public/avatars/
+chmod 777: e107_files/cache/
+
+Permissions: Plugins
+The following permissions will need to be set if you were using statistics in your 0.6xx site or wish to use the new
+Statistic Logging plugin at some point in the future:
+
+chmod 777: e107_plugins/log/logs/
+
+The following permissions will need to be set if you were using the links page in your 0.6xx site or wish to use the new
+links page plugin at some point in the future:
+
+chmod 777: e107_plugins/links_page/cat_images/
+chmod 777: e107_plugins/links_page/link_images/
+
+The following permissions will need to be set if you were using Reviews / Articles or Content in your 0.6xx site or
+wish to use the new Content Management plugin at some point in the future:
+
+chmod 777: e107_plugins/content/images/cat/
+chmod 777: e107_plugins/content/images/cat/16/
+chmod 777: e107_plugins/content/images/cat/48/
+chmod 777: e107_plugins/content/images/file/
+chmod 777: e107_plugins/content/images/file/tmp/
+chmod 777: e107_plugins/content/images/icon/
+chmod 777: e107_plugins/content/images/icon/tmp/
+chmod 777: e107_plugins/content/images/image/
+chmod 777: e107_plugins/content/images/image/tmp/
+chmod 777: e107_plugins/content/menus/
+
+
+Troubleshooting
+If you have any problems with the upgrade such as being locked out of your site please clear your cache by deleting
+the php files in e107_files/cache/.
+
+CVS Users
+If you have upgraded your 0.6xx install to 0.7 using a CVS nightly build or downloading directly from the CVS
+repository, you need to check what character set you are currently using. You will find this information displayed
+on your admin area front page under the 'Site Info' menu where it says 'Charset'. If under Charset it says you are
+using 'utf-8' then you need only download the main core zip and upgrade with that. Your charset is the default that
+0.7 runs with and so is included in the main zip. However, if the Charset says iso-8859-1 and you run an English site
+then you must download the separate English iso-8858-1 language pack alongside the main core zip and overwrite the
+language files in the core zip with those you find in the iso-8858-1 zip. For non English sites make sure to get your
+language in the same Charset as is listed on the admin area frontpage under Site Info.
+</pre>
+  <a id='disclaimer'></a><span class="headertext">Disclaimer</span><br />
+  <br />
+  This software is free and as such comes without warranty as stated in the GNU GPL License (included in this package). Any problems encountered due to deficiencies in this software are not the responsibility of the author. <br />
+</div>
+</body>
+</html>

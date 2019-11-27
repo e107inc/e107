@@ -1,0 +1,17 @@
+pm_id
+pm_from
+pm_to
+pm_sent
+pm_read
+pm_subject
+pm_text
+pm_sent_del
+pm_read_del
+pm_attachments
+pm_options
+
+pm_block_id
+pm_block_from
+pm_block_to
+pm_block_datestamp
+pm_block_count

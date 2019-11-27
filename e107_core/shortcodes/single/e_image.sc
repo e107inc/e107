@@ -1,0 +1,2 @@
+global $IMAGES_DIRECTORY;
+return $IMAGES_DIRECTORY;
