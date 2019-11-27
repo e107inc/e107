@@ -5,11 +5,15 @@ e107 Test Suites
 
 1. Check out this repository:
    ```sh
-   git clone git@github.com:e107inc/e107-test.git e107-test
+   # SSH option
+   git clone git@github.com:e107inc/e107.git
+   
+   # HTTPS option
+   git clone https://github.com/e107inc/e107.git
    ```
-2. Change your current working directory into your copy of the repository:
+2. Change your current working directory into your copy of the tests:
    ```sh
-   cd e107-test
+   cd e107/e107_tests
    ```
 3. Configure the testing environment by copying [`config.sample.yml`](config.sample.yml) into `config.yml` at the root level of this repository and then editing `config.yml`.  The `db` section needs to be configured for all tests while acceptance tests can be configured with one of the following deployment options:
 
@@ -33,7 +37,7 @@ e107 Test Suites
    ```sh
    php -d allow_url_fopen=On $(which composer) update
    ```
-5. Update all submodules, which also obtains the latest development code of e107:
+5. Update all submodules:
    ```sh
    git submodule update --init --recursive --remote
    ```
@@ -109,7 +113,7 @@ To set up locally deployed tests, copy the file called [`config.sample.yml`](con
 ```yaml
 # Path (absolute or relative) to the app intended to be tested
 # Absolute path begins with "/"; relative path does not begin with "/"
-app_path: 'e107/'
+app_path: '../'
 
 # Which deployer to use to set up tests
 deployer: 'local'
@@ -154,7 +158,7 @@ To set up SFTP-deployed tests, copy the file called [`config.sample.yml`](config
 ```yaml
 # Path (absolute or relative) to the app intended to be tested
 # Absolute path begins with "/"; relative path does not begin with "/"
-app_path: 'e107/'
+app_path: '../'
 
 # Which deployer to use to set up tests
 deployer: 'sftp'
@@ -227,7 +231,7 @@ To set up the deployment of tests to a cPanel account, copy the file called [`co
 ```yaml
 # Path (absolute or relative) to the app intended to be tested
 # Absolute path begins with "/"; relative path does not begin with "/"
-app_path: 'e107/'
+app_path: '../'
 
 # Which deployer to use to set up tests
 deployer: 'cpanel'
@@ -263,7 +267,7 @@ To turn off automated acceptance test deployments, copy the file called [`config
 ```yaml
 # Path (absolute or relative) to the app intended to be tested
 # Absolute path begins with "/"; relative path does not begin with "/"
-app_path: 'e107/'
+app_path: '../'
 
 # Which deployer to use to set up tests
 deployer: 'none'
@@ -296,7 +300,7 @@ db:
 
   # Path (absolute or relative) to the database dump of a testable installation of the app
   # Absolute path begins with "/"; relative path does not begin with "/"
-  dump_path: 'tests/_data/e107_v2.1.8.sample.sql'
+  dump_path: 'tests/_data/e107_v2.1.9.sample.sql'
 ```
 
 ## Code Coverage
@@ -324,4 +328,4 @@ These commands run all tests and generate a code coverage report in HTML format 
 
 ### Output
 
-The generated coverage reports are stored in `./tests/_output/` relative to the root of your copy of this repository.
+The generated coverage reports are stored in `./tests/_output/` relative to the tests root folder.
