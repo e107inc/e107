@@ -2,7 +2,7 @@
 deployer: 'local'
 url: 'http://set-this-to-your-acceptance-test-url.local/'
 db:
-  host: 'mysql'
+  host: 'db'
   dbname: 'app'
   user: 'root'
   password: 'Database Password for Continuous Integration'

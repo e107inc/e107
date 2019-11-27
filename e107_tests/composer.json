@@ -1,4 +1,7 @@
 {
+    "name": "e107inc/e107-test",
+    "description": "Test harness for e107",
+    "license": "GPL-3.0-or-later",
     "require-dev": {
         "codeception/codeception": "^2.5",
         "twig/twig": ">=1.28"
