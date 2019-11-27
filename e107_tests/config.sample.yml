@@ -2,7 +2,7 @@
 
 # Path (absolute or relative) to the app intended to be tested
 # Absolute path begins with "/"; relative path does not begin with "/"
-app_path: 'e107/'
+app_path: '../'
 
 # Which deployer to use to set up tests. Options:
 #
