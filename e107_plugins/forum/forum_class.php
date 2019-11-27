@@ -400,7 +400,7 @@ class e107forum
 			}
 			else
 			{
-				$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+				$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
 				$ret['status'] 	= 'error';
 			}
 		}
@@ -537,7 +537,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+						$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
