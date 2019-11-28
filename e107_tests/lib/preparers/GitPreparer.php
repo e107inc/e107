@@ -34,14 +34,13 @@ class GitPreparer implements Preparer
 		$this->runCommand('git add -f '.escapeshellarg(self::TEST_IN_PROGRESS_FILE));
 		$this->runCommand('git add -A -f');
 
-		$commit_command = 'git commit -a --no-gpg-sign ' .
+		$commit_command = 'git -c user.name="Test Run" -c user.email="testrun@example.com" commit -a --no-gpg-sign ' .
 			"-m '".self::TEST_IN_PROGRESS."! If test crashed, run `git log -1` for instructions' " .
 			"-m 'Running the test again after fixing the crash will clear this commit\nand any related stashes.' " .
 			"-m 'Alternatively, run these commands to restore the repository to its\npre-test state:' ";
 		$unsetVcsInProgress_commands = [
 			'git reset --hard HEAD',
 			'git clean -fdx',
-//			'git stash pop',
 			'git reset --mixed HEAD^',
 			'rm -fv '.escapeshellarg(self::TEST_IN_PROGRESS)
 		];
@@ -49,8 +48,20 @@ class GitPreparer implements Preparer
 		{
 			$commit_command .= "-m ".escapeshellarg($command)." ";
 		}
-		$this->runCommand($commit_command);
-//		$this->runCommand('git stash push --all -m '.escapeshellarg(self::TEST_IN_PROGRESS));
+
+		$stdout = '';
+		$stderr = '';
+		$rc = $this->runCommand($commit_command, $stdout, $stderr);
+		if ($rc !== 0)
+		{
+			@unlink(self::TEST_IN_PROGRESS_FILE);
+			$this->debug('Error taking snapshot with Git!');
+			$this->debug('========== STDOUT ==========');
+			$this->debug($stdout);
+			$this->debug('========== STDERR ==========');
+			$this->debug($stderr);
+			throw new Exception("Error taking snapshot with Git!");
+		}
 	}
 
 	protected function isVcsInProgress($case = '')
@@ -71,6 +82,12 @@ class GitPreparer implements Preparer
 		return in_array(true, $in_progress);
 	}
 
+	/**
+	 * @param string $command The command to run
+	 * @param string $stdout Reference to the STDOUT output as a string
+	 * @param string $stderr Reference to the STDERR output as a string
+	 * @return int Return code of the command that was run
+	 */
 	protected function runCommand($command, &$stdout = "", &$stderr = "")
 	{
 		$descriptorspec = [
@@ -85,7 +102,7 @@ class GitPreparer implements Preparer
 		{
 			fclose($pipe);
 		}
-		proc_close($resource);
+		return proc_close($resource);
 	}
 
 	protected function unsetVcsInProgress()
