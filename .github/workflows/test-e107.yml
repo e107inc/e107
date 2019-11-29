@@ -87,7 +87,6 @@ jobs:
           php ./vendor/bin/codecept run unit --steps --debug
         fi
       working-directory: ./e107_tests/
-      continue-on-error: true
 
     - name: Send code coverage report to Codecov
       uses: codecov/codecov-action@v1
