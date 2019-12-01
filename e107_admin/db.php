@@ -35,12 +35,12 @@ $mes = e107::getMessage();
 
 if(isset($_GET['mode']))
 {
-    $_GET['mode'] = preg_replace('/[^\w-]/', '', $_GET['mode']);
+    $_GET['mode'] = preg_replace('/[^\w\-]/', '', $_GET['mode']);
 }
 
 if(isset($_GET['type']))
 {
-    $_GET['type'] = preg_replace('/[^\w-]/', '', $_GET['type']);
+    $_GET['type'] = preg_replace('/[^\w\-]/', '', $_GET['type']);
 }
 
 /*
