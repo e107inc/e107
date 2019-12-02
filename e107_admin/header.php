@@ -63,7 +63,7 @@ function loadJSAddons()
 	e107::css('core', 'bootstrap-select/bootstrap-select.min.css', 'jquery');
 	e107::js('footer', '{e_WEB}js/bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
 	
-	// e107::css('core', 'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
+//	e107::css('core', 'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
 	e107::js('footer', '{e_WEB}js/bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
 
 	// TODO: remove typeahead.
