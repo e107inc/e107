@@ -95,12 +95,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement = 'top';
 				}
 
+				// custom position defined in field-help container class
 				var custPlace = $fieldHelp.attr('data-placement'); // ie top|left|bottom|right
-
 				if(custPlace !== undefined)
 				{
 					placement = custPlace;
 				}
+
+				// custom position defined in selector tag.
+				var pos = $(this).attr('data-tooltip-position');
+				if(pos !== undefined)
+				{
+					placement = pos;
+				}
+				
 
 				$fieldHelp.hide();
 
@@ -567,6 +575,11 @@ $(document).ready(function()
 			{
 				$(this).multiselect({ buttonClass: 'btn btn-default'} );
 			}
+			
+
+			/*            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            }*/
 			
 		});
 		
