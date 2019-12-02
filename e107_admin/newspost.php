@@ -930,7 +930,7 @@ class news_admin_ui extends e_admin_ui
 		$this->fields['news_meta_robots']['writeParms']['optArray'] = e107::getSingleton('eResponse')->getRobotTypes();
 		$this->fields['news_meta_robots']['writeParms']['title'] = e107::getSingleton('eResponse')->getRobotDescriptions();
 		$this->fields['news_meta_robots']['writeParms']['multiple'] = 1;
-		//$this->fields['news_meta_robots']['writeParms']['default'] = 'blank';
+	//	$this->fields['news_meta_robots']['writeParms']['default'] = 'blank';
 	//	$this->newspost = new admin_newspost;
 	//	$this->newspost->news_renderTypes = $this->news_renderTypes;
 	//	$this->newspost->observer();
