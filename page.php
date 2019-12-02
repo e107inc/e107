@@ -700,6 +700,11 @@ class pageClass
 			e107::meta('keywords', eHelper::formatMetaKeys($this->page['page_metakeys']));
 		}
 
+		if(!empty($this->page['page_metarobots']))
+		{
+			e107::meta('robots', $this->page['page_metarobots']);
+		}
+
 		$tp = e107::getParser();
 
 		if($tp->isImage($this->page['menu_image']))
