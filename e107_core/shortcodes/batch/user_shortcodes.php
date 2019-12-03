@@ -651,6 +651,57 @@ class user_shortcodes extends e_shortcode
 		}
 	}
 
+	/**
+	 * @example: {USER_USERCLASS_ICON} returns the icons of all userclasses the user belongs to, seperated by a whitespace
+	 * @example: {USER_USERCLASS_ICON: amount=1} // returns only one icon
+	 * @example: {USER_USERCLASS_ICON: seperator=|} // returns the icons seperated by |
+	 * @param array $parm
+	 * @return string
+	*/
+
+	function sc_user_userclass_icon($parm = null)
+	{
+		$icons 	= array();
+		$i 		= 0; 
+
+		if($parm['amount'])
+		{
+			$amount	= intval($parm['amount']);
+		}
+
+		// Get all userclasses that the user belongs to (comma separated)
+		$userclasses = explode(',', $this->var['user_class']);
+		//print_a($userclasses);
+ 		
+ 		// Loop through userclasses
+		foreach($userclasses as $userclass)
+		{
+			// Break the foreach if we have reached the maximum amount of icons to return (set by shortcode)
+			if($i === $amount)
+			{
+				break;
+			}
+
+			// Retrieve icon path for each userclass
+			$icon_path 	= e107::getUserClass()->uc_get_classicon($userclass); 
+			//print_a($icon_path);
+			
+			// Check if icon path is set, and if so, add to $icons array
+			if($icon_path)
+			{
+				// Use parser to transform path into html
+				$icons[] = e107::getParser()->toIcon($icon_path);
+				$i++;
+			}
+		}
+
+		$separator = varset($parm['separator'], " "); // default separater is a whitespace
+
+		// Return all icons in html format
+		return implode($separator, $icons);
+	}
+
+
 	// v2.x extended user field data.
 	/**
 	 * Usage {USER_EUF: field=xxxx} (excluding the 'user_' )
