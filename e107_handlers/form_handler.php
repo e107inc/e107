@@ -3304,6 +3304,7 @@ var_dump($select_options);*/
 
 		foreach ((array) $option_array as $value => $label)
 		{
+
 			if(is_array($label))
 			{
 				$text .= $this->optgroup($value, $label, $selected, $options, 0);
@@ -3321,9 +3322,9 @@ var_dump($select_options);*/
 				{
 					$opts['data-title'] = $options['title'][$value];
 				}
-				else
+				elseif(isset($opts['data-title']))
 				{
-					$opts['data-title'] = '';
+					unset($opts['data-title']);
 				}
 
 				$text .= $this->option($label, $value, $sel, $opts)."\n";
