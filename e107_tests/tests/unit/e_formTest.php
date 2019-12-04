@@ -1044,64 +1044,63 @@ class e_formTest extends \Codeception\Test\Unit
 
 	public function testRenderLink()
 	{
-		# FIXME: https://github.com/e107inc/e107/issues/4032
-//		$tests = array(
-//			0   => array(
-//				'value'     => 'Some text',
-//				'parms'     => array('link'=>'myurl.php', 'target'=>'blank'),
-//				'expected'  => "<a class='e-tip'  rel='external'  href='myurl.php'  title='Quick View' >Some text</a>"
-//			),
-//			1   => array(
-//				'value'     => 'Some text',
-//				'parms'     => array('link'=>'myurl.php?id=[id]', 'target'=>'modal'),
-//				'expected'  => "<a class='e-tip'  href='myurl.php?id=3'  data-toggle='modal' data-cache='false' data-target='#uiModal'  title='Quick View' >Some text</a>"
-//			),
-//			2   => array(
-//				'value'     => 'Some text',
-//				'parms'     => array('link'=>'url_001', 'target'=>'blank'),
-//				'expected'  => "<a class='e-tip'  rel='external'  href='https://e107.org'  title='Quick View' >Some text</a>"
-//			),
-//			3   => array(
-//				'value'     => 'Some text',
-//				'parms'     => array('link'=>'myurl.php?country=[country_001]', 'target'=>'dialog'),
-//				'expected'  => "<a class='e-tip e-modal'  href='myurl.php?country=au'  title='Quick View' >Some text</a>"
-//			),
-//			4   => array(
-//				'value'     => 'Some text',
-//				'parms'     => array('url'=>'rss', 'title'=>'Click Here'),
-//				'expected'  => "<a class='e-tip'  href='".e_HTTP."feed/rss-sefurl/rss/5'  title='Click Here' >Some text</a>"
-//			)
+		$tests = array(
+			0   => array(
+				'value'     => 'Some text',
+				'parms'     => array('link'=>'myurl.php', 'target'=>'blank'),
+				'expected'  => "<a class='e-tip'  rel='external'  href='myurl.php'  title='Quick View' >Some text</a>"
+			),
+			1   => array(
+				'value'     => 'Some text',
+				'parms'     => array('link'=>'myurl.php?id=[id]', 'target'=>'modal'),
+				'expected'  => "<a class='e-tip'  href='myurl.php?id=3'  data-toggle='modal' data-cache='false' data-target='#uiModal'  title='Quick View' >Some text</a>"
+			),
+			2   => array(
+				'value'     => 'Some text',
+				'parms'     => array('link'=>'url_001', 'target'=>'blank'),
+				'expected'  => "<a class='e-tip'  rel='external'  href='https://e107.org'  title='Quick View' >Some text</a>"
+			),
+			3   => array(
+				'value'     => 'Some text',
+				'parms'     => array('link'=>'myurl.php?country=[country_001]', 'target'=>'dialog'),
+				'expected'  => "<a class='e-tip e-modal'  href='myurl.php?country=au'  title='Quick View' >Some text</a>"
+			),
+		/*	4   => array(
+				'value'     => 'Some text',
+				'parms'     => array('url'=>'rss', 'title'=>'Click Here'),
+				'expected'  => "<a class='e-tip'  href='".e_HTTP."feed/rss-sefurl/rss/5'  title='Click Here' >Some text</a>"
+			)*/
 
 
-//		);
-
-
-
-//		try
-//		{
-//			/** @var e_admin_model $model */
-//			$model = $this->make('e_admin_model');
-//		}
-//		catch (Exception $e)
-//		{
-//			$this->assertTrue(false, "Couldn't load e_admin_model object");
-//		}
-
-//		$model->setData($this->_values);
-
-//		$model->setData('rss_url', 'rss-sefurl');
-//		$model->setData('rss_topicid', '5');
-
-//		e107::setRegistry('core/adminUI/currentListModel', $model);
-//		e107::setRegistry('core/adminUI/currentPlugin', 'rss_menu');
+		);
 
 
 
-//		foreach($tests as $t)
-//		{
-//			$result = $this->_frm->renderLink($t['value'], $t['parms'], 3);
-//			$this->assertEquals($t['expected'],$result);
-//		}
+		try
+		{
+			/** @var e_admin_model $model */
+			$model = $this->make('e_admin_model');
+		}
+		catch (Exception $e)
+		{
+			$this->assertTrue(false, "Couldn't load e_admin_model object");
+		}
+
+		$model->setData($this->_values);
+
+		$model->setData('rss_url', 'rss-sefurl');
+		$model->setData('rss_topicid', '5');
+
+		e107::setRegistry('core/adminUI/currentListModel', $model);
+		e107::setRegistry('core/adminUI/currentPlugin', 'rss_menu');
+
+
+
+		foreach($tests as $t)
+		{
+			$result = $this->_frm->renderLink($t['value'], $t['parms'], 3);
+			$this->assertEquals($t['expected'],$result);
+		}
 
 
 
