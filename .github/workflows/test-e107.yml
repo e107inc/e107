@@ -93,7 +93,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./e107_tests/tests/_output/coverage.xml
-        flags: unittests
+        flags: unit-tests
         name: ${{ matrix.interpreter.image }}-${{ matrix.db.image }}
       continue-on-error: true
 
