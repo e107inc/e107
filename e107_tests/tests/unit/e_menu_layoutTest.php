@@ -84,10 +84,10 @@
 
 				'bootstrap3'   => array (
 					'templates' => array( // template key and string length
-						'jumbotron_home'            => 2940,
-						'modern_business_home'      => 3746,
-						'jumbotron_full'            => 1949,
-						'jumbotron_sidebar_right'   => 2765
+						'jumbotron_home'            => 3132,
+						'modern_business_home'      => 3842,
+						'jumbotron_full'            => 2239,
+						'jumbotron_sidebar_right'   => 2973
 					),
 					'menus'     => array (
 						'jumbotron_home'            => array ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','100','101','102','103','104','105','106','107',),
@@ -100,8 +100,8 @@
 
 				'testkubrick'   => array (
 					'templates' => array(
-						'legacyCustom' => 283,
-						'legacyDefault' => 328
+						'legacyCustom' => 267,
+						'legacyDefault' => 308
 					),
 					'menus'     => array(
 						'legacyCustom' => array(),
@@ -111,9 +111,9 @@
 
 				'testcore'      => array (
 					'templates' => array (
-						'HOME' => 1635,
-						'FULL' => 1378,
-						'legacyDefault'=> 1807
+						'HOME' => 1494,
+						'FULL' => 1269,
+						'legacyDefault'=> 1654
 					),
 					'menus'     => array(
 						'HOME' => array('2', '3', '4'),
@@ -124,10 +124,10 @@
 
 				'basic-light' => array(
 					'templates' => array(
-						'default'       => 3359,
-						'default-home'  => 3359,
-						'simple-page'   => 1604,
-						'wide-page'     => 1272
+						'default'       => 3274,
+						'default-home'  => 3274,
+						'simple-page'   => 1553,
+						'wide-page'     => 1235
 					),
 					'menus' => array(
 						'default'       => array('1', '2', '3', '4'),
@@ -142,13 +142,16 @@
 
 			foreach($tests as $theme=>$vars)
 			{
+
 				$result = e_menu_layout::getLayouts($theme);
 
 				foreach($vars['templates'] as $key=>$length)
 				{
-
+					$content = str_replace(array("\r", "\n"),'',$result['templates'][$key]);
 					$expectedLength = $length;
-					$actualLength = strlen($result['templates'][$key]);
+					$actualLength = strlen($content);
+
+					//var_dump($key. " = ".$actualLength);
 
 					$this->assertEquals($expectedLength, $actualLength, $key. " is different");
 				}
