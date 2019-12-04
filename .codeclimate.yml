@@ -60,3 +60,4 @@ exclude_patterns:
 - "e107_handlers/phpthumb/**/*"
 - "e107_handlers/xmlrpc/**/*"
 - "e107_web/**/*"
+- "e107_tests/tests/**/*"
