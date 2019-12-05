@@ -144,10 +144,10 @@ class banlist_ui extends e_admin_ui
 		//
 
 		/**
-		 * Custom filter for banlist_ip filter search.
+		 * Custom search field handling for banlist_ip.
 		 * @param string $srch
 		 */
-		function handleListBanlistIpFilter($srch)
+		function handleListBanlistIpSearch($srch)
 		{
 			$ret = array(
 				"banlist_ip = '".$srch."'"
