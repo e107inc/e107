@@ -4227,15 +4227,16 @@ class e_admin_controller_ui extends e_admin_controller
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
 				// Search for customer filter handler.
-				$cutomerFilterMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Filter';
+				$cutomerSearchMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Search';
 				$args = array($tp->toDB($request->getQuery('searchquery', '')));
-				e107::getMessage()->addDebug("Searching for custom filter method: ".$className.'::'.$cutomerFilterMethod."(".implode(', ', $args).")");
 
-				if(method_exists($this, $cutomerFilterMethod)) // callback handling
+				e107::getMessage()->addDebug("Searching for custom search method: ".$className.'::'.$cutomerSearchMethod."(".implode(', ', $args).")");
+
+				if(method_exists($this, $cutomerSearchMethod)) // callback handling
 				{
-					e107::getMessage()->addDebug('Executing filter callback <strong>'.$className.'::'.$cutomerFilterMethod.'('.implode(', ', $args).')</strong>');
+					e107::getMessage()->addDebug('Executing custom search callback <strong>'.$className.'::'.$cutomerSearchMethod.'('.implode(', ', $args).')</strong>');
 
-					$filter[] = call_user_func_array(array($this, $cutomerFilterMethod), $args);
+					$filter[] = call_user_func_array(array($this, $cutomerSearchMethod), $args);
 					continue;
 				}
 
