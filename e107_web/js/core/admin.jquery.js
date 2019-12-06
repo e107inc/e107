@@ -811,6 +811,20 @@ $(document).ready(function()
             target      = $(this).attr("data-target");
             toconvert   = $('#'+src).val();
             script      = window.location;
+            confirmation = $(this).attr("data-sef-generate-confirm");
+            targetLength = $('#'+target).val().length ;
+
+            if(confirmation !== undefined && targetLength > 0)
+			{
+				answer = confirm(confirmation);
+
+				if(answer === false)
+				{
+					return;
+				}
+			}
+
+
 
             $.ajax({
                 type: "POST",
