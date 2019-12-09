@@ -1722,7 +1722,7 @@ class e_media
 	
 			$data_src = $this->mediaSelectNav($parm['category'], $parm['tagid'], $parm);
 			$carouselID = 'media-carousel-'.$parm['action'];
-			$searchToolttip = (empty($parm['searchTooltip'])) ? "Enter some text to filter results" : $parm['searchTooltip'];
+			$searchToolttip = (empty($parm['searchTooltip'])) ? IMALAN_186 : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 					
 			$text = '';
