@@ -210,3 +210,4 @@ define("IMALAN_182", "Convert to jpeg during import");
 define("IMALAN_183", "PNG and GIF files will be automatically converted to jpeg format. (icons excluded)");
 define("IMALAN_184", "Default Image Sizes");
 define("IMALAN_185", "Maximum height in pixels");
+define("IMALAN_186", "Enter some text to filter results");
