@@ -1951,6 +1951,8 @@ class e_file
 		// 1. Start by checking against filetypes - that's the easy one!
 		$file_ext = pathinfo($target_name, PATHINFO_EXTENSION);
 
+		$file_ext = strtolower($file_ext);
+
 		// 2. For all files, read the first little bit to check for any flags etc
 		$res = fopen($filename, 'rb');
 		$tstr = fread($res, 2048);
