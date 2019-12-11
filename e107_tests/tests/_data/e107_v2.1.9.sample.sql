@@ -972,7 +972,7 @@ CREATE TABLE `e107_user` (
 
 LOCK TABLES `e107_user` WRITE;
 /*!40000 ALTER TABLE `e107_user` DISABLE KEYS */;
-INSERT INTO `e107_user` VALUES (1,'e107','e107','','$2y$10$9I/WNzNKiwhwGAugF3kKPeLB8R8gCGUjd9T1rGrHsP46//koUS84.','','e107inc@gmail.com','','',0,1541074253,0,0,0,0,0,'10.64.229.1',0,'',0,1,'','','0','',1541074253,'');
+INSERT INTO `e107_user` VALUES (1,'e107','e107','','$2y$10$9I/WNzNKiwhwGAugF3kKPeLB8R8gCGUjd9T1rGrHsP46//koUS84.','','e107inc@gmail.com','','',0,1541074253,0,0,0,0,0,'10.64.229.1',0,'',0,1,'','4,5','0','',1541074253,'');
 /*!40000 ALTER TABLE `e107_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1063,7 +1063,7 @@ CREATE TABLE `e107_userclass_classes` (
 
 LOCK TABLES `e107_userclass_classes` WRITE;
 /*!40000 ALTER TABLE `e107_userclass_classes` DISABLE KEYS */;
-INSERT INTO `e107_userclass_classes` VALUES (2,'CONTACT PEOPLE','Example contact person class',254,0,'0,2',0,0,'',''),(3,'NEWSLETTER','Subscribe to Newsletter',0,255,'3',0,0,'',''),(253,'Members','Registered and logged in members',250,0,'0,253',253,0,'',''),(246,'Search Bots','Identified search bots',250,0,'0,246',254,0,'',''),(254,'Admin','Site Administrators',250,0,'0,254',253,0,'',''),(248,'Forum Moderators','Moderators for Forums and other areas',250,0,'0,248',253,0,'',''),(249,'Admins and Mods','Anyone able to administer something, moderate forums etc',250,0,'0,249',253,0,'',''),(1,'PRIVATEMENU','Grants access to private menu items',254,0,'0,1',0,0,'',''),(247,'New Users','Recently joined users',250,0,'0,247',254,0,'',''),(250,'Main Admin','Main site Administrators',250,0,'0,250',253,0,'',''),(0,'Everyone (public)','Fixed class',250,0,'0',0,0,'',''),(252,'Guests','Fixed class',250,0,'0,252',0,0,'',''),(255,'No One (inactive)','Fixed class',250,0,'255',0,0,'',''),(251,'Read Only','Fixed class',250,0,'0,251',0,0,'','');
+INSERT INTO `e107_userclass_classes` VALUES (2,'CONTACT PEOPLE','Example contact person class',254,0,'0,2',0,0,'',''),(3,'NEWSLETTER','Subscribe to Newsletter',0,255,'3',0,0,'',''),(253,'Members','Registered and logged in members',250,0,'0,253',253,0,'',''),(246,'Search Bots','Identified search bots',250,0,'0,246',254,0,'',''),(254,'Admin','Site Administrators',250,0,'0,254',253,0,'',''),(248,'Forum Moderators','Moderators for Forums and other areas',250,0,'0,248',253,0,'',''),(249,'Admins and Mods','Anyone able to administer something, moderate forums etc',250,0,'0,249',253,0,'',''),(1,'PRIVATEMENU','Grants access to private menu items',254,0,'0,1',0,0,'',''),(247,'New Users','Recently joined users',250,0,'0,247',254,0,'',''),(250,'Main Admin','Main site Administrators',250,0,'0,250',253,0,'',''),(0,'Everyone (public)','Fixed class',250,0,'0',0,0,'',''),(252,'Guests','Fixed class',250,0,'0,252',0,0,'',''),(255,'No One (inactive)','Fixed class',250,0,'255',0,0,'',''),(251,'Read Only','Fixed class',250,0,'0,251',0,0,'',''),(4,'TestImage1','Used for testing userclass image (FA icon)',254,255,'4',254,0,'fa-fire-extinguisher.glyph',''),(5,'TestImage2','Used for testing userclass image (FA icon)',254,255,'5',254,0,'{e_PLUGIN}tinymce4/images/icon_32.png','');
 /*!40000 ALTER TABLE `e107_userclass_classes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
