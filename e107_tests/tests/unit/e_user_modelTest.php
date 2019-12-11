@@ -44,11 +44,11 @@
 		public function testGetClassList()
 		{
 			$result = $this->usr->getClassList();
-			$expected = array ( 0 => 253, 1 => 254, 2 => 250, 3 => 251, 4 => 0,);
+			$expected = array ( 0 => 4, 1 => 5, 2 => 253, 3 => 254, 4 => 250, 5 => 251, 6 => 0,);
 			$this->assertEquals($expected, $result);
 
 			$result = $this->usr->getClassList(true);
-			$expected = "253,254,250,251,0";
+			$expected = "4,5,253,254,250,251,0";
 			$this->assertEquals($expected, $result);
 
 		}
