@@ -97,7 +97,7 @@ class banner_ui extends e_admin_ui
 		protected $pid				= 'banner_id';
 		protected $perPage			= 10; 
 		protected $batchDelete		= true;
-	//	protected $batchCopy		= true;		
+		protected $batchCopy		= true;		
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 		protected $tabs				= array(LAN_BASIC, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
