@@ -353,6 +353,11 @@
 
 
 		/**
+		 * TODO: Document this method
+		 */
+		public function resetTableList();
+
+		/**
 		 * Return a filtered list of DB tables.
 		 *
 		 * @param string $mode [optional] all|lan|nolan|nologs

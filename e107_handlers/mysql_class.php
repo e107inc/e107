@@ -2607,6 +2607,13 @@ class e_db_mysql implements e_db
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
 	}
+	/**
+	 * @inheritDoc
+	 */
+	public function resetTableList()
+	{
+		return $this->db_ResetTableList();
+	}
 
 	/**
 	 * Legacy Alias of tables
