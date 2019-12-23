@@ -301,10 +301,17 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testDb_Select_gen()
 	{
+		$this->db->db_Select_gen(
+			"UPDATE `#user` SET user_signature = 'something else' WHERE user_id = 1"
+		);
 		$result = $this->db->db_Select_gen(
 			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
 		);
 		$this->assertEquals(1,$result);
+		$result = $this->db->db_Select_gen(
+			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
+		);
+		$this->assertEquals(0,$result);
 
 
 		$qry = "INSERT INTO #core_media_cat(media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM #core_media_cat WHERE media_cat_id = 1";
