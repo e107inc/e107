@@ -387,6 +387,18 @@
 
 
 		/**
+		 * XXX: e_db_pdo and e_db_mysql have differing implementations of this method.
+		 * @param string $oldtable
+		 * @param string $newtable
+		 * @param bool $drop
+		 * @param bool $data
+		 * @return bool|int|PDOStatement|resource
+		 */
+		public function copyTable($oldtable, $newtable, $drop = false, $data = false);
+
+
+
+		/**
 		 * Drop/delete table and all it's data
 		 * @param string $table name without the prefix
 		 * @return bool|int
