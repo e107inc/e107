@@ -198,76 +198,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->db_Query("INSERT INTO ".MPREFIX."core_media_cat(media_cat_owner,media_cat_title,media_cat_category,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_category,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM ".MPREFIX."core_media_cat WHERE media_cat_id = 1");
 		$err = $this->db->getLastErrorText();
 		$this->assertFalse($result, $err);
-
-
-		$query = array (
-			'PREPARE' => 'INSERT INTO '.MPREFIX.'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
-			'BIND' =>
-				array(
-					'tmp_ip'   =>
-						array(
-							'value' => '127.0.0.1',
-							'type'  => PDO::PARAM_STR,
-						),
-					'tmp_time' =>
-						array(
-							'value' => 12345435,
-							'type'  => PDO::PARAM_INT,
-						),
-					'tmp_info' =>
-						array(
-							'value' => 'Insert test',
-							'type'  => PDO::PARAM_STR,
-						),
-				),
-		);
-
-
-		$result = $this->db->db_Query($query, null, 'db_Insert');
-		$this->assertGreaterThan(0,$result);
-
-
-		$query = array (
-			'PREPARE' => 'INSERT INTO '.MPREFIX.'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
-			'BIND' =>
-				array(
-					'tmp_ip'   =>
-						array(
-							'value' => '127.0.0.1',
-							'type'  => PDO::PARAM_STR,
-						),
-					'tmp_time' =>
-						array(
-							'value' => 12345435,
-							'type'  => PDO::PARAM_INT,
-						),
-					'tmp_info' =>
-						array(
-							'value' => 'Insert test',
-							'type'  => PDO::PARAM_STR,
-						),
-				),
-		);
-
-
-		$result = $this->db->db_Query($query, null, 'db_Insert');
-		$this->assertGreaterThan(0,$result);
-
-
-
-		$query = array(
-			'PREPARE'   => 'SELECT * FROM '.MPREFIX.'user WHERE user_id=:user_id AND user_name=:user_name',
-			'EXECUTE'      => array(
-				'user_id'   => 1,
-				'user_name' => 'e107'
-			)
-		);
-
-
-		$res = $this->db->db_Query($query, null, 'db_Select');
-		$result = $res->fetch();
-		$this->assertArrayHasKey('user_password', $result);
-
 	}
 
 
@@ -333,10 +263,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$result = $this->db->select('user', 'user_id, user_name', 'WHERE user_id = 1', true);
 		$this->assertEquals(1, $result);
-
-		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
-		$this->assertEquals(1, $result);
-
 
 	}
 
@@ -964,17 +890,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$result = $this->db->db_CopyRow('news', null);
 		$this->assertFalse($result);
-
-		// test with table that has unique keys.
-		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
-		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
-
-		// test with table that has unique keys. (same row again) - make sure copyRow duplicates it regardless.
-		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
-		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
-
 	}
 
 	public function testDb_CopyTable()
