@@ -488,7 +488,7 @@ class e_db_mysql implements e_db
 
 		if ($debug == 'now')
 		{
-			echo "<pre>** $query</pre><br />\n";
+			$this->dbg->log($query);
 		}
 		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
