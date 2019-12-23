@@ -30,7 +30,6 @@ class e_db_pdoTest extends e_db_abstractTest
 			$this->fail("Couldn't load e_db_pdo object");
 		}
 
-		define('e_LEGACY_MODE', true);
 		$this->db->__construct();
 		$this->loadConfig();
 

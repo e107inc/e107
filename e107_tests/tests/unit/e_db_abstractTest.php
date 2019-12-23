@@ -651,7 +651,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch();
 		$this->assertEquals("e107", $row['user_name']);
-		$this->assertEquals("e107", $row[1]);
+		$this->assertNull($row[0]);
+		$this->assertNull($row[1]);
 
 		// legacy tests
 		$this->db->select('user', '*', 'user_id = 1');
