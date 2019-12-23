@@ -60,7 +60,7 @@
 
 
 			$result = $this->dbg->Show_Log();
-			$this->assertContains('e107_db_debugTest->testLog()',$result);
+			$this->assertStringContainsString('e107_db_debugTest->testLog()',$result);
 
 		}
 /*

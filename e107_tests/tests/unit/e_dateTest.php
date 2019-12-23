@@ -127,9 +127,9 @@
 		{
 			$actual = $this->dateObj->buildDateLocale();
 
-			$this->assertContains('$.fn.datetimepicker.dates["en"]', $actual);
-			$this->assertContains('days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],', $actual);
-			$this->assertContains('monthsShort: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],', $actual);
+			$this->assertStringContainsString('$.fn.datetimepicker.dates["en"]', $actual);
+			$this->assertStringContainsString('days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],', $actual);
+			$this->assertStringContainsString('monthsShort: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],', $actual);
 		}
 
 		public function testToTime()

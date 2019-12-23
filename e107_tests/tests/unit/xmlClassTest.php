@@ -153,7 +153,7 @@
 			$feed = 'https://www.youtube.com/feeds/videos.xml?channel_id=UC7vv3cBq14FRXajteZt6FEg';
 			$contents = $this->_xml->getRemoteFile($feed,true);
 
-			$this->assertContains('<?xml version="1.0" encoding="UTF-8"?>',$contents);
+			$this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>',$contents);
 
 		}
 /*
@@ -236,8 +236,8 @@
 			$incorrect = '<core name="e_jslib_plugin"><![CDATA[Array]]></core>';
 			$correct = '<core name="e_jslib_plugin"><![CDATA[array ()]]></core>';
 
-			$this->assertNotContains($incorrect, $ret);
-			$this->assertContains($correct, $ret);
+			$this->assertStringNotContainsString($incorrect, $ret);
+			$this->assertStringContainsString($correct, $ret);
 
 		}
 	}
