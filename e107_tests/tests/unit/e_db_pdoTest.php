@@ -1150,9 +1150,9 @@
 
 
 		/**
-		 * @desc Test primary methods against a secondary database (ensures mysqlPrefix is working correctly)
+		 * @desc Test primary methods against a secondary database instance (ensures mysqlPrefix is working correctly)
 		 */
-		public function testSecondaryDatabase()
+		public function testSecondaryDatabaseInstance()
 		{
 
 			try
@@ -1168,42 +1168,29 @@
 
 			$config =  e107::getMySQLConfig();
 
-		//	$xql = $this->db;
-
-			$database = 'e107_tests_tmp';
+			$database = $config['mySQLdefaultdb'];
 			$table = 'test';
-
-			// cleanup
-			$xql->gen("DROP DATABASE `".$database."`");
-
-			// create database
-			if($xql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
-			{
-				$xql->gen("GRANT ALL ON `".$database."`.* TO ".$config['mySQLuser']."@'".$config['mySQLserver']."';");
-				$xql->gen("FLUSH PRIVILEGES;");
-			}
-			else
-			{
-				$this->fail("Failed to create secondary database");
-			}
-
+			$MPREFIX = 'another_prefix_';
 
 			// use new database
-			$use = $xql->database($database,MPREFIX,true);
+			$use = $xql->database($database,$MPREFIX,true);
 
 			if($use === false)
 			{
 				$this->fail("Failed to select new database");
 			}
 
-			$create = "CREATE TABLE `".$database."`.".MPREFIX.$table." (
+			$create = "CREATE TABLE `".$database."`.".$MPREFIX.$table." (
 					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
 					 `test_var` varchar(255) NOT NULL,
 					 PRIMARY KEY (`test_id`)
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 			";
 
-			// create secondary database
+			// cleanup
+			$xql->gen("DROP TABLE IF EXISTS `$database`.{$MPREFIX}{$table}");
+
+			// create table
 			if(!$xql->gen($create))
 			{
 				$this->fail("Failed to create table in secondary database");
