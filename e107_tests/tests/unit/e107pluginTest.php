@@ -405,7 +405,7 @@
 				unset($actual[$unimportant_key]);
 			}
 
-			// Filter out cruft from e_LEGACY_MODE database output
+			// Filter out cruft from MYSQL_BOTH database output
 			foreach ($actual as $key => $value)
 			{
 				if (is_int($key)) unset($actual[$key]);
