@@ -72,7 +72,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	{
 
 		$result = $this->db->getServerInfo();
-		$this->assertNotContains('?',$result);
+		$this->assertStringNotContainsString('?',$result);
 	}
 
 	/**
@@ -926,10 +926,10 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$tmp = file_get_contents($result);
 
-		$this->assertNotContains("DROP TABLE IF EXISTS `e107_user`;", $tmp);
-		$this->assertContains("CREATE TABLE `e107_user` (", $tmp);
-		$this->assertContains("INSERT INTO `e107_user` VALUES (1", $tmp);
-		$this->assertContains("CREATE TABLE `e107_core_media_cat`", $tmp);
+		$this->assertStringNotContainsString("DROP TABLE IF EXISTS `e107_user`;", $tmp);
+		$this->assertStringContainsString("CREATE TABLE `e107_user` (", $tmp);
+		$this->assertStringContainsString("INSERT INTO `e107_user` VALUES (1", $tmp);
+		$this->assertStringContainsString("CREATE TABLE `e107_core_media_cat`", $tmp);
 
 		$result = $this->db->backup('*', null, $opts);
 		$size = filesize($result);

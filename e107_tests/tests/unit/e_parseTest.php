@@ -83,7 +83,7 @@ TMP;
 		{
 			$needle = '<ul class="nav navbar-nav nav-main ml-auto">';
 			$result = $this->tp->parseTemplate('{NAVIGATION}', true);
-			$this->assertContains($needle, $result);
+			$this->assertStringContainsString($needle, $result);
 		}
 
 		public function testParseTemplateWithDisabledCoreShortcodes()
@@ -131,7 +131,7 @@ TMP;
 
 			$needle = "<form class='form-search form-inline' ";
 			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false, $shortcodeObject);
-			$this->assertContains($needle, $result);
+			$this->assertStringContainsString($needle, $result);
 
 			$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false);
 			$this->assertEmpty($result);
@@ -398,7 +398,7 @@ TMP;
 		{
 			$actual = $this->tp->replaceConstants('{e_BASE}news','abs');
 
-			$this->assertContains(e_HTTP,$actual);
+			$this->assertStringContainsString(e_HTTP,$actual);
 
 			
 		}
@@ -430,7 +430,7 @@ TMP;
 
 				$actual = $this->tp->thumbUrl($val['path'], array('w'=>300, 'h'=>200));
 
-				$this->assertContains($val['expected'], $actual);
+				$this->assertStringContainsString($val['expected'], $actual);
 				//echo $$actual."\n\n";
 			}
 
@@ -659,7 +659,7 @@ TMP;
 			foreach($tests as $var)
 			{
 				$result = $this->tp->toIcon($var['input'],$var['parms']);
-				$this->assertContains($var['expected'],$result);
+				$this->assertStringContainsString($var['expected'],$result);
 				//var_dump($result);
 			}
 		}
@@ -753,12 +753,12 @@ TMP;
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => '[email]'));
 
-			$this->assertContains('[email]</a>', $result);
+			$this->assertStringContainsString('[email]</a>', $result);
 
 			// -----
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => 'fa-envelope.glyph'));
-			$this->assertContains("<i class='fa fa-envelope' ><!-- --></i></a>", $result);
+			$this->assertStringContainsString("<i class='fa fa-envelope' ><!-- --></i></a>", $result);
 
 			// links standard.
 			$tests = array(
@@ -821,17 +821,17 @@ TMP;
 			$time = 1519512067; //  Saturday 24 February 2018 - 22:41:07
 
 			$long = $class->toDate($time, 'long');
-			$this->assertContains('Saturday 24 February 2018',$long);
+			$this->assertStringContainsString('Saturday 24 February 2018',$long);
 
 			$short = $class->toDate($time, 'short');
-			$this->assertContains('Feb 2018', $short);
+			$this->assertStringContainsString('Feb 2018', $short);
 
 			$rel = $class->toDate($time, 'relative');
-			$this->assertContains('ago', $rel);
-			$this->assertContains('data-livestamp="1519512067"', $rel);
+			$this->assertStringContainsString('ago', $rel);
+			$this->assertStringContainsString('data-livestamp="1519512067"', $rel);
 
 			$custom = $class->toDate($time, 'dd-M-yy');
-			$this->assertContains('<span>24-Feb-18</span>', $custom);
+			$this->assertStringContainsString('<span>24-Feb-18</span>', $custom);
 
 
 

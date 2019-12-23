@@ -371,7 +371,7 @@ class e_formTest extends \Codeception\Test\Unit
 				foreach($tests as $var)
 				{
 					$result = $this->_frm->progressBar('progress', $var['value']);
-					$this->assertContains($var['expected'],$result);
+					$this->assertStringContainsString($var['expected'],$result);
 				}
 
 			}
@@ -556,7 +556,7 @@ class e_formTest extends \Codeception\Test\Unit
 		foreach($tests as $var)
 		{
 			$result = $this->_frm->uc_select('uc', $var['value'], $var['options'], array('default'=>$var['default']));
-			$this->assertContains($var['expected'],$result);
+			$this->assertStringContainsString($var['expected'],$result);
 		}
 
 
@@ -892,7 +892,7 @@ class e_formTest extends \Codeception\Test\Unit
 				//	$this->expectExceptionMessage($result);
 			}
 
-			$this->assertContains('data-token',$result,$field." doesn't contain 'data-token'");
+			$this->assertStringContainsString('data-token',$result,$field." doesn't contain 'data-token'");
 		}
 
 	}
