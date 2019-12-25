@@ -95,12 +95,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement = 'top';
 				}
 
+				// custom position defined in field-help container class
 				var custPlace = $fieldHelp.attr('data-placement'); // ie top|left|bottom|right
-
 				if(custPlace !== undefined)
 				{
 					placement = custPlace;
 				}
+
+				// custom position defined in selector tag.
+				var pos = $(this).attr('data-tooltip-position');
+				if(pos !== undefined)
+				{
+					placement = pos;
+				}
+				
 
 				$fieldHelp.hide();
 
@@ -557,7 +565,8 @@ $(document).ready(function()
 		$("select.tbox").each(function() {
 			
 			var multi = $(this).attr('multiple');
-			
+			var tagName = $(this).attr('name');
+
 			if(multi === undefined)
 			{
 			//	 $(this).selectpicker();	// causes HTML5 validation alert to be hidden. 
@@ -565,8 +574,33 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).multiselect({ buttonClass: 'btn btn-default'} );
+				$(this).multiselect({
+					buttonClass: 'btn btn-default',
+					 buttonText: function(options) {
+						if (options.length == 0) {
+
+							return '(Optional) <b class="caret"></b><input type="hidden" name="' + tagName + '" value="" />'; // send empty value to server so value is saved.
+						}
+						else if (options.length > 5) {
+							return options.length + ' selected <b class="caret"></b>';
+						}
+						else {
+							var selected = '';
+							options.each(function() {
+								selected += $(this).text() + ', ';
+							});
+							return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+						}
+					},
+
+
+					});
 			}
+			
+
+			/*            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            }*/
 			
 		});
 		

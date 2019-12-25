@@ -3028,6 +3028,7 @@ class e_form
 		{
 			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 			if(!is_array($selected)) $selected = explode(",",$selected);
+
 		}
 		
 		$text = $this->select_open($name, $options)."\n";
@@ -3303,6 +3304,7 @@ var_dump($select_options);*/
 
 		foreach ((array) $option_array as $value => $label)
 		{
+
 			if(is_array($label))
 			{
 				$text .= $this->optgroup($value, $label, $selected, $options, 0);
@@ -3314,6 +3316,15 @@ var_dump($select_options);*/
 				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{
 					$opts['disabled'] = in_array($value, $options['optDisabled']);
+				}
+
+				if(is_array($options['title']) && !empty($options['title'][$value]))
+				{
+					$opts['data-title'] = $options['title'][$value];
+				}
+				elseif(isset($opts['data-title']))
+				{
+					unset($opts['data-title']);
 				}
 
 				$text .= $this->option($label, $value, $sel, $opts)."\n";

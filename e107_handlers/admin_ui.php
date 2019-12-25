@@ -7383,6 +7383,13 @@ class e_admin_form_ui extends e_form
 			$parms = vartrue($val['writeParms'], array());
 			if(is_string($parms)) parse_str($parms, $parms);
 
+			//Basic batch support for dropdown with multiple values. (comma separated)
+			if(!empty($val['writeParms']['multiple']) && $val['type'] === 'dropdown' && !empty($val['writeParms']['optArray']))
+			{
+				$val['type'] = 'comma';
+				$parms = $val['writeParms']['optArray'];
+			}
+
 			switch($val['type'])
 			{
 
