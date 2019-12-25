@@ -389,8 +389,10 @@
 
 		private function pluginInstall($pluginDir)
 		{
+			e107::getPlugin()->uninstall($pluginDir);
 
-			e107::getPlugin()->install($pluginDir);
+			$return_text = e107::getPlugin()->install($pluginDir);
+			$this->assertNotEquals("Plugin is already installed.", $return_text);
 
 			$install = $this->makePluginReport($pluginDir);
 
