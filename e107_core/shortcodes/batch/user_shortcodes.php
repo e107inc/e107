@@ -32,9 +32,10 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-
-	function sc_total_chatposts($parm) {
+	function sc_total_chatposts($parm = null) 
+	{
 		$sql = e107::getDb();
+
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
 		{
 		  $chatposts = 0; // In case plugin not installed
@@ -44,38 +45,40 @@ class user_shortcodes extends e_shortcode
 		  }
 		  e107::setRegistry('total_chatposts', $chatposts);
 		}
+
 		return $chatposts;
 	}
+		
 	
-	
-	
-	function sc_total_commentposts($parm) 
+	function sc_total_commentposts($parm = null) 
 	{
 		$sql = e107::getDb();
+
 		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
 			$commentposts = $sql->count("comments");
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
+
 		return $commentposts;
 	}
 	
 	
-	
-	function sc_total_forumposts($parm) 
+	function sc_total_forumposts($parm = null) 
 	{
 		$sql = e107::getDb();
+
 		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
 			$forumposts = $sql->count("forum_thread");
 			e107::setRegistry('total_forumposts', $forumposts);
 		}
+
 		return $forumposts;
 	}
+
 	
-	
-	
-	function sc_user_commentposts($parm) 
+	function sc_user_commentposts($parm = null) 
 	{
 		if($this->commentsDisabled)
 		{
@@ -85,8 +88,7 @@ class user_shortcodes extends e_shortcode
 	}
 	
 	
-	
-	function sc_user_forumposts($parm) 
+	function sc_user_forumposts($parm = null) 
 	{
 		//return $this->var['user_forums']; //FIXME column not present in v2. Possible fix on next line.
 		//return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']); // Does not account for pruned posts? #716. Possible fix on next line.
@@ -94,18 +96,19 @@ class user_shortcodes extends e_shortcode
 	}
 	
 	
-	
-	function sc_user_chatposts($parm) 
+	function sc_user_chatposts($parm = null) 
 	{
 		return $this->var['user_chats'];
 	}
 	
-	function sc_user_downloads($parm) 
+
+	function sc_user_downloads($parm = null) 
 	{
 		return e107::getDb()->count("download_requests","(*)","where download_request_userid=".$this->var['user_id']);
 	}
 	
-	function sc_user_chatper($parm) 
+
+	function sc_user_chatper($parm = null) 
 	{
 		$sql = e107::getDb();
 		
@@ -120,7 +123,6 @@ class user_shortcodes extends e_shortcode
 		}
 		return ($chatposts > 0) ? round(($this->var['user_chats']/$chatposts) * 100, 2) : 0;
 	}
-	
 	
 	
 	function sc_user_commentper($parm='')
@@ -141,7 +143,6 @@ class user_shortcodes extends e_shortcode
 	}
 	
 	
-	
 	function sc_user_forumper($parm='')
 	{
 		$sql = e107::getDb();
@@ -155,10 +156,9 @@ class user_shortcodes extends e_shortcode
 		}
 		return ($total_forumposts > 0) ? round(($user_forumposts/$total_forumposts) * 100, 2) : 0;
 	}
-	
 
 	
-	function sc_user_level($parm) 
+	function sc_user_level($parm = null) 
 	{
 		$pref = e107::getPref();
 
@@ -177,19 +177,16 @@ class user_shortcodes extends e_shortcode
 	}
 	
 	
-	
 	function sc_user_lastvisit($parm='')
 	{
 		return $this->var['user_currentvisit'] ? e107::getDate()->convert_date($this->var['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
 	}
 	
 	
-	
 	function sc_user_lastvisit_lapse($parm='')
 	{	
 		return $this->var['user_currentvisit'] ? "( ".e107::getDate()->computeLapse($this->var['user_currentvisit'])." ".LAN_USER_34." )" : '';
 	}
-
 
 	
 	function sc_user_visits($parm='')
@@ -198,12 +195,10 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_join($parm='')
 	{
 		return e107::getDate()->convert_date($this->var['user_join'], "forum");
 	}
-	
 	
 	
 	function sc_user_daysregged($parm='')
@@ -211,7 +206,6 @@ class user_shortcodes extends e_shortcode
 		return e107::getDate()->computeLapse($this->var['user_join']);
 	}
 
-	
 		
 	function sc_user_realname_icon($parm='')
 	{
@@ -226,14 +220,12 @@ class user_shortcodes extends e_shortcode
 		
 		return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 	}
-
 	
 	
 	function sc_user_realname($parm='')
 	{
 		return $this->var['user_login'] ? $this->var['user_login'] : "<i>".LAN_USER_33."</i>";
 	}
-
 
 	
 	function sc_user_email_icon($parm='')
@@ -251,7 +243,6 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_email_link($parm='')
 	{
 		$tp = e107::getParser();
@@ -260,31 +251,31 @@ class user_shortcodes extends e_shortcode
 		       /*  Not Hidden or Admin  */ $tp->parseTemplate("{email={$this->var['user_email']}-link}");
 	}
 
-
 	
-function sc_user_email($parm='')
-{
-
-	$tp = e107::getParser();
-	
-	$aCurUserData = e107::user(USERID);
-
-	if( ($this->var['user_hideemail'] && !ADMIN ) && ( $this->var['user_email']!=$aCurUserData['user_email'] ) )
+	function sc_user_email($parm='')
 	{
-		return "<i>".LAN_USER_35."</i>";
-	}
-	else
-	{
-		if($this->var['user_email']!=$aCurUserData['user_email']){
-			return $tp->emailObfuscate($this->var['user_email']);
-			//list($user,$dom) = explode('@', $this->var['user_email']);
-			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
-		}else{
-			return $this->var['user_email'];
+		$tp = e107::getParser();
+		
+		$aCurUserData = e107::user(USERID);
+
+		if( ($this->var['user_hideemail'] && !ADMIN ) && ( $this->var['user_email']!=$aCurUserData['user_email'] ) )
+		{
+			return "<i>".LAN_USER_35."</i>";
+		}
+		else
+		{
+			if($this->var['user_email']!=$aCurUserData['user_email'])
+			{
+				return $tp->emailObfuscate($this->var['user_email']);
+				//list($user,$dom) = explode('@', $this->var['user_email']);
+				//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
+			}
+			else
+			{
+				return $this->var['user_email'];
+			}
 		}
 	}
-
-}
 
 
 	/**
@@ -457,7 +448,6 @@ function sc_user_email($parm='')
 	}
 
 
-	
 	function sc_user_forum_link($parm) 
 	{
 		$user_forumposts = e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
@@ -465,7 +455,6 @@ function sc_user_email($parm='')
 	}
 
 	
-		
 	function sc_user_sendpm($parm) 
 	{
 		$pref = e107::getPref();
@@ -477,49 +466,50 @@ function sc_user_email($parm='')
 	}
 
 
-	
 	function sc_user_rating($parm='') 
 	{
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		
 		if(!vartrue($pref['profile_rate'])){ return; }
-		if(!USER){ return LAN_USER_87; } 
-		else{
 		
-		switch ($parm) 
+		if(!USER)
+		{ 
+			return LAN_USER_87; 
+		} 
+		else
 		{
-			case 'like':
-				return $frm->like('user',$this->var['user_id']);	
-			break;
-			
-			case 'legacy':
-				$rater = e107::getRate();
-				$ret = "<span>";
-				if($rating = $rater->getrating('user', $this->var['user_id']))
-				{
-					$num = $rating[1];
-					for($i=1; $i<= $num; $i++)
+			switch ($parm) 
+			{
+				case 'like':
+					return $frm->like('user',$this->var['user_id']);	
+				break;
+				case 'legacy':
+					$rater = e107::getRate();
+					$ret = "<span>";
+					if($rating = $rater->getrating('user', $this->var['user_id']))
 					{
-						$ret .= "<img src='".e_IMAGE_ABS."rate/star.png' alt='' />";
+						$num = $rating[1];
+						for($i=1; $i<= $num; $i++)
+						{
+							$ret .= "<img src='".e_IMAGE_ABS."rate/star.png' alt='' />";
+						}
 					}
-				}
-				if(!$rater->checkrated('user', $this->var['user_id']))
-				{
-					$ret .= " &nbsp; &nbsp;".$rater->rateselect('', 'user', $this->var['user_id']);
-				}
-				$ret .= "</span>";
-				return $ret;	
-			break;
-			
-			default:
-				return $frm->rate('user',$this->var['user_id']);	
-			break;
-		}		
+					if(!$rater->checkrated('user', $this->var['user_id']))
+					{
+						$ret .= " &nbsp; &nbsp;".$rater->rateselect('', 'user', $this->var['user_id']);
+					}
+					$ret .= "</span>";
+					return $ret;	
+				break;
+				default:
+					return $frm->rate('user',$this->var['user_id']);	
+				break;
+			}		
 
-		return "";
-	}}
-
+			return "";
+		}
+	}
 
 	
 	function sc_user_update_link($parm) 
@@ -541,12 +531,11 @@ function sc_user_email($parm='')
 		}
 
 		return "<a class='btn btn-default' href='".$this->sc_user_settings_url()."'>".$label."</a>";
-
 	}
+
 
 	function sc_user_settings_url($parm=null)
 	{
-
 		if (USERID == $this->var['user_id'])
 		{
 			return e107::getUrl()->create('user/myprofile/edit');
@@ -555,10 +544,8 @@ function sc_user_email($parm='')
 		{
 			return e_ADMIN_ABS."users.php?mode=main&action=edit&id=".$this->var['user_id'];
 		}
-
 	}
 
-	
 	
 	/**
 	* @example {USER_JUMP_LINK=prev|class=btn-secondary} 
@@ -594,7 +581,6 @@ function sc_user_email($parm='')
 		}
 		
 		$class  = empty($parms[2]['class']) ? 'e-tip' : $parms[2]['class'];
-
 	
 		if($parms[1] == 'prev')
 		{
@@ -626,7 +612,7 @@ function sc_user_email($parm='')
 	{
 		return e107::getParser()->toAvatar($this->var, $parm);
 
-/*
+		/*
 
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
 		
@@ -653,7 +639,6 @@ function sc_user_email($parm='')
 	}
 	
 	
-	
 	function sc_user_picture_delete($parm) 
 	{
 		if (USERID == $this->var['user_id'] || (ADMIN && getperms("4")))
@@ -666,15 +651,65 @@ function sc_user_email($parm='')
 		}
 	}
 
+	/**
+	 * @example: {USER_USERCLASS_ICON} returns the icons of all userclasses the user belongs to, seperated by a whitespace
+	 * @example: {USER_USERCLASS_ICON: amount=1} // returns only one icon
+	 * @example: {USER_USERCLASS_ICON: seperator=|} // returns the icons seperated by |
+	 * @param array $parm
+	 * @return string
+	*/
+
+	function sc_user_userclass_icon($parm = null)
+	{
+		$icons 	= array();
+		$i 		= 0; 
+
+		if($parm['amount'])
+		{
+			$amount	= intval($parm['amount']);
+		}
+
+		// Get all userclasses that the user belongs to (comma separated)
+		$userclasses = explode(',', $this->var['user_class']);
+		//print_a($userclasses);
+ 		
+ 		// Loop through userclasses
+		foreach($userclasses as $userclass)
+		{
+			// Break the foreach if we have reached the maximum amount of icons to return (set by shortcode)
+			if($i === $amount)
+			{
+				break;
+			}
+
+			// Retrieve icon path for each userclass
+			$icon_path 	= e107::getUserClass()->uc_get_classicon($userclass); 
+			//print_a($icon_path);
+			
+			// Check if icon path is set, and if so, add to $icons array
+			if($icon_path)
+			{
+				// Use parser to transform path into html
+				$icons[] = e107::getParser()->toIcon($icon_path);
+				$i++;
+			}
+		}
+
+		$separator = varset($parm['separator'], " "); // default separater is a whitespace
+
+		// Return all icons in html format
+		return implode($separator, $icons);
+	}
+
+
 	// v2.x extended user field data.
 	/**
 	 * Usage {USER_EUF: field=xxxx} (excluding the 'user_' )
 	 * @param string $parm
 	 * @return string
-	 */
+	*/
 	function sc_user_euf($parm=null)
 	{
-
 		if(!empty($parm['field']))
 		{
 
@@ -696,9 +731,7 @@ function sc_user_email($parm='')
 		}
 
 		return false;
-
 	}
-
 
 
 	function sc_user_extended_all($parm) 
@@ -719,9 +752,7 @@ function sc_user_email($parm='')
 			ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 		";
 		
-		
-		
-		
+
 		require_once(e_HANDLER."user_extended_class.php");
 		
 		$ue = new e107_user_extended;
@@ -737,9 +768,6 @@ function sc_user_email($parm='')
 		$ret = "";
 		foreach($ueCatList as $catnum => $cat)
 		{
-			
-			
-			
 			$key = $cat[0]['user_extended_struct_text'] ? $cat[0]['user_extended_struct_text'] : $cat[0]['user_extended_struct_name'];
 			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE); //XXX FIXME Fails
 			
@@ -785,7 +813,6 @@ function sc_user_email($parm='')
 	}
 
 
-	
 	function sc_profile_comments($parm) 
 	{
 		if(!e107::getPref('profile_comments'))
@@ -795,15 +822,13 @@ function sc_user_email($parm='')
 
 		return e107::getComment()->compose_comment('profile', 'comment', $this->var['user_id'], null, $this->var['user_name'], false,'html');
 
-	//	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
-
+		//	return e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment'], 'profile_comments', TRUE);
 	}
-	
 	
 	
 	function sc_profile_comment_form($parm='') // deprecated. 
 	{
-		return ;
+		return;
 	}
 	
 	
@@ -815,19 +840,19 @@ function sc_user_email($parm='')
 	}
 	
 	
-	
 	function sc_user_form_records($parm='') 
 	{
 		global $records;
+
 		$opts = array(5,10,20,30,50);
 		return e107::getForm()->select('records', $opts, $records,'useValues=1');
-
 	}
 	
-	
+
 	function sc_user_form_order($parm) 
 	{
 		global $order;
+
 		if ($order == "ASC")
 		{
 			$ret = "<select name='order' class='form-control tbox'>
@@ -849,6 +874,7 @@ function sc_user_email($parm='')
 	function sc_user_form_start($parm) 
 	{
 		global $from;
+
 		return "
 		<form method='post' action='".e_SELF."'>
 		<p><input type='hidden' name='from' value='$from' /></p>
@@ -863,7 +889,6 @@ function sc_user_email($parm='')
 	}
 
 
-	
 	function sc_user_form_submit($parm) 
 	{
 		return "<input class='btn btn-default btn-secondary button' type='submit' name='submit' value='".LAN_GO."' />";
@@ -900,10 +925,7 @@ function sc_user_email($parm='')
 		}
 			
 		return $text;			
-
 	}
-
-
 
 
 	/**
@@ -911,7 +933,6 @@ function sc_user_email($parm='')
 	 */
 	function sc_user_embed_userprofile($parm='') 
 	{
-		
 		return $this->sc_user_addons($parm);
 		//if no parm, it means we render ALL embedded contents
 		//so we're preloading all registerd e_userprofile files
@@ -989,12 +1010,9 @@ function sc_user_email($parm='')
 	}
 	
 	
-	
 	function sc_user_customtitle($parm) 
 	{
 		return $this->var['user_customtitle'];
 	}
-	 
-	
 
 }

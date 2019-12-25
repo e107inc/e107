@@ -596,7 +596,8 @@ class page_admin_ui extends e_admin_ui
 			'page_sef' 			=> array('title'=> LAN_SEFURL, 		'tab' => 1,	'type' => 'text', 'batch'=>true,	'data'=>'str', 'inline'=>true, 'width' => 'auto', 'writeParms'=>'size=xxlarge&sef=page_title'),
 			'page_metakeys' 	=> array('title'=> LAN_KEYWORDS, 		'tab' => 1,	'type' => 'tags', 	'data'=>'str', 'width' => 'auto'),
 			'page_metadscr' 	=> array('title'=> CUSLAN_11, 		'tab' => 1,	'type' => 'text', 	'data'=>'str', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
-		
+			'page_metarobots'		=> array('title' => LAN_ROBOTS, 'tab'=>1,	'type' => 'dropdown',  'data'=>'safestr', 'batch'=>true,   'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			'page_fields'       => array('title'=>'Custom Fields',  'tab'=>4, 'type'=>'hidden', 'data'=>'json', 'width'=>'auto'),
 
@@ -640,6 +641,12 @@ class page_admin_ui extends e_admin_ui
 
 		function init()
 		{
+
+			$this->fields['page_metarobots']['writeParms']['optArray'] = e107::getSingleton('eResponse')->getRobotTypes();
+			$this->fields['page_metarobots']['writeParms']['title'] = e107::getSingleton('eResponse')->getRobotDescriptions();
+			$this->fields['page_metarobots']['writeParms']['multiple'] = 1;
+
+
 
 			$mode = $this->getMode();
 

@@ -459,6 +459,8 @@ class news_admin_ui extends e_admin_ui
 
 		'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'tags', 	  'data'=>'safestr', 'filter'=>true, 'tab'=>1,	'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 'data'=>'safestr','filter'=>true,	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge')),
+		'news_meta_robots'		=> array('title' => LAN_ROBOTS, 	'type' => 'dropdown',  'data'=>'safestr',  'tab'=>1, 'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'writeParms'=>array('multiple'=>1), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
@@ -775,6 +777,7 @@ class news_admin_ui extends e_admin_ui
 		'news_sef' ,
 		'news_meta_keywords',
 		'news_meta_description' ,
+		'news_meta_robots' ,
 		'news_ping',
 
 		'news_email_notify',
@@ -923,6 +926,11 @@ class news_admin_ui extends e_admin_ui
 		$this->fields['news_category']['writeParms']['size'] = 'xlarge';
 		$this->fields['news_render_type']['writeParms']['optArray'] = $this->news_renderTypes; // array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
 		$this->fields['news_render_type']['writeParms']['multiple'] = 1;
+
+		$this->fields['news_meta_robots']['writeParms']['optArray'] = e107::getSingleton('eResponse')->getRobotTypes();
+		$this->fields['news_meta_robots']['writeParms']['title'] = e107::getSingleton('eResponse')->getRobotDescriptions();
+		$this->fields['news_meta_robots']['writeParms']['multiple'] = 1;
+	//	$this->fields['news_meta_robots']['writeParms']['default'] = 'blank';
 	//	$this->newspost = new admin_newspost;
 	//	$this->newspost->news_renderTypes = $this->news_renderTypes;
 	//	$this->newspost->observer();

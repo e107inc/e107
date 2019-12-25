@@ -607,6 +607,12 @@ class news_front
 
 		if($type == 'news')
 		{
+
+			if(!empty($news['news_meta_robots']))
+			{
+				e107::meta('robots', $news['news_meta_robots']);
+			}
+
 			if($news['news_title'] && !defined('e_PAGETITLE'))
 			{
 				define('e_PAGETITLE', $news['news_title']);

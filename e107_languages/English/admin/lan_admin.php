@@ -569,4 +569,10 @@ define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");
 
 define("LAN_UI_FILTER_SEARCH_IN_FIELD", "Search in Field");
 
+define("LAN_ROBOTS", "Robots");
+define("LAN_ROBOTS_NOINDEX", "Prevent search engines from indexing this item.");
+define("LAN_ROBOTS_NOFOLLOW", "Prevent search engines from following links in this item.");
+define("LAN_ROBOTS_NOARCHIVE", "Prevent cached copies of this item from appearing in search results.");
+define("LAN_ROBOTS_NOIMAGE", "Prevent search engines from indexing images of this item.");
+
 
