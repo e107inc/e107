@@ -1,4 +1,4 @@
-name: Test e107
+name: Unit Tests
 
 on:
   push:
