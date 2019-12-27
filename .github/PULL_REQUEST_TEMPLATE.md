@@ -24,7 +24,7 @@
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
 - [ ] Documentation (a change to man pages or other documentation)
 
-### Checklist:
+### Checklist
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] My code adheres to the e107 [code style standard](https://github.com/e107inc/e107/wiki/e107-Coding-Standard).

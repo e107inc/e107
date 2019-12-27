@@ -39,15 +39,15 @@ class cPanelDeployer extends Deployer
 
 		foreach ($this->components as $component)
 		{
-			$method = "prepare_${component}";
+			$method = "prepare_{$component}";
 			if (!method_exists($this, $method))
 			{
-				throw new Exception("Unsupported component \"${component}\" requested.");
+				throw new Exception("Unsupported component \"{$component}\" requested.");
 			}
 		}
 		foreach ($this->components as $component)
 		{
-			$method = "prepare_${component}";
+			$method = "prepare_{$component}";
 			$this->$method();
 		}
 	}
@@ -64,23 +64,23 @@ class cPanelDeployer extends Deployer
 
 		$this->cPanel = $cPanel = new cpanelAPI($username, $password, $hostname);
 
-		self::println("Connecting to cPanel at \"${hostname}\" with username \"${username}\"…");
+		self::println("Connecting to cPanel at \"{$hostname}\" with username \"{$username}\"…");
 
 		$domains_data = $cPanel->uapi->DomainInfo->domains_data();
 		if (!$domains_data)
 		{
-			throw new Exception("Cannot connect to cPanel at \"${hostname}\" with username \"${username}\" and password \"${password}\"");
+			throw new Exception("Cannot connect to cPanel at \"{$hostname}\" with username \"{$username}\" and password \"{$password}\"");
 		}
 		$userdata = $domains_data->{'data'};
-		$this->homedir = $homedir = $userdata->{'main_domain'}->{'homedir'};
-		$this->docroot = $docroot = $userdata->{'main_domain'}->{'documentroot'};
-		$this->domain = $domain = $userdata->{'main_domain'}->{'domain'};
+		$this->homedir = $userdata->{'main_domain'}->{'homedir'};
+		$this->docroot = $userdata->{'main_domain'}->{'documentroot'};
+		$this->domain = $userdata->{'main_domain'}->{'domain'};
 
 		self::println("Obtained home directory from cPanel: " . $this->homedir);
 		self::println("Obtained document root from cPanel:  " . $this->docroot);
 		self::println("Obtained domain name from cPanel:    " . $this->domain);
 
-		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $homedir);
+		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $this->homedir);
 
 		self::println("Adding this test (".$this->run_id.") to registered tests list…");
 		$run_time = microtime(true);
@@ -89,7 +89,7 @@ class cPanelDeployer extends Deployer
 				'time' => $run_time
 			]);
 
-		self::write_acceptance_tests($cPanel, $homedir, $acceptance_tests);
+		self::write_acceptance_tests($cPanel, $this->homedir, $acceptance_tests);
 
 		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
 		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
@@ -245,7 +245,7 @@ class cPanelDeployer extends Deployer
 	{
 		$hostname = $this->credentials['hostname'];
 		$db_id = $this->getDbName();
-		return "mysql:host=${hostname};dbname=${db_id}";
+		return "mysql:host={$hostname};dbname={$db_id}";
 	}
 
 	private function getDbName()
@@ -287,7 +287,7 @@ class cPanelDeployer extends Deployer
 		$cPanel = $this->cPanel;
 		$username = &$this->credentials['username'];
 		$run_id = &$this->run_id;
-		$this->db_id = $db_id = "${username}_${run_id}";
+		$this->db_id = $db_id = "{$username}_{$run_id}";
 
 		self::println("Ensuring that MySQL users allow any remote access hosts (%)…");
 		$remote_hosts = $cPanel->api2->MysqlFE->gethosts()->{'cpanelresult'}->{'data'};
@@ -304,12 +304,12 @@ class cPanelDeployer extends Deployer
 			$this->skip_mysql_remote_hosts = true;
 		}
 
-		self::println("Creating new MySQL database \"${db_id}\"…");
+		self::println("Creating new MySQL database \"{$db_id}\"…");
 		$cPanel->uapi->Mysql->create_database(['name' => $db_id]);
 
-		self::println("Creating new MySQL user \"${db_id}\" with password \"${run_id}\"…");
+		self::println("Creating new MySQL user \"{$db_id}\" with password \"{$run_id}\"…");
 		$cPanel->uapi->Mysql->create_user(['name' => $db_id, 'password' => $run_id]);
-		self::println("Granting ALL PRIVILEGES to MySQL user \"${db_id}\"…");
+		self::println("Granting ALL PRIVILEGES to MySQL user \"{$db_id}\"…");
 		$cPanel->uapi->Mysql->set_privileges_on_database(['user' => $db_id,
 			'database' => $db_id,
 			'privileges' => 'ALL PRIVILEGES'
@@ -350,7 +350,7 @@ class cPanelDeployer extends Deployer
 		$i = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 		self::println("Adding app to temporary archive…");
 		$path = realpath($path);
-		foreach ($i as $relpath => $value)
+		foreach ($i as $relpath => $_value)
 		{
 			$realpath = realpath($relpath);
 			if (substr($realpath, 0, strlen($path)) === $path)
