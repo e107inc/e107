@@ -2295,41 +2295,46 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		if($fields === '*')
-		{
-			$fields = $this->db_FieldList($table);
-			$unique = $this->_getUnique($table);
+		for ($retries = 0; $retries < 3; $retries ++) {
+			if ($fields === '*') {
+				$fieldList = $this->db_FieldList($table);
+				$unique = $this->_getUnique($table);
 
-			$flds = array();
-			// randomize fields that must be unique.
-			foreach($fields as $fld)
-			{
-				if(isset($unique[$fld]))
-				{
-					$flds[] = $unique[$fld] === 'PRIMARY' ? 0 : "'rand-".rand(0,999)."'"; // keep it short.
-					continue;
+				$flds = array();
+				// randomize fields that must be unique.
+				foreach ($fieldList as $fld) {
+					if (isset($unique[$fld])) {
+						$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+							"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
+						continue;
+					}
+
+					$flds[] = $fld;
 				}
 
-				$flds[] = $fld;
+				$fieldList = implode(",", $fieldList);
+				$fieldList2 = implode(",", $flds);
+			} else {
+				$fieldList = $fields;
+				$fieldList2 = $fieldList;
 			}
 
-			$fieldList = implode(",", $fields);
-			$fieldList2 = implode(",", $flds);
-		}
-		else
-		{
-			$fieldList = $fields;
-			$fieldList2 = $fieldList;
-		}
+			if (empty($fieldList)) {
+				$this->mysqlLastErrText = "copyRow \$fields list was empty";
+				return false;
+			}
 
-		if(empty($fieldList))
-		{
-			$this->mysqlLastErrText = "copyRow \$fields list was empty";
-			return false;
+			$beforeLastInsertId = $this->lastInsertId();
+			$id = $this->gen(
+				"INSERT INTO " . $this->mySQLPrefix . $table .
+				"(" . $fieldList . ") SELECT " .
+				$fieldList2 .
+				" FROM " . $this->mySQLPrefix . $table .
+				" WHERE " . $args
+			);
+			$lastInsertId = $this->lastInsertId();
+			if ($beforeLastInsertId !== $lastInsertId) break;
 		}
-
-		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList2." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
-		$lastInsertId = $this->lastInsertId();
 
 		return ($id && $lastInsertId) ? $lastInsertId : false;
 

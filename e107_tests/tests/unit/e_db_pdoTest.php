@@ -118,4 +118,53 @@ class e_db_pdoTest extends e_db_abstractTest
 		$qry = $this->db->getLastErrorText();
 		$this->assertGreaterThan(1,$result, $qry);
 	}
+
+	public function test_Db_CopyRowRNGRetry()
+	{
+		$original_user_handler = e107::getRegistry('core/e107/singleton/UserHandler');
+		$evil_user_handler = $this->make('UserHandler', [
+			'generateRandomString' => function($pattern = '', $seed = '')
+			{
+				static $index = 0;
+				$mock_values = ['same0000000', 'same0000000', 'different00'];
+
+				return $mock_values[$index ++];
+			}
+		]);
+		e107::setRegistry('core/e107/singleton/UserHandler', $evil_user_handler);
+
+		// test with table that has unique keys.
+		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
+		$qry = $this->db->getLastErrorText();
+		$this->assertGreaterThan(1,$result, $qry);
+
+		// test with table that has unique keys. (same row again) - make sure copyRow duplicates it regardless.
+		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
+		$qry = $this->db->getLastErrorText();
+		$this->assertGreaterThan(1,$result, $qry);
+
+		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
+	}
+
+	public function test_Db_CopyRowRNGGiveUp()
+	{
+		$original_user_handler = e107::getRegistry('core/e107/singleton/UserHandler');
+		$evil_user_handler = $this->make('UserHandler', [
+			'generateRandomString' => function($pattern = '', $seed = '')
+			{
+				return 'neverchange';
+			}
+		]);
+		e107::setRegistry('core/e107/singleton/UserHandler', $evil_user_handler);
+
+		// test with table that has unique keys.
+		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
+		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
+		$qry = $this->db->getLastErrorText();
+		$this->assertFalse($result,
+			"Intentionally broken random number generator should have prevented row copy with unique keys"
+		);
+
+		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
+	}
 }
