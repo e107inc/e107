@@ -7,6 +7,9 @@ include_once(codecept_root_dir() . "lib/deployers/DeployerFactory.php");
 
 abstract class Base extends \Codeception\Module
 {
+	/**
+	 * @var \Deployer
+	 */
 	protected $deployer;
 	protected $deployer_components = ['db', 'fs'];
 
