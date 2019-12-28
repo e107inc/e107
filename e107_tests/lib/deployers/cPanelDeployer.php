@@ -350,9 +350,12 @@ class cPanelDeployer extends Deployer
 		$i = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 		self::println("Adding app to temporary archive…");
 		$path = realpath($path);
-		foreach ($i as $relpath => $_value)
+		/**
+		 * @var $file_info SplFileInfo
+		 */
+		foreach ($i as $file_info)
 		{
-			$realpath = realpath($relpath);
+			$realpath = $file_info->getRealPath();
 			if (substr($realpath, 0, strlen($path)) === $path)
 				$relpath = substr($realpath, strlen($path));
 			if (substr($relpath, -3) === "/.." ||
