@@ -153,9 +153,9 @@ class alt_login
 			{
 				$qry = "SELECT * FROM `#user` WHERE ".$ulogin->getLookupQuery($username, FALSE);
 			}
-			if($aa_sql -> db_Select_gen($qry))
+			if($aa_sql->gen($qry))
 			{ // Existing user - get current data, see if any changes
-				$row = $aa_sql->db_Fetch();
+				$row = $aa_sql->fetch();
 				foreach ($db_vals as $k => $v)
 				{
 					if ($row[$k] == $v) unset($db_vals[$k]);
