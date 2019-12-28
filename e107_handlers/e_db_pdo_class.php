@@ -2296,28 +2296,7 @@ class e_db_pdo implements e_db
 		}
 
 		for ($retries = 0; $retries < 3; $retries ++) {
-			if ($fields === '*') {
-				$fieldList = $this->db_FieldList($table);
-				$unique = $this->_getUnique($table);
-
-				$flds = array();
-				// randomize fields that must be unique.
-				foreach ($fieldList as $fld) {
-					if (isset($unique[$fld])) {
-						$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
-							"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
-						continue;
-					}
-
-					$flds[] = $fld;
-				}
-
-				$fieldList = implode(",", $fieldList);
-				$fieldList2 = implode(",", $flds);
-			} else {
-				$fieldList = $fields;
-				$fieldList2 = $fieldList;
-			}
+			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
 
 			if (empty($fieldList)) {
 				$this->mysqlLastErrText = "copyRow \$fields list was empty";
@@ -2325,19 +2304,47 @@ class e_db_pdo implements e_db
 			}
 
 			$beforeLastInsertId = $this->lastInsertId();
-			$id = $this->gen(
-				"INSERT INTO " . $this->mySQLPrefix . $table .
+			$query = "INSERT INTO " . $this->mySQLPrefix . $table .
 				"(" . $fieldList . ") SELECT " .
 				$fieldList2 .
 				" FROM " . $this->mySQLPrefix . $table .
-				" WHERE " . $args
-			);
+				" WHERE " . $args;
+			$id = $this->gen($query);
 			$lastInsertId = $this->lastInsertId();
 			if ($beforeLastInsertId !== $lastInsertId) break;
 		}
 
 		return ($id && $lastInsertId) ? $lastInsertId : false;
+	}
 
+	/**
+	 * Determine before and after fields for a table
+	 * @param $table string Table name, without the prefix
+	 * @param $fields string Field list in query format (i.e. separated by commas) or all of them ("*")
+	 * @return array Index 0 is before and index 1 is after
+	 */
+	private function generateCopyRowFieldLists($table, $fields)
+	{
+		if ($fields !== '*') return array($fields, $fields);
+
+		$fieldList = $this->db_FieldList($table);
+		$unique = $this->_getUnique($table);
+
+		$flds = array();
+		// randomize fields that must be unique.
+		foreach ($fieldList as $fld) {
+			if (isset($unique[$fld])) {
+				$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+					"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
+				continue;
+			}
+
+			$flds[] = $fld;
+		}
+
+		$fieldList = implode(",", $fieldList);
+		$fieldList2 = implode(",", $flds);
+		return array($fieldList, $fieldList2);
 	}
 
 
