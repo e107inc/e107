@@ -1037,7 +1037,7 @@ class page_admin_ui extends e_admin_ui
 
 			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
 
-			$newdata['menu_name'] = preg_replace('/[^\w-*]/','-',$newdata['menu_name']);
+			$newdata['menu_name'] = preg_replace('/[^\w\-*]/','-',$newdata['menu_name']);
 
 			if(empty($newdata['page_sef']))
 			{
@@ -1081,11 +1081,16 @@ class page_admin_ui extends e_admin_ui
 		function beforeUpdate($newdata,$olddata, $id)
 		{
 
+			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			{
+				e107::getMessage()->addError(CUSLAN_79);
+				return false;
+			}
 			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
 
 			if(isset($newdata['menu_name']))
 			{
-				$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
+				$newdata['menu_name'] = preg_replace('/[^\w\-*]/','',$newdata['menu_name']);
 			}
 
 
