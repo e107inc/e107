@@ -65,7 +65,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 
 
 
-class e_db_mysql
+class e_db_mysql implements e_db
 {
 	// TODO switch to protected vars where needed
 	public      $mySQLserver;
@@ -488,7 +488,7 @@ class e_db_mysql
 
 		if ($debug == 'now')
 		{
-			echo "<pre>** $query</pre><br />\n";
+			$this->dbg->log($query);
 		}
 		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
@@ -2607,6 +2607,13 @@ class e_db_mysql
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
 	}
+	/**
+	 * @inheritDoc
+	 */
+	public function resetTableList()
+	{
+		return $this->db_ResetTableList();
+	}
 
 	/**
 	 * Legacy Alias of tables
@@ -2749,6 +2756,13 @@ class e_db_mysql
 			$result = $this->gen($qry);
 		}
 		return $result;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function copyTable($oldtable, $newtable, $drop = false, $data = false) {
+		return $this->db_CopyTable($oldtable, $newtable, $drop, $data);
 	}
 
 
@@ -3243,6 +3257,30 @@ class e_db_mysql
 		return $this->mySQLaccess;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function setLanguage($lang)
+	{
+		$this->mySQLlanguage = $lang;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getLanguage()
+	{
+		return $this->mySQLlanguage;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function dropTable($table)
+	{
+		$name = $this->mySQLPrefix.strtolower($table);
+		return $this->gen("DROP TABLE IF EXISTS ".$name);
+	}
 }
 
 /**

@@ -60,3 +60,7 @@ exclude_patterns:
 - "e107_handlers/phpthumb/**/*"
 - "e107_handlers/xmlrpc/**/*"
 - "e107_web/**/*"
+- "e107_tests/tests/**/*"
+# Ignore symlinks that are allowed to be broken due to local configurations
+- "e107_tests/lib/ci/salt/pillars/config.sls"
+- "e107_tests/lib/ci/salt/pillars/config-local.sls"

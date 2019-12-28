@@ -3830,7 +3830,7 @@ class e_parser
      */
     function init()
     {
-        $this->domObj = new DOMDocument();
+        $this->domObj = new DOMDocument('1.0', 'utf-8');
 
 		if(defined('FONTAWESOME'))
 		{
@@ -5265,12 +5265,14 @@ return;
     {
         if(empty($html)){ return ''; }
 
-		$html = str_replace('&nbsp;', '@nbsp;', $html); // prevent replacement of &nbsp; with spaces.
-
+		$html = str_replace('&nbsp;', '{E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE}', $html); // prevent replacement of &nbsp; with spaces.
+		// Workaround for https://bugs.php.net/bug.php?id=76285
+		//  Part 1 of 2
+		$html = str_replace("\n", "{E_PARSER_CLEAN_HTML_LINE_BREAK}", $html);
 
         if(strpos($html, "<body")===false) // HTML Fragment
 		{
-       		$html = '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>'; 
+       		$html = '<body>'.$html.'</body>';
 		}
 		else  // Full HTML page. 
 		{
@@ -5297,24 +5299,16 @@ return;
 
 		
         // Set it up for processing.
-	//    libxml_use_internal_errors(true); // hides errors.
         $doc  = $this->domObj;
 	    libxml_use_internal_errors(true);
-    //    @$doc->loadHTML($html);
 	    if(function_exists('mb_convert_encoding'))
 	    {
 			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
 	    }
 
-		@$doc->loadHTML($html);
+		@$doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-		// $doc->encoding = 'UTF-8';
-
-     //   $doc->resolveExternals = true;
-        
-    //    $tmp = $doc->getElementsByTagName('*');   
-    
-       	$this->nodesToConvert 	= array(); // required. 
+       	$this->nodesToConvert 	= array(); // required.
 		$this->nodesToDelete 	= array(); // required. 
 		$this->removedList		= array();
 
@@ -5483,20 +5477,19 @@ return;
         }
 		*/
 
-        $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
+		$cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
+		// Workaround for https://bugs.php.net/bug.php?id=76285
+		//  Part 2 of 2
+		$cleaned = str_replace("\n", "", $cleaned);
+		$cleaned = str_replace("{E_PARSER_CLEAN_HTML_LINE_BREAK}", "\n", $cleaned);
 
-		$cleaned = str_replace('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
-
+		$cleaned = str_replace('{E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE}', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
 
 		$cleaned = str_replace('{{{','&#123;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
-         $cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
+		$cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
 
-        $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
+		$cleaned = str_replace(array('<body>','</body>'),'', $cleaned); // filter out tags.
 
-
-
-     //   $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-        
         return trim($cleaned);
     }
 

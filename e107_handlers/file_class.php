@@ -1664,10 +1664,16 @@ class e_file
 	}
 
 
-
-
-
-	public function unzipGithubArchive($url='core')
+	/**
+	 * Download and extract a zipped copy of e107
+	 * @param string $url "core" to download the e107 core from Git master or
+	 *                    a custom download URL
+	 * @param string $destination_path The e107 root where the downloaded archive should be extracted,
+	 *                                 with a directory separator at the end
+	 * @return array|bool FALSE on failure;
+	 *                    An array of successful and failed path extractions
+	 */
+	public function unzipGithubArchive($url='core', $destination_path = e_BASE)
 	{
 
 		switch($url)
@@ -1675,8 +1681,21 @@ class e_file
 			case "core":
 				$localfile      = 'e107-master.zip';
 				$remotefile     = 'https://codeload.github.com/e107inc/e107/zip/master';
-				$excludes       = array('e107-master/install.php','e107-master/favicon.ico');
-				$excludeMatch   = false;
+				$excludes       = array(
+					'e107-master/.codeclimate.yml',
+					'e107-master/.editorconfig',
+					'e107-master/.gitignore',
+					'e107-master/.gitmodules',
+					'e107-master/CONTRIBUTING.md', # moved to ./.github/CONTRIBUTING.md
+					'e107-master/LICENSE',
+					'e107-master/README.md',
+					'e107-master/install.php',
+					'e107-master/favicon.ico',
+				);
+				$excludeMatch   = array(
+					'/.github/',
+					'/e107_tests/',
+				);
 				break;
 
 			// language.
@@ -1712,18 +1731,18 @@ class e_file
 		$excludes[] = $zipBase;
 
 		$newFolders = array(
-			$zipBase.'/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
-			$zipBase.'/e107_core/'        => e_BASE.e107::getFolder('CORE'),
-			$zipBase.'/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
-			$zipBase.'/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
-			$zipBase.'/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
-			$zipBase.'/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
-			$zipBase.'/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
-			$zipBase.'/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
-			$zipBase.'/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
-			$zipBase.'/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
-			$zipBase.'/e107_web/'         => e_BASE.e107::getFolder('WEB'),
-			$zipBase.'/'                  => e_BASE
+			$zipBase.'/e107_admin/'       => $destination_path.e107::getFolder('ADMIN'),
+			$zipBase.'/e107_core/'        => $destination_path.e107::getFolder('CORE'),
+			$zipBase.'/e107_docs/'        => $destination_path.e107::getFolder('DOCS'),
+			$zipBase.'/e107_handlers/'    => $destination_path.e107::getFolder('HANDLERS'),
+			$zipBase.'/e107_images/'      => $destination_path.e107::getFolder('IMAGES'),
+			$zipBase.'/e107_languages/'   => $destination_path.e107::getFolder('LANGUAGES'),
+			$zipBase.'/e107_media/'       => $destination_path.e107::getFolder('MEDIA'),
+			$zipBase.'/e107_plugins/'     => $destination_path.e107::getFolder('PLUGINS'),
+			$zipBase.'/e107_system/'      => $destination_path.e107::getFolder('SYSTEM'),
+			$zipBase.'/e107_themes/'      => $destination_path.e107::getFolder('THEMES'),
+			$zipBase.'/e107_web/'         => $destination_path.e107::getFolder('WEB'),
+			$zipBase.'/'                  => $destination_path
 		);
 
 		$srch = array_keys($newFolders);
@@ -1734,35 +1753,28 @@ class e_file
 
 		$error = array();
 		$success = array();
-	//	$skipped = array();
+		$skipped = array();
 
 
 
 		foreach($unarc as $k=>$v)
 		{
-			if($this->matchFound($v['stored_filename'],$excludeMatch))
+			if($this->matchFound($v['stored_filename'],$excludeMatch) ||
+				in_array($v['stored_filename'],$excludes))
 			{
-				continue;
-			}
-
-			if(in_array($v['stored_filename'],$excludes))
-			{
+				$skipped[] = $v['stored_filename'];
 				continue;
 			}
 
 			$oldPath = $v['filename'];
 			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
 
-/*
-			$success[] = $newPath;
-			continue;*/
-
 			if($v['folder'] ==1 && is_dir($newPath))
 			{
 				// $skipped[] =  $newPath. " (already exists)";
 				continue;
 			}
-
+			mkdir(dirname($newPath), 0755, true);
 			if(!rename($oldPath,$newPath))
 			{
 				$error[] =  $newPath;
@@ -1774,9 +1786,7 @@ class e_file
 
 		}
 
-
-		return array('success'=>$success, 'error'=>$error);
-
+		return array('success'=>$success, 'error'=>$error, 'skipped'=>$skipped);
 	}
 
 
