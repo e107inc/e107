@@ -103,7 +103,7 @@ class userlogin
 			$result = false;
 			foreach ($authMethod as $method)
 			{
-				if ($method == 'e107')
+				if ($method == 'e107' OR $method == 'e107db')
 				{
 					if ($this->lookupUser($username, $forceLogin))
 					{
