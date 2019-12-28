@@ -1,8 +1,15 @@
-Install MySQL server:
+Install LAMP stack:
   pkg.installed:
     - pkgs:
       - mariadb-server
       - python3-mysqldb
+      - php
+      - libapache2-mod-php
+      - php-mysql
+      - php-xml
+      - php-curl
+      - php-gd
+      - php-mbstring
 
 MySQL server configuration file:
   file.managed:
@@ -38,3 +45,27 @@ Create MySQL grants:
     - database: {{ salt['pillar.get']('db:dbname') }}.*
     - user: {{ salt['pillar.get']('db:user') }}
     - host: '%'
+
+Start and enable the web server:
+  service.running:
+    - name: apache2
+    - enable: True
+    - watch:
+      - pkg: Install LAMP stack
+
+Configure Apache user:
+  user.present:
+    - name: {{ salt['pillar.get']('fs:user') }}
+    - password: {{ salt['pillar.get']('fs:password') }}
+    - hash_password: True
+    - shell: /bin/bash
+
+Ensure docroot has the correct permissions:
+  file.directory:
+    - name: {{ salt['pillar.get']('fs:path') }}
+    - user: {{ salt['pillar.get']('fs:user') }}
+    - group: {{ salt['pillar.get']('fs:user') }}
+    - recurse:
+      - user
+      - group
+    - makedirs: True
