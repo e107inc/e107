@@ -251,6 +251,7 @@ class alt_login
 					$this->loginResult = LOGIN_ABORT;
 					return;
 				case AUTH_BADPASSWORD:
+				case AUTH_NOUSER:
 					if(varset(e107::getPref('auth_badpassword'), TRUE))
 					{
 						$this->loginResult = LOGIN_TRY_OTHER;
