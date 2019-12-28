@@ -1,0 +1,4 @@
+[submodule "e107_tests/lib/cpaneluapi"]
+	path = e107_tests/lib/cpaneluapi
+	url = https://github.com/N1ghteyes/cpanel-UAPI-php-class.git
+	branch = master

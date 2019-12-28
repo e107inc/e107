@@ -38,11 +38,6 @@
 
 		public function db_Fetch($type = null)
 		{
-			if (defined('e_LEGACY_MODE') && !is_int($type))
-			{
-				return $this->fetch('both');
-		    }
-
 			return $this->fetch($type);
 		}
 

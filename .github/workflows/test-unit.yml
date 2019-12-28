@@ -1,0 +1,126 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  MYSQL_DATABASE: app
+  MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        interpreter:
+          - image: php:5.6
+          - image: php:7.1
+          - image: php:7.2
+          - image: php:7.3
+          - image: php:7.4
+        db:
+          - image: mysql:5.5
+          - image: mysql:5.6
+          - image: mysql:5.7
+          - image: mariadb:10.4
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.interpreter.image }}
+    services:
+      db:
+        image: ${{ matrix.db.image }}
+        env:
+          MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+          MYSQL_DATABASE: 'app'
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Update operating system software repository
+      run: apt-get update
+
+    - name: Install operating system dependencies
+      run: apt-get install -y git zip libzip-dev
+
+    - name: PECL zip
+      run: docker-php-ext-install zip
+
+    - name: PECL xdebug
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug
+        else
+          pecl install xdebug-2.5.5
+        fi
+        docker-php-ext-enable xdebug
+
+    - name: Install PHP pdo_mysql extension
+      run: docker-php-ext-install pdo_mysql
+
+    - name: Install Composer
+      run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+      working-directory: ./e107_tests/
+
+    - name: Download Git submodule dependencies
+      run: git submodule update --init --recursive --remote
+
+    - name: Install the CI test configuration file
+      run: cp ./e107_tests/lib/ci/config.ci.yml ./e107_tests/config.yml
+
+    - name: Download Code Climate test reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+      working-directory: ./e107_tests/vendor/bin/
+      continue-on-error: true
+
+    - name: Code Climate report before build
+      run: ./e107_tests/vendor/bin/cc-test-reporter before-build
+      continue-on-error: true
+
+    - name: Run unit tests
+      run: |
+        if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
+        then
+          php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
+        else
+          echo "Warning: xdebug not available; skipping coverage..."
+          php ./vendor/bin/codecept run unit --steps --debug
+        fi
+      working-directory: ./e107_tests/
+
+    - name: Send code coverage report to Code Climate
+      run: |
+        ./e107_tests/vendor/bin/cc-test-reporter format-coverage \
+          --input-type clover \
+          --output ./e107_tests/tests/_output/coverage/codeclimate.json \
+          ./e107_tests/tests/_output/coverage.xml
+        ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
+          --input ./e107_tests/tests/_output/coverage/codeclimate.json
+      continue-on-error: true
+
+    - name: Send code coverage report to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./e107_tests/tests/_output/coverage.xml
+        flags: unit-tests
+        name: ${{ matrix.interpreter.image }}-${{ matrix.db.image }}
+      continue-on-error: true
+
+    - name: Upload test output
+      uses: actions/upload-artifact@v1
+      with:
+        name: tests_output
+        path: ./e107_tests/tests/_output/

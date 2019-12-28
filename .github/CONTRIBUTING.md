@@ -1,27 +1,76 @@
-# e107 v2 
+# Contributing to e107
 [![Join the chat at https://gitter.im/e107inc/e107](https://badges.gitter.im/e107inc/e107.svg)](https://gitter.im/e107inc/e107?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## How to contribute 
+_Firstly, thank you for taking the time to contribute to e107!_
 
-Contributing to e107 is quite easy if you keep in mind the following tips, to avoid some pitfalls.
+By following these guidelines, you can help us make e107 even better.
 
-### The big picture
+## Getting Started
 
-1. You need to install git on your local computer to be able to work with github! 
-2. Create a fork of e107 by clicking on the "Fork" button on the top right corner of the project page.
-3. Once the forking process has finished, click on the green "Clone or download" and copy the shown url.
-4. Clone your fork to your local computer by running the `git clone [The previously copied url]` command.
-5. Make sure, your copy "knows" from the original repo by running the following command `git remote add upstream https://github.com/e107inc/e107.git`
-6. Create a new branch for each issue you tackle by running `git checkout [branch name e.g. fix_IssueNr]`
-7. Work on your fix and add the changed file to your commit by running `git add [changed file]`
-8. Commit your work by running `git commit -m [message]` e.g. for a message: "Fixes #5432 added new method to solve this" 
-9. Push your commit to the remote repo (your online fork) by running `git push -u origin [branch name]`
-10. Do NOT forget to switch the branch back to master by running `git checkout master`!
-11. Now the fix is online at Github and you can now create the push request by clicking on "Compare & pull request" on YOUR forks project page. Enter some more details to the pull request to explain what you have done and click on "Create pull request"
-12. Congratulation! You have created your first pull request!
+### The Big Picture
+
+1. You need to install [Git](https://git-scm.com/) on your local computer to be able to push and pull code to and from GitHub!
+2. Create a fork of e107 by clicking on the "Fork" button on the top right corner of [the project page](https://github.com/e107inc/e107/).
+3. Once the forking process has finished, click on the green "Clone or download" and copy the URL shown.
+4. Clone your fork to your local computer by running the following command:
+   ```
+   git clone [the previously copied url]
+   ```
+5. Make sure your copy "knows" from the original repo by running:
+   ```
+   git remote add upstream https://github.com/e107inc/e107.git
+   ```
+6. Create a new branch for each [issue](https://github.com/e107inc/e107/issues) you tackle by running:
+   ```
+   git checkout [branch name, e.g. fix-IssueNumber]
+   ```
+7. Work on your fix and add changed files to your commit by running:
+   ```
+   # One changed file
+   git add [changed file]
+
+   # All changed files
+   git add -A
+   ```
+8. Commit your work by running:
+   ```
+   git commit
+   ```
+   For the commit message, add a summary of important information such as why the proposed approach was chosen or a brief description of the bug you are resolving.
+   
+   **Example:**
+   
+   First line:
+   ```
+   This line is a brief summary of your change
+   ```
+   
+   Starting from the third line:
+   ```
+   Please provide at least a couple sentences describing the
+   change. If necessary, please summarize decisions such as
+   why the proposed approach was chosen or what bug you are
+   attempting to solve.
+   
+   Fixes: #5432
+   ```
+9. Push your commit to the origin repo (your online fork) by running:
+   ```
+   git push -u origin [branch name]
+   ```
+10. Do **not** forget to switch the branch back to master by running:
+   ```
+   git checkout master
+   ```
+11. Once the commit is on GitHub, you can create a pull request to get the changes merged into the original project by clicking on "Compare & pull request" on _your_ fork's project page.
+
+    Fill out the pull request checklist and then click on "Create pull request".
+12. Congratulations! A project maintainer will review your contribution.  The maintainer may:
+    * approve and merge your changes, which means your contribution will be added to e107!
+    * provide feedback if your changes need improvement.
 
 
-### More in detail 
+### More Details
 
 ##### Make sure ... 
 

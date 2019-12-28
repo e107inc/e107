@@ -1,0 +1,15 @@
+root_dir: ./
+
+file_roots:
+  base:
+    - states/
+
+pillar_roots:
+  base:
+    - pillars/
+
+log_file: logs/master
+
+cachedir: cache/
+
+file_ignore_glob: []

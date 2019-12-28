@@ -1,0 +1,37 @@
+Return-path: <bounce-newsletter@e107.org>
+Received: from e107 by secure.awscloudservices.net with local (Exim 4.91)
+	(envelope-from <bounce-newsletter@e107.org>)
+	id 1hG9qV-0002Ux-RO
+	for bounce-newsletter@e107.org; Mon, 15 Apr 2019 15:12:59 -0700
+To: Bounce handler <bounce-newsletter@e107.org>
+Subject: Test Bounce
+X-PHP-Script: www.e107.org/e107_admin/mailout.php for 98.160.237.154
+X-PHP-Originating-Script: 1010:class.phpmailer.php
+Date: Mon, 15 Apr 2019 16:12:59 -0600
+From: "e107.org" <noreply@e107.org>
+Message-ID: <b32e962004f61de78186edcc7a1c7e2e@www.e107.org>
+X-Mailer: PHPMailer 5.2.27 (https://github.com/PHPMailer/PHPMailer)
+X-e107-id: 99999999
+X-Bounce-Test: true
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="b1_b32e962004f61de78186edcc7a1c7e2e"
+Content-Transfer-Encoding: 8bit
+
+This is a multi-part message in MIME format.
+
+--b1_b32e962004f61de78186edcc7a1c7e2e
+Content-Type: text/plain; charset=us-ascii
+
+Test Bounce Email address
+
+
+--b1_b32e962004f61de78186edcc7a1c7e2e
+Content-Type: text/html; charset=us-ascii
+
+Test Bounce Email address
+
+
+
+--b1_b32e962004f61de78186edcc7a1c7e2e--
+
