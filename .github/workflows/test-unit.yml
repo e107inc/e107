@@ -7,6 +7,7 @@ on:
 env:
   MYSQL_DATABASE: app
   MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
 jobs:
   test:
@@ -77,6 +78,17 @@ jobs:
     - name: Install the CI test configuration file
       run: cp ./e107_tests/lib/ci/config.ci.yml ./e107_tests/config.yml
 
+    - name: Download Code Climate test reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+      working-directory: ./e107_tests/vendor/bin/
+      continue-on-error: true
+
+    - name: Code Climate report before build
+      run: ./e107_tests/vendor/bin/cc-test-reporter before-build
+      continue-on-error: true
+
     - name: Run unit tests
       run: |
         if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
@@ -87,6 +99,16 @@ jobs:
           php ./vendor/bin/codecept run unit --steps --debug
         fi
       working-directory: ./e107_tests/
+
+    - name: Send code coverage report to Code Climate
+      run: |
+        ./e107_tests/vendor/bin/cc-test-reporter format-coverage \
+          --input-type clover \
+          --output ./e107_tests/tests/_output/coverage/codeclimate.json \
+          ./e107_tests/tests/_output/coverage.xml
+        ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
+          --input ./e107_tests/tests/_output/coverage/codeclimate.json
+      continue-on-error: true
 
     - name: Send code coverage report to Codecov
       uses: codecov/codecov-action@v1
