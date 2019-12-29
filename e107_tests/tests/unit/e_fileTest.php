@@ -341,11 +341,18 @@ class e_fileTest extends \Codeception\Test\Unit
 			}
 		]);
 		$destination = e_TEMP."fake-git-remote-destination/";
-		mkdir($destination);
+		$e_file->removeDir($destination);
+		$e_file->mkDir($destination);
 		$results = $e_file->unzipGithubArchive('core', $destination);
 
 		$this->assertEmpty($results['error'], "Errors not expected from Git remote update");
-		$extraction_mapping = array_flip(e107::getInstance()->e107_dirs);
+		$results['success'] = array_map(function($path)
+		{
+			$realpath = realpath($path);
+			$this->assertNotFalse($realpath,
+				"File {$path} reported as successfully extracted but does not exist");
+			return $realpath;
+		}, $results['success']);
 		foreach($fake_e107_files['desired'] as $desired_filename)
 		{
 			foreach ($src_dest_map as $src => $dest)
@@ -353,11 +360,12 @@ class e_fileTest extends \Codeception\Test\Unit
 				$desired_filename = preg_replace("/^".preg_quote($src, '/')."/", $dest, $desired_filename);
 			}
 			$this->assertContains(realpath($destination.$desired_filename), $results['success'],
-				"Desired file did not appear in file system");
+				"Desired file {$desired_filename} did not appear in file system");
 		}
 		foreach($fake_e107_files['undesired'] as $undesired_filename)
 		{
-			$this->assertContains($prefix.$undesired_filename, $results['skipped']);
+			$this->assertContains($prefix.$undesired_filename, $results['skipped'],
+				"{$undesired_filename} was not skipped but should have been");
 		}
 	}
 
