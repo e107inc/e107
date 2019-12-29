@@ -54,6 +54,11 @@ class _system_cron
 			{
 				$mes->addDebug("Removed install.php");	
 			}
+
+			if(!deftrue('e_DEVELOPER')) // leave tests folder intact if developer mode is active.
+			{
+				$fl->removeDir(e_BASE.'e107_tests');
+			}
 		}
 		else
 		{
