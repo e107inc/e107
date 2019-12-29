@@ -41,8 +41,6 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v1
-
     - name: Update operating system software repository
       run: apt-get update
 
@@ -64,6 +62,8 @@ jobs:
 
     - name: Install PHP pdo_mysql extension
       run: docker-php-ext-install pdo_mysql
+
+    - uses: actions/checkout@v2
 
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
