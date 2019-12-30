@@ -35,26 +35,22 @@ class E107Preparer implements Preparer
 
 		if(!is_dir($dirPath))
 		{
-			//	echo ($dirPath . "must be a directory");
 			return null;
 		}
 
-		if(substr($dirPath, strlen($dirPath) - 1, 1) != '/')
-		{
-			$dirPath .= '/';
-		}
-
-		$files = glob($dirPath . '*', GLOB_MARK);
+		$files = scandir($dirPath);
 
 		foreach($files as $file)
 		{
-			if(is_dir($file))
+			if ($file == "." || $file == "..") continue;
+
+			if(is_dir("$dirPath/$file"))
 			{
-				$this->deleteDir($file);
+				$this->deleteDir("$dirPath/$file");
 			}
 			else
 			{
-				unlink($file);
+				unlink("$dirPath/$file");
 			}
 		}
 
