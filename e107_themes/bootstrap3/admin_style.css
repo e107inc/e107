@@ -1645,6 +1645,11 @@ margin-top: 0; }
 
 
 /*
+Optional: Display Admin Nav Button Labels.
+ul.nav-admin a.navbar-admin-button:after { content: attr(title) }
+ */
+
+/*
 
 body { background-color: rgb(68, 68, 68); }
 #left-panel {
