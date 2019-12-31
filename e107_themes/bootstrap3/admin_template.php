@@ -26,8 +26,8 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar
 
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE} <span>{LINK_TEXT}</span>
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		 {LINK_IMAGE}
 
 		</a> 
 		{SUB_MENU}
@@ -38,8 +38,8 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE} <span>{LINK_TEXT}</span>
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		 {LINK_IMAGE}
 
 		</a>
 		{SUB_MENU}
