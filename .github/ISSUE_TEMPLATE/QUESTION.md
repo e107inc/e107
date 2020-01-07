@@ -1,9 +1,10 @@
 ---
 name: Question
-about: Ask about behavior that you can't find documented anywhere 
+about: Ask about behavior that you can't find documented anywhere
 title: ''
-labels: question
+labels: 'type: question'
 assignees: ''
+
 ---
 
 <!-- If you know that something isn't working the way it should, -->
