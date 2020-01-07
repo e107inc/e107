@@ -2,7 +2,7 @@
 name: Question
 about: Ask about behavior that you can't find documented anywhere
 title: ''
-labels: 'type: question'
+labels: 'status: new, type: question'
 assignees: ''
 
 ---
