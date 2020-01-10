@@ -423,6 +423,14 @@ City, State, Country
 		  'pinterest' => '',
 		  'vimeo' => '',
 		)]]></core>
+		<core name="avatar_upload">0</core>
+		<core name="photo_upload">0</core>
+		<core name="profile_rate">0</core>
+		<core name="profile_comments">0</core>
+		<core name="force_userupdate">0</core>
+		<core name="del_unv">0</core>
+		<core name="del_accu">1</core>
+		<core name="signature_access">253</core>		
 		<emote name="alien!png">!alien</emote>
 		<emote name="amazed!png">!amazed</emote>
 		<emote name="angry!png">!grr !angry</emote>

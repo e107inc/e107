@@ -328,6 +328,7 @@ class users_admin_ui extends e_admin_ui
 		'profile_comments'			=> array('title' => USRLAN_127, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
 		'force_userupdate'			=> array('title' => USRLAN_133, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'help' => USRLAN_134, 'data' => 'int',),
 		'del_unv'					=> array('title' => USRLAN_93,  'type' => 'number',  'writeParms' => array('maxlength' => 5, 'post' => USRLAN_95), 'help' => USRLAN_94, 'data' => 'int',),
+		'del_accu'					=> array('title' => USRLAN_257, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'data' => 'int',),
 		'track_online'				=> array('title' => USRLAN_130, 'type' => 'boolean', 'writeParms' => 'label=yesno', 'help' => USRLAN_131, 'data' => 'int',),
 		'memberlist_access'			=> array('title' => USRLAN_146, 'type' => 'userclass', 'writeParms' => 'classlist=public,member,guest,admin,main,classes,nobody', 'data' => 'int',),
 		'signature_access'			=> array('title' => USRLAN_194, 'type' => 'userclass', 'writeParms' => 'classlist=member,admin,main,classes,nobody', 'data' => 'int',),
