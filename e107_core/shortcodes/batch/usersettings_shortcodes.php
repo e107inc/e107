@@ -600,13 +600,21 @@ class usersettings_shortcodes extends e_shortcode
 		{
 			return null;
 		}
+		
+		$pref = e107::getPref();
+		if($pref['del_accu'] == 1)
+		{
+			$confirm    = defset("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed all personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");
+			$label      = defset('LAN_USET_50', "Delete All Account Information");
 
-		$confirm    = defset("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed all personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");
-		$label      = defset('LAN_USET_50', "Delete All Account Information");
+			$parm['confirm'] = $confirm;
 
-		$parm['confirm'] = $confirm;
-
-		return e107::getForm()->button('delete_account',1, 'delete', $label, $parm);
+			return e107::getForm()->button('delete_account',1, 'delete', $label, $parm);
+		}
+		else
+		{
+			return null;
+		}
 
 	}
 
