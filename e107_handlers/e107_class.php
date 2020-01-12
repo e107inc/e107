@@ -3474,7 +3474,7 @@ class e107
 
 		$active = true;
 
-		foreach ($matches[1] as $k => $v) // check if a field value is missing, if so, revent to legacy url.
+		foreach ($matches[1] as $k => $v) // check if a field value is missing, if so, revert to legacy url.
 		{
 			if (!isset($row[$v])) {
 				self::getMessage()->addDebug("Missing value for " . $v . " in " . $plugin . "/e_url.php - '" . $key . "'");
@@ -3489,7 +3489,6 @@ class e107
 			$active = false;
 		}
 
-
 		if (deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
 		{
 			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
@@ -3501,13 +3500,6 @@ class e107
 			} else {
 				$sefUrl = e_HTTP . $rawUrl;
 			}
-
-			// Append the query.
-			if (is_array($options['query']) && !empty($options['query'])) {
-				$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
-			}
-
-			return $sefUrl . $options['fragment'];
 		} else // Legacy URL.
 		{
 
@@ -3551,15 +3543,15 @@ class e107
 
 				}
 			}
-
-			// Append the query.
-			if (is_array($options['query']) && !empty($options['query'])) {
-
-				$legacyUrl .= (strpos($legacyUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
-			}
-
-			return $legacyUrl . $options['fragment'];
+			$sefUrl = $legacyUrl;
 		}
+
+		// Append the query.
+		if (is_array($options['query']) && !empty($options['query'])) {
+			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&amp;' : '?') . self::httpBuildQuery($options['query']);
+		}
+
+		return $sefUrl . $options['fragment'];
 	}
 
 
@@ -3631,7 +3623,7 @@ class e107
 			}
 		}
 
-		return implode('&', $params);
+		return implode('&amp;', $params);
 	}
 
 

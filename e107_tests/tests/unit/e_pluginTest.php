@@ -227,6 +227,7 @@
 
 		public function testGetFields()
 		{
+			e107::getPlugin()->uninstall('forum');
 			$result = $this->ep->clearCache()->load('forum')->getFields(true);
 
 		//	print_r($result);
