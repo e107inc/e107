@@ -7,7 +7,8 @@ on:
 env:
   MYSQL_DATABASE: app
   MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
-  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  #CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  CC_TEST_REPORTER_ID: 8948074581c1ffe7f4e47995c65d7d303882310256edd73536723d7c92adb1e3
 
 jobs:
   test:
@@ -118,15 +119,6 @@ jobs:
           ./e107_tests/tests/_output/coverage.xml
         ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
           --input ./e107_tests/tests/_output/coverage/codeclimate.json
-      continue-on-error: true
-
-    - name: Send code coverage report to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./e107_tests/tests/_output/coverage.xml
-        flags: unit-tests
-        name: ${{ matrix.interpreter.image }}-${{ matrix.db.image }}
       continue-on-error: true
 
     - name: Upload test output
