@@ -3409,10 +3409,12 @@ class e107
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
 		$legacy = array('news', 'page', 'search', 'user', 'download', 'gallery');
 
-		if (strpos($plugin, '/') !== false) {
+		if (strpos($plugin, '/') !== false)
+		{
 			$tmp = explode("/", $plugin, 2);
 
-			if (in_array($tmp[0], $legacy)) {
+			if (in_array($tmp[0], $legacy))
+			{
 				return self::getUrl()->create($plugin, $key, $row);
 			}
 
@@ -3422,7 +3424,8 @@ class e107
 			$key = $tmp[1];
 		}
 
-		if (!$tmp = self::getRegistry('core/e107/addons/e_url')) {
+		if (!$tmp = self::getRegistry('core/e107/addons/e_url'))
+		{
 			$tmp = self::getUrlConfig();
 			self::setRegistry('core/e107/addons/e_url', $tmp);
 		}
@@ -3448,22 +3451,28 @@ class e107
 			'query' => array(),
 		);
 
-		if (isset($options['fragment']) && $options['fragment'] !== '') {
+		if (isset($options['fragment']) && $options['fragment'] !== '')
+		{
 			$options['fragment'] = '#' . $options['fragment'];
 		}
 
-		if (!empty($plugin) && empty($tmp[$plugin][$key]['sef'])) {
+		if (!empty($plugin) && empty($tmp[$plugin][$key]['sef']))
+		{
 			self::getMessage()->addDebug("e_url.php in <b>" . e_PLUGIN . $plugin . "</b> is missing the key: <b>" . $key . "</b>. Or, you may need to <a href='" . e_ADMIN . "db.php?mode=plugin_scan'>scan your plugin directories</a> to register e_url.php");
 			return false;
 		}
 
-		if (!empty($tmp[$plugin][$key]['alias'])) {
+		if (!empty($tmp[$plugin][$key]['alias']))
+		{
 			$alias = (!empty($pref[e_LAN][$plugin][$key])) ? $pref[e_LAN][$plugin][$key] : $tmp[$plugin][$key]['alias'];
 
-			if (!empty($rootNamespace) && $rootNamespace === $plugin) {
+			if (!empty($rootNamespace) && $rootNamespace === $plugin)
+			{
 				$replaceAlias = array('{alias}\/', '{alias}/');
 				$tmp[$plugin][$key]['sef'] = str_replace($replaceAlias, '', $tmp[$plugin][$key]['sef']);
-			} else {
+			}
+			else
+			{
 				$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
 			}
 
@@ -3476,7 +3485,8 @@ class e107
 
 		foreach ($matches[1] as $k => $v) // check if a field value is missing, if so, revert to legacy url.
 		{
-			if (!isset($row[$v])) {
+			if (!isset($row[$v]))
+			{
 				self::getMessage()->addDebug("Missing value for " . $v . " in " . $plugin . "/e_url.php - '" . $key . "'");
 				$active = false;
 				break;
@@ -3493,20 +3503,27 @@ class e107
 		{
 			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
-			if ($options['mode'] === 'full') {
+			if ($options['mode'] === 'full')
+			{
 				$sefUrl = SITEURL . $rawUrl;
-			} elseif ($options['mode'] === 'raw') {
+			}
+			elseif ($options['mode'] === 'raw')
+			{
 				$sefUrl = $rawUrl;
-			} else {
+			}
+			else
+			{
 				$sefUrl = e_HTTP . $rawUrl;
 			}
-		} else // Legacy URL.
+		}
+		else // Legacy URL.
 		{
 
 			$srch = array();
 			$repl = array();
 
-			foreach ($matches[0] as $k => $val) {
+			foreach ($matches[0] as $k => $val)
+			{
 				$srch[] = '$' . ($k + 1);
 				$repl[] = $val;
 			}
@@ -3524,17 +3541,22 @@ class e107
 			// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
 			list($legacyUrl, $tmp) = explode("?", $legacyUrl);
 
-			if (!empty($tmp)) {
-				if (strpos($tmp, '=') === false) {
+			if (!empty($tmp))
+			{
+				if (strpos($tmp, '=') === false)
+				{
 					// required for legacy urls of type "request.php?download.43"
 					// @see: issue #3275
 					$legacyUrl .= '?' . $tmp;
 					$options['query'] = null;
-				} else {
+				}
+				else
+				{
 
 					parse_str($tmp, $qry);
 
-					foreach ($qry as $k => $v) {
+					foreach ($qry as $k => $v)
+					{
 						if (!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
 						{
 							$options['query'][$k] = $v;
@@ -3547,7 +3569,8 @@ class e107
 		}
 
 		// Append the query.
-		if (is_array($options['query']) && !empty($options['query'])) {
+		if (is_array($options['query']) && !empty($options['query']))
+		{
 			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&amp;' : '?') . self::httpBuildQuery($options['query']);
 		}
 
