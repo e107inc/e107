@@ -886,6 +886,8 @@ class eDispatcher
 			
 			if(!class_exists($className, false)) return null;
 		}
+
+		/** @var eUrlConfig $obj */
 		$obj = new $className();
 		$obj->init();
 		self::$_configObjects[$reg] = $obj;
@@ -3962,7 +3964,6 @@ class eResponse
 	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
 	protected $_meta = array();
 	protected $_meta_robot_types = array('noindex'=>'NoIndex', 'nofollow'=>'NoFollow','noarchive'=>'NoArchive','noimageindex'=>'NoImageIndex' );
-	protected $_meta_robot_descriptions = array('noindex'=>LAN_ROBOTS_NOINDEX, 'nofollow'=>LAN_ROBOTS_NOFOLLOW,'noarchive'=>LAN_ROBOTS_NOARCHIVE,'noimageindex'=>LAN_ROBOTS_NOIMAGE );
 	protected $_title_separator = ' &raquo; ';
 	protected $_content_type = 'html';
 	protected $_content_type_arr =  array(
@@ -3989,7 +3990,13 @@ class eResponse
 
 	public function getRobotDescriptions()
 	{
-		return $this->_meta_robot_descriptions;
+		$_meta_robot_descriptions = array(
+			'noindex'       => LAN_ROBOTS_NOINDEX,
+			'nofollow'      => LAN_ROBOTS_NOFOLLOW,
+			'noarchive'     => LAN_ROBOTS_NOARCHIVE,
+			'noimageindex'  => LAN_ROBOTS_NOIMAGE );
+
+		return $_meta_robot_descriptions;
 	}
 
 	public function setParam($key, $value)
