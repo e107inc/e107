@@ -3391,17 +3391,23 @@ class e107
 	}
 
 	/**
-	 * Static (easy) sef-url creation method (works with e_url.php @see /index.php)
+	 * Generate a plugin's search engine-friendly URL with HTML special characters escaped
+	 *
+	 * Can be spliced directly into HTML code like <a href="…"></a>
+	 *
+	 * Output is generated based on the plugin's e_url.php configuration
 	 *
 	 * @param string    $plugin - plugin folder name
 	 * @param string    $key assigned in e_url.php configuration.
 	 * @param array     $row Array of variables in url config.
-	 * @param array     $options  (optional) An associative array of additional options, with the following elements:
-	 * @param string    $options['mode']  abs | full
-	 * @param array     $options['query']  An array of query key/value-pairs (without any URL-encoding) to append to the URL.
-	 * @param string    $options['fragment'] A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character.
-	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
-	 * @return string
+	 * @param array     $options = [ // (optional) An associative array of additional options
+	 * 	'mode' => 'abs | full', // @see e_parse::replaceConstants()
+	 * 	'query' => [], // An array of query key/value-pairs (without any URL encoding) to append to the URL
+	 * 	'fragment' => '', // A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character
+	 * 	'legacy' => false, // When true, legacy URLs will be generated regardless of mod_rewrite status
+	 * 	]
+	 * @return string   The SEF URL with HTML special characters escaped
+	 *                  (equivalent to the htmlspecialchars() output)
 	 */
 	public static function url($plugin = '', $key = null, $row = array(), $options = array())
 	{
