@@ -791,23 +791,7 @@ class e107Test extends \Codeception\Test\Unit
 		$result = $obj::url('news','index', array(), array('mode'=>'full'));
 
 		$this->assertEquals("https://localhost/e107/news", $result);
-
-
-		$obj::getPlugin()->install('forum');
-		$url = $obj::url('forum', 'topic', array(), array(
-			'query' => array(
-				'f' => 'post',
-				'id' => 123
-			),
-			'mode'=>'full' // suitable for URL redirect. eg. e107::redirect($url)
-		));
-
-		if(strpos($url,'http')!==0 || strpos($url, '&amp;') !== false)
-		{
-			$this->fail("Generated 'full mode' URL contains ampersand entities or does not contain http");
-		}
-
-
+		
 
 	}
 
