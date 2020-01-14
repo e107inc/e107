@@ -3403,17 +3403,17 @@ class e107
 	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
 	 * @return string
 	 */
-	public static function url($plugin='', $key=null, $row=array(), $options = array())
+	public static function url($plugin = '', $key = null, $row = array(), $options = array())
 	{
 
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
-		$legacy = array('news','page','search','user','download','gallery');
+		$legacy = array('news', 'page', 'search', 'user', 'download', 'gallery');
 
-		if(strpos($plugin,'/')!==false)
+		if (strpos($plugin, '/') !== false)
 		{
-			$tmp = explode("/",$plugin,2);
+			$tmp = explode("/", $plugin, 2);
 
-			if(in_array($tmp[0], $legacy))
+			if (in_array($tmp[0], $legacy))
 			{
 				return self::getUrl()->create($plugin, $key, $row);
 			}
@@ -3424,10 +3424,10 @@ class e107
 			$key = $tmp[1];
 		}
 
-		if(!$tmp = self::getRegistry('core/e107/addons/e_url'))
+		if (!$tmp = self::getRegistry('core/e107/addons/e_url'))
 		{
 			$tmp = self::getUrlConfig();
-			self::setRegistry('core/e107/addons/e_url',$tmp);
+			self::setRegistry('core/e107/addons/e_url', $tmp);
 		}
 
 		$tp = self::getParser();
@@ -3437,7 +3437,7 @@ class e107
 		$rootNamespace = self::getPref('url_main_module');
 
 
-		if(is_string($options)) // backwards compat.
+		if (is_string($options)) // backwards compat.
 		{
 			$options = array(
 				'mode' => $options,
@@ -3446,159 +3446,135 @@ class e107
 
 		// Merge in defaults.
 		$options += array(
-			'mode'     => 'abs',
+			'mode' => 'abs',
 			'fragment' => '',
-			'query'    => array(),
+			'query' => array(),
 		);
 
-		if(isset($options['fragment']) && $options['fragment'] !== '')
+		if (isset($options['fragment']) && $options['fragment'] !== '')
 		{
 			$options['fragment'] = '#' . $options['fragment'];
 		}
 
-		if(!empty($tmp[$plugin][$key]['sef']))
+		if (!empty($plugin) && empty($tmp[$plugin][$key]['sef']))
 		{
-			if(!empty($tmp[$plugin][$key]['alias']))
+			self::getMessage()->addDebug("e_url.php in <b>" . e_PLUGIN . $plugin . "</b> is missing the key: <b>" . $key . "</b>. Or, you may need to <a href='" . e_ADMIN . "db.php?mode=plugin_scan'>scan your plugin directories</a> to register e_url.php");
+			return false;
+		}
+
+		if (!empty($tmp[$plugin][$key]['alias']))
+		{
+			$alias = (!empty($pref[e_LAN][$plugin][$key])) ? $pref[e_LAN][$plugin][$key] : $tmp[$plugin][$key]['alias'];
+
+			if (!empty($rootNamespace) && $rootNamespace === $plugin)
 			{
-				$alias = (!empty($pref[e_LAN][$plugin][$key])) ? $pref[e_LAN][$plugin][$key] : $tmp[$plugin][$key]['alias'];
-
-				if(!empty($rootNamespace) && $rootNamespace === $plugin)
-				{
-					$replaceAlias = array('{alias}\/','{alias}/');
-					$tmp[$plugin][$key]['sef'] = str_replace($replaceAlias, '', $tmp[$plugin][$key]['sef']);
-				}
-				else
-				{
-					$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
-				}
-
+				$replaceAlias = array('{alias}\/', '{alias}/');
+				$tmp[$plugin][$key]['sef'] = str_replace($replaceAlias, '', $tmp[$plugin][$key]['sef']);
+			}
+			else
+			{
+				$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
 			}
 
+		}
 
-			preg_match_all('#{([a-z_]*)}#', $tmp[$plugin][$key]['sef'],$matches);
 
-			$active = true;
+		preg_match_all('#{([a-z_]*)}#', $tmp[$plugin][$key]['sef'], $matches);
 
-			foreach($matches[1] as $k=>$v) // check if a field value is missing, if so, revent to legacy url.
+		$active = true;
+
+		foreach ($matches[1] as $k => $v) // check if a field value is missing, if so, revert to legacy url.
+		{
+			if (!isset($row[$v]))
 			{
-				if(!isset($row[$v]))
-				{
-					self::getMessage()->addDebug("Missing value for ".$v." in ".$plugin."/e_url.php - '".$key."'");
-					$active = false;
-					break;
-				}
-			}
-
-			if(empty($sefActive[$plugin])) // SEF disabled.
-			{
-				self::getDebug()->log('SEF URL for <b>'.$plugin.'</b> disabled.');
+				self::getMessage()->addDebug("Missing value for " . $v . " in " . $plugin . "/e_url.php - '" . $key . "'");
 				$active = false;
+				break;
+			}
+		}
+
+		if (empty($sefActive[$plugin])) // SEF disabled.
+		{
+			self::getDebug()->log('SEF URL for <b>' . $plugin . '</b> disabled.');
+			$active = false;
+		}
+
+		if (deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
+		{
+			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
+
+			if ($options['mode'] === 'full')
+			{
+				$sefUrl = SITEURL . $rawUrl;
+			}
+			elseif ($options['mode'] === 'raw')
+			{
+				$sefUrl = $rawUrl;
+			}
+			else
+			{
+				$sefUrl = e_HTTP . $rawUrl;
+			}
+		}
+		else // Legacy URL.
+		{
+
+			$srch = array();
+			$repl = array();
+
+			foreach ($matches[0] as $k => $val)
+			{
+				$srch[] = '$' . ($k + 1);
+				$repl[] = $val;
 			}
 
+			$template = isset($tmp[$plugin][$key]['legacy']) ? $tmp[$plugin][$key]['legacy'] : $tmp[$plugin][$key]['redirect'];
+
+			$urlTemplate = str_replace($srch, $repl, $template);
+			$urlTemplate = $tp->replaceConstants($urlTemplate, $options['mode']);
+			$legacyUrl = $tp->simpleParse($urlTemplate, $row);
+
+			$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
 
 
-			if(deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
+			// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
+			// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
+			list($legacyUrl, $tmp) = explode("?", $legacyUrl);
+
+			if (!empty($tmp))
 			{
-				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
-
-				if($options['mode'] === 'full')
+				if (strpos($tmp, '=') === false)
 				{
-					$sefUrl = SITEURL.$rawUrl;
-				}
-				elseif($options['mode'] === 'raw')
-				{
-					$sefUrl = $rawUrl;
+					// required for legacy urls of type "request.php?download.43"
+					// @see: issue #3275
+					$legacyUrl .= '?' . $tmp;
+					$options['query'] = null;
 				}
 				else
 				{
-					$sefUrl = e_HTTP.$rawUrl;
-				}
 
-				// Append the query.
-				if (is_array($options['query']) && !empty($options['query'])) {
-					$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
-				}
+					parse_str($tmp, $qry);
 
-				return $sefUrl . $options['fragment'];
-			}
-			else // Legacy URL.
-			{
-
-				$srch = array();
-				$repl = array();
-
-				foreach($matches[0] as $k=>$val)
-				{
-					$srch[] = '$'.($k+1);
-					$repl[] = $val;
-				}
-
-				$template = isset($tmp[$plugin][$key]['legacy']) ? $tmp[$plugin][$key]['legacy'] : $tmp[$plugin][$key]['redirect'];
-
-				$urlTemplate = str_replace($srch,$repl, $template);
-				$urlTemplate = $tp->replaceConstants($urlTemplate, $options['mode']);
-				$legacyUrl = $tp->simpleParse($urlTemplate, $row);
-
-				$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
-
-
-				// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
-				// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
-				list($legacyUrl,$tmp) = explode("?",$legacyUrl);
-
-				if(!empty($tmp))
-				{
-					if (strpos($tmp, '=') === false)
+					foreach ($qry as $k => $v)
 					{
-						// required for legacy urls of type "request.php?download.43"
-						// @see: issue #3275
-						$legacyUrl .= '?' . $tmp;
-						$options['query'] = null;
-					}
-					else
-					{
-
-						parse_str($tmp,$qry);
-
-						foreach($qry as $k=>$v)
+						if (!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
 						{
-							if(!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
-							{
-								$options['query'][$k] = $v;
-							}
+							$options['query'][$k] = $v;
 						}
-
 					}
+
 				}
-
-				// Append the query.
-				if (is_array($options['query']) && !empty($options['query']))
-				{
-
-					$legacyUrl .= (strpos($legacyUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
-				}
-
-				return $legacyUrl . $options['fragment'];
 			}
-
-
+			$sefUrl = $legacyUrl;
 		}
 
-		if(!empty($plugin))
+		// Append the query.
+		if (is_array($options['query']) && !empty($options['query']))
 		{
-			self::getMessage()->addDebug("e_url.php in <b>".e_PLUGIN.$plugin."</b> is missing the key: <b>".$key."</b>. Or, you may need to <a href='".e_ADMIN."db.php?mode=plugin_scan'>scan your plugin directories</a> to register e_url.php");
-		}
-		return false;
-
-		/*
-		elseif(varset($tmp[$plugin][$key]['redirect']))
-		{
-			return self::getParser()->replaceConstants($tmp[$plugin][$key]['redirect'],'full');
+			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&amp;' : '?') . self::httpBuildQuery($options['query']);
 		}
 
-		return;
-		*/
-
+		return $sefUrl . $options['fragment'];
 	}
 
 
@@ -3643,7 +3619,7 @@ class e107
 	 * rawurlencode() (instead of urlencode()) all query parameters.
 	 * @param array $query The query parameter array to be processed, e.g. $_GET.
 	 * @param string $parent Internal use only. Used to build the $query array key for nested items.
-	 * @return array A rawurlencoded string which can be used as or appended to the URL query string.
+	 * @return string A rawurlencoded string which can be used as or appended to the URL query string.
 	 */
 	public static function httpBuildQuery(array $query, $parent = '')
 	{
@@ -3670,7 +3646,7 @@ class e107
 			}
 		}
 
-		return implode('&', $params);
+		return implode('&amp;', $params);
 	}
 
 
