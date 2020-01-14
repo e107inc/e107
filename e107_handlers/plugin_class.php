@@ -140,6 +140,7 @@ class e_plugin
 	{
 		$this->_installed = array();
 		$this->_addons = array();
+		e107::setRegistry('core/e107/addons/e_url');
 
 		$this->_init(true);
 		$this->_initIDs();
