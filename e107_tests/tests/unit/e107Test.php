@@ -791,8 +791,6 @@ class e107Test extends \Codeception\Test\Unit
 		$result = $obj::url('news','index', array(), array('mode'=>'full'));
 
 		$this->assertEquals("https://localhost/e107/news", $result);
-		
-
 	}
 
 	/**
@@ -809,12 +807,42 @@ class e107Test extends \Codeception\Test\Unit
 			),
 		));
 		$this->assertEquals(
-			e_PLUGIN_ABS. 'forum/forum_viewtopic.php?f=post&amp;id=123',
+			e_PLUGIN_ABS . 'forum/forum_viewtopic.php?f=post&amp;id=123',
 			$url, "Generated href does not match expectation"
-			);
+		);
+	}
 
+	public function testUrlOptionQueryUrlEncoded()
+	{
+		$e107 = $this->e107;
+		$e107::getPlugin()->install('forum');
+		$url = $e107::url('forum', 'post', [], array(
+			'query' => array(
+				"didn't" => '<tag attr="such wow"></tag>',
+				'did' => 'much doge',
+			),
+		));
+		$this->assertEquals(
+			e_HTTP .
+			'forum/post/?didn%27t=%3Ctag%20attr%3D%22such%20wow%22%3E%3C/tag%3E&amp;did=much%20doge',
+			$url, "Generated href query string did not have expected URL encoding"
+		);
+	}
 
-
+	public function testUrlEscapesHtmlSpecialChars()
+	{
+		$e107 = $this->e107;
+		$e107::getPlugin()->install('forum');
+		$url = $e107::url('forum', 'forum', [
+			'forum_sef' => '<>',
+		], array(
+			'fragment' => 'Arts & Crafts <tag attr="can\'t inject here"></tag>'
+		));
+		$this->assertEquals(
+			e_HTTP .
+			'forum/&lt;&gt;/#Arts &amp; Crafts &lt;tag attr=&quot;can&#039;t inject here&quot;&gt;&lt;/tag&gt;',
+			$url, "Generated href did not prevent HTML tag injection as expected"
+		);
 	}
 	/*
 			public function testRedirect()

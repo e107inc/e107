@@ -3577,10 +3577,10 @@ class e107
 		// Append the query.
 		if (is_array($options['query']) && !empty($options['query']))
 		{
-			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&amp;' : '?') . self::httpBuildQuery($options['query']);
+			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
 		}
 
-		return $sefUrl . $options['fragment'];
+		return htmlspecialchars($sefUrl . $options['fragment'], ENT_QUOTES, 'UTF-8');
 	}
 
 
@@ -3652,7 +3652,7 @@ class e107
 			}
 		}
 
-		return implode('&amp;', $params);
+		return implode('&', $params);
 	}
 
 
