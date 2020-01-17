@@ -18,7 +18,7 @@ class Unit extends E107Base
 		$_E107['debug'] = true;
 
 		codecept_debug("Loading ".APP_PATH."/class2.php…");
-		define('E107_DBG_BASIC', true);
+		define('E107_DEBUG_LEVEL', 1 << 0);
 		require_once(APP_PATH."/class2.php");
 
 		$create_dir = array(e_MEDIA,e_MEDIA_IMAGE,e_MEDIA_ICON,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
