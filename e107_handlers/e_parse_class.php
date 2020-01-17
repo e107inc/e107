@@ -2999,6 +2999,7 @@ class e_parse extends e_parser
 		}
 		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
 		{
+			$multiply = intval($multiply);
 
 			if(empty($parm['w']) && isset($parm['h']))
 			{
@@ -3006,8 +3007,8 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
-			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
-			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
+			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
+			$height = !empty($parm['h']) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
 
 		}
 		else
