@@ -9,6 +9,8 @@
  * Application store client
  *
  */
+
+e107::coreLan('theme', true);
  
 class e_marketplace
 {
