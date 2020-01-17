@@ -86,47 +86,46 @@
 */
 		public function testGetUsersInClass()
 		{
-
 			$result = $this->uc->getUsersInClass(e_UC_MEMBER);
-			$expected = array (
-				  1 =>
-				  array (
-				    'user_id' => '1',
-				    'user_name' => 'e107',
-				    'user_loginname' => 'e107',
-				  ),
-				);
+			$expected = [
+				'user_id' => '1',
+				'user_name' => 'e107',
+				'user_loginname' => 'e107',
+			];
 
-			$matched = array_intersect_assoc($expected,$result);
-			$this->assertNotEmpty($matched);
+			$passed = false;
+			foreach ($result as $user)
+			{
+				if ($user == $expected) $passed = true;
+			}
+			$this->assertTrue($passed, "Expected user not found");
 
+			$result = $this->uc->getUsersInClass(e_UC_ADMIN . ",5,4,3", 'user_perms');
+			$expected = [
+				'user_id' => '1',
+				'user_perms' => '0',
+			];
 
-
-			$result = $this->uc->getUsersInClass(e_UC_ADMIN.",5,4,3", 'user_perms');
-			$expected = array (
-			  1 =>
-			  array (
-			    'user_id' => '1',
-			    'user_perms' => '0',
-			  ),
-			);
-
-			$matched = array_intersect_assoc($expected,$result);
-			$this->assertNotEmpty($matched);
+			$passed = false;
+			foreach ($result as $user)
+			{
+				if ($user == $expected) $passed = true;
+			}
+			$this->assertTrue($passed, "Expected user not found");
 
 			$result = $this->uc->getUsersInClass(e_UC_MAINADMIN);
-			$expected = array (
-				  1 =>
-				  array (
-				    'user_id' => '1',
-				    'user_name' => 'e107',
-				    'user_loginname' => 'e107',
-				  ),
-				);
+			$expected = [
+				'user_id' => '1',
+				'user_name' => 'e107',
+				'user_loginname' => 'e107',
+			];
 
-			$matched = array_intersect_assoc($expected,$result);
-			$this->assertNotEmpty($matched);
-
+			$passed = false;
+			foreach ($result as $user)
+			{
+				if ($user == $expected) $passed = true;
+			}
+			$this->assertTrue($passed, "Expected user not found");
 		}
 /*
 		public function testGet_editable_classes()
