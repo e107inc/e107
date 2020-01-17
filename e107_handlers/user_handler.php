@@ -955,6 +955,7 @@ Following fields auto-filled in code as required:
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		$initClassStage = isset($pref['init_class_stage']) ? intval($pref['init_class_stage']) : 0;
 		$initClasses = array();
 		$doClasses = false;
 		$doProbation = false;
@@ -967,14 +968,14 @@ Following fields auto-filled in code as required:
 				$doProbation = true;
 				break;
 			case 'userfull':
-				if(!$pref['user_reg_veri'] || (intval($pref['init_class_stage']) == 2))
+				if(!$pref['user_reg_veri'] || ($initClassStage == 2))
 				{
 					$doClasses = true;
 				}
 				$doProbation = true;
 				break;
 			case 'userpartial' :
-				if(intval($pref['init_class_stage']) === 1)
+				if($initClassStage === 1)
 				{
 					// Set initial classes if to be done on partial signup, or if selected to add them now
 					$doClasses = true;
