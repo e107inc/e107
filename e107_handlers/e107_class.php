@@ -3145,6 +3145,11 @@ class e107
 	 */
 	public static function coreLan($fname, $admin = false)
 	{
+		if ($admin)
+		{
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+		}
+
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
 		if(self::getRegistry($cstring)) return;
 
