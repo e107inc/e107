@@ -584,8 +584,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch();
 		$this->assertEquals("e107", $row['user_name']);
-		$this->assertNull($row[0]);
-		$this->assertNull($row[1]);
+		$this->assertFalse(isset($row[0]), "MYSQL_NUM keys not expected");
+		$this->assertFalse(isset($row[1]), "MYSQL_NUM keys not expected");
 
 		// legacy tests
 		$this->db->select('user', '*', 'user_id = 1');
