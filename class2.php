@@ -144,7 +144,6 @@ if(!defined('e_ROOT'))
 //    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
 //
 $error_handler = new error_handler();
-set_error_handler(array(&$error_handler, 'handle_error'));
 
 //
 // E: Setup other essential PHP parameters
@@ -2462,6 +2461,8 @@ class error_handler
 		{
 			error_reporting(E_ERROR | E_PARSE);
 		}
+
+		set_error_handler(array(&$this, 'handle_error'));
 	}
 
 	/**
