@@ -789,7 +789,7 @@ class e_date
 	 */
 	public function strptime($str, $format)
 	{
-		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
+		if(function_exists('strptime')) // Unix Only.
 		{
 			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
 			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
