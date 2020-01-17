@@ -25,14 +25,6 @@
  * Always use $this->getConfig() method to avoid issues pointed above
  */
 
-/*
-	Parameters related to auto-generation of field definitions on db_Insert() and db_Update()
-*/
-	define('ALLOW_AUTO_FIELD_DEFS', TRUE);	// Temporary so new functionality can be disabled if it causes problems
-	// Uses it's own cache directory now - see e_CACHE_DB
-	//define('e_DB_CACHE', e_CACHE);
-
-
 if(defined('MYSQL_LIGHT'))
 {
 	define('E107_DEBUG_LEVEL', 0);
@@ -927,7 +919,7 @@ class e_db_mysql implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
@@ -1161,7 +1153,7 @@ class e_db_mysql implements e_db
 	   		if(!isset($arg['data'])) { return false; }
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
