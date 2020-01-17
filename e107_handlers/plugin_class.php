@@ -3073,6 +3073,7 @@ class e107plugin
 
 			$tableData = $dbv->getSqlFileTables($contents);
 
+			$query = '';
 			foreach($tableData['tables'] as $k=>$v)
 			{
 				switch($function)
