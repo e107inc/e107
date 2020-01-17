@@ -2914,7 +2914,7 @@ class e_parse extends e_parser
 	 */
 	function thumbUrlDecode($src)
 	{
-		list($url,$qry) = explode("?",$src);
+		list($url,$qry) = array_pad(explode("?",$src), 2, null);
 
 		$ret = array();
 
