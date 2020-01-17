@@ -118,7 +118,7 @@ class e_online
 			$ip = e107::getIPHandler()->getIP(FALSE);
 
 			$udata = ($user->isUser() && USER ? $user->getId().'.'.$user->getName() : '0'); // USER check required to make sure they logged in without an error.
-			$agent = $_SERVER['HTTP_USER_AGENT'];
+			$agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
 			// XXX - more exceptions, e.g. hide online location for admins/users (pref), e_jlsib.php, etc
 			// XXX - more advanced flod timing when  e_AJAX_REQUEST, e.g. $ban_access_ajax = 300
