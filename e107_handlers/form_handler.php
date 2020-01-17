@@ -3318,7 +3318,7 @@ var_dump($select_options);*/
 					$opts['disabled'] = in_array($value, $options['optDisabled']);
 				}
 
-				if(is_array($options['title']) && !empty($options['title'][$value]))
+				if(!empty($options['title'][$value]))
 				{
 					$opts['data-title'] = $options['title'][$value];
 				}
