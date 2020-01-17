@@ -42,9 +42,9 @@
 			$debug_text .= "---- Pref: plug_installed (version)\n\n";
 			$pref = e107::getConfig('core',true,true)->get('plug_installed');
 
-			$debug_text .= print_r($pref[$pluginDir],true);
-
 			$installedPref = isset($pref[$pluginDir]) ? $pref[$pluginDir] : false;
+
+			$debug_text .= print_r($installedPref,true);
 
 			$debug_text .= "\n\n---- Plugin Prefs: \n\n";
 			$pluginPref = e107::pref($pluginDir);

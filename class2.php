@@ -1417,12 +1417,6 @@ define('TIMEOFFSET', $e_deltaTime);
 // ----------------------------------------------------------------------------
 $sql->db_Mark_Time('Find/Load Theme');
 
-if(e_ADMIN_AREA) // Load admin phrases ASAP
-{
-	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-}
-
-
 if(!defined('THEME'))
 {
 
@@ -2032,6 +2026,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USERNAME', 'e107-cli');
 		define('USERTHEME', false);
 		define('ADMIN', true);
+		define('ADMINPERMS', false);
 		define('GUEST', false);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
