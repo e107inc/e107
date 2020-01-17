@@ -711,7 +711,7 @@ class e_session
 		);
 
 		// collect ip data
-		if ($_SERVER['REMOTE_ADDR'])
+		if (isset($_SERVER['REMOTE_ADDR']))
 		{
 			$data['RemoteAddr'] = (string) $_SERVER['REMOTE_ADDR'];
 		}
@@ -1036,7 +1036,8 @@ class e_core_session extends e_session
 		//$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, strftime('%H:%M:%S').' CHAP start: '.$extra_text."\n"); fclose($logfp);
 
 		// could go, see _validate()
-		$ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
+		$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		$ubrowser = md5('E107'.$user_agent);
 		if (!$this->is('ubrowser'))
 		{
 			$this->set('ubrowser', $ubrowser);
