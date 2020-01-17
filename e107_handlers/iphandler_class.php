@@ -171,7 +171,7 @@ class eIPHandler
 
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
 
-		$this->serverIP = $this->ipEncode($_SERVER['SERVER_ADDR']);
+		$this->serverIP = $this->ipEncode(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'x.x.x.x');
 
 		$this->makeUserToken();
 		$ipStatus = $this->checkIP($this->ourIP);
@@ -334,7 +334,7 @@ class eIPHandler
 	{
 		if(!$this->ourIP)
 		{
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'x.x.x.x';
 			if ($ip4 = getenv('HTTP_X_FORWARDED_FOR'))
 			{
 				if (!$this->isAddressRoutable($ip))
@@ -343,10 +343,6 @@ class eIPHandler
 					$ip = trim($ip3[sizeof($ip3) - 1]);						// If IP address is unroutable, replace with any forwarded_for address
 					$this->logBanItem(0, 'X_Forward  '.$ip4.' --> '.$ip);		// Just log for interest ATM
 				}
-			}
-			if($ip == '')
-			{
-				$ip = 'x.x.x.x';
 			}
 			$this->ourIP = $this->ipEncode($ip); 				// Normalise for storage
 		}
