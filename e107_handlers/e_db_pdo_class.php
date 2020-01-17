@@ -774,7 +774,8 @@ class e_db_pdo implements e_db
 			// See if we need to auto-add field types array
 			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
@@ -801,7 +802,8 @@ class e_db_pdo implements e_db
 			foreach($arg['data'] as $fk => $fv)
 			{
 				$tmp[] = ':'.$fk;
-				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk],$this->_getPDOValue($fieldTypes[$fk],$fv)));
+				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
 			}
 
 			$valList= implode(', ', $tmp);
@@ -983,7 +985,8 @@ class e_db_pdo implements e_db
 			// See if we need to auto-add field types array
 			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$fieldTypes = $this->_getTypes($arg);
@@ -2715,6 +2718,7 @@ class e_db_pdo implements e_db
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
 		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		if (!$fieldDefs) return false;
 
 		$outDefs = array();
 
