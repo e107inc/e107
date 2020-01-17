@@ -423,12 +423,12 @@ class e107
 
 		if(!is_dir(e_SYSTEM))
 		{
-			mkdir(e_SYSTEM, 0755);
+			mkdir(e_SYSTEM, 0755, true);
 		}
 
 		if(!is_dir(e_CACHE_IMAGE))
 		{
-			mkdir(e_CACHE_IMAGE, 0755);
+			mkdir(e_CACHE_IMAGE, 0755, true);
 		}
 
 		// Prepare essential directories.
