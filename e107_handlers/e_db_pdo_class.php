@@ -9,12 +9,9 @@
 define('MYSQL_ASSOC', 1);
 define('MYSQL_NUM', 2);
 define('MYSQL_BOTH', 3);
-define('ALLOW_AUTO_FIELD_DEFS', true);
 
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
-
-
 
 /**
  * PDO MySQL class. All legacy mysql_ methods removed.
@@ -775,7 +772,7 @@ class e_db_pdo implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && defined('ALLOW_AUTO_FIELD_DEFS') && ALLOW_AUTO_FIELD_DEFS === true)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
@@ -984,7 +981,7 @@ class e_db_pdo implements e_db
 	   		if(!isset($arg['data'])) { return false; }
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
