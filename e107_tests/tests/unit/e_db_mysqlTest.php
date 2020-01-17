@@ -30,9 +30,9 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 
 		// Simulate PHP 5.6
-		define('MYSQL_ASSOC', 1);
-		define('MYSQL_NUM', 2);
-		define('MYSQL_BOTH', 3);
+		defined('MYSQL_ASSOC') or define('MYSQL_ASSOC', 1);
+		defined('MYSQL_NUM') or define('MYSQL_NUM', 2);
+		defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 		$this->db->__construct();
 		$this->loadConfig();
 
