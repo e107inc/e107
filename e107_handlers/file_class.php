@@ -1774,7 +1774,7 @@ class e_file
 				// $skipped[] =  $newPath. " (already exists)";
 				continue;
 			}
-			mkdir(dirname($newPath), 0755, true);
+			@mkdir(dirname($newPath), 0755, true);
 			if(!rename($oldPath,$newPath))
 			{
 				$error[] =  $newPath;
