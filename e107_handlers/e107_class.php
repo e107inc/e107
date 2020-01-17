@@ -3852,7 +3852,12 @@ class e107
 		if(isset($GLOBALS['_E107']) && is_array($GLOBALS['_E107'])) $this->_E107 = & $GLOBALS['_E107'];
 
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
-		$_SERVER['QUERY_STRING'] = trim(str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']), '&');
+		$_SERVER['QUERY_STRING'] = trim(
+			str_replace(
+				array('ajax_used=1', '&&'),
+				array('', '&'),
+				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
+			), '&');
 
 		/* PathInfo doesn't break anything, URLs should be always absolute. Disabling the below forever.
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
@@ -4100,13 +4105,16 @@ class e107
 		$subdomain = false;
 
 		// Define the domain name and subdomain name.
-		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+		if (is_numeric(str_replace(".", "",
+			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '')
+		)))
 		{
 			$domain = false;
 			$subdomain = false;
 		}
 		else
 		{
+			$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 			$host = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 			$domain = preg_replace('/^www\.|:\d*$/', '', $host); // remove www. and port numbers.
 
@@ -4182,9 +4190,12 @@ class e107
 	{
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443)
+		if (
+			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
+			(!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+		)
 		{
-			$this->HTTP_SCHEME =  'https';
+			$this->HTTP_SCHEME = 'https';
 		}
 
 		$path = ""; $i = 0;
@@ -4232,6 +4243,7 @@ class e107
 
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
+		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 		$this->https_path = filter_var("https://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 
@@ -4518,6 +4530,7 @@ class e107
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
 		$curPage = basename($_SERVER['SCRIPT_FILENAME']);
+		$_SERVER['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
