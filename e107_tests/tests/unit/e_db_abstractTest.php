@@ -109,6 +109,9 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	public function testDb_Mark_Time()
 	{
 		$this->db->debugMode(true);
+		e107::getDebug()->aTimeMarks = [];
+		e107::getDebug()->nTimeMarks = 0;
+		e107::getDebug()->e107_db_debug();
 
 		$this->db->db_Mark_Time("Testing");
 
@@ -121,8 +124,12 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertArrayHasKey('Memory', $actual[1]);
 
 		$this->db->debugMode(false);
+		e107::getDebug()->aTimeMarks = [];
+		e107::getDebug()->nTimeMarks = 0;
+		e107::getDebug()->e107_db_debug();
 		$result = $this->db->db_Mark_Time("Testing");
 		$this->assertNull($result);
+		$this->assertEquals(1, count(e107::getDebug()->getTimeMarkers()));
 
 
 	}
@@ -138,6 +145,9 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testDb_IsLang()
 	{
+		// XXX: This test leads to e_pref, which depends on lan_admin.php
+		e107::coreLan('', true);
+
 		$result = $this->db->db_IsLang('news', false);
 		$this->assertEquals('news', $result);
 

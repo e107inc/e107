@@ -439,6 +439,7 @@ class e_db_pdo implements e_db
 
 				if(is_array($query))
 				{
+					$query['BIND'] = isset($query['BIND']) ? $query['BIND'] : null;
 					$query = "PREPARE: " . $query['PREPARE'] . "<br />BIND:" . print_a($query['BIND'], true); // ,true);
 				}
 
