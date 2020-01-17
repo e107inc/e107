@@ -3548,7 +3548,6 @@ class e107plugin
 		foreach ($tag['link'] as $link)
 		{
 			$attrib = $link['@attributes'];
-			$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
 			$url = e_PLUGIN_ABS.$this->plugFolder."/".$attrib['url'];
 			if (isset($attrib['primary']) && $attrib['primary'] == 'true')
 			{
