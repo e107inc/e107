@@ -15,14 +15,6 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
-/*
-if (!getperms("L")) 
-{
-	e107::redirect('admin');
-	exit;
-}
-*/
-
 e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
