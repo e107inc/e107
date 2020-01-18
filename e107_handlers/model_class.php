@@ -3519,7 +3519,7 @@ class e_tree_model extends e_front_model
 
 		foreach($tree as $item)
 		{
-			$children = $item['_children'];
+			$children = isset($item['_children']) ? $item['_children'] : null;
 			unset($item['_children']);
 			$item['_depth'] = $depth;
 			if($depth > 0)
