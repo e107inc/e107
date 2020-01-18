@@ -457,7 +457,7 @@ class e_array {
 
 	     //   e107::getDebug()->log("Json data found");
 
-	        if(json_last_error() !=  JSON_ERROR_NONE && (e_DEBUG === true))
+	        if(json_last_error() !=  JSON_ERROR_NONE && e_DEBUG === true && !e107::isCli())
 	        {
 	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
 		        echo "<pre>";
