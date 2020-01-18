@@ -94,7 +94,7 @@
 
 		public function testBuildAddonPrefList()
 		{
-
+			e107::getPlugin()->install('gallery');
 
             $newUrls = array('gallery'=>0, 'news'=>'news', 'rss_menu'=>0);
 
