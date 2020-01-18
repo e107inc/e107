@@ -160,6 +160,7 @@ class e_formTest extends \Codeception\Test\Unit
 			$this->assertTrue(false, "Couldn't load e_form object");
 		}
 
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		include_once(e_CORE."templates/admin_icons_template.php");
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		include_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
@@ -914,8 +915,8 @@ class e_formTest extends \Codeception\Test\Unit
 			'number_001' => "<input type='number' name='number_001'  min='0'  step='1' value='555'  id='number-001' class='tbox number e-spinner  input-small form-control' tabindex='2' pattern='^[0-9]*' />",
 			'number_002' => "<input type='number' name='number_002'  min='0'  step='1' value='444'  id='number-002' class='tbox number e-spinner  input-small form-control' tabindex='3' pattern='^[0-9]*' />",
 
-			'bool_001' => "<label class='radio-inline'><input type='radio' name='bool_001' value='1' checked='checked' /> <span>LAN_ON</span></label> 	<label class='radio-inline'><input type='radio' name='bool_001' value='0' /> <span>LAN_OFF</span></label>",
-			'bool_002' => "<label class='radio-inline'><input type='radio' name='bool_002' value='1' checked='checked' /> <span>LAN_ON</span></label> 	<label class='radio-inline'><input type='radio' name='bool_002' value='0' /> <span>LAN_OFF</span></label>",
+			'bool_001' => "<label class='radio-inline'><input type='radio' name='bool_001' value='1' checked='checked' /> <span>On</span></label> 	<label class='radio-inline'><input type='radio' name='bool_001' value='0' /> <span>Off</span></label>",
+			'bool_002' => "<label class='radio-inline'><input type='radio' name='bool_002' value='1' checked='checked' /> <span>On</span></label> 	<label class='radio-inline'><input type='radio' name='bool_002' value='0' /> <span>Off</span></label>",
 
 
 			'dropdown_001' => "<select name='dropdown_001' id='dropdown-001' class='tbox select form-control' tabindex='3'><option value='opt_value_1'>Label 1</option><option value='opt_value_2' selected='selected'>Label 2</option></select>",
