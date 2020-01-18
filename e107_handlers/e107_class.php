@@ -3559,7 +3559,7 @@ class e107
 
 			// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
 			// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
-			list($legacyUrl, $tmp) = explode("?", $legacyUrl);
+			list($legacyUrl, $tmp) = array_pad(explode("?", $legacyUrl), 2, null);
 
 			if (!empty($tmp))
 			{
