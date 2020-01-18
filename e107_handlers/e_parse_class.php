@@ -1274,10 +1274,10 @@ class e_parse extends e_parser
 		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
-			switch($text {$pos} )
+			switch($text [$pos] )
 			{
 				case "<":
-					if($text {$pos + 1} == "/")
+					if($text [$pos + 1] == "/")
 					{
 						$closing_tag = TRUE;
 					}
@@ -1288,7 +1288,7 @@ class e_parse extends e_parser
 
 
 				case ">":
-					if($text {$pos - 1} == "/")
+					if($text [$pos - 1] == "/")
 					{
 						$closing_tag = TRUE;
 					}
@@ -1303,7 +1303,7 @@ class e_parse extends e_parser
 
 
 				case "&":
-					if($text {$pos + 1} == "#")
+					if($text [$pos + 1] == "#")
 					{
 						$end = strpos(substr($text, $pos, 7), ";");
 						if($end !== FALSE)

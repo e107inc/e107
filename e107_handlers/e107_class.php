@@ -4285,11 +4285,11 @@ class e107
 		}
 
 		//BC temporary fixes
-		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY']{0} == "/")
+		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY'][0] == "/")
 		{
 			$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
 		}
-		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY']{0} == "/")
+		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY'][0] == "/")
 		{
 			$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
 		}
@@ -5115,7 +5115,7 @@ class e107
 			break;
 		}
 
-		$this->{$name} = $ret;
+		$this->$name = $ret;
 		return $ret;
 	}
 
