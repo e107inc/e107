@@ -2837,6 +2837,15 @@ class e107
 			self::getMessage()->addDebug( "Attempting to load Template File: ".$path );
 		}
 
+		/**
+		 * "front" and "global" LANs might not be loaded come self::_getTemplate(),
+		 * so the following calls to self::plugLan() fix that.
+		 */
+		self::plugLan($plug_name, null, true);
+		self::plugLan($plug_name, null, false);
+		self::plugLan($plug_name, 'global', true);
+		self::plugLan($plug_name, 'global', false);
+
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
 

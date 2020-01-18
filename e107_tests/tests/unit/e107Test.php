@@ -39,7 +39,7 @@ class e107Test extends \Codeception\Test\Unit
 	public function testInitCore()
 	{
 		//$res = null;
-		include(APP_PATH.'/e107_config.php'); // contains $E107_CONFIG = array('site_path' => '000000test');
+		include_once(APP_PATH.'/e107_config.php'); // contains $E107_CONFIG = array('site_path' => '000000test');
 
 		$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 		$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
@@ -691,12 +691,11 @@ class e107Test extends \Codeception\Test\Unit
 	 */
 	public function testGetTemplate()
 	{
-
 		e107::getConfig()->set('sitetheme', '_blank');
 
 		$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
 		$this->assertEquals('{DOWNLOAD_BREADCRUMB} Custom', $template['header']); // ie. should be from _blank theme download template (override of plugin).
-		$footer = is_null($template['footer']); // theme overrides everything, since merge is not enabled. theme does not contain 'footer'.
+		$footer = empty($template['footer']); // theme overrides everything, since merge is not enabled. theme does not contain 'footer'.
 		$this->assertTrue($footer);
 
 		$template = e107::getTemplate('download', null, null, false); // theme override is disabled.
