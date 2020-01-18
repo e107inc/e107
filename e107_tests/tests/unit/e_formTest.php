@@ -366,6 +366,8 @@ class e_formTest extends \Codeception\Test\Unit
 					1   => array('value' => '4/5',      'expected' => 'width: 80%'),
 					2   => array('value' => '150/300',  'expected' => 'width: 50%'),
 					3   => array('value' => '30%',      'expected' => 'width: 30%'),
+					4   => array('value' => '30.4%',    'expected' => 'width: 30%'),
+					5   => array('value' => '30.5%',    'expected' => 'width: 31%'),
 				);
 
 				foreach($tests as $var)
