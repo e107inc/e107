@@ -145,7 +145,7 @@ class userlogin
 									$authorized = true;
 								break;
 								case LOGIN_TRY_OTHER:
-									continue;
+									continue 2;
 								break;
 							}
 						}

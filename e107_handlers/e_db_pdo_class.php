@@ -2718,7 +2718,8 @@ class e_db_pdo implements e_db
 		$dbAdm = new db_table_admin();
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
+		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
 		if (!$fieldDefs) return false;
 
 		$outDefs = array();
