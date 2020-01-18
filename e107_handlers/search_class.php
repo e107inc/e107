@@ -56,16 +56,16 @@ class e_search
 		foreach ($this -> keywords['split'] as $k_key => $key)
 		{
 			if (!$this -> stopword($key)) {
-				if ($key{($tp->ustrlen($key) - 1)} == '*') {
+				if ($key[($tp->ustrlen($key) - 1)] == '*') {
 					$this -> keywords['wildcard'][$k_key] = TRUE;
 					$key = $tp->usubstr($key, 0, -1);
 				} else {
 					$this -> keywords['wildcard'][$k_key] = FALSE;
 				}
-				if ($key{0} == '+') {
+				if ($key[0] == '+') {
 					$this -> keywords['boolean'][$k_key] = '+';
 					$this -> keywords['match'][$k_key] = substr($key, 1);
-				} else if ($key{0} == '-') {
+				} else if ($key[0] == '-') {
 					$this -> keywords['boolean'][$k_key] = '-';
 					$this -> keywords['match'][$k_key] = substr($key, 1);
 				} else {
@@ -451,10 +451,10 @@ class e_search
 	{
 		global $search_prefs;
 		$tp = e107::getParser();
-		if ($search_prefs['mysql_sort'] && ($key{0} == '+')) {
+		if ($search_prefs['mysql_sort'] && ($key[0] == '+')) {
 			$key = $tp->usubstr($key, 1);
 		}
-		if (($key{($tp->ustrlen($key) - 1)} != '*') && ($key{0} != '+')) {
+		if (($key[($tp->ustrlen($key) - 1)] != '*') && ($key[0] != '+')) {
 			if ($tp->ustrlen($key) > 2) {
 				if ($search_prefs['mysql_sort']) {
 					$stopword_list = $this -> stopwords_mysql;
