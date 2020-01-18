@@ -286,15 +286,11 @@ class e_tohtml_linkwords
 		$tp = e107::getParser();
 		$doSamePage = !e107::getPref('lw_notsamepage');
 
-		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
-		//		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-
-
-
-		while (($first < $limit) && (strpos($tp->ustrtolower($text),$this->word_list[$first]) === false))
+		for (; $first < $limit; $first ++)
 		{
-			$first++;
-		}		// *utf
+			if (empty($this->word_list[$first])) continue;
+			if (strpos($tp->ustrtolower($text), $this->word_list[$first]) !== false) break;
+		}
 
 		if ($first == $limit)
 		{
