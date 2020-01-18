@@ -143,6 +143,7 @@ if(!defined('e_ROOT'))
 // D: Setup PHP error handling
 //    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
 //
+global $error_handler;
 $error_handler = new error_handler();
 
 //
@@ -2412,8 +2413,8 @@ function force_userupdate($currentUser)
 class error_handler
 {
 
-	var $errors;
-	var $debug = false;
+	public $errors = [];
+	public $debug = false;
 	protected $xdebug = false;
 	protected $docroot = '';
 	protected $label = array();
