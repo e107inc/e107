@@ -57,6 +57,8 @@ class e_theme
 
 	function __construct($options=array())
 	{
+		$options['force'] = isset($options['force']) ? $options['force'] : false;
+
 		if(!empty($options['themedir']))
 		{
 			$this->_current = $options['themedir'];
