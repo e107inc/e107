@@ -2821,7 +2821,7 @@ class e107
 	 */
 	public static function getTemplate($plug_name, $id = null, $key = null, $override = true, $merge = false, $info = false)
 	{
-		if(null === $plug_name)
+		if(!$plug_name)
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
 		}
