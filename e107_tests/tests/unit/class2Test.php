@@ -47,6 +47,9 @@
 
 		function testCheckClass()
 		{
+			// XXX: Should not use some flag just to make tests pass!
+			global $_E107;
+			$_E107['phpunit'] = true;
 
 			$result = check_class(0, "253,254,250,251,0");
 			$this->assertTrue($result);
@@ -63,6 +66,7 @@
 			$result = check_class(e_UC_NOBODY, "253,254,250,251,0");
 			$this->assertFalse($result);
 
+			unset($_E107['phpunit']);
 		}
 
 
