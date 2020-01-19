@@ -133,6 +133,7 @@
 
 			foreach($tests as $item=>$var)
 			{
+				$var['script'] = isset($var['script']) ? $var['script'] : null;
 
 				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url'], $var['script']);
 				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);

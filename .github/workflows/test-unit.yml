@@ -74,6 +74,9 @@ jobs:
     - name: Install PHP pdo_mysql extension
       run: docker-php-ext-install pdo_mysql
 
+    - name: Install PHP mysqli extension
+      run: docker-php-ext-install mysqli
+
     - uses: actions/checkout@v2
 
     - name: Install Composer

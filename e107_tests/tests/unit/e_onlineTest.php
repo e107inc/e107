@@ -29,24 +29,17 @@
 		}
 
 
-
-
-
+		/**
+		 * FIXME: This test has no assertions!
+		 */
+		/*
 		public function testGoOnline()
 		{
-
 			$this->on->goOnline(true, true);
 
 			$this->on->goOnline(false, false);
-
-
-			// $this->on->goOnline(true, true);
-
-
-
-		//	var_dump($markers);
-			// var_dump(TOTAL_ONLINE);
 		}
+		*/
 
 		public function testIsBot()
 		{

@@ -848,7 +848,7 @@ class e_file
 		$source = trim($source);
 		$source = strtoupper($source);
 
-		list($val, $unit) = preg_split('#(?<=\d)(?=[a-z])#i', $source);
+		list($val, $unit) = array_pad(preg_split('#(?<=\d)(?=[a-z])#i', $source), 2, '');
 
 		$val = (int) $val;
 
@@ -1774,7 +1774,7 @@ class e_file
 				// $skipped[] =  $newPath. " (already exists)";
 				continue;
 			}
-			mkdir(dirname($newPath), 0755, true);
+			@mkdir(dirname($newPath), 0755, true);
 			if(!rename($oldPath,$newPath))
 			{
 				$error[] =  $newPath;

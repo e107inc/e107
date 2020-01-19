@@ -15,9 +15,6 @@
 
 		protected function _before()
 		{
-			// fix for getperms("L") check in lancheck.php
-			define('ADMINPERMS', 'L');
-
 			require_once(e_ADMIN."lancheck.php");
 
 			try
@@ -28,8 +25,6 @@
 			{
 				$this->fail("Couldn't load lancheck object");
 			}
-
-
 		}
 
 

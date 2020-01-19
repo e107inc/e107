@@ -60,7 +60,7 @@ if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level']))
 		define('E107_DEBUG_LEVEL', $e107_debug_level);
 	}
 } 
-else 
+elseif (!defined('E107_DEBUG_LEVEL'))
 {
 	define('E107_DEBUG_LEVEL', 0);
 }

@@ -19,7 +19,7 @@ $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_maintenance'] = true;
 
-define('e_ADMIN_AREA', true);
+if (!defined('e_ADMIN_AREA')) define('e_ADMIN_AREA', true);
 if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	require_once("../../../../class2.php");
@@ -42,6 +42,9 @@ class e107TinyMceParser
 	 */
 	function __construct()
 	{
+		$_POST['mode'] = isset($_POST['mode']) ? $_POST['mode'] : 'tohtml';
+		$_POST['content'] = isset($_POST['content']) ? $_POST['content'] : '';
+
 		$html = '';
 
 		if(defined('TINYMCE_DEBUG') || defined('TINYMCE_UNIT_TEST'))
@@ -70,7 +73,6 @@ class e107TinyMceParser
 TEMPL;
 			}
 			$_POST['content'] = $text;
-			$_POST['mode'] = 'tohtml';
 		}
 		else
 		{
@@ -119,7 +121,7 @@ TEMPL;
 		$content = stripslashes($content);
 
 		//	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
-		e107::getBB()->setClass($_SESSION['media_category']);
+		e107::getBB()->setClass($this->getMediaCategory());
 
 		if(check_class($pref['post_html'])) // raw HTML within [html] tags.
 		{
@@ -197,7 +199,7 @@ TEMPL;
 		$pref = e107::getPref();
 	//	$tp = e107::getParser();
 
-			e107::getBB()->setClass($_SESSION['media_category']);
+		e107::getBB()->setClass($this->getMediaCategory());
 
 		$content = stripslashes($content);
 
@@ -229,6 +231,14 @@ TEMPL;
 		e107::getBB()->clearClass();
 		return $text;
 
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	private function getMediaCategory()
+	{
+		return isset($_SESSION['media_category']) ? $_SESSION['media_category'] : null;
 	}
 
 

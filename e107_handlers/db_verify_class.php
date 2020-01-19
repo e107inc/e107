@@ -130,11 +130,13 @@ class db_verify
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
+		$expected['default'] = isset($expected['default']) ? $expected['default'] : '';
+		$actual['default']   = isset($actual['default'])   ? $actual['default']   : '';
+
 		if($expected['type'] === 'JSON') // Fix for JSON alias MySQL 5.7+
 		{
 			$expected['type'] = 'LONGTEXT';
 		}
-
 
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
@@ -410,7 +412,7 @@ class db_verify
 			{
 				$this->{$results}[$tbl][$key]['_status'] = 'ok';
 
-				if(!is_array($sqlData[$type][$key]))
+				if(!isset($sqlData[$type][$key]) || !is_array($sqlData[$type][$key]))
 				{
 					$this->errors[$tbl]['_status'] = 'error'; // table status
 					$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status

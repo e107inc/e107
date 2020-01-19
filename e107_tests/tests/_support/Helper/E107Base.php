@@ -64,6 +64,7 @@ abstract class E107Base extends Base
 		$this->revokeLocalE107Config();
 		$this->preparer->rollback();
 		$this->restoreLocalE107Config();
+		$this->workaroundOldPhpUnitPhpCodeCoverage();
 	}
 
 	protected function revokeLocalE107Config()
@@ -80,4 +81,21 @@ abstract class E107Base extends Base
 		}
 	}
 
+	/**
+	 * Workaround for phpunit/php-code-coverage < 6.0.8
+	 * @see https://github.com/sebastianbergmann/php-code-coverage/commit/f4181f5c0a2af0180dadaeb576c6a1a7548b54bf
+	 */
+	protected function workaroundOldPhpUnitPhpCodeCoverage()
+	{
+		$composer_installed_file = codecept_absolute_path("vendor/composer/installed.json");
+		$composer_installed = json_decode(file_get_contents($composer_installed_file));
+		$installed_phpunit_php_code_coverage = current(array_filter($composer_installed, function ($element)
+		{
+			return $element->name == 'phpunit/php-code-coverage';
+		}));
+		if (version_compare($installed_phpunit_php_code_coverage->version_normalized, '6.0.8', '>='))
+			return;
+
+		@mkdir(codecept_output_dir(), 0755, true);
+	}
 }

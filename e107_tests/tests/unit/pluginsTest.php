@@ -42,9 +42,9 @@
 			$debug_text .= "---- Pref: plug_installed (version)\n\n";
 			$pref = e107::getConfig('core',true,true)->get('plug_installed');
 
-			$debug_text .= print_r($pref[$pluginDir],true);
-
 			$installedPref = isset($pref[$pluginDir]) ? $pref[$pluginDir] : false;
+
+			$debug_text .= print_r($installedPref,true);
 
 			$debug_text .= "\n\n---- Plugin Prefs: \n\n";
 			$pluginPref = e107::pref($pluginDir);
@@ -63,7 +63,7 @@
 			$linksTable = e107::getDb()->retrieve('links','*', "link_owner='".$pluginDir."' ", true);
 			$debug_text .= print_r($linksTable, true);
 
-			$files_in_plugin_directory = scandir(e_PLUGIN.$pluginDir);
+			$files_in_plugin_directory = @scandir(e_PLUGIN.$pluginDir) ?: [];
 			$corePref = e107::getConfig('core',true,true)->getPref();
 
 
@@ -312,7 +312,7 @@
 
 						$result = $plg->getAddonErrors($this_addon);
 
-						if(is_numeric($result))
+						if(is_numeric($result) && $result != 0)
 						{
 							$errMsg = " (".$errors[$result].")";
 						}

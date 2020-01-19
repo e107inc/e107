@@ -423,12 +423,12 @@ class e107
 
 		if(!is_dir(e_SYSTEM))
 		{
-			mkdir(e_SYSTEM, 0755);
+			mkdir(e_SYSTEM, 0755, true);
 		}
 
 		if(!is_dir(e_CACHE_IMAGE))
 		{
-			mkdir(e_CACHE_IMAGE, 0755);
+			mkdir(e_CACHE_IMAGE, 0755, true);
 		}
 
 		// Prepare essential directories.
@@ -2821,7 +2821,7 @@ class e107
 	 */
 	public static function getTemplate($plug_name, $id = null, $key = null, $override = true, $merge = false, $info = false)
 	{
-		if(null === $plug_name)
+		if(!$plug_name)
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
 		}
@@ -2836,6 +2836,15 @@ class e107
 		{
 			self::getMessage()->addDebug( "Attempting to load Template File: ".$path );
 		}
+
+		/**
+		 * "front" and "global" LANs might not be loaded come self::_getTemplate(),
+		 * so the following calls to self::plugLan() fix that.
+		 */
+		self::plugLan($plug_name, null, true);
+		self::plugLan($plug_name, null, false);
+		self::plugLan($plug_name, 'global', true);
+		self::plugLan($plug_name, 'global', false);
 
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
@@ -3145,6 +3154,11 @@ class e107
 	 */
 	public static function coreLan($fname, $admin = false)
 	{
+		if ($admin)
+		{
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+		}
+
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
 		if(self::getRegistry($cstring)) return;
 
@@ -3545,7 +3559,7 @@ class e107
 
 			// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
 			// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
-			list($legacyUrl, $tmp) = explode("?", $legacyUrl);
+			list($legacyUrl, $tmp) = array_pad(explode("?", $legacyUrl), 2, null);
 
 			if (!empty($tmp))
 			{
@@ -3852,7 +3866,12 @@ class e107
 		if(isset($GLOBALS['_E107']) && is_array($GLOBALS['_E107'])) $this->_E107 = & $GLOBALS['_E107'];
 
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
-		$_SERVER['QUERY_STRING'] = trim(str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']), '&');
+		$_SERVER['QUERY_STRING'] = trim(
+			str_replace(
+				array('ajax_used=1', '&&'),
+				array('', '&'),
+				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
+			), '&');
 
 		/* PathInfo doesn't break anything, URLs should be always absolute. Disabling the below forever.
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
@@ -4100,13 +4119,16 @@ class e107
 		$subdomain = false;
 
 		// Define the domain name and subdomain name.
-		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+		if (is_numeric(str_replace(".", "",
+			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '')
+		)))
 		{
 			$domain = false;
 			$subdomain = false;
 		}
 		else
 		{
+			$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 			$host = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 			$domain = preg_replace('/^www\.|:\d*$/', '', $host); // remove www. and port numbers.
 
@@ -4182,9 +4204,12 @@ class e107
 	{
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443)
+		if (
+			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
+			(!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+		)
 		{
-			$this->HTTP_SCHEME =  'https';
+			$this->HTTP_SCHEME = 'https';
 		}
 
 		$path = ""; $i = 0;
@@ -4232,6 +4257,7 @@ class e107
 
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
+		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 		$this->https_path = filter_var("https://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 
@@ -4259,11 +4285,11 @@ class e107
 		}
 
 		//BC temporary fixes
-		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY']{0} == "/")
+		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY'][0] == "/")
 		{
 			$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
 		}
-		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY']{0} == "/")
+		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY'][0] == "/")
 		{
 			$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
 		}
@@ -4518,6 +4544,7 @@ class e107
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
 		$curPage = basename($_SERVER['SCRIPT_FILENAME']);
+		$_SERVER['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
@@ -5088,7 +5115,7 @@ class e107
 			break;
 		}
 
-		$this->{$name} = $ret;
+		$this->$name = $ret;
 		return $ret;
 	}
 

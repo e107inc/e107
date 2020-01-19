@@ -2,7 +2,7 @@
 /**
  * e107 website system
  *
- * Copyright (C) 2008-2019 e107 Inc (e107.org)
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -19,6 +19,14 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	 * @return e_db
 	 */
 	abstract protected function makeDb();
+
+	/**
+	 * Prevent creating too many connections to database server
+	 */
+	public function _after()
+	{
+		$this->db->close();
+	}
 
 	protected function loadConfig()
 	{
@@ -46,9 +54,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->getPDO();
 		$this->assertTrue($result);
 	}
-
-
-
 
 	public function testGetMode()
 	{
@@ -109,6 +114,9 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	public function testDb_Mark_Time()
 	{
 		$this->db->debugMode(true);
+		e107::getDebug()->aTimeMarks = [];
+		e107::getDebug()->nTimeMarks = 0;
+		e107::getDebug()->e107_db_debug();
 
 		$this->db->db_Mark_Time("Testing");
 
@@ -121,8 +129,12 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertArrayHasKey('Memory', $actual[1]);
 
 		$this->db->debugMode(false);
+		e107::getDebug()->aTimeMarks = [];
+		e107::getDebug()->nTimeMarks = 0;
+		e107::getDebug()->e107_db_debug();
 		$result = $this->db->db_Mark_Time("Testing");
 		$this->assertNull($result);
+		$this->assertEquals(1, count(e107::getDebug()->getTimeMarkers()));
 
 
 	}
@@ -138,6 +150,9 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testDb_IsLang()
 	{
+		// XXX: This test leads to e_pref, which depends on lan_admin.php
+		e107::coreLan('', true);
+
 		$result = $this->db->db_IsLang('news', false);
 		$this->assertEquals('news', $result);
 
@@ -190,8 +205,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$userp = "3, 'Display Name', 'Username', '', 'password-hash', '', 'email@address.com', '', '', 0, ".time().", 0, 0, 0, 0, 0, '127.0.0.1', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
 		$this->db->db_Query("REPLACE INTO ".MPREFIX."user VALUES ({$userp})" );
 
-		$res = $this->db->db_Query("SELECT user_email FROM ".MPREFIX."user WHERE user_id = 3");
-		$result = $res->fetch();
+		$this->db->db_Query("SELECT user_email FROM ".MPREFIX."user WHERE user_id = 3");
+		$result = $this->db->fetch();
 		$this->assertEquals('email@address.com', $result['user_email']);
 
 		// duplicate unique field 'media_cat_category', should return false/error.
@@ -584,8 +599,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch();
 		$this->assertEquals("e107", $row['user_name']);
-		$this->assertNull($row[0]);
-		$this->assertNull($row[1]);
+		$this->assertFalse(isset($row[0]), "MYSQL_NUM keys not expected");
+		$this->assertFalse(isset($row[1]), "MYSQL_NUM keys not expected");
 
 		// legacy tests
 		$this->db->select('user', '*', 'user_id = 1');
@@ -646,7 +661,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		// Check if the returned value is equal to the number of affected records
 		$expected = $actual;
 		$actual = $this->db->rowCount();
-		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
+		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual})");
 
 		// Insert some records
 		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => time(), 'tmp_info' => 'Delete test 1'));
@@ -656,7 +671,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		// Count records
 		$expected = 3;
 		$actual = $this->db->count('tmp');
-		$this->assertEquals($expected, $actual, "Number of inserted records is wrong ({$expected} != {$actual}");
+		$this->assertEquals($expected, $actual, "Number of inserted records is wrong ({$expected} != {$actual})");
 
 		// Delete 1 record
 		$expected = 1;
@@ -666,7 +681,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		// Check if the returned value is equal to the number of affected records
 		$expected = $actual;
 		$actual = $this->db->rowCount();
-		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
+		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual})");
 
 		// Delete all remaining (2) records
 		$expected = 2;
@@ -676,7 +691,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		// Check if the returned value is equal to the number of affected records
 		$expected = $actual;
 		$actual = $this->db->rowCount();
-		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual}");
+		$this->assertEquals($expected, $actual, "Number of deleted records is wrong ({$expected} != {$actual})");
 
 		// Delete from an table that doesn't exist
 		$actual = $this->db->delete('tmp_unknown_table');
@@ -809,10 +824,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$result = $this->db->escape("Can't", true);
 		$this->assertEquals("Can't", $result);
-
 	}
-
-
 
 	public function testDb_Table_exists()
 	{
@@ -913,43 +925,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 
-	public function testBackup()
-	{
-		$opts = array(
-			'gzip'      => false,
-			'nologs'    => false,
-			'droptable' => false,
-		);
-
-		$result = $this->db->backup('user,core_media_cat', null, $opts);
-		$uncompressedSize = filesize($result);
-
-		$tmp = file_get_contents($result);
-
-		$this->assertStringNotContainsString("DROP TABLE IF EXISTS `e107_user`;", $tmp);
-		$this->assertStringContainsString("CREATE TABLE `e107_user` (", $tmp);
-		$this->assertStringContainsString("INSERT INTO `e107_user` VALUES (1", $tmp);
-		$this->assertStringContainsString("CREATE TABLE `e107_core_media_cat`", $tmp);
-
-		$result = $this->db->backup('*', null, $opts);
-		$size = filesize($result);
-		$this->assertGreaterThan(100000,$size);
-
-		$opts = array(
-			'gzip'      => true,
-			'nologs'    => false,
-			'droptable' => false,
-		);
-
-		$result = $this->db->backup('user,core_media_cat', null, $opts);
-		$compressedSize = filesize($result);
-		$this->assertLessThan($uncompressedSize, $compressedSize);
-
-		$result = $this->db->backup('missing_table', null, $opts);
-		$this->assertFalse($result);
-
-	}
-
 
 	public function testGetLanguage()
 	{
@@ -972,7 +947,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorNumber();
 		$this->assertEquals("42S02", $result);
-
 	}
 
 	public function testGetLastErrorText()
@@ -1037,7 +1011,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	 */
 	public function testSecondaryDatabaseInstance()
 	{
-
 		try
 		{
 			$xql = $this->makeDb();
@@ -1159,8 +1132,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$empty = $xql->isEmpty($table);
 		$this->assertTrue($empty,"isEmpty() or truncate() failed");
 
-
-
+		$xql->close();
 	}
 
 }

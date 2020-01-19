@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -24,14 +24,6 @@
  * when data is initally loaded)
  * Always use $this->getConfig() method to avoid issues pointed above
  */
-
-/*
-	Parameters related to auto-generation of field definitions on db_Insert() and db_Update()
-*/
-	define('ALLOW_AUTO_FIELD_DEFS', TRUE);	// Temporary so new functionality can be disabled if it causes problems
-	// Uses it's own cache directory now - see e_CACHE_DB
-	//define('e_DB_CACHE', e_CACHE);
-
 
 if(defined('MYSQL_LIGHT'))
 {
@@ -75,7 +67,7 @@ class e_db_mysql implements e_db
 	protected   $mySQLport = 3306;
 	public      $mySQLPrefix;
 
-	/** @var PDO */
+	/** @var mysqli */
 	protected   $mySQLaccess;
 	public      $mySQLresult;
 	public      $mySQLrows;
@@ -99,9 +91,6 @@ class e_db_mysql implements e_db
 	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	public      $total_results = false;			// Total number of results
-	
-	private     $pdo = false; // using PDO or not.
-	private     $pdoBind= false;
 
 	/** @var e107_db_debug */
 	private     $dbg;
@@ -114,15 +103,6 @@ class e_db_mysql implements e_db
 	*/
 	public function __construct()
 	{
-
-		global $pref, $db_defaultPrefix;
-
-
-		if((PHP_MAJOR_VERSION > 6) || !function_exists('mysql_connect') ||  (defined('e_PDO') && e_PDO === true))
-		{
-			$this->pdo = true;	
-		}
-
 		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);
 
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
@@ -157,7 +137,7 @@ class e_db_mysql implements e_db
 
 	function getPDO()
 	{
-		return $this->pdo;
+		return false;
 	}
 
 	function debugMode($bool)
@@ -203,65 +183,24 @@ class e_db_mysql implements e_db
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-
-		if($this->pdo)
-		{	
-		
-			if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
-			{
-				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
-			}
-
-			try
-			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-
-			}
-			catch(PDOException $ex)
-			{
-				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
-
-				return 'e1';
-			}
-
-		}
-		elseif(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == TRUE)
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
-			// No persistent link parameter permitted
-			if ( ! $this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword))
-			{
-				$this->mySQLlastErrText = mysql_error();
-				return 'e1';
-			}
-		}
-		else
-		{
-			if ( ! $this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
-			{
-				$this->mySQLlastErrText = mysql_error();
-				return 'e1';
-			}
+			$this->mySQLlastErrText = mysqli_connect_error();
+			return 'e1';
 		}
 
-		$this->mySqlServerInfo = ($this->pdo) ? $this->mySQLaccess->query('select version()')->fetchColumn() : mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
+		$this->mySqlServerInfo = mysqli_get_server_info($this->mySQLaccess); // We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
 		$this->db_Set_Charset();
 		$this->setSQLMode();
 
-	//	if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
 		if (!$this->database($this->mySQLdefaultdb))
 		{
 			return 'e2';
 		}
 
-		if($this->pdo == true)
-		{
-		//	$this->mySQLaccess->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-		//	$this->mySQLaccess->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-		}
 		$this->dbError('dbConnect/SelectDB');
 
 		// Save the connection resource
@@ -285,12 +224,12 @@ class e_db_mysql implements e_db
 	 * @param string $mySQLdefaultdb The database schema to connect to
 	 * @param string $newLink force a new link connection if TRUE. Default FALSE
 	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
-	 * @return boolean true on success, false on error. 
+	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
 	{
 		global $db_ConnectionID, $db_defaultPrefix;
-		
+
 		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
 
 		$this->mySQLserver 		= $mySQLserver;
@@ -303,49 +242,19 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-	//	if($this->mySQLserver === 'localhost') // problematic.
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
-	//		$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second.
+			$this->mySQLlastErrText = mysqli_connect_error();
+			return false;
 		}
 
-
-		if($this->pdo) // PDO 
-		{		
-			try
-			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-			}
-			catch(PDOException $ex)
-			{
-				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLLastErrNum = $ex->getCode();
-				$this->dbg->log($this->mySQLlastErrText);	// Useful for Debug.
-				return false;
-			}
-			
-		//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
-			$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
-
-		}
-		else // Legacy. 
-		{
-			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
-			{
-				$this->mySQLlastErrText = mysql_error();
-				return false;
-			}
-			
-			$this->mySqlServerInfo = mysql_get_server_info();
-		}
+		$this->mySqlServerInfo = mysqli_get_server_info($this->mySQLaccess);
 
 		$this->db_Set_Charset();
 		$this->setSQLMode();
-		
-		//if ($db_ConnectionID == NULL){
-			$db_ConnectionID = $this->mySQLaccess;
 
-	//	}
-		
+		$db_ConnectionID = $this->mySQLaccess;
+
 		return true;
 	}
 
@@ -363,11 +272,11 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * Select the database to use. 
+	 * Select the database to use.
 	 * @param string $database name
 	 * @param string $table prefix . eg. e107_
 	 * @param boolean $multiple set to maintain connection to a secondary database.
-	 * @return boolean true when database selection was successful otherwise false. 
+	 * @return boolean true when database selection was successful otherwise false.
 	 */
 	public function database($database, $prefix = MPREFIX, $multiple=false)
 	{
@@ -380,31 +289,12 @@ class e_db_mysql implements e_db
 			return true;
 		}
 
-		if($this->pdo)
-		{
-
-			try
-			{
-				$this->mySQLaccess->query("use `".$database."`");
-        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
-		    }
-			catch (PDOException $e) 
-			{
-				$this->mySQLlastErrText = $e->getMessage();
-				$this->mySQLlastErrNum = $e->getCode();
-				return false;
-		    }
-		    
-			return true;
-		}
-		
-		
-		if (!@mysql_select_db($database, $this->mySQLaccess))
+		if (!@mysqli_select_db($this->mySQLaccess, $database))
 		{
 			return false;
 		}
-		
-		return true;		
+
+		return true;
 	}
 
 
@@ -471,10 +361,8 @@ class e_db_mysql implements e_db
 	*
 	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
 	* @param string|array $query
-	* @param string $query['PREPARE'] PDO Format query.
-	 *@param array $query['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
-	* @param object $rli
-	* @return boolean|PDOStatement | resource - as mysql_query() function.
+	* @param mysqli $rli Your own mysqli connection instead of the one in this object
+	* @return boolean|mysqli_result - as mysqli_query() function.
 	*			FALSE indicates an error
 	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
 	*			TRUE indicates success in other cases
@@ -503,71 +391,11 @@ class e_db_mysql implements e_db
 		$this->provide_mySQLaccess();
 
 		$b = microtime();
-		
-		if($this->pdo)
-		{
 
-			if(is_array($query) && !empty($query['PREPARE']) && !empty($query['BIND']))
-			{
-				/** @var PDOStatement $prep */
-				$prep = $this->mySQLaccess->prepare($query['PREPARE']);
-				foreach($query['BIND'] as $k=>$v)
-				{
-					$prep->bindValue(':'.$k, $v['value'],$v['type']);
+		$sQryRes = is_null($rli) ? @mysqli_query($this->mySQLaccess, $query) : @mysqli_query($rli, $query);
+		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 
-				}
-
-				try
-				{
-					$prep->execute();
-					$sQryRes = $prep->rowCount();
-				}
-				catch(PDOException $ex)
-				{
-					$sQryRes = false;
-					$this->mySQLlastErrText = $ex->getMessage();
-					$this->mySQLlastErrNum = $ex->getCode();
-				}
-			}
-			else
-			{
-				try
-				{
-
-					if(preg_match('#^(CREATE TABLE|DROP TABLE|ALTER TABLE|RENAME TABLE|CREATE DATABASE|CREATE INDEX)#',$query, $matches))
-					{
-						/** @var PDO $rli */
-						$sQryRes = is_null($rli) ? $this->mySQLaccess->exec($query) : $rli->exec($query);
-
-						if($sQryRes !==false)
-						{
-							$sQryRes = true; // match with non-PDO results.
-						}
-
-					}
-					else
-					{
-						/** @var PDO $rli */
-						$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
-					}
-
-				}
-				catch(PDOException $ex)
-				{
-					$sQryRes = false;
-					$this->mySQLlastErrText = $ex->getMessage();
-					$this->mySQLlastErrNum = $ex->getCode();
-				}
-			}
-
-		}
-		else 
-		{
-			$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
-			$this->mySQLlastErrNum = mysql_errno();
-			$this->mySQLlastErrText = mysql_error();
-		}
-		
 		$e = microtime();
 
 		e107::getSingleton('e107_traffic')->Bump('db_Query', $b, $e);
@@ -588,17 +416,9 @@ class e_db_mysql implements e_db
 		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
 		{
 
-			if($this->pdo)
-			{
-				$rc = $this->mySQLaccess->query('SELECT FOUND_ROWS();')->fetch(PDO::FETCH_COLUMN);
-				$this->total_results = intval($rc);
-			}
-			else /* @XXX Subject of Removal. */
-			{
-				$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
-				$rc =  mysql_fetch_array($fr);
-				$this->total_results = (int) $rc['FOUND_ROWS()'];
-			}
+			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');
+			$rc = mysqli_fetch_array($fr);
+			$this->total_results = (int)$rc['FOUND_ROWS()'];
 
 		}
 
@@ -616,35 +436,7 @@ class e_db_mysql implements e_db
 			if(is_object($db_debug))
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
-
-				if($this->pdo == true)
-				{
-					if(is_array($query))
-					{
-						$query = "PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
-					}
-
-					if(isset($ex) && is_object($ex))
-					{
-						$query = $ex->getMessage();
-						$query .= print_a($ex->getTrace(),true);
-					}
-				}
-
-				if($this->pdo == true && $buglink instanceof PDO)
-				{
-
-					$db_debug->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
-				}
-				else
-				{
-
-					$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
-				}
-			}
-			else
-			{
-				// echo "what happened to db_debug??!!<br />";
+				$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 		}
 
@@ -702,7 +494,7 @@ class e_db_mysql implements e_db
 		{
 			$ret = array();
 			if(!$multi) return $this->fetch();
-			
+
 			while($row = $this->fetch())
 			{
 				if(null !== $indexField) $ret[$row[$indexField]] = $row;
@@ -710,7 +502,7 @@ class e_db_mysql implements e_db
 			}
 			return $ret;
 		}
-		
+
 		// detect mode
 		$mode = 'one';
 		if($table && !$where && is_bool($fields))
@@ -728,7 +520,7 @@ class e_db_mysql implements e_db
 		{
 			$mode = 'multi';
 		}
-		
+
 		// detect query type
 		$select = true;
 		$noWhere = false;
@@ -744,9 +536,9 @@ class e_db_mysql implements e_db
 			// FIXME - move auto detect to select()?
 			$noWhere = true;
 		}
-		
+
 		// execute & fetch
-		switch ($mode) 
+		switch ($mode)
 		{
 			case 'single':
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
@@ -760,7 +552,7 @@ class e_db_mysql implements e_db
 				$rows = $this->fetch();
 				return array_shift($rows);
 			break;
-			
+
 			case 'one':
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
 				{
@@ -772,7 +564,7 @@ class e_db_mysql implements e_db
 				}
 				return $this->fetch();
 			break;
-			
+
 			case 'multi':
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
 				{
@@ -790,12 +582,12 @@ class e_db_mysql implements e_db
 				}
 				return $ret;
 			break;
-			
+
 		}
 	}
 
 	/**
-	* Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
+	* Perform a mysqli_query() using the arguments suplied by calling db::db_Query()<br />
 	* <br />
 	* If you need more requests think to call the class.<br />
 	* <br />
@@ -815,7 +607,7 @@ class e_db_mysql implements e_db
 		$table = $this->db_IsLang($table);
 
 		$this->mySQLcurTable = $table;
-		
+
 		if ($arg != '' && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC. 
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
@@ -859,7 +651,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * select() alias
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
@@ -927,9 +719,10 @@ class e_db_mysql implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
@@ -951,12 +744,10 @@ class e_db_mysql implements e_db
 			$fieldTypes = $this->_getTypes($arg);
 			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
 			$tmp = array();
-			$bind = array();
 
 			foreach($arg['data'] as $fk => $fv)
 			{
-				$tmp[] = ($this->pdo == true) ? ':'.$fk : $this->_getFieldValue($fk, $fv, $fieldTypes);
-				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk],$this->_getPDOValue($fieldTypes[$fk],$fv)));
+				$tmp[] = $this->_getFieldValue($fk, $fv, $fieldTypes);
 			}
 
 			$valList= implode(', ', $tmp);
@@ -981,17 +772,6 @@ class e_db_mysql implements e_db
 			{
 				$query = "REPLACE INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
 			}
-
-
-			if($this->pdo == true)
-			{
-				$query = array(
-					'PREPARE' => $query,
-					'BIND'  => $bind,
-				);
-			}
-
-
 		}
 		else
 		{
@@ -1006,10 +786,7 @@ class e_db_mysql implements e_db
 		{
 			$result = false; // ie. there was an error.
 
-			if($this->pdo !== true)
-			{
-				$this->mySQLresult = mysql_affected_rows($this->mySQLaccess);
-			}
+			$this->mySQLresult = mysqli_affected_rows($this->mySQLaccess);
 
 			if($this->mySQLresult === 1 ) // insert.
 			{
@@ -1036,14 +813,12 @@ class e_db_mysql implements e_db
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = ($this->pdo) ? $this->mySQLresult : mysql_affected_rows($this->mySQLaccess);
+				$tmp = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
-				if ($tmp == -1) { return false; } // mysql_affected_rows error
+				if ($tmp == -1) { return false; } // mysqli_affected_rows error
 				return $tmp;
 			}
-
-		//	$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
 
 			$tmp = $this->lastInsertId();
 
@@ -1056,11 +831,11 @@ class e_db_mysql implements e_db
 			return FALSE;
 		}
 	}
-	
+
 
 	public function lastInsertId()
 	{
-		$tmp = ($this->pdo) ? (int) $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
+		$tmp = mysqli_insert_id($this->mySQLaccess);
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
@@ -1074,31 +849,24 @@ class e_db_mysql implements e_db
 		return $this->total_results;
 	}
 
-
+	/**
+	 * @param mysqli_result $result
+	 * @return false|int
+	 */
 	public function rowCount($result=null)
 	{
-
-		if($this->pdo)
+		if (!($result instanceof mysqli_result))
 		{
-			if(!$this->mySQLresult)
-			{
-				return -1;
-			}
-
+			$result = $this->mySQLresult;
 		}
-
-		/** @var PDOStatement $resource */
-		$resource = $this->mySQLresult;
-		$rows = $this->mySQLrows = ($this->pdo) ? $resource->rowCount() :  mysql_num_rows($this->mySQLresult);
+		if ($result instanceof mysqli_result)
+		{
+			$this->mySQLrows = mysqli_num_rows($result);
+		}
 		$this->dbError('db_Rows');
-		return $rows;	
+		return $this->mySQLrows;
 	}
 
-
-
-
-
-	
 	/**
 	 * insert() alias
 	 * @deprecated
@@ -1127,7 +895,7 @@ class e_db_mysql implements e_db
 		$arg['_REPLACE'] = TRUE;
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
-	
+
 	/**
 	 * replace() alias
 	 * @deprecated
@@ -1140,10 +908,8 @@ class e_db_mysql implements e_db
 
 	private function _prepareUpdateArg($tableName, $arg)
 	{
-		$this->pdoBind = array();
 		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
-
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 		   	{
 			   	//Convert data if not using 'new' format
@@ -1161,32 +927,21 @@ class e_db_mysql implements e_db
 	   		if(!isset($arg['data'])) { return false; }
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$fieldTypes = $this->_getTypes($arg);
 
 
 			$new_data = '';
-			//$this->pdoBind = array(); // moved up to the beginning of the method to make sure it is initialized properly
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
 
-				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
-
-				if($fv === '_NULL_')
-				{
-					$ftype = 'null';
-				}
-
-				if($ftype != 'cmd')
-				{
-					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
-				}
+				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
 			}
 
 			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
@@ -1227,35 +982,14 @@ class e_db_mysql implements e_db
 
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
 
-		if($this->pdo == true && !empty($this->pdoBind))
-		{
-			$query = array(
-					'PREPARE' => $query,
-					'BIND'  => $this->pdoBind,
-			);
-		}
-
 		$result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark);
 
 		if ($result !==false)
 		{
+			$result = mysqli_affected_rows($this->mySQLaccess);
 
-			if($this->pdo == true)
-			{
-				if(is_object($result))
-				{
-					// make sure to return the number of records affected, instead of an object
-					$result = $this->rowCount();
-				}
-			}
-			else
-			{
-				$result = mysql_affected_rows($this->mySQLaccess);
-			}
-
-		//	$result = ($this->pdo) ? $result : mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');
-			if ($result === -1) { return false; }	// Error return from mysql_affected_rows
+			if ($result === -1) { return false; }	// Error return from mysqli_affected_rows
 			return $result;
 		}
 		else
@@ -1315,7 +1049,7 @@ class e_db_mysql implements e_db
 			case 'cmd':
 				return $fieldValue;
 			break;
-			
+
 			case 'safestr':
 				return "'{$fieldValue}'";
 			break;
@@ -1354,121 +1088,13 @@ class e_db_mysql implements e_db
 				if($fieldValue == '') { return "''"; }
 				return "'".e107::getParser()->toDB($fieldValue)."'";
 			break;
-			
+
 			case 'escape':
 			default:
 				return "'".$this->escape($fieldValue, false)."'";
 			break;
 	  	}
 	}
-
-
-	/**
-	 * Return a value for use in PDO bindValue() - based on field-type.
-	 * @param $type
-	 * @param $fieldValue
-	 * @return int|string
-	 */
-	private function _getPDOValue($type, $fieldValue)
-	{
-
-
-		if(is_string($fieldValue) && ($fieldValue === '_NULL_'))
-		{
-			$type = 'null';
-		}
-
-		switch($type)
-		{
-			case "int":
-			case "integer":
-				return (int) $fieldValue;
-				break;
-
-
-
-			case 'float':
-				// fix - convert localized float numbers
-				// $larr = localeconv();
-				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				// $replace = array('.', '.', '', '', '', '');
-
-				// return str_replace($search, $replace, floatval($fieldValue));
-				return e107::getParser()->toNumber($fieldValue);
-			break;
-
-			case 'null':
-			    return (
-                    is_string($fieldValue) && (
-                        ($fieldValue !== '_NULL_') && ($fieldValue !== '')
-                    )
-                ) ? $fieldValue : null;
-				break;
-
-			case 'array':
-				if(is_array($fieldValue))
-				{
-					return e107::serialize($fieldValue);
-				}
-				return $fieldValue;
-			break;
-
-			case 'todb': // using as default causes serious BC issues.
-				if($fieldValue == '') { return ''; }
-				return e107::getParser()->toDB($fieldValue);
-			break;
-
-				case 'cmd':
-			case 'safestr':
-			case 'str':
-			case 'string':
-			case 'escape':
-			default:
-
-				return $fieldValue;
-				break;
-
-		}
-
-
-	}
-
-
-	/**
-	 * Convert FIELD_TYPE to PDO compatible Field-Type
-	 * @param $type
-	 * @return int
-	 */
-	private function _getPDOType($type, $value = null)
-	{
-		switch($type)
-		{
-			case "int":
-			case "integer":
-				return PDO::PARAM_INT;
-				break;
-
-			case 'null':
-				return ($value === null) ? PDO::PARAM_NULL : PDO::PARAM_STR;
-				break;
-
-			case 'cmd':
-			case 'safestr':
-			case 'str':
-			case 'string':
-			case 'escape':
-			case 'array':
-			case 'todb':
-			case 'float':
-				return PDO::PARAM_STR;
-				break;
-
-		}
-
-		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
-		return PDO::PARAM_STR;
-	}
-
 
 	/**
 	 *  @DEPRECATED
@@ -1499,8 +1125,8 @@ class e_db_mysql implements e_db
 	  }
 	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
 	  {
-		$result = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
-		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
+		$result = mysqli_affected_rows($this->mySQLaccess);
+		if ($result == -1) return FALSE;	// Error return from mysqli_affected_rows
 		return $result;
 	  }
 	  else
@@ -1525,7 +1151,7 @@ class e_db_mysql implements e_db
 	/**
 	 * @param string $type assoc|num|both
 	* @return array|bool MySQL row
-	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
+	* @desc Fetch an array containing row data (see PHP's mysqli_fetch_array() docs)<br />
 	* @example
 	* Example :<br />
 	* <code>while($row = $sql->fetch()){
@@ -1536,59 +1162,33 @@ class e_db_mysql implements e_db
 	*/
 	function fetch($type = null)
 	{
-
 		if(defined('MYSQL_ASSOC'))
 		{
 			switch ($type)
 			{
 					case 'both':
 					case 3: // MYSQL_BOTH:
-						$type = ($this->pdo) ? PDO::FETCH_BOTH: MYSQL_BOTH; // 3
+						$type = MYSQL_BOTH; // 3
 					break;
 
 					case 'num':
 					case 2; // MYSQL_NUM: // 2
-						$type = ($this->pdo) ? PDO::FETCH_NUM : MYSQL_NUM;
+						$type = MYSQL_NUM;
 					break;
 
 					default:
 					case 'assoc':
 					case 1; //: // 1
-						$type =  ($this->pdo) ?  PDO::FETCH_ASSOC : MYSQL_ASSOC;
+						$type = MYSQL_ASSOC;
 					break;
 				}
 		}
-		else
-		{
-
-			if($this->pdo) // convert type to PDO.
-			{
-				switch ($type)
-				{
-					case 'both': // 3
-						$type = PDO::FETCH_BOTH;
-					break;
-
-					case 'num': // 2
-						$type = PDO::FETCH_NUM;
-					break;
-
-					case 'assoc': // 1
-					default:
-						$type = PDO::FETCH_ASSOC;
-					break;
-				}
-			}
-		}
-
 
 		$b = microtime();
 
 		if($this->mySQLresult)
 		{
-			/** @var PDOStatement $resource */
-			$resource = $this->mySQLresult;
-			$row = ($this->pdo) ? $resource->fetch($type) :  @mysql_fetch_array($this->mySQLresult,$type);
+			$row = @mysqli_fetch_array($this->mySQLresult, $type);
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 			if ($row)
 			{
@@ -1599,7 +1199,7 @@ class e_db_mysql implements e_db
 		$this->dbError('db_Fetch');
 		return FALSE;				// Failure
 	}
-	
+
 	/**
 	 * fetch() alias
 	 * @deprecated
@@ -1633,7 +1233,7 @@ class e_db_mysql implements e_db
 			$query=$table;
 			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 			{
-				$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_ASSOC) : @mysql_fetch_array($this->mySQLresult);
+				$rows = $this->mySQLrows = @mysqli_fetch_array($this->mySQLresult);
 				$this->dbError('db_Count');
 				return (int) $rows['COUNT(*)'];
 			}
@@ -1653,7 +1253,7 @@ class e_db_mysql implements e_db
 		$query='SELECT COUNT'.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg;
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 		{
-			$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->fetch(PDO::FETCH_NUM) : @mysql_fetch_array($this->mySQLresult);
+			$rows = $this->mySQLrows = @mysqli_fetch_array($this->mySQLresult);
 			$this->dbError('db_Count');
 			return (int) $rows[0];
 		}
@@ -1690,8 +1290,7 @@ class e_db_mysql implements e_db
 	{
 		$this->provide_mySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
-		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
-		$this->dbError('dbClose');
+		@mysqli_close($this->mySQLaccess);
 	}
 
 
@@ -1728,9 +1327,9 @@ class e_db_mysql implements e_db
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
 				// return the number of records deleted instead of an object
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
-				return $tmp;
+				return $this->mySQLrows;
 			}
 			else
 			{
@@ -1742,9 +1341,9 @@ class e_db_mysql implements e_db
 		{
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
-				return $tmp;
+				return $this->mySQLrows;
 			}
 			else
 			{
@@ -1771,7 +1370,7 @@ class e_db_mysql implements e_db
 	function db_Rows()
 	{
 		return $this->rowCount();
-		
+
 	}
 
 
@@ -1826,10 +1425,8 @@ class e_db_mysql implements e_db
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
-			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
-				/** @var PDOStatement $resource */
-				$resource = $this->mySQLresult;
-				$tmp = ($this->pdo) ? $resource->rowCount() : mysql_affected_rows($this->mySQLaccess);
+			{	// Need to check mysqli_affected_rows() - to return number of rows actually updated
+				$tmp = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Select_gen');
 				return $tmp;
 			}
@@ -1863,50 +1460,6 @@ class e_db_mysql implements e_db
 
 		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
 	}
-
-
-	/**
-	* @return unknown
-	* @param unknown $offset
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Fieldname($offset)
-	{
-		$result = @mysql_field_name($this->mySQLresult, $offset);
-		return $result;
-	}
-	*/
-
-
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/*
-	function db_Field_info()
-	{
-		$result = @mysql_fetch_field($this->mySQLresult);
-		return $result;
-	}
-	*/
-
-
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Num_fields()
-	{
-		$result = @mysql_num_fields($this->mySQLresult);
-		return $result;
-	}
-	*/
-
 
 	/**
 	* Check for the existence of a matching language table when multi-language tables are active.
@@ -1982,16 +1535,16 @@ class e_db_mysql implements e_db
 	}
 
 
-	/** 
-	 * Deprecated alias of the rows() function below. 
+	/**
+	 * Deprecated alias of the rows() function below.
 	 */
 	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
 	{
 		return $this->rows($fields, $amount, $maximum, $ordermode);
 	}
-	
-	
-	
+
+
+
 	/**
 	* @return array
 	* @param string fields to retrieve
@@ -2272,9 +1825,9 @@ class e_db_mysql implements e_db
 		{
 			return false;		// Error return
 		}
-		
+
 		$ret = array();
-		
+
         if ($this->rowCount() > 0)
 		{
 			while ($row = $this->fetch())
@@ -2296,26 +1849,13 @@ class e_db_mysql implements e_db
 
 	function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
 	{
-		return $this->field($table,$fieldid,$key, $retinfo);		
+		return $this->field($table,$fieldid,$key, $retinfo);
 	}
-
 
 	function columnCount()
 	{
-		if($this->pdo)
-		{
-			/** @var PDOStatement $resource */
-			$resource = $this->mySQLresult;
-			return $resource->columnCount();
-		}
-		else
-		{
-			return mysql_num_fields($this->mySQLresult);	
-		}
-
+		return mysqli_num_fields($this->mySQLresult);
 	}
-
-
 
 	/**
 	 *	Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
@@ -2435,28 +1975,21 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
+	 * A pointer to mysqli_real_escape_string() - see https://www.php.net/manual/en/mysqli.real-escape-string.php
 	 *
 	 * @param string $data
 	 * @return string
 	 */
 	function escape($data, $strip = true)
 	{
-
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
 		}
 
 		$this->provide_mySQLaccess();
-		
-		if($this->pdo)
-		{
-			return $data;
-		//	return $this->mySQLaccess->quote($data);
-		}
 
-		return mysql_real_escape_string($data,$this->mySQLaccess);
+		return mysqli_real_escape_string($this->mySQLaccess, $data);
 	}
 
 
@@ -2639,7 +2172,7 @@ class e_db_mysql implements e_db
 		{
 			$this->mySQLtableList = $this->db_mySQLtableList();
 		}
-		
+
 		if($mode == 'nologs')
 		{
 			$ret = array();
@@ -2647,14 +2180,14 @@ class e_db_mysql implements e_db
 			{
 				if(substr($table,-4) != '_log' && $table != 'download_requests')
 				{
-					$ret[] = $table;	
-				}	
-				
+					$ret[] = $table;
+				}
+
 			}
-			
+
 			return $ret;
 		}
-		
+
 
 		if($mode == 'all')
 		{
@@ -2685,7 +2218,7 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * Duplicate a Table Row in a table. 
+	 * Duplicate a Table Row in a table.
 	 */
 	function db_CopyRow($table,$fields = '*', $args='')
 	{
@@ -2693,10 +2226,10 @@ class e_db_mysql implements e_db
 		{
 			return false;
 		}
-			
+
 		if($fields === '*')
 		{
-			$fields = $this->db_FieldList($table);	
+			$fields = $this->db_FieldList($table);
 			unset($fields[0]); // Remove primary_id. 
 			$fieldList = implode(",",$fields);
 		}
@@ -2704,7 +2237,7 @@ class e_db_mysql implements e_db
 		{
 			$fieldList = $fields;
 		}
-			
+
 		if(empty($fields))
 		{
 			$this->mysqlLastErrText = "copyRow \$fields list was empty";
@@ -2716,8 +2249,8 @@ class e_db_mysql implements e_db
 		return ($id && $lastInsertId) ? $lastInsertId : false;
 
 	}
-	
-	
+
+
 
 	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{
@@ -2769,148 +2302,17 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * Dump MySQL Table(s) to a file in the Backup folder. 
+	 * Dump MySQL Table(s) to a file in the Backup folder.
 	 * @param $table string - name without the prefix or '*' for all
-	 * @param $file string - optional file name. or leave blank to generate. 
-	 * @param $options - additional preferences. 
+	 * @param $file string - optional file name. or leave blank to generate.
+	 * @param $options - additional preferences.
 	 * @return string|bool backup file path.
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
-
-		if($this->pdo === false)
-		{
-			$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
-			return false;
-		}
-
-	//	$dbtable 		= $this->mySQLdefaultdb;
-		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table; 
-		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
-		
-		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
-		
-		if($table === '*')
-		{
-			$nolog 		= vartrue($options['nologs']) ? 'nologs' : 'all';
-			$tableList 	= $this->tables($nolog);
-		}
-		else
-		{
-			$tableList 	= explode(",",$table);
-		}
-
-		if(!empty($options['gzip']))
-		{
-			$backupFile .= '.gz';
-		}
-
-
-        include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
-
-        $config = e107::getMySQLConfig();
-
-		$dumpSettings = array(
-	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
-	        'include-tables'                => array(),
-		    'no-data'                       => false,
-		    'add-drop-table'                => !empty($options['droptable']) ? true : false,
-		    'single-transaction'            => true,
-		    'lock-tables'                   => true,
-		    'add-locks'                     => true,
-		    'extended-insert'               => true,
-		    'disable-foreign-keys-check'    => true,
-		    'skip-triggers'                 => false,
-		    'add-drop-trigger'              => true,
-		    'databases'                     => false,
-		    'add-drop-database'             => false,
-		    'hex-blob'                      => true,
-		    'reset-auto-increment'          => false,
-	    );
-
-        foreach($tableList as $tab)
-        {
-            $dumpSettings['include-tables'][] = $config['mySQLprefix'].trim($tab);
-        }
-
-
-        try {
-            $dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host='.$config['mySQLserver'].';dbname='.$config['mySQLdefaultdb'], $config['mySQLuser'], $config['mySQLpassword'], $dumpSettings);
-		    $dump->start($backupFile);
-		    return $backupFile;
-		}
-		catch (\Exception $e)
-		{
-			$this->mysqlLastErrText = 'mysqldump-php error: ' .$e->getMessage();
-		    return false;
-		}
-
-
-/*
-
-				
-		$header = "-- e107 Database Backup File \n";	
-		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
-		$header .= "-- Generation Time: ".date('r')."\n";
-		$header .= "-- Encoding: UTF-8\n\n\n";
-		
-		file_put_contents($backupFile,$header, FILE_APPEND);	
-		
-		foreach ($tableList as $table)
-		{
-			unset($text);
-			$text = "";
-			$text .= vartrue($options['droptable']) ? "DROP TABLE IF EXISTS `".$this->mySQLPrefix.$table."`;\n" : "";
-			$this->gen("SHOW CREATE TABLE `".$this->mySQLPrefix.$table."`");
-			$row2 = $this->fetch();
-			$text .= $row2['Create Table'];
-			$text .= ";\n\n";
-			
-			file_put_contents($backupFile,$text,FILE_APPEND);
-		//	echo $text;
-		//	ob_end_clean(); // prevents memory exhaustian on large databases but breaks layout. .  
-			
-			$count = $this->gen("SELECT * FROM `#".$table."`");
-			$data_array = "";
-			
-			//TODO After so many rows (50,000?), make a new files to avoid overly large inserts. 
-			while($row = $this->fetch())
-			{
-				$fields = array_keys($row);	
-				$text = "\nINSERT INTO `".$this->mySQLPrefix.$table."` (`".implode("` ,`",$fields)."`) VALUES \n";	
-				file_put_contents($backupFile,$text,FILE_APPEND);	
-				
-				$d = array();
-				foreach($fields as $val)
-				{
-					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".$this->escape($row[$val])."'";
-				}
-	
-				$data_array = "(".implode(", ",$d).");\n"; 
-				file_put_contents($backupFile, $data_array, FILE_APPEND); // Do this here to save memory. 
-
-			}
-				
-			$text = "\n\n\n";		
-			file_put_contents($backupFile, $text, FILE_APPEND);
-			unset($fields);	
-
-		}
-		
-		return $backupFile;		
-		// file_put_contents('memory.log', 'memory used in line ' . __LINE__ . ' is: ' . memory_get_usage() . PHP_EOL, FILE_APPEND);
-		*/
+		$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
+		return false;
 	}
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	* @return string relating to error (empty string if no error)
@@ -2920,30 +2322,13 @@ class e_db_mysql implements e_db
 	*/
 	function dbError($from)
 	{
-
-//	$this->mySQLaccess->getMessage();
-
-		if($this->pdo)
-		{
-			$this->mySQLerror = true;
-
-		    if($this->mySQLlastErrNum === 0)
-			{
-				return null;
-			}
-
-			return $from." :: ".$this->mySQLlastErrText;
-		}
-
-
-
-		$this->mySQLlastErrNum = mysql_errno();
+		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
 		$this->mySQLlastErrText = '';
 		if ($this->mySQLlastErrNum == 0)
 		{
 			return '';
 		}
-		$this->mySQLlastErrText = mysql_error();		// Get the error text.
+		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
 		if ($this->mySQLerror == TRUE)
 		{
 			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);
@@ -3009,7 +2394,7 @@ class e_db_mysql implements e_db
 		{
 			if ( ! $debug)
 			{
-			   ($this->pdo) ? $this->db_Query("SET NAMES `$charset`") : @mysql_query("SET NAMES `$charset`");
+			   @mysqli_query($this->mySQLaccess, "SET NAMES `$charset`");
 			}
 			else
 			{
@@ -3162,7 +2547,9 @@ class e_db_mysql implements e_db
 		$dbAdm = new db_table_admin();
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
+		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
+		if (!$fieldDefs) return false;
 
 		$outDefs = array();
 
@@ -3198,10 +2585,10 @@ class e_db_mysql implements e_db
 							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues. 
 							break;
 					}
-					
+
 				//	if($v['name'])
-					
-					
+
+
 					if (isset($v['nulltype']) && !isset($v['default']))
 					{
 						$outDefs['_NOTNULL'][$v['name']] = '';
@@ -3223,7 +2610,7 @@ class e_db_mysql implements e_db
 		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 			$mes = e107::getMessage();
-			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade. 
+			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
 			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
 		}
 
@@ -3250,7 +2637,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * @deprecated 2.1.9 Used only to provide $mySQLaccess to other instances of e_db_mysql scattered around
-	 * @return PDO
+	 * @return resource
 	 */
 	public function get_mySQLaccess()
 	{

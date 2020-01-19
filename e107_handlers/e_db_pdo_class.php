@@ -1,20 +1,21 @@
 <?php
 /**
- * Created by PhpStorm.
- * Date: 2/8/2019
- * Time: 11:46 AM
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * PDO MySQL Handler
  */
 
 // Legacy Fix.
-define('MYSQL_ASSOC', 1);
-define('MYSQL_NUM', 2);
-define('MYSQL_BOTH', 3);
-define('ALLOW_AUTO_FIELD_DEFS', true);
+defined('MYSQL_ASSOC') or define('MYSQL_ASSOC', 1);
+defined('MYSQL_NUM') or define('MYSQL_NUM', 2);
+defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
-
-
 
 /**
  * PDO MySQL class. All legacy mysql_ methods removed.
@@ -442,6 +443,7 @@ class e_db_pdo implements e_db
 
 				if(is_array($query))
 				{
+					$query['BIND'] = isset($query['BIND']) ? $query['BIND'] : null;
 					$query = "PREPARE: " . $query['PREPARE'] . "<br />BIND:" . print_a($query['BIND'], true); // ,true);
 				}
 
@@ -775,9 +777,10 @@ class e_db_pdo implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && defined('ALLOW_AUTO_FIELD_DEFS') && ALLOW_AUTO_FIELD_DEFS === true)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
@@ -804,7 +807,8 @@ class e_db_pdo implements e_db
 			foreach($arg['data'] as $fk => $fv)
 			{
 				$tmp[] = ':'.$fk;
-				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk],$this->_getPDOValue($fieldTypes[$fk],$fv)));
+				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
 			}
 
 			$valList= implode(', ', $tmp);
@@ -984,9 +988,10 @@ class e_db_pdo implements e_db
 	   		if(!isset($arg['data'])) { return false; }
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$fieldTypes = $this->_getTypes($arg);
@@ -2717,7 +2722,9 @@ class e_db_pdo implements e_db
 		$dbAdm = new db_table_admin();
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
+		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
+		if (!$fieldDefs) return false;
 
 		$outDefs = array();
 

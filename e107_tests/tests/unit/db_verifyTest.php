@@ -254,13 +254,15 @@
 			$this->assertEquals($expected,$result);
 		}
 
+		/**
+		 * FIXME: This test has no assertions!
+		 */
+		/*
 		public function testCompare()
 		{
 
 			e107::getDb()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
 			e107::getDb()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
-
-			define('e_DEBUG', true);
 
 			$this->dbv->__construct();
 
@@ -277,7 +279,7 @@
 		//	print_r($this->dbv->indices['submitnews']);
 		//	print_r($this->dbv->results);
 		}
-
+		*/
 
 		public function testGetFixQuery()
 		{

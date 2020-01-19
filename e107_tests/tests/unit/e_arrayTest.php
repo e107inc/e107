@@ -108,7 +108,6 @@ $data = array (
 			$this->assertArrayHasKey('TITLE', $actual);
 
 
-			define('e_DEBUG', true);
 			// case sitePrefs
 		//	$string_6 = $this->getSitePrefExample();
 		//	$actual = $this->arrObj->unserialize($string_6);

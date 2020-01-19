@@ -17,7 +17,7 @@
 
 		protected function _before()
 		{
-			define('TINYMCE_UNIT_TEST', true);
+			@define('TINYMCE_UNIT_TEST', true);
 			require_once(e_PLUGIN."tinymce4/plugins/e107/parser.php");
 			try
 			{
