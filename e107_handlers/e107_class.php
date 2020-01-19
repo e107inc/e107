@@ -4626,7 +4626,7 @@ class e107
 	public function set_request($no_cbrace = true)
 	{
 
-		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
+		$inArray = array("'", '/**/', '/UNION/', '/SELECT/', 'AS ');
 		if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
 		{
 			foreach($inArray as $res)
