@@ -4273,7 +4273,17 @@ class e_parser
 
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
-	 * @param @array  - user data from e107_user. 
+	 * @param array $userData  - user data from e107_user. ie. user_image, user_id etc.
+	 * @param array $options
+	 * @param int $options['w'] - image width in px
+	 * @param int $options['h'] - image height in px
+	 * @param int|bool $options['crop'] = enables cropping when true
+	 * @param string $options['shape'] - (optional) rounded|circle|thumbnail
+	 * @param string $options['id'] - 'id' attribute will be added to tag.
+	 * @param string $options['class'] - override default 'class' attribute in tag.
+	 * @param string $options['alt'] - override default 'alt' attribute in tag.
+	 * @param bool $options['base64'] - use embedded base64 for image src.
+	 * @param string $options['type'] - when set to 'url' returns the URL value instead of the tag.
 	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData=null, $options=array())
@@ -4284,6 +4294,7 @@ class e_parser
 		$crop       = !empty($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart  = '';
 		$linkEnd    =  '';
+		$full       = !empty($options['base64']) ? true : false;
 
 		if(!empty($options['h']))
 		{
@@ -4303,37 +4314,60 @@ class e_parser
 		
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
-		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);
+		$genericFile = e_IMAGE."generic/blank_avatar.jpg";
+		$genericImg = $tp->thumbUrl($genericFile,"w=".$width."&h=".$height,true, $full);
 		
 		if (!empty($image)) 
 		{
 			
-			if(strpos($image,"://")!==false) // Remove Image
+			if(strpos($image,"://")!==false) // Remote Image
 			{
-				$img = $image;	
+				$url = $image;	
 			}
 			elseif(substr($image,0,8) == "-upload-")
 			{
 				
-				$image = substr($image,8); // strip the -upload- from the beginning. 
-				$img = (file_exists(e_AVATAR_UPLOAD.$image))  ? $tp->thumbUrl(e_AVATAR_UPLOAD.$image,"w=".$width."&h=".$height."&crop=".$crop) : $genericImg;
+				$image = substr($image,8); // strip the -upload- from the beginning.
+				if(file_exists(e_AVATAR_UPLOAD.$image))
+				{
+					$file  = e_AVATAR_UPLOAD.$image;
+					$url = $tp->thumbUrl($file,"w=".$width."&h=".$height."&crop=".$crop, false, $full);
+				}
+				else
+				{
+					$file = $genericFile;
+					$url = $genericImg;
+				}
 			}
 			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
 			{
-				$img =	$tp->thumbUrl(e_AVATAR_DEFAULT.$image,"w=".$width."&h=".$height."&crop=".$crop);
+				$file = e_AVATAR_DEFAULT.$image;
+				$url =	$tp->thumbUrl($file,"w=".$width."&h=".$height."&crop=".$crop, false, $full);
 			}
 			else // Image Missing. 
 			{
-				
-				$img = $genericImg;
+				$url = $genericImg;
+				$file = $genericFile;
 			}
 		}
 		else // No image provided - so send generic. 
 		{
-			$img = $genericImg;
+			$url = $genericImg;
+			$file = $genericFile;
 		}
 
-		if(($img == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
+		if(!empty($options['base64'])) // embed image data into URL.
+		{
+			$content = e107::getFile()->getRemoteContent($url); // returns false during unit tests, works otherwise.  
+			if(!empty($content))
+			{
+				$ext = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+				$url = 'data:image/'.$ext.';base64,'.base64_encode($content);
+			}
+
+		}
+
+		if(($url == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
 		{
 			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit')."'>";
 			$linkEnd = "</a>";
@@ -4345,9 +4379,13 @@ class e_parser
 
 		if(!empty($options['type']) && $options['type'] === 'url')
 		{
-			return $img;
+			return $url;
 		}
 
+		if(!empty($options['alt']))
+		{
+			$title =  $tp->toAttribute($options['alt']);
+		}
 
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
 		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
@@ -4357,9 +4395,9 @@ class e_parser
 		$class = !empty($options['class']) ? $options['class'] : $shape." user-avatar";
 
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$url."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
-	//	return $img;
+	//	return $url;
 		return $text;
 		
 	}

@@ -646,7 +646,10 @@ class e_file
 	//	$mes = e107::getMessage();
 			
 		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
-		// ... and there shouldn't be unprintable characters in the URL anyway		
+
+		$address = str_replace('&amp;', '&', $address);
+
+		// ... and there shouldn't be unprintable characters in the URL anyway
 		$requireCurl = false;
 		
 		if(vartrue($options['decode'], false)) $address = urldecode($address);
