@@ -183,7 +183,10 @@ class e_url
 						define('e_CURRENT_PLUGIN', $plug);
 						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
 						define('e_URL_LEGACY', $redirect);
-
+						if(!defined('e_PAGE'))
+						{
+							define('e_PAGE', basename($file));
+						}
 						$this->_include= $file;
 						return true;
 					//	exit;
