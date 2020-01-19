@@ -6,9 +6,9 @@
  */
 
 // Legacy Fix.
-define('MYSQL_ASSOC', 1);
-define('MYSQL_NUM', 2);
-define('MYSQL_BOTH', 3);
+defined('MYSQL_ASSOC') or define('MYSQL_ASSOC', 1);
+defined('MYSQL_NUM') or define('MYSQL_NUM', 2);
+defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
