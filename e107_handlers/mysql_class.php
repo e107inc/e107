@@ -1083,9 +1083,16 @@ class e_db_mysql implements e_db
 
 		/** @var PDOStatement $resource */
 		$resource = $this->mySQLresult;
-		$rows = $this->mySQLrows = ($this->pdo) ? $resource->rowCount() :  mysql_num_rows($this->mySQLresult);
+		if ($this->pdo)
+		{
+			$this->mySQLrows = $resource->rowCount();
+		}
+		elseif (is_resource($this->mySQLresult))
+		{
+			$this->mySQLrows = mysql_num_rows($this->mySQLresult);
+		}
 		$this->dbError('db_Rows');
-		return $rows;	
+		return $this->mySQLrows;
 	}
 
 
@@ -1723,9 +1730,9 @@ class e_db_mysql implements e_db
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
 				// return the number of records deleted instead of an object
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
-				return $tmp;
+				return $this->mySQLrows;
 			}
 			else
 			{
@@ -1737,9 +1744,9 @@ class e_db_mysql implements e_db
 		{
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
-				return $tmp;
+				return $this->mySQLrows;
 			}
 			else
 			{

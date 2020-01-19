@@ -18,9 +18,9 @@ class e_db_pdoTest extends e_db_abstractTest
 
 	protected function _before()
 	{
-		require_once(e_HANDLER."e_db_interface.php");
-		require_once(e_HANDLER."e_db_legacy_trait.php");
-		require_once(e_HANDLER."e_db_pdo_class.php");
+		require_once(e_HANDLER . "e_db_interface.php");
+		require_once(e_HANDLER . "e_db_legacy_trait.php");
+		require_once(e_HANDLER . "e_db_pdo_class.php");
 		try
 		{
 			$this->db = $this->makeDb();
@@ -43,13 +43,49 @@ class e_db_pdoTest extends e_db_abstractTest
 		$this->assertEquals('utf8', $result);
 	}
 
+	public function testBackup()
+	{
+		$opts = array(
+			'gzip' => false,
+			'nologs' => false,
+			'droptable' => false,
+		);
+
+		$result = $this->db->backup('user,core_media_cat', null, $opts);
+		$uncompressedSize = filesize($result);
+
+		$tmp = file_get_contents($result);
+
+		$this->assertStringNotContainsString("DROP TABLE IF EXISTS `e107_user`;", $tmp);
+		$this->assertStringContainsString("CREATE TABLE `e107_user` (", $tmp);
+		$this->assertStringContainsString("INSERT INTO `e107_user` VALUES (1", $tmp);
+		$this->assertStringContainsString("CREATE TABLE `e107_core_media_cat`", $tmp);
+
+		$result = $this->db->backup('*', null, $opts);
+		$size = filesize($result);
+		$this->assertGreaterThan(100000, $size);
+
+		$opts = array(
+			'gzip' => true,
+			'nologs' => false,
+			'droptable' => false,
+		);
+
+		$result = $this->db->backup('user,core_media_cat', null, $opts);
+		$compressedSize = filesize($result);
+		$this->assertLessThan($uncompressedSize, $compressedSize);
+
+		$result = $this->db->backup('missing_table', null, $opts);
+		$this->assertFalse($result);
+	}
+
 	/**
 	 * PDO-exclusive feature: Select with argument bindings
 	 * @see e_db_abstractTest::testSelect()
 	 */
 	public function testSelectBind()
 	{
-		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
+		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name' => 'e107')); // bind support.
 		$this->assertEquals(1, $result);
 	}
 
@@ -59,38 +95,37 @@ class e_db_pdoTest extends e_db_abstractTest
 	 */
 	public function testDb_QueryBind()
 	{
-		$query = array (
-			'PREPARE' => 'INSERT INTO '.MPREFIX.'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
+		$query = array(
+			'PREPARE' => 'INSERT INTO ' . MPREFIX . 'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
 			'BIND' =>
 				array(
-					'tmp_ip'   =>
+					'tmp_ip' =>
 						array(
 							'value' => '127.0.0.1',
-							'type'  => PDO::PARAM_STR,
+							'type' => PDO::PARAM_STR,
 						),
 					'tmp_time' =>
 						array(
 							'value' => 12345435,
-							'type'  => PDO::PARAM_INT,
+							'type' => PDO::PARAM_INT,
 						),
 					'tmp_info' =>
 						array(
 							'value' => 'Insert test',
-							'type'  => PDO::PARAM_STR,
+							'type' => PDO::PARAM_STR,
 						),
 				),
 		);
 
 
 		$result = $this->db->db_Query($query, null, 'db_Insert');
-		$this->assertGreaterThan(0,$result);
-
+		$this->assertGreaterThan(0, $result);
 
 
 		$query = array(
-			'PREPARE'   => 'SELECT * FROM '.MPREFIX.'user WHERE user_id=:user_id AND user_name=:user_name',
-			'EXECUTE'      => array(
-				'user_id'   => 1,
+			'PREPARE' => 'SELECT * FROM ' . MPREFIX . 'user WHERE user_id=:user_id AND user_name=:user_name',
+			'EXECUTE' => array(
+				'user_id' => 1,
 				'user_name' => 'e107'
 			)
 		);
@@ -111,24 +146,24 @@ class e_db_pdoTest extends e_db_abstractTest
 		// test with table that has unique keys.
 		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
 		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
+		$this->assertGreaterThan(1, $result, $qry);
 
 		// test with table that has unique keys. (same row again) - make sure copyRow duplicates it regardless.
 		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
 		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
+		$this->assertGreaterThan(1, $result, $qry);
 	}
 
 	public function test_Db_CopyRowRNGRetry()
 	{
 		$original_user_handler = e107::getRegistry('core/e107/singleton/UserHandler');
 		$evil_user_handler = $this->make('UserHandler', [
-			'generateRandomString' => function($pattern = '', $seed = '')
+			'generateRandomString' => function ($pattern = '', $seed = '')
 			{
 				static $index = 0;
 				$mock_values = ['same0000000', 'same0000000', 'different00'];
 
-				return $mock_values[$index ++];
+				return $mock_values[$index++];
 			}
 		]);
 		e107::setRegistry('core/e107/singleton/UserHandler', $evil_user_handler);
@@ -136,12 +171,12 @@ class e_db_pdoTest extends e_db_abstractTest
 		// test with table that has unique keys.
 		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
 		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
+		$this->assertGreaterThan(1, $result, $qry);
 
 		// test with table that has unique keys. (same row again) - make sure copyRow duplicates it regardless.
 		$result = $this->db->db_CopyRow('core_media_cat', '*', "media_cat_id = 1");
 		$qry = $this->db->getLastErrorText();
-		$this->assertGreaterThan(1,$result, $qry);
+		$this->assertGreaterThan(1, $result, $qry);
 
 		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
 	}
@@ -150,7 +185,7 @@ class e_db_pdoTest extends e_db_abstractTest
 	{
 		$original_user_handler = e107::getRegistry('core/e107/singleton/UserHandler');
 		$evil_user_handler = $this->make('UserHandler', [
-			'generateRandomString' => function($pattern = '', $seed = '')
+			'generateRandomString' => function ($pattern = '', $seed = '')
 			{
 				return 'neverchange';
 			}
