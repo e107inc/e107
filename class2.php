@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Copyright (C) 2008-2020 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -391,7 +391,7 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 // e107_require_once(e_HANDLER.'mysql_class.php');
 
 //DEPRECATED, BC, $e107->sql caught by __get()
-/** @var e_db_mysql $sql */
+/** @var e_db $sql */
 $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(false);
 
