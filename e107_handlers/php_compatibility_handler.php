@@ -30,10 +30,13 @@ if (!defined('e107_INIT'))
 
 if (!function_exists('strptime'))
 {
+
+	define('STRPTIME_COMPAT', true);
 	function strptime($str, $format)
 	{
 		return e107::getDate()->strptime($str,$format);	
 	} 
+	
 }
 
 //PHP < 5.2 compatibility

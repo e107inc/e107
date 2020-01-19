@@ -789,7 +789,7 @@ class e_date
 	 */
 	public function strptime($str, $format)
 	{
-		if(function_exists('strptime')) // Unix Only.
+		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
 		{
 			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
 			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
@@ -894,7 +894,7 @@ class e_date
 	
 			}
 			
-			if($ampm)
+			if($ampm && isset($vals['tm_hour']))
 			{
 				if($vals['tm_hour'] == 12 && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am'))
 				{
