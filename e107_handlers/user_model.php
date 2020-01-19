@@ -266,7 +266,7 @@ class e_user_model extends e_admin_model
 
 	final public function isBot()
 	{
-		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+		$userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
 		if(empty($userAgent))
 		{

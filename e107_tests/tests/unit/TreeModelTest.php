@@ -52,11 +52,11 @@ class TreeModelTest extends \Codeception\Test\Unit
     {
         $key = $this->sample_key;
         $parent_key = $this->sample_parent_key;
-        $l0_id     = $this->tree[1][$key];
-        $l1_id     = $this->tree[1]['_children'][0][$key];
-        $l1_parent = $this->tree[1]['_children'][0][$parent_key];
-        $l2_id     = $this->tree[1]['_children'][0]['_children'][0][$key];
-        $l2_parent = $this->tree[1]['_children'][0]['_children'][0][$parent_key];
+        $l0_id     = $this->tree[0][$key];
+        $l1_id     = $this->tree[0]['_children'][0][$key];
+        $l1_parent = $this->tree[0]['_children'][0][$parent_key];
+        $l2_id     = $this->tree[0]['_children'][0]['_children'][0][$key];
+        $l2_parent = $this->tree[0]['_children'][0]['_children'][0][$parent_key];
 
         $this->assertEquals($l0_id, $l1_parent);
         $this->assertEquals($l1_id, $l2_parent);

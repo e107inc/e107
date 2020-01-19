@@ -51,7 +51,7 @@ global $pref;
 		$parm .= ']';
 	}
 
-	list($link,$extras) = explode(" ",$parm);
+	list($link,$extras) = array_pad(explode(" ",$parm), 2, null);
 
 	if(!$parm) $link = $code_text;
 

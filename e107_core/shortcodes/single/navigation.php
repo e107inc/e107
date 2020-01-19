@@ -18,27 +18,28 @@
 		'alt6'		=> 6,
 	);
 
-
-	if(is_array($parm) && !empty($parm))
+	$category = 1;
+	$tmpl = 'main';
+	if (!is_array($parm))
+	{
+		$category = isset($types[$parm]) ? $types[$parm] : 1;
+		$tmpl = $parm ?: 'main';
+	}
+	elseif (!empty($parm))
 	{
 		$category = 1;
 		$tmpl = 'main';
 
-		if(!empty($parm['type']))
+		if (!empty($parm['type']))
 		{
 			$cat = $parm['type'];
 			$category = varset($types[$cat], 1);
 		}
 
-		if(!empty($parm['layout']))
+		if (!empty($parm['layout']))
 		{
-			$tmpl= $parm['layout'];
+			$tmpl = $parm['layout'];
 		}
-	}
-	else
-	{
-		$category 		= varset($types[$parm], 1);
-		$tmpl 			= vartrue($parm, 'main');
 	}
 
 	$nav			= e107::getNav();

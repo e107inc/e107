@@ -47,21 +47,21 @@ class e107_user_extended
 
 	public function __construct()
 	{
-		define('EUF_CATEGORY', 0);
-		define('EUF_TEXT',1);
-		define('EUF_RADIO',2);
-		define('EUF_DROPDOWN',3);
-		define('EUF_DB_FIELD',4);
-		define('EUF_TEXTAREA',5);
-		define('EUF_INTEGER',6);
-		define('EUF_DATE',7);
-		define('EUF_LANGUAGE',8);
-		define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
-		define('EUF_CHECKBOX',10);
-		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
-		define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
-		define('EUF_COUNTRY', 13);  // $frm->country()
-		define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()
+		@define('EUF_CATEGORY', 0);
+		@define('EUF_TEXT',1);
+		@define('EUF_RADIO',2);
+		@define('EUF_DROPDOWN',3);
+		@define('EUF_DB_FIELD',4);
+		@define('EUF_TEXTAREA',5);
+		@define('EUF_INTEGER',6);
+		@define('EUF_DATE',7);
+		@define('EUF_LANGUAGE',8);
+		@define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
+		@define('EUF_CHECKBOX',10);
+		@define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
+		@define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
+		@define('EUF_COUNTRY', 13);  // $frm->country()
+		@define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()
 
 		$this->typeArray = array(
 			'text'          => EUF_TEXT,

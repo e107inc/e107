@@ -115,7 +115,7 @@ class list_forum
 					}
 					else
 					{
-						if($thread_lastuser{0} == "0")
+						if($thread_lastuser[0] == "0")
 						{
 							$LASTPOST = substr($thread_lastuser, 2);
 						}

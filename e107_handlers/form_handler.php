@@ -2257,11 +2257,11 @@ class e_form
 			$value = ((int) $score / (int) $denom) * 100;
 
 		//	$value = (int) $score * (int) $multiplier;
-			$percVal = number_format($value,0).'%';
+			$percVal = round(floatval($value)).'%';
 		}
 		else
 		{
-			$percVal = number_format($value,0).'%';
+			$percVal = round(floatval($value)).'%';
 			$label = $percVal;
 		}
 
@@ -2597,7 +2597,7 @@ class e_form
 		$id = empty($options['id']) ? $this->name2id($name).'-container' : $options['id'];
 
 	//	return print_a($checked,true);
-		if($options['list'])
+		if(isset($options['list']) && $options['list'])
 		{
 			return "<ul id='".$id."' class='checkboxes'><li>".implode("</li><li>",$text)."</li></ul>";
 		}
@@ -3318,7 +3318,7 @@ var_dump($select_options);*/
 					$opts['disabled'] = in_array($value, $options['optDisabled']);
 				}
 
-				if(is_array($options['title']) && !empty($options['title'][$value]))
+				if(!empty($options['title'][$value]))
 				{
 					$opts['data-title'] = $options['title'][$value];
 				}

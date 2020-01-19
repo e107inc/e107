@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2010 e107 Inc (e107.org)
+* Copyright (C) 2008-2020 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -143,8 +143,8 @@ if(!defined('e_ROOT'))
 // D: Setup PHP error handling
 //    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
 //
+global $error_handler;
 $error_handler = new error_handler();
-set_error_handler(array(&$error_handler, 'handle_error'));
 
 //
 // E: Setup other essential PHP parameters
@@ -391,7 +391,7 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 // e107_require_once(e_HANDLER.'mysql_class.php');
 
 //DEPRECATED, BC, $e107->sql caught by __get()
-/** @var e_db_mysql $sql */
+/** @var e_db $sql */
 $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(false);
 
@@ -1418,12 +1418,6 @@ define('TIMEOFFSET', $e_deltaTime);
 // ----------------------------------------------------------------------------
 $sql->db_Mark_Time('Find/Load Theme');
 
-if(e_ADMIN_AREA) // Load admin phrases ASAP
-{
-	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-}
-
-
 if(!defined('THEME'))
 {
 
@@ -2033,6 +2027,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USERNAME', 'e107-cli');
 		define('USERTHEME', false);
 		define('ADMIN', true);
+		define('ADMINPERMS', false);
 		define('GUEST', false);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
@@ -2418,8 +2413,8 @@ function force_userupdate($currentUser)
 class error_handler
 {
 
-	var $errors;
-	var $debug = false;
+	public $errors = [];
+	public $debug = false;
 	protected $xdebug = false;
 	protected $docroot = '';
 	protected $label = array();
@@ -2462,6 +2457,8 @@ class error_handler
 		{
 			error_reporting(E_ERROR | E_PARSE);
 		}
+
+		set_error_handler(array(&$this, 'handle_error'));
 	}
 
 	/**

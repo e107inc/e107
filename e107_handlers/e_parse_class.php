@@ -1274,10 +1274,10 @@ class e_parse extends e_parser
 		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
-			switch($text {$pos} )
+			switch($text [$pos] )
 			{
 				case "<":
-					if($text {$pos + 1} == "/")
+					if($text [$pos + 1] == "/")
 					{
 						$closing_tag = TRUE;
 					}
@@ -1288,7 +1288,7 @@ class e_parse extends e_parser
 
 
 				case ">":
-					if($text {$pos - 1} == "/")
+					if($text [$pos - 1] == "/")
 					{
 						$closing_tag = TRUE;
 					}
@@ -1303,7 +1303,7 @@ class e_parse extends e_parser
 
 
 				case "&":
-					if($text {$pos + 1} == "#")
+					if($text [$pos + 1] == "#")
 					{
 						$end = strpos(substr($text, $pos, 7), ";");
 						if($end !== FALSE)
@@ -2914,7 +2914,7 @@ class e_parse extends e_parser
 	 */
 	function thumbUrlDecode($src)
 	{
-		list($url,$qry) = explode("?",$src);
+		list($url,$qry) = array_pad(explode("?",$src), 2, null);
 
 		$ret = array();
 
@@ -2999,6 +2999,7 @@ class e_parse extends e_parser
 		}
 		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
 		{
+			$multiply = intval($multiply);
 
 			if(empty($parm['w']) && isset($parm['h']))
 			{
@@ -3006,8 +3007,8 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
-			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
-			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
+			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
+			$height = !empty($parm['h']) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
 
 		}
 		else
