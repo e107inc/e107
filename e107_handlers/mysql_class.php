@@ -1290,8 +1290,7 @@ class e_db_mysql implements e_db
 	{
 		$this->provide_mySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
-		$result = mysqli_close($this->mySQLaccess);
-		if ($result === false) $this->dbError('dbClose');
+		@mysqli_close($this->mySQLaccess);
 	}
 
 

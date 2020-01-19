@@ -2,7 +2,7 @@
 /**
  * e107 website system
  *
- * Copyright (C) 2008-2019 e107 Inc (e107.org)
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -19,6 +19,14 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	 * @return e_db
 	 */
 	abstract protected function makeDb();
+
+	/**
+	 * Prevent creating too many connections to database server
+	 */
+	public function _after()
+	{
+		$this->db->close();
+	}
 
 	protected function loadConfig()
 	{
@@ -46,9 +54,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->getPDO();
 		$this->assertTrue($result);
 	}
-
-
-
 
 	public function testGetMode()
 	{
@@ -1006,7 +1011,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	 */
 	public function testSecondaryDatabaseInstance()
 	{
-
 		try
 		{
 			$xql = $this->makeDb();
@@ -1128,8 +1132,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$empty = $xql->isEmpty($table);
 		$this->assertTrue($empty,"isEmpty() or truncate() failed");
 
-
-
+		$xql->close();
 	}
 
 }

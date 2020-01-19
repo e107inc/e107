@@ -1,8 +1,12 @@
 <?php
 /**
- * Created by PhpStorm.
- * Date: 2/8/2019
- * Time: 11:46 AM
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * PDO MySQL Handler
  */
 
 // Legacy Fix.
