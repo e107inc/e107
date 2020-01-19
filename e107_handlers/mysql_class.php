@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -67,7 +67,7 @@ class e_db_mysql implements e_db
 	protected   $mySQLport = 3306;
 	public      $mySQLPrefix;
 
-	/** @var resource */
+	/** @var mysqli */
 	protected   $mySQLaccess;
 	public      $mySQLresult;
 	public      $mySQLrows;
@@ -183,13 +183,13 @@ class e_db_mysql implements e_db
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-		if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
-			$this->mySQLlastErrText = mysql_error();
+			$this->mySQLlastErrText = mysqli_connect_error();
 			return 'e1';
 		}
 
-		$this->mySqlServerInfo = mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
+		$this->mySqlServerInfo = mysqli_get_server_info($this->mySQLaccess); // We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
@@ -242,13 +242,13 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
-			$this->mySQLlastErrText = mysql_error();
+			$this->mySQLlastErrText = mysqli_connect_error();
 			return false;
 		}
 
-		$this->mySqlServerInfo = mysql_get_server_info();
+		$this->mySqlServerInfo = mysqli_get_server_info($this->mySQLaccess);
 
 		$this->db_Set_Charset();
 		$this->setSQLMode();
@@ -289,7 +289,7 @@ class e_db_mysql implements e_db
 			return true;
 		}
 
-		if (!@mysql_select_db($database, $this->mySQLaccess))
+		if (!@mysqli_select_db($this->mySQLaccess, $database))
 		{
 			return false;
 		}
@@ -361,8 +361,8 @@ class e_db_mysql implements e_db
 	*
 	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
 	* @param string|array $query
-	* @param object $rli
-	* @return boolean|resource - as mysql_query() function.
+	* @param mysqli $rli Your own mysqli connection instead of the one in this object
+	* @return boolean|mysqli_result - as mysqli_query() function.
 	*			FALSE indicates an error
 	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
 	*			TRUE indicates success in other cases
@@ -392,9 +392,9 @@ class e_db_mysql implements e_db
 
 		$b = microtime();
 
-		$sQryRes = is_null($rli) ? @mysql_query($query, $this->mySQLaccess) : @mysql_query($query, $rli);
-		$this->mySQLlastErrNum = mysql_errno();
-		$this->mySQLlastErrText = mysql_error();
+		$sQryRes = is_null($rli) ? @mysqli_query($this->mySQLaccess, $query) : @mysqli_query($rli, $query);
+		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 
 		$e = microtime();
 
@@ -416,8 +416,8 @@ class e_db_mysql implements e_db
 		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
 		{
 
-			$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
-			$rc = mysql_fetch_array($fr);
+			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');
+			$rc = mysqli_fetch_array($fr);
 			$this->total_results = (int)$rc['FOUND_ROWS()'];
 
 		}
@@ -587,7 +587,7 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	* Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
+	* Perform a mysqli_query() using the arguments suplied by calling db::db_Query()<br />
 	* <br />
 	* If you need more requests think to call the class.<br />
 	* <br />
@@ -786,7 +786,7 @@ class e_db_mysql implements e_db
 		{
 			$result = false; // ie. there was an error.
 
-			$this->mySQLresult = mysql_affected_rows($this->mySQLaccess);
+			$this->mySQLresult = mysqli_affected_rows($this->mySQLaccess);
 
 			if($this->mySQLresult === 1 ) // insert.
 			{
@@ -813,10 +813,10 @@ class e_db_mysql implements e_db
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$tmp = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
-				if ($tmp == -1) { return false; } // mysql_affected_rows error
+				if ($tmp == -1) { return false; } // mysqli_affected_rows error
 				return $tmp;
 			}
 
@@ -835,7 +835,7 @@ class e_db_mysql implements e_db
 
 	public function lastInsertId()
 	{
-		$tmp = mysql_insert_id($this->mySQLaccess);
+		$tmp = mysqli_insert_id($this->mySQLaccess);
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
@@ -850,18 +850,18 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * @param resource $result
+	 * @param mysqli_result $result
 	 * @return false|int
 	 */
 	public function rowCount($result=null)
 	{
-		if (!is_resource($result))
+		if (!($result instanceof mysqli_result))
 		{
 			$result = $this->mySQLresult;
 		}
-		if (is_resource($result))
+		if ($result instanceof mysqli_result)
 		{
-			$this->mySQLrows = mysql_num_rows($result);
+			$this->mySQLrows = mysqli_num_rows($result);
 		}
 		$this->dbError('db_Rows');
 		return $this->mySQLrows;
@@ -986,10 +986,10 @@ class e_db_mysql implements e_db
 
 		if ($result !==false)
 		{
-			$result = mysql_affected_rows($this->mySQLaccess);
+			$result = mysqli_affected_rows($this->mySQLaccess);
 
 			$this->dbError('db_Update');
-			if ($result === -1) { return false; }	// Error return from mysql_affected_rows
+			if ($result === -1) { return false; }	// Error return from mysqli_affected_rows
 			return $result;
 		}
 		else
@@ -1125,8 +1125,8 @@ class e_db_mysql implements e_db
 	  }
 	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
 	  {
-		$result = mysql_affected_rows($this->mySQLaccess);
-		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
+		$result = mysqli_affected_rows($this->mySQLaccess);
+		if ($result == -1) return FALSE;	// Error return from mysqli_affected_rows
 		return $result;
 	  }
 	  else
@@ -1151,7 +1151,7 @@ class e_db_mysql implements e_db
 	/**
 	 * @param string $type assoc|num|both
 	* @return array|bool MySQL row
-	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
+	* @desc Fetch an array containing row data (see PHP's mysqli_fetch_array() docs)<br />
 	* @example
 	* Example :<br />
 	* <code>while($row = $sql->fetch()){
@@ -1188,7 +1188,7 @@ class e_db_mysql implements e_db
 
 		if($this->mySQLresult)
 		{
-			$row = @mysql_fetch_array($this->mySQLresult, $type);
+			$row = @mysqli_fetch_array($this->mySQLresult, $type);
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 			if ($row)
 			{
@@ -1233,7 +1233,7 @@ class e_db_mysql implements e_db
 			$query=$table;
 			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 			{
-				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+				$rows = $this->mySQLrows = @mysqli_fetch_array($this->mySQLresult);
 				$this->dbError('db_Count');
 				return (int) $rows['COUNT(*)'];
 			}
@@ -1253,7 +1253,7 @@ class e_db_mysql implements e_db
 		$query='SELECT COUNT'.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg;
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark))
 		{
-			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+			$rows = $this->mySQLrows = @mysqli_fetch_array($this->mySQLresult);
 			$this->dbError('db_Count');
 			return (int) $rows[0];
 		}
@@ -1290,8 +1290,8 @@ class e_db_mysql implements e_db
 	{
 		$this->provide_mySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
-		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
-		$this->dbError('dbClose');
+		$result = mysqli_close($this->mySQLaccess);
+		if ($result === false) $this->dbError('dbClose');
 	}
 
 
@@ -1328,7 +1328,7 @@ class e_db_mysql implements e_db
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
 				// return the number of records deleted instead of an object
-				$this->mySQLrows = mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
 				return $this->mySQLrows;
 			}
@@ -1342,7 +1342,7 @@ class e_db_mysql implements e_db
 		{
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark))
 			{
-				$this->mySQLrows = mysql_affected_rows($this->mySQLaccess);
+				$this->mySQLrows = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Delete');
 				return $this->mySQLrows;
 			}
@@ -1426,8 +1426,8 @@ class e_db_mysql implements e_db
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
 			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
-			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
-				$tmp = mysql_affected_rows($this->mySQLaccess);
+			{	// Need to check mysqli_affected_rows() - to return number of rows actually updated
+				$tmp = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Select_gen');
 				return $tmp;
 			}
@@ -1461,50 +1461,6 @@ class e_db_mysql implements e_db
 
 		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
 	}
-
-
-	/**
-	* @return unknown
-	* @param unknown $offset
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Fieldname($offset)
-	{
-		$result = @mysql_field_name($this->mySQLresult, $offset);
-		return $result;
-	}
-	*/
-
-
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/*
-	function db_Field_info()
-	{
-		$result = @mysql_fetch_field($this->mySQLresult);
-		return $result;
-	}
-	*/
-
-
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	/* Function not used
-	function db_Num_fields()
-	{
-		$result = @mysql_num_fields($this->mySQLresult);
-		return $result;
-	}
-	*/
-
 
 	/**
 	* Check for the existence of a matching language table when multi-language tables are active.
@@ -1899,7 +1855,7 @@ class e_db_mysql implements e_db
 
 	function columnCount()
 	{
-		return mysql_num_fields($this->mySQLresult);
+		return mysqli_num_fields($this->mySQLresult);
 	}
 
 	/**
@@ -2020,7 +1976,7 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
+	 * A pointer to mysqli_real_escape_string() - see https://www.php.net/manual/en/mysqli.real-escape-string.php
 	 *
 	 * @param string $data
 	 * @return string
@@ -2034,7 +1990,7 @@ class e_db_mysql implements e_db
 
 		$this->provide_mySQLaccess();
 
-		return mysql_real_escape_string($data,$this->mySQLaccess);
+		return mysqli_real_escape_string($this->mySQLaccess, $data);
 	}
 
 
@@ -2367,13 +2323,13 @@ class e_db_mysql implements e_db
 	*/
 	function dbError($from)
 	{
-		$this->mySQLlastErrNum = mysql_errno();
+		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
 		$this->mySQLlastErrText = '';
 		if ($this->mySQLlastErrNum == 0)
 		{
 			return '';
 		}
-		$this->mySQLlastErrText = mysql_error();		// Get the error text.
+		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
 		if ($this->mySQLerror == TRUE)
 		{
 			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);
@@ -2439,7 +2395,7 @@ class e_db_mysql implements e_db
 		{
 			if ( ! $debug)
 			{
-			   @mysql_query("SET NAMES `$charset`");
+			   @mysqli_query($this->mySQLaccess, "SET NAMES `$charset`");
 			}
 			else
 			{
