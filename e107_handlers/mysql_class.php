@@ -183,23 +183,10 @@ class e_db_mysql implements e_db
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-
-		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == TRUE)
+		if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
-			// No persistent link parameter permitted
-			if ( ! $this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword))
-			{
-				$this->mySQLlastErrText = mysql_error();
-				return 'e1';
-			}
-		}
-		else
-		{
-			if ( ! $this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
-			{
-				$this->mySQLlastErrText = mysql_error();
-				return 'e1';
-			}
+			$this->mySQLlastErrText = mysql_error();
+			return 'e1';
 		}
 
 		$this->mySqlServerInfo = mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
