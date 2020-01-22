@@ -1209,6 +1209,7 @@ class user_class
 		{
 			while ($row = $sql->fetch())
 			{
+				$row['user_id'] = (int) $row['user_id'];
 				$ret[$row['user_id']] = $row;
 			}
 		}
