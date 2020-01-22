@@ -26,17 +26,12 @@ if (!defined('e107_INIT'))
  */
 
 
-
-
 if (!function_exists('strptime'))
 {
-
-	define('STRPTIME_COMPAT', true);
-	function strptime($str, $format)
+	function strptime($date, $format)
 	{
-		return e107::getDate()->strptime($str,$format);	
-	} 
-	
+		return eShims::strptime($date, $format);
+	}
 }
 
 //PHP < 5.2 compatibility

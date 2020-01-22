@@ -770,184 +770,22 @@ class e_date
 
 
 	/**
-	 *  This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
-	 *  Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
-	 *  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-	 *  or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+	 * Parse a time/date generated with strftime()
+	 * With extra output keys for localized month
 	 *
-	 * http://snipplr.com/view/4964/emulate-php-5-for-backwards-compatibility/
-	 *
-	 * Parse a date generated with strftime().
-	 *
-	 * @author Lionel SAURON and reworked by e107 Inc. for month names.
-	 * @version 1.0
-	 * @public
-	 *
+	 * @deprecated Use eShims::strptime() instead
+	 * @see eShims::strptime()
 	 * @param string $str date string to parse (e.g. returned from strftime()).
 	 * @param        $format
 	 * @return array|bool Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
 	 */
 	public function strptime($str, $format)
 	{
-		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
-		{
-			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
-			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
-			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['tm_mon'] +1) );
-			return $vals;
-		}	
-			
-		// Below is for Windows machines. (XXX TODO - Currently not as accurate as Linux PHP5 strptime() function above. ) 
-		
-		static $expand = array('%D'=>'%m/%d/%y', '%T'=>'%H:%M:%S', );
-		
-		$ampm	= (preg_match("/%l|%I|%p|%P/",$format)) ? 'true' : 'false';
-		
-		static $map_r = array(
-			'%S'	=>'tm_sec',
-			'%M'	=>'tm_min',
-			'%H'	=>'tm_hour', 
-			'%I'	=>'tm_hour',
-			'%d'	=>'tm_mday', 
-			'%m'	=>'tm_mon', 
-			'%Y'	=>'tm_year', 
-			'%y'	=>'tm_year', 
-			'%W'	=>'tm_wday', 
-			'%D'	=>'tm_yday', 
-			'%B'	=>'tm_fmon', // full month-name
-			'%b'	=>'tm_amon', // abrev. month-name
-			'%p'	=>'tm_AMPM', // AM/PM	
-			'%P'	=>'tm_ampm', // am/pm				
-			'%u'	=>'unparsed',
-			 
-		);
-				
-		$fullmonth = array();
-		$abrevmonth = array();
-		
-		for ($i = 1; $i <= 12; $i++)
-		{
-			$k = strftime('%B',mktime(0,0,0,$i));
-    		$fullmonth[$k] = $i;
-			
-			$j = strftime('%b',mktime(0,0,0,$i));
-    		$abrevmonth[$j] = $i;
-		}
-
-		
-		
-		#-- transform $format into extraction regex
-		$format = str_replace(array_keys($expand), array_values($expand), $format);
-		$preg = preg_replace('/(%\w)/', '(\w+)', preg_quote($format));
-		
-		#-- record the positions of all STRFCMD-placeholders
-		preg_match_all('/(%\w)/', $format, $positions);
-		$positions = $positions[1];
-
-		$vals = array();
-
-		#-- get individual values
-		if (preg_match("#$preg#", $str, $extracted))
-		{
-			#-- get values
-			foreach ($positions as $pos => $strfc)
-			{
-				$v = $extracted[$pos + 1];
-				#-- add
-				if (isset($map_r[$strfc]))
-				{
-					$n = $map_r[$strfc];
-					$vals[$n] = ($v > 0) ? (int) $v : $v;
-				}
-				else
-				{
-					$vals['unparsed'] .= $v.' ';
-				}
-			}
-			
-			#-- fixup some entries
-			//$vals["tm_wday"] = $names[ substr($vals["tm_wday"], 0, 3) ];
-			if ($vals['tm_year'] >= 1900)
-			{
-				$vals['tm_year'] -= 1900;
-			}
-			elseif ($vals['tm_year'] > 0)
-			{
-				$vals['tm_year'] += 100;
-			}
-			
-			if ($vals['tm_mon'])
-			{
-				$vals['tm_mon'] -= 1;			
-			}
-			else
-			{
-
-				if(isset($fullmonth[$vals['tm_fmon']]))
-				{
-					$vals['tm_mon'] = $fullmonth[$vals['tm_fmon']];	
-				}
-				elseif(isset($abrevmonth[$vals['tm_amon']]))
-				{
-					$vals['tm_mon'] = $abrevmonth[$vals['tm_amon']];	
-				}
-	
-			}
-			
-			if($ampm && isset($vals['tm_hour']))
-			{
-				if($vals['tm_hour'] == 12 && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am'))
-				{
-					$vals['tm_hour'] = 0;			
-				}
-				
-				if($vals['tm_hour'] < 12 && ($vals['tm_AMPM'] == 'PM' || $vals['tm_ampm'] == 'pm'))
-				{
-					$vals['tm_hour'] = intval($vals['tm_hour']) + 12;			
-				}
-							
-			}
-			
-			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
-			
-			#-- calculate wday/yday
-			//$vals['tm_mon'] = $vals['tm_mon'] + 1; // returns months from 0 - 11 so we need to +1 
-
-			if (!isset($vals['tm_sec']))
-			{
-				$vals['tm_sec'] = 0;
-			}
-
-			if (!isset($vals['tm_min']))
-			{
-				$vals['tm_min'] = 0;
-			}
-
-			if (!isset($vals['tm_hour']))
-			{
-				$vals['tm_hour'] = 0;
-			}
-
-
-			if (!isset($vals['unparsed']))
-			{
-				$vals['unparsed'] = '';
-			}
-
-			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
-
-			$vals['tm_amon'] = strftime('%b', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon'] + 1));
-			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon'] + 1));
-			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
-			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
-			
-
-			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
-		}
-		
-		return !empty($vals) ? $vals : false;
-		
-	} 
+		$vals = eShims::strptime($str, $format); // PHP5 is more accurate than below.
+		$vals['tm_amon'] = strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_fmon'] = strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		return $vals;
+	}
 
 
 
