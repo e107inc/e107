@@ -1143,7 +1143,7 @@ class user_class
 	 *
 	 *  Could potentially be verrrrryyyy slow - has to scan the whole user database at present.
 	 *	@param string $$classes - comma separated list of classes
-	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
+	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry, prefix with 'ue.' to retrieve extended user fields.
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
 	 *	@return array indexed by user_id, each element is an array (database row) containing the requested fields
@@ -1203,7 +1203,9 @@ class user_class
 
 		$ret = array();
 
-		$query = "SELECT user_id,{$fields} FROM `#user` WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
+		$lj = strpos($fields,'ue.') !== false ? "LEFT JOIN `#user_extended` AS ue ON user_id = ue.user_extended_id " : "";
+
+		$query = "SELECT user_id,{$fields} FROM `#user` ".$lj." WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
 
 		if ($sql->gen($query))
 		{
@@ -1212,6 +1214,7 @@ class user_class
 				$row['user_id'] = (int) $row['user_id'];
 				$ret[$row['user_id']] = $row;
 			}
+
 		}
 
 		return $ret;
