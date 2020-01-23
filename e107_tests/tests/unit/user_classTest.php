@@ -88,9 +88,10 @@
 		{
 			$result = $this->uc->getUsersInClass(e_UC_MEMBER);
 			$expected = [
-				'user_id' => '1',
+				'user_id' => 1,
 				'user_name' => 'e107',
 				'user_loginname' => 'e107',
+
 			];
 
 			$passed = false;
@@ -102,7 +103,7 @@
 
 			$result = $this->uc->getUsersInClass(e_UC_ADMIN . ",5,4,3", 'user_perms');
 			$expected = [
-				'user_id' => '1',
+				'user_id' => 1,
 				'user_perms' => '0',
 			];
 
@@ -115,7 +116,7 @@
 
 			$result = $this->uc->getUsersInClass(e_UC_MAINADMIN);
 			$expected = [
-				'user_id' => '1',
+				'user_id' => 1,
 				'user_name' => 'e107',
 				'user_loginname' => 'e107',
 			];
@@ -126,6 +127,24 @@
 				if ($user == $expected) $passed = true;
 			}
 			$this->assertTrue($passed, "Expected user not found");
+
+
+			// Test returning extended user fields.
+			$result = $this->uc->getUsersInClass(e_UC_MAINADMIN,'user_perms,ue.user_extended_id');
+			$expected = [
+				'user_id' => 1,
+                'user_perms' => '0',
+                'user_extended_id' => '1'
+			];
+
+			$passed = false;
+			foreach ($result as $user)
+			{
+				if ($user == $expected) $passed = true;
+			}
+			$this->assertTrue($passed, "Expected user not found:".print_r($result,true));
+
+
 		}
 /*
 		public function testGet_editable_classes()
