@@ -37,7 +37,7 @@ trait StrptimeTrait
 	public static function strptime($date, $format)
 	{
 		$result = false;
-		if (function_exists('strptime'))
+		if (function_exists('strptime') && (new \ReflectionFunction('strptime'))->isInternal())
 			$result = strptime($date, $format);
 		if (!is_array($result))
 			$result = self::strptime_alt($date, $format);
