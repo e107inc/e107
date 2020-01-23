@@ -233,7 +233,7 @@ class e_menuManager {
 	{
 		global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$LAYOUT;
 
-		// new v2.2.2 experimental
+		// new v2.3
 		if($tmp = e_theme::loadLayout($this->curLayout))
 		{
 			$LAYOUT = $tmp;
@@ -241,6 +241,8 @@ class e_menuManager {
 
 		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
 		{
+			$HEADER = array();
+			$FOOTER = array();
 			foreach($LAYOUT as $key=>$template)
 			{
 				list($hd,$ft) = explode("{---}",$template);
@@ -262,7 +264,7 @@ class e_menuManager {
 		{
 		 // 	echo " MODE 0.7 ".$this->curLayout;
 			$HEADER = isset($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
-			$FOOTER = isset($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
+			$FOOTER = is_array($CUSTOMFOOTER) && isset($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
 		}
 	    elseif($this->curLayout && is_array($HEADER) && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
 		{
