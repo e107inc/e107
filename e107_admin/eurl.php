@@ -242,8 +242,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$pref = e107::getPref('e_url_alias');
 		$sefActive = e107::getPref('e_url_list');
 
+
+
 		if(empty($eUrl))
 		{
+			e107::getMessage()->addDebug("Unable to load e_url configurations.");
 			return false;
 		}
 
@@ -261,6 +264,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		foreach($eUrl as $plug=>$val)
 		{
+
 
 			$plg->load($plug);
 

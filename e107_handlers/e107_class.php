@@ -2565,7 +2565,7 @@ class e107
 					}
 					else
 					{
-						return array();
+						continue;
 					}
 
 					if($mode === 'alias')
