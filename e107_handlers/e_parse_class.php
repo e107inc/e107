@@ -4283,6 +4283,7 @@ class e_parser
 	 * @param string $options['class'] - override default 'class' attribute in tag.
 	 * @param string $options['alt'] - override default 'alt' attribute in tag.
 	 * @param bool $options['base64'] - use embedded base64 for image src.
+	 * @param bool $options['hd'] - double the resolution of the image. Useful for retina displays.
 	 * @param string $options['type'] - when set to 'url' returns the URL value instead of the tag.
 	 * @return string <img> tag of avatar.
 	 */
@@ -4299,6 +4300,12 @@ class e_parser
 		if(!empty($options['h']))
 		{
 			$height = intval($options['h']);
+		}
+
+		if(!empty($options['hd'])) // Fix resolution on Retina display.
+		{
+			$width = $width * 2;
+			$height = $height * 2;
 		}
 
 
@@ -4364,7 +4371,12 @@ class e_parser
 				$ext = strtolower(pathinfo($file,PATHINFO_EXTENSION));
 				$url = 'data:image/'.$ext.';base64,'.base64_encode($content);
 			}
+		}
 
+		if(!empty($options['hd'])) // Fix resolution on Retina display.
+		{
+			$width = $width / 2;
+			$height = ($height / 2);
 		}
 
 		if(($url == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
