@@ -4285,6 +4285,7 @@ class e_parser
 	 * @param bool $options['base64'] - use embedded base64 for image src.
 	 * @param bool $options['hd'] - double the resolution of the image. Useful for retina displays.
 	 * @param string $options['type'] - when set to 'url' returns the URL value instead of the tag.
+	 * @param string $options['style'] - sets the style attribute.
 	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData=null, $options=array())
@@ -4405,9 +4406,10 @@ class e_parser
 		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
 
 		$class = !empty($options['class']) ? $options['class'] : $shape." user-avatar";
+		$style = !empty($options['style']) ? " style='".$options['style']."'" : '';
 
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$url."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$url."'  width='".$width."' ".$heightInsert.$style." />";
 		$text .= $linkEnd;
 	//	return $url;
 		return $text;
