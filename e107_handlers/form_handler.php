@@ -5528,15 +5528,19 @@ var_dump($select_options);*/
 			case 'url':
 				if(!$value) break;
 				$ttl = $value;
-				if(vartrue($parms['href']))
+				if(!empty($parms['href']))
 				{
 					return $tp->replaceConstants(vartrue($parms['pre']).$value, varset($parms['replace_mod'],'abs'));
 				}
-				if(vartrue($parms['truncate']))
+				if(!empty($parms['truncate']))
 				{
 					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
 				}
-				$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
+
+				$target = (!empty($parms['target'])) ? " target='".$parms['target']."' " : "";
+				$class = (!empty($parms['class'])) ? " class='".$parms['class']."' " : "";
+
+				$value = "<a".$target.$class."href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
 			break;
 
 			case 'email':
@@ -5546,7 +5550,11 @@ var_dump($select_options);*/
 				{
 					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
 				}
-				$value = "<a href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
+
+				$target = (!empty($parms['target'])) ? " target='".$parms['target']."' " : "";
+				$class = (!empty($parms['class'])) ? " class='".$parms['class']."' " : "";
+
+				$value = "<a".$target.$class."href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
 			break;
 
 			case 'method': // Custom Function			
