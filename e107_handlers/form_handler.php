@@ -5540,7 +5540,7 @@ var_dump($select_options);*/
 				$target = (!empty($parms['target'])) ? " target='".$parms['target']."' " : "";
 				$class = (!empty($parms['class'])) ? " class='".$parms['class']."' " : "";
 
-				$value = "<a".$target.$class."href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
+				$value = "<a ".$target.$class."href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
 			break;
 
 			case 'email':
@@ -5554,7 +5554,7 @@ var_dump($select_options);*/
 				$target = (!empty($parms['target'])) ? " target='".$parms['target']."' " : "";
 				$class = (!empty($parms['class'])) ? " class='".$parms['class']."' " : "";
 
-				$value = "<a".$target.$class."href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
+				$value = "<a ".$target.$class."href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
 			break;
 
 			case 'method': // Custom Function			
