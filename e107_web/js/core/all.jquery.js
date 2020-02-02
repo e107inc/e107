@@ -597,6 +597,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var form = $element.closest("form");
 		var data = form.serialize() || '';
 
+		if($element.attr('data-disable') == 'true')
+		{
+			$element.addClass('disabled');
+		}
+
 		$.ajax({
 			type: options.type || 'POST',
 			url: options.url,
@@ -611,6 +616,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				if($loadingImage)
 				{
 					$loadingImage.remove();
+				}
+
+				if($element.attr('data-disable') == 'true')
+				{
+					$element.removeClass('disabled');
 				}
 			},
 			success: function (response)
