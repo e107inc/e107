@@ -2463,6 +2463,7 @@ class e_parse extends e_parser
 		if($this->isHtml($text) === true) // strip any html.
 		{
 			$text = $this->toHTML($text,true);
+			$text = str_ireplace( array("<br>","<br />","<br/>"), "\n", $text);
 			$text = strip_tags($text);
 		}
 
