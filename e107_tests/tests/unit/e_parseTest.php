@@ -497,6 +497,7 @@ TMP;
 			$arr = array(
 				0   => array('html'=>"<h1><a href='#'>My Caption</a></h1>", 'expected' => 'My Caption'),
 				1   => array('html'=>"<div><h1><a href='#'>My Caption</a></h1></div>", 'expected' => 'My Caption'),
+				2   => array('html'=>'Line 1<br />Line 2<br />Line 3<br />', 'expected'=> "Line 1\nLine 2\nLine 3\n"),
 			);
 
 
