@@ -4792,7 +4792,10 @@ class e_parser
 
 		$mime = varset($parm['mime'], 'audio/mpeg');
 
-		$text = '<audio controls style="max-width:100%">
+		$autoplay = !empty($parm['autoplay']) ? "autoplay " : "";
+		$controls = !empty($parm['controls']) ? "controls" : "";
+
+		$text = '<audio controls style="max-width:100%" '.$autoplay.$controls.'>
 					<source src="'.$file.'" type="'.$mime .'">
 					  Your browser does not support the audio tag.
 				</audio>';
