@@ -600,6 +600,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		if($element.attr('data-disable') == 'true')
 		{
 			$element.addClass('disabled');
+			$element.prop('disabled', true);
 		}
 
 		$.ajax({
@@ -620,7 +621,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 				if($element.attr('data-disable') == 'true')
 				{
-					$element.removeClass('disabled');
+					setTimeout( function(){
+						$element.removeClass('disabled');
+						$element.prop('disabled', false)
+					}, 4000 );
 				}
 			},
 			success: function (response)
