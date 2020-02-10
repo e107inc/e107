@@ -257,7 +257,7 @@ class news {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
 			{
-				return;
+				return null;
 			}
 		}
 
@@ -519,8 +519,7 @@ class news {
 				$parms['count'] = 3;
 			}
 
-			$parms['order']     = 'n.news_datestamp DESC';
-
+			$parms['order']  = empty($parms['order']) ? 'n.news_datestamp DESC' : $parms['order'];
 
 			$treeparm = array();
 
