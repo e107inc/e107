@@ -7449,7 +7449,7 @@ class e_admin_form_ui extends e_form
 						unset($parms['__options']); //remove element options if any
 						
 						$options = $parms ? $parms : array();
-						if(empty($options)) continue;
+						if(empty($options)) continue 2;
 						
 						
 						if($type === 'batch')
@@ -7540,7 +7540,7 @@ class e_admin_form_ui extends e_form
 						if(vartrue($opts['multiple']) && $type === 'batch')
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue;
+							continue 2;
 						}
 
 						unset($parms['__options']); //remove element options if any
@@ -7560,7 +7560,7 @@ class e_admin_form_ui extends e_form
 						if(vartrue($opts['multiple']))
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue;
+							continue 2;
 						}
 						$options = ($val['type'] === 'language') ? e107::getLanguage()->getList() : e107::getLanguage()->getLanSelectArray();
 						foreach($options as $code => $name)
@@ -7647,7 +7647,7 @@ class e_admin_form_ui extends e_form
 							if(isset($list['singleOption']))
 							{
 								$textsingle .= $list['singleOption'];
-								continue;
+								continue 2;
 							}
 							// non rendered options array
 							foreach($list as $k => $name)
@@ -7658,7 +7658,7 @@ class e_admin_form_ui extends e_form
 						elseif(!empty($list)) //optgroup, continue
 						{
 							$text .= $list;
-							continue;
+							continue 2;
 						}
 					break;
 
