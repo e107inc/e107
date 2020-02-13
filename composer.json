@@ -17,6 +17,9 @@
     "php": ">=5.6"
   },
   "config": {
+    "platform": {
+      "php": "5.6"
+    },
     "vendor-dir": "e107_handlers/vendor"
   }
 }
