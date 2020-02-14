@@ -1692,6 +1692,8 @@ class e_file
 					'e107-master/CONTRIBUTING.md', # moved to ./.github/CONTRIBUTING.md
 					'e107-master/LICENSE',
 					'e107-master/README.md',
+					'e107-master/composer.json',
+					'e107-master/composer.lock',
 					'e107-master/install.php',
 					'e107-master/favicon.ico',
 				);
