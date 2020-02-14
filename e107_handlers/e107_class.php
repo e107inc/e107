@@ -236,7 +236,6 @@ class e107
 		'eUrl'                           => '{e_HANDLER}e107Url.php',
 		'eUrlConfig'                     => '{e_HANDLER}application.php',
 		'eUrlRule'                       => '{e_HANDLER}application.php',
-		'Hybrid_Auth'                    => '{e_HANDLER}hybridauth/Hybrid/Auth.php',
 		'language'                       => '{e_HANDLER}language_class.php',
 		'news'                           => '{e_HANDLER}news_class.php',
 		'notify'                         => '{e_HANDLER}notify_class.php',
@@ -1693,22 +1692,22 @@ class e107
 	}
 
 	/**
-	 * Retrieve HybridAuth object
+	 * Create a new Hybridauth object based on the provided configuration
 	 *
-	 * @return object
+	 * @return Hybridauth\Hybridauth
 	 */
 	public static function getHybridAuth($config = null)
 	{
 		if(null === $config)
 		{
 			$config = array(
-				'base_url' => self::getUrl()->create('system/xup/endpoint', array(), array('full' => true)),
+				'callback' => self::getUrl()->create('system/xup/login', array(), array('full' => true)),
 				'providers' => self::getPref('social_login', array()),
 				'debug_mode' => false,
 				'debug_file' => ''
 			);
 		}
-		return new Hybrid_Auth($config);
+		return new Hybridauth\Hybridauth($config);
 	}
 
 	/**

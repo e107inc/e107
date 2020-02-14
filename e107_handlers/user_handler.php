@@ -1090,13 +1090,13 @@ class e_user_provider
 	
 	/**
 	 * Hybridauth adapter
-	 * @var Hybrid_Provider_Model
+	 * @var \Hybridauth\Adapter\AdapterInterface
 	 */
 	public $adapter;
 	
 	/**
 	 * Hybridauth object
-	 * @var Hybrid_Auth
+	 * @var Hybridauth\Hybridauth
 	 */
 	public $hybridauth;
 	protected $_config = array();
@@ -1110,7 +1110,7 @@ class e_user_provider
 		else 
 		{
 			$this->_config = array(
-				"base_url" 		=> e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+				"callback" 		=> e107::getUrl()->create('system/xup/login', array(), array('full' => true)),
 				"providers" 	=> e107::getPref('social_login', array()),
 				"debug_mode" 	=> 'error', 
 				"debug_file"	=> e_LOG."hybridAuth.log"	
@@ -1120,7 +1120,6 @@ class e_user_provider
 		
 		$this->hybridauth = e107::getHybridAuth($this->_config);
 		$this->setProvider($provider);
-		//require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
 	}
 	
 	public function setProvider($provider)
@@ -1176,8 +1175,8 @@ class e_user_provider
 
 	public function setBackUrl($url)
 	{
-		# system/xup/endpoint by default
-		$this->_config['base_url'] = $url;
+		# system/xup/login by default
+		$this->_config['callback'] = $url;
 	}
 	
 	public function getProvider()
@@ -1451,15 +1450,19 @@ class e_user_provider
 		}
 		$this->adapter = null;
 		$providerId = $this->_provider;
-		if($providerId && Hybrid_Auth::isConnectedWith($providerId))
+		if($providerId && $this->hybridauth->isConnectedWith($providerId))
 		{
-			$this->adapter = Hybrid_Auth::setup($providerId);
+			$this->adapter = $this->hybridauth->getAdapter($providerId);
 		}
 	}
 	
 	public function logout()
 	{
-		if(!e107::getPref('social_login_active', false) || !$this->adapter || !Hybrid_Auth::isConnectedWith($this->getProvider())) return true;
+		if (
+			!e107::getPref('social_login_active', false) ||
+			!$this->adapter ||
+			!$this->hybridauth->isConnectedWith($this->getProvider())
+		) return true;
 		try
 		{
 			$this->adapter->logout();
