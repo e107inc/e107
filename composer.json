@@ -13,13 +13,13 @@
     "irc": "https://gitter.im/e107inc/e107",
     "source": "https://github.com/e107inc/e107"
   },
-  "require": {
-    "php": ">=5.6"
-  },
   "config": {
     "platform": {
       "php": "5.6"
     },
     "vendor-dir": "e107_handlers/vendor"
+  },
+  "require": {
+    "php": ">=5.6"
   }
 }
