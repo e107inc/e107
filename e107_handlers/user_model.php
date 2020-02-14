@@ -1724,12 +1724,13 @@ class e_user extends e_user_model
 	{
 		// don't allow if main admin browse front-end or there is already user session
 		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
-		
+
+		$hybrid = e107::getHybridAuth(); // init the auth class
+
 		try
 		{
 			// detect all currently connected providers
-			$hybrid = e107::getHybridAuth(); // init the auth class
-			$connected = Hybrid_Auth::getConnectedProviders();
+			$connected = $hybrid->getConnectedProviders();
 		}
 		catch(Exception $e)
 		{
@@ -1748,7 +1749,7 @@ class e_user extends e_user_model
 
 		foreach ($connected as $providerId) 
 		{
-			$adapter = Hybrid_Auth::getAdapter($providerId);
+			$adapter = $hybrid->getAdapter($providerId);
 			
 			if(!$adapter->getUserProfile()->identifier) continue;
 
