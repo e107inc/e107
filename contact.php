@@ -191,7 +191,7 @@ if(isset($_POST['send-contactus']))
 
 		$CONTACT_EMAIL = e107::getCoreTemplate('contact','email');
 
-		unset($_POST['contact_person'], $_POST['author_name'], $_POST['email_send'] , $_POST['subject'], $_POST['body'], $_POST['rand_num'], $_POST['code_verify'], $_POST['send-contactus'], $_POST['g-recaptcha-response'],  $_POST['gdpr']);
+		unset($_POST['contact_person'], $_POST['author_name'], $_POST['email_send'] , $_POST['subject'], $_POST['body'], $_POST['rand_num'], $_POST['code_verify'], $_POST['send-contactus']);
 
 		if(!empty($_POST)) // support for custom fields in contact template.
 		{
