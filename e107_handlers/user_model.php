@@ -1497,12 +1497,13 @@ class e_user extends e_user_model
 	private $_parent_config = null;
 	
 	/**
-	 * @var Hybrid_Provider_Model
+	 * @var e_user_provider|null
 	 */
 	protected $_provider;
 
 	public function __construct()
 	{
+		parent::__construct();
 		$this->setSessionData() // retrieve data from current session
 			->load() // load current user from DB
 			->setEditor($this); // reference to self
@@ -1531,7 +1532,7 @@ class e_user extends e_user_model
 	
 	/**
 	 * Init external user login/signup provider
-	 * @return e_system_user
+	 * @return e_user
 	 */
 	public function initProvider()
 	{
@@ -1544,11 +1545,13 @@ class e_user extends e_user_model
 			$this->_provider = new e_user_provider($providerId);
 			$this->_provider->init();
 		}
+
+		return $this;
 	}
 	
 	/**
 	 * Get external user provider
-	 * @return Hybrid_Provider_Model
+	 * @return e_user_provider|null
 	 */
 	public function getProvider()
 	{
@@ -1750,10 +1753,17 @@ class e_user extends e_user_model
 		foreach ($connected as $providerId) 
 		{
 			$adapter = $hybrid->getAdapter($providerId);
-			
-			if(!$adapter->getUserProfile()->identifier) continue;
 
-			$profile = $adapter->getUserProfile();
+			try
+			{
+				$profile = $adapter->getUserProfile();
+			}
+			catch (\Hybridauth\Exception\Exception $e)
+			{
+				continue;
+			}
+
+			if (!$profile->identifier) continue;
 
 			$userdata['user_name']  = $sql->escape($profile->displayName);
 			$userdata['user_image'] = $profile->photoURL; // avatar
@@ -1762,7 +1772,8 @@ class e_user extends e_user_model
 			$id = $providerId.'_'.$profile->identifier;
 			$where[] = "user_xup='".$sql->escape($id)."'";
 		}
-
+		// no active session found
+		if(empty($where)) return $this;
 
 		$where = implode(' OR ', $where);
 		if($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))

@@ -20,8 +20,18 @@ class core_system_xup_controller extends eController
 {
 		
 	var $backUrl = null;
-	
-		
+	/**
+	 * @var SocialLoginConfigManager
+	 */
+	private $social_login_config_manager;
+
+	public function __construct(eRequest $request, eResponse $response = null)
+	{
+		parent::__construct($request, $response);
+		require_once(e_PLUGIN."social/SocialLoginConfigManager.php");
+		$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
+	}
+
 	public function init()
 	{
 		//$back = 'system/xup/test';
@@ -113,9 +123,11 @@ class core_system_xup_controller extends eController
 		echo ' '.LAN_XUP_ERRM_11.' '.(e107::getUser()->isUser() && !empty($profileData) ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
 	
 	
-		$testUrl = SITEURL."?route=system/xup/test"; 
-		$providers = e107::getPref('social_login', array());
-		
+		$testUrl = SITEURL."?route=system/xup/test";
+		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+		$manager = new SocialLoginConfigManager(e107::getConfig());
+		$providers = $manager->getValidConfiguredProviderConfigs();
+
 		foreach($providers as $key=>$var)
 		{
 			if($var['enabled'] == 1)
