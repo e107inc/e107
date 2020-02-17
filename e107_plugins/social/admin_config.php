@@ -3,7 +3,7 @@
 // Generated e107 Plugin Admin Area 
 
 require_once('../../class2.php');
-if (!getperms('P')) 
+if (!getperms('P'))
 {
 	e107::redirect('admin');
 	exit;
@@ -15,63 +15,63 @@ e107::lan('social',false, true);
 class social_adminarea extends e_admin_dispatcher
 {
 
-	protected $modes = array(	
-	
+	protected $modes = array(
+
 		'main'	=> array(
 			'controller' 	=> 'social_ui',
 			'path' 			=> null,
 			'ui' 			=> 'social_form_ui',
 			'uipath' 		=> null
 		),
-		
 
-	);	
-	
-	
+
+	);
+
+
 	protected $adminMenu = array(
 
 	//	'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		// 'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		'main/configure'		=> array('caption'=> LAN_CONFIGURE, 'perm' => 'P'),
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 
 
 	);
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'				
-	);	
-	
+		'main/edit'	=> 'main/list'
+	);
+
 	protected $menuTitle = LAN_PLUGIN_SOCIAL_NAME;
 }
 
 
 
+require_once("SocialLoginConfigManager.php");
 
-				
 class social_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= LAN_PLUGIN_SOCIAL_NAME;
 		protected $pluginName		= 'social';
 	//	protected $eventName		= 'social-social'; // remove comment to enable event triggers in admin.
 	//	protected $table			= 'social';
 	//	protected $pid				= 'interview_id';
-		protected $perPage			= 10; 
+		protected $perPage			= 10;
 		protected $batchDelete		= true;
 	//	protected $batchCopy		= true;		
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
-		
+
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= '';
-	
+
 		protected $fields           = array();
-		
+
 		protected $fieldpref        = array();
-		
+
 
 		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, LAN_SOCIAL_ADMIN_37);
 
@@ -107,16 +107,25 @@ class social_ui extends e_admin_ui
 			);
 
 		protected $social_logins = array();
+		/**
+		 * @var SocialLoginConfigManager
+		 */
+		protected $social_login_config_manager;
 
 		protected $social_external = array();
 
 		public function init()
 		{
+			$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
+
 			if(!empty($_POST['save_social']) )
 			{
 				$cfg = e107::getConfig();
 
-				$cfg->setPref('social_login', $_POST['social_login']);
+				foreach ($_POST['social_login'] as $provider_name => $raw_updated_social_login)
+				{
+					$this->social_login_config_manager->setProviderConfig($provider_name, $raw_updated_social_login);
+				}
 				$cfg->setPref('social_login_active', $_POST['social_login_active']);
 				$cfg->setPref('xurl', $_POST['xurl']);
 				$cfg->save(true, true, true);
@@ -132,96 +141,6 @@ class social_ui extends e_admin_ui
 			{
 				$this->prefs['sharing_providers']['writeParms']['optArray'][$k] = $k;
 			}
-		//	print_a($bla);
-
-
-
-// Single/ Social  Login / / copied from hybridAuth config.php so it's easy to add more.
-// Used Below.
-
-			$this->social_logins = array (
-				// openid providers
-
-
-				"AOL"  => array (
-					"enabled" => true
-				),
-
-				"Facebook" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" ),
-					"trustForwarded" => false,
-					// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-					"scope"   => "email",
-
-					// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
-					"display" => ""
-				),
-
-				"Foursquare" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" )
-				),
-
-				"Github" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" ),
-					"scope"   => "user:email",
-				),
-
-				"Google" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" ),
-					"scope"   => "email"
-				),
-/*
-				"Instagram" => array (
-					"enabled" => true,
-					"keys"	 => array ( "id" => "", "secret" => "" )
-				),*/
-
-				"LinkedIn" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" )
-				),
-
-				// windows live
-				"Live" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" )
-				),
-
-				/*
-				"MySpace" => array (
-					"enabled" => true,
-					"keys"    => array ( "key" => "", "secret" => "" )
-				),
-				*/
-
-				"OpenID" => array (
-					"enabled" => true
-				),
-
-				"Steam" => array (
-					"enabled" => true,
-					"keys"	 => array ( "key" => "" )
-				),
-
-				"Twitter" => array (
-					"enabled" => true,
-					"keys"    => array ( "key" => "", "secret" => "" ),
-					"includeEmail" => true,
-				),
-
-
-				"Yahoo" => array (
-					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" ),
-				),
-
-
-			);
-
 
 			$this->social_external = array(
 				"Facebook" 		=> "https://developers.facebook.com/apps",
@@ -230,7 +149,7 @@ class social_ui extends e_admin_ui
 				"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
 				"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
 				"Foursquare"	=> "https://www.foursquare.com/oauth/",
-				"Github"		=> "https://github.com/settings/applications/new",
+				"GitHub"		=> "https://github.com/settings/applications/new",
 				"Steam"			=> "http://steamcommunity.com/dev/apikey",
 				"Instagram"     => "http://instagram.com/developer"
 			);
@@ -238,14 +157,14 @@ class social_ui extends e_admin_ui
 
 		}
 
-		
+
 		// ------- Customize Create --------
-		
-		public function beforeCreate($new_data)
+
+		public function beforeCreate($new_data, $old_data)
 		{
 			return $new_data;
 		}
-	
+
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
@@ -253,12 +172,12 @@ class social_ui extends e_admin_ui
 
 		public function onCreateError($new_data, $old_data)
 		{
-			// do something		
-		}		
-		
-		
+			// do something
+		}
+
+
 		// ------- Customize Update --------
-		
+
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
 			return $new_data;
@@ -266,14 +185,14 @@ class social_ui extends e_admin_ui
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			// do something	
+			// do something
 		}
-		
+
 		public function onUpdateError($new_data, $old_data, $id)
 		{
-			// do something		
-		}		
-		
+			// do something
+		}
+
 		function renderHelp()
 		{
 			$this->testUrl = SITEURL."?route=system/xup/test";
@@ -288,18 +207,19 @@ class social_ui extends e_admin_ui
 
 		}
 
-		// optional - a custom page.  
+		// optional - a custom page.
 		public function configurePage()
 		{
 			$ns = e107::getRender();
 			$frm = e107::getForm();
 			$pref = e107::pref('core');
 
-
-
-
-		//	e107::getMessage()->addInfo($notice);
-
+			require_once("social_setup.php");
+			$social_setup = new social_setup();
+			if ($social_setup->upgrade_required())
+			{
+				return "<p>" . LAN_SOCIAL_UPDATE_REQUIRED . "</p>";
+			}
 
 			$text = "<table class='table adminform'>
 				<colgroup>
@@ -315,124 +235,33 @@ class social_ui extends e_admin_ui
 								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_07." </div>
 
 						</td>
-					</tr>
+					</tr>";
 
+			$supported_providers = $this->social_login_config_manager->getSupportedProviders();
+			$configured_providers = $this->social_login_config_manager->getConfiguredProviders();
+			$unconfigured_providers = array_diff($supported_providers, $configured_providers);
+			$unsupported_providers = array_diff($configured_providers, $supported_providers);
+			$configured_providers = array_diff($configured_providers, $unsupported_providers);
 
+			$text .= $this->generateSocialLoginSection(
+				LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED,
+				LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED_DESCRIPTION,
+				$unsupported_providers
+			);
+			$text .= $this->generateSocialLoginSection(
+				LAN_SOCIAL_LOGIN_SECTION_CONFIGURED,
+				LAN_SOCIAL_LOGIN_SECTION_CONFIGURED_DESCRIPTION,
+				$configured_providers
+			);
+			$text .= $this->generateSocialLoginSection(
+				LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED,
+				LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED_DESCRIPTION,
+				$unconfigured_providers
+			);
 
-					<tr><td colspan='2'>
-							<table class='table table-bordered table-striped'>
-							<colgroup>
-								<col style='width:10%' />
-								<col class='col-control' />
-								<col class='col-control' />
-								<col class='col-control' />
-								<col style='width:20%' />
-							</colgroup>
-							<thead>
-								<tr>
-									<th>".LAN_SOCIAL_ADMIN_04."</th>
-									<th>".LAN_SOCIAL_ADMIN_05."</th>
-									<th>".LAN_SOCIAL_ADMIN_06."</th>
-									<th>".LAN_SOCIAL_ADMIN_38."</th>
-									<th class='center'>".LAN_SOCIAL_ADMIN_03."</th>
-								</tr>
-							</thead>
-
-					";
-
-			if(!is_array($pref['social_login']))
-			{
-				$pref['social_login'] = array();
-			}
-
-			foreach($this->social_logins as $prov=>$val)
-			{
-				$textKeys = '';
-				$textScope = '';
-				$keyCount= array();
-				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title=' ".LAN_SOCIAL_ADMIN_10."' href='".$this->social_external[$prov]."'>".$prov."</a>" : $prov;
-				$radio_label = strtolower($prov);
-				$text .= "
-					<tr>
-						<td><label for='social-login-".$radio_label."-enabled'>".$label."</label></td>
-
-						";
-				foreach($val as $k=>$v)
-				{
-
-
-					switch ($k) {
-						case 'enabled':
-							$eopt = array('class'=>'e-expandit');
-							$textEnabled = $frm->radio_switch('social_login['.$prov.'][enabled]', vartrue($pref['social_login'][$prov]['enabled']),'','',$eopt);
-							break;
-
-						case 'keys':
-							// $cls = vartrue($pref['single_login'][$prov]['keys'][$tk]) ? "class='e-hideme'" : '';
-							$sty = vartrue($pref['social_login'][$prov]['keys'][vartrue($tk)]) ? "" : "e-hideme";
-					//		$text .= "<div class='e-expandit-container {$sty}' id='option-{$prov}' >";
-							foreach($v as $tk=>$idk)
-							{
-								$eopt = array( 'size'=>'block-level');
-								$keyCount[] = 1;
-								$textKeys .= "<td>".$frm->text('social_login['.$prov.'][keys]['.$tk.']', vartrue($pref['social_login'][$prov]['keys'][$tk]), 100, $eopt)."</td>";
-							}
-						//	$text .= "</div>";
-
-							break;
-
-						case 'scope':
-							$eopt = array( 'size'=>'block-level');
-							$keyCount[] = 1;
-							$textScope .= "<td>".$frm->text('social_login['.$prov.'][scope]', vartrue($pref['social_login'][$prov]['scope']), 100, $eopt)."</td>";
-							break;
-
-						default:
-
-							break;
-					}
-
-
-
-
-				}
-
-
-
-				if(empty($keyCount))
-				{
-					$textKeys = "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-				}
-				elseif(count($keyCount) == 1)
-				{
-					$textKeys .= "<td>&nbsp;</td><td>&nbsp;</td>";
-				}
-				elseif(count($keyCount) == 2)
-				{
-					$textKeys .= "<td>&nbsp;</td>";
-				}
-
-				$text .= $textKeys.$textScope."<td class='center'>".$textEnabled."</td>";
-
-				$text .= "
-					</tr>
-					";
-			}
-
-
-
-
-
-
-
-			$text .= "</table>
-					</td></tr>
-
-
+			$text .= "
 				</tbody></table>
 			";
-
-
 
 			// -------------------------------
 			//
@@ -454,7 +283,7 @@ class social_ui extends e_admin_ui
 				'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
 				'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
 				'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
-				'github'		=>	array('label'=>"Github",	"placeholder"=>"eg. https://github.com/e107inc"),
+				'github'		=>	array('label'=>"GitHub",	"placeholder"=>"eg. https://github.com/e107inc"),
 				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
 				'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
 				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
@@ -506,17 +335,133 @@ class social_ui extends e_admin_ui
 			return $ret;
 		}
 
-			
+	/**
+	 * @param $text
+	 * @param array $provider_names
+	 * @return string
+	 */
+	private function generateSocialLoginSection($section_name, $section_explanation, $provider_names)
+	{
+		if (empty($provider_names)) return "";
+
+		$text = "
+					<tr>
+						<td colspan='2'>
+						<h4>$section_name</h4>
+						<p>$section_explanation</p>
+						<table class='table table-bordered table-striped'>
+							<colgroup>
+								<col style='width:10%' />
+								<col style='width:5%' />
+								<col class='col-control' />
+								<col class='col-control' />
+								<col class='col-control' />
+								<col style='width:5%' />
+							</colgroup>
+							<thead>
+								<tr>
+									<th>" . LAN_SOCIAL_ADMIN_04 . "</th>
+									<th>" . LAN_SOCIAL_ADMIN_AUTH_TYPE . "</th>
+									<th>" . LAN_SOCIAL_ADMIN_05 . "</th>
+									<th>" . LAN_SOCIAL_ADMIN_06 . "</th>
+									<th>" . LAN_SOCIAL_ADMIN_38 . "</th>
+									<th class='center'>" . LAN_SOCIAL_ADMIN_03 . "</th>
+								</tr>
+							</thead>
+							";
+
+		foreach ($provider_names as $provider_name)
+		{
+			$text .= $this->generateSocialLoginRow($provider_name);
+		}
+
+		$text .= "</table>
+						</td>
+					</tr>";
+
+		return $text;
+	}
+
+	/**
+	 * @param $provider_name
+	 * @return string Text to append
+	 */
+	private function generateSocialLoginRow($provider_name)
+	{
+		$slcm = $this->social_login_config_manager;
+		$provider_type = $slcm->getTypeOfProvider($provider_name);
+		if (empty($provider_type)) $provider_type = "<em>" . LAN_SOCIAL_ADMIN_AUTH_TYPE_UNKNOWN . "</em>";
+
+		$normalized_provider_name = $slcm->normalizeProviderName($provider_name);
+		list($pretty_provider_name,) = array_pad(explode("-", $normalized_provider_name), 2, "");
+
+		$frm = e107::getForm();
+		$textKeys = '';
+		$textScope = '';
+		$label = varset($this->social_external[$provider_name]) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . $this->social_external[$provider_name] . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
+		$radio_label = strtolower($provider_name);
+		$text = "
+					<tr>
+						<td><label for='social-login-" . $radio_label . "-enabled'>" . $label . "</label></td>
+						<td>$provider_type</td>
+						";
+
+		if ($provider_type == "OpenID")
+		{
+			$openid_identifier = $slcm->getProviderConfig($provider_name, '/openid_identifier');
+			$frm_options = ['size' => 'block-level'];
+			if (empty($openid_identifier))
+			{
+				try
+				{
+					$class = "\Hybridauth\Provider\\$provider_name";
+					$reflection = new ReflectionClass($class);
+					$properties = $reflection->getDefaultProperties();
+					$frm_options['placeholder'] = $properties['openidIdentifier'];
+				}
+				catch (Exception $e)
+				{
+					$openid_identifier = "";
+				}
+			}
+			$textKeys .= "<td>" .
+				$frm->text("social_login[$provider_name][openid_identifier]", $openid_identifier, 256, $frm_options) .
+			"</td><td></td><td></td>";
+		}
+		else
+		{
+			$textKeys .= "<td>" . $frm->text("social_login[$provider_name][keys][id]", $slcm->getProviderConfig($provider_name, '/keys/id'), 128, ['size' => 'block-level']);
+			$textKeys .= "<td>" . $frm->text("social_login[$provider_name][keys][secret]", $slcm->getProviderConfig($provider_name, '/keys/secret'), 128, ['size' => 'block-level']);
+			if ($provider_type == "OAuth2" || $slcm->getProviderConfig($provider_name, '/scope'))
+			{
+				$textKeys .= "<td>" . $frm->text("social_login[$provider_name][scope]", $slcm->getProviderConfig($provider_name, '/scope'), 128, ['size' => 'block-level']);
+			}
+			else
+			{
+				$textKeys .= "<td></td>";
+			}
+		}
+
+		$textEnabled = $frm->radio_switch("social_login[$provider_name][enabled]", $slcm->isProviderEnabled($provider_name), '', '', ['class' => 'e-expandit']);
+
+		$text .= $textKeys . $textScope . "<td class='center'>" . $textEnabled . "</td>";
+
+		$text .= "
+					</tr>
+					";
+
+		return $text;
+	}
 }
-				
+
 
 
 class social_form_ui extends e_admin_form_ui
 {
 
-}		
-		
-		
+}
+
+
 new social_adminarea();
 
 require_once(e_ADMIN."auth.php");

@@ -579,7 +579,7 @@ class UserHandler
 		$digitLength = strlen($digit) - 1;
 
 		// Create alpha numeric [A-Z][a-z]
-		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _	
+		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _
 		$alphaNumLength = strlen($alphaNum) - 1;
 
 		$symbols = "~!@#$%^*-+?;:"; // avoid < > and quotes.
@@ -1081,95 +1081,69 @@ Following fields auto-filled in code as required:
 	}
 }
 
+/**
+ * Social login provider
+ */
 class e_user_provider
 {
 	/**
 	 * @var string
 	 */
 	protected $_provider;
-	
+
 	/**
 	 * Hybridauth adapter
 	 * @var \Hybridauth\Adapter\AdapterInterface
 	 */
 	public $adapter;
-	
+
 	/**
 	 * Hybridauth object
 	 * @var Hybridauth\Hybridauth
 	 */
-	public $hybridauth;
+	protected $hybridauth;
 	protected $_config = array();
-	
-	public function __construct($provider, $config = array())
+	/**
+	 * @var SocialLoginConfigManager
+	 */
+	protected $social_login_config_manager;
+
+	public function __construct($provider = null, $config = array())
 	{
-		if(!empty($config))
+		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+		$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
+
+		if (!empty($config))
 		{
 			$this->_config = $config;
 		}
-		else 
+		else
 		{
 			$this->_config = array(
-				"callback" 		=> e107::getUrl()->create('system/xup/login', array(), array('full' => true)),
-				"providers" 	=> e107::getPref('social_login', array()),
-				"debug_mode" 	=> 'error', 
-				"debug_file"	=> e_LOG."hybridAuth.log"	
+				"callback" => e107::getUrl()->create(
+					'system/xup/login',
+					array('provider' => $provider),
+					array('full' => true, 'encode' => false)
+				),
+				"providers" => $this->social_login_config_manager->getValidConfiguredProviderConfigs(),
+				"debug_mode" => 'error',
+				"debug_file" => e_LOG . "hybridAuth.log"
 			);
-			
+
 		}
-		
-		$this->hybridauth = e107::getHybridAuth($this->_config);
+
+		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
 		$this->setProvider($provider);
 	}
-	
+
 	public function setProvider($provider)
 	{
-		$provider = strtolower($provider);
-
-		switch($provider)
-		{
-			case 'aol':
-				$provider = 'AOL';
-				break;
-
-			case 'googleopenid':
-				$provider = 'GoogleOpenID';
-				break;
-
-			case 'linkedin':
-				$provider = 'LinkedIn';
-				break;
-
-			case 'myspace':
-				$provider = 'MySpace';
-				break;
-
-			case 'openid':
-				$provider = 'OpenID';
-				break;
-
-			default:
-				$provider = ucfirst($provider);
-				break;
-		}
-
-		if(isset($this->_config['providers'][$provider]) && $this->_config['providers'][$provider]['enabled'])
-		{
-			if($this->_config['providers'][$provider]['enabled'] && vartrue($this->_config['providers'][$provider]['keys']))
-			{
-				$valid = true;
-				foreach ($this->_config['providers'][$provider]['keys'] as $_key => $_value) 
-				{
-					if(empty($_value)) $valid = false;
-				}
-				if($valid) $this->_provider = $provider;
-			}
-		}
+		$this->_provider = $provider;
 	}
 
-	private function log($class,$method,$line)
+	private function log($class, $method, $line)
 	{
-	//	e107::getLog()->add('XUP Debug', ($class.':'.$method.'-'.$line), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		//	e107::getLog()->add('XUP Debug', ($class.':'.$method.'-'.$line), E_LOG_INFORMATIVE, "XUP_DEBUG");
 	}
 
 
@@ -1178,110 +1152,179 @@ class e_user_provider
 		# system/xup/login by default
 		$this->_config['callback'] = $url;
 	}
-	
+
 	public function getProvider()
 	{
 		// $this->log(__CLASS__, __METHOD__, __LINE__);
 		return $this->_provider;
 	}
-	
+
 	public function getConfig()
 	{
 		return $this->_config;
 	}
-	
+
 	public function getUserProfile()
 	{
-		if($this->adapter)
+		if ($this->adapter)
 		{
-			return $this->adapter->getUserProfile();
+			try
+			{
+				return $this->adapter->getUserProfile();
+			}
+			catch (\Hybridauth\Exception\Exception $e)
+			{
+				return null;
+			}
 		}
 		return null;
 	}
-	
+
 	public function userId()
 	{
-
-		if($this->adapter && $this->adapter->getUserProfile()->identifier)
+		if ($profile = $this->getUserProfile())
 		{
-			return $this->getProvider().'_'.$this->adapter->getUserProfile()->identifier;
+			return $this->getProvider() . '_' . $profile->identifier;
 		}
 		return null;
 	}
-	
+
 	/**
-	 * XUP Signup Method (falls-back to XUP login when existing user is detected). 
-	 * May be used as a simple XUP login link for existing and non-existing users.  
+	 * Get the social login providers for which we have adapters
+	 *
+	 * This function is slow! Please cache the output instead of calling it multiple times.
+	 *
+	 * @return array String list of supported providers. Empty if Hybridauth is broken.
+	 */
+	public static function getSupportedProviders()
+	{
+		$providers = [];
+
+		try
+		{
+			$reflector = new ReflectionClass('Hybridauth\Hybridauth');
+		}
+		catch (ReflectionException $e)
+		{
+			return $providers;
+		}
+		$hybridauth_path = $reflector->getFileName();
+		$hybridauth_providers_path = dirname($hybridauth_path) . "/Provider/";
+		$fs_iterator = new FilesystemIterator($hybridauth_providers_path);
+		foreach ($fs_iterator as $file)
+		{
+			if (!$file->isFile()) continue;
+
+			$provider_source_code = file_get_contents($file);
+			$provider_source_tokens = token_get_all($provider_source_code);
+			for ($token_index = 0; isset($provider_source_tokens[$token_index]); $token_index++)
+			{
+				if (!isset($provider_source_tokens[$token_index][0])) continue;
+
+				if (T_CLASS === $provider_source_tokens[$token_index][0])
+				{
+					$token_index += 2;
+					$providers[] = $provider_source_tokens[$token_index][1];
+				}
+			}
+		}
+
+		sort($providers);
+		return $providers;
+	}
+
+	/**
+	 * Get the type of provider from a provider name
+	 * @param $providerName string Name of the supported social login provider
+	 * @return string|bool "OAuth1", "OAuth2", or "OpenID". If false, the provider name is invalid.
+	 *                     Other values are technically possible but not supported.
+	 */
+	public static function getTypeOf($providerName)
+	{
+		$class_name = "Hybridauth\Provider\\{$providerName}";
+		$parent_class = get_parent_class($class_name);
+		if (!$parent_class) return false;
+
+		$parent_class_split = explode("\\", get_parent_class($class_name));
+		$type = end($parent_class_split);
+		if ($type == "AbstractAdapter") return $providerName;
+		if (!in_array($type, ['OAuth1', 'OAuth2', 'OpenID'])) return self::getTypeOf($type);
+		return $type;
+	}
+
+	/**
+	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
+	 * May be used as a simple XUP login link for existing and non-existing users.
 	 */
 	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
 	{
-		if(!e107::getPref('social_login_active', false))
+		if (!e107::getPref('social_login_active', false))
 		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception("Signup failed! This feature is disabled.", 100); // TODO lan
 		}
-		
-		if(!$this->getProvider()) 
+
+		if (!$this->getProvider())
 		{
-			throw new Exception( "Signup failed! Wrong provider.", 2); // TODO lan
+			throw new Exception("Signup failed! Wrong provider.", 2); // TODO lan
 		}
-		
-		if($redirectUrl)
+
+		if ($redirectUrl)
 		{
-			if(true === $redirectUrl)
+			if (true === $redirectUrl)
 			{
 				$redirectUrl = SITEURL;
 			}
-			elseif(strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
+			elseif (strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
 			{
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}
 		}
 
 
-		if(e107::getUser()->isUser())
+		if (e107::getUser()->isUser())
 		{
-			if($redirectUrl)
+			if ($redirectUrl)
 			{
 				e107::getRedirect()->redirect($redirectUrl);
 			}
 			return false;
-		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
+			//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
-		
+
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
 
 		$this->log(__CLASS__, __METHOD__, __LINE__);
 		// returned back, if success...
-		if($profile->identifier)
+		if ($profile->identifier)
 		{
 
 			$sql = e107::getDb();
 			$userMethods = e107::getUserSession();
-			
+
 			$plainPwd = $userMethods->generateRandomString('************'); // auto plain passwords
 
-			
+
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
-			$userdata['user_loginname']     = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
-			$userdata['user_email']         = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
-			$userdata['user_name']          = $sql->escape($profile->displayName);
-			$userdata['user_login']         = $userdata['user_name'];
-			$userdata['user_customtitle']   = ''; // not used
-			$userdata['user_password']      = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
-			$userdata['user_sess']          = ''; //
-			$userdata['user_image']         = $profile->photoURL; // avatar
-			$userdata['user_signature']     = ''; // not used
-			$userdata['user_hideemail']     = 1; // hide it by default
-			$userdata['user_xup']           = $sql->escape($this->userId());
+			$userdata['user_loginname'] = $this->getProvider() . $userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
+			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
+			$userdata['user_name'] = $sql->escape($profile->displayName);
+			$userdata['user_login'] = $userdata['user_name'];
+			$userdata['user_customtitle'] = ''; // not used
+			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
+			$userdata['user_sess'] = ''; //
+			$userdata['user_image'] = $profile->photoURL; // avatar
+			$userdata['user_signature'] = ''; // not used
+			$userdata['user_hideemail'] = 1; // hide it by default
+			$userdata['user_xup'] = $sql->escape($this->userId());
 
 			$pref = e107::pref('core');
 
-			if(!empty($pref['initial_user_classes']))
+			if (!empty($pref['initial_user_classes']))
 			{
 				$userdata['user_class'] = $pref['initial_user_classes'];
 			}
-			elseif(!empty($pref['user_new_period']))
+			elseif (!empty($pref['user_new_period']))
 			{
 				$userdata['user_class'] = e_UC_NEWUSER;
 			}
@@ -1290,37 +1333,38 @@ class e_user_provider
 				$userdata['user_class'] = '';
 			}
 
-	//		print_a($userdata);
-		
-			
+			//		print_a($userdata);
+
+
 			// user_name, user_xup, user_email and user_loginname shouldn't match
-			$insert = (!empty($userdata['user_email'])) ? "OR user_email='".$userdata['user_email']."' " : "";
+			$insert = (!empty($userdata['user_email'])) ? "OR user_email='" . $userdata['user_email'] . "' " : "";
 
 			$this->log(__CLASS__, __METHOD__, __LINE__);
-			
-			if($uid = $sql->retrieve("user", "user_id", "user_xup='".$sql->escape($this->userId())."' ".$insert." OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
+
+			if ($uid = $sql->retrieve("user", "user_id", "user_xup='" . $sql->escape($this->userId()) . "' " . $insert . " OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
 				// $this->login($redirectUrl); // auto-login
 				e107::getUser()->loginProvider($this->userId());
 
-				if($redirectUrl) 
+				if ($redirectUrl)
 				{
 					e107::getRedirect()->redirect($redirectUrl);
 				}
-				
+
 				return false;
 				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3);
 			}
-			
-			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
+
+			if (empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0) == 0) // Allow it if set-up that way.
 			{
 				// Twitter will not provide email addresses.
-			//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
+				//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
 			}
-			
+
 			// other fields
-			$now = time(); 
+			$now = time();
 			$userdata['user_id'] = null;
+			$userdata['user_image'] = '';
 			$userdata['user_join'] = $now;
 			$userdata['user_lastvisit'] = 0;
 			$userdata['user_currentvisit'] = 0;
@@ -1340,12 +1384,12 @@ class e_user_provider
 			$user->getExtendedModel(); // init
 			//$user->setEditor(e107::getSystemUser(1, false));
 			$user->save(true);
-			
+
 			// user model error
-			if($user->hasError())
+			if ($user->hasError())
 			{
 				e107::getLog()->add('XUP Signup Failure', $userdata, E_LOG_WARNING, "XUP_SIGNUP");
-				throw new Exception($user->renderMessages(), 5); 
+				throw new Exception($user->renderMessages(), 5);
 			}
 
 
@@ -1354,35 +1398,35 @@ class e_user_provider
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
 
-            $userdata['callback_data'] = $profile;
-			
-		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
-			
-			e107::getEvent()->trigger('user_xup_signup', $userdata); 
-			
-			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array?
+			$userdata['callback_data'] = $profile;
 
-			if(true === $ret) return $this;
-			
+			//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
+
+			e107::getEvent()->trigger('user_xup_signup', $userdata);
+
+			$ret = e107::getEvent()->trigger('usersupprov', $userdata);    // XXX - it's time to pass objects instead of array?
+
+			if (true === $ret) return $this;
+
 			// send email
-			if($emailAfterSuccess && !empty($userdata['user_email']))
+			if ($emailAfterSuccess && !empty($userdata['user_email']))
 			{
-				$user->set('user_password', $plainPwd)->email('signup'); 
+				$user->set('user_password', $plainPwd)->email('signup');
 			}
-			
+
 			e107::getUser()->setProvider($this);
-			
+
 			// auto login
-			if($loginAfterSuccess)
+			if ($loginAfterSuccess)
 			{
 				e107::getUser()->loginProvider($this->userId()); // if not proper after-login, return true so user can see login screen
 			}
-						
-			if($redirectUrl)
+
+			if ($redirectUrl)
 			{
 				e107::getRedirect()->redirect($redirectUrl);
 			}
-			
+
 			return true;
 		}
 
@@ -1392,70 +1436,68 @@ class e_user_provider
 	}
 
 
-
 	public function login($redirectUrl = true)
 	{
 
-		if(!e107::getPref('social_login_active', false))
+		if (!e107::getPref('social_login_active', false))
 		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception("Signup failed! This feature is disabled.", 100); // TODO lan
 		}
-		
-		if(!$this->getProvider()) 
+
+		if (!$this->getProvider())
 		{
-			throw new Exception( "Login failed! Wrong provider.", 22); // TODO lan
+			throw new Exception("Login failed! Wrong provider.", 22); // TODO lan
 		}
-		
-		if($redirectUrl)
+
+		if ($redirectUrl)
 		{
-			if(true === $redirectUrl)
+			if (true === $redirectUrl)
 			{
 				$redirectUrl = SITEURL;
 			}
-			elseif(strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
+			elseif (strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
 			{
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}
 		}
 
 
-		if(e107::getUser()->isUser())
+		if (e107::getUser()->isUser())
 		{
-			if($redirectUrl)
+			if ($redirectUrl)
 			{
 				e107::getRedirect()->redirect($redirectUrl);
 			}
-			return true; 
+			return true;
 		}
-		
+
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
 
 
-		if($redirectUrl)
+		if ($redirectUrl)
 		{
 			e107::getRedirect()->redirect($redirectUrl);
 		}
-		
+
 		return $check;
 	}
 
 
-
 	public function init()
 	{
-		if(!e107::getPref('social_login_active', false))
+		if (!e107::getPref('social_login_active', false))
 		{
 			return;
 		}
 		$this->adapter = null;
 		$providerId = $this->_provider;
-		if($providerId && $this->hybridauth->isConnectedWith($providerId))
+		if ($providerId && $this->hybridauth->isConnectedWith($providerId))
 		{
 			$this->adapter = $this->hybridauth->getAdapter($providerId);
 		}
 	}
-	
+
 	public function logout()
 	{
 		if (
@@ -1465,16 +1507,16 @@ class e_user_provider
 		) return true;
 		try
 		{
-			$this->adapter->logout();
+			$this->adapter->disconnect();
 			$this->adapter = null;
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			return $e->getMessage();
 		}
 		return true;
 	}
-	
+
 }
 
 

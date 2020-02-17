@@ -75,26 +75,34 @@ class signup_shortcodes extends e_shortcode
 		if(!empty($pref))
 		{
 			$text = "";
-			$providers = e107::getPref('social_login'); 
+			$manager = new SocialLoginConfigManager(e107::getConfig());
+			$providers = $manager->getValidConfiguredProviderConfigs();
 
 			foreach($providers as $p=>$v)
 			{
-				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
 					
 				//		$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
 				
 					$ic = strtolower($p);
-					
-					if($ic == 'live')
+
+					switch ($ic)
 					{
-						$ic = 'windows';
+						case 'windowslive':
+							$ic = 'windows';
+							break;
 					}
-					
-					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
-					
-					$button = (defset('FONTAWESOME')) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true)) : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+
+					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in.
+
+					if (defset('FONTAWESOME') && in_array($ic, e107::getMedia()->getGlyphs()))
+						$button = "<span title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p) . "'>" . $tp->toGlyph('fa-' . $ic, array('size' => $size, 'fw' => true)) . "</span>";
+					elseif (is_file(e107::getFolder('images') . "xup/{$ic}.png"))
+						$button = "<img class='e-tip' title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p) . "' src='" . e_IMAGE_ABS . "xup/{$ic}.png' alt='' />";
+					else
+						$button = "<span title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p) . "'>$p</span>";
+
 					$text .= " <a title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)." ' role='button' class='signup-xup  ".$class."' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
@@ -116,8 +124,9 @@ class signup_shortcodes extends e_shortcode
 		if(!empty($pref))
 		{
 			$text = "";
-			$providers = e107::pref('core', 'social_login'); 
-			
+			$manager = new SocialLoginConfigManager(e107::getConfig());
+			$providers = $manager->getValidConfiguredProviderConfigs();
+
 			$size = empty($parm['size']) ? '2x' : $parm['size'];	
 			$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ; 
 			
@@ -129,22 +138,25 @@ class signup_shortcodes extends e_shortcode
 
 			foreach($providers as $p=>$v)
 			{
-
-
-				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
 					$ic = strtolower($p);
-					
-					if($ic == 'live')
+
+					switch ($ic)
 					{
-						$ic = 'windows';
+						case 'windowslive':
+							$ic = 'windows';
+							break;
 					}
 
-					$button = (defset('FONTAWESOME')) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true))."</span>" : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
-				
-					$text .= " <a class='signup-xup ".$class."' role='button' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
-				}
+					if (defset('FONTAWESOME') && in_array($ic, e107::getMedia()->getGlyphs()))
+						$button = "<span title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p) . "'>" . $tp->toGlyph('fa-' . $ic, array('size' => $size, 'fw' => true)) . "</span>";
+					elseif (is_file(e107::getFolder('images') . "xup/{$ic}.png"))
+						$button = "<img class='e-tip' title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p) . "' src='" . e_IMAGE_ABS . "xup/{$ic}.png' alt='' />";
+					else
+						$button = "<span title='" . $tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p) . "'>$p</span>";
+					$text .= " <a class='signup-xup " . $class . "' role='button' href='" . e107::getUrl()->create('system/xup/signup?provider=' . $p . '&back=' . base64_encode(e_REQUEST_URL)) . "'>" . $button . "</a> ";
+			}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
 			

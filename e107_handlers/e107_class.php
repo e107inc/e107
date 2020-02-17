@@ -286,6 +286,18 @@ class e107
 		//register_shutdown_function(array($this, 'destruct'));
 	}
 
+	private static function die_http_400()
+	{
+		header('HTTP/1.0 400 Bad Request', true, 400);
+		header('Content-Type: text/plain');
+		if (deftrue('e_DEBUG'))
+		{
+			echo "Bad Request: ";
+			debug_print_backtrace(0, 1);
+		}
+		exit();
+	}
+
 	/**
 	 * Cloning is not allowed
 	 *
@@ -1695,14 +1707,22 @@ class e107
 	 * Create a new Hybridauth object based on the provided configuration
 	 *
 	 * @return Hybridauth\Hybridauth
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 * @deprecated v2.3.0 Use the e_user_provider interfaces instead (e107::getUser()->getProvider()).
+	 *                    Hybridauth features are only available if the user is associated with a social login.
+	 * @see e107::getUser() for getting a user object that may or may not have a social login.
+	 * @see e_user_provider for social login features, only if enabled on the user.
 	 */
 	public static function getHybridAuth($config = null)
 	{
 		if(null === $config)
 		{
+			require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+			$manager = new SocialLoginConfigManager(e107::getConfig());
+
 			$config = array(
 				'callback' => self::getUrl()->create('system/xup/login', array(), array('full' => true)),
-				'providers' => self::getPref('social_login', array()),
+				'providers' => $manager->getValidConfiguredProviderConfigs(),
 				'debug_mode' => false,
 				'debug_file' => ''
 			);
@@ -3938,57 +3958,32 @@ class e107
 			$regex = "/(base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
 			if(preg_match($regex,$input))
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 			// Check for XSS JS
 			$regex = "/(document\.location|document\.write|document\.cookie)/i";
 			if(preg_match($regex,$input))
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 
 			// Suspicious HTML.
 			if(strpos($input, '<body/onload')!==false)
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 			if(preg_match("/system\((.*);.*\)/i",$input))
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
 			if(preg_match($regex,$input))
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 		}
@@ -3997,12 +3992,7 @@ class e107
 		{
 			if(stripos($input, "<script")!==false || stripos($input, "%3Cscript")!==false)
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 		}
@@ -4017,37 +4007,12 @@ class e107
 				|| stripos($input,"%3cscript")!==FALSE
 				))
 			{
-
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
-			}
-
-			if(($key == "QUERY_STRING") && empty($_GET['hauth_done']) && empty($_GET['hauth.done']) && ( // exception for hybridAuth.
-				strpos(strtolower($input),"=http")!==FALSE
-				|| strpos(strtolower($input),strtolower("http%3A%2F%2F"))!==FALSE
-				))
-			{
-
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 			{
-				header('HTTP/1.0 400 Bad Request', true, 400);
-				if(deftrue('e_DEBUG'))
-				{
-					echo "Bad Request: ".__METHOD__." : ". __LINE__;
-				}
-				exit();
+				self::die_http_400();
 			}
 
 
@@ -4055,12 +4020,7 @@ class e107
 
 		if(strpos(str_replace('.', '', $input), '22250738585072011') !== FALSE) // php-bug 53632
 		{
-			header('HTTP/1.0 400 Bad Request', true, 400);
-			if(deftrue('e_DEBUG'))
-			{
-				echo "Bad Request: ".__METHOD__." : ". __LINE__;
-			}
-			exit();
+			self::die_http_400();
 		}
 
 		if($base64 != true)

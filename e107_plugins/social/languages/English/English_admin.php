@@ -50,3 +50,28 @@ define("LAN_SOCIAL_ADMIN_39", "Providers");
 define("LAN_SOCIAL_ADMIN_40", "Update User Display Name");
 define("LAN_SOCIAL_ADMIN_41", "Update User Avatar");
 define("LAN_SOCIAL_ADMIN_42", "Custom Image");
+define("LAN_SOCIAL_ADMIN_AUTH_TYPE", "Type");
+define("LAN_SOCIAL_ADMIN_AUTH_TYPE_UNKNOWN", "Unknown");
+
+define("LAN_SOCIAL_UPDATE_REQUIRED",
+	"A <a href=\"" . e_ADMIN_ABS . "e107_update.php\">database update</a> is required to continue using this plugin."
+);
+
+define("LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED", "Broken Configured Providers");
+define("LAN_SOCIAL_LOGIN_SECTION_CONFIGURED", "Manage Existing Providers");
+define("LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED", "Add New Providers");
+
+define("LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED_DESCRIPTION",
+	"These social login providers were configured in the past but no longer have an adapter that can support them. " .
+	"This may be due to them no longer existing or being replaced by a different provider."
+);
+define("LAN_SOCIAL_LOGIN_SECTION_CONFIGURED_DESCRIPTION",
+	"These social login providers are currently configured. " .
+	"If the master switch \"" . LAN_SOCIAL_ADMIN_02 . "\" is toggled on, each provider in this table that is " .
+	"also toggled on may be used for user registration and login. If you empty the fields of a provider here and save, " .
+	"it will move to the \"" . LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED . "\" section."
+);
+define("LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED_DESCRIPTION",
+	"These are the available social login providers, which have not been configured. " .
+	"Once you configure and save a provider here, it will move to the \"" . LAN_SOCIAL_LOGIN_SECTION_CONFIGURED . "\" section."
+);
