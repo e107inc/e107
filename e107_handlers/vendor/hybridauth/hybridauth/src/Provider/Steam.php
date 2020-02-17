@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID;
+use Hybridauth\Adapter\OpenID as OpenIDAdapter;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Data;
 use Hybridauth\User;
@@ -32,7 +32,7 @@ use Hybridauth\User;
  *       echo $e->getMessage() ;
  *   }
  */
-class Steam extends OpenID
+class Steam extends OpenIDAdapter
 {
     /**
      * {@inheritdoc}
