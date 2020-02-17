@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter;
+use Hybridauth\Adapter\OpenID as OpenIDAdapter;
 
 /**
  * Generic OpenID providers adapter.
@@ -18,12 +18,12 @@ use Hybridauth\Adapter;
  *       'callback' => Hybridauth\HttpClient\Util::getCurrentUrl(),
  *
  *       //  authenticate with Yahoo openid
- *       'openid_identifier' => 'https://open.login.yahooapis.com/openid20/www.yahoo.com/xrds' 
+ *       'openid_identifier' => 'https://open.login.yahooapis.com/openid20/www.yahoo.com/xrds'
  *
  *       //  authenticate with stackexchange network openid
  *       // 'openid_identifier' => 'https://openid.stackexchange.com/',
  *
- *       //  authenticate with Steam openid 
+ *       //  authenticate with Steam openid
  *       // 'openid_identifier' => 'http://steamcommunity.com/openid',
  *
  *       // etc.
@@ -40,6 +40,6 @@ use Hybridauth\Adapter;
  *       echo $e->getMessage() ;
  *   }
  */
-class OpenID extends Adapter\OpenID
+class OpenID extends OpenIDAdapter
 {
 }
