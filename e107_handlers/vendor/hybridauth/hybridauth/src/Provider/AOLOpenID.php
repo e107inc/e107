@@ -7,12 +7,12 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID;
+use Hybridauth\Adapter\OpenID as OpenIDAdapter;
 
 /**
  * AOL OpenID provider adapter.
  */
-class AOLOpenID extends OpenID
+class AOLOpenID extends OpenIDAdapter
 {
     /**
      * {@inheritdoc}
