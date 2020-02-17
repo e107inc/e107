@@ -185,12 +185,24 @@ TMP;
 		{
 
 		}
-
+*/
 		public function testToASCII()
 		{
 
-		}
+			$array = array(
+				array('input' => 'ľ, ú, ŕ, ô, ť', 'expected' => 'l, u, r, o, t'),
+			);
 
+			foreach($array as $arr)
+			{
+				$result = $this->tp->toASCII($arr['input']);
+				$this->assertEquals($arr['expected'], $result);
+			}
+
+
+
+		}
+/*
 		public function testToNumber()
 		{
 
