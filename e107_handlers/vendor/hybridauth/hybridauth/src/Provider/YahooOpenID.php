@@ -7,12 +7,12 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID;
+use Hybridauth\Adapter\OpenID as OpenIDAdapter;
 
 /**
  * Yahoo OpenID provider adapter.
  */
-class YahooOpenID extends OpenID
+class YahooOpenID extends OpenIDAdapter
 {
     /**
     * {@inheritdoc}
