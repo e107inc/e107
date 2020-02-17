@@ -539,8 +539,11 @@ class e_parse extends e_parser
 			}
 			else // caused double-encoding of '&'
 			{
-				//$data = str_replace('<','&lt;',$data);
-				//$data = str_replace('>','&gt;',$data);
+			//	$data = str_replace('&amp;','&',$data);
+		//		$data = str_replace('<','&lt;',$data);
+		//		$data = str_replace('>','&gt;',$data);
+			//	$data = str_replace('&','&amp;',$data);
+
 			}
 
 
@@ -5323,10 +5326,19 @@ return;
     {
         if(empty($html)){ return ''; }
 
+        if($this->isHtml($html) === false)
+        {
+            	$html = str_replace('<','&lt;',$html);
+				$html = str_replace('>','&gt;',$html);
+        }
+
 		$html = str_replace('&nbsp;', '{E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE}', $html); // prevent replacement of &nbsp; with spaces.
 		// Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 1 of 2
 		$html = str_replace("\n", "{E_PARSER_CLEAN_HTML_LINE_BREAK}", $html);
+
+
+
 
         if(strpos($html, "<body")===false) // HTML Fragment
 		{

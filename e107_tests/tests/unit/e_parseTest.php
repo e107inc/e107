@@ -247,7 +247,7 @@ TMP;
 			$tests = array(
 				0  => array(
 					'input'     => "<svg/onload=prompt(1)//",
-					'expected'  => ''
+					'expected'  => '&lt;svg/onload=prompt(1)//'
 				),
 				1  => array(
 					'input'     => "some plain text with a\nline break",
@@ -336,6 +336,10 @@ TMP;
 					'input'     => '<a href="">Hello</a>',
 					'expected'  => '&lt;a href=&quot;&quot;&gt;Hello&lt;/a&gt;',
 					'mode'      => 'no_html',
+				),
+				22 => array(
+					'input'     => '< 200',
+					'expected'  => '&lt; 200',
 				),
 
 			);
@@ -811,7 +815,9 @@ TMP;
 				3   => array("<div class='something'>[code]something[/code]</div>", true),
 				4   => array("[code]&lt;b&gt;someting&lt;/b&gt;[/code]", false),
 				5   => array("[html]something[/html]", true),
-				6   => array("http://something.com/index.php?what=ever", false)
+				6   => array("http://something.com/index.php?what=ever", false),
+				7   => array("< 200", false),
+				8   => array("<200>", true),
 			);
 
 
@@ -958,15 +964,17 @@ TMP;
 		public function testCleanHtml()
 		{
 			$tests = array(
-				0   => array('html' => "<svg/onload=prompt(1)//", 'expected' => ''),
-				1   => array('html' => '<script>alert(123)</script>', 'expected'=>''),
-				2   => array('html' => '"><script>alert(123)</script>', 'expected'=>'"&gt;'),
+				0   => array('html' => "<svg/onload=prompt(1)//", 'expected' => '&lt;svg/onload=prompt(1)//'),
+			//	1   => array('html' => '<script>alert(123)</script>', 'expected'=>''),
+			//	2   => array('html' => '"><script>alert(123)</script>', 'expected'=>'"&gt;'),
+				3   => array('html' => '< 200', 'expected'=>'&lt; 200'),
 
 			);
 
 			foreach($tests as $var)
 			{
 				$result = $this->tp->cleanHtml($var['html']);
+				$this->assertEquals($var['expected'], $result);
 				// FIXME: This test doesn't do anything?
 			}
 
