@@ -7,12 +7,12 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID;
+use Hybridauth\Adapter\OpenID as OpenIDAdapter;
 
 /**
  * StackExchange OpenID provider adapter.
  */
-class StackExchangeOpenID extends OpenID
+class StackExchangeOpenID extends OpenIDAdapter
 {
     /**
      * {@inheritdoc}
