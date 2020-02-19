@@ -91,6 +91,15 @@ class core_system_xup_controller extends eController
 	
 	public function actionTest()
 	{
+		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+		$manager = new SocialLoginConfigManager(e107::getConfig());
+
+		if (!$manager->isFlagActive($manager::ENABLE_BIT_TEST_PAGE))
+		{
+			e107::getRedirect()->redirect(SITEURL);
+			return;
+		}
+
 		echo '<h3>'.LAN_XUP_ERRM_07.'</h3>';
 		
 		if(getperms('0'))
@@ -122,8 +131,6 @@ class core_system_xup_controller extends eController
 	
 	
 		$testUrl = SITEURL."?route=system/xup/test";
-		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
-		$manager = new SocialLoginConfigManager(e107::getConfig());
 		$providers = $manager->getValidConfiguredProviderConfigs();
 
 		foreach($providers as $key=>$var)

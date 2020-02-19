@@ -68,7 +68,7 @@ class social_setup
 			}
 		}
 
-		$manager->saveProviderConfig();
+		$manager->saveConfig();
 	}
 
 	private function upgradeDenormalizedProviderQuirks($denormalizedProviderName)
