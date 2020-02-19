@@ -852,10 +852,22 @@ $(document).ready(function()
 
 
 		$('body').on('slid.bs.carousel', '.carousel', function(){
-		  var currentIndex = $(this).find('.active').index();
-		  var text = (currentIndex + 1);
-		  var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
-		  $('#'+id).text(text);
+
+			var label = $(this).find('.active').attr('data-label');
+			var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
+
+			if(label !== undefined)
+			{
+				$('#'+id).text(label);
+			}
+			else
+			{
+				var currentIndex = $(this).find('.active').index();
+				var text = (currentIndex + 1);
+
+				$('#'+id).text(text);
+			}
+
 
 			// this takes commented content for each carousel slide and enables it, one slide at a time as we scroll.
 
