@@ -50,8 +50,7 @@ class core_system_xup_controller extends eController
 		
 		if($allow && vartrue($_GET['provider']))
 		{
-			require_once(e_HANDLER."user_handler.php");
-			$provider = new e_user_provider($_GET['provider']);
+			$provider = e107::getUserProvider($_GET['provider']);
 			try
 			{
 				$provider->signup($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
@@ -77,8 +76,7 @@ class core_system_xup_controller extends eController
 
 		if($allow && vartrue($_GET['provider']))
 		{
-			require_once(e_HANDLER."user_handler.php");
-			$provider = new e_user_provider($_GET['provider']);
+			$provider = e107::getUserProvider($_GET['provider']);
 			try
 			{
 				$provider->login($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
