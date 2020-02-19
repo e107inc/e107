@@ -1541,8 +1541,7 @@ class e_user extends e_user_model
 		if($this->get('user_xup'))
 		{
 			$providerId = $this->getProviderName();
-			require_once(e_HANDLER.'user_handler.php');
-			$this->_provider = new e_user_provider($providerId);
+			$this->_provider = e107::getUserProvider($providerId);
 			$this->_provider->init();
 		}
 
