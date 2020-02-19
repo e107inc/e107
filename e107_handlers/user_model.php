@@ -1542,7 +1542,6 @@ class e_user extends e_user_model
 		{
 			$providerId = $this->getProviderName();
 			$this->_provider = e107::getUserProvider($providerId);
-			$this->_provider->init();
 		}
 
 		return $this;

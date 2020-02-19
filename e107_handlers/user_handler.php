@@ -847,7 +847,7 @@ Following fields auto-filled in code as required:
 			}
 			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
 			{
-				$errMsg = ERR_BANNED_USER; 
+				$errMsg = ERR_BANNED_USER;
 			}
 			else
 			{	// See if email address banned
@@ -920,7 +920,7 @@ Following fields auto-filled in code as required:
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDb();
-		
+
 		$temp1 = 0;
 		if (isset($pref['del_unv']) && $pref['del_unv'] && intval($pref['user_reg_veri']) != 2)
 		{
@@ -1120,11 +1120,7 @@ class e_user_provider
 		else
 		{
 			$this->_config = array(
-				"callback" => e107::getUrl()->create(
-					'system/xup/login',
-					array('provider' => $provider),
-					array('full' => true, 'encode' => false)
-				),
+				"callback" => $this->generateCallbackUrl($provider),
 				"providers" => $this->social_login_config_manager->getValidConfiguredProviderConfigs(),
 				"debug_mode" => 'error',
 				"debug_file" => e_LOG . "hybridAuth.log"
@@ -1132,8 +1128,19 @@ class e_user_provider
 
 		}
 
-		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
+		$this->respawnHybridauth();
 		$this->setProvider($provider);
+
+		$providerId = $this->getProvider();
+		if ($providerId && $this->hybridauth->isConnectedWith($providerId))
+		{
+			$this->adapter = $this->hybridauth->getAdapter($providerId);
+		}
+	}
+
+	private function respawnHybridauth()
+	{
+		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
 	}
 
 	public function setProvider($provider)
@@ -1147,10 +1154,11 @@ class e_user_provider
 	}
 
 
-	public function setBackUrl($url)
+	public function setBackUrl($url, $action)
 	{
 		# system/xup/login by default
-		$this->_config['callback'] = $url;
+		$this->_config['callback'] = $this->generateCallbackUrl($this->getProvider(), $action, $url);
+		$this->respawnHybridauth();
 	}
 
 	public function getProvider()
@@ -1291,6 +1299,8 @@ class e_user_provider
 			//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
 
+		$this->setBackUrl($redirectUrl, "signup");
+
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
 
@@ -1424,7 +1434,7 @@ class e_user_provider
 
 			if ($redirectUrl)
 			{
-				e107::getRedirect()->redirect($redirectUrl);
+				$this->redirectAndForwardMessages($redirectUrl);
 			}
 
 			return true;
@@ -1441,7 +1451,7 @@ class e_user_provider
 
 		if (!e107::getPref('social_login_active', false))
 		{
-			throw new Exception("Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception("Login failed! This feature is disabled.", 100); // TODO lan
 		}
 
 		if (!$this->getProvider())
@@ -1471,37 +1481,23 @@ class e_user_provider
 			return true;
 		}
 
+		$this->setBackUrl($redirectUrl, "login");
+
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
 
 
 		if ($redirectUrl)
 		{
-			e107::getRedirect()->redirect($redirectUrl);
+			$this->redirectAndForwardMessages($redirectUrl);
 		}
 
 		return $check;
 	}
 
-
-	public function init()
-	{
-		if (!e107::getPref('social_login_active', false))
-		{
-			return;
-		}
-		$this->adapter = null;
-		$providerId = $this->_provider;
-		if ($providerId && $this->hybridauth->isConnectedWith($providerId))
-		{
-			$this->adapter = $this->hybridauth->getAdapter($providerId);
-		}
-	}
-
 	public function logout()
 	{
 		if (
-			!e107::getPref('social_login_active', false) ||
 			!$this->adapter ||
 			!$this->hybridauth->isConnectedWith($this->getProvider())
 		) return true;
@@ -1517,6 +1513,36 @@ class e_user_provider
 		return true;
 	}
 
+	/**
+	 * @param $provider
+	 * @param string $xupAction
+	 * @param string $backUrl
+	 * @return string
+	 */
+	private function generateCallbackUrl($provider, $xupAction = "login", $backUrl = null)
+	{
+		return e107::getUrl()->create(
+			"system/xup/$xupAction",
+			array(
+				'provider' => $provider,
+				'back' => $backUrl,
+				),
+			array('full' => true, 'encode' => false)
+		);
+	}
+
+	/**
+	 * @param $redirectUrl
+	 */
+	private function redirectAndForwardMessages($redirectUrl)
+	{
+		$messages = e107::getMessage()->getAll('default', true, false);
+		foreach ($messages as $type => $message_stack)
+		{
+			e107::getMessage()->addSessionStack($message_stack, 'default', $type);
+		}
+		e107::getRedirect()->redirect($redirectUrl);
+	}
 }
 
 
@@ -1532,7 +1558,7 @@ class e_userperms
 	protected $language_perms = array();
 
 	protected $main_perms = array();
-	
+
 	protected $full_perms = array();
 
 	protected $permSectionDiz = array(
@@ -1541,8 +1567,8 @@ class e_userperms
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
 	 );
-	 
-	
+
+
 
 
 	function __construct()
@@ -1551,32 +1577,32 @@ class e_userperms
 		$this->core_perms = array(
 
 		// In the same order as admin navigation! Plus same labels.
-		
+
 		// Settings
 		"C"	=> array(ADLAN_74,E_16_CACHE, E_32_CACHE),		    // Clear the system cache
 		"F"	=> array(ADLAN_58,E_16_EMOTE, E_32_EMOTE),	        // Emoticons
 		"G"	=> array(ADLAN_60,E_16_FRONT, E_32_FRONT),		    // Front-Page Configuration
 		"L"	=> array(ADLAN_132,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
 		"T"	=> array(ADLAN_66,E_16_META, E_32_META),			// Meta tags
-		
+
 		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
 		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks 
+		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
 		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
-				
-		// Users 
+
+		// Users
 		"3"	=> array(ADLAN_8,E_16_ADMIN, E_32_ADMIN),			// Modify Admin perms
 		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
 		"U0" => array(ADLAN_34,E_16_USER, E_32_USER), 		    // moderate users/bans but not userclasses or extended fields,
 		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
 		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
 		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
-		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
-		
-		
-		// Content 			
-		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES 
+		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout
+
+
+		// Content
+		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
 		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
 
 		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
@@ -1590,39 +1616,39 @@ class e_userperms
 		"N"	=> array(ADLAN_0." (".LAN_SUBMITTED.")",E_16_NEWS, E_32_NEWS),			// Moderate submitted news
 		"V"	=> array(ADLAN_31,E_16_UPLOADS, E_32_UPLOADS),							// Configure public file uploads
 		"M"	=> array(ADLAN_28,E_16_WELCOME, E_32_WELCOME),							// Welcome Messages
-				
-		// Tools 
+
+		// Tools
 		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
 		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
 		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
 		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
 		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
-		
+
 		// Manage
 		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
-		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files - 
-		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas. 
+		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files -
+		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas.
 		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_UPLOAD."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Upload/Add/Import)
 		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
 
 		"TMP"=> array(ADLAN_140." (".LAN_PREFS.")",E_16_THEMEMANAGER, E_32_THEMEMANAGER),
-		
+
 		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
-		
-		
+
+
 		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
-		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)	
+		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)
 		// "K"=>
-		
+
 		// "P" 				// Reserved for Plugins
-		
+
 		//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
-		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)	
-		
-	
-		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category. 
+		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)
+
+
+		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category.
 		);
-	
+
 
 	//	$sql = e107::getDb('sql2');
 	//	$tp = e107::getParser();
@@ -1735,7 +1761,7 @@ class e_userperms
 	function checkb($arg, $perms, $info='')
 	{
 		$frm = e107::getForm();
-	
+
 		if(is_array($info))
 		{
 			$label		= $info[0];
@@ -1764,11 +1790,11 @@ class e_userperms
 	{
 		$tmp = explode(".",$perms);
 		$tmp = array_filter($tmp);
-		
+
 		$permdiz = $this->getPermList();
 
 		$ptext = array();
-		
+
 		foreach($tmp as $p)
 		{
 			// if(trim($p) == ""){ continue; }
@@ -1830,16 +1856,16 @@ class e_userperms
 						<tbody>
 							<tr>
 								<td class='control'>
-								
+
 
 		";
 	*/
-	
+
 	$text = "<form method='post' action='".e_SELF."' id='myform'>
 				<fieldset id='core-administrator-edit'>
 					<legend class='e-hideme'>".ADMSLAN_52."</legend>";
 
-	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area. 
+	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area.
 	$text .= '
 		 <ul class="nav nav-tabs">
 		    <li class="active"><a href="#tab1" data-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
@@ -1874,17 +1900,17 @@ class e_userperms
 		      </div>
 			</div>
 			
-		  </div>';	
+		  </div>';
 
 
 	//	$text .= $this->renderPermTable('grouped',$a_perms);
-		
-		
 
-		$text .= $this->renderCheckAllButtons(); 
-		
+
+
+		$text .= $this->renderCheckAllButtons();
+
 	//	$text .= "</td></tr></tbody></table>";
-					
+
 					$text .= "
 					".$this->renderSubmitButtons()."
 					<input type='hidden' name='ad_name' value='{$ad_name}' />
@@ -1908,7 +1934,7 @@ class e_userperms
 			</div>
 		";
 	}
-	
+
 	function renderSubmitButtons()
 	{
 		$frm = e107::getForm();
@@ -1919,7 +1945,7 @@ class e_userperms
 			</div>
 		";
 	}
-	
+
 	function renderPermTable($type,$a_perms='')
 	{
 
@@ -1957,7 +1983,7 @@ class e_userperms
 		}
 
 		$groupedList = $this->getPermList($type);
-			
+
 		if($type != 'grouped')
 		{
 			$text = "\t\t<table class='table adminform'>
@@ -1974,11 +2000,11 @@ class e_userperms
 				$text .= $this->checkb($key, $a_perms, $diz);
 			}
 			$text .= "</tbody>
-			</table>";	
-			
+			</table>";
+
 			return $text;
 		}
-		
+
 		$text = "";
 		foreach($groupedList as $section=>$list)
 		{
@@ -1997,10 +2023,10 @@ class e_userperms
 			$text .= "</tbody>
 			</table>";
 		}
-		
-		return $text;	
+
+		return $text;
 	}
-	
+
 	/**
 	 * Update user (admin) permissions.
 	 * NOTE: exit if $uid is not an integer or is 0.
@@ -2044,7 +2070,7 @@ class e_userperms
 				$perm .= $value.".";
 			}
 	 	}
-		
+
 		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
 		if(!$sysuser->isAdmin())
 		{
@@ -2053,7 +2079,7 @@ class e_userperms
 			$lan = e107::getParser()->lanVars( USRLAN_164, $vars);
 			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
 		}
-		
+
 		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('[x]', '[y]'),array($modID, $a_name),ADMSLAN_72).$perm;
 		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');

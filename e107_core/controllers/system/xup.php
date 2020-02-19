@@ -35,7 +35,7 @@ class core_system_xup_controller extends eController
 	public function init()
 	{
 		//$back = 'system/xup/test';
-		$this->backUrl = vartrue($_GET['back']) ? base64_decode($_GET['back']) : true;	
+		$this->backUrl = isset($_GET['back']) ? $_GET['back'] : null;
 	}
 	
 	public function actionSignup()
@@ -99,7 +99,7 @@ class core_system_xup_controller extends eController
 			return; 	
 		}
 		
-		if(isset($_GET['lgt']))
+		if(isset($_GET['logout']))
 		{
 			e107::getUser()->logout();
 		}
@@ -130,9 +130,18 @@ class core_system_xup_controller extends eController
 		{
 			if($var['enabled'] == 1)
 			{
+				$testLoginUrl = e107::getUrl()->create('system/xup/login', [
+					'provider' => $key,
+					'back' => $testUrl,
+				]);
+				$testSignupUrl = e107::getUrl()->create('system/xup/signup', [
+					'provider' => $key,
+					'back' => $testUrl,
+				]);
+
 				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
-				echo '<li><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';
+				echo '<li><a class="btn btn-default btn-secondary" href="'.$testLoginUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
+				echo '<li><a class="btn btn-default btn-secondary" href="'.$testSignupUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';
 			
 				echo "</ul>";
 			}
@@ -140,7 +149,7 @@ class core_system_xup_controller extends eController
 		//	print_a($var);
 		}
 		
-			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?lgt').'">'.LAN_XUP_ERRM_12.'</a>';
+			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?logout=true').'">'.LAN_XUP_ERRM_12.'</a>';
 		
 		/*
 		echo '<h3>Facebook</h3>';
