@@ -13,6 +13,11 @@ require_once(e_HANDLER . "user_handler.php");
 class SocialLoginConfigManager
 {
 	const SOCIAL_LOGIN_PREF = "social_login";
+
+	const SOCIAL_LOGIN_FLAGS = "social_login_active";
+	const ENABLE_BIT_GLOBAL = 0;
+	const ENABLE_BIT_TEST_PAGE = 1;
+
 	/**
 	 * @var e_pref
 	 */
@@ -26,6 +31,31 @@ class SocialLoginConfigManager
 	public function __construct($config)
 	{
 		$this->config = $config;
+	}
+
+	/**
+	 * Check a social login boolean (toggle) setting
+	 * @param int $bit Which setting to check
+	 * @return boolean TRUE if the setting is enabled, FALSE otherwise
+	 */
+	public function isFlagActive($bit = self::ENABLE_BIT_GLOBAL)
+	{
+		return (bool)($this->config->get(self::SOCIAL_LOGIN_FLAGS) & 1 << $bit);
+	}
+
+	/**
+	 * Set a social login boolean (toggle) setting
+	 * @param int $bit Which setting to change
+	 * @param boolean $active TRUE to enable the setting, FALSE to disable the setting
+	 */
+	public function setFlag($bit, $active)
+	{
+		$flags = $this->config->get(self::SOCIAL_LOGIN_FLAGS);
+		if (!is_numeric($flags)) $flags = 0x0;
+
+		$flags = $flags & ~(1 << $bit) | ($active << $bit);
+		$this->config->set(self::SOCIAL_LOGIN_FLAGS, $flags);
+		$this->saveConfig();
 	}
 
 	/**
@@ -60,7 +90,7 @@ class SocialLoginConfigManager
 	 *        $options['keys']['id'] string The OAuth1 client key or OAuth2 client ID
 	 *        $options['keys']['secret'] string The OAuth1 or OAuth2 client secret
 	 *        $options['scope'] string OAuth2 scopes, space-delimited
-	 * @see SocialLoginConfigManager::saveProviderConfig() to commit to database.
+	 * @see SocialLoginConfigManager::saveConfig() to commit to database.
 	 *
 	 */
 	public function setProviderConfig($providerName, $options)
@@ -97,7 +127,7 @@ class SocialLoginConfigManager
 		return count($array);
 	}
 
-	public function saveProviderConfig()
+	public function saveConfig()
 	{
 		$this->config->save(true, false, false);
 	}

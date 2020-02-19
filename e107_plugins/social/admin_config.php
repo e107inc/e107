@@ -114,7 +114,9 @@ class social_ui extends e_admin_ui
 
 		protected $social_external = array();
 
-		public function init()
+	    const TEST_URL = SITEURL."?route=system/xup/test";
+
+	public function init()
 		{
 			$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
 
@@ -126,7 +128,10 @@ class social_ui extends e_admin_ui
 				{
 					$this->social_login_config_manager->setProviderConfig($provider_name, $raw_updated_social_login);
 				}
-				$cfg->setPref('social_login_active', $_POST['social_login_active']);
+				$social_login_flags =
+					!!$_POST['social_login_active'] << SocialLoginConfigManager::ENABLE_BIT_GLOBAL |
+					!!$_POST['social_login_test_page'] << SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE;
+				$cfg->setPref(SocialLoginConfigManager::SOCIAL_LOGIN_FLAGS, $social_login_flags);
 				$cfg->setPref('xurl', $_POST['xurl']);
 				$cfg->save(true, true, true);
 
@@ -195,9 +200,7 @@ class social_ui extends e_admin_ui
 
 		function renderHelp()
 		{
-			$this->testUrl = SITEURL."?route=system/xup/test";
-
-			$notice = "".LAN_SOCIAL_ADMIN_08." <br /><a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
+			$notice = "".LAN_SOCIAL_ADMIN_08." <br /><a href='".self::TEST_URL."' rel='external'>".self::TEST_URL."</a>";
 
 			$callBack = SITEURL."index.php";
 			$notice .= "<br /><br />".LAN_SOCIAL_ADMIN_09."</br ><a href='".$callBack."'>".$callBack."</a>";
@@ -213,6 +216,7 @@ class social_ui extends e_admin_ui
 			$ns = e107::getRender();
 			$frm = e107::getForm();
 			$pref = e107::pref('core');
+			$slcm = $this->social_login_config_manager;
 
 			require_once("social_setup.php");
 			$social_setup = new social_setup();
@@ -228,17 +232,27 @@ class social_ui extends e_admin_ui
 				</colgroup>
 						<tbody>
 					<tr>
-						<td><label for='social-login-active'>".LAN_SOCIAL_ADMIN_02."</label>
+						<td><label for='social-login-active-1'>".LAN_SOCIAL_ADMIN_02."</label>
 						</td>
 						<td>
-							".$frm->radio_switch('social_login_active', $pref['social_login_active'])."
+							".$frm->radio_switch('social_login_active', $slcm->isFlagActive($slcm::ENABLE_BIT_GLOBAL))."
 								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_07." </div>
-
+						</td>
+					</tr>
+					<tr>
+						<td>
+						  <label for='social-login-test-mode-1'>
+						    <a href='".self::TEST_URL."' target='_blank'>".LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE."</a>
+						  </label>
+						</td>
+						<td>
+							".$frm->radio_switch('social_login_test_page', $slcm->isFlagActive($slcm::ENABLE_BIT_TEST_PAGE))."
+								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_TEST_PAGE_INFO." </div>
 						</td>
 					</tr>";
 
-			$supported_providers = $this->social_login_config_manager->getSupportedProviders();
-			$configured_providers = $this->social_login_config_manager->getConfiguredProviders();
+			$supported_providers = $slcm->getSupportedProviders();
+			$configured_providers = $slcm->getConfiguredProviders();
 			$unconfigured_providers = array_diff($supported_providers, $configured_providers);
 			$unsupported_providers = array_diff($configured_providers, $supported_providers);
 			$configured_providers = array_diff($configured_providers, $unsupported_providers);
