@@ -1157,7 +1157,7 @@ class e_user_provider
 	public function setBackUrl($url, $action)
 	{
 		# system/xup/login by default
-		$this->_config['callback'] = $this->generateCallbackUrl($this->getProvider(), $action, $url);
+		$this->_config['callback'] = $this->generateCallbackUrl($action, $url);
 		$this->respawnHybridauth();
 	}
 
@@ -1519,12 +1519,12 @@ class e_user_provider
 	 * @param string $backUrl
 	 * @return string
 	 */
-	private function generateCallbackUrl($provider, $xupAction = "login", $backUrl = null)
+	public function generateCallbackUrl($xupAction = "login", $backUrl = null)
 	{
 		return e107::getUrl()->create(
 			"system/xup/$xupAction",
 			array(
-				'provider' => $provider,
+				'provider' => $this->getProvider(),
 				'back' => $backUrl,
 				),
 			array('full' => true, 'encode' => false)
