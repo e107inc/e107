@@ -29,7 +29,7 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 		include_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
 
 		$this->pref = $this->make('e_pref');
-		$this->pref->set('social_login', [
+		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, [
 			'Twitter-OAuth1' => [
 				'enabled' => true,
 				'keys' => [
@@ -118,6 +118,18 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 		]);
 		$result = $this->manager->getProviderConfig('MiscProvider');
 		$this->assertEquals(['enabled' => true], $result);
+	}
+
+	public function testSetProviderConfigOverwritesNonArray()
+	{
+		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, 'bad string!');
+		$manager = new SocialLoginConfigManager($this->pref);
+		$expected = ['enabled' => true];
+
+		$manager->setProviderConfig('FirstProvider', $expected);
+		$result = $manager->getProviderConfig('FirstProvider');
+
+		$this->assertEquals($expected, $result);
 	}
 
 	public function testGetProviderConfig()

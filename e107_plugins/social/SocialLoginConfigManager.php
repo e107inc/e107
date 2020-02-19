@@ -65,7 +65,7 @@ class SocialLoginConfigManager
 	 */
 	public function setProviderConfig($providerName, $options)
 	{
-		$config = $this->getSocialLoginConfig();
+		$config = $this->config->get(self::SOCIAL_LOGIN_PREF);
 		if (!is_array($config)) $this->config->set(self::SOCIAL_LOGIN_PREF, []);
 
 		self::array_unset_empty_recursive($options);
@@ -182,7 +182,10 @@ class SocialLoginConfigManager
 
 	protected function getSocialLoginConfig()
 	{
-		return $this->config->get(self::SOCIAL_LOGIN_PREF);
+		$config = $this->config->get(self::SOCIAL_LOGIN_PREF);
+		if (!is_array($config)) $config = [];
+
+		return $config;
 	}
 
 	/**
