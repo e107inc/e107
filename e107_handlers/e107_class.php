@@ -1707,7 +1707,8 @@ class e107
 	 * Create a new Hybridauth object based on the provided configuration
 	 *
 	 * @return Hybridauth\Hybridauth
-	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 * @throws \Hybridauth\Exception\InvalidArgumentException if Hybridauth rejects the provided config
+	 * @throws ReflectionException if this method is unintentionally broken
 	 * @deprecated v2.3.0 Use the e_user_provider interfaces instead (e107::getUser()->getProvider()).
 	 *                    Hybridauth features are only available if the user is associated with a social login.
 	 * @see e107::getUser() for getting a user object that may or may not have a social login.
@@ -1715,19 +1716,12 @@ class e107
 	 */
 	public static function getHybridAuth($config = null)
 	{
-		if(null === $config)
-		{
-			require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
-			$manager = new SocialLoginConfigManager(e107::getConfig());
-
-			$config = array(
-				'callback' => self::getUrl()->create('system/xup/login', array(), array('full' => true)),
-				'providers' => $manager->getValidConfiguredProviderConfigs(),
-				'debug_mode' => false,
-				'debug_file' => ''
-			);
-		}
-		return new Hybridauth\Hybridauth($config);
+		include_once("user_handler.php");
+		$e_user_provider = new e_user_provider(null, $config);
+		$reflection = new ReflectionClass('e_user_provider');
+		$reflection_property = $reflection->getProperty('hybridauth');
+		$reflection_property->setAccessible(true);
+		return $reflection_property->getValue($e_user_provider);
 	}
 
 	/**
