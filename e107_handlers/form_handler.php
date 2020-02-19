@@ -594,7 +594,7 @@ class e_form
 	 * Render Bootstrap Carousel
 	 * @param string $name : A unique name
 	 * @param array $array
-	 * @param array $options : default, interval, pause, wrap
+	 * @param array $options : default, interval, pause, wrap, navigation, indicators
 	 * @return string|array
 	 * @example
 	 * $array = array(
@@ -603,7 +603,7 @@ class e_form
 	 *        'slide3' => array('caption' => 'Slide 3', 'text' => 'third slide content' )
 	 *    );
 	 */
-	function carousel($name="e-carousel", $array, $options = null)
+	function carousel($name="e-carousel", $array=array(), $options = null)
 	{
 		$interval   = null;
 		$wrap       = null;
@@ -628,13 +628,16 @@ class e_form
 			$pause = 'data-pause="'.$options['pause'].'"';
 		}
 
+		$navigation = isset($options['navigation']) ? $options['navigation'] : true;
+		$indicate = isset($options['indicators']) ? $options['indicators'] : true;
+
 
 		$start  ='
 		<!-- Carousel -->
 		
 		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
 
-		if(count($array) > 1)
+		if($indicate && (count($array) > 1))
 		{
 			$indicators = '
 	        <!-- Indicators -->
@@ -663,7 +666,8 @@ class e_form
 		foreach($array as $key=>$tab)
 		{
 			$active = ($c == $act) ? ' active' : '';
-			$inner .= '<div class="carousel-item item'.$active.'" id="'.$key.'">';
+			$label = !empty($tab['label']) ? ' data-label="'.$tab['label'].'"' : '';
+			$inner .= '<div class="carousel-item item'.$active.'" id="'.$key.'"'.$label.'>';
 			$inner .= $tab['text'];
 			
 			if(!empty($tab['caption']))
@@ -678,7 +682,7 @@ class e_form
 		$inner .= '
 		</div>';
 
-		if(count($array) > 1)
+		if($navigation && (count($array) > 1))
 		{
 			$controls = '
 			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev">
