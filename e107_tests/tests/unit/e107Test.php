@@ -439,13 +439,15 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this->assertTrue($res);
 			}
+			*/
 
 			public function testGetHybridAuth()
 			{
-				$res = null;
-				$this->assertTrue($res);
+				$object = e107::getHybridAuth();
+				$this->assertInstanceOf(Hybridauth\Hybridauth::class, $object);
 			}
 
+			/*
 			public function testGetUserClass()
 			{
 				$res = null;
