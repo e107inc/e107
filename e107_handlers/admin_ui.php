@@ -6492,7 +6492,7 @@ class e_admin_form_ui extends e_form
 
 	/**
 	 * Constructor
-	 * @param e_admin_ui $controller
+	 * @param e_admin_controller_ui $controller
 	 * @param boolean $tabindex [optional] enable form element auto tab-indexing
 	 */
 	function __construct($controller, $tabindex = false)
@@ -7423,15 +7423,44 @@ class e_admin_form_ui extends e_form
 
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
-						if(vartrue($parms['reverse'])) // reverse true/false values; 
+
+						// defaults
+						$LAN_TRUE = LAN_ON;
+						$LAN_FALSE = LAN_OFF;
+
+						if(varset($parms['label']) === 'yesno')
 						{
-							$option['bool__'.$key.'__0'] = LAN_YES;	// see newspost.php : news_allow_comments for an example. 
-							$option['bool__'.$key.'__1'] = LAN_NO;							
+							$LAN_TRUE = LAN_YES;
+							$LAN_FALSE = LAN_NO;
+						}
+						
+						if(!empty($parms['enabled']))
+						{
+							$LAN_TRUE = $parms['enabled'];
+						}
+						elseif(!empty($parms['true']))
+						{
+							$LAN_TRUE = $parms['true'];
+						}
+
+						if(!empty($parms['disabled']))
+						{
+							$LAN_FALSE = $parms['disabled'];
+						}
+						elseif(!empty($parms['false']))
+						{
+							$LAN_FALSE = $parms['false'];
+						}
+
+						if(!empty($parms['reverse'])) // reverse true/false values;
+						{
+							$option['bool__'.$key.'__0'] = $LAN_TRUE;	// see newspost.php : news_allow_comments for an example.
+							$option['bool__'.$key.'__1'] = $LAN_FALSE;
 						}
 						else 
 						{
-							$option['bool__'.$key.'__1'] = LAN_YES;
-							$option['bool__'.$key.'__0'] = LAN_NO;	
+							$option['bool__'.$key.'__1'] = $LAN_TRUE;
+							$option['bool__'.$key.'__0'] = $LAN_FALSE;
 						}
 							
 						if($type === 'batch')
