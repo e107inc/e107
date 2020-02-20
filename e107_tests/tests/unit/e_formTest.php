@@ -32,7 +32,7 @@ class e_formTest extends \Codeception\Test\Unit
 		//	'number_002'    => array('title'=> "Number 002",	'type' => 'number', 'inline'=>true, 'writeParms'=>array('min'=>0)),
 
 		'bool_001'      => array('title'=> "Bool 001",	'type' => 'bool', 'writeParms'=>array('size'=>'xlarge')),
-		//	'bool_002'      => array('title'=> "Bool 002",	'type' => 'bool', 'inline'=>true, 'writeParms'=>array('size'=>'xlarge')),
+	//	'bool_002'      => array('title'=> "Bool 002",	'type' => 'bool', 'inline'=>true, 'readParms' => array ('enabled'=>'TÉMA', 'disabled'=>'ČLÁNOK'), 'writeParms' => array ('enabled'=>'TÉMA', 'disabled'=>'ČLÁNOK'), ),
 
 		'dropdown_001'  => array('title'=>'Dropdown 001', 'type'=>'dropdown', 'tab'=>1, 'writeParms' => array('optArray'=>array('opt_value_1'=>'Label 1', 'opt_value_2'=>'Label 2')) ),
 		'dropdown_002' => array(
