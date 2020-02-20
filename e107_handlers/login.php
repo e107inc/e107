@@ -476,7 +476,7 @@ class userlogin
 			  	$auditLog = array(
 					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
 					'login_name'        => $login_name,
-					'userpass'          => $userpass,
+				//	'userpass'          => $userpass,
 					'pwdHash'           => $this->userData['user_password']
 				);
 
