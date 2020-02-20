@@ -5488,9 +5488,26 @@ var_dump($select_options);*/
 				
 			break;
 
+			/**
+			 * $parms['true']  - label to use for true
+			 * $parms['false'] - label to use for false
+			 * $parms['enabled'] - alias of $parms['true']
+			 * $parms['disabled'] - alias of $parms['false']
+			 * $parms['reverse'] - use 0 for true and 1 for false.
+			 */
 			case 'bool':
 			case 'boolean':
 				$false = vartrue($parms['trueonly']) ? "" : ADMIN_FALSE_ICON;
+
+				if(!empty($parms['enabled']))
+				{
+					$parms['true'] = $parms['enabled'];
+				}
+
+				if(!empty($parms['disabled']))
+				{
+					$parms['false'] = $parms['disabled'];
+				}
 
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
@@ -6258,8 +6275,13 @@ var_dump($select_options);*/
 			break;
 
 
-
-
+			/**
+			 * $parms['true']  - label to use for true
+			 * $parms['false'] - label to use for false
+			 * $parms['enabled'] - alias of $parms['true']
+			 * $parms['disabled'] - alias of $parms['false']
+			 * $parms['label'] - when set to 'yesno' uses yes/no instead of enabled/disabled
+			 */
 			case 'bool':
 			case 'boolean':
 
@@ -6273,6 +6295,17 @@ var_dump($select_options);*/
 					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
 					$ldisabled = (!empty($parms['disabled']) && is_string($parms['disabled'])) ?  $parms['disabled'] : 'LAN_OFF';
 				}
+
+				if(!empty($parms['true']))
+				{
+					$lenabled = $parms['true'];
+				}
+
+				if(!empty($parms['false']))
+				{
+					$ldisabled = $parms['false'];
+				}
+
 
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
