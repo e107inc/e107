@@ -2047,14 +2047,14 @@ class e_media
 		$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 		$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 		$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-
-		// Clean the fileName for security reasons
-		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
-
+		
 		if(!empty($_FILES['file']['name']) && $_FILES['file']['name'] !== 'blob' ) // dropzone support v2.1.9
 		{
 			$fileName = $_FILES['file']['name'];
 		}
+
+		// Clean the fileName for security reasons
+		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
 
 		//	$array = array("jsonrpc" => "2.0", "error" => array('code'=>$_FILES['file']['error'], 'message'=>'Failed to move file'), "id" => "id",  'data'=>$_FILES );
 
