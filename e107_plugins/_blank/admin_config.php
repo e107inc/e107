@@ -91,7 +91,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		 * Example: 'r.blank'
 		 * @var string
 		 */
-		protected $table = "_blank";
+		protected $table = "blank";
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
@@ -253,9 +253,11 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
-			'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
-			'blank_url' 				=> array('title'=> LAN_URL,		'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),
+            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => array('type' => 'datetime')),
+			'blank_compatibility' 		=> array('title'=> 'Compatible',		'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
+			'blank_url' 				=> array('title'=> LAN_URL,		        'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, enter valid URL'),
+			'blank_media' 				=> array('title'=> "Media",		        'type' => 'media', 		'data' => 'json',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'writeParms'=>array(/*'w'=>200, 'h'=>150,*/ 'image'=>1, 'video'=>1, 'youtube'=>1, 'audio'=>1, 'glyph'=>1),  'validate' => false),
+
 			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => false,		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'blank_class'               => array('title'=> LAN_VISIBILITY,      'type' => 'userclass',  'data'=>'int', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'width'=>'auto'),
 

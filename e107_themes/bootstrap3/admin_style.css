@@ -560,6 +560,7 @@ img.S32:hover 				{}
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 table.adminlist								{ margin-bottom: 0 }
+table.adminlist td .video-responsive        { height: auto; padding:0 }
 
 span.e-search input[type='text']				{ padding-left:15px; font-style: italic }
 
