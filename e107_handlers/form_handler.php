@@ -5316,6 +5316,13 @@ var_dump($select_options);*/
 
 
 			case 'media':
+
+				if(!empty($value) && $attributes['data'] === 'json')
+				{
+					$tmp = e107::unserialize($value);
+					$value = !empty($tmp[0]['path']) ? $tmp[0]['path'] : null; // display first item.
+				}
+
 				return e107::getMedia()->previewTag($value, $parms);
 			break;
 			
@@ -6005,6 +6012,11 @@ var_dump($select_options);*/
 			case 'media':
 
 				$max = varset($parms['max'],1);
+
+				if(!empty($value) && $attributes['data'] === 'json')
+				{
+					$value = e107::unserialize($value);
+				}
 
 				$ret = "<div class='mediaselector-multi field-element-media'>";
 				for ($i=0; $i < $max; $i++)

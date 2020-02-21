@@ -1168,6 +1168,11 @@ class e_media
 	{
 		$type = pathinfo($mediaURL,PATHINFO_EXTENSION);
 
+		if($type == 'glyph')
+		{
+			return 'glyph';
+		}
+
 		foreach($this->mimeExtensions as $key=>$exts)
 		{
 			if(!in_array($type, $exts))
@@ -1195,6 +1200,7 @@ class e_media
 
 		$width = vartrue($options['w'], 220);
 		$height = vartrue($options['h'], 190);
+		$crop = vartrue($options['crop'], 0);
 		$preview = '';
 
 		switch($type)
@@ -1211,7 +1217,7 @@ class e_media
 				break;
 
 			case "image":
-				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'crop'=>$crop, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
 			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
 				break;
 
@@ -2047,7 +2053,7 @@ class e_media
 		$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 		$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 		$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-		
+
 		if(!empty($_FILES['file']['name']) && $_FILES['file']['name'] !== 'blob' ) // dropzone support v2.1.9
 		{
 			$fileName = $_FILES['file']['name'];
