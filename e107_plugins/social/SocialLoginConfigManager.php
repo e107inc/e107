@@ -35,16 +35,24 @@ class SocialLoginConfigManager
 
 	/**
 	 * Check a social login boolean (toggle) setting
+	 *
+	 * For backwards compatibility, if the global bit (0) is off, no other bits can be on.
+	 *
 	 * @param int $bit Which setting to check
 	 * @return boolean TRUE if the setting is enabled, FALSE otherwise
 	 */
 	public function isFlagActive($bit = self::ENABLE_BIT_GLOBAL)
 	{
-		return (bool)($this->config->get(self::SOCIAL_LOGIN_FLAGS) & 1 << $bit);
+		$flags = $this->config->get(self::SOCIAL_LOGIN_FLAGS);
+		if (!($flags & 1 << self::ENABLE_BIT_GLOBAL)) return false;
+		return (bool)($flags & 1 << $bit);
 	}
 
 	/**
 	 * Set a social login boolean (toggle) setting
+	 *
+	 * For backwards compatibility, if the global bit (0) is off, no other bits can be on.
+	 *
 	 * @param int $bit Which setting to change
 	 * @param boolean $active TRUE to enable the setting, FALSE to disable the setting
 	 */
@@ -54,7 +62,9 @@ class SocialLoginConfigManager
 		if (!is_numeric($flags)) $flags = 0x0;
 
 		$flags = $flags & ~(1 << $bit) | ($active << $bit);
-		$this->config->set(self::SOCIAL_LOGIN_FLAGS, $flags);
+
+		if (!($flags & 1 << self::ENABLE_BIT_GLOBAL)) $this->config->set(self::SOCIAL_LOGIN_FLAGS, 0x0);
+		else $this->config->set(self::SOCIAL_LOGIN_FLAGS, $flags);
 		$this->saveConfig();
 	}
 

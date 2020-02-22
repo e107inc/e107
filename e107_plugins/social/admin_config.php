@@ -225,7 +225,9 @@ class social_ui extends e_admin_ui
 				return "<p>" . LAN_SOCIAL_UPDATE_REQUIRED . "</p>";
 			}
 
-			$text = "<table class='table adminform'>
+			$text = $this->generateAdminFormJs();
+
+			$text .= "<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
@@ -465,6 +467,53 @@ class social_ui extends e_admin_ui
 					";
 
 		return $text;
+	}
+
+	private function generateAdminFormJs()
+	{
+		return <<<EOD
+<script type='text/javascript'>
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
+let socialLoginSwitches = {
+    'social-login-test-page__switch': null,
+};
+
+function socialLoginSwitchesHighstate(element) {
+    if (element === undefined) return;
+    
+	let isActive = element.checked;
+	
+	if (isActive) {
+	    for (let key in socialLoginSwitches) {
+	        let toggle = $('[name='+key+']');
+	        toggle.bootstrapSwitch('disabled', false);
+	        if (socialLoginSwitches[key] !== null) toggle.bootstrapSwitch('state', socialLoginSwitches[key]);
+	    }
+	} else {
+	    for (let key in socialLoginSwitches) {
+	    	let toggle = $('[name='+key+']');
+	        socialLoginSwitches[key] = toggle.bootstrapSwitch('state');
+	        toggle.bootstrapSwitch('state', false);
+	        toggle.bootstrapSwitch('disabled', true);
+	    }
+	}   
+}
+
+(function ($)
+{
+    e107.behaviors.manageSocialLoginSwitches = {
+    	attach: function (context, settings) {
+    	    let globalSwitch = $('[name=social-login-active__switch]');
+    	    socialLoginSwitchesHighstate(globalSwitch.get(0));
+			globalSwitch.on('switchChange.bootstrapSwitch', function(event) {
+			    socialLoginSwitchesHighstate(event.target);
+			});
+		},
+	};
+})(jQuery);
+</script>
+EOD;
 	}
 }
 

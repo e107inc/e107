@@ -120,7 +120,7 @@
 
 	// unset($_SESSION['E:SOCIAL']);
 
-	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getPref('social_login_active', false) && (e_ADMIN_AREA !== true))
+	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getUserProvider()->isSocialLoginEnabled() && (e_ADMIN_AREA !== true))
 	{
 		$hybridauth = e107::getHybridAuth();
 

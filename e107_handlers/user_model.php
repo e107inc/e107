@@ -1609,7 +1609,7 @@ class e_user extends e_user_model
 	 */
 	final public function loginProvider($xup)
 	{
-		if(!e107::getPref('social_login_active', false))  return false;
+		if(!e107::getUserProvider()->isSocialLoginEnabled())  return false;
 		
 		if($this->isUser()) return true;
 		
@@ -1724,7 +1724,7 @@ class e_user extends e_user_model
 	public function tryProviderSession($deniedAs)
 	{
 		// don't allow if main admin browse front-end or there is already user session
-		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
+		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getUserProvider()->isSocialLoginEnabled()) return $this;
 
 		$hybrid = e107::getHybridAuth(); // init the auth class
 
@@ -1883,7 +1883,7 @@ class e_user extends e_user_model
 				$this->_initConstants();
 				
 				// init any available external user provider
-				if(e107::getPref('social_login_active', false)) $this->initProvider();
+				if(e107::getUserProvider()->isSocialLoginEnabled()) $this->initProvider();
 				
 				return $this;
 			}
