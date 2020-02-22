@@ -2445,6 +2445,12 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $fieldpref = array();
 
 	/**
+	 * Custom Field (User) Preferences Name. (for viewable columns)
+	 * @var string
+	 */
+	protected $fieldPrefName = '';
+
+	/**
 	 * @var array Plugin Preference description array
 	 */
 	protected $prefs = array();
@@ -2932,14 +2938,18 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		//global $user_pref;
 		// return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
-		return e107::getUser()->getPref('admin_cols_'.$this->getTableName(), array());
+
+		$name = (!empty($this->fieldPrefName)) ? strtolower($this->fieldPrefName) : $this->getTableName();
+
+		e107::getMessage()->addDebug("Loading Field Preferences using name: ".$name);
+		return e107::getUser()->getPref('admin_cols_'.$name, array());
 	}
 
 	/**
 	 * Set column preference array
 	 * @return boolean success
 	 */
-	public function setUserPref($new)
+	public function setUserPref($new, $name='')
 	{
 		//global $user_pref;
 		//e107::getUser()->getConfig()->setData($new);
@@ -2947,8 +2957,16 @@ class e_admin_controller_ui extends e_admin_controller
 		//$this->fieldpref = $new;
 		//return save_prefs('user');
 		$this->fieldpref = $new;
+
+		if(empty($name))
+		{
+			$name = $this->getTableName();
+		}
+
+		e107::getMessage()->addDebug("Saving User Field preferences using name: ".$name);
+
 		return e107::getUser()->getConfig()
-			->set('admin_cols_'.$this->getTableName(), $new)
+			->set('admin_cols_'.$name, $new)
 			->save();
 	}
 
@@ -3322,7 +3340,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($cols)
 		{
-			$this->setUserPref($cols);
+			$this->setUserPref($cols, $this->fieldPrefName);
 		}
 	}
 
@@ -4775,6 +4793,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public $deleteConfirmMessage = null;
 
+
+
 	/**
 	 * Constructor
 	 * @param e_admin_request $request
@@ -4793,11 +4813,11 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->pluginName = 'core';
 		}
 
-		$ufieldpref = $this->getUserPref();
+	/*	$ufieldpref = $this->getUserPref();
 		if($ufieldpref)
 		{
 			$this->fieldpref = $ufieldpref;
-		}
+		}*/
 
 		$this->addTitle($this->pluginTitle, true)->parseAliases();
 
@@ -5660,11 +5680,17 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListObserver()
 	{
+		if($ufieldpref = $this->getUserPref())
+		{
+			$this->fieldpref = $ufieldpref;
+		}
+
 		$table = $this->getTableName();
 		if(empty($table))
 		{
 			return;
 		}
+
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 
 		$this->addTitle();
