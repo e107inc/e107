@@ -164,7 +164,7 @@ class social_shortcodes extends e_shortcode
 
 	function sc_social_login($parm=null)
 	{
-		$pref = e107::pref('core', 'social_login_active');
+		$pref = e107::getUserProvider()->isSocialLoginEnabled();
 
 
 

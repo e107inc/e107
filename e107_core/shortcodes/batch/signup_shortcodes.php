@@ -65,8 +65,7 @@ class signup_shortcodes extends e_shortcode
 	// TODO - template
 	function sc_signup_xup_login($parm)
 	{
-		$pref = e107::getPref('social_login_active');
-		if (empty($pref)) return '';
+		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
 
 		$size = empty($parm['size']) ? '3x' : $parm['size'];
 		$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ;
@@ -77,8 +76,7 @@ class signup_shortcodes extends e_shortcode
 	// TODO - template
 	function sc_signup_xup_signup($parm)
 	{
-		$pref = e107::getPref('social_login_active');
-		if (empty($pref)) return '';
+		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
 
 		$size = empty($parm['size']) ? '2x' : $parm['size'];
 		$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ;

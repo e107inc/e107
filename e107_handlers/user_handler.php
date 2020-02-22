@@ -1261,12 +1261,21 @@ class e_user_provider
 	}
 
 	/**
+	 * Check if social logins are enabled site-wide
+	 * @return bool TRUE if the site has social logins enabled; FALSE otherwise
+	 */
+	public function isSocialLoginEnabled()
+	{
+		return $this->social_login_config_manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL);
+	}
+
+	/**
 	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
 	 * May be used as a simple XUP login link for existing and non-existing users.
 	 */
 	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
 	{
-		if (!e107::getPref('social_login_active', false))
+		if (!$this->isSocialLoginEnabled())
 		{
 			throw new Exception("Signup failed! This feature is disabled.", 100); // TODO lan
 		}
@@ -1449,7 +1458,7 @@ class e_user_provider
 	public function login($redirectUrl = true)
 	{
 
-		if (!e107::getPref('social_login_active', false))
+		if (!$this->isSocialLoginEnabled())
 		{
 			throw new Exception("Login failed! This feature is disabled.", 100); // TODO lan
 		}
