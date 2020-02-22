@@ -143,6 +143,7 @@ else
 		}
 
 	//	require_once (e_HANDLER.'user_handler.php');
+		/** @var array $row */
 		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass'], varset($_POST['hashchallenge'], ''));
 
 		if ($row[0] == "authfail")
@@ -155,6 +156,14 @@ else
 		}
 		else
 		{
+
+			$reHashedPass = e107::getUserSession()->rehashPassword($row,$_POST['authpass']);
+			if($reHashedPass !==false)
+			{
+				e107::getLog()->add('ADMINPW_02', '', E_LOG_INFORMATIVE, '', LOG_TO_ADMIN, $row);
+				$row['user_password'] = $reHashedPass;
+			}
+
 			$cookieval = $row['user_id'].".".md5($row['user_password']);
 
 			//	  $sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
@@ -197,6 +206,9 @@ else
 			// ---
 			
 			e107::getEvent()->trigger("login", $edata_li);
+
+
+
 			e107::getRedirect()->redirect(e_ADMIN_ABS.'admin.php');
 			//echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}
