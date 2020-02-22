@@ -4065,7 +4065,7 @@ var_dump($select_options);*/
 		return $def_options;
 	}
 
-	function columnSelector($columnsArray, $columnsDefault = '', $id = 'column_options')
+	function columnSelector($columnsArray, $columnsDefault = array(), $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
 		
@@ -4083,16 +4083,16 @@ var_dump($select_options);*/
 
 		foreach($columnsArray as $key => $fld)
 		{
+			if(!isset($fld['type']) || $fld['type'] === null) // Fixes #4083
+			{
+				continue;
+			}
+
 			if (empty($fld['forced']) && empty($fld['nolist']) && vartrue($fld['type'])!='hidden' && vartrue($fld['type'])!='upload')
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$ttl = isset($fld['title']) ? defset($fld['title'], $fld['title']) : $key;
-				// $text .= "
-					// <div class='field-spacer'>
-						// ".$this->checkbox_label($ttl, 'e-columns[]', $key, $checked)."
-					// </div>
-				// ";
-// 				
+
 				$text .= "
 					<li role='menuitem'><a href='#'>
 						".$this->checkbox('e-columns[]', $key, $checked,'label='.$ttl)."

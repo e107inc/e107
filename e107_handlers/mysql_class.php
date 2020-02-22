@@ -868,6 +868,16 @@ class e_db_mysql implements e_db
 	}
 
 	/**
+	 * hasLanguage() alias
+	 * @deprecated
+	 */
+	function db_IsLang($table, $multiple=false)
+	{
+		return $this->hasLanguage($table, $multiple);
+	}
+
+
+	/**
 	 * insert() alias
 	 * @deprecated
 	 */
@@ -1467,7 +1477,7 @@ class e_db_mysql implements e_db
 	* @access private
 	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
-	function db_IsLang($table, $multiple=false)
+	function hasLanguage($table, $multiple=false)
 	{
 		//When running a multi-language site with english included. English must be the main site language.
 		// WARNING!!! FALSE is critical important - if missed, expect dead loop (prefs are calling db handler as well when loading)
