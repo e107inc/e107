@@ -213,7 +213,7 @@ define("LAN_AL_WELCOME_05", "");
 // Admin Password
 //---------------
 define("LAN_AL_ADMINPW_01", "Admin password changed");
-
+define("LAN_AL_ADMINPW_02", "Admin password rehashed");
 
 // Banners Admin
 //--------------

@@ -304,7 +304,7 @@ class UserHandler
 	 * If necessary, rehash the user password to the currently set algorythm and updated database. .
 	 * @param array $user - user fields. required: user_id, user_loginname, user_password
 	 * @param string $password - plain text password.
-	 * @return bool|str returns new password hash on success or false.
+	 * @return bool|string returns new password hash on success or false.
 	 */
 	public function rehashPassword($user, $password)
 	{
