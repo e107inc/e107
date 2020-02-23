@@ -57,4 +57,60 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$result = e_user_provider::getTypeOf("WordPress");
 		$this->assertEquals("OAuth2", $result);
 	}
+
+	public function testGetStandardFieldsOf()
+	{
+		$result = e_user_provider::getStandardFieldsOf("Facebook");
+		$this->assertTrue(array_key_exists('id', $result['keys']));
+		$this->assertTrue(array_key_exists('secret', $result['keys']));
+		$this->assertTrue(array_key_exists('scope', $result));
+
+		$result = e_user_provider::getStandardFieldsOf("Steam");
+		$this->assertTrue(array_key_exists('openid_identifier', $result));
+
+		$result = e_user_provider::getStandardFieldsOf("Telegram");
+		$this->assertEmpty($result);
+
+		$result = e_user_provider::getStandardFieldsOf("Twitter");
+		$this->assertTrue(array_key_exists('key', $result['keys']));
+		$this->assertTrue(array_key_exists('secret', $result['keys']));
+	}
+
+	public function testGetSupplementalFieldsOf()
+	{
+		$result = e_user_provider::getSupplementalFieldsOf("Facebook");
+		$this->assertTrue(array_key_exists('photo_size', $result));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Foursquare");
+		$this->assertTrue(array_key_exists('api_version', $result));
+		$this->assertTrue(array_key_exists('photo_size', $result));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Google");
+		$this->assertTrue(array_key_exists('photo_size', $result));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Odnoklassniki");
+		$this->assertTrue(array_key_exists('key', $result['keys']));
+		$this->assertTrue(array_key_exists('secret', $result['keys']));
+		$this->assertIsNotArray($result['keys']['key']);
+		$this->assertIsNotArray($result['keys']['secret']);
+
+		$result = e_user_provider::getSupplementalFieldsOf("StackExchange");
+		$this->assertTrue(array_key_exists('api_key', $result));
+		$this->assertTrue(array_key_exists('site', $result));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Steam");
+		$this->assertFalse(array_key_exists('id', $result['keys']));
+		$this->assertTrue(array_key_exists('secret', $result['keys']));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Telegram");
+		$this->assertTrue(array_key_exists('id', $result['keys']));
+		$this->assertTrue(array_key_exists('secret', $result['keys']));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Twitter");
+		$this->assertTrue(array_key_exists('authorize', $result));
+		$this->assertTrue(array_key_exists('photo_size', $result));
+
+		$result = e_user_provider::getSupplementalFieldsOf("Vkontakte");
+		$this->assertTrue(array_key_exists('photo_size', $result));
+	}
 }
