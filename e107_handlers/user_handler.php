@@ -1483,7 +1483,7 @@ class e_user_provider
 
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
 			$userdata['user_loginname'] = $this->getProvider() . $userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
-			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
+			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email) ?: '';
 			$userdata['user_name'] = $sql->escape($profile->displayName);
 			$userdata['user_login'] = $userdata['user_name'];
 			$userdata['user_customtitle'] = ''; // not used
