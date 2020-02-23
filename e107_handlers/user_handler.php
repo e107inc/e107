@@ -1261,6 +1261,163 @@ class e_user_provider
 	}
 
 	/**
+	 * Get the standard/common/parent fields of the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the standard field names and the values are
+	 *               a description of what each key is for.  Keys can be nested in parent keys.  Parent keys will not
+	 *               have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known standard fields.
+	 */
+	public static function getStandardFieldsOf($providerName)
+	{
+		$providerType = self::getTypeOf($providerName);
+		switch ($providerType)
+		{
+			case 'OAuth2':
+				$fieldPart = [
+					'keys' => [
+						'id' => "Client ID given to you by $providerName",
+						'secret' => "Client secret given to you by $providerName",
+					],
+					'scope' => "Permissions to request from $providerName. See the $providerName OAuth2 documentation for details.",
+				];
+				break;
+			case 'OAuth1':
+				$fieldPart = [
+					'keys' => [
+						'key' => "Consumer key given to you by $providerName",
+						'secret' => "Consumer secret given to you by $providerName",
+					]
+				];
+				break;
+			case 'OpenID':
+				$fieldPart = [
+					'openid_identifier' => "OpenID endpoint URL"
+				];
+				break;
+			default:
+				$fieldPart = [];
+		}
+
+		return $fieldPart;
+	}
+
+	/**
+	 * Get the supplemental fields specific to the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the supplemental field names and the values
+	 *               are a description of what each key is for.  Keys can be nested in parent keys.  Parent keys will
+	 *               not have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known supplemental fields.
+	 */
+	public static function getSupplementalFieldsOf($providerName)
+	{
+		$supplementalFields = [];
+		$className = "Hybridauth\Provider\\${providerName}";
+		try
+		{
+			$reflector = new ReflectionClass($className);
+		}
+		catch (ReflectionException $e)
+		{
+			return $supplementalFields;
+		}
+
+		$adapterPath = $reflector->getFileName();
+		$adapterSourceCode = file_get_contents($adapterPath);
+		$adapterTokens = token_get_all($adapterSourceCode);
+		$rawDocumentation = null;
+		for ($index = 0; isset($adapterTokens[$index]); $index ++)
+		{
+			if (!isset($adapterTokens[$index][1])) continue;
+
+			if (T_DOC_COMMENT === $adapterTokens[$index][0] &&
+				FALSE !== strpos($adapterTokens[$index][1], '$config'))
+			{
+				$rawDocumentation = $adapterTokens[$index][1];
+			}
+
+			if (T_VARIABLE == $adapterTokens[$index][0])
+			{
+				$supplementalFieldPathSplit = self::adapterTokenParseConfig($adapterTokens, $index, null);
+				if (!is_null($supplementalFieldPathSplit))
+				{
+					$value = $rawDocumentation;
+					$level = [];
+					foreach (array_reverse($supplementalFieldPathSplit) as $supplementalFieldPathItem)
+					{
+						$level[$supplementalFieldPathItem] = $value;
+						$value = $level;
+						$level = [];
+					}
+					$supplementalFields = self::array_merge_recursive_distinct($supplementalFields, $value);
+				}
+			}
+		}
+
+		return $supplementalFields;
+	}
+
+	private static function adapterTokenParseConfig($adapterTokens, &$index, $carry)
+	{
+		if (!isset($adapterTokens[$index][1]))
+		{
+			if (in_array($adapterTokens[$index], [';', '.', ','])) return $carry;
+			++$index;
+			return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
+		}
+		$token = $adapterTokens[$index];
+		$tokenType = $token[0];
+		$tokenValue = $token[1];
+
+		switch ($tokenType)
+		{
+			case T_VARIABLE:
+				if ($tokenValue == '$this') break;
+				return $carry;
+			case T_OBJECT_OPERATOR:
+				break;
+			case T_STRING:
+				switch ($tokenValue)
+				{
+					case 'config':
+						$carry = [];
+						break;
+					case 'filter':
+					case 'get':
+						break;
+					default:
+						return $carry;
+				}
+				break;
+			case T_CONSTANT_ENCAPSED_STRING:
+				$carry[] = trim($tokenValue, '\'"');
+				break;
+		}
+		++$index;
+		return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
+	}
+
+	private static function array_merge_recursive_distinct(&$array1, &$array2)
+	{
+		$merged = $array1;
+
+		foreach ($array2 as $key => &$value)
+		{
+			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key]))
+			{
+				$merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
+			}
+			else
+			{
+				$merged[$key] = $value;
+			}
+		}
+
+		return $merged;
+	}
+
+	/**
 	 * Check if social logins are enabled site-wide
 	 * @return bool TRUE if the site has social logins enabled; FALSE otherwise
 	 */
