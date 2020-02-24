@@ -2939,7 +2939,7 @@ class e_admin_controller_ui extends e_admin_controller
 		//global $user_pref;
 		// return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
 
-		$name = (!empty($this->fieldPrefName)) ? strtolower($this->fieldPrefName) : $this->getTableName();
+		$name = (!empty($this->fieldPrefName)) ? strtolower($this->pluginName."_".$this->fieldPrefName) : $this->getTableName();
 
 		e107::getMessage()->addDebug("Loading Field Preferences using name: ".$name);
 		return e107::getUser()->getPref('admin_cols_'.$name, array());
@@ -2961,6 +2961,10 @@ class e_admin_controller_ui extends e_admin_controller
 		if(empty($name))
 		{
 			$name = $this->getTableName();
+		}
+		else
+		{
+			$name = strtolower($this->pluginName."_".$name);
 		}
 
 		e107::getMessage()->addDebug("Saving User Field preferences using name: ".$name);
@@ -3323,7 +3327,7 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Manage column visibility
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function manageColumns()
 	{
