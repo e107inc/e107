@@ -109,6 +109,7 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$result = e_user_provider::getSupplementalFieldsOf("Twitter");
 		$this->assertTrue(array_key_exists('authorize', $result));
 		$this->assertTrue(array_key_exists('photo_size', $result));
+		$this->assertIsNotArray($result['photo_size']);
 
 		$result = e_user_provider::getSupplementalFieldsOf("Vkontakte");
 		$this->assertTrue(array_key_exists('photo_size', $result));

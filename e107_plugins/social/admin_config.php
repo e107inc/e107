@@ -370,17 +370,13 @@ class social_ui extends e_admin_ui
 								<col style='width:10%' />
 								<col style='width:5%' />
 								<col class='col-control' />
-								<col class='col-control' />
-								<col class='col-control' />
 								<col style='width:5%' />
 							</colgroup>
 							<thead>
 								<tr>
 									<th>" . LAN_SOCIAL_ADMIN_04 . "</th>
 									<th>" . LAN_SOCIAL_ADMIN_AUTH_TYPE . "</th>
-									<th>" . LAN_SOCIAL_ADMIN_05 . "</th>
-									<th>" . LAN_SOCIAL_ADMIN_06 . "</th>
-									<th>" . LAN_SOCIAL_ADMIN_38 . "</th>
+									<th>" . LAN_SOCIAL_ADMIN_COLUMN_CONFIGURATION . "</th>
 									<th class='center'>" . LAN_SOCIAL_ADMIN_03 . "</th>
 								</tr>
 							</thead>
@@ -422,41 +418,27 @@ class social_ui extends e_admin_ui
 						<td>$provider_type</td>
 						";
 
-		if ($provider_type == "OpenID")
+		$text .= "<td>";
+		$fieldInfo = self::array_slash($slcm->getFieldsOf($provider_name));
+		foreach ($fieldInfo as $fieldSlash => $description)
 		{
-			$openid_identifier = $slcm->getProviderConfig($provider_name, '/openid_identifier');
-			$frm_options = ['size' => 'block-level'];
-			if (empty($openid_identifier))
-			{
-				try
-				{
-					$class = "\Hybridauth\Provider\\$provider_name";
-					$reflection = new ReflectionClass($class);
-					$properties = $reflection->getDefaultProperties();
-					$frm_options['placeholder'] = $properties['openidIdentifier'];
-				}
-				catch (Exception $e)
-				{
-					$openid_identifier = "";
-				}
-			}
-			$textKeys .= "<td>" .
-				$frm->text("social_login[$provider_name][openid_identifier]", $openid_identifier, 256, $frm_options) .
-			"</td><td></td><td></td>";
+			$field = str_replace("/", "][", $fieldSlash);
+			$frm_options = [
+				'size' => 'block-level',
+				'placeholder' => self::getPlaceholderFor($provider_name, $fieldSlash),
+			];
+
+			$text .= "<div><label>$fieldSlash</label>";
+			$text .= $frm->text(
+				"social_login[$provider_name][$field]",
+				$slcm->getProviderConfig($provider_name, $fieldSlash),
+				256,
+				$frm_options
+			);
+			$text .= "<div class='smalltext field-help'>$description</div>";
+			$text .= "</div>";
 		}
-		else
-		{
-			$textKeys .= "<td>" . $frm->text("social_login[$provider_name][keys][id]", $slcm->getProviderConfig($provider_name, '/keys/id'), 128, ['size' => 'block-level']);
-			$textKeys .= "<td>" . $frm->text("social_login[$provider_name][keys][secret]", $slcm->getProviderConfig($provider_name, '/keys/secret'), 128, ['size' => 'block-level']);
-			if ($provider_type == "OAuth2" || $slcm->getProviderConfig($provider_name, '/scope'))
-			{
-				$textKeys .= "<td>" . $frm->text("social_login[$provider_name][scope]", $slcm->getProviderConfig($provider_name, '/scope'), 128, ['size' => 'block-level']);
-			}
-			else
-			{
-				$textKeys .= "<td></td>";
-			}
-		}
+		$text .= "</td>";
 
 		$textEnabled = $frm->radio_switch("social_login[$provider_name][enabled]", $slcm->isProviderEnabled($provider_name), '', '', ['class' => 'e-expandit']);
 
@@ -467,6 +449,60 @@ class social_ui extends e_admin_ui
 					";
 
 		return $text;
+	}
+
+	/**
+	 * Based on Illuminate\Support\Arr::dot()
+	 * @copyright Copyright (c) Taylor Otwell
+	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
+	 * @param $array
+	 * @param string $prepend
+	 * @return array
+	 */
+	private static function array_slash($array, $prepend = '')
+	{
+		$results = [];
+
+		foreach ($array as $key => $value)
+		{
+			if (is_array($value) && !empty($value))
+			{
+				$results = array_merge($results, static::array_slash($value, $prepend . $key . '/'));
+			}
+			else
+			{
+				$results[$prepend . $key] = $value;
+			}
+		}
+
+		return $results;
+	}
+
+	private static function getPlaceholderFor($providerName, $fieldSlash)
+	{
+		switch ($fieldSlash)
+		{
+			case "scope":
+				$propertyName = "scope";
+				break;
+			case "openid_identifier":
+				$propertyName = "openidIdentifier";
+				break;
+			default:
+				$propertyName = "";
+		}
+
+		try
+		{
+			$class = "\Hybridauth\Provider\\$providerName";
+			$reflection = new ReflectionClass($class);
+			$properties = $reflection->getDefaultProperties();
+			return isset($properties[$propertyName]) ? $properties[$propertyName] : null;
+		}
+		catch (ReflectionException $e)
+		{
+			return null;
+		}
 	}
 
 	private function generateAdminFormJs()

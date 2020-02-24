@@ -55,6 +55,8 @@ define("LAN_SOCIAL_UPDATE_REQUIRED",
 	"A <a href=\"" . e_ADMIN_ABS . "e107_update.php\">database update</a> is required to continue using this plugin."
 );
 
+define("LAN_SOCIAL_ADMIN_COLUMN_CONFIGURATION", "Configuration");
+
 define("LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE", "Test Page");
 define("LAN_SOCIAL_ADMIN_TEST_PAGE_INFO", "Enable or disable the social login test page");
 define("LAN_SOCIAL_ADMIN_08", "Note: In most cases, you will need to obtain an application ID and secret key from social login providers.\nIf a provider's name is a link, that link should take you to the login application configuration documentation.\n\nYou may test your configuration with the following URL after enabling the \"".LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE."\" option:");

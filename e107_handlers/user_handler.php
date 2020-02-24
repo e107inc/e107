@@ -1261,6 +1261,21 @@ class e_user_provider
 	}
 
 	/**
+	 * Get standard and supplementary fields of the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the known field names and the values are a
+	 *               description of what their key is for.  Keys can be nested in parent keys.  Parent keys will not
+	 *               have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known fields.
+	 */
+	public static function getFieldsOf($providerName)
+	{
+		$standardFields = self::getStandardFieldsOf($providerName);
+		$supplementaryFields = self::getSupplementalFieldsOf($providerName);
+		return self::array_merge_recursive_distinct($standardFields, $supplementaryFields);
+	}
+
+	/**
 	 * Get the standard/common/parent fields of the specified provider
 	 * @param $providerName string Name of the supported social login provider
 	 * @return array Multidimensional associative array where the keys are the standard field names and the values are
@@ -1362,7 +1377,7 @@ class e_user_provider
 	{
 		if (!isset($adapterTokens[$index][1]))
 		{
-			if (in_array($adapterTokens[$index], [';', '.', ','])) return $carry;
+			if (in_array($adapterTokens[$index], [';', '.', ',', '?'])) return $carry;
 			++$index;
 			return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
 		}
