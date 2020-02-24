@@ -42,6 +42,7 @@ class social_setup
 			$actualNormalizedProviderName = $manager->normalizeProviderName($denormalizedProviderName);
 
 			$newOptions = $oldOptions;
+			/* Commented out because there are no known options to migrate from HybridAuth 2 to Hybridauth 3
 			if (isset($newOptions['keys']['key']))
 			{
 				$newOptions['keys']['id'] = $newOptions['keys']['key'];
@@ -55,6 +56,7 @@ class social_setup
 					"Updated configuration format of social login provider $denormalizedProviderName"
 				);
 			}
+			*/
 
 			if ($actualNormalizedProviderName !== $oldNormalizedProviderName)
 			{
