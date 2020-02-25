@@ -12,10 +12,17 @@ require_once("SocialLoginConfigManager.php");
 
 class social_setup
 {
+	const RENAMED_PROVIDERS = [
+		'AOL' => 'AOLOpenID',
+		'Github' => 'GitHub',
+		'Live' => 'WindowsLive',
+	];
+
 	public function upgrade_required()
 	{
 		return (
 			$this->upgrade_required_provider_name_normalization() ||
+			$this->upgrade_required_rename_xup() ||
 			$this->upgrade_required_steam_xup_bug()
 		);
 	}
@@ -36,19 +43,31 @@ class social_setup
 		return false;
 	}
 
+	private function upgrade_required_rename_xup()
+	{
+		$db = e107::getDb();
+		$whereSegment = array_map(function ($oldProviderName)
+		{
+			return "user_xup LIKE BINARY '{$oldProviderName}\_%'";
+		}, array_keys(self::RENAMED_PROVIDERS));
+		$count = $db->count('user', '(*)', implode(' OR ', $whereSegment));
+		return $count >= 1;
+	}
+
 	/**
 	 * @see https://github.com/e107inc/e107/pull/4099#issuecomment-590579521
 	 */
 	private function upgrade_required_steam_xup_bug()
 	{
 		$db = e107::getDb();
-		$count = $db->count('user', '(*)', "user_xup LIKE 'Steam_https://steamcommunity.com/openid/id/%'");
+		$count = $db->count('user', '(*)', "user_xup LIKE 'Steam\_https://steamcommunity.com/openid/id/%'");
 		return $count >= 1;
 	}
 
 	public function upgrade_pre()
 	{
 		$this->upgrade_pre_provider_name_normalization();
+		$this->upgrade_pre_rename_xup();
 		$this->upgrade_pre_steam_xup_bug();
 	}
 
@@ -101,16 +120,29 @@ class social_setup
 
 	private function upgradeDenormalizedProviderQuirks($denormalizedProviderName)
 	{
-		switch ($denormalizedProviderName)
-		{
-			case 'AOL':
-				$denormalizedProviderName = 'AOLOpenID';
-				break;
-			case 'Live':
-				$denormalizedProviderName = 'WindowsLive';
-				break;
-		}
+		$renamedProviders = self::RENAMED_PROVIDERS;
+		if (isset($renamedProviders[$denormalizedProviderName])) return $renamedProviders[$denormalizedProviderName];
 		return $denormalizedProviderName;
+	}
+
+	private function upgrade_pre_rename_xup()
+	{
+		$db = e107::getDb();
+		foreach (self::RENAMED_PROVIDERS as $oldProviderName => $newProviderName)
+		{
+			$db->select('user', '*', "user_xup LIKE '{$oldProviderName}\_%'");
+			$rows = $db->rows();
+			foreach ($rows as $row)
+			{
+				$old_user_xup = $row['user_xup'];
+				$new_user_xup = preg_replace(
+					'/^' . preg_quote($oldProviderName) . '_/',
+					$newProviderName . '_',
+					$old_user_xup
+				);
+				$this->fixUserXup($db, $row['user_id'], $old_user_xup, $new_user_xup);
+			}
+		}
 	}
 
 	/**
@@ -118,9 +150,8 @@ class social_setup
 	 */
 	private function upgrade_pre_steam_xup_bug()
 	{
-		$logger = e107::getMessage();
 		$db = e107::getDb();
-		$db->select('user', '*', "user_xup LIKE 'Steam_https://steamcommunity.com/openid/id/%'");
+		$db->select('user', '*', "user_xup LIKE 'Steam\_https://steamcommunity.com/openid/id/%'");
 		$rows = $db->rows();
 		foreach ($rows as $row)
 		{
@@ -130,21 +161,33 @@ class social_setup
 				'',
 				$old_user_xup
 			);
-	        $status = $db->update(
-	        	'user',
-				"user_xup = '".$db->escape($new_user_xup)."' WHERE user_id = ".$db->escape($row['user_id'])
+			$this->fixUserXup($db, $row['user_id'], $old_user_xup, $new_user_xup);
+		}
+	}
+
+	/**
+	 * @param e_db_mysql $db
+	 * @param string $user_id
+	 * @param string $old_user_xup
+	 * @param string $new_user_xup
+	 */
+	private function fixUserXup($db, $user_id, $old_user_xup, $new_user_xup)
+	{
+		$logger = e107::getMessage();
+		$status = $db->update(
+			'user',
+			"user_xup = '" . $db->escape($new_user_xup) . "' WHERE user_id = " . $db->escape($user_id)
+		);
+		if ($status !== 1)
+		{
+			$logger->addError(
+				"Unexpected error while correcting user_xup of user_id = " . $user_id . " from \"" . $old_user_xup . "\" to \"" . $new_user_xup . "\": " .
+				$db->getLastErrorText()
 			);
-	        if ($status !== 1)
-			{
-				$logger->addError(
-					"Unexpected error while correcting user_xup of user_id = ".$row['user_id']." from \"".$old_user_xup."\" to \"".$new_user_xup."\": ".
-					$db->getLastErrorText()
-				);
-			}
-	        else
-			{
-				$logger->addSuccess("Corrected user_xup of user_id = ".$row['user_id']." from \"".$old_user_xup."\" to \"".$new_user_xup."\"");
-			}
+		}
+		else
+		{
+			$logger->addSuccess("Corrected user_xup of user_id = " . $user_id . " from \"" . $old_user_xup . "\" to \"" . $new_user_xup . "\"");
 		}
 	}
 }
