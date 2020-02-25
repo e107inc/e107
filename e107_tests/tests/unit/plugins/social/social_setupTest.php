@@ -23,11 +23,44 @@ class social_setupTest extends \Codeception\Test\Unit
 		$this->assertTrue($social_setup->upgrade_required());
 		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL"));
 		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
+		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Github"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
+		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Live"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/WindowsLive"));
 
 		$social_setup->upgrade_pre();
 		$this->assertFalse($social_setup->upgrade_required());
 		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL"));
 		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Github"));
+		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Live"));
+		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/WindowsLive-OAuth2"));
+	}
+
+	public function testUpgradeFixRenamedProvidersXup()
+	{
+		$renamedProviders = social_setup::RENAMED_PROVIDERS;
+		foreach ($renamedProviders as $oldProviderName => $newProviderName)
+		{
+			$db = e107::getDb();
+			$db->insert('user', [
+				'user_loginname' => $oldProviderName . '012345',
+				'user_name' => $oldProviderName . '012345',
+				'user_password' => '559b3b2f2d54b647ae7a5beb5c8c36c3',
+				'user_email' => '',
+				'user_xup' => $oldProviderName . '_ThisSegmentDoesNotMatter',
+			]);
+			$insertId = $db->lastInsertId();
+
+			$social_setup = new social_setup();
+			$this->assertTrue($social_setup->upgrade_required());
+			$social_setup->upgrade_pre();
+
+			$result = $db->retrieve('user', '*', 'user_id=' . $insertId);
+			$this->assertEquals($newProviderName . '_ThisSegmentDoesNotMatter', $result['user_xup']);
+			$this->assertFalse($social_setup->upgrade_required());
+		}
 	}
 
 	/**
@@ -38,6 +71,7 @@ class social_setupTest extends \Codeception\Test\Unit
 		$db = e107::getDb();
 		$db->insert('user', [
 			'user_loginname' => 'SteambB8047',
+			'user_name' => 'SteambB8047',
 			'user_password' => '$2y$10$.u22u/U392cUhvJm2DJ57.wsKtxKKj3WsZ.x6LsXoUVHVuprZGgUu',
 			'user_email' => '',
 			'user_xup' => 'Steam_https://steamcommunity.com/openid/id/76561198006790310',
