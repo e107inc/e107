@@ -105,12 +105,12 @@
 			'-8' => 0 // unknown
 			);
 
-			define('LAN_SETSAVED', "Saved"); // for preferences.
+			defined('LAN_SETSAVED') or define('LAN_SETSAVED', "Saved"); // for preferences.
 
 			//set ban duration pref.
 			e107::getConfig()->set('ban_durations',$banDurations)->save(false,true, false);
 
-			$result = $this->ip->add_ban(2,"unit test generated ban", '123.123.123.123', 0,);
+			$result = $this->ip->add_ban(2,"unit test generated ban", '123.123.123.123', 0);
 			$this->assertTrue($result);
 
 
