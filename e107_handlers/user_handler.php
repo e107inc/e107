@@ -1474,7 +1474,7 @@ class e_user_provider
 		{
 			if ($redirectUrl)
 			{
-				e107::getRedirect()->redirect($redirectUrl);
+				$this->redirectAndForwardMessages($redirectUrl);
 			}
 			return false;
 			//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
@@ -1535,11 +1535,16 @@ class e_user_provider
 			if ($uid = $sql->retrieve("user", "user_id", "user_xup='" . $sql->escape($this->userId()) . "' " . $insert . " OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
 				// $this->login($redirectUrl); // auto-login
-				e107::getUser()->loginProvider($this->userId());
+				$result = e107::getUser()->loginProvider($this->userId());
+
+				if (!$result)
+				{
+					e107::getMessage()->addError("user_name already exists but doesn't have a matching user_xup");
+				}
 
 				if ($redirectUrl)
 				{
-					e107::getRedirect()->redirect($redirectUrl);
+					$this->redirectAndForwardMessages($redirectUrl);
 				}
 
 				return false;
@@ -1657,7 +1662,7 @@ class e_user_provider
 		{
 			if ($redirectUrl)
 			{
-				e107::getRedirect()->redirect($redirectUrl);
+				$this->redirectAndForwardMessages($redirectUrl);
 			}
 			return true;
 		}
