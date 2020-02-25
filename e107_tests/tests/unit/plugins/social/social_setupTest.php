@@ -10,11 +10,14 @@
 
 class social_setupTest extends \Codeception\Test\Unit
 {
-	public function testUpgrade()
+	public function _before()
 	{
 		include_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
 		include_once(e_PLUGIN . "social/social_setup.php");
+	}
 
+	public function testUpgradeProviderNameNormalization()
+	{
 		e107::getConfig()->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, SOCIAL_LOGIN_LEGACY_DATA);
 		$social_setup = new social_setup();
 		$this->assertTrue($social_setup->upgrade_required());
@@ -25,6 +28,29 @@ class social_setupTest extends \Codeception\Test\Unit
 		$this->assertFalse($social_setup->upgrade_required());
 		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL"));
 		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/pull/4099#issuecomment-590579521
+	 */
+	public function testUpgradeFixSteamXupBug()
+	{
+		$db = e107::getDb();
+		$db->insert('user', [
+			'user_loginname' => 'SteambB8047',
+			'user_password' => '$2y$10$.u22u/U392cUhvJm2DJ57.wsKtxKKj3WsZ.x6LsXoUVHVuprZGgUu',
+			'user_email' => '',
+			'user_xup' => 'Steam_https://steamcommunity.com/openid/id/76561198006790310',
+		]);
+		$insertId = $db->lastInsertId();
+
+		$social_setup = new social_setup();
+		$this->assertTrue($social_setup->upgrade_required());
+		$social_setup->upgrade_pre();
+
+		$result = $db->retrieve('user', '*', 'user_id=' . $insertId);
+		$this->assertEquals('Steam_76561198006790310', $result['user_xup']);
+		$this->assertFalse($social_setup->upgrade_required());
 	}
 }
 const SOCIAL_LOGIN_LEGACY_DATA =
