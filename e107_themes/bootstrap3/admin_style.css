@@ -4,6 +4,7 @@ body#admin-admin .popover   { position: fixed }
 
 @media (max-width: 992px) {
     body { height: 100vh; overflow-y: auto!important; }
+    ul.nav-admin a.navbar-admin-button:after { content: attr(title) }
 }
 
 button, button:active                      { outline: 0; }
