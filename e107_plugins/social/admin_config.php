@@ -146,20 +146,6 @@ class social_ui extends e_admin_ui
 			{
 				$this->prefs['sharing_providers']['writeParms']['optArray'][$k] = $k;
 			}
-
-			$this->social_external = array(
-				"Facebook" 		=> "https://developers.facebook.com/apps",
-				"Twitter"		=> "https://dev.twitter.com/apps/new",
-				"Google"		=> "https://code.google.com/apis/console/",
-				"Live"			=> "https://manage.dev.live.com/ApplicationOverview.aspx",
-				"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
-				"Foursquare"	=> "https://www.foursquare.com/oauth/",
-				"GitHub"		=> "https://github.com/settings/applications/new",
-				"Steam"			=> "http://steamcommunity.com/dev/apikey",
-				"Instagram"     => "http://instagram.com/developer"
-			);
-
-
 		}
 
 
@@ -410,7 +396,7 @@ class social_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$textKeys = '';
 		$textScope = '';
-		$label = varset($this->social_external[$provider_name]) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . $this->social_external[$provider_name] . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
+		$label = varset(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
 		$radio_label = strtolower($provider_name);
 		$text = "
 					<tr>
@@ -498,6 +484,21 @@ class social_ui extends e_admin_ui
 			$reflection = new ReflectionClass($class);
 			$properties = $reflection->getDefaultProperties();
 			return isset($properties[$propertyName]) ? $properties[$propertyName] : null;
+		}
+		catch (ReflectionException $e)
+		{
+			return null;
+		}
+	}
+
+	private static function getApiDocumentationUrlFor($providerName)
+	{
+		try
+		{
+			$class = "\Hybridauth\Provider\\$providerName";
+			$reflection = new ReflectionClass($class);
+			$properties = $reflection->getDefaultProperties();
+			return isset($properties['apiDocumentation']) ? $properties['apiDocumentation'] : null;
 		}
 		catch (ReflectionException $e)
 		{
