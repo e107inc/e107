@@ -202,7 +202,7 @@ class social_ui extends e_admin_ui
 		{
 			$notice = "".LAN_SOCIAL_ADMIN_08." <br /><a href='".self::TEST_URL."' rel='external'>".self::TEST_URL."</a>";
 
-			$callBack = SITEURL."index.php";
+			$callBack = SITEURL;
 			$notice .= "<br /><br />".LAN_SOCIAL_ADMIN_09."</br ><a href='".$callBack."'>".$callBack."</a>";
 
 
