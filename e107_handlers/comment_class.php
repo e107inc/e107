@@ -313,7 +313,7 @@ class comment
 		else
 		{ // Comment entry not allowed - point to signup link
 			$userReg = intval(e107::pref('core','user_reg'));
-			$socialLogin = e107::pref('core','social_login_active');
+			$socialLogin = e107::getUserProvider()->isSocialLoginEnabled();
 
 			$text = "<div class='comments-form-login'>";
 

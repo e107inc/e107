@@ -15,8 +15,6 @@ define("LAN_SOCIAL_ADMIN_04", "Provider");
 define("LAN_SOCIAL_ADMIN_05", "Key/ID");
 define("LAN_SOCIAL_ADMIN_06", "Secret");
 define("LAN_SOCIAL_ADMIN_07", "Allows users to signup/login with their social media accounts. When enabled, this option will still allow users to signup/login even if the core user registration system above is disabled.");
-define("LAN_SOCIAL_ADMIN_08", "Note: In most cases you will need to obtain an id and secret key from one of the providers.\nClick the blue links to the right to configure.\n\nYou may test your configuration with the following URL:");
-define("LAN_SOCIAL_ADMIN_09", "Your callback URL is: ");
 define("LAN_SOCIAL_ADMIN_10", "Get a key from the provider");
 define("LAN_SOCIAL_ADMIN_11", "Your");
 define("LAN_SOCIAL_ADMIN_12", "page");
@@ -50,3 +48,35 @@ define("LAN_SOCIAL_ADMIN_39", "Providers");
 define("LAN_SOCIAL_ADMIN_40", "Update User Display Name");
 define("LAN_SOCIAL_ADMIN_41", "Update User Avatar");
 define("LAN_SOCIAL_ADMIN_42", "Custom Image");
+define("LAN_SOCIAL_ADMIN_AUTH_TYPE", "Type");
+define("LAN_SOCIAL_ADMIN_AUTH_TYPE_UNKNOWN", "Unknown");
+
+define("LAN_SOCIAL_UPDATE_REQUIRED",
+	"A <a href=\"" . e_ADMIN_ABS . "e107_update.php\">database update</a> is required to continue using this plugin."
+);
+
+define("LAN_SOCIAL_ADMIN_COLUMN_CONFIGURATION", "Configuration");
+
+define("LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE", "Test Page");
+define("LAN_SOCIAL_ADMIN_TEST_PAGE_INFO", "Enable or disable the social login test page");
+define("LAN_SOCIAL_ADMIN_08", "Note: In most cases, you will need to obtain an application ID and secret key from social login providers.\nIf a provider's name is a link, that link should take you to the login application configuration documentation.\n\nYou may test your configuration with the following URL after enabling the \"".LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE."\" option:");
+define("LAN_SOCIAL_ADMIN_09", "Your callback URL is: ");
+
+define("LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED", "Broken Configured Providers");
+define("LAN_SOCIAL_LOGIN_SECTION_CONFIGURED", "Manage Existing Providers");
+define("LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED", "Add New Providers");
+
+define("LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED_DESCRIPTION",
+	"These social login providers were configured in the past but no longer have an adapter that can support them. " .
+	"This may be due to them no longer existing or being replaced by a different provider."
+);
+define("LAN_SOCIAL_LOGIN_SECTION_CONFIGURED_DESCRIPTION",
+	"These social login providers are currently configured. " .
+	"If the master switch \"" . LAN_SOCIAL_ADMIN_02 . "\" is toggled on, each provider in this table that is " .
+	"also toggled on may be used for user registration and login. If you empty the fields of a provider here and save, " .
+	"it will move to the \"" . LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED . "\" section."
+);
+define("LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED_DESCRIPTION",
+	"These are the available social login providers, which have not been configured. " .
+	"Once you configure and save a provider here, it will move to the \"" . LAN_SOCIAL_LOGIN_SECTION_CONFIGURED . "\" section."
+);
