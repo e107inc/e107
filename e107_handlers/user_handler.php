@@ -1530,7 +1530,7 @@ class e_user_provider
 
 				if (!$result)
 				{
-					e107::getMessage()->addError("user_name already exists but doesn't have a matching user_xup");
+					e107::getMessage()->addError("User already exists but is not connected through this social login provider");
 				}
 
 				if ($redirectUrl)
