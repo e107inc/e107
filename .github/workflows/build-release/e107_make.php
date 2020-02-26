@@ -1,27 +1,17 @@
 <?php
-/*
-if($argc !== 2) {
-	showUsage();
-	exit;
-}
-
-echo "Begin -> ".date('r')."\n";
-// Read in make.ini file, create $config
-
-$build = new e107Build($argv[1]);
-//var_dump($build->config);
-
-exit;*/
-
-function showUsage()
-{
-	echo "\nUsage: {$_SERVER['argv'][0]} <config_file_name>\n\n";
-}
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 
 class e107Build
 {
 
-	public $config, $path, $version, $tag, $lastversion, $lastversiondate, $dbchange, $beta, $error, $rc;
+	public $config, $version, $tag, $lastversion, $lastversiondate, $beta, $error, $rc;
 
 	var $createdFiles = array();
 	var $releaseDir = "";
@@ -38,12 +28,8 @@ class e107Build
 	{
 		$this->beta = false;
 		$this->error = false;
-		$this->live = false;
-		$this->testCoreImage = false;
 		$this->rc = false;
 
-
-		//	$this->config['baseDir'] = realpath(getcwd());
 		$this->config['baseDir'] = dirname(__FILE__);
 
 	}
@@ -79,14 +65,6 @@ class e107Build
 		$this->tempDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/temp/";
 		$this->gitDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout/";
 		$this->gitRepo = $this->config['main']['git_repo'];
-		/*
-				if(is_dir($this->tempDir))
-				{
-					$this->rmdir($this->tempDir);
-					mkrdir($this->tempDir,0755);
-				}
-		*/
-
 
 		if (!$this->version)
 		{
@@ -104,8 +82,6 @@ class e107Build
 		$this->config['preprocess']['version'] = $this->version;
 		$this->config['preprocess']['tag'] = $this->tag;
 
-		//	$this->buildLastConfig();
-
 		if ($this->ReadMeProblems())
 		{
 			return;
@@ -122,7 +98,6 @@ class e107Build
 				'files_create' => 'e107_config.php',
 				'files_rename' => 'install_.php->install.php'
 			);
-
 
 			// One Full Upgrade Beta
 			$this->config['releases'][] = array(
@@ -220,12 +195,6 @@ class e107Build
 
 	private function generateReadme($additional = '', $dbchange = FALSE)
 	{
-
-		if ($this->testCoreImage)
-		{
-			return false;
-		}
-
 		$TEMPLATE = "[oldversion] -> [newversion] Upgrade Guide\n";
 
 		$TEMPLATE .= "This is an update from [oldversion] to [newversion] only. If you are upgrading from any other version besides [oldversion] ,\n";
@@ -318,10 +287,6 @@ class e107Build
 		$cmd = "mkdir -p {$dir}/release";
 		`$cmd`;
 
-		//	$cmd = "mkdir -p {$dir}/export";
-		//	`$cmd`;
-
-
 		$releaseDir = "e107_" . $this->version;
 
 		if ($this->rc)
@@ -335,84 +300,13 @@ class e107Build
 		$cmd = "mkdir -p {$dir}/release/" . $releaseDir;
 		`$cmd`;
 
+		return true;
 	}
 
 	private function preprocess()
 	{
-		//Update current cvs
-		/*
-		$this->checkoutSvn();
-
-		$checkedOutFiles = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout/e107_admin/ver.php";
-		if(!file_exists($checkedOutFiles) && !$this->beta)
-		{
-			$this->status("Checkout Failed!");
-			return FALSE;
-		}
-
-
-		//Edit ver.php file with new version
-		if(isset($this->config['preprocess']['version']) && !$this->beta)
-		{
-			if($this->editVersion()) // /checkout not export.
-			{
-				//Commit new ver.php file to cvs
-				$this->commitFile("e107_admin/ver.php", "new version: {$this->config['preprocess']['version']} - auto");
-			}
-			else
-			{
-				$this->status("Error updating version");
-				return false;
-			}
-		}
-		*/
-
 		$this->gitClone();
-
-		//$this->editVersion('checkout');
-
-		//	$this->exportSvn(); //Export files to export dir
-
-		//	$this->editVersion('export'); // needed because we don't commit the version change with betas.
-
-		if (trim($this->config['preprocess']['plugin_delete']) != '')
-		{
-			//		$this->pluginRemove($this->config['preprocess']['plugin_delete']);
-		}
-
-		//	$this->rmdir($this->exportDir."e107_themes/bootstrap");
-
 		return true;
-		/*
-
-			if(!$this->beta) // Official Release.
-			{
-				$this->CreateCoreImage(); //Create the new image file
-
-				//Commit new image file to cvs
-				$this->commitFile("e107_admin/core_image.php", "Update image file: {$this->config['preprocess']['version']} - auto");
-
-				$this->tagFiles($this->config['preprocess']['tag']); //Tag all files with new tag
-
-				//Create clean export of new tag
-				//$this->exportSvn($this->config['preprocess']['tag']);
-				// ** No longer export via tag, since the $URL:$ substitution will mess up file inspector
-				$this->exportSvn();
-			}
-			else // Beta - we don't do any commits.
-			{
-				$this->editVersion('export'); // needed because we don't commit the version change with betas.
-
-				if(trim($this->config['preprocess']['plugin_delete']) != '')
-				{
-					$this->pluginRemove($this->config['preprocess']['plugin_delete']);
-				}
-
-				// $this->CreateCoreImage(); // Create Image
-			}
-
-			return true;
-		*/
 	}
 
 	private function gitClone()
@@ -426,11 +320,6 @@ class e107Build
 		$this->status("Cloning git repo", true);
 
 		$this->run("git clone " . $this->gitRepo . " " . $this->gitDir);
-		//	$this->run("mv ".$tempDir."/.git ".$repoDir."/.git");
-		//	$this->run("mv ".$tempDir."/* ".$repoDir);
-		//	$this->run("/bin/cp -rfv ".$tempDir."/* ".$repoDir);
-		//	$this->run("git --work-tree=".$repoDir." --git-dir=".$repoDir."/.git pull");
-		//	$this->run("chown -R ".$dir.":".$dir." ".$repoDir);
 		$this->run("chmod 0755 " . $this->gitDir);
 
 		if (!is_dir($this->gitDir . "/.git"))
@@ -444,6 +333,7 @@ class e107Build
 			Make sure TCP port 9418 is open!");
 		}
 
+		return true;
 	}
 
 	private function run($cmd)
@@ -454,37 +344,23 @@ class e107Build
 
 		if ($return)
 		{
-			//	$return = $this->parseReturn($return);
-			//	$this->lastRunMessage = $return;
 			$this->status(print_r($return, true));
 		}
-
-
-		//	print_r($return);
-		// $this->alert($return);
 	}
 
 	private function createReleases()
 	{
-
 		foreach ($this->config['releases'] as $c => $rel)
 		{
 			$this->status(" ------------------ Release " . $c . "--------------------------- ", true);
 
 			$this->emptyExportDir();
 
-			//	$this->pause(25);
-
 			$zipExportFile = 'release_' . $c . ".zip";
 
 			$this->gitArchive($zipExportFile, $rel['since']);
 
-			//	$this->pause(25);
-
 			$this->gitArchiveUnzip($zipExportFile);
-
-
-			//	$this->pause(25);
 
 			$this->editVersion('export');
 
@@ -531,18 +407,9 @@ class e107Build
 			}
 
 			$zipsince = '';
-			$tarsince = '';
 			$ts = '';
-			/*
-						if(!empty($rel['since']))
-						{
-							$zipsince = "t {$rel['since']}";
-							$ts = "--newer-mtime=".substr($rel['since'], 4)."-".substr($rel['since'], 0, 2)."-".substr($rel['since'], 2, 2);
-							$tarsince = "--newer={$ts}";
-							$reftime = substr($rel['since'], 4).substr($rel['since'], 0, 4).'0001';
-							$this->gitArchive('release_'.$rel, $rel['since']);
-						}*/
 
+			$newfile = "";
 			if ($rel['type'] == 'full')
 			{
 				$newfile = "e107_" . $this->config['preprocess']['version'] . "_full";
@@ -565,9 +432,6 @@ class e107Build
 
 			$releaseDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/release/" . $this->releaseDir;
 
-
-			// $newfile
-
 			/**
 			 * git archive -o update.zip HEAD $(git diff --name-only [id])
 			 *
@@ -585,11 +449,6 @@ class e107Build
 			$zipcmd = "zip -r{$zipsince} $zipfile * >/dev/null 2>&1";
 			$tarcmd = "tar cz {$ts} -f$gzfile * >/dev/null 2>&1";
 
-//touch -t 201003140001 ../reftime && find . -newer ../reftime -type f -print0 | xargs -0 zip ../release/mytest2.zip
-			//	$xzipcmd = "touch -t {$reftime} ../reftime && find . -newer ../reftime -type f -print0 | xargs -0 zip {$zipfile} >/dev/null 2>&1";
-			//	$xtarcmd = "touch -t {$reftime} ../reftime && find . -newer ../reftime -type f -print0 | xargs -0 tar --no-recursion -zc -f{$gzfile} >/dev/null 2>&1";
-
-
 			$this->status('Creating ZIP archive');
 			$this->status($zipcmd);
 			`$zipcmd`;
@@ -598,26 +457,8 @@ class e107Build
 			$this->status($tarcmd);
 			`$tarcmd`;
 
-			/*	else // Doesn't make a zip/tar with empty directories.
-				{
-					$this->status('Creating Alternate ZIP release');
-					$this->status($xzipcmd);
-					`$xzipcmd`;
-
-					$this->status('Creating Alternate TAR.GZ release');
-					$this->status($xtarcmd);
-					`$xtarcmd`;
-				}*/
-
 			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.zip');
 			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar.gz');
-
-			if ($rel['plugin_delete'])
-			{
-				//	$this->pluginRemove($rel['plugin_delete'],true);
-			}
-
-
 		} // end loop
 
 
@@ -627,7 +468,6 @@ class e107Build
 	{
 		if (is_dir($this->exportDir))
 		{
-			//$this->status("Cleaning out export directory. ");
 			$this->rmdir($this->exportDir);
 			mkdir($this->exportDir, 0755);
 		}
@@ -641,7 +481,6 @@ class e107Build
 
 	private function rmdir($dir)
 	{
-
 		if (empty($dir))
 		{
 			return false;
@@ -658,10 +497,7 @@ class e107Build
 		$this->status($cmd);
 		`$cmd`;
 
-		//	$found = scandir($dir);
-
-		//	$this->status("Remaining files: ".implode(", ",$found));
-
+		return true;
 	}
 
 	private function gitArchive($zipFile, $since = null)
@@ -702,7 +538,6 @@ class e107Build
 
 	private function editVersion($dir = 'checkout')
 	{
-
 		$version = $this->config['preprocess']['version'];
 
 		if ($this->beta && !$this->rc)
@@ -722,17 +557,13 @@ class e107Build
 		$contents = "<?php\n";
 		$contents .= "/*\n";
 		$contents .= "* Copyright (c) " . date("Y") . " e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)\n";
-		//	$contents .= "* \$URL$\n";
-		//	$contents .= "* \$Id$\n";
 		$contents .= "*\n";
 		$contents .= "* Version file\n";
 		$contents .= "*/\n\n";
 		$contents .= "if (!defined('e107_INIT')) { exit; }\n\n";
 		$contents .= "\$e107info['e107_version'] = \"{$version}\";\n";
 
-
 		$contents .= "?>\n";
-
 
 		return file_put_contents($fname, $contents);
 	}
@@ -762,8 +593,6 @@ class e107Build
 	private function filesDelete($parm)
 	{
 		$fnames = explode(',', $parm);
-
-		//	$this->changeDir($this->exportDir);
 
 		foreach ($fnames as $fn)
 		{
@@ -803,62 +632,20 @@ class e107Build
 		{
 			$fn = trim($fn);
 			$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/e107_plugins/" . $fn;
-			$temp = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/temp/" . $fn;
-			//	$result = rename($dir,$temp);
 
-
-			//	$cmd = ($restore == false) ? "mv {$dir} {$temp}" :  "mv {$temp} {$dir}";;
-			//	$this->status($cmd);
 			$this->rmdir($dir);
-
-			/*	if($restore)
-				{
-					$this->status("Restoring Plugin: {$fn} ");
-				}
-				else
-				{
-					$this->status("Removing Plugin: {$fn} ");
-				}*/
 		}
 	}
 
 	private function createCoreImage()
 	{
-		//	$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
-		//	$this->exportDir;
-		//	chdir($dir);
-
-		//Delete or create any files as per config
-
-		if ($this->testCoreImage != TRUE)
-		{
-			//	$this->filesDelete($this->config['preprocess']['files_delete']);
-			//	$this->filesCreate($this->config['preprocess']['files_create']);
-		}
 		//create new image file - writes directly to cvsroot
 		chdir($this->config['baseDir']);
 
 		$_current = $this->exportDir;
 		$_deprecated = "{$this->config['baseDir']}/deprecated/{$this->config['main']['name']}";
 
-		/*	if(!$this->beta)
-			{
-				$_image = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout/e107_admin/core_image.php";
-			}
-			else
-			{
-				$_image = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/e107_admin/core_image.php";
-			}
-		*/
-
-		if ($this->testCoreImage)
-		{
-			$_image = "{$this->config['baseDir']}/test_core_image.php";
-		}
-		else
-		{
-			$_image = $this->tempDir . "core_image.php";
-		}
+		$_image = $this->tempDir . "core_image.php";
 
 		$this->status("Creating new core_image.php file ({$_image})", true);
 		new coreImage($_current, $_deprecated, $_image);
@@ -869,7 +656,6 @@ class e107Build
 
 	private function pause($seconds)
 	{
-
 		if ($this->pause !== true)
 		{
 			return false;
@@ -877,11 +663,12 @@ class e107Build
 
 		$this->status("   (Pausing for " . $seconds . " seconds...)", true);
 		sleep($seconds);
+
+		return true;
 	}
 
 	private function copyCoreImage()
 	{
-
 		$orig = $this->tempDir . "core_image.php";
 		$dest = $this->exportDir . "e107_admin/core_image.php";
 
@@ -906,14 +693,6 @@ class e107Build
 		$to = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/README.txt";
 		$result = copy($from, $to);
 		$this->status("Copying readme file $readme to $to - " . ($result ? "SUCCESS" : "FAIL"));
-	}
-
-	public function coreImageTest()
-	{
-		//$this->checkoutSvn();
-		//Export files to export dir
-		//$this->exportSvn();
-		$this->CreateCoreImage();
 	}
 
 	function deleteAll($directory, $empty = false)
@@ -965,130 +744,6 @@ class e107Build
 			return true;
 		}
 	}
-
-	private function checkoutSvn()
-	{
-
-		return false;
-
-		if ($this->beta)
-		{
-			$this->status("Beta Mode - skipping svn checkout");
-			return;
-		}
-
-
-		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout";
-		$this->status("Checking out current svn to {$dir}");
-		$cmd = "svn checkout --username {$this->config['main']['svn_username']} --password {$this->config['main']['svn_password']} --no-auth-cache --non-interactive {$this->config['main']['svn_path']} {$dir}";
-		$this->status($cmd);
-		`$cmd`;
-	}
-
-	private function exportSvn($tag = '')
-	{
-
-
-		if (is_dir($this->exportDir))
-		{
-			$this->status("Cleaning out export directory. ");
-			$this->rmdir($this->exportDir);
-		}
-
-		if (is_dir($this->tempDir))
-		{
-			$this->status("Cleaning out temp directory. ");
-			$this->rmdir($this->tempDir);
-			mkdir($this->tempDir, 0755);
-		}
-
-
-		$this->status("Exporting from Github to temp directory  ");
-
-		/*
-		if($tag == '')
-		{
-			$this->status("Exporting current svn to {$dir}");
-			$path = $this->config['main']['svn_path'];
-		}
-		else
-		{
-			$this->status("Exporting tag {$tag} to {$dir}");
-			$path = "{$this->config['main']['svn_tag_path']}/{$tag}";
-		}
-		*/
-
-		$filePath = $this->tempDir . "master.zip";
-		$cmd = 'wget https://codeload.github.com/e107inc/e107/zip/master -O ' . $filePath; // , 'e107-master.zip', 'temp');
-
-		//	$cmd = "svn export --username {$this->config['main']['svn_username']} --password {$this->config['main']['svn_password']} --no-auth-cache --non-interactive --force  {$path} {$dir}";
-		$this->status($cmd);
-
-
-		`$cmd`;
-
-
-		if (!file_exists($filePath))
-		{
-			$this->status("FAIL: Couldn't retrieve zip file from github.");
-			return false;
-		}
-
-		$cmd = 'unzip -o ' . $filePath . ' -d ' . $this->tempDir;
-		$this->status($cmd);
-
-		`$cmd`;
-
-		if (!is_dir($this->tempDir . "e107-master"))
-		{
-			$this->status("FAIL: Couldn't unzip ." . $filePath . " to " . $this->tempDir);
-			return false;
-		}
-
-		$cmd = "mv " . $this->tempDir . "e107-master " . $this->exportDir;
-
-
-		$this->status($cmd);
-
-		`$cmd`;
-
-		if (!is_dir($this->exportDir))
-		{
-			$this->status("GIT Export FAILED for some reason");
-
-		}
-	}
-
-	private function commitFile($fname, $message = "no remarks")
-	{
-		if (($this->beta == TRUE) || ($this->live != TRUE) || $this->rc)
-		{
-			return;
-		}
-
-		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout";
-		chdir($dir);
-		$cmd = "svn commit --username {$this->config['main']['svn_username']} --password {$this->config['main']['svn_password']} --no-auth-cache --non-interactive -m \"{$message}\" {$fname}";
-		$this->status("commiting $fname to svn");
-		$this->status($cmd);
-		return `$cmd`;
-//		return true;
-	}
-
-	private function tagFiles($tagid)
-	{
-		if (($this->beta == TRUE) || $this->live != TRUE || $this->rc)
-		{
-			return;
-		}
-
-		$this->status("Creating Tag of $tagid");
-		$cmd = "svn copy --username {$this->config['main']['svn_username']} --password {$this->config['main']['svn_password']} --no-auth-cache --non-interactive -m \"Auto creating of tag during build\" {$this->config['main']['svn_path']} {$this->config['main']['svn_tag_path']}/{$tagid}";
-		$this->status($cmd);
-		return `$cmd`;
-	}
-
-
 }
 
 /*****************************************************************************************
@@ -1096,10 +751,6 @@ class e107Build
  ******************************************************************************************/
 class coreImage
 {
-
-	var $file;
-	var $image = array();
-
 	public function __construct($_current, $_deprecated, $_image)
 	{
 		global $coredir;
@@ -1126,16 +777,14 @@ class coreImage
 			$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
 		}
 
-//		echo IMAGE_IMAGE;
-//		include(IMAGE_IMAGE);
-//		die("xxx\n");
 		$this->create_image(IMAGE_CURRENT, IMAGE_DEPRECATED);
 	}
 
 	function create_image($_curdir, $_depdir)
 	{
-		global $core_image, $deprecated_image, $coredir;
+		global $coredir;
 
+		$search = $replace = [];
 		foreach ($coredir as $trim_key => $trim_dirs)
 		{
 			$search[$trim_key] = "'" . $trim_dirs . "'";
@@ -1176,21 +825,12 @@ class coreImage
 		$data .= "\$deprecated_image = " . $image_array . ";\n\n";
 		$data .= "?>";
 
-//		echo "writing to ".IMAGE_IMAGE."\n";
-
-		//	echo "\n------- Core Image --------\n";
-		//	echo $data;
-		//	echo "\n------- End Image --------\n";
-
-
 		$fp = fopen(IMAGE_IMAGE, 'w');
-//		echo "open results = [{$fp}]\n";
 		fwrite($fp, $data);
 	}
 
 	function scan($dir, $image = array())
 	{
-//		echo "Scanning directory $dir \n";
 		$handle = opendir($dir . '/');
 
 		$exclude = array('e107_config.php', 'install.php', 'CVS', '.svn', 'Thumbs.db', '.gitignore');
@@ -1206,12 +846,13 @@ class coreImage
 				}
 				else if (!isset($image[$readdir]))
 				{
-					$files[$readdir] = $this->checksum($path, TRUE);
+					$files[$readdir] = $this->checksum($path);
 				}
 			}
 		}
 		closedir($handle);
 
+		$list = [];
 		if (isset($dirs))
 		{
 			ksort($dirs);
@@ -1235,7 +876,6 @@ class coreImage
 
 	function checksum($filename)
 	{
-		$checksum = md5(str_replace(array(chr(13), chr(10)), '', file_get_contents($filename)));
-		return $checksum;
+		return md5(str_replace(array(chr(13), chr(10)), '', file_get_contents($filename)));
 	}
 }
