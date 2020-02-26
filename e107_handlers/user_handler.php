@@ -1148,16 +1148,10 @@ class e_user_provider
 		$this->_provider = $provider;
 	}
 
-	private function log($class, $method, $line)
-	{
-		//	e107::getLog()->add('XUP Debug', ($class.':'.$method.'-'.$line), E_LOG_INFORMATIVE, "XUP_DEBUG");
-	}
-
-
-	public function setBackUrl($url, $action)
+	public function setBackUrl($url)
 	{
 		# system/xup/login by default
-		$this->_config['callback'] = $this->generateCallbackUrl($action, $url);
+		$this->_config['callback'] = $this->generateCallbackUrl($url);
 		$this->respawnHybridauth();
 	}
 
@@ -1445,16 +1439,16 @@ class e_user_provider
 	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
 	 * May be used as a simple XUP login link for existing and non-existing users.
 	 */
-	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
+	public function login($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
 	{
 		if (!$this->isSocialLoginEnabled())
 		{
-			throw new Exception("Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception("Login failed! This feature is disabled.", 100); // TODO lan
 		}
 
 		if (!$this->getProvider())
 		{
-			throw new Exception("Signup failed! Wrong provider.", 2); // TODO lan
+			throw new Exception("Login failed! Wrong provider.", 2); // TODO lan
 		}
 
 		if ($redirectUrl)
@@ -1480,12 +1474,11 @@ class e_user_provider
 			//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
 
-		$this->setBackUrl($redirectUrl, "signup");
+		$this->setBackUrl($redirectUrl);
 
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
 
-		$this->log(__CLASS__, __METHOD__, __LINE__);
 		// returned back, if success...
 		if ($profile->identifier)
 		{
@@ -1529,8 +1522,6 @@ class e_user_provider
 
 			// user_name, user_xup, user_email and user_loginname shouldn't match
 			$insert = (!empty($userdata['user_email'])) ? "OR user_email='" . $userdata['user_email'] . "' " : "";
-
-			$this->log(__CLASS__, __METHOD__, __LINE__);
 
 			if ($uid = $sql->retrieve("user", "user_id", "user_xup='" . $sql->escape($this->userId()) . "' " . $insert . " OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
@@ -1626,59 +1617,7 @@ class e_user_provider
 			return true;
 		}
 
-		$this->log(__CLASS__, __METHOD__, __LINE__);
-
 		return false;
-	}
-
-
-	public function login($redirectUrl = true)
-	{
-
-		if (!$this->isSocialLoginEnabled())
-		{
-			throw new Exception("Login failed! This feature is disabled.", 100); // TODO lan
-		}
-
-		if (!$this->getProvider())
-		{
-			throw new Exception("Login failed! Wrong provider.", 22); // TODO lan
-		}
-
-		if ($redirectUrl)
-		{
-			if (true === $redirectUrl)
-			{
-				$redirectUrl = SITEURL;
-			}
-			elseif (strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
-			{
-				$redirectUrl = e107::getUrl()->create($redirectUrl);
-			}
-		}
-
-
-		if (e107::getUser()->isUser())
-		{
-			if ($redirectUrl)
-			{
-				$this->redirectAndForwardMessages($redirectUrl);
-			}
-			return true;
-		}
-
-		$this->setBackUrl($redirectUrl, "login");
-
-		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
-		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
-
-
-		if ($redirectUrl)
-		{
-			$this->redirectAndForwardMessages($redirectUrl);
-		}
-
-		return $check;
 	}
 
 	public function logout()
@@ -1700,15 +1639,13 @@ class e_user_provider
 	}
 
 	/**
-	 * @param $provider
-	 * @param string $xupAction
 	 * @param string $backUrl
 	 * @return string
 	 */
-	public function generateCallbackUrl($xupAction = "login", $backUrl = null)
+	public function generateCallbackUrl($backUrl = null)
 	{
 		return e107::getUrl()->create(
-			"system/xup/$xupAction",
+			"system/xup/login",
 			array(
 				'provider' => $this->getProvider(),
 				'back' => $backUrl,

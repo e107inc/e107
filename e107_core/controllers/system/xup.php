@@ -34,34 +34,7 @@ class core_system_xup_controller extends eController
 
 	public function init()
 	{
-		//$back = 'system/xup/test';
 		$this->backUrl = isset($_GET['back']) ? $_GET['back'] : null;
-	}
-	
-	public function actionSignup()
-	{
-		$allow = true;
-		$session = e107::getSession();
-		if($session->get('HAuthError'))
-		{
-			$allow = false;
-			$session->set('HAuthError', null);
-		}
-		
-		if($allow && vartrue($_GET['provider']))
-		{
-			$provider = e107::getUserProvider($_GET['provider']);
-			try
-			{
-				$provider->signup($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
-			}
-			catch (Exception $e)
-			{
-				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
-			}
-		}
-		
-		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : $this->backUrl);
 	}
 	
 	public function actionLogin()
@@ -73,22 +46,23 @@ class core_system_xup_controller extends eController
 			$allow = false;
 			$session->set('HAuthError', null);
 		}
-
+		
 		if($allow && vartrue($_GET['provider']))
 		{
 			$provider = e107::getUserProvider($_GET['provider']);
 			try
 			{
-				$provider->login($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
+				$provider->login($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
 				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
 			}
 		}
+		
 		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : $this->backUrl);
 	}
-	
+
 	public function actionTest()
 	{
 		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
@@ -141,32 +115,12 @@ class core_system_xup_controller extends eController
 					'provider' => $key,
 					'back' => $testUrl,
 				]);
-				$testSignupUrl = e107::getUrl()->create('system/xup/signup', [
-					'provider' => $key,
-					'back' => $testUrl,
-				]);
 
-				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a class="btn btn-default btn-secondary" href="'.$testLoginUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
-				echo '<li><a class="btn btn-default btn-secondary" href="'.$testSignupUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';
-			
-				echo "</ul>";
+				echo '<h4>'.$key.'</h4>';
+				echo '<div><a class="btn btn-default btn-secondary" href="'.$testLoginUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></div>';
 			}
-			
-		//	print_a($var);
 		}
 		
 			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?logout=true').'">'.LAN_XUP_ERRM_12.'</a>';
-		
-		/*
-		echo '<h3>Facebook</h3>';
-		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Facebook').'">Test login with Facebook</a>';
-		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Facebook').'">Test signup with Facebook</a>';
-		
-		echo '<h3>Twitter</h3>';
-		echo '<br /><a href="'.e107::getUrl()->create('system/xup/login?provider=Twitter').'">Test login with Twitter</a>';
-		echo '<br /><a href="'.e107::getUrl()->create('system/xup/signup?provider=Twitter').'">Test signup with Twitter</a>';
-		
-		 */
 	}
 }
