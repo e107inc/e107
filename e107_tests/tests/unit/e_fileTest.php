@@ -305,6 +305,8 @@ class e_fileTest extends \Codeception\Test\Unit
 				'/CONTRIBUTING.md',
 				'/LICENSE',
 				'/README.md',
+				'/composer.json',
+				'/composer.lock',
 				'/install.php',
 				'/favicon.ico',
 			]

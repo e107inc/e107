@@ -1497,12 +1497,13 @@ class e_user extends e_user_model
 	private $_parent_config = null;
 	
 	/**
-	 * @var Hybrid_Provider_Model
+	 * @var e_user_provider|null
 	 */
 	protected $_provider;
 
 	public function __construct()
 	{
+		parent::__construct();
 		$this->setSessionData() // retrieve data from current session
 			->load() // load current user from DB
 			->setEditor($this); // reference to self
@@ -1531,7 +1532,7 @@ class e_user extends e_user_model
 	
 	/**
 	 * Init external user login/signup provider
-	 * @return e_system_user
+	 * @return e_user
 	 */
 	public function initProvider()
 	{
@@ -1540,15 +1541,15 @@ class e_user extends e_user_model
 		if($this->get('user_xup'))
 		{
 			$providerId = $this->getProviderName();
-			require_once(e_HANDLER.'user_handler.php');
-			$this->_provider = new e_user_provider($providerId);
-			$this->_provider->init();
+			$this->_provider = e107::getUserProvider($providerId);
 		}
+
+		return $this;
 	}
 	
 	/**
 	 * Get external user provider
-	 * @return Hybrid_Provider_Model
+	 * @return e_user_provider|null
 	 */
 	public function getProvider()
 	{
@@ -1608,7 +1609,7 @@ class e_user extends e_user_model
 	 */
 	final public function loginProvider($xup)
 	{
-		if(!e107::getPref('social_login_active', false))  return false;
+		if(!e107::getUserProvider()->isSocialLoginEnabled())  return false;
 		
 		if($this->isUser()) return true;
 		
@@ -1723,13 +1724,14 @@ class e_user extends e_user_model
 	public function tryProviderSession($deniedAs)
 	{
 		// don't allow if main admin browse front-end or there is already user session
-		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
-		
+		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getUserProvider()->isSocialLoginEnabled()) return $this;
+
+		$hybrid = e107::getHybridAuth(); // init the auth class
+
 		try
 		{
 			// detect all currently connected providers
-			$hybrid = e107::getHybridAuth(); // init the auth class
-			$connected = Hybrid_Auth::getConnectedProviders();
+			$connected = $hybrid->getConnectedProviders();
 		}
 		catch(Exception $e)
 		{
@@ -1748,11 +1750,18 @@ class e_user extends e_user_model
 
 		foreach ($connected as $providerId) 
 		{
-			$adapter = Hybrid_Auth::getAdapter($providerId);
-			
-			if(!$adapter->getUserProfile()->identifier) continue;
+			$adapter = $hybrid->getAdapter($providerId);
 
-			$profile = $adapter->getUserProfile();
+			try
+			{
+				$profile = $adapter->getUserProfile();
+			}
+			catch (\Hybridauth\Exception\Exception $e)
+			{
+				continue;
+			}
+
+			if (!$profile->identifier) continue;
 
 			$userdata['user_name']  = $sql->escape($profile->displayName);
 			$userdata['user_image'] = $profile->photoURL; // avatar
@@ -1761,7 +1770,8 @@ class e_user extends e_user_model
 			$id = $providerId.'_'.$profile->identifier;
 			$where[] = "user_xup='".$sql->escape($id)."'";
 		}
-
+		// no active session found
+		if(empty($where)) return $this;
 
 		$where = implode(' OR ', $where);
 		if($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))
@@ -1873,7 +1883,7 @@ class e_user extends e_user_model
 				$this->_initConstants();
 				
 				// init any available external user provider
-				if(e107::getPref('social_login_active', false)) $this->initProvider();
+				if(e107::getUserProvider()->isSocialLoginEnabled()) $this->initProvider();
 				
 				return $this;
 			}

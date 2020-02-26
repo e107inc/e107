@@ -174,13 +174,13 @@ class userlogin
 		{
 			if (!$this->lookupUser($username, $forceLogin))
 			{
-				return $this->invalidLogin($username,LOGIN_BAD_USERNAME);		// User doesn't exist
+				return false;		// User doesn't exist
 			}
 		}
 
 		if ($authorized !== true && $this->checkUserPassword($username, $userpass, $response, $forceLogin) !== true)
 		{
-			return $this->invalidLogin($username,LOGIN_BAD_PW);
+			return false;
 		}
 
 

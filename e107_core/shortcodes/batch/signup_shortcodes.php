@@ -65,95 +65,85 @@ class signup_shortcodes extends e_shortcode
 	// TODO - template
 	function sc_signup_xup_login($parm)
 	{
-		$pref = e107::getPref('social_login_active');
-		$tp = e107::getParser();
-			
+		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
+
 		$size = empty($parm['size']) ? '3x' : $parm['size'];
 		$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ;
 
-
-		if(!empty($pref))
-		{
-			$text = "";
-			$providers = e107::getPref('social_login'); 
-
-			foreach($providers as $p=>$v)
-			{
-				$p = strtolower($p);
-				if($v['enabled'] == 1)
-				{
-					
-				//		$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
-				
-					$ic = strtolower($p);
-					
-					if($ic == 'live')
-					{
-						$ic = 'windows';
-					}
-					
-					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
-					
-					$button = (defset('FONTAWESOME')) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true)) : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
-					$text .= " <a title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)." ' role='button' class='signup-xup  ".$class."' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";
-				}
-				//TODO different icon options. see: http://zocial.smcllns.com/
-			}	
-			
-		//	$text .= "<hr />";
-			return $text;	
-		}	
+		return $this->generateXupLoginButtons("login", $size, $class);
 	}
 	
 	// TODO - template
 	function sc_signup_xup_signup($parm)
 	{
-		$pref = e107::getPref('social_login_active');
+		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
+
+		$size = empty($parm['size']) ? '2x' : $parm['size'];
+		$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ;
+
+		if($size == '2x')
+		{
+			$class .= ' btn-lg';
+		}
+
+		return $this->generateXupLoginButtons("signup", $size, $class);
+	}
+
+	/**
+	 * @param string $type
+	 * @param $size
+	 * @param $class
+	 * @return string
+	 */
+	private function generateXupLoginButtons($type, $size, $class)
+	{
+		$text = "";
 		$tp = e107::getParser();
 
-
-		
-		if(!empty($pref))
+		$lan_plugin_social_xup = '';
+		switch ($type)
 		{
-			$text = "";
-			$providers = e107::pref('core', 'social_login'); 
-			
-			$size = empty($parm['size']) ? '2x' : $parm['size'];	
-			$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ; 
-			
-			if($size == '2x')
+			case "login":
+				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_REG;
+				break;
+			case "signup":
+				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_SIGNUP;
+				break;
+		}
+
+
+		$manager = new SocialLoginConfigManager(e107::getConfig());
+		$providers = $manager->getValidConfiguredProviderConfigs();
+
+		foreach ($providers as $p => $v)
+		{
+			if ($v['enabled'] == 1)
 			{
-				$class .= ' btn-lg';	
-			}
+				$ic = strtolower($p);
 
-
-			foreach($providers as $p=>$v)
-			{
-
-
-				$p = strtolower($p);
-				if($v['enabled'] == 1)
+				switch ($ic)
 				{
-					$ic = strtolower($p);
-					
-					if($ic == 'live')
-					{
+					case 'windowslive':
 						$ic = 'windows';
-					}
-
-					$button = (defset('FONTAWESOME')) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true))."</span>" : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
-				
-					$text .= " <a class='signup-xup ".$class."' role='button' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
+						break;
 				}
-				//TODO different icon options. see: http://zocial.smcllns.com/
-			}	
-			
-		//	$text .= "<hr />";
-			return $text;	
-		}	
+
+				if (defset('FONTAWESOME') && in_array($ic, e107::getMedia()->getGlyphs()))
+					$button = "<span title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "'>" . $tp->toGlyph('fa-' . $ic, array('size' => $size, 'fw' => true)) . "</span>";
+				elseif (is_file(e107::getFolder('images') . "xup/{$ic}.png"))
+					$button = "<img class='e-tip' title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "' src='" . e_IMAGE_ABS . "xup/{$ic}.png' alt='' />";
+				else
+					$button = "<span title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "'>$p</span>";
+
+				$callback_url = e107::getUserProvider($p)->generateCallbackUrl(e_REQUEST_URL);
+				$text .= " <a title='" . $tp->lanVars($lan_plugin_social_xup, $p) . " ' role='button' class='signup-xup $class' href='$callback_url'>$button</a> ";
+			}
+			//TODO different icon options. see: http://zocial.smcllns.com/
+		}
+
+		return $text;
 	}
-	
-	
+
 	function sc_signup_form_open()
 	{
 		return "<form action='".e_SELF."' method='post' id='signupform' autocomplete='off'><div>".e107::getForm()->token()."</div>";
