@@ -32,17 +32,40 @@ class social_adminarea extends e_admin_dispatcher
 
 	//	'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		// 'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'main/configure'		=> array('caption'=> LAN_CONFIGURE, 'perm' => 'P'),
+		'main/pages'        => array('caption'=>LAN_SOCIAL_ADMIN_01, 'perm'=>'P'),
+		'main/configure'	=> array('caption'=> LAN_SOCIAL_ADMIN_02, 'perm' => 'P'),
+		'main/add'		    => array('caption'=> LAN_SOCIAL_ADMIN_44, 'perm' => 'P'),
+		'main/unsupported'	=> array('caption'=> LAN_SOCIAL_ADMIN_47, 'perm' => 'P'),
+
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 
 
 	);
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'
+		'main/modify'	=> 'main/add'
 	);
 
 	protected $menuTitle = LAN_PLUGIN_SOCIAL_NAME;
+
+	public function init()
+	{
+		$slcm = new SocialLoginConfigManager(e107::getConfig());
+		$supported_providers = $slcm->getSupportedProviders();
+		$configured_providers = $slcm->getConfiguredProviders();
+		$unsupported_providers = array_diff($configured_providers, $supported_providers);
+
+		if(empty($unsupported_providers) && !deftrue('e_DEBUG'))
+		{
+			unset($this->adminMenu['main/unsupported']);
+		}
+		else
+		{
+			$this->adminMenu['main/unsupported']['badge'] = array('value' => count($unsupported_providers), 'type'=>'warning');
+		}
+
+	}
+
 }
 
 
@@ -56,7 +79,7 @@ class social_ui extends e_admin_ui
 		protected $pluginName		= 'social';
 	//	protected $eventName		= 'social-social'; // remove comment to enable event triggers in admin.
 	//	protected $table			= 'social';
-	//	protected $pid				= 'interview_id';
+		protected $pid				= 'social_id';
 		protected $perPage			= 10;
 		protected $batchDelete		= true;
 	//	protected $batchCopy		= true;		
@@ -68,7 +91,7 @@ class social_ui extends e_admin_ui
 
 		protected $listOrder		= '';
 
-		protected $fields           = array();
+		protected $fields           = array(	);
 
 		protected $fieldpref        = array();
 
@@ -120,7 +143,7 @@ class social_ui extends e_admin_ui
 		{
 			$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
 
-			if(!empty($_POST['save_social']) )
+			if(!empty($_POST['save_social_logins']) )
 			{
 				$cfg = e107::getConfig();
 
@@ -128,13 +151,20 @@ class social_ui extends e_admin_ui
 				{
 					$this->social_login_config_manager->setProviderConfig($provider_name, $raw_updated_social_login);
 				}
+
 				$social_login_flags =
 					!!$_POST['social_login_active'] << SocialLoginConfigManager::ENABLE_BIT_GLOBAL |
 					!!$_POST['social_login_test_page'] << SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE;
 				$cfg->setPref(SocialLoginConfigManager::SOCIAL_LOGIN_FLAGS, $social_login_flags);
-				$cfg->setPref('xurl', $_POST['xurl']);
 				$cfg->save(true, true, true);
 
+			}
+
+			if(!empty($_POST['save_social_pages']) && isset($_POST['xurl']))
+			{
+				$cfg = e107::getConfig();
+				$cfg->setPref('xurl', $_POST['xurl']);
+				$cfg->save(true, true, true);
 			}
 
 			$tp = e107::getParser();
@@ -186,92 +216,59 @@ class social_ui extends e_admin_ui
 
 		function renderHelp()
 		{
-			$notice = "".LAN_SOCIAL_ADMIN_08." <br /><a href='".self::TEST_URL."' rel='external'>".self::TEST_URL."</a>";
-
-			$callBack = SITEURL;
-			$notice .= "<br /><br />".LAN_SOCIAL_ADMIN_09."</br ><a href='".$callBack."'>".$callBack."</a>";
 
 
-			return array("caption"=>LAN_HELP,'text'=> $notice);
+			$action = $this->getAction();
+
+			switch($action)
+			{
+
+				case "configure":
+					$notice = LAN_SOCIAL_ADMIN_45."<br />";
+					break;
+
+				case "unsupported":
+					$notice = LAN_SOCIAL_ADMIN_48;
+				break;
+
+				default:
+				case "add":
+					$notice = LAN_SOCIAL_ADMIN_46."<br /><br />";
+					$notice .= LAN_SOCIAL_ADMIN_08." <br /><br /><a href='".self::TEST_URL."' rel='external'>".self::TEST_URL."</a>";
+
+					$callBack = SITEURL;
+					$notice .= "<br /><br />".LAN_SOCIAL_ADMIN_09."</br ><a href='".$callBack."'>".$callBack."</a>";
+					break;
+
+			}
+
+			$tp = e107::getParser();
+
+			return array("caption"=>LAN_HELP,'text'=> $tp->toHTML($notice,true));
 
 		}
 
-		// optional - a custom page.
-		public function configurePage()
+		public function unsupportedPage()
 		{
-			$ns = e107::getRender();
-			$frm = e107::getForm();
-			$pref = e107::pref('core');
 			$slcm = $this->social_login_config_manager;
-
-			require_once("social_setup.php");
-			$social_setup = new social_setup();
-			if ($social_setup->upgrade_required())
-			{
-				return "<p>" . LAN_SOCIAL_UPDATE_REQUIRED . "</p>";
-			}
-
-			$text = $this->generateAdminFormJs();
-
-			$text .= "<table class='table adminform'>
-				<colgroup>
-					<col class='col-label' />
-					<col class='col-control' />
-				</colgroup>
-						<tbody>
-					<tr>
-						<td><label for='social-login-active-1'>".LAN_SOCIAL_ADMIN_02."</label>
-						</td>
-						<td>
-							".$frm->radio_switch('social_login_active', $slcm->isFlagActive($slcm::ENABLE_BIT_GLOBAL))."
-								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_07." </div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-						  <label for='social-login-test-mode-1'>
-						    <a href='".self::TEST_URL."' target='_blank'>".LAN_SOCIAL_ADMIN_TEST_PAGE_TOGGLE."</a>
-						  </label>
-						</td>
-						<td>
-							".$frm->radio_switch('social_login_test_page', $slcm->isFlagActive($slcm::ENABLE_BIT_TEST_PAGE))."
-								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_TEST_PAGE_INFO." </div>
-						</td>
-					</tr>";
-
 			$supported_providers = $slcm->getSupportedProviders();
 			$configured_providers = $slcm->getConfiguredProviders();
-			$unconfigured_providers = array_diff($supported_providers, $configured_providers);
 			$unsupported_providers = array_diff($configured_providers, $supported_providers);
-			$configured_providers = array_diff($configured_providers, $unsupported_providers);
+		//	$configured_providers = array_diff($configured_providers, $unsupported_providers);
 
-			$text .= $this->generateSocialLoginSection(
-				LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED,
-				LAN_SOCIAL_LOGIN_SECTION_UNSUPPORTED_DESCRIPTION,
-				$unsupported_providers
-			);
-			$text .= $this->generateSocialLoginSection(
-				LAN_SOCIAL_LOGIN_SECTION_CONFIGURED,
-				LAN_SOCIAL_LOGIN_SECTION_CONFIGURED_DESCRIPTION,
-				$configured_providers
-			);
-			$text .= $this->generateSocialLoginSection(
-				LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED,
-				LAN_SOCIAL_LOGIN_SECTION_UNCONFIGURED_DESCRIPTION,
-				$unconfigured_providers
-			);
+			return $this->generateSocialLoginSection($unsupported_providers	);
 
-			$text .= "
-				</tbody></table>
-			";
 
-			// -------------------------------
-			//
-			//
+		}
 
+
+		public function pagesPage()
+		{
+			$frm = $this->getUI();
+			$pref = e107::pref('core');
 
 			$text2 = "
-					<table class='table'>
+					<table class='table table-bordered'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -279,7 +276,7 @@ class social_ui extends e_admin_ui
 						<tbody>
 						";
 
-//XXX XURL Definitions.
+			//XXX XURL Definitions.
 			$xurls = array(
 				'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
 				'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
@@ -320,15 +317,131 @@ class social_ui extends e_admin_ui
 			</table>
 
 ";
-			$tabs = array();
-			$tabs[] = array('caption'=> LAN_SOCIAL_ADMIN_00, 'text'=>$text);
-			$tabs[] = array('caption'=> LAN_SOCIAL_ADMIN_01, 'text'=>$text2);
 
-			$ret =  $frm->open('social','post',null, 'class=form-horizontal').$frm->tabs($tabs);
+
+			$ret =  $frm->open('social','post',null, 'class=form-horizontal');
+			$ret .= $text2;
 
 			$ret .= "<div class='buttons-bar center'>
 
-			".$frm->button('save_social',1,'submit',LAN_SAVE)."
+			".$frm->button('save_social_pages',1,'submit',LAN_SAVE)."
+
+				</div>";
+
+			$ret .= $frm->close();
+
+			return $ret;
+
+
+
+		}
+
+
+
+		public function modifyPage()
+		{
+
+			$frm= $this->getUI();
+			$var = $this->getId();
+			$this->addTitle($var);
+
+			$text = $frm->open('add-social', 'post', e_SELF."?mode=main&action=add");
+			$text .= $this->generateSocialLoginForm($var);
+
+			$text .= "<div class='buttons-bar center'>".$frm->button('save_social_logins',1,'submit',LAN_ADD)."</div>";
+			$text .= $frm->close();
+
+			return $text;
+
+		}
+
+		public function addPage()
+		{
+			$slcm = $this->social_login_config_manager;
+			$supported_providers = $slcm->getSupportedProviders();
+			$configured_providers = $slcm->getConfiguredProviders();
+			$unconfigured_providers = array_diff($supported_providers, $configured_providers);
+
+		//	$text = "<table class='table table-striped table-bordered'>";
+			$text = '';
+			foreach($unconfigured_providers as $value)
+			{
+				$link = e_SELF."?mode=main&action=modify&id=".$value;
+				$text .= "<a class='col-md-3 btn btn-default' href='".$link."'>".$value."</a>";
+			}
+
+			return $text;
+
+		}
+
+
+
+		// optional - a custom page.
+		public function configurePage()
+		{
+			$ns = e107::getRender();
+			$frm = e107::getForm();
+			$pref = e107::pref('core');
+			$slcm = $this->social_login_config_manager;
+
+			require_once("social_setup.php");
+			$social_setup = new social_setup();
+			if ($social_setup->upgrade_required())
+			{
+				$srch = array('[',']');
+				$repl = array("<a href=\"" . e_ADMIN_ABS . "e107_update.php\">", "</a>");
+
+				e107::getMessage()->addInfo(str_replace($srch,$repl, LAN_SOCIAL_ADMIN_43));
+				return null;
+			}
+
+			$text = $this->generateAdminFormJs();
+
+			$text .= "<table class='table adminform table-bordered'>
+				<colgroup>
+					<col class='col-label' style='width:15%' />
+					<col class='col-control' />
+				</colgroup>
+						<tbody>
+					<tr>
+						<td><label for='social-login-active-1'>".LAN_SOCIAL_ADMIN_02."</label>
+						</td>
+						<td>
+							".$frm->radio_switch('social_login_active', $slcm->isFlagActive($slcm::ENABLE_BIT_GLOBAL))."
+								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_07." </div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						  <label for='social-login-test-mode-1'>
+						    <a href='".self::TEST_URL."' target='_blank'>".LAN_SOCIAL_ADMIN_49."</a>
+						  </label>
+						</td>
+						<td>
+							".$frm->radio_switch('social_login_test_page', $slcm->isFlagActive($slcm::ENABLE_BIT_TEST_PAGE))."
+								<div class='smalltext field-help'>".LAN_SOCIAL_ADMIN_50." </div>
+						</td>
+					</tr>";
+
+			$supported_providers = $slcm->getSupportedProviders();
+			$configured_providers = $slcm->getConfiguredProviders();
+		//	$unconfigured_providers = array_diff($supported_providers, $configured_providers);
+			$unsupported_providers = array_diff($configured_providers, $supported_providers);
+			$configured_providers = array_diff($configured_providers, $unsupported_providers);
+
+
+			$text .= $this->generateSocialLoginSection($configured_providers);
+
+			$text .= "
+				</tbody></table>
+			";
+
+
+			$ret =  $frm->open('social','post',null, 'class=form-horizontal').$text;
+
+			$ret .= "<div class='buttons-bar center'>
+
+			".$frm->button('save_social_logins',1,'submit',LAN_SAVE)."
 
 				</div>";
 
@@ -342,15 +455,14 @@ class social_ui extends e_admin_ui
 	 * @param array $provider_names
 	 * @return string
 	 */
-	private function generateSocialLoginSection($section_name, $section_explanation, $provider_names)
+	private function generateSocialLoginSection($provider_names)
 	{
-		if (empty($provider_names)) return "";
+		if(empty($provider_names))
+		{
+			return "";
+		}
 
-		$text = "
-					<tr>
-						<td colspan='2'>
-						<h4>$section_name</h4>
-						<p>$section_explanation</p>
+			$text  = "
 						<table class='table table-bordered table-striped'>
 							<colgroup>
 								<col style='width:10%' />
@@ -361,8 +473,8 @@ class social_ui extends e_admin_ui
 							<thead>
 								<tr>
 									<th>" . LAN_SOCIAL_ADMIN_04 . "</th>
-									<th>" . LAN_SOCIAL_ADMIN_AUTH_TYPE . "</th>
-									<th>" . LAN_SOCIAL_ADMIN_COLUMN_CONFIGURATION . "</th>
+									<th>" . LAN_TYPE . "</th>
+									<th>" . LAN_CONFIGURE . "</th>
 									<th class='center'>" . LAN_SOCIAL_ADMIN_03 . "</th>
 								</tr>
 							</thead>
@@ -373,9 +485,79 @@ class social_ui extends e_admin_ui
 			$text .= $this->generateSocialLoginRow($provider_name);
 		}
 
-		$text .= "</table>
-						</td>
-					</tr>";
+		$text .= "</table>";
+
+
+		return $text;
+	}
+
+	private function getLabel($fieldSlash)
+	{
+			$labels = array(
+			'keys/key'      => LAN_SOCIAL_ADMIN_05,
+			'keys/id'       => LAN_SOCIAL_ADMIN_05,
+			'keys/secret'   => LAN_SOCIAL_ADMIN_06,
+			'scope'         => LAN_SOCIAL_ADMIN_38
+
+		);
+
+		return varset($labels[$fieldSlash], ucfirst($fieldSlash));
+	}
+
+		/**
+	 * @param $provider_name
+	 * @return string Text to append
+	 */
+	private function generateSocialLoginForm($provider_name)
+	{
+		$slcm = $this->social_login_config_manager;
+		$provider_type = $slcm->getTypeOfProvider($provider_name);
+		if (empty($provider_type)) $provider_type = "<em>" . LAN_UNKNOWN . "</em>";
+
+		$normalized_provider_name = $slcm->normalizeProviderName($provider_name);
+		list($pretty_provider_name,) = array_pad(explode("-", $normalized_provider_name), 2, "");
+
+		$frm = e107::getForm();
+		$textKeys = '';
+		$textScope = '';
+		$label = varset(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
+		$radio_label = strtolower($provider_name);
+
+		$text = "<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+						<tbody>";
+
+		$textEnabled = $frm->radio_switch("social_login[$provider_name][enabled]", $slcm->isProviderEnabled($provider_name), '', '', ['class' => 'e-expandit']);
+		$text .= $textKeys . $textScope . "<tr><td>".LAN_ACTIVE."</td><td>" . $textEnabled . "</td></tr>";
+
+		$text .= "
+					<tr><td>".LAN_NAME."</td><td><label for='social-login-" . $radio_label . "-enabled'>" . $label . "</label></td></tr>
+					<tr><td>".LAN_TYPE."</td><td>$provider_type</td></tr>
+						";
+
+		$fieldInfo = self::array_slash($slcm->getFieldsOf($provider_name));
+
+
+
+		foreach ($fieldInfo as $fieldSlash => $description)
+		{
+			$field = str_replace("/", "][", $fieldSlash);
+			$frm_options = [
+				'size' => 'xxlarge',
+				'placeholder' => self::getPlaceholderFor($provider_name, $fieldSlash),
+			];
+
+			$text .= "<tr><td>".$this->getLabel($fieldSlash)."</td><td>";
+			$text .= $frm->text("social_login[$provider_name][$field]",	$slcm->getProviderConfig($provider_name, $fieldSlash),	256, $frm_options);
+			$text .= "<div class='smalltext field-help'>$description</div>";
+			$text .= "</td></tr>";
+		}
+
+		$text .= "</table>";
+
 
 		return $text;
 	}
@@ -384,11 +566,11 @@ class social_ui extends e_admin_ui
 	 * @param $provider_name
 	 * @return string Text to append
 	 */
-	private function generateSocialLoginRow($provider_name)
+	private function generateSocialLoginRow($provider_name, $mode = 'list')
 	{
 		$slcm = $this->social_login_config_manager;
 		$provider_type = $slcm->getTypeOfProvider($provider_name);
-		if (empty($provider_type)) $provider_type = "<em>" . LAN_SOCIAL_ADMIN_AUTH_TYPE_UNKNOWN . "</em>";
+		if (empty($provider_type)) $provider_type = "<em>" . LAN_UNKNOWN . "</em>";
 
 		$normalized_provider_name = $slcm->normalizeProviderName($provider_name);
 		list($pretty_provider_name,) = array_pad(explode("-", $normalized_provider_name), 2, "");
@@ -399,12 +581,12 @@ class social_ui extends e_admin_ui
 		$label = varset(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
 		$radio_label = strtolower($provider_name);
 		$text = "
-					<tr>
+					<tr id='social-login-row-" . $radio_label."'>
 						<td><label for='social-login-" . $radio_label . "-enabled'>" . $label . "</label></td>
 						<td>$provider_type</td>
 						";
 
-		$text .= "<td>";
+		$text .= "<td><table class='table table-bordered table-condensed' style='margin:0'>";
 		$fieldInfo = self::array_slash($slcm->getFieldsOf($provider_name));
 		foreach ($fieldInfo as $fieldSlash => $description)
 		{
@@ -414,17 +596,13 @@ class social_ui extends e_admin_ui
 				'placeholder' => self::getPlaceholderFor($provider_name, $fieldSlash),
 			];
 
-			$text .= "<div><label>$fieldSlash</label>";
-			$text .= $frm->text(
-				"social_login[$provider_name][$field]",
-				$slcm->getProviderConfig($provider_name, $fieldSlash),
-				256,
-				$frm_options
-			);
-			$text .= "<div class='smalltext field-help'>$description</div>";
-			$text .= "</div>";
+			$text .= "<tr><td class='col-label'>".$this->getLabel($fieldSlash)."</td>";
+			$text .= "<td>".$frm->text("social_login[$provider_name][$field]",	$slcm->getProviderConfig($provider_name, $fieldSlash),	256, $frm_options).
+			 "<div class='smalltext field-help'>$description</div>";
+			$text .= "</td></tr>";
 		}
-		$text .= "</td>";
+
+		$text .= "</table></td>";
 
 		$textEnabled = $frm->radio_switch("social_login[$provider_name][enabled]", $slcm->isProviderEnabled($provider_name), '', '', ['class' => 'e-expandit']);
 
@@ -560,6 +738,71 @@ class social_form_ui extends e_admin_form_ui
 {
 
 }
+
+
+class social_admin_tree_model extends e_tree_model
+{
+
+	/**
+	 * Load data from theme meta file.
+	 * @param bool $force
+	 */
+	function loadBatch($force=false)
+	{
+		$themeList  = e107::getTheme()->getList();
+		$newArray   = array();
+		$parms      = $this->getParams();
+		$siteTheme  = e107::getPref('sitetheme');
+
+		if($parms['limitFrom'] == 0 && empty($parms['searchqry'])) // place the sitetheme first.
+		{
+			$newArray[] = $themeList[$siteTheme];
+		}
+
+		foreach($themeList as $k=>$v)
+		{
+
+			if(!empty($parms['searchqry']) && stripos($v['description'],$parms['searchqry']) === false && stripos($v['folder'],$parms['searchqry']) === false && stripos($v['name'],$parms['searchqry']) === false)
+			{
+				continue;
+			}
+
+			if($v['path'] == $siteTheme)
+			{
+				continue;
+			}
+
+			$newArray[] = $v;
+		}
+
+		if(!empty($parms['limitTo']) && empty($parms['searchqry']))
+		{
+			$arr = array_slice($newArray, $parms['limitFrom'], $parms['limitTo']);
+		}
+		else
+		{
+			$arr = $newArray;
+		}
+
+
+		foreach($arr as $k=>$v)
+		{
+
+			$v['social_id'] = $k;
+
+			$v['social_thumbnail'] = !empty($v['thumbnail']) ? '{e_THEME}'.$v['path'].'/'.$v['thumbnail'] : null;
+			$tmp = new e_model($v);
+			$this->setNode($k,$tmp);
+
+		}
+
+		$this->setTotal(count($newArray));
+	}
+
+
+}
+
+
 
 
 new social_adminarea();
