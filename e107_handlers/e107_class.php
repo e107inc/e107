@@ -343,7 +343,7 @@ class e107
 	 * @param $e107_paths
 	 * @param $e107_root_path
 	 * @param array $e107_config_override
-	 * @return e107
+	 * @return object|boolean e107
 	 */
 	public function initInstall($e107_paths, $e107_root_path, $e107_config_override = array())
 	{

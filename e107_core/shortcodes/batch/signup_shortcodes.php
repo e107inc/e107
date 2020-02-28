@@ -112,7 +112,7 @@ class signup_shortcodes extends e_shortcode
 		}
 
 
-		$manager = new SocialLoginConfigManager(e107::getConfig());
+		$manager = new social_login_config(e107::getConfig());
 		$providers = $manager->getValidConfiguredProviderConfigs();
 
 		foreach ($providers as $p => $v)

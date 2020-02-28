@@ -17,7 +17,7 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 	 */
 	private $pref;
 	/**
-	 * @var SocialLoginConfigManager
+	 * @var social_login_config
 	 */
 	private $manager;
 
@@ -26,10 +26,10 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 	 */
 	public function _before()
 	{
-		include_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+		include_once(e_PLUGIN . "social/includes/social_login_config.php");
 
 		$this->pref = $this->make('e_pref');
-		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, [
+		$this->pref->set(social_login_config::SOCIAL_LOGIN_PREF, [
 			'Twitter-OAuth1' => [
 				'enabled' => true,
 				'keys' => [
@@ -52,35 +52,35 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 				'enabled' => true,
 			],
 		]);
-		$this->manager = new SocialLoginConfigManager($this->pref);
+		$this->manager = new social_login_config($this->pref);
 	}
 
 	public function testFlagSettingOff()
 	{
-		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_FLAGS, 0x0);
-		$this->manager = new SocialLoginConfigManager($this->pref);
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->pref->set(social_login_config::SOCIAL_LOGIN_FLAGS, 0x0);
+		$this->manager = new social_login_config($this->pref);
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 	}
 
 	public function testFlagSettingGlobalOffPreventsOthersOn()
 	{
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_GLOBAL, 0);
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE, 1);
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, 0);
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_TEST_PAGE, 1);
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 	}
 
 	public function testFlagSettingGlobalOnAllowsOtherToggles()
 	{
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_GLOBAL, 1);
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE, 0);
-		$this->assertTrue($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, 1);
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_TEST_PAGE, 0);
+		$this->assertTrue($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE, 1);
-		$this->assertTrue($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertTrue($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_TEST_PAGE, 1);
+		$this->assertTrue($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertTrue($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 	}
 
 	/**
@@ -89,14 +89,14 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 	 */
 	public function testFlagGlobalOffTurnsAllOff()
 	{
-		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_FLAGS, ~0);
-		$this->manager = new SocialLoginConfigManager($this->pref);
-		$this->assertTrue($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertTrue($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->pref->set(social_login_config::SOCIAL_LOGIN_FLAGS, ~0);
+		$this->manager = new social_login_config($this->pref);
+		$this->assertTrue($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertTrue($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 
-		$this->manager->setFlag(SocialLoginConfigManager::ENABLE_BIT_GLOBAL, 0);
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL));
-		$this->assertFalse($this->manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_TEST_PAGE));
+		$this->manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, 0);
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL));
+		$this->assertFalse($this->manager->isFlagActive(social_login_config::ENABLE_BIT_TEST_PAGE));
 	}
 
 	public function testIsProviderEnabled()
@@ -166,8 +166,8 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 
 	public function testSetProviderConfigOverwritesNonArray()
 	{
-		$this->pref->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, 'bad string!');
-		$manager = new SocialLoginConfigManager($this->pref);
+		$this->pref->set(social_login_config::SOCIAL_LOGIN_PREF, 'bad string!');
+		$manager = new social_login_config($this->pref);
 		$expected = ['enabled' => true];
 
 		$manager->setProviderConfig('FirstProvider', $expected);
