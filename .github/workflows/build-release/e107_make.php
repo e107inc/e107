@@ -8,21 +8,22 @@
  *
  */
 
+$builder = new e107Build();
+$builder->init();
+$builder->makeBuild();
+
 class e107Build
 {
 
-	public $config, $version, $tag, $lastversion, $lastversiondate, $beta, $error, $rc;
+	public $config, $version, $lastversion, $lastversiondate, $beta, $error, $rc;
 
 	var $createdFiles = array();
 	var $releaseDir = "";
 
-	var $pause = false;
-
 	var $tempDir = null;
 	var $exportDir = null;
 	var $gitDir = null;
-	var $gitRepo = null;
-
+	var $stagingDir = null;
 
 	public function __construct()
 	{
@@ -31,12 +32,46 @@ class e107Build
 		$this->rc = false;
 
 		$this->config['baseDir'] = dirname(__FILE__);
-
 	}
 
-	public function init($module)
+	private static function getVerFileVersion($verFilePath)
 	{
-		$iniFile = $this->config['baseDir'] . '/config/config_' . $module . '.ini';
+		$verFileTokens = token_get_all(file_get_contents($verFilePath));
+		$nextConstantEncapsedStringIsVersion = false;
+		foreach ($verFileTokens as $verFileToken)
+		{
+			if (!isset($verFileToken[1])) continue;
+			$token = $verFileToken[0];
+			$value = trim($verFileToken[1], "'\"");
+
+			if ($token === T_CONSTANT_ENCAPSED_STRING)
+			{
+				if ($nextConstantEncapsedStringIsVersion)
+				{
+					return $value;
+				}
+				if ($value === 'e107_version') $nextConstantEncapsedStringIsVersion = true;
+			}
+		}
+		return '0';
+	}
+
+	private static function gitVersionToPhpVersion($gitVersion, $verFileVersion)
+	{
+		$verFileVersion = array_shift(explode(" ", $verFileVersion));
+		$version = preg_replace("/^v/", "", $gitVersion);
+		$versionSplit = explode("-", $version);
+		if (count($versionSplit) > 1)
+		{
+			if (version_compare($verFileVersion, $versionSplit[0], '>')) $versionSplit[0] = $verFileVersion;
+			$versionSplit[0] .= "dev";
+		}
+		return implode("-", $versionSplit);
+	}
+
+	public function init($module = null)
+	{
+		$iniFile = $this->config['baseDir'] . '/make.ini';
 
 		if (is_readable($iniFile))
 		{
@@ -63,24 +98,25 @@ class e107Build
 
 		$this->exportDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/";
 		$this->tempDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/temp/";
-		$this->gitDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/checkout/";
-		$this->gitRepo = $this->config['main']['git_repo'];
+		$this->stagingDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/staging/";
 
-		if (!$this->version)
+		$rc = 255;
+		$output = [];
+		exec("git rev-parse --show-toplevel", $output, $rc);
+		$gitRoot = array_pop($output);
+		if (!is_dir($gitRoot))
 		{
-			echo "Error: No Version Set\n"; // eg. 0.7.22
-			$this->error = TRUE;
-			return;
+			$this->status("Error getting Git repo root (rc=$rc). Output was garbage: $gitRoot");
+			return false;
 		}
+		$this->gitDir = realpath($gitRoot);
 
-		if (!$this->tag)
-		{
-			echo "Error: No Tag Set\n"; // eg. e107_v07_22_release	
-			$this->error = TRUE;
-		}
+		exec("git describe --tags", $output, $rc);
+		$gitVersion = array_pop($output);
+		$verFileVersion = self::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
+		$this->version = self::gitVersionToPhpVersion($gitVersion, $verFileVersion);
 
 		$this->config['preprocess']['version'] = $this->version;
-		$this->config['preprocess']['tag'] = $this->tag;
 
 		if ($this->ReadMeProblems())
 		{
@@ -281,9 +317,6 @@ class e107Build
 		$cmd = "mkdir -p {$dir}/temp";
 		`$cmd`;
 
-		$cmd = "mkdir -p {$dir}/checkout";
-		`$cmd`;
-
 		$cmd = "mkdir -p {$dir}/release";
 		`$cmd`;
 
@@ -305,36 +338,41 @@ class e107Build
 
 	private function preprocess()
 	{
-		$this->gitClone();
 		return true;
 	}
 
-	private function gitClone()
+	/*
+	private function targetClone()
 	{
-		if (empty($this->gitRepo))
+		$rc = 255;
+		$output = [];
+		exec("git rev-parse --show-toplevel", $output, $rc);
+		$gitRoot = array_pop($output);
+		if (!is_dir($gitRoot))
 		{
-			$this->status("No Repo  selected");
+			$this->status("Error getting Git repo root (rc=$rc). Output was garbage: $gitRoot");
 			return false;
 		}
-
-		$this->status("Cloning git repo", true);
-
-		$this->run("git clone " . $this->gitRepo . " " . $this->gitDir);
-		$this->run("chmod 0755 " . $this->gitDir);
-
-		if (!is_dir($this->gitDir . "/.git"))
+		$gitRoot = realpath($gitRoot);
+		mkdir($this->stagingDir, 0755, true);
+		$stagingDir = realpath($this->stagingDir);
+		$stagingDirLocalSegment = preg_replace("/^" . preg_quote($gitRoot, "/") . "/", "", $stagingDir);
+		if ($stagingDirLocalSegment == $stagingDir)
 		{
-			$this->status("There was a problem. Check your setup:\n
-			cd /usr/bin/<br />
-			sudo ln -s /usr/local/cpanel/3rdparty/bin/git* .<br />
-			git --version
-			<br /><br />
-
-			Make sure TCP port 9418 is open!");
+			$this->status("Staging dir \"$stagingDir\" is currently not supported outside repo root \"$gitRoot\"");
 		}
+		$cloneCommand =
+			"rsync -avHXShPs" .
+			" --exclude=" . escapeshellarg($stagingDirLocalSegment . "/") .
+			" --delete-after --delete-excluded" .
+			" --link-dest=" . escapeshellarg($gitRoot) .
+			" " . escapeshellarg($gitRoot . "/") .
+			" " . escapeshellarg($stagingDir . "/");
+		exec($cloneCommand, $output, $rc);
 
-		return true;
+		return $rc;
 	}
+	*/
 
 	private function run($cmd)
 	{
@@ -382,6 +420,7 @@ class e107Build
 					case "files_delete" :
 						$this->filesDelete($val);
 						break;
+
 					case "plugin_delete" :
 						$this->pluginRemove($val);
 						break;
@@ -394,12 +433,7 @@ class e107Build
 				$this->CreateCoreImage(); // Create Image
 			}
 
-			$this->pause(20);
-
-
 			$this->copyCoreImage();
-
-			$this->pause(20);
 
 			if (isset($rel['readme']))
 			{
@@ -444,21 +478,28 @@ class e107Build
 
 
 			$zipfile = $releaseDir . '/' . $newfile . '.zip';
-			$gzfile = $releaseDir . '/' . $newfile . '.tar.gz';
+			$tarfile = $releaseDir . '/' . $newfile . '.tar';
 
-			$zipcmd = "zip -r{$zipsince} $zipfile * >/dev/null 2>&1";
-			$tarcmd = "tar cz {$ts} -f$gzfile * >/dev/null 2>&1";
+			$zipcmd = "zip -9 -r{$zipsince} $zipfile . 2>&1";
+			$tarcmd = "tar --owner=0 --group=0 -cf $tarfile {$ts} . 2>&1";
 
 			$this->status('Creating ZIP archive');
 			$this->status($zipcmd);
 			`$zipcmd`;
 
-			$this->status('Creating TAR.GZ archive');
+			$this->status('Creating TAR archive');
 			$this->status($tarcmd);
 			`$tarcmd`;
 
+			$this->status('Creating TAR.GZ archive');
+			`(cat $tarfile | gzip -9 > $tarfile.gz)`;
+//			$this->status('Creating TAR.XZ archive');
+//			`(cat $tarfile | xz -9e > $tarfile.xz)`;
+
 			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.zip');
+			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar');
 			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar.gz');
+//			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar.xz');
 		} // end loop
 
 
@@ -481,7 +522,7 @@ class e107Build
 
 	private function rmdir($dir)
 	{
-		if (empty($dir))
+		if (!is_dir($dir))
 		{
 			return false;
 		}
@@ -490,10 +531,7 @@ class e107Build
 
 		$dir = rtrim($dir, "/");
 
-		$cmd = "rm -rf {$dir}/*";
-		$this->status($cmd);
-		`$cmd`;
-		$cmd = "rmdir {$dir}";
+		$cmd = "rm -rf {$dir}";
 		$this->status($cmd);
 		`$cmd`;
 
@@ -533,22 +571,17 @@ class e107Build
 		$cmd = 'unzip -q -o ' . $filepath . ' -d ' . $this->exportDir;
 
 		$this->run($cmd);
-
+		$this->run('chmod -R a=,u+rwX,go+rX ' . escapeshellarg($this->exportDir));
 	}
 
-	private function editVersion($dir = 'checkout')
+	private function editVersion($dir = 'export')
 	{
 		$version = $this->config['preprocess']['version'];
 
-		if ($this->beta && !$this->rc)
+		if (strpos($version, "-") !== false)
 		{
-			$version .= " beta build " . date('Ymd');
+			$version .= " nightly build " . date('Ymd');
 		}
-		elseif ($this->rc)
-		{
-			$version .= " " . $this->rc;
-		}
-
 
 		$fname = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/" . $dir . "/e107_admin/ver.php";
 
@@ -599,12 +632,14 @@ class e107Build
 			$fn = trim($fn);
 			if (file_exists($fn))
 			{
-				$result = unlink($fn);
+				if (is_file($fn)) $result = unlink($fn);
+				elseif (is_dir($fn)) $result = $this->rmdir($fn);
+				else $result = false;
 				$this->status("Deleting $fn - " . ($result ? "SUCCESS" : "FAIL"));
 			}
 			else
 			{
-				$this->status("File already deleted or abscent - " . $fn);
+				$this->status("File already deleted or absent - " . $fn);
 			}
 		}
 
@@ -652,19 +687,6 @@ class e107Build
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
 		chdir($dir);
-	}
-
-	private function pause($seconds)
-	{
-		if ($this->pause !== true)
-		{
-			return false;
-		}
-
-		$this->status("   (Pausing for " . $seconds . " seconds...)", true);
-		sleep($seconds);
-
-		return true;
 	}
 
 	private function copyCoreImage()
@@ -796,7 +818,7 @@ class coreImage
 		$data .= "+ ----------------------------------------------------------------------------+\n";
 		$data .= "|     e107 website system\n";
 		$data .= "|\n";
-		$data .= "|     Copyright (C) 2008-2010 e107 Inc. \n";
+		$data .= "|     Copyright (C) 2008-" . date("Y") . " e107 Inc. \n";
 		$data .= "|     http://e107.org\n";
 		//	$data .= "|     jalist@e107.org\n";
 		$data .= "|\n";
@@ -831,47 +853,73 @@ class coreImage
 
 	function scan($dir, $image = array())
 	{
-		$handle = opendir($dir . '/');
+		$absoluteBase = realpath($dir);
+		if (!is_dir($absoluteBase)) return false;
 
-		$exclude = array('e107_config.php', 'install.php', 'CVS', '.svn', 'Thumbs.db', '.gitignore');
+		$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+		$files = [];
 
-		while (false !== ($readdir = readdir($handle)))
+		/**
+		 * @var $file DirectoryIterator
+		 */
+		foreach ($iterator as $file)
 		{
-			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && !in_array($readdir, $exclude) && (strpos('._', $readdir) === FALSE))
-			{
-				$path = $dir . '/' . $readdir;
-				if (is_dir($path))
-				{
-					$dirs[$path] = $readdir;
-				}
-				else if (!isset($image[$readdir]))
-				{
-					$files[$readdir] = $this->checksum($path);
-				}
-			}
-		}
-		closedir($handle);
+			if ($file->isDir()) continue;
 
-		$list = [];
-		if (isset($dirs))
-		{
-			ksort($dirs);
-			foreach ($dirs as $dir_path => $dir_list)
-			{
-				$list[$dir_list] = ($set = $this->scan($dir_path, $image[$dir_list])) ? $set : array();
-			}
+			$absolutePath = $file->getRealPath();
+			$relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
+
+			if (empty($relativePath) || $relativePath == $absolutePath) continue;
+
+			self::array_set($files, $relativePath, $this->checksum($absolutePath));
 		}
 
-		if (isset($files))
+		ksort($files);
+
+		return $files;
+	}
+
+	/**
+	 * Set an array item to a given value using "slash" notation.
+	 *
+	 * If no key is given to the method, the entire array will be replaced.
+	 *
+	 * Based on Illuminate\Support\Arr::set()
+	 *
+	 * @param array $array
+	 * @param string|null $key
+	 * @param mixed $value
+	 * @return array
+	 * @copyright Copyright (c) Taylor Otwell
+	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
+	 */
+	private static function array_set(&$array, $key, $value)
+	{
+		if (is_null($key))
 		{
-			ksort($files);
-			foreach ($files as $file_name => $file_list)
-			{
-				$list[$file_name] = $file_list;
-			}
+			return $array = $value;
 		}
 
-		return $list;
+		$keys = explode('/', $key);
+
+		while (count($keys) > 1)
+		{
+			$key = array_shift($keys);
+
+			// If the key doesn't exist at this depth, we will just create an empty array
+			// to hold the next value, allowing us to create the arrays to hold final
+			// values at the correct depth. Then we'll keep digging into the array.
+			if (!isset($array[$key]) || !is_array($array[$key]))
+			{
+				$array[$key] = [];
+			}
+
+			$array = &$array[$key];
+		}
+
+		$array[array_shift($keys)] = $value;
+
+		return $array;
 	}
 
 	function checksum($filename)

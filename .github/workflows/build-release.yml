@@ -1,0 +1,36 @@
+name: Build Release
+
+on:
+  push:
+  pull_request:
+
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update operating system software repository
+        run: sudo apt-get update
+
+      - name: Install operating system dependencies
+        run: sudo apt-get install -y git tar gzip xz-utils zip php-cli
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch version information
+        run: git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
+
+      - name: Run build script
+        run: php e107_make.php
+        working-directory: ./.github/workflows/build-release/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: release_files
+          path: ./.github/workflows/build-release/target/e107/release/
