@@ -21,15 +21,15 @@ class core_system_xup_controller extends eController
 		
 	var $backUrl = null;
 	/**
-	 * @var SocialLoginConfigManager
+	 * @var social_login_config
 	 */
 	private $social_login_config_manager;
 
 	public function __construct(eRequest $request, eResponse $response = null)
 	{
 		parent::__construct($request, $response);
-		require_once(e_PLUGIN."social/SocialLoginConfigManager.php");
-		$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
+		require_once(e_PLUGIN."social/includes/social_login_config.php");
+		$this->social_login_config_manager = new social_login_config(e107::getConfig());
 	}
 
 	public function init()
@@ -65,8 +65,8 @@ class core_system_xup_controller extends eController
 
 	public function actionTest()
 	{
-		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
-		$manager = new SocialLoginConfigManager(e107::getConfig());
+		require_once(e_PLUGIN . "social/includes/social_login_config.php");
+		$manager = new social_login_config(e107::getConfig());
 
 		if (!$manager->isFlagActive($manager::ENABLE_BIT_TEST_PAGE))
 		{

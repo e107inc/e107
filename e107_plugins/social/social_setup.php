@@ -8,7 +8,7 @@
  *
  */
 
-require_once("SocialLoginConfigManager.php");
+require_once("includes/social_login_config.php");
 
 class social_setup
 {
@@ -30,8 +30,8 @@ class social_setup
 	private function upgrade_required_provider_name_normalization()
 	{
 		$coreConfig = e107::getConfig();
-		$manager = new SocialLoginConfigManager($coreConfig);
-		$providerConfig = $coreConfig->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF);
+		$manager = new social_login_config($coreConfig);
+		$providerConfig = $coreConfig->getPref(social_login_config::SOCIAL_LOGIN_PREF);
 		if (!is_array($providerConfig)) $providerConfig = [];
 		$normalizedProviderNames = array_keys($providerConfig);
 		foreach ($normalizedProviderNames as $normalizedProviderName)
@@ -75,9 +75,9 @@ class social_setup
 	{
 		$coreConfig = e107::getConfig();
 		$logger = e107::getMessage();
-		$manager = new SocialLoginConfigManager($coreConfig);
+		$manager = new social_login_config($coreConfig);
 
-		$providerConfig = $coreConfig->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF);
+		$providerConfig = $coreConfig->getPref(social_login_config::SOCIAL_LOGIN_PREF);
 		if (!is_array($providerConfig)) $providerConfig = [];
 
 		foreach ($providerConfig as $oldNormalizedProviderName => $oldOptions)
@@ -107,7 +107,7 @@ class social_setup
 			{
 				$manager->setProviderConfig($denormalizedProviderName, $newOptions);
 				$coreConfig->removePref(
-					SocialLoginConfigManager::SOCIAL_LOGIN_PREF . '/' . $oldNormalizedProviderName
+					social_login_config::SOCIAL_LOGIN_PREF . '/' . $oldNormalizedProviderName
 				);
 				$logger->addSuccess(
 					"Updated name of social login provider $oldNormalizedProviderName → $actualNormalizedProviderName"

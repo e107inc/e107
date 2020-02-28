@@ -12,30 +12,30 @@ class social_setupTest extends \Codeception\Test\Unit
 {
 	public function _before()
 	{
-		include_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
+		include_once(e_PLUGIN . "social/includes/social_login_config.php");
 		include_once(e_PLUGIN . "social/social_setup.php");
 	}
 
 	public function testUpgradeProviderNameNormalization()
 	{
-		e107::getConfig()->set(SocialLoginConfigManager::SOCIAL_LOGIN_PREF, SOCIAL_LOGIN_LEGACY_DATA);
+		e107::getConfig()->set(social_login_config::SOCIAL_LOGIN_PREF, SOCIAL_LOGIN_LEGACY_DATA);
 		$social_setup = new social_setup();
 		$this->assertTrue($social_setup->upgrade_required());
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL"));
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Github"));
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Live"));
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/WindowsLive"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/AOL"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/Github"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/Live"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/WindowsLive"));
 
 		$social_setup->upgrade_pre();
 		$this->assertFalse($social_setup->upgrade_required());
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL"));
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Github"));
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
-		$this->assertIsNotArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/Live"));
-		$this->assertIsArray(e107::getConfig()->getPref(SocialLoginConfigManager::SOCIAL_LOGIN_PREF . "/WindowsLive-OAuth2"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/AOL"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/AOL-OpenID"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/Github"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/GitHub-OAuth2"));
+		$this->assertIsNotArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/Live"));
+		$this->assertIsArray(e107::getConfig()->getPref(social_login_config::SOCIAL_LOGIN_PREF . "/WindowsLive-OAuth2"));
 	}
 
 	public function testUpgradeFixRenamedProvidersXup()

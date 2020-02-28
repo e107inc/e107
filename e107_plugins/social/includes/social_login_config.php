@@ -10,7 +10,7 @@
 
 require_once(e_HANDLER . "user_handler.php");
 
-class SocialLoginConfigManager
+class social_login_config
 {
 	const SOCIAL_LOGIN_PREF = "social_login";
 
@@ -100,7 +100,7 @@ class SocialLoginConfigManager
 	 *        $options['keys']['id'] string The OAuth1 client key or OAuth2 client ID
 	 *        $options['keys']['secret'] string The OAuth1 or OAuth2 client secret
 	 *        $options['scope'] string OAuth2 scopes, space-delimited
-	 * @see SocialLoginConfigManager::saveConfig() to commit to database.
+	 * @see social_login_config::saveConfig() to commit to database.
 	 *
 	 */
 	public function setProviderConfig($providerName, $options)

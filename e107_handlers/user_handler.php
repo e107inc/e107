@@ -1104,14 +1104,14 @@ class e_user_provider
 	protected $hybridauth;
 	protected $_config = array();
 	/**
-	 * @var SocialLoginConfigManager
+	 * @var social_login_config
 	 */
 	protected $social_login_config_manager;
 
 	public function __construct($provider = null, $config = array())
 	{
-		require_once(e_PLUGIN . "social/SocialLoginConfigManager.php");
-		$this->social_login_config_manager = new SocialLoginConfigManager(e107::getConfig());
+		require_once(e_PLUGIN . "social/includes/social_login_config.php");
+		$this->social_login_config_manager = new social_login_config(e107::getConfig());
 
 		if (!empty($config))
 		{
@@ -1432,7 +1432,7 @@ class e_user_provider
 	 */
 	public function isSocialLoginEnabled()
 	{
-		return $this->social_login_config_manager->isFlagActive(SocialLoginConfigManager::ENABLE_BIT_GLOBAL);
+		return $this->social_login_config_manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL);
 	}
 
 	/**
