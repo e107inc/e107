@@ -8,30 +8,86 @@
  *
  */
 
+require_once("coreImage.php");
+
 $builder = new e107Build();
-$builder->init();
 $builder->makeBuild();
 
 class e107Build
 {
-
-	public $config, $version, $lastversion, $lastversiondate, $beta, $error, $rc;
-
-	var $createdFiles = array();
 	var $releaseDir = "";
-
 	var $tempDir = null;
 	var $exportDir = null;
 	var $gitDir = null;
 	var $stagingDir = null;
+	protected $config;
+	protected $version;
 
 	public function __construct()
 	{
-		$this->beta = false;
-		$this->error = false;
-		$this->rc = false;
+		$this->config['baseDir'] = dirname(__FILE__);
+		$iniFile = $this->config['baseDir'] . '/make.ini';
+
+		if (is_readable($iniFile))
+		{
+			$this->status('Reading config file: ' . $iniFile);
+			$this->config = parse_ini_file($iniFile, true);
+		}
+		else
+		{
+			throw new RuntimeException("Configuration file " . escapeshellarg($iniFile) . " not found.");
+		}
+		foreach ($this->config as $k => $v)
+		{
+			if (preg_match('#release_(\d*)#', $k, $matches))
+			{
+				$this->config['releases'][] = $v;
+				unset($this->config[$k]);
+			}
+		}
 
 		$this->config['baseDir'] = dirname(__FILE__);
+
+
+		$this->exportDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/";
+		$this->tempDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/temp/";
+		$this->stagingDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/staging/";
+
+		$rc = 255;
+		$output = [];
+		exec("git rev-parse --show-toplevel", $output, $rc);
+		$gitRoot = array_pop($output);
+		if (!is_dir($gitRoot))
+		{
+			throw new RuntimeException("Error getting Git repo root (rc=$rc). Output was garbage: $gitRoot");
+		}
+		$this->gitDir = realpath($gitRoot);
+
+		exec("git describe --tags", $output, $rc);
+		$gitVersion = array_pop($output);
+		$verFileVersion = self::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
+		$this->version = self::gitVersionToPhpVersion($gitVersion, $verFileVersion);
+
+		$this->validateReadme();
+	}
+
+	private function status($msg, $heading = false)
+	{
+		if ($heading == false)
+		{
+			echo date('m/d/Y h:i:s') . '  ';
+		}
+		else
+		{
+			echo "\n\n>>>> ";
+		}
+
+		echo $msg . "\n";
+
+		if ($heading != false)
+		{
+			echo "\n";
+		}
 	}
 
 	private static function getVerFileVersion($verFilePath)
@@ -69,113 +125,9 @@ class e107Build
 		return implode("-", $versionSplit);
 	}
 
-	public function init($module = null)
-	{
-		$iniFile = $this->config['baseDir'] . '/make.ini';
-
-		if (is_readable($iniFile))
-		{
-			$this->status('Reading config file: ' . $iniFile);
-			$this->config = parse_ini_file($iniFile, true);
-		}
-		else
-		{
-			echo(" configuration file '{$iniFile}' not found.\n\n");
-			$this->error = TRUE;
-			return;
-		}
-		foreach ($this->config as $k => $v)
-		{
-			if (preg_match('#release_(\d*)#', $k, $matches))
-			{
-				$this->config['releases'][] = $v;
-				unset($this->config[$k]);
-			}
-		}
-
-		$this->config['baseDir'] = dirname(__FILE__);
-
-
-		$this->exportDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/";
-		$this->tempDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/temp/";
-		$this->stagingDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/staging/";
-
-		$rc = 255;
-		$output = [];
-		exec("git rev-parse --show-toplevel", $output, $rc);
-		$gitRoot = array_pop($output);
-		if (!is_dir($gitRoot))
-		{
-			$this->status("Error getting Git repo root (rc=$rc). Output was garbage: $gitRoot");
-			return false;
-		}
-		$this->gitDir = realpath($gitRoot);
-
-		exec("git describe --tags", $output, $rc);
-		$gitVersion = array_pop($output);
-		$verFileVersion = self::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
-		$this->version = self::gitVersionToPhpVersion($gitVersion, $verFileVersion);
-
-		$this->config['preprocess']['version'] = $this->version;
-
-		if ($this->ReadMeProblems())
-		{
-			return;
-		}
-
-
-		if ($this->beta && ($module == '07'))
-		{
-			$this->config['releases'] = array();
-
-			// One Full Release Beta
-			$this->config['releases'][] = array(
-				'type' => 'full',
-				'files_create' => 'e107_config.php',
-				'files_rename' => 'install_.php->install.php'
-			);
-
-			// One Full Upgrade Beta
-			$this->config['releases'][] = array(
-				'type' => 'upgrade',
-				'from_version' => 'v1.x',
-				'files_delete' => 'e107_config.php,install.php,favicon.ico,.gitignore',
-				'since' => '01152006', // $this->lastversiondate, // mmddyyyy
-				//		'readme'		=> '07x_upgrade.txt'
-			);
-
-			$this->buildLastConfig();
-		}
-
-
-	}
-
-	private function status($msg, $heading = false)
-	{
-		if ($heading == false)
-		{
-			echo date('m/d/Y h:i:s') . '  ';
-		}
-
-		if ($heading != false)
-		{
-			echo "\n\n>>>> ";
-		}
-
-		echo $msg . "\n";
-
-		if ($heading != false)
-		{
-			echo "\n";
-		}
-
-
-	}
-
-	private function ReadMeProblems()
+	private function validateReadme()
 	{
 		//check for readme files associated with configured releases
-		$error = false;
 		foreach ($this->config['releases'] as $rel)
 		{
 			if (isset($rel['readme']))
@@ -183,106 +135,23 @@ class e107Build
 				$fname = "{$this->config['baseDir']}/readme/{$this->config['main']['name']}/{$rel['readme']}";
 				if (!is_readable($fname))
 				{
-					echo "ERROR: readme file $fname does not exist.\n";
-					$error = true;
+					throw new RuntimeException("ERROR: readme file $fname does not exist.");
 				}
 			}
 		}
-
-		return $error;
-	}
-
-	private function buildLastConfig()
-	{
-		if (!$this->lastversion || !$this->lastversiondate)
-		{
-			echo "No LastVersion of LastVersiondate Found. Continuing...\n";
-			return;
-		}
-
-		// Automatically Include the last release in the Config
-		if ($this->lastversion && $this->lastversiondate)
-		{
-			$this->config['releases'][] = array(
-				'type' => 'upgrade',
-				'since' => $this->lastversiondate, // mmddyyyy
-				'files_delete' => 'favicon.ico',
-				'readme' => str_replace(".", "", $this->lastversion) . '_upgrade.txt',
-				'from_version' => 'v' . $this->lastversion
-			);
-
-			// Generate the Readme for the "last release -> this release update";
-
-			$lastReadme = $this->config['baseDir'] . "/readme/{$this->config['main']['name']}/" . str_replace(".", "", $this->lastversion) . '_upgrade.txt';
-			if (!is_readable($lastReadme))
-			{
-				if (file_put_contents($lastReadme, $this->generateReadme()))
-				{
-					echo("Writing ReadMe Data to " . $lastReadme . "\n");
-				}
-				else
-				{
-					echo("Couldn't write ReadMe Data to " . $lastReadme . "\n");
-				}
-			}
-
-		}
-	}
-
-	private function generateReadme($additional = '', $dbchange = FALSE)
-	{
-		$TEMPLATE = "[oldversion] -> [newversion] Upgrade Guide\n";
-
-		$TEMPLATE .= "This is an update from [oldversion] to [newversion] only. If you are upgrading from any other version besides [oldversion] ,\n";
-		$TEMPLATE .= "then you have downloaded the wrong package.  For those users that have been using the current SVN version of e107, from any other version besides [oldversion] ";
-		$TEMPLATE .= "this is the correct version to use.\n";
-
-		$TEMPLATE .= "\nIncluded in these releases are security related file changes and so you must upgrade your site with all these files.\n";
-
-		$TEMPLATE .= "\nTo install, simply upload the files to your server overwriting the existing [oldversion] files.\n";
-
-		$TEMPLATE .= ($dbchange == FALSE) ? "There are no database changes in this release." : "This version contains database changes.\n After uploading the files, go to the admin area and click 'Update'.";
-
-		if ($additional)
-		{
-			$TEMPLATE .= "\n" . $additional . "\n";
-		}
-
-		$srch[0] = "[oldversion]";
-		$repl[0] = $this->lastversion;
-
-		$srch[1] = "[newversion]";
-		$repl[1] = $this->version;
-
-		$text = str_replace($srch, $repl, $TEMPLATE);
-		echo("Generating ReadMe Data:  " . $this->lastversion . " -> " . $this->version . "\n");
-		return $text;
 	}
 
 	public function makeBuild()
 	{
-		echo date('r') . "<br />Begin Creating Release -> ";
-		echo ($this->rc) ? $this->version . " " . $this->rc : $this->version;
+		$this->status("Building release " . $this->version);
 
-		echo "\n\n";
+		$this->cleanupFiles();
 
-		if ($this->cleanupFiles() === false)
-		{
-			return;
-		}
+		$this->preprocess();
 
+		$this->createReleases();
 
-		if ($this->preprocess())
-		{
-			$this->createReleases();
-			echo "\n\nDONE!!!\n\n\n";
-		}
-		else
-		{
-			echo "\n\nERRORS FOUND!";
-		}
-
-		return;
+		echo "\n\nDONE!!!\n\n\n";
 	}
 
 	private function cleanupFiles()
@@ -292,53 +161,53 @@ class e107Build
 		if (file_exists($dir))
 		{
 			$this->status("Cleaning up old target directory ($dir)");
-			chdir($dir);
-			$cmd = "rm -rf *";
-			`$cmd`;
-
-
-			chdir($this->config['baseDir']);
+			$cmd = "rm -rf " . escapeshellarg($dir);
+			$this->runValidated($cmd);
+			$this->changeDir($this->config['baseDir']);
 		}
 		else
 		{
 			$this->status("Creating new target directory ($dir)");
-			$cmd = "mkdir -p {$dir}";
-			`$cmd`;
+			$cmd = "mkdir -pv " . escapeshellarg($dir);
+			$this->runValidated($cmd);
 		}
-
 
 		if (file_exists($dir . '/temp'))
 		{
-			$this->status("Target Directory Not Clean! Aborting...");
-			return false;
+			throw new RuntimeException("Target Directory Not Clean! Aborting...");
 		}
 
+		$cmd = "mkdir -pv " . escapeshellarg($dir . "/temp");
+		$this->runValidated($cmd);
 
-		$cmd = "mkdir -p {$dir}/temp";
-		`$cmd`;
-
-		$cmd = "mkdir -p {$dir}/release";
-		`$cmd`;
+		$cmd = "mkdir -pv " . escapeshellarg($dir . "/release");
+		$this->runValidated($cmd);
 
 		$releaseDir = "e107_" . $this->version;
-
-		if ($this->rc)
-		{
-			$releaseDir .= "_" . $this->rc;
-		}
 
 		$this->releaseDir = $releaseDir;
 
 		$this->status("Creating new release directory ($releaseDir)", true);
-		$cmd = "mkdir -p {$dir}/release/" . $releaseDir;
-		`$cmd`;
+		$cmd = "mkdir -pv " . escapeshellarg($dir . "/release/" . $releaseDir);
+		$this->runValidated($cmd);
 
 		return true;
 	}
 
-	private function preprocess()
+	protected function runValidated($command, &$stdout = "", &$stderr = "")
 	{
-		return true;
+		$rc = $this->run($command, $stdout, $stderr);
+		if ($rc != 0)
+		{
+			throw new RuntimeException(
+				"Error while running command (rc=$rc): " . $command . PHP_EOL .
+				"========== STDOUT ==========" . PHP_EOL .
+				$stdout . PHP_EOL .
+				"========== STDERR ==========" . PHP_EOL .
+				$stderr . PHP_EOL
+			);
+		}
+		return $rc;
 	}
 
 	/*
@@ -374,16 +243,38 @@ class e107Build
 	}
 	*/
 
-	private function run($cmd)
+	/**
+	 * @param string $command The command to run
+	 * @param string $stdout Reference to the STDOUT output as a string
+	 * @param string $stderr Reference to the STDERR output as a string
+	 * @return int Return code of the command that was run
+	 */
+	protected function run($command, &$stdout = "", &$stderr = "")
 	{
-		$return = `$cmd 2>&1`;
-
-		$this->status($cmd . ":");
-
-		if ($return)
+		$descriptorspec = [
+			1 => ['pipe', 'w'],
+			2 => ['pipe', 'w'],
+		];
+		$pipes = [];
+		$resource = proc_open($command, $descriptorspec, $pipes);
+		$stdout .= stream_get_contents($pipes[1]);
+		$stderr .= stream_get_contents($pipes[2]);
+		foreach ($pipes as $pipe)
 		{
-			$this->status(print_r($return, true));
+			fclose($pipe);
 		}
+		return proc_close($resource);
+	}
+
+	private function changeDir($dir)
+	{
+		$this->status("Changing to dir: " . $dir);
+		chdir($dir);
+	}
+
+	private function preprocess()
+	{
+		return true;
 	}
 
 	private function createReleases()
@@ -446,22 +337,13 @@ class e107Build
 			$newfile = "";
 			if ($rel['type'] == 'full')
 			{
-				$newfile = "e107_" . $this->config['preprocess']['version'] . "_full";
+				$newfile = "e107_" . $this->version . "_full";
 				$this->status("Creating Release " . $c . " Packages : full", true);
 			}
 			elseif ($rel['type'] == "upgrade")
 			{
-				$newfile = "e107_" . $rel['from_version'] . "_to_" . $this->config['preprocess']['version'] . "_upgrade";
+				$newfile = "e107_" . $rel['from_version'] . "_to_" . $this->version . "_upgrade";
 				$this->status("Creating Release " . $c . " Packages :  upgrade from {$rel['from_version']}", true);
-			}
-
-			if ($this->beta && !$this->rc)
-			{
-				$newfile .= "_beta_" . date('Ymd');
-			}
-			elseif ($this->rc)
-			{
-				$newfile .= "_" . $this->rc;
 			}
 
 			$releaseDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/release/" . $this->releaseDir;
@@ -485,21 +367,19 @@ class e107Build
 
 			$this->status('Creating ZIP archive');
 			$this->status($zipcmd);
-			`$zipcmd`;
+			$this->runValidated($zipcmd);
 
 			$this->status('Creating TAR archive');
 			$this->status($tarcmd);
-			`$tarcmd`;
+			$this->runValidated($tarcmd);
 
 			$this->status('Creating TAR.GZ archive');
-			`(cat $tarfile | gzip -9 > $tarfile.gz)`;
+			$this->runValidated("(cat $tarfile | gzip -9 > $tarfile.gz)");
 //			$this->status('Creating TAR.XZ archive');
-//			`(cat $tarfile | xz -9e > $tarfile.xz)`;
+//			$this->runValidated(cat $tarfile | xz -9e > $tarfile.xz)");
 
-			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.zip');
-			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar');
-			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar.gz');
-//			$this->createdFiles[] = array('path' => $releaseDir . "/", 'file' => $newfile . '.tar.xz');
+			$this->status('Removing TAR archive');
+			unlink($tarfile);
 		} // end loop
 
 
@@ -510,14 +390,10 @@ class e107Build
 		if (is_dir($this->exportDir))
 		{
 			$this->rmdir($this->exportDir);
-			mkdir($this->exportDir, 0755);
-		}
-		else
-		{
-			$this->status("Making export directory. ");
-			mkdir($this->exportDir, 0755);
 		}
 
+		$this->status("Making export directory. ");
+		mkdir($this->exportDir, 0755);
 	}
 
 	private function rmdir($dir)
@@ -531,9 +407,9 @@ class e107Build
 
 		$dir = rtrim($dir, "/");
 
-		$cmd = "rm -rf {$dir}";
+		$cmd = "rm -rf " . escapeshellarg($dir);
 		$this->status($cmd);
-		`$cmd`;
+		$this->runValidated($cmd);
 
 		return true;
 	}
@@ -546,37 +422,31 @@ class e107Build
 
 		if (!empty($since))
 		{
-			$cmd = "git archive -o " . $file . " HEAD $(git diff --name-only --diff-filter=ACMRTUXB " . $since . ")";
+			$cmd = "git archive -o " . escapeshellarg($file) . " HEAD $(git diff --name-only --diff-filter=ACMRTUXB " . escapeshellarg($since) . ")";
 		}
 		else
 		{
-			$cmd = "git archive -o " . $file . " HEAD";
+			$cmd = "git archive -o " . escapeshellarg($file) . " HEAD";
 		}
 
 		$this->changeDir($this->gitDir);
 
-		$this->run($cmd);
-	}
-
-	private function changeDir($dir)
-	{
-		$this->status("Changing to dir: " . $dir);
-		chdir($dir);
+		$this->runValidated($cmd);
 	}
 
 	private function gitArchiveUnzip($file)
 	{
 		$this->status("Unzipping temp archive to export folder", true);
 		$filepath = $this->tempDir . $file;
-		$cmd = 'unzip -q -o ' . $filepath . ' -d ' . $this->exportDir;
+		$cmd = 'unzip -q -o ' . escapeshellarg($filepath) . ' -d ' . escapeshellarg($this->exportDir);
 
-		$this->run($cmd);
-		$this->run('chmod -R a=,u+rwX,go+rX ' . escapeshellarg($this->exportDir));
+		$this->runValidated($cmd);
+		$this->runValidated('chmod -R a=,u+rwX,go+rX ' . escapeshellarg($this->exportDir));
 	}
 
 	private function editVersion($dir = 'export')
 	{
-		$version = $this->config['preprocess']['version'];
+		$version = $this->version;
 
 		if (strpos($version, "-") !== false)
 		{
@@ -609,6 +479,7 @@ class e107Build
 			$fn = trim($fn);
 			$result = touch($fn);
 			$this->status("Creating $fn - " . ($result ? "SUCCESS" : "FAIL"));
+			if (!$result) throw new RuntimeException("Failed to touch: $fn");
 		}
 	}
 
@@ -620,6 +491,10 @@ class e107Build
 			list($old, $new) = explode('->', $fn);
 			$result = rename($old, $new);
 			$this->status("Renaming {$old} to {$new} " . ($result ? "SUCCESS" : "FAIL"));
+			if (!$result)
+				throw new RuntimeException(
+					"Failed to rename " . escapeshellarg($old) . " to " . escapeshellarg($new)
+				);
 		}
 	}
 
@@ -636,13 +511,13 @@ class e107Build
 				elseif (is_dir($fn)) $result = $this->rmdir($fn);
 				else $result = false;
 				$this->status("Deleting $fn - " . ($result ? "SUCCESS" : "FAIL"));
+				if (!$result) throw new RuntimeException("Failed to delete: $fn");
 			}
 			else
 			{
 				$this->status("File already deleted or absent - " . $fn);
 			}
 		}
-
 	}
 
 	private function pluginRemove($parm, $restore = false)
@@ -675,7 +550,7 @@ class e107Build
 	private function createCoreImage()
 	{
 		//create new image file - writes directly to cvsroot
-		chdir($this->config['baseDir']);
+		$this->changeDir($this->config['baseDir']);
 
 		$_current = $this->exportDir;
 		$_deprecated = "{$this->config['baseDir']}/deprecated/{$this->config['main']['name']}";
@@ -686,7 +561,7 @@ class e107Build
 		new coreImage($_current, $_deprecated, $_image);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
-		chdir($dir);
+		$this->changeDir($dir);
 	}
 
 	private function copyCoreImage()
@@ -696,15 +571,15 @@ class e107Build
 
 		if (!file_exists($orig))
 		{
-			$this->status("ERROR: Image file not found");
+			throw new RuntimeException("Core image file not found: {$orig}");
 		}
 
 		$this->status("Copying Core Image into export directory", true);
-		$this->run("/bin/cp -rf " . $orig . " " . $dest);
+		$this->runValidated("cp -rf " . escapeshellarg($orig) . " " . escapeshellarg($dest));
 
 		if (!file_exists($dest))
 		{
-			$this->status("ERROR: Image file didnt copy.");
+			throw new RuntimeException("Core image file didnt copy to: {$dest}");
 		}
 
 	}
@@ -715,215 +590,6 @@ class e107Build
 		$to = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export/README.txt";
 		$result = copy($from, $to);
 		$this->status("Copying readme file $readme to $to - " . ($result ? "SUCCESS" : "FAIL"));
-	}
-
-	function deleteAll($directory, $empty = false)
-	{
-		if (substr($directory, -1) == "/")
-		{
-			$directory = substr($directory, 0, -1);
-		}
-
-		if (!file_exists($directory) || !is_dir($directory))
-		{
-			return false;
-		}
-		elseif (!is_readable($directory))
-		{
-			return false;
-		}
-		else
-		{
-			$directoryHandle = opendir($directory);
-
-			while ($contents = readdir($directoryHandle))
-			{
-				if ($contents != '.' && $contents != '..')
-				{
-					$path = $directory . "/" . $contents;
-
-					if (is_dir($path))
-					{
-						$this->deleteAll($path);
-					}
-					else
-					{
-						unlink($path);
-					}
-				}
-			}
-
-			closedir($directoryHandle);
-
-			if ($empty == false)
-			{
-				if (!rmdir($directory))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-}
-
-/*****************************************************************************************
- ******************************************************************************************
- ******************************************************************************************/
-class coreImage
-{
-	public function __construct($_current, $_deprecated, $_image)
-	{
-		global $coredir;
-		set_time_limit(240);
-
-		define("IMAGE_CURRENT", $_current);
-		define("IMAGE_DEPRECATED", $_deprecated);
-		define("IMAGE_IMAGE", $_image);
-
-		$maindirs = array(
-			'admin' => 'e107_admin/',
-			'files' => 'e107_files/',
-			'images' => 'e107_images/',
-			'themes' => 'e107_themes/',
-			'plugins' => 'e107_plugins/',
-			'handlers' => 'e107_handlers/',
-			'languages' => 'e107_languages/',
-			'downloads' => 'e107_files/downloads/',
-			'docs' => 'e107_docs/'
-		);
-
-		foreach ($maindirs as $maindirs_key => $maindirs_value)
-		{
-			$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
-		}
-
-		$this->create_image(IMAGE_CURRENT, IMAGE_DEPRECATED);
-	}
-
-	function create_image($_curdir, $_depdir)
-	{
-		global $coredir;
-
-		$search = $replace = [];
-		foreach ($coredir as $trim_key => $trim_dirs)
-		{
-			$search[$trim_key] = "'" . $trim_dirs . "'";
-			$replace[$trim_key] = "\$coredir['" . $trim_key . "']";
-		}
-
-		$data = "<?php\n";
-		$data .= "/*\n";
-		$data .= "+ ----------------------------------------------------------------------------+\n";
-		$data .= "|     e107 website system\n";
-		$data .= "|\n";
-		$data .= "|     Copyright (C) 2008-" . date("Y") . " e107 Inc. \n";
-		$data .= "|     http://e107.org\n";
-		//	$data .= "|     jalist@e107.org\n";
-		$data .= "|\n";
-		$data .= "|     Released under the terms and conditions of the\n";
-		$data .= "|     GNU General Public License (http://gnu.org).\n";
-		$data .= "|\n";
-		$data .= "|     \$URL$\n";
-		$data .= "|     \$Id$\n";
-		$data .= "+----------------------------------------------------------------------------+\n";
-		$data .= "*/\n\n";
-		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
-
-		$scan_current = $this->scan($_curdir);
-
-
-		echo("[Core-Image] Scanning Dir: " . $_curdir . "\n");
-
-
-		$image_array = var_export($scan_current, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$core_image = " . $image_array . ";\n\n";
-
-		$scan_deprecated = $this->scan($_depdir, $scan_current);
-		$image_array = var_export($scan_deprecated, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$deprecated_image = " . $image_array . ";\n\n";
-		$data .= "?>";
-
-		$fp = fopen(IMAGE_IMAGE, 'w');
-		fwrite($fp, $data);
-	}
-
-	function scan($dir, $image = array())
-	{
-		$absoluteBase = realpath($dir);
-		if (!is_dir($absoluteBase)) return false;
-
-		$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-		$files = [];
-
-		/**
-		 * @var $file DirectoryIterator
-		 */
-		foreach ($iterator as $file)
-		{
-			if ($file->isDir()) continue;
-
-			$absolutePath = $file->getRealPath();
-			$relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
-
-			if (empty($relativePath) || $relativePath == $absolutePath) continue;
-
-			self::array_set($files, $relativePath, $this->checksum($absolutePath));
-		}
-
-		ksort($files);
-
-		return $files;
-	}
-
-	/**
-	 * Set an array item to a given value using "slash" notation.
-	 *
-	 * If no key is given to the method, the entire array will be replaced.
-	 *
-	 * Based on Illuminate\Support\Arr::set()
-	 *
-	 * @param array $array
-	 * @param string|null $key
-	 * @param mixed $value
-	 * @return array
-	 * @copyright Copyright (c) Taylor Otwell
-	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
-	 */
-	private static function array_set(&$array, $key, $value)
-	{
-		if (is_null($key))
-		{
-			return $array = $value;
-		}
-
-		$keys = explode('/', $key);
-
-		while (count($keys) > 1)
-		{
-			$key = array_shift($keys);
-
-			// If the key doesn't exist at this depth, we will just create an empty array
-			// to hold the next value, allowing us to create the arrays to hold final
-			// values at the correct depth. Then we'll keep digging into the array.
-			if (!isset($array[$key]) || !is_array($array[$key]))
-			{
-				$array[$key] = [];
-			}
-
-			$array = &$array[$key];
-		}
-
-		$array[array_shift($keys)] = $value;
-
-		return $array;
-	}
-
-	function checksum($filename)
-	{
-		return md5(str_replace(array(chr(13), chr(10)), '', file_get_contents($filename)));
+		if (!$result) throw new RuntimeException("Failed to copy $readme to $to");
 	}
 }
