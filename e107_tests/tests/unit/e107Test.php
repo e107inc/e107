@@ -863,13 +863,18 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this->assertTrue($res);
 			}
-
+*/
 			public function testMinify()
 			{
-				$res = null;
-				$this->assertTrue($res);
-			}
+				$text = "something ; other or ; else";
+				$expected = "something;other or;else";
 
+				$result = e107::minify($text);
+
+				$this->assertEquals($expected,$result);
+
+			}
+/*
 			public function testWysiwyg()
 			{
 				$res = null;

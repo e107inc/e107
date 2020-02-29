@@ -3700,8 +3700,17 @@ class e107
 			return null;
 		}
 
-		require_once(e_HANDLER."jsshrink/Minifier.php");
-		return JShrink\Minifier::minify($js,$options);
+	//	require_once(e_HANDLER."jsshrink/Minifier.php");
+		try
+		{
+			$minified = JShrink\Minifier::minify($js,$options);
+		}
+		catch(Exception $e)
+		{
+			$minified = $js;
+		}
+
+		return $minified;
 	}
 
 

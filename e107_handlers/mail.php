@@ -132,7 +132,16 @@ if (!defined('e107_INIT')) { exit; }
 
 //require_once(e_HANDLER.'phpmailer/class.phpmailer.php');
 //require_once(e_HANDLER.'phpmailer/class.smtp.php');
-require_once(e_HANDLER.'phpmailer/PHPMailerAutoload.php');
+//require_once(e_HANDLER.'phpmailer/PHPMailerAutoload.php');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\POP3;
+use PHPMailer\PHPMailer\Exception;
+require_once(e_HANDLER.'vendor/autoload.php');
+
+
+
 
 // Directory for log (if enabled)
 define('MAIL_LOG_PATH',e_LOG);
@@ -187,7 +196,7 @@ class e107Email extends PHPMailer
 	 * 
 	 * @var array $overrides - array of values which override mail-related prefs. Key is the same as the corresponding pref.
 	 *						- second batch of keys can preset values configurable through the arraySet() method
-	 * @return none
+	 * @return null
 	 */
 	public function __construct($overrides = FALSE) 
 	{
@@ -284,7 +293,7 @@ class e107Email extends PHPMailer
 
 				if (isset($smtp_options['pop3auth']))			// We've made sure this is set
 				{	// Need POP-before-SMTP authorisation
-					require_once(e_HANDLER.'phpmailer/class.pop3.php');
+				//	require_once(e_HANDLER.'phpmailer/class.pop3.php');
 					$pop = new POP3();
 					$pop->authorise($overrides['smtp_server'], 110, 30, $overrides['smtp_username'], $overrides['smtp_password'], 1);
 				}
@@ -630,7 +639,7 @@ class e107Email extends PHPMailer
 	 *
 	 *	@param string|array $attachments - single attachment name as a string, or any number as an array
 	 *
-	 *	@return none
+	 *	@return null
 	 */
 	public function attach($attachments)
 	{
@@ -1271,13 +1280,13 @@ class e107Email extends PHPMailer
 // Overrides the phpmailer handler
 // For now just work the same as the phpmailer handler - maybe add features to log to rolling log or something later
 // Could throw an e107Exception
-class e107MailerException extends phpmailerException 
+/*class e107MailerException extends phpmailerException
 {
 	public function errorMessage() 
 	{
 		return parent::errorMsg();
 	}
-}
+}*/
 
 
 // Called by PHPMailer when SMTP debug is active. 
@@ -1383,7 +1392,7 @@ function sendemail($send_to, $subject, $message, $to_name='', $send_from='', $fr
 	//  if (vartrue($returnpath)) $mail->Sender = $AddReplyToAddresses($returnpath,'');
 	if (vartrue($returnpath)) $mail->Sender = $returnpath;
 
-	if (vartrue($returnreceipt)) $mail->ConfirmReadingTo($returnreceipt);
+	if (vartrue($returnreceipt)) $mail->ConfirmReadingTo = $returnreceipt;
 
 	if ($mail->sendEmail($send_to,$to_name) === TRUE) 
 	{	// Success
