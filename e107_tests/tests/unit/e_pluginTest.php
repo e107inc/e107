@@ -26,7 +26,7 @@
 			}
 			catch (Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_plugin object");
+				$this->assertTrue(false, "Couldn't load e_plugin object: $e");
 			}
 		}
 
