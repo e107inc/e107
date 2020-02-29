@@ -8,16 +8,15 @@
  *
  */
 
-class coreImage
+require_once("OsHelper.php");
+
+class CoreImage
 {
+	protected $coredir = [];
+
 	public function __construct($_current, $_deprecated, $_image)
 	{
-		global $coredir;
 		set_time_limit(240);
-
-		define("IMAGE_CURRENT", $_current);
-		define("IMAGE_DEPRECATED", $_deprecated);
-		define("IMAGE_IMAGE", $_image);
 
 		$maindirs = array(
 			'admin' => 'e107_admin/',
@@ -33,18 +32,16 @@ class coreImage
 
 		foreach ($maindirs as $maindirs_key => $maindirs_value)
 		{
-			$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
+			$this->coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
 		}
 
-		$this->create_image(IMAGE_CURRENT, IMAGE_DEPRECATED);
+		$this->create_image($_current, $_deprecated, $_image);
 	}
 
-	function create_image($_curdir, $_depdir)
+	function create_image($_curdir, $_depdir, $_image)
 	{
-		global $coredir;
-
 		$search = $replace = [];
-		foreach ($coredir as $trim_key => $trim_dirs)
+		foreach ($this->coredir as $trim_key => $trim_dirs)
 		{
 			$search[$trim_key] = "'" . $trim_dirs . "'";
 			$replace[$trim_key] = "\$coredir['" . $trim_key . "']";
@@ -78,17 +75,17 @@ class coreImage
 		$image_array = str_replace($search, $replace, $image_array);
 		$data .= "\$core_image = " . $image_array . ";\n\n";
 
-		$scan_deprecated = $this->scan($_depdir, $scan_current);
+		$scan_deprecated = $this->generateRemovedChecksums();
 		$image_array = var_export($scan_deprecated, true);
 		$image_array = str_replace($search, $replace, $image_array);
 		$data .= "\$deprecated_image = " . $image_array . ";\n\n";
 		$data .= "?>";
 
-		$fp = fopen(IMAGE_IMAGE, 'w');
+		$fp = fopen($_image, 'w');
 		fwrite($fp, $data);
 	}
 
-	function scan($dir, $image = array())
+	protected function scan($dir)
 	{
 		$absoluteBase = realpath($dir);
 		if (!is_dir($absoluteBase)) return false;
@@ -108,7 +105,7 @@ class coreImage
 
 			if (empty($relativePath) || $relativePath == $absolutePath) continue;
 
-			self::array_set($files, $relativePath, $this->checksum($absolutePath));
+			self::array_set($files, $relativePath, $this->checksumPath($absolutePath));
 		}
 
 		ksort($files);
@@ -159,8 +156,89 @@ class coreImage
 		return $array;
 	}
 
-	function checksum($filename)
+	protected function checksumPath($filename)
 	{
-		return md5(str_replace(array(chr(13), chr(10)), '', file_get_contents($filename)));
+		return $this->checksum(file_get_contents($filename));
+	}
+
+	protected function checksum($body)
+	{
+		return md5(str_replace(array(chr(13), chr(10)), '', $body));
+	}
+
+	protected function generateRemovedChecksums()
+	{
+		$checksums = [];
+
+		$stdout = '';
+		OsHelper::runValidated('git tag --list ' . escapeshellarg("v*"), $stdout);
+		$tags = explode("\n", trim($stdout));
+		$versions = [];
+		foreach ($tags as $tag)
+		{
+			$versions[] = preg_replace("/^v/", "", $tag);
+		}
+		$tags = array_combine($tags, $versions);
+		unset($versions);
+		uasort($tags, function ($a, $b)
+		{
+			return -version_compare($a, $b);
+		});
+		$tags = array_filter($tags, function ($version)
+		{
+			return !preg_match("/[a-z]/i", $version);
+		});
+
+		foreach ($tags as $tag => $version)
+		{
+			OsHelper::runValidated(
+				'git --no-pager diff --name-only --diff-filter D ' . escapeshellarg($tag),
+				$stdout
+			);
+			$removedFiles = explode("\n", trim($stdout));
+			foreach ($removedFiles as $removedFilePath)
+			{
+				OsHelper::runValidated(
+					'git --no-pager show ' . escapeshellarg($tag . ":" . $removedFilePath),
+					$stdout
+				);
+				$checksum = $this->checksum($stdout);
+				$item = self::array_get($checksums, $removedFilePath, []);
+				if (!in_array($checksum, $item)) $item["v{$version}"] = $checksum;
+				self::array_set($checksums, $removedFilePath, $item);
+			}
+		}
+		return $checksums;
+	}
+
+	/**
+	 * Get an item from an array using "slash" notation.
+	 *
+	 * Based on Illuminate\Support\Arr::get()
+	 *
+	 * @param array $array
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 * @copyright Copyright (c) Taylor Otwell
+	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
+	 */
+	private static function array_get($array, $key, $default = null)
+	{
+		if (is_null($key)) return $array;
+
+		if (isset($array[$key])) return $array[$key];
+
+		foreach (explode('/', $key) as $segment)
+		{
+			if (!is_array($array) || !array_key_exists($segment, $array))
+			{
+				return $default;
+			}
+
+			$array = $array[$segment];
+		}
+
+		return $array;
 	}
 }

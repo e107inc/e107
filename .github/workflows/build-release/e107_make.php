@@ -8,7 +8,8 @@
  *
  */
 
-require_once("coreImage.php");
+require_once("OsHelper.php");
+require_once("CoreImage.php");
 
 $builder = new e107Build();
 $builder->makeBuild();
@@ -162,14 +163,14 @@ class e107Build
 		{
 			$this->status("Cleaning up old target directory ($dir)");
 			$cmd = "rm -rf " . escapeshellarg($dir);
-			$this->runValidated($cmd);
+			OsHelper::runValidated($cmd);
 			$this->changeDir($this->config['baseDir']);
 		}
 		else
 		{
 			$this->status("Creating new target directory ($dir)");
 			$cmd = "mkdir -pv " . escapeshellarg($dir);
-			$this->runValidated($cmd);
+			OsHelper::runValidated($cmd);
 		}
 
 		if (file_exists($dir . '/temp'))
@@ -178,10 +179,10 @@ class e107Build
 		}
 
 		$cmd = "mkdir -pv " . escapeshellarg($dir . "/temp");
-		$this->runValidated($cmd);
+		OsHelper::runValidated($cmd);
 
 		$cmd = "mkdir -pv " . escapeshellarg($dir . "/release");
-		$this->runValidated($cmd);
+		OsHelper::runValidated($cmd);
 
 		$releaseDir = "e107_" . $this->version;
 
@@ -189,25 +190,9 @@ class e107Build
 
 		$this->status("Creating new release directory ($releaseDir)", true);
 		$cmd = "mkdir -pv " . escapeshellarg($dir . "/release/" . $releaseDir);
-		$this->runValidated($cmd);
+		OsHelper::runValidated($cmd);
 
 		return true;
-	}
-
-	protected function runValidated($command, &$stdout = "", &$stderr = "")
-	{
-		$rc = $this->run($command, $stdout, $stderr);
-		if ($rc != 0)
-		{
-			throw new RuntimeException(
-				"Error while running command (rc=$rc): " . $command . PHP_EOL .
-				"========== STDOUT ==========" . PHP_EOL .
-				$stdout . PHP_EOL .
-				"========== STDERR ==========" . PHP_EOL .
-				$stderr . PHP_EOL
-			);
-		}
-		return $rc;
 	}
 
 	/*
@@ -242,29 +227,6 @@ class e107Build
 		return $rc;
 	}
 	*/
-
-	/**
-	 * @param string $command The command to run
-	 * @param string $stdout Reference to the STDOUT output as a string
-	 * @param string $stderr Reference to the STDERR output as a string
-	 * @return int Return code of the command that was run
-	 */
-	protected function run($command, &$stdout = "", &$stderr = "")
-	{
-		$descriptorspec = [
-			1 => ['pipe', 'w'],
-			2 => ['pipe', 'w'],
-		];
-		$pipes = [];
-		$resource = proc_open($command, $descriptorspec, $pipes);
-		$stdout .= stream_get_contents($pipes[1]);
-		$stderr .= stream_get_contents($pipes[2]);
-		foreach ($pipes as $pipe)
-		{
-			fclose($pipe);
-		}
-		return proc_close($resource);
-	}
 
 	private function changeDir($dir)
 	{
@@ -367,14 +329,14 @@ class e107Build
 
 			$this->status('Creating ZIP archive');
 			$this->status($zipcmd);
-			$this->runValidated($zipcmd);
+			OsHelper::runValidated($zipcmd);
 
 			$this->status('Creating TAR archive');
 			$this->status($tarcmd);
-			$this->runValidated($tarcmd);
+			OsHelper::runValidated($tarcmd);
 
 			$this->status('Creating TAR.GZ archive');
-			$this->runValidated("(cat $tarfile | gzip -9 > $tarfile.gz)");
+			OsHelper::runValidated("(cat $tarfile | gzip -9 > $tarfile.gz)");
 //			$this->status('Creating TAR.XZ archive');
 //			$this->runValidated(cat $tarfile | xz -9e > $tarfile.xz)");
 
@@ -409,7 +371,7 @@ class e107Build
 
 		$cmd = "rm -rf " . escapeshellarg($dir);
 		$this->status($cmd);
-		$this->runValidated($cmd);
+		OsHelper::runValidated($cmd);
 
 		return true;
 	}
@@ -431,7 +393,7 @@ class e107Build
 
 		$this->changeDir($this->gitDir);
 
-		$this->runValidated($cmd);
+		OsHelper::runValidated($cmd);
 	}
 
 	private function gitArchiveUnzip($file)
@@ -440,8 +402,8 @@ class e107Build
 		$filepath = $this->tempDir . $file;
 		$cmd = 'unzip -q -o ' . escapeshellarg($filepath) . ' -d ' . escapeshellarg($this->exportDir);
 
-		$this->runValidated($cmd);
-		$this->runValidated('chmod -R a=,u+rwX,go+rX ' . escapeshellarg($this->exportDir));
+		OsHelper::runValidated($cmd);
+		OsHelper::runValidated('chmod -R a=,u+rwX,go+rX ' . escapeshellarg($this->exportDir));
 	}
 
 	private function editVersion($dir = 'export')
@@ -558,7 +520,7 @@ class e107Build
 		$_image = $this->tempDir . "core_image.php";
 
 		$this->status("Creating new core_image.php file ({$_image})", true);
-		new coreImage($_current, $_deprecated, $_image);
+		new CoreImage($_current, $_deprecated, $_image);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
 		$this->changeDir($dir);
@@ -575,7 +537,7 @@ class e107Build
 		}
 
 		$this->status("Copying Core Image into export directory", true);
-		$this->runValidated("cp -rf " . escapeshellarg($orig) . " " . escapeshellarg($dest));
+		OsHelper::runValidated("cp -rf " . escapeshellarg($orig) . " " . escapeshellarg($dest));
 
 		if (!file_exists($dest))
 		{
