@@ -2449,7 +2449,7 @@ class e_db_pdo implements e_db
 		}
 
 
-        include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
+   //     include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
 
         $config = e107::getMySQLConfig();
 
