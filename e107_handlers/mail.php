@@ -1172,7 +1172,7 @@ class e107Email extends PHPMailer
 		// Error sending email
 
 
-		e107::getLog()->e_log_event(3,debug_backtrace(),"MAIL","Send Failed",$this->ErrorInfo,false,LOG_TO_ROLLING);
+		e107::getLog()->addEvent(3,debug_backtrace(),"MAIL","Send Failed",$this->ErrorInfo,false,LOG_TO_ROLLING);
 		$this->TotalErrors++;
 		$this->closeLog();
 		return $this->ErrorInfo;
