@@ -1870,7 +1870,7 @@ class mailoutAdminClass extends e107MailManager
 		// First thing, delete temporary records from both tables
 		if(($res = $this->db2->db_Delete('mail_content', '`mail_content_status` = ' . MAIL_STATUS_TEMP)) === FALSE)
 		{
-			$results[] = 'Error ' . $this->db2->mySQLlastErrNum . ':' . $this->db2->mySQLlastErrText . ' deleting temporary records from mail_content';
+			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_content';
 			$noError = FALSE;
 		}
 		else
@@ -1886,7 +1886,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 		if(($res = $this->db2->delete('mail_recipients', '`mail_status` = ' . MAIL_STATUS_TEMP)) === FALSE)
 		{
-			$results[] = 'Error ' . $this->db2->mySQLlastErrNum . ':' . $this->db2->mySQLlastErrText . ' deleting temporary records from mail_recipients';
+			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_recipients';
 			$noError = FALSE;
 		}
 		else
@@ -1906,7 +1906,7 @@ class mailoutAdminClass extends e107MailManager
 					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
 					WHERE `#mail_content`.`mail_source_id` IS NULL")) === FALSE)
 		{
-			$results[] = 'Error ' . $this->db2->mySQLlastErrNum . ':' . $this->db2->mySQLlastErrText . ' deleting orphaned records from mail_recipients';
+			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting orphaned records from mail_recipients';
 			$noError = FALSE;
 		}
 		elseif($res)
@@ -1920,7 +1920,7 @@ class mailoutAdminClass extends e107MailManager
 					WHERE (`mail_content_status` >" . MAIL_STATUS_FAILED . ") AND (`mail_content_status` <=" . MAIL_STATUS_MAX_ACTIVE . ")
 					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < " . time() . ")))")) === FALSE)
 		{
-			$results[] = 'Error ' . $this->db2->mySQLlastErrNum . ':' . $this->db2->mySQLlastErrText . ' checking bad status in mail_content';
+			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' checking bad status in mail_content';
 			$noError = FALSE;
 		}
 		else
@@ -1961,7 +1961,7 @@ class mailoutAdminClass extends e107MailManager
 					GROUP BY mr.`mail_status`, mc.`mail_source_id` ORDER BY mc.`mail_source_id`
 					")) === FALSE)
 		{
-			$results[] = 'Error ' . $this->db2->mySQLlastErrNum . ':' . $this->db2->mySQLlastErrText . ' assembling email counts';
+			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' assembling email counts';
 			$noError = FALSE;
 		}
 		else

@@ -125,7 +125,11 @@ class e107MailManager
 
 	private		$debugMode = false;
 	protected	$e107;
+
+	/** @var e_db_pdo  */
 	protected	$db = NULL;					// Use our own database object - this one for reading data
+
+	/** @var e_db_pdo  */
 	protected	$db2 = NULL;				// Use our own database object - this one for updates
 	protected	$queryActive = FALSE;		// Keeps track of unused records in currently active query
 	protected	$mailCounters = array();	// Counters to track adding recipients
@@ -134,6 +138,7 @@ class e107MailManager
 	protected	$currentMailBody = '';			// Buffers current mail body
 	protected	$currentTextBody = '';			// Alternative text body (if required)
 
+	/** @var e107Email  */
 	protected	$mailer = NULL;				// Mailer class when required
 	protected	$mailOverrides = FALSE;		// Any overrides to be passed to the mailer
 
@@ -1079,7 +1084,7 @@ class e107MailManager
 	{
 		$this->checkDB(2);						// Make sure we have a DB object to use
 
-		$dbData = $this->mailToDB($emailData, FALSE);		// Convert array formats
+		$dbData = $this->mailToDb($emailData, FALSE);		// Convert array formats
 	//	print_a($dbData);
 
 
@@ -1333,7 +1338,7 @@ class e107MailManager
 		
 		if (!$this->db->update('mail_content',$query))
 		{
-			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->getLastErrorText(),FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		
@@ -1342,7 +1347,7 @@ class e107MailManager
 		//	echo "Update individual emails: {$query}<br />";
 		if (FALSE === $this->db->update('mail_recipients',$query))
 		{
-			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->getLastErrorText(),FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		return TRUE;
@@ -1507,8 +1512,7 @@ class e107MailManager
 					{
 						if($plug == 'core')
 						{
-							require_once(e_HANDLER.'user_handler.php');
-							if($err = userHandler::userStatusUpdate('bounce', $uid, $emailAddress));
+							if($err = e107::getUserSession()->userStatusUpdate('bounce', $uid, $emailAddress));
 							{
 								$errors[] = $err;
 							}	
@@ -1664,7 +1668,7 @@ class e107MailManager
 
 	/**
 	 * Returns the detail of the next email which satisfies the query done in selectEmailStatus()
-	 * @return Returns an array of data relating to a single email if available (in 'flat' format). FALSE on no data or error
+	 * @return bool Returns an array of data relating to a single email if available (in 'flat' format). FALSE on no data or error
 	 */
 	public function getNextEmailStatus()
 	{
