@@ -247,12 +247,9 @@ TMP;
 		{
 
 		}
-
-		public function testThumbSrcSet()
-		{
-
-		}
 */
+
+
 		public function testToDB()
 		{
 
@@ -787,13 +784,49 @@ TMP;
 				//var_dump($result);
 			}
 		}
-/*
+
 		public function testToImage()
 		{
+			$src = "{e_PLUGIN}gallery/images/butterfly.jpg";
+			$this->tp->setThumbSize(80,80); // set defaults.
+
+			// test with defaults set above.
+			$result = $this->tp->toImage($src);
+			$this->assertStringContainsString('butterfly.jpg&amp;w=80&amp;h=80', $result); // src
+			$this->assertStringContainsString('butterfly.jpg&amp;w=320&amp;h=320', $result); // srcset 4x the size on small images.
+
+			// test overriding of defaults.
+			$override = array('w'=>800, 'h'=>0);
+			$result2 = $this->tp->toImage($src, $override);
+			$this->assertStringContainsString('butterfly.jpg&amp;w=800&amp;h=0', $result2); // src
+			$this->assertStringContainsString('Fbutterfly.jpg&amp;w=1600&amp;h=0', $result2); // srcset
+
+
+			$override = array('w'=>0, 'h'=>0); // display image without resizing
+			$result3 = $this->tp->toImage($src, $override);
+			$this->assertStringContainsString('Fbutterfly.jpg&amp;w=0&amp;h=0', $result3); // src
+		}
+
+		public function testThumbSrcSet()
+		{
+			$src = "{e_PLUGIN}gallery/images/butterfly.jpg";
+			$parms = array('w'=>800, 'h'=>0, 'size'=>'2x');
+
+			$result = $this->tp->thumbSrcSet($src, $parms);
+			$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result);
+
+			$this->tp->setThumbSize(80,80); // set defaults.
+
+			$result2 = $this->tp->thumbSrcSet($src, $parms); // testing overrides
+			$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result2);
+
+			$result3 = $this->tp->thumbSrcSet($src, array('w'=>800, 'size'=>'2x')); // testing overrides without 'h' being set.
+			$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result3);
+
+			$result4 = $this->tp->thumbSrcSet($src); // no overrides
+			$this->assertStringContainsString('butterfly.jpg&amp;w=160&amp;h=160', $result4);
 
 		}
-*/
-
 
 		public function testIsBBcode()
 		{
