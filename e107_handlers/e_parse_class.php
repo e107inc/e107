@@ -2968,12 +2968,13 @@ class e_parse extends e_parser
 	/**
 	 * Experimental: Generate a Thumb URL for use in the img srcset attribute.
 	 * @param string $src eg. {e_MEDIA_IMAGE}myimage.jpg
-	 * @param int|str $width - desired size in px or '2x' or '3x' or null for all or array (
+	 * @param int|string|array $width - desired size in px or '2x' or '3x' or null for all or array (
 	 * @return string
 	 */
 	function thumbSrcSet($src='', $width=null)
 	{
 		$multiply = null;
+		$encode = false;
 
 		if(is_array($width))
 		{
@@ -3014,8 +3015,13 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
+			if(isset($parm['w']) && !isset($parm['h'])) // if w set, assume h value of 0 is set.
+			{
+				$parm['h'] = 0;
+			}
+
 			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
-			$height = !empty($parm['h']) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
+			$height = isset($parm['h']) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
 
 		}
 		else
