@@ -1571,9 +1571,14 @@ class system_tools
 
 		$plg->buildAddonPrefLists();
 
+		$plgClass = e107::getPlugin();
+
+
 		foreach($plg->getDetected() as $folder)
 		{
 			$plg->load($folder);
+			$plgClass->plugFolder = $folder;
+			$plgClass->XmlLanguageFiles('refresh');
 
 			$name   = $plg->getName();
 			$addons = $plg->getAddons();
