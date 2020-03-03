@@ -6588,7 +6588,8 @@ var_dump($select_options);*/
 		}
 		if(!$nocontainer)
 		{
-			$text = '<div class="e-container">'.$text.'</div>';
+			$class = deftrue('e_IFRAME') ? 'e-container e-container-modal' : 'e-container';
+			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
@@ -6800,7 +6801,8 @@ var_dump($select_options);*/
 		}
 		if(!$nocontainer)
 		{
-			$text = '<div class="e-container">'.$text.'</div>';
+			$class = deftrue('e_IFRAME') ? 'e-container e-container-modal' : 'e-container';
+			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
@@ -6921,7 +6923,8 @@ var_dump($select_options);*/
 		}
 		if(!$nocontainer)
 		{
-			$text = '<div class="e-container">'.$text.'</div>';
+			$class = deftrue('e_IFRAME') ? 'e-container e-container-modal' : 'e-container';
+			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
 		return $text;
 	}
@@ -7478,7 +7481,8 @@ var_dump($select_options);*/
 		}
 		if(!$nocontainer)
 		{
-			$text = '<div class="e-container">'.$text.'</div>';
+			$class = deftrue('e_IFRAME') ? 'e-container e-container-modal' : 'e-container';
+			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
 		return $text;
 	}
