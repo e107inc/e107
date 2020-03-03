@@ -36,11 +36,12 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {
 	foreach($pref['lan_log_list'] as $path => $file)
 	{
-		$file = str_replace('--LAN--', e_LANGUAGE, $file);
-		
-	//	echo "orig = ".$file."     ";
+	//	$file = str_replace('--LAN--', e_LANGUAGE, $file);
+
 		//e107::lan($path,'log',true);
-		e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
+	//	e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.e_LANGUAGE."_log.php");
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.e_LANGUAGE."/".e_LANGUAGE."_log.php");
 	}
 }
 
