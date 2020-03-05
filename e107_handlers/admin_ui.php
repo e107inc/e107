@@ -2508,6 +2508,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string SQL order, false to disable order, null is default order
 	 */
 	protected $listOrder = null;
+
+	/**
+	 * @var string SQL group-by field name (optional)
+	 */
+	protected $listGroup = null;
 	
 	/**
 	 * @var string field containing the order number
@@ -4411,11 +4416,16 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		// group field - currently auto-added only if there are joins
-		// TODO - groupField property
 		$groupField = '';
 		if($joins && $this->getPrimaryName())
 		{
 			$groupField = $tablePath.$this->getPrimaryName();
+		}
+
+		// appended to GROUP BY when true.
+		if(!empty($this->listGroup))
+		{
+			$groupField = $this->listGroup;
 		}
 
 		if($raw)

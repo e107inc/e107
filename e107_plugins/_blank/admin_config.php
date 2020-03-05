@@ -95,15 +95,17 @@ class plugin_blank_admin_ui extends e_admin_ui
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
-		 * Write your list query without any Order or Limit.
+		 * Write your list query without any Group, Order or Limit.
 		 *
 		 * @var string [optional]
 		 */
 		protected $listQry = "";
-		//
 
-		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
-		//protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
+		protected $listOrder        = 'blank_id DESC';
+
+	//  protected $listGroup        = 'somefield';  // (optional: when needing control over JOINs)
+
+	//  protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
 
 		// required - if no custom model is set in init() (primary id)
 		protected $pid = "blank_id";
@@ -112,6 +114,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $perPage = 20;
 
 		protected $batchDelete = true;
+		
 
 	//	protected \$sortField		= 'somefield_order';
 
