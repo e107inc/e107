@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter\OpenID;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Data;
 use Hybridauth\User;
@@ -28,7 +28,7 @@ use Hybridauth\User;
 
  *   $userProfile = $adapter->getUserProfile();
  */
-class Steam extends OpenIDAdapter
+class Steam extends OpenID
 {
     /**
     * {@inheritdoc}
@@ -44,9 +44,12 @@ class Steam extends OpenIDAdapter
 
         $userProfile = $this->storage->get($this->providerId . '.user');
 
-        $userProfile->identifier = str_ireplace(array('http://steamcommunity.com/openid/id/', 'https://steamcommunity.com/openid/id/'), '', $userProfile->identifier);
+        $userProfile->identifier = str_ireplace([
+            'http://steamcommunity.com/openid/id/',
+            'https://steamcommunity.com/openid/id/',
+        ], '', $userProfile->identifier);
 
-        if (! $userProfile->identifier) {
+        if (!$userProfile->identifier) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
         }
 
@@ -56,9 +59,8 @@ class Steam extends OpenIDAdapter
             // if api key is provided, we attempt to use steam web api
             if ($apiKey) {
                 $result = $this->getUserProfileWebAPI($apiKey, $userProfile->identifier);
-            }
-            // otherwise we fallback to community data
-            else {
+            } else {
+                // otherwise we fallback to community data
                 $result = $this->getUserProfileLegacyAPI($userProfile->identifier);
             }
 
@@ -66,9 +68,7 @@ class Steam extends OpenIDAdapter
             foreach ($result as $k => $v) {
                 $userProfile->$k = $v ?: $userProfile->$k;
             }
-        }
-        // these data are not mandatory, so keep it quite
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
         }
 
         // store user profile
@@ -85,7 +85,8 @@ class Steam extends OpenIDAdapter
      */
     public function getUserProfileWebAPI($apiKey, $steam64)
     {
-        $apiUrl = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' . $apiKey . '&steamids=' . $steam64;
+        $q = http_build_query(['key' => $apiKey, 'steamid' => $steam64]);
+        $apiUrl = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' . $q;
 
         $response = $this->httpClient->request($apiUrl);
 
