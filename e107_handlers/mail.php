@@ -433,7 +433,7 @@ class e107Email extends PHPMailer
 	{
 		if ($this->logEnable && ($this->logHandle === false))
 		{
-			$logFileName = MAIL_LOG_PATH.'mailoutlog.txt';
+			$logFileName = MAIL_LOG_PATH.'mailoutlog.log';
 			$this->logHandle = fopen($logFileName, 'a');      // Always append to file
 		}
 		if ($this->logHandle !== false)
@@ -534,7 +534,7 @@ class e107Email extends PHPMailer
 					}
 					catch (Exception $e)
 					{
-					   // do something
+						$this->logLine($e->getMessage());
 					}
 
 					break;
@@ -545,7 +545,7 @@ class e107Email extends PHPMailer
 					}
 					catch (Exception $e)
 					{
-					   // do something
+						$this->logLine($e->getMessage());
 					}
 
 					break;
@@ -562,7 +562,7 @@ class e107Email extends PHPMailer
 						}
 						catch (Exception $e)
 						{
-						   // do something
+							$this->logLine($e->getMessage());
 						}
 
 					}
@@ -580,7 +580,7 @@ class e107Email extends PHPMailer
 						}
 						catch (Exception $e)
 						{
-						   // do something
+							$this->logLine($e->getMessage());
 						}
 
 					}
@@ -708,7 +708,7 @@ class e107Email extends PHPMailer
 					}
 					catch (Exception $e)
 					{
-					   // do something
+					   $this->logLine($e->getMessage());
 					}
 
 				}
@@ -746,7 +746,7 @@ class e107Email extends PHPMailer
 				}
 				catch (Exception $e)
 				{
-				   // do something
+					$this->logLine($e->getMessage());
 				}
 
 
@@ -1093,17 +1093,26 @@ class e107Email extends PHPMailer
 
 		$this->SendCount++;
 
+		if($this->isError())
+		{
+			$this->logLine('Error info: '.$this->ErrorInfo);
+			e107::getMessage()->addInfo($this->ErrorInfo);
+		}
+
 		$result = false;
 
 		if ($this->debug == false && (($this->logEnable == 0) || ($this->logEnable == 2)) )
 		{
-			// prevent user/script details being exposed in X-PHP-Script header 
-			$oldphpself 					= $_SERVER['PHP_SELF']; 
-			$oldremoteaddr					= $_SERVER['REMOTE_ADDR']; 
-			$_SERVER['PHP_SELF'] 			= "/"; 
-			$_SERVER['REMOTE_ADDR'] 		= $_SERVER['SERVER_ADDR']; 
-			$_SERVER["HTTP_X_FORWARDED_FOR"] = $_SERVER['SERVER_ADDR'];
-			$_SERVER["HTTP_CF_CONNECTING_IP"] = $_SERVER['SERVER_ADDR'];
+			// prevent user/script details being exposed in X-PHP-Script header
+			if(!empty($_SERVER['REMOTE_ADDR']))
+			{
+				$oldphpself 					= $_SERVER['PHP_SELF'];
+				$oldremoteaddr					= $_SERVER['REMOTE_ADDR'];
+				$_SERVER['PHP_SELF'] 			= "/";
+				$_SERVER['REMOTE_ADDR'] 		= $_SERVER['SERVER_ADDR'];
+				$_SERVER["HTTP_X_FORWARDED_FOR"] = $_SERVER['SERVER_ADDR'];
+				$_SERVER["HTTP_CF_CONNECTING_IP"] = $_SERVER['SERVER_ADDR'];
+			}
 
 			try
 			{
@@ -1111,15 +1120,16 @@ class e107Email extends PHPMailer
 			}
 			catch (Exception $e)
 			{
-			   //  echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+				$this->logLine($e->getMessage());
 			}
 
-
-			
-			$_SERVER['PHP_SELF'] = $oldphpself; 
-			$_SERVER['REMOTE_ADDR'] = $oldremoteaddr;
-			$_SERVER["HTTP_X_FORWARDED_FOR"] = $oldremoteaddr;
-			$_SERVER["HTTP_CF_CONNECTING_IP"] = $oldremoteaddr;
+			if(!empty($oldremoteaddr))
+			{
+				$_SERVER['PHP_SELF'] = $oldphpself;
+				$_SERVER['REMOTE_ADDR'] = $oldremoteaddr;
+				$_SERVER["HTTP_X_FORWARDED_FOR"] = $oldremoteaddr;
+				$_SERVER["HTTP_CF_CONNECTING_IP"] = $oldremoteaddr;
+			}
 			
 			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->smtpClose();
 		}
@@ -1213,12 +1223,12 @@ class e107Email extends PHPMailer
 	 * @param bool   $advanced
 	 * @return null (message saved ready to send)
 	 */
-	public function MsgHTML($message, $basedir = '', $advanced=false)
+	public function MsgHTML($message, $basedir = '', $advanced = false)
 	{
 		$tp = e107::getParser();
 
 		$message = $tp->toEmail($message, false, 'rawtext');
-				
+
 		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3]) && ($this->previewMode === false)) 
 		{
@@ -1231,7 +1241,10 @@ class e107Email extends PHPMailer
 			
 			foreach($images[3] as $i => $url) 
 			{
-				
+				if(strpos($url,'data:') === 0) // already embedded, so skip processing
+				{
+					continue;
+				}
 				// do not change urls for absolute images (thanks to corvuscorax)
 				if (!preg_match('#^[A-z]+://#',$url)) 
 				{
@@ -1289,6 +1302,7 @@ class e107Email extends PHPMailer
 					}
 					catch (Exception $e)
 					{
+						$this->logLine($e->getMessage());
 						if ($this->debug)
 						{
 							 echo "Add embedded image {$url} failed<br />";
@@ -1339,7 +1353,7 @@ class e107Email extends PHPMailer
 			$this->AltBody = 'To view this email message, enable HTML!' . "\n\n";
 		}
 
-		return null;
+		 return $this->Body;
 	}
 
 
@@ -1384,7 +1398,7 @@ class e107Exception extends Exception
 	{
         parent::__construct($message, $code);
 
-		e107::getLog()->e_log_event(10,
+		e107::getLog()->addEvent(10,
 									$this->getFile().'|@'.$this->getLine(),
 									'EXCEPT',
 									$this->getCode().':'.$this->getMessage(),
