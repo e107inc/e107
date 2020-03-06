@@ -64,7 +64,7 @@ class e_admin_log
 	 * Constructor. Sets up constants and overwrites default options where set.
 	 *
 	 * @param array $options
-	 * @return none
+	 * @return null
 	 */
 	public function __construct($options = array())
 	{
@@ -111,7 +111,8 @@ class e_admin_log
 		require_once(e_HANDLER.'message_handler.php');
 		$this->_messages = array();
 		$this->_allMessages = array();
-	
+
+		return null;
 	}
 
 	/**
@@ -178,27 +179,8 @@ class e_admin_log
 				$event_code = 'ADMIN';
 			}
 		}
-		//SecretR - now supports DB array as event_detail (see e.g. db::db_Insert())
-		if (is_array($event_detail))
-		{
-			// handled inside e_log_event(); 
-			
-			/*
-			$tmp = array();
-				if (isset($event_detail['data']))
-				{
-					$event_detail = $event_detail['data'];
-				}
-				foreach ($event_detail as $k => $v)
-				{
-					$tmp[] = $k.'=>'.$v;
-				}
-				$event_detail = implode("[!br!]\n", $tmp);
-				unset($tmp);
-			*/
-			
-		}
-		else
+
+		if (!is_array($event_detail))
 		{
 			// auto-format long details - TODO - shrink details on administration log page, expand/show in DHTML window full details.  
 			$event_detail = str_replace("\n", "[!br!]", $event_detail);
@@ -225,7 +207,7 @@ class e_admin_log
 	 * @param bool   $finished
 	 * @param int    $target_logs
 	 * @param null   $userData
-	 * @return none
+	 * @return null
 	 */
 	public function addEvent($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
 	{
@@ -257,7 +239,7 @@ class e_admin_log
 	 *		 LOG_TO_AUDIT		- audit log
 	 *		 LOG_TO_ROLLING		- rolling log
 	 * @param array $userData - attribute user to log entry. array('user_id'=>2, 'user_name'=>'whatever');
-	 *	@return none
+	 *	@return null
 
 	 * @todo - check microtime() call
 	 * @deprecated - use add() method instead or addEvent() as a direct replacement.
@@ -414,6 +396,8 @@ class e_admin_log
 
 		if ($finished)
 			exit; // Optional abort for all logs
+
+		return null;
 	}
 
 	public function setCurrentPlugin($plugdir)
@@ -595,7 +579,7 @@ class e_admin_log
 	 *	@param array $niceNames - Normally data is logged in the format keyname=>value, one per line.
 	 *		If the $niceName array exists and has a definition, the 'nice Name' is displayed instead of the key name
 	 *
-	 *	@return none
+	 *	@return null
 	 */
 	public function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
 	{
@@ -627,6 +611,8 @@ class e_admin_log
 			$spacer = '[!br!]';
 		}
 		$this->add($event, $logString, E_LOG_INFORMATIVE, '');
+
+		return null;
 	}
 
 	/**
@@ -842,7 +828,7 @@ class e_admin_log
 	{
 		if($this->logFile == null)
 		{
-			 return;
+			 return null;
 		}
 				
 		if(count($this->_allMessages))
@@ -852,7 +838,7 @@ class e_admin_log
 		}
 		else 
 		{
-			return; 	
+			return null;
 		}		
 
 		$text = '';

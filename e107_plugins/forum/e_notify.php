@@ -96,7 +96,7 @@ class forum_notify extends notify
 	private function getData($type, $id)
 	{
 		if (intval($id) < 1) return false;
-		$qry = '';
+
 		switch($type)
 		{
 			case 'post':
