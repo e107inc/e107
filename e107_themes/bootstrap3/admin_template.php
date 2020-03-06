@@ -54,7 +54,7 @@ $E_ADMIN_NAVIGATION['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -100,10 +100,10 @@ $E_ADMIN_NAVIGATION['button_enav_logout'] = '
 $E_ADMIN_NAVIGATION['button_pm'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
-		<i class="icon-envelope" class="active"></i> 3
+		<i class="icon-envelope active"></i> 3
 		<b class="caret"></b>
 		</a> 
-		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
+		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px;">
 		    <ul class="nav-list">
 	    <li class="dropdown-header nav-header">Unread Messages</li>
 	    <li><a href="#">Incoming Message Number 1</a></li>
@@ -174,7 +174,7 @@ $ADMIN_MODAL = '
 				<p>'.LAN_LOADING.'</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="e-modal-submit" class="btn btn-success" style="display:none" data-loading-icon="fa-spinner"><!-- placeholder --></button>
+				<button type="button" id="e-modal-submit" class="btn btn-success" style="display:none;" data-loading-icon="fa-spinner"><!-- placeholder --></button>
 				<button type="button" class="btn btn-primary" data-dismiss="modal">'.LAN_CLOSE.'</button>
 			</div>
 		</div>
@@ -289,19 +289,19 @@ $E_ADMIN_MENU['start'] = '
 
 $E_ADMIN_MENU['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
 
 $E_ADMIN_MENU['start_sub'] = '
-		<ul class="plugin-navigation-sub{SUB_CLASS}"{SUB_ID}>
+		<ul class="plugin-navigation-sub{SUB_CLASS}" {SUB_ID}>
 ';
 
 $E_ADMIN_MENU['button_sub'] = '
@@ -329,4 +329,3 @@ $E_ADMIN_MENU['end'] = '
 $E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
 
 
-?>
