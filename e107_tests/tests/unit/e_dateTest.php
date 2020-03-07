@@ -184,6 +184,15 @@
 			$newer = strtotime("+10 seconds");
 			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'long');
 			$this->assertEquals("Just now", $actual);
+
+			// XXX Improve output
+		/*	$newer = strtotime("18 months ago");
+			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'short');
+			$expected = '18 months ago';
+
+			$this->assertEquals($expected, $actual);*/
+
+
 		}
 
 		/**
