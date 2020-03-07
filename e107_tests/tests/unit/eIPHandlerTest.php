@@ -105,7 +105,8 @@
 			'-8' => 0 // unknown
 			);
 
-			defined('LAN_SETSAVED') or define('LAN_SETSAVED', "Saved"); // for preferences.
+			// XXX: e_pref::save() depends on e107_admin/banlist.php LAN but should not
+			e107::coreLan('banlist', true);
 
 			//set ban duration pref.
 			e107::getConfig()->set('ban_durations',$banDurations)->save(false,true, false);
