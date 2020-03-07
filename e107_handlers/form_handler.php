@@ -3926,7 +3926,7 @@ var_dump($select_options);*/
 	function name2id($name)
 	{
 		$name = strtolower($name);
-		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':'), array('-', '-', '', '-', '-', '-', '-','','','-',''), $name), '-');
+		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':', '?','='), array('-', '-', '', '-', '-', '-', '-','','','-','','-','-'), $name), '-');
 	}
 
 	/**

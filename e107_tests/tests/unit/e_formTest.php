@@ -741,12 +741,17 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testName2id()
 			{
+				$text       = "Something?hello=there and test";
+				$expected   = 'something-hello-there-and-test';
 
+				$result = $this->_frm->name2id($text);
+				
+				$this->assertEquals($expected, $result);
 			}
-
+/*
 			public function testFormat_options()
 			{
 
