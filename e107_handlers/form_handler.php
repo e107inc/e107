@@ -1299,6 +1299,8 @@ class e_form
 	 * - video=1 (Enable the Video tab)
 	 * - audio=1  (Enable the Audio tab)
      * - glyph=1 (Enable the Glyphs tab).
+     * - path=plugin (store in media/plugins/{current-plugin])
+     * - edit=false (disable media-manager popup button)                    
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
@@ -1383,6 +1385,11 @@ class e_form
 			$previewIcon    = '';
 		}
 
+		if(isset($parms['edit']) && $parms['edit'] === false) // remove media-manager add/edit button. ie. drag-n-drop only.
+		{
+			$editIcon = '';
+		}
+
 
 		if(!empty($parms['icon'])) // empty overlay without button.
 		{
@@ -1406,6 +1413,19 @@ class e_form
 		{
 			return $ret;
 		}
+
+		if(!isset($parms['label']))
+		{
+			$parms['label'] = defset('LAN_UI_DROPZONE_DROP_FILES', "Drop files here to upload");
+		}
+
+		$qry = "for=".$cat;
+
+		if(!empty($parms['path']) && $parms['path'] == 'plugin')
+		{
+			$qry .= "&path=".deftrue('e_CURRENT_PLUGIN');
+		}
+
 		// Drag-n-Drop Upload
 		// @see https://www.dropzonejs.com/#server-side-implementation
 
@@ -1415,14 +1435,16 @@ class e_form
 			.dropzone { background: transparent; border:0 }
 		");
 
+
+
 			$INLINEJS = "
 				Dropzone.autoDiscover = false;
 				$(function() {
 				    $('#".$name_id."_prev').dropzone({ 
-				        url: '".e_JS."plupload/upload.php?for=".$cat."',
+				        url: '".e_JS."plupload/upload.php?".$qry."',
 				        createImageThumbnails: false,
 				        uploadMultiple :false,
-						dictDefaultMessage: \"".defset('LAN_UI_DROPZONE_DROP_FILES', "Drop files here to upload")."\",
+						dictDefaultMessage: \"".$parms['label']."\",
 				        maxFilesize: ".(int) ini_get('upload_max_filesize').",
 				         success: function (file, response) {
 				            
