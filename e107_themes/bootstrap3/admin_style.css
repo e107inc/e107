@@ -79,6 +79,9 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 .admin-ui-grid img.fallback { opacity: 0.3; }
 .admin-ui-grid img.thumbnail { max-width: 100%; height:auto; }
 .admin-ui-grid .panel-footer { font-size:1em; /*height:30px; overflow:hidden*/}
+.admin-ui-grid .panel-footer a { overflow: hidden; white-space: nowrap; width: 88%; display: inline-block; }
+
+
 
 
 /*

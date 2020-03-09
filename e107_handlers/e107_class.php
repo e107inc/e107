@@ -1467,6 +1467,27 @@ class e107
 
 
 	/**
+	 * Retrieves PhpThumbFactory object
+	 *
+	 * @param $src
+	 * @return bool|GdThumb
+	 */
+	public static function getThumb($src)
+	{
+		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
+		try
+		{
+			return PhpThumbFactory::create($src);
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+
+	}
+
+
+	/**
 	 * Retrieve e107Email mail mailer object.
 	 *
 	 * @return e107MailManager
