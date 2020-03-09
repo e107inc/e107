@@ -361,24 +361,32 @@ class e_thumbpage
 		{
 			$start = microtime(true);
 		}
-		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
-		try
+
+
+	//	@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
+
+		if(!$thumb = e107::getThumb($this->_src_path))
 		{
-		    $thumb = PhpThumbFactory::create($this->_src_path);
-			$sizeUp = ($this->_request['w'] > 110 || $this->_request['aw'] > 110) ? true : false; // don't resizeUp the icon images.
-		   	$thumb->setOptions(array(
+			if(getperms('0'))
+			{
+				echo "Couldn't load thumb factory";
+			}
+			return null;
+		}
+
+		$sizeUp = ($this->_request['w'] > 110 || $this->_request['aw'] > 110) ? true : false; // don't resizeUp the icon images.
+	   	$thumb->setOptions(array(
 		   	    'correctPermissions'    => true,
 		   	    'resizeUp'              => $sizeUp,
 		   	    'jpegQuality'           => $this->_thumbQuality,
 			    'interlace'             => true // improves performance
 		    ));
-			
-		}
-		catch (Exception $e)
+
+	/*	catch (Exception $e)
 		{
 		     echo $e->getMessage();
 		     return $this;
-		}
+		}*/
 
 		// Image Cropping by Quadrant.
 		if(!empty($options['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)

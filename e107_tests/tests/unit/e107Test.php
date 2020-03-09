@@ -284,6 +284,18 @@ class e107Test extends \Codeception\Test\Unit
 				$this->assertTrue($res);
 			}*/
 
+
+	public function testGetThumb()
+	{
+		$tmp = e107::getThumb(e_PLUGIN."gallery/images/horse.jpg");
+
+		$className = get_class($tmp);
+
+		$this->assertEquals('GdThumb', $className);
+
+	}
+
+
 	public function testGetUserSession()
 	{
 		$tmp = e107::getUserSession();
