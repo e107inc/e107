@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
  * @package e107
  * @subpackage e107_handlers
  * @version $Id$
- * @todo hardcoded text
+ *
  * 
  * Automate Form fields creation. Produced markup is following e107 CSS/XHTML standards
  * If options argument is omitted, default values will be used (which OK most of the time)
@@ -85,6 +85,7 @@ class e_form
 	}
 
 	/**
+	 * @param $tmp
 	 * @return array
 	 * @see https://github.com/e107inc/e107/issues/3533
 	 */
@@ -109,8 +110,8 @@ class e_form
 	 * Open a new form
 	 * @param string name
 	 * @param $method - post|get  default is post
-	 * @param @target - e_REQUEST_URI by default
-	 * @param $other - unused at the moment.
+	 * @param string target - e_REQUEST_URI by default
+	 * @param array $options
 	 * @return string
 	 */
 	public function open($name, $method=null, $target=null, $options=null)
@@ -124,8 +125,7 @@ class e_form
 		{
 			$method = "post";	
 		}
-	
-		$class 			= "";
+
 		$autoComplete 	= "";
 
 		if(is_string($options))
@@ -509,19 +509,17 @@ class e_form
 	}
 
 
-
-
-
-	
 	/**
 	 * Render Bootstrap Tabs
+	 *
 	 * @param $array
 	 * @param $options
+	 * @return string
 	 * @example
-	 * $array = array(
-	 * 		'home' => array('caption' => 'Home', 'text' => 'some tab content' ),
-	 * 		'other' => array('caption' => 'Other', 'text' => 'second tab content' )
-	 * 	);
+	 *        $array = array(
+	 *        'home' => array('caption' => 'Home', 'text' => 'some tab content' ),
+	 *        'other' => array('caption' => 'Other', 'text' => 'second tab content' )
+	 *        );
 	 */
 	function tabs($array,$options = array())
 	{
@@ -708,11 +706,17 @@ class e_form
 
 		return $start.$indicators.$inner.$controls.$end; // $text;
 
-	}	
+	}
 
 	/**
-	 * Same as $this->text() except it adds input validation for urls. 
-	 * At this stage, checking only for spaces. Should include sef-urls. 
+	 * Same as $this->text() except it adds input validation for urls.
+	 * At this stage, checking only for spaces. Should include sef-urls.
+	 *
+	 * @param string  $name
+	 * @param string $value
+	 * @param int    $maxlength
+	 * @param array  $options
+	 * @return string
 	 */
 	function url($name, $value = '', $maxlength = 80, $options= array())
 	{
@@ -777,15 +781,6 @@ class e_form
 		{
 			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
 			e107::css('core', 'selectize/css/selectize.css', 'jquery');
-
-			if(deftrue('BOOTSTRAP') === 3)
-			{
-		//		e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
-			}
-			elseif(deftrue('BOOTSTRAP'))
-			{
-		//		e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
-			}
 
 			// Load selectize behavior.
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
@@ -890,14 +885,11 @@ class e_form
 		// Always define the min. parameter
 		// defaults to 0
 		// setting the min option to a negative value allows negative inputs
-		$min = " min='".varsettrue($options['min'], '0')."'";
+		$min = " min='".vartrue($options['min'], '0')."'";
 		$max = isset($options['max']) ? " max='".$options['max']."'" : '';
 
-		if (!empty($options['pattern']))
-		{
-			$pattern = ' pattern="'.trim($options['pattern']).'"';
-		}
-		else
+
+		if (empty($options['pattern']))
 		{
 			$options['pattern'] = '^';
 			// ^\-?[0-9]*\.?[0-9]{0,2}
@@ -933,11 +925,11 @@ class e_form
 				// decimal option not defined
 				// check for step option (1, 0.1, 0.01, and so on)
 				// or set default step 1 (integers only)
-				$step = "step='" . varsettrue($options['step'], '1') . "'";
+				$step = "step='" . vartrue($options['step'], '1') . "'";
 			}
 
-			$pattern = ' pattern="'.$options['pattern'].'"';
 		}
+
 		$options = $this->format_options('text', $name, $options);
 
 		//never allow id in format name-value for text fields
@@ -962,6 +954,7 @@ class e_form
 
 	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
+		unset($width,$height); // quick fix
 		// XXX - $name ?!
 	//	$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters = 'mode=preview&default='.$default.'&id='.$id;
@@ -970,26 +963,29 @@ class e_form
 
 	/**
 	 * @param $name
-	 * @param $default value
+	 * @param $default - value
 	 * @param $label
-	 * @param $options - gylphs=1 
+	 * @param $options - gylphs=1
 	 * @param $ajax
+	 * @return string
 	 */
 	function iconpicker($name, $default, $label, $options = array(), $ajax = true)
 	{
 		//v2.2.0
-			$options['icon'] = 1;
-			$options['glyph'] = 1;
-			$options['w'] = 64;
-			$options['h'] = 64;
-			$options['media'] = '_icon';
+		unset($label,$ajax);  // no longer used.
 
-			if(!isset($options['legacyPath']))
-			{
-		        $options['legacyPath'] = "{e_IMAGE}icons";
-			}
+		$options['icon'] = 1;
+		$options['glyph'] = 1;
+		$options['w'] = 64;
+		$options['h'] = 64;
+		$options['media'] = '_icon';
 
-			return $this->mediapicker($name, $default, $options);
+		if(!isset($options['legacyPath']))
+		{
+		       $options['legacyPath'] = "{e_IMAGE}icons";
+		}
+
+		return $this->mediapicker($name, $default, $options);
 
 
 	/*	$options['media'] = '_icon';
@@ -1111,10 +1107,13 @@ class e_form
 
 	/**
 	 * Avatar Picker
-	 * @param $name - form element name ie. value to be posted. 
-	 * @param $curVal - current avatar value. ie. the image-file name or URL. 
+	 * @param string $name - form element name ie. value to be posted.
+	 * @param string $curVal - current avatar value. ie. the image-file name or URL.
+	 * @param array $options
+	 * @todo add a pref for allowing external or internal avatars or both.
+	 * @return string
 	 */
-	function avatarpicker($name,$curVal='',$options=array())
+	function avatarpicker($name, $curVal='',$options=array())
 	{
 		
 		$tp 		= e107::getParser();
@@ -1124,7 +1123,7 @@ class e_form
 		$tp->setThumbSize($pref['im_width'],$pref['im_height']);
 		
 		$blankImg 	= $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg",$attr);
-		$localonly 	= true; //TODO add a pref for allowing external or internal avatars or both. 
+		$localonly 	= true;
 		$idinput 	= $this->name2id($name);
 		$previnput	= $idinput."-preview";
 		$optioni 	= $idinput."-options";
@@ -1232,32 +1231,30 @@ class e_form
 	}
 
 
-
-
 	/**
 	 * Image Picker
-	
-	 * @param string $name input name
-	 * @param string $default default value
-	 * @param string $label custom label
+	 *
+	 * @param string $name          input name
+	 * @param string $default       default value
+	 * @param string $previewURL
 	 * @param string $sc_parameters shortcode parameters
-	 *  --- SC Parameter list --- 
-	 * - media: if present - load from media category table
-	 * - w: preview width in pixels
-	 * - h: preview height in pixels
-	 * - help: tooltip
-	 * - video: when set to true, will enable the Youtube  (video) tab. 
-	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images. 
-	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
+	 *                              --- SC Parameter list ---
+	 *                              - media: if present - load from media category table
+	 *                              - w: preview width in pixels
+	 *                              - h: preview height in pixels
+	 *                              - help: tooltip
+	 *                              - video: when set to true, will enable the Youtube  (video) tab.
 	 * @return string html output
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images.
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 */
 	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
 
-		$tp = e107::getParser();
+	//	$tp = e107::getParser();
 
-		$name_id = $this->name2id($name);
-		$meta_id = $name_id."-meta";
+	//	$name_id = $this->name2id($name);
+	//	$meta_id = $name_id."-meta";
 		
 		if(is_string($sc_parameters))
 		{
@@ -1269,9 +1266,10 @@ class e_form
 			$sc_parameters = array();
 		}
 
-		$cat = $tp->toDB(vartrue($sc_parameters['media']));
+	//	$cat = $tp->toDB(vartrue($sc_parameters['media']));
 
 		// v2.2.0
+		unset($previewURL );
 		$sc_parameters['image'] = 1;
 		$sc_parameters['dropzone'] = 1;
 		if(!empty($sc_parameters['video'])) // bc fix
@@ -1281,130 +1279,6 @@ class e_form
 
 		return $this->mediapicker($name, $default, $sc_parameters);
 
-
-/*
-		if(empty($sc_parameters['media']))
-		{
-			$sc_parameters['media'] = '_common';	
-		}
-
-
-// e107::getDebug()->log($sc_parameters);
-
-		$default_thumb = $default;
-		$class = '';
-
-		if($default)
-		{
-			if($video = $tp->toVideo($default, array('thumb'=>'src')))
-			{
-				$default_url = $video;
-				$class = 'image-selector-video';
-
-			}
-			else 
-			{
-				if('{' != $default[0]) // legacy path or one without {}
-				{
-					list($default_thumb,$default) = $this->imagepickerDefault($default, $sc_parameters);
-				}
-
-				$default_url = $tp->replaceConstants($default, 'abs');
-			}
-
-
-			$debugInfo = "
-			<pre>
-			default-thumb: ".$default_thumb."
-			defautlt:   ".$default."
-			default-url: ".$default_url."
-			</pre>";
-
-		//	e107::getDebug()->log($debugInfo);
-
-
-			$blank = FALSE;
-			
-			
-		}
-		else
-		{
-			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
-			$default_url = e_IMAGE_ABS."generic/nomedia.png";
-			$blank = TRUE;
-			$class = 'image-selector-empty';
-		}
-		
-
-		//$width = intval(vartrue($sc_parameters['width'], 150));
-
-		
-		if($cat == '_icon') // ICONS
-		{
-			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
-			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector icon-selector img-responsive img-fluid' >";
-			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
-
-            //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
-			//$label .= $tp->toIcon($default_url);
-			
-			$label .= "</div>";
-			
-		//	$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
-
-
-			$ret = $this->mediaUrl($cat, $label, $name_id, $sc_parameters);
-		}
-		else // Images 
-		{
-			
-			$title = (vartrue($sc_parameters['help'])) ? "title='".$sc_parameters['help']."'" : "";
-			$width = vartrue($sc_parameters['w'], 120);
-			$height = vartrue($sc_parameters['h'], 0);
-
-			$ret = "<div class='imgselector-container e-tip ".$class."' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
-			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
-			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
-
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive img-fluid' style='display:block;' />";
-			
-			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
-			{
-			 	$cat = $cat . "_image";		
-			}
-
-			$sc_parameters['class'] = 'btn btn-sm btn-default';
-
-			if($blank === true)
-			{
-				$sc_parameters['title'] = LAN_ADD;
-				$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$sc_parameters);
-				$previewIcon     = '';
-
-				// @todo drag-n-drop upload code in here.
-			}
-			else
-			{
-				$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$sc_parameters);
-				$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
-			}
-
-			$ret .= $label; // image
-
-			$ret .= '<div class="overlay">
-				    <div class="text">'.$editIcon.$previewIcon.'</div>
-				  </div>';
-		}
-
-
-		$ret .= "</div>\n";
-		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
-		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
-
-		return $ret;*/
 
 	}
 
@@ -1590,52 +1464,20 @@ class e_form
 
 
 
-
-
-
-
-	private function imagepickerDefault($path, $parms=array())
-	{
-		$tp = e107::getParser();
-
-			if(!empty($parms['legacyPath'])) // look in a specific path.
-			{
-				$legacyDefault = rtrim($parms['legacyPath'],'/')."/".$path;
-				$legacyRel = $tp->replaceConstants($legacyDefault);
-
-				if(is_readable($legacyRel))
-				{
-					return array($legacyDefault, $legacyDefault);
-				}
-				else
-				{
-			//		e107::getDebug()->log("Legacy Default:".$legacyDefault);
-			//		e107::getDebug()->log("wasnt found:".$legacyRel);
-				}
-
-			}
-
-			$path = str_replace('e_MEDIA_IMAGE/','{e_MEDIA_IMAGE}',$path);
-
-			$default_thumb = $tp->createConstants($path, 'nice');
-			$default = $tp->createConstants($path, 'mix');
-
-			return array($default_thumb, $default);
-
-	}
-
-			
 	/**
-	 * File Picker 
+	 * File Picker
+	 *
 	 * @param string name  eg. 'myfield' or 'myfield[]'
 	 * @param mixed default
 	 * @param string label
 	 * @param mixed sc_parameters
-	 */		
+	 * @return string
+	 */
 	function filepicker($name, $default, $label = '', $sc_parameters = null)
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
+		unset($label);
 				
 		if(is_string($sc_parameters))
 		{
@@ -1687,11 +1529,12 @@ class e_form
 	 *	Date field with popup calendar // NEW in 0.8/2.0
 	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
-	 * @param integer $datestamp UNIX timestamp - default value of the field
-	 * @param array or str
-	 * @param string $options['type'] date or datetime
-	 * @param string $options['format'] strftime format eg. '%Y-%m-%d'
-	 * @param string $options['timezone'] eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
+	 * @param int|bool $datestamp UNIX timestamp - default value of the field
+	 * @param array|string {
+	 *      @type string type date or datetime
+	 *      @type string format strftime format eg. '%Y-%m-%d'
+	 *      @type string timezone eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
+	 *      }
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
@@ -1793,13 +1636,13 @@ class e_form
 	 * @param string $name - form field name
 	 * @param null $val - current value
 	 * @param array $options
-	 * @param string $options['group'] if == 'class' then users will be sorted into userclass groups.
-	 * @param string $options['fields']
-	 * @param string $options['classes'] - single or comma-separated list of user-classes members to include.
-	 * @param string $options['excludeSelf'] = exlude logged in user from list.
-	 * @param string $options['return'] if == 'array' an array is returned.
-	 * @param string $options['return'] if == 'sqlWhere' an sql query is returned.
-	 * @return string select form element.
+	 * @param string 'group' if == 'class' then users will be sorted into userclass groups.
+	 *      @type string 'fields'
+	 *      @type string 'classes' - single or comma-separated list of user-classes members to include.
+	 *      @type string 'excludeSelf' = exlude logged in user from list.
+	 *      @type string 'return' if == 'array' an array is returned.
+	 *      @type string 'return' if == 'sqlWhere' an sql query is returned.
+	 * @return string|array select form element.
 	 */
 	public function userlist($name, $val=null, $options=array())
 	{
@@ -1967,9 +1810,9 @@ class e_form
 	 * @param string $name form element name
 	 * @param string|array $value comma separated list of user ids or array of userid=>username pairs.
 	 * @param array|string $options [optional]
-	 * @param int $options['limit'] Maximum number of users
-	 * @param string $options['id'] Custom id
-	 * @param string $options['inline'] Inline ID.
+	 *      @type int 'limit' Maximum number of users
+	 *      @type string 'id' Custom id
+	 *      @type string 'inline' Inline ID.
 	 *
 	 * @example $frm->userpicker('author', 1);
 	 * @example $frm->userpicker('authors', "1,2,3");
@@ -2051,22 +1894,21 @@ class e_form
 		}
 
 		$parms = array_merge($parms, $options);
-		
-		$ret = $this->text($name, implode(",",$defValues), 100, $parms);
 
-		return $ret;
+		return $this->text($name, implode(",",$defValues), 100, $parms);
+
 	}
 
 
-
-
-
-	
 	/**
 	 * A Rating element
-	 * @var $text 
+	 *
+	 * @param string $table
+	 * @param int $id
+	 * @param array $options
+	 * @return string
 	 */
-	function rate($table,$id,$options=null)
+	function rate($table,$id,$options=array())
 	{		
 		$table 	= preg_replace('/\W/', '', $table);
 		$id 	= intval($id);
@@ -2104,8 +1946,16 @@ class e_form
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
 
+	/**
+	 * Upload Element. (for the future)
+	 *
+	 * @param       $name
+	 * @param array $options
+	 * @return string
+	 */
 	function upload($name, $options = array())
 	{
+		unset($name,$options);
 		return 'Ready to use upload form fields, optional - file list view';
 	}
 
@@ -2225,13 +2075,14 @@ class e_form
 	}
 
 
-
 	/**
-	 * Render a bootStrap ProgressBar. 
-	 * @param string $name
+	 * Render a bootStrap ProgressBar.
+	 *
+	 * @param string        $name
 	 * @param number|string $value
-	 * @param array $options
-	 * @example  Use 
+	 * @param array         $options
+	 * @return string
+	 * @example  Use
 	 */
 	public function progressBar($name,$value,$options=array())
 	{
@@ -2303,12 +2154,12 @@ class e_form
 
 	/**
 	 * Textarea Element
-	 * @param $name
-	 * @param $value
-	 * @param $rows
-	 * @param $cols
-	 * @param $options
-	 * @param $count
+	 * @param string $name
+	 * @param string $value
+	 * @param int $rows
+	 * @param int $cols
+	 * @param array $options
+	 * @param int|bool $counter
 	 * @return string
 	 */
 	function textarea($name, $value, $rows = 10, $cols = 80, $options = array(), $counter = false)
@@ -2341,15 +2192,18 @@ class e_form
 	/**
 	 * Bbcode Area. Name, value, template, media-Cat, size, options array eg. counter
 	 * IMPORTANT: $$mediaCat is also used is the media-manager category identifier
+	 *
 	 * @param string $name
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @param string $template
 	 * @param string $mediaCat _common
-	 * @param string $size : small | medium | large
-	 * @param array $options array();
-	 * @param bool $options['wysiwyg'] when set to false will disable wysiwyg if active.
-	 * @param string $options['class'] override class.
-	 * @param string $options['id']
+	 * @param string $size     : small | medium | large
+	 * @param array  $options  {
+	 *  @type bool wysiwyg  when set to false will disable wysiwyg if active.
+	 *  @type string class override class.
+	 *                         }
+
+	 * @return string
 	 */
 	function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
 	{
@@ -6878,8 +6732,7 @@ var_dump($select_options);*/
 			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
-		
-								
+
 				if(vartrue($data['tabs'])) // Tabs Present 
 				{
 					$text .= '<ul class="nav nav-tabs">';
@@ -6905,13 +6758,13 @@ var_dump($select_options);*/
 					}
 					
 					$text .= "</div>";			
-					$text .= $this->renderCreateButtonsBar($elid, $data, $model, $tabId);	// Create/Update Buttons etc. 	 
+					$text .= $this->renderCreateButtonsBar( $data, $model->getId());	// Create/Update Buttons etc.
 				 	
 				}
 				else   // No Tabs Present 
 				{
 					$text .= $this->renderCreateFieldset($elid, $data, $model, false);		
-					$text .= $this->renderCreateButtonsBar($elid, $data, $model, false);	// Create/Update Buttons etc. 	
+					$text .= $this->renderCreateButtonsBar( $data, $model->getId());	// Create/Update Buttons etc.
 				}
 				
 				
@@ -7027,7 +6880,7 @@ var_dump($select_options);*/
 			if('hidden' === $att['type'])
 			{
 				
-				if(empty($writeParms['show']))
+				if(empty($writeParms['show'])) // hidden field and not displayed. Render element after the field-set.
 				{
 					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
 
@@ -7059,19 +6912,6 @@ var_dump($select_options);*/
 					}
 				}
 
-		/*
-				if('hidden' === $att['type'])
-				{
-					parse_str(varset($att['writeParms']), $tmp);
-					if(!vartrue($tmp['show']))
-					{
-						$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
-						unset($tmp);
-						continue;
-					}
-					unset($tmp);
-				}
-				*/
 
 				if(in_array($key,$this->_field_warnings))
 				{
@@ -7094,17 +6934,10 @@ var_dump($select_options);*/
 				
 				
 			}
-			//if($bckp) $model->remove($bckp);
+
 
 		}
 		
-		//print_a($fdata);
-		/*
-		if($required_help)
-		{
-			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
-		}*/
-
 
 		if(!empty($text) || !empty($hidden_fields))
 		{
@@ -7113,6 +6946,8 @@ var_dump($select_options);*/
 			$text .= "
 					</tbody>
 				</table>";
+
+			$text .= vartrue($fdata['table_post']);
 
 			$text .= implode("\n", $hidden_fields);
 
@@ -7141,7 +6976,7 @@ var_dump($select_options);*/
 	 */
 	public function renderCreateFieldRow($label, $control, $att = array())
 	{
-	
+
 		$writeParms = $att['writeParms'];
 
 		if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
@@ -7183,137 +7018,14 @@ var_dump($select_options);*/
 
 
 	/**
-	 * @param     $id
-	 * @param     $fdata
-	 * @param     $model
-	 * @param int $tab
+	 * Render the submit buttons in the Create/Edit Form.
+	 * @param array $fdata - admin-ui data such as $fields, $tabs, $after_submit_options etc.
+	 * @param int $id Primary ID of the record being edited (only in edit-mode)
 	 * @return string
 	 */
-	function renderCreateButtonsBar($id, $fdata, $model, $tab=0)
+	public function renderCreateButtonsBar($fdata, $id=null) // XXX Note model and $tab removed as of v2.3
 	{
-		/*
-		$text = vartrue($fdata['fieldset_pre'])."
-			<fieldset id='{$id}'>
-				<legend>".vartrue($fdata['legend'])."</legend>
-				".vartrue($fdata['table_pre'])."
-				<table class='table adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tbody>
-		";
-		*/
-		$text = '';
-		
-		// required fields - model definition
-		/** @var e_object $model */
-		$model_required = $model->getValidationRules();
-		$required_help = false;
-		$hidden_fields = array();
-		foreach($fdata['fields'] as $key => $att)
-		{
-			
-			if($tab !== false && varset($att['tab'], 0) !== $tab)
-			{
-				continue;
-			}
-			
-			// convert aliases - not supported in edit mod
-			if(vartrue($att['alias']) && !$model->hasData($key))
-			{
-				$key = $att['field'];
-			}
-			
-			if($key == 'checkboxes' || $key == 'options')
-			{
-				continue;	
-			}
-
-			$parms = vartrue($att['formparms'], array());
-			if(!is_array($parms)) parse_str($parms, $parms);
-			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
-			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
-
-			$valPath = trim(vartrue($att['dataPath'], $key), '/');
-			$keyName = $key;
-			if(strpos($valPath, '/')) //not TRUE, cause string doesn't start with /
-			{
-				$tmp = explode('/', $valPath);
-				$keyName = array_shift($tmp);
-				foreach ($tmp as $path)
-				{
-					$keyName .= '['.$path.']';
-				}
-			}
-			
-			if('hidden' === $att['type'])
-			{
-				if(!is_array($att['writeParms'])) parse_str(varset($att['writeParms']), $tmp);
-				else $tmp = $att['writeParms'];
-				
-				if(!vartrue($tmp['show']))
-				{
-					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
-					unset($tmp);
-					continue;
-				}
-				unset($tmp);
-			}
-			
-			// type null - system (special) fields
-			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
-			{
-				$required = '';
-				$required_class = '';
-				if(isset($model_required[$key]) || vartrue($att['validate']))
-				{
-					$required = $this->getRequiredString();
-					$required_class = ' class="required-label"'; // TODO - add 'required-label' to the core CSS definitions
-					$required_help = true;
-					if(vartrue($att['validate']))
-					{
-						// override
-						$model_required[$key] = array();
-						$model_required[$key][] = true === $att['validate'] ? 'required' : $att['validate'];
-						$model_required[$key][] = varset($att['rule']);
-						$model_required[$key][] = $att['title'];
-						$model_required[$key][] = varset($att['error']);
-					}
-				}
-				 
-				/*
-				$text .= "
-					<tr>
-						<td>
-							".$required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label."
-						</td>
-						<td>
-							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()))."
-							{$help}
-						</td>
-					</tr>
-				";
-				 * */
-			}
-			//if($bckp) $model->remove($bckp);
-
-		}
-
-		if($required_help)
-		{
-		//	$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
-		}
-
-	//	$text .= "
-	//				</tbody>
-	//			</table></fieldset>";
-		
-	
-				
-		$text .= "
-				".implode("\n", $hidden_fields)."
-				".vartrue($fdata['table_post'])."
+		$text = "
 				<div class='buttons-bar center'>
 		";
 					// After submit options
@@ -7331,17 +7043,19 @@ var_dump($select_options);*/
 					}
 
 					$triggers = (empty($fdata['triggers']) && $fdata['triggers'] !== false) ? 'auto' : $fdata['triggers']; // vartrue($fdata['triggers'], 'auto');
+
 					if(is_string($triggers) && 'auto' === $triggers)
 					{
 						$triggers = array();
-						if($model->getId())
+						if(!empty($id))
 						{
-							$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
+							$triggers['submit'] = array(LAN_UPDATE, 'update', $id);
 						}
 						else
 						{
 							$triggers['submit'] = array(LAN_CREATE, 'create', 0);
 						}
+
 						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
 					}
 
@@ -7368,13 +7082,6 @@ var_dump($select_options);*/
 									$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 								}
 
-								//$text .= '
-								//		<li role="menuitem">
-								//			<div class="options left" style="padding:5px">
-								//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
-								//			</div></li>';
-
-
 								$text .= '</ul>';
 							}
 
@@ -7389,9 +7096,9 @@ var_dump($select_options);*/
 
 		$text .= "
 				</div>
-			
-			".vartrue($fdata['fieldset_post'])."
+	
 		";
+
 		return $text;
 	}
 
