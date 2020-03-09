@@ -2291,7 +2291,7 @@ class e_form
 		if(vartrue($options['btn-label']))
 		{
 			$interval = vartrue($options['interval'],1000);
-			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-interval="'.$interval.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
+			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-interval="'.$interval.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.varset($options['show'],0).'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
 			$text .= ' <a data-progress-target="'.$target.'" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
 		}
 		
@@ -2560,7 +2560,7 @@ class e_form
 	 * @param mixed $checked
 	 * @param array $options [optional useKeyValues]
 	 */
-	function checkboxes($name, $option_array, $checked, $options=array())
+	function checkboxes($name, $option_array=array(), $checked=null, $options=array())
 	{
 		$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 
@@ -4405,8 +4405,10 @@ var_dump($select_options);*/
 		$currentlist 	= $obj->fieldpref;
 		$pid 			= $obj->pid;*/
 
-		$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
+	//	$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
 		unset($fieldvalues['__trclass']);
+
+		$trclass = '';
 
 		foreach ($fieldarray as $field => $data)
 		{
@@ -4623,7 +4625,9 @@ var_dump($select_options);*/
 			{
 				if(!$model->getUrl())
 				{
-					$model->setUrl($this->getController()->getUrl());
+					/** @var e_admin_controller_ui $controller */
+					$controller = $this->getController();
+					$model->setUrl($controller->getUrl());
 				}
 
 				// assemble the url
@@ -4649,7 +4653,7 @@ var_dump($select_options);*/
 
 	}
 
-	private function renderOptions($parms, $value='', $id, $attributes)
+	private function renderOptions($parms, $id, $attributes)
 	{
 		$tp = e107::getParser();
 		$cls = false;
@@ -4663,21 +4667,22 @@ var_dump($select_options);*/
 			$deleteIconDefault = $tp->toGlyph('fa-trash');
 		}
 */
-
-		$sf = $this->getController()->getSortField();
+		/** @var e_admin_controller_ui $controller */
+		$controller = $this->getController();
+		$sf = $controller->getSortField();
 
 		if(!isset($parms['sort']) && !empty($sf))
 		{
 			$parms['sort'] = true;
 		}
 
-		$value = "<div class='btn-group'>";
+		$text = "<div class='btn-group'>";
 
 		if(!empty($parms['sort']) && empty($attributes['grid']))
 		{
 			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 			$from = intval(vartrue($_GET['from'],0));
-			$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";
+			$text .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";
 		}
 
 
@@ -4713,7 +4718,7 @@ var_dump($select_options);*/
 			}
 
 			$query = http_build_query($query, null, '&amp;');
-			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+			$text .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 				".$editIconDefault."</a>";
 		}
 
@@ -4727,20 +4732,20 @@ var_dump($select_options);*/
 				$parms['class'] =  'action delete btn btn-default'.$delcls;
 				unset($parms['deleteClass']);
 				$parms['icon'] = $deleteIconDefault;
-				$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
+				$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 			}
 		}
 		else
 		{
 			$parms['class'] =  'action delete btn btn-default'.$delcls;
 			$parms['icon'] = $deleteIconDefault;
-			$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
+			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 		}
 
 				//$attributes['type'] = 'text';
-		$value .= "</div>";
+		$text .= "</div>";
 
-		return $value;
+		return $text;
 
 	}
 
@@ -4815,7 +4820,7 @@ var_dump($select_options);*/
 
 				if(!$value)
 				{
-					$value = $this->renderOptions($parms, $value, $id, $attributes);
+					$value = $this->renderOptions($parms, $id, $attributes);
 				}
 
 				return $value;
@@ -6033,7 +6038,7 @@ var_dump($select_options);*/
 			break;
 			
 			case 'files':
-			
+				$label = varset($parms['label'], 'LAN_EDIT');
 				if($attributes['data'] == 'array')
 				{
 					$parms['data'] = 'array';	
@@ -6176,7 +6181,7 @@ var_dump($select_options);*/
 					}
 
 
-					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, (array) $parms, $value, $eloptions).vartrue($eloptions['post']);
 
 
 				}
@@ -7082,40 +7087,9 @@ var_dump($select_options);*/
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$required.$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." ".$help;
 
-				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
-				{
-					$text .= "
-					<tr><td colspan='2'>";
-					
-					$text .= (isset($writeParms['nolabel']) && $writeParms['nolabel'] == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
-					$text .= $rightCell."
-						</td>
-						
-					</tr>
-				";	
-					
-				}
-				else 
-				{
-// rightCellClass
-		//			leftCellClass
-					$leftCellClass  = (!empty($writeParms['tdClassLeft'])) ? " class='".$writeParms['tdClassLeft']."'" : "";
-					$rightCellClass = (!empty($writeParms['tdClassRight'])) ? " class='".$writeParms['tdClassRight']."'" : "";
-					$trClass        = (!empty($writeParms['trClass'])) ? " class='".$writeParms['trClass']."'" : "";
-
-					$text .= "
-					<tr{$trClass}>
-						<td{$leftCellClass}>
-							".$leftCell."
-						</td>
-						<td{$rightCellClass}>
-							".$rightCell."
-						</td>
-					</tr>
-				";
-				}
+				$att['writeParms'] = $writeParms;
 				 
-				
+				$text .= $this->renderCreateFieldRow($leftCell, $rightCell, $att);
 				
 				
 				
@@ -7125,11 +7099,11 @@ var_dump($select_options);*/
 		}
 		
 		//print_a($fdata);
-		
+		/*
 		if($required_help)
 		{
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
-		}
+		}*/
 
 
 		if(!empty($text) || !empty($hidden_fields))
@@ -7153,91 +7127,68 @@ var_dump($select_options);*/
 		
 		return false;
 		
-		/*		
-		$text .= "
-				".implode("\n", $hidden_fields)."
-				".$required_help."
-				".vartrue($fdata['table_post'])."
-				<div class='buttons-bar center'>
-		";
-					// After submit options
-					$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
-					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
-					if(true === $submitopt)
-					{
-						$submitopt = $defsubmitopt;
-					}
 
-					if($submitopt)
-					{
-						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
-						
-					}
-
-					$triggers = vartrue($fdata['triggers'], 'auto');
-					if(is_string($triggers) && 'auto' === $triggers)
-					{
-						$triggers = array();
-						if($model->getId())
-						{
-							$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
-						}
-						else
-						{
-							$triggers['submit'] = array(LAN_CREATE, 'create', 0);
-						}
-						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
-					}
-
-					foreach ($triggers as $trigger => $tdata)
-					{
-						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
-						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
-						
-						if($trigger == 'submit' && $submitopt)
-						{
-						
-							$text .= 
-							'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
-									<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu col-selection">
-									<li class="nav-header">After submit:</li>
-							';
-							
-							foreach($defsubmitopt as $k=>$v)
-							{
-								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected,"label=".$v)."</a></li>";	
-							}
-							
-							//$text .= '
-							//		<li role="menuitem">
-							//			<div class="options left" style="padding:5px">
-							//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
-							//			</div></li>';
-										
-									
-							$text .= '</ul>';
-						} 
-								
-						$text .= ($trigger == 'submit') ?"</div>" : "";
-						
-						if(isset($tdata[2]))
-						{
-							$text .= $this->hidden($trigger.'_value', $tdata[2]);
-						}
-					}
-
-		$text .= "
-				</div>
-			
-			".vartrue($fdata['fieldset_post'])."
-		";
-		return $text;
-		 */
 	}
+
+
+
+	/**
+	 * Render Create/Edit Fieldset Row.
+	 * @param string $label
+	 * @param string $control
+	 * @param array $att
+	 * @return string
+	 */
+	public function renderCreateFieldRow($label, $control, $att = array())
+	{
 	
-	
+		$writeParms = $att['writeParms'];
+
+		if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
+		{
+			$text = "
+			<tr>
+			<td colspan='2'>";
+
+			$text .= (isset($writeParms['nolabel']) && $writeParms['nolabel'] == 2) ? '' : "<div style='padding-bottom:8px'>".$label."</div>" ;
+			$text .= $control."
+			</td>			
+			</tr>
+			";
+
+			return $text;
+
+		}
+
+		$leftCellClass  = (!empty($writeParms['tdClassLeft'])) ? " class='".$writeParms['tdClassLeft']."'" : "";
+		$rightCellClass = (!empty($writeParms['tdClassRight'])) ? " class='".$writeParms['tdClassRight']."'" : "";
+		$trClass        = (!empty($writeParms['trClass'])) ? " class='".$writeParms['trClass']."'" : "";
+
+		$text = "
+				<tr{$trClass}>
+					<td{$leftCellClass}>
+						".$label."
+					</td>
+					<td{$rightCellClass}>
+						".$control."
+					</td>
+				</tr>
+				";
+
+		return $text;
+
+	}
+
+
+
+
+	/**
+	 * @param     $id
+	 * @param     $fdata
+	 * @param     $model
+	 * @param int $tab
+	 * @return string
+	 */
 	function renderCreateButtonsBar($id, $fdata, $model, $tab=0)
 	{
 		/*
@@ -7256,6 +7207,7 @@ var_dump($select_options);*/
 		$text = '';
 		
 		// required fields - model definition
+		/** @var e_object $model */
 		$model_required = $model->getValidationRules();
 		$required_help = false;
 		$hidden_fields = array();
