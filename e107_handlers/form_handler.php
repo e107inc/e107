@@ -1285,6 +1285,7 @@ class e_form
 
 /**
 	 * Media Picker
+ *
 
 	 * @param string $name input name
 	 * @param string $default default value
@@ -1300,9 +1301,12 @@ class e_form
 	 * - audio=1  (Enable the Audio tab)
      * - glyph=1 (Enable the Glyphs tab).
      * - path=plugin (store in media/plugins/{current-plugin])
-     * - edit=false (disable media-manager popup button)                    
-	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
+     * - edit=false (disable media-manager popup button)
+	 * - rename (string) rename file to this value after upload.  (don't forget the extension)
+	 * - resize array with numberic x values. (array 'w'=>x, 'h'=>x)  - resize the uploaded image before importing during upload.
+     * - convert=jpg (override pref and convert uploaded image to jpeg format. )
 	 * @return string html output
+	 *@example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 */
 	function mediapicker($name, $default, $parms = '')
 	{
@@ -1339,7 +1343,6 @@ class e_form
 		{
 			$parms['h'] = 190;
 		}
-
 
 	//	$width = vartrue($parms['w'], 220);
 	//	$height = vartrue($parms['h'], 190);
@@ -1425,6 +1428,33 @@ class e_form
 		{
 			$qry .= "&path=".deftrue('e_CURRENT_PLUGIN');
 		}
+
+		if(!empty($parms['rename']))
+		{
+			$qry .= "&rename=".$parms['rename'];
+		}
+
+		if(!empty($parms['convert']))
+		{
+			$qry .= "&convert=".$parms['convert'];
+		}
+
+		if(isset($parms['w']))
+		{
+			$qry .= "&w=".(int) $parms['w'];
+		}
+
+		if(isset($parms['h']))
+		{
+			$qry .= "&h=".(int) $parms['h'];
+		}
+
+		if(!empty($parms['resize']))
+		{
+			$resize = array('resize'=>$parms['resize']);
+			$qry .= "&".http_build_query($resize);
+		}
+
 
 		// Drag-n-Drop Upload
 		// @see https://www.dropzonejs.com/#server-side-implementation
@@ -2910,7 +2940,7 @@ class e_form
 			if(!is_array($selected)) $selected = explode(",",$selected);
 
 		}
-		
+
 		$text = $this->select_open($name, $options)."\n";
 
 		if(isset($options['default']))
@@ -3154,6 +3184,7 @@ var_dump($select_options);*/
 	    if(is_string($options)) parse_str($options, $options);
 
 		if(false === $value) $value = '';
+
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
 
@@ -3673,7 +3704,7 @@ var_dump($select_options);*/
 		foreach ($options as $option => $optval)
 		{
 			$optval = trim($optval);
-			switch ($option) 
+			switch ($option)
 			{
 
 				case 'id':
