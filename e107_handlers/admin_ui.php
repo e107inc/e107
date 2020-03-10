@@ -7439,6 +7439,11 @@ class e_admin_form_ui extends e_form
 				$parms = $val['writeParms']['optArray'];
 			}
 
+			if(!empty($val['search']))
+			{
+				$searchFieldOpts["searchfield__".$key] = $val['title'];
+			}
+
 			switch($val['type'])
 			{
 
@@ -7775,7 +7780,6 @@ class e_admin_form_ui extends e_form
 				$text .= "\t".$this->optgroup_close()."\n";
 			}
 		}
-
 
 
 		if(!empty($searchFieldOpts))
