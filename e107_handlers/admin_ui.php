@@ -7423,6 +7423,11 @@ class e_admin_form_ui extends e_form
 
 		foreach($fieldList as $key=>$val)
 		{
+			if(!empty($val['search']))
+			{
+				$searchFieldOpts["searchfield__".$key] = $val['title'];
+			}
+
 			if(empty($val[$type])) // ie. filter = false or batch = false.
 			{
 				continue;
@@ -7439,10 +7444,7 @@ class e_admin_form_ui extends e_form
 				$parms = $val['writeParms']['optArray'];
 			}
 
-			if(!empty($val['search']))
-			{
-				$searchFieldOpts["searchfield__".$key] = $val['title'];
-			}
+
 
 			switch($val['type'])
 			{
