@@ -2231,9 +2231,15 @@ class e_media
 
 
 		$convertToJpeg = e107::getPref('convert_to_jpeg', 0);
+
+		if(!empty($_REQUEST['convert']) && $_REQUEST['convert'] === 'jpg')
+		{
+			$convertToJpeg = true;
+		}
+
 		$fileSize = filesize($filePath);
 
-		if(varset($_GET['for']) !== '_icon' && !empty($convertToJpeg))
+		if(varset($_REQUEST['for']) !== '_icon' && !empty($convertToJpeg))
 		{
 			if($jpegFile = e107::getMedia()->convertImageToJpeg($filePath, true))
 			{
@@ -2244,10 +2250,28 @@ class e_media
 
 		}
 
-		if(!empty($_GET['for'])) // leave in upload directory if no category given.
+		if(!empty($_REQUEST['resize']))
 		{
-			$uploadPath = varset($_GET['path'],null);
-			$for = e107::getParser()->filter($_GET['for']);
+			$thumb = e107::getThumb($filePath);
+			$w = (int) $_REQUEST['resize']['w'];
+			$h = (int) $_REQUEST['resize']['h'];
+			$thumb->adaptiveResize($w,$h)->save($filePath);
+		}
+
+		if(!empty($_REQUEST['rename']))
+		{
+			$newPath = $targetDir.basename($_REQUEST['rename']);
+			if(!rename($filePath, $newPath))
+			{
+				return '{"jsonrpc" : "2.0", "error" : {"code": 105, "message": "Unable to rename '.$filePath.' to '.$newPath.'"}, "id" : "id"}';
+			}
+			$fileName = basename($newPath);
+		}
+
+		if(!empty($_REQUEST['for'])) // leave in upload directory if no category given.
+		{
+			$uploadPath = varset($_REQUEST['path'],null);
+			$for = e107::getParser()->filter($_REQUEST['for']);
 			$for = str_replace(array('+','^'),'', $for);
 
 			$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath));
@@ -2261,7 +2285,23 @@ class e_media
 		$this->ajaxUploadLog($filePath,$fileName,$fileSize,$result);
 
 
-		$preview = $this->previewTag($result);
+
+		// file_put_contents(e_LOG."mediatmp.log", print_r($previewArr,true));
+
+		$opts = array();
+
+		// set correct size for preview image.
+		if(isset($_REQUEST['w']))
+		{
+			$opts['w'] = (int) $_REQUEST['w'];
+		}
+
+		if(isset($_REQUEST['h']))
+		{
+			$opts['h'] = (int) $_REQUEST['h'];
+		}
+
+		$preview = $this->previewTag($result,$opts);
 		$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id", 'preview' => $preview, 'data'=>$_FILES );
 
 		return json_encode($array);
