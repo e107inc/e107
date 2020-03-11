@@ -2183,10 +2183,7 @@ class e_admin_controller
 
 	//	e107::getDebug()->log("Admin-ui Action: <b>".$action."</b>");
 
-		if($action === 'Edit')
-		{
-			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
-		}
+
 
 
 		
@@ -6020,6 +6017,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->getModel()->load($this->getId());
 		$this->addTitle();
+		$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited.
 	}
 
 	/**
