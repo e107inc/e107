@@ -58,9 +58,6 @@ jobs:
         )
         apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libpng-dev libjpeg-dev
 
-    - name: Install PHP zip extension
-      run: docker-php-ext-install zip
-
     - name: Configure PHP gd extension with JPEG support
       run: |
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
@@ -70,14 +67,10 @@ jobs:
           docker-php-ext-configure gd --with-jpeg-dir=/usr
         fi
 
-    - name: Install PHP gd extension
-      run: docker-php-ext-install gd
-
-    - name: Install PHP pdo_mysql extension
-      run: docker-php-ext-install pdo_mysql
-
-    - name: Install PHP mysqli extension
-      run: docker-php-ext-install mysqli
+    - name: Install necessary PHP extensions
+      run: |
+        docker-php-ext-install -j "$(nproc)" \
+        zip gd pdo_mysql mysqli
 
     - name: PECL install xdebug
       run: |
