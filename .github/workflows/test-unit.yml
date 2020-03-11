@@ -56,12 +56,30 @@ jobs:
           grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
           awk '{print $3}'
         )
-        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev
+        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libpng-dev libjpeg-dev
 
-    - name: PECL zip
+    - name: Install PHP zip extension
       run: docker-php-ext-install zip
 
-    - name: PECL xdebug
+    - name: Configure PHP gd extension with JPEG support
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          docker-php-ext-configure gd --with-jpeg
+        else
+          docker-php-ext-configure gd --with-jpeg-dir=/usr
+        fi
+
+    - name: Install PHP gd extension
+      run: docker-php-ext-install gd
+
+    - name: Install PHP pdo_mysql extension
+      run: docker-php-ext-install pdo_mysql
+
+    - name: Install PHP mysqli extension
+      run: docker-php-ext-install mysqli
+
+    - name: PECL install xdebug
       run: |
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
         then
@@ -70,12 +88,6 @@ jobs:
           pecl install xdebug-2.5.5
         fi
         docker-php-ext-enable xdebug
-
-    - name: Install PHP pdo_mysql extension
-      run: docker-php-ext-install pdo_mysql
-
-    - name: Install PHP mysqli extension
-      run: docker-php-ext-install mysqli
 
     - uses: actions/checkout@v2
 
