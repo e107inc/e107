@@ -231,7 +231,10 @@ class e107Email extends PHPMailer
 		
 		foreach (array('mailer', 'smtp_server', 'smtp_username', 'smtp_password', 'smtp_port', 'sendmail', 'siteadminemail', 'siteadmin') as $k)
 		{
-			if (!isset($overrides[$k])) $overrides[$k] = $pref[$k];
+			if (!isset($overrides[$k]))
+			{
+				 $overrides[$k] = varset($pref[$k]);
+			}
 		}
 
 		if(strpos($overrides['smtp_server'],':')!== false)
