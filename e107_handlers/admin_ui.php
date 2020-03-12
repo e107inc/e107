@@ -310,7 +310,7 @@ class e_admin_request
 
 	/**
 	 * Get current action
-	 * @return TBD
+	 * @return string
 	 */
 	public function getAction()
 	{
@@ -1061,6 +1061,18 @@ class e_admin_dispatcher
 			$this->setDefaults();
 		}
 
+
+
+		// current user does not have access to default route, so find a new one.
+		if(!$hasAccess = $this->hasRouteAccess($this->defaultMode.'/'.$this->defaultAction))
+		{
+			if($newRoute = $this->getApprovedAccessRoute())
+			{
+				list($this->defaultMode,$this->defaultAction) = explode('/',$newRoute);
+			}
+		}
+
+
 		$request->setDefaultMode($this->defaultMode)->setDefaultAction($this->defaultAction);
 
 		// register itself
@@ -1089,7 +1101,7 @@ class e_admin_dispatcher
 		$currentMode = $request->getMode();
 
 		// access based on mode setting - general controller access
-		if(!$this->checkModeAccess($currentMode))
+		if(!$this->hasModeAccess($currentMode))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
@@ -1100,7 +1112,10 @@ class e_admin_dispatcher
 		// access based on $access settings - access per action
 		$currentAction = $request->getAction();
 		$route = $currentMode.'/'.$currentAction;
-		if(!$this->checkRouteAccess($route))
+
+
+
+		if(!$this->hasRouteAccess($route))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
@@ -1111,7 +1126,7 @@ class e_admin_dispatcher
 		return true;
 	}
 	
-	public function checkModeAccess($mode)
+	public function hasModeAccess($mode)
 	{
 		// mode userclass (former check_class())
 		if(isset($this->modes[$mode]['userclass']) && !e107::getUser()->checkClass($this->modes[$mode]['userclass'], false))
@@ -1133,7 +1148,7 @@ class e_admin_dispatcher
 		return true;
 	}
 	
-	public function checkRouteAccess($route)
+	public function hasRouteAccess($route)
 	{
 		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
@@ -1168,10 +1183,37 @@ class e_admin_dispatcher
 			$action = $this->modes[$mode]['index'];
 		}
 
+
+
+
 		if(!$this->defaultMode) $this->defaultMode = $mode;
 		if(!$this->defaultAction) $this->defaultAction = $action;
 
 		return $this;
+	}
+
+	/**
+	 * Search through access for an approved route.
+	 * Returns false if no approved route found.
+	 *
+	 * @return string|bool
+	 */
+	private function getApprovedAccessRoute()
+	{
+		if(empty($this->access))
+		{
+			return false;
+		}
+
+		foreach($this->access as $route=>$uclass)
+		{
+			if(check_class($uclass))
+			{
+				return $route;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1491,7 +1533,7 @@ class e_admin_dispatcher
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
-			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.varset($tmp[1])))
+			if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($tmp[0].'/'.varset($tmp[1])))
 			{
 				continue;
 			}
@@ -6859,18 +6901,18 @@ class e_admin_form_ui extends e_form
 		$editRoute      = $mode."/edit";
 		$createRoute    = $mode."/create";
 
-		if(!$controller->getDispatcher()->checkRouteAccess($createRoute)) // disable the batchCopy option.
+		if(!$controller->getDispatcher()->hasRouteAccess($createRoute)) // disable the batchCopy option.
 		{
 			$controller->setBatchCopy(false);
 		}
 
-		if(!$controller->getDispatcher()->checkRouteAccess($deleteRoute)) // disable the delete button and batch delete.
+		if(!$controller->getDispatcher()->hasRouteAccess($deleteRoute)) // disable the delete button and batch delete.
 		{
 			$fields['options']['readParms']['deleteClass'] = e_UC_NOBODY;
 			$controller->setBatchDelete(false);
 		}
 
-		if(!$controller->getDispatcher()->checkRouteAccess($editRoute))
+		if(!$controller->getDispatcher()->hasRouteAccess($editRoute))
 		{
 			$fields['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
 			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
