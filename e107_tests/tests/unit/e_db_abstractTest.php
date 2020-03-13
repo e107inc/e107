@@ -218,9 +218,25 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testRetrieve()
 	{
+		// 'single' field value mode.
+		$expected = 'e107';
+		$result = $this->db->retrieve('user', 'user_name', 'user_id = 1');
+		$this->assertEquals($expected,$result);
+
+		$result = $this->db->retrieve("SELECT user_name FROM #user WHERE user_id = 1");
+		$this->assertEquals($expected,$result);
+
+		// 'one' row mode.
 		$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
 		$this->assertEquals($expected,$result);
+
+		$result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1");
+		$this->assertEquals($expected,$result);
+
+		$result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1");
+		$this->assertEquals($expected,$result);
+
 
 
 		$result = $this->db->retrieve('user', 'missing_field, user_name', 'user_id = 1');
@@ -233,7 +249,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->retrieve(null);
 		$this->assertEquals($expected,$result);
 
-
+		// 'multi' row mode.
 		$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => 'e107', ),);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 		$this->assertEquals($expected,$result);
