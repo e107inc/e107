@@ -465,7 +465,7 @@ class e_db_mysql implements e_db
 	 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
 	 * }
 	 *
-	 * // Using whole query example, in this case default mode is 'single'
+	 * // Using whole query example, in this case default mode is 'one'
 	 * $array = e107::getDb()->retrieve('SELECT
 	 *    p.*, u.user_email, u.user_name FROM `#user` AS u
 	 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
@@ -528,7 +528,10 @@ class e_db_mysql implements e_db
 		{
 			// gen()
 			$select = false;
-			if($mode == 'one') $mode = 'single';
+			if($mode == 'one' && !preg_match('/[,*]+[\s\S]*FROM/im',$table)) // if a comma or astericks is found before "FROM" then leave it in 'one' row mode.
+			{
+			    $mode = 'single';
+			}
 		}
 		// auto detect noWhere - if where string starts with upper case LATIN word
 		elseif(!$where || preg_match('/^[A-Z]+\S.*$/', trim($where)))
