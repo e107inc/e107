@@ -21,6 +21,8 @@
   },
   "require": {
     "php": ">=5.6",
+    "ext-json": "*",
+    "ext-pdo": "*",
     "hybridauth/hybridauth": "^3.1.1",
     "phpmailer/phpmailer": "^6.1",
     "tedivm/jshrink": "^1.3",
