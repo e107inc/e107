@@ -337,8 +337,8 @@ class e107Build
 
 			$this->status('Creating TAR.GZ archive');
 			OsHelper::runValidated("(cat $tarfile | gzip -9 > $tarfile.gz)");
-//			$this->status('Creating TAR.XZ archive');
-//			$this->runValidated(cat $tarfile | xz -9e > $tarfile.xz)");
+			$this->status('Creating TAR.XZ archive');
+			OsHelper::runValidated("(cat $tarfile | xz -9 > $tarfile.xz)");
 
 			$this->status('Removing TAR archive');
 			unlink($tarfile);
@@ -514,13 +514,10 @@ class e107Build
 		//create new image file - writes directly to cvsroot
 		$this->changeDir($this->config['baseDir']);
 
-		$_current = $this->exportDir;
-		$_deprecated = "{$this->config['baseDir']}/deprecated/{$this->config['main']['name']}";
+		$imageFile = $this->tempDir . "core_image.php";
 
-		$_image = $this->tempDir . "core_image.php";
-
-		$this->status("Creating new core_image.php file ({$_image})", true);
-		new CoreImage($_current, $_deprecated, $_image);
+		$this->status("Creating new core_image.php file ({$imageFile})", true);
+		new CoreImage($this->exportDir, $this->version, $imageFile);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
 		$this->changeDir($dir);
