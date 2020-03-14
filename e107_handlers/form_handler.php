@@ -4502,7 +4502,10 @@ var_dump($select_options);*/
 		}
 
 		/** @var e_admin_model $model */
-		$model = e107::getRegistry('core/adminUI/currentListModel');
+		if(!$model = e107::getRegistry('core/adminUI/currentListModel')) // Try list model
+		{
+			$model = e107::getRegistry('core/adminUI/currentModel'); // try create/edit model.
+		}
 
 		$dialog     = vartrue($parms['target']) =='dialog' ? " e-modal" : ""; // iframe
 		$ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
@@ -6764,6 +6767,8 @@ var_dump($select_options);*/
 		foreach ($forms as $fid => $form)
 		{
 			$model = $models[$fid];
+
+			e107::setRegistry('core/adminUI/currentModel', $model);
 
 			if(!is_object($model))
 			{
