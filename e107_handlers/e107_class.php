@@ -193,6 +193,7 @@ class e107
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
 		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
+		'e_file_inspector'               => '{e_HANDLER}e_file_inspector_json.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
 		'e_media'                        => '{e_HANDLER}media_class.php',
@@ -1599,6 +1600,18 @@ class e107
 			return self::getSingleton('e_file', true);
 		}
 		return self::getObject('e_file', null, true);
+	}
+
+	/**
+	 * Create a new file inspector object
+	 *
+	 * Note: Only the core file inspector is supported right now.
+	 *
+	 * @return e_file_inspector
+	 */
+	public static function getFileInspector()
+	{
+		return self::getSingleton('e_file_inspector');
 	}
 
 	/**
