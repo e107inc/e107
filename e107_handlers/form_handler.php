@@ -4303,19 +4303,11 @@ var_dump($select_options);*/
 	 * @param string $pid - eg. table_id
 	 * @return string
 	 */
-	function renderTableRow($fieldarray, $currentlist, $fieldvalues, $pid)
+	function renderTableCells($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
+
 		$cnt = 0;
-		$ret = '';
-
-		/*$fieldarray 	= $obj->fields;
-		$currentlist 	= $obj->fieldpref;
-		$pid 			= $obj->pid;*/
-
-	//	$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
-		unset($fieldvalues['__trclass']);
-
-		$trclass = '';
+		$text = '';
 
 		foreach ($fieldarray as $field => $data)
 		{
@@ -4329,7 +4321,7 @@ var_dump($select_options);*/
 				$field = $data['alias'];
 			}
 			*/
-            
+
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
@@ -4337,7 +4329,7 @@ var_dump($select_options);*/
 			}
 			elseif(vartrue($data['type']) != 'method' && !$data['forced'] && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== NULL)
 			{
-				$ret .= "
+				$text .= "
 					<td>
 						Not Found! ($field)
 					</td>
@@ -4347,13 +4339,12 @@ var_dump($select_options);*/
 			}
 
 			$tdclass = vartrue($data['class']);
-            
+
             if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
-            
+
 			if($field == 'options') $tdclass = $tdclass ? $tdclass.' options' : 'options';
-            
-            
-            
+
+
 			// there is no other way for now - prepare user data
 			if('user' == vartrue($data['type']) /* && isset($data['readParms']['idField'])*/)
 			{
@@ -4376,17 +4367,17 @@ var_dump($select_options);*/
 					$data['readParms']['__nameval'] = $fieldvalues['user_name'];
 				}
 
-
 			}
-			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
+			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
 
 			if($tdclass)
 			{
 				$tdclass = ' class="'.$tdclass.'"';
 			}
-			$ret .= '
+
+			$text .= '
 				<td'.$tdclass.'>
 					'.$value.'
 				</td>
@@ -4397,15 +4388,42 @@ var_dump($select_options);*/
 
 		if($cnt)
 		{
-			return '
-				<tr'.$trclass.' id="row-'.$fieldvalues[$pid].'">
+			return $text;
+		}
+
+		return null;
+
+	}
+
+	/**
+	 * Render Table row and cells from field listing.
+	 *
+	 * @param array  $fieldArray  - eg. $this->fields
+	 * @param array  $fieldPref   - eg $this->fieldpref
+	 * @param array  $fieldValues - eg. $row
+	 * @param string $pid         - eg. table_id
+	 * @return string
+	 */
+	function renderTableRow($fieldArray, $fieldPref, $fieldValues, $pid)
+	{
+
+		if(!$ret = $this->renderTableCells($fieldArray, $fieldPref, $fieldValues, $pid))
+		{
+			return '';
+		}
+
+		$trclass = '';
+		//	$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
+		unset($fieldValues['__trclass']);
+
+		return '
+				<tr'.$trclass.' id="row-' . $fieldValues[$pid].'">
 					'.$ret.'
 				</tr>
 			';
-		}
-
-		return '';
 	}
+
+
 
 	/**
 	 * Inline Token

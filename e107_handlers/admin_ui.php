@@ -5812,7 +5812,16 @@ class e_admin_ui extends e_admin_controller_ui
 			echo ADLAN_86; //Forbidden
 
 			$result = var_export($this->fields[$_name], true);
-			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField:\n".$result);
+
+			$problem = array();
+			$problem['noedit'] = !empty($this->fields[$_name]['noedit']) ? 'yes' : 'no';
+			$problem['nolist'] = !empty($this->fields[$_name]['nolist']) ? 'yes' : 'no';
+			$problem['inline'] = empty($this->fields[$_name]['inline']) ? 'yes' : 'no';
+			$problem['token'] = empty($_token) ? 'yes' : 'no';
+			$problem['password'] = !password_verify(session_id(),$_token) ? 'yes' : 'no';
+
+			$result .= "\nForbidden Caused by: ".print_r($problem,true);
+			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField (".$_name."):\n".$result);
 			return;
 		}
 
