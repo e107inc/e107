@@ -15,7 +15,7 @@ class CoreImage
 	/** @var PDO */
 	protected $db;
 
-	public function __construct($exportFolder, $currentVersion, $imageFile)
+	public function __construct($exportFolder, $tempFolder, $currentVersion, $imageFile)
 	{
 		set_time_limit(240);
 
@@ -30,10 +30,10 @@ class CoreImage
 			);
         ');
 
-		$this->create_image($exportFolder, $currentVersion);
+		$this->create_image($exportFolder, $tempFolder, $currentVersion);
 	}
 
-	function create_image($exportFolder, $currentVersion)
+	function create_image($exportFolder, $tempFolder, $currentVersion)
 	{
 		$data = "<?php\n";
 		$data .= "/*\n";
@@ -57,7 +57,7 @@ class CoreImage
 		$this->generateCurrentChecksums($exportFolder, $currentVersion);
 
 		echo("[Core-Image] Scanning Removed Files from Git" . "\n");
-		$this->generateRemovedChecksums();
+		$this->generateRemovedChecksums($tempFolder);
 	}
 
 	protected function generateCurrentChecksums($exportFolder, $currentVersion)
@@ -98,7 +98,7 @@ class CoreImage
 		return md5(str_replace(array(chr(13), chr(10)), '', $body));
 	}
 
-	protected function generateRemovedChecksums()
+	protected function generateRemovedChecksums($tempFolder)
 	{
 		$stdout = '';
 		OsHelper::runValidated('git tag --list ' . escapeshellarg("v*"), $stdout);
@@ -116,6 +116,17 @@ class CoreImage
 			return !preg_match("/[a-z]/i", $version);
 		});
 
+		$timeMachineFolder = $tempFolder . "/git_time_machine/";
+		OsHelper::runValidated('mkdir -p ' . escapeshellarg($timeMachineFolder));
+		OsHelper::runValidated('git rev-parse --show-toplevel', $repo_folder);
+		$repo_folder = realpath(trim($repo_folder) . "/.git");
+		OsHelper::runValidated(
+			'cp -a ' .
+			escapeshellarg($repo_folder) .
+			' ' .
+			escapeshellarg($timeMachineFolder)
+		);
+
 		$insert_statement = $this->insert_statement($removedFilePath, $version, $checksum);
 		$check_statement = $this->db->prepare('SELECT COUNT(*) FROM file_hashes WHERE path = :path AND hash = :hash');
 		$this->db->beginTransaction();
@@ -126,16 +137,18 @@ class CoreImage
 				$stdout
 			);
 			$removedFiles = explode("\n", trim($stdout));
+			OsHelper::runValidated(
+				'git -C ' . escapeshellarg($timeMachineFolder) . ' ' .
+				'checkout ' . escapeshellarg($tag)
+			);
 			foreach ($removedFiles as $removedFilePath) {
-				OsHelper::runValidated(
-					'git --no-pager show ' . escapeshellarg($tag . ":" . $removedFilePath),
-					$stdout
-				);
-				$checksum = $this->checksum($stdout);
+				$checksum = $this->checksumPath($timeMachineFolder . '/' . $removedFilePath);
 				$check_statement->execute([':path' => $removedFilePath, ':hash' => $checksum]);
 				if ($check_statement->fetchColumn() == 0) $insert_statement->execute();
 			}
 		}
+
+		OsHelper::runValidated('rm -rf ' . escapeshellarg($timeMachineFolder));
 
 		$this->db->commit();
 	}
