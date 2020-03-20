@@ -24,11 +24,23 @@ class CoreImage
 		$this->db->exec('
 			CREATE TABLE IF NOT EXISTS file_hashes (
 			    path TEXT,
-			    release_version TEXT,
+			    release_version INTEGER,
 			    hash TEXT'/*.',
 			    UNIQUE(path, hash) ON CONFLICT IGNORE'*/ . '
 			);
         ');
+		$this->db->exec('
+			CREATE TABLE IF NOT EXISTS versions (
+				version_id INTEGER PRIMARY KEY,
+				version_string TEXT,
+				UNIQUE(version_string) ON CONFLICT IGNORE
+			);
+		');
+		# Retrieval:
+		#   SELECT file_hashes.path, versions.version_string, file_hashes.hash
+		#   FROM file_hashes
+		#   LEFT JOIN versions ON versions.version_id = file_hashes.release_version
+		#   ORDER BY path ASC;
 
 		$this->create_image($exportFolder, $tempFolder, $currentVersion);
 	}
@@ -69,6 +81,8 @@ class CoreImage
 
 		$insert_statement = $this->insert_statement($relativePath, $currentVersion, $checksum);
 		$this->db->beginTransaction();
+
+		$this->insert_version($currentVersion);
 
 		/**
 		 * @var $file DirectoryIterator
@@ -132,6 +146,7 @@ class CoreImage
 		$this->db->beginTransaction();
 
 		foreach ($tags as $tag => $version) {
+			$this->insert_version($version);
 			OsHelper::runValidated(
 				'git --no-pager diff --no-renames --name-only --diff-filter D ' . escapeshellarg($tag),
 				$stdout
@@ -165,11 +180,23 @@ class CoreImage
 		$releaseVersion = $releaseVersion ?: null;
 		$checksum = $checksum ?: null;
 		$insert_statement = $this->db->prepare(
-			"INSERT INTO file_hashes (path, release_version, hash) VALUES (:path, :release_version, :hash)"
+			"INSERT INTO file_hashes (
+                      	path, release_version, hash
+                      ) VALUES (
+                        :path, (SELECT version_id FROM versions WHERE version_string = :release_version), :hash
+                      )"
 		);
 		$insert_statement->bindParam(":path", $relativePath);
 		$insert_statement->bindParam(":release_version", $releaseVersion);
 		$insert_statement->bindParam(":hash", $checksum);
 		return $insert_statement;
+	}
+
+	private function insert_version($releaseVersion)
+	{
+		$statement = $this->db->prepare(
+			"INSERT INTO versions (version_id, version_string) VALUES (NULL, ?)"
+		);
+		$statement->execute([$releaseVersion]);
 	}
 }
