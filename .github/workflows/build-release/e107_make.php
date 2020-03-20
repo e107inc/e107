@@ -517,7 +517,7 @@ class e107Build
 		$imageFile = $this->tempDir . "core_image.php";
 
 		$this->status("Creating new core_image.php file ({$imageFile})", true);
-		new CoreImage($this->exportDir, $this->version, $imageFile);
+		new CoreImage($this->exportDir, $this->tempDir, $this->version, $imageFile);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
 		$this->changeDir($dir);
