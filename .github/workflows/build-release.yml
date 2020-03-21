@@ -26,7 +26,7 @@ jobs:
         run: git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
 
       - name: Run build script
-        run: php e107_make.php
+        run: php -dphar.readonly=0 e107_make.php
         working-directory: ./.github/workflows/build-release/
 
       - name: Upload build artifacts

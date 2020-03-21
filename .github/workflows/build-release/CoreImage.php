@@ -17,10 +17,12 @@ class CoreImage
 
 	public function __construct($exportFolder, $tempFolder, $currentVersion, $imageFile)
 	{
-		set_time_limit(240);
+		$imagePharFile = "$imageFile.phar";
+		$phar = new Phar($imagePharFile);
 
-		file_put_contents($imageFile, '');
-		$this->db = new PDO("sqlite:{$imageFile}");
+		$imageSqliteFile = "$imageFile.sqlite";
+		file_put_contents($imageSqliteFile, '');
+		$this->db = new PDO("sqlite:{$imageSqliteFile}");
 		$this->db->exec('
 			CREATE TABLE IF NOT EXISTS file_hashes (
 			    path TEXT,
@@ -43,29 +45,17 @@ class CoreImage
 		#   ORDER BY path ASC;
 
 		$this->create_image($exportFolder, $tempFolder, $currentVersion);
+
+		$phar->startBuffering();
+		$phar->setStub($this->generateStub());
+		$phar->addFile($imageSqliteFile, "core_image.sqlite");
+		$phar->compressFiles(Phar::BZ2);
+		$phar->stopBuffering();
+		rename($imagePharFile, $imageFile);
 	}
 
 	function create_image($exportFolder, $tempFolder, $currentVersion)
 	{
-		$data = "<?php\n";
-		$data .= "/*\n";
-		$data .= "+ ----------------------------------------------------------------------------+\n";
-		$data .= "|     e107 website system\n";
-		$data .= "|\n";
-		$data .= "|     Copyright (C) 2008-" . date("Y") . " e107 Inc. \n";
-		$data .= "|     http://e107.org\n";
-		//	$data .= "|     jalist@e107.org\n";
-		$data .= "|\n";
-		$data .= "|     Released under the terms and conditions of the\n";
-		$data .= "|     GNU General Public License (http://gnu.org).\n";
-		$data .= "|\n";
-		$data .= "|     \$URL$\n";
-		$data .= "|     \$Id$\n";
-		$data .= "+----------------------------------------------------------------------------+\n";
-		$data .= "*/\n\n";
-		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
-
-		echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
 		$this->generateCurrentChecksums($exportFolder, $currentVersion);
 
 		echo("[Core-Image] Scanning Removed Files from Git" . "\n");
@@ -198,5 +188,29 @@ class CoreImage
 			"INSERT INTO versions (version_id, version_string) VALUES (NULL, ?)"
 		);
 		$statement->execute([$releaseVersion]);
+	}
+
+	private function generateStub()
+	{
+		$data = "<?php\n";
+		$data .= "/*\n";
+		$data .= "+ ----------------------------------------------------------------------------+\n";
+		$data .= "|     e107 website system\n";
+		$data .= "|\n";
+		$data .= "|     Copyright (C) 2008-" . date("Y") . " e107 Inc. \n";
+		$data .= "|     http://e107.org\n";
+		//	$data .= "|     jalist@e107.org\n";
+		$data .= "|\n";
+		$data .= "|     Released under the terms and conditions of the\n";
+		$data .= "|     GNU General Public License (http://gnu.org).\n";
+		$data .= "|\n";
+		$data .= "|     \$URL$\n";
+		$data .= "|     \$Id$\n";
+		$data .= "+----------------------------------------------------------------------------+\n";
+		$data .= "*/\n\n";
+		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
+		$data .= "__HALT_COMPILER();";
+
+		return $data;
 	}
 }
