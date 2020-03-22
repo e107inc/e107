@@ -25,6 +25,12 @@ jobs:
       - name: Fetch version information
         run: git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
 
+      # Remove this step if the old version tags make it to the official repository.
+      - name: Fetch version information from really old releases
+        run: |
+          git remote add deltik https://github.com/Deltik/e107.git
+          git fetch deltik +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
+
       - name: Run build script
         run: php -dphar.readonly=0 e107_make.php
         working-directory: ./.github/workflows/build-release/
