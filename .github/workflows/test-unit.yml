@@ -56,7 +56,7 @@ jobs:
           grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
           awk '{print $3}'
         )
-        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libpng-dev libjpeg-dev
+        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev
 
     - name: Configure PHP gd extension with JPEG support
       run: |
@@ -70,7 +70,7 @@ jobs:
     - name: Install necessary PHP extensions
       run: |
         docker-php-ext-install -j "$(nproc)" \
-        zip gd pdo_mysql mysqli
+        zip bz2 gd pdo_mysql mysqli
 
     - name: PECL install xdebug
       run: |
