@@ -9,6 +9,11 @@
 
 require_once("e_file_inspector_interface.php");
 
+/**
+ * File Inspector
+ *
+ * Tool to validate application files for consistency by comparing hashes of files with those in a database
+ */
 abstract class e_file_inspector implements e_file_inspector_interface
 {
 	/**
@@ -16,12 +21,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
 	 *
 	 * @param $path string Relative path of the file to look up
 	 * @param $version string The desired software release to match.
-	 *                        Leave blank for the latest version.
+	 *                        Leave blank for the current version.
 	 *                        Do not prepend the version number with "v".
 	 * @return int Validation code (see the constants of this class)
 	 */
 	public function validate($path, $version = null)
 	{
+	    if ($version === null) $version = $this->getCurrentVersion();
 		$absolutePath = realpath($path);
 		$actualChecksum = $this->checksumPath($absolutePath);
 		$dbChecksum = $this->getChecksum($path, $version);
@@ -47,12 +53,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
 	 *
 	 * @param $path string Relative path of the file to look up
 	 * @param $version string The software release version corresponding to the file hash.
-	 *                        Leave blank for the latest version.
+	 *                        Leave blank for the current version.
 	 *                        Do not prepend the version number with "v".
 	 * @return string|bool The database hash for the path and version specified. FALSE if the record does not exist.
 	 */
 	public function getChecksum($path, $version = null)
 	{
+        if ($version === null) $version = $this->getCurrentVersion();
 		$checksums = $this->getChecksums($path);
 		return isset($checksums[$version]) ? $checksums[$version] : false;
 	}
@@ -81,7 +88,26 @@ abstract class e_file_inspector implements e_file_inspector_interface
 		return md5(str_replace(array(chr(13),chr(10)), "",  $content));
 	}
 
-	/**
+    /**
+     * @inheritDoc
+     */
+    public function getVersions($path)
+    {
+        return array_keys($this->getChecksums($path));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCurrentVersion()
+    {
+        $checksums = $this->getChecksums("index.php");
+        $versions = array_keys($checksums);
+        usort($versions, 'version_compare');
+        return array_pop($versions);
+    }
+
+    /**
 	 * Get the matching version of the provided path
 	 *
 	 * Useful for looking up the versions of old files that no longer exist in the latest image
@@ -98,4 +124,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
 		}
 		return false;
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public function isInsecure($path)
+    {
+        # TODO
+        return false;
+    }
 }

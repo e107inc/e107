@@ -1,0 +1,101 @@
+<?php
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ */
+
+require_once("e_file_inspector.php");
+
+class e_file_inspector_sqlphar extends e_file_inspector
+{
+    private $coreImage;
+    private $currentVersion;
+
+    /**
+     * e_file_inspector_sqlphar constructor.
+     * @param $pharFilePath string Absolute path to the file inspector database
+     */
+    public function __construct($pharFilePath = null)
+    {
+        if ($pharFilePath === null) $pharFilePath = e_ADMIN . "core_image.php";
+        Phar::loadPhar($pharFilePath, "core_image.phar");
+        $tmpFile = tmpfile();
+        $tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
+        $this->copyUrlToResource("phar://core_image.phar/core_image.sqlite", $tmpFile);
+        $this->coreImage = new PDO("sqlite:{$tmpFilePath}");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPathIterator()
+    {
+        $statement = $this->coreImage->query(
+            "SELECT path FROM file_hashes ORDER BY path ASC;"
+        );
+        return new IteratorIterator($statement);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getChecksums($path)
+    {
+        $path = $this->pathToDefaultPath($path);
+        $statement = $this->coreImage->prepare("
+            SELECT versions.version_string, file_hashes.hash
+            FROM file_hashes
+            LEFT JOIN versions ON versions.version_id = file_hashes.release_version
+            WHERE file_hashes.path = :path
+            ORDER BY path ASC;
+        ");
+        $statement->execute([
+            ':path' => $path
+        ]);
+        return $statement->fetchAll(PDO::FETCH_KEY_PAIR);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCurrentVersion()
+    {
+        if ($this->currentVersion) return $this->currentVersion;
+
+        $statement = $this->coreImage->query("
+            SELECT version_string FROM versions ORDER BY version_string DESC LIMIT 1
+        ");
+        return $this->currentVersion = $statement->fetchColumn();
+    }
+
+    private function pathToDefaultPath($path)
+    {
+        $defaultDirs = e107::getInstance()->defaultDirs();
+        foreach ($defaultDirs as $dirType => $defaultDir)
+        {
+            $customDir = e107::getFolder(preg_replace("/_DIRECTORY$/i", "", $dirType));
+            $path = preg_replace("/^" . preg_quote($customDir, "/") . "/", $defaultDir, $path);
+        }
+        return $path;
+    }
+
+    /**
+     * Copy file to destination with low memory footprint
+     * @param $source string URL of the source
+     * @param $destination resource File pointer of the destination
+     */
+    private function copyUrlToResource($source, $destination)
+    {
+        $dbFile = fopen($source, "r");
+        while (!feof($dbFile))
+        {
+            $buffer = fread($dbFile, 4096);
+            fwrite($destination, $buffer);
+        }
+        unset($buffer);
+        fclose($dbFile);
+    }
+}
