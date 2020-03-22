@@ -10,14 +10,14 @@
 class e_file_inspectorTest extends \Codeception\Test\Unit
 {
 	/**
-	 * @var e_file_inspector_json
+	 * @var e_file_inspector_sqlphar
 	 */
 	private $e_integrity;
 
 	public function _before()
 	{
-		require_once(e_HANDLER."e_file_inspector_json.php");
-		$this->e_integrity = new e_file_inspector_json();
+		require_once(e_HANDLER."e_file_inspector_sqlphar.php");
+		$this->e_integrity = new e_file_inspector_sqlphar();
 	}
 
 	public function testGetChecksums()
@@ -30,4 +30,12 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 		$this->assertIsArray($checksums);
 		$this->assertEmpty($checksums);
 	}
+
+	public function testGetCurrentVersion()
+    {
+        $actualVersion = $this->e_integrity->getCurrentVersion();
+
+        $this->assertIsString($actualVersion);
+        $this->assertNotEmpty($actualVersion);
+    }
 }

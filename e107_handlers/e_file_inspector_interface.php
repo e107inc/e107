@@ -38,6 +38,13 @@ interface e_file_inspector_interface
 	 */
 	const VALIDATION_IGNORE = 7;
 
+    /**
+     * Return an Iterator that can enumerate every path in the image database
+     *
+     * @return Iterator
+     */
+    public function getPathIterator();
+
 	/**
 	 * Get all the known file integrity hashes for the provided path
 	 *
@@ -54,6 +61,16 @@ interface e_file_inspector_interface
 	 * @return array PHP-standardized versions. Empty if there are none.
 	 */
 	public function getVersions($path);
+
+    /**
+     * Get the version of the software that goes with this image database.
+     *
+     * This database SHOULD contain file integrity hashes for this software version.
+     * This database MAY contain file integrity hashes for older versions of this software.
+     *
+     * @return string PHP-standardized version
+     */
+    public function getCurrentVersion();
 
 	/**
 	 * Check if the file is insecure
