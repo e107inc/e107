@@ -36,7 +36,7 @@ interface e_file_inspector_interface
     const VALIDATED_UPTODATE = 1 << 4;
     /**
      * TRUE: The file hash is calculable.
-     * FALSE: The file hash is not calculable (e.g. the core image itself, a user configuration file).
+     * FALSE: The file hash is not calculable (e.g. the core image itself, a user config file, a nonexistent file).
      */
     const VALIDATED_DETERMINABLE = 1 << 5;
     /**

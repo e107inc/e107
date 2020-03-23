@@ -33,13 +33,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         $bits = 0x0;
         $absolutePath = realpath(e_BASE . $path);
-        $actualChecksum = $this->checksumPath($absolutePath);
         $dbChecksum = $this->getChecksum($path, $version);
+        $actualChecksum = $dbChecksum ? $this->checksumPath($absolutePath) : null;
 
         if ($dbChecksum !== false) $bits |= self::VALIDATED_RELEVANCE;
         if (file_exists($absolutePath)) $bits |= self::VALIDATED_PRESENCE;
         if (!$this->isInsecure($path)) $bits |= self::VALIDATED_SECURITY;
-        if ($actualChecksum !== false) $bits |= self::VALIDATED_DETERMINABLE;
+        if ($this->isDeterminable($absolutePath)) $bits |= self::VALIDATED_DETERMINABLE;
         if ($actualChecksum === $dbChecksum) $bits |= self::VALIDATED_UPTODATE;
 
         foreach ($this->getChecksums($path) as $dbVersion => $dbChecksum)
@@ -47,7 +47,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             if ($dbChecksum === $actualChecksum) $bits |= self::VALIDATED_HASH;
         }
 
-        if ($bits + 0x1 === $this->getValidatedBitmask()) $bits |= self::VALIDATED;
+        if ($bits + self::VALIDATED === $this->getValidatedBitmask()) $bits |= self::VALIDATED;
 
         return $bits;
     }
@@ -76,7 +76,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
      */
     public function checksumPath($absolutePath)
     {
-        if (!is_file($absolutePath) || !is_readable($absolutePath)) return false;
+        if (!$this->isDeterminable($absolutePath)) return false;
 
         return $this->checksum(file_get_contents($absolutePath));
     }
@@ -150,5 +150,14 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         $this->validatedBitmask = (max($validated_constants) << 0x1) - 0x1;
         return $this->validatedBitmask;
+    }
+
+    /**
+     * @param $absolutePath
+     * @return bool
+     */
+    private function isDeterminable($absolutePath)
+    {
+        return is_file($absolutePath) && is_readable($absolutePath);
     }
 }
