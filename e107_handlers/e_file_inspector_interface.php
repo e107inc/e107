@@ -9,34 +9,41 @@
 
 interface e_file_inspector_interface
 {
-	/**
-	 * The file is present, and its hash matches the specified version.
-	 */
-	const VALIDATION_PASS = 1;
-	/**
-	 * The file is present, but the hash does not match the specified version. VALIDATION_OLD takes precedence.
-	 */
-	const VALIDATION_FAIL = 2;
-	/**
-	 * The file is absent, but a hash exists for the specified version.
-	 */
-	const VALIDATION_MISSING = 3;
-	/**
-	 * The file is present, and its hash matches a version older than the specified version.
-	 */
-	const VALIDATION_OLD = 4;
-	/**
-	 * A hash cannot be determined for the provided file.
-	 */
-	const VALIDATION_INCALCULABLE = 5;
-	/**
-	 * The file is present, but it should be deleted due to security concerns
-	 */
-	const VALIDATION_INSECURE = 6;
-	/**
-	 * The file, present or absent, is not in this database.
-	 */
-	const VALIDATION_IGNORE = 7;
+    /**
+     * TRUE: All validations pass for the provided file.
+     * FALSE: One or more validations failed for the provided file.
+     */
+    const VALIDATED = 1 << 0;
+    /**
+     * TRUE: The file path is known in this database, regardless of version.
+     * FALSE: The file path is not in this database.
+     */
+    const VALIDATED_RELEVANCE = 1 << 1;
+    /**
+     * TRUE: The file exists.
+     * FALSE: The file doesn't exist.
+     */
+    const VALIDATED_PRESENCE = 1 << 2;
+    /**
+     * TRUE: The file's hash matches a known version.
+     * FALSE: The file's hash does not match any known versions.
+     */
+    const VALIDATED_HASH = 1 << 3;
+    /**
+     * TRUE: The file's hash matches the specified version.
+     * FALSE: The file's hash matches a newer or older version than the one specified.
+     */
+    const VALIDATED_UPTODATE = 1 << 4;
+    /**
+     * TRUE: The file hash is calculable.
+     * FALSE: The file hash is not calculable (e.g. the core image itself, a user configuration file).
+     */
+    const VALIDATED_DETERMINABLE = 1 << 5;
+    /**
+     * TRUE: The file is not known to be insecure.
+     * FALSE: The file should be deleted due to security concerns.
+     */
+    const VALIDATED_SECURITY = 1 << 6;
 
     /**
      * Return an Iterator that can enumerate every path in the image database
@@ -45,22 +52,22 @@ interface e_file_inspector_interface
      */
     public function getPathIterator();
 
-	/**
-	 * Get all the known file integrity hashes for the provided path
-	 *
-	 * @param $path string Relative path of the file to look up
-	 * @return array Associative array where the keys are the PHP-standardized versions and the values are the checksums
-	 *               for those versions.
-	 */
-	public function getChecksums($path);
+    /**
+     * Get all the known file integrity hashes for the provided path
+     *
+     * @param $path string Relative path of the file to look up
+     * @return array Associative array where the keys are the PHP-standardized versions and the values are the checksums
+     *               for those versions.
+     */
+    public function getChecksums($path);
 
-	/**
-	 * List of versions of the provided path for which the database has hashes
-	 *
-	 * @param $path string Relative path of the file to look up
-	 * @return array PHP-standardized versions. Empty if there are none.
-	 */
-	public function getVersions($path);
+    /**
+     * List of versions of the provided path for which the database has hashes
+     *
+     * @param $path string Relative path of the file to look up
+     * @return array PHP-standardized versions. Empty if there are none.
+     */
+    public function getVersions($path);
 
     /**
      * Get the version of the software that goes with this image database.
@@ -72,11 +79,11 @@ interface e_file_inspector_interface
      */
     public function getCurrentVersion();
 
-	/**
-	 * Check if the file is insecure
-	 *
-	 * @param $path string Relative path of the file to look up
-	 * @return bool TRUE if the file should be deleted due to known security flaws; FALSE otherwise
-	 */
-	public function isInsecure($path);
+    /**
+     * Check if the file is insecure
+     *
+     * @param $path string Relative path of the file to look up
+     * @return bool TRUE if the file should be deleted due to known security flaws; FALSE otherwise
+     */
+    public function isInsecure($path);
 }

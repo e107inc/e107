@@ -9,33 +9,48 @@
 
 class e_file_inspectorTest extends \Codeception\Test\Unit
 {
-	/**
-	 * @var e_file_inspector_sqlphar
-	 */
-	private $e_integrity;
+    /**
+     * @var e_file_inspector_sqlphar
+     */
+    private $e_integrity;
 
-	public function _before()
-	{
-		require_once(e_HANDLER."e_file_inspector_sqlphar.php");
-		$this->e_integrity = new e_file_inspector_sqlphar();
-	}
+    public function _before()
+    {
+        require_once(e_HANDLER . "e_file_inspector_sqlphar.php");
+        $this->e_integrity = new e_file_inspector_sqlphar();
+    }
 
-	public function testGetChecksums()
-	{
-		$checksums = $this->e_integrity->getChecksums("e107_admin/e107_update.php");
-		$this->assertIsArray($checksums);
-		$this->assertNotEmpty($checksums);
+    public function testGetChecksums()
+    {
+        $checksums = $this->e_integrity->getChecksums("e107_admin/e107_update.php");
+        $this->assertIsArray($checksums);
+        $this->assertNotEmpty($checksums);
 
-		$checksums = $this->e_integrity->getChecksums("e107_handlers/nonexistent.php");
-		$this->assertIsArray($checksums);
-		$this->assertEmpty($checksums);
-	}
+        $checksums = $this->e_integrity->getChecksums("e107_handlers/nonexistent.php");
+        $this->assertIsArray($checksums);
+        $this->assertEmpty($checksums);
+    }
 
-	public function testGetCurrentVersion()
+    public function testGetCurrentVersion()
     {
         $actualVersion = $this->e_integrity->getCurrentVersion();
 
         $this->assertIsString($actualVersion);
         $this->assertNotEmpty($actualVersion);
+    }
+
+    public function testValidate()
+    {
+        $result = $this->e_integrity->validate("index.php");
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_RELEVANCE);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PRESENCE);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_HASH);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_UPTODATE);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_DETERMINABLE);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_SECURITY);
+
+        $result = $this->e_integrity->validate("file/does/not/exist.php");
+        $this->assertEquals(0, $result & e_file_inspector::VALIDATED_PRESENCE);
     }
 }
