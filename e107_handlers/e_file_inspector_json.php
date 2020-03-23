@@ -21,7 +21,7 @@ class e_file_inspector_json extends e_file_inspector
         global $core_image;
         if ($jsonFilePath === null) $jsonFilePath = e_ADMIN . "core_image.php";
         require($jsonFilePath);
-        $this->coreImage = json_decode($core_image, true);
+        $this->coreImage = self::array_slash(json_decode($core_image, true));
         unset($core_image);
     }
 
@@ -30,7 +30,7 @@ class e_file_inspector_json extends e_file_inspector
      */
     public function getPathIterator($version = null)
     {
-        $result = self::array_slash($this->coreImage);
+        $result = $this->coreImage;
         if (!empty($version))
         {
             $result = array_filter($result, function ($value) use ($version)
@@ -47,38 +47,7 @@ class e_file_inspector_json extends e_file_inspector
     public function getChecksums($path)
     {
         $path = $this->pathToDefaultPath($path);
-        return self::array_get($this->coreImage, $path, []);
-    }
-
-    /**
-     * Get an item from an array using "slash" notation.
-     *
-     * Based on Illuminate\Support\Arr::get()
-     *
-     * @param array $array
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     * @copyright Copyright (c) Taylor Otwell
-     * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
-     */
-    private static function array_get($array, $key, $default = null)
-    {
-        if (is_null($key)) return $array;
-
-        if (isset($array[$key])) return $array[$key];
-
-        foreach (explode('/', $key) as $segment)
-        {
-            if (!is_array($array) || !array_key_exists($segment, $array))
-            {
-                return $default;
-            }
-
-            $array = $array[$segment];
-        }
-
-        return $array;
+        return isset($this->coreImage[$path]) ? $this->coreImage[$path] : [];
     }
 
     /**
