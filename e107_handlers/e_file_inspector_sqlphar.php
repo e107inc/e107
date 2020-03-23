@@ -14,6 +14,9 @@ class e_file_inspector_sqlphar extends e_file_inspector
     private $coreImage;
     private $currentVersion;
 
+    private $defaultDirsCache;
+    private $customDirsCache;
+
     /**
      * e_file_inspector_sqlphar constructor.
      * @param $pharFilePath string Absolute path to the file inspector database
@@ -86,11 +89,21 @@ class e_file_inspector_sqlphar extends e_file_inspector
 
     private function pathToDefaultPath($path)
     {
-        $defaultDirs = e107::getInstance()->defaultDirs();
-        foreach ($defaultDirs as $dirType => $defaultDir)
+        if (!$this->customDirsCache)
         {
-            $customDir = e107::getFolder(preg_replace("/_DIRECTORY$/i", "", $dirType));
-            $path = preg_replace("/^" . preg_quote($customDir, "/") . "/", $defaultDir, $path);
+            $this->defaultDirsCache = e107::getInstance()->defaultDirs();
+            $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
+            $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
+        }
+        foreach ($this->customDirsCache as $dirType => $customDir)
+        {
+            if (!isset($this->defaultDirsCache[$dirType])) continue;
+
+            $defaultDir = $this->defaultDirsCache[$dirType];
+            if ($customDir === $defaultDir) continue;
+
+            if (substr($path, 0, strlen($customDir)) === $customDir)
+                $path = $defaultDir . substr($path, strlen($customDir));
         }
         return $path;
     }
