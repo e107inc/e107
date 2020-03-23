@@ -39,6 +39,15 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
         $this->assertNotEmpty($actualVersion);
     }
 
+    public function testGetPathIterator()
+    {
+        $iterator = $this->e_integrity->getPathIterator();
+        $this->assertGreaterThanOrEqual(1, iterator_count($iterator));
+
+        $iterator = $this->e_integrity->getPathIterator("0.0.1-fakeNonExistentVersion");
+        $this->assertEquals(0, iterator_count($iterator));
+    }
+
     public function testValidate()
     {
         $result = $this->e_integrity->validate("index.php");

@@ -31,11 +31,24 @@ class e_file_inspector_sqlphar extends e_file_inspector
     /**
      * @inheritDoc
      */
-    public function getPathIterator()
+    public function getPathIterator($version = null)
     {
-        $statement = $this->coreImage->query(
-            "SELECT path FROM file_hashes ORDER BY path ASC;"
-        );
+        $addVersionWhere = "";
+        $inputParameters = [];
+        if (!empty($version))
+        {
+            $addVersionWhere = "WHERE versions.version_string = ?";
+            $inputParameters[] = $version;
+        }
+        $statement = $this->coreImage->prepare("
+            SELECT path
+            FROM file_hashes
+            LEFT JOIN versions ON versions.version_id = file_hashes.release_version
+            $addVersionWhere
+            ORDER BY path ASC;
+        ");
+        $statement->setFetchMode(PDO::FETCH_COLUMN, 0);
+        $statement->execute($inputParameters);
         return new IteratorIterator($statement);
     }
 

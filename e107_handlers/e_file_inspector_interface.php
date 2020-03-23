@@ -48,9 +48,10 @@ interface e_file_inspector_interface
     /**
      * Return an Iterator that can enumerate every path in the image database
      *
+     * @param $version string|null Provide a PHP-standardized version to limit the paths to that version
      * @return Iterator
      */
-    public function getPathIterator();
+    public function getPathIterator($version = null);
 
     /**
      * Get all the known file integrity hashes for the provided path
