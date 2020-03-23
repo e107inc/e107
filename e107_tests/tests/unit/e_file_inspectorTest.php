@@ -16,8 +16,9 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
     public function _before()
     {
+        require_once(e_HANDLER . "e_file_inspector_json.php");
         require_once(e_HANDLER . "e_file_inspector_sqlphar.php");
-        $this->e_integrity = new e_file_inspector_sqlphar();
+        $this->e_integrity = new e_file_inspector_json();
     }
 
     public function testGetChecksums()
@@ -69,7 +70,7 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
      */
     public function testPathToDefaultPath()
     {
-        $object = new e_file_inspector_sqlphar();
+        $object = $this->make('e_file_inspector');
         $class = new ReflectionClass(get_class($object));
         $method = $class->getMethod('pathToDefaultPath');
         $method->setAccessible(true);

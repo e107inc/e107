@@ -12,10 +12,6 @@ require_once("e_file_inspector.php");
 class e_file_inspector_sqlphar extends e_file_inspector
 {
     private $coreImage;
-    private $currentVersion;
-
-    private $defaultDirsCache;
-    private $customDirsCache;
 
     /**
      * e_file_inspector_sqlphar constructor.
@@ -87,26 +83,7 @@ class e_file_inspector_sqlphar extends e_file_inspector
         return $this->currentVersion = $statement->fetchColumn();
     }
 
-    private function pathToDefaultPath($path)
-    {
-        if (!$this->customDirsCache)
-        {
-            $this->defaultDirsCache = e107::getInstance()->defaultDirs();
-            $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
-            $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
-        }
-        foreach ($this->customDirsCache as $dirType => $customDir)
-        {
-            if (!isset($this->defaultDirsCache[$dirType])) continue;
 
-            $defaultDir = $this->defaultDirsCache[$dirType];
-            if ($customDir === $defaultDir) continue;
-
-            if (substr($path, 0, strlen($customDir)) === $customDir)
-                $path = $defaultDir . substr($path, strlen($customDir));
-        }
-        return $path;
-    }
 
     /**
      * Copy file to destination with low memory footprint

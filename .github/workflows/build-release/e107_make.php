@@ -9,7 +9,7 @@
  */
 
 require_once("OsHelper.php");
-require_once("CoreImage.php");
+require_once("JsonCoreImage.php");
 
 $builder = new e107Build();
 $builder->makeBuild();
@@ -517,7 +517,7 @@ class e107Build
 		$imageFile = $this->tempDir . "core_image.php";
 
 		$this->status("Creating new core_image.php file ({$imageFile})", true);
-		new CoreImage($this->exportDir, $this->tempDir, $this->version, $imageFile);
+		new JsonCoreImage($this->exportDir, $this->tempDir, $this->version, $imageFile);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
 		$this->changeDir($dir);

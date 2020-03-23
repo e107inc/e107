@@ -16,7 +16,11 @@ require_once("e_file_inspector_interface.php");
  */
 abstract class e_file_inspector implements e_file_inspector_interface
 {
+    protected $currentVersion;
     private $validatedBitmask;
+
+    protected $defaultDirsCache;
+    protected $customDirsCache;
 
     /**
      * Check the integrity of the provided path
@@ -105,10 +109,12 @@ abstract class e_file_inspector implements e_file_inspector_interface
      */
     public function getCurrentVersion()
     {
+        if ($this->currentVersion) return $this->currentVersion;
+
         $checksums = $this->getChecksums("index.php");
         $versions = array_keys($checksums);
         usort($versions, 'version_compare');
-        return array_pop($versions);
+        return $this->currentVersion = array_pop($versions);
     }
 
     /**
@@ -136,6 +142,27 @@ abstract class e_file_inspector implements e_file_inspector_interface
     {
         # TODO
         return false;
+    }
+
+    protected function pathToDefaultPath($path)
+    {
+        if (!$this->customDirsCache)
+        {
+            $this->defaultDirsCache = e107::getInstance()->defaultDirs();
+            $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
+            $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
+        }
+        foreach ($this->customDirsCache as $dirType => $customDir)
+        {
+            if (!isset($this->defaultDirsCache[$dirType])) continue;
+
+            $defaultDir = $this->defaultDirsCache[$dirType];
+            if ($customDir === $defaultDir) continue;
+
+            if (substr($path, 0, strlen($customDir)) === $customDir)
+                $path = $defaultDir . substr($path, strlen($customDir));
+        }
+        return $path;
     }
 
     private function getValidatedBitmask()
