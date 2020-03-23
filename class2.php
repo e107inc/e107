@@ -2033,7 +2033,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USERNAME', 'e107-cli');
 		define('USERTHEME', false);
 		define('ADMIN', true);
-		define('ADMINPERMS', false);
+		define('ADMINPERMS', '0');
 		define('GUEST', false);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');

@@ -10,7 +10,7 @@
 
 require_once("OsHelper.php");
 
-class CoreImage
+class SqlpharCoreImage
 {
 	/** @var PDO */
 	protected $db;
@@ -56,6 +56,7 @@ class CoreImage
 
 	function create_image($exportFolder, $tempFolder, $currentVersion)
 	{
+        echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
 		$this->generateCurrentChecksums($exportFolder, $currentVersion);
 
 		echo("[Core-Image] Scanning Removed Files from Git" . "\n");
