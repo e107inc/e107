@@ -759,6 +759,13 @@ class e_plugin
 
 		$cacheSet = e107::serialize($arr,'json');
 
+		if(empty($cacheSet))
+		{
+			$error = json_last_error_msg();
+			e107::getMessage()->addDebug("Plugin Cache JSON encoding is failing! (".__METHOD__.") Line: ".__LINE__);
+			e107::getMessage()->addDebug("JSON Error: ".$error);
+		}
+
 		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
 
 		$this->_data = $arr;
