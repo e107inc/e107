@@ -2120,7 +2120,36 @@ class e_parse extends e_parser
 	}
 
 
+	/**
+	 * @param $mixed
+	 * @return array|false|string
+	 */
+	public function toUTF8($mixed)
+	{
 
+		if(is_array($mixed))
+		{
+			foreach($mixed as $k => $v)
+			{
+				unset($mixed[$k]);
+				$mixed[$this->toUTF8($k)] = $this->toUTF8($v);
+			}
+		}
+		elseif(is_object($mixed))
+		{
+			$objVars = get_object_vars($mixed);
+			foreach($objVars as $key => $value)
+			{
+				$mixed->$key = $this->toUTF8($value);
+			}
+		}
+		elseif(is_string($mixed))
+		{
+			return iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($mixed));
+		}
+
+		return $mixed;
+	}
 
 
 	function toASCII($text)

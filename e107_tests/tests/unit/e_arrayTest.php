@@ -108,16 +108,15 @@ $data = array (
 			$this->assertArrayHasKey('TITLE', $actual);
 
 
-			// case sitePrefs
-		//	$string_6 = $this->getSitePrefExample();
-		//	$actual = $this->arrObj->unserialize($string_6);
-
-
 			$tests = array(
-				0   => array('string' => $this->getSitePrefExample(),
+				0   => array(
+						'string' => $this->getSitePrefExample(),
 						'expected' => array('email_password' => '$2y$10$IpizFx.gp5USl98SLXwwbeod3SYF3M3raAQX0y01ETexzoutvdyWW' )
 						),
-
+				1   => array(
+						'string' => "{\n    \"hello\": \"h\u00e9ll\u00f2 w\u00f2rld\"\n}",
+						'expected' => array('hello'=>'héllò wòrld')
+						),
 
 
 			);
@@ -166,6 +165,14 @@ $data = array (
 			$result5    = $this->arrObj->serialize($pref5,'json');
 			$expected5  = "{\n    \"hello\": \"world\"\n}";
 			$this->assertEquals($expected5,$result5);
+
+			$pref6      = array('hello'=> mb_convert_encoding('héllò wòrld', 'ISO-8859-1'));
+			$result6    = $this->arrObj->serialize($pref6,'json');
+			$expected6  = "{\n    \"hello\": \"h\u00e9ll\u00f2 w\u00f2rld\"\n}";
+
+			$this->assertEquals($expected6,$result6);
+
+
 
 		}
 	}

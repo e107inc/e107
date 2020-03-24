@@ -572,7 +572,16 @@ class e_array {
 
         if($mode === 'json')
         {
-            return json_encode($ArrayData, JSON_PRETTY_PRINT);
+            //todo discuss - move to e_parse::toJSON() ?
+            $encoded =  json_encode($ArrayData, JSON_PRETTY_PRINT);
+            if(json_last_error() === JSON_ERROR_UTF8)
+            {
+                $ArrayData = e107::getParser()->toUTF8($ArrayData);
+                $encoded = json_encode($ArrayData, JSON_PRETTY_PRINT);
+                //todo log
+            }
+
+            return $encoded;
         }
 
         $Array = var_export($ArrayData, true);
@@ -584,6 +593,8 @@ class e_array {
 
         return $Array;        
     }
+
+
 
 
     /**
@@ -628,7 +639,7 @@ class e_array {
 	 * 
 	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
 	 * @param string $extension [optional] file extension, default is 'php'
-	 * @return array or false when file not found (or on error)
+	 * @return array|false false when file not found (or on error)
 	 */
 	public function load($systemLocationFile, $extension = 'php')
 	{
@@ -650,7 +661,7 @@ class e_array {
 	 * 
 	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
 	 * @param string $extension [optional] file extension, default is 'php'
-	 * @return array or false when file not found (or on error)
+	 * @return array|false when file not found (or on error)
 	 */
 	public function store($array, $systemLocationFile, $extension = 'php')
 	{
