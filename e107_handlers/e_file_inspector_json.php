@@ -11,7 +11,7 @@ require_once("e_file_inspector.php");
 
 class e_file_inspector_json extends e_file_inspector
 {
-    private $coreImage;
+    protected $coreImage;
 
     /**
      * @param $jsonFilePath string Absolute path to the file inspector database
@@ -72,7 +72,7 @@ class e_file_inspector_json extends e_file_inspector
      * @copyright Copyright (c) Taylor Otwell
      * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
      */
-    private static function array_slash($array, $prepend = '')
+    protected static function array_slash($array, $prepend = '')
     {
         $results = array();
 

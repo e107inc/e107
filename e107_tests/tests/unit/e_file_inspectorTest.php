@@ -16,9 +16,9 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
     public function _before()
     {
-        require_once(e_HANDLER . "e_file_inspector_json.php");
-        require_once(e_HANDLER . "e_file_inspector_sqlphar.php");
-        $this->e_integrity = new e_file_inspector_json();
+        require_once(e_HANDLER . "e_file_inspector_json_phar.php");
+        // TODO: Make test databases; don't hard-code e107_admin/core_image.php and hope it has the expected content.
+        $this->e_integrity = new e_file_inspector_json_phar(e_ADMIN . "core_image.php");
     }
 
     public function testGetChecksums()

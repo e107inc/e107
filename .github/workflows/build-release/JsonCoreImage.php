@@ -13,12 +13,20 @@ require_once("CoreImage.php");
 
 class JsonCoreImage extends CoreImage
 {
-    private $checksums = [];
+    protected $checksums = [];
 
     public function __construct($exportFolder, $tempFolder, $currentVersion, $imageFile)
     {
         $this->create_image($exportFolder, $tempFolder, $currentVersion);
 
+        $this->saveImage($imageFile);
+    }
+
+    /**
+     * @param $imageFile
+     */
+    protected function saveImage($imageFile)
+    {
         $json_result = json_encode($this->checksums, JSON_PRETTY_PRINT);
         $json_string_result = var_export($json_result, true);
         $data = $this->generateStub();
