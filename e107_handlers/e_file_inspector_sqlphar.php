@@ -89,7 +89,6 @@ class e_file_inspector_sqlphar extends e_file_inspector
         return $this->currentVersion = $statement->fetchColumn();
     }
 
-
     /**
      * Copy file to destination with low memory footprint
      * @param $source string URL of the source
