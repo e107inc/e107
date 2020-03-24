@@ -67,7 +67,7 @@ class e107Build
 		exec("git describe --tags", $output, $rc);
 		$gitVersion = array_pop($output);
 		$verFileVersion = self::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
-		$this->version = self::gitVersionToPhpVersion($gitVersion, $verFileVersion);
+		$this->version = OsHelper::gitVersionToPhpVersion($gitVersion, $verFileVersion);
 
 		$this->validateReadme();
 	}
@@ -111,19 +111,6 @@ class e107Build
 			}
 		}
 		return '0';
-	}
-
-	private static function gitVersionToPhpVersion($gitVersion, $verFileVersion)
-	{
-		$verFileVersion = array_shift(explode(" ", $verFileVersion));
-		$version = preg_replace("/^v/", "", $gitVersion);
-		$versionSplit = explode("-", $version);
-		if (count($versionSplit) > 1)
-		{
-			if (version_compare($verFileVersion, $versionSplit[0], '>')) $versionSplit[0] = $verFileVersion;
-			$versionSplit[0] .= "dev";
-		}
-		return implode("-", $versionSplit);
 	}
 
 	private function validateReadme()
@@ -249,7 +236,8 @@ class e107Build
 
 			$zipExportFile = 'release_' . $c . ".zip";
 
-			$this->gitArchive($zipExportFile, $rel['since']);
+			$since = isset($rel['since']) ? $rel['since'] : null;
+			$this->gitArchive($zipExportFile, $since);
 
 			$this->gitArchiveUnzip($zipExportFile);
 

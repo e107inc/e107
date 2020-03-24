@@ -16,11 +16,32 @@ require_once("e_file_inspector_interface.php");
  */
 abstract class e_file_inspector implements e_file_inspector_interface
 {
+    protected $database;
     protected $currentVersion;
     private $validatedBitmask;
 
     protected $defaultDirsCache;
     protected $customDirsCache;
+
+    /**
+     * e_file_inspector constructor
+     * @param string $database The database from which integrity data may be read or to which integrity data may be
+     *                         written.  This should be an URL or absolute file path for most implementations.
+     */
+    public function __construct($database)
+    {
+        $this->database = $database;
+        $this->loadDatabase();
+    }
+
+    /**
+     * Prepare the provided database for reading or writing
+     *
+     * Should tolerate a non-existent database and try to create it if a write operation is executed.
+     *
+     * @return void
+     */
+    abstract public function loadDatabase();
 
     /**
      * Check the integrity of the provided path

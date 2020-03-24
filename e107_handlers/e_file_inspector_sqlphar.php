@@ -14,13 +14,19 @@ class e_file_inspector_sqlphar extends e_file_inspector
     private $coreImage;
 
     /**
-     * e_file_inspector_sqlphar constructor.
      * @param $pharFilePath string Absolute path to the file inspector database
      */
     public function __construct($pharFilePath = null)
     {
-        if ($pharFilePath === null) $pharFilePath = e_ADMIN . "core_image.php";
-        Phar::loadPhar($pharFilePath, "core_image.phar");
+        parent::__construct($pharFilePath);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function loadDatabase()
+    {
+        Phar::loadPhar($this->database, "core_image.phar");
         $tmpFile = tmpfile();
         $tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
         $this->copyUrlToResource("phar://core_image.phar/core_image.sqlite", $tmpFile);
@@ -82,7 +88,6 @@ class e_file_inspector_sqlphar extends e_file_inspector
         ");
         return $this->currentVersion = $statement->fetchColumn();
     }
-
 
 
     /**

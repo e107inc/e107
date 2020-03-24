@@ -18,10 +18,20 @@ class e_file_inspector_json extends e_file_inspector
      */
     public function __construct($jsonFilePath = null)
     {
+        parent::__construct($jsonFilePath);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function loadDatabase()
+    {
         global $core_image;
-        if ($jsonFilePath === null) $jsonFilePath = e_ADMIN . "core_image.php";
-        require($jsonFilePath);
-        $this->coreImage = self::array_slash(json_decode($core_image, true));
+        @include($this->database);
+        $this->coreImage = json_decode($core_image, true);
+        if (!is_array($this->coreImage)) $this->coreImage = [];
+        $this->coreImage = self::array_slash($this->coreImage);
+        if (!$this->coreImage) $this->coreImage = [];
         unset($core_image);
     }
 

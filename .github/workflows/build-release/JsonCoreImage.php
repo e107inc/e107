@@ -9,23 +9,17 @@
  */
 
 require_once("OsHelper.php");
+require_once("CoreImage.php");
 
-class JsonCoreImage
+class JsonCoreImage extends CoreImage
 {
+    private $checksums = [];
+
     public function __construct($exportFolder, $tempFolder, $currentVersion, $imageFile)
     {
-        $this->create_image($exportFolder, $tempFolder, $currentVersion, $imageFile);
-    }
+        $this->create_image($exportFolder, $tempFolder, $currentVersion);
 
-    function create_image($exportFolder, $tempFolder, $currentVersion, $imageFile)
-    {
-        echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
-        $carry = $this->generateCurrentChecksums($exportFolder, $currentVersion);
-
-        echo("[Core-Image] Scanning Removed Files from Git" . "\n");
-        $result = $this->generateRemovedChecksums($tempFolder, $carry);
-
-        $json_result = json_encode($result, JSON_PRETTY_PRINT);
+        $json_result = json_encode($this->checksums, JSON_PRETTY_PRINT);
         $json_string_result = var_export($json_result, true);
         $data = $this->generateStub();
         $data .= '$core_image = ' . $json_string_result . ';';
@@ -36,102 +30,24 @@ class JsonCoreImage
 
     protected function generateCurrentChecksums($exportFolder, $currentVersion)
     {
-        $absoluteBase = realpath($exportFolder);
-        if (!is_dir($absoluteBase)) return false;
-
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($exportFolder));
-        $checksums = [];
-
-        /**
-         * @var $file DirectoryIterator
-         */
-        foreach ($iterator as $file)
-        {
-            if ($file->isDir()) continue;
-
-            $absolutePath = $file->getRealPath();
-            $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
-
-            if (empty($relativePath) || $relativePath == $absolutePath) continue;
-
-            $checksum = $this->checksumPath($absolutePath);
-            $item = self::array_get($checksums, $relativePath, []);
-            if (!in_array($checksum, $item)) $item["v{$currentVersion}"] = $checksum;
-            self::array_set($checksums, $relativePath, $item);
-        }
-
-        ksort($checksums);
-        return $checksums;
+        parent::generateCurrentChecksums($exportFolder, $currentVersion);
+        ksort($this->checksums);
     }
 
-    protected function checksumPath($filename)
+    protected function generateRemovedChecksums($tempFolder)
     {
-        return $this->checksum(file_get_contents($filename));
+        parent::generateRemovedChecksums($tempFolder);
+        ksort($this->checksums);
     }
 
-    protected function checksum($body)
+    /**
+     * @inheritDoc
+     */
+    protected function insertChecksumIntoDatabase(&$relativePath, &$checksum, &$version)
     {
-        return md5(str_replace(array(chr(13), chr(10)), '', $body));
-    }
-
-    protected function generateRemovedChecksums($tempFolder, $carry)
-    {
-        $checksums = $carry;
-
-        $stdout = '';
-        OsHelper::runValidated('git tag --list ' . escapeshellarg("v*"), $stdout);
-        $tags = explode("\n", trim($stdout));
-        $versions = [];
-        foreach ($tags as $tag)
-        {
-            $versions[] = preg_replace("/^v/", "", $tag);
-        }
-        $tags = array_combine($tags, $versions);
-        unset($versions);
-        uasort($tags, function ($a, $b)
-        {
-            return -version_compare($a, $b);
-        });
-        $tags = array_filter($tags, function ($version)
-        {
-            return !preg_match("/[a-z]/i", $version);
-        });
-
-        $timeMachineFolder = $tempFolder . "/git_time_machine/";
-        OsHelper::runValidated('mkdir -p ' . escapeshellarg($timeMachineFolder));
-        OsHelper::runValidated('git rev-parse --show-toplevel', $repo_folder);
-        $repo_folder = realpath(trim($repo_folder) . "/.git");
-        OsHelper::runValidated(
-            'cp -a ' .
-            escapeshellarg($repo_folder) .
-            ' ' .
-            escapeshellarg($timeMachineFolder)
-        );
-
-        foreach ($tags as $tag => $version)
-        {
-            OsHelper::runValidated(
-                'git --no-pager diff --no-renames --name-only --diff-filter D ' . escapeshellarg($tag),
-                $stdout
-            );
-            $removedFiles = explode("\n", trim($stdout));
-            OsHelper::runValidated(
-                'git -C ' . escapeshellarg($timeMachineFolder) . ' ' .
-                'checkout ' . escapeshellarg($tag)
-            );
-            foreach ($removedFiles as $removedFilePath)
-            {
-                $checksum = $this->checksumPath($timeMachineFolder . '/' . $removedFilePath);
-                $item = self::array_get($checksums, $removedFilePath, []);
-                if (!in_array($checksum, $item)) $item["v{$version}"] = $checksum;
-                self::array_set($checksums, $removedFilePath, $item);
-            }
-        }
-
-        OsHelper::runValidated('rm -rf ' . escapeshellarg($timeMachineFolder));
-
-        ksort($checksums);
-        return $checksums;
+        $item = self::array_get($this->checksums, $relativePath, []);
+        if (!in_array($checksum, $item)) $item["v{$version}"] = $checksum;
+        self::array_set($this->checksums, $relativePath, $item);
     }
 
     /**
@@ -206,28 +122,5 @@ class JsonCoreImage
         $array[array_shift($keys)] = $value;
 
         return $array;
-    }
-
-    private function generateStub()
-    {
-        $data = "<?php\n";
-        $data .= "/*\n";
-        $data .= "+ ----------------------------------------------------------------------------+\n";
-        $data .= "|     e107 website system\n";
-        $data .= "|\n";
-        $data .= "|     Copyright (C) 2008-" . date("Y") . " e107 Inc. \n";
-        $data .= "|     http://e107.org\n";
-        //	$data .= "|     jalist@e107.org\n";
-        $data .= "|\n";
-        $data .= "|     Released under the terms and conditions of the\n";
-        $data .= "|     GNU General Public License (http://gnu.org).\n";
-        $data .= "|\n";
-        $data .= "|     \$URL$\n";
-        $data .= "|     \$Id$\n";
-        $data .= "+----------------------------------------------------------------------------+\n";
-        $data .= "*/\n\n";
-        $data .= "if (!defined('e107_INIT')) { exit; }\n\n";
-
-        return $data;
     }
 }
