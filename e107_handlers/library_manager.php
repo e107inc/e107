@@ -422,8 +422,9 @@ class core_library
 
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
-			'path'              => '3.3.7',
+		//	'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap',
+			'path'              => '3.4.1',
 		);
 
 		// Bootstrap (local).
@@ -431,19 +432,19 @@ class core_library
 			'name'              => 'Bootstrap (local)',
 			'vendor_url'        => 'http://getbootstrap.com/',
 			'version_arguments' => array(
-				'file'    => 'dist/js/bootstrap.min.js',
+				'file'    => 'js/bootstrap.min.js',
 				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
 				'lines'   => 5,
 			),
 			'files'             => array(
 				'js'  => array(
-					'dist/js/bootstrap.min.js' => array(
+					'js/bootstrap.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
 					),
 				),
 				'css' => array(
-					'dist/css/bootstrap.min.css' => array(
+					'css/bootstrap.min.css' => array(
 						'zone' => 2,
 					),
 				),
@@ -453,13 +454,13 @@ class core_library
 				'dev' => array(
 					'files' => array(
 						'js'  => array(
-							'dist/js/bootstrap.js' => array(
+							'js/bootstrap.js' => array(
 								'zone' => 2,
 								'type' => 'footer',
 							),
 						),
 						'css' => array(
-							'dist/css/bootstrap.css' => array(
+							'css/bootstrap.css' => array(
 								'zone' => 2,
 							),
 						),
@@ -467,7 +468,7 @@ class core_library
 				),
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
-			'path'              => '3.3.7',
+			'path'              => '3',
 		);
 
 		// Bootstrap Editable (CDN).

@@ -19,27 +19,12 @@ if(!defined('e107_INIT'))
 
 define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
-// CDN provider for Bootswatch.
-$cndPref = e107::pref('theme', 'cdn', 'cdnjs');
-$bootswatch = e107::pref('theme', 'bootswatch', false);
-
-switch($cndPref)
+// Load CDN provider for Bootswatch.
+if($bootswatch = e107::pref('theme', 'bootswatch', false))
 {
-	case "jsdelivr":
-		if($bootswatch)
-		{
-			e107::css('url', 'https://cdn.jsdelivr.net/bootswatch/3.3.7/' . $bootswatch . '/bootstrap.min.css');
-		}
-		break;
-
-	case "cdnjs":
-	default:
-		if($bootswatch)
-		{
-			e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/' . $bootswatch . '/bootstrap.min.css');
-		}
-		break;
+	e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/' . $bootswatch . '/bootstrap.min.css');
 }
+
 
 /* @example prefetch  */
 //e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
