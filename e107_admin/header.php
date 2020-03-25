@@ -451,7 +451,10 @@ if(deftrue('e_MENUMANAGER_ACTIVE'))
 }
 else
 {
-	$body_onload .= " id=\"admin-".str_replace(".php","",e_PAGE)."\" ";
+	$bodyID = deftrue("e_CURRENT_PLUGIN") ? e_CURRENT_PLUGIN : str_replace(".php","",e_PAGE);
+	$bodyID .= (!empty($_GET['mode']) && !empty($_GET['action'])) ? "-".$_GET['mode'].'-'.$_GET['action'] : '';
+	$body_onload .= " id=\"admin-".e107::getForm()->name2id($bodyID)."\" ";
+	unset($bodyID);
 }
 
 //
