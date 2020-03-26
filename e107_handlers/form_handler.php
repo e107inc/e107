@@ -4308,6 +4308,7 @@ var_dump($select_options);*/
 
 		$cnt = 0;
 		$text = '';
+		
 
 		foreach ($fieldarray as $field => $data)
 		{
@@ -4323,11 +4324,11 @@ var_dump($select_options);*/
 			*/
 
 			//Not found
-			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
+			if((empty($data['forced']) && !in_array($field, $currentlist)) || !empty($data['nolist']))
 			{
 				continue;
 			}
-			elseif(vartrue($data['type']) != 'method' && !$data['forced'] && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== NULL)
+			elseif(vartrue($data['type']) != 'method' && empty($data['forced']) && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== null)
 			{
 				$text .= "
 					<td>
