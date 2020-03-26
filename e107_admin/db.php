@@ -393,6 +393,8 @@ class system_tools
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
 
+		e107::getCache()->clearAll('system');
+
 	}
 
 
