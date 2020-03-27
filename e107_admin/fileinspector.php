@@ -195,6 +195,7 @@ class file_inspector {
 			'folder'            => array('<i class="fa fa-folder text-success" style="color:#F6EDB0;"></i>'),
 			'folder_check'      => array('<i class="fa fa-folder text-success" style="color:#F6EDB0" ></i>', FC_LAN_24 ),
 			'folder_fail'       => array('<i class="fa fa-folder text-danger" ></i>', FC_LAN_25 ),
+            'folder_uncalc'     => array('<i class="fa fa-folder-o" ></i>', FC_LAN_24 ),
 			'folder_missing'    => array('<i class="fa fa-folder-o text-danger" ></i>', FC_LAN_26 ),
 			'folder_warning'    => array('<i class="fa fa-folder text-warning" ></i>'),
 			'folder_old'        => array('<i class="fa fa-folder-o text-warning" ></i>', FC_LAN_27 ),
