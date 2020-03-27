@@ -369,6 +369,7 @@ class file_inspector {
 		</td>
 		</tr>";
 
+		/*
 		$text .= "<tr>
 		<td style='width: 35%'>
 		".FC_LAN_8.":
@@ -377,6 +378,7 @@ class file_inspector {
 		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
 		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td></tr>";
+		*/
 
 		$text .= "</table>";
 
