@@ -1025,7 +1025,7 @@ class file_inspector {
 		$text .= "</td></tr>";
 
 		$text .= "</table>
-		</dit><br />";
+		</div><br />";
 
 		echo e107::getMessage()->render();
 		echo $text;
