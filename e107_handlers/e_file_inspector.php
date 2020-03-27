@@ -71,7 +71,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
         $absolutePath = realpath(e_BASE . $path);
         $dbChecksums = $this->getChecksums($path);
         $dbChecksum = $this->getChecksum($path, $version);
-        $actualChecksum = $dbChecksum ? $this->checksumPath($absolutePath) : null;
+        $actualChecksum = !empty($dbChecksums) ? $this->checksumPath($absolutePath) : null;
 
         if (!empty($dbChecksums)) $bits |= self::VALIDATED_PATH_KNOWN;
         if ($dbChecksum !== false) $bits |= self::VALIDATED_PATH_VERSION;

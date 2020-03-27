@@ -63,6 +63,7 @@ class e_file_inspector_json extends e_file_inspector
     /**
      * Flatten a multi-dimensional associative array with slashes.
      * Excludes the second-to-last level of depth from flattening.
+     * Also removes the leading "v" from all version keys.
      *
      * Based on Illuminate\Support\Arr::dot()
      *
@@ -84,6 +85,11 @@ class e_file_inspector_json extends e_file_inspector
             }
             else
             {
+                foreach ($value as $versionWithV => $checksum)
+                {
+                    $value[ltrim($versionWithV, 'v')] = $checksum;
+                    unset($value[$versionWithV]);
+                }
                 $results[$prepend . $key] = $value;
             }
         }
