@@ -24,6 +24,35 @@ abstract class e_file_inspector implements e_file_inspector_interface
     protected $customDirsCache;
     private $undeterminable = array();
 
+    // FIXME: Better place for the insecure file list
+    public $insecureFiles = [
+        e_ADMIN . "ad_links.php",
+        e_PLUGIN . "tinymce4/e_meta.php",
+        e_THEME . "bootstrap3/css/bootstrap_dark.css",
+        e_PLUGIN . "search_menu/languages/English.php",
+        e_LANGUAGEDIR . e_LANGUAGE . "/lan_parser_functions.php",
+        e_LANGUAGEDIR . e_LANGUAGE . "/admin/help/theme.php",
+        e_HANDLER . "np_class.php",
+        e_CORE . "shortcodes/single/user_extended.sc",
+        e_ADMIN . "download.php",
+        e_PLUGIN . "banner/config.php",
+        e_PLUGIN . "forum/newforumposts_menu_config.php",
+        e_PLUGIN . "forum/e_latest.php",
+        e_PLUGIN . "forum/e_status.php",
+        e_PLUGIN . "forum/forum_post_shortcodes.php",
+        e_PLUGIN . "forum/forum_shortcodes.php",
+        e_PLUGIN . "forum/forum_update_check.php",
+        e_PLUGIN . "online_extended_menu/online_extended_menu.php",
+        e_PLUGIN . "online_extended_menu/images/user.png",
+        e_PLUGIN . "online_extended_menu/languages/English.php",
+        e_PLUGIN . "pm/sendpm.sc",
+        e_PLUGIN . "pm/shortcodes/",
+        e_PLUGIN . "social/e_header.php",
+    ];
+
+    private $existingInsecureFiles = array();
+    private $existingInsecureDirectories = array();
+
     /**
      * e_file_inspector constructor
      * @param string $database The database from which integrity data may be read or to which integrity data may be
@@ -43,6 +72,16 @@ abstract class e_file_inspector implements e_file_inspector_interface
                 $appRoot . e107::getFolder('admin') . "core_image.php",
             ]
         );
+        $this->existingInsecureFiles = array_filter($this->insecureFiles, function ($path)
+        {
+            return is_file($path);
+        });
+        $this->existingInsecureFiles = array_map('realpath', $this->existingInsecureFiles);
+        $this->existingInsecureDirectories = array_filter($this->insecureFiles, function ($path)
+        {
+            return is_dir($path);
+        });
+        $this->existingInsecureDirectories = array_map('realpath', $this->existingInsecureDirectories);
     }
 
     /**
@@ -68,7 +107,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
         if ($version === null) $version = $this->getCurrentVersion();
 
         $bits = 0x0;
-        $absolutePath = realpath(e_BASE . $path);
+        $absolutePath = $this->relativePathToAbsolutePath($path);
         $dbChecksums = $this->getChecksums($path);
         $dbChecksum = $this->getChecksum($path, $version);
         $actualChecksum = !empty($dbChecksums) ? $this->checksumPath($absolutePath) : null;
@@ -174,7 +213,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
      */
     public function isInsecure($path)
     {
-        # TODO
+        $absolutePath = $this->relativePathToAbsolutePath($path);
+        if (in_array($absolutePath, $this->existingInsecureFiles)) return true;
+        foreach ($this->existingInsecureDirectories as $existingInsecureDirectory)
+        {
+            $existingInsecureDirectory .= '/';
+            if (substr($absolutePath, 0, strlen($existingInsecureDirectory)) === $existingInsecureDirectory) return true;
+        }
         return false;
     }
 
@@ -243,5 +288,14 @@ abstract class e_file_inspector implements e_file_inspector_interface
         $this->defaultDirsCache = e107::getInstance()->defaultDirs();
         $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
         $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
+    }
+
+    /**
+     * @param $path
+     * @return false|string
+     */
+    private function relativePathToAbsolutePath($path)
+    {
+        return realpath(e_BASE . $path);
     }
 }

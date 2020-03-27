@@ -685,14 +685,14 @@ class file_inspector {
     {
         if ($validationCode & e_file_inspector::VALIDATED)
             return 'check';
+        if (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
+            return 'missing';
+        if (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
+            return 'warning';
         if (!($validationCode & e_file_inspector::VALIDATED_PATH_KNOWN))
             return 'unknown';
         if (!($validationCode & e_file_inspector::VALIDATED_PATH_VERSION))
             return 'old';
-        if (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
-            return 'warning';
-        if (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
-            return 'missing';
         if (!($validationCode & e_file_inspector::VALIDATED_HASH_CALCULABLE))
             return 'uncalc';
         if (!($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
@@ -1004,6 +1004,8 @@ class file_inspector {
             ksort($this->files);
             foreach ($this->files as $relativePath => $validation)
             {
+                if (!$this->displayAllowed($validation)) continue;
+
                 list($icon, $title) = $this->getGlyphForValidationCode($validation);
                 $text .= '<tr><td class="f" title="'.$title.'">';
                 $text .= "$icon ";
