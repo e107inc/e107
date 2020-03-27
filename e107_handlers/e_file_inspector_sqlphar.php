@@ -62,7 +62,7 @@ class e_file_inspector_sqlphar extends e_file_inspector
      */
     public function getChecksums($path)
     {
-        $path = $this->pathToDefaultPath($path);
+        $path = $this->customPathToDefaultPath($path);
         $statement = $this->coreImage->prepare("
             SELECT versions.version_string, file_hashes.hash
             FROM file_hashes

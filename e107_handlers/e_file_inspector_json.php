@@ -56,7 +56,7 @@ class e_file_inspector_json extends e_file_inspector
      */
     public function getChecksums($path)
     {
-        $path = $this->pathToDefaultPath($path);
+        $path = $this->customPathToDefaultPath($path);
         return isset($this->coreImage[$path]) ? $this->coreImage[$path] : [];
     }
 

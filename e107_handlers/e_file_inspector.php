@@ -22,6 +22,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
     protected $defaultDirsCache;
     protected $customDirsCache;
+    private $undeterminable = array();
 
     /**
      * e_file_inspector constructor
@@ -32,6 +33,16 @@ abstract class e_file_inspector implements e_file_inspector_interface
     {
         $this->database = $database;
         $this->loadDatabase();
+
+        $appRoot = e107::getInstance()->file_path;
+        $this->undeterminable = array_map(function ($path)
+        {
+            return realpath($path) ? realpath($path) : $path;
+        }, [
+                $appRoot . "e107_config.php",
+                $appRoot . e107::getFolder('admin') . "core_image.php",
+            ]
+        );
     }
 
     /**
@@ -165,14 +176,14 @@ abstract class e_file_inspector implements e_file_inspector_interface
         return false;
     }
 
-    protected function pathToDefaultPath($path)
+    /**
+     * Convert a custom site path to a default path
+     * @param string $path Custom path
+     * @return string
+     */
+    public function customPathToDefaultPath($path)
     {
-        if (!$this->customDirsCache)
-        {
-            $this->defaultDirsCache = e107::getInstance()->defaultDirs();
-            $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
-            $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
-        }
+        if (!is_array($this->customDirsCache)) $this->populateDirsCache();
         foreach ($this->customDirsCache as $dirType => $customDir)
         {
             if (!isset($this->defaultDirsCache[$dirType])) continue;
@@ -182,6 +193,22 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
             if (substr($path, 0, strlen($customDir)) === $customDir)
                 $path = $defaultDir . substr($path, strlen($customDir));
+        }
+        return $path;
+    }
+
+    public function defaultPathToCustomPath($path)
+    {
+        if (!is_array($this->customDirsCache)) $this->populateDirsCache();
+        foreach ($this->customDirsCache as $dirType => $customDir)
+        {
+            if (!isset($this->defaultDirsCache[$dirType])) continue;
+
+            $defaultDir = $this->defaultDirsCache[$dirType];
+            if ($customDir === $defaultDir) continue;
+
+            if (substr($path, 0, strlen($defaultDir)) === $defaultDir)
+                $path = $customDir . substr($path, strlen($defaultDir));
         }
         return $path;
     }
@@ -206,6 +233,13 @@ abstract class e_file_inspector implements e_file_inspector_interface
      */
     private function isDeterminable($absolutePath)
     {
-        return is_file($absolutePath) && is_readable($absolutePath);
+        return is_file($absolutePath) && is_readable($absolutePath) && !in_array($absolutePath, $this->undeterminable);
+    }
+
+    protected function populateDirsCache()
+    {
+        $this->defaultDirsCache = e107::getInstance()->defaultDirs();
+        $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];
+        $this->customDirsCache = array_diff_assoc($customDirs, $this->defaultDirsCache);
     }
 }
