@@ -69,18 +69,20 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         $bits = 0x0;
         $absolutePath = realpath(e_BASE . $path);
+        $dbChecksums = $this->getChecksums($path);
         $dbChecksum = $this->getChecksum($path, $version);
         $actualChecksum = $dbChecksum ? $this->checksumPath($absolutePath) : null;
 
-        if ($dbChecksum !== false) $bits |= self::VALIDATED_RELEVANCE;
-        if (file_exists($absolutePath)) $bits |= self::VALIDATED_PRESENCE;
-        if (!$this->isInsecure($path)) $bits |= self::VALIDATED_SECURITY;
-        if ($this->isDeterminable($absolutePath)) $bits |= self::VALIDATED_DETERMINABLE;
-        if ($actualChecksum === $dbChecksum) $bits |= self::VALIDATED_UPTODATE;
+        if (!empty($dbChecksums)) $bits |= self::VALIDATED_PATH_KNOWN;
+        if ($dbChecksum !== false) $bits |= self::VALIDATED_PATH_VERSION;
+        if (file_exists($absolutePath)) $bits |= self::VALIDATED_FILE_EXISTS;
+        if (!$this->isInsecure($path)) $bits |= self::VALIDATED_FILE_SECURITY;
+        if ($this->isDeterminable($absolutePath)) $bits |= self::VALIDATED_HASH_CALCULABLE;
+        if ($actualChecksum === $dbChecksum) $bits |= self::VALIDATED_HASH_CURRENT;
 
-        foreach ($this->getChecksums($path) as $dbVersion => $dbChecksum)
+        foreach ($dbChecksums as $dbVersion => $dbChecksum)
         {
-            if ($dbChecksum === $actualChecksum) $bits |= self::VALIDATED_HASH;
+            if ($dbChecksum === $actualChecksum) $bits |= self::VALIDATED_HASH_EXISTS;
         }
 
         if ($bits + self::VALIDATED === $this->getValidatedBitmask()) $bits |= self::VALIDATED;

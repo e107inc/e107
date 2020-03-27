@@ -18,32 +18,37 @@ interface e_file_inspector_interface
      * TRUE: The file path is known in this database, regardless of version.
      * FALSE: The file path is not in this database.
      */
-    const VALIDATED_RELEVANCE = 1 << 1;
+    const VALIDATED_PATH_KNOWN = 1 << 1;
+    /**
+     * TRUE: The file path and specified version have a hash in this database.
+     * FALSE: There is no hash for the file path and specified version.
+     */
+    const VALIDATED_PATH_VERSION = 1 << 2;
     /**
      * TRUE: The file exists.
      * FALSE: The file doesn't exist.
      */
-    const VALIDATED_PRESENCE = 1 << 2;
+    const VALIDATED_FILE_EXISTS = 1 << 3;
     /**
-     * TRUE: The file's hash matches a known version.
+     * TRUE: The file's hash matches any known version.
      * FALSE: The file's hash does not match any known versions.
      */
-    const VALIDATED_HASH = 1 << 3;
+    const VALIDATED_HASH_EXISTS = 1 << 4;
     /**
      * TRUE: The file's hash matches the specified version.
      * FALSE: The file's hash matches a newer or older version than the one specified.
      */
-    const VALIDATED_UPTODATE = 1 << 4;
+    const VALIDATED_HASH_CURRENT = 1 << 5;
     /**
      * TRUE: The file hash is calculable.
      * FALSE: The file hash is not calculable (e.g. the core image itself, a user config file, a nonexistent file).
      */
-    const VALIDATED_DETERMINABLE = 1 << 5;
+    const VALIDATED_HASH_CALCULABLE = 1 << 6;
     /**
      * TRUE: The file is not known to be insecure.
      * FALSE: The file should be deleted due to security concerns.
      */
-    const VALIDATED_SECURITY = 1 << 6;
+    const VALIDATED_FILE_SECURITY = 1 << 7;
 
     /**
      * Return an Iterator that can enumerate every path in the image database
