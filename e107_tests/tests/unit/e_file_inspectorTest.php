@@ -64,17 +64,12 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
         $this->assertEquals(0, $result & e_file_inspector::VALIDATED_PRESENCE);
     }
 
-    /**
-     * TODO: Create a stable interface for pathToDefaultPath()
-     * @throws ReflectionException
-     */
-    public function testPathToDefaultPath()
+    public function testCustomPathToDefaultPath()
     {
+        /** @var e_file_inspector $object */
         $object = $this->make('e_file_inspector');
         $class = new ReflectionClass(get_class($object));
-        $method = $class->getMethod('pathToDefaultPath');
-        $method->setAccessible(true);
-        $method->invoke($object, 'populate_cache');
+        $object->customPathToDefaultPath('populate_cache');
         $member = $class->getProperty('customDirsCache');
         $member->setAccessible(true);
         $customDirs = $member->getValue($object);
@@ -83,7 +78,26 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
         $input = "e963_admin/index.php";
         $expected = "e107_admin/index.php";
-        $actual = $method->invoke($object, $input);
+        $actual = $object->customPathToDefaultPath($input);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testDefaultPathToCustomPath()
+    {
+        /** @var e_file_inspector $object */
+        $object = $this->make('e_file_inspector');
+        $class = new ReflectionClass(get_class($object));
+        $object->customPathToDefaultPath('populate_cache');
+        $member = $class->getProperty('customDirsCache');
+        $member->setAccessible(true);
+        $customDirs = $member->getValue($object);
+        $customDirs['ADMIN_DIRECTORY'] = 'e963_admin/';
+        $member->setValue($object, $customDirs);
+
+        $input = "e107_admin/index.php";
+        $expected = "e963_admin/index.php";
+        $actual = $object->defaultPathToCustomPath($input);
 
         $this->assertEquals($expected, $actual);
     }
