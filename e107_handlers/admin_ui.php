@@ -1731,6 +1731,9 @@ class e_admin_controller
 			->setParams($params);
 			
 		$this->checkAccess();
+
+		$this->_log(); // clear the log (when debug is enabled)
+
 	}
 
 	/**
@@ -2080,6 +2083,7 @@ class e_admin_controller
 		$method = $this->toMethodName($action, 'page');
 		if(!method_exists($this, $method))
 		{
+			$this->_log("Skipping ".$method."() (not found)");
 			$this->getRequest()->setAction($this->getDefaultAction());
 		}
 
@@ -2087,11 +2091,37 @@ class e_admin_controller
 		$method = $this->toMethodName($this->getRequest()->getActionName(), 'page');
 		if(!method_exists($this, $method))
 		{
+			$this->_log("Skipping ".$method."() (not found)");
 			$this->getRequest()->setAction('e404');
 			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, $method, true);
 			e107::getMessage()->add($message, E_MESSAGE_ERROR);
 		}
 	}
+
+	/**
+	 * Log Controller when e_DEBUG is active.
+	 * @param string|null $message
+	 * @return null
+	 */
+	protected function _log($message=null)
+	{
+		if(!deftrue('e_DEBUG'))
+		{
+			return null;
+		}
+
+		if($message === null) // clear the log.
+		{
+			file_put_contents(e_LOG."adminUI.log", '');
+			return null;
+		}
+
+		$date = (!empty($message)) ? date('c') : '';
+
+		file_put_contents(e_LOG."adminUI.log",$date."\t".$message."\n",FILE_APPEND);
+
+	}
+
 
 	/**
 	 * Dispatch observer, check for triggers
@@ -2118,8 +2148,12 @@ class e_admin_controller
 		$actionObserverName = $this->toMethodName($action, 'observer', e_AJAX_REQUEST);
 		if(method_exists($this, $actionObserverName))
 		{
+			$this->_log("Executing ".$actionObserverName."()");
 			$this->$actionObserverName();
-			
+		}
+		else
+		{
+			$this->_log("Skipping ".$actionObserverName."() (not found)");
 		}
 
 		// check for triggers, not available in Ajax mode
@@ -2213,8 +2247,13 @@ class e_admin_controller
 		$ret = '';
 		if(!method_exists($this, $actionName)) // pre dispatch already switched to default action/not found page if needed
 		{
+			$this->_log("Skipping ".$actionName."() (not found)");
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 			return $response;
+		}
+		else
+		{
+			$this->_log("Executing ".$actionName."()");
 		}
 		
 		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title.
@@ -3872,6 +3911,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
+			$this->_log("Filter ListQry: ".$qry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
 
 			// Make query
@@ -4573,7 +4613,7 @@ class e_admin_controller_ui extends e_admin_controller
 	//	 echo $qry.'<br />';	
 	// print_a($this->fields);	
 	
-	
+		$this->_log('listQry: '.str_replace('#', MPREFIX, $qry));
 
 		return $qry;
 	}
