@@ -133,7 +133,6 @@ class file_inspector {
 		'type'          =>'list',
 		'missing'       => 0,
 		'noncore'       => 9,
-		'nolang'        => 1,
 		'oldcore'       => 0,
 		'integrity'     => 1,
 		'regex'         => 0,
@@ -229,7 +228,7 @@ class file_inspector {
 			$this->root_dir = substr($this->root_dir, 0, -1);
 		}
 
-		if(isset($_POST['core']) && $_POST['core'] == 'fail')
+		if(isset($_POST['core']) && $_POST['core'] == 'integrity_fail_only')
 		{
 			$_POST['integrity'] = TRUE;
 		}
@@ -320,7 +319,7 @@ class file_inspector {
 		<td class='fcaption' colspan='2'>".LAN_OPTIONS."</td>
 		</tr>";*/
 
-		$coreOpts = array('full'=>FC_LAN_6, 'all'=>LAN_ALL, 'none'=> LAN_NONE);
+		$coreOpts = array('integrity_fail_only'=>FC_LAN_6, 'all'=>LAN_ALL, 'none'=> LAN_NONE);
 
 		$text .= "<tr>
 		<td style='width: 35%'>
@@ -357,7 +356,6 @@ class file_inspector {
 		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
 		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
-		<input type='checkbox' name='nolang' value='1'".(($_POST['nolang'] == '1' || !isset($_POST['nolang'])) ? " checked='checked'" : "")." /> ".FC_LAN_23."&nbsp;&nbsp;
 		</td>
 		</tr>";
 
@@ -597,7 +595,8 @@ class file_inspector {
         $nestedFiles = [];
         foreach ($this->files as $relativePath => $validation)
         {
-            self::array_set($nestedFiles, $relativePath, $validation);
+            if ($this->displayAllowed($validation))
+                self::array_set($nestedFiles, $relativePath, $validation);
         }
         return $this->generateDirectoryHtml([SITENAME => $nestedFiles]);
     }
@@ -694,9 +693,9 @@ class file_inspector {
     {
         switch ($status)
         {
-            case 'uncalc':
-                return -2;
             case 'unknown':
+                return -2;
+            case 'uncalc':
                 return -1;
             case 'check':
                 return 0;
@@ -714,7 +713,7 @@ class file_inspector {
 
     private function getWorstGlyphForFolder($treeFolder)
     {
-        $worstStatus = 'uncalc';
+        $worstStatus = 'unknown';
         $worstStatusRank = -PHP_INT_MAX;
         array_walk_recursive($treeFolder, function ($value) use (&$worstStatus, &$worstStatusRank)
         {
@@ -727,6 +726,28 @@ class file_inspector {
             }
         });
         return $this->glyph['folder_' . $worstStatus];
+    }
+
+    private function displayAllowed($validationCode)
+    {
+        if ($this->opt('core') == 'integrity_fail_only' &&
+            $validationCode & e_file_inspector::VALIDATED)
+            return false;
+        elseif ($this->opt('core') == 'none' &&
+        $validationCode & e_file_inspector::VALIDATED_PATH_VERSION)
+            return false;
+
+        $status = $this->getStatusForValidationCode($validationCode);
+        switch ($status)
+        {
+            case 'missing':
+                return $this->opt('missing');
+            case 'unknown':
+                return $this->opt('noncore');
+            case 'old':
+                return $this->opt('oldcore');
+        }
+        return true;
     }
 
     /**
