@@ -618,6 +618,7 @@ class file_inspector {
             if ($level === 0) $relativePath = '';
             $rowId = str_replace(" ", "%20", $relativePath);
             list($icon, $title) = $this->getGlyphForValidationCode($validationCode);
+            $oldVersion = $this->getOldVersionOfPath($relativePath, $validationCode);
             $html .= "<div class=\"d\" title=\"$title\" style=\"margin-left: " . ($level * 8) . "px\">";
             $html .= "<span onclick=\"ec('$rowId')\">";
             $html .= $this->getTreeActionImageForFile($tree, $fileName, $rowId, $hide);
@@ -634,6 +635,7 @@ class file_inspector {
             {
                 $html .= '<span style="float:right">';
                 $html .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
+                $html .= $oldVersion ? " (v$oldVersion)" : "";
                 $html .= '</span>';
             }
             $html .= "</div>";
@@ -1008,6 +1010,8 @@ class file_inspector {
                 $text .= htmlspecialchars($relativePath);
                 $text .= '</td><td class="s">';
                 $text .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
+                $oldVersion = $this->getOldVersionOfPath($relativePath, $validation);
+                $text .= $oldVersion ? " (v$oldVersion)" : "";
                 $text .= '</td>';
                 $text .= '</tr>';
             }
@@ -1332,6 +1336,27 @@ i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
 </style>\n";
         echo $text;
 	}
+
+    /**
+     * Get the PHP-standard version of the hash of the relative path
+     *
+     * @todo FIXME performance: This method checksums old files a second time.
+     * @param string $relativePath Relative path to checksum
+     * @param int $validationCode e_file_inspector validation bits
+     * @return false|string
+     */
+    private function getOldVersionOfPath($relativePath, $validationCode)
+    {
+        $oldVersion = false;
+        if (($validationCode & e_file_inspector::VALIDATED_HASH_EXISTS) &&
+            !($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
+        {
+            $dbChecksums = $this->coreImage->getChecksums($relativePath);
+            $actualChecksum = $this->coreImage->checksumPath(e_BASE . $relativePath);
+            $oldVersion = array_search($actualChecksum, $dbChecksums);
+        }
+        return $oldVersion;
+    }
 
 }
 
