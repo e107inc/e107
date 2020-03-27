@@ -112,7 +112,8 @@ class file_inspector {
 	private $coreImageVersion;
 
 	var $root_dir;
-	var $files = array();
+	private $files = array();
+    private $fileSizes = array();
 	var $parent;
 	var $count = array();
 	var $results = 0;
@@ -130,7 +131,7 @@ class file_inspector {
 
 	private $options = array(
 		'core'          => '',
-		'type'          =>'list',
+		'type'          => 'tree',
 		'missing'       => 0,
 		'noncore'       => 9,
 		'oldcore'       => 0,
@@ -516,13 +517,11 @@ class file_inspector {
 
     /**
      * @param $baseDir string Absolute path to the directory to inspect
-     * @return string HTML output of the validated directory structure
      */
 	protected function inspect($baseDir)
     {
         $this->inspect_existing($baseDir);
         $this->inspect_missing(array_keys($this->files));
-        return $this->generateScanResultsHtml();
     }
 
     private function inspect_existing($baseDir)
@@ -543,6 +542,7 @@ class file_inspector {
             if (empty($relativePath) || $relativePath == $absolutePath) continue;
 
             $this->files[$relativePath] = $this->coreImage->validate($relativePath);
+            $this->fileSizes[$relativePath] = filesize($absolutePath);
             $this->updateFileSizeCounter($absolutePath, $this->files[$relativePath]);
         }
     }
@@ -592,6 +592,9 @@ class file_inspector {
         return $category;
     }
 
+    /**
+     * @return string HTML output of the validated directory structure
+     */
     private function generateScanResultsHtml()
     {
         $nestedFiles = [];
@@ -611,8 +614,9 @@ class file_inspector {
         $hide = $level;
         foreach ($tree as $fileName => $validationCode)
         {
-            $relativePath = "$parentPath/$fileName";
-            $rowId = base64_encode($relativePath);
+            $relativePath = ltrim("$parentPath/$fileName", '/');
+            if ($level === 0) $relativePath = '';
+            $rowId = str_replace(" ", "%20", $relativePath);
             list($icon, $title) = $this->getGlyphForValidationCode($validationCode);
             $html .= "<div class=\"d\" title=\"$title\" style=\"margin-left: " . ($level * 8) . "px\">";
             $html .= "<span onclick=\"ec('$rowId')\">";
@@ -625,6 +629,12 @@ class file_inspector {
                 $html .= "<div id=\"d_$rowId\" " . ($hide ? "style=\"display:none\"" : "") . ">";
                 $html .= $this->generateDirectoryHtml($validationCode, $level + 1, $relativePath);
                 $html .= "</div>";
+            }
+            else
+            {
+                $html .= '<span style="float:right">';
+                $html .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
+                $html .= '</span>';
             }
             $html .= "</div>";
         }
@@ -846,7 +856,7 @@ class file_inspector {
                 'size' => 0,
             ]
         ];
-		$scan_text = $this->inspect($this->root_dir);
+		$this->inspect($this->root_dir);
 
         array_walk_recursive($this->files, function ($validationCode)
         {
@@ -876,7 +886,7 @@ class file_inspector {
 			$text .= "<tr>
 			<td style='width:60%;padding:0; '>
 			<div style=' min-height:400px; max-height:800px; overflow: auto; padding-bottom:50px'>
-			".$scan_text."
+			".$this->generateScanResultsHtml()."
 			</div>
 			</td>
 			<td style='width:40%; height:5000px; vertical-align: top; overflow:auto'><div>";
@@ -989,55 +999,19 @@ class file_inspector {
 				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
 			}
 
-
-		//	print_a($this->files);
-		}
-
-
-
-
-		foreach ($this->files as $dir_id => $fid)
-		{
-			ksort($fid);
-			$text .= ($this->opt('type') == 'tree') ? "<table class='t' style='display: none' id='f_".$dir_id."'>" : "";
-			$initial = FALSE;
-			foreach ($fid as $key => $stext)
-			{
-
-		//		print_a($stext);
-
-				$iconKey = $stext['icon'];
-
-				if(!$initial)
-				{
-					if($this->opt('type') == 'tree')
-					{
-
-						$rootIconKey = ($stext['level'] ? "folder_up" : "folder_root");
-
-						$text .= "<tr><td class='f' title=\"".$this->getDiz($iconKey)."\" style='padding-left: 4px' ".($stext['level'] ? "onclick=\"sh('f_".$stext['parent']."')\"" : "").">";
-						$text .= $this->iconTag[$rootIconKey];
-						$text .=  ($stext['level'] ? "&nbsp;.." : "")."</td>
-						<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('initial')\">";
-						$text .= $this->iconTag['folder_close'];
-						$text .= "</td></tr>";
-					}
-				}
-				else
-				{
-					if($this->opt('type') != 'tree')
-					{
-						$stext['file'] = str_replace($this->root_dir."/", "", $stext['file']);
-					}
-
-					$text .= $this->renderRow($stext);
-
-
-				}
-				$initial = TRUE;
-			}
-			$text .= ($this->opt('type') == 'tree') ? "</table>" : "";
-		}
+            ksort($this->files);
+            foreach ($this->files as $relativePath => $validation)
+            {
+                list($icon, $title) = $this->getGlyphForValidationCode($validation);
+                $text .= '<tr><td class="f" title="'.$title.'">';
+                $text .= "$icon ";
+                $text .= htmlspecialchars($relativePath);
+                $text .= '</td><td class="s">';
+                $text .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
+                $text .= '</td>';
+                $text .= '</tr>';
+            }
+        }
 
 		if($this->opt('type') != 'tree') {
 			$text .= "</td>
@@ -1056,68 +1030,6 @@ class file_inspector {
 	 //$ns->tablerender(FR_LAN_1.'...', $text);
 
 	}
-
-
-	function renderRow($stext)
-	{
-
-		$mode = $this->opt('core');
-
-		$iconKey = $stext['icon'];
-
-		//	return "<tr><td>".$mode." ( ".$iconKey.")</td></tr>";
-
-
-		if($mode == 'full' && $iconKey == 'file_check' )
-		{
-			return '';
-		}
-
-		if($mode == 'none')
-		{
-			//		return '';
-		}
-
-
-		$text = '';
-		$text .= "
-			<tr>
-			<td class='f ".$iconKey."' title=\"".$this->getDiz($iconKey)."\">".$this->iconTag[$iconKey]."&nbsp;".$stext['file']."&nbsp;";
-
-			if($this->opt('regex'))
-			{
-				if($this->opt('num') || $this->opt('line'))
-				{
-					$text .= "<br />";
-				}
-
-				foreach ($stext['lines'] as $rkey => $rvalue)
-				{
-					if($this->opt('num'))
-					{
-						$text .= "[".($rkey + 1)."] ";
-					}
-
-					if($this->opt('line'))
-					{
-						$text .= htmlspecialchars($rvalue)."<br />";
-					}
-				}
-
-				$text .= "<br />";
-			}
-			else
-			{
-				$text .= "</td>
-					<td class='s'>".$this->parsesize($stext['size']);
-			}
-
-			$text .= "</td></tr>";
-
-		return $text;
-	}
-
-
 
 	function create_image($dir)
 	{
