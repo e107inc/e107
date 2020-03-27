@@ -4308,7 +4308,7 @@ var_dump($select_options);*/
 
 		$cnt = 0;
 		$text = '';
-		
+
 
 		foreach ($fieldarray as $field => $data)
 		{
