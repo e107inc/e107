@@ -53,15 +53,16 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
     {
         $result = $this->e_integrity->validate("index.php");
         $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_RELEVANCE);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PRESENCE);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_HASH);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_UPTODATE);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_DETERMINABLE);
-        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_SECURITY);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PATH_KNOWN);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PATH_VERSION);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_FILE_EXISTS);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_HASH_EXISTS);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_HASH_CURRENT);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_HASH_CALCULABLE);
+        $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_FILE_SECURITY);
 
         $result = $this->e_integrity->validate("file/does/not/exist.php");
-        $this->assertEquals(0, $result & e_file_inspector::VALIDATED_PRESENCE);
+        $this->assertEquals(0, $result & e_file_inspector::VALIDATED_FILE_EXISTS);
     }
 
     public function testCustomPathToDefaultPath()

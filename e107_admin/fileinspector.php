@@ -569,8 +569,8 @@ class file_inspector {
         $fileSize = filesize($absolutePath);
         $this->count[$category]['size'] += $fileSize;
 
-        if ($validationCode & e_file_inspector::VALIDATED_RELEVANCE &&
-            $validationCode & e_file_inspector::VALIDATED_PRESENCE)
+        if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
+            $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
             $this->count['core']['size'] += $fileSize;
     }
 
@@ -672,16 +672,18 @@ class file_inspector {
     {
         if ($validationCode & e_file_inspector::VALIDATED)
             return 'check';
-        if (!($validationCode & e_file_inspector::VALIDATED_RELEVANCE))
+        if (!($validationCode & e_file_inspector::VALIDATED_PATH_KNOWN))
             return 'unknown';
-        if (!($validationCode & e_file_inspector::VALIDATED_SECURITY))
+        if (!($validationCode & e_file_inspector::VALIDATED_PATH_VERSION))
+            return 'old';
+        if (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
             return 'warning';
-        if (!($validationCode & e_file_inspector::VALIDATED_PRESENCE))
+        if (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
             return 'missing';
-        if (!($validationCode & e_file_inspector::VALIDATED_DETERMINABLE))
+        if (!($validationCode & e_file_inspector::VALIDATED_HASH_CALCULABLE))
             return 'uncalc';
-        if (!($validationCode & e_file_inspector::VALIDATED_UPTODATE))
-            if ($validationCode & e_file_inspector::VALIDATED_HASH)
+        if (!($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
+            if ($validationCode & e_file_inspector::VALIDATED_HASH_EXISTS)
                 return 'old';
             else
                 return 'fail';
@@ -829,8 +831,8 @@ class file_inspector {
             $category = $this->statusToLegacyCountCategory($status);
             $this->count[$category]['num']++;
 
-            if ($validationCode & e_file_inspector::VALIDATED_RELEVANCE &&
-                $validationCode & e_file_inspector::VALIDATED_PRESENCE)
+            if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
+                $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
                 $this->count['core']['num']++;
         });
 
