@@ -128,7 +128,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement: placement,
 					container: 'body',
 					delay: {
-						show: 300,
+						show: 200,
 						hide: 600
 					}
 				});
@@ -858,7 +858,7 @@ $(document).ready(function()
 
 		$('body').on('slid.bs.carousel', '.carousel', function(){
 
-			var label = $(this).find('.active').attr('data-label');
+			var label = $(this).find('.carousel-item.active').attr('data-label');
 			var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
 
 			if(label !== undefined)
