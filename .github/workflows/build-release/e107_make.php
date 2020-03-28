@@ -66,7 +66,7 @@ class e107Build
 
 		exec("git describe --tags", $output, $rc);
 		$gitVersion = array_pop($output);
-		$verFileVersion = self::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
+		$verFileVersion = OsHelper::getVerFileVersion($this->gitDir . "/e107_admin/ver.php");
 		$this->version = OsHelper::gitVersionToPhpVersion($gitVersion, $verFileVersion);
 
 		$this->validateReadme();
@@ -91,29 +91,7 @@ class e107Build
 		}
 	}
 
-	private static function getVerFileVersion($verFilePath)
-	{
-		$verFileTokens = token_get_all(file_get_contents($verFilePath));
-		$nextConstantEncapsedStringIsVersion = false;
-		foreach ($verFileTokens as $verFileToken)
-		{
-			if (!isset($verFileToken[1])) continue;
-			$token = $verFileToken[0];
-			$value = trim($verFileToken[1], "'\"");
-
-			if ($token === T_CONSTANT_ENCAPSED_STRING)
-			{
-				if ($nextConstantEncapsedStringIsVersion)
-				{
-					return $value;
-				}
-				if ($value === 'e107_version') $nextConstantEncapsedStringIsVersion = true;
-			}
-		}
-		return '0';
-	}
-
-	private function validateReadme()
+    private function validateReadme()
 	{
 		//check for readme files associated with configured releases
 		foreach ($this->config['releases'] as $rel)
