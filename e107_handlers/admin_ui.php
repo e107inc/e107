@@ -3677,6 +3677,7 @@ class e_admin_controller_ui extends e_admin_controller
 			case 'bool':
 				// direct query
 				$res = array($filter[1], $filter[2]);
+				$this->_log("listQry Filtered by ".$filter[1]." (".($filter[2] ? 'true': 'false').")");
 			break;
 			
 			case 'datestamp':
@@ -3687,11 +3688,17 @@ class e_admin_controller_ui extends e_admin_controller
 					"day"	=> "24 hours ago",
 					"week"	=> "1 week ago",
 					"month"	=> "1 month ago",
+					"month3"	=> "3 months ago",
+					"month6"	=> "6 months ago",
+					"month9"	=> "9 months ago",
 					"year"	=> "1 year ago",
 					"nhour"	=> "now + 1 hour",
 					"nday"	=> "now + 24 hours",
 					"nweek"	=> "now + 1 week",
 					"nmonth"	=> "now + 1 month",
+					"nmonth3"	=> "now + 3 months",
+					"nmonth6"	=> "now + 6 months",
+					"nmonth9"	=> "now + 9 months",
 					"nyear"	=> "now + 1 year",
 				);
 				
@@ -3700,6 +3707,8 @@ class e_admin_controller_ui extends e_admin_controller
 				$timeStamp = strtotime($time);
 				
 				$res = array($filter[1], $timeStamp);
+
+				$this->_log("listQry Filtered by ".$filter[1]." (".$time.")");
 				
 			break;
 
@@ -3724,6 +3733,7 @@ class e_admin_controller_ui extends e_admin_controller
 				else // default handling
 				{
 					$res = array($filter[0], $filter[1]);
+					$this->_log("listQry Filtered by ".$filter[0]." (".$filter[1].")");
 				}
 			break;
 		}
@@ -7742,12 +7752,16 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 
-					case 'datestamp': 
+					case 'datestamp':
+						$tp = e107::getParser();
 						$dateFilters = array (
 							'hour'		=> LAN_UI_FILTER_PAST_HOUR,
 							"day"		=> LAN_UI_FILTER_PAST_24_HOURS,
 							"week"		=> LAN_UI_FILTER_PAST_WEEK,
 							"month"		=> LAN_UI_FILTER_PAST_MONTH,
+							"month3"	=> $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,3),
+							"month6"	=> $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,6),
+							"month9"	=> $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,9),
 							"year"		=> LAN_UI_FILTER_PAST_YEAR
 						);
 
@@ -7756,6 +7770,9 @@ class e_admin_form_ui extends e_form
 								"nday"		=> LAN_UI_FILTER_NEXT_24_HOURS,
 								"nweek"		=> LAN_UI_FILTER_NEXT_WEEK,
 								"nmonth"	=> LAN_UI_FILTER_NEXT_MONTH,
+								"nmonth3"	=> $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,3),
+								"nmonth6"	=> $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,6),
+								"nmonth9"	=> $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,9),
 								"nyear"		=> LAN_UI_FILTER_NEXT_YEAR
 						);
 
