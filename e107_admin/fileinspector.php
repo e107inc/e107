@@ -111,22 +111,16 @@ class file_inspector {
 	private $coreImage;
 	private $coreImageVersion;
 
-	var $root_dir;
+	private $root_dir;
 	private $files = array();
     private $fileSizes = array();
-	var $parent;
-	var $count = array();
+	private $count = array();
+	/** @deprecated What's this? */
 	var $results = 0;
-	var $totalFiles = 0;
-	var $coredir = array();
-	var $progress_units = 0;
+	private $totalFiles = 0;
+	private $progress_units = 0;
 	private $langs = array();
 	private $lang_short = array();
-
-	private $excludeFiles = array( '.', '..','/','.svn', 'CVS' ,'Thumbs.db', '.git');
-
-	private $knownSecurityIssues = array('htmlarea', 'e107_docs/docs.php');
-//	private $icon = array();
 	private $iconTag = array();
 
 	private $options = array(
@@ -266,18 +260,7 @@ class file_inspector {
 	}
 
 
-	private function getDiz($key)
-	{
-		if(!empty($this->glyph[$key][1]))
-		{
-			return $this->glyph[$key][1];
-		}
-
-		return $key;
-	}
-
-
-	public function getLegend()
+    function getLegend()
 	{
 		return $this->glyph;
 	}
@@ -440,80 +423,6 @@ class file_inspector {
 
 		$ns->tablerender(FC_LAN_1, $text);
 
-	}
-
-	function scan($dir, $image)
-	{
-		$handle = opendir($dir.'/');
-
-		while (false !== ($readdir = readdir($handle)))
-		{
-
-			if($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE))
-			{
-				$path = $dir.'/'.$readdir;
-				if(is_dir($path))
-				{
-					$dirs[$path] = $readdir;
-				}
-				elseif(!isset($image[$readdir]))
-				{
-					$files[$readdir] = $this->checksum($path, TRUE);
-				}
-			}
-		}
-		closedir($handle);
-
-		if(isset($dirs))
-		{
-			ksort($dirs);
-
-			foreach ($dirs as $dir_path => $dir_list)
-			{
-				$list[$dir_list] = ($set = $this->scan($dir_path, $image[$dir_list])) ? $set : array();
-			}
-		}
-
-		if(isset($files))
-		{
-			ksort($files);
-
-			foreach ($files as $file_name => $file_list)
-			{
-				$list[$file_name] = $file_list;
-			}
-		}
-
-		return $list;
-	}
-
-	// Given a full path and filename, looks it up in the list to determine valid actions; returns:
-	//	  'check' - file is expected to be present, and validity is to be checked
-	//	  'ignore' - file may or may not be present - check its validity if found, but not an error if missing
-	//	  'uncalc' - file must be present, but its integrity cannot be checked.
-	//	  'nocalc' - file may be present, but its integrity cannot be checked. Not an error if missing
-	function check_action($dir, $name)
-	{
-		global $coredir;
-
-		if($name == 'e_inspect.php') { return 'nocalc'; }		// Special case for plugin integrity checking
-
-		$filename = $dir.'/'.$name;
-		$admin_dir = $this->root_dir.'/'.$coredir['admin'].'/';
-		$image_dir  = $this->root_dir.'/'.$coredir['images'].'/';
-		$test_list = array();
-
-		// Files that are unable to be checked
-		$test_list[$admin_dir.'core_image.php'] = 'uncalc';
-		$test_list[$this->root_dir.'/e107_config.php'] = 'uncalc';
-
-		// Files that are likely to be renamed by user
-		$test_list[$admin_dir.'filetypes_.php'] = 'ignore';
-		$test_list[$this->root_dir.'/e107.htaccess'] = 'ignore';
-		$test_list[$this->root_dir.'/e107.robots.txt'] = 'ignore';
-
-		if(isset($test_list[$filename])) { return $test_list[$filename]; }
-		return 'check';
 	}
 
     /**
@@ -684,46 +593,55 @@ class file_inspector {
 
     private function getStatusForValidationCode($validationCode)
     {
+        $status = 'unknown';
         if ($validationCode & e_file_inspector::VALIDATED)
-            return 'check';
-        if (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
-            return 'missing';
-        if (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
-            return 'warning';
-        if (!($validationCode & e_file_inspector::VALIDATED_PATH_KNOWN))
-            return 'unknown';
-        if (!($validationCode & e_file_inspector::VALIDATED_PATH_VERSION))
-            return 'old';
-        if (!($validationCode & e_file_inspector::VALIDATED_HASH_CALCULABLE))
-            return 'uncalc';
-        if (!($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
+            $status = 'check';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
+            $status = 'missing';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
+            $status = 'warning';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_PATH_KNOWN))
+            $status = 'unknown';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_PATH_VERSION))
+            $status = 'old';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_HASH_CALCULABLE))
+            $status = 'uncalc';
+        elseif (!($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
             if ($validationCode & e_file_inspector::VALIDATED_HASH_EXISTS)
-                return 'old';
+                $status = 'old';
             else
-                return 'fail';
-        return 'unknown';
+                $status = 'fail';
+        return $status;
     }
 
     private function getStatusRank($status)
     {
+        $rank = PHP_INT_MIN;
         switch ($status)
         {
             case 'unknown':
-                return -2;
+                $rank = -2;
+                break;
             case 'uncalc':
-                return -1;
+                $rank = -1;
+                break;
             case 'check':
-                return 0;
+                $rank = 0;
+                break;
             case 'missing':
-                return 1;
+                $rank = 1;
+                break;
             case 'old':
-                return 2;
+                $rank = 2;
+                break;
             case 'fail':
-                return 3;
+                $rank = 3;
+                break;
             case 'warning':
-                return 4;
+                $rank = 4;
+                break;
         }
-        return -1;
+        return $rank;
     }
 
     private function getWorstGlyphForFolder($treeFolder)
@@ -753,16 +671,20 @@ class file_inspector {
             return false;
 
         $status = $this->getStatusForValidationCode($validationCode);
+        $return = true;
         switch ($status)
         {
             case 'missing':
-                return $this->opt('missing');
+                $return = $this->opt('missing');
+                break;
             case 'unknown':
-                return $this->opt('noncore');
+                $return = $this->opt('noncore');
+                break;
             case 'old':
-                return $this->opt('oldcore');
+                $return = $this->opt('oldcore');
+                break;
         }
-        return true;
+        return $return;
     }
 
     /**
@@ -808,23 +730,8 @@ class file_inspector {
         return $array;
     }
 
-	private function checkKnownSecurity($path)
-	{
 
-		foreach($this->knownSecurityIssues as $v)
-		{
-			if(strpos($path, $v) !== false)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-
-
-	function scan_results()
+    function scan_results()
 	{
 	    $this->count = [
 	        'core' => [
@@ -1038,116 +945,7 @@ class file_inspector {
 
 	}
 
-	function create_image($dir)
-	{
-		global $core_image, $deprecated_image,$coredir;
-
-		foreach ($coredir as $trim_key => $trim_dirs)
-		{
-			$search[$trim_key] 	= "'".$trim_dirs."'";
-			$replace[$trim_key] = "\$coredir['".$trim_key."']";
-		}
-
-		$data = "<?php\n";
-		$data .= "/*\n";
-		$data .= "+ ----------------------------------------------------------------------------+\n";
-		$data .= "|     e107 website system\n";
-		$data .= "|\n";
-		$data .= "|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)\n";
-		$data .= "|     Copyright (C) 2008-2016 e107 Inc (e107.org)\n";
-		$data .= "|\n";
-		$data .= "|     Released under the terms and conditions of the\n";
-		$data .= "|     GNU General Public License (http://gnu.org).\n";
-		$data .= "|\n";
-		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
-		$data .= "|     \$Revision$\n";
-		$data .= "|     \$Id$\n";
-		$data .= "|     \$Author$\n";
-		$data .= "+----------------------------------------------------------------------------+\n";
-		$data .= "*/\n\n";
-		$data .= "if(!defined('e107_INIT')) { exit; }\n\n";
-
-		$scan_current = ($_POST['snaptype'] == 'current') ? $this->scan($dir) : $core_image;
-		$image_array = var_export($scan_current, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$core_image = ".$image_array.";\n\n";
-
-		$scan_deprecated = ($_POST['snaptype'] == 'deprecated') ? $this->scan($dir, $core_image) : $deprecated_image;
-		$image_array = var_export($scan_deprecated, true);
-		$image_array = str_replace($search, $replace, $image_array);
-		$data .= "\$deprecated_image = ".$image_array.";\n\n";
-
-		$data .= "?>";
-		$fp = fopen(e_ADMIN.'core_image.php', 'w');
-		fwrite($fp, $data);
-	}
-
-	function snapshot_interface()
-	{
-		$ns = e107::getRender();
-		$frm = e107::getRender();
-		$text = "";
-
-		if(isset($_POST['create_snapshot']))
-		{
-			$this->create_image($_POST['snapshot_path']);
-			$text = "<div style='text-align:center'>
-			<form action='".e_SELF."' method='post' id='main_page'>
-			<table class='table adminform'>snapshot_interface
-			<tr>
-			<td class='fcaption'>Snapshot Created</td>
-			</tr>";
-
-			$text .= "<tr>
-			<td style='text-align:center'>
-			The snapshot (".e_ADMIN."core_image.php) was successfully created.
-			</td>
-			</tr>
-			<tr>
-			<td style='text-align:center' class='forumheader'>".$frm->admin_button('main_page', 'Return To Main Page', 'submit')."</td>
-			</tr>
-			</table>
-			</form>
-			</div><br />";
-		}
-
-		$text .= "<div style='text-align:center'>
-		<form action='".e_SELF."?".e_QUERY."' method='post' id='snapshot'>
-		<table class='table adminform'>
-		<tr>
-		<td ccolspan='2'>Create Snapshot</td>
-		</tr>";
-
-		$text .= "<tr>
-		<td style='width:50%'>
-		Absolute path of root directory to create image from:
-		</td>
-		<td style='width:50%'>
-		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this->root_dir)."' />
-		</td></tr>
-		
-		<tr>
-		<td style='width: 35%'>
-		Create snapshot of current or deprecated core files:
-		</td>
-		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> Current&nbsp;&nbsp;
-		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> Deprecated&nbsp;&nbsp;
-		</td>
-		</tr>
-		
-		<tr>
-		<td class='forumheader' style='text-align:center' colspan='2'>".$frm->admin_button('create_snapshot', 'Create Snapshot', 'create')."</td>
-		</tr>
-		</table>
-		</form>
-		</div>";
-
-		$ns->tablerender('Snapshot', $text);
-
-	}
-
-	function checksum($filename)
+    function checksum($filename)
 	{
 		$checksum = md5(str_replace(array(chr(13),chr(10)), "", file_get_contents($filename)));
 		return $checksum;

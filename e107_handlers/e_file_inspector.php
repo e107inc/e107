@@ -119,7 +119,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
         if ($this->isDeterminable($absolutePath)) $bits |= self::VALIDATED_HASH_CALCULABLE;
         if ($actualChecksum === $dbChecksum) $bits |= self::VALIDATED_HASH_CURRENT;
 
-        foreach ($dbChecksums as $dbVersion => $dbChecksum)
+        foreach ($dbChecksums as $dbChecksum)
         {
             if ($dbChecksum === $actualChecksum) $bits |= self::VALIDATED_HASH_EXISTS;
         }
