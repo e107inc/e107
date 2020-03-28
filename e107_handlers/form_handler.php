@@ -1583,15 +1583,15 @@ class e_form
 	 * @param string $name the name of the field
 	 * @param int|bool $datestamp UNIX timestamp - default value of the field
 	 * @param array|string {
-	 *      @type string type date or datetime
+	 *      @type string mode date or datetime
 	 *      @type string format strftime format eg. '%Y-%m-%d'
 	 *      @type string timezone eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
 	 *      }
-	 * @example $frm->datepicker('my_field',time(),'type=date');
-	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
-	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
-	 * @example $frm->datepicker('my_field',time(),'type=datetime&format=MM, dd, yyyy hh:ii');
-	 * @example $frm->datepicker('my_field',time(),'type=datetime&return=string');
+	 * @example $frm->datepicker('my_field',time(),'mode=date');
+	 * @example $frm->datepicker('my_field',time(),'mode=datetime&inline=1');
+	 * @example $frm->datepicker('my_field',time(),'mode=date&format=yyyy-mm-dd');
+	 * @example $frm->datepicker('my_field',time(),'mode=datetime&format=MM, dd, yyyy hh:ii');
+	 * @example $frm->datepicker('my_field',time(),'mode=datetime&return=string');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
 	 * @return string
@@ -1603,7 +1603,13 @@ class e_form
 			parse_str($options,$options);
 		}
 
-		$type		 = varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
+		$mode = !empty($options['mode']) ? trim($options['mode']) : "date"; // OR  'datetime'
+
+		if(!empty($options['type'])) /** BC Fix. 'type' is @deprecated */
+		{
+			$mode = trim($options['type']);
+		}
+
 		$dateFormat  = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$ampm		 = (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';
 		$value		 = null;
@@ -1612,7 +1618,7 @@ class e_form
 		$id          = $this->name2id($name);
 		$classes     = array('date' => 'tbox e-date', 'datetime' => 'tbox e-datetime');
 
-		if($type == 'datetime' && !varset($options['format']))
+		if($mode == 'datetime' && !varset($options['format']))
 		{
 			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');
 		}
@@ -1636,7 +1642,7 @@ class e_form
 			}
 		}
 
-		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
+		$class 		= (isset($classes[$mode])) ? $classes[$mode] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
@@ -4713,13 +4719,10 @@ var_dump($select_options);*/
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
-		if(!empty($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
+		if(!empty($parms['type'])) // Allow the use of a different 'type' in readMode. eg. type=method.
 		{
 			$attributes['type'] = $parms['type'];	
 		}
-
-
-
 
 		$this->renderValueTrigger($field, $value, $parms, $id);
 
@@ -5732,6 +5735,7 @@ var_dump($select_options);*/
 			{
 				$attributes['readParms'] = $attributes['writeParms'];
 			}
+
 			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
 		}
 		
