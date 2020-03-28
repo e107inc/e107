@@ -491,6 +491,7 @@ define("LAN_UI_FILTER_PAST_HOUR", "Past Hour");
 define("LAN_UI_FILTER_PAST_24_HOURS", "Past 24 hours");
 define("LAN_UI_FILTER_PAST_WEEK", "Past Week");
 define("LAN_UI_FILTER_PAST_MONTH", "Past Month");
+define("LAN_UI_FILTER_PAST_XMONTHS", "Past [x] Months");
 define("LAN_UI_FILTER_PAST_YEAR", "Past Year");
 
 
@@ -557,6 +558,7 @@ define("LAN_UI_FILTER_NEXT_HOUR", "Next Hour");
 define("LAN_UI_FILTER_NEXT_24_HOURS", "Next 24 hours");
 define("LAN_UI_FILTER_NEXT_WEEK", "Next Week");
 define("LAN_UI_FILTER_NEXT_MONTH", "Next Month");
+define("LAN_UI_FILTER_NEXT_XMONTHS", "Next [x] Months");
 define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
 define("LAN_UI_FILTER_IS_EMPTY", "Is Empty");
 define("LAN_RECALCULATE_COMMENT_COUNT", "Recalculate comment count");
