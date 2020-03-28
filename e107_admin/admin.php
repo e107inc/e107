@@ -127,32 +127,8 @@ class admin_start
 		}
 
 		// Files that can cause comflicts and problems.
-		$this->deprecated = array(
-			e_ADMIN."ad_links.php",
-			e_PLUGIN."tinymce4/e_meta.php",
-			e_THEME."bootstrap3/css/bootstrap_dark.css",
-			e_PLUGIN."search_menu/languages/English.php",
-			e_LANGUAGEDIR.e_LANGUAGE."/lan_parser_functions.php",
-			e_LANGUAGEDIR.e_LANGUAGE."/admin/help/theme.php",
-			e_HANDLER."np_class.php",
-			e_CORE."shortcodes/single/user_extended.sc",
-			e_ADMIN."download.php",
-			e_PLUGIN."banner/config.php",
-			e_PLUGIN."forum/newforumposts_menu_config.php",
-			e_PLUGIN."forum/e_latest.php",
-			e_PLUGIN."forum/e_status.php",
-			e_PLUGIN."forum/forum_post_shortcodes.php",
-			e_PLUGIN."forum/forum_shortcodes.php",
-			e_PLUGIN."forum/forum_update_check.php",
-			e_PLUGIN."online_extended_menu/online_extended_menu.php",
-			e_PLUGIN."online_extended_menu/images/user.png",
-			e_PLUGIN."online_extended_menu/languages/English.php",
-			e_PLUGIN."pm/sendpm.sc",
-			e_PLUGIN."pm/shortcodes/",
-			e_PLUGIN."social/e_header.php",
-		//	e_PLUGIN."download/url/url.php", // removed by download_setup.php
-		//	e_PLUGIN."download/url/sef_url.php",
-		);
+        $fileInspector = e107::getFileInspector();
+		$this->deprecated = $fileInspector->insecureFiles;
 
 		$this->checkCoreVersion();
 
