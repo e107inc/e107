@@ -1609,9 +1609,30 @@ class e107
 	 *
 	 * @return e_file_inspector
 	 */
-	public static function getFileInspector($type = 'core')
-	{
-		return self::getObject('e_file_inspector_json_phar', e_ADMIN . "core_image.php");
+    public static function getFileInspector($type = 'core')
+    {
+        $fileInspectorPath = realpath(e_ADMIN . "core_image.php");
+        /** @var e_file_inspector $fileInspector */
+        $fileInspector = self::getObject('e_file_inspector_json_phar', $fileInspectorPath);
+
+        try
+        {
+            $fileInspector->loadDatabase();
+        }
+        catch (Exception $e)
+        {
+            // TODO: LAN
+            self::getMessage()->addWarning(
+                "The core integrity image is corrupt. " .
+                "File Inspector will be inoperative. " .
+                "Resolve this issue by uploading a good copy of the core image to " .
+                escapeshellarg($fileInspectorPath) . ". " .
+                "Error message: " .
+                $e->getMessage()
+            );
+        }
+
+        return $fileInspector;
 	}
 
 	/**

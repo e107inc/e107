@@ -61,7 +61,6 @@ abstract class e_file_inspector implements e_file_inspector_interface
     public function __construct($database)
     {
         $this->database = $database;
-        $this->loadDatabase();
 
         $appRoot = e107::getInstance()->file_path;
         $this->undeterminable = array_map(function ($path)

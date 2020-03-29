@@ -40,7 +40,7 @@ class e_file_inspector_json extends e_file_inspector
      */
     public function getPathIterator($version = null)
     {
-        $result = $this->coreImage;
+        $result = $this->coreImage ? $this->coreImage : [];
         if (!empty($version))
         {
             $result = array_filter($result, function ($value) use ($version)
