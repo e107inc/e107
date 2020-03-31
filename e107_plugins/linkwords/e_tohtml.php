@@ -81,7 +81,7 @@ class e_tohtml_linkwords
 
 	//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
 		$this->customClass      = vartrue($pref['lw_custom_class'],'');
-		$this->area_opts        = $pref['lw_context_visibility'];
+		$this->area_opts        = varset($pref['lw_context_visibility']);
 		$this->utfMode          = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex //@TODO utfMode probably obsolete
 		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
 

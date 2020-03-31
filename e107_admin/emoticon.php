@@ -119,7 +119,7 @@ class emotec
 {
 	var $packArray;			// Stores an array of all available emote packs (as subdirectory names)
 
-	function emotec()
+	function __construct()
 	{
 		/* constructor */
 		$fl = e107::getFile();
