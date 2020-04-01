@@ -10,7 +10,6 @@
  * 
  */
 ob_implicit_flush(true);
-ob_end_flush();
 
 require_once('../class2.php');
 
