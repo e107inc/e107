@@ -591,6 +591,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// BC.
 		if(options.target && options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
 		{
+		    console.log('BC Mode: adding # to target');
 			options.target = "#" + options.target;
 		}
 
@@ -653,7 +654,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					// If result is a simple text/html.
 					e107.callbacks.ajaxResponseHandler($target, options, response);
 				}
-			}
+			},
+			error: function(response)
+            {
+
+                console.log("e-ajax Error");
+                console.log("e-ajax URL: "+options.url);
+       
+
+            }
 		});
 	};
 
