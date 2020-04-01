@@ -9,6 +9,11 @@
 
 abstract class CoreImage
 {
+    const EXCLUDED_PATHS = [
+        'install.php',
+        'robots.txt'
+    ];
+
     protected function create_image($exportFolder, $tempFolder, $currentVersion)
     {
         echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
@@ -34,6 +39,7 @@ abstract class CoreImage
             $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
 
             if (empty($relativePath) || $relativePath == $absolutePath) continue;
+            if ($this->isExcluded($relativePath)) continue;
 
             $checksum = $this->checksumPath($absolutePath);
             $this->insertChecksumIntoDatabase($relativePath, $checksum, $currentVersion);
@@ -126,6 +132,8 @@ abstract class CoreImage
             );
             foreach ($removedFiles as $removedFilePath)
             {
+                if ($this->isExcluded($removedFilePath)) continue;
+
                 $checksum = $this->checksumPath($timeMachineFolder . '/' . $removedFilePath);
                 $this->insertChecksumIntoDatabase($removedFilePath, $checksum, $version);
             }
@@ -156,5 +164,15 @@ abstract class CoreImage
         $data .= "if (!defined('e107_INIT')) { exit; }\n\n";
 
         return $data;
+    }
+
+    /**
+     * Determines whether the provided relative path should make it into the generated integrity database
+     * @param $relativePath string Relative path candidate
+     * @return bool TRUE if the relative path should not be added to the integrity database; FALSE otherwise
+     */
+    protected function isExcluded($relativePath)
+    {
+        return in_array($relativePath, self::EXCLUDED_PATHS);
     }
 }
