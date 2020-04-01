@@ -24,84 +24,237 @@ if(!getperms('Y'))
 set_time_limit(18000);
 $e_sub_cat = 'fileinspector';
 
-
-if(isset($_GET['scan']))
+if (!empty($_GET['regex']))
 {
-	session_write_close();
-	while (@ob_end_clean());
-
-	//header("Content-type: text/html; charset=".CHARSET, true);
-	//$css_file = file_exists(e_THEME.$pref['admintheme'].'/'.$pref['admincss']) ? e_THEME.$pref['admintheme'].'/'.$pref['admincss'] : e_THEME.$pref['admintheme'].'/'.$pref['admincss'];
-	//	$fi = new file_inspector;
-
-    /** @var file_inspector $fi */
-	$fi = e107::getSingleton('file_inspector');
-
-	echo "<!DOCTYPE html>
-	<html> 
-	<head>  	
-		<title>Results</title>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/jquery/2.2.1/jquery.min.js'></script>
-		<link  rel='stylesheet' media='all' property='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css' />
-	 
-		".$fi->headerCss()." ".headerjs()."
-		<body style='height:100%;background-color:#2F2F2F'>\n";
-
-		//	define('e_IFRAME', true);
-		//	require_once(e_ADMIN."auth.php");
-
-		// echo "<br />loading..";
-
-		// echo "..";
-		//flush();
-
-		$_POST = $_GET;
-
-		if(vartrue($_GET['exploit']))
-		{
-			$fi->exploit();
-		}
-		else
-		{
-			$fi->scan_results();
-		}
-
-		//	require_once(e_ADMIN."footer.php");
-
-	echo "</body>
-	</html>";
-
-	exit();
-
+    $css = ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }\n";
 }
 else
 {
-	// $fi = new file_inspector;
-	$fi = e107::getSingleton('file_inspector');
-
-	require_once(e_ADMIN.'auth.php');
-
-
-	//	if(e_QUERY) {
-	// $fi -> snapshot_interface();
-	//}
-
-	if(varset($_POST['scan']))
-	{
-		 $fi->exploit_interface();
-		 $fi->scan_config();
-	}
-	elseif($_GET['mode'] == 'run')
-	{
-		$mes = e107::getMessage();
-		$mes->addInfo(FR_LAN_32);//Run a Scan first
-		echo $mes->render();
-	}
-	else
-	{
-		$fi->scan_config();
-	}
+    $css = ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }\n";
 }
+
+$css .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
+    .s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
+    .t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
+    .w { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }
+    .i { width: 16px; height: 16px }
+    .e { width: 9px; height: 9px }
+    i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
+    span.tree-node { cursor: pointer } 
+    
+";
+
+e107::css('inline', $css);
+
+$js = "
+            c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
+            e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
+            function ec(ecid) {
+                icon = document.getElementById('e_' + ecid).src;
+                if(icon.indexOf('expand.png') !== -1) {
+                    document.getElementById('e_' + ecid).src = c;
+                } else {
+                    document.getElementById('e_' + ecid).src = e;
+                }
+                div = document.getElementById('d_' + ecid).style;
+                if(div.display == 'none') {
+                    div.display = '';
+                } else {
+                    div.display = 'none';
+                }
+            }
+            var hideid = 'initial';
+            function sh(showid) {
+                if(hideid != showid) {
+                    show = document.getElementById(showid).style;
+                    hide = document.getElementById(hideid).style;
+                    show.display = '';
+                    hide.display = 'none';
+                    hideid = showid;
+                }
+            }
+            ";
+
+
+e107::js('footer-inline', $js);
+
+
+
+
+
+
+
+
+
+
+class fileinspector_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+
+		'main'	=> array(
+			'controller' 	=> 'fileinspector_ui',
+			'path' 			=> null,
+			'ui' 			=> 'fileinspector_form_ui',
+			'uipath' 		=> null
+		),
+
+
+	);
+
+	protected $adminMenu = array(
+
+		'main/setup'		=> array('caption'=> LAN_CONFIGURE, 'perm' => 'P'),
+	//	'main/run'		    => array('caption'=> FR_LAN_2, 'perm' => 'P'),
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'
+	);
+
+	protected $menuTitle = FC_LAN_1;
+
+	protected $adminMenuIcon = 'e-fileinspector-24';
+
+
+
+	function init()
+    {
+
+
+        if(!empty($_GET['viewerror']))
+        {
+          $file =   e107::getSession()->get('fileinspector_error_log_'. $_GET['viewerror']);
+
+          if(!empty($file))
+          {
+            $contents = file_get_contents(e_BASE.$file);
+            echo "<pre style='color:silver;background: #000'>".$contents."</pre>";
+
+          }
+
+          exit;
+
+        }
+
+        if(!empty($_GET['action']) && $_GET['action'] === 'progress')
+        {
+            echo rand(70,100);
+            // XXX FIXME - progress meter.
+         //   echo (int)  e107::getSession()->get('file-inspector-progress');
+         //   echo 100;
+            exit;
+        }
+
+        if(!empty($_GET['action']) && $_GET['action'] === 'begin')
+        {
+        //	session_write_close();
+        //	while (@ob_end_clean());
+
+            /** @var file_inspector $fi */
+            $fi = e107::getSingleton('file_inspector');
+            $fi->scan_results();
+
+            exit();
+
+        }
+
+
+
+
+    }
+}
+
+
+
+
+
+class fileinspector_ui extends e_admin_ui
+{
+
+		protected $pluginTitle		= FC_LAN_1;
+		protected $pluginName		= 'core';
+		protected $eventName		= 'fileinspector';
+		protected $table			= '';
+		protected $pid				= '';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		protected $batchCopy		= true;
+	//	protected $sortField		= 'somefield_order';
+	//	protected $orderStep		= 10;
+	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+		protected $listQry      	= ""; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+		protected $listOrder		= '';
+		protected $fields		= array ();
+		protected $fieldpref = array();
+		protected $prefs = array();
+
+		protected $fi;
+
+		public function init()
+		{
+            //
+		}
+
+        public function SetupPage()
+        {
+            /** @var file_inspector  */
+            $fi =e107::getSingleton('file_inspector');
+            return $fi->scan_config();
+        }
+
+        public function RunPage()
+        {
+            $this->addTitle(LAN_CONFIGURE);
+            $this->addTitle(LAN_RUN);
+
+            $frm = $this->getUI();
+
+            unset($_GET['mode'],$_GET['action']);
+
+            $source =  e_SELF."?mode=main&action=begin&".http_build_query($_GET);
+            $target = '#results-container';
+            $interval = 1000;
+
+            $text = $frm->open('runit');
+            $text .= $frm->progressBar('inspector-progress', 0);
+
+         //   $text .= '<button id="start-render" type="button" data-loading-icon="fa-spinner" data-loading-target="#start-render" class="e-ajax btn-sm btn btn-primary" data-src="'.$source.'" data-target="#results-container">Other</button>';
+
+
+			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> Begin</a>';
+			$text .= ' <a data-progress-target="inspector-progress" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
+
+
+            $text .= $frm->close();
+            $text .= "<div id='results-container'></div>";
+
+
+
+            return $text;
+
+        }
+
+
+}
+
+
+
+class fileinspector_form_ui extends e_admin_form_ui
+{
+
+}
+
+
+new fileinspector_admin();
+
+require_once(e_ADMIN."auth.php");
+
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
 
 
 
@@ -155,7 +308,9 @@ class file_inspector {
 		$lng    = e107::getLanguage();
 		$langs  = $lng->installed();
 
-		if(isset($_GET['scan']))
+
+
+	//	if(isset($_GET['begin']))
 		{
 			$this->setOptions($_GET);
 		}
@@ -275,14 +430,15 @@ class file_inspector {
 
 		}
 		$text .= "</table>";
+
+		return $text;
 		// echo $text;
 	}
 
 
-	function scan_config()
+	public function scan_config()
 	{
 		$frm 	= e107::getForm();
-		$ns 	= e107::getRender();
 		$pref 	= e107::pref('core');
 
 		if($_GET['mode'] == 'run')
@@ -293,7 +449,7 @@ class file_inspector {
 		$tab = array();
 
 		$head = "<div>
-		<form action='".e_SELF."?mode=run' method='post' id='scanform'>";
+		<form action='".e_SELF."' method='get' id='scanform'>";
 
 		$text = "
 		<table class='table  adminform'>";
@@ -413,14 +569,18 @@ class file_inspector {
 
 		$foot = "
 		<div class='buttons-bar center'>
-		".$frm->admin_button('scan', LAN_GO, 'other')."
+		".$frm->admin_button('scan', LAN_GO, 'other').
+		$frm->hidden('mode','main').
+		$frm->hidden('action','run')."
+		
 		</div>
 		</form>
 		</div>";
 
 		$text = $head.$tabText.$foot;
 
-		$ns->tablerender(FC_LAN_1, $text);
+		return $text;
+	//	$ns->tablerender(FC_LAN_1, $text);
 
 	}
 
@@ -515,6 +675,30 @@ class file_inspector {
         return $this->generateDirectoryHtml([SITENAME => $nestedFiles]);
     }
 
+
+    private function renderFileName($tree, $fileName, $relativePath,$rowId)
+    {
+
+
+
+        if($fileName === 'error_log')
+        {
+            $hash = md5($relativePath);
+            e107::getSession()->set('fileinspector_error_log_'. $hash, $relativePath);
+
+
+            return "<a class='e-modal' data-modal-caption=\"".$relativePath."\" href='fileinspector.php?iframe=1&viewerror=".$hash."'>".$relativePath."</a>";
+        }
+
+        if (!is_array($tree[$fileName]))
+        {
+           return $fileName;
+        }
+
+
+        return "<span class='tree-node' onclick=\"ec('$rowId')\">".$fileName."</span>";
+    }
+
     private function generateDirectoryHtml($tree, $level = 0, $parentPath = '')
     {
         $html = '';
@@ -529,11 +713,11 @@ class file_inspector {
             list($icon, $title) = $this->getGlyphForValidationCode($validationCode);
             $oldVersion = $this->getOldVersionOfPath($relativePath, $validationCode);
             $html .= "<div class=\"d\" title=\"$title\" style=\"margin-left: " . ($level * 8) . "px\">";
-            $html .= "<span onclick=\"ec('$rowId')\">";
+            $html .= "<span  class='tree-node' onclick=\"ec('$rowId')\">";
             $html .= $this->getTreeActionImageForFile($tree, $fileName, $rowId, $hide);
             $html .= "</span>&nbsp;<span onclick=\"sh('f_$rowId')\">" .
                 $icon.
-                "&nbsp;$fileName</span>";
+                "&nbsp;".$this->renderFileName($tree, $fileName,$relativePath, $rowId)."</span>";
             if (is_array($validationCode))
             {
                 $html .= "<div id=\"d_$rowId\" " . ($hide ? "style=\"display:none\"" : "") . ">";
@@ -767,6 +951,7 @@ class file_inspector {
         ];
 		$this->inspect($this->root_dir);
 
+
         array_walk_recursive($this->files, function ($validationCode)
         {
             $status = $this->getStatusForValidationCode($validationCode);
@@ -785,7 +970,7 @@ class file_inspector {
 		if($this->opt('type') == 'tree')
 		{
 			$text = "<div style='text-align:center'>
-			<table class='table adminlist'>
+			<table class='table table-bordered'>
 			<tr>
 			<th class='fcaption' colspan='2'>".FR_LAN_2."</th>
 			</tr>";
@@ -793,58 +978,57 @@ class file_inspector {
 			$text .= "<tr style='display: none'><td style='width:60%'></td><td style='width:40%'></td></tr>";
 
 			$text .= "<tr>
-			<td style='width:60%;padding:0; '>
+			<td class='text-left' style='width:60%;padding:10px; '>
 			<div style=' min-height:400px; max-height:800px; overflow: auto; padding-bottom:50px'>
 			".$this->generateScanResultsHtml()."
 			</div>
 			</td>
-			<td style='width:40%; height:5000px; vertical-align: top; overflow:auto'><div>";
+			<td style='width:40%; height:5000px; vertical-align: top; overflow:auto; padding:0'><div>";
 		}
 		else
 		{
-			$text = "<div style='text-align:center'>
+			$text = "<h3>".FR_LAN_2."</h3>";
+			/*$text .= "<div style='text-align:center'>
 			<table class='table table-striped adminlist'>
-			<tr>
-			<th class='fcaption' colspan='2'>".FR_LAN_2."</th>
-			</tr>";
+			";
 
 			$text .= "<tr>
-			<td colspan='2'>";
+			<td colspan='2'>";*/
 		}
 
-		$text .= "<table class='table-striped table adminlist' id='initial'>";
+		$text .= "<table class='table-striped table table-bordered' id='initial'>";
 
 		if($this->opt('type') == 'tree')
 		{
-			$text .= "<tr><th class='f' >".FR_LAN_3."</th>
-			<th class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this->root_dir))."')\">
+			$text .= "<tr><th class='text-left f' >".FR_LAN_3."</th>
+			<th class='s text-right' style='padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this->root_dir))."')\">
 			<b class='caret'></b></th></tr>";
 		}
 		else
 		{
-			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_3."</th></tr>";
+			$text .= "<tr><th class='text-left f' colspan='2'>".FR_LAN_3."</th></tr>";
 		}
 
 		if($this->opt('core') != 'none')
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_core']."&nbsp;".FC_LAN_5.":&nbsp;".($this->count['core']['num'] ? $this->count['core']['num'] : LAN_NONE)."&nbsp;</td>
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_core']."&nbsp;".FC_LAN_5.":&nbsp;".($this->count['core']['num'] ? $this->count['core']['num'] : LAN_NONE)."&nbsp;</td>
 			<td class='s'>".$this->parsesize($this->count['core']['size'], 2)."</td></tr>";
 		}
 		if($this->opt('missing'))
 		{
-			$text .= "<tr><td class='f' colspan='2'>".$this->iconTag['file_missing']."&nbsp;".FC_LAN_13.":&nbsp;".($this->count['missing']['num'] ? $this->count['missing']['num'] : LAN_NONE)."&nbsp;</td></tr>";
+			$text .= "<tr><td class='text-left f' colspan='2'>".$this->iconTag['file_missing']."&nbsp;".FC_LAN_13.":&nbsp;".($this->count['missing']['num'] ? $this->count['missing']['num'] : LAN_NONE)."&nbsp;</td></tr>";
 		}
 		if($this->opt('noncore'))
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_unknown']."&nbsp;".FC_LAN_7.":&nbsp;".($this->count['unknown']['num'] ? $this->count['unknown']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['unknown']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_unknown']."&nbsp;".FC_LAN_7.":&nbsp;".($this->count['unknown']['num'] ? $this->count['unknown']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['unknown']['size'], 2)."</td></tr>";
 		}
 		if($this->opt('oldcore'))
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_old']."&nbsp;".FR_LAN_24.":&nbsp;".($this->count['deprecated']['num'] ? $this->count['deprecated']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_old']."&nbsp;".FR_LAN_24.":&nbsp;".($this->count['deprecated']['num'] ? $this->count['deprecated']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if($this->opt('core') == 'all')
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file']."&nbsp;".FR_LAN_6.":&nbsp;".($this->count['core']['num'] + $this->count['unknown']['num'] + $this->count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this->parsesize($this->count['core']['size'] + $this->count['unknown']['size'] + $this->count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file']."&nbsp;".FR_LAN_6.":&nbsp;".($this->count['core']['num'] + $this->count['unknown']['num'] + $this->count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this->parsesize($this->count['core']['size'] + $this->count['unknown']['size'] + $this->count['deprecated']['size'], 2)."</td></tr>";
 		}
 
 		if($this->count['warning']['num'])
@@ -853,7 +1037,7 @@ class file_inspector {
 			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
 			".$this->iconTag['warning']."&nbsp;<b>".FR_LAN_26."</b></td></tr>";
 
-			$text .= "<tr><td class='f'>".$this->iconTag['file_warning']." ".FR_LAN_28.": ".($this->count['warning']['num'] ? $this->count['warning']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['warning']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_warning']." ".FR_LAN_28.": ".($this->count['warning']['num'] ? $this->count['warning']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['warning']['size'], 2)."</td></tr>";
 
 			$text .= "<tr><td class='w' colspan='2'><div class='alert alert-warning'>".FR_LAN_27."</div></td></tr>";
 
@@ -863,17 +1047,17 @@ class file_inspector {
 			$integrity_icon = $this->count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
 			$integrity_text = $this->count['fail']['num'] ? '( '.$this->count['fail']['num'].' '.FR_LAN_19.' )' : '( '.FR_LAN_20.' )';
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
-			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_7." ".$integrity_text."</th></tr>";
+			$text .= "<tr><th class='text-left f' colspan='2'>".FR_LAN_7." ".$integrity_text."</th></tr>";
 
-			$text .= "<tr><td class='f'>".$this->iconTag['file_check']."&nbsp;".FR_LAN_8.":&nbsp;".($this->count['pass']['num'] ? $this->count['pass']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['pass']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'>".$this->iconTag['file_fail']."&nbsp;".FR_LAN_9.":&nbsp;".($this->count['fail']['num'] ? $this->count['fail']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['fail']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'>".$this->iconTag['file_uncalc']."&nbsp;".FR_LAN_25.":&nbsp;".($this->count['uncalculable']['num'] ? $this->count['uncalculable']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['uncalculable']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_check']."&nbsp;".FR_LAN_8.":&nbsp;".($this->count['pass']['num'] ? $this->count['pass']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['pass']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_fail']."&nbsp;".FR_LAN_9.":&nbsp;".($this->count['fail']['num'] ? $this->count['fail']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='text-left f'>".$this->iconTag['file_uncalc']."&nbsp;".FR_LAN_25.":&nbsp;".($this->count['uncalculable']['num'] ? $this->count['uncalculable']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this->parsesize($this->count['uncalculable']['size'], 2)."</td></tr>";
 
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
-			$text .= "<tr><td class='f' colspan='2'>".$this->iconTag['info']."&nbsp;".FR_LAN_10.":&nbsp;</td></tr>";
+			$text .= "<tr><td class='text-left f' colspan='2'>".$this->iconTag['info']."&nbsp;".FR_LAN_10.":&nbsp;</td></tr>";
 
-			$text .= "<tr><td style='padding-right: 4px' colspan='2'>
+			$text .= "<tr><td class='text-left' style='padding-right: 4px' colspan='2'>
 			<ul><li>
 			<a href=\"#\" onclick=\"expandit('i_corrupt')\">".FR_LAN_11."...</a><div style='display: none' id='i_corrupt'>
 			".FR_LAN_12."<br /><br /></div>
@@ -893,28 +1077,30 @@ class file_inspector {
 		if($this->opt('type') == 'tree' && !$this->results && $this->opt('regex'))
 		{
 			$text .= "</td></tr>
-			<tr><td style='padding-right: 4px; text-align: center' colspan='2'><br />".FR_LAN_23."</td></tr>";
+			<tr><td class='text-left' style='padding-right: 4px; text-align: center' colspan='2'><br />".FR_LAN_23."</td></tr>";
 		}
 
 		$text .= "</table>";
 
 		if($this->opt('type') != 'tree')
 		{
-			$text .= "<br /></td></tr><tr>
-			<td colspan='2'>
-			<table class='table table-striped'>";
+			/*$text .= "<br /></td></tr><tr>
+			<td colspan='2'>";*/
+
+			$text .= "
+			<table class='table table-striped table-bordered'>";
 			if(!$this->results && $this->opt('regex'))
 			{
-				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
+				$text .= "<tr><td class='text-left f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
 			}
 
             ksort($this->files);
             foreach ($this->files as $relativePath => $validation)
             {
                 if (!$this->displayAllowed($validation)) continue;
-
+                 $this->sendProgress(50, $this->totalFiles);
                 list($icon, $title) = $this->getGlyphForValidationCode($validation);
-                $text .= '<tr><td class="f" title="'.$title.'">';
+                $text .= '<tr><td class="text-left f" title="'.$title.'">';
                 $text .= "$icon ";
                 $text .= htmlspecialchars($relativePath);
                 $text .= '</td><td class="s">';
@@ -927,8 +1113,8 @@ class file_inspector {
         }
 
 		if($this->opt('type') != 'tree') {
-			$text .= "</td>
-			</tr></table>";
+		/*	$text .= "</td>
+			</tr></table>";*/
 		}
 
 		$text .= "</td></tr>";
@@ -997,53 +1183,21 @@ class file_inspector {
 		}
 
 
-		echo "<div  style='display:block;position:absolute;top:20px;width:100%;'>
-		<div style='width:700px;position:relative;margin-left:auto;margin-right:auto;text-align:center'>";
-
-		$active = "active";
-
 		if($inc >= 100)
 		{
 			$inc = 100;
-			$active = "";
 		}
 
-		echo e107::getForm()->progressBar('inspector',$inc);
-
-		/*	echo '<div class="progress progress-striped '.$active.'">
-    			<div class="bar" style="width: '.$inc.'%"></div>
-   		 </div>';*/
+        e107::getSession()->set('file-inspector-progress',$inc);
 
 
-		echo "</div>
-		</div>";
-
-		return;
+		return null;
 
 
-		//	exit;
-		/*
-	    echo "<div style='margin-left:auto;margin-right:auto;border:2px inset black;height:20px;width:700px;overflow:hidden;text-align:left'>
-		<img src='".THEME."images/bar.jpg' style='width:".$inc."%;height:20px;vertical-align:top' />
-		</div>";
-		*/
-		/*
-
-		echo "<div style='width:100%;background-color:#EEEEEE'>".$diz."</div>";
-
-
-		if($total > 0)
-		{
-			echo "<div style='width:100%;background-color:#EEEEEE;text-align:center'>".$inc ."%</div>";
-		}
-
-		echo "</div>
-		</div>";
-		*/
 	}
 
 
-	function exploit_interface()
+	public function exploit_interface()
 	{
 		//	global $ns;
 		$ns = e107::getRender();
@@ -1159,7 +1313,7 @@ i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
     }
 
 }
-
+/*
 function fileinspector_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
 {
 	$var['setup']['text'] = FC_LAN_11;
@@ -1172,7 +1326,7 @@ function fileinspector_adminmenu() //FIXME - has problems when navigation is on 
 	$caption = $icon."<span>".FC_LAN_1."</span>";
 
 	e107::getNav()->admin($caption, $_GET['mode'], $var);
-}
+}*/
 
 function e_help()
 {
@@ -1197,11 +1351,14 @@ function e_help()
 
 
 require_once(e_ADMIN.'footer.php');
-
+/*
 function headerjs()
 {
 e107::js('footer', '{e_WEB}/js/core/all.jquery.js', 'jquery', 1);
+e107::js('footer', '{e_WEB}js/core/front.jquery.js', 'jquery', 1); // Load all default functions.
+
 $text = e107::getJs()->renderJs('footer', 1, true, true);
+
 $text .= "<script type='text/javascript'>
 <!--
 c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
@@ -1234,6 +1391,6 @@ function sh(showid) {
 </script>";
 
 return $text;
-}
+}*/
 
 ?>
