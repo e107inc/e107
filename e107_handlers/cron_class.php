@@ -58,6 +58,7 @@ class _system_cron
 			if(!deftrue('e_DEVELOPER')) // Leave development files intact if developer mode is active.
 			{
 				$fl->removeDir(e_BASE.'e107_tests');
+				$fl->removeDir(e_BASE.'.github');
 				unlink(e_BASE."composer.json");
 				unlink(e_BASE."composer.lock");
 			}
