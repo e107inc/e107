@@ -11,7 +11,27 @@
  */
 ob_implicit_flush(true);
 
+if(!empty($_GET['action']) && $_GET['action'] === 'progress' && !empty($_GET['scan']))
+{
+    $e_ROOT = realpath(__DIR__ . '/..');
+
+	if ((substr($e_ROOT,-1) !== '/') && (substr($e_ROOT,-1) !== '\\') )
+	{
+		$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now.
+	}
+
+	define('e_ROOT', $e_ROOT);
+
+    $content =  file_get_contents(e_ROOT.'file-inspector-progress_'.filter_var($_GET['scan']));
+    echo trim($content);
+    //  echo rand(70,100);
+    exit;
+}
+
+
 require_once('../class2.php');
+
+
 
 e107::coreLan('fileinspector', true);
 
@@ -137,14 +157,7 @@ class fileinspector_admin extends e_admin_dispatcher
 
         }
 
-        if(!empty($_GET['action']) && $_GET['action'] === 'progress')
-        {
-            echo rand(70,100);
-            // XXX FIXME - progress meter.
-         //   echo (int)  e107::getSession()->get('file-inspector-progress');
-         //   echo 100;
-            exit;
-        }
+
 
         if(!empty($_GET['action']) && $_GET['action'] === 'begin')
         {
@@ -214,7 +227,7 @@ class fileinspector_ui extends e_admin_ui
 
             $source =  e_SELF."?mode=main&action=begin&".http_build_query($_GET);
             $target = '#results-container';
-            $interval = 1000;
+            $interval = 500;
 
             $text = $frm->open('runit');
             $text .= $frm->progressBar('inspector-progress', 0);
@@ -222,7 +235,7 @@ class fileinspector_ui extends e_admin_ui
          //   $text .= '<button id="start-render" type="button" data-loading-icon="fa-spinner" data-loading-target="#start-render" class="e-ajax btn-sm btn btn-primary" data-src="'.$source.'" data-target="#results-container">Other</button>';
 
 
-			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> Begin</a>';
+			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress&scan='.filter_var($_GET['scan']).'" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> Begin</a>';
 			$text .= ' <a data-progress-target="inspector-progress" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
 
 
@@ -271,6 +284,7 @@ class file_inspector {
 	var $results = 0;
 	private $totalFiles = 0;
 	private $progress_units = 0;
+	private $progressPercentage = 0;
 	private $langs = array();
 	private $lang_short = array();
 	private $iconTag = array();
@@ -285,7 +299,8 @@ class file_inspector {
 		'regex'         => 0,
 		'mod'           => '',
 		'num'           => 0,
-		'line'          => 0
+		'line'          => 0,
+		'scan'          => null // progress identifier
 	);
     /**
      * @var array
@@ -308,7 +323,7 @@ class file_inspector {
 		$lng    = e107::getLanguage();
 		$langs  = $lng->installed();
 
-
+        $this->sendProgress(200);
 
 	//	if(isset($_GET['begin']))
 		{
@@ -569,10 +584,9 @@ class file_inspector {
 
 		$foot = "
 		<div class='buttons-bar center'>
-		".$frm->admin_button('scan', LAN_GO, 'other').
+		".$frm->admin_button('scan', md5(time()), 'other', LAN_GO).
 		$frm->hidden('mode','main').
 		$frm->hidden('action','run')."
-		
 		</div>
 		</form>
 		</div>";
@@ -590,7 +604,9 @@ class file_inspector {
 	protected function inspect($baseDir)
     {
         $this->inspect_existing($baseDir);
+         $this->sendProgress(100);
         $this->inspect_missing(array_keys($this->files));
+
     }
 
     private function inspect_existing($baseDir)
@@ -600,10 +616,14 @@ class file_inspector {
 
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir));
         $index = 0;
+
+        $this->sendProgress(50);
+
         foreach ($iterator as $file)
         {
-            $this->sendProgress($index++, $this->totalFiles);
+
             if ($file->isDir()) continue;
+
 
             $absolutePath = $file->getRealPath();
             $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
@@ -614,10 +634,13 @@ class file_inspector {
             $this->fileSizes[$relativePath] = filesize($absolutePath);
             $this->updateFileSizeCounter($absolutePath, $this->files[$relativePath]);
         }
+
+           $this->sendProgress(50);
     }
 
     private function inspect_missing($existingPaths)
     {
+         $this->sendProgress(50);
         $dbIterator = $this->coreImage->getPathIterator($this->coreImageVersion);
         $dbPaths = iterator_to_array($dbIterator);
         $dbPaths = array_map(function ($defaultPath)
@@ -627,8 +650,10 @@ class file_inspector {
         $missingPaths = array_diff($dbPaths, $existingPaths);
         foreach ($missingPaths as $relativePath)
         {
+
             $this->files[$relativePath] = $this->coreImage->validate($relativePath);
         }
+        $this->sendProgress(50);
     }
 
     private function updateFileSizeCounter($absolutePath, $validationCode)
@@ -636,7 +661,9 @@ class file_inspector {
         $status = $this->getStatusForValidationCode($validationCode);
         $category = $this->statusToLegacyCountCategory($status);
         $fileSize = filesize($absolutePath);
+     //     $this->sendProgress();
         $this->count[$category]['size'] += $fileSize;
+
 
         if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
             $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
@@ -669,6 +696,7 @@ class file_inspector {
         $nestedFiles = [];
         foreach ($this->files as $relativePath => $validation)
         {
+             $this->sendProgress(0.4);
             if ($this->displayAllowed($validation))
                 self::array_set($nestedFiles, $relativePath, $validation);
         }
@@ -957,13 +985,16 @@ class file_inspector {
             $status = $this->getStatusForValidationCode($validationCode);
             $category = $this->statusToLegacyCountCategory($status);
             $this->count[$category]['num']++;
-
+            $this->totalFiles++;
+            $this->sendProgress(0.4);
             if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
                 $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
                 $this->count['core']['num']++;
+
+
         });
 
-        $this->sendProgress($this->totalFiles, $this->totalFiles);
+    //
 
 		echo "<div style='display:block;height:30px'>&nbsp;</div>";
 
@@ -1098,7 +1129,7 @@ class file_inspector {
             foreach ($this->files as $relativePath => $validation)
             {
                 if (!$this->displayAllowed($validation)) continue;
-                 $this->sendProgress(50, $this->totalFiles);
+                 $this->sendProgress(0.8);
                 list($icon, $title) = $this->getGlyphForValidationCode($validation);
                 $text .= '<tr><td class="text-left f" title="'.$title.'">';
                 $text .= "$icon ";
@@ -1122,9 +1153,11 @@ class file_inspector {
 		$text .= "</table>
 		</div><br />";
 
-		echo e107::getMessage()->render();
-		echo $text;
+	//	echo e107::getMessage()->render();
 
+     //   $this->sendProgress($this->totalFiles, $this->totalFiles);
+      $this->sendProgress($this->totalFiles);
+        echo $text;
 
 	 //$ns->tablerender(FR_LAN_1.'...', $text);
 
@@ -1163,23 +1196,23 @@ class file_inspector {
 	}
 
 
-	function sendProgress($rand,$total)
+	function sendProgress($increment=1)
 	{
-		if($this->progress_units <40 && ($rand != $total))
-		{
-			$this->progress_units++;
-			return;
-		}
-		else
-		{
-			$this->progress_units = 0;
-		}
+		if(empty($this->options['scan']))
+        {
+            return null;
+        }
+
+        $this->progress_units = $this->progress_units + $increment;
+
+		$rand = (int)  $this->progress_units;
+		$total = (int) $this->totalFiles;
 
 		$inc = round(($rand / $total) * 100);
 
 		if($inc == 0)
 		{
-			return;
+	//		return;
 		}
 
 
@@ -1188,8 +1221,21 @@ class file_inspector {
 			$inc = 100;
 		}
 
-        e107::getSession()->set('file-inspector-progress',$inc);
+		if (($inc > 5) && $inc % 5 !== 0)
+		{
+            return null;
+        }
 
+        if( $this->progressPercentage === $inc)
+        {
+            return null;
+        }
+
+        $this->progressPercentage = $inc;
+
+    //     file_put_contents(e_ROOT.'file-inspector-total_'.$this->options['scan'],$total."\n",FILE_APPEND);
+        file_put_contents(e_ROOT.'file-inspector-progress_'.$this->options['scan'],$inc);
+    //    file_put_contents(e_ROOT.'file-inspector-files_'.$this->options['scan'],$rand."\n",FILE_APPEND);
 
 		return null;
 

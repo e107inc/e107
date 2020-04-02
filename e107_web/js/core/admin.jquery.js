@@ -502,7 +502,7 @@ $(document).ready(function()
 					clearInterval(progresspump);
 			        $("#"+target).closest('.progress').removeClass("active");
 
-			        $("#"+target).html("Done");
+
 			        
 			        if(hide !== 'undefined')
 			        {
@@ -513,7 +513,8 @@ $(document).ready(function()
 			        {
 						$('#'+show).show('slow');	
 			        }
-			      
+
+			         $("#"+target).html("Done");
 		        
 					}
 		    
