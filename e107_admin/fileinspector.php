@@ -13,18 +13,8 @@ ob_implicit_flush(true);
 
 if(!empty($_GET['action']) && $_GET['action'] === 'progress' && !empty($_GET['scan']))
 {
-    $e_ROOT = realpath(__DIR__ . '/..');
-
-	if ((substr($e_ROOT,-1) !== '/') && (substr($e_ROOT,-1) !== '\\') )
-	{
-		$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now.
-	}
-
-	define('e_ROOT', $e_ROOT);
-
-    $content =  file_get_contents(e_ROOT.'file-inspector-progress_'.filter_var($_GET['scan']));
-    echo trim($content);
-    //  echo rand(70,100);
+    $content = file_inspector::readScanProgress($_GET['scan']);
+    echo $content;
     exit;
 }
 
@@ -161,9 +151,6 @@ class fileinspector_admin extends e_admin_dispatcher
 
         if(!empty($_GET['action']) && $_GET['action'] === 'begin')
         {
-        //	session_write_close();
-        //	while (@ob_end_clean());
-
             /** @var file_inspector $fi */
             $fi = e107::getSingleton('file_inspector');
             $fi->scan_results();
@@ -272,6 +259,8 @@ exit;
 
 
 class file_inspector {
+    const SCAN_ID_PREFIX = 'e107-file-inspector-scan-';
+
     /** @var e_file_inspector */
 	private $coreImage;
 	private $coreImageVersion;
@@ -323,12 +312,7 @@ class file_inspector {
 		$lng    = e107::getLanguage();
 		$langs  = $lng->installed();
 
-        $this->sendProgress(200);
-
-	//	if(isset($_GET['begin']))
-		{
-			$this->setOptions($_GET);
-		}
+        $this->setOptions($_GET);
 
 		$lang_short = array();
 
@@ -413,6 +397,8 @@ class file_inspector {
 			$_POST['missing'] = 0;
 			$_POST['integrity'] = 0;
 		}
+
+		self::pruneOldProgressFiles();
 	}
 
 
@@ -604,7 +590,6 @@ class file_inspector {
 	protected function inspect($baseDir)
     {
         $this->inspect_existing($baseDir);
-         $this->sendProgress(100);
         $this->inspect_missing(array_keys($this->files));
 
     }
@@ -615,15 +600,9 @@ class file_inspector {
         if (!is_dir($absoluteBase)) return;
 
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir));
-        $index = 0;
-
-        $this->sendProgress(50);
-
         foreach ($iterator as $file)
         {
-
             if ($file->isDir()) continue;
-
 
             $absolutePath = $file->getRealPath();
             $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
@@ -633,14 +612,12 @@ class file_inspector {
             $this->files[$relativePath] = $this->coreImage->validate($relativePath);
             $this->fileSizes[$relativePath] = filesize($absolutePath);
             $this->updateFileSizeCounter($absolutePath, $this->files[$relativePath]);
+            $this->sendProgress(1);
         }
-
-           $this->sendProgress(50);
     }
 
     private function inspect_missing($existingPaths)
     {
-         $this->sendProgress(50);
         $dbIterator = $this->coreImage->getPathIterator($this->coreImageVersion);
         $dbPaths = iterator_to_array($dbIterator);
         $dbPaths = array_map(function ($defaultPath)
@@ -650,10 +627,8 @@ class file_inspector {
         $missingPaths = array_diff($dbPaths, $existingPaths);
         foreach ($missingPaths as $relativePath)
         {
-
             $this->files[$relativePath] = $this->coreImage->validate($relativePath);
         }
-        $this->sendProgress(50);
     }
 
     private function updateFileSizeCounter($absolutePath, $validationCode)
@@ -661,9 +636,7 @@ class file_inspector {
         $status = $this->getStatusForValidationCode($validationCode);
         $category = $this->statusToLegacyCountCategory($status);
         $fileSize = filesize($absolutePath);
-     //     $this->sendProgress();
         $this->count[$category]['size'] += $fileSize;
-
 
         if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
             $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
@@ -696,7 +669,6 @@ class file_inspector {
         $nestedFiles = [];
         foreach ($this->files as $relativePath => $validation)
         {
-             $this->sendProgress(0.4);
             if ($this->displayAllowed($validation))
                 self::array_set($nestedFiles, $relativePath, $validation);
         }
@@ -977,6 +949,7 @@ class file_inspector {
                 'size' => 0,
             ]
         ];
+        $this->sendProgress(0);
 		$this->inspect($this->root_dir);
 
 
@@ -986,15 +959,12 @@ class file_inspector {
             $category = $this->statusToLegacyCountCategory($status);
             $this->count[$category]['num']++;
             $this->totalFiles++;
-            $this->sendProgress(0.4);
             if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
                 $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
                 $this->count['core']['num']++;
 
 
         });
-
-    //
 
 		echo "<div style='display:block;height:30px'>&nbsp;</div>";
 
@@ -1019,12 +989,6 @@ class file_inspector {
 		else
 		{
 			$text = "<h3>".FR_LAN_2."</h3>";
-			/*$text .= "<div style='text-align:center'>
-			<table class='table table-striped adminlist'>
-			";
-
-			$text .= "<tr>
-			<td colspan='2'>";*/
 		}
 
 		$text .= "<table class='table-striped table table-bordered' id='initial'>";
@@ -1115,9 +1079,6 @@ class file_inspector {
 
 		if($this->opt('type') != 'tree')
 		{
-			/*$text .= "<br /></td></tr><tr>
-			<td colspan='2'>";*/
-
 			$text .= "
 			<table class='table table-striped table-bordered'>";
 			if(!$this->results && $this->opt('regex'))
@@ -1129,7 +1090,6 @@ class file_inspector {
             foreach ($this->files as $relativePath => $validation)
             {
                 if (!$this->displayAllowed($validation)) continue;
-                 $this->sendProgress(0.8);
                 list($icon, $title) = $this->getGlyphForValidationCode($validation);
                 $text .= '<tr><td class="text-left f" title="'.$title.'">';
                 $text .= "$icon ";
@@ -1143,24 +1103,16 @@ class file_inspector {
             }
         }
 
-		if($this->opt('type') != 'tree') {
-		/*	$text .= "</td>
-			</tr></table>";*/
-		}
-
 		$text .= "</td></tr>";
 
 		$text .= "</table>
 		</div><br />";
 
-	//	echo e107::getMessage()->render();
 
-     //   $this->sendProgress($this->totalFiles, $this->totalFiles);
       $this->sendProgress($this->totalFiles);
         echo $text;
 
-	 //$ns->tablerender(FR_LAN_1.'...', $text);
-
+        self::pruneOldProgressFiles();
 	}
 
     function checksum($filename)
@@ -1196,7 +1148,7 @@ class file_inspector {
 	}
 
 
-	function sendProgress($increment=1)
+	function sendProgress($increment=0)
 	{
 		if(empty($this->options['scan']))
         {
@@ -1209,12 +1161,6 @@ class file_inspector {
 		$total = (int) $this->totalFiles;
 
 		$inc = round(($rand / $total) * 100);
-
-		if($inc == 0)
-		{
-	//		return;
-		}
-
 
 		if($inc >= 100)
 		{
@@ -1233,9 +1179,7 @@ class file_inspector {
 
         $this->progressPercentage = $inc;
 
-    //     file_put_contents(e_ROOT.'file-inspector-total_'.$this->options['scan'],$total."\n",FILE_APPEND);
-        file_put_contents(e_ROOT.'file-inspector-progress_'.$this->options['scan'],$inc);
-    //    file_put_contents(e_ROOT.'file-inspector-files_'.$this->options['scan'],$rand."\n",FILE_APPEND);
+        self::writeScanProgress($this->options['scan'], $this->progressPercentage);
 
 		return null;
 
@@ -1358,6 +1302,44 @@ i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
         return $oldVersion;
     }
 
+    private static function writeScanProgress($scanId, $progress)
+    {
+        self::exitOnEvilScanId($scanId);
+        $tmpDir = sys_get_temp_dir();
+        $progressPath = $tmpDir . "/" . self::SCAN_ID_PREFIX . $scanId;
+        if ($progress >= 100) unlink($progressPath);
+        else file_put_contents($progressPath, $progress);
+    }
+
+    public static function readScanProgress($scanId)
+    {
+        self::exitOnEvilScanId($scanId);
+        $tmpDir = sys_get_temp_dir();
+        $progressPath = $tmpDir . "/" . self::SCAN_ID_PREFIX . $scanId;
+        $result = trim(@file_get_contents($progressPath));
+        if (!strlen($result)) $result = '100';
+        return $result;
+    }
+
+    private static function exitOnEvilScanId($scanId)
+    {
+        if (!preg_match('/^[0-9A-F]+$/i', $scanId)) exit(1);
+    }
+
+    private static function pruneOldProgressFiles()
+    {
+        $tmpDir = sys_get_temp_dir();
+        $i = new DirectoryIterator($tmpDir);
+        foreach ($i as $fileInfo)
+        {
+            $candidateFileName = $fileInfo->getFilename();
+            if (substr($candidateFileName, 0, strlen(self::SCAN_ID_PREFIX)) !== self::SCAN_ID_PREFIX)
+                continue;
+
+            if ($fileInfo->isFile() && time() - $fileInfo->getMTime() > 300)
+                unlink($fileInfo->getRealPath());
+        }
+    }
 }
 /*
 function fileinspector_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
