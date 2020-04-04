@@ -252,7 +252,7 @@ class e107Build
 				$this->createCoreImage(); // Create Image
 			}
 
-			$this->copyCoreImage();
+			$this->copyCoreImage($this->exportDir . "e107_admin/core_image.php");
 
 			if (isset($rel['readme']))
 			{
@@ -275,6 +275,8 @@ class e107Build
 			}
 
 			$releaseDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/release/" . $this->releaseDir;
+
+            $this->copyCoreImage($releaseDir . "/core_image.php");
 
 			/**
 			 * git archive -o update.zip HEAD $(git diff --name-only [id])
@@ -490,22 +492,21 @@ class e107Build
 		$this->changeDir($dir);
 	}
 
-	private function copyCoreImage()
+	private function copyCoreImage($destination)
 	{
-		$orig = $this->tempDir . "core_image.php";
-		$dest = $this->exportDir . "e107_admin/core_image.php";
+		$source = $this->tempDir . "core_image.php";
 
-		if (!file_exists($orig))
+		if (!file_exists($source))
 		{
-			throw new RuntimeException("Core image file not found: {$orig}");
+			throw new RuntimeException("Core image file not found: {$source}");
 		}
 
-		$this->status("Copying Core Image into export directory", true);
-		OsHelper::runValidated("cp -rf " . escapeshellarg($orig) . " " . escapeshellarg($dest));
+		$this->status("Copying Core Image into: $destination", true);
+		OsHelper::runValidated("cp -rf " . escapeshellarg($source) . " " . escapeshellarg($destination));
 
-		if (!file_exists($dest))
+		if (!file_exists($destination))
 		{
-			throw new RuntimeException("Core image file didnt copy to: {$dest}");
+			throw new RuntimeException("Core image file didnt copy to: {$destination}");
 		}
 
 	}

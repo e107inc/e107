@@ -52,7 +52,8 @@ class OsHelper
 
 	public static function gitVersionToPhpVersion($gitVersion, $verFileVersion = "0")
 	{
-		$verFileVersion = array_shift(explode(" ", $verFileVersion));
+	    $verFileVersion = explode(" ", $verFileVersion);
+		$verFileVersion = array_shift($verFileVersion);
 		$version = preg_replace("/^v/", "", $gitVersion);
 		$versionSplit = explode("-", $version);
 		if (count($versionSplit) > 1)
