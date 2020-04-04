@@ -249,7 +249,7 @@ class e107Build
 
 			if ($rel['type'] == 'full')
 			{
-				$this->CreateCoreImage(); // Create Image
+				$this->createCoreImage(); // Create Image
 			}
 
 			$this->copyCoreImage();
@@ -310,7 +310,8 @@ class e107Build
 			unlink($tarfile);
 		} // end loop
 
-
+        $this->status('Removing export folder', true);
+        $this->rmdir($this->exportDir);
 	}
 
 	private function emptyExportDir()
