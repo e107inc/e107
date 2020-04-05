@@ -368,8 +368,6 @@ class file_inspector {
 		$this->coreImage = e107::getFileInspector('core');
 		$this->coreImageVersion = $this->coreImage->getCurrentVersion();
 
-		$this->countFiles();
-
 		$this->root_dir = $e107 -> file_path;
 
 		if(substr($this->root_dir, -1) == '/')
@@ -589,6 +587,10 @@ class file_inspector {
      */
 	protected function inspect($baseDir)
     {
+        $this->progress_units = 0;
+        $this->totalFiles = 1;
+        $this->sendProgress(0);
+        $this->totalFiles = iterator_count(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir)));
         $this->inspect_existing($baseDir);
         $this->inspect_missing(array_keys($this->files));
 
@@ -602,6 +604,7 @@ class file_inspector {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir));
         foreach ($iterator as $file)
         {
+            $this->sendProgress(1);
             if ($file->isDir()) continue;
 
             $absolutePath = $file->getRealPath();
@@ -612,7 +615,6 @@ class file_inspector {
             $this->files[$relativePath] = $this->coreImage->validate($relativePath);
             $this->fileSizes[$relativePath] = filesize($absolutePath);
             $this->updateFileSizeCounter($absolutePath, $this->files[$relativePath]);
-            $this->sendProgress(1);
         }
     }
 
@@ -687,7 +689,7 @@ class file_inspector {
             e107::getSession()->set('fileinspector_error_log_'. $hash, $relativePath);
 
 
-            return "<a class='e-modal' data-modal-caption=\"".$relativePath."\" href='fileinspector.php?iframe=1&viewerror=".$hash."'>".$relativePath."</a>";
+            return "<a class='e-modal' data-modal-caption=\"".$relativePath."\" href='fileinspector.php?iframe=1&viewerror=".$hash."'>".$fileName."</a>";
         }
 
         if (!is_array($tree[$fileName]))
@@ -1108,8 +1110,6 @@ class file_inspector {
 		$text .= "</table>
 		</div><br />";
 
-
-      $this->sendProgress($this->totalFiles);
         echo $text;
 
         self::pruneOldProgressFiles();
