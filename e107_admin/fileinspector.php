@@ -590,7 +590,7 @@ class file_inspector {
         $this->progress_units = 0;
         $this->totalFiles = 1;
         $this->sendProgress(0);
-        $this->totalFiles = iterator_count(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir)));
+        $this->totalFiles = iterator_count(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir))) * 2;
         $this->inspect_existing($baseDir);
         $this->inspect_missing(array_keys($this->files));
 
@@ -709,6 +709,7 @@ class file_inspector {
         $hide = $level;
         foreach ($tree as $fileName => $validationCode)
         {
+            $this->sendProgress(1);
             $relativePath = ltrim("$parentPath/$fileName", '/');
             if ($level === 0) $relativePath = '';
             $rowId = str_replace(" ", "%20", $relativePath);
@@ -951,16 +952,13 @@ class file_inspector {
                 'size' => 0,
             ]
         ];
-        $this->sendProgress(0);
 		$this->inspect($this->root_dir);
-
 
         array_walk_recursive($this->files, function ($validationCode)
         {
             $status = $this->getStatusForValidationCode($validationCode);
             $category = $this->statusToLegacyCountCategory($status);
             $this->count[$category]['num']++;
-            $this->totalFiles++;
             if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
                 $validationCode & e_file_inspector::VALIDATED_FILE_EXISTS)
                 $this->count['core']['num']++;
@@ -1112,6 +1110,7 @@ class file_inspector {
 
         echo $text;
 
+        $this->sendProgress($this->totalFiles);
         self::pruneOldProgressFiles();
 	}
 
@@ -1166,11 +1165,6 @@ class file_inspector {
 		{
 			$inc = 100;
 		}
-
-		if (($inc > 5) && $inc % 5 !== 0)
-		{
-            return null;
-        }
 
         if( $this->progressPercentage === $inc)
         {
