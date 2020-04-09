@@ -31,16 +31,18 @@
 		public function testShowIf()
 		{
 
-		}
+		}*/
 
 		public function testShow_Log()
 		{
-
+            $result = $this->dbg->Show_Log();
+            $this->assertEmpty($result);
 		}
 
 		public function testShow_Includes()
 		{
-
+            $result = $this->dbg->Show_Includes();
+            $this->assertEmpty($result);
 		}
 
 		public function testSave()
@@ -50,8 +52,9 @@
 
 		public function testShow_DEPRECATED()
 		{
-
-		}*/
+            $result = $this->dbg->Show_DEPRECATED();
+            $this->assertEmpty($result);
+		}
 
 		public function testLog()
 		{
@@ -62,6 +65,31 @@
 			$result = $this->dbg->Show_Log();
 			$this->assertStringContainsString('e107_db_debugTest->testLog()',$result);
 
+		}
+
+		public function testShow_Performance()
+		{
+            $result = $this->dbg->Show_Performance();
+            $this->assertEmpty($result);
+
+		}
+
+		public function testShow_PATH()
+		{
+            $result = $this->dbg->Show_PATH();
+            $this->assertEmpty($result);
+		}
+
+		public function testShow_SQL_Details()
+		{
+            $result = $this->dbg->Show_SQL_Details();
+            $this->assertEmpty($result);
+		}
+
+		public function testShow_SC_BB()
+		{
+            $result = $this->dbg->Show_SC_BB();
+            $this->assertEmpty($result);
 		}
 /*
 		public function testLogCode()
@@ -84,15 +112,7 @@
 
 		}
 
-		public function testShow_SQL_Details()
-		{
 
-		}
-
-		public function testShow_SC_BB()
-		{
-
-		}
 
 		public function testShow_All()
 		{
@@ -114,15 +134,7 @@
 
 		}
 
-		public function testShow_Performance()
-		{
 
-		}
-
-		public function testShow_PATH()
-		{
-
-		}
 
 		public function testDump()
 		{

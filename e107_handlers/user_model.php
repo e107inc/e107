@@ -1813,7 +1813,7 @@ class e_user extends e_user_model
 				}
 				else
 				{
-					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name'], 'user_email'=>$userdata['user_email']));
+					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, $updateQry);
 				}
 			}
 
