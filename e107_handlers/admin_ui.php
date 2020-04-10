@@ -3418,16 +3418,18 @@ class e_admin_controller_ui extends e_admin_controller
 		$posted = $this->getPosted('e-columns', array());
 		foreach ($this->getFields() as $field => $attr)
 		{
-			if((vartrue($attr['forced']) || in_array($field, $posted)) && !vartrue($attr['nolist']))
+			if((/*vartrue($attr['forced']) || */ in_array($field, $posted)) && !vartrue($attr['nolist']))
 			{
 				$cols[] = $field;
 				continue;
 			}
 		}
 
-		if($cols)
+		// Alow for an empty array to be saved also, to reset to default.
+	    if($this->getPosted('etrigger_ecolumns', false)) // Column Save Button
 		{
 			$this->setUserPref($cols, $this->fieldPrefName);
+			e107::getMessage()->addDebug("User Field Preferences Saved: ".print_a($cols,true));
 		}
 	}
 
