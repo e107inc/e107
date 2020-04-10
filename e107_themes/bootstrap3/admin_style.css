@@ -571,8 +571,10 @@ table.adminlist td .video-responsive        { height: auto; padding:0 }
 .admin-true-icon                            {  color: #51a351; font-weight:bold; font-size:1.2em; }
 .admin-false-icon                           {  color: #ee5f5b; font-weight:bold; font-size:1.2em; }
 
-select.e-editable-boolean option[value='1']       {  color: #51a351; }
-select.e-editable-boolean option[value='0']       {  color: #ee5f5b; }
+ select.e-editable-boolean.admin-true-icon option[value='1'],
+ select.e-editable-boolean.admin-false-icon option[value='1']        {  color: #51a351; }
+ select.e-editable-boolean.admin-true-icon option[value='0'],
+ select.e-editable-boolean.admin-false-icon option[value='0']      {  color: #ee5f5b; }
 
 span.e-search input[type='text']				{ padding-left:15px; font-style: italic }
 
