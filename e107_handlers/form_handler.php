@@ -5475,8 +5475,12 @@ var_dump($select_options);*/
 							
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
 					$dispValue = $wparms[$value];
+					$styleClass = '';
 
-					$styleClass = ($value === 1) ? 'admin-true-icon' : 'admin-false-icon';
+                    if($true ==='&#10004;')
+                    {
+					    $styleClass = ($value === 1) ? 'admin-true-icon' : 'admin-false-icon';
+                    }
 
 
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean '.$styleClass));
