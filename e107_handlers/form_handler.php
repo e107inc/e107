@@ -5463,20 +5463,23 @@ var_dump($select_options);*/
 					{
 						// https://stackoverflow.com/questions/2965971/how-to-add-images-in-select-list
 
-						$false = ($value === '') ? "&square;" : "&cross;";
+						$false = ($value === '') ? "&square;" : "&#10799;"; // "&cross;";
 					}
 					
-					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
+					$true = varset($parms['true'], "&#10004;" /*'&check;'*/); // custom representation for 'true'. (supports font-awesome when set by css)
 
-				//	$true = '\f00c';
-				//	$false = '\f00d';
+			//		$true = '&#xf00c';
+			//		$false = '\f00d';
 
 					$value = intval($value);
 							
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
 					$dispValue = $wparms[$value];
 
-					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean'));
+					$styleClass = ($value === 1) ? 'admin-true-icon' : 'admin-false-icon';
+
+
+					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean '.$styleClass));
 				}
 				
 				if(vartrue($parms['reverse']))
@@ -5553,7 +5556,7 @@ var_dump($select_options);*/
 				{
 					$className = get_class($cls);
 					e107::getDebug()->log("Missing Method: ".$className."::".$meth." ".print_a($attributes,true));
-					return "<span class='label label-important label-danger'>Missing Method</span>";
+					return "<span class='label label-important label-danger' title='".$className."::".$meth."'>Missing Method</span>";
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  

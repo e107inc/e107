@@ -447,8 +447,8 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 	define("ADMIN_CHILD_ICON", '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />'); // must use single quotes.
 	define("ADMIN_FILTER_ICON",  "<i class='fa fa-filter'></i>");
-	define("ADMIN_TRUE_ICON", "<i class='fa fa-check text-success'></i>");
-	define("ADMIN_FALSE_ICON", "<i class='fa fa-times text-danger'></i>");
+	define("ADMIN_TRUE_ICON", "<span class='text-success admin-true-icon'>&#10004;</span>"/*"<i class='fa fa-check text-success'></i>"*/);
+	define("ADMIN_FALSE_ICON", "<span class='text-danger admin-false-icon'>&#10799;</span>" /*"<i class='fa fa-times text-danger'></i>"*/);
 	define("ADMIN_WARNING_ICON", "<i class='fa fa-warning text-warning'></i>");
 	define("ADMIN_GRID_ICON",  "<i class='fa fa-th'></i>");
 	define("ADMIN_LIST_ICON",  "<i class='fa fa-th-list'></i>");
