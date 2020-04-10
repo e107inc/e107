@@ -3036,12 +3036,12 @@ class e_parse extends e_parser
 		}
 		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
 		{
-			$multiply = intval($multiply);
+			$multiInt = (int) $multiply;
 
 			if(empty($parm['w']) && isset($parm['h']))
 			{
-				$parm['h'] = ($parm['h'] * $multiply) ;
-				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
+				$parm['h'] = ($parm['h'] * $multiInt) ;
+				return $this->thumbUrl($src, $parm)." ".$multiply;
 			}
 
 			if(isset($parm['w']) && !isset($parm['h'])) // if w set, assume h value of 0 is set.
@@ -3049,8 +3049,8 @@ class e_parse extends e_parser
 				$parm['h'] = 0;
 			}
 
-			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
-			$height = isset($parm['h']) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
+			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiInt) : (intval($this->thumbWidth) * $multiInt);
+			$height = isset($parm['h']) ? (intval($parm['h']) * $multiInt) : (intval($this->thumbHeight) * $multiInt);
 
 		}
 		else
@@ -3092,8 +3092,11 @@ class e_parse extends e_parser
 			return $this->thumbUrl($src, $parms);
 		}
 
-		return $this->thumbUrl($src, $parms)." ".$width."w";
+		$ret = $this->thumbUrl($src, $parms);
 
+		$ret .= ($multiply) ? " ".$multiply : " ".$width."w";
+
+        return $ret;
 
 	}
 
