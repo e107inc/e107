@@ -2031,7 +2031,7 @@ class e_menu_layout
 			$theme = e107::pref('core','sitetheme');
 		}
 
-		$sql = e107::getDb();
+		$sql = e107::getDb(); // required
 		$tp = e107::getParser();
 
 		$HEADER         = null;
@@ -2048,15 +2048,11 @@ class e_menu_layout
 			return false;
 		}
 
-
-
 		e107::set('css_enabled',false);
 		e107::set('js_enabled',false);
 
-
-
 		// new v2.2.2 HTML layout support.
-		if(is_dir($path."layouts"))
+		if(is_dir($path."layouts") && is_readable($path."theme.html"))
 		{
 			$lyt = scandir($path."layouts");
 			$LAYOUT = array();
