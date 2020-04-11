@@ -3025,6 +3025,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$name = (!empty($this->fieldPrefName)) ? strtolower($this->pluginName."_".$this->fieldPrefName) : $this->getTableName();
 
 		e107::getMessage()->addDebug("Loading Field Preferences using name: ".$name);
+		$this->_log("Loading Field Preferences using name: ".$name);
 		return e107::getUser()->getPref('admin_cols_'.$name, array());
 	}
 
@@ -3039,7 +3040,10 @@ class e_admin_controller_ui extends e_admin_controller
 		//$user_pref['admin_cols_'.$this->getTableName()] = $new;
 		//$this->fieldpref = $new;
 		//return save_prefs('user');
-		$this->fieldpref = $new;
+		if(!empty($new))
+        {
+		    $this->fieldpref = $new;
+        }
 
 		if(empty($name))
 		{
@@ -3050,7 +3054,9 @@ class e_admin_controller_ui extends e_admin_controller
 			$name = strtolower($this->pluginName."_".$name);
 		}
 
-		e107::getMessage()->addDebug("Saving User Field preferences using name: ".$name);
+        $msg = "Saving User Field preferences using name: ".$name;
+		e107::getMessage()->addDebug($msg);
+		$this->_log($msg);
 
 		return e107::getUser()->getConfig()
 			->set('admin_cols_'.$name, $new)
@@ -6085,6 +6091,11 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListAjaxObserver()
 	{
+	    if($ufieldpref = $this->getUserPref())
+		{
+			$this->fieldpref = $ufieldpref;
+		}
+
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 	}
 
