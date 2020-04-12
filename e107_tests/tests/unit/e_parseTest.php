@@ -350,6 +350,23 @@ TMP;
 					'input'     => '< 200',
 					'expected'  => '&lt; 200',
 				),
+				23 => array(
+					'input'     => '[html]<pre>echo {e_BASE}."index.php";</pre>[/html]',
+					'expected'  => '[html]<pre>echo &#123;e_BASE&#125;.&quot;index.php&quot;;</pre>[/html]'
+				),
+				24 => array(
+					'input'     => '[html]<code>echo {e_BASE}."index.php";</code>[/html]',
+					'expected'  => '[html]<code>echo &#123;e_BASE&#125;.&quot;index.php&quot;;</code>[/html]'
+				),
+				25 => array(
+					'input'     => '[html]<img src="{e_BASE}image.jpg" alt="">[/html]',
+					'expected'  => '[html]<img src=&quot;{e_BASE}image.jpg&quot; alt=&quot;&quot;>[/html]'
+				),
+				26 => array(
+				    'input'     => "[html]<code>function sc_my_shortcode(){\nreturn \"Something\";}</code>[/html]",
+				    'expected'  => "[html]<code>function sc_my_shortcode()&#123;\nreturn &quot;Something&quot;;&#125;</code>[/html]"
+                ),
+             
 
 			);
 
@@ -1013,6 +1030,9 @@ TMP;
 			//	1   => array('html' => '<script>alert(123)</script>', 'expected'=>''),
 			//	2   => array('html' => '"><script>alert(123)</script>', 'expected'=>'"&gt;'),
 				3   => array('html' => '< 200', 'expected'=>'&lt; 200'),
+				4   => array('html' => "<code>function sc_my_shortcode(){\nreturn \"Something\";}</code>", 'expected' =>  "<code>function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</code>"),
+               	5   => array('html' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode(){\nreturn \"Something\";}</pre>", 'expected' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</pre>"),
+               6   => array('html' => '<img src="{e_BASE}image.jpg" alt="">', 'expected'=>'<img src="{e_BASE}image.jpg" alt="">'),
 
 			);
 
@@ -1020,7 +1040,6 @@ TMP;
 			{
 				$result = $this->tp->cleanHtml($var['html']);
 				$this->assertEquals($var['expected'], $result);
-				// FIXME: This test doesn't do anything?
 			}
 
 
