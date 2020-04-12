@@ -5372,12 +5372,12 @@ return;
 				$html = str_replace('>','&gt;',$html);
         }
 
-		$html = str_replace('&nbsp;', '{E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE}', $html); // prevent replacement of &nbsp; with spaces.
+		$html = str_replace('&nbsp;', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', $html); // prevent replacement of &nbsp; with spaces.
 		// Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 1 of 2
-		$html = str_replace("\n", "{E_PARSER_CLEAN_HTML_LINE_BREAK}", $html);
-
-
+		$html = str_replace("\n", "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $html);
+        $html = str_replace("{", "__E_PARSER_CLEAN_HTML_CURLY_OPEN__", $html);
+        $html = str_replace("}", "__E_PARSER_CLEAN_HTML_CURLY_CLOSED__", $html);
 
 
         if(strpos($html, "<body")===false) // HTML Fragment
@@ -5529,16 +5529,16 @@ return;
 		        $value = str_replace('<br></br>', PHP_EOL, $value);
 
 		    }
-
-		    if($node->nodeName === 'code')
+            elseif($node->nodeName === 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
 		        $value = str_replace("</code>", "", $value);
 		        $value = str_replace("<br></br>", PHP_EOL, $value);
 		    }
 
-		    $value = str_replace('{', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
-		    $value = str_replace('}', '}}}', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
+		   $value = str_replace('__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
+		   $value = str_replace('__E_PARSER_CLEAN_HTML_CURLY_CLOSED__', '}}}', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
+
 
 		    $newNode = $doc->createElement($node->nodeName);
 		    $newNode->nodeValue = $value;
@@ -5591,12 +5591,15 @@ return;
 		// Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 2 of 2
 		$cleaned = str_replace("\n", "", $cleaned);
-		$cleaned = str_replace("{E_PARSER_CLEAN_HTML_LINE_BREAK}", "\n", $cleaned);
+		$cleaned = str_replace("__E_PARSER_CLEAN_HTML_LINE_BREAK__", "\n", $cleaned);
 
-		$cleaned = str_replace('{E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE}', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+		$cleaned = str_replace('__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
 
 		$cleaned = str_replace('{{{','&#123;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
 		$cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
+
+        $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_OPEN__","{", $cleaned);
+        $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_CLOSED__","}", $cleaned);
 
 		$cleaned = str_replace(array('<body>','</body>'),'', $cleaned); // filter out tags.
 
