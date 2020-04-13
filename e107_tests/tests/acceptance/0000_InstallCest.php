@@ -47,7 +47,7 @@ class InstallCest
 
 	}
 
-	public function installLandingZero(AcceptanceTester $I)
+/*	public function installLandingZero(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 with landingzero");
 		$this->installe107($I, array('sitetheme'=>'landingzero'));
@@ -55,7 +55,7 @@ class InstallCest
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
-	}
+	}*/
 
 	private function installe107(AcceptanceTester $I, $params = array())
 	{

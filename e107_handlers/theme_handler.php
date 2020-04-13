@@ -972,18 +972,13 @@ class e_theme
 			unset($vars['glyphicons']);
 		}
 
-		if($path == "landingzero" )
-		{
-
-		//	e107::getMessage()->addDebug("<h2>".$path."</h2>");
-		//	e107::getMessage()->addDebug(print_a($vars,true));
-		//	$mes->addDebug("<hr />");
-		}
 
 		if($path == "bootstrap3" )
 		{
-	//		print_a($vars);
-		//	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
+            //	e107::getMessage()->addDebug("<h2>".$path."</h2>");
+            //	e107::getMessage()->addDebug(print_a($vars,true));
+            //	print_a($vars);
+            //	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
 		}
 
 

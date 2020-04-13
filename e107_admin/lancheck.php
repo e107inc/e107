@@ -295,7 +295,7 @@ class lancheck
 	
 	var $core_plugins = array();
 
-	var $core_themes = array("bootstrap3", "voux", "landingzero");
+	var $core_themes = array("bootstrap3", "voux");
 			
 	private $errorsOnly = false;
 	
