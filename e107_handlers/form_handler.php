@@ -5781,7 +5781,7 @@ var_dump($select_options);*/
 
 
 		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
-		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio' || $attributes['type'] == 'checkboxes') && !empty($parms['optArray']))
+		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio' || $attributes['type'] == 'checkboxes') && isset($parms['optArray']))
 		{
 			$fopts = $parms;
 			$parms = $fopts['optArray'];
