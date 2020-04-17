@@ -822,6 +822,10 @@ TMP;
 			$override = array('w'=>0, 'h'=>0); // display image without resizing
 			$result3 = $this->tp->toImage($src, $override);
 			$this->assertStringContainsString('Fbutterfly.jpg&amp;w=0&amp;h=0', $result3); // src
+
+			$result4 = $this->tp->toImage($src, ['loading'=>'lazy']);
+			$this->assertStringContainsString('loading="lazy"', $result4); // src
+
 		}
 
 		public function testThumbSrcSet()

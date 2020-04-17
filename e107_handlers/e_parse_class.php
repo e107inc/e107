@@ -4543,9 +4543,9 @@ class e_parser
 
 
 	/**
-	 * Render an <img> tag.
+	 * Render an img tag.
 	 * @param string $file
-	 * @param array $parm  legacy|w|h|alt|class|id|crop
+	 * @param array $parm  keys: legacy|w|h|alt|class|id|crop|loading
 	 * @param array $parm['legacy'] Usually a legacy path like {e_FILE}
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
@@ -4655,8 +4655,9 @@ class e_parser
 		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
 		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
 		$height = (!empty($parm['h']))      ? "height=\"".intval($parm['h'])."\" " : "";
+		$loading = !empty($parm['loading']) ? "loading=\"".$parm['loading']."\" " : ""; // eg. lazy, eager, auto
 
-		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style." />";
+		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading." />";
 
 	}
 
