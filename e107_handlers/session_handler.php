@@ -194,60 +194,77 @@ class e_session
 	 */
 	public function setDefaultSystemConfig()
 	{
-		if(!$this->getSessionId())
-		{
-			$config = array(
-				'ValidateRemoteAddr' 		=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
-				'ValidateHttpVia' 			=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
-				'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
-				'ValidateHttpUserAgent' 	=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
-			);
-			
-			$options = array(
-		//		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
-				'httponly' => true,
-			);
-			
-			if(!defined('E107_INSTALL'))
-			{
-				$systemSaveMethod = ini_get('session.save_handler');
+        if ($this->getSessionId()) return $this;
 
-			//	e107::getDebug()->log("Save Method:".$systemSaveMethod);
+        $config = array(
+            'ValidateRemoteAddr' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
+            'ValidateHttpVia' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
+            'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
+            'ValidateHttpUserAgent' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
+        );
 
-				$saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
+        $options = array(
+            //		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+            'httponly' => true,
+        );
 
-				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
-				$config['SaveMethod'] = e107::getPref('session_save_method', $saveMethod); // FIXME - new pref
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); //
-				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-				$options['secure'] = e107::getPref('ssl_enabled', false); //
+        if (!defined('E107_INSTALL'))
+        {
+            $systemSaveMethod = ini_get('session.save_handler');
 
-				if(!empty($options['secure']))
-				{
-					ini_set('session.cookie_secure', 1);
-				}
-			}
+            //	e107::getDebug()->log("Save Method:".$systemSaveMethod);
 
-			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
-			{
-				$config['SavePath'] = e_BASE. SESSION_SAVE_PATH;
-			}
+            $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
 
-			$hashes = hash_algos();
+            $config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
+            $config['SaveMethod'] = e107::getPref('session_save_method', $saveMethod); // FIXME - new pref
+            $options['lifetime'] = (integer)e107::getPref('session_lifetime', 86400); //
+            $options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
+            $options['secure'] = e107::getPref('ssl_enabled', false); //
 
-			if((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512',$hashes))
-			{
-				ini_set('session.hash_function', 'sha512');
-				ini_set('session.hash_bits_per_character', 5);
-			}
+            if (!empty($options['secure']))
+            {
+                ini_set('session.cookie_secure', 1);
+            }
+        }
 
-			
-			$this->setConfig($config)
-				->setOptions($options);
-		}
+        if (defined('SESSION_SAVE_PATH')) // safer than a pref.
+        {
+            $config['SavePath'] = e_BASE . SESSION_SAVE_PATH;
+        }
 
-		return $this;
+        $hashes = hash_algos();
+
+        if ((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512', $hashes))
+        {
+            ini_set('session.hash_function', 'sha512');
+            ini_set('session.hash_bits_per_character', 5);
+        }
+
+        $this->fixSessionFileGarbageCollection();
+
+        $this->setConfig($config)
+            ->setOptions($options);
+
+        return $this;
 	}
+
+    /**
+     * Modify PHP ini at runtime to enable session file garbage collection
+     *
+     * Takes no action if the garbage collector is already enabled.
+     *
+     * @see https://github.com/e107inc/e107/issues/4113
+     * @return void
+     */
+	private function fixSessionFileGarbageCollection()
+    {
+        $gc_probability = ini_get('session.gc_probability');
+        if ($gc_probability > 0) return;
+
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_divisor', 100);
+    }
 	
 	/**
 	 * Retrieve value from current session namespace
