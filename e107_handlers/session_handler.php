@@ -241,12 +241,30 @@ class e_session
             ini_set('session.hash_bits_per_character', 5);
         }
 
+        $this->fixSessionFileGarbageCollection();
 
         $this->setConfig($config)
             ->setOptions($options);
 
         return $this;
 	}
+
+    /**
+     * Modify PHP ini at runtime to enable session file garbage collection
+     *
+     * Takes no action if the garbage collector is already enabled.
+     *
+     * @see https://github.com/e107inc/e107/issues/4113
+     * @return void
+     */
+	private function fixSessionFileGarbageCollection()
+    {
+        $gc_probability = ini_get('session.gc_probability');
+        if ($gc_probability > 0) return;
+
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_divisor', 100);
+    }
 	
 	/**
 	 * Retrieve value from current session namespace
