@@ -394,7 +394,115 @@ class news_shortcodes extends e_shortcode
 
 	public function sc_news_image($parm=null)
 	{
-		return $this->sc_newsimage($parm);
+		if(!empty($parm['carousel']))
+		{
+			return $this->news_carousel($parm);
+		}
+
+		$tp = e107::getParser();
+
+		if(is_string($parm))
+		{
+			$parm = array('type'=> $parm);
+		}
+
+
+		$tmp = $this->handleMultiple($parm);
+
+		$srcPath = $tmp['file'];
+
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
+		$class .= ' news-image-'.$tmp['count'];
+		$dimensions = null;
+		$srcset = null;
+
+		if($tp->isVideo($srcPath))
+		{
+			return null;
+		}
+		else
+		{
+
+			if(empty($srcPath))
+			{
+				if(varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
+				{
+					$src = 	$tp->thumbUrl(); // placeholder;
+					$dimensions = $tp->thumbDimensions();
+				}
+
+			}
+			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
+			{
+				$src = $tp->thumbUrl($srcPath);
+				$dimensions = $tp->thumbDimensions();
+				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
+
+			}
+			else
+			{
+				// We store SC path in DB now + BC
+
+				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;
+			}
+		}
+
+
+
+		if(!empty($parm['nolegacy'])) // Remove legacy thumbnails.
+		{
+			$legSrc = urldecode($src);
+
+		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
+			{
+				return null;
+			}
+		}
+
+		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
+		{
+			$parm['type'] = 'tag';
+		}
+
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+
+		$imgParms = array(
+			'class'         => $class,
+			'alt'           => basename($srcPath),
+			'style'         => $style,
+			'placeholder'   => varset($parm['placeholder']),
+		);
+
+		if(!empty($parm['loading']))
+		{
+		    $imgParms['loading'] = $parm['loading'];
+        }
+
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
+		if(empty($imgTag))
+		{
+			return null;
+		}
+
+		switch(vartrue($parm['type']))
+		{
+			case 'src':
+				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
+			break;
+
+			case 'url':
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
+			break;
+
+			case 'tag':
+			default:
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+			break;
+
+
+		}
 	}
 
 	private function news_carousel($parm)
@@ -819,7 +927,7 @@ class news_shortcodes extends e_shortcode
 
 		if(!empty($parm['placeholder']))
 		{
-			return $this->sc_newsimage('placeholder');
+			return $this->sc_news_image('placeholder');
 		}
 		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
 		{
@@ -832,7 +940,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$parm['class'] = 'img-responsive img-fluid news-media news-media-'.$parm['item'];
 			}
-			return $this->sc_newsimage($parm);
+			return $this->sc_news_image($parm);
 		}
 			
 		
@@ -905,124 +1013,15 @@ class news_shortcodes extends e_shortcode
 
 	/**
 	 * Display News Images (but not video thumbnails )
-	 * @param $parm array
+	 * @deprecated Use {NEWS_IMAGE} instead.
+     * @param $parm array
 	 * @example {NEWSIMAGE: type=src&placeholder=true}
 	 * @example {NEWSIMAGE: class=img-responsive img-fluid}
 	 */
 	function sc_newsimage($parm = null)
 	{
-		if(!empty($parm['carousel']))
-		{
-			return $this->news_carousel($parm);
-		}
-
-		$tp = e107::getParser();
-		
-		if(is_string($parm))
-		{
-			$parm = array('type'=> $parm);
-		}
-
-
-		$tmp = $this->handleMultiple($parm);
-
-
-
-		$srcPath = $tmp['file'];
-		
-		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
-		$class .= ' news-image-'.$tmp['count'];
-		$dimensions = null;
-		$srcset = null;
-			
-		if($tp->isVideo($srcPath))
-		{
-
-			return null;
-		}
-		else 
-		{
-
-			if(empty($srcPath))
-			{
-				if(varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
-				{
-					$src = 	$tp->thumbUrl(); // placeholder;
-					$dimensions = $tp->thumbDimensions();
-				}
-
-			}
-			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
-			{
-				$src = $tp->thumbUrl($srcPath);
-				$dimensions = $tp->thumbDimensions();
-				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
-
-			}
-			else
-			{
-				// We store SC path in DB now + BC
-
-				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
-			}
-		}
-		
-	
-		
-		if(!empty($parm['nolegacy'])) // Remove legacy thumbnails.
-		{
-			$legSrc = urldecode($src);
-
-		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
-			{
-				return null;
-			}
-		}
-		
-		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
-		{
-			$parm['type'] = 'tag';
-		}
-
-		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
-
-		$imgParms = array(
-			'class'         => $class,
-			'alt'           => basename($srcPath),
-			'style'         => $style,
-			'placeholder'   => varset($parm['placeholder']),
-			'loading'       => varset($parm['loading'],'auto'),
-		);
-
-
-		$imgTag = $tp->toImage($srcPath,$imgParms);
-
-		if(empty($imgTag))
-		{
-			return null;
-		}
-
-		switch(vartrue($parm['type']))
-		{
-			case 'src':
-				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
-			break;
-
-			case 'url':
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
-			break;
-
-			case 'tag':
-			default:
-				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
-			break;
-
-
-		}
+	    return $this->sc_news_image($parm);
 	}
-
-
-
 
 
 	function sc_sticky_icon()
