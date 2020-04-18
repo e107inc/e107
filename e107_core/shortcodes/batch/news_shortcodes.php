@@ -819,7 +819,7 @@ class news_shortcodes extends e_shortcode
 
 		if(!empty($parm['placeholder']))
 		{
-			return $this->sc_newsimage('placeholder');	
+			return $this->sc_newsimage('placeholder');
 		}
 		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
 		{
@@ -987,10 +987,11 @@ class news_shortcodes extends e_shortcode
 		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
 
 		$imgParms = array(
-			'class'=>$class,
-			'alt'=>basename($srcPath),
-			'style'=>$style,
-			'placeholder'=>varset($parm['placeholder'])
+			'class'         => $class,
+			'alt'           => basename($srcPath),
+			'style'         => $style,
+			'placeholder'   => varset($parm['placeholder']),
+			'loading'       => varset($parm['loading'],'auto'),
 		);
 
 
