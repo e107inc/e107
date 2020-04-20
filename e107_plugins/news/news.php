@@ -1197,12 +1197,11 @@ class news_front
 			$caption = null;
 			$render = false;
 
-			if(!empty($NEWSSTYLE))
+			if(deftrue('THEME_LEGACY') && !empty($NEWSSTYLE))
 			{
 				$template =  $NEWSSTYLE;
-
 			}
-			elseif(function_exists("news_style")) // BC
+			elseif(deftrue('THEME_LEGACY') && function_exists("news_style")) // BC
 			{
 				$template = news_style($news, 'extend', $param);
 			}
