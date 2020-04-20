@@ -61,7 +61,7 @@ class comment
 				
 		global $COMMENTSTYLE;
 			
-		if (!$COMMENTSTYLE)
+		if (empty($COMMENTSTYLE) || !deftrue('THEME_LEGACY')) // v2.x
 		{		
 			require(e107::coreTemplatePath('comment'));	 // using require_once() could cause an empty template if the template is already loaded, for example, by the comment-menu al
 		}
