@@ -173,7 +173,7 @@ class signup_shortcodes extends e_shortcode
 			//	return $SIGNUP_TEXT." ";
 		}
 		 */
-		 
+		return null;
 	}
 	
 	
@@ -189,6 +189,8 @@ class signup_shortcodes extends e_shortcode
 			return e107::getForm()->text('username', $val,  $dis_name_len);
 
 		}
+
+		return null;
 	}
 	
 	/* example {SIGNUP_LOGINNAME} */
@@ -228,7 +230,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_realname($parm=null)
 	{
 		$pref = e107::getPref('signup_option_realname');
-		if($pref < 1){ return; }
+		if($pref < 1){ return null; }
 			
 		$options 				= array('size'=>30);
 		$options['required'] 	= ($pref==2) ? 1 : 0;
@@ -259,7 +261,8 @@ class signup_shortcodes extends e_shortcode
 
 		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
 	//	$options['title'] = 'Password must contain at least 6 characters, including UPPER/lowercase and numbers';
-		$len = vartrue(e107::getPref('signup_pass_len'),6);
+	    $preLen = e107::getPref('signup_pass_len');
+		$len = vartrue($preLen,6);
 		$options['title'] = str_replace("[x]", $len, LAN_SIGNUP_107); // Password must contain  at least
 	//	$options['pattern'] = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{'.$len.',}'; // at least one number, one lowercase and uppercase. 
 		$options['required'] = true;
@@ -320,6 +323,8 @@ class signup_shortcodes extends e_shortcode
 		{
 			return $SIGNUP_PASSWORD_LEN;
 		}
+
+		return null;
 	}
 	
 	/* example {SIGNUP_EMAIL} */
@@ -350,7 +355,7 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_email_confirm($parm=null)
 	{
 		$pref = e107::getPref('signup_option_email_confirm');
-		if($pref < 1){ return; }
+		if($pref < 1){ return null; }
 			
 		$options 				= array('size'=>30);
 		$options['required'] 	= ($pref==2) ? 1 : 0;
@@ -375,6 +380,8 @@ class signup_shortcodes extends e_shortcode
 		{
 			return $rs->form_radio("hideemail", 1, $default_email_setting==1)." <label for='hideemail1'>".LAN_YES."</label> &nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." <label for='hideemail0'>".LAN_NO."</label>";
 		}
+
+		return null;
 	}
 
 
@@ -404,7 +411,7 @@ class signup_shortcodes extends e_shortcode
 
 
 
-	private function show_signup_class( $classnum, $current_value='', $nest_level=0)
+	private function show_signup_class( $classnum, $current_value='')
 	{
 		$tp = e107::getParser();
 		$uc = e107::getUserClass();
@@ -424,7 +431,7 @@ class signup_shortcodes extends e_shortcode
 	//	}
 
 		// code below is too unpredictable for reliable BC.
-
+/*
 		global $USERCLASS_SUBSCRIBE_ROW;
 
 		e107::getDebug()->log($USERCLASS_SUBSCRIBE_ROW);
@@ -435,11 +442,11 @@ class signup_shortcodes extends e_shortcode
 			'USERCLASS_ID'          => $classnum,
 			'USERCLASS_NAME'        => $tp->toHTML($uc->getName($classnum),false, 'defs'),
 			'USERCLASS_DESCRIPTION' => $tp->toHTML($uc->getDescription($classnum),false,'defs'),
-			'USERCLASS_INDENT'      => " style='text-indent:".(1.2*$nest_level)."em'",
+			'USERCLASS_INDENT'      => " style='text-indent:".(1.2 * $nest_level)."em'",
 			'USERCLASS_CHECKED'     => (in_array($classnum, $tmp) ? " checked='checked'" : '')
 		);
 
-		return $tp->simpleParse($USERCLASS_SUBSCRIBE_ROW, $shortcodes);
+		return $tp->simpleParse($USERCLASS_SUBSCRIBE_ROW, $shortcodes);*/
 
 	}
 	
@@ -517,6 +524,8 @@ class signup_shortcodes extends e_shortcode
 			$frm = e107::getForm();
 			return $frm->bbarea('signature', '', 'signature','helpb', 'tiny');
 		}
+
+		return null;
 	}
 	
 	/* {SIGNUP_IMAGES}  */
@@ -529,6 +538,8 @@ class signup_shortcodes extends e_shortcode
 		{
 			return e107::getForm()->avatarpicker('avatar', '', $parm);
 		}
+
+		return null;
 	}
 	
 	
@@ -540,6 +551,8 @@ class signup_shortcodes extends e_shortcode
 			return e107::getSecureImg()->r_image()."<div>".e107::getSecureImg()->renderInput()."</div>"; 
 			// return $rs->form_hidden("rand_num", $sec_img->random_number). $sec_img->r_image()."<br />".$rs->form_text("code_verify", 20, "", 20);
 		}
+		unset($rs, $sec_img);
+		return null;
 	}
 	
 	function sc_signup_imagecode_label()
@@ -548,7 +561,9 @@ class signup_shortcodes extends e_shortcode
 		if($signup_imagecode)
 		{
 			return $sec_img->renderLabel(); 
-		}			
+		}
+
+		return null;
 	}
 	
 	
@@ -591,6 +606,8 @@ class signup_shortcodes extends e_shortcode
 
 			}
 		}
+
+        return null;
 
 	//	if((int) $val === 2)
 		{
@@ -635,11 +652,13 @@ class signup_shortcodes extends e_shortcode
 
 	}
 
-	/**
-	 * Create Privacy policy link
-	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK}
-	 * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK: class=label label-info}
-	 */
+    /**
+     * Create Privacy policy link
+     * @param null $parm
+     * @return string
+     * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK}
+     * @example {SIGNUP_GDPR_PRIVACYPOLICY_LINK: class=label label-info}
+     */
 	function sc_signup_gdpr_privacypolicy_link($parm=null)
 	{
 		$pp = e107::getPref('gdpr_privacypolicy', '');
@@ -649,15 +668,17 @@ class signup_shortcodes extends e_shortcode
 		}
 		$pp = e107::getParser()->replaceConstants($pp, 'full');
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_122);
-		return $text;
+		return sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_122);
+
 	}
 
-	/**
-	 * Create Terms and conditions link
-	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK}
-	 * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK: class=label label-info}
-	 */
+    /**
+     * Create Terms and conditions link
+     * @param null $parm
+     * @return string
+     * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK}
+     * @example {SIGNUP_GDPR_TERMSANDCONDITIONS_LINK: class=label label-info}
+     */
 	function sc_signup_gdpr_termsandconditions_link($parm=null)
 	{
 		$pp = e107::getPref('gdpr_termsandconditions', '');
@@ -667,8 +688,8 @@ class signup_shortcodes extends e_shortcode
 		}
 		$pp = e107::getParser()->replaceConstants($pp, 'full');
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		$text = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_123);
-		return $text;
+		return sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_SIGNUP_123);
+
 	}
 
 	/**
@@ -682,11 +703,11 @@ class signup_shortcodes extends e_shortcode
 			return '';
 		}
 
-		$text = e107::getParser()->lanVars(LAN_SIGNUP_124,
+		return e107::getParser()->lanVars(LAN_SIGNUP_124,
 			array($this->sc_signup_gdpr_privacypolicy_link(), $this->sc_signup_gdpr_termsandconditions_link()));
-		return $text;
+
 	}
 
 }
 
-?>
+
