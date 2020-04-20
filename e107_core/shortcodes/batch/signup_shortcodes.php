@@ -486,8 +486,10 @@ class signup_shortcodes extends e_shortcode
 			continue;	
 		  }
 
+
 			foreach($extList as $ext)
 			{
+			     $opts = $parm;
 				if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
 				{
 					if(!$done_heading && ($cat['user_extended_struct_id'] > 0))
@@ -503,15 +505,15 @@ class signup_shortcodes extends e_shortcode
 
 					$label = $tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs');
 
-                    if(!empty($parm['placeholder']))
+                    if(isset($opts['placeholder']))
                     {
-                        $parm['placeholder'] = str_replace('[label]', $label, $parm['placeholder']);
+                        $opts['placeholder'] = str_replace('[label]', $label, $opts['placeholder']);
                     }
 
 					$replace = array(
 						$label,
 						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
-						$usere->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $parm)
+						$usere->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $opts)
 					);
 
 					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
