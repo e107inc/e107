@@ -452,7 +452,7 @@ class signup_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_signup_extended_user_fields()
+	function sc_signup_extended_user_fields($parm=null)
 	{ 
 		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
 		$text = "";
@@ -501,10 +501,17 @@ class signup_shortcodes extends e_shortcode
 						$done_heading = true;
 					}
 
+					$label = $tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs');
+
+                    if(!empty($parm['placeholder']))
+                    {
+                        $parm['placeholder'] = str_replace('[label]', $label, $parm['placeholder']);
+                    }
+
 					$replace = array(
-						$tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs'),
+						$label,
 						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
-						$usere->user_extended_edit($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']])
+						$usere->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $parm)
 					);
 
 					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
