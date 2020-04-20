@@ -625,7 +625,7 @@ function req($field)
 
 function headerjs()
 {
-	$script_txt = "
+	return "
 	<script type=\"text/javascript\">
 	function addtext3(sc){
 		document.getElementById('signupform').image.value = sc;
@@ -639,7 +639,4 @@ function headerjs()
 	}
 	</script>\n";
 
-	//global $cal; // XXX - can this be removed completely?
-	//$script_txt .= $cal->load_files();
-	return $script_txt;
 }

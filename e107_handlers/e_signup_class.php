@@ -21,13 +21,11 @@ class e_signup_class
 {
 
 	private $testMode = false;
-	private $pref = array();
+	private $pref;
 
 	function __construct()
 	{
-		$pref = e107::pref('core');
-
-		$this->pref = $pref;
+		$this->pref = e107::pref('core');
 
 		$this->pref['user_reg_veri'] = intval($this->pref['user_reg_veri']);
 
