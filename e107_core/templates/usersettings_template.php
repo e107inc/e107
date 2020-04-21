@@ -101,7 +101,7 @@ $USEREXTENDED_FIELD 					= "<tr>
 	
 	
 										
-$REQUIRED_FIELD 						= "{FIELDNAME}<span class='required'> *</span>";
+$REQUIRED_FIELD 						= "{FIELDNAME} <span class='required'><!-- emtpy --></span>";
 
 // After Saving has occurred. 
 $USERSETTINGS_MESSAGE 					= "{MESSAGE}";
