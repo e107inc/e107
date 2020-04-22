@@ -3823,7 +3823,7 @@ class e_parser
     protected $allowedAttributes    = array(
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
-                                    'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
+                                    'a'         => array('id', 'href', 'style', 'class', 'title', 'target', 'rel'),
                                     'script'	=> array('type', 'src', 'language', 'async'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
 	                                'input'     => array('type','name','value','class','style'),
