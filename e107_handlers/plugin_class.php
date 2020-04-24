@@ -456,7 +456,7 @@ class e_plugin
 		}
 
 		// Generic markup check
-		if ($sc === false && (substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+		if ($sc === false && !$this->isValidAddonMarkup($content))
 		{
 			return 1;
 		}
@@ -482,10 +482,18 @@ class e_plugin
 		return 0;
 
 
-
-
-
 	}
+
+	public function isValidAddonMarkup($content='')
+    {
+       if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+       {
+            return false;
+       }
+
+       return true;
+
+    }
 
 
 	public function getUpgradableList()

@@ -295,6 +295,24 @@
 			$this->assertEquals('news', $result['folder']);
 			$this->assertEquals('menu', $result['category']);
 		}
+
+		public function testIsValidAddonMarkup()
+        {
+            $content = ' <?php    ';
+            $result = $this->ep->isValidAddonMarkup($content);
+            $this->assertFalse($result);
+
+            $content = ' ?>
+            ';
+            $result = $this->ep->isValidAddonMarkup($content);
+            $this->assertFalse($result);
+
+            $content = '<?php
+            ?>';
+            $result = $this->ep->isValidAddonMarkup($content);
+            $this->assertTrue($result);
+
+        }
 /*
 		public function testLoad()
 		{
