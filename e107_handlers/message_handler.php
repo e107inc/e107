@@ -540,7 +540,7 @@ class eMessage
 		
 		foreach ($typesArray as $type)
 		{
-			if(E_MESSAGE_DEBUG === $type && !deftrue('E107_DEBUG_LEVEL'))
+			if(E_MESSAGE_DEBUG === $type && (!deftrue('E107_DEBUG_LEVEL') || !ADMIN))
 			{
 				continue;
 			}

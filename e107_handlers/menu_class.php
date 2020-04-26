@@ -600,7 +600,7 @@ class e_menu
 	//	global $sql; // required at the moment.
 
 
-		global $sc_style, $e107_debug;
+		global $sc_style;
 				
 
 		$sql        = e107::getDb();
@@ -627,7 +627,7 @@ class e_menu
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
-		e107::getDB()->db_Mark_Time($mname);
+		e107::getDb()->db_Mark_Time($mname);
 		
 		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
@@ -639,7 +639,7 @@ class e_menu
 			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
 			{
 				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
-				return;	
+				return null;
 			}
 			
 			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
@@ -694,9 +694,9 @@ class e_menu
 			$pref = e107::getPref(); // possibly used by plugin menu.
 
 
-			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
+			deftrue('e_DEBUG') ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
-		e107::getDB()->db_Mark_Time("(After ".$mname.")");
+		e107::getDb()->db_Mark_Time("(After ".$mname.")");
 
 		if(e_DEBUG === true)
 		{
@@ -709,5 +709,8 @@ class e_menu
 			ob_end_clean();
 			return $ret;
 		}
+
+		unset($pref);
+		return null;
 	}
 }

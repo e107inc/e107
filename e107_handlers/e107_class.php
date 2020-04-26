@@ -939,9 +939,9 @@ class e107
 
 		if($path && is_string($path) && !class_exists($class_name, false))
 		{
-			global $e107_debug, $_E107;
+			global $_E107;
 
-			if(($e107_debug || !empty($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
+			if((!empty($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
 			{
 				require_once($path);
 			}
