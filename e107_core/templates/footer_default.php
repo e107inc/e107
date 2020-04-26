@@ -303,8 +303,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 
 		}	
 	}
@@ -399,8 +398,7 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}
 	}
 	unset($ret);

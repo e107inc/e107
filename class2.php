@@ -363,12 +363,14 @@ $tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 // All debug objects and constants are defined in the debug handler
 // i.e. from here on you can use E107_DEBUG_LEVEL or any
 // E107_DBG_* constant for debug testing.
-// TODO - rewrite the debug init phase, add e107 class getters
 //
 require_once(e_HANDLER.'debug_handler.php');
+e107_debug::init(); // defines E107_DEBUG_LEVEL
 
-if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug))
+if(E107_DEBUG_LEVEL)
 {
+   //  $e107_debug = true; // BC
+    $db_debug = e107::getDebug();
 	$db_debug->Mark_Time('Init ErrHandler');
 }
 
@@ -598,8 +600,8 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 		//	header("Location: {$location}", true, 301); // send 301 header, not 302
 			if(defined('e_DEBUG') && e_DEBUG === true)
 			{
-				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a hre='".$location."'>".$location."</a>";;
-				echo "<br />e_DOMAIN: ".e_DOMAIN;
+				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a hre='".$location."'>".$location."</a>";
+                echo "<br />e_DOMAIN: ".e_DOMAIN;
 				echo "<br />e_SUBDOMAIN: ".e_SUBDOMAIN;
 			}
 			else
@@ -977,7 +979,7 @@ if (!class_exists('e107table', false))
 
 		/**
 		 * Return the first caption rendered with {SETSTYLE=default} or {SETSTYLE=main}
-		 * @return |null
+		 * @return string|null
 		 */
 		public function getMainCaption()
 		{
@@ -1191,7 +1193,7 @@ if (!class_exists('e107table', false))
 			}
 
 			// Automatic list detection .
-			$isList = (strpos(ltrim($text), '<ul') === 0 ) ? true : false;
+			$isList = (strpos(ltrim($text), '<ul') === 0 );
 			$this->setContent('list', $isList);
 
 			$options = $this->getContent();
@@ -1790,10 +1792,10 @@ function getperms($arg, $ap = ADMINPERMS)
 			}
 		}
 	}
-	else
-	{
-		return false;
-	}
+
+
+	return false;
+
 }
 
 /**
@@ -1842,6 +1844,7 @@ function get_user_data($uid, $extra = '')
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
 	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
+	unset($row_val);
 
 	if(e107::getPref('developer'))
 	{
@@ -1897,6 +1900,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			return $tmp;
 			break;
 	}
+
 }
 
 
@@ -1940,7 +1944,7 @@ class floodprotect
 		# - return                                boolean
 		# - scope                                        public
 		*/
-		$sql=new db;
+		$sql= e107::getDb('flood');
 
 		if (FLOODPROTECT == true)
 		{
@@ -2559,6 +2563,9 @@ class error_handler
 			return true;
 			break;
 		}
+
+		unset($context);
+		return null;
 	}
 
 
@@ -2679,7 +2686,7 @@ class e_http_header
 
 		if($this->compression_server_support == true && $this->compression_browser_support == true)
 		{
-			$this->compress_output = (bool) varset(e107::getPref('compress_output'),false);
+			$this->compress_output = (bool) e107::getPref('compress_output', false);
 		}
 		else
 		{
@@ -2780,13 +2787,6 @@ class e_http_header
 		
 	}
 
-	/**
-	 * @param $header
-	 */
-	private function unsetHeader($header)
-	{
-		header_remove($header);
-	}
 
 
 

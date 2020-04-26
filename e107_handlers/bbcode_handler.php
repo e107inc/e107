@@ -367,8 +367,6 @@ class e_bbcode
 			
 			e107::getDebug()->logCode(1, $code, $parm, print_a($info,true));
 		}
-		
-		global $e107_debug;
 
 		if (is_object($this->bbList[$code]))
 		{

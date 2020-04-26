@@ -1069,7 +1069,7 @@ class e_parse_shortcode
 			$sql->db_Mark_Time("SC ".$code);
 		}
 
-		if (E107_DBG_SC)
+		if (E107_DBG_SC && ADMIN)
 		{
 			
 			$dbg = "<strong>";
