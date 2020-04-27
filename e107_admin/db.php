@@ -326,9 +326,15 @@ class system_tools
 	// Developer Mode ONly.. No LANS required. 
 	private function githubSync()
 	{
-
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+
+		if(!deftrue('e_DEVELOPER'))
+		{
+			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
+			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
+			return;
+		}
 
 		//	$message = DBLAN_70;
 		//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
