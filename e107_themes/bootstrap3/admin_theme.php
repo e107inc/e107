@@ -64,7 +64,7 @@ $(function() {
 // e107::js("inline","$('.dropdown-toggle').toggle('slow');");
 
 
-
+/*
 if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDIRECTION).'.css'))
 {
 	// e107::css('theme','menu/menu_'.strtolower(TEXTDIRECTION).'.css');
@@ -72,7 +72,7 @@ if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDI
 else
 {
 	// e107::css('theme','menu/menu.css');
-}
+}*/
 
 
 // $register_sc[]='FS_ADMIN_ALT_NAV';
@@ -82,7 +82,7 @@ $no_core_css = TRUE;
 class bootstrap3_admintheme implements e_theme_render
 {
 
-	function tablestyle($caption, $text, $mode, $data)
+	function tablestyle($caption, $text, $mode='', $data=array())
 	{
 		// global $style;
 
@@ -93,12 +93,12 @@ class bootstrap3_admintheme implements e_theme_render
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
 		echo "<!-- Style: ".$style." -->\n\n";
 			echo "<!-- Mode: ".(string) $mode." -->";
-		$class = '';
+	/*	$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help')
 		{
 			$class = ' ' . str_replace('_', '-', $mode);
-		}
+		}*/
 
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
@@ -280,4 +280,3 @@ $NEWSSTYLE = '
 ';
 
  */
-?>

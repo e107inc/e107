@@ -628,12 +628,19 @@ echo "</head>\n";
 
     $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 	$noBody = false;
-	// v2.2.2 --- Experimental --
+
+	// v2.2.2
 	if($tmp = e_theme::loadLayout(THEME_LAYOUT))
 	{
 		$LAYOUT = $tmp;
 		$noBody = true;
 		unset($tmp);
+
+		if(!class_exists('theme') && ADMIN) // 2.3.0+ required class.
+        {
+            // debug - no translation needed.
+            echo "<div class='alert alert-danger'>Required class <b>theme</b> is missing. See <b>".e_THEME."bootstrap3/theme.php</b> for an example.</div>";
+        }
 	}
 
 

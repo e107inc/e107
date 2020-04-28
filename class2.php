@@ -943,7 +943,8 @@ if (!class_exists('e107table', false))
 		public 	$eMenuArea;
 		public 	$eMenuTotal = array();
 		public 	$eSetStyle;
-		private $themeClass = '';
+		private $themeClass = 'theme';  // v2.3.0+
+		private $legacyThemeClass = '';
 		private $adminThemeClass = '';
 		public  $frontend = null;
 		private $uniqueId = null;
@@ -954,7 +955,7 @@ if (!class_exists('e107table', false))
 		
 		function __construct()
 		{
-			$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment.
+			$this->legacyThemeClass  = e107::getPref('sitetheme')."_theme"; // disabled at the moment.
 			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
 		}
 
@@ -1170,6 +1171,22 @@ if (!class_exists('e107table', false))
 		}
 
 
+        private function hasLegacyCode()
+        {
+            $legacy = ['VIEWPORT','THEME_DISCLAIMER', 'IMODE', 'BODYTAG', 'COMMENTLINK', 'OTHERNEWS_LIMIT',
+                        'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING', 'e_SEARCH'];
+
+            foreach($legacy as $const)
+            {
+                if(defined($const))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
 
 
 		/**
@@ -1179,17 +1196,35 @@ if (!class_exists('e107table', false))
 		 * @param $mode
 		 */
 		private function tablestyle($caption, $text, $mode)
-		{	
+		{
+
 		
 			if(class_exists($this->adminThemeClass) && ($this->frontend == false))
 			{
 				/** @var e_theme_render $thm */
 				$thm = new $this->adminThemeClass();
 			}
-			elseif(class_exists($this->themeClass)) // disabled at the moment. 
+			elseif(class_exists($this->themeClass)) // v2.3.0+
+            {
+
+                if(ADMIN && $this->hasLegacyCode()) // debug - no translation needed.
+                {
+                    echo "<div class='alert alert-danger'>Please place all theme code inside the <b>theme</b> class. </div>";
+                }
+
+                /** @var e_theme_render $thm */
+				$thm = new $this->themeClass();
+
+				if(ADMIN && !$thm instanceof e_theme_render)
+				{
+				    // debug - no need to translate.
+                    echo "<div class='alert alert-danger'>class <b>".$this->themeClass."</b> is missing 'implements e_theme_render'</div>";
+                }
+            }
+			elseif(class_exists($this->legacyThemeClass)) // legacy v2.x
 			{
 				/** @var e_theme_render $thm */
-				$thm = new $this->themeClass();
+				$thm = new $this->legacyThemeClass();
 			}
 
 			// Automatic list detection .

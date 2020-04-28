@@ -124,7 +124,10 @@ e107::coreLan('admin', true);
 
 if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
-
+    if(class_exists('theme')) // v2.3.0+
+    {
+        $tmpTemp = new theme; // load __construct() in case it contains CSS etc.
+    }
 
 	$JSMODAL = <<<TEMPL
 	$(function() {
@@ -762,6 +765,8 @@ class e_layout
 			
 			$theme = e107::getPref('sitetheme');		
 			require_once(e_THEME.$theme."/theme.php");
+
+
 			
 			$this->HEADER 		= $HEADER;
 			$this->FOOTER 		= $FOOTER;

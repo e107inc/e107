@@ -131,7 +131,7 @@ if(!defined("OTHERNEWS2_THUMB")){
 }
 
 if(!defined("OTHERNEWS2_COLS")){
-	// define("OTHERNEWS2_COLS","1");
+	define("OTHERNEWS2_COLS",false);
 }
 
 if(!defined("OTHERNEWS2_CELL")){

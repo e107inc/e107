@@ -8,7 +8,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * @file
- * Bootstrap 3 Theme for e107 v2.x.
+ * Bootstrap 3 Theme for e107 v2.3.x+.
  */
 
 if(!defined('e107_INIT'))
@@ -17,46 +17,37 @@ if(!defined('e107_INIT'))
 }
 
 
-define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
-// Load CDN provider for Bootswatch.
-if($bootswatch = e107::pref('theme', 'bootswatch', false))
+class theme implements e_theme_render
 {
-	e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/' . $bootswatch . '/bootstrap.min.css');
-}
+
+    function __construct()
+    {
+
+        e107::meta('viewport',"width=device-width, initial-scale=1.0");
+
+        // Load CDN provider for Bootswatch.
+        if($bootswatch = e107::pref('theme', 'bootswatch', false))
+        {
+            e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/' . $bootswatch . '/bootstrap.min.css');
+        }
+
+        e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'});"); // activate bootstrap tooltips.
+
+        /* @example prefetch  */
+        //e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
+
+    }
 
 
-/* @example prefetch  */
-//e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
-
-e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'});"); // activate bootstrap tooltips.
-
-// Legacy Stuff.
-define('OTHERNEWS_COLS',false); // no tables, only divs. 
-define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
-define('OTHERNEWS2_COLS',false); // no tables, only divs. 
-define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
-// define('COMMENTLINK', 	e107::getParser()->toGlyph('fa-comment'));
-define('COMMENTOFFSTRING', '');
-
-define('PRE_EXTENDEDSTRING', '<br />');
-
-
-
-
-
-
-
-class bootstrap3_theme
-{
-   	
     /**
      * @param string $caption
      * @param string $text
      * @param string $id : id of the current render
-     * @param array $info : current style and other menu data. 
-     */ 
-    function tablestyle($caption, $text, $id='', $info=array())
+     * @param array $info : current style and other menu data.
+     * @return null
+     */
+    public function tablestyle($caption, $text, $id='', $info=array())
 	{
 
 
@@ -161,25 +152,5 @@ class bootstrap3_theme
     
 }
 
- 
-$NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
-	<div style='padding:2px;padding-bottom:12px'>
-	<div class='newscat_caption'>
-	{NEWSCATEGORY}
-	</div>
-	<div style='width:100%;text-align:left'>
-	{NEWSCAT_ITEM}
-	</div>
-	</div>
-";
 
-
-$NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
-		<div style='width:100%; display:block'>
-		<table style='width:100%'>
-		<tr><td style='width:2px;vertical-align:middle'>&#8226;&nbsp;</td>
-		<td style='text-align:left;height:10px'>
-		{NEWSTITLELINK}
-		</td></tr></table></div>
-";
 

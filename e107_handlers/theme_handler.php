@@ -81,7 +81,7 @@ class e_theme
 
 	/**
 	 * Load theme layout from html files
-	 * Required theme.html file in the theme root directory.
+	 * Requires theme.html file in the theme root directory.
 	 * @param string $key layout name
 	 * @return array|bool
 	 */
@@ -2042,6 +2042,12 @@ class themeHandler
 			{
 				$this->themeConfigObj = new theme_config();
 
+				if(!$this->themeConfigObj instanceof e_theme_config)
+				{
+				    // debug - no need to translate.
+                    e107::getMessage()->addWarning("class <b>theme_config</b> is missing 'implements e_theme_config'");
+                }
+
 				if(class_exists('theme_config_form')) // new v2.1.7
 				{
 					$this->themeConfigFormObj = new theme_config_form();
@@ -3278,11 +3284,12 @@ interface e_theme_config
 
 /**
  * Interface e_theme_render
+ * @see e107_themes/bootstrap3/theme.php
  * @see e107_themes/bootstrap3/admin_theme.php
  */
 interface e_theme_render
 {
-	public function tablestyle($caption, $text, $mode, $data);
+	public function tablestyle($caption, $text, $mode='', $data=array());
 
 }
 
