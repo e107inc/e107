@@ -136,7 +136,8 @@ class theme_shortcodes extends e_shortcode
 
 		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
-		$tp = e107::getParser();		   
+		$tp = e107::getParser();
+		$login_menu_shortcodes = null;
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
 
 		$direction = vartrue($parm['dir']) == 'up' ? ' dropup' : '';
@@ -309,6 +310,7 @@ class theme_shortcodes extends e_shortcode
 			$text .= $tp->parseTemplate($TEMPLATE, true, $sc); // parse news shortcodes.
 		}
 
+        unset($parm);
 		return $text;
 
 
@@ -338,7 +340,7 @@ class theme_shortcodes extends e_shortcode
 		$parm['layout']         = 'media-list'; //    default | or any key as defined in news_grid_template.php
 		$parm['featured']       = 0;
 
-
+        unset($data);
 		return "<div class='container'>". e107::getObject('news')->render_newsgrid($parm) ."</div>";
 
 
@@ -346,4 +348,4 @@ class theme_shortcodes extends e_shortcode
  
 }
  
-?>
+
