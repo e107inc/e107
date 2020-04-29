@@ -951,15 +951,55 @@ if (!class_exists('e107table', false))
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
 		private $mainRenders = array(); // all renderered with style = 'default' or 'main'.
+		private $thm;
 
 		
 		function __construct()
 		{
 			$this->legacyThemeClass  = e107::getPref('sitetheme')."_theme"; // disabled at the moment.
-			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
+			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class.
 		}
 
+        /**
+         * Load theme class if necessary.
+         * @return null
+         */
+        private function load()
+        {
+            if(!empty($this->thm))
+            {
+                return null;
+            }
 
+            if(class_exists($this->adminThemeClass) && ($this->frontend == false))
+			{
+				/** @var e_theme_render $thm */
+				$this->thm = new $this->adminThemeClass();
+			}
+			elseif(class_exists($this->themeClass)) // v2.3.0+
+            {
+
+                if(ADMIN && $this->hasLegacyCode()) // debug - no translation needed.
+                {
+                    echo "<div class='alert alert-danger'>Please place all theme code inside the <b>theme</b> class. </div>";
+                }
+
+                /** @var e_theme_render $thm */
+				$this->thm = new $this->themeClass();
+
+				if(ADMIN && !$this->thm instanceof e_theme_render)
+				{
+				    // debug - no need to translate.
+                    echo "<div class='alert alert-danger'>class <b>".$this->themeClass."</b> is missing 'implements e_theme_render'</div>";
+                }
+            }
+			elseif(class_exists($this->legacyThemeClass)) // legacy v2.x
+			{
+				/** @var e_theme_render $thm */
+				$this->thm = new $this->legacyThemeClass();
+			}
+
+        }
 
 
 		/**
@@ -1140,9 +1180,6 @@ if (!class_exists('e107table', false))
 			}
 
 
-
-
-
 			if ($return)
 			{
             	if(!empty($text) && $this->eMenuArea)
@@ -1198,34 +1235,7 @@ if (!class_exists('e107table', false))
 		private function tablestyle($caption, $text, $mode)
 		{
 
-		
-			if(class_exists($this->adminThemeClass) && ($this->frontend == false))
-			{
-				/** @var e_theme_render $thm */
-				$thm = new $this->adminThemeClass();
-			}
-			elseif(class_exists($this->themeClass)) // v2.3.0+
-            {
-
-                if(ADMIN && $this->hasLegacyCode()) // debug - no translation needed.
-                {
-                    echo "<div class='alert alert-danger'>Please place all theme code inside the <b>theme</b> class. </div>";
-                }
-
-                /** @var e_theme_render $thm */
-				$thm = new $this->themeClass();
-
-				if(ADMIN && !$thm instanceof e_theme_render)
-				{
-				    // debug - no need to translate.
-                    echo "<div class='alert alert-danger'>class <b>".$this->themeClass."</b> is missing 'implements e_theme_render'</div>";
-                }
-            }
-			elseif(class_exists($this->legacyThemeClass)) // legacy v2.x
-			{
-				/** @var e_theme_render $thm */
-				$thm = new $this->legacyThemeClass();
-			}
+            $this->load();
 
 			// Automatic list detection .
 			$isList = (strpos(ltrim($text), '<ul') === 0 );
@@ -1248,9 +1258,9 @@ if (!class_exists('e107table', false))
 
 			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();
 			
-			if(is_object(vartrue($thm)))
+			if(!empty($this->thm) && is_object($this->thm))
 			{
-				$thm->tablestyle($caption, $text, $mode, $options);
+				$this->thm->tablestyle($caption, $text, $mode, $options);
 			}
 			else 
 			{
