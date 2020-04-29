@@ -5376,6 +5376,7 @@ return;
 		$html = str_replace('&nbsp;', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', $html); // prevent replacement of &nbsp; with spaces.
 		// Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 1 of 2
+        $html = str_replace("\r", "", $html); // clean out windows line-breaks.
 		$html = str_replace("\n", "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $html);
         $html = str_replace("{", "__E_PARSER_CLEAN_HTML_CURLY_OPEN__", $html);
         $html = str_replace("}", "__E_PARSER_CLEAN_HTML_CURLY_CLOSED__", $html);
@@ -5527,14 +5528,13 @@ return;
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
-		        $value = str_replace('<br></br>', PHP_EOL, $value);
-
+		        $value = str_replace('<br></br>', "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $value);
 		    }
             elseif($node->nodeName === 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
 		        $value = str_replace("</code>", "", $value);
-		        $value = str_replace("<br></br>", PHP_EOL, $value);
+		        $value = str_replace("<br></br>", "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $value);
 		    }
 
 		   $value = str_replace('__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
