@@ -1627,6 +1627,7 @@ class e107
                 "File Inspector will be inoperative. " .
                 "Resolve this issue by uploading a good copy of the core image to " .
                 escapeshellarg($fileInspectorPath) . ". " .
+                "If uploading with FTP, use binary transfer mode. " .
                 "Error message: " .
                 $e->getMessage()
             );

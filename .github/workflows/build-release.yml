@@ -18,12 +18,14 @@ jobs:
       - name: Install operating system dependencies
         run: sudo apt-get install -y git tar gzip xz-utils zip php-cli
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.1.0
         with:
           fetch-depth: 0
 
       - name: Fetch version information
-        run: git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
+        run: |
+          git remote set-url origin "$(git remote get-url origin | sed 's|^git@github\.com:|https://github.com/|')"
+          git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
 
       # Remove this step if the old version tags make it to the official repository.
       - name: Fetch version information from really old releases
