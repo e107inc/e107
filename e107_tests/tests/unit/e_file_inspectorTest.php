@@ -10,15 +10,35 @@
 class e_file_inspectorTest extends \Codeception\Test\Unit
 {
     /**
-     * @var e_file_inspector_sqlphar
+     * @var e_file_inspector
      */
     private $e_integrity;
+    const TEST_INTEGRITY_CONTENTS = [
+        'index.php' => [
+            'v1.0.0' => 'd41d8cd98f00b204e9800998ecf8427e'
+        ],
+        'e107_admin' => [
+            'e107_update.php' => [
+                'v1.0.0' => 'd41d8cd98f00b204e9800998ecf8427e'
+            ]
+        ],
+        'e107_themes' => [
+            'index.html' => [
+                'v1.0.0' => 'd41d8cd98f00b204e9800998ecf8427e'
+            ]
+        ]
+    ];
 
     public function _before()
     {
-        require_once(e_HANDLER . "e_file_inspector_json_phar.php");
-        // TODO: Make test databases; don't hard-code e107_admin/core_image.php and hope it has the expected content.
-        $this->e_integrity = new e_file_inspector_json_phar(e_ADMIN . "core_image.php");
+        $tmpfile = tmpfile();
+        $tmpfilePath = stream_get_meta_data($tmpfile)['uri'];
+        $testIntegrityImage = '<?php $core_image = ' .
+            var_export(json_encode(self::TEST_INTEGRITY_CONTENTS), true) .
+            ';';
+        file_put_contents($tmpfilePath, $testIntegrityImage);
+        require_once(e_HANDLER . "e_file_inspector_json.php");
+        $this->e_integrity = new e_file_inspector_json($tmpfilePath);
         $this->e_integrity->loadDatabase();
     }
 
@@ -52,7 +72,7 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
     public function testValidate()
     {
-        $result = $this->e_integrity->validate("index.php");
+        $result = $this->e_integrity->validate("e107_themes/index.html");
         $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED);
         $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PATH_KNOWN);
         $this->assertGreaterThanOrEqual(1, $result & e_file_inspector::VALIDATED_PATH_VERSION);
@@ -68,15 +88,7 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
     public function testCustomPathToDefaultPath()
     {
-        /** @var e_file_inspector $object */
-        $object = $this->make('e_file_inspector');
-        $class = new ReflectionClass(get_class($object));
-        $object->customPathToDefaultPath('populate_cache');
-        $member = $class->getProperty('customDirsCache');
-        $member->setAccessible(true);
-        $customDirs = $member->getValue($object);
-        $customDirs['ADMIN_DIRECTORY'] = 'e963_admin/';
-        $member->setValue($object, $customDirs);
+        $object = $this->createCustomPathFileInspector();
 
         $input = "e963_admin/index.php";
         $expected = "e107_admin/index.php";
@@ -87,6 +99,21 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
 
     public function testDefaultPathToCustomPath()
     {
+        $object = $this->createCustomPathFileInspector();
+
+        $input = "e107_admin/index.php";
+        $expected = "e963_admin/index.php";
+        $actual = $object->defaultPathToCustomPath($input);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return e_file_inspector
+     * @throws ReflectionException if e_file_inspector is broken
+     */
+    private function createCustomPathFileInspector()
+    {
         /** @var e_file_inspector $object */
         $object = $this->make('e_file_inspector');
         $class = new ReflectionClass(get_class($object));
@@ -96,11 +123,6 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
         $customDirs = $member->getValue($object);
         $customDirs['ADMIN_DIRECTORY'] = 'e963_admin/';
         $member->setValue($object, $customDirs);
-
-        $input = "e107_admin/index.php";
-        $expected = "e963_admin/index.php";
-        $actual = $object->defaultPathToCustomPath($input);
-
-        $this->assertEquals($expected, $actual);
+        return $object;
     }
 }
