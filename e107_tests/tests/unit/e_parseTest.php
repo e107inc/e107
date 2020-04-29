@@ -64,6 +64,20 @@ TMP;
 		$expected = "<div class='bbcode-center' style='text-align:center'><img src='".e_HTTP."e107_images/generic/blank_avatar.jpg' width='' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
 
 		$this->assertEquals($expected, $actual, "BBcode parsing failed on [img]");
+/*
+$src = "[html]
+<pre>&#036;sql = e107::getDb();
+&#036;sql-&gt;select(&#039;tablename&#039;, &#039;field1, field2&#039;, &#039;field_id = 1&#039;);
+while(&#036;row = &#036;sql-&gt;fetch())
+&#123;
+    echo &#036;row[&#039;field1&#039;];
+&#125;</pre>
+[/html]";
+
+    $actual = $this->tp->toHTML($src,true);
+    $expected = '';
+
+        $this->assertEquals($expected, $actual, "BBcode parsing failed on <pre>");*/
 
 
 		}
@@ -366,7 +380,11 @@ TMP;
 				    'input'     => "[html]<code>function sc_my_shortcode(){\nreturn \"Something\";}</code>[/html]",
 				    'expected'  => "[html]<code>function sc_my_shortcode()&#123;\nreturn &quot;Something&quot;;&#125;</code>[/html]"
                 ),
-             
+                27 => array(
+                    'input'     =>"[html]<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>",
+                    'expected'  =>"[html]<pre class=&quot;whatever&quot;>require_once(&quot;class2.php&quot;);\nrequire_once(HEADERF);\necho &quot;test&quot;;&lt;br&gt;\nrequire_once(FOOTERF);</pre>",
+
+                ),
 
 			);
 
@@ -1030,15 +1048,43 @@ TMP;
 		public function testCleanHtml()
 		{
 			$tests = array(
-				0   => array('html' => "<svg/onload=prompt(1)//", 'expected' => '&lt;svg/onload=prompt(1)//'),
+				0   => array(
+				    'html' => "<svg/onload=prompt(1)//",
+				    'expected' => '&lt;svg/onload=prompt(1)//'
+                ),
 			//	1   => array('html' => '<script>alert(123)</script>', 'expected'=>''),
 			//	2   => array('html' => '"><script>alert(123)</script>', 'expected'=>'"&gt;'),
-				3   => array('html' => '< 200', 'expected'=>'&lt; 200'),
-				4   => array('html' => "<code>function sc_my_shortcode(){\nreturn \"Something\";}</code>", 'expected' =>  "<code>function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</code>"),
-               	5   => array('html' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode(){\nreturn \"Something\";}</pre>", 'expected' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</pre>"),
-               6   => array('html' => '<img src="{e_BASE}image.jpg" alt="">', 'expected'=>'<img src="{e_BASE}image.jpg" alt="">'),
+				3   => array(
+				    'html' => '< 200',
+				    'expected'=>'&lt; 200'
+                ),
+				4   => array(
+				    'html' => "<code>function sc_my_shortcode(){\nreturn \"Something\";}</code>",
+				    'expected' =>  "<code>function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</code>"
+                ),
+               	5   => array(
+               	    'html' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode(){\nreturn \"Something\";}</pre>",
+               	    'expected' => "<pre class=\"prettyprint linenums\">function sc_my_shortcode()&#123;\nreturn \"Something\";&#125;</pre>"
+                ),
+                6   => array(
+                    'html'      => '<img src="{e_BASE}image.jpg" alt="">',
+                    'expected'  =>'<img src="{e_BASE}image.jpg" alt="">'
+                ),
+                7 => array( // with <br> inside <pre> ie. TinyMce
+                    'html'      => '<pre class="whatever">require_once("class2.php");<br>require_once(HEADERF);<br>echo "test";&lt;br&gt;<br>require_once(FOOTERF);</pre>',
+                    'expected'  => "<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>"
+                ),
+                8 => array( // with \n
+                    'html'      => "<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>",
+                    'expected'  => "<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>"
+                ),
+                9 => array( // with \r\n (windows) line-breaks.
+                    'html'      => "<pre class=\"whatever\">require_once(\"class2.php\");\r\nrequire_once(HEADERF);\r\necho \"test\";&lt;br&gt;\r\nrequire_once(FOOTERF);</pre>",
+                    'expected'  => "<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>"
+                ),
 
 			);
+
 
 			foreach($tests as $var)
 			{
