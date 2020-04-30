@@ -3851,7 +3851,12 @@ class e_parser
                                         'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
-	
+
+    protected $scriptAttributes = array('onclick', 'onchange', 'onblur', 'onload', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup',
+                                        'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel',
+                                        'onwheel', 'oncopy', 'oncut', 'onpaste'
+                                    );
+
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
 
 
@@ -3932,7 +3937,11 @@ class e_parser
 	public function getAllowedTags()
 	{
 		return $this->allowedTags;
+	}
 
+    public function getAllowedAttributes()
+	{
+		return $this->allowedAttributes;
 	}
 
 
@@ -3940,6 +3949,11 @@ class e_parser
 	{
 		return $this->scriptAccess;
 	}
+
+	public function getRemoved()
+    {
+        return $this->removedList;
+    }
 
 	/**
      * Set Allowed Attributes. 
@@ -5356,6 +5370,24 @@ return;
 	}
 
 
+    private function grantScriptAccess()
+    {
+         $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
+
+        foreach($this->allowedAttributes as $tag => $att)
+        {
+            foreach($this->scriptAttributes as $new)
+            {
+                $this->allowedAttributes[$tag][] = $new;
+            }
+        }
+
+
+        return null;
+    }
+
+
+
     /**
      * Process and clean HTML from user input.
      * TODO Html5 tag support.
@@ -5399,6 +5431,7 @@ return;
 			$this->init();	
 		}
 
+
 		if($this->scriptAccess === false)
 		{
 	        $this->scriptAccess = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags11;
@@ -5406,7 +5439,7 @@ return;
 
 		if(check_class($this->scriptAccess))
         {
-            $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
+            $this->grantScriptAccess();
         }
 
 		
@@ -5458,7 +5491,8 @@ return;
                 $name = $attr->nodeName;
                 $value = $attr->nodeValue;
 
-                $allow = varset($this->allowedAttributes[$tag], $this->allowedAttributes['default']);
+                $allow = isset($this->allowedAttributes[$tag]) ? $this->allowedAttributes[$tag] : $this->allowedAttributes['default'];
+
                 $removeAttributes = array();
 
                 if(!in_array($name, $allow))
