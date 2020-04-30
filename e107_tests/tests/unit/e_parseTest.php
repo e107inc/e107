@@ -302,7 +302,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				8  => array(
 					'input'     => '<table background="javascript:alert(1)"><tr><td><a href="something.php" onclick="alert(1)">Hi there</a></td></tr></table>',
-					'expected'  => "<table><tr><td><a href=&quot;something.php&quot;>Hi there</a></td></tr></table>"
+					'expected'  => '<table><tr><td><a href=&quot;something.php&quot; onclick=&quot;#---sanitized---#&quot;>Hi there</a></td></tr></table>'
 				),
 				9  => array(
 					'input'     => '<!--<img src="--><img src=x onerror=alert(1)//">',
@@ -310,7 +310,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				10 => array(
 					'input'     => '<div style=content:url(data:image/svg+xml,%3Csvg/%3E);visibility:hidden onload=alert(1)>',
-					'expected'  => '<div style=&quot;#---sanitized---#&quot;></div>'),
+					'expected'  => '<div style=&quot;#---sanitized---#&quot; onload=&quot;#---sanitized---#&quot;></div>'),
 				11 => array(
 					'input'     => '<a href="{e_PLUGIN}myplugin/index.php">Test</a>',
 					'expected'  => '<a href=&quot;{e_PLUGIN}myplugin/index.php&quot;>Test</a>'
@@ -399,7 +399,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$parm = varset($var['parm']);
 
 				$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
-				$this->assertEquals($var['expected'], $result, 'Test #'.$k." failed.");
+				$this->assertEquals($var['expected'], $result, 'Test #'.$k." failed.". print_r($this->tp->getRemoved(),true));
 
 			}
 
@@ -608,22 +608,25 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testSetScriptAccess()
 		{
-
+            $this->tp->setScriptAccess(e_UC_PUBLIC);
+            $result = $this->tp->getScriptAccess();
+            $this->assertEquals(e_UC_PUBLIC, $result);
 		}
-
+/*
 		public function testGetAllowedTags()
 		{
 
 		}
-
+*/
 		public function testGetScriptAccess()
 		{
-
+            $result = $this->tp->getScriptAccess();
+            $this->assertFalse($result);
 		}
-
+/*
 		public function testSetAllowedAttributes()
 		{
 
@@ -1047,6 +1050,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
 */
 		public function testCleanHtml()
 		{
+		    global $_E107;
+			$_E107['phpunit'] = true; // disable CLI "all access" permissions to simulated a non-cli scenario.
+
+		    $this->tp->setScriptAccess(e_UC_NOBODY);
+
 			$tests = array(
 				0   => array(
 				    'html' => "<svg/onload=prompt(1)//",
@@ -1082,6 +1090,10 @@ while(&#036;row = &#036;sql-&gt;fetch())
                     'html'      => "<pre class=\"whatever\">require_once(\"class2.php\");\r\nrequire_once(HEADERF);\r\necho \"test\";&lt;br&gt;\r\nrequire_once(FOOTERF);</pre>",
                     'expected'  => "<pre class=\"whatever\">require_once(\"class2.php\");\nrequire_once(HEADERF);\necho \"test\";&lt;br&gt;\nrequire_once(FOOTERF);</pre>"
                 ),
+                10   => array(
+			        'html'=>    '<a href="#" onchange="whatever">Test</a>',
+			        'expected'=>'<a href="#">Test</a>'
+                ),
 
 			);
 
@@ -1092,8 +1104,30 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$this->assertEquals($var['expected'], $result);
 			}
 
+            // -------------------------
+
+
+			$this->tp->setScriptAccess(e_UC_PUBLIC);
+
+			$scriptAccess = array(
+			    0   => array(
+			        'html'      => '<a href="#" onchange="whatever">Test</a>',
+			        'expected'  => '<a href="#" onchange="whatever">Test</a>'
+                ),
+            );
+
+			foreach($scriptAccess as $var)
+			{
+				$result = $this->tp->cleanHtml($var['html']);
+				$this->assertEquals($var['expected'], $result);
+			}
+
+            $this->tp->setScriptAccess(false);
+            unset($_E107['phpunit']);
 
 		}
+
+
 /*
 		public function testSecureAttributeValue()
 		{
@@ -1105,4 +1139,15 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		}
 */
+/*
+        public function testGrantScriptAccess()
+        {
+            $before = $this->tp->getAllowedAttributes();
+
+            $this->tp->grantScriptAccess();
+
+            $after = $this->tp->getAllowedAttributes();
+
+
+        }*/
 	}
