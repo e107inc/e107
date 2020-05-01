@@ -385,6 +385,15 @@ while(&#036;row = &#036;sql-&gt;fetch())
                     'expected'  =>"[html]<pre class=&quot;whatever&quot;>require_once(&quot;class2.php&quot;);\nrequire_once(HEADERF);\necho &quot;test&quot;;&lt;br&gt;\nrequire_once(FOOTERF);</pre>",
 
                 ),
+                28 => array(
+                    'html'      => "<pre>{THEME_PREF: code=header_width&default=container}</pre>",
+                    'expected'  => "<pre>&#123;THEME_PREF: code=header_width&amp;default=container&#125;</pre>",
+                ),
+
+                29 => array(
+                    'html'      => "<pre>/* {THEME_PREF: code=header_width&default=container} */</pre>",
+                    'expected'  => "<pre>/* &#123;THEME_PREF: code=header_width&amp;default=container&#125; */</pre>",
+                ),
 
 			);
 
@@ -1093,6 +1102,16 @@ while(&#036;row = &#036;sql-&gt;fetch())
                 10   => array(
 			        'html'=>    '<a href="#" onchange="whatever">Test</a>',
 			        'expected'=>'<a href="#">Test</a>'
+                ),
+
+                11 => array(
+                    'html'      => "<pre>{THEME_PREF: code=header_width&default=container}</pre>",
+                    'expected'  => "<pre>&#123;THEME_PREF: code=header_width&amp;default=container&#125;</pre>",
+                ),
+
+                12 => array(
+                    'html'      => "<pre>/* {THEME_PREF: code=header_width&default=container} */</pre>",
+                    'expected'  => "<pre>/* &#123;THEME_PREF: code=header_width&amp;default=container&#125; */</pre>",
                 ),
 
 			);
