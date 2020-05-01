@@ -985,7 +985,7 @@ class news_front
 
 		$action = $currentNewsAction;
 
-		if(deftrue('BOOTSTRAP'))  // v2.x
+		if(!deftrue('THEME_LEGACY'))  // v2.x
 		{
 			$template = e107::getTemplate('news', 'news', 'list');
 		}
