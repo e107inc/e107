@@ -1618,14 +1618,16 @@ class e107plugin
 				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 				}
 		}
-		$sql->db_Mark_Time('Start Scanning Plugin Files');
+		e107::getDebug()->logTime('Start Scanning Plugin Files');
 		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
+
 		foreach ($plugList as $num => $val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.
 		{
 			$key = basename($val['path']);
 			$pluginList[$key] = $val;
 		}
-		$sql->db_Mark_Time('After Scanning Plugin Files');
+
+		e107::getDebug()->logTime('After Scanning Plugin Files');
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 		$mes = e107::getMessage();
 

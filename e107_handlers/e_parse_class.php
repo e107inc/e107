@@ -5250,6 +5250,7 @@ return;
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$dbg = e107::getDebug(); 
         
       //  $html = $this->getXss();
                    
@@ -5260,20 +5261,20 @@ return;
         echo "<h2>Standard v2 Parser</h2>";
         echo "<h3>\$tp->dataFilter()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        $sql->db_Mark_Time('------ Start Parser Test -------');
+       $dbg->logTime('------ Start Parser Test -------');
         print_a($tp->dataFilter($html));
-        $sql->db_Mark_Time('tp->dataFilter');
+       $dbg->logTime('tp->dataFilter');
          
         echo "<h3>\$tp->toHTML()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($tp->toHTML($html));
-        $sql->db_Mark_Time('tp->toHtml');     
+       $dbg->logTime('tp->toHtml');     
         
         echo "<h3>\$tp->toDB()</h3>";
         // echo $tp->dataFilter($html); // Remove Comment for a real mess!
         $todb = $tp->toDB($html);
         print_a( $todb);
-        $sql->db_Mark_Time('tp->toDB');
+       $dbg->logTime('tp->toDB');
 
 	    echo "<h3>\$tp->toForm() with toDB input.</h3>";
        print_a( $tp->toForm($todb));
@@ -5282,8 +5283,8 @@ return;
         echo "<h3>Processed</h3>";
         $cleaned = $this->cleanHtml($html, true);  // false = don't check html pref.
         print_a($cleaned);
-        $sql->db_Mark_Time('new Parser');    
-      //  $sql->db_Mark_Time('------ End Parser Test -------');
+       $dbg->logTime('new Parser');    
+      // $dbg->logTime('------ End Parser Test -------');
         echo "<h3>Processed &amp; Rendered</h3>";
         echo $cleaned;
         

@@ -76,10 +76,10 @@ new admin_start;
 require_once(e_ADMIN.'auth.php');
 
 
-e107::getDb()->db_Mark_Time('(Start Admin Checks)');
+e107::getDebug()->logTime('(Start Admin Checks)');
 
 
-e107::getDb()->db_Mark_Time('(After Admin Checks)');
+e107::getDebug()->logTime('(After Admin Checks)');
 $mes = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn't be needed - but just in case
@@ -140,34 +140,34 @@ class admin_start
 		unset($_SESSION['lancheck']);
 
 
-		e107::getDb()->db_Mark_Time('Check Paths');
+		e107::getDebug()->logTime('Check Paths');
 		$this->checkPaths();
 
-		e107::getDb()->db_Mark_Time('Check Timezone');
+		e107::getDebug()->logTime('Check Timezone');
 		$this->checkTimezone();
 
-		e107::getDb()->db_Mark_Time('Check Writable');
+		e107::getDebug()->logTime('Check Writable');
 		$this->checkWritable();
 
-		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
+		e107::getDebug()->logTime('Check Incompatible Plugins');
 		$this->checkIncompatiblePlugins();
 
-		e107::getDb()->db_Mark_Time('Check Filetypes');
+		e107::getDebug()->logTime('Check Filetypes');
 		$this->checkFileTypes();
 
-		e107::getDb()->db_Mark_Time('Check Suspect Files');
+		e107::getDebug()->logTime('Check Suspect Files');
 		$this->checkSuspiciousFiles();
 
-		e107::getDb()->db_Mark_Time('Check Deprecated');
+		e107::getDebug()->logTime('Check Deprecated');
 		$this->checkDeprecated();
 
-		e107::getDb()->db_Mark_Time('Check HTMLArea');
+		e107::getDebug()->logTime('Check HTMLArea');
 		$this->checkHtmlarea();
 
-		e107::getDb()->db_Mark_Time('Check Htaccess');
+		e107::getDebug()->logTime('Check Htaccess');
 		$this->checkHtaccess();
 
-		e107::getDb()->db_Mark_Time('Check Core Update');
+		e107::getDebug()->logTime('Check Core Update');
 		$this->checkCoreUpdate();
 
 		if($this->exit === true)
@@ -175,16 +175,16 @@ class admin_start
 			return null;
 		}
 
-		e107::getDb()->db_Mark_Time('Check New Install');
+		e107::getDebug()->logTime('Check New Install');
 		$this->checkNewInstall();
 
-	/*	e107::getDb()->db_Mark_Time('Check Plugin Update');
+	/*	e107::getDebug()->logTime('Check Plugin Update');
 		$this->checkPluginUpdate();
 
-		e107::getDb()->db_Mark_Time('Check Theme Update');
+		e107::getDebug()->logTime('Check Theme Update');
 		$this->checkThemeUpdate();
 		*/
-		e107::getDb()->db_Mark_Time('Check Password Encryption');
+		e107::getDebug()->logTime('Check Password Encryption');
 		$this->checkPasswordEncryption();
 
 

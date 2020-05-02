@@ -20,7 +20,7 @@ if (!defined('e107_INIT'))
 }
 
 
-e107::getDb()->db_Mark_Time('(Start auth.php)');
+e107::getDebug()->logTime('(Start auth.php)');
 
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 

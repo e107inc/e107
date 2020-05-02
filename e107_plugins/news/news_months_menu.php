@@ -86,7 +86,7 @@ if(false === $cached)
 	$xmonth_cnt = array();
 	$month_links = array();
 	
-	$sql->db_Mark_Time('News months menu');
+	e107::getDebug()->logTime('News months menu');
 	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND (FIND_IN_SET('0', news_render_type) OR FIND_IN_SET(1, news_render_type)) AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
 	{
 		e107::getCache()->set($cString, '');
