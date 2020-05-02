@@ -185,7 +185,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_lastvisit_lapse($parm='')
 	{	
-		return $this->var['user_currentvisit'] ? "( ".e107::getDate()->computeLapse($this->var['user_currentvisit'])." ".LAN_USER_34." )" : '';
+		return $this->var['user_currentvisit'] ? e107::getDate()->computeLapse($this->var['user_currentvisit']) : '';
 	}
 
 	
