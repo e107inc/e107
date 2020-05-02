@@ -310,6 +310,7 @@ class e_db_mysql implements e_db
 	/**
 	* @return void
 	* @param string $sMarker
+    * @deprecated Use e107::getDebug()->logTime();
 	* @desc Enter description here...
 	* @access private
 	*/

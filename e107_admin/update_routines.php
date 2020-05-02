@@ -401,7 +401,7 @@ function update_check()
 			if(function_exists('update_' . $func))
 			{
 
-				$sql->db_Mark_Time('Check Core Update_' . $func . ' ');
+				e107::getDebug()->logTime('Check Core Update_' . $func . ' ');
 				if(!call_user_func('update_' . $func, false))
 				{
 					$dbUpdatesPref[$func] = 0;

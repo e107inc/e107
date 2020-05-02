@@ -627,7 +627,7 @@ class e_menu
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
-		e107::getDb()->db_Mark_Time($mname);
+		e107::getDebug()->logTime($mname);
 		
 		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
@@ -696,7 +696,7 @@ class e_menu
 
 			deftrue('e_DEBUG') ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
-		e107::getDb()->db_Mark_Time("(After ".$mname.")");
+		e107::getDebug()->logTime("(After ".$mname.")");
 
 		if(e_DEBUG === true)
 		{

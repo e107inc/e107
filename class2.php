@@ -370,8 +370,11 @@ e107_debug::init(); // defines E107_DEBUG_LEVEL
 if(E107_DEBUG_LEVEL)
 {
    //  $e107_debug = true; // BC
-    $db_debug = e107::getDebug();
-	$db_debug->Mark_Time('Init ErrHandler');
+    $dbg = e107::getDebug();
+    
+    /** @deprecated  $db_debug */
+    $db_debug = $dbg;
+	$dbg->logTime('Init ErrHandler');
 }
 
 //
@@ -397,14 +400,14 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(false);
 
-$sql->db_Mark_Time('SQL Connect');
+$dbg->logTime('SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 
-$sql->db_Mark_Time('Prefs, misc tables');
+$dbg->logTime('Prefs, misc tables');
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
 $admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
@@ -437,21 +440,21 @@ $e107->set_urls_deferred();
 
 
 // TODO - remove it from here, auto-loaded when required
-$sql->db_Mark_Time('Load Cache Handler');
+$dbg->logTime('Load Cache Handler');
 e107_require_once(e_HANDLER.'cache_handler.php');
 
 //DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
-$sql->db_Mark_Time('Load Array Storage Handler');
+$dbg->logTime('Load Array Storage Handler');
 e107_require_once(e_HANDLER.'arraystorage_class.php'); // ArrayData(); BC Fix only. 
 $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage with e107::getArrayStorage();
 
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
-$sql->db_Mark_Time('Load Event Handler');
+$dbg->logTime('Load Event Handler');
 $e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
 // TODO - DEPRECATED - remove
 
-$sql->db_Mark_Time('Load Core Prefs');
+$dbg->logTime('Load Core Prefs');
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 
@@ -510,7 +513,7 @@ $pref = e107::getPref();
 // $e107->set_base_path(); moved to init().
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
-$sql->db_Mark_Time('Load Menu Prefs');
+$dbg->logTime('Load Menu Prefs');
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
 // NEW - force ssl
@@ -527,9 +530,9 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE') && empty($_E107['cl
 	}
 }
 
-// $sql->db_Mark_Time('(Extracting Core Prefs Done)');
+// $dbg->logTime('(Extracting Core Prefs Done)');
 
-$sql->db_Mark_Time('Init Language and detect changes');
+$dbg->logTime('Init Language and detect changes');
 $lng = e107::getLanguage(); // required for v1.0 BC. 
 $lng->detect();
 
@@ -623,9 +626,9 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 // - Language detection (because of session.cookie_domain)
 // to avoid multi-language 'access-denied' issues.
 //session_start(); see e107::getSession() above
-$sql->db_Mark_Time('Load Session Handler');
+$dbg->logTime('Load Session Handler');
 e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
-$sql->db_Mark_Time('Set User Language Session');
+$dbg->logTime('Set User Language Session');
 e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
 
 if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
@@ -638,7 +641,7 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
 // v1 Custom language File Path.
-$sql->db_Mark_Time('Include Global Core Language Files');
+$dbg->logTime('Include Global Core Language Files');
 if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 {
 	include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
@@ -665,7 +668,7 @@ unset($customLan, $customLan2);
 
 $lng->bcDefs(); // defined v1.x definitions for old templates.
 
-$sql->db_Mark_Time('Include Global Plugin Language Files');
+$dbg->logTime('Include Global Plugin Language Files');
 if(isset($pref['lan_global_list']))
 {
 	foreach($pref['lan_global_list'] as $path)
@@ -680,7 +683,7 @@ if(isset($pref['lan_global_list']))
 
 
 
-$sql->db_Mark_Time('CHAP challenge');
+$dbg->logTime('CHAP challenge');
 
 $die = (e_AJAX_REQUEST == true) ? false : true;
 e107::getSession()
@@ -691,7 +694,7 @@ unset($die);
 //
 // N: misc setups: online user tracking, cache
 //
-$sql->db_Mark_Time('Misc resources. Online user tracking, cache');
+$dbg->logTime('Misc resources. Online user tracking, cache');
 
 
 /**
@@ -705,9 +708,9 @@ $override = e107::getSingleton('override', true);
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
-$sql->db_Mark_Time('Init Event Handler');
+$dbg->logTime('Init Event Handler');
 e107::getEvent()->init();
-$sql->db_Mark_Time('Register Core Events');
+$dbg->logTime('Register Core Events');
 e107::getNotify()->registerEvents();
 
 //
@@ -800,7 +803,7 @@ if (isset($pref['modules']) && $pref['modules']) {
 }
 */
 
-$sql->db_Mark_Time('Load Plugin Modules');
+$dbg->logTime('Load Plugin Modules');
 
 $js_body_onload = array();			// Initialise this array in case a module wants to add to it
 
@@ -811,7 +814,7 @@ if(isset($pref['e_module_list']) && $pref['e_module_list'])
 	{
 		if (is_readable(e_PLUGIN."{$mod}/e_module.php"))
 		{
-			$sql->db_Mark_Time('[e_module in '.$mod.']');
+			$dbg->logTime('[e_module in '.$mod.']');
 			require_once(e_PLUGIN."{$mod}/e_module.php");
  		}
 	}
@@ -822,7 +825,7 @@ if(isset($pref['e_module_list']) && $pref['e_module_list'])
 // P: THEME LOADING
 //
 
-$sql->db_Mark_Time('Load Theme');
+$dbg->logTime('Load Theme');
 
 if(!defined("USERTHEME"	))
 {
@@ -871,7 +874,7 @@ if (!function_exists('checkvalidtheme'))
 			return;
 		}
 
-		$sql->db_Mark_Time("Theme Check");
+		e107::getDebug()->logTime("Theme Check");
 
 		if (@fopen(e_THEME.$theme_check.'/theme.php', 'r'))
 	//	if (is_readable(e_THEME.$theme_check.'/theme.php'))
@@ -918,17 +921,19 @@ if (!function_exists('checkvalidtheme'))
 				
 			}
 		}
-		$sql->db_Mark_Time("Theme Check End");
+		e107::getDebug()->logTime("Theme Check End");
 
 		$themes_dir = $e107->getFolder('themes');
 		$e107->http_theme_dir = "{$e107->server_path}{$themes_dir}{$e107->site_theme}/";
+
+		unset($sql);
 	}
 }
 
 //
 // Q: ALL OTHER SETUP CODE
 //
-$sql->db_Mark_Time('Misc Setup');
+$dbg->logTime('Misc Setup');
 
 //------------------------------------------------------------------------------------------------------------------------------------//
 if (!class_exists('e107table', false))
@@ -944,8 +949,8 @@ if (!class_exists('e107table', false))
 		public 	$eMenuTotal = array();
 		public 	$eSetStyle;
 		private $themeClass = 'theme';  // v2.3.0+
-		private $legacyThemeClass = '';
-		private $adminThemeClass = '';
+		private $legacyThemeClass;
+		private $adminThemeClass;
 		public  $frontend = null;
 		private $uniqueId = null;
 		private $content = array();
@@ -999,6 +1004,7 @@ if (!class_exists('e107table', false))
 				$this->thm = new $this->legacyThemeClass();
 			}
 
+            return null;
         }
 
 
@@ -1211,7 +1217,7 @@ if (!class_exists('e107table', false))
         private function hasLegacyCode()
         {
             $legacy = ['VIEWPORT','THEME_DISCLAIMER', 'IMODE', 'BODYTAG', 'COMMENTLINK', 'OTHERNEWS_LIMIT',
-                        'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING'];
+                        'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING', 'CORE_CSS'];
 
             foreach($legacy as $const)
             {
@@ -1287,7 +1293,7 @@ $ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 
 // EONE-134 - bad e_module could destroy e107 instance
 $e107 = e107::getInstance();		// Is this needed now?
-$sql->db_Mark_Time('IP Handler and Ban Check');
+$dbg->logTime('IP Handler and Ban Check');
 e107::getIPHandler()->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout')
@@ -1299,7 +1305,7 @@ if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdat
 	}
 }
 
-$sql->db_Mark_Time('Signup/splash/admin');
+$dbg->logTime('Signup/splash/admin');
 
 
 if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['maintainance_flag'] && empty($_E107['cli']) && empty($_E107['no_maintenance'])))
@@ -1317,7 +1323,7 @@ if(!isset($_E107['no_prunetmp']))
 }
 
 
-$sql->db_Mark_Time('Login/logout/ban/tz');
+$dbg->logTime('Login/logout/ban/tz');
 
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
@@ -1463,7 +1469,7 @@ define('TIMEOFFSET', $e_deltaTime);
 
 
 // ----------------------------------------------------------------------------
-$sql->db_Mark_Time('Find/Load Theme');
+$dbg->logTime('Find/Load Theme');
 
 if(e_ADMIN_AREA) // Load admin phrases ASAP
 {
@@ -1499,7 +1505,7 @@ if(!defined('THEME'))
 
 $theme_pref = varset($pref['sitetheme_pref']);
 // --------------------------------------------------------------
-$sql->db_Mark_Time('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
+$dbg->logTime('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
 
 if(deftrue('e_ADMIN_AREA'))
 {
@@ -1541,14 +1547,14 @@ else
 
 if(!isset($_E107['no_menus']))
 {
-	$sql->db_Mark_Time('Init Menus');
+	$dbg->logTime('Init Menus');
 	e107::getMenu()->init();
 }
 
 // here we USE the theme
 if(e_ADMIN_AREA)
 {
-	$sql->db_Mark_Time('Loading Admin Theme');
+	$dbg->logTime('Loading Admin Theme');
 	if(file_exists(THEME.'admin_theme.php') && !deftrue('e_MENUMANAGER_ACTIVE')) // no admin theme when previewing.
 	{
 		require_once (THEME.'admin_theme.php');
@@ -1560,8 +1566,9 @@ if(e_ADMIN_AREA)
 }
 else
 {
-	$sql->db_Mark_Time('Loading Site Theme');
+	$dbg->logTime('Loading Site Theme');
 	require_once (THEME.'theme.php');
+	
 	if(isset($SC_WRAPPER))
 	{
 		e107::scStyle($SC_WRAPPER);
@@ -2206,13 +2213,13 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 }
 
 
-$sql->db_Mark_Time('Go online');
+$dbg->logTime('Go online');
 if(!isset($_E107['no_online']) && varset($pref['track_online']))
 {
 	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
 }
 
-$sql->db_Mark_Time('(After Go online)');
+$dbg->logTime('(After Go online)');
 
 /**
  * Set Cookie
@@ -2986,4 +2993,4 @@ function plugInstalled($plugname)
 	return isset($pref['plug_installed'][$plugname]);*/
 }
 
-$sql->db_Mark_Time('(After class2)');
+$dbg->logTime('(After class2)');

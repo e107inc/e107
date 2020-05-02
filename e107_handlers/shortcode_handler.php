@@ -1066,7 +1066,7 @@ class e_parse_shortcode
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			$sql->db_Mark_Time("SC ".$code);
+			e107::getDebug()->logTime("SC ".$code);
 		}
 
 		if (E107_DBG_SC && ADMIN)

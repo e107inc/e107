@@ -122,6 +122,11 @@
 		}
 
 		function Mark_Time($sMarker)
+        {
+            $this->logTime($sMarker);
+        }
+
+		public function logTime($sMarker)
 		{ // Should move to traffic_class?
 			$timeNow = microtime();
 			$nMarks = ++$this->nTimeMarks;

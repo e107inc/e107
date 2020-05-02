@@ -1262,7 +1262,7 @@ class e_jsmanager
 		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
-			e107::getDb()->db_Mark_Time("Load JS/CSS: ".$label);
+			e107::getDebug()->logTime("Load JS/CSS: ".$label);
 		}
 
 

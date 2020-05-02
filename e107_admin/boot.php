@@ -15,7 +15,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-e107::getDb()->db_Mark_Time('(Start boot.php)');
+e107::getDebug()->logTime('(Start boot.php)');
 header('Content-type: text/html; charset=utf-8', TRUE);
 define('ADMINFEED', 'https://e107.org/adminfeed');
 
@@ -216,7 +216,7 @@ e107::coreLan('footer', true);
 				continue;
 			}
 			
-			e107::getDb()->db_Mark_Time('[boot.php: Loading LANS for '.$_p.']');
+			e107::getDebug()->logTime('[boot.php: Loading LANS for '.$_p.']');
 			e107::loadLanFiles($_p, 'admin');
 		}
 	}
@@ -224,7 +224,7 @@ e107::coreLan('footer', true);
 
 
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
-e107::getDb()->db_Mark_Time('[boot.php: Loading admin_icons]');
+e107::getDebug()->logTime('[boot.php: Loading admin_icons]');
 include_once(e107::coreTemplatePath('admin_icons'));
 
 

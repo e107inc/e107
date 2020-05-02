@@ -59,7 +59,7 @@
 
 // ----------------------------
 
-	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
+	e107::getDebug()->logTime("Start Simple URL-ReWrite Routine");
 
 	$eUrl = e_url::instance();
 	$eUrl->run();
@@ -74,7 +74,7 @@
 
 // -----------------------------------------
 
-	$sql->db_Mark_Time("Start regular eFront Class");
+	e107::getDebug()->logTime("Start regular eFront Class");
 
 	$front = eFront::instance();
 	$front->init()
