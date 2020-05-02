@@ -408,7 +408,7 @@ class e_signup_class
 					e107::getEvent()->trigger('user_signup_activated', $row);
 					e107::getEvent()->trigger('userfull', $row);			// 'New' event
 
-					if (!empty($this->pref['autologinpostsignup']))
+					if (!empty($this->pref['autologinpostsignup']) && !e107::isCli())
 					{
 						require_once(e_HANDLER.'login.php');
 						$usr = new userlogin();

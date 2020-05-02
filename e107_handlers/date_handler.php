@@ -650,13 +650,11 @@ class e_date
 			if($format === 'short') { break; }
 		}
 
-
-		if(strpos($ret[0],$secs) !== false)
+		if(strpos($ret[0],$sec) !== false)
 		{
 			$justNow = deftrue('LANDT_10',"Just now");
 			return $mode ? array($justNow) : $justNow;
 		}
-
 
         if($older_date < $newer_date) // past
         {
