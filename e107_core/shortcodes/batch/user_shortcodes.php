@@ -530,7 +530,7 @@ class user_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return "<a class='btn btn-default' href='".$this->sc_user_settings_url()."'>".$label."</a>";
+		return "<a class='btn btn-default btn-secondary' href='".$this->sc_user_settings_url()."'>".$label."</a>";
 	}
 
 
