@@ -944,6 +944,8 @@ class e107_user_extended
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
+					$choice = $tp->toHTML($choice);
+
 					if(strpos($choice,"|")!==FALSE)
 					{
 		            	list($val,$label) = explode("|",$choice);
