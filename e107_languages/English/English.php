@@ -147,3 +147,5 @@ define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_CHOOSE_FILE", "Choose a file");
 
 define("LAN_REQUIRED", "Required");
+
+define("LAN_DEVELOPERMODE_CHECK", "Developer mode is enabled. Only use this mode when actually developing. Make sure to disable when using this website in live production.");
