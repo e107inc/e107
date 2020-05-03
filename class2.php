@@ -366,11 +366,12 @@ $tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 //
 require_once(e_HANDLER.'debug_handler.php');
 e107_debug::init(); // defines E107_DEBUG_LEVEL
+$dbg = e107::getDebug();
 
 if(E107_DEBUG_LEVEL)
 {
    //  $e107_debug = true; // BC
-    $dbg = e107::getDebug();
+    //$dbg = e107::getDebug();
     
     /** @deprecated  $db_debug */
     $db_debug = $dbg;
