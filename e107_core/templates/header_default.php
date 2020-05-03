@@ -780,6 +780,14 @@ if ($e107_popup != 1) {
 	{
 		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
+
+	if(ADMIN && deftrue('e_DEVELOPER') && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
+	{
+		echo "<div class='installer alert alert-danger alert-block text-center'>".LAN_DEVELOPERMODE_CHECK."</div>";
+	}
+
+
+
 	
 	//XXX TODO LAN in English.php 
 	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
