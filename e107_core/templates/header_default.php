@@ -783,12 +783,10 @@ if ($e107_popup != 1) {
 		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
 
-	if(ADMIN && deftrue('e_DEVELOPER') && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
+	if(ADMIN && $pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
 	{
-		echo "<div class='installer alert alert-danger alert-block text-center'>".LAN_DEVELOPERMODE_CHECK."</div>";
+		echo "<div class='installer alert alert-danger alert-block text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."</div>";
 	}
-
-
 
 	
 	//XXX TODO LAN in English.php 
