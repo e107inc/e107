@@ -582,6 +582,8 @@ echo "</head>\n";
 	if($tmp = e_theme::loadLayout(THEME_LAYOUT))
 	{
 		$LAYOUT = $tmp;
+		$HEADER = array();
+		$FOOTER = array();
 		$noBody = true;
 		unset($tmp);
 

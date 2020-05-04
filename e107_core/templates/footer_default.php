@@ -71,10 +71,11 @@ if (varset($e107_popup) != 1)
     {
 
         $psc = array(
-         '</body>'       => '',
-         '{THEME}'       => THEME_ABS,
-         '{---HEADER---}'     => $tp->parseTemplate('{HEADER}',true),
-         '{---FOOTER---}'     => $tp->parseTemplate('{FOOTER}',true)
+         '</body>'          => '',
+         '{THEME}'          => THEME_ABS,
+         '{---MODAL---}'    => $LAYOUT['_modal_'],
+         '{---HEADER---}'   => $tp->parseTemplate('{HEADER}',true),
+         '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
         );
 
 	   parseheader($FOOTER, $psc);

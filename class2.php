@@ -370,9 +370,8 @@ $dbg = e107::getDebug();
 
 if(E107_DEBUG_LEVEL)
 {
-   //  $e107_debug = true; // BC
-    //$dbg = e107::getDebug();
-    
+    $dbg->active(true);
+
     /** @deprecated  $db_debug */
     $db_debug = $dbg;
 	$dbg->logTime('Init ErrHandler');
@@ -717,7 +716,7 @@ e107::getNotify()->registerEvents();
 //
 // O: Start user session
 //
-$sql -> db_Mark_Time('User session');
+$dbg->logTime('User session');
 init_session();			// Set up a lot of the user-related constants
 
 

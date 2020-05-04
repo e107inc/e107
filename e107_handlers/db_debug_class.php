@@ -25,7 +25,7 @@
 
 	class e107_db_debug
 	{
-
+        private $active       = false;      // true when debug is active.
 		var $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
 		var $aDBbyTable       = array();
 		var $aOBMarks         = array(0 => ''); // Track output buffer level at each time mark
@@ -47,6 +47,16 @@
 
 		}
 
+
+        /**
+         * Set the active status of the debug logging.
+         * When set to false, called methods within the class will by bypassed for better performance.
+         * @param $var
+         */
+        public function active($var)
+        {
+            $this->active = (bool) $var;
+        }
 
 		/**
 		 * Return a list of all registered time markers.
@@ -127,7 +137,12 @@
         }
 
 		public function logTime($sMarker)
-		{ // Should move to traffic_class?
+		{
+		   if(!$this->active)
+           {
+                return null;
+           }
+
 			$timeNow = microtime();
 			$nMarks = ++$this->nTimeMarks;
 
@@ -170,7 +185,10 @@
 		 */
 		function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 		{
-
+            if(!$this->active)
+            {
+                return null;
+            }
 			//  global $sql;
 			$sql = e107::getDb($rli);
 
@@ -691,7 +709,7 @@
 		function logCode($type, $code, $parm, $details)
 		{
 
-			if(!E107_DBG_BBSC)
+			if(!E107_DBG_BBSC || !$this->active)
 			{
 				return false;
 			}
@@ -910,6 +928,10 @@
 		 */
 		public function log($message, $TraceLev = 1)
 		{
+		    if(!$this->active)
+            {
+                return null;
+            }
 
 			if(is_array($message) || is_object($message))
 			{

@@ -27,7 +27,7 @@
 				$this->assertTrue(false, "Couldn't load e107table object");
 			}
 
-			$this->ns->__construct();
+			$this->ns->init();
 
 		}
 /*
