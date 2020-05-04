@@ -538,11 +538,15 @@ TMPO;
 
 	private function checkDeveloperMode()
 	{
-		if(deftrue('e_DEVELOPER') && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
+		$pref 	= e107::getPref();
+		$tp 	= e107::getParser();
+
+		if($pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
 		{
-			e107::getMessage()->addWarning(LAN_DEVELOPERMODE_CHECK);
+			e107::getMessage()->addWarning($tp->toHTML(LAN_DEVELOPERMODE_CHECK, true));
 		}
 	}
+
 
 
 	private function checkDependencies()
