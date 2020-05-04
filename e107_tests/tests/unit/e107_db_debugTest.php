@@ -26,6 +26,7 @@
 				$this->assertTrue(false, "Couldn't load e107_db_debug object");
 			}
 
+            $this->dbg->active(true);
 		}
 /*
 		public function testShowIf()
