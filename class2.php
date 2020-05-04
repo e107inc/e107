@@ -960,10 +960,12 @@ if (!class_exists('e107table', false))
 		private $thm;
 
 		
-		function __construct()
+		public function init()
 		{
 			$this->legacyThemeClass  = e107::getPref('sitetheme')."_theme"; // disabled at the moment.
 			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class.
+
+            $this->load();
 		}
 
         /**
@@ -1242,7 +1244,7 @@ if (!class_exists('e107table', false))
 		private function tablestyle($caption, $text, $mode)
 		{
 
-            $this->load();
+
 
 			// Automatic list detection .
 			$isList = (strpos(ltrim($text), '<ul') === 0 );
@@ -1290,7 +1292,7 @@ if (!class_exists('e107table', false))
 //#############################################################
 
 //DEPRECATED, BC, call the method only when needed, $e107->ns caught by __get()
-$ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
+$ns = e107::getRender(); //  load theme class.
 
 // EONE-134 - bad e_module could destroy e107 instance
 $e107 = e107::getInstance();		// Is this needed now?
@@ -1576,6 +1578,7 @@ else
 	}
 }
 
+e107::getRender()->init(); // initialize theme class.
 
 //----------------------------
 //	Load shortcode handler
