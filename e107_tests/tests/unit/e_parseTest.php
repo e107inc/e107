@@ -25,6 +25,7 @@
 				$this->assertTrue(false, "Couldn't load e_parser object");
 			}
 
+            $this->tp->__construct();
 		}
 /*
 		public function testHtmlAbuseFilter()
@@ -635,12 +636,16 @@ while(&#036;row = &#036;sql-&gt;fetch())
             $result = $this->tp->getScriptAccess();
             $this->assertFalse($result);
 		}
-/*
-		public function testSetAllowedAttributes()
+
+		public function testGetAllowedAttributes()
 		{
+            $result = $this->tp->getAllowedAttributes();
 
+            $true = is_array($result) && in_array('style',$result['img']);
+
+            $this->assertTrue($true);
 		}
-
+/*
 		public function testSetScriptTags()
 		{
 
@@ -1112,6 +1117,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
                 12 => array(
                     'html'      => "<pre>/* {THEME_PREF: code=header_width&default=container} */</pre>",
                     'expected'  => "<pre>/* &#123;THEME_PREF: code=header_width&amp;default=container&#125; */</pre>",
+                ),
+
+                13 => array(
+                    'html'      => '<div class="video-responsive"><div class="video-responsive"><video width="320" height="240" controls="controls"><source src="e107_media/xxxxx5/videos/2018-07/SampleVideo.mp4" type="video/mp4">Your browser does not support the video tag.</video></div></div>',
+                    'expected'  => '<div class="video-responsive"><div class="video-responsive"><video width="320" height="240" controls="controls"><source src="e107_media/xxxxx5/videos/2018-07/SampleVideo.mp4" type="video/mp4">Your browser does not support the video tag.</source></video></div></div>'
                 ),
 
 			);

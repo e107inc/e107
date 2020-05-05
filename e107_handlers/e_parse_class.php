@@ -3821,21 +3821,22 @@ class e_parser
     protected $nodesToDisableSC     = array();
     protected $pathList             = array();
     protected $allowedAttributes    = array(
-                                    'default'   => array('id', 'style', 'class'),
-                                    'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
-                                    'a'         => array('id', 'href', 'style', 'class', 'title', 'target', 'rel'),
+                                    'default'   => array('id', 'style', 'class', 'title', 'lang', 'accesskey'),
+                                    'img'       => array('src', 'alt', 'width', 'height'),
+                                    'a'         => array('href', 'target', 'rel'),
                                     'script'	=> array('type', 'src', 'language', 'async'),
-                                    'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
-	                                'input'     => array('type','name','value','class','style'),
+                                    'iframe'	=> array('src', 'frameborder', 'width', 'height'),
+	                                'input'     => array('type','name','value'),
 	                                'form'      => array('action','method','target'),
 	                                'audio'     => array('src','controls', 'autoplay', 'loop', 'muted', 'preload' ),
 	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
-	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
-	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
-	                                'col'       => array('id', 'span', 'class','style'),
-		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
+	                                'td'        => array('colspan', 'rowspan'),
+	                                'th'        => array('colspan', 'rowspan'),
+	                                'col'       => array('span'),
+		                            'embed'     => array('src', 'wmode', 'type', 'width', 'height'),
 									'x-bbcode'  => array('alt'),
 									'label'		=> array('for'),
+									'source'    => array('media', 'sizes', 'src', 'srcset', 'type'),
 
                                   );
 
@@ -3847,7 +3848,7 @@ class e_parser
 
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
-                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
+                                        'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'source', 'br',
                                         'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
@@ -3869,12 +3870,35 @@ class e_parser
     {
 
 		$this->init();
+		$this->compileAttributeDefaults();
+
          /*
         $meths = get_class_methods('DomDocument');
         sort($meths);
         print_a($meths);
         */        
-    }  
+    }
+
+    /**
+     * Merge default 'global' attributes into assigned tags.
+     */
+    private function compileAttributeDefaults()
+    {
+        foreach($this->allowedAttributes as $tag=>$array)
+        {
+            if($tag === 'default')
+            {
+                continue;
+            }
+
+            foreach($this->allowedAttributes['default'] as $def)
+            {
+                $this->allowedAttributes[$tag][] = $def;
+            }
+
+        }
+
+    }
 
     /**
      * Used by e_parse to start
