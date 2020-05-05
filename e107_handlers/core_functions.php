@@ -462,6 +462,7 @@ class e_array {
 	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
 		        echo "<pre>";
 				debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+				file_put_contents(e_LOG.'unserializeError_'.date('c').'.log', $ArrayData);
 				echo "</pre>";
 	        }
 

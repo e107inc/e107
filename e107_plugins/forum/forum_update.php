@@ -471,6 +471,8 @@ function step5()
 	if ($sql -> select('forum'))
 	{
 		$forumList = $sql -> db_getList();
+		$sefs = array();
+
 		foreach ($forumList as $forum)
 		{
 			if ($forum['forum_parent'] == 0)
@@ -489,8 +491,16 @@ function step5()
 			$tmp = $forum;
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
-			$tmp['forum_sef'] = eHelper::title2sef($forum['forum_name'],'dashl');
+			$forum_sef = eHelper::title2sef($forum['forum_name'],'dashl');
 
+			if(isset($sefs[$forum_sef]))
+            {
+                $forum_sef .= "-2";
+            }
+
+			$tmp['forum_sef'] = $forum_sef;
+
+            $sefs[$forum_sef] = true;
 
 			//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
 			if ($sql -> insert('forum_new', $tmp))
@@ -499,7 +509,8 @@ function step5()
 			}
 			else
 			{
-				$mes -> addError("Insert failed on " . print_a($tmp, true));
+				$mes->addDebug("Insert failed on " . print_a($tmp, true));
+				$mes->addError($sql->getLastErrorText());
 			}
 
 		}

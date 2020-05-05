@@ -1,4 +1,7 @@
 /* Backwards Compatibility Stylesheet for v1.x */
+/* v1.x e107.css */
+table { margin-left:auto; margin-right:auto; }
+
 
 /* Bootstrap Alerts */
 .alert          { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }

@@ -125,10 +125,10 @@ if (!$dont_check_update)
 //	$dbupdate['218_to_219'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.8','2.1.9')), 'message'=> null, 'hide_when_complete'=>true);
 
 //	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
-
-	$dbupdate['20x_to_220'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
-	
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
+
+	$dbupdate['20x_to_220'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
+	
 
 
 	// always run these last.

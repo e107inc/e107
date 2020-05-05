@@ -100,7 +100,7 @@ class e_plugin
 
 		$this->_init();
 
-		if(empty($this->_ids))
+		if(empty($this->_ids) )
 		{
 		//	e107::getDebug()->log("Running e_plugin::_initIDs()");
 		//	e107::getDebug()->log(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
@@ -581,7 +581,10 @@ class e_plugin
 		}
 
 
-
+        if(e_PAGE == 'e107_update.php')
+        {
+            return null;
+        }
 
 
 		foreach($detected as $path) // add a missing plugin to the database table.
