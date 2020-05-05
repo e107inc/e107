@@ -111,6 +111,7 @@ class admin_start
 	private $exit = false;
 
 	private $deprecated = array();
+	private $upgradeRequiredFirst = false;
 	
 	function __construct()
 	{
@@ -119,6 +120,11 @@ class admin_start
 		{
 			return null;
 		}
+
+		if(!e107::getDb()->isTable('admin_log')) // Upgrade from v1.x to v2.x required.
+		{
+		    $this->upgradeRequiredFirst = true;
+        }
 
 		// Files that can cause comflicts and problems.
         $fileInspector = e107::getFileInspector();
@@ -263,6 +269,13 @@ class admin_start
 		{
 			return null;
 		}
+
+        if($this->upgradeRequiredFirst)
+        {
+            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php'>".LAN_CONTINUE." ".SEP."</a></p>";
+            e107::getMessage()->addInfo($message);
+        }
+
 
 		return null;
 
@@ -494,6 +507,11 @@ TMPO;
 
 	private function checkIncompatiblePlugins()
 	{
+	    if($this->upgradeRequiredFirst)
+	    {
+	        return null;
+        }
+
 		$mes = e107::getMessage();
 		
 		$installedPlugs = e107::getPref('plug_installed');
@@ -523,6 +541,11 @@ TMPO;
 
 	private function checkPasswordEncryption()
 	{
+	    if($this->upgradeRequiredFirst)
+	    {
+	        return null;
+        }
+
 		$us = e107::getUserSession();
 		$mes = e107::getMessage();
 
@@ -558,7 +581,10 @@ TMPO;
 
 	private function checkDeprecated()
 	{
-
+        if($this->upgradeRequiredFirst)
+        {
+            return null;
+        }
 
 		$found = array();
 		foreach($this->deprecated as $path)

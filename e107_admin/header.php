@@ -363,18 +363,28 @@ e107::getJs()->renderJs('header_inline', 3);
 echo "<!-- *META* -->\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
-if (vartrue($pref['e_meta_list']))
+
+/** @var array $incompatibleMeta - plugins that may cause jQuery conflicts etc if loaded.  */
+$incompatibleMeta = array('aa_jquery', 'fancybox', 'lightwindow', 'e107slider' );
+
+if (!empty($pref['e_meta_list']))
 {
 	foreach ($pref['e_meta_list'] as $val)
 	{
+	    if(in_array($val,$incompatibleMeta))
+        {
+            continue;
+        }
+
 		if (is_readable(e_PLUGIN.$val."/e_meta.php"))
 		{
-			echo "<!-- $val meta -->\n";
+			echo "\n\n<!-- $val meta -->\n";
 			require_once (e_PLUGIN.$val."/e_meta.php");
 		}
 	}
 }
 
+unset($incompatibleMeta);
 
 
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
