@@ -507,6 +507,7 @@ class e_plugin
 
 			if(version_compare($curVal,$version,"<")) // check pref version against file version.
 			{
+			    e107::getDebug()->log($curVal."  vs  ".$version);
 				$needed[$path] = $version;
 			}
 
@@ -948,7 +949,7 @@ class e_plugin
 
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['lan'] = varset($eplug_name);
-		$ret['@attributes']['version'] =  $this->_fixVersion($eplug_version);
+		$ret['@attributes']['version'] =  $this->_fixVersion($eplug_version, true);
 		$ret['@attributes']['date'] = varset($eplug_date);
 		$ret['@attributes']['compatibility'] = $this->_fixCompat($eplug_compatible);
 		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) ? 'true' : '';
@@ -1031,7 +1032,7 @@ class e_plugin
 	}
 
 
-	private function _fixVersion($ver)
+	private function _fixVersion($ver, $legacy=false)
 	{
 
 		if(empty($ver))
@@ -1041,8 +1042,9 @@ class e_plugin
 
 		$ver = str_replace('e107','',$ver);
 
+        $regex = ($legacy === true) ? '/([^\d\.ab])/' : '/([^\d\.])/';
 
-		return preg_replace('/([^\d\.])/','',$ver);
+		return preg_replace($regex,'',$ver); // eg. 2.0.1b okay for BC plugin.
 
 
 	}

@@ -19,16 +19,18 @@ if(!class_exists('forum_newforumposts_menu'))
 	class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 	{
 
-		private $plugPref = null;
-		private $menuPref = null;
-		private $forumObj = null;
+		private $plugPref;
+		private $menuPref;
+		private $forumObj;
 		private $total = array();
+		private $cacheTag = 'nfpCache';
+		private $cacheTime = 1; // cache time in minutes.
 
 		function __construct()
 		{
-			$this->forumObj = new e107forum;
 			$this->plugPref = e107::pref('forum'); // general forum preferences.
 			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+            $this->forumObj = new e107forum;
 
 			// Set some defaults ...
 			if (!isset($this->menuPref['title'])) $this->menuPref['title'] = "";
@@ -39,6 +41,16 @@ if(!class_exists('forum_newforumposts_menu'))
 			if (!isset($this->menuPref['scroll'])) $this->menuPref['scroll'] = "";
 			if (empty($this->menuPref['layout'])) $this->menuPref['layout'] = 'default';
 
+            $this->cacheTag .= "_".$this->menuPref['layout'];
+
+
+            if($text = e107::getCache()->retrieve($this->cacheTag, $this->cacheTime, true))
+            {
+                e107::getDebug()->log("New Forum Posts Menu Cache Rendered");
+                $caption = $this->getCaption();
+                e107::getRender()->tablerender($caption, $text, 'nfp_menu');
+                return null;
+            }
 
 			$sql = e107::getDb();
 
@@ -57,7 +69,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 
 
-		function getQuery()
+		private function getQuery()
 		{
 			$max_age = vartrue($this->menuPref['maxage'], 0);
 			$max_age = ($max_age == 0) ? '' : '(p.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
@@ -70,7 +82,6 @@ if(!class_exists('forum_newforumposts_menu'))
 				return false;
 			}
 
-			$qry = '';
 
 			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
 			switch($this->menuPref['layout'])
@@ -122,13 +133,11 @@ if(!class_exists('forum_newforumposts_menu'))
 		}
 
 
-
-		// TODO: cache menu.
-		function render()
+		private function render()
 		{
 			$tp = e107::getParser();
 			$sql = e107::getDb('nfp');
-			$pref = e107::getPref();
+		//	$pref = e107::getPref();
 
 			$qry = $this->getQuery();
 			$ns = e107::getRender();
@@ -200,33 +209,7 @@ if(!class_exists('forum_newforumposts_menu'))
 				$text = LAN_FORUM_MENU_016;
 			}
 
-			if(!empty($this->menuPref['caption']))
-			{
-				if (array_key_exists(e_LANGUAGE, $this->menuPref['caption']))
-				{
-					// Language key exists
-					$caption = vartrue($this->menuPref['caption'][e_LANGUAGE], LAN_PLUGIN_FORUM_LATESTPOSTS);
-				}
-				elseif (is_array($this->menuPref['caption']))
-				{
-					// Language key not found
-					$keys = array_keys($caption = $this->menuPref['caption']);
-					// Just first language key from the list
-					$caption = vartrue($this->menuPref['caption'][$keys[0]], LAN_PLUGIN_FORUM_LATESTPOSTS);
-				}
-				else
-				{
-					// No multilan array, just plain text
-					$caption = vartrue($this->menuPref['caption'], LAN_PLUGIN_FORUM_LATESTPOSTS);
-				}
-				//$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
-			}
-
-
-			if(empty($caption))
-			{
-				$caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
-			}
+            $caption = $this->getCaption();
 
 			if(!empty($this->menuPref['scroll']))
 			{
@@ -234,11 +217,50 @@ if(!class_exists('forum_newforumposts_menu'))
 			}
 		//	e107::debug('menuPref', $this->menuPref);
 
+
+		    e107::getCache()->set($this->cacheTag, $text, true);
+
 			$ns->tablerender($caption, $text, 'nfp_menu');
 
 		}
 
+        private function getCaption()
+        {
+            if (!empty($this->menuPref['caption']))
+            {
+                if (array_key_exists(e_LANGUAGE, $this->menuPref['caption']))
+                {
+                    // Language key exists
+                    $caption = vartrue($this->menuPref['caption'][e_LANGUAGE], LAN_PLUGIN_FORUM_LATESTPOSTS);
+                }
+                elseif (is_array($this->menuPref['caption']))
+                {
+                    // Language key not found
+                    $keys = array_keys($caption = $this->menuPref['caption']);
+                    // Just first language key from the list
+                    $caption = vartrue($this->menuPref['caption'][$keys[0]], LAN_PLUGIN_FORUM_LATESTPOSTS);
+                }
+                else
+                {
+                    // No multilan array, just plain text
+                    $caption = vartrue($this->menuPref['caption'], LAN_PLUGIN_FORUM_LATESTPOSTS);
+                }
+                //$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
+            }
+
+
+            if (empty($caption))
+            {
+                $caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
+            }
+
+            return $caption;
+        }
+
+
 	}
+
+
 }
 
 

@@ -103,6 +103,7 @@ class admin_start
 			array('jshelpers',      '0.3b'),
 			array('akismet',        7.0),
 			array('newforumposts_main', 1),
+			array('fancybox',       '2.06b'),
 	);
 
 
