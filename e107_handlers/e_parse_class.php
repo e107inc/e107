@@ -1605,6 +1605,12 @@ class e_parse extends e_parser
 		{
 			$opts['nobreak'] = true;
 			$text = trim($text);
+
+			if(strpos($text,'[center]') === 0) // quick bc fix TODO Find a better solution. [center][/center] containing HTML.
+            {
+		    	$text = str_replace("[center]","<div style='text-align:center'>",$text);
+		        $text = str_replace("[/center]","</div>",$text);
+            }
 		}
 
 		$fromadmin = $opts['fromadmin'];

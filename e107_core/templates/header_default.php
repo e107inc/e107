@@ -210,6 +210,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
+	$e_js->footerFile('{e_WEB_JS}core/backcompat.js');
 }
 
 

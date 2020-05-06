@@ -65,6 +65,9 @@ table.table { width: 100% }
     background-color: #f9f9f9;
 }
 
+.s-message a.close { cursor: pointer }
+
+
 /* Bootstrap classes that hide content for all devices except screen readers (accessibility) */
 .sr-only {
   position: absolute;
