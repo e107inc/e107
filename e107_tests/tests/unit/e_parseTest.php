@@ -65,6 +65,39 @@ TMP;
 		$expected = "<div class='bbcode-center' style='text-align:center'><img src='".e_HTTP."e107_images/generic/blank_avatar.jpg' width='' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
 
 		$this->assertEquals($expected, $actual, "BBcode parsing failed on [img]");
+
+
+		$src = <<<SRC
+[center]<script type=&quot;text/javascript&quot;><!--
+google_ad_client = &quot;12345678&quot;;
+/* vertical */
+google_ad_slot = &quot;12345&quot;;
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type=&quot;text/javascript&quot;
+src=&quot;http://pagead2.googlesyndication.com/pagead/show_ads.js&quot;>
+</script>[/center]
+SRC;
+
+        $expected = <<<EXPECTED
+<div style='text-align:center'><script type="text/javascript"><!--
+google_ad_client = "12345678";
+/* vertical */
+google_ad_slot = "12345";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+EXPECTED;
+
+                $actual = $this->tp->toHTML($src,true);
+                $this->assertEquals($expected,$actual);
+
 /*
 $src = "[html]
 <pre>&#036;sql = e107::getDb();

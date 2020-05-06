@@ -1607,9 +1607,9 @@ class news_front
 
 			require_once(THEME."news_template.php");
 
-			if(empty($ALTERNATECLASS1))
+			if(!empty($ALTERNATECLASS1))
 			{
-				return TRUE;
+				return true;
 			}
 
 			$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
@@ -1618,7 +1618,9 @@ class news_front
 			$loop = 1;
 			$param = array();
 			$param['current_action'] = $action;
-			foreach($newsAr as $news) {
+
+			foreach($newsAr as $news)
+			{
 
 				if(is_array($ALTERNATECLASSES))
 				{
@@ -1630,7 +1632,8 @@ class news_front
 					$newsdata[$loop] .= $this->ix->render_newsitem($news, 'return', '', '', $param);
 				}
 				$loop ++;
-				if($loop > $newscolumns) {
+				if($loop > $newscolumns)
+				{
 					$loop = 1;
 				}
 			}
