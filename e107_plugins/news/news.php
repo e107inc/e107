@@ -180,7 +180,7 @@ class news_front
 	 */
 	private function renderNewForumPosts()
 	{
-		if(e107::isInstalled('newforumposts_main') && !empty($this->pref['nfp_display']))
+		if(deftrue('THEME_LEGACY') && !empty($this->pref['nfp_display']))
 		{
 			$parms = array('layout'=>'main', 'display'=>$this->pref['nfp_amount']);
 
