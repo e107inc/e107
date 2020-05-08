@@ -580,7 +580,7 @@ class user_shortcodes extends e_shortcode
 		  e107::setRegistry('userjump', $userjump);
 		}
 		
-		$class  = empty($parms[2]['class']) ? 'e-tip' : $parms[2]['class'];
+		$class  = empty($parms[2]['class']) ? 'e-tip page-link' : $parms[2]['class'];
 	
 		if($parms[1] == 'prev')
 		{
@@ -739,19 +739,25 @@ class user_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
-		$template = e107::getCoreTemplate('user','extended');
-		
-		
-		$EXTENDED_CATEGORY_START 	= $template['start'];
-		$EXTENDED_CATEGORY_END		= $template['end'];
-		$EXTENDED_CATEGORY_TABLE 	= $template['item'];;
-		
+
+		if(THEME_LEGACY === true) // v1.x
+        {
+            global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
+        }
+        else // v2.x
+        {
+            $template = e107::getCoreTemplate('user','extended');
+            $EXTENDED_CATEGORY_START    = $template['start'];
+            $EXTENDED_CATEGORY_END	    = $template['end'];
+            $EXTENDED_CATEGORY_TABLE 	= $template['item'];;
+        }
+
+     /*
 		$qry = "SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
 			LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
 			ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
 		";
-		
+		*/
 
 		require_once(e_HANDLER."user_extended_class.php");
 		

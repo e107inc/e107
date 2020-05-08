@@ -761,7 +761,7 @@ if ($e107_popup != 1) {
 		'{THEME}'       => THEME_ABS,
 		'{BODY_ONLOAD}' => $body_onload,
 		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
-		'{---MODAL---}' => $LAYOUT['_modal_'],
+		'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
 		'{---HEADER---}'  => $tp->parseTemplate('{HEADER}',true),
         '{---FOOTER---}'  => $tp->parseTemplate('{FOOTER}',true),
 		);

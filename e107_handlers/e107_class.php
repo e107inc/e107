@@ -283,6 +283,10 @@ class e107
 	 */
 	protected function __construct()
 	{
+	  /*  if(defined('e_PDO') && e_PDO === false) // TODO
+        {
+            self::$_known_handlers['db'] = '{e_HANDLER}mysql_class.php';
+        }*/
 		// FIXME registered shutdown functions not executed after the $page output in footer - investigate
 		// Currently manually called in front-end/admin footer
 		//register_shutdown_function(array($this, 'destruct'));
@@ -2770,8 +2774,9 @@ class e107
 		$override_path 				= $override ? $curTheme.'templates/'.$id.'_template.php' : null;
 		$legacy_override_path 		= $override ? $curTheme.$id.'_template.php' : null;
 
-		$legacy_core_path 			= e_THEME.'templates/'.$id.'_template.php';
-		$core_path 					= e_CORE.'templates/'.$id.'_template.php';
+		$core_path 					= e_CORE.'templates/'.$id.'_template.php'; // default
+		$core_path_legacy 			= e_CORE.'templates/legacy/'.$id.'_template.php';
+		$core_path_bs4				= e_CORE.'templates/bootstrap4/'.$id.'_template.php';
 
 		if($override_path && is_readable($override_path)) // v2 override template.
 		{
@@ -2781,10 +2786,14 @@ class e107
 		{
 			return $legacy_override_path;
 		}
-		elseif(is_readable($legacy_core_path)) //v1 core template.
+		elseif(THEME_LEGACY === true && is_readable($core_path_legacy)) //v1 core template.
 		{
-		//	return $legacy_core_path; // just asking for trouble.
+			return $core_path_legacy;
 		}
+		elseif(defset('BOOTSTRAP') === 4 && is_readable($core_path_bs4))
+        {
+            return $core_path_bs4;
+        }
 
 		return $core_path;
 	}

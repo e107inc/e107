@@ -15,12 +15,9 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH"))
-{
-	 $legacyWidth = deftrue('BOOTSTRAP') ? ""  : "width:95%";
-	 define("USER_WIDTH", $legacyWidth); 
-}
 
+
+/*
 global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
 define("HIDE_EMPTY_FIELDS", FALSE);
@@ -42,9 +39,9 @@ $EXTENDED_CATEGORY_TABLE = "
 
 $EXTENDED_CATEGORY_END = "";
 
-/**
- * Preparing for huge markup/css changes
- */
+
+// Preparing for huge markup/css changes
+
 $USER_SHORT_TEMPLATE_START = "
 	<div class='content user-list'>
 	<div class='center'>".LAN_USER_56." {TOTAL_USERS}
@@ -109,7 +106,7 @@ $sc_style['USER_COMMENTPOSTS']['post'] = "";
 $sc_style['USER_COMMENTPER']['pre'] = " ( ";
 $sc_style['USER_COMMENTPER']['post'] = "% )</td></tr>";
 
-//FIXME TODO - Remove IF statements from template. 
+
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
 {
 	$user_picture =  "{USER_PICTURE}";
@@ -241,13 +238,12 @@ $USER_TEMPLATE['extended']['start']         = $EXTENDED_CATEGORY_END;
 $USER_TEMPLATE['list']['start'] 	        = $USER_SHORT_TEMPLATE_START;
 $USER_TEMPLATE['list']['item'] 		        = $USER_SHORT_TEMPLATE;
 $USER_TEMPLATE['list']['end'] 		        = $USER_SHORT_TEMPLATE_END;
-
+*/
 
 // ------------ End of Legacy Code ------------------------------- //
 
 //  v2.x Standards.
-if(deftrue('BOOTSTRAP'))
-{
+
 
 	$USER_TEMPLATE = array(); // reset the legacy template above.
 	$USER_WRAPPER = array(); // reset all the legacy wrappers above.
@@ -383,7 +379,6 @@ if(deftrue('BOOTSTRAP'))
 	  <!-- End Comments -->
 	 
 	';
-}
 
 
 
@@ -392,7 +387,3 @@ if(deftrue('BOOTSTRAP'))
 
 
 
-
-
-
-?>
