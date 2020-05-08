@@ -105,20 +105,23 @@ $qs = explode(".", e_QUERY);
 $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
 
-$USER_TEMPLATE = e107::getCoreTemplate('user');
-e107::scStyle($sc_style);
 
-if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
+if(THEME_LEGACY === true) // v1.x BC Fix for loading old templates.
 {
-	e107::getMessage()->addDebug( "Using v1.x user template");
+    $sc_style = array();
+	e107::getMessage()->addDebug( "Loading v1.x user template");
 	include(e107::coreTemplatePath('user')); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
+    e107::scStyle($sc_style);
 }
-else
+else // v2.x
 {
+    e107::getMessage()->addDebug( "Loading v2.x user template");
+    $USER_TEMPLATE              = e107::getCoreTemplate('user');
 	$USER_FULL_TEMPLATE         = $USER_TEMPLATE['view'];
 	$USER_SHORT_TEMPLATE_START  = $USER_TEMPLATE['list']['start'] ;
 	$USER_SHORT_TEMPLATE        = $USER_TEMPLATE['list']['item'] ;
 	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
+
 }
 
 $USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $USER_FULL_TEMPLATE); // BC Fix
@@ -126,19 +129,6 @@ $USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $U
 $user_shortcodes = e107::getScBatch('user');
 $user_shortcodes->wrapper('user/view');
 
-
-
-
-/*
-if (file_exists(THEME."user_template.php"))
-{
-	require_once(THEME."user_template.php");
-}
-else
-{
-	require_once(e_BASE.$THEMES_DIRECTORY."templates/user_template.php");
-}
-  */
 
 $user_frm = new form;
 require_once(HEADERF);
@@ -223,17 +213,17 @@ if (isset($id))
 	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
 	{
 		$cobj = new comment;
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, null, $_POST['subject']);
 	}
 
 	if($text = renderuser($id))
 	{
-		$ns->tablerender(LAN_USER_50, $text);
+		$ns->tablerender(LAN_USER_50, e107::getMessage()->render(). $text);
 	}
 	else
 	{
 		$text = "<div style='text-align:center'>".LAN_USER_51."</div>";
-		$ns->tablerender(LAN_ERROR, $text);
+		$ns->tablerender(LAN_ERROR,  e107::getMessage()->render().$text);
 	}
 	unset($text);
 	require_once(FOOTERF);
@@ -326,4 +316,4 @@ function renderuser($uid, $mode = "verbose")
 }
 
 require_once(FOOTERF);
-?>
+
