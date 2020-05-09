@@ -98,11 +98,11 @@ if (!defined('e107_INIT')) { exit; }
 	{SETIMAGE: w=600}
 	<div class="user-profile user-profile-bs4 row">
 	    <div class="col-md-12">
-	        <div class="panel panel-default panel-profile clearfix">
-	            <div class="panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
+	        <div class="panel panel-default panel-profile card card-profile  clearfix">
+	            <div class="panel-heading card-heading pt-2 pl-2" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
 	                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}</h5>
 	            </div>
-	            <div class="panel-body text-center">
+	            <div class="panel-body card-body text-center">
 	                {SETIMAGE: w=200&h=200&crop=1}
 	                {USER_PICTURE: shape=circle&link=1}
 	                <div class="profile-header">
@@ -112,7 +112,7 @@ if (!defined('e107_INIT')) { exit; }
 	                    {USER_SENDPM}
 	                </div>
 	            </div>
-	            <div class="panel-body">
+	            <div class="panel-body card-body">
 	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_63.'</div><div class="col-xs-12 col-md-8">{USER_REALNAME}</div></div>
 	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_02.'</div><div class="col-xs-12 col-md-8">{USER_LOGINNAME}</div></div>
 	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_60.'</div><div class="col-xs-12 col-md-8">{USER_EMAIL}</div></div>
@@ -125,21 +125,19 @@ if (!defined('e107_INIT')) { exit; }
 	                {USER_EXTENDED_ALL}
 	                <div class="row"></div>
 	            </div>
-	            <div class="panel-body text-center">
+	            <div class="panel-body card-body text-center">
 	                {USER_UPDATE_LINK}
 	            </div>
-	            <div class="panel-body">
-	                <ul class="pagination user-view-nextprev">
-	                    <li class="page-item previous">
-	                       {USER_JUMP_LINK=prev}
-	                    </li>
-		               <li>
-	                       <!-- Back to List? -->
-	                    </li>
-	                    <li class="page-item next">
-	                       {USER_JUMP_LINK=next}
-	                    </li>
-	                </ul>
+                    <div class="panel-body card-body user-view-nextprev">
+                    <div class="float-left previous">
+                    	{USER_JUMP_LINK=prev}
+                	</div>
+                	<div class="text-center ">
+                		<!-- Back to List? -->
+                	</div>
+                	<div class="float-right next">
+                    {USER_JUMP_LINK=next}
+                	</div> 
 	            </div>
 	        </div>
 			
