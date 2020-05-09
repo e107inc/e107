@@ -128,23 +128,18 @@ if (!defined('e107_INIT')) { exit; }
 	            <div class="panel-body text-center">
 	                {USER_UPDATE_LINK}
 	            </div>
-	            <div class="panel-body">
-	                <ul class="pagination user-view-nextprev">
-	                    <li class="page-item previous">
-	                       {USER_JUMP_LINK=prev}
-	                    </li>
-		               <li>
-	                       <!-- Back to List? -->
-	                    </li>
-	                    <li class="page-item next">
-	                       {USER_JUMP_LINK=next}
-	                    </li>
-	                </ul>
+	            <div class="panel-body card-body user-view-nextprev">
+                    <div class="float-left previous">
+                    	{USER_JUMP_LINK=prev}
+                	</div>
+                	<div class="text-center ">
+                		<!-- Back to List? -->
+                	</div>
+                	<div class="float-right next">
+                    {USER_JUMP_LINK=next}
+                	</div> 
 	            </div>
 	        </div>
-			
-	          
-		
 		
 	    </div>
 	</div>
