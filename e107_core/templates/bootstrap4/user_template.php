@@ -128,16 +128,18 @@ if (!defined('e107_INIT')) { exit; }
 	            <div class="panel-body card-body text-center">
 	                {USER_UPDATE_LINK}
 	            </div>
-                    <div class="panel-body card-body user-view-nextprev">
-                    <div class="float-left previous">
-                    	{USER_JUMP_LINK=prev}
-                	</div>
-                	<div class="text-center ">
-                		<!-- Back to List? -->
-                	</div>
-                	<div class="float-right next">
-                    {USER_JUMP_LINK=next}
-                	</div> 
+                   <div class="panel-body card-body">
+	                <ul class="pagination d-flex justify-content-between user-view-nextprev">
+	                    <li class="page-item previous">
+	                       {USER_JUMP_LINK=prev}
+	                    </li>
+		               <li>
+	                       <!-- Back to List? -->
+	                    </li>
+	                    <li class="page-item next">
+	                       {USER_JUMP_LINK=next}
+	                    </li>
+	                </ul>
 	            </div>
 	        </div>
 			
