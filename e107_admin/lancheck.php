@@ -354,22 +354,6 @@ class lancheck
 
 		$acceptedLans = explode(",",e_LANLIST);
 	
-		
-		if(!isset($_SESSION['lancheck-core-image']))
-		{
-			$core = array();	
-
-			$coredir = array('admin' => 'e107_admin', 'files' => 'e107_files', 'images' => 'e107_images', 'themes' => 'e107_themes', 'plugins' => 'e107_plugins', 'handlers' => 'e107_handlers', 'languages' => 'e107_languages', 'downloads' => 'e107_downloads', 'docs' => 'e107_docs');
-
-			$core_image = array();
-
-			require_once(e_ADMIN."core_image.php");
-			
-			unset($core_image['e107_images'],$core_image['e107_files'],$core_image['e107_admin']);
-			
-			$_SESSION['lancheck-core-image'] = $core_image;	
-		}
-
 
 		if(!empty($_POST['ziplang']))
 		{

@@ -252,7 +252,7 @@ class e107Build
 				$this->createCoreImage(); // Create Image
 			}
 
-			$this->copyCoreImage($this->exportDir . "e107_admin/core_image.php");
+			$this->copyCoreImage($this->exportDir . "e107_system/core_image.phar");
 
 			if (isset($rel['readme']))
 			{

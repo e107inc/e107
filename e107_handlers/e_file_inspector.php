@@ -68,7 +68,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             return realpath($path) ? realpath($path) : $path;
         }, [
                 $appRoot . "e107_config.php",
-                $appRoot . e107::getFolder('admin') . "core_image.php",
+                $appRoot . e107::getFolder('system') . "core_image.phar",
             ]
         );
         $this->existingInsecureFiles = array_filter($this->insecureFiles, function ($path)
