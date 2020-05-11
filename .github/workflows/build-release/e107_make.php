@@ -276,7 +276,7 @@ class e107Build
 
 			$releaseDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/release/" . $this->releaseDir;
 
-            $this->copyCoreImage($releaseDir . "/core_image.php");
+            $this->copyCoreImage($releaseDir . "/core_image.phar");
 
 			/**
 			 * git archive -o update.zip HEAD $(git diff --name-only [id])
@@ -483,9 +483,9 @@ class e107Build
 		//create new image file - writes directly to cvsroot
 		$this->changeDir($this->config['baseDir']);
 
-		$imageFile = $this->tempDir . "core_image.php";
+		$imageFile = $this->tempDir . "core_image.phar";
 
-		$this->status("Creating new core_image.php file ({$imageFile})", true);
+		$this->status("Creating new core_image.phar file ({$imageFile})", true);
 		new JsonPharCoreImage($this->exportDir, $this->tempDir, $this->version, $imageFile);
 
 		$dir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/export";
@@ -494,7 +494,7 @@ class e107Build
 
 	private function copyCoreImage($destination)
 	{
-		$source = $this->tempDir . "core_image.php";
+		$source = $this->tempDir . "core_image.phar";
 
 		if (!file_exists($source))
 		{
