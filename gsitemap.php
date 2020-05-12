@@ -59,9 +59,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 
 header('Content-type: application/xml', TRUE);
 $xml = "<?xml version='1.0' encoding='UTF-8'?>
-<urlset xmlns='http://www.google.com/schemas/sitemap/0.84'
-xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.google.com/schemas/sitemap/0.84
-http://www.google.com/schemas/sitemap/0.84/sitemap.xsd'>";
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>";
 
 $smArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
 
@@ -94,4 +92,4 @@ function get_iso_8601_date($int_date)
 }
 
 
-?>
+
