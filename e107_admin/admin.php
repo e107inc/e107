@@ -30,6 +30,7 @@ if($info = e107::getLibrary()->load('bootstrap'))
     if($info['path'] !== '3')
     {
         e107::getCache()->clearAll('library');
+        e107::getCache()->clearAll('browser');
     }
 }
 
