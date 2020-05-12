@@ -48,4 +48,3 @@ function pingit($vals)
 
 }
 
-?>
