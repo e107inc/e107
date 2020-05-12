@@ -24,6 +24,14 @@ if(varset($_GET['mode']) == 'customize')
 	}
 }
 
+// check that the bootstrap library path is up-to-date before the header is loaded.
+if($info = e107::getLibrary()->info('bootstrap'))
+{
+    if($info['path'] !== '3')
+    {
+        e107::getCache()->clearAll('system');
+    }
+}
 
 include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
 
