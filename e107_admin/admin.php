@@ -27,7 +27,6 @@ if(varset($_GET['mode']) == 'customize')
 // check that the bootstrap library path is up-to-date before the header is loaded.
 if($info = e107::getLibrary()->load('bootstrap'))
 {
-
     if($info['path'] !== '3')
     {
         e107::getCache()->clearAll('library');
