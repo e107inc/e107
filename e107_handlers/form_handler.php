@@ -2429,7 +2429,7 @@ class e_form
 	
 		}
 
-		$labelClass = (!empty($options['inline'])) ? 'checkbox-inline' : 'checkbox';
+		$labelClass = (!empty($options['inline'])) ? 'checkbox-inline' : 'checkbox form-check';
 		$labelTitle = '';
 
 		$options = $this->format_options('checkbox', $name, $options);
@@ -2459,7 +2459,7 @@ class e_form
 		$post = (vartrue($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
-		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		$text .= "<input class='form-check-input' type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 		
 		return $pre.$text.$post;
 	}
@@ -2515,13 +2515,13 @@ class e_form
 	//	return print_a($checked,true);
 		if(isset($options['list']) && $options['list'])
 		{
-			return "<ul id='".$id."' class='checkboxes'><li>".implode("</li><li>",$text)."</li></ul>";
+			return "<ul id='".$id."' class='checkboxes checkbox'><li>".implode("</li><li>",$text)."</li></ul>";
 		}
 
 
 		if(!empty($text))
 		{
-			return "<div id='".$id."' class='checkboxes' style='display:inline-block'>".implode("",$text)."</div>";
+			return "<div id='".$id."' class='checkboxes checkbox' style='display:inline-block'>".implode("",$text)."</div>";
 		}
 
 		return $text;
@@ -2631,14 +2631,14 @@ class e_form
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
 		{
-			$defaultClass = (deftrue('BOOTSTRAP')) ? 'radio-inline' : 'radio inline';
+			$defaultClass = (deftrue('BOOTSTRAP')) ? 'radio-inline form-check-inline' : 'radio inline';
 			$dis = (!empty($options['disabled'])) ? " disabled" : "";
 			$text .= "<label class='{$defaultClass}{$dis}'>";
 			
 		}
 		
 		
-		$text .= "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
+		$text .= "<input class='form-check-input' type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 		
 		if(vartrue($options['help']))
 		{

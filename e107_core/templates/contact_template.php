@@ -52,7 +52,7 @@ $CONTACT_TEMPLATE['menu'] =  '
 				{CONTACT_BODY=rows=5&cols=30}
 		</div>
 		<div class="form-group"><label for="gdpr">'.LANCONTACT_24.'</label>
-			<div class="checkbox">
+			<div class="checkbox form-check">
 				<label>{CONTACT_GDPR_CHECK} '.LANCONTACT_21.'</label>
 				<div class="help-block">{CONTACT_GDPR_LINK}</div> 
 			</div>
