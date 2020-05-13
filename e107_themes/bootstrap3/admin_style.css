@@ -180,7 +180,9 @@ table textarea.input-block-level,
 input.input-block-level,
 input.form-control.input-block-level,
 select.input-block-level                { width: 100% }
-table  label.checkbox                   { margin-left: 20px }
+table  label.checkbox                   { /*margin-left: 20px */}
+.form-check { padding-bottom: 9px; margin:0 !important }
+div.checkboxes { margin:0 }
 ul.checkboxes { display: inline-block; list-style: none; margin: 0; padding: 0;}
 
 #admin-ui-nav-menu i.fa-chevron-right   { margin-left: -10px }

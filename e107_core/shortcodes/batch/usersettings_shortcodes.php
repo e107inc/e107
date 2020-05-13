@@ -212,7 +212,7 @@ class usersettings_shortcodes extends e_shortcode
 		if($parm == 'radio')
 		{
 			$options['enabled'] = array('title' => LAN_USER_84);
-			return "<div class='radio'>".e107::getForm()->radio_switch("hideemail", $this->var['user_hideemail'],LAN_YES,LAN_NO,$options)."</div>";		
+			return "<div class='radio'>".e107::getForm()->radio_switch("hideemail", $this->var['user_hideemail'],LAN_YES,LAN_NO,$options)."</div>";
 		}
 	}
 	
@@ -328,7 +328,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		if (e107::getPref('photo_upload') && FILE_UPLOADS)
 		{
-			$text .= "<div class='checkbox'>";
+			$text .= "<div class='checkbox form-check'>";
 			$text .= e107::getForm()->checkbox('user_delete_photo', 1, false, LAN_USET_16);
 			$text .= "</div>";	
 		
