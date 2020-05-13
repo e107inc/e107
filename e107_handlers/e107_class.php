@@ -1615,7 +1615,7 @@ class e107
 	 */
     public static function getFileInspector($type = 'core')
     {
-        $fileInspectorPath = realpath(e_SYSTEM . "core_image.phar");
+        $fileInspectorPath = realpath(e_SYSTEM_BASE . "core_image.phar");
         /** @var e_file_inspector $fileInspector */
         $fileInspector = self::getObject('e_file_inspector_json_phar', $fileInspectorPath);
 
