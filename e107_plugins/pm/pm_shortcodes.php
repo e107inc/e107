@@ -562,7 +562,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			{
 				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
 
-				return "<a class='btn  btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
+				return "<a class='btn  btn-default btn-secondary' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
 			}
 		}
 
@@ -586,7 +586,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 
 			$action = $extra == '.outbox' ? 'delete-out' : 'delete-in';
-			return "<a class='btn btn-default' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
+			return "<a class='btn btn-default btn-secondary' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
 

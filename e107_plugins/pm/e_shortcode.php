@@ -103,7 +103,7 @@ class pm_shortcodes extends e_shortcode
 		$pm = new private_message;
 
 		$glyph  = empty($parm['glyph']) ? 'fa-paper-plane' : $parm['glyph'];
-		$class  = empty($parm['class']) ? 'btn btn-sm btn-default' : $parm['class'];
+		$class  = empty($parm['class']) ? 'btn btn-sm btn-default btn-secondary' : $parm['class'];
 
 
 		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm['user'])) // check $this->pmPrefs['send_to_class'].
