@@ -5474,7 +5474,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @param array $selected
 	 * @return void
 	 */
-	protected function handleListBoolreverseBatch($selected, $field, $value)
+	protected function handleListBoolreverseBatch($selected, $field)
 	{
 		$tree = $this->getTreeModel();
 		$cnt = $tree->batchUpdate($field, "1-{$field}", $selected, null, false);
