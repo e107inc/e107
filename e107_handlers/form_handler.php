@@ -2455,11 +2455,18 @@ class e_form
 			}
 		}
 
+		if(!isset($options['class']))
+        {
+            $options['class'] = '';
+        }
+
+        $options['class'] .= ' form-check-input';
+
 		$pre = (vartrue($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
 		$post = (vartrue($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
 		unset($options['label']); // not to be used as attribute; 
 		
-		$text .= "<input class='form-check-input' type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 		
 		return $pre.$text.$post;
 	}
