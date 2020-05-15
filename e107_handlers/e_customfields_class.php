@@ -440,9 +440,11 @@
 
 			$ui->getModel()->set($fieldname, null);
 
+			$tp = e107::getParser();
+
 			foreach($this->_data as $key=>$value)
 			{
-				$ui->getModel()->set($fieldname.'__'.$key, $value);
+				$ui->getModel()->set($fieldname.'__'.$key, $tp->toDB($value));
 			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
 			}
 
