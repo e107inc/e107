@@ -952,9 +952,9 @@ class db_verify
 		foreach($tmp as $line)
 		{
 			$line = trim($line);
-			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*)/","`$1`", $line);				
+			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*[0-9]?)/","`$1`", $line);
 		}
-		
+
 		$data = implode("\n",$newline);
 		// --------------------
 		
@@ -966,6 +966,7 @@ class db_verify
 		if(e_DEBUG)
 		{
 		//	e107::getMessage()->addDebug("Regex: ".print_a($data,true));
+		 //   echo $regex;
 		//	e107::getMessage()->addDebug("Regex: ".$regex);
 
 		}

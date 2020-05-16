@@ -48,6 +48,7 @@
   table_description text,
   table_summary text,
   table_media text,
+  table_email2 tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (table_id)";
 
 	$expected = array (
@@ -178,6 +179,14 @@
 		    'attributes' => '',
 		    'null' => '',
 		    'default' => '',
+		  ),
+		  'table_email2' =>
+		  array (
+		    'type' => 'TINYINT',
+		    'value' => '3',
+		    'attributes' => 'UNSIGNED',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'0\'',
 		  ),
 		);
 
@@ -528,7 +537,8 @@
 					  PRIMARY KEY  (rate_id)
 					) ENGINE=MyISAM;
 							
-				"
+				",
+
 			);
 
 			$expected = array(
