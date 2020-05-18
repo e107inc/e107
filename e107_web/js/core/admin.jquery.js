@@ -777,6 +777,21 @@ $(document).ready(function()
 			//	$(selector).removeAttr("checked");
 			}
 		});
+
+
+    $("ul.col-selection input[type='checkbox']").click(function(evt){
+
+        if(this.checked)
+        {
+             $(this).closest("label").addClass( "active", 0 );
+        //    $(this).closest("tr.even").switchClass( "even", "highlight-even", 50 );
+        }
+        else
+        {
+            $(this).closest("label").removeClass( "active", 0 );
+        }
+
+    });
 		
 		// highlight checked row
 		$(".adminlist input[type='checkbox']").click(function(evt){

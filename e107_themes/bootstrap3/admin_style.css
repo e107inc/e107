@@ -1115,11 +1115,14 @@ ul.col-selection 				            { padding:5px; text-align:left; background-colo
 ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;  background-color: rgb(23, 23, 23); }
 ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
 ul.col-selection > li a 					{ padding: 3px 0 0 5px; color: rgb(153, 153, 153); }
-ul.col-selection > li a label 				{ padding-left:0; display:block; line-height:25px; }
+ul.col-selection > li a label 				{ padding-left:20px; display:block; /*line-height:25px;*/ }
 ul.col-selection > li a:hover 				{ color: #FFF; background-image: linear-gradient(to bottom, #08C, #0077B3);}
 ul.col-selection 							{ background-color: rgb(39, 39, 39);}
 ul.col-selection ul.nav > li                  { padding:0 }
 ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
+ul.col-selection li.col-selection-list      { padding: 5px; }
+ul.col-selection input                      { opacity:0; }
+ul.col-selection label.active:before        { font-family:FontAwesome;  margin-left:-20px ; margin-right:6px ; content: '\f00c'; color: #51a351; position:relative; }
 
 
 .nav ul li ul.dropdown-menu 				{ border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
