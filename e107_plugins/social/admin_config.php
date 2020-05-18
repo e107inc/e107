@@ -403,6 +403,8 @@ class social_ui extends e_admin_ui
 				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
 				'steam'			=>	array('label'=>"Steam",		"placeholder"=>"eg. http://steamcommunity.com"),
 				'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
+				'twitch'		=> 	array('label'=>"Twitch", 	"placeholder"=>""),
+				'vk'			=> 	array('label'=>"VK (Vkontakte)", "placeholder"=>""),
 			);
 
 			foreach($xurls as $k=>$var)

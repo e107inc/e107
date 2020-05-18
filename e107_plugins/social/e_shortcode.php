@@ -78,10 +78,12 @@ class social_shortcodes extends e_shortcode
 			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
 			'youtube'		=> array('href'=> deftrue('XURL_YOUTUBE'),		'title'=>'YouTube'),
 			'steam'			=> array('href'=> deftrue('XURL_STEAM'),		'title'=>'Steam'),
-			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
+			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo'),
+			'twitch'		=> array('href'=> deftrue('XURL_TWITCH'),		'title'=>'Twitch'),
+			'vk'			=> array('href'=> deftrue('XURL_VK'),			'title'=>'VK (Vkontakte)')
 		);
  			
-		
+		// print_a($social);
 	
 		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
 
