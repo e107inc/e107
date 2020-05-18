@@ -770,6 +770,8 @@ if(!empty($pref['xurl']) && is_array($pref['xurl']))
 	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
 	define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
 	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
+	define('XURL_TWITCH', vartrue($pref['xurl']['twitch'], false));
+	define('XURL_VK', vartrue($pref['xurl']['vk'], false));
 }
 else
 {
@@ -784,6 +786,8 @@ else
 	define('XURL_PINTEREST', false);
 	define('XURL_STEAM', false);
 	define('XURL_VIMEO', false);
+	define('XURL_TWITCH', false);
+	define('XURL_VK', false);
 }
 
 if(!defined('MAIL_IDENTIFIER'))
