@@ -3996,7 +3996,7 @@ var_dump($select_options);*/
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
     <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
-    <li class="list-group-item">
+    <li class="list-group-item col-selection-list">
      <ul class="nav scroll-menu" >';
 		
         unset($columnsArray['options'], $columnsArray['checkboxes']);
