@@ -173,16 +173,17 @@
 			$expected = '1 year ago';
 			$this->assertEquals($expected, $actual);
 
-			$newer = strtotime("+2 weeks");
-			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'short');
+            $time = time();
+			$newer = strtotime("+2 weeks", $time);
+			$actual = $this->dateObj->computeLapse($newer, $time, false, true, 'short');
 			$expected = 'in 2 weeks';
 			$this->assertEquals($expected, $actual);
 
-			$actual = $this->dateObj->computeLapse($newer, time(), true, true, 'short');
+			$actual = $this->dateObj->computeLapse($newer, $time, true, true, 'short');
 			$this->assertEquals(array(0=>'2 weeks'), $actual);
 
-			$newer = strtotime("+10 seconds");
-			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'long');
+			$newer = strtotime("+10 seconds", $time);
+			$actual = $this->dateObj->computeLapse($newer, $time, false, true, 'long');
 			$this->assertEquals("Just now", $actual);
 
 			// XXX Improve output
