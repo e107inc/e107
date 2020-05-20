@@ -62,6 +62,8 @@ abstract class e_file_inspector implements e_file_inspector_interface
     {
         $this->database = $database;
 
+        $this->checkDeprecatedFilesLog();
+
         $appRoot = e107::getInstance()->file_path;
         $this->undeterminable = array_map(function ($path)
         {
@@ -81,6 +83,41 @@ abstract class e_file_inspector implements e_file_inspector_interface
             return is_dir($path);
         });
         $this->existingInsecureDirectories = array_map('realpath', $this->existingInsecureDirectories);
+    }
+
+    /**
+     * Populate insecureFiles list if deprecatedFiles.log found.
+     * @return |null
+     */
+    private function checkDeprecatedFilesLog()
+    {
+        $log = e_LOG.'fileinspector/deprecatedFiles.log';
+
+        if(!file_exists($log))
+        {
+            return null;
+        }
+
+        $content = file_get_contents($log);
+
+        if(empty($content))
+        {
+            return null;
+        }
+
+       $tmp = explode("\n", $content);
+       $this->insecureFiles = [];
+       foreach($tmp as $line)
+       {
+            if(empty($line))
+            {
+                continue;
+            }
+
+            $this->insecureFiles[] = e_BASE.$line;
+       }
+
+
     }
 
     /**
@@ -125,7 +162,37 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         if ($bits + self::VALIDATED === $this->getValidatedBitmask()) $bits |= self::VALIDATED;
 
+        $this->log($path, $bits);
+
         return $bits;
+    }
+
+     /**
+     * Log old file paths. (may be expanded to other types in future)
+     *
+     * @param string $relativePath
+     * @param int $status
+     * @return null
+     */
+    private function log($relativePath, $status)
+    {
+        if($status !== 218 || empty($relativePath)) // deprecated-file status code - find better way to check this.
+        {
+            return null;
+        }
+
+        $message = $relativePath."\n";
+
+        $logPath = e_LOG."fileinspector/";
+
+        if(!is_dir($logPath))
+        {
+            mkdir($logPath, 0775);
+        }
+
+        file_put_contents($logPath."deprecatedFiles.log", $message, FILE_APPEND);
+
+        return null;
     }
 
     /**
