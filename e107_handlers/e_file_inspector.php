@@ -121,6 +121,34 @@ abstract class e_file_inspector implements e_file_inspector_interface
     }
 
     /**
+     * Convert validation code to string.
+     * @param $validationCode
+     * @return string
+     */
+    public static function getStatusForValidationCode($validationCode)
+    {
+        $status = 'unknown';
+        if ($validationCode & self::VALIDATED)
+            $status = 'check';
+        elseif (!($validationCode & self::VALIDATED_FILE_EXISTS))
+            $status = 'missing';
+        elseif (!($validationCode & self::VALIDATED_FILE_SECURITY))
+            $status = 'warning';
+        elseif (!($validationCode & self::VALIDATED_PATH_KNOWN))
+            $status = 'unknown';
+        elseif (!($validationCode & self::VALIDATED_PATH_VERSION))
+            $status = 'old';
+        elseif (!($validationCode & self::VALIDATED_HASH_CALCULABLE))
+            $status = 'uncalc';
+        elseif (!($validationCode & self::VALIDATED_HASH_CURRENT))
+            if ($validationCode & self::VALIDATED_HASH_EXISTS)
+                $status = 'old';
+            else
+                $status = 'fail';
+        return $status;
+    }
+
+    /**
      * Prepare the provided database for reading or writing
      *
      * Should tolerate a non-existent database and try to create it if a write operation is executed.
@@ -176,7 +204,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
      */
     private function log($relativePath, $status)
     {
-        if($status !== 218 || empty($relativePath)) // deprecated-file status code - find better way to check this.
+        if(empty($relativePath) || self::getStatusForValidationCode($status) !== 'old') // deprecated-file status
         {
             return null;
         }
