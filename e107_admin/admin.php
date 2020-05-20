@@ -601,7 +601,7 @@ TMPO;
 		{
 			if(file_exists($path))
 			{
-				$found[] = $path;
+				$found[] = str_replace(e_BASE, "", $path);
 			}
 
 
@@ -628,7 +628,7 @@ TMPO;
 		$mes = e107::getMessage();
 
 
-
+        $error = 0;
 
 		foreach($this->deprecated as $file)
 		{
@@ -647,8 +647,16 @@ TMPO;
 			{
 				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED_FAILED, array('x'=>$file));
 				$mes->addError($message);
+				$error++;
 			}
 		}
+
+        $logFile = e_LOG."fileinspector/deprecatedFiles.log";
+
+        if($error === 0 && file_exists($logFile))
+        {
+            @unlink($logFile);
+        }
 
 	}
 
