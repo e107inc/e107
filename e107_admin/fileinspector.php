@@ -635,7 +635,7 @@ class file_inspector {
 
     private function updateFileSizeCounter($absolutePath, $validationCode)
     {
-        $status = $this->getStatusForValidationCode($validationCode);
+        $status = e_file_inspector::getStatusForValidationCode($validationCode);
         $category = $this->statusToLegacyCountCategory($status);
         $fileSize = filesize($absolutePath);
         $this->count[$category]['size'] += $fileSize;
@@ -774,30 +774,7 @@ class file_inspector {
     private function getGlyphForValidationCode($validationCodeOrArray)
     {
         if (is_array($validationCodeOrArray)) return $this->getWorstGlyphForFolder($validationCodeOrArray);
-        return $this->glyph['file_' . $this->getStatusForValidationCode($validationCodeOrArray)];
-    }
-
-    private function getStatusForValidationCode($validationCode)
-    {
-        $status = 'unknown';
-        if ($validationCode & e_file_inspector::VALIDATED)
-            $status = 'check';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_FILE_EXISTS))
-            $status = 'missing';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_FILE_SECURITY))
-            $status = 'warning';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_PATH_KNOWN))
-            $status = 'unknown';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_PATH_VERSION))
-            $status = 'old';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_HASH_CALCULABLE))
-            $status = 'uncalc';
-        elseif (!($validationCode & e_file_inspector::VALIDATED_HASH_CURRENT))
-            if ($validationCode & e_file_inspector::VALIDATED_HASH_EXISTS)
-                $status = 'old';
-            else
-                $status = 'fail';
-        return $status;
+        return $this->glyph['file_' . e_file_inspector::getStatusForValidationCode($validationCodeOrArray)];
     }
 
     private function getStatusRank($status)
@@ -836,7 +813,7 @@ class file_inspector {
         $worstStatusRank = -PHP_INT_MAX;
         array_walk_recursive($treeFolder, function ($value) use (&$worstStatus, &$worstStatusRank)
         {
-            $currentStatus = $this->getStatusForValidationCode($value);
+            $currentStatus = e_file_inspector::getStatusForValidationCode($value);
             $currentStatusRank = $this->getStatusRank($currentStatus);
             if ($currentStatusRank > $worstStatusRank)
             {
@@ -856,7 +833,7 @@ class file_inspector {
         $validationCode & e_file_inspector::VALIDATED_PATH_VERSION)
             return false;
 
-        $status = $this->getStatusForValidationCode($validationCode);
+        $status = e_file_inspector::getStatusForValidationCode($validationCode);
         $return = true;
         switch ($status)
         {
@@ -956,7 +933,7 @@ class file_inspector {
 
         array_walk_recursive($this->files, function ($validationCode)
         {
-            $status = $this->getStatusForValidationCode($validationCode);
+            $status = e_file_inspector::getStatusForValidationCode($validationCode);
             $category = $this->statusToLegacyCountCategory($status);
             $this->count[$category]['num']++;
             if ($validationCode & e_file_inspector::VALIDATED_PATH_VERSION &&
