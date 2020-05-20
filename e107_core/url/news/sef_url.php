@@ -140,7 +140,7 @@ class core_news_sef_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_NEWS, // Module name
 				'label' => LAN_EURL_NEWS_REWRITEX_LABEL, // Current profile name
 				'description' => LAN_EURL_NEWS_REWRITEX_DESCR, //
-				'examples'  => array('{SITEURL}news/1/news-title')
+				'examples'  => array('{SITEURL}news/view/1/news-category/news-title')
 			),
 			'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
