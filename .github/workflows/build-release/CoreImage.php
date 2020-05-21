@@ -14,6 +14,12 @@ abstract class CoreImage
         'robots.txt'
     ];
 
+    const EXCLUDED_PATHS_REMOVED = [
+        ...self::EXCLUDED_PATHS,
+        'e107_plugins/',
+        'e107_themes/',
+    ];
+
     protected function create_image($exportFolder, $tempFolder, $currentVersion)
     {
         echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
@@ -39,7 +45,7 @@ abstract class CoreImage
             $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
 
             if (empty($relativePath) || $relativePath == $absolutePath) continue;
-            if ($this->isExcluded($relativePath)) continue;
+            if ($this->isExcluded($relativePath, self::EXCLUDED_PATHS)) continue;
 
             $checksum = $this->checksumPath($absolutePath);
             $this->insertChecksumIntoDatabase($relativePath, $checksum, $currentVersion);
@@ -114,7 +120,6 @@ abstract class CoreImage
     /**
      * @param array $tags
      * @param $timeMachineFolder
-     * @return mixed
      */
     protected function generateRemovedChecksumsFromTags($tags, $timeMachineFolder)
     {
@@ -132,7 +137,7 @@ abstract class CoreImage
             );
             foreach ($removedFiles as $removedFilePath)
             {
-                if ($this->isExcluded($removedFilePath)) continue;
+                if ($this->isExcluded($removedFilePath, self::EXCLUDED_PATHS_REMOVED)) continue;
 
                 $checksum = $this->checksumPath($timeMachineFolder . '/' . $removedFilePath);
                 $this->insertChecksumIntoDatabase($removedFilePath, $checksum, $version);
@@ -168,11 +173,23 @@ abstract class CoreImage
 
     /**
      * Determines whether the provided relative path should make it into the generated integrity database
-     * @param $relativePath string Relative path candidate
+     * @param string $relativePath Relative path candidate
+     * @param string[] $excludedPaths The list of paths to exclude
      * @return bool TRUE if the relative path should not be added to the integrity database; FALSE otherwise
      */
-    protected function isExcluded($relativePath)
+    protected function isExcluded($relativePath, $excludedPaths = self::EXCLUDED_PATHS)
     {
-        return in_array($relativePath, self::EXCLUDED_PATHS);
+        $excludedFolders = array_filter($excludedPaths, function ($excludedPath)
+        {
+            $needle = '/';
+            return substr($excludedPath, -strlen($needle)) === $needle;
+        });
+        foreach ($excludedFolders as $excludedFolder)
+        {
+            if (substr($relativePath, 0, strlen($excludedFolder)) === $excludedFolder) return true;
+        }
+
+        $excludedFiles = array_diff($excludedPaths, $excludedFolders);
+        return in_array($relativePath, $excludedFiles);
     }
 }
