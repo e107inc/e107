@@ -14,9 +14,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-// e107::plugLan('news', true);
-// solution from news.php:
-e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/lan_news.php'); // Temporary
+e107::coreLan('news');
 
 // v2.x Standard
 
@@ -40,7 +38,16 @@ class news_gsitemap
 			);
 		}
 
-		$data = $sql->retrieve("news", "*", "news_class IN (" . $userclass_list . ") AND news_start < " . $_t . "   ORDER BY news_datestamp ASC", true);
+
+
+        $query = "SELECT n.*, nc.category_name, nc.category_sef FROM #news AS n 
+                LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
+				WHERE n.news_class IN (". $userclass_list.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".time().") ORDER BY n.news_datestamp ASC ";
+
+	//	$data = $sql->retrieve("news", "*", "news_class IN (" . $userclass_list . ") AND news_start < " . $_t . "   ORDER BY news_datestamp ASC", true);
+
+		$data = $sql->retrieve($query,true);
+
 		foreach($data as $row)
 		{
 			$import[] = array(
