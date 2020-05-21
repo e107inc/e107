@@ -24,6 +24,12 @@ class e_file_inspector_json_phar extends e_file_inspector_json
      */
     public function loadDatabase()
     {
+        if(!file_exists($this->database))
+        {
+            $this->coreImage = [];
+            return false;
+        }
+
         Phar::loadPhar($this->database, "core_image.phar");
         $tmpFile = tmpfile();
         $tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
