@@ -430,22 +430,21 @@ class news_admin_ui extends e_admin_ui
 	protected $batchExport  = true;
 	protected $batchCopy 	= true;
     protected $batchLink    = true;
-	protected $listQry      = "SELECT n.*,u.user_id,u.user_name FROM `#news` AS n LEFT JOIN `#user` AS u ON n.news_author = u.user_id "; // without any Order or Limit.
+	protected $listQry      = "SELECT n.*,  nc.category_name, nc.category_sef, u.user_id,u.user_name FROM `#news` AS n 
+                               LEFT JOIN `#news_category` AS nc ON n.news_category = nc.category_id 
+                               LEFT JOIN `#user` AS u ON n.news_author = u.user_id "; // without any Order or Limit.
 
 	protected $listOrder	= "news_id desc";
-	// true for 'vars' value means use same var
 
 	protected $tabs         = array(LAN_NEWS_52, 'SEO', LAN_NEWS_53);
 
-
     protected $url          = array(
-    	'route'=>'news/view/item', 
-    	'name' => 'news_title', 
-    	'description' => 'news_summary', 
-    	'vars'=> array('news_id' => true, 'news_sef' => true, 'category_id' => 'news_category', 'category_sef' => true) // FIXME category_sef missing, we have to retrieve category data on the list view
-	); // 'link' only needed if profile not provided. 
+                             'route'        => 'news/view/item',
+                             'name'         => 'news_title',
+                             'description'  => 'news_summary',
+                             'vars'=> array('news_id' => true, 'news_sef' => true, 'category_id' => 'news_category', 'category_sef' => true)
+                             ); // 'link' only needed if profile not provided.
     
-		
 
 		
 	protected $fields = array(
