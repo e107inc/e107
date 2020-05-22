@@ -14,6 +14,66 @@ abstract class CoreImage
         'robots.txt'
     ];
 
+    const EXCLUDED_PATHS_REMOVED = [
+        ...self::EXCLUDED_PATHS,
+        'e107_plugins/tagwords/',
+        'e107_plugins/alt_auth/',
+        'e107_plugins/alt_news/',
+        'e107_plugins/calendar_menu/',
+        'e107_plugins/content/',
+        'e107_plugins/integrity_check/',
+        'e107_plugins/linkspage/',
+        'e107_plugins/newsletter/',
+        'e107_plugins/online_extended_menu/',
+        'e107_plugins/pdf/',
+        'e107_plugins/tree_menu/',
+        'e107_plugins/articles_menu/',
+        'e107_plugins/backend_menu/',
+        'e107_plugins/custom/',
+        'e107_plugins/custom_pages/',
+        'e107_plugins/fader_menu/',
+        'e107_plugins/headlines_menu/',
+        'e107_plugins/newforumposts_main/',
+        'e107_plugins/newforumposts_menu/',
+        'e107_plugins/review_menu/',
+        'e107_plugins/ypslide_menu/',
+        'e107_plugins/theme_layout/',
+        'e107_themes/bootstrap4/',
+        'e107_themes/landingzero/',
+        'e107_themes/bootstrap/',
+        'e107_themes/core/',
+        'e107_themes/crahan/',
+        'e107_themes/e107v4a/',
+        'e107_themes/human_condition/',
+        'e107_themes/interfectus/',
+        'e107_themes/jayya/',
+        'e107_themes/khatru/',
+        'e107_themes/kubrick/',
+        'e107_themes/lamb/',
+        'e107_themes/leaf/',
+        'e107_themes/newsroom/',
+        'e107_themes/sebes/',
+        'e107_themes/templates/',
+        'e107_themes/vekna_blue/',
+        'e107_themes/reline/',
+        'e107_themes/clan/',
+        'e107_themes/comfort/',
+        'e107_themes/e107/',
+        'e107_themes/fiblack3d/',
+        'e107_themes/nordranious/',
+        'e107_themes/phpbb/',
+        'e107_themes/ranyart/',
+        'e107_themes/smacks/',
+        'e107_themes/soar/',
+        'e107_themes/wan/',
+        'e107_themes/xog/',
+        'e107_themes/blue_patriot/',
+        'e107_themes/comfortless/',
+        'e107_themes/example/',
+        'e107_themes/leap of faith/',
+        'e107_themes/nagrunium/',
+    ];
+
     protected function create_image($exportFolder, $tempFolder, $currentVersion)
     {
         echo("[Core-Image] Scanning Dir: " . $exportFolder . "\n");
@@ -39,7 +99,7 @@ abstract class CoreImage
             $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
 
             if (empty($relativePath) || $relativePath == $absolutePath) continue;
-            if ($this->isExcluded($relativePath)) continue;
+            if ($this->isExcluded($relativePath, self::EXCLUDED_PATHS)) continue;
 
             $checksum = $this->checksumPath($absolutePath);
             $this->insertChecksumIntoDatabase($relativePath, $checksum, $currentVersion);
@@ -114,7 +174,6 @@ abstract class CoreImage
     /**
      * @param array $tags
      * @param $timeMachineFolder
-     * @return mixed
      */
     protected function generateRemovedChecksumsFromTags($tags, $timeMachineFolder)
     {
@@ -132,7 +191,7 @@ abstract class CoreImage
             );
             foreach ($removedFiles as $removedFilePath)
             {
-                if ($this->isExcluded($removedFilePath)) continue;
+                if ($this->isExcluded($removedFilePath, self::EXCLUDED_PATHS_REMOVED)) continue;
 
                 $checksum = $this->checksumPath($timeMachineFolder . '/' . $removedFilePath);
                 $this->insertChecksumIntoDatabase($removedFilePath, $checksum, $version);
@@ -168,11 +227,23 @@ abstract class CoreImage
 
     /**
      * Determines whether the provided relative path should make it into the generated integrity database
-     * @param $relativePath string Relative path candidate
+     * @param string $relativePath Relative path candidate
+     * @param string[] $excludedPaths The list of paths to exclude
      * @return bool TRUE if the relative path should not be added to the integrity database; FALSE otherwise
      */
-    protected function isExcluded($relativePath)
+    protected function isExcluded($relativePath, $excludedPaths = self::EXCLUDED_PATHS)
     {
-        return in_array($relativePath, self::EXCLUDED_PATHS);
+        $excludedFolders = array_filter($excludedPaths, function ($excludedPath)
+        {
+            $needle = '/';
+            return substr($excludedPath, -strlen($needle)) === $needle;
+        });
+        foreach ($excludedFolders as $excludedFolder)
+        {
+            if (substr($relativePath, 0, strlen($excludedFolder)) === $excludedFolder) return true;
+        }
+
+        $excludedFiles = array_diff($excludedPaths, $excludedFolders);
+        return in_array($relativePath, $excludedFiles);
     }
 }
