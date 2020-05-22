@@ -194,8 +194,9 @@ class usersettings_shortcodes extends e_shortcode
 		$options = array(
 			'size'     => 40,
 			'title'    => '',
-			'required' => true,
 		);
+
+		if (e107::getPref('disable_emailcheck') == 0) $options['required'] = true;
 
 		if(!empty($sc->var['user_email']) && !empty($sc->var['user_xup'])) // social login active.
 		{
