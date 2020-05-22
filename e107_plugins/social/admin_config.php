@@ -662,13 +662,14 @@ class social_ui extends e_admin_ui
 		foreach ($fieldInfo as $fieldSlash => $description)
 		{
 			$field = str_replace("/", "][", $fieldSlash);
+			$placeholder = self::getPlaceholderFor($provider_name, $fieldSlash);
 			$frm_options = [
 				'size' => 'xxlarge',
-				'placeholder' => self::getPlaceholderFor($provider_name, $fieldSlash),
+				'placeholder' => $placeholder,
 			];
 
 			$text .= "<tr><td>".$this->getLabel($fieldSlash)."</td><td>";
-			$text .= $frm->text("social_login[$provider_name][$field]",	$slcm->getProviderConfig($provider_name, $fieldSlash),	256, $frm_options);
+			$text .= $frm->text("social_login[$provider_name][$field]", $placeholder, 256, $frm_options);
 			$text .= "<div class='smalltext field-help'>$description</div>";
 			$text .= "</td></tr>";
 		}
