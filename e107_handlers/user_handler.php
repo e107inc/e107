@@ -1527,8 +1527,9 @@ class e_user_provider
 			{
 				// $this->login($redirectUrl); // auto-login
 				$result = e107::getUser()->loginProvider($this->userId());
+                $this->updateXupProfile();
 
-				if (!$result)
+                if (!$result)
 				{
 					e107::getMessage()->addError("User already exists but is not connected through this social login provider");
 				}
@@ -1666,6 +1667,107 @@ class e_user_provider
 		}
 		e107::getRedirect()->redirect($redirectUrl);
 	}
+
+    /**
+     * Synchronize user profile fields from social login provider
+     */
+    private function updateXupProfile()
+    {
+        try
+        {
+            // detect all currently connected providers
+            $connected = $this->hybridauth->getConnectedProviders();
+        }
+        catch (Exception $e)
+        {
+            e107::getMessage()->addError('[' . $e->getCode() . ']' . $e->getMessage(), 'default', true);
+            $session = e107::getSession();
+            $session->set('HAuthError', true);
+            $connected = false;
+        }
+        // no active session found
+        if (!$connected) return;
+
+        // query DB
+        $sql = e107::getDb();
+        $where = array();
+        $userdata = array();
+
+        foreach ($connected as $providerId)
+        {
+            try
+            {
+                $adapter = $this->hybridauth->getAdapter($providerId);
+                $profile = $adapter->getUserProfile();
+            }
+            catch (\Hybridauth\Exception\Exception $e)
+            {
+                continue;
+            }
+
+            if (!$profile->identifier) continue;
+
+            $userdata['user_name'] = $sql->escape($profile->displayName);
+            $userdata['user_image'] = $profile->photoURL; // avatar
+            $userdata['user_email'] = $profile->email;
+
+            $id = $providerId . '_' . $profile->identifier;
+            $where[] = "user_xup='" . $sql->escape($id) . "'";
+        }
+        // no active session found
+        if (empty($where)) return;
+
+        $where = implode(' OR ', $where);
+        if ($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))
+        {
+
+            $user = $sql->fetch();
+            e107::getUserSession()->makeUserCookie($user);
+
+            $spref = e107::pref('social');
+
+            // Update display name or avatar image if they have changed.
+            if (
+                (empty($user['user_email']) && !empty($userdata['user_email'])) ||
+                ($userdata['user_name'] != $user['user_name']) ||
+                ($userdata['user_image'] != $user['user_image'])
+            )
+            {
+                $updateQry = array();
+
+                if (!empty($spref['xup_login_update_username']))
+                {
+                    $updateQry['user_name'] = $userdata['user_name'];
+                }
+
+                if (!empty($spref['xup_login_update_avatar']))
+                {
+                    $updateQry['user_image'] = $userdata['user_image'];
+                }
+
+                if (empty($user['user_email']))
+                {
+                    $updateQry['user_email'] = $userdata['user_email'];
+                }
+
+                $updateQry['WHERE'] = "user_id=" . $user['user_id'] . " LIMIT 1";
+
+                if ($sql->update('user', $updateQry) !== false)
+                {
+                    $updatedProfile = array_replace($user, $userdata);
+                    e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
+                    e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id' => $user['user_id'], 'user_name' => $user['user_name'], 'user_email' => $userdata['user_email']));
+                }
+                else
+                {
+                    e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, $updateQry);
+                }
+            }
+
+            unset($user['user_password']);
+            e107::getLog()->user_audit(USER_AUDIT_LOGIN, '', $user['user_id'], $user['user_name']);
+        }
+    }
 }
 
 
