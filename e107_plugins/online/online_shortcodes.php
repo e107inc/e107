@@ -73,7 +73,7 @@ class online_shortcodes extends e_shortcode
 
 	function sc_online_tracking_disabled()
 	{
-		$url = e_ADMIN."users.php?mode=main&amp;action=prefs";
+		$url = e_ADMIN_ABS."users.php?mode=main&amp;action=prefs";
 
 		$srch = array("[","]");
 		$repl = array("<a href='".$url."'>", "</a>");

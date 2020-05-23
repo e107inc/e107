@@ -81,7 +81,7 @@ class e_online
 		//global $members_online, $total_online;						// Not needed as globals
 		global $listuserson; // FIXME - remove it, make it property, call e_online signleton - e107::getOnline()
 
-		if($online_tracking === false && $flood_control === false)
+		if($online_tracking == false || $flood_control == false)
 		{
 			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
 			define('TOTAL_ONLINE', '');
