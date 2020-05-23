@@ -140,7 +140,6 @@
         <core name="failed_login_limit">10</core>
 		<core name="filter_script">0</core>
 		<core name="flood_hits">100</core>
-		<core name="flood_protect">1</core>
 		<core name="flood_time">30</core>
 		<core name="flood_timeout">5</core>
 		<core name="forumdate">%a %b %d %Y, %I:%M%p</core>

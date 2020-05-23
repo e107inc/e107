@@ -2221,9 +2221,10 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 
 
 $dbg->logTime('Go online');
-if(!isset($_E107['no_online']) && varset($pref['track_online']))
+
+if(!isset($_E107['no_online']))
 {
-	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
+	e107::getOnline()->goOnline($pref['track_online'], $pref['antiflood1']);
 }
 
 $dbg->logTime('(After Go online)');
