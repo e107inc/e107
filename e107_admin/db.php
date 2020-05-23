@@ -329,16 +329,12 @@ class system_tools
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-		if(!deftrue('e_DEVELOPER'))
+		if(!$pref['developer'])
 		{
 			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
 			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 			return;
 		}
-
-		//	$message = DBLAN_70;
-		//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
-
 
 		// Check for minimum required PHP version, and display warning instead of sync button to avoid broken functionality after syncing
 		// MIN_PHP_VERSION constant only defined in install.php, thus hardcoded here
@@ -346,7 +342,7 @@ class system_tools
 		
 		if(version_compare(PHP_VERSION, $min_php_version, "<"))
 		{
-			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
+			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No need to translate, developer mode only
 		}
 		else 
 		{
@@ -358,7 +354,6 @@ class system_tools
 			$mes->addInfo($message);
 		} 
 		
-		//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 	}
