@@ -387,7 +387,7 @@ if (!empty($pref['e_meta_list']))
 unset($incompatibleMeta);
 
 
-if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+if (!USER && varset($pref['password_CHAP'],0))
 {
 	if ($pref['password_CHAP'] == 2)
   	{

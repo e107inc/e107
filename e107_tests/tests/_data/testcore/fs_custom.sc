@@ -80,10 +80,18 @@ switch($custom_query[0])
 								<a class="custom-loginc-link custom-signup f-right" href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a>
 							';
 						}
+					/**
+					 * @todo since v2.3.0: `user_tracking` has been removed. Only session handlers are used now.
+					 *       "autologin" should be replaced with a user-configurable session lifetime.
+					 * @see UserHandler::makeUserCookie()
+					 * @see \e107\SessionHandlers\BaseSessionHandler
+					 */
+					/*
 					if ($pref['user_tracking'] == "cookie")
 						{
 							$fs_autologin = "<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n";
 						}
+					*/
 						
 					if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 						{

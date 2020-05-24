@@ -1487,7 +1487,6 @@ class e_user extends e_user_model
 {
 	private $_session_data = null;
 	private $_session_key = null;
-	private $_session_type = null;
 	private $_session_error = false;
 
 	private $_parent_id = false;
@@ -1647,15 +1646,7 @@ class e_user extends e_user_model
 
 		$key = $this->_session_key.'_as';
 
-		if('session' == $this->_session_type)
-		{
-			$_SESSION[$key] = $user_id;
-		}
-		elseif('cookie' == $this->_session_type)
-		{
-			$_COOKIE[$key] = $user_id;
-			cookie($key, $user_id);
-		}
+		$_SESSION[$key] = $user_id;
 
 		// TODO - lan
 		e107::getAdminLog()->log_event('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
@@ -1883,17 +1874,9 @@ class e_user extends e_user_model
 
 	final public function getSessionDataAs()
 	{
-		$id = false;
 		$key = $this->_session_key.'_as';
 
-		if('session' == $this->_session_type && isset($_SESSION[$key]) && !empty($_SESSION[$key]))
-		{
-			$id = $_SESSION[$key];
-		}
-		elseif('cookie' == $this->_session_type && isset($_COOKIE[$key]) && !empty($_COOKIE[$key]))
-		{
-			$id = $_COOKIE[$key];
-		}
+		$id = $_SESSION[$key];
 
 		if(!empty($id) && is_numeric($id)) return intval($id);
 
@@ -1904,18 +1887,8 @@ class e_user extends e_user_model
 	{
 		if($force || null === $this->_session_data)
 		{
-			$this->_session_data = null;
 			$this->_session_key = e107::getPref('cookie_name', 'e107cookie');
-			$this->_session_type = e107::getPref('user_tracking', 'cookie');
-			
-			if('session' == $this->_session_type && isset($_SESSION[$this->_session_key]) && !empty($_SESSION[$this->_session_key]))
-			{
-				$this->_session_data = &$_SESSION[$this->_session_key];
-			}
-			elseif('cookie' == $this->_session_type && isset($_COOKIE[$this->_session_key]) && !empty($_COOKIE[$this->_session_key]))
-			{
-				$this->_session_data = &$_COOKIE[$this->_session_key];
-			}
+			$this->_session_data = &$_SESSION[$this->_session_key];
 		}
 
 		return $this;

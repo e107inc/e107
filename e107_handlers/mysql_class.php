@@ -112,17 +112,6 @@ class e_db_mysql implements e_db
 			$this->mySQLport = intval($port);
 		}
 
-		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
-		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
-		{
-			if (!isset($_SESSION[$langid])) { return; }
-			$this->mySQLlanguage = $_SESSION[$langid];
-		}
-		else
-		{
-			if (!isset($_COOKIE[$langid])) { return; }
-			$this->mySQLlanguage = $_COOKIE[$langid];
-		}*/
 		// Detect is already done in language handler, use it if not too early
 		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
 

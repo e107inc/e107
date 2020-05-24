@@ -199,7 +199,7 @@ else
 				$sessionLife = time() + $sessionLife;
 			}
 
-			session_set(e_COOKIE, $cookieval, $sessionLife);
+			$_SESSION[e_COOKIE] = $cookieval;
 
 			unset($sessionLife,$cookieval);
 		

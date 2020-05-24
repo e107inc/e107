@@ -184,14 +184,23 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_rememberme($parm='')
 			{
-				$pref = e107::getPref();
 				if($parm == "hidden"){
 					return "<input type='hidden' name='autologin' id='autologin' value='1' />";
 				}
+				/**
+				 * @todo since v2.3.0: `user_tracking` has been removed. Only session handlers are used now.
+				 *       "autologin" should be replaced with a user-configurable session lifetime.
+				 * @see UserHandler::makeUserCookie()
+				 * @see \e107\SessionHandlers\BaseSessionHandler
+				 */
+				// TODO: `user_tracking` == 'cookie' has been removed.  See UserHandler::makeUserCookie() for details.
+				/*
+				$pref = e107::getPref();
 				if($pref['user_tracking'] != "session")
 				{
 					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
 				}
+				*/
 				return '';
 			}
 

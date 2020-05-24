@@ -193,6 +193,10 @@ if(isset($_POST['updateprefs']))
 				$sessionRegenerate = true;
 			}
 		}
+		elseif($key == 'session_handler')
+		{
+			$newValue = $value;
+		}
 		else
 		{
 			$newValue = $tp->toDB($value);
@@ -1390,47 +1394,27 @@ $text .= "
 		
 	}
 
-
-/*
-
-
-					
-	$text .= "
-					<tr>
-						<td>".PRFLAN_81.": </td>
-						<td>
-";
-
-if($hasGD)
+$session_handlers = \e107\Factories\SessionHandlerFactory::getImplementations();
+$mapped_session_handlers = [];
+foreach ($session_handlers as $session_handler)
 {
-	$text .= $frm->radio_switch('logcode', $pref['logcode']);
-}
-else
-{
-	$text .= PRFLAN_133;
-}
-$text .= "
-						</td>
-					</tr>
-					<tr>
-						<td>".PRFLAN_138.": </td>
-						<td>
-";
-if($hasGD)
-{
-	$text .= $frm->radio_switch('fpwcode', $pref['fpwcode']);
-}
-else
-{
-	$text .= PRFLAN_133;
+	switch ($session_handler)
+	{
+		case \e107\SessionHandlers\DatabaseSessionHandler::class:
+			$lan = PRFLAN_SESSION_HANDLER_DATABASE;
+			break;
+		case \e107\SessionHandlers\FilesSessionHandler::class:
+			$lan = PRFLAN_SESSION_HANDLER_FILES_BLOCKING;
+			break;
+		case \e107\SessionHandlers\NonblockingFilesSessionHandler::class:
+			$lan = PRFLAN_SESSION_HANDLER_FILES_NONBLOCKING;
+			break;
+		default:
+			$lan = $session_handler;
+	}
+	$mapped_session_handlers[$session_handler] = $lan;
 }
 
-$text .= "
-						</td>
-					</tr>";
- * 
- 
- */
 $text .= "
 
 					<tr>
@@ -1442,20 +1426,14 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td><label for='user-tracking-cookie'>".PRFLAN_48."</label></td>
+						<td><label for='session-handler'>".PRFLAN_SESSION_HANDLER_LABEL."</label></td>
 						<td >
 							<div class='form-inline'>
-							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
+							".$frm->select('session_handler', $mapped_session_handlers, $pref['session_handler'])."
 						</div></td>
 					</tr>
 					
-				
-					<tr>
-						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
-						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
-						<div class='field-help'>".PRFLAN_263.".</div></td></tr>
-
-
+					
 					<tr>
 						<td><label for='session-lifetime'>".PRFLAN_272."</label></td>
 						<td>
@@ -1463,7 +1441,13 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_273."</div>
 						</td>
 					</tr>
+					
 
+					<tr>
+						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
+						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+						<div class='field-help'>".PRFLAN_263.".</div></td>
+					</tr>
 
 
 					<tr>

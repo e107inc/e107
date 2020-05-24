@@ -676,39 +676,18 @@ class UserHandler
 	*/
 
 
-
 	/**
-	 *	Create user cookie
+	 * Create user cookie
 	 *
-	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
-	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
-	 *
-	 *	@return void
+	 * @param array $lode - user information from DB - 'user_id' and 'user_password' required
+	 * @param bool $autologin - TRUE if the 'Remember Me' box ticked
+	 * @return void
+	 * @todo since v2.3.0, $autologin should be rewritten as a user-defined session lifetime
 	 */
-	public function makeUserCookie($lode,$autologin = false)
+	public function makeUserCookie($lode, $autologin = false)
 	{
-		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if (e107::getPref('user_tracking') == 'session')
-		{
-			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
-		}
-		else
-		{
-			if ($autologin == 1)
-			{	// Cookie valid for up to 30 days
-				cookie(e107::getPref('cookie_name'), $cookieval, (time() + 3600 * 24 * 30));
-				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
-			}
-			else
-			{
-				cookie(e107::getPref('cookie_name'), $cookieval);
-				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
-			}
-		}
-
-
-	//	echo "Debug: making cookie: ".$cookieval ." from ".print_a($lode,true);
-	//	exit;
+		$cookieval = $lode['user_id'] . '.' . md5($lode['user_password']);
+		$_SESSION[e107::getPref('cookie_name')] = $cookieval;
 	}
 
 

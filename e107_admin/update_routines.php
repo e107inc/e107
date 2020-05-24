@@ -127,7 +127,7 @@ if (!$dont_check_update)
 //	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
-	$dbupdate['20x_to_220'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
+	$dbupdate['20x_to_230'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.3.0')), 'message'=> null, 'hide_when_complete'=>false);
 	
 
 
@@ -638,7 +638,7 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_20x_to_220($type='')
+	function update_20x_to_230($type='')
 	{
 
 		$sql = e107::getDb();
@@ -724,14 +724,26 @@ function update_core_database($type = '')
 			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
 		}
 
-
+		if (e107::getConfig()->has('user_tracking'))
+		{
+			if ($just_check)
+			{
+				return update_needed("Overhauled session handler");
+			}
+			else
+			{
+				$config = e107::getConfig();
+				$config->remove('user_tracking');
+				if (!$config->has('session_handler'))
+				{
+					$should = get_default_prefs();
+					$config->set('session_handler', $should['session_handler']);
+				}
+				$config->save(false, true);
+			}
+		}
 
 		return $just_check;
-
-
-
-
-
 	}
 
 
@@ -766,7 +778,7 @@ function update_706_to_800($type='')
 				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
-	$obs_tables = array('flood',  'stat_info', 'stat_counter', 'stat_last', 'session', 'preset', 'tinymce');
+	$obs_tables = array('flood',  'stat_info', 'stat_counter', 'stat_last', 'preset', 'tinymce');
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)

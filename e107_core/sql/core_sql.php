@@ -104,7 +104,7 @@ CREATE TABLE comments (
   comment_share tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id),
   KEY comment_blocked (comment_blocked),
-  KEY comment_author_id (comment_author_id) 
+  KEY comment_author_id (comment_author_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
@@ -360,7 +360,7 @@ CREATE TABLE online (
   online_flag tinyint(3) unsigned NOT NULL default '0',
   online_user_id varchar(100) NOT NULL default '',
   online_ip varchar(45) NOT NULL default '',
-  online_location text NOT NULL,        
+  online_location text NOT NULL,
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
@@ -395,15 +395,15 @@ CREATE TABLE page (
   page_order int(4) unsigned NOT NULL default '9999',
   page_fields mediumtext,
   menu_name varchar(50) default '',
-  menu_title varchar(250) NOT NULL default '',  
+  menu_title varchar(250) NOT NULL default '',
   menu_text mediumtext,
   menu_image varchar(250) NOT NULL default '',
   menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
   menu_class varchar(250) NOT NULL default '0',
-  menu_button_url varchar(250) NOT NULL default '', 
-  menu_button_text varchar(250) NOT NULL default '',   
-  
+  menu_button_url varchar(250) NOT NULL default '',
+  menu_button_text varchar(250) NOT NULL default '',
+
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
@@ -466,6 +466,20 @@ CREATE TABLE rate (
   rate_down int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (rate_id)
 ) ENGINE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `session`
+#
+
+CREATE TABLE session (
+  session_id varchar(255) NOT NULL default '',
+  session_expires int(10) unsigned NOT NULL default '0',
+  session_user int(10) unsigned default NULL,
+  session_data text NOT NULL,
+  PRIMARY KEY  (session_id)
+) ENGINE=MyISAM;
+
 # --------------------------------------------------------
 
 #

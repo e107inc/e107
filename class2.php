@@ -1343,7 +1343,7 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 // $_SESSION['ubrowser'] check not needed anymore - see session handler
 // e_QUERY not defined in single entry mod
-if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
+if ($_SERVER['QUERY_STRING'] == 'logout')
 {
 	if (USER)
 	{
@@ -1367,13 +1367,17 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	
 	// first model logout and session destroy..
 	e107::getUser()->logout();
-	
+
 	// it might be removed soon
-	if ($pref['user_tracking'] == 'session')
+	$_SESSION[e_COOKIE] = '';
+	session_destroy();
+	if (ini_get("session.use_cookies"))
 	{
-		session_destroy();
-		$_SESSION[e_COOKIE]='';
-		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 2592000,
+			$params["path"], $params["domain"],
+			$params["secure"], $params["httponly"]
+		);
 	}
 	cookie(e_COOKIE, '', (time() - 2592000));
 	
@@ -2248,31 +2252,6 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 	}	
 	
 	setcookie($name, $value, $expire, $path, $domain, $secure, true);
-}
-
-// generic function for retaining values across pages. ie. cookies or sessions.
-function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $secure = 0)
-{
-	global $pref;
-	if ($pref['user_tracking'] == 'session')
-	{
-		$_SESSION[$name] = $value;
-	}
-	else
-	{
-		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
-		{
-			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
-		}
-
-		if(defined('e_MULTISITE_MATCH'))
-		{
-			$path = '/';
-		}
-		
-		setcookie($name, $value, $expire, $path, $domain, $secure, true);
-		$_COOKIE[$name] = $value;
-	}
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

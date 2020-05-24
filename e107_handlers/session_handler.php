@@ -12,6 +12,9 @@
  * $Id$
  */
 
+use e107\Factories\SessionHandlerFactory;
+use e107\SessionHandlers\FilesSessionHandler;
+
 if (!defined('e107_INIT'))
 {
 	exit;
@@ -118,7 +121,6 @@ class e_session
 	
 	protected $_namespace;
 	protected $_name;
-	protected $_sessionStarted = false; // Fixes lost $_SESSION value problem. 
 
 	/**
 	 * Validation options
@@ -241,7 +243,7 @@ class e_session
             ini_set('session.hash_bits_per_character', 5);
         }
 
-        $this->fixSessionFileGarbageCollection();
+        $this->fixSessionGarbageCollection();
 
         $this->setConfig($config)
             ->setOptions($options);
@@ -250,14 +252,14 @@ class e_session
 	}
 
     /**
-     * Modify PHP ini at runtime to enable session file garbage collection
+     * Modify PHP ini at runtime to enable session garbage collection
      *
      * Takes no action if the garbage collector is already enabled.
      *
      * @see https://github.com/e107inc/e107/issues/4113
      * @return void
      */
-	private function fixSessionFileGarbageCollection()
+	private function fixSessionGarbageCollection()
     {
         $gc_probability = ini_get('session.gc_probability');
         if ($gc_probability > 0) return;
@@ -475,31 +477,9 @@ class e_session
 	 */
 	public function start($sessionName = null)
 	{
-	
-		if (isset($_SESSION) && ($this->_sessionStarted == true))
+		if (isset($_SESSION))
 		{
 			return $this;
-		}
-
-		if (false !== $this->_sessionSavePath && is_writable($this->_sessionSavePath))
-		{
-			session_save_path($this->_sessionSavePath);
-		}
-	
-		switch ($this->_sessionSaveMethod)
-		{
-			case 'db': // TODO session db handling, more methods (e.g. memcache)
-				ini_set('session.save_handler', 'user');
-				$session = new e_db_session;
-				$session->setSaveHandler();
-			break;
-
-			default:
-				if(!isset($_SESSION))
-				{
-					session_module_name($this->_sessionSaveMethod);
-				}
-			break;
 		}
 
 		if (empty($this->_options['domain']))
@@ -538,10 +518,26 @@ class e_session
 		{
 			session_cache_limiter((string) $this->_sessionCacheLimiter); //XXX Remove and have e_headers class handle it?
 		}
-		
-	
-		session_start();
-		$this->_sessionStarted = true;
+
+		try
+		{
+			$sessionHandler = SessionHandlerFactory::make();
+			$sessionHandler->activate();
+		}
+		catch (RuntimeException $e)
+		{
+			$sessionHandler = SessionHandlerFactory::make(FilesSessionHandler::class);
+			$sessionHandler->activate();
+			// TODO: LAN
+			if (e_ADMIN_AREA) e107::getMessage()->addWarning(
+				"<p>The configured session handler <code>" . SessionHandlerFactory::getDefaultImplementation() .
+				"</code> is not set up properly. The fallback session handler <code>" . get_class($sessionHandler) .
+				"</code> is being used instead. This negatively impacts your site performance. Perhaps you need to " .
+				"perform a <a href=\"" . e_ADMIN_ABS . "e107_update.php\">database migration</a>?</p><p>" .
+				"Error message: " . $e->getMessage() . "</p>"
+			);
+		}
+
 		return $this;
 	}
 
@@ -1000,7 +996,7 @@ class e_core_session extends e_session
 				define('e_TOKEN_FREEZE', true);
 			}
 			// __form_token_regenerate set in footer, so if footer is not called, token will be never regenerated!
-			if(e_SECURITY_LEVEL == e_session::SECURITY_LEVEL_INSANE && !deftrue('e_TOKEN_FREEZE') && $this->has('__form_token_regenerate')) 
+			if(e_SECURITY_LEVEL == e_session::SECURITY_LEVEL_INSANE && !deftrue('e_TOKEN_FREEZE') && $this->has('__form_token_regenerate'))
 			{
 				$this->_regenerateFormToken()
 					->clear('__form_token_regenerate');
@@ -1061,223 +1057,4 @@ class e_core_session extends e_session
 		}
 		return $this;
 	}
-}
-
-/* SQL to be added
-CREATE TABLE session (
-  `session_id` varchar(255) NOT NULL default '',
-  `session_expires` int(10) unsigned NOT NULL default 0,
-  `session_data` text NOT NULL,
-  PRIMARY KEY  (`session_id`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- */
-class e_db_session
-{
-	/**
-	 * @var e_db_mysql
-	 */
-	protected $_db = null;
-	
-	/**
-	 * Table name
-	 * @var string
-	 */
-	protected $_table = 'session';
-	
-	/**
-	 * @var integer
-	 */
-	protected $_lifetime = null;
-	
-	public function __construct()
-	{
-		$this->_db = e107::getDb('session');		
-	}
-	
-	public function __destruct()
-	{
-		session_write_close();
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getTable()
-	{
-		return $this->_table;
-	}
-	
-	/**
-	 * @param string $table
-	 * @return e_db_session
-	 */
-	public function setTable($table)
-	{
-		$this->_table = $table;
-		return $this;
-	}
-	
-	/**
-	 * @return integer
-	 */
-	public function getLifetime()
-	{
-		if(null === $this->_lifetime)
-		{
-			$this->_lifetime = ini_get('session.gc_maxlifetime');
-			if(!$this->_lifetime)
-			{
-				$this->_lifetime = 3600;
-			}
-		}
-		return (integer) $this->_lifetime;
-	}
-	
-	/**
-	 * @param integer $seconds
-	 * @return e_db_session
-	 */
-	public function setLifetime($seconds = null)
-	{
-		$this->_lifetime = $seconds;
-		return $this;
-	}
-	
-	/**
-	 * Set session save handler
-	 * @return e_db_session
-	 */
-	public function setSaveHandler()
-	{
-		session_set_save_handler(
-			array($this, 'open'),
-			array($this, 'close'),
-			array($this, 'read'),
-			array($this, 'write'),
-			array($this, 'destroy'),
-			array($this, 'gc')
-		);
-		return $this;
-	}
-	
-	/**
-	 * Open session, parameters are ignored (see e_session handler)
-	 * @param string $save_path
-	 * @param string $sess_name
-	 * @return boolean
-	 */
-    public function open($save_path, $sess_name)
-    {
-        return true;
-    }
-    
-	/**
-	 * Close session
-	 * @return boolean
-	 */
-    public function close()
-    {
-    	$this->gc($this->getLifetime());
-        return true;
-    }
-    
-    /**
-     * Get session data
-     * @param string $session_id
-     * @return string
-     */
-    public function read($session_id)
-    {
-    	$data = false;
-    	$check = $this->_db->db_Select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($session_id)."' AND session_expires>".time());
-    	if($check)
-    	{
-    		$tmp = $this->_db->db_Fetch();
-    		$data = base64_decode($tmp['session_data']);
-    	}
-    	elseif(false !== $check)
-    	{
-    		$data = '';
-    	}
-    	return $data;
-    }
-    
-    /**
-     * Write session data
-     * @param string $session_id
-     * @param string $session_data
-     * @return boolean
-     */
-    public function write($session_id, $session_data)
-    {
-    	$data = array(
-    		'data' => array(
-	    		'session_expires' => time() + $this->getLifetime(),
-	    		'session_data' 	  => base64_encode($session_data),
-    		),
-    		'_FIELD_TYPES' => array(
-    			'session_id'		=> 'str',
-    			'session_expires'	=> 'int',
-    			'session_data'		=> 'str'
-    		),
-    		'_DEFAULT' => 'str'
-    	);
-    	if(!($session_id = $this->_sanitize($session_id)))
-    	{
-    		return false;
-    	}
-    	
-    	$check = $this->_db->db_Select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
-    	
-    	if($check)
-    	{
-    		$data['WHERE'] = "`session_id`='{$session_id}'";
-    		if(false !== $this->_db->db_Update($this->getTable(), $data))
-    		{
-    			return true;
-    		}
-    	}
-    	else
-    	{
-    		$data['data']['session_id'] = $session_id;
-    		if($this->_db->db_Insert($this->getTable(), $data))
-    		{
-    			return true;
-    		}	
-    	}
-    	return false;
-    }
-    
-    /**
-     * Destroy session
-     * @param string $session_id
-     * @return boolean
-     */
-    public function destroy($session_id)
-    {
-    	$session_id = $this->_sanitize($session_id);
-    	$this->_db->db_Delete($this->getTable(), "`session_id`='{$session_id}'");
-    	return true;
-    }
-    
-    /**
-     * Garbage collection
-     * @param integer $session_maxlf ignored - see write()
-     * @return boolean
-     */
-    public function gc($session_maxlf)
-    {
-    	$this->_db->db_Delete($this->getTable(), '`session_expires`<'.time());
-    	return true;
-    }
-    
-    /**
-     * Allow only well formed session id string 
-     * @param string $session_id
-     * @return string
-     */
-    protected function _sanitize($session_id)
-    {
-    	return preg_replace('#[^0-9a-zA-Z,-]#', '', $session_id);
-    }
 }
