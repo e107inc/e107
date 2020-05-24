@@ -7,4 +7,3 @@ db:
   user: 'root'
   password: 'Database Password for Continuous Integration'
   populate: true
-  dump_path: 'tests/_data/e107_v2.1.9.sample.sql'
