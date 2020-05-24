@@ -59,7 +59,7 @@ db:
 
   # Path (absolute or relative) to the database dump of a testable installation of the app
   # Absolute path begins with "/"; relative path does not begin with "/"
-  dump_path: 'tests/_data/e107_v2.1.9.sample.sql'
+  dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 
 # Configure this section for deployers that need file upload configuration
 fs:
