@@ -44,13 +44,15 @@
 		public function testGetClassList()
 		{
 			$result = $this->usr->getClassList();
-			$expected = array ( 0 => 4, 1 => 5, 2 => 253, 3 => 254, 4 => 250, 5 => 251, 6 => 0,);
-			$this->assertEquals($expected, $result);
+			$this->assertContains(e_UC_MEMBER, $result);
+			$this->assertContains(e_UC_ADMIN, $result);
+			$this->assertContains(e_UC_MAINADMIN, $result);
 
 			$result = $this->usr->getClassList(true);
-			$expected = "4,5,253,254,250,251,0";
-			$this->assertEquals($expected, $result);
-
+			$result = array_map('intval', explode(',', $result));
+			$this->assertContains(e_UC_MEMBER, $result);
+			$this->assertContains(e_UC_ADMIN, $result);
+			$this->assertContains(e_UC_MAINADMIN, $result);
 		}
 
 /*		public function testIsNewUser()

@@ -608,7 +608,10 @@ class e_pref extends e_front_model
 				{
 					$logId = 'PREFS_01';	
 				}
-				
+
+				// FIXME: Admin LAN dependency out of nowhere
+				e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
+
 				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
 
 				$uid = USERID;
