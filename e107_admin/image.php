@@ -485,11 +485,11 @@ class media_form_ui extends e_admin_form_ui
 		     return FALSE;
 		    // return $this;
 		}
-		if($WM) // TODO Add watermark prefs for alpha and position. 
+	/*	if($WM) // TODO Add watermark prefs for alpha and position.
 		{
 			$thumb->resize($img_import_w,$img_import_h)->addWatermark($watermark, 'rightBottom', 30, 0, 0)->save($oldpath); 
 		}
-		else
+		else*/
 		{
 		 	if($thumb->resize($img_import_w,$img_import_h)->save($oldpath))
 			{
@@ -762,16 +762,13 @@ class media_form_ui extends e_admin_form_ui
 		$val = $this->getController()->getFieldVar('media_url');
 		$type = $this->getMediaType();
 
-
-
 		switch($type)
 		{
-			case "label1":
-				// code
-				break;
-
+            case "application":
 			case "audio":
 			case "icon":
+            case "file":
+            case "video":
 				$path = e107::getParser()->replaceConstants($val, 'abs');
 				break;
 
@@ -781,8 +778,8 @@ class media_form_ui extends e_admin_form_ui
 				// code to be executed if n is different from all labels;
 		}
 
-			$url = SITEURLBASE.$path;
-			return "<a href='".$url."' rel='external' title='".LAN_EFORM_010."'><small>".$url."</small></a>";
+        $url = SITEURLBASE.$path;
+        return "<a href='".$url."' rel='external' title='".LAN_EFORM_010."'><small>".$url."</small></a>";
 
 
 	}
@@ -1869,7 +1866,7 @@ class media_admin_ui extends e_admin_ui
 			e107::getBB()->setClass($category);
 			$parms['width'] = (int) e107::getBB()->resizeWidth(); // resize the image according to prefs.
 			$parms['height'] = (int) e107::getBB()->resizeHeight();
-			e107::getBB()->clearclass();
+			e107::getBB()->clearClass();
 		}
 
 
@@ -2472,8 +2469,9 @@ class media_admin_ui extends e_admin_ui
 		{
 			$gd_version = "<span class='error'> ".IMALAN_55."</span>";
 		}
-		
-		if($pref['resize_method'] == "ImageMagick" && (!vartrue(e107::getFolder('imagemagick'))))
+
+        $folder1 = e107::getFolder('imagemagick');
+        if($pref['resize_method'] == "ImageMagick" && (!vartrue($folder1)))
 		{
 			
 			$mes->addWarning('Please add: <b>$IMAGEMAGICK_DIRECTORY="'.$pref['im_path'].'";</b> to your e107_config.php file');	
@@ -2481,7 +2479,8 @@ class media_admin_ui extends e_admin_ui
 		
 			
 		//$IM_NOTE = "";
-		$im_path = vartrue(e107::getFolder('imagemagick'));
+        $folder = e107::getFolder('imagemagick');
+        $im_path = vartrue($folder);
 		if($im_path != "")
 		{
 		  $im_file = $im_path.'convert';
@@ -3879,4 +3878,3 @@ if (isset($_POST['check_avatar_sizes']))
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php"); 
 
-?>
