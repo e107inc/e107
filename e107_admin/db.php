@@ -328,8 +328,9 @@ class system_tools
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$pref = e107::pref();
 
-		if(!$pref['developer'])
+		if(empty($pref['developer']))
 		{
 			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
 			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
