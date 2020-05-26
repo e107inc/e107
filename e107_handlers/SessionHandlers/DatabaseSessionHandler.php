@@ -38,27 +38,12 @@ class DatabaseSessionHandler extends BaseSessionHandler
 		$this->_db = e107::getDb('session');
 	}
 
-	public function __destruct()
-	{
-		session_write_close();
-	}
-
 	/**
 	 * @return string
 	 */
-	public function getTable()
+	protected function getTable()
 	{
 		return $this->_table;
-	}
-
-	/**
-	 * @param string $table
-	 * @return DatabaseSessionHandler
-	 */
-	public function setTable($table)
-	{
-		$this->_table = $table;
-		return $this;
 	}
 
 	/**
@@ -68,11 +53,7 @@ class DatabaseSessionHandler extends BaseSessionHandler
 	{
 		if (null === $this->_lifetime)
 		{
-			$this->_lifetime = ini_get('session.gc_maxlifetime');
-			if (!$this->_lifetime)
-			{
-				$this->_lifetime = 3600;
-			}
+			$this->setLifetime(ini_get('session.gc_maxlifetime'));
 		}
 		return (integer)$this->_lifetime;
 	}
@@ -81,7 +62,7 @@ class DatabaseSessionHandler extends BaseSessionHandler
 	 * @param integer $seconds
 	 * @return DatabaseSessionHandler
 	 */
-	public function setLifetime($seconds = null)
+	protected function setLifetime($seconds = null)
 	{
 		$this->_lifetime = $seconds;
 		return $this;
@@ -215,4 +196,3 @@ class DatabaseSessionHandler extends BaseSessionHandler
 		);
 	}
 }
->>>>>>> 70d8e406f... QA

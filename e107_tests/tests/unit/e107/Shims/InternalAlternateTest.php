@@ -12,9 +12,9 @@ namespace e107\Shims;
 
 function readfile($filename, $use_include_path = FALSE, $context = NULL)
 {
-	foreach(debug_backtrace(false) as $line)
+	foreach (debug_backtrace(false) as $line)
 	{
-		if ($line['class'] == InternalAlternateTest::class)
+		if (isset($line['class']) && $line['class'] == InternalAlternateTest::class)
 		{
 			return null;
 		}
