@@ -1363,7 +1363,7 @@ class e107
 	 * $instance_id
 	 *
 	 * @param string $instance_id
-	 * @return e_db_mysql
+	 * @return e_db
 	 */
 	public static function getDb($instance_id = '')
 	{
