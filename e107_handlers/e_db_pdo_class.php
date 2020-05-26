@@ -2808,19 +2808,11 @@ class e_db_pdo implements e_db
 	 */
 	private function _getMySQLaccess()
 	{
-		/*if (!$this->mySQLaccess) {
-			global $db_ConnectionID;
-			$this->mySQLaccess = $db_ConnectionID;
-			debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-
-		}*/
-		
 		if (!$this->mySQLaccess)
 		{
-		//	debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-			$this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
-			$this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
-			//$this->mySQLaccess = e107::getDb()->get_mySQLaccess();
+			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
+			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
+			if (!$success) throw new PDOException($this->mySQLlastErrText);
 		}
 	}
 
