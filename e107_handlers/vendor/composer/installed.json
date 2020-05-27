@@ -1,17 +1,17 @@
 [
     {
         "name": "hybridauth/hybridauth",
-        "version": "3.2.0",
-        "version_normalized": "3.2.0.0",
+        "version": "3.3.0",
+        "version_normalized": "3.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/hybridauth/hybridauth.git",
-            "reference": "2edf92f07b94fcc9e17ea14e2a1644b83981af7d"
+            "reference": "51cb2ad2f04d175d298b51e919868dec1d4d8b04"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/2edf92f07b94fcc9e17ea14e2a1644b83981af7d",
-            "reference": "2edf92f07b94fcc9e17ea14e2a1644b83981af7d",
+            "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/51cb2ad2f04d175d298b51e919868dec1d4d8b04",
+            "reference": "51cb2ad2f04d175d298b51e919868dec1d4d8b04",
             "shasum": ""
         },
         "require": {
@@ -21,7 +21,7 @@
             "ext-curl": "*",
             "phpunit/phpunit": "^4.8.35 || ^6.5 || ^8"
         },
-        "time": "2020-03-04T14:32:04+00:00",
+        "time": "2020-04-16T08:04:26+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -55,17 +55,17 @@
     },
     {
         "name": "ifsnop/mysqldump-php",
-        "version": "v2.8",
-        "version_normalized": "2.8.0.0",
+        "version": "v2.9",
+        "version_normalized": "2.9.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ifsnop/mysqldump-php.git",
-            "reference": "b6919eff87c36b18fe0d4b3a53635df03c8a3b38"
+            "reference": "fc9c119fe5d70af9a685cad6a8ac612fd7589e25"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/b6919eff87c36b18fe0d4b3a53635df03c8a3b38",
-            "reference": "b6919eff87c36b18fe0d4b3a53635df03c8a3b38",
+            "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/fc9c119fe5d70af9a685cad6a8ac612fd7589e25",
+            "reference": "fc9c119fe5d70af9a685cad6a8ac612fd7589e25",
             "shasum": ""
         },
         "require": {
@@ -75,7 +75,7 @@
             "phpunit/phpunit": "4.8.36",
             "squizlabs/php_codesniffer": "1.*"
         },
-        "time": "2019-10-29T23:13:43+00:00",
+        "time": "2020-04-03T14:40:40+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -112,17 +112,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.1.4",
-        "version_normalized": "6.1.4.0",
+        "version": "v6.1.6",
+        "version_normalized": "6.1.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "c5e61d0729507049cec9673aa1a679f9adefd683"
+            "reference": "c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c5e61d0729507049cec9673aa1a679f9adefd683",
-            "reference": "c5e61d0729507049cec9673aa1a679f9adefd683",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3",
+            "reference": "c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3",
             "shasum": ""
         },
         "require": {
@@ -143,7 +143,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2019-12-10T11:17:38+00:00",
+        "time": "2020-05-27T12:24:03+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -172,7 +172,13 @@
                 "name": "Brent R. Matzelle"
             }
         ],
-        "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
+        "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+        "funding": [
+            {
+                "url": "https://github.com/synchro",
+                "type": "github"
+            }
+        ]
     },
     {
         "name": "tedivm/jshrink",
