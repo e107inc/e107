@@ -83,7 +83,9 @@ class Mysqldump
     private $pdoSettings = array();
     private $version;
     private $tableColumnTypes = array();
+    private $transformTableRowCallable;
     private $transformColumnValueCallable;
+    private $infoCallable;
 
     /**
      * Database name, parsed from dsn.
@@ -112,6 +114,7 @@ class Mysqldump
     private $tableWheres = array();
     private $tableLimits = array();
 
+
     /**
      * Constructor of Mysqldump. Note that in the case of an SQLite database
      * connection, the filename must be in the $db parameter.
@@ -132,6 +135,7 @@ class Mysqldump
         $dumpSettingsDefault = array(
             'include-tables' => array(),
             'exclude-tables' => array(),
+            'include-views' => array(),
             'compress' => Mysqldump::NONE,
             'init_commands' => array(),
             'no-data' => array(),
@@ -196,8 +200,10 @@ class Mysqldump
             throw new Exception("Include-tables and exclude-tables should be arrays");
         }
 
-        // Dump the same views as tables, mimic mysqldump behaviour
-        $this->dumpSettings['include-views'] = $this->dumpSettings['include-tables'];
+        // If no include-views is passed in, dump the same views as tables, mimic mysqldump behaviour.
+        if (!isset($dumpSettings['include-views'])) {
+            $this->dumpSettings['include-views'] = $this->dumpSettings['include-tables'];
+        }
 
         // Create a new compressManager to manage compressed output
         $this->compressManager = CompressManagerFactory::create($this->dumpSettings['compress']);
@@ -723,6 +729,7 @@ class Mysqldump
         foreach ($this->triggers as $trigger) {
             $this->getTriggerStructure($trigger);
         }
+
     }
 
     /**
@@ -1011,12 +1018,20 @@ class Mysqldump
      *
      * @return array
      */
-    private function prepareColumnValues($tableName, $row)
+    private function prepareColumnValues($tableName, array $row)
     {
         $ret = array();
         $columnTypes = $this->tableColumnTypes[$tableName];
+
+        if ($this->transformTableRowCallable) {
+            $row = call_user_func($this->transformTableRowCallable, $tableName, $row);
+        }
+
         foreach ($row as $colName => $colValue) {
-            $colValue = $this->hookTransformColumnValue($tableName, $colName, $colValue, $row);
+            if ($this->transformColumnValueCallable) {
+                $colValue = call_user_func($this->transformColumnValueCallable, $tableName, $colName, $colValue, $row);
+            }
+
             $ret[] = $this->escape($colValue, $columnTypes[$colName]);
         }
 
@@ -1049,11 +1064,25 @@ class Mysqldump
     }
 
     /**
-     * Set a callable that will will be used to transform column values.
+     * Set a callable that will be used to transform table rows
      *
      * @param callable $callable
      *
      * @return void
+     */
+    public function setTransformTableRowHook($callable)
+    {
+        $this->transformTableRowCallable = $callable;
+    }
+
+    /**
+     * Set a callable that will be used to transform column values
+     *
+     * @param callable $callable
+     *
+     * @return void
+     *
+     * @deprecated Use setTransformTableRowHook instead for better performance
      */
     public function setTransformColumnValueHook($callable)
     {
@@ -1061,26 +1090,15 @@ class Mysqldump
     }
 
     /**
-     * Give extending classes an opportunity to transform column values
+     * Set a callable that will be used to report dump information
      *
-     * @param string $tableName Name of table which contains rows
-     * @param string $colName Name of the column in question
-     * @param string $colValue Value of the column in question
+     * @param callable $callable
      *
-     * @return string
+     * @return void
      */
-    protected function hookTransformColumnValue($tableName, $colName, $colValue, $row)
+    public function setInfoHook($callable)
     {
-        if (!$this->transformColumnValueCallable) {
-            return $colValue;
-        }
-
-        return call_user_func_array($this->transformColumnValueCallable, array(
-            $tableName,
-            $colName,
-            $colValue,
-            $row
-        ));
+        $this->infoCallable = $callable;
     }
 
     /**
@@ -1157,6 +1175,10 @@ class Mysqldump
         }
 
         $this->endListValues($tableName, $count);
+
+        if ($this->infoCallable) {
+            call_user_func($this->infoCallable, 'table', array('name' => $tableName, 'rowCount' => $count));
+        }
     }
 
     /**
@@ -1458,39 +1480,39 @@ class CompressNone extends CompressManagerFactory
 
 class CompressGzipstream extends CompressManagerFactory
 {
-  private $fileHandler = null;
+    private $fileHandler = null;
 
-  private $compressContext;
+    private $compressContext;
 
-  /**
-   * @param string $filename
-   */
-  public function open($filename)
-  {
+    /**
+     * @param string $filename
+     */
+    public function open($filename)
+    {
     $this->fileHandler = fopen($filename, "wb");
     if (false === $this->fileHandler) {
-      throw new Exception("Output file is not writable");
+        throw new Exception("Output file is not writable");
     }
 
     $this->compressContext = deflate_init(ZLIB_ENCODING_GZIP, array('level' => 9));
     return true;
-  }
+    }
 
-  public function write($str)
-  {
+    public function write($str)
+    {
 
     $bytesWritten = fwrite($this->fileHandler, deflate_add($this->compressContext, $str, ZLIB_NO_FLUSH));
     if (false === $bytesWritten) {
-      throw new Exception("Writting to file failed! Probably, there is no more free space left?");
+        throw new Exception("Writting to file failed! Probably, there is no more free space left?");
     }
     return $bytesWritten;
-  }
+    }
 
-  public function close()
-  {
+    public function close()
+    {
     fwrite($this->fileHandler, deflate_add($this->compressContext, '', ZLIB_FINISH));
     return fclose($this->fileHandler);
-  }
+    }
 }
 
 /**
@@ -1942,7 +1964,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
                 "Please check 'https://bugs.mysql.com/bug.php?id=14564'");
         }
         $procedureStmt = $row['Create Procedure'];
-        if ( $this->dumpSettings['skip-definer'] ) {
+        if ($this->dumpSettings['skip-definer']) {
             if ($procedureStmtReplaced = preg_replace(
                 '/^(CREATE)\s+('.self::DEFINER_RE.')?\s+(PROCEDURE\s.*)$/s',
                 '\1 \3',
@@ -2132,7 +2154,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
 
     public function start_transaction()
     {
-        return "START TRANSACTION " .
+        return "START TRANSACTION ".
             "/*!40100 WITH CONSISTENT SNAPSHOT */";
     }
 

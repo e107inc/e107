@@ -25,7 +25,7 @@ Out of the box, MySQLDump-PHP supports backing up table structures, the data its
 MySQLDump-PHP is the only library that supports:
 * output binary blobs as hex.
 * resolves view dependencies (using Stand-In tables).
-* output compared against original mysqldump. Linked to travis-ci testing system (testing from php 5.3 to 7.1 & hhvm)
+* output compared against original mysqldump. Linked to travis-ci testing system (testing from php 5.3 to 7.3 & hhvm)
 * dumps stored routines (functions and procedures).
 * dumps events.
 * does extended-insert and/or complete-insert.
@@ -89,23 +89,36 @@ Plain old PHP:
 Refer to the [wiki](https://github.com/ifsnop/mysqldump-php/wiki/Full-usage-example) for some examples and a comparision between mysqldump and mysqldump-php dumps.
 
 ## Changing values when exporting
+
 You can register a callable that will be used to transform values during the export. An example use-case for this is removing sensitive data from database dumps:
 
 ```php
 $dumper = new IMysqldump\Mysqldump('mysql:host=localhost;dbname=testdb', 'username', 'password');
 
-$dumper->setTransformColumnValueHook(function ($tableName, $colName, $colValue) {
-    if ($colName === 'social_security_number') {
-        return (string) rand(1000000, 9999999);
+$dumper->setTransformTableRowHook(function ($tableName, array $row) {
+    if ($tableName === 'customers') {
+        $row['social_security_number'] = (string) rand(1000000, 9999999);
     }
 
-    return $colValue;
+    return $row;
 });
 
 $dumper->start('storage/work/dump.sql');
 ```
 
+## Getting information about the dump
+
+You can register a callable that will be used to report on the progress of the dump
+
+```php
+$dumper->setInfoHook(function($object, $info) {
+    if ($object === 'table') {
+        echo $info['name'], $info['rowCount'];
+    });
+```
+
 ## Table specific export conditions
+
 You can register table specific 'where' clauses to limit data on a per table basis.  These override the default `where` dump setting:
 
 ```php
@@ -119,6 +132,7 @@ $dumper->setTableWheres(array(
 ```
 
 ## Table specific export limits
+
 You can register table specific 'limits' to limit the returned rows on a per table basis:
 
 ```php
@@ -132,6 +146,7 @@ $dumper->setTableLimits(array(
 ```
 
 ## Constructor and default parameters
+
 ```php
 /**
  * Constructor of Mysqldump. Note that in the case of an SQLite database
@@ -200,9 +215,11 @@ $this->_dumpSettings = self::array_replace_recursive($dumpSettingsDefault, $dump
 ## Dump Settings
 
 - **include-tables**
-  - Only include these tables (array of table names), include all if empty
+  - Only include these tables (array of table names), include all if empty.
 - **exclude-tables**
-  - Exclude these tables (array of table names), include all if empty, supports regexps
+  - Exclude these tables (array of table names), include all if empty, supports regexps.
+- **include-views**
+  - Only include these views (array of view names), include all if empty. By default, all views named as the include-tables array are included.
 - **compress**
   - Gzip, Bzip2, None.
   - Could be specified using the declared consts: IMysqldump\Mysqldump::GZIP, IMysqldump\Mysqldump::BZIP2 or IMysqldump\Mysqldump::NONE
