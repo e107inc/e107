@@ -101,6 +101,11 @@ class notify
 	 */
 	function generic($data,$id)
 	{
+	    if(isset($data['user_password']))
+        {
+            unset($data['user_password']);
+        }
+
 		$message = print_a($data,true); 
 		$this->send($id, 'Event Triggered: '.$id, $message);	
 	}
