@@ -4729,13 +4729,13 @@ class e_admin_controller_ui extends e_admin_controller
 		//	$model->addMessageInfo(print_a($_posted,true));
 		}
 
-
 		// Trigger Admin-ui event.  'pre'
 		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
 		{
 			$id = $model->getId();
 			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
 			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
+			$this->_log('Triggering Event: '.$triggerName. " (before)");
 			if(E107_DBG_ALLERRORS >0 )
 			{
 				$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
@@ -4781,6 +4781,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$_posted[$pid] = $id; 	// add in the primary ID field.
 				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id); // use $_posted as it may include unsaved data.
 				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
+				$this->_log('Triggering Event: '.$triggerName." (after)");
 				if(E107_DBG_ALLERRORS >0 )
 				{
 					$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
@@ -5890,6 +5891,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$model = $this->getModel()->load($this->getId());
 		$_POST = array(); //reset post
 		$_POST[$_name] = $_value; // set current field only
+		$_POST['etrigger_submit'] = 'update'; // needed for event trigger
 
 	//	print_r($_POST);
 		
