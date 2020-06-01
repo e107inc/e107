@@ -147,6 +147,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						loadingIcon: $element.attr('data-loading-icon'),
 						// ID or class of container to place loading-icon within. eg. #mycontainer or .mycontainer
 						loadingTarget: $element.attr('data-loading-target'),
+                        // ID or class of form element to clear upon success. eg. #my-form-element
+						clearTarget: $element.attr('data-clear-target'),
 						// If this is a navigation controller, e.g. pager.
 						nav: $element.attr('data-nav-inc'),
 						// Old way - href='myscript.php#id-to-target.
@@ -615,6 +617,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$('.e-ajax-loading').hide();
 				}
 
+
+
+
+
 				if($loadingImage)
 				{
 					$loadingImage.remove();
@@ -632,6 +638,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				var $target = $(options.target);
 				var jsonObject = response;
+
+				if(options.clearTarget !== null)
+                {
+                    $(options.clearTarget).val('');
+                }
 
 				if(typeof response == 'string')
 				{
