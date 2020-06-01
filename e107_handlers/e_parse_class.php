@@ -4375,6 +4375,7 @@ class e_parser
 	 * @param bool $options['hd'] - double the resolution of the image. Useful for retina displays.
 	 * @param string $options['type'] - when set to 'url' returns the URL value instead of the tag.
 	 * @param string $options['style'] - sets the style attribute.
+     * @param string $options['mode'] - 'full' url mode. 
 	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData=null, $options=array())
@@ -4386,6 +4387,11 @@ class e_parser
 		$linkStart  = '';
 		$linkEnd    =  '';
 		$full       = !empty($options['base64']) ? true : false;
+
+		if(!empty($options['mode']) && $options['mode'] === 'full')
+		{
+			$full = true;
+		}
 
 		if(!empty($options['h']))
 		{
