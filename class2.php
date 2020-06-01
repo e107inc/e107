@@ -1274,7 +1274,7 @@ if (!class_exists('e107table', false))
 			{
 				$this->thm->tablestyle($caption, $text, $mode, $options);
 			}
-			else 
+			elseif(function_exists('tablestyle'))
 			{
 				tablestyle($caption, $text, $mode, $options);
 			}
