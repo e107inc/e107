@@ -96,7 +96,7 @@ $EMAIL_OVERRIDES = array(
 
 
 // Default - test email and when no template specified. 
-
+$EMAIL_TEMPLATE = [];
 $EMAIL_TEMPLATE['default']['name']	 		= 'Default';
 $EMAIL_TEMPLATE['default']['subject']		= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -255,9 +255,9 @@ $EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;
 $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
 
+// ------- Notify (@see admin-> notify)
+//$EMAIL_WRAPPER['notify']['SUBJECT'] = "*** {---} ***";
 
-
-// ------- Notify (@see admin-> notify) 
 $EMAIL_TEMPLATE['notify']['name']	 		    = 'Notify';
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -367,4 +367,3 @@ $EMAIL_TEMPLATE['example']['priority']			= 3; // (1 = High, 3 = Normal, 5 = low)
 
 
 
-?>

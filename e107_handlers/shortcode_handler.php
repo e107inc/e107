@@ -744,6 +744,25 @@ class e_parse_shortcode
 		return in_array($name, $this->scBatchOverride);
 	}
 
+    /**
+     * Backward Compatibility for $sc_style wrapper
+     * @param mixed $extraCodes
+     */
+    private function mergeLegacyWrappers($extraCodes=null)
+    {
+        global $sc_style; //legacy, will be removed soon, use the non-global $SC_STYLE instead
+
+        if(is_array($extraCodes) && isset($extraCodes['_WRAPPER_'])) // v2.x array wrapper.
+        {
+            return null;
+        }
+
+        if(isset($sc_style) && is_array($sc_style)/* && !isset($extraCodes['_WRAPPER_'])*/)
+		{
+			$this->sc_style = array_merge($sc_style, $this->sc_style);
+		}
+    }
+
 	/**
 	 *	Parse the shortcodes in some text
 	 *
@@ -758,8 +777,6 @@ class e_parse_shortcode
 	 */
 	function parseCodes($text, $useSCFiles = true, $extraCodes = null, $eVars = null)
 	{
-		global $sc_style; //legacy, will be removed soon, use the non-global $SC_STYLE instead
-		
 		$saveParseSCFiles = $this->parseSCFiles; // In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 		$saveVars = $this->eVars; // In case of nested call
@@ -788,10 +805,7 @@ class e_parse_shortcode
 		 * 
 		 */
 
-		if(isset($sc_style) && is_array($sc_style))
-		{
-			$this->sc_style = array_merge($sc_style, $this->sc_style); // XXX Commenting this out will fix #2 above. 
-		}
+        $this->mergeLegacyWrappers($extraCodes); // XXX Commenting this out will fix #2 above.
 
 		//object support
 		

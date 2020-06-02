@@ -63,7 +63,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	}
 */
-	public function testParseCodes()
+	public function testParseCodesWithArray()
 	{
 		$text = '<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >';
 
@@ -83,10 +83,51 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		    'LINK_BADGE' => '',
 		);
 
-		$result = $this->scParser->parseCodes($text, false, $array);
+		  // -- Legacy Wrapper --
+        global $sc_style;
+        $sc_style = array();
+        $sc_style['LINK_SUB_OVERSIZED']['pre'] = "** ";
+        $sc_style['LINK_SUB_OVERSIZED']['post'] = " **";
 
-		// var_dump($result);
+		$actual = $this->scParser->parseCodes($text, false, $array);
+        $expected = '<ul class="dropdown-menu ** oversized **" role="menu" >';
+		$this->assertEquals($expected, $actual);
+
+		// v2.x Array Wrapper - should override any $sc_style legacy wrapper
+		$array['_WRAPPER_'] = "non-existent/template";
+		$actual = $this->scParser->parseCodes($text, false, $array);
+        $expected = '<ul class="dropdown-menu oversized" role="menu" >';
+		$this->assertEquals($expected, $actual);
+
 	}
+
+
+	public function testParseCodesWithClass()
+	{
+	    $sc = e107::getScBatch('_blank', true, '_blank');
+	    $this->assertIsObject($sc);
+
+        // - v1.x Wrapper Test.
+        global $sc_style;
+        $sc_style = array();
+        $sc_style['BLANK_TEST']['pre'] = "** ";
+        $sc_style['BLANK_TEST']['post'] = " **";
+
+        $actualTemplate = e107::getTemplate('_blank', '_blank', 'default');
+        $expectedTemplate = "<div>{BLANK_TEST}</div>";
+        $this->assertEquals($expectedTemplate, $actualTemplate);
+        $actualLegacy = $this->scParser->parseCodes($actualTemplate, false, $sc);
+        $expectedLegacy = "<div>** test **</div>";
+        $this->assertEquals($expectedLegacy, $actualLegacy);
+
+        // - v2.x Wrapper Test.
+        $sc->wrapper('_blank/default'); // overrides legacy $sc_style;
+        $actual = $this->scParser->parseCodes($actualTemplate, false, $sc);
+        $expected = "<div>[ test ]</div>";
+        $this->assertEquals($expected, $actual);
+
+
+    }
 /*
 	public function testInitShortcodeClass()
 	{

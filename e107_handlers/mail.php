@@ -903,13 +903,14 @@ class e107Email extends PHPMailer
 		
 
 
-		if(vartrue($eml['template'])) // @see e107_core/templates/email_template.php
+		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
 		{		
 					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
 				$eml['templateHTML'] = $tmpl;
 				$eml['shortcodes'] = $this->processShortcodes($eml);
+				$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
 
 				$emailBody = $tmpl['header']. str_replace('{BODY}', $eml['body'], $tmpl['body']) . $tmpl['footer'];
 				
