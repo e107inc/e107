@@ -296,7 +296,7 @@ class mailout_main_ui extends e_admin_ui
 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
+			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'number', 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
 			'mail_selectors'		=> array('title' => LAN_MAILOUT_03, 'type'=>'method', 'data'=>false, 'nolist' => true, 'writeParms'=>'nolabel=0'),
 			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>''),
@@ -373,7 +373,7 @@ class mailout_main_ui extends e_admin_ui
 	);
 
 
-	function afterDelete($del_data,$id)
+	function afterDelete($del_data,$id, $deleted_check)
 	{
 		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
 	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
