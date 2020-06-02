@@ -457,8 +457,11 @@ ul#e-status i		{
                                             -o-filter: grayscale(100%);
                                             filter: grayscale(100%);
                                             filter: gray; /* IE 6-9 */
+                                            opacity: 0.6
 											}
 
+ul.navbar-nav li ul.dropdown-menu > li.active a img,
+ul.navbar-nav li ul.dropdown-menu > li.active a i,
 ul.navbar-nav li ul.dropdown-menu a:hover i,
 ul.navbar-nav li ul.dropdown-menu a:hover img,
 ul#e-latest a:hover img,
@@ -471,6 +474,7 @@ ul#e-status a:hover i
                                             -moz-filter: none;
                                             -ms-filter: none;
                                             -o-filter: none;
+                                            opacity: 1;
 										     }
 
 td.options 									{ 	}
