@@ -93,7 +93,7 @@ class e_session
 	/**
 	 * Highest system protection, session id and token values are regenerated on every page request,
 	 * label 'Insane'
-	 * @var unknown_type
+	 * @var int unknown_type
 	 */
 	const SECURITY_LEVEL_INSANE = 10;
 	
@@ -107,7 +107,7 @@ class e_session
 	 * Session save method
 	 * @var string files|db
 	 */
-	protected $_sessionSaveMethod = 'files';
+	protected $_sessionSaveMethod = 'files';//'files';
 
 	/**
 	 * Session cache limiter, ignored if empty
@@ -212,15 +212,15 @@ class e_session
         {
             $systemSaveMethod = ini_get('session.save_handler');
 
-            //	e107::getDebug()->log("Save Method:".$systemSaveMethod);
-
             $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
 
-            $config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
-            $config['SaveMethod'] = e107::getPref('session_save_method', $saveMethod); // FIXME - new pref
-            $options['lifetime'] = (integer)e107::getPref('session_lifetime', 86400); //
-            $options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-            $options['secure'] = e107::getPref('ssl_enabled', false); //
+            $config['SavePath']     = e107::getPref('session_save_path', false); // FIXME - new pref
+            $config['SaveMethod']   = e107::getPref('session_save_method', $saveMethod);
+            $options['lifetime']    = (integer)e107::getPref('session_lifetime', 86400);
+            $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
+            $options['secure']      = e107::getPref('ssl_enabled', false); //
+
+            e107::getDebug()->log("Session Save Method: ".$config['SaveMethod']);
 
             if (!empty($options['secure']))
             {
@@ -485,12 +485,12 @@ class e_session
 		{
 			session_save_path($this->_sessionSavePath);
 		}
-	
+
 		switch ($this->_sessionSaveMethod)
 		{
-			case 'db': // TODO session db handling, more methods (e.g. memcache)
+			case 'db':
 				ini_set('session.save_handler', 'user');
-				$session = new e_db_session;
+				$session = new e_session_db;
 				$session->setSaveHandler();
 			break;
 
@@ -1063,18 +1063,11 @@ class e_core_session extends e_session
 	}
 }
 
-/* SQL to be added
-CREATE TABLE session (
-  `session_id` varchar(255) NOT NULL default '',
-  `session_expires` int(10) unsigned NOT NULL default 0,
-  `session_data` text NOT NULL,
-  PRIMARY KEY  (`session_id`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- */
-class e_db_session
+
+class e_session_db
 {
 	/**
-	 * @var e_db_mysql
+	 * @var e_db
 	 */
 	protected $_db = null;
 	
@@ -1109,7 +1102,7 @@ class e_db_session
 	
 	/**
 	 * @param string $table
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setTable($table)
 	{
@@ -1135,7 +1128,7 @@ class e_db_session
 	
 	/**
 	 * @param integer $seconds
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setLifetime($seconds = null)
 	{
@@ -1145,7 +1138,7 @@ class e_db_session
 	
 	/**
 	 * Set session save handler
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setSaveHandler()
 	{
@@ -1189,10 +1182,10 @@ class e_db_session
     public function read($session_id)
     {
     	$data = false;
-    	$check = $this->_db->db_Select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($session_id)."' AND session_expires>".time());
+    	$check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($session_id)."' AND session_expires>".time());
     	if($check)
     	{
-    		$tmp = $this->_db->db_Fetch();
+    		$tmp = $this->_db->fetch();
     		$data = base64_decode($tmp['session_data']);
     	}
     	elseif(false !== $check)
@@ -1227,12 +1220,12 @@ class e_db_session
     		return false;
     	}
     	
-    	$check = $this->_db->db_Select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
+    	$check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
     	
     	if($check)
     	{
     		$data['WHERE'] = "`session_id`='{$session_id}'";
-    		if(false !== $this->_db->db_Update($this->getTable(), $data))
+    		if(false !== $this->_db->update($this->getTable(), $data))
     		{
     			return true;
     		}
@@ -1240,7 +1233,7 @@ class e_db_session
     	else
     	{
     		$data['data']['session_id'] = $session_id;
-    		if($this->_db->db_Insert($this->getTable(), $data))
+    		if($this->_db->insert($this->getTable(), $data))
     		{
     			return true;
     		}	
@@ -1256,7 +1249,7 @@ class e_db_session
     public function destroy($session_id)
     {
     	$session_id = $this->_sanitize($session_id);
-    	$this->_db->db_Delete($this->getTable(), "`session_id`='{$session_id}'");
+    	$this->_db->delete($this->getTable(), "`session_id`='{$session_id}'");
     	return true;
     }
     
@@ -1267,7 +1260,7 @@ class e_db_session
      */
     public function gc($session_maxlf)
     {
-    	$this->_db->db_Delete($this->getTable(), '`session_expires`<'.time());
+    	$this->_db->delete($this->getTable(), '`session_expires`<'.time());
     	return true;
     }
     

@@ -1431,7 +1431,7 @@ $text .= "
  * 
  
  */
-$text .= "
+    $text .= "
 
 					<tr>
 						<td><label for='disallowmultilogin'>".PRFLAN_129."</label></td>
@@ -1463,9 +1463,26 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_273."</div>
 						</td>
 					</tr>
+					";
 
+	if(e_DEVELOPER) // Experimental (translate terms after this check is removed)
+    {
+           //  $systemSaveMethod = ini_get('session.save_handler');
+           //  $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
+            // $systemSaveMethod => PRFLAN_276,
+                $text .= "
+	                <tr>
+						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
+						<td class='form-inline'>
+							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], $pref['session_save_method'])."
+							<!-- <div class='smalltext field-help'>".PRFLAN_273."</div>-->
+							<span class='label label-warning'>Experimental</span>
+						</td>
+					</tr>
+                    ";
+    }
 
-
+    $text .= "
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
 
