@@ -152,4 +152,3 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	
 	
 	
-?>

@@ -6,7 +6,7 @@
 * Navigation Template 
 */
 
- 
+
 // TEMPLATE FOR {NAVIGATION=main}
 $NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav nav-main ml-auto">';
 
@@ -183,4 +183,3 @@ $NAVIGATION_TEMPLATE['alt6']['start'] 				= '<ul class="nav nav-list nav-alt6">'
 
 
 
-?>

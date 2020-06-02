@@ -135,4 +135,3 @@ $LOGIN_TEMPLATE['page']['footer'] =  "
 
 
 
-?>

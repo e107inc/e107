@@ -51,4 +51,4 @@ $ADMIN_FOOTER = "</td>
 {ADMIN_CREDITS}
 ";
 
-?>
+
