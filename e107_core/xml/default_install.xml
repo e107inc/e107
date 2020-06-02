@@ -253,6 +253,7 @@
 		<core name="search_highlight">1</core>
 		<core name="search_restrict">0</core>
 		<core name="session_lifetime">86400</core>
+		<core name="session_save_method">files</core>
 		<core name="shortdate">%d %b %Y : %H:%M</core>
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
