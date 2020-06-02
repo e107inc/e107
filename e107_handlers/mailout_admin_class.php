@@ -132,7 +132,7 @@ class mailoutAdminClass extends e107MailManager
 				'title' => LAN_MAILOUT_85,
 				'proc' => 'username'
 			),
-			'mail_create_app' => array('title' => LAN_MAILOUT_133),
+			'mail_create_app' => array('title' => LAN_SOURCE),
 			'mail_e107_priority' => array('title' => LAN_MAILOUT_134),
 			'mail_notify_complete' => array(
 				'title' => LAN_MAILOUT_243,
