@@ -1955,6 +1955,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 		// MAIN LINK
+		/*
 		if($parm != 'no-main')
 		{
 			$menu_vars = array();
@@ -1963,7 +1964,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['adminhome']['image_src'] = ADLAN_151;
 			$menu_vars['adminhome']['perm'] = '';
-		}
+		}*/
 
 		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
 

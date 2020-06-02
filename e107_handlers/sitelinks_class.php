@@ -1392,7 +1392,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			 $text = $tmpl['start'];
 		}
-	
+
 		//FIXME - e_parse::array2sc()
 /*		$search = array();
 		$search[0] = '/\{LINK_TEXT\}(.*?)/si';
@@ -1450,7 +1450,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 			
 			//XXX  && !is_numeric($act) ???
-			if (($active_page == (string) $act)|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
+			if (($active_page == (string) $act)
+			|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act))
+            || e_REQUEST_HTTP === $e107_vars[$act]['link']
+			)
 			{
 				$temp = $tmpl['button_active'.$kpost];
 			}
@@ -1458,7 +1461,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			{
 				$temp = $tmpl['button'.$kpost];
 			}
-	
+
+   //     e107::getDebug()->log($e107_vars[$act]['link']);
+
 		//	$temp = $tmpl['button'.$kpost];
 		//	echo "ap = ".$active_page;
 		//	echo " act = ".$act."<br /><br />";
@@ -1883,7 +1888,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			if($removeOnly)
 			{
-				$data['link_url'] = array_shift(explode('#?', $data['link_url'], 2));
+			    $arr = explode('#?', $data['link_url'], 2);
+				$data['link_url'] = array_shift($arr);
 				return null;
 			}
 			
@@ -2233,6 +2239,7 @@ class navigation_shortcodes extends e_shortcode
 		foreach($this->var['link_sub'] as $val)
 		{
 			$active	= (e107::getNav()->isActive($val, $this->activeSubFound, true)) ? "_active" : "";
+
 			$this->setVars($val);	// isActive is allowed to alter data
 			$tmpl = !empty($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);
