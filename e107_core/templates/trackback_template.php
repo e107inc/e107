@@ -9,4 +9,3 @@ $TRACKBACK = "
 
 $TRACKBACK_RENDER_METHOD = TRUE;			/* TRUE=tablerender, FALSE=echo */
 
-?>

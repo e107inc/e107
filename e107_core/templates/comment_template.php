@@ -155,4 +155,3 @@ $COMMENT_TEMPLATE['item'] = '
 $COMMENT_TEMPLATE['layout'] 		= '{COMMENTFORM}{COMMENTS} <div style="padding:10px 0px">{MODERATE}</div>';
 										
 
-?>

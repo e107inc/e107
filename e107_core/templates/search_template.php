@@ -206,4 +206,3 @@ $SEARCH_TEMPLATE['form']['advanced-combo'] = '<div>{SEARCH_ADV_TEXT}</div>';
 	</td>
 	</tr>";
 */
-?>
