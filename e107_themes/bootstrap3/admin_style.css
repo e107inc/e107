@@ -324,11 +324,11 @@ td .mediaselector-multi .mediaselector-container { margin-bottom: 20px }
 
 /* dropzone new in v2.1.9 */
 
-.dropzone { min-height: 100px; padding: 0 }
-.dropzone .dz-preview { display: block }
-.dropzone .dz-preview .dz-image { width: auto }
-.dropzone .dz-filename { margin-top: 30px; }
-.dz-message span {
+.mediaselector-preview.dropzone { min-height: 100px; padding: 0 }
+.mediaselector-preview.dropzone .dz-preview { display: block }
+.mediaselector-preview.dropzone .dz-preview .dz-image { width: auto }
+.mediaselector-preview.dropzone .dz-filename { margin-top: 30px; }
+.mediaselector-preview .dz-message span {
 	display: block;
 	margin-top: 35%;
 	text-align: center;
