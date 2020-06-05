@@ -7,11 +7,11 @@ if (!defined('e107_INIT')) { exit; }
 // License GNU/GPL - Vincent Blavet - Janvier 2001
 // http://www.phpconcept.net & http://phpconcept.free.fr
 // --------------------------------------------------------------------------------
-// Français :
+// Franï¿½ais :
 //   La description de l'usage de la librairie PCL Trace 1.0 n'est pas encore
-//   disponible. Celle-ci n'est pour le moment distribuée qu'avec l'application
+//   disponible. Celle-ci n'est pour le moment distribuï¿½e qu'avec l'application
 //   et la librairie PhpZip.
-//   Une version indépendante sera bientot disponible sur http://www.phpconcept.net
+//   Une version indï¿½pendante sera bientot disponible sur http://www.phpconcept.net
 //
 // English :
 //   The PCL Trace 1.0 library description is not available yet. This library is
@@ -22,17 +22,17 @@ if (!defined('e107_INIT')) { exit; }
 //
 //   * Avertissement :
 //
-//   Cette librairie a été créée de façon non professionnelle.
-//   Son usage est au risque et péril de celui qui l'utilise, en aucun cas l'auteur
-//   de ce code ne pourra être tenu pour responsable des éventuels dégats qu'il pourrait
+//   Cette librairie a ï¿½tï¿½ crï¿½ï¿½e de faï¿½on non professionnelle.
+//   Son usage est au risque et pï¿½ril de celui qui l'utilise, en aucun cas l'auteur
+//   de ce code ne pourra ï¿½tre tenu pour responsable des ï¿½ventuels dï¿½gats qu'il pourrait
 //   engendrer.
-//   Il est entendu cependant que l'auteur a réalisé ce code par plaisir et n'y a
-//   caché aucun virus, ni malveillance.
-//   Cette libairie est distribuée sous la license GNU/GPL (http://www.gnu.org)
+//   Il est entendu cependant que l'auteur a rï¿½alisï¿½ ce code par plaisir et n'y a
+//   cachï¿½ aucun virus, ni malveillance.
+//   Cette libairie est distribuï¿½e sous la license GNU/GPL (http://www.gnu.org)
 //
 //   * Auteur :
 //
-//   Ce code a été écrit par Vincent Blavet (vincent@blavet.net) sur son temps
+//   Ce code a ï¿½tï¿½ ï¿½crit par Vincent Blavet (vincent@blavet.net) sur son temps
 //   de loisir.
 //
 // --------------------------------------------------------------------------------
@@ -453,4 +453,3 @@ if (!defined("PCLTRACE_LIB"))
 
 // ----- End of double include look
 }
-?>

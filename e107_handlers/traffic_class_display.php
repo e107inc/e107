@@ -125,4 +125,3 @@ if (!defined('e107_INIT')) { exit; }
             $cal2 usec per call(start,stop); $cal1 usec per call(start). Total adjustment: $cTot msec.</td></tr>\n";
             $text .="</table><br />\n";
         }
-?>

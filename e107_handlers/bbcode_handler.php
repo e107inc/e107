@@ -1012,4 +1012,3 @@ class e_bb_base
 	}
 }
 
-?>

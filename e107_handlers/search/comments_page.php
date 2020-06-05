@@ -32,4 +32,3 @@ function com_search_page($row) {
 	return $res;
 }
 
-?>

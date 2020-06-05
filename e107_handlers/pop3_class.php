@@ -196,4 +196,3 @@ class receiveMail
 		imap_close($this->marubox,CL_EXPUNGE);
 	}
 }
-?>

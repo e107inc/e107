@@ -1969,4 +1969,3 @@ class e107MailManager
 }
 
 
-?>

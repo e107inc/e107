@@ -7969,4 +7969,4 @@ include_once(e107::coreTemplatePath('admin_icons'));
  * 17. tree list view (should handle cases like Site Links admin page)
  */
  
-?>
+

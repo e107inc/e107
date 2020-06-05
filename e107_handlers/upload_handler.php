@@ -1002,4 +1002,4 @@ function get_image_mime($filename, $extended = false)
 		return $max_upload_size;
 	}
 
-?>
+

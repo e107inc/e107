@@ -1670,4 +1670,3 @@ class banlistManager
 }
 
 
-?>

@@ -272,4 +272,3 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	  return TRUE;
 	} 
 }
-?>

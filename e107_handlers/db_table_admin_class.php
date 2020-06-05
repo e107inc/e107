@@ -702,4 +702,4 @@ class db_table_admin
 	
 
 
-?>
+
