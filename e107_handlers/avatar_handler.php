@@ -52,4 +52,3 @@ function avatar($avatar)
  */
 }
 
-?>

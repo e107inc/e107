@@ -26,4 +26,3 @@ function com_search_0($row) {
 	return $res;
 }
 
-?>

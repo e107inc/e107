@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 //   gzip tools and WinZip application.
 //
 // Description :
-//   See readme.txt (English & Français) and http://www.phpconcept.net
+//   See readme.txt (English & Franï¿½ais) and http://www.phpconcept.net
 //
 // Warning :
 //   This library and the associated files are non commercial, non professional
@@ -402,7 +402,7 @@ if (!defined("PCL_TAR"))
   //   $p_filelist, in the directory
   //   $p_path. The relative path of the archived files are keep and become
   //   relative to $p_path.
-  //   If a directory is spécified in the list, all the files from this directory
+  //   If a directory is spï¿½cified in the list, all the files from this directory
   //   will be extracted.
   //   If a file with the same name already exists it will be replaced.
   //   If the path to the file does not exist, it will be created.
@@ -2160,7 +2160,7 @@ if (!defined("PCL_TAR"))
         else
           gzseek($v_tar, gztell($v_tar)+(ceil(($v_header[size]/512))*512));
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position aprï¿½s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       if ($p_tar_mode == "tar")
@@ -2391,7 +2391,7 @@ if (!defined("PCL_TAR"))
         else
           gzseek($v_tar, gztell($v_tar)+(ceil(($v_header[size]/512))*512));
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position aprï¿½s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       if ($p_tar_mode == "tar")
@@ -2828,7 +2828,7 @@ if (!defined("PCL_TAR"))
         else
           gzseek($v_tar, gztell($v_tar)+(ceil(($v_header[size]/512))*512));
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position aprï¿½s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       // ----- Look for end of file
@@ -3556,4 +3556,4 @@ if (!defined("PCL_TAR"))
 
 // ----- End of double include look
 }
-?>
+

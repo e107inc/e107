@@ -2250,4 +2250,4 @@ class mailoutAdminClass extends e107MailManager
 
 
 }
-?>
+

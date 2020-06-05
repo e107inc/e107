@@ -673,5 +673,5 @@ class e_chart
  
  
  
-?>
+
  

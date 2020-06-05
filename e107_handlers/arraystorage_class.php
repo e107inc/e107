@@ -59,7 +59,7 @@ class ArrayData {
 	* Returns an array from stored array data.
 	* @DEPRECATED use e107::unserialize() instead. 
 	* @param string $ArrayData
-	* @return array stored data
+	* @return bool|array stored data
 	*/
 	function ReadArray($ArrayData) 
 	{
@@ -78,12 +78,12 @@ class ArrayData {
 		$data = "";
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);
-		if (!isset($data) || !is_array($data)) {
+		if (!isset($data) || !is_array($data))
+		{
 			trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
-			return false;
+			// return false;
 		}
 		return $data;
 	}
 }
 
-?>

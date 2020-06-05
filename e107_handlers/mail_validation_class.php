@@ -229,4 +229,3 @@ class email_validation_class
 	}
 };
 
-?>

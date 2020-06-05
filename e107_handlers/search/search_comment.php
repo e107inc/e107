@@ -64,4 +64,3 @@ function search_comment($row) {
 	}
 }
 
-?>

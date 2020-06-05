@@ -303,4 +303,3 @@ class e_ranks
 }
 
 
-?>

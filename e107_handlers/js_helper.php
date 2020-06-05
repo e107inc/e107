@@ -353,4 +353,3 @@ class e_jshelper
         return "'".str_replace(array("\\'", "'"), array("'", "\\'"), $string)."'";
     }
 }
-?>

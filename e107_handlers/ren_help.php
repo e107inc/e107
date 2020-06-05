@@ -324,4 +324,3 @@ function Emoticon_Select($formid='emoticon_selector') {
 	return $text;
 }
 
-?>

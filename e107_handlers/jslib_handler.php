@@ -292,4 +292,3 @@ class e_jslib
         return $cacheFile;
     }
 }
-?>

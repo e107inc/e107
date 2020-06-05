@@ -273,4 +273,4 @@ class e107MailTemplate
 	}
 }
 
-?>
+

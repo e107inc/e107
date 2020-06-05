@@ -1284,4 +1284,4 @@ class prefs
 		$this->set($tmp, $name, $table, $uid);
 	}
 }
-?>
+
