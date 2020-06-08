@@ -473,7 +473,7 @@ CREATE TABLE rate (
 #
 
 CREATE TABLE session (
-  session_id varchar(255) NOT NULL default '',
+  session_id varchar(250) NOT NULL default '',
   session_expires int(10) unsigned NOT NULL default 0,
   session_user int(10) unsigned default NULL,
   session_data text NOT NULL,
