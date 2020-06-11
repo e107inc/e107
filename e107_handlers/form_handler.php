@@ -1336,12 +1336,12 @@ class e_form
 
 		if(!isset($parms['w']))
 		{
-			$parms['w'] = 220;
+			$parms['w'] = 206;
 		}
 
 		if(!isset($parms['h']))
 		{
-			$parms['h'] = 190;
+			$parms['h'] = 190; // 178
 		}
 
 	//	$width = vartrue($parms['w'], 220);
@@ -1358,7 +1358,7 @@ class e_form
 
 		$class = '';
 
-		if($parms['icon'])
+		if(!empty($parms['icon']))
 		{
 			$class = 'icon-preview mediaselector-container-icon';
 			$parms['type'] = 'icon';
@@ -2909,6 +2909,11 @@ class e_form
 
 			unset($options['size']); // don't include in html 'size='. 	
 		}
+
+        if(!empty($options['title']) && is_array($options['title']))
+        {
+            unset($options['title']);
+        }
 
 
 		$options = $this->format_options('select', $name, $options);
