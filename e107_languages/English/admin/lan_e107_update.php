@@ -59,6 +59,8 @@ define("LAN_UPDATE_57", "Before continuing, please manually delete the following
 define("LAN_UPDATE_CAPTION_PLUGIN", "Plugin Updates"); // Unused
 define("LAN_UPDATE_CAPTION_CORE", "Core Updates"); // Unused
 
+define("LAN_UPDATE_58", "It is highly recommended that you run [File Inspector] after you have completed all the updates, in order to detect any outdated files that need to be removed.");
+
 // define("LAN_UPDATE_5", "Update available");
 // define("LAN_UPDATE_8", "Update from");
 // define("LAN_UPDATE_9", "to");
@@ -66,4 +68,3 @@ define("LAN_UPDATE_CAPTION_CORE", "Core Updates"); // Unused
 //define("LAN_UPDATE_11", ".617 to .7 Update Continued");
 
 
-?>
