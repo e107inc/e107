@@ -187,7 +187,7 @@ class e107
 		'e_admin_request'                => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'               => '{e_HANDLER}admin_ui.php',
 		'e_admin_ui'                     => '{e_HANDLER}admin_ui.php',
-		'e_ajax_class'                   => '{e_HANDLER}e_ajax_class.php',
+		'e_ajax' => '{e_HANDLER}e_ajax_class.php',
 		'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage.
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
@@ -2046,11 +2046,11 @@ class e107
 	/**
 	 * Retrieve ajax singleton object
 	 *
-	 * @return e_ajax_class
+	 * @return e_ajax
 	 */
 	public static function getAjax()
 	{
-		return self::getSingleton('e_ajax_class', true);
+		return self::getSingleton('e_ajax', true);
 	}
 
 	/**

@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
  * @todo add all processing elements withing signup.php into this class.
  * @todo create unit tests for each of the methods.
  */
-class e_signup_class
+class e_signup
 {
 
 	private $testMode = false;

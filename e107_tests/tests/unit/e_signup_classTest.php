@@ -12,7 +12,7 @@
 	class e_signup_classTest extends \Codeception\Test\Unit
 	{
 
-		/** @var e_signup_class */
+		/** @var e_signup */
 		protected $sup;
 
 		protected function _before()
@@ -20,11 +20,11 @@
 			require_once(e_HANDLER."e_signup_class.php");
 			try
 			{
-				$this->sup = $this->make('e_signup_class');
+				$this->sup = $this->make('e_signup');
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_signup_class object");
+				$this->assertTrue(false, "Couldn't load e_signup object");
 			}
 
 			$this->sup->__construct();
