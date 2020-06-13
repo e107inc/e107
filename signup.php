@@ -132,7 +132,7 @@ require_once(e_HANDLER."e_signup_class.php");
 if(e_QUERY && e_QUERY != 'stage1')
 {
 	require_once(HEADERF);
-	$suObj = new e_signup_class;
+	$suObj = new e_signup;
 	$suObj->run();
 	require_once(FOOTERF);
 	exit;
@@ -508,7 +508,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 			require_once(HEADERF);
 
-			$after_signup = e_signup_class::render_after_signup($error_message);
+			$after_signup = e_signup::render_after_signup($error_message);
 			$ns->tablerender($after_signup['caption'], $after_signup['text']);
 
 			require_once(FOOTERF);
