@@ -1598,7 +1598,7 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
-		if(vartrue($options) && is_string($options))
+		if(!empty($options) && is_string($options))
 		{
 			parse_str($options,$options);
 		}
@@ -1610,12 +1610,12 @@ class e_form
 			$mode = trim($options['type']);
 		}
 
-		$dateFormat  = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$dateFormat  = !empty($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$ampm		 = (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';
 		$value		 = null;
 		$hiddenValue = null;
 		$useUnix     = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
-		$id          = $this->name2id($name);
+		$id          = !empty($options['id']) ? $options['id'] : $this->name2id($name);
 		$classes     = array('date' => 'tbox e-date', 'datetime' => 'tbox e-datetime');
 
 		if($mode == 'datetime' && !varset($options['format']))
@@ -1643,12 +1643,12 @@ class e_form
 		}
 
 		$class 		= (isset($classes[$mode])) ? $classes[$mode] : "tbox e-date";
-		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
-		$required 	= vartrue($options['required']) ? "required" : "";
-		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
-		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
-		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
-		$placeholder = vartrue($options['placeholder']) ? 'placeholder="'.$options['placeholder'].'"' : '';
+		$size 		= !empty($options['size']) ? intval($options['size']) : 40;
+		$required 	= !empty($options['required']) ? "required" : "";
+		$firstDay	= isset($options['firstDay']) ? $options['firstDay'] : 0;
+		$xsize		= (!empty($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
+		$disabled 	= !empty($options['disabled']) ? "disabled" : "";
+		$placeholder = !empty($options['placeholder']) ? 'placeholder="'.$options['placeholder'].'"' : '';
 		$timezone    = '';
 
 
@@ -1663,7 +1663,7 @@ class e_form
 
 		$text = "";
 
-		if(vartrue($options['inline']))
+		if(!empty($options['inline']))
 		{
 			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'></div>";
 			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'  />";
