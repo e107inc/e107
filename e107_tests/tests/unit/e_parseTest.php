@@ -1156,6 +1156,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
                     'html'      => '<div class="video-responsive"><div class="video-responsive"><video width="320" height="240" controls="controls"><source src="e107_media/xxxxx5/videos/2018-07/SampleVideo.mp4" type="video/mp4">Your browser does not support the video tag.</video></div></div>',
                     'expected'  => '<div class="video-responsive"><div class="video-responsive"><video width="320" height="240" controls="controls"><source src="e107_media/xxxxx5/videos/2018-07/SampleVideo.mp4" type="video/mp4">Your browser does not support the video tag.</source></video></div></div>'
                 ),
+				14 => array(
+                    'html'      => '<script>alert(1)</script>', // test removal of 'script' tags
+                    'expected'  => ''
+                )
+
 
 			);
 
@@ -1166,7 +1171,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$this->assertEquals($var['expected'], $result);
 			}
 
-            // -------------------------
+            // ----------- Test with Script access enabled --------------
 
 
 			$this->tp->setScriptAccess(e_UC_PUBLIC);
@@ -1176,6 +1181,10 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			        'html'      => '<a href="#" onchange="whatever">Test</a>',
 			        'expected'  => '<a href="#" onchange="whatever">Test</a>'
                 ),
+                1 => array(
+                    'html'      => '<script>alert(1)</script>', // test support for 'script' tags
+                    'expected'  => '<script>alert(1)</script>'
+                )
             );
 
 			foreach($scriptAccess as $var)
