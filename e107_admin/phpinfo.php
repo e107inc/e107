@@ -40,6 +40,31 @@ $phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped ad
 
 $mes = e107::getMessage();
 
+$extensionCheck = array(
+			'curl'  => array('label'=> 'Curl Library',      'status' => function_exists('curl_version'),        'url'=> 'http://php.net/manual/en/book.curl.php'),
+			'exif'  => array('label'=> "EXIF Extension",    'status' => function_exists('exif_imagetype'),      'url'=> 'http://php.net/manual/en/book.exif.php'),
+			'gd'    => array('label'=> 'GD Library',        'status' => function_exists('gd_info'),             'url'=> 'http://php.net/manual/en/book.image.php'),
+			'mb'    => array('label'=> 'MB String Library', 'status' => function_exists('mb_strimwidth'),       'url'=> 'http://php.net/manual/en/book.mbstring.php'),
+			'pdo'   => array('label'=> "PDO (MySQL)",       'status' => extension_loaded('pdo_mysql'),          'url'=> 'https://php.net/manual/en/book.pdo.php'),
+			'xml'   => array('label'=> "XML Extension",     'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false),  'url'=> 'http://php.net/manual/en/ref.xml.php'),
+);
+
+foreach($extensionCheck as $var)
+{
+	if($var['status'] !== true)
+	{
+		$erTitle    = deftrue('PHP_LAN_7', "PHP Configuration Issue(s) Found:");
+		$def        = deftrue('PHP_LAN_8', "[x] is missing from the PHP configuration and need to be installed.");
+		$message    = $tp->lanVars($def,$var['label'],true);
+
+		$mes->setIcon('fa-hand-stop-o', E_MESSAGE_ERROR)->setTitle($erTitle,E_MESSAGE_ERROR)->addError($message." <a class='alert-link' href='".$var['url']."' target='_blank' title=\"".$var['url']."\">".ADMIN_INFO_ICON."</a> ");
+
+	}
+
+}
+
+
+
 $security_risks = array(
     "allow_url_fopen"   => PHP_LAN_1,
     "allow_url_include" => PHP_LAN_2,
@@ -74,6 +99,7 @@ $security_risks = array(
 ob_end_clean();
 
 
+
 if(deftrue('e_DEBUG'))
 {
 	$mes->addDebug("Session ID: ".session_id());
@@ -81,4 +107,4 @@ if(deftrue('e_DEBUG'))
 
 $ns->tablerender("PHPInfo", $mes->render(). $phpinfo);
 require_once("footer.php");
-?>
+
