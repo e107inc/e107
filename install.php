@@ -998,7 +998,7 @@ class e_install
 
 
 		$extensionCheck = array(
-			'pdo'   => array('label'=> "PDO (MySQL)",       'status' => extension_loaded('pdo_mysql'),          'url'=> ''),
+			'pdo'   => array('label'=> "PDO (MySQL)",       'status' => extension_loaded('pdo_mysql'),          'url'=> 'https:/php.net/manual/en/book.pdo.php'),
 			'xml'   => array('label'=> LANINS_050,          'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false),  'url'=> 'http://php.net/manual/en/ref.xml.php'),
 			'exif'  => array('label'=> LANINS_048,          'status' => function_exists('exif_imagetype'),      'url'=> 'http://php.net/manual/en/book.exif.php'),
 			'curl'  => array('label'=> 'Curl Library',      'status' => function_exists('curl_version'),        'url'=> 'http://php.net/manual/en/book.curl.php'),
