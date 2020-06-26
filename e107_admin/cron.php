@@ -93,9 +93,9 @@ class cron_admin_ui extends e_admin_ui
 			}
 	
 			
-			if (!vartrue(e107::getPref('e_cron_pwd')) || varset($_POST['generate_pwd']))
+			if (empty(e107::getPref('e_cron_pwd')) || !empty($_POST['generate_pwd']))
 			{
-				$pwd = $this->setCronPwd();
+				$this->setCronPwd();
 			}
 			
 			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
@@ -1299,4 +1299,4 @@ function cron_adminmenu()
   */
 
 
-?>
+

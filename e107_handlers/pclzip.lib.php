@@ -3792,7 +3792,7 @@ class PclZip
         }
 
         // ----- Write gz file format header
-        $v_binary_data = pack('va1a1Va1a1', 0x8b1f, Chr($p_entry['compression']), Chr(0x00), time(), Chr(0x00), Chr(3));
+        $v_binary_data = pack('va1a1Va1a1', 0x8b1f, chr($p_entry['compression']), chr(0x00), time(), chr(0x00), chr(3));
         @fwrite($v_dest_file, $v_binary_data, 10);
 
         // ----- Read the file by PCLZIP_READ_BLOCK_SIZE octets blocks
@@ -5084,11 +5084,11 @@ class PclZip
         }
 
         // ----- Get and memorize the magic_quote value
-        $this->magic_quotes_status = @get_magic_quotes_runtime();
+        $this->magic_quotes_status = ini_get('magic_quotes_runtime'); // @get_magic_quotes_runtime();
 
         // ----- Disable magic_quotes
         if ($this->magic_quotes_status == 1) {
-            @set_magic_quotes_runtime(0);
+            @ini_set('magic_quotes_runtime', 0);
         }
 
         // ----- Return
@@ -5118,7 +5118,7 @@ class PclZip
 
         // ----- Swap back magic_quotes
         if ($this->magic_quotes_status == 1) {
-            @set_magic_quotes_runtime($this->magic_quotes_status);
+            @ini_set('magic_quotes_runtime', 0); // set_magic_quotes_runtime($this->magic_quotes_status);
         }
 
         // ----- Return

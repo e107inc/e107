@@ -562,25 +562,25 @@ if ($action == "dl")
 {
 	$id = str_replace("%20", " ", $id);
 
-	if (preg_match("/Binary\s(.*?)\/.*/", $id, $result)) 
-	{
-		$bid = $result[1];
-		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
-		$binary_data = @mysql_result($result, 0, "binary_data");
-		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
-		$binary_name = @mysql_result($result, 0, "binary_name");
-		header("Content-type: ".$binary_filetype);
-		header("Content-length: ".$download_filesize);
-		header("Content-Disposition: attachment; filename=".$binary_name);
-		header("Content-Description: PHP Generated Data");
-		echo $binary_data;
-		exit;
-	} 
-	else 
-	{
-		header("location:".e_UPLOAD.str_replace("dl.", "", e_QUERY));
-		exit;
-	}
+//	if (preg_match("/Binary\s(.*?)\/.*/", $id, $result))
+//	{
+//		$bid = $result[1];
+//		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
+//		$binary_data = @mysql_result($result, 0, "binary_data");
+//		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
+//		$binary_name = @mysql_result($result, 0, "binary_name");
+//		header("Content-type: ".$binary_filetype);
+//		header("Content-length: ".$download_filesize);
+//		header("Content-Disposition: attachment; filename=".$binary_name);
+//		header("Content-Description: PHP Generated Data");
+//		echo $binary_data;
+//		exit;
+//	}
+//	else
+//	{
+//		header("location:".e_UPLOAD.str_replace("dl.", "", e_QUERY));
+//		exit;
+//	}
 }
 
 require_once(e_HANDLER.'upload_handler.php');
@@ -979,4 +979,4 @@ function upload_adminmenu()
 
 
 require_once("footer.php");
-?>
+

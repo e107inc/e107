@@ -1101,7 +1101,7 @@ class e_file
 				$data_len = filesize($filename);
 				if ($seek > ($data_len - 1)) { $seek = 0; }
 			//	if ($filename == null) { $filename = basename($this->data); }
-				$res =& fopen($filename, 'rb');
+				$res = fopen($filename, 'rb');
 				if ($seek)
 				{
 					fseek($res , $seek);

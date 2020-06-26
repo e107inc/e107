@@ -93,7 +93,7 @@ if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn'
 
 class admin_start
 {
-	
+
 	private $incompat = array(
 			array('banhelper',      1.5),
 			array('banhelper',      1.7),
@@ -536,14 +536,14 @@ TMPO;
 
 			if(!empty($installedPlugs[$folder]) && ($version == $installedPlugs[$folder] || $version === '*'))
 			{
-				$inCompatText .= "<li>".$folder." v".$installedPlugs[$folder]."</li>";				
+				$inCompatText .= "<li><a title='".LAN_UNINSTALL."' href='".e_ADMIN."plugin.php?mode=installed&action=uninstall&path=".$folder."'>".$folder." v".$installedPlugs[$folder]."</a></li>";
 			}	
 		}
 		
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning(ADLAN_189."&nbsp;".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>".LAN_UNINSTALL."</a>");
+			$mes->addWarning(ADLAN_189."&nbsp;<br /><br />".$text);
 		}	
 		
 	}
