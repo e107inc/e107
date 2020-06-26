@@ -895,7 +895,7 @@ class links_admin_form_ui extends e_admin_form_ui
 	 *
 	 * @return string
 	 */
-	public function getList($ajax = false)
+	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();

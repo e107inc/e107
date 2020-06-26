@@ -811,7 +811,8 @@ class e_user_model extends e_admin_model
 	{
 		if($this->get('user_xup'))
 		{
-			return array_shift(explode('_', $this->get('user_xup')));
+			$provider = explode('_', $this->get('user_xup'));
+			return array_shift($provider);
 		}
 		return null;
 	}

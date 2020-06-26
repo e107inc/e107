@@ -50,8 +50,8 @@ class e_search
 		$this->bullet = ''; // Use CSS instead.
 
 		preg_match_all('/(\W?".*?")|(.*?)(\s|$)/', $this->query, $boolean_keys);
-
-		sort($this -> keywords['split'] = array_unique(array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2])))));
+		$this->keywords['split'] = array_unique(array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2]))));
+		sort($this->keywords['split']);
 
 		foreach ($this -> keywords['split'] as $k_key => $key)
 		{

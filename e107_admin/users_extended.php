@@ -551,12 +551,12 @@ e107::js('footer-inline', js());
 
 		}
 
-
+/*
 		public function afterDelete($data,$id)
 		{
 
 
-		}
+		}*/
 
 
 		// ------- Customize Update --------
