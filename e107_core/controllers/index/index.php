@@ -23,6 +23,7 @@ class core_index_index_controller extends eController
 	 * - http://mysite.com/news.php?extend.2 (redirect)
 	 * - http://mysite.com/Blog/My Blog Title.html (redirect)
 	 * - http://NotMysite.com/someurl/ (redirect) - really not sure who'd need that...
+	 * @throws eException
 	 */
 	public function actionIndex()
 	{	
@@ -66,9 +67,9 @@ class core_index_index_controller extends eController
 			elseif (USER)
 			{ // This is the key bit - what to do for a 'normal' logged in user
 				// We have USERCLASS_LIST - comma separated. Also e_CLASS_REGEXP
+				$inclass = false;
 				foreach ($class_list as $fp_class)
 				{
-					$inclass = false;
 					if (!$inclass && check_class($fp_class['userclass_id']))
 					{
 						$location = $pref['frontpage'][$fp_class['userclass_id']];
@@ -85,7 +86,7 @@ class core_index_index_controller extends eController
 		
 		$location = trim($location);
 		$request = $this->getRequest();
-		
+
 		// Defaults to news
 		if(!$location) $location = 'url:/news';
 		// Former Welcome Message front-page. Should be handled by current theme layout
@@ -159,7 +160,7 @@ class core_index_index_controller extends eController
 			$request->routed = true;
 			define('e_FRONTPAGE', true);
 			eFront::isLegacy('{e_BASE}'.$page);
-			return $this;
+			return;
 		}
 		// Redirect
 		else
