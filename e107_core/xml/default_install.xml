@@ -232,7 +232,7 @@
 
 )]]></core>
 		<core name="post_html">254</core>
-		<core name="post_script">254</core>
+		<core name="post_script">255</core>
 		<core name="filter_script">1</core>
 		<core name="html_abuse">1</core>
 		<core name="pageCookieExpire">84600</core>	

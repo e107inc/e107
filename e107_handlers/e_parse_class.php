@@ -5471,7 +5471,7 @@ return;
 
 		if($this->scriptAccess === false)
 		{
-	        $this->scriptAccess = e107::getConfig()->get('post_script', e_UC_MAINADMIN); // Pref to Allow <script> tags11;
+	        $this->scriptAccess = e107::getConfig()->get('post_script', e_UC_NOBODY); // Pref to Allow <script> tags11;
 		}
 
 		if(check_class($this->scriptAccess))
