@@ -1089,12 +1089,28 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testFilter()
 		{
 
+			$tests = array(
+				0   => array('input' => 'test123 xxx',      'mode' => 'w',        'expected' => 'test123xxx'),
+				1   => array('input' => 'test123 xxx',      'mode' => 'd',        'expected' => '123'),
+				2   => array('input' => 'test123 xxx',      'mode' => 'wd',       'expected' => 'test123xxx'),
+				3   => array('input' => 'test123 xxx',      'mode' => 'wds',      'expected' => 'test123 xxx'),
+				4   => array('input' => 'test123 xxx.jpg',  'mode' => 'file',     'expected' => 'test123-xxx.jpg'),
+				5   => array('input' => '2.1.4 (test)',     'mode' => 'version',  'expected' => '2.1.4'),
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->filter($var['input'],$var['mode']);
+				$this->assertEquals($var['expected'],$result);
+			}
+
+
 		}
-*/
+
 		public function testCleanHtml()
 		{
 		    global $_E107;

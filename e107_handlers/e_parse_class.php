@@ -5374,6 +5374,10 @@ return;
 			return preg_replace('/[^\w\d_\.-]/',"-",$text);
 		}
 
+		if($type === 'version')
+		{
+			return preg_replace('/[^\d_\.]/',"",$text);
+		}
 
 		if($validate == false)
 		{
