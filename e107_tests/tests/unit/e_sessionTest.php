@@ -48,6 +48,19 @@
 
 
 		}
+
+		public function testSetGet()
+		{
+			$expected = '123456';
+
+			$this->sess->set('whatever', $expected);
+
+			$result = $this->sess->get('whatever');
+
+			$this->assertEquals($expected, $result);
+
+
+		}
 /*
 		public function testGetOption()
 		{
