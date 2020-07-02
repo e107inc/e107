@@ -967,7 +967,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 			$mainTitle = defset('TPVLAN_97', "This theme requires a newer version of e107.");
 		}
 
-		e107::getDebug()->log($theme['path']." - ".$disabled. "  (".$compat.")");
+	//	e107::getDebug()->log($theme['path']." - ".$disabled. "  (".$compat.")");
 
 		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit' ".$disabled."   name='selectmain[".$theme['path']."]' alt=\"".$mainTitle."\" title=\"".$mainTitle."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoPath."'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";

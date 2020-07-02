@@ -1465,7 +1465,7 @@ $text .= "
 					</tr>
 					";
 
-	if(e_DEVELOPER) // Experimental (translate terms after this check is removed)
+//	if(e_DEVELOPER) // Experimental (translate terms after this check is removed)
     {
            //  $systemSaveMethod = ini_get('session.save_handler');
            //  $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
@@ -1476,7 +1476,7 @@ $text .= "
 						<td class='form-inline'>
 							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], $pref['session_save_method'])."
 							<!-- <div class='smalltext field-help'>".PRFLAN_273."</div>-->
-							<span class='label label-warning'>Experimental</span>
+							<!-- <span class='label label-warning'>Experimental</span>-->
 						</td>
 					</tr>
                     ";
