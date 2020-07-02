@@ -9,7 +9,8 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 	public static $SUPPORTED_VARIABLES = array(
 		'$secure_link_expires',
 		'$uri',
-		'$remote_addr'
+		'$remote_addr',
+		'$host',
 	);
 
 	static function supported_variables() {
@@ -37,7 +38,8 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 			array(
 				$expiry,
 				$url_parts['path'],
-				$_SERVER['REMOTE_ADDR']
+				$_SERVER['REMOTE_ADDR'],
+				$url_parts['host'],
 			),
 			$prefs['download_security_expression']
 		);
