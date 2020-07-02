@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 //   gzip tools and WinZip application.
 //
 // Description :
-//   See readme.txt (English & Fran�ais) and http://www.phpconcept.net
+//   See readme.txt (English & French) and http://www.phpconcept.net
 //
 // Warning :
 //   This library and the associated files are non commercial, non professional
@@ -1638,16 +1638,16 @@ if (!defined("PCL_TAR"))
 
     // ----- Get file info
     $v_info = stat($p_filename);
-    $v_uid = sprintf("%6s ", DecOct($v_info[4]));
-    $v_gid = sprintf("%6s ", DecOct($v_info[5]));
+    $v_uid = sprintf("%6s ", decoct($v_info[4]));
+    $v_gid = sprintf("%6s ", decoct($v_info[5]));
     TrFctMessage(__FILE__, __LINE__, 3, "uid=$v_uid, gid=$v_gid");
-    $v_perms = sprintf("%6s ", DecOct(fileperms($p_filename)));
+    $v_perms = sprintf("%6s ", decoct(fileperms($p_filename)));
     TrFctMessage(__FILE__, __LINE__, 3, "file permissions $v_perms");
 
     // ----- File mtime
     $v_mtime_data = filemtime($p_filename);
     TrFctMessage(__FILE__, __LINE__, 2, "File mtime : $v_mtime_data");
-    $v_mtime = sprintf("%11s", DecOct($v_mtime_data));
+    $v_mtime = sprintf("%11s", decoct($v_mtime_data));
 
     // ----- File typeflag
     // '0' or '\0' is the code for regular file
@@ -1667,7 +1667,7 @@ if (!defined("PCL_TAR"))
     }
 
     TrFctMessage(__FILE__, __LINE__, 2, "File size : $v_size");
-    $v_size = sprintf("%11s ", DecOct($v_size));
+    $v_size = sprintf("%11s ", decoct($v_size));
 
     TrFctMessage(__FILE__, __LINE__, 2, "File typeflag : $v_typeflag");
 
@@ -1725,7 +1725,7 @@ if (!defined("PCL_TAR"))
       gzputs($p_tar, $v_binary_data_first, 148);
 
     // ----- Write the calculated checksum
-    $v_checksum = sprintf("%6s ", DecOct($v_checksum));
+    $v_checksum = sprintf("%6s ", decoct($v_checksum));
     $v_binary_data = pack("a8", $v_checksum);
     if ($p_mode == "tar")
       fputs($p_tar, $v_binary_data, 8);
