@@ -19,14 +19,14 @@ global $sc_style;
 $NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="news-menu-category">';
 $NEWS_MENU_TEMPLATE['category']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['category']['item']        = '
-	<li><a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE}{NEWS_CATEGORY_NEWS_COUNT}</a></li>
+	<li><a class="e-menu-link newscats{ACTIVE}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE}{NEWS_CATEGORY_NEWS_COUNT}</a></li>
 ';
 
 
 
 
 
-// months menu
+// @deprecated months menu - use news archive instead.
 $NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="news-menu-months">';
 $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
@@ -130,7 +130,7 @@ $NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
 $NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';
 
 
-// TODO
+
 $NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="news-archive-menu">';
 $NEWS_MENU_TEMPLATE['archive']['end']         = '</ul>';
 

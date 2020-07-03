@@ -188,6 +188,16 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$this->assertEmpty($result);
 		}
 
+		public function testParseTemplateWithEvars()
+		{
+			$obj = new e_vars(array('ACTIVE' => "yes"));
+			$result = $this->tp->parseTemplate('<div>something {ACTIVE}</div>', true, null, $obj);
+			$expected = '<div>something yes</div>';
+
+			$this->assertEquals($expected, $result);
+
+		}
+
 /*
 		public function testCreateConstants()
 		{
