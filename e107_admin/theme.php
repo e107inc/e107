@@ -388,19 +388,19 @@ class theme_admin_ui extends e_admin_ui
 
 			$c = 1;
 
-			$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
+		/*	$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
 			$text .= "<div class='form-inline clearfix row-fluid'>";
 			$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
 			$text .= '<div class="btn-group" style="margin-left:10px"><a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a></div>';
 			$text .= "{CAROUSEL_INDICATORS}";
 			$text .= "</div>";
-			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';
+			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';*/
 
 			if(is_array($xdata['data'] ))
 			{
 
-				$text .= '<div  class="active item">';
+				$text = '<div  class="active item">';
 
 				$slides = array();
 
@@ -991,26 +991,34 @@ class theme_admin_form_ui extends e_admin_form_ui
 				'price' => $theme['price']
 		);
 
-
 		e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
 		$d = http_build_query($srcData,false,'&');
 		$base64 = base64_encode($d);
 
-
 		$id = $this->name2id($theme['name']);
-		$LAN_DOWNLOAD = (!empty($theme['price'])) ? LAN_PURCHASE."/".LAN_DOWNLOAD : LAN_DOWNLOAD;
 
-		$downloadUrl = e_SELF.'?mode=main&iframe=1&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
+		if(!empty($theme['price'])) // Premium Theme
+		{
+			$LAN_DOWNLOAD = LAN_PURCHASE."/".LAN_DOWNLOAD;
+			$downloadUrl = e_SELF.'?mode=main&action=download&src='.base64_encode($d); // no iframe.
+			$mainTarget = '_blank';
+			$mainClass = '';
+			$modalCaption = ' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
+		}
+		else // Free Theme
+		{
+			$LAN_DOWNLOAD = LAN_DOWNLOAD;
+			$downloadUrl = e_SELF.'?mode=main&iframe=1&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
+			$mainTarget = '_self';
+			$mainClass = 'e-modal';
+			$modalCaption =  ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'];
+		}
 
 	//	$url = e_SELF."?src=".$base64;
 		$infoUrl = e_SELF.'?mode=main&iframe=1&action=info&src='.$base64;
-
 	//	$viewUrl = $theme['url'];
-
-		$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-		$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('fa-download',array('size'=>'2x'))."</a>";
-
+		$main_icon = "<a class='".$mainClass." btn-default btn-secondary btn btn-sm btn-small btn-inverse' target='".$mainTarget."' data-modal-caption=\"".$modalCaption."\"  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('fa-download',array('size'=>'2x'))."</a>";
 		$info_icon 	= "<a class='btn btn-default btn-secondary btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 
 		if(!empty($theme['preview'][0]))
@@ -1704,6 +1712,7 @@ TEMPLATE;
 
 			}
 
+			return null;
 		}
 
 
@@ -1754,4 +1763,4 @@ function headerjs() // needed for the checkboxes - how can we remove the need to
 	return e107::getAdminUI()->getHeader();
 }
 */
-?>
+
