@@ -10,6 +10,8 @@
 
 class OsHelper
 {
+	const REGEX_MATCH_GIT_DESCRIBE_TAGS = "-[0-9]+-g[0-9a-f]+";
+
 	/**
 	 * @param string $command The command to run
 	 * @param string $stdout Reference to the STDOUT output as a string
@@ -52,14 +54,25 @@ class OsHelper
 
 	public static function gitVersionToPhpVersion($gitVersion, $verFileVersion = "0")
 	{
-	    $verFileVersion = explode(" ", $verFileVersion);
+		$verFileVersion = explode(" ", $verFileVersion);
 		$verFileVersion = array_shift($verFileVersion);
 		$version = preg_replace("/^v/", "", $gitVersion);
 		$versionSplit = explode("-", $version);
-		if (count($versionSplit) > 1)
+		$matchGitDescribeTags = self::REGEX_MATCH_GIT_DESCRIBE_TAGS;
+		if (preg_match("/{$matchGitDescribeTags}$/", $version))
 		{
-			if (version_compare($verFileVersion, $versionSplit[0], '>')) $versionSplit[0] = $verFileVersion;
-			$versionSplit[0] .= "dev";
+			$increment = 1;
+			if (version_compare($verFileVersion, $version, '>'))
+			{
+				$increment = 0;
+				$versionSplit[0] = $verFileVersion;
+			}
+			$version = implode("-", $versionSplit);
+			return preg_replace_callback("/(.*\.)([0-9]+)([^.]*)({$matchGitDescribeTags})$/",
+				function ($matches) use ($increment)
+				{
+					return $matches[1] . ($matches[2] + $increment) . "dev" . $matches[4];
+				}, $version);
 		}
 		return implode("-", $versionSplit);
 	}

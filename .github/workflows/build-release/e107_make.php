@@ -91,7 +91,7 @@ class e107Build
 		}
 	}
 
-    private function validateReadme()
+	private function validateReadme()
 	{
 		//check for readme files associated with configured releases
 		foreach ($this->config['releases'] as $rel)
@@ -276,7 +276,7 @@ class e107Build
 
 			$releaseDir = "{$this->config['baseDir']}/target/{$this->config['main']['name']}/release/" . $this->releaseDir;
 
-            $this->copyCoreImage($releaseDir . "/core_image.phar");
+			$this->copyCoreImage($releaseDir . "/core_image.phar");
 
 			/**
 			 * git archive -o update.zip HEAD $(git diff --name-only [id])
@@ -312,8 +312,8 @@ class e107Build
 			unlink($tarfile);
 		} // end loop
 
-        $this->status('Removing export folder', true);
-        $this->rmdir($this->exportDir);
+		$this->status('Removing export folder', true);
+		$this->rmdir($this->exportDir);
 	}
 
 	private function emptyExportDir()
@@ -379,7 +379,7 @@ class e107Build
 	{
 		$version = $this->version;
 
-		if (strpos($version, "-") !== false)
+		if (preg_match("/" . OsHelper::REGEX_MATCH_GIT_DESCRIBE_TAGS . "$/", $version))
 		{
 			$version .= " nightly build " . date('Ymd');
 		}
