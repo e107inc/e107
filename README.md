@@ -88,7 +88,6 @@ You may report any bugs and make feature requests [e107's GitHub Issues page](ht
 ## Donations
 If you like e107 and wish to help it to improve, please consider making a small donation.
 
-* Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
 * PayPal: donate (at) e107.org
 
 
