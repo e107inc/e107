@@ -154,6 +154,16 @@ class db_verify
 			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
 		}
 
+		/**
+		 * Display width specification for integer data types was deprecated in MySQL 8.0.17
+		 * @see https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
+		 */
+		if(1 === preg_match('/([A-Z]*INT)/i', $expected['type']))
+		{
+			$expected['value'] = '';
+			$actual['value'] = '';
+		}
+
 		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
 		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', $expected['default']))
 		{
