@@ -2840,7 +2840,7 @@ class e_front_model extends e_model
 
 			return 0;
 		}
-		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
+		$this->clearCache()->addMessageSuccess(LAN_UPDATED. " #".$this->getId());
 
 		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
 		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
@@ -3044,7 +3044,7 @@ class e_admin_model extends e_front_model
 
 		// Set the reutrned ID
 		$this->setId($res);
-		$this->clearCache()->addMessageSuccess(LAN_CREATED);
+		$this->clearCache()->addMessageSuccess(LAN_CREATED. " #".$this->getId());
 
 		return $res;
     }
