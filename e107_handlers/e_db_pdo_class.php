@@ -142,7 +142,7 @@ class e_db_pdo implements e_db
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
-	 * @param string $newLink force a new link connection if TRUE. Default false
+	 * @param bool $newLink force a new link connection if TRUE. Default false
 	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
@@ -168,7 +168,7 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			$this->mySQLaccess = new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 		}
 		catch(PDOException $ex)
 		{
@@ -2455,8 +2455,6 @@ class e_db_pdo implements e_db
 
    //     include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
 
-        $config = e107::getMySQLConfig();
-
 		$dumpSettings = array(
 	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
 	        'include-tables'                => array(),
@@ -2477,13 +2475,13 @@ class e_db_pdo implements e_db
 
         foreach($tableList as $tab)
         {
-            $dumpSettings['include-tables'][] = $config['mySQLprefix'].trim($tab);
+            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim($tab);
         }
 
 
         try
         {
-            $dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host='.$config['mySQLserver'].';dbname='.$config['mySQLdefaultdb'], $config['mySQLuser'], $config['mySQLpassword'], $dumpSettings);
+            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings);
 		    $dump->start($backupFile);
 		    return $backupFile;
 		}
