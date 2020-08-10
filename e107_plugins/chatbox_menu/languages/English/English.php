@@ -44,4 +44,3 @@ define("CHATBOX_L24", "You do not have the correct permissions to view this page
 define("CHATBOX_L25", "[ this post has been blocked by admin ]");
 
 define("LAN_CHATBOX_100", "Type your message here.");
-?>

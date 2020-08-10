@@ -17,4 +17,3 @@ if(e107::isInstalled('trackback') && !empty($pref['trackbackEnabled']) && USER_A
 	echo "<link rel='pingback' href='".SITEURLBASE.e_PLUGIN_ABS."trackback/trackback.php' />";
 }
 
-?>

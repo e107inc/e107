@@ -306,4 +306,4 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>
+

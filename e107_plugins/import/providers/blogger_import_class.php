@@ -195,4 +195,3 @@ class blogger_import extends rss_import
 }
 
 
-?>

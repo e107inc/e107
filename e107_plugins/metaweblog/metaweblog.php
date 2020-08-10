@@ -1505,4 +1505,3 @@ function iso8601_to_datetime($date_string, $timezone = USER )
 
 
 
-?>

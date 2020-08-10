@@ -23,4 +23,3 @@ header('Content-Type: text/xml');
 include(e_PLUGIN."trackback/trackbackClass.php");
 $trackback = trackbackClass :: respondTrackback();
 
-?>

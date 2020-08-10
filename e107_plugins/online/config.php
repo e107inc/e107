@@ -126,4 +126,3 @@ $text = "
 
 $ns->tablerender(LAN_ONLINE_ADMIN_4." - ".LAN_ONLINE_ADMIN_1, $mes->render() . $text);
 require_once(e_ADMIN."footer.php");
-?>

@@ -467,4 +467,3 @@ class xoops_import extends base_import_class
 }
 
 
-?>	 

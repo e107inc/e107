@@ -829,4 +829,4 @@ function pm_conf_adminmenu()
 	show_admin_menu(ADLAN_PM_12, $action, $var);
 }
 
-?>
+

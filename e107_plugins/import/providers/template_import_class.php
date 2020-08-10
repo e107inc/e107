@@ -463,4 +463,3 @@ class template_import extends base_import_class
 }
 
 
-?>	 

@@ -580,4 +580,4 @@ function alt_auth_adminmenu()
 
 	show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
 }
-?>
+

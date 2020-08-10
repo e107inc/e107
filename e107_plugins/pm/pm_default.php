@@ -51,4 +51,3 @@ function pm_set_default_prefs()
 	);
 	return $ret;
 }
-?>

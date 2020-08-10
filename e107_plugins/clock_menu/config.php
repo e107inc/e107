@@ -103,4 +103,3 @@ $text = "
 
 $ns->tablerender(CLOCK_AD_L4, $text);
 require_once(e_ADMIN."footer.php");
-?>

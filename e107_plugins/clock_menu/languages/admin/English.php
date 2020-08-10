@@ -21,4 +21,4 @@ define("CLOCK_AD_L10", "Suffix 2");
 define("CLOCK_AD_L11", "Suffix 3");
 define("CLOCK_AD_L12", "Suffix 4 and more");
 define("CLOCK_AD_L13", "If your language requires to display a suffix just after numbers for date, fill these fields with suffix only (Example: 'st' for 1, 'nd' for 2, 'rd' for 3 and 'th' for 4 and more - for English users). If not required leave blank.");
-?>
+

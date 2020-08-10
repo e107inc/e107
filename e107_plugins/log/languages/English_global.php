@@ -7,4 +7,3 @@ define("LAN_PLUGIN_LOG_DESCRIPTION", 	"This plugin will log all visits to your s
 define("LAN_PLUGIN_LOG_CONFIGURE",		"Configure Statistics Logging"); 
 define("LAN_PLUGIN_LOG_LINK", 			"Visits");
 
-?>

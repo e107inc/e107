@@ -201,4 +201,4 @@ else
 	$ns->tablerender($caption, $text, 'login');
 }
 // END NOT LOGGED CODE
-?>
+

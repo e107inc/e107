@@ -78,4 +78,3 @@ $FORUM_POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-cen
 
 
 
-?>

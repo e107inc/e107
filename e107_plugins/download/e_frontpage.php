@@ -24,4 +24,3 @@ class download_frontpage // include plugin-folder in the name.
 
 
 
-?>

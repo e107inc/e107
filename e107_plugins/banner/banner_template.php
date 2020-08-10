@@ -119,4 +119,3 @@ $BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}</div
 $BANNER_TEMPLATE['menu']['end'] = 		"</div>"; 
 
 
-?>

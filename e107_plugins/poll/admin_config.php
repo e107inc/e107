@@ -245,4 +245,3 @@ function admin_config_adminmenu()
 
 	show_admin_menu($caption, $action, $var);
 }
-?>

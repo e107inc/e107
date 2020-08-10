@@ -23,4 +23,3 @@ foreach($data as $row)
 }
 
 
-?>

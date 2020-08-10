@@ -425,4 +425,3 @@ class wordpress_import extends base_import_class
 }
 
 
-?>

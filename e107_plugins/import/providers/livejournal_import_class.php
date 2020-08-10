@@ -101,4 +101,3 @@ class livejournal_import extends rss_import
 }
 
 
-?>

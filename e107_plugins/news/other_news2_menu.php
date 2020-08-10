@@ -218,4 +218,3 @@ if (e107::getDb()->gen($query))
 
 }
 
-?>

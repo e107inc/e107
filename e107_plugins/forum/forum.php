@@ -534,4 +534,3 @@ function forum_track()
 }
 
 
-?>

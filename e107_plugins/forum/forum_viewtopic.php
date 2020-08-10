@@ -1113,4 +1113,4 @@ class e107ForumThread
 	}
 }
 
-?>
+

@@ -147,4 +147,4 @@ define('LAN_ALT_CONVERSION_HELP', 'For some fields, the drop-down box to the rig
 	<br />
 	<br />');
 
-?>
+

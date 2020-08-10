@@ -24,4 +24,3 @@ if(defset('e_CURRENT_PLUGIN') == "forum" && e107::isInstalled('poll') && $poll_a
 }
 
 
-?>

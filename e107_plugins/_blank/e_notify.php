@@ -46,4 +46,3 @@ class _blank_notify extends notify
 }
 
 
-?>

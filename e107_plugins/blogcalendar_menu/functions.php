@@ -25,4 +25,3 @@ function formatDate($year, $month, $day = "") {
 	$day;
 	return $date;
 }
-?>

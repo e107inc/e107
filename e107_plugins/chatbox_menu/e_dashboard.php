@@ -45,4 +45,3 @@ class chatbox_menu_dashboard // include plugin-folder in the name.
 
 
 
-?>

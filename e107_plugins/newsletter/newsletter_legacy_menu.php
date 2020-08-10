@@ -106,4 +106,3 @@ foreach($newsletterArray as $nl)
 }
 
 $ns->tablerender(NLLAN_MENU_CAPTION, $text);
-?>

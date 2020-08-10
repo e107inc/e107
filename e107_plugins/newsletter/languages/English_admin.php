@@ -79,4 +79,4 @@ define("NLLAN_65", "Subscribers overview newsletter ID");
 define("NLLAN_66", "Your news letter subscriber list has been sanitised.");
 
 // Up to NLLAN_72 used in "public" file
-?>
+

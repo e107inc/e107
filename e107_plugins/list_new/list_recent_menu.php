@@ -51,4 +51,3 @@ $rc->e107->ns->tablerender($caption, $text, 'list_recent');
 unset($caption);
 unset($text);
 
-?>

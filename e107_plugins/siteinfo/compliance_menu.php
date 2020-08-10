@@ -8,4 +8,3 @@ $text = "<div style='text-align:center'>
 	</div>";
 $caption = (file_exists(THEME."images/compliance_menu.png") ? "<img src='".THEME_ABS."images/compliance_menu.png' alt='' /> ".COMPLIANCE_L1 : COMPLIANCE_L1);
 $ns->tablerender($caption, $text, 'compliance');
-?>

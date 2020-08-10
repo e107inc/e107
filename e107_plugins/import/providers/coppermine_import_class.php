@@ -96,4 +96,4 @@ class coppermine_import extends base_import_class
 }
 
 
-?>
+

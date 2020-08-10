@@ -82,4 +82,4 @@ $FORUM_POSTED_TEMPLATE['reply']     =   "<div class='alert alert-success'>
 
 
 
-?>
+

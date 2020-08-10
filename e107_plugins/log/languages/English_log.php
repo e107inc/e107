@@ -8,4 +8,3 @@ define("LAN_AL_STAT_04", "Stats - historic data removed");
 // define("LAN_AL_STAT_06", "");
 // define("LAN_AL_STAT_07", "");
 
-?>

@@ -27,4 +27,4 @@ function com_search_4($row) {
 	return $res;
 }
 
-?>
+

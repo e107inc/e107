@@ -43,4 +43,3 @@ switch ($action)
 }
 $ns -> tablerender(LAN_STAT_HELP_01, $text);
 unset($text);
-?>

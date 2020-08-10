@@ -76,4 +76,3 @@ class list_download
 		);
 	}
 }
-?>

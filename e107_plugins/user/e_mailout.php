@@ -392,4 +392,3 @@ class user_mailout
 
 
 
-?>

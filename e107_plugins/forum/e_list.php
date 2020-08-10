@@ -172,4 +172,3 @@ class list_forum
 	}
 }
 
-?>

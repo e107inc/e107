@@ -91,4 +91,3 @@ class joomla_import extends base_import_class
 }
 
 
-?>

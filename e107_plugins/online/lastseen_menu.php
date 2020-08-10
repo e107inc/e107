@@ -66,4 +66,3 @@ $caption = vartrue($menu_pref['online_ls_caption'],LAN_LASTSEEN_1);
 
 e107::getRender()->tablerender($caption, $text, 'lastseen');
 
-?>

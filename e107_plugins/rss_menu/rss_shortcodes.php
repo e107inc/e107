@@ -289,4 +289,3 @@ class rss_menu_shortcodes extends e_shortcode
 }
 
 	$rss_shortcodes = new rss_menu_shortcodes;
-?>

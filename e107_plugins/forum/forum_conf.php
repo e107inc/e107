@@ -220,4 +220,3 @@ if ($action == 'move')
 
 
 require_once(FOOTERF);
-?>

@@ -96,4 +96,4 @@ define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages nee
 define('LAN_dl_78', "That download has been disabled or discontinued. Please check in the [downloads area] for a more recent version.");
 define("LAN_dl_79", "You do not have the correct permissions to report this download item as broken.");
 
-?>
+

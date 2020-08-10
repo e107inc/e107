@@ -155,4 +155,4 @@ function ldap_conf_adminmenu()
 	alt_auth_adminmenu();
 }
 
-?>
+

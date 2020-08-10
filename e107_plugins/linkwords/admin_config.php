@@ -579,4 +579,4 @@ show_admin_menu(LWLAN_23, $action, $var);
 
 require_once(e_ADMIN."footer.php");
 */
-?>
+

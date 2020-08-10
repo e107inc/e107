@@ -44,4 +44,3 @@ if (!isset($COMMENT_MENU_TEMPLATE))
 
 
 }
-?>

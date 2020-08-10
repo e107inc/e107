@@ -43,4 +43,3 @@ class e_tagwords_download
 	}
 }
 
-?>

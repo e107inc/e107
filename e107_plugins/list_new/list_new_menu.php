@@ -52,4 +52,3 @@ e107::getRender()->tablerender($caption, $text, 'list_new');
 unset($caption);
 unset($text);
 
-?>

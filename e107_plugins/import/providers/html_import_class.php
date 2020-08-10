@@ -547,4 +547,3 @@ class html_import extends base_import_class
 }
 
 
-?>

@@ -729,4 +729,4 @@ function admin_config_adminmenu()
 	global $action;
 	$nl->show_options($action);
 }
-?>
+

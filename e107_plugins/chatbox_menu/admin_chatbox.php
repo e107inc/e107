@@ -155,4 +155,3 @@ function admin_chatbox_adminmenu()
 }
 
 
-?>

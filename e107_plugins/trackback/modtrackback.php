@@ -84,4 +84,3 @@ $ns->tablerender(TRACKBACK_L13, $text);
 	
 require_once(e_ADMIN."footer.php");
 
-?>

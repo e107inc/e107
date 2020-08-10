@@ -53,4 +53,3 @@ class _blank_related // include plugin-folder in the name.
 
 
 
-?>

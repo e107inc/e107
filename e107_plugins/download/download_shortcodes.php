@@ -1123,4 +1123,4 @@ class download_shortcodes extends e_shortcode
 	//	return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />";	
 	}
 }
-?>
+

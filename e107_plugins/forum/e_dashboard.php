@@ -40,4 +40,3 @@ class forum_dashboard // include plugin-folder in the name.
 	
 	
 }
-?>

@@ -736,4 +736,4 @@ function edit_theme()
 require_once(e_ADMIN."footer.php");
 
 
-?>
+

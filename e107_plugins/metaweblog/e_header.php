@@ -7,4 +7,3 @@ echo "<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"".
 ";
 
 
-?>

@@ -242,4 +242,3 @@ function alt_auth_conf_adminmenu()
 }
 
 
-?>
