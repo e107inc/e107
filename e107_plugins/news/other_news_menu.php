@@ -210,4 +210,3 @@ if ($sql->gen($query))
 	e107::getCache()->set("nq_othernews", $cache_data);
 }
 
-?>

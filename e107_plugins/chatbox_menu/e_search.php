@@ -92,4 +92,3 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 //Old v1.
 // $search_info[] = array('sfile' => e_PLUGIN.'chatbox_menu/search/search_parser.php', 'qtype' => CB_SCH_LAN_1, 'refpage' => 'chat.php', 'advanced' => e_PLUGIN.'chatbox_menu/search/search_advanced.php');
 
-?>

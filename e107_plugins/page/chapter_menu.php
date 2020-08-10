@@ -48,4 +48,3 @@ $caption = $tp->parseTemplate($template['listChapters']['caption'], true, $sc);
 
 $ns->tablerender($caption, $body, 'chapter-menu'); 
 
-?>

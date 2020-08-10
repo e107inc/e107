@@ -103,4 +103,3 @@ if (vartrue($pref['statActivate']))
 }
 
 
-?>

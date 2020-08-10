@@ -74,4 +74,3 @@ class list_chatbox_menu
 	}
 }
 
-?>

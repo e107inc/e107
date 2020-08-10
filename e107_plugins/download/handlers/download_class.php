@@ -1265,4 +1265,4 @@ function sort_download_mirror_order($a, $b)
    }
    return ($a[1] < $b[1]) ? -1 : 1;
 }
-?>
+

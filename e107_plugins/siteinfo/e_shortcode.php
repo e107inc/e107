@@ -220,4 +220,3 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	}
 
 }
-?>

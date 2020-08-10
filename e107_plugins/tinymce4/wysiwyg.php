@@ -1126,4 +1126,4 @@ class wysiwyg
 
 }
 
-?>
+

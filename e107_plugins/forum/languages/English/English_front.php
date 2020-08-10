@@ -663,4 +663,4 @@ define("LAN_FORUM_2", "Duplicate post");
 define("LAN_FORUMPOST_EMOTES", "Deactivate emoticons for this post");
 */
 
-?>
+

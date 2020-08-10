@@ -31,4 +31,3 @@ define("BANNER_MENU_L17", "set amount ...");
 //define("BANNER_MENU_L18", "Update Menu Settings");
 //define('BANNER_MENU_L19', "Nothing changed - not saved");
 */
-?>

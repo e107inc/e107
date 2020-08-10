@@ -513,4 +513,4 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 
 }
-?>
+

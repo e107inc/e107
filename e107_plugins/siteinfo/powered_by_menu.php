@@ -44,4 +44,3 @@ if(!deftrue("BOOTSTRAP")) // Old Legacy Code.
 
 
 $ns -> tablerender(POWEREDBY_L1,  $text, 'powered_by');
-?>

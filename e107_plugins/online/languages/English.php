@@ -49,4 +49,3 @@ define("LAN_ONLINE_ADMIN_9", "Displays a list of members viewing a page.");
 define("LAN_ONLINE_ADMIN_10", "Display guests online.");
 
 
-?>

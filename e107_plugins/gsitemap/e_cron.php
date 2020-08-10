@@ -61,4 +61,3 @@ class gsitemap_cron // include plugin-folder in the name.
 
 
 
-?>

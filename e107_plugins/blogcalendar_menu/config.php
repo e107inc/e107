@@ -84,4 +84,3 @@ $text = "
 $ns->tablerender(BLOGCAL_CONF4, $text);
 	
 require_once(e_ADMIN."footer.php");
-?>

@@ -593,4 +593,3 @@ function admin_config_adminmenu()
 	show_admin_menu(LAN_PLUGIN_GSITEMAP_NAME, $action, $var);
 }
 
-?>

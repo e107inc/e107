@@ -115,4 +115,3 @@ else
 	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div class='search-menu'>".$text."</div>", 'search');
 }
 
-?>

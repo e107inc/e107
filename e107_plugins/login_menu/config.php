@@ -161,4 +161,3 @@ $ns->tablerender(LAN_LOGINMENU_41, $text);
 
 require_once(e_ADMIN."footer.php");
 
-?>

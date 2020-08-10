@@ -2847,4 +2847,4 @@ class forumAdmin
 		}
 	}
 		*/
-?>
+

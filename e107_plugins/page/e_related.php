@@ -89,4 +89,3 @@ class page_related // replace 'e_' with 'plugin-folder_'
 
 
 
-?>

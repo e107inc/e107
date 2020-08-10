@@ -490,4 +490,3 @@ CREATE TABLE {$db_prefix}members (
 }
 
 
-?>

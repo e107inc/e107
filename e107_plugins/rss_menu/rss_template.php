@@ -29,4 +29,3 @@ if(!isset($RSS_LIST_FOOTER))
 }
 
 
-?>

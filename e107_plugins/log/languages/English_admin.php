@@ -102,4 +102,4 @@ define ('ADSTAT_LAN_89', 'Rebuild');
 define ('ADSTAT_LAN_90', "Data saved to database with id: [x]");
 define ('ADSTAT_LAN_91', "Couldn't save data to database with id: [x]");
 
-?>
+

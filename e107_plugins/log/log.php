@@ -308,4 +308,3 @@ if(LOGSTATS_DEBUG == true)
 }
 
 
-?>

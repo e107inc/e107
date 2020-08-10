@@ -154,4 +154,3 @@ $archive .= "</tr></table></div>";
 $ns->tablerender(BLOGCAL_L2 ."&nbsp;$req_year", $archive);
 	
 require_once(FOOTERF);
-?>

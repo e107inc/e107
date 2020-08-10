@@ -1803,4 +1803,3 @@ function forum_update_adminmenu()
 
 	show_admin_menu('Forum Upgrade', $action, $var);
 }
-?>

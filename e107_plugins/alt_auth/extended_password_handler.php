@@ -382,4 +382,3 @@ class ExtendedPasswordHandler extends UserHandler
 }
 
 
-?>

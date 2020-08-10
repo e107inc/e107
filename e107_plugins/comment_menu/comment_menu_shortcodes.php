@@ -187,4 +187,3 @@ return $COMMENT;
 SC_END
 
 */
-?>

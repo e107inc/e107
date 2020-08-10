@@ -247,4 +247,4 @@ class auth_login extends alt_auth_base
 		return AUTH_SUCCESS;
 	}
 }
-?>
+

@@ -114,4 +114,3 @@ class list_shortcodes
 		return $this->row['timelapse'];
 	}
 }
-?>

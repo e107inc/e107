@@ -294,4 +294,4 @@ class alt_login
 	}
 
 }
-?>
+

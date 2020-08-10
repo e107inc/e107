@@ -139,4 +139,3 @@ class list_news
 		return preg_replace($search, $replace, $title);
 	}
 }
-?>

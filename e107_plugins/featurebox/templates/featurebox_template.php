@@ -175,4 +175,3 @@ $FEATUREBOX_INFO = array(
 	'accordion' 					=> array('title' => 'Accordion Item',						'description' => 'For use with accordion'),
 	'tabs' 							=> array('title' => 'Tab Item',								'description' => 'For use with tabs')
 );
-?>

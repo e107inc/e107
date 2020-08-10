@@ -34,4 +34,3 @@ e107::includeLan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
   $text2 .=$helptext[$i]."<br /><br />";
   };
 $ns -> tablerender($helptitle, $text2);
-?>

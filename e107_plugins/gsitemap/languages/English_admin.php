@@ -63,4 +63,3 @@ define("GSLAN_39", "No links in sitemap - import sitelinks?");
 //define('GSLAN_42', 'Installation Successful..');
 
 
-?>

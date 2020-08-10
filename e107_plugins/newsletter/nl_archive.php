@@ -134,4 +134,3 @@ $text .= "</div>";
 
 $ns -> tablerender(NLLAN_67, $text);
 require_once(FOOTERF);
-?>

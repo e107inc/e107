@@ -58,4 +58,3 @@ define("CHBLAN_42", "Show amount of posts in user profile");
 
 
 
-?>

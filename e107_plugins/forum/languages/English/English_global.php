@@ -23,4 +23,3 @@ define("FORUM_LAN_URL_DEFAULT_DESCR", "URLs of 'GET type' with no single entry p
 define("FORUM_LAN_URL_REWRITE_LABEL", "SEF Forum URLs (UNDER DEVELOPMENT)");
 define("FORUM_LAN_URL_REWRITE_DESCR", "Examples:<br />UNDER DEVELOPMENT");
 
-?>

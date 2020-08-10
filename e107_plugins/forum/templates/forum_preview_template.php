@@ -32,4 +32,3 @@ $FORUM_PREVIEW_TEMPLATE['item'] = "<div class='alert alert-warning alert-block'>
 									{PREVIEW_POST}
 									</div>";
 
-?>

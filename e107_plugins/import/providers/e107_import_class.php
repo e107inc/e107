@@ -230,4 +230,3 @@ class e107_import extends base_import_class
 }
 
 
-?>

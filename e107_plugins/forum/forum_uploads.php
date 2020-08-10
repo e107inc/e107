@@ -119,4 +119,3 @@ if(!$filecount) {
 $ns->tablerender(LAN_FORUM_7001, $txt);
 include_once(FOOTERF);
 
-?>

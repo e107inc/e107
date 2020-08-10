@@ -18,4 +18,3 @@ $timeend = microtime();
 $diff = number_format(((substr($timeend, 0, 9)) + (substr($timeend, -10)) - (substr($timestart, 0, 9)) - (substr($timestart, -10))), 4);
 echo "<br />script generation took $diff s";
 	
-?>

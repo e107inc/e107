@@ -71,4 +71,3 @@ class e_linkwords
 	} 
 }
 
-?>

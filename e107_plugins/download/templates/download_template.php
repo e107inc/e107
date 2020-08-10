@@ -653,4 +653,3 @@ $DOWNLOAD_TEMPLATE['mirror']['end'] = "
 $DOWNLOAD_TEMPLATE['header'] = '{DOWNLOAD_BREADCRUMB}';
 $DOWNLOAD_TEMPLATE['footer'] = '';
 
-?>

@@ -345,4 +345,3 @@ TEMPL;
 $mce = new	e107TinyMceParser();
 
 
-?>

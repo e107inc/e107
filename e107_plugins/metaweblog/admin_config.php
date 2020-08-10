@@ -18,4 +18,4 @@ require_once(e_ADMIN."auth.php");
 $text = "<div class='alert alert-block'>".XMLRPC_HELP_011."</div>";
 $ns -> tablerender(XMLRPC_CONFIG_001, $text);
 require_once(e_ADMIN."footer.php");
-?>
+

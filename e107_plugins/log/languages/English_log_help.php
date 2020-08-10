@@ -35,4 +35,3 @@ Clears the selected all-time data (up to the end of yesterday) to zero. To delet
 ");
 define("LAN_STAT_HELP_06","");
 
-?>

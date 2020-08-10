@@ -98,4 +98,3 @@ define ('ADSTAT_L85', '');
 
 
 
-?>

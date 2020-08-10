@@ -239,4 +239,4 @@ $POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{
 ";
 
 
-?>
+

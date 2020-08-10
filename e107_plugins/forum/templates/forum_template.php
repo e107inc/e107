@@ -190,4 +190,4 @@ $FORUM_TEMPLATE['main-end']				.= "
 <tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>
 ";
 */
-?>
+

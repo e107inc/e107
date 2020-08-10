@@ -58,4 +58,3 @@ else
 	require_once(e_PLUGIN."featurebox/templates/".$fb_template.".php");
 	echo $FB_TEMPLATE;
 }
-?>

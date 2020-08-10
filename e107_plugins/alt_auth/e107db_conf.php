@@ -132,4 +132,4 @@ function e107db_conf_adminmenu()
 	alt_auth_adminmenu();
 }
 
-?>
+

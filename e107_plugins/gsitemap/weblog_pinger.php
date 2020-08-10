@@ -234,4 +234,4 @@ class Weblog_Pinger {
         fclose($fhandle);*/
     }
 }
-?>
+

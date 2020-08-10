@@ -19,4 +19,3 @@ if(USER_AREA && e107::getMenu()->isLoaded('news_carousel'))
 	e107::css('news','news_carousel.css');
 }
 
-?>

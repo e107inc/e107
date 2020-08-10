@@ -391,4 +391,3 @@ class login_menu_class
 
 }
 
-?>

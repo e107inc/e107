@@ -60,4 +60,4 @@ $poll->remove_poll_cookies();
 
 $poll->render_poll($query, $pollType, $pollMode);
 
-?>
+

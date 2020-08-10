@@ -96,4 +96,4 @@ define('IMAGE_rank_moderator_image',	'<img src="'.img_path('moderator.png', '', 
 define('IMAGE_rank_main_admin_image',	'<img src="'.img_path('main_admin.png', '', 'rank_main_admin_image').'" alt="" />');
 define('IMAGE_rank_admin_image', 		'<img src="'.img_path('admin.png', '', 'rank_admin_image').'" alt="" />');
 
-?>
+

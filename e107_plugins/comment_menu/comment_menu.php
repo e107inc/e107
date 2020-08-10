@@ -110,4 +110,3 @@ if(empty($title))
 e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
 
 
-?>

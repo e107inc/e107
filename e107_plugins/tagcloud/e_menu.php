@@ -46,4 +46,3 @@ class tagcloud_menu_form extends e_form
 }
 
 
-?>

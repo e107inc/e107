@@ -151,4 +151,4 @@ if(e_QUERY)
 	e107::getRender()->tablerender(POLLAN_28, $text);
 	require_once(FOOTERF);
 
-?>
+

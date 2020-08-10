@@ -221,4 +221,3 @@ if(false === $cached)
 }
 
 echo $cached;
-?>

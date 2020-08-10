@@ -27,4 +27,4 @@ require(e_PLUGIN.'poll/poll_menu.php');
 require_once(FOOTERF);
 exit;
 
-?>
+

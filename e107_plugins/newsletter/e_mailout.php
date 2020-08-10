@@ -259,4 +259,3 @@ class newsletter_mailout
 
 
 
-?>

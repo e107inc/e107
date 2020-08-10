@@ -67,4 +67,3 @@ unset($text);
 
 require_once(FOOTERF);
 
-?>

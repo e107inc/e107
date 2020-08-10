@@ -104,4 +104,3 @@ class log_shortcodes extends e_shortcode
 
 
 
-?>

@@ -34,5 +34,5 @@ define("BANNERLAN_35", "Clickthrough IP addresses");
 //define("BANNERLAN_38", "Error"); // English LAN_ERROR
 define("BANNERLAN_39", "No image assigned to this banner.");
 
-?>
+
 

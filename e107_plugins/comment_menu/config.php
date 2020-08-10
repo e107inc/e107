@@ -120,4 +120,3 @@ $text = "
 $ns->tablerender(CM_L8, $mes->render() . $text);
 
 require_once(e_ADMIN."footer.php");
-?>

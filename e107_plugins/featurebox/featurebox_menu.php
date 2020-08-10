@@ -21,4 +21,4 @@ if(empty($text))
 echo $text;
 unset($text);
 
-?>
+

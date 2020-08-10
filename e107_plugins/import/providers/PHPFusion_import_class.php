@@ -360,4 +360,3 @@ class PHPFusion_import extends base_import_class
 }
 
 
-?>

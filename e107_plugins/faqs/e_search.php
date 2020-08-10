@@ -76,4 +76,3 @@ class faqs_search extends e_search // include plugin-folder in the name.
 }
 // $search_info[]=array( 'sfile' => e_PLUGIN.'faq/search.php', 'qtype' => 'FAQ', 'refpage' => 'faq.php');
 
-?>

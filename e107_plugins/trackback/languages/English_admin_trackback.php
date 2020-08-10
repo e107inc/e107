@@ -37,4 +37,3 @@ define("TRACKBACK_L16", "Trackback");
 //define("LAN_AL_TRACK_01", "Trackback settings changed");
 //define("LAN_AL_TRACK_02", "Trackback items deleted");
 
-?>

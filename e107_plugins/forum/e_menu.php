@@ -53,4 +53,3 @@ class forum_menu_form extends e_form
 }
 */
 
-?>
