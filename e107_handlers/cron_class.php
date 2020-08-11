@@ -168,6 +168,17 @@ class _system_cron
 		$message .= $this->renderTable($_SERVER);
 		$message .= "<h3>_ENV</h3>";
 		$message .= $this->renderTable($_ENV);
+		$message .= "<h3>LAST ERROR</h3>";
+		$message .= "<pre>".print_r(error_get_last(), true)."</pre>";
+		$message .= "<h3>HEADERS LIST</h3>";
+		$message .= "<pre>".print_r(headers_list(),true)."</pre>";
+		$message .= "<h3>Included Files</h3>";
+		$included_files = get_included_files();
+
+		foreach ($included_files as $filename)
+		{
+		    $message .= $filename."<br />";
+		}
 
 		$eml = array(
 					'subject' 		=> "TEST Email Sent by cron. ".date("r"),
@@ -459,7 +470,7 @@ class CronParser
 	function calcLastRan($string)
 	{
 
- 		$tstart = microtime();
+ 		$tstart = microtime(true);
 		$this->debug = "";
 		$this->lastRan = 0;
 		$this->year = NULL;
@@ -589,7 +600,7 @@ class CronParser
 			}
 		}
 
-		$tend = microtime();
+		$tend = microtime(true);
 		$this->taken = $tend - $tstart;
 		$this->debug("Parsing $string taken " . $this->taken . " seconds");
 
