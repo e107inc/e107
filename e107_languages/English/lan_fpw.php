@@ -51,4 +51,4 @@ define("LAN_FPW_100", "Forgot your password?");
 define("LAN_FPW_101", "Not to worry. Just enter your email address below and we'll send you an email with instructions to get it back.");
 define("LAN_FPW_102", "Reset Password");
 
-?>
+

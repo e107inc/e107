@@ -12,4 +12,3 @@ define("METLAN_1", "Additional meta tags");
 define("METLAN_2", "e.g. < meta name='revisit-after' content='30 days' />"); //FIXME space between < and meta: parses meta tag for some reason
 define("METLAN_3", "Use news title and summary as the meta-description on news pages.");
 
-?>

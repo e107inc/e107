@@ -41,4 +41,3 @@ define("FRTLAN_61", "Selection");
 //define("FRTLAN_54", "Are you sure?");
 //define("FRTLAN_55", "Confirm delete rule?");
 
-?>

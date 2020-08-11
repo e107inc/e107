@@ -99,4 +99,3 @@ define("FS_LAN_9", "Snapshot");
 define("FS_LAN_10", "Snapshot Created");
 define("FS_LAN_11", "The snapshot was successfully created.");
 define("FS_LAN_12", "Return To Main Page");
-?>

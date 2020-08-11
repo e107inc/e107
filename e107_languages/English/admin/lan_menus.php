@@ -80,4 +80,3 @@ define("MENLAN_60", "This theme is using deprecated elements. All [x]HEADER and 
 
 
 
-?>

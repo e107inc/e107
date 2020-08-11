@@ -25,4 +25,3 @@ define("LAN_NP_URLCURRENT", "Currently viewed");
 // Replacement: "%1$d" - current page; "%2$d" - total pages
 define("NP_CAPTION", "Page [x] of [y]");
 
-?>

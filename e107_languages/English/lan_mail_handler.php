@@ -18,4 +18,3 @@ define("LANMAILH_6", "Cannot find E-Mail server.");
 define("LANMAILH_7", " appears to be valid.");
 
 
-?>

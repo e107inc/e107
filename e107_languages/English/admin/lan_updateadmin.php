@@ -16,4 +16,3 @@ define("UDALAN_6", "Re-type password");
 define("UDALAN_7", "Change password");
 define("UDALAN_8", "Password updated for");
 
-?>

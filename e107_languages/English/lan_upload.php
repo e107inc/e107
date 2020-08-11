@@ -56,4 +56,3 @@ define("LAN_420", "fields are required");
 
 
 
-?>
