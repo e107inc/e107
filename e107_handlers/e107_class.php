@@ -4261,7 +4261,10 @@ class e107
 			}
 		}
 
-		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
+		if ($_SERVER['PHP_SELF'] == "" && !empty($_SERVER['SCRIPT_NAME']))
+		{
+			$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
+		}
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
 		$http_path = explode("/", $http_path);
@@ -4478,6 +4481,11 @@ class e107
 		{
 			$_SERVER['PHP_SELF'] = $requestUrl;
 		}*/
+
+		if(self::isCli() && !empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']))
+		{
+			$_SERVER['SCRIPT_FILENAME'] = $_SERVER['_'];
+		}
 
 		$eSelf = !empty($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
