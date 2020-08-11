@@ -486,12 +486,18 @@ class e_plugin
 
 	public function isValidAddonMarkup($content='')
     {
-       if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+       if ((substr($content, 0, 5) != '<'.'?php'))
        {
             return false;
        }
 
-       return true;
+      if ((substr($content, -2, 2) != '?'.'>') && (strrpos(substr($content, -20, 20), '?'.'>') !== false))
+      {
+			return false;
+      }
+
+
+      return true;
 
     }
 
@@ -2428,7 +2434,7 @@ class e107plugin
 	function manage_tables($action, $var)
 	{
 		$this->log("Running ".__FUNCTION__);
-		$sql = e107::getDB();
+		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		
 		if (!is_array($var))

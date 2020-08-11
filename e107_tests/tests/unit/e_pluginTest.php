@@ -298,6 +298,13 @@
 
 		public function testIsValidAddonMarkup()
         {
+            $content = '<?php    
+            
+            ';
+            $result = $this->ep->isValidAddonMarkup($content);
+            $this->assertTrue($result);
+
+
             $content = ' <?php    ';
             $result = $this->ep->isValidAddonMarkup($content);
             $this->assertFalse($result);

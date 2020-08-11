@@ -812,8 +812,6 @@ class e107Email extends PHPMailer
 
 		$mediaParms = array();
 
-
-
 		if(strpos($eml['templateHTML']['body'], '{MEDIA') !==false )
 		{
 			// check for media sizing.
@@ -905,7 +903,7 @@ class e107Email extends PHPMailer
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
 		{		
-					
+			e107::coreLan('users', true);
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
 				$eml['templateHTML'] = $tmpl;

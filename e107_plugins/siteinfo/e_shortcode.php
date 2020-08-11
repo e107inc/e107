@@ -11,7 +11,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	function sc_sitebutton($parm=null)
 	{
 		
-		if($_POST['sitebutton'] && $_POST['ajax_used'])
+		if(!empty($_POST['sitebutton']) && !empty($_POST['ajax_used']))
 		{
 			$path = e107::getParser()->replaceConstants($_POST['sitebutton']);
 		}
