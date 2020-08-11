@@ -340,10 +340,10 @@ class e_tohtml_linkwords
 			$lwClass[] = $this->word_class[$first];
 		}
 
-		if (!count($lwClass))
-		{
+	//	if (!count($lwClass))
+	//	{
 			//	return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
-		}
+	//	}
 
 		if (count($linkrel))
 		{
