@@ -132,4 +132,4 @@ define("BANLAN_125", "Use my IP");
 define("BANLAN_126", "IP / Email");
 define("BANLAN_127", "Delete all [x] failed logins from database");
 
-?>
+

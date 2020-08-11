@@ -66,4 +66,3 @@ define("UE_LAN_COMMENT_DESC", "Comment Box");
 
 
 
-?>

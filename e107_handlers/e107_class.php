@@ -4479,7 +4479,7 @@ class e107
 			$_SERVER['PHP_SELF'] = $requestUrl;
 		}*/
 
-		$eSelf = $_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
+		$eSelf = !empty($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
 
 
@@ -4580,7 +4580,7 @@ class e107
 		$inAdminDir = FALSE;
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
-		$curPage = basename($_SERVER['SCRIPT_FILENAME']);
+		$curPage = !empty($_SERVER['SCRIPT_FILENAME']) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
 		$_SERVER['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
 		if	(

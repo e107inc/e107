@@ -35,4 +35,3 @@ define("NT_LAN_NU_1", "Updated");
 define("NT_LAN_ND_1", "News Item Deleted");
 define("NT_LAN_ND_2", "Deleted news item id");
 
-?>

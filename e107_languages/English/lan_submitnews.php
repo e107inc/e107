@@ -34,4 +34,4 @@ define("SUBNEWSLAN_11", "Meta Description");
 define("SUBNEWSLAN_12", "Used by Facebook etc.");
 define("SUBNEWSLAN_13", "Media URLs");
 
-?>
+

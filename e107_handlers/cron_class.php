@@ -172,13 +172,13 @@ class _system_cron
 		$message .= "<pre>".print_r(error_get_last(), true)."</pre>";
 		$message .= "<h3>HEADERS LIST</h3>";
 		$message .= "<pre>".print_r(headers_list(),true)."</pre>";
-		$message .= "<h3>Included Files</h3>";
-		$included_files = get_included_files();
+	//	$message .= "<h3>Included Files</h3>";
+	/*	$included_files = get_included_files();
 
 		foreach ($included_files as $filename)
 		{
 		    $message .= $filename."<br />";
-		}
+		}*/
 
 		$eml = array(
 					'subject' 		=> "TEST Email Sent by cron. ".date("r"),

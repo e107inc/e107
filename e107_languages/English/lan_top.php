@@ -29,4 +29,3 @@ define("LAN_7", "Most Active Threads");
 define("LAN_8", "Top Posters");
 
 
-?>

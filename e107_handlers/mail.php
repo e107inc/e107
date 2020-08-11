@@ -902,8 +902,8 @@ class e107Email extends PHPMailer
 
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
-		{		
-			e107::coreLan('users', true);
+		{
+			require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
 				$eml['templateHTML'] = $tmpl;

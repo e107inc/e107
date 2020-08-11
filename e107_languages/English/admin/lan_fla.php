@@ -26,4 +26,3 @@ define("FLALAN_17", "Auto-ban list deleted");
 // define('FLALAN_18', "Could not ban IP address --IP-- - on whitelist");
 
 // define('FLALAN_19', "Check All Delete");
-?>

@@ -18,4 +18,3 @@ define("LAN_MEMBERS_3","or [register] as a member.");
 define("LAN_MEMBERS_4","Click here to return to front page.");
 
 
-?>

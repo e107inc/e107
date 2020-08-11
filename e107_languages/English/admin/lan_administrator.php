@@ -83,4 +83,3 @@ define("ADMSLAN_73", "Admin ID: [x] name: [y]");
 //define("ADMSLAN_76", "Manage language-packs");//ADLAN_132
 
 //define("ADMSLAN_2", "Site Administrator [name] updated in database."); // LAN_UPDATED
-?>

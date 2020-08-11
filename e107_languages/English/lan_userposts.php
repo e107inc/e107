@@ -28,4 +28,3 @@ define("UP_LAN_12", "Search");
 define("UP_LAN_14", "Forum Posts");
 define("UP_LAN_15", "Re");
 define("UP_LAN_16", "IP Address");
-?>
