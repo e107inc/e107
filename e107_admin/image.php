@@ -98,7 +98,7 @@ if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work corre
 	
 }
 
-	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
+	require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import.
 
 $e_sub_cat = 'image';
 
