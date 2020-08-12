@@ -3607,7 +3607,9 @@ class e107
 			$active = false;
 		}
 
-		if (deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
+		$e_MOD_REWRITE = (self::isCli() !==true) ? deftrue('e_MOD_REWRITE') : true;
+
+		if ($e_MOD_REWRITE && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
 		{
 			$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
