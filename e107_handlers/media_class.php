@@ -1940,7 +1940,7 @@ class e_media
 		}
 
 
-		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
+		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
 		{
 			$thumb = PhpThumbFactory::create($src);
