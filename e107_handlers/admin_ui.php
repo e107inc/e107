@@ -4861,13 +4861,13 @@ class e_admin_ui extends e_admin_controller_ui
 	 * Markup to be auto-inserted before List filter
 	 * @var string
 	 */
-	public $preFiliterMarkup = '';
+	public $preFilterMarkup = '';
 
 	/**
 	 * Markup to be auto-inserted after List filter
 	 * @var string
 	 */
-	public $postFiliterMarkup = '';
+	public $postFilterMarkup = '';
 
 	/**
 	 * Markup to be auto-inserted at the top of Create form
@@ -7163,8 +7163,8 @@ class e_admin_form_ui extends e_form
 		$input_options['id'] = false;
 		$input_options['class'] = 'tbox input-text filter input-xlarge ';
 		$controller = $this->getController();
-		$filter_pre = vartrue($controller->preFiliterMarkup);
-		$filter_post = vartrue($controller->postFiliterMarkup);
+		$filter_pre = vartrue($controller->preFilterMarkup);
+		$filter_post = vartrue($controller->postFilterMarkup);
 		$filter_preserve_var = array();
 		// method requires controller - stanalone advanced usage not possible 
 		if($this->getController())
