@@ -25,4 +25,4 @@ define("LAN_PAGE_13", "Page");
 define("LAN_PAGE_14", "Other Articles");
 define("LAN_PAGE_15", "Articles");
 define("LAN_PAGE_16", "There are no chapters in this book");
-define("LAN_PAGE_17", "Comments on this page are locked.")
+define("LAN_PAGE_17", "Comments on this page are locked.");
