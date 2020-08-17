@@ -134,6 +134,7 @@
   'user' => 'user',
 )]]></core>
 		<core name="email_text"></core>
+		<core name="email_item_class">253</core>
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>
 		<core name="enable_rdns_on_ban">0</core>
