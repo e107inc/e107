@@ -81,7 +81,7 @@ define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");
 
 define("LINKLAN_10", "Theme Shortcodes");
-_
+
 // define("LINKLAN_10", "Create Sublink");
 // define('LINKLAN_11', 'Nothing changed - not updated');
 
