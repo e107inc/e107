@@ -292,10 +292,10 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 
 class lancheck
 {
-	
-	var $core_plugins = array();
 
-	var $core_themes = array("bootstrap3", "voux");
+	public $core_plugins = array();
+
+	public $core_themes = array("bootstrap3", "voux");
 			
 	private $errorsOnly = false;
 	
@@ -345,12 +345,12 @@ class lancheck
 		{
 			$this->core_themes[] = $pref['sitetheme'];
 			$this->core_themes = array_unique($this->core_themes);
-		}
-
+		}/*
 		if(E107_DEBUG_LEVEL > 0)
 		{
-		//	print_a($this->core_plugins);
-		}
+			print_a($this->core_plugins);
+		}*/
+
 
 		$acceptedLans = explode(",",e_LANLIST);
 	
@@ -418,11 +418,11 @@ class lancheck
 				$key = key($val);
 				$this->coreImage[$key] = $val;
 			}
-			elseif($val)
+		/*	elseif($val)
 			{
-			//	$this->totalFiles++;		
+				$this->totalFiles++;
 			}	
-			
+			*/
 		}	
 	}
 
@@ -631,18 +631,6 @@ class lancheck
 		}
 
 
-	//	if(!is_writable(e_FILE."public"))
-	//	{
-		//	$ret['error'] = TRUE;
-		//	$ret['message'] = LAN_UPLOAD_777 . " ".e_FILE."public";
-		//	return $ret;
-	//	}
-
-		if(is_readable(e_ADMIN."ver.php"))
-		{
-		//	include(e_ADMIN."ver.php");
-		}
-
 		require_once(e_HANDLER.'pclzip.lib.php');
 		list($ver, $tmp) = explode(" ", e_VERSION);
 		if(!$locale = $this->findLocale($language))
@@ -743,13 +731,14 @@ class lancheck
 
 	}
 
-	function removeLanguagePack($language)
+	/** todo */
+	/*function removeLanguagePack($language)
 	{
 		$files = $this->getFileList($language);
 
 
 
-	}
+	}*/
 
 
 
@@ -875,17 +864,17 @@ class lancheck
 	{
 		$xml = e107::getXml();
 
-
-
-
 		$feed = 'https://e107.org/languagepacks.xml';
 
 		$version = e_VERSION;
 
 		if(!empty($version))
 		{
-			$feed .= "?ver=". preg_replace('/[^\d\.]/','',e_VERSION);
+			list($ver,$tmp) = explode("-", $version);
+			$feed .= "?ver=". preg_replace('/[^\d\.]/','', $ver);
 		}
+
+		e107::getDebug()->log("Language Pack Feed: ".$feed);
 
 		$languages = array();
 
@@ -956,7 +945,6 @@ class lancheck
 	{
 		// global $ns,$tp;
 		$mes = e107::getMessage();
-		$ns = e107::getRender();
 		$tp = e107::getParser();
 
 		if(empty($lan))
@@ -1022,14 +1010,14 @@ class lancheck
 		
 		if($mode != 'render')
 		{
-			 return;
+			 return null;
 		}
 	
 		$message = "
 		<form id='lancheck' method='post' action='".e_ADMIN."language.php?mode=main&action=tools'>
 		<div>\n";
 		
-		$icon = ($_SESSION['lancheck'][$lan]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;
+	//	$icon = ($_SESSION['lancheck'][$lan]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;
 		
 		
 		$errors_diz = (deftrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
@@ -1765,10 +1753,10 @@ class lancheck
 		if($lan == '')
 		{
 			echo "Language selection was lost. ";
-			return;
+			return null;
 		}
 		
-		$ns = e107::getRender();
+	//	$ns = e107::getRender();
 		$sql = e107::getDb();
 
 	
@@ -1798,7 +1786,7 @@ class lancheck
 
 		$this->newFile($dir2.$f2,$lan);
 
-		$writable = (is_writable($dir2)) ? TRUE : FALSE;
+		$writable = is_writable($dir2);
 		$trans = $this->get_lan_file_phrases($dir1,$dir2,$f1,$f2);
 		$keys = array_keys($trans);
 		sort($keys);
