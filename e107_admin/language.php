@@ -379,6 +379,11 @@ if(!empty($_GET['iframe']))
 
 			$tp = e107::getParser();
 
+			if(empty($this->onlinePacks))
+			{
+				return null;
+			}
+
 
 			foreach($this->onlinePacks as $lan=>$value)
 			{
