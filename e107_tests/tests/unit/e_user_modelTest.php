@@ -377,7 +377,15 @@
 
 		}
 */
+		/**
+		 * @see https://github.com/e107inc/e107/issues/4236
+		 */
+		public function testUserLoginWrongCredentialsNotUser()
+		{
+			$user = e107::getUser();
+			$user->login("e107", "DefinitelyTheWrongPassword");
 
-
-
+			$this->assertFalse($user->isUser());
+			$this->assertEmpty($user->getData());
+		}
 	}
