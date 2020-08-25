@@ -625,7 +625,7 @@ class userlogin
 			return $message;
 		}
 
-		define('LOGINMESSAGE', $message);
+		defined('LOGINMESSAGE') or define('LOGINMESSAGE', $message);
 
 	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
 

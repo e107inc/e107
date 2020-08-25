@@ -1592,12 +1592,12 @@ class e_user extends e_user_model
 		if($this->isUser()) return false;
 
 		$userlogin = new userlogin();
-		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
-		
+		$loginSuccess = $userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
+
 		$userdata  = $userlogin->getUserData(); 
-		
 		$this->setSessionData(true)->setData($userdata);
-		
+		if ($loginSuccess === false) return false;
+
 		e107::getEvent()->trigger('user_login', $userdata); 	
 
 		return $this->isUser();
