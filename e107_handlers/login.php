@@ -342,8 +342,8 @@ class userlogin
 	 * Note: PASSWORD IS NOT VERIFIED BY THIS ROUTINE
 	 * @param string $username - as entered
 	 * @param boolean $forceLogin - TRUE if login is being forced from clicking signup link; normally FALSE
-	 * @return TRUE if name exists, and $this->userData array set up
-	 *		   otherwise FALSE
+	 * @return boolean TRUE if name exists, and $this->userData array set up
+	 *		           FALSE otherwise
 	 */
 	protected function lookupUser($username, $forceLogin)
 	{
@@ -540,7 +540,7 @@ class userlogin
 		global $pref, $sql;
 
 		$doCheck = FALSE;			// Flag set if need to ban check
-
+		$this->userData = array();
 
 		switch($reason)
 		{
@@ -625,7 +625,7 @@ class userlogin
 			return $message;
 		}
 
-		define('LOGINMESSAGE', $message);
+		defined('LOGINMESSAGE') or define('LOGINMESSAGE', $message);
 
 	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
 
