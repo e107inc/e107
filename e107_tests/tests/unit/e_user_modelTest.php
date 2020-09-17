@@ -377,7 +377,35 @@
 
 		}
 */
+		/**
+		 * @see https://github.com/e107inc/e107/issues/4236
+		 */
+		public function testUserLoginWrongCredentialsNotUser()
+		{
+			$user = e107::getUser();
+			$user->login("e107", "DefinitelyTheWrongPassword");
 
+			$this->assertFalse($user->isUser());
+			$this->assertEmpty($user->getData());
+		}
 
+		public function testUserLoginFailureDoesNotTriggerUserLoginEvent()
+		{
+			$originalEventHandler = e107::getRegistry('core/e107/singleton/e107_event');
+			$mockEventHandler = $this->createMock(e107_event::class);
+			$mockEventHandler->expects($this->never())->method('trigger');
+			e107::setRegistry('core/e107/singleton/e107_event', $mockEventHandler);
 
+			try
+			{
+				$user = e107::getUser();
+				$user->login("e107", "DefinitelyTheWrongPassword");
+
+				e107::getEvent();
+			}
+			finally
+			{
+				e107::setRegistry('core/e107/singleton/e107_event', $originalEventHandler);
+			}
+		}
 	}
