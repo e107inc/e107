@@ -30,7 +30,7 @@ class e_fileTest extends \Codeception\Test\Unit
 
 		$this->exploitFile = e_TEMP."test_exploit_file.jpg";
 
-		$content = "<?php system(\$_GET['q']) ?>";
+		$content = "<?php echo 'This file could be dangerous.'; ?>";
 
 		file_put_contents($this->exploitFile,$content);
 
