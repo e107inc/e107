@@ -45,4 +45,4 @@ function search_user($row) {
 	return $res;
 }
 
-?>
+*/
