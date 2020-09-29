@@ -99,3 +99,4 @@ if($items = $sqlrss->select('featurebox', "*", "fb_class = 0 DESC LIMIT 0,".$thi
 }
 $eplug_rss_data[] = $rss;
 //##### ------------------------------------------------------------------------------------
+*/
