@@ -2511,6 +2511,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array UI field data
 	 */
 
+	/** @var string  */
 	protected $listQry;
 
 	protected $pid;
@@ -3980,9 +3981,19 @@ class e_admin_controller_ui extends e_admin_controller
 		return vartrue($tmp[$alias]);			
 	}
 
-	function getJoinField($field)
+	public function getJoinField($field=null)
 	{
+		if(empty($field))
+		{
+			return $this->joinField;
+		}
+
 		return isset($this->joinField[$field]) ? $this->joinField[$field] : false; // vartrue($this->joinField[$field],false);
+	}
+
+	public function getJoinAlias()
+	{
+		return $this->joinAlias;
 	}
 
 	/**
@@ -3993,7 +4004,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		if($this->_alias_parsed) return $this; // already parsed!!!
 
-		$this->joinAlias(); // generate Table Aliases from listQry
+		$this->joinAlias($this->listQry); // generate Table Aliases from listQry
 		
 		if($this->getJoinData())
 		{
@@ -4114,11 +4125,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 *  Generate array of table names and their alias - auto-detected from listQry;
 	 *  eg. $listQry = "SELECT m.*, u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id";
 	 */
-	protected function joinAlias()
+	public function joinAlias($listQry=null)
 	{
-		if($this->listQry)
+		if(!empty($listQry))
 		{
-			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
+			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-]+)/im",$listQry,$matches);
 			$keys = array();
 			foreach($matches[1] AS $k=>$v)
 			{
@@ -4129,16 +4140,20 @@ class e_admin_controller_ui extends e_admin_controller
 				
 				$keys[] = $matches[3][$k];
 			}
-			
+
 			foreach($keys as $alias)
 			{
-				preg_match_all("/".$alias."\.([\w]*)/i",$this->listQry,$match);
+				preg_match_all("/".$alias."\.([\w]*)/i",$listQry,$match);
 				foreach($match[1] as $k=>$m)
 				{
+					if(empty($m))
+					{
+						continue;
+					}
 					$this->joinField[$m] = $match[0][$k];		
 				}					
 			}
-			
+
 		}
 		elseif($this->tableJoin)
 		{
@@ -4157,7 +4172,8 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
-		
+
+
 	}
 
 	/**
