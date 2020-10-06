@@ -87,7 +87,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
     /**
      * Populate insecureFiles list if deprecatedFiles.log found.
-     * @return |null
+     * @return void
      */
     private function checkDeprecatedFilesLog()
     {
@@ -95,14 +95,14 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         if(!file_exists($log))
         {
-            return null;
+            return;
         }
 
         $content = file_get_contents($log);
 
         if(empty($content))
         {
-            return null;
+            return;
         }
 
        $tmp = explode("\n", $content);
