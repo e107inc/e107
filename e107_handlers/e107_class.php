@@ -3323,6 +3323,13 @@ class e107
 
 		if(deftrue('E107_DBG_INCLUDES'))
 		{
+			$adminLanguage = self::getPref('adminlanguage');
+
+			if(e_ADMIN_AREA && !empty($adminLanguage))
+			{
+				$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+			}
+
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
 		}
 
