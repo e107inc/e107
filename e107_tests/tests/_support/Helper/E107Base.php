@@ -89,6 +89,11 @@ abstract class E107Base extends Base
 	{
 		$composer_installed_file = codecept_absolute_path("vendor/composer/installed.json");
 		$composer_installed = json_decode(file_get_contents($composer_installed_file));
+		if (property_exists($composer_installed, "packages"))
+		{
+			// Composer 2 format for the installed packages manifest
+			$composer_installed = $composer_installed->packages;
+		}
 		$installed_phpunit_php_code_coverage = current(array_filter($composer_installed, function ($element)
 		{
 			return $element->name == 'phpunit/php-code-coverage';
