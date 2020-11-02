@@ -5026,7 +5026,7 @@ TEMPLATE;
 			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 			
-			
+
 			$type = strtolower($type);
 
 			if(in_array($type,$strings))

@@ -175,9 +175,9 @@ else
 		}
 	}
 }
-if (vartrue($records) > 30)
+if (vartrue($records) > 50)
 {
-	$records = 30;
+	$records = 50;
 }
 
 if (isset($id))
