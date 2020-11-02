@@ -590,7 +590,7 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 		if(!vartrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
-			$ns->tablerender(LAN_SIGNUP_78, $text);
+			$ns->tablerender(LAN_SIGNUP_78, $text, 'coppa');
 			require_once(FOOTERF);
 			exit;
 		}
