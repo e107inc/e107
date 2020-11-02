@@ -354,7 +354,7 @@ class plugin_ui extends e_admin_ui
 
 			$text = e107::getPlugin()->install($id);
 
-			$log = e107::getAdminLog();
+		//	$log = e107::getAdminLog();
 
 			if ($text === FALSE)
 			{
@@ -521,7 +521,7 @@ class plugin_ui extends e_admin_ui
 			  $max_file_size = get_user_max_upload();
 
 			  $text = "
-				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
+				<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=avail&action=upload'>
                 <table class='table adminform'>
                 	<colgroup>
                 		<col class='col-label' />
@@ -548,7 +548,7 @@ class plugin_ui extends e_admin_ui
 
 
 			return $text;
-            e107::getRender()->tablerender(ADLAN_98.SEP.EPL_ADLAN_38, $text);
+         //   e107::getRender()->tablerender(ADLAN_98.SEP.EPL_ADLAN_38, $text);
 
 
 		}
