@@ -5026,11 +5026,10 @@ TEMPLATE;
 			$strings = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 			
+			
+			$type = strtolower($type);
 
-
-
-
-			if(in_array(strtolower($type),$strings))
+			if(in_array($type,$strings))
 			{
 				$value = 'str';	
 			}
@@ -5043,8 +5042,6 @@ TEMPLATE;
 				$value = 'int';
 			}
 
-
-			
 			
 			$fname = $this->table."[fields][".$name."][data]";
 			
