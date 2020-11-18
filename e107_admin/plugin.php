@@ -4573,6 +4573,7 @@ TEMPLATE;
 
 		function form($table,$fieldArray)
 		{
+
 			$frm = e107::getForm();
 					
 			$modes = array(
@@ -4632,8 +4633,10 @@ TEMPLATE;
 							<th class='center'>".EPL_ADLAN_169."</th>
 							<th class='center'>".EPL_ADLAN_170."</th>
 							<th class='center'>".EPL_ADLAN_171."</th>
-							<th class='center e-tip' title='".EPL_ADLAN_177."'>".EPL_ADLAN_172."</th>
-							<th class='center e-tip' title='".EPL_ADLAN_178."'>".EPL_ADLAN_173."</th>
+							<th class='center' title='".EPL_ADLAN_177."'>".EPL_ADLAN_172."</th>
+							<th class='center' title='".EPL_ADLAN_178."'>".EPL_ADLAN_173."</th>
+							<th class='center' title='".EPL_ADLAN_257."'>R/O</th>
+							
 							<th>".EPL_ADLAN_174."</th>
 							<th>".EPL_ADLAN_175."</th>
 							<th>".EPL_ADLAN_176."</th>
@@ -4657,6 +4660,7 @@ TEMPLATE;
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][inline]", true, $this->guess($name, $val,'inline'))."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][validate]", true)."</td>
 					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][fieldpref]", true, $this->guess($name, $val,'fieldpref'))."</td>
+					<td class='center'>".$frm->checkbox($this->table."[fields][".$name."][readonly]", true)."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][help]",'', 50,'size=medium')."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][readParms]",'', 60,'size=small')."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][writeParms]",'', 60,'size=small').
@@ -4739,8 +4743,9 @@ TEMPLATE;
 				case 'decimal':
 				case 'double':
 				case 'float':
+
 					$array = array(
-					"number"	=> EPL_ADLAN_189,
+					"number"	=> EPL_ADLAN_182,
 					"dropdown"	=> EPL_ADLAN_190,
 					"method"	=> EPL_ADLAN_191,
 					"hidden"	=> EPL_ADLAN_192,
@@ -5036,6 +5041,10 @@ TEMPLATE;
 			elseif($type === 'varchar' || $type === 'char')
 			{
 				$value = 'safestr';
+			}
+			elseif($type === 'decimal' || $type === 'float')
+			{
+				$value = 'float';
 			}
 			else 
 			{
@@ -5611,6 +5620,7 @@ $text .= "
 				"'filter' => '0'",
 				"'inline' => '1'",
 				"'validate' => '1'",
+				"'readonly' => '1'",
 			//	", 'fieldpref' => '1'",
 				"'type' => ''",
 				"'data' => ''",
@@ -5629,6 +5639,7 @@ $text .= "
 				"'filter' => false",
 				"'inline' => true",
 				"'validate' => true",
+				"'readonly' => true",
 			//	"",
 				"'type' => null",
 				"'data' => null",
