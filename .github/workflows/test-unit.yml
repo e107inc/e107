@@ -74,9 +74,12 @@ jobs:
 
     - name: PECL install xdebug
       run: |
-        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.9.8
         else
           pecl install xdebug-2.5.5
         fi
@@ -88,7 +91,7 @@ jobs:
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install --prefer-dist --no-progress
       working-directory: ./e107_tests/
 
     - name: Download Git submodule dependencies
@@ -112,7 +115,7 @@ jobs:
       run: |
         if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
         then
-          php ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
+          php -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
         else
           echo "Warning: xdebug not available; skipping coverage..."
           php ./vendor/bin/codecept run unit --steps --debug
