@@ -2552,10 +2552,10 @@ class error_handler
 	 * @param $message
 	 * @param $file
 	 * @param $line
-	 * @param $context
+	 * @param $context (deprecated since PHP 7.2.0)
 	 * @return bool
 	 */
-	function handle_error($type, $message, $file, $line, $context) {
+	function handle_error($type, $message, $file, $line, $context = null) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
 
 

@@ -2184,7 +2184,7 @@ class themeHandler
 		 mode = 1 :: selected site theme
 		 mode = 2 :: selected admin theme
 	*/
-	function renderTheme($mode = 0, $theme)
+	function renderTheme($mode = 0, $theme = array())
 	{
 		$ns = e107::getRender();
 		$pref = e107::getPref();

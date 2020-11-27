@@ -3240,7 +3240,7 @@ var_dump($select_options);*/
 			}
 			else
 			{
-				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
+				$sel = is_array($selected) ? in_array($value, $selected) : ($value === $selected);
 
 				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{

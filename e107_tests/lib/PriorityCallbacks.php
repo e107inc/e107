@@ -36,11 +36,11 @@ class PriorityCallbacks
 		$this->shutdown_functions[] = $callable;
 	}
 
-	private function __clone() {}
+	public function __clone() {}
 
-	private function __sleep() {}
+	public function __sleep() {}
 
-	private function __wakeup() {}
+	public function __wakeup() {}
 }
 
 PriorityCallbacks::instance();

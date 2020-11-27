@@ -161,6 +161,7 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
 		include_once(e_CORE."templates/admin_icons_template.php");
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		include_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
@@ -925,7 +926,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 
 			'dropdown_001' => "<select name='dropdown_001' id='dropdown-001' class='tbox select form-control' tabindex='3'><option value='opt_value_1'>Label 1</option><option value='opt_value_2' selected='selected'>Label 2</option></select>",
-			'dropdown_002' => "<select name='dropdown_002' id='dropdown-002' class='tbox select form-control' tabindex='4'><option value='0'>Option 0</option><option value='1' selected='selected'>Option 1</option><option value='2'>Option 2</option></select>",
+			'dropdown_002' => "<select name='dropdown_002' id='dropdown-002' class='tbox select form-control' tabindex='4'><option value='0'>Option 0</option><option value='1'>Option 1</option><option value='2'>Option 2</option></select>",
 
 
 			'textarea_001' => "<textarea name='textarea_001' rows='5' cols='40' id='textarea-001' class='form-control input-xlarge' tabindex='5'>the quick brown fox jumps over the lazy dog</textarea>",

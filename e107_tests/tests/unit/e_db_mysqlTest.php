@@ -44,6 +44,14 @@ class e_db_mysqlTest extends e_db_abstractTest
 		);
 	}
 
+	public function _after()
+	{
+		$db_impl = $this->getDbImplementation();
+		if (@empty($db_impl->server_info)) return;
+
+		parent::_after();
+	}
+
 	public function testGetPDO()
 	{
 		$result = $this->db->getPDO();
@@ -70,5 +78,21 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 		$result = $this->db->escape("Can't", true);
 		$this->assertEquals("Can\'t", $result);
+	}
+
+	public function testDb_Close()
+	{
+		$db_impl = $this->getDbImplementation();
+		$this->assertFalse(@empty($db_impl->server_info));
+		$this->db->db_Close();
+		$this->assertTrue(@empty($db_impl->server_info));
+	}
+
+	private function getDbImplementation()
+	{
+		$reflection_object = new ReflectionObject($this->db);
+		$db_property = $reflection_object->getProperty('mySQLaccess');
+		$db_property->setAccessible(true);
+		return $db_property->getValue($this->db);
 	}
 }

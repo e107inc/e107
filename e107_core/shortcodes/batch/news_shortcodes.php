@@ -227,7 +227,7 @@ class news_shortcodes extends e_shortcode
   			<li><a href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
 		</ul>';
 		
-		if(BOOTSTRAP === 4)
+		if(defined('BOOTSTRAP') && BOOTSTRAP === 4)
 		{
 			$text = '<a class="pager-button btn btn-primary hidden-print" href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a>';
 		}

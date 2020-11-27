@@ -104,7 +104,7 @@ if (isset($_POST['delp']))
 $qs = explode(".", e_QUERY);
 $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
-
+if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 if(THEME_LEGACY === true) // v1.x BC Fix for loading old templates.
 {
@@ -132,7 +132,6 @@ $user_shortcodes->wrapper('user/view');
 
 $user_frm = new form;
 require_once(HEADERF);
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 $full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
