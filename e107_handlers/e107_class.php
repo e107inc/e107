@@ -3774,10 +3774,10 @@ class e107
 			return null;
 		}
 
-	//	require_once(e_HANDLER."jsshrink/Minifier.php");
 		try
 		{
-			$minified = JShrink\Minifier::minify($js,$options);
+			$minifier = new MatthiasMullie\Minify\JS($js);
+			$minified = $minifier->minify();
 		}
 		catch(Exception $e)
 		{

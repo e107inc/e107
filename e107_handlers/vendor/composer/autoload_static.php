@@ -4,12 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314
+class ComposerStaticInit4ce406ae486ac58c9aa71537459207ae
 {
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'M' => 
+        array (
+            'MatthiasMullie\\PathConverter\\' => 29,
+            'MatthiasMullie\\Minify\\' => 22,
         ),
         'I' => 
         array (
@@ -26,6 +31,14 @@ class ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'MatthiasMullie\\PathConverter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/matthiasmullie/path-converter/src',
+        ),
+        'MatthiasMullie\\Minify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/matthiasmullie/minify/src',
+        ),
         'Ifsnop\\' => 
         array (
             0 => __DIR__ . '/..' . '/ifsnop/mysqldump-php/src/Ifsnop',
@@ -36,22 +49,16 @@ class ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'J' => 
-        array (
-            'JShrink' => 
-            array (
-                0 => __DIR__ . '/..' . '/tedivm/jshrink/src',
-            ),
-        ),
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit1da798ad8058bf7b615c0a3d8f41e314::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4ce406ae486ac58c9aa71537459207ae::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4ce406ae486ac58c9aa71537459207ae::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4ce406ae486ac58c9aa71537459207ae::$classMap;
 
         }, null, ClassLoader::class);
     }
