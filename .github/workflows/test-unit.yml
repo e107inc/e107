@@ -103,7 +103,7 @@ jobs:
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer update --prefer-dist --no-progress
       working-directory: ./e107_tests/
 
     - name: Download Git submodule dependencies
