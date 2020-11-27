@@ -660,11 +660,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 			}
 	*/
-	public function testDb_Close()
-	{
-		$this->db->db_Close();
-
-	}
 
 	public function testDelete()
 	{
@@ -1147,8 +1142,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$xql->truncate($table);
 		$empty = $xql->isEmpty($table);
 		$this->assertTrue($empty,"isEmpty() or truncate() failed");
-
-		$xql->close();
 	}
 
 }

@@ -231,7 +231,7 @@ class e_marketplace
 	 * @param $data - e107.org plugin/theme feed data.
 	 * @return bool|string
 	 */
-	public function getDownloadModal($type='plugin',$data)
+	public function getDownloadModal($type='plugin',$data=array())
 	{
 
 		$url = false;

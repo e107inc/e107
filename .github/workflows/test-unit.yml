@@ -17,15 +17,23 @@ jobs:
       matrix:
         interpreter:
           - image: php:5.6
+          - image: php:7.0
           - image: php:7.1
           - image: php:7.2
           - image: php:7.3
           - image: php:7.4
+          - image: php:8.0-rc
         db:
           - image: mysql:5.5
           - image: mysql:5.6
           - image: mysql:5.7
+          - image: bitnami/mysql:8.0
+          - image: mariadb:10.0
+          - image: mariadb:10.1
+          - image: mariadb:10.2
+          - image: mariadb:10.3
           - image: mariadb:10.4
+          - image: mariadb:10.5
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
@@ -35,6 +43,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
           MYSQL_DATABASE: 'app'
+          MYSQL_AUTHENTICATION_PLUGIN: 'mysql_native_password'
         options: >-
           --health-cmd "mysqladmin ping"
           --health-interval 10s
@@ -77,9 +86,12 @@ jobs:
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
-        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.1.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug-2.9.8
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.7.2
         else
           pecl install xdebug-2.5.5
         fi

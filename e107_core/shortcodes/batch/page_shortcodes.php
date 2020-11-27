@@ -166,7 +166,7 @@ class cpage_shortcodes extends e_shortcode
 
 		if(e107::getPref('comments_disabled') == 0 && !$comflag)
 		{
-			if(BOOTSTRAP)
+			if(defined('BOOTSTRAP') && BOOTSTRAP)
 			{
 				return e107::getMessage()->addInfo(LAN_PAGE_17)->render(); 
 			}

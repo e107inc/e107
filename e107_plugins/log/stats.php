@@ -857,7 +857,7 @@ class siteStats
 			if ($do_errors XOR !$found) 
 			{
 				$totalArray[$k] = $v;
-				$total += vartrue($v['ttlv']);
+				$total += (int) vartrue($v['ttlv']);
 			}
 		}
 		$totalArray = $this -> arraySort($totalArray, "ttl");
@@ -2037,7 +2037,7 @@ class siteStats
 		
 		$text .= "
 		</td>
-		<td style='width:10%; text-align:right' class='forumheader3'>".number_format($val);
+		<td style='width:10%; text-align:right' class='forumheader3'>".number_format((float) $val);
 		
 		return $text;
 	}
