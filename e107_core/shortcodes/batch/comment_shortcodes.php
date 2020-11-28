@@ -112,15 +112,11 @@ class comment_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-		//	return $this->var['user_image'];
-		//	$url = $tp->thumbUrl($this->var['user_image']);
-		//	$text = $tp->parseTemplate("{USER_AVATAR=".vartrue($this->var['user_image'],USERIMAGE)."}");
-		//	$text = $tp->parseTemplate("{USER_AVATAR=".$this->var['user_id']."}");
-
 		// Posting a new comment (check that it is not an existing comment by anonymous user) - #3813 & 3829
-		if($this->var['comment_author_id'] != '0' && USERID)
+		// https://github.com/e107inc/e107/issues/4217
+		if(!isset($this->var['comment_author_id']) && USERID) // assumes we are writing a new comment, not displaying an existing one.
 		{
-			$userdata = e107::user(USERID); 
+			$userdata = e107::user(USERID);
 			$this->var = array_merge($this->var, $userdata); 
 		}
 
@@ -133,6 +129,9 @@ class comment_shortcodes extends e_shortcode
 		$text .= $this->sc_joined() . '<br />' . $this->sc_comments() . '<br />' . $this->sc_rating() . $this->sc_location;
 		$text .= '</div>';
 		$text .= '</div>';
+
+	/*	unset($this->var['user_prefs']);
+		$text .= print_a($this->var,true);*/
 
 		return $text;
 	}
