@@ -71,8 +71,9 @@
 
 		function sc_newthreadbuttonx()
 		{
+			$bootstrap = defined('BOOTSTRAP') ? BOOTSTRAP : false;
 
-			if(!BOOTSTRAP)
+			if(!$bootstrap)
 			{
 				return $this->sc_newthreadbutton();
 			}
@@ -103,7 +104,7 @@
 			'.($this->var['ntUrl'] ?"":"<span>&nbsp;</span>").'
 			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 			';
-			if(BOOTSTRAP !== 4)
+			if($bootstrap !== 4)
 			{
 		    	$text .= '<span class="caret"></span>';
 		    }

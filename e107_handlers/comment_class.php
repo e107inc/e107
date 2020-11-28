@@ -1153,7 +1153,7 @@ class comment
 		}
 		else
 		{
-			if(BOOTSTRAP)
+			if(defined('BOOTSTRAP') && BOOTSTRAP)
 			{
 				$comment = e107::getMessage()->addInfo(COMLAN_328)->render(); 
 			}

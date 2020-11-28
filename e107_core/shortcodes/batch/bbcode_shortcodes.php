@@ -43,7 +43,7 @@ class bbcode_shortcodes extends e_shortcode
 		); 
 		
 		
-		if(BOOTSTRAP)
+		if(defined('BOOTSTRAP') && BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
 				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="">';
