@@ -639,7 +639,7 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_20x_to_220($type='')
+	 function update_20x_to_230($type='')
 	{
 
 		$sql = e107::getDb();
@@ -682,6 +682,17 @@ function update_core_database($type = '')
 			}
 
 			e107::getConfig()->set('themecss','style.css')->save(false,true,false);
+		}
+
+
+		if(isset($pref['flood_protect']))
+		{
+			if ($just_check)
+			{
+		        return update_needed("Old flood protection pref needs to be removed.");
+			}
+
+			e107::getConfig()->remove('flood_protect')->save(false,true,false);
 		}
 
 
@@ -2084,7 +2095,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 
 /**	Check for database access errors
- *	@param reference $target - pointer to db object
+ *	@param object e_db $target - pointer to db object
  *	@return null
  */
 function catch_error(&$target)
