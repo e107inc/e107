@@ -848,7 +848,7 @@
     	<button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     	' . LAN_FORUM_8013 . '
     	';
-    	if(BOOTSTRAP !== 4)
+    	if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
     	{
     		$text .= '<span class="caret"></span>';
     	}
@@ -1144,7 +1144,7 @@
    ' . $replyUrl . '
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     ';
-	if(BOOTSTRAP !== 4)
+	if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
 	{
     	$text .= '<span class="caret"></span>';
     }

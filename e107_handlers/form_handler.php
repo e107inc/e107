@@ -2103,7 +2103,7 @@ class e_form
 			return '';
 		}
 		
-		if(BOOTSTRAP === 4)
+		if(defined('BOOTSTRAP') && BOOTSTRAP === 4)
 		{
 			return '<a class="pager-button btn btn-primary" href="'.$url.'">'.$total.'</a>';
 		}
