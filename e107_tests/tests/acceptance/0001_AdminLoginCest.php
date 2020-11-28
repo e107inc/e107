@@ -47,6 +47,16 @@ class AdminLoginCest
 	}
 
 
+	public function testAdminSearchPage(AcceptanceTester $I)
+	{
+		$this->e107Login($I);
+
+		$I->amOnPage('/e107_admin/search.php');
+		$I->dontSee("LAN_PLUGIN_");
+		$I->see("Pages");
+	}
+
+
 	public function testAdminURLS(AcceptanceTester $I)
 	{
 

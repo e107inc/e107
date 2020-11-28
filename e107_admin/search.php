@@ -493,7 +493,7 @@ else
 	{
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
 
-		if($value['dir'] == 'download' && !e107::isInstalled($value['dir']))
+		if(($value['dir'] == 'download' || $key == 'download') && !e107::isInstalled('download'))
 		{
 			continue;
 		}
