@@ -165,6 +165,12 @@
 		<core name="inputdate">%A, %d %b, %Y</core>
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
+		<core name="lan_global_list"><![CDATA[array (
+  'page' => 'page',
+  'social' => 'social',
+  'rss_menu' => 'rss_menu',
+  'user' => 'user',
+)]]></core>
 		<core name="link_replace">0</core>
 		<core name="link_text"></core>
 		<core name="linkpage_screentip">0</core>
