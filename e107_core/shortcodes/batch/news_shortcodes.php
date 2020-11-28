@@ -202,7 +202,8 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsnavlink($parm=null) //TODO add more options.
 	{
-		
+		$url = e107::getUrl()->create('news/list/items'); // default for now.
+
 		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
 		{
 			$url = e107::getUrl()->create('news/list/all');
@@ -215,12 +216,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
 		}
-		else
-		{
-			$url = e107::getUrl()->create('news/list/items'); // default for now. 	
-		}
-			
-			
+
 		$caption = vartrue($parm['text'],LAN_BACK);
 		
 		$text = '<ul class="pager hidden-print">
