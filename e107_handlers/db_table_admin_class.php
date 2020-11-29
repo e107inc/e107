@@ -22,12 +22,13 @@
  */
 
  
-// DEPRECATED - USE db_verify_class where possible. 
+
 
 class db_table_admin
 {
-	var $file_buffer = ''; // Contents of a file
-	var $last_file = '';
+	protected $file_buffer = ''; // Contents of a file
+	protected $last_file = '';
+	protected $errors = array();
 	
 	// Get list of fields and keys for a table - return FALSE if unsuccessful
 	// Return as for get_table_def
@@ -61,6 +62,12 @@ class db_table_admin
 		{
 			return "No matches";
 		}
+
+		if(isset($matches[0][2]) && is_string($matches[0][2]))
+		{
+			$matches[0][2] = trim($matches[0][2]);
+		}
+
 		return $matches;
 	}
 	
@@ -73,6 +80,7 @@ class db_table_admin
 	 *
 	 * @param string $table_name  - If specified, returns only that table's info; otherwise returns a list of all tables
 	 * 		The table name must include a prefix where appropriate (although not required with standard E107 table definition files)
+	 * @param string $file_name
 	 * @return  string|array
 	 *			- if error, returns a brief text message
 	 *			- if successful, returns an array of table definitions, each of which is itself an array:
@@ -124,6 +132,8 @@ class db_table_admin
 		);
 		$text = str_replace("\r", "\n", $text);
 		$field_lines = explode("\n", $text);
+
+		$defs = array();
 		foreach ($field_lines as $fv)
 		{
 			unset($defs);
@@ -148,7 +158,7 @@ class db_table_admin
 					case 'UNIQUE':
 						if (count($fd) < 3)
 						{
-							echo "Truncated definition after UNIQUE {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Truncated definition after UNIQUE {$fv}: ".$fd[1]."<br />";
 						}
 						elseif (strtoupper($fd[1]) == 'KEY')
 						{
@@ -159,14 +169,14 @@ class db_table_admin
 						}
 						else
 						{
-							echo "Unrecognised word after UNIQUE in definition {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Unrecognised word after UNIQUE in definition {$fv}: ".$fd[1]."<br />";
 						}
 					break;
 					
 					case 'FULLTEXT':
 						if (count($fd) < 3)
 						{
-							echo "Truncated definition after FULLTEXT {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Truncated definition after FULLTEXT {$fv}: ".$fd[1]."<br />";
 						}
 						elseif (strtoupper($fd[1]) == 'KEY')
 						{
@@ -177,7 +187,7 @@ class db_table_admin
 						}
 						else
 						{
-							echo "Unrecognised word after FULLTEXT in definition {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Unrecognised word after FULLTEXT in definition {$fv}: ".$fd[1]."<br />";
 						}
 					break;
 					
@@ -218,7 +228,7 @@ class db_table_admin
 									}
 									else
 									{ // Syntax error
-										echo "Unrecognised word in definition {$i} after 'NOT': ".$fd[$i + 1]."<br />";
+										$this->errors[] = "Unrecognised word in definition {$i} after 'NOT': ".$fd[$i + 1]."<br />";
 									}
 								break;
 								case 'DEFAULT':
@@ -250,7 +260,7 @@ class db_table_admin
 					}
 					else
 					{
-						echo "Partial definition<br />";
+						$this->errors[] = "Partial definition<br />";
 					}
 				}
 			}
@@ -678,12 +688,12 @@ class db_table_admin
 				}
 				return TRUE; // Success even if no changes required
 			}
-			return FALSE;
+
 		}
 		
 		function createTable($pathToSqlFile = '', $tableName = '', $addPrefix = true, $renameTable = '')
 		{
-			$e107 = e107::getInstance();
+		//	$e107 = e107::getInstance();
 			$tmp = $this->get_table_def($tableName, $pathToSqlFile);
 			$createText = $tmp[0][0];
 			$newTableName = ($renameTable ? $renameTable : $tableName);
@@ -697,7 +707,77 @@ class db_table_admin
 			}
 			return e107::getDb()->gen($createText);
 		}
-		
+
+
+		/**
+		 * Used by $sql->makeTableDef() to create an e_CACHE_DB.$tableName.'.php' file.
+		 * @param array $fieldDefs
+		 * @return array as returned by parse_field_defs()
+		 */
+		public function make_field_types($fieldDefs=array())
+		{
+			$outDefs = array();
+
+			foreach ($fieldDefs as $k => $v)
+			{
+				switch ($v['type'])
+				{
+					case 'field' :
+					//	if (!empty($v['autoinc']))
+					//	{
+							//break;		Probably include autoinc fields in array
+					//	}
+
+						$baseType = preg_replace('#\(.*?\)#', '', $v['fieldtype']);		// Should strip any length
+
+						switch ($baseType)
+						{
+							case 'int' :
+							case 'integer':
+							case 'smallint':
+							case 'shortint' :
+							case 'tinyint' :
+							case 'mediumint':
+							case 'bigint':
+								$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
+								break;
+
+							case 'char' :
+							case 'text' :
+							case 'varchar' :
+							case 'tinytext' :
+							case 'mediumtext' :
+							case 'longtext' :
+							case 'enum' :
+								$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues.
+								break;
+						}
+
+					//	if($v['name'])
+
+
+						if (isset($v['nulltype']) && !isset($v['default']))
+						{
+							$outDefs['_NOTNULL'][$v['name']] = '';
+						}
+						break;
+					case 'pkey' :
+					case 'ukey' :
+					case 'key' :
+					case 'ftkey' :
+						break;			// Do nothing with keys for now
+					default :
+						$this->errors[] = "Unexpected field type: {$k} => {$v['type']}<br />";
+				}
+			}
+
+			return $outDefs;
+
+
+		}
+
+
+
 	}
 	
 
