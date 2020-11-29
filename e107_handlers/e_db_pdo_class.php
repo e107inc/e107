@@ -2728,60 +2728,8 @@ class e_db_pdo implements e_db
 		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
 		if (!$fieldDefs) return false;
 
-		$outDefs = array();
+		$outDefs = $dbAdm->make_field_types($fieldDefs);
 
-
-		foreach ($fieldDefs as $k => $v)
-		{
-			switch ($v['type'])
-			{
-				case 'field' :
-					if (vartrue($v['autoinc']))
-					{
-						//break;		Probably include autoinc fields in array
-					}
-
-					$baseType = preg_replace('#\(\d+?\)#', '', $v['fieldtype']);		// Should strip any length
-
-					switch ($baseType)
-					{
-						case 'int' :
-						case 'integer':
-						case 'smallint':
-						case 'shortint' :
-						case 'tinyint' :
-						case 'mediumint':
-							$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
-							break;
-
-						case 'char' :
-						case 'text' :
-						case 'varchar' :
-						case 'tinytext' :
-						case 'mediumtext' :
-						case 'longtext' :
-							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues.
-							break;
-					}
-
-				//	if($v['name'])
-
-
-					if (isset($v['nulltype']) && !isset($v['default']))
-					{
-						$outDefs['_NOTNULL'][$v['name']] = '';
-					}
-					break;
-				case 'pkey' :
-				case 'ukey' :
-				case 'key' :
-				case 'ftkey' :
-					break;			// Do nothing with keys for now
-				default :
-					echo "Unexpected field type: {$k} => {$v['type']}<br />";
-			}
-		}
-	//	$array = e107::getArrayStorage();
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
