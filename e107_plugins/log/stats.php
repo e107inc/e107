@@ -800,6 +800,7 @@ class siteStats
 	function arraySort($array, $column, $order = SORT_DESC)
 	{
 		$i=0;
+		$sortarr = array();
 		foreach($array as $info) 
 		{
 			$sortarr[]=$info[$column];
