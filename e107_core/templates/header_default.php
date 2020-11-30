@@ -564,10 +564,11 @@ e107Event.trigger('loaded', null, document);
 });
 ",'prototype',5);
 
+e107::getJs()->renderCached('js');
 e107::getJs()->renderJs('header_inline', 5);
 
 
-e107::getJs()->renderCached('js');
+
 
 
 echo "</head>\n";
