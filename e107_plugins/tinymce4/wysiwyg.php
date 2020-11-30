@@ -851,12 +851,14 @@ class wysiwyg
 		$pathAn .= e107::getLibrary()->getProperty('animate.css', 'path'); // sub-folder
 
 		$editorCSS = array(
-			0 => $pathBS . '/dist/css/bootstrap.min.css',
+			0 => $pathBS . '/css/bootstrap.min.css',
 			1 => $pathFA . '/css/font-awesome.min.css',
 			2 => e_PLUGIN_ABS . 'tinymce4/editor.css',
 			3 => $pathAn . 'animate.min.css',
 
 		);
+
+	//	file_put_contents(e_LOG."wysiwyg.log", print_r($editorCSS,true));
 
 		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
 
