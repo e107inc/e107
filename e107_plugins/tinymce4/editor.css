@@ -93,3 +93,4 @@ ul { padding-bottom:8px }
 .mce-visualblocks .animated.slideOutUp:after { content: "slideOutUp" !important }*/
 .mce-visualblocks .animated:after,
 .mce-visualblocks .wow:after { content: attr(class); !important }
+.mce-visualblocks div:not([data-mce-bogus]) { margin-left: auto !important; }
