@@ -21,6 +21,8 @@ class user_shortcodes extends e_shortcode
 
 	function __construct()
 	{
+		parent::__construct();
+
 		$pref = e107::getPref();
 
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
@@ -797,7 +799,7 @@ class user_shortcodes extends e_shortcode
 						$extended_record = str_replace("EXTENDED_VALUE","USER_EXTENDED={$key}.value.{$this->var['user_id']}", $extended_record);
 						$extended_record = str_replace('{EXTENDED_ID}',$frm->name2id('user_'.$key), $extended_record);
 
-						if(HIDE_EMPTY_FIELDS === TRUE)
+						if(defined('HIDE_EMPTY_FIELDS') && HIDE_EMPTY_FIELDS === TRUE)
 						{
 							$this_value = $tp->parseTemplate("{USER_EXTENDED={$key}.value.{$this->var['user_id']}}", TRUE);
 

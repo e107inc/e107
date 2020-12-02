@@ -166,7 +166,7 @@ class search extends e_shortcode
 		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'>
 		";
 
-		if(BOOTSTRAP !== 4)
+		if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
 		{
 			$text .= "<span class='caret'></span></button>";
 		}
