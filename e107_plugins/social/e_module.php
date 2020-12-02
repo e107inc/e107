@@ -4,7 +4,7 @@ if(e_ADMIN_AREA !==true)
 {
 
 	e107::css('social', 'css/fontello.css');
-	e107::link(array('rel'=>'preload', 'href'=> e_PLUGIN_ABS."social/font/fontello.woff2", 'as' => "font", 'type'=>"font/woff2"), true);
+	e107::link(array('rel'=>'preload', 'href'=> e_PLUGIN_ABS."social/font/fontello.woff2?21917124", 'as' => "font", 'type'=>"font/woff2", 'crossorigin'   => true));
 	e107::css('social' ,'css/social.css');
 
 	$appID = false;
