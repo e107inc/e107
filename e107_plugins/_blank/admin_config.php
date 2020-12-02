@@ -303,6 +303,16 @@ class plugin_blank_admin_ui extends e_admin_ui
 			$ns->tablerender("Hello",$text);	
 			
 		}
+	
+		// left-panel help menu area. (replaces e_help.php used in old plugins)	
+		public function renderHelp()
+		{
+			 $caption = LAN_HELP;
+			 $text = 'Some help text';
+
+			return array('caption'=> $caption,'text'=> $text);
+
+		}
 
 		public function beforePrefsSave($new_data, $old_data)
 		{
