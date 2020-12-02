@@ -4661,7 +4661,16 @@ class e_parser
 			elseif(!isset($parm['srcset']))
 			{
 				$srcSetParm = $parm;
-				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+
+				if(!isset($parm['size']))
+				{
+					$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+				}
+				else
+				{
+					unset($parm['size']);
+				}
+
 				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 			}
 
@@ -4704,10 +4713,21 @@ class e_parser
 		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
 		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
 		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
-		$height = (!empty($parm['h']))      ? "height=\"".intval($parm['h'])."\" " : "";
+		$title  = (!empty($parm['title']))      ? "title=\"".$parm['title']."\" " : "";
+		$height = !empty($parm['h'])      ? "height=\"".intval($parm['h'])."\" " : "";
 		$loading = !empty($parm['loading']) ? "loading=\"".$parm['loading']."\" " : ""; // eg. lazy, eager, auto
 
-		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading." />";
+		if(isset($parm['width'])) // width attribute override (while retaining w)
+		{
+			$width  = "width=\"".$parm['width']."\" " ;
+		}
+		
+		if(isset($parm['height'])) // height attribute override (while retaining h)
+		{
+			$height  = "height=\"".$parm['height']."\" " ;
+		}
+
+		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading.$title." />";
 
 	}
 
