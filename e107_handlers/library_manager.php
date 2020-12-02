@@ -726,9 +726,10 @@ class core_library
 					'as'            => 'font',
 					'type'          => 'font/woff2',
 					'path'          => 'fonts/fontawesome-webfont.woff2?v=4.7.0',
-					'crossorigin'   => false,
+					'crossorigin'   => true,
 					'browsercache'  => false,
 				),
+
 			),
 		);
 
