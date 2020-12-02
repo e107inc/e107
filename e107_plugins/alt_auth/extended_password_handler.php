@@ -77,7 +77,8 @@ class ExtendedPasswordHandler extends UserHandler
 	const   PASSWORD_WORDPRESS_SALT = 8;
 	const   PASSWORD_MAGENTO_SALT   = 9;
 	const   PASSWORD_PHPFUSION_SALT = 10;
-
+    const   PASSWORD_ABANTECART_SALT = 11;
+    
 	const   PASSWORD_PHPBB_ID           = '$H$';			// PHPBB salted
 	const   PASSWORD_ORIG_ID            = '$P$';				// 'Original' code
 	const   PASSWORD_WORDPRESS_ID       = '$P$';			// WordPress 2.8
@@ -227,6 +228,7 @@ class ExtendedPasswordHandler extends UserHandler
 				'wordpress_salt'	=> IMPORTDB_LAN_13,
 				'magento_salt'		=> IMPORTDB_LAN_14,
 				'phpfusion_salt'    => "PHPFusion",
+                'abantecart_salt'    => "AbanteCart Salt",
 				));
 		}
 		return $vals;
@@ -254,6 +256,7 @@ class ExtendedPasswordHandler extends UserHandler
 				'wordpress_salt'	=> self::PASSWORD_WORDPRESS_SALT,
 				'magento_salt'		=> self::PASSWORD_MAGENTO_SALT,
 				'phpfusion_salt'    => self::PASSWORD_PHPFUSION_SALT,
+                'abantecart_salt'   => self::PASSWORD_ABANTECART_SALT,
 				);
 		if (isset($maps[$ptype])) return $maps[$ptype];
 		return FALSE;
@@ -357,12 +360,35 @@ class ExtendedPasswordHandler extends UserHandler
 			case self::PASSWORD_PLAINTEXT :
 				$pwHash = $pword;
 				break;
+                
+ 	        
+             case self::PASSWORD_ABANTECART_SALT :
+				$hash = $salt = '';
+                
+				if ((strpos($stored_hash, ':') !== false))
+				{
+					list($hash, $salt) = explode(':', $stored_hash); 
+				}
+				// Magento salted hash - should be 32-character md5 hash, ':', 2-character salt, but could be also only md5 hash
+				else 
+				{
+					$hash = $stored_hash;
+				} 
+                          
+				/*
+                password = 	SHA1(CONCAT(salt, SHA1(CONCAT(salt, SHA1('".$this->db->escape($password)."')))
+                */
+				//$pwHash = $salt ? md5($salt.$pword) : md5($pword);
+                $pwHash = sha1($salt.sha1($salt.sha1($pword)));
+				$stored_hash = $hash;
+				break;               
+                
 
 			default :
 				return PASSWORD_INVALID;
 		}
-
-		if(deftrue('e_DEBUG'))
+       
+		if(ADMIN_AREA)
 		{
 			e107::getMessage()->addDebug("Stored Hash: ".$stored_hash);
 
