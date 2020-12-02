@@ -1579,6 +1579,7 @@ class e_jsmanager
 				{
 					$content .= "/* File: ".str_replace("../",'',$path)." */\n";
 					$content .= $this->getCacheFileContent($path, $type);
+					$content .= ($type === 'js') ? ";" : ""; // precaution in case it is missing from a js file.
 					$content .= "\n\n";
 				}
 
