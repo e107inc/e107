@@ -773,10 +773,17 @@ class e_jsmanager
 	/**
 	 * Add a <link> tag to the head.
 	 * @param array $attributes key>value pairs
+	 * @param bool $browserCache - set to true to add the cacheId to the href.
 	 * @example addLink(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
 	 */
-	public function addLink($attributes=array())
+	public function addLink($attributes=array(), $browserCache=false)
 	{
+		if(!empty($attributes['href']) && $browserCache === true)
+		{
+			$attributes['href'] .=  "?".$this->getCacheId();
+		}
+
+
 		if(!empty($attributes))
 		{
 			$this->_e_link[] = $attributes;
@@ -790,7 +797,6 @@ class e_jsmanager
 	 */
 	public function renderLinks()
 	{
-
 		if(empty($this->_e_link))
 		{
 			return null;
@@ -812,6 +818,12 @@ class e_jsmanager
 			$text .= "\n<link";
 			foreach($v as $key=>$val)
 			{
+				if($key === 'crossorigin' && $val === true)
+				{
+					$text .= " crossorigin";
+					continue;
+				}
+
 				if(!empty($val))
 				{
 					$text .= " ".$key."=\"".$val."\"";

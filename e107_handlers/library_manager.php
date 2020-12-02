@@ -713,6 +713,23 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '4.7.0',
+			// preload in header using <link> tag. for speed optimization.
+			'preload'           => array(
+				0   => array(
+					'as'            => 'style',
+					'type'          => '',
+					'path'          => 'css/font-awesome.min.css',
+					'crossorigin'   => false,
+					'browsercache'  => true, // add the generated ?xxxxxx to the path.
+				),
+				1   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'crossorigin'   => false,
+					'browsercache'  => false,
+				),
+			),
 		);
 
 

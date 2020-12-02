@@ -189,12 +189,17 @@ class e_theme
 				}
 
 				e107::library('load', $library['name']);
+				e107::library('preload', $library['name']);
+
+
 				continue;
 			}
 
 			if($library['scope'] === $scope)
 			{
 				e107::library('load', $library['name']);
+				e107::library('preload', $library['name']);
+
 				continue;
 			}
 		}

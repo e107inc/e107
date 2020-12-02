@@ -2069,6 +2069,8 @@ class e107
 	 * @param string $action
 	 *  - 'detect': Tries to detect a library and its installed version.
 	 *  - 'load': Loads a library.
+	 *  - 'info' : Load library information array
+	 *  - 'preload' : Activate preloading of the library (when detected) using a <link rel='preload' ...> tag.
 	 * @param string $library
 	 *  The name of the library to detect/load.
 	 * @param string $variant
@@ -2144,6 +2146,35 @@ class e107
 
 			case 'info':
 				return $libraryHandler->info($library);
+				break;
+
+			case 'preload':
+
+				$info = $libraryHandler->info($library);
+
+				if(empty($info['preload']))
+				{
+					return null;
+				}
+
+				$libraryPath = self::getParser()->replaceConstants($info['library_path'].'/'.$info['path'], 'abs').'/';
+
+				foreach($info['preload'] as $pre)
+				{
+					$linkArr = [
+						'rel' => 'preload',
+						'href' => $libraryPath.$pre['path']
+					];
+
+					$browserCache = !empty($pre['browsercache']) ? true : false;
+
+					unset($pre['path'],$pre['browsercache']);
+					$linkArr2 = array_merge($linkArr,$pre);
+
+					self::link($linkArr2, $browserCache);
+
+				}
+
 				break;
 		}
 	}
@@ -2260,11 +2291,12 @@ class e107
 	/**
 	 * Add a <link> tag to the head of the html document.
 	 * @param array $attributes
+	 * @param bool $browserCache set to true to add the cacheId to the href.
 	 * @example e107::link(array('rel'=>"dns-prefetch", "href" => "http://example-domain.com/"));
 	 */
-	public static function link($attributes=array())
+	public static function link($attributes=array(), $browserCache = false)
 	{
-		self::getJs()->addLink($attributes);
+		self::getJs()->addLink($attributes, $browserCache);
 	}
 
 
