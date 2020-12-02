@@ -13,7 +13,7 @@
   
 class sitelinks_alt
 {
-	function sitelinks_alt_shortcode($parm)
+	static function sitelinks_alt_shortcode($parm)
 	{
 
 		$params = explode('+', $parm);
@@ -95,7 +95,7 @@ class sitelinks_alt
 	
 	}
 	
-	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $cat_open = FALSE)
+	static function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $cat_open = FALSE)
 	{
 			$tp = e107::getParser();
 
@@ -128,7 +128,7 @@ class sitelinks_alt
 			return $text;
 		}
 		
-		function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params, $cat_open = FALSE)
+		static function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params, $cat_open = FALSE)
 		{
 			$tp = e107::getParser();
 			
@@ -176,7 +176,7 @@ class sitelinks_alt
 			return $text;
 		}
 		
-		function render_sub($linklist, $id, $params, $icon)
+		static function render_sub($linklist, $id, $params, $icon)
 		{
 			$tp = e107::getParser();
 			

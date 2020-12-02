@@ -1414,7 +1414,7 @@ class lancheck
 	
 	
 	
-	function checkLog($type='error',$count)
+	function checkLog($type='error',$count=1)
 	{
 		$lan = $this->transLanguage;
 		$_SESSION['lancheck'][$lan][$type] += $count;
@@ -1602,9 +1602,9 @@ class lancheck
 	
 	
 	// for plugins and themes - checkes what kind of language files directory structure we have
-	function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan)
+	function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan=null)
 	{
-
+		if (empty($target_lan)) throw new RuntimeException(__METHOD__ . ' requires non-empty $target_lan');
 
 		$tp = e107::getParser();
 

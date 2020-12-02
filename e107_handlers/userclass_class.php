@@ -918,6 +918,7 @@ class user_class
 	 */
 	public function getName($id)
 	{
+		$id = (int) $id;
 		$cn = abs($id);
 		$ucString = 'Class:'.$id;			// Debugging aid - this should be overridden
 		

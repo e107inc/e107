@@ -2271,7 +2271,7 @@ class e107forum
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
 	 * $thread_title is needed for post-related breadcrumbs
 	 */
-	function set_crumb($forum_href=false, $thread_title='', &$templateVar)
+	function set_crumb($forum_href=false, $thread_title='', &$templateVar=null)
 	{
 
 		$tp = e107::getParser();

@@ -1244,10 +1244,10 @@ class e_user_provider
 	public static function getTypeOf($providerName)
 	{
 		$class_name = "Hybridauth\Provider\\{$providerName}";
-		$parent_class = get_parent_class($class_name);
+		$parent_class = eShims::get_parent_class($class_name);
 		if (!$parent_class) return false;
 
-		$parent_class_split = explode("\\", get_parent_class($class_name));
+		$parent_class_split = explode("\\", eShims::get_parent_class($class_name));
 		$type = end($parent_class_split);
 		if ($type == "AbstractAdapter") return $providerName;
 		if (!in_array($type, ['OAuth1', 'OAuth2', 'OpenID'])) return self::getTypeOf($type);

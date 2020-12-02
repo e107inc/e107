@@ -71,8 +71,9 @@
 
 		function sc_newthreadbuttonx()
 		{
+			$bootstrap = defined('BOOTSTRAP') ? BOOTSTRAP : false;
 
-			if(!BOOTSTRAP)
+			if(!$bootstrap)
 			{
 				return $this->sc_newthreadbutton();
 			}
@@ -95,15 +96,27 @@
 		    	<ul class="dropdown-menu pull-right">
 		    	';
 */
+			$href = "#";
+			$disabled = " disabled";
+			$restricted_to_members_only = " data-toggle='tooltip' title='".LAN_FORUM_0006."'
+			style='cursor: not-allowed; pointer-events: all !important;'";
+			$extra_space = "<span>&nbsp;</span>";
+			if ($this->var['ntUrl'])
+			{
+				$href = $this->var['ntUrl'];
+				$disabled = "";
+				$restricted_to_members_only = "";
+				$extra_space = "";
+			}
+
 			$text .=
-			'<a href="'.($this->var['ntUrl'] ?:"#").
-			'" class="btn btn-primary'.($this->var['ntUrl'] ?"":" disabled").'"'
-			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='".LAN_FORUM_0006."'
-			style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>
-			'.($this->var['ntUrl'] ?"":"<span>&nbsp;</span>").'
+			'<a href="'.$href.
+			'" class="btn btn-primary'.$disabled.'"'
+			.$restricted_to_members_only.'>'.LAN_FORUM_1018.'</a>
+			'.$extra_space.'
 			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 			';
-			if(BOOTSTRAP !== 4)
+			if($bootstrap !== 4)
 			{
 		    	$text .= '<span class="caret"></span>';
 		    }

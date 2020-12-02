@@ -2103,7 +2103,7 @@ class e_form
 			return '';
 		}
 		
-		if(BOOTSTRAP === 4)
+		if(defined('BOOTSTRAP') && BOOTSTRAP === 4)
 		{
 			return '<a class="pager-button btn btn-primary" href="'.$url.'">'.$total.'</a>';
 		}
@@ -3240,7 +3240,7 @@ var_dump($select_options);*/
 			}
 			else
 			{
-				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
+				$sel = is_array($selected) ? in_array($value, $selected) : ($value === $selected);
 
 				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{
