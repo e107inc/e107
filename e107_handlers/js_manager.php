@@ -1678,7 +1678,7 @@ class e_jsmanager
 				continue;
 			}
 
-			$http = $tp->staticUrl(null, array('full'=>1)); // returns SITEURL or Static URL if enabled.
+			$http = $tp->staticUrl(null); // returns SITEURL or Static URL if enabled.  array('full'=>1) removed.
 			$path = $this->normalizePath($basePath.$v);
 			$dir = "url(".$http.$path.")";
 

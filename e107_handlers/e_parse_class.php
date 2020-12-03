@@ -2713,7 +2713,8 @@ class e_parse extends e_parser
 
 	/**
 	 * @todo Move to e107_class ?
-	 * @param string $path - absolute path or e107 path {e_PLUGIN} etc. 
+	 * @param string $path - absolute path or e107 path {e_PLUGIN} etc.
+	 * @param array $opts - when $opts['full'] is true, a full siteurl will be used instead of an absolute path. (unless static url is found)
 	 * @return string - full path or static path.
 	 */
 	public function staticUrl($path=null, $opts=array())
@@ -2727,7 +2728,7 @@ class e_parse extends e_parser
 			}
 			else
 			{
-				return self::replaceConstants($path, 'full');
+				return !empty($opts['full']) ? self::replaceConstants($path, 'full') : self::replaceConstants($path, 'abs'); // self::replaceConstants($path, 'full');
 			}
 		}
 
