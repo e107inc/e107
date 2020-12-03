@@ -282,6 +282,11 @@ if (function_exists('theme_foot'))
 // F any included JS footer scripts
 // DEPRECATED - use  e107::getJs()->footerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 //
+if(!empty($pref['jscsscachestatus']))
+{
+	e107::getJs()->renderCached('js');
+	e107::getJs()->renderJs('header_inline', 5);
+}
 global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
 {

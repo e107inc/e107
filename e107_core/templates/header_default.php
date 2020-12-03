@@ -564,8 +564,11 @@ e107Event.trigger('loaded', null, document);
 });
 ",'prototype',5);
 
-e107::getJs()->renderCached('js');
-e107::getJs()->renderJs('header_inline', 5);
+if(empty($pref['jscsscachestatus'])) // render in header when cache disabled, otherwise render in footer. (see footer_default.php)
+{
+	e107::getJs()->renderCached('js');
+	e107::getJs()->renderJs('header_inline', 5);
+}
 
 
 
