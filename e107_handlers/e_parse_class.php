@@ -2713,13 +2713,11 @@ class e_parse extends e_parser
 
 	/**
 	 * @todo Move to e107_class ?
-	 * @param string $path - absolute path
-	 * @return string - static path.
+	 * @param string $path - absolute path or e107 path {e_PLUGIN} etc. 
+	 * @return string - full path or static path.
 	 */
 	public function staticUrl($path=null, $opts=array())
 	{
-		$path = $this->replaceConstants($path,'abs');
-
 		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");
@@ -2729,10 +2727,9 @@ class e_parse extends e_parser
 			}
 			else
 			{
-				return $path;
+				return self::replaceConstants($path, 'full');
 			}
 		}
-
 
 		$staticArray = e_HTTP_STATIC;
 
@@ -2763,8 +2760,9 @@ class e_parse extends e_parser
 
 		$base = '';
 
+		$path = self::replaceConstants($path, 'abs'); // replace any {THEME} etc.
+
 		$srch = array(
-		//
 			e_PLUGIN_ABS,
 			e_THEME_ABS,
 			e_WEB_ABS,
@@ -2773,7 +2771,6 @@ class e_parse extends e_parser
 
 
 		$repl = array(
-
 			$http.$base.e107::getFolder('plugins'),
 			$http.$base.e107::getFolder('themes'),
 			$http.$base.e107::getFolder('web'),

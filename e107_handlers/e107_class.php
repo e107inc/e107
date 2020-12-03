@@ -2159,7 +2159,9 @@ class e107
 
 				$tp = self::getParser();
 
-				$libraryPath = $tp->replaceConstants($info['library_path'].'/'.$info['path'], 'abs').'/';
+				$libraryPath = $info['library_path'].'/'.$info['path'].'/';
+
+
 
 				foreach($info['preload'] as $pre)
 				{
