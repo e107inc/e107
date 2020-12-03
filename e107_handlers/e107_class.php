@@ -2157,7 +2157,9 @@ class e107
 					return null;
 				}
 
-				$libraryPath = self::getParser()->replaceConstants($info['library_path'].'/'.$info['path'], 'abs').'/';
+				$tp = self::getParser();
+
+				$libraryPath = $tp->replaceConstants($info['library_path'].'/'.$info['path'], 'abs').'/';
 
 				foreach($info['preload'] as $pre)
 				{
@@ -2290,16 +2292,15 @@ class e107
 
 	/**
 	 * Add a <link> tag to the head of the html document.
-	 * @param array $attributes
-	 * @param bool $browserCache set to true to add the cacheId to the href.
+	 * @param array|string $attributes
+	 * @param bool $browserCache set to true to add the cacheId to the href. (when an array is used)
 	 * @example e107::link(array('rel'=>"dns-prefetch", "href" => "http://example-domain.com/"));
+	 * @example e107::link('rel="preload" href="{THEME}assets/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin');
 	 */
-	public static function link($attributes=array(), $browserCache = false)
+	public static function link($attributes, $browserCache = false)
 	{
 		self::getJs()->addLink($attributes, $browserCache);
 	}
-
-
 
 
 	/**
