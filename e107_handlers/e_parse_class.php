@@ -2718,6 +2718,8 @@ class e_parse extends e_parser
 	 */
 	public function staticUrl($path=null, $opts=array())
 	{
+		$path = $this->replaceConstants($path,'abs');
+
 		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");

@@ -772,17 +772,23 @@ class e_jsmanager
 
 	/**
 	 * Add a <link> tag to the head.
-	 * @param array $attributes key>value pairs
+	 * @param array|string $attributes key>value pairs or html attributes string
 	 * @param bool $browserCache - set to true to add the cacheId to the href.
 	 * @example addLink(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
+	 * @example addLink('rel="preload" href="{THEME}assets/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin');
 	 */
-	public function addLink($attributes=array(), $browserCache=false)
+	public function addLink($attributes, $browserCache=false)
 	{
-		if(!empty($attributes['href']) && $browserCache === true)
+		if(is_array($attributes) && !empty($attributes['href']))
 		{
-			$attributes['href'] .=  "?".$this->getCacheId();
+			$attributes['href'] .= ($browserCache === true) ?  "?".$this->getCacheId() : '';
+			$attributes['href'] = e107::getParser()->staticUrl($attributes['href']);
 		}
 
+		if(is_string($attributes))
+		{
+			$attributes = e107::getParser()->staticUrl($attributes);
+		}
 
 		if(!empty($attributes))
 		{
@@ -806,10 +812,24 @@ class e_jsmanager
 
 		foreach($this->_e_link as $v)
 		{
+			if(is_string($v))
+			{
+				if(strpos($v, "text/css") !== false)
+				{
+					e107::getDebug()->log("e107::link(".$v.") ignored. Use e107::css() instead for css stylesheets");
+					continue;
+				}
+
+				$text .= "\n<link ".$v." />";
+				continue;
+			}
+
+
 			if(!empty($v['type']))
 			{
 				if($v['type'] == 'text/css' || $v['rel'] == 'stylesheet') // not for this purpose. use e107::css();
 				{
+					e107::getDebug()->log("e107::link(".$v['href'].") ignored. Use e107::css() instead for css stylesheets");
 					continue;
 				}
 			}

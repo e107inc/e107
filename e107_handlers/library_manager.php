@@ -469,6 +469,16 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '3',
+			'preload'           => array(
+				0   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'fonts/glyphicons-halflings-regular.woff2',
+					'crossorigin'   => true,
+					'browsercache'  => false,
+				),
+
+			),
 		);
 
 		// Bootstrap Editable (CDN).
@@ -855,6 +865,7 @@ class core_library
 
 	/**
 	 * Alters library information before detection and caching takes place.
+	 * @param array $libraries
 	 */
 	function config_alter(&$libraries)
 	{
