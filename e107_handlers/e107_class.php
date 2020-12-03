@@ -4468,10 +4468,8 @@ class e107
 		define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
 		define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
 
-		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
-		{
-			define('e_CACHE_IMAGE_ABS', $this->get_override_http('CACHE_IMAGE'));
-		}
+		define('e_CACHE_IMAGE_ABS', $this->get_override_http('CACHE_IMAGE'));
+
 
 		// Special
 

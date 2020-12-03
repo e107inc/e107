@@ -625,12 +625,51 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testStaticUrl()
 		{
 
-		}
+			$tests = array(
+				0   => array(
+					'expected'  => 'https://static.mydomain.com/',
+					'input'     => null,
+					'static'    => true,
+					),
+				1   => array(
+					'expected'  => 'https://static.mydomain.com/e107_web/lib/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'input'     => e_WEB_ABS.'lib/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'static'    => true,
+					),
+				2   => array(
+					'expected'  => 'https://static.mydomain.com/e107_media/000000test/myimage.jpg',
+					'input'     => e_MEDIA_ABS.'myimage.jpg',
+					'static'    => true,
+					),
+				3   => array(
+					'expected'  => 'https://static.mydomain.com/e107_themes/bootstrap3/images/myimage.jpg',
+					'input'     => '{THEME}images/myimage.jpg',
+					'static'    => true,
+					),
+				4   => array(
+					'expected'  => e_WEB_ABS.'lib/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'input'     => '{e_WEB}lib/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'static'    => false,
+					),
+			);
 
+			foreach($tests as $val)
+			{
+				$static = !empty($val['static']) ? 'https://static.mydomain.com/' : null;
+				$this->tp->setStaticUrl($static);
+				$actual = $this->tp->staticUrl($val['input']);
+				$this->assertSame( $val['expected'], $actual);
+			}
+
+
+
+
+		}
+/*
 		public function testGetUrlConstants()
 		{
 

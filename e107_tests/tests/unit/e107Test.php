@@ -618,8 +618,8 @@ class e107Test extends \Codeception\Test\Unit
 
 			public function testLink()
 			{
-				$res = null;
-				$this->assertTrue($res);
+
+
 			}
 
 			public function testCss()

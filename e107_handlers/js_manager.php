@@ -799,9 +799,10 @@ class e_jsmanager
 
 	/**
 	 * Render all link tags. (other than css)
-	 * @return null
+	 * @param bool $return - when true will not echo the result, will return it instead.
+	 * @return null|string
 	 */
-	public function renderLinks()
+	public function renderLinks($return = false)
 	{
 		if(empty($this->_e_link))
 		{
@@ -851,6 +852,11 @@ class e_jsmanager
 			}
 			$text .= " />";
 
+		}
+
+		if(!empty($return))
+		{
+			return $text;
 		}
 
 		echo $text;
