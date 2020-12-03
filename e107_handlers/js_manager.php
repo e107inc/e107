@@ -802,7 +802,7 @@ class e_jsmanager
 			return null;
 		}
 
-		$text = '';
+		$text = "\n\n<!-- [JSManager] Links -->\n";
 
 		foreach($this->_e_link as $v)
 		{
@@ -1590,7 +1590,7 @@ class e_jsmanager
 
 			}
 
-			echo "\n\n<!-- Cached ".$type." -->\n";
+			echo "\n\n<!-- [JSManager] Cached ".strtoupper($type)." -->\n";
 
 			if($type == 'js')
 			{
