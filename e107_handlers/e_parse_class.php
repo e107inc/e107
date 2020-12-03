@@ -64,6 +64,9 @@ class e_parse extends e_parser
 
 	private $staticCount = 0;
 
+	protected $staticUrl = null;
+
+
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
 
@@ -2719,7 +2722,7 @@ class e_parse extends e_parser
 	 */
 	public function staticUrl($path=null, $opts=array())
 	{
-		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
+		if(empty($this->staticUrl) || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");
 			if($path === null)
@@ -2732,7 +2735,7 @@ class e_parse extends e_parser
 			}
 		}
 
-		$staticArray = e_HTTP_STATIC;
+		$staticArray = $this->staticUrl; // e_HTTP_STATIC;
 
 		if(is_array($staticArray))
 		{
@@ -2749,7 +2752,7 @@ class e_parse extends e_parser
 		}
 		else
 		{
-			$http = e_HTTP_STATIC;
+			$http = $this->staticUrl;
 		}
 
 		$this->staticCount(1);
@@ -2789,6 +2792,14 @@ class e_parse extends e_parser
 
 	}
 
+	/**
+	 * Used internally to store e_HTTP_STATIC.
+	 * @param string|null $url The static URL ie. e_HTTP_STATIC
+	 */
+	public function setStaticUrl($url)
+	{
+		$this->staticUrl = $url;
+	}
 
 	/**
 	 * Generate an auto-sized Image URL.
@@ -2848,7 +2859,7 @@ class e_parse extends e_parser
 		
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
 
-		if(defined('e_HTTP_STATIC'))
+		if(!empty($this->staticUrl))
 		{
 			$baseurl = $this->staticUrl().'thumb.php?';
 		}
@@ -3131,7 +3142,7 @@ class e_parse extends e_parser
 			$base = (!empty($options['ebase'])) ? '{e_BASE}' : e_HTTP;
 		}
 
-		if(defined('e_HTTP_STATIC'))
+		if(!empty($this->staticUrl))
 		{
 			$base = $this->staticUrl();
 		}
@@ -3821,6 +3832,7 @@ class e_parser
 	protected $bootstrap            = null;
 	protected $fontawesome          = null;
 
+
     protected $removedList          = array();
     protected $nodesToDelete        = array();
     protected $nodesToConvert       = array();
@@ -3922,6 +3934,11 @@ class e_parser
 		{
 			$this->bootstrap = (int) BOOTSTRAP;
 
+		}
+
+		if(defined('e_HTTP_STATIC'))
+		{
+			$this->staticUrl = e_HTTP_STATIC;
 		}
 
     }
