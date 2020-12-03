@@ -70,7 +70,12 @@ class _system_cron
 		
 		$fl->chmod(e_BASE."cron.php",0755);
 		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
+
 		e107::getCache()->clearAll('system');
+		e107::getCache()->clearAll('css');
+		e107::getCache()->clearAll('js');
+		e107::getCache()->clearAll('library');
+		e107::getCache()->clearAll('browser');
 	}
 
 

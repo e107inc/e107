@@ -322,6 +322,7 @@ else
 	}
 }
 
+$e_js->renderLinks();
 
 //
 // Render CSS - all in once
@@ -350,7 +351,7 @@ unset($CSSORDER);
 
 $e_js->renderCached('css');
 
-$e_js->renderLinks();
+
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
