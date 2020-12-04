@@ -109,7 +109,7 @@ class e_formTest extends \Codeception\Test\Unit
 		'bool_002'          => 1,
 
 		'dropdown_001'      => 'opt_value_2',
-		'dropdown_002'      => '1,2',
+		'dropdown_002'      => '2',
 
 		'textarea_001'      => "the quick brown fox jumps over the lazy dog",
 
@@ -532,6 +532,18 @@ class e_formTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected,$actual);
 
 
+		// Important - Test backward compatibility with selected value as string/integer combination, plus null default option.
+
+		$selected =  (string) '3';
+		$opt_array = array(1=>"Option 1", 2=>"Option 2", 3=>"Option 3");
+		$actual = $this->_frm->select('name', $opt_array, $selected,null,true);
+
+		$actual = str_replace("\n", "", $actual);
+		$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='3'><option value=''>&nbsp;</option><option value='1'>Option 1</option><option value='2'>Option 2</option><option value='3' selected='selected'>Option 3</option></select>";
+
+		$this->assertSame($expected,$actual);
+
+
 	}
 	/*
 			public function testUserclass()
@@ -814,7 +826,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'bool_002' => "<a class='e-tip e-editable editable-click e-editable-boolean' data-name='bool_002' data-source='{\"0\":\"\u0026cross;\",\"1\":\"\u0026check;\"}'   title=\"Edit Bool 002\" data-type='select' data-inputclass='x-editable-bool-002 e-editable-boolean' data-value=\"1\"   href='#'  data-class='e-editable-boolean' data-url='".e_SELF."?mode=&amp;action=inline&amp;id=0&amp;ajax_used=1'>&check;</a>",
 
 			'dropdown_001' => 'Label 2',
-			'dropdown_002' => "",
+			'dropdown_002' => "Option 2",
 
 			'textarea_001' => "the quick brown fox jumps over the lazy dog",
 
@@ -926,7 +938,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 
 			'dropdown_001' => "<select name='dropdown_001' id='dropdown-001' class='tbox select form-control' tabindex='3'><option value='opt_value_1'>Label 1</option><option value='opt_value_2' selected='selected'>Label 2</option></select>",
-			'dropdown_002' => "<select name='dropdown_002' id='dropdown-002' class='tbox select form-control' tabindex='4'><option value='0'>Option 0</option><option value='1'>Option 1</option><option value='2'>Option 2</option></select>",
+			'dropdown_002' => "<select name='dropdown_002' id='dropdown-002' class='tbox select form-control' tabindex='4'><option value='0'>Option 0</option><option value='1'>Option 1</option><option value='2' selected='selected'>Option 2</option></select>",
 
 
 			'textarea_001' => "<textarea name='textarea_001' rows='5' cols='40' id='textarea-001' class='form-control input-xlarge' tabindex='5'>the quick brown fox jumps over the lazy dog</textarea>",
