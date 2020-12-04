@@ -2112,17 +2112,22 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		exit;
 	}
 
+	define('ADMIN', $user->isAdmin());
+	define('ADMINID', $user->getAdminId());
+	define('ADMINNAME', $user->getAdminName());
+	define('ADMINPERMS', $user->getAdminPerms());
+	define('ADMINEMAIL', $user->getAdminEmail());
+	define('ADMINPWCHANGE', $user->getAdminPwchange());
+
 	if (!$user->isUser())
 	{
 		define('USER', false);
 		define('USERID', 0);
 		define('USERTHEME', false);
-		define('ADMIN', false);
 		define('GUEST', true);
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
 		define('USERSIGNATURE', '');
-		define('ADMINPERMS', false);
 
 		if($user->hasSessionError())
 		{
@@ -2146,12 +2151,6 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USERVISITS', $user->get('user_visits'));
 		define('USERSIGNATURE', $user->get('user_signature'));
 
-		define('ADMIN', $user->isAdmin());
-		define('ADMINID', $user->getAdminId());
-		define('ADMINNAME', $user->getAdminName());
-		define('ADMINPERMS', $user->getAdminPerms());
-		define('ADMINEMAIL', $user->getAdminEmail());
-		define('ADMINPWCHANGE', $user->getAdminPwchange());
 		if(ADMIN) // XXX - why for admins only?
 		{
 			e107::getRedirect()->setPreviousUrl();
