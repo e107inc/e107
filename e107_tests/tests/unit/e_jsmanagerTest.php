@@ -275,7 +275,7 @@
 					$this->assertTrue($result, $var['expected']." was not found in the rendered links. Render links result:".$actual."\n\n");
 				}
 
-
+				$tp->setStaticUrl(null);
 
 
 		}

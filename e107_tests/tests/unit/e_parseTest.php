@@ -665,6 +665,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$this->assertSame( $val['expected'], $actual);
 			}
 
+			$this->tp->setStaticUrl(null);
 
 
 
