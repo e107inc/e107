@@ -156,7 +156,7 @@ class banner_ui extends e_admin_ui
 		
 		// ------- Customize Create --------
 		
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 		//	e107::getMessage()->addDebug(print_a($new_data,true)); 
 			
@@ -604,6 +604,8 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->campaigns; 
 			break;
 		}
+
+		return null;
 	}
 	
 	
