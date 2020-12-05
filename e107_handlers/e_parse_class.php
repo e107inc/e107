@@ -281,10 +281,11 @@ class e_parse extends e_parser
 // CHARSET is utf-8
 //		if(strtolower(CHARSET) == 'utf-8')
 //		{
-			if(version_compare(PHP_VERSION, '6.0.0') < 1)
+
+			if(PHP_MAJOR_VERSION < 6)
 			{
 				// Need to do something here
-				if(extension_loaded('mbstring'))
+				if(extension_loaded('mbstring') && defined('MB_OVERLOAD_STRING'))
 				{
 					// Check for function overloading
 					$temp = ini_get('mbstring.func_overload');

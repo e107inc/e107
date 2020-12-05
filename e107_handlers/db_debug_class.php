@@ -26,20 +26,20 @@
 	class e107_db_debug
 	{
         private $active       = false;      // true when debug is active.
-		var $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
-		var $aDBbyTable       = array();
-		var $aOBMarks         = array(0 => ''); // Track output buffer level at each time mark
-		var $aMarkNotes       = array();      // Other notes can be added and output...
-		var $aTimeMarks       = array();      // Overall time markers
-		var $curTimeMark      = 'Start';
-		var $nTimeMarks       = 0;            // Provide an array index for time marks. Stablizes 'current' function
-		var $aGoodQueries     = array();
-		var $aBadQueries      = array();
-		var $scbbcodes        = array();
-		var $scbcount;
-		var $deprecated_funcs = array();
-		var $aLog             = array();    // Generalized debug log (only seen during debug)
-		var $aIncList         = array(); // Included files
+		public $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
+		public $aDBbyTable       = array();
+		public $aOBMarks         = array(0 => ''); // Track output buffer level at each time mark
+		public $aMarkNotes       = array();      // Other notes can be added and output...
+		public $aTimeMarks       = array();      // Overall time markers
+		public $curTimeMark      = 'Start';
+		public $nTimeMarks       = 0;            // Provide an array index for time marks. Stablizes 'current' function
+	//	public $aGoodQueries     = array();
+	//	var $aBadQueries      = array();
+		public $scbbcodes        = array();
+		public $scbcount;
+		public $deprecated_funcs = array();
+		public $aLog             = array();    // Generalized debug log (only seen during debug)
+		public $aIncList         = array(); // Included files
 
 		function __construct()
 		{
@@ -175,14 +175,15 @@
 		}
 
 
-		/**
-		 * @param $query
-		 * @param $rli
-		 * @param $origQryRes
-		 * @param $aTrace
-		 * @param $mytime
-		 * @param $curtable
-		 */
+	/**
+	 * @param $query
+	 * @param $rli
+	 * @param $origQryRes
+	 * @param $aTrace
+	 * @param $mytime
+	 * @param $curtable
+	 * @return null
+	 */
 		function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 		{
             if(!$this->active)
@@ -210,7 +211,7 @@
 				if($sQryRes)  // There's something to explain
 				{
 					//$nFields = mysql_num_fields($sQryRes);
-					$nFields = $sql->columnCount($sQryRes); // mysql_num_fields($sQryRes);
+					$nFields = $sql->columnCount(); // mysql_num_fields($sQryRes);
 					$bExplained = true;
 				}
 			}
@@ -227,7 +228,7 @@
 			$t['marker'] = $this->curTimeMark;
 			$t['caller'] = "$sCallingFile($sCallingLine)";
 			$t['query'] = $query;
-			$t['ok'] = ($sQryRes !== false) ? true : false;
+			$t['ok'] = ($sQryRes !== false);
 			$t['error'] = $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 			$t['nFields'] = $nFields;
 			$t['time'] = $mytime;
@@ -267,6 +268,8 @@
 				$this->aDBbyTable[$curtable]['DB Time'] = $mytime;
 				$this->aDBbyTable[$curtable]['DB Count'] = 1;
 			}
+
+			return null;
 		}
 
 
@@ -402,6 +405,7 @@
 
 		function countLabel($amount)
 		{
+			$inc = '';
 
 			if($amount < 30)
 			{
@@ -431,7 +435,7 @@
 
 			foreach($this->aTimeMarks as $item)
 			{
-				$item['What'] = str_pad($item['What'], 50, " ", STR_PAD_RIGHT);
+				$item['What'] = str_pad($item['What'], 50);
 				$text .= implode("\t\t\t", $item) . "\n";
 			}
 
@@ -534,10 +538,10 @@
 
 				$tMem = ($tMarker['Memory']);
 
-				if($tMem < 0) // Quick Fix for negative numbers.
-				{
+			//	if($tMem < 0) // Quick Fix for negative numbers.
+			//	{
 					//	$tMem = 0.0000000001;
-				}
+			//	}
 
 				$tMarker['Memory'] = ($tMem ? number_format($tMem / 1024.0, 1) : '?'); // display if known
 
@@ -578,9 +582,9 @@
 					$tMarker['Time'] = $this->highlight($tMarker['Time'], $thisDelta, .2);
 
 
-					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
-					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
-					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
+					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime)) : 0;
+					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount());
+					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time) : 0;
 					$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
 
 					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
@@ -600,9 +604,9 @@
 				}
 			}
 
-			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
-			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
+			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime)) : 0;
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time)) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount()))) : 0;
 			$aSum['Time'] = number_format($aSum['Time'] * 1000.0, 1);
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 
@@ -675,16 +679,16 @@
 
 				$aSum['DB Time'] += $curTable['DB Time'];
 				$aSum['DB Count'] += $curTable['DB Count'];
-				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
-				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
+				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount());
+				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time);
 				$timeLabel = number_format($curTable['DB Time'] * 1000.0, 1);
 				$curTable['DB Time'] = $this->highlight($timeLabel, ($curTable['DB Time'] * 1000), 500); // 500 msec
 
 				$text .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
-			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time)) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount()))) : 0;
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 			$text .= "<tr><td class='fcaption'><b>" . implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
 			$text .= "\n</table><br />\n";
@@ -892,11 +896,12 @@
 		}
 
 
-		/**
-		 * var_dump to debug log
-		 *
-		 * @param mixed $message
-		 */
+	/**
+	 * var_dump to debug log
+	 *
+	 * @param mixed $message
+	 * @param int $TraceLev
+	 */
 		function dump($message, $TraceLev = 1)
 		{
 
