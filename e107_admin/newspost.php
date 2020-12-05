@@ -461,7 +461,7 @@ class news_admin_ui extends e_admin_ui
 		'news_meta_robots'		=> array('title' => LAN_ROBOTS, 	'type' => 'dropdown',  'data'=>'safestr',  'tab'=>1, 'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'writeParms'=>array('multiple'=>1), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
-		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+	//	'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
 		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>2, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 'data'=>'int', 'tab'=>2,   'writeParms'=>'type=datetime',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false,  'filter'=>true),
@@ -490,8 +490,6 @@ class news_admin_ui extends e_admin_ui
 	protected $prefs = array(
 
 		'news_category'			=> array('title' => NWSLAN_127, 		'type' => 'dropdown', 'help'=> "Determines how the default news page should appear."),
-		'news_ping_services'			=> array('title' => "Ping Services", 	'type' => 'textarea', 'data'=> 'help'=> ">Notify these services when you create/update news items. <br />One per line."),
-
 
 
 	);
@@ -654,7 +652,7 @@ class news_admin_ui extends e_admin_ui
 		}
 
 
-		$this->processPings();
+
 		e107::getEvent()->trigger('newspost',$new_data);
 	//	e107::getEvent()->trigger('admin_news_created',$new_data);
 		$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
@@ -674,7 +672,7 @@ class news_admin_ui extends e_admin_ui
 			$this->triggerNotify($new_data);
 		}
 
-		$this->processPings();
+
 
 		e107::getEvent()->trigger('newsupd', $new_data);
 	//	e107::getEvent()->trigger('admin_news_updated',$new_data);
@@ -777,7 +775,7 @@ class news_admin_ui extends e_admin_ui
 		'news_meta_keywords',
 		'news_meta_description' ,
 		'news_meta_robots' ,
-		'news_ping',
+
 
 		'news_email_notify',
 		'news_allow_comments' ,
@@ -960,7 +958,7 @@ class news_admin_ui extends e_admin_ui
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
-		$temp['news_ping_services']		= explode("\n",$_POST['news_ping_services']);
+
 		$temp['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_default_template']);
 		$temp['news_list_limit']		= intval($_POST['news_list_limit']);
 		$temp['news_list_templates']     = e107::getParser()->toDB($_POST['news_list_templates']);
@@ -973,174 +971,6 @@ class news_admin_ui extends e_admin_ui
 			e107::getAdminLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
 			$this->clearCache();
 		}
-	}
-
-
-
-
-	function processPings()
-	{
-
-		// Ping Changes to Services.
-		$pingServices = e107::getPref('news_ping_services');
-		//TODO Use Ajax with progress-bar.
-
-		$mes = e107::getMessage();
-
-		$mes->addDebug(LAN_NEWS_107,'default',true);
-
-		if(!empty($_POST['news_ping']) && (count($pingServices)>0) && (in_array(e_UC_PUBLIC, $_POST['news_class'])))
-		{
-			$mes->addDebug("Initiating ping",'default',true);
-
-			include (e_HANDLER.'xmlrpc/xmlrpc.inc.php');
-			include (e_HANDLER.'xmlrpc/xmlrpcs.inc.php');
-			include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc.php');
-
-			$extendedServices = array('blogsearch.google.com');
-
-			$port = 80;
-
-			foreach($pingServices as $fullUrl)
-			{
-				$fullUrl = str_replace("http://","", trim($fullUrl));
-				list($server,$path) = explode("/",$fullUrl, 2);
-
-				$path 			= "/".$path;
-
-				$weblog_name	= SITENAME;
-				$weblog_url		= $_SERVER['HTTP_HOST'].e_HTTP;
-				$changes_url	= $_SERVER['HTTP_HOST'].e107::getUrl()->create('news/view/item', $_POST); //  $_SERVER['HTTP_HOST'].e_HTTP."news.php?extend.".$_POST['news_id'];
-				$cat_or_rss		= $_SERVER['HTTP_HOST'].e_PLUGIN_ABS."rss_menu/rss.php?1.2";
-				$extended		= (in_array($server, $extendedServices)) ? true : false;
-
-				if($this->ping($server, $port, $path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss, $extended))
-				{
-					e107::getMessage()->addInfo("Successfully Pinged: ".$server .' with:<br />url: '.$changes_url .'<br />rss: '.$cat_or_rss , 'default', true);
-				}
-				else
-				{
-					e107::getMessage()->addDebug("Ping failed!: ".$server .' with: '.$changes_url , 'default', true);
-				}
-
-			}
-
-		}
-		else
-		{
-		//	$mes->addDebug('Ping not triggerred','default',true);
-		//	$mes->addDebug("Services: ".print_a($pingServices, true),'default', true);
-		//	$mes->addDebug("Userclass: ".print_a($_POST['news_class'],true),'default', true);
-
-		}
-
-	}
-
-
-	   /* Multi-purpose ping for any XML-RPC server that supports the Weblogs.Com interface. */
-    function ping($xml_rpc_server, $xml_rpc_port, $xml_rpc_path, $weblog_name, $weblog_url, $changes_url, $cat_or_rss='', $extended = false)
-	{
-		$mes = e107::getMessage();
-		$log = e107::getAdminLog();
-		
-		$mes->addDebug("Attempting to ping: ".$xml_rpc_server, 'default', true);
-
-		
-        $name_param 		= new xmlrpcval($weblog_name, 'string');
-        $url_param 			= new xmlrpcval($weblog_url, 'string');
-        $changes_param 		= new xmlrpcval($changes_url, 'string');
-        $cat_or_rss_param 	= new xmlrpcval($cat_or_rss, 'string');
-        $method_name 		= ($extended) ? "weblogUpdates.extendedPing" : "weblogUpdates.ping";
-		
-        if ($cat_or_rss != "") 
-        {
-            $params = array($name_param, $url_param, $changes_param, $cat_or_rss_param);
-			$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\", \"$changes_url\", \"$cat_or_rss\")";
-		} 
-        else 
-        {
-            if ($changes_url != "") 
-            {
-              	$params = array($name_param, $url_param, $changes_param);
-				$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\", \"$changes_url\")";
-			}
-			 else 
-			 {
-				$params = array($name_param, $url_param);
-				$call_text = "$method_name(\"$weblog_name\", \"$weblog_url\")";
-			}
-        }
-
-        // create the message
-        $message 	= new xmlrpcmsg($method_name, $params);
-        $client 	= new xmlrpc_client($xml_rpc_path, $xml_rpc_server, $xml_rpc_port);
-        $response 	= $client->send($message);
-       
-        $this->log_ping("Request: " . $call_text);
-        $this->log_ping($message->serialize(), true);
-		
-        if ($response == 0) 
-        {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $client->errno . " " . $client->errstring;
-            $this->report_error($error_text);
-            $this->log_ping($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$client->errstring))->save('PING_01');
-	
-            return false;
-        }
-		
-        if ($response->faultCode() != 0)  
-        {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $response->faultCode() . " " . $response->faultString();
-            $this->report_error($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$response->faultString()))->save('PING_01');
-	
-            return false;
-        }
-		
-        $response_value = $response->value();
-        if ($this->debug)
-		{
-			 $this->report_error($response_value->serialize());
-		}
-		
-        $this->log_ping($response_value->serialize(), true);
-
-		/** @var xmlrpcval $fl_error */
-		$fl_error 	= $response_value->structmem('flerror');
-
-		/** @var xmlrpcval $message */
-		$message 	= $response_value->structmem('message');
-
-        // read the response
-        if ($fl_error->scalarval() != false) 
-        {
-            $error_text = "Error: " . $xml_rpc_server . ": " . $message->scalarval();
-			$this->report_error($error_text);
-			$log->addArray(array('status'=>LAN_ERROR, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
-	
-		//	$this->log_ping($error_text);
-			return false;
-		}
-
-		$log->addArray(array('status'=>LAN_OK, 'service'=>$xml_rpc_server, 'url'=> $changes_url, 'response'=>$message->scalarval()))->save('PING_01');
-		
-        return true;
-	}
-
-
-
-    // save ping data to a log file
-    function log_ping($message, $xml_data = false) 
-    {
-       	$message = $xml_data." ".$message;
-		file_put_contents(e_LOG."news_ping.log", $message, FILE_APPEND);
-    }
-
-	  // sDisplay Ping errors. 
-	function report_error($message)
-	{
-		e107::getMessage()->addError($message, 'default', true);	
 	}
 
 
@@ -1170,8 +1000,7 @@ class news_admin_ui extends e_admin_ui
 			$frm = e107::getForm();
 
 			$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
-			$pingOpt = array('placeholder'=>LAN_NEWS_87);
-			$pingVal = (!empty($pref['news_ping_services'])) ? implode("\n",$pref['news_ping_services']) : '';
+
 
 			$newsTemplates = array();
 
@@ -1229,13 +1058,7 @@ class news_admin_ui extends e_admin_ui
 									<div class='field-help'>".LAN_NEWS_94."</div>
 								</td>
 							</tr>
-							<tr>
-								<td>".LAN_NEWS_98."</td>
-								<td>
-									".$frm->textarea('news_ping_services', $pingVal, 4, 100, $pingOpt)."
-									<div class='field-help'>".LAN_NEWS_89."<br />".LAN_NEWS_90."</div>
-								</td>
-							</tr>";
+							";
 
 								
 						$tab1 .= "
