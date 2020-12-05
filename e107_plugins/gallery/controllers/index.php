@@ -120,7 +120,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$sc = e107::getScBatch('gallery', true);
 		$sc->breadcrumb();
 
-		$text = "";
+	//	$text = "";
 
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
 		{
@@ -132,7 +132,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);
-			$text .= e107::getParser()->parseTemplate($template['cat']['item'], true);
+			$text .= e107::getParser()->parseTemplate($template['cat']['item']);
 		}
 
 		$text .= e107::getParser()->parseTemplate($template['cat']['end'], true, $sc);

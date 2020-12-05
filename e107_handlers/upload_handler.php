@@ -721,7 +721,7 @@ function get_image_mime($filename, $extended = false)
 			case 'mpa':
 			case 'wma':
 			case 'wmv':
-			case 'flv': //Flash stream
+		//	case 'flv': //Flash stream
 			case 'f4v': //Flash stream
 			case 'mov': //media
 			case 'avi': //media

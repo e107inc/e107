@@ -24,7 +24,7 @@
 require_once('class2.php');
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-	if (vartrue(e107::getPref('comments_disabled')))
+	if (!empty(e107::getPref('comments_disabled')))
 	{
 		exit;
 	}
@@ -107,7 +107,8 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$pid 				= intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 		$row 				= array();
-		$clean_authorname 	= vartrue(filter_var($_POST['author_name'],FILTER_SANITIZE_STRING),USERNAME);
+		$authName           = filter_var($_POST['author_name'],FILTER_SANITIZE_STRING);
+		$clean_authorname 	= vartrue($authName,USERNAME);
 		$clean_comment 		= e107::getParser()->toText($_POST['comment']);
 		$clean_subject 		= e107::getParser()->filter($_POST['subject'],'str');
 		$clean_table        = e107::getParser()->filter($_POST['table'],'str');

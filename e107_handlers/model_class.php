@@ -2309,7 +2309,7 @@ class e_front_model extends e_model
     		// get values form validated array when possible
     		// we need it because of advanced validation methods e.g. 'compare'
     		// FIX - security issue, toDb required
-    		if(isset($valid_data[$field])) $dt = $tp->toDb($valid_data[$field]);
+    		if(isset($valid_data[$field])) $dt = $tp->toDB($valid_data[$field]);
 
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
@@ -2925,8 +2925,8 @@ class e_front_model extends e_model
 		if($undo)
 		{
 			$this->setData($ret['model_base_data'])
-				->isModified($ret['model_base_ismodfied'])
-				->setPostedData($ret['posted_data']);
+				->isModified($ret['model_base_ismodfied']);
+			$this->setPostedData($ret['posted_data']);
 		}
 		if($return) return $ret;
 

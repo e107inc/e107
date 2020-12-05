@@ -637,7 +637,7 @@ class social_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$textKeys = '';
 		$textScope = '';
-		$label = varset(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
+		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
 		$radio_label = strtolower($provider_name);
 
 		$text = "<table class='table adminform'>
@@ -696,7 +696,7 @@ class social_ui extends e_admin_ui
 		$frm = e107::getForm();
 		$textKeys = '';
 		$textScope = '';
-		$label = varset(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
+		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
 		$radio_label = strtolower($provider_name);
 		$text = "
 					<tr id='social-login-row-" . $radio_label."'>

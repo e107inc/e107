@@ -242,7 +242,8 @@ class alt_login
 			switch($login_result)
 			{
 				case AUTH_NOCONNECT:
-					if(varset(e107::getPref('auth_noconn'), TRUE))
+					$noconn = e107::getPref('auth_noconn');
+					if(varset($noconn, TRUE))
 					{
 						$this->loginResult = LOGIN_TRY_OTHER;
 						return;
@@ -252,7 +253,8 @@ class alt_login
 					return;
 				case AUTH_BADPASSWORD:
 				case AUTH_NOUSER:
-					if(varset(e107::getPref('auth_badpassword'), TRUE))
+					$badpass = e107::getPref('auth_badpassword');
+					if(varset($badpass, TRUE))
 					{
 						$this->loginResult = LOGIN_TRY_OTHER;
 						return;

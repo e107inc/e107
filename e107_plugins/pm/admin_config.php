@@ -881,7 +881,7 @@ class private_msg_ui extends e_admin_ui
         
         }
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 
 			if(empty($new_data['pm_to']))

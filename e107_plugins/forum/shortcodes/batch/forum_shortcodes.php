@@ -291,7 +291,7 @@ class forum_shortcodes extends e_shortcode
 		$forum = new e107forum;
 		//$trackPref = $forum->prefs->get('track');
 		//if (USER && vartrue($trackPref) && e_QUERY != 'track')
-		if (USER && vartrue($forum->prefs->get('track')) && e_QUERY != 'track')
+		if (USER && !empty($forum->prefs->get('track')) && e_QUERY != 'track')
 		{
 			$text .= "<br /><a href='".e107::url('forum','track')."'>".LAN_FORUM_0030.'</a>';
 		}

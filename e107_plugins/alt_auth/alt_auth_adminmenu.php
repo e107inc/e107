@@ -131,7 +131,7 @@ class alt_auth_admin extends alt_auth_base
 	 *	Returns a block of table rows with user DB fields and either checkboxes or entry boxes
 	 *
 	 *	@param string $tableType is the prefix used, without the following underscore
-	 *	@param $frm is the form object to use to create the text
+	 *	@param object $frm is the form object to use to create the text
 	 *	@param array $parm is the array of options for the current auth type as read from the DB
 	 */
 	public function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = FALSE)
@@ -141,11 +141,11 @@ class alt_auth_admin extends alt_auth_base
 		{
 			if (vartrue($v['showAll']) || vartrue($v[$tableType]))
 			{
-				$ret .= "<tr><td$log>";
+				$ret .= "<tr><td>";
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
 				$ret .= $v['prompt'].':';
 
-				$ret .= "</td><td class='form-inline' $log>";
+				$ret .= "</td><td class='form-inline'>";
 	//			$fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
 				$value = varset($v['default'],'');
@@ -266,7 +266,7 @@ class alt_auth_admin extends alt_auth_base
 	 *	Each is a row of a table having two columns (no <table>...</table> etc added, so can be embedded in a larger table
 	 *
 	 *	@param string $prefix is the prefix used, without the following underscore
-	 *	@param $frm is the form object to use
+	 *	@param object $frm is the form object to use
 	 *	@param array $parm is an array of the current values of each item
 	 *	@param string $fields is a list of the fields to display, separated by '|'. The names are the key values from $common_fields table
 	 *
@@ -279,9 +279,9 @@ class alt_auth_admin extends alt_auth_base
 		{
 			if (in_array($fn,$opts))
 			{
-				$ret .= "<tr><td$log>".$cf['prompt'];
+				$ret .= "<tr><td>".$cf['prompt'];
 
-				$ret .= "</td><td$log>";
+				$ret .= "</td><td>";
 
 				if ($cf['fieldname'] == 'password')
 				{
@@ -352,7 +352,8 @@ class alt_auth_admin extends alt_auth_base
 	 */
 	public function altAuthGetPasswordSelector($name, $frm, $currentSelection = '', $getExtended = FALSE)
 	{
-		$password_methods = ExtendedPasswordHandler::GetPasswordTypes($getExtended);
+		$ext = new ExtendedPasswordHandler;
+		$password_methods = $ext->getPasswordTypes($getExtended);
 		$text = "";
 		$text .= $frm->form_select_open($name);
 		foreach($password_methods as $k => $v)
@@ -477,12 +478,12 @@ class alt_auth_admin extends alt_auth_base
 		</colgroup>
 		<tr><th colspan='2'>".LAN_ALT_42."</th></tr>";
 
-		$text .= "<tr><td $log>".LAN_ALT_33."</td><td $log>";
+		$text .= "<tr><td>".LAN_ALT_33."</td><td>";
 	//	$text .= $frm->form_text('nametovalidate', 35, '', 120);
 		$text .= e107::getForm()->text('nametovalidate','',35);
 		$text .= "</td></tr>";
 
-		$text .= "<tr><td $log>".LAN_ALT_34."</td><td $log>";
+		$text .= "<tr><td>".LAN_ALT_34."</td><td>";
 		$text .= $frm->form_password('passtovalidate', 35, '', 120);
 		$text .= "</td></tr>";
 
@@ -550,10 +551,10 @@ class alt_auth_admin extends alt_auth_base
 function alt_auth_adminmenu()
 {
 	echo ' ';
-	if(!is_array($authlist))
+	/*if(!is_array($authlist))
 	{
 		$authlist = alt_auth_admin::alt_auth_get_authlist();
-	}
+	}*/
 	define('ALT_AUTH_ACTION', 'main');
 
 	$var['main']['text'] = LAN_ALT_31;
@@ -567,6 +568,7 @@ function alt_auth_adminmenu()
 
 
 	$var = array();
+	/*
 	foreach($authlist as $a)
 	{
 	  if($a != 'e107')
@@ -574,10 +576,10 @@ function alt_auth_adminmenu()
 		$var[$a]['text'] = LAN_ALT_30.$a;
 		$var[$a]['link'] = e_PLUGIN."alt_auth/{$a}_conf.php";
 	  }
-	}
+	}*/
 
 
 
-	show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
+	// show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
 }
 

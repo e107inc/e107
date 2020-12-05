@@ -9,8 +9,8 @@ if (!defined('e107_INIT')) { exit; }
 
 // e107::Lan('featurebox', 'front');
 e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php'); // This line added to admin warning
-
-$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');		
+$cat = e107::getPlugPref('featurebox','menu_category');
+$type 	= vartrue($cat,'bootstrap_carousel');
 $text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
 
 if(empty($text))
