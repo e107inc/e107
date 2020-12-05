@@ -127,7 +127,8 @@ class download
 		{
 			if (is_numeric($tmp[0]))	//legacy		// $tmp[0] at least must be valid
 			{
-			   $this->qry['action'] 	= varset(preg_replace("#\W#", "", $tp->toDB($tmp[1])),'list');
+				$parsed                 = preg_replace("#\W#", "", $tp->toDB($tmp[1]));
+			   $this->qry['action'] 	= varset($parsed,'list');
 			   $this->qry['id'] 		= intval($tmp[2]);
 			   $this->qry['view'] 		= intval($tmp[3]);
 			   $this->qry['order'] 		= preg_replace("#\W#", "", $tp->toDB($tmp[4]));

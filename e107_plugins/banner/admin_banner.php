@@ -155,7 +155,7 @@ class banner_ui extends e_admin_ui
 
 		
 		// ------- Customize Create --------
-		
+
 		public function beforeCreate($new_data, $old_data)
 		{
 		//	e107::getMessage()->addDebug(print_a($new_data,true)); 
@@ -439,7 +439,7 @@ class banner_form_ui extends e_admin_form_ui
 
 	function banner_image($curVal,$mode)
 	{
-		$frm = e107::getForm();
+
 
 		switch($mode)
 		{
@@ -486,6 +486,8 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->clients;
 			break;
 		}
+
+		return null;
 	}
 
 	
@@ -523,6 +525,8 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->clients; 
 			break;
 		}
+
+		return null;
 	}
 
 	
@@ -546,6 +550,8 @@ class banner_form_ui extends e_admin_form_ui
 				return null;
 			break;
 		}
+
+		return null;
 	}
 
 	// Custom Method/Function 
@@ -616,15 +622,14 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			return null;
 		}
-		
-		$frm = e107::getForm();		
-		
+
+		unset($curVal); // keep inspector happy.
+
 		$banner_row = $this->getController()->getListModel()->getData(); 
 		 
 	//	 return print_a($banner_row,true); 		
-		$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
-		
-		return $clickpercentage; 
+		return ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
+
 		//$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
 	//	$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 	}	
@@ -633,7 +638,7 @@ class banner_form_ui extends e_admin_form_ui
 }		
 		
 
-new banner_admin();
+new banner_admin;
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();

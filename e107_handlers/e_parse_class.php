@@ -1323,15 +1323,15 @@ class e_parse extends e_parser
 						break;
 						}
 					}
-					else
+
+					$pos++;
+					if(!$intag)
 					{
-						$pos++;
-						if(!$intag)
-						{
-							$curlen++;
-						}
-					break;
+						$curlen++;
 					}
+
+					break;
+
 				default:
 					$pos++;
 					if(!$intag)

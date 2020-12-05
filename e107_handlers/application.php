@@ -3023,7 +3023,7 @@ class eController
 	 * Add document title
 	 * @param string $title
 	 * @param boolean $meta auto-add it as meta-title
-	 * @return eResponse
+	 * @return eController
 	 */
 	public function addTitle($title, $meta = true)
 	{

@@ -198,7 +198,7 @@ class rss_import extends base_import_class
 	}
 
 
-	function process($type='description',$source)
+	function process($type,$source)
 	{
 		switch ($type) 
 		{			

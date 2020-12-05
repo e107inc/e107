@@ -440,7 +440,8 @@ function nextprev_shortcode($parm = '')
 		else // new - page support in format 'p:1'
 		{
 			$perpage = 1;
-			$current_start = intval(array_pop(explode(':', $p[2], 2)));
+			$exp            = explode(':', $p[2], 2);
+			$current_start = intval(array_pop($exp));
 			$current_page = $current_start;
 			$total_pages = $total_items;
 			$index_add = 1;

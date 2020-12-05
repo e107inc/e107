@@ -219,8 +219,8 @@ function parse_forum($f, $restricted_string = '')
 
 	if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
 	{
-
-		$lastpost_datestamp = reset(explode('.', $f['forum_lastpost_info']));
+		$lastPost = explode('.', $f['forum_lastpost_info']);
+		$lastpost_datestamp = reset($lastPost);
 		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
 
 		$f['forum_threads'] += $ret['threads'];

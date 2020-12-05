@@ -118,7 +118,7 @@ class newsfeed_ui extends e_admin_ui
 
 		// ------- Customize Create --------
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			if(isset($new_data['newsfeed_showmenu']))
 			{

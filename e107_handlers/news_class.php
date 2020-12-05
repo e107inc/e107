@@ -582,7 +582,7 @@ class e_news_item extends e_front_model
 	 * @param mixed $default
 	 * @return string field value
 	 */
-	public function sc_news_field($parm = '')
+	public function sc_news_field($parm = null)
 	{
 		$tmp = explode('|', $parm, 2);
 		$field = $tmp[0];
@@ -594,7 +594,7 @@ class e_news_item extends e_front_model
 		$val = $this->field($field, '');
 
 		//do more with $parm array, just an example here
-		if(vartrue($parm['format']))
+		if(!empty($parm['format']))
 		{
 			switch ($parm['format'])
 			{

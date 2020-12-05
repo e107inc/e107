@@ -86,7 +86,8 @@ class login_menu_class
 		{
             foreach ($list_arr as $item) 
 			{
-                $tmp = end(explode('/', trim($item['path'], '/.')));
+				$path = explode('/', trim($item['path'], '/.'));
+                $tmp = end($path);
                 
                 if(e107::isInstalled($tmp)) 
 				{

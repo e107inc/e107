@@ -23,7 +23,7 @@ class bb_img extends e_bb_base
 		if(!empty($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
 		if(!empty($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
 		if(!empty($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
-		if(!empty($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt'],'str');
+		if(!empty($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt']);
 		if(isset($parms['width'])) 	    $safe['width'] = (int) $parms['width'];
 
 		if(!empty($safe))
@@ -33,11 +33,13 @@ class bb_img extends e_bb_base
 
 		return '[img]'.$code_text.'[/img]';
 	}
-	
-    /**
-     * Media Manager bbcode. eg. using {e_MEDIA_IMAGE} and auto-resizing. 
-     * @return <img> tag with resized image. 
-     */
+
+	/**
+	 * Media Manager bbcode. eg. using {e_MEDIA_IMAGE} and auto-resizing.
+	 * @param $code_text
+	 * @param $parm
+	 * @return string <img> tag with resized image.
+	 */
     private function mediaImage($code_text,$parm)
     {
         $tp = e107::getParser();
@@ -66,7 +68,8 @@ class bb_img extends e_bb_base
             }
         } 
 
-        $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),0);
+		$resizeWidth = e107::getBB()->resizeWidth();
+        $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue($resizeWidth,0);
      //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
         
     //    $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing.
@@ -83,7 +86,7 @@ class bb_img extends e_bb_base
 			$html = "<figure>\n";
 		//	$html .= "<img src=\"".$url."\" {$parmStr} />";
 			$html .= $tp->toImage($code_text, $imgParms);
-			$html .= "<figcaption>".e107::getParser()->filter($figcaption,'str')."</figcaption>\n";
+			$html .= "<figcaption>".e107::getParser()->filter($figcaption)."</figcaption>\n";
 			$html .= "</figure>";
 
 			return $html;
@@ -96,10 +99,13 @@ class bb_img extends e_bb_base
     }
 
 
-
-    /**
-     * Process the [img] bbcode parm. ie. [img parms]something[/img]
-     */
+	/**
+	 * Process the [img] bbcode parm. ie. [img parms]something[/img]
+	 * @param $code_text
+	 * @param $parm
+	 * @param string $mode
+	 * @return array|string
+	 */
     private function processParm($code_text, $parm, $mode='')
     {      
 
@@ -278,4 +284,3 @@ class bb_img extends e_bb_base
 
 }
 
-?>

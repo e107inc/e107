@@ -177,16 +177,19 @@ if (isset($_POST['commentsubmit']))
 
 		require_once (HEADERF);
 				
-		$ns->tablerender($ftmp['caption'], $ftmp['text']);
+		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
 		
 	}
 
 	if($action == "cat" && $idx)
 	{
 		 $ftmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",LAN_FAQS_011." - ". $ftmp['title']);
+		 if(!defined("e_PAGETITLE"))
+		 {
+		    define("e_PAGETITLE", LAN_FAQS_011." - ". $ftmp['title']);
+		 }
 		 require_once(HEADERF);
-		 $ns->tablerender($ftmp['caption'], $ftmp['text']);
+		 e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
 	}
 
 	if ($action == "cat")
@@ -195,7 +198,7 @@ if (isset($_POST['commentsubmit']))
 
 		define("e_PAGETITLE", strip_tags($ftmp['title'].$ftmp['caption']));
 		require_once (HEADERF);
-		$ns->tablerender($ftmp['caption'], $ftmp['text']);
+		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
 	}
 
 

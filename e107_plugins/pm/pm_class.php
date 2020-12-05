@@ -386,8 +386,15 @@ class private_message
 
 		$template = $PM_NOTIFY;
 */
-	if(THEME_LEGACY){include_once(THEME.'pm_template.php');}
-	if (!$PM_NOTIFY){$PM_NOTIFY = e107::getTemplate('pm', 'pm', 'notify');}
+		if(THEME_LEGACY)
+		{
+			include_once(THEME.'pm_template.php');
+		}
+
+		if(empty($PM_NOTIFY))
+		{
+			$PM_NOTIFY = e107::getTemplate('pm', 'pm', 'notify');
+		}
 
 		if(empty($PM_NOTIFY)) // BC Fallback.
 		{
@@ -858,7 +865,7 @@ class private_message
 			ignore_user_abort(true);
 			$data_len = filesize($filename);
 			if ($seek > ($data_len - 1)) $seek = 0;
-			$res =& fopen($filename, 'rb');
+			$res = fopen($filename, 'rb');
 			if ($seek)
 			{
 				fseek($res , $seek);

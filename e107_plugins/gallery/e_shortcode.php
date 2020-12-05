@@ -223,7 +223,8 @@ class gallery_shortcodes extends e_shortcode
 
 	function sc_gallery_slideshow($parm = '')
 	{
-		$this->sliderCat = ($parm) ? $parm : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), 1);
+		$slideCat = e107::getPlugPref('gallery', 'slideshow_category');
+		$this->sliderCat = ($parm) ? $parm : vartrue($slideCat, 1);
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$template = array_change_key_case($tmpl);
@@ -241,7 +242,8 @@ class gallery_shortcodes extends e_shortcode
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 	//	$parm = eHelper::scParams($parms);
-		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), false); //TODO Separate pref?
+		$slideCat = e107::getPlugPref('gallery', 'slideshow_category');
+		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue($slideCat, false); //TODO Separate pref?
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$limit = vartrue($parm['limit'], 6);

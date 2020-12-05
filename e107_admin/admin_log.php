@@ -32,9 +32,11 @@ if(! getperms('S'))
 e107::coreLan('admin_log', true);
 e107::coreLan('log_messages', true); 
 
-if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
+$logList = e107::pref('core', 'lan_log_list');
+
+if(is_array($logList)) //... and for any plugins which support it
 {
-	foreach($pref['lan_log_list'] as $path => $file)
+	foreach($logList  as $path => $file)
 	{
 	//	$file = str_replace('--LAN--', e_LANGUAGE, $file);
 
@@ -504,7 +506,7 @@ class admin_log_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+			//	return  $array;
 			break;
 		}
 	}
@@ -659,7 +661,7 @@ class admin_log_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+			//	return  $array;
 			break;
 		}
 	}
@@ -684,7 +686,7 @@ class admin_log_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+			//	return  $array;
 			break;
 		}
 	}

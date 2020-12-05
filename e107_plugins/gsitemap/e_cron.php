@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpMissingReturnTypeInspection */
+<?php
 /*
  * e107 website system
  *
