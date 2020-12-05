@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingFieldTypeInspection */
 /*
  * e107 website system
  *
@@ -26,10 +26,10 @@ $gsm = new gsitemap;
 class gsitemap
 {
 
-	var $message;
-	var $error; 
-	var $errortext;  
-    var $freq_list = array();
+	protected $message;
+	protected $error;
+	protected $errortext;
+    protected $freq_list = array();
 
 	//function gsitemap()
 	function __construct()
@@ -120,7 +120,7 @@ class gsitemap
 			$text = "
 			<form action='".e_SELF."?import' id='import' method='post'>
 			".GSLAN_39."<br /><br />"
-			.$frm->admin_button('import',LAN_YES,'submit')."
+			.$frm->admin_button('import',LAN_YES)."
 			</form>";
 			
 			$mes->addInfo($text);
@@ -255,9 +255,9 @@ class gsitemap
 				{
 					$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
 					$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
-				};
+				}
 
-				$text.="</select></td>
+		$text.="</select></td>
 		</tr>
 		<tr>
 			<td>".LAN_ORDER."</td>
@@ -332,8 +332,8 @@ class gsitemap
 		// Inserting new record
 		else
 		{
-			$gmap['gsitemap_img'] = vartrue($_POST['gsitemap_img'], '');
-			$gmap['gsitemap_cat'] = vartrue($_POST['gsitemap_cat'], '');
+			$gmap['gsitemap_img'] = vartrue($_POST['gsitemap_img']);
+			$gmap['gsitemap_cat'] = vartrue($_POST['gsitemap_cat']);
 			
 			if($sql->insert('gsitemap', $gmap))
 			{
@@ -360,7 +360,7 @@ class gsitemap
 		if($sql->delete("gsitemap", "gsitemap_id='".$d_idt[0]."'"))
 		{
 			$this->message = LAN_DELETED;
-			$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
+			$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0]);
 		}
 		else
 		{
@@ -381,7 +381,7 @@ class gsitemap
 		$mes 	= e107::getMessage();
 		
 		$existing = array(); 
-		$sql->select("gsitemap", "*");  
+		$sql->select("gsitemap");
 		while($row = $sql->fetch())
 		{
 			$existing[] = $row['gsitemap_name'];	
@@ -502,12 +502,14 @@ class gsitemap
 		</table>
 		<div class='buttons-bar center'>
 		".
-			$frm->admin_button('import_links',GSLAN_18,'submit')."
+			$frm->admin_button('import_links',GSLAN_18)."
 		</div>
 		</form>
 		";
 
 		$ns->tablerender(GSLAN_7, $mes->render(). $text);
+
+		unset($PLUGINS_DIRECTORY);
 	}
 
 
@@ -529,7 +531,7 @@ class gsitemap
 		}
 
 		$this->message = count($_POST['importid'])." link(s) imported.";
-		$log->log_event('GSMAP_01',$this->message, E_LOG_INFORMATIVE,'');
+		$log->log_event('GSMAP_01',$this->message);
 	}
 
 
@@ -573,7 +575,7 @@ class gsitemap
 
 require_once(e_ADMIN."footer.php");
 
-
+// loaded automatically.
 function admin_config_adminmenu() 
 {
 	$action = (e_QUERY) ? e_QUERY : "list";
