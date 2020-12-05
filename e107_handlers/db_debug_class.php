@@ -501,8 +501,9 @@
 			}
 
 
-			while(list($tKey, $tMarker) = each($this->aTimeMarks))
+			foreach($this->aTimeMarks as $tKey => $tMarker)
 			{
+
 				if(!$bRowHeaders)
 				{
 					// First time: emit headers

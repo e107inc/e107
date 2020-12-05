@@ -1036,7 +1036,7 @@ class e_parse extends e_parser
 						if (in_array(substr($lvalue, 1), $nobreak))
 						{
 							reset($innbk);
-							while (list($key, $tag) = each($innbk))
+							foreach($innbk as $key=>$tag)
 							{
 								if (substr($lvalue, 1) == $tag)
 								{
