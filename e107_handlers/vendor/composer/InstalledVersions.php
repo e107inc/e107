@@ -1,5 +1,15 @@
 <?php
 
+
+
+
+
+
+
+
+
+
+
 namespace Composer;
 
 use Composer\Semver\VersionParser;
@@ -19,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'c258b6a2806c591575415a7b93f5543473d04e15',
+    'reference' => '1f38b3b3dd231c274f4df1a529883655108b611e',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -31,7 +41,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'c258b6a2806c591575415a7b93f5543473d04e15',
+      'reference' => '1f38b3b3dd231c274f4df1a529883655108b611e',
+    ),
+    'guzzlehttp/psr7' => 
+    array (
+      'pretty_version' => '1.7.0',
+      'version' => '1.7.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '53330f47520498c0ae1f61f7e2c90f55690c06a3',
     ),
     'hybridauth/hybridauth' => 
     array (
@@ -50,6 +69,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'fc9c119fe5d70af9a685cad6a8ac612fd7589e25',
+    ),
+    'intervention/image' => 
+    array (
+      'pretty_version' => '2.5.1',
+      'version' => '2.5.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'abbf18d5ab8367f96b3205ca3c89fb2fa598c69e',
     ),
     'matthiasmullie/minify' => 
     array (
@@ -77,6 +105,31 @@ private static $installed = array (
       array (
       ),
       'reference' => 'c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3',
+    ),
+    'psr/http-message' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+    ),
+    'psr/http-message-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
+    ),
+    'ralouphie/getallheaders' => 
+    array (
+      'pretty_version' => '3.0.3',
+      'version' => '3.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '120b605dfeb996808c31b6477290a714d356e822',
     ),
   ),
 );
