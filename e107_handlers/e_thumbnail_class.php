@@ -54,6 +54,13 @@ class e_thumbnail
 
 	public function init($pref)
 	{
+		$this->parseRequest();
+
+		if(!empty($this->_request['noinit']))
+		{
+			return null;
+		}
+
 		$this->_watermark = array(
 			'activate'		=> vartrue($pref['watermark_activate'], false),
 			'text'			=> vartrue($pref['watermark_text']),
@@ -68,7 +75,8 @@ class e_thumbnail
 
 		$this->_thumbQuality = vartrue($pref['thumbnail_quality'],65);
 
-		$this->parseRequest();
+
+
 	}
 
 	/**
@@ -289,7 +297,6 @@ class e_thumbnail
 		elseif(!empty($this->_request['ah']))
 		{
 			//Typically gives a better result with images of people than adaptiveResize().
-			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center?
 			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
 		}
 		else
@@ -318,27 +325,20 @@ class e_thumbnail
 			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
 			$this->_watermark['font'] =  realpath($tp->replaceConstants($this->_watermark['font'],'rel'));
 
-			$thumb->watermarkText($this->_watermark);
+		//	$thumb->WatermarkText($this->_watermark); // failing due to phpThumb::
 		}
 		//	echo "hello";
-
-
-
-	//exit;
-
 
 
 		// set cache
 		$thumb->save($cache_filename);
 
-		$this->_request = array();
+		$this->_request = array(); // reset the request.
 
-		if($this->_debug === true)
+		if($this->_debug === true) // return the cache file path for testing.
 		{
-
 			return $cache_filename;
 		}
-
 
 		// show thumb
 		$thumb->show();
