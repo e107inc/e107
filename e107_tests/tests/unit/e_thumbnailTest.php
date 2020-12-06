@@ -135,6 +135,13 @@
 				//  'c' => 'r', // crop right
 				),
 
+				// Test Resize Auto-disabled low resolution icons.
+				14 => array (
+				  'src' => 'e_IMAGE/e107_icon_32.png',
+				  'w' => 80,
+				  'h' => 0,
+				//  'c' => 'r', // crop right
+				),
 
 
 			);
@@ -146,11 +153,12 @@
 				$this->thm->checkSrc();
 
 				list($file,$ext) = explode(".",$val['src']);
+				unset($file);
 				$generatedImage = $this->thm->sendImage();
 				$storedImage = $this->thumbPath."image_".$index.".".$ext;
 
-				$compareMachine = new compareImages($storedImage);
-				$diff = $compareMachine->compareWith($generatedImage);
+				$compare = new compareImages($storedImage);
+				$diff = $compare->compareWith($generatedImage);
 
 				$status = ($diff < 5);
 

@@ -10,6 +10,8 @@
 
 
 
+use Intervention\Image\ImageManagerStatic as Image;
+
 class e_thumbnail
 {
 	private $_debug = false;
@@ -41,6 +43,8 @@ class e_thumbnail
 
 	protected $_thumbQuality = 65;
 
+	protected $_upsize = true;
+
 	/**
 	 * Constructor - init paths
 	 *
@@ -52,6 +56,11 @@ class e_thumbnail
 
 	}
 
+	/**
+	 * Initialize the class with e107 core prefs.
+	 * @param array $pref
+	 * @return null
+	 */
 	public function init($pref)
 	{
 		$this->parseRequest();
@@ -75,8 +84,11 @@ class e_thumbnail
 
 		$this->_thumbQuality = vartrue($pref['thumbnail_quality'],65);
 
+		$this->_upsize = ((isset($this->_request['w']) && $this->_request['w'] > 110) || (isset($this->_request['aw']) && ($this->_request['aw'] > 110))); // don't resizeUp the icon images.
 
-
+	//	var_dump($this);
+	//	exit;
+		return null;
 	}
 
 	/**
@@ -88,6 +100,10 @@ class e_thumbnail
 
 	}
 
+	/**
+	 * Enabled/Disable debugging/testing.
+	 * @param $val
+	 */
 	public function setDebug($val)
 	{
 		$this->_debug = (bool) $val;
@@ -115,17 +131,33 @@ class e_thumbnail
 
 		parse_str(str_replace('&amp;', '&', $e_QUERY), $this->_request);
 
+		if(isset($this->_request['w']))
+		{
+			$this->_request['w'] = (int) $this->_request['w'];
+		}
+		if(isset($this->_request['h']))
+		{
+			$this->_request['h'] = (int) $this->_request['h'];
+		}
 	//	file_put_contents(e_LOG."thumbRequests.log", var_export($this->_request, true)."\n\n", FILE_APPEND);
 
 		// parse_str($_SERVER['QUERY_STRING'], $this->_request);
 		return $this;
 	}
 
+	/**
+	 * Manually Set the Request parameters
+	 * @param array $array keys: w, h, ah, aw, c(rop)
+	 */
 	public function setRequest($array)
 	{
 		$this->_request = (array) $array;
 	}
 
+	/**
+	 * Validate and Sanitize the Request.
+	 * @return bool true when request is okay.
+	 */
 	public function checkSrc()
 	{
 		if(!vartrue($this->_request['src'])) // display placeholder when src is missing.
@@ -172,8 +204,109 @@ class e_thumbnail
 
 	}
 
-
 	public function sendImage()
+	{
+		if($this->_placeholder == true)
+		{
+			$width = ($this->_request['aw']) ? $this->_request['aw'] : $this->_request['w'];
+			$height = ($this->_request['ah']) ? $this->_request['ah'] : $this->_request['h'];
+
+			$parm = array('size' => $width."x".$height);
+
+			$this->placeholder($parm);
+			return false;
+		}
+
+		if(!$this->_src_path) // would only happen during testing.
+		{
+			echo "no source";
+			return $this;
+		}
+
+		$thumbnfo = pathinfo($this->_src_path);
+		$options = $this->getRequestOptions();
+		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
+		$cache_filename = e_CACHE_IMAGE . $fname;
+
+		$this->sendCachedImage($cache_filename, $thumbnfo);
+
+		// No Cached file found - proceed with image creation.
+
+		$img = Image::make($this->_src_path);
+
+
+		if(!empty($options['c'])) // Cropping:  $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
+		{
+			if(!empty($this->_request['ah']))
+			{
+				$this->_request['h'] = $this->_request['ah'];
+			}
+
+			if(!empty($this->_request['aw']))
+			{
+				$this->_request['w'] = $this->_request['aw'];
+			}
+
+			$key = $options['c'];
+			$fit = array(
+				'T' => 'top',
+				'C' => 'center',
+				'B' => 'bottom',
+				'L' => 'left',
+				'R' => 'right'
+			);
+
+			$position = varset($fit[$key],'top');
+
+			$img->fit(vartrue($this->_request['w'], null), vartrue($this->_request['h'], null), null, $position);
+		}
+		elseif(!empty($this->_request['w']) || !empty($this->_request['h']))
+		{
+			$img->resize(vartrue($this->_request['w'], null), vartrue($this->_request['h'], null), function ($constraint)
+			{
+		        $constraint->aspectRatio();
+
+		        if(!$this->_upsize)
+				{
+		            $constraint->upsize();
+				}
+
+			});
+		}
+		elseif(!empty($this->_request['ah']))
+		{
+			$img->fit(vartrue($this->_request['aw'], null), vartrue($this->_request['ah'], null), null, 'top');
+		}
+
+		/*
+			todo watermark support. @see http://image.intervention.io/api/text
+			todo also @see: http://image.intervention.io/api/insert
+		*/
+
+
+		$img->save($cache_filename, $this->_thumbQuality, $thumbnfo['extension']);
+
+		$this->_request = array(); // reset the request.
+
+		if($this->_debug === true) // return the cache file path for testing.
+		{
+			return $cache_filename;
+		}
+
+
+		$imageData = $img->encode($thumbnfo['extension'], $this->_thumbQuality);
+		$thumbnfo['fsize'] = strlen($imageData);
+
+		$this->sendHeaders($thumbnfo);
+		echo $imageData;
+
+		exit;
+	}
+
+
+
+
+	protected function sendImageOld() // for reference. - can be removed at a later date.
 	{
 
 		if($this->_placeholder == true)
@@ -187,8 +320,6 @@ class e_thumbnail
 			return false;
 		}
 
-
-
 		if(!$this->_src_path)
 		{
 			echo "no source";
@@ -197,58 +328,11 @@ class e_thumbnail
 
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
-
-/*		if($this->_debug === true)
-		{
-			var_dump($options);
-		//	return false;
-		}*/
-
-	//	$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
-	//	$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
-
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
-
 		$cache_filename = e_CACHE_IMAGE . $fname;
-		if(($this->_cache === true) && is_file($cache_filename) && is_readable($cache_filename) && ($this->_debug !== true))
-		{
-			$thumbnfo['lmodified'] = filemtime($cache_filename);
-			$thumbnfo['md5s'] = md5_file($cache_filename);
-			$thumbnfo['fsize'] = filesize($cache_filename);
 
-			// Send required headers
-			if($this->_debug !== true)
-			{
-				$this->sendHeaders($thumbnfo);
-			}
+		$this->sendCachedImage($cache_filename,$thumbnfo);
 
-				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
-			// 	exit;
-			// check browser cache
-			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
-			{
-				header('HTTP/1.1 304 Not Modified');
-				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
-				exit;
-			}
-
-			// Send required headers
-			//$this->sendHeaders($thumbnfo);
-
-			eShims::readfile($cache_filename);
-			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
-
-			exit;
-		}
-
-
-	//	if($this->_debug === true)
-	//	{
-			// $start = microtime(true);
-	//	}
-
-
-	//	@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 
 		if(!$thumb = e107::getThumb($this->_src_path))
 		{
@@ -267,11 +351,6 @@ class e_thumbnail
 			    'interlace'             => true // improves performance
 		    ));
 
-	/*	catch (Exception $e)
-		{
-		     echo $e->getMessage();
-		     return $this;
-		}*/
 
 		// Image Cropping by Quadrant.
 		if(!empty($options['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
@@ -346,6 +425,43 @@ class e_thumbnail
 		return $this;
 	}
 
+	/**
+	 * When caching is enabled, send the cached image with headers and then exit the script.
+	 * @param string $cache_filename
+	 * @param array $thumbnfo
+	 * @return null
+	 */
+	private function sendCachedImage($cache_filename, $thumbnfo)
+	{
+		if(!$this->_cache || !is_file($cache_filename) || !is_readable($cache_filename) || $this->_debug)
+		{
+			return null;
+		}
+
+		$thumbnfo['lmodified'] = filemtime($cache_filename);
+		$thumbnfo['md5s'] = md5_file($cache_filename);
+		$thumbnfo['fsize'] = filesize($cache_filename);
+
+			// Send required headers
+		if($this->_debug !== true)
+		{
+			$this->sendHeaders($thumbnfo);
+		}
+
+		// check browser cache
+		if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
+		{
+			header('HTTP/1.1 304 Not Modified');
+			//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
+			exit;
+		}
+
+		eShims::readfile($cache_filename);
+
+		exit;
+
+	}
+
 	private function getRequestOptions()
 	{
 		$ret = array();
@@ -366,6 +482,7 @@ class e_thumbnail
 
 	private function sendHeaders($thumbnfo)
 	{
+
 		if(headers_sent($filename, $linenum))
 		{
 			echo 'Headers already sent in '.$filename.' on line '.$linenum;
@@ -376,11 +493,19 @@ class e_thumbnail
 		{
 		    date_default_timezone_set('UTC');
 		}
-		//header('Pragma:');
+
 		header('Cache-Control: must-revalidate');
-	//	header('Cache-Control: public, max-age=3600');
-		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
-		header('Content-Length: '.$thumbnfo['fsize']);
+
+		if(isset($thumbnfo['lmodified']))
+		{
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
+		}
+
+		if(isset($thumbnfo['fsize'])) // extra check, if empty image will fail.
+		{
+			header('Content-Length: '.$thumbnfo['fsize']);
+		}
+
 		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as.
 
 		$ctype = $this->ctype($thumbnfo['extension']);
@@ -392,13 +517,17 @@ class e_thumbnail
 		// Expire header - 1 year
 		$time = time() + 365 * 86400;
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT');
-		header("Etag: ".$thumbnfo['md5s']);
+
+		if(isset($thumbnfo['md5s']))
+		{
+			header("Etag: ".$thumbnfo['md5s']);
+		}
 
 	}
 
 
 
-	public function ctype($ftype)
+	private function ctype($ftype)
 	{
 		static $known_types = array(
 			'gif'  => 'image/gif',
@@ -418,7 +547,7 @@ class e_thumbnail
 
 
 	// Display a placeholder image.
-	public function placeholder($parm)
+	private function placeholder($parm)
 	{
 		if($this->_debug === true)
 		{

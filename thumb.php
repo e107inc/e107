@@ -164,7 +164,7 @@ class e_thumbpage
 
 		if(!$thm->checkSrc())
 		{
-			die(' Access denied!');
+			die('Bad URL');
 		}
 
 		$thm->sendImage();
