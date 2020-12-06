@@ -199,12 +199,33 @@
 		{
 
 		}
-
+*/
 		public function testResizeImage()
 		{
+			$tests = array(
+				0 => array(
+					'input' => array('file'=>"{e_PLUGIN}gallery/images/butterfly.jpg", 'w' => 500, 'h' => 900),
+					'expected' => array('filename'=>'500x900_butterfly.jpg', 'w' => 500, 'h' => 333) // aspect ratio maintained.
+				),
+
+			);
+
+			foreach($tests as $index=>$var)
+			{
+				$output = codecept_output_dir().basename($var['input']['file']);
+				$result = $this->md->resizeImage($var['input']['file'], $output,['w'=>500,'h'=>900]);
+
+				$this->assertNotFalse($result, 'resizeImage() returned a value of false.');
+
+				$info = getimagesize($result);
+
+				$this->assertEquals($var['expected']['w'], $info[0], 'Image width mismatch on index #'.$index);
+				$this->assertEquals($var['expected']['h'], $info[1], 'Image height mismatch on index #'.$index);
+
+			}
 
 		}
-
+/*
 		public function testPreviewTag()
 		{
 
@@ -263,6 +284,6 @@
 		public function testGetPath()
 		{
 			$result = $this->md->getPath('image/jpeg');
-			// FIXME: This test doesn't do anything?
+			$this->assertContains(e_MEDIA.'images/', $result);
 		}
 	}
