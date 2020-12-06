@@ -305,7 +305,7 @@ class e_thumbnail
 
 
 
-
+/*
 	protected function sendImageOld() // for reference. - can be removed at a later date.
 	{
 
@@ -333,8 +333,9 @@ class e_thumbnail
 
 		$this->sendCachedImage($cache_filename,$thumbnfo);
 
+		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 
-		if(!$thumb = e107::getThumb($this->_src_path))
+		if(!$thumb = PhpThumbFactory::create($this->_src_path))
 		{
 			if(getperms('0'))
 			{
@@ -384,17 +385,17 @@ class e_thumbnail
 		}
 
 
-/*		if($this->_debug === true)
+		if($this->_debug === true)
 		{
 			// echo "time: ".round((microtime(true) - $start),4);
 
 			var_dump($thumb);
 			return false;
-		}*/
+		}
 
 		// Watermark Option - See admin->MediaManager->prefs for details.
 
-		if(($this->_watermark['activate'] < $options['w']
+	/	if(($this->_watermark['activate'] < $options['w']
 		|| $this->_watermark['activate'] < $options['aw']
 		|| $this->_watermark['activate'] < $options['h']
 		|| $this->_watermark['activate'] < $options['ah']
@@ -424,6 +425,7 @@ class e_thumbnail
 
 		return $this;
 	}
+*/
 
 	/**
 	 * When caching is enabled, send the cached image with headers and then exit the script.

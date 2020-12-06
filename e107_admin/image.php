@@ -98,7 +98,7 @@ if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work corre
 	
 }
 
-	require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import.
+
 
 $e_sub_cat = 'image';
 
@@ -268,7 +268,7 @@ class media_cat_ui extends e_admin_ui
 		if(!count($this->fields['media_cat_owner']['writeParms'])) 
 		{
 			e107::getMessage()->addInfo("Category creation not available.");
-			return;
+			return null;
 		}
 		
 		return $this->getUI()->getCreate();	
@@ -471,32 +471,13 @@ class media_form_ui extends e_admin_form_ui
 	 * @param int
 	 * @param int
 	 */
-	public function resizeImage($oldpath,$img_import_w,$img_import_h)
+	public function resizeImage($oldpath,$w,$h)
 	{
-		$mes = e107::getMessage();
-		try
+		if(e107::getMedia()->resizeImage($oldpath, $oldpath. ['w'=>$w, 'h'=>$h]))
 		{
-		    $thumb = PhpThumbFactory::create($oldpath);
-		    $thumb->setOptions(array('correctPermissions' => true));
+			return true;
 		}
-		catch (Exception $e)
-		{
-		     $mes->addError($e->getMessage());
-		     return FALSE;
-		    // return $this;
-		}
-	/*	if($WM) // TODO Add watermark prefs for alpha and position.
-		{
-			$thumb->resize($img_import_w,$img_import_h)->addWatermark($watermark, 'rightBottom', 30, 0, 0)->save($oldpath); 
-		}
-		else*/
-		{
-		 	if($thumb->resize($img_import_w,$img_import_h)->save($oldpath))
-			{
-				return TRUE;
-			} 
-		}	
-		
+
 	}
 
 
@@ -530,7 +511,7 @@ class media_form_ui extends e_admin_form_ui
 					$mes->addSuccess(LAN_IMA_004.": ".basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
-					$sql2->db_Update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])."");
+					$sql2->update("core_media","media_dimensions = '".$dim."', media_size = '".intval($info['fsize'])."' WHERE media_id = ".intval($row['media_id'])."");
 				}
 				else 
 				{
@@ -3258,12 +3239,7 @@ class media_admin_ui extends e_admin_ui
 						<div class='buttons-bar center form-inline'>
 						".IMALAN_123." ".$frm->selectbox('batch_category',$this->cats, $tp->filter($_POST['batch_category']));
 			
-		//	$waterMarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png"; // Now performed site-wide dynamically. 				
-					
-		//	if(is_readable($waterMarkPath))
-			{
-		//		$text .= $frm->checkbox_label("Add Watermark", 'batch_import_watermark',1);
-			}
+
 						
 						$text .= "
 						</div>
@@ -3387,18 +3363,7 @@ class media_admin_ui extends e_admin_ui
 		
 
 	
-		list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
-		
-		if(vartrue($_POST['batch_import_watermark']))
-		{
-			$WM = TRUE;
-			$watermarkPath = e_THEME.e107::getPref('sitetheme')."/images/watermark.png";	
-			$watermark = PhpThumbFactory::create($watermarkPath);
-		}
-		else 
-		{
-		 	$WM = FALSE; 
-		}	
+	//	list($img_import_w,$img_import_h) = explode("x",e107::getPref('img_import_resize'));
 
 		// Disable resize-on-import and watermark for now. 
 		$img_import_w = 2816;

@@ -14,6 +14,8 @@
 if (!defined('e107_INIT')) { exit; }
 //TODO LANS
 
+use Intervention\Image\ImageManagerStatic as Intervension;
+
 class e_media
 {
 	protected $imagelist = array();
@@ -363,7 +365,7 @@ class e_media
 		$sql = e107::getDb();
 		
 		$sql->select('core_media_cat',"media_cat_category", "media_cat_owner = '".$owner."' ");
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$categories[] = "'".$row['media_cat_category']."'";	
 		}
@@ -629,7 +631,7 @@ class e_media
 		$sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ");
 		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$image	= $row['media_url'];
 			$diz	= $row['media_name']." : ". $row['media_dimensions'];
@@ -666,9 +668,8 @@ class e_media
 		
 		$action = varset($option['action'],'nav');
 					
-		$url = e_ADMIN_ABS."image.php?mode=main&amp;action=".$action."&amp;iframe=1".$cat."&amp;from=0";
-		
-		return $url;	
+		return e_ADMIN_ABS."image.php?mode=main&amp;action=".$action."&amp;iframe=1".$cat."&amp;from=0";
+
 	}
 
 
@@ -1154,7 +1155,7 @@ class e_media
 				$text = str_replace('[x]',$dir,IMALAN_112);
 				$mes->add($text, E_MESSAGE_ERROR);
 				return FALSE;
-			};
+			}
 		}
 		return $dir;
 	}
@@ -1260,7 +1261,7 @@ class e_media
 			return FALSE;
 		}
 		
-		$info = e107::getFile()->get_file_info($path,true);
+		$info = e107::getFile()->get_file_info($path);
 		
 		
 		
@@ -1363,7 +1364,7 @@ class e_media
 			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
 			return false;
-		};
+		}
 
 		if($category === '_icon') // convert to _icon_16, _icon_32 etc.
 		{
@@ -1472,13 +1473,11 @@ class e_media
 
 		// e-dialog-save
 
-		$style  = varset($data['style'],'');
-		$class  = varset($data['class'],'');
+		$style  = varset($data['style']);
+		$class  = varset($data['class']);
 		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
 
-		$linkTag = "<a data-toggle='context' class='e-media-select ".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
-
-		return $linkTag;
+		return "<a data-toggle='context' class='e-media-select ".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
 
 	}
 
@@ -1939,23 +1938,26 @@ class e_media
 			return $destFilePath;
 		}
 
-
-		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
 		{
-			$thumb = PhpThumbFactory::create($src);
-			$thumb->setOptions(array('correctPermissions' => true, 'resizeUp' => false, 'jpegQuality' => $quality));
-			$thumb->resize($maxWidth, $maxHeight);
-			$thumb->save($destFilePath);
+			$thumb = Intervension::make($src);
+			$thumb->resize(vartrue($maxWidth, null), vartrue($maxHeight, null), function ($constraint)
+			{
+		        $constraint->aspectRatio();
+	            $constraint->upsize();
+			});
+
+			$thumb->save($destFilePath, $quality);
 			return $destFilePath;
 		}
 		catch (Exception $e)
 		{
-			$error =  array('thumbnailer'=> $e->getMessage(), 'src'=>$src, 'dest'=>$dest, 'savePath'=>$destFilePath, 'backtrace'=>'e_media::resizeImage');;
+			$error =  array('thumbnailer'=> $e->getMessage(), 'src'=>$src, 'dest'=>$dest, 'savePath'=>$destFilePath, 'backtrace'=>'e_media::resizeImage');
 			e107::getMessage()->addDebug(print_a($error,true));
 			e107::getLog()->add("RESIZE ERROR",$error,E_LOG_INFORMATIVE,'RESIZE');
 			return false;
 		}
+
 
 
 
@@ -2252,10 +2254,19 @@ class e_media
 
 		if(!empty($_REQUEST['resize']))
 		{
-			$thumb = e107::getThumb($filePath);
+
+			$thumb = Intervension::make($filePath);
 			$w = (int) $_REQUEST['resize']['w'];
 			$h = (int) $_REQUEST['resize']['h'];
-			$thumb->adaptiveResize($w,$h)->save($filePath);
+
+			$thumb->resize(vartrue($w, null), vartrue($h, null), function ($constraint)
+			{
+		        $constraint->aspectRatio();
+	            $constraint->upsize();
+			});
+
+			$thumb->save($filePath);
+
 		}
 
 		if(!empty($_REQUEST['rename']))

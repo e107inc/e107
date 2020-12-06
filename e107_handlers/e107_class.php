@@ -735,7 +735,7 @@ class e107
 	 * Note: will always return false if called before prepare_request() method!
 	 *
 	 * @param string $key
-	 * @return boolean
+	 * @return boolean|array
 	 */
 	public static function getE107($key = null)
 	{
@@ -1024,7 +1024,7 @@ class e107
 	 * @param string $name core|core_backup|emote|menu|search|notify
 	 * @param bool $load
 	 * @param bool $refresh
-	 * @return e_core_pref
+	 * @return e_core_pref|e_plugin_pref
 	 */
 	public static function getConfig($name = 'core', $load = true, $refresh=false)
 	{
@@ -1295,7 +1295,7 @@ class e107
 	/**
 	 * Retrieve text parser singleton object
 	 *
-	 * @return e_parse
+	 * @return e_parse|array
 	 */
 	public static function getParser()
 	{
@@ -1475,9 +1475,12 @@ class e107
 	 * Retrieves PhpThumbFactory object
 	 *
 	 * @param $src
+	 * @deprecated - use Intervention class instead @see
+	 * @example use Intervention\Image\ImageManagerStatic as Image;
+	 * @example $img = Image::make($this->_src_path);.
 	 * @return bool|GdThumb
 	 */
-	public static function getThumb($src)
+	/*public static function getThumb($src)
 	{
 		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
@@ -1489,7 +1492,7 @@ class e107
 			return false;
 		}
 
-	}
+	}*/
 
 
 	/**
