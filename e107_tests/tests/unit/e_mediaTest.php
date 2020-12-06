@@ -284,6 +284,6 @@
 		public function testGetPath()
 		{
 			$result = $this->md->getPath('image/jpeg');
-			$this->assertContains(e_MEDIA.'images/', $result);
+			$this->assertStringContainsString(e_MEDIA.'images/', $result);
 		}
 	}
