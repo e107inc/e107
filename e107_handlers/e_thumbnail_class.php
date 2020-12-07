@@ -228,7 +228,7 @@ class e_thumbnail
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 		$cache_filename = e_CACHE_IMAGE . $fname;
 
-		$this->sendCachedImage($cache_filename, $thumbnfo);
+	//	$this->sendCachedImage($cache_filename, $thumbnfo);
 
 		// No Cached file found - proceed with image creation.
 
@@ -273,7 +273,7 @@ class e_thumbnail
 
 			});
 		}
-		elseif(!empty($this->_request['ah']))
+		elseif(!empty($this->_request['ah']) || !empty($this->_request['aw']))
 		{
 			$img->fit(vartrue($this->_request['aw'], null), vartrue($this->_request['ah'], null), null, 'top');
 		}
