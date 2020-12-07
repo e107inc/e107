@@ -556,8 +556,9 @@ class e_file
     }
 
 	/**
-	 * @param string $address
+	 * @param string     $address
 	 * @param array|null $options
+	 * @return CurlHandle|false|resource
 	 */
 	function initCurl($address, $options =null)
 	{
@@ -1720,7 +1721,7 @@ class e_file
 			unlink(e_TEMP.$localfile);
 		}
 
-		$result = $this->getRemoteFile($remotefile, $localfile, 'temp');
+		$result = $this->getRemoteFile($remotefile, $localfile);
 
 		if($result === false)
 		{
@@ -2023,6 +2024,7 @@ class e_file
 			case 'wbmp':
 			case 'xbm':
 			case 'ico':
+			case 'webp':
 
 				$ret = $this->getImageMime($filename);
 
@@ -2061,6 +2063,7 @@ class e_file
 			case 'mov': //media
 			case 'avi': //media
 			case 'xml':
+			case 'webm':
 
 				break; // Just accept these
 
@@ -2085,12 +2088,12 @@ class e_file
 	}
 
 
-
-
 	/**
 	 * New in v2.1.9
 	 * Check filename or path against filetypes.xml
-	 * @param $file - real path to file.
+	 *
+	 * @param        $file - real path to file.
+	 * @param string $targetFile
 	 * @return boolean
 	 */
 	public function isAllowedType($file,$targetFile='')
@@ -2153,7 +2156,8 @@ class e_file
 			'image/iff' 					=> array('iff'),
 			'image/vnd.wap.wbmp' 			=> array('wbmp'),
 			'image/xbm' 					=> array('xbm'),
-			'image/vnd.microsoft.icon' 		=> array('ico')
+			'image/vnd.microsoft.icon' 		=> array('ico'),
+			'image/webp'                    => array('webp'),
 		);
 
 		$ret = image_type_to_mime_type(exif_imagetype($filename));
@@ -2203,7 +2207,7 @@ class e_file
 
 		$xml = e107::getXml();
 		$xml->setOptArrayTags('class'); // class tag should be always array
-		$temp_vars = $xml->loadXMLfile(e_SYSTEM."filetypes.xml", 'filetypes', false);
+		$temp_vars = $xml->loadXMLfile(e_SYSTEM."filetypes.xml", 'filetypes');
 
 		if ($temp_vars === false)
 		{

@@ -149,6 +149,14 @@
 				//  'c' => 'r', // crop right
 				),
 
+				// Test WebP format resize.
+				16 => array (
+				  'src' => 'e_PLUGIN/gallery/images/beach.webp',
+				  'aw' => 455,
+				  'ah' => 0,
+
+				),
+
 
 
 			);
@@ -172,7 +180,14 @@
 			//	$actual     = getimagesize($generatedImage);
 			//	$expected   = getimagesize($storedImage);
 
+				if($status === false)
+				{
+					rename($generatedImage,codecept_output_dir()."sendImage_".time()."_index_".$index.".".$ext);
+				}
+
 				$this->assertTrue($status, "Image Index #".$index." failed the image-comparison check");
+
+
 			}
 
 		}
@@ -210,6 +225,12 @@ class compareImages
             case 'image/png':
                 $return[] = 'png';
                 return $return;
+	        case 'image/webp':
+	             $return[] = 'webp';
+                return $return;
+            case 'image/gif':
+	             $return[] = 'gif';
+                return $return;
             default:
                 return false;
         }
@@ -219,14 +240,29 @@ class compareImages
     {
         /*retuns image resource or false if its not jpg or png*/
         $mime = $this->mimeType($i);
-        if ($mime[2] == 'jpg') {
-            return imagecreatefromjpeg($i);
-        } else
-            if ($mime[2] == 'png') {
-                return imagecreatefrompng($i);
-            } else {
-                return false;
-            }
+
+	    switch($mime[2])
+	    {
+		    case "jpg":
+			    return imagecreatefromjpeg($i);
+			    break;
+
+		    case "png":
+			    return imagecreatefrompng($i);
+			    break;
+
+			case "gif":
+			    return imagecreatefromgif($i);
+			    break;
+
+			case "webp":
+			    return imagecreatefromwebp($i);
+			    break;
+
+		    default:
+			   return false;
+	    }
+
     }
 
     private function resizeImage($source)

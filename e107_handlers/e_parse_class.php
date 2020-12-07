@@ -4638,7 +4638,7 @@ class e_parser
 			$path       = null;
 			$file       = trim($file);
 			$ext        = pathinfo($file, PATHINFO_EXTENSION);
-			$accepted   = array('jpg','gif','png','jpeg', 'svg');
+			$accepted   = array('jpg','gif','png','jpeg', 'svg', 'webp');
 
 
 			if(!in_array($ext,$accepted))
