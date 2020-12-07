@@ -237,12 +237,24 @@ class e_fileTest extends \Codeception\Test\Unit
 
 	public function testGet_file_info()
 	{
-		$path = APP_PATH."/e107_web/lib/font-awesome/4.7.0/fonts/fontawesome-webfont.svg";
+		$tests = array(
+			0   => array('input' => "e107_web/lib/font-awesome/4.7.0/fonts/fontawesome-webfont.svg", 'expected'=>'image/svg+xml'),
+			1   => array('input' => "e107_plugins/gallery/images/beach.webp", 'expected'=>'image/webp'),
+			2   => array('input' => "e107_tests/tests/_data/fileTest/corrupted_image.webp", 'expected'=>false),
+		);
 
-		$ret = $this->fl->get_file_info($path);
+		foreach($tests as $item)
+		{
+			$path = APP_PATH.'/'.$item['input'];
+			$ret = $this->fl->get_file_info($path);
 
-		$this->assertEquals('image/svg+xml',$ret['mime']);
+			if($ret === false)
+			{
+				$ret = array('mime'=>false);
+			}
 
+			$this->assertEquals($item['expected'], $ret['mime']);
+		}
 
 	}
 	/*

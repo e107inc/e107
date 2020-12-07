@@ -401,11 +401,11 @@ class e_file
 	 * @param boolean $auto_fix_ext
 	 * @return array|bool
 	 */
-	function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
+	public function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 	{
 		$finfo = array();
 		
-		if(filesize($path_to_file) < 2) // Don't try and read 0 byte files. 
+		if(!file_exists($path_to_file) || filesize($path_to_file) < 2) // Don't try and read 0 byte files.
 		{
 			return false; 	
 		}

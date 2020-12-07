@@ -38,7 +38,7 @@ class e_media
 				'multipart'		=> array(),
 				'application'	=> array('zip','doc','gz'),
 				'audio'			=> array('mp3','wav'),
-				'image'			=> array('jpeg','jpg','png','gif', 'svg'),
+				'image'			=> array('jpeg','jpg','png','gif', 'svg', 'webp'),
 				'video'			=> array('mp4', 'youtube','youtubepl'),
 				'other'			=> array(),
 			//	'glyph'         => array('glyph')
@@ -568,6 +568,7 @@ class e_media
 			$id = $row['media_id'];
 			$ret[$id] = $row;
 		}
+
 		return $ret;	
 	}
 
@@ -1128,7 +1129,7 @@ class e_media
 		list($pmime,$tmp) = explode('/',$mime);
 		unset($tmp);
 
-		if(!vartrue($this->mimePaths[$pmime]))
+		if(empty($this->mimePaths[$pmime]))
 		{
 			$this->log("Couldn't detect mime-type ($mime).");
 			$text = $text = str_replace('[x]',$mime,IMALAN_111); //FIXME LAN IMALAN_112 is not generic. This method can be called from anywhere, not only e107_admin/image.php.
@@ -1263,7 +1264,7 @@ class e_media
 		
 		$info = e107::getFile()->get_file_info($path);
 		
-		
+
 		
 		$this->log("File info for $path : ".print_r($info,true));
 		
@@ -1443,10 +1444,11 @@ class e_media
 			return $path;
 		}
 
-
 		$ext = e107::getFile()->getFileExtension($mime);
 
-		if($ext && (substr($path,-4) != $ext))
+		$len = strlen($ext);
+
+		if($ext && (substr($path,- $len) != $ext))
 		{
 			return $path.$ext;
 		}
@@ -1999,7 +2001,6 @@ class e_media
 		if(!file_exists($jpgFile))
 		{
 
-
 			switch($type)
 			{
 				case ".gif":
@@ -2061,11 +2062,11 @@ class e_media
 			$fileName = $_FILES['file']['name'];
 		}
 
+
 		// Clean the fileName for security reasons
 		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
 
 		//	$array = array("jsonrpc" => "2.0", "error" => array('code'=>$_FILES['file']['error'], 'message'=>'Failed to move file'), "id" => "id",  'data'=>$_FILES );
-
 
 
 		// Make sure the fileName is unique but only if chunking is disabled
@@ -2083,6 +2084,7 @@ class e_media
 
 			$fileName = $fileName_a . '_' . $count . $fileName_b;
 		}
+
 
 		$filePath = $targetDir .  $fileName;
 
@@ -2139,7 +2141,7 @@ class e_media
 				if($out)
 				{
 					// Read binary input stream and append it to temp file
-					$tmpName = e107::getParser()->filter($_FILES['file']['tmp_name'],'str');
+					$tmpName = e107::getParser()->filter($_FILES['file']['tmp_name']);
 					$in = fopen($tmpName, "rb");
 
 					if($in)
@@ -2224,9 +2226,32 @@ class e_media
 			rename("{$filePath}.part", $filePath);
 		}
 
+		return $this->processAjaxImport($filePath, $_REQUEST); 
+		
+	}
+
+	/**
+	 * For Internal Use Only
+	 * Second half of processAjaxUpload()
+	 * Subject to change at any time. Use at own risk.
+	 *
+	 * @param string $filePath
+	 * @param array $request
+	 * @return false|string
+	 */
+	public function processAjaxImport($filePath, $request = array())
+	{
+		if(!file_exists($filePath))
+		{
+			return '{"jsonrpc" : "2.0", "error" : {"code": 110, "message": "File Not Found: '.$filePath.'"}, "id" : "id"}';
+		}
+
+		$targetDir = e_IMPORT;
+		$fileName = basename($filePath);
+	
 		if(e107::getFile()->isClean($filePath) !== true)
 		{
-			$this->ajaxUploadLog($filePath,$fileName, filesize($filePath), false);
+			$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "File detected as not clean. (".__METHOD__.")");
 			@unlink($filePath);
 			return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected. '.$filePath.'"}, "id" : "id"}';
 		}
@@ -2234,14 +2259,14 @@ class e_media
 
 		$convertToJpeg = e107::getPref('convert_to_jpeg', 0);
 
-		if(!empty($_REQUEST['convert']) && $_REQUEST['convert'] === 'jpg')
+		if(!empty($request['convert']) && $request['convert'] === 'jpg')
 		{
 			$convertToJpeg = true;
 		}
 
 		$fileSize = filesize($filePath);
 
-		if(varset($_REQUEST['for']) !== '_icon' && !empty($convertToJpeg))
+		if(varset($request['for']) !== '_icon' && !empty($convertToJpeg))
 		{
 			if($jpegFile = e107::getMedia()->convertImageToJpeg($filePath, true))
 			{
@@ -2252,12 +2277,12 @@ class e_media
 
 		}
 
-		if(!empty($_REQUEST['resize']))
+		if(!empty($request['resize']))
 		{
 
 			$thumb = Intervension::make($filePath);
-			$w = (int) $_REQUEST['resize']['w'];
-			$h = (int) $_REQUEST['resize']['h'];
+			$w = (int) $request['resize']['w'];
+			$h = (int) $request['resize']['h'];
 
 			$thumb->resize(vartrue($w, null), vartrue($h, null), function ($constraint)
 			{
@@ -2269,9 +2294,9 @@ class e_media
 
 		}
 
-		if(!empty($_REQUEST['rename']))
+		if(!empty($request['rename']))
 		{
-			$newPath = $targetDir.basename($_REQUEST['rename']);
+			$newPath = $targetDir.basename($request['rename']);
 			if(!rename($filePath, $newPath))
 			{
 				return '{"jsonrpc" : "2.0", "error" : {"code": 105, "message": "Unable to rename '.$filePath.' to '.$newPath.'"}, "id" : "id"}';
@@ -2279,13 +2304,18 @@ class e_media
 			$fileName = basename($newPath);
 		}
 
-		if(!empty($_REQUEST['for'])) // leave in upload directory if no category given.
+		$msg = '';
+
+		if(!empty($request['for'])) // leave in upload directory if no category given.
 		{
-			$uploadPath = varset($_REQUEST['path'],null);
-			$for = e107::getParser()->filter($_REQUEST['for']);
+			$uploadPath = varset($request['path'],null);
+			$for = e107::getParser()->filter($request['for']);
 			$for = str_replace(array('+','^'),'', $for);
 
-			$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath));
+			if(!$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath)))
+			{
+				$msg = 'Unable to import ('.__METHOD__.' Line: '.__LINE__ .')';
+			}
 		}
 		else
 		{
@@ -2293,43 +2323,45 @@ class e_media
 		}
 
 
-		$this->ajaxUploadLog($filePath,$fileName,$fileSize,$result);
-
-
-
-		// file_put_contents(e_LOG."mediatmp.log", print_r($previewArr,true));
+		$this->ajaxUploadLog($filePath,$fileName,$fileSize,$result, $msg);
 
 		$opts = array();
 
 		// set correct size for preview image.
-		if(isset($_REQUEST['w']))
+		if(isset($request['w']))
 		{
-			$opts['w'] = (int) $_REQUEST['w'];
+			$opts['w'] = (int) $request['w'];
 		}
 
-		if(isset($_REQUEST['h']))
+		if(isset($request['h']))
 		{
-			$opts['h'] = (int) $_REQUEST['h'];
+			$opts['h'] = (int) $request['h'];
 		}
 
 		$preview = $this->previewTag($result,$opts);
 		$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id", 'preview' => $preview, 'data'=>$_FILES );
 
 		return json_encode($array);
-
-
+	
+	
 	}
 
-
-	private function ajaxUploadLog($filePath,$fileName,$fileSize,$result)
+	private function ajaxUploadLog($filePath,$fileName,$fileSize,$result, $msg='')
 	{
-		$log = e107::getParser()->filter($_GET,'str');
+		$log = e107::getParser()->filter($_GET);
+
 		$log['filepath'] = str_replace('../','',$filePath);
 		$log['filename'] = $fileName;
 		$log['filesize'] = $fileSize;
 		$log['status'] = ($result) ? 'ok' : 'failed';
 		$log['_files'] = $_FILES;
 		$log['_request'] = $_REQUEST;
+
+		if(!empty($msg))
+		{
+			$log['_msg'] = $msg;
+		}
+
 		//	$log['_get'] = $_GET;
 		//	$log['_post'] = $_POST;
 		$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING;
