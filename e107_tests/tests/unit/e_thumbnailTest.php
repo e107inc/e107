@@ -142,6 +142,13 @@
 				  'h' => 0,
 				//  'c' => 'r', // crop right
 				),
+				15 => array (
+				  'src' => 'e_PLUGIN/gallery/images/butterfly.jpg',
+				  'aw' => 80,
+				  'ah' => 0,
+				//  'c' => 'r', // crop right
+				),
+
 
 
 			);
