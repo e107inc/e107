@@ -23,7 +23,7 @@
 			}
 			catch (Exception $e)
 			{
-				$this->fail("Couldn't load e_media object");
+				$this->fail($e->getMessage());
 			}
 
 		}
@@ -37,25 +37,58 @@
 				array('path'=>'path-to-file/audio' ,    'mime' => 'audio/mpeg', 'expected'=>'path-to-file/audio.mp3'),
 				array('path'=>'path-to-file/audio.mp3', 'mime' => 'audio/mpeg', 'expected'=>'path-to-file/audio.mp3'),
 				array('path'=>'path-to-file/image.svg', 'mime' => 'svg+xml',    'expected'=>'path-to-file/image.svg'),
+				array('path'=>'path-to-file/image.webp', 'mime' => 'svg+xml',    'expected'=>'path-to-file/image.webp'),
 			);
 
 
 			foreach($types as $val)
 			{
 				$actual = $this->md->checkFileExtension($val['path'],$val['mime']);
-
 				$this->assertEquals($val['expected'],$actual);
-				//echo ($actual)."\n";
 			}
-
-
 
 		}
 
-		public function testProcessAjaxUpload()
+		public function testProcessAjaxImport()
 		{
+			$tests = array(
+				0 => array(
+						'file'  => e_PLUGIN."gallery/images/horse.jpg",
+						'param' => array (
+							  'for' => 'news ',
+							  'w' => '206',
+							  'h' => '190',
+						),
+				),
+				1 => array(
+						'file'  => e_PLUGIN."gallery/images/beach.webp",
+						'param' => array (
+							  'for' => 'news ',
+							  'w' => '206',
+							  'h' => '190',
+						),
+				),
 
-			// @todo
+			);
+
+			foreach($tests as $index => $var)
+			{
+				$source = $var['file'];
+				$file = e_IMPORT.basename($var['file']);
+				copy($source,$file);
+
+				$json = $this->md->processAjaxImport($file,$var['param']);
+
+				$result = json_decode($json, JSON_PRETTY_PRINT);
+			//	var_dump($result);
+				$this->assertNotFalse($result);
+
+			//	var_dump($result);
+
+				$this->assertStringEndsWith('/'.basename($var['file']), $result['result']);
+
+				$this->assertNotEmpty($result['preview']);
+			}
 
 		
 		}
@@ -99,26 +132,29 @@
 */
 		public function testImportFile()
 		{
-			/* FIXME: https://github.com/e107inc/e107/issues/4033
-			$icon = codecept_data_dir()."icon_64.png";
-			$dest = e_IMPORT."icon_64.png";
-			copy($icon,$dest);
+			/* FIXME: https://github.com/e107inc/e107/issues/4033 */
 
-			if(!file_exists($dest))
-			{
-				$this->fail("Couldn't copy icon to ".$dest);
-			}
 
 			$tests = array(
-				0   => array('file'=> 'icon_64.png', 'cat'  => '_icon',  'expected'=>"{e_MEDIA_ICON}icon_64.png"),
+		//		0   => array('file'=> codecept_data_dir().'icon_64.png', 'cat'  => '_icon',  'expected'=>"{e_MEDIA_ICON}icon_64.png"),
+				1   => array('file'=> e_PLUGIN.'gallery/images/horse.jpg', 'cat'  => 'news',  'expected'=>"horse.jpg"),
+				2   => array('file'=> e_PLUGIN.'gallery/images/beach.webp', 'cat'  => 'news',  'expected'=>"beach.webp"),
 			);
 
 			foreach($tests as $var)
 			{
-				$result = $this->md->importFile($var['file'], $var['cat']);
-				$this->assertEquals($var['expected'],$result);
+				$importPath = e_IMPORT.basename($var['file']);
+				copy($var['file'], $importPath);
+
+				if(!file_exists($importPath))
+				{
+					$this->fail("Couldn't copy file to ".$importPath);
+				}
+
+				$result = $this->md->importFile($importPath, $var['cat']);
+				$this->assertStringEndsWith($var['expected'],$result);
 			}
-			*/
+
 		}
 /*
 		public function testBrowserCarousel()
