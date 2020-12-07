@@ -65,10 +65,11 @@ class alt_auth_admin extends alt_auth_base
 	 *
 	 *	@return array of authentication methods in value fields
 	 */
-	public function alt_auth_get_authlist($incE107 = TRUE)
+	public static function alt_auth_get_authlist($incE107 = TRUE)
 	{
 		$authlist = $incE107 ? array('e107') : array();
 		$handle = opendir(e_PLUGIN.'alt_auth');
+
 		while ($file = readdir($handle))
 		{
 			if(preg_match("/^(.+)_auth\.php/", $file, $match))
@@ -76,28 +77,29 @@ class alt_auth_admin extends alt_auth_base
 				$authlist[] = $match[1];
 			}
 		}
+
 		closedir($handle);
 		return $authlist;
 	}
 
 
-
 	/**
-	 *	Return HTML for selector for authentication method
+	 *    Return HTML for selector for authentication method
 	 *
-	 *	@param string $name - the name of the selector
-	 *	@param string $curval - current value (if any)
-	 *	@param string $optlist - comma-separated list of options to be included as choices
+	 * @param string $name   - the name of the selector
+	 * @param string $curval - current value (if any)
+	 * @param string $options
+	 * @return string
 	 */
 	public function alt_auth_get_dropdown($name, $curval = '', $options = '')
 	{
 		$optList = explode(',', $options);
-		$authList = array_merge($optList, $this->alt_auth_get_authlist(FALSE));
+		$authList = array_merge($optList, self::alt_auth_get_authlist(FALSE));
 		$ret = "<select class='tbox' name='{$name}'>\n";
 		foreach ($authList as $v)
 		{
 			$sel = ($curval == $v ? " selected = 'selected' " : '');
-			$ret .= "<option value='{$v}'{$sel} >{$v}</option>\n";
+			$ret .= "<option value='{$v}'".$sel." >{$v}</option>\n";
 		}
 		$ret .= "</select>\n";
 		return $ret;
@@ -113,7 +115,7 @@ class alt_auth_admin extends alt_auth_base
 	private $alt_auth_user_fields = array(
 	  'user_id' 		=> array('prompt' => "User Id", 'help'=>'Use with caution', 'default' => false, 'optional' =>  TRUE, 'otherdb' =>  FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
 	  'user_email' 		=> array('prompt' => LAN_ALT_12, 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
-	  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', method => 'bool1'),
+	  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', 'method' => 'bool1'),
 	  'user_name' 		=> array('prompt' => LAN_ALT_14, 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
 	  'user_login'		=> array('prompt' => LAN_ALT_15, 'default' => 'user_login', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'sn'),
 	  'user_customtitle'=> array('prompt' => LAN_ALT_16, 'default' => 'user_customtitle', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
@@ -126,15 +128,16 @@ class alt_auth_admin extends alt_auth_base
 	);
 
 
-
 	/**
-	 *	Returns a block of table rows with user DB fields and either checkboxes or entry boxes
+	 *    Returns a block of table rows with user DB fields and either checkboxes or entry boxes
 	 *
-	 *	@param string $tableType is the prefix used, without the following underscore
-	 *	@param object $frm is the form object to use to create the text
-	 *	@param array $parm is the array of options for the current auth type as read from the DB
+	 * @param string $tableType is the prefix used, without the following underscore
+	 * @param object $frm       is the form object to use to create the text
+	 * @param array  $parm      is the array of options for the current auth type as read from the DB
+	 * @param bool   $asCheckboxes
+	 * @return string
 	 */
-	public function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = FALSE)
+	public function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = false)
 	{
 		$ret = '';
 		foreach ($this->alt_auth_user_fields as $f => $v)
@@ -148,10 +151,10 @@ class alt_auth_admin extends alt_auth_base
 				$ret .= "</td><td class='form-inline'>";
 	//			$fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
-				$value = varset($v['default'],'');
+				$value = varset($v['default']);
 				if (is_array($value))
 				{
-					$value = varset($value[$tableType],'');
+					$value = varset($value[$tableType]);
 				}
 				if (isset($v[$tableType.'_field'])) $value = $v[$tableType.'_field'];
 				if (isset($parm[$fieldname])) $value = $parm[$fieldname];
@@ -166,7 +169,7 @@ class alt_auth_admin extends alt_auth_base
 					if (isset($v['method']) && $v['method'])
 					{
 						$fieldMethod = $tableType.'_pm_'.$f;			// Processing method ID code
-						$method = varset($parm[$fieldMethod],'');
+						$method = varset($parm[$fieldMethod]);
 						$ret .= '&nbsp;&nbsp;'.$this->alt_auth_processing($fieldMethod,$v['method'], $method);
 					}
 				}
@@ -228,8 +231,8 @@ class alt_auth_admin extends alt_auth_base
 		{
 			if (isset($xFields[$f]))
 			{
-				$this->alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text'],'').' ('.$f.')',
-														'default' => varset($xFields[$f]['default'],''),
+				$this->alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text']).' ('.$f.')',
+														'default' => varset($xFields[$f]['default']),
 														'optional' => TRUE,
 														'showAll' => TRUE,			// Show for all methods - in principle, its likely to be wanted for all
 														'method'  => '*' 			// Specify all convert methods - have little idea what may be around
@@ -260,16 +263,16 @@ class alt_auth_admin extends alt_auth_base
 	);
 
 
-
 	/**
-	 *	Return the HTML for all server-related fields required for configuration of a particular method.
-	 *	Each is a row of a table having two columns (no <table>...</table> etc added, so can be embedded in a larger table
+	 *    Return the HTML for all server-related fields required for configuration of a particular method.
+	 *    Each is a row of a table having two columns (no <table>...</table> etc added, so can be embedded in a larger table
 	 *
-	 *	@param string $prefix is the prefix used, without the following underscore
-	 *	@param object $frm is the form object to use
-	 *	@param array $parm is an array of the current values of each item
-	 *	@param string $fields is a list of the fields to display, separated by '|'. The names are the key values from $common_fields table
+	 * @param string $prefix is the prefix used, without the following underscore
+	 * @param object $frm    is the form object to use
+	 * @param array  $parm   is an array of the current values of each item
+	 * @param string $fields is a list of the fields to display, separated by '|'. The names are the key values from $common_fields table
 	 *
+	 * @return string
 	 */
 	public function alt_auth_get_db_fields($prefix, $frm, $parm, $fields = 'server|uname|pwd|db|table|ufield|pwfield')
 	{
@@ -299,11 +302,11 @@ class alt_auth_admin extends alt_auth_base
 	}
 
 
-
 	/**
-	 *	Write all the options for a particular authentication type to the DB
+	 *    Write all the options for a particular authentication type to the DB
 	 *
-	 *	@var string $prefix - the prefix string representing the authentication type (currently importdb|e107db|otherdb|ldap|radius). Must NOT have a trailing underscore
+	 * @return string
+	 * @var string $prefix - the prefix string representing the authentication type (currently importdb|e107db|otherdb|ldap|radius). Must NOT have a trailing underscore
 	 */
 	public function alt_auth_post_options($prefix)
 	{
@@ -326,29 +329,29 @@ class alt_auth_admin extends alt_auth_base
 			if (strpos($k,$lprefix) === 0)
 			{
 				$v = base64_encode(base64_encode($v));
-				if($sql -> db_Select('alt_auth', '*', "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
+				if($sql -> select('alt_auth', '*', "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
 				{
-					$sql -> db_Update('alt_auth', "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
+					$sql -> update('alt_auth', "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
 				}
 				else
 				{
-					$sql -> db_Insert('alt_auth', "'{$prefix}','{$k}','{$v}' ");
+					$sql -> insert('alt_auth', "'{$prefix}','{$k}','{$v}' ");
 				}
 			}
 		}
-		e107::getLog()->add('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('AUTH_03',$prefix);
 		return LAN_ALT_UPDATED;
 	}
-
 
 
 	/**
 	 * Get the HTML for a password type selector.
 	 *
-	 *	@param string $name - name to be used for selector
-	 *	@param $frm - form object to use
-	 *	@param string $currentSelection - current value (if any)
-	 *	@param boolean $getExtended - return all supported password types if TRUE, 'core' password types if FALSE
+	 * @param string  $name             - name to be used for selector
+	 * @param         $frm              - form object to use
+	 * @param string  $currentSelection - current value (if any)
+	 * @param boolean $getExtended      - return all supported password types if TRUE, 'core' password types if FALSE
+	 * @return string
 	 */
 	public function altAuthGetPasswordSelector($name, $frm, $currentSelection = '', $getExtended = FALSE)
 	{
@@ -366,15 +369,14 @@ class alt_auth_admin extends alt_auth_base
 	}
 
 
-
-
 	/**
-	 *	Return the HTML needed to display the test form.
+	 *    Return the HTML needed to display the test form.
 	 *
-	 *	@param string $prefix - the type of connection being tested
-	 *	@param $frm - the form object to use
+	 * @param string $prefix - the type of connection being tested
+	 * @param        $frm    - the form object to use
 	 *
-	 *	if $_POST['testauth'] is set, attempts to validate the connection, and displays any returned values
+	 *    if $_POST['testauth'] is set, attempts to validate the connection, and displays any returned values
+	 * @return string
 	 */
 	public function alt_auth_test_form($prefix, $frm)
 	{
@@ -389,7 +391,7 @@ class alt_auth_admin extends alt_auth_base
 			$_login = new auth_login;
 			$log_result = AUTH_UNKNOWN;
 			$pass_vars = array();
-			$val_name = trim(varset($_POST['nametovalidate'],''));
+			$val_name = trim(varset($_POST['nametovalidate']));
 
 			if(isset($_login->Available) && ($_login->Available === FALSE))
 			{	// Relevant auth method not available (e.g. PHP extension not loaded)
@@ -411,7 +413,7 @@ class alt_auth_admin extends alt_auth_base
 			if ($val_name)
 			{
 				$text .= LAN_ALT_49.": ".$val_name.'<br />'.LAN_ALT_50.": ";
-				if (varset($_POST['passtovalidate'],'')) $text .= str_repeat('*',strlen($_POST['passtovalidate'])); else $text .= LAN_ALT_51;
+				if (varset($_POST['passtovalidate'])) $text .= str_repeat('*',strlen($_POST['passtovalidate'])); else $text .= LAN_ALT_51;
 			}
 			$text .= "</td><td>";
 
@@ -517,7 +519,12 @@ class alt_auth_admin extends alt_auth_base
 					);
 
 	/**
-	 *	Return a 'select' box for available processing methods
+	 *    Return a 'select' box for available processing methods
+	 *
+	 * @param        $selName
+	 * @param string $allowed
+	 * @param string $curVal
+	 * @return string
 	 */
 	public function alt_auth_processing($selName, $allowed='*', $curVal='')
 	{
@@ -551,35 +558,33 @@ class alt_auth_admin extends alt_auth_base
 function alt_auth_adminmenu()
 {
 	echo ' ';
-	/*if(!is_array($authlist))
+//	if(!is_array($authlist))
 	{
 		$authlist = alt_auth_admin::alt_auth_get_authlist();
-	}*/
+	}
 	define('ALT_AUTH_ACTION', 'main');
 
 	$var['main']['text'] = LAN_ALT_31;
-	$var['main']['link'] = e_PLUGIN.'alt_auth/alt_auth_conf.php';
+	$var['main']['link'] = e_PLUGIN . 'alt_auth/alt_auth_conf.php';
 
 
-	$icon  = e107::getParser()->toIcon(e_PLUGIN.'alt_auth/images/alt_auth_32.png');
-	$caption = $icon."<span>alt auth</span>";
+	$icon = e107::getParser()->toIcon(e_PLUGIN . 'alt_auth/images/alt_auth_32.png');
+	$caption = $icon . "<span>alt auth</span>";
 
 	show_admin_menu($caption, ALT_AUTH_ACTION, $var);
 
 
 	$var = array();
-	/*
-	foreach($authlist as $a)
+	foreach ($authlist as $a)
 	{
-	  if($a != 'e107')
-	  {
-		$var[$a]['text'] = LAN_ALT_30.$a;
-		$var[$a]['link'] = e_PLUGIN."alt_auth/{$a}_conf.php";
-	  }
-	}*/
+		if ($a != 'e107')
+		{
+			$var[$a]['text'] = LAN_ALT_30 . $a;
+			$var[$a]['link'] = e_PLUGIN . "alt_auth/{$a}_conf.php";
+		}
+	}
 
 
-
-	// show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
+	show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
 }
 
