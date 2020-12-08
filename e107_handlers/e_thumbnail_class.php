@@ -169,7 +169,7 @@ class e_thumbnail
 		$tp = e107::getParser();
 
 		// convert raw to SC path
-		$this->_request['src'] = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $this->_request['src']);
+		$this->_request['src'] = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants(), $this->_request['src']);
 
 		// convert absolute and full url to SC URL
 		$this->_src = $tp->createConstants($this->_request['src'], 'mix');
@@ -228,7 +228,7 @@ class e_thumbnail
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 		$cache_filename = e_CACHE_IMAGE . $fname;
 
-	//	$this->sendCachedImage($cache_filename, $thumbnfo);
+		$this->sendCachedImage($cache_filename, $thumbnfo);
 
 		// No Cached file found - proceed with image creation.
 

@@ -33,26 +33,26 @@ class e_parse extends e_parser
 	//var $e_sc;
 
 	// BBCode processor
-	var $e_bb;
+	protected $e_bb;
 
 	// Profanity filter
-	var $e_pf;
+	protected $e_pf;
 
 	// Emote filter
-	var $e_emote;
+	protected $e_emote;
 
 	// 'Hooked' parsers (array)
-	var $e_hook;
+	protected $e_hook;
 
-	var $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
+	protected $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
-	var $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
+	protected $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
 
 	// Set to TRUE or FALSE once it has been calculated
-	var $e_highlighting;
+	protected $e_highlighting;
 
 	// Highlight query
-	var $e_query;
+	protected $e_query;
 	
 	public $thumbWidth = 100;
 	
@@ -72,7 +72,7 @@ class e_parse extends e_parser
 
 
 	// Set up the defaults
-	var $e_optDefault = array(
+	protected $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
 		'context' 		=> 'OLDDEFAULT',
 		//
@@ -116,7 +116,7 @@ class e_parse extends e_parser
 		);
 
 	// Super modifiers override default option values
-	var	$e_SuperMods = array(
+	protected	$e_SuperMods = array(
 				//text is part of a title (e.g. news title)
 				'TITLE' =>
 					array(
@@ -184,7 +184,7 @@ class e_parse extends e_parser
 		);
 
 	// Individual modifiers change the current context
-	var $e_Modifiers = array(
+	protected $e_Modifiers = array(
 				'emotes_off'	=> array('emotes' => FALSE),
 				'emotes_on'		=> array('emotes' => TRUE),
 				'no_hook'		=> array('hook' => FALSE),
@@ -267,7 +267,7 @@ class e_parse extends e_parser
 
 	/**
 	 * Initialise the type of UTF-8 processing methods depending on PHP version and mb string extension.
-	 *
+	 * Note: mb string is required during installation of e107.
 	 * NOTE: can't be called until CHARSET is known
 	 but we all know that it is UTF-8 now
 	 *
@@ -278,36 +278,20 @@ class e_parse extends e_parser
 		// Start by working out what, if anything, we do about utf-8 handling.
 		// 'Do nothing' is the simple option
 		$this->utfAction = 0;
-// CHARSET is utf-8
-//		if(strtolower(CHARSET) == 'utf-8')
-//		{
 
-			if(PHP_MAJOR_VERSION < 6)
+		if(PHP_MAJOR_VERSION < 6 && extension_loaded('mbstring'))
+		{
+			// Check for function overloading
+			$temp = ini_get('mbstring.func_overload');
+			// Just check the string functions - will be non-zero if overloaded
+			if(defined('MB_OVERLOAD_STRING') && ($temp & MB_OVERLOAD_STRING) == 0)
 			{
-				// Need to do something here
-				if(extension_loaded('mbstring') && defined('MB_OVERLOAD_STRING'))
-				{
-					// Check for function overloading
-					$temp = ini_get('mbstring.func_overload');
-					// Just check the string functions - will be non-zero if overloaded
-					if(($temp & MB_OVERLOAD_STRING) == 0)
-					{
-						// Can use the mb_string routines
-						$this->utfAction = 1;
-					}
-					// Set the default encoding, so we don't have to specify every time
-					mb_internal_encoding('UTF-8');
-				}
-				else
-				{
-					// Must use emulation - will probably be slow!
-					$this->utfAction = 2;
-					require_once(E_UTF8_PACK.'utils/unicode.php');
-					// Always load the core routines - bound to need some of them!
-					require_once(E_UTF8_PACK.'native/core.php');
-				}
+				// Can use the mb_string routines
+				$this->utfAction = 1;
 			}
-//		}
+					// Set the default encoding, so we don't have to specify every time
+			mb_internal_encoding('UTF-8');
+		}
 	}
 
 
@@ -344,13 +328,14 @@ class e_parse extends e_parser
 	{
 		switch($this->utfAction)
 		{
-			case 0:
-				return strtolower($str);
+
 			case 1:
 				return mb_strtolower($str);
+			case 0:
+			default:
+				return strtolower($str);
 		}
-		// Default case shouldn't happen often
-		return utf8_strtolower($str);
+
 	}
 
 
@@ -365,13 +350,13 @@ class e_parse extends e_parser
 	{
 		switch($this->utfAction)
 		{
-			case 0:
-				return strtoupper($str);
+
 			case 1:
 				return mb_strtoupper($str);
+			default:
+				return strtoupper($str);
 		}
-		// Default case shouldn't happen often
-		return utf8_strtoupper($str);
+
 	}
 
 
@@ -391,12 +376,13 @@ class e_parse extends e_parser
 	{
 		switch($this->utfAction)
 		{
-			case 0:
-				return strpos($haystack, $needle, $offset);
+
 			case 1:
 				return mb_strpos($haystack, $needle, $offset);
+			default:
+				return strpos($haystack, $needle, $offset);
 		}
-		return utf8_strpos($haystack, $needle, $offset);
+
 	}
 
 
@@ -416,12 +402,13 @@ class e_parse extends e_parser
 	{
 		switch($this->utfAction)
 		{
-			case 0:
-				return strrpos($haystack, $needle, $offset);
+
 			case 1:
 				return mb_strrpos($haystack, $needle, $offset);
+			default:
+				return strrpos($haystack, $needle, $offset);
 		}
-		return utf8_strrpos($haystack, $needle, $offset);
+
 	}
 
 
@@ -431,7 +418,7 @@ class e_parse extends e_parser
 	 *
 	 * @param string $haystack The UTF-8 encoded string to search in.
 	 * @param mixed $needle If needle is not a string, it is converted to an integer and applied as the ordinal value of a character.
-	 * @param integer $length [optional] (PHP 5.3+) If TRUE, returns the part of the haystack before the first occurrence of the needle (excluding needle).
+	 * @param integer $before_needle [optional] (PHP 5.3+) If TRUE, returns the part of the haystack before the first occurrence of the needle (excluding needle).
 	 * @return string Returns the matched substring. If needle is not found, returns FALSE.
 	 */
 	public function ustristr($haystack, $needle, $before_needle = false)
@@ -466,8 +453,7 @@ class e_parse extends e_parser
 	{
 		switch($this->utfAction)
 		{
-			case 0:
-				return substr($str, $start, $length);
+
 			case 1:
 				if(is_null($length))
 				{
@@ -477,8 +463,11 @@ class e_parse extends e_parser
 				{
 					return mb_substr($str, $start, $length);
 				}
+
+			default:
+				return substr($str, $start, $length);
 		}
-		return utf8_substr($str, $start, $length);
+
 	}
 
 	/**
@@ -541,7 +530,7 @@ class e_parse extends e_parser
 
 				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
 			}
-			else // caused double-encoding of '&'
+	//		else // caused double-encoding of '&'
 			{
 			//	$data = str_replace('&amp;','&',$data);
 		//		$data = str_replace('<','&lt;',$data);
@@ -658,7 +647,7 @@ class e_parse extends e_parser
 			$checkTags = explode(',', $tagList);
 		}
 		$tagArray = array_flip($checkTags);
-		foreach ($tagArray as &$v) { $v = 0; };		// Data fields become zero; keys are tag names.
+		foreach ($tagArray as &$v) { $v = 0; }		// Data fields become zero; keys are tag names.
 		$data = strtolower(preg_replace('#\[code\].*?\[\/code\]#i', '', $data));            // Ignore code blocks. All lower case simplifies the rest
 		$matches = array();
 		if (!preg_match_all('#<(\/|)([^<>]*?[^\/])>#', $data, $matches, PREG_SET_ORDER))
@@ -770,7 +759,7 @@ class e_parse extends e_parser
 	// XXX REmove ME. 
 	private function modTag($match)
 	{
-		$ans = '';
+
 		if (isset($match[1]))
 		{
 			$chop = intval(strlen($match[1]) / 2);
@@ -887,10 +876,12 @@ class e_parse extends e_parser
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
-	
+
 	/**
-	 * Check if we are using the simple-Parse array format, or a legacy .sc format which contains 'return ' 
+	 * Check if we are using the simple-Parse array format, or a legacy .sc format which contains 'return '
+	 *
 	 * @param array $extraCodes
+	 * @return bool
 	 */
 	private function isSimpleParse($extraCodes)
 	{
@@ -975,7 +966,7 @@ class e_parse extends e_parser
 		$nobreak = explode(" ", strtolower($nobreak));
 
 		// Variable setup
-		$intag = FALSE;
+
 		$innbk = array();
 		$drain = "";
 
@@ -1423,7 +1414,7 @@ class e_parse extends e_parser
 				$this->e_highlighting = TRUE;
 				if(!isset($this->e_query))
 				{
-					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
+					preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
 					$this->e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
 				}
 			}
@@ -2191,8 +2182,8 @@ class e_parse extends e_parser
 			'ά' => 'a', 'έ' => 'e', 'ί' => 'i', 'ό' => 'o', 'ύ' => 'y', 'ή' => 'h', 'ώ' => 'w', 'ς' => 's',
 			'ϊ' => 'i', 'ΰ' => 'y', 'ϋ' => 'y', 'ΐ' => 'i',
 			// Turkish
-			'Ş' => 'S', 'İ' => 'I', 'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O', 'Ğ' => 'G',
-			'ş' => 's', 'ı' => 'i', 'ç' => 'c', 'ü' => 'u', 'ö' => 'o', 'ğ' => 'g',
+			'Ş' => 'S', 'İ' => 'I', /*'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O',*/ 'Ğ' => 'G',
+			'ş' => 's', 'ı' => 'i', /*'ç' => 'c', 'ü' => 'u', 'ö' => 'o',*/ 'ğ' => 'g',
 			// Russian
 			'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'Yo', 'Ж' => 'Zh',
 			'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O',
@@ -2213,15 +2204,15 @@ class e_parse extends e_parser
 			'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
 			'ž' => 'z',
 			// Polish
-			'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
+			'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', /*'Ó' => 'o',*/ 'Ś' => 'S', 'Ź' => 'Z',
 			'Ż' => 'Z',
-			'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's', 'ź' => 'z',
+			'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n',/* 'ó' => 'o',*/ 'ś' => 's', 'ź' => 'z',
 			'ż' => 'z',
 			// Latvian
-			'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
-			'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
-			'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
-			'š' => 's', 'ū' => 'u', 'ž' => 'z',
+			'Ā' => 'A',/* 'Č' => 'C',*/ 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
+			/*'Š' => 'S',*/ 'Ū' => 'u',
+			'ā' => 'a', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
+			 'ū' => 'u',
 
 			'ľ' => 'l', 'ŕ'=>'r',
 		);
@@ -4889,7 +4880,7 @@ class e_parser
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
-		return ($ext === 'youtube' || $ext === 'youtubepl') ? true : false;
+		return $ext === 'youtube' || $ext === 'youtubepl';
 		
 	}
 
@@ -4908,7 +4899,7 @@ class e_parser
 
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 
-		return ($ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg') ? true : false;
+		return $ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg';
 	}
 
 
@@ -5220,7 +5211,7 @@ TMPL;
 		    print_a( $filter3);
 
 		    // Filter by String.
-		    $filter1 = $tp->filter($text,'str');
+		    $filter1 = $tp->filter($text);
 		    echo "<h3>User-input &gg; filter(\$text, 'str')</h3>";
 		    print_a($filter1);
 
@@ -5355,7 +5346,7 @@ return;
         
         echo "<h2>New Parser</h2>"; 
         echo "<h3>Processed</h3>";
-        $cleaned = $this->cleanHtml($html, true);  // false = don't check html pref.
+        $cleaned = $this->cleanHtml($html);  // false = don't check html pref.
         print_a($cleaned);
        $dbg->logTime('new Parser');    
       // $dbg->logTime('------ End Parser Test -------');
@@ -5998,7 +5989,7 @@ class e_emotefilter
 
 class e_profanityFilter 
 {
-	var $profanityList;
+	protected $profanityList;
 
 	function __construct()
 	{
@@ -6100,6 +6091,8 @@ class textparse {
 		{
 			e107::getDebug()->logDeprecated();
 		}
+
+		unset($mode); // keep PHPStorm happy
 
 		return e107::getParser()->toDB($text);
 	}

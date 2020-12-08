@@ -84,14 +84,14 @@ if(function_exists('ini_get'))
 if($register_globals == true)
 {
 	if(isset($_REQUEST['_E107'])) { unset($_E107); }
-	while (list($global) = each($GLOBALS))
+	foreach($GLOBALS as $global=>$var)
 	{
 		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|_SESSION|GLOBALS|HTTP.*|_REQUEST|_E107|retrieve_prefs|eplug_admin|eTimingStart.*|oblev_.*)$/', $global))
 		{
 			unset($$global);
 		}
 	}
-	unset($global);
+	unset($global, $var);
 }
 
 // MOVED TO $e107->prepare_request()
@@ -285,7 +285,7 @@ if(isset($mySQLport))
 }
 $e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 e107::getSingleton('eIPHandler');			// This auto-handles bans etc
-unset($dirPaths,$sql_info,$e107_paths);
+unset($dirPaths,$e107_paths);
 
 /**
  * NEW - system security levels
@@ -401,8 +401,8 @@ $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(false);
 
 $dbg->logTime('SQL Connect');
-$merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-
+$merror=$sql->db_Connect($sql_info['mySQLserver'], $sql_info['mySQLuser'], $sql_info['mySQLpassword'], $mySQLdefaultdb);
+unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
@@ -675,7 +675,7 @@ if(isset($pref['lan_global_list']))
 	{
 		if(e107::plugLan($path, 'global', true) === false)
 		{
-			e107::plugLan($path, 'global', false);
+			e107::plugLan($path, 'global');
 		}
 
 	}			
@@ -703,7 +703,7 @@ $dbg->logTime('Misc resources. Online user tracking, cache');
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
 //DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
-$override = e107::getSingleton('override', true);
+$override = e107::getSingleton('override');
 
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
@@ -753,7 +753,7 @@ define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_of
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
 define('e_DEVELOPER', $developerMode);
-define('e_VERSION', varset($pref['version'],''));
+define('e_VERSION', varset($pref['version']));
 
 unset($developerMode);
 
@@ -1334,7 +1334,7 @@ $dbg->logTime('Login/logout/ban/tz');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
-	e107::getUser()->login($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''), false);
+	e107::getUser()->login($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge']), false);
 //	e107_require_once(e_HANDLER.'login.php');
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
@@ -1347,7 +1347,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 {
 	if (USER)
 	{
-		if (check_class(varset($pref['user_audit_class'],''))) // Need to note in user audit trail
+		if (check_class(varset($pref['user_audit_class']))) // Need to note in user audit trail
 		{
 			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, null, USERID, USERNAME);
 		}
@@ -1531,7 +1531,7 @@ if(!defined("THEME_LAYOUT"))
 	$user_pref      = e107::getUser()->getPref();
 	$pref           = e107::getPref();
 	$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
-	$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout'],'') : $user_pref['sitetheme_deflayout'];
+	$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
 	$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
 
 	define("THEME_LAYOUT",$deflayout);
@@ -1882,7 +1882,7 @@ function get_user_data($uid, $extra = '')
 	unset($extra);
 
 	$var = array();
-	$user = e107::getSystemUser($uid, true);
+	$user = e107::getSystemUser($uid);
 	if($user)
 	{
 		$var = $user->getUserData();
@@ -2077,7 +2077,7 @@ function init_session()
 e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 
 
-	define('USERIP', e107::getIPHandler()->getIP(FALSE));
+	define('USERIP', e107::getIPHandler()->getIP());
 	define('POST_REFERER', md5($user->getToken()));
 
 	// Check for intruders - outside the model for now
@@ -2733,7 +2733,7 @@ class e_http_header
 	
 	function __construct()
 	{
-		if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
+		if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip'))
 		{
 			$this->compression_browser_support = true;
 		}

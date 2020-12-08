@@ -55,7 +55,7 @@ foreach($extensionCheck as $var)
 	{
 		$erTitle    = deftrue('PHP_LAN_7', "PHP Configuration Issue(s) Found:");
 		$def        = deftrue('PHP_LAN_8', "[x] is missing from the PHP configuration and need to be installed.");
-		$message    = $tp->lanVars($def,$var['label'],true);
+		$message    = e107::getParser()->lanVars($def,$var['label'],true);
 
 		$mes->setIcon('fa-hand-stop-o', E_MESSAGE_ERROR)->setTitle($erTitle,E_MESSAGE_ERROR)->addError($message." <a class='alert-link' href='".$var['url']."' target='_blank' title=\"".$var['url']."\">".ADMIN_INFO_ICON."</a> ");
 
@@ -78,7 +78,7 @@ $security_risks = array(
         if(ini_get($risk))
         {
             $srch = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
+            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.e107::getParser()->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
@@ -105,6 +105,6 @@ if(deftrue('e_DEBUG'))
 	$mes->addDebug("Session ID: ".session_id());
 }
 
-$ns->tablerender("PHPInfo", $mes->render(). $phpinfo);
+e107::getRender()->tablerender("PHPInfo", $mes->render(). $phpinfo);
 require_once("footer.php");
 
