@@ -328,17 +328,17 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 
 class e_install
 {
-	var $paths;
-	var $template;
-	var $debug_info;
-	var $debug_db_info;
-	var $e107;
-	var $previous_steps;
-	var $stage;
-	var $post_data;
-	var $required = array();
-	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
-	var $session = null;
+//	private   $paths;
+	public    $template;
+	private   $debug_info;
+//	private   $debug_db_info;
+	private   $e107;
+	public    $previous_steps;
+	private   $stage;
+	private   $post_data;
+	private   $required = array();
+
+	private   $session;
 	protected $pdo = false;
 	protected $debug = false;
 
@@ -699,7 +699,7 @@ class e_install
 			$this->previous_steps['mysql']['user']      = trim($tp->filter($_POST['name']));
 			$this->previous_steps['mysql']['password']  = trim($tp->filter($_POST['password']));
 			$this->previous_steps['mysql']['db']        = trim($tp->filter($_POST['db']));
-			$this->previous_steps['mysql']['createdb']  = (isset($_POST['createdb']) && $_POST['createdb'] == true ? true : false);
+			$this->previous_steps['mysql']['createdb']  = isset($_POST['createdb']) && $_POST['createdb'] == true;
 			$this->previous_steps['mysql']['prefix']    = trim($tp->filter($_POST['prefix']));
 
 			$this->setDb();
@@ -710,7 +710,7 @@ class e_install
 			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
 					
-		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
+		$success = $this->check_name($this->previous_steps['mysql']['db']) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
 		
 		if ($success)
 		{
@@ -903,7 +903,7 @@ class e_install
 		$this->template->SetTag("stage_title", LANINS_008);
 		$this->template->SetTag("percent", 50);
 		$this->template->SetTag("bartype", 'warning');
-		$not_writable = $this->check_writable_perms('must_write');		// Some directories MUST be writable
+		$not_writable = $this->check_writable_perms();		// Some directories MUST be writable
 		$opt_writable = $this->check_writable_perms('can_write');		// Some directories CAN optionally be writable
 		$version_fail = false;
 		$perms_errors = "";
@@ -1654,8 +1654,8 @@ if($this->pdo == true)
 	{
 		global $e_forms;
 
-		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);;
-		$base = base64_encode(http_build_query($data, null, '&'));
+		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);
+		$base = base64_encode(http_build_query($data, null));
 		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 
@@ -1812,8 +1812,8 @@ if($this->pdo == true)
 
 		// Admin log fix - don't allow logs to be called inside pref handler
 		// FIX
-		e107::getConfig('core')->setParam('nologs', true); // change to false to enable log
-		$pref = e107::getConfig('core')->getPref();
+		e107::getConfig()->setParam('nologs', true); // change to false to enable log
+		$pref = e107::getConfig()->getPref();
 
 		// Set Preferences defined during install - overwriting those that may exist in the XML.
 
@@ -1837,7 +1837,7 @@ if($this->pdo == true)
 		
 		### URL related prefs
 		// set all prefs so that they are available, required for adminReadModules() - it checks which plugins are installed
-		e107::getConfig('core')->setPref($this->previous_steps['prefs']); 
+		e107::getConfig()->setPref($this->previous_steps['prefs']);
 		
 		$url_modules = eRouter::adminReadModules();
 		$url_locations = eRouter::adminBuildLocations($url_modules);
@@ -1863,8 +1863,8 @@ if($this->pdo == true)
 		}
 
 		// Set prefs, save
-		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
-		e107::getConfig('core')->save(FALSE,TRUE, FALSE); // save preferences made during install.
+		e107::getConfig()->setPref($this->previous_steps['prefs']);
+		e107::getConfig()->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		installLog::add('Core prefs set to install choices');
 
 		// Create the admin user - replacing any that may be been included in the XML.
@@ -2127,7 +2127,7 @@ if($this->pdo == true)
 
 		installLog::add("DB Connection made");
 
-		$this->dbLink = $link;		// Needed for mysql_close() to work round bug in PHP 5.3
+	//	$dbLink = $link;		// Needed for mysql_close() to work round bug in PHP 5.3
 	//	$db_selected = mysql_select_db($this->previous_steps['mysql']['db'], $link);
 		$db_selected = $sql->database($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
 		if(!$db_selected)
@@ -2242,8 +2242,8 @@ if($this->pdo == true)
 
 class e_forms 
 {
-	var $form;
-	var $opened;
+	public  $form;
+	private $opened;
 
 	function start_form($id, $action, $method = "post" )
 	{
@@ -2353,9 +2353,9 @@ function create_tables_unattended()
 
 class SimpleTemplate
 {
-	var $Tags = array();
-	var $open_tag = "{";
-	var $close_tag = "}";
+	private $Tags = array();
+	private $open_tag = "{";
+	private $close_tag = "}";
 
 	function __construct()
 	{
@@ -2402,7 +2402,7 @@ class SimpleTemplate
 function template_data()
 {
 
-	$data = '<!DOCTYPE html>
+	return '<!DOCTYPE html>
 	<html lang="en">
 	  <head>
 		<meta charset="utf-8">
@@ -2519,7 +2519,7 @@ function template_data()
 	  </body>
 	</html>
 	';
-	return $data;
+
 }
 
 /**
