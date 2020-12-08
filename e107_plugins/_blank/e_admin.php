@@ -96,12 +96,12 @@ class _blank_admin implements e_admin_addon_interface
 		if(!empty($id) )
 		{
 
-			if(!empty($data['x__blank_url']))
-			{
+		//	if(!empty($data['x__blank_url']))
+		//	{
 
 				// eg. Save the data in 'blank' plugin table. .
 
-			}
+		//	}
 
 
 		}

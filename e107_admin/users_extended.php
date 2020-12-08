@@ -2455,21 +2455,3 @@ class users_ext
 	}
 }// end class
 
-
-
-	function users_extended_adminmenu() {
-		global $user, $action, $ns, $curtype, $action;
-		// $user->show_options($action);
-		$ac = e_QUERY;
-		$action = vartrue($ac,'main');
-
-		users_ext::show_options($action);
-		if($action == 'editext' || $action == 'continue')
-		{
-			$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");
-			echo "<script type='text/javascript'>changeHelp('{$curtype}');</script>";
-		}
-	}
-
-
-?>

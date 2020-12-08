@@ -384,8 +384,13 @@ class html_import extends base_import_class
 	}
 
 
-	function process($type='description',$source)
+	function process($type, $source)
 	{
+		if(empty($type))
+		{
+			$type = 'description';
+		}
+
 		switch ($type) 
 		{			
 			case 'category':

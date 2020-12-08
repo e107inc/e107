@@ -64,7 +64,10 @@ if(function_exists('utf8_encode') === false)
 
 if(!isset($_E107['cli']))
 {
-	while (@ob_end_clean());  // destroy all ouput buffering
+	while (ob_get_length() !== false)  // destroy all ouput buffering
+	{
+        ob_end_clean();
+	}
 	ob_start();             // start our own.
 	$oblev_at_start = ob_get_level(); 	// preserve when destroying globals in step C
 }
@@ -328,7 +331,6 @@ if(!defined('e_SECURITY_LEVEL'))
 //$e107->url = e107::getUrl(); - caught by __get()
 //TODO - find & replace $e107->url
 //DEPRECATED, BC, $e107->tp caught by __get()
-/** @var e_parse $tp */
 $tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 
 //define("e_QUERY", $matches[2]);
@@ -1960,6 +1962,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			break;
 	}
 
+
 }
 
 
@@ -2746,10 +2749,6 @@ class e_http_header
 		if($this->compression_server_support == true && $this->compression_browser_support == true)
 		{
 			$this->compress_output = (bool) e107::getPref('compress_output', false);
-		}
-		else
-		{
-			$this->compress_output = false;
 		}
 
 

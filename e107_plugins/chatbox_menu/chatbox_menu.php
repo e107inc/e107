@@ -36,9 +36,12 @@ $emessage = '';
 
 if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '') {
 
-	if ( ! USER && ! $pref['anon_post']) {
+	if ( ! USER && ! $pref['anon_post'])
+	{
 		// disallow post
-	} else {
+	}
+	else
+	{
 		$nick = trim(preg_replace("#\[.*\]#si", "", $tp->toDB($_POST['nick'])));
 
 		$cmessage = $_POST['cmessage'];

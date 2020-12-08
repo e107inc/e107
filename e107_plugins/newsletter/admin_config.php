@@ -548,14 +548,14 @@ class newsletter
 	/**
 	 * Delete a newsletter
 	 *
-	 * @return none
+	 * @return null
 	 */
 	function deleteNewsletter()
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$tmp = each($_POST['delete']);
+		$tmp = key($_POST['delete']);
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));

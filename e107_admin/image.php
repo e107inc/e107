@@ -2760,7 +2760,7 @@ class media_admin_ui extends e_admin_ui
 
 			$count = 0;
 			$prevType  = '';
-			while (list($key, $image_name) = each($dirlist))
+			foreach($dirlist as $key=>$image_name)
 			{
 				//$users = IMALAN_21." | ";
 				$row = array('user_id' => '');

@@ -117,7 +117,7 @@ else
 	if (e_AJAX_REQUEST)
 	{
 		require_once (e_HANDLER.'js_helper.php');
-		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87, true);
+		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87);
 	}
 	
 	require_once(e_ADMIN.'boot.php');

@@ -176,7 +176,7 @@ class e107_traffic
 		{
 			return;
 		}
-		if ($tObject != $this)
+		if ($tObject !== $this)
 		{
 			message_handler("CRITICAL_ERROR", "Bad traffic object", __LINE__ - 2, __FILE__);
 		}
@@ -225,8 +225,10 @@ if (!isset($qTimeOn))
 	{
 		$GLOBALS['qTimeOn'] = explode(' ', microtime());
 	}
+
 	function eQTimeOff()
 	{
+		global $qTimeOn;
 		$e = explode(' ', microtime());
 		$diff = ((float) $e[0] + (float) $e[1]) - ((float) $qTimeOn[0] + (float) $qTimeOn[1]);
 		$GLOBALS['qTimeTotal'] += $diff;

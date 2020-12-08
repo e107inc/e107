@@ -274,10 +274,10 @@ class auth_login extends alt_auth_base
 					return AUTH_NOUSER; // Bit debateable what to return if this happens
 				}
 			}
-			else // Probably a bit strange if we don't get any info back - but possible
-				{
+			//else // Probably a bit strange if we don't get any info back - but possible
+			//	{
 					// echo "No results!<br />";
-				}
+			//	}
 
 				return AUTH_SUCCESS;
 		}

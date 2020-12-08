@@ -119,8 +119,10 @@ $config = varset($_GET['config'],false); // e_QUERY;
 $gen = $wy->renderConfig($config);
 
 define('USE_GZIP', true);
+$compression_browser_support = false;
+$compression_server_support = false;
 
-if(strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
+if(strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip'))
 {
 	$compression_browser_support = true;
 }
@@ -143,16 +145,19 @@ if(ADMIN && e_QUERY == 'debug' || !empty($_GET['debug']))
 	</td>
 	</tr></table>";
 
-	echo "<br />Browser gZip support: ".$compression_browser_support;
-	echo "<br />Server gZip support: ". $compression_server_support;
+//	echo "<br />Browser gZip support: ".$compression_browser_support;
+//	echo "<br />Server gZip support: ". $compression_server_support;
 	
 	require_once(FOOTERF);
 
 }
 elseif((USE_GZIP === true) && $compression_browser_support && $compression_server_support)
 {
-	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme
-	header('Content-type: text/javascript;charset=UTF-8', true);
+	while (ob_get_length() !== false)  // clear out anything that may have been echoed from class2.php or theme
+	{
+        ob_end_clean();
+	}
+	header('Content-type: text/javascript;charset=UTF-8');
 	header('Content-Encoding: gzip');
 
 	$minified = e107::minify($gen);
@@ -163,7 +168,10 @@ elseif((USE_GZIP === true) && $compression_browser_support && $compression_serve
 }
 else
 {
-	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme.
+	while (ob_get_length() !== false)  // clear out anything that may have been echoed from class2.php or theme
+	{
+        ob_end_clean();
+	}
 	ob_start();
 	ob_implicit_flush(0);
 	header('Content-type: text/javascript', TRUE);
@@ -180,9 +188,9 @@ exit;
 
 class wysiwyg
 {
-	var $js;
-	var $config = array();
-	var $configName;
+	public $js;
+	public $config = array();
+	public $configName;
 
 	function renderConfig($config='')
 	{
@@ -199,7 +207,7 @@ class wysiwyg
 		},\n";
 */
 
-		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
+	//	$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 
 		$text .= "\n});";
 
@@ -329,7 +337,7 @@ class wysiwyg
 	{
 		if(empty($data))
 		{
-			return;
+			return null;
 		}
 
 		$tmp = explode(" ",$data);
@@ -396,7 +404,7 @@ class wysiwyg
 	function getConfig($config=false)
 	{
 		$tp = e107::getParser();	
-		$fl = e107::getFile();
+	//	$fl = e107::getFile();
 
 		if($config !== false)
 		{

@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 class trackbackClass
 {
 
-	function sendTrackback ($permLink, $pingUrl, $title, $excerpt)
+	static function sendTrackback ($permLink, $pingUrl, $title, $excerpt)
 	{
 		global $e107;
 
@@ -98,7 +98,7 @@ class trackbackClass
 
     }
 
-	function respondTrackback ()
+	static function respondTrackback ()
 	{
 		global $sql, $pref, $tp, $e107cache;
 		$errorMessage = "";
@@ -151,7 +151,7 @@ class trackbackClass
 
 		if(!$errorMessage)
 		{
-		  if(!$sql -> db_Insert("trackback", "0, {$pid}, '{$title}', '{$excerpt}', '{$permLink}', '{$blog_name}' "))
+		  if(!$sql->insert("trackback", "0, {$pid}, '{$title}', '{$excerpt}', '{$permLink}', '{$blog_name}' "))
 		  {
 			$errorMessage = "Unable to enter your trackback information into the database -> 0, {$pid}, '{$title}', '{$excerpt}', '{$permLink}', '{$blog_name}'";
 		  }

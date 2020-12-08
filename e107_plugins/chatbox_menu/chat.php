@@ -93,9 +93,9 @@ if (strstr(e_QUERY, "fs")) {
 }
 // end search
 
-if (e_QUERY ? $from = intval(e_QUERY) : $from = 0) {
-	;
-}
+//if (e_QUERY ? $from = intval(e_QUERY) : $from = 0) {
+
+//}
 
 $chat_total = $sql->count('chatbox');
 

@@ -19,7 +19,8 @@ $newarray = e107::getNav()->adminLinks('core');
 $text = "<div style='text-align:center'>
 	<table class='table'>";
 $buts = "";
-while (list($key, $funcinfo) = each($newarray)) {
+foreach($newarray as $key=>$funcinfo)
+{
 	$buts .= e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
 $text .= $buts;
@@ -29,8 +30,9 @@ while ($td <= 5) {
 }
 $td = 1;
 $text .= "</tr></table></div>";
-if($buts != ""){
-	$ns->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
+if(!empty($buts))
+{
+	e107::getRender()->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
 }
 
 $text = "<div style='text-align:center'>

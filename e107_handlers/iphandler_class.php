@@ -1297,7 +1297,7 @@ class banlistManager
 	/**
 	 *	Return an array of valid ban types (for use as indices into array, generally)
 	 */
-	public function getValidReasonList()
+	public static function getValidReasonList()
 	{
 		return array(
 			eIPHandler::BAN_TYPE_LEGACY,

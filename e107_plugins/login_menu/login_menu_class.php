@@ -114,7 +114,7 @@ class login_menu_class
     }
 
 
-    function parse_external_list($active=false, $order=true) 
+    function parse_external_list($active=false, $order=true)
 	{
         //prevent more than 1 call
         if(($tmp = getcachedvars('loginbox_elist')) !== FALSE) return $tmp;
@@ -377,7 +377,10 @@ class login_menu_class
     
     function clean_links($link_items) 
 	{
-        if(empty($link_items)) return;
+        if(empty($link_items))
+        {
+			return array();
+        }
     
         foreach($link_items as $key => $value) 
 		{

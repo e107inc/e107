@@ -3921,7 +3921,7 @@ class e107plugin
 				case 'install':
 				case 'upgrade':
 					$ret = $config->add($key, $value);
-					if($ret->data_has_changed == TRUE)
+					if($ret->isModified())
 					{
 						$mes->addSuccess(EPL_ADLAN_241, $key);	
 					}								

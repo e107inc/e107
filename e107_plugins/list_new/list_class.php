@@ -183,7 +183,10 @@ class listclass
 			}
 		}
 		//sort array on order values set in preferences
-		usort($arr, create_function('$e,$f','return $e["order"]==$f["order"]?0:($e["order"]>$f["order"]?1:-1);'));
+		usort($arr, function($e, $f)
+		{
+			return $e["order"]==$f["order"] ? 0 : ($e["order"] > $f["order"] ? 1 : -1);
+		});
 
 		return $arr;
 	}

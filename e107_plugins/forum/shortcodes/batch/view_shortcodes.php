@@ -17,7 +17,7 @@
 
 		protected $e107;
 		protected $defaultImgAttachSize = false;
-		protected $pref;
+		public $pref;
 		// $param is sent from nfp menu.
 
 		function __construct()
@@ -1263,13 +1263,6 @@
 
 						return $text;
 					}
-
-					if(E107_DEBUG_LEVEL > 0)
-					{
-						//	echo "<div class='alert alert-info'>Thread id: ".$threadId."</div>";
-						//	print_a($this);
-					}
-
 
 					// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 				}

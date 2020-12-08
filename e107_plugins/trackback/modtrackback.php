@@ -16,7 +16,7 @@
 */
 $eplug_admin = true;
 require_once("../../class2.php");
-
+$pref = e107::pref();
 if (!getperms("P") || !e107::isInstalled('trackback') || !$pref['trackbackEnabled'])
 {
 	e107::redirect();
@@ -27,37 +27,40 @@ require_once(e_ADMIN."auth.php");
 if (isset($_POST['moderate'])) 
 {
 	$temp = array();
+	$sql = e107::getDb();
+	
 	if (is_array($_POST['trackback_delete'])) 
 	{
-		while (list ($key, $cid) = each ($_POST['trackback_delete'])) 
+		foreach($_POST['trackback_delete'] as $key=>$cid)
 		{
 			$cid = intval($cid);
 			if ($cid > 0)
 			{
-				$sql->db_Delete("trackback", "trackback_id=".$cid);
+				$sql->delete("trackback", "trackback_id=".$cid);
 				$temp[] = $cid;
 			}
 		}
 		if (count($temp))
 		{
-			e107::getLog()->add('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('TRACK_02',implode(', ',$temp));
 		}
 	}
-	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
-	$e107cache->clear("news.php");
+	e107::getRender()->tablerender(null, "<div style='text-align:center'><b>".LAN_DELETED."</b></div>");
+	e107::getCache()->clear("news.php");
 }
-	
+
+$sql = e107::getDb();
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
 if (e_QUERY=='all') 
 {
-	$res=$sql->db_Select("trackback", "*");
+	$res=$sql->select("trackback");
 } 
 else 
 {
-	$res=$sql->db_Select("trackback", "*", "trackback_pid=".intval(e_QUERY));
+	$res=$sql->select("trackback", "*", "trackback_pid=".intval(e_QUERY));
 }
 
 if (!$res)
@@ -67,20 +70,20 @@ if (!$res)
 else
 {
 	$tbArray = $sql -> db_getList();
-	foreach($tbArray as $trackback)
+	foreach($tbArray as $row)
 	{
-		extract($trackback);
+
 		$text .= "<tr>
-		<td class='forumheader3' style='width: 30%;'><a href='$trackback_url' rel='external'>$trackback_title</a></td>
-		<td class='forumheader3' style='width: 40%;'>$trackback_excerpt</td>
-		<td class='forumheader3' style='width: 20%;'>$trackback_blogname</td>
-		<td class='forumheader3' style='width: 10%;'><input type='checkbox' name='trackback_delete[]' value='$trackback_id' /> ".TRACKBACK_L14."</td>
+		<td class='forumheader3' style='width: 30%;'><a href='".$row['trackback_url']."' rel='external'>".$row['trackback_title']."</a></td>
+		<td class='forumheader3' style='width: 40%;'>".$row['trackback_excerpt']."</td>
+		<td class='forumheader3' style='width: 20%;'>".$row['trackback_blogname']."</td>
+		<td class='forumheader3' style='width: 10%;'><input type='checkbox' name='trackback_delete[]' value='".$row['trackback_id']."' /> ".LAN_DELETE."</td>
 		</tr>\n";
 	}
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn btn-default btn-secondary button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
 }
 	
-$ns->tablerender(TRACKBACK_L13, $text);
+e107::getRender()->tablerender(TRACKBACK_L13, $text);
 	
 require_once(e_ADMIN."footer.php");
 

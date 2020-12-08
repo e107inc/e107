@@ -40,7 +40,7 @@ class parseXml extends xmlClass // BC with v1.x
 	{	
 	//	$data = $this->getRemoteFile($address, $timeout);	
 		$fl = e107::getFile();
-		$data = $fl->getRemoteContent($address);
+		$data = $fl->getRemoteContent($address, ['timeout' => $timeout]);
 
 		$this->xmlLegacyContents = $data;
 
@@ -227,9 +227,9 @@ class xmlClass
 
 	public $errors;
 
-	private $arrayTags = false;
+	private $arrayTags;
 
-	private $stringTags = false;
+	private $stringTags;
 
 	private $urlPrefix = false;
 
