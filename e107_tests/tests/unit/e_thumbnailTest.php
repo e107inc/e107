@@ -27,7 +27,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_thumbnail object");
+				$this->assertTrue(false, $e->getMessage());
 			}
 
 			$this->thm->setCache(false);
@@ -157,7 +157,13 @@
 
 				),
 
-
+				// Test Converting JPEG to WebP and resize. (Stored index file is saved with a .jpg extension but encoded as WebP)
+				17 => array (
+				  'src' => 'e_PLUGIN/gallery/images/butterfly.jpg',
+				  'w' => 222,
+				  'h' => 272,
+				  'type'=>'webp'
+				),
 
 			);
 

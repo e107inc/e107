@@ -522,14 +522,27 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		public function testThumbUrl()
 		{
 			$urls = array(
-				array('path'    => '{e_PLUGIN}gallery/images/butterfly.jpg', 'expected'=>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=200'),
-				array('path'    => '{e_PLUGIN}dummy/Freesample.svg', 'expected'=>'/e107_plugins/dummy/Freesample.svg'),
+				0 => array(
+					'path'      => '{e_PLUGIN}gallery/images/butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200),
+					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=200'
+					),
+				1 => array(
+					'path'      => '{e_PLUGIN}dummy/Freesample.svg',
+					'options'   =>  array('w'=>300, 'h'=>200),
+					'expected'  =>'/e107_plugins/dummy/Freesample.svg'
+					),
+				2 => array(
+					'path'      => '{e_PLUGIN}gallery/images/butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200, 'type'=>'webp'),
+					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=200&amp;type=webp'
+					),
 			);
 
 			foreach($urls as $val)
 			{
 
-				$actual = $this->tp->thumbUrl($val['path'], array('w'=>300, 'h'=>200));
+				$actual = $this->tp->thumbUrl($val['path'],$val['options']);
 
 				$this->assertStringContainsString($val['expected'], $actual);
 				//echo $$actual."\n\n";
@@ -562,12 +575,38 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testThumbCacheFile()
 		{
+			$tests = array(
+				0 => array(
+					'file'      => 'e107_plugins/gallery/images/butterfly.jpg',
+					'options'   => array ('w' => 222, 'h' => 272, 'aw' => 0, 'ah' => 0, 'c' => 0,),
+					'expected' => array('prefix'=>'thumb_butterfly_', 'suffix'=>'.jpg.cache.bin'),
+				),
+				1 => array(
+					'file'      => 'e107_plugins/gallery/images/butterfly.jpg',
+					'options'   => array ('w' => 222, 'h' => 272, 'aw' => 0, 'ah' => 0, 'c' => 0, 'type'=>'webp'),
+					'expected' => array('prefix'=>'thumb_butterfly_', 'suffix'=>'.webp.cache.bin'),
+				),
+
+			);
+
+			foreach($tests as $var)
+			{
+
+				$result = $this->tp->thumbCacheFile($var['file'], $var['options']);
+
+				$this->assertStringStartsWith($var['expected']['prefix'], $result);
+				$this->assertStringEndsWith($var['expected']['suffix'], $result);
+
+			}
+
+
+
 
 		}
-
+/*
 		public function testText_truncate()
 		{
 
@@ -943,6 +982,9 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			$result4 = $this->tp->toImage($src, ['loading'=>'lazy']);
 			$this->assertStringContainsString('loading="lazy"', $result4); // src
+
+			$result5 = $this->tp->toImage($src, ['type'=>'webp']);
+			$this->assertStringContainsString('&amp;type=webp', $result5); // src
 
 		}
 

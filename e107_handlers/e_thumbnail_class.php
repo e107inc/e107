@@ -154,6 +154,18 @@ class e_thumbnail
 		$this->_request = (array) $array;
 	}
 
+	private function getImageInfo()
+	{
+		$thumbnfo = pathinfo($this->_src_path);
+
+		if(!empty($this->_request['type']) && $this->_request['type'] == 'webp')
+		{
+			$thumbnfo['extension'] = 'webp';
+		}
+
+		return $thumbnfo;
+	}
+
 	/**
 	 * Validate and Sanitize the Request.
 	 * @return bool true when request is okay.
@@ -223,7 +235,7 @@ class e_thumbnail
 			return $this;
 		}
 
-		$thumbnfo = pathinfo($this->_src_path);
+		$thumbnfo = $this->getImageInfo();
 		$options = $this->getRequestOptions();
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 		$cache_filename = e_CACHE_IMAGE . $fname;
@@ -477,6 +489,11 @@ class e_thumbnail
 		if($ret['c'] == 'A') // auto
 		{
 			$ret['c'] = 'T'; // default is 'Top';
+		}
+
+		if(!empty($this->_request['type']))
+		{
+			$ret['type'] = $this->_request['type'];
 		}
 
 		return $ret;
