@@ -36,17 +36,17 @@ class e_parse extends e_parser
 	protected $e_bb;
 
 	// Profanity filter
-	protected $e_pf;
+	public $e_pf;
 
 	// Emote filter
-	protected $e_emote;
+	public $e_emote;
 
 	// 'Hooked' parsers (array)
 	protected $e_hook;
 
-	protected $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
+	public $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
-	protected $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
+	public $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
 
 	// Set to TRUE or FALSE once it has been calculated
 	protected $e_highlighting;
@@ -2609,6 +2609,7 @@ class e_parse extends e_parser
 	 * Generated a Thumb Cache File Name from path and options.
 	 * @param string $path
 	 * @param array $options
+	 * @param string $log (optional) - log file name
 	 * @return null|string
 	 */
 	public function thumbCacheFile($path, $options=null, $log=null)
@@ -2630,8 +2631,7 @@ class e_parse extends e_parser
 		$tmp        = explode('.',$filename);
 		$ext        = end($tmp);
 		$len        = strlen($ext) + 1;
-		$start      = substr($filename,0,- $len);
-
+		$start      = substr($filename,0, - $len);
 
 		// cleanup.
 		$newOpts = array(
@@ -2639,16 +2639,12 @@ class e_parse extends e_parser
 			'h'     => (string) intval($options['h']),
 			'aw'    => (string) intval($options['aw']),
 			'ah'    => (string) intval($options['ah']),
-			'c'     => strtoupper(vartrue($options['c'],'0'))
+			'c'     => strtoupper(vartrue($options['c'],'0')),
 		);
 
-		if($log !== null)
+		if(!empty($options['type']))
 		{
-			file_put_contents(e_LOG.$log, "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
-			$message = $path."\n".print_r($newOpts,true)."\n\n\n";
-			file_put_contents(e_LOG.$log, $message, FILE_APPEND);
-
-		//	file_put_contents(e_LOG.$log, "\t\tFOUND!!\n\n\n", FILE_APPEND);
+			$ext = $newOpts['type'] = $options['type'];
 		}
 
 
@@ -2681,6 +2677,19 @@ class e_parse extends e_parser
 		}
 
 		$fname = $pre.strtolower($start.'_'.$cache_str.'_'.$size.'.'.$ext).$post;
+
+
+		if($log !== null)
+		{
+			file_put_contents(e_LOG.$log, "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
+			$message = "Name: ".$fname."\n";
+			$message .= $path."\n".var_export($newOpts,true)."\n\n\n";
+			file_put_contents(e_LOG.$log, $message, FILE_APPEND);
+
+		//	file_put_contents(e_LOG.$log, "\t\tFOUND!!\n\n\n", FILE_APPEND);
+		}
+
+
 
 		return $fname;
 	}
@@ -2797,12 +2806,12 @@ class e_parse extends e_parser
 	 * Generate an auto-sized Image URL.
 	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg
 	 * @param array $options - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
-	 * @param int $options ['w'] width (optional)
-	 * @param int $options ['h'] height (optional)
+	 * @param int $options['w'] width (optional)
+	 * @param int $options['h'] height (optional)
 	 * @param bool|string $options ['crop'] true/false or A(auto) or T(op) or B(ottom) or C(enter) or L(eft) or R(right)
-	 * @param string $options ['scale'] '2x' (optional)
-	 * @param bool $options ['x'] encode/mask the url parms (optional)
-	 * @param bool $options ['nosef'] when set to true disabled SEF Url being returned (optional)
+	 * @param string $options['scale'] '2x' (optional)
+	 * @param bool $options['x'] encode/mask the url parms (optional)
+	 * @param bool $options['nosef'] when set to true disabled SEF Url being returned (optional)
 	 * @param bool $raw set to true when the $url does not being with an e107 variable ie. "{e_XXXX}" eg. {e_MEDIA} (optional)
 	 * @param bool $full when true returns full http:// url. (optional)
 	 * @return string
@@ -2837,8 +2846,6 @@ class e_parse extends e_parser
 			unset($options['scale']);
 			return $this->thumbSrcSet($url,$options);
 		}
-
-
 
 
 		
@@ -2903,6 +2910,11 @@ class e_parse extends e_parser
 
 			$thurl .= 'w='.intval($options['w']).'&amp;h='.intval($options['h']);
 
+		}
+
+		if(!empty($options['type']) && ($options['type'] === 'webp'))
+		{
+			$thurl .= '&amp;type=webp';
 		}
 
 
@@ -3092,6 +3104,10 @@ class e_parse extends e_parser
 
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
+		if(!empty($parm['type']))
+		{
+			$parms['type'] = $parm['type'];
+		}
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
 
 		// $parms['x'] = $encode;
@@ -4606,6 +4622,7 @@ class e_parser
 	 * @param string $file
 	 * @param array $parm  keys: legacy|w|h|alt|class|id|crop|loading
 	 * @param array $parm['legacy'] Usually a legacy path like {e_FILE}
+	 * @param array $parm['type'] Force the returned image to be a jpg, webp etc.
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
 	 */
