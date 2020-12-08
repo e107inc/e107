@@ -174,7 +174,7 @@ function getBrowser($agent)
 		"konqueror"    => array('name' => 'Konqueror',         'rule' => 'konqueror/([0-9.]{1,10})'),
 		"avantbrowser" => array('name' => 'Avant Browser',     'rule' => 'Avant[ ]?Browser'),
 		"avantgo"      => array('name' => 'AvantGo',           'rule' => 'AvantGo[ /]([0-9.]{1,10})'),
-		"proxomitron"  => array('name' => 'Proxomitron',       'rule' => 'Space[ ]?Bison/[0-9.]{1,10}'),
+	//	"proxomitron"  => array('name' => 'Proxomitron',       'rule' => 'Space[ ]?Bison/[0-9.]{1,10}'),
 		"lynx"         => array('name' => 'Lynx',              'rule' => 'lynx/([0-9a-z.]{1,10})'),
 		"links"        => array('name' => 'Links',             'rule' => 'Links[ /]\(([0-9.]{1,10})'),
 		"galeon"       => array('name' => 'Galeon',            'rule' => 'galeon/([0-9.]{1,10})'),

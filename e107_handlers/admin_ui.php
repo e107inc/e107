@@ -214,7 +214,7 @@ class e_admin_request
 	 * If $key is array, $value is not used.
 	 * If $value is null, (string) $key is unset
 	 *
-	 * @param object $key
+	 * @param string $key
 	 * @param object $value [optional]
 	 * @return e_admin_request
 	 */
@@ -1721,7 +1721,7 @@ class e_admin_controller
 
 	/**
 	 * Constructor
-	 * @param e_admin_request $request [optional]
+	 * @param e_admin_request $request
 	 */
 	public function __construct($request, $response, $params = array())
 	{
@@ -6466,9 +6466,9 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Set read and write parms with drop-down-list array data (ie. type='dropdown')
-	 * @param str $field
+	 * @param string $field
 	 * @param array $array [optional]
-	 * @return none
+	 * @return null
 	 */
 	public function setDropDown($field,$array) //TODO Have Miro check this.
 	{

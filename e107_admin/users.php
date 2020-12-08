@@ -466,7 +466,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
-	public function afterDelete($deletedData, $id=null, $deleted_check)
+	public function afterDelete($deletedData, $id, $deleted_check)
 	{
 		if(!empty($id))
 		{

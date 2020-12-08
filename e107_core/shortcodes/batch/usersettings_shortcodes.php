@@ -239,10 +239,10 @@ class usersettings_shortcodes extends e_shortcode
 		  foreach ($ucList as $cid)
 		  {
 		    if (check_class($cid, $this->var['user_class'])) $is_checked[$cid] = $cid;
-			if(isset($_POST['class']))
-			{
+		//	if(isset($_POST['class']))
+		//	{
 		//	  $is_checked[$cid] = in_array($cid, $_POST['class']);
-			}
+		//	}
 		
 		  }
 		  $inclass = implode(',',$is_checked);

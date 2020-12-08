@@ -11,7 +11,9 @@ e107::lan('download','download');
 $log = e107::getAdminLog(); 
 $id = FALSE;
 
-
+$sql = e107::getDb();
+$tp = e107::getRender();
+$pref = e107::pref('core');
 
 if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
 {
@@ -46,13 +48,13 @@ if(strstr(e_QUERY, "mirror"))
 	{
 		$row = $sql->fetch();
 		extract($row);
-		if (check_class($download_category_class) && check_class($download_class)) 
+		if (check_class($row['download_category_class']) && check_class($row['download_class']))
 		{
-			if($pref['download_limits'] && $download_active == 1) 
+			if($pref['download_limits'] && $row['download_active'] == 1)
 			{
 				check_download_limits();
 			}
-			$mirrorList = explode(chr(1), $download_mirror);
+			$mirrorList = explode(chr(1), $row['download_mirror']);
 			$mstr = "";
 			foreach($mirrorList as $mirror) 
 			{
@@ -124,7 +126,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+	e107::getRender()->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -146,7 +148,7 @@ if ($type == "file")
 				$search = array("[","]");
 				$replace = array("<a href='".e_HTTP."download.php'>", "</a>");
 
-				$ns->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>".str_replace($search, $replace, LAN_dl_78).'</div>');
+				e107::getRender()->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>".str_replace($search, $replace, LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}
@@ -156,9 +158,9 @@ if ($type == "file")
 				check_download_limits();
 			}
 			extract($row);
-			if($download_mirror) 
+			if($row['download_mirror'])
 			{
-				$array = explode(chr(1), $download_mirror);
+				$array = explode(chr(1), $row['download_mirror']);
 				$c = (count($array)-1);
 				for ($i=1; $i < $c; $i++) 
 				{
@@ -199,46 +201,46 @@ if ($type == "file")
 			$ip = e107::getIPHandler()->getIP(FALSE);
 			$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '".time()."'";
 			//add request info to db
-			$sql->db_Insert("download_requests", $request_data, FALSE);
-			if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)) 
+			$sql->insert("download_requests", $request_data, FALSE);
+		//	if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result))
+		//	{
+		//		$bid = $result[1];
+		///		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
+		//		$binary_data = @mysql_result($result, 0, "binary_data");
+		//		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
+		//		$binary_name = @mysql_result($result, 0, "binary_name");
+		//		header("Content-type: {$binary_filetype}");
+		//		header("Content-length: {$download_filesize}");
+		//		header("Content-Disposition: attachment; filename={$binary_name}");
+		//		header("Content-Description: PHP Generated Data");
+		//		echo $binary_data;
+		//		exit();
+		//	}
+			if (strstr($row['download_url'], "http://") || strstr($row['download_url'], "ftp://") || strstr($row['download_url'], "https://"))
 			{
-				$bid = $result[1];
-				$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
-				$binary_data = @mysql_result($result, 0, "binary_data");
-				$binary_filetype = @mysql_result($result, 0, "binary_filetype");
-				$binary_name = @mysql_result($result, 0, "binary_name");
-				header("Content-type: {$binary_filetype}");
-				header("Content-length: {$download_filesize}");
-				header("Content-Disposition: attachment; filename={$binary_name}");
-				header("Content-Description: PHP Generated Data");
-				echo $binary_data;
-				exit();
-			}
-			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://"))
-			{
-				$download_url = e107::getParser()->parseTemplate($download_url,true); // support for shortcode-driven dynamic URLS.
+				$download_url = e107::getParser()->parseTemplate($row['download_url'],true); // support for shortcode-driven dynamic URLS.
 				e107::redirect(decorate_download_location($download_url));
 				// header("Location: {$download_url}");
 				exit();
 			} 
 			else 
 			{
-				if (file_exists(e_DOWNLOAD.$download_url)) 
+				if (file_exists(e_DOWNLOAD.$row['download_url']))
 				{
-					e107::getFile()->send(e_DOWNLOAD.$download_url);
+					e107::getFile()->send(e_DOWNLOAD.$row['download_url']);
 					exit();
 				} 
-				elseif(file_exists($download_url)) 
+				elseif(file_exists($row['download_url']))
 				{
-					e107::getFile()->send($download_url);
+					e107::getFile()->send($row['download_url']);
 					exit();
 				}
-				elseif(file_exists(e_UPLOAD.$download_url)) 
+				elseif(file_exists(e_UPLOAD.$row['download_url']))
 				{
-					e107::getFile()->send(e_UPLOAD.$download_url);
+					e107::getFile()->send(e_UPLOAD.$row['download_url']);
 					exit();
 				}
-				$log->addError("Couldn't find ".e_DOWNLOAD.$download_url." or ".$download_url." or ".e_UPLOAD.$download_ur);
+				$log->addError("Couldn't find ".e_DOWNLOAD.$row['download_url']." or ".$row['download_url']." or ".e_UPLOAD.$row['download_url']);
 				$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 			}
 		} 
@@ -266,7 +268,7 @@ if ($type == "file")
 	else if(strstr(e_QUERY, "pub_"))
 	{
 		/* check to see if public upload and not in download table ... */
-		$bid = str_replace("pub_", "", e_QUERY);
+		/*$bid = str_replace("pub_", "", e_QUERY);
 		if($result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '$bid' "))
 		{
 			$binary_data = @mysql_result($result, 0, "binary_data");
@@ -278,14 +280,14 @@ if ($type == "file")
 			header("Content-Description: PHP Generated Data");
 			echo $binary_data;
 			exit();
-		}
+		}*/
 	}
 	
 	
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns -> tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+	e107::getRender()->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -293,10 +295,10 @@ if ($type == "file")
 $sql->select($table, "*", "{$table}_id = '{$id}'");
 $row = $sql->fetch();
 extract($row);
-$image = ($table == "upload" ? $upload_ss : $download_image);
-if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) 
-{
-	$bid = $result[1];
+$image = ($table == "upload" ? $row['upload_ss'] : $row['download_image']);
+//if (preg_match("/Binary\s(.*?)\/.*/", $image, $result))
+//{
+/*	$bid = $result[1];
 	$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
 	$binary_data = @mysql_result($result, 0, "binary_data");
 	$binary_filetype = @mysql_result($result, 0, "binary_filetype");
@@ -304,11 +306,12 @@ if (preg_match("/Binary\s(.*?)\/.*/", $image, $result))
 	header("Content-type: {$binary_filetype}");
 	header("Content-Disposition: inline; filename={$binary_name}");
 	echo $binary_data;
-	exit();
-}
+	exit();*/
+
+//}
 
 
-$image = ($table == "upload" ? $upload_ss : $download_image);
+// $image = ($table == "upload" ? $upload_ss : $download_image);
 
 if (strpos($image, "http") !== FALSE) 
 {
@@ -338,7 +341,7 @@ else
 
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>";
 
-		$ns->tablerender($imagecaption, $disp);
+		e107::getRender()->tablerender($imagecaption, $disp);
 
 		require_once(FOOTERF);
 	} else 
@@ -354,7 +357,7 @@ else
 		else 
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
+			e107::getRender()->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -366,7 +369,7 @@ else
 
 function check_download_limits() 
 {
-	global $pref, $sql, $ns, $HEADER, $e107, $tp;
+	global $pref, $sql, $HEADER;
 	// Check download count limits
 	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata >= 0 AND gen_intdata >= 0) ORDER BY count_perday DESC";
 	if($sql->gen($qry)) 

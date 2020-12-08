@@ -364,7 +364,7 @@ class siteStats
 		'Konqueror'         => "konqueror",
 		'Avant Browser'     => "avantbrowser",
 		'AvantGo'           => "avantgo",
-		'Proxomitron'       => "proxomitron",
+	//	'Proxomitron'       => "proxomitron",
 		'Safari'            => "safari",
 		'Lynx'              => "lynx",
 		'Links'             => "links",
@@ -1989,7 +1989,8 @@ class siteStats
 	function getWidthRatio ($array, $column) 
 	{
 		$tmpArray = $this -> arraySort($array, $column);
-		$data = each($tmpArray);
+	//	$data = each($tmpArray);
+		$data = key($tmpArray);
 		$maxValue = $data[1]['totalv'];
 		echo "<b>maxValue</b> ".$maxValue." <br />";
 		$ratio = 0;

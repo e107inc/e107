@@ -25,7 +25,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->fail("Couldn't load e_file object");
+			$this->fail($e->getMessage());
 		}
 
 		$this->exploitFile = e_TEMP."test_exploit_file.jpg";

@@ -1297,10 +1297,10 @@ class admin_shortcodes
 					}
 					$text .= "</ul>";
 
-					if($parm == 'list')
-					{
+				//	if($parm == 'list')
+				//	{
 					//	$text = str_replace("<div style='padding-bottom: 2px;'>","<li>",$text);;	
-					}
+				//	}
 					
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
@@ -1764,10 +1764,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				{
 					$plug_vars = $plug->plug_vars;
 
-					if($row['plugin_path']=='calendar_menu')
-					{
+				//	if($row['plugin_path']=='calendar_menu')
+				//	{
 				//		print_a($plug_vars);
-					}
+				//	}
 					
 					// moved to boot.php
 					// e107::loadLanFiles($row['plugin_path'], 'admin');
@@ -1891,10 +1891,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		// ------------------------------------------------------------------
 
 		//added option to disable leave/logout (ll) - more flexibility for theme developers
-		if(!vartrue($parms['disable_ll']))
-		{
+	//	if(!vartrue($parms['disable_ll']))
+	//	{
 		//	$menu_vars += $this->getOtherNav('home');	
-		}
+	//	}
 
 	//	 print_a($menu_vars);
 

@@ -245,7 +245,7 @@ function parse_forum($f, $restricted_string = '')
 
 
 
-function parse_subs($forumList, $id ='', $lastpost_datestamp)
+function parse_subs($forumList, $id, $lastpost_datestamp)
 {
 
 	$tp = e107::getParser();

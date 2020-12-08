@@ -72,7 +72,7 @@ if ($error_string = do_export($filename, $type_list, $format_array, $use_separat
 banlist_adminlog('06','File: '.$filename.'<br />'.$error_string);
 
 
-function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '"')
+function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $quot = '"')
 {
 	$sql = e107::getDb();
 	$export_text = '';

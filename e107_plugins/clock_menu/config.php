@@ -23,12 +23,13 @@ e107::includeLan(e_PLUGIN.'clock_menu/languages/admin/'.e_LANGUAGE.'.php');
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
-$menu_pref = e107::getConfig('menu')->getPref('');
+$menu_pref = e107::getConfig('menu')->getPref();
 	
 if (isset($_POST['update_menu'])) 
 {
 	$temp = array();
-	while (list($key, $value) = each($_POST)) 
+
+	foreach($_POST as $key=>$value)
 	{
 		if ($key != 'update_menu') 
 		{
@@ -39,7 +40,7 @@ if (isset($_POST['update_menu']))
 	{
 		$temp['clock_format'] = 0;
 	}
-	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_05'))
+	if (e107::getLog()->logArrayDiffs($temp,$menu_pref,'MISC_05'))
 	{
 		$menuPref = e107::getConfig('menu');
 		foreach ($temp as $k => $v)
@@ -50,7 +51,7 @@ if (isset($_POST['update_menu']))
 	}
 }
 	
-$ns->tablerender($caption, $mes->render(). $text);
+e107::getRender()->tablerender(null, $mes->render());
 
 $text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
@@ -101,5 +102,5 @@ $text = "
 	</form>
 	";
 
-$ns->tablerender(CLOCK_AD_L4, $text);
+e107::getRender()->tablerender(CLOCK_AD_L4, $text);
 require_once(e_ADMIN."footer.php");

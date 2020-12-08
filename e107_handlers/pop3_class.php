@@ -158,7 +158,7 @@ class receiveMail
 				if ($enc == 4)
 					$message = quoted_printable_decode($message);
 				if ($enc == 5)
-					$message = $message;
+				//	$message = $message;
 				$fp=fopen($path.$name,"w");
 				fwrite($fp,$message);
 				fclose($fp);

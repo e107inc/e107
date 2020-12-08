@@ -328,7 +328,7 @@ class e_jshelper
      * @param string $errextended
      * @access public 
      */
-    function sendAjaxError($errcode, $errmessage, $errextended = '')
+    static function sendAjaxError($errcode, $errmessage, $errextended = '')
     {
         header('Content-type: text/html; charset='.CHARSET, true);
         header("HTTP/1.0 {$errcode} {$errmessage}", true);
@@ -337,7 +337,10 @@ class e_jshelper
 
         //Safari expects some kind of output, even empty
         echo ($errextended ? $errextended : ' ');
-		while (@ob_end_flush());
+		while (ob_get_length() !== false)
+		{
+		    ob_end_clean();
+		}
         exit;
     }
 

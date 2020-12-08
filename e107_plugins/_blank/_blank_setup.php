@@ -177,10 +177,10 @@ if(!class_exists("_blank_setup"))
 
 
 			$legacyMenuPref = e107::getConfig('menu')->getPref();
-			if(isset($legacyMenuPref['newforumposts_caption']))
+		/*	if(isset($legacyMenuPref['newforumposts_caption']))
 			{
 
-			}
+			}*/
 
 			return false;
 		}

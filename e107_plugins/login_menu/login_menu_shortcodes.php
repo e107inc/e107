@@ -317,24 +317,42 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_external_links($parm='')
 			{
+
 				global $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
 
 				$tp = e107::getParser();
+				$lmc = new login_menu_class;
 
-				if(!vartrue($menu_pref['login_menu']['external_links'])) return '';
-				$lbox_infos = login_menu_class::parse_external_list(true, false);
-				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
-				if(!vartrue($lbox_infos['links'])) return '';
-				$ret = '';
-				foreach ($lbox_active as $stackid) {
-				    $lbox_items = login_menu_class::clean_links(varset($lbox_infos['links'][$stackid]));
-				    if(!$lbox_items) continue;
-				    foreach ($lbox_items as $num=>$lbox_item) {
-				        $lbox_item['link_id'] = $stackid.'_'.$num;
-				        cachevars('login_menu_linkdata', $lbox_item);
-				        $ret .= $tp -> parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
-				    }
+				if(!vartrue($menu_pref['login_menu']['external_links']))
+				{
+					return '';
 				}
+
+				$lbox_infos = $lmc->parse_external_list(true, false);
+				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
+
+				if(!vartrue($lbox_infos['links']))
+				{
+					return '';
+				}
+
+				$ret = '';
+
+				foreach($lbox_active as $stackid)
+				{
+					$lbox_items = $lmc->clean_links(varset($lbox_infos['links'][$stackid]));
+					if(!$lbox_items)
+					{
+						continue;
+					}
+					foreach($lbox_items as $num => $lbox_item)
+					{
+						$lbox_item['link_id'] = $stackid . '_' . $num;
+						cachevars('login_menu_linkdata', $lbox_item);
+						$ret .= $tp->parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
+					}
+				}
+
 				return $ret;
 			}
 
@@ -420,7 +438,9 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				if(!vartrue($menu_pref['login_menu']['external_stats'])) return '';
 
-				$lbox_infos = login_menu_class::parse_external_list(true, false);
+				$lm = new login_menu_class;
+
+				$lbox_infos = $lm->parse_external_list(true, false);
 
 				if(!vartrue($lbox_infos['stats'])) return '';
 

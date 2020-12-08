@@ -128,7 +128,7 @@ class sitelinks_alt
 			return $text;
 		}
 		
-		static function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params, $cat_open = FALSE)
+		static function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params=array(), $cat_open = FALSE)
 		{
 			$tp = e107::getParser();
 			

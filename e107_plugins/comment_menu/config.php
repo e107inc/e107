@@ -37,7 +37,7 @@ if (isset($_POST['update_menu']))
 
 	
 	$tp = e107::getParser();
-	while (list($key, $value) = each($_POST)) 
+	foreach($_POST as $key=>$value)
 	{
 		if($key == "comment_caption")
 		{
@@ -61,7 +61,7 @@ if (isset($_POST['update_menu']))
 
 	if($menu_config->save(false))
 	{
-		$mes->addSuccess();
+		$mes->addSuccess(LAN_SAVED);
 	}
 	/*if ($admin_log->logArrayDiffs($old, $menu_config->getPref(), 'MISC_04'))
 	{
@@ -117,6 +117,6 @@ $text = "
 	</div>	
 	</form>";
 	
-$ns->tablerender(CM_L8, $mes->render() . $text);
+e107::getRender()->tablerender(CM_L8, $mes->render() . $text);
 
 require_once(e_ADMIN."footer.php");

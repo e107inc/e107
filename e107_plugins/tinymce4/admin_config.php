@@ -257,7 +257,7 @@ class tinymce
 	/**
 	 * Render Field value (listing page)
 	 *
-	 * @param array $key
+	 * @param string $key
 	 * @param array $row
 	 * @return string
 	 */

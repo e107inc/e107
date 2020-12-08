@@ -315,10 +315,10 @@ class ExtendedPasswordHandler extends UserHandler
 				{
 					$hash = $stored_hash;
 				} 
-				if(strlen($hash) !== 32) 
-				{
+			//	if(strlen($hash) !== 32)
+			//	{
 					//return PASSWORD_INVALID;
-				}
+			//	}
 				
 				$pwHash = $salt ? md5($salt.$pword) : md5($pword);
 				$stored_hash = $hash;

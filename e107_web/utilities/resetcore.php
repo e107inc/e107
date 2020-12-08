@@ -59,14 +59,14 @@ if(function_exists('ini_get'))
 }
 if($register_globals == true)
 {
-	while (list($global) = each($GLOBALS))
+	foreach($GLOBALS as $global=>$tmp);
 	{
 		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global))
 		{
 			unset($$global);
 		}
 	}
-	unset($global);
+	unset($global,$tmp);
 }
 
 
@@ -79,8 +79,8 @@ if (!isset($mySQLprefix)) return FALSE;
 $hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);	
 
 
-mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
-mysql_select_db($mySQLdefaultdb);
+//mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
+//mysql_select_db($mySQLdefaultdb);
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 define('e_CACHE', $siteRoot.$SYSTEM_DIRECTORY.$hash.'/cache/');
