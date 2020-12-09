@@ -189,7 +189,7 @@ exit;
 class wysiwyg
 {
 	public $js;
-	public $config = array();
+	public $config;
 	public $configName;
 
 	function renderConfig($config='')
@@ -207,7 +207,7 @@ class wysiwyg
 		},\n";
 */
 
-	//	$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
+		$text .= $this->config; // Moc: temporary fix for BC with PHP 5.3: https://github.com/e107inc/e107/issues/614
 
 		$text .= "\n});";
 
@@ -868,7 +868,7 @@ class wysiwyg
 
 	//	file_put_contents(e_LOG."wysiwyg.log", print_r($editorCSS,true));
 
-		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
+//		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
 
 		$ret['content_css']				= json_encode($editorCSS);
 		$ret['content_style']           = "div.clearfix { border-top:1px solid red } ";
