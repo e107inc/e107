@@ -953,7 +953,7 @@ e107::js('footer-inline', js());
 			$text .= "</div>";
 
 
-			if($this->getController()->getMode() === 'edit' && ($type !== EUF_DB_FIELD))
+			if($this->getController()->getAction() === 'edit' && ($type !== EUF_DB_FIELD))
 			{
 				return $text;
 			}
