@@ -139,6 +139,14 @@ else
 	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 }
 
+// Load early
+if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
+{
+	define('e_PAGETITLE', $_PAGE_TITLE);
+	unset($_PAGE_TITLE);
+}
+
+
 //
 // C: Send start of HTML
 //
@@ -147,13 +155,13 @@ if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pre
 if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if(!empty($pref['sitebutton']))
 {
-	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitebutton'],'w=800',false, true) : $tp->replaceConstants($pref['sitebutton'],'full');
+	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitebutton'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitebutton'],'full');
 	e107::meta('og:image',$siteButton);
 	unset($siteButton);
 }
 elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
 {
-	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitelogo'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitelogo'],'full');
 	e107::meta('og:image',$siteLogo);
 	unset($siteLogo);
 }
@@ -185,7 +193,10 @@ if (deftrue('e_FRONTPAGE'))
 }
 else
 {
-	echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	unset($_PAGE_TITLE);
 }
 
 
@@ -194,7 +205,7 @@ else
 //
 $e_js = e107::getJs();
 
-$e_pref = e107::getConfig('core');
+$e_pref = e107::getConfig();
 
 // Other Meta tags. 
 
@@ -216,7 +227,7 @@ if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 
 // re-initalize in case globals are destroyed from $e_headers includes
 $e_js = e107::getJs();
-$e_pref = e107::getConfig('core');
+$e_pref = e107::getConfig();
 
 
 // --- Load plugin Meta files - now possible to add to all zones!  --------
@@ -246,7 +257,7 @@ if (is_array($pref['e_meta_list']))
 
 if(isset($pref['sitebutton']))
 {
-	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
+	$appleIcon = e107::getParser()->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
 	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
 	unset($appleIcon);
 }
@@ -318,7 +329,7 @@ else
 	{
 		//echo '
 		//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
-		$e_js->themeCSS(TEXTDIRECTION.'.css', 'all');
+		$e_js->themeCSS(TEXTDIRECTION.'.css');
 	}
 }
 
@@ -343,7 +354,7 @@ $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library', 'othe
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
-	$e_js->renderJs($cssId, false, 'css', false);		
+	$e_js->renderJs($cssId, false, 'css');
 }
 
 unset($CSSORDER);
@@ -483,6 +494,10 @@ if(function_exists('theme_head'))
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
+/**
+ * @param $type
+ * @return string
+ */
 function render_meta($type)
 {
 	$tp = e107::getParser();
@@ -633,8 +648,8 @@ echo "</head>\n";
       //    echo "MODE 0.6";
         if($def == 'legacyCustom')
         {
-            $HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-            $FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+            $HEADER = isset($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+            $FOOTER = isset($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
         }
     }
     elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7/1.x themes
@@ -659,12 +674,12 @@ echo "</head>\n";
     
     if(deftrue('e_IFRAME'))
     {
-        $HEADER = deftrue('e_IFRAME_HEADER',"");
-        $FOOTER = deftrue('e_IFRAME_FOOTER',"");
+        $HEADER = deftrue('e_IFRAME_HEADER');
+        $FOOTER = deftrue('e_IFRAME_FOOTER');
         $body_onload .= " class='e-iframe'";
     }
 
-	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
+	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE'),$HEADER);
 
 	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 
@@ -672,7 +687,7 @@ if($noBody === true) // New in v2.2.2 - remove need for BODYTAG.
 {
 	echo "\n<!-- Start theme.html -->\n";
 }
-elseif(!deftrue('BODYTAG')) // @deprecated.
+elseif(!defined('BODYTAG')) // @deprecated.
 {
 	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
@@ -767,8 +782,8 @@ if ($e107_popup != 1) {
 		'{BODY_ONLOAD}' => $body_onload,
 		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
 		'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
-		'{---HEADER---}'  => $tp->parseTemplate('{HEADER}',true),
-        '{---FOOTER---}'  => $tp->parseTemplate('{FOOTER}',true),
+		'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
+        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
 		);
 		
    		parseheader($HEADER, $psc);

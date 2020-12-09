@@ -880,6 +880,8 @@ class media_admin_ui extends e_admin_ui
 	//	'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'number', 'data'=>'int', 'writeParms'=> array('tdClassRight'=>'form-inline', 'post'=> CORE_LAN_KB), 'help'=>IMALAN_183),
 
 		'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_183),
+		'convert_to_webp'				=> array('title'=> IMALAN_187, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_189),
+		'thumb_to_webp'				    => array('title'=> IMALAN_188, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_189),
 
 		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
 		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),

@@ -2491,16 +2491,27 @@ class e107
 
 		if($name === 'description')
 		{
-			$response->addMetaDescription($content);	//Cam: TBD
+			$response->addMetaDescription($content);
 		}
 
 		if($name === 'keywords')
 		{
-			$response->addMetaKeywords($content);	//Cam: TBD
+			$response->addMetaKeywords($content);
 		}
 
 		return $response->addMeta($name, $content, $extended);
-	//	return self::getUrl()->response()->addMeta($name, $content, $extended);
+
+	}
+
+	/**
+	 * Set the Page Title ie. <title>Whatever</title>
+	 * @param string $title
+	 */
+	public static function title($title)
+	{
+		/** @var eResponse $response */
+		$response = self::getSingleton('eResponse');
+		$response->addMetaTitle($title, true);
 	}
 
 	/**

@@ -4454,12 +4454,17 @@ class eResponse
 	 * @param string $title
 	 * @return eResponse
 	 */
-	function addMetaTitle($title)
+	public function addMetaTitle($title, $reset=false)
 	{
+		if($reset)
+		{
+			$this->_e_PAGETITLE = array();
+		}
+
 		return $this->addMetaData('e_PAGETITLE', $title);
 	}
 
-	function getMetaTitle()
+	public function getMetaTitle()
 	{
 		return $this->getMetaData('e_PAGETITLE', $this->_meta_title_separator);
 	}

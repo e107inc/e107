@@ -192,6 +192,7 @@ class news_front
 			return e107::getMenu()->renderMenu('forum','newforumposts_menu', $parms, true);
 		}
 
+		return null;
 	}
 
 
@@ -248,6 +249,8 @@ class news_front
 		{
 			echo $this->renderComments($this->comments);
 		}
+
+		return null;
 	}
 
 	private function setActions()
@@ -424,6 +427,8 @@ class news_front
 
 	public function debug()
 	{
+		$title = e107::getSingleton('eResponse')->getMetaTitle();
+
 		echo "<div class='alert alert-info'>";
 		echo "<h4>News Debug Info</h4>";
 		echo "<table class='table table-striped table-bordered'>";
@@ -431,7 +436,7 @@ class news_front
 		echo "<tr><td><b>subaction:</b></td><td>".$this->subAction."</td></tr>";
 		echo "<tr><td><b>route:</b></td><td>".$this->route."</td></tr>";
 		echo "<tr><td><b>e_QUERY:</b></td><td>".e_QUERY."</td></tr>";
-		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".defset('e_PAGETITLE','(unassigned)')."</td></tr>";
+		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".vartrue($title,'(unassigned)')."</td></tr>";
 		echo "<tr><td><b>PAGE_NAME:</b></td><td>".defset('PAGE_NAME','(unassigned)')."</td></tr>";
 		echo "<tr><td><b>CacheTimeout:</b></td><td>".$this->cacheRefreshTime."</td></tr>";
 		echo "<tr><td><b>_GET:</b></td><td>".print_r($_GET,true)."</td></tr>";
@@ -494,7 +499,7 @@ class news_front
 			$newsAr = $sql -> db_getList();
 		}
 
-		$i = $this->interval;
+	//	$i = $this->interval;
 
 
 		// require_once(e_CORE.'shortcodes/batch/news_archives.php');
@@ -549,23 +554,20 @@ class news_front
 
 			case "tag":
 			case "author":
-				if(!defined('e_PAGETITLE'))
-				{
-					define('e_PAGETITLE', $this->subAction);
-					e107::meta('og:title', $this->subAction);
-				}
+
+				e107::title($this->subAction);
+				e107::meta('og:title', $this->subAction);
 				e107::meta('robots', 'noindex');
 
 				break;
 
 			case "list":
 				$title = $tp->toHTML($news['category_name'],false,'TITLE_PLAIN');
-				if(!defined('e_PAGETITLE'))
-				{
-					define('e_PAGETITLE', $title );
-					e107::meta('og:title', $title);
-				}
+
+				e107::title($title);
+				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
+
 				break;
 
 			case "day":
@@ -587,11 +589,8 @@ class news_front
 
 				$this->dayMonth = $title;
 
-				if(!defined('e_PAGETITLE'))
-				{
-					define('e_PAGETITLE', $title );
-					e107::meta('og:title', $title);
-				}
+				e107::title($title);
+				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
 				break;
 
@@ -613,9 +612,9 @@ class news_front
 				e107::meta('robots', $news['news_meta_robots']);
 			}
 
-			if($news['news_title'] && !defined('e_PAGETITLE'))
+			if($news['news_title'])
 			{
-				define('e_PAGETITLE', $news['news_title']);
+				e107::title($news['news_title']);
 				e107::meta('og:title',$news['news_title']);
 				e107::meta('og:type','article');
 				e107::meta('twitter:card', 'summary');
@@ -699,9 +698,9 @@ class news_front
 
 
 
-		if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'cat')
+		if($news['category_name'] && $type == 'cat')
 		{
-			define('e_PAGETITLE', $tp->toHTML($news['category_name'],false,'TITLE_PLAIN'));
+			e107::title($tp->toHTML($news['category_name'],false,'TITLE_PLAIN'));
 		}
 
 		if($news['category_meta_keywords'] && !defined('META_KEYWORDS'))
@@ -727,7 +726,7 @@ class news_front
 
 		$e107cache->set($cache_tag, $cache_data);
 		$e107cache->set($cache_tag."_caption", $this->caption);
-		$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
+		$e107cache->set($cache_tag."_title", e107::getSingleton('eResponse')->getMetaTitle());
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
 		$e107cache->set($cache_tag."_rows", e107::serialize($rowData,'json'));
@@ -776,7 +775,7 @@ class news_front
 
 		if($etitle)
 		{
-			define('e_PAGETITLE', $etitle);
+			e107::title($etitle);
 		}
 
 		if($ediz)
@@ -980,7 +979,7 @@ class news_front
 	//	{
 	//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
 	//	}
-		e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
+
 		$currentNewsAction = $this->action;
 
 		$action = $currentNewsAction;
@@ -1568,14 +1567,6 @@ class news_front
 				break;
 		}
 
-		/*if($action != "" && !is_numeric($action))
-		{
-		if($action == "item" && $this->pref['meta_news_summary'] && $newsAr[1]['news_title'])
-		{
-		define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
-		}
-		define("e_PAGETITLE", $p_title);
-		}*/
 
 		$currentNewsAction = $this->action;
 
