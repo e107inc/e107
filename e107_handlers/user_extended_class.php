@@ -517,6 +517,36 @@ class e107_user_extended
 	{
 		return $this->user_extended_get_fieldList($cat, $indexField); 	
 	}
+
+	private function getFieldTypeClass($listRoot)
+	{
+
+		$filename = e_CORE . 'sql/extended_' . $listRoot . '.php';
+
+		if(!is_readable($filename))
+		{
+			return false;
+		}
+
+		require_once($filename);
+		$className = 'extended_' . $listRoot;
+
+		if(!class_exists($className))
+		{
+			return false;
+		}
+
+		/** @var extended_timezones $temp */
+		$temp = new $className();
+
+		if(!method_exists($className, 'getValue'))
+		{
+			return false;
+		}
+
+
+		return $temp;
+	}
 		
 
 	/**
@@ -1005,14 +1035,12 @@ class e107_user_extended
 
 			case EUF_PREDEFINED : // predefined list, shown in dropdown
 				$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
-				$filename = e_CORE.'sql/extended_'.$listRoot.'.php';
-				if (!is_readable($filename)) return 'No file: '.$filename;
-				require_once($filename);
-				$className = 'extended_'.$listRoot;
-				if (!class_exists($className)) return '?????';
-				/** @var extended_timezones $temp */
-				$temp = new $className();
-				if (!method_exists($className, 'getValue')) return '???-???';
+
+				if(!$temp = $this->getFieldTypeClass($listRoot))
+				{
+					return "Missing Extended Class";
+				}
+
 				$temp->pointerReset();
 
 				$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required} >\n";
@@ -1329,14 +1357,11 @@ class e107_user_extended
 	 */
 	function user_extended_display_text($table, $value)
 	{
-		$filename = e_CORE.'sql/extended_'.$table.'.php';
-		if (!is_readable($filename)) return 'No file: '.$filename;
-		require_once($filename);
-		$className = 'extended_'.$table;
-		if (!class_exists($className)) return '?????';
-		/** @var extended_timezones $temp */
-		$temp = new $className();
-		if (!method_exists($className, 'getValue')) return '???-???';
+		if(!$temp = $this->getFieldTypeClass($table))
+		{
+			"Couldn't find extended field class: ".$table;
+		}
+
 		return $temp->getValue($value);
 	}
 
