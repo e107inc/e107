@@ -243,7 +243,7 @@ class e_thumbnail
 		$this->sendCachedImage($cache_filename, $thumbnfo);
 
 		// No Cached file found - proceed with image creation.
-file_put_contents(e_BASE."e107_system/thumbnail.log",$this->_src_path."\n", FILE_APPEND);
+
 		$img = Image::make($this->_src_path);
 
 
