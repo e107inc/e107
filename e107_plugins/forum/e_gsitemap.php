@@ -26,6 +26,8 @@ class forum_gsitemap // plugin-folder + '_rss'
 		foreach($data as $row)
 		{
 			$import[] = array(
+					'id'    => $row['forum_id'],
+					'table' => 'forum',
 					'name'  => $row['forum_name'],
 					'url'   => e107::url('forum','forum',$row, array('mode'=>'full')), // ('forum/forum/view', $row['forum_id']),
 					'type'  => LAN_PLUGIN_FORUM_NAME

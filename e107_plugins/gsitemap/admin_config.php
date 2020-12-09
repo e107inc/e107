@@ -22,6 +22,8 @@ e107::lan('gsitemap',true);
 
 $gsm = new gsitemap;
 
+//todo Use ADMIN-UI
+
 
 class gsitemap
 {
@@ -397,7 +399,12 @@ class gsitemap
 		{
 			if(!in_array($row['link_name'], $existing))
 			{
-				$importArray[] = array('name' => $row['link_name'], 'url' => $row['link_url'], 'type' => GSLAN_1);
+				$importArray[] = array(
+					'table' => 'links',
+					'id'    => $row['link_id'],
+					'name' => $row['link_name'],
+					'url' => $row['link_url'],
+					'type' => GSLAN_1);
 			}
 		}
 
@@ -415,7 +422,13 @@ class gsitemap
 			{
 				$route = ($row['page_chapter'] == 0) ? "page/view/other" : "page/view/index";
 				
-				$importArray[] = array('name' => $row['page_title'], 'url' => e107::getUrl()->create($route, $row, array('full'=>1, 'allow' => 'page_sef,page_title,page_id, chapter_sef, book_sef')), 'type' => "Page");
+				$importArray[] = array(
+					'table' => 'page',
+					'id'    => $row['page_id'],
+					'name' => $row['page_title'],
+					'url' => e107::getUrl()->create($route, $row, array('full'=>1, 'allow' => 'page_sef,page_title,page_id, chapter_sef, book_sef')),
+					'type' => "Page"
+					);
 			}
 		}
 
@@ -464,7 +477,7 @@ class gsitemap
 			$id = 'gs-'.$k;
 			$text .= "
 			<tr>
-				<td class='center'><input id='".$id."' type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
+				<td class='center'><input id='".$id."' type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."^".$ia['table']."^".$ia['id']."' /></td>
 				<td><label for='".$id."'>".$ia['type']."</label></td>
 				<td>".$ia['name']."</td>
 				<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
@@ -519,15 +532,30 @@ class gsitemap
 		$sql 	= e107::getDb();
 		$tp 	= e107::getParser();
 		$log 	= e107::getAdminLog();
-		
+
+
 		foreach($_POST['importid'] as $import)
 		{
-			list($name, $url, $type) = explode("^", $import);
-			
-			$name 	= $tp->toDB($name);
-			$url 	= $tp->toDB($url);
-			
-			$sql->insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
+			list($name, $url, $type, $table, $id) = explode("^", $import);
+
+			$insert = array(
+				'gsitemap_id'       => 0,
+				'gsitemap_name'     => $tp->toDB($name),
+				'gsitemap_url'      => $tp->toDB($url),
+				'gsitemap_table'    => $tp->toDB($id),
+				'gsitemap_table_id' => (int) $id,
+				'gsitemap_lastmod'  => time(),
+				'gsitemap_freq'     => $_POST['import_freq'],
+				'gsitemap_priority' => $_POST['import_priority'],
+				'gsitemap_cat'      => $type,
+				'gsitemap_order'    => '0',
+				'gsitemap_img'      => '',
+				'gsitemap_active'   => '0',
+			);
+
+			$sql->insert("gsitemap", $insert);
+
+		//	$sql->insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
 		}
 
 		$this->message = count($_POST['importid'])." link(s) imported.";
