@@ -3839,7 +3839,7 @@ class e_parser
 
 	protected $bootstrap            = null;
 	protected $fontawesome          = null;
-
+	protected $convertToWebp         = false;
 
     protected $removedList          = array();
     protected $nodesToDelete        = array();
@@ -3949,6 +3949,11 @@ class e_parser
 			$this->staticUrl = e_HTTP_STATIC;
 		}
 
+	//	if(e107::pref('core', 'thumb_to_webp', false))
+		{
+			$this->convertToWebp = true;
+		}
+
     }
 
 	/**
@@ -4043,6 +4048,14 @@ class e_parser
 	public function setBootstrap($version)
     {
         $this->bootstrap = (int) $version;
+    }
+
+    /**
+	 * @param bool $bool
+	 */
+	public function setConvertToWebp($bool)
+    {
+        $this->convertToWebp = (bool) $bool;
     }
 
 

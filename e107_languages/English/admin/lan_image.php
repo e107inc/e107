@@ -211,3 +211,7 @@ define("IMALAN_183", "PNG and GIF files will be automatically converted to jpeg 
 define("IMALAN_184", "Default Image Sizes");
 define("IMALAN_185", "Maximum height in pixels");
 define("IMALAN_186", "Enter some text to filter results");
+
+define("IMALAN_187", "Convert to webp during import");
+define("IMALAN_188", "Convert to webp during render");
+define("IMALAN_189", "JPEG, PNG and GIF files will be automatically converted to webp format. (icons excluded)");
