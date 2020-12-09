@@ -3843,9 +3843,9 @@ class e_parser
 	public $isHtml                  = false;
 
 
-	protected $bootstrap            = null;
-	protected $fontawesome          = null;
-	protected $convertToWebp         = false;
+	protected $bootstrap     = null;
+	protected $fontawesome   = null;
+	protected $convertToWebP = false;
 
     protected $removedList          = array();
     protected $nodesToDelete        = array();
@@ -3955,10 +3955,6 @@ class e_parser
 			$this->staticUrl = e_HTTP_STATIC;
 		}
 
-	//	if(e107::pref('core', 'thumb_to_webp', false))
-		{
-			$this->convertToWebp = true;
-		}
 
     }
 
@@ -4059,9 +4055,9 @@ class e_parser
     /**
 	 * @param bool $bool
 	 */
-	public function setConvertToWebp($bool)
+	public function setConvertToWebP($bool)
     {
-        $this->convertToWebp = (bool) $bool;
+        $this->convertToWebP = (bool) $bool;
     }
 
 
@@ -4772,7 +4768,31 @@ class e_parser
 			$height  = "height=\"".$parm['height']."\" " ;
 		}
 
-		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading.$title." />";
+		$html = '';
+
+		if($this->convertToWebP)
+		{
+			$parm['type'] = 'webp';
+			$source = $tp->thumbUrl($file,$parm);
+			$html = "<picture>\n";
+			$html .= '<source type="image/webp" srcset="'.$source.'">';
+			$html .= "\n";
+			if(!empty($parm['srcset']))
+			{
+				list($webPSourceSet,$webPSize) = explode(' ', $parm['srcset']);
+				$html .= '<source type="image/webp" srcset="'.$webPSourceSet.'&amp;type=webp '.$webPSize.'">';
+				$html .= "\n";
+				$html .= '<source type="image/'.str_replace('jpg', 'jpeg',$ext).'" srcset="'.$parm['srcset'].'">';
+				$html .= "\n";
+				$srcset = ''; // remove it from the img tag below.
+			}
+		}
+
+		$html .= "<img {$id}class=\"{$class}\" src=\"".$path."\" alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading.$title." />";
+
+		$html .= ($this->convertToWebP) ? "\n</picture>" : '';
+
+		return $html;
 
 	}
 
