@@ -1056,7 +1056,10 @@ class e_file
 		@set_time_limit(10 * 60);
 		@session_write_close();
 		@e107_ini_set("max_execution_time", 10 * 60);
-		while(@ob_end_clean()); // kill all output buffering else it eats server resources
+		while (ob_get_length() !== false)  // destroy all ouput buffering
+		{
+	        ob_end_clean();
+		}
 		@ob_implicit_flush(TRUE);
 		
 		

@@ -396,7 +396,7 @@ class eFront
 		
 		$router = new eRouter();
 		$this->setRouter($router);
-		
+
 		/** @var eResponse $response */
 		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);

@@ -1276,7 +1276,7 @@ class e_media
 			'media_author'		=> USERID,
 			'media_usedby'		=> '',
 			'media_tags'		=> '',
-			'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
+			'media_dimensions'	=> (isset($info['img-width']) && isset($info['img-height'])) ? $info['img-width']." x ".$info['img-height'] : ''
 		);
 	}
 	
