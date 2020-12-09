@@ -510,6 +510,10 @@ if(!e107::getConfig()->hasData())
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 $pref = e107::getPref();
 
+if(!empty($pref['thumb_to_webp']))
+{
+	$tp->setConvertToWebP(true);
+}
 //this could be part of e107->init() method now, prefs will be auto-initialized
 //when proper called (e107::getPref())
 // $e107->set_base_path(); moved to init().

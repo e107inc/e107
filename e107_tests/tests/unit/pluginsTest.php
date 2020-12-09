@@ -134,11 +134,11 @@
 			$tp = e107::getParser();
 
 			$result = $tp->parseTemplate("{BANNER=e107promo}",true);
-			$this->assertStringContainsString("<img class='e-banner img-responsive img-fluid'", $result);
+			$this->assertStringContainsString('<img class="e-banner img-responsive img-fluid"', $result);
 
 			$result = $tp->parseTemplate("{BANNER=e107promo}",false,
 				e107::getScBatch('banner', true));
-			$this->assertStringContainsString("<img class='e-banner img-responsive img-fluid'", $result);
+			$this->assertStringContainsString('<img class="e-banner img-responsive img-fluid"', $result);
 
 			$result = $tp->parseTemplate("{BANNER=e107promo}",false);
 			$this->assertEquals("", $result);
