@@ -32,6 +32,8 @@ class news_gsitemap
 		foreach($data as $row)
 		{
 			$import[] = array(
+				'id'    => $row['category_id'],
+				'table' => 'news_category',
 				'name' => $row['category_name'],
 				'url' => e107::getUrl()->create('news/list/category', $row, array('full' => 1)) , 
 				'type' => LAN_NEWS_23
@@ -51,6 +53,8 @@ class news_gsitemap
 		foreach($data as $row)
 		{
 			$import[] = array(
+				'id'    => $row['news_id'],
+				'table' => 'news',
 				'name' => $row['news_title'],
 				'url' => e107::getUrl()->create('news/view/item', $row, array('full' => 1)),
 				'type' => ADLAN_0
