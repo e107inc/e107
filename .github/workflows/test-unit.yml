@@ -71,9 +71,9 @@ jobs:
       run: |
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
         then
-          docker-php-ext-configure gd --enable-gd
+          docker-php-ext-configure gd --with-jpeg --with-webp
         else
-          docker-php-ext-configure gd --with-gd
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
         fi
 
     - name: Install necessary PHP extensions
