@@ -65,15 +65,15 @@ jobs:
           grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
           awk '{print $3}'
         )
-        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev
+        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev
 
-    - name: Configure PHP gd extension with JPEG support
+    - name: Configure PHP gd extension with default bundle
       run: |
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
         then
-          docker-php-ext-configure gd --with-jpeg
+          docker-php-ext-configure gd --enable-gd
         else
-          docker-php-ext-configure gd --with-jpeg-dir=/usr
+          docker-php-ext-configure gd --with-gd
         fi
 
     - name: Install necessary PHP extensions
