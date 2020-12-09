@@ -42,7 +42,7 @@ class e_parse extends e_parser
 	public $e_emote;
 
 	// 'Hooked' parsers (array)
-	protected $e_hook;
+	protected $e_hook = array();
 
 	public $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
@@ -1991,7 +1991,12 @@ class e_parse extends e_parser
 							{
 								foreach($pref['e_tohtml_list'] as $hook)
 								{
-									if (!is_object($this->e_hook[$hook]))
+									if(empty($hook))
+									{
+										continue;
+									}
+
+									if (empty($this->e_hook[$hook]) /*&& !is_object($this->e_hook[$hook])*/)
 									{
 										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
 										{
@@ -2224,8 +2229,9 @@ class e_parse extends e_parser
 
 
 	/**
-	 * Use it on html attributes to avoid breaking markup . 
-	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>"; 
+	 * Use it on html attributes to avoid breaking markup .
+	 * @param string $text
+	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>";
 	 */
 	function toAttribute($text)
 	{
@@ -4564,10 +4570,10 @@ class e_parser
 			return null;
 		}
 
-		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
-		{
+	//	if(strpos($icon,'e_MEDIA_IMAGE')!==false)
+	//	{
 		//	return "<div class='alert alert-danger'>Use \$tp->toImage() instead of toIcon() for ".$icon."</div>"; // debug info only.
-		}
+	//	}
 
 		if(substr($icon,0,3) == '<i ') // if it's html (ie. css sprite) return the code.
 		{
@@ -5198,7 +5204,7 @@ TMPL;
         // -------------------- Encoding ----------------
 
 		$acc = $this->getScriptAccess();
-		$accName = e107::getUserClass()->uc_get_classname($acc);
+		$accName = e107::getUserClass()->getName($acc);
 
 		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
 		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
@@ -5518,13 +5524,7 @@ return;
 		{
        		$html = '<body>'.$html.'</body>';
 		}
-		else  // Full HTML page. 
-		{
-		//	$this->allowedTags[] = 'head';
-		//	$this->allowedTags[] = 'body';
-		//	$this->allowedTags[] = 'title';
-			//$this->allowedTags[] = 'meta';
-		}
+
          
 		if(!is_object($this->domObj))
 		{
@@ -5755,7 +5755,7 @@ return;
     /**
      * Check for Invalid Attribute Values
      * @param $value string
-     * @return true/false
+     * @return bool true/false
      */   
     function invalidAttributeValue($value)
     {

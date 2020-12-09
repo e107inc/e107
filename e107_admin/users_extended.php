@@ -920,7 +920,7 @@ e107::js('footer-inline', js());
 
 			$type = intval($current['user_extended_struct_type']);
 
-			$val_hide = ($type != 4 && $type !=1 ) ? "visible" : "none";
+			$val_hide = ($type !== EUF_DB_FIELD && $type !== EUF_TEXT && $type !== EUF_COUNTRY ) ? "visible" : "none";
 
 			if($type == 0)
 			{
@@ -949,18 +949,21 @@ e107::js('footer-inline', js());
 			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			<br /><span class='field-help'>".EXTLAN_17."</span>";
 
-				$text .= "<div style='margin-top:10px'>".$frm->checkbox('sort_user_values',1, false, EXTLAN_87)."</div>";
+				$text .= "<div class='checkbox' style='margin-top:10px; margin-bottom:0'>".$frm->checkbox('sort_user_values',1, false, EXTLAN_87)."</div>";
 			$text .= "</div>";
 
 
-
+			if($this->getController()->getMode() === 'edit' && ($type !== EUF_DB_FIELD))
+			{
+				return $text;
+			}
 
 // End of Values. --------------------------------------
 
 
 
 
-			$db_hide = ($current['user_extended_struct_type'] == 4) ? "block" : "none";
+			$db_hide = ($current['user_extended_struct_type'] == EUF_DB_FIELD) ? "block" : "none";
 
 			// Ajax URL for "Table" dropdown.
 			$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
