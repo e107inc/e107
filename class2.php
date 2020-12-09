@@ -510,7 +510,7 @@ if(!e107::getConfig()->hasData())
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 $pref = e107::getPref();
 
-if(!empty($pref['thumb_to_webp']))
+if(e_ADMIN_AREA !== true && !empty($pref['thumb_to_webp']))
 {
 	$tp->setConvertToWebP(true);
 }

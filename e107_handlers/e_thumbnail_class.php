@@ -206,7 +206,7 @@ class e_thumbnail
 			return true;
 		}
 
-		if($this->_debug === true)
+		if($this->_debug === true || defined("e_DEBUG_THUMBNAIL"))
 		{
 			echo "File Not Found: ".$path;
 		}

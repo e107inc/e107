@@ -136,6 +136,11 @@
             $this->logTime($sMarker);
         }
 
+		/**
+		 * Replacement for $sql->db_Mark_Time()
+		 * @param string $sMarker - a descriptive marker for the log
+		 * @return null
+		 */
 		public function logTime($sMarker)
 		{
 		   if(!$this->active)
