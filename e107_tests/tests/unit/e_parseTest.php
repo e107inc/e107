@@ -988,14 +988,18 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			$this->tp->setConvertToWebP(true);
 			$result6 = $this->tp->toImage($src);
-			$tempDir = str_replace(['C:','\\'],['','/'],sys_get_temp_dir()).'/'; // FIXME
+
 
 			$expected = '<picture>
-<source type="image/webp" srcset="'.$tempDir.'thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp">
-<source type="image/webp" srcset="'.$tempDir.'thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320&amp;type=webp 4x">
-<source type="image/jpeg" srcset="'.$tempDir.'thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320 4x">
-<img class="img-responsive img-fluid" src="'.$tempDir.'thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80" alt="butterfly.jpg" width="80" height="80"  />
+<source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp">
+<source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320&amp;type=webp 4x">
+<source type="image/jpeg" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320 4x">
+<img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80" alt="butterfly.jpg" width="80" height="80"  />
 </picture>';
+
+			$tempDir = str_replace(['C:','\\'],['','/'], sys_get_temp_dir()).'/'; // FIXME
+
+			$result6 = str_replace($tempDir, '', $result6);
 
 			$this->assertSame($expected,$result6);
 			$this->tp->setConvertToWebP(false);
