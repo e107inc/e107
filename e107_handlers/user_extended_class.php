@@ -420,7 +420,7 @@ class e107_user_extended
 				case EUF_PREFIELD:
 				case EUF_ADDON:
 
-					$arr[$field] = filter_var($value,FILTER_SANITIZE_STRING);
+					$arr[$field] = e107::getParser()->filter($value);
 			    break;
 
 				case EUF_RICHTEXTAREA : // rich textarea (using WYSIWYG editor)
@@ -1173,7 +1173,7 @@ class e107_user_extended
 
 	/**
 	 * @param bool|false $no_cache
-	 * @return bool
+	 * @return bool|array
 	 */
 	function parse_extended_xml($no_cache = false)
 	{
