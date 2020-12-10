@@ -191,7 +191,7 @@ class e_thumbnail
 			return false;
 		}
 
-		if(!is_writeable(e_CACHE_IMAGE))
+		if(!is_writable(e_CACHE_IMAGE))
 		{
 			echo 'Cache folder not writeable! ';
 			return false;

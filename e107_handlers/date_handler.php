@@ -552,7 +552,7 @@ class e_date
 			}
 			else
 			{
-				preg_match('#(\d{1,2})(?:\D(\d{1,2})){0,1}(?:\D(\d{1,2})){0,1}#', $timeString, $timeVals);
+				preg_match('#(\d{1,2})(?:\D(\d{1,2}))?(?:\D(\d{1,2})){0,1}#', $timeString, $timeVals);
 			}
 		}
 		elseif ($endDay)

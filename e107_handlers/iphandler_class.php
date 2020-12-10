@@ -340,7 +340,7 @@ class eIPHandler
 				if (!$this->isAddressRoutable($ip))
 				{
 					$ip3 = explode(',', $ip4);				// May only be one address; could be several, comma separated, if multiple proxies used
-					$ip = trim($ip3[sizeof($ip3) - 1]);						// If IP address is unroutable, replace with any forwarded_for address
+					$ip = trim($ip3[count($ip3) - 1]);						// If IP address is unroutable, replace with any forwarded_for address
 					$this->logBanItem(0, 'X_Forward  '.$ip4.' --> '.$ip);		// Just log for interest ATM
 				}
 			}

@@ -454,7 +454,7 @@ class alt_auth_admin extends alt_auth_base
 				break;
 				default :
 					$err = "Coding error";
-					var_dump($log_result);
+					e107::getDebug()->log($log_result);
 			}
 
 			if(!empty($err))

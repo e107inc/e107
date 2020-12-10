@@ -80,7 +80,7 @@ class user_import
 
 
   // Constructor
-	function user_import()
+	function __construct()
 	{
 		$this->userDB = new db;			// Have our own database object to write to the user table
 		$this->actualExtended = e107::getUserExt()->getFieldNames(); // Create list of predefined extended user fields which are present

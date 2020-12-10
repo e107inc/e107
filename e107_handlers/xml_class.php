@@ -131,7 +131,7 @@ class parseXml extends xmlClass // BC with v1.x
 
 	function characterData ($p, $data)
 	{
-		$data = trim ( chop ( $data ));
+		$data = trim ( rtrim ( $data ));
 		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
 		if(!array_key_exists($this -> current_tag, $this -> xmlData))
 		{

@@ -224,7 +224,7 @@ class MagpieRSS {
         elseif ($this->feed_type == ATOM and $this->incontent ) 
         {
             // if tags are inlined, then flatten
-            $attrs_str = join(' ', 
+            $attrs_str = implode(' ',
                     array_map('map_attrs', 
                     array_keys($attrs), 
                     array_values($attrs) ) );
@@ -265,7 +265,7 @@ class MagpieRSS {
             $this->append_content( $text );
         }
         else {
-            $current_el = join('_', array_reverse($this->stack));
+            $current_el = implode('_', array_reverse($this->stack));
             $this->append($current_el, $text);
         }
     }

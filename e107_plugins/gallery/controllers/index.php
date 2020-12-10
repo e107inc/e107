@@ -86,7 +86,7 @@ class plugin_gallery_index_controller extends eControllerFront
 
 	private function getTemplate()
 	{
-		$template = e107::getTemplate('gallery');
+		$template = (array) e107::getTemplate('gallery');
 
 		$oldKeys = array(
 			'list_start', 'list_item', 'list_caption', 'list_end',

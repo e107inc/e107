@@ -73,7 +73,7 @@ class e_thumbpage
 	function __construct()
 	{
 
-	$self = realpath(dirname(__FILE__));
+	$self = realpath(__DIR__);
 
 		$e_ROOT = $self."/";
 
@@ -95,7 +95,7 @@ class e_thumbpage
 		// support early include feature
 		if(isset($CLASS2_INCLUDE) && !empty($CLASS2_INCLUDE))
 		{
-			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
+			 require_once(realpath(__DIR__ .'/'.$CLASS2_INCLUDE));
 		}
 
 

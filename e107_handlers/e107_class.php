@@ -905,7 +905,7 @@ class e107
 	 * @param string $class_name
 	 * @param string|boolean $path optional script path
 	 * @param string $regpath additional registry path
-	 * @return Object
+	 * @return mixed
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '',$vars=null)
 	{
@@ -972,7 +972,7 @@ class e107
 	 * @param string $class_name
 	 * @param mixed $arguments
 	 * @param string|boolean $path optional script path
-	 * @return object|null
+	 * @return mixed
 	 */
 	public static function getObject($class_name, $arguments = null, $path = true)
 	{
@@ -1305,7 +1305,7 @@ class e107
 	/**
 	 * Retrieve sc parser singleton object
 	 *
-	 * @return e_parse_shortcode
+	 * @return e_parse_shortcode|array
 	 */
 	public static function getScParser()
 	{
@@ -1316,7 +1316,7 @@ class e107
 	/**
 	 * Retrieve secure_image singleton object
 	 *
-	 * @return secure_image
+	 * @return array|Object|secure_image
 	 */
 	public static function getSecureImg()
 	{
@@ -1557,7 +1557,7 @@ class e107
 		}
 
 		// Get the currently used theme.
-		if ($themedir == 'current')
+		if ($themedir === 'current')
 		{
 			// If we are in the admin area.
 			if (deftrue('e_ADMIN_AREA', false))
@@ -1813,7 +1813,7 @@ class e107
 	 * @param integer $user_id target user
 	 * @param boolean $checkIfCurrent if tru user_id will be compared to current user, if there is a match
 	 * 	current user object will be returned
-	 * @return e_system_user
+	 * @return e_system_user|e_user
 	 */
 	public static function getSystemUser($user_id, $checkIfCurrent = true)
 	{
@@ -1836,11 +1836,11 @@ class e107
 	/**
 	 * Simple replacement for deprecated get_user_data(). e107::user();
 	 * @param $uid integer user_id or leave empty for currently logged in user.
-	 * @return array of user data
+	 * @return array|false of user data
 	 */
 	public static function user($uid=null)
 	{
-		$uid = intval($uid);
+		$uid = (int) $uid;
 
 		if(empty($uid)){ return false; }
 
@@ -2648,12 +2648,9 @@ class e107
 					//$debug_backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
 					$mes->addDebug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
 				}
-				return call_user_func(array($obj, $method_name),$param, $param2);
+				return $obj->$method_name($param, $param2);
 			}
-			else
-			{
-			//	$mes->addDebug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
-			}
+
 		}
 		return FALSE;
 	}
@@ -3287,7 +3284,7 @@ class e107
 	 *
 	 * @param string $fname filename without the extension part (e.g. 'comment')
 	 * @param boolean $admin true if it's an administration language file
-	 * @return bool
+	 * @return bool|null
 	 */
 	public static function coreLan($fname, $admin = false)
 	{
@@ -3297,7 +3294,7 @@ class e107
 		}
 
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
-		if(self::getRegistry($cstring)) return;
+		if(self::getRegistry($cstring)) return null;
 
 		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
@@ -3333,12 +3330,12 @@ class e107
 	 * @param string $plugin plugin name
 	 * @param string $fname filename without the extension part (e.g. 'common')
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
-	 * @return bool
+	 * @return bool|null
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false)
 	{
 		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
-		if(self::getRegistry($cstring)) return;
+		if(self::getRegistry($cstring)) return null;
 
 		$plugin = preg_replace('/[^\w]/', '', $plugin);
 
@@ -3413,7 +3410,7 @@ class e107
 	 * @param string $fname filename without the extension part (e.g. 'common' for common.php)
 	 * @param string $theme theme name, if null current theme will be used
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
-	 * @return bool
+	 * @return bool|null
 	 */
 	public static function themeLan($fname = '', $theme = null, $flat = false)
 	{
@@ -3421,7 +3418,7 @@ class e107
 		else $theme = e_THEME.preg_replace('#[^\w/]#', '', $theme).'/languages/';
 
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
-		if(self::getRegistry($cstring)) return;
+		if(self::getRegistry($cstring)) return null;
 
 		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		else $fname = e_LANGUAGE;
@@ -3700,7 +3697,7 @@ class e107
 			$urlTemplate = $tp->replaceConstants($urlTemplate, $options['mode']);
 			$legacyUrl = $tp->simpleParse($urlTemplate, $row);
 
-			$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
+			$legacyUrl = preg_replace('/&?\$[\d]/', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
 
 
 			// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
@@ -4052,7 +4049,7 @@ class e107
 
 		//  Ensure thet '.' is the first part of the include path
 		$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
-		if($inc_path[0] != '.')
+		if($inc_path[0] !== '.')
 		{
 			array_unshift($inc_path, '.');
 			$inc_path = implode(PATH_SEPARATOR, $inc_path);
@@ -4084,9 +4081,9 @@ class e107
 		}
 
 
-		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
+		if($type === "_POST" || ($type === "_SERVER" && ($key === "QUERY_STRING")))
 		{
-			if($type == "_POST" && ($base64 === false))
+			if($type === "_POST" && ($base64 === false))
 			{
 				$input = preg_replace("/(\[code\])(.*?)(\[\/code\])/is","",$input);
 			}
@@ -4133,10 +4130,10 @@ class e107
 
 		}
 
-		if($type == "_SERVER")
+		if($type === "_SERVER")
 		{
 
-			if(($key == "QUERY_STRING") && (
+			if(($key === "QUERY_STRING") && (
 				strpos(strtolower($input),"../../")!==FALSE
 				|| stripos($input,"php:")!==FALSE
 				|| stripos($input,"data:")!==FALSE
@@ -4146,7 +4143,7 @@ class e107
 				self::die_http_400();
 			}
 
-			if(($key == "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
+			if(($key === "HTTP_USER_AGENT") && strpos($input,"libwww-perl")!==FALSE)
 			{
 				self::die_http_400();
 			}
@@ -4198,17 +4195,17 @@ class e107
 
 		if(!defined('e_MOD_REWRITE')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On'||  getenv('REDIRECT_HTTP_MOD_REWRITE')=='On' ? true : false));
+			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE') === 'On'||  getenv('REDIRECT_HTTP_MOD_REWRITE') === 'On' ? true : false));
 		}
 
 		if(!defined('e_MOD_REWRITE_MEDIA')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA')=='On'  ? true : false));
+			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA') === 'On'  ? true : false));
 		}
 
 		if(!defined('e_MOD_REWRITE_STATIC')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_STATIC', (getenv('HTTP_MOD_REWRITE_STATIC')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE_STATIC')=='On'  ? true : false));
+			define('e_MOD_REWRITE_STATIC', (getenv('HTTP_MOD_REWRITE_STATIC') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_STATIC') === 'On'  ? true : false));
 		}
 
 		$subdomain = false;
@@ -4300,7 +4297,7 @@ class e107
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
 		if (
-			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
+			(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
 			(!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
 		)
 		{
@@ -4333,7 +4330,7 @@ class e107
 			unset($http_path[$j]);
 			$j++;
 		}
-		$http_path = array_reverse($http_path);
+		$http_path = array_reverse((array) $http_path);
 
 
 
@@ -4343,7 +4340,7 @@ class e107
 //var_dump($this->server_path);
 //exit;
 
-		if ($this->server_path == "//")
+		if ($this->server_path === "//")
 		{
 			$this->server_path = "/";
 		}
@@ -4383,11 +4380,11 @@ class e107
 		}
 
 		//BC temporary fixes
-		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY'][0] == "/")
+		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY'][0] === "/")
 		{
 			$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
 		}
-		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY'][0] == "/")
+		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY'][0] === "/")
 		{
 			$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
 		}
@@ -4501,7 +4498,7 @@ class e107
 	function fix_windows_paths($path)
 	{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
-		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
+		$fixed_path = (substr($fixed_path, 1, 2) === ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
 
@@ -4732,7 +4729,7 @@ class e107
 		{
 			foreach($inArray as $res)
 			{
-				if(stristr($_SERVER['QUERY_STRING'], $res))
+				if(stripos($_SERVER['QUERY_STRING'], $res) !== false)
 				 {
 					die('Access denied.');
 				}
@@ -4762,10 +4759,7 @@ class e107
 			define('e_QUERY', filter_var($e_QUERY, FILTER_SANITIZE_URL));
 			$_SERVER['QUERY_STRING'] = e_QUERY;
 		}
-		else
-		{
-		//	 define('e_QUERY', ''); // breaks news sef-urls and possibly others. Moved to index.php.
-		}
+
 
 
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
@@ -4798,7 +4792,7 @@ class e107
 			{
 				unset($_data[$check]);
 				self::getSession()->set('__sessionBrowserCache', $_data);
-				return;
+				return null;
 			}
 		}
 
@@ -4807,7 +4801,7 @@ class e107
 			$set = e_REQUEST_URI;
 		}
 
-		if(empty($set) || !is_string($set) || in_array($set, $_data)) return;
+		if(empty($set) || !is_string($set) || in_array($set, $_data)) return null;
 
 		$_data[]  = $set;
 		self::getSession()->set('__sessionBrowserCache', array_unique($_data));
@@ -5094,7 +5088,7 @@ class e107
 
 				// Currently only batches inside shortcodes/ folder are auto-detected,
 				// read the todo for e_shortcode.php related problems
-				if('shortcodes' == $end)
+				if('shortcodes' === $end)
 				{
 					$filename = e_PLUGIN.$tmp[0].'/shortcodes/batch/'; // plugname/shortcodes/batch/
 					unset($tmp[0]);
@@ -5115,7 +5109,7 @@ class e107
 			default: //core libraries, core shortcode batches
 				// core SC batch check
 				$end = array_pop($tmp);
-				if('shortcodes' == $end)
+				if('shortcodes' === $end)
 				{
 					$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
 					break;
@@ -5144,7 +5138,7 @@ class e107
 		$levels = explode('\\', $className);
 
 		// Guard against classes that are not ours
-		if ($levels[0] != 'e107') return;
+		if ($levels[0] !== 'e107') return;
 
 		$levels[0] = e_HANDLER;
 		$classPath = implode('/', $levels).'.php';

@@ -161,7 +161,7 @@ if (!defined("PCLTRACE_LIB"))
       $g_pcl_trace_name .= ",".$p_name;
 
     // ----- Update the function entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = $p_name;
     $g_pcl_trace_entries[$i][param] = $p_param;
     $g_pcl_trace_entries[$i][message] = "";
@@ -173,7 +173,7 @@ if (!defined("PCLTRACE_LIB"))
     // ----- Update the message entry
     if ($p_message != "")
     {
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -231,7 +231,7 @@ if (!defined("PCLTRACE_LIB"))
     // ----- Update the message entry
     if ($p_message != "")
     {
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -242,7 +242,7 @@ if (!defined("PCLTRACE_LIB"))
     }
 
     // ----- Update the function entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = $v_name;
     $g_pcl_trace_entries[$i][param] = $p_return;
     $g_pcl_trace_entries[$i][message] = "";
@@ -275,7 +275,7 @@ if (!defined("PCLTRACE_LIB"))
       return;
 
     // ----- Update the entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -308,7 +308,7 @@ if (!defined("PCLTRACE_LIB"))
       return;
 
     // ----- Update the entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -360,7 +360,7 @@ if (!defined("PCLTRACE_LIB"))
 
     // ----- Display
     $v_again=0;
-    for ($i=0; $i<sizeof($g_pcl_trace_entries); $i++)
+    for ($i=0; $i<count($g_pcl_trace_entries); $i++)
     {
       // ---- Row header
       echo "<tr>";

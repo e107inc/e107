@@ -24,7 +24,7 @@ class receiveMail
 
 	var $email='';
 
-	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
+	function __construct($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
 	{
 		if($servertype=='imap')
 		{
