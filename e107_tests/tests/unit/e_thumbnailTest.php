@@ -27,7 +27,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, $e->getMessage());
+				self::assertTrue(false, $e->getMessage());
 			}
 
 			$this->thm->setCache(false);
@@ -154,7 +154,9 @@
 			);
 
 			// WebP support added in PHP 7.1+
-			if (version_compare(phpversion(), '7.0', '>'))
+			$ver = (float) phpversion();
+
+			if ($ver > 7.0)
 			{
 					// Test WebP format resize.
 				$tests[] = array(
@@ -197,7 +199,7 @@
 					rename($generatedImage,codecept_output_dir()."sendImage_".time()."_index_".$index.".".$ext);
 				}
 
-				$this->assertTrue($status, "Image Index #".$index." failed the image-comparison check");
+				self::assertTrue($status, "Image Index #".$index." failed the image-comparison check");
 
 
 			}
