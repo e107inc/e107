@@ -73,8 +73,9 @@ jobs:
         then
           docker-php-ext-configure gd --with-jpeg --with-webp
         elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
-          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
         then
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
+        else
           docker-php-ext-configure gd --with-jpeg-dir=/usr --with-vpx-dir=/usr
         fi
 
