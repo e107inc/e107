@@ -1261,7 +1261,7 @@ class e_jsmanager
 				// Renumber integer keys as array_merge_recursive() does. Note that PHP
 				// automatically converts array keys that are integer strings (e.g., '1')
 				// to integers.
-				if (is_integer($key)) {
+				if (is_int($key)) {
 					$result[] = $value;
 				}
 				// Recurse when both values are arrays.

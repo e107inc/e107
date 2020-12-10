@@ -26,20 +26,20 @@
 	class e107_db_debug
 	{
         private $active       = false;      // true when debug is active.
-		public $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
-		public $aDBbyTable       = array();
-		public $aOBMarks         = array(0 => ''); // Track output buffer level at each time mark
-		public $aMarkNotes       = array();      // Other notes can be added and output...
-		public $aTimeMarks       = array();      // Overall time markers
-		public $curTimeMark      = 'Start';
-		public $nTimeMarks       = 0;            // Provide an array index for time marks. Stablizes 'current' function
-	//	public $aGoodQueries     = array();
-	//	var $aBadQueries      = array();
-		public $scbbcodes        = array();
-		public $scbcount;
-		public $deprecated_funcs = array();
-		public $aLog             = array();    // Generalized debug log (only seen during debug)
-		public $aIncList         = array(); // Included files
+		var $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
+		var $aDBbyTable       = array();
+		var $aOBMarks         = array(0 => ''); // Track output buffer level at each time mark
+		var $aMarkNotes       = array();      // Other notes can be added and output...
+		var $aTimeMarks       = array();      // Overall time markers
+		var $curTimeMark      = 'Start';
+		var $nTimeMarks       = 0;            // Provide an array index for time marks. Stablizes 'current' function
+		var $aGoodQueries     = array();
+		var $aBadQueries      = array();
+		var $scbbcodes        = array();
+		var $scbcount;
+		var $deprecated_funcs = array();
+		var $aLog             = array();    // Generalized debug log (only seen during debug)
+		var $aIncList         = array(); // Included files
 
 		function __construct()
 		{
@@ -180,15 +180,15 @@
 		}
 
 
-	/**
-	 * @param $query
-	 * @param $rli
-	 * @param $origQryRes
-	 * @param $aTrace
-	 * @param $mytime
-	 * @param $curtable
+		/**
+		 * @param $query
+		 * @param $rli
+		 * @param $origQryRes
+		 * @param $aTrace
+		 * @param $mytime
+		 * @param $curtable
 	 * @return null
-	 */
+		 */
 		function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 		{
             if(!$this->active)
@@ -440,7 +440,7 @@
 
 			foreach($this->aTimeMarks as $item)
 			{
-				$item['What'] = str_pad($item['What'], 50);
+				$item['What'] = str_pad($item['What'], 50, " ", STR_PAD_RIGHT);
 				$text .= implode("\t\t\t", $item) . "\n";
 			}
 
@@ -510,8 +510,15 @@
 			}
 
 
-			foreach($this->aTimeMarks as $tKey => $tMarker)
+
+
+			$obj = new ArrayObject($this->aTimeMarks);
+			$it = $obj->getIterator();
+
+		    // while(list($tKey, $tMarker) = each($this->aTimeMarks))
+			foreach ($it as $tKey=>$tMarker)
 			{
+
 
 				if(!$bRowHeaders)
 				{
@@ -543,10 +550,10 @@
 
 				$tMem = ($tMarker['Memory']);
 
-			//	if($tMem < 0) // Quick Fix for negative numbers.
-			//	{
+				if($tMem < 0) // Quick Fix for negative numbers.
+				{
 					//	$tMem = 0.0000000001;
-			//	}
+				}
 
 				$tMarker['Memory'] = ($tMem ? number_format($tMem / 1024.0, 1) : '?'); // display if known
 
@@ -562,7 +569,7 @@
 
 				$aSum['Memory'] = $tMem;
 
-				if($tMarker['What'] == 'Stop')
+				if($tMarker['What'] === 'Stop')
 				{
 					$tMarker['Time'] = '&nbsp;';
 					$tMarker['%Time'] = '&nbsp;';
@@ -575,7 +582,10 @@
 				else
 				{
 					// Convert from start time to delta time, i.e. from now to next entry
-					$nextMarker = current($this->aTimeMarks);
+				//	$nextMarker = current($this->aTimeMarks);
+					$it->next();
+					$nextMarker = $it->current();
+
 					$aNextT = $nextMarker['Time'];
 					$aThisT = $tMarker['Time'];
 
@@ -587,9 +597,9 @@
 					$tMarker['Time'] = $this->highlight($tMarker['Time'], $thisDelta, .2);
 
 
-					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime)) : 0;
-					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount());
-					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time) : 0;
+					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
+					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
+					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
 					$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
 
 					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
@@ -603,15 +613,15 @@
 					$text .= $this->aMarkNotes[$tKey] . "</td></tr>\n";
 				}
 
-				if($tMarker['What'] == 'Stop')
+				if($tMarker['What'] === 'Stop')
 				{
 					break;
 				}
 			}
 
-			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime)) : 0;
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time)) : 0;
-			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount()))) : 0;
+			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 			$aSum['Time'] = number_format($aSum['Time'] * 1000.0, 1);
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 
@@ -684,16 +694,16 @@
 
 				$aSum['DB Time'] += $curTable['DB Time'];
 				$aSum['DB Count'] += $curTable['DB Count'];
-				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount());
-				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time);
+				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
+				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
 				$timeLabel = number_format($curTable['DB Time'] * 1000.0, 1);
 				$curTable['DB Time'] = $this->highlight($timeLabel, ($curTable['DB Time'] * 1000), 500); // 500 msec
 
 				$text .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time)) : 0;
-			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount()))) : 0;
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 			$text .= "<tr><td class='fcaption'><b>" . implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
 			$text .= "\n</table><br />\n";
@@ -706,10 +716,10 @@
 
 			$back_trace = debug_backtrace();
 
-			print_r($back_trace);
+		//	print_r($back_trace);
 
 			$this->deprecated_funcs[] = array(
-				'func' => (isset($back_trace[1]['type']) && ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->') ? $back_trace[1]['class'] . $back_trace[1]['type'] . $back_trace[1]['function'] : $back_trace[1]['function']),
+				'func' => (isset($back_trace[1]['type']) && ($back_trace[1]['type'] === '::' || $back_trace[1]['type'] === '->') ? $back_trace[1]['class'] . $back_trace[1]['type'] . $back_trace[1]['function'] : $back_trace[1]['function']),
 				'file' => $back_trace[1]['file'],
 				'line' => $back_trace[1]['line']
 			);
@@ -901,12 +911,11 @@
 		}
 
 
-	/**
-	 * var_dump to debug log
-	 *
-	 * @param mixed $message
-	 * @param int $TraceLev
-	 */
+		/**
+		 * var_dump to debug log
+		 *
+		 * @param mixed $message
+		 */
 		function dump($message, $TraceLev = 1)
 		{
 
@@ -1053,12 +1062,12 @@
 		{
 			if(defset('ADMIN_AREA'))
 			{
-				$filewanted = realpath(dirname(__FILE__)) . '/../' . $ADMIN_DIRECTORY . 'footer.php';
+				$filewanted = realpath(__DIR__) . '/../' . $ADMIN_DIRECTORY . 'footer.php';
 				require_once($filewanted);
 			}
 			elseif(defset('USER_AREA'))
 			{
-				$filewanted = realpath(dirname(__FILE__)) . '/../' . FOOTERF;
+				$filewanted = realpath(__DIR__) . '/../' . FOOTERF;
 				require_once($filewanted);
 			}
 		}

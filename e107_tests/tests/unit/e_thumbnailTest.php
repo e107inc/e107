@@ -158,7 +158,9 @@
 
 			if ($ver > 7.0)
 			{
-					// Test WebP format resize.
+				// $this->markTestSkipped('must be revisited.');
+
+				// Test WebP format resize.
 				$tests[] = array(
 				  'src' => 'e_PLUGIN/gallery/images/beach.webp',
 				  'aw' => 455,

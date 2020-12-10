@@ -32,7 +32,7 @@ require_once("e107_admin/ver.php");
 
 define("e_VERSION", $e107info['e107_version']);
 
-$e_ROOT = realpath(dirname(__FILE__)."/");
+$e_ROOT = realpath(__DIR__ ."/");
 if ((substr($e_ROOT,-1) !== '/') && (substr($e_ROOT,-1) !== '\\') )
 {
 	$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now.
@@ -93,12 +93,12 @@ class installLog
 
 	static function clear()
 	{
-		if(!is_writable(dirname(__FILE__)) || !MAKE_INSTALL_LOG)
+		if(!is_writable(__DIR__) || !MAKE_INSTALL_LOG)
 		{
 			return null;
 		}
 
-		$logFile = dirname(__FILE__).'/'.self::logFile;
+		$logFile = __DIR__ .'/'.self::logFile;
 		file_put_contents($logFile,'');
 
 	}
@@ -111,12 +111,12 @@ class installLog
 	 */
 	static function add($message, $type='info')
 	{
-		if(!is_writable(dirname(__FILE__)) || !MAKE_INSTALL_LOG)
+		if(!is_writable(__DIR__) || !MAKE_INSTALL_LOG)
 		{
 			return null;
 		}
 
-		$logFile = dirname(__FILE__).'/'.self::logFile; // e107InstallLog.log';
+		$logFile = __DIR__ .'/'.self::logFile; // e107InstallLog.log';
 
 		$now    = time();
 		$message = $now.', '.gmstrftime('%y-%m-%d %H:%M:%S',$now)."\t".$type."\t".$message."\n";
@@ -272,7 +272,7 @@ if(isset($_POST['previous_steps']))
 //$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107_paths = array();
 $e107 = e107::getInstance();
-$ebase = realpath(dirname(__FILE__));
+$ebase = realpath(__DIR__);
 if($e107->initInstall($e107_paths, $ebase, $override)===false)
 {
 	die_fatal_error("Error creating the following empty file: <b>".$ebase.DIRECTORY_SEPARATOR."e107_config.php</b><br />Please create it manually and then run the installation again.");

@@ -82,7 +82,7 @@ class email_validation_class
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
-		return(fputs($connection,"$line\r\n"));
+		return(fwrite($connection,"$line\r\n"));
 	}
 
 	Function ValidateEmailAddress($email)
@@ -183,7 +183,7 @@ class email_validation_class
 				$timeout=($this->data_timeout ? $this->data_timeout : $this->timeout);
 				if($timeout
 				&& function_exists("socket_set_timeout"))
-					socket_set_timeout($connection,$timeout,0);
+					stream_set_timeout($connection,$timeout,0);
 				if($this->debug)
 					$this->OutputDebug("Connected.");
 				if($this->VerifyResultLines($connection,"220")>0

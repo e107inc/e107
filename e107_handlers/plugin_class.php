@@ -410,7 +410,7 @@ class e_plugin
 			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
 		}
 
-		return in_array($this->_plugdir, array_keys($this->_installed));
+		return array_key_exists($this->_plugdir, $this->_installed);
 	}
 
 

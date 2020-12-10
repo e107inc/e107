@@ -26,7 +26,7 @@ class adminDownload extends download
    var $advancedSearchFields;
    var $userclassOptions;
 
-   function adminDownload()
+   function __construct()
    {
       global $pref;
       parent::download();

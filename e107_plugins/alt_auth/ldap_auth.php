@@ -45,7 +45,7 @@ class auth_login extends alt_auth_base
 	 *
 	 *	@return AUTH_xxxx result code
 	 */
-	public function auth_login()
+	public function __construct()
 	{
 		$this->copyAttribs = array();
 		$this->copyMethods = array();
@@ -128,7 +128,7 @@ class auth_login extends alt_auth_base
 	 */
 	public function close()
 	{
-		if (!@ldap_close($this->connection))
+		if (!@ldap_unbind($this->connection))
 		{
 			$this->makeErrorText(); // Read the error code and explanatory string
 			return false;

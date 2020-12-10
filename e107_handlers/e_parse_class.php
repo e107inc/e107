@@ -2389,7 +2389,7 @@ class e_parse extends e_parser
 				// Arrays in JSON can't be associative. If the array is empty or if it
 				// has sequential whole number keys starting with 0, it's not associative
 				// so we can go ahead and convert it as an array.
-				if(empty($var) || array_keys($var) === range(0, sizeof($var) - 1))
+				if(empty($var) || array_keys($var) === range(0, count($var) - 1))
 				{
 					$output = array();
 					foreach($var as $v)

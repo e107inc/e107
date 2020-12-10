@@ -16,7 +16,7 @@
 		$_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 		$_E107['no_maintenance'] = true;
 
-		$class2 = realpath(dirname(__FILE__) . "/../") . "/class2.php";
+		$class2 = realpath(__DIR__ . "/../") . "/class2.php";
 
 		@require_once($class2);
 	}

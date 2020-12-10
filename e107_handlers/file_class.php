@@ -743,8 +743,8 @@
 				}
 				else
 				{
-					socket_set_timeout($remote, $timeout);
-					fputs($remote, "GET " . urlencode($address) . " HTTP/1.0\r\n\r\n");
+					stream_set_timeout($remote, $timeout);
+					fwrite($remote, "GET " . urlencode($address) . " HTTP/1.0\r\n\r\n");
 				}
 			}
 			$fileContents = "";

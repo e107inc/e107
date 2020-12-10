@@ -28,7 +28,7 @@ class list_admin
 	 * @return void
 	 * 
 	 */
-	function list_admin($parent)
+	function __construct($parent)
 	{
 		$this->e107 = e107::getInstance();
 		$this->parent = $parent;

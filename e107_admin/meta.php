@@ -44,11 +44,11 @@ if (isset($_POST['metasubmit']))
 		$meta_author[$lan] = $pref['meta_author'][$lan];
 	}
 
-	$meta_tag[e_LANGUAGE] = strip_if_magic(chop($_POST['meta']));
-	$meta_diz[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_description']));
-	$meta_keywords[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_keywords']));
-	$meta_copyright[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_copyright']));
-	$meta_author[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_author']));
+	$meta_tag[e_LANGUAGE] = strip_if_magic(rtrim($_POST['meta']));
+	$meta_diz[e_LANGUAGE] = strip_if_magic(rtrim($_POST['meta_description']));
+	$meta_keywords[e_LANGUAGE] = strip_if_magic(rtrim($_POST['meta_keywords']));
+	$meta_copyright[e_LANGUAGE] = strip_if_magic(rtrim($_POST['meta_copyright']));
+	$meta_author[e_LANGUAGE] = strip_if_magic(rtrim($_POST['meta_author']));
 
     $pref['meta_news_summary'] = intval($_POST['meta_news_summary']);
 	$pref['meta_tag'] = $meta_tag;

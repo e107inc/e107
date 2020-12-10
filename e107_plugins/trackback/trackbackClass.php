@@ -70,7 +70,7 @@ class trackbackClass
 				return 'trackbackClass -> sendTrackback: Unable to connect to {$trackback_url[\'host\']}.';
 			}
 
-			fputs($socket, $header);
+			fwrite($socket, $header);
 
 			$response = "";
 			while (!feof($socket)) {

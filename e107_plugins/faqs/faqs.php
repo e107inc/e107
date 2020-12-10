@@ -186,7 +186,7 @@ if (isset($_POST['commentsubmit']))
 		 $ftmp = $faq->view_faq($idx) ;
 		 if(!defined("e_PAGETITLE"))
 		 {
-		    define("e_PAGETITLE", LAN_FAQS_011." - ". $ftmp['title']);
+		    e107::title( LAN_FAQS_011." - ". $ftmp['title']);
 		 }
 		 require_once(HEADERF);
 		 e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
@@ -196,7 +196,7 @@ if (isset($_POST['commentsubmit']))
 	{
 		$ftmp = $faq->view_cat_list($action, $id);
 
-		define("e_PAGETITLE", strip_tags($ftmp['title'].$ftmp['caption']));
+		e107::title( strip_tags($ftmp['title'].$ftmp['caption']));
 		require_once (HEADERF);
 		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
 	}

@@ -1173,7 +1173,7 @@ class e_system_user extends e_user_model
 		{
 			$userInfo = $this->getData();
 		}
-		elseif(is_object($userInfo) && get_class($userInfo) == 'e_object' || is_subclass_of($userInfo, 'e_object'))
+		elseif(is_object($userInfo) && get_class($userInfo) == 'e_object' || $userInfo instanceof \e_object)
 		{
 			$userInfo = $userInfo->getData();
 		}

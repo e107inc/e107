@@ -50,7 +50,7 @@
 
 	$_E107['single_entry'] = true; // TODO - notify class2.php
 
-	define('ROOT', dirname(__FILE__));
+	define('ROOT', __DIR__);
 	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
 
 

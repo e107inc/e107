@@ -33,7 +33,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 			$realPath = e107::getParser()->replaceConstants($path);
 
-			if(defined('e_MEDIA') && is_writeable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
+			if(defined('e_MEDIA') && is_writable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
 			{
 				$path = e107::getParser()->createConstants($resized);
 			}

@@ -3571,7 +3571,7 @@ class e_tree_model extends e_front_model
 	 */
 	protected function countResults($sql)
 	{
-		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		$this->_total = is_int($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 		{
 			//SQL_CALC_FOUND_ROWS not found in the query, do one more query

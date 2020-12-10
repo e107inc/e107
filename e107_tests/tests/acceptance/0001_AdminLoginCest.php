@@ -47,13 +47,16 @@ class AdminLoginCest
 	}
 
 
-	public function testAdminSearchPage(AcceptanceTester $I)
+	public function testForMissingLans(AcceptanceTester $I)
 	{
 		$this->e107Login($I);
 
 		$I->amOnPage('/e107_admin/search.php');
 		$I->dontSee("LAN_PLUGIN_");
 		$I->see("Pages");
+
+		$I->amOnPage('/e107_plugins/gallery/admin_gallery.php');
+		$I->dontSee("LAN_PLUGIN_");
 	}
 
 

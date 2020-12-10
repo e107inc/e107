@@ -13,7 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_linkwords
 {
-	function e_linkwords()
+	function __construct()
 	{
 		global $pref, $admin_log;
 		/* constructor */
