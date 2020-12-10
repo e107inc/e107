@@ -997,9 +997,10 @@ while(&#036;row = &#036;sql-&gt;fetch())
 <img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80" alt="butterfly.jpg" width="80" height="80"  />
 </picture>';
 
-			$tempDir = str_replace(['C:','\\'],['','/'], sys_get_temp_dir()).'/'; // FIXME
+		//	$tempDir = str_replace(['C:','\\'],['','/'], sys_get_temp_dir()).'/'; // FIXME
+			$result6 = preg_replace('/"([^"]*)thumb.php/','"thumb.php', $result6);
 
-			$result6 = str_replace($tempDir, '', $result6);
+		//	$result6 = str_replace($tempDir, '', $result6);
 
 			$this->assertSame($expected,$result6);
 			$this->tp->setConvertToWebP(false);
