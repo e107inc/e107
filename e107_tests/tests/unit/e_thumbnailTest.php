@@ -149,23 +149,29 @@
 				//  'c' => 'r', // crop right
 				),
 
-				// Test WebP format resize.
-				16 => array (
+
+
+			);
+
+			// WebP support added in PHP 7.1+
+			if (version_compare(phpversion(), '7.0', '>'))
+			{
+					// Test WebP format resize.
+				$tests[] = array(
 				  'src' => 'e_PLUGIN/gallery/images/beach.webp',
 				  'aw' => 455,
 				  'ah' => 0,
 
-				),
+				);
 
 				// Test Converting JPEG to WebP and resize. (Stored index file is saved with a .jpg extension but encoded as WebP)
-				17 => array (
+				$tests[] = array(
 				  'src' => 'e_PLUGIN/gallery/images/butterfly.jpg',
 				  'w' => 222,
 				  'h' => 272,
 				  'type'=>'webp'
-				),
-
-			);
+				);
+			}
 
 			foreach($tests as $index => $val)
 			{
