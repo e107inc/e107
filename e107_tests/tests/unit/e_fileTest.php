@@ -263,9 +263,9 @@ class e_fileTest extends \Codeception\Test\Unit
 				'expected'  => ['mime'=>'image/svg+xml']
 			),
 			1   => array(
-				'input'     => "e107_plugins/gallery/images/beach.webp",
+				'input'     => "e107_plugins/gallery/images/horse.jpg",
 				'imgchk'    => true,
-				'expected'  => ['mime'=>'image/webp', 'img-width'=>1920, 'img-height'=>1440]
+				'expected'  => ['mime'=>'image/jpeg', 'img-width'=>1500, 'img-height'=>1000]
 				),
 			2   => array(
 				'input'     => "e107_tests/tests/_data/fileTest/corrupted_image.webp",
