@@ -850,7 +850,7 @@ class private_message
 
 
 		@set_time_limit(10 * 60);
-		@e107_ini_set("max_execution_time", 10 * 60);
+		@ini_set("max_execution_time", 10 * 60);
 		while (@ob_end_clean()); // kill all output buffering else it eats server resources
 		if (connection_status() == 0)
 		{

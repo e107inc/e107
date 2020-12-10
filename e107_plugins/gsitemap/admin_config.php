@@ -542,7 +542,7 @@ class gsitemap
 				'gsitemap_id'       => 0,
 				'gsitemap_name'     => $tp->toDB($name),
 				'gsitemap_url'      => $tp->toDB($url),
-				'gsitemap_table'    => $tp->toDB($id),
+				'gsitemap_table'    => $tp->toDB($table),
 				'gsitemap_table_id' => (int) $id,
 				'gsitemap_lastmod'  => time(),
 				'gsitemap_freq'     => $_POST['import_freq'],

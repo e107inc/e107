@@ -525,7 +525,7 @@ class language{
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
-			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			//ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			$this->_cookie_domain = ".".e_DOMAIN;
 			define('MULTILANG_SUBDOMAIN',true);
 		}
@@ -558,7 +558,7 @@ class language{
 		}
 		
 		// Done in session handler now
-		// e107_ini_set("session.cookie_path", e_HTTP);
+		// ini_set("session.cookie_path", e_HTTP);
 		
 		$this->detect = $detect_language;	
 		return $detect_language;

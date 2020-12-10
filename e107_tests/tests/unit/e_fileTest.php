@@ -88,6 +88,25 @@ class e_fileTest extends \Codeception\Test\Unit
 
 	}
 
+
+	public function testGetMime()
+	{
+		$test = array(
+			array('path'=> 'somefile',                              'expected' => false), // no extension
+			array('path'=> 'somefile.bla',                          'expected' => 'application/octet-stream'), // unknown
+			array('path'=> "{e_PLUGIN}filetypes.xml",               'expected' => 'application/xml'),
+			array('path'=> "gallery/images/butterfly.jpg",          'expected' => 'image/jpeg'),
+			array('path'=> "image.webp",                            'expected' => 'image/webp'),
+		);
+
+		foreach($test as $var)
+		{
+			$actual = $this->fl->getMime($var['path']);
+
+			$this->assertSame($var['expected'], $actual);
+		}
+	}
+
 	public function testIsAllowedType()
 	{
 
@@ -235,25 +254,49 @@ class e_fileTest extends \Codeception\Test\Unit
 
 			}*/
 
-	public function testGet_file_info()
+	public function testGetFileInfo()
 	{
 		$tests = array(
-			0   => array('input' => "e107_web/lib/font-awesome/4.7.0/fonts/fontawesome-webfont.svg", 'expected'=>'image/svg+xml'),
-			1   => array('input' => "e107_plugins/gallery/images/beach.webp", 'expected'=>'image/webp'),
-			2   => array('input' => "e107_tests/tests/_data/fileTest/corrupted_image.webp", 'expected'=>false),
+			0   => array(
+				'input'     => "e107_web/lib/font-awesome/4.7.0/fonts/fontawesome-webfont.svg",
+				'imgchk'    => false,
+				'expected'  => ['mime'=>'image/svg+xml']
+			),
+			1   => array(
+				'input'     => "e107_plugins/gallery/images/beach.webp",
+				'imgchk'    => true,
+				'expected'  => ['mime'=>'image/webp', 'img-width'=>1920, 'img-height'=>1440]
+				),
+			2   => array(
+				'input'     => "e107_tests/tests/_data/fileTest/corrupted_image.webp",
+				'imgchk'    => false,
+				'expected'  => ['mime' => false]
+				),
+			3   => array(
+				'input'     => "none-existent-file.png",
+				'imgchk'    => false,
+				'expected'  => ['mime' => false]
+				),
 		);
 
 		foreach($tests as $item)
 		{
 			$path = APP_PATH.'/'.$item['input'];
-			$ret = $this->fl->get_file_info($path);
+			$ret = $this->fl->getFileInfo($path);
 
 			if($ret === false)
 			{
 				$ret = array('mime'=>false);
 			}
 
-			$this->assertEquals($item['expected'], $ret['mime']);
+var_dump($ret);
+			$this->assertEquals($item['expected']['mime'], $ret['mime']);
+
+			if($item['imgchk'])
+			{
+				$this->assertEquals($item['expected']['img-width'], $ret['img-width']);
+				$this->assertEquals($item['expected']['img-height'], $ret['img-height']);
+			}
 		}
 
 	}
@@ -262,12 +305,84 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testGetFileExtension()
 			{
+				$test = array(
+				'application/ecmascript'                                                    => '.es',
+				'application/epub+zip'                                                      => '.epub',
+				'application/java-archive'                                                  => '.jar',
+				'application/javascript'                                                    => '.js',
+				'application/json'                                                          => '.json',
+				'application/msword'                                                        => '.doc',
+				'application/octet-stream'                                                  => '.bin',
+				'application/ogg'                                                           => '.ogx',
+				'application/pdf'                                                           => '.pdf',
+				'application/rtf'                                                           => '.rtf',
+				'application/typescript'                                                    => '.ts',
+				'application/vnd.amazon.ebook'                                              => '.azw',
+				'application/vnd.apple.installer+xml'                                       => '.mpkg',
+				'application/vnd.mozilla.xul+xml'                                           => '.xul',
+				'application/vnd.ms-excel'                                                  => '.xls',
+				'application/vnd.ms-fontobject'                                             => '.eot',
+				'application/vnd.ms-powerpoint'                                             => '.ppt',
+				'application/vnd.oasis.opendocument.presentation'                           => '.odp',
+				'application/vnd.oasis.opendocument.spreadsheet'                            => '.ods',
+				'application/vnd.oasis.opendocument.text'                                   => '.odt',
+				'application/vnd.openxmlformats-officedocument.presentationml.presentation' => '.pptx',
+				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'         => '.xlsx',
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'   => '.docx',
+				'application/vnd.visio'                                                     => '.vsd',
+				'application/x-7z-compressed'                                               => '.7z',
+				'application/x-abiword'                                                     => '.abw',
+				'application/x-bzip'                                                        => '.bz',
+				'application/x-bzip2'                                                       => '.bz2',
+				'application/x-csh'                                                         => '.csh',
+				'application/x-rar-compressed'                                              => '.rar',
+				'application/x-sh'                                                          => '.sh',
+				'application/x-shockwave-flash'                                             => '.swf',
+				'application/x-tar'                                                         => '.tar',
+				'application/xhtml+xml'                                                     => '.xhtml',
+				'application/xml'                                                           => '.xml',
+				'application/zip'                                                           => '.zip',
+				'audio/aac'                                                                 => '.aac',
+				'audio/midi'                                                                => '.midi',
+				'audio/mpeg'                                                                => '.mp3',
+				'audio/ogg'                                                                 => '.oga',
+				'audio/wav'                                                                 => '.wav',
+				'audio/webm'                                                                => '.weba',
+				'font/otf'                                                                  => '.otf',
+				'font/ttf'                                                                  => '.ttf',
+				'font/woff'                                                                 => '.woff',
+				'font/woff2'                                                                => '.woff2',
+				'image/bmp'                                                                 => '.bmp',
+				'image/gif'                                                                 => '.gif',
+				'image/jpeg'                                                                => '.jpg',
+				'image/png'                                                                 => '.png',
+				'image/svg+xml'                                                             => '.svg',
+				'image/tiff'                                                                => '.tiff',
+				'image/webp'                                                                => '.webp',
+				'image/x-icon'                                                              => '.ico',
+				'text/calendar'                                                             => '.ics',
+				'text/css'                                                                  => '.css',
+				'text/csv'                                                                  => '.csv',
+				'text/html'                                                                 => '.html',
+				'text/plain'                                                                => '.txt',
+				'video/mp4'                                                                 => '.mp4',
+				'video/mpeg'                                                                => '.mpeg',
+				'video/ogg'                                                                 => '.ogv',
+				'video/webm'                                                                => '.webm',
+				'video/x-msvideo'                                                           => '.avi',
+				);
 
+				foreach($test as $mime=>$ext)
+				{
+					$actual = $this->fl->getFileExtension($mime);
+		
+					$this->assertSame($ext, $actual);
+				}	
 			}
-
+/*
 			public function testRmtree()
 			{
 

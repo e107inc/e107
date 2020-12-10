@@ -560,8 +560,8 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	
 	public function __construct()
 	{
-		e107_ini_set('soap.wsdl_cache_enabled', 0);
-		e107_ini_set('soap.wsdl_cache_ttl', 0);
+		ini_set('soap.wsdl_cache_enabled', 0);
+		ini_set('soap.wsdl_cache_ttl', 0);
 		
 		$options = array(
 			"trace" 				=> true, 
