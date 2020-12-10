@@ -289,7 +289,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				$ret = array('mime'=>false);
 			}
 
-var_dump($ret);
+
 			$this->assertEquals($item['expected']['mime'], $ret['mime']);
 
 			if($item['imgchk'])
