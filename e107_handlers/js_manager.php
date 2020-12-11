@@ -1204,6 +1204,15 @@ class e_jsmanager
 			case 'footer':
 				if(true === $zone)
 				{
+					if(!empty($this->_runtime_header)) // late stage header js.
+					{
+						foreach ($this->_runtime_header as $priority => $path_array)
+						{
+							$this->renderFile($path_array, $external, 'Late Header JS include - priority #'.$priority, $mod);
+						}
+						$this->_runtime_header = array();
+					}
+
 					ksort($this->_runtime_footer, SORT_NUMERIC);
 					foreach ($this->_runtime_footer as $priority => $path_array)
 					{
