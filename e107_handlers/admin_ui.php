@@ -214,7 +214,7 @@ class e_admin_request
 	 * If $key is array, $value is not used.
 	 * If $value is null, (string) $key is unset
 	 *
-	 * @param string $key
+	 * @param string|array $key
 	 * @param object $value [optional]
 	 * @return e_admin_request
 	 */
@@ -669,7 +669,7 @@ class e_admin_response
 	 * @param string $namespace
 	 * @param boolean $reset
 	 * @param boolean|string $glue
-	 * @return unknown
+	 * @return string|array
 	 */
 	function getTitle($namespace = 'default', $reset = false, $glue = '  ')
 	{
@@ -1920,7 +1920,7 @@ class e_admin_controller
 
 	/**
 	 * Request proxy method
-	 * @param string $key
+	 * @param string|array $key
 	 * @param mixed $value [optional]
 	 * @return e_admin_controller
 	 */
@@ -3331,7 +3331,7 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Get extended (UI) Form instance
 	 *
-	 * @return e_admin_form_ui
+	 * @return e_admin_form_ui|mixed
 	 */
 	public function getUI()
 	{
@@ -4091,7 +4091,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
 				$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
 			}
-			else
+		//	else
 			{
 		//		$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 			}
@@ -4444,7 +4444,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+	//	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
 		//	e107::getDebug()->log(print_a($filter,true));
 			// e107::getMessage()->addInfo(print_a($filter,true));
@@ -4747,19 +4747,12 @@ class e_admin_controller_ui extends e_admin_controller
 		//	$model->addMessageInfo(print_a($_posted,true));
 		}
 
-		// Trigger Admin-ui event.  'pre'
-		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
-		{
-			$id = $model->getId();
-			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
-			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
-			$this->_log('Triggering Event: '.$triggerName. " (before)");
-			if(E107_DBG_ALLERRORS >0 )
-			{
-				$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
-			}
+		$id = $model->getId();
 
-			if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+		// Trigger Plugin Admin-ui event.  'pre'
+		if($triggerName = $this->getEventTriggerName($this->getEventName(), $_posted['etrigger_submit'])) // 'create' or 'update';
+		{
+			if($halt = $this->triggerEvent($triggerName, $_posted,$old_data,$id))
 			{
 				$model->setMessages();
 				return false; 
@@ -4791,20 +4784,9 @@ class e_admin_controller_ui extends e_admin_controller
 			e107::getAddonConfig('e_admin',null,'process', $this, $id);
 
 			// Trigger Admin-ui event. 'post' 
-			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
+			if($triggerName = $this->getEventTriggerName( $this->getEventName(), $_posted['etrigger_submit'],'after')) // 'created' or 'updated';
 			{
-				unset($_posted['etrigger_submit'], $_posted['__after_submit_action'], $_posted['submit_value'], $_posted['e-token']);
-
-				$pid = $this->getPrimaryName();
-				$_posted[$pid] = $id; 	// add in the primary ID field.
-				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id); // use $_posted as it may include unsaved data.
-				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
-				$this->_log('Triggering Event: '.$triggerName." (after)");
-				if(E107_DBG_ALLERRORS >0 )
-				{
-					$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
-				}
-				e107::getEvent()->trigger($triggerName, $eventData);	
+				$this->triggerEvent($triggerName, $_posted, $old_data, $id);
 			}
 			
 			if($callbackAfter && method_exists($this, $callbackAfter))
@@ -4833,18 +4815,61 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Trigger 2 events. The $triggerName event, and a matching generic admin_ui_xxxxx event.
+	 * @param string $triggerName
+	 * @param array $_posted
+	 * @param array $old_data
+	 * @param int $id
+	 * @return false|mixed
+	 */
+	protected function triggerEvent($triggerName, $_posted, $old_data, $id)
+	{
+		unset($_posted['etrigger_submit'], $_posted['__after_submit_action'], $_posted['submit_value'], $_posted['e-token']);
+
+		$pid = $this->getPrimaryName();
+		$_posted[$pid] = $id;    // add in the primary ID field.
+
+		$eventData = array( // use $_posted as it may include unsaved data.
+			'newData'   => $_posted,
+			'oldData'   => $old_data,
+			'id'        => $id,
+			'table'     => $this->getTableName(),
+			'plugin'    => $this->getPluginName(),
+		);
+
+		$this->_log('Triggering Event: ' . $triggerName);
+
+		$tmp = explode("_", $triggerName);
+		$name = end($tmp);
+
+		$adminTriggerName = 'admin_ui_'.$name;
+
+
+		e107::getMessage()->addDebug("Event triggers fired (<b>".$triggerName."</b>, <b>". $adminTriggerName."</b>) 
+		<a class='e-expandit' href='#view-event-data-".$name."'>Toggle data</a>
+		<div id='view-event-data-".$name."' class='e-hideme'>" . 	print_a($eventData, true)."</div>"
+		);
+
+		if($halt = e107::getEvent()->trigger($adminTriggerName, $eventData))
+		{
+			return $halt;
+		}
+
+		return e107::getEvent()->trigger($triggerName, $eventData);
+
+	}
+
+	/**
 	 *  Return a custom event trigger name
 	 * @param null $type  Usually 'Create' or 'Update'
 	 * @param string $when ' before or after
 	 * @return bool|string
 	 */
-	public function getEventTriggerName($type=null, $when='before')
+	public function getEventTriggerName($name, $type=null, $when='before')
 	{
-		$plug = $this->getEventName();
-		
-		if(empty($plug) || empty($type))
+		if(empty($name) || empty($type))
 		{
-			return false; 
+			return false;
 		}
 
 		if($when === 'after')
@@ -4852,7 +4877,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$type .= 'd'; // ie. 'created' or 'updated'.
 		}
 		
-		return 'admin_'.strtolower($plug).'_'.strtolower($type); 
+		return 'admin_'.strtolower($name).'_'.strtolower($type);
 
 	}
 }
@@ -5075,7 +5100,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function ListBatchTrigger($batch_trigger)
 	{
@@ -5095,7 +5120,7 @@ class e_admin_ui extends e_admin_controller_ui
 		/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function GridBatchTrigger($batch_trigger)
 	{
@@ -5658,7 +5683,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Batch default (field) trigger
 	 * @param array $selected
-	 * @return void
+	 * @return int|null
 	 */
 	protected function handleListBatch($selected, $field, $value)
 	{
@@ -5681,7 +5706,7 @@ class e_admin_ui extends e_admin_controller_ui
 		
 		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
-			return; 
+			return null;
 		}
 
 
@@ -5703,7 +5728,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Catch delete submit
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function ListDeleteTrigger($posted)
 	{
@@ -5729,21 +5754,14 @@ class e_admin_ui extends e_admin_controller_ui
 			$data = $model->getData();
 			if($this->beforeDelete($data, $id))
 			{
-				
-				$eventData = array('oldData'=>$data,'id'=> $id);
-				
-				if($triggerName = $this->getEventTriggerName('delete')) // trigger for before. 
+
+				if($triggerName = $this->getEventTriggerName($this->getEventName(),'delete')) // trigger for before.
 				{
 
-					if(E107_DBG_ALLERRORS >0 )
-					{
-						$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
-					}
-
-					if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+					if($halt = $this->triggerEvent($triggerName, null, $data, $id))
 					{
 						$this->getTreeModel()->setMessages();
-						return; 
+						return null;
 					} 	
 				}
 				
@@ -5751,13 +5769,9 @@ class e_admin_ui extends e_admin_controller_ui
 				 		 
 				if($this->afterDelete($data, $id, $check))
 				{
-					if($triggerName = $this->getEventTriggerName('deleted')) // trigger for after. 
+					if($triggerName = $this->getEventTriggerName($this->getEventName(), 'deleted')) // trigger for after.
 					{
-						if(E107_DBG_ALLERRORS > 0)
-						{
-							$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>'); //FIXME - Why doesn't this display?
-						}
-						e107::getEvent()->trigger($triggerName, $eventData);
+						$this->triggerEvent($triggerName, null, $data, $id);
 					}
 					
 					$this->getTreeModel()->setMessages();
@@ -5825,7 +5839,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->addTitle();
 
-		if($this->getQuery('filter_options'))
+	//	if($this->getQuery('filter_options'))
 		{
 		//	var_dump($this);
 			// $this->addTitle("to-do"); // display filter option when active.
@@ -6270,6 +6284,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function beforePrefsSave($new_data, $old_data)
 	{
+		return null;
 	}
 
 	/**
@@ -6277,7 +6292,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function afterPrefsSave()
 	{
-
+		return null;
 	}
 
 	/**
