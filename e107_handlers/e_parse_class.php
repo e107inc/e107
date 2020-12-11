@@ -4774,9 +4774,8 @@ class e_parser
 		{
 			$parm['type'] = 'webp';
 			$source = $tp->thumbUrl($file,$parm);
-			$html = "<picture>\n";
-			$html .= '<source type="image/webp" srcset="'.$source.'">';
-			$html .= "\n";
+			$html = "<picture class=\"{$class}\">\n";
+
 			if(!empty($parm['srcset']))
 			{
 				list($webPSourceSet,$webPSize) = explode(' ', $parm['srcset']);
@@ -4786,6 +4785,9 @@ class e_parser
 				$html .= "\n";
 				$srcset = ''; // remove it from the img tag below.
 			}
+
+			$html .= '<source type="image/webp" srcset="'.$source.'">';
+			$html .= "\n";
 		}
 
 		$html .= "<img {$id}class=\"{$class}\" src=\"".$path."\" alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading.$title." />";
