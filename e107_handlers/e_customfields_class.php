@@ -138,7 +138,7 @@
 
 			$fieldType = $this->_config[$key]['type'];
 
-			if($value === null)
+			if($value === null || empty($value))
 			{
 				return null;
 			}
@@ -164,6 +164,15 @@
 
 
 				case "image":
+					//{CPAGEFIELD: name=XXXX&type=full} return full path to image. This ignore thumb params.
+				  if($type == 'full') {
+		            return ($raw) ? $value : $tp->replaceConstants($value, 'abs');
+		          }
+					//{CPAGEFIELD: name=XXXX&type=popup} return a wrapped image with link to full image path.
+				  if($type == 'popup') {
+		            return ($raw) ? $value : '<a class="cpage_image cpage_image_popup '.$parm['name'].'" href="'.$tp->replaceConstants($value, 'abs').'">'.$tp->toImage($value,$parm).'</a>';
+		          }
+
 					return ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
 					break;
 
