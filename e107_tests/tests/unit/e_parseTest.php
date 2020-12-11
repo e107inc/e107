@@ -990,10 +990,10 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$result6 = $this->tp->toImage($src);
 
 
-			$expected = '<picture>
-<source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp">
+			$expected = '<picture class="img-responsive img-fluid">
 <source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320&amp;type=webp 4x">
 <source type="image/jpeg" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320 4x">
+<source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp">
 <img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80" alt="butterfly.jpg" width="80" height="80"  />
 </picture>';
 
