@@ -19,6 +19,7 @@ coverage:
         - '%app_path%/e107_web/**/*.php'
     exclude:
         - './**'
+        - '%app_path%/e107_handlers/vendor/**/*.php'
         - '%app_path%/e107_tests/**'
 params:
     - lib/config.php
