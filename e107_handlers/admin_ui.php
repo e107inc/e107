@@ -1152,11 +1152,13 @@ class e_admin_dispatcher
 	{
 		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
+			e107::getMessage()->addDebug("Userclass Permissions Failed: ".$this->access[$route]);
 			return false;
 		}
 
 		if(is_array($this->perm) && isset($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
 		{
+			e107::getMessage()->addDebug("Admin Permissions Failed.".$this->perm[$route]);
 			return false;
 		}
 

@@ -54,6 +54,15 @@
 			$result = check_class(0, "253,254,250,251,0");
 			$this->assertTrue($result);
 
+			$result = check_class('NEWSLETTER', "253,254,250,251,0");
+			$this->assertFalse($result);
+
+			$result = check_class('NEWSLETTER', "253,254,250,251,3,0"); // NEWSLETTER = 3
+			$this->assertTrue($result);
+
+			$result = check_class('-NEWSLETTER', "253,254,250,251,0");
+			$this->assertTrue($result);
+
 			$result = check_class(254, "253,254,250,251,0");
 			$this->assertTrue($result);
 
@@ -61,6 +70,18 @@
 			$this->assertTrue($result);
 
 			$result = check_class(null, "253,254,250,251,0");
+			$this->assertFalse($result);
+
+			$result = check_class('-254', "253,254,250,251,0");
+			$this->assertFalse($result);
+
+			$result = check_class('-254', "253,250,251,0");
+			$this->assertTrue($result);
+
+			$result = check_class(-254, "253,250,251,0");
+			$this->assertTrue($result);
+
+			$result = check_class(-254, "254,253,250,251,0");
 			$this->assertFalse($result);
 
 			$result = check_class(e_UC_NOBODY, "253,254,250,251,0");

@@ -77,13 +77,14 @@ if(!isset($_E107['cli']))
 //
 
 // Can't be moved to e107, required here for e107_config vars security
-$register_globals = true;
+/*$register_globals = true;
 if(function_exists('ini_get'))
 {
 	$register_globals = ini_get('register_globals');
-}
+}*/
 
 // Destroy! (if we need to)
+/*
 if($register_globals === true)
 {
 	if(isset($_REQUEST['_E107'])) { unset($_E107); }
@@ -95,26 +96,8 @@ if($register_globals === true)
 		}
 	}
 	unset($global);
-}
+}*/
 
-// MOVED TO $e107->prepare_request()
-// TODO - better ajax detection method (headers when possible)
-//define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-//unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
-//
-//if(isset($_E107['minimal']) || e_AJAX_REQUEST)
-//{
-//	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
-//	foreach($_e107vars as $v)
-//	{
-//		$noname = 'no_'.$v;
-//		if(!isset($_E107[$v]))
-//		{
-//			$_E107[$noname] = 1;
-//		}
-//		unset($_E107[$v]);
-//	}
-//}
 
 // Set Absolute file-path of directory containing class2.php
 if(!defined('e_ROOT'))
@@ -1310,7 +1293,7 @@ $e107 = e107::getInstance();		// Is this needed now?
 $dbg->logTime('IP Handler and Ban Check');
 e107::getIPHandler()->ban();
 
-if(USER && !isset($_E107['no_forceuserupdate']) && varset($pref['force_userupdate']) &&   $_SERVER['QUERY_STRING'] !== 'logout')
+if(USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout' && varset($pref['force_userupdate']))
 {
 	if(isset($currentUser) && force_userupdate($currentUser))
 	{
@@ -1660,7 +1643,8 @@ if (!file_exists(FOOTERF))
 
 //define('LOGINMESSAGE', ''); - not needed, breaks login messages
 define('OPEN_BASEDIR', (ini_get('open_basedir') ? true : false));
-define('SAFE_MODE', (ini_get('safe_mode') ? true : false));
+define('SAFE_MODE', false);
+
 define('FILE_UPLOADS', (ini_get('file_uploads') ? true : false));
 define('INIT', true);
 if(isset($_SERVER['HTTP_REFERER']))
@@ -1734,43 +1718,48 @@ function check_email($email)
 function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
 	$e107 = e107::getInstance();
-	if($var === e_LANGUAGE)
+	if ($var === e_LANGUAGE)
 	{
-		return TRUE;
+		return true;
 	}
 
-	if(e107::isCli())
+	if (e107::isCli())
 	{
 		global $_E107;
-		if(empty($_E107['phpunit']))
+		if (empty($_E107['phpunit']))
 		{
 			return true;
 		}
 	}
 
-	if(is_numeric($uid) && $uid > 0)
-	{	// userid has been supplied, go build that user's class list
+	if (is_numeric($uid) && $uid > 0)
+	{    // userid has been supplied, go build that user's class list
 		$userclass = class_list($uid);
 	}
 
-	if (empty($userclass))
+	if ($userclass == '')
 	{
-		return FALSE;
+		return false;
 	}
 
 	$class_array = !is_array($userclass) ? explode(',', $userclass) : $userclass;
 
 	$varList = !is_array($var) ? explode(',', $var) : $var;
-	$latchedAccess = FALSE;
+	$latchedAccess = false;
 
-	foreach($varList as $v)
+	foreach ($varList as $v)
 	{
 		$v = trim($v);
-		$invert = FALSE;
+		$invert = false;
 		//value to test is a userclass name (or garbage, of course), go get the id
-		if(!is_numeric($v))
+		if (!is_numeric($v))
 		{
-			if (strncmp($v, '-', 1) === 0)
+			if ($v === '')
+			{
+				return false;
+			}
+
+			if ($v[0] === '-')
 			{
 				$invert = TRUE;
 				$v = substr($v, 1);
@@ -1779,27 +1768,29 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 		}
 		elseif ($v < 0)
 		{
-			$invert = TRUE;
+			$invert = true;
 			$v = -$v;
 		}
 		if ($v !== FALSE)
 		{
+			//	var_dump($v);
 			// Ignore non-valid userclass names
-			if (($v === '0') || ($v === 0) || in_array($v, $class_array, true))
+			if (($v === '0') || ($v === 0) || in_array($v, $class_array))
 			{
 				if ($invert)
 				{
-					return FALSE;
+					return false;
 				}
 				$latchedAccess = TRUE;
 			}
-			elseif ($invert && count($varList) === 1)
+			elseif ($invert && count($varList) == 1)
 			{
 				// Handle scenario where only an 'exclude' class is passed
-				$latchedAccess = TRUE;
+				$latchedAccess = true;
 			}
 		}
 	}
+
 	return $latchedAccess;
 }
 
