@@ -1111,7 +1111,8 @@ class e_plugin
 		$core->set('bbcode_list', array())
 			 ->set('shortcode_legacy_list', array())
 			 ->set('shortcode_list', array())
-			 ->set('lan_global_list', array());
+			 ->set('lan_global_list', array())
+			 ->set('wysiwyg_list', array());
 
 		$paths = $this->getDetected();
 
@@ -1240,6 +1241,8 @@ class e_plugin
 			}
 		}
 
+		$editors = $this->getInstalledWysiwygEditors();
+		$core->setPref('wysiwyg_list',$editors);
 
 		$core->save(false, true, false);
 

@@ -878,13 +878,16 @@ class e107Test extends \Codeception\Test\Unit
 				$this->assertEquals($expected,$result);
 
 			}
-/*
+
 			public function testWysiwyg()
 			{
-				$res = null;
-				$this->assertTrue($res);
-			}
+				$result = e107::wysiwyg(null, true);
+				$expected = 'bbcode';
 
+				$this->assertSame($expected, $result);
+
+			}
+/*
 			public function testLoadLanFiles()
 			{
 				$res = null;
