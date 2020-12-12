@@ -30,7 +30,15 @@
 			}
 		}
 
+		public function testGetInstalledWysiwygEditors()
+		{
+			$expected = array('tinymce4'=>'TinyMce4');
+			$result = $this->ep->getInstalledWysiwygEditors();
 
+			$this->assertSame($expected,$result);
+
+
+		}
 		/**
 		 * Creates a dummy plugin entry to make sure such plugins are ignored
 		 */
@@ -99,21 +107,25 @@
             $newUrls = array('gallery'=>0, 'news'=>'news', 'rss_menu'=>0);
 
             e107::getConfig()->setData('e_url_list', $newUrls)->save(false,false,false);
+			e107::getConfig()->setData('wysiwyg_list', array())->save(false,false,false);
 
 			$urlsBefore = e107::pref('core', 'e_url_list');
 			$userBefore = e107::pref('core', 'e_user_list');
+			$wysiwygBefore = e107::pref('core', 'wysiwyg_list',array());
 
-		//	print_r($userBefore);
+		//	print_r($wysiwygBefore);
 
 			$this->ep->clearCache()->buildAddonPrefLists();
 
 			$urlsAfter = e107::pref('core', 'e_url_list');
 			$userAfter = e107::pref('core', 'e_user_list');
+			$wysiwygAfter = e107::pref('core', 'wysiwyg_list');
 
-		//	print_r($userAfter);
+		//	 print_r($wysiwygAfter);
 
 			$this->assertEquals($urlsBefore['gallery'],$urlsAfter['gallery']);
 			$this->assertEquals($userBefore['user'],$userAfter['user']);
+			$this->assertNotSame($wysiwygBefore,$wysiwygAfter);
 
 		}
 

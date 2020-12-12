@@ -3858,7 +3858,8 @@ class e107
 			if(!isset($availEditors))
 			{
 				// init list of installed wysiwyg editors
-				$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors());
+				$availEditors = self::getPref('wysiwyg_list', array());
+			//	$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors()); // very slow.
 			}
 
 			if(!is_null($val))
@@ -3873,7 +3874,8 @@ class e107
 			// if no wysiwyg editor available, use fallback editor (bbcode)
 			if(is_bool($editor) || ($editor !== $fallbackEditor && !in_array($editor, $availEditors)))
 			{
-				$editor = count($availEditors) > 0 ? $availEditors[0] : $fallbackEditor;
+				$names = array_keys($availEditors);
+				$editor = count($availEditors) > 0 ? reset($names) : $fallbackEditor;
 			}
 		}
 		// $returnEditor => false:
