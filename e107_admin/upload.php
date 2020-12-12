@@ -180,7 +180,7 @@ class upload_ui extends e_admin_ui
 
     protected function handleListUploadActiveBatch($selected, $value = null)
     {
-        $ids = array_map('intval', array_values($selected));
+        $ids = array_map('\intval', array_values($selected));
         foreach ($ids as $id)
         {
             $model = $this->getTreeModel()->getNode($id);

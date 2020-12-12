@@ -63,7 +63,8 @@ class ArrayData {
 	*/
 	function ReadArray($ArrayData) 
 	{
-		if ($ArrayData == ""){
+		if (empty($ArrayData))
+		{
 			return false;
 		}
 		

@@ -85,7 +85,7 @@ class userlogin
 		$forceLogin = ($autologin === 'signup');
 		if(!$forceLogin && $autologin === 'provider') $forceLogin = 'provider';
 
-		if($username == "" || (($userpass == "") && ($response == '') && $forceLogin !== 'provider'))
+		if(empty($username) || (empty($userpass) && empty($response) && $forceLogin !== 'provider'))
 		{	// Required fields blank
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
 		}

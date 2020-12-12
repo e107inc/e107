@@ -651,7 +651,7 @@ class rater
 					}
 				}
 				$rate .= "<img src='".e_IMAGE_ABS."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-				if($ratearray[2] == ""){ $ratearray[2] = 0; }
+				if(empty($ratearray[2])){ $ratearray[2] = 0; }
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){
 					$rate .= " - ".$ratearray[0]."&nbsp;";

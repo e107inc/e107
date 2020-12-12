@@ -445,11 +445,11 @@ class e_install
 		{
 			$_POST['stage'] = 1;
 		}
-		$_POST['stage'] = intval($_POST['stage']);
+		$_POST['stage'] = (int) $_POST['stage'];
 
 		if(!empty($_POST['back']))
 		{
-			$_POST['stage'] = intval($_POST['back']);
+			$_POST['stage'] = (int) $_POST['back'];
 		}
 
 		switch ($_POST['stage'])
@@ -2332,8 +2332,8 @@ function create_tables_unattended()
 	$einstall->previous_steps['admin']['password']  = (isset($_GET['admin_password']) ? $_GET['admin_password'] : 'admin_password');
 	$einstall->previous_steps['admin']['email']  	= (isset($_GET['admin_email']) ? $_GET['admin_email'] : 'admin_email@xxx.com');
 
-	$einstall->previous_steps['generate_content'] 	= isset($_GET['gen']) ? intval($_GET['gen']) : 1;
-	$einstall->previous_steps['install_plugins'] 	= isset($_GET['plugins']) ? intval($_GET['plugins']) : 1;
+	$einstall->previous_steps['generate_content'] 	= isset($_GET['gen']) ? (int) $_GET['gen'] : 1;
+	$einstall->previous_steps['install_plugins'] 	= isset($_GET['plugins']) ? (int) $_GET['plugins'] : 1;
 	$einstall->previous_steps['prefs']['sitename'] 	= isset($_GET['sitename']) ? urldecode($_GET['sitename']) : LANINS_113;
 	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : 'bootstrap3';
 

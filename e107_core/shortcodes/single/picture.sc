@@ -1,12 +1,12 @@
 //<?php
 global $loop_uid;
-if($parm == "" && is_numeric($loop_uid))
+if(empty($parm) && is_numeric($loop_uid))
 {
 	$parm = $loop_uid;
 }
 if(is_numeric($parm))
 {
-	if(intval($parm) == USERID)
+	if((int) $parm == USERID)
 	{
 		$image = USERPHOTO;
 	}
