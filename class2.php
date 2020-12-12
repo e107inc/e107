@@ -1531,6 +1531,8 @@ if(!defined('THEME_LAYOUT'))
 }
 
 // Load library dependencies.
+$dbg->logTime('Load Libraries');
+//$startTime = microtime(true);
 if(deftrue('e_ADMIN_AREA'))
 {
 	e107::getTheme('current', true)->loadLibrary();
@@ -1539,9 +1541,8 @@ else
 {
 	e107::getTheme('current')->loadLibrary();
 }
+//echo "\nRun Time:  " . number_format(( microtime(true) - $startTime), 4) . " Seconds\n";
 // -----------------------------------------------------------------------
-
-
 if(!isset($_E107['no_menus']))
 {
 	$dbg->logTime('Init Menus');
@@ -1549,6 +1550,7 @@ if(!isset($_E107['no_menus']))
 }
 
 // here we USE the theme
+$dbg->logTime("Load admin_/theme.php file");
 if(e_ADMIN_AREA)
 {
 	$dbg->logTime('Loading Admin Theme');
@@ -1571,7 +1573,7 @@ else
 		e107::scStyle($SC_WRAPPER);
 	}
 }
-
+$dbg->logTime("Init Theme Class");
 e107::getRender()->init(); // initialize theme class.
 
 //----------------------------
