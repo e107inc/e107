@@ -148,8 +148,12 @@
                 return null;
            }
 
+
+
 			$timeNow = microtime();
 			$nMarks = ++$this->nTimeMarks;
+
+		//	 file_put_contents(e_LOG."debugClass.log",$nMarks."\t". $sMarker."\n", FILE_APPEND);
 
 			if(!strlen($sMarker))
 			{
@@ -515,10 +519,11 @@
 			$obj = new ArrayObject($this->aTimeMarks);
 			$it = $obj->getIterator();
 
+
 		    // while(list($tKey, $tMarker) = each($this->aTimeMarks))
 			foreach ($it as $tKey=>$tMarker)
 			{
-
+				file_put_contents(e_LOG."debugPerformance.log",$tKey."\t". $sMarker."\n", FILE_APPEND);
 
 				if(!$bRowHeaders)
 				{
@@ -585,9 +590,11 @@
 				//	$nextMarker = current($this->aTimeMarks);
 					$it->next();
 					$nextMarker = $it->current();
+					$it->seek($tKey - 1); // go back one position.
 
 					$aNextT = $nextMarker['Time'];
 					$aThisT = $tMarker['Time'];
+
 
 					$thisDelta = e107::getSingleton('e107_traffic')->TimeDelta($aThisT, $aNextT);
 					$aSum['Time'] += $thisDelta;
@@ -598,6 +605,8 @@
 
 
 					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
+					$tMarker['%Time'] = $this->highlight($tMarker['%Time'], $tMarker['%Time'], 20);
+
 					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
 					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
 					$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
