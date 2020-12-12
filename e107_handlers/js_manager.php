@@ -1742,7 +1742,7 @@ class e_jsmanager
 	            $i -= 1;
 	        }
 
-	        if ($i > 0 && $parts[$i] === "")  // remove empty parts
+	        if ($i > 0 && empty($parts[$i]))  // remove empty parts
 	        {
 	            unset($parts[$i]);
 	            $parts = array_values($parts);

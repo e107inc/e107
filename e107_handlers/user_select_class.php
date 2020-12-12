@@ -93,8 +93,8 @@ class user_select
 		}
 		if ($class == e_UC_MEMBER) 
 		{
-			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
-			while ($row = $sql -> db_Fetch()) 
+			$sql -> select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
+			while ($row = $sql -> fetch())
 			{
 				if (check_class($row['userclass_id']) || ADMINPERMS == '0') 
 				{
@@ -104,8 +104,8 @@ class user_select
 		} 
 		else 
 		{
-			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
-			while ($row = $sql -> db_Fetch()) 
+			$sql -> select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
+			while ($row = $sql -> fetch())
 			{
 				$text .= "<option value='".$row['userclass_id'].":".$row['userclass_name']."'>".$row['userclass_name']."</option>";
 			}
@@ -143,7 +143,7 @@ class user_select
 		</script>";
 
 		list($form_type, $form_id) = explode(".", $user_form);
-		if($form_id == "") { $form_id = $form_type; }
+		if(empty($form_id)) { $form_id = $form_type; }
 
 		if ($type == 'list') 
 		{
@@ -183,8 +183,8 @@ class user_select
 	function real_name($_id) 
 	{
 		global $sql;
-		$sql -> db_Select("user", "user_name", "user_id='".intval($_id)."' ");
-		if ($row = $sql -> db_Fetch()) 
+		$sql ->select("user", "user_name", "user_id='".intval($_id)."' ");
+		if ($row = $sql ->fetch())
 		{
 			return $row['user_name'];
 		}
@@ -210,7 +210,7 @@ class user_select
 		}
 		else
 		{
-			if($elementID == "")
+			if(empty($elementID))
 			{
 				$elementID = $elementType;
 			}
@@ -297,9 +297,9 @@ class user_select
 	function findusers($s,$banned=FALSE) {
 		global $sql, $tp;
 		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
-		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc)) 
+		if ($sql->select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc))
 		{
-			while ($row = $sql -> db_Fetch()) {
+			while ($row = $sql ->fetch()) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}
 			ksort($ret);

@@ -939,6 +939,7 @@ class e_library_manager
 	 */
 	public function detect($name)
 	{
+
 		// Re-use the statically cached value of info() to save memory.
 		$library = &$this->info($name);
 
@@ -1202,6 +1203,7 @@ class e_library_manager
 	public function load($name, $variant = null)
 	{
 		// Re-use the statically cached value to save memory.
+
 		static $loaded;
 
 		if(!isset($loaded[$name]))
@@ -1216,7 +1218,7 @@ class e_library_manager
 				$library = e107::unserialize($cached);
 			}
 
-			if(!varset($library, false))
+			if(empty($library))
 			{
 				$library = $this->detect($name);
 				$cacheData = e107::serialize($library, 'json');

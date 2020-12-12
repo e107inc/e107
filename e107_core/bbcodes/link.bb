@@ -55,7 +55,7 @@ global $pref;
 
 	if(!$parm) $link = $code_text;
 
-	if($link == "external" && $extras == "")
+	if($link == "external" && empty($extras))
 	{
 		$link = $code_text;
     	$extras = "rel=external";

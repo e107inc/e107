@@ -435,7 +435,7 @@ class e_array {
         $ArrayData = $sourceArrayData;
 
 
-        if ($ArrayData == "")
+        if (empty($ArrayData))
         {
             return false;
         }

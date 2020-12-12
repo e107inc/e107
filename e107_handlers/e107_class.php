@@ -4316,7 +4316,7 @@ class e107
 			}
 		}
 
-		if ($_SERVER['PHP_SELF'] == "" && !empty($_SERVER['SCRIPT_NAME']))
+		if (empty($_SERVER['PHP_SELF']) && !empty($_SERVER['SCRIPT_NAME']))
 		{
 			$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
 		}

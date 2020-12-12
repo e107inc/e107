@@ -762,7 +762,7 @@ class e_parse extends e_parser
 
 		if (isset($match[1]))
 		{
-			$chop = intval(strlen($match[1]) / 2);
+			$chop = (int) (strlen($match[1]) / 2);
 			$ans = substr($match[1], 0, $chop).'##xss##'.substr($match[1], $chop);
 		}
 		else
@@ -2523,17 +2523,17 @@ class e_parse extends e_parser
 	{
 		if($w !== null)
 		{
-			$this->thumbWidth = intval($w);	
+			$this->thumbWidth = (int) $w;
 		}
 		
 		if($h !== null)
 		{
-			$this->thumbHeight = intval($h);	
+			$this->thumbHeight = (int) $h;
 		}	
 		
 		if($crop !== null)
 		{
-			$this->thumbCrop = intval($crop);	
+			$this->thumbCrop = (int) $crop;
 		}				
 		
 	}
@@ -2543,7 +2543,7 @@ class e_parse extends e_parser
 
 		if($val !== null)
 		{
-			$this->thumbEncode = intval($val);
+			$this->thumbEncode = (int) $val;
 			return null;
 		}
 
@@ -2574,7 +2574,7 @@ class e_parse extends e_parser
 	{
 		if($width !== null)
 		{
-			$this->thumbWidth = intval($width);
+			$this->thumbWidth = (int) $width;
 		}
 		
 		return $this->thumbWidth;		
@@ -2588,7 +2588,7 @@ class e_parse extends e_parser
 	{
 		if($status !== false)
 		{
-			$this->thumbCrop = intval($status);
+			$this->thumbCrop = (int) $status;
 		}
 
 		return $this->thumbCrop;
@@ -2604,7 +2604,7 @@ class e_parse extends e_parser
 	{
 		if($height !== null)
 		{
-			$this->thumbHeight = intval($height);
+			$this->thumbHeight = (int) $height;
 		}
 		
 		return $this->thumbHeight;	
@@ -2902,7 +2902,7 @@ class e_parse extends e_parser
 				$options['h']	= $options['ah'] ;
 			}
 
-			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.intval($options['h']);
+			$thurl .= 'aw='.(int) $options['w'].'&amp;ah='.(int) $options['h'];
 
 			if(!is_numeric($options['crop']))
 			{
@@ -2914,7 +2914,7 @@ class e_parse extends e_parser
 		else
 		{
 
-			$thurl .= 'w='.intval($options['w']).'&amp;h='.intval($options['h']);
+			$thurl .= 'w='.(int) $options['w'].'&amp;h='.(int) $options['h'];
 
 		}
 

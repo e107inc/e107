@@ -185,7 +185,7 @@
 			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . intval($tmp[1]) . "'");
+				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
 				$content = $sql->fetch();
 				$online_location_page = ARTICLE . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
@@ -197,7 +197,7 @@
 			}
 			elseif($tmp[0] == "review")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . intval($tmp[1]) . "'");
+				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
 				$content = $sql->fetch();
 				$online_location_page = REVIEW . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);

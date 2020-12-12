@@ -210,7 +210,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				else 
 				{
 					if(!is_numeric($parts[1])) $id = $this->categoryIdByTitle($parts[1]);
-					else $id = intval($parts[1]);
+					else $id = (int) $parts[1];
 				}
 				if(!$id)
 				{

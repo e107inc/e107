@@ -115,16 +115,16 @@ class pageClass
 		if(!vartrue($_GET['id'])) // legacy URLs  /page.php?x
 		{
 			$tmp 				= explode(".", e_QUERY);
-			$this->pageID 		= intval($tmp[0]);
-			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+			$this->pageID 		= (int) $tmp[0];
+			$this->pageSelected = (isset($tmp[1]) ? (int) $tmp[1] : 0);
 			$this->pageTitles 	= array();
 			$this->bullet 		= '';
 		}
 		else // NEW URLS  /page.php?id=x 
 		{
 			$tmp 				= explode(".", e_QUERY);
-			$this->pageID 		= intval($_GET['id']);
-			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0); // Not sure what this is?
+			$this->pageID 		= (int) $_GET['id'];
+			$this->pageSelected = (isset($tmp[1]) ? (int) $tmp[1] : 0); // Not sure what this is?
 			$this->pageTitles 	= array();
 			$this->bullet 		= '';	// deprecated - use CSS instead.  	
 		}
@@ -170,11 +170,11 @@ class pageClass
 		switch ($request) 
 		{
 			case 'listChapters':
-				$id = intval($_GET['bk']);
+				$id = (int) $_GET['bk'];
 			break;
 			
 			case 'listPages':
-				$id = intval($_GET['ch']);
+				$id = (int) $_GET['ch'];
 			break;
 			
 			case 'showPage':
