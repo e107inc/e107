@@ -439,6 +439,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
                     'expected'  => "<pre>/* &#123;THEME_PREF: code=header_width&amp;default=container&#125; */</pre>",
                 ),
 
+                30 => array(
+                    'html'      => "<hr />",
+                    'expected'  => "<hr>",
+                ),
+
 			);
 
 			foreach($tests as $k=>$var)
