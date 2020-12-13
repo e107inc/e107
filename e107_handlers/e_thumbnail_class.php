@@ -121,8 +121,8 @@ class e_thumbnail
 
 	private function parseRequest()
 	{
-		//echo 'e_query='.str_replace('&amp;', '&', e_QUERY);
-		$e_QUERY = e_QUERY;
+
+		$e_QUERY = !empty($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : e_QUERY;
 
 		if(isset($_GET['id'])) // very-basic url-tampering prevention and path cloaking
 		{
@@ -139,9 +139,7 @@ class e_thumbnail
 		{
 			$this->_request['h'] = (int) $this->_request['h'];
 		}
-	//	file_put_contents(e_LOG."thumbRequests.log", var_export($this->_request, true)."\n\n", FILE_APPEND);
 
-		// parse_str($_SERVER['QUERY_STRING'], $this->_request);
 		return $this;
 	}
 

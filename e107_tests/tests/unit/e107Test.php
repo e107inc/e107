@@ -881,11 +881,14 @@ class e107Test extends \Codeception\Test\Unit
 
 			public function testWysiwyg()
 			{
+				e107::getConfig()->setPref('wysiwyg', true)->save();
+				$tinyMceInstalled = e107::isInstalled('tinymce4');
+
 				$tests = array(
 					//input     => expected
-					'default'   => 'tinymce4',
+					'default'   => ($tinyMceInstalled) ? 'tinymce4' : 'bbcode',
 					'bbcode'    => 'bbcode',
-					'tinymce4'  => 'tinymce4'
+					'tinymce4'  => ($tinyMceInstalled) ? 'tinymce4' : 'bbcode',
 				);
 
 				foreach($tests as $input => $expected)
