@@ -32,10 +32,13 @@
 
 		public function testGetInstalledWysiwygEditors()
 		{
-			$expected = array('tinymce4'=>'TinyMce4');
-			$result = $this->ep->getInstalledWysiwygEditors();
+			if(e107::isInstalled('tinymce4'))
+			{
+				$expected = array('tinymce4'=>'TinyMce4');
+				$result = $this->ep->getInstalledWysiwygEditors();
 
-			$this->assertSame($expected,$result);
+				$this->assertSame($expected,$result);
+			}
 
 
 		}

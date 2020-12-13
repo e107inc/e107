@@ -881,10 +881,30 @@ class e107Test extends \Codeception\Test\Unit
 
 			public function testWysiwyg()
 			{
-				$result = e107::wysiwyg(null, true);
-				$expected = 'bbcode';
+				$tests = array(
+					//input     => expected
+					'default'   => 'tinymce4',
+					'bbcode'    => 'bbcode',
+					'tinymce4'  => 'tinymce4'
+				);
 
+				foreach($tests as $input => $expected)
+				{
+				   	e107::wysiwyg($input);     // set the wysiwyg editor.  
+					$result = e107::wysiwyg(null, true);  // get the name of the editor.
+					$this->assertSame($expected, $result, "Input: ".$input);
+				}
+
+
+				e107::getConfig()->setPref('wysiwyg', false)->save();  // wysiwyg is disabled.
+				e107::wysiwyg('default');    // set as default.
+				$result = e107::wysiwyg(null, true);   // get the editor value.
+				$expected = 'bbcode';
+				e107::getConfig()->setPref('wysiwyg', true)->save(); // enabled wysiwyg again.
 				$this->assertSame($expected, $result);
+
+
+				
 
 			}
 /*
