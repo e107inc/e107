@@ -3937,7 +3937,6 @@ class e_parser
      */
     function init()
     {
-        $this->domObj = new DOMDocument('1.0', 'utf-8');
 
 		if(defined('FONTAWESOME'))
 		{
@@ -5547,12 +5546,7 @@ return;
        		$html = '<body>'.$html.'</body>';
 		}
 
-         
-		if(!is_object($this->domObj))
-		{
-			$this->init();	
-		}
-
+        $this->domObj = $doc = new DOMDocument('1.0', 'utf-8');
 
 		if($this->scriptAccess === false)
 		{
@@ -5564,16 +5558,22 @@ return;
             $this->grantScriptAccess();
         }
 
-		
         // Set it up for processing.
-        $doc  = $this->domObj;
+
 	    libxml_use_internal_errors(true);
 	    if(function_exists('mb_convert_encoding'))
 	    {
 			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+
 	    }
 
-		@$doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		//	$fragment = $doc->createDocumentFragment();
+		//	$fragment->appendXML($html);
+		//	$doc->appendChild($fragment);
+		//	$doc->encoding = 'utf-8';
+
+		$opts = defined('LIBXML_HTML_NOIMPLIED') ? LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD : 0;
+		$doc->loadHTML($html, $opts);
 
        	$this->nodesToConvert 	= array(); // required.
 		$this->nodesToDelete 	= array(); // required. 
@@ -5745,7 +5745,7 @@ return;
 		*/
 
 		$cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
-		// Workaround for https://bugs.php.net/bug.php?id=76285
+		 // Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 2 of 2
 		$cleaned = str_replace("\n", "", $cleaned);
 		$cleaned = str_replace("__E_PARSER_CLEAN_HTML_LINE_BREAK__", "\n", $cleaned);
@@ -5758,7 +5758,7 @@ return;
         $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_OPEN__","{", $cleaned);
         $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_CLOSED__","}", $cleaned);
 
-		$cleaned = str_replace(array('<body>','</body>'),'', $cleaned); // filter out tags.
+		$cleaned = str_replace(array('<body>','</body>','<html>','</html>'),'', $cleaned); // filter out tags.
 
         return trim($cleaned);
     }
