@@ -414,6 +414,9 @@ City, State, Country
 		<core name="wm_enclose">1</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
+		<core name="wysiwyg_list"><![CDATA[array (
+  'tinymce4' => 'TinyMce4',
+)]]></core>
 		<core name="xup_enabled">1</core>
 		<core name="xurl"><![CDATA[array ()]]></core>
 		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>

@@ -3858,7 +3858,9 @@ class e107
 			if(!isset($availEditors))
 			{
 				// init list of installed wysiwyg editors
-				$availEditors = self::getPref('wysiwyg_list', array());
+				$default = self::isInstalled('tinymce4') ? array('tinymce4'=>'TinyMce4') : array();  // if missing pref fallback.
+				$availEditors = self::getPref('wysiwyg_list', $default);
+
 			//	$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors()); // very slow.
 			}
 
@@ -3875,9 +3877,11 @@ class e107
 			if(is_bool($editor) || ($editor !== $fallbackEditor && !in_array($editor, $availEditors)))
 			{
 				$names = array_keys($availEditors);
+			//	$editor = count($availEditors) > 0 ? $availEditors[0] : $fallbackEditor;
 				$editor = count($availEditors) > 0 ? reset($names) : $fallbackEditor;
 			}
 		}
+
 		// $returnEditor => false:
 		// false => fallback editor (bbcode)
 		// true => default wysiwyg editor
