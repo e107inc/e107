@@ -457,7 +457,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$parm = varset($var['parm']);
 
 				$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
-				$this->assertEquals($var['expected'], $result, 'Test #'.$k." failed.". print_r($this->tp->getRemoved(),true));
+				$this->assertSame($var['expected'], $result, 'Test #'.$k." failed.". print_r($this->tp->getRemoved(),true));
 
 			}
 
