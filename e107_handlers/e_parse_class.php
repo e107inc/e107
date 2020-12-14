@@ -486,12 +486,14 @@ class e_parse extends e_parser
 	 */
 	public function toDB($data = null, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
 	{
-		if($data === null)
+		$variableType = gettype($data);
+
+		if(($variableType !== 'string' && $variableType !== 'array' ) || $data === '0')
 		{
-			return null;
+			return $data;
 		}
 
-		if (is_array($data))
+		if ($variableType === 'array')
 		{
 			$ret = array();
 
@@ -504,15 +506,11 @@ class e_parse extends e_parser
 
 			return $ret;
 		}
-		
+
+
 		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 		{
 			$data = stripslashes($data);
-		}
-
-		if(intval($data) === $data || $data === '0') // simple integer.
-		{
-			return $data;
 		}
 
 		$core_pref = e107::getConfig();
