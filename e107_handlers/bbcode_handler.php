@@ -375,10 +375,10 @@ class e_bbcode
 				//echo "Preprocess: ".htmlspecialchars($code_text).", params: {$param1}<br />";
 				return $this->bbList[$code]->bbPreSave($code_text, $param1);
 			}
-			if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior. 
-			{
+		//	if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior.
+		//	{
 			// 	return $this->bbList[$code]->bbWYSIWYG($code_text, $param1);					
-			}
+		//	}
 			return $this->bbList[$code]->bbPreDisplay($code_text, $param1);
 		}
 		if ($this->preProcess == 'toDB') return $full_text;		// No change
@@ -406,17 +406,19 @@ class e_bbcode
 	 * @var string $type  - bbcode eg. 'img' or 'youtube'
 	 * @var string $text  - text to be processed for bbcode content
 	 * @var string $path - optional path to prepend to output if http or {e_xxxx} is not found. 
-	 * @return array
+	 * @return array|null
 	 */
 	function getContent($type,$text,$path='')
 	{
+
 		if(!in_array($type,$this->core_bb))
 		{
-			return;
+			return null;
 		}
 
 		if(substr(ltrim($text),0,6) == '[html]' && $type == 'img') // support for html img tags inside [html] bbcode.
 		{
+
 			$tmp = e107::getParser()->getTags($text,'img');
 
 			if(!empty($tmp['img']))
@@ -436,7 +438,7 @@ class e_bbcode
 			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
 		}
 
-		
+
 
 		$ret = array();
 		

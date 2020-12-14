@@ -787,12 +787,32 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testGetTags()
 		{
+			$html = "<div><img src='#' alt='whatever' /></div>";
+			$result = $this->tp->getTags($html, 'img');
+			$expected = array (
+				  'img' =>
+				  array (
+				    0 =>
+				    array (
+				      'src' => '#',
+				      'alt' => 'whatever',
+				      '@value' => '<img alt="whatever" src="#"></img>',
+				    ),
+				  ),
+				);
 
+			if(empty($expected['img'][0]))
+			{
+				$this->assertTrue(false, "getTags() didn't return the correct value");
+			}
+
+			$this->assertSame($expected['img'][0]['src'], $result['img'][0]['src']);
+			$this->assertSame($expected['img'][0]['alt'], $result['img'][0]['alt']);
 		}
-*/
+
 		public function testToGlyph()
 		{
 
