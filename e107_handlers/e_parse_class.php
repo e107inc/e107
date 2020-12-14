@@ -3898,7 +3898,7 @@ class e_parser
 	 */
 	public function __construct()
     {
-
+		$this->domObj = new DOMDocument('1.0', 'utf-8');
 		$this->init();
 		$this->compileAttributeDefaults();
 
@@ -5544,7 +5544,7 @@ return;
        		$html = '<body>'.$html.'</body>';
 		}
 
-        $this->domObj = $doc = new DOMDocument('1.0', 'utf-8');
+
 
 		if($this->scriptAccess === false)
 		{
@@ -5569,7 +5569,7 @@ return;
 		//	$fragment->appendXML($html);
 		//	$doc->appendChild($fragment);
 		//	$doc->encoding = 'utf-8';
-
+		$doc = $this->domObj;
 		$opts = defined('LIBXML_HTML_NOIMPLIED') ? LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD : 0;
 		$doc->loadHTML($html, $opts);
 
