@@ -523,8 +523,8 @@ if (e_QUERY)
 
 if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) ) 
 {
-	$res = $sql -> db_Select("upload", "*", "upload_id='".intval($id)."'");
-	$row = $sql -> db_Fetch();
+	$res = $sql ->select("upload", "*", "upload_id='".intval($id)."'");
+	$row = $sql ->fetch();
 	if (preg_match("#Binary (.*?)/#", $row['upload_file'], $match)) 
 	{
 		$sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
@@ -535,7 +535,7 @@ if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) )
 	}
 	if (preg_match("#Binary (.*?)/#", $row['upload_ss'], $match)) 
 	{
-		$sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
+		$sql ->delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
 	} 
 	else if ($row['upload_ss'] && file_exists(e_FILE."public/".$row['upload_ss'])) 
 	{

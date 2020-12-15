@@ -1150,8 +1150,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		$plug_id = array();
 		$plugin_array = array();
-		e107::getDb()->db_Select("plugin", "*", "plugin_installflag = 1"); // Grab plugin IDs. 
-		while ($row = e107::getDb()->db_Fetch())
+		e107::getDb()->select("plugin", "*", "plugin_installflag = 1"); // Grab plugin IDs.
+		while ($row = e107::getDb()->fetch())
 		{
 			$pth = $row['plugin_path'];
 			$plug_id[$pth] = $row['plugin_id'];

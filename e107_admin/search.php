@@ -136,9 +136,9 @@ if (isset($_POST['update_handler']))
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
 //	$tmp = addslashes(serialize($search_prefs));
-	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
+	$tmp = e107::serialize($search_prefs, true);
 
-	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
+	$check = $sql ->update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);

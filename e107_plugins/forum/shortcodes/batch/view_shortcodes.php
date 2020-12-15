@@ -153,7 +153,7 @@
 		/**
 		 * @example {TOPIC_DATESTAMP: format=relative}
 		 * @param string $parm['format'] short|long|forum|relative
-		 * @return HTML
+		 * @return string HTML
 		 */
 		function sc_topic_datestamp($parm=null)
 		{

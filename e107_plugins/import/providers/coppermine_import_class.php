@@ -45,7 +45,7 @@ class coppermine_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
+	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
 		if ($result === FALSE) return FALSE;
 		break;
 	  default :

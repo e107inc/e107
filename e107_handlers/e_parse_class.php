@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit(); }
 // Directory for the hard-coded utf-8 handling routines
 define('E_UTF8_PACK', e_HANDLER.'utf8/');
 
-define("E_NL", chr(2));
+define('E_NL', chr(2));
 
 class e_parse extends e_parser
 {
@@ -116,7 +116,7 @@ class e_parse extends e_parser
 		);
 
 	// Super modifiers override default option values
-	protected	$e_SuperMods = array(
+	protected $e_SuperMods = array(
 				//text is part of a title (e.g. news title)
 				'TITLE' =>
 					array(
@@ -348,14 +348,12 @@ class e_parse extends e_parser
 	 */
 	public function ustrtoupper($str)
 	{
-		switch($this->utfAction)
+		if($this->utfAction === 1)
 		{
-
-			case 1:
-				return mb_strtoupper($str);
-			default:
-				return strtoupper($str);
+			return mb_strtoupper($str);
 		}
+		
+		return strtoupper($str);
 
 	}
 
@@ -374,15 +372,12 @@ class e_parse extends e_parser
 	 */
 	public function ustrpos($haystack, $needle, $offset = 0)
 	{
-		switch($this->utfAction)
+		if($this->utfAction === 1)
 		{
-
-			case 1:
-				return mb_strpos($haystack, $needle, $offset);
-			default:
-				return strpos($haystack, $needle, $offset);
+			return mb_strpos($haystack, $needle, $offset);
 		}
-
+		
+		return strpos($haystack, $needle, $offset);
 	}
 
 
@@ -400,15 +395,13 @@ class e_parse extends e_parser
 	 */
 	public function ustrrpos($haystack, $needle, $offset = 0)
 	{
-		switch($this->utfAction)
+		if($this->utfAction === 1)
 		{
-
-			case 1:
-				return mb_strrpos($haystack, $needle, $offset);
-			default:
-				return strrpos($haystack, $needle, $offset);
+			return mb_strrpos($haystack, $needle, $offset);
 		}
 
+		return strrpos($haystack, $needle, $offset);
+		
 	}
 
 
@@ -451,22 +444,12 @@ class e_parse extends e_parser
 	 */
 	public function usubstr($str, $start, $length = NULL)
 	{
-		switch($this->utfAction)
+		if($this->utfAction === 1)
 		{
-
-			case 1:
-				if(is_null($length))
-				{
-					return mb_substr($str, $start);
-				}
-				else
-				{
-					return mb_substr($str, $start, $length);
-				}
-
-			default:
-				return substr($str, $start, $length);
+			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);				
 		}
+		
+		return substr($str, $start, $length);
 
 	}
 
@@ -508,7 +491,7 @@ class e_parse extends e_parser
 		}
 
 
-		if (MAGIC_QUOTES_GPC == true && $nostrip == false)
+		if (MAGIC_QUOTES_GPC === true && $nostrip === false)
 		{
 			$data = stripslashes($data);
 		}
@@ -633,10 +616,10 @@ class e_parse extends e_parser
 	 *	@return boolean TRUE if an unopened closing tag found
 	 *					FALSE if nothing found
 	 */
-	function htmlAbuseFilter($data, $tagList = '')
+	public function htmlAbuseFilter($data, $tagList = '')
 	{
 		
-		if ($tagList == '')
+		if (empty($tagList))
 		{
 			$checkTags = array('textarea', 'input', 'td', 'tr', 'table');
 		}
@@ -658,8 +641,11 @@ class e_parse extends e_parser
 		{
 			// $m[0] is the complete tag; $m[1] is '/' or empty; $m[2] is the tag and any attributes
 			list ($tag) = explode(' ', $m[2], 2);
-			if (!isset($tagArray[$tag])) continue;			// Not a tag of interest
-			if ($m[1] == '/')
+			if (!isset($tagArray[$tag]))
+			{
+				continue;
+			}            // Not a tag of interest
+			if ($m[1] === '/')
 			{	// Closing tag
 				if ($tagArray[$tag] == 0) 
 				{
@@ -676,7 +662,10 @@ class e_parse extends e_parser
 		//print_a($tagArray);
 		foreach ($tagArray as $t)
 		{
-			if ($t > 0) return TRUE;		// More opening tags than closing tags
+			if ($t > 0)
+			{
+				return TRUE;
+			}        // More opening tags than closing tags
 		}
 		return FALSE;						// OK now
 	}
@@ -703,7 +692,7 @@ class e_parse extends e_parser
 
 		foreach ($ret as $s)
 		{
-			if (substr($s, 0, 5) != '[code')
+			if (strpos($s, '[code') !== 0)
 			{
 				$vl = array();
 				$t = html_entity_decode(rawurldecode($s), ENT_QUOTES, CHARSET);
@@ -715,7 +704,7 @@ class e_parse extends e_parser
 					{
 						$vl[] = $vw;		// Add to list of words found
 					}
-					if (substr($vw, 0, 1) == '<')
+					if (strpos($vw, '<') === 0)
 					{
 						$vw = '</'.substr($vw, 1);
 						if (strpos($t1, $vw) !== FALSE)
@@ -735,9 +724,9 @@ class e_parse extends e_parser
 			$ans .= $s;
 		}
 		
-		if($mode == 'link' && count($vl))
+		if($mode === 'link' && count($vl))
 		{
-			return "#sanitized";
+			return '#sanitized';
 		}
 		
 		return $ans;
@@ -794,7 +783,7 @@ class e_parse extends e_parser
 
 
 
-	function toForm($text)
+	public function toForm($text)
 	{
 
 		if(empty($text)) // fix - handle proper 0, Space etc values.
@@ -803,7 +792,7 @@ class e_parse extends e_parser
 		}
 
 
-		if(is_string($text) && substr($text,0,6) == '[html]')
+		if(is_string($text) && strpos($text, '[html]') === 0)
 		{
 			// $text = $this->toHTML($text,true);
 			$search = array('&quot;','&#039;','&#092;', '&',); // '&' must be last.
@@ -832,7 +821,7 @@ class e_parse extends e_parser
 	}
 
 
-	function post_toForm($text)
+	public function post_toForm($text)
 	{
 		if(is_array($text))
 		{
@@ -846,11 +835,11 @@ class e_parse extends e_parser
 		{
 			$text = stripslashes($text);
 		}
-		return str_replace(array("'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
+		return str_replace(array("'", '"', '<', '>'), array('&#039;', '&quot;', '&lt;', '&gt;'), $text);
 	}
 
 
-	function post_toHTML($text, $original_author = FALSE, $extra = '', $mod = FALSE)
+	public function post_toHTML($text, $original_author = FALSE, $extra = '', $mod = FALSE)
 	{
 		$text = $this->toDB($text, FALSE, FALSE, $mod, $original_author);
 		return $this->toHTML($text, TRUE, $extra);
@@ -863,12 +852,12 @@ class e_parse extends e_parser
 	 * @param object $eVars - XXX more info needed.
 	 * @return string
 	 */
-	function parseTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
+	public function parseTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
 	{
 
 		if(!is_bool($parseSCFiles))
 		{
-			trigger_error("\$parseSCFiles in parseTemplate() was given incorrect data");
+			trigger_error('$parseSCFiles in parseTemplate() was given incorrect data');
 		}
 
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
@@ -895,18 +884,16 @@ class e_parse extends e_parser
 			{
 				return false;
 			}
-			else
-			{
-				return true;
-			}
-		/*	if(!strpos($code, 'return '))
-			{
-				return true;
-			}
-			else 
-			{
-				return false;
-			}*/
+
+			return true;
+			/*	if(!strpos($code, 'return '))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}*/
 		}		
 	}
 
@@ -920,7 +907,7 @@ class e_parse extends e_parser
 	 * @param string $replaceUnset string to be used if replace variable is not set, false - don't replace
 	 * @return string parsed content
 	 */
-	function simpleParse($template, $vars, $replaceUnset='')
+	public function simpleParse($template, $vars, $replaceUnset='')
 	{
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
@@ -942,7 +929,7 @@ class e_parse extends e_parser
 	}
 
 
-	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
+	public function htmlwrap($str, $width, $break = "\n", $nobreak = 'a', $nobr = 'pre', $utf = FALSE)
 	{
 		/*
 		Pretty well complete rewrite to try and handle utf-8 properly.
@@ -955,25 +942,27 @@ class e_parse extends e_parser
 		//return $str;
 
 		// Don't wrap if non-numeric width
-		$width = intval($width);
+		$width = (int)$width;
 		// And trap stupid wrap counts
 		if ($width < 6)
+		{
 			return $str;
+		}
 
 		// Transform protected element lists into arrays
-		$nobreak = explode(" ", strtolower($nobreak));
+		$nobreak = explode(' ', strtolower($nobreak));
 
 		// Variable setup
 
 		$innbk = array();
-		$drain = "";
+		$drain = '';
 
 		// List of characters it is "safe" to insert line-breaks at
 		// It is not necessary to add < and > as they are automatically implied
 		$lbrks = "/?!%)-}]\\\"':;&";
 
 		// Is $str a UTF8 string?
-		if ($utf || strtolower(CHARSET) == 'utf-8')
+		if ($utf || strtolower(CHARSET) === 'utf-8')
 		{
 			// 0x1680, 0x180e, 0x2000-0x200a, 0x2028, 0x205f, 0x3000 are 'non-ASCII' Unicode UCS-4 codepoints - see http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
 			// All convert to 3-byte utf-8 sequences:
@@ -1001,7 +990,7 @@ class e_parse extends e_parser
 		$content = preg_split('#(<.*?'.'>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		foreach($content as $value)
 		{
-			if ($value[0] == "<")
+			if ($value[0] === '<')
 			{
 				// We are within an HTML tag
 				// Create a lowercase copy of this tag's contents
@@ -1010,14 +999,16 @@ class e_parse extends e_parser
 				{
 					// Tag of non-zero length
 					// If the first character is not a / then this is an opening tag
-					if ($lvalue[0] != "/")
+					if ($lvalue[0] !== '/')
 					{
 						// Collect the tag name
 						preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
 
 						// If this is a protected element, activate the associated protection flag
 						if(in_array($t[1], $nobreak))
+						{
 							array_unshift($innbk, $t[1]);
+						}
 					}
 					else
 					{
@@ -1051,7 +1042,7 @@ class e_parse extends e_parser
 				if (!count($innbk))
 				{
 					// Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
-					$value = str_replace("\x06", "", $value);
+					$value = str_replace("\x06", '', $value);
 					preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
 					$value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
 					//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
@@ -1088,7 +1079,9 @@ class e_parse extends e_parser
 									for($i = strlen($matches[1]) - 1; $i >= 0; $i--)
 									{
 										if(strpos($lbrks, $matches[1][$i]) !== FALSE)
+										{
 											break;
+										}
 									}
 									if($i < 0)
 									{
@@ -1114,7 +1107,9 @@ class e_parse extends e_parser
 								{
 									// No speed advantage to defining match character
 									if (strpos($lbrks, $sp[$i-1]) !== FALSE)
+									{
 										break;
+									}
 								}
 								if ($i == 0)
 								{
@@ -1138,7 +1133,9 @@ class e_parse extends e_parser
 					}
 					// Put captured HTML entities back into the string
 					foreach ($ents[0] as $ent)
+					{
 						$value = preg_replace("/\x06/", $ent, $value, 1);
+					}
 				}
 			}
 			// Send the modified segment down the drain
@@ -1162,7 +1159,7 @@ class e_parse extends e_parser
 	 * @param boolean $exact If false, $text will not be cut mid-word
 	 * @return string Trimmed string.
 	 */
-	function html_truncate($text, $length = 100, $ending = '...', $exact = true)
+	public function html_truncate($text, $length = 100, $ending = '...', $exact = true)
 	{
 		if($this->ustrlen(preg_replace('/<.*?>/', '', $text)) <= $length)
 		{
@@ -1216,11 +1213,9 @@ class e_parse extends e_parser
 				$truncate .= $this->usubstr($tag[3], 0, $left + $entitiesLength);
 				break;
 			}
-			else
-			{
-				$truncate .= $tag[3];
-				$totalLength += $contentLength;
-			}
+
+			$truncate .= $tag[3];
+			$totalLength += $contentLength;
 			if($totalLength >= $length)
 			{
 				break;
@@ -1272,8 +1267,8 @@ class e_parse extends e_parser
 		{
 			switch($text [$pos] )
 			{
-				case "<":
-					if($text [$pos + 1] == "/")
+				case '<':
+					if($text [$pos + 1] === '/')
 					{
 						$closing_tag = TRUE;
 					}
@@ -1283,8 +1278,8 @@ class e_parse extends e_parser
 				break;
 
 
-				case ">":
-					if($text [$pos - 1] == "/")
+				case '>':
+					if($text [$pos - 1] === '/')
 					{
 						$closing_tag = TRUE;
 					}
@@ -1298,10 +1293,10 @@ class e_parse extends e_parser
 				break;
 
 
-				case "&":
-					if($text [$pos + 1] == "#")
+				case '&':
+					if($text [$pos + 1] === '#')
 					{
-						$end = strpos(substr($text, $pos, 7), ";");
+						$end = strpos(substr($text, $pos, 7), ';');
 						if($end !== FALSE)
 						{
 							$pos += ($end + 1);
@@ -1333,7 +1328,7 @@ class e_parse extends e_parser
 		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos+1) : substr($text, 0, $pos));
 		if($pos < strlen($text))
 		{
-			$ret = $ret.$more;
+			$ret .= $more;
 		}
 		return $ret;
 	}
@@ -1381,7 +1376,7 @@ class e_parse extends e_parser
 	}
 
 
-	function textclean ($text, $wrap = 100)
+	public function textclean ($text, $wrap = 100)
 	{
 		$text = str_replace("\n\n\n", "\n\n", $text);
 		$text = $this->htmlwrap($text, $wrap);
@@ -1393,7 +1388,7 @@ class e_parse extends e_parser
 
 	// Test for text highlighting, and determine the text highlighting transformation
 	// Returns TRUE if highlighting is active for this page display
-	function checkHighlighting()
+	public function checkHighlighting()
 	{
 		global $pref;
 
@@ -1406,7 +1401,7 @@ class e_parse extends e_parser
 		if(!isset($this->e_highlighting))
 		{
 			$this->e_highlighting = FALSE;
-			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
 			if($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE)))
 			{
 				$this->e_highlighting = TRUE;
@@ -1448,7 +1443,7 @@ class e_parse extends e_parser
 		switch($type)
 		{
 			default:
-			case "email":
+			case 'email':
 
 				preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
 
@@ -1468,14 +1463,14 @@ class e_parse extends e_parser
 				}
 				break;
 
-			case "url":
+			case 'url':
 
 				$linktext = (!empty($textReplace)) ? $textReplace : '$3';
 				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
 
-				$text= preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<a class=\"e-url\" href=\"$3\" ".$external.">".$linktext."</a>", $text);
-				$text= preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", "$1$2<a class=\"e-url\" href=\"http://$3\" ".$external.">".$linktext."</a>", $text);
-				$text= preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", "$1$2<a class=\"e-url\" href=\"$4://$3\" ".$external.">".$linktext."</a>", $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' .$external. '>' .$linktext. '</a>', $text);
+				$text= preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' .$external. '>' .$linktext. '</a>', $text);
+				$text= preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' .$external. '>' .$linktext. '</a>', $text);
 
 				break;
 
@@ -1489,7 +1484,7 @@ class e_parse extends e_parser
 
 
 
-	function parseBBCodes($text, $postID)
+	public function parseBBCodes($text, $postID)
 	{
 		if (!is_object($this->e_bb))
 		{
@@ -1601,8 +1596,7 @@ class e_parse extends e_parser
 
 			if(strpos($text,'[center]') === 0) // quick bc fix TODO Find a better solution. [center][/center] containing HTML.
             {
-		    	$text = str_replace("[center]","<div style='text-align:center'>",$text);
-		        $text = str_replace("[/center]","</div>",$text);
+	            $text = str_replace(array('[center]', '[/center]'), array("<div style='text-align:center'>", '</div>'), $text);
             }
 		}
 
@@ -1726,9 +1720,9 @@ class e_parse extends e_parser
 						//	$code_text = str_replace("\r\n", " ", $code_text);
 						//	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 						//	$code_text = str_replace('&','&amp;',$code_text); // validation safe.
-							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
-							$html_end	= "<!-- bbcode-html-end -->";
-							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?
+							$html_start = '<!-- bbcode-html-start -->'; // markers for html-to-bbcode replacement. 
+							$html_end	= '<!-- bbcode-html-end -->';
+							$full_text = str_replace(array('[html]', '[/html]'), '',$code_text); // quick fix.. security issue?
 
 							$full_text = $this->parseBBCodes($full_text, $postID); // parse any embedded bbcodes eg. [img]
 							$full_text = $this->replaceConstants($full_text,'abs'); // parse any other paths using {e_....
@@ -1903,7 +1897,7 @@ class e_parse extends e_parser
 							if ($parseBB === TRUE)
 							{
 								// 'Normal' or 'legacy' processing
-								if($modifiers == "WYSIWYG")
+								if($modifiers === 'WYSIWYG')
 								{
 									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'wysiwyg');	
 								}
@@ -1962,17 +1956,13 @@ class e_parse extends e_parser
 							if ( varset($pref['tohtml_hook']))
 							{
 								//Process the older tohtml_hook pref (deprecated)
-								foreach(explode(",", $pref['tohtml_hook']) as $hook)
+								foreach(explode(',', $pref['tohtml_hook']) as $hook)
 								{
-									if (!is_object($this->e_hook[$hook]))
+									if (!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . "/" . $hook . ".php"))
 									{
-										if(is_readable(e_PLUGIN.$hook."/".$hook.".php"))
-										{
-											require_once(e_PLUGIN.$hook."/".$hook.".php");
-											$hook_class = "e_".$hook;
-											$this->e_hook[$hook] = new $hook_class;
-										}
-
+										require_once(e_PLUGIN.$hook."/".$hook.".php");
+										$hook_class = "e_".$hook;
+										$this->e_hook[$hook] = new $hook_class;
 									}
 
 									if(is_object($this->e_hook[$hook])) // precaution for old plugins. 
@@ -1994,16 +1984,13 @@ class e_parse extends e_parser
 										continue;
 									}
 
-									if (empty($this->e_hook[$hook]) /*&& !is_object($this->e_hook[$hook])*/)
+									if (empty($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . "/e_tohtml.php") /*&& !is_object($this->e_hook[$hook])*/)
 									{
-										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
-										{
-											require_once(e_PLUGIN.$hook."/e_tohtml.php");
+										require_once(e_PLUGIN.$hook."/e_tohtml.php");
 
-											$hook_class = "e_tohtml_".$hook;
+										$hook_class = "e_tohtml_".$hook;
 
-											$this->e_hook[$hook] = new $hook_class;
-										}
+										$this->e_hook[$hook] = new $hook_class;
 									}
 
 									if(is_object( $this->e_hook[$hook]))
@@ -2047,12 +2034,9 @@ class e_parse extends e_parser
 
 
 						//	Search highlighting
-						if ($opts['emotes'])			// Why??
+						if ($opts['emotes'] && $this->checkHighlighting())			// Why??
 						{
-							if ($this->checkHighlighting())
-							{
-								$sub_blk = $this->e_highlight($sub_blk, $this->e_query);
-							}
+							$sub_blk = $this->e_highlight($sub_blk, $this->e_query);
 						}
 
 						
@@ -2093,8 +2077,8 @@ class e_parse extends e_parser
 		
 		foreach($this->blockTags as $val)
 		{
-			$srch[] = "</".$val."><br />";	
-			$repl[]	= "</".$val.">";
+			$srch[] = '</' .$val. '><br />';	
+			$repl[]	= '</' .$val. '>';
 		}
 		
 		$ret_parser = str_replace($srch, $repl, $ret_parser);
@@ -2156,7 +2140,7 @@ class e_parse extends e_parser
 	}
 
 
-	function toASCII($text)
+	public function toASCII($text)
 	{
 
 		$char_map = array(
@@ -2231,7 +2215,7 @@ class e_parse extends e_parser
 	 * @param string $text
 	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>";
 	 */
-	function toAttribute($text)
+	public function toAttribute($text)
 	{
 		// URLs posted without HTML access may have an &amp; in them.
 
@@ -2258,8 +2242,8 @@ class e_parse extends e_parser
 	 */
 	public function toJS($stringarray)
 	{
-		$search = array("\r\n", "\r", "<br />", "'");
-		$replace = array("\\n", "", "\\n", "\'");
+		$search = array("\r\n", "\r", '<br />', "'");
+		$replace = array("\\n", '', "\\n", "\'");
 		$stringarray = str_replace($search, $replace, $stringarray);
 		$stringarray = strip_tags($stringarray);
 
@@ -2403,7 +2387,7 @@ class e_parse extends e_parser
 				$output = array();
 				foreach($var as $k => $v)
 				{
-					$output[] = $this->toJSONhelper(strval($k)) . ':' . $this->toJSONhelper($v);
+					$output[] = $this->toJSONhelper((string)$k) . ':' . $this->toJSONhelper($v);
 				}
 				return '{' . implode(', ', $output) . '}';
 
@@ -2420,7 +2404,7 @@ class e_parse extends e_parser
 	 * @param boolean $tags [optional]
 	 * @return string
 	 */
-	function toRss($text, $tags = false)
+	public function toRss($text, $tags = false)
 	{
 		if($tags != true)
 		{
@@ -2430,15 +2414,15 @@ class e_parse extends e_parser
 
 		$text = $this->toEmail($text);
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", e_BASE, "href='request.php","<!-- bbcode-html-start -->","<!-- bbcode-html-end -->");
-		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL."request.php", '', '' );
+		$search = array('&amp;#039;', '&amp;#036;', '&#039;', '&#036;', e_BASE, "href='request.php", '<!-- bbcode-html-start -->', '<!-- bbcode-html-end -->');
+		$replace = array("'", '$', "'", '$', SITEURL, "href='".SITEURL. 'request.php', '', '' );
 		$text = str_replace($search, $replace, $text);
 
 		$text = $this->ampEncode($text);
 
 		if($tags == true && ($text))
 		{
-			$text = "<![CDATA[".$text."]]>";
+			$text = '<![CDATA[' .$text. ']]>';
 		}
 
 		return $text;
@@ -2451,7 +2435,7 @@ class e_parse extends e_parser
 	 * @param string $value
 	 * @return int|float
 	 */
-	function toNumber($value) 
+	public function toNumber($value)
 	{
 		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
 		$dotPos = strrpos($value, '.');
@@ -2460,12 +2444,12 @@ class e_parse extends e_parser
 			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
 	  
 		if (!$sep) {
-			return preg_replace("/[^-0-9]/", "", $value);
+			return preg_replace('/[^-0-9]/', '', $value);
 		}
 	
 		return (
-			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
-			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+			preg_replace('/[^-0-9]/', '', substr($value, 0, $sep)) . '.' .
+			preg_replace('/[^0-9]/', '', substr($value, $sep+1, strlen($value)))
 		);
 	}
 
@@ -2476,11 +2460,11 @@ class e_parse extends e_parser
 	 * @param string $text
 	 * @return mixed|string
 	 */
-	function ampEncode($text='')
+	public function ampEncode($text='')
 	{
 		// Fix any left-over '&'
-		$text = str_replace('&amp;', '&', $text); //first revert any previously converted.
-		$text = str_replace('&', '&amp;', $text);
+		//first revert any previously converted.
+		$text = str_replace(array('&amp;', '&'), array('&', '&amp;'), $text);
 
 		return $text;
 	}
@@ -2491,7 +2475,7 @@ class e_parse extends e_parser
 	 * @param $text
 	 * @return mixed|string
 	 */
-	function toText($text)
+	public function toText($text)
 	{
 
 		if($this->isBBcode($text) === true) // convert any bbcodes to html
@@ -2502,12 +2486,12 @@ class e_parse extends e_parser
 		if($this->isHtml($text) === true) // strip any html.
 		{
 			$text = $this->toHTML($text,true);
-			$text = str_replace("\n","",$text); // clean-out line-breaks.
-			$text = str_ireplace( array("<br>","<br />","<br/>"), "\n", $text);
+			$text = str_replace("\n", '',$text); // clean-out line-breaks.
+			$text = str_ireplace( array('<br>', '<br />', '<br/>'), "\n", $text);
 			$text = strip_tags($text);
 		}
 
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&#092;", "&amp;#092;");
+		$search = array('&amp;#039;', '&amp;#036;', '&#039;', '&#036;', '&#092;', '&amp;#092;');
 		$replace = array("'", '$', "'", '$', "\\", "\\");
 		$text = str_replace($search, $replace, $text);
 		return $text;
@@ -2648,7 +2632,8 @@ class e_parse extends e_parser
 
 		if(!empty($options['type']))
 		{
-			$ext = $newOpts['type'] = $options['type'];
+			$newOpts['type'] = $options['type'];
+			$ext = $newOpts['type'];
 		}
 
 
@@ -2686,7 +2671,7 @@ class e_parse extends e_parser
 		if($log !== null)
 		{
 			file_put_contents(e_LOG.$log, "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
-			$message = "Name: ".$fname."\n";
+			$message = 'Name: ' .$fname."\n";
 			$message .= $path."\n".var_export($newOpts,true)."\n\n\n";
 			file_put_contents(e_LOG.$log, $message, FILE_APPEND);
 
@@ -2711,10 +2696,10 @@ class e_parse extends e_parser
 		}
 		elseif($val !== false)
 		{
-			$this->staticCount = $this->staticCount + (int) $val;
+			$this->staticCount += (int)$val;
 		}
 
-		return (int) $count;
+		return $count;
 
 	}
 
@@ -2734,10 +2719,8 @@ class e_parse extends e_parser
 			{
 				return !empty($opts['full']) ? SITEURL : e_HTTP;
 			}
-			else
-			{
-				return !empty($opts['full']) ? self::replaceConstants($path, 'full') : self::replaceConstants($path, 'abs'); // self::replaceConstants($path, 'full');
-			}
+
+			return !empty($opts['full']) ? $this->replaceConstants($path, 'full') : $this->replaceConstants($path, 'abs'); // self::replaceConstants($path, 'full');
 		}
 
 		$staticArray = $this->staticUrl; // e_HTTP_STATIC;
@@ -2769,7 +2752,7 @@ class e_parse extends e_parser
 
 		$base = '';
 
-		$path = self::replaceConstants($path, 'abs'); // replace any {THEME} etc.
+		$path = $this->replaceConstants($path, 'abs'); // replace any {THEME} etc.
 
 		$srch = array(
 			e_PLUGIN_ABS,
@@ -2831,7 +2814,7 @@ class e_parse extends e_parser
 			return $this->replaceConstants($url, 'abs');
 		}
 
-		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
+		if(strpos($url, '{e_') === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
 			// always switch to 'nice' urls when SC is used	
@@ -2858,7 +2841,10 @@ class e_parse extends e_parser
 			$raw = true; 	
 		}
 
-		if($raw) $url = $this->createConstants($url, 'mix');
+		if($raw)
+		{
+			$url = $this->createConstants($url, 'mix');
+		}
 		
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
 
@@ -2973,13 +2959,13 @@ class e_parse extends e_parser
 	 * @param $src
 	 * @return array
 	 */
-	function thumbUrlDecode($src)
+	public function thumbUrlDecode($src)
 	{
-		list($url,$qry) = array_pad(explode("?",$src), 2, null);
+		list($url,$qry) = array_pad(explode('?',$src), 2, null);
 
 		$ret = array();
 
-		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
+		if(strstr($url, 'thumb.php') && !empty($qry)) // Regular
 		{
 			parse_str($qry,$val);
 			$ret = $val;
@@ -3009,7 +2995,7 @@ class e_parse extends e_parser
 		}
 		elseif(defined('TINYMCE_DEBUG'))
 		{
-			print_a("thumbUrlDecode: No Matches");
+			print_a('thumbUrlDecode: No Matches');
 
 		}
 
@@ -3025,10 +3011,11 @@ class e_parse extends e_parser
 	 * @param int|string|array $width - desired size in px or '2x' or '3x' or null for all or array (
 	 * @return string
 	 */
-	function thumbSrcSet($src='', $width=null)
+	public function thumbSrcSet($src='', $width=null)
 	{
 		$multiply = null;
 		$encode = false;
+		$parm = array();
 
 		if(is_array($width))
 		{
@@ -3040,7 +3027,7 @@ class e_parse extends e_parser
 
 
 	//	$encode =  $this->thumbEncode();;
-		if($width == null || $width=='all')
+		if($width == null || $width === 'all')
 		{
 			$links = array();
 			$mag = ($width == null) ? array(1, 2) : array(160,320,460,600,780,920,1100);
@@ -3049,14 +3036,14 @@ class e_parse extends e_parser
 				$w = ($this->thumbWidth * $v);
 				$h =  ($this->thumbHeight * $v);
 
-				$att = (!empty($this->thumbCrop)) ? array('aw' => $w, 'ah' => $h) : array('w' => $w, 'h' => $h);
+				$att = (!empty($this->thumbCrop)) ? array('aw' => $w, 'ah' => $h) : compact('w', 'h');
 				$att['x'] = $encode;
 
-				$add = ($width == null) ? " ".$v."x" : " ".$v."w";
+				$add = ($width == null) ? ' ' .$v. 'x' : ' ' .$v. 'w';
 				$links[] = $this->thumbUrl($src, $att).$add; // " w".$width; //
 			}
 
-			return implode(", ",$links);
+			return implode(', ',$links);
 
 		}
 		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
@@ -3066,7 +3053,7 @@ class e_parse extends e_parser
 			if(empty($parm['w']) && isset($parm['h']))
 			{
 				$parm['h'] = ($parm['h'] * $multiInt) ;
-				return $this->thumbUrl($src, $parm)." ".$multiply;
+				return $this->thumbUrl($src, $parm). ' ' .$multiply;
 			}
 
 			if(isset($parm['w']) && !isset($parm['h'])) // if w set, assume h value of 0 is set.
@@ -3123,7 +3110,7 @@ class e_parse extends e_parser
 
 		$ret = $this->thumbUrl($src, $parms);
 
-		$ret .= ($multiply) ? " ".$multiply : " ".$width."w";
+		$ret .= ($multiply) ? ' ' .$multiply : ' ' .$width. 'w';
 
         return $ret;
 
@@ -3163,7 +3150,7 @@ class e_parse extends e_parser
 		if(!empty($options['x'])  && !empty($options['ext'])) // base64 encoded. Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
 		{
 			$ext = strtolower($options['ext']);
-			return $base.'media/img/'.base64_encode($options['thurl']).'.'.str_replace("jpeg", "jpg", $ext);
+			return $base.'media/img/'.base64_encode($options['thurl']).'.'.str_replace('jpeg', 'jpg', $ext);
 		}
 		elseif(strstr($url, 'e_MEDIA_IMAGE')) // media images.
 		{
@@ -3278,7 +3265,7 @@ class e_parse extends e_parser
 	}
 
 
-	function getEmotes()
+	public function getEmotes()
 	{
 		return $this->e_emote->emotes;		
 	}
@@ -3309,36 +3296,36 @@ class e_parse extends e_parser
 			return $new;
 		}
 
-		if($mode != "")
+		if($mode != '')
 		{
 			$e107 = e107::getInstance();
 
 			$replace_relative = array(
-				$e107->getFolder('media_files'),
-				$e107->getFolder('media_video'),
-				$e107->getFolder('media_image'),
-				$e107->getFolder('media_icon'),
-				$e107->getFolder('avatars'),
-				$e107->getFolder('web_js'),
-				$e107->getFolder('web_css'),
-				$e107->getFolder('web_image'),
+				$e107::getFolder('media_files'),
+				$e107::getFolder('media_video'),
+				$e107::getFolder('media_image'),
+				$e107::getFolder('media_icon'),
+				$e107::getFolder('avatars'),
+				$e107::getFolder('web_js'),
+				$e107::getFolder('web_css'),
+				$e107::getFolder('web_image'),
 				//$e107->getFolder('web_pack'),
 				e_IMAGE_ABS,
 				e_THEME_ABS,
-				$e107->getFolder('images'),
-				$e107->getFolder('plugins'),
-				$e107->getFolder('files'),
-				$e107->getFolder('themes'),
+				$e107::getFolder('images'),
+				$e107::getFolder('plugins'),
+				$e107::getFolder('files'),
+				$e107::getFolder('themes'),
 			//	$e107->getFolder('downloads'),
-				$e107->getFolder('handlers'),
-				$e107->getFolder('media'),
-				$e107->getFolder('web'),
-				$e107->site_theme ? $e107->getFolder('themes').$e107->site_theme.'/' : '',
+				$e107::getFolder('handlers'),
+				$e107::getFolder('media'),
+				$e107::getFolder('web'),
+				$e107->site_theme ? $e107::getFolder('themes').$e107->site_theme.'/' : '',
 				defset('THEME_ABS'),
-				(ADMIN ? $e107->getFolder('admin') : ''),
+				(ADMIN ? $e107::getFolder('admin') : ''),
 				'',
-				$e107->getFolder('core'),
-				$e107->getFolder('system'),
+				$e107::getFolder('core'),
+				$e107::getFolder('system'),
 			);
 
 			switch ($mode)
@@ -3414,22 +3401,22 @@ class e_parse extends e_parser
 				'{e_WEB_CSS}',
 				'{e_WEB_IMAGE}',
 		//		'{e_WEB_PACK}',
-				"{e_IMAGE_ABS}",
-				"{e_THEME_ABS}",
-				"{e_IMAGE}",
-				"{e_PLUGIN}",
-				"{e_FILE}",
-				"{e_THEME}",
+				'{e_IMAGE_ABS}',
+				'{e_THEME_ABS}',
+				'{e_IMAGE}',
+				'{e_PLUGIN}',
+				'{e_FILE}',
+				'{e_THEME}',
 				//,"{e_DOWNLOAD}"
-				"{e_HANDLER}",
-				"{e_MEDIA}",
-				"{e_WEB}",
-				"{THEME}",
-				"{THEME_ABS}",
-				"{e_ADMIN}",
-				"{e_BASE}",
-				"{e_CORE}",
-				"{e_SYSTEM}",
+				'{e_HANDLER}',
+				'{e_MEDIA}',
+				'{e_WEB}',
+				'{THEME}',
+				'{THEME_ABS}',
+				'{e_ADMIN}',
+				'{e_BASE}',
+				'{e_CORE}',
+				'{e_SYSTEM}',
 			);
 
 			/*if (ADMIN)
@@ -3451,7 +3438,7 @@ class e_parse extends e_parser
 					$replace_relative[] = '';
 					$replace_absolute[] = '';
 				}
-				$search[] = "{USERID}";
+				$search[] = '{USERID}';
 			}
 
 			// current THEME
@@ -3470,7 +3457,7 @@ class e_parse extends e_parser
 				$search[] = "{THEME_ABS}";
 			}*/
 
-			$replace = ((string)$mode == "full" || (string)$mode=='abs' ) ? $replace_absolute : $replace_relative;
+			$replace = ((string)$mode === 'full' || (string)$mode === 'abs' ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
 
@@ -3494,7 +3481,7 @@ class e_parse extends e_parser
 	}
 
 
-	function doReplace($matches)
+	public function doReplace($matches)
 	{
 		if(defined($matches[1]) && (deftrue('ADMIN') || strpos($matches[1], 'ADMIN') === FALSE))
 		{
@@ -3530,26 +3517,26 @@ class e_parse extends e_parser
 		{
 			case 0: // folder name only.
 				$tmp = array(
-					'{e_MEDIA_FILE}'	=> $e107->getFolder('media_files'),
-					'{e_MEDIA_VIDEO}'	=> $e107->getFolder('media_videos'),
-					'{e_MEDIA_IMAGE}'	=> $e107->getFolder('media_images'),
-					'{e_MEDIA_ICON}'	=> $e107->getFolder('media_icons'),
-					'{e_AVATAR}'		=> $e107->getFolder('avatars'),
-					'{e_WEB_JS}'		=> $e107->getFolder('web_js'),
-					'{e_WEB_CSS}'		=> $e107->getFolder('web_css'),
-					'{e_WEB_IMAGE}'		=> $e107->getFolder('web_images'),
-			//		'{e_WEB_PACK}'		=> $e107->getFolder('web_packs'),
+					'{e_MEDIA_FILE}'	=> $e107::getFolder('media_files'),
+					'{e_MEDIA_VIDEO}'	=> $e107::getFolder('media_videos'),
+					'{e_MEDIA_IMAGE}'	=> $e107::getFolder('media_images'),
+					'{e_MEDIA_ICON}'	=> $e107::getFolder('media_icons'),
+					'{e_AVATAR}'		=> $e107::getFolder('avatars'),
+					'{e_WEB_JS}'		=> $e107::getFolder('web_js'),
+					'{e_WEB_CSS}'		=> $e107::getFolder('web_css'),
+					'{e_WEB_IMAGE}'		=> $e107::getFolder('web_images'),
+			//		'{e_WEB_PACK}'		=> $e107::getFolder('web_packs'),
 
-					'{e_IMAGE}' 	=> $e107->getFolder('images'),
-					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
-					'{e_FILE}'		=> $e107->getFolder('files'),
-					'{e_THEME}'		=> $e107->getFolder('themes'),
-					'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
-					'{e_ADMIN}'		=> $e107->getFolder('admin'),
-					'{e_HANDLER}'	=> $e107->getFolder('handlers'),
-					'{e_MEDIA}'		=> $e107->getFolder('media'),
-					'{e_WEB}'		=> $e107->getFolder('web'),
-					'{e_UPLOAD}'	=> $e107->getFolder('uploads'),
+					'{e_IMAGE}' 	=> $e107::getFolder('images'),
+					'{e_PLUGIN}'	=> $e107::getFolder('plugins'),
+					'{e_FILE}'		=> $e107::getFolder('files'),
+					'{e_THEME}'		=> $e107::getFolder('themes'),
+					'{e_DOWNLOAD}'	=> $e107::getFolder('downloads'),
+					'{e_ADMIN}'		=> $e107::getFolder('admin'),
+					'{e_HANDLER}'	=> $e107::getFolder('handlers'),
+					'{e_MEDIA}'		=> $e107::getFolder('media'),
+					'{e_WEB}'		=> $e107::getFolder('web'),
+					'{e_UPLOAD}'	=> $e107::getFolder('uploads'),
 					);
 					
 			break;
@@ -3671,7 +3658,7 @@ class e_parse extends e_parser
 
 
 	//FIXME - $match not used?
-	function e_highlight($text, $match)
+	public function e_highlight($text, $match)
 	{
 		$tags = array();
 		preg_match_all('#<[^>]+>#', $text, $tags);
@@ -3693,7 +3680,7 @@ class e_parse extends e_parser
 	 * @param boolean $posted - if the text has been posted. (uses stripslashes etc)
 	 * @param string $mods - flags for text transformation. 
 	 */
-	public function toEmail($text, $posted = "", $mods = "parse_sc, no_make_clickable")
+	public function toEmail($text, $posted = '', $mods = 'parse_sc, no_make_clickable')
 	{
 		if ($posted === TRUE)
 		{
@@ -3704,11 +3691,11 @@ class e_parse extends e_parser
 			$text = preg_replace('#\[(php)#i', '&#91;\\1', $text);
 		}
 
-		$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text, "full") : $text;
+		$text = (strtolower($mods) !== 'rawtext') ? $this->replaceConstants($text, 'full') : $text;
 
 		if($this->isHtml($text))
 		{
-			$text = str_replace(array("[html]","[/html]"), "", $text);
+			$text = str_replace(array('[html]', '[/html]'), '', $text);
 			$text = html_entity_decode( $text, ENT_COMPAT, 'UTF-8');
 		}
 		else
@@ -3731,7 +3718,7 @@ class e_parse extends e_parser
 	 * @param null $subject [optional] default subject for email.
 	 * @return string
 	 */
-	function emailObfuscate($email, $words = null, $subject =null)
+	public function emailObfuscate($email, $words = null, $subject =null)
 	{
 		if(strpos($email, '@') === false)
 		{
@@ -3747,7 +3734,7 @@ class e_parse extends e_parser
 
 		if(empty($words))
 		{
-			$words = "&#64;";
+			$words = '&#64;';
 			$user = "data-user='".$this->obfuscate($name)."'";
 			$dom =  "data-dom='".$this->obfuscate($address)."'";
 		}
@@ -3757,7 +3744,7 @@ class e_parse extends e_parser
 			$dom = '';
 		}
 
-		$url = "mailto:".$email.$subject;
+		$url = 'mailto:' .$email.$subject;
 
 		$safe = $this->obfuscate($url);
 
@@ -3776,7 +3763,7 @@ class e_parse extends e_parser
 		$ret = '';
 		foreach (str_split($text) as $letter)
 		{
-			switch (rand(1, 3))
+			switch (mt_rand(1, 3))
 			{
 				// HTML entity code
 				case 1:
@@ -3933,7 +3920,7 @@ class e_parser
     /**
      * Used by e_parse to start
      */
-    function init()
+    public function init()
     {
 
 		if(defined('FONTAWESOME'))
@@ -4066,7 +4053,7 @@ class e_parser
 	 */
 	public function leadingZeros($num,$numDigits)
 	{
-		return (string) sprintf("%0".$numDigits."d",$num);
+		return (string) sprintf('%0' .$numDigits. 'd',$num);
 	}
 
 	/**
@@ -4077,7 +4064,7 @@ class e_parser
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
 	 * @return string
 	 */
-	function lanVars($lan, $vals, $bold=false)
+	public function lanVars($lan, $vals, $bold=false)
 	{
 		
 		$array = (!is_array($vals)) ? array('x'=>$vals) : $vals;
@@ -4094,8 +4081,8 @@ class e_parser
 				$k = $defaults[$k];
 			}
 
-			$search[] = "[".$k."]";
-			$replace[] = ($bold===true) ? "<strong>".$v."</strong>" : $v;
+			$search[] = '[' .$k. ']';
+			$replace[] = ($bold===true) ? '<strong>' .$v. '</strong>' : $v;
 		}
 		
 		return str_replace($search, $replace, $lan);
@@ -4112,7 +4099,7 @@ class e_parser
 		
 		if($header == false)
 		{
-			$html = "<html><body>".$html."</body></html>";	
+			$html = '<html><body>' .$html. '</body></html>';	
 		}	
 		
 		$doc = $this->domObj;   
@@ -4121,7 +4108,7 @@ class e_parser
 		libxml_use_internal_errors(true);
         $doc->loadHTML($html);
 	
-		$tg = explode(",", $taglist);
+		$tg = explode(',', $taglist);
 		$ret = array();
 		
 		foreach($tg as $find)
@@ -4136,7 +4123,7 @@ class e_parser
 			{
 				$tag = $node->nodeName;
 				$inner = $node->C14N();
-				 $inner = str_replace("&#xD;","",$inner);
+				 $inner = str_replace('&#xD;', '',$inner);
 				
 				foreach ($node->attributes as $attr)
 	            {
@@ -4174,7 +4161,7 @@ class e_parser
 	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
 	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
 	 */
-	public function toGlyph($text, $options=" ")
+	public function toGlyph($text, $options= ' ')
 	{
 
 		if(empty($text))
@@ -4197,7 +4184,7 @@ class e_parser
 			$parm = array();
 		}
 
-		if(substr($text,0,2) === 'e-') 	// e107 admin icon.
+		if(strpos($text, 'e-') === 0) 	// e107 admin icon.
 		{
 			$size = (substr($text,-3) === '-32') ? 'S32' : 'S16';
 
@@ -4206,7 +4193,7 @@ class e_parser
 				$size = 'S24';
 			}
 
-			return "<i class='".$size." ".$text."'></i>";
+			return "<i class='".$size. ' ' .$text."'></i>";
 		}
 
 		// Get Glyph names.
@@ -4266,23 +4253,23 @@ class e_parser
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
 			$tag 	= 'i';
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
-			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
-			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'. (int)$parm['rotate'] : '';
+			$fixedW = !empty($parm['fw']) ? ' fa-fw' : '';
 
 			if($this->fontawesome === 5)
 			{
 				$fab = e107::getMedia()->getGlyphs('fab');
-				$fas = e107::getMedia()->getGlyphs('fas');;
+				$fas = e107::getMedia()->getGlyphs('fas');
 
 				$code = substr($id,3);
 
 				if(in_array($code,$fab))
 				{
-					$prefix = "fab ";
+					$prefix = 'fab ';
 				}
 				elseif(in_array($code,$fas))
 				{
-					$prefix = "fas ";
+					$prefix = 'fas ';
 				}
 
 			}
@@ -4300,7 +4287,7 @@ class e_parser
 			{
 				$prefix = 'glyphicon ';
 				$tag = 'span';
-				$id = str_replace("icon-", "glyphicon-", $id);
+				$id = str_replace('icon-', 'glyphicon-', $id);
 			}
 			else
 			{
@@ -4315,7 +4302,7 @@ class e_parser
 			{
 				if(strpos($text, $glyphConfig['prefix']) === 0)
 				{
-					$prefix = $glyphConfig['class'] . " ";
+					$prefix = $glyphConfig['class'] . ' ';
 					$tag = $glyphConfig['tag'];
 					continue;
 				}
@@ -4326,12 +4313,12 @@ class e_parser
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
-		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
-		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : "<!-- -->";
+		$class = (!empty($parm['class'])) ? $parm['class']. ' ' : '';
+		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : '<!-- -->';
 		$title = (!empty($parm['title'])) ? " title='".$this->toAttribute($parm['title'])."' " : '';
 
-		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' ".$style.$title.">".$placeholder."</".$tag.">" ;
-		$text .= ($options !== false) ? $options : "";
+		$text = '<' .$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' ".$style.$title. '>' .$placeholder. '</' .$tag. '>';
+		$text .= ($options !== false) ? $options : '';
 
 		return $text;
 
@@ -4346,9 +4333,9 @@ class e_parser
 	 */
 	public function toBadge($text, $parm=null)
 	{
-		$class = !empty($parm['class']) ? " ".$parm['class'] : ' badge-secondary';
+		$class = !empty($parm['class']) ? ' ' .$parm['class'] : ' badge-secondary';
 
-		return "<span class='badge".$class."'>".$text."</span>";
+		return "<span class='badge".$class."'>".$text. '</span>';
 	}
 
 
@@ -4364,15 +4351,15 @@ class e_parser
 			$type = 'default';
 		}
 
-		$tmp = explode(",",$text);
+		$tmp = explode(',',$text);
 
 		$opt = array();
 		foreach($tmp as $v)
 		{
-			$opt[] = "<span class='label label-".$type."'>".$v."</span>";
+			$opt[] = "<span class='label label-".$type."'>".$v. '</span>';
 		}
 
-		return implode(" ",$opt);
+		return implode(' ',$opt);
 	}
 
 	/**
@@ -4387,7 +4374,7 @@ class e_parser
 			'{e_PLUGIN}' => 'e_PLUGIN/'
 		);
 
-		$link = e_HTTP."request.php?file=". str_replace(array_keys($srch), $srch,$text);
+		$link = e_HTTP. 'request.php?file=' . str_replace(array_keys($srch), $srch,$text);
 
 		if(!empty($parm['raw']))
 		{
@@ -4419,7 +4406,7 @@ class e_parser
 	{
 		$tp 		= e107::getParser();
 		$width 		= !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
-		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
+		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : '';
 		$crop       = !empty($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart  = '';
 		$linkEnd    =  '';
@@ -4437,8 +4424,8 @@ class e_parser
 
 		if(!empty($options['hd'])) // Fix resolution on Retina display.
 		{
-			$width = $width * 2;
-			$height = $height * 2;
+			$width *= 2;
+			$height *= 2;
 		}
 
 
@@ -4454,24 +4441,24 @@ class e_parser
 		
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
-		$genericFile = e_IMAGE."generic/blank_avatar.jpg";
-		$genericImg = $tp->thumbUrl($genericFile,"w=".$width."&h=".$height,true, $full);
+		$genericFile = e_IMAGE. 'generic/blank_avatar.jpg';
+		$genericImg = $tp->thumbUrl($genericFile, 'w=' .$width. '&h=' .$height,true, $full);
 		
 		if (!empty($image)) 
 		{
 			
-			if(strpos($image,"://")!==false) // Remote Image
+			if(strpos($image, '://')!==false) // Remote Image
 			{
 				$url = $image;	
 			}
-			elseif(substr($image,0,8) == "-upload-")
+			elseif(strpos($image, "-upload-") === 0)
 			{
 				
 				$image = substr($image,8); // strip the -upload- from the beginning.
 				if(file_exists(e_AVATAR_UPLOAD.$image))
 				{
 					$file  = e_AVATAR_UPLOAD.$image;
-					$url = $tp->thumbUrl($file,"w=".$width."&h=".$height."&crop=".$crop, false, $full);
+					$url = $tp->thumbUrl($file, 'w=' .$width. '&h=' .$height. '&crop=' .$crop, false, $full);
 				}
 				else
 				{
@@ -4482,7 +4469,7 @@ class e_parser
 			elseif(file_exists(e_AVATAR_DEFAULT.$image))  // User-Uplaoded Image
 			{
 				$file = e_AVATAR_DEFAULT.$image;
-				$url =	$tp->thumbUrl($file,"w=".$width."&h=".$height."&crop=".$crop, false, $full);
+				$url =	$tp->thumbUrl($file, 'w=' .$width. '&h=' .$height. '&crop=' .$crop, false, $full);
 			}
 			else // Image Missing. 
 			{
@@ -4515,11 +4502,11 @@ class e_parser
 		if(($url == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
 		{
 			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit')."'>";
-			$linkEnd = "</a>";
+			$linkEnd = '</a>';
 		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
-		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
+		$shape = (!empty($options['shape'])) ? 'img-' .$options['shape'] : 'img-rounded rounded';
 
 
 		if(!empty($options['type']) && $options['type'] === 'url')
@@ -4533,15 +4520,15 @@ class e_parser
 		}
 
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
-		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
+		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : '';
 
-		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
+		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? ' user-avatar-online' : '';
 
-		$class = !empty($options['class']) ? $options['class'] : $shape." user-avatar";
+		$class = !empty($options['class']) ? $options['class'] : $shape. ' user-avatar';
 		$style = !empty($options['style']) ? " style='".$options['style']."'" : '';
 
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$url."'  width='".$width."' ".$heightInsert.$style." />";
+		$text .= '<img ' .$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$url."'  width='".$width."' ".$heightInsert.$style. ' />';
 		$text .= $linkEnd;
 	//	return $url;
 		return $text;
@@ -4568,7 +4555,7 @@ class e_parser
 		//	return "<div class='alert alert-danger'>Use \$tp->toImage() instead of toIcon() for ".$icon."</div>"; // debug info only.
 	//	}
 
-		if(substr($icon,0,3) == '<i ') // if it's html (ie. css sprite) return the code.
+		if(strpos($icon, '<i ') === 0) // if it's html (ie. css sprite) return the code.
 		{
 			return $icon;
 		}
@@ -4576,7 +4563,7 @@ class e_parser
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
 		$dimensions = null;
 		
-		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
+		if(!$ext || $ext === 'glyph') // Bootstrap or Font-Awesome.
 		{
 			return $this->toGlyph($icon,$parm);
 		}
@@ -4625,7 +4612,7 @@ class e_parser
 		$alt = (!empty($parm['alt'])) ? $this->toAttribute($parm['alt']) : basename($path);
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'icon';
 		
-		return "<img class='".$class."' src='".$path."' alt='".$alt."' ".$dimensions." />";
+		return "<img class='".$class."' src='".$path."' alt='".$alt."' ".$dimensions. ' />';
 	}
 
 
@@ -4643,7 +4630,7 @@ class e_parser
 
 		if(strpos($file,'e_AVATAR')!==false)
 		{
-			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file."</div>"; // debug info only.
+			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file. '</div>'; // debug info only.
 
 		}
 
@@ -4731,7 +4718,7 @@ class e_parser
 			{
 				$log = e107::getAdminLog();
 				$log->addDebug('Broken Image Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
-				e107::getDebug()->log("Broken Image Path: ".$legacyPath);
+				e107::getDebug()->log('Broken Image Path: ' .$legacyPath);
 			}
 
 		}
@@ -4745,24 +4732,24 @@ class e_parser
 			$path = $tp->thumbUrl($file,$parm);
 		}
 
-		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
-		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive img-fluid";
+		$id     = (!empty($parm['id']))     ? 'id="' .$parm['id']. '" ' : '';
+		$class  = (!empty($parm['class']))  ? $parm['class'] : 'img-responsive img-fluid';
 		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($file);
-		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
-		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
-		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
-		$title  = (!empty($parm['title']))      ? "title=\"".$parm['title']."\" " : "";
-		$height = !empty($parm['h'])      ? "height=\"".intval($parm['h'])."\" " : "";
-		$loading = !empty($parm['loading']) ? "loading=\"".$parm['loading']."\" " : ""; // eg. lazy, eager, auto
+		$style  = (!empty($parm['style']))  ? 'style="' .$parm['style']. '" ' : '';
+		$srcset = (!empty($parm['srcset'])) ? 'srcset="' .$parm['srcset']. '" ' : '';
+		$width  = (!empty($parm['w']))      ? 'width="' . (int)$parm['w'] . '" ' : '';
+		$title  = (!empty($parm['title']))      ? 'title="' .$parm['title']. '" ' : '';
+		$height = !empty($parm['h'])      ? 'height="' . (int)$parm['h'] . '" ' : '';
+		$loading = !empty($parm['loading']) ? 'loading="' .$parm['loading']. '" ' : ''; // eg. lazy, eager, auto
 
 		if(isset($parm['width'])) // width attribute override (while retaining w)
 		{
-			$width  = "width=\"".$parm['width']."\" " ;
+			$width  = 'width="' .$parm['width']. '" ';
 		}
 		
 		if(isset($parm['height'])) // height attribute override (while retaining h)
 		{
-			$height  = "height=\"".$parm['height']."\" " ;
+			$height  = 'height="' .$parm['height']. '" ';
 		}
 
 		$html = '';
@@ -4787,7 +4774,7 @@ class e_parser
 			$html .= "\n";
 		}
 
-		$html .= "<img {$id}class=\"{$class}\" src=\"".$path."\" alt=\"".$alt."\" ".$srcset.$width.$height.$style.$loading.$title." />";
+		$html .= "<img {$id}class=\"{$class}\" src=\"".$path. '" alt="' .$alt. '" ' .$srcset.$width.$height.$style.$loading.$title. ' />';
 
 		$html .= ($this->convertToWebP) ? "\n</picture>" : '';
 
@@ -4801,7 +4788,7 @@ class e_parser
 	 * @param $text
 	 * @return bool
 	 */
-	function isBBcode($text)
+	public function isBBcode($text)
 	{
 		if(preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
 		{
@@ -4830,7 +4817,7 @@ class e_parser
 	 * @param $text
 	 * @return bool
 	 */
-	function isHtml($text)
+	public function isHtml($text)
 	{
 
 		if(strpos($text,'[html]') !==false)
@@ -4866,7 +4853,7 @@ class e_parser
 			return false;
 		}
 
-		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
+		 if(strpos($text, '{') === 0 || strpos($text, '[') === 0) // json
 	    {
 	        $dat = json_decode($text, true);
 
@@ -4931,7 +4918,7 @@ class e_parser
 	 * @param $file string
 	 * @return boolean
 	 */
-	function isVideo($file)
+	public function isVideo($file)
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
@@ -4944,9 +4931,9 @@ class e_parser
 	 * @param $file string
 	 * @return boolean
 	 */
-	function isImage($file)
+	public function isImage($file)
 	{
-		if(substr($file,0,3)=="{e_")
+		if(strpos($file, "{e_") === 0)
 		{
 			$file = e107::getParser()->replaceConstants($file);
 		}
@@ -4970,8 +4957,8 @@ class e_parser
 
 		$mime = varset($parm['mime'], 'audio/mpeg');
 
-		$autoplay = !empty($parm['autoplay']) ? "autoplay " : "";
-		$controls = !empty($parm['controls']) ? "controls" : "";
+		$autoplay = !empty($parm['autoplay']) ? 'autoplay ' : '';
+		$controls = !empty($parm['controls']) ? 'controls' : '';
 
 		$text = '<audio controls style="max-width:100%" '.$autoplay.$controls.'>
 					<source src="'.$file.'" type="'.$mime .'">
@@ -4989,7 +4976,7 @@ class e_parser
 	 * @param string $file - format: id.type eg. x123dkax.youtube 
 	 * @param boolean $thumbnail  - set to 'tag' to return an image thumbnail and 'src' to return the src url or 'video' for a small video thumbnail. 
 	 */
-	function toVideo($file, $parm=array())
+	public function toVideo($file, $parm=array())
 	{
 		if(empty($file))
 		{
@@ -4998,7 +4985,7 @@ class e_parser
 
 		$type = pathinfo($file, PATHINFO_EXTENSION);
 
-		$id = str_replace(".".$type, "", $file);
+		$id = str_replace('.' .$type, '', $file);
 
 		$thumb = vartrue($parm['thumb']);
 		$mode = varset($parm['mode'],false); // tag, url
@@ -5009,7 +4996,7 @@ class e_parser
 		$ytpref = array();
 		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
 		{
-			if(substr($k,0,8) === 'youtube_')
+			if(strpos($k, 'youtube_') === 0)
 			{
 				$key = substr($k,8);
 				$ytpref[$key] = $v;
@@ -5025,14 +5012,14 @@ class e_parser
 
 		$ytqry = http_build_query($ytpref, null, '&amp;');
 
-		$defClass = !empty($this->bootstrap) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
+		$defClass = !empty($this->bootstrap) ? 'embed-responsive embed-responsive-16by9' : 'video-responsive'; // levacy backup.
 
 
 		if($type === 'youtube')
 		{
 
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
-			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
+			$thumbSrc = 'https://i1.ytimg.com/vi/' .$id. '/mqdefault.jpg';
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
 			$url 	= 'http://youtu.be/'.$id;
 
@@ -5050,8 +5037,8 @@ class e_parser
 			
 			if($thumb === 'email')
 			{
-				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
-				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
+				$thumbSrc = 'http://i1.ytimg.com/vi/' .$id. '/maxresdefault.jpg'; // 640 x 480
+				$filename = 'temp/yt-thumb-'.md5($id). '.jpg';
 				$filepath = e_MEDIA.$filename;
 
 				
@@ -5061,7 +5048,7 @@ class e_parser
 				}
 								
 				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='{e_MEDIA}".$filename."' alt='".LAN_YOUTUBE_VIDEO."' title='".LAN_CLICK_TO_VIEW."' />
-				<div class='video-thumbnail-caption'><small>".LAN_CLICK_TO_VIEW."</small></div></a>";
+				<div class='video-thumbnail-caption'><small>".LAN_CLICK_TO_VIEW. '</small></div></a>';
 			}
 			
 			if($thumb === 'src')
@@ -5089,7 +5076,7 @@ class e_parser
 
 				if(empty($thumbSrc))
 				{
-					$thumbSrc = e_IMAGE_ABS."generic/playlist_120.png";
+					$thumbSrc = e_IMAGE_ABS. 'generic/playlist_120.png';
 				}
 				return "<img class='img-responsive img-fluid' src='".$thumbSrc."' alt='".LAN_YOUTUBE_PLAYLIST."' style='width:".vartrue($parm['w'],'80')."px'/>";
 
@@ -5102,11 +5089,9 @@ class e_parser
 				{
 					return $thumb;
 				}
-				else
-				{
-					// return "https://cdn0.iconfinder.com/data/icons/internet-2-2/64/youtube_playlist_videos_vid_web_online_internet-256.png";
-					return e_IMAGE_ABS."generic/playlist_120.png";
-				}
+
+// return "https://cdn0.iconfinder.com/data/icons/internet-2-2/64/youtube_playlist_videos_vid_web_online_internet-256.png";
+				return e_IMAGE_ABS. 'generic/playlist_120.png';
 			}
 
 			$video = '<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list='.$id.'" style="border:0" allowfullscreen></iframe>';
@@ -5172,9 +5157,9 @@ class e_parser
 	 * @param bool $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it.
 	 * @return string html
 	 */
-	function parseBBTags($text,$retainTags = false)
+	public function parseBBTags($text, $retainTags = false)
 	{
-		$stext = str_replace("&quot;", '"', $text);
+		$stext = str_replace('&quot;', '"', $text);
 
 		$bbcodes = $this->getTags($stext, 'x-bbcode');
 
@@ -5225,14 +5210,14 @@ TMPL;
 		$acc = $this->getScriptAccess();
 		$accName = e107::getUserClass()->getName($acc);
 
-		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName."</span></small></h2>";
-		echo"<h3>User-input <small>(eg. from \$_POST)</small></h3>";
+		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName. '</span></small></h2>';
+		echo '<h3>User-input <small>(eg. from $_POST)</small></h3>';
 
 	    print_a($text);
 
 	    $dbText = $tp->toDB($text,true);
 
-		echo "<h3>User-input &gg; toDB() ";
+		echo '<h3>User-input &gg; toDB() ';
 
 		if($this->isHtml == true)
 		{
@@ -5243,7 +5228,7 @@ TMPL;
 			echo "<small>detected as <span class='label label-info'>Plain text</span></small>";
 		}
 
-		echo "</h3>";
+		echo '</h3>';
 
 	    print_a($dbText);
 
@@ -5278,67 +5263,67 @@ TMPL;
 
 		    // toAttribute
 		    $toAtt = $tp->toAttribute($text);
-		    echo "<h3>User-input &gg; toAttribute(\$text)</h3>";
+		    echo '<h3>User-input &gg; toAttribute($text)</h3>';
 		    print_a($toAtt);
 
 		    // toEmail
 		    $toEmail = $tp->toEmail($dbText);
-		    echo "<h3>User-input &gg; toEmail(\$text) <small>from DB</small></h3>";
+		    echo '<h3>User-input &gg; toEmail($text) <small>from DB</small></h3>';
 		    print_a($toEmail);
 
 		    // toEmail
 		    $toRss = $tp->toRss($text);
-		    echo "<h3>User-input &gg; toRss(\$text)</h3>";
+		    echo '<h3>User-input &gg; toRss($text)</h3>';
 		    print_a($toRss);
 
-		    echo "</div>";
+		    echo '</div>';
 
 
 
 	    }
 
-	    echo "<h3>toDB() &gg; toHTML()</h3>";
+	    echo '<h3>toDB() &gg; toHTML()</h3>';
 		$html = $tp->toHTML($dbText,true);
 	    print_a($html);
 
-	    echo "<h3>toDB &gg; toHTML() <small>(rendered)</small></h3>";
+	    echo '<h3>toDB &gg; toHTML() <small>(rendered)</small></h3>';
 	    echo $html;
 
-	    echo "<h3>toDB &gg; toForm()</h3>";
+	    echo '<h3>toDB &gg; toForm()</h3>';
 		$toForm = $tp->toForm($dbText);
 	    $toFormRender = e107::getForm()->open('test');
-	    $toFormRender .= "<textarea cols='100' style='width:100%;height:300px' >".$toForm."</textarea>";
+	    $toFormRender .= "<textarea cols='100' style='width:100%;height:300px' >".$toForm. '</textarea>';
 	    $toFormRender .= e107::getForm()->close();
 
 		echo  $toFormRender;
 
 
-		 echo "<h3>toDB &gg; bbarea</h3>";
+		 echo '<h3>toDB &gg; bbarea</h3>';
 	    echo e107::getForm()->bbarea('name',$toForm);
 
 		if(!empty($advanced))
 		{
 
-			echo "<h3>Allowed Tags</h3>";
+			echo '<h3>Allowed Tags</h3>';
 			print_a($this->allowedTags);
 
 
-		    echo "<h3>Converted Paths</h3>";
+		    echo '<h3>Converted Paths</h3>';
 		    print_a($this->pathList);
 
-		    echo "<h3>Removed Tags and Attributes</h3>";
+		    echo '<h3>Removed Tags and Attributes</h3>';
 		    print_a($this->removedList);
 
-		    echo "<h3>Nodes to Convert</h3>";
+		    echo '<h3>Nodes to Convert</h3>';
 			print_a($this->nodesToConvert);
 
-			  echo "<h3>Nodes to Disable SC</h3>";
+			  echo '<h3>Nodes to Disable SC</h3>';
 			print_a($this->nodesToDisableSC);
 		}
 
 	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
 	    $scoreStyle = ($perc > 98) ? 'label-success' : 'label-danger';
-	    echo "<h3><span class='label ".$scoreStyle."'>Similarity:  ".number_format($perc)."%</span></h3>";
+	    echo "<h3><span class='label ".$scoreStyle."'>Similarity:  ".number_format($perc). '%</span></h3>';
 
 		echo "<table class='table table-bordered'>
 
@@ -5348,11 +5333,11 @@ TMPL;
 			<th style='width:50%'>toForm() output</th>
 		</tr>
 		<tr>
-			<td>".print_a($text,true)."</td>
-			<td>". $toFormRender."</td>
+			<td>".print_a($text,true). '</td>
+			<td>' . $toFormRender. '</td>
 		</tr>
 
-		</table>";
+		</table>';
 	  /*  <tr>
 			<td>".print_a(json_encode($text),true)."</td>
 			<td>". print_a(json_encode(html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8')),true)."</td>
@@ -5374,45 +5359,45 @@ return;
         
       //  $html = $this->getXss();
                    
-        echo "<h2>Unprocessed XSS</h2>";
+        echo '<h2>Unprocessed XSS</h2>';
         // echo $html; // Remove Comment for a real mess! 
         print_a($html);
  
-        echo "<h2>Standard v2 Parser</h2>";
-        echo "<h3>\$tp->dataFilter()</h3>";
+        echo '<h2>Standard v2 Parser</h2>';
+        echo '<h3>$tp->dataFilter()</h3>';
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
        $dbg->logTime('------ Start Parser Test -------');
         print_a($tp->dataFilter($html));
        $dbg->logTime('tp->dataFilter');
          
-        echo "<h3>\$tp->toHTML()</h3>";
+        echo '<h3>$tp->toHTML()</h3>';
         // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
         print_a($tp->toHTML($html));
        $dbg->logTime('tp->toHtml');     
         
-        echo "<h3>\$tp->toDB()</h3>";
+        echo '<h3>$tp->toDB()</h3>';
         // echo $tp->dataFilter($html); // Remove Comment for a real mess!
         $todb = $tp->toDB($html);
         print_a( $todb);
        $dbg->logTime('tp->toDB');
 
-	    echo "<h3>\$tp->toForm() with toDB input.</h3>";
+	    echo '<h3>$tp->toForm() with toDB input.</h3>';
        print_a( $tp->toForm($todb));
         
-        echo "<h2>New Parser</h2>"; 
-        echo "<h3>Processed</h3>";
+        echo '<h2>New Parser</h2>'; 
+        echo '<h3>Processed</h3>';
         $cleaned = $this->cleanHtml($html);  // false = don't check html pref.
         print_a($cleaned);
        $dbg->logTime('new Parser');    
       // $dbg->logTime('------ End Parser Test -------');
-        echo "<h3>Processed &amp; Rendered</h3>";
+        echo '<h3>Processed &amp; Rendered</h3>';
         echo $cleaned;
         
-        echo "<h2>New Parser - Data</h2>"; 
-        echo "<h3>Converted Paths</h3>";
+        echo '<h2>New Parser - Data</h2>'; 
+        echo '<h3>Converted Paths</h3>';
         print_a($this->pathList);
                    
-        echo "<h3>Removed Tags and Attributes</h3>";
+        echo '<h3>Removed Tags and Attributes</h3>';
         print_a($this->removedList);
         
          //   print_a($p); 
@@ -5426,7 +5411,7 @@ return;
 	 * @param $type string str|int|email|url|w|wds|file
 	 * @return string | boolean | array
 	 */
-	function filter($text, $type='str',$validate=false)
+	public function filter($text, $type='str', $validate=false)
 	{
 		if(empty($text))
 		{
@@ -5435,32 +5420,32 @@ return;
 
 		if($type === 'w') // words only.
 		{
-			return preg_replace('/[^\w]/',"",$text);
+			return preg_replace('/[^\w]/', '',$text);
 		}
 
 		if($type === 'd') // digits only.
 		{
-			return preg_replace('/[^\d]/',"",$text);
+			return preg_replace('/[^\d]/', '',$text);
 		}
 
 		if($type === 'wd') // words and digits only.
 		{
-			return preg_replace('/[^\w\d]/',"",$text);
+			return preg_replace('/[^\w\d]/', '',$text);
 		}
 
 		if($type === 'wds') // words, digits and spaces only.
 		{
-			return preg_replace('/[^\w\d ]/',"",$text);
+			return preg_replace('/[^\w\d ]/', '',$text);
 		}
 
 		if($type === 'file')
 		{
-			return preg_replace('/[^\w\d_\.-]/',"-",$text);
+			return preg_replace('/[^\w\d_\.-]/', '-',$text);
 		}
 
 		if($type === 'version')
 		{
-			return preg_replace('/[^\d_\.]/',"",$text);
+			return preg_replace('/[^\d_\.]/', '',$text);
 		}
 
 		if($validate == false)
@@ -5526,20 +5511,17 @@ return;
 
         if($this->isHtml($html) === false)
         {
-            	$html = str_replace('<','&lt;',$html);
-				$html = str_replace('>','&gt;',$html);
+	        $html = str_replace(array('<', '>'), array('&lt;', '&gt;'), $html);
         }
 
-		$html = str_replace('&nbsp;', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', $html); // prevent replacement of &nbsp; with spaces.
+	    // prevent replacement of &nbsp; with spaces.
 		// Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 1 of 2
-        $html = str_replace("\r", "", $html); // clean out windows line-breaks.
-		$html = str_replace("\n", "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $html);
-        $html = str_replace("{", "__E_PARSER_CLEAN_HTML_CURLY_OPEN__", $html);
-        $html = str_replace("}", "__E_PARSER_CLEAN_HTML_CURLY_CLOSED__", $html);
+	    // clean out windows line-breaks.
+	    $html = str_replace(array('&nbsp;', "\r", "\n", '{', '}'), array('__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '', '__E_PARSER_CLEAN_HTML_LINE_BREAK__', '__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__'), $html);
 
 
-        if(strpos($html, "<body")===false) // HTML Fragment
+        if(strpos($html, '<body')===false) // HTML Fragment
 		{
        		$html = '<body>'.$html.'</body>';
 		}
@@ -5561,7 +5543,7 @@ return;
 	    libxml_use_internal_errors(true);
 	    if(function_exists('mb_convert_encoding'))
 	    {
-			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+			$html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 
 	    }
 
@@ -5597,7 +5579,7 @@ return;
             }
 
 
-            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', "$2", $path);
+            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', '$2', $path);
             if(!in_array($tag, $this->allowedTags))
             {
 
@@ -5625,7 +5607,7 @@ return;
 
                     $removeAttributes[] = $name;
                     //$node->removeAttribute($name);
-                    $this->removedList['attributes'][] = $name. " from <".$tag.">";
+                    $this->removedList['attributes'][] = $name. ' from <' .$tag. '>';
                     continue;
                 }
 
@@ -5676,23 +5658,21 @@ return;
 		        continue;
 		    }
 
-		    $value = str_replace("&#xD;", "\r", $value);
+		    $value = str_replace('&#xD;', "\r", $value);
 
 		    if($node->nodeName === 'pre')
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
-		        $value = str_replace("</pre>", "", $value);
-		        $value = str_replace('<br></br>', "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $value);
+			    $value = str_replace(array('</pre>', '<br></br>'), array('', '__E_PARSER_CLEAN_HTML_LINE_BREAK__'), $value);
 		    }
             elseif($node->nodeName === 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
-		        $value = str_replace("</code>", "", $value);
-		        $value = str_replace("<br></br>", "__E_PARSER_CLEAN_HTML_LINE_BREAK__", $value);
+			    $value = str_replace(array('</code>', '<br></br>'), array('', '__E_PARSER_CLEAN_HTML_LINE_BREAK__'), $value);
 		    }
 
-		   $value = str_replace('__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
-		   $value = str_replace('__E_PARSER_CLEAN_HTML_CURLY_CLOSED__', '}}}', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
+	       // temporarily change {e_XXX} to {{{e_XXX}}}
+		   $value = str_replace(array('__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__'), array('{{{', '}}}'), $value); // temporarily change {e_XXX} to {{{e_XXX}}}
 
 
 		    $newNode = $doc->createElement($node->nodeName);
@@ -5745,18 +5725,16 @@ return;
 		$cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 		 // Workaround for https://bugs.php.net/bug.php?id=76285
 		//  Part 2 of 2
-		$cleaned = str_replace("\n", "", $cleaned);
-		$cleaned = str_replace("__E_PARSER_CLEAN_HTML_LINE_BREAK__", "\n", $cleaned);
+	    // prevent replacement of &nbsp; with spaces. - convert back.
 
-		$cleaned = str_replace('__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+	    // convert shortcode temporary triple-curly braces back to entities.
+	    // convert shortcode temporary triple-curly braces back to entities.
 
-		$cleaned = str_replace('{{{','&#123;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
-		$cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
-
-        $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_OPEN__","{", $cleaned);
-        $cleaned = str_replace("__E_PARSER_CLEAN_HTML_CURLY_CLOSED__","}", $cleaned);
-
-		$cleaned = str_replace(array('<body>','</body>','<html>','</html>'),'', $cleaned); // filter out tags.
+	    $cleaned = str_replace(
+	            array("\n", '__E_PARSER_CLEAN_HTML_LINE_BREAK__', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '{{{', '}}}', '__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__', '<body>', '</body>', '<html>', '</html>'),
+	            array('', "\n", '&nbsp;', '&#123;', '&#125;', '{', '}', '', '', '', ''),
+	            $cleaned
+	    ); // filter out tags.
 
         return trim($cleaned);
     }
@@ -5777,7 +5755,7 @@ return;
      * @param $value string
      * @return bool true/false
      */   
-    function invalidAttributeValue($value)
+    public function invalidAttributeValue($value)
     {
     	
     	
@@ -5906,18 +5884,18 @@ class e_emotefilter
 	private $singleSearch   = array();
 	private $singleReplace  = array();
 	 
-	function __construct()
+	public function __construct()
 	{		
 		$pref = e107::getPref();
 		
 		if(empty($pref['emotepack']))
 		{	
-			$pref['emotepack'] = "default";
+			$pref['emotepack'] = 'default';
 			e107::getConfig('emote')->clearPrefCache('emote');
 			e107::getConfig('core')->set('emotepack','default')->save(false,true,false);
 		}
 
-		$this->emotes = e107::getConfig("emote")->getPref();
+		$this->emotes = e107::getConfig('emote')->getPref();
 
 		if(empty($this->emotes))
 		{
@@ -5939,31 +5917,31 @@ class e_emotefilter
 			// Next two probably to sort out legacy issues - may not be required any more
 		//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 
-			  $key = str_replace("!", "_", $key);
+			  $key = str_replace('!', '_', $key);
 
-			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+			  $filename = e_IMAGE. 'emotes/' . $pref['emotepack'] . '/' . $key;
 
 
 			  
-			  $fileloc = $base.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
+			  $fileloc = $base.e_IMAGE_ABS. 'emotes/' . $pref['emotepack'] . '/' . $key;
 
 			  $alt = str_replace(array('.png','.gif', '.jpg'),'', $key);
 
 			  if(file_exists($filename))
 			  {
-			        $tmp = explode(" ", $value);
+			        $tmp = explode(' ', $value);
 					foreach($tmp as $code)
 					{
-						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  />";
+						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt. '"  />';
 
 				        $this->search[]     = "\n".$code;
 				        $this->replace[]    = "\n".$img;
 
-						$this->search[]     = " ".$code;
-				        $this->replace[]    = " ".$img;
+						$this->search[]     = ' ' .$code;
+				        $this->replace[]    = ' ' .$img;
 
-				        $this->search[]     = ">".$code; // Fix for emote within html.
-				        $this->replace[]    = ">".$img;
+				        $this->search[]     = '>' .$code; // Fix for emote within html.
+				        $this->replace[]    = '>' .$img;
 
 				        $this->singleSearch[] = $code;
 				        $this->singleReplace[] = $img;
@@ -6012,7 +5990,7 @@ class e_emotefilter
 	}
 
 
-	function filterEmotes($text)
+	public function filterEmotes($text)
 	{
 
 		if(empty($text))
@@ -6030,7 +6008,7 @@ class e_emotefilter
 	}
 
 	 
-	function filterEmotesRev($text)
+	public function filterEmotesRev($text)
 	{
 		return str_replace($this->replace, $this->search, $text);
 	}
@@ -6041,16 +6019,16 @@ class e_profanityFilter
 {
 	protected $profanityList;
 
-	function __construct()
+	public function __construct()
 	{
 		global $pref;
 
-		$words = explode(",", $pref['profanity_words']);
+		$words = explode(',', $pref['profanity_words']);
         $word_array = array();
 		foreach($words as $word) 
 		{
 			$word = trim($word);
-			if($word != "")
+			if($word != '')
 			{
 				$word_array[] = $word;
 				if (strpos($word, '&#036;') !== FALSE)
@@ -6067,7 +6045,7 @@ class e_profanityFilter
 		return TRUE;
 	}
 
-	function filterProfanities($text) 
+	public function filterProfanities($text)
 	{
 		global $pref;
 		if (!$this->profanityList) 
@@ -6077,14 +6055,12 @@ class e_profanityFilter
 		if ($pref['profanity_replace']) 
 		{
 			return preg_replace("#\b".$this->profanityList."\b#is", $pref['profanity_replace'], $text);
-		} 
-		else 
-		{
-			return preg_replace_callback("#\b".$this->profanityList."\b#is", array($this, 'replaceProfanities'), $text);
 		}
+
+		return preg_replace_callback("#\b".$this->profanityList."\b#is", array($this, 'replaceProfanities'), $text);
 	}
 
-	function replaceProfanities($matches) 
+	public function replaceProfanities($matches)
 	{
 		/*!
 		@function replaceProfanities callback
@@ -6093,7 +6069,7 @@ class e_profanityFilter
 		@result filtered text
 		*/
 
-		return preg_replace("#a|e|i|o|u#i", "*" , $matches[0]);
+		return preg_replace('#a|e|i|o|u#i', '*', $matches[0]);
 	}
 }
 
@@ -6103,7 +6079,7 @@ class e_profanityFilter
  */
 class textparse {
 
-	function editparse($text, $mode = "off")
+	public function editparse($text, $mode = 'off')
 	{
 		if(E107_DBG_DEPRECATED)
 		{
@@ -6113,7 +6089,7 @@ class textparse {
 		return e107::getParser()->toForm($text);
 	}
 
-	function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
+	public function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
 	{
 		if(E107_DBG_DEPRECATED)
 		{
@@ -6123,7 +6099,7 @@ class textparse {
 		return e107::getParser()->toHTML($text, true, $mode, $poster_id);
 	}
 
-	function tpj($text)
+	public function tpj($text)
 	{
 
 		if(E107_DBG_DEPRECATED)
@@ -6134,7 +6110,7 @@ class textparse {
 		return $text;
 	}
 
-	function formtpa($text, $mode = '')
+	public function formtpa($text, $mode = '')
 	{
 
 		if(E107_DBG_DEPRECATED)
@@ -6147,7 +6123,7 @@ class textparse {
 		return e107::getParser()->toDB($text);
 	}
 
-	function formtparev($text)
+	public function formtparev($text)
 	{
 
 		if(E107_DBG_DEPRECATED)

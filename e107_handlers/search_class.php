@@ -310,7 +310,7 @@ class e_search
 
 			} else {
 				$x = 0;
-				while ($row = $sql -> db_Fetch()) 
+				while ($row = $sql ->fetch())
 				{
 					$display_row[] = $row;
 					$x++;

@@ -3647,16 +3647,9 @@ var_dump($select_options);*/
 			case 'create':
 			case 'import':
 			case 'submit':
+			case 'execute':
 			case 'success':
 				$class = 'btn-success';
-				break;
-
-			case 'checkall':
-				$class = 'btn-default';
-				break;
-
-			case 'cancel':
-				$class = 'btn-default';
 				break;
 
 			case 'delete':
@@ -3664,12 +3657,12 @@ var_dump($select_options);*/
 				$class = 'btn-danger';
 				break;
 
-			case 'execute':
-				$class = 'btn-success';
-				break;
-
 			case 'other':
 			case 'login':
+			case 'batch e-hide-if-js':
+			case 'filter e-hide-if-js':
+			case 'batch':
+			case 'filter':
 			case 'primary':
 				$class = 'btn-primary';
 				break;
@@ -3679,17 +3672,9 @@ var_dump($select_options);*/
 				$class = 'btn-warning';
 				break;
 
-			case 'batch':
-			case 'batch e-hide-if-js':
-				$class = 'btn-primary';
-				break;
-
-			case 'filter':
-			case 'filter e-hide-if-js':
-				$class = 'btn-primary';
-				break;
-
 			case 'default':
+			case 'checkall':
+			case 'cancel':
 			default:
 				$class = 'btn-default';
 				break;

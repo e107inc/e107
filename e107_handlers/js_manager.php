@@ -692,11 +692,8 @@ class e_jsmanager
 				case 'front':
 					return ($this->isInAdmin()) ? true : false;	
 				break;
-				
+
 				case 'none':
-					return true;	
-				break;
-				
 				default:
 					return true;
 				break;

@@ -3296,7 +3296,7 @@ class e107
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
 		if(self::getRegistry($cstring)) return null;
 
-		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[^\w]/', '', trim($fname, '/')).'.php';
+		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[\W]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
 		self::setRegistry($cstring, true);
@@ -3337,7 +3337,7 @@ class e107
 		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
 		if(self::getRegistry($cstring)) return null;
 
-		$plugin = preg_replace('/[^\w]/', '', $plugin);
+		$plugin = preg_replace('/[\W]/', '', $plugin);
 
 		if($fname === 'global') // fix ambiguity
 		{
@@ -4927,7 +4927,7 @@ class e107
 
 	/**
 	 * Retrieve & cache host name
-	 * @deprecated but needed by some old plugins/menus.
+	 * @deprecated Use getIPHandler()->get_host_name() instead. Still needed by some old plugins/menus.
 	 * @todo Find old calls and replace with code within.
 	 * @param string $ip_address
 	 * @return string host name

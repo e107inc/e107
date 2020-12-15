@@ -224,7 +224,7 @@ class tinymce
 							"<tbody>";
 
 
-		if(!$sql->db_Select_gen($this->listQry))
+		if(!$sql->gen($this->listQry))
 		{
 			$text .= "\n<tr><td colspan='".count($this->fields)."' class='center middle'>".CUSLAN_42."</td></tr>\n";
 		}
@@ -300,7 +300,7 @@ class tinymce
 	/**
 	 * Render Form Element (edit page)
 	 *
-	 * @param array $key
+	 * @param string $key
 	 * @param array $row
 	 * @return string method's value or HTML input
 	 */
@@ -339,8 +339,8 @@ class tinymce
 		if($id)
 		{
 			$query = str_replace("{ID}",$id,$this->editQry);
-			$sql->db_Select_gen($query);
-			$row = $sql->db_Fetch();
+			$sql->gen($query);
+			$row = $sql->fetch();
 		}
 		else
 		{

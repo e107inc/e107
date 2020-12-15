@@ -152,10 +152,9 @@ function print_a($var, $return = FALSE)
 		echo '<pre>'.htmlspecialchars(print_r($var, TRUE), ENT_QUOTES, 'utf-8').'</pre>';
 		return TRUE;
 	}
-	else
-	{
-		return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
-	}
+
+	return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
+
 }
 
 function e_print($expr = null)
@@ -186,14 +185,13 @@ function e_dump($expr = null)
  */
 function strip_if_magic($data)
 {
-	if (MAGIC_QUOTES_GPC == true)
+	if (MAGIC_QUOTES_GPC === true)
 	{
 		return array_stripslashes($data);
 	}
-	else
-	{
-		return $data;
-	}
+
+	return $data;
+
 }
 
 /**
@@ -272,9 +270,8 @@ function echo_gzipped_page()
 
     if($encoding)
 	{
-        $contents = ob_get_contents();
-        ob_end_clean();
-        header('Content-Encoding: '.$encoding);
+        $contents = ob_get_clean();
+		header('Content-Encoding: '.$encoding);
         print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
         $size = strlen($contents);
         $contents = gzcompress($contents, 9);
@@ -282,11 +279,10 @@ function echo_gzipped_page()
         print($contents);
         exit();
     }
-	else
-	{
-        ob_end_flush();
-        exit();
-    }
+
+    ob_end_flush();
+    exit();
+
 }
 
 
@@ -336,7 +332,7 @@ if (!function_exists('r_emote'))
 	
 			$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
-			$value = ($value == '&|') ? ':((' : $value;
+			$value = ($value === '&|') ? ':((' : $value;
 			$value = " ".$value." ";
 
 		//	$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
@@ -388,12 +384,12 @@ if (!function_exists('multiarray_sort'))
 
         if(!$natsort) 
         {
-            ($order=='asc')? asort($sort_values) : arsort($sort_values);
+            ($order==='asc')? asort($sort_values) : arsort($sort_values);
         }
         elseif(isset($sort_values))
         {
              $case ? natsort($sort_values) : natcasesort($sort_values);
-             if($order != 'asc') $sort_values = array_reverse($sort_values, true);
+             if($order !== 'asc') $sort_values = array_reverse($sort_values, true);
         }
         
 
@@ -445,8 +441,9 @@ class e_array {
             return false;
         }
         
-        // Saftety mechanism for 0.7 -> 0.8 transition. 
-        if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:') // php serialize.
+        // Saftety mechanism for 0.7 -> 0.8 transition.
+        $first2Chars = substr($ArrayData,0,2);
+        if($first2Chars === 'a:' || $first2Chars === 's:') // php serialize.
         {
             $dat = unserialize($ArrayData);
             $ArrayData = $this->WriteArray($dat,FALSE);
@@ -457,7 +454,7 @@ class e_array {
 
 	     //   e107::getDebug()->log("Json data found");
 
-	        if(json_last_error() !=  JSON_ERROR_NONE && e_DEBUG === true && !e107::isCli())
+	        if(e_DEBUG === true && json_last_error() !=  JSON_ERROR_NONE && !e107::isCli())
 	        {
 	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
 		        echo "<pre>";
@@ -478,12 +475,12 @@ class e_array {
 			$ArrayData = (string) substr($ArrayData,8);
 		}
 
-        if(strtolower(substr($ArrayData,0,5)) != 'array')
+        if(strtolower(substr($ArrayData,0,5)) !== 'array')
         {
             return false;
         }
 
-		if(strpos($ArrayData,"0 => \'")!=false)
+		if(strpos($ArrayData,"0 => \'")!==false)
 		{
              $ArrayData = stripslashes($ArrayData);
 		}
@@ -495,7 +492,7 @@ class e_array {
 	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
 
 
-	    if(trim($ArrayData) == 'Array') // Something went wrong with storage.
+	    if(trim($ArrayData) === 'Array') // Something went wrong with storage.
         {
             $debug = debug_backtrace(false);
             e107::getMessage()->addDebug("Bad Array Storage found: ". print_a($debug,true));
@@ -586,7 +583,7 @@ class e_array {
 
         $Array = var_export($ArrayData, true);
 
-        if ($mode == true)
+        if ($mode === true)
         {
             $Array = addslashes($Array);
         }

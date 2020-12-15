@@ -1672,7 +1672,7 @@ class e107MailManager
 	 */
 	public function getNextEmailStatus()
 	{
-		$result = $this->db->db_Fetch();
+		$result = $this->db->fetch();
 		if (is_array($result)) { return $this->dbToMail($result); }
 		return FALSE;
 	}
@@ -1742,7 +1742,7 @@ class e107MailManager
 	 */
 	public function getNextTargetStatus()
 	{
-		$result = $this->db2->db_Fetch();
+		$result = $this->db2->fetch();
 		if (is_array($result)) { return $this->dbToTarget($result); }
 		return FALSE;
 	}

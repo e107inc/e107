@@ -227,7 +227,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch())) return FALSE;
+		if (!($row = $sql->fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],

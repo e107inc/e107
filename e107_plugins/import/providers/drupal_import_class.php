@@ -130,7 +130,7 @@ class drupal_import extends base_import_class
 				$result = $this->_setupQueryUsers();
 				$this->copyUserInfo = !$blank_user;
 				break;
-
+/*
 			case 'news':
 				break;
 
@@ -138,7 +138,7 @@ class drupal_import extends base_import_class
 				break;
 
 			case 'links':
-				break;
+				break;*/
 
 			default:
 				break;

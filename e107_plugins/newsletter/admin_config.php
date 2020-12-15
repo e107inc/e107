@@ -483,7 +483,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -638,7 +638,7 @@ class newsletter
 					<td>".LAN_OPTIONS."</td>
 				</tr>";
 
-			if($nl_row = $nl_sql-> db_Fetch())
+			if($nl_row = $nl_sql->fetch())
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
 				sort($subscriber_list);

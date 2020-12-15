@@ -1057,7 +1057,7 @@ Following fields auto-filled in code as required:
 		}
 		else
 		{
-			$row = $db->db_Fetch();
+			$row = $db->fetch();
 			if ($uid && ($uid != $row['user_id']))
 			{
 				$error = 'UID mismatch: '.$uid.'/'.$row['user_id'];

@@ -117,9 +117,9 @@ if ($parms[1] == 'value')
 		case EUF_DB_FIELD :		// check for db_lookup type
 			$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
 			$sql_ue = new db;			// Use our own DB object to avoid conflicts
-			if($sql_ue->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
+			if($sql_ue->select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 			{
-				$row = $sql_ue->db_Fetch();
+				$row = $sql_ue->fetch();
 				$ret_data = $row[$tmp[2]];
 			}
 			else

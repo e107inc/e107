@@ -663,9 +663,9 @@ class private_msg_ui extends e_admin_ui
 				{
 					$qry = implode(' OR ', $del_qry);
 					$cnt = 0;
-					if($db2->db_Select('private_msg', 'pm_id', $qry))
+					if($db2->select('private_msg', 'pm_id', $qry))
 					{
-						while ($row = $db2->db_Fetch())
+						while ($row = $db2->fetch())
 						{
 							if ($pmHandler->del($row['pm_id']) !== FALSE)
 							{

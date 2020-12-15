@@ -692,7 +692,7 @@ class adminstyle_infopanel
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
-			while ($row = e107::getDb()->db_Fetch())
+			while ($row = e107::getDb()->fetch())
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))

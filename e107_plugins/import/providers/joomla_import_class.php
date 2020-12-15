@@ -45,7 +45,7 @@ class joomla_import extends base_import_class
 	    switch ($task)
 		{
 		  case 'users' :
-		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users");
+		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
 			if ($result === FALSE) return FALSE;
 			break;
 		  default :

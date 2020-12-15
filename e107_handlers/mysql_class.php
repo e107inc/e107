@@ -608,7 +608,7 @@ class e_db_mysql implements e_db
 	{
 		global $db_mySQLQueryCount;
 
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 
 		$this->mySQLcurTable = $table;
 
@@ -679,7 +679,7 @@ class e_db_mysql implements e_db
 	 */
 	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($tableName);
+		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
 		$DUPEKEY_UPDATE = false;
@@ -873,7 +873,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * hasLanguage() alias
-	 * @deprecated
+	 * @deprecated Use hasLanguage($table,$multiple)
 	 */
 	function db_IsLang($table, $multiple=false)
 	{
@@ -987,7 +987,7 @@ class e_db_mysql implements e_db
 	*/
 	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($tableName);
+		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1121,7 +1121,7 @@ class e_db_mysql implements e_db
 	*/
 	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-	  $table = $this->db_IsLang($table);
+	  $table = $this->hasLanguage($table);
 	  $this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1240,7 +1240,7 @@ class e_db_mysql implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
 		{
@@ -1330,7 +1330,7 @@ class e_db_mysql implements e_db
 	*/
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		$table = $this->db_IsLang($table);
+		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
 		$this->provide_mySQLaccess();
@@ -1465,7 +1465,7 @@ class e_db_mysql implements e_db
 
 	function ml_check($matches)
 	{
-		$table = $this->db_IsLang($matches[1]);
+		$table = $this->hasLanguage($matches[1]);
 		if($this->tabset == false)
 		{
 			$this->mySQLcurTable = $table;
@@ -1788,7 +1788,7 @@ class e_db_mysql implements e_db
 
      // Loop thru relevant language tables and replace each tablename within the query.
 
-        if($tablist = $this->db_IsLang($table, true))
+        if($tablist = $this->hasLanguage($table, true))
 		{
 			foreach($tablist as $key=>$tab)
 			{
@@ -2164,7 +2164,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * Legacy Alias of tables
-	 * @deprecated
+	 * @deprecated Use $sql->tables($mode) instead.
 	 * @param string $mode
 	 * @return array
 	 */

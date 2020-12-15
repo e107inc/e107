@@ -1369,7 +1369,7 @@ class banlistManager
 
 		if ($sql->gen($qry))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
 				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
@@ -1655,7 +1655,7 @@ class banlistManager
 				if ($row = $ourDb->fetch())
 				{
 					// @todo check next line
-					$writeDb->db_Update('banlist', 
+					$writeDb->update('banlist',
 					'`banlist_banexpires` = '.intval($row['banlist_banexpires'] + $pref['ban_durations'][$row['banlist_banreason']]));
 					$numRet++;
 				}

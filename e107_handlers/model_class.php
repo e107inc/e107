@@ -3068,7 +3068,7 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$table = $this->getModelTable();
-		$res = $sql->db_Insert($table, $this->toSqlQuery('replace'));
+		$res = $sql->insert($table, $this->toSqlQuery('replace'));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{

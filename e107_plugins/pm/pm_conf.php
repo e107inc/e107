@@ -388,9 +388,9 @@ function show_limits($pm_prefs)
 	
 	if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
-	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$limitList[$row['limit_classnum']] = $row;
 		}
@@ -480,9 +480,9 @@ function add_limit($pm_prefs)
 	$sql = e107::getDb();
 	$frm = e107::getForm();
 	
-	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$limitList[$row['limit_classnum']] = $row;
 		}
@@ -679,7 +679,7 @@ function doMaint($opts, $pmPrefs)
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($db2->sql->getLastErrorNum, $db2->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
@@ -690,7 +690,7 @@ function doMaint($opts, $pmPrefs)
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($db2->sql->getLastErrorNum, $db2->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
@@ -719,9 +719,9 @@ function doMaint($opts, $pmPrefs)
 		{
 			$qry = implode(' OR ', $del_qry);
 			$cnt = 0;
-			if($db2->db_Select('private_msg', 'pm_id', $qry))
+			if($db2->select('private_msg', 'pm_id', $qry))
 			{
-				while ($row = $db2->db_Fetch())
+				while ($row = $db2->fetch())
 				{
 					if ($pmHandler->del($row['pm_id']) !== FALSE)
 					{

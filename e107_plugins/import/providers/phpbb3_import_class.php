@@ -111,17 +111,14 @@ class phpbb3_import extends base_import_class
 				if ($result === FALSE) return FALSE;	  
 			break;
 
-				
-		  	case 'polls' :
+
+		    case 'news':
+		    case 'polls' :
 		    	return FALSE;
-			break;  
-			
-		  	case 'news' :
-				  return FALSE;	
 			break;
-		  
-			  
-		  	default :
+
+
+		    default :
 		    return FALSE;
 		}
 

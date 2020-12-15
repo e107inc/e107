@@ -2887,9 +2887,9 @@ class themeHandler
 			else
 			{
 				//	echo $plug;
-				if($sql->db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
+				if($sql->select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$name = "installplugin[".$row['plugin_id']."]";
 					$text .= $this->frm->admin_button($name, ADLAN_121." ".$plug."", 'delete');
 				}

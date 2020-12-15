@@ -1337,7 +1337,7 @@ class news_admin_ui extends e_admin_ui
 					$_POST['cat_id'] = $row['news_category'];
 					$_POST['news_start'] = $row['news_start'];
 					$_POST['news_end'] = $row['news_end'];
-					$_POST['comment_total'] = e107::getDb()->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
+					$_POST['comment_total'] = e107::getDb()->count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
 					$_POST['news_render_type'] = $row['news_render_type'];
 					$_POST['news_thumbnail'] = $row['news_thumbnail'];
 					$_POST['news_meta_keywords'] = $row['news_meta_keywords'];

@@ -661,9 +661,9 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					if(null === $this->current_parent)
 					{
-						if(e107::getDb()->db_Select('links', 'link_name', 'link_id='.$current))
+						if(e107::getDb()->select('links', 'link_name', 'link_id='.$current))
 						{
-							$tmp = e107::getDb()->db_Fetch();
+							$tmp = e107::getDb()->fetch();
 							$this->current_parent = $tmp['link_name'];
 						}
 					}

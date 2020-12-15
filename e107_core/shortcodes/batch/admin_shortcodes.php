@@ -1634,6 +1634,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Old Admin Navigation Routine.
 	 */
+	 /*
 	function sc_admin_navigationOld($parm=null)
 	{
 	
@@ -1902,7 +1903,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
-
+*/
 
 	/**
 	 * New Admin Navigation Routine. v2.1.5

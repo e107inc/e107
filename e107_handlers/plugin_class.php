@@ -2301,7 +2301,7 @@ class e107plugin
 			if (($path && $sql->select('links', 'link_id,link_order', "link_url = '{$path}'")) || $sql->select('links', 'link_id,link_order', "link_name = '{$link_name}'"))
 			{
 					$row = $sql->fetch();
-					$sql->db_Update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
+					$sql->update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
 					return $sql->delete('links', "link_id = {$row['link_id']}");
 			}
 		}

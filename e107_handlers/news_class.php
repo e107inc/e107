@@ -76,7 +76,7 @@ class news {
 			$message = LAN_ERROR_48;
 			$emessage->add(LAN_ERROR_48, E_MESSAGE_ERROR, $smessages);
 		}
-		elseif($sql->db_Count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
+		elseif($sql->count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
 		{
 			$error = true;
 			$message = LAN_ERROR_49;
@@ -166,7 +166,7 @@ class news {
 			$data['WHERE'] = 'news_id='.intval($news['news_id']);
 
 			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
-			if ($sql->db_Update('news', $data))
+			if ($sql->update('news', $data))
 			{
 				
 			
@@ -213,7 +213,7 @@ class news {
 		else
 		{
 			// Adding item
-			$data['data']['news_id'] = $sql->db_Insert('news', $data);
+			$data['data']['news_id'] = $sql->insert('news', $data);
 			$news['news_id'] = $data['data']['news_id'];
 			//$news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")
 			if ($data['data']['news_id'])
@@ -320,8 +320,8 @@ class news {
 		  $param['image_sticky'] = IMAGE_sticky;
 		}
 
-		cachevars('current_news_item', $news);
-		cachevars('current_news_param', $param);
+		e107::setRegistry('current_news_item', $news);
+		e107::setRegistry('current_news_param', $param);
 
 		if ($news['news_render_type'] == 1 && $mode != "extend") 
 		{

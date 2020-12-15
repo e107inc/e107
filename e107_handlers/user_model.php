@@ -2148,9 +2148,9 @@ class e_user_extended_model extends e_admin_model
 		$value = $this->get($field);
 		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
 		$this->_struct_index[$field]['db_value'] = $value;
-		if($value && $table && $field_id && $field_name && e107::getDb()->db_Select($table, $field_name, "{$field_id}='{$value}'"))
+		if($value && $table && $field_id && $field_name && e107::getDb()->select($table, $field_name, "{$field_id}='{$value}'"))
 		{
-			$res = e107::getDb()->db_Fetch();
+			$res = e107::getDb()->fetch();
 			$this->_struct_index[$field]['db_value'] = $res[$field_name];
 		}
 
@@ -2428,7 +2428,7 @@ class e_user_extended_model extends e_admin_model
 		}
 		$this->_buildManageRules();
 		// insert new record
-		if(!e107::getDb()->db_Count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
+		if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
 		{
 			return $this->insert(true, $session);
 		}

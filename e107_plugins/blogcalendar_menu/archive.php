@@ -61,8 +61,8 @@ if (!isset($req_year)) $req_year = $cur_year;
 // --------------------------------
 // look for the first and last year
 // --------------------------------
-$bcSql->db_Select_gen("SELECT news_id, news_datestamp from #news ORDER BY news_datestamp LIMIT 0,1");
-$first_post = $bcSql->db_Fetch();
+$bcSql->gen("SELECT news_id, news_datestamp from #news ORDER BY news_datestamp LIMIT 0,1");
+$first_post = $bcSql->fetch();
 $start_year = date("Y", $first_post['news_datestamp']);
 $end_year = $cur_year;
 	
@@ -85,7 +85,7 @@ for($i = $start_year; $i <= $end_year; $i++)
 		$year_selector .= " selected='selected'";
 		if ($bcSql->db_Select("news", "news_id, news_datestamp, news_class", "news_datestamp > {$start} AND news_datestamp < {$end}")) 
 		{
-			while ($news = $bcSql->db_Fetch()) 
+			while ($news = $bcSql->fetch())
 			{
 				if (check_class($news['news_class'])) 
 				{

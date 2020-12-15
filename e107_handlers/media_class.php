@@ -905,7 +905,7 @@ class e_media
 		$sql = e107::getDb();
 		
 	//	$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($upload,TRUE));
-		if(file_exists($newpath) && ($f = e107::getFile()->get_file_info($oldpath,TRUE)))
+		if(file_exists($newpath) && ($f = e107::getFile()->getFileInfo($oldpath,TRUE)))
 		{
 			$this->log($newpath." already exists and will be renamed during import.");
 			$mes->addWarning($newpath." already exists and was renamed during import.");	
@@ -1262,10 +1262,8 @@ class e_media
 			return FALSE;
 		}
 		
-		$info = e107::getFile()->get_file_info($path);
-		
+		$info = e107::getFile()->getFileInfo($path);
 
-		
 		$this->log("File info for $path : ".print_r($info,true));
 		
 		return array(

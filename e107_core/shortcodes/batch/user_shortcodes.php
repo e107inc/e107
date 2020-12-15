@@ -317,14 +317,11 @@ class user_shortcodes extends e_shortcode
 			case 'location':
 				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
-			
+
+			case 'msn':
 			case 'icq':
 				return ($boot) ? $tp->toGlyph('fa-comment') : '';
-			break;	
-				
-			case 'msn':
-				return ($boot) ? $tp->toGlyph('fa-comment') : '';
-			break;		
+			break;
 
 			default:
 			case 'realname':

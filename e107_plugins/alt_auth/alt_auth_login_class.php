@@ -60,7 +60,7 @@ class alt_auth_base
 
 		$sql->db_Select('alt_auth', '*', "auth_type = '".$prefix."' ");
 		$parm = array();
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$parm[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
 		}

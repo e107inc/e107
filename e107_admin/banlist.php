@@ -1138,7 +1138,7 @@ if ($writeBanFile)
 if ($action == 'edit' || $action == 'whedit')
 {
 	$sql->db_Select('banlist', '*', "banlist_ip='{$sub_action}'");
-	$row = $sql->db_Fetch();
+	$row = $sql->fetch();
 	extract($row);				//FIXME - kill extract()
 }
 else
@@ -1726,7 +1726,7 @@ switch ($action)
 			$text .= "</tr>
 						</thead>
 						<tbody>";
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				//extract($row);//FIXME - kill extract()
 				$row['banlist_reason'] = str_replace('LAN_LOGIN_18', BANLAN_11, $row['banlist_reason']);
@@ -1863,7 +1863,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 	//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
 	// Renumber imported bans
 	if ($override_imports)
-		$sql->db_Update('banlist', "`banlist_bantype`=".eIPHandler::BAN_TYPE_TEMPORARY." WHERE `banlist_bantype` = ".eIPHandler::BAN_TYPE_IMPORTED);
+		$sql->update('banlist', "`banlist_bantype`=".eIPHandler::BAN_TYPE_TEMPORARY." WHERE `banlist_bantype` = ".eIPHandler::BAN_TYPE_IMPORTED);
 	$temp = file($filename);
 	$line_num = 0;
 	foreach ($temp as $line)
@@ -1932,7 +1932,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 	}
 	// Success here - may need to delete old imported bans
 	if ($override_imports)
-		$sql->db_Delete('banlist', "`banlist_bantype` = ".eIPHandler::BAN_TYPE_TEMPORARY);
+		$sql->delete('banlist', "`banlist_bantype` = ".eIPHandler::BAN_TYPE_TEMPORARY);
 	@unlink($filename);		// Delete file once done
 	$mes->addSuccess(str_replace('[y]', $line_num, BANLAN_51).$filename);
 	return str_replace('[y]', $line_num, BANLAN_51).$filename;
