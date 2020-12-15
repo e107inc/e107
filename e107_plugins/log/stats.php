@@ -1119,7 +1119,7 @@ class siteStats
 							break;
 						}
 					}
-					if($image == "") 
+					if(empty($image))
 					{
 						$image = "unknown.png";
 					}

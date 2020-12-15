@@ -910,8 +910,9 @@ class e107_user_extended
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
-		if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
+		$curval = trim($curval);
+
+		if(empty($curval) && !empty($struct['user_extended_struct_default']))
 		{
 			$curval = $struct['user_extended_struct_default'];
 		}

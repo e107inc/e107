@@ -176,7 +176,7 @@ class receiveMail
 		{
 			$body = $this->get_part($this->marubox, $mid, "TEXT/HTML");
 		}
-		if (($body == "") || $mode == 'plain')
+		if (empty($body) || $mode == 'plain')
 			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN");
 		if ($body == "") {
 			return "";

@@ -1393,7 +1393,7 @@ function admin_config_adminmenu()
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
   }
-  if (!isset($action) || ($action == "")) $action = "config";
+  if (empty($action)) $action = "config";
 
   $var['config']['text'] = ADSTAT_LAN_35;
   $var['config']['link'] = 'admin_config.php';

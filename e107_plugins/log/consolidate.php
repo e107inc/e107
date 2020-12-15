@@ -470,7 +470,7 @@ class logConsolidate
 				list($pageName,$tmp) = explode("?",$pageName);
 			}
 
-			if($pageName == "")
+			if(empty($pageName))
 			{
 				$pageName = "index";
 			}
