@@ -14,7 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-define('CACHE_PREFIX','<?php exit;');
+define('CACHE_PREFIX','<?php exit; ?>');
 
 /**
  * Class to cache data as files, improving site speed and throughput.
@@ -32,7 +32,7 @@ class ecache {
 	public $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
 	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
 
-	const CACHE_PREFIX = '<?php exit;';
+	const CACHE_PREFIX = '<?php exit; ?>';
 
 	function __construct()
 	{
