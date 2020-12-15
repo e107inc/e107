@@ -375,7 +375,7 @@ class e_online
 				define('MEMBERS_ONLINE', $members_online);
 				define('GUESTS_ONLINE', $total_online - $members_online);
 				$dbg->logTime('Go online (db count) Line:'.__LINE__);
-				define('ON_PAGE', $sql->db_Count('online', '(*)', "WHERE `online_location` = '{$page}' "));
+				define('ON_PAGE', $sql->count('online', '(*)', "WHERE `online_location` = '{$page}' "));
 				define('MEMBER_LIST', $member_list);
 
 				//update most ever online

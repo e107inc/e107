@@ -1136,7 +1136,7 @@ class db_verify
 	function getSqlLanguages()
 	{
 		$sql = e107::getDb();
-		$list = $sql->db_TableList('lan');
+		$list = $sql->tables('lan');
 		
 		$array = array();
 		

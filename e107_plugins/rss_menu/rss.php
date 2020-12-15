@@ -282,7 +282,9 @@ class rssCreate
 				$path = e_PLUGIN."forum/e_rss.php";
 				break;
 
+
 			case 8:
+			case 11:
 				if(!$this -> topicid)
 				{
 					return FALSE;
@@ -291,13 +293,6 @@ class rssCreate
 				break;
 
 			// case 10 was bugtracker
-			case 11:
-				if(!$this -> topicid)
-				{
-					return FALSE;
-				}
-				$path = e_PLUGIN."forum/e_rss.php";
-				break;
 
 			case 'download':
 			case 12:

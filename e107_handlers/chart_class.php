@@ -577,20 +577,14 @@ class e_chart
 				$js .= 'var myLine = new Chart(document.getElementById("'.$id.'").getContext("2d")).Bar(ChartData, ChartOptions);';
 			break;
 
-			case 'radar':
-				//TODO
-			break;
-
 			case 'polar':
+			case 'pie':
+			case 'radar':
 				//TODO
 			break;
 
 			case 'doughnut':
 				$js .= 'var myDoughnut = new Chart(document.getElementById("'.$id.'").getContext("2d")).Doughnut(ChartData, ChartOptions);';	
-			break;
-			
-			case 'pie':
-				//TODO
 			break;
 
 			default:

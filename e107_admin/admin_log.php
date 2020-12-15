@@ -1717,7 +1717,7 @@ if(isset($page_title[$action]))
 		}
 		// Now put up the events
 		$delete_button = FALSE;
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$text .= '<tr>';
 			foreach($col_fields[$action] as $cf)

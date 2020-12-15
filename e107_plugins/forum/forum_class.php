@@ -1584,7 +1584,7 @@ class e107forum
 		}
 		else
 		{
-			$this->modArray = e107::getUserClass()->get_users_in_class($uclass, 'user_name', true);
+			$this->modArray = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
 		}
 
 

@@ -126,7 +126,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
         return '';
     }
 	$cats = array();
-	while ($row = $sql2->db_Fetch()) 
+	while ($row = $sql2->fetch())
 	{
 		if($row['ccount'] > 0) $cats[$row['category_id']] = $row;
 	}

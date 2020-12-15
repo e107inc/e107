@@ -192,9 +192,9 @@ class login_menu_class
         	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
         	";
         	
-        	if($sql->db_Select_gen($qry)) 
+        	if($sql->gen($qry))
 			{
-        		$row = $sql->db_Fetch();
+        		$row = $sql->fetch();
         		$lbox_stats['forum'][0]['stat_new'] = $row['count'];
         	}
         }

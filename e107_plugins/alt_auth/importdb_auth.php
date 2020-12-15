@@ -83,7 +83,7 @@ class auth_login extends alt_auth_base
 
 		// Now look at their password - we always need to verify it, even if its a core E107 format.
 		// Higher levels will always convert an authorised password to E107 format and save it for us.
-		if (!$row = $sql->db_Fetch())
+		if (!$row = $sql->fetch())
 		{
 			$this->makeErrorText('Error reading DB');
 			return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler

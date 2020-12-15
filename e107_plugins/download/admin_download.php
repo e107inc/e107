@@ -100,7 +100,7 @@ if (isset($_POST['update_catorder']))
 	{
 		if (is_numeric($_POST['catorder'][$key]))
 		{
-			$sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
+			$sql ->update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
 		}
 	}
 	e107::getLog()->add('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
@@ -206,7 +206,7 @@ if (isset($_POST['updatelimits']))
 		if (!$_POST['count_num'][$idLim] && !$_POST['count_days'][$idLim] && !$_POST['bw_num'][$idLim] && !$_POST['bw_days'][$idLim])
 		{
 			//All entries empty - Remove record
-			if ($sql->db_Delete('generic',"gen_id = {$idLim}"))
+			if ($sql->delete('generic',"gen_id = {$idLim}"))
 			{
 				$message .= $idLim." - ".DOWLAN_119."<br/>";
 				e107::getLog()->add('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');

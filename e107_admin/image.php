@@ -507,7 +507,7 @@ class media_form_ui extends e_admin_form_ui
 				if($this->resizeImage($path,$img_import_w,$img_import_h))
 				{
 					
-					$info = $fl->get_file_info($path);
+					$info = $fl->getFileInfo($path);
 					$mes->addSuccess(LAN_IMA_004.": ".basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = intval($info['img-width'])." x ".intval($info['img-height']);
@@ -3045,7 +3045,7 @@ class media_admin_ui extends e_admin_ui
 		$f = e107::getFile()->get_file_info($oldpath,TRUE);
 		
 		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($newpath,TRUE));
-		if(file_exists($newpath) || e107::getDb()->db_Select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		if(file_exists($newpath) || e107::getDb()->select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 		{
 			$mes->addWarning($newpath." already exists.");	
 			$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];
@@ -3594,7 +3594,7 @@ if (isset($_POST['submit_show_deleteall']))
 		{
 			$image_name = basename($image_name);
 			$image_todb = $tp->toDB($image_name);
-			if (!$sql->db_Count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
+			if (!$sql->count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
 				unlink(e_AVATAR_UPLOAD.$image_name);
 				$imgList .= '[!br!]'.$image_name;
 				$count++;
@@ -3626,7 +3626,7 @@ if (isset($_POST['submit_avdelete_multi']))
 	$multiaction = $tp->filter($_POST['multiaction'], 'int');
 
 	//sql queries significant reduced
-	if(!empty($multiaction) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $multiaction).")"))
+	if(!empty($multiaction) && $sql->select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $multiaction).")"))
 	{
 		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
 		foreach($multiaction as $uid)
@@ -3648,7 +3648,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		//sql queries significant reduced
 		if(!empty($uids))
 		{
-			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $uids).")");
+			$sql->update("user", "user_image='' WHERE user_id IN (".implode(',', $uids).")");
 		}
 
 		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
@@ -3703,13 +3703,13 @@ if (isset($_POST['check_avatar_sizes']))
 	//
 	// Loop through avatar field for every user
 	//
-	$iUserCount = $sql->db_Count("user");
+	$iUserCount = $sql->count("user");
 	$found = false;
 	$allowedWidth = intval($pref['im_width']);
 	$allowedHeight = intval($pref['im_width']);
-	if ($sql->db_Select("user", "*", "user_image!=''")) {
+	if ($sql->select("user", "*", "user_image!=''")) {
 
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			//Check size
 			$avname=avatar($row['user_image']);

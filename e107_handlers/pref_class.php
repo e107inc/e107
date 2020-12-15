@@ -1166,9 +1166,9 @@ class prefs
 
 		// Data not in cache - retrieve from DB
 		$get_sql = new db; // required so sql loops don't break using $tp->toHTML().
-		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default'))
+		if($get_sql->select('core', '*', "`e107_name` = '{$Name}'", 'default'))
 		{
-			$row = $get_sql->db_Fetch();
+			$row = $get_sql->fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
 		}
@@ -1225,17 +1225,18 @@ class prefs
 		}
 		$val = addslashes($val);
 
-		switch ($table ) {
+		switch ($table )
+		{
 			case 'core':
-			if(!$sql->db_Update($table, "e107_value='$val' WHERE e107_name='$name'"))
+			if(!$sql->update($table, "e107_value='$val' WHERE e107_name='$name'"))
 			{
-				$sql->db_Insert($table, "'{$name}', '{$val}'");
+				$sql->insert($table, "'{$name}', '{$val}'");
 			}
 			$this->prefVals[$table][$name] = $val;
 			unset($this->prefArrays[$table][$name]);
 			break;
 			case 'user':
-			$sql->db_Update($table, "user_prefs='$val' WHERE user_id=$uid");
+			$sql->update($table, "user_prefs='$val' WHERE user_id=$uid");
 			break;
 		}
 	}

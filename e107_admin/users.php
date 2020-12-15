@@ -1951,7 +1951,7 @@ class users_admin_ui extends e_admin_ui
 			}
             // TODO - move to e_userinfo.php
 			$obj = new convert;
-			$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
+			$sql->select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
 			$host = $e107->get_host_name($ipd);
 			$text = USFLAN_3." <b>".$ipd."</b> [ ".USFLAN_4.": $host ]<br />
 				<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
@@ -1974,7 +1974,7 @@ class users_admin_ui extends e_admin_ui
 
 			$text .= "<hr />";
 
-			$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
+			$sql->select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
 			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->fetch())
 			{
 				$datestamp = $obj->convert_date($comment_datestamp, "short");

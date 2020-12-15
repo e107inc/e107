@@ -122,7 +122,7 @@ if ($action == 'active')
 
 		$text .= "</table>\n</div>";
 
-		$ftotal = $sql->db_Count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
+		$ftotal = $sql->count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
 		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');

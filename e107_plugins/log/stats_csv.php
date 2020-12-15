@@ -191,11 +191,8 @@ function  export_stats($export_type, $export_date, $export_filter, $first_date, 
     case 3 : $filename .= $export_type.'_year_'.date('Ym',$first_date).'_'.date('Ym',$last_date);
 	  $values_per_row = 12;
 	  break;
-    case 4 : 
-//	  $filename .= $export_type.'_alltime';
-	  $filename .= $export_type;
-	  break;
-    case 5 : 
+	  case 5:
+	  case 4 :
 //	  $filename .= $export_type.'_alltime';
 	  $filename .= $export_type;
 	  break;
@@ -203,7 +200,7 @@ function  export_stats($export_type, $export_date, $export_filter, $first_date, 
   $filename .= '.csv';
   if (defined('CSV_DEBUG')) $export_text .= "export stats to {$filename}<br />";
   
-  while($row = $sql -> db_Fetch())
+  while($row = $sql ->fetch())
   {	// Process one DB entry
     $date_id = substr($row['log_id'],strrpos($row['log_id'],'-')+1);	// Numeric value of date being processed (not always valid)
 	if (!is_numeric($date_id)) $date_id = 0;

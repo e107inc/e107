@@ -30,7 +30,7 @@ function tablestyle($caption, $text, $mode='')
 	
     switch($style) 
     {
-
+/*
         case 'home': 
             echo $caption;
 			echo $text; 
@@ -44,7 +44,7 @@ function tablestyle($caption, $text, $mode='')
 		case 'full': 
             echo $caption;
 			echo $text; 
-		break;
+		break;*/
 
 		default: 
         	echo $caption;

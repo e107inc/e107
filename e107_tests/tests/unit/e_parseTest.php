@@ -27,6 +27,9 @@
 
             $this->tp->__construct();
 		}
+
+
+
 /*
 		public function testHtmlAbuseFilter()
 		{

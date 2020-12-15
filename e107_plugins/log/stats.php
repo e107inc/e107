@@ -710,7 +710,7 @@ class siteStats
 		/* get main stat info from database */
 		if($sql->select('logstats', 'log_data', "log_id='pageTotal'"))
 		{
-			$row = $sql -> db_Fetch();
+			$row = $sql ->fetch();
 			$this -> dbPageInfo = unserialize($row['log_data']);
 		} 
 		else 
@@ -1176,7 +1176,7 @@ class siteStats
 
 			if ($entries = $sql->select("logstats", "*", $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql -> fetch();
 				$statOs = unserialize($row['log_data']);
 			}
 			else
@@ -1309,7 +1309,7 @@ class siteStats
 
 			if ($entries = $sql->select('logstats', 'log_data', $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql -> fetch();
 				$statDom = unserialize($row['log_data']);
 			}
 			else
@@ -1399,7 +1399,7 @@ class siteStats
 
 			if ($entries = $sql->db_Select('logstats', 'log_data', $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql -> fetch();
 				$statScreen = unserialize($row['log_data']);
 			}
 			else
@@ -1503,7 +1503,7 @@ class siteStats
 
 			if ($entries = $sql->select('logstats', 'log_data', $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql -> fetch();
 				$statRefer = unserialize($row['log_data']);
 			}
 			else
@@ -1600,7 +1600,7 @@ class siteStats
 
 			if ($entries = $sql->select("logstats", "*", $pars['query'])) 
 			{
-				$row = $sql -> db_Fetch();
+				$row = $sql -> fetch();
 				$statQuery = unserialize($row['log_data']);
 			}
 			else
@@ -2058,7 +2058,7 @@ class siteStats
 		$sql = e107::getDB();
 		if ($sql->select("logstats", "*", "log_id='pageTotal'"))
 		{
-			$row = $sql -> db_Fetch();
+			$row = $sql -> fetch();
 			$dbPageInfo = unserialize($row[2]);
 			unset($dbPageInfo[$toremove]);
 			$dbPageDone = serialize($dbPageInfo);

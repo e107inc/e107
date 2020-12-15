@@ -1751,7 +1751,7 @@ class user_class_admin extends user_class
 				$classrec['userclass_accum'] = implode(',',$temp);
 			}
 		}
-		if ($this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
+		if ($this->sql_r->insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
 		{
 			return FALSE;
 		}
@@ -1801,7 +1801,7 @@ class user_class_admin extends user_class
 				$spacer = ", ";
 			}
 		}
-		if ($this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
+		if ($this->sql_r->update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
 		{
 			return FALSE;
 		}
@@ -1873,7 +1873,7 @@ class user_class_admin extends user_class
 	{
 		if (self::queryCanDeleteClass($classID) === FALSE) return FALSE;
 
-		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
+		if ($this->sql_r->delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
 		$this->clearCache();
 		$this->readTree(TRUE);			// Re-read the class tree
 		return TRUE;

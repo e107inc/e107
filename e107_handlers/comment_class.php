@@ -1464,7 +1464,7 @@ class comment
 					}
 				}
 				
-				cachevars('e_comment', $data);
+				e107::setRegistry('e_comment', $data);
 				return $data;
 			}
 		}

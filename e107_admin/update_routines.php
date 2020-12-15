@@ -1006,11 +1006,11 @@ function update_706_to_800($type='')
 
 	// Leave this one here.. just in case.. 
 	//delete record for online_extended_menu (now only using one online menu)
-	if($sql->db_Select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
+	if($sql->select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 	{
 		if ($just_check) return update_needed("The Menu table needs to have some paths corrected in its data.");
 
-		$row=$sql->db_Fetch();
+		$row=$sql->fetch();
 
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
@@ -1028,7 +1028,7 @@ function update_706_to_800($type='')
 	}
 
 	//change menu_path for online_menu (if it still exists)
-	if($sql->db_Select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
+	if($sql->select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
 	{
 		if ($just_check) return update_needed('change menu_path for online menu');
 
@@ -1961,7 +1961,7 @@ function update_70x_to_706($type='')
 
 	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp"))
 	{
-	  $row = $sql -> db_Fetch();
+	  $row = $sql ->fetch();
 	  if (!in_array('tmp_ip', $row))
 	  {
 		if ($just_check) return update_needed();
@@ -2027,9 +2027,9 @@ function copy_user_timezone()
 
 	e107::getMessage()->addDebug("Line:".__LINE__);
 	// Created the field - now copy existing data
-	if ($sql->db_Select('user','user_id, user_timezone'))
+	if ($sql->select('user','user_id, user_timezone'))
 	{
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
 		}
@@ -2075,7 +2075,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 	if ($sql->gen("SHOW INDEX FROM ".MPREFIX.$target))
 	{
 		$found = FALSE;
-		while ($row = $sql -> db_Fetch())
+		while ($row = $sql ->fetch())
 		{		// One index per field
 			if (in_array($indexSpec, $row))
 			{

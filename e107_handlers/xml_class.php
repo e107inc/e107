@@ -19,6 +19,7 @@ class parseXml extends xmlClass // BC with v1.x
 {
 	private $xmlData = array();
 	private $counterArray = array();
+
 	
 	function __construct()
 	{
@@ -85,7 +86,7 @@ class parseXml extends xmlClass // BC with v1.x
 		foreach($array as $data)
 		{
 
-			if(strlen($data == 4096))
+			if(strlen($data) == 4096)
 			{
 				$log->addDebug("The XML cannot be parsed as it is badly formed.")->save('XML');
 				return FALSE;
@@ -297,8 +298,8 @@ class xmlClass
 	/**
 	 * Constructor - set defaults
 	 *
-	 */
-	function __constructor()
+	 *//*
+	function __construct()
 	{
 		$this->reset();
 
@@ -306,7 +307,7 @@ class xmlClass
 		{
 			$this->filePathConvKeys = array_keys($this->filePathConversions);
 		}
-	}
+	}*/
 
 	/**
 	 * Reset object
@@ -504,7 +505,7 @@ class xmlClass
 	 * XXX New parser in testing phase - see e_marketplace::parse()
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
-	 * @return array
+	 * @return array|string
 	 */
 	function xml2array($xml, $rec_parent = '')
 	{
@@ -534,7 +535,7 @@ class xmlClass
 			$tags = array_keys($tags);
 			foreach ($tags as $tag)
 			{
-				if($tag == '@attributes')
+				if($tag === '@attributes')
 				{
 					$tmp = (array) $xml->attributes();
 					$ret['@attributes'] = $tmp['@attributes'];
@@ -870,7 +871,7 @@ class xmlClass
 
 		if(is_array($val))
 		{
-			$val = e107::serialize($val,false);
+			$val = e107::serialize($val);
 
 			if($val === null)
 			{
@@ -931,7 +932,7 @@ class xmlClass
 				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
-					if($type == 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || substr($key,0,2) == 'e_'))
+					if($type === 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || strpos($key, 'e_') === 0))
 					{
 						continue;
 					}
@@ -1009,11 +1010,11 @@ class xmlClass
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
 				e107::getDb()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
-				$count = 1;
+			//	$count = 1;
 				while($row = e107::getDb()->fetch())
 				{
 
-					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
+					if($this->convertFilePaths == true && $eTable === 'core_media' && strpos($row['media_url'], '{e_MEDIA') !== 0)
 					{
 						continue;
 					}
@@ -1026,7 +1027,7 @@ class xmlClass
 					}
 
 					$text .= "\t\t</item>\n";
-					$count++;
+			//		$count++;
 				}
 				$text .= "\t</dbTable>\n";
 
@@ -1282,7 +1283,7 @@ class xmlClass
 						$insert_array[$fieldkey] = $fieldval;
 
 					}
-					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
+					if(($mode === "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}

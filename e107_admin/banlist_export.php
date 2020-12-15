@@ -79,7 +79,7 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 	$qry = "SELECT * FROM `#banlist` ";
 	if ($type_list != '') $qry .= " WHERE`banlist_bantype` IN ({$type_list})";
 	if (!$sql->gen($qry)) return 'No data: '.$qry;
-	while ($row = $sql->db_Fetch())
+	while ($row = $sql->fetch())
 	{
 		$line = '';
 		$spacer = '';
