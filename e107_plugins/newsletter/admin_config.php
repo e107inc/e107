@@ -581,7 +581,7 @@ class newsletter
 	 */
 	function show_options($action)
 	{
-		if ($action == "")
+		if (empty($action))
 		{
 			$action = "main";
 		}

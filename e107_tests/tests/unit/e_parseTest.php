@@ -65,7 +65,7 @@ TMP;
 		
 		$actual = $this->tp->toHTML($src,true);
 
-		$expected = "<div class='bbcode-center' style='text-align:center'><img src='".e_HTTP."e107_images/generic/blank_avatar.jpg' width='' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
+		$expected = "<div class='bbcode-center' style='text-align:center'><img src='".e_HTTP."e107_images/generic/blank_avatar.jpg' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
 
 		$this->assertEquals($expected, $actual, "BBcode parsing failed on [img]");
 
@@ -1032,6 +1032,24 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			$this->assertSame($expected,$result6);
 			$this->tp->setConvertToWebP(false);
+
+
+			$tests = array(
+				0 => array(
+					'src'       => '{e_PLUGIN}gallery/images/butterfly.jpg',
+					'parms'     => array('w'=>300, 'alt'=>"Custom"),
+					'expected'  => '<img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=0" alt="Custom" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=600&amp;h=0 2x" width="300"  />'
+				),
+
+			);
+
+			foreach($tests as $index => $var)
+			{
+				$result = $this->tp->toImage($var['src'], $var['parms']);
+				$result = preg_replace('/"([^"]*)thumb.php/','"thumb.php', $result);
+				$this->assertSame($var['expected'], $result);
+
+			}
 
 
 		}

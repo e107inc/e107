@@ -1422,7 +1422,7 @@ $columnInfo = array(
 	                  </tr>";
 	      }      // End of mirror-related stuff
 	
-	      $download_author = $subAction != "edit" && $download_author == "" ? USERNAME : $download_author;//TODO what if editing an no author specified
+	      $download_author = ($subAction !== "edit" && empty($download_author)) ? USERNAME : $download_author;//TODO what if editing an no author specified
 	      $download_author_email = $subAction != "edit" && $download_author_email == "" ? USEREMAIL : $download_author_email;
 	      $text .= "
 	               </table>
