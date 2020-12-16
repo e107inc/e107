@@ -14,7 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-define('CACHE_PREFIX','<?php exit;');
+define('CACHE_PREFIX','<?php exit; ?>');
 
 /**
  * Class to cache data as files, improving site speed and throughput.
@@ -33,7 +33,7 @@ class ecache {
 	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
 	private $lastError;
 
-	const CACHE_PREFIX = '<?php exit;';
+	const CACHE_PREFIX = '<?php exit; ?>';
 
 	function __construct()
 	{
@@ -153,11 +153,15 @@ class ecache {
 						$this->lastError = "Couldn't read ".$cache_file;
 					}
 
-					if (substr($ret,0,strlen(self::CACHE_PREFIX)) == self::CACHE_PREFIX)
+					if (strpos($ret, self::CACHE_PREFIX) === 0)
 					{
 						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					elseif(substr($ret,0,5) == '<?php')
+					elseif(strpos($ret, '<?php exit;') === 0)
+					{
+						$ret = substr($ret, 11);
+					}
+					elseif(strpos($ret,'<?php') === 0)
 					{
 						$ret = substr($ret, 5);		// Handle the history for now
 					}
