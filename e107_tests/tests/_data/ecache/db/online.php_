@@ -1,0 +1,18 @@
+array (
+  '_FIELD_TYPES' => 
+  array (
+    'online_timestamp' => 'int',
+    'online_flag' => 'int',
+    'online_user_id' => 'escape',
+    'online_ip' => 'escape',
+    'online_location' => 'escape',
+    'online_pagecount' => 'int',
+    'online_active' => 'int',
+    'online_agent' => 'escape',
+    'online_language' => 'escape',
+  ),
+  '_NOTNULL' => 
+  array (
+    'online_location' => '',
+  ),
+)
