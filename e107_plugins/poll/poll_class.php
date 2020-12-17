@@ -274,7 +274,6 @@ class poll
 		{
 			if ($_POST['votea'])
 			{
-//					$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $pollArray;
 				extract($row);
 				$poll_votes = varset($poll_votes);

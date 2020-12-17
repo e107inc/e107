@@ -1078,7 +1078,7 @@ class eIPHandler
 		}
 		/*
 		// See if the address is in the whitelist
-		if ($sql->db_Select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
+		if ($sql->select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
 		{ // Got a whitelist entry for this
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;

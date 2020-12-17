@@ -1397,7 +1397,7 @@ class siteStats
 			$pars = make_bits('statScreen',$act);		// Get the query, plus maybe date for heading
 			if (!is_array($pars)) return $pars;			// Return error if necessary
 
-			if ($entries = $sql->db_Select('logstats', 'log_data', $pars['query'])) 
+			if ($entries = $sql->select('logstats', 'log_data', $pars['query']))
 			{
 				$row = $sql -> fetch();
 				$statScreen = unserialize($row['log_data']);

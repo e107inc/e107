@@ -71,7 +71,7 @@ class e107_import extends base_import_class
 		{
 		    case 'users' :
 		  	    $query =  "SELECT * FROM {$this->DBPrefix}user WHERE `user_id` != 1";
-		        $result = $this->ourDB->db_Select_gen($query);
+		        $result = $this->ourDB->gen($query);
 	
 				if ($result === false) return false;
 			break;

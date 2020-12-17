@@ -154,7 +154,7 @@ function  export_stats($export_type, $export_date, $export_filter, $first_date, 
 {
   $stat_types = array( 1 => 'day', 2 => 'month', 3 => 'year', 4 => 'alltime', 5 => 'all_detail');
   global $sql, $e107;
-  $sql -> db_Select("logstats", "*", "{$export_filter} ");
+  $sql ->select("logstats", "*", "{$export_filter} ");
 
   $export_text = '';				// Accumulate output string
   $export_array = array();

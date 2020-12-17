@@ -165,10 +165,10 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
             ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT;
 
         $count = $sql->gen($cqry);
-		//$count = $sql->db_Select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
+		//$count = $sql->select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
 		if($count)
 		{
-            while ($row = $sql->db_Fetch()) 
+            while ($row = $sql->fetch())
             {
     			$scbatch->setScVar('news_item', $row);
     			//$row['category_name'] = $category_name;

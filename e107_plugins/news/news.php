@@ -1545,12 +1545,7 @@ class news_front
 
 		$newsAr = $sql -> db_getList();
 		$news_total=$sql->total_results;
-		// Get number of entries
-		//$sql -> db_Select_gen("SELECT FOUND_ROWS()");
-	//	$frows = $sql -> db_Fetch();
-		//$news_total = $frows[0];
 
-		//echo "<br />Total ".$news_total." items found, ".count($newsAr)." displayed, Interval = {$interval}<br /><br />";
 
 		$p_title = ($this->action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,'TITLE');
 

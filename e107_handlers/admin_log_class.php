@@ -572,7 +572,7 @@ class e_admin_log
 
 	/**
 	 *	Logs an entry with all the data from an array, one field per line.
-	 *  @deprecated 
+	 *  @deprecated Use e107::getLog()->addArray($arrayData)->save($event);
 	 *	@param string $event - LAN define or string used as title in log
 	 *	@param array $target - data to be logged
 	 *	@param string $extra - if non-empty, it goes on the first line.

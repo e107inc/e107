@@ -76,20 +76,7 @@ $dont_check_update = false;
 
 if (!$dont_check_update)
 {
-	/*
-	if ($sql->db_Select('plugin', 'plugin_id, plugin_version, plugin_path', 'plugin_installflag=1'))
-	{
-		while ($row = $sql->db_Fetch())
-		{  // Mark plugins for update which have a specific update file, or a plugin.php file to check
-			if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_setup.php'))
-			{
-				$dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
-				//TODO - Add support for {plugins}_setup.php upgrade check and routine. 
-			}
-		}
-	}
-	*/
-	
+
 	if($dbupdateplugs = e107::getConfig('core')->get('plug_installed'))
 	{
 		// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
@@ -1898,9 +1885,9 @@ function core_media_import($cat,$epath)
 		'media_type'	=> $f['mime']
 		);
 
-		if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
+		if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
 		{
-			if($sql->db_Insert("core_media",$insert))
+			if($sql->insert("core_media",$insert))
 			{
 				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
 			}

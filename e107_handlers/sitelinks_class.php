@@ -1226,65 +1226,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}	
 		}
 	
-		
-	//	print_a($plugs->plug_vars['adminLinks']['link']);
-		
-		
-	
-	
-		/*	echo "hello there";
-		
-		 	$xml = e107::getXml();
-			$xml->filter = array('@attributes' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
-		
-			if ($sql->db_Select("plugin", "*", "plugin_installflag=1"))
-			{
-				while ($row = $sql->db_Fetch())
-				{
-					extract($row);		//  plugin_id int(10) unsigned NOT NULL auto_increment,
-										//	plugin_name varchar(100) NOT NULL default '',
-										//	plugin_version varchar(10) NOT NULL default '',
-										//	plugin_path varchar(100) NOT NULL default '',
-										//	plugin_installflag tinyint(1) unsigned NOT NULL default '0',
-										//	plugin_addons text NOT NULL,
-		
-					if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
-					{
-						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-						if ($readFile === FALSE)
-						{
-							echo 'Error in file: '.e_PLUGIN.$plugin_path.'/plugin.xml'.'<br />';
-						}
-						else
-						{
-							loadLanFiles($plugin_path, 'admin');
-							$eplug_name 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
-							$eplug_conffile 	= $readFile['administration']['configFile'];
-							$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
-							$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
-							$eplug_caption 		= str_replace("'", '', $tp->toHTML($readFile['description'], FALSE, 'defs, emotes_off'));
-						}
-					}
-					elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
-					{
-						include(e_PLUGIN.$plugin_path."/plugin.php");
-					}
-					if (varset($eplug_conffile))
-					{
-						$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-						$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
-						$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
-		
-						$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
-					}
-					unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
-				}
-					}
-					else
-					{
-						$plugin_array = array();	
-					}
-				*/
+
 			ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'
 		
 			if($linkStyle == "array" || $iconSize == 'assoc')

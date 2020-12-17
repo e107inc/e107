@@ -610,7 +610,7 @@ class newsletter
 		$vs_text = '';
 
 
-		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
+		if(!$nl_sql->select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
