@@ -80,12 +80,13 @@ class hero_ui extends e_admin_ui
 		protected $fields 		= array (
 		   'checkboxes'         =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'hero_id'           =>   array ( 'title' => LAN_ID, 'type' => null, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'hero_media'       => array('title'=> "Image/Video", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
-          'hero_bg'       => array('title'=> "Background", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
+		  'hero_media'       => array('title'=> "Image/Video", 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
+          'hero_bg'         => array('title'=> "Background", 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
 
 		  'hero_title'        =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => '18%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_description'  =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'text', 'data' => 'str', 'width' => '30%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_bullets'      =>   array ( 'title' => 'Bullets', 'type' => 'method', 'data' => 'json', 'width' => '35%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'hero_images'        => array('title'=> "Media", 'type'=>'method', 'data'=>false, 'nolist'=>true),
 		  'hero_button1'      =>   array ( 'title' => 'Button-1', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_button2'      =>   array ( 'title' => 'Button-2', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		   'hero_order'      =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -119,8 +120,24 @@ class hero_ui extends e_admin_ui
 			$this->prefs['slide_interval']['writeParms']['optArray'] = $opts;
 
 		}
+/*
+		function EditObserver()
+		{
+			$this->fields['hero_media']['noedit'] = true;
+			$this->fields['hero_bg']['noedit'] = true;
 
-		
+			$this->fields['hero_images'] = array('title'=> "Image/Video", 'type'=>'method', 'data'=>'str');
+
+			parent::EditObserver();
+
+
+		//		  'hero_media'       => array('title'=> "Image/Video", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
+      //    'hero_bg'       => array('title'=> "Background", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
+
+
+
+		}
+		*/
 		// ------- Customize Create --------
 		
 		public function beforeCreate($new_data,$old_data)
@@ -582,7 +599,33 @@ class hero_form_ui extends e_admin_form_ui
 		}
 	}
 
+	// Edit mode for hero_bg and hero_media
+	function hero_images($curVal,$mode,$att)
+	{
+		$value = null;
 
+		if($mode !== 'write')
+		{
+			return null;
+		}
+
+		$bg = $this->getController()->getFieldVar('hero_bg');
+		$media = $this->getController()->getFieldVar('hero_media');
+
+		return "<table class='table table-condensed table-bordered' style='margin:0;width:auto'>
+				<tr>
+					<th class='text-center'>Background</th>
+					<th class='text-center'>Image/Video</th>
+				</tr>
+				<tr>
+					<td class='text-center' style='padding-left:15px'>".$this->imagepicker('hero_bg', $bg, null, array('media'=>'hero^'))."</td>
+					<td class='text-center' style='padding-left:15px'>".$this->imagepicker('hero_media', $media, null, array('media'=>'hero^',  'video' => 1))."</td>
+				</tr>
+				</table>";
+
+
+
+	}
 
 }		
 		
