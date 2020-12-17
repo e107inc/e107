@@ -8,16 +8,7 @@
  *
 */
 
-/*
-if($sql->db_Select('page', 'page_id, page_title', "menu_name=''")) 
-{
-	$front_page['custom']['title'] = FRTLAN_30;
-	while($row = $sql->db_Fetch())
-	{
-		$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
-	}
-}
-*/
+
 
 if (!defined('e107_INIT')) { exit; }
 

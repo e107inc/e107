@@ -83,7 +83,7 @@ for($i = $start_year; $i <= $end_year; $i++)
 	if ($i == $req_year) 
 	{
 		$year_selector .= " selected='selected'";
-		if ($bcSql->db_Select("news", "news_id, news_datestamp, news_class", "news_datestamp > {$start} AND news_datestamp < {$end}")) 
+		if ($bcSql->select("news", "news_id, news_datestamp, news_class", "news_datestamp > {$start} AND news_datestamp < {$end}"))
 		{
 			while ($news = $bcSql->fetch())
 			{

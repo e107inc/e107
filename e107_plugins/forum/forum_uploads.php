@@ -56,7 +56,7 @@ if($msg)
 $fi = new e_file;
 $mask = ".*_".USERID."_FT.*";
 $fileList = $fi->get_files(e_UPLOAD, $mask);
-if($sql->db_Select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'")) // FIXME new forum db structure
+if($sql->select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'")) // FIXME new forum db structure
 {
 	$threadList = $sql->db_getList();
 }

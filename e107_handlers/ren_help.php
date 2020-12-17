@@ -245,15 +245,6 @@ function PreFile_Select($formid='prefile_selector')
 	$filelist = array();
 	$downloadList = array();
 
-	/*$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		if($download_url)
-		{
-			$filelist[] = array('id' => $download_id, 'name' => $download_name, 'url' => $download_url, 'class' => $download_class);
-			$downloadList[] = $download_url;
-		}
-	}*/
 
 	$tmp = $fl->get_files(e_FILE.'downloads/');
 	foreach($tmp as $value)

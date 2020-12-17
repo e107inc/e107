@@ -2236,10 +2236,10 @@ class users_admin_ui extends e_admin_ui
 							{
 								$usr_email = trim($result[0]);
 							}
-							if ($sql->db_Select('user','user_id, user_name, user_email',"user_email='".$usr_email."' "))
+							if ($sql->select('user','user_id, user_name, user_email',"user_email='".$usr_email."' "))
 							{
 								$row = $sql->fetch();
-								if ($sql->db_Update('user',"`user_email`='' WHERE `user_id` = '".$row['user_id']."' ") !== false)
+								if ($sql->update('user',"`user_email`='' WHERE `user_id` = '".$row['user_id']."' ") !== false)
 								{
 								// echo "Deleting user email {$row['user_email']} for user {$row['user_name']}, id={$row['user_id']}<br />";
 									$dodel = true;
@@ -2375,7 +2375,7 @@ class users_admin_ui extends e_admin_ui
 		// $bantype = 2;
 		// $ins = " AND user_join < ".strtotime("-30 days");
 	// }
-	// if ($sql->db_Select("user","user_id, user_name","user_ban= {$bantype}".$ins))
+	// if ($sql->select("user","user_id, user_name","user_ban= {$bantype}".$ins))
 	// {
 		// $uList = $sql->db_getList();
 		// foreach ($uList as $u)

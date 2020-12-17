@@ -75,7 +75,7 @@ class auth_login extends alt_auth_base
 
 		// See if the user's in the E107 database - otherwise they can go away
 		global $sql, $tp;
-		if (!$sql->db_Select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'")) 
+		if (!$sql->select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'"))
 		{	// Invalid user
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;

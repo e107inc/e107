@@ -562,14 +562,13 @@ class user_shortcodes extends e_shortcode
 		$url = e107::getUrl();
 		if(!$userjump = e107::getRegistry('userjump'))
 		{
-		//  $sql->db_Select("user", "user_id, user_name", "`user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
 		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
 		  if ($row = $sql->fetch())
 		  {
 			$userjump['next']['id'] = $row['user_id'];
 			$userjump['next']['name'] = $row['user_name'];
 		  }
-		//  $sql->db_Select("user", "user_id, user_name", "`user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
+
 		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
 		  if ($row = $sql->fetch())
 		  {

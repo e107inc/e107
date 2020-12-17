@@ -1137,7 +1137,7 @@ if ($writeBanFile)
 // Edit modes - get existing entry
 if ($action == 'edit' || $action == 'whedit')
 {
-	$sql->db_Select('banlist', '*', "banlist_ip='{$sub_action}'");
+	$sql->select('banlist', '*', "banlist_ip='{$sub_action}'");
 	$row = $sql->fetch();
 	extract($row);				//FIXME - kill extract()
 }
@@ -1695,7 +1695,7 @@ switch ($action)
 		$filter = ($action == 'white') ? 'banlist_bantype='.eIPHandler::BAN_TYPE_WHITELIST : 'banlist_bantype!='.eIPHandler::BAN_TYPE_WHITELIST;
 
 
-		if(!$ban_total = $sql->db_Select("banlist", "*", $filter." ORDER BY banlist_ip"))
+		if(!$ban_total = $sql->select("banlist", "*", $filter." ORDER BY banlist_ip"))
 		{
 			//$text .= "<div class='center'>".$no_values[$action]."</div>";
 			$mes->addInfo($no_values[$action]);

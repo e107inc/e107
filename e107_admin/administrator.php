@@ -119,7 +119,7 @@ function show_admins()
 
 	
 	
-	$sql->db_Select("user", "*", "user_admin='1'");
+	$sql->select("user", "*", "user_admin='1'");
 
 	$text = "
 	<form action='".e_SELF."' method='post' id='del_administrator'>

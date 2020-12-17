@@ -484,8 +484,7 @@ class rater
 				
 			if($row = $sql->insert("rate", $insert))
 			{
-                //$row = $sql->db_Fetch();
-                $edata = array(
+                    $edata = array(
                     'like_pid' => $row,
                     'like_table' => $table,
                     'like_item_id' => $itemid,

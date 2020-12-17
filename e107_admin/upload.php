@@ -602,12 +602,12 @@ if (isset($_POST['optionsubmit']))
 	$temp['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
 	$temp['upload_class'] = $_POST['upload_class'];
 	$temp['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
-	if ($temp['upload_enabled'] && !$sql->db_Select("links", "*", "link_url='upload.php' ")) 
+	if ($temp['upload_enabled'] && !$sql->select("links", "*", "link_url='upload.php' "))
 	{
 	  $sql->db_Insert("links", "0, '".LAN_UPLOAD."', 'upload.php', '', '', 1,0,0,0,0");
 	}
 
-	if (!$temp['upload_enabled'] && $sql->db_Select("links", "*", "link_url='upload.php' ")) 
+	if (!$temp['upload_enabled'] && $sql->select("links", "*", "link_url='upload.php' "))
 	{
 		$sql->db_Delete("links", "link_url='upload.php' ");
 	}
@@ -798,8 +798,8 @@ switch ($action)
     break;
 	
   case 'view' :
-	$sql->db_Select('upload', '*', "upload_id='{$id}'");
-	$row = $sql->db_Fetch();
+	$sql->select('upload', '*', "upload_id='{$id}'");
+	$row = $sql->fetch();
 	 extract($row);
 
 
@@ -913,7 +913,7 @@ switch ($action)
 
 	$text .= "<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
 
-	if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY upload_id ASC")) 
+	if (!$active_uploads = $sql->select("upload", "*", "upload_active=0 ORDER BY upload_id ASC"))
 	{
 	  $text .= UPLLAN_19.".\n</td>\n</tr>";
 	} 

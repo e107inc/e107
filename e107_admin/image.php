@@ -359,7 +359,7 @@ class media_form_ui extends e_admin_form_ui
 		/*$sql = e107::getDb();
 	//	$sql->gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
 		$sql->gen("SELECT media_cat_title, media_cat_owner FROM #core_media_cat");
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$cat = $row['media_cat_owner'];
 			$this->cats[$cat] = $row['media_cat_title'];
@@ -2769,9 +2769,9 @@ class media_admin_ui extends e_admin_ui
 				$image_pre = '';
 				$disabled = false;
 				/*
-				if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
+				if ($sql->select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
 					$users .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
 				}
@@ -3422,7 +3422,7 @@ class media_admin_ui extends e_admin_ui
 			
 			/*
 				
-						if(file_exists($newpath) || $sql->db_Select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+						if(file_exists($newpath) || $sql->select("core_media","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
 						{
 							$mes->addWarning($newpath." already exists and was renamed during import.");	
 							$file = $f['pathinfo']['filename']."_.".$f['pathinfo']['extension'];

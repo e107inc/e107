@@ -166,8 +166,7 @@ else
 
 			$cookieval = $row['user_id'].".".md5($row['user_password']);
 
-			//	  $sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
-			//	  list($user_id, $user_name, $userpass) = $sql->db_Fetch();
+
 
 			// Calculate class membership - needed for a couple of things
 			// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point

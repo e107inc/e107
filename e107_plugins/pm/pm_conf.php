@@ -175,7 +175,7 @@ if (isset($_POST['pm_maint_execute']))
 if(isset($_POST['addlimit']))
 {
 	$id = intval($_POST['newlimit_class']);
-	if($sql->db_Select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
+	if($sql->select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
 	{
 		$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
 	}

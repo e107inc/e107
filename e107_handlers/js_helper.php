@@ -137,9 +137,7 @@ class e_jshelper
 	        $ret .= "\t<e107action name='{$action}'>\n";
             foreach ($field_array as $field => $value)
 	        {
-	            //associative arrays only - no numeric keys!
-	            //to speed this up use $sql->db_Fetch();
-	            //when passing large data from the DB
+
 	            if (is_numeric($field) || empty($field)) continue;
 
 	            switch (gettype($value)) {
@@ -183,7 +181,10 @@ class e_jshelper
     	}
 
     	if(null !== $action) echo $this->buildXmlResponse();
-		while (@ob_end_flush());
+		while (ob_get_length() !== false)
+		{
+		    ob_end_clean();
+		}
     	exit;
     }
 
@@ -212,7 +213,10 @@ class e_jshelper
     	    $this->addResponseAction($action, $data_array);
     	}
 		if(null !== $action) echo $this->buildJSONResponse();
-		while (@ob_end_flush());
+		while (ob_get_length() !== false)
+		{
+		    ob_end_clean();
+		}
     	exit;
     }
     
@@ -256,7 +260,10 @@ class e_jshelper
     { 
     	header('Content-type: text/html; charset='.CHARSET, true);
     	echo $this->addTextResponse($data_text)->buildTextResponse();
-		while (@ob_end_flush());
+		while (ob_get_length() !== false)
+		{
+		    ob_end_clean();
+		}
     	exit;
     }
     

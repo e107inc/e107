@@ -153,7 +153,7 @@ if ($action == 'top')
 		WHERE ue.user_plugin_forum_posts > 0
 		ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$from}, {$view}
 		";
-		//		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
+
 		$text = "
 			<div>
 			<table style='width:95%' class='table table-striped fborder'>
