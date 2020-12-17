@@ -37,6 +37,7 @@ if(!class_exists("hero_setup"))
 			if(!empty($ret['failed']))
 			{
 				e107::getMessage()->addError("Failed to import default slides.");
+				e107::getMessage()->addDebug(print_a($ret['failed'],true));
 			}
 
 		}

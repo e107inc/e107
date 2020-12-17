@@ -56,7 +56,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">0</field>
-			<field name="hero_image">{e_PLUGIN}hero/images/slide1.jpg</field>
+			<field name="hero_media"></field>
+			<field name="hero_bg">{e_PLUGIN}hero/images/slide1.jpg</field>
 		</item>
 		<item>
 			<field name="hero_id">2</field>
@@ -112,7 +113,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">1</field>
-			<field name="hero_image">{e_PLUGIN}hero/images/slide2.jpg</field>
+			<field name="hero_media"></field>
+			<field name="hero_bg">{e_PLUGIN}hero/images/slide2.jpg</field>
 		</item>
 		<item>
 			<field name="hero_id">3</field>
@@ -168,7 +170,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">2</field>
-			<field name="hero_image">{e_PLUGIN}hero/images/slide3.jpg</field>
+			<field name="hero_media"></field>
+			<field name="hero_bg">{e_PLUGIN}hero/images/slide3.jpg</field>
 		</item>
 	</dbTable>
 	</database>

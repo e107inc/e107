@@ -80,7 +80,8 @@ class hero_ui extends e_admin_ui
 		protected $fields 		= array (
 		   'checkboxes'         =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'hero_id'           =>   array ( 'title' => LAN_ID, 'type' => null, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		   'hero_image'       => array('title'=> LAN_IMAGE, 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
+		  'hero_media'       => array('title'=> "Image/Video", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
+          'hero_bg'       => array('title'=> "Background", 'type'=>'image', 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
 
 		  'hero_title'        =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => '18%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_description'  =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'text', 'data' => 'str', 'width' => '30%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
@@ -93,7 +94,7 @@ class hero_ui extends e_admin_ui
 	        'options'             =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
-		protected $fieldpref = array('hero_image', 'hero_title', 'hero_description', 'hero_bullets', 'hero_button1', 'hero_class');
+		protected $fieldpref = array('hero_media', 'hero_bg', 'hero_title', 'hero_description', 'hero_bullets', 'hero_button1', 'hero_class');
 		
 
 	//	protected $preftabs        = array('General', 'Other' );
