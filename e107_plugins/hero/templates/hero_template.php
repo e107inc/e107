@@ -34,6 +34,7 @@ $HERO_TEMPLATE['menu']['footer'] 	= '</div><div class="carousel-controls">
 
 
 $HERO_TEMPLATE['menu']['start'] 	    = '<div class="carousel-item item {HERO_SLIDE_ACTIVE}" style="background-image:url({HERO_IMAGE})">
+						                  <div class="container">
 						                  <div class="carousel-caption">
 						                    <div class="hero-text-container">
 						                      <header class="hero-title animated slideInLeft animation-delay-5">
@@ -50,6 +51,7 @@ $HERO_TEMPLATE['menu']['end'] 	    = ' </ul>
 					                          </a>
 					                        
 					                      </div>
+					                    </div>
 					                    </div>
 					                    </div>
 					                    </div>';
