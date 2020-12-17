@@ -98,7 +98,7 @@ class hero_ui extends e_admin_ui
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
-			'visibility'		=> array('title'=> LAN_VISIBILITY, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>''),
+			'visibility'		=> array('title'=> LAN_VISIBILITY, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>'', 'writeParms'=>array('classlist' => 'public,member,guest,admin,main,classes,nobody, no-excludes')),
 			'icon_pack'		=> array('title'=> "Icon Pack", 'tab'=>0, 'type'=>'method', 'data' => 'str', 'writeParms'=>array(),'help'=>''),
 			'slide_interval'    => array('title'=>'Slide Interval', 'type'=>'dropdown', 'data'=>'int', 'writeParms'=>array('optArray'=>array())),
 		);

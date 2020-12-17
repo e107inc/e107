@@ -210,6 +210,11 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_button1_label($parm=null)
 	{
+		if(empty($this->var['hero_button1']['label']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->parseTemplate($this->var['hero_button1']['label'], true);
 	}
 	
