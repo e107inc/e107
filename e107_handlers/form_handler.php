@@ -6502,7 +6502,7 @@ var_dump($select_options);*/
 				$parms = 'total='.$total;
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
-				if(ADMIN_AREA)
+				if(defined('ADMIN_AREA') && ADMIN_AREA)
 				{
 					$parms .= '&tmpl_prefix=admin';
 				}
