@@ -60,7 +60,7 @@ class e_jshelper
      * @param array $data_array item data for the action
      * @return e_jshelper
      */
-    function addResponseAction($action, $data_array)
+    public function addResponseAction($action, $data_array)
     {
         if(!isset($this->_response_actions[$action]))
         {
@@ -80,7 +80,7 @@ class e_jshelper
      * @param array $data_array item data for the action
      * @return e_jshelper
      */
-    function addResponseItem($action, $subaction, $data)
+    public function addResponseItem($action, $subaction, $data)
     {
         if(!isset($this->_response_actions[$action]))
         {
@@ -110,7 +110,7 @@ class e_jshelper
      * @param bool $reset clear current response actions
      * @return array response actions
      */
-    function getResponseActions($reset = false) {
+    public function getResponseActions($reset = false) {
         if($reset)
         {
             $ret = $this->_response_actions;
@@ -127,7 +127,7 @@ class e_jshelper
      *
      * @return string XML response
      */
-    function buildXmlResponse()
+    public function buildXmlResponse()
     {
         $action_array = $this->getResponseActions(true);
         $ret = '<?xml version="1.0"  encoding="'.CHARSET.'" ?>';
@@ -138,14 +138,17 @@ class e_jshelper
             foreach ($field_array as $field => $value)
 	        {
 
-	            if (is_numeric($field) || empty($field)) continue;
+	            if (is_numeric($field) || empty($field))
+	            {
+		            continue;
+	            }
 
 	            switch (gettype($value)) {
 	            	case 'array':
 	            		foreach ($value as $v)
 	            		{
 	            			if(is_string($v)) { $v = "<![CDATA[{$v}]]>"; }
-	            			$ret .= "\t\t<item type='".gettype($v)."' name='{$field}'>{$v}</item>\n";;
+	            			$ret .= "\t\t<item type='".gettype($v)."' name='{$field}'>{$v}</item>\n";
 	            		}
 	            	break;
 	            	
@@ -172,18 +175,21 @@ class e_jshelper
      * @param string $action optional
      * @param array $data_array optional
      */
-    function sendXmlResponse($action = '', $data_array = array())
+    public function sendXmlResponse($action = '', $data_array = array())
     {
-        header('Content-type: application/xml; charset='.CHARSET, true);
+        header('Content-type: application/xml; charset='.CHARSET);
         if($action)
     	{
     	    $this->addResponseAction($action, $data_array);
     	}
 
-    	if(null !== $action) echo $this->buildXmlResponse();
-		while (ob_get_length() !== false)
+    	if($action !== null)
+	    {
+		    echo $this->buildXmlResponse();
+	    }
+    	while (ob_get_level() > 0)
 		{
-		    ob_end_clean();
+		    ob_end_flush();
 		}
     	exit;
     }
@@ -193,9 +199,12 @@ class e_jshelper
      *
      * @return string JSON response
      */
-    function buildJsonResponse($data = null)
+    public function buildJsonResponse($data = null)
     {
-    	if(null !== $data) return "/*-secure-\n".json_encode($data)."\n*/";
+    	if($data !== null)
+	    {
+		    return "/*-secure-\n" . json_encode($data) . "\n*/";
+	    }
         return "/*-secure-\n".json_encode($this->getResponseActions(true))."\n*/";
     }
 
@@ -205,17 +214,20 @@ class e_jshelper
      * @param string $action optional
      * @param array $data_array optional
      */
-    function sendJsonResponse($action = '', $data_array = array())
+    public function sendJsonResponse($action = '', $data_array = array())
     {
-    	header('Content-type: application/json; charset='.CHARSET, true);
+    	header('Content-type: application/json; charset='.CHARSET);
         if($action)
     	{
     	    $this->addResponseAction($action, $data_array);
     	}
-		if(null !== $action) echo $this->buildJSONResponse();
-		while (ob_get_length() !== false)
+		if($action !== null)
 		{
-		    ob_end_clean();
+			echo $this->buildJSONResponse();
+		}
+		while (ob_get_level() > 0)
+		{
+		    ob_end_flush();
 		}
     	exit;
     }
@@ -240,7 +252,7 @@ class e_jshelper
      *
      * @return string
      */
-    function buildTextResponse()
+    public function buildTextResponse()
     {
     	$content = $this->getResponseActions(true);
     	if(!isset($content['text']) || !isset($content['text']['body']))
@@ -256,13 +268,13 @@ class e_jshelper
      * @param string $action optional
      * @param array $data_array optional
      */
-    function sendTextResponse($data_text = '')
+    public function sendTextResponse($data_text = '')
     { 
-    	header('Content-type: text/html; charset='.CHARSET, true);
+    	header('Content-type: text/html; charset='.CHARSET);
     	echo $this->addTextResponse($data_text)->buildTextResponse();
-		while (ob_get_length() !== false)
+		while (ob_get_level() > 0)
 		{
-		    ob_end_clean();
+		    ob_end_flush();
 		}
     	exit;
     }
@@ -275,12 +287,11 @@ class e_jshelper
      * @param string $action optional Action
      * @return boolean success
      */
-    function sendResponse($response_type = '')
+    public function sendResponse($response_type = '')
     {
     	if(!$response_type)
     	{
-    		//TODO - pref?
-    		$response_type = strtolower(ucfirst($this->_prefered_response_type)); 
+    		$response_type = strtolower($this->_prefered_response_type);
     	}
     	$method = "send{$response_type}Response"; 
     	if(method_exists($this, $method))
@@ -299,13 +310,13 @@ class e_jshelper
      * @param string $action 'text' or response action string
      * @return e_jshelper
      */
-    function addResponse($data, $action = '')
+    public function addResponse($data, $action = '')
     {
 		if(!$action)
     	{
     		$action = 'text'; 
     	}
-		if('text' == $action)
+		if($action === 'text')
 		{
 			$this->addTextResponse($data);
 		}
@@ -322,7 +333,7 @@ class e_jshelper
      * @access private
      * @return void
      */
-    function _reset()
+    public function _reset()
     {
         $this->_response_actions = array();
     }
@@ -335,18 +346,18 @@ class e_jshelper
      * @param string $errextended
      * @access public 
      */
-    static function sendAjaxError($errcode, $errmessage, $errextended = '')
+    public function sendAjaxError($errcode, $errmessage, $errextended = '')
     {
-        header('Content-type: text/html; charset='.CHARSET, true);
-        header("HTTP/1.0 {$errcode} {$errmessage}", true);
-        header("e107ErrorMessage: {$errmessage}", true);
-        header("e107ErrorCode: {$errcode}", true);
+        header('Content-type: text/html; charset='.CHARSET);
+        header("HTTP/1.0 {$errcode} {$errmessage}");
+        header("e107ErrorMessage: {$errmessage}");
+        header("e107ErrorCode: {$errcode}");
 
         //Safari expects some kind of output, even empty
-        echo ($errextended ? $errextended : ' ');
-		while (ob_get_length() !== false)
+        echo ($errextended ?: ' ');
+		while (ob_get_level() > 0)
 		{
-		    ob_end_clean();
+		    ob_end_flush();
 		}
         exit;
     }
@@ -358,7 +369,7 @@ class e_jshelper
      * @param string $string
      * @return string
      */
-    function toString($string)
+    public function toString($string)
     {
         return "'".str_replace(array("\\'", "'"), array("'", "\\'"), $string)."'";
     }
