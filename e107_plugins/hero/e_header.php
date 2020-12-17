@@ -13,15 +13,14 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$heroVisibility = e107::pref('hero', 'visibility', e_UC_NOBODY);
 
-if(USER_AREA) // prevents inclusion of JS/CSS/meta in the admin area.
+if(USER_AREA && check_class($heroVisibility))
 {
-	// @todo add check for the hero_menu being active.
-
 	e107::library('load', 'animate.css');
 	e107::css('hero', 'css/hero.css');
-
 }
 
+unset($heroVisibility);
 
 
