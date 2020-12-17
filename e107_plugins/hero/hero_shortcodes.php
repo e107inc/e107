@@ -17,14 +17,35 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 		return $this->var['hero_id'];
 	}
 
-	public function sc_hero_image($parm=null)
+	public function sc_hero_media($parm=null)
 	{
-		if(empty($this->var['hero_image']))
+		if(empty($this->var['hero_media']))
 		{
 			return null;
 		}
 
-		return e107::getParser()->replaceConstants($this->var['hero_image'], 'full');
+		if(empty($parm['w']) )
+		{
+			$parm['w'] = e107::getParser()->thumbWidth();
+		}
+
+		if(empty($parm['h']) )
+		{
+			$parm['h'] = e107::getParser()->thumbHeight();
+		}
+
+		return e107::getMedia()->previewTag($this->var['hero_media'], $parm);
+	//	return e107::getParser()->replaceConstants($this->var['hero_media'], 'full');
+	}
+
+	public function sc_hero_bgimage($parm=null)
+	{
+		if(empty($this->var['hero_bg']))
+		{
+			return null;
+		}
+
+		return e107::getParser()->replaceConstants($this->var['hero_bg'], 'full');
 	}
 
 	public function sc_hero_carousel_indicators($parm=null)

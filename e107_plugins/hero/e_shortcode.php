@@ -48,11 +48,9 @@ class hero_shortcodes extends e_shortcode
 
 		$data = e107::getDb()->retrieve('hero','*',"hero_class IN(".USERCLASS_LIST.") ORDER BY hero_order",true);
 
+		$sc = e107::getScBatch('hero', true, 'hero');
 
-		$sc = e107::getScBatch('hero',true, 'hero');
-
-		$template = e107::getTemplate('hero','hero','menu');
-
+		$template = e107::getTemplate('hero','hero','default'); // todo use a table field to make layout dynamic.
 
 		$tp = e107::getParser();
 
@@ -96,15 +94,10 @@ class hero_shortcodes extends e_shortcode
 
 				$sc->count = $cnt;
 
-
 				$text .= $tp->parseTemplate($template['item'],true,$sc);
-
 			}
 
-
 			$text .= $tp->parseTemplate($template['end'],true,$sc);
-
-
 
 		}
 
