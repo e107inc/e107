@@ -5164,7 +5164,7 @@ var_dump($select_options);*/
 
 					$fileOnly = basename($value);
 					// Not an image but a file.  (media manager)  
-					if(!preg_match("/\.(png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)$/", $fileOnly) && false !== strpos($fileOnly,'.'))
+					if(!preg_match("/\.(png|jpg|jpeg|gif|webp|PNG|JPG|JPEG|GIF|WEBP)$/", $fileOnly) && false !== strpos($fileOnly,'.'))
 					{
 						$icon = "{e_IMAGE}filemanager/zip_32.png";	
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');

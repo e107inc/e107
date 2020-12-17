@@ -1261,7 +1261,7 @@ class xmlClass
 
 
 
-		if(vartrue($xmlArray['database']))
+		if(!empty($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
