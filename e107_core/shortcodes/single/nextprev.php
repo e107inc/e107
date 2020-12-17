@@ -584,7 +584,7 @@ function nextprev_shortcode($parm = '')
 
 
 
-		if($cached_parms = getcachedvars('nextprev'))
+		if($cached_parms = e107::getRegistry('nextprev'))
 		{
 			$tmp = $cached_parms;
 			foreach($tmp as $key => $val)

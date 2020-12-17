@@ -381,7 +381,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		foreach($catList as $cat)
 		{
-			cachevars("extendedcat_{$cat['user_extended_struct_id']}", $cat);
+			e107::setRegistry("extendedcat_{$cat['user_extended_struct_id']}", $cat);
 			$text = $this->sc_userextended_cat($cat['user_extended_struct_id']);
 			$ret .= $text;
 			$catName = vartrue($cat['user_extended_struct_text'], $cat['user_extended_struct_name']);
@@ -425,7 +425,7 @@ class usersettings_shortcodes extends e_shortcode
 			return "";
 		}
 		$ret = "";
-		$catInfo = getcachedvars("extendedcat_{$parm}");
+		$catInfo = e107::getRegistry("extendedcat_{$parm}");
 		if(!$catInfo)
 		{
 			$qry = "
@@ -456,7 +456,7 @@ class usersettings_shortcodes extends e_shortcode
 				$fieldList = $sql->db_getList();
 				foreach($fieldList as $field)
 				{
-					cachevars("extendedfield_{$field['user_extended_struct_name']}", $field);
+					e107::setRegistry("extendedfield_{$field['user_extended_struct_name']}", $field);
 					//TODO use $this instead of parseTemplate(); 
 					$ret .= $this->sc_userextended_field($field['user_extended_struct_name']);
 					//		$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
@@ -509,7 +509,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		$ret = "";
 
-		$fInfo = getcachedvars("extendeddata_{$parm}");
+		$fInfo = e107::getRegistry("extendeddata_{$parm}");
 
 		if(!$fInfo)
 		{

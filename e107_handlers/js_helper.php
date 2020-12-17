@@ -346,7 +346,7 @@ class e_jshelper
      * @param string $errextended
      * @access public 
      */
-    public function sendAjaxError($errcode, $errmessage, $errextended = '')
+    public static function sendAjaxError($errcode, $errmessage, $errextended = '')
     {
         header('Content-type: text/html; charset='.CHARSET);
         header("HTTP/1.0 {$errcode} {$errmessage}");

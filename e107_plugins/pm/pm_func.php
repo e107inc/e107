@@ -68,7 +68,7 @@ class pmbox_manager
 			$pm_info[$which] = $this->pmDB->fetch();
 			if ($which == 'inbox' && ($this->pmPrefs['animate'] == 1 || $this->pmPrefs['popup'] == 1))
 			{
-				if($new = $this->pmDB->db_Count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
+				if($new = $this->pmDB->count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
 				{
 					$pm_info['inbox']['new'] = $new;
 				}

@@ -166,7 +166,7 @@ class alt_login
 					$newUser['data'] = $db_vals;
 					validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 					$newUser['WHERE'] = '`user_id`='.$row['user_id'];
-					$aa_sql->db_Update('user',$newUser);
+					$aa_sql->update('user',$newUser);
 					if (AA_DEBUG1) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($newUser,TRUE),FALSE,LOG_TO_ROLLING);
 				}
 				foreach ($xFields as $k => $v)
@@ -184,14 +184,14 @@ class alt_login
 						$ue->addFieldTypes($xArray);		// Add in the data types for storage
 						$xArray['WHERE'] = '`user_extended_id`='.intval($row['user_id']);
 						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd update: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
-						$aa_sql->db_Update('user_extended',$xArray );
+						$aa_sql->update('user_extended',$xArray );
 					}
 					else
 					{	// Never been an extended user fields record for this user
 						$xArray['data']['user_extended_id'] = $row['user_id'];
 						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
 						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Write new extended record".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
-						$aa_sql->db_Insert('user_extended',$xArray);
+						$aa_sql->insert('user_extended',$xArray);
 					}
 				}
 			}

@@ -2159,7 +2159,7 @@ class e_db_mysql implements e_db
 	 */
 	public function resetTableList()
 	{
-		return $this->db_ResetTableList();
+		$this->db_ResetTableList();
 	}
 
 	/**
