@@ -71,7 +71,7 @@ class hero_ui extends e_admin_ui
 	//	protected $sortParent      = 'somefield_parent';
 	//	protected $treePrefix      = 'somefield_title';
 
-	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
+		protected $tabs				= array(LAN_GENERAL, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
 		
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
 	
@@ -89,13 +89,13 @@ class hero_ui extends e_admin_ui
 		  'hero_images'        => array('title'=> "Media", 'type'=>'method', 'data'=>false, 'nolist'=>true),
 		  'hero_button1'      =>   array ( 'title' => 'Button-1', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_button2'      =>   array ( 'title' => 'Button-2', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		   'hero_order'      =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	       'hero_class'      =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		   'hero_order'      =>   array ( 'title' => LAN_ORDER, 'tab'=>1 , 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	       'hero_class'      =>   array ( 'title' => LAN_VISIBILITY, 'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
 	        'options'             =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
-		protected $fieldpref = array('hero_media', 'hero_bg', 'hero_title', 'hero_description', 'hero_bullets', 'hero_button1', 'hero_class');
+		protected $fieldpref = array('hero_media', 'hero_bg', 'hero_title', 'hero_description', 'hero_bullets', 'hero_button1');
 		
 
 	//	protected $preftabs        = array('General', 'Other' );
@@ -406,7 +406,7 @@ class hero_form_ui extends e_admin_form_ui
 
 		);
 
-				$text = "<table class='table table-condensed table-bordered'>
+				$text = "<table class='table table-condensed table-bordered' style='margin:0;'>
 				<colgroup>
 					<col style='width:5%' />
 					<col style='width:5%' />
