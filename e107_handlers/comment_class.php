@@ -1423,7 +1423,7 @@ class comment
 				return null;
 			}
 
-			$data = getcachedvars('e_comment');
+			$data = e107::getRegistry('e_comment');
 			if ($data !== FALSE)
 			{
 				return $data;

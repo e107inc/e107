@@ -550,11 +550,11 @@
 			if($forum->prefs->get('sig_once'))
 			{
 				$_tmp = 'forum_sig_shown_' . $this->postInfo['post_user'];
-				if(getcachedvars($_tmp))
+				if(e107::getRegistry($_tmp))
 				{
 					return '';
 				}
-				cachevars($_tmp, 1);
+				e107::setRegistry($_tmp, 1);
 			}
 
 			if($parm == 'clean')

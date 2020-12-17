@@ -53,7 +53,7 @@ class db_table_admin
 		}
 		$row = $sql->db_Fetch('num');
 		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$prefix}{$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
+		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$prefix}{$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
 		if ($count === FALSE)
 		{
 			return "Error occurred";
@@ -112,7 +112,7 @@ class db_table_admin
 			$table_name = '\w+?';
 		}
 		// Regex should be identical to that in get_current_table (apart from the source text variable name)
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $this->file_buffer, $matches, PREG_SET_ORDER);
+		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $this->file_buffer, $matches, PREG_SET_ORDER);
 		if ($count === false)
 		{
 			return "Error occurred";

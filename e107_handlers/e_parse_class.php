@@ -1061,7 +1061,7 @@ class e_parse extends e_parser
 							if ($utf8)
 							{
 								// Pull out a piece of the maximum permissible length
-								if (preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches) == 0)
+								if (preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.?).*#s',$sp,$matches) == 0)
 								{
 									// Make any problems obvious for now
 									$value .= '[!<b>invalid utf-8: '.$sp.'<b>!]';

@@ -490,7 +490,7 @@ class tinymce
 		if($id)
 		{
 			$insert_array['WHERE'] = $this->primary." = ".$id;
-			$status = $sql->db_Update($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+			$status = $sql->update($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
 			$message = LAN_UPDATED;	
 			
 			
@@ -499,7 +499,7 @@ class tinymce
 		}
 		else
 		{
-			$status = $sql->db_Insert($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+			$status = $sql->insert($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
 			$message = LAN_CREATED;	
 		}
 		
@@ -518,7 +518,7 @@ class tinymce
 		$sql = e107::getDb();
 		
 		$query = $this->primary." = ".$id;
-		$status = $sql->db_Delete($this->table,$query) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+		$status = $sql->delete($this->table,$query) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
 		$message = LAN_DELETED;
 		$emessage->add($message, $status);		
 	}

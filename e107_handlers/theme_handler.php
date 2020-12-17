@@ -1180,11 +1180,12 @@ class themeHandler
 		if(isset($_POST['submit_adminstyle']))
 		{
 			$this->id = $this->curTheme;
-			if($this->setAdminStyle())
+			$this->setAdminStyle(); // this redirects.
+			/*if($this->setAdminStyle())
 			{
 				eMessage::getInstance()->add(TPVLAN_43, E_MESSAGE_SUCCESS);
 			}
-			e107::getConfig()->save(true);
+			e107::getConfig()->save(true);*/
 		}
 
 		if(isset($_POST['submit_style']))

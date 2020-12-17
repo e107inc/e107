@@ -545,7 +545,7 @@ $columnInfo = array(
             $foundSome = false;
             foreach($files as $file)
 			{
-               if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
                   if (!$foundSome) {
    		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -816,7 +816,7 @@ $columnInfo = array(
 		            $files = $efile->get_files(e_DOWNLOAD);
 		            $foundSome = false;
 		            foreach($files as $file) {
-		               if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+		               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
 		                  if (!$foundSome) {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -1877,7 +1877,7 @@ $columnInfo = array(
 				$updateArray = array_merge($dlInfo,$dlMirrors);
 				$updateArray['WHERE'] = 'download_id='.intval($id);
 				
-				$mes->addAuto($sql->db_Update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
+				$mes->addAuto($sql->update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
 	                
 				$dlInfo['download_id'] = $id;
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
@@ -1909,7 +1909,7 @@ $columnInfo = array(
 		
 		            if ($_POST['remove_upload'])
 		            {
-		               $sql->db_Update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
+		               $sql->update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
 		               $mess = "<br/>".$_POST['download_name']." ".DOWLAN_104;
 		               $mess .= "<br/><br/><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
 		               $this->show_message($mess);
@@ -1956,7 +1956,7 @@ $columnInfo = array(
 		  
 	      if ($delete == "mirror")
 	      {
-	         $mes->addAuto($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
+	         $mes->addAuto($sql ->delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
 	         e107::getLog()->add('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 	      }
 	
@@ -2107,12 +2107,12 @@ $columnInfo = array(
 		
 		         if (isset($_POST['id']))
 		         {
-		            $mes->addAuto($sql -> db_Update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
+		            $mes->addAuto($sql ->update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
 		            e107::getLog()->add('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
 		         }
 		         else
 		         {
-		            $mes->addAuto($sql -> db_Insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
+		            $mes->addAuto($sql ->insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
 		            e107::getLog()->add('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
 		         }
 		      }
