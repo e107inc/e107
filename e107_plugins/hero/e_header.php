@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 
 $heroVisibility = e107::pref('hero', 'visibility', e_UC_NOBODY);
 
-if(USER_AREA && check_class($heroVisibility))
+if(USER_AREA && deftrue('e_FRONTPAGE') && check_class($heroVisibility))
 {
 	e107::library('load', 'animate.css');
 	e107::css('hero', 'css/hero.css');
