@@ -69,6 +69,57 @@ class e107_debug {
 
 	}
 
+	public static function getAliases()
+	{
+		return array(
+			'off'           => 'Off',
+			'basic'         => 'Basic',
+			'counts'        => 'Traffic Counters',
+			'showsql'       => 'SQL Analysis',
+			'time'          => 'Time Analysis',
+			'notice'        => 'Notices (PHP)',
+			'warn'          => 'Warnings (PHP)',
+			'backtrace'     => 'Backtraces (PHP)',
+			'deprecated'    => 'Deprecated Functions (PHP)',
+			'inc'           => 'Included Files (PHP)',
+			'paths' 		=> 'Paths + Variables',		// dump path strings
+			'bbsc' 			=> 'BBCodes + Shortcodes',		// show bb and sc details
+			'sc'			=> 'Shortcode Placement',   		// Shortcode paths dumped inline
+			'sql' 			=> 'SQL Analysis (Detailed)',     // sql details and php errors
+			'everything' 	=> 'All Details',
+		);
+
+	}
+
+	/**
+	 *  Returns the currently active debug mode as an alias. eg. 'basic'
+	 *  @return string|null
+	 */
+	public static function getShortcut()
+	{
+		if(deftrue('e_MENU'))
+		{
+			list($tmp,$alias) = explode('=', e_MENU);
+			return str_replace(['+','-', '0', '1'],'',$alias);
+		}
+
+		if(empty($_COOKIE['e107_debug_level']))
+		{
+			return null;
+		}
+
+		$a = self::$aDebugShortcuts;
+		unset($a['all'], $a['b'], $a['d']); // remove duplicates.
+
+		$keys = array_flip($a);
+
+		list($tmp,$level) = explode('=',$_COOKIE['e107_debug_level']);
+
+		$level = (int) $level;
+
+		return isset($keys[$level]) ? $keys[$level] : null;
+	}
+
     public static function activated()
     {
         if ((strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) || deftrue('e_DEBUG')) // ADMIN and getperms('0') are not available at this point.

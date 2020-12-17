@@ -413,7 +413,7 @@ class admin_shortcodes
 				//$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
 				//$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
 				$selected = ($lng == e_LANGUAGE) ? " selected='selected'" : "";
-				$select .= "<option value='".$lng."'{$selected}>$lng</option>\n";
+				$select .= "<option value='".$lng."' {$selected}>$lng</option>\n";
 				
 			}
 			$select .= "</select> ".(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1."</span></button>" : '')."
@@ -730,14 +730,79 @@ class admin_shortcodes
 		return $ret;
 	}
 
-
+	/**
+	 * Admin area debug dropdown menu.
+	 * @return string|null
+	 */
 	function sc_admin_debug()
 	{
-		if(e_DEBUG !== false)
+		if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
 		{
-			return "<div class='navbar-right nav-admin navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;&nbsp;</div>";
+			return null;
 		}
 
+		if(!getperms('0'))
+		{
+			return null;
+		}
+
+		$items = e107_debug::getAliases();
+		$current = e107_debug::getShortcut();
+		$currentAlias = !empty($items[$current]) ? " (".$items[$current].")" : '';
+
+		$active = deftrue('e_DEBUG') ? 'text-warning' : null;
+
+		$text = "<ul class='nav nav-admin navbar-nav navbar-right admin-icon-debug'>
+				<li class='dropdown'>
+				<a class='dropdown-toggle' title=\"Set DEBUG mode".$currentAlias."\" role='button' data-toggle='dropdown' data-target='#' href='#'>
+		";
+
+		$text .= e107::getParser()->toGlyph('fa-bug', array('class'=>$active))."<b class='caret ".$active."'></b></a>";
+
+		$text .= '<ul class="dropdown-menu " role="menu">';
+
+		$dividerBefore = array(
+			'basic', 'notice', 'paths', 'everything'
+		);
+
+		foreach($items as $var => $label)
+		{
+			if(strpos(e_REQUEST_URI, '?') !== false)
+			{
+				list($before,$after) = explode('?',e_REQUEST_URI,2);
+				if($after === '&')
+				{
+					$after = '';
+				}
+
+				$link = $before."?[debug=".$var."+]".$after;
+			}
+			else
+			{
+				$link = e_REQUEST_URI."?[debug=".$var."+]";
+			}
+
+			if(in_array($var,$dividerBefore))
+			{
+				$text .= '<li class="divider"></li>';
+			}
+
+			$active = ($var === $current) ? ' active bg-default' : '';
+
+			$text .= '<li role="menuitem" class="text-right'.$active.'">
+				<a href="'.$link.'">'.$label;
+
+		//	$text .= ($var === $current) ? '<i class="fa fa-fw fa-chevron-left"></i>' : '';
+
+			$text .= '</a>
+			</li>';
+
+
+		}
+
+		$text .= '</ul></li></ul>';
+
+		return $text;
 	}
 
 
