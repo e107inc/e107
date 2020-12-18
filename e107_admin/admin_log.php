@@ -628,7 +628,7 @@ class admin_log_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 			
-				$text = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $curVal);
+				$text = preg_replace_callback("#\[!(\w+?)(=.+?)?!]#", 'log_process', $curVal);
 				$text = $tp->toHTML($text,false,'E_BODY');
 				
 				if(strpos($text,'Array')!==false || strlen($text)>300)
@@ -1763,7 +1763,7 @@ if(isset($page_title[$action]))
 						break;
 					case 'dblog_remarks':
 						// Look for pseudo-code for newlines, link insertion
-						$val = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#", 'log_process', $row['dblog_remarks']);
+						$val = preg_replace_callback("#\[!(\w+?)(=.+?)?!]#", 'log_process', $row['dblog_remarks']);
 						break;
 					case 'dblog_ip':
 						$val = e107::getIPHandler()->ipDecode($row['dblog_ip']);
