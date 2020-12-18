@@ -245,8 +245,40 @@ class banlist_ui extends e_admin_ui
 			//$ns->tablerender('Hello',$text);				
 		}
 
-		
-		protected function transferPage()
+	/**
+	 *	Create dropdown with options for ban time - uses internal fixed list of reasonable values
+	 */
+	private static function ban_time_dropdown($click_js = '', $zero_text = LAN_NEVER, $curval = -1, $drop_name = 'ban_time')
+	{
+
+		$frm = e107::getForm();
+		$intervals = array(0, 1, 2, 3, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 336, 672);
+
+		$ret = $frm->select_open($drop_name, array('other' => $click_js, 'id' => false));
+		$ret .= $frm->option('&nbsp;', '');
+		foreach ($intervals as $i)
+		{
+			if ($i == 0)
+			{
+				$words = $zero_text ? $zero_text : LAN_NEVER;
+			}
+			elseif (($i % 24) == 0)
+			{
+				$words = floor($i / 24) . ' ' . BANLAN_23;
+			}
+			else
+			{
+				$words = $i . ' ' . BANLAN_24;
+			}
+			$ret .= $frm->option($words, $i, ($curval == $i));
+		}
+		$ret .= '</select>';
+
+		return $ret;
+	}
+
+
+	protected function transferPage()
 		{
 
 			$ipAdministrator = new banlistManager;
@@ -492,7 +524,7 @@ class banlist_ui extends e_admin_ui
 							<td class='left'>
 								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120, array('size'=>'xxlarge'))."
 							</td>
-							<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
+							<td class='center'>". self::ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_' . ($i)) ."</td>
 						</tr>
 					";
 			}
@@ -952,7 +984,7 @@ class banlist_form_ui extends e_admin_form_ui
 	}
 
 
-	new banlist_admin();
+new banlist_admin();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
