@@ -452,7 +452,7 @@ if(!e107::getConfig()->hasData())
 {
 
 	// Core prefs error - admin log
-	e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
+	e107::getAdminLog()->add('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
 
 	// Try for the automatic backup..
 	if(e107::getConfig('core_backup')->hasData())
@@ -469,7 +469,7 @@ if(!e107::getConfig()->hasData())
 		if(!e107::getConfig('core_old')->hasData())
 		{
 			// Core could not restore from automatic backup. Execution halted.
-			e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
+			e107::getAdminLog()->add('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
 
 			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
 			// No old system, so point in the direction of resetcore :(
@@ -1869,7 +1869,7 @@ function get_user_data($uid, $extra = '')
 {
 	if(e107::getPref('developer'))
 	{
-		e107::getAdminLog()->log_event(
+		e107::getAdminLog()->add(
 			'Deprecated call - get_user_data()',
 			'Call to deprecated function get_user_data() (class2.php) '."\n".print_r(debug_backtrace(null,2), true),
 			E_LOG_INFORMATIVE,
@@ -1893,7 +1893,7 @@ function get_user_data($uid, $extra = '')
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //SO MUCH DEPRECATED 
 /**
- * @deprecated
+ * @deprecated Use instead: e107::getConfig(alias)->->setPref($array)->save();
  * @example Use instead: e107::getConfig(alias)->->setPref($array)->save();  Not to be used for saving plugin or theme prefs!
  * @param string    $table
  * @param int|mixed $uid
@@ -2460,12 +2460,12 @@ function force_userupdate($currentUser)
 			$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
 			if (!isset($currentUser[$user_extended_struct_name]))
 			{
-				//e107::admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'FORCE', 'Force User update', 'Trigger field: '.$user_extended_struct_name, FALSE, LOG_TO_ROLLING);
+				//e107::admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'FORCE', 'Force User update', 'Trigger field: '.$user_extended_struct_name, FALSE, LOG_TO_ROLLING);
 				return TRUE;
 			}
 			if (($row['user_extended_struct_type'] == 7) && ($currentUser[$user_extended_struct_name] == '0000-00-00'))
 			{
-				//e107::admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'FORCE', 'Force User update', 'Trigger field: '.$user_extended_struct_name, FALSE, LOG_TO_ROLLING);
+				//e107::admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'FORCE', 'Force User update', 'Trigger field: '.$user_extended_struct_name, FALSE, LOG_TO_ROLLING);
 				return TRUE;
 			}
 		}

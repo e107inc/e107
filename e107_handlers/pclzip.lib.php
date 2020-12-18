@@ -5084,12 +5084,12 @@ class PclZip
         }
 
         // ----- Get and memorize the magic_quote value
-        $this->magic_quotes_status = ini_get('magic_quotes_runtime'); // @get_magic_quotes_runtime();
+        $this->magic_quotes_status = false; // ini_get('magic_quotes_runtime'); // @get_magic_quotes_runtime();
 
         // ----- Disable magic_quotes
-        if ($this->magic_quotes_status == 1) {
-            @ini_set('magic_quotes_runtime', 0);
-        }
+     //   if ($this->magic_quotes_status == 1) {
+          //  @ini_set('magic_quotes_runtime', 0);
+     //   }
 
         // ----- Return
         return $v_result;
@@ -5117,9 +5117,9 @@ class PclZip
         }
 
         // ----- Swap back magic_quotes
-        if ($this->magic_quotes_status == 1) {
+      /*  if ($this->magic_quotes_status == 1) {
             @ini_set('magic_quotes_runtime', 0); // set_magic_quotes_runtime($this->magic_quotes_status);
-        }
+        }*/
 
         // ----- Return
         return $v_result;

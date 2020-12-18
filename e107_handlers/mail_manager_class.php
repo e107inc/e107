@@ -1563,13 +1563,13 @@ class e107MailManager
 			$logErrors['email'] = $emailAddress;
 			$logErrors['bounceString'] = $bounceString;
 			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors).implode('[!br!]',$bounceInfo);
-		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
+		//	e107::getAdminLog()->addEvent(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
 			e107::getAdminLog()->add('Bounce receive error',$logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
 			return $errors;
 		}
 		else 
 		{
-			//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
+			//	e107::getAdminLog()->addEvent(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
 			e107::getAdminLog()->add('Bounce received/logged',$bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE',LOG_TO_ROLLING);	
 		}
 		

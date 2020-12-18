@@ -1659,7 +1659,7 @@ class e_user extends e_user_model
 		}
 
 		// TODO - lan
-		e107::getAdminLog()->log_event('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
+		e107::getAdminLog()->add('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
 		//$this->loadAs(); - shouldn't be called here - loginAs should be called in Admin area only, loadAs - front-end
 		return true;
 	}

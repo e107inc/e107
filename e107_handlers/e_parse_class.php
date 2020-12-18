@@ -464,7 +464,7 @@ class e_parse extends e_parser
 	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
 	 * @param mixed $parm [optional]
-	 * @return string|array
+	 * @return mixed
 	 * @todo complete the documentation of this essential method
 	 */
 	public function toDB($data = null, $nostrip =false, $no_encode = false, $mod = false, $parm = null)

@@ -367,7 +367,7 @@ class plugin_ui extends e_admin_ui
 
 			//	$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$info['plugin_version']. "({e_PLUGIN}".$info['plugin_path'].")";
 
-			//	$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
+			//	$log->add('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
 
 				// make sure ALL plugin/addon pref lists get update and are current
 				e107::getPlug()->clearCache()->buildAddonPrefLists();
@@ -2804,7 +2804,7 @@ class pluginManager{
 			 
 			$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$info['plugin_version']. "({e_PLUGIN}".$info['plugin_path'].")";
 			 
-			$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
+			$log->add('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
 		
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		}

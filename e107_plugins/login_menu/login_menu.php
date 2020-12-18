@@ -144,7 +144,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		}
 
 		// ------------ Pass the data & parse ------------
-		cachevars('login_menu_data', $menu_data);
+		e107::setRegistry('login_menu_data', $menu_data);
 		$text = $tp->parseTemplate($LOGIN_MENU_LOGGED, true, $login_menu_shortcodes);
     
     //menu caption

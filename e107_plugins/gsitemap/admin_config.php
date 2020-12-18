@@ -891,7 +891,7 @@ class gsitemap
 				$this->message = LAN_UPDATED; 	
 				
 				// Log update
-				$log->logArrayAll('GSMAP_04', $gmap);
+				$log->addArray($gmap)->save('GSMAP_04');
 			}
 			else
 			{
@@ -910,7 +910,7 @@ class gsitemap
 				$this->message = LAN_CREATED;
 
 				// Log insert
-				$log->logArrayAll('GSMAP_03',$gmap);
+				$log->addArray($gmap)->save('GSMAP_03');
 			}
 			else
 			{
@@ -930,7 +930,7 @@ class gsitemap
 		if($sql->delete("gsitemap", "gsitemap_id='".$d_idt[0]."'"))
 		{
 			$this->message = LAN_DELETED;
-			$log->log_event('GSMAP_02', $this->message.': '.$d_idt[0]);
+			$log->add('GSMAP_02', $this->message.': '.$d_idt[0]);
 		}
 		else
 		{
@@ -1127,7 +1127,7 @@ class gsitemap
 		}
 
 		$this->message = count($_POST['importid'])." link(s) imported.";
-		$log->log_event('GSMAP_01',$this->message);
+		$log->add('GSMAP_01',$this->message);
 	}
 
 

@@ -179,7 +179,7 @@ if (function_exists('date_default_timezone_set'))
 	date_default_timezone_set('UTC');
 }
 
-define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+define('MAGIC_QUOTES_GPC', false); // (ini_get('magic_quotes_gpc') ? true : false));
 
 $php_version = phpversion();
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))

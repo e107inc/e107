@@ -291,7 +291,7 @@ function sendTest()
 		else 
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			$log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+			$log->add('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
 		}
 	}
 

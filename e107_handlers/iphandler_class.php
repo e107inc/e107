@@ -940,14 +940,14 @@ class eIPHandler
 		$tp = e107::getParser();
 		$admin_log = e107::getAdminLog();
 
-		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
+		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
 		if ($sql->select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
 		{
 			// Any whitelist entries will be first, because they are positive numbers - so we can answer based on the first DB record read
 			$row = $sql->fetch();
 			if($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
 			{
-				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
+				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
 				return true;        // Whitelisted entry
 			}
 
@@ -972,9 +972,9 @@ class eIPHandler
 
 				$sql->update('banlist', $updateQry);
 				$this->regenerateFiles();
-				//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
+				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
-			//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+			//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
 			if ($show_error)
 			{
 				header('HTTP/1.1 403 Forbidden', true);
@@ -990,7 +990,7 @@ class eIPHandler
 
 				echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']])); 	// Show message if one set
 			}
-			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
 
 			if($this->debug)
 			{
@@ -1014,7 +1014,7 @@ class eIPHandler
 		}
 
 
-		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
+		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 		return true; 		// Email address OK
 	}
 
@@ -1071,7 +1071,7 @@ class eIPHandler
 			
 			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
 			{ // Got a whitelist entry for this
-				//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+				//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 				return FALSE;
 			}
 			return 1;		// Already in ban list
@@ -1080,7 +1080,7 @@ class eIPHandler
 		// See if the address is in the whitelist
 		if ($sql->select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
 		{ // Got a whitelist entry for this
-			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
 		} */
 		if(vartrue($pref['enable_rdns_on_ban']))

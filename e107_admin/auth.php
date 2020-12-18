@@ -148,7 +148,7 @@ else
 
 		if ($row[0] == "authfail")
 		{
-			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
+			$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 
 			e107::getRedirect()->redirect('admin.php?failed');
@@ -458,7 +458,7 @@ class auth
 				$text = 'CHAP: '.$username.' ('.$extra_text.')';
 				$title = e107::getParser()->toDB($title);
 				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+				e107::getAdminLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
 
 				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
 				*/
@@ -476,7 +476,7 @@ class auth
 				$text = 'STD: '.$username.' ('.$extra_text.')';
 				$title = e107::getParser()->toDB($title);
 				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+				e107::getAdminLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
 
 //				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
 				*/

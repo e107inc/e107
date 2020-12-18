@@ -135,7 +135,7 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 // Log event to admin log
 function banlist_adminlog($msg_num='00', $woffle='')
 {
-	e107::getAdminLog()->log_event('BANLIST_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+	e107::getAdminLog()->add('BANLIST_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
 

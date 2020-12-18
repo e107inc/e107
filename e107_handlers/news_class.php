@@ -170,7 +170,7 @@ class news {
 			{
 				
 			
-				e107::getAdminLog()->logArrayAll('NEWS_09', $logData);
+				e107::getAdminLog()->addArray($logData)->save('NEWS_09');
 
 		
 				$data['data']['news_id'] = $news['news_id'];
@@ -224,7 +224,7 @@ class news {
 				e107::getCache()->clear('news.php');
 
 				//moved down - prevent wrong mysql_insert_id
-				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
+				e107::getAdminLog()->addArray($logData)->save('NEWS_08');
 				e107::getEvent()->trigger('newspost', $data['data']);
 				e107::getEvent()->trigger('admin_news_created', $data['data']);
 

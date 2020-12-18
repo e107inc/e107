@@ -4192,7 +4192,7 @@ class e107
 	{
 		if(!defined('MAGIC_QUOTES_GPC'))
 		{
-			define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+			define('MAGIC_QUOTES_GPC', false); // (Removed in PHP 5.4 ini_get('magic_quotes_gpc') ? true : false));
 		}
 
 		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix

@@ -69,7 +69,7 @@ if(!is_array($pm_prefs))
 	$pm_prefs = pm_set_default_prefs();			// Use the default settings
 	$sysprefs->setArray('pm_prefs');
 	$emessage->add(ADLAN_PM_3, E_MESSAGE_INFO);
-	$e107->admin_log->log_event('PM_ADM_01', '');
+	$e107->admin_log->add('PM_ADM_01', '');
 }
 */
 
@@ -192,12 +192,12 @@ if(isset($_POST['addlimit']))
 
 		if($sql->insert('generic', $limArray))
 		{
-			e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
+			e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 			$mes->addSuccess(ADLAN_PM_6);
 		}
 		else
 		{
-			e107::getLog()->log_event('PM_ADM_08', '');
+			e107::getLog()->add('PM_ADM_08', '');
 			$mes->addError(ADLAN_PM_7); 
 		}
 	}
@@ -220,12 +220,12 @@ if(isset($_POST['updatelimits']))
 			//All entries empty - Remove record
 			if($sql->delete('generic','gen_id = '.$id))
 			{
-				e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
+				e107::getLog()->add('PM_ADM_07', 'ID: '.$id);
 				$mes->addSuccess($id.ADLAN_PM_9);
 			}
 			else
 			{
-				e107::getLog()->log_event('PM_ADM_10', '');
+				e107::getLog()->add('PM_ADM_10', '');
 				$mes->addError($id.ADLAN_PM_10);
 			}
 		}
@@ -239,12 +239,12 @@ if(isset($_POST['updatelimits']))
 				);
 			if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 			{
-				e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
+				e107::getLog()->addArray($limArray)->save('PM_ADM_06');
 				$mes->addSuccess($id.ADLAN_PM_11);
 			}
 			else
 			{
-				e107::getLog()->log_event('PM_ADM_09', '');
+				e107::getLog()->add('PM_ADM_09', '');
 				$mes->addError($id.ADLAN_PM_7);
 			}
 		}
@@ -439,7 +439,7 @@ function show_limits($pm_prefs)
 		{
 			$txt .= "
 			<tr>
-			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
+			<td>".e107::getUserClass()->getName($row['limit_classnum'])."</td>
 			<td>
 			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
 			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' />
@@ -631,7 +631,7 @@ function doMaint($opts, $pmPrefs)
 	$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
 	$logResults = array();
 	$e107 = e107::getInstance();
-	$e107->admin_log->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
+	$e107->admin_log->add('PM_ADM_04', implode(', ',array_keys($opts)));
 	$pmHandler = new private_message($pmPrefs);
 	$db2 = new db();							// Will usually need a second DB object to avoid over load
 	$start = 0;						// Use to ensure we get different log times
@@ -796,8 +796,8 @@ function doMaint($opts, $pmPrefs)
 		$results[E_MESSAGE_SUCCESS][$start] = $attachMessage;
 	}
 
+	e107::getLog()->addArray(makeLogEntry($results))->save('PM_ADM_03');
 
-	$e107->admin_log->logArrayAll('PM_ADM_03',makeLogEntry($results));
 	foreach ($results as $k => $r)
 	{
 		foreach ($r as $sk => $s)

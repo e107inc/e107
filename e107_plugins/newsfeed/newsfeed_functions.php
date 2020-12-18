@@ -154,7 +154,7 @@ class newsfeedClass
 
 				if (NEWSFEED_DEBUG)
 				{
-					 e107::getLog()->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
+					 e107::getLog()->addEvent(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
 				}
 				
 				require_once(e_HANDLER.'xml_class.php');

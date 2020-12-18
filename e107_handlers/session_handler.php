@@ -235,10 +235,11 @@ class e_session
 
         $hashes = hash_algos();
 
-        if ((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512', $hashes))
+    //    if ((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512', $hashes))
         {
-            ini_set('session.hash_function', 'sha512');
-            ini_set('session.hash_bits_per_character', 5);
+
+          //  ini_set('session.hash_function', 'sha512'); Removed in PHP 7.1
+          //  ini_set('session.hash_bits_per_character', 5); Removed in PHP 7.1
         }
 
         $this->fixSessionFileGarbageCollection();
@@ -678,7 +679,7 @@ class e_session
 			
 			// TODO event trigger
 			
-			// e107::getAdminLog()->log_event('Session validation failed!', $details, E_LOG_FATAL);
+			// e107::getAdminLog()->add('Session validation failed!', $details, E_LOG_FATAL);
 			// TODO session exception, handle it proper on live site
 			// throw new Exception('');
 			

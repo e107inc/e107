@@ -1554,7 +1554,7 @@ class mailoutAdminClass extends e107MailManager
 			}
 
 			$counters = $this->mailRetrieveCounters($mailMainID);
-			//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.'
+			//	$this->e107->admin_log->add('MAIL_02','ID: '.$mailMainID.'
 			// '.$counters['add'].'[!br!]'.$_POST['email_from_name']."
 			// &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
 		}

@@ -314,10 +314,6 @@ class download_main_admin_ui extends e_admin_ui
 		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
 
-		/** @deprecated see writeParms() on download_id below. */
-	//	protected $url         		= array('route'=>'download/view/item', 'vars' => array('id' => 'download_id', 'name' => 'download_sef'), 'name' => 'download_name', 'description' => ''); // 'link' only needed if profile not provided.
-
-
 	
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
