@@ -265,7 +265,7 @@ class e_object
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return e_tree_model
+	 * @return mixed|e_tree_model
 	 */
 	public function setParam($key, $value)
 	{
@@ -590,7 +590,7 @@ class e_model extends e_object
 	/**
 	 * Optional DB table - used for auto-load data from the DB
 	 * @param string $table
-	 * @return e_model
+	 * @return string
 	 */
 	public function getModelTable()
 	{
@@ -665,10 +665,16 @@ class e_model extends e_object
 
 		$eurl = e107::getUrl();
 
-		if(empty($options)) $options = array();
-		elseif(!is_array($options)) parse_str($options, $options);
+	    if (empty($options))
+	    {
+		    $options = array();
+	    }
+	    elseif(is_string($options))
+	    {
+		    parse_str($options, $options);
+	    }
 
-		$vars = $this->toArray();
+	    $vars = $this->toArray();
 		if(!isset($options['allow']) || empty($options['allow']))
 		{
 			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
@@ -3571,7 +3577,9 @@ class e_tree_model extends e_front_model
 	 */
 	protected function countResults($sql)
 	{
-		$this->_total = is_int($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		$total = $sql->foundRows();
+		$this->_total = is_int($total) ? $total : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 		{
 			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
