@@ -1930,7 +1930,7 @@ class lancheck
 			return TRUE;
 		}
 	
-		return (preg_match('/^.{1}/us',$str,$ar) == 1);
+		return (preg_match('/^./us',$str,$ar) == 1);
 	}
 	
 

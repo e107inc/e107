@@ -3600,7 +3600,7 @@ class e_tree_model extends e_front_model
 	protected function prepareSimulatedPagination()
 	{
 		$db_query = $this->getParam('db_query');
-		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET){0,1}[ ]*([\d]*)/i", function($matches)
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET)?[ ]*([\d]*)/i", function($matches)
 		{
 			// Count only
 			if (empty($matches[2]))
