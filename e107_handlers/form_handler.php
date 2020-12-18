@@ -2592,15 +2592,15 @@ class e_form
 		{
 			$style = " style='text-indent:" . (1.2 * $nest_level) . "em'";
 		}
-		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
+		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->getDescription($classnum).')</span>' : '';
 
-		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classIndex).$descr, $treename.'[]', $classnum)."</div>\n";
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->getName($classIndex).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
 
 
 	function uc_label($classnum)
 	{
-		return $this->_uc->uc_get_classname($classnum);
+		return $this->_uc->getName($classnum);
 	}
 
 	/**
@@ -3181,7 +3181,7 @@ var_dump($select_options);*/
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		}
-		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classSign.$classIndex, ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
+		return $this->option($prefix.$this->_uc->getName($classnum), $classSign.$classIndex, ($current_value !== '' && in_array($classnum, $tmp)), array("style"=>"{$style}"))."\n";
 	}
 
 

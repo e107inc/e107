@@ -2037,7 +2037,7 @@ class forumAdmin
 				$text .= "
 				<tr>
 				<td colspan='2'>".$parent['forum_name']."
-				<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->uc_get_classname($parent['forum_postclass'])."
+				<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->getName($parent['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->getName($parent['forum_postclass'])."
 				</td>";
 
 				$text .= "<td style='text-align:center'>";
@@ -2083,7 +2083,7 @@ class forumAdmin
 
 						$text .= "
 						<br /><span class='smallblacktext'>".$tp->toHTML($forum['forum_description'])."&nbsp;</span>
-						<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->uc_get_classname($forum['forum_postclass'])."
+						<br /><b>".FORLAN_140.":</b> ".e107::getUserClass()->getName($forum['forum_class'])."&nbsp;&nbsp;<b>".LAN_FORUM_2015.":</b> ".e107::getUserClass()->getName($forum['forum_postclass'])."
 
 						</td>
 

@@ -419,7 +419,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		
 	//	if (SIGNUP_DEBUG)
 	//	{
-		//	 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		//	 $admin_log->addEvent(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
 	//	}
 
 		// Log to user audit log if enabled
@@ -535,7 +535,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				
 				if($user_class_update === FALSE)
 				{
-					//$admin_log->e_log_event(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
+					//$admin_log->addEvent(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
 					require_once(HEADERF);
 					$ns->tablerender(LAN_SIGNUP_75, LAN_SIGNUP_101);
 					require_once(FOOTERF);

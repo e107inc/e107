@@ -183,7 +183,7 @@ class private_message
 		{
 			if(!empty($vars['pm_userclass']))
 			{
-				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
+				$toclass = e107::getUserClass()->getName($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
 				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;

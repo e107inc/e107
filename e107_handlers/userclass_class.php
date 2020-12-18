@@ -636,7 +636,7 @@ class user_class
 			{
 				// $c = (in_array($k,$curArray)) ?  " checked='checked'" : '';
 				$c = (in_array($k,$curArray)) ?  true : false;
-				if ($showdescription) $v .= ' ('.$this->uc_get_classdescription($k).')';
+				if ($showdescription) $v .= ' ('.$this->getDescription($k).')';
 				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
 				$name = $fieldname.'['.$k.']';
 				$ret[] = $frm->checkbox($name,$k,$c,$v);
@@ -1313,7 +1313,7 @@ function r_userclass_name($id)
 //  echo "Call r_userclass_name<br />";
 	global $e_userclass;
 	if (!is_object($e_userclass)) $e_userclass = new user_class;
-	return $e_userclass->uc_get_classname($id);
+	return $e_userclass->getName($id);
 }
 
 

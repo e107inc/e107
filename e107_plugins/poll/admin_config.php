@@ -159,11 +159,11 @@ function poll_list()
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
 	
-	global $user_pref;
+//	global $user_pref;
 	if(isset($_POST['etrigger_ecolumns'])) //TODO User 
 	{
-		$user_pref['admin_poll_columns'] = $_POST['e-columns'];
-		save_prefs('user');
+	//	$user_pref['admin_poll_columns'] = $_POST['e-columns'];
+		e107::getConfig('user')->setPref('admin_poll_columns',$_POST['e-columns'])->save(true,true,false);
 	}
 	
 	$fieldpref = (varset($user_pref['admin_poll_columns'])) ? $user_pref['admin_poll_columns'] : array("poll_id","poll_title","poll_options","poll_vote_userclass"); ;

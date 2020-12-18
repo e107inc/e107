@@ -2062,7 +2062,7 @@ class siteStats
 			$dbPageInfo = unserialize($row[2]);
 			unset($dbPageInfo[$toremove]);
 			$dbPageDone = serialize($dbPageInfo);
-			$sql -> db_Update("logstats", "log_data='{$dbPageDone}' WHERE log_id='pageTotal' ");
+			$sql ->update("logstats", "log_data='{$dbPageDone}' WHERE log_id='pageTotal' ");
 			return TRUE;
 		}
 		return FALSE;

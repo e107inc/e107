@@ -72,8 +72,8 @@ if(isset($_POST['updateeufs']))
 	$au = implode(',',$authExtended);
 	if ($au != $pref['auth_extended'])
 	{
-		$pref['auth_extended'] = $au;				// @TODO:
-		save_prefs();
+
+		e107::getConfig()->set('auth_extended', $au)->save(true,true,true);
 		e107::getLog()->add('AUTH_02',$au,'');
 	}
 }
@@ -85,14 +85,23 @@ if (!isset($pref['auth_noconn'])) $pref['auth_noconn'] = 0;
 // Convert prefs
 if (isset($pref['auth_nouser']))
 {
-	$pref['auth_method2'] = 'none';		// Default to no fallback
-	if ($pref['auth_nouser'])
+	$cfg = e107::getConfig();
+	$cfg->set('auth_method2', 'none');
+
+	if($pref['auth_nouser'])
 	{
-		$pref['auth_method2'] = 'e107';
+		$cfg->set('auth_method2', 'e107');
 	}
-	unset($pref['auth_nouser']);
-	if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
-	save_prefs();			// @TODO
+
+	$cfg->remove('auth_nouser');
+
+	if (!isset($pref['auth_badpassword']))
+	{
+		$cfg->set('auth_badpassword', 0);
+	}
+
+	$cfg->save(false, true, true);
+
 }
 
 

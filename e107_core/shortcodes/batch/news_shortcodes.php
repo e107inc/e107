@@ -108,8 +108,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsicon($parm=null)
 	{
-
-		return $this->sc_newscaticon('url');
+		return $this->sc_news_category_icon('url');
 	}
 
 	function sc_newsauthor($parm)
@@ -127,6 +126,7 @@ class news_shortcodes extends e_shortcode
 		}
 		return "<a href='http://e107.org'>e107</a>";
 	}
+
 
 	function sc_newscomments($parm=null)
 	{
@@ -236,7 +236,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsheader($parm=null)
 	{
-		return $this->sc_newscaticon('src');
+		return $this->sc_news_category_icon('src');
 	}
 
 
@@ -249,7 +249,50 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_category_icon($parm=null)
 	{
-		return $this->sc_newscaticon($parm);
+			if(is_string($parm))
+		{
+			$parm = array('type'=>$parm);
+		}
+		// BC
+		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
+		if (!$category_icon) { return ''; }
+
+		// We store SC path in DB now + BC
+		if($category_icon[0] == '{')
+		{
+			$src =  e107::getParser()->replaceConstants($category_icon, 'abs');
+		}
+		else
+		{
+			//Backwards Compatible Link.
+			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
+		}
+
+
+	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
+
+		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
+		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
+		$parm['class']     = 'icon news_image news-category-icon';
+
+		$icon = e107::getParser()->toIcon($category_icon, $parm);
+
+		switch($parm['type'])
+		{
+			/* @deprecated - Will cause issues with glyphs */
+			case 'src':
+				return $src;
+			break;
+
+			case 'tag':
+				return $icon;
+			break;
+
+			case 'url':
+			default:
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
+			break;
+		}
 	}
 
 
@@ -1064,50 +1107,7 @@ class news_shortcodes extends e_shortcode
 	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
 	function sc_newscaticon($parm = array())
 	{
-		if(is_string($parm))
-		{
-			$parm = array('type'=>$parm); 
-		}
-		// BC
-		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
-		if (!$category_icon) { return ''; }
-
-		// We store SC path in DB now + BC
-		if($category_icon[0] == '{')
-		{
-			$src =  e107::getParser()->replaceConstants($category_icon, 'abs');	
-		}
-		else
-		{
-			//Backwards Compatible Link.
-			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
-		}
-		
-
-	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
-
-		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
-		$parm['class']     = 'icon news_image news-category-icon';
-
-		$icon = e107::getParser()->toIcon($category_icon, $parm);
-
-		switch($parm['type'])
-		{
-			/* @deprecated - Will cause issues with glyphs */
-			case 'src':
-				return $src;
-			break;
-
-			case 'tag':
-				return $icon;
-			break;
-
-			case 'url':
-			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
-			break;
-		}
+		return $this->sc_news_category_icon($parm);
 	}
 
 	/**

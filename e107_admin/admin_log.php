@@ -357,7 +357,7 @@ class admin_log_ui extends e_admin_ui
 					// Add in a log event
 					$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 					$mes->addSuccess($message);
-					$log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
+					$log->add($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 				}
 				else
 				{

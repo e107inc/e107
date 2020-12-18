@@ -1257,7 +1257,7 @@ class e_plugin
 
 
 /**
- * @deprecated in part. To eventually be replaced with e_plugin above.
+ * @outdated in part. To eventually be replaced with e_plugin above.
  */
 class e107plugin
 {
@@ -2311,7 +2311,7 @@ class e107plugin
 	// Update prefs array according to $action
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
 	/**
-	 * @deprecated See XmlPrefs(); Left for BC.
+	 * @outdated See XmlPrefs(); Left for BC.
 	 * @param        $action
 	 * @param        $var
 	 * @param string $prefType
@@ -4046,10 +4046,10 @@ class e107plugin
 				return FALSE;
 			}
 		}
-		else
-		{
+	//	else
+	//	{
 			//$mes->add("Optional Setup File NOT Found ".$path."_setup.php ", E_MESSAGE_DEBUG);
-		}
+	//	}
 
 		return FALSE; // IMPORTANT.
 	}
@@ -4647,7 +4647,7 @@ class e107plugin
 		}
 
 		$core->save(FALSE, false, false);
-
+/*
 		if ($this->manage_icons())
 		{
 			// 	echo 'IT WORKED';
@@ -4655,7 +4655,8 @@ class e107plugin
 		else
 		{
 			// echo "didn't work!";
-			}
+			}*/
+
 		return null;
 	}
 
@@ -4777,7 +4778,7 @@ class e107plugin
 
 	/**
 	 * Check Plugin Addon for errors. 
-	 * @return array or numeric. 0 = OK, 1 = Fail, 2 = inaccessible
+	 * @return array|int array or numeric. 0 = OK, 1 = Fail, 2 = inaccessible
 	 */
 	function checkAddon($plugin_path, $e_xxx) 
 	{ 
@@ -4890,10 +4891,6 @@ class e107plugin
         }
 
 
-		if(!$plugin_icon)
-		{
-		//	
-		}
 		
      	return $plugin_icon;
 	}
@@ -4918,13 +4915,14 @@ class e107plugin
 		$eplug_icon         = null;
 		$eplug_icon_small   = null;
 
-	e107::getDebug()->log("Legacy Plugin Parse (php): ".$plugName);
+		e107::getDebug()->log("Legacy Plugin Parse (php): ".$plugName);
 
 		ob_start();
-		if (include(e_PLUGIN.$plugName.'/plugin.php'))
-		{
+		include(e_PLUGIN.$plugName.'/plugin.php');
+	//	if (include(e_PLUGIN.$plugName.'/plugin.php'))
+	//	{
 			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);
-		}
+	//	}
 		ob_end_clean();
 		$ret = array();
 

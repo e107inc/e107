@@ -716,7 +716,7 @@ require_once(e_ADMIN.'footer.php');
  */
 function frontpage_adminlog($msg_num = '00', $woffle = '')
 {
-	e107::getAdminLog()->log_event('FRONTPG_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+	e107::getAdminLog()->add('FRONTPG_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
 

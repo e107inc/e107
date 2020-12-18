@@ -90,7 +90,7 @@ class userlogin
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
 		}
 
-//	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
+//	    $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
 //		$this->e107->check_ban("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 		e107::getIPHandler()->checkBan("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 		
@@ -205,7 +205,7 @@ class userlogin
 
 
 		// User is OK as far as core is concerned
-//	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
+//	    $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
 		if (($this->passResult !== FALSE) && ($this->passResult !== PASSWORD_VALID))
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
@@ -277,7 +277,7 @@ class userlogin
 			if (time() > ($this->userData['user_join'] + (varset($pref['user_new_period'],0)*86400)))
 			{	// 'New user' probationary period expired - we can take them out of the class
 				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
-//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
+//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
 
 				/**
 				 * issue e107inc/e107#3657: Third argument of update() function is for debugging purposes and NOT used for the WHERE clause.
@@ -298,7 +298,7 @@ class userlogin
 		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
 		{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
 //		  $log_info = "New user: ".$this->userData['user_name']."  Class: ".$this->userData['user_class']."  Admin: ".$this->userData['user_admin']."  Perms: ".$this->userData['user_perms'];
-//		  $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
+//		  $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
 			// FIXME - front page now supports SEF URLs - make a check here
 			foreach ($pref['frontpage_force'] as $fk=>$fp)
 			{
@@ -313,7 +313,7 @@ class userlogin
 						}
 						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$tp->replaceConstants($fp, TRUE, FALSE);
 						$redir = e107::getParser()->replaceConstants($fp, TRUE, FALSE);
-		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
+		//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;
 				}
@@ -462,7 +462,7 @@ class userlogin
 			//$aLogVal = "U: {$username}, P: ******, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']} Prf: {$pref['password_CHAP']}/{$gotChallenge}";
 			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
-			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
+			  	//$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
@@ -669,8 +669,8 @@ class userlogin
 		$debug[0] = e_REQUEST_URI;
 
 	//	$array = debug_backtrace();
-	//	e107::getLog()->e_log_event(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-		e107::getLog()->e_log_event(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "LOGIN", $title, $debug, FALSE, LOG_TO_ROLLING);
+	//	e107::getLog()->addEvent(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+		e107::getLog()->addEvent(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "LOGIN", $title, $debug, FALSE, LOG_TO_ROLLING);
 	}
 
 

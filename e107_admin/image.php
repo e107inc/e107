@@ -2918,7 +2918,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		if(!$sc_path) return array();
 		$path = e107::getParser()->replaceConstants($sc_path);
-		$info = e107::getFile()->get_file_info($path,true);
+		$info = e107::getFile()->getFileInfo($path,true);
 		return array(
 			'media_type'		=> $info['mime'],
 			'media_datestamp'	=> time(),
@@ -3042,7 +3042,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		$mes = e107::getMessage();	
 		$tp = e107::getParser();
-		$f = e107::getFile()->get_file_info($oldpath,TRUE);
+		$f = e107::getFile()->getFileInfo($oldpath,TRUE);
 		
 		$mes->addDebug("checkDupe(): newpath=".$newpath."<br />oldpath=".$oldpath."<br />".print_r($newpath,TRUE));
 		if(file_exists($newpath) || e107::getDb()->select("core_media","*","media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
@@ -3399,7 +3399,7 @@ class media_admin_ui extends e_admin_ui
 			}
 			// End Resize routine. ---------------------
 
-			$f = $fl->get_file_info($oldpath);
+			$f = $fl->getFileInfo($oldpath);
 
 			if(!$f['mime'])
 			{
@@ -3510,27 +3510,21 @@ class media_admin_ui extends e_admin_ui
 		$mes = e107::getMessage();
 		
 		$tmp = array();
-		$tmp['image_post'] = intval($_POST['image_post']);
-		$tmp['resize_method'] = $tp->toDB($_POST['resize_method']);
-		$tmp['im_path'] = trim($tp->toDB($_POST['im_path']));
-		$tmp['image_post_class'] = intval($_POST['image_post_class']);
-		$tmp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
-		$tmp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
+		$tmp['image_post']                  = (int) $_POST['image_post'];
+		$tmp['resize_method']               = $tp->toDB($_POST['resize_method']);
+		$tmp['im_path']                     = trim($tp->toDB($_POST['im_path']));
+		$tmp['image_post_class']            = (int) $_POST['image_post_class'];
+		$tmp['image_post_disabled_method']  = (int) $_POST['image_post_disabled_method'];
+		$tmp['enable_png_image_fix']        = (int) $_POST['enable_png_image_fix'];
 		
 		if($_POST['img_import_resize_w'] && $_POST['img_import_resize_h'])
 		{
 			$tmp['img_import_resize'] = intval($_POST['img_import_resize_w'])."x".intval($_POST['img_import_resize_h']);		
-		} 
-	
-		if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
-		{
-			save_prefs();		// Only save if changes
-			$mes->add(IMALAN_9, E_MESSAGE_SUCCESS);
 		}
-		else
-		{
-			$mes->add(IMALAN_20, E_MESSAGE_INFO);
-		}	
+
+		e107::getConfig()->setPref($tmp)->save(true,true,true);
+	
+
 	}
 
 	

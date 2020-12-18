@@ -235,7 +235,7 @@ class _system_cron
 			
 		if (CRON_MAIL_DEBUG)
 		{
-			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
 		}
 
 		$mailManager = e107::getBulkEmail();
@@ -249,7 +249,7 @@ class _system_cron
 		
 		if (CRON_MAIL_DEBUG)
 		{
-			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -259,14 +259,14 @@ class _system_cron
 		if (CRON_MAIL_DEBUG)
 		{
 			$e107 = e107::getInstance();
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing started',FALSE,LOG_TO_ROLLING);
+			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing started',FALSE,LOG_TO_ROLLING);
 		}
 		require_once(e_HANDLER.'pop_bounce_handler.php');
 		$mailBounce = new pop3BounceHandler();
 		$mailBounce->processBounces();
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
+			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -276,14 +276,14 @@ class _system_cron
 		if (CRON_RETRIGGER_DEBUG)
 		{
 			$e107 = e107::getInstance();
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban retrigger','Retrigger processing started',FALSE,LOG_TO_ROLLING);
+			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Ban retrigger','Retrigger processing started',FALSE,LOG_TO_ROLLING);
 		}
 		require_once(e_HANDLER.'iphandler_class.php');
 		$ipManager = new banlistManager();
 		$ipManager->banRetriggerAction();
 		if (CRON_RETRIGGER_DEBUG)
 		{
-			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	

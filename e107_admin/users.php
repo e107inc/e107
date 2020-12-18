@@ -613,7 +613,7 @@ class users_admin_ui extends e_admin_ui
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
-		e107::getAdminLog()->log_event('USET_06', $tp->lanVars( USRLAN_162, $vars), E_LOG_INFORMATIVE);
+		e107::getAdminLog()->add('USET_06', $tp->lanVars( USRLAN_162, $vars), E_LOG_INFORMATIVE);
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
 		
 		// List data reload
@@ -786,7 +786,7 @@ class users_admin_ui extends e_admin_ui
 			 // TODO - lan
 			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) has logged in as the user --EMAIL-- (#--UID--, --NAME--)';
 			
-			e107::getLog()->log_event('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
 			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
 			e107::getEvent()->trigger('loginas', $eventData); // BC
@@ -814,7 +814,7 @@ class users_admin_ui extends e_admin_ui
 			 // TODO - lan
 			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) has logged out as the user --EMAIL-- (#--UID--, --NAME--)';
 			
-			e107::getAdminLog()->log_event('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getAdminLog()->add('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
 			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
 			e107::getEvent()->trigger('logoutas', $eventData); //BC 
@@ -855,7 +855,7 @@ class users_admin_ui extends e_admin_ui
 				'z' => $user->getValue('email')
 			);
 			
-			e107::getAdminLog()->log_event('USET_08', $tp->lanVars(USRLAN_244,$vars), E_LOG_INFORMATIVE);
+			e107::getAdminLog()->add('USET_08', $tp->lanVars(USRLAN_244,$vars), E_LOG_INFORMATIVE);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -869,7 +869,7 @@ class users_admin_ui extends e_admin_ui
 			{
 				$vars = array('x'=>$sysuser->getId(), 'y'=>$sysuser->getName(), 'z'=>$sysuser->getValue('email'));
 
-				e107::getAdminLog()->log_event('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
+				e107::getAdminLog()->add('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
 				$mes->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
 				$this->getTreeModel()->loadBatch(true);
 			}
@@ -1057,7 +1057,7 @@ class users_admin_ui extends e_admin_ui
 				if ($messaccess == '') $messaccess = UCSLAN_12."\n";
 				
 				$message = USRLAN_256." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
-				//    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
+				//    $admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
 				
 				$options['mail_subject'] = UCSLAN_2;
 				$options['mail_body'] = nl2br($message);
@@ -2639,10 +2639,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		if($controller->getMode() != 'main' || $controller->getAction() != 'list') return;
 		$row = $controller->getListModel()->getData();
 		
-		if(!getperms('4'))
-		{
-		//	return; 
-		}
+
 	
 		
 	//	extract($row);
@@ -2749,14 +2746,14 @@ class users_admin_form_ui extends e_admin_form_ui
 			$opts['usersettings'] = LAN_EDIT;
 		}
 
-		if ($row['user_perms'] == "0" && !getperms("0"))
-		{
+	//	if ($row['user_perms'] == "0" && !getperms("0"))
+	//	{
 		//	$text .= "";
-		}
-		elseif ($user_id != USERID || getperms("0"))
-		{
+	//	}
+	//	elseif ($user_id != USERID || getperms("0"))
+	//	{
 		//	$text .= "<option value='userclass'>".USRLAN_36."</option>\n"; // DEPRECATED. inline & batch should be enough. 
-		}
+	//	}
 		if ($row['user_perms'] != "0")
 		{
 		//	$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";

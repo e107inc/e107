@@ -613,7 +613,7 @@ class e_media
 		
 	/**
 	 * Generate Simple Thumbnail window for image -selection
-	 * @deprecated Currently used only by ren_help PreImage_Select
+	 * Currently used only by ren_help PreImage_Select
 	 * @param string $cat
 	 * @param string $formid
 	 * @return string

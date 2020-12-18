@@ -519,7 +519,7 @@ class usersettings_front // Begin Usersettings rewrite.
 						{
 							if (US_DEBUG)
 							{
-								e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
+								e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
 							}
 							$changedUserData['user_class'] = $nid;
 						}
@@ -664,7 +664,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 			// We can update the basic user record now - can just update fields from $changedUserData
-			if (US_DEBUG) { e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
+			if (US_DEBUG) { e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
 			if (isset($changedUserData) && count($changedUserData))
 			{
 				$changedData['data'] = $changedUserData;

@@ -624,7 +624,7 @@ class mailout_main_ui extends e_admin_ui
 		else
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+			e107::getAdminLog()->add('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
 		}
 
 		
@@ -750,7 +750,7 @@ class mailout_main_ui extends e_admin_ui
 		if ($this->mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			e107::getMessage()->addSuccess(LAN_MAILOUT_185);
-			$log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+			$log->add('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{

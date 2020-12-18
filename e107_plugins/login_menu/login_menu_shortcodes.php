@@ -250,7 +250,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				if(ADMIN)
 				{
-					$data = getcachedvars('login_menu_data');
+					$data = e107::getRegistry('login_menu_data');
 					return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 				}
 				return '';
@@ -274,7 +274,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_bullet($parm='')
 			{
-			$data = getcachedvars('login_menu_data');
+			$data = e107::getRegistry('login_menu_data');
 			return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 			}
 
@@ -348,7 +348,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 					foreach($lbox_items as $num => $lbox_item)
 					{
 						$lbox_item['link_id'] = $stackid . '_' . $num;
-						cachevars('login_menu_linkdata', $lbox_item);
+						e107::setRegistry('login_menu_linkdata', $lbox_item);
 						$ret .= $tp->parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
 					}
 				}
@@ -358,13 +358,13 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_external_link($parm='')
 			{
-				$lbox_item = getcachedvars('login_menu_linkdata');
+				$lbox_item = e107::getRegistry('login_menu_linkdata');
 				return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']').'</a>';
 			}
 
 			function sc_lm_external_link_label($parm='')
 			{
-				$lbox_item = getcachedvars('login_menu_linkdata');
+				$lbox_item = e107::getRegistry('login_menu_linkdata');
 				return vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']');
 			}
 
@@ -372,7 +372,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				$tp = e107::getParser();
 				global $LOGIN_MENU_STATS;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!$data['enable_stats']) return '';
 				return $tp -> parseTemplate($LOGIN_MENU_STATS, true, $this);
 			}
@@ -381,7 +381,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				$tp = e107::getParser();
 				global $LOGIN_MENU_STATITEM;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_news'])) return '';
 				$tmp = array();
 				if($data['new_news']){
@@ -399,7 +399,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_new_comments($parm='')
 			{
 				global $LOGIN_MENU_STATITEM, $tp;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_comments'])) return '';
 				$tmp = array();
 				if($data['new_comments']){
@@ -417,7 +417,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_new_users($parm='')
 			{
 				global $LOGIN_MENU_STATITEM, $tp;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_users'])) return '';
 				$tmp = array();
 				if($data['new_users']){
@@ -483,7 +483,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_listnew_link($parm='')
 			{
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if($parm == 'href') return $data['listnew_link'];
 				return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'" class="login_menu_link listnew" id="login_menu_link_listnew">'.LAN_LOGINMENU_24.'</a>' : '';
 			}

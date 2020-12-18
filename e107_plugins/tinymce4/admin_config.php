@@ -146,11 +146,6 @@ else
 	$ef->listRecords();
 }
 
-if(isset($_POST['etrigger_ecolumns']))
-{
-	$user_pref['admin_release_columns'] = $_POST['e-columns'];
-	save_prefs('user');
-}
 
 
 require_once(e_ADMIN."footer.php");
@@ -568,18 +563,11 @@ class tinymce
 
 	function saveSettings()
 	{
-		global $pref, $admin_log, $emessage;
+		$temp = array();
 		$temp['listPages'] = $_POST['listPages'];
 		$temp['pageCookieExpire'] = $_POST['pageCookieExpire'];
-		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
-		{
-			save_prefs();		// Only save if changes
-			$emessage->add(CUSLAN_45, E_MESSAGE_SUCCESS);
-		}
-		else
-		{
-			$emessage->add(CUSLAN_46);
-		}
+
+		e107::getConfig()->setPref($temp)->save(true, true, true);
 	}
 
 

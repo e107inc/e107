@@ -177,12 +177,12 @@ class private_msg_ui extends e_admin_ui
 
 				if($sql->insert('generic', $limArray))
 				{
-					e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
+					e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 					$mes->addSuccess(ADLAN_PM_6);
 				}
 				else
 				{
-					e107::getLog()->log_event('PM_ADM_08', '');
+					e107::getLog()->add('PM_ADM_08', '');
 					$mes->addError(ADLAN_PM_7);
 				}
 			}
@@ -214,12 +214,12 @@ class private_msg_ui extends e_admin_ui
 					//All entries empty - Remove record
 					if($sql->delete('generic','gen_id = '.$id))
 					{
-						e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
+						e107::getLog()->add('PM_ADM_07', 'ID: '.$id);
 						$mes->addSuccess($id.ADLAN_PM_9);
 					}
 					else
 					{
-						e107::getLog()->log_event('PM_ADM_10', '');
+						e107::getLog()->add('PM_ADM_10', '');
 						$mes->addError($id.ADLAN_PM_10);
 					}
 				}
@@ -235,12 +235,12 @@ class private_msg_ui extends e_admin_ui
 
 					if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 					{
-						e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
+						e107::getLog()->addArray($limArray)->save('PM_ADM_06');
 						$mes->addSuccess($id.ADLAN_PM_11);
 					}
 					else
 					{
-						e107::getLog()->log_event('PM_ADM_09', '');
+						e107::getLog()->add('PM_ADM_09', '');
 						$mes->addError($id.ADLAN_PM_7);
 					}
 				}
@@ -328,7 +328,7 @@ class private_msg_ui extends e_admin_ui
 				{
 					$txt .= "
 					<tr>
-					<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
+					<td>".e107::getUserClass()->getName($row['limit_classnum'])."</td>
 					<td>
 						<div class='row'>
 							<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /></div>
@@ -575,7 +575,7 @@ class private_msg_ui extends e_admin_ui
 			$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
 			$logResults = array();
 			$e107 = e107::getInstance();
-			e107::getLog()->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
+			e107::getLog()->add('PM_ADM_04', implode(', ',array_keys($opts)));
 			$pmHandler = new private_message($pmPrefs);
 			$db2 =e107::getDb('sql2');							// Will usually need a second DB object to avoid over load
 			$start = 0;						// Use to ensure we get different log times
@@ -741,7 +741,7 @@ class private_msg_ui extends e_admin_ui
 			}
 
 
-			e107::getLog()->logArrayAll('PM_ADM_03', $this->makeLogEntry($results));
+			e107::getLog()->addArray($this->makeLogEntry($results))->save('PM_ADM_03');
 
 			foreach ($results as $k => $r)
 			{
