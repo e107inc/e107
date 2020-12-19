@@ -1730,11 +1730,11 @@ class e_library_manager
 				}
 			}
 		}
-		else
-		{
+		//else
+	//	{
 			// TODO: Provide the ability to use third-party callbacks (are defined in e_library.php files) for groups:
 			// 'info', 'pre_detect', 'post_detect', 'pre_dependencies_load', 'pre_load', 'post_load'
-		}
+	//	}
 	}
 
 	/**

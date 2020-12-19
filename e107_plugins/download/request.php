@@ -265,8 +265,8 @@ if ($type == "file")
 			}
 		}
 	}
-	else if(strstr(e_QUERY, "pub_"))
-	{
+	//else if(strstr(e_QUERY, "pub_"))
+//	{
 		/* check to see if public upload and not in download table ... */
 		/*$bid = str_replace("pub_", "", e_QUERY);
 		if($result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '$bid' "))
@@ -281,7 +281,7 @@ if ($type == "file")
 			echo $binary_data;
 			exit();
 		}*/
-	}
+//	}
 	
 	
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);

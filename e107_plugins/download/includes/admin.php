@@ -1321,10 +1321,10 @@ $columnInfo = array(
 	         $etext = "";
 	      }
 	
-	      if (!$found && $download_url)
-	      {
+	      //if (!$found && $download_url)
+	   //   {
 	    //     $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
-	      }
+	  //    }
 	
 	  //    $text .= "             </select>";
 	  

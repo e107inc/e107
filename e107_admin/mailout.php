@@ -141,13 +141,6 @@ if(e_AJAX_REQUEST)
 		
 	
 
-if(vartrue($_GET['mode']) == "progress")
-{
-//	session_write_close();
-//	sendProgress();
-//	exit;
-}
-
 
 $mes = e107::getMessage();
 $tp = e107::getParser();
@@ -373,7 +366,7 @@ class mailout_main_ui extends e_admin_ui
 	);
 
 
-	function afterDelete($del_data,$id, $deleted_check)
+	function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
 	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
@@ -656,17 +649,17 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	function afterCopy($firstInsert, $copied)
+	function afterCopy($result, $copied)
 	{
 		$num = array();
 		$count = 0; 
 		foreach($copied as $tmp)
 		{
-			$num[] = ($firstInsert + $count);
+			$num[] = ($result + $count);
 			$count ++; 	
 		} 
 		
-		if(!empty($firstInsert))
+		if(!empty($result))
 		{
 			$update = array(
 				'mail_content_status'	=> MAIL_STATUS_TEMP,
@@ -1359,10 +1352,7 @@ class mailout_main_ui extends e_admin_ui
 	{
 		$status = LAN_MAILOUT_162;
 	}
-	else 
-	{
-	//	$text .= " ".ADMIN_TRUE_ICON;	
-	}
+
 	
 	if(!empty($status))
 	{
@@ -1821,15 +1811,15 @@ class mailout_recipients_ui extends e_admin_ui
 	/**
 	 * Fix Total counts after recipient deletion. 
 	 */
-	public function afterDelete($data, $id, $deleted_check)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		
-		if($data['mail_status'] < MAIL_STATUS_PENDING)
+		if($deleted_data['mail_status'] < MAIL_STATUS_PENDING)
 		{
 			return;	
 		}
 						
-		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($data['mail_detail_id'])." LIMIT 1";
+		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($deleted_data['mail_detail_id'])." LIMIT 1";
 
 		if(!e107::getDb()->update('mail_content',$query))
 		{
@@ -1955,11 +1945,11 @@ $targetId = intval(varset($_GET['t'],0));
 // Create mail admin object, load all mail handlers
 $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
 e107::setRegistry('_mailout_admin', $mailAdmin);
-if ($mailAdmin->loadMailHandlers() == 0)
-{	// No mail handlers loaded
+//if ($mailAdmin->loadMailHandlers() == 0)
+//{	// No mail handlers loaded
 //	echo 'No mail handlers loaded!!';
 	//exit;
-}
+//}
 
 require_once(e_ADMIN.'auth.php');
 
@@ -2239,6 +2229,7 @@ switch ($action)
 	case 'mailshowtemplate' :
 		if (isset($_POST['etrigger_ecolumns']))
 		{
+			$nothing='';
 	//		$mailAdmin->mailbodySaveColumnPref($action);
 		}
 		break;
@@ -2336,10 +2327,7 @@ switch ($midAction)
 		break;
 }
 
-if(isset($_POST['email_sendnow']))
-{
-//	sendImmediately($mailId);
-}
+
 
 // --------------------- Display errors and results ------------------------
 if (is_array($errors) && (count($errors) > 0))

@@ -160,10 +160,10 @@
 					}
 				}
 			}
-			else // Existing User.
-			{
+			//else // Existing User.
+			//{
 
-			}
+		//	}
 
 
 		}

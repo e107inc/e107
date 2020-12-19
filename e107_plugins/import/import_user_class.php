@@ -202,11 +202,11 @@ class user_import
 				return 3;
 			}
 			
-			if (strlen($userRecord[$k]) < 3)
-			{
+			//if (strlen($userRecord[$k]) < 3)
+		//	{
 			//	e107::getMessage()->addDebug("Failed userMandatory length on {$k}");
 				// return 3;
-			}
+		//	}
 		}
 		
 		if (!isset($userRecord['user_join'])) $userRecord['user_join'] = time();

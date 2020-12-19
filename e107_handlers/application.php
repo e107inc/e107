@@ -3694,7 +3694,7 @@ class eRequest
 	/**
 	 * Set current route
 	 * @param string $route module/controller/action
-	 * @return eRequest
+	 * @return array|eRequest
 	 */
 	public function setRoute($route)
 	{
@@ -3762,7 +3762,7 @@ class eRequest
 	/**
 	 * Populate module, controller and action from route string
 	 * @param string $route
-	 * @return array route data
+	 * @return array|eRequest
 	 */
 	public function initFromRoute($route)
 	{

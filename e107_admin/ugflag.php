@@ -60,11 +60,7 @@ if(isset($_POST['updatesettings']))
 
 	$pref = e107::getConfig('core', true, true)->getPref();
 		
-	if(!e_AJAX_REQUEST)
-	{
-	//	header("location:".e_SELF);
-	//	exit();
-	}
+
 }
 
 require_once("auth.php");

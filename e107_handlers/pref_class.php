@@ -108,13 +108,13 @@ class e_pref extends e_front_model
 	 * Simple getter - $pref_name is not parsed (no multidimensional arrays support), alias of {@link e_model::get()}
 	 * This is the prefered (performance wise) method when simple preference is retrieved
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function get($pref_name, $default = null)
+	public function get($key, $default = null)
 	{
-		return parent::get((string) $pref_name, $default);
+		return parent::get((string) $key, $default);
 	}
 
 	/**
@@ -202,20 +202,20 @@ class e_pref extends e_front_model
 	 * Simple setter - $pref_name is not parsed (no multidimensional arrays support)
 	 * Adding new pref is allowed
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set($pref_name, $value=null, $strict = false)
+	public function set($key, $value=null, $strict = false)
 	{
 		global $pref;
-		if(empty($pref_name) || !is_string($pref_name))
+		if(empty($key) || !is_string($key))
 		{
 			return $this;
 		}
 		
-		if(!isset($this->_data[$pref_name]) || $this->_data[$pref_name] != $value) $this->data_has_changed = true;
-		$this->_data[$pref_name] = $value;
+		if(!isset($this->_data[$key]) || $this->_data[$key] != $value) $this->data_has_changed = true;
+		$this->_data[$key] = $value;
 
 		//BC
 		if($this->alias === 'core')
@@ -302,14 +302,14 @@ class e_pref extends e_front_model
 	 * Remove single preference
 	 * $pref_name is not parsed as a path
 	 *
-	 * @see e_model::remove()
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @return e_pref
+	 *@see e_model::remove()
 	 */
-	public function remove($pref_name)
+	public function remove($key)
 	{
 		global $pref;
-		parent::remove((string) $pref_name);
+		parent::remove((string) $key);
 
 		//BC
 		if($this->alias === 'core')
@@ -337,15 +337,15 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::addData()
 	 * Disallow preference override
 	 *
-	 * @param string|array $pref_name
+	 * @param string|array $key (pref name or array)
 	 * @param mixed value
 	 * @param boolean $strict
 	 * @return $this|\e_model
 	 */
-	final public function addData($pref_name, $value = null, $override = true)
+	final public function addData($key, $value = null, $override = true)
 	{
 		global $pref;
-		parent::addData($pref_name, $value, false);
+		parent::addData($key, $value, false);
 		//BC
 		if($this->alias === 'core')
 		{
@@ -358,26 +358,26 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::setData()
 	 * Only data merge possible
 	 *
-	 * @param string|array $pref_name
+	 * @param string|array $key
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData($pref_name, $value = null, $strict = false)
+	final public function setData($key, $value = null, $strict = false)
 	{
 		global $pref;
-		if(empty($pref_name))
+		if(empty($key))
 		{
 			return $this;
 		}
 
 		//Merge only allowed
-		if(is_array($pref_name))
+		if(is_array($key))
 		{
-			$this->mergeData($pref_name, false, false, false);
+			$this->mergeData($key, false, false, false);
 			return $this;
 		}
 
-		parent::setData($pref_name, $value, false);
+		parent::setData($key, $value, false);
 
 		//BC
 		if($this->alias === 'core')
@@ -391,13 +391,13 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::removeData()
 	 * Object data reseting is not allowed
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @return e_pref
 	 */
-	final public function removeData($pref_name=null)
+	final public function removeData($key=null)
 	{
 		global $pref;
-		parent::removeData((string) $pref_name);
+		parent::removeData((string) $key);
 
 		//BC
 		if($this->alias === 'core')

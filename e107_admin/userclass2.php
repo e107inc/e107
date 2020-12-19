@@ -172,7 +172,7 @@ e107::coreLan('userclass2', true);
 			e107::getUserClass()->clearCache();
 		}
 
-		public function afterDelete($data,$id, $check = false)
+		public function afterDelete($deleted_data,$id, $deleted_check = false)
 		{
 			e107::getUserClass()->clearCache();
 		}
@@ -365,15 +365,10 @@ e107::coreLan('userclass2', true);
 			<table class='table table-bordered adminform'>
 			<tr><td>".UCSLAN_43."</td><td>";
 
-				if (count($icn) > 0)
-				{
-					//  $text .= implode(', ',$icn);
-				}
-				else
+				if (count($icn) < 1)
 				{
 					$text .= LAN_NONE;
 				}
-
 
 				if ($class_text)
 				{
@@ -488,11 +483,12 @@ e107::coreLan('userclass2', true);
 
 		function userclass_perms($curVal,$mode)
 		{
-			if($mode == 'read')
-			{
+		//	if($mode == 'read')
+		//	{
 				//	$uid = $this->getController()->getModel()->get('user_id');
 				//	return e107::getUserPerms()->renderPerms($curVal,$uid);
-			}
+		//	}
+
 			if($mode == 'write')
 			{
 				$prm = e107::getUserPerms();
@@ -500,7 +496,7 @@ e107::coreLan('userclass2', true);
 
 			}
 
-			return '';
+			return null;
 		}
 	}
 

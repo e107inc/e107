@@ -362,7 +362,7 @@
 			{
 				if(THEME_LEGACY === true && ($stuck === false || $unstuck === true))
 				{
-					// do nothing.
+					$doNothing; // do nothing.
 				}
 				elseif(!empty($FORUM_NORMAL_ROW))
 				{
@@ -521,11 +521,11 @@
 
 		$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></li>";
 
-		if(e_DEVELOPER)
-		{
+		//if(e_DEVELOPER)
+	//	{
 //		$text .= "<li class='text-right'><a href='{$splitUrl}'>Split ".$tp->toGlyph('scissors')."</i></a></li>";
 //		print_a($thread_info);
-		}
+	//	}
 
 		/*
 			$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";

@@ -115,10 +115,10 @@ if (isset($_POST['emailsubmit']))
 			$message .= "\n\n".LAN_EMAIL_1." ".$author;
 		}
 	}
-	else
-	{
+	//else
+//	{
 //		$message .= $comments."\n";			// Added to message later on
-	}
+//	}
 	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 

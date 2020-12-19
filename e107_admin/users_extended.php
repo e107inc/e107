@@ -620,14 +620,12 @@ e107::js('footer-inline', js());
 
 					if ($tmp[$f]['type']=="db field")
 					{
-						if (is_readable(e_CORE.'sql/extended_'.$f.'.php'))
-						{
-		           //     $ret .= ($this->process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
-						}
-						else
+						if (!is_readable(e_CORE.'sql/extended_'.$f.'.php'))
 						{
 							$ret .= str_replace('[x]',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
+		           //     $ret .= ($this->process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
 						}
+
 					}
 				}
 				else

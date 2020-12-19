@@ -109,7 +109,10 @@ if (empty($rss_type))
 }
 
 
-while (@ob_end_clean());
+	while (ob_get_length() !== false)  // destroy all ouput buffering
+	{
+        ob_end_clean();
+	}
 
 // Returning feeds here
 // Conversion table for old urls -------

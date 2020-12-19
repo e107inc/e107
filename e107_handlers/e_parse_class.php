@@ -3281,7 +3281,7 @@ class e_parse extends e_parser
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
-	 * @return array|string
+	 * @return string|array
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{

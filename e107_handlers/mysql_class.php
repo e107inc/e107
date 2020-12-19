@@ -2532,7 +2532,7 @@ class e_db_mysql implements e_db
 
 					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
 					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-
+						$result = false;
 					}
 
 					$result = true;

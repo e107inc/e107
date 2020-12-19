@@ -103,15 +103,10 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 			if(!empty($_POST['update']))
 			{
-				if($this-> update())
+				if(!$this-> update())
 				{
-			   //     e107::getMessage()->addSuccess(LAN_UPDATED);
+			        e107::getMessage()->addError(LAN_UPDATED_FAILED);
 				}
-				else
-				{
-					e107::getMessage()->addError(LAN_UPDATED_FAILED);
-				}
-
 			}
 
 
@@ -172,12 +167,12 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 		//	print_a($this->pluginConfig);
 
-			if ($recalibrate)
-			{
+		//	if ($recalibrate)
+		//	{
 			//	$s_prefs = $tp -> toDB($this -> notify_prefs);
 			//	$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			//	$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-			}
+		//	}
 		}
 
 
@@ -536,18 +531,11 @@ if(!empty($_GET['iframe']))
 
 if (isset($_POST['update']))
 {
-	if($nc -> update())
+	if(!$nc -> update())
 	{
-    	//$message = LAN_UPDATED;
-        //$style = E_MESSAGE_SUCCESS;
-        //$mes->addSuccess(LAN_UPDATED);
-	}
-	else
-	{
-    	//$message = LAN_UPDATED_FAILED;
-		//$style = E_MESSAGE_FAILED;
 		$mes->addError(LAN_UPDATED_FAILED);
 	}
+
 	//$emessage->add($message, $style);
 
  //	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
@@ -621,12 +609,12 @@ class notify_config
 		
 	//	print_a($this->pluginConfig);
 		
-		if ($recalibrate) 
-		{
+		//if ($recalibrate)
+		//{
 		//	$s_prefs = $tp -> toDB($this -> notify_prefs);
 		//	$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		//	$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-		}
+		//}
 	}
 
 	function prefCleanup()

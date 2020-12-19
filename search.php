@@ -638,10 +638,10 @@ class search extends e_shortcode
 		 $search_info = $this->array_sort($search_info, 'listorder', SORT_ASC);
 		 $this->search_info = $search_info;
 
-		if(e_DEBUG)
-		{
+		//if(e_DEBUG)
+	//	{
 	//		echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();
-		}
+	//	}
 
 		 return $search_info;
 	}	
@@ -808,11 +808,11 @@ class search extends e_shortcode
 						
 						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
 
-						if(e_DEBUG)
-						{
+						//if(e_DEBUG)
+					//	{
 						//	echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();// "DEBUG: Order is missing";
 
-						}
+					//	}
 
 					//	print_a($ps);
 
@@ -842,10 +842,10 @@ class search extends e_shortcode
 					{
 						$temp = preg_replace('/[^\w_]/i','',$pparm_key);
 						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
-						if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
-						{
+						//if (($temp == $pparm_key) && !isset($core_parms[$pparm_key]))
+					//	{
 						//	$parms .= "&".$pparm_key."=".$temp1; //FIXME Unused
-						}
+					//	}
 					}
 					if ($results > $search_res) 
 					{
@@ -1053,13 +1053,13 @@ $SEARCH_VARS->ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 // advanced search config
 if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
 {
-  foreach ($_GET as $gk => $gv) 
-  {
-	if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') 
-	{
+  //foreach ($_GET as $gk => $gv)
+ // {
+	//if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv')
+	//{
 //	  unset($_GET[$gk]);
-	}
-  }
+	//}
+ // }
 }
 
 //$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;

@@ -151,14 +151,14 @@ class comment
 	/**
 	 * Display the comment editing form
 	 *
-	 * @param unknown_type $action
-	 * @param unknown_type $table
-	 * @param unknown_type $id
-	 * @param unknown_type $subject
-	 * @param unknown_type $content_type
-	 * @param unknown_type $return
-	 * @param unknown_type $rating
-	 * @return unknown
+	 * @param string $action
+	 * @param string $table
+	 * @param int $id
+	 * @param string $subject
+	 * @param mixed $content_type
+	 * @param bool $return
+	 * @param bool $rating
+	 * @return string
 	 */
 	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE,$pid = false)
 	{
@@ -387,10 +387,10 @@ class comment
 	 * @param string $table
 	 * @param string $action
 	 * @param integer $id
-	 * @param interger $width
+	 * @param integer $width
 	 * @param string $subject
 	 * @param integer $addrating
-	 * @return html
+	 * @return string|null html
 	 */
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
@@ -412,9 +412,9 @@ class comment
 		$sql 	= e107::getDb();
 		$pref 	= e107::getPref();
 		
-		if (vartrue($pref['comments_disabled']))
+		if (!empty($pref['comments_disabled']))
 		{
-			return;
+			return null;
 		}
 				
 		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
@@ -981,7 +981,7 @@ class comment
 	 *
 	 * @param unknown_type $table
 	 * @param unknown_type $id
-	 * @return unknown
+	 * @return int
 	 */
 	function count_comments($table, $id)
 	{
@@ -990,7 +990,8 @@ class comment
 
 		$type = $this->getCommentType($table);
 		$count_comments = $sql->count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' ");
-		return $count_comments;
+
+		return (int) $count_comments;
 	}
 
 	/**

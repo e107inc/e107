@@ -398,10 +398,7 @@ class news_sub_form_ui extends e_admin_form_ui
 				$text .= "<a class='btn btn-default btn-secondary btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
-			else // Already submitted; 
-			{
-				
-			}
+
 					
 			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'btn btn-default btn-secondary btn-large action delete'));
 			$text .= "</div>";
@@ -1582,13 +1579,6 @@ class news_form_ui extends e_admin_form_ui
 			//	$text .= $frm->imagepicker('news_thumbnail[0]', $curval ,'','media=news&video=1');
 			$thumbTmp = explode(",",$curval);
 
-			foreach($thumbTmp as $key=>$path)
-			{
-				if(!empty($path) && (strpos($path, ",") == false) && $path[0] != "{" && $tp->isVideo($path) === false )//BC compat
-				{
-				//	$thumbTmp[$key] = "{e_IMAGE}newspost_images/".$path;
-				}
-			}
 
 			$text = "<div class='mediaselector-multi'>";
 			$text .= $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]), array('media' => 'news+', 'video' => 1, 'legacyPath' => '{e_IMAGE}newspost_images'));

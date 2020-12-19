@@ -357,17 +357,18 @@ class page_chapters_form_ui extends e_admin_form_ui
 	{
 		$fieldAmount = (deftrue('e_DEBUG')) ? 20 :10;
 
-
+/*
 		if($mode == 'read')
 		{
 
 		}
+*/
 
 		if($mode == 'write')
 		{
 			return e107::getCustomFields()->loadConfig($curVal)->renderConfigForm('chapter_fields');
 		}
-
+/*
 		if($mode == 'filter')
 		{
 			return;
@@ -376,6 +377,8 @@ class page_chapters_form_ui extends e_admin_form_ui
 		{
 			return;
 		}
+*/
+
 	}
 
 
@@ -834,13 +837,13 @@ class page_admin_ui extends e_admin_ui
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
 			}
-
+/*
 
 			if(e_AJAX_REQUEST)
 			{
 				// @todo insert placeholder examples in params input when 'type' dropdown value is changed
 			}
-
+*/
 
 
 
@@ -1008,13 +1011,13 @@ class page_admin_ui extends e_admin_ui
             }
         }
 
-		function afterCreate($newdata,$olddata, $id)
+		function afterCreate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
 			
-			$menu_name = $tp->toDB($newdata['menu_name']); // not to be confused with menu-caption.
+			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
 			$menu_path = intval($id);
 				
 			if (!$sql->select('menus', 'menu_name', "`menu_path` = ".$menu_path." LIMIT 1")) 	
@@ -1028,41 +1031,41 @@ class page_admin_ui extends e_admin_ui
 				}
 			}	
 			
-			return $newdata;
+			return $new_data;
 			
 		}
 		
-		function beforeCreate($newdata,$olddata)
+		function beforeCreate($new_data, $old_data)
 		{
 
-			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
+			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
 
-			$newdata['menu_name'] = preg_replace('/[^\w\-*]/','-',$newdata['menu_name']);
+			$new_data['menu_name'] = preg_replace('/[^\w\-*]/','-',$new_data['menu_name']);
 
-			if(empty($newdata['page_sef']))
+			if(empty($new_data['page_sef']))
 			{
-				if(!empty($newdata['page_title']))
+				if(!empty($new_data['page_title']))
 				{
-					$newdata['page_sef'] = eHelper::title2sef($newdata['page_title']);
+					$new_data['page_sef'] = eHelper::title2sef($new_data['page_title']);
 				}
-				elseif(!empty($newdata['menu_name']))
+				elseif(!empty($new_data['menu_name']))
 				{
-					$newdata['page_sef'] = eHelper::title2sef($newdata['menu_name']);
+					$new_data['page_sef'] = eHelper::title2sef($new_data['menu_name']);
 				}
 		
 			}
 			else
 			{
-				$newdata['page_sef'] = eHelper::secureSef($newdata['page_sef']);
+				$new_data['page_sef'] = eHelper::secureSef($new_data['page_sef']);
 			}
 
 
-		//	$newdata = $this->processCustomFieldData($newdata);
+		//	$new_data = $this->processCustomFieldData($new_data);
 
 
-			$sef = e107::getParser()->toDB($newdata['page_sef']);
+			$sef = e107::getParser()->toDB($new_data['page_sef']);
 
-			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			if(isset($new_data['page_title']) && isset($new_data['menu_name']) && empty($new_data['page_title']) && empty($new_data['menu_name']))
 			{
 				e107::getMessage()->addError(CUSLAN_79);
 				return false;
@@ -1075,43 +1078,41 @@ class page_admin_ui extends e_admin_ui
 			}
 
 
-			return $newdata;	
+			return $new_data;	
 		}
 		
-		function beforeUpdate($newdata,$olddata, $id)
+		function beforeUpdate($new_data,$old_data, $id)
 		{
 
-			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			if(isset($new_data['page_title']) && isset($new_data['menu_name']) && empty($new_data['page_title']) && empty($new_data['menu_name']))
 			{
 				e107::getMessage()->addError(CUSLAN_79);
 				return false;
 			}
-			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
+			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
 
-			if(isset($newdata['menu_name']))
+			if(isset($new_data['menu_name']))
 			{
-				$newdata['menu_name'] = preg_replace('/[^\w\-*]/','',$newdata['menu_name']);
+				$new_data['menu_name'] = preg_replace('/[^\w\-*]/','',$new_data['menu_name']);
 			}
 
 
-
-
-			return $newdata;	
+			return $new_data;	
 		}		
 		
 		// Update Menu in Menu Table
-		function afterUpdate($newdata,$olddata,$id)
+		function afterUpdate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
 
-			if(!isset($newdata['menu_name']))
+			if(!isset($new_data['menu_name']))
 			{
 				return true;
 			}
 					
-			$menu_name = $tp->toDB($newdata['menu_name']); // not to be confused with menu-caption.
+			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
 				
 			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
 			{		
@@ -1124,7 +1125,7 @@ class page_admin_ui extends e_admin_ui
 			else // missing menu record so create it.  
 			{
 				$mes->addDebug(CUSLAN_75." ".$id);
-				return $this->afterCreate($newdata,$olddata,$id);	
+				return $this->afterCreate($new_data,$old_data,$id);
 				
 			}				
 		}

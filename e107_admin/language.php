@@ -1770,10 +1770,10 @@ class lanDeveloper
 			$label .= " <span class='label label-inverse'>".LAN_DISABLED."</span>";
 		}
 
-		if(empty($found) && $disabled === true)
-		{
+	//	if(empty($found) && $disabled === true)
+	//	{
 			// $needle = "<span class='e-tip' style='cursor:help' title=\"".$value."\">".$needle."</span>";
-		}
+	//	}
 
 		return "<tr><td class='".$class."' style='width:15%;$color'>".$needle ."</td><td>".$label. "</td>
 	<td class='".$class."'>".print_r($value,true)."</td>
@@ -1786,11 +1786,11 @@ class lanDeveloper
 
 	/**
 	 * Compare Language File against script and find unused LANs
-	 * @param object $lanfile
-	 * @param object $script
-	 * @return string|boolean FALSE on error
+	 * @param array|string $lanfile
+	 * @param array|string $script
+	 * @return array|bool|string
 	 */
-	function unused($lanfile,$script,$reverse=false)
+	function unused($lanfile, $script, $reverse=false)
 	{
 
 		$mes = e107::getMessage();
@@ -1976,7 +1976,7 @@ class lanDeveloper
 		}
 		else
 		{
-	        return FALSE;
+	        return false;
 		}
 
 	}

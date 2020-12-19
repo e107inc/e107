@@ -39,11 +39,11 @@ if (isset($_POST['update_menu']))
 	$tp = e107::getParser();
 	foreach($_POST as $key=>$value)
 	{
-		if($key == "comment_caption")
-		{
+		//if($key == "comment_caption")
+	//	{
 		//	$temp['comment_caption'][e_LANGUAGE] = $tp->toDB($value);
 		//	continue;
-		}
+	//	}
 
 
 		if ($value != LAN_UPDATE) 

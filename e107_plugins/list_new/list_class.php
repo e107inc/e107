@@ -564,19 +564,17 @@ class listclass
 	{
 		$name = "list_".$file;
 
-		$listArray = '';
+		$listArray = array();
 
 		//instantiate the class with this as parm
-		if(!class_exists($name))
-		{
-			//echo "class $name doesn't exist<br />";
-		}
-		else
+
+		if(class_exists($name))
 		{
 			$class = new $name($this);
 			//call method
 			if(!method_exists($class, 'getListData'))
 			{
+				return $listArray;
 				//echo "method getListData doesn't exist in class $class<br />";
 			}
 			else
@@ -600,6 +598,7 @@ class listclass
 				}
 			}
 		}
+
 		return $listArray;
 	}
 

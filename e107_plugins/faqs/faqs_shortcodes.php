@@ -192,11 +192,11 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$faqpref = e107::getPlugConfig('faqs')->getPref();
-		if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
-		{
+		//if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
+	//	{
 			// UNDER CONSTRUCTION
 		 	//return "[ <a href='faqs.php?edit.".$this->var['faq_parent'].".".$this->var['faq_id']."'>Edit</a> ]";
-		}	
+	//	}
 	}
 	
 	/* {FAQ_CATEGORY_ID} */ 

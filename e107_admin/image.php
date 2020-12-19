@@ -57,10 +57,7 @@ if(isset($_POST['submit_cancel_show']))
 
 e107::coreLan('image', true);
 
-if($_GET['action'] == 'dialog')
-{
-//	e107::css('inline', "body { background-color: #373737 } ");
-}
+
 
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
 {
@@ -335,7 +332,7 @@ class media_cat_form_ui extends e_admin_form_ui
 		$owner = $this->getController()->getListModel()->get('media_cat_owner');	
 		if(!in_array($owner,$this->restrictedOwners))
 		{
-			return $this->renderValue('options',$value,'',$id);	
+			return $this->renderValue('options',$value,null,$id);
 		}
 			
 		
@@ -688,7 +685,7 @@ class media_form_ui extends e_admin_form_ui
 		}
 		else
 		{
-			$text = $this->renderValue('options',$value,'',$id);
+			$text = $this->renderValue('options',$value,null,$id);
 		}
 
 		return "<div class='nowrap'>".$text."</div>";
@@ -1083,14 +1080,15 @@ class media_admin_ui extends e_admin_ui
 			exit;
 		}
 	*/
+/*
 		if($this->getAction() == 'nav' )
 		{
-			//echo $this->navPage();\
-		//	$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
-		//	print_a($_GET);
+			echo $this->navPage();\
+			$this->getResponse()->setIframeMod(); // disable header/footer menus etc.
+			print_a($_GET);
 
 		}
-		
+*/
 
 
 		if(varset($_POST['batch_import_selected']))
@@ -1438,11 +1436,6 @@ class media_admin_ui extends e_admin_ui
 			);
 
 			return $frm->tabs($tabs, array('class'=>'media-manager'));
-		}
-
-		if(deftrue('e_DEBUG_MEDIAPICKER'))
-		{
-		//	return $this->mediaManagerTabs();
 		}
 
 
@@ -3393,10 +3386,10 @@ class media_admin_ui extends e_admin_ui
 
 
 			// Resize on Import Routine ------------------------
-			if(vartrue($img_import_w) && vartrue($img_import_h))
-			{
+		//	if(vartrue($img_import_w) && vartrue($img_import_h))
+		//	{
 				// $this->resizeImage($file,$img_import_w,$img_import_h);		
-			}
+		//	}
 			// End Resize routine. ---------------------
 
 			$f = $fl->getFileInfo($oldpath);

@@ -1495,8 +1495,8 @@ class news_front
 		{
 
 
-			if(!$this->action)
-			{
+			//if(!$this->action)
+		//	{
 				// Removed, themes should use {FEATUREBOX} shortcode instead
 				//		if (isset($this->pref['fb_active']))
 				//		{
@@ -1508,7 +1508,7 @@ class news_front
 					// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 				// }
 
-			}
+		//	}
 
 			//news archive
 			if ($this->action != "item" && $this->action != 'list' && $this->pref['newsposts_archive'])
@@ -1524,10 +1524,10 @@ class news_front
 					{
 						$newsCachedPage = $newsCachedPage.$newsarchive;
 					}
-					else
-					{
+					//else
+				//	{
 					//	$this->show_newsarchive($newsAr,$interval);
-					}
+				//	}
 				}
 			}
 
@@ -1567,8 +1567,8 @@ class news_front
 
 		$action = $currentNewsAction;
 
-		if(!$action)
-		{
+		//if(!$action)
+	//	{
 			// Removed, themes should use {FEATUREBOX} shortcode instead
 			//	if (isset($this->pref['fb_active'])){   // --->feature box
 			//		require_once(e_PLUGIN."featurebox/featurebox.php");
@@ -1578,7 +1578,7 @@ class news_front
 			// if (isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 1){
 				// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 			// }
-		}
+	//	}
 
 		/**
 		 * @deprecated - for BC only. May be removed in future without further notice.

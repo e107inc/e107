@@ -642,10 +642,10 @@ class e_theme
 					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "scope"=>$scope, "nonadmin"=>$nonadmin);
 
 				}
-				else
-				{
+				//else
+				//{
  				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);
-				}
+			//	}
 			}
 
 
@@ -823,12 +823,12 @@ class e_theme
 	//	$oldvars =
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', 'advanced', true); // must be 'advanced'
 
-		if($path == "bootstrap3" )
-		{
+		//if($path == "bootstrap3" )
+	//	{
 	//		echo "<table class='table table-bordered'>
 	//		<tr><th>old</th><th>new parser</th></tr>
 	//	<tr><td>".print_a($oldvars,true)."</td><td>".print_a($vars,true)."</td></tr></table>";
-		}
+	//	}
 
 
 		$vars['name'] 			= varset($vars['@attributes']['name']);
@@ -978,13 +978,13 @@ class e_theme
 		}
 
 
-		if($path == "bootstrap3" )
-		{
+		//if($path == "bootstrap3" )
+	//	{
             //	e107::getMessage()->addDebug("<h2>".$path."</h2>");
             //	e107::getMessage()->addDebug(print_a($vars,true));
             //	print_a($vars);
             //	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
-		}
+	//	}
 
 
 		return $vars;
@@ -1324,10 +1324,10 @@ class themeHandler
 					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "scope"=>$scope, "nonadmin"=>$nonadmin);
 					
 				}
-				else
-				{
+				//else
+			//	{
  				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);	
-				}
+			//	}
 			}
 
 		
@@ -2016,10 +2016,10 @@ class themeHandler
 		
 	//	$text .= "<div class='right'><a href='#themeInfo_".$theme['id']."' class='e-expandit'>Close</a></div>";
 
-		if(E107_DEBUG_LEVEL > 0)
-		{
+		//if(E107_DEBUG_LEVEL > 0)
+	//	{
 		//	$text .= print_a($theme, true);
-		}
+	//	}
 	
 	
 		return $text;
@@ -2301,10 +2301,10 @@ class themeHandler
 			$admin_icon = "";	
 		}
 		
-		if($theme['name'] == 'bootstrap')
-		{
+		//if($theme['name'] == 'bootstrap')
+		//{
 		//	print_a($theme);	
-		}
+	//	}
 	//	
 	//	$thumbPath = (substr($theme['thumbnail'],0,4) == 'http') ? $theme['thumbnail'] : e_THEME.$theme['path'] ."/".$theme['preview'][0];
 	//	$thumbnail = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >";

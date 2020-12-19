@@ -103,12 +103,12 @@ class links_admin_ui extends e_admin_ui
 	protected $_link_array	= null;
 	
 	
-	function afterCreate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterCreate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');	
 	}
 	
-	function afterUpdate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterUpdate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');
 	}	
@@ -342,11 +342,11 @@ class links_admin_ui extends e_admin_ui
 		$pid = intval($this->getPosted('link_parent'));
 		$sublink = $this->sublink_data($subtype);
 
-		if(!$pid)
-		{
+	//	if(!$pid)
+	//	{
 		//	$mes->addWarning(LCLAN_109);
 		//	return;
-		}
+	//	}
 		if(!$subtype)
 		{
 			$mes->addWarning(LCLAN_110);
@@ -456,15 +456,12 @@ class links_admin_ui extends e_admin_ui
 			}
 		}
 
-		if($message) // TODO admin log
-		{
-			// sitelinks_adminlog('01', $message); // 'Sublinks generated'
-		}
+
 	}
 
 	/**
 	 * Product tree model
-	 * @return links_model_admin_tree
+	 * @return links_admin_ui|links_model_admin_tree
 	 */
 	public function _setTreeModel()
 	{

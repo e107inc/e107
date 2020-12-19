@@ -948,11 +948,11 @@ class e_jsmanager
 			return $this;
 			
 		}
-		else
-		{
+		//else
+		//{
 			// echo $this->_dependence." :: ENABLED<br />";
 			 // echo $this->_dependence."::".$file_path." : DISABLED<br />";		
-		}
+	//	}
 		
 		
 

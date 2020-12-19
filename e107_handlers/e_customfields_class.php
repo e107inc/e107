@@ -534,10 +534,10 @@
 
 			}
 
-			if(empty($new_data[$fieldname]))
-			{
+		//	if(empty($new_data[$fieldname]))
+		//	{
 			//	$new_data[$fieldname] = array();
-			}
+		//	}
 
 			return $new_data;
 

@@ -80,7 +80,10 @@ if(e_AJAX_REQUEST )
 {
 
 	session_write_close();
-	while (@ob_end_clean()); 
+	while (ob_get_length() !== false)  // destroy all ouput buffering
+	{
+        ob_end_clean();
+	}
 
 	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
@@ -541,10 +544,11 @@ class system_tools
 				$mes->addError($sql->getLastErrorText());
 				return false;
 			}
-			else
+/*			else
 			{
 				// $mes->addDebug($sql_table);
 			}
+*/
 		}	
 		
 		return true;

@@ -466,7 +466,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
-	public function afterDelete($deletedData, $id, $deleted_check)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		if(!empty($id))
 		{
@@ -477,7 +477,7 @@ class users_admin_ui extends e_admin_ui
 			e107::getCache()->clear('online_menu_member_total');
 
 			// Trigger admin_user_delete
-			e107::getEvent()->trigger('admin_user_delete', $deletedData);
+			e107::getEvent()->trigger('admin_user_delete', $deleted_data);
 		}
 
 	}
@@ -2880,7 +2880,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		//	natsort($imageList);
 		}
 
-		public function afterDelete($data, $id, $deleted_check)
+		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
 		}

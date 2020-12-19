@@ -444,8 +444,9 @@ class e_admin_log
 	 *		USER AUDIT ENTRY
 	 *--------------------------------------
 	 *	Log user-related events
-	 *	@param int $event_code is a defined constant (see above) which specifies the event
-	 *	@param array $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
+	 *@param string $event_type
+	 * @param int $event_code is a defined constant (see above) which specifies the event
+	 *	@param array|string $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
 	 *	@param int $id
 	 *	@param string $u_name
 	 *	both $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user

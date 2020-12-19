@@ -683,7 +683,7 @@ class db_table_admin
 					}
 					if ($ret === FALSE)
 					{
-						return $sql->dbError();
+						return $sql->dbError(__METHOD__);
 					}
 				}
 				return TRUE; // Success even if no changes required

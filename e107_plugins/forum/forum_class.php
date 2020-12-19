@@ -704,12 +704,12 @@ class e107forum
 					$tmp[$row['forum_parent']] = 1;
 				}
 				ksort($tmp);
-				if($key == 'post')
-				{
+				//if($key == 'post')
+			//	{
 					//echo "<h3>Raw Perms</h3>";
 				//	echo "Qry: ".$qryList['post'];
 				//	print_a($tmp);
-				}
+			//	}
 				$this->permList[$key] = array_keys($tmp);
 				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 			}
@@ -2068,10 +2068,10 @@ class e107forum
 			//	return $row['thread_id'];
 
 			}
-			else
-			{
+			//else
+		//	{
 			//	e107::getMessage()->addDebug(ucfirst($which)." Thread Qry Returned Nothing: ".$qry);
-			}
+		//	}
 
 			return false;
 	}
