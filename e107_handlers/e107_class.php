@@ -97,7 +97,7 @@ class e107
 	 *
 	 * @var e107
 	 */
-	protected static $_instance = null;
+	protected static $_instance;
 
 	/**
 	 * e107 registry
@@ -319,7 +319,7 @@ class e107
 	 */
 	public static function getInstance()
 	{
-		if(null == self::$_instance)
+		if(self::$_instance == null)
 		{
 		    self::$_instance = new self();
 		}
@@ -354,12 +354,9 @@ class e107
 	{
 
 		$e107_config = 'e107_config.php';
-		if (!file_exists($e107_config))  // prevent blank-page with missing file during install.
+		if (!file_exists($e107_config) && file_put_contents($e107_config, '') === false)  // prevent blank-page with missing file during install.
 		{
-			if(file_put_contents($e107_config, '')===false)
-			{
-				return false;
-			}
+			return false;
 		}
 
 		// Do some security checks/cleanup, prepare the environment
@@ -399,7 +396,10 @@ class e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-		if(!empty($this->e107_dirs)) return $this;
+		if(!empty($this->e107_dirs))
+		{
+			return $this;
+		}
 
 		// Do some security checks/cleanup, prepare the environment
 		$this->prepare_request();
@@ -523,7 +523,7 @@ class e107
 	 */
 	public function prepareDirs()
 	{
-		$file = e107::getFile();
+		$file = self::getFile();
 
 		// Essential directories which should be created and writable.
 		$essential_directories = array(
@@ -583,7 +583,10 @@ class e107
 		$ret['MEDIA_DIRECTORY'] 	.= $this->site_path."/"; // multisite support.
 		$ret['SYSTEM_DIRECTORY'] 	.= $this->site_path."/"; // multisite support.
 
-		if($return_root) return $ret;
+		if($return_root)
+		{
+			return $ret;
+		}
 
 		$ret['HELP_DIRECTORY'] 				= $ret['DOCS_DIRECTORY'].'help/';
 
@@ -697,7 +700,7 @@ class e107
 	 */
 	public static function setRegistry($id, $data = null, $allow_override = true)
 	{
-		if(null === $data)
+		if($data === null)
 		{
 			if(isset(self::$_registry[$id]) && is_object(self::$_registry[$id]) && method_exists(self::$_registry[$id], '__destruct'))
 			{
@@ -707,7 +710,7 @@ class e107
 			return;
 		}
 
-		if(!$allow_override && null !== self::getRegistry($id))
+		if(!$allow_override && self::getRegistry($id) !== null)
 		{
 			return;
 		}
@@ -740,8 +743,11 @@ class e107
 	public static function getE107($key = null)
 	{
 		$self = self::getInstance();
-		if(null === $key) return $self->_E107;
-		return (isset($self->_E107[$key]) && $self->_E107[$key] ? true : false);
+		if($key === null)
+		{
+			return $self->_E107;
+		}
+		return ((isset($self->_E107[$key]) && $self->_E107[$key]));
 	}
 
 	/**
@@ -820,9 +826,9 @@ class e107
 	{
 		if(is_array($class_name))
 		{
-			foreach ($class_name as $cname => $path)
+			foreach ($class_name as $cname => $pathb)
 			{
-				self::addHandler($cname, $path);
+				self::addHandler($cname, $pathb);
 			}
 			return;
 		}
@@ -867,7 +873,7 @@ class e107
 	 * If class name is array, method will add it (recursion) and
 	 * ignore $overload_class_name and  $overload_path arguments
 	 *
-	 * @param string $class_name
+	 * @param string|array $class_name
 	 * @param string $overload_class_name [optional]
 	 * @param string $overload_path [optional]
 	 * @return void
@@ -928,7 +934,7 @@ class e107
 		if(is_bool($path))
 		{
 			//overload allowed
-			if(true === $path && self::isHandlerOverloadable($class_name))
+			if($path === true && self::isHandlerOverloadable($class_name))
 			{
 				$tmp = self::getHandlerOverload($class_name);
 				$class_name = $tmp[0];
@@ -976,19 +982,16 @@ class e107
 	 */
 	public static function getObject($class_name, $arguments = null, $path = true)
 	{
-		if(true === $path)
+		if((true === $path) && isset(self::$_known_handlers[$class_name]))
 		{
-			if(isset(self::$_known_handlers[$class_name]))
-			{
-				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
-			}
+			$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
 		}
 
 		//auto detection + overload check
 		if(is_bool($path))
 		{
 			//overload allowed
-			if(true === $path && self::isHandlerOverloadable($class_name))
+			if($path === true && self::isHandlerOverloadable($class_name))
 			{
 				$tmp = self::getHandlerOverload($class_name);
 				$class_name = $tmp[0];
@@ -1008,7 +1011,10 @@ class e107
 
 		if(class_exists($class_name, false))
 		{
-			if(null !== $arguments) return  new $class_name($arguments);
+			if($arguments !== null)
+			{
+				return new $class_name($arguments);
+			}
 			return new $class_name();
 		}
 
@@ -1251,8 +1257,11 @@ class e107
 	 */
 	public static function setThemePref($pref_name, $pref_value = null)
 	{
-		if(is_array($pref_name)) return self::getConfig()->set('sitetheme_pref', $pref_name);
-		return self::getConfig()->updatePref('sitetheme_pref/'.$pref_name, $pref_value, false);
+		if(is_array($pref_name))
+		{
+			return self::getConfig()->set('sitetheme_pref', $pref_name);
+		}
+		return self::getConfig()->updatePref('sitetheme_pref/'.$pref_name, $pref_value);
 	}
 
 
@@ -1270,7 +1279,7 @@ class e107
 			foreach($custom as $glyphConfig)
 			{
 
-				if(substr($glyphConfig['path'],0,4) !== 'http')
+				if(strpos($glyphConfig['path'], 'http') !== 0)
 				{
 					$glyphConfig['path'] = e_THEME."$theme/".$glyphConfig['path'];
 				}
@@ -1279,7 +1288,7 @@ class e107
 
 				if(E107_DBG_INCLUDES)
 				{
-					e107::getDebug()->log("Loading Glyph Icons: ".print_a($glyphConfig,true));
+					self::getDebug()->log("Loading Glyph Icons: ".print_a($glyphConfig,true));
 				}
 			}
 
@@ -1309,7 +1318,7 @@ class e107
 	 */
 	public static function getScParser()
 	{
-		return self::getSingleton('e_parse_shortcode', true);
+		return self::getSingleton('e_parse_shortcode');
 	}
 
 
@@ -1320,7 +1329,7 @@ class e107
 	 */
 	public static function getSecureImg()
 	{
-		return self::getSingleton('secure_image', true); // more flexible.
+		return self::getSingleton('secure_image'); // more flexible.
 		// return self::getObject('secure_image');
 	}
 
@@ -1354,7 +1363,10 @@ class e107
 	 */
 	public static function getScBatch($className, $pluginName = null, $overrideClass = null)
 	{
-		if(is_string($overrideClass)) $overrideClass .= '_shortcodes';
+		if(is_string($overrideClass))
+		{
+			$overrideClass .= '_shortcodes';
+		}
 		return self::getScParser()->getScObject($className.'_shortcodes', $pluginName, $overrideClass);
 	}
 
@@ -1377,7 +1389,7 @@ class e107
 	 */
 	public static function getCache()
 	{
-		return self::getSingleton('ecache', true);
+		return self::getSingleton('ecache');
 	}
 
 	/**
@@ -1387,7 +1399,7 @@ class e107
 	 */
 	public static function getBB()
 	{
-		return self::getSingleton('e_bbcode', true);
+		return self::getSingleton('e_bbcode');
 	}
 
 	/**
@@ -1397,7 +1409,7 @@ class e107
 	 */
 	public static function getUserSession()
 	{
-		return self::getSingleton('UserHandler', true);
+		return self::getSingleton('UserHandler');
 	}
 
 	/**
@@ -1408,12 +1420,12 @@ class e107
 	 */
 	public static function getSession($namespace = null)
 	{
-		$id = 'core/e107/session/'.(null === $namespace ? 'e107' : $namespace);
+		$id = 'core/e107/session/'.($namespace === null ? 'e107' : $namespace);
 		if(self::getRegistry($id))
 		{
 			return self::getRegistry($id);
 		}
-		$session = self::getObject('e_core_session', array('namespace' => $namespace), true);
+		$session = self::getObject('e_core_session', array('namespace' => $namespace));
 		self::setRegistry($id, $session);
 		return $session;
 	}
@@ -1425,7 +1437,7 @@ class e107
 	 */
 	public static function getRedirect()
 	{
-		return self::getSingleton('redirection', true);
+		return self::getSingleton('redirection');
 	}
 
 
@@ -1436,7 +1448,7 @@ class e107
 	 */
 	public static function getRate()
 	{
-		return self::getSingleton('rater', true);
+		return self::getSingleton('rater');
 	}
 
 	/**
@@ -1446,7 +1458,7 @@ class e107
 	 */
 	public static function getSitelinks()
 	{
-		return self::getSingleton('sitelinks', true);
+		return self::getSingleton('sitelinks');
 	}
 
 
@@ -1502,7 +1514,7 @@ class e107
 	 */
 	public static function getBulkEmail()
 	{
-		return self::getSingleton('e107MailManager', true);
+		return self::getSingleton('e107MailManager');
 	}
 
 	/**
@@ -1512,7 +1524,7 @@ class e107
 	 */
 	public static function getEvent()
 	{
-		return self::getSingleton('e107_event', true);
+		return self::getSingleton('e107_event');
 	}
 
 	/**
@@ -1522,7 +1534,7 @@ class e107
 	 */
 	public static function getArrayStorage()
 	{
-		return self::getSingleton('e_array', true);
+		return self::getSingleton('e_array');
 	}
 
 	/**
@@ -1532,7 +1544,7 @@ class e107
 	 */
 	public static function getMenu()
 	{
-		return self::getSingleton('e_menu', true);
+		return self::getSingleton('e_menu');
 	}
 
 
@@ -1591,7 +1603,7 @@ class e107
 	 */
 	public static function getUrl()
 	{
-		return self::getSingleton('eUrl', true);
+		return self::getSingleton('eUrl');
 	}
 
 	/**
@@ -1604,9 +1616,9 @@ class e107
 	{
 		if($singleton)
 		{
-			return self::getSingleton('e_file', true);
+			return self::getSingleton('e_file');
 		}
-		return self::getObject('e_file', null, true);
+		return self::getObject('e_file');
 	}
 
 	/**
@@ -1654,9 +1666,9 @@ class e107
 	{
 		if($singleton)
 		{
-			return self::getSingleton('e_form', true);
+			return self::getSingleton('e_form');
 		}
-		return self::getObject('e_form', $tabindex, true);
+		return self::getObject('e_form', $tabindex);
 	}
 
 	/**
@@ -1666,7 +1678,7 @@ class e107
 	 */
 	public static function getAdminLog()
 	{
-		return self::getSingleton('e_admin_log', true);
+		return self::getSingleton('e_admin_log');
 	}
 
 	/**
@@ -1676,7 +1688,7 @@ class e107
 	 */
 	public static function getLog()
 	{
-		return self::getSingleton('e_admin_log', true);
+		return self::getSingleton('e_admin_log');
 	}
 
 	/**
@@ -1686,7 +1698,7 @@ class e107
 	 */
 	public static function getDateConvert()
 	{
-		return self::getSingleton('e_date', true);
+		return self::getSingleton('e_date');
 	}
 
 	/**
@@ -1696,7 +1708,7 @@ class e107
 	 */
 	public static function getDate()
 	{
-		return self::getSingleton('e_date', true);
+		return self::getSingleton('e_date');
 	}
 
 
@@ -1707,7 +1719,7 @@ class e107
      */
     public static function getDebug()
     {
-        return self::getSingleton('e107_db_debug', true);
+        return self::getSingleton('e107_db_debug');
     }
 
 	/**
@@ -1717,7 +1729,7 @@ class e107
 	 */
 	public static function getNotify()
 	{
-		return self::getSingleton('notify', true);
+		return self::getSingleton('notify');
 	}
 
 
@@ -1728,7 +1740,7 @@ class e107
 	 */
 	public static function getOverride()
 	{
-		return self::getSingleton('override', true);
+		return self::getSingleton('override');
 	}
 
 
@@ -1740,7 +1752,7 @@ class e107
 	 */
 	public static function getLanguage()
 	{
-		return self::getSingleton('language', true);
+		return self::getSingleton('language');
 	}
 
 	/**
@@ -1750,7 +1762,7 @@ class e107
 	 */
 	public static function getIPHandler()
 	{
-		return self::getSingleton('eIPHandler', true);
+		return self::getSingleton('eIPHandler');
 	}
 
 	/**
@@ -1762,9 +1774,9 @@ class e107
 	{
 		if($singleton)
 		{
-			return self::getSingleton('xmlClass', true, (true === $singleton ? '' : $singleton));
+			return self::getSingleton('xmlClass', true, ($singleton === true ? '' : $singleton));
 		}
-		return self::getObject('xmlClass', null, true);
+		return self::getObject('xmlClass');
 	}
 
 	/**
@@ -1804,7 +1816,7 @@ class e107
 	 */
 	public static function getUserClass()
 	{
-		return self::getSingleton('user_class', true);
+		return self::getSingleton('user_class');
 	}
 
 	/**
@@ -1822,13 +1834,19 @@ class e107
 			return self::getUser();
 		}
 
-		if(!$user_id) return self::getObject('e_system_user');
+		if(!$user_id)
+		{
+			return self::getObject('e_system_user');
+		}
 
 		$user = self::getRegistry('core/e107/user/'.$user_id);
-		if(null === $user)
+		if($user === null)
 		{
 			$user = self::getObject('e_system_user');
-			if($user_id) $user->load($user_id); // self registered on load
+			if($user_id)
+			{
+				$user->load($user_id);
+			} // self registered on load
 		}
 		return $user;
 	}
@@ -1844,7 +1862,7 @@ class e107
 
 		if(empty($uid)){ return false; }
 
-		$user = self::getSystemUser($uid, true);
+		$user = self::getSystemUser($uid);
 		$var = array();
 		if($user)
 		{
@@ -1892,7 +1910,7 @@ class e107
 	public static function getUser()
 	{
 		$user = self::getRegistry('core/e107/current_user');
-		if(null === $user)
+		if($user === null)
 		{
 			$user = self::getObject('e_user');
 			self::setRegistry('core/e107/current_user', $user);
@@ -1924,7 +1942,7 @@ class e107
 	 */
 	public static function getUserStructure()
 	{
-		return self::getSingleton('e_user_extended_structure_tree', true);
+		return self::getSingleton('e_user_extended_structure_tree');
 	}
 
 	/**
@@ -1933,7 +1951,7 @@ class e107
 	 */
 	public static function getUserExt()
 	{
-		return self::getSingleton('e107_user_extended', true);
+		return self::getSingleton('e107_user_extended');
 	}
 
 	/**
@@ -1942,7 +1960,7 @@ class e107
 	 */
 	public static function getUserPerms()
 	{
-		return self::getSingleton('e_userperms', true);
+		return self::getSingleton('e_userperms');
 	}
 
 	/**
@@ -1951,7 +1969,7 @@ class e107
 	 */
 	public static function getRank()
 	{
-		return self::getSingleton('e_ranks', true);
+		return self::getSingleton('e_ranks');
 	}
 
 	/**
@@ -1960,7 +1978,7 @@ class e107
 	 */
 	public static function getPlugin()
 	{
-		return self::getSingleton('e107plugin', true);
+		return self::getSingleton('e107plugin');
 	}
 
 
@@ -1971,7 +1989,7 @@ class e107
 	 */
 	public static function getPlug()
 	{
-		return self::getSingleton('e_plugin', true);
+		return self::getSingleton('e_plugin');
 	}
 
 	/**
@@ -1980,7 +1998,7 @@ class e107
 	 */
 	public static function getOnline()
 	{
-		return self::getSingleton('e_online', true);
+		return self::getSingleton('e_online');
 	}
 
 
@@ -1990,7 +2008,7 @@ class e107
 	 */
 	public static function getChart()
 	{
-		return self::getObject('e_chart', null, true);
+		return self::getObject('e_chart');
 	}
 
 
@@ -2000,7 +2018,7 @@ class e107
 	 */
 	public static function getComment()
 	{
-		return self::getSingleton('comment', true);
+		return self::getSingleton('comment');
 	}
 
 	/**
@@ -2009,7 +2027,7 @@ class e107
 	 */
 	public static function getCustomFields()
 	{
-		return self::getSingleton('e_customfields', true);
+		return self::getSingleton('e_customfields');
 	}
 
 	/**
@@ -2018,7 +2036,7 @@ class e107
 	 */
 	public static function getMedia()
 	{
-		return self::getSingleton('e_media', true);
+		return self::getSingleton('e_media');
 	}
 
 	/**
@@ -2027,7 +2045,7 @@ class e107
 	 */
 	public static function getNav()
 	{
-		return self::getSingleton('e_navigation', true);
+		return self::getSingleton('e_navigation');
 	}
 
 	/**
@@ -2043,7 +2061,7 @@ class e107
 			// $included = true;
 		// }
 		// return eMessage::getInstance();
-		return self::getSingleton('eMessage', true);
+		return self::getSingleton('eMessage');
 	}
 
 	/**
@@ -2053,7 +2071,7 @@ class e107
 	 */
 	public static function getAjax()
 	{
-		return self::getSingleton('e_ajax', true);
+		return self::getSingleton('e_ajax');
 	}
 
 	/**
@@ -2063,7 +2081,7 @@ class e107
 	 */
 	public static function getLibrary()
 	{
-		return self::getSingleton('e_library_manager', true);
+		return self::getSingleton('e_library_manager');
 	}
 
 	/**
@@ -2243,51 +2261,102 @@ class e107
 
 			case 'core':
 				// data is e.g. 'core/tabs.js'
-				if(null !== $zone) $jshandler->requireCoreLib($data, $zone);
-				else $jshandler->requireCoreLib($data);
+				if($zone !== null)
+				{
+					$jshandler->requireCoreLib($data, $zone);
+				}
+				else
+				{
+					$jshandler->requireCoreLib($data);
+				}
 			break;
 
 			case 'bootstrap': //TODO Eventually add own method and render for bootstrap.
-				if(null !== $zone) $jshandler->requireCoreLib('bootstrap/js/'.$data, $zone);
-				else $jshandler->requireCoreLib('bootstrap/js/'.$data);
+				if($zone !== null)
+				{
+					$jshandler->requireCoreLib('bootstrap/js/' . $data, $zone);
+				}
+				else
+				{
+					$jshandler->requireCoreLib('bootstrap/js/' . $data);
+				}
 			break;
 
 			case 'theme':
 				// data is e.g. 'jslib/mytheme.js'
-				if(null !== $zone) $jshandler->headerTheme($data, $zone, $pre, $post);
-				else $jshandler->footerTheme($data, 5, $pre, $post);
+				if($zone !== null)
+				{
+					$jshandler->headerTheme($data, $zone, $pre, $post);
+				}
+				else
+				{
+					$jshandler->footerTheme($data, 5, $pre, $post);
+				}
 			break;
 
 			case 'inline':
 				// data is JS source (without script tags)
-				if(null !== $zone) $jshandler->headerInline($data, $zone);
-				else $jshandler->headerInline($data);
+				if($zone !== null)
+				{
+					$jshandler->headerInline($data, $zone);
+				}
+				else
+				{
+					$jshandler->headerInline($data);
+				}
 			break;
 
 			case 'footer-inline':
 				// data is JS source (without script tags)
-				if(null !== $zone) $jshandler->footerInline($data, $zone);
-				else $jshandler->footerInline($data);
+				if($zone !== null)
+				{
+					$jshandler->footerInline($data, $zone);
+				}
+				else
+				{
+					$jshandler->footerInline($data);
+				}
 			break;
 
 			case 'url':
 				// data is e.g. 'http://cdn.somesite.com/some.js'
-				if(null !== $zone) $jshandler->headerFile($data, $zone, $pre, $post);
-				else $jshandler->headerFile($data, 5, $pre, $post);
+				if($zone !== null)
+				{
+					$jshandler->headerFile($data, $zone, $pre, $post);
+				}
+				else
+				{
+					$jshandler->headerFile($data, 5, $pre, $post);
+				}
 			break;
 
 			case 'footer':
 				// data is e.g. '{e_PLUGIN}myplugin/jslib/myplug.js'
-				if(null !== $zone) $jshandler->footerFile($data, $zone, $pre, $post);
-				else $jshandler->footerFile($data, 5, $pre, $post);
+				if($zone !== null)
+				{
+					$jshandler->footerFile($data, $zone, $pre, $post);
+				}
+				else
+				{
+					$jshandler->footerFile($data, 5, $pre, $post);
+				}
 			break;
 
 			// $type is plugin name
 			default:
 				// data is e.g. 'jslib/myplug.js'
-				if(!self::isInstalled($type)) return;
-				if(null !== $zone) $jshandler->requirePluginLib($type, $data, $zone);
-				else $jshandler->requirePluginLib($type, $data);
+				if(!self::isInstalled($type))
+				{
+					return;
+				}
+				if($zone !== null)
+				{
+					$jshandler->requirePluginLib($type, $data, $zone);
+				}
+				else
+				{
+					$jshandler->requirePluginLib($type, $data);
+				}
 			break;
 		}
 
@@ -2369,7 +2438,10 @@ class e107
 			// $type is plugin name
 			default:
 				// data is e.g. 'css/myplug.css'
-				if(self::isInstalled($type)) $jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
+				if(self::isInstalled($type))
+				{
+					$jshandler->pluginCSS($type, $data, $media, $preComment, $postComment);
+				}
 			break;
 		}
 		$jshandler->resetDependency();
@@ -2472,9 +2544,9 @@ class e107
 	{
 		if($singleton)
 		{
-			return self::getSingleton('e_jshelper', true, (true === $singleton ? '' : $singleton));
+			return self::getSingleton('e_jshelper', true, ($singleton === true ? '' : $singleton));
 		}
-		return self::getObject('e_jshelper', null, true);
+		return self::getObject('e_jshelper');
 	}
 
 	/**
@@ -2541,23 +2613,32 @@ class e107
 		$filename = $addonName; // e.g. 'e_cron';
 
 		// fixme, temporary adding 's' to className, should be core fixed, better naming
-		if(true === $className) $className = $pluginName.'_'.substr($addonName, 2); // remove 'e_'
+		if($className === true)
+		{
+			$className = $pluginName . '_' . substr($addonName, 2);
+		} // remove 'e_'
 
 		$elist = self::getPref($filename.'_list');
 
 		if($filename === 'e_menu')
 		{
-			if(!in_array($pluginName, $elist)) return null;
+			if(!in_array($pluginName, $elist))
+			{
+				return null;
+			}
 		}
-		else
+		elseif(!isset($elist[$pluginName]))
 		{
-			if(!isset($elist[$pluginName])) return null;
+			return null;
 		}
 
 		// TODO override check comes here
 		$path = e_PLUGIN.$pluginName.'/'.$filename.'.php';
 		// e.g. include e_module, e_meta etc
-		if(false === $className) return include_once($path);
+		if($className === false)
+		{
+			return include_once($path);
+		}
 
 		if(!class_exists($className, false))
 		{
@@ -2669,7 +2750,7 @@ class e107
 		$className = substr($filename, 2); // remove 'e_'
 		$methodName = 'config';
 
-		$url_profiles = e107::getPref('url_profiles');
+		$url_profiles = self::getPref('url_profiles');
 
 		if(!empty($elist))
 		{
@@ -2763,7 +2844,7 @@ class e107
 	{
 	//	global $user_pref; // FIXME - user model, kill user_pref global
 
-		if(true === $for)
+		if($for === true)
 		{
 			$for = e_ADMIN_AREA ? 'admin' : 'front';
 		}
@@ -2787,7 +2868,10 @@ class e107
 
 			break;
 		}
-		if(!$path) return $for;
+		if(!$path)
+		{
+			return $for;
+		}
 
 		switch($path)
 		{
@@ -2959,7 +3043,7 @@ class e107
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
 		}
-		if(null == $id || true === $id) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
+		if($id == null || $id === true) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
 		{
 			$id = $plug_name;
 		}
@@ -2976,9 +3060,9 @@ class e107
 		 * so the following calls to self::plugLan() fix that.
 		 */
 		self::plugLan($plug_name, null, true);
-		self::plugLan($plug_name, null, false);
+		self::plugLan($plug_name, null);
 		self::plugLan($plug_name, 'global', true);
-		self::plugLan($plug_name, 'global', false);
+		self::plugLan($plug_name, 'global');
 
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
@@ -3017,7 +3101,10 @@ class e107
 	 */
 	public static function templateWrapper($templateId, $scName = null)
 	{
-		if(!$templateId) return array();
+		if(!$templateId)
+		{
+			return array();
+		}
 
 		list($templateId, $templateKey) = explode('/', $templateId, 2);
 
@@ -3025,7 +3112,10 @@ class e107
 
 		$wrapper = self::getRegistry($wrapperRegPath);
 
-		if(empty($wrapper) || !is_array($wrapper)) $wrapper = array();
+		if(empty($wrapper) || !is_array($wrapper))
+		{
+			$wrapper = array();
+		}
 
 		if(strpos($templateKey,'/')!==false) // quick fix support for 3 keys eg. news/view/item
 		{
@@ -3036,11 +3126,12 @@ class e107
 			}
 		}
 		else // support for 2 keys. eg. contact/form
-		{
-			if($templateKey) $wrapper = (isset($wrapper[$templateKey])  ? $wrapper[$templateKey] : array());
-		}
+			if($templateKey)
+			{
+				$wrapper = (isset($wrapper[$templateKey]) ? $wrapper[$templateKey] : array());
+			}
 
-		if(null !== $scName)
+		if($scName !== null)
 		{
 			$scName = strtoupper($scName);
 			return isset($wrapper[$scName]) ? $wrapper[$scName] : '';
@@ -3057,7 +3148,10 @@ class e107
 	public static function scStyle($set = null)
 	{
 		$_sc_style = self::getRegistry('shortcodes/sc_style');
-		if(!is_array($_sc_style)) $_sc_style = array();
+		if(!is_array($_sc_style))
+		{
+			$_sc_style = array();
+		}
 		if(is_array($set) && !empty($set))
 		{
 			self::setRegistry('shortcodes/sc_style', array_merge($_sc_style, $set));
@@ -3144,7 +3238,10 @@ class e107
 						break;
 					}
 				}
-				if(!$match) continue;
+				if(!$match)
+				{
+					continue;
+				}
 			}
 			if(isset($tmp_info[$key]))
 			{
@@ -3183,7 +3280,7 @@ class e107
 
 		$tp = self::getParser(); // BC FIx - avoid breaking old templates due to missing globals.
 
-		if(null === self::getRegistry($regPath))
+		if(self::getRegistry($regPath) === null)
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
@@ -3213,7 +3310,7 @@ class e107
                 }
             }
 		}
-		if(null === self::getRegistry($regPathInfo))
+		if(self::getRegistry($regPathInfo) === null)
 		{
 			self::setRegistry($regPathInfo, (isset($$var_info) && is_array($$var_info) ? $$var_info : array()));
 		}
@@ -3290,18 +3387,21 @@ class e107
 	{
 		if ($admin)
 		{
-			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+			self::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		}
 
 		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
-		if(self::getRegistry($cstring)) return null;
+		if(self::getRegistry($cstring))
+		{
+			return null;
+		}
 
 		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[\W]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path, false);
+		return self::includeLan($path);
 	}
 
 	/**
@@ -3335,7 +3435,10 @@ class e107
 	public static function plugLan($plugin, $fname = '', $flat = false)
 	{
 		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
-		if(self::getRegistry($cstring)) return null;
+		if(self::getRegistry($cstring))
+		{
+			return null;
+		}
 
 		$plugin = preg_replace('/[\W]/', '', $plugin);
 
@@ -3382,7 +3485,7 @@ class e107
 
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path, false);
+		return self::includeLan($path);
 	}
 
 	/**
@@ -3414,14 +3517,29 @@ class e107
 	 */
 	public static function themeLan($fname = '', $theme = null, $flat = false)
 	{
-		if(null === $theme) $theme = THEME.'languages/';
-		else $theme = e_THEME.preg_replace('#[^\w/]#', '', $theme).'/languages/';
+		if($theme === null)
+		{
+			$theme = THEME . 'languages/';
+		}
+		else
+		{
+			$theme = e_THEME . preg_replace('#[^\w/]#', '', $theme) . '/languages/';
+		}
 
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
-		if(self::getRegistry($cstring)) return null;
+		if(self::getRegistry($cstring))
+		{
+			return null;
+		}
 
-		if($fname) $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
-		else $fname = e_LANGUAGE;
+		if($fname)
+		{
+			$fname = e_LANGUAGE . ($flat ? '_' : '/') . preg_replace('#[^\w/]#', '', trim($fname, '/'));
+		}
+		else
+		{
+			$fname = e_LANGUAGE;
+		}
 
 		$path = $theme.$fname.'.php';
 
@@ -3432,7 +3550,7 @@ class e107
 
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path, false);
+		return self::includeLan($path);
 	}
 
 
@@ -3526,7 +3644,7 @@ class e107
 				{
 					return array(0=> array('text'=>PAGE_NAME, 'url'=>null));
 				}
-				elseif($caption = e107::getRender()->getMainCaption()) // BC search for primary render caption
+				elseif($caption = self::getRender()->getMainCaption()) // BC search for primary render caption
 				{
 					return array(0=> array('text'=>$caption, 'url'=>null));
 				}
@@ -3737,7 +3855,7 @@ class e107
 			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
 		}
 
-		return htmlspecialchars($sefUrl . $options['fragment'], ENT_QUOTES, 'UTF-8');
+		return htmlspecialchars($sefUrl . $options['fragment'], ENT_QUOTES);
 	}
 
 
@@ -3773,7 +3891,7 @@ class e107
 	 */
 	public static function getError()
 	{
-		return self::getSingleton('error_page', true);
+		return self::getSingleton('error_page');
 	}
 
 
@@ -3864,7 +3982,7 @@ class e107
 			//	$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors()); // very slow.
 			}
 
-			if(!is_null($val))
+			if($val !== null)
 			{
 				// set editor if value given
 				$editor = empty($val) ? $fallbackEditor : ($val === 'default' ? true : $val);
@@ -3980,14 +4098,23 @@ class e107
 
 		// Block common bad agents / queries / php issues.
 		array_walk($_SERVER,  array('self', 'filter_request'), '_SERVER');
-		if (isset($_GET)) array_walk($_GET,     array('self', 'filter_request'), '_GET');
+		if (isset($_GET))
+		{
+			array_walk($_GET, array('self', 'filter_request'), '_GET');
+		}
 		if (isset($_POST))
 		{
 			array_walk($_POST,    array('self', 'filter_request'), '_POST');
 			reset($_POST);		// Change of behaviour in PHP 5.3.17?
 		}
-		if (isset($_COOKIE)) array_walk($_COOKIE,  array('self', 'filter_request'), '_COOKIE');
-		if (isset($_REQUEST)) array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
+		if (isset($_COOKIE))
+		{
+			array_walk($_COOKIE, array('self', 'filter_request'), '_COOKIE');
+		}
+		if (isset($_REQUEST))
+		{
+			array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
+		}
 
 		// A better way to detect an AJAX request. No need for "ajax_used=1";
 		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
@@ -4007,7 +4134,10 @@ class e107
 			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
 			$GLOBALS['_E107']['minimal'] = true;
 			// lame but quick - allow online when ajax request only, additonal checks are made in e_online class
-			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal'])) unset($_e107vars[1]);
+			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal']))
+			{
+				unset($_e107vars[1]);
+			}
 
 			foreach($_e107vars as $v)
 			{
@@ -4021,7 +4151,10 @@ class e107
 		}
 
 		// we can now start use $e107->_E107
-		if(isset($GLOBALS['_E107']) && is_array($GLOBALS['_E107'])) $this->_E107 = & $GLOBALS['_E107'];
+		if(isset($GLOBALS['_E107']) && is_array($GLOBALS['_E107']))
+		{
+			$this->_E107 = &$GLOBALS['_E107'];
+		}
 
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
 		$_SERVER['QUERY_STRING'] = trim(
@@ -4138,9 +4271,10 @@ class e107
 
 		if($type === "_SERVER")
 		{
+			$input = strtolower($input);
 
 			if(($key === "QUERY_STRING") && (
-				strpos(strtolower($input),"../../")!==FALSE
+				strpos($input,"../../")!==FALSE
 				|| stripos($input,"php:")!==FALSE
 				|| stripos($input,"data:")!==FALSE
 				|| stripos($input,"%3cscript")!==FALSE
@@ -4179,7 +4313,7 @@ class e107
 	 */
 	public function set_base_path($force = null)
 	{
-		$ssl_enabled = (null !== $force) ? $force : $this->isSecure();//(self::getPref('ssl_enabled') == 1);
+		$ssl_enabled = ($force !== null) ? $force : $this->isSecure();//(self::getPref('ssl_enabled') == 1);
 		$this->base_path = $ssl_enabled ?  $this->https_path : $this->http_path;
 		return $this;
 	}
@@ -4201,17 +4335,17 @@ class e107
 
 		if(!defined('e_MOD_REWRITE')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE') === 'On'||  getenv('REDIRECT_HTTP_MOD_REWRITE') === 'On' ? true : false));
+			define('e_MOD_REWRITE', ((getenv('HTTP_MOD_REWRITE') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE') === 'On')));
 		}
 
 		if(!defined('e_MOD_REWRITE_MEDIA')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA') === 'On'  ? true : false));
+			define('e_MOD_REWRITE_MEDIA', ((getenv('HTTP_MOD_REWRITE_MEDIA') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA') === 'On')));
 		}
 
 		if(!defined('e_MOD_REWRITE_STATIC')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_STATIC', (getenv('HTTP_MOD_REWRITE_STATIC') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_STATIC') === 'On'  ? true : false));
+			define('e_MOD_REWRITE_STATIC', ((getenv('HTTP_MOD_REWRITE_STATIC') === 'On' || getenv('REDIRECT_HTTP_MOD_REWRITE_STATIC') === 'On')));
 		}
 
 		$subdomain = false;
@@ -4247,7 +4381,7 @@ class e107
 		}
 
 		define("e_DOMAIN", $domain);
-		define("e_SUBDOMAIN", ($subdomain) ? $subdomain : false);
+		define("e_SUBDOMAIN", ($subdomain) ?: false);
 
 		define('e_UC_PUBLIC', 0);
 		define('e_UC_MAINADMIN', 250);
@@ -4364,7 +4498,10 @@ class e107
 
 		$this->file_path = $path;
 
-		if(defined('e_HTTP') && defined('e_ADMIN')) return $this;
+		if(defined('e_HTTP') && defined('e_ADMIN'))
+		{
+			return $this;
+		}
 
 		if(!defined('e_HTTP'))
 		{
@@ -4523,8 +4660,8 @@ class e107
 	public function set_urls($no_cbrace = true)
 	{
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
-		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
-		$ADMIN_DIRECTORY = $this->getFolder('admin');
+		$PLUGINS_DIRECTORY = self::getFolder('plugins');
+		$ADMIN_DIRECTORY = self::getFolder('admin');
 
 		// Outdated
 		/*$requestQry = '';
@@ -4595,7 +4732,10 @@ class e107
 		{
 			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
 			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
-			if(defset('e_QUERY')) parse_str(e_QUERY,$_GET);
+			if(defset('e_QUERY'))
+			{
+				parse_str(e_QUERY, $_GET);
+			}
 		}
 
 		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
@@ -4754,7 +4894,10 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		}
 
-		if ($no_cbrace)	$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
+		if ($no_cbrace)
+		{
+			$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
+		}
 
 	//	$e_QUERY = htmlentities(self::getParser()->post_toForm($e_QUERY)); //@see https://github.com/e107inc/e107/issues/719
 		$e_QUERY = htmlspecialchars(self::getParser()->post_toForm($e_QUERY));
@@ -4783,18 +4926,21 @@ class e107
 	public static function canCache($set = null)
 	{
 		$_data = self::getSession()->get('__sessionBrowserCache');
-		if(!is_array($_data)) $_data = array();
+		if(!is_array($_data))
+		{
+			$_data = array();
+		}
 
-		if(null === $set)
+		if($set === null)
 		{
 			return in_array(e_REQUEST_URI, $_data);
 		}
 
 		// remove e_REQUEST_URI from the set
-		if(false === $set)
+		if($set === false)
 		{
 			$check = array_search(e_REQUEST_URI, $_data);
-			if(false !== $check)
+			if($check !== false)
 			{
 				unset($_data[$check]);
 				self::getSession()->set('__sessionBrowserCache', $_data);
@@ -4802,12 +4948,15 @@ class e107
 			}
 		}
 
-		if(true === $set)
+		if($set === true)
 		{
 			$set = e_REQUEST_URI;
 		}
 
-		if(empty($set) || !is_string($set) || in_array($set, $_data)) return null;
+		if(empty($set) || !is_string($set) || in_array($set, $_data))
+		{
+			return null;
+		}
 
 		$_data[]  = $set;
 		self::getSession()->set('__sessionBrowserCache', array_unique($_data));
@@ -4880,7 +5029,7 @@ class e107
 	 */
 	public function getip()
 	{
-		return self::getIPHandler()->getIP(FALSE);
+		return self::getIPHandler()->getIP();
 	}
 
 	/**
@@ -5007,7 +5156,7 @@ class e107
 			die_fatal_error('Fatal exception - spl_autoload_* required.');
 		}
 
-		if(!$prepend || false === ($registered = spl_autoload_functions()))
+		if(!$prepend || ($registered = spl_autoload_functions()) === false)
 		{
 			return spl_autoload_register($function);
 		}
@@ -5020,7 +5169,10 @@ class e107
 		$result = spl_autoload_register($function);
 		foreach ($registered as $r)
 		{
-			if(!spl_autoload_register($r)) $result = false;
+			if(!spl_autoload_register($r))
+			{
+				$result = false;
+			}
 		}
 		return $result;
 	}
@@ -5094,7 +5246,7 @@ class e107
 
 				// Currently only batches inside shortcodes/ folder are auto-detected,
 				// read the todo for e_shortcode.php related problems
-				if('shortcodes' === $end)
+				if($end === 'shortcodes')
 				{
 					$filename = e_PLUGIN.$tmp[0].'/shortcodes/batch/'; // plugname/shortcodes/batch/
 					unset($tmp[0]);
@@ -5115,13 +5267,13 @@ class e107
 			default: //core libraries, core shortcode batches
 				// core SC batch check
 				$end = array_pop($tmp);
-				if('shortcodes' === $end)
+				if($end === 'shortcodes')
 				{
 					$filename = e_CORE.'shortcodes/batch/'.$className.'.php'; // core shortcode batch
 					break;
 				}
 
-				$filename = self::getHandlerPath($className, true);
+				$filename = self::getHandlerPath($className);
 				//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
 			break;
 		}
@@ -5144,7 +5296,10 @@ class e107
 		$levels = explode('\\', $className);
 
 		// Guard against classes that are not ours
-		if ($levels[0] !== 'e107') return;
+		if ($levels[0] !== 'e107')
+		{
+			return;
+		}
 
 		$levels[0] = e_HANDLER;
 		$classPath = implode('/', $levels).'.php';
@@ -5226,7 +5381,10 @@ class e107
 	 */
 	public function destruct() //FIXME $path is not defined anywhere.
 	{
-		if(null === self::$_instance) return;
+		if(self::$_instance === null)
+		{
+			return;
+		}
 		
 		$print = defined('E107_DBG_TIMEDETAILS') && E107_DBG_TIMEDETAILS;
 
@@ -5241,7 +5399,10 @@ class e107
 					!$print || print('<tr><td>object [property] using __destruct()</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
 					$value->__destruct();
 				}
-				else !$print || print('<tr><td>object [property]</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
+				else
+				{
+					!$print || print('<tr><td>object [property]</td><td>' . $name . '</td><td>' . get_class($value) . '</td></tr>');
+				}
 				$this->$name = null;
 			}
 		}
@@ -5254,7 +5415,10 @@ class e107
 					!$print || print('<tr><td>object [registry] using __destruct()</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
 					$reg->__destruct();
 				}
-				else !$print || print('<tr><td>object [registry]</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
+				else
+				{
+					!$print || print('<tr><td>object [registry]</td><td>' . $path . '</td><td>' . get_class($reg) . '</td></tr>');
+				}
 				unset(self::$_registry[$path]);
 			}
 
@@ -5292,7 +5456,7 @@ class e107
 
         $xml  = self::getXml();
         $file = "https://e107.org/releases.php";
-        if(!$xdata = $xml->loadXMLfile($file,true,false))
+        if(!$xdata = $xml->loadXMLfile($file,true))
         {
             return false;
         }
