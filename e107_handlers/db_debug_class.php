@@ -251,9 +251,9 @@
 					if(!$bRowHeaders)
 					{
 						$bRowHeaders = true;
-						$t['explain'] = "<tr><td class='forumheader3'><b>" . implode("</b></td><td class='forumheader3'><b>", array_keys($row)) . "</b></td></tr>\n";
+						$t['explain'] = "<tr><td><b>" . implode("</b></td><td><b>", array_keys($row)) . "</b></td></tr>\n";
 					}
-					$t['explain'] .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3'>", array_values($row)) . "&nbsp;</td></tr>\n";
+					$t['explain'] .= "<tr><td>" . implode("&nbsp;</td><td>", array_values($row)) . "&nbsp;</td></tr>\n";
 				}
 			}
 			else
@@ -323,16 +323,16 @@
 
 			if($badCount)
 			{
-				$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
-				$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
-				$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
+				$text .= "\n<table class='table table-striped table-bordered'>\n";
+				$text .= "<tr><th colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
+				$text .= "<tr><th><b>Index</b></td><th><b>Query / Error</b></td></tr>\n";
 
 				foreach($this->aSQLdetails as $idx => $cQuery)
 				{
 					if(!$cQuery['ok'])
 					{
-						$text .= "<tr><td class='forumheader3' rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
-    	       	        <td class='forumheader3'>" . $cQuery['query'] . "</td></tr>\n<tr><td class='forumheader3'>" . $cQuery['error'] . "</td></tr>\n";
+						$text .= "<tr><td  rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
+    	       	        <td>" . $cQuery['query'] . "</td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
 					}
 				}
 				$text .= "\n</table><br />\n";
@@ -344,10 +344,10 @@
 
 			if($okCount && E107_DBG_SQLDETAILS)
 			{
-				$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
-				$text .= "<tr><td class='fcaption' colspan='3'><b>" . $this->countLabel($okCount) . " Good Queries</b></td></tr>\n";
-				$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
-				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
+				$text .= "\n<table class='table table-striped table-bordered'>\n";
+				$text .= "<tr><th colspan='3'><b>" . $this->countLabel($okCount) . " Good Queries</b></td></tr>\n";
+				$text .= "<tr><th><b>Index</b></td><th><b>Qtime</b></td><th><b>Query</b></td></tr>\n
+				 <tr><th>&nbsp;</td><th><b>(msec)</b></td><th>&nbsp;</td></tr>\n
 				 ";
 
 				$count = 0;
@@ -362,9 +362,9 @@
 
 					if($cQuery['ok'])
 					{
-						$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td class='forumheader3' style='text-align:right'>" . number_format($cQuery['time'] * 1000.0, 4) . "&nbsp;</td>
-	       	        <td class='forumheader3'>" . $cQuery['query'] . '<br />[' . $cQuery['marker'] . " - " . $cQuery['caller'] . "]</td></tr>\n";
+						$text .= "<tr><td  style='text-align:right'>{$idx}&nbsp;</td>
+	       	        <td  style='text-align:right'>" . number_format($cQuery['time'] * 1000.0, 4) . "&nbsp;</td>
+	       	        <td>" . $cQuery['query'] . '<br />[' . $cQuery['marker'] . " - " . $cQuery['caller'] . "]</td></tr>\n";
 
 						$count++;
 					}
@@ -383,18 +383,18 @@
 				$count = 0;
 				foreach($this->aSQLdetails as $idx => $cQuery)
 				{
-					$text .= "\n<table class='fborder table table-striped table-bordered' style='width: 100%;'>\n";
-					$text .= "<tr><td class='forumheader3' colspan='" . $cQuery['nFields'] . "'><b>" . $idx . ") Query:</b> [" . $cQuery['marker'] . " - " . $cQuery['caller'] . "]<br />" . $cQuery['query'] . "</td></tr>\n";
+					$text .= "\n<table class='table table-striped table-bordered' style='width: 100%;'>\n";
+					$text .= "<tr><td  colspan='" . $cQuery['nFields'] . "'><b>" . $idx . ") Query:</b> [" . $cQuery['marker'] . " - " . $cQuery['caller'] . "]<br />" . $cQuery['query'] . "</td></tr>\n";
 					if(isset($cQuery['explain']))
 					{
 						$text .= $cQuery['explain'];
 					}
 					if(strlen($cQuery['error']))
 					{
-						$text .= "<tr><td class='forumheader3' ><b>Error in query:</b></td></tr>\n<tr><td class='forumheader3'>" . $cQuery['error'] . "</td></tr>\n";
+						$text .= "<tr><td  ><b>Error in query:</b></td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
 					}
 
-					$text .= "<tr><td class='forumheader3'  colspan='" . $cQuery['nFields'] . "'><b>Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
+					$text .= "<tr><td   colspan='" . $cQuery['nFields'] . "'><b>Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
 
 					$text .= '</table><br />' . "\n";
 
@@ -485,7 +485,7 @@
 
 			$totTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
 
-			$text = "\n<table class='fborder table table-striped table-condensed'>\n";
+			$text = "\n<table class='table table-striped table-condensed'>\n";
 			$bRowHeaders = false;
 			reset($this->aTimeMarks);
 			$aSum = $this->aTimeMarks[0]; // create a template from the 'real' array
@@ -529,7 +529,7 @@
 				{
 					// First time: emit headers
 					$bRowHeaders = true;
-					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_keys($tMarker)) . "</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
+					$text .= "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", array_keys($tMarker)) . "</b>&nbsp;</td><th style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
 					$aUnits = $tMarker;
 					foreach($aUnits as $key => $val)
 					{
@@ -547,7 +547,7 @@
 					$aUnits['OB Lev'] = 'lev(buf bytes)';
 					$aUnits['Memory'] = '(kb)';
 					$aUnits['Memory Used'] = '(kb)';
-					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
+					$text .= "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
 				}
 
 
@@ -614,11 +614,11 @@
 					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
 				}
 
-				$text .= "<tr><td class='forumheader3' >" . implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker)) . "&nbsp;</td></tr>\n";
+				$text .= "<tr><td  >" . implode("&nbsp;</td><td   style='text-align:right'>", array_values($tMarker)) . "&nbsp;</td></tr>\n";
 
 				if(isset($this->aMarkNotes[$tKey]))
 				{
-					$text .= "<tr><td class='forumheader3' >&nbsp;</td><td class='forumheader3' colspan='4'>";
+					$text .= "<tr><td  >&nbsp;</td><td  colspan='4'>";
 					$text .= $this->aMarkNotes[$tKey] . "</td></tr>\n";
 				}
 
@@ -636,24 +636,24 @@
 
 
 			$text .= "<tr>
-		<td class='fcaption'>&nbsp;</td>
-		<td class='fcaption' style='text-align:right'><b>Total</b></td>
-		<td class='fcaption' style='text-align:right'><b>" . $aSum['%Time'] . "</b></td>
-		<td class='fcaption' style='text-align:right'><b>" . $aSum['%DB Time'] . "</b></td>
-		<td class='fcaption' style='text-align:right'><b>" . $aSum['%DB Count'] . "</b></td>
-		<td class='fcaption' style='text-align:right' title='Time (msec)'><b>" . $aSum['Time'] . "</b></td>
-		<td class='fcaption' style='text-align:right' title='DB Time (msec)'><b>" . $aSum['DB Time'] . "</b></td>
-		<td class='fcaption' style='text-align:right'><b>" . $aSum['DB Count'] . "</b></td>
-		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
-		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
+		<th>&nbsp;</td>
+		<th style='text-align:right'><b>Total</b></td>
+		<th style='text-align:right'><b>" . $aSum['%Time'] . "</b></td>
+		<th style='text-align:right'><b>" . $aSum['%DB Time'] . "</b></td>
+		<th style='text-align:right'><b>" . $aSum['%DB Count'] . "</b></td>
+		<th style='text-align:right' title='Time (msec)'><b>" . $aSum['Time'] . "</b></td>
+		<th style='text-align:right' title='DB Time (msec)'><b>" . $aSum['DB Time'] . "</b></td>
+		<th style='text-align:right'><b>" . $aSum['DB Count'] . "</b></td>
+		<th style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
+		<th style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
 
-			<td class='fcaption' style='text-align:right'><b>" . $tMarker['OB Lev'] . "</b></td>
+			<th style='text-align:right'><b>" . $tMarker['OB Lev'] . "</b></td>
 
 		</tr>
 		";
 
 
-			//	$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
+			//	$text .= "<tr><th><b>".implode("</b>&nbsp;</td><th style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><th>&nbsp;</td></tr>\n";
 
 			$text .= "\n</table><br />\n";
 
@@ -662,7 +662,7 @@
 			// Stats by Table
 			//
 
-			$text .= "\n<table class='fborder table table-striped table-condensed'>
+			$text .= "\n<table class='table table-striped table-condensed'>
 			<colgroup>
 				<col style='width:auto' />
 				<col style='width:9%' />
@@ -684,7 +684,7 @@
 				if(!$bRowHeaders)
 				{
 					$bRowHeaders = true;
-					$text .= "<tr><td class='fcaption'><b>" . implode("</b></td><td class='fcaption' style='text-align:right'><b>", array_keys($curTable)) . "</b></td></tr>\n";
+					$text .= "<tr><th><b>" . implode("</b></td><th style='text-align:right'><b>", array_keys($curTable)) . "</b></td></tr>\n";
 					$aUnits = $curTable;
 					foreach($aUnits as $key => $val)
 					{
@@ -698,7 +698,7 @@
 								break;
 						}
 					}
-					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
+					$text .= "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
 				}
 
 				$aSum['DB Time'] += $curTable['DB Time'];
@@ -708,13 +708,13 @@
 				$timeLabel = number_format($curTable['DB Time'] * 1000.0, 1);
 				$curTable['DB Time'] = $this->highlight($timeLabel, ($curTable['DB Time'] * 1000), 500); // 500 msec
 
-				$text .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
+				$text .= "<tr><td>" . implode("&nbsp;</td><td  style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
 			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
-			$text .= "<tr><td class='fcaption'><b>" . implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
+			$text .= "<tr><th><b>" . implode("&nbsp;</td><th style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
 			$text .= "\n</table><br />\n";
 
 			return $text;
@@ -760,14 +760,14 @@
 				return false;
 			}
 
-			$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
+			$text = "<table class='table table-striped table-condensed' style='width: 100%'>
 			
 			<thead>
 			<tr>
-				<th class='fcaption' style='width: 10%;'>Type</th>
-				<th class='fcaption' style='width: 30%;'>Code</th>
-				<th class='fcaption' style='width: 20%;'>Parm</th>
-				<th class='fcaption' style='width: 40%;'>Details</th>
+				<th style='width: 10%;'>Type</th>
+				<th style='width: 30%;'>Code</th>
+				<th style='width: 20%;'>Parm</th>
+				<th style='width: 40%;'>Details</th>
 			</tr>
 			</thead>
 			<tbody>\n";
@@ -781,10 +781,10 @@
 				$type = $codes['type'];
 
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 10%;'><span class='label " . $style[$type] . "'>" . ($description[$type]) . "</span></td>
-				<td class='forumheader3' style='width: auto;'>" . (isset($codes['code']) ? $codes['code'] : "&nbsp;") . "</td>
-				<td class='forumheader3' style='width: auto;'>" . ($codes['parm'] ? $codes['parm'] : "&nbsp;") . "</td>
-				<td class='forumheader3' style='width: 40%;'>" . ($codes['details'] ? $codes['details'] : "&nbsp;") . "</td>
+				<td  style='width: 10%;'><span class='label " . $style[$type] . "'>" . ($description[$type]) . "</span></td>
+				<td  style='width: auto;'>" . (isset($codes['code']) ? $codes['code'] : "&nbsp;") . "</td>
+				<td  style='width: auto;'>" . ($codes['parm'] ? $codes['parm'] : "&nbsp;") . "</td>
+				<td  style='width: 40%;'>" . ($codes['details'] ? $codes['details'] : "&nbsp;") . "</td>
 				</tr>\n";
 			}
 			$text .= "</tbody></table>";
@@ -803,14 +803,14 @@
 			global $e107;
 			$sql = e107::getDb();
 
-			$text = "<table class='fborder table table-striped table-condensed debug-footer' style='width:100%'>
+			$text = "<table class='table table-striped table-condensed debug-footer' style='width:100%'>
 		<colgroup>
 		<col style='width:20%' />
 		<col style='width:auto' />
 		</colgroup>
 		<thead>
 			<tr>
-				<th class='fcaption debug-footer-caption left' colspan='2'><b>Paths &amp; Variables</b></th>
+				<th class='debug-footer-caption left' colspan='2'><b>Paths &amp; Variables</b></th>
 			</tr>
 		</thead>
 		<tbody>\n";
@@ -831,8 +831,8 @@
 				{
 					$text .= "
 				<tr>
-					<td class='forumheader3'>" . $k . "</td>
-					<td class='forumheader3'>" . htmlspecialchars($v) . "</td>
+					<td>" . $k . "</td>
+					<td>" . htmlspecialchars($v) . "</td>
 				</tr>";
 				}
 			}
@@ -843,39 +843,39 @@
 			
 		
 			<tr>
-				<td class='forumheader3'>SQL Language</td>
-				<td class='forumheader3'>" . $sql->mySQLlanguage . "</td>
+				<td>SQL Language</td>
+				<td>" . $sql->mySQLlanguage . "</td>
 			</tr>
 ";
 			if($_SERVER['E_DEV'] == 'true')
 			{
 				$text .= "
 				<tr>
-					<td class='forumheader3' colspan='2'><pre>" . htmlspecialchars(print_r($e107, true)) . "</pre></td>
+					<td  colspan='2'><pre>" . htmlspecialchars(print_r($e107, true)) . "</pre></td>
 				</tr>";
 			}
 
 			$text .= "
 			<tr>
-				<td class='fcaption' colspan='2'><h2>Session</h2></td>
+				<th colspan='2'><h2>Session</h2></td>
 			</tr>
 			<tr>
-				<td class='forumheader3'>Session lifetime</td>
-				<td class='forumheader3'>" . $sess->getOption('lifetime') . " seconds</td>
+				<td>Session lifetime</td>
+				<td>" . $sess->getOption('lifetime') . " seconds</td>
 			</tr>
 			<tr>
-				<td class='forumheader3'>Session domain</td>
-				<td class='forumheader3'>" . $sess->getOption('domain') . "</td>
+				<td>Session domain</td>
+				<td>" . $sess->getOption('domain') . "</td>
 			</tr>
 			<tr>
-				<td class='forumheader3'>Session save method</td>
-				<td class='forumheader3'>" . $sess->getSaveMethod() . "</td>
+				<td>Session save method</td>
+				<td>" . $sess->getSaveMethod() . "</td>
 			</tr>
 			
 			
 			
 			<tr>
-				<td class='forumheader3' colspan='2'><pre>" . htmlspecialchars(print_r($_SESSION, true)) . "</pre></td>
+				<td  colspan='2'><pre>" . htmlspecialchars(print_r($_SESSION, true)) . "</pre></td>
 			</tr>
 			
 		</tbody>
@@ -894,13 +894,13 @@
 			}
 			else
 			{
-				$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
-			<tr><td class='fcaption' colspan='4'><b>The following deprecated functions were used:</b></td></tr>
+				$text = "<table class='table table-striped table-condensed' style='width: 100%'>
+			<tr><th colspan='4'><b>The following deprecated functions were used:</b></td></tr>
 			<thead>
 			<tr>
-			<th class='fcaption' style='width: 10%;'>Function</th>
-			<th class='fcaption' style='width: 10%;'>File</th>
-			<th class='fcaption' style='width: 10%;'>Line</th>
+			<th style='width: 10%;'>Function</th>
+			<th style='width: 10%;'>File</th>
+			<th style='width: 10%;'>Line</th>
 			</tr>
 			</thead>
 			<tbody>\n";
@@ -908,9 +908,9 @@
 				foreach($this->deprecated_funcs as $funcs)
 				{
 					$text .= "<tr>
-				<td class='forumheader3' style='width: 10%;'>{$funcs['func']}()</td>
-				<td class='forumheader3' style='width: 10%;'>{$funcs['file']}</td>
-				<td class='forumheader3' style='width: 10%;'>{$funcs['line']}</td>
+				<td style='width: 10%;'>{$funcs['func']}()</td>
+				<td style='width: 10%;'>{$funcs['file']}</td>
+				<td style='width: 10%;'>{$funcs['line']}</td>
 				</tr>\n";
 				}
 				$text .= "</tbody></table>";
@@ -1009,7 +1009,7 @@
 			// Dump the debug log
 			//
 
-			$text = "\n<table class='fborder table table-striped'>\n";
+			$text = "\n<table class='table table-striped'>\n";
 
 			$bRowHeaders = false;
 
@@ -1018,10 +1018,10 @@
 				if(!$bRowHeaders)
 				{
 					$bRowHeaders = true;
-					$text .= "<tr><td class='fcaption' style='text-align:left'><b>" . implode("</b></td><td class='fcaption' style='text-align:left'><b>", array_keys($curLog)) . "</b></td></tr>\n";
+					$text .= "<tr><th style='text-align:left'><b>" . implode("</b></td><th style='text-align:left'><b>", array_keys($curLog)) . "</b></td></tr>\n";
 				}
 
-				$text .= "<tr ><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3'>", array_values($curLog)) . "&nbsp;</td></tr>\n";
+				$text .= "<tr ><td>" . implode("&nbsp;</td><td>", array_values($curLog)) . "&nbsp;</td></tr>\n";
 			}
 
 			$text .= "</table><br />\n";
@@ -1038,9 +1038,9 @@
 			}
 
 
-			$text = "<table class='fborder table table-striped'>\n";
-			$text .= "<tr><td class='forumheader3'>" .
-				implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $this->aIncList) .
+			$text = "<table class='table table-striped'>\n";
+			$text .= "<tr><td>" .
+				implode("&nbsp;</td></tr>\n<tr><td>", $this->aIncList) .
 				"&nbsp;</td></tr>\n";
 			$text .= "</table>\n";
 

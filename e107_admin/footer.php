@@ -195,18 +195,18 @@ if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
  usage: add ?showsql to query string, must be admin
  */
 
-// XXX - Too old? Something using this? 
+// XXX Part of DEBUG info
 if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
 	echo "<div class='e-debug query-notice'>
-		<table class='fborder table table-bordered table-striped' style='width: 100%;'>
+		<table class='table table-bordered table-striped' style='width: 100%;'>
 		<tr>
-		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
+		<th style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+		echo "<tr>\n<td style='width: 5%;'>{$c}</td><td style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table></div>";
