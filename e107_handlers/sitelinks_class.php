@@ -1591,10 +1591,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$td++;
 			}
 		}
-		else
-		{
+		//else
+		//{
 			// echo "no Perms";
-		}
+		//}
 	
 		return $text;
 	}
@@ -1796,7 +1796,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 			if(!file_exists(e_PLUGIN.$path."/e_sitelink.php"))
 			{
-
+				return array();
 			}
 
 
@@ -1863,10 +1863,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
 		}
 
-		if(E107_DBG_PATH)
-		{
+		//if(E107_DBG_PATH)
+		//{
 		//	e107::getDebug()->log("db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
-		}
+	//	}
 	
 		if($exactMatch)
 		{

@@ -182,9 +182,9 @@ class eIPHandler
 				$this->logBanItem($ipStatus, 'result --> '.$ipStatus); // only log blacklist
 				$this->banAction($ipStatus);		// This will abort if appropriate
 			}
-			elseif ($ipStatus > 0)
-			{	// Whitelisted - we may want to set a specific indicator
-			}
+			//elseif ($ipStatus > 0)
+		//	{	// Whitelisted - we may want to set a specific indicator
+		//	}
 		}
 		// Continue here - user not banned (so far)
 	}
@@ -1182,9 +1182,9 @@ class eIPHandler
 				$msg = $name.': Insufficient permissions. Required: '.$this->permsToString($reqPerms).'  Actual: '.$this->permsToString($realPerms);
 			}
 		}
-		if ($message && $msg)
-		{	// Do something with the error message
-		}
+		//if ($message && $msg)
+	//	{	// Do something with the error message
+	//	}
 		return $result;
 	}
 
@@ -1243,9 +1243,9 @@ class eIPHandler
 					$bestRow = $row;
 					$gotBrowser = TRUE;
 				}
-				else
-				{	// Problem - two or more rows with same browser token. What to do?
-				}
+			//	else
+			//	{	// Problem - two or more rows with same browser token. What to do?
+			//	}
 			}
 			elseif ($row['user_ip'] == $ip)
 				{	// Just IP match here
@@ -1254,9 +1254,9 @@ class eIPHandler
 						$bestRow = $row;
 						$gotIP = TRUE;
 					}
-					else
-					{	// Problem - two or more rows with same IP address. Hopefully better offer later!
-					}
+					//else
+					//{	// Problem - two or more rows with same IP address. Hopefully better offer later!
+					//}
 				}
 		}
 		return $bestRow;

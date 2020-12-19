@@ -510,7 +510,7 @@ class e107Email extends PHPMailer
 	 * @param string $addresses - comma separated
 	 * @param string $names - either a single name (used for all addresses) or a comma-separated list corresponding to the address list
 	 * If the name field for an entry is blank, or there are not enough entries, the address is substituted
-	 * @return true if list accepted, false if invalid list name
+	 * @return bool true if list accepted, false if invalid list name
 	 */
 	public function AddAddressList($list = 'to',$addresses='',$names = '')
 	{

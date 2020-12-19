@@ -1710,11 +1710,11 @@ class forum_post_handler
 
 				return $ret;
 			}
-			else
-			{
+			//else
+		//	{
 				// e107::getMessage()->addError('There was a problem with the attachment.');
 				// e107::getMessage()->addDebug(print_a($_FILES['file_userfile'],true));
-			}
+		//	}
 		}
 		/* no file uploaded at all, proceed with creating the topic or reply
 		// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)

@@ -179,10 +179,10 @@ class page_sitelink // include plugin-folder in the name.
 
 			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
 
-			if(!vartrue($row['chapter_sef']))
-			{
+			//if(!vartrue($row['chapter_sef']))
+			//{
 			//	$row['chapter_sef'] = '--sef-not-assigned--';
-			}
+		//	}
 
 			$arr[]  = $this->pageArray($row);
 

@@ -700,7 +700,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * Set extended (UI) Form instance
-	 * @return e_admin_ui
+	 * @return eurl_admin_ui
 	 */
 	public function _setUI()
 	{
@@ -712,7 +712,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * Set Config object
-	 * @return e_admin_ui
+	 * @return eurl_admin_ui
 	 */
 	protected function _setConfig()
 	{
@@ -875,12 +875,12 @@ class eurl_admin_form_ui extends e_admin_form_ui
 
 	                }
 				 }
-
+/*
                  if(strpos($path,'noid')!==false)
                 {
-               //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
+                 $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
                 }
-                
+ */
                 $selected = varset($obj->current[$module]) == $location ? "selected='selected'" : '';
 				$opt .= "<option value='{$location}' {$selected} >".$diz.": ".$exampleUrl[0]."</option>";
 

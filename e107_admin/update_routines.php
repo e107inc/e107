@@ -1223,10 +1223,10 @@ function update_706_to_800($type='')
 			// catch_error($sql);
 		  }
 	    }
-	    else
-		{
+	//    else
+	//	{
 			// Got a strange error here
-		}
+	//	}
 	  }
 	}
 
@@ -1650,10 +1650,10 @@ function update_706_to_800($type='')
 		$med->import('page',e_IMAGE.'custom');
 		
 	}
-	else 
-	{
+//	else
+//	{
 //		$log->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
-	}
+//	}
 	
 	// Check for Legacy Download Images. 
 
@@ -1735,12 +1735,14 @@ function update_706_to_800($type='')
 		(0, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
 		(0, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
 		";
-		
-		if(!$sql->gen($query))
-		{
+
+		$sql->gen($query);
+
+	//	if(!$sql->gen($query))
+	//	{
 			// echo "mysyql error";
 		 	// error or already exists.	
-		}
+	//	}
 		
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");

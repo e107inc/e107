@@ -186,7 +186,8 @@ class phpbb3_import extends base_import_class
 		 * 
 		 */
 	}  
-	  
+
+
 	function convertUserBan($data)
 	{
 		if($data == 3) // founder in phpbb3, but 'bounced' in e107. 

@@ -1765,7 +1765,7 @@ class e_user_provider
             }
 
             unset($user['user_password']);
-            e107::getLog()->user_audit(USER_AUDIT_LOGIN, '', $user['user_id'], $user['user_name']);
+            e107::getLog()->user_audit(USER_AUDIT_LOGIN, null, $user['user_id'], $user['user_name']);
         }
     }
 }

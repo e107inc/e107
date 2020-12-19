@@ -467,10 +467,10 @@ class newsletter
 		{
 			$mailMainID = $mailData['mail_source_id'] = $result;
 		}
-		else
-		{
+		//else
+		//{
 				// TODO: Handle error
-		}
+		//}
   
 
 		$mailer->mailInitCounters($mailMainID);			// Initialise counters for emails added

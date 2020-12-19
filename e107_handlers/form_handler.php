@@ -2418,15 +2418,11 @@ class e_form
 			{
 			 	parse_str($options, $options);
 			}
-			elseif(is_array($options))
-			{
-				// do nothing.
-			}
-			else // Assume it's a label. 
+			elseif(is_string($options))
 			{
 				$options = array('label'=>$options);
 			}
-	
+
 		}
 
 		$labelClass = (!empty($options['inline'])) ? 'checkbox-inline' : 'checkbox form-check';
@@ -2678,9 +2674,9 @@ class e_form
 	 *
 	 * @return string $text
 	 */
-	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options = array())
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options = null)
 	{
-		if(!is_array($options))
+		if(is_string($options))
 		{
 			parse_str($options, $options);
 		}
@@ -2935,7 +2931,7 @@ class e_form
 	/**
 	 *
 	 * @param string        $name
-	 * @param array         $option_array
+	 * @param array|string  $option_array
 	 * @param boolean       $selected [optional]
 	 * @param string|array  $options [optional]
 	 * @param bool          $options['useValues']   when true uses array values as the key.
@@ -4862,12 +4858,12 @@ var_dump($select_options);*/
 			case 'dropdown':
 				// XXX - should we use readParams at all here? see writeParms check below
 
-				if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
-				{
+			//	if($parms && is_array($parms)) // FIXME - add support for multi-level arrays (option groups)
+			//	{
 					//FIXME return no value at all when 'editable=1' is a readParm. See FAQs templates. 
 				//	$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
 				//	break; 
-				}
+			//	}
 				
 				// NEW - multiple (array values) support
 				// FIXME - add support for multi-level arrays (option groups)

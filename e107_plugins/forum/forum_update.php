@@ -503,11 +503,7 @@ function step5()
             $sefs[$forum_sef] = true;
 
 			//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
-			if ($sql -> insert('forum_new', $tmp))
-			{
-
-			}
-			else
+			if (!$sql -> insert('forum_new', $tmp))
 			{
 				$mes->addDebug("Insert failed on " . print_a($tmp, true));
 				$mes->addError($sql->getLastErrorText());
@@ -1687,21 +1683,21 @@ class forumUpgrade
 		//Copy was successful, let's delete the original files now.
 		//		$r = true;
 		//	$r = unlink($old);
-		if (!$r)
-		{
+		//if (!$r)
+	//	{
 			//		$error = 'Was unable to delete old attachment: '.$old;
 			//		return false;
-		}
-		if ($oldThumb)
-		{
+	//	}
+	//	if ($oldThumb)
+	//	{
 			//			$r = true;
 			//		$r = unlink($oldThumb);
-			if (!$r)
-			{
+			//if (!$r)
+		//	{
 				//			$error = 'Was unable to delete old thumb: '.$oldThumb;
 				//			return false;
-			}
-		}
+		//	}
+	//	}
 		return true;
 	}
 

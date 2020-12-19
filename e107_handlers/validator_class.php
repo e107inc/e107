@@ -1162,22 +1162,22 @@ class validatorClass
 								}
 								$img = varset($img,$value);
 								//XXX There should be no size limits - as image sizes are handled by thumb.php 
-								if ($size = getimagesize($img))
-								{
+							//	if ($size = getimagesize($img))
+							//	{
 									// echo "Image {$img} size: {$size[0]} x {$size[1]}<br />";
-									if (isset($defs['maxWidth']) && $size[0] > $defs['maxWidth'])
-									{		// Image too wide
+								//	if (isset($defs['maxWidth']) && $size[0] > $defs['maxWidth'])
+								//	{		// Image too wide
 									//	$errNum = ERR_IMAGE_TOO_WIDE;
-									}
-									if (isset($defs['maxHeight']) && $size[1] > $defs['maxHeight'])
-									{		// Image too high
+								//	}
+								//	if (isset($defs['maxHeight']) && $size[1] > $defs['maxHeight'])
+								//	{		// Image too high
 									//	$errNum = ERR_IMAGE_TOO_HIGH;
-									}
-								}
-								else
-								{
+								//	}
+							//	}
+							//	else
+							//	{
 									// echo "Image {$img} not found or cannot size - original value {$value}<br />";
-								}
+							//	}
 								unset($img);
 								break;
 							default :

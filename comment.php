@@ -146,7 +146,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 			 * Fix for issue e107inc/e107#3154 (Comments not refreshing on submission)
 			 * Missing 6th argument ($subject) caused an exception
 			 */
-			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width, $tp->toDB($clean_subject));
+			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment', (int) $_POST['itemid'], $width, $tp->toDB($clean_subject));
 			$ret['html'] .= "</li>\n<!-- end Appended -->\n";
 			
 			$ret['error'] = false;	

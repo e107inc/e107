@@ -555,10 +555,10 @@
 
 				$tMem = ($tMarker['Memory']);
 
-				if($tMem < 0) // Quick Fix for negative numbers.
-				{
+		//		if($tMem < 0) // Quick Fix for negative numbers.
+			//	{
 					//	$tMem = 0.0000000001;
-				}
+			//	}
 
 				$tMarker['Memory'] = ($tMem ? number_format($tMem / 1024.0, 1) : '?'); // display if known
 

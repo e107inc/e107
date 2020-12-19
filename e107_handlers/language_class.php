@@ -519,6 +519,7 @@ class language{
 
 		if(defined('e_PAGE_LANGUAGE') && ($detect_language = $this->isValid(e_PAGE_LANGUAGE))) // page specific override.
 		{
+			$doNothing = '';
 			// Do nothing as $detect_language is set.
 		}
 		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
@@ -541,16 +542,16 @@ class language{
 		}
 		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
 		{
-			// Do nothing			
+			$doNothing = '';// Do nothing
 		}
 		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['sitelanguage'])))
 		{
-			// Do nothing	
+			$doNothing = '';// Do nothing
 		}
 		
 		elseif(isset($GLOBALS['elan']) && ($detect_language = $this->isValid($GLOBALS['elan'])))
 		{
-			// Do nothing		
+			$doNothing = '';// Do nothing
 		}
 		else
 		{

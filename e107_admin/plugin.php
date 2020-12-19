@@ -976,9 +976,9 @@ class plugin_form_ui extends e_admin_form_ui
 			}
 
 		}
-		else
-		{
-			if($var['menuName'])
+	//	else
+	//	{
+/*			if($var['menuName'])
 			{
 			//	$text .= EPL_NOINSTALL . str_replace("..", "", e_PLUGIN . $var['plugin_path']) . "/ " . EPL_DIRECTORY;
 			}
@@ -989,8 +989,8 @@ class plugin_form_ui extends e_admin_form_ui
 				{
 			//		e107::getDb()->delete('plugin', "plugin_installflag=0 AND (plugin_path='{$var['plugin_path']}' OR plugin_path='{$var['plugin_path']}/' )  ");
 				}
-			}
-		}
+			}*/
+	//	}
 
 		if($var['plugin_version'] != $var['plugin_version_file'] && $var['plugin_installflag'])
 		{
@@ -1965,16 +1965,17 @@ class pluginLanguage extends e_admin_ui
 			foreach($lines as $ln=>$row)
 			{
 				$row = trim($row);
-				if(substr($row,0,2) == '/*')
-				{
+
+			//	if(substr($row,0,2) == '/*')
+			//	{
 				//	$skip =true; ;
 
-				}
-				if(substr($row,0,2) == '*/')
-				{
+			//	}
+			//	if(substr($row,0,2) == '*/')
+			//	{
 				//	$skip =false;
 				//	continue;
-				}
+			//	}
 
 				if(empty($row) /*|| $skip == true*/ || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
 				{
@@ -4035,10 +4036,7 @@ $content .= '}';
 						}
 					}
 				}
-				else
-				{
-					//$mes->addError("Addon source-file was empty: ".$addon);
-				}
+
 
 			}
 

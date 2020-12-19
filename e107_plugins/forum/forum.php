@@ -286,10 +286,10 @@ function parse_subs($forumList, $id, $lastpost_datestamp)
 	return $ret;
 }
 
-if (e_QUERY == 'track')
-{
+//if (e_QUERY == 'track')
+//{
 
-}
+//}
 
 if (e_QUERY == 'new')
 {

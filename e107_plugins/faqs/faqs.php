@@ -65,10 +65,7 @@ if (!vartrue($_GET['elan']) && empty($_GET))
 	$id 	= $qs[1];
 	$idx 	= $qs[2];
 }
-else
-{
-	
-}
+
 
 
 

@@ -1086,7 +1086,7 @@ class eAuth
 	/**
 	 * Load credentials stored in a system file
 	 * @param boolean $force
-	 * @return e_marketplace_adapter_abstract adapter instance
+	 * @return e_marketplace_adapter_abstract|eAuth
 	 */
 	public function loadSysCredentials($force = false)
 	{

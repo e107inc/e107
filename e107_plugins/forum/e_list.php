@@ -119,10 +119,10 @@ class list_forum
 						{
 							$LASTPOST = substr($thread_lastuser, 2);
 						}
-						else
-						{
+						//else
+					//	{
 							//$LASTPOST = NFPM_L16;
-						}
+					//	}
 					}
 					$LASTPOST .= " ".LIST_FORUM_6." <span class='smalltext'>$r_datestamp</span>";
 				}

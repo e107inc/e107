@@ -166,10 +166,10 @@ class download
 
 
 
-		if($this->qry['action'] == 'maincats')
-		{
+		//if($this->qry['action'] == 'maincats')
+	//	{
 		//
-		}
+	//	}
 
 		if($this->qry['action'] == 'list')
 		{
@@ -186,15 +186,15 @@ class download
 			$this->loadReport();
 		}
 
-		if($this->qry['action'] == 'mirror')
-		{
+		//if($this->qry['action'] == 'mirror')
+	//	{
 		//
-		}
+	//	}
 
-		if($this->qry['action'] == 'error')
-		{
+	//	if($this->qry['action'] == 'error')
+	//	{
 
-		}
+	//	}
 
 	}
 
@@ -720,11 +720,11 @@ class download
 	   	   return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-info' style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-list',true);
 		}
 		
-		if ($dlrow['download_category_parent'] == 0)  // It's a main category - change the listing type required
-	      { 
+		//if ($dlrow['download_category_parent'] == 0)  // It's a main category - change the listing type required
+	   //   {
 	      //   $action = 'maincats';
 	  // 	  	 $maincatval = $id;
-		}
+	//	}
 		
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 						

@@ -851,7 +851,11 @@ class private_message
 
 		@set_time_limit(10 * 60);
 		@ini_set("max_execution_time", 10 * 60);
-		while (@ob_end_clean()); // kill all output buffering else it eats server resources
+		while (ob_get_length() !== false)  // destroy all ouput buffering
+		{
+	        ob_end_clean();
+		}
+
 		if (connection_status() == 0)
 		{
 			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {

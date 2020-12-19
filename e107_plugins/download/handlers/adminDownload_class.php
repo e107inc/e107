@@ -84,10 +84,10 @@ class adminDownload extends download
 //		{
 //			$this->_observe_newsCommentsRecalc();
 //		}
-		if(isset($_POST['etrigger_ecolumns']))
-		{
+		//if(isset($_POST['etrigger_ecolumns']))
+		//{
        // 	$this->_observe_saveColumns();
-		}
+	//	}
 	}
 
  

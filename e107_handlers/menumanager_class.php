@@ -12,7 +12,8 @@ if (!defined('e107_INIT')) { exit; }
 
 $frm = e107::getForm();
 
-class e_menuManager {
+class e_menuManager
+{
 
         var $menu_areas = array();
         var $curLayout;
@@ -24,6 +25,8 @@ class e_menuManager {
 		var $debug;
 		var $menuMessage;
 		var $style = 'default';
+
+		public $dbLayout = '';
 		private $menuData = array();
 
 		function __construct($dragdrop=FALSE)
@@ -260,7 +263,7 @@ class e_menuManager {
 				$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
 			}
 		}
-		elseif($this->curLayout && $this->curLayout !== "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMFOOTER[$this->curLayout]))) // 0.7 themes
+		elseif($this->curLayout && $this->curLayout !== "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || (is_array($CUSTOMFOOTER) && isset($CUSTOMFOOTER[$this->curLayout])))) // 0.7 themes
 		{
 		 // 	echo " MODE 0.7 ".$this->curLayout;
 			$HEADER = isset($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
@@ -945,11 +948,7 @@ class e_menuManager {
 			}
 		}
 						
-		if(E107_DEBUG_LEVEL > 0)
-		{
-	//		e107::getMessage()->addDebug(print_a($menuArea,true)); 	
-		}
-		
+
 
 	   return varset($menuArea, array());
 
@@ -1250,10 +1249,10 @@ class e_menuManager {
 			<tbody>\n";
 
 		}
-		else
-		{
+		//else
+		//{
        // 	$text .= "<div class='column' id='remove' style='border:1px solid silver'>\n";
-		}
+	//	}
 
 
 		$pageMenu = array();
@@ -1405,10 +1404,10 @@ class e_menuManager {
 
 		//  $tmp = explode("\n", $LAYOUT);
 
-		if(strpos($LAYOUT,'<body ') !== false) // FIXME Find a way to remove the <body> tag from the admin header when menu-manager is active.
-		{
+	//	if(strpos($LAYOUT,'<body ') !== false) // FIXME Find a way to remove the <body> tag from the admin header when menu-manager is active.
+	//	{
 		//	$LAYOUT = preg_replace('/<body[^>]*>/','', $LAYOUT);
-		}
+	//	}
 
 		// Split up using the same function as the shortcode handler
 		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -1551,6 +1550,7 @@ class e_menuManager {
 		}
 		elseif(strstr($str, "ALERT"))
 		{
+			echo '';
 			//echo "[Navigation Area]";
 		}
 		elseif(strstr($str, "LANGUAGELINKS"))
@@ -1769,10 +1769,10 @@ class e_menuManager {
 			$text .= $rs->form_option(MENLAN_25, TRUE, " ");
 		//	$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 	
-			if ($conf) 
-			{
+		//	if ($conf)
+		//	{
 			//	$text .= $rs->form_option("Configure", "", $conf); // TODO Check LAN availability
-			}
+		//	}
 	
 			if ($menu_order != 1) 
 			{

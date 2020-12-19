@@ -517,10 +517,10 @@ class adminstyle_infopanel
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if(!check_class('B')) // XXX problems?
-		{
+		//if(!check_class('B')) // XXX problems?
+	//	{
 	//		return;
-		}		
+	//	}
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
