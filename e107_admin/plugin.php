@@ -183,6 +183,8 @@ class plugin_ui extends e_admin_ui
 		protected $batchDelete		= false;
 		protected $batchExport     = false;
 		protected $batchCopy		= false;
+
+		protected $batchOptions     = array();
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
@@ -210,10 +212,40 @@ class plugin_ui extends e_admin_ui
 			unset($this->fields['plugin_category']['writeParms']['optArray']['menu']);
 			unset($this->fields['plugin_category']['writeParms']['optArray']['about']);
 
+
+
 			parent:: __construct($request, $response, $params);
+
+			if($this->getMode() === 'installed') // TODO more batch options install, uninstall etc.
+			{
+				$this->batchOptions = array('repairall'=> 'Repair selected'); // TODO LAN "[x] selected"
+			}
 
 		}
 
+		public function handleListRepairallBatch($arr)
+		{
+			if(empty($arr))
+			{
+				return null;
+			}
+
+			$arr = e107::getParser()->filter($arr, 'int');
+
+			$data = e107::getDb()->retrieve('plugin', 'plugin_path', 'plugin_id IN ('.implode(',', $arr).')', true);
+
+			if(empty($data))
+			{
+				return null;
+			}
+
+			foreach($data as $row)
+			{
+				$this->repair($row['plugin_path']);
+			}
+
+
+		}
 
 		public function init()
 		{
@@ -452,9 +484,16 @@ class plugin_ui extends e_admin_ui
 		{
 			$id = $this->getQuery('path');
 
+			$this->repair($id);
+
+			$this->redirectAction('list');
+		}
+
+		private function repair($id)
+		{
 			if(!is_dir(e_PLUGIN.$id))
 			{
-				e107::getMessage()->addError("Bad Link");
+				e107::getMessage()->addError("Plugin {$id} doesn't exist");
 				return false;
 			}
 
@@ -463,7 +502,6 @@ class plugin_ui extends e_admin_ui
 
 			e107::getMessage()->addSuccess("Repair Complete (".$id.")"); // Repair Complete ([x])
 
-			$this->redirectAction('list');
 		}
 
 
@@ -997,7 +1035,7 @@ class plugin_form_ui extends e_admin_form_ui
 			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&path={$var['plugin_path']}' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version_file'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
 		}
 
-		if($var['plugin_installflag'] && e_DEBUG == true)
+		if($var['plugin_installflag'])
 		{
 			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=repair&path={$var['plugin_path']}' title='" . LAN_REPAIR_PLUGIN_SETTINGS . "'> " . ADMIN_REPAIRPLUGIN_ICON . "</a>";
 		}
