@@ -1535,7 +1535,9 @@ $dbg->logTime('Load Libraries');
 //$startTime = microtime(true);
 if(deftrue('e_ADMIN_AREA'))
 {
-	e107::getTheme('current', true)->loadLibrary();
+	$clearThemeCache = (deftrue('e_ADMIN_HOME', false) || deftrue('e_ADMIN_UPDATE', false));
+	e107::getTheme('current', $clearThemeCache)->loadLibrary();
+	unset($clearThemeCache);
 }
 else
 {

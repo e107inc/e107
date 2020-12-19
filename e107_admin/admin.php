@@ -8,6 +8,7 @@
  *
  */
 
+define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 require_once('../class2.php');
 
 
@@ -70,7 +71,7 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 //e107::getSession()->clear('addons-update-status');
 //e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
-define('e_ADMIN_HOME', true); // used by some admin shortcodes.
+
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_HANDLER.'upload_handler.php');
