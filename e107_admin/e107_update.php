@@ -15,6 +15,7 @@
  *
 */
 define("e_MINIMAL",true);
+define('e_ADMIN_UPDATE', true); // used in class2.php
 require_once ("../class2.php");
 
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
