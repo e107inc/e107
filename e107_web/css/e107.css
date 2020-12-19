@@ -374,8 +374,7 @@ cursor: pointer;
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
 #uiAlert.notifications { top: 48%; left: 0; width: 100%; }
 
-div.e-debug { margin-top:50px; background-color: white }
-div.e-debug td { color: black }
+
 
 #login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
 #login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
@@ -389,4 +388,15 @@ div.login-page-signup-link, div.login-page-fpw-link { text-align:center }
 
 div.search-menu { text-align: center }
 
+div.e-debug                     { margin-top:50px; padding:5px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: rgb(39, 43, 48); color: rgb(200, 200, 200) }
+div.e-debug .table              { background-color: rgb(46, 51, 56); border-collapse: collapse; border-spacing: 0; box-sizing: border-box;
+                                color: rgb(200, 200, 200); font-size: 14px; line-height: 20px; margin-bottom: 20px; width: 100%;  }
 
+div.e-debug .table-striped > tbody > tr:nth-of-type(2n+1) { background-color: #353a41; }
+
+div.e-debug td, div.e-debug th  { padding: 5px; }
+div.e-debug td                  { color: rgb(200, 200, 200); line-height: 1.42857143; vertical-align: top; border-top: 1px solid #1c1e22; }
+div.e-debug h4                  { text-shadow: -1px -1px 0 rgba(0,0,0,0.3); font-size: 18px; }
+div.e-debug .label              { display: inline; padding: .2em .6em .3em; font-size: 75%; font-weight: 700; line-height: 1;
+                                  color: #ffffff; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25em; }
+div.e-debug .label-danger       { background-color: #ee5f5b; }
