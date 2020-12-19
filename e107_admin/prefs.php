@@ -1942,10 +1942,12 @@ $text .= '</tr>';
 $text .= '</thead>';
 $text .= '<tbody>';
 
-$libraries = e107::library('info');
+$lib = e107::getLibrary();
+$libraries = $lib->info();
+
 foreach($libraries as $machineName => $library)
 {
-	$details = e107::library('detect', $machineName);
+	$details = $lib->detect($machineName);
 
 	if(empty($details['name']))
 	{

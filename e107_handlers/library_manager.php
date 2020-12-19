@@ -80,6 +80,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery',
 			'path'              => '2.2.4',
+			'version'           => '2.2.4',
 		);
 
 		// jQuery (local).
@@ -114,6 +115,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/jquery',
 			'path'              => '2.2.4',
+			'version'           => '2.2.4',
 		);
 
 		// jQuery Once (CDN).
@@ -150,6 +152,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
 			'path'              => '2.1.2',
+			'version'           => '2.1.2',
 		);
 
 		// jQuery Once (local).
@@ -185,6 +188,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-once',
+			'version'   => '2.1.2',
 		);
 
 		// jQuery UI (CDN).
@@ -232,6 +236,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui',
 			'path'              => '1.11.4',
+			'version'           => '1.11.4',
 		);
 
 		// jQuery UI (local).
@@ -276,6 +281,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-ui',
+			'version'           => '1.12.1'
 		);
 
 
@@ -328,6 +334,7 @@ class core_library
 		//	https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js
 			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1',
 			'path'              => '',
+			'version'           => '4.3.1',
 		);
 
 		// Bootstrap (local).
@@ -372,6 +379,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '4',
+			'version'           => '4.3.1',
 		);
 
 
@@ -425,6 +433,7 @@ class core_library
 		//	'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
 			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap',
 			'path'              => '3.4.1',
+			'version'           => '3.4.1',
 		);
 
 		// Bootstrap (local).
@@ -469,6 +478,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '3',
+			'version'           => '3.4.1',
 			'preload'           => array(
 				0   => array(
 					'as'            => 'font',
@@ -524,6 +534,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.editable',
 			'path'              => '1.5.1',
+			'version'           => '1.5.1',
 		);
 
 		// Bootstrap Editable (local).
@@ -568,6 +579,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}js/bootstrap3-editable',
+			'version'           => '1.5.1',
 		);
 
 		// Bootstrap Switch (CDN).
@@ -613,6 +625,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.switch',
 			'path'              => '3.3.2',
+			'version'           => '3.3.2',
 		);
 
 		// Bootstrap Switch (local).
@@ -657,6 +670,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/bootstrap-switch',
+			'version'           => '3.3.2',
 		);
 
 		// Font-Awesome 4 (CDN).
@@ -690,6 +704,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome',
 			'path'              => '4.7.0',
+			'version'           => '4.7.0',
 		);
 
 		// Font-Awesome (local).
@@ -723,6 +738,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '4.7.0',
+			'version'           => '4.7.0',
 			// preload in header using <link> tag. for speed optimization.
 			'preload'           => array(
 				0   => array(
@@ -781,6 +797,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://use.fontawesome.com/releases',
 			'path'              => 'v5.8.1',
+			'version'           => '5.8.1',
 		);
 
 		// Font-Awesome (local).
@@ -820,6 +837,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
+			'version'           => '5.8.1',
 		);
 
 
@@ -855,6 +873,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/animate.css',
 		//	'path'              => '3.5.2',
+			'version'           => '3.5.2',
 		);
 
 
@@ -897,6 +916,8 @@ class core_library
  */
 class e_library_manager
 {
+	/** @var array list of callbacks to track performance  */
+	private $callbacks = array();
 
 	/**
 	 * Constructor
@@ -920,12 +941,17 @@ class e_library_manager
 	{
 	}
 
+	public function getCallbackLog()
+	{
+		return $this->callbacks;
+	}
+
 	/**
 	 * Tries to detect a library and its installed version.
 	 *
 	 * @param $name
 	 *   The machine name of a library to return registered information for.
-	 *
+	 * @param bool $force - removes the 'version' and has the callback look it up from the library file.
 	 * @return array|false
 	 *   An associative array containing registered information for the library specified by $name, or FALSE if the
 	 *   library $name is not registered. In addition to the keys returned by info(), the following keys are
@@ -937,11 +963,11 @@ class e_library_manager
 	 *     "not found", "not detected", "not supported".
 	 *   - error_message: If an error occurred during library detection, a detailed error_message.
 	 */
-	public function detect($name)
+	public function detect($name, $force = false)
 	{
 
 		// Re-use the statically cached value of info() to save memory.
-		$library = &$this->info($name);
+		$library = &$this->info($name, $force);
 
 		// Exit early if the library was not found.
 		if($library === false)
@@ -978,12 +1004,20 @@ class e_library_manager
 		// Invoke callbacks in the 'pre_detect' group.
 		$this->invoke('pre_detect', $library);
 
+		if($force === true)
+		{
+			unset($library['version']);
+		}
+
 		// Detect library version, if not hardcoded.
 		if(!isset($library['version']))
 		{
+
 			// If version_callback is a method in $this class.
-			if(method_exists($this, $library['version_callback']))
+			if(method_exists($this, $library['version_callback'])) // runs getVersion() which will be slow.
 			{
+				$this->callbacks[] = $name;
+				e107::getDebug()->logTime("[Looking up version of ".$name."]");
 				// We support both a single parameter, which is an associative array, and an indexed array of multiple
 				// parameters.
 				if(isset($library['version_arguments'][0]))
@@ -1005,11 +1039,11 @@ class e_library_manager
 				$library['version'] = '';
 				$class = false;
 
-				if(varset($library['plugin'], false))
+				if(!empty($library['plugin']))
 				{
 					$class = e107::getAddon($library['plugin'], 'e_library');
 				}
-				elseif(varset($library['theme'], false))
+				elseif(!empty($library['theme']))
 				{
 					// e107::getAddon() does not support theme folders.
 					if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
@@ -1372,18 +1406,23 @@ class e_library_manager
 	 *
 	 * The returned information is unprocessed; i.e., as registered by plugins.
 	 *
-	 * @param $library
+	 * @param string $library
 	 *   (optional) The machine name of a library to return registered information for. If omitted, information
 	 *   about all registered libraries is returned.
+	 *
+	 * @param bool $force - ignore any cached values and reload.
 	 *
 	 * @return array|false
 	 *   An associative array containing registered information for all libraries, the registered information for the
 	 *   library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	public function &info($library = null)
+	public function &info($library = null, $force = false)
 	{
 		// This static cache is re-used by detect() to save memory.
-		static $libraries;
+		if($force === false)
+		{
+			static $libraries;
+		}
 
 		if(!isset($libraries))
 		{
