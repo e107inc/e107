@@ -456,11 +456,15 @@ class e_array {
 
 	        if(e_DEBUG === true && json_last_error() !=  JSON_ERROR_NONE && !e107::isCli())
 	        {
-	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
-		        echo "<pre>";
-				debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-				file_put_contents(e_LOG.'unserializeError_'.date('c').'.log', $ArrayData);
-				echo "</pre>";
+	            e107::getDebug()->log("e107::unserialize() Parser Error (json)");
+
+				$dbg = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 9);
+
+				$fileName = e_LOG.'unserializeError_'.time().'.log';
+
+	            file_put_contents($fileName, "input:". $sourceArrayData."\nbacktrace:\n".print_r($dbg,true));
+
+				return null;
 	        }
 
 	        return $dat;

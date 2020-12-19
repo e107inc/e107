@@ -523,7 +523,6 @@
 		    // while(list($tKey, $tMarker) = each($this->aTimeMarks))
 			foreach ($it as $tKey=>$tMarker)
 			{
-				file_put_contents(e_LOG."debugPerformance.log",$tKey."\t". $sMarker."\n", FILE_APPEND);
 
 				if(!$bRowHeaders)
 				{
