@@ -2630,15 +2630,15 @@ class error_handler
 		{
 			$text .= "
 			<tr>
-				<td class='forumheader3'>".$key."</td>
-				<td class='forumheader3'>";
+				<td>".$key."</td>
+				<td>";
 			$text .= !empty($val['class']) ? $val['class']."->" : '';
 			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
 			$text .= !empty($val['function']) ? $val['function']."(" : "";
 			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
 			$text .= !empty($val['function']) ? ")" : "";
 			$text .="</td>
-				<td class='forumheader3'>";
+				<td>";
 			$text .= str_replace($this->docroot,'', $val['file']).":".$val['line'];
 			$text .= "</td>
 			</tr>";
@@ -2664,7 +2664,7 @@ class error_handler
 
 			foreach ($this->errors as $key => $value)
 			{
-				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
+				$ret .= "\t<tr>\n\t\t<td>{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
 					$ret .= "</td>\n\t</tr>";
 				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".$this->render_trace($value['trace'])."</td></tr>\n";
 
@@ -2676,11 +2676,11 @@ class error_handler
 		{
 			foreach ($this->errors as $key => $value)
 			{
-				$ret .= "<tr><td class='forumheader3'>{$value['short']}</td></tr>\n";
+				$ret .= "<tr><td>{$value['short']}</td></tr>\n";
 			}
 		}
 
-		return ($ret) ? "<table class='table table-condensed fborder'>\n".$ret."</table>" : FALSE;
+		return ($ret) ? "<table class='table table-condensed'>\n".$ret."</table>" : FALSE;
 	}
 
 	/**

@@ -395,8 +395,11 @@ div.e-debug .table              { background-color: rgb(46, 51, 56); border-coll
 div.e-debug .table-striped > tbody > tr:nth-of-type(2n+1) { background-color: #353a41; }
 
 div.e-debug td, div.e-debug th  { padding: 5px; }
-div.e-debug td                  { color: rgb(200, 200, 200); line-height: 1.42857143; vertical-align: top; border-top: 1px solid #1c1e22; }
+div.e-debug td                  { font-size: 14px; line-height: 20px; color: rgb(200, 200, 200); line-height: 1.42857143; vertical-align: top; border-top: 1px solid #1c1e22; }
 div.e-debug h4                  { text-shadow: -1px -1px 0 rgba(0,0,0,0.3); font-size: 18px; }
 div.e-debug .label              { display: inline; padding: .2em .6em .3em; font-size: 75%; font-weight: 700; line-height: 1;
                                   color: #ffffff; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25em; }
 div.e-debug .label-danger       { background-color: #ee5f5b; }
+div.e-debug .btn                { display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle;
+                                  cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap;
+                                  padding: 8px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; user-select: none; }
