@@ -78,7 +78,7 @@ if (varset($e107_popup) != 1)
          '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
         );
 
-	   parseheader($FOOTER, $psc);
+	   e107::renderLayout($FOOTER, $psc);
     }
     
 	$eTimingStop = microtime();

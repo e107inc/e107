@@ -4433,9 +4433,9 @@ class e_parser
 		{
 			$userData = array();
 			$userData['user_id']    = USERID;
-			$userData['user_image']	= USERIMAGE;
-			$userData['user_name']	= USERNAME;
-			$userData['user_currentvisit'] = USERCURRENTVISIT;
+			$userData['user_image']	= deftrue('USERIMAGE');
+			$userData['user_name']	= deftrue('USERNAME');
+			$userData['user_currentvisit'] = deftrue('USERCURRENTVISIT');
 		}
 
 		

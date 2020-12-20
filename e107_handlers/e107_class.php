@@ -305,6 +305,42 @@ class e107
 	}
 
 	/**
+	 * Render layout - replacement for legacy parseheader() function in header_default.php
+	 * @param string $LAYOUT
+	 * @param array $opts - magic shortcode key=>value pair replacements
+	 * @return void
+	 */
+	public static function renderLayout($LAYOUT, $opts = array())
+	{
+
+		$tp = self::getParser();
+
+		$tmp = explode("\n", $LAYOUT);
+
+		$sc = self::getScBatch('_theme_'); // include the theme shortcodes. 
+
+		$search = array_keys($opts);
+		$replace = array_values($opts);
+
+		foreach ($tmp as $line)
+		{
+			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
+
+			if (strpos($line,'{') === false)
+			{
+				echo $line . "\n"; // retain line-breaks.
+				continue;
+			}
+
+			if (preg_match("/{.+?}/", $line))
+			{
+				echo $tp->parseTemplate($line, true, $sc) . "\n";  // retain line-breaks.
+			}
+
+		}
+	}
+
+	/**
 	 * Cloning is not allowed
 	 *
 	 */
@@ -5098,6 +5134,8 @@ class e107
 	{
 		return eHelper::parseMemorySize($size, $dp);
 	}
+
+
 
 
 	/**
