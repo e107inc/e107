@@ -49,6 +49,22 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	public function testRenderLayout()
+	{
+		$LAYOUT = file_get_contents(e_THEME."bootstrap3/theme.html");
+		ob_start();
+
+		$this->e107::renderLayout($LAYOUT);
+
+		$result = ob_get_clean();
+
+		$this->assertStringNotContainsString('{MENU=1}',$result);
+		$this->assertStringNotContainsString('{NAVIGATION=main}',$result);
+		$this->assertStringNotContainsString('{BOOTSTRAP_BRANDING}',$result);
+
+
+	}
+
 	/*
 			public function testInitInstall()
 			{

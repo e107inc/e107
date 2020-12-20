@@ -79,33 +79,6 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 // A: Define themeable header parsing
 //
 
-if (!function_exists("parseheader")) 
-{
-	function parseheader($LAYOUT, $opts=array())
-	{
-		$tp 	= e107::getParser();
-		$tmp 	= explode("\n", $LAYOUT);
-
-		$sc = e107::getScBatch('_theme_');
-
-		$search = array_keys($opts);
-		$replace = array_values($opts);
-		
-		foreach ($tmp as $line) 
-		{
-			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
-
-			if (preg_match("/{.+?}/", $line))
-			{
-				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
-			} 
-			else 
-			{
-				echo $line."\n"; // retain line-breaks. 
-			}
-		}
-	}
-}
 
 //
 // B: Send HTTP headers (these come before ANY html)
@@ -763,10 +736,11 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
+e107::getDebug()->logTime('Render Layout');
 	// BC Fix
 	if (defset('e_PAGE') == 'news.php' && isset($NEWSHEADER))
 	{
-		parseheader($NEWSHEADER);
+		e107::renderLayout($NEWSHEADER);
 	}
 	else
 	{	
@@ -786,7 +760,7 @@ if ($e107_popup != 1) {
         '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
 		);
 		
-   		parseheader($HEADER, $psc);
+   		e107::renderLayout($HEADER, $psc);
 
 	//	echo $HEADER;
 	}
@@ -798,6 +772,7 @@ if ($e107_popup != 1) {
 //
 // N: Send other top-of-body HTML
 //
+e107::getDebug()->logTime('Render Other');
 
 	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{

@@ -233,7 +233,7 @@ class theme_shortcodes extends e_shortcode
 			
 			
 			
-			return $tp->parseTemplate($text, true, $login_menu_shortcodes);
+			return e107::getParser()->parseTemplate($text, true, $login_menu_shortcodes);
 		}  
 
 		
@@ -276,7 +276,7 @@ class theme_shortcodes extends e_shortcode
 		';
 
 
-		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
+		return e107::getParser()->parseTemplate($text,true,$login_menu_shortcodes);
 	}	
 	
 
