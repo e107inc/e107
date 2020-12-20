@@ -317,13 +317,18 @@ class e107
 
 		$tmp = explode("\n", $LAYOUT);
 
-		$sc = self::getScBatch('_theme_'); // include the theme shortcodes. 
+		$sc = self::getScBatch('_theme_'); // include the theme shortcodes.
 
 		$search = array_keys($opts);
 		$replace = array_values($opts);
 
 		foreach ($tmp as $line)
 		{
+			if(empty($line))
+			{
+				continue;
+			}
+
 			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
 
 			if (strpos($line,'{') === false)
