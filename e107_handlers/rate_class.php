@@ -304,7 +304,7 @@ class rater
 			$rating = array();
 
 			$rateusers = explode(".", $rowgr['rate_voters']);
-			for($i = 0; $i < count($rateusers); $i++)
+			for($i = 0, $iMax = count($rateusers); $i < $iMax; $i++)
 			{
 				if(strpos($rateusers[$i], $sep))
 				{

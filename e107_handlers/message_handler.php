@@ -1130,7 +1130,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			break;
 
 		case "MESSAGE":
-			if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here.
+			if(strpos(e_SELF, "forum_post.php") !== false) //FIXME Shouldn't be here.
 			{
 				return;
 			}

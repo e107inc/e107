@@ -22,7 +22,7 @@ class comment_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 		$form = e107::getForm();
 
-		if(vartrue($pref['nested_comments']))
+		if(!empty($pref['nested_comments']))
 		{
 			$options = array(
 				'class'       => 'comment subject-input form-control',
@@ -381,7 +381,7 @@ class comment_shortcodes extends e_shortcode
 		{
 			$adop_icon = (file_exists(THEME."images/commentedit.png") ? "<img src='".THEME_ABS."images/commentedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' />" : LAN_EDIT);
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
-			if (strstr(e_QUERY, "&"))
+			if (strpos(e_QUERY, "&") !== false)
 			{
 				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-mini btn-xs e-comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
 			}

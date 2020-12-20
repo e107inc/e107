@@ -536,7 +536,7 @@ class logConsolidate
 					if($vars = $this->splitRawBackupLine($buffer))
 					{
 
-						if(substr($vars['eself'],0,7) == 'file://')
+						if(strpos($vars['eself'],'file://') === 0)
 						{
 							continue;
 						}

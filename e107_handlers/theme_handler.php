@@ -622,14 +622,14 @@ class e_theme
 
 			$themeArray[$file]['files'][] = $file2;
 
-			if(strstr($file2, "preview."))
+			if(strpos($file2, "preview.") !== false)
 			{
 				$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 			}
 
 			// ----------------  get information string for css file - Legacy mode (no theme.xml)
 
-			if(strstr($file2, ".css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
+			if(strpos($file2, ".css") !== false && strpos($file2, "menu.css") === false && strpos($file2, "e_") !== 0)
 			{
 				if($cssContents = file_get_contents(e_THEME.$file."/".$file2))
 				{
@@ -741,7 +741,7 @@ class e_theme
 		{
 			foreach ($themeContentsArray as $line)
 			{
-				if(strstr($line, "CUSTOMPAGES"))
+				if(strpos($line, "CUSTOMPAGES") !== false)
 				{
 					try
 					{
@@ -1147,7 +1147,7 @@ class themeHandler
 
 		foreach ($_POST as $key=>$post)
 		{
-			if(strstr($key, "preview"))
+			if(strpos($key, "preview") !== false)
 			{
 				//	$this -> id = str_replace("preview_", "", $key);
 				$this->id = key($post);
@@ -1168,7 +1168,7 @@ class themeHandler
 				}
 			}*/
 
-			if(strstr($key, "selectadmin"))
+			if(strpos($key, "selectadmin") !== false)
 			{
 				$this->id = key($post);
 				$this->setAdminTheme();
@@ -1304,14 +1304,14 @@ class themeHandler
 			
 			$themeArray[$file]['files'][] = $file2;
 			
-			if(strstr($file2, "preview."))
+			if(strpos($file2, "preview.") !== false)
 			{
 				$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 			}
 
 			// ----------------  get information string for css file - Legacy mode (no theme.xml) 
 
-			if(strstr($file2, ".css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
+			if(strpos($file2, ".css") !== false && strpos($file2, "menu.css") === false && strpos($file2, "e_") !== 0)
 			{
 				if($cssContents = file_get_contents(e_THEME.$file."/".$file2))
 				{
@@ -1555,7 +1555,7 @@ class themeHandler
 			$mp 	= $this->getMarketplace();
 			$from 	= intval(varset($_GET['frm']));
 			$limit 	= 96; // FIXME - ajax pages load
-			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch'])); 
+			$srch 	= preg_replace('/[\W]/','', vartrue($_GET['srch']));
 			
 			// check for cURL
 			if(!function_exists('curl_init'))
@@ -2212,7 +2212,7 @@ class themeHandler
 		$price 			= '';
 
 
-		if(substr($theme['thumbnail'],0,4) == 'http')
+		if(strpos($theme['thumbnail'],'http') === 0)
 		{
 			$thumbPath = $theme['thumbnail'];	
 			$previewPath = $theme['preview'][0];	

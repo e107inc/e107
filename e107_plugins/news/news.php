@@ -1050,7 +1050,7 @@ class news_front
 		}
 		else // No News - empty.
 		{
-			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
+			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strpos(e_QUERY, "month") !== false ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 		}
 
 		if(!empty($template['end']))
@@ -1939,7 +1939,7 @@ if(is_dir("remotefile")) {
 	$crem = $file -> get_files(e_BASE."remotefile", '~Readme\.txt');
 	if(count($crem)) {
 		foreach($crem as $loadrem) {
-			if(strstr($loadrem['fname'], "load_")) {
+			if(strpos($loadrem['fname'], "load_") !== false) {
 				require_once(e_BASE."remotefile/".$loadrem['fname']);
 			}
 		}

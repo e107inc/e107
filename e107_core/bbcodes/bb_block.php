@@ -31,9 +31,9 @@ class bb_block extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
-		if(vartrue($parms['class'])) $safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(vartrue($parms['id'])) $safe['id'] = eHelper::secureIdAttr($parms['id']);
-		if(vartrue($parms['style'])) $safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(!empty($parms['class'])) $safe['class'] = eHelper::secureClassAttr($parms['class']);
+		if(!empty($parms['id'])) $safe['id'] = eHelper::secureIdAttr($parms['id']);
+		if(!empty($parms['style'])) $safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		if($safe)
 		{
 			return '[block='.eHelper::buildAttr($safe).']'.$code_text.'[/block]';

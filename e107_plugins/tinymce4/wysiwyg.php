@@ -122,7 +122,7 @@ define('USE_GZIP', true);
 $compression_browser_support = false;
 $compression_server_support = false;
 
-if(strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip'))
+if(strpos(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false)
 {
 	$compression_browser_support = true;
 }

@@ -858,7 +858,7 @@ class private_message
 
 		if (connection_status() == 0)
 		{
-			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+			if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
 				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 			}
 			if (isset($_SERVER['HTTP_RANGE']))

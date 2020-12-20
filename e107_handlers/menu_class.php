@@ -74,7 +74,7 @@ class e_menu
 	{
 		global $_E107;
 
-		if(vartrue($_E107['cli']))
+		if(!empty($_E107['cli']))
 		{
 			return;
 		}
@@ -640,7 +640,7 @@ class e_menu
 			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
 			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
-			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
+			if(!empty($page['menu_template'])) // New v2.x templates. see core/menu_template.php
 			{
 				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  

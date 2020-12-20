@@ -360,7 +360,7 @@ if (!defined("PCLTRACE_LIB"))
 
     // ----- Display
     $v_again=0;
-    for ($i=0; $i<count($g_pcl_trace_entries); $i++)
+    for ($i=0, $iMax = count($g_pcl_trace_entries); $i< $iMax; $i++)
     {
       // ---- Row header
       echo "<tr>";

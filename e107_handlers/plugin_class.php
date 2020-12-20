@@ -2031,7 +2031,7 @@ class e107plugin
 			$field_attrib['applicable'] = varset($field_attrib['applicable'], 'e_UC_MEMBER');
 			
 			// manage parent
-			if(vartrue($field_attrib['parent']))
+			if(!empty($field_attrib['parent']))
 			{
 				foreach ($this->module['ue']->catDefinitions as $key => $value) 
 				{
@@ -2292,7 +2292,7 @@ class e107plugin
 		if ($action == 'remove') 
 		{
 			//v2.x  
-			if(vartrue($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$options['link_owner']."'")) 
+			if(!empty($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$options['link_owner']."'"))
 			{
 				return $sql->delete('links', "link_owner = '".$options['link_owner']."' ");	
 			}
@@ -3497,7 +3497,7 @@ class e107plugin
 
 		$mes = e107::getMessage();
 		
-		if(vartrue($this->options['nolinks']))
+		if(!empty($this->options['nolinks']))
 		{
 			return null;
 		}
@@ -3705,7 +3705,7 @@ class e107plugin
 		switch ($function)
 		{
 			case 'install': // Probably best to leave well alone
-				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
+				if(!empty($tag['bbcodes']['@attributes']['imgResize']))
 				{
 					e107::getConfig('core')->setPref('resize_dimensions/'.$this->plugFolder."-bbcode", array('w'=>300,'h'=>300));
 					$this->log('Adding imageResize for: '.$this->plugFolder);
@@ -3713,7 +3713,7 @@ class e107plugin
 			break;
 			
 			case 'uninstall': // Probably best to leave well alone
-				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
+				if(!empty($tag['bbcodes']['@attributes']['imgResize']))
 				{
 					//e107::getConfig('core')->removePref('resize_dimensions/'.$this->plugFolder);
 					//e107::getConfig('core')->removePref('e_imageresize/'.$this->plugFolder);
@@ -3903,7 +3903,7 @@ class e107plugin
 
 		//	$this->log("&nbsp;   Pref:  ".$key." => ".$value);
 			
-			if(substr($value,0,5) == "e_UC_") // Convert Userclass constants. 
+			if(strpos($value,"e_UC_") === 0) // Convert Userclass constants.
 			{
 				$value = constant($value);	
 			}
@@ -4974,14 +4974,14 @@ class e107plugin
 			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
 			$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
 		}
-		if(vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
+		if(!empty($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
 		{
 			$ret['siteLinks']['link'][0]['@attributes']['url'] = $tp->createConstants($eplug_link_url, 1);
 			$ret['siteLinks']['link'][0]['@attributes']['perm'] = varset($eplug_link_perms);
 			$ret['siteLinks']['link'][0]['@value'] = varset($eplug_link_name);
 		}
 
-		if(vartrue($eplug_userclass) && vartrue($eplug_userclass_description))
+		if(!empty($eplug_userclass) && !empty($eplug_userclass_description))
 		{
 			$ret['userClasses']['class'][0]['@attributes']['name'] = $eplug_userclass;
 			$ret['userClasses']['class'][0]['@attributes']['description'] = $eplug_userclass_description;

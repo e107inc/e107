@@ -1248,7 +1248,7 @@ class theme_builder extends e_admin_ui
 				foreach($matches[1] as $i => $m)
 				{
 					$leg[$m] = strip_tags($matches[3][$i]);
-					if(substr($m,0,5) == 'theme' || $m == "CUSTOMPAGES")
+					if(strpos($m,'theme') === 0 || $m == "CUSTOMPAGES")
 					{
 						$search[] = $matches[0][$i];
 					}

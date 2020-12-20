@@ -231,17 +231,17 @@ class online_shortcodes extends e_shortcode
 						$pinfo = 'download.php';
 						$online_location_page = 'download';
 					}
-					elseif (strstr($online_location_page, 'forum'))
+					elseif (strpos($online_location_page, 'forum') !== false)
 					{
 						$pinfo = e_PLUGIN.'forum/forum.php';
 						$online_location_page = 'forum';
 					}
-					elseif (strstr($online_location_page, 'content'))
+					elseif (strpos($online_location_page, 'content') !== false)
 					{
 						$pinfo = 'content.php';
 						$online_location_page = 'content';
 					}
-					elseif (strstr($online_location_page, 'comment'))
+					elseif (strpos($online_location_page, 'comment') !== false)
 					{
 						$pinfo = 'comment.php';
 						$online_location_page = 'comment';
@@ -325,7 +325,7 @@ class online_shortcodes extends e_shortcode
 
 		$ADMIN_DIRECTORY = e107::getFolder('admin');
 		$pinfo = (isset($currentMember['pinfo'])) ? $currentMember['pinfo'] : '';
-		return !strstr($pinfo, $ADMIN_DIRECTORY) ?
+		return strpos($pinfo, $ADMIN_DIRECTORY) === false ?
 			"<a href='".$pinfo."'>".$currentMember['page']."</a>" :
 			$currentMember['page'];
 	}

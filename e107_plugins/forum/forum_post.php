@@ -1636,7 +1636,7 @@ class forum_post_handler
 						$_thumb = '';
 						$_fname = '';
 						$fpath = '';
-						if(strstr($upload['type'], 'image'))
+						if(strpos($upload['type'], 'image') !== false)
 						{
 							$_type = 'img';
 

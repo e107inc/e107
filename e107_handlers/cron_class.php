@@ -428,12 +428,12 @@ class CronParser
 	 */
 	function expand_ranges($str)
 	{
-		if (strstr($str,  ","))
+		if (strpos($str, ",") !== false)
 		{
 			$arParts = explode(',', $str);
 			foreach ($arParts AS $part)
 			{
-				if (strstr($part, '-'))
+				if (strpos($part, '-') !== false)
 				{
 					$arRange = explode('-', $part);
 					for ($i = $arRange[0]; $i <= $arRange[1]; $i++)
@@ -447,7 +447,7 @@ class CronParser
 				}
 			}
 		}
-		elseif (strstr($str,  '-'))
+		elseif (strpos($str, '-') !== false)
 		{
 			$arRange = explode('-', $str);
 			for ($i = $arRange[0]; $i <= $arRange[1]; $i++)

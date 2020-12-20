@@ -19,25 +19,25 @@ if (!defined('e107_INIT')) { exit; }
 // include_lan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 
 
-if (strstr(e_PAGE, "news.php")) {
+if (strpos(e_PAGE, "news.php") !== false) {
 	 $page = 0;
-} elseif(strstr(e_PAGE, "comment.php")) {
+} elseif(strpos(e_PAGE, "comment.php") !== false) {
 	 $page = 1;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "content")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "content") !== false) {
 	 $page = 2;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "review")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "review") !== false) {
 	 $page = 3;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "content")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "content") !== false) {
 	 $page = 4;
-} elseif(strstr(e_PAGE, "chat.php")) {
+} elseif(strpos(e_PAGE, "chat.php") !== false) {
 	 $page = 5;
-} elseif(strstr(e_PAGE, "links.php")) {
+} elseif(strpos(e_PAGE, "links.php") !== false) {
 	 $page = 6;
-} elseif(strstr(e_PAGE, "forum")) {
+} elseif(strpos(e_PAGE, "forum") !== false) {
 	 $page = 7;
-} elseif(strstr(e_PAGE, "user.php") || strstr(e_PAGE, "usersettings.php")) {
+} elseif(strpos(e_PAGE, "user.php") !== false || strpos(e_PAGE, "usersettings.php") !== false) {
 	 $page = 8;
-} elseif(strstr(e_PAGE, "download.php")) {
+} elseif(strpos(e_PAGE, "download.php") !== false) {
 	 $page = 9;
 } else {
 	 $page = 99;

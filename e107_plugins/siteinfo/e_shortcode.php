@@ -17,7 +17,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		}
 		else 
 		{
-			$path = (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+			$path = (strpos(SITEBUTTON, 'http:') !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}
 
 		if($parm['type'] == 'email' || $parm == 'email') // (retain {}  constants )

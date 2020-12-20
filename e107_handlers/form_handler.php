@@ -133,7 +133,7 @@ class e_form
 			parse_str($options, $options);
 		}
 	
-		if(vartrue($options['class']))
+		if(!empty($options['class']))
 		{
 			$class = "class='".$options['class']."'";
 		}
@@ -807,7 +807,7 @@ class e_form
 		}
 
 		// TODO: remove typeahead.
-		if(vartrue($options['typeahead']))
+		if(!empty($options['typeahead']))
 		{
 			if(vartrue($options['typeahead']) == 'users')
 			{
@@ -816,13 +816,13 @@ class e_form
 			}		
 		}
 		
-		if(vartrue($options['size']) && !is_numeric($options['size']))
+		if(!empty($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " input-".$options['size'];
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 			
-		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		$mlength = !empty($maxlength) ? "maxlength=".$maxlength : "";
 		
 		$type = varset($options['type']) == 'email' ? 'email' : 'text'; // used by $this->email(); 
 				
@@ -1041,7 +1041,7 @@ class e_form
 
 		$url .= "&amp;iframe=1";
 		
-		if(vartrue($extras['w']))
+		if(!empty($extras['w']))
 		{
 			$url .= "&amp;w=".$extras['w'];	
 		}
@@ -1129,7 +1129,7 @@ class e_form
 		$optioni 	= $idinput."-options";
 		
 		
-		$path = (substr($curVal,0,8) == '-upload-') ? '{e_AVATAR}upload/' : '{e_AVATAR}default/';
+		$path = (strpos($curVal,'-upload-') === 0) ? '{e_AVATAR}upload/' : '{e_AVATAR}default/';
 		$newVal = str_replace('-upload-','',$curVal);
 	
 		$img = (strpos($curVal,"://")!==false) ? $curVal : $tp->thumbUrl($path.$newVal);
@@ -2024,7 +2024,7 @@ class e_form
 		$addon = "";
 		$gen = "";
 		
-		if(vartrue($options['generate']))
+		if(!empty($options['generate']))
 		{
 			$gen = '&nbsp;<a href="#" class="btn btn-default btn-secondary btn-small e-tip" id="Spn_PasswordGenerator" title=" '.LAN_GEN_PW.' " >'.LAN_GENERATE.'</a> ';
 			
@@ -2034,7 +2034,7 @@ class e_form
 			}
 		}
 		
-		if(vartrue($options['strength']))
+		if(!empty($options['strength']))
 		{
 			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px;margin-bottom:0'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
 		}
@@ -2060,7 +2060,7 @@ class e_form
 			$options['class'] .= ' form-control';
 		}
 		
-		if(vartrue($options['size']) && !is_numeric($options['size']))
+		if(!empty($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " input-".$options['size'];	
 			unset($options['size']); // don't include in html 'size='. 	
@@ -2197,7 +2197,7 @@ class e_form
 		
 		
 		
-		if(vartrue($options['btn-label']))
+		if(!empty($options['btn-label']))
 		{
 			$interval = vartrue($options['interval'],1000);
 			$text .= '<a id="'.$buttonId.'" data-loading-text="'.$loading.'" data-progress-interval="'.$interval.'" data-progress-target="'.$target.'" data-progress="' . $options['url'] . '" data-progress-mode="'.varset($options['mode'],0).'" data-progress-show="'.varset($options['show'],0).'" data-progress-hide="'.$buttonId.'" class="btn btn-primary e-progress" >'.$options['btn-label'].'</a>';
@@ -2230,12 +2230,12 @@ class e_form
 			$options['class'] = '';
 		}
 
-		if(vartrue($options['size']) && !is_numeric($options['size']))
+		if(!empty($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " form-control input-".$options['size'];	
 			unset($options['size']); // don't include in html 'size='. 	
 		}
-		elseif(!vartrue($options['noresize']))
+		elseif(empty($options['noresize']))
 		{
 			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox col-md-7 span7 e-autoheight form-control';
 		}
@@ -2643,7 +2643,7 @@ class e_form
 		
 		$text .= "<input class='form-check-input' type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 		
-		if(vartrue($options['help']))
+		if(!empty($options['help']))
 		{
 			$text .= "<div class='field-help'>".$options['help']."</div>";
 		}
@@ -2690,7 +2690,7 @@ class e_form
 		$options_off = array_merge($options_off, $options);
 
 
-		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
+		if(vartrue($options['class']) == 'e-expandit' || !empty($options['expandit'])) // See admin->prefs 'Single Login' for an example.
 		{
 			$options_on = array_merge($options, array('class' => 'e-expandit-on'));
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
@@ -2833,7 +2833,7 @@ class e_form
 		if(is_string($elements)) parse_str($elements, $elements);
 		if(!is_array($options)) parse_str($options, $options);
 		$help = '';
-		if(vartrue($options['help']))
+		if(!empty($options['help']))
 		{
 			$help = "<div class='field-help'>".$options['help']."</div>";
 			unset($options['help']);
@@ -3791,12 +3791,16 @@ var_dump($select_options);*/
 				case 'other':
 					if($optval) $ret .= " $optval";
 					break;
+
+				default:
+					if(strpos($option,'data-') === 0)
+					{
+						$ret .= " ".$option."='{$optval}'";
+					}
+				break;
 			}
 
-			if(substr($option,0,5) =='data-')
-			{
-				$ret .= " ".$option."='{$optval}'";	
-			}
+
 				
 		}
 
@@ -3861,7 +3865,10 @@ var_dump($select_options);*/
 			
 			foreach (array_keys($user_options) as $key)
 			{
-				if(!isset($def_options[$key]) && substr($key,0,5)!='data-') unset($user_options[$key]); // data-xxxx exempt //remove it?
+				if(!isset($def_options[$key]) && strpos($key,'data-') !== 0)
+				{
+					unset($user_options[$key]); // data-xxxx exempt //remove it?
+				}
 			}	
 		}
 		else 
@@ -4328,7 +4335,7 @@ var_dump($select_options);*/
 			{
 				continue;
 			}
-			elseif(vartrue($data['type']) != 'method' && empty($data['forced']) && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== null)
+			elseif(vartrue($data['type']) !== 'method' && empty($data['forced']) && !isset($fieldvalues[$field]) && $fieldvalues[$field] !== null)
 			{
 				$text .= "
 					<td>
@@ -4461,7 +4468,7 @@ var_dump($select_options);*/
 
 		$source = e107::getParser()->toJSON($jsonArray, true);
 		
-		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+		$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode'], ''));
 
 		if(!isset($options['url']))
 		{
@@ -4609,7 +4616,7 @@ var_dump($select_options);*/
 
 		if(!empty($parms['sort']) && empty($attributes['grid']))
 		{
-			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+			$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode'], ''));
 			$from = intval(vartrue($_GET['from'],0));
 			$text .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";
 		}
@@ -4998,7 +5005,7 @@ var_dump($select_options);*/
 
 					$tpl = $this->text($field, $value, 80, $options);
 
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode'], ''));
 					$value = "<a id='" . $field . '_' . $id . "' class='e-tip e-editable editable-click editable-tags' data-emptytext='-' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' data-token='".$this->inlineToken()."' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $id . "' " . $setValue . " data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>" . $value . "</a>";
 				}
 
@@ -5012,15 +5019,15 @@ var_dump($select_options);*/
 					$value = defset($value,$value);
 				}
 
-				if(vartrue($parms['truncate']))
+				if(!empty($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
 				}
-				elseif(vartrue($parms['htmltruncate']))
+				elseif(!empty($parms['htmltruncate']))
 				{
 					$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
 				}
-				if(vartrue($parms['wrap']))
+				if(!empty($parms['wrap']))
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
@@ -5070,7 +5077,7 @@ var_dump($select_options);*/
 				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
 				$elid = trim(str_replace('_', '-', $field)).'-'.$id;
 				if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
-				if(vartrue($parms['expand']) || vartrue($parms['truncate']) || vartrue($parms['htmltruncate']))
+				if(!empty($parms['expand']) || !empty($parms['truncate']) || !empty($parms['htmltruncate']))
 				{
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
@@ -5083,13 +5090,13 @@ var_dump($select_options);*/
 				}
 
 				$oldval = $value;
-				if(vartrue($parms['truncate']))
+				if(!empty($parms['truncate']))
 				{
 					$value = $oldval = strip_tags($value);
 					$value = $tp->text_truncate($value, $parms['truncate'], '');
 					$toexpand = $value != $oldval;
 				}
-				elseif(vartrue($parms['htmltruncate']))
+				elseif(!empty($parms['htmltruncate']))
 				{
 					$value = $tp->html_truncate($value, $parms['htmltruncate'], '');
 					$toexpand = $value != $oldval;
@@ -5112,7 +5119,7 @@ var_dump($select_options);*/
 			break;
 			
 			case 'file':
-				if(vartrue($parms['base']))
+				if(!empty($parms['base']))
 				{
 					$url = $parms['base'].$value;
 				}
@@ -5190,9 +5197,9 @@ var_dump($select_options);*/
 						{
 							$thparms['w'] = intval($parms['thumb']);
 						}
-						elseif(vartrue($parms['thumb_aw'])) // Legacy v2. 
+						elseif(!empty($parms['thumb_aw'])) // Legacy v2.
 						{
-							$thparms['aw'] = intval($parms['thumb_aw']);
+							$thparms['aw'] = (int) $parms['thumb_aw'];
 						}
 
 						if(!empty($parms['legacyPath']))
@@ -5420,7 +5427,7 @@ var_dump($select_options);*/
 				//	$tpl = $this->userpicker($field, '', $ttl, $id, array('id' => $fieldID, 'selectize' => array('e_editable' => $eEditableID)));
 
 					$tpl = $this->userpicker($fieldID, array('user_id'=>$id, 'user_name'=>$ttl),  array('id' => $fieldID, 'inline' => $eEditableID));
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode'], ''));
 					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-token='".$this->inlineToken()."' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
 				}
 				
@@ -5480,7 +5487,7 @@ var_dump($select_options);*/
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean '.$styleClass));
 				}
 				
-				if(vartrue($parms['reverse']))
+				if(!empty($parms['reverse']))
 				{
 					$value = ($value) ? $false : ADMIN_TRUE_ICON;	
 				}
@@ -5512,7 +5519,7 @@ var_dump($select_options);*/
 			case 'email':
 				if(!$value) break;
 				$ttl = $value;
-				if(vartrue($parms['truncate']))
+				if(!empty($parms['truncate']))
 				{
 					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
 				}
@@ -5561,7 +5568,7 @@ var_dump($select_options);*/
 				if(empty($attributes['noedit']) && !empty($parms['editable'])) // avoid bad markup, better solution coming up
 				{
 					
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+					$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $meth), array($_value, 'inline', $parms));
 
 					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
@@ -5730,9 +5737,9 @@ var_dump($select_options);*/
 		}
 
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
-		if(vartrue($attributes['readonly']) && (vartrue($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
+		if(!empty($attributes['readonly']) && (!empty($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			if(vartrue($attributes['writeParms'])) // eg. different size thumbnail on the edit page. 
+			if(!empty($attributes['writeParms'])) // eg. different size thumbnail on the edit page.
 			{
 				$attributes['readParms'] = $attributes['writeParms'];
 			}
@@ -5745,7 +5752,7 @@ var_dump($select_options);*/
 		$writeParamsDisabled =  array('layouts', 'templates', 'userclass', 'userclasses');
 
 		// FIXME it breaks all list like elements - dropdowns, radio, etc
-		if(vartrue($required_data[0]) || vartrue($attributes['required'])) // HTML5 'required' attribute 
+		if(!empty($required_data[0]) || !empty($attributes['required'])) // HTML5 'required' attribute
 		{
 			// FIXME - another approach, raise standards, remove checks
 			if(in_array($attributes['type'], $writeParamsOptionable))
@@ -5759,7 +5766,7 @@ var_dump($select_options);*/
 		}
 		
 		// FIXME it breaks all list like elements - dropdowns, radio, etc
-		if(vartrue($required_data[3]) || vartrue($attributes['pattern'])) // HTML5 'pattern' attribute
+		if(!empty($required_data[3]) || !empty($attributes['pattern'])) // HTML5 'pattern' attribute
 		{
 			// FIXME - another approach, raise standards, remove checks
 			if(in_array($attributes['type'], $writeParamsOptionable))
@@ -5878,7 +5885,7 @@ var_dump($select_options);*/
 
 			case 'textarea':
 				$text = "";
-				if(vartrue($parms['append']) && vartrue($value)) // similar to comments - TODO TBD. a 'comment' field type may be better.
+				if(!empty($parms['append']) && !empty($value)) // similar to comments - TODO TBD. a 'comment' field type may be better.
 				{
 					$attributes['readParms'] = 'bb=1';
 					
@@ -6008,16 +6015,16 @@ var_dump($select_options);*/
 				// If hidden, value is updated regardless. eg. a 'last updated' field.
 				// If not hidden, and there is a value, it is retained. eg. during the update of an existing record.
 				// otherwise it is added. eg. during the creation of a new record.
-				if(vartrue($parms['auto']) && (($value == null) || vartrue($parms['hidden'])))
+				if(!empty($parms['auto']) && (($value == null) || !empty($parms['hidden'])))
 				{
 					$value = time();
 				}
 				
-				if(vartrue($parms['readonly'])) // different to 'attribute-readonly' since the value may be auto-generated. 
+				if(!empty($parms['readonly'])) // different to 'attribute-readonly' since the value may be auto-generated.
 				{
 					$ret =  $this->renderValue($key, $value, $attributes).$this->hidden($key, $value);
 				}
-				elseif(vartrue($parms['hidden']))
+				elseif(!empty($parms['hidden']))
 				{
 					$ret =  $this->hidden($key, $value);
 				}
@@ -6142,7 +6149,7 @@ var_dump($select_options);*/
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
-				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
+				if(!empty($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
@@ -6192,7 +6199,7 @@ var_dump($select_options);*/
 				if((empty($value) || !empty($parms['currentInit']) && empty($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
 				{
 					$value = array('user_id'=>USERID, 'user_name'=>USERNAME);
-					if(vartrue($parms['current']))
+					if(!empty($parms['current']))
 					{
 						$parms['__options']['readonly'] = true;
 					}
@@ -6319,7 +6326,7 @@ var_dump($select_options);*/
 			break;
 		}
 
-		if(vartrue($parms['expand']))
+		if(!empty($parms['expand']))
 		{
 			$k = "exp-".$this->name2id($key);
 			$text = "<a class='e-expandit e-tip' href='#{$k}'>".$parms['expand']."</a>";
@@ -7282,12 +7289,12 @@ var_dump($select_options);*/
 					";
 				}
 			}
-			elseif(vartrue($fdata['table_body']))
+			elseif(!empty($fdata['table_body']))
 			{
 				$text .= $fdata['table_body'];
 			}
 
-			if(vartrue($fdata['table_note']))
+			if(!empty($fdata['table_note']))
 			{
 				$note = '<div class="form-note">'.$fdata['table_note'].'</div>';
 			}

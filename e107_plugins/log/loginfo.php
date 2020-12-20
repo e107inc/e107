@@ -63,7 +63,7 @@ else
 }
 
 /* referer data ... */
-if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) 
+if($ref && strpos($ref, $_SERVER['HTTP_HOST']) === false)
 {
 	if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) 
 	{
@@ -97,7 +97,7 @@ if(preg_match("#q=(.*?)($|&)#is", $oldref, $match))
 if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) 
 {
 	$host = trim(strtolower(substr($tmp, strrpos($tmp, ".")+1)));
-	if(!is_numeric($host) && !strstr($host, "calhost")) 
+	if(!is_numeric($host) && strpos($host, "calhost") === false)
 	{
 		if(array_key_exists($host, $domainInfo)) 
 		{
@@ -303,7 +303,7 @@ function getOs($agent)
 	{
 		if (preg_match("#".$info['rule']."#i", $agent, $results)) 
 		{
-			if(strstr($key, "win")) 
+			if(strpos($key, "win") !== false)
 			{
 				return ($info['name']);
 			} 

@@ -483,7 +483,7 @@ class admin_shortcodes
 					}
 				
 
-					if(vartrue($pref['e_latest_list']))
+					if(!empty($pref['e_latest_list']))
 					{
 						foreach($pref['e_latest_list'] as $val)
 						{
@@ -948,7 +948,7 @@ class admin_shortcodes
 			global $ns, $pref, $array_functions, $tp;
 			$e107_var = array();
 
-			if (strstr(e_SELF, '/admin.php'))
+			if (strpos(e_SELF, '/admin.php') !== false)
 			{
 				$active_page = 'x';
 			}
@@ -1042,7 +1042,7 @@ class admin_shortcodes
 				ob_start();
 				$text = "";
 				$i = 0;
-				if (strstr(e_SELF, '/admin.php'))
+				if (strpos(e_SELF, '/admin.php') !== false)
 				{
 					global $sql;
 					if ($sql ->select('plugin', '*', 'plugin_installflag=1'))
@@ -1317,7 +1317,7 @@ class admin_shortcodes
 					
 					
 					
-					if(vartrue($pref['e_status_list']))
+					if(!empty($pref['e_status_list']))
 					{
 						foreach($pref['e_status_list'] as $val)
 						{
@@ -2082,7 +2082,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 			//	e107::getDebug()->log($catid);
 
-				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
+				if(!empty($pref['admin_slidedown_subs']) && !empty($array_sub_functions[$key]))
 				{
 					$tmp['sub_class'] = 'sub';
 					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)

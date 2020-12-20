@@ -94,7 +94,7 @@ class e_date
 			return $marray;
 		}	
 		
-		if(substr($type,0,3) == 'day')
+		if(strpos($type, 'day') === 0)
 		{
 			$days = array();
 			for ($i=2; $i < 9; $i++) 

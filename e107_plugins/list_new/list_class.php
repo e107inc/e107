@@ -165,7 +165,7 @@ class listclass
 	function prepareSectionArray($mode)
 	{
 		//section reference
-		for($i=0;$i<count($this->sections);$i++)
+		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
 			$s = $this->sections[$i];
 			if(vartrue($this->list_pref[$s."_".$mode."_display"]) == '1')
@@ -200,7 +200,7 @@ class listclass
 	function getDefaultSections()
 	{
 		//default always present sections
-		for($i=0;$i<count($this->defaultArray);$i++)
+		for($i=0, $iMax = count($this->defaultArray); $i< $iMax; $i++)
 		{
 			$this->sections[] = $this->defaultArray[$i];
 			$this->titles[] = $this->defaultArray[$i];
@@ -293,7 +293,7 @@ class listclass
 
 		$prf = array();
 		//section preferences
-		for($i=0;$i<count($this->sections);$i++)
+		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
 			$s = $this->sections[$i];
 			if(!in_array($this->sections[$i], $this->defaultArray))

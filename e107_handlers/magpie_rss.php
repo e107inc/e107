@@ -382,7 +382,7 @@ class MagpieRSS {
         // if atom populate rss fields
         if ( $this->is_atom() ) {
             $this->channel['description'] = $this->channel['tagline'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['summary']) )
                     $item['description'] = $item['summary'];
@@ -402,7 +402,7 @@ class MagpieRSS {
         }
         elseif ( $this->is_rss() ) {
             $this->channel['tagline'] = $this->channel['description'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['description']))
                     $item['summary'] = $item['description'];

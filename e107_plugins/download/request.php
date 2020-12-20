@@ -38,7 +38,7 @@ if (!is_numeric(e_QUERY) && empty($_GET['id']))
 
 
 
-if(strstr(e_QUERY, "mirror")) 
+if(strpos(e_QUERY, "mirror") !== false)
 {	// Download from mirror
 	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
 	$download_id = intval($download_id);
@@ -86,7 +86,7 @@ if(strstr(e_QUERY, "mirror"))
 }
 
 $tmp = explode(".", e_QUERY);
-if (!$tmp[1] || strstr(e_QUERY, "pub_")) 
+if (!$tmp[1] || strpos(e_QUERY, "pub_") !== false)
 {
 	$id = intval($tmp[0]);
 	$type = "file";
@@ -108,7 +108,7 @@ if(vartrue($_GET['id'])) // SEF URL
 
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 
 {
-	if(strstr(e_QUERY, "pub_"))
+	if(strpos(e_QUERY, "pub_") !== false)
 	{
 		$bid = str_replace("pub_", "", e_QUERY);
 		if (file_exists(e_UPLOAD.$bid))
@@ -216,7 +216,7 @@ if ($type == "file")
 		//		echo $binary_data;
 		//		exit();
 		//	}
-			if (strstr($row['download_url'], "http://") || strstr($row['download_url'], "ftp://") || strstr($row['download_url'], "https://"))
+			if (strpos($row['download_url'], "http://") !== false || strpos($row['download_url'], "ftp://") !== false || strpos($row['download_url'], "https://") !== false)
 			{
 				$download_url = e107::getParser()->parseTemplate($row['download_url'],true); // support for shortcode-driven dynamic URLS.
 				e107::redirect(decorate_download_location($download_url));

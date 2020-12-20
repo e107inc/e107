@@ -86,7 +86,7 @@ function nextprev_shortcode($parm = '')
 
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
+		if(!empty($parm['glyphs']) && (deftrue('BOOTSTRAP')))
 		{
 			if(deftrue('FONTAWESOME'))
 			{

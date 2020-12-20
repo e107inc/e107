@@ -623,7 +623,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 				$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
 				$info['url'] = str_replace("\\", "", $info['url']);
 				$page = trim($page);
-				if($page && !strstr($page, "cache") && !strstr($page, "file:"))
+				if($page && strpos($page, "cache") === false && strpos($page, "file:") === false)
 				{
 					if($loop){ $data .= ",\n"; }
 					$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].")";

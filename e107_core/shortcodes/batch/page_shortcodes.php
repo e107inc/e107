@@ -59,7 +59,7 @@ class cpage_shortcodes extends e_shortcode
 		
 		$id = $this->var['page_chapter'];
 		
-		if(vartrue($this->chapterData[$id]['chapter_id']) && $this->chapterData[$id]['chapter_parent'] > 0)
+		if(!empty($this->chapterData[$id]['chapter_id']) && $this->chapterData[$id]['chapter_parent'] > 0)
 		{
 			return $this->chapterData[$id];	
 		}
@@ -78,7 +78,7 @@ class cpage_shortcodes extends e_shortcode
 		
 		$row = $this->chapterData[$cid];
 		
-		if(vartrue($row['chapter_id']) && $row['chapter_parent'] < 1)
+		if(!empty($row['chapter_id']) && $row['chapter_parent'] < 1)
 		{
 			return $row;	
 		}

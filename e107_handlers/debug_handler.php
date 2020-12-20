@@ -122,7 +122,7 @@ class e107_debug {
 
     public static function activated()
     {
-        if ((strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) || deftrue('e_DEBUG')) // ADMIN and getperms('0') are not available at this point.
+        if (isset($_COOKIE['e107_debug_level']) || deftrue('e_DEBUG') || (strpos(e_MENU, "debug") === 0)) // ADMIN and getperms('0') are not available at this point.
         {
             return true;
         }

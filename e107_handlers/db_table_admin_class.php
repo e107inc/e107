@@ -350,7 +350,7 @@ class db_table_admin
 							return FALSE;
 						}
 						$found = FALSE;
-						for ($k = $i + 1; $k < count($list1); $k++)
+						for ($k = $i + 1, $kMax = count($list1); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$k]['name'].' with '.$list2[0]['name'];
 							if (strcasecmp($list1[$k]['name'], $list2[0]['name']) == 0)
@@ -371,7 +371,7 @@ class db_table_admin
 						}
 						
 						$found = FALSE;
-						for ($k = 0; $k < count($list2); $k++)
+						for ($k = 0, $kMax = count($list2); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$i]['name'].' with '.$list2[$k]['name'];
 							if (strcasecmp($list1[$i]['name'], $list2[$k]['name']) == 0)
@@ -522,7 +522,7 @@ class db_table_admin
 				return "Not an array<br />";
 			}
 			$text = "<table>";
-			for ($i = 0; $i < count($result[0]); $i++)
+			for ($i = 0, $iMax = count($result[0]); $i < $iMax; $i++)
 			{
 				$text .= "<tr><td>{$result[0][$i]}</td>";
 				$text .= "<td>{$result[1][$i]}</td>";
@@ -540,7 +540,7 @@ class db_table_admin
 				return "Not an array<br />";
 			}
 			$text = "<table>";
-			for ($i = 0; $i < count($result); $i++)
+			for ($i = 0, $iMax = count($result); $i < $iMax; $i++)
 			{
 				$text .= "<tr><td>{$result[$i][0]}</td>";
 				$text .= "<td>{$result[$i][1]}</td>";

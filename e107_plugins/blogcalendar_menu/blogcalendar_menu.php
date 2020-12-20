@@ -45,7 +45,7 @@ if(false === $cached)
 	// get the requested and current date information
 	// ----------------------------------------------
 	list($cur_year, $cur_month, $cur_day) = explode(" ", date("Y n j"));
-	if (e_PAGE == 'news.php' && strstr(e_QUERY, "day")) 
+	if (e_PAGE == 'news.php' && strpos(e_QUERY, "day") !== false)
 	{
 		$tmp = explode(".", e_QUERY);
 		// Core now support legacy queries - use just the old way
@@ -67,7 +67,7 @@ if(false === $cached)
 			$req_day = "";
 		}
 	}
-	elseif(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
+	elseif(e_PAGE == 'news.php' && strpos(e_QUERY, "month") !== false)
 	{
 		$tmp = explode(".", e_QUERY);
 		// Core now support legacy queries - use just the old way

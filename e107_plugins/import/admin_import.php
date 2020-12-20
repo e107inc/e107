@@ -1541,7 +1541,7 @@ function csv_split(&$data,$delim=',',$enveloper='')
   $enclosed = false;
 // $fldcount=0;
 // $linecount=0;
-  for($i=0;$i<strlen($data);$i++)
+  for($i=0, $iMax = strlen($data); $i< $iMax; $i++)
   {
 	$c=$data[$i];
 	switch($c)

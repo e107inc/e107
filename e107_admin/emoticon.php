@@ -61,28 +61,28 @@ $filtered = e107::getParser()->filter($_POST);
 // Check for pack-related buttons pressed
 foreach($filtered as $key => $value)
 {
-	if(strstr($key, "subPack_"))
+	if(strpos($key, "subPack_") !== false)
 	{
 		$subpack = str_replace("subPack_", "", $key);
 		$emote->emoteConf($subpack);
 		break;
 	}
 
-	if(strstr($key, "XMLPack_"))
+	if(strpos($key, "XMLPack_") !== false)
 	{
 		$subpack = str_replace("XMLPack_", "", $key);
 		$emote->emoteXML($subpack);
 		break;
 	}
 
-	if(strstr($key, "defPack_"))
+	if(strpos($key, "defPack_") !== false)
 	{
 		e107::getConfig()->set('emotepack', str_replace("defPack_", "", $key))->save(true,true,true);
 		e107::getLog()->add('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		break;
 	}
 
-	if(strstr($key, "scanPack_"))
+	if(strpos($key, "scanPack_") !== false)
 	{
 		$one_pack = str_replace("scanPack_", "", $key);
 		break;
@@ -203,9 +203,9 @@ class emotec
 
 			foreach($emoteArray as $emote)
 			{
-				if (strstr($emote['fname'], ".pak")
-				|| strstr($emote['fname'], ".xml")
-				|| strstr($emote['fname'], "phpBB"))
+				if (strpos($emote['fname'], ".pak") !== false
+				|| strpos($emote['fname'], ".xml") !== false
+				|| strpos($emote['fname'], "phpBB") !== false)
 				{
 					$can_scan = TRUE;		// Allow re-scan of config files
 				}
@@ -474,15 +474,15 @@ class emotec
 				$confFile = '';
 				foreach($fileArray as $k => $file)
 				{
-					if(strstr($file['fname'], ".xml"))
+					if(strpos($file['fname'], ".xml") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "xml");
 					}
-					else if(strstr($file['fname'], ".pak"))
+					else if(strpos($file['fname'], ".pak") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "pak");
 					}
-					else if(strstr($file['fname'], ".php"))
+					else if(strpos($file['fname'], ".php") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "php");
 					}
@@ -501,7 +501,7 @@ class emotec
 					$contentArray = array();
 					foreach($pakconf as $line)
 					{
-					  if(trim($line) && strstr($line, "=+") && !strstr($line, ".txt") && !strstr($line, ".html") && !strstr($line, "cvs")) $contentArray[] = $line;
+					  if(trim($line) && strpos($line, "=+") !== false && strpos($line, ".txt") === false && strpos($line, ".html") === false && strpos($line, "cvs") === false) $contentArray[] = $line;
 					}
 					$confArray = array();
 					foreach($contentArray as $pakline)
@@ -554,7 +554,7 @@ class emotec
 
 					if ($xml_type)
 					{
-					  for($a=0; $a < count($match[0]); $a++)
+					  for($a=0, $aMax = count($match[0]); $a < $aMax; $a++)
 					  {
 					    $e_file = '';
 					    switch ($xml_type)

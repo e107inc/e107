@@ -272,7 +272,7 @@ class e_search
 						$this -> text = $row[$field];
 						foreach ($this -> keywords['match'] as $k_key => $this -> query) 
 						{
-							if (stristr($this -> text, $this -> query) !== FALSE) 
+							if (stripos($this->text, $this->query) !== false)
 							{
 								if ($this -> keywords['exact'][$k_key] || $this -> keywords['boolean'][$k_key]) 
 								{

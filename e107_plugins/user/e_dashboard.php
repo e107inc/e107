@@ -141,7 +141,7 @@ class user_dashboard // plugin-folder + '_url'
 					if($entry)
 					{
 						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/"))
+						if(strpos($url, "/") !== false)
 						{
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
 						}

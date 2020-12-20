@@ -165,7 +165,7 @@ class user_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 
 		$ldata = e107::getRank()->getRanks($this->var['user_id']); //, (USER && $forum->isModerator(USERID)));
-		if(vartrue($ldata['special']))
+		if(!empty($ldata['special']))
 		{
 			$r = $ldata['special'];
 		}

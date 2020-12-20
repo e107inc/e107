@@ -71,7 +71,7 @@ if(false === $cached)
 	}
 	
 	$req_year = $cur_year;
-	if(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
+	if(e_PAGE == 'news.php' && strpos(e_QUERY, "month") !== false)
 	{
 		$tmp = explode('.', e_QUERY);
 		$item = $tmp[1];

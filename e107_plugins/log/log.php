@@ -152,7 +152,7 @@ if ($err_code = strip_tags((isset($vals['err_direct']) ? $vals['err_direct'] : '
 	$err_code .= ':';
 }
 
-if(strstr($ref, 'admin')) 
+if(strpos($ref, 'admin') !== false)
 {
 	$ref = FALSE;
 }
@@ -162,7 +162,7 @@ $agent = $_SERVER['HTTP_USER_AGENT'];
 $ip = e107::getIPHandler()->ipDecode(USERIP);
 
 $oldref = $ref; // backup for search string being stripped off for referer
-if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) 
+if($ref && strpos($ref, $_SERVER['HTTP_HOST']) === false)
 {
 	if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) 
 	{
@@ -262,7 +262,7 @@ else
 
 
 
-if(!strstr($ipAddresses, $ip)) 
+if(strpos($ipAddresses, $ip) === false)
 {	/* unique visit */
 	if(!$flag) 
 	{

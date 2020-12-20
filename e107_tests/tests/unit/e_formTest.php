@@ -744,12 +744,22 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testGet_attributes()
 			{
+				$options = array(
+					'class'             => 'myclass',
+					'id'                => 'custom-id',
+					'readonly'          => true,
+					'data-something'    => 'custom-att'
+				);
 
+				$actual = $this->_frm->get_attributes($options);
+				$expected = " class='myclass' id='custom-id' readonly='readonly' data-something='custom-att'";
+
+				$this->assertSame($expected, $actual);
 			}
-
+/*
 			public function test_format_id()
 			{
 

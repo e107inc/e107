@@ -1172,13 +1172,13 @@ class e_parse extends e_parser
 
 		foreach($tags as $tag)
 		{
-			if(!$tag[2] || !preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/si', $tag[2]))
+			if(!$tag[2] || !preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/i', $tag[2]))
 			{
-				if(preg_match('/<[\w]+[^>]*>/s', $tag[0]))
+				if(preg_match('/<[\w]+[^>]*>/', $tag[0]))
 				{
 					array_unshift($openTags, $tag[2]);
 				}
-				else if(preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag))
+				else if(preg_match('/<\/([\w]+)[^>]*>/', $tag[0], $closeTag))
 				{
 					$pos = array_search($closeTag[1], $openTags);
 					if($pos !== false)
@@ -2836,7 +2836,7 @@ class e_parse extends e_parser
 
 
 		
-		if(strstr($url,e_MEDIA) || strstr($url,e_SYSTEM)) // prevent disclosure of 'hashed' path. 
+		if(strpos($url, e_MEDIA) !== false || strpos($url, e_SYSTEM) !== false) // prevent disclosure of 'hashed' path.
 		{
 			$raw = true; 	
 		}
@@ -2965,7 +2965,7 @@ class e_parse extends e_parser
 
 		$ret = array();
 
-		if(strstr($url, 'thumb.php') && !empty($qry)) // Regular
+		if(!empty($qry) && strpos($url, 'thumb.php') !== false) // Regular
 		{
 			parse_str($qry,$val);
 			$ret = $val;
@@ -3152,17 +3152,17 @@ class e_parse extends e_parser
 			$ext = strtolower($options['ext']);
 			return $base.'media/img/'.base64_encode($options['thurl']).'.'.str_replace('jpeg', 'jpg', $ext);
 		}
-		elseif(strstr($url, 'e_MEDIA_IMAGE')) // media images.
+		elseif(strpos($url, 'e_MEDIA_IMAGE') !== false) // media images.
 		{
 			$sefPath = 'media/img/';
 			$clean = array('{e_MEDIA_IMAGE}','e_MEDIA_IMAGE/');
 		}
-		elseif(strstr($url, 'e_AVATAR')) // avatars
+		elseif(strpos($url, 'e_AVATAR') !== false) // avatars
 		{
 			$sefPath = 'media/avatar/';
 			$clean = array('{e_AVATAR}','e_AVATAR/');
 		}
-		elseif(strstr($url, 'e_THEME')) // theme folder images.
+		elseif(strpos($url, 'e_THEME') !== false) // theme folder images.
 		{
 			$sefPath = 'theme/img/';
 			$clean = array('{e_THEME}','e_THEME/');
@@ -3176,7 +3176,7 @@ class e_parse extends e_parser
 		// Build URL for ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4
 		$sefUrl =  $base.$sefPath;
 
-		if(vartrue($options['aw']) || vartrue($options['ah']))
+		if(!empty($options['aw']) || !empty($options['ah']))
 		{
 			$sefUrl .= 'a'.intval($options['aw']) .'xa'. intval($options['ah']);
 		}
@@ -4790,7 +4790,7 @@ class e_parser
 	 */
 	public function isBBcode($text)
 	{
-		if(preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		if(strpos($text,'[')=== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
 		{
 			return false;
 		}

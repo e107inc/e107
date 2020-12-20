@@ -1966,12 +1966,12 @@ class e_userperms
 			$ret['core'] 		= $this->core_perms;
 			$ret['plugin']		= $this->plugin_perms;
 
-			if(vartrue($this->language_perms))
+			if(!empty($this->language_perms))
 			{
 				$ret['language'] = $this->language_perms;
 			}
 
-			if(vartrue($this->main_perms))
+			if(!empty($this->main_perms))
 			{
 				$ret['main'] = $this->main_perms;
 			}
