@@ -1322,13 +1322,13 @@ class e_system_user extends e_user_model
 			break;
 				
 			case 'notify': 
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+				if(!empty($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER;
 				$ret['template'] = 'notify';
 			break;
 				
 			case 'email':
 			case 'default':
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
+				if(!empty($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER;
 				$ret['template'] = 'default';
 			break;
 		}
@@ -1400,7 +1400,7 @@ class e_system_user extends e_user_model
 				}
 			
 				$HEAD .= "</head>\n";
-				if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated. 
+				if(!empty($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated.
 				{
 					$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
 				}

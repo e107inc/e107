@@ -1916,7 +1916,7 @@ if (!defined("PCL_TAR"))
         $v_extract_file = FALSE;
 
         // ----- Look into the file list
-        for ($i=0; $i<count($p_file_list); $i++)
+        for ($i=0, $iMax = count($p_file_list); $i< $iMax; $i++)
         {
           TrFctMessage(__FILE__, __LINE__, 2, "Compare archived file '$v_header[filename]' from asked list file '".$p_file_list[$i]."'");
 
@@ -1981,7 +1981,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, strlen($p_path)-1);
+            $p_path = substr($p_path, 0, -1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -2043,7 +2043,7 @@ if (!defined("PCL_TAR"))
         {
           if ($v_header[typeflag]=="5")
             $v_dir_to_check = $v_header[filename];
-          else if (!strstr($v_header[filename], "/"))
+          else if (strpos($v_header[filename], "/") === false)
             $v_dir_to_check = "";
           else
             $v_dir_to_check = dirname($v_header[filename]);
@@ -2461,7 +2461,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, strlen($p_path)-1);
+            $p_path = substr($p_path, 0, -1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -2523,7 +2523,7 @@ if (!defined("PCL_TAR"))
         {
           if ($v_header[typeflag]=="5")
             $v_dir_to_check = $v_header[filename];
-          else if (!strstr($v_header[filename], "/"))
+          else if (strpos($v_header[filename], "/") === false)
             $v_dir_to_check = "";
           else
             $v_dir_to_check = dirname($v_header[filename]);
@@ -2956,7 +2956,7 @@ if (!defined("PCL_TAR"))
     }
 
     // ----- Prepare the list of files
-    for ($i=0; $i<count($p_file_list); $i++)
+    for ($i=0, $iMax = count($p_file_list); $i< $iMax; $i++)
     {
       // ----- Reset the found list
       $v_found_list[$i] = 0;
@@ -3175,7 +3175,7 @@ if (!defined("PCL_TAR"))
     }
 
     // ----- Look for files that does not exists in the archive and need to be added
-    for ($i=0; $i<count($p_file_list); $i++)
+    for ($i=0, $iMax = count($p_file_list); $i< $iMax; $i++)
     {
       // ----- Look if file not found in the archive
       if (!$v_found_list[$i])

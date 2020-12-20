@@ -52,7 +52,7 @@ class sitelinks
 				else
 				{
 					$this->eLinkList['head_menu'][] = $row;
-					if(vartrue($row['link_function']))
+					if(!empty($row['link_function']))
 					{
 						$parm = false;
 						list($path,$method) = explode("::",$row['link_function']);
@@ -67,7 +67,7 @@ class sitelinks
 						{
 							$class = $path."_sitelink";
 							$sublinkArray = e107::callMethod($class,$method,$parm); //TODO Cache it.
-							if(vartrue($sublinkArray))
+							if(!empty($sublinkArray))
 							{
 								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
 							}
@@ -312,7 +312,7 @@ class sitelinks
 			$style['linkclass_hilite'] = "";	
 		}
 
-		if(vartrue($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
+		if(!empty($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
 			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
 		}
@@ -322,7 +322,7 @@ class sitelinks
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == true)
 		{
-			if(substr($linkInfo['link_name'],0,8) == "submenu.")
+			if(strpos($linkInfo['link_name'], 'submenu.') === 0)
 			{
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
@@ -525,7 +525,7 @@ class sitelinks
 		}
 
 		// --------------- highlighting for plugins. ----------------
-		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE)
+		if(stripos($link, $PLUGINS_DIRECTORY) !== false && stripos($link, "custompages") === false)
 		{
 			if($link_qry)
 			{	// plugin links with queries
@@ -534,7 +534,7 @@ class sitelinks
 			else
 			{	// plugin links without queries
 				$link = str_replace("../", "", $link);
-		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE)
+		   		if(stripos(dirname(e_SELF), dirname($link)) !== false)
 				{
  			 		return TRUE;
 				}
@@ -786,7 +786,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$this->admin_cat['lrg_img'][5] = $tp->toGlyph('e-manage-32'); 
 		$this->admin_cat['sort'][5] = TRUE;
 		
-		if(vartrue($pref['admin_separate_plugins']))
+		if(!empty($pref['admin_separate_plugins']))
 		{
 			$this->admin_cat['title'][6] = ADLAN_CL_7;
 			$this->admin_cat['id'][6] = 'plugMenu'; 
@@ -1446,7 +1446,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
 			$replace['SUB_CLASS'] = '';
 			
-			if(vartrue($e107_vars[$act]['image_src']) && strstr($e107_vars[$act]['image_src'],'.glyph'))
+			if(!empty($e107_vars[$act]['image_src']) && strpos($e107_vars[$act]['image_src'], '.glyph') !== false)
 			{
 				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
 			}

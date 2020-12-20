@@ -163,12 +163,14 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testGet_dirs()
 			{
-
+				$actual = $this->fl->get_dirs(e_LANGUAGEDIR);
+				$expected = array (  0 => 'English' );
+				$this->assertSame($expected, $actual);
 			}
-
+/*
 			public function testGetErrorMessage()
 			{
 
@@ -387,12 +389,26 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testGet_files()
 			{
+				$reject = array('style.*');
+				$result = $this->fl->get_files(e_THEME."voux/", "\.php|\.css|\.xml|preview\.jpg|preview\.png", $reject, 1);
+
+				$files = array();
+				foreach($result as $f)
+				{
+					$files[] = $f['fname'];
+				}
+
+	     		$this->assertContains('install.xml', $files); // 1 level deep.
+	     		$this->assertContains('theme.php', $files);
+	     		$this->assertContains('theme.xml', $files);
+				$this->assertNotContains('style.css', $files);
+
 
 			}
-
+/*
 			public function testGetUserDir()
 			{
 

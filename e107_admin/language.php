@@ -616,7 +616,7 @@ if(!empty($_GET['iframe']))
 			foreach ($tabs as $table_name)
 			{
 				$installed = 'lan_'.strtolower($languageSelected)."_".$table_name;
-				if (stristr($languageSelected, $installed) === FALSE)
+				if (stripos($languageSelected, $installed) === false)
 				{
 
 					$selected = ($sql->isTable($table_name,$languageSelected)) ? " checked='checked'" : "";
@@ -1524,7 +1524,7 @@ class lanDeveloper
 		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
-			if(strstr($val,e_SYSTEM))
+			if(strpos($val, e_SYSTEM) !== false)
 			{
 				continue;
 			}

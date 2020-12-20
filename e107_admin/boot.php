@@ -341,7 +341,7 @@ if (!function_exists("parse_admin"))
 
 		$adtmp = explode("\n", $ADMINLAYOUT);
 		
-		for ($a = 0; $a < count($adtmp); $a++)
+		for ($a = 0, $aMax = count($adtmp); $a < $aMax; $a++)
 		{
 			if (preg_match("/{.+?}/", $adtmp[$a]))
 			{

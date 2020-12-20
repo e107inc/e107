@@ -628,12 +628,12 @@ class e_validator
 					$this->addValidateResult($name, self::ERR_NOT_FILE);
 					return false;
 				}
-				if(vartrue($params['writable']) && !is_writable($path))
+				if(!empty($params['writable']) && !is_writable($path))
 				{
 					$this->addValidateResult($name, self::ERR_WRITABLE_FILE);
 					return false;
 				}
-				if(vartrue($params['size']))
+				if(!empty($params['size']))
 				{
 					$tmp = $this->parseMinMax($cond);
 					$fs = filesize($path);
@@ -1273,7 +1273,7 @@ class validatorClass
 										{	// Exact match search (noticed with exclamation mark in the end of the word)
 											$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
 										}
-										elseif(stristr($v, trim($disallow)))
+										elseif(stripos($v, trim($disallow)) !== false)
 										{	// Wild card search
 											$errMsg = ERR_DISALLOWED_TEXT;
 										}

@@ -2636,11 +2636,11 @@ class error_handler
 				<td>";
 			$text .= !empty($val['class']) ? $val['class']."->" : '';
 			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
-			$text .= !empty($val['function']) ? $val['function']."(" : "";
+			$text .= !empty($val['function']) ? htmlentities($val['function'])."(" : "";
 			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
 			$text .= !empty($val['function']) ? ")" : "";
 			$text .="</td>
-				<td>";
+				<td style='width:20%'>";
 			$text .= str_replace($this->docroot,'', $val['file']).":".$val['line'];
 			$text .= "</td>
 			</tr>";

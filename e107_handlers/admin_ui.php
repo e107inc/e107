@@ -1462,7 +1462,7 @@ class e_admin_dispatcher
 				$this->_current_controller->setRequest($request)->init();
 			}
 
-			if(vartrue($this->modes[$request->getModeName()]['ui']))
+			if(!empty($this->modes[$request->getModeName()]['ui']))
 			{
 				$class_name = $this->modes[$request->getModeName()]['ui'];
 				$class_path = vartrue($this->modes[$request->getModeName()]['uipath']);
@@ -2402,7 +2402,7 @@ class e_admin_controller
 		if(!$path && $this->getParam('modes'))
 		{
 			$modes = $this->getParam('modes');
-			if(vartrue($modes[$mode]) && vartrue($modes[$mode]['url']))
+			if(!empty($modes[$mode]) && !empty($modes[$mode]['url']))
 			{
 				$path = e107::getParser()->replaceConstants($modes[$mode]['url'], 'abs');
 			}
@@ -3851,7 +3851,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 */
 	
-			if(vartrue($attributes['dataPath']))
+			if(!empty($attributes['dataPath']))
 			{
 				$model->setData($attributes['dataPath'], $value);
 			}
@@ -4494,7 +4494,7 @@ class e_admin_controller_ui extends e_admin_controller
 					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
 
 				// Prepare Where
-				if(vartrue($tparams['where']))
+				if(!empty($tparams['where']))
 				{
 					$jwhere[] = $tparams['where'];
 				}
@@ -6516,7 +6516,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$dataFields[$key] = vartrue($att['data'], 'string');
 
 			// create validation array
-			if(vartrue($att['validate']))
+			if(!empty($att['validate']))
 			{
 				$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 			}
@@ -6591,7 +6591,7 @@ class e_admin_ui extends e_admin_controller_ui
 				{
 					continue;
 				}
-				if(vartrue($att['validate']))
+				if(!empty($att['validate']))
 				{
 					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], vartrue($att['help'])));
 				}
@@ -7698,7 +7698,7 @@ class e_admin_form_ui extends e_form
 								unset($options['clearAll']);
 							}
 							
-							if(vartrue($opts['simple']))
+							if(!empty($opts['simple']))
 							{
 								foreach ($options as $value) 
 								{
@@ -7720,7 +7720,7 @@ class e_admin_form_ui extends e_form
 						else
 						{
 							unset($options['addAll'], $options['clearAll']);
-							if(vartrue($opts['simple']))
+							if(!empty($opts['simple']))
 							{
 								foreach($options as $k)
 								{
@@ -7768,7 +7768,7 @@ class e_admin_form_ui extends e_form
 
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']) && $type === 'batch')
+						if(!empty($opts['multiple']) && $type === 'batch')
 						{
 							// no batch support for multiple, should have some for filters soon
 							continue 2;
@@ -7788,7 +7788,7 @@ class e_admin_form_ui extends e_form
 					case 'lanlist': // use the array $parm;
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']))
+						if(!empty($opts['multiple']))
 						{
 							// no batch support for multiple, should have some for filters soon
 							continue 2;

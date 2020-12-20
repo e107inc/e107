@@ -47,7 +47,7 @@ class poll
 			foreach($_COOKIE as $cookie_name => $cookie_val)
 			{	// Collect poll cookies
 
-				if(substr($cookie_name,0,5) == 'poll_')
+				if(strpos($cookie_name,'poll_') === 0)
 				{
 					// e107::getDebug()->log("Poll: ".$cookie_name);
 					list($str, $int) = explode('_', $cookie_name, 2);
@@ -62,7 +62,7 @@ class poll
 		if (count($arr_polls_cookies) > 1) 
 		{	// Remove all except first (assumption: there is always only one active poll)
 			rsort($arr_polls_cookies);
-			for($i = 1; $i < count($arr_polls_cookies); $i++)
+			for($i = 1, $iMax = count($arr_polls_cookies); $i < $iMax; $i++)
 			{
 				cookie("poll_{$arr_polls_cookies[$i]}", "", (time() - 2592000));
 			}
@@ -175,7 +175,7 @@ class poll
 		else 
 		{
 			$votes = '';
-			for($a=1; $a<=count($_POST['poll_option']); $a++)
+			for($a=1, $aMax = count($_POST['poll_option']); $a<= $aMax; $a++)
 			{
 				$votes .= '0'.chr(1);
 			}
@@ -516,7 +516,7 @@ class poll
 			case 'voted':
 			case 'results' :
 
-				if ($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
+				if ($pollArray['poll_result_type'] && strpos(e_SELF, "comment.php") === false)
 				{
 					$text = "<div style='text-align: center;'><br /><br />".LAN_THANK_YOU."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
 				}

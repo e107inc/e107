@@ -1113,7 +1113,7 @@ class siteStats
 					$image = "";
 					foreach ($this->browser_map as $name => $file) 
 					{
-						if(strstr($key, $name)) 
+						if(strpos($key, $name) !== false)
 						{
 							$image = "{$file}.png";
 							break;
@@ -1249,17 +1249,17 @@ class siteStats
 				foreach($osArray as $key => $info) 
 				{
 					$image = "";
-					if(strstr($key, "Windows")) {	$image = "windows.png"; }
-					elseif(strstr($key, "Mac")) {	$image = "mac.png"; }
-					elseif(strstr($key, "Linux")) {	$image = "linux.png"; }
-					elseif(strstr($key, "BeOS")) {	$image = "beos.png"; }
-					elseif(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
-					elseif(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
-					elseif(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
-					elseif(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
-					elseif(strstr($key, "Unix")) {	$image = "unix.png"; }
-					elseif(strstr($key, "Spiders")) {	$image = "spiders.png"; }
-					elseif(stristr($key, "Android")) {	$image = "android.png"; }
+					if(strpos($key, "Windows") !== false) {	$image = "windows.png"; }
+					elseif(strpos($key, "Mac") !== false) {	$image = "mac.png"; }
+					elseif(strpos($key, "Linux") !== false) {	$image = "linux.png"; }
+					elseif(strpos($key, "BeOS") !== false) {	$image = "beos.png"; }
+					elseif(strpos($key, "FreeBSD") !== false) {	$image = "freebsd.png"; }
+					elseif(strpos($key, "NetBSD") !== false) {	$image = "netbsd.png"; }
+					elseif(strpos($key, "Unspecified") !== false) {	$image = "unspecified.png"; }
+					elseif(strpos($key, "OpenBSD") !== false) {	$image = "openbsd.png"; }
+					elseif(strpos($key, "Unix") !== false) {	$image = "unix.png"; }
+					elseif(strpos($key, "Spiders") !== false) {	$image = "spiders.png"; }
+					elseif(stripos($key, "Android") !== false) {	$image = "android.png"; }
 
 					$percentage = round(($info/$total) * 100, 2);
           $var = array(                        
@@ -1451,7 +1451,7 @@ class siteStats
 			{
 				foreach($screenArray as $key => $info) 
 				{
-					if(strstr($key, "@") && !strstr($key, "undefined") && preg_match("/(\d+)x(\d+)@(\d+)/", $key)) 
+					if(strpos($key, "@") !== false && strpos($key, "undefined") === false && preg_match("/(\d+)x(\d+)@(\d+)/", $key))
 					{
 						$percentage = round(($info/$total) * 100, 2);
             $var = array(         
@@ -1771,7 +1771,7 @@ class siteStats
 					if($entry) 
 					{
 						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/")) 
+						if(strpos($url, "/") !== false)
 						{
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
 						} 

@@ -823,12 +823,12 @@ if ($e107_popup != 1) {
      * fix - only when e_FRONTPAGE set to true
      * @see core_index_index_controller/actionIndex
      */
-    if(deftrue('e_FRONTPAGE') && strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref.
+    if(deftrue('e_FRONTPAGE') && strpos($HEADER, "{WMESSAGE") === false && strpos($FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
 
-	if(!deftrue('e_IFRAME') && (strstr($HEADER,"{ALERTS}")===false && strstr($FOOTER,"{ALERTS}")===false)) // Old theme, missing {ALERTS}
+	if(!deftrue('e_IFRAME') && (strpos($HEADER, "{ALERTS}") === false && strpos($FOOTER, "{ALERTS}") === false)) // Old theme, missing {ALERTS}
 	{
 		if(deftrue('e_DEBUG'))
 		{

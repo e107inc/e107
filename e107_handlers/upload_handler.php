@@ -631,7 +631,7 @@ function get_image_mime($filename, $extended = false)
 			// Otherwise, it could be in the supplementary list
 
 			$tmp = explode(',', $unknown);
-			for($i = 0; $i < count($tmp); $i++)
+			for($i = 0, $iMax = count($tmp); $i < $iMax; $i++)
 			{
 				$tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));
 			}

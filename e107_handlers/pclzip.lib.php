@@ -1621,7 +1621,7 @@ class PclZip
                     // ----- Check the format of each item
                     $v_sort_flag  = false;
                     $v_sort_value = 0;
-                    for ($j = 0; $j < count($v_work_list); $j++) {
+                    for ($j = 0, $jMax = count($v_work_list); $j < $jMax; $j++) {
                         // ----- Explode the item
                         $v_item_list      = explode("-", $v_work_list[$j]);
                         $v_size_item_list = count($v_item_list);
@@ -1968,7 +1968,7 @@ class PclZip
         $v_result_list = array();
 
         // ----- Look each entry
-        for ($i = 0; $i < count($p_filedescr_list); $i++) {
+        for ($i = 0, $iMax = count($p_filedescr_list); $i < $iMax; $i++) {
 
             // ----- Get filedescr
             $v_descr = $p_filedescr_list[$i];
@@ -2204,7 +2204,7 @@ class PclZip
         }
 
         // ----- Create the Central Dir files header
-        for ($i = 0, $v_count = 0; $i < count($v_header_list); $i++) {
+        for ($i = 0, $v_count = 0, $iMax = count($v_header_list); $i < $iMax; $i++) {
             // ----- Create the file header
             if ($v_header_list[$i]['status'] == 'ok') {
                 if (($v_result = $this->privWriteCentralFileHeader($v_header_list[$i])) != 1) {
@@ -2356,7 +2356,7 @@ class PclZip
         $v_offset = @ftell($this->zip_fd);
 
         // ----- Create the Central Dir files header
-        for ($i = 0, $v_count = 0; $i < count($v_header_list); $i++) {
+        for ($i = 0, $v_count = 0, $iMax = count($v_header_list); $i < $iMax; $i++) {
             // ----- Create the file header
             if ($v_header_list[$i]['status'] == 'ok') {
                 if (($v_result = $this->privWriteCentralFileHeader($v_header_list[$i])) != 1) {
@@ -3174,7 +3174,7 @@ class PclZip
         if (($p_path != "./") && ($p_path != "/")) {
             // ----- Look for the path end '/'
             while (substr($p_path, -1) == "/") {
-                $p_path = substr($p_path, 0, strlen($p_path) - 1);
+                $p_path = substr($p_path, 0, -1);
             }
         }
 
@@ -3623,7 +3623,7 @@ class PclZip
             } else {
                 if ((($p_entry['external'] & 0x00000010) == 0x00000010) || (substr($p_entry['filename'], -1) == '/')) {
                     $v_dir_to_check = $p_entry['filename'];
-                } elseif (!strstr($p_entry['filename'], "/")) {
+                } elseif (strpos($p_entry['filename'], "/") === false) {
                     $v_dir_to_check = "";
                 } else {
                     $v_dir_to_check = dirname($p_entry['filename']);
@@ -4613,7 +4613,7 @@ class PclZip
             }
 
             // ----- Look which file need to be kept
-            for ($i = 0; $i < count($v_header_list); $i++) {
+            for ($i = 0, $iMax = count($v_header_list); $i < $iMax; $i++) {
 
                 // ----- Calculate the position of the header
                 @rewind($this->zip_fd);
@@ -4675,7 +4675,7 @@ class PclZip
             $v_offset = @ftell($v_temp_zip->zip_fd);
 
             // ----- Re-Create the Central Dir files header
-            for ($i = 0; $i < count($v_header_list); $i++) {
+            for ($i = 0, $iMax = count($v_header_list); $i < $iMax; $i++) {
                 // ----- Create the file header
                 if (($v_result = $v_temp_zip->privWriteCentralFileHeader($v_header_list[$i])) != 1) {
                     $v_temp_zip->privCloseFd();
@@ -4764,7 +4764,7 @@ class PclZip
 
         // ----- Remove the final '/'
         if (($p_is_dir) && (substr($p_dir, -1) == '/')) {
-            $p_dir = substr($p_dir, 0, strlen($p_dir) - 1);
+            $p_dir = substr($p_dir, 0, -1);
         }
 
         // ----- Check the directory availability
@@ -5401,7 +5401,7 @@ function PclZipUtilOptionText($p_option)
 // --------------------------------------------------------------------------------
 function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter = true)
 {
-    if (stristr(php_uname(), 'windows')) {
+    if (stripos(php_uname(), 'windows') !== false) {
         // ----- Look for potential disk letter
         if (($p_remove_disk_letter) && (($v_position = strpos($p_path, ':')) != false)) {
             $p_path = substr($p_path, $v_position + 1);

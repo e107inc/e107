@@ -37,7 +37,7 @@ global $pref;
 		$parm = $parm." ".$extras;
 	}
 
-	if(substr($parm,0,6) == "mailto")
+	if(strpos($parm, 'mailto') === 0)
 	{
 		list($pre,$email) = explode(":",$parm);
 		list($p1,$p2) = explode("@",$email);

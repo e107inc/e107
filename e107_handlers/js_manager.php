@@ -249,7 +249,7 @@ class e_jsmanager
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
 		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
-		if(vartrue($customJqueryUrls) && $this->_in_admin === false)
+		if(!empty($customJqueryUrls) && $this->_in_admin === false)
 		{
 			$this->_libraries['jquery'] = explode("\n", $customJqueryUrls);	
 		}
@@ -269,7 +269,7 @@ class e_jsmanager
 
 				if(!$this->libDisabled($id,$vis))
 				{
-					if(vartrue($this->_libraries[$id]))
+					if(!empty($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
 						{
@@ -1718,7 +1718,7 @@ class e_jsmanager
 	    $parts = preg_split(":[\\\/]:", $path); // split on known directory separators
 
 	    // resolve relative paths
-	    for ($i = 0; $i < count($parts); $i +=1)
+	    for ($i = 0, $iMax = count($parts); $i < $iMax; $i +=1)
 	    {
 	        if ($parts[$i] === "..")   // resolve ..
 	        {

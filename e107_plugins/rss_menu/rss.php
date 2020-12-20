@@ -455,7 +455,7 @@ class rssCreate
 			break;
 
 			case 2:	// RSS 2.0
-				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
+				$sitebutton = (strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this->contentType."\" -->
@@ -494,7 +494,7 @@ class rssCreate
 					echo "
 					<image>
 					<title>".$tp->toRss($rss_title)."</title>
-					<url>".(strstr(SITEBUTTON, "http:")!==FALSE ? SITEBUTTON : SITEURL.str_replace("../", "",SITEBUTTON))."</url>
+					<url>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "",SITEBUTTON))."</url>
 					<link>".$pref['siteurl']."</link>
 					<width>88</width>
 					<height>31</height>
@@ -680,7 +680,7 @@ class rssCreate
 					<generator uri='http://e107.org/' version='".e_VERSION."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
-					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
+					<logo>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
 					<rights type='html'>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</rights>\n";
 					if($pref['sitedescription']){
 					echo "

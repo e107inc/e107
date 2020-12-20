@@ -87,7 +87,7 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 
 $fs = false;
 
-if (strstr(e_QUERY, "fs")) {
+if (strpos(e_QUERY, "fs") !== false) {
 	$cgtm = intval(str_replace(".fs", "", e_QUERY));
 	$fs = true;
 }

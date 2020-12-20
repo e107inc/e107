@@ -254,7 +254,7 @@ if(isset($_POST['fp_save_new']))
 	if($temp['order'] == 0) // New index to add
 	{
 		$ind = 0;
-		for($i = 1; $i <= count($fp_settings); $i ++)
+		for($i = 1, $iMax = count($fp_settings); $i <= $iMax; $i ++)
 		{
 			if($fp_settings[$i]['class'] == $temp['class'])
 				$ind = $i;
@@ -307,7 +307,7 @@ if($fp_update_prefs)
 { // Save the two arrays
 	$fp_list = array();
 	$fp_force = array();
-	for($i = 1; $i <= count($fp_settings); $i ++)
+	for($i = 1, $iMax = count($fp_settings); $i <= $iMax; $i ++)
 	{
 		$fp_list[$fp_settings[$i]['class']] = $fp_settings[$i]['page'];
 		$fp_force[$fp_settings[$i]['class']] = $fp_settings[$i]['force'];

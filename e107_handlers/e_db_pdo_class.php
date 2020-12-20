@@ -328,7 +328,7 @@ class e_db_pdo implements e_db
 		{
 			$this->dbg->log($query);
 		}
-		if ($debug !== false || strstr($_SERVER['QUERY_STRING'], 'showsql'))
+		if ($debug !== false || strpos($_SERVER['QUERY_STRING'], 'showsql') !== false)
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -1615,7 +1615,7 @@ class e_db_pdo implements e_db
 			foreach($this->mySQLtableList as $tab)
 			{
 
- 				if(substr($tab,0,4) == "lan_")
+ 				if(strpos($tab,"lan_") === 0)
 				{
 					list($tmp,$lng,$tableName) = explode("_",$tab,3);
 
@@ -2277,13 +2277,13 @@ class e_db_pdo implements e_db
 
 			foreach($this->mySQLtableList as $tab)
 			{
-				if(substr($tab,0,4)!='lan_')
+				if(strpos($tab,'lan_') === 0)
 				{
-					$nolan[] = $tab;
+					$lan[] = $tab;
 				}
 				else
 				{
-					$lan[] = $tab;
+					$nolan[] = $tab;
 				}
 			}
 
@@ -2433,7 +2433,7 @@ class e_db_pdo implements e_db
 
 	//	$dbtable 		= $this->mySQLdefaultdb;
 		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table;
-		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
+		$fileName	 	= preg_replace('/[\W]/',"",$fileName);
 
 		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
 
@@ -2679,7 +2679,7 @@ class e_db_pdo implements e_db
 			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
 			$temp = file_get_contents($defFile);
 			// Strip any comments  (only /*...*/ supported)
-			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
+			$temp = preg_replace("#\/\*.*?\*\/#ms", '', $temp);
 			//echo "Check: {$defFile}, {$tableName}<br />";
 			if ($temp !== false)
 			{

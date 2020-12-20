@@ -1299,7 +1299,7 @@ $columnInfo = array(
 	      {
 	         $fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
 	         $selected = '';
-	         if (stristr($fpath, $download_url) !== FALSE)
+	         if (stripos($fpath, $download_url) !== false)
 	         {
 	            $selected = " selected='selected'";
 	            $found = 1;

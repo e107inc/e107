@@ -291,11 +291,9 @@ class e_parse_shortcode
 				$methods = get_class_methods($class);
 				foreach($methods as $meth)
 				{
-					if(substr($meth,0,3) == 'sc_')
+					if(strpos($meth,'sc_') === 0)
 					{
 						$this->addonOverride[$meth] = $class;
-
-
 					}
 				}
 			}
@@ -1005,6 +1003,7 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
+		// e107::getDebug()->log($matches[1]);
 		// print_a($matches);
 
 		if(in_array($matches[0],$this->ignoreCodes)) // Ignore all {e_PLUGIN}, {THEME} etc. otherwise it will just return blank for these items. 

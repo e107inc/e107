@@ -30,7 +30,7 @@ class trackbackClass
 		$permLink = urlencode(stripslashes($e107->base_path.$permLink));
 		$query_string = "title=".$title."&url=".$permLink."&blog_name=".$blog_name."&excerpt=".$excerpt;
 
-		if (strstr($pingUrl, '?'))
+		if (strpos($pingUrl, '?') !== false)
 		{
 			$pingUrl .= "&".$query_string;
 			$fp = fopen($pingUrl, 'r');
@@ -80,7 +80,7 @@ class trackbackClass
 
 		}
 
-		if(strstr($response, "<error>0</error>"))
+		if(strpos($response, "<error>0</error>") !== false)
 		{
 			return FALSE;
 		}

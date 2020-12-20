@@ -1502,13 +1502,13 @@ class news_form_ui extends e_admin_form_ui
 		  <div class="tab-content">';
 
 
-		$val = strstr($curVal, "[img]http") ? $curVal : str_replace("[img]../", "[img]", $curVal);
+		$val = strpos($curVal, "[img]http") !== false ? $curVal : str_replace("[img]../", "[img]", $curVal);
 		$text .= "<div id='news-body-container' class='tab-pane active'>";
 		$text .= $frm->bbarea('news_body', $val, 'news', 'news', 'large');
 		$text .= "</div>";
 		$text .= "<div id='news-extended-container' class='tab-pane'>";
 
-		$val = (strstr($curValExt, "[img]http") ? $curValExt : str_replace("[img]../", "[img]",$curValExt));
+		$val = (strpos($curValExt, "[img]http") !== false ? $curValExt : str_replace("[img]../", "[img]",$curValExt));
 		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news','large');
 
 		$text .= "</div>

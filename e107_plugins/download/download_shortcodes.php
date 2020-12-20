@@ -1113,7 +1113,7 @@ class download_shortcodes extends e_shortcode
 	
 	private function renderNewIcon()
 	{
-		if(strstr(IMAGE_NEW,'<i ') || strstr(IMAGE_NEW,'<span'))
+		if(strpos(IMAGE_NEW, '<i ') !== false || strpos(IMAGE_NEW, '<span') !== false)
 		{
 			return IMAGE_NEW;	
 		}

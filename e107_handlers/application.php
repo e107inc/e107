@@ -1853,7 +1853,7 @@ class eRouter
 			eFront::isLegacy(varset($config['legacy']));
 			
 			// Don't allow single entry if required by module config
-			if(vartrue($config['noSingleEntry']))
+			if(!empty($config['noSingleEntry']))
 			{
 				$request->routed = true;
 				if(!eFront::isLegacy())
@@ -1884,10 +1884,10 @@ class eRouter
 			}
 			
 			// parse callback
-			if(vartrue($config['selfParse']))
+			if(!empty($config['selfParse']))
 			{
 				// controller/action[/additional/parms]
-				if(vartrue($config['urlSuffix'])) $rawPathInfo = $this->removeUrlSuffix($rawPathInfo, $config['urlSuffix']);
+				if(!empty($config['urlSuffix'])) $rawPathInfo = $this->removeUrlSuffix($rawPathInfo, $config['urlSuffix']);
 				$route = $this->configCallback($module, 'parse', array($rawPathInfo, $_GET, $request, $this, $config), $config['location']);
 			}
 			// default module route
@@ -1936,7 +1936,7 @@ class eRouter
 									if(isset($_GET[$key]) && !$request->isRequestParam($key))
 									{
 										// sanitize
-										$vars->$key = preg_replace('/[^\d\w\-]/', '', $_GET[$key]); 
+										$vars->$key = preg_replace('/[^\w\-]/', '', $_GET[$key]);
 									}
 								}
 							}
@@ -2177,7 +2177,7 @@ class eRouter
 		$urlSuffix = '';
 		
 		// Fix base url for legacy links
-		if(vartrue($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
+		if(!empty($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
 		elseif(self::FORMAT_GET !== $config['format'])
 		{
 			$urlSuffix = $this->urlSuffix;
@@ -2185,7 +2185,7 @@ class eRouter
 		} 
 		
 		// Create by config callback
-		if(vartrue($config['selfCreate']))
+		if(!empty($config['selfCreate']))
 		{
 			$tmp = $this->configCallback($module, 'create', array(array($route[1], $route[2]), $params, $options), $config['location']); 
 			
@@ -4768,7 +4768,7 @@ class eHelper
 
 		$title = str_replace(array('/',' ',","),' ',$title);
 		$title = str_replace(array("&","(",")"),'',$title);
-		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = preg_replace('/[^\w\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---
 

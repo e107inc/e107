@@ -566,9 +566,9 @@ class e_menuManager
 		$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
 		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch('num'))
 		{
-			if(stristr($menustr, $menu_name) === false)
+			if(stripos($menustr, $menu_name) === false)
 			{
-				$sql2->db_Delete("menus", "menu_name='$menu_name'");
+				$sql2->delete("menus", "menu_name='$menu_name'");
 				$message .= MENLAN_11 . " - " . $menu_name . "<br />";
 			}
 		}
@@ -1047,7 +1047,7 @@ class e_menuManager
 
 		$pagelist = explode("\r\n", $pageList);
 
-		for ($i = 0 ; $i < count($pagelist) ; $i++)
+		for ($i = 0, $iMax = count($pagelist); $i < $iMax; $i++)
 		{
 			$pagelist[$i] = trim($pagelist[$i]);
 		}
@@ -1412,7 +1412,7 @@ class e_menuManager
 		// Split up using the same function as the shortcode handler
 		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		$str = array();
-		for($c = 0; $c < count($tmp); $c++)
+		for($c = 0, $cMax = count($tmp); $c < $cMax; $c++)
 		{
 
 
@@ -1485,7 +1485,7 @@ class e_menuManager
 	//	{
 	//		echo $tp->parseTemplate("{LOGO}");
 	//	}
-		if(strstr($str, "SETSTYLE"))
+		if(strpos($str, "SETSTYLE") !== false)
 		{
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
 
@@ -1511,7 +1511,7 @@ class e_menuManager
 	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
 		//	echo "<span class='label label-info'>Navigation Area</span>";
 	//	}
-		elseif(strstr($str, '{---MODAL---}'))
+		elseif(strpos($str, '{---MODAL---}') !== false)
 		{
 			//echo "\n<!-- Modal would appear here --> \n";
 			echo '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
@@ -1540,29 +1540,29 @@ class e_menuManager
 
 			//echo getModal();
 		}
-		elseif(strstr($str, '{---CAPTION---}'))
+		elseif(strpos($str, '{---CAPTION---}') !== false)
 		{
 			echo LAN_CAPTION;
 		}
-		elseif(strstr($str, '{LAYOUT_ID}'))
+		elseif(strpos($str, '{LAYOUT_ID}') !== false)
 		{
 			echo 'layout-'.e107::getForm()->name2id($this->curLayout);
 		}
-		elseif(strstr($str, "ALERT"))
+		elseif(strpos($str, "ALERT") !== false)
 		{
 			echo '';
 			//echo "[Navigation Area]";
 		}
-		elseif(strstr($str, "LANGUAGELINKS"))
+		elseif(strpos($str, "LANGUAGELINKS") !== false)
 		{
 			echo "<div class=text style='padding: 2px; text-align: center'>[".LAN_LANGUAGE."]</div>";
 		}
-		elseif(strstr($str, "CUSTOM"))
+		elseif(strpos($str, "CUSTOM") !== false)
 		{
 			$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
 			echo "<div style='padding: 2px'>[" . $cust . "]</div>";
 		}
-		elseif(strstr($str, "CMENU"))
+		elseif(strpos($str, "CMENU") !== false)
 		{
 			$cust = preg_replace("/\W*\{CMENU=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
 			if(isset($this->customMenu))
@@ -1572,7 +1572,7 @@ class e_menuManager
 			echo $tp->parseTemplate("{CMENU=".$cust."}",true);
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
-		elseif(strstr($str, "SETIMAGE"))
+		elseif(strpos($str, "SETIMAGE") !== false)
 		{
 			$cust = preg_replace("/\W*\{SETIMAGE(.*?)(\+.*)?\}\W*/si", "\\1", $str);
 			echo $tp->parseTemplate("{SETIMAGE".$cust."}",true);
@@ -1583,13 +1583,13 @@ class e_menuManager
 			echo "<div class=text style='padding: 30px; text-align: center'>[Welcome Message Area]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}*/
-		elseif(strstr($str, "{FEATUREBOX"))
+		elseif(strpos($str, "{FEATUREBOX") !== false)
 		{
 			echo "<div class=text style='padding: 80px; text-align: center'>[".LAN_PLUGIN_FEATUREBOX_NAME."]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
 		// Display embedded Plugin information.
-		else if(strstr($str, "PLUGIN"))
+		else if(strpos($str, "PLUGIN") !== false)
 		{
 			$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
 			$plug = trim($plug);
@@ -1611,7 +1611,7 @@ class e_menuManager
 			echo $this->renderPanel($plug, $plugtext);
 			// $ns->tablerender($plug, $plugtext);
 		}
-		else if(strstr($str, "MENU"))
+		else if(strpos($str, "MENU") !== false)
 		{
 
 			$matches = array();

@@ -639,7 +639,7 @@ class admin_log_form_ui extends e_admin_form_ui
 					$text = str_replace("<br />","\n",$text);
 					$text = str_replace("&#092;","/",$text);
 					
-					if(substr($text,0,2) == '\n') // cleanup (not sure of the cause)
+					if(strpos($text,'\n') === 0) // cleanup (not sure of the cause)
 					{
 						$text = substr($text,2);	
 					}

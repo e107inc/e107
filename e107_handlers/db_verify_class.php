@@ -749,7 +749,7 @@ class db_verify
 	{
 		$key = array_flip($tabl);
 		
-		if(substr($cur,0,4)=="lan_") // language table adjustment. 
+		if(strpos($cur,"lan_") === 0) // language table adjustment.
 		{
 			list($tmp,$lang,$cur) = explode("_",$cur,3);
 		}
@@ -773,7 +773,7 @@ class db_verify
 	function getFixQuery($mode, $table, $field, $sqlFileData, $engine = 'MyISAM' )
 	{
 
-		if(substr($mode,0,5)== 'index')
+		if(strpos($mode, 'index') === 0)
 		{
 			$fdata = $this->getIndex($sqlFileData);
 			$newval = $this->toMysql($fdata[$field],'index');

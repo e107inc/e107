@@ -168,7 +168,7 @@ class comment
 		$sql	= e107::getDb();
 		$tp	= e107::getParser();
 
-		if(vartrue($pref['comments_disabled']) || $this->engine != 'e107')
+		if(!empty($pref['comments_disabled']) || $this->engine != 'e107')
 		{
 			return null;
 		}
@@ -733,7 +733,7 @@ class comment
 			$eaction = 'edit';
 			$editpid = $_GET['comment_id'];
 		}
-		elseif (strstr(e_QUERY, "edit"))
+		elseif (strpos(e_QUERY, "edit") !== false)
 		{
 			$eaction = "edit";
 			$tmp = explode(".", e_QUERY);
@@ -1254,7 +1254,7 @@ class comment
 		$type = $this->getCommentType($table);
 		$sort = vartrue($pref['comments_sort'],'desc');
 		
-		if(vartrue($pref['nested_comments']))
+		if(!empty($pref['nested_comments']))
 		{
 			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id

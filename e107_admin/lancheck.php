@@ -1146,7 +1146,7 @@ class lancheck
 		$input .= $diz;
 		$message .= str_replace("\n","<br />",$diz);
 	
-		for ($i=0; $i<count($_POST['newlang']); $i++)
+		for ($i=0, $iMax = count($_POST['newlang']); $i< $iMax; $i++)
 		{
 			$notdef_start = "";
 			$notdef_end = "\n";

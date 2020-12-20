@@ -84,7 +84,7 @@
 		 *
 		 * @var array
 		 */
-		public $dirFilter;
+		public $dirFilter = array();
 
 		/**
 		 * Array of file names to ignore (in addition to any set by caller)
@@ -227,10 +227,9 @@
 		 */
 		function get_files($path, $fmask = '', $omit = 'standard', $recurse_level = 0)
 		{
-
 			$ret = array();
 			$invert = false;
-			if(substr($fmask, 0, 1) == '~')
+			if(strpos($fmask,'~') === 0)
 			{
 				$invert = true;                        // Invert selection - exclude files which match selection
 				$fmask = substr($fmask, 1);
@@ -240,10 +239,13 @@
 			{
 				return $ret;
 			}
+
+
 			if(substr($path, -1) == '/')
 			{
 				$path = substr($path, 0, -1);
 			}
+
 
 			if(!is_dir($path) || !$handle = opendir($path))
 			{
@@ -263,19 +265,22 @@
 
 			while(false !== ($file = readdir($handle)))
 			{
-				if(is_dir($path . '/' . $file))
-				{    // Its a directory - recurse into it unless a filtered directory or required depth achieved
-					// Must always check for '.' and '..'
-					if(($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && ($recurse_level > 0))
-					{
-						$xx = $this->get_files($path . '/' . $file, $fmask, $omit, $recurse_level - 1);
-						$ret = array_merge($ret, $xx);
-					}
+				if($file === '.' || $file === '..')
+				{
+					continue;
+				}
+
+				if(($recurse_level > 0) && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && is_dir($path . '/' . $file))
+				{
+					// Its a directory - recurse into it unless a filtered directory or required depth achieved
+					$xx = $this->get_files($path . '/' . $file, $fmask, $omit, $recurse_level - 1);
+					$ret = array_merge($ret, $xx);
+
 				}
 				else
 				{
 					// Now check against standard reject list and caller-specified list
-					if(($fmask == '') || ($invert != preg_match("#" . $fmask . "#", $file)))
+					if(empty($fmask) || ($invert != preg_match("#" . $fmask . "#", $file)))
 					{    // File passes caller's filter here
 						$rejected = false;
 
@@ -467,7 +472,7 @@
 				}
 
 				// Auto-Fix Files without an extensions using known mime-type.
-				if(empty($finfo['pathinfo']['extension']) && !is_dir($path_to_file) && !empty($finfo['mime']))
+				if(empty($finfo['pathinfo']['extension']) && !empty($finfo['mime']) && !is_dir($path_to_file))
 				{
 					if($ext = $this->getFileExtension($finfo['mime']))
 					{
@@ -652,14 +657,14 @@
 
 			//	$mes = e107::getMessage();
 
-			$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea
+			// May be paranoia, but streaky thought it might be a good idea
 
-			$address = str_replace('&amp;', '&', $address);
+			$address = str_replace(array("\r", "\n", "\t", '&amp;'), array('', '', '', '&'), $address);
 
 			// ... and there shouldn't be unprintable characters in the URL anyway
 			$requireCurl = false;
 
-			if(vartrue($options['decode'], false))
+			if(!empty($options['decode']))
 			{
 				$address = urldecode($address);
 			}
@@ -778,7 +783,9 @@
 		{
 
 			$ret = array();
-			if(substr($path, -1) == '/')
+			$path = rtrim($path,'/');
+			if($path[strlen($path) - 1] === '/')
+		//	if(substr($path, -1) == '/')
 			{
 				$path = substr($path, 0, -1);
 			}
@@ -799,9 +806,10 @@
 					$omit = array($omit);
 				}
 			}
+
 			while(false !== ($file = readdir($handle)))
 			{
-				if(is_dir($path . '/' . $file) && ($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
+				if(($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && is_dir($path . '/' . $file)   && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
 				{
 					$ret[] = $file;
 				}
@@ -1105,7 +1113,7 @@
 			$path_public = realpath($FILES_DIRECTORY . "public/");
 
 
-			if(!strstr($path, $path_downloads) && !strstr($path, $path_public) && !strstr($path, $MEDIA_DIRECTORY) && !strstr($path, $SYSTEM_DIRECTORY))
+			if(strpos($path, $path_downloads) === false && strpos($path, $path_public) === false && strpos($path, $MEDIA_DIRECTORY) === false && strpos($path, $SYSTEM_DIRECTORY) === false)
 			{
 				if(E107_DEBUG_LEVEL > 0 && ADMIN)
 				{
@@ -1127,7 +1135,7 @@
 				if(is_file($filename) && is_readable($filename) && connection_status() == 0)
 				{
 					$seek = 0;
-					if(strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+					if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false)
 					{
 						$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 					}
@@ -1278,7 +1286,7 @@
 				$newFile = e_BACKUP . eHelper::title2sef(SITENAME) . "_" . date("Y-m-d-H-i-s") . ".zip";
 			}
 
-			if(is_null($filePaths))
+			if($filePaths === null)
 			{
 				return "No file-paths set!";
 			}
@@ -1561,7 +1569,7 @@
 
 			//   print_a($headers);
 
-			return (stripos($headers[0], "200 OK") || stripos($headers[0], "302")) ? true : false;
+			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302")) ? true : false;
 		}
 
 
@@ -1761,8 +1769,8 @@
 				// language.
 				// eg. https://github.com/e107translations/Spanish/archive/v2.1.5.zip
 				default:
-					$localfile = str_replace('https://github.com/e107translations/', '', $url); // 'e107-master.zip';
-					$localfile = str_replace('/archive/v', '-', $localfile); //remove dirs.
+					// 'e107-master.zip';
+					$localfile = str_replace(array('https://github.com/e107translations/', '/archive/v'), array('', '-'), $url); //remove dirs.
 					$remotefile = $url;
 					$excludes = array();
 					$excludeMatch = array('alt_auth', 'tagwords', 'faqs');

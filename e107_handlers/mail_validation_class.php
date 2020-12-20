@@ -33,7 +33,7 @@ class email_validation_class
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0;$character<strlen($separator);$character++)
+		for($character=0, $characterMax = strlen($separator); $character< $characterMax; $character++)
 		{
 			if(GetType($position=strpos($string,$separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
@@ -112,10 +112,10 @@ class email_validation_class
 		&& $getmxrr($domain,$hosts,$weights))
 		{
 			$mxhosts=array();
-			for($host=0;$host<count($hosts);$host++)
+			for($host=0, $hostMax = count($hosts); $host< $hostMax; $host++)
 				$mxhosts[$weights[$host]]=$hosts[$host];
 			KSort($mxhosts);
-			for(Reset($mxhosts),$host=0;$host<count($mxhosts);Next($mxhosts),$host++)
+			for(Reset($mxhosts), $host=0, $hostMax = count($mxhosts); $host< $hostMax; Next($mxhosts), $host++)
 				$hosts[$host]=$mxhosts[Key($mxhosts)];
 		}
 		else
@@ -153,7 +153,7 @@ class email_validation_class
 		&& !strcmp($localuser=getenv("USERNAME"),"")
 		&& !strcmp($localuser=getenv("USER"),""))
 		   $localuser="root";
-		for($host=0;$host<count($hosts);$host++)
+		for($host=0, $hostMax = count($hosts); $host< $hostMax; $host++)
 		{
 			$domain=$hosts[$host];
 			if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$domain))

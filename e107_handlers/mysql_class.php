@@ -379,7 +379,7 @@ class e_db_mysql implements e_db
 		{
 			$this->dbg->log($query);
 		}
-		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
+		if ($debug !== FALSE || strpos($_SERVER['QUERY_STRING'], 'showsql') !== false)
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -1517,7 +1517,7 @@ class e_db_mysql implements e_db
 			foreach($this->mySQLtableList as $tab)
 			{
 
- 				if(substr($tab,0,4) == "lan_")
+ 				if(strpos($tab, "lan_") === 0)
 				{
 					list($tmp,$lng,$tableName) = explode("_",$tab,3);
 
@@ -2215,13 +2215,13 @@ class e_db_mysql implements e_db
 
 			foreach($this->mySQLtableList as $tab)
 			{
-				if(substr($tab,0,4)!='lan_')
+				if(strpos($tab,'lan_') === 0)
 				{
-					$nolan[] = $tab;
+					$lan[] = $tab;
 				}
 				else
 				{
-					$lan[] = $tab;
+					$nolan[] = $tab;
 				}
 			}
 

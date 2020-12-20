@@ -45,7 +45,7 @@ class core_index_index_controller extends eController
 		}
 		else
 		{ // This is the 'new' method - assumes $pref['frontpage'] is an ordered list of rules
-			if(vartrue($pref['frontpage']))
+			if(!empty($pref['frontpage']))
 			{
 				foreach ($pref['frontpage'] as $fk=>$fp)
 				{

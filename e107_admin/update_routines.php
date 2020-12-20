@@ -1509,7 +1509,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Avatar paths require updating.');
 		foreach($avatar_images as $av)
 		{
-			$apath = (strstr($av['path'],'public/')) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
+			$apath = (strpos($av['path'], 'public/') !== false) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
 			
 			if(rename($av['path'].$av['fname'], $apath. $av['fname'])===false)
 			{

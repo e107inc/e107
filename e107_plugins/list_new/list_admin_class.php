@@ -115,7 +115,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_3;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-sections";
 		$this->row['FIELD'] = "";
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
@@ -127,7 +127,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_6;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-display-style";
 		$this->row['FIELD'] = "";
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
@@ -139,7 +139,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_9;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-author";
 		$this->row['FIELD'] = "";
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
@@ -151,7 +151,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_12;
 		$this->row['FIELD'] = "";
 		$this->row['CONTID'] = "list-new-{$type}-expandable-category";
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
@@ -163,7 +163,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_15;
 		$this->row['FIELD'] = "";
 		$this->row['CONTID'] = "list-new-{$type}-expandable-date";
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
@@ -178,7 +178,7 @@ class list_admin
 		$iconlist = $fl->get_files($this->parent->plugin_dir."images/");
 		$frm = e107::getForm();
 		
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$name = $this->parent->sections[$i]."_".$type."_icon";
 			$curVal = $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"];
@@ -210,7 +210,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_18;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-amount";
 		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
 			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_amount");
@@ -231,7 +231,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_21;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-order";
 		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
 			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_order");
@@ -251,7 +251,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_SECT_27;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-caption";
 		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
-		for($i=0;$i<count($this->parent->sections);$i++)
+		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
 			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, e107::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
@@ -472,7 +472,7 @@ class list_admin
 		$this->row['HELP'] = LIST_ADMIN_LAN_22;
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-colomn";
 		$this->row['FIELD'] = $rs->form_select_open($type."_colomn");
-			for($a=1; $a<=count($this->parent->sections); $a++)
+			for($a=1, $aMax = count($this->parent->sections); $a<= $aMax; $a++)
 			{
 				$this->row['FIELD'] .= ($this->parent->list_pref[$type."_colomn"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
 			}

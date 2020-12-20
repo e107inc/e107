@@ -660,23 +660,23 @@ class eIPHandler
 	 */
 	public function ipDecode($ip, $IP4Legacy = TRUE)
 	{
-		if (strstr($ip,'.'))
+		if (strpos($ip, '.') !== false)
 		{
 			if ($IP4Legacy) return $ip;			// Assume its unencoded IPV4
 			$ipa = explode('.', $ip);
 			$ip = '0:0:0:0:0:ffff:'.sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
 			$ip = str_repeat('0000'.':', 5).'ffff:'.$this->ip4Encode($ip, TRUE, ':');
 		}
-		if (strstr($ip,'::')) return $ip;			// Assume its a compressed IPV6 address already
-		if ((strlen($ip) == 8) && !strstr($ip,':'))
+		if (strpos($ip, '::') !== false) return $ip;			// Assume its a compressed IPV6 address already
+		if ((strlen($ip) == 8) && strpos($ip, ':') === false)
 		{	// Assume a 'legacy' IPV4 encoding
 			$ip = '0:0:0:0:0:ffff:'.implode(':',str_split($ip,4));		// Turn it into standard IPV6
 		}
-		elseif ((strlen($ip) == 32) && !strstr($ip,':'))
+		elseif ((strlen($ip) == 32) && strpos($ip, ':') === false)
 		{  // Assume a compressed hex IPV6
 			$ip = implode(':',str_split($ip,4));
 		}
-		if (!strstr($ip,':')) return FALSE;			// Return on problem - no ':'!
+		if (strpos($ip, ':') === false) return FALSE;			// Return on problem - no ':'!
 		$temp = explode(':',$ip);
 		$z = 0;		// State of the 'zero manager' - 0 = not started, 1 = running, 2 = done
 		$ret = '';
@@ -1083,7 +1083,7 @@ class eIPHandler
 			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
 		} */
-		if(vartrue($pref['enable_rdns_on_ban']))
+		if(!empty($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}

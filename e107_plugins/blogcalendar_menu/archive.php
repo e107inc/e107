@@ -45,7 +45,7 @@ $pref['blogcal_ws'] = "monday";
 $cur_year = date("Y");
 $cur_month = date("n");
 $cur_day = date("j");
-if (strstr(e_QUERY, "year")) 
+if (strpos(e_QUERY, "year") !== false)
 {
   $tmp = explode(".", e_QUERY);
   if (is_numeric($tmp[1]))

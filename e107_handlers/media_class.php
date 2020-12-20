@@ -1079,7 +1079,7 @@ class e_media
 		elseif(!empty($pattern) && !empty($path))
 		{
 			$pattern = '/'.$pattern.'/';
-			if(substr($path,0,4) === 'http')
+			if(strpos($path, 'http') === 0)
 			{
 				$subject = e107::getFile()->getRemoteContent($path);
 			}
