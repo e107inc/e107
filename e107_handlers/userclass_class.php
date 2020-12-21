@@ -999,6 +999,8 @@ class user_class
 	 */
 	public function uc_get_classname($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getName() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getName($id);
 	}
 
@@ -1013,6 +1015,8 @@ class user_class
 	 */
 	public function uc_get_classdescription($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getDescription($id) instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getDescription($id);
 	}
 
@@ -1135,6 +1139,8 @@ class user_class
 	 */
 	public function get_users_in_class($classes, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getUsersInClass() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getUsersInClass($classes, $fieldList, $includeAncestors, $orderBy);
 	}
 

@@ -109,7 +109,7 @@
 			$this->ShowIf('SQL Analysis', $this->Show_SQL_Details());
 			$this->ShowIf('Shortcodes / BBCode', $this->Show_SC_BB());
 			$this->ShowIf('Paths', $this->Show_PATH());
-			$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+			$this->ShowIf('Deprecated Methods/Function Usage', $this->Show_DEPRECATED());
 
 			if(E107_DBG_INCLUDES)
 			{
@@ -719,14 +719,26 @@
 			return $text;
 		}
 
-		function logDeprecated()
+		function logDeprecated($message=null, $file=null, $line=null)
 		{
+			if(!empty($message) || !empty($file))
+			{
+				$this->deprecated_funcs[] = array(
+					'func' => $message,
+					'file' => $file,
+					'line' => $line
+				);
+
+				return null;
+			}
+
 
 			$back_trace = debug_backtrace();
 
 		//	print_r($back_trace);
 
 			$this->deprecated_funcs[] = array(
+				'message'   => varset($message),
 				'func' => (isset($back_trace[1]['type']) && ($back_trace[1]['type'] === '::' || $back_trace[1]['type'] === '->') ? $back_trace[1]['class'] . $back_trace[1]['type'] . $back_trace[1]['function'] : $back_trace[1]['function']),
 				'file' => $back_trace[1]['file'],
 				'line' => $back_trace[1]['line']
@@ -925,36 +937,48 @@
 
 		function Show_DEPRECATED($force = false)
 		{
-
 			if(!E107_DBG_DEPRECATED && ($force === false))
 			{
 				return false;
 			}
-			else
-			{
-				$text = "<table class='table table-striped table-condensed' style='width: 100%'>
-			<tr><th colspan='4'><b>The following deprecated functions were used:</b></td></tr>
-			<thead>
-			<tr>
-			<th style='width: 10%;'>Function</th>
-			<th style='width: 10%;'>File</th>
-			<th style='width: 10%;'>Line</th>
-			</tr>
-			</thead>
-			<tbody>\n";
 
-				foreach($this->deprecated_funcs as $funcs)
+			$text = "
+				<table class='table table-striped table-condensed' style='width: 100%'>
+				
+				<thead>
+				<tr>
+				<th style='width: 40%;'>Info</th>
+				<th style='width: 30%;'>File</th>
+				<th>Line</th>
+				</tr>
+				</thead>
+				<tbody>\n";
+
+				if(empty($this->deprecated_funcs))
 				{
 					$text .= "<tr>
-				<td style='width: 10%;'>{$funcs['func']}()</td>
-				<td style='width: 10%;'>{$funcs['file']}</td>
-				<td style='width: 10%;'>{$funcs['line']}</td>
-				</tr>\n";
+						<td colspan='3'><span class='label label-success'>None Found</span></td>
+						</tr>";
 				}
+				else
+				{
+
+				//	$unique = array_unique($this->deprecated_funcs);
+
+					foreach($this->deprecated_funcs as $funcs)
+					{
+						$text .= "<tr>
+						<td>{$funcs['func']}</td>
+						<td>".(is_array($funcs['file']) ? print_a($funcs['file'],true) : $funcs['file'])."</td>
+						<td>{$funcs['line']}</td>
+						</tr>\n";
+					}
+				}
+
 				$text .= "</tbody></table>";
 
 				return $text;
-			}
+
 		}
 
 

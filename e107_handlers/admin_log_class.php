@@ -134,6 +134,7 @@ class e_admin_log
 	 */
 	public function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use add() instead.', E_USER_DEPRECATED);
 		return $this->add($event_title, $event_detail, $event_type, $event_code);	
 	}
 
@@ -429,6 +430,8 @@ class e_admin_log
 	 */
 	public function e_log_event($importance, $source_call, $eventcode = 'GEN', $event_title = 'Untitled', $explain = '', $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use add()->save() or addEvent() instead.', E_USER_DEPRECATED);
+
 		return addEvent($importance, $source_call, $eventcode, $event_title, $explain, $finished, $target_logs, $userData);
 	}
 
@@ -617,7 +620,7 @@ class e_admin_log
 	 */
 	public function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
 	{
-		
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getLog()->addArray($arrayData)->save($event) instead.', E_USER_DEPRECATED); // no LAN
 		if($extra == '' && $niceNames == null)
 		{
 			return $this->add($event, $target, E_LOG_INFORMATIVE, '');	// supports arrays
@@ -699,11 +702,12 @@ class e_admin_log
 
 
 	/**
-	 * @DEPRECATED
+	 * @deprecated
 	 * BC Alias for addSuccess(); 
 	 */
 	public function logSuccess($text, $message = true, $session = false)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getLog()->addSuccess($arrayData)->save($event) instead.', E_USER_DEPRECATED); // no LAN
 		return $this->addSuccess($text,$message,$session);	
 	}
 
@@ -715,7 +719,8 @@ class e_admin_log
 	 */
 	public function logError($text, $message = true, $session = false)
 	{
-		return $this->addError($text,$message,$session);	
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getLog()->addError($arrayData)->save($event) instead.', E_USER_DEPRECATED); // no LAN
+		return $this->addError($text,$message,$session);
 	}
 
 

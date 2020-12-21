@@ -424,7 +424,7 @@ class e_pref extends e_front_model
 				$data = e107::getParser()->toDB($data);
 			}
 			parent::setData($data, null, false);
-			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
+			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			//BC
 			if($this->alias === 'core')
 			{
@@ -471,7 +471,7 @@ class e_pref extends e_front_model
 
 		if(!empty($data))
 		{
-			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
+			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			$this->loadData((array) $data, false);
 			return $this;
 		}
@@ -483,7 +483,7 @@ class e_pref extends e_front_model
 			if($this->serial_bc)
 			{
 				$data = unserialize($row['e107_value']);
-				$row['e107_value'] = e107::getArrayStorage()->WriteArray($data, false);
+				$row['e107_value'] = e107::getArrayStorage()->serialize($data, false);
 			}
 			else
 			{

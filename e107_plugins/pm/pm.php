@@ -142,6 +142,7 @@
 		 */
 		function show_send($to_uid)
 		{
+		//	 trigger_error('Method ' . __METHOD__ . ' is deprecated. Use e107::serialize() instead.', E_USER_DEPRECATED);
 			$pm_info = array();
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 

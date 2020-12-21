@@ -28,6 +28,7 @@ class user_select
 	 */
 	function user_list($class, $form_name)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getForm()->userlist() instead.', E_USER_DEPRECATED); // NO LAN
 
 	//	e107::getMessage()->addDebug("Deprecated user_list Method used ".debug_backtrace());
 

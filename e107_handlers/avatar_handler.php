@@ -17,11 +17,13 @@ if (!defined('e107_INIT'))
 	exit;
 }
 /**
- * @DEPRECATED 
+ * @deprecated
  * Use e107::getParser()->toAvatar() instead.
  */
 function avatar($avatar)
 {
+	trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getParser()->toAvatar() instead.', E_USER_DEPRECATED); // no LAN
+
 	$data = array('user_image' => $avatar);
 
 	return e107::getParser()->toAvatar($data, array('type'=>'url'));

@@ -547,6 +547,9 @@ class e_theme
 	 */
 	public static function getThemeList($mode = false, $force = false)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
+
 		$themeArray = array();
 
 		$tloop = 1;

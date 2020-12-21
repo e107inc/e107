@@ -2919,10 +2919,12 @@ class e_form
 
 
 	/**
-	 * @DEPRECATED - use select() instead. 
+	 * @deprecated - use select() instead.
 	 */
 	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use select() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->select($name, $option_array, $selected, $options, $defaultBlank);	
 	}
 

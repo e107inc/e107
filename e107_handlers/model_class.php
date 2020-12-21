@@ -3808,7 +3808,7 @@ class e_tree_model extends e_front_model
 		{
 			return $this->getNode($node_id)->toString($AddSlashes);
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
+		return (string) e107::getArrayStorage()->serialize($this->toArray($total), $AddSlashes);
 	}
 
 	public function update($from_post = true, $force = false, $session_messages = false)

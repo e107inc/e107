@@ -15,17 +15,22 @@
 
 		public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Select() is deprecated.</b> Use $sql->select() or $sql->retrieve() instead.', E_USER_DEPRECATED);
 			return $this->select($table, $fields, $arg, $mode !== 'default', $debug, $log_type, $log_remark);
 		}
 
 
 		public function db_Insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Insert() is deprecated.</b> Use $sql->insert() instead.', E_USER_DEPRECATED);
+
 			return $this->insert($tableName, $arg, $debug, $log_type, $log_remark);
 		}
 
 		function db_Update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Update() is deprecated.</b> Use $sql->update() instead.', E_USER_DEPRECATED);
+
 			return $this->update($tableName, $arg, $debug, $log_type, $log_remark);
 		}
 
@@ -38,24 +43,31 @@
 
 		public function db_Fetch($type = null)
 		{
+			trigger_error('<b>$sql->db_Fetch() is deprecated.</b> Use $sql->fetch() instead.', E_USER_DEPRECATED);
+
 			return $this->fetch($type);
 		}
 
 
 		public function db_Delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Delete() is deprecated.</b> Use $sql->delete() instead.', E_USER_DEPRECATED);
+
 			return $this->delete($table, $arg, $debug, $log_type, $log_remark);
 		}
 
 
 		function db_Replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Replace() is deprecated.</b> Use $sql->replace() instead.', E_USER_DEPRECATED);
+
 			return $this->replace($table, $arg, $debug, $log_type, $log_remark);
 		}
 
 
 		function db_Count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Count is deprecated.</b> Use $sql->count() instead.', E_USER_DEPRECATED);
 			return $this->count($table, $fields, $arg, $debug, $log_type, $log_remark);
 		}
 
@@ -69,6 +81,7 @@
 
 		public function db_Select_gen($query, $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_Select_gen() is deprecated.</b> Use $sql->gen() instead.', E_USER_DEPRECATED);
 			return $this->gen($query, $debug, $log_type, $log_remark);
 		}
 
@@ -99,6 +112,8 @@
 
 		function db_IsLang($table, $multiple=false)
 		{
+			trigger_error('<b>$sql->db_IsLang() is deprecated.</b> Use $sql->hasLanguage() instead.', E_USER_DEPRECATED);
+
 			return $this->hasLanguage($table, $multiple);
 		}
 
@@ -120,6 +135,8 @@
 
 		public function db_UpdateArray($table, $vars=array(), $arg='', $debug = false, $log_type = '', $log_remark = '')
 		{
+			trigger_error('<b>$sql->db_UpdateArray() is deprecated.</b> Use $sql->update() with "WHERE" instead.', E_USER_DEPRECATED);
+
 			$vars['WHERE'] = str_replace('WHERE', '', $arg);
 
 			return $this->update($table,$vars,$debug,$log_type,$log_remark);
@@ -134,6 +151,8 @@
 		 */
 		public function db_CopyRow($table, $fields = '*', $args='')
 		{
+			trigger_error('<b>$sql->db_CopyRow() is deprecated.</b>Use $sql->copyRow() instead.', E_USER_DEPRECATED); // NO LAN
+
 			return $this->copyRow($table,$fields,$args);
 		}
 
