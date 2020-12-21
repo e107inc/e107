@@ -447,8 +447,16 @@ class e_array {
         $first2Chars = substr($ArrayData,0,2);
         if($first2Chars === 'a:' || $first2Chars === 's:') // php serialize.
         {
-            $dat = unserialize($ArrayData, ['allowed_classes' => false]);
-            $ArrayData = $this->WriteArray($dat,FALSE);
+            if(PHP_MAJOR_VERSION > 5)
+            {
+                 $dat = unserialize($ArrayData, ['allowed_classes' => false]);
+            }
+            else
+            {
+                $dat = unserialize($ArrayData);
+            }
+
+            $ArrayData = $this->serialize($dat,FALSE);
         }
 		elseif(strpos($ArrayData,'{') === 0 || strpos($ArrayData,'[') === 0) // json
 	    {
