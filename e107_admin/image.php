@@ -578,13 +578,13 @@ class media_form_ui extends e_admin_form_ui
 
 		$pref 	= e107::getPref();
 		
-		$options = array(
+	//	$options = array(
 	//		"news-image" 			=> LAN_IMA_O_001,
 	//		"news-bbcode" 			=> LAN_IMA_O_002,
 	//		"page-bbcode" 			=> LAN_IMA_O_003,
 		//	"featurebox-image" 		=> LAN_IMA_O_004,
 		//	"featurebox-bbcode" 	=> LAN_IMA_O_005,
-		);
+	//	);
 
 		$options = $pref['resize_dimensions'];
 
@@ -3265,10 +3265,10 @@ class media_admin_ui extends e_admin_ui
 		if(is_readable($xmlFile))
 		{
 			$data = file_get_contents($xmlFile);
-			$tmp = preg_match("/<author name=(?:'|\")([^'\"]*)/i",$data,$authorName);
-			$tmp = preg_match("/email=(?:'|\")([^'\"]*)/i",$data,$authorEmail);
-			$tmp = preg_match("/<title>(.*)<\/title>/i",$data,$title);
-			$tmp = preg_match("/<description>(.*)<\/description>/i",$data,$diz);
+			preg_match("/<author name=(?:'|\")([^'\"]*)/i",$data,$authorName);
+			preg_match("/email=(?:'|\")([^'\"]*)/i",$data,$authorEmail);
+			preg_match("/<title>(.*)<\/title>/i",$data,$title);
+			preg_match("/<description>(.*)<\/description>/i",$data,$diz);
 			
 			return array(
 				'title'			=> $title[1],

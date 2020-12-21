@@ -863,7 +863,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				    
 
 				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
-				$cssClass = $checked ? 'e-showme' : 'e-hideme';
+			//	$cssClass = $checked ? 'e-showme' : 'e-hideme';
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 
 				 $exampleUrl = array();
