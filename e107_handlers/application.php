@@ -2375,7 +2375,7 @@ class eRouter
 		if ('' === $pathInfo) return;
 		
 		if ($equal != $ampersand) $pathInfo = str_replace($equal, $ampersand, $pathInfo);
-		$segs = explode($ampersand, $pathInfo.$ampersand);
+	//	$segs = explode($ampersand, $pathInfo.$ampersand);
 		
 		$segs = explode('/', $pathInfo);
 		$ret = array();

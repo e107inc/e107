@@ -91,9 +91,6 @@ foreach($filtered as $key => $value)
 
 // $ns->tablerender($caption, $mes->render() . $text);
 
-
-$check = TRUE;
-//$check = $emote -> installCheck();
 $check = $emote->installCheck($one_pack);
 if($check!==FALSE)
 {

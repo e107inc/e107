@@ -3231,7 +3231,7 @@ class themeHandler
 	/**
 	 * Set the Theme layouts, as found in theme.xml
 	 */
-	function setLayouts($name='')
+	function setLayouts()
 	{
 		$name = $this->id;
 		$layout = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();	

@@ -773,11 +773,11 @@ class user_shortcodes extends e_shortcode
 		foreach($ueCatList as $catnum => $cat)
 		{
 			$key = $cat[0]['user_extended_struct_text'] ? $cat[0]['user_extended_struct_text'] : $cat[0]['user_extended_struct_name'];
-			$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE); //XXX FIXME Fails
+		//	$cat_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE); //XXX FIXME Fails
+
+		//	$cat_name = true; //XXX TEMP Fix.
 			
-			$cat_name = true; //XXX TEMP Fix. 
-			
-			if($cat_name != FALSE && isset($ueFieldList[$catnum]) && count($ueFieldList[$catnum]))
+			if(/*$cat_name != FALSE && */isset($ueFieldList[$catnum]) && count($ueFieldList[$catnum]))
 			{
 					
 				$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);

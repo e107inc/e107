@@ -359,8 +359,7 @@ class signup_shortcodes extends e_shortcode
 			
 		$options 				= array('size'=>30);
 		$options['required'] 	= ($pref==2) ? 1 : 0;
-		$options['class'] 		= 'tbox input-text e-email';  
-		$options['class']     = vartrue($parm['class'],'tbox input-text e-email');
+		$options['class']       = vartrue($parm['class'],'tbox input-text e-email');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
 
 		$val = !empty($_POST['email_confirm']) ? filter_var($_POST['email_confirm'], FILTER_SANITIZE_EMAIL) : '';

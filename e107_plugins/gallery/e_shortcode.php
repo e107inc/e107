@@ -216,8 +216,8 @@ class gallery_shortcodes extends e_shortcode
 	{
 		// we passs both fields, the router will convert one of them to 'cat' variable, based on the current URL config
 		$url = 'route::gallery/index/list?media_cat_category=' . $this->curCat . '--AMP--media_cat_sef=' . $this->var['media_cat_sef'] . '--AMP--frm=--FROM--::full=1';
-		$parm = 'total=' . $this->total . '&amount=' . $this->amount . '&current=' . $this->from . '&url=' . rawurlencode($url); // .'&url='.$url;
-		$text = e107::getParser()->parseTemplate("{NEXTPREV=" . $parm . "}");
+		$param = 'total=' . $this->total . '&amount=' . $this->amount . '&current=' . $this->from . '&url=' . rawurlencode($url); // .'&url='.$url;
+		$text = e107::getParser()->parseTemplate("{NEXTPREV=" . $param . "}");
 		return $text;
 	}
 
