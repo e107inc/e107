@@ -283,7 +283,7 @@ class user_mailout
 	 * @param $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
 	 * @param $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return array Returns HTML which is displayed in a table cell. Typically we return a complete table
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{

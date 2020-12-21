@@ -799,7 +799,8 @@
 				return false;
 			}
 
-			global $e107;
+
+			$e107 = e107::getInstance();
 			$sql = e107::getDb();
 
 			$text = "<table class='table table-striped table-condensed debug-footer' style='width:100%'>
@@ -845,16 +846,48 @@
 				<td>SQL Language</td>
 				<td>" . $sql->mySQLlanguage . "</td>
 			</tr>
+			
+			
 ";
 			if($_SERVER['E_DEV'] == 'true')
 			{
 				$text .= "
 				<tr>
-					<td  colspan='2'><pre>" . htmlspecialchars(print_r($e107, true)) . "</pre></td>
+					<th colspan='2'><h2>e107 Object</h2></td>
 				</tr>";
+
+					foreach($e107 as $key=>$val)
+					{
+						$text .= "
+						<tr>
+							<td>".$key."</td>
+							<td><pre>" . htmlspecialchars(print_r($val, true)) . "</pre></td>
+						</tr>";
+					}
 			}
 
 			$text .= "
+			<tr>
+				<th colspan='2'><h2>Registry</h2></td>
+			</tr>";
+
+			$regis = e107::getRegistry('_all_');
+			ksort($regis);
+			$c = 0;
+			foreach($regis as $key=>$val)
+			{
+				$id = "view-registry-".$c;
+
+				$text .= "<tr>
+				<td>".$key."</td>
+				<td><a href='#".$id."' class='btn btn-sm btn-default e-expandit'>View</a><div id='".$id."' class='e-hideme'>" . print_a($val,true). "</div></td>
+				</tr>";
+				$c++;
+
+			}
+
+			$text .= "
+			
 			<tr>
 				<th colspan='2'><h2>Session</h2></td>
 			</tr>
@@ -870,6 +903,12 @@
 				<td>Session save method</td>
 				<td>" . $sess->getSaveMethod() . "</td>
 			</tr>
+			
+			<tr>
+				<td>Registry</td>
+				<td>" . $sess->getSaveMethod() . "</td>
+			</tr>
+			
 			
 			
 			
