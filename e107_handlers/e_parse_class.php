@@ -66,6 +66,9 @@ class e_parse extends e_parser
 
 	protected $staticUrl = null;
 
+	/** @var array Stored relative paths - used by replaceConstants() */
+	private $relativePaths = array();
+
 
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
@@ -3296,37 +3299,44 @@ class e_parse extends e_parser
 			return $new;
 		}
 
-		if($mode != '')
+
+		if(!empty($mode))
 		{
 			$e107 = e107::getInstance();
 
-			$replace_relative = array(
-				$e107::getFolder('media_files'),
-				$e107::getFolder('media_video'),
-				$e107::getFolder('media_image'),
-				$e107::getFolder('media_icon'),
-				$e107::getFolder('avatars'),
-				$e107::getFolder('web_js'),
-				$e107::getFolder('web_css'),
-				$e107::getFolder('web_image'),
-				//$e107->getFolder('web_pack'),
-				e_IMAGE_ABS,
-				e_THEME_ABS,
-				$e107::getFolder('images'),
-				$e107::getFolder('plugins'),
-				$e107::getFolder('files'),
-				$e107::getFolder('themes'),
-			//	$e107->getFolder('downloads'),
-				$e107::getFolder('handlers'),
-				$e107::getFolder('media'),
-				$e107::getFolder('web'),
-				$e107->site_theme ? $e107::getFolder('themes').$e107->site_theme.'/' : '',
-				defset('THEME_ABS'),
-				(ADMIN ? $e107::getFolder('admin') : ''),
-				'',
-				$e107::getFolder('core'),
-				$e107::getFolder('system'),
-			);
+			if(empty($this->relativePaths)) // prevent multiple lookups.
+			{
+
+				$this->relativePaths = array(
+					$e107::getFolder('media_files'),
+					$e107::getFolder('media_video'),
+					$e107::getFolder('media_image'),
+					$e107::getFolder('media_icon'),
+					$e107::getFolder('avatars'),
+					$e107::getFolder('web_js'),
+					$e107::getFolder('web_css'),
+					$e107::getFolder('web_image'),
+					//$e107->getFolder('web_pack'),
+					e_IMAGE_ABS,
+					e_THEME_ABS,
+					$e107::getFolder('images'),
+					$e107::getFolder('plugins'),
+					$e107::getFolder('files'),
+					$e107::getFolder('themes'),
+				//	$e107->getFolder('downloads'),
+					$e107::getFolder('handlers'),
+					$e107::getFolder('media'),
+					$e107::getFolder('web'),
+					$e107->site_theme ? $e107::getFolder('themes').$e107->site_theme.'/' : '',
+					defset('THEME_ABS'),
+					(ADMIN ? $e107::getFolder('admin') : ''),
+					'',
+					$e107::getFolder('core'),
+					$e107::getFolder('system'),
+				);
+			}
+
+			$replace_relative = $this->relativePaths;
 
 			switch ($mode)
 			{
@@ -3815,8 +3825,8 @@ class e_parse extends e_parser
 	 * Cameron's DOM-based parser.
 	 *
 	 * @method replaceConstants($text, $mode = '', $all = false)
-	 * @method toAttribute($title)
-	 * @method thumbUrl($icon)
+	 * @method toAttribute($text)
+	 * @method thumbUrl($url)
 	 * @method thumbDimensions()
 	 */
 class e_parser

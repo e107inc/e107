@@ -505,10 +505,30 @@ while(&#036;row = &#036;sql-&gt;fetch())
 */
 		public function testReplaceConstants()
 		{
-			$actual = $this->tp->replaceConstants('{e_BASE}news','abs');
+			$tests = array(
+				0 => array(
+					'path'  => '{e_BASE}news',
+					'type'  => 'abs',
+					'match' => e_HTTP,
+				),
+				1 => array(
+					'path'  => '{e_BASE}news.php',
+					'type'  => 'full',
+					'match' => 'https://localhost/e107/news.php',
+				),
+				2 => array(
+					'path'  => '{e_PLUGIN}news/index.php',
+					'type'  => null,
+					'match' => 'e107_plugins/news/index.php',
+				),
+			);
 
-			$this->assertStringContainsString(e_HTTP,$actual);
 
+			foreach($tests as $var)
+			{
+				$actual = $this->tp->replaceConstants($var['path'],$var['type']);
+				$this->assertStringContainsString($var['match'], $actual);
+			}
 			
 		}
 /*
