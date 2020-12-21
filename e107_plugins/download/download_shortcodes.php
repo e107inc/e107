@@ -638,18 +638,22 @@ class download_shortcodes extends e_shortcode
    }
    
    /**
-    * @Deprecated DOWNLOAD_VIEW_DATE should be used instead.
+    * @deprecated DOWNLOAD_VIEW_DATE should be used instead.
     */
    function sc_download_view_date_short()
    {
-      return $this->sc_download_view_date('short');
+   	    trigger_error('<b>{DOWNLOAD_VIEW_DATE_SHORT} is deprecated.</b> Use {DOWNLOAD_VIEW_DATE} instead.', E_USER_DEPRECATED); // NO LAN
+
+		return $this->sc_download_view_date('short');
    }
    
     /**
-    * @Deprecated DOWNLOAD_VIEW_DATE should be used instead.
+    * @deprecated DOWNLOAD_VIEW_DATE should be used instead.
     */
    function sc_download_view_date_long()
    {
+     trigger_error('<b>{DOWNLOAD_VIEW_DATE_LONG} is deprecated.</b> Use {DOWNLOAD_VIEW_DATE} instead.', E_USER_DEPRECATED); // NO LAN
+
       return $this->sc_download_view_date('long');
    }
 

@@ -217,6 +217,8 @@ class e_date
 	 */
 	function convert($string=null, $mask = 'inputdate')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $tp->toDate() instead.', E_USER_DEPRECATED); // NO LAN
+
 		if($string == null) return false;
 		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);
 	}
@@ -779,6 +781,8 @@ class e_date
 	 */
 	public function strptime($str, $format)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use eShims::strptime() instead', E_USER_DEPRECATED); // NO LAN
+
 		$vals = eShims::strptime($str, $format); // PHP5 is more accurate than below.
 		$vals['tm_amon'] = strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
 		$vals['tm_fmon'] = strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));

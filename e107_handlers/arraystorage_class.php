@@ -14,19 +14,21 @@ if (!defined('e107_INIT')) { exit; }
 * @deprecated: Allows Storage of arrays without use of serialize functions
 *
 */
-class ArrayData {
+class ArrayData
+{
 
 
     function __construct()
     {
         // DO Not translate - debug info only. 
-        
-        $log = e107::getAdminLog();
+        trigger_error('<b>ArrayData class is deprecated.</b> Use e107::serialize() and e107::unserialize instead of WriteArray() and ReadArray().', E_USER_DEPRECATED);
+
    
        if(E107_DEBUG_LEVEL > 0 || e107::getPref('developer'))
        { 
            $dep = debug_backtrace(false);
-		   
+		    $log = e107::getLog();
+
            foreach($dep as $d)
            {
              $log->addDebug("Deprecated ArrayStorage Class called by ".str_replace(e_ROOT,"",$d['file'])." on line ".$d['line']);
@@ -46,6 +48,7 @@ class ArrayData {
 	*/
 	function WriteArray($ArrayData, $AddSlashes = true)
 	{
+		trigger_error('Method ' . __METHOD__ . ' is deprecated. Use e107::serialize() instead.', E_USER_DEPRECATED);
 		return e107::serialize($ArrayData, $AddSlashes);
 
 	}
@@ -58,6 +61,7 @@ class ArrayData {
 	*/
 	function ReadArray($ArrayData) 
 	{
+		trigger_error('Method ' . __METHOD__ . ' is deprecated. Use e107::unserialize() instead.', E_USER_DEPRECATED);
 		return e107::unserialize($ArrayData);
 	}
 }

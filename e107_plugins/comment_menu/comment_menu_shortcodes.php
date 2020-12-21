@@ -26,6 +26,8 @@ class comment_menu_shortcodes extends e_shortcode
 	 */
 	function sc_cm_icon()
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		//TODO review bullet
 		$bullet = '';
 		if(defined('BULLET'))

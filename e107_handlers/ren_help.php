@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 // IMPORTANT : Entire file is deprecated. see: bbcode_shortcodes.php and bbcode_hanlder.php 
 // Left in place only for BC. 
 /**
- *  @DEPRECATED use $frm->bbarea() instead. 
+ *  @deprecated use $frm->bbarea() instead.
  */
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {

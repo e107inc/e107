@@ -38,6 +38,8 @@ if (!defined('e107_INIT'))
 	 */
 	function register_shortcode($classFunc, $codes, $path = '', $force = false)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		return e107::getScParser()->registerShortcode($classFunc, $codes, $path, $force);
 	}
 
@@ -74,6 +76,8 @@ if (!defined('e107_INIT'))
 	 */
 	function initShortcodeClass($class, $force = false, $eVars = null)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		return e107::getScParser()->initShortcodeClass($class,  $force);
 	}
 

@@ -532,9 +532,18 @@ elseif (file_exists(e_BASE."favicon.ico"))
 
 // Theme JS
 /** const THEME_ONLOAD @deprecated */
-if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
-$body_onload='';
-if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
+if (defined('THEME_ONLOAD'))
+{
+	trigger_error('<b>THEME_ONLOAD is deprecated.</b> Use e107::js() instead.', E_USER_DEPRECATED); // NO LAN
+
+	$js_body_onload[] = THEME_ONLOAD;
+}
+
+$body_onload = '';
+if (count($js_body_onload))
+{
+	$body_onload = " onload=\"" . implode(" ", $js_body_onload) . "\"";
+}
 
 //
 // J: Send end of <head> and start of <body>
@@ -662,11 +671,14 @@ if($noBody === true) // New in v2.2.2 - remove need for BODYTAG.
 }
 elseif(!defined('BODYTAG')) // @deprecated.
 {
+
 	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
 }
 else
 {
+	trigger_error('<b>BODYTAG is deprecated.</b> Use a theme.html file instead.', E_USER_DEPRECATED); // NO LAN
+
 	if ($body_onload)
 	{
 		// Kludge to get the CHAP code included
@@ -674,6 +686,7 @@ else
 	}
 	else
 	{
+
 		echo BODYTAG."\n";	
 	}
 }

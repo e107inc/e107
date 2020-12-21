@@ -430,6 +430,8 @@
 		 */
 		public function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 		{
+			trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use getFileInfo() instead.', E_USER_DEPRECATED); // NO LAN
+
 			return $this->getFileInfo($path_to_file, $imgcheck, $auto_fix_ext);
 		}
 

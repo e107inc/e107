@@ -373,6 +373,8 @@ class language{
 	 */
 	function translate($lan, $array= array())
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $tp->lanVars() instead.', E_USER_DEPRECATED); // NO LAN
+
 		foreach($array as $k=>$v)
 		{
 			$search[] = "[".$k."]";

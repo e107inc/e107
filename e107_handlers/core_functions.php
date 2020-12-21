@@ -68,6 +68,7 @@ function defset($str, $default='')
  */
 function varsettrue(&$val, $default='')
 {
+	trigger_error('<b>varsettrue() is deprecated.</b> Use vartrue() instead.', E_USER_DEPRECATED); // NO LAN
 	return vartrue($val, $default);
 }
 
@@ -94,6 +95,7 @@ function vartrue(&$val, $default='')
  */
 function defsettrue($str, $default='')
 {
+    trigger_error('<b>defsettrue() is deprecated.</b> Use deftrue() instead.', E_USER_DEPRECATED); // NO LAN
 	if (defined($str) && constant($str)) { return constant($str); }
 	return $default;
 }
@@ -599,25 +601,27 @@ class e_array {
 
 
     /**
-     * @DEPRECATED - Backwards Compatible. Use e107::serialize() instead; 
+     * @deprecated - Backwards Compatible. Use e107::serialize() instead;
     * @param array $ArrayData array to be stored
     * @param bool $AddSlashes default true, add slashes for db storage, else false
     * @return string a string containg exported array data.
      */
-    function WriteArray($ArrayData, $AddSlashes = true) {
-        
+    function WriteArray($ArrayData, $AddSlashes = true)
+    {
+        trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::serialize() instead.', E_USER_DEPRECATED); // no LAN
         return  $this->serialize($ArrayData, $AddSlashes);   
 
     }
 	
-	function write($ArrayData, $AddSlashes = true) {
+	function write($ArrayData, $AddSlashes = true)
+	{
         
         return  $this->serialize($ArrayData, $AddSlashes);   
 
     }
 
     /**
-    * @DEPRECATED: Use e107::unserialize(); instead. 
+    * @deprecated: Use e107::unserialize(); instead.
     * Returns an array from stored array data.
     * @deprecated
     * @param string $ArrayData
@@ -625,6 +629,7 @@ class e_array {
     */
     function ReadArray($ArrayData) 
     {
+        trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::unserialize() instead.', E_USER_DEPRECATED); // NO LAN
         return $this->unserialize($ArrayData);
     }
 	

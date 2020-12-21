@@ -1143,7 +1143,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 */
 	function pluginLinksOld($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
-	
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
@@ -2100,11 +2101,12 @@ class navigation_shortcodes extends e_shortcode
 	}
 
 	/**
-	 * @Deprecated - Use {LINK_ICON} instead. 
+	 * @deprecated - Use {LINK_ICON} instead.
 	 */
 	function sc_link_image($parm='')
 	{
-		e107::getMessage()->addDebug("Using deprecated shortcode: {LINK_IMAGE} - use {LINK_ICON} instead.");
+		trigger_error('<b>{LINK_IMAGE} is deprecated. Use {LINK_ICON} instead</b>', E_USER_DEPRECATED); // NO LAN
+
 		return $this->sc_link_icon($parm);	
 	}
 	

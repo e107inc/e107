@@ -316,6 +316,8 @@ class e_db_mysql implements e_db
 	*/
 	function db_Mark_Time($sMarker)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getDebug()->logTime() instead.', E_USER_DEPRECATED); // NO LAN
+
 		if($this->debugMode !== true)
 		{
 			return null;
@@ -660,6 +662,8 @@ class e_db_mysql implements e_db
 	 */
 	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getDb()->select() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->select($table, $fields, $arg, $mode !== 'default', $debug, $log_type, $log_remark);
 	}
 

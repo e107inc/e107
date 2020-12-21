@@ -1714,11 +1714,12 @@ class e107
 
 	/**
 	 * Retrieve admin log singleton object
-	 * @Deprecated - use e107::getLog();
+	 * @deprecated - use e107::getLog();
 	 * @return e_admin_log
 	 */
 	public static function getAdminLog()
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use e107::getLog() instead', E_USER_DEPRECATED); // NO LAN
 		return self::getSingleton('e_admin_log');
 	}
 
@@ -1833,6 +1834,8 @@ class e107
 	 */
 	public static function getHybridAuth($config = null)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use the e_user_provider interfaces instead (e107::getUserProvider())', E_USER_DEPRECATED); // NO LAN
+
 		$e_user_provider = new e_user_provider(null, $config);
 		$reflection = new ReflectionClass('e_user_provider');
 		$reflection_property = $reflection->getProperty('hybridauth');
@@ -5124,6 +5127,8 @@ class e107
 	 */
 	public function get_host_name($ip_address)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use getIPHandler()->get_host_name() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return self::getIPHandler()->get_host_name($ip_address);
 	}
 

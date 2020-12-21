@@ -612,7 +612,7 @@ class e_parse extends e_parser
 	/**
 	 *	Check for umatched 'dangerous' HTML tags
 	 *		(these can destroy page layout where users are able to post HTML)
-	 * @DEPRECATED
+	 * @deprecated
 	 *	@param string $data
 	 *	@param string $tagList - if empty, uses default list of input tags. Otherwise a CSV list of tags to check (any type)
 	 *
@@ -621,7 +621,8 @@ class e_parse extends e_parser
 	 */
 	public function htmlAbuseFilter($data, $tagList = '')
 	{
-		
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		if (empty($tagList))
 		{
 			$checkTags = array('textarea', 'input', 'td', 'tr', 'table');
@@ -1956,8 +1957,11 @@ class e_parse extends e_parser
 						 */
 						if ($opts['hook']) //Run any hooked in parsers
 						{
-							if ( varset($pref['tohtml_hook']))
+
+							if (!empty($pref['tohtml_hook']))
 							{
+						//		trigger_error('<b>tohtml_hook is deprecated.</b> Use e_parse.php instead.', E_USER_DEPRECATED); // NO LAN
+
 								//Process the older tohtml_hook pref (deprecated)
 								foreach(explode(',', $pref['tohtml_hook']) as $hook)
 								{
@@ -1980,6 +1984,7 @@ class e_parse extends e_parser
 						    */
 							if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
 							{
+
 								foreach($pref['e_tohtml_list'] as $hook)
 								{
 									if(empty($hook))
@@ -4606,7 +4611,7 @@ class e_parser
 
 			if(empty($path))
 			{
-				$log = e107::getAdminLog();
+				$log = e107::getLog();
 				$log->addDebug('Broken Icon Path: '.$icon."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 				e107::getDebug()->log('Broken Icon Path: '.$icon);
 				return null;
@@ -4726,7 +4731,7 @@ class e_parser
 			}
 			else
 			{
-				$log = e107::getAdminLog();
+				$log = e107::getLog();
 				$log->addDebug('Broken Image Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 				e107::getDebug()->log('Broken Image Path: ' .$legacyPath);
 			}

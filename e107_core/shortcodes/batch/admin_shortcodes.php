@@ -493,7 +493,8 @@ class admin_shortcodes
 								include_once(e_PLUGIN.$val.'/e_latest.php');
 								if(!class_exists($val."_latest"))
 								{
-									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_latest method");	
+									trigger_error("<strong>".$val ."</strong> is using a deprecated e_latest method. See plugin: _blank/e_dashboard.php ", E_USER_DEPRECATED);
+
 									$oldconfigs[$val] = admin_shortcodes::legacyToConfig($text);
 								}
 							}
@@ -1328,7 +1329,9 @@ class admin_shortcodes
 								include_once(e_PLUGIN.$val.'/e_status.php');
 								if(!class_exists($val."_status"))
 								{
-									$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method. See the chatbox plugin folder for a working example of the new one. ");	
+									trigger_error("<strong>".$val ."</strong> is using a deprecated e_status method method. See plugin: _blank/e_dashboard.php ", E_USER_DEPRECATED);
+
+								//	$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method. See the chatbox plugin folder for a working example of the new one. ");
 								}
 								
 								$oldconfigs[$val] = admin_shortcodes::legacyToConfig($text);

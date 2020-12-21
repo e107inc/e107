@@ -395,7 +395,7 @@ $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 $dbg->logTime('Prefs, misc tables');
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
-$admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
+$admin_log = e107::getLog(); //TODO - find & replace $admin_log, $e107->admin_log
 
 	if($merror === 'e1')
 	{
@@ -452,7 +452,7 @@ if(!e107::getConfig()->hasData())
 {
 
 	// Core prefs error - admin log
-	e107::getAdminLog()->add('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
+	e107::getLog()->add('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
 
 	// Try for the automatic backup..
 	if(e107::getConfig('core_backup')->hasData())
@@ -469,7 +469,7 @@ if(!e107::getConfig()->hasData())
 		if(!e107::getConfig('core_old')->hasData())
 		{
 			// Core could not restore from automatic backup. Execution halted.
-			e107::getAdminLog()->add('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
+			e107::getLog()->add('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
 
 			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
 			// No old system, so point in the direction of resetcore :(
@@ -721,6 +721,8 @@ init_session();			// Set up a lot of the user-related constants
  */
 function getip()
 {
+	trigger_error('<b>getip() is deprecated.</b> Use e107::getIPHandler()->ipDecode(USERIP) instead.', E_USER_DEPRECATED); // NO LAN
+
 	return e107::getIPHandler()->ipDecode(USERIP);
 }
 
@@ -1869,9 +1871,11 @@ function getperms($arg, $ap = ADMINPERMS)
  */
 function get_user_data($uid, $extra = '')
 {
+	trigger_error('<b>get_user_data() is deprecated.</b> Use e107::user($uid) instead.', E_USER_DEPRECATED); // NO LAN
+
 	if(e107::getPref('developer'))
 	{
-		e107::getAdminLog()->add(
+		e107::getLog()->add(
 			'Deprecated call - get_user_data()',
 			'Call to deprecated function get_user_data() (class2.php) '."\n".print_r(debug_backtrace(null,2), true),
 			E_LOG_INFORMATIVE,
@@ -1904,6 +1908,8 @@ function get_user_data($uid, $extra = '')
  */
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
+	trigger_error('<b>save_prefs() is deprecated.</b> Use e107::getConfig(table)->->setPref($array)->save() instead.', E_USER_DEPRECATED); // NO LAN
+
 	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
 	unset($row_val);
 
@@ -1911,7 +1917,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 	{
 		$backtrace = debug_backtrace(false);
 		
-		e107::getAdminLog()->add(
+		e107::getLog()->add(
 			'Deprecated call - save_prefs()',
 			"Call to deprecated function save_prefs() (class2.php). Backtrace:\n".print_r($backtrace, true),
 			E_LOG_INFORMATIVE,
@@ -1933,7 +1939,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			{
 				$backtrace = debug_backtrace(false);
 
-				e107::getAdminLog()->add(
+				e107::getLog()->add(
 				'Core pref corruption avoided',
 				"Call to deprecated function save_prefs() (class2.php) with too few prefs. Backtrace:\n".print_r($backtrace, true),
 				E_LOG_INFORMATIVE,
@@ -1956,7 +1962,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
-			$tmp = $eArrayStorage->WriteArray($_user_pref);
+			$tmp = e107::serialize($_user_pref);
 			$sql->update('user', "user_prefs='$tmp' WHERE user_id=". (int)$uid);
 			return $tmp;
 			break;
@@ -1975,6 +1981,8 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
  */
 function cachevars($id, $var)
 {
+	trigger_error('<b>cachevars() is deprecated.</b> Use e107::setRegistry() instead.', E_USER_DEPRECATED); // NO LAN
+
 	e107::setRegistry('core/cachedvars/'.$id, $var);
 }
 
@@ -1986,6 +1994,8 @@ function cachevars($id, $var)
  */
 function getcachedvars($id)
 {
+	trigger_error('<b>getcachedvars() is deprecated.</b> Use e107::getRegistry() instead.', E_USER_DEPRECATED); // NO LAN
+
 	return e107::getRegistry('core/cachedvars/'.$id, false);
 }
 
@@ -2375,25 +2385,19 @@ function class_list($uid = '')
 
 
 /**
- * @Deprecated  by e107::lan();
+ * @deprecated  by e107::lan();
  * @param string $path
  * @param boolean $force [optional] Please use the default
  * @return bool
  */
 function include_lan($path, $force = false)
 {
+	trigger_error('<b>include_lan() is deprecated.</b> Use e107::lan() instead.', E_USER_DEPRECATED); // NO LAN
+
 	return e107::includeLan($path, $force);
 }
 
-/*
-withdrawn - use loadLanFiles($path, 'admin') instead
-// Searches a defined set of paths and file names to load language files used for admin (including install etc)
-function include_lan_admin($path)
-{
-	include_lan($path.'languages/'.e_LANGUAGE.'/lan_config.php');
-	include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
-}
-*/
+
 
 
 // Routine looks in standard paths for language files associated with a plugin or theme - primarily for core routines, which won't know
@@ -2420,6 +2424,8 @@ function include_lan_admin($path)
  */
 function loadLanFiles($unitName, $type='runtime')
 {
+	trigger_error('<b>loadLanFiles() is deprecated.</b> Use e107::loadLanFiles() instead.', E_USER_DEPRECATED); // NO LAN
+
 	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
 	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true)); 
 	return e107::loadLanFiles($unitName, $type);
@@ -2574,17 +2580,21 @@ class error_handler
 	function handle_error($type, $message, $file, $line, $context = null) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
 
+		switch($type)
+		{
+			case E_USER_DEPRECATED:
+				if($this->deftrue('E107_DBG_DEPRECATED'))
+				{
+					$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,3);
+					e107::getDebug()->logDeprecated($message, varset($trace[2]['file']), varset($trace[2]['line']));
+				}
+			break;
 
-
-		switch($type) {
 			case E_NOTICE:
-			case E_DEPRECATED:
 		//	case E_STRICT:
 
 			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
-
-
 				$this->addError($type, $message,$line,$file);
 			}
 			break;
@@ -2977,6 +2987,8 @@ function e107_ini_set($var, $value)
  */
 function plugInstalled($plugname)
 {
+	trigger_error('<b>plugInstalled() is deprecated.</b> Use <e107::isInstalled() instead.', E_USER_DEPRECATED); // NO LAN
+
 	return e107::isInstalled($plugname);
 	/*global $pref;
 	// Could add more checks here later if appropriate

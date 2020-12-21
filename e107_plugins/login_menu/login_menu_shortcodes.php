@@ -140,6 +140,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 			 */
 			function sc_lm_imagecode($parm='')
 			{
+				trigger_error('<b>{LM_IMAGECODE} is deprecated.</b> Use {LM_IMAGECODE_NUMBER}, {LM_IMAGECODE_BOX} instead.', E_USER_DEPRECATED); // NO LAN
+
 				//DEPRECATED - use LM_IMAGECODE_NUMBER, LM_IMAGECODE_BOX instead
 				if($this->use_imagecode)
 				{

@@ -111,6 +111,7 @@ class private_message
 	 */
 	function add($vars)
 	{
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$pmsize = 0;
@@ -200,7 +201,7 @@ class private_message
 				$totalSend = count($tolist);
 				$targets = array_chunk($tolist, $maxSendNow);		// Split into a number of lists, each with the maximum number of elements (apart from the last block, of course)
 				unset($tolist);
-				$array = new ArrayData;
+
 				$pmInfo = $info;
 				$genInfo = array(
 					'gen_type' => 'pm_bulk',
@@ -212,7 +213,7 @@ class private_message
 				{	// Save the list in the 'generic' table
 					$pmInfo['to_array'] = $targets[$i];			// Should be in exactly the right format
 					$genInfo['gen_intdata'] = count($targets[$i]);
-					$genInfo['gen_chardata'] = $array->WriteArray($pmInfo,TRUE);
+					$genInfo['gen_chardata'] = e107::serialize($pmInfo,TRUE);
 					$sql->insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
 				}
 				$toclass .= ' ['.$totalSend.']';
