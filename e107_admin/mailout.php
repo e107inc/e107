@@ -649,11 +649,11 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	function afterCopy($result, $copied)
+	function afterCopy($result, $selected)
 	{
 		$num = array();
 		$count = 0; 
-		foreach($copied as $tmp)
+		foreach($selected as $tmp)
 		{
 			$num[] = ($result + $count);
 			$count ++; 	
