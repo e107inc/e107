@@ -7,15 +7,20 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter\OpenID;
 
 /**
  * AOL OpenID provider adapter.
  */
-class AOLOpenID extends OpenIDAdapter
+class AOLOpenID extends OpenID
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     protected $openidIdentifier = 'http://openid.aol.com/';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $apiDocumentation = ''; // Not available
 }
