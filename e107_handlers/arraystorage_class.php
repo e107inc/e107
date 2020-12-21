@@ -11,7 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
-* @DEPRECATED: Allows Storage of arrays without use of serialize functions
+* @deprecated: Allows Storage of arrays without use of serialize functions
 *
 */
 class ArrayData {
@@ -39,52 +39,26 @@ class ArrayData {
     }
 	/**
 	* Return a string containg exported array data.
-	* @DEPRECATED use e107::serialize() instead. 
+	* @deprecated use e107::serialize() instead.
 	* @param array $ArrayData array to be stored
 	* @param bool $AddSlashes default true, add slashes for db storage, else false
 	* @return string
 	*/
-	function WriteArray($ArrayData, $AddSlashes = true) {
-		if (!is_array($ArrayData)) {
-			return false;
-		}
-		$Array = var_export($ArrayData, true);
-		if ($AddSlashes == true) {
-			$Array = addslashes($Array);
-		}
-		return $Array;
+	function WriteArray($ArrayData, $AddSlashes = true)
+	{
+		return e107::serialize($ArrayData, $AddSlashes);
+
 	}
 
 	/**
 	* Returns an array from stored array data.
-	* @DEPRECATED use e107::unserialize() instead. 
+	* @deprecated use e107::unserialize() instead.
 	* @param string $ArrayData
 	* @return bool|array stored data
 	*/
 	function ReadArray($ArrayData) 
 	{
-		if (empty($ArrayData))
-		{
-			return false;
-		}
-		
-		// Saftety mechanism for 0.7 -> 0.8 transition. 
-		if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
-		{
-			$dat = unserialize($ArrayData);
-			$ArrayData = $this->WriteArray($dat,FALSE);
-		}
-		
-		
-		$data = "";
-		$ArrayData = '$data = '.trim($ArrayData).';';
-		@eval($ArrayData);
-		if (!isset($data) || !is_array($data))
-		{
-			trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
-			// return false;
-		}
-		return $data;
+		return e107::unserialize($ArrayData);
 	}
 }
 
