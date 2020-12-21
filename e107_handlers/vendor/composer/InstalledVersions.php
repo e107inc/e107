@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '1f38b3b3dd231c274f4df1a529883655108b611e',
+    'reference' => '153cf33aa76c3378a8332616fe68fd796d00343b',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -41,7 +41,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '1f38b3b3dd231c274f4df1a529883655108b611e',
+      'reference' => '153cf33aa76c3378a8332616fe68fd796d00343b',
+    ),
+    'firebase/php-jwt' => 
+    array (
+      'pretty_version' => 'v5.2.0',
+      'version' => '5.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'feb0e820b8436873675fd3aca04f3728eb2185cb',
     ),
     'guzzlehttp/psr7' => 
     array (
@@ -54,12 +63,12 @@ private static $installed = array (
     ),
     'hybridauth/hybridauth' => 
     array (
-      'pretty_version' => '3.3.0',
-      'version' => '3.3.0.0',
+      'pretty_version' => '3.6.0',
+      'version' => '3.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '51cb2ad2f04d175d298b51e919868dec1d4d8b04',
+      'reference' => '222ab4e6ee6ffd81caa77283142f3aa97afa5863',
     ),
     'ifsnop/mysqldump-php' => 
     array (
@@ -99,12 +108,21 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.1.6',
-      'version' => '6.1.6.0',
+      'pretty_version' => 'v6.2.0',
+      'version' => '6.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3',
+      'reference' => 'e38888a75c070304ca5514197d4847a59a5c853f',
+    ),
+    'phpseclib/phpseclib' => 
+    array (
+      'pretty_version' => '2.0.30',
+      'version' => '2.0.30.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '136b9ca7eebef78be14abf90d65c5e57b6bc5d36',
     ),
     'psr/http-message' => 
     array (

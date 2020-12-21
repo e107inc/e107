@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter;
 
 /**
  * Generic OpenID providers adapter.
@@ -29,17 +29,16 @@ use Hybridauth\Adapter\OpenID as OpenIDAdapter;
  *       // etc.
  *   ];
  *
- *   $adapter = new Hybridauth\Provider\OpenID( $config );
+ *   $adapter = new Hybridauth\Provider\OpenID($config);
  *
  *   try {
  *       $adapter->authenticate();
  *
  *       $userProfile = $adapter->getUserProfile();
- *   }
- *   catch( \Exception $e ){
+ *   } catch (\Exception $e) {
  *       echo $e->getMessage() ;
  *   }
  */
-class OpenID extends OpenIDAdapter
+class OpenID extends Adapter\OpenID
 {
 }

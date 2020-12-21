@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter\OpenID;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Data;
 use Hybridauth\User;
@@ -19,25 +19,34 @@ use Hybridauth\User;
  *
  *   $config = [
  *       'callback' => Hybridauth\HttpClient\Util::getCurrentUrl(),
- *       'keys'     => [ 'secret' => 'steam-api-key' ]
+ *       'keys' => ['secret' => 'steam-api-key']
  *   ];
  *
- *   $adapter = new Hybridauth\Provider\Steam( $config );
+ *   $adapter = new Hybridauth\Provider\Steam($config);
  *
- *   $adapter->authenticate();
-
- *   $userProfile = $adapter->getUserProfile();
+ *   try {
+ *       $adapter->authenticate();
+ *
+ *       $userProfile = $adapter->getUserProfile();
+ *   } catch (\Exception $e) {
+ *       echo $e->getMessage() ;
+ *   }
  */
-class Steam extends OpenIDAdapter
+class Steam extends OpenID
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     protected $openidIdentifier = 'http://steamcommunity.com/openid';
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
+    protected $apiDocumentation = 'https://steamcommunity.com/dev';
+
+    /**
+     * {@inheritdoc}
+     */
     public function authenticateFinish()
     {
         parent::authenticateFinish();
@@ -85,7 +94,7 @@ class Steam extends OpenIDAdapter
      */
     public function getUserProfileWebAPI($apiKey, $steam64)
     {
-        $q = http_build_query(['key' => $apiKey, 'steamid' => $steam64]);
+        $q = http_build_query(['key' => $apiKey, 'steamids' => $steam64]);
         $apiUrl = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' . $q;
 
         $response = $this->httpClient->request($apiUrl);
@@ -111,7 +120,7 @@ class Steam extends OpenIDAdapter
      * Fetch user profile on community API
      * @param $steam64
      * @return array
-*/
+     */
     public function getUserProfileLegacyAPI($steam64)
     {
         libxml_use_internal_errors(false);
@@ -132,8 +141,8 @@ class Steam extends OpenIDAdapter
         $userProfile['description'] = (string)$data->get('summary');
         $userProfile['region'] = (string)$data->get('location');
         $userProfile['profileURL'] = (string)$data->get('customURL')
-          ? 'http://steamcommunity.com/id/' . (string)$data->get('customURL')
-          : 'http://steamcommunity.com/profiles/' . $steam64;
+            ? 'http://steamcommunity.com/id/' . (string)$data->get('customURL')
+            : 'http://steamcommunity.com/profiles/' . $steam64;
 
         return $userProfile;
     }
