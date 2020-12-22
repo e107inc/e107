@@ -97,4 +97,24 @@
 
 
 		}
+
+
+		public function testThemeConstants()
+		{
+			$this->assertStringEndsWith('e107_themes/bootstrap3/', THEME);
+			$this->assertStringEndsWith('/e107_themes/bootstrap3/', THEME_ABS);
+
+			$this->assertNotNull(THEME_LEGACY);
+			$this->assertFalse(THEME_LEGACY);
+
+			$this->assertSame('style.css', THEME_STYLE);
+			$this->assertSame('jumbotron_sidebar_right', THEME_LAYOUT);
+
+			$e107 = e107::getInstance();
+			$this->assertSame('bootstrap3', $e107->site_theme);
+		//	$this->assertStringEndsWith('/e107_themes/bootstrap3/', $e107->http_theme_dir);
+
+
+
+		}
 	}
