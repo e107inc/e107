@@ -109,7 +109,7 @@
 			$this->ShowIf('SQL Analysis', $this->Show_SQL_Details());
 			$this->ShowIf('Shortcodes / BBCode', $this->Show_SC_BB());
 			$this->ShowIf('Paths', $this->Show_PATH());
-			$this->ShowIf('Deprecated Methods/Function Usage', $this->Show_DEPRECATED());
+			$this->ShowIf('Deprecated Methods/Functions', $this->Show_DEPRECATED());
 
 			if(E107_DBG_INCLUDES)
 			{

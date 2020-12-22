@@ -6096,42 +6096,28 @@ class textparse {
 
 	public function editparse($text, $mode = 'off')
 	{
-		if(E107_DBG_DEPRECATED)
-		{
-			e107::getDebug()->logDeprecated();
-		}
+		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toForm($text) instead. ', E_USER_DEPRECATED);
 
 		return e107::getParser()->toForm($text);
 	}
 
 	public function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
 	{
-		if(E107_DBG_DEPRECATED)
-		{
-			e107::getDebug()->logDeprecated();
-		}
+		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toHTML($text) instead. ', E_USER_DEPRECATED);
 
 		return e107::getParser()->toHTML($text, true, $mode, $poster_id);
 	}
 
 	public function tpj($text)
 	{
-
-		if(E107_DBG_DEPRECATED)
-		{
-			e107::getDebug()->logDeprecated();
-		}
+		trigger_error('<b>'.__METHOD__.' is deprecated. ', E_USER_DEPRECATED);
 
 		return $text;
 	}
 
 	public function formtpa($text, $mode = '')
 	{
-
-		if(E107_DBG_DEPRECATED)
-		{
-			e107::getDebug()->logDeprecated();
-		}
+		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toDB($text) instead. ', E_USER_DEPRECATED);
 
 		unset($mode); // keep PHPStorm happy
 
@@ -6140,11 +6126,7 @@ class textparse {
 
 	public function formtparev($text)
 	{
-
-		if(E107_DBG_DEPRECATED)
-		{
-			e107::getDebug()->logDeprecated();
-		}
+		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toForm($text) instead. ', E_USER_DEPRECATED);
 
 		return e107::getParser()->toForm($text);
 	}
