@@ -52,7 +52,7 @@ class e107
 	public $_host_name_cache;
 
 	public $site_theme; // class2 -> check valid theme
-	public $http_theme_dir; // class2 -> check valid theme
+//	public $http_theme_dir; // class2 -> check valid theme
 
 	/**
 	 * Contains reference to global $_E107 array
@@ -5390,7 +5390,7 @@ class e107
 			break;
 
 			case 'admin_log':
-				$ret = self::getAdminLog();
+				$ret = self::getLog();
 			break;
 
 			case 'override':

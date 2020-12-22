@@ -528,7 +528,7 @@
 				{
 					// First time: emit headers
 					$bRowHeaders = true;
-					$text .= "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", array_keys($tMarker)) . "</b>&nbsp;</td><th style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
+					$head = "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", array_keys($tMarker)) . "</b>&nbsp;</td><th style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
 					$aUnits = $tMarker;
 					foreach($aUnits as $key => $val)
 					{
@@ -546,7 +546,8 @@
 					$aUnits['OB Lev'] = 'lev(buf bytes)';
 					$aUnits['Memory'] = '(kb)';
 					$aUnits['Memory Used'] = '(kb)';
-					$text .= "<tr><th style='text-align:right'><b>" . implode("</b>&nbsp;</td><th style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
+					$head .= "<tr><th style='text-align:right'><small>" . implode("</small>&nbsp;</td><th style='text-align:right'><small>", $aUnits) . "</small>&nbsp;</td></tr>\n";
+					$text .= $head;
 				}
 
 
@@ -627,6 +628,8 @@
 				}
 			}
 
+			$text .= $head;
+
 			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
 			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
@@ -673,8 +676,9 @@
 			$bRowHeaders = false;
 			$aSum = $this->aDBbyTable['core']; // create a template from the 'real' array
 			$aSum['Table'] = 'Total';
-			$aSum['%DB Count'] = 0;
 			$aSum['%DB Time'] = 0;
+			$aSum['%DB Count'] = 0;
+
 			$aSum['DB Time'] = 0;
 			$aSum['DB Count'] = 0;
 

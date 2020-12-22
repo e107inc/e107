@@ -181,7 +181,7 @@ function e_dump($expr = null)
 
 /**
  * Strips slashes from a var if magic_quotes_gqc is enabled
- *
+ * @deprecated
  * @param mixed $data
  * @return mixed
  */

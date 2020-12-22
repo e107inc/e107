@@ -93,7 +93,7 @@ class installLog
 
 	static function clear()
 	{
-		if(!is_writable(__DIR__) || !MAKE_INSTALL_LOG)
+		if(!MAKE_INSTALL_LOG || !is_writable(__DIR__))
 		{
 			return null;
 		}
@@ -111,7 +111,7 @@ class installLog
 	 */
 	static function add($message, $type='info')
 	{
-		if(!is_writable(__DIR__) || !MAKE_INSTALL_LOG)
+		if(!MAKE_INSTALL_LOG || !is_writable(__DIR__))
 		{
 			return null;
 		}
@@ -143,7 +143,7 @@ define("e_UC_NOBODY", 255);*/
 
 define("E107_INSTALL",true);
 
-if($_SERVER['QUERY_STRING'] != "debug")
+if($_SERVER['QUERY_STRING'] !== "debug")
 {
 	error_reporting(0); // suppress all errors unless debugging.
 }
@@ -152,7 +152,7 @@ else
 	error_reporting(E_ALL);
 }
 
-if($_SERVER['QUERY_STRING'] == 'clear')
+if($_SERVER['QUERY_STRING'] === 'clear')
 {
 	unset($_SESSION);
 }
@@ -168,11 +168,10 @@ function e107_ini_set($var, $value)
 }
 
 // setup some php options
-e107_ini_set('magic_quotes_runtime',     0);
-e107_ini_set('magic_quotes_sybase',      0);
-e107_ini_set('arg_separator.output',     '&amp;');
-e107_ini_set('session.use_only_cookies', 1);
-e107_ini_set('session.use_trans_sid',    0);
+
+ini_set('arg_separator.output',     '&amp;');
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid',    0);
 
 if (function_exists('date_default_timezone_set'))
 {
@@ -181,7 +180,7 @@ if (function_exists('date_default_timezone_set'))
 
 define('MAGIC_QUOTES_GPC', false); // (ini_get('magic_quotes_gpc') ? true : false));
 
-$php_version = phpversion();
+$php_version = PHP_VERSION;
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))
 {
 	die_fatal_error('A minimum version of PHP '.MIN_PHP_VERSION.' is required');   // no  LAN DEF translation accepted by lower versions <5.3
@@ -195,7 +194,7 @@ if(!class_exists('DOMDocument', false))
 
 //  Ensure that '.' is the first part of the include path
 $inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
-if($inc_path[0] != ".")
+if($inc_path[0] !== ".")
 {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
@@ -219,7 +218,7 @@ if (trim($disabled_functions) != '')
 	$disabled_functions = explode( ',', $disabled_functions );
 	foreach ($disabled_functions as $function)
 	{
-		if(trim($function) == "realpath")
+		if(trim($function) === "realpath")
 		{
 			$functions_ok = false;
 		}
@@ -352,7 +351,7 @@ class e_install
 	//	define('e_UC_MAINADMIN', 250);
 		define('E107_DEBUG_LEVEL',0);
 
-		if($_SERVER['QUERY_STRING'] == "debug")
+		if($_SERVER['QUERY_STRING'] === "debug")
 		{
 			$this->debug = true;
 		}
@@ -426,13 +425,13 @@ class e_install
 		global $e_forms;
 
 		$e_forms->form .= "<div class='buttons-bar inline' style='text-align: {$align}; z-index: 10;'>";
-		if($id != 'start')
+		if($id !== 'start')
 		{
 			//		$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
 			$prevStage = ($this->stage - 1);
 			$e_forms->form .= "<button class='btn btn-default btn-secondary btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
 		}
-		if($id != 'back')
+		if($id !== 'back')
 		{
 			$e_forms->form .= "<input type='{$type}' id='{$id}' name='{$id}' value='{$title} &raquo;' class='btn btn-large btn-primary' />";
 		}
@@ -482,7 +481,7 @@ class e_install
 				$this->raise_error("Install stage information from client makes no sense to me.");
 		}
 
-		if($_SERVER['QUERY_STRING'] == "debug")
+		if($_SERVER['QUERY_STRING'] === "debug")
 		{
 			$this->template->SetTag("debug_info", print_a($this->previous_steps,TRUE));
 		}
@@ -539,7 +538,7 @@ class e_install
 		$this->template->SetTag("percent", 10);
 		$this->template->SetTag("bartype", 'warning');
 		
-		$e_forms->start_form("language_select", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$e_forms->start_form("language_select", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 		$e_forms->add_select_item("language", $this->get_languages(), "English");
 		$this->finish_form();
 		$this->add_button("start", LAN_CONTINUE);
@@ -584,8 +583,8 @@ class e_install
 		// $this->template->SetTag("onload", "document.getElementById('name').focus()");
 		// $page_info = nl2br(LANINS_023);
 		$page_info = "<div class='alert alert-block alert-info'>".LANINS_141."</div>";
-		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-		$isrequired = (($_SERVER['SERVER_ADDR'] == "127.0.0.1") || ($_SERVER['SERVER_ADDR'] == "localhost") || ($_SERVER['SERVER_ADDR'] == "::1") || preg_match('^192\.168\.\d{1,3}\.\d{1,3}$',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
+		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
+		$isrequired = (($_SERVER['SERVER_ADDR'] === "127.0.0.1") || ($_SERVER['SERVER_ADDR'] === "localhost") || ($_SERVER['SERVER_ADDR'] === "::1") || preg_match('/^192\.168\.\d{1,3}\.\d{1,3}$/',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
@@ -721,7 +720,7 @@ class e_install
 		{
 			$this->stage = 3;
 			$this->template->SetTag("stage_num", LANINS_021);
-			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 			$head = LANINS_039."<br /><br />\n";
 			$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
@@ -781,14 +780,14 @@ class e_install
 	//		if (!$res = @mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 			{
 				$success = FALSE;
-				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 				$page_content = LANINS_041.nl2br("\n\n<b>".LANINS_083."\n</b><i>".$sql->getLastErrorText()."</i>");
 				
 				$alertType = 'error';
 			}
 			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']))
 			{
-				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 				$head = str_replace('[x]', '<b>'.$this->previous_steps['mysql']['db'].'</b>', "<div class='alert alert-warning'>". LANINS_127."</div>");
 				$alertType = 'error';
 				$this->add_button('overwritedb', LANINS_128);
@@ -804,7 +803,7 @@ class e_install
 			}
 			else
 			{
-				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 				$page_content = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_042;
 				// @TODO Check database version here?
 /*
@@ -916,7 +915,7 @@ class e_install
 			$perms_pass = false;
 			foreach ($not_writable as $file)
 			{
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr($file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_018;
 		}
@@ -925,7 +924,7 @@ class e_install
 			$perms_pass = true;
 			foreach ($opt_writable as $file)
 			{
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr($file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_106;
 		}
@@ -975,7 +974,7 @@ class e_install
 			}
 		}
 
-		$php_version = phpversion();
+		$php_version = PHP_VERSION;
 
 		if(version_compare($php_version, MIN_PHP_VERSION, ">="))
 		{
@@ -988,7 +987,7 @@ class e_install
 
 
 
-		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 
 
 		
@@ -1086,7 +1085,7 @@ class e_install
 		$this->template->SetTag("percent", 60);
 		$this->template->SetTag("bartype", 'warning');
 
-		$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table class='table table-striped table-bordered'>
@@ -1276,7 +1275,7 @@ class e_install
 		$this->template->SetTag("percent", 70);
 		$this->template->SetTag("bartype", 'warning');
 
-		$e_forms->start_form("pref_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$e_forms->start_form("pref_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto; margin-bottom:20px'>
 			<table class='table table-striped'>
@@ -1552,7 +1551,7 @@ if($this->pdo == true)
 		$this->template->SetTag("percent", 80);
 		$this->template->SetTag("bartype", 'warning');
 
-		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 		$page = '<div class="alert alert-success">'.nl2br(LANINS_057).'</div>';
 		$this->finish_form();
 		$this->add_button("submit", LAN_CONTINUE);
@@ -1678,7 +1677,7 @@ if($this->pdo == true)
 			{
 				$error = LANINS_142;
 			}
-			elseif($_SERVER['QUERY_STRING'] == "debug")
+			elseif($_SERVER['QUERY_STRING'] === "debug")
 			{
 				rename(".htaccess","e107.htaccess");
 				$error = "DEBUG: Rename from e107.htaccess to .htaccess was successful";		
@@ -1777,18 +1776,12 @@ if($this->pdo == true)
 		installLog::add('Plugins table updated');
 
 		// Install Theme-required plugins
-		if(vartrue($this->previous_steps['install_plugins']))
+		if(vartrue($this->previous_steps['install_plugins']) && ($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme'])) && isset($themeInfo['plugins']['plugin']))
 		{
-			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
+			foreach($themeInfo['plugins']['plugin'] as $k=>$plug)
 			{
-				if(isset($themeInfo['plugins']['plugin']))
-				{
-					foreach($themeInfo['plugins']['plugin'] as $k=>$plug)
-					{
-						$this->install_plugin($plug['@attributes']['name']);
-						installLog::add('Theme-related plugin installed: '.$plug['@attributes']['name']);
-					}
-				}
+				$this->install_plugin($plug['@attributes']['name']);
+				installLog::add('Theme-related plugin installed: '.$plug['@attributes']['name']);
 			}
 		}
 
@@ -1918,9 +1911,13 @@ if($this->pdo == true)
 	function check_name($str, $blank_ok = FALSE)
 	{
 		if ($str == '')
+		{
 			return $blank_ok;
+		}
 		if (preg_match("#^\d+[e|E]#", $str))
-			return FALSE;
+		{
+			return false;
+		}
 		return TRUE;
 	}
 
@@ -1932,15 +1929,15 @@ if($this->pdo == true)
 	 */
 	function checkDbFields($fields)
 	{
-		if (!is_array($fields)) return FALSE;
+		if (!is_array($fields))
+		{
+			return false;
+		}
 		foreach (array('server', 'user', 'db', 'prefix') as $key)
 		{
-			if (isset($fields[$key]))
+			if (isset($fields[$key]) && strtr($fields[$key], "';", '    ') != $fields[$key])
 			{
-				if (strtr($fields[$key],"';", '    ') != $fields[$key])
-				{
-					return FALSE;		// Invalid character found
-				}
+				return FALSE;		// Invalid character found
 			}
 		}
 		return TRUE;
@@ -1985,7 +1982,7 @@ if($this->pdo == true)
 		$lanlist = array();		
 		while ($file = readdir($handle))
 		{
-			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS" && $file != 'index.html') 
+			if ($file !== "." && $file !== ".." && $file !== "/" && $file !== "CVS" && $file !== 'index.html')
 			{
 				if(file_exists("./{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}{$file}/lan_installer.php"))
 				{
@@ -2008,7 +2005,7 @@ if($this->pdo == true)
 		$themelist = array();
 		while ($file = readdir($handle))
 		{
-			if (is_dir($this->e107->e107_dirs['THEMES_DIRECTORY'].$file) && $file !='_blank')
+			if (is_dir($this->e107->e107_dirs['THEMES_DIRECTORY'].$file) && $file !== '_blank')
 			{
 				if(is_readable("./{$this->e107->e107_dirs['THEMES_DIRECTORY']}{$file}/theme.xml"))
 				{
@@ -2081,7 +2078,10 @@ if($this->pdo == true)
 		$data['must_write'] = 'e107_config.php|{$MEDIA_DIRECTORY}|{$SYSTEM_DIRECTORY}'; // all-sub folders are created on-the-fly
 		
 		$data['can_write'] = '{$PLUGINS_DIRECTORY}|{$THEMES_DIRECTORY}|{$WEB_DIRECTORY}cache|{$WEB_DIRECTORY}lib';
-		if (!isset($data[$list])) return $bad_files;
+		if (!isset($data[$list]))
+		{
+			return $bad_files;
+		}
 
 		$find = array();
 		$replace = array();

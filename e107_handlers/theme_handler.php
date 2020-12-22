@@ -1026,6 +1026,116 @@ class e_theme
 
 	}
 
+	private static function initThemePreview($id)
+	{
+		$themeobj = new themeHandler;
+		$themeArray = $themeobj->getThemes('id');
+		$id = (int) $id;
+
+		$themeDef = $themeobj->findDefault($themeArray[$id]);
+
+		define('THEME_LAYOUT', $themeDef);
+		define('PREVIEWTHEME', e_THEME . $themeArray[$id] . '/');
+		define('PREVIEWTHEMENAME', $themeArray[$id]);
+		define('THEME', e_THEME . $themeArray[$id] . '/');
+		define('THEME_ABS', e_THEME_ABS . $themeArray[$id] . '/');
+
+		$legacy = (file_exists(e_THEME_ABS . $themeArray[$id] . '/theme.xml') === false);
+
+		define('THEME_LEGACY', $legacy);
+		unset($action);
+
+	}
+
+	private static function initThemeLayout()
+	{
+		e107::getDebug()->logTime('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
+
+		if(deftrue('e_ADMIN_AREA'))
+		{
+			define('THEME_STYLE', $pref['admincss']);
+		}
+		elseif(!empty($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+		{
+			define('THEME_STYLE', $pref['themecss']);
+		}
+		else
+		{
+			define('THEME_STYLE', 'style.css');
+		}
+
+		if(!defined('THEME_LAYOUT'))
+		{
+			$user_pref      = e107::getUser()->getPref();
+			$pref           = e107::getPref();
+			$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
+			$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
+
+			define('THEME_LAYOUT',$deflayout);
+
+		    unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
+		}
+
+
+	}
+	/**
+	 * Replacement of checkvalidtheme()
+	 * @param string $themeDir
+	 */
+	public static function initTheme($themeDir)
+	{
+		$sql = e107::getDb();
+		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+
+		e107::getDebug()->logTime('Theme Check');
+
+		// e_QUERY not set when in single entry mod
+		if (ADMIN && strpos($_SERVER['QUERY_STRING'], 'themepreview') !== false)
+		{
+			list($action, $id) = explode('.', $_SERVER['QUERY_STRING']);
+			self::initThemePreview($id);
+			self::initThemeLayout();
+			return;
+		}
+
+
+		// check for valid theme.
+		if (@fopen(e_THEME . $themeDir . '/theme.php', 'r'))
+		{
+			define('THEME', e_THEME . $themeDir . '/');
+			define('THEME_ABS', e_THEME_ABS . $themeDir . '/');
+
+			$legacy = (file_exists(e_THEME . $themeDir . '/theme.xml') === false);
+			define('THEME_LEGACY', $legacy);
+
+			$e107->site_theme = $themeDir;
+			e107::getDebug()->logTime('Theme Check End');
+
+			self::initThemeLayout();
+			return;
+		}
+
+		// fallback in case selected theme failed.
+
+		$ADMIN_DIRECTORY = e107::getFolder('admin');
+		$e107tmp_theme = 'bootstrap3'; // set to bootstrap3 by default.
+		define('THEME', e_THEME . $e107tmp_theme . '/');
+		define('THEME_ABS', e_THEME_ABS . $e107tmp_theme . '/');
+
+		if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === false)
+		{
+			echo '<script>alert("' . $tp->toJS(CORE_LAN1) . '")</script>';
+			$tm = e107::getSingleton('themeHandler');
+			$tm->setTheme($e107tmp_theme);
+		}
+
+		e107::getDebug()->logTime('Theme Check End');
+		self::initThemeLayout();
+
+	}
+
 
 }
 
