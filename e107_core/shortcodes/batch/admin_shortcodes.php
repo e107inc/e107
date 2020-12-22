@@ -785,11 +785,11 @@ class admin_shortcodes
 					$after = '';
 				}
 
-				$link = $before."?[debug=".$var."+]".$after;
+				$link = $before."?[debug=".$var."!]".$after;
 			}
 			else
 			{
-				$link = e_REQUEST_URI."?[debug=".$var."+]";
+				$link = e_REQUEST_URI."?[debug=".$var."!]";
 			}
 
 			if(in_array($var,$dividerBefore))
