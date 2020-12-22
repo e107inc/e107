@@ -30,7 +30,7 @@
 		<css file="css/corporate.css" name="Corporate" scope='admin' thumbnail='images/admin_corporate.jpg' exclude='bootstrap' />
 		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' exclude='bootstrap'/>
         <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" scope='admin' exclude='bootstrap'/>
-        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/admin_superhero.jpg' scope='admin,wysiwyg' exclude='bootstrap'/>
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/admin_superhero.jpg' scope='admin' exclude='bootstrap'/>
         <css file="*" name="*"/>
 	</stylesheets>
 	<layouts>

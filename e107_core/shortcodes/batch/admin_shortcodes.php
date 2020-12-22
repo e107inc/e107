@@ -747,7 +747,16 @@ class admin_shortcodes
 			return null;
 		}
 
-		$items = e107_debug::getAliases();
+		try
+		{
+			$items = e107_debug::getAliases();
+		}
+		catch (Exception $e)
+		{
+			e107::getDebug()->log($e->getMessage());
+		    return null; // likely during a github update.
+		}
+
 		$current = e107_debug::getShortcut();
 		$currentAlias = !empty($items[$current]) ? " (".$items[$current].")" : '';
 
