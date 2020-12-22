@@ -594,7 +594,7 @@ class plugin_ui extends e_admin_ui
 		private function pluginUpgrade()
 		{
 			$pref 		= e107::getPref();
-			$admin_log 	= e107::getAdminLog();
+			$admin_log 	= e107::getLog();
 			$plugin 	= e107::getPlugin();
 
 		    $sql 		= e107::getDb();

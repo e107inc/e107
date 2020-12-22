@@ -38,7 +38,7 @@ class news {
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$pref = e107::getPref();
 		$e_event = e107::getEvent();
 		$e107cache = e107::getCache();
@@ -170,7 +170,7 @@ class news {
 			{
 				
 			
-				e107::getAdminLog()->addArray($logData)->save('NEWS_09');
+				e107::getLog()->addArray($logData)->save('NEWS_09');
 
 		
 				$data['data']['news_id'] = $news['news_id'];
@@ -224,7 +224,7 @@ class news {
 				e107::getCache()->clear('news.php');
 
 				//moved down - prevent wrong mysql_insert_id
-				e107::getAdminLog()->addArray($logData)->save('NEWS_08');
+				e107::getLog()->addArray($logData)->save('NEWS_08');
 				e107::getEvent()->trigger('newspost', $data['data']);
 				e107::getEvent()->trigger('admin_news_created', $data['data']);
 

@@ -1410,14 +1410,14 @@ class e_model extends e_object
 
 		if(!empty($logData))
 		{
-			e107::getAdminLog()->addArray($logData);
+			e107::getLog()->addArray($logData);
 		}
 		else
 		{
-			e107::getAdminLog()->addError($message,false);
+			e107::getLog()->addError($message,false);
 		}
 
-		e107::getAdminLog()->save('ADMINUI_04', E_LOG_WARNING);
+		e107::getLog()->save('ADMINUI_04', E_LOG_WARNING);
 
 		return $this;
 	}
@@ -2306,7 +2306,7 @@ class e_front_model extends e_model
 		}
 
 	//	$newData = $this->getPostedData();
-		e107::getAdminLog()->addArray($data,$oldData);
+		e107::getLog()->addArray($data,$oldData);
 	//	$this->addMessageDebug("NEWD".print_a($data,true));
 
 		$tp = e107::getParser();
@@ -2848,9 +2848,9 @@ class e_front_model extends e_model
 		}
 		$this->clearCache()->addMessageSuccess(LAN_UPDATED. " #".$this->getId());
 
-		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
-		e107::getAdminLog()->save('ADMINUI_02');
+		e107::getLog()->addSuccess('TABLE: '.$table, false);
+		e107::getLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
+		e107::getLog()->save('ADMINUI_02');
 
 
 		return $res;
@@ -3044,8 +3044,8 @@ class e_admin_model extends e_front_model
 			return false;
 		}
 
-	    e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->save('ADMINUI_01');
+	    e107::getLog()->addSuccess('TABLE: '.$table, false);
+		e107::getLog()->save('ADMINUI_01');
 	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
 
 		// Set the reutrned ID
@@ -3145,8 +3145,8 @@ class e_admin_model extends e_front_model
 			if($table != 'admin_log')
 			{
 				$logData = array('TABLE'=>$table, 'WHERE'=>$where);
-				e107::getAdminLog()->addSuccess($table,false);
-				e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+				e107::getLog()->addSuccess($table,false);
+				e107::getLog()->addArray($logData)->save('ADMINUI_03');
 			}
 
 			$this->clearCache();
@@ -4037,7 +4037,7 @@ class e_admin_tree_model extends e_front_tree_model
 		if($table != 'admin_log')
 		{
 			$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
-			e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+			e107::getLog()->addArray($logData)->save('ADMINUI_03');
 		}
 		return $res;
 	}

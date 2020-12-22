@@ -284,7 +284,7 @@ class admin_log_ui extends e_admin_ui
 		{
 			$mes = e107::getMessage();
 			$ns = e107::getRender();
-			$log = e107::getAdminLog();
+			$log = e107::getLog();
 			$frm = e107::getForm();
 			$sql = e107::getDb();
 

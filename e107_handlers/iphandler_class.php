@@ -938,7 +938,7 @@ class eIPHandler
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 
 		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
 		if ($sql->select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))

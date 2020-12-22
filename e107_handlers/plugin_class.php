@@ -558,7 +558,7 @@ class e_plugin
 					if(!isset($pref[$path]))
 					{
 						$cfg->setPref('plug_installed/'.$path, $row['plugin_version']);
-						e107::getAdminLog()->addDebug($path)->save("plug_installed pref updated");
+						e107::getLog()->addDebug($path)->save("plug_installed pref updated");
 						$save = true;
 					}
 				}
@@ -582,7 +582,7 @@ class e_plugin
 
 			if($sql->delete('plugin', "plugin_id IN (".$delList.")"))
 			{
-				e107::getAdminLog()->addDebug("Deleted missing plugins with id(s): ".$delList)->save("Plugin Table Updated");
+				e107::getLog()->addDebug("Deleted missing plugins with id(s): ".$delList)->save("Plugin Table Updated");
 				// e107::getDebug()->log("Deleted missing plugins with id(s): ".$delList);
 			}
 		}
@@ -606,7 +606,7 @@ class e_plugin
 				if(!$id = $sql->insert('plugin',$row))
 				{
 					e107::getDebug()->log("Unable to insert plugin data into table".print_a($row,true));
-					e107::getAdminLog()->addDebug("Unable to insert plugin data into table".print_a($row,true))->save("plug_installed pref updated");
+					e107::getLog()->addDebug("Unable to insert plugin data into table".print_a($row,true))->save("plug_installed pref updated");
 				}
 				else
 				{
@@ -615,7 +615,7 @@ class e_plugin
 					$runUpdate = true;
 
 					e107::getDebug()->log("Inserting plugin data into table".print_a($row,true));
-					e107::getAdminLog()->addArray($row)->save("Plugin Table Entry Added");
+					e107::getLog()->addArray($row)->save("Plugin Table Entry Added");
 
 					if($row['plugin_installflag'] == 1)
 					{
@@ -1511,7 +1511,7 @@ class e107plugin
 	//	$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
-		$log 			= e107::getAdminLog();
+		$log 			= e107::getLog();
 
 		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
 		{
@@ -1613,7 +1613,7 @@ class e107plugin
 		
 		$mes->addDebug("Updating plugins Table");
 		
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 
 		global $mySQLprefix, $menu_pref;
 		$pref = e107::getPref();
@@ -4345,7 +4345,7 @@ class e107plugin
 	public function uninstall($id, $options = array())
 	{
 		$pref = e107::getPref();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$plugin = e107::getPlugin();
 		$tp = e107::getParser();
 

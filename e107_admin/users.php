@@ -613,7 +613,7 @@ class users_admin_ui extends e_admin_ui
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
-		e107::getAdminLog()->add('USET_06', $tp->lanVars( USRLAN_162, $vars), E_LOG_INFORMATIVE);
+		e107::getLog()->add('USET_06', $tp->lanVars( USRLAN_162, $vars), E_LOG_INFORMATIVE);
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
 		
 		// List data reload
@@ -629,7 +629,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$iph = e107::getIPHandler();
 		$tp = e107::getParser();
 		
@@ -690,7 +690,7 @@ class users_admin_ui extends e_admin_ui
 	public function ListVerifyTrigger($userid)
 	{
 		$e_event = e107::getEvent();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$sysuser = e107::getSystemUser($userid, false);
 		$userMethods = e107::getUserSession();
 		$mes = e107::getMessage();
@@ -814,7 +814,7 @@ class users_admin_ui extends e_admin_ui
 			 // TODO - lan
 			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) has logged out as the user --EMAIL-- (#--UID--, --NAME--)';
 			
-			e107::getAdminLog()->add('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
 			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
 			e107::getEvent()->trigger('logoutas', $eventData); //BC 
@@ -855,7 +855,7 @@ class users_admin_ui extends e_admin_ui
 				'z' => $user->getValue('email')
 			);
 			
-			e107::getAdminLog()->add('USET_08', $tp->lanVars(USRLAN_244,$vars), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_08', $tp->lanVars(USRLAN_244,$vars), E_LOG_INFORMATIVE);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -869,7 +869,7 @@ class users_admin_ui extends e_admin_ui
 			{
 				$vars = array('x'=>$sysuser->getId(), 'y'=>$sysuser->getName(), 'z'=>$sysuser->getValue('email'));
 
-				e107::getAdminLog()->add('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
+				e107::getLog()->add('USET_09',$tp->lanVars(USRLAN_165, $vars), E_LOG_INFORMATIVE);
 				$mes->addSuccess($sysuser->getName()." (".$sysuser->getValue('email').") ".USRLAN_6);
 				$this->getTreeModel()->loadBatch(true);
 			}
@@ -895,7 +895,7 @@ class users_admin_ui extends e_admin_ui
 		$sql = e107::getDb();
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($userid, false);
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		
@@ -990,7 +990,7 @@ class users_admin_ui extends e_admin_ui
 		$response = $this->getResponse();
 		$sysuser = e107::getSystemUser($userid, false);
 		
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$e_userclass = e107::getUserClass();
 		$sql = e107::getDb();
 
@@ -1392,7 +1392,7 @@ class users_admin_ui extends e_admin_ui
 		$mes 			= e107::getMessage();
 		$sql 			= e107::getDb();
 		$e_event 		= e107::getEvent();
-		$admin_log		= e107::getAdminLog();
+		$admin_log		= e107::getLog();
 		$pref = e107::getPref();
 		
 		if (!$_POST['ac'] == md5(ADMINPWCHANGE))

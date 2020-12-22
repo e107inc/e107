@@ -945,7 +945,7 @@ class e_core_session extends e_session
 
 		$details .= $status."\n\n---------------------------------\n\n";
 
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$log->addDebug($details);
 
 		if(deftrue('e_DEBUG_SESSION'))

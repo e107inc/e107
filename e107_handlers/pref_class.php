@@ -539,7 +539,7 @@ class e_pref extends e_front_model
 			return 0;
 		}
 
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$disallow_logs = $this->getParam('nologs', false);
 
 		//Save to DB

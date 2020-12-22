@@ -866,7 +866,7 @@ class gsitemap
 
 	function addLink()
 	{
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$sql = e107::getDb();
 		$tp  = e107::getParser();
 		
@@ -922,7 +922,7 @@ class gsitemap
 
 	function deleteSme()
 	{
-		$log = e107::getAdminLog();	
+		$log = e107::getLog();
 		$sql = e107::getDb();
 		
 		$d_idt = array_keys($_POST['delete']);
@@ -1099,7 +1099,7 @@ class gsitemap
 	{
 		$sql 	= e107::getDb();
 		$tp 	= e107::getParser();
-		$log 	= e107::getAdminLog();
+		$log 	= e107::getLog();
 
 
 		foreach($_POST['importid'] as $import)

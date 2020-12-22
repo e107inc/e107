@@ -8,7 +8,7 @@ if (!defined('e107_INIT'))
 e107::lan('download','download');
 
 
-$log = e107::getAdminLog(); 
+$log = e107::getLog();
 $id = FALSE;
 
 $sql = e107::getDb();

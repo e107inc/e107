@@ -617,7 +617,7 @@ class mailout_main_ui extends e_admin_ui
 		else
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			e107::getAdminLog()->add('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
 		}
 
 		
@@ -723,7 +723,7 @@ class mailout_main_ui extends e_admin_ui
 	
 	private function emailSend($mailId)
 	{
-		$log 		= e107::getAdminLog();	
+		$log 		= e107::getLog();
 			
 		$notify 	= isset($_POST['mail_notify_complete']) ? 3 : 2;
 		$first 		= 0;
@@ -1539,7 +1539,7 @@ class mailout_main_ui extends e_admin_ui
 			if ($t === NULL) $t = '';
 		}
 		$pref = e107::pref('core');              		 	// Core Prefs Array.
-		if (e107::getAdminLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
+		if (e107::getLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
 		{
 			e107::getConfig()->updatePref($temp);
 			e107::getConfig()->save(false);		// Only save if changes - generates its own message

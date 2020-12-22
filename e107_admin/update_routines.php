@@ -457,7 +457,7 @@ function update_core_prefs($type='')
 	global $e107info; // $pref,  $pref must be kept as global 
 	
 	$pref = e107::getConfig('core', true, true)->getPref();
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 	$do_save = FALSE;
 	$should = get_default_prefs();
 
@@ -517,7 +517,7 @@ function update_core_database($type = '')
 	/** @var db_verify $dbv */
 	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 
-	$log = e107::getAdminLog();
+	$log = e107::getLog();
 
 	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
 	{
@@ -745,7 +745,7 @@ function update_706_to_800($type='')
 
 	//$mes = new messageLog;		// Combined logging and message displaying handler
 	//$mes = e107::getMessage();
-	$log 	= e107::getAdminLog();		// Used for combined logging and message displaying
+	$log 	= e107::getLog();		// Used for combined logging and message displaying
 	$sql 	= e107::getDb();
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
