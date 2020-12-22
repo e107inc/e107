@@ -247,7 +247,7 @@ class links_admin_ui extends e_admin_ui
 									<option value='{$key}'{$selected}>".$type['title']."</option>
 					";*/
 		}
-		$text .= $ui->selectbox('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
+		$text .= $ui->select('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
 
 		$text .= "
 							</td>
@@ -677,7 +677,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				$cats	= $this->getController()->getLinkArray($catid);
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
-				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
+				return $this->select('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
 			break;
 
 			case 'batch':
@@ -700,7 +700,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{			
-			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
+			return $this->select('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
 		}
 
 		else

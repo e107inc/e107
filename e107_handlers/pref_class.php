@@ -637,8 +637,8 @@ class e_pref extends e_front_model
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
 				if(!$disallow_logs)
-					$log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
-					->logError('Settings not saved.', true, $session_messages)
+					$log->addError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
+					->addError('Settings not saved.', true, $session_messages)
 					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
 					
 				e107::getMessage()->moveStack($this->prefid);
@@ -651,7 +651,7 @@ class e_pref extends e_front_model
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			if(!$disallow_logs)
-				$log->logError('Settings not saved.', true, $session_messages)
+				$log->addError('Settings not saved.', true, $session_messages)
 				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 				
 			e107::getMessage()->moveStack($this->prefid);
@@ -695,7 +695,7 @@ class e_pref extends e_front_model
 	{
 		if(is_array($cache_string))
 		{
-			$cache_string = e107::getArrayStorage()->WriteArray($cache_string, false);
+			$cache_string = e107::serialize($cache_string, false);
 		}
 		if(is_bool($save))
 		{
@@ -1283,7 +1283,7 @@ class prefs
 				$$name[$key] = $tp->toDB($prefvalue);
 			}
 		}
-		$tmp = e107::getArrayStorage()->WriteArray($$name, FALSE);		// $this->set() adds slashes now
+		$tmp = e107::serialize($$name, FALSE);		// $this->set() adds slashes now
 	//	$tmp = serialize($$name);
 		$this->set($tmp, $name, $table, $uid);
 	}

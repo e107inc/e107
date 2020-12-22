@@ -23,10 +23,10 @@ require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php"); // FIXME using 'form' instead of 'e_form'
 
-if(isset($_POST)) 
+/*if(isset($_POST))
 {
 	$_POST = strip_if_magic($_POST);
-}
+}*/
 
 $rs = new form;
 $poll = new poll;

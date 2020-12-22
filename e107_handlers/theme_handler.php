@@ -559,7 +559,7 @@ class e_theme
 
 	/**
 	 * Get a list of all themes in theme folder and its data.
-	 * @deprecated
+	 * @deprecated Use getList($mode) instead
 	 * @see load();
 	 * @param bool|false xml|false
 	 * @param bool|false $force force a refresh ie. ignore cached list.
@@ -567,7 +567,7 @@ class e_theme
 	 */
 	public static function getThemeList($mode = false, $force = false)
 	{
-		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use getList() instead.', E_USER_DEPRECATED); // NO LAN
 
 		$themeArray = array();
 
@@ -1401,7 +1401,7 @@ class themeHandler
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Use e107::getTheme($file)->get(); instead.
 	 * @param string $file - theme folder name.
 	 * @return array|mixed
 	 */
@@ -1619,7 +1619,7 @@ class themeHandler
 			}
 			
 			// auth
-			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 			
 			// do the request, retrieve and parse data
 			$xdata = $mp->call('getList', array(

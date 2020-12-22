@@ -18,7 +18,7 @@ if (!$e107->isInstalled('forum'))
 
 if(!USER)
 {
-	header("location:".e_PLUGIN."forum/forum.php");
+	e107::redirect(e_PLUGIN."forum/forum.php");
 	exit;
 }
 

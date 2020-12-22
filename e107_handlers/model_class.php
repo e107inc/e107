@@ -334,7 +334,7 @@ class e_object
 	 */
 	public function toString($AddSlashes = false)
 	{
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
 	/**
@@ -1829,11 +1829,11 @@ class e_model extends e_object
 			$value = $this->getData($key);
 			if(is_array($value))
 			{
-				return e107::getArrayStorage()->WriteArray($value, $AddSlashes);
+				return e107::serialize($value, $AddSlashes);
 			}
 			return (string) $value;
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
 	public function destroy()

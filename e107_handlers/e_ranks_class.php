@@ -55,7 +55,7 @@ class e_ranks
 					}
 				}
 			}
-			$e107->ecache->set_sys('nomd5_user_ranks', $e107->arrayStorage->WriteArray($this->ranks, false));
+			$e107->ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
 		}
 
 		// defaults

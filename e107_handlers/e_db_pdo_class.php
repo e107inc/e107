@@ -2080,11 +2080,11 @@ class e_db_pdo implements e_db
 	 */
 	function escape($data, $strip = true)
 	{
-
+/*
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
-		}
+		}*/
 
 		$this->_getMySQLaccess();
 

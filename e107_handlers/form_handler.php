@@ -3061,7 +3061,7 @@ class e_form
 		
 		if(is_array($filterArray))
 		{
-			$text .= $this->selectbox($filterName, $filterArray, $filterVal);
+			$text .= $this->select($filterName, $filterArray, $filterVal);
 		}
 		
 	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
@@ -6106,7 +6106,7 @@ var_dump($select_options);*/
 					$k = str_replace('_template.php', '', $files['fname']);
 					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
 				}
-				$ret =  (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
+				$ret =  (vartrue($parms['raw']) ? $templates : $this->select($key, $templates, $value));
 			break;
 
 			case 'checkboxes':
@@ -6316,7 +6316,7 @@ var_dump($select_options);*/
 				if(!is_array($eloptions)) parse_str($eloptions, $eloptions);
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
-				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $options, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->select($key, $options, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			case null:

@@ -624,7 +624,7 @@ class private_message
 		}
 		else
 		{
-			$var = strip_if_magic($var);
+		//	$var = strip_if_magic($var);
 			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
 			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
 		}

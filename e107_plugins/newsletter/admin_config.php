@@ -646,7 +646,7 @@ class newsletter
 			}
 			if ($subscribers_total_count<1) 
 			{
-				header("location:".e_SELF);
+				e107::redirect(e_SELF);
 				exit;
 			}
 			// Loop through each user in the array subscribers_list & sanatize

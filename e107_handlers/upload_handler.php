@@ -561,35 +561,9 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
  */
 function get_image_mime($filename, $extended = false)
 {
-	// mime types as returned from image_type_to_mime_type()
-	// and associated file extensions
-	$imageExtensions = array(
-		'image/gif' 					=> array('gif'),
-		'image/jpeg' 					=> array('jpg'),
-		'image/png' 					=> array('png'),
-		'application/x-shockwave-flash' => array('swf', 'swc'),
-		'image/psd' 					=> array('psd'),
-		'image/bmp' 					=> array('bmp'),
-		'image/tiff' 					=> array('tiff'),
-		'application/octet-stream' 		=> array('jpc', 'jpx', 'jb2'),
-		'image/jp2' 					=> array('jp2'),
-		'image/iff' 					=> array('iff'),
-		'image/vnd.wap.wbmp' 			=> array('wbmp'),
-		'image/xbm' 					=> array('xbm'),
-		'image/vnd.microsoft.icon' 		=> array('ico')
-	);
+	trigger_error(__METHOD__.' is deprecated. Use e107::getFile()->getImageMime($filename, $extended); instead.', E_USER_DEPRECATED);
 
-	$ret = image_type_to_mime_type(exif_imagetype($filename));
-
-	if($extended)
-	{
-		return array(
-			$ret,
-			$ret && isset($imageExtensions[$ret]) ? $imageExtensions[$ret]: array()
-		);
-	}
-
-	return $ret;
+	return e107::getFile()->getImageMime($filename, $extended);
 
 }
 
@@ -824,61 +798,9 @@ function get_image_mime($filename, $extended = false)
 	 */
 	function get_XML_filetypes($def_file = FALSE, $file_mask = '')
 	{
-		$ret = array(
-		);
-		if ($def_file === FALSE)
-			return $ret;
+		trigger_error(__METHOD__.' is deprecated. Use e107::getFile()->getAllowedFileTypes(); instead.', E_USER_DEPRECATED);
 
-		if ($file_mask)
-		{
-			$file_array = explode(',', $file_mask);
-			foreach ($file_array as $k=>$f)
-			{
-				$file_array[$k] = trim($f);
-			}
-		}
-
-		if ($def_file && is_readable(e_SYSTEM.$def_file))
-		{
-			$xml = e107::getXml();
-			// class tag should be always array
-			$xml->setOptArrayTags('class');
-			$temp_vars = $xml->loadXMLfile(e_SYSTEM.$def_file, 'filetypes', false);
-			if ($temp_vars === FALSE)
-			{
-				echo "Error reading XML file: {$def_file}<br />";
-				return $ret;
-			}
-			foreach ($temp_vars['class'] as $v1)
-			{
-				$v = $v1['@attributes'];
-				if (check_class($v['name']))
-				{
-					$current_perms[$v['name']] = array(
-						'type'=>$v['type'], 'maxupload'=>$v['maxupload']
-					);
-					$a_filetypes = explode(',', $v['type']);
-					foreach ($a_filetypes as $ftype)
-					{
-						$ftype = strtolower(trim(str_replace('.', '', $ftype))); // File extension
-
-						if (!$file_mask || in_array($ftype, $file_array))
-						{ // We can load this extension
-							if (isset($ret[$ftype]))
-							{
-								$ret[$ftype] = file_size_decode($v['maxupload'], $ret[$ftype], 'gt'); // Use largest value
-							}
-							else
-							{
-								$ret[$ftype] = file_size_decode($v['maxupload']);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $ret;
+		return e107::getFile()->getAllowedFileTypes();
 	}
 
 

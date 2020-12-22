@@ -140,7 +140,7 @@ if ($table)
 				echo "Unexpected field type: {$k} => {$v['type']}<br />";
 		}
 	}
-	$toSave = $eArrayStorage->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
+	$toSave = e107::serialize($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
 }
 
 //========================================================

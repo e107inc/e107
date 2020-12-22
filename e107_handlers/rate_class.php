@@ -525,7 +525,7 @@ class rater
 				
 			if($ajax == false)
 			{
-				header("location:".e_BASE."index.php");
+				e107::redirect();
 				exit;	
 			}
 			else

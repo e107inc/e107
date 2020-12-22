@@ -129,7 +129,7 @@ class theme_admin extends e_admin_dispatcher
 				case 'preview':
 					// Theme Info Ajax
 					$tm = (string) $_GET['id'];
-					$data = $themec->getThemeInfo($tm);
+					$data = e107::getTheme($tm)->get(); // $themec->getThemeInfo($tm);
 					echo $themec->renderThemeInfo($data);
 				//	exit;
 				break;
@@ -160,7 +160,7 @@ class theme_admin extends e_admin_dispatcher
 			if(!empty($_GET['id']))
 			{
 				$tm = (string) $_GET['id'];
-				$data = $themec->getThemeInfo($tm);
+				$data = e107::getTheme($tm)->get(); // $themec->getThemeInfo($tm);
 				echo $themec->renderThemeInfo($data);
 			}
 
@@ -1634,9 +1634,7 @@ TEMPLATE;
 
 			$frm = e107::getForm();
 
-			$list = e107::getTheme()->clearCache()->getThemeList(); // (e_THEME);
-
-			$folders = array_keys($list);
+			$folders = e107::getTheme()->clearCache()->getList('id'); // array_keys($list);
 
 			$text = $frm->open('copytheme','get','theme.php?mode=convert');
 			$text .= "<table class='table adminform'>
