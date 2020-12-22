@@ -241,7 +241,7 @@ if (e107::isInstalled('alt_auth'))
 
 function sendTest()
 {
-	$log = e107::getAdminLog();
+	$log = e107::getLog();
 	$mes = e107::getMessage();
 	
 	if(trim($_POST['testaddress']) == '')

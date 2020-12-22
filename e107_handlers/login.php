@@ -430,7 +430,7 @@ class userlogin
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		if($forceLogin === 'provider') return true;
 		/*

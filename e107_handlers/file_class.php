@@ -538,7 +538,7 @@
 			{
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
+					e107::getLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
 				}
 
 				return false;            // May not be installed
@@ -1301,7 +1301,7 @@
 			if($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH, $removePath) == 0)
 			{
 				$error = $archive->errorInfo(true);
-				e107::getAdminLog()->addError($error)->save('FILE', E_LOG_NOTICE);
+				e107::getLog()->addError($error)->save('FILE', E_LOG_NOTICE);
 
 				return false;
 			}

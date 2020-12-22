@@ -91,7 +91,7 @@ else
 
 $logVals = str_replace('%3A',':',$logVals); // make the URLs a bit cleaner, while keeping any urlqueries encoded.
 
-$lg = e107::getAdminLog();
+$lg = e107::getLog();
 $lg->addDebug(print_r($logVals, true));
 $lg->toFile('SiteStats','Statistics Log', true);
 

@@ -112,7 +112,7 @@ define('e_SAVE_FILETYPES', 'filetypes_.xml');
  */
 function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 {
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 
 	$ul_temp_dir = '';
 	if (ini_get('open_basedir') != '') // Need to move file to intermediate directory before we can read its contents to check it.
@@ -485,7 +485,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  */
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 	$options = array(
 		'extra_file_types'=>TRUE
 	); // As default, allow any filetype enabled in filetypes.php
@@ -893,7 +893,7 @@ function get_image_mime($filename, $extended = false)
 	function calc_max_upload_size($max_up = -1)
 	{
 		global $pref;
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		// Work out maximum allowable file size
 		if (deftrue('UH_DEBUG'))
 		{

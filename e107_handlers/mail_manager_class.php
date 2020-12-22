@@ -813,7 +813,7 @@ class e107MailManager
 
 				if (e107::callMethod($cls, 'sent', $email) === false)
 				{
-					e107::getAdminLog()->add($plug . ' sent process failed', $email, E_LOG_FATAL, 'SENT');
+					e107::getLog()->add($plug . ' sent process failed', $email, E_LOG_FATAL, 'SENT');
 				}
 			}
 		}
@@ -1580,13 +1580,13 @@ class e107MailManager
 
 					if (!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = ' . $vals[1]))
 					{
-						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id=' . $vals[1], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
+						e107::getLog()->add('Unable to increment bounce-count on mail_source_id=' . $vals[1], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 
 
 					if (!$this->db->update('mail_recipients', '`mail_status` = ' . MAIL_STATUS_BOUNCED . ' WHERE `mail_target_id` = ' . $vals[2]))
 					{
-						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = ' . $vals[2], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
+						e107::getLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = ' . $vals[2], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 
 					$addons = array_keys($row['mail_selectors']); // trigger e_mailout.php addons. 'bounce' method. 
@@ -1606,7 +1606,7 @@ class e107MailManager
 							{
 								if (e107::callMethod($cls, 'bounce', $bounceInfo) === false)
 								{
-									e107::getAdminLog()->add($plug . ' bounce process failed', $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
+									e107::getLog()->add($plug . ' bounce process failed', $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 								}
 							}
 
@@ -1646,14 +1646,14 @@ class e107MailManager
 			$logErrors['bounceString'] = $bounceString;
 			$logString = $bounceString . ' (' . $emailAddress . ')[!br!]' . implode('[!br!]', $errors) . implode('[!br!]', $bounceInfo);
 			//	e107::getAdminLog()->addEvent(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
-			e107::getAdminLog()->add('Bounce receive error', $logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
+			e107::getLog()->add('Bounce receive error', $logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
 
 			return $errors;
 		}
 		else
 		{
 			//	e107::getAdminLog()->addEvent(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
-			e107::getAdminLog()->add('Bounce received/logged', $bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE', LOG_TO_ROLLING);
+			e107::getLog()->add('Bounce received/logged', $bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE', LOG_TO_ROLLING);
 		}
 
 
@@ -1901,7 +1901,7 @@ class e107MailManager
 	public function sendEmails($templateName, $emailData, $recipientData, $options = false)
 	{
 
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$log->addDebug(print_r($emailData, true), true);
 		$log->addDebug(print_r($recipientData, true), true);
 		$log->toFile('mail_manager', 'Mail Manager Log', true);

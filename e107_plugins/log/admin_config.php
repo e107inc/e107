@@ -29,7 +29,7 @@ if(e_AJAX_REQUEST && varset($_GET['action']) == 'rebuild')
 	$totalFiles = $_SESSION['stats_log_files_total'] - 1;
 	//$process = true;
 
-	$lg = e107::getAdminLog();
+	$lg = e107::getLog();
 //	$lg->addDebug(print_r($logVals, true));
 
 

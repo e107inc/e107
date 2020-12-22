@@ -827,7 +827,7 @@ class db_verify
 	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		if(!is_array($fixArray))
 		{

@@ -1294,7 +1294,7 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$sql  = e107::getDb();
-		$log  = e107::getAdminLog(); 
+		$log  = e107::getLog();
 
 		$id = (int)$id;
 		if(!$id) { return; }

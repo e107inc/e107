@@ -1072,7 +1072,7 @@ Following fields auto-filled in code as required:
 				{	// Only update if needed
 					$db->update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
 					// Add to user audit log		TODO: Should we log to admin log as well?
-					$adminLog = e107::getAdminLog();
+					$adminLog = e107::getLog();
 					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);
 				}
 			}

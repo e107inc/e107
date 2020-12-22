@@ -115,7 +115,7 @@ if(e_AJAX_REQUEST )
 		
 		echo DBLAN_62." <small>(".$dbfile.")</small>";
 
-		e107::getAdminLog()->addSuccess($zip." ".$dbfile, false)->save(DBLAN_63);
+		e107::getLog()->addSuccess($zip." ".$dbfile, false)->save(DBLAN_63);
 		
 	}
 	

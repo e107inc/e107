@@ -383,7 +383,7 @@ if (!empty($_POST['pwsubmit']))
 		}
 
 		// Log to user audit log
-		e107::getAdminLog()->user_audit(USER_AUDIT_PW_RES, $do_log, $row['user_id'], $row['user_name']);
+		e107::getLog()->user_audit(USER_AUDIT_PW_RES, $do_log, $row['user_id'], $row['user_name']);
 
 		$ns->tablerender(LAN_03, $text.e107::getMessage()->render());
 		require_once(FOOTERF);

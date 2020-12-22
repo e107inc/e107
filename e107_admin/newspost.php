@@ -965,7 +965,7 @@ class news_admin_ui extends e_admin_ui
 
 		if(e107::getConfig()->save(false))
 		{
-			e107::getAdminLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
+			e107::getLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
 			$this->clearCache();
 		}
 	}
