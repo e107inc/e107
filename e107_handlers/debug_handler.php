@@ -100,7 +100,7 @@ class e107_debug {
 		if(deftrue('e_MENU'))
 		{
 			list($tmp,$alias) = explode('=', e_MENU);
-			return str_replace(['+','-', '0', '1'],'',$alias);
+			return str_replace(['!','+','-', '0', '1'],'',$alias);
 		}
 
 		if(empty($_COOKIE['e107_debug_level']))
@@ -140,7 +140,7 @@ class e107_debug {
             return false;
         }
 
-        if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level']))
+        if (preg_match('/debug(=?)(.*?),?(!|\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level']))
         {
             $dVals = '';
             if (!isset($debug_param[1]) || ($debug_param[1] == '')) $debug_param[1] = '=';
@@ -149,7 +149,7 @@ class e107_debug {
                 $dVals = substr($_COOKIE['e107_debug_level'], 6);
             }
 
-            if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU))
+            if (preg_match('/debug(=?)(.*?),?(!|\+|stick|-|unstick|$)/', e_MENU))
             {
                 $dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
             }
@@ -172,7 +172,7 @@ class e107_debug {
 
             if (isset($debug_param[3]))
             {
-                if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
+                if ($debug_param[3] == '!' || $debug_param[3] == '+' || $debug_param[3] == 'stick')
                 {
                     cookie('e107_debug_level', 'level=' . $dVal, time() + 86400);
                 }

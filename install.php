@@ -256,7 +256,7 @@ if(isset($_POST['previous_steps']))
 	$tmp = unserialize(base64_decode($_POST['previous_steps']));
 
 	// Save unfiltered admin password (#4004) - " are transformed into &#34;
-	$tmpadminpass1 = $tmp['admin']['password']; 
+	$tmpadminpass1 = !empty($tmp['admin']['password']) ? $tmp['admin']['password'] : '';
 	
 	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING); 
 
