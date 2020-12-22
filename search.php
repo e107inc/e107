@@ -1027,7 +1027,7 @@ if ($perform_search)
 	if (isset($_GET['t'][$google_id]) && ($_GET['t']==$google_id) && $_GET['t'][$google_id]) 
 	{
 //	echo "We think google should be used using checkboxes<br />";
-		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
+		e107::redirect("http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
   } 
@@ -1035,7 +1035,7 @@ if ($perform_search)
   { 
 	if (isset($_GET['t']) && $_GET['t'] == $google_id) 
 	{
-		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
+		e107::redirect("http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
   }

@@ -678,7 +678,7 @@ class gallery_cat_admin_form_ui extends e_admin_form_ui
 				break;
 
 			case 'write':
-				return $this->selectbox('gallery_category_parent', $controller->getDownloadCategoryTree(), $curVal);
+				return $this->select('gallery_category_parent', $controller->getDownloadCategoryTree(), $curVal);
 				break;
 
 			case 'filter':

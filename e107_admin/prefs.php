@@ -18,7 +18,7 @@ require_once ("../class2.php");
 
 if(isset($_POST['newver']))
 {
-	header("location:http://e107.org/index.php");
+	e107::redirect("https://e107.org/index.php");
 	exit();
 }
 

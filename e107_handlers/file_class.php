@@ -1128,7 +1128,7 @@
 				}
 				else
 				{
-					header("location: {$e107->base_path}");
+					e107::redirect(); // ("location: {$e107->base_path}");
 					exit();
 				}
 			}
@@ -1189,7 +1189,7 @@
 					}
 					else
 					{
-						header("location: " . e_BASE . "index.php");
+						e107::redirect();
 						exit();
 					}
 				}

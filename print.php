@@ -17,7 +17,7 @@ e107::coreLan('print');
 
 $qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 	 exit;
 }
 

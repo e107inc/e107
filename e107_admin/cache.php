@@ -50,7 +50,7 @@ if (isset($_POST['submit_cache']))
 
 if (isset($_POST['trigger_empty_cache']))
 {
-	e107::getLog()->logSuccess(CACLAN_6);
+	e107::getLog()->addSuccess(CACLAN_6);
 	switch ($_POST['option_clear_cache'])
 	{
 		case 'empty_contentcache':

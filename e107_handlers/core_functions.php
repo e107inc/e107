@@ -464,7 +464,7 @@ class e_array {
 
 	     //   e107::getDebug()->log("Json data found");
 
-	        if(e_DEBUG === true && json_last_error() !=  JSON_ERROR_NONE && !e107::isCli())
+	        if(deftrue('e_DEBUG') && json_last_error() !=  JSON_ERROR_NONE && !e107::isCli())
 	        {
 	            e107::getDebug()->log("e107::unserialize() Parser Error (json)");
 
@@ -623,9 +623,7 @@ class e_array {
 	
 	function write($ArrayData, $AddSlashes = true)
 	{
-        
-        return  $this->serialize($ArrayData, $AddSlashes);   
-
+        return  $this->serialize($ArrayData, $AddSlashes);
     }
 
     /**

@@ -137,7 +137,7 @@ if(varset($_GET['mode']) == "ajax")
 			break;
 	}
 }
-
+/*
 if (isset($_POST['cancel']))
 {
 	header('location:'.e_SELF);
@@ -148,7 +148,7 @@ if (isset($_POST['cancel_cat']))
 {
 	header("location:".e_SELF."?cat");
 	exit;
-}
+}*/
 
 function js()
 {

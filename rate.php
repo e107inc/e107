@@ -30,7 +30,7 @@ if(!e_AJAX_REQUEST) // Legacy method.
 	$returnurl = $tp -> toDB($qs[2]);
 	$rate = (int) $qs[3];
 	e107::getRate()->submitVote($table,$itemid,$rate);
-	header("location:".$returnurl);	
+	e107::redirect($returnurl);
 	exit;
 }
 else // Ajax Used. 

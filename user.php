@@ -96,7 +96,7 @@ if (isset($_POST['delp']))
 		$row = $sql->fetch();
 		@unlink(e_AVATAR_UPLOAD.$row['user_sess']);
 		$sql->update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
-		header("location:".e_SELF."?id.".$tmp[1]);
+		e107::redirect(e_SELF."?id.".$tmp[1]);
 		exit;
 	}
 }

@@ -1097,7 +1097,7 @@ class e_db_mysql implements e_db
 			case 'array':
 				if(is_array($fieldValue))
 				{
-					return "'".e107::getArrayStorage()->WriteArray($fieldValue, true)."'";
+					return "'".e107::serialize($fieldValue, true)."'";
 				}
 				return "'". (string) $fieldValue."'";
 			break;
@@ -2000,10 +2000,10 @@ class e_db_mysql implements e_db
 	 */
 	function escape($data, $strip = true)
 	{
-		if ($strip)
+	/*	if ($strip)
 		{
 			$data = strip_if_magic($data);
-		}
+		}*/
 
 		$this->provide_mySQLaccess();
 

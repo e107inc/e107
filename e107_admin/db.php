@@ -22,7 +22,7 @@ if(!getperms('0'))
 
 if(isset($_POST['back']))
 {
-	header("location: ".e_SELF);
+	e107::redirect(e_SELF);
 	exit();
 }
 

@@ -43,7 +43,7 @@ if(!deftrue('e_DEBUG_PLUGMANAGER'))
 
 if(isset($_POST['uninstall_cancel']))
 {
-	header("location:".e_SELF);
+	e107::redirect(e_SELF);
 	exit;		
 }
 

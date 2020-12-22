@@ -771,7 +771,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 
 
-				return $this->selectbox('banlist_bantype',$ipAdministrator->banTypes, $curVal);
+				return $this->select('banlist_bantype',$ipAdministrator->banTypes, $curVal);
 			break;
 			
 			case 'filter':
@@ -817,7 +817,7 @@ class banlist_form_ui extends e_admin_form_ui
 					$opts[$curVal] = e107::getParser()->toDate($curVal, 'short');
 				}
 
-				return $this->selectbox('banlist_banexpires',$opts, $curVal);
+				return $this->select('banlist_banexpires',$opts, $curVal);
 				// return $frm->text('banlist_banexpires',$curVal);		
 			break;
 			

@@ -385,6 +385,11 @@ class e_user_model extends e_admin_model
 		return '(^|,)('.str_replace(',', '|', $this->getClassList(true)).')(,|$)';
 	}
 
+	/**
+	 * @param $class
+	 * @param bool $allowMain
+	 * @return bool
+	 */
 	final public function checkClass($class, $allowMain = true)
 	{
 		// FIXME - replace check_class() here
@@ -922,7 +927,7 @@ class e_user_model extends e_admin_model
 		$editor = $this->getEditor();
 		if($this->getId() === $editor->getId() || $editor->isMainAdmin() || $editor->checkAdminPerms('4'))
 			$perm = true;
-		return ($perm || (!in_array($field, array('user_admin', 'user_perms', 'user_prefs', 'user_password') && $editor->checkClass($this->_memberlist_access))));
+		return ($perm || (!in_array($field, array('user_admin', 'user_perms', 'user_prefs', 'user_password')) && $editor->checkClass($this->_memberlist_access)));
 	}
 
 	/**
@@ -2188,7 +2193,7 @@ class e_user_extended_model extends e_admin_model
 	 * @param mixed $value
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
 	 * @param boolean $strict if false no Applicable check will be made
-	 * @return e_user_model
+	 * @return e_user_model|e_user_extended_model
 	 */
 	public function setSystem($field, $value, $short = true, $strict = true)
 	{
@@ -2483,7 +2488,7 @@ class e_user_extended_structure_model extends e_model
 	 *
 	 * @param string $field
 	 * @param mixed $value
-	 * @return e_user_model
+	 * @return e_user_model|e_user_extended_structure_model
 	 */
 	public function setValue($field, $value)
 	{
@@ -2577,7 +2582,7 @@ class e_user_extended_structure_tree extends e_tree_model
 
 	/**
 	 * @param string $name name field value
-	 * @return e_user_extended_structure_model
+	 * @return e_user_extended_structure_model|e_model
 	 */
 	public function getNodeByName($name)
 	{

@@ -714,7 +714,7 @@ class e_admin_log
 
 
 	/**
-	 * @DEPRECATED
+	 * @deprecated
 	 * BC Alias for addError(); 
 	 */
 	public function logError($text, $message = true, $session = false)
