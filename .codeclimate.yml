@@ -37,6 +37,8 @@ plugins:
         enabled: false
       Design/TooManyPublicMethods:
         enabled: false
+      Design/TooManyMethods:
+        enabled: false
     config:
       languages:
       - javascript
@@ -86,6 +88,11 @@ exclude_patterns:
 - "e107_plugins/log/js/awesomechart.js"
 - "e107_core/**/*.sc"
 - "e107_docs/**/*"
+- "e107_handlers/magpie_rss.php"
+- "e107_handlers/pclerror.lib.php"
+- "e107_handlers/pclzip.lib.php"
+- "e107_handlers/pcltar.lib.php"
+- "e107_handlers/pcltrace.lib.php"
 - "e107_images/**/*"
 - "e107_system/core_image.phar"
 - "e107_web/**/*"
