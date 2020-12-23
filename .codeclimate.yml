@@ -1,5 +1,12 @@
 ---
 version: "2"
+checks:
+  file-lines:
+    enabled: false
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 250
 plugins:
   csslint:
     enabled: false
@@ -10,7 +17,6 @@ plugins:
         enabled: false
       Design/TooManyPublicMethods:
         enabled: false
-
     config:
       languages:
       - javascript
@@ -33,6 +39,10 @@ plugins:
       UnusedFormalParameter:
         enabled: false
       Design/TooManyFields:
+        enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
+      Design/WeightedMethodCount:
         enabled: false
       CleanCode/BooleanArgumentFlag:
         enabled: false
@@ -57,11 +67,6 @@ exclude_patterns:
 - "e107_core/**/*.sc"
 - "e107_docs/**/*"
 - "e107_images/**/*"
-- "e107_handlers/hybridauth/**/*"
-- "e107_handlers/jsshrink/**/*"
-- "e107_handlers/phpmailer/**/*"
-- "e107_handlers/phpthumb/**/*"
-- "e107_handlers/xmlrpc/**/*"
 - "e107_system/core_image.phar"
 - "e107_web/**/*"
 - "e107_tests/tests/**/*"
