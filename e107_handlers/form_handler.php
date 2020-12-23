@@ -2441,7 +2441,7 @@ class e_form
 
 	private function renderSnippet($snippet, $options, $name, $value)
 	{
-		$snip  = $options;
+		$snip  = (array) $options;
 
 		if(!empty($options['class']))
 		{
@@ -2449,6 +2449,8 @@ class e_form
 			unset($options['class']);
 		}
 
+		$snip['id'] = $this->_format_id(varset($options['id']), $name, $value, null);
+		unset($options['id']);
 		$snip['attributes'] = $this->get_attributes($options, $name, $value);
 
 		foreach($snip as $k=>$v)
