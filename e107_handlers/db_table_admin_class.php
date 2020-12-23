@@ -51,7 +51,7 @@ class db_table_admin
 		{
 			return FALSE;
 		}
-		$row = $sql->db_Fetch('num');
+		$row = $sql->fetch('num');
 		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
 		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$prefix}{$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
 		if ($count === FALSE)

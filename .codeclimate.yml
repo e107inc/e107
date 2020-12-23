@@ -76,6 +76,8 @@ plugins:
         enabled: false
       CleanCode/ElseExpression:
         enabled: false
+      UnusedLocalVariable:
+        enabled: false
     config:
       file_extensions: "php"
       rulesets: "cleancode,unusedcode,codesize"
