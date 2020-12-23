@@ -56,7 +56,11 @@ plugins:
         enabled: false
       Identical code:
         enabled: false
+      CyclomaticComplexity:
+        enabled: false
       CleanCode/StaticAccess:
+        enabled: false
+      ExcessivePublicCount:
         enabled: false
       UnusedFormalParameter:
         enabled: false
