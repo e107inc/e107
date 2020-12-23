@@ -1148,7 +1148,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$result = $this->_frm->checkbox('myname', 3, true, ['readonly'=>true]);
 		$expected = "<label class='checkbox form-check'>
-<input id='myname-3' class='form-check-input' type='checkbox' name='myname' value='3'   readonly='readonly'  checked='checked' />
+<input class='form-check-input' type='checkbox'  id='myname-3' readonly='readonly' checked='checked' />
 <span></span>
 </label>";
 
