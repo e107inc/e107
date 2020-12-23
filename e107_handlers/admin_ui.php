@@ -4829,12 +4829,31 @@ class e_admin_controller_ui extends e_admin_controller
 		$pid = $this->getPrimaryName();
 		$_posted[$pid] = $id;    // add in the primary ID field.
 
+		$table = $this->getTableName();
+		$pname = $this->getPluginName();
+
+		if($pname === 'core') // Handler 'core' plugin value.
+		{
+			$convert = array(
+				'news_category' => 'news',
+				'news'          => 'news',
+				'page'          => 'page',
+				'page_chapters' => 'page',
+				'user'          => 'user'
+			);
+
+			if(!empty($convert[$table]))
+			{
+				$pname = $convert[$table];
+			}
+		}
+
 		$eventData = array( // use $_posted as it may include unsaved data.
 			'newData'   => $_posted,
 			'oldData'   => $old_data,
 			'id'        => $id,
-			'table'     => $this->getTableName(),
-			'plugin'    => $this->getPluginName(),
+			'table'     => $table,
+			'plugin'    => $pname,
 		);
 
 		$this->_log('Triggering Event: ' . $triggerName);

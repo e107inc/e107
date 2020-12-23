@@ -56,11 +56,24 @@ class news_gsitemap
 				'id'    => $row['news_id'],
 				'table' => 'news',
 				'name' => $row['news_title'],
-				'url' => e107::getUrl()->create('news/view/item', $row, array('full' => 1)),
+				'url' => $this->url($row),
 				'type' => ADLAN_0
 			);
 		}
 
 		return $import;
 	}
+
+	/**
+	 * Used above and by gsitemap/e_event.php to update the URL when changed in news, pages etc.
+	 * @param $row
+	 * @return string
+	 */
+	function url($row)
+	{
+		return e107::getUrl()->create('news/view/item', $row, array('full' => 1));
+	}
+
+
+
 }
