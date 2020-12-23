@@ -40,37 +40,51 @@ class gsitemap_event // plugin-folder + '_event'
 
 	function update($data) // the method to run.
 	{
-		e107::getMessage()->addDebug("GSITEMAP TRIGGERRED!!") ;
+	//	e107::getMessage()->addDebug("GSITEMAP TRIGGERRED!!") ;
 
-
-		if(empty($data['table']) || empty($data['newData']))
+		if(empty($data['plugin']) || empty($data['table']) || empty($data['newData']))
 		{
 			return null;
 		}
 
-
-		switch ($data['table'])
+		/** @var news_gsitemap $gsmap - could be another plugin too */
+		if(!$gsmap = e107::getAddon($data['plugin'], 'e_gsitemap'))
 		{
-			case "news":
-				$update = array(
-					'gsitemap_url' => e107::getUrl()->create('news/view/item', $data['newData'], array('full' => 1)),
-					'WHERE' => "gsitemap_table = 'news' AND gsitemap_table_id = ".(int) $data['id']
-				);
-				break;
-
-			case "page":
-				//  code
-				break;
-
+			return null;
 		}
 
-		if(!empty($update))
+		if(!method_exists($gsmap, 'url'))
 		{
-			if(e107::getDb()->update('gsitemap', $update)!==false)
-			{
-				e107::getMessage()->addDebug("Gsitemap updated: ".print_a($update,true));
-			}
+			return null;
 		}
+
+		if(!$url = $gsmap->url($data['newData']))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+		$id = (int) $data['id'];
+
+		$update = array(
+			'gsitemap_url' => $url,
+			'WHERE' => "gsitemap_plugin = '".$tp->filter($data['plugin'])."' 
+				AND gsitemap_table = '".$tp->filter($data['table'])."' 
+				AND gsitemap_table_id = ".$id
+		);
+
+		// todo LAN
+		$message = e107::getParser()->lanVars("Updating sitemap link for #[x] to [y]. ", array($id,$url), true);
+
+		if(e107::getDb()->update('gsitemap', $update)!==false)
+		{
+			e107::getMessage()->addSuccess($message);
+		}
+		else
+		{
+			e107::getMessage()->addError($message);
+		}
+
 	}
 
 
