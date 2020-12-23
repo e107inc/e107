@@ -322,12 +322,14 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$this->assertEquals($expected, $actual);
 	}
-	/*
+
 			public function testUserlist()
 			{
+				$list = $this->_frm->userlist('name',null);
+				$this->assertStringContainsString("<option value='1'>e107</option>",$list);
 
 			}
-
+/*
 			public function testUserpicker()
 			{
 

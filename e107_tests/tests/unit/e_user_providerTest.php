@@ -31,6 +31,7 @@ class e_user_providerTest extends \Codeception\Test\Unit
 	public function testGetSupportedProviders()
 	{
 		$result = e_user_provider::getSupportedProviders();
+
 		$this->assertIsArray($result);
 		$this->assertContains("Facebook", $result);
 		$this->assertContains("Twitter", $result);

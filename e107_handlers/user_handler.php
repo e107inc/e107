@@ -1200,6 +1200,13 @@ class e_user_provider
 	 */
 	public static function getSupportedProviders()
 	{
+		$regId = 'core/e107/user/provider';
+
+		if($cached = e107::getRegistry($regId))
+		{
+			return $cached;
+		}
+
 		$providers = [];
 
 		try
@@ -1232,6 +1239,9 @@ class e_user_provider
 		}
 
 		sort($providers);
+
+		e107::setRegistry($regId, $providers);
+
 		return $providers;
 	}
 

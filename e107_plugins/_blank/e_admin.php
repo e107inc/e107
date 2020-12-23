@@ -52,8 +52,8 @@ class _blank_admin implements e_admin_addon_interface
 
 		switch($type)
 		{
-			case "news": // hook into the news admin form.
-				$config['fields']['url'] =   array ( 'title' =>"Custom Field", 'type' => 'url', 'tab'=>1,  'writeParms'=> array('size'=>'xxlarge', 'placeholder'=>'', 'default'=>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+			case 'news': // hook into the news admin form.
+				$config['fields']['url'] =   array ('title' => 'Custom Field', 'type' => 'url', 'tab' =>1, 'writeParms' => array('size' =>'xxlarge', 'placeholder' =>'', 'default' =>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
 
 				$config['batchOptions'] = array('custom'    => 'Custom Batch Command');
 				break;
@@ -71,7 +71,7 @@ class _blank_admin implements e_admin_addon_interface
 	 * @param object $ui admin-ui
 	 * @param int|array $id - Primary ID of the record being created/edited/deleted or array data of a batch process.
 	 */
-	public function process(e_admin_ui $ui, $id=0)
+	public function process(e_admin_ui $ui, $id=null)
 	{
 
 		$data       = $ui->getPosted(); // ie $_POST field-data
@@ -86,6 +86,7 @@ class _blank_admin implements e_admin_addon_interface
 
 		if($action === 'batch')
 		{
+			$id = (array) $id;
 			$arrayOfRecordIds = $id['ids'];
 			$command = $id['cmd'];
 
