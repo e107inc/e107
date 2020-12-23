@@ -63,11 +63,12 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e_form
 {
-	protected $_tabindex_counter = 0;
-	protected $_tabindex_enabled = true;
-	protected $_cached_attributes = array();
-	protected $_field_warnings = array();
-	private $_inline_token = null;
+	protected   $_tabindex_counter = 0;
+	protected   $_tabindex_enabled = true;
+	protected   $_cached_attributes = array();
+	protected   $_field_warnings = array();
+	private     $_inline_token = null;
+	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
 
 	/**
 	 * @var user_class
@@ -82,6 +83,8 @@ class e_form
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required text-warning">&nbsp;*</span>');
+
+
 	}
 
 	/**
@@ -2403,6 +2406,31 @@ class e_form
 	}
 
 	/**
+	 * Checks for a theme snippet and returns it
+	 * @param string $type
+	 * @return string|false
+	 */
+	private function getSnippet($type)
+	{
+		if(deftrue('e_ADMIN_AREA') || $this->_snippets === false)
+		{
+			return false;
+		}
+
+		$snippet = THEME."snippets/form_".$type.".html";
+
+		if(!file_exists($snippet))
+		{
+			return false;
+		}
+
+		return file_get_contents($snippet, false, null, 0, 1024);
+
+	}
+
+
+
+	/**
 	* Render a checkbox 
 	* @param string $name
 	* @param mixed $value
@@ -2434,6 +2462,7 @@ class e_form
 		
 		$text = "";
 
+
 		$active = ($checked === true) ? " active" : ""; // allow for styling if needed.
 
 		if(!empty($options['label'])) // add attributes to <label>
@@ -2458,13 +2487,39 @@ class e_form
 
         $options['class'] .= ' form-check-input';
 
-		$pre = (vartrue($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
-		$post = (vartrue($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
-		unset($options['label']); // not to be used as attribute; 
+		if($text = $this->getSnippet('checkbox'))
+		{
+			// todo move all this to its own method. eg.  renderSnippet()
+			$snip  = $options;
+			$snip['name'] = $name;
+			$snip['value'] = $value;
+			$snip['attributes'] = $this->get_attributes($options, $name, $value);
+			$snip['readonly'] = $this->get_attributes(['readonly'=> $options['readonly']]);
+			$snip['checked'] = $this->get_attributes(['checked'=> $options['checked']]);
+			$snip['active'] = trim($active);
+			$snip['class'] = trim($options['class']);
+			$snip['id'] = $this->_format_id($options['id'], $name, $value, null);
+
+			foreach($snip as $k=>$v)
+			{
+				$search[] = '{'.$k.'}';
+			}
+
+			return str_replace($search, array_values($snip), $text);
+		}
+
+
+		$pre = (!empty($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
+		$post = (!empty($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
+		unset($options['label']); // not to be used as attribute;
+
+
+
+
 		
-		$text .= "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		return $pre. "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />".$post;
 		
-		return $pre.$text.$post;
+
 	}
 
 
@@ -3823,17 +3878,47 @@ var_dump($select_options);*/
 
 		//format data first
 		$name = trim($this->name2id($name), '-');
-		$value = trim(preg_replace('#[^a-zA-Z0-9\-]#','-', $value), '-');
+		$value = trim(preg_replace('#[^a-zA-Z0-9\-]#', '-', $value), '-');
 		//$value = trim(preg_replace('#[^a-z0-9\-]#/i','-', $value), '-');		// This should work - but didn't for me!
-		$value = trim(str_replace("/","-",$value), '-');					// Why?
-		if(!$id_value && is_numeric($value)) $id_value = $value;
+		$value = trim(str_replace("/", "-", $value), '-');                    // Why?
+		if (!$id_value && is_numeric($value))
+		{
+			$id_value = $value;
+		}
 
 		// clean - do it better, this could lead to dups
 		$id_value = trim($id_value, '-');
 
-		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
-		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
-		else return " {$return_attribute}='{$id_value}'";
+		if($return_attribute === null) // return only the value.
+		{
+			if (empty($id_value))
+			{
+				return "{$name}" . ($value ? "-{$value}" : '');
+			}
+			elseif (is_numeric($id_value) && $name) // also useful when name is e.g. name='my_name[some_id]'
+			{
+				return "{$name}-{$id_value}";
+			}
+			else // also useful when name is e.g. name='my_name[]'
+			{
+				return "{$id_value}";
+			}
+
+		}
+
+
+		if (empty($id_value))
+		{
+			return " {$return_attribute}='{$name}" . ($value ? "-{$value}" : '') . "'";
+		}
+		elseif (is_numeric($id_value) && $name) // also useful when name is e.g. name='my_name[some_id]'
+		{
+			return " {$return_attribute}='{$name}-{$id_value}'";
+		}
+		else // also useful when name is e.g. name='my_name[]'
+		{
+			return " {$return_attribute}='{$id_value}'";
+		}
 	}
 
 	function name2id($name)

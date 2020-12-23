@@ -1139,4 +1139,24 @@ class e_formTest extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * Loads snipper from e107_themes/bootstrap/snippets/form_checkbox.html
+	 */
+	public function testSnippet()
+	{
+		$this->_frm->_snippets = true;
+
+		$result = $this->_frm->checkbox('myname', 3, true, ['readonly'=>true]);
+		$expected = "<label class='checkbox form-check'>
+<input id='myname-3' class='form-check-input' type='checkbox' name='myname' value='3'   readonly='readonly'  checked='checked' />
+<span></span>
+</label>";
+
+		$this->assertSame($expected, $result);
+
+		$this->_frm->_snippets = false;
+
+	}
+
+
 }
