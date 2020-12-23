@@ -1,8 +1,6 @@
 ---
 version: "2"
 checks:
-  file-lines:
-    enabled: false
   argument-count:
     config:
       threshold: 4
@@ -11,7 +9,7 @@ checks:
       threshold: 4
   file-lines:
     config:
-      threshold: 250
+      threshold: 1500
   method-complexity:
     config:
       threshold: 250
