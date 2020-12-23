@@ -3,10 +3,32 @@ version: "2"
 checks:
   file-lines:
     enabled: false
-  method-complexity:
-    enabled: true
+  argument-count:
+    config:
+      threshold: 4
+  complex-logic:
+    config:
+      threshold: 4
+  file-lines:
     config:
       threshold: 250
+  method-complexity:
+    config:
+      threshold: 250
+  method-count:
+    config:
+      threshold: 250
+  method-lines:
+    config:
+      threshold: 500
+  nested-control-flow:
+    config:
+      threshold: 4
+  return-statements:
+    config:
+      threshold: 4
+  similar-code:
+    enabled: false
 plugins:
   csslint:
     enabled: false

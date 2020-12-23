@@ -2417,18 +2417,48 @@ class e_form
 			return false;
 		}
 
-		$snippet = THEME."snippets/form_".$type.".html";
+		$regId = 'core/form/snippet/'.$type;
 
-		if(!file_exists($snippet))
+		if($snippet = e107::getRegistry($regId))
+		{
+			return $snippet;
+		}
+
+		$snippetPath = THEME."snippets/form_".$type.".html";
+
+		if(!file_exists($snippetPath))
 		{
 			return false;
 		}
 
-		return file_get_contents($snippet, false, null, 0, 1024);
+		$content =  file_get_contents($snippetPath, false, null, 0, 1024);
+
+		e107::setRegistry($regId, $content);
+
+		return $content;
 
 	}
 
+	private function renderSnippet($snippet, $options, $name, $value)
+	{
+		$snip  = $options;
 
+		if(!empty($options['class']))
+		{
+			$snip['class'] = trim($options['class']);
+			unset($options['class']);
+		}
+
+		$snip['attributes'] = $this->get_attributes($options, $name, $value);
+
+		foreach($snip as $k=>$v)
+		{
+			$search[] = '{'.$k.'}';
+		}
+
+		return str_replace($search, array_values($snip), $snippet);
+
+	}
 
 	/**
 	* Render a checkbox 
@@ -2487,34 +2517,14 @@ class e_form
 
         $options['class'] .= ' form-check-input';
 
-		if($text = $this->getSnippet('checkbox'))
+		if($snippet = $this->getSnippet('checkbox'))
 		{
-			// todo move all this to its own method. eg.  renderSnippet()
-			$snip  = $options;
-			$snip['name'] = $name;
-			$snip['value'] = $value;
-			$snip['attributes'] = $this->get_attributes($options, $name, $value);
-			$snip['readonly'] = $this->get_attributes(['readonly'=> $options['readonly']]);
-			$snip['checked'] = $this->get_attributes(['checked'=> $options['checked']]);
-			$snip['active'] = trim($active);
-			$snip['class'] = trim($options['class']);
-			$snip['id'] = $this->_format_id($options['id'], $name, $value, null);
-
-			foreach($snip as $k=>$v)
-			{
-				$search[] = '{'.$k.'}';
-			}
-
-			return str_replace($search, array_values($snip), $text);
+			return $this->renderSnippet($snippet, $options, $name, $value);
 		}
-
 
 		$pre = (!empty($options['label'])) ? "<label class='".$labelClass.$active."'{$labelTitle}>" : ""; // Bootstrap compatible markup
 		$post = (!empty($options['label'])) ? "<span>".$options['label']."</span></label>" : "";
 		unset($options['label']); // not to be used as attribute;
-
-
-
 
 		
 		return $pre. "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />".$post;
