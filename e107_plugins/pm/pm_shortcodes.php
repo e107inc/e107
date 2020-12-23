@@ -205,7 +205,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		//		$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
 
 				// Option show by visibility
-				$filterVisible = $parm == 'visible' ? 'matchclass, filter' : 'matchclass';
+				$filterVisible = $parm === 'visible' ? 'matchclass, filter' : 'matchclass';
 
 				$args = (ADMIN ? 'nobody, admin, classes' : 'nobody,classes, '.$filterVisible);
 				if(check_class($this->pmPrefs['sendall_class']))
@@ -218,8 +218,10 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 			else
 			{
-				return false;
+				$ret = false;
 			}
+
+
 			return $ret;
 		}
 
@@ -260,7 +262,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			if(!empty($this->pmPrefs['maxlength']))
 			{
-				$length = intval($this->pmPrefs['maxlength']);
+				$length = (int) $this->pmPrefs['maxlength'];
 				$maxlength = "maxlength=".$length;
 				$placeholder = "placeholder='Max. ".$length." chars.'"; // TODO LAN
 			}
@@ -362,42 +364,42 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		public function sc_pm_inbox_total()
 		{
 			$pm_inbox = $this->pmManager->pm_getInfo('inbox');
-			return intval($pm_inbox['inbox']['total']);
+			return (int) $pm_inbox['inbox']['total'];
 		}
 
 
 		public function sc_pm_inbox_unread()
 		{
 			$pm_inbox = $this->pmManager->pm_getInfo('inbox');
-			return intval($pm_inbox['inbox']['unread']);
+			return (int) $pm_inbox['inbox']['unread'];
 		}
 
 
 		public function sc_pm_inbox_filled()
 		{
 			$pm_inbox = $this->pmManager->pm_getInfo('inbox');
-			return (intval($pm_inbox['inbox']['filled']) > 0 ? $pm_inbox['inbox']['filled'] : '');
+			return ((int) $pm_inbox['inbox']['filled'] > 0 ? $pm_inbox['inbox']['filled'] : '');
 		}
 
 
 		public function sc_pm_outbox_total()
 		{
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
-			return intval($pm_outbox['outbox']['total']);
+			return (int) $pm_outbox['outbox']['total'];
 		}
 
 
 		public function sc_pm_outbox_unread()
 		{
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
-			return intval($pm_outbox['outbox']['unread']);
+			return (int) $pm_outbox['outbox']['unread'];
 		}
 
 
 		public function sc_pm_outbox_filled()
 		{
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
-			return (intval($pm_outbox['outbox']['filled']) > 0 ? $pm_outbox['outbox']['filled'] : '');
+			return ((int) $pm_outbox['outbox']['filled'] > 0 ? $pm_outbox['outbox']['filled'] : '');
 		}
 
 
@@ -418,28 +420,30 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_read($parm = '')
 		{
-			if($this->pmMode == 'inbox')
+			if($this->pmMode === 'inbox')
 			{
-				return;
+				$ret = '';
 			}
 
 			if($this->var['pm_read'] == 0)
 			{
-				return LAN_PM_27;
+				$ret = LAN_PM_27;
 			}
 			if($this->var['pm_read'] == 1)
 			{
-				return LAN_PM_28;
+				$ret = LAN_PM_28;
 			}
 
-			if('lapse' != $parm)
+			if('lapse' !== $parm)
 			{
-				return e107::getDate()->convert_date($this->var['pm_read'], $parm);
+				$ret = e107::getDate()->convert_date($this->var['pm_read'], $parm);
 			}
 			else
 			{
-				return e107::getDate()->computeLapse($this->var['pm_read']);
+				$ret = e107::getDate()->computeLapse($this->var['pm_read']);
 			}
+			
+			return $ret; 
 		}
 
 
@@ -448,7 +452,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			$tp = e107::getParser();
 		//	$sc = e107::getScBatch('pm',TRUE);
 
-			if($this->pmMode == 'outbox')
+			if($this->pmMode === 'outbox')
 			{
 				$ret = LAN_PM_2.': ';
 				$this->var['user_name'] = $this->var['sent_name'];
@@ -471,7 +475,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			$prm = explode(',',$parm);
 
-			if('link' == $prm[0])
+			if('link' === $prm[0])
 			{
 				$extra = '';
 				// TODO - go with only one route version - view/message ???
@@ -497,7 +501,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		{
 			$url = e107::getUrl();
 
-			if('link' == $parm)
+			if('link' === $parm)
 			{
 				return "<a href='".$url->create('user/profile/view', array('id' => $this->var['pm_from'], 'name' => $this->var['user_name']))."'>{$this->var['user_name']}</a>";
 			}
@@ -581,11 +585,11 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 			else
 			{
-				$extra = '.'.($this->pmMode == 'outbox' ? 'outbox' : 'inbox');
+				$extra = '.'.($this->pmMode === 'outbox' ? 'outbox' : 'inbox');
 			}
 
 
-			$action = $extra == '.outbox' ? 'delete-out' : 'delete-in';
+			$action = $extra === '.outbox' ? 'delete-out' : 'delete-in';
 			return "<a class='btn btn-default btn-secondary' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
@@ -602,20 +606,22 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		{
 			if(is_numeric($this->var['pm_to']))
 			{
-				if('link' == $parm)
+				if('link' === $parm)
 				{
 					$url = e107::getUrl();
-					return "<a href='".$url->create('user/profile/view', array('id' => $this->var['pm_to'], 'name' => $this->var['user_name']))."'>{$this->var['user_name']}</a>";
+					$ret = "<a href='".$url->create('user/profile/view', array('id' => $this->var['pm_to'], 'name' => $this->var['user_name']))."'>{$this->var['user_name']}</a>";
 				}
 				else
 				{
-					return $this->var['user_name'];
+					$ret = $this->var['user_name'];
 				}
 			}
 			else
 			{
-				return LAN_PM_63.' '.$this->var['pm_to'];
+				$ret = LAN_PM_63.' '.$this->var['pm_to'];
 			}
+			
+			return $ret; 
 		}
 
 
@@ -692,18 +698,20 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		{
 			if (!$this->pmBlocked['user_name'])
 			{
-				return LAN_PM_72;
+				$ret = LAN_PM_72;
 			}
-			if('link' == $parm)
+			if('link' === $parm)
 			{
 
 				$url = e107::getUrl();
-				return "<a href='".$url->create('user/profile/view', array('id' => $this->pmBlocked['pm_block_from'], 'name' => $this->pmBlocked['user_name']))."'>{$this->pmBlocked['user_name']}</a>";
+				$ret = "<a href='".$url->create('user/profile/view', array('id' => $this->pmBlocked['pm_block_from'], 'name' => $this->pmBlocked['user_name']))."'>{$this->pmBlocked['user_name']}</a>";
 			}
 			else
 			{
-				return $this->pmBlocked['user_name'];
+				$ret = $this->pmBlocked['user_name'];
 			}
+			
+			return $ret; 
 		}
 
 
@@ -753,52 +761,54 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 
 			$base = e107::url('pm','index').'?';
+			$ret = '';
 
 			switch($route[1])
 			{
 				case 'index':
 				case 'inbox':
-					return $base.'inbox';
+					$ret =  $base.'inbox';
 					break;
 				case 'outbox':
-					return $base.'outbox';
+					$ret = $base.'outbox';
 					break;
 					// we could just remove them all and let only 'message' live
 				case 'show':
-					return $base.'show.'.$params['id'];
+					$ret = $base.'show.'.$params['id'];
 					break;
 				case 'message':
-					return $base.'show.'.$params['id'].'.inbox';
+					$ret = $base.'show.'.$params['id'].'.inbox';
 					break;
 				case 'sent':
-					return $base.'show.'.$params['id'].'.outbox';
+					$ret = $base.'show.'.$params['id'].'.outbox';
 					break;
 				case 'reply':
-					return $base.'reply.'.$params['id'];
+					$ret = $base.'reply.'.$params['id'];
 					break;
 				case 'new':
-					return $base.'send';
+					$ret = $base.'send';
 					break;
 				case 'delete-in':
-					return $base.'del.'.$params['id'].'.inbox';
+					$ret = $base.'del.'.$params['id'].'.inbox';
 					break;
 				case 'delete-out':
-					return $base.'del.'.$params['id'].'.outbox';
+					$ret = $base.'del.'.$params['id'].'.outbox';
 					break;
 				case 'delete-blocked':
-					return $base.'delblocked.'.$params['id'];
+					$ret = $base.'delblocked.'.$params['id'];
 					break;
 				case 'block':
-					return $base.'block.'.$params['id'];
+					$ret = $base.'block.'.$params['id'];
 					break;
 				case 'unblock':
-					return $base.'unblock.'.$params['id'];
+					$ret = $base.'unblock.'.$params['id'];
 					break;
 				case 'get':
-					return $base.'get.'.$params['id'].'.'.$params['index'];
+					$ret = $base.'get.'.$params['id'].'.'.$params['index'];
 					break;
 			}
 
+			return $ret; 
 		}
 
 	}
