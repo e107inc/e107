@@ -64,6 +64,8 @@ plugins:
         enabled: false
       UnusedFormalParameter:
         enabled: false
+      Design/LongClass:
+        enabled: false
       Design/TooManyFields:
         enabled: false
       Design/TooManyMethods:
