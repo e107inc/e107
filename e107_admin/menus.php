@@ -38,9 +38,8 @@ else
 {
 	define('e_ADMIN_AREA', true);
 	define("USER_AREA", false);
-//	define('ADMIN_AREA', true);
-//	define('ADMIN_AREA', true);
-//	define('USER_AREA', false);
+	define('ADMIN_AREA', true);
+
 	define('e_MENUMANAGER_ACTIVE', false);
 }
 
