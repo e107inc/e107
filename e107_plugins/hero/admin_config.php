@@ -437,7 +437,7 @@ class hero_form_ui extends e_admin_form_ui
 				foreach($amt as $v)
 				{
 					$name = 'hero_bullets['.$v.']';
-					$val = varset($value[$v]);
+					$val = varset($value[$v], array());
 
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', $val['icon'])."</td>

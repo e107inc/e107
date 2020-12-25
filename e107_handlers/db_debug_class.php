@@ -1135,12 +1135,12 @@
 
 		if(!isset($In_e107_Footer))
 		{
-			if(defset('ADMIN_AREA'))
+			if(deftrue('ADMIN_AREA'))
 			{
 				$filewanted = realpath(__DIR__) . '/../' . $ADMIN_DIRECTORY . 'footer.php';
 				require_once($filewanted);
 			}
-			elseif(defset('USER_AREA'))
+			elseif(deftrue('USER_AREA'))
 			{
 				$filewanted = realpath(__DIR__) . '/../' . FOOTERF;
 				require_once($filewanted);

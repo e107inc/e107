@@ -37,6 +37,7 @@ define("LAN_CRON_04_3", "Only needed if retriggering of bans enabled.");
 define("LAN_CRON_05_1", "Database Backup");
 define("LAN_CRON_05_2", "Backup the system database to");
 
+define('LAN_CRON_06_1', "Process Ban Trigger");
 
 // Error and info messages
 define("LAN_CRON_6", "Couldn't Import Prefs");

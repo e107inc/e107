@@ -21,7 +21,7 @@ class faqs_search extends e_search // include plugin-folder in the name.
 							
 			'return_fields'	=> array('t.faq_question','t.faq_answer','t.faq_datestamp','x.faq_info_title','t.faq_id','x.faq_info_id','x.faq_info_title', 'x.faq_info_class','x.faq_info_sef'), 
 			'search_fields'	=> array('t.faq_question'=>1.0, 't.faq_answer'=>1.2, "x.faq_info_title"=>0.6, 't.faq_tags'=> 1.4), // fields and weights. 
-			'order'			=> array('t.faq_question' => DESC),
+			'order'			=> array('t.faq_question' => 'DESC'),
 			'refpage'		=> 'faqs.php'
 		);
 

@@ -58,8 +58,16 @@ Valid subparameters (where required):
 	$_GET['m'] - id of mail info in db
 	$_GET['t'] - id of target info in db
 */
-// header('Content-Encoding: none'); // turn off gzip. 
+// header('Content-Encoding: none'); // turn off gzip.
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\POP3;
+use PHPMailer\PHPMailer\Exception;
+
 require_once('../class2.php');
+
+
 
 if (!getperms('W'))
 {
@@ -978,7 +986,8 @@ class mailout_main_ui extends e_admin_ui
 	function testPage()
 	{
 
-		require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
+		require_once(e_HANDLER.'vendor/autoload.php');
+	//	require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
 
 		/** @var SMTP $smtp */
 		$smtp = new SMTP;

@@ -66,11 +66,11 @@ if (isset($_POST['metasubmit']))
 	save_prefs();
 }
 
-$meta 			= vartrue($pref['meta_tag']);
-$meta_diz 		= vartrue($pref['meta_description']);
-$meta_keywords 	= vartrue($pref['meta_keywords']);
-$meta_copyright = vartrue($pref['meta_copyright']);
-$meta_author 	= vartrue($pref['meta_author']);
+$meta 			= vartrue($pref['meta_tag'], array());
+$meta_diz 		= vartrue($pref['meta_description'], array());
+$meta_keywords 	= vartrue($pref['meta_keywords'], array());
+$meta_copyright = vartrue($pref['meta_copyright'], array());
+$meta_author 	= vartrue($pref['meta_author'], array());
 
 
 $text = "

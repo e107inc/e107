@@ -490,8 +490,10 @@ class e_session
 		switch ($this->_sessionSaveMethod)
 		{
 			case 'db':
-				ini_set('session.save_handler', 'user');
+			//	ini_set('session.save_handler', 'user');
+
 				$session = new e_session_db;
+				session_set_save_handler($session, true);
 				$session->setSaveHandler();
 			break;
 
@@ -1065,7 +1067,7 @@ class e_core_session extends e_session
 }
 
 
-class e_session_db
+class e_session_db implements SessionHandlerInterface
 {
 	/**
 	 * @var e_db

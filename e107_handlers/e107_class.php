@@ -3616,7 +3616,7 @@ class e107
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English_front.php (if English is the current language)
 	 * @example e107::lan('gallery', 'admin'); // Loads e_PLUGIN."gallery/languages/English/admin.php (if English is the current language)
-	 * @example e107::lan('gallery', 'admin', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', 'admin', true); // Loads e_PLUGIN."gallery/languages/English/English_admin.php (if English is the current language)
 	 * @example e107::lan('gallery', 'admin/example'); // Loads e_PLUGIN."gallery/languages/English/admin/example.php (if English is the current language)
 	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
 	 * @example e107::lan('gallery', "something", true); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
@@ -3629,16 +3629,18 @@ class e107
 		switch ($type)
 		{
 			case 'core' :
-				self::coreLan($fname, $options);
+				$result = self::coreLan($fname, $options);
 			break;
 
 			case 'theme' :
-				self::themeLan($fname, null,  $options);
+				$result = self::themeLan($fname, null,  $options);
 				break;
 			default :
-				self::plugLan($type, $fname, $options);
+				$result = self::plugLan($type, $fname, $options);
 				break;
 		}
+
+		return $result;
 
 	}
 

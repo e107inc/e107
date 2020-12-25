@@ -149,7 +149,7 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> LAN_CRON_06_1,
 					'category'		=> 'user',
 					'function' 		=> 'procBanRetrigger',
-					'description' 	=> LAN_CRON_06_2 ."<br />". LAN_CRON_06_3,
+					'description' 	=> defset('LAN_CRON_06_2') ."<br />". defset('LAN_CRON_06_3'),
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				),
 				6 => array(

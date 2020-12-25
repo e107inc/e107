@@ -1070,8 +1070,9 @@ class e_theme
 
 	}
 
-	private static function initThemeLayout()
+	private static function initThemeLayout($pref)
 	{
+
 		e107::getDebug()->logTime('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
 
 		if(deftrue('e_ADMIN_AREA'))
@@ -1090,7 +1091,6 @@ class e_theme
 		if(!defined('THEME_LAYOUT'))
 		{
 			$user_pref      = e107::getUser()->getPref();
-			$pref           = e107::getPref();
 			$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
 			$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
 			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
@@ -1111,6 +1111,7 @@ class e_theme
 		$sql = e107::getDb();
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
+		$pref = e107::getPref();
 
 		e107::getDebug()->logTime('Theme Check');
 
@@ -1119,7 +1120,7 @@ class e_theme
 		{
 			list($action, $id) = explode('.', $_SERVER['QUERY_STRING']);
 			self::initThemePreview($id);
-			self::initThemeLayout();
+			self::initThemeLayout($pref);
 			return;
 		}
 
@@ -1136,7 +1137,7 @@ class e_theme
 			$e107->site_theme = $themeDir;
 			e107::getDebug()->logTime('Theme Check End');
 
-			self::initThemeLayout();
+			self::initThemeLayout($pref);
 			return;
 		}
 
@@ -1155,7 +1156,7 @@ class e_theme
 		}
 
 		e107::getDebug()->logTime('Theme Check End');
-		self::initThemeLayout();
+		self::initThemeLayout($pref);
 
 	}
 

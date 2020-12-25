@@ -15,7 +15,7 @@ if( !e107::isInstalled('tinymce4'))
 	exit();
 }
 
-e107::lan('tinymce4','admin', true);
+$result = e107::lan('tinymce4', true);
 
 
 	class tinymce4_admin extends e_admin_dispatcher
