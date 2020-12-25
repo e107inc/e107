@@ -22,7 +22,7 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 global $error_handler,$db_time,$ADMIN_FOOTER;
 
 // Legacy fix - call header if not already done, mainly fixing left side menus to work proper
-if(!deftrue('e_ADMIN_UI') && !deftrue('ADMIN_AREA'))
+if(!deftrue('e_ADMIN_UI') /*&& !deftrue('ADMIN_AREA')*/)
 {
 	// close the old buffer
 	$content =  ob_get_contents();

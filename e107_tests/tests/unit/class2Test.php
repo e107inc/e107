@@ -41,6 +41,17 @@
 			$result = getperms('U1|U2', '0.');
 			$this->assertTrue($result);
 
+/*
+			$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'gallery'");
+
+			$result = getperms('P', 'P'.$pid);
+			$this->assertFalse($result);
+
+			// define('e_CURRENT_PLUGIN', 'gallery');
+			$result = getperms('P', 'P'.$pid);
+			$this->assertTrue($result);
+*/
+
 		}
 
 

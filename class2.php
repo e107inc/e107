@@ -715,16 +715,7 @@ init_session();			// Set up a lot of the user-related constants
 
 
 
-/**
- * @deprecated but necessary. BC Fix.
- * @return string
- */
-function getip()
-{
-	trigger_error('<b>getip() is deprecated.</b> Use e107::getIPHandler()->ipDecode(USERIP) instead.', E_USER_DEPRECATED); // NO LAN
 
-	return e107::getIPHandler()->ipDecode(USERIP);
-}
 
 
 $developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
@@ -1386,7 +1377,7 @@ if(!defined('THEME'))
 	{
 		e_theme::initTheme($pref['admintheme']);
 	}
-	elseif (USERTHEME !== false && !e_ADMIN_AREA)
+	elseif (USERTHEME !== false && e_ADMIN_AREA === false)
 	{
 		e_theme::initTheme(USERTHEME);
 	}
@@ -1394,7 +1385,6 @@ if(!defined('THEME'))
 	{
 		e_theme::initTheme($pref['sitetheme']);
 	}
-
 
 }
 
@@ -2146,30 +2136,7 @@ function message_handler($mode, $message, $line = 0, $file = '')
 	show_emessage($mode, $message, $line, $file);
 }
 
-/*
-// -----------------------------------------------------------------------------
-function table_exists($check)
-{
-	if (!$GLOBALS['mySQLtablelist'])
-	{
-		$tablist=mysql_list_tables($GLOBALS['mySQLdefaultdb']);
-		while (list($temp) = mysql_fetch_array($tablist))
-		{
-			$GLOBALS['mySQLtablelist'][] = $temp;
-		}
-	}
 
-	$mltable=MPREFIX.strtolower($check);
-
-	foreach ($GLOBALS['mySQLtablelist'] as $lang)
-	{
-		if (strpos($lang, $mltable) !== false)
-		{
-			return true;
-		}
-	}
-}
-*/
 
 function class_list($uid = '')
 {
@@ -2242,42 +2209,6 @@ function include_lan($path, $force = false)
 
 	return e107::includeLan($path, $force);
 }
-
-
-
-
-// Routine looks in standard paths for language files associated with a plugin or theme - primarily for core routines, which won't know
-// for sure where the author has put them.
-// $unitName is the name (directory path) of the plugin or theme
-// $type determines what is to be loaded:
-//		'runtime'	- the standard runtime language file for a plugin
-//		'admin'		- the standard admin language file for a plugin
-//		'theme'		- the standard language file for a plugin (these are usually pretty small, so one is enough)
-// Otherwise, $type is treated as part of a filename within the plugin's language directory, prefixed with the current language
-// Returns false on failure (not found).
-// Returns the include_once error return if there is one
-// Otherwise returns an empty string.
-
-// Note - if the code knows precisely where the language file is located, use include_lan()
-
-// $pref['noLanguageSubs'] can be set true to prevent searching for the English files if the files for the current site language don't exist.
-//DEPRECATED - use e107::loadLanFiles();
-/**
- * @deprecated - use e107::loadLanFiles();
- * @param $unitName
- * @param string $type
- * @return bool|string
- */
-function loadLanFiles($unitName, $type='runtime')
-{
-	trigger_error('<b>loadLanFiles() is deprecated.</b> Use e107::loadLanFiles() instead.', E_USER_DEPRECATED); // NO LAN
-
-	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
-	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true)); 
-	return e107::loadLanFiles($unitName, $type);
-}
-
-
 
 
 
@@ -2691,46 +2622,7 @@ class e_http_header
 	
 	function send()
 	{
-		// Disable caching of html. 	
-		/*
-		$this->setHeader("Expires: 0", true);
-		$this->setHeader("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);
-		$this->setHeader("Cache-Control: no-store, no-cache, must-revalidate", true);
-		$this->setHeader("Cache-Control: post-check=0, pre-check=0", false);
-		$this->setHeader("Pragma: no-cache");
-		$this->setHeader("Cache-Control: max-age=0", false);
-		*/
-	//	$this->setHeader("Cache-Control: public", true);
 
-/*
-		if(defined('e_HTTP_STATIC'))
-		{
-			unset($_COOKIE);
-
-			$siteurl = str_replace('https','http',SITEURL);
-			$static = str_replace('https','http', e_HTTP_STATIC);
-
-			if($siteurl === $static && deftrue('e_SUBDOMAIN'))
-			{
-				$accessControl = str_replace(e_SUBDOMAIN.'.', '', SITEURLBASE);
-
-				$this->unsetHeader("Cache-Control");
-			//	$this->unsetHeader("Content-Type");
-				$this->unsetHeader("Set-Cookie");
-				$this->unsetHeader("Pragma");
-				$this->unsetHeader("Expires");
-
-				$this->setHeader("Access-Control-Allow-Origin: ".$accessControl, true);
-				$this->setHeader("Cache-Control: public", true);
-			}
-			else
-			{
-				$this->setHeader("Access-Control-Allow-Origin: ".$static, true);
-			}
-		}
-*/
-
-	
 		$canCache = e107::canCache();
 		
 	// $this->setHeader("Cache-Control: must-revalidate", true); 
@@ -2805,43 +2697,6 @@ class e_http_header
 		
 	
 	
-}
-
-
-/**
- * @deprecated Use ini_set() directly.
- * @param $var
- * @param $value
- * @return false|string
- */
-function e107_ini_set($var, $value)
-{
-	trigger_error('<b>e107_ini_set() is deprecated.</b> Use ini_set() instead.', E_USER_DEPRECATED); // NO LAN
-
-	if (function_exists('ini_set'))
-	{
-		return ini_set($var, $value);
-	}
-
-	return false;
-}
-
-// Return true if specified plugin installed, false if not
-//DEPRECATED
-
-/**
- * @deprecated - use e107::isInstalled();
- * @param $plugname
- * @return bool
- */
-function plugInstalled($plugname)
-{
-	trigger_error('<b>plugInstalled() is deprecated.</b> Use <e107::isInstalled() instead.', E_USER_DEPRECATED); // NO LAN
-
-	return e107::isInstalled($plugname);
-	/*global $pref;
-	// Could add more checks here later if appropriate
-	return isset($pref['plug_installed'][$plugname]);*/
 }
 
 $dbg->logTime('(After class2)');
