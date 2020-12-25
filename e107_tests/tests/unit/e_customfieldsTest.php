@@ -191,6 +191,9 @@
 				$this->fail("Couldn't load e_customfields object");
 			}
 
+			setlocale(LC_TIME, 'C');
+			date_default_timezone_set('UTC');
+
 		}
 
 		public function testFieldValues()
