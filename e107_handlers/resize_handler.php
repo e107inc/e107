@@ -32,7 +32,14 @@ function mimeFromFilename($fileName)
 	return "Content-type: image/".$mimeTypes[$fileExt];
 }
 
-
+/**
+ * @deprecated To be replaced with e107::getMedia()->resizeImage();
+ * @param string $source_file
+ * @param string $destination_file
+ * @param string $type
+ * @param string $model
+ * @return bool
+ */
 function resize_image($source_file, $destination_file, $type = "upload", $model = "") 
 {
 // $destination_file - 'stdout' sends direct to browser. Otherwise treated as file name	
