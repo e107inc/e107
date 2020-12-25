@@ -14,6 +14,8 @@ if(isset($_GET['configure']))
 	$_GET['configure'] = preg_replace('[^a-z0-9_-]','',$_GET['configure']);
 	
 	define("USER_AREA", true);
+	define('ADMIN_AREA', false);
+//	define('ADMIN_AREA', false);
 	//Switch to desired layout
 	define('THEME_LAYOUT', $_GET['configure']);
 
@@ -30,10 +32,15 @@ if(isset($_GET['configure']))
 	}
 	define('e_MENUMANAGER_ACTIVE', true);
 
+
 }
 else
 {
 	define('e_ADMIN_AREA', true);
+	define("USER_AREA", false);
+//	define('ADMIN_AREA', true);
+//	define('ADMIN_AREA', true);
+//	define('USER_AREA', false);
 	define('e_MENUMANAGER_ACTIVE', false);
 }
 

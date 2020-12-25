@@ -610,8 +610,8 @@ class media_form_ui extends e_admin_form_ui
 		foreach($options as $key=>$title)
 		{
 			$title = ucwords(str_replace("-"," ",$key));
-			$valW = vartrue($curval[$key]['w']);
-			$valH = vartrue($curval[$key]['h']);
+			$valW = !empty($curval[$key]['w']) ? $curval[$key]['w'] : 400;
+			$valH = !empty($curval[$key]['h']) ? $curval[$key]['h'] : 400;
 		
 			$text .= "<tr><td style='width:45%'>".$title."</td><td class='text-right'>";
 			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' />";
@@ -3147,7 +3147,7 @@ class media_admin_ui extends e_admin_ui
 			$text = "
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='batch_import'>
 					<fieldset id='core-mediamanager-batch'>
-						<legend class='e-hideme'>".DBLAN_20."</legend>
+						
 						<table class='table adminlist'>
 							<colgroup>
 								<col style='width: 5%' />
@@ -3202,8 +3202,8 @@ class media_admin_ui extends e_admin_ui
 				<td class='center'>".$frm->checkbox("batch_selected[".$c."]",$f['fname'],$checked)."</td>
 				<td class='center'>".$this->preview($f)."</td>			
 				<td><a class='e-dialog' href='".$large."'>".$f['fname']."</a></td>
-				<td>".$frm->text('batch_import_name['.$c.']', ($_POST['batch_import_name'][$c] ? $tp->filter($_POST['batch_import_name'][$c]) : $default['title']))."</td>
-				<td><textarea name='batch_import_diz[".$c."]' rows='3' cols='50'>". ($_POST['batch_import_diz'][$c] ? $tp->filter($_POST['batch_import_diz'][$c]) : $default['description'])."</textarea></td>
+				<td>".$frm->text('batch_import_name['.$c.']', (!empty($_POST['batch_import_name'][$c]) ? $tp->filter($_POST['batch_import_name'][$c]) : $default['title']))."</td>
+				<td><textarea name='batch_import_diz[".$c."]' rows='3' cols='50'>". (!empty($_POST['batch_import_diz'][$c]) ? $tp->filter($_POST['batch_import_diz'][$c]) : $default['description'])."</textarea></td>
 			
 				<td><a href='mailto:".$default['authorEmail']."'>".$default['authorName']."</a><br />".$default['authorEmail']."</td>
 				<td>".$f['mime']."</td>
@@ -3468,7 +3468,7 @@ class media_admin_ui extends e_admin_ui
 			$url = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=100', true);
 			$large = e107::getParser()->thumbUrl($f['path'].$f['fname'], 'w=800', true);
 			//echo $url;
-			return "<a class='e-dialog' href='".$large."'><img src='".$url."' alt=\"".$f['name']."\" width='100px' /></a>";
+			return "<a class='e-dialog' href='".$large."'><img src='".$url."' alt=\"".varset($f['name'])."\" width='100px' /></a>";
 		}
 		else
 		{

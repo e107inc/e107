@@ -595,7 +595,7 @@ class e107MailManager
 			case MAIL_STATUS_HELD :
 				return LAN_MAILOUT_217;
 			default :
-				if (($status > MAIL_STATUS_PENDING) && ($status <= MAIL_STATUS_ACTIVE))
+				if (($status > defset('MAIL_STATUS_PENDING')) && ($status <= defset('MAIL_STATUS_ACTIVE')))
 				{
 					return LAN_MAILOUT_214;
 				}

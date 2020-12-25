@@ -286,7 +286,7 @@ class list_admin
 		//menu preference : caption
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_2;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
-		$this->row['HELP'] = LIST_ADMIN_LAN_4;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_4');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-caption";
 		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -294,7 +294,7 @@ class list_admin
 		//menu preference : icon : use
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_5;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_6;
-		$this->row['HELP'] = LIST_ADMIN_LAN_7;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_7');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-icon-use";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -305,7 +305,7 @@ class list_admin
 		//menu preference : icon : show default theme bullet
 		$this->row['TOPIC'] = LIST_ADMIN_MENU_2;
 		$this->row['HEADING'] = LIST_ADMIN_MENU_3;
-		$this->row['HELP'] = LIST_ADMIN_MENU_4;
+		$this->row['HELP'] = defset('LIST_ADMIN_MENU_4');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-icon-show";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -316,7 +316,7 @@ class list_admin
 		//menu preference : amount chars
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_8;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_9;
-		$this->row['HELP'] = LIST_ADMIN_LAN_10;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_10');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-amount-chars";
 		$this->row['FIELD'] = $rs->form_text($type."_char_heading", "3", $this->parent->list_pref[$type."_char_heading"], "3", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -324,7 +324,7 @@ class list_admin
 		//menu preference : postfix
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_11;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_12;
-		$this->row['HELP'] = LIST_ADMIN_LAN_13;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_13');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-postfix";
 		$this->row['FIELD'] = $rs->form_text($type."_char_postfix", "3", $this->parent->list_pref[$type."_char_postfix"], "3", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -332,7 +332,7 @@ class list_admin
 		//menu preference : date
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_14;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_15;
-		$this->row['HELP'] = LIST_ADMIN_LAN_16;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_16');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-date";
 		$this->row['FIELD'] = $rs->form_text($type."_datestyle", "30", $this->parent->list_pref[$type."_datestyle"], "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -340,7 +340,7 @@ class list_admin
 		//menu preference : date today
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_17;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_18;
-		$this->row['HELP'] = LIST_ADMIN_LAN_19;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_19');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-datet";
 		$this->row['FIELD'] = $rs->form_text($type."_datestyletoday", "30", $this->parent->list_pref[$type."_datestyletoday"], "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -348,7 +348,7 @@ class list_admin
 		//menu preference : show empty
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_26;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_27;
-		$this->row['HELP'] = LIST_ADMIN_LAN_28;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_28');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-sempty";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -359,7 +359,7 @@ class list_admin
 		//menu preference : open section if content exists? this will override the individual setting of the section
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_39;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_40;
-		$this->row['HELP'] = LIST_ADMIN_LAN_41;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_41');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-osie";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -396,7 +396,7 @@ class list_admin
 		//page preference : caption
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_2;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
-		$this->row['HELP'] = LIST_ADMIN_LAN_4;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_4');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-caption";
 		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -404,7 +404,7 @@ class list_admin
 		//page preference : icon : use
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_5;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_6;
-		$this->row['HELP'] = LIST_ADMIN_LAN_7;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_7');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-icon-use";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -415,7 +415,7 @@ class list_admin
 		//page preference : icon : show default theme bullet
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_29;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_30;
-		$this->row['HELP'] = LIST_ADMIN_LAN_31;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_31');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-icon-show";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -426,7 +426,7 @@ class list_admin
 		//page preference : amount chars
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_8;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_9;
-		$this->row['HELP'] = LIST_ADMIN_LAN_10;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_10');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-amount-chars";
 		$this->row['FIELD'] = $rs->form_text($type."_char_heading", "3", $this->parent->list_pref[$type."_char_heading"], "3", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -434,7 +434,7 @@ class list_admin
 		//page preference : postfix
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_11;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_12;
-		$this->row['HELP'] = LIST_ADMIN_LAN_13;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_13');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-postfix";
 		$this->row['FIELD'] = $rs->form_text($type."_char_postfix", "3", $this->parent->list_pref[$type."_char_postfix"], "3", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -442,7 +442,7 @@ class list_admin
 		//page preference : date
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_14;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_15;
-		$this->row['HELP'] = LIST_ADMIN_LAN_16;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_16');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-date";
 		$this->row['FIELD'] = $rs->form_text($type."_datestyle", "30", $this->parent->list_pref[$type."_datestyle"], "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -450,7 +450,7 @@ class list_admin
 		//page preference : date today
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_17;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_18;
-		$this->row['HELP'] = LIST_ADMIN_LAN_19;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_19');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-datet";
 		$this->row['FIELD'] = $rs->form_text($type."_datestyletoday", "30", $this->parent->list_pref[$type."_datestyletoday"], "50", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -458,7 +458,7 @@ class list_admin
 		//page preference : show empty
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_26;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_27;
-		$this->row['HELP'] = LIST_ADMIN_LAN_28;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_28');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-showe";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -469,7 +469,7 @@ class list_admin
 		//page preference : colomn
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_20;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_21;
-		$this->row['HELP'] = LIST_ADMIN_LAN_22;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_22');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-colomn";
 		$this->row['FIELD'] = $rs->form_select_open($type."_colomn");
 			for($a=1, $aMax = count($this->parent->sections); $a<= $aMax; $a++)
@@ -482,7 +482,7 @@ class list_admin
 		//page preference : welcome text
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_23;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_24;
-		$this->row['HELP'] = LIST_ADMIN_LAN_25;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_25');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-wtext";
 		$this->row['FIELD'] = $rs->form_textarea($type."_welcometext", "50", "5", $tp->toHTML($this->parent->list_pref[$type."_welcometext"],"","defs"), "", "tbox");
 		$text .= $this->parseTemplate('TOPIC_ROW');
@@ -492,7 +492,7 @@ class list_admin
 			//timelapse:show
 			$this->row['TOPIC'] = LIST_ADMIN_LAN_36;
 			$this->row['HEADING'] = LIST_ADMIN_LAN_37;
-			$this->row['HELP'] = LIST_ADMIN_LAN_38;
+			$this->row['HELP'] = defset('LIST_ADMIN_LAN_38');
 			$this->row['CONTID'] = "list-new-page-{$type}-expandable-timelapse-show";
 			$this->row['FIELD'] = "
 				".$rs->form_radio($type."_timelapse", "1", ($this->parent->list_pref[$type."_timelapse"] ? "1" : "0"), "", "").LIST_ADMIN_7."
@@ -503,7 +503,7 @@ class list_admin
 			//timelapse day number maximum
 			$this->row['TOPIC'] = LIST_ADMIN_LAN_32;
 			$this->row['HEADING'] = LIST_ADMIN_LAN_33;
-			$this->row['HELP'] = LIST_ADMIN_LAN_34;
+			$this->row['HELP'] = defset('LIST_ADMIN_LAN_34');
 			$this->row['CONTID'] = "list-new-page-{$type}-expandable-timelapse-dnm";
 			$this->row['FIELD'] = $rs->form_text($type."_timelapse_days", "3", $this->parent->list_pref[$type."_timelapse_days"], "3", "tbox")." ".LIST_ADMIN_LAN_35;
 			$text .= $this->parseTemplate('TOPIC_ROW');
@@ -512,7 +512,7 @@ class list_admin
 		//page preference : open section if content exists? this will override the individual setting of the section
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_39;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_40;
-		$this->row['HELP'] = LIST_ADMIN_LAN_41;
+		$this->row['HELP'] = defset('LIST_ADMIN_LAN_41');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-osie";
 		$this->row['FIELD'] = "
 			".$rs->form_radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."

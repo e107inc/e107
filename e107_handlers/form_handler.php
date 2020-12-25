@@ -4569,7 +4569,14 @@ var_dump($select_options);*/
 		foreach ($fieldarray as $field => $data)
 		{
 
-
+			if(!isset($data['readParms']) || $data['readParms'] === '' )
+			{
+				$data['readParms'] = array();
+			}
+			elseif(is_string($data['readParms'])) // fix for readParms = '';
+			{
+				parse_str($data['readParms'],$data['readParms']);
+			}
 			// shouldn't happen... test with Admin->Users with user_xup visible and NULL values in user_xup table column before re-enabling this code.
 			/*
 			if(!isset($fieldvalues[$field]) && vartrue($data['alias']))

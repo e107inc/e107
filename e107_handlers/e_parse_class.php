@@ -1530,7 +1530,7 @@ class e_parse extends e_parser
 	 */
 	public function toHTML($text, $parseBB = FALSE, $modifiers = '', $postID = '', $wrap = FALSE)
 	{
-		if($text == '')
+		if(empty($text) || !is_string($text))
 		{
 			return $text;
 		}
@@ -4805,6 +4805,11 @@ class e_parser
 	 */
 	public function isBBcode($text)
 	{
+		if(!is_string($text))
+		{
+			return false;
+		}
+
 		if(strpos($text,'[')=== false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
 		{
 			return false;
@@ -4834,6 +4839,10 @@ class e_parser
 	 */
 	public function isHtml($text)
 	{
+		if(!is_string($text))
+		{
+			return false;
+		}
 
 		if(strpos($text,'[html]') !==false)
 		{
@@ -4935,6 +4944,11 @@ class e_parser
 	 */
 	public function isVideo($file)
 	{
+		if(!is_string($file))
+		{
+			return false;
+		}
+
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
 		return $ext === 'youtube' || $ext === 'youtubepl';
@@ -4948,6 +4962,11 @@ class e_parser
 	 */
 	public function isImage($file)
 	{
+		if(!is_string($text))
+		{
+			return false;
+		}
+
 		if(strpos($file, "{e_") === 0)
 		{
 			$file = e107::getParser()->replaceConstants($file);

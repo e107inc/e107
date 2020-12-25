@@ -19,11 +19,11 @@ if (!defined('e107_INIT'))
 if (!defined('ADMIN_AREA'))
 {
 	//avoid PHP warning
-	define("ADMIN_AREA", TRUE);
+	define("ADMIN_AREA", true);
 }
 if(!defined('USER_AREA'))
 {
-	define("USER_AREA", FALSE);
+	define("USER_AREA", false);
 }
 
 e107::getDebug()->logTime('(Header Top)');

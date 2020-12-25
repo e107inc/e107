@@ -196,7 +196,13 @@ class download_cat_ui extends e_admin_ui
 
 		while($row = $sql->fetch())
 		{
-			$num = $row['_depth'] - 1;
+			$num = (int) $row['_depth'] - 1;
+
+			if($num < 0)
+			{
+				$num = 0;
+			}
+
 			$id = $row['download_category_id'];
 			$this->downloadCats[$id] = str_repeat("&nbsp;&nbsp;",$num).$row['download_category_name'];
 		}
@@ -2314,7 +2320,7 @@ $columnInfo = array(
 		            		         <col style='width:70%'/>
 		            		      </colgroup>
 		            		      <tr>
-		            		         <td>".DOWLAN_XXX."</td>
+		            		         <td>".defset('DOWLAN_XXX')."</td>
 		            		         <td>//TODO</td>
 		            		      </tr>
 		            		   </table>

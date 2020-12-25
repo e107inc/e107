@@ -604,6 +604,11 @@ e107::js('footer-inline', js());
 
 		private function addPageActivate()
 		{
+			if(empty($_POST['activate']))
+			{
+				return null;
+			}
+
 			$ue = e107::getUserExt();
 			$tp = e107::getParser();
 			$ret = "";
@@ -642,6 +647,11 @@ e107::js('footer-inline', js());
 
 		private function addPageDeactivate()
 		{
+
+			if(empty($_POST['deactivate']))
+			{
+				return null;
+			}
 
 			$tp = e107::getParser();
 			$sql = e107::getDb();
