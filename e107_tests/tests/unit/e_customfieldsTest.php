@@ -224,7 +224,59 @@
 			  19 => 'Userclass',
 			  20 => 'Progress Bar',
 			);
+			
+		$expectedValues = array (
+		  'image'       => '<img class="img-responsive img-fluid"',
+		  'video'       => '<div class="embed-responsive embed-responsive-16by9',
+		  'bbarea'      => '<!-- bbcode-html-start --><p><b>Rich text.</b></p><!-- bbcode-html-end -->',
+		  'boolean'     => '<i class',
+		  'checkboxes'  => 'Boat, Plane',
+		  'country'     => 'Andorra',
+		  'datestamp'   => '<span>13 Jan 2017 : 00:35</span>',
+		  'dropdown'    => 'Red',
+		  'email'       => 'my@email.com',
+		  'file'        => '<a href=',
+		  'icon'        => '<i class=',
+		  'language'    => 'French',
+		  'lanlist'     => 'English',
+		  'number'      => '0',
+		  'password'    => 'a8f5f167f44f4964e6c998dee827110c',
+		  'tags'        => "<span class='label label-default'",
+		  'textarea'    => 'Plain text',
+		  'url'         => 'http://something.com',
+		  'user'        => 'e107',
+		  'userclass'   => 'Everyone (public)',
+		  'progressbar' => "<div  class='progress",
 
+		);	
+
+		$expectedRawValues = array (
+		  'image'       => 'thumb.php?src=',
+		  'video'       => 'https://www.youtube.com/watch?v=WcuRPzB4RNc',
+		  'bbarea'      => '<!-- bbcode-html-start --><p><b>Rich text.</b></p><!-- bbcode-html-end -->',
+		  'boolean'     => '1',
+		  'checkboxes'  => 'boat,plane',
+		  'country'     => 'ad',
+		  'datestamp'   => '1484267751',
+		  'dropdown'    => 'red',
+		  'email'       => 'my@email.com',
+		  'file'        => 'e107_banners.zip',
+		  'icon'        => 'fa-check',
+		  'language'    => 'fr',
+		  'lanlist'     => 'en',
+		  'number'      => '0',
+		  'password'    => 'a8f5f167f44f4964e6c998dee827110c',
+		  'tags'        => 'tag1,tag2,tag3',
+		  'textarea'    => 'Plain text',
+		  'url'         => 'http://something.com',
+		  'user'        => '1',
+		  'userclass'   => '0',
+		  'progressbar' => '75%',
+
+		);
+
+
+		$export = array();
 			foreach($data as $ok=>$v)
 			{
 
@@ -232,16 +284,13 @@
 			//	echo ($title)."\n";
 				$value = $this->cf->getFieldValue($ok);
 				$valueRaw = $this->cf->getFieldValue($ok, array('mode'=>'raw'));
+
+				$this->assertStringStartsWith($expectedValues[$ok], $value);
+				$this->assertStringContainsString($expectedRawValues[$ok], $valueRaw);
 			}
 
 			// check titles.
 			$this->assertEquals($titlesExpected,$titles);
-
-			//@todo more tests for value and valueRaw. 
-
-
-
-
 
 		}
 

@@ -29,10 +29,10 @@
 		private $_tab_default = 'additional';
 
 
-		function __construct()
+		public function __construct()
 		{
 			asort($this->_fieldTypes);
-			$this->_tab = array($this->_tab_default => "Additional");
+			$this->_tab = array($this->_tab_default => 'Additional');
 
 		}
 
@@ -145,112 +145,125 @@
 
 			switch($fieldType)
 			{
-				case "dropdown":
-				case "checkboxes":
-				case "radio":
-					return ($raw) ? $value : e107::getForm()->renderValue($key,$value,$this->_config[$key]);
+				case 'dropdown':
+				case 'checkboxes':
+				case 'radio':
+					$ret = ($raw) ? $value : e107::getForm()->renderValue($key,$value,$this->_config[$key]);
 				break;
 
-				case "video":
+				case 'video':
 
 					if(empty($value))
 					{
-						return null;
+						$ret = null;
 					}
-
-					return ($raw) ? 'https://www.youtube.com/watch?v='.str_replace(".youtube", '', $value) : $tp->toVideo($value);
+					else
+					{
+						$ret = ($raw) ? 'https://www.youtube.com/watch?v='.str_replace('.youtube', '', $value) : $tp->toVideo($value);
+					}
 				break;
 
 
 
-				case "image":
-					return ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
+				case 'image':
+					$ret = ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
 					break;
 
-				case "icon":
-					return ($raw) ? str_replace(".glyph", '', $value) : $tp->toIcon($value);
+				case 'icon':
+					$ret = ($raw) ? str_replace('.glyph', '', $value) : $tp->toIcon($value);
 					break;
 
-				case "country":
-					return ($raw) ? $value : e107::getForm()->getCountry($value);
+				case 'country':
+					$ret = ($raw) ? $value : e107::getForm()->getCountry($value);
 					break;
 
-				case "tags":
-					return ($raw) ? $value : $tp->toLabel($value,$type);
+				case 'tags':
+					$ret = ($raw) ? $value : $tp->toLabel($value,$type);
 					break;
 
-				case "lanlist":
-				case "language":
-					return ($raw) ? $value : e107::getLanguage()->convert($value);
+				case 'lanlist':
+				case 'language':
+					$ret = ($raw) ? $value : e107::getLanguage()->convert($value);
 					break;
 
-				case "datestamp":
-					return ($raw) ? $value : $tp->toDate($value);
+				case 'datestamp':
+					$ret = ($raw) ? $value : $tp->toDate($value);
 					break;
 
-				case "file":
+				case 'file':
 					if(empty($value))
 					{
-						return null; 
+						$ret = null;
 					}
-					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+					else
+					{
+						$ret = ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+					}
 					break;
 
-				case "url":
-				case "email":
-					return ($raw) ? $value : $tp->toHTML($value);
+				case 'url':
+				case 'email':
+					$ret = ($raw) ? $value : $tp->toHTML($value);
 					break;
 
-				case "user":
-					return ($raw) ? $value : e107::getSystemUser($value,true)->getName();
+				case 'user':
+					$ret = ($raw) ? $value : e107::getSystemUser($value,true)->getName();
 					break;
 
-				case "userclass":
-					return ($raw) ? $value : e107::getUserClass()->getName($value);
+				case 'userclass':
+					$ret = ($raw) ? $value : e107::getUserClass()->getName($value);
 					break;
 
-				case "progressbar":
+				case 'progressbar':
 					if($raw)
 					{
-						return (strpos($value, '/') === false) ? $value.'%' : $value;
+						$ret = (strpos($value, '/') === false) ? $value.'%' : $value;
+					}
+					else
+					{
+						$ret = e107::getForm()->progressBar($key,$value,$this->_config[$key]);
 					}
 
-					return e107::getForm()->progressBar($key,$value,$this->_config[$key]);
 					break;
 
-				case "textarea":
-				case "bbarea":
-					return $tp->toHTML($value, true, "BODY");
+				case 'textarea':
+				case 'bbarea':
+					$ret = $tp->toHTML($value, true, 'BODY');
 					break;
 
 
-				case "boolean":
+				case 'boolean':
 					if($raw)
 					{
 						return $value;
 					}
-
-					return empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
+					else
+					{
+						$ret = empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
+					}
 					break;
 
-				case "checkbox":
+				case 'checkbox':
 					if($raw)
 					{
-						return $value;
+						$ret = $value;
 					}
-
-					if(is_numeric($value))
+					elseif(is_numeric($value))
 					{
-						return empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
+						$ret = empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
 					}
-
-					return $value;
+					else
+					{
+						$ret = $value;
+					}
 					break;
 
 				default:
-					return $tp->toHTML($value);
+					$ret = $tp->toHTML($value);
 			}
 
+
+			return $ret;
 		}
 
 
@@ -263,10 +276,10 @@
 			foreach($this->_data as $ok=>$v)
 			{
 
-				$text .= "<tr><td>".$ok."</td><td>".$this->getFieldTitle($ok)."</td><td>".$this->getFieldValue($ok)."</td><td>".$this->getFieldValue($ok, array('mode'=>'raw'))."</td></tr>";
+				$text .= '<tr><td>' .$ok. '</td><td>' .$this->getFieldTitle($ok). '</td><td>' .$this->getFieldValue($ok). '</td><td>' .$this->getFieldValue($ok, array('mode' =>'raw')). '</td></tr>';
 			}
 
-			$text .= "</table>";
+			$text .= '</table>';
 
 			return $text;
 
@@ -310,7 +323,7 @@
 
 			$text = "
 			<div class='form-group'>
-				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder'=>"Tab label",'size'=>'medium', 'required'=>1))."
+				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
 			</div>
 			<table class='table table-striped table-bordered'>
 			<colgroup>
@@ -320,8 +333,8 @@
 				<col style='width:40%' />
 			</colgroup>
 			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
-				";
+				<tr><th>".LAN_NAME. '</th><th>' .LAN_TITLE. '</th><th>' .LAN_TYPE. '</th><th>Params</th><th>' .LAN_TOOLTIP. '</th></tr>
+				';
 
 			for($i = 0; $i <= $this->_field_limit; $i++)
 			{
@@ -343,10 +356,10 @@
 				$fieldType = $frm->select($name . '[' . $i . '][type]', $this->getFieldTypes(), varset($value[$i]['type']), $writeParms);
 				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', varset($value[$i]['writeParms']), 255, $parmsWriteParms);
 				$fieldHelp = $frm->text($name . '[' . $i . '][help]', varset($value[$i]['help']), 255, array('size' => 'block-level'));
-				$text .= "<tr><td>" . $fieldName . "</td><td>" . $fieldTitle . "</td><td>" . $fieldType . "</td><td>" . $fieldParms . "</td><td>" . $fieldHelp . "</td></tr>";
+				$text .= '<tr><td>' . $fieldName . '</td><td>' . $fieldTitle . '</td><td>' . $fieldType . '</td><td>' . $fieldParms . '</td><td>' . $fieldHelp . '</td></tr>';
 			}
 
-			$text .= "</tbody></table>";
+			$text .= '</tbody></table>';
 
 
 			return $text;
@@ -362,13 +375,13 @@
 		{
 			switch($type)
 			{
-				case "radio":
-				case "dropdown":
-				case "checkboxes":
+				case 'radio':
+				case 'dropdown':
+				case 'checkboxes':
 					return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
 					break;
 
-				case "datestamp":
+				case 'datestamp':
 					return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
 				break;
 
@@ -405,7 +418,7 @@
 
 				if($fld['type'] === 'icon')
 				{
-					$fld['writeParms'] .= "&glyphs=1";
+					$fld['writeParms'] .= '&glyphs=1';
 				}
 
 				if($fld['type'] === 'checkboxes')
@@ -525,7 +538,7 @@
 			{
 				if(substr($k,0,$len) === $fieldname)
 				{
-					list($tmp,$newkey) = explode("__",$k);
+					list($tmp,$newkey) = explode('__',$k);
 					$new_data[$fieldname][$newkey] = $v;
 					unset($new_data[$k]);
 
