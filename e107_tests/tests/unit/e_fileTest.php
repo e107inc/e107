@@ -421,6 +421,13 @@ class e_fileTest extends \Codeception\Test\Unit
 				$this->assertNotContains('style.css', $files);
 
 
+				// test folder with ony a folder inside. (no files)
+				$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+				$result = $this->fl->get_files(e_DOCS,'',$publicFilter);
+				$expected = array();
+
+				$this->assertSame($expected, $result);
+
 			}
 /*
 			public function testGetUserDir()
