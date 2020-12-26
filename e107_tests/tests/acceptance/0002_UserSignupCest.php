@@ -44,6 +44,7 @@ class UserSignupCest
 		$I->click('register');
 
 		$I->dontSee('Unauthorized access!');
+		$I->dontSee('Error');
 
 	}
 

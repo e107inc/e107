@@ -44,7 +44,7 @@ unset($e_ROOT);
 class installLog
 {
 
-	const logFile = "e107InstallLog.log";
+	const logFile = "e107Install.log";
 
 
 	static function exceptionHandler(Exception $exception)
@@ -53,7 +53,7 @@ class installLog
 		self::add($message, "error");
 	}
 
-	static function errorHandler($errno, $errstr, $errfile, $errline)
+	static function errorHandler($errno=null, $errstr=null, $errfile=null, $errline=null)
 	{
 
 		$error = "Error on line $errline in file ".$errfile." : ".$errstr;
@@ -143,7 +143,7 @@ define("e_UC_NOBODY", 255);*/
 
 define("E107_INSTALL",true);
 
-if($_SERVER['QUERY_STRING'] !== "debug")
+if($_SERVER['QUERY_STRING'] !== "debug") // install.php?debug
 {
 	error_reporting(0); // suppress all errors unless debugging.
 }
@@ -159,13 +159,13 @@ if($_SERVER['QUERY_STRING'] === 'clear')
 
 //error_reporting(E_ALL);
 
-function e107_ini_set($var, $value)
+/*function e107_ini_set($var, $value)
 {
 	if (function_exists('ini_set'))
 	{
 		ini_set($var, $value);
 	}
-}
+}*/
 
 // setup some php options
 
@@ -198,7 +198,7 @@ if($inc_path[0] !== ".")
 {
 	array_unshift($inc_path, ".");
 	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	e107_ini_set("include_path", $inc_path);
+	ini_set("include_path", $inc_path);
 }
 unset($inc_path);
 
@@ -276,7 +276,7 @@ if($e107->initInstall($e107_paths, $ebase, $override)===false)
 {
 	die_fatal_error("Error creating the following empty file: <b>".$ebase.DIRECTORY_SEPARATOR."e107_config.php</b><br />Please create it manually and then run the installation again.");
 }
-	
+
 unset($e107_paths,$override,$ebase);
 
 // NEW - session handler
@@ -2529,7 +2529,7 @@ function template_data()
 */
 function die_fatal_error($error)
 {
-		
+
 	define("e_IMAGE","e107_images/");
 	define("e_JS","e107_web/js/");
 	define("e_THEME", "e107_themes/");
