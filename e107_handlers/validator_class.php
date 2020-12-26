@@ -63,7 +63,7 @@ class e_validator
 	/**
 	 * @var integer Unknown error code
 	 */
-	public const ERR_UNKNOWN = 0;
+	const ERR_UNKNOWN = 0;
 
 	/**
 	 * @var integer Value not found error code
