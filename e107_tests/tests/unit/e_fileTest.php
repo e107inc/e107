@@ -128,12 +128,26 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testFile_size_encode()
 			{
+				$arr = array(
+					'1&nbsp;kB'   => 1024,
+					'2&nbsp;kB'   => 2048,
+					'1&nbsp;MB'   => 1048576,
+					'1&nbsp;GB'   => 1073741824,
+					'1&nbsp;TB'   => 1099511627776,
+				);
+
+				foreach($arr as $expected => $bytes)
+				{
+					$result = $this->fl->file_size_encode($bytes);
+					$this->assertSame($expected, $result);
+
+				}
 
 			}
-
+/*
 			public function testMkDir()
 			{
 

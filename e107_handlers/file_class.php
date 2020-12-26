@@ -811,7 +811,12 @@
 
 			while(false !== ($file = readdir($handle)))
 			{
-				if(($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && is_dir($path . '/' . $file)   && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
+				if($file === '.' || $file === '..' || in_array($file, $this->dirFilter) || in_array($file, $omit))
+				{
+					continue;
+				}
+
+				if(is_dir($path . '/' . $file) && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
 				{
 					$ret[] = $file;
 				}
@@ -829,7 +834,7 @@
 		function rmtree($dir)
 		{
 
-			if(substr($dir, -1) != '/')
+			if(substr($dir, -1) !== '/')
 			{
 				$dir .= '/';
 			}
@@ -837,23 +842,26 @@
 			{
 				while($obj = readdir($handle))
 				{
-					if($obj != '.' && $obj != '..')
+					if($obj === '.' || $obj === '..')
 					{
-						if(is_dir($dir . $obj))
+						continue;
+					}
+
+					if(is_dir($dir . $obj))
+					{
+						if(!$this->rmtree($dir . $obj))
 						{
-							if(!$this->rmtree($dir . $obj))
-							{
-								return false;
-							}
-						}
-						elseif(is_file($dir . $obj))
-						{
-							if(!unlink($dir . $obj))
-							{
-								return false;
-							}
+							return false;
 						}
 					}
+					elseif(is_file($dir . $obj))
+					{
+						if(!unlink($dir . $obj))
+						{
+							return false;
+						}
+					}
+
 				}
 
 				closedir($handle);
@@ -950,34 +958,39 @@
 			{
 				$size = filesize($size);
 			}
+
+
 			$kb = 1024;
 			$mb = 1024 * $kb;
 			$gb = 1024 * $mb;
 			$tb = 1024 * $gb;
+
 			if(!$size)
 			{
 				return '0&nbsp;' . CORE_LAN_B;
 			}
 			if($size < $kb)
 			{
-				return $size . "&nbsp;" . CORE_LAN_B;
+				$ret = $size . "&nbsp;" . CORE_LAN_B;
 			}
 			elseif($size < $mb)
 			{
-				return round($size / $kb, $decimal) . "&nbsp;" . CORE_LAN_KB;
+				$ret = round($size / $kb, $decimal) . "&nbsp;" . CORE_LAN_KB;
 			}
 			elseif($size < $gb)
 			{
-				return round($size / $mb, $decimal) . "&nbsp;" . CORE_LAN_MB;
+				$ret = round($size / $mb, $decimal) . "&nbsp;" . CORE_LAN_MB;
 			}
 			elseif($size < $tb)
 			{
-				return round($size / $gb, $decimal) . "&nbsp;" . CORE_LAN_GB;
+				$ret = round($size / $gb, $decimal) . "&nbsp;" . CORE_LAN_GB;
 			}
 			else
 			{
-				return round($size / $tb, 2) . "&nbsp;" . CORE_LAN_TB;
+				$ret = round($size / $tb, 2) . "&nbsp;" . CORE_LAN_TB;
 			}
+
+			return $ret;
 		}
 
 
@@ -1571,7 +1584,7 @@
 
 			//   print_a($headers);
 
-			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302")) ? true : false;
+			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
 		}
 
 
@@ -1854,7 +1867,7 @@
 
 			}
 
-			return array('success' => $success, 'error' => $error, 'skipped' => $skipped);
+			return compact('success', 'error', 'skipped');
 		}
 
 
