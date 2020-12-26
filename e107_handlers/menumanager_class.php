@@ -2087,6 +2087,9 @@ class e_menu_layout
 
 			$themeFileContent = str_replace("class ".$theme."_theme", "class ".$theme."__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
 
+			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
+			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
+
 			try
 			{
 			   @eval($themeFileContent);
