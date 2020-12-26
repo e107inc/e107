@@ -207,10 +207,11 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
-		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
+
+		validatorClass::checkMandatory('user_name,user_loginname', $allData);
+		// Check for missing fields (email done in userValidation() )
 		validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);		// Do basic DB-related checks
 		$userMethods->userValidation($allData);
-
 
 		$savePassword = null;
 
