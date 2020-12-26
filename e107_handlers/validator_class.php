@@ -988,7 +988,9 @@ class validatorClass
 	//  ...one and aren't otherwise defined.
 	public static function validateFields(&$sourceFields, &$definitions, $addDefaults = FALSE)
 	{
-		global $tp, $pref;
+		$tp = e107::getParser();
+		$pref = e107::getPref();
+
 		$ret = array('data' => array(), 'failed' => array(), 'errors' => array());
 
 		foreach ($definitions as $dest => $defs)

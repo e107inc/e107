@@ -694,6 +694,7 @@ e107::js('footer-inline', js());
 
 			// Get list of current extended fields
 			$curList = $ue->user_extended_get_fieldlist();
+			$curNames = array();
 			foreach($curList as $c)
 			{
 				$curNames[] = $c['user_extended_struct_name'];
@@ -728,7 +729,7 @@ e107::js('footer-inline', js());
 
 		    foreach($preList as $k=>$a)
 			{
-				if($k !='version') // don't know why this is appearing in the array.
+				if($k !== 'version') // don't know why this is appearing in the array.
 				{
 			        $active = (in_array($a['name'], $curNames)) ? TRUE : FALSE;
 					$txt .= $this->show_predefined_field($a,$active);
