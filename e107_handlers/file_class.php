@@ -229,7 +229,7 @@
 		{
 			$ret = array();
 			$invert = false;
-			if(strpos($fmask,'~') === 0)
+			if(substr($fmask, 0, 1) == '~')
 			{
 				$invert = true;                        // Invert selection - exclude files which match selection
 				$fmask = substr($fmask, 1);
@@ -270,17 +270,19 @@
 					continue;
 				}
 
-				if(($recurse_level > 0) && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && is_dir($path . '/' . $file))
-				{
-					// Its a directory - recurse into it unless a filtered directory or required depth achieved
-					$xx = $this->get_files($path . '/' . $file, $fmask, $omit, $recurse_level - 1);
-					$ret = array_merge($ret, $xx);
-
+				if(is_dir($path . '/' . $file))
+				{    // Its a directory - recurse into it unless a filtered directory or required depth achieved
+					// Must always check for '.' and '..'
+					if(($recurse_level > 0) && !in_array($file, $this->dirFilter) && !in_array($file, $omit))
+					{
+						$xx = $this->get_files($path . '/' . $file, $fmask, $omit, $recurse_level - 1);
+						$ret = array_merge($ret, $xx);
+					}
 				}
 				else
 				{
 					// Now check against standard reject list and caller-specified list
-					if(empty($fmask) || ($invert != preg_match("#" . $fmask . "#", $file)))
+					if(($fmask == '') || ($invert != preg_match("#" . $fmask . "#", $file)))
 					{    // File passes caller's filter here
 						$rejected = false;
 
@@ -430,8 +432,6 @@
 		 */
 		public function get_file_info($path_to_file, $imgcheck = true, $auto_fix_ext = true)
 		{
-			trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use getFileInfo() instead.', E_USER_DEPRECATED); // NO LAN
-
 			return $this->getFileInfo($path_to_file, $imgcheck, $auto_fix_ext);
 		}
 
@@ -538,7 +538,7 @@
 			{
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					e107::getLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
+					e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
 				}
 
 				return false;            // May not be installed
@@ -811,12 +811,7 @@
 
 			while(false !== ($file = readdir($handle)))
 			{
-				if($file === '.' || $file === '..' || in_array($file, $this->dirFilter) || in_array($file, $omit))
-				{
-					continue;
-				}
-
-				if(is_dir($path . '/' . $file) && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
+				if(($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && is_dir($path . '/' . $file)   && ($fmask == '' || preg_match("#" . $fmask . "#", $file)))
 				{
 					$ret[] = $file;
 				}
@@ -834,7 +829,7 @@
 		function rmtree($dir)
 		{
 
-			if(substr($dir, -1) !== '/')
+			if(substr($dir, -1) != '/')
 			{
 				$dir .= '/';
 			}
@@ -842,26 +837,23 @@
 			{
 				while($obj = readdir($handle))
 				{
-					if($obj === '.' || $obj === '..')
+					if($obj != '.' && $obj != '..')
 					{
-						continue;
-					}
-
-					if(is_dir($dir . $obj))
-					{
-						if(!$this->rmtree($dir . $obj))
+						if(is_dir($dir . $obj))
 						{
-							return false;
+							if(!$this->rmtree($dir . $obj))
+							{
+								return false;
+							}
+						}
+						elseif(is_file($dir . $obj))
+						{
+							if(!unlink($dir . $obj))
+							{
+								return false;
+							}
 						}
 					}
-					elseif(is_file($dir . $obj))
-					{
-						if(!unlink($dir . $obj))
-						{
-							return false;
-						}
-					}
-
 				}
 
 				closedir($handle);
@@ -958,39 +950,34 @@
 			{
 				$size = filesize($size);
 			}
-
-
 			$kb = 1024;
 			$mb = 1024 * $kb;
 			$gb = 1024 * $mb;
 			$tb = 1024 * $gb;
-
 			if(!$size)
 			{
 				return '0&nbsp;' . CORE_LAN_B;
 			}
 			if($size < $kb)
 			{
-				$ret = $size . "&nbsp;" . CORE_LAN_B;
+				return $size . "&nbsp;" . CORE_LAN_B;
 			}
 			elseif($size < $mb)
 			{
-				$ret = round($size / $kb, $decimal) . "&nbsp;" . CORE_LAN_KB;
+				return round($size / $kb, $decimal) . "&nbsp;" . CORE_LAN_KB;
 			}
 			elseif($size < $gb)
 			{
-				$ret = round($size / $mb, $decimal) . "&nbsp;" . CORE_LAN_MB;
+				return round($size / $mb, $decimal) . "&nbsp;" . CORE_LAN_MB;
 			}
 			elseif($size < $tb)
 			{
-				$ret = round($size / $gb, $decimal) . "&nbsp;" . CORE_LAN_GB;
+				return round($size / $gb, $decimal) . "&nbsp;" . CORE_LAN_GB;
 			}
 			else
 			{
-				$ret = round($size / $tb, 2) . "&nbsp;" . CORE_LAN_TB;
+				return round($size / $tb, 2) . "&nbsp;" . CORE_LAN_TB;
 			}
-
-			return $ret;
 		}
 
 
@@ -1141,7 +1128,7 @@
 				}
 				else
 				{
-					e107::redirect(); // ("location: {$e107->base_path}");
+					header("location: {$e107->base_path}");
 					exit();
 				}
 			}
@@ -1202,7 +1189,7 @@
 					}
 					else
 					{
-						e107::redirect();
+						header("location: " . e_BASE . "index.php");
 						exit();
 					}
 				}
@@ -1314,7 +1301,7 @@
 			if($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH, $removePath) == 0)
 			{
 				$error = $archive->errorInfo(true);
-				e107::getLog()->addError($error)->save('FILE', E_LOG_NOTICE);
+				e107::getAdminLog()->addError($error)->save('FILE', E_LOG_NOTICE);
 
 				return false;
 			}
@@ -1584,7 +1571,7 @@
 
 			//   print_a($headers);
 
-			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
+			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302")) ? true : false;
 		}
 
 
@@ -1867,7 +1854,7 @@
 
 			}
 
-			return compact('success', 'error', 'skipped');
+			return array('success' => $success, 'error' => $error, 'skipped' => $skipped);
 		}
 
 
