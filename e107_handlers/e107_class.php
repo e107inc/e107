@@ -4863,31 +4863,40 @@ class e107
 
 	/**
 	 * Internal Use Only.
-	 * @param $e107Path
-	 * @param $curPage
-	 * @param $isPluginDir
+	 * @param string $e107Path
+	 * @param string $curPage
+	 * @param bool $isPluginDir
 	 * @return bool
 	 */
 	public function inAdminDir($e107Path, $curPage, $isPluginDir)
 	{
 		$inAdminDir         = false;
 		$eplug_admin        = !empty($GLOBALS['eplug_admin']);
-		$ADMIN_DIRECTORY    = ADMINDIR;
 
-		if	(
-			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-			  || ($isPluginDir && (strpos($curPage,'_admin.php') !== false || strpos($curPage,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
-			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
-		//	  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
-			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
-			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
-			  || ($isPluginDir && strpos($curPage,'_config.php')!==false) // BC Fix for old plugins eg. dtree_menu
-			)
+		if($eplug_admin || deftrue('ADMIN_AREA'))
 		{
-			$inAdminDir = TRUE;
+			return true;
 		}
 
+		if(strpos($e107Path, ADMINDIR) === 0) // core admin.
+		{
+			$inAdminDir = true;
+		}
+		elseif($isPluginDir) // plugin admin areas
+		{
+			if($curPage === 'prefs.php' || $curPage === 'config.php' || strpos($curPage,'admin_') === 0)
+			{
+				$inAdminDir = true;
+			}
+			elseif(strpos($e107Path, 'admin/') !== false || strpos($curPage, '_admin.php') !==false || strpos($curPage, '_config.php') !==false)
+			{
+				$inAdminDir = true;
+			}
+		}
+
+
 		return $inAdminDir;
+
 	}
 
 
