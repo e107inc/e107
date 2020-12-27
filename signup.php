@@ -503,7 +503,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}
 
 			e107::getEvent()->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
-			e107::getEvent()->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('userpartial', array_merge($allData['data'], (array) $eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 			e107::getEvent()->trigger('user_signup_submitted', $_POST);
 
 
