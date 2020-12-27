@@ -1,14 +1,15 @@
 <?php
 
+require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 	/**
 	 * Navigation Shortcodes
 	 *
-	 * @todo SEF
 	 */
 	class navigation_shortcodes extends e_shortcode
 	{
-
+		use navigation_shortcodes_legacy;
+		
 		public $template;
 		public $counter;
 		public $active;
@@ -18,7 +19,6 @@
 
 		function sc_nav_class($parm = null)
 		{
-
 			return $this->navClass;
 		}
 
@@ -28,7 +28,7 @@
 		 * @return string 'active' on the active link.
 		 * @example {LINK_ACTIVE}
 		 */
-		function sc_link_active($parm = '')
+		function sc_nav_active($parm = null)
 		{
 
 			if($this->active == true)
@@ -46,13 +46,13 @@
 		 *
 		 * @return integer
 		 */
-		function sc_link_id($parm = null)
+		function sc_nav_id($parm = null)
 		{
 
 			return (int) $this->var['link_id'];
 		}
 
-		function sc_link_depth($parm = null)
+		function sc_nav_depth($parm = null)
 		{
 
 			unset($parm);
@@ -74,7 +74,7 @@
 		 * @return string
 		 * @example {LINK_NAME}
 		 */
-		function sc_link_name($parm = null)
+		function sc_nav_name($parm = null)
 		{
 
 			if(empty($this->var['link_name']))
@@ -101,14 +101,14 @@
 		 *
 		 * @return integer
 		 */
-		function sc_link_parent($parm = null)
+		function sc_nav_parent($parm = null)
 		{
 
 			return (int) $this->var['link_parent'];
 		}
 
 
-		function sc_link_identifier($parm = null)
+		function sc_nav_identifier($parm = null)
 		{
 
 			return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
@@ -119,7 +119,7 @@
 		 *
 		 * @return string
 		 */
-		function sc_link_url($parm = null)
+		function sc_nav_url($parm = null)
 		{
 
 			$tp = e107::getParser();
@@ -153,7 +153,7 @@
 		}
 
 		/*
-			function sc_link_sub_oversized($parm='')
+			function sc_nav_sub_oversized($parm='')
 			{
 				$count = count($this->var['link_sub']);
 		
@@ -173,7 +173,7 @@
 		 * @param array $parm
 		 * @return null|string
 		 */
-		function sc_link_target($parm = null)
+		function sc_nav_target($parm = null)
 		{
 
 			if(strpos($this->var['link_url'], '#') !== false)
@@ -188,13 +188,13 @@
 		}
 
 
-		function sc_link_open($parm = '')
+		function sc_nav_open($parm = null)
 		{
 
 			$type = $this->var['link_open'] ? (int) $this->var['link_open'] : 0;
 
 			### 0 - same window, 1 - target blank, 4 - 600x400 popup, 5 - 800x600 popup
-			### TODO - JS popups (i.e. bootstrap)
+			### TODO - JS modal (i.e. bootstrap)
 			switch($type)
 			{
 				case 1:
@@ -213,24 +213,13 @@
 			return '';
 		}
 
-		/**
-		 * @deprecated - Use {LINK_ICON} instead.
-		 */
-		function sc_link_image($parm = '')
-		{
-
-			trigger_error('<b>{LINK_IMAGE} is deprecated. Use {LINK_ICON} instead</b>', E_USER_DEPRECATED); // NO LAN
-
-			return $this->sc_link_icon($parm);
-		}
-
 
 		/**
 		 * Return the link icon of the current link
-		 *
+		 * @example {NAV_ICON}
 		 * @return string
 		 */
-		function sc_link_icon($parm = '')
+		function sc_nav_icon($parm = null)
 		{
 
 			$tp = e107::getParser();
@@ -256,10 +245,10 @@
 
 		/**
 		 * Return the link description of the current link
-		 *
+		 * @example {NAV_DESCRIPTION}
 		 * @return string
 		 */
-		function sc_link_description($parm = '')
+		function sc_nav_description($parm = null)
 		{
 
 			$toolTipEnabled = e107::pref('core', 'linkpage_screentip', false);
@@ -279,7 +268,7 @@
 		 *
 		 * @return string
 		 */
-		function sc_link_sub($parm = '')
+		function sc_nav_sub($parm = null)
 		{
 
 			if(empty($this->var['link_sub']))
@@ -302,6 +291,7 @@
 			$endTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] : $this->template['submenu_end'];
 
 			$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $startTemplate), true, $this);
+			$text = e107::getParser()->parseTemplate(str_replace('{NAV_SUB}', '', $startTemplate), true, $this);
 
 			foreach($this->var['link_sub'] as $val)
 			{
@@ -317,7 +307,7 @@
 			}
 
 			$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $endTemplate), true, $this);
-
+			$text .= e107::getParser()->parseTemplate(str_replace('{NAV_SUB}', '', $endTemplate), true, $this);
 			return $text;
 		}
 
@@ -328,7 +318,7 @@
 		 * @return    string - a generated anchor for the current link.
 		 * @example {LINK_ANCHOR}
 		 */
-		function sc_link_anchor($parm = '')
+		function sc_nav_anchor($parm = null)
 		{
 
 			return $this->var['link_name'] ? '#' . e107::getForm()->name2id($this->var['link_name']) : '';

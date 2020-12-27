@@ -501,8 +501,6 @@ class news_front
 
 	//	$i = $this->interval;
 
-
-		// require_once(e_CORE.'shortcodes/batch/news_archives.php');
 		 $sc = e107::getScBatch('news_archive');
 
 		if(!$NEWSARCHIVE)
