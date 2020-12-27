@@ -4708,14 +4708,14 @@ class e107
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = self::getFolder('plugins');
 		$ADMIN_DIRECTORY = self::getFolder('admin');
-
+		define('ADMINDIR', $ADMIN_DIRECTORY);
 		// Outdated
 		/*$requestQry = '';
 		$requestUrl = $_SERVER['REQUEST_URI'];
 		if(strpos($_SERVER['REQUEST_URI'], '?') !== FALSE)
 			list($requestUrl, $requestQry) = explode("?", $_SERVER['REQUEST_URI'], 2); */
 
-		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
+
 
 		// Leave e_SELF BC, use e_REQUEST_SELF instead
 		/*// moved after page check - e_PAGE is important for BC
@@ -4828,26 +4828,15 @@ class e107
 
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
-
-		// e_SELF has the full HTML path
-		$inAdminDir = FALSE;
-		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
-		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
 		$curPage = !empty($_SERVER['SCRIPT_FILENAME']) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
 		$_SERVER['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-		if	(
-			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-			  || ($isPluginDir && (strpos($curPage,'_admin.php') !== false || strpos($curPage,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
-			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
-			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
-			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
-			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
-			  || ($isPluginDir && strpos($curPage,'_config.php')!==false) // BC Fix for old plugins eg. dtree_menu
-			)
-		{
-			$inAdminDir = TRUE;
-		}
+		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
+		$inAdminDir = $this->inAdminDir($e107Path, $curPage, $isPluginDir);
+
+		// e_SELF has the full HTML path
+
 		if ($isPluginDir)
 		{
 			$temp = substr($e107Path, strpos($e107Path, '/') +1);
@@ -4869,10 +4858,38 @@ class e107
 			define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA')));
 		}
 
-		define('ADMINDIR', $ADMIN_DIRECTORY);
-
 		return $this;
 	}
+
+	/**
+	 * Internal Use Only.
+	 * @param $e107Path
+	 * @param $curPage
+	 * @param $isPluginDir
+	 * @return bool
+	 */
+	public function inAdminDir($e107Path, $curPage, $isPluginDir)
+	{
+		$inAdminDir         = false;
+		$eplug_admin        = !empty($GLOBALS['eplug_admin']);
+		$ADMIN_DIRECTORY    = ADMINDIR;
+
+		if	(
+			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
+			  || ($isPluginDir && (strpos($curPage,'_admin.php') !== false || strpos($curPage,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
+			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
+		//	  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
+			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
+			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
+			  || ($isPluginDir && strpos($curPage,'_config.php')!==false) // BC Fix for old plugins eg. dtree_menu
+			)
+		{
+			$inAdminDir = TRUE;
+		}
+
+		return $inAdminDir;
+	}
+
 
 	/**
 	 * The second part of e107::set_urls()

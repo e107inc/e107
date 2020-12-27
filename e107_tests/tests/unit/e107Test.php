@@ -950,6 +950,41 @@ class e107Test extends \Codeception\Test\Unit
 	}
 
 
+	public function testInAdminDir()
+	{
+		$tests = array(
+			0 => array('path' => 'thumb.php',                                   'plugdir' => false, 'expected' => false),
+			1 => array('path' => 'index.php',                                   'plugdir' => false, 'expected' => false),
+			2 => array('path' => 'e107_admin/prefs.php',                        'plugdir' => false, 'expected' => true),
+			3 => array('path' => 'e107_admin/menus.php',                        'plugdir' => false, 'expected' => true),
+			4 => array('path' => 'e107_plugins/forum/forum.php',                'plugdir' => true,  'expected' => false),
+			5 => array('path' => 'e107_plugins/vstore/admin_config.php',        'plugdir' => true,  'expected' => true),
+			6 => array('path' => 'e107_plugins/login_menu/config.php',          'plugdir' => true,  'expected' => true),
+			7 => array('path' => 'e107_plugins/aplugin/prefs.php',              'plugdir' => true,  'expected' => true),
+			8 => array('path' => 'e107_plugins/dtree_menu/dtree_config.php',    'plugdir' => true,  'expected' => true),
+		);
+
+		foreach($tests as $var)
+		{
+			$curPage = basename($var['path']);
+			$result = $this->e107->inAdminDir($var['path'], $curPage, $var['plugdir']);
+			$this->assertSame($var['expected'], $result);
+		}
+
+		// Test legacy override.
+		$GLOBALS['eplug_admin'] = true;
+		$result = $this->e107->inAdminDir('myplugin.php','myplugin.php', true);
+		$this->assertTrue($result);
+
+		// Test legacy off.
+		$GLOBALS['eplug_admin'] = false;
+		$result = $this->e107->inAdminDir('myplugin.php','myplugin.php', true);
+		$this->assertFalse($result);
+	}
+
+
+
+
 	public function testFilter_request()
 	{
 
