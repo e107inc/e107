@@ -51,7 +51,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	 */
 	function sc_sitedisclaimer()
 	{
-		$default = "Proudly powered by <a href='http://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
+		$default = "Proudly powered by <a href='https://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
