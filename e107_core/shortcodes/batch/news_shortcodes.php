@@ -14,17 +14,12 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-/* DEPRECATED
-register_shortcode('news_shortcodes', TRUE);
-initShortcodeClass('news_shortcodes');
-*/
-
-// Done via e107::getScBatch('news'); call - see news_class.php
-/*e107::getScParser()->registerShortcode('news_shortcodes', true)
-	->initShortcodeClass('news_shortcodes');*/
+require_once(__DIR__.'/news_shortcodes_legacy.php');
 
 class news_shortcodes extends e_shortcode
 {
+	use news_shortcodes_legacy;
+
 	//protected $news_item; - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 	protected $e107;
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
@@ -80,10 +75,10 @@ class news_shortcodes extends e_shortcode
 	{
 		$title = $this->sc_newstitle();
 		// FIXME generic parser toAttribute method (currently toAttribute() isn't appropriate)
-		return '<a href="'.$this->sc_newsurl().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
+		return '<a href="'.$this->sc_news_url().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
 	}
 	
-	function sc_newsbody($parm=null)
+	function sc_news_body($parm=null)
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
@@ -111,7 +106,7 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_news_category_icon('url');
 	}
 
-	function sc_newsauthor($parm)
+	function sc_news_author($parm)
 	{
 		if($this->news_item['user_id'])
 		{
@@ -345,20 +340,6 @@ class news_shortcodes extends e_shortcode
 		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
 	}
 
-	public function sc_news_body($parm=null)
-	{
-		return $this->sc_newsbody($parm);
-	}
-
-	public function sc_news_author($parm=null)
-	{
-		return $this->sc_newsauthor($parm);
-	}
-
-	public function sc_news_author_avatar($parm=null)
-	{
-		return $this->sc_newsavatar($parm);
-	}
 
 	public function sc_news_author_signature($parm=null)
 	{
@@ -391,20 +372,14 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	public function sc_news_summary($parm=null)
-	{
-		return $this->sc_newssummary($parm);
-	}
+
 
 	public function sc_news_description($parm=null)
 	{
 		return $this->sc_newsmetadiz($parm);
 	}
 
-	public function sc_news_tags($parm=null)
-	{
-		return $this->sc_newstags($parm);
-	}
+
 
 	public  function sc_news_comment_count($parm=null)
 	{
@@ -426,10 +401,7 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsavatar($parm);
 	}
 
-	public function sc_news_url($parm=null)
-	{
-		return $this->sc_newsurl($parm);
-	}
+
 
 	public function sc_news_image($parm=null)
 	{
@@ -647,7 +619,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsavatar($parm=null)
+	function sc_news_author_avatar($parm=null)
 	{
 		if(!empty($this->news_item['user_id']))
 		{
@@ -793,11 +765,11 @@ class news_shortcodes extends e_shortcode
 
 	function sc_adminbody($parm)
 	{
-		$news_body = $this->sc_newsbody($parm);
+		$news_body = $this->sc_news_body($parm);
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
-	function sc_newssummary($parm=null)
+	function sc_news_summary($parm=null)
 	{
 		$text = '';
 
@@ -1099,16 +1071,12 @@ class news_shortcodes extends e_shortcode
 		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$title.'</a>';
 	}
 
-	function sc_newsurl($parm=null)
+	function sc_news_url($parm=null)
 	{
 		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
 
-	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
-	function sc_newscaticon($parm = array())
-	{
-		return $this->sc_news_category_icon($parm);
-	}
+
 
 	/**
 	 * Example usage: {NEWSITEM_SCHOOK=mysc_name|my_var1=val1&myvar2=myval2}
@@ -1147,7 +1115,7 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm=null)
+	function sc_news_tags($parm=null)
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
