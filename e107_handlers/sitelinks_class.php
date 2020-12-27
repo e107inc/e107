@@ -1648,8 +1648,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$sc->navClass = $opts['class'];
 		}
 
-		$head			= e107::getParser()->parseTemplate($template['start'],true);
-		$foot 			= e107::getParser()->parseTemplate($template['end'],true);
+		$head			= e107::getParser()->parseTemplate($template['start'], true, $sc);
+
 		$ret 			= "";
 		
 		$sc->counter	= 1;
@@ -1669,7 +1669,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			$sc->counter++;		
 		}
-		
+
+		$foot 			= e107::getParser()->parseTemplate($template['end'], true, $sc);
+
 		return ($ret != '') ? $head.$ret.$foot : '';
 	}
 
