@@ -290,8 +290,9 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			$startTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerstart'] : $this->template['submenu_start'];
 			$endTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] : $this->template['submenu_end'];
 
-			$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $startTemplate), true, $this);
-			$text = e107::getParser()->parseTemplate(str_replace('{NAV_SUB}', '', $startTemplate), true, $this);
+
+
+			$text = e107::getParser()->parseTemplate(str_replace(array('{LINK_SUB}','{NAV_SUB}'), '', $startTemplate), true, $this);
 
 			foreach($this->var['link_sub'] as $val)
 			{
@@ -306,8 +307,8 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 				}
 			}
 
-			$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $endTemplate), true, $this);
-			$text .= e107::getParser()->parseTemplate(str_replace('{NAV_SUB}', '', $endTemplate), true, $this);
+			$text .= e107::getParser()->parseTemplate(str_replace(array('{LINK_SUB}','{NAV_SUB}'), '', $endTemplate), true, $this);
+
 			return $text;
 		}
 
