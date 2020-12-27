@@ -960,21 +960,24 @@ class e107Test extends \Codeception\Test\Unit
 			4 => array('path' => 'e107_plugins/forum/forum.php',                'plugdir' => true,  'expected' => false),
 			5 => array('path' => 'e107_plugins/vstore/admin_config.php',        'plugdir' => true,  'expected' => true),
 			6 => array('path' => 'e107_plugins/login_menu/config.php',          'plugdir' => true,  'expected' => true),
-			7 => array('path' => 'e107_plugins/aplugin/prefs.php',              'plugdir' => true,  'expected' => true),
+			7 => array('path' => 'e107_plugins/myplugin/prefs.php',              'plugdir' => true,  'expected' => true),
 			8 => array('path' => 'e107_plugins/dtree_menu/dtree_config.php',    'plugdir' => true,  'expected' => true),
+			9 => array('path' => 'e107_plugins/myplugin/admin/something.php',   'plugdir' => true,  'expected' => true),
+			10 => array('path' => 'e107_plugins/myplugin/bla_admin.php',        'plugdir' => true,  'expected' => true),
+			11 => array('path' => 'e107_plugins/myplugin/admin_xxx.php',        'plugdir' => true,  'expected' => true),
 		);
 
-		foreach($tests as $var)
+		foreach($tests as $index=>$var)
 		{
 			$curPage = basename($var['path']);
 			$result = $this->e107->inAdminDir($var['path'], $curPage, $var['plugdir']);
-			$this->assertSame($var['expected'], $result);
+			$this->assertSame($var['expected'], $result, "Failed on index #".$index);
 		}
 
 		// Test legacy override.
 		$GLOBALS['eplug_admin'] = true;
 		$result = $this->e107->inAdminDir('myplugin.php','myplugin.php', true);
-		$this->assertTrue($result);
+		$this->assertTrue($result, "Legacy Override Failed");
 
 		// Test legacy off.
 		$GLOBALS['eplug_admin'] = false;
