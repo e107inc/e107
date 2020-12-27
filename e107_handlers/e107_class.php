@@ -3380,7 +3380,7 @@ class e107
 	{
 		if (!is_readable($path))
 		{
-			if (self::getPref('noLanguageSubs') || (e_LANGUAGE === 'English'))
+			if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
 			{
 				return false;
 			}
@@ -4115,7 +4115,7 @@ class e107
 				return (isset($ret)) ? $ret : "";
 			}
 		}
-		if (self::getPref('noLanguageSubs') || (e_LANGUAGE === 'English'))
+		if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
 		{
 			return FALSE;		// No point looking for the English files twice
 		}
@@ -4724,7 +4724,7 @@ class e107
 			$_SERVER['PHP_SELF'] = $requestUrl;
 		}*/
 
-		if(self::isCli() && !empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']))
+		if(!empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']) && self::isCli())
 		{
 			$_SERVER['SCRIPT_FILENAME'] = $_SERVER['_'];
 		}
@@ -4805,7 +4805,7 @@ class e107
 		{
 			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
-			if(self::isCli() && !empty($_SERVER['_']))
+			if(!empty($_SERVER['_']) && self::isCli())
 			{
 				$page = basename($_SERVER['_']);
 			}
