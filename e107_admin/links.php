@@ -46,14 +46,14 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = ADLAN_138;
+	protected $menuTitle = LAN_NAVIGATION;
 
 		protected $adminMenuIcon = 'e-links-24';
 }
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= ADLAN_138;
+	protected $pluginTitle 	= LAN_NAVIGATION;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';

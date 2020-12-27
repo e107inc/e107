@@ -1822,7 +1822,7 @@ class e_userperms
 
 		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
 		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks
+		"I"	=> array(LAN_NAVIGATION,E_16_LINKS, E_32_LINKS),			// Post SiteLinks
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
 		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
 

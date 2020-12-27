@@ -878,7 +878,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		//	9 => array(e_ADMIN.'filemanager.php', 	ADLAN_30,	ADLAN_31,	'6', 5, E_16_FILE, E_32_FILE), // replaced by media-manager
 			10 => array(e_ADMIN_ABS.'frontpage.php', 	ADLAN_60,	ADLAN_61,	'G', 1, E_16_FRONT, E_32_FRONT),
 			11 => array(e_ADMIN_ABS.'image.php', 		LAN_MEDIAMANAGER, LAN_MEDIAMANAGER, 'A', 5, E_16_IMAGES, E_32_IMAGES),
-			12 => array(e_ADMIN_ABS.'links.php', 		ADLAN_138,	ADLAN_139,	'I', 1, E_16_LINKS, E_32_LINKS),
+			12 => array(e_ADMIN_ABS.'links.php', 		LAN_NAVIGATION,	ADLAN_139,	'I', 1, E_16_LINKS, E_32_LINKS),
 			13 => array(e_ADMIN_ABS.'wmessage.php', 	ADLAN_28,	ADLAN_29,	'M', 3, E_16_WELCOME, E_32_WELCOME),
 			14 => array(e_ADMIN_ABS.'ugflag.php', 		ADLAN_40,	ADLAN_41,	'9', 4, E_16_MAINTAIN, E_32_MAINTAIN),
 			15 => array(e_ADMIN_ABS.'menus.php', 		ADLAN_6,	ADLAN_7,	'2', 5, E_16_MENUS, E_32_MENUS),

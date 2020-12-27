@@ -577,4 +577,4 @@ define("LAN_ROBOTS_NOFOLLOW", "Prevent search engines from following links in th
 define("LAN_ROBOTS_NOARCHIVE", "Prevent cached copies of this item from appearing in search results.");
 define("LAN_ROBOTS_NOIMAGE", "Prevent search engines from indexing images of this item.");
 
-
+define("LAN_NAVIGATION", "Navigation");
