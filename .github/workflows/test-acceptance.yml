@@ -1,0 +1,53 @@
+name: Acceptance Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-acceptance:
+    runs-on: ubuntu-latest
+    container:
+      image: php:latest
+    services:
+      target:
+        image: ghcr.io/e107inc/e107/e107-dev:latest
+        ports:
+          - 22
+          - 80
+          - 3306
+        options: >-
+          --tmpfs /tmp
+          --tmpfs /run
+          --tmpfs /run/lock
+          --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+    steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y git zip libzip-dev sshpass rsync
+
+      - name: Install necessary PHP extensions
+        run: docker-php-ext-install -j "$(nproc)" zip pdo_mysql mysqli
+
+      - uses: actions/checkout@v2
+
+      - name: Install Composer
+        run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+      - name: Install test dependencies
+        run: composer update --prefer-dist --no-progress
+        working-directory: ./e107_tests/
+
+      - name: Download Git submodule dependencies
+        run: git submodule update --init --recursive --remote
+
+      - name: Install the CI test configuration file
+        run: |
+          cp ./e107_tests/lib/ci/config.ci.yml ./e107_tests/config.yml
+          sed -i "s/host: 'db'/host: 'target'/" ./e107_tests/config.yml
+
+      - name: Run acceptance tests
+        run: php ./vendor/bin/codecept run acceptance --steps --debug
+        working-directory: ./e107_tests/
