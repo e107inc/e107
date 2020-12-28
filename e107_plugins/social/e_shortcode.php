@@ -86,6 +86,7 @@ class social_shortcodes extends e_shortcode
 		// print_a($social);
 	
 		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
+		$class      = (vartrue($parm['class'])) ?  $parm['class'] : $class;
 
 		// @deprecated - use template.
 		/*
