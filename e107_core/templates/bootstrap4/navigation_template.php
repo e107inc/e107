@@ -30,7 +30,7 @@ $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';
 
 // Main Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = "
-	<li class='nav-item'>
+	<li class='nav-item dropdown'>
 		<a class='nav-link dropdown-toggle'  role='button' data-toggle='dropdown' id='navbarDropdownMenuLink-{NAV_LINK_ID}' data-target='#' aria-haspopup='true' aria-expanded='false' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>
 		 {NAV_LINK_ICON}{NAV_LINK_NAME} 
 		</a> 
