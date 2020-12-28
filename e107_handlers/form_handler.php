@@ -84,7 +84,10 @@ class e_form
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required text-warning">&nbsp;*</span>');
 
-
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$this->_snippets = true;
+		}
 	}
 
 	/**
@@ -2743,10 +2746,15 @@ class e_form
 		{
 			unset($options['id']);
 		}
+
+		if($snippet = $this->getSnippet('radio'))
+		{
+			$options['label'] = $labelFound;
+			return $this->renderSnippet($snippet, $options, $name, $value);
+		}
+
 		// $options['class'] = 'inline';	
 		$text = '';
-		
-
 
 	//	return print_a($options,true);
 		if($labelFound) // Bootstrap compatible markup
