@@ -32,6 +32,7 @@ class ecache {
 	public $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
 	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
 	private $lastError;
+	private $lastFile;
 
 	const CACHE_PREFIX = '<?php exit; ?>';
 
@@ -119,6 +120,7 @@ class ecache {
 
 		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
+		$this->lastFile = $fname;
 		return $fname;
 	}
 
@@ -185,6 +187,15 @@ class ecache {
 	public function getLastError()
 	{
 		return $this->lastError;
+	}
+
+	/**
+	 * Return the last error encountered during cache processing.
+	 * @return mixed
+	 */
+	public function getLastFile()
+	{
+		return $this->lastFile;
 	}
 
 	/**

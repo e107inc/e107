@@ -107,12 +107,25 @@ class ecacheTest extends \Codeception\Test\Unit
 	{
 
 	}
-
+*/
 	public function testClear()
 	{
+		$cacheName = 'testClearCache';
+		$this->cache->set($cacheName, "something", true);
+		$file = $this->cache->getLastFile();
+
+		// check it has been created.
+		$exists = file_exists($file);
+		$this->assertTrue($exists);
+
+		// check it has been deleted.
+		$this->cache->clear($cacheName);
+		$exists = file_exists($file);
+		$this->assertFalse($exists);
+
 
 	}
-
+/*
 	public function testDelete()
 	{
 
