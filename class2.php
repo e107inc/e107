@@ -1887,7 +1887,7 @@ function init_session()
 	// Set 'UTC' as default timezone to avoid PHP warnings.
 	date_default_timezone_set('UTC');
 
-	global $user_pref, $currentUser;
+	global $user_pref, $currentUser, $_E107;
 
 	$e107 = e107::getInstance();
 
@@ -1998,10 +1998,12 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USERVISITS', $user->get('user_visits'));
 		define('USERSIGNATURE', $user->get('user_signature'));
 
-		if(ADMIN) // XXX - why for admins only?
+
+		if(ADMIN && empty($_E107['no_online']) && empty($_E107['no_forceuserupdate'])) // XXX - why for admins only?
 		{
 			e107::getRedirect()->setPreviousUrl();
 		}
+
 		define('USERLV', $user->get('user_lastvisit'));
 
 		// BC - FIXME - get rid of them!
