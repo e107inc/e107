@@ -108,7 +108,6 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 */
 		function sc_nav_link_parent($parm = null)
 		{
-
 			return (int) $this->var['link_parent'];
 		}
 
