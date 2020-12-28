@@ -48,7 +48,7 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_newstitle($parm=null)
+	function newsTitle($parm=null)
 	{
 		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
 
@@ -71,13 +71,7 @@ class news_shortcodes extends e_shortcode
 		return $text;
 	}
 
-	function sc_newsurltitle()
-	{
-		$title = $this->sc_newstitle();
-		// FIXME generic parser toAttribute method (currently toAttribute() isn't appropriate)
-		return '<a href="'.$this->sc_news_url().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
-	}
-	
+
 	function sc_news_body($parm=null)
 	{
 		$tp = e107::getParser();
@@ -101,10 +95,7 @@ class news_shortcodes extends e_shortcode
 		return $news_body;
 	}
 
-	function sc_newsicon($parm=null)
-	{
-		return $this->sc_news_category_icon('url');
-	}
+
 
 	function sc_news_author($parm)
 	{
@@ -330,16 +321,12 @@ class news_shortcodes extends e_shortcode
 
 	//New v2.x Aliases
 
-	public function sc_news_id($parm=null)
-	{
-		return $this->sc_newsid();
-	}
+
 
 	public function sc_news_title($parm=null)
 	{
-		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
+		return (!empty($parm['link'])) ? $this->newsTitleLink($parm) : $this->newsTitle($parm);
 	}
-
 
 	public function sc_news_author_signature($parm=null)
 	{
@@ -374,35 +361,21 @@ class news_shortcodes extends e_shortcode
 
 
 
-	public function sc_news_description($parm=null)
-	{
-		return $this->sc_newsmetadiz($parm);
-	}
-
-
-
-	public  function sc_news_comment_count($parm=null)
-	{
-		return $this->sc_newscommentcount($parm);
-	}
-
 	public function sc_news_comment_label($parm=null)
 	{
 		return ($this->news_item['news_comment_total'] == 1) ? COMLAN_8 : LAN_COMMENTS;
 	}
 
-	public function sc_news_date($parm=null)
-	{
-		return $this->sc_newsdate($parm);
-	}
-
-	public function sc_news_user_avatar($parm=null)
-	{
-		return $this->sc_newsavatar($parm);
-	}
 
 
 
+	/**
+	 * Display News Images (but not video thumbnails )
+	 *
+     * @param $parm array
+	 * @example {NEWS_IMAGE: type=src&placeholder=true}
+	 * @example {NEWS_IMAGE: class=img-responsive img-fluid}
+	 */
 	public function sc_news_image($parm=null)
 	{
 		if(!empty($parm['carousel']))
@@ -426,37 +399,36 @@ class news_shortcodes extends e_shortcode
 		$class .= ' news-image-'.$tmp['count'];
 		$dimensions = null;
 		$srcset = null;
+		$src = '';
 
-		if($tp->isVideo($srcPath))
+		if ($tp->isVideo($srcPath))
 		{
 			return null;
 		}
-		else
+
+
+		if (empty($srcPath))
 		{
-
-			if(empty($srcPath))
+			if (varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
 			{
-				if(varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
-				{
-					$src = 	$tp->thumbUrl(); // placeholder;
-					$dimensions = $tp->thumbDimensions();
-				}
-
-			}
-			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
-			{
-				$src = $tp->thumbUrl($srcPath);
+				$src = $tp->thumbUrl(); // placeholder;
 				$dimensions = $tp->thumbDimensions();
-				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
-
-			}
-			else
-			{
-				// We store SC path in DB now + BC
-
-				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;
 			}
 		}
+		elseif ($srcPath[0] == '{') // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
+		{
+			$src = $tp->thumbUrl($srcPath);
+			$dimensions = $tp->thumbDimensions();
+			$srcset = $tp->thumbSrcSet($srcPath, array('size' => '2x'));
+		}
+		else
+		{
+			// We store SC path in DB now + BC
+
+			$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS . "newspost_images/" . $srcPath;
+
+		}
+
 
 
 
@@ -551,19 +523,6 @@ class news_shortcodes extends e_shortcode
 		return e107::getForm()->carousel('news-carousel-'.$this->news_item['news_id'],$images, $options);
 	}
 
-	/**
-	*
-	* @param array $array
-	* @param string $array['types']
-	* @param int $array['limit']
-	* @example {NEWS_RELATED: types=news&limit-3}
-	* @return string
-	*/
-	public function sc_news_related($parm=null)
-	{
-		return $this->sc_newsrelated($parm);
-	}
-
 	public function sc_news_visibility($parm=null)
 	{
 		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
@@ -588,13 +547,13 @@ class news_shortcodes extends e_shortcode
 		return "<a ".$style." href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
-	function sc_newsdate($parm)
+	function sc_news_date($parm=null)
 	{
 	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
 		$con = e107::getDate();
 		$tp = e107::getParser();
 
-		if($parm == '')
+		if(empty($parm))
 		{
 			return  $tp->toDate($date, 'long');
 		}
@@ -656,7 +615,7 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * {NEWSCOMMENTCOUNT: glyph=x}
 	 */
-	function sc_newscommentcount($parm=null)
+	function sc_news_comment_count($parm=null)
 	{
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
@@ -698,7 +657,7 @@ class news_shortcodes extends e_shortcode
 		return e107::getParser()->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
 
-	function sc_newsid()
+	function sc_news_id()
 	{
 		return $this->news_item['news_id'];
 	}
@@ -812,9 +771,9 @@ class news_shortcodes extends e_shortcode
 	 * Auto-thumbnailing now allowed.
 	 * New sc parameter standards
 	 * Exampes: 
-	 * - {NEWSTHUMBNAIL=link|w=200} render link with thumbnail max width 200px
-	 * - {NEWSTHUMBNAIL=|w=200} same as above
-	 * - {NEWSTHUMBNAIL=src|aw=200&ah=200} return thumb link only, size forced to 200px X 200px (smart thumbnailing close to how Facebook is doing it)
+	 * - {NEWS_THUMBNAIL=link|w=200} render link with thumbnail max width 200px
+	 * - {NEWS_THUMBNAIL=|w=200} same as above
+	 * - {NEWS_THUMBNAIL=src|aw=200&ah=200} return thumb link only, size forced to 200px X 200px (smart thumbnailing close to how Facebook is doing it)
 	 * 
 	 * First parameter values: link|src|tag
 	 * Second parameter format: aw|w=xxx&ah|ah=xxx
@@ -823,7 +782,7 @@ class news_shortcodes extends e_shortcode
 	 * @see eHelper::scParams()
 	 * XXX Also returns Video thumbnails. 
 	 */
-	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
+	function sc_news_thumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format
 	{
 		$tmp = $this->handleMultiple($parm,'all');
 		$newsThumb = $tmp['file'];
@@ -918,9 +877,9 @@ class news_shortcodes extends e_shortcode
 
 	/**
 	 * XXX  Experimental Images/Video - supports multiple items
-	 * {NEWSMEDIA: item=1}
+	 * @example {NEWS_MEDIA: item=1}
 	 */
-	function sc_newsmedia($parm=array())
+	function sc_news_media($parm=array())
 	{
 		
 		$media = explode(",", $this->news_item['news_thumbnail']);
@@ -959,7 +918,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsvideo($parm='')
+	function sc_news_video($parm=null)
 	{
 		$tmp = $this->handleMultiple($parm,'video');	
 		$file = $tmp['file'];	
@@ -1023,17 +982,8 @@ class news_shortcodes extends e_shortcode
 		
 		
 
-	/**
-	 * Display News Images (but not video thumbnails )
-	 * @deprecated Use {NEWS_IMAGE} instead.
-     * @param $parm array
-	 * @example {NEWSIMAGE: type=src&placeholder=true}
-	 * @example {NEWSIMAGE: class=img-responsive img-fluid}
-	 */
-	function sc_newsimage($parm = null)
-	{
-	    return $this->sc_news_image($parm);
-	}
+
+
 
 
 	function sc_sticky_icon()
@@ -1043,7 +993,7 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_newstitlelink($parm = null)
+	function newsTitleLink($parm = null)
 	{
 		if(is_string($parm))
 		{
@@ -1098,7 +1048,7 @@ class news_shortcodes extends e_shortcode
 		return e107::getParser()->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
 	}
 
-	function sc_newsinfo()
+	public function sc_news_info($parm=null)
 	{
 		$news_item = $this->news_item;
 		$param = $this->param;
@@ -1158,8 +1108,15 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-
-	function sc_newsrelated($array=array())
+	/**
+	*
+	* @param array $array
+	* @param string $array['types']
+	* @param int $array['limit']
+	* @example {NEWS_RELATED: types=news&limit-3}
+	* @return string
+	*/
+	function sc_news_related($array=array())
 	{
 		if(!varset($array['types']))
 		{
@@ -1172,7 +1129,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsmetadiz($parm=null)
+	function sc_news_description($parm=null)
 	{
   		$text = e107::getParser()->toHTML($this->news_item['news_meta_description'],true);
 

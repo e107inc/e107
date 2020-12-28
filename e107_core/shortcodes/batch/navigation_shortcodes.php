@@ -16,7 +16,12 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		public $depth = 0;
 		public $navClass;
 
-
+		/**
+		 * As set by {NAVIGATION: class=xxxx}
+		 * @example {NAV_CLASS}
+		 * @param null $parm
+		 * @return mixed
+		 */
 		function sc_nav_class($parm = null)
 		{
 			return $this->navClass;
@@ -26,9 +31,9 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 *
 		 * @return string 'active' on the active link.
-		 * @example {LINK_ACTIVE}
+		 * @example {NAV_LINK_ACTIVE}
 		 */
-		function sc_nav_active($parm = null)
+		function sc_nav_link_active($parm = null)
 		{
 
 			if($this->active == true)
@@ -46,13 +51,13 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 *
 		 * @return integer
 		 */
-		function sc_nav_id($parm = null)
+		function sc_nav_link_id($parm = null)
 		{
 
 			return (int) $this->var['link_id'];
 		}
 
-		function sc_nav_depth($parm = null)
+		function sc_nav_link_depth($parm = null)
 		{
 
 			unset($parm);
@@ -72,9 +77,9 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 * Return the name of the current link
 		 *
 		 * @return string
-		 * @example {LINK_NAME}
+		 * @example {NAV_LINK_NAME}
 		 */
-		function sc_nav_name($parm = null)
+		function sc_nav_link_name($parm = null)
 		{
 
 			if(empty($this->var['link_name']))
@@ -101,14 +106,14 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 *
 		 * @return integer
 		 */
-		function sc_nav_parent($parm = null)
+		function sc_nav_link_parent($parm = null)
 		{
 
 			return (int) $this->var['link_parent'];
 		}
 
 
-		function sc_nav_identifier($parm = null)
+		function sc_nav_link_identifier($parm = null)
 		{
 
 			return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
@@ -119,7 +124,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 *
 		 * @return string
 		 */
-		function sc_nav_url($parm = null)
+		function sc_nav_link_url($parm = null)
 		{
 
 			$tp = e107::getParser();
@@ -153,7 +158,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		}
 
 		/*
-			function sc_nav_sub_oversized($parm='')
+			function sc_nav_link_sub_oversized($parm='')
 			{
 				$count = count($this->var['link_sub']);
 		
@@ -169,11 +174,11 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 		/**
 		 * Returns only the anchor target in the URL if one is found.
-		 *
+		 * @example {NAV_LINK_TARGET}
 		 * @param array $parm
 		 * @return null|string
 		 */
-		function sc_nav_target($parm = null)
+		function sc_nav_link_target($parm = null)
 		{
 
 			if(strpos($this->var['link_url'], '#') !== false)
@@ -187,8 +192,12 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			return '#';
 		}
 
-
-		function sc_nav_open($parm = null)
+		/**
+		 * @param null $parm
+		 * @example {NAV_LINK_OPEN}
+		 * @return string
+		 */
+		function sc_nav_link_open($parm = null)
 		{
 
 			$type = $this->var['link_open'] ? (int) $this->var['link_open'] : 0;
@@ -216,10 +225,10 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 		/**
 		 * Return the link icon of the current link
-		 * @example {NAV_ICON}
+		 * @example {NAV_LINK_ICON}
 		 * @return string
 		 */
-		function sc_nav_icon($parm = null)
+		function sc_nav_link_icon($parm = null)
 		{
 
 			$tp = e107::getParser();
@@ -245,10 +254,10 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 		/**
 		 * Return the link description of the current link
-		 * @example {NAV_DESCRIPTION}
+		 * @example {NAV_LINK_DESCRIPTION}
 		 * @return string
 		 */
-		function sc_nav_description($parm = null)
+		function sc_nav_link_description($parm = null)
 		{
 
 			$toolTipEnabled = e107::pref('core', 'linkpage_screentip', false);
@@ -265,10 +274,10 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 		/**
 		 * Return the parsed sublinks of the current link
-		 *
+		 * @example {NAV_LINK_SUB}
 		 * @return string
 		 */
-		function sc_nav_sub($parm = null)
+		function sc_nav_link_sub($parm = null)
 		{
 
 			if(empty($this->var['link_sub']))
@@ -316,10 +325,10 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		 * Return a generated anchor for the current link.
 		 *
 		 * @param unused
-		 * @return    string - a generated anchor for the current link.
-		 * @example {LINK_ANCHOR}
+		 * @return string - a generated anchor for the current link.
+		 * @example {NAV_LINK_ANCHOR}
 		 */
-		function sc_nav_anchor($parm = null)
+		function sc_nav_link_anchor($parm = null)
 		{
 
 			return $this->var['link_name'] ? '#' . e107::getForm()->name2id($this->var['link_name']) : '';
