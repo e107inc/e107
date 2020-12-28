@@ -15,11 +15,14 @@
 		
 		init : function(ed,url) {
 
-			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
+			var t = this;
 
-	
-			ed.on('beforeSetContent', function(e) {
-				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
+            console.log('Initializing e107 TinyMce Plugin');
+
+			ed.on('beforeSetContent', function(e)
+			{
+		        e.content = t['_e107_bbcode2html'](e.content, url);
+
 			});
 
 			ed.on('change', function(e) {
@@ -39,11 +42,11 @@
           //      alert(e.content); // remove comment to test.
 
 				if (e.set) {
-					e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
+					e.content = t['_e107_bbcode2html'](e.content, url);
 				}
 
 				if (e.get) {
-					e.content = t['_' + dialect + '_html2bbcode'](e.content, url);
+					e.content = t['_e107_html2bbcode'](e.content, url);
 				}
 
 
@@ -79,7 +82,10 @@
 								dataType: 'html',
 								success: function(html) {
 								  return html;
-								}
+								},
+								error: function (request, status, error) {
+                                    console.log(request.responseText);
+                                }
 							}).responseText;
 
 							html = '<x-bbcode alt=\"'+btoa(s)+'\">' + html + '</x-bbcode>   ' ;
@@ -202,12 +208,15 @@
 					type: "POST",
 					url: url + "/parser.php",
 					data: { content: s, mode: 'tobbcode' },
-					async       : false,
+					async: false,
 
 					dataType: "html",
 					success: function(html) {
 				      return html;
-				    }
+				    },
+				     error: function (request, status, error) {
+                        console.log(request.responseText);
+                    }
 				}).responseText;
 
 			return p;
@@ -227,12 +236,15 @@
 					type: "POST",
 					url: url + "/parser.php",
 					data: { content: s, mode: 'tohtml' },
-					async       : false,
+					async: false,
 
 					dataType: "html",
 					success: function(html) {
 				      return html;
-				    }
+				    },
+				    error: function (request, status, error) {
+                        console.log(request.responseText);
+                    }
 				}).responseText;
 
 				return p;

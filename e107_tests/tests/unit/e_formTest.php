@@ -1143,7 +1143,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 	/**
 	 * Loads snipper from e107_themes/bootstrap/snippets/form_checkbox.html
-	 */
+	 *//*
 	public function testSnippet()
 	{
 		$this->_frm->_snippets = true;
@@ -1158,7 +1158,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$this->_frm->_snippets = false;
 
-	}
+	}*/
 
 
 }

@@ -82,7 +82,7 @@ class ecacheTest extends \Codeception\Test\Unit
 
 		$this->cache->setMD5('hash'); // set a consistent hash value: ie. 0800fc577294c34e0b28ad2839435945
 
-		$clean = ["\t", "\n", " "];
+		$clean = ["\t", "\n", "\r", " "];
 
 		foreach($tests as $var)
 		{
