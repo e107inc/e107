@@ -950,7 +950,7 @@ if (!class_exists('e107table', false))
 			}
 
 			$bread = e107::breadcrumb();
-			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread);
+			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread, true);
 
 			return $ret;
 

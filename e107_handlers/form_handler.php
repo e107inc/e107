@@ -3586,12 +3586,18 @@ var_dump($select_options);*/
 
 	/**
 	 * Render a Breadcrumb in Bootstrap format. 
-	 * @param $array
+	 * @param array $array
 	 * @param $array[url]
 	 * @param $array[text]
+	 * @param bool $force - used internally to prevent duplicate {--BREADCUMB---} and template breadcrumbs from both displaying at once.
 	 */
-	public function breadcrumb($array)
+	public function breadcrumb($array, $force = false)
 	{
+		if($force === false && defset('THEME_VERSION') === 2.3) // ignore template breadcrumb.
+		{
+			return null;
+		}
+
 		if(!is_array($array)){ return; }
 		
 		$opt = array();
@@ -3613,9 +3619,9 @@ var_dump($select_options);*/
 			}
 
 			$ret = '';
-			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : '';
+			$ret .= !empty($val['url']) ? "<a href='".$val['url']."'>" : '';
 			$ret .= vartrue($val['text']);
-			$ret .= vartrue($val['url']) ? '</a>' : '';
+			$ret .= !empty($val['url']) ? '</a>' : '';
 			
 			if($ret != '')
 			{

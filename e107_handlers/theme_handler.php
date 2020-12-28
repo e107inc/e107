@@ -1134,6 +1134,17 @@ class e_theme
 			$legacy = (file_exists(e_THEME . $themeDir . '/theme.xml') === false);
 			define('THEME_LEGACY', $legacy);
 
+			if($legacy === true)
+			{
+				$version = 1.0; 
+			}
+			else
+			{
+				$version = (file_exists(e_THEME . $themeDir . '/theme.html')) ? 2.3 : 2.0;
+			}
+
+			define('THEME_VERSION', $version);
+
 			$e107->site_theme = $themeDir;
 			e107::getDebug()->logTime('Theme Check End');
 
@@ -1147,6 +1158,7 @@ class e_theme
 		$e107tmp_theme = 'bootstrap3'; // set to bootstrap3 by default.
 		define('THEME', e_THEME . $e107tmp_theme . '/');
 		define('THEME_ABS', e_THEME_ABS . $e107tmp_theme . '/');
+		define('THEME_VERSION', 2.3);
 
 		if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === false)
 		{

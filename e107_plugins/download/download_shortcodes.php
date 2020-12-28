@@ -467,6 +467,8 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_list_icon($parm='') //XXX FIXME $img. 
    {
+      $img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
+
       if ($parm == "link")
       {
       	$url = e107::url('download', 'item', $this->var);
@@ -884,7 +886,7 @@ class download_shortcodes extends e_shortcode
 			$img = '<i class="icon-download"></i>'; 
 		}	
 		
-		return "<a href='".e_PLUGIN_ABS."download/download.php?mirror.{$this->var['download_id']}.{$this->mirror['dlmirrorfile'][0]}' title='".LAN_DOWNLOAD."'{$click}>".$img."</a>";
+		return "<a href='".e_PLUGIN_ABS."download/download.php?mirror.{$this->var['download_id']}.{$this->mirror['dlmirrorfile'][0]}' title='".LAN_DOWNLOAD."' {$click}>".$img."</a>";
 	}
 	
 	function sc_download_mirror_requests() 
