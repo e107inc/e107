@@ -32,12 +32,12 @@ class social_menu
 		}
 
 		$templates = e107::getLayouts('social','social_xurl', 'front', null, false, false);
-		$sizes = array('2x'=> '2x', '3x'=>'3x', '4x'=>'4x', '5x'=>'5x');
+	//	$sizes = array('2x'=> '2x', '3x'=>'3x', '4x'=>'4x', '5x'=>'5x');
 
 		$fields = array();
 		$fields['caption']      = array('title'=> "Caption", 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 		$fields['template']     = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$templates));
-		$fields['size']     = array('title'=> "Size", 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$sizes));
+	//	$fields['size']     = array('title'=> "Size", 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$sizes));
 
 
         return $fields;
