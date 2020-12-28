@@ -11,7 +11,7 @@ env:
   CC_TEST_REPORTER_ID: 8948074581c1ffe7f4e47995c65d7d303882310256edd73536723d7c92adb1e3
 
 jobs:
-  test:
+  test-unit:
     strategy:
       fail-fast: false
       matrix:
@@ -105,7 +105,7 @@ jobs:
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
-    - name: Install dependencies
+    - name: Install test dependencies
       run: composer update --prefer-dist --no-progress
       working-directory: ./e107_tests/
 

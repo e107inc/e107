@@ -34,7 +34,8 @@ class SFTPDeployer extends Deployer
 
 	private function generateRsyncRemoteShell()
 	{
-		$prefix = 'ssh -p '.escapeshellarg($this->getFsParam('port'));
+		$prefix = 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p '.
+			escapeshellarg($this->getFsParam('port'));
 		if (!empty($this->getFsParam('privkey_path')))
 			return $prefix.' -i ' . escapeshellarg($this->getFsParam('privkey_path'));
 		else
