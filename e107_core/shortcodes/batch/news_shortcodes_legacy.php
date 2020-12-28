@@ -47,4 +47,94 @@ trait news_shortcodes_legacy
 		return $this->sc_news_summary($parm);
 	}
 
+	public function sc_newsmetadiz($parm=null)
+	{
+		trigger_error('<b>{NEWSSUMMARY} is deprecated</b> Use {NEWS_DESCRIPTION} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_description($parm);
+	}
+
+	public function sc_newsdate($parm=null)
+	{
+		trigger_error('<b>{NEWSDATE} is deprecated</b> Use {NEWS_DATE} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_date($parm);
+	}
+
+	public function sc_news_user_avatar($parm=null)
+	{
+		trigger_error('<b>{NEWS_USER_AVATAR} is deprecated</b> Use {NEWS_AUTHOR_AVATAR} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_author_avatar($parm);
+	}
+
+	public function sc_newsrelated($parm=null)
+	{
+		trigger_error('<b>{NEWSRELATED} is deprecated</b> Use {NEWS_RELATED} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_related($parm);
+	}
+
+	function sc_newsicon($parm=null)
+	{
+		trigger_error('<b>{NEWSICON} is deprecated</b> Use {NEWS_CATEGORY_ICON=url} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_category_icon('url');
+	}
+
+	public function sc_newsid($parm=null)
+	{
+		trigger_error('<b>{NEWSID} is deprecated</b> Use {NEWS_ID} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_id($parm);
+	}
+
+	public function sc_newsinfo($parm=null)
+	{
+		trigger_error('<b>{NEWSINFO} is deprecated</b> Use {NEWS_INFO} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_info($parm);
+	}
+
+	public function sc_newstitlelink($parm=null)
+	{
+		trigger_error('<b>{NEWSTITLELINK} is deprecated</b> Use {NEWS_TITLE: link=1} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->newsTitleLink($parm);
+	}
+
+	public function sc_newstitle($parm=null)
+	{
+		trigger_error('<b>{NEWSTITLE} is deprecated</b> Use {NEWS_TITLE} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->newsTitle($parm);
+	}
+
+	public function sc_newsurltitle()
+	{
+		trigger_error('<b>{NEWSURLTITLE} is deprecated</b> Use {NEWS_TITLE: link=1} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->newsTitleLink();
+	}
+
+	public function sc_newsvideo($parm=null)
+	{
+		trigger_error('<b>{NEWSVIDEO} is deprecated</b> Use {NEWS_VIDEO} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_video($parm);
+	}
+
+	public function sc_newsimage($parm = null)
+	{
+		trigger_error('<b>{NEWSIMAGE} is deprecated</b> Use {NEWS_IMAGE} instead', E_USER_DEPRECATED); // NO LAN
+	    return $this->sc_news_image($parm);
+	}
+
+	public function sc_newsmedia($parm = null)
+	{
+		trigger_error('<b>{NEWSMEDIA} is deprecated</b> Use {NEWS_MEDIA} instead', E_USER_DEPRECATED); // NO LAN
+	    return $this->sc_news_media($parm);
+	}
+
+	public function sc_newscommentcount($parm=null)
+	{
+		trigger_error('<b>{NEWSCOMMENTCOUNT} is deprecated</b> Use {NEWS_COMMENT_COUNT} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_comment_count($parm);
+	}
+
+	public function sc_newsthumbnail($parm=null)
+	{
+		trigger_error('<b>{NEWSTHUMBNAIL} is deprecated</b> Use {NEWS_THUMBNAIL} instead', E_USER_DEPRECATED); // NO LAN
+		return $this->sc_news_thumbnail($parm);
+	}
+
 }

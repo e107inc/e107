@@ -11,8 +11,8 @@
 		 */
 		function sc_link_active($parm = null)
 		{
-			trigger_error('<b>{LINK_ACTIVE} is deprecated</b> Use {NAV_ACTIVE} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_active($parm);
+			trigger_error('<b>{LINK_ACTIVE} is deprecated</b> Use {NAV_LINK_ACTIVE} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_active($parm);
 		}
 
 		/**
@@ -22,8 +22,8 @@
 		 */
 		function sc_link_id($parm = null)
 		{
-			trigger_error('<b>{LINK_ID} is deprecated</b> Use {NAV_ID} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_id($parm);
+			trigger_error('<b>{LINK_ID} is deprecated</b> Use {NAV_LINK_ID} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_id($parm);
 		}
 
 		/**
@@ -33,8 +33,8 @@
 		 */
 		function sc_link_depth($parm = null)
 		{
-			trigger_error('<b>{LINK_DEPTH} is deprecated</b> Use {NAV_DEPTH} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_depth($parm);
+			trigger_error('<b>{LINK_DEPTH} is deprecated</b> Use {NAV_LINK_DEPTH} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_depth($parm);
 		}
 
 
@@ -46,8 +46,8 @@
 		 */
 		function sc_link_name($parm = null)
 		{
-			trigger_error('<b>{LINK_NAME} is deprecated</b> Use {NAV_NAME} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_name($parm);
+			trigger_error('<b>{LINK_NAME} is deprecated</b> Use {NAV_LINK_NAME} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_name($parm);
 		}
 
 
@@ -58,8 +58,8 @@
 		 */
 		function sc_link_parent($parm = null)
 		{
-			trigger_error('<b>{LINK_PARENT} is deprecated</b> Use {NAV_PARENT} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_parent($parm);
+			trigger_error('<b>{LINK_PARENT} is deprecated</b> Use {NAV_LINK_PARENT} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_parent($parm);
 		}
 
 		/**
@@ -69,8 +69,8 @@
 		 */
 		function sc_link_identifier($parm = null)
 		{
-			trigger_error('<b>{LINK_IDENTIFIER} is deprecated</b> Use {NAV_IDENTIFIER} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_identifier($parm);
+			trigger_error('<b>{LINK_IDENTIFIER} is deprecated</b> Use {NAV_LINK_IDENTIFIER} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_identifier($parm);
 		}
 
 		/**
@@ -80,8 +80,8 @@
 		 */
 		function sc_link_url($parm = null)
 		{
-			trigger_error('<b>{LINK_URL} is deprecated</b> Use {NAV_URL} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_url($parm);
+			trigger_error('<b>{LINK_URL} is deprecated</b> Use {NAV_LINK_URL} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_url($parm);
 		}
 
 
@@ -93,8 +93,8 @@
 		 */
 		function sc_link_target($parm = null)
 		{
-			trigger_error('<b>{LINK_TARGET} is deprecated</b> Use {NAV_TARGET} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_target($parm);
+			trigger_error('<b>{LINK_TARGET} is deprecated</b> Use {NAV_LINK_TARGET} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_target($parm);
 		}
 
 		/**
@@ -104,7 +104,8 @@
 		 */
 		function sc_link_open($parm = null)
 		{
-			return $this->sc_nav_open($parm);
+			trigger_error('<b>{LINK_OPEN} is deprecated</b> Use {NAV_LINK_ICON} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_open($parm);
 		}
 
 		/**
@@ -112,9 +113,8 @@
 		 */
 		function sc_link_image($parm = null)
 		{
-			trigger_error('<b>{LINK_IMAGE} is deprecated</b> Use {NAV_ICON} instead', E_USER_DEPRECATED); // NO LAN
-
-			return $this->sc_nav_icon($parm);
+			trigger_error('<b>{LINK_IMAGE} is deprecated</b> Use {NAV_LINK_ICON} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_icon($parm);
 		}
 
 
@@ -125,8 +125,8 @@
 		 */
 		function sc_link_icon($parm = null)
 		{
-			trigger_error('<b>{LINK_ICON} is deprecated</b> Use {NAV_ICON} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_icon($parm);
+			trigger_error('<b>{LINK_ICON} is deprecated</b> Use {NAV_LINK_ICON} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_icon($parm);
 		}
 
 
@@ -137,8 +137,8 @@
 		 */
 		function sc_link_description($parm = null)
 		{
-			trigger_error('<b>{LINK_DESCRIPTION} is deprecated</b> Use {NAV_DESCRIPTION} instead', E_USER_DEPRECATED); // NO LAN
-			return $this->sc_nav_description($parm);
+			trigger_error('<b>{LINK_DESCRIPTION} is deprecated</b> Use {NAV_LINK_DESCRIPTION} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_description($parm);
 		}
 
 
@@ -149,7 +149,8 @@
 		 */
 		function sc_link_sub($parm = null)
 		{
-			return $this->sc_nav_sub($parm);
+			trigger_error('<b>{LINK_SUB} is deprecated</b> Use {NAV_LINK_SUB} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_sub($parm);
 		}
 
 		/**
@@ -161,7 +162,8 @@
 		 */
 		function sc_link_anchor($parm = null)
 		{
-			return $this->sc_nav_anchor($parm);
+			trigger_error('<b>{LINK_ANCHOR} is deprecated</b> Use {NAV_LINK_ANCHOR} instead', E_USER_DEPRECATED); // NO LAN
+			return $this->sc_nav_link_anchor($parm);
 		}
 
 
