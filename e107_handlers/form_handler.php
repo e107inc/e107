@@ -2487,9 +2487,16 @@ class e_form
 			unset($options['class']);
 		}
 
+		if(!empty($options['label']))
+		{
+			$snip['label'] = trim($options['label']);
+			unset($options['label']);
+		}
+
 		$snip['id'] = $this->_format_id(varset($options['id']), $name, $value, null);
 		unset($options['id']);
-		$snip['attributes'] = $this->get_attributes($options, $name, $value);
+
+		$snip['attributes'] = "name='".$name."' value='".$value."' ".$this->get_attributes($options, $name, $value);
 
 		foreach($snip as $k=>$v)
 		{
