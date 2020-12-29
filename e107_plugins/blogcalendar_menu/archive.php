@@ -23,6 +23,7 @@ require_once(e_HANDLER."userclass_class.php");
 e107::includeLan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
 require_once("calendar.php");
 require_once("functions.php");
+e107::title(BLOGCAL_L1." - ".BLOGCAL_L2);
 require_once(HEADERF);
 	
 // ---------------------
