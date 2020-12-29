@@ -1110,7 +1110,7 @@ if (!class_exists('e107table', false))
         private function hasLegacyCode()
         {
             $legacy = ['VIEWPORT','THEME_DISCLAIMER', 'IMODE', 'BODYTAG', 'COMMENTLINK', 'OTHERNEWS_LIMIT',
-                        'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING', 'CORE_CSS'];
+                        'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING', 'CORE_CSS', 'TRACKBACKSTRING', 'TRACKBACKBEFORESTRING'];
 
             foreach($legacy as $const)
             {
