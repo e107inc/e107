@@ -1128,7 +1128,7 @@ class news_front
 		$sql = e107::getDb();
 		// <-- Cache
 
-		if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
+	/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 		{
 			$query = "
 		    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
@@ -1143,7 +1143,7 @@ class news_front
 			GROUP by n.news_id";
 		}
 		else
-		{
+		{*/
 			$query = "
 		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
@@ -1155,7 +1155,7 @@ class news_front
 			AND n.news_start < ".time()."
 			AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_id=".intval($this->subAction);
-		}
+	//	}
 
 
 		if ($sql->gen($query))
@@ -1375,7 +1375,7 @@ class news_front
 			case "item" :
 				$sub_action = intval($this->subAction);
 				$news_total = 1;
-				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
+			/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 				{
 					$query = "
 			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
@@ -1389,7 +1389,7 @@ class news_front
 				GROUP by n.news_id";
 				}
 				else
-				{
+				{*/
 					$query = "
 			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
@@ -1398,7 +1398,7 @@ class news_front
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_id=".$this->subAction." AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
-				}
+		//		}
 
 				$noNewsMessage = LAN_NEWS_83;
 				break;
@@ -1463,7 +1463,7 @@ class news_front
 				$interval = $this->pref['newsposts']-$this->pref['newsposts_archive'];		// Number of 'full' posts to show
 
 				// Get number of news item to show
-				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
+			/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
 					$query = "
 				SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id,
 				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template, 
@@ -1479,11 +1479,11 @@ class news_front
 				ORDER BY news_sticky DESC, ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 				}
 				else
-				{
+				{*/
 					$query = $this->getQuery();
 
 
-				}
+			//	}
 
 				$noNewsMessage = LAN_NEWS_83;
 		}	// END - switch($action)

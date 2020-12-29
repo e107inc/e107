@@ -4943,14 +4943,12 @@ class e107
 	{
 
 		$inArray = array("'", '/**/', '/UNION/', '/SELECT/', 'AS ');
-		if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
+
+		foreach($inArray as $res)
 		{
-			foreach($inArray as $res)
-			{
-				if(stripos($_SERVER['QUERY_STRING'], $res) !== false)
-				 {
-					die('Access denied.');
-				}
+			if(stripos($_SERVER['QUERY_STRING'], $res) !== false)
+			 {
+				die('Access denied.');
 			}
 		}
 

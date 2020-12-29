@@ -278,9 +278,9 @@ class news {
 		$tmp['caticon'] 				= defset('ICONSTYLE');
 		$tmp['commentoffstring'] 		= defset('COMMENTOFFSTRING', '');
 		$tmp['commentlink'] 			= defset('COMMENTLINK', e107::getParser()->toGlyph('fa-comment'));
-		$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');
+	/*	$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');
 		$tmp['trackbackbeforestring'] 	= defset('TRACKBACKBEFORESTRING');
-		$tmp['trackbackafterstring'] 	= defset('TRACKBACKAFTERSTRING');
+		$tmp['trackbackafterstring'] 	= defset('TRACKBACKAFTERSTRING');*/
 		$tmp['itemlink'] 				= defset('NEWSLIST_ITEMLINK');
 		$tmp['thumbnail'] 				= defset('NEWSLIST_THUMB', "border:0px");
 		$tmp['catlink']  				= defset('NEWSLIST_CATLINK');

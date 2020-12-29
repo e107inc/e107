@@ -21,9 +21,8 @@ define("LAN_THEME_1", "'kubrick' by <a href='http://e107.org' title='e107.org' r
 define("LAN_THEME_2", "Comments are turned off for this item");
 define("LAN_THEME_3", "comment: ");
 define("LAN_THEME_4", "Read the rest ...");
-define("LAN_THEME_5", "Trackbacks: ");
+// define("LAN_THEME_5", "Trackbacks: ");
 define('LAN_THEME_6', 'on');
 define('LAN_THEME_7', 'by');
 
 
-?>

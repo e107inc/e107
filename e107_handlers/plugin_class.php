@@ -88,7 +88,7 @@ class e_plugin
 		"metaweblog", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
 		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
-		"trackback","tree_menu","user"
+		"tree_menu","user"
 	);
 
 
