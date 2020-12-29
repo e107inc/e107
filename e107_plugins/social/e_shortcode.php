@@ -70,7 +70,7 @@ class social_shortcodes extends e_shortcode
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
 			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
-			'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
+		//	'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
 			'linkedin'		=> array('href'=> deftrue('XURL_LINKEDIN'),		'title'=>'LinkedIn'),
 			'github'		=> array('href'=> deftrue('XURL_GITHUB'),		'title'=>'Github'),
 			'pinterest'		=> array('href'=> deftrue('XURL_PINTEREST'),	'title'=>'Pinterest'),
@@ -288,7 +288,7 @@ class social_shortcodes extends e_shortcode
 
 		if(empty($parm['providers'])) // No parms so use prefs instead.
 		{
-			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'google-plus1',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
+			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
 			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : $defaultProviders;
 		}
 		else
