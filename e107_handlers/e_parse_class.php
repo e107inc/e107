@@ -4704,7 +4704,7 @@ class e_parser
 
 				if(!isset($parm['size']))
 				{
-					$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+					$srcSetParm['size'] = (varset($parm['w']) < 100) ? '4x' : '2x';
 				}
 				else
 				{

@@ -2000,8 +2000,8 @@ class e_userperms
 		if(is_array($info))
 		{
 			$label		= $info[0];
-			$icon_16	= $info[1];
-			$icon_32	= $info[2];
+			$icon_16	= varset($info[1]);
+			$icon_32	= varset($info[2]);
 		}
 		elseif($info)
 		{

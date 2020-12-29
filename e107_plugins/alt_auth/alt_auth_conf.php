@@ -182,7 +182,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', varset($pref['auth_method2']), 'none')."
 <div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
@@ -227,7 +227,7 @@ if ($euf->userCount)
 			<td class='center'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
 			<td>{$f['user_extended_struct_name']}</td>
 			<td>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
-			<td>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
+			<td>". varset($euf->user_extended_types[$f['user_extended_struct_type']])."</td></tr>\n";
 		}
 	$text .= "</tbody>
 </table><div class='buttons-bar center'>

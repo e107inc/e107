@@ -896,7 +896,7 @@ class banlist_form_ui extends e_admin_form_ui
 		// optional
 		public function init()
 		{
-			if($_POST['etrigger_batch'] == 'gen_intdata__1' && count($_POST['e-multiselect'])) // Do we need BAN here?
+			if(varset($_POST['etrigger_batch']) == 'gen_intdata__1' && count($_POST['e-multiselect'])) // Do we need BAN here?
 			{
 				$dels = implode(',',$_POST['e-multiselect']);
 				//$e107::getDb()->insert('banlist',

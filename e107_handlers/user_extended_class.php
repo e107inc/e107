@@ -73,22 +73,6 @@ class e107_user_extended
 			}
 		}
 		
-/*
-		@define('EUF_CATEGORY', 0);
-		@define('EUF_TEXT',1);
-		@define('EUF_RADIO',2);
-		@define('EUF_DROPDOWN',3);
-		@define('EUF_DB_FIELD',4);
-		@define('EUF_TEXTAREA',5);
-		@define('EUF_INTEGER',6);
-		@define('EUF_DATE',7);
-		@define('EUF_LANGUAGE',8);
-		@define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
-		@define('EUF_CHECKBOX',10);
-		@define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
-		@define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
-		@define('EUF_COUNTRY', 13);  // $frm->country()
-		@define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()*/
 
 		$this->typeArray = array(
 			'text'          => EUF_TEXT,
@@ -1244,23 +1228,24 @@ class e107_user_extended
 		unset($info);
 		foreach($data['item'] as $item)
 		{
-			if(is_array($item['include_text']) && !count($item['include_text']))
+			if(isset($item['include_text']) && is_array($item['include_text']) && !count($item['include_text']))
 			{
 				$item['include_text'] = '';
 			}
+
 			$info = array(
 						"name" 			=> $item['@attributes']['name'],
 						"text" 			=> "UE_LAN_".strtoupper($item['@attributes']['name']),
-						"type" 			=> $item['type'],
-						"values" 		=> $item['values'],
-						"default" 		=> $item['default'],
-						"required" 		=> $item['required'],
-						"read" 			=> $item['read'],
-						"write"			=> $item['write'],
-						"applicable" 	=> $item['applicable'],
-						"include_text"	=> $item['include_text'],
-						"parms"			=> $item['include_text'],
-						"regex" 		=> $item['regex']
+						"type" 			=> varset($item['type']),
+						"values" 		=> varset($item['values']),
+						"default" 		=> varset($item['default']),
+						"required" 		=> varset($item['required']),
+						"read" 			=> varset($item['read']),
+						"write"			=> varset($item['write']),
+						"applicable" 	=> varset($item['applicable']),
+						"include_text"	=> varset($item['include_text']),
+						"parms"			=> varset($item['include_text']),
+						"regex" 		=> varset($item['regex'])
 					);
 			if(is_array($item['default']) && $item['default'] == '')
 			{

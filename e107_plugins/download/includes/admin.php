@@ -538,11 +538,12 @@ $columnInfo = array(
 			
 		}
 		
-		
+		/*
 		
 		function orphanFiles() //TODO
 		{
-			
+			$sql = e107::getDb();
+			$tp = e107::getParser();
 			$files = e107::getFile()->get_files(e_DOWNLOAD);
             $foundSome = false;
             foreach($files as $file)
@@ -569,7 +570,7 @@ $columnInfo = array(
 
                }
             }
-		}
+		}*/
 
         /**
          * @inheritdoc
@@ -734,7 +735,7 @@ $columnInfo = array(
 
 
 		
-		function showMaint() //XXX Deprecated. 
+		function showMaint()
 		{
 			$mes = e107::getMessage();
 			$mes->addInfo("Deprecated Area - please use filter instead under 'Manage' ");
@@ -742,6 +743,7 @@ $columnInfo = array(
 			global $pref;
 			$ns = e107::getRender();
 			$sql = e107::getDb();
+			$sql2 = e107::getDb('sql2');
 			$frm = e107::getForm();
 			$tp = e107::getParser();
 			
@@ -790,7 +792,7 @@ $columnInfo = array(
 		                        $text .= '<td>*</td>';
 		                     }
 		                     $text .= '<td>'.$row['download_id'].'</td>';
-		                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name']).'</a></td>';
 		                     $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
 		                     $text .= '<td>
 		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
@@ -928,8 +930,8 @@ $columnInfo = array(
 		                  
 		                  $text .= '<tr>';
 		                  $text .= '<td>'.$row['download_id'].'</td>';
-		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
-		                  $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
+		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name']).'</a></td>';
+		                  $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
 		                  if (strlen($row['download_url']) > 0) {
 		                     $text .= '<td>'.$row['download_url'].'</td>';
 		                  } else {
@@ -981,9 +983,9 @@ $columnInfo = array(
 		                  }
 		                  $text .= '<tr>';
 		                  $text .= '<td>'.$row['download_id'].'</td>';
-		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+		                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name']).'</a></td>';
 		                  if (strlen($row['download_url']) > 0) {
-		                     $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
+		                     $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
 		                  } else {
 		   					   $mirrorArray = download::makeMirrorArray($row['download_mirror'], TRUE);
 		                     $text .= '<td>';
@@ -1037,9 +1039,9 @@ $columnInfo = array(
 		                        }
 		                        $text .= '<tr>';
 		                        $text .= '<td>'.$row['download_id'].'</td>';
-		                        $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
-		                        $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
-		                        $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
+		                        $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name']).'</a></td>';
+		                        $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
+		                        $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
 		                        $text .= '<td>'.$row['download_filesize'].' / ';
 		                        $text .= $filesize;
 		                        $text .= '</td>';
@@ -1883,7 +1885,7 @@ $columnInfo = array(
 	                
 				$dlInfo['download_id'] = $id;
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
-				$dlInfo['download_datestamp'] = $time;      // This is what 0.7 did, regardless of settings
+				$dlInfo['download_datestamp'] = time(); // $time;      // This is what 0.7 did, regardless of settings
 				unset($dlInfo['download_class']);         // Also replicating 0.7
 				$e_event->trigger('dlupdate', $dlInfo); // @deprecated 
 				
@@ -1903,7 +1905,7 @@ $columnInfo = array(
 		
 		            $dlInfo['download_id'] = $download_id;
 		            $this->downloadLog('DOWNL_05',$dlInfo,$dlMirrors);
-		            $dlInfo['download_datestamp'] = $time;      // This is what 0.7 did, regardless of settings
+		            $dlInfo['download_datestamp'] = time(); // $time;      // This is what 0.7 did, regardless of settings
 		            unset($dlInfo['download_class']);         // Also replicating 0.7
 		            $e_event->trigger("dlpost", $dlInfo); // @deprecated 
 					

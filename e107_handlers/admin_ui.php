@@ -4474,7 +4474,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$searchable_types[] = 'method';
 			}
 			
-			if($var['__tableField'] && trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) )
+			if(!empty($var['__tableField']) && trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) )
 			{
 				// Search for customer filter handler.
 				$cutomerSearchMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Search';
