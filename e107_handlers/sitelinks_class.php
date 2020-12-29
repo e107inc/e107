@@ -1397,7 +1397,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			//XXX  && !is_numeric($act) ???
 			if (($active_page == (string) $act)
 			|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act))
-            || e_REQUEST_HTTP === $e107_vars[$act]['link']
+            || e_REQUEST_HTTP === varset($e107_vars[$act]['link'])
 			)
 			{
 				$temp = $tmpl['button_active'.$kpost];

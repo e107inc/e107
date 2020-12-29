@@ -984,17 +984,18 @@ class e_library_manager
 		$library['installed'] = false;
 
 		// Check whether the library exists.
-		if(!isset($library['library_path']))
+		if(!isset($library['library_path']) && !empty($library['machine_name']))
 		{
 			$library['library_path'] = $this->detectPath($library['machine_name']);
 		}
 
-		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
-		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
+		$libraryPath = !empty($library['library_path']) ? e107::getParser()->replaceConstants($library['library_path']) : '';
+
+		if(empty($library['library_path']) || (!empty($libraryPath) && !file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
 		{
 			$library['error'] = LAN_NOT_FOUND;
 
-			$replace_with = array($library['name']);
+			$replace_with = array($name);
 			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
 
 			return $library;

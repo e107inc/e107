@@ -47,6 +47,33 @@ class e107_user_extended
 
 	public function __construct()
 	{
+		$constants = array(
+			'EUF_CATEGORY'     => 0,
+			'EUF_TEXT'         => 1,
+			'EUF_RADIO'        => 2,
+			'EUF_DROPDOWN'     => 3,
+			'EUF_DB_FIELD'     => 4,
+			'EUF_TEXTAREA'     => 5,
+			'EUF_INTEGER'      => 6,
+			'EUF_DATE'         => 7,
+			'EUF_LANGUAGE'     => 8,
+			'EUF_PREDEFINED'   => 9,    // should be EUF_LIST IMO
+			'EUF_CHECKBOX'     => 10,
+			'EUF_PREFIELD'     => 11,   // should be EUF_PREDEFINED               => useful when creating fields from e.g. plugin XML
+			'EUF_ADDON'        => 12,   // defined within e_user.php addon @todo
+			'EUF_COUNTRY'      => 13,   // $frm->country()
+			'EUF_RICHTEXTAREA' => 14,   // $frm->bbarea()
+		);
+		
+		foreach($constants as $def => $val)
+		{
+			if(!defined($def))
+			{
+				define($def, $val);
+			}
+		}
+		
+/*
 		@define('EUF_CATEGORY', 0);
 		@define('EUF_TEXT',1);
 		@define('EUF_RADIO',2);
@@ -61,7 +88,7 @@ class e107_user_extended
 		@define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
 		@define('EUF_ADDON', 12);  // defined within e_user.php addon @todo
 		@define('EUF_COUNTRY', 13);  // $frm->country()
-		@define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()
+		@define('EUF_RICHTEXTAREA', 14); // $frm->bbarea()*/
 
 		$this->typeArray = array(
 			'text'          => EUF_TEXT,

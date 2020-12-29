@@ -469,7 +469,8 @@ class user_class
 		if(is_array($extra_js))
 		{
 			$options = $extra_js;
-			unset($extra_js);
+			$extra_js = '';
+
 		}
 
 		$class = "tbox form-control";

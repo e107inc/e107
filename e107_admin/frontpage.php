@@ -147,7 +147,7 @@ elseif(isset($_POST['fp_dec']))
 }
 */
 
-if (isset($_POST))
+if (!empty($_POST))
 {
 
 	// avoid endless loop.

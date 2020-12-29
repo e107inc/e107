@@ -2248,7 +2248,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "<tr>
 			<td><label for='smtp_keepalive'>" . LAN_MAILOUT_57 . "</label></td><td>\n";
 
-		$text .= $frm->radio_switch('smtp_keepalive', $pref['smtp_keepalive']) . "
+		$text .= $frm->radio_switch('smtp_keepalive', varset($pref['smtp_keepalive'])) . "
 			</td>
 			</tr>";
 

@@ -831,7 +831,7 @@ class theme_admin_online_tree_model extends e_tree_model
 						'thumbnail'		=> $r['thumbnail'],
 						'url'			=> $r['urlView'],
 						'author'		=> $r['author'],
-						'website'		=> $r['authorUrl'],
+						'website'		=> varset($r['authorUrl']),
 						'compatibility'	=> $r['compatibility'],
 						'description'	=> $r['description'],
 						'price'			=> $r['price'],
@@ -958,6 +958,8 @@ class theme_admin_form_ui extends e_admin_form_ui
 		$version = $tp->filter(e_VERSION,'version');
 		$compat = $tp->filter($theme['compatibility'], 'version');
 
+
+
 		$disabled = '';
 		$mainTitle = TPVLAN_10;
 
@@ -1066,8 +1068,10 @@ class theme_builder extends e_admin_ui
 
 			e107::getMessage()->addDebug("Disable debug to save generated files. ");
 
-
-			$this->themeName = $tp->filter($_GET['newtheme'],'w');
+			if(!empty($_GET['newtheme']))
+			{
+				$this->themeName = $tp->filter($_GET['newtheme'],'w');
+			}
 
 			if(!empty($_GET['src']))
 			{
