@@ -830,6 +830,7 @@ class e_theme
 	//	 print_a($lays);
 		$themeArray['legacy'] = true;
 		$themeArray['html'] = false;
+		$themeArray['compatibility'] = '1';
 
 		return $themeArray;
 	}

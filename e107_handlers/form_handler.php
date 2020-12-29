@@ -7079,7 +7079,7 @@ var_dump($select_options);*/
 					{
 						$key = strtoupper($k);
 						$fields[$v]['grid'] = true;
-						$vars[$key] = $this->renderValue($v,$data[$v],$fields[$v],$id);
+						$vars[$key] = $this->renderValue($v, varset($data[$v]), $fields[$v], $id);
 					}
 
 					$cells[] = "<div class='".$cls." admin-ui-grid'>". $tp->simpleParse($template,$vars). '</div>';

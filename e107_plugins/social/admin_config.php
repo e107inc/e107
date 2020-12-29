@@ -419,7 +419,7 @@ class social_ui extends e_admin_ui
 					<tr>
 						<td><label for='".$text_label."'>".LAN_SOCIAL_ADMIN_11." ".$var['label']." ".LAN_SOCIAL_ADMIN_12."</label></td>
 						<td>
-							".$frm->text($keypref, $pref['xurl'][$k], false, $opts)."
+							".$frm->text($keypref, varset($pref['xurl'][$k]), false, $opts)."
 							<div class='field-help'>".LAN_SOCIAL_ADMIN_13." ".$var['label']." ".LAN_SOCIAL_ADMIN_12." (".$def.")</div>
 						</td>
 					</tr>
