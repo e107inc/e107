@@ -159,8 +159,8 @@ define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_32", "Date stamp");
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
-define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Add trackback URLs");
+// define("LAN_NEWS_34", "Trackback");
+// define("LAN_NEWS_35", "Add trackback URLs");
 // define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
 define("LAN_NEWS_37", "One URL per line)");
 // define("LAN_NEWS_38", "Insert images");

@@ -3,7 +3,7 @@ define('LAN_THEME_1', 'e107 core theme by <a href="http://e107.org" title="e107 
 define('LAN_THEME_2', 'Comments: ');
 define('LAN_THEME_3', 'Comments are turned off for this item');
 define('LAN_THEME_4', 'Read the full story');
-define('LAN_THEME_5', 'Trackbacks: '); 
+// define('LAN_THEME_5', 'Trackbacks: ');
 define('LAN_THEME_8', 'in');
 define('LAN_THEME_9', 'by');
 define("LAN_THEME_11", "Latest news");
