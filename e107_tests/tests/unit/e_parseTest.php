@@ -1270,6 +1270,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 */
 		public function testFilter()
 		{
+			$url = 'http://www.domain.com/folder/folder2//1234_1_0.jpg';
 
 			$tests = array(
 				0   => array('input' => 'test123 xxx',      'mode' => 'w',        'expected' => 'test123xxx'),
@@ -1278,6 +1279,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				3   => array('input' => 'test123 xxx',      'mode' => 'wds',      'expected' => 'test123 xxx'),
 				4   => array('input' => 'test123 xxx.jpg',  'mode' => 'file',     'expected' => 'test123-xxx.jpg'),
 				5   => array('input' => '2.1.4 (test)',     'mode' => 'version',  'expected' => '2.1.4'),
+				6   => array('input' => $url,               'mode'=>'url',        'expected' => $url),
 			);
 
 			foreach($tests as $var)
