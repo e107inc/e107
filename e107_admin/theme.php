@@ -651,6 +651,7 @@ class theme_admin_ui extends e_admin_ui
 
 		public function ChoosePage()
 		{
+			e107::getTheme()->clearCache();
 			return $this->GridPage();
 		}
 
@@ -737,7 +738,7 @@ class theme_admin_tree_model extends e_tree_model
 		foreach($themeList as $k=>$v)
 		{
 
-			if(!empty($parms['searchqry']) && stripos($v['description'],$parms['searchqry']) === false && stripos($v['folder'],$parms['searchqry']) === false && stripos($v['name'],$parms['searchqry']) === false)
+			if(!empty($parms['searchqry']) && stripos($v['info'],$parms['searchqry']) === false && stripos($v['folder'],$parms['searchqry']) === false && stripos($v['name'],$parms['searchqry']) === false)
 			{
 				continue;
 			}

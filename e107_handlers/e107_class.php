@@ -3079,7 +3079,7 @@ class e107
 	 * @param boolean $override see {@link getThemeInfo()}
 	 * @param boolean $merge merge theme with plugin templates, default is false
 	 * @param boolean $info retrieve template info only
-	 * @return string|array
+	 * @return array
 	 */
 	public static function getTemplate($plug_name, $id = null, $key = null, $override = true, $merge = false, $info = false)
 	{
@@ -3113,7 +3113,7 @@ class e107
 
 		if($merge === false || $override === false)
 		{
-			return ($ret === false) ? '' : $ret;
+			return ($ret === false) ? array() : $ret;
 		}
 
 		// merge
@@ -3131,7 +3131,7 @@ class e107
 
 		if($ret === false)
 		{
-			return '';
+			return array();
 		}
 
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);

@@ -285,6 +285,108 @@ class core_library
 		);
 
 
+		// ----------------- Bootstrap 5 ---------------------------//
+
+			// Bootstrap (CDN).
+		$libraries['cdn.bootstrap5'] = array(
+			'name'              => 'Bootstrap 5 (CDN)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.bundle.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.min.css' => array(
+						'zone' => 1,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				/*'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),*/
+
+
+			),
+			// Override library path to CDN.
+		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1',
+			'path'              => '',
+			'version'           => '5.0.0',
+		);
+
+
+			// Bootstrap (local).
+		$libraries['bootstrap5'] = array(
+			'name'              => 'Bootstrap 5 (local)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap.bundle.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap.bundle.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+		/*	'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.bundle.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),*/
+			'library_path'      => '{e_WEB}lib/bootstrap',
+			'path'              => '5',
+			'version'           => '5.0.0',
+		);
+
+
+
+
+
+
 
 		// ----------------- Bootstrap 4 ---------------------------//
 
