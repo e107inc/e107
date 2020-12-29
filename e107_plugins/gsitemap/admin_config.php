@@ -284,7 +284,7 @@ class gsitemap_ui extends e_admin_ui
 			</colgroup>
 			<thead>
 				<tr>
-				<th class='center'>".GSLAN_2."</th>
+				<th class='center'><input type='checkbox' name='e-column-toggle' value='jstarget:importid' id='e-column-toggle-jstarget-e-multiselect' class='checkbox checkbox-inline toggle-all form-check-input ui-state-valid' /></th>
 				<th>".LAN_TYPE."</th>
 				<th>".LAN_NAME."</th>
 				<th>".LAN_URL."</th>
@@ -293,6 +293,7 @@ class gsitemap_ui extends e_admin_ui
 			<tbody>
 			";
 
+
 			foreach($importArray as $k=>$ia)
 			{
 				$id = 'gs-'.$k;
@@ -300,8 +301,8 @@ class gsitemap_ui extends e_admin_ui
 				<tr>
 					<td class='center'><input id='".$id."' type='checkbox' name='importid[]' 
 					value='".$ia['name']."^".$ia['url']."^".$ia['type']."^".$ia['plugin']."^".$ia['table']."^".$ia['id']."' /></td>
-					<td><label for='".$id."'>".$ia['type']."</label></td>
-					<td>".$ia['name']."</td>
+					<td><label for='".$id."' style='cursor:pointer' >".$ia['type']."</label></td>
+					<td><label for='".$id."' style='cursor:pointer'>".defset($ia['name'],$ia['name'])."</label></td>
 					<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
 				</tr>
 				";
@@ -541,7 +542,7 @@ $text = "
 			if ($sql->insert("gsitemap", $insert))
 			{
 				e107::getMessage()->addSuccess(LAN_CREATED);
-				$log->add('GSMAP_01', $gsitemap->message);
+				$log->add('GSMAP_01', LAN_CREATED);
 			}
 			else
 			{
@@ -552,7 +553,7 @@ $text = "
 		}
 
 		//	$this->message = count($_POST['importid'])." link(s) imported.";
-		$log->add('GSMAP_01', $gsitemap->message);
+	//	$log->add('GSMAP_01', $gsitemap->message);
 	}
 
 }

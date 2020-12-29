@@ -58,7 +58,7 @@ class gsitemap_event // plugin-folder + '_event'
 			return null;
 		}
 
-		if(!$url = $gsmap->url($data['newData']))
+		if(!$url = $gsmap->url($data['table'], $data['newData']))
 		{
 			return null;
 		}
