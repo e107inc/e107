@@ -31,7 +31,7 @@ TODO:
 
 if (!defined('e107_INIT')) { exit; }
 
-
+/*
 
   define('AUTH_SUCCESS', -1);
   define('AUTH_NOUSER', 1);
@@ -39,7 +39,7 @@ if (!defined('e107_INIT')) { exit; }
   define('AUTH_NOCONNECT', 3);
   define('AUTH_UNKNOWN', 4);
   define('AUTH_NOT_AVAILABLE', 5);
-
+*/
 
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_PLUGIN.'alt_auth/alt_auth_login_class.php');		// Has base methods class
@@ -562,7 +562,11 @@ function alt_auth_adminmenu()
 	{
 		$authlist = alt_auth_admin::alt_auth_get_authlist();
 	}
-	define('ALT_AUTH_ACTION', 'main');
+
+	if(!defined('ALT_AUTH_ACTION'))
+	{
+		define('ALT_AUTH_ACTION', 'main');
+	}
 
 	$var['main']['text'] = LAN_ALT_31;
 	$var['main']['link'] = e_PLUGIN . 'alt_auth/alt_auth_conf.php';

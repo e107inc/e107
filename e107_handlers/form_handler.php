@@ -5093,7 +5093,7 @@ var_dump($select_options);*/
 				{
 					if(isset($parms['sep']))
 					{
-						$value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
+						$value = number_format($value, varset($parms['decimals'],0), vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 					}
 					else
 					{
@@ -7323,7 +7323,7 @@ var_dump($select_options);*/
 				$key = $att['field'];
 			}
 			
-			if($key === 'checkboxes' || $key === 'options' || ($att['type'] === null) || ($att['type'] === false))
+			if($key === 'checkboxes' || $key === 'options' || (varset($att['type']) === null) || (varset($att['type']) === false))
 			{
 				continue;	
 			}

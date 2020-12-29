@@ -106,7 +106,7 @@ e107::coreLan('userclass2', true);
 		public function init()
 		{
 
-			if(E107_DBG_BASIC && intval($_GET['id']) === 254) // Experimental
+			if(E107_DBG_BASIC && isset($_GET['id']) && intval($_GET['id']) === 254) // Experimental
 			{
 				e107::getMessage()->addDebug("Experimental Feature active");
 				$this->tabs = array(LAN_GENERAL,"Administrator Permissions");

@@ -770,7 +770,7 @@ e107::js('footer-inline', js());
 			<tr>
 			<td>{$var['user_extended_struct_name']}</td>
 			<td>".constant(strtoupper($var['user_extended_struct_text'])."_DESC")."</td>
-			<td>".$ue->user_extended_edit($var,$uVal)."</td>
+			<td>".$ue->user_extended_edit($var,'')."</td>
 	        <td>".$tp->toHTML($var['type'], false, 'defs')."</td>
 			<td class='center'>".($active ? ADMIN_TRUE_ICON : "&nbsp;")."</td>
 			";
@@ -927,7 +927,7 @@ e107::js('footer-inline', js());
 
 			$current = $this->getController()->getModel()->getData();
 
-			$type = intval($current['user_extended_struct_type']);
+			$type = (int) varset($current['user_extended_struct_type']);
 
 			$val_hide = ($type !== EUF_DB_FIELD && $type !== EUF_TEXT && $type !== EUF_COUNTRY ) ? "visible" : "none";
 

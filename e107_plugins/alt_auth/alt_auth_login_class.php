@@ -26,14 +26,23 @@ define('AA_DEBUG1',FALSE);
 
 
 //TODO convert to class constants (but may be more useful as globals, perhaps within a general login manager scheme)
-define('AUTH_SUCCESS', -1);
-define('AUTH_NOUSER', 1);
-define('AUTH_BADPASSWORD', 2);
-define('AUTH_NOCONNECT', 3);
-define('AUTH_UNKNOWN', 4);
-define('AUTH_NOT_AVAILABLE', 5);
-define('AUTH_NORESOURCE', 6);		// Used to indicate, for example, that a required PHP module isn't loaded
+$authConst = array(
+	'AUTH_SUCCESS'       => -1,
+	'AUTH_NOUSER'        => 1,
+	'AUTH_BADPASSWORD'   => 2,
+	'AUTH_NOCONNECT'     => 3,
+	'AUTH_UNKNOWN'       => 4,
+	'AUTH_NOT_AVAILABLE' => 5,
+	'AUTH_NORESOURCE'    => 6,		// Used to indicate => for example => that a required PHP module isn't loaded
+);
 
+foreach($authConst as $def => $val)
+{
+	if(!defined($def))
+	{
+		define($def, $val);
+	}
+}
 
 /**
  *	Methods used by a number of alt_auth classes.

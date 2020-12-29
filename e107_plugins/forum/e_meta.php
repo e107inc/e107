@@ -7,6 +7,7 @@ if(!e107::isInstalled('poll'))
 {
 	return;
 }
+$poll_active = false;
 
 if(e107::getPlugPref('forum', 'poll') != '255')
 {

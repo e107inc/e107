@@ -72,21 +72,22 @@ class user_class
 		$this->isAdmin = FALSE;
 
 		$this->fixed_classes = array(
-							e_UC_PUBLIC => UC_LAN_0,
-							e_UC_GUEST => UC_LAN_1,
-							e_UC_NOBODY => UC_LAN_2,
-							e_UC_MEMBER => UC_LAN_3,
-							e_UC_ADMIN => UC_LAN_5,
-							e_UC_MAINADMIN => UC_LAN_6,
-							e_UC_READONLY => UC_LAN_4,
-							e_UC_NEWUSER => UC_LAN_9,
-							e_UC_BOTS => UC_LAN_10
-							);
+				e_UC_PUBLIC    => UC_LAN_0,
+				e_UC_GUEST     => UC_LAN_1,
+				e_UC_NOBODY    => UC_LAN_2,
+				e_UC_MEMBER    => UC_LAN_3,
+				e_UC_ADMIN     => UC_LAN_5,
+				e_UC_MAINADMIN => UC_LAN_6,
+				e_UC_READONLY  => UC_LAN_4,
+				e_UC_NEWUSER   => UC_LAN_9,
+				e_UC_BOTS      => UC_LAN_10,
+		//		e_UC_MODS      => UC_LAN_7 // specific to Forum plugin
+		);
 							
 		
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER, 'mods' => e_UC_MODS,
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,/* 'mods' => e_UC_MODS,*/
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
 									
 		
@@ -2033,12 +2034,12 @@ class user_class_admin extends user_class
 							'userclass_parent' => e_UC_NOBODY,
 							'userclass_visibility' => e_UC_MEMBER
 							),
-						array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
+					/*	array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
 							'userclass_description' => UCSLAN_78,
 							'userclass_editclass' => e_UC_MAINADMIN,
 							'userclass_parent' => e_UC_ADMINMOD,
 							'userclass_visibility' => e_UC_MEMBER
-							),
+							),*/
 						array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9,
 							'userclass_description' => UCSLAN_87,
 							'userclass_editclass' => e_UC_MAINADMIN,

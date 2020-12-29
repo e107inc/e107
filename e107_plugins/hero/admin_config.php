@@ -440,11 +440,11 @@ class hero_form_ui extends e_admin_form_ui
 					$val = varset($value[$v], array());
 
 					$text .= "<tr>
-								<td class='text-center'>".$this->glyphPicker($name.'[icon]', $val['icon'])."</td>
-								<td>".$this->btnClass($name.'[icon_style]', $val['icon_style'])."</td>
-								<td>".$this->textarea($name.'[text]',$val['text'],1,80,array('size'=>'block-level'))."</td>
-								<td>".$this->select($name.'[animation]',$optAnimation, $val['animation'], array( 'useValues'=>1), true)."</td>
-								<td>".$this->select($name.'[animation_delay]',$optDelay, $val['animation_delay'], array('size'=>'small'), true)."</td>
+								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
+								<td>".$this->btnClass($name.'[icon_style]', varset($val['icon_style']))."</td>
+								<td>".$this->textarea($name.'[text]', varset($val['text']),1,80,array('size'=>'block-level'))."</td>
+								<td>".$this->select($name.'[animation]',$optAnimation, varset($val['animation']), array( 'useValues'=>1), true)."</td>
+								<td>".$this->select($name.'[animation_delay]',$optDelay, varset($val['animation_delay']), array('size'=>'small'), true)."</td>
 							</tr>";
 
 				}
@@ -511,10 +511,10 @@ class hero_form_ui extends e_admin_form_ui
 
 
 					$text .= "<tr>
-								<td class='text-center'>".$this->glyphPicker($name.'[icon]', $val['icon'])."</td>
-								<td>".$this->text($name.'[label]',$val['label'],255,array('size'=>'block-level', 'placeholder'=>'Label'))."</td>
-								<td> ".$this->text($name.'[url]',$val['url'],255,array('size'=>'block-level', 'placeholder'=>'URL'))."</td>
-								<td> ".$this->btnClass($name.'[class]', $val['class'])."</td>
+								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
+								<td>".$this->text($name.'[label]', varset($val['label']), 255, array('size'=>'block-level', 'placeholder'=>'Label'))."</td>
+								<td> ".$this->text($name.'[url]', varset($val['url']), 255, array('size'=>'block-level', 'placeholder'=>'URL'))."</td>
+								<td> ".$this->btnClass($name.'[class]', varset($val['class']))."</td>
 							</tr>";
 
 
