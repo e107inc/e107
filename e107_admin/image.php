@@ -2408,7 +2408,7 @@ class media_admin_ui extends e_admin_ui
 				$fileName = empty($uploadCaption) ? str_replace(array(".php",".html",".asp",".htm"),'',$fileName)."_".time() : eHelper::dasherize(strtolower($uploadCaption));
 			}
 
-			if(!$fl->getRemoteFile($tp->filter($_POST['upload_url'], 'file'), $fileName, 'import'))
+			if(!$fl->getRemoteFile($tp->filter($_POST['upload_url'], 'url'), $fileName, 'import'))
 			{
 				$mes->addError(IMALAN_176);
 			}
