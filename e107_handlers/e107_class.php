@@ -2951,6 +2951,7 @@ class e107
 		$core_path 					= e_CORE.'templates/'.$id.'_template.php'; // default
 		$core_path_legacy 			= e_CORE.'templates/legacy/'.$id.'_template.php';
 		$core_path_bs4				= e_CORE.'templates/bootstrap4/'.$id.'_template.php';
+		$core_path_bs5				= e_CORE.'templates/bootstrap5/'.$id.'_template.php';
 
 		if($override_path && is_readable($override_path)) // v2 override template.
 		{
@@ -2967,6 +2968,10 @@ class e107
 		elseif(defset('BOOTSTRAP') === 4 && is_readable($core_path_bs4))
         {
             return $core_path_bs4;
+        }
+		elseif(defset('BOOTSTRAP') === 5 && is_readable($core_path_bs5))
+        {
+            return $core_path_bs5;
         }
 
 		return $core_path;
