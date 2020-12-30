@@ -476,7 +476,7 @@ class e_parse_shortcode
 			}
 			else
 			{
-				e107::getDebug()->log("Couldn't Find Class '".$className."' OR 'plugin_".$className."'in <b>".$path."</b>");
+				e107::getDebug()->log("Found file: <b>".$path."</b> but couldn't Find Class <b>".$className."</b> OR <b>plugin_".$className."</b> inside.");
 			}
 		}
 		else

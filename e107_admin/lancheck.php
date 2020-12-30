@@ -401,7 +401,7 @@ class lancheck
 				$dir2 = dirname($fullpath_trans)."/";
 			}
 			
-			return $this->edit_lanfiles($dir1,$dir2,$f1,$f2,$lan);
+			return $this->edit_lanfiles($dir1,$dir2,$f1,$f2,$lan, varset($_GET['type']));
 			// return true;
 		}	
 		
@@ -1200,7 +1200,8 @@ class lancheck
 		}
 		else
 		{
-			$caption = LAN_SAVED." <b>".$lan."/".$writeit."</b>";
+		//	$caption = LAN_SAVED." <b>".$lan."/".$writeit."</b>";
+			$caption = LAN_SAVED." <b>".$writeit."</b>";
 			$status = e107::getMessage()->addSuccess($caption)->render();
 		}
 		fclose($fp);
@@ -1703,7 +1704,7 @@ class lancheck
 
 			$parms = $_GET;
 			$parms['sub'] = 'edit';
-			$parms['file'] = $comp_dir."/languages/".$lnk;
+			$parms['file'] = $comp_name."/languages/".$lnk;
 			$parms['lan'] = $this->transLanguage;
 			$parms['iframe'] = 1;
 			$parms['type'] = $mode;
@@ -1748,12 +1749,24 @@ class lancheck
 	}
 	
 	
-	function edit_lanfiles($dir1,$dir2,$f1,$f2,$lan)
+	function edit_lanfiles($dir1, $dir2, $f1, $f2, $lan, $type=null)
 	{
 		if($lan == '')
 		{
 			echo "Language selection was lost. ";
 			return null;
+		}
+
+		if($type === 'P')
+		{
+			$dir1 = e_PLUGIN.$dir1;
+			$dir2 = e_PLUGIN.$dir2;
+		}
+
+		if($type === 'T')
+		{
+			$dir1 = e_THEME.$dir1;
+			$dir2 = e_THEME.$dir2;
 		}
 		
 	//	$ns = e107::getRender();
@@ -1788,6 +1801,12 @@ class lancheck
 
 		$writable = is_writable($dir2);
 		$trans = $this->get_lan_file_phrases($dir1,$dir2,$f1,$f2);
+
+		if(empty($trans))
+		{
+			//return array('caption'=>"Error", 'text'=>"Unable to open file", 'mode'=>'edit', 'file'=>$capFile);
+		}
+
 		$keys = array_keys($trans);
 		sort($keys);
 	
