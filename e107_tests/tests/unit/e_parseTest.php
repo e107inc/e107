@@ -947,7 +947,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					'parms'     => array('w'=>30, 'h'=>30, 'shape'=>'circle', 'alt'=>'mytitle'),
 					'expected'  => array(
 									"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=30&amp;h=30",
-									"class='img-circle user-avatar'",
+									"class='img-circle rounded-circle user-avatar'",
 									'alt="mytitle"',
 								)
 				),
