@@ -12,7 +12,7 @@ $log = e107::getLog();
 $id = FALSE;
 
 $sql = e107::getDb();
-$tp = e107::getRender();
+$tp = e107::getParser();
 $pref = e107::pref('core');
 
 if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
