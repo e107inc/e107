@@ -65,9 +65,9 @@ class pm_shortcodes extends e_shortcode
 		<ul class="dropdown-menu">
 		<li>
 
-			<a href="'.$urlInbox.'">'.LAN_PLUGIN_PM_INBOX.'</a>
-			<a href="'.$urlOutbox.'">'.LAN_PLUGIN_PM_OUTBOX.'</a>
-			<a href="'.$urlCompose.'">'.LAN_PLUGIN_PM_NEW.'</a>
+			<a class="nav-link" href="'.$urlInbox.'">'.LAN_PLUGIN_PM_INBOX.'</a>
+			<a class="nav-link" href="'.$urlOutbox.'">'.LAN_PLUGIN_PM_OUTBOX.'</a>
+			<a class="nav-link" href="'.$urlCompose.'">'.LAN_PLUGIN_PM_NEW.'</a>
 
 		</li>
 		</ul>';
