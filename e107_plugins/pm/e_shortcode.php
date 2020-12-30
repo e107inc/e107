@@ -61,7 +61,7 @@ class pm_shortcodes extends e_shortcode
 		$urlOutbox = e107::url('pm','index','', array('query'=>array('mode'=>'outbox')));
 		$urlCompose = e107::url('pm','index','', array('query'=>array('mode'=>'send')));
 
-		return '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.$icon.$count.'</a>
+		return '<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">'.$icon.$count.'</a>
 		<ul class="dropdown-menu">
 		<li>
 

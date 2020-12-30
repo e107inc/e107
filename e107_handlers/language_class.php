@@ -31,6 +31,7 @@ class language{
 	 */
 	protected $lanlist = null; // null is important!!!
 
+	// code / folder.
 	protected $list = array(
             "aa" => "Afar",
             "ab" => "Abkhazian",
@@ -48,7 +49,9 @@ class language{
             "bi" => "Bislama",
             "bo" => "Tibetan",
             "bs" => "Bosnian",
-            "br" => "Breton",
+
+			"br" => "Brazilian",
+
             "bg" => "Bulgarian",
             "my" => "Burmese",
             "ca" => "Catalan",
@@ -145,6 +148,7 @@ class language{
             "pi" => "Pali",
             "pl" => "Polish",
             "pt" => "Portuguese",
+
             "ps" => "Pushto",
             "qu" => "Quechua",
             "ro" => "Romanian",
@@ -230,6 +234,7 @@ class language{
 			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
+		    "Brazilian"     => "Português do Brasil",
 			"Polish"		=> "Polski",
 			"Romanian"		=> "Română",
 			"Russian"		=> "Pусский",
