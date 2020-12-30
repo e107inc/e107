@@ -180,6 +180,7 @@ if(!empty($_GET['iframe']))
 		{
 			$this->loadPackInfo();
 			$pref = e107::getPref();
+			/** @var lancheck $lck */
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
 
 			$lck->errorsOnly($pref['multilanguage_verify_errorsonly']);
