@@ -714,7 +714,6 @@ class file_inspector {
             if ($level === 0) $relativePath = '';
             $rowId = str_replace(" ", "%20", $relativePath);
             list($icon, $title) = $this->getGlyphForValidationCode($validationCode);
-            $oldVersion = $this->getOldVersionOfPath($relativePath, $validationCode);
             $html .= "<div class=\"d\" title=\"$title\" style=\"margin-left: " . ($level * 8) . "px\">";
             $html .= "<span  class='tree-node' onclick=\"ec('$rowId')\">";
             $html .= $this->getTreeActionImageForFile($tree, $fileName, $rowId, $hide);
@@ -729,6 +728,7 @@ class file_inspector {
             }
             else
             {
+	            $oldVersion = $this->getOldVersionOfPath($relativePath, $validationCode);
                 $html .= '<span style="float:right">';
                 $html .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
                 $html .= $oldVersion ? " (v$oldVersion)" : "";
