@@ -192,7 +192,11 @@ e107::getLanguage()->bcDefs($bcDefs);
 				}
 				if($pref['user_tracking'] != "session")
 				{
-					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
+					if(!isset($parm['label']))
+        			{
+        				$parm['label'] = LAN_LOGINMENU_6;
+        			}
+            		return e107::getForm()->checkbox('autologin', 1, 1, $parm) ;
 				}
 				return '';
 			}
