@@ -4966,7 +4966,7 @@ class e_parser
 	 */
 	public function isImage($file)
 	{
-		if(!is_string($text))
+		if(!is_string($file))
 		{
 			return false;
 		}
