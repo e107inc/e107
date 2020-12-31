@@ -6825,9 +6825,9 @@ var_dump($select_options);*/
 	{
 		$tp = e107::getParser();
 		$text = '';
-		
+		$formPre = '';
+		$formPost = '';
 
-		
 		foreach ($form_options as $fid => $options)
 		{
 			list($type,$plugin) = explode('-',$fid,2);
@@ -6936,8 +6936,8 @@ var_dump($select_options);*/
 
 			e107::setRegistry('core/adminUI/currentPlugin');
 
-			$text = vartrue($options['form_pre']).$text.vartrue($options['form_post']);
-
+			$formPre = vartrue($options['form_pre']);
+			$formPost = vartrue($options['form_post']);
 		}
 
 		if(!$nocontainer)
@@ -6946,7 +6946,8 @@ var_dump($select_options);*/
 			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
 
-		return $text;
+
+		return $formPre . $text . $formPost;
 	}
 
 
