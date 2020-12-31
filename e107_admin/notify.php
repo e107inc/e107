@@ -263,8 +263,8 @@ class plugin_notify_admin_ui extends e_admin_ui
 			{
 	            if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 				{
-					$config_category = $this->pluginConfig[$plugin_id]['category'];
-					$legacy = $this->pluginConfig[$plugin_id]['legacy'];
+					$config_category = varset($this->pluginConfig[$plugin_id]['category']);
+					$legacy = varset($this->pluginConfig[$plugin_id]['legacy']);
 
 					$text = "<table class='table adminform'>
 			        	<colgroup>
@@ -273,9 +273,12 @@ class plugin_notify_admin_ui extends e_admin_ui
 			        	</colgroup>";
 					;
 
-					foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+					if(!empty($this->pluginConfig[$plugin_id]['events']))
 					{
-						$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+						foreach ($this->pluginConfig[$plugin_id]['events'] as $event_id => $event_text)
+						{
+							$text .= $this->render_event($event_id, $event_text, $plugin_id, $legacy);
+						}
 					}
 
 					$text .= "</table>\n";
@@ -336,10 +339,10 @@ class plugin_notify_admin_ui extends e_admin_ui
 				<td  class='form-inline nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
-			if($this -> notify_prefs['event'][$id]['class'] == 'email')
+			if(varset($this->notify_prefs['event'][$id]['class']) == 'email')
 			{
             	$disp='display:visible';
-				$value = $tp -> toForm($this -> notify_prefs['event'][$id]['email']);
+				$value = $tp -> toForm(varset($this->notify_prefs['event'][$id]['email']));
 			}
 			else
 			{

@@ -27,7 +27,7 @@ if (!getperms("A") && ($_GET['action'] != 'dialog') && ($_GET['action'] != 'yout
 	exit;
 }
 
-if($_GET['action'] == 'youtube' )
+if(varset($_GET['action']) === 'youtube' )
 {
 	if(!getperms('A') && !getperms('A1'))
 	{
