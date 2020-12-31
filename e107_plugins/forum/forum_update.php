@@ -237,6 +237,7 @@ function step3()
 {
 	$ns = e107::getRender();
 	$mes = e107::getMessage();
+	$text = '';
 
 	$stepCaption = 'Step 3: Extended user field creation';
 	if (!isset($_POST['create_extended']))
@@ -725,6 +726,8 @@ function step8_ajax()
 	
 	global $forum;
 
+	$parentList = [];
+
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
 	{
 		while ($row = $sql->fetch())
@@ -735,7 +738,7 @@ function step8_ajax()
 		foreach($parentList as $id)
 		{
 			set_time_limit(60);
-			$forum->forumUpdateLastpost('forum', $id, $updateThreads);
+			$forum->forumUpdateLastpost('forum', $id);
 			$_SESSION['forumupdate']['lastpost_last'] = $id;
 			$_SESSION['forumupdate']['lastpost_count']++;
 		}
@@ -755,6 +758,7 @@ function step9()
 {
 
 	$sql = e107::getDb();
+	$text = '';
 	
 	$stepCaption = 'Step 9: Migrate poll information';
 	if (!isset($_POST['migrate_polls']))
@@ -775,6 +779,10 @@ function step9()
 	LEFT JOIN `#forum_thread` AS t ON t.thread_id =  p.poll_datestamp
 	WHERE t.thread_id IS NOT NULL
 	";
+
+	$threadList = [];
+
+
 	if ($sql -> gen($qry))
 	{
 		while ($row = $sql -> fetch())
@@ -871,7 +879,7 @@ function step10_ajax()//TODO
 	global $f;
 
 	$lastPost = vartrue($_SESSION['forumupdate']['attachment_last'], 0);
-
+	$errorText = '';
 /*
 	$qry = "
 	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
@@ -887,7 +895,7 @@ function step10_ajax()//TODO
 	";
 
 	// file_put_contents(e_LOG."forum_update_step10.log",$qry."\n",FILE_APPEND);
-	
+	$postList = [];
 	
 	if ($sql->gen($qry))
 	{
@@ -1060,7 +1068,7 @@ function step10_ajax()//TODO
 
 			if (count($attachments))
 			{
-				$f->log("found " . count($attachments) . " attachments");
+				$f->log("found " . count($attachments) . " attachments", true);
 				$newValues = array();
 				$info = array();
 				$info['post_entry'] = $post['post_entry'];
@@ -1068,7 +1076,7 @@ function step10_ajax()//TODO
 				foreach ($attachments as $attachment)
 				{
 					$error = '';
-					$f->log($attachment['name']);
+				//	$f->log($attachment['name'], true);
 					if ($f->moveAttachment($attachment, $post, $error))
 					{
 						$type = $attachment['type'];
@@ -1078,7 +1086,7 @@ function step10_ajax()//TODO
 					else
 					{
 						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}<br />";
-						$f -> log("Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}");
+						$f -> log("Failure processing post {$post['post_id']} - file {$attachment['name']} - {$error}", true);
 					}
 				}
 				//				echo $errorText."<br />";
@@ -1361,20 +1369,7 @@ class forumUpgrade
 		}
 
 		return;
-		
-		/*
-		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
-		{
-			$row = $sql -> fetch();
-			$this -> updateInfo = unserialize($row['gen_chardata']);
-		}
-		else
-		{
-			$qry = "INSERT INTO `#generic` (gen_type) VALUES ('forumUpgrade')";
-			$sql -> gen($qry);
-			$this -> updateInfo = array();
-		}
-		 * */
+
 	}
 
 	function setUpdateInfo()
@@ -1400,9 +1395,13 @@ class forumUpgrade
 		global $forum;
 
 		$threadId = (int)$threadId;
-		if (e107::getDb()->select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
+		$result = false;
+
+		$sql = e107::getDb();
+
+		if ($sql->select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
 		{
-			$threadData = e107::getDb()->db_getList();
+			$threadData = $sql->db_getList();
 			foreach ($threadData as $post)
 			{
 				if ($post['thread_parent'] == 0)
@@ -1418,8 +1417,14 @@ class forumUpgrade
 					$result = $this -> addPost($post);
 				}
 			}
+
 			return ($result ? count($threadData) : false);
 		}
+		else
+		{
+			$this->log($sql->getLastErrorText(), true);
+		}
+
 		return false;
 	}
 
@@ -1494,9 +1499,15 @@ class forumUpgrade
 		//		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 		//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent
 		// double entities
+		$sql = e107::getDb();
 
+		$result = $sql->insert('forum_thread', $thread);
 
-		$result = e107::getDb() -> insert('forum_thread', $thread);
+		if($result === false)
+		{
+			$this->log($sql->getLastErrorText(), true);
+		}
+
 		return $result;
 	}
 
@@ -1543,8 +1554,16 @@ class forumUpgrade
 		// double entities
 		//		print_a($newPost);
 		//		exit;
-		$result = e107::getDb() -> insert('forum_post', $newPost);
-		//		exit;
+
+		$sql = e107::getDb() ;
+
+		$result = $sql->insert('forum_post', $newPost);
+
+		if($result === false)
+		{
+			$this->log($sql->getLastErrorText(), true);
+		}
+
 		return $result;
 
 	}
