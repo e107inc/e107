@@ -1166,7 +1166,7 @@ class news_admin_ui extends e_admin_ui
 							<tr>
 								<td>".NWSLAN_120."</td>
 								<td>
-									".$frm->bbarea('news_subheader', stripcslashes(vartrue($pref['news_subheader'])), 2, 'helpb')."
+									".$frm->bbarea('news_subheader', stripcslashes(vartrue($pref['news_subheader'])), null, 'helpb')."
 								</td>
 							</tr>
 							</tbody>

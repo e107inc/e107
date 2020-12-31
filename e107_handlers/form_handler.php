@@ -4418,7 +4418,7 @@ var_dump($select_options);*/
 
 
 				$text .= (vartrue($val['url'])) ? '<a ' .$aClass. ' title="' .LAN_SORT."\" href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : '';  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
-	            $text .= defset($val['title'], $val['title']);
+	            $text .= !empty($val['title']) ? defset($val['title'], $val['title']) : '';
 				$text .= ($val['url']) ? '</a>' : '';
 	            $text .= ($key === 'options' && !vartrue($val['noselector'])) ? $this->columnSelector($fieldarray, $columnPref) : '';
 				$text .= ($key === 'checkboxes') ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : '';
@@ -6052,6 +6052,7 @@ var_dump($select_options);*/
 	public function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
 		$tp = e107::getParser();
+		$ret = '';
 
 		$parms = vartrue($attributes['writeParms'], array());
 
@@ -6934,13 +6935,18 @@ var_dump($select_options);*/
 			';
 
 			e107::setRegistry('core/adminUI/currentPlugin');
+
+			$text = vartrue($options['form_pre']).$text.vartrue($options['form_post']);
+
 		}
+
 		if(!$nocontainer)
 		{
 			$class = deftrue('e_IFRAME') ? 'e-container e-container-modal' : 'e-container';
 			$text = '<div class="'.$class.'">'.$text.'</div>';
 		}
-		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
+
+		return $text;
 	}
 
 

@@ -250,6 +250,7 @@ define("LAN_AL_META_01", "Meta tags updated");
 
 // Downloads
 //----------
+/*
 define("LAN_AL_DOWNL_01", "Download options changed");
 define("LAN_AL_DOWNL_02", "Download category created");
 define("LAN_AL_DOWNL_03", "Download category updated");
@@ -265,6 +266,7 @@ define("LAN_AL_DOWNL_12", "Download mirror added");
 define("LAN_AL_DOWNL_13", "Download mirror updated");
 define("LAN_AL_DOWNL_14", "Download mirror deleted");
 define("LAN_AL_DOWNL_15", "");
+*/
 
 // Custom Pages/Menus
 //-------------------

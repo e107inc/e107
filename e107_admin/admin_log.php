@@ -50,6 +50,25 @@ if(is_array($logList)) //... and for any plugins which support it
 define('AL_DATE_TIME_FORMAT', 'y-m-d  H:i:s');
 
 
+function loadEventTypes($table)
+{
+
+	$sql = e107::getDb();
+	$row = $sql->retrieve("SELECT dblog_eventcode,dblog_title FROM #".$table." WHERE dblog_eventcode !='' AND dblog_title !='' GROUP BY dblog_eventcode",true);
+	$eventTypes = array();
+	foreach($row as $val)
+	{
+		$id = $val['dblog_eventcode'];
+		$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
+		$eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
+	}
+
+	asort($eventTypes);
+
+	return $eventTypes;
+
+}
+
 
 class adminlog_admin extends e_admin_dispatcher
 {
@@ -198,18 +217,8 @@ class admin_log_ui extends e_admin_ui
 			$this->perPage = vartrue($perPage,10);
 			
 			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 15=>15, 20=>20, 30=>30, 40=>40, 50=>50);
-			
-			
-			$sql = e107::getDb();
-			$row = $sql->retrieve("SELECT dblog_eventcode,dblog_title FROM #admin_log WHERE dblog_eventcode !='' AND dblog_title !='' GROUP BY dblog_eventcode",true);
-			foreach($row as $val)
-			{
-				$id = $val['dblog_eventcode'];
-				$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
-				$this->eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
-			}
 
-			asort($this->eventTypes);
+			$this->eventTypes = loadEventTypes('admin_log');
 			
 			if(getperms('0'))
 			{
@@ -722,13 +731,14 @@ class audit_log_ui extends e_admin_ui
 		
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_title','dblog_remarks');
 		
-	
+		public $eventTypes = array();
 
 		// optional
 		public function init()
 		{
-				$perPage = e107::getConfig()->get('sys_log_perpage');
+			$perPage = e107::getConfig()->get('sys_log_perpage');
 			$this->perPage = vartrue($perPage,10);
+			$this->eventTypes = loadEventTypes('audit_log');
 		}
 
 	/*
@@ -777,12 +787,14 @@ class dblog_ui extends e_admin_ui
 
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_caller', 'dblog_title', 'dblog_remarks');
 
+	public $eventTypes = array();
 
 	// optional
 	public function init()
 	{
-		$perPage = e107::getConfig()->get('sys_log_perpage');
-		$this->perPage = vartrue($perPage,10);
+		$perPage            = e107::getConfig()->get('sys_log_perpage');
+		$this->perPage      = vartrue($perPage,10);
+		$this->eventTypes   = loadEventTypes('dblog');
 	}
 
 }
