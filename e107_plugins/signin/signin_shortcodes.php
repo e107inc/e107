@@ -52,7 +52,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		$this->regMode = (int) defset('USER_REGISTRATION');
 
-		$this->authMethod = varset($pref['auth_method'], 'e107');
+		$this->authMethod = vartrue($pref['auth_method'], 'e107');
 
 	}
 
