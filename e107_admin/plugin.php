@@ -348,6 +348,7 @@ class plugin_ui extends e_admin_ui
 		function renderHelp()
 		{
 			$plg = e107::getPlug();
+			$plg->clearCache();
 			if(!$list = $plg->getUpgradableList())
 			{
 				return null;
@@ -358,16 +359,15 @@ class plugin_ui extends e_admin_ui
 			foreach($list as $path=>$ver)
 			{
 				$plg->load($path);
-				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$path;
+				$name = $plg->getName();
+				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&path=".$path;
 				$text .= "<li class='media'>
 				<div class='media-left'>
 					<a href='".$url."'>".$plg->getIcon(32)."</a>
-					</div><div class='media-body'><a href='".$url."'>".$plg->getName()."</a></div></li>";
+					</div><div class='media-body'><a class='e-spinner' href='".$url."' title=\"".EPL_UPGRADE." ".$name." v".$ver."\">".$name."</a></div></li>";
 
 			}
 			$text .= "</ul>";
-
-
 
 
 			return array('caption'=>EPL_ADLAN_247, 'text'=>$text);
@@ -526,6 +526,7 @@ class plugin_ui extends e_admin_ui
 		function upgradePage()
 		{
 			$this->pluginUpgrade();
+
 		}
 
 
@@ -609,11 +610,14 @@ class plugin_ui extends e_admin_ui
 			$_path = e_PLUGIN.$id.'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
+
 				$plugin->install_plugin_xml($id, 'upgrade');
 				$text = LAN_UPGRADE_SUCCESSFUL;
 			}
 			else
 			{
+				e107::getMessage()->addDebug("Running Legacy plugin upgrade. <b>".$_path."</b> not found."); // NO LAN
+
 				$eplug_folder = null;
 				$upgrade_alter_tables = null;
 				$upgrade_add_prefs = null;
@@ -621,7 +625,6 @@ class plugin_ui extends e_admin_ui
 				$upgrade_add_array_pref = null;
 				$upgrade_remove_array_pref = null;
 				$eplug_version = null;
-
 
 
 				include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');

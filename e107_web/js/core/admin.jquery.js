@@ -174,6 +174,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 $(document).ready(function()
 {
+            $('a.e-spinner').on('click', function() {
+
+			  	var orig = $(this).text();
+			  	var spin = "<i class='fa fa-spin fa-spinner fa-fw'></i>";
+
+				$(this).html(orig + spin);
+            });
+
+
 
 			$('#e-modal-submit').click(function () {
 			  $('#e-modal-iframe').contents().find('#etrigger-submit').trigger('click');
