@@ -346,9 +346,6 @@
 
 			$result = $this->dta->get_current_table('core');
 
-
-
-
 			$this->assertSame($result,$expected);
 
 		}

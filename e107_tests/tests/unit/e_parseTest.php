@@ -1049,7 +1049,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$result6 = preg_replace('/"([^"]*)thumb.php/','"thumb.php', $result6);
 
 		//	$result6 = str_replace($tempDir, '', $result6);
-
+			$expected = str_replace("\r", '', $expected);
 			$this->assertSame($expected,$result6);
 			$this->tp->setConvertToWebP(false);
 
