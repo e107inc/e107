@@ -838,10 +838,20 @@ class user_class
 		}
 		
 		$checked = in_array($classnum, $tmp) ? true : false;
-		return "<div {$style}>".$frm->checkbox($treename.'[]',$classSign.$classIndex,$checked,array('label'=> $ucString))."</div>\n";
+
+		$pre = "<div {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.$frm->checkbox($treename.'[]',$classSign.$classIndex, $checked, array('label'=> $ucString)).$post;
 		
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
+	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
 	}
 
 
@@ -881,7 +891,16 @@ class user_class
 
 		$id ="{$treename}_{$classSign}{$classnum}";
 
-		return "<div class='checkbox' {$style}>".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description))."</div>\n";
+		$pre = "<div class='checkbox' {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description)).$post;
 		
 	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
