@@ -40,7 +40,7 @@ $f = new forumUpgrade;
 
 $sql = e107::getDb();
 
-if($_GET['reset'])
+if(!empty($_GET['reset']))
 {
 	unset($_SESSION['forumUpgrade']);
 	unset($_SESSION['forumupdate']);
