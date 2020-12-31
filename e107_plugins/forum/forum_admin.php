@@ -1148,7 +1148,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		public function init()
 		{
 
-			$id = intval($_GET['id']);
+			$id = (int) varset($_GET['id']);
 
 			if(!empty($id))
 			{

@@ -3068,6 +3068,7 @@ class e107plugin
 	 */
 	function XmlTables($function, $plug, $options = array())
 	{
+		$txt = '';
 		$this->log("Running ".__METHOD__);
 
 		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.str_replace("_menu","", $plug['plugin_path'])."_sql.php";
@@ -3494,6 +3495,8 @@ class e107plugin
 	function XmlSiteLinks($function, $plug_vars)
 	{
 		$this->log("Running ".__FUNCTION__);
+
+		$status = false;
 
 		$mes = e107::getMessage();
 		
@@ -4239,6 +4242,8 @@ class e107plugin
 		}	
 		
 		global $sysprefs, $mySQLprefix;
+
+		$text = '';
 		
 		$ns = e107::getRender();
 		$sql = e107::getDb();
