@@ -2953,28 +2953,34 @@ class e107
 		$core_path_bs4				= e_CORE.'templates/bootstrap4/'.$id.'_template.php';
 		$core_path_bs5				= e_CORE.'templates/bootstrap5/'.$id.'_template.php';
 
+		$ret = $core_path;
+
 		if($override_path && is_readable($override_path)) // v2 override template.
 		{
-			return $override_path;
+			$ret = $override_path;
 		}
 		elseif($legacy_override_path && is_readable($legacy_override_path)) //v1 override template.
 		{
-			return $legacy_override_path;
+			$ret = $legacy_override_path;
 		}
 		elseif(THEME_LEGACY === true && is_readable($core_path_legacy)) //v1 core template.
 		{
-			return $core_path_legacy;
+			$ret = $core_path_legacy;
 		}
-		elseif(defset('BOOTSTRAP') === 4 && is_readable($core_path_bs4))
+		elseif(defset('BOOTSTRAP') > 3)
         {
-            return $core_path_bs4;
-        }
-		elseif(defset('BOOTSTRAP') === 5 && is_readable($core_path_bs5))
-        {
-            return $core_path_bs5;
+            if(is_readable($core_path_bs5))
+            {
+                $ret = $core_path_bs5;
+            }
+            elseif(is_readable($core_path_bs4))
+            {
+                $ret = $core_path_bs4;
+            }
+
         }
 
-		return $core_path;
+		return $ret;
 	}
 
 	/**

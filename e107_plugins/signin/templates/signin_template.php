@@ -9,7 +9,7 @@ $SIGNIN_TEMPLATE = [];
 $SIGNIN_WRAPPER['signin']['SIGNIN_SIGNUP_HREF'] = '<li class="nav-item"><a class="nav-link" href="{---}">{LAN=LAN_LOGINMENU_3}</a></li>';
 
 $SIGNIN_TEMPLATE['signin'] = '
-			<ul class="nav navbar-nav navbar-right nav-right">
+			<ul class="navbar-nav nav-right">
 				{SIGNIN_SIGNUP_HREF}
 				<li class="divider-vertical"></li>
 				<li class="nav-item dropdown">
@@ -48,7 +48,7 @@ $SIGNIN_WRAPPER['signout']['SIGNIN_PM_NAV'] = '<li class="dropdown">{---}</li>';
 
 $SIGNIN_TEMPLATE['signout'] = '
 
-		<ul class="nav navbar-nav navbar-right">
+		<ul class="navbar-nav navbar-right">
 			{SIGNIN_PM_NAV}
 			<li class="dropdown dropdown-avatar"><a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown">{USER_AVATAR: w=30&h=30&crop=1&shape=circle} {SIGNIN_USERNAME} <b class="caret"></b></a>
 				<ul class="dropdown-menu  ">
