@@ -385,6 +385,7 @@ class news_shortcodes extends e_shortcode
 		}
 
 		$tp = e107::getParser();
+		$srcPath = '';
 
 		if(is_string($parm))
 		{
@@ -392,12 +393,15 @@ class news_shortcodes extends e_shortcode
 		}
 
 
-		$tmp = $this->handleMultiple($parm);
+		if($tmp = $this->handleMultiple($parm))
+		{
+			$srcPath = $tmp['file'];
+		}
 
-		$srcPath = $tmp['file'];
+
 
 		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
-		$class .= ' news-image-'.$tmp['count'];
+		$class .= ' news-image-'.varset($tmp['count'],0);
 		$dimensions = null;
 		$srcset = null;
 		$src = '';
@@ -416,7 +420,7 @@ class news_shortcodes extends e_shortcode
 				$dimensions = $tp->thumbDimensions();
 			}
 		}
-		elseif ($srcPath[0] == '{') // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
+		elseif ($srcPath[0] === '{') // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
 		{
 			$src = $tp->thumbUrl($srcPath);
 			$dimensions = $tp->thumbDimensions();
@@ -443,7 +447,7 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 
-		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
+		if(isset($tmp['count']) && ($tmp['count'] > 1) && empty($parm['type'])) // link first image by default, but not others.
 		{
 			$parm['type'] = 'tag';
 		}
@@ -747,9 +751,10 @@ class news_shortcodes extends e_shortcode
 			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text), 2, PREG_SPLIT_DELIM_CAPTURE);
 			$tmp = array_filter($tmp);
 
-			if($tmp[0])
+			if(!empty($tmp[0]))
 			{
-				$text = trim($tmp[0]).trim($tmp[1]);
+				$text = trim($tmp[0]);
+				$text .= (!empty($tmp[1])) ? trim($tmp[1]) : '';
 			}
 		}
 

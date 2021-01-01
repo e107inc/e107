@@ -184,29 +184,29 @@ li .hero-list-text {
 #carousel-hero h2 { font-size: 1.2em}
 
 /* CAROUSEL FADE */
-.carousel-fade .carousel-inner .item {
+#carousel-hero.carousel-fade .carousel-inner .item {
 	-webkit-transition-property: opacity;
 	transition-property: opacity; }
 
-.carousel-fade .carousel-inner .item,
-.carousel-fade .carousel-inner .active.left,
-.carousel-fade .carousel-inner .active.right {
+#carousel-hero.carousel-fade .carousel-inner .item,
+#carousel-hero.carousel-fade .carousel-inner .active.left,
+#carousel-hero.carousel-fade .carousel-inner .active.right {
 	opacity: 0; }
 
-.carousel-fade .carousel-inner .active,
-.carousel-fade .carousel-inner .next.left,
-.carousel-fade .carousel-inner .prev.right {
+#carousel-hero.carousel-fade .carousel-inner .active,
+#carousel-hero.carousel-fade .carousel-inner .next.left,
+#carousel-hero.carousel-fade .carousel-inner .prev.right {
 	opacity: 1; }
 
-.carousel-fade .carousel-inner .next,
-.carousel-fade .carousel-inner .prev,
-.carousel-fade .carousel-inner .active.left,
-.carousel-fade .carousel-inner .active.right {
+#carousel-hero.carousel-fade .carousel-inner .next,
+#carousel-hero.carousel-fade .carousel-inner .prev,
+#carousel-hero.carousel-fade .carousel-inner .active.left,
+#carousel-hero.carousel-fade .carousel-inner .active.right {
 	left: 0;
 	-webkit-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0); }
 
-.carousel-fade .carousel-control {
+#carousel-hero.carousel-fade .carousel-control {
 	z-index: 2; }
 
 /* ANIMATION */

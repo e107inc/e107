@@ -65,6 +65,11 @@ class list_shortcodes
 
 	function sc_list_heading()
 	{
+		if(empty($this->row['heading']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->row['heading'], true, "TITLE");
 	}
 
@@ -75,6 +80,11 @@ class list_shortcodes
 
 	function sc_list_category()
 	{
+		if(empty($this->row['category']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->row['category'], true, "");
 	}
 

@@ -136,7 +136,7 @@ class newsfeedClass
 
 		$cachedData  = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID,$maxAge, true);
 
-		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec.
+		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || (!empty($this->newsList[$feedID]['newsfeed_data']) && strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS'))) //BC Fix to update newsfeed_data from v1 to v2 spec.
 		{
 			$force = true;
 			// e107::getDebug()->log("NewsFeed Force");

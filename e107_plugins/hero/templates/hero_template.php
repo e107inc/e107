@@ -25,7 +25,7 @@ $HERO_TEMPLATE['default']['footer'] 	= '</div><div class="carousel-controls">
 						                  <!-- Indicators -->
 						                  {HERO_CAROUSEL_INDICATORS: target=carousel-hero&class=animated fadeInUpBig}
 						
-						                  </ol>-->
+						                  </ol>
 						                </div>
 						              </div>';
 

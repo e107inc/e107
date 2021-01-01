@@ -120,8 +120,7 @@ class MagpieRSS {
         # setup handlers
         #
         xml_set_object( $this->parser, $this );
-        xml_set_element_handler($this->parser, 
-                'feed_start_element', 'feed_end_element' );
+        xml_set_element_handler($this->parser, 'feed_start_element', 'feed_end_element' );
                         
         xml_set_character_data_handler( $this->parser, 'feed_cdata' ); 
     
@@ -144,7 +143,7 @@ class MagpieRSS {
         $this->normalize();
     }
     
-    function feed_start_element($p, $element, &$attrs) {
+    function feed_start_element($p, $element, $attrs) {
         $el = $element = strtolower($element);
         $attrs = array_change_key_case($attrs, CASE_LOWER);
         
@@ -560,9 +559,9 @@ class MagpieRSS {
 
     function error ($errormsg, $lvl=E_USER_WARNING) {
         // append PHP's error message if track_errors enabled
-        if ( $php_errormsg ) { 
+     /*   if ( $php_errormsg ) {
             $errormsg .= " ({$php_errormsg})";
-        }
+        }*/
         if ( defined('MAGPIE_DEBUG') &&  MAGPIE_DEBUG) {
             trigger_error( $errormsg, $lvl);        
         }
