@@ -76,7 +76,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	public function sc_cb_avatar($parm = null)
 	{
 		$tp = e107::getParser();
-		$size = $parm['size'] ?: 40;
+		$size = !empty($parm['size']) ? $parm['size'] : 40;
 		$options = array('h' => $size, 'w' => $size, 'crop' => 'C');
 
 		if ( ! isset($this->var['user_image']) ) {
@@ -154,7 +154,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 		}
 
 		$pref = e107::getPref();
-		$emotes_active = $pref['cb_emote'] ? 'USER_BODY, emotes_on'
+		$emotes_active = !empty($pref['cb_emote']) ? 'USER_BODY, emotes_on'
 			: 'USER_BODY, emotes_off';
 
 		$cb_message = e107::getParser()

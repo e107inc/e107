@@ -3161,7 +3161,14 @@ class e107
 			return array();
 		}
 
-		list($templateId, $templateKey) = explode('/', $templateId, 2);
+		if(strpos($templateId,'/') !== false)
+		{
+			list($templateId, $templateKey) = explode('/', $templateId, 2);
+		}
+		else
+		{
+			$templateKey = '';
+		}
 
 		$wrapperRegPath = 'templates/wrapper/'.$templateId;
 

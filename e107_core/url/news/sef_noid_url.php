@@ -73,7 +73,7 @@ class core_news_sef_noid_url extends eUrlConfig
 			switch ($route[1]) 
 			{
 				case 'item':
-					$r[0] = $params['id']; // news/ID
+					$r[0] = varset($params['id']); // news/ID
 				break;
 				
 				default:

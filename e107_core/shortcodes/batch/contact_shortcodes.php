@@ -146,10 +146,8 @@ class contact_shortcodes extends e_shortcode
 		$cols = vartrue($parm['cols'],70);
 		$placeholder = !empty($parm['placeholder']) ? "placeholder=\"".$parm['placeholder']."\"" : "";
 		
-		if($cols > 60)
-		{
-			$size = 'input-xxlarge';	
-		}
+		$size = ($cols > 60) ? 'input-xxlarge' : '';
+
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox '.$size.' form-control';
 
 

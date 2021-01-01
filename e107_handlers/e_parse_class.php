@@ -4719,7 +4719,7 @@ class e_parser
 			}
 
 		}
-		elseif($file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
+		elseif(!empty($file) && $file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
 			$path = $tp->replaceConstants($file,'abs');
 		}

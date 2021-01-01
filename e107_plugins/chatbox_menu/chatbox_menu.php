@@ -10,10 +10,10 @@
  *
 */
 
-if (isset($_POST['chatbox_ajax']))
+if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL', true);
-	if (!defined('e107_INIT'))
+	if(!defined('e107_INIT'))
 	{
 		require_once('../../class2.php');
 	}
@@ -24,7 +24,7 @@ global $e107cache, $e_event, $e107;
 $tp = e107::getParser();
 $pref = e107::getPref();
 
-if (!e107::isInstalled('chatbox_menu'))
+if(!e107::isInstalled('chatbox_menu'))
 {
 	return '';
 }
@@ -35,10 +35,10 @@ e107::lan('chatbox_menu', e_LANGUAGE);
 $emessage = '';
 
 
-if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '')
+if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '')
 {
 
-	if (!USER && !$pref['anon_post'])
+	if(!USER && !$pref['anon_post'])
 	{
 		$cmessage = ''; // disallow post
 	}
@@ -52,14 +52,14 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 
 		$fp = new floodprotect;
 
-		if ($fp->flood('chatbox', 'cb_datestamp'))
+		if($fp->flood('chatbox', 'cb_datestamp'))
 		{
-			if (trim($cmessage) !== '' && (strlen(trim($cmessage)) < 1000))
+			if(trim($cmessage) !== '' && (strlen(trim($cmessage)) < 1000))
 			{
 
 				$cmessage = $tp->toDB($cmessage);
 
-				if ($sql->select('chatbox', '*',
+				if($sql->select('chatbox', '*',
 					"cb_message='{$cmessage}' AND cb_datestamp+84600>" . time()))
 				{
 
@@ -72,7 +72,7 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 					$datestamp = time();
 					$ip = e107::getIPHandler()->getIP(false);
 
-					if (USER)
+					if(USER)
 					{
 
 						$nick = USERID . '.' . USERNAME;
@@ -81,7 +81,7 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 						$sql->update('user', "user_chats = user_chats + 1, user_lastpost = {$postTime} WHERE user_id = " . USERID);
 
 					}
-					elseif (!$nick)
+					elseif(!$nick)
 					{
 
 						$nick = '0.Anonymous';
@@ -90,7 +90,7 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 					else
 					{
 
-						if ($sql->select('user', '*', "user_name='$nick' "))
+						if($sql->select('user', '*', "user_name='$nick' "))
 						{
 
 							$emessage = CHATBOX_L1;
@@ -104,12 +104,12 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 						}
 
 					}
-					if (!$emessage)
+					if(!$emessage)
 					{
 						$insertId = $sql->insert('chatbox',
 							"0, '{$nick}', '{$cmessage}', '{$datestamp}', 0, '{$ip}' ");
 
-						if ($insertId)
+						if($insertId)
 						{
 
 							$edata_cb = [
@@ -142,16 +142,16 @@ if ((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== '
 }
 
 
-if (!USER && !$pref['anon_post'])
+if(!USER && !$pref['anon_post'])
 {
 
-	if ($pref['user_reg'])
+	if($pref['user_reg'])
 	{
 
 		$text1 = str_replace(['[', ']'], ["<a href='" . e_LOGIN . "'>", '</a>'],
 			CHATBOX_L3);
 
-		if ($pref['user_reg'] === 1)
+		if($pref['user_reg'] === 1)
 		{
 			$text1 .= str_replace(['[', ']'],
 				["<a href='" . e_SIGNUP . "'>", '</a>'], CHATBOX_L3b);
@@ -166,7 +166,7 @@ else
 {
 	$cb_width = (defined('CBWIDTH') ? CBWIDTH : '');
 
-	if ($pref['cb_layer'] === 2)
+	if(varset($pref['cb_layer']) === 2)
 	{
 
 		$texta = "\n<form id='chatbox' action='" . e_SELF . '?' . e_QUERY . "'  method='post' onsubmit='return(false);'>
@@ -185,13 +185,13 @@ else
 
 	$texta .= "<div class='control-group form-group' id='chatbox-input-block'>";
 
-	if (($pref['anon_post'] == '1' && USER === false))
+	if(($pref['anon_post'] == '1' && USER === false))
 	{
 		$texta .= "\n<input class='tbox chatbox' type='text' id='nick' name='nick' value='' maxlength='50' " . ($cb_width
 				? "style='width: " . $cb_width . ";'" : '') . ' /><br />';
 	}
 
-	if ($pref['cb_layer'] === 2)
+	if($pref['cb_layer'] === 2)
 	{
 
 		$oc =
@@ -215,7 +215,7 @@ else
 	// $texta .= "<input type='reset' name='reset' value='".CHATBOX_L5."' />"; // How often do we see these lately? ;-)
 
 
-	if ($pref['cb_emote'] && $pref['smiley_activate'])
+	if(!empty($pref['cb_emote']) && !empty($pref['smiley_activate']))
 	{
 		$texta .= "
 		<input class='btn btn-default btn-secondary button' type='button' style='cursor:pointer' size='30' value='" . CHATBOX_L14 . "' onclick=\"expandit('emote')\" />
@@ -226,28 +226,27 @@ else
 }
 
 
-if ($emessage !== '')
+if($emessage !== '')
 {
 	$texta .= "<div style='text-align:center'><b>" . $emessage . '</b></div>';
 }
 
 
-if (!$text = $e107cache->retrieve('nq_chatbox'))
+if(!$text = $e107cache->retrieve('nq_chatbox'))
 {
 
 	global $pref, $tp;
 
-	$pref['chatbox_posts'] =
-		($pref['chatbox_posts'] ? $pref['chatbox_posts'] : 10);
+	$pref['chatbox_posts'] = (!empty($pref['chatbox_posts']) ? (int) $pref['chatbox_posts'] : 10);
 
 	$chatbox_posts = $pref['chatbox_posts'];
 
-	if (!isset($pref['cb_mod']))
+	if(!isset($pref['cb_mod']))
 	{
 		$pref['cb_mod'] = e_UC_ADMIN;
 	}
 
-	if (!defined('CB_MOD'))
+	if(!defined('CB_MOD'))
 	{
 		define('CB_MOD', check_class($pref['cb_mod']));
 	}
@@ -258,7 +257,7 @@ if (!$text = $e107cache->retrieve('nq_chatbox'))
 
 	global $CHATBOXSTYLE;
 
-	if ($CHATBOXSTYLE)  // legacy chatbox style
+	if($CHATBOXSTYLE)  // legacy chatbox style
 	{
 		$legacyIconSrc = e_IMAGE_ABS . 'admin_images/chatbox_16.png';
 		$currentIconSrc = e_PLUGIN . 'chatbox_menu/images/chatbox_16.png';
@@ -284,7 +283,7 @@ if (!$text = $e107cache->retrieve('nq_chatbox'))
 
 	$sc = e107::getScBatch('chatbox_menu', true);
 
-	if ($sql->gen($qry))
+	if($sql->gen($qry))
 	{
 
 		$cbpost = $sql->rows();
@@ -293,7 +292,7 @@ if (!$text = $e107cache->retrieve('nq_chatbox'))
 
 		$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['start'], false, $sc);
 
-		foreach ($cbpost as $cb)
+		foreach($cbpost as $cb)
 		{
 			$sc->setVars($cb);
 			$text .= $tp->parseTemplate($CHATBOX_TEMPLATE['item'], false, $sc);
@@ -311,7 +310,7 @@ if (!$text = $e107cache->retrieve('nq_chatbox'))
 
 	$total_chats = $sql->count('chatbox');
 
-	if ($total_chats > $chatbox_posts || CB_MOD)
+	if($total_chats > $chatbox_posts || CB_MOD)
 	{
 		$text .= "<br /><div style='text-align:center'><a href='" . e_PLUGIN_ABS . "chatbox_menu/chat.php'>" . (CB_MOD
 				? CHATBOX_L13
@@ -327,7 +326,7 @@ $caption = (file_exists(THEME . 'images/chatbox_menu.png')
 	: LAN_PLUGIN_CHATBOX_MENU_NAME);
 
 
-if ($pref['cb_layer'] === 1)
+if(varset($pref['cb_layer']) === 1)
 {
 
 	$text =
@@ -336,7 +335,7 @@ if ($pref['cb_layer'] === 1)
 	$ns->tablerender($caption, $text, 'chatbox');
 
 }
-elseif ($pref['cb_layer'] === 2 && e_AJAX_REQUEST)
+elseif(varset($pref['cb_layer']) === 2 && e_AJAX_REQUEST)
 {
 
 	$text = $texta . $text;
@@ -349,7 +348,7 @@ else
 
 	$text = $texta . $text;
 
-	if ($pref['cb_layer'] === 2)
+	if($pref['cb_layer'] === 2)
 	{
 		$text = "<div id='chatbox_posts'>" . $text . '</div>';
 	}

@@ -39,7 +39,7 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 elseif(deftrue('XURL_FACEBOOK'))
 {
 	$width = vartrue($pref['facebook_like_menu_width'],     350);
-	$text .= '<iframe src="//www.facebook.com/plugins/likebox.php?href='.urlencode(XURL_FACEBOOK).'&amp;width='.$width.'&amp;height=200&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=false" scrolling="no" style="border:none; overflow:hidden; width:350px;height:200px;max-width:100%;" allowtransparency="true" frameborder="0"></iframe>';
+	$text = '<iframe src="//www.facebook.com/plugins/likebox.php?href='.urlencode(XURL_FACEBOOK).'&amp;width='.$width.'&amp;height=200&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=false" scrolling="no" style="border:none; overflow:hidden; width:350px;height:200px;max-width:100%;" allowtransparency="true" frameborder="0"></iframe>';
 	e107::getRender()->tablerender($caption,$text,'facebook-like-menu');
 }
 elseif(ADMIN)

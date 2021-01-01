@@ -402,7 +402,7 @@ class faqs_shortcodes extends e_shortcode
 			
 			$text = $frm->open('faq-search-form','get', $target);
 			$text .= '<span class="input-group e-search">';
-			$text .= $frm->text('srch', $_GET['srch'], 20,'class=search-query&placeholder='.LAN_SEARCH).'
+			$text .= $frm->text('srch', varset($_GET['srch']), 20,'class=search-query&placeholder='.LAN_SEARCH).'
    			 <span class="input-group-btn"><button class="btn btn-primary"  type="submit">'.$tp->toGlyph('fa-search').'</button>';
 			$text .= '</span></span>';
 			$text .= $frm->close();

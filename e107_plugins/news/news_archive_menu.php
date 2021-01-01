@@ -30,6 +30,7 @@ foreach($tmp as $id => $val)
 }
 
 $template = e107::getTemplate('news', 'news_menu', 'archive',true, true);
+$text = '';
 
 if(ADMIN && empty($template))
 {
