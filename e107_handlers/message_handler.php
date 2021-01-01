@@ -592,7 +592,16 @@ class eMessage
 
 		
 		$text = "<div class='s-message alert alert-block alert-dismissible fade in show {$type} {$bclass}' role='alert'>";
-		$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert' aria-label='".LAN_CLOSE."'>×</a>" : "";
+
+		if(defset('BOOTSTRAP') === 5)
+		{
+			$text .= (self::$_close[$type] === true) ? "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='".LAN_CLOSE."'></button>" : "";
+		}
+		else
+		{
+			$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert' aria-label='".LAN_CLOSE."'>×</a>" : "";
+		}
+
 		$text .= "<i class='s-message-icon ".$icon."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
