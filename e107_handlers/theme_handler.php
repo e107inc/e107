@@ -1077,15 +1077,15 @@ class e_theme
 
 	}
 
-	private static function initThemePreview($themeDir)
+	private static function initThemePreview($themeDir, $layout=null)
 	{
 		$themeDir = filter_var($themeDir);
 		$themeDir = basename($themeDir);
 
 		$themeobj = new themeHandler;
-		$themeDef = $themeobj->findDefault($themeDir);
+		$defLayout = !empty($layout) ? $layout : $themeobj->findDefault($themeDir);
 
-		define('THEME_LAYOUT', $themeDef);
+		define('THEME_LAYOUT', $defLayout);
 		define('PREVIEWTHEME', $themeDir);
 
 		define('THEME', e_THEME . $themeDir . '/');
@@ -1155,7 +1155,8 @@ class e_theme
 		// e_QUERY not set when in single entry mod
 		if (getperms('0') && !empty($_GET['themepreview']))
 		{
-			self::initThemePreview($_GET['themepreview']);
+			$layout = !empty($_GET['layout']) ? $_GET['layout'] : null;
+			self::initThemePreview($_GET['themepreview'], $layout);
 			self::initThemeLayout($pref);
 			return;
 		}
