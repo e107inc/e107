@@ -20,7 +20,7 @@ header('Content-type: text/html; charset=utf-8', TRUE);
 define('ADMINFEED', 'https://e107.org/adminfeed');
 
 
-if(!empty($_GET['iframe'])) // global iframe support. 
+if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 {
 	define('e_IFRAME', true);
 }
