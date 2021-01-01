@@ -1619,7 +1619,7 @@ class e107
 			}
 			else
 			{
-				$themedir= self::getPref('sitetheme');
+				$themedir= deftrue('USERTHEME', self::getPref('sitetheme'));
 			}
 		}
 

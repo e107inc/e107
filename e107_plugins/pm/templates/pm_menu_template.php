@@ -27,7 +27,7 @@ if (!defined('e107_INIT')) { exit; }
 
 if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
 {
-	define('PM_INBOX_ICON', e107::getParser()->toGlyph('fa-inbox'));
+	define('PM_INBOX_ICON', e107::getParser()->toGlyph('fa-inbox').e107::getParser()->toGlyph('fa-arrow-down'));
 	// Icon candidate to stacked fontawesome icons...
 	define('PM_OUTBOX_ICON', e107::getParser()->toGlyph('fa-inbox').e107::getParser()->toGlyph('fa-arrow-up'));
 	// Icon candidate to animated fontawesome icons...
