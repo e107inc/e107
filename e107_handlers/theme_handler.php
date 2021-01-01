@@ -1788,7 +1788,7 @@ class themeHandler
 			foreach($slides as $key=>$v)
 			{
 				$id = $key + 1;	
-				$indicators .= '<li data-target="#myCarousel" data-slide-to="'.$id.'"></li>';
+				$indicators .= '<li data-target="#myCarousel" data-slide-to="'.$id.'" data-bs-slide-to="'.$id.'"></li>';
 			}
 			
 			$indicators .=	'</ol>';		

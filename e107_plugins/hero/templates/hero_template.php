@@ -8,26 +8,23 @@ if (!defined('e107_INIT')) { exit; }
 $HERO_TEMPLATE = array();
 
 $HERO_TEMPLATE['default']['header'] 	= '<!-- Hero Menu: header -->{SETIMAGE: w=400&h=400}
-											<div id="carousel-hero" class="carousel carousel-fade slide" data-ride="carousel" data-interval="{HERO_SLIDE_INTERVAL}">
+											<div id="carousel-hero" class="carousel carousel-fade slide" data-bs-ride="carousel" data-ride="carousel" data-interval="{HERO_SLIDE_INTERVAL}" data-bs-interval="{HERO_SLIDE_INTERVAL}">
 							                <div class="carousel-inner" role="listbox">';
 
 
 $HERO_TEMPLATE['default']['footer'] 	= '</div><div class="carousel-controls">
 						                  <!-- Controls -->
-						                  <a class="left carousel-left carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="prev">
+						                  <a class="left carousel-left carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="prev" data-bs-slide="prev">
 						                    <i class="fa fa-chevron-left fa-fw"></i>
 						                    <span class="sr-only">Previous</span>
 						                  </a>
-						                  <a class="right carousel-right carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="next">
+						                  <a class="right carousel-right carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="next" data-bs-slide="next">
 						                    <i class="fa fa-chevron-right fa-fw"></i>
 						                    <span class="sr-only">Next</span>
 						                  </a>
 						                  <!-- Indicators -->
 						                  {HERO_CAROUSEL_INDICATORS: target=carousel-hero&class=animated fadeInUpBig}
-						                 <!-- <ol class="carousel-indicators">
-						                    <li data-target="#carousel-hero" data-slide-to="0" class="animated fadeInUpBig animation-delay-27 active"></li>
-						                    <li data-target="#carousel-hero" data-slide-to="1" class="animated fadeInUpBig animation-delay-28"></li>
-						                    <li data-target="#carousel-hero" data-slide-to="2" class="animated fadeInUpBig animation-delay-29"></li>
+						
 						                  </ol>-->
 						                </div>
 						              </div>';

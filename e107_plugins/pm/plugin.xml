@@ -7,7 +7,7 @@
 		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
 	</adminLinks>
 	<pluginPrefs>
-		<pref name="title">LAN_PM</pref>
+		<pref name="title">LAN_PLUGIN_PM_NAME</pref>
 		<pref name="animate">1</pref>
 		<pref name="dropdown">0</pref>
 		<pref name="read_timeout">0</pref>

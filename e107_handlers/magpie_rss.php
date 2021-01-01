@@ -563,7 +563,7 @@ class MagpieRSS {
         if ( $php_errormsg ) { 
             $errormsg .= " ({$php_errormsg})";
         }
-        if ( MAGPIE_DEBUG ) {
+        if ( defined('MAGPIE_DEBUG') &&  MAGPIE_DEBUG) {
             trigger_error( $errormsg, $lvl);        
         }
         else {

@@ -67,7 +67,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 		{
 			$active = ($c == 0) ? 'active' : '';
 
-			$text .= '<li data-target="#'.$target.'" data-slide-to="'.$c.'" class="'.$active.'"></li>';
+			$text .= '<li data-target="#'.$target.'" data-slide-to="'.$c.'" data-bs-slide-to="'.$c.'" class="'.$active.'"></li>';
 			$text .= "\n";
 		}
 

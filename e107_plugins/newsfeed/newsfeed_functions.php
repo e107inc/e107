@@ -216,7 +216,7 @@ class newsfeedClass
 						$temp['newsfeed_image_link'] = !empty($newsfeed_image) ? "<img src='".$newsfeed_image."' alt='' />" : '';
 					}
 					
-					$serializedArray = e107::serialize($temp, false);
+					$serializedArray = e107::serialize($temp, 'json');
 
 					$now = time();
 					$this->newsList[$feedID]['newsfeed_data'] = $serializedArray;

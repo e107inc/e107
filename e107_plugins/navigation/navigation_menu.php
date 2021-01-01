@@ -1,7 +1,11 @@
 <?php
 
+if(!is_array($parm))
+{
+	$parm = array();
+}
                         
-$parm['type'] = !empty($parm['type']) ? $parm['type'] : 'main';
+$parm['type'] = !empty($parm['type']) ? $parm['type'] : 'side';
 $parm['layout'] = !empty($parm['layout']) ? $parm['layout'] : $parm['type'];
 
 require_once(e_CORE."shortcodes/single/navigation.php");

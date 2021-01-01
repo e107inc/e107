@@ -21,6 +21,8 @@ if(!check_class($pm_prefs['pm_class']))
 if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('pm')) { return ''; }
 
+
+
 /**
  *	Function to show a popup (if enabled) when new PMs arrive.
  *
@@ -58,7 +60,7 @@ if(!function_exists('pm_show_popup'))
 	</html> ";
         $popuptext = str_replace("\n", '', $popuptext);
         $popuptext = str_replace("\t", '', $popuptext);
-        $text .= "
+        $text = "
 	<script type='text/javascript'>
 	winl=(screen.width-200)/2;
 	wint = (screen.height-100)/2;
@@ -147,4 +149,5 @@ if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php
 
 //$ns->tablerender(LAN_PM, $txt, 'pm');
 $caption = varset($pm_prefs['title'], LAN_PM);
+$caption = defset($caption, $caption);
 $ns->tablerender($caption, $txt, 'pm');

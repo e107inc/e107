@@ -52,10 +52,10 @@ $NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmo
 
 // Other News Menu. 
 $NEWS_MENU_TEMPLATE['other']['caption'] 	= TD_MENU_L1;
-$NEWS_MENU_TEMPLATE['other']['start']		= "<div id='otherNews' data-interval='false' class='carousel slide othernews-block'>
+$NEWS_MENU_TEMPLATE['other']['start']		= "<div id='otherNews' data-interval='false' data-bs-interval='false' class='carousel slide othernews-block'>
 												<div class='carousel-inner'>
 												{SETIMAGE: w=400&h=200&crop=1}"; // set the {NEWSIMAGE} dimensions. 								
-$NEWS_MENU_TEMPLATE['other']['item']		= '<div class="item {ACTIVE}">
+$NEWS_MENU_TEMPLATE['other']['item']		= '<div class="carousel-item item {ACTIVE}">
 												{NEWSTHUMBNAIL=placeholder}
               									<h3>{NEWSTITLE}</h3>
               									<p>{NEWSSUMMARY}</p>
@@ -96,7 +96,7 @@ $NEWS_MENU_TEMPLATE['other2']['end'] 	= "</ul>";
 /* Carousel Menu */
 
 $NEWS_MENU_TEMPLATE['carousel']['start'] = '
-										    <div id="news-carousel" class="carousel slide" data-ride="carousel">
+										    <div id="news-carousel" class="carousel slide" data-ride="carousel" data-bs-ride="carousel">
 										        <div class="row">
 										      <!-- Wrapper for slides -->
 										      <div id="news-carousel-images" class="col-md-8">
@@ -116,7 +116,7 @@ $NEWS_MENU_TEMPLATE['carousel']['end'] = '
 
 
 $NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
-											<div class="item {ACTIVE}">{SETIMAGE: w=800&h=370&crop=1}
+											<div class="carousel-item item {ACTIVE}">{SETIMAGE: w=800&h=370&crop=1}
 									          {NEWS_IMAGE: class=img-responsive img-fluid}
 									           <div class="carousel-caption">
 									            <small>{NEWS_DATE=dd MM, yyyy}</small>
@@ -127,7 +127,7 @@ $NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
 
 
 
-$NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';
+$NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" data-bs-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';
 
 
 
