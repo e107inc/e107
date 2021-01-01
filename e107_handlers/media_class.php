@@ -1725,7 +1725,7 @@ class e_media
 		
 	//	$text .= print_a($_GET,true);
 	
-			$data_src = $this->mediaSelectNav($parm['category'], $parm['tagid'], $parm);
+			$data_src = $this->mediaSelectNav(varset($parm['category']), $parm['tagid'], $parm);
 			$carouselID = 'media-carousel-'.$parm['action'];
 			$searchToolttip = (empty($parm['searchTooltip'])) ? IMALAN_186 : $parm['searchTooltip'];
 			//$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
@@ -1810,7 +1810,7 @@ class e_media
 
 						$val['width']	= $parm['width'];
 						$val['height']	= $parm['height'];
-						$val['id']		= $parm['id'];
+						$val['id']		= varset($parm['id']);
 						$val['tagid']	= $parm['tagid'];
 						$val['type']	= $parm['type'];
 						$val['bbcode']	= $parm['bbcode'];
