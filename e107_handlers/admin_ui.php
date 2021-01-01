@@ -6212,13 +6212,21 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 
+		$this->_log('Executing SortAjaxPage()');
+		$sql    = e107::getDb();
+
 		if(!empty($this->sortParent)) // Force 100 positions for child when sorting with parent/child.
 		{
 			$this->orderStep = 100;
 		}
+		else // Reset all the order fields first.
+		{
+			$resetQry = $this->sortField ."= 999 WHERE 1"; // .$this->sortField;
+			$sql->update($this->table, $resetQry );
+			$this->_log('Sort Qry ('.$this->table.'): '.$resetQry);
+		}
 
-		
-		$sql    = e107::getDb();
+
 		$step   = $this->orderStep ? (int) $this->orderStep : 1;
 		$from   = !empty($_GET['from']) ? (int) $_GET['from'] * $step : $step;
 
@@ -6234,12 +6242,15 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$id = "'{$id}'";
 			}
-			if($sql->update($this->table, $this->sortField." = {$c} WHERE ".$this->pid. ' = ' .$id)!==false)
+			$updateQry = $this->sortField." = {$c} WHERE ".$this->pid. ' = ' .$id;
+
+			if($sql->update($this->table, $updateQry) !==false)
 			{
 				$updated[] = '#' .$id. '  --  ' .$this->sortField. ' = ' .$c;
 			}
 
-			// echo($sql->getLastQuery()."\n");
+			$this->_log('Sort Qry ('.$this->table.'): '.$updateQry);
+
 			$c += $step;
 
 		}
@@ -6250,14 +6261,14 @@ class e_admin_ui extends e_admin_controller_ui
 			return null;
 		}
 
-//	file_put_contents(e_LOG."sortAjax.log", print_r($updated,true));
 
-		// Increment every other record after the current page of records.
-	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
+		// Increment every record after the current page of records.
+
 		$changed = $c - $step;
 		$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := ' .($changed). ') m  SET e.' .$this->sortField. ' = @n := @n + ' .$step. ' WHERE ' .$this->sortField. ' > ' .($changed);
 
 		$result = $sql->gen($qry);
+		$this->_log('Sort Qry: '.$qry);
 
 
 		// ------------ Fix Child Order when parent is used. ----------------
@@ -6307,7 +6318,6 @@ class e_admin_ui extends e_admin_controller_ui
 	//	 e107::getLog()->addDebug(print_r($updated,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 	//	e107::getLog()->addDebug($qry)->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 
-	// eg. 	$qry = "UPDATE e107_faqs e, (SELECT @n := 249) m  SET e.faq_order = @n := @n + 1 WHERE 1";
 
 	}
 

@@ -343,8 +343,8 @@ e107::js('footer-inline', js());
 		protected $perPage			= 10;
 		protected $batchDelete		= true;
 		//	protected $batchCopy		= true;
-		//	protected $sortField		= 'somefield_order';
-		//	protected $orderStep		= 10;
+		protected $sortField		= 'user_extended_struct_order';
+		protected $orderStep		= 10;
 		protected $tabs				= array(LAN_BASIC,LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
 
 		protected $listQry      	= "SELECT * FROM `#user_extended_struct` WHERE user_extended_struct_type != 0 AND user_extended_struct_text != '_system_'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
