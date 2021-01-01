@@ -12,7 +12,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE = array();
 
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_start'] = '
-<div id="carousel-example-generic" class="featurebox carousel slide" data-ride="carousel">  
+<div id="carousel-example-generic" class="featurebox carousel slide" data-ride="carousel" data-bs-ride="carousel">  
 {FEATUREBOX_NAVIGATION|bootstrap3_carousel=loop&uselimit=1}
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
@@ -23,10 +23,10 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_end'] = '
 	  </div>
 
 	<!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev" data-bs-slide="prev">
     <span class="glyphicon glyphicon-chevron-left"></span>
   </a>
-  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next" data-bs-slide="next">
     <span class="glyphicon glyphicon-chevron-right"></span>
   </a>
                     
@@ -69,8 +69,8 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_end'] = '
 				</div>
 	 				
 	 				<!-- Carousel nav -->
-                    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-                    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev" data-bs-slide="prev">&lsaquo;</a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next" data-bs-slide="next">&rsaquo;</a>
                     
 			</div><!-- end myCarousel -->
 		</div><!-- end span12 -->

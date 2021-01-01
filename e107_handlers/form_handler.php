@@ -650,7 +650,7 @@ class e_form
 		$start  ='
 		<!-- Carousel -->
 		
-		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
+		<div id="'.$name.'" class="carousel slide" data-ride="carousel" data-bs-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
 
 		if($indicate && (count($array) > 1))
 		{
@@ -663,7 +663,7 @@ class e_form
 			foreach($array as $key=>$tab)
 			{
 				$active = ($c == $act) ? ' class="active"' : '';
-				$indicators .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
+				$indicators .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" data-bs-target="#'.$name.'" data-bs-slide-to="'.$c.'" '.$active.'></li>';
 				$c++;
 			}
 
@@ -700,10 +700,10 @@ class e_form
 		if($navigation && (count($array) > 1))
 		{
 			$controls = '
-			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev">
+			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev" data-bs-slide="prev">
 	        <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
-			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" data-slide="next">
+			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" data-slide="next" data-bs-slide="next">
 			<span class="glyphicon glyphicon-chevron-right"></span>
 			</a>';
 		}
