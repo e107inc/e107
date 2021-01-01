@@ -90,7 +90,15 @@ class e_theme
 		if($theme === null)
 		{
 			$theme = deftrue('USERTHEME', e107::pref('core','sitetheme'));
+
+			if(defined('PREVIEWTHEME'))
+			{
+				$theme = PREVIEWTHEME;
+			}
+
 		}
+
+
 
 		if(!is_readable(e_THEME.$theme."/layouts/".$key."_layout.html") || !is_readable(e_THEME.$theme."/theme.html"))
 		{
@@ -120,6 +128,25 @@ class e_theme
 		$LAYOUT[$key] = file_get_contents(e_THEME.$theme."/layouts/".$key."_layout.html");
 
 		return $LAYOUT;
+	}
+
+	public static function showPreview()
+	{
+
+		/*
+				e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
+				$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
+
+				$srch = array(
+					'{PREVIEWTHEMENAME}' => PREVIEWTHEME,
+					'{e_ADMIN}' => e_ADMIN
+				);*/
+
+		//	$text = str_replace(array_keys($srch),$srch,$text);
+		echo "<div class='alert alert-warning alert-block'>Theme Preview Mode: <b>" . PREVIEWTHEME . "</b></div>";
+
+		//	global $ns;
+		//	$ns->tablerender(TPVLAN_2, $text);
 	}
 
 
@@ -1050,24 +1077,33 @@ class e_theme
 
 	}
 
-	private static function initThemePreview($id)
+	private static function initThemePreview($themeDir)
 	{
-		$themeobj = new themeHandler;
-		$themeArray = e107::getTheme()->getList('id');
-		$id = (int) $id;
+		$themeDir = filter_var($themeDir);
+		$themeDir = basename($themeDir);
 
-		$themeDef = $themeobj->findDefault($themeArray[$id]);
+		$themeobj = new themeHandler;
+		$themeDef = $themeobj->findDefault($themeDir);
 
 		define('THEME_LAYOUT', $themeDef);
-		define('PREVIEWTHEME', e_THEME . $themeArray[$id] . '/');
-		define('PREVIEWTHEMENAME', $themeArray[$id]);
-		define('THEME', e_THEME . $themeArray[$id] . '/');
-		define('THEME_ABS', e_THEME_ABS . $themeArray[$id] . '/');
+		define('PREVIEWTHEME', $themeDir);
 
-		$legacy = (file_exists(e_THEME_ABS . $themeArray[$id] . '/theme.xml') === false);
+		define('THEME', e_THEME . $themeDir . '/');
+		define('THEME_ABS', e_THEME_ABS . $themeDir . '/');
 
+		$legacy = (file_exists(e_THEME . $themeDir . '/theme.xml') === false);
+
+		if($legacy === true)
+		{
+			$version = 1.0;
+		}
+		else
+		{
+			$version = (file_exists(e_THEME . $themeDir . '/theme.html')) ? 2.3 : 2.0;
+		}
+
+		define('THEME_VERSION', $version);
 		define('THEME_LEGACY', $legacy);
-		unset($action);
 
 	}
 
@@ -1117,10 +1153,9 @@ class e_theme
 		e107::getDebug()->logTime('Theme Check');
 
 		// e_QUERY not set when in single entry mod
-		if (ADMIN && strpos($_SERVER['QUERY_STRING'], 'themepreview') !== false)
+		if (getperms('0') && !empty($_GET['themepreview']))
 		{
-			list($action, $id) = explode('.', $_SERVER['QUERY_STRING']);
-			self::initThemePreview($id);
+			self::initThemePreview($_GET['themepreview']);
 			self::initThemeLayout($pref);
 			return;
 		}
@@ -2988,24 +3023,8 @@ class themeHandler
 		echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php?themepreview.".$this->id."'</script>\n";
 		exit;
 	}
-	
-	static function showPreview()
-	{
-		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
-		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
 
-		$srch = array(
-			'{PREVIEWTHEMENAME}' => PREVIEWTHEMENAME,
-			'{e_ADMIN}' => e_ADMIN
-		);
 
-		$text = str_replace(array_keys($srch),$srch,$text);
-
-		global $ns;
-		$ns->tablerender(TPVLAN_2, $text);
-	}
-
-	
 	/**
 	 * Set Theme as Main Theme.
 	 *
@@ -3178,9 +3197,9 @@ class themeHandler
 			return e107::getParser()->filter($_POST['layout_default'], 'w');
 		}
 		
-		$l = $this->themeArray[$theme];
+	//	$l = $this->themeArray[$theme];
 		
-		if(!$l)
+	//	if(!$l)
 		{
 			$l = e107::getTheme($theme)->get(); // $this->getThemeInfo($theme);
 		}

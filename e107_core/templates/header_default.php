@@ -826,10 +826,9 @@ e107::getDebug()->logTime('Render Other');
 		echo e107::getParser()->parseTemplate("{ALERTS}");
 	}
 
-
-	if(defined("PREVIEWTHEME")) 
+	if(defined("PREVIEWTHEME"))
 	{
-		themeHandler::showPreview();
+		e_theme::showPreview();
 	}
 
 
