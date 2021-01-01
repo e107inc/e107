@@ -39,6 +39,8 @@ plugins:
         enabled: false
       Design/TooManyMethods:
         enabled: false
+      Design/LongMethod:
+        enabled: false
     config:
       languages:
       - javascript
