@@ -89,7 +89,7 @@ class e_theme
 	{
 		if($theme === null)
 		{
-			$theme = e107::pref('core','sitetheme');
+			$theme = deftrue('USERTHEME', e107::pref('core','sitetheme'));
 		}
 
 		if(!is_readable(e_THEME.$theme."/layouts/".$key."_layout.html") || !is_readable(e_THEME.$theme."/theme.html"))
@@ -1125,7 +1125,6 @@ class e_theme
 			return;
 		}
 
-
 		// check for valid theme.
 		if (@fopen(e_THEME . $themeDir . '/theme.php', 'r'))
 		{
@@ -1160,12 +1159,14 @@ class e_theme
 		define('THEME', e_THEME . $e107tmp_theme . '/');
 		define('THEME_ABS', e_THEME_ABS . $e107tmp_theme . '/');
 		define('THEME_VERSION', 2.3);
+		define('THEME_LEGACY', false);
+		define('USERTHEME', 'bootstrap3');
+		define('BOOTSTRAP', 3);
+		define('FONTAWESOME', 4);
 
-		if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === false)
+		if (ADMIN && (e_ADMIN_AREA !== true))
 		{
-			echo '<script>alert("' . $tp->toJS(CORE_LAN1) . '")</script>';
-			$tm = e107::getSingleton('themeHandler');
-			$tm->setTheme($e107tmp_theme);
+			echo "<div class='alert alert-danger'><b>".$themeDir."</b> ".str_replace('\n','<br />',CORE_LAN1)."</div>";
 		}
 
 		e107::getDebug()->logTime('Theme Check End');
