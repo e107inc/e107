@@ -1377,7 +1377,7 @@ if(!defined('THEME'))
 	{
 		e_theme::initTheme($pref['admintheme']);
 	}
-	elseif (USERTHEME !== false && e_ADMIN_AREA === false)
+	elseif (deftrue('USERTHEME') && e_ADMIN_AREA === false)
 	{
 		e_theme::initTheme(USERTHEME);
 	}

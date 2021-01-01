@@ -1617,6 +1617,10 @@ class e107
 			{
 				$themedir = self::getPref('admintheme');
 			}
+			elseif(defined('PREVIEWTHEME'))
+			{
+				$themedir = PREVIEWTHEME;
+			}
 			else
 			{
 				$themedir= deftrue('USERTHEME', self::getPref('sitetheme'));

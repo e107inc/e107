@@ -368,15 +368,16 @@ class e_menu
 	private function getDataLegacy()
 	{
 		$sql = e107::getDb();
-		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
+		$menu_layout_field = THEME_LAYOUT != e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
 		
 	//	e107::getCache()->CachePageMD5 = md5(e_LANGUAGE.$menu_layout_field); // Disabled by line 93 of Cache class. 
 		//FIXME add a function to the cache class for this.
 
-		$cacheData = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
-
-	//	$menu_data = json_decode($cacheData,true);
-		$menu_data = e107::unserialize($cacheData);
+		if(!defined('PREVIEWTHEME'))
+		{
+			$cacheData = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+			$menu_data = e107::unserialize($cacheData);
+		}
 
 		$eMenuArea = array();
 		// $eMenuList = array();
@@ -385,7 +386,9 @@ class e_menu
 		
 		if(empty($menu_data) || !is_array($menu_data))
 		{
-			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
+			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.')  ';
+			$menu_qry .= !defined('PREVIEWTHEME') ? 'AND menu_layout = "'.$menu_layout_field.'" ' : '';
+			$menu_qry .= 'ORDER BY menu_location,menu_order';
 			
 			if($sql->gen($menu_qry))
 			{
