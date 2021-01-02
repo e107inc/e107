@@ -184,7 +184,7 @@ if(false === $cached)
 		
 		$menu .= "</div>";
 		$menu .= "<div class='blogcalendar-archive-link' >
-		<a class='blogcalendar-archive-link btn btn-small btn-s btn-primary' href='$prefix/archive.php'>".BLOGCAL_L2."</a>
+		<a class='blogcalendar-archive-link btn btn-small btn-sm btn-primary' href='$prefix/archive.php'>".BLOGCAL_L2."</a>
 		</div>
 		</div>";
 		

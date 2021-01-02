@@ -209,7 +209,7 @@ else
 	<textarea placeholder="' . LAN_CHATBOX_100 . "\" required class='tbox chatbox form-control input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; " . ($cb_width
 			? 'width:' . $cb_width . ';' : '') . " overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
-	<input class='btn btn-default btn-secondary button' type='submit' id='chat_submit' name='chat_submit' value='" . CHATBOX_L4 . "' {$oc}/>";
+	<input class='btn btn-sm btn-primary button' type='submit' id='chat_submit' name='chat_submit' value='" . CHATBOX_L4 . "' {$oc}/>";
 
 
 	// $texta .= "<input type='reset' name='reset' value='".CHATBOX_L5."' />"; // How often do we see these lately? ;-)
