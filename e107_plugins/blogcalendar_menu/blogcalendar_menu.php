@@ -166,7 +166,7 @@ if(false === $cached)
 	
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		$month_selector = '<span class="btn-group pull-right float-right"><a class="btn btn-mini btn-default btn-secondary btn-sm btn-xs " href="#blogCalendar" data-slide="prev" data-bs-slide="prev">‹</a>  
+		$month_selector = '<span class="btn-group pull-right float-right float-end"><a class="btn btn-mini btn-default btn-secondary btn-sm btn-xs " href="#blogCalendar" data-slide="prev" data-bs-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-default btn-secondary btn-sm btn-xs" href="#blogCalendar" data-slide="next" data-bs-slide="next">›</a></span>';
 		 
 		$caption = "<span class='inline-text'>".BLOGCAL_L1." ".$month_selector."</span>";	
