@@ -4504,6 +4504,7 @@ class e107plugin
 		}
 
 		e107::getPlug()->clearCache()->buildAddonPrefLists();
+		e107::getSession()->clear('addons-update-status');
 
 		//	$this->save_addon_prefs('update');
 
