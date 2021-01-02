@@ -4512,35 +4512,33 @@ class e107
 			$this->HTTP_SCHEME = 'https';
 		}
 
-		$path = ""; $i = 0;
+		$path = "";
 
-		// FIXME - Again, what if someone moves handlers under the webroot?
-		if(!self::isCli())
+		$needle = "/class2.php";
+		if (file_exists(__DIR__."/..".$needle))
 		{
-			while (!file_exists("{$path}class2.php"))
+			$target_path = realpath(__DIR__."/..".$needle);
+		}
+		else
+		{
+			$debug_backtrace = array_reverse(debug_backtrace());
+			foreach ($debug_backtrace as $stack_item)
 			{
-				$path .= "../";
-				$i++;
+				$target_path = isset($stack_item["file"]) ? $stack_item["file"] : "";
+				if (substr_compare($target_path, $needle, -strlen($needle)) === 0) break;
+				break;
 			}
 		}
 
-		if (empty($_SERVER['PHP_SELF']) && !empty($_SERVER['SCRIPT_NAME']))
-		{
-			$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
-		}
+		if (e107::isCli()) chdir(e_ROOT); // Maintain relative path consistency in CLI mode
+		$path = dirname(self::getRelativePath(getcwd(), $target_path))."/";
 
-		$http_path = dirname($_SERVER['PHP_SELF']);
+		$http_path = dirname($_SERVER['SCRIPT_NAME']);
 		$http_path = explode("/", $http_path);
-		$http_path = array_reverse($http_path);
-		$j = 0;
-		while ($j < $i)
+		for ($i = 0; $i < substr_count($path, "../"); $i ++)
 		{
-			unset($http_path[$j]);
-			$j++;
+			array_pop($http_path);
 		}
-		$http_path = array_reverse((array) $http_path);
-
-
 
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
@@ -4556,10 +4554,7 @@ class e107
 		// Absolute file-path of directory containing class2.php
 		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
-
-
-
-		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
+		$this->relative_base_path = $path;
 		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 		$this->https_path = filter_var("https://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
@@ -4711,6 +4706,50 @@ class e107
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
 		$fixed_path = (substr($fixed_path, 1, 2) === ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
+	}
+
+	/**
+	 * Convert two absolute paths to a relative path between them
+	 * @license https://creativecommons.org/licenses/by-sa/3.0/ CC BY-SA 3.0
+	 * @see https://stackoverflow.com/a/2638272
+	 * @param $from string Absolute path of traversal source
+	 * @param $to string Absolute path of traversal destination
+	 * @return string Relative path from the source to the destination
+	 */
+	private static function getRelativePath($from, $to)
+	{
+		$from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
+		$to = is_dir($to) ? rtrim($to, '\/') . '/' : $to;
+		$from = str_replace('\\', '/', $from);
+		$to = str_replace('\\', '/', $to);
+
+		$from = explode('/', $from);
+		$to = explode('/', $to);
+		$relPath = $to;
+
+		foreach ($from as $depth => $dir)
+		{
+			if ($dir === $to[$depth])
+			{
+				array_shift($relPath);
+			}
+			else
+			{
+				$remaining = count($from) - $depth;
+				if ($remaining > 1)
+				{
+					$padLength = (count($relPath) + $remaining - 1) * -1;
+					$relPath = array_pad($relPath, $padLength, '..');
+					break;
+				}
+				else
+				{
+					$relPath[0] = './' . $relPath[0];
+				}
+			}
+		}
+
+		return implode('/', $relPath);
 	}
 
 	/**
