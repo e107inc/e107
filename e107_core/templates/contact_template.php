@@ -57,7 +57,7 @@ $CONTACT_TEMPLATE['menu'] =  '
 				<div class="help-block">{CONTACT_GDPR_LINK}</div> 
 			</div>
 		</div>
-		{CONTACT_SUBMIT_BUTTON}
+		{CONTACT_SUBMIT_BUTTON: class=btn btn-sm btn-small btn-primary button}
 	</div>       
  ';
  
