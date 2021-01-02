@@ -139,7 +139,7 @@ class admin_start
 
 		// Files that can cause comflicts and problems.
         $fileInspector = e107::getFileInspector();
-		$this->deprecated = $fileInspector->insecureFiles;
+		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
 
 		$this->checkCoreVersion();
 

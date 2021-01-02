@@ -53,6 +53,11 @@ abstract class e_file_inspector implements e_file_inspector_interface
     private $existingInsecureFiles = array();
     private $existingInsecureDirectories = array();
 
+	/**
+	 * @var null|resource File pointer resource opened in write mode or null if not initialized yet
+	 */
+	private $deprecatedLogFileHandle = null;
+
     /**
      * e_file_inspector constructor
      * @param string $database The database from which integrity data may be read or to which integrity data may be
@@ -61,8 +66,6 @@ abstract class e_file_inspector implements e_file_inspector_interface
     public function __construct($database)
     {
         $this->database = $database;
-
-        $this->checkDeprecatedFilesLog();
 
         $appRoot = e107::getInstance()->file_path;
         $this->undeterminable = array_map(function ($path)
@@ -86,27 +89,27 @@ abstract class e_file_inspector implements e_file_inspector_interface
     }
 
     /**
-     * Populate insecureFiles list if deprecatedFiles.log found.
-     * @return void
+     * Get a list of deprecated files cached in deprecatedFiles.log from the last File Inspector scan
+     * @return array
      */
-    private function checkDeprecatedFilesLog()
+    public static function getCachedDeprecatedFiles()
     {
         $log = e_LOG.'fileinspector/deprecatedFiles.log';
 
         if(!file_exists($log))
         {
-            return;
+            return [];
         }
 
         $content = file_get_contents($log);
 
         if(empty($content))
         {
-            return;
+            return [];
         }
 
        $tmp = explode("\n", $content);
-       $this->insecureFiles = [];
+       $cachedDeprecatedFiles = [];
        foreach($tmp as $line)
        {
             if(empty($line))
@@ -114,10 +117,10 @@ abstract class e_file_inspector implements e_file_inspector_interface
                 continue;
             }
 
-            $this->insecureFiles[] = e_BASE.$line;
+            $cachedDeprecatedFiles[] = e_BASE.$line;
        }
 
-
+		return $cachedDeprecatedFiles;
     }
 
     /**
@@ -211,14 +214,19 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
         $message = $relativePath."\n";
 
-        $logPath = e_LOG."fileinspector/";
-
-        if(!is_dir($logPath))
+        if (!is_resource($this->deprecatedLogFileHandle))
         {
-            mkdir($logPath, 0775);
+	        $logPath = e_LOG."fileinspector/";
+
+	        if(!is_dir($logPath))
+	        {
+		        mkdir($logPath, 0775);
+	        }
+
+	        $this->deprecatedLogFileHandle = fopen($logPath."deprecatedFiles.log", 'w');
         }
 
-        file_put_contents($logPath."deprecatedFiles.log", $message, FILE_APPEND);
+        fwrite($this->deprecatedLogFileHandle, $message);
 
         return null;
     }
