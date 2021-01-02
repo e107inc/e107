@@ -88,3 +88,8 @@ table.table { width: 100% }
   overflow: visible;
   clip: auto;
 }
+
+.mt-0 { margin-top: 0 }
+.mb-0 { margin-bottom: 0 }
+.mt-3 { margin-top: 1rem !important; }
+.d-flex { display: flex !important; } 
