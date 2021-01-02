@@ -16,10 +16,10 @@ global $sc_style;
 
 
 // category menu
-$NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="news-menu-category">';
+$NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="list-group news-menu-category">';
 $NEWS_MENU_TEMPLATE['category']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['category']['item']        = '
-	<li><a class="e-menu-link newscats{ACTIVE}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE}{NEWS_CATEGORY_NEWS_COUNT}</a></li>
+	<li class="list-group-item d-flex justify-content-between align-items-center"><a class="e-menu-link newscats{ACTIVE}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE}</a><span class="badge bg-primary rounded-pill">{NEWS_CATEGORY_NEWS_COUNT=raw}</span></li>
 ';
 
 
@@ -27,10 +27,10 @@ $NEWS_MENU_TEMPLATE['category']['item']        = '
 
 
 // @deprecated months menu - use news archive instead.
-$NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="news-menu-months">';
+$NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="list-group news-menu-months">';
 $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
-	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} <span class="badge">{count}</span></a></li>
+	<li class="list-group-item d-flex justify-content-between align-items-center"><a class="e-menu-link newsmonths{active}" href="{url}">{month}</a> <span class="badge bg-primary rounded-pill">{count}</span></li>
 ';
 
 // sends value to tablestyle / $options['footer'];
@@ -41,9 +41,9 @@ $NEWS_MENU_TEMPLATE['months']['item']        = '
  
 
 // latest menu
-$NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="news-menu-latest">';
+$NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="list-group news-menu-latest">';
 $NEWS_MENU_TEMPLATE['latest']['end']         = '</ul>'; // Example: $NEWS_MENU_TEMPLATE['latest']['end']  '<br />{currentTotal} from {total}';
-$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} <span class="badge">{NEWSCOMMENTCOUNT}</span></a></li>';
+$NEWS_MENU_TEMPLATE['latest']['item']        = '<li class="list-group-item d-flex justify-content-between align-items-center"><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE}</a><span class="badge bg-primary rounded-pill">{NEWSCOMMENTCOUNT}</span></li>';
 
 
 
@@ -131,11 +131,11 @@ $NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-
 
 
 
-$NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="news-archive-menu">';
+$NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="list-group news-archive-menu">';
 $NEWS_MENU_TEMPLATE['archive']['end']         = '</ul>';
 
-$NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li>
-												<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
+$NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li class='list-group-item' >
+												<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}' style='display:block'>{YEAR_NAME}</a>
 												<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
 												";
 $NEWS_MENU_TEMPLATE['archive']['year_end']        = '</ul></li>';

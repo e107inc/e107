@@ -11,8 +11,8 @@
 $ONLINE_MENU_TEMPLATE = array();
 
 // Last seen Menu
-$ONLINE_MENU_TEMPLATE['lastseen']['start']	                        = "<ul class='lastseen-menu '>";
-$ONLINE_MENU_TEMPLATE['lastseen']['item']	                        = "<li>{LASTSEEN_USERLINK} <small class='muted'>{LASTSEEN_DATE}</small></li>";
+$ONLINE_MENU_TEMPLATE['lastseen']['start']	                        = "<ul class='list-group lastseen-menu'>";
+$ONLINE_MENU_TEMPLATE['lastseen']['item']	                        = "<li class='list-group-item d-flex justify-content-between align-items-center'>{LASTSEEN_USERLINK} <small class='muted'>{LASTSEEN_DATE}</small></li>";
 $ONLINE_MENU_TEMPLATE['lastseen']['end']	                        = "</ul>";
 
 
