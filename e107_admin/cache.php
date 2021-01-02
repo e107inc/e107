@@ -94,6 +94,7 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('browser');
 			e107::getCache()->clearAll('js');
 			e107::getCache()->clearAll('css');
+			e107::getSession()->clear('addons-update-status');
 			e107::getLog()->flushMessages(CACLAN_26);
 		break;
 	}
