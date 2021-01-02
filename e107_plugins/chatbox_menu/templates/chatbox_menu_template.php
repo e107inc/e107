@@ -21,7 +21,7 @@ $CHATBOX_MENU_TEMPLATE['menu']['start'] =
 $CHATBOX_MENU_TEMPLATE['menu']['item'] 	= '
 <li class="media">
 <div class="media-left">
-	<span class="media-object">{CB_AVATAR}</span>
+	<span class="media-object mr-3">{CB_AVATAR: shape=circle&size=48}</span>
 </div> 
 <div class="media-body">
 	<b>{CB_USERNAME}</b>&nbsp;
