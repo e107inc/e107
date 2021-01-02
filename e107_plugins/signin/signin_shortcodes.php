@@ -168,7 +168,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 		}
 		if ($pref['user_tracking'] !== "session")
 		{
-			return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />" . ($parm ? $parm : "" . LAN_LOGINMENU_6 . "</label>");
+			return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />" . ($parm ? $parm : "" . LAN_LOGINMENU_6 );
 		}
 
 		return null;
