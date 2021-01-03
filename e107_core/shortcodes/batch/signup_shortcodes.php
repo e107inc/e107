@@ -21,7 +21,13 @@ e107::coreLan('signup');
 class signup_shortcodes extends e_shortcode
 {
 
+	function sc_signup_coppa_text($parm=null)
+	{
+		$text = LAN_SIGNUP_77. " <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>". LAN_SIGNUP_14."</a>. ".
+		LAN_SIGNUP_15 . " " . e107::getParser()->emailObfuscate(SITEADMINEMAIL, LAN_SIGNUP_14) . " " . LAN_SIGNUP_16;
 
+		return $text;
+	}
 	
 	function sc_signup_coppa_form($parm)
 	{
@@ -278,8 +284,12 @@ class signup_shortcodes extends e_shortcode
 		{
 			$options['placeholder'] = $parm['placeholder'];
 		}
+		elseif(!empty($preLen))
+		{
+			$text = defset('LAN_SIGNUP_125', "Min. [x] chars.");
+			$options['placeholder'] = e107::getParser()->lanVars($text, $preLen);
+		}
 
-		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 	
 		return e107::getForm()->password('password1', '', 20, $options);
@@ -314,12 +324,16 @@ class signup_shortcodes extends e_shortcode
 				
 		return e107::getForm()->password('password2', '', 20, $options);
 	}
-	
-	
+
+
+	/**
+	 * @deprecated - placeholder in PASSWORD1 includes this.
+	 * @return null
+	 */
 	function sc_signup_password_len()
 	{
 		global $pref, $SIGNUP_PASSWORD_LEN;
-		if($pref['signup_pass_len'])
+		if($pref['signup_pass_len'] && !empty($SIGNUP_PASSWORD_LEN))
 		{
 			return $SIGNUP_PASSWORD_LEN;
 		}
