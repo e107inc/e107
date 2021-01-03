@@ -34,7 +34,7 @@ if (!e107::isInstalled('rss_menu'))
 
 $tp = e107::getParser();
 
-require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
+//require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 require_once(e_HANDLER.'userclass_class.php');
 
 /*
@@ -49,15 +49,7 @@ if (!is_object($tp->e_bb))
 // Get language file
 e107::includeLan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
 
-// Get template
-if (is_readable(THEME.'rss_template.php'))
-{
-	require_once(THEME.'rss_template.php');
-}
-else
-{
-	require_once(e_PLUGIN.'rss_menu/rss_template.php');
-}
+
 
 // Query handler
 if(!empty($_GET['type']))
@@ -87,7 +79,9 @@ if (empty($rss_type))
 	// Display list of all feeds
 	require_once(HEADERF);
 
-	// require_once(e_PLUGIN.'rss_menu/rss_template.php');		Already loaded
+	require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
+	$sc = e107::getScBatch('rss_menu', true);
+	$sc->wrapper('rss/page');
 
 	if(!$sql->select('rss', '*', "`rss_class` = 0 AND `rss_limit` > 0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
 	{
@@ -95,12 +89,34 @@ if (empty($rss_type))
 	}
 	else
 	{
-		$text = $RSS_LIST_HEADER;
+		if($template = e107::getTemplate('rss_menu', 'rss', 'page'))
+		{
+			$RSS_LIST_HEADER    = $template['start'];
+			$RSS_LIST_TABLE     = $template['item'];
+			$RSS_LIST_FOOTER    = $template['end'];
+		}
+		else
+		{
+			// Get Legacy template
+			if (is_readable(THEME.'rss_template.php'))
+			{
+				require_once(THEME.'rss_template.php');
+			}
+			else
+			{
+				require_once(e_PLUGIN.'rss_menu/rss_template.php');
+			}
+		}
+
+		$text = $tp->parseTemplate($RSS_LIST_HEADER);
+
 		while($row = $sql->fetch())
 		{
-			$text .= $tp->parseTemplate($RSS_LIST_TABLE, FALSE, $rss_shortcodes);
+			$text .= $tp->parseTemplate($RSS_LIST_TABLE, false, $sc);
 		}
-		$text .= $RSS_LIST_FOOTER;
+
+		$text .= $tp->parseTemplate($RSS_LIST_FOOTER);
+
 		$ns->tablerender(RSS_MENU_L2, $text);
 	}
 
