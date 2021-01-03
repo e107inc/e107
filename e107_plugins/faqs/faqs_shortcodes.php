@@ -28,6 +28,9 @@ class faqs_shortcodes extends e_shortcode
 	private $share = false;
 	private $datestamp = false;
 	private $questionCharLimit = 255;
+	public $pref;
+	public $tag;
+	public $category;
 
 
 	public function __construct()
