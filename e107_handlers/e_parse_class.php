@@ -4348,7 +4348,7 @@ class e_parser
 	 */
 	public function toBadge($text, $parm=null)
 	{
-		$class = !empty($parm['class']) ? ' ' .$parm['class'] : ' badge-secondary';
+		$class = !empty($parm['class']) ? ' ' .$parm['class'] : ' bg-secondary rounded-pill badge-secondary';
 
 		return "<span class='badge".$class."'>".$text. '</span>';
 	}
