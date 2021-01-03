@@ -165,3 +165,5 @@ define("LAN_SIGNUP_121", "Use a different email address");
 define("LAN_SIGNUP_122", "Privacy Policy");
 define("LAN_SIGNUP_123", "Terms and conditions");
 define("LAN_SIGNUP_124", "By signing up you agree to our [x] and our [y].");
+define("LAN_SIGNUP_125", "Min. [x] chars.");
+

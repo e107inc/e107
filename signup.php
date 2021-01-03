@@ -70,8 +70,23 @@ $SIGNUP_END  = null;
 $COPPA_TEMPLATE = null;
 $COPPA_FAIL = null;
 
-require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+if($template = e107::getCoreTemplate('signup'))
+{
+	$SIGNUP_BEGIN                   = $template['start'];
+	$SIGNUP_BODY                    = $template['body'];
+	$SIGNUP_END                     = $template['end'];
+	$COPPA_TEMPLATE                 = $template['coppa'];
+	$COPPA_FAIL                     = $template['coppa-fail'];
+	$SIGNUP_EXTENDED_USER_FIELDS    = $template['extended-user-fields'];
+	$SIGNUP_EXTENDED_CAT            = $template['extended-category'];
+}
+else
+{
+	require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+}
+
 $signup_shortcodes = e107::getScBatch('signup');
+$signup_shortcodes->wrapper('signup');
 // $facebook_shortcodes = e107::getScBatch('facebook',TRUE);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
