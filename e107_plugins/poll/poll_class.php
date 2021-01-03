@@ -603,7 +603,7 @@ class poll
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';	
 			
@@ -1006,7 +1006,7 @@ class poll_shortcodes extends e_shortcode
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';
 
