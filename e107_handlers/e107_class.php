@@ -3360,7 +3360,7 @@ class e107
                 {
                     if(E107_DBG_BBSC)
                     {
-                        self::getMessage()->addDebug("Found wrapper: ".$SC_WRAPPER);
+                        self::getMessage()->addDebug("Found deprecated \$SC_WRAPPER: ".print_a($SC_WRAPPER, true));
                     }
                     self::scStyle($SC_WRAPPER);
                 }
