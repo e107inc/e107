@@ -823,21 +823,17 @@ class e_parse_shortcode
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
-				// $cname = get_class($this->addedCodes);
-
 				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
+				$this->wrapper = $this->addedCodes->getWrapperID();
+
 				if(!empty($tmpWrap)) // FIX for #3 above.
 				{
 					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
-					$this->wrapper = $this->addedCodes->getWrapperID();
-
 				}
-				elseif(E107_DBG_BBSC)
+				elseif(!empty($this->wrapper))  // if there's a wrapper id but no wrappers assigned to it, clear the wrappers array.
 				{
-					$this->wrapper = $this->addedCodes->getWrapperID();
-				//	e107::getMessage()->addDebug("Wrapper Empty: ".$this->addedCodes->wrapper());
+					$this->wrappers = array();
 				}
-
 			}
 
 			if(method_exists($this->addedCodes, 'editable'))

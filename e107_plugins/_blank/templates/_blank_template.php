@@ -11,3 +11,6 @@
 
 	$_BLANK_WRAPPER['default']['BLANK_TEST'] = "[ {---} ]";
 	$_BLANK_TEMPLATE['default'] = "<div>{BLANK_TEST}</div>";
+
+
+	$_BLANK_TEMPLATE['other'] = "<div>{BLANK_TEST}</div>";

@@ -114,6 +114,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         $sc_style['BLANK_TEST']['post'] = " **";
 
         $actualTemplate = e107::getTemplate('_blank', '_blank', 'default');
+        $otherTemplate = e107::getTemplate('_blank', '_blank', 'other');
+
+
         $expectedTemplate = "<div>{BLANK_TEST}</div>";
         $this->assertEquals($expectedTemplate, $actualTemplate);
         $actualLegacy = $this->scParser->parseCodes($actualTemplate, false, $sc);
@@ -123,6 +126,24 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         // - v2.x Wrapper Test.
         $sc->wrapper('_blank/default'); // overrides legacy $sc_style;
         $actual = $this->scParser->parseCodes($actualTemplate, false, $sc);
+        $expected = "<div>[ test ]</div>";
+        $this->assertEquals($expected, $actual);
+
+		// different template, same wrapper ID.
+        $actual = $this->scParser->parseCodes($otherTemplate, false, $sc);
+        $expected = "<div>[ test ]</div>";
+        $this->assertEquals($expected, $actual);
+
+		// different template and non-existent wrappers - should fallback to legacy wrappers and not use '_blank/default' wrappers by the same name.
+        $sc->wrapper('_blank/other');
+        $actual = $this->scParser->parseCodes($otherTemplate, false, $sc);
+		$expected = "<div>** test **</div>";
+        $this->assertEquals($expected, $actual);
+
+
+        // And back to a wrapper that exists.
+        $sc->wrapper('_blank/default'); // overrides legacy $sc_style;
+        $actual = $this->scParser->parseCodes($otherTemplate, false, $sc);
         $expected = "<div>[ test ]</div>";
         $this->assertEquals($expected, $actual);
 
