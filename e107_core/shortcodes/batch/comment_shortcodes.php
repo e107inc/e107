@@ -77,7 +77,7 @@ class comment_shortcodes extends e_shortcode
 	}
 
 
-	function sc_timedate($parm = null)
+	function sc_comment_timedate($parm = null)
 	{
 		if($parm == 'relative')
 		{
@@ -87,8 +87,19 @@ class comment_shortcodes extends e_shortcode
 		return e107::getDate()->convert_date($this->var['comment_datestamp'], "short");
 	}
 
+	/**
+	 * @deprecated
+	 * @param null $parm
+	 * @return array|string
+	 */
+	function sc_timedate($parm = null)
+	{
+		return $this->sc_comment_timedate($parm);
 
-	function sc_reply($parm = null)
+	}
+
+
+	function sc_comment_reply($parm = null)
 	{
 		global $REPLY, $action, $table, $id, $thisaction, $thistable, $thisid;
 
@@ -105,6 +116,16 @@ class comment_shortcodes extends e_shortcode
 			}
 		}
 		return $REPLY;
+	}
+
+	/**
+	 * @deprecated
+	 * @param null $parm
+	 * @return string
+	 */
+	function sc_reply($parm=null)
+	{
+		return $this->sc_comment_reply($parm);
 	}
 
 
@@ -136,7 +157,11 @@ class comment_shortcodes extends e_shortcode
 		return $text;
 	}
 
-
+	/**
+	 * @deprecated
+	 * @param null $parm
+	 * @return string
+	 */
 	function sc_avatar($parm = null)
 	{
 		return $this->sc_comment_avatar($parm);
@@ -372,7 +397,7 @@ class comment_shortcodes extends e_shortcode
 
 
 
-	function sc_commentedit($parm = null)
+	function sc_comment_edit($parm = null)
 	{
 		global $COMMENTEDIT, $comment_edit_query;
 		$pref = e107::getPref();
@@ -395,6 +420,17 @@ class comment_shortcodes extends e_shortcode
 		{
 			return "";
 		}
+	}
+
+	/**
+	 * @deprecated
+	 * @param null $parm
+	 * @return string
+	 */
+	function sc_commentedit($parm = null)
+	{
+		global $COMMENTEDIT, $comment_edit_query;
+		return $this->sc_comment_edit($parm);
 	}
 
 

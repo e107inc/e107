@@ -63,7 +63,8 @@ class comment
 			
 		if (empty($COMMENTSTYLE) || !deftrue('THEME_LEGACY')) // v2.x
 		{		
-			require(e107::coreTemplatePath('comment'));	 // using require_once() could cause an empty template if the template is already loaded, for example, by the comment-menu al
+			//require(e107::coreTemplatePath('comment'));	 // using require_once() could cause an empty template if the template is already loaded, for example, by the comment-menu al
+			$COMMENT_TEMPLATE = e107::getCoreTemplate('comment');
 		}
 		elseif(!vartrue($COMMENT_TEMPLATE)) // BC template. 
 		{
@@ -280,12 +281,13 @@ class comment
 				'eaction'	=> varset($eaction),
 				'rate'		=> $rating
 			);
-			
-			e107::getScBatch('comment')->setVars($data);
-			
-			e107::getScBatch('comment')->setMode('edit');
+
+			$sc = e107::getScBatch('comment');
+			$sc->setVars($data);
+			$sc->setMode('edit');
+			$sc->wrapper('comment/form');
 	
-			$text .= $tp->parseTemplate($this->template['form'], TRUE, e107::getScBatch('comment'));
+			$text .= $tp->parseTemplate($this->template['form'], true, $sc);
 			
 			$text .= "\n<div>\n"; // All Hidden Elements. 
 			
@@ -449,8 +451,10 @@ class comment
 		}	
 		
 		$row['rating_enabled'] = true; // Toggles rating shortcode. //TODO add pref
-		
-		e107::getScBatch('comment')->setVars($row);
+
+		$comment_shortcodes = e107::getScBatch('comment');
+		$comment_shortcodes->setVars($row);
+		$comment_shortcodes->wrapper('comment/item');
 		
 		
 		$COMMENT_TEMPLATE 					= $this->template; 
@@ -466,7 +470,7 @@ class comment
 		{
 			$COMMENT_TEMPLATE['item'] = str_replace("row", "row-fluid", $COMMENT_TEMPLATE['item']);
 		}
-			
+
 
 		e107::getParser()->setThumbSize(100,100); // BC FIx.  Set a default image size, in case the template doesn't have one.
 
@@ -529,7 +533,7 @@ class comment
 		
 	//	$RATING = ($addrating == TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 		
-		$comment_shortcodes = e107::getScBatch('comment');
+
 		
 		$text = $tp->parseTemplate($renderstyle, TRUE, $comment_shortcodes);
 			
@@ -579,7 +583,7 @@ class comment
 			$this->totalComments = $this->totalComments + $sub_total;
 		} // End (nested comment handling)
 		
-	
+		
 		
 		return $text;
 	}
