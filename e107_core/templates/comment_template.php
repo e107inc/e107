@@ -30,9 +30,9 @@ $COMMENT_WRAPPER['form'] = $COMMENT_WRAPPER['item']; // use the above wrappers f
 
 $COMMENT_TEMPLATE['form']			= "
 	{SETIMAGE: w=90&h=90&crop=1}
-	<div class='media comment-box comment-box-form clearfix'>
-		<div class='comment-box-left media-object pull-left' >
-		{COMMENT_AVATAR}
+	<div class='media comment-box comment-box-form d-flex clearfix'>
+		<div class='comment-box-left media-object pull-left me-3' >
+		{COMMENT_AVATAR: shape=circle}
 		</div>
 		<div class='media-body comment-box-right text-left' >
 			<div class='P10'>
@@ -53,10 +53,10 @@ $COMMENT_TEMPLATE['form']			= "
 
 $COMMENT_TEMPLATE['item'] = '
 		{SETIMAGE: w=90&h=90&crop=1}
-		<div class="media-object comment-box-left pull-left span1">
-			{COMMENT_AVATAR}
+		<div class="media-object comment-box-left pull-left me-3 span1">
+			{COMMENT_AVATAR: shape=circle}
 		</div>	
-		<div class="media-body comment-box-right ">
+		<div class="media-body d-flex comment-box-right ">
 			<div class="row">
 				
 					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>
