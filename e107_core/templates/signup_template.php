@@ -21,79 +21,71 @@ if(!defined('e107_INIT'))
 
 // Shortcode Wrappers
 
-$SIGNUP_WRAPPER['SIGNUP_DISPLAYNAME'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' ><label for='username'>"
-	. LAN_SIGNUP_89 . "{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>" . LAN_SIGNUP_90 . "</span></label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_DISPLAYNAME'] = 		"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='username'>"
+													. LAN_SIGNUP_89 . "{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>" . LAN_SIGNUP_90 . "</span></label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_REALNAME'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='realname'>" . LAN_SIGNUP_91 . "{SIGNUP_IS_MANDATORY=realname}</label></td>
-	<td class='forumheader3' style='width:70%' >{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_REALNAME'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='realname'>" . LAN_SIGNUP_91 . "{SIGNUP_IS_MANDATORY=realname}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-
-$SIGNUP_WRAPPER['SIGNUP_GDPR_INFO'] = "<tr style='vertical-align:top'><td class='forumheader' colspan='2'  style='text-align:center'>{---}</td></tr>";
+$SIGNUP_WRAPPER['SIGNUP_GDPR_INFO']             = "<div class='form-group row m-2 text-center'>{---}</div> ";
 
 
-$SIGNUP_WRAPPER['SIGNUP_SIGNATURE'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' ><label for='signature'>" . LAN_SIGNUP_93 . " {SIGNUP_IS_MANDATORY=signature}</label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_SIGNATURE'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='signature'>" . LAN_SIGNUP_93 . " {SIGNUP_IS_MANDATORY=signature}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_IMAGES'] = "
-<tr>
-	<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' ><label for='avatar'>" . LAN_SIGNUP_94 . "{SIGNUP_IS_MANDATORY=avatar}</label></td>
-	<td class='forumheader3' style='width:70%;vertical-align:top'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_IMAGES'] = 				"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label'for='avatar'>" . LAN_SIGNUP_94 . "{SIGNUP_IS_MANDATORY=avatar}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_IMAGECODE'] = "
-<tr>
-	<td class='forumheader3' style='width:30%'><label for='code-verify'>" . e107::getSecureImg()->renderLabel() . "{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_IMAGECODE'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='code-verify'>" . e107::getSecureImg()->renderLabel() . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_LOGINNAME'] = "
-<tr>
-	<td class='forumheader3' style='width:30%'><label for='loginname'>" . LAN_SIGNUP_81 . "{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_LOGINNAME'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='loginname'>" . LAN_SIGNUP_81 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_HIDE_EMAIL'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label>" . LAN_USER_83 . "</label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_HIDE_EMAIL'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label'>" . LAN_USER_83 . "</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_EMAIL_CONFIRM'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email-confirm'>" . LAN_SIGNUP_39 . "{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>{---}</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_EMAIL_CONFIRM'] = 		"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='email-confirm'>" . LAN_SIGNUP_39 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_XUP'] = "<div class='center' style='display:block;padding:10px'>{---}
-									<h2 class='signup-divider'><span>" . LAN_SIGNUP_120 . "</span></h2></div>";
+$SIGNUP_WRAPPER['SIGNUP_XUP']                   = "<div class='text-center'>{---}
+												<h2 class='signup-divider'><span>" . LAN_SIGNUP_120 . "</span></h2></div>";
 
-$SIGNUP_WRAPPER['SIGNUP_PASSWORD1'] = "<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password1'>" . LAN_SIGNUP_83 . "{SIGNUP_IS_MANDATORY=true}</label></td>
-				<td class='forumheader3' style='width:70%'>{---}</td>
-			</tr>";
+$SIGNUP_WRAPPER['SIGNUP_PASSWORD1'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='password1'>" . LAN_SIGNUP_83 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_PASSWORD2'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password2'>" . LAN_SIGNUP_84 . "{SIGNUP_IS_MANDATORY=true}</label></td>
-			<td class='forumheader3' style='width:70%'>{---}</td>
-		</tr>";
+$SIGNUP_WRAPPER['SIGNUP_PASSWORD2'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='password2'>" . LAN_SIGNUP_84 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$SIGNUP_WRAPPER['SIGNUP_USERCLASS_SUBSCRIBE'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'><label>" . LAN_SIGNUP_113 . "{SIGNUP_IS_MANDATORY=subscribe}</label></td>
-			<td class='forumheader3' style='width:70%'>{---}</td>
-		</tr>";
+$SIGNUP_WRAPPER['SIGNUP_USERCLASS_SUBSCRIBE'] = "<div class='form-group row m-2 '>
+													<label class='col-sm-3 control-label'>" . LAN_SIGNUP_113 . "{SIGNUP_IS_MANDATORY=subscribe}</label>
+													<div class='col-sm-9 checkbox'>{---}</div>
+												</div>";
+ 
 
 
-// Template v2.x spec.
+// Signup Template
 
 
 $SIGNUP_TEMPLATE['start'] = "
@@ -104,16 +96,13 @@ $SIGNUP_TEMPLATE['body'] = "
 	{SIGNUP_XUP}
 	<div id='default'>
 		{SIGNUP_XUP_ACTION}
-		<table class='table fborder' >
 			{SIGNUP_DISPLAYNAME}
 			{SIGNUP_LOGINNAME}
 			{SIGNUP_REALNAME}
-			<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email'>" . LAN_USER_60 . "{SIGNUP_IS_MANDATORY=email}</label></td>
-				<td class='forumheader3' style='width:70%'>
-					{SIGNUP_EMAIL}
-				</td>
-			</tr>
+			<div class='form-group row m-2'>
+				<label class='col-sm-3 control-label' for='password1'>{LAN=LAN_USER_60}{SIGNUP_IS_MANDATORY=email}</label>
+				<div class='col-sm-9'>{SIGNUP_EMAIL}</div>
+			</div>
 			{SIGNUP_EMAIL_CONFIRM}
 			{SIGNUP_PASSWORD1}
 			{SIGNUP_PASSWORD2}
@@ -124,43 +113,28 @@ $SIGNUP_TEMPLATE['body'] = "
 			{SIGNUP_IMAGES}
 			{SIGNUP_IMAGECODE}
 			{SIGNUP_GDPR_INFO}
-			<tr style='vertical-align:top'>
-				<td class='forumheader' colspan='2'  style='text-align:center'>
-					<input class='button btn btn-primary' type='submit' name='register' value=\"{LAN=LAN_SIGNUP_79}\" />
-					<br />
-				</td>
-			</tr>
-		</table>
+			<div class='form-group row m-2 text-center'>
+				{SIGNUP_BUTTON}
+			</div>	 
 	</div>
 	{SIGNUP_FORM_CLOSE}";
 
+$SIGNUP_TEMPLATE['end']                     = '';
 
-$SIGNUP_TEMPLATE['end']         = '';
+$SIGNUP_TEMPLATE['coppa']                   = "{SIGNUP_COPPA_TEXT}<br /><br />
+											<div style='text-align:center'><b>{LAN=LAN_SIGNUP_17}</b>
+												{SIGNUP_COPPA_FORM}
+											</div>";
 
+$SIGNUP_TEMPLATE['coppa-fail']              = "<div class='alert alert-danger alert-block' style='text-align:center'>{LAN=LAN_SIGNUP_9}</div>";
 
-$SIGNUP_TEMPLATE['coppa']       = "{SIGNUP_COPPA_TEXT}<br /><br />
-								<div style='text-align:center'><b>{LAN=LAN_SIGNUP_17}</b>
-									{SIGNUP_COPPA_FORM}
-								</div>";
+$SIGNUP_TEMPLATE['extended-category']       = "
+											<div class='form-group row m-2'>
+												<div class='col-sm-9 col-md-offset-3'>{EXTENDED_CAT_TEXT}</div>
+											</div>";
 
-$SIGNUP_TEMPLATE['coppa-fail'] = "<div class='alert alert-danger alert-block' style='text-align:center'>{LAN=LAN_SIGNUP_9}</div>";
-
-
-$SIGNUP_TEMPLATE['extended-category'] = "
-	<tr>
-		<td colspan='2' class='forumheader'>
-			{EXTENDED_CAT_TEXT}
-		</td>	
-	</tr>";
-
-
-$SIGNUP_TEMPLATE['extended-user-fields'] = "
-	<tr>
-		<td style='width:40%' class='forumheader3'>
-			<label>{EXTENDED_USER_FIELD_TEXT}
-			{EXTENDED_USER_FIELD_REQUIRED}</label>
-		</td>
-		<td style='width:60%' class='forumheader3'>
-			{EXTENDED_USER_FIELD_EDIT}
-		</td>
-	</tr>";
+$SIGNUP_TEMPLATE['extended-user-fields']    = "
+											<div class='form-group row m-2'>
+												<label class='col-sm-3 control-label'>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>
+												<div class='col-sm-9'>{EXTENDED_USER_FIELD_EDIT}</div>
+											</div>";

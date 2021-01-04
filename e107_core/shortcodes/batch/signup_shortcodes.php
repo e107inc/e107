@@ -639,6 +639,13 @@ class signup_shortcodes extends e_shortcode
 		//return "<span class='required'></span>";
 	}
 
+	function sc_signup_button($parm=null)
+	{
+		$class = isset($parm['class']) ? $parm['class'] : "button btn btn-primary signup-button";
+
+		return "<input class='".$class."' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />\n";
+	}
+
 
 	// allow main admin to view signup page for design/testing.
 	function sc_signup_adminoptions()
