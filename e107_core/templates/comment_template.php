@@ -60,7 +60,7 @@ $COMMENT_TEMPLATE['item'] = '
 			<div class="row">
 				
 					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>
-					<div class="comment-box-date span2 col-xs-6 col-sm-6  col-md-6 text-right text-muted">{COMMENT_TIMEDATE=relative}</div>
+					<div class="comment-box-date span2 col-xs-6 col-sm-6  col-md-6 text-right text-end text-muted">{COMMENT_TIMEDATE=relative}</div>
 
 			</div>
 			
@@ -73,7 +73,7 @@ $COMMENT_TEMPLATE['item'] = '
 			</div>	
 			<div class="row">
 				<div class="comment-status span2 col-sm-12 col-md-6">{COMMENT_STATUS}</div>
-					<div class="comment-moderate span6 col-sm-12 col-md-6 text-right">{COMMENT_RATE} {COMMENT_REPLY} {COMMENT_EDIT} {COMMENT_MODERATE}</div>
+					<div class="comment-moderate span6 col-sm-12 col-md-6 text-right text-end">{COMMENT_RATE} {COMMENT_REPLY} {COMMENT_EDIT} {COMMENT_MODERATE}</div>
 			</div>
 			
 				

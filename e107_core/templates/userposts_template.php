@@ -91,7 +91,7 @@ $USERPOSTS_NP_TABLE = $USERPOSTS_TEMPLATE['np_table']; // BC, will be removed
 	$USERPOSTS_TEMPLATE['forum_table_end'] = "
 
 		</table>
-		<div class='text-right'>
+		<div class='text-right text-end'>
 			{USERPOSTS_FORUM_SEARCH}
 		</div>
 		</form>
