@@ -378,6 +378,7 @@ CREATE TABLE online (
 CREATE TABLE page (
   page_id int(10) unsigned NOT NULL auto_increment,
   page_title varchar(250) NOT NULL default '',
+  page_subtitle varchar(250) NOT NULL default '',
   page_sef varchar (250) NOT NULL default '',
   page_chapter int(10) unsigned NOT NULL default '0',
   page_metakeys varchar (250) NOT NULL default '',

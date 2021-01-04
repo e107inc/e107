@@ -50,6 +50,7 @@ define("CUSLAN_76", "Menu with path #");
 define("CUSLAN_77", "deleted");
 define("CUSLAN_78", "Couldn't delete menu with path ");
 define("CUSLAN_79", "You must enter either a page title or a menu name.");
+define("CUSLAN_80", "Sub Title");
 
 
 // define("CUSLAN_54", "Meta Keywords"); //LAN_KEYWORDS
