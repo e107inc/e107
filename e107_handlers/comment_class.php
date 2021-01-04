@@ -463,7 +463,7 @@ class comment
 	//	$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
 		
 		//XXX Do NOT add to template - too important to allow for modification. 
-		$COMMENT_TEMPLATE['item_start'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box clearfix'>\n";
+		$COMMENT_TEMPLATE['item_start'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box d-flex clearfix'>\n";
 		$COMMENT_TEMPLATE['item_end']		= "\n</li>\n";
 		
 		if(defset('BOOTSTRAP') === 2 || defset('BOOTSTRAP') === true) // Convert Bootstrap3 to Bootstrap 2 when detected. 
