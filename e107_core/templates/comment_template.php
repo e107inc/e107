@@ -53,10 +53,10 @@ $COMMENT_TEMPLATE['form']			= "
 
 $COMMENT_TEMPLATE['item'] = '
 		{SETIMAGE: w=90&h=90&crop=1}
-		<div class="media-object comment-box-left pull-left me-3 span1">
+		<div class="media-object comment-box-left pull-left  col-md-2 span1">
 			{COMMENT_AVATAR: shape=circle}
 		</div>	
-		<div class="media-body d-flex comment-box-right ">
+		<div class="media-body col-md-10 comment-box-right ">
 			<div class="row">
 				
 					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>
@@ -71,7 +71,7 @@ $COMMENT_TEMPLATE['item'] = '
 					</p>
 				</div>
 			</div>	
-			<div class="row">
+			<div class="row ">
 				<div class="comment-status span2 col-sm-12 col-md-6">{COMMENT_STATUS}</div>
 					<div class="comment-moderate span6 col-sm-12 col-md-6 text-right text-end">{COMMENT_RATE} {COMMENT_REPLY} {COMMENT_EDIT} {COMMENT_MODERATE}</div>
 			</div>
