@@ -59,7 +59,7 @@ $USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group'>
 
 $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
 															<label  class='col-sm-3 control-label'>".LAN_USER_76.":".req(e107::getPref('signup_option_class'))."</label>
-														       	<div class='col-sm-9'>{---}</div>
+														       	<div class='col-sm-9 checkbox'>{---}</div>
 														   </div>
 														";
 
