@@ -8,9 +8,6 @@
 
 if (!defined('e107_INIT'))  exit;
 
-global $sc_style;
-
-
 
 $NEWS_TEMPLATE = array();
 
