@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '153cf33aa76c3378a8332616fe68fd796d00343b',
+    'reference' => 'f9492a8c89860284979e9b947dc04836bc20d33b',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '153cf33aa76c3378a8332616fe68fd796d00343b',
+      'reference' => 'f9492a8c89860284979e9b947dc04836bc20d33b',
     ),
     'firebase/php-jwt' => 
     array (
@@ -67,12 +67,12 @@
     ),
     'matthiasmullie/minify' => 
     array (
-      'pretty_version' => '1.3.63',
-      'version' => '1.3.63.0',
+      'pretty_version' => '1.3.65',
+      'version' => '1.3.65.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9ba1b459828adc13430f4dd6c49dae4950dc4117',
+      'reference' => '227f19062451c55a797e0cc667ef983834e6580c',
     ),
     'matthiasmullie/path-converter' => 
     array (
