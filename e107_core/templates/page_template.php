@@ -53,7 +53,7 @@ $PAGE_TEMPLATE['default']['body'] = '
 
 // {CPAGEFIELD: name=image}
 
-$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right'>{---}</div>";
+$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right text-end'>{---}</div>";
 
 // used only when password authorization is required
 $PAGE_TEMPLATE['default']['authorize'] = '
