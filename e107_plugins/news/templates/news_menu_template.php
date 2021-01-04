@@ -8,12 +8,6 @@
 
 if (!defined('e107_INIT'))  exit;
 
-global $sc_style;
-
-// $sc_style['NEWS_CATEGORY_NEWS_COUNT']['pre']  = '(';
-// $sc_style['NEWS_CATEGORY_NEWS_COUNT']['post'] = ')';
-
-
 
 // category menu
 $NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="list-group news-menu-category">';
