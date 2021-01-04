@@ -4542,7 +4542,7 @@ var_dump($select_options);*/
 		
 			$tmp = $obj->compile($tags,$parm);	
 		
-			if(count($tmp))
+			if(is_array($tmp) && count($tmp))
 			{
 				foreach($tmp as $val)
 				{
