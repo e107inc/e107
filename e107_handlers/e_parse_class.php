@@ -2428,6 +2428,9 @@ class e_parse extends e_parser
 
 		$text = $this->ampEncode($text);
 
+		// if CDATA happens to be quoted in the text.
+		$text = str_replace(['<![CDATA', ']]>'], ['&lt;![CDATA', ']]&gt;'], $text);
+
 		if($tags == true && ($text))
 		{
 			$text = '<![CDATA[' .$text. ']]>';
