@@ -2967,7 +2967,7 @@ class e107
 		{
 			$ret = $legacy_override_path;
 		}
-		elseif(THEME_LEGACY === true && is_readable($core_path_legacy)) //v1 core template.
+		elseif(deftrue('THEME_LEGACY') && is_readable($core_path_legacy)) //v1 core template.
 		{
 			$ret = $core_path_legacy;
 		}
@@ -4199,7 +4199,7 @@ class e107
 		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST
 		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST || deftrue('e_MINIMAL'))
 		{
-			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
+			$_e107vars = array('forceuserupdate', 'online', 'menus', 'prunetmp');
 			$GLOBALS['_E107']['minimal'] = true;
 			// lame but quick - allow online when ajax request only, additonal checks are made in e_online class
 			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal']))

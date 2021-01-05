@@ -61,6 +61,7 @@ if (isset($_POST['trigger_empty_cache']))
 		case 'empty_syscache':
 			e107::getCache()->clearAll('system');
 			e107::getLog()->flushMessages(CACLAN_16);
+			e107::getSession()->clear('addons-update-status');
 		break;
 
 		case 'empty_dbcache':

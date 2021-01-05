@@ -453,7 +453,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 	define("ADMIN_GRID_ICON",  "<i class='fa fa-th'></i>");
 	define("ADMIN_LIST_ICON",  "<i class='fa fa-th-list'></i>");
 
-if(THEME_STYLE === 'css/kadmin.css')
+if(defset('THEME_STYLE') === 'css/kadmin.css')
 {
 
 	define("ADMIN_EDIT_ICON", "<i class='fa fa-edit fa-2x fa-fw'></i>");
