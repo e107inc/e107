@@ -800,6 +800,11 @@ class e107
 	 */
 	public static function isCli()
 	{
+		if(PHP_SAPI === 'cli')
+		{
+			return true;
+		}
+
 		return self::getE107('cli');
 	}
 
@@ -4785,10 +4790,19 @@ class e107
 			$_SERVER['PHP_SELF'] = $requestUrl;
 		}*/
 
-		if(!empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']) && self::isCli())
+		if(self::isCli())
 		{
-			$_SERVER['SCRIPT_FILENAME'] = $_SERVER['_'];
+			if(!empty($_SERVER['argv']) && empty($_GET))
+			{
+				parse_str($_SERVER['argv'][1], $_GET); // convert argv to $_GET for script testing via CLI.
+			}
+
+			if(!empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']))
+			{
+				$_SERVER['SCRIPT_FILENAME'] = $_SERVER['_'];
+			}
 		}
+
 
 		$eSelf = !empty($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
