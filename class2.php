@@ -71,6 +71,26 @@ if(!isset($_E107['cli']))
 	ob_start();             // start our own.
 	$oblev_at_start = ob_get_level(); 	// preserve when destroying globals in step C
 }
+
+if(!empty($_E107['minimal']))
+{
+	$_E107['no_prunetmp'] = true;
+	$_E107['no_menus'] = true;
+	$_E107['no_theme'] = true;
+	$_E107['no_online'] = true;
+	$_E107['no_lan'] = true;
+	$_E107['no_module'] = true;
+	$_E107['no_maintenance'] = true;
+	$_E107['no_forceuserupdate'] = true;
+	$_E107['no_event'] = true;
+	$_E107['no_session'] = true;
+	$_E107['no_parser'] = true;
+	$_E107['no_override'] = true;
+	$_E107['no_log'] = true;
+	$_E107['no_autoload'] = true;
+}
+
+
 //
 // C: Find out if register globals is enabled and destroy them if so
 // (DO NOT use the value of any variables before this point! They could have been set by the user)
@@ -314,8 +334,10 @@ if(!defined('e_SECURITY_LEVEL'))
 //$e107->url = e107::getUrl(); - caught by __get()
 //TODO - find & replace $e107->url
 //DEPRECATED, BC, $e107->tp caught by __get()
-$tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
-
+if(!isset($_E107['no_parser']))
+{
+	$tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
+}
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
 
@@ -395,8 +417,10 @@ $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 $dbg->logTime('Prefs, misc tables');
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
-$admin_log = e107::getLog(); //TODO - find & replace $admin_log, $e107->admin_log
-
+if(!isset($_E107['no_log']))
+{
+	$admin_log = e107::getLog(); //TODO - find & replace $admin_log, $e107->admin_log
+}
 	if($merror === 'e1')
 	{
 		message_handler('CRITICAL_ERROR', 6, ': generic, ', 'class2.php');
@@ -436,8 +460,10 @@ $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorag
 
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
 $dbg->logTime('Load Event Handler');
-$e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
-
+if(!isset($_E107['no_event']))
+{
+	$e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
+}
 // TODO - DEPRECATED - remove
 
 $dbg->logTime('Load Core Prefs');
@@ -492,7 +518,7 @@ if(!e107::getConfig()->hasData())
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 $pref = e107::getPref();
 
-if(e_ADMIN_AREA !== true && !empty($pref['thumb_to_webp']))
+if(e_ADMIN_AREA !== true && !isset($_E107['no_parser']) && !empty($pref['thumb_to_webp']))
 {
 	$tp->setConvertToWebP(true);
 }
@@ -501,9 +527,11 @@ if(e_ADMIN_AREA !== true && !empty($pref['thumb_to_webp']))
 // $e107->set_base_path(); moved to init().
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
-$dbg->logTime('Load Menu Prefs');
-$menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
-
+if(!isset($_E107['no_menus']))
+{
+	$dbg->logTime('Load Menu Prefs');
+	$menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
+}
 // NEW - force ssl
 if(empty($_E107['cli']) && e107::getPref('ssl_enabled') &&  !deftrue('e_SSL_DISABLE') )
 {
@@ -519,11 +547,12 @@ if(empty($_E107['cli']) && e107::getPref('ssl_enabled') &&  !deftrue('e_SSL_DISA
 }
 
 // $dbg->logTime('(Extracting Core Prefs Done)');
-
-$dbg->logTime('Init Language and detect changes');
-$lng = e107::getLanguage(); // required for v1.0 BC. 
-$lng->detect();
-
+if(!isset($_E107['no_lan']))
+{
+	$dbg->logTime('Init Language and detect changes');
+	$lng = e107::getLanguage(); // required for v1.0 BC.
+	$lng->detect();
+}
 //
 // M: Subdomain and Language Selection
 //
@@ -620,10 +649,18 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 // - Language detection (because of session.cookie_domain)
 // to avoid multi-language 'access-denied' issues.
 //session_start(); see e107::getSession() above
-$dbg->logTime('Load Session Handler');
-e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
-$dbg->logTime('Set User Language Session');
-e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
+if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
+{
+	$dbg->logTime('Load Session Handler');
+	e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
+
+	$dbg->logTime('Set User Language Session');
+	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
+}
+else
+{
+	define('e_LANGUAGE', 'English');
+}
 
 if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 {
@@ -635,56 +672,60 @@ if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
 // v1 Custom language File Path.
-$dbg->logTime('Include Global Core Language Files');
-if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
+if(!isset($_E107['no_lan']))
 {
-	include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
-}
-else
-{
-	include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
-}
-
-
-$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
-if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
-{
-	include($customLan);
-}
-
-// v2 Custom language File Path. 
-$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
-if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
-{
-	include($customLan2);
-}
-unset($customLan, $customLan2);
-
-$lng->bcDefs(); // defined v1.x definitions for old templates.
-
-$dbg->logTime('Include Global Plugin Language Files');
-if(isset($pref['lan_global_list']))
-{
-	foreach($pref['lan_global_list'] as $path)
+	$dbg->logTime('Include Global Core Language Files');
+	if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 	{
-		if(e107::plugLan($path, 'global', true) === false)
-		{
-			e107::plugLan($path, 'global');
-		}
+		include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
+	}
+	else
+	{
+		include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
+	}
 
-	}			
+
+	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
+	if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
+	{
+		include($customLan);
+	}
+
+	// v2 Custom language File Path.
+	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
+	if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
+	{
+		include($customLan2);
+	}
+	unset($customLan, $customLan2);
+
+	$lng->bcDefs(); // defined v1.x definitions for old templates.
+
+	$dbg->logTime('Include Global Plugin Language Files');
+
+	if(isset($pref['lan_global_list']))
+	{
+		foreach($pref['lan_global_list'] as $path)
+		{
+			if(e107::plugLan($path, 'global', true) === false)
+			{
+				e107::plugLan($path, 'global');
+			}
+
+		}
+	}
 }
 
+if(!isset($_E107['no_session']))
+{
+	$dbg->logTime('CHAP challenge');
 
-
-$dbg->logTime('CHAP challenge');
-
-$die = e_AJAX_REQUEST !== true;
-e107::getSession()
-	->challenge() // Make sure there is a unique challenge string for CHAP login
-	->check($die); // Token protection
-unset($die);
-	
+	$die = e_AJAX_REQUEST !== true;
+	e107::getSession()
+		->challenge() // Make sure there is a unique challenge string for CHAP login
+		->check($die); // Token protection
+	unset($die);
+}
 //
 // N: misc setups: online user tracking, cache
 //
@@ -697,22 +738,38 @@ $dbg->logTime('Misc resources. Online user tracking, cache');
 $e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
 //DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
-$override = e107::getSingleton('override');
-
+if(!isset($_E107['no_override']))
+{
+	$override = e107::getSingleton('override');
+}
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
-$e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
+if(!isset($_E107['no_session']))
+{
+	$e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
+}
 
-$dbg->logTime('Init Event Handler');
-e107::getEvent()->init();
-$dbg->logTime('Register Core Events');
-e107::getNotify()->registerEvents();
 
+if(!isset($_E107['no_event']))
+{
+	$dbg->logTime('Init Event Handler');
+	e107::getEvent()->init();
+	$dbg->logTime('Register Core Events');
+	e107::getNotify()->registerEvents();
+}
 //
 // O: Start user session
 //
-$dbg->logTime('User session');
-init_session();			// Set up a lot of the user-related constants
 
+if(!isset($_E107['no_session']))
+{
+	$dbg->logTime('User session');
+	init_session();			// Set up a lot of the user-related constants
+}
+else
+{
+	define('ADMIN', false);
+	define('USER', true);
+}
 
 
 
@@ -720,63 +777,65 @@ init_session();			// Set up a lot of the user-related constants
 
 $developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
 
-// for multi-language these definitions needs to come after the language loaded.
-if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
+if(!isset($_E107['no_theme']))
 {
-	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+	// for multi-language these definitions needs to come after the language loaded.
+	if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
+	{
+		define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+	}
+	if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
+	{
+		define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
+	}
+
+	define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
+	define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
+
+	define('SITEADMIN', $pref['siteadmin']);
+	define('SITEADMINEMAIL', $pref['siteadminemail']);
+	define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
+	define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
+	define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
+	define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
+	define('e_DEVELOPER', $developerMode);
+	define('e_VERSION', varset($pref['version']));
+
+	unset($developerMode);
+
+	if(!empty($pref['xurl']) && is_array($pref['xurl']))
+	{
+		define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
+		define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
+		define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
+		define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
+		define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
+		define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
+		define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
+		define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
+		define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
+		define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
+		define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
+		define('XURL_TWITCH', vartrue($pref['xurl']['twitch'], false));
+		define('XURL_VK', vartrue($pref['xurl']['vk'], false));
+	}
+	else
+	{
+		define('XURL_FACEBOOK',false);
+		define('XURL_TWITTER', false);
+		define('XURL_YOUTUBE', false);
+		define('XURL_GOOGLE', false);
+		define('XURL_LINKEDIN', false);
+		define('XURL_GITHUB', false);
+		define('XURL_FLICKR', false);
+		define('XURL_INSTAGRAM', false);
+		define('XURL_PINTEREST', false);
+		define('XURL_STEAM', false);
+		define('XURL_VIMEO', false);
+		define('XURL_TWITCH', false);
+		define('XURL_VK', false);
+	}
 }
-if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
-{
-	define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
-}
-
-define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
-define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
-
-define('SITEADMIN', $pref['siteadmin']);
-define('SITEADMINEMAIL', $pref['siteadminemail']);
-define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
-define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
-define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
-define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
-define('e_DEVELOPER', $developerMode);
-define('e_VERSION', varset($pref['version']));
-
-unset($developerMode);
-
-if(!empty($pref['xurl']) && is_array($pref['xurl']))
-{
-	define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
-	define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
-	define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
-	define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
-	define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
-	define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
-	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
-	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
-	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
-	define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
-	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
-	define('XURL_TWITCH', vartrue($pref['xurl']['twitch'], false));
-	define('XURL_VK', vartrue($pref['xurl']['vk'], false));
-}
-else
-{
-	define('XURL_FACEBOOK',false);
-	define('XURL_TWITTER', false);
-	define('XURL_YOUTUBE', false);
-	define('XURL_GOOGLE', false);
-	define('XURL_LINKEDIN', false);
-	define('XURL_GITHUB', false);
-	define('XURL_FLICKR', false);
-	define('XURL_INSTAGRAM', false);
-	define('XURL_PINTEREST', false);
-	define('XURL_STEAM', false);
-	define('XURL_VIMEO', false);
-	define('XURL_TWITCH', false);
-	define('XURL_VK', false);
-}
-
 if(!defined('MAIL_IDENTIFIER'))
 {
 	define('MAIL_IDENTIFIER', 'X-e107-id');	
@@ -799,27 +858,30 @@ $dbg->logTime('Load Plugin Modules');
 $js_body_onload = array();			// Initialise this array in case a module wants to add to it
 
 // Load e_modules after all the constants, but before the themes, so they can be put to use.
-if(isset($pref['e_module_list']) && $pref['e_module_list'])
+if(!isset($_E107['no_module']))
 {
-	foreach ($pref['e_module_list'] as $mod)
+	if(isset($pref['e_module_list']) && $pref['e_module_list'])
 	{
-		if (is_readable(e_PLUGIN."{$mod}/e_module.php"))
+		foreach ($pref['e_module_list'] as $mod)
 		{
-			$dbg->logTime('[e_module in '.$mod.']');
-			require_once(e_PLUGIN."{$mod}/e_module.php");
- 		}
+			if (is_readable(e_PLUGIN."{$mod}/e_module.php"))
+			{
+				$dbg->logTime('[e_module in '.$mod.']');
+				require_once(e_PLUGIN."{$mod}/e_module.php");
+	        }
+		}
 	}
 }
-
 
 //
 // P: THEME LOADING
 //
 
-$dbg->logTime('Load Theme');
 
-if(!defined('USERTHEME'))
+
+if(!defined('USERTHEME') && !isset($_E107['no_theme']))
 {
+	$dbg->logTime('Load Theme');
 	define('USERTHEME', (e107::getUser()->getPref('sitetheme') && file_exists(e_THEME.e107::getUser()->getPref('sitetheme'). '/theme.php') ? e107::getUser()->getPref('sitetheme') : false));
 }
 
@@ -1362,16 +1424,17 @@ define('TIMEOFFSET', $e_deltaTime);
 
 
 // ----------------------------------------------------------------------------
-$dbg->logTime('Find/Load Theme');
 
-if(e_ADMIN_AREA) // Load admin phrases ASAP
+
+if(e_ADMIN_AREA && !isset($_E107['no_lan'])) // Load admin phrases ASAP
 {
 	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
 
 
-if(!defined('THEME'))
+if(!defined('THEME') && !isset($_E107['no_theme']))
 {
+	$dbg->logTime('Find/Load Theme');
 
 	if (e_ADMIN_AREA && vartrue($pref['admintheme']))
 	{
@@ -1393,17 +1456,20 @@ $theme_pref = varset($pref['sitetheme_pref']);
 
 
 // Load library dependencies.
-$dbg->logTime('Load Libraries');
-//$startTime = microtime(true);
-if(deftrue('e_ADMIN_AREA'))
+
+if(!isset($_E107['no_theme']))
 {
-	$clearThemeCache = (deftrue('e_ADMIN_HOME', false) || deftrue('e_ADMIN_UPDATE', false));
-	e107::getTheme('current', $clearThemeCache)->loadLibrary();
-	unset($clearThemeCache);
-}
-else
-{
-	e107::getTheme('current')->loadLibrary();
+	$dbg->logTime('Load Libraries');
+	if(deftrue('e_ADMIN_AREA'))
+	{
+		$clearThemeCache = (deftrue('e_ADMIN_HOME', false) || deftrue('e_ADMIN_UPDATE', false));
+		e107::getTheme('current', $clearThemeCache)->loadLibrary();
+		unset($clearThemeCache);
+	}
+	else
+	{
+		e107::getTheme('current')->loadLibrary();
+	}
 }
 //echo "\nRun Time:  " . number_format(( microtime(true) - $startTime), 4) . " Seconds\n";
 // -----------------------------------------------------------------------
@@ -1414,49 +1480,68 @@ if(!isset($_E107['no_menus']))
 }
 
 // here we USE the theme
-$dbg->logTime("Load admin_/theme.php file");
-if(e_ADMIN_AREA)
+if(!isset($_E107['no_theme']))
 {
-	$dbg->logTime('Loading Admin Theme');
-	if(file_exists(THEME.'admin_theme.php') && !deftrue('e_MENUMANAGER_ACTIVE')) // no admin theme when previewing.
+	$dbg->logTime("Load admin_/theme.php file");
+	if(e_ADMIN_AREA)
 	{
-		require_once (THEME.'admin_theme.php');
+		$dbg->logTime('Loading Admin Theme');
+		if(file_exists(THEME.'admin_theme.php') && !deftrue('e_MENUMANAGER_ACTIVE')) // no admin theme when previewing.
+		{
+			require_once (THEME.'admin_theme.php');
+		}
+		else
+		{
+			require_once (THEME.'theme.php');
+		}
 	}
 	else
 	{
+		$dbg->logTime('Loading Site Theme');
 		require_once (THEME.'theme.php');
+
+		if(isset($SC_WRAPPER))
+		{
+			e107::scStyle($SC_WRAPPER);
+		}
 	}
-}
-else
-{
-	$dbg->logTime('Loading Site Theme');
-	require_once (THEME.'theme.php');
-	
-	if(isset($SC_WRAPPER))
+	$dbg->logTime("Init Theme Class");
+	e107::getRender()->init(); // initialize theme class.
+
+	if ($pref['anon_post'])
 	{
-		e107::scStyle($SC_WRAPPER);
+		define('ANON', true);
+	}
+	else
+	{
+		define('ANON', false);
+	}
+
+	if(empty($pref['newsposts']))
+	{
+		define('ITEMVIEW', 15);
+	}
+	else
+	{
+		define('ITEMVIEW', $pref['newsposts']);
+	}
+
+	$layout = isset($layout) ? $layout : '_default';
+	define('HEADERF', e_CORE."templates/header{$layout}.php");
+	define('FOOTERF', e_CORE."templates/footer{$layout}.php");
+
+	if (!file_exists(HEADERF))
+	{
+		message_handler('CRITICAL_ERROR', 'Unable to find file: '.HEADERF, __LINE__ - 2, __FILE__);
+	}
+
+	if (!file_exists(FOOTERF))
+	{
+		message_handler('CRITICAL_ERROR', 'Unable to find file: '.FOOTERF, __LINE__ - 2, __FILE__);
 	}
 }
-$dbg->logTime("Init Theme Class");
-e107::getRender()->init(); // initialize theme class.
 
-if ($pref['anon_post'])
-{
-	define('ANON', true);
-}
-else
-{
-	define('ANON', false);
-}
 
-if(empty($pref['newsposts']))
-{
-	define('ITEMVIEW', 15);
-}
-else
-{
-	define('ITEMVIEW', $pref['newsposts']);
-}
 
 if (!empty($pref['antiflood1']) && !defined('FLOODPROTECT'))
 {
@@ -1471,19 +1556,7 @@ else
 	define('FLOODPROTECT', false);
 }
 
-$layout = isset($layout) ? $layout : '_default';
-define('HEADERF', e_CORE."templates/header{$layout}.php");
-define('FOOTERF', e_CORE."templates/footer{$layout}.php");
 
-if (!file_exists(HEADERF))
-{
-	message_handler('CRITICAL_ERROR', 'Unable to find file: '.HEADERF, __LINE__ - 2, __FILE__);
-}
-
-if (!file_exists(FOOTERF))
-{
-	message_handler('CRITICAL_ERROR', 'Unable to find file: '.FOOTERF, __LINE__ - 2, __FILE__);
-}
 
 //define('LOGINMESSAGE', ''); - not needed, breaks login messages
 define('OPEN_BASEDIR', (ini_get('open_basedir') ? true : false));
