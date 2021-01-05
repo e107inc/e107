@@ -536,12 +536,53 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testToRss()
 		{
+			$tests = array(
+				'[html]<pre class=&quot;prettyprint linenums&quot; style=&quot;unicode-bidi: embed; direction: ltr;&quot;>&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_plugin&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_theme&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;</pre>[/html]',
+				'<div class="something">One & Two < and > " or \'</div>',
+			);
+
+			foreach($tests as $html)
+			{
+
+				$result = $this->tp->toRss($html, true);
+				$valid = $this->isValidXML($result);
+
+				$this->assertTrue($valid);
+			}
 
 		}
 
+		private function isValidXML($xmlContent)
+	    {
+	        if (trim($xmlContent) == '')
+	        {
+	            return false;
+	        }
+
+	        $xmlContent = '<?xml version="1.0" encoding="utf-8"?>'."\n".'<description>'.$xmlContent.'</description>';
+
+	        libxml_use_internal_errors(true);
+
+	        $doc = new DOMDocument('1.0', 'utf-8');
+	        $doc->loadXML($xmlContent);
+
+	        $errors = libxml_get_errors();
+
+	        if(!empty($errors))
+	        {
+	            var_dump($errors);
+	        }
+
+	        libxml_clear_errors();
+
+	        return empty($errors);
+	    }
+
+
+/*
 		public function testPreFilter()
 		{
 
