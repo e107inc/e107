@@ -258,7 +258,7 @@ class admin_start
 
 		require(e_ADMIN."ver.php");
 
-		if(!empty($e107info['e107_version']) && (e_VERSION !==  $e107info['e107_version']))
+		if(!empty($e107info['e107_version']) && defined('e_VERSION') && (e_VERSION !==  $e107info['e107_version']))
 		{
 			e107::getConfig()->set('version', $e107info['e107_version'])->save(false,true,false);
 

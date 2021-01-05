@@ -52,7 +52,10 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET
 
 if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
 {
-	e107::getSession()->set('addons-update-checked',true);
+	if(!E107_DEBUG_LEVEL)
+	{
+		e107::getSession()->set('addons-update-checked',true);
+	}
 
 	/** @var admin_shortcodes $sc */
 	$sc = e107::getScBatch('admin');
@@ -62,7 +65,6 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 	$text = $sc->renderAddonUpdate($plugins);
 	$text .= $sc->renderAddonUpdate($themes);
-
 
 	if(empty($text))
 	{
@@ -78,7 +80,10 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 	echo $ret;
 
-	e107::getSession()->set('addons-update-status',$ret);
+	if(!E107_DEBUG_LEVEL)
+	{
+		e107::getSession()->set('addons-update-status',$ret);
+	}
 
 	exit;
 
