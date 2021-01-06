@@ -29,7 +29,7 @@ class signup_shortcodes extends e_shortcode
 		return $text;
 	}
 	
-	function sc_signup_coppa_form($parm)
+	function sc_signup_coppa_form($parm=null)
 	{
 		if (strpos(LAN_SIGNUP_77, "stage") !== FALSE)
 		{
@@ -53,7 +53,7 @@ class signup_shortcodes extends e_shortcode
 
 
 
-	function sc_signup_xup($param) // show it to those who were using xup
+	function sc_signup_xup($param=null) // show it to those who were using xup
 	{
 		switch ($param) 
 		{
@@ -69,7 +69,7 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	// TODO - template
-	function sc_signup_xup_login($parm)
+	function sc_signup_xup_login($parm=null)
 	{
 		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
 
@@ -80,7 +80,7 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	// TODO - template
-	function sc_signup_xup_signup($parm)
+	function sc_signup_xup_signup($parm=null)
 	{
 		if (!e107::getUserProvider()->isSocialLoginEnabled()) return '';
 
@@ -191,7 +191,7 @@ class signup_shortcodes extends e_shortcode
 		if (check_class($pref['displayname_class']))
 		{
 			$dis_name_len = varset($pref['displayname_maxlength'],15);
-			$val = ($_POST['username']) ? filter_var($_POST['username'], FILTER_SANITIZE_STRING) : '';
+			$val = !empty($_POST['username']) ? filter_var($_POST['username'], FILTER_SANITIZE_STRING) : '';
 			return e107::getForm()->text('username', $val,  $dis_name_len);
 
 		}
@@ -222,7 +222,7 @@ class signup_shortcodes extends e_shortcode
 			$options['class'] = vartrue($parm['class'],'');
 			$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : '';
 
-			$val = ($_POST['loginname']) ? filter_var($_POST['loginname'], FILTER_SANITIZE_STRING) : '';
+			$val = !empty($_POST['loginname']) ? filter_var($_POST['loginname'], FILTER_SANITIZE_STRING) : '';
 
 			return e107::getForm()->text('loginname', $val, $log_name_length, $options);
 		}
@@ -467,7 +467,7 @@ class signup_shortcodes extends e_shortcode
 	
 	function sc_signup_extended_user_fields($parm=null)
 	{ 
-		global $usere, $tp, $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
+		global $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
 		$text = "";
 		
 		$search = array(
@@ -476,21 +476,22 @@ class signup_shortcodes extends e_shortcode
 		'{EXTENDED_USER_FIELD_EDIT}'
 		);
 		
-		
+		$ue = e107::getUserExt();
+		$tp = e107::getParser();
 		// What we need is a list of fields, ordered first by parent, and then by display order?
 		// category entries are `user_extended_struct_type` = 0
 		// 'unallocated' entries are `user_extended_struct_parent` = 0
 		
 		// Get a list of defined categories
-		$catList = $usere->user_extended_get_categories(FALSE);
+		$catList = $ue->getCategories(FALSE);
 		// Add in category zero - the 'no category' category
 		array_unshift($catList,array('user_extended_struct_parent' => 0, 'user_extended_struct_id' => '0'));
 		
-		
+
 		
 		foreach($catList as $cat)
 		{
-		  $extList = $usere->user_extended_get_fieldList($cat['user_extended_struct_id']);
+		  $extList = $ue->user_extended_get_fieldList($cat['user_extended_struct_id']);
 		
 		  $done_heading = FALSE;
 		  
@@ -526,7 +527,7 @@ class signup_shortcodes extends e_shortcode
 					$replace = array(
 						$label,
 						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
-						$usere->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $opts)
+						$ue->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $opts)
 					);
 
 					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
@@ -606,12 +607,10 @@ class signup_shortcodes extends e_shortcode
 			'signature' => 'signup_option_signature',
 		);
 
-		if((!empty($mandatory[$parm]) && (int) $pref[$mandatory[$parm]] === 2) || $parm === 'true' || ($parm === 'email' && empty($pref['disable_emailcheck'])))
+		if((!empty($parm) && !empty($mandatory[$parm]) && (int) $pref[$mandatory[$parm]] === 2) || $parm === 'true' || ($parm === 'email' && empty($pref['disable_emailcheck'])))
 		{
 			return "<span class='required'><!-- empty --></span>";
 		}
-
-
 
 		if(!empty($parm))
 		{

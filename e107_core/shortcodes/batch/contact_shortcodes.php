@@ -16,6 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('contact');
 
 class contact_shortcodes extends e_shortcode
 {
@@ -31,8 +32,7 @@ class contact_shortcodes extends e_shortcode
 		return "<input type='checkbox' name='email_copy'  value='1'  />";
 	}
 	
-	
-	
+
 	function sc_contact_person($parm='') 
 	{
 		$tp = e107::getParser();

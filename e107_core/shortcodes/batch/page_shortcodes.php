@@ -73,17 +73,17 @@ class cpage_shortcodes extends e_shortcode
 		if(empty($cid))
 		{
 			$pid = $this->var['page_chapter'];
-			$cid = $this->chapterData[$pid]['chapter_parent'];
+			$cid = isset($this->chapterData[$pid]['chapter_parent']) ?  $this->chapterData[$pid]['chapter_parent'] : 0;
 		}
 		
-		$row = $this->chapterData[$cid];
+		$row = isset($this->chapterData[$cid]) ? $this->chapterData[$cid] : array();
 		
 		if(!empty($row['chapter_id']) && $row['chapter_parent'] < 1)
 		{
 			return $row;	
 		}
 		
-		return false; // not a book. 
+		return false; // not a book.
 		
 	}
 	
@@ -109,12 +109,20 @@ class cpage_shortcodes extends e_shortcode
 		return $text ? e107::getParser()->toHTML($text, true, 'BODY') : '';
 	}
 
-	function sc_cpageauthor($parm)
+	function sc_cpageauthor($parm=null)
 	{
 		$parms = eHelper::scParams($parm);
 		$author = '';
-		$url = e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['user_id']));
-		
+
+		if(!empty($this->var['user_name']))
+		{
+			$url = e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['user_id']));
+		}
+		else
+		{
+			$url = '';
+		}
+
 		if(isset($parms['url']))
 		{
 			return $url;
@@ -123,8 +131,14 @@ class cpage_shortcodes extends e_shortcode
 		if($this->var['page_author'])
 		{
 			// currently this field used as Real Name, no matter what the db name says
-			if($this->var['user_login'] && !isset($parms['user'])) $author = $this->var['user_login'];
-			elseif($this->var['user_name']) $author = preg_replace('/[^\w\pL\s]+/u', ' ', $this->var['user_name']);
+			if(!empty($this->var['user_login']) && !isset($parms['user']))
+			{
+				$author = $this->var['user_login'];
+			}
+			elseif(!empty($this->var['user_name']))
+			{
+				$author = preg_replace('/[^\w\pL\s]+/u', ' ', $this->var['user_name']);
+			}
 		}
 		
 		if(empty($author)) return '';
@@ -139,7 +153,7 @@ class cpage_shortcodes extends e_shortcode
 		return '<a class="cpage-author" href="'.$url.'" title="">'.$author.'</a>';
 	}
 
-	function sc_cpagedate($parm)
+	function sc_cpagedate($parm=null)
 	{
 		if(empty($parm))
 		{
@@ -187,12 +201,12 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cpagenav()
 	{
-		return $this->var['np'];
+		return isset($this->var['np']) ? $this->var['np'] : null;
 	}
 	
 	function sc_cpagerating()
 	{
-		return $this->var['rating'];
+		return isset($this->var['rating']) ? $this->var['rating'] : null;
 	}
 	
 	function sc_cpagemessage()
@@ -251,6 +265,7 @@ class cpage_shortcodes extends e_shortcode
 	}
 	
 	// For Future Use..
+	/*
 	function sc_cpageimage($parm = '')
 	{
 		list($num,$size) = explode("|",$parm);
@@ -259,9 +274,9 @@ class cpage_shortcodes extends e_shortcode
 			$img = explode(",",$this->var['page_images']);
 			
 		}	
-	}
+	}*/
 
-	function sc_cpagelink($parm)
+	function sc_cpagelink($parm=null)
 	{
 		$url = $this->sc_cpageurl();
 		
@@ -278,7 +293,7 @@ class cpage_shortcodes extends e_shortcode
 	 * @example {CPAGEBUTTON: class=btn large default mb&target=blank}
 	 * @return string
 	 */
-	function sc_cpagebutton($parm)
+	function sc_cpagebutton($parm=null)
 	{
 		$tp = e107::getParser();
 
@@ -430,7 +445,7 @@ class cpage_shortcodes extends e_shortcode
 		$route = ($this->var['page_chapter'] == 0) ? 'page/view/other' : 'page/view';
 		$urldata = $this->var;
 
-		if($this->var['page_chapter'] && $this->chapterData[$this->var['page_chapter']])
+		if(!empty($this->var['page_chapter']) && isset($this->chapterData[$this->var['page_chapter']]))
 		{
 			$chapter = $this->chapterData[$this->var['page_chapter']]; 
 			$urldata = array_merge($this->var, $chapter);
@@ -457,47 +472,64 @@ class cpage_shortcodes extends e_shortcode
 	function sc_book_id()
 	{
 		$frm = e107::getForm();
-		$row = $this->getBook();
-		
-		return $row['chapter_id'];
+
+		if($row = $this->getBook())
+		{
+			return $row['chapter_id'];
+		}
+
 	}
 		
 	function sc_book_name()
 	{
 		$tp = e107::getParser();
-		$row = $this->getBook();
 
-		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
+		if(	$row = $this->getBook())
+		{
+			return $tp->toHTML($row['chapter_name'], false, 'TITLE');
+		}
+
 	}
 	
 	function sc_book_anchor()
 	{
 		$frm = e107::getForm();
-		$row = $this->getBook();
-		
-		return $frm->name2id($row['chapter_name']);
+
+		if($row = $this->getBook())
+		{
+			return $frm->name2id($row['chapter_name']);
+		}
+
 	}
 	
 	function sc_book_icon()
 	{
 		$tp = e107::getParser();
-		$row = $this->getBook();
-		
-		return $tp->toIcon($row['chapter_icon'], array('space'=>' '));
+
+		if($row = $this->getBook())
+		{
+			return $tp->toIcon($row['chapter_icon'], array('space'=>' '));
+		}
+
 	}
 	
 	function sc_book_description()
 	{
 		$tp = e107::getParser();
-		$row = $this->getBook();
-		
-		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
+
+		if($row = $this->getBook())
+		{
+			return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
+		}
+
 	}
 	
 	function sc_book_url()
 	{
-		$row = $this->getBook();		
-		return e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+		if($row = $this->getBook())
+		{
+			return e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+		}
 	}	
 	
 	// -------------------- Chapter - specific to the current page. -------------------------
@@ -507,8 +539,10 @@ class cpage_shortcodes extends e_shortcode
 	 */	
 	function sc_chapter_id()
 	{
-		$row = $this->getChapter();
-		return $row['chapter_id'];
+		if($row = $this->getChapter())
+		{
+			return $row['chapter_id'];
+		}
 	}
 	
 	
@@ -518,11 +552,10 @@ class cpage_shortcodes extends e_shortcode
 	 */		
 	function sc_chapter_name()
 	{
-		
-		$tp = e107::getParser();
-		$row = $this->getChapter();
-
-		return $tp->toHTML($row['chapter_name'], false, 'TITLE');		
+		if($row = $this->getChapter())
+		{
+			return e107::getParser()->toHTML($row['chapter_name'], false, 'TITLE');
+		}
 	}
 
 	/**
@@ -540,10 +573,10 @@ class cpage_shortcodes extends e_shortcode
 	 */		
 	function sc_chapter_anchor()
 	{
-		$frm = e107::getForm();
-		$row = $this->getChapter();
-		
-		return $frm->name2id($row['chapter_name']);
+		if($row = $this->getChapter())
+		{
+			return e107::getForm()->name2id($row['chapter_name']);
+		}
 	}
 
 	/**
@@ -551,18 +584,19 @@ class cpage_shortcodes extends e_shortcode
 	 */		
 	function sc_chapter_icon()
 	{
-		$tp = e107::getParser();
-		$row = $this->getChapter();
-		
-		return $tp->toIcon($row['chapter_icon']);
+		if($row = $this->getChapter())
+		{
+			return e107::getParser()->toIcon($row['chapter_icon']);
+		}
+
 	}
 
 	function sc_chapter_image($parm=null)
 	{
-		$tp = e107::getParser();
-		$row = $this->getChapter();
-
-		return $tp->toImage($row['chapter_image'],$parm);
+		if($row = $this->getChapter())
+		{
+			return e107::getParser()->toImage($row['chapter_image'],$parm);
+		}
 	}
 
 	/**
@@ -570,10 +604,10 @@ class cpage_shortcodes extends e_shortcode
 	 */		
 	function sc_chapter_description()
 	{
-		$tp = e107::getParser();
-		$row = $this->getChapter();
-		
-		return $tp->toHTML($row['chapter_meta_description'], true, 'BODY');
+		if($row = $this->getChapter())
+		{
+			return e107::getParser()->toHTML($row['chapter_meta_description'], true, 'BODY');
+		}
 	}
 
 	/**
@@ -581,20 +615,24 @@ class cpage_shortcodes extends e_shortcode
 	 */	
 	function sc_chapter_url()
 	{
-		$tp = e107::getParser();
-		$row = $this->getChapter();
+		if(!$row = $this->getChapter())
+		{
+			return null;
+		}
 		
-		$brow = $this->getBook($row['chapter_parent']);
-		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
+		if($brow = $this->getBook($row['chapter_parent']))
+		{
+			$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
 		
-		return e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+			return e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+		}
 		
 	}
 	
 	/**
 	 * @example {CHAPTER_BUTTON: text=More&size=sm}
 	 */
-	function sc_chapter_button($options)
+	function sc_chapter_button($options=null)
 	{		
 		$text = vartrue($options['text'], LAN_READ_MORE);
 		$size = vartrue($options['size'], "");
@@ -631,9 +669,12 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_chapter_breadcrumb()
 	{
+		$brow = array();
 		
-		$row = $this->getChapter();
-		$brow = $this->getBook($row['chapter_parent']);
+		if($row = $this->getChapter())
+		{
+			$brow = $this->getBook($row['chapter_parent']);
+		}
 
 		if(empty($brow['chapter_sef']))
 		{
@@ -643,8 +684,7 @@ class cpage_shortcodes extends e_shortcode
 		$breadcrumb = e107::breadcrumb();
 
 		return e107::getForm()->breadcrumb($breadcrumb);
-	
-		
+
 	}
 
 

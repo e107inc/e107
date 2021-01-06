@@ -133,8 +133,11 @@ class admin_shortcodes
 
 		$act = null; // FIXME
 
-		$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
-		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
+		if(function_exists('show_admin_menu'))
+		{
+			$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
+			return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
+		}
 	}
 
 	function sc_adminui_help()
@@ -278,7 +281,7 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_lang($parm)
+	function sc_admin_lang($parm=null)
 	{
 		if (!ADMIN || !e107::getPref('multilanguage')) { return ''; }
 		
@@ -290,7 +293,14 @@ class admin_shortcodes
 		e107::plugLan('user_menu', '', true);
 		
 		$params = array();
-		parse_str($parm, $params);
+		if(is_string($parm))
+		{
+			parse_str($parm, $params);
+		}
+		else
+		{
+			$params = $parm;
+		}
 
 		$lanlist = explode(',',e_LANLIST); 
 		sort($lanlist);
@@ -366,6 +376,7 @@ class admin_shortcodes
 		}
 		$text .= "<br /><br /></div>";
 
+		e107::includeLan(e_PLUGIN.'user/languages/English.php');
 
 		$select = '';
 		if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
@@ -430,7 +441,7 @@ class admin_shortcodes
 
 	}
 
-	function sc_admin_latest($parm)
+	function sc_admin_latest($parm=null)
 	{
 		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
@@ -550,7 +561,7 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_log($parm)
+	function sc_admin_log($parm=null)
 	{
 		if (getperms('0'))
 		{
@@ -558,7 +569,9 @@ class admin_shortcodes
 			{
 				function admin_log()
 				{
-					global $sql, $ns;
+
+					$sql = e107::getDb();
+					$ns = e107::getRender();
 					$text = E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
 					if (e_QUERY == 'logall')
 					{
@@ -613,11 +626,11 @@ class admin_shortcodes
 			$str = str_replace('.', '', ADMINPERMS);
 			if (ADMINPERMS == '0')
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.defset('ADMINNAME').' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 			else
 			{
-				return '<b>'.ADLAN_48.':</b> '.ADMINNAME.' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
+				return '<b>'.ADLAN_48.':</b> '.defset('ADMINNAME').' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
 		}
 		else
@@ -626,9 +639,10 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_logo($parm)
+	function sc_admin_logo($parm=null)
 	{
-		parse_str($parm);
+		//	parse_str($parm);
+
 
 		if (isset($file) && $file && is_readable($file))
 		{
@@ -664,7 +678,7 @@ class admin_shortcodes
 		return $image;
 	}
 
-	function sc_admin_menu($parm)
+	function sc_admin_menu($parm=null)
 	{
 		if (!ADMIN)
 		{
@@ -819,7 +833,7 @@ class admin_shortcodes
 
 
 	// FIXME - make it work
-	function sc_admin_pm($parm)
+	function sc_admin_pm($parm=null)
 	{
 		if(!e107::isInstalled('pm')) return;
         
@@ -940,7 +954,7 @@ class admin_shortcodes
 	}
 
 
-	function sc_admin_msg($parm)
+	function sc_admin_msg($parm=null)
 	{
 		if (ADMIN)
 		{
@@ -951,11 +965,16 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_nav($parm)
+	function sc_admin_nav($parm=null)
 	{
 		if (ADMIN)
 		{
-			global $ns, $pref, $array_functions, $tp;
+		//	global $ns, $pref, $array_functions, $tp;
+			$tp = e107::getParser();
+			$ns = e107::getRender();
+			$pref = e107::getPref();
+			$array_functions = e107::getNav()->adminLinks('legacy');
+
 			$e107_var = array();
 
 			if (strpos(e_SELF, '/admin.php') !== false)
@@ -1011,7 +1030,7 @@ class admin_shortcodes
 						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
 					//	e107::loadLanFiles($plugin_path, 'admin');
 						$eplug_caption 	= $tp->toHTML($readFile['@attributes']['name'], FALSE, 'defs, emotes_off');
-						$eplug_conffile = $readFile['administration']['configFile'];
+						$eplug_conffile = !empty($readFile['administration']['configFile']) ? $readFile['administration']['configFile'] : '';
 					}
 					elseif (is_readable(e_PLUGIN.$plugin_path.'/plugin.php'))
 					{
@@ -1034,15 +1053,18 @@ class admin_shortcodes
 				unset($tmp);
 			}
 
-			$e107_var['lout']['text']=LAN_LOGOUT;
-			$e107_var['lout']['link']=e_ADMIN_ABS.'admin.php?logout';
+			$e107_var['lout']['text'] = LAN_LOGOUT;
+			$e107_var['lout']['link'] = e_ADMIN_ABS.'admin.php?logout';
 
-			$text = e_admin_menu('', '', $e107_var);
-			return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+			if(function_exists('e_admin_menu'))
+			{
+				$text = e_admin_menu('', '', $e107_var);
+				return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+			}
 		}
 	}
 
-	function sc_admin_plugins($parm)
+	function sc_admin_plugins($parm=null)
 	{
 		if (ADMIN)
 		{
@@ -1110,7 +1132,7 @@ class admin_shortcodes
 		}
 	}
 
-	function sc_admin_preset($parm)
+	function sc_admin_preset($parm=null)
 	{
 		//DEPRECATED
 	}
@@ -1180,7 +1202,7 @@ class admin_shortcodes
 				$themename = $data['@attributes']['name'];
 				$themeversion = $data['@attributes']['version'];
 				$themedate = $data['@attributes']['date'];
-				$themeauthor = $data['author']['@attributes']['name'];			
+				$themeauthor = !empty($data['author']['@attributes']['name']) ? $data['author']['@attributes']['name'] : '';
 			}
 			
 			$text = "<b>".FOOTLAN_1."</b>
@@ -1221,7 +1243,7 @@ class admin_shortcodes
 			$text .= "<br />
 			<b>".FOOTLAN_9."</b>
 			<br />".
-			preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
+			preg_replace("/PHP.*/i", "", varset($_SERVER['SERVER_SOFTWARE']))."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
 			<br /><br />
 			<b>".FOOTLAN_11."</b>
 			<br />
@@ -1244,7 +1266,7 @@ class admin_shortcodes
 			".date('r').
 			"<br />";
 
-			return $ns->tablerender(FOOTLAN_13, $text, '', TRUE);
+			return e107::getRender()->tablerender(FOOTLAN_13, $text, '', TRUE);
 		}
 	}
 
@@ -1264,7 +1286,7 @@ class admin_shortcodes
 
 	}
 
-	function sc_admin_status($parm)
+	function sc_admin_status($parm=null)
 	{
 		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
@@ -1988,11 +2010,21 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	function sc_admin_navigation($parm=null)
 	{
 
-		if (!ADMIN) return '';
+		if(!ADMIN)
+		{
+			return '';
+		}
 
-		$tp 	= e107::getParser();
+		$tp = e107::getParser();
+		if(is_string($parm))
+		{
+			parse_str($parm, $parms);
+		}
+		else
+		{
+			$parms = $parm;
+		}
 
-		parse_str($parm, $parms);
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 
