@@ -21,6 +21,11 @@ Plugins should use an e_rss.php file in their plugin folder
 */
 if (!defined('e107_INIT'))
 {
+	if(!empty($_GET) || !empty($argv))
+	{
+		$_E107['minimal'] = true;
+	}
+
 	require_once('../../class2.php');
 }
 
@@ -71,7 +76,6 @@ else
 	$content_type 	= false;
 	$topic_id 		= false;
 }
-
 
 // List available rss feeds
 if (empty($rss_type))
@@ -693,7 +697,7 @@ class rssCreate
 					<contributor>\n
 						<name>e107</name>\n
 					</contributor>\n
-					<generator uri='http://e107.org/' version='".e_VERSION."'>e107</generator>\n";
+					<generator uri='http://e107.org/' version='".defset('e_VERSION')."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
 					<logo>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n

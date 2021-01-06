@@ -780,7 +780,7 @@ class e_parse extends e_parser
 			require_once(e_HANDLER.'bbcode_handler.php');
 			$this->e_bb = new e_bbcode;
 		}
-		$ret = $this->e_bb->parseBBCodes($data, USERID, 'default', 'PRE');			// $postID = logged in user here
+		$ret = $this->e_bb->parseBBCodes($data, defset('USERID'), 'default', 'PRE');			// $postID = logged in user here
 		return $ret;
 	}
 

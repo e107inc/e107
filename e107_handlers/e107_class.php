@@ -4535,8 +4535,12 @@ class e107
 			}
 		}
 
-		if (e107::isCli()) chdir(e_ROOT); // Maintain relative path consistency in CLI mode
-		$path = dirname(self::getRelativePath(getcwd(), $target_path))."/";
+		if(self::isCli()) // Maintain relative path consistency in CLI mode
+		{
+			chdir(e_ROOT);
+		}
+
+		$path = dirname(self::getRelativePath(getcwd(), $target_path)) . "/";
 
 		$http_path = dirname($_SERVER['SCRIPT_NAME']);
 		$http_path = explode("/", $http_path);

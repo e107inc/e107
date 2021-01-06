@@ -84,10 +84,10 @@ if(!empty($_E107['minimal']))
 	$_E107['no_forceuserupdate'] = true;
 	$_E107['no_event'] = true;
 	$_E107['no_session'] = true;
-	$_E107['no_parser'] = true;
+//	$_E107['no_parser'] = true;
 	$_E107['no_override'] = true;
 	$_E107['no_log'] = true;
-	$_E107['no_autoload'] = true;
+//	$_E107['no_autoload'] = true;
 }
 
 
@@ -553,6 +553,10 @@ if(!isset($_E107['no_lan']))
 	$lng = e107::getLanguage(); // required for v1.0 BC.
 	$lng->detect();
 }
+else
+{
+	define('e_LAN', 'en');
+}
 //
 // M: Subdomain and Language Selection
 //
@@ -769,6 +773,7 @@ else
 {
 	define('ADMIN', false);
 	define('USER', true);
+	define('USERCLASS_LIST', '0');
 }
 
 
@@ -777,65 +782,64 @@ else
 
 $developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
 
-if(!isset($_E107['no_theme']))
-{
+
 	// for multi-language these definitions needs to come after the language loaded.
-	if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
-	{
-		define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
-	}
-	if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
-	{
-		define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
-	}
-
-	define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
-	define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
-
-	define('SITEADMIN', $pref['siteadmin']);
-	define('SITEADMINEMAIL', $pref['siteadminemail']);
-	define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
-	define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
-	define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
-	define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
-	define('e_DEVELOPER', $developerMode);
-	define('e_VERSION', varset($pref['version']));
-
-	unset($developerMode);
-
-	if(!empty($pref['xurl']) && is_array($pref['xurl']))
-	{
-		define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
-		define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
-		define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
-		define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
-		define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
-		define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
-		define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
-		define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
-		define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
-		define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
-		define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
-		define('XURL_TWITCH', vartrue($pref['xurl']['twitch'], false));
-		define('XURL_VK', vartrue($pref['xurl']['vk'], false));
-	}
-	else
-	{
-		define('XURL_FACEBOOK',false);
-		define('XURL_TWITTER', false);
-		define('XURL_YOUTUBE', false);
-		define('XURL_GOOGLE', false);
-		define('XURL_LINKEDIN', false);
-		define('XURL_GITHUB', false);
-		define('XURL_FLICKR', false);
-		define('XURL_INSTAGRAM', false);
-		define('XURL_PINTEREST', false);
-		define('XURL_STEAM', false);
-		define('XURL_VIMEO', false);
-		define('XURL_TWITCH', false);
-		define('XURL_VK', false);
-	}
+if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
+{
+	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
 }
+if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
+{
+	define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));
+}
+
+define('SITEBUTTON', $tp->replaceConstants($pref['sitebutton'],'abs'));
+define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
+
+define('SITEADMIN', $pref['siteadmin']);
+define('SITEADMINEMAIL', $pref['siteadminemail']);
+define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
+define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs'));
+define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
+define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
+define('e_DEVELOPER', $developerMode);
+define('e_VERSION', varset($pref['version']));
+
+unset($developerMode);
+
+if(!empty($pref['xurl']) && is_array($pref['xurl']))
+{
+	define('XURL_FACEBOOK', vartrue($pref['xurl']['facebook'], false));
+	define('XURL_TWITTER', vartrue($pref['xurl']['twitter'], false));
+	define('XURL_YOUTUBE', vartrue($pref['xurl']['youtube'], false));
+	define('XURL_GOOGLE', vartrue($pref['xurl']['google'], false));
+	define('XURL_LINKEDIN', vartrue($pref['xurl']['linkedin'], false));
+	define('XURL_GITHUB', vartrue($pref['xurl']['github'], false));
+	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
+	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
+	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
+	define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
+	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
+	define('XURL_TWITCH', vartrue($pref['xurl']['twitch'], false));
+	define('XURL_VK', vartrue($pref['xurl']['vk'], false));
+}
+else
+{
+	define('XURL_FACEBOOK',false);
+	define('XURL_TWITTER', false);
+	define('XURL_YOUTUBE', false);
+	define('XURL_GOOGLE', false);
+	define('XURL_LINKEDIN', false);
+	define('XURL_GITHUB', false);
+	define('XURL_FLICKR', false);
+	define('XURL_INSTAGRAM', false);
+	define('XURL_PINTEREST', false);
+	define('XURL_STEAM', false);
+	define('XURL_VIMEO', false);
+	define('XURL_TWITCH', false);
+	define('XURL_VK', false);
+}
+
 if(!defined('MAIL_IDENTIFIER'))
 {
 	define('MAIL_IDENTIFIER', 'X-e107-id');	

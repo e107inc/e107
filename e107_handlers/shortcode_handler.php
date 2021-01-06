@@ -533,7 +533,12 @@ class e_parse_shortcode
 	{
 		global $register_sc;
 
-		$themePath = ($theme === null) ? THEME : e_THEME.$theme.'/';
+		$themePath = ($theme === null) ? defset('THEME') : e_THEME.$theme.'/';
+
+		if(empty($themePath))
+		{
+			return null;
+		}
 
 		if(file_exists($themePath."theme_shortcodes.php"))
 		{
