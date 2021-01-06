@@ -539,6 +539,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 */
 		public function testToRss()
 		{
+			if(PHP_VERSION_ID <  71000 )
+			{
+				$this->markTestSkipped("testToRSS() skipped. Requires a healthy libxml installation");
+				return null;
+			}
+
 			$tests = array(
 				'[html]<pre class=&quot;prettyprint linenums&quot; style=&quot;unicode-bidi: embed; direction: ltr;&quot;>&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_plugin&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_theme&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;</pre>[/html]',
 				'<div class="something">One & Two < and > " or \'</div>',
