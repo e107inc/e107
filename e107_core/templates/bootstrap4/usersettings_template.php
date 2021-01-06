@@ -45,19 +45,19 @@ $USERSETTINGS_WRAPPER['edit']['PASSWORD2'] =			"<div class='form-group row'>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['REALNAME'] =			"<div class='form-group row'>
-															<label for='realname' class='col-sm-3 col-form-label'>".LAN_USER_63.req(e107::getPref('signup_option_realname'))."</label>
+															<label for='realname' class='col-sm-3 col-form-label'>".LAN_USER_63."{REQUIRED=realname}</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group row'>
-															<label for='customtitle' class='col-sm-3 col-form-label'>".LAN_USER_04.':'.req(e107::getPref('signup_option_customtitle'))."</label>
+															<label for='customtitle' class='col-sm-3 col-form-label'>".LAN_USER_04.':'."{REQUIRED=customtitle}</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group row'>
-															<label  class='col-sm-3'>".LAN_USER_76.":".req(e107::getPref('signup_option_class'))."</label>
+															<label  class='col-sm-3'>".LAN_USER_76.":"."{REQUIRED=class}</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
@@ -76,7 +76,7 @@ $USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group row'>
 														
 
 $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group row'>
-														<label for='signature' class='col-sm-3 col-form-label'>".LAN_USER_71.req(e107::getPref('signup_option_signature'))."</label>
+														<label for='signature' class='col-sm-3 col-form-label'>".LAN_USER_71."{REQUIRED=signature}</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 													 ";
@@ -101,7 +101,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 
 
 	<div class='form-group row'>
-	<label for='email' class='col-sm-3 col-form-label'>".LAN_USER_60.req(!e107::getPref('disable_emailcheck'))."</label>
+	<label for='email' class='col-sm-3 col-form-label'>".LAN_USER_60."{REQUIRED=email}</label>
 	<div class='col-sm-9'>
 		{EMAIL}
 	</div>
@@ -124,7 +124,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	</div>
 
 	<div class='form-group row'>
-	<label class='col-sm-3 col-form-label'>".LAN_USER_07.req(e107::getPref('signup_option_image'))."</label>
+	<label class='col-sm-3 col-form-label'>".LAN_USER_07."{REQUIRED=image}</label>
         <div class='col-sm-9'>
         {AVATAR_REMOTE}
         </div>

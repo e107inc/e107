@@ -55,7 +55,7 @@ if (!defined('e107_INIT')) { exit; }
 		</div>
 		<br />
 		<br />
-		<table style='".USER_WIDTH."' class='table fborder e-list'>
+		<table class='table fborder e-list'>
 		<thead>
 		<tr>
 		<th class='fcaption' style='width:2%'>&nbsp;</th>
