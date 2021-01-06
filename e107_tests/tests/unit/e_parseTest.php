@@ -934,7 +934,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$tests = array(
 				0   => array(
 					'input'     => array('user_image'=>'-upload-avatartest.png'),
-					'parms'     => array('w'=>50, 'h'=>50),
+					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>false),
 					'expected'  => array(
 									"thumb.php?src=%7Be_AVATAR%7Dupload%2Favatartest.png&amp;w=50&amp;h=50",
 									"class='img-rounded rounded user-avatar'"
@@ -942,7 +942,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				1   => array(
 					'input'     => array('user_image'=>'avatartest.png'),
-					'parms'     => array('w'=>50, 'h'=>50),
+					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>false),
 					'expected'  => array(
 									"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=50&amp;h=50",
 									"class='img-rounded rounded user-avatar'"
@@ -950,7 +950,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				2   => array(
 					'input'     => array('user_image'=>''),
-					'parms'     => array('w'=>50, 'h'=>50),
+					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>false),
 					'expected'  => array(
 									"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 									"class='img-rounded rounded user-avatar'"
@@ -958,7 +958,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				3   => array(
 					'input'     => array('user_image'=>'https://mydomain.com/remoteavatar.jpg'),
-					'parms'     => array('w'=>50, 'h'=>50),
+					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>false,),
 					'expected'  => array(
 									"src='https://mydomain.com/remoteavatar.jpg'",
 									"class='img-rounded rounded user-avatar'",
@@ -967,7 +967,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				4   => array(
 					'input'     => array('user_image'=>'', 'user_id'=>1),
-					'parms'     => array('w'=>50, 'h'=>50, 'link'=>true),
+					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>false, 'link'=>true),
 					'expected'  => array(
 									"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 									"class='img-rounded rounded user-avatar'",
@@ -985,7 +985,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				),
 				6   => array(
 					'input'     => array('user_image'=>'avatartest.png'),
-					'parms'     => array('w'=>30, 'h'=>30, 'shape'=>'circle', 'alt'=>'mytitle'),
+					'parms'     => array('w'=>30, 'h'=>30, 'crop'=>false, 'shape'=>'circle', 'alt'=>'mytitle'),
 					'expected'  => array(
 									"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=30&amp;h=30",
 									"class='img-circle rounded-circle user-avatar'",
@@ -1005,12 +1005,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			);
 
-			foreach($tests as $var)
+			foreach($tests as $index => $var)
 			{
 				$result = $this->tp->toAvatar($var['input'], $var['parms']);
 				foreach($var['expected'] as $str)
 				{
-					$this->assertStringContainsString($str, $result);
+					$this->assertStringContainsString($str, $result, "Failed on index #".$index);
 				}
 				//var_dump($result);
 
