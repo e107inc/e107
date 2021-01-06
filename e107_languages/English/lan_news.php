@@ -9,8 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "News");
-
+if(!defined('PAGE_NAME')) // FIXME.
+{
+	define("PAGE_NAME", "News");
+}
 
 
 

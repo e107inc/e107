@@ -9,7 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "User Settings");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "User Settings");
+}
 
 /*
 LANs rationalised - some common ones now in lan_user.php. Old numbers generally cross-referenced
