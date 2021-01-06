@@ -16,6 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('sitedown');
 
 class sitedown_shortcodes extends e_shortcode
 {

@@ -15,6 +15,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 require_once(__DIR__.'/news_shortcodes_legacy.php');
+e107::coreLan('news');
 
 class news_shortcodes extends e_shortcode
 {
@@ -29,6 +30,8 @@ class news_shortcodes extends e_shortcode
 	protected $commentsEngine = 'e107';
 	
 	private $imageItem;
+
+	public $param = array();
 
 	// protected $param; // do not enable - erases param. .
 	
@@ -85,7 +88,7 @@ class news_shortcodes extends e_shortcode
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 		
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && ($parm != 'noextend' && $parm != 'body'))
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || varset($this->param['current_action']) === 'extend') && ($parm !== 'noextend' && $parm !== 'body'))
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
@@ -97,9 +100,9 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_news_author($parm)
+	function sc_news_author($parm=null)
 	{
-		if($this->news_item['user_id'])
+		if(!empty($this->news_item['user_id']))
 		{
 			if($parm == 'nolink')
 			{
@@ -146,16 +149,16 @@ class news_shortcodes extends e_shortcode
 			$latest_comment = $comments['comment_datestamp'];
 			if ($latest_comment > USERLV )
 			{
-				$NEWIMAGE = $param['image_new_small'];
+				$NEWIMAGE = varset($param['image_new_small']);
 			}
 			else
 			{
-				$NEWIMAGE = $param['image_nonew_small'];
+				$NEWIMAGE = varset($param['image_nonew_small']);
 			}
 		}
 		else
 		{
-			$NEWIMAGE = $param['image_nonew_small'];
+			$NEWIMAGE = varset($param['image_nonew_small']);
 		}
 		
 		if(deftrue('BOOTSTRAP')) // Should be done with CSS, not like above.
@@ -163,7 +166,7 @@ class news_shortcodes extends e_shortcode
 			$NEWIMAGE = "";		
 		}
 		
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".varset($param['commentlink']).intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
 	function sc_trackback($parm=null)
@@ -230,7 +233,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_category_id($parm=null)
 	{
-		return (int) $this->news_item['category_id'];
+		return !empty($this->news_item['category_id']) ? (int) $this->news_item['category_id'] : 0;
 	}
 
 
@@ -241,7 +244,7 @@ class news_shortcodes extends e_shortcode
 			$parm = array('type'=>$parm);
 		}
 		// BC
-		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
+		$category_icon = !empty($this->news_item['category_icon']) ? str_replace('../', '', trim($this->news_item['category_icon'])) : '';
 		if (!$category_icon) { return ''; }
 
 		// We store SC path in DB now + BC
@@ -285,7 +288,7 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_category_name($parm=null)
 	{
-		if(empty($parm['link']))
+		if(empty($parm['link']) && isset($this->news_item['category_name']))
 		{
 			return e107::getParser()->toHTML($this->news_item['category_name'], 'TITLE');
 		}
@@ -313,6 +316,11 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_category_url($parm=null)
 	{
+		if(empty($this->news_item['category_id']) || empty($this->news_item['category_sef']) )
+		{
+			return null;
+		}
+
 		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
 
 		return e107::getUrl()->create('news/list/category', $category);	
@@ -331,6 +339,11 @@ class news_shortcodes extends e_shortcode
 
 	public function sc_news_author_signature($parm=null)
 	{
+		if(empty($this->news_item['user_id']))
+		{
+			return null;
+		}
+
 		$user = e107::user($this->news_item['user_id']);
 
 		if(!empty($user['user_signature']))
@@ -341,6 +354,11 @@ class news_shortcodes extends e_shortcode
 
 	public function sc_news_author_items_url($parm=null)
 	{
+		if(empty($this->news_item['user_name']))
+		{
+			return null;
+		}
+
 		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
 	}
 
@@ -350,6 +368,11 @@ class news_shortcodes extends e_shortcode
 	*/
 	public function sc_news_author_euf($parm=null)
 	{
+		if(empty($this->news_item['user_id']))
+		{
+			return null;
+		}
+
 		$userid = $this->news_item['user_id'];		
 		$field 	= (!empty($parm['field'])) ? $parm['field'] : '';
 		$type 	= (!empty($parm['type'])) ? $parm['type'] : 'value';
@@ -545,8 +568,8 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newscategory($parm=null)
 	{
-		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+		$category_name = !empty($this->news_item['category_name']) ? e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs') : '';
+		$category = !empty($this->news_item['category_id']) ? array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] ) : array();
 	//	$categoryClass = varset($GLOBALS['NEWS_CSSMODE'],'');
 	    $style = isset($this->param['catlink']) ? "style='".$this->param['catlink']."'" : '';
 		return "<a ".$style." href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
@@ -727,7 +750,7 @@ class news_shortcodes extends e_shortcode
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
-	function sc_adminbody($parm)
+	function sc_adminbody($parm=null)
 	{
 		$news_body = $this->sc_news_body($parm);
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
@@ -1046,8 +1069,13 @@ class news_shortcodes extends e_shortcode
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_newsitem_schook($parm='')
+	function sc_newsitem_schook($parm=null)
 	{
+		if(!is_string($parm))
+		{
+			return null;
+		}
+
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');
 		e107::setRegistry('core/news/schook_data', array('data' => $this->news_item, 'params' => $this->param));

@@ -14,15 +14,24 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('user');
+e107::coreLan('usersettings');
 
 class usersettings_shortcodes extends e_shortcode
 {
 	private $extendedTabs = false;
 	public $legacyTemplate = array();
+	private $pref;
 
-	function sc_username($parm) // This is the 'display name'
+	function __construct()
 	{
-		$pref = e107::getPref();
+		$this->pref = e107::getPref();
+
+	}
+
+	function sc_username($parm=null) // This is the 'display name'
+	{
+		$pref = $this->pref;
 		$dis_name_len = varset($pref['displayname_maxlength'], 15);
 
 		if(check_class($pref['displayname_class']) || $pref['allowEmailLogin'] == 1) // display if email is used for login.
@@ -51,19 +60,18 @@ class usersettings_shortcodes extends e_shortcode
 	}
 
 
-	function sc_loginname($parm)
+	function sc_loginname($parm=null)
 	{
-		$pref = e107::getPref();
 
-		if($pref['allowEmailLogin'] == 1) // email/password login only. 
+		if($this->pref['allowEmailLogin'] == 1) // email/password login only.
 		{
 			return; // hide login name when email-login is being used. (may contain social login info)	
 		}
 
-		$log_name_length = varset($pref['loginname_maxlength'], 30);
+		$log_name_length = varset($this->pref['loginname_maxlength'], 30);
 
 		$options = array(
-			'title' => ($pref['allowEmailLogin'] == 1) ? LAN_USER_82 : LAN_USER_80,
+			'title' => ($this->pref['allowEmailLogin'] == 1) ? LAN_USER_82 : LAN_USER_80,
 			'size'  => 40,
 		);
 
@@ -79,30 +87,29 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_customtitle($parm)
+	function sc_customtitle($parm=null)
 	{ 	
-		$pref = e107::getPref();
-		if ($pref['signup_option_customtitle'])
+		if ($this->pref['signup_option_customtitle'])
 		{		
 			$options = array(
 				'title'=> '', 
 				'size' => 40,
-				'required' => ($pref['signup_option_customtitle'] == 2));	
+				'required' => ($this->pref['signup_option_customtitle'] == 2));
 			return e107::getForm()->text('customtitle', $this->var['user_customtitle'], 100, $options);
 		}
 	}
 
 	
-	function sc_realname($parm)
+	function sc_realname($parm=null)
 	{ 	
-		$pref = e107::getPref();
-		if ($pref['signup_option_realname'])
+
+		if ($this->pref['signup_option_realname'])
 		{		
 			$sc = e107::getScBatch('usersettings');
 			$options = array(
 				'title'    => '',
 				'size'     => 40,
-				'required' => ($pref['signup_option_realname'] == 2),
+				'required' => ($this->pref['signup_option_realname'] == 2),
 			);
 			if(!empty($sc->var['user_login']) && !empty($sc->var['user_xup'])) // social login active.
 			{
@@ -114,9 +121,9 @@ class usersettings_shortcodes extends e_shortcode
 	}
 
 /*
-	function sc_realname2($parm)
+	function sc_realname2($parm=null)
 	{
-		$pref = e107::getPref();
+
 		$sc = e107::getScBatch('usersettings');
 
 		$options = array(
@@ -135,9 +142,8 @@ class usersettings_shortcodes extends e_shortcode
 */	
 	
 	
-	function sc_password1($parm)
+	function sc_password1($parm=null)
 	{ 
-		$pref = e107::getPref();
 
 		if(!empty($this->var['user_xup'])) // social login active.
 		{
@@ -155,16 +161,15 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_password2($parm)
+	function sc_password2($parm=null)
 	{ 
-		$pref = e107::getPref();
 
 		if(!empty($this->var['user_xup'])) // social login active.
 		{
 			return null;
 		}
 		
-		if(!isset($pref['auth_method']) || $pref['auth_method'] == '' || $pref['auth_method'] == 'e107' || $pref['auth_method'] == '>e107')
+		if(!isset($this->pref['auth_method']) || $this->pref['auth_method'] == '' || $this->pref['auth_method'] == 'e107' || $this->pref['auth_method'] == '>e107')
 		{
 			$options = array('size' => 40,'title'=>LAN_USET_23, 'required'=>0); 
 			return e107::getForm()->password('password2', '', 20, $options);	
@@ -175,21 +180,20 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_password_len($parm)
+	function sc_password_len($parm=null)
 	{ 
-		$pref = e107::getPref();
-		if(!isset($pref['auth_method']) || ($pref['auth_method'] != 'e107' && $pref['auth_method'] != '>e107'))
+		if(!isset($this->pref['auth_method']) || ($this->pref['auth_method'] != 'e107' && $this->pref['auth_method'] != '>e107'))
 		{
 			return "";
 		}
-		return $pref['signup_pass_len'];
+		return $this->pref['signup_pass_len'];
 	}
 
 
 
-	function sc_email($parm)
+	function sc_email($parm=null)
 	{
-		$sc = e107::getScBatch('usersettings');
+		$sc = $this;
 
 		$options = array(
 			'size'     => 40,
@@ -208,7 +212,7 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_hideemail($parm)
+	function sc_hideemail($parm=null)
 	{ 
 		if($parm == 'radio')
 		{
@@ -219,12 +223,11 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_userclasses($parm)
+	function sc_userclasses($parm=null)
 	{ 
 		global $e_userclass;
 		$tp 		= e107::getParser();
-		$pref 		= e107::getPref();
-		
+
 		$ret = "";
 		if(ADMIN && $this->var['user_id'] != USERID)
 		{
@@ -256,10 +259,9 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_signature($parm)
+	function sc_signature($parm=null)
 	{
-		$pref = e107::getPref();
-		if(!check_class(varset($pref['signature_access'],0)))
+		if(!check_class(varset($this->pref['signature_access'],0)))
 		{
 			return; 		
 		} 
@@ -274,7 +276,7 @@ class usersettings_shortcodes extends e_shortcode
 	/**
 	 * @DEPRECATED - it is integreated with sc_signature now. 
 	 */
-	function sc_signature_help($parm)
+	function sc_signature_help($parm=null)
 	{
 		return;
 		/*
@@ -289,14 +291,14 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_avatar_upload($parm) // deprecated and combined into avatarpicker() (see sc_avatar_remote)
+	function sc_avatar_upload($parm=null) // deprecated and combined into avatarpicker() (see sc_avatar_remote)
 	{
 		return; 
 	}
 	
 	
 	
-	function sc_avatar_remote($parm)
+	function sc_avatar_remote($parm=null)
 	{
 		if(!empty($this->var['user_xup'])) // social login active.
 		{
@@ -309,21 +311,20 @@ class usersettings_shortcodes extends e_shortcode
 	
 	
 	
-	function sc_avatar_choose($parm) // deprecated
+	function sc_avatar_choose($parm=null) // deprecated
 	{
 		return false;
 	}
 	
 	
 	
-	function sc_photo_upload($parm)
+	function sc_photo_upload($parm=null)
 	{ 
 		$diz = LAN_USET_27.". ".LAN_USET_28.".";
 		$text = '';
 
-		if(USERPHOTO)
+		if(defset('USERPHOTO'))
 		{
-
 			$text .= e107::getParser()->parseTemplate("{PICTURE}",true);
 		}
 		
@@ -367,6 +368,7 @@ class usersettings_shortcodes extends e_shortcode
 		else 
 		{
 			e107::getMessage()->addDebug("No extended fields found");
+			$catList = array();
 		}
 		
 		$catList[] = array("user_extended_struct_id" => 0, "user_extended_struct_name" => LAN_USET_7);
@@ -403,9 +405,11 @@ class usersettings_shortcodes extends e_shortcode
 	}
 
 
-	function sc_userextended_cat($parm = '')
+	function sc_userextended_cat($parm = 0)
 	{
 		global $extended_showed;
+
+		$parm = (int) $parm;
 
 		if(THEME_LEGACY === true)
 		{
@@ -424,6 +428,7 @@ class usersettings_shortcodes extends e_shortcode
 		{
 			return "";
 		}
+
 		$ret = "";
 		$catInfo = e107::getRegistry("extendedcat_{$parm}");
 		if(!$catInfo)
@@ -432,7 +437,7 @@ class usersettings_shortcodes extends e_shortcode
 			SELECT * FROM #user_extended_struct
 			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
 			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
-			AND user_extended_struct_id = " . intval($parm) . "
+			AND user_extended_struct_id = " . (int) $parm . "
 			";
 			if($sql->gen($qry))
 			{
@@ -446,7 +451,7 @@ class usersettings_shortcodes extends e_shortcode
 			SELECT * FROM #user_extended_struct
 			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
 			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
-			AND user_extended_struct_parent = " . intval($parm) . "
+			AND user_extended_struct_parent = " . (int) $parm . "
 			AND user_extended_struct_type != 0
 			ORDER BY user_extended_struct_order ASC
 			";
@@ -466,7 +471,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		if($ret && $this->extendedTabs == false)
 		{
-			$catName = $catInfo['user_extended_struct_text'] ? $catInfo['user_extended_struct_text'] : $catInfo['user_extended_struct_name'];
+			$catName = !empty($catInfo['user_extended_struct_text']) ? $catInfo['user_extended_struct_text'] : $catInfo['user_extended_struct_name'];
 			if(defined($catName))
 			{
 				$catName = constant($catName);
@@ -480,9 +485,13 @@ class usersettings_shortcodes extends e_shortcode
 	}
 
 
-	function sc_userextended_field($parm = '')
+	function sc_userextended_field($parm = null)
 	{
 		global $extended_showed;
+		if(empty($parm))
+		{
+			$parm = '';
+		}
 
 		$ue = e107::getUserExt();
 
@@ -557,7 +566,7 @@ class usersettings_shortcodes extends e_shortcode
 				$fhide = $ue->user_extended_hide($fInfo, $chk);
 			}
 
-			$uVal = str_replace(chr(1), "", $this->var['user_' . $parm]);
+			$uVal = str_replace(chr(1), "", varset($this->var['user_' . $parm]));
 			$fval = $ue->user_extended_edit($fInfo, $uVal);
 
 
@@ -594,16 +603,35 @@ class usersettings_shortcodes extends e_shortcode
 
 	}
 
+	function sc_required($parm=null)
+	{
+		if(empty($parm) || !isset($this->pref['signup_option_'.$parm]))
+		{
+			return null;
+		}
+
+		if($parm === 'email' && !e107::getPref('disable_emailcheck'))
+		{
+			return $this->required(true);
+		}
+
+		if ((int) $this->pref['signup_option_'.$parm] === 2)
+		{
+			return $this->required(true);
+		}
+
+	}
+
 	function sc_deleteaccountbutton($parm=array())
 	{
 
-		if((int) $_GET['id'] !== USERID)
+		if(!empty($_GET['id']) && (int) $_GET['id'] !== USERID)
 		{
 			return null;
 		}
 		
-		$pref = e107::getPref();
-		if($pref['del_accu'] == 1)
+
+		if($this->pref['del_accu'] == 1)
 		{
 			$confirm    = defset("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed all personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");
 			$label      = defset('LAN_USET_50', "Delete All Account Information");
@@ -620,4 +648,3 @@ class usersettings_shortcodes extends e_shortcode
 	}
 
 }
-?>

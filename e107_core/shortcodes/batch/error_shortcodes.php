@@ -16,6 +16,7 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+e107::coreLan('error');
 
 /**
  * Class error_shortcodes.

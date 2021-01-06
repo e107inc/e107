@@ -11,6 +11,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('comment');
 
 class comment_shortcodes extends e_shortcode
 {
@@ -31,7 +32,7 @@ class comment_shortcodes extends e_shortcode
 			);
 
 			$text = '<div class="form-group">';
-			$text .= $form->text('subject', $tp->toForm($this->var['subject']), 100, $options);
+			$text .= $form->text('subject', $tp->toForm(varset($this->var['subject'])), 100, $options);
 			$text .= '</div>';
 
 			return $text;
@@ -46,7 +47,7 @@ class comment_shortcodes extends e_shortcode
 
 		global $SUBJECT, $NEWIMAGE;
 
-		if (vartrue($pref['nested_comments']))
+		if (!empty($pref['nested_comments']))
 		{
 			$SUBJECT = $NEWIMAGE." ".(empty($this->var['comment_subject']) ? $SUBJECT : $tp->toHTML($this->var['comment_subject'], TRUE));
 		}
@@ -55,7 +56,7 @@ class comment_shortcodes extends e_shortcode
 			$SUBJECT = '';
 		}
 
-		return $SUBJECT;
+		return trim($SUBJECT);
 
 	}
 
@@ -84,7 +85,7 @@ class comment_shortcodes extends e_shortcode
 			return e107::getDate()->computeLapse($this->var['comment_datestamp'],time(),false, false, 'short');
 		}
 
-		return e107::getDate()->convert_date($this->var['comment_datestamp'], "short");
+		return e107::getDate()->convert_date(varset($this->var['comment_datestamp'],0), "short");
 	}
 
 	/**
@@ -107,7 +108,7 @@ class comment_shortcodes extends e_shortcode
 		$REPLY = '';
 		if(USERID || $pref['anon_post'] == 1)
 		{
-			if($this->var['comment_lock'] != "1" && $this->var['comment_blocked'] < 1)
+			if(isset($this->var['comment_lock']) && $this->var['comment_lock'] != "1" && $this->var['comment_blocked'] < 1)
 			{
 				if ($thisaction == "comment" && $pref['nested_comments'])
 				{
@@ -147,7 +148,7 @@ class comment_shortcodes extends e_shortcode
 		$text .= '<div class="left">';
 		$text .= '<h2>' . $this->sc_username() . '</h2>';
 		//	$text .= e107::getDate()-> //    convert($this->var['user_lastvisit'],'short');
-		$text .= $this->sc_joined() . '<br />' . $this->sc_comments() . '<br />' . $this->sc_rating() . $this->sc_location;
+		$text .= $this->sc_joined() . '<br />' . $this->sc_comments() . '<br />' . $this->sc_rating() . $this->sc_location();
 		$text .= '</div>';
 		$text .= '</div>';
 
@@ -191,17 +192,19 @@ class comment_shortcodes extends e_shortcode
 	function sc_comments($parm = null)
 	{
 		global $COMMENTS;
-		return (isset($this->var['user_id']) && $this->var['user_id'] ? LAN_COMMENTS.": ".$this->var['user_comments'] : COMLAN_194)."<br />";
+		return (!empty($this->var['user_id']) ? LAN_COMMENTS.": ".varset($this->var['user_comments']) : COMLAN_194)."<br />";
 	}
 
 
 	function sc_joined($parm = null)
 	{
-		global $JOINED, $gen;
+		global $JOINED;
 		$JOINED = '';
-		if ($this->var['user_id'] && !$this->var['user_admin']) {
-			$this->var['user_join'] = $gen->convert_date($this->var['user_join'], "short");
-			$JOINED = ($this->var['user_join'] ? COMLAN_145." ".$this->var['user_join'] : '');
+		if (!empty($this->var['user_id']) && empty($this->var['user_admin']))
+		{
+			$joined = varset($this->var['user_join'], 0);
+			$date = e107::getDate()->convert_date($joined, "short");
+			$JOINED = ($this->var['user_join'] ? COMLAN_145." ".$date : '');
 		}
 		return $JOINED;
 	}
@@ -308,7 +311,7 @@ class comment_shortcodes extends e_shortcode
 	function sc_comment_rate($parm = null)
 	{
 
-		if($this->var['comment_blocked'] > 0 || $this->var['rating_enabled'] == false)
+		if($this->var['comment_blocked'] > 0 || varset($this->var['rating_enabled']) == false)
 		{
 			return null;
 		}
