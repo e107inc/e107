@@ -2026,6 +2026,8 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USEREMAIL', '');
 		define('USERCLASS_LIST', '253,254,250,251,0'); // needed to run some queries.
 		define('USERJOINED', '');
+		define('e_CLASS_REGEXP', '(^|,)(253|254|250|251|0)(,|$)');
+		define('e_NOBODY_REGEXP', '(^|,)255(,|$)');
 		return;
 	}
 
