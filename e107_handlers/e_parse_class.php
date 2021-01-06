@@ -4425,7 +4425,7 @@ class e_parser
 		$tp 		= e107::getParser();
 		$width 		= !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : '';
-		$crop       = !empty($options['crop']) ? $options['crop'] : $tp->thumbCrop;
+		$crop       = isset($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart  = '';
 		$linkEnd    =  '';
 		$full       = !empty($options['base64']) ? true : false;
@@ -4691,6 +4691,7 @@ class e_parser
 
 			if(!isset($parm['w']) && !isset($parm['h']))
 			{
+				 $parm = (array) $parm;
 				$parm['w']      = $tp->thumbWidth();
 				$parm['h']      = $tp->thumbHeight();
 				$parm['crop']   = $tp->thumbCrop();
