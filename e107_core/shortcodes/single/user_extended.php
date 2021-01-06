@@ -145,7 +145,7 @@
 
 		if ($parms[1] == 'value')
 		{
-			$uVal = str_replace(chr(1), '', $udata['user_'.$parms[0]]);
+			$uVal = isset($parms[0]) && isset($udata['user_'.$parms[0]]) ?  str_replace(chr(1), '', $udata['user_'.$parms[0]]) : '';
 			switch ($ueStruct["user_".$parms[0]]['user_extended_struct_type'])
 			{
 
@@ -178,6 +178,13 @@
 				break; 
 				case EUF_DB_FIELD :		// check for db_lookup type
 					$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
+
+					if(empty($tmp[1]) || empty($tmp[2]))
+					{
+						return null;
+					}
+
+
 					$sql_ue = new db;			// Use our own DB object to avoid conflicts
 					if($sql_ue->select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 					{
@@ -202,10 +209,12 @@
 				default :
 					$ret_data = $uVal;
 			}
-			if($ret_data != '')
+
+			if(!empty($ret_data))
 			{
 				return $tp->toHTML($ret_data, TRUE, 'no_make_clickable', "class:{$udata['user_class']}");
 			}
+
 			return FALSE;
 		}
 // return TRUE;
