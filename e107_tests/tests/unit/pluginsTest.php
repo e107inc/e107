@@ -133,19 +133,18 @@
 
 			$tp = e107::getParser();
 
-			$result = $tp->parseTemplate("{BANNER=e107promo}",true);
+			$result = $tp->parseTemplate("{BANNER=e107promo}", true);
 			$this->assertStringContainsString('<img class="e-banner img-responsive img-fluid"', $result);
 
-			$result = $tp->parseTemplate("{BANNER=e107promo}",false,
-				e107::getScBatch('banner', true));
+			$result = $tp->parseTemplate("{BANNER=e107promo}", false, e107::getScBatch('banner', true));
 			$this->assertStringContainsString('<img class="e-banner img-responsive img-fluid"', $result);
 
-			$result = $tp->parseTemplate("{BANNER=e107promo}",false);
+			$result = $tp->parseTemplate("{BANNER=e107promo}", false);
 			$this->assertEquals("", $result);
 
 			$this->pluginUninstall('banner');
 
-			$result = $tp->parseTemplate("{BANNER=e107promo}",true);
+			$result = $tp->parseTemplate("{BANNER=e107promo}", true);
 			// The expected value below was the actual observed output when the assertion was written:
 			$this->assertEquals('&nbsp;', $result,
 				"Banner shortcode is not returning an empty value, despite banner being uninstalled");
@@ -389,6 +388,8 @@
 
 		private function pluginInstall($pluginDir)
 		{
+			e107::setRegistry('core/form/related'); // reset.
+
 			e107::getPlugin()->uninstall($pluginDir);
 
 			$return_text = e107::getPlugin()->install($pluginDir);
