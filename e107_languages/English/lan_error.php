@@ -9,7 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Error");
+if(!defined('PAGE_NAME')) // FIXME.
+{
+	define("PAGE_NAME", "Error");
+}
 define("LAN_ERROR_TITLE", "Oops!");
 
 define("LAN_ERROR_1", "Error 401 - Authentication Failed");

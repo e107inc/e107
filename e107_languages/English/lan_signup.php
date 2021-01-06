@@ -9,8 +9,10 @@
  * Language file - User signup
  *
 */
-define("PAGE_NAME", "Register");
-
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Register");
+}
 /*
 //define("LAN_103", "That username is invalid. Please choose a different one");
 //define("LAN_104", "That username is taken.  Please choose a different one");
