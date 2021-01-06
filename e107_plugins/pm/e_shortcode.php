@@ -61,7 +61,7 @@ class pm_shortcodes extends e_shortcode
 		$urlOutbox = e107::url('pm','index','', array('query'=>array('mode'=>'outbox')));
 		$urlCompose = e107::url('pm','index','', array('query'=>array('mode'=>'send')));
 
-		return '<a class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">'.$icon.$count.'</a>
+		return '<a class="pm-nav nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">'.$icon.$count.'</a>
 		<ul class="dropdown-menu dropdown-menu-end">
 		<li>
 			<a class="dropdown-item" href="'.$urlInbox.'">'.LAN_PLUGIN_PM_INBOX.'</a>
@@ -101,7 +101,7 @@ class pm_shortcodes extends e_shortcode
 		$pm = new private_message;
 
 		$glyph  = empty($parm['glyph']) ? 'fa-paper-plane' : $parm['glyph'];
-		$class  = empty($parm['class']) ? 'btn btn-sm btn-default btn-secondary' : $parm['class'];
+		$class  = empty($parm['class']) ? 'sendpm btn btn-sm btn-default btn-secondary' : $parm['class'];
 
 
 		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm['user'])) // check $this->pmPrefs['send_to_class'].
@@ -124,7 +124,7 @@ class pm_shortcodes extends e_shortcode
 
 
 
-			return  "<a href='".$url ."'>{$img}</a>";
+			return  "<a class='sendpm' href='".$url ."'>{$img}</a>";
 		}
 		else
 		{
