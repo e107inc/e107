@@ -465,7 +465,11 @@ class e107_user_extended
 		return $this->user_extended_get_categories($byID);	
 	}
 
-
+	/**
+	 * BC Alias of getCategories()
+	 * @param bool $byID
+	 * @return array
+	 */
 	function user_extended_get_categories($byID = TRUE)
 	{
 	   	$ret = array();
@@ -1072,11 +1076,34 @@ class e107_user_extended
 				if(empty($choices))
 				{
 					e107::getDebug()->log("DB Field Choices is empty");
+					$error = true;
 				}
+
+				if(empty($choices[0]))
+				{
+					e107::getDebug()->log("DB Field Choices is missing a table");
+					$error = true;
+				}
+				if(empty($choices[1]))
+				{
+					e107::getDebug()->log("DB Field Choices is missing an index field");
+					$error = true;
+				}
+				if(empty($choices[2]))
+				{
+					e107::getDebug()->log("DB Field Choices is missing an value field");
+					$error = true;
+				}
+
+				if(!empty($error))
+				{
+					return "<span class='label label-danger'>Failed to load (misconfigured. See debug for more info.)</span>";
+				}
+
 
 				$sql = e107::getDb('ue');
 
-				$order = ($choices[3]) ? "ORDER BY " . $tp->toDB($choices[3], true) : "";
+				$order = !empty($choices[3]) ? "ORDER BY " . $tp->toDB($choices[3], true) : "";
 
 				if($sql->select($tp->toDB($choices[0], true), $tp->toDB($choices[1], true) . "," . $tp->toDB($choices[2], true), "1 $order"))
 				{
@@ -1373,6 +1400,7 @@ class e107_user_extended
 		if(!$temp = $this->getFieldTypeClass($table))
 		{
 			"Couldn't find extended field class: ".$table;
+			return null;
 		}
 
 		return $temp->getValue($value);

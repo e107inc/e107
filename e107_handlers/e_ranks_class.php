@@ -235,7 +235,7 @@ class e_ranks
 
 		$lastRank = count($this->ranks['data']);
 		$rank = false;
-		if($level <= $this->ranks['data'][0]['thresh'])
+		if($level <= varset($this->ranks['data'][0]['thresh']))
 		{
 			$rank = 1;
 		}

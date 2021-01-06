@@ -1333,7 +1333,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			$kpost = '_sub';
 		}
-		else
+		elseif(isset($tmpl['start']))
 		{
 			 $text = $tmpl['start'];
 		}
@@ -1404,7 +1404,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			else
 			{
-				$temp = $tmpl['button'.$kpost];
+				$temp = isset($tmpl['button'.$kpost]) ? $tmpl['button'.$kpost] : '';
 			}
 
    //     e107::getDebug()->log($e107_vars[$act]['link']);
@@ -1483,7 +1483,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			else 
 			{
-				$START_SUB = $tmpl['start_sub'];	
+				$START_SUB = isset($tmpl['start_sub']) ? $tmpl['start_sub'] : '';
 			}		
 	
 			if(!empty($e107_vars[$act]['sub']))
@@ -1494,7 +1494,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace['SUB_MENU'] .= $tmpl['end_sub'];
+				$replace['SUB_MENU'] .= isset($tmpl['end_sub']) ? $tmpl['end_sub'] : '';
 			}
 
 
@@ -1504,7 +1504,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			//print_a($e107_vars[$act]);
 		}
 	
-		$text .= (!$sub_link) ? $tmpl['end'] : '';
+		$text .= (!$sub_link && isset($tmpl['end'])) ? $tmpl['end'] : '';
 		
 		if ($sub_link || empty($title))
 		{

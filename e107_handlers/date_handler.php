@@ -140,6 +140,8 @@ class e_date
 	 */
 	function convert_date($datestamp, $mask = '')
 	{
+		$datestamp = (int) $datestamp;
+
 		if(empty($mask))
 		{
 			$mask = 'long';
