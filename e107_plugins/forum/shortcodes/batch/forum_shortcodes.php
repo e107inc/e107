@@ -154,7 +154,7 @@ class forum_shortcodes extends e_shortcode
 		// To be reworked to get the $forum var
 		$trackPref = varset($this->prefs['track']);
 
-		if(!empty($trackPref) && $forum->checkPerm($this->var['forum_id'], 'post'))
+		if(!empty($trackPref) && is_object($forum) && $forum->checkPerm($this->var['forum_id'], 'post'))
 		{
 			$uInfo[2] = "<a href='".e107::url('forum','track')."'>".LAN_FORUM_0030."</a>";
 		}

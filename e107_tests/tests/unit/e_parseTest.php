@@ -539,11 +539,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
 */
 		public function testToRss()
 		{
-			if(PHP_VERSION_ID <  71000 )
+		/*	if(PHP_VERSION_ID <  71000 )
 			{
 				$this->markTestSkipped("testToRSS() skipped. Requires a healthy libxml installation");
 				return null;
-			}
+			}*/
 
 			$tests = array(
 				'[html]<pre class=&quot;prettyprint linenums&quot; style=&quot;unicode-bidi: embed; direction: ltr;&quot;>&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_plugin&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;&lt;/p&gt;&lt;p&gt;&lt;core name=&quot;e_jslib_theme&quot;&gt;&lt;![CDATA[Array]]&gt;&lt;/core&gt;</pre>[/html]',
@@ -571,6 +571,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 	        $xmlContent = '<?xml version="1.0" encoding="utf-8"?>'."\n".'<description>'.$xmlContent.'</description>';
 
 	        libxml_use_internal_errors(true);
+	        libxml_clear_errors();
 
 	        $doc = new DOMDocument('1.0', 'utf-8');
 	        $doc->loadXML($xmlContent);
@@ -579,7 +580,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 	        if(!empty($errors))
 	        {
-	            var_dump($errors);
+	            codecept_debug($errors);
 	        }
 
 	        libxml_clear_errors();
