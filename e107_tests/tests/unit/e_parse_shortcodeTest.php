@@ -741,7 +741,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
-      public function testFaqsShortcodes()
+    public function testFaqsShortcodes()
     {
         require_once(e_PLUGIN."faqs/faqs_shortcodes.php");
 
@@ -907,31 +907,236 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
     }
 
 
+      public function testForumViewShortcodes()
+    {
+        require_once(e_PLUGIN."forum/shortcodes/batch/view_shortcodes.php");
+
+        try
+		{
+			/** @var plugin_forum_view_shortcodes $sc */
+			$sc = $this->make('plugin_forum_view_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+			'forum_id'                 => '2',
+			'forum_name'               => 'Parent Number Two',
+			'forum_description'        => 'Forum Description',
+			'forum_parent'             => '0',
+			'forum_sub'                => '0',
+			'forum_datestamp'          => '1367304545',
+			'forum_moderators'         => '248',
+			'forum_threads'            => '0',
+			'forum_replies'            => '0',
+			'forum_lastpost_user'      => '0',
+			'forum_lastpost_user_anon' => NULL,
+			'forum_lastpost_info'      => '',
+			'forum_class'              => '253',
+			'forum_order'              => '300',
+			'forum_postclass'          => '253',
+			'forum_threadclass'        => '0',
+			'forum_options'            => '',
+			'forum_sef'                => 'parent-number-two',
+			'forum_image'              => NULL,
+			'forum_icon'               => NULL,
+			'thread_id' => '1',
+			'thread_name' => '3 Duis tempus enim vitae magna placerat vel dapibus tellus feugiat.',
+			'thread_forum_id' => '4',
+			'thread_views' => '53',
+			'thread_active' => '1',
+			'thread_lastpost' => '1434584999',
+			'thread_sticky' => '0',
+			'thread_datestamp' => '1367307189',
+			'thread_user' => '2',
+			'thread_user_anon' => NULL,
+			'thread_lastuser' => '1',
+			'thread_lastuser_anon' => NULL,
+			'thread_total_replies' => '7',
+			'thread_options' => NULL,
+			'post_id' => '1',
+			'post_entry' => '4 Morbi eleifend auctor quam, ac consequat ipsum dictum vitae. Curabitur egestas lacinia mi, in venenatis mi euismod eu.',
+			'post_thread' => '1',
+			'post_forum' => '4',
+			'post_status' => '0',
+			'post_datestamp' => '1367307189',
+			'post_user' => '2',
+			'post_edit_datestamp' => NULL,
+			'post_edit_user' => NULL,
+			'post_ip' => NULL,
+			'post_user_anon' => NULL,
+			'post_attachments' => NULL,
+			'post_options' => NULL
+
+
+		);
+
+		$sc->__construct();
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+    public function testGalleryShortcodes()
+    {
+        require_once(e_PLUGIN."gallery/e_shortcode.php");
+
+        try
+		{
+			/** @var gallery_shortcodes $sc */
+			$sc = $this->make('gallery_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+			'media_id'           => '227',
+			'media_type'         => 'image/jpeg',
+			'media_name'         => 'gasmask.jpg',
+			'media_caption'      => 'gasmask.jpg',
+			'media_description'  => '',
+			'media_category'     => '_common_image',
+			'media_datestamp'    => '1464646050',
+			'media_author'       => '1',
+			'media_url'          => '{e_THEME}voux/install/gasmask.jpg',
+			'media_size'         => '91054',
+			'media_dimensions'   => '1200 x 830',
+			'media_userclass'    => '0',
+			'media_usedby'       => '',
+			'media_tags'         => '',
+			'media_cat_id'       => '1',
+			'media_cat_owner'    => '_common',
+			'media_cat_category' => '_common_image',
+			'media_cat_title'    => '(Common Images)',
+			'media_cat_sef'      => '',
+			'media_cat_diz'      => 'Media in this category will be available in all areas of admin.',
+			'media_cat_class'    => '253',
+			'media_cat_image'    => '',
+			'media_cat_order'    => '0'
+		);
+
+
+
+		$sc->setVars($vars);
+		$exclude = array('sc_gallery_slides'); // uses a counter.
+        $this->processShortcodeMethods($sc, $exclude);
+
+    }
+
+
+    public function testHeroShortcodes()
+    {
+        require_once(e_PLUGIN."hero/hero_shortcodes.php");
+
+        try
+		{
+			/** @var plugin_hero_hero_shortcodes $sc */
+			$sc = $this->make('plugin_hero_hero_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars =  array(
+				'hero_id' => '1',
+				'hero_title' => 'A [powerful] &amp; [free] hero area',
+				'hero_description' => '[Easy] to Use',
+				'hero_bg' => '{e_MEDIA_IMAGE}2020-12/4.sm.webp',
+				'hero_media' => '{e_MEDIA_IMAGE}2020-12/horse.jpg',
+				'hero_bullets' => e107::unserialize('[
+		    {
+		        "icon": "fa-sun-o.glyph",
+		        "icon_style": "warning",
+		        "text": "Add some bullet text",
+		        "animation": "fadeInRight",
+		        "animation_delay": "15"
+		    },
+		    {
+		        "icon": "fa-font-awesome.glyph",
+		        "icon_style": "success",
+		        "text": "Select an Icon from FontAwesome or others",
+		        "animation": "fadeInRight",
+		        "animation_delay": "25"
+		    },
+		    {
+		        "icon": "fa-adjust.glyph",
+		        "icon_style": "danger",
+		        "text": "Choose a Style from Bootstrap",
+		        "animation": "fadeInRight",
+		        "animation_delay": "35"
+		    },
+		    {
+		        "icon": "",
+		        "icon_style": "",
+		        "text": "",
+		        "animation": "",
+		        "animation_delay": "0"
+		    },
+		    {
+		        "icon": "",
+		        "icon_style": "",
+		        "text": "",
+		        "animation": "",
+		        "animation_delay": "0"
+		    }
+		]'),
+		'hero_button1' => e107::unserialize('{
+		    "icon": "fa-",
+		    "label": "",
+		    "url": "",
+		    "class": ""
+		}'),
+		'hero_button2' => e107::unserialize('{
+		    "icon": "fa-",
+		    "label": "",
+		    "url": "",
+		    "class": ""
+		}'),
+		'hero_order' => '1',
+		'hero_class' => '0'
+		);
+
+
+
+		$sc->setVars($vars);
+	//	$exclude = array('sc_gallery_slides'); // uses a counter.
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+    public function testLoginMenuShortcodes()
+    {
+        require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+
+        try
+		{
+			/** @var login_menu_shortcodes $sc */
+			$sc = $this->make('login_menu_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
 	/*
 
-            e107_plugins\faqs/
-                faqs_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\forum\shortcodes\batch  (4 usages found)
-                forum_shortcodes.php  (1 usage found)
-                    1 <?php
-                post_shortcodes.php  (1 usage found)
-                    1 <?php
-                view_shortcodes.php  (1 usage found)
-                    1 <?php
-                viewforum_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\forum\todelete  (2 usages found)
-                forum_post_shortcodes.php  (1 usage found)
-                    1 <?php
-                forum_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\gallery\shortcodes\batch  (1 usage found)
-                gallery_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\hero  (1 usage found)
-                hero_shortcodes.php  (1 usage found)
-                    1 <?php
+
             e107_plugins\links_page  (1 usage found)
                 links_page_shortcodes.php  (1 usage found)
                     1 <?php

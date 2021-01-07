@@ -108,7 +108,9 @@ class admin_shortcodes
 	function sc_admin_docs()
 	{
 		if (!ADMIN) { return ''; }
-		global $ns;
+
+		$helplist = array();
+
 		$i=1;
 		if (!$handle=opendir(e_DOCS.e_LANGUAGE.'/'))
 		{
@@ -125,6 +127,7 @@ class admin_shortcodes
 		closedir($handle);
 
 		unset($e107_var);
+		$e107_var = array();
 		foreach ($helplist as $key => $value)
 		{
 			$e107_var['x'.$key]['text'] = str_replace('_', ' ', $value);
@@ -136,7 +139,7 @@ class admin_shortcodes
 		if(function_exists('show_admin_menu'))
 		{
 			$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
-			return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
+			return e107::getRender()->tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 		}
 	}
 
@@ -1009,6 +1012,7 @@ class admin_shortcodes
 			$xml->filter = array('@attributes' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
 
 			$nav_sql = new db;
+			$tmp = array();
 			if ($nav_sql ->select('plugin', '*', 'plugin_installflag=1'))
 			{
 				$tmp = array();
@@ -1038,9 +1042,9 @@ class admin_shortcodes
 					}
 
 					// Links Plugins
-					if ($eplug_conffile)
+					if(!empty($eplug_conffile))
 					{
-						$tmp['plug_'.$plugin_id]['text'] = $eplug_caption;
+						$tmp['plug_'.$plugin_id]['text'] = varset($eplug_caption);
 						$tmp['plug_'.$plugin_id]['link'] = e_PLUGIN.$plugin_path.'/'.$eplug_conffile;
 						$tmp['plug_'.$plugin_id]['perm'] = 'P'.$plugin_id;
 					}
@@ -1171,16 +1175,20 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php" && e_PAGE != 'e107_update.php')
+		if($parm == 'creditsonly' && e_PAGE !== "credits.php"  && e_PAGE !== "phpinfo.php" && e_PAGE !== 'e107_update.php')
 		{
 			return null;
 		}	
 		
 		
-		if (ADMIN)
+		if (!ADMIN)
 		{
-			global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
+			return null;
+		}
+			global $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
+			$pref = e107::getPref();
+			$ns = e107::getRender();
 		//	if (file_exists(e_ADMIN.'ver.php'))
 			{
 			//	include(e_ADMIN.'ver.php');
@@ -1191,8 +1199,7 @@ class admin_shortcodes
 				return e_VERSION;
 			}
 
-			$obj = e107::getDateConvert();
-			$install_date = $obj->convert_date($pref['install_date'], 'long');
+			$install_date = e107::getDate()->convert_date($pref['install_date'], '%A %d %B %Y - %H:%M');
 			
 			if(is_readable(THEME."theme.xml"))
 			{
@@ -1267,7 +1274,7 @@ class admin_shortcodes
 			"<br />";
 
 			return e107::getRender()->tablerender(FOOTLAN_13, $text, '', TRUE);
-		}
+
 	}
 
 	private function getLastGitUpdate()

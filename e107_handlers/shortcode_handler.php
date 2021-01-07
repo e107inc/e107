@@ -1449,7 +1449,8 @@ class e_parse_shortcode
 	 */
 	private function makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode)
 	{
-		$pre = $post = '';
+		$pre = '';
+		$post = '';
 
 		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
@@ -1504,6 +1505,7 @@ class e_parse_shortcode
 			$post = $this->parseCodes($post, true, $this->addedCodes);
 			$this->nowrap = false;
 		}
+
 
 		return $pre.$ret.$post;
 

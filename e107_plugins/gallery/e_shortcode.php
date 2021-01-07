@@ -312,7 +312,7 @@ class gallery_shortcodes extends e_shortcode
 	 * limit - (optional) total limit of pcitures to be shown
 	 * template - (optional) template - name of template to be used for parsing the slideshow item
 	 */
-	function sc_gallery_slides($parm)
+	function sc_gallery_slides($parm=null)
 	{
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
@@ -359,7 +359,7 @@ class gallery_shortcodes extends e_shortcode
 	}
 
 
-	function sc_gallery_jumper($parm)
+	function sc_gallery_jumper($parm=null)
 	{
 		// echo "SlideCount=".$this->slideCount; 
 		if($this->slideCount == 1 && deftrue('E107_DBG_BASIC'))

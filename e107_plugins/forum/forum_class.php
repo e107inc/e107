@@ -1942,6 +1942,11 @@ class e107forum
 
 	function forumGetAllowed($type='view')
 	{
+		if(empty($this->permList[$type]))
+		{
+			return array();
+		}
+
 		$sql = e107::getDb();
 		$forumList = implode(',', $this->permList[$type]);
 		$qry = "
