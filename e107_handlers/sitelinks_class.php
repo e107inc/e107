@@ -1660,7 +1660,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$active			= ($this->isActive($_data, $this->activeMainFound)) ? "_active" : ""; 
 			$sc->setDepth(0);
 			$sc->setVars($_data); // isActive is allowed to alter data
-			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
+			$itemTmpl 		= is_array($_data['link_sub']) && count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
 			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, true, $sc);
 			$sc->active		= ($active) ? true : false;
 			if($sc->active)
