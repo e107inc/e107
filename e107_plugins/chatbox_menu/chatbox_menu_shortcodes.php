@@ -9,19 +9,23 @@
  * e107 chatbox_menu Plugin
  *
 */
-if ( ! defined('e107_INIT')) {
+if(!defined('e107_INIT'))
+{
 	exit;
 }
 
 
 class chatbox_menu_shortcodes extends e_shortcode
 {
+
 	/**
 	 *  Initializer for chatbox_menu_shortcodes class
 	 */
 	public function init()
 	{
-		if ( ! isset($this->var['user_image'], $this->var['user_id'], $this->var['user_name']) ) {
+
+		if(!isset($this->var['user_image'], $this->var['user_id'], $this->var['user_name']))
+		{
 			$this->addVars($this->retrieveUserDataByNick());
 		}
 
@@ -49,7 +53,9 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	protected function getUserIdFromNick()
 	{
+
 		$temp = explode('.', $this->var['cb_nick']);
+
 		return $temp[0];
 	}
 
@@ -61,7 +67,9 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	protected function getUserNameFromNick()
 	{
+
 		$temp = explode('.', $this->var['cb_nick'], 2);
+
 		return $temp[1];
 	}
 
@@ -75,12 +83,15 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_avatar($parm = null)
 	{
+
 		$tp = e107::getParser();
 		$size = !empty($parm['size']) ? $parm['size'] : 40;
-		$options = array('h' => $size, 'w' => $size, 'crop' => 'C', 'shape'=>varset($parm['shape']));
+		$options = array('h' => $size, 'w' => $size, 'crop' => 'C', 'shape' => varset($parm['shape']));
 
-		if ( ! isset($this->var['user_image']) ) {
+		if(!isset($this->var['user_image']))
+		{
 			$this->init();
+
 			return $tp->toAvatar($this->var, $options);
 		}
 
@@ -98,7 +109,8 @@ class chatbox_menu_shortcodes extends e_shortcode
 	public function sc_cb_username($parm = null)
 	{
 
-		if ( ! isset($this->var['user_id'], $this->var['user_name']) ) {
+		if(!isset($this->var['user_id'], $this->var['user_name']))
+		{
 
 			$userData = array(
 				'id'   => $this->getUserIdFromNick(),
@@ -149,7 +161,9 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_message($parm = null)
 	{
-		if ($this->var['cb_blocked']) {
+
+		if($this->var['cb_blocked'])
+		{
 			return CHATBOX_L6;
 		}
 
@@ -174,12 +188,16 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_bullet($parm = null)
 	{
+
 		$bullet = '';
 
-		if (defined('BULLET')) {
+		if(defined('BULLET'))
+		{
 			$bullet =
 				'<img src="' . THEME_ABS . 'images/' . BULLET . '" alt="" class="icon" />';
-		} elseif (file_exists(THEME . 'images/bullet2.gif')) {
+		}
+		elseif(file_exists(THEME . 'images/bullet2.gif'))
+		{
 			$bullet =
 				'<img src="' . THEME_ABS . 'images/bullet2.gif" alt="" class="icon" />';
 		}
@@ -197,23 +215,28 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_mod($parm = null)
 	{
+
 		$frm = e107::getForm();
 		$modControls = '';
 
-		if (CB_MOD) {
+		if(deftrue('CB_MOD'))
+		{
 			$id = $this->var['cb_id'];
 
 			$modControls .= "<span class='checkbox'>";
 
 			$modControls .= $frm->checkbox('delete[' . $id . ']', 1, false,
-				array( 'inline' => true, 'label' => LAN_DELETE ));
+				array('inline' => true, 'label' => LAN_DELETE));
 
-			if ($this->var['cb_blocked']) {
+			if($this->var['cb_blocked'])
+			{
 				$modControls .= $frm->checkbox('unblock[' . $id . ']', 1, false,
-					array( 'inline' => true, 'label' => CHATBOX_L7 ));
-			} else {
+					array('inline' => true, 'label' => CHATBOX_L7));
+			}
+			else
+			{
 				$modControls .= $frm->checkbox('block[' . $id . ']', 1, false,
-					array( 'inline' => true, 'label' => CHATBOX_L9 ));
+					array('inline' => true, 'label' => CHATBOX_L9));
 			}
 
 			$modControls .= '</span>';
@@ -232,6 +255,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 */
 	public function sc_cb_blocked($parm = null)
 	{
+
 		return $this->var['cb_blocked'] ? '<span class="label label-warning">' . CHATBOX_L25 . '</span>' : '';
 	}
 

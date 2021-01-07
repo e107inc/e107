@@ -3480,6 +3480,7 @@ class e107
 	 * All inputs are sanitized.
 	 *
 	 * Examples:
+	 * @example
 	 * <code><?php
 	 * 	// import defeinitions from /e107_plugins/forum/languages/[CurrentLanguage]/lan_forum.php
 	 * 	e107::plugLan('forum', 'lan_forum');
@@ -3493,6 +3494,9 @@ class e107
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_admin.php
 	 * 	e107::plugLan('myplug', true);
+	 *
+	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/[CurrentLanguage]_front.php
+	 * 	e107::plugLan('myplug', 'front', true);
 	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/admin/common.php
 	 * 	e107::plugLan('myplug', 'admin/common');

@@ -601,9 +601,360 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+// -------------- Plugins ------------------------
 
 
+    public function testChatboxMenuShortcodes()
+    {
+        require_once(e_PLUGIN."chatbox_menu/chatbox_menu_shortcodes.php");
 
+        try
+		{
+			/** @var chatbox_menu_shortcodes $sc */
+			$sc = $this->make('chatbox_menu_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+			'cb_id'        => '11',
+			'cb_nick'      => '1.admin',
+			'cb_message'   => 'A new chatbox comment',
+			'cb_datestamp' => '1609613065',
+			'cb_blocked'   => '0',
+			'cb_ip'        => '0000:0000:0000:0000:0000:ffff:7f00:0001'
+		);
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+      public function testCommentMenuShortcodes()
+    {
+        require_once(e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
+
+        try
+		{
+			/** @var comment_menu_shortcodes $sc */
+			$sc = $this->make('comment_menu_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+	   $values = array(
+	        'comment_id'           => '84',
+	        'comment_pid'          => '82',
+	        'comment_item_id'      => '53',
+	        'comment_subject'      => 'Re: New Item',
+	        'comment_author_id'    => '1',
+	        'comment_author_name'  => 'admin',
+	        'comment_author_email' => 'someone@gmail.com',
+	        'comment_datestamp'    => '1609767045',
+	        'comment_comment'      => 'Nested Comment here',
+	        'comment_blocked'      => '0',
+	        'comment_ip'           => '0000:0000:0000:0000:0000:ffff:7f00:0001',
+	        'comment_type'         => '0',
+	        'comment_lock'         => '0',
+	        'comment_share'        => '0',
+	        'table'                 => 'news',
+			'action'	            => '',
+			'subject' 	            => 'subject name',
+			'comval'	            => 'a comment',
+			'itemid'	            => 5,
+			'pid'		            => 3,
+	        'eaction'	            => '',
+	        'rate'		            => 2,
+	        'user_id'               => 1,
+	        'user_join'             => 1518441749,
+	        'comment_type'          => 'Type',
+	        'comment_title'         => "Title",
+	        'comment_url'           => e_HTTP."page.php?3",
+	        'comment_author'        => 'admin',
+			'comment_author_image'  => '',
+
+	   );
+
+		$sc->setVars($values);
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+    public function testDownloadShortcodes()
+    {
+        require_once(e_PLUGIN."download/download_shortcodes.php");
+
+        try
+		{
+			/** @var download_shortcodes $sc */
+			$sc = $this->make('download_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars =  array(
+			'download_id'             => '1',
+			'download_name'           => 'MyFile v1',
+			'download_url'            => '{e_MEDIA_FILE}2016-03/myfile.zip',
+			'download_sef'            => 'italk-v1',
+			'download_author'         => 'admin',
+			'download_author_email'   => 'email@gmail.com',
+			'download_author_website' => 'https://somewhere.com',
+			'download_description'    => 'description of my file',
+			'download_keywords'       => 'keyword1,keyword2',
+			'download_filesize'       => '654432',
+			'download_requested'      => '4',
+			'download_category'       => '2',
+			'download_active'         => '1',
+			'download_datestamp'      => '1560544675',
+			'download_thumb'          => '',
+			'download_image'          => '',
+			'download_comment'        => '1',
+			'download_class'          => '0',
+			'download_mirror'         => '',
+			'download_mirror_type'    => '0',
+			'download_visible'        => '0',
+			'download_category_id'    => '2',
+			'download_category_name'  => 'My Category',
+			'download_category_description' => 'My Category Description',
+			'download_category_icon'    => '',
+			'download_category_parent'  => '0',
+			'download_category_class'   => '0',
+			'download_category_order'   => '1',
+			'download_category_sef'     => 'my-category'
+
+		);
+
+		$sc->__construct();
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+      public function testFaqsShortcodes()
+    {
+        require_once(e_PLUGIN."faqs/faqs_shortcodes.php");
+
+        try
+		{
+			/** @var faqs_shortcodes $sc */
+			$sc = $this->make('faqs_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+		'faq_id'        => '4',
+		'faq_parent'    => '1',
+		'faq_question'  => 'My Second Question which is quite long and might wrap to another line after that',
+		'faq_answer'    => '[html]<p>My Second Answer</p>[/html]',
+		'faq_comment'   => '0',
+		'faq_datestamp' => '1461263100',
+		'faq_author'    => '1',
+		'faq_author_ip' => '',
+		'faq_tags'      => '',
+		'faq_order'     => '2',
+		'faq_info_id'   => '2',
+		'faq_info_title'  => 'Misc',
+		'faq_info_about'  => 'Other FAQs',
+		'faq_info_parent' => '0',
+		'faq_info_class'  => '0',
+		'faq_info_order'  => '1',
+		'faq_info_icon'   => '',
+		'faq_info_metad'  => 'description',
+		'faq_info_metak'  => 'keyword1,keyword2',
+		'faq_info_sef'    => 'misc'
+
+		);
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+    public function testForumShortcodes()
+    {
+        require_once(e_PLUGIN."forum/shortcodes/batch/forum_shortcodes.php");
+
+        try
+		{
+			/** @var forum_shortcodes $sc */
+			$sc = $this->make('forum_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+			'forum_id'                 => '2',
+			'forum_name'               => 'Parent Number Two',
+			'forum_description'        => 'Forum Description',
+			'forum_parent'             => '0',
+			'forum_sub'                => '0',
+			'forum_datestamp'          => '1367304545',
+			'forum_moderators'         => '248',
+			'forum_threads'            => '0',
+			'forum_replies'            => '0',
+			'forum_lastpost_user'      => '0',
+			'forum_lastpost_user_anon' => NULL,
+			'forum_lastpost_info'      => '',
+			'forum_class'              => '253',
+			'forum_order'              => '300',
+			'forum_postclass'          => '253',
+			'forum_threadclass'        => '0',
+			'forum_options'            => '',
+			'forum_sef'                => 'parent-number-two',
+			'forum_image'              => NULL,
+			'forum_icon'               => NULL
+
+		);
+
+		$sc->__construct();
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+      public function testForumPostShortcodes()
+    {
+        require_once(e_PLUGIN."forum/shortcodes/batch/post_shortcodes.php");
+
+        try
+		{
+			/** @var plugin_forum_post_shortcodes $sc */
+			$sc = $this->make('plugin_forum_post_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars = array(
+			'forum_id'                 => '2',
+			'forum_name'               => 'Parent Number Two',
+			'forum_description'        => 'Forum Description',
+			'forum_parent'             => '0',
+			'forum_sub'                => '0',
+			'forum_datestamp'          => '1367304545',
+			'forum_moderators'         => '248',
+			'forum_threads'            => '0',
+			'forum_replies'            => '0',
+			'forum_lastpost_user'      => '0',
+			'forum_lastpost_user_anon' => NULL,
+			'forum_lastpost_info'      => '',
+			'forum_class'              => '253',
+			'forum_order'              => '300',
+			'forum_postclass'          => '253',
+			'forum_threadclass'        => '0',
+			'forum_options'            => '',
+			'forum_sef'                => 'parent-number-two',
+			'forum_image'              => NULL,
+			'forum_icon'               => NULL,
+			'thread_id' => '1',
+			'thread_name' => '3 Duis tempus enim vitae magna placerat vel dapibus tellus feugiat.',
+			'thread_forum_id' => '4',
+			'thread_views' => '53',
+			'thread_active' => '1',
+			'thread_lastpost' => '1434584999',
+			'thread_sticky' => '0',
+			'thread_datestamp' => '1367307189',
+			'thread_user' => '2',
+			'thread_user_anon' => NULL,
+			'thread_lastuser' => '1',
+			'thread_lastuser_anon' => NULL,
+			'thread_total_replies' => '7',
+			'thread_options' => NULL,
+			'post_id' => '1',
+			'post_entry' => '4 Morbi eleifend auctor quam, ac consequat ipsum dictum vitae. Curabitur egestas lacinia mi, in venenatis mi euismod eu.',
+			'post_thread' => '1',
+			'post_forum' => '4',
+			'post_status' => '0',
+			'post_datestamp' => '1367307189',
+			'post_user' => '2',
+			'post_edit_datestamp' => NULL,
+			'post_edit_user' => NULL,
+			'post_ip' => NULL,
+			'post_user_anon' => NULL,
+			'post_attachments' => NULL,
+			'post_options' => NULL
+
+
+		);
+
+		$sc->__construct();
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+	/*
+
+            e107_plugins\faqs/
+                faqs_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\forum\shortcodes\batch  (4 usages found)
+                forum_shortcodes.php  (1 usage found)
+                    1 <?php
+                post_shortcodes.php  (1 usage found)
+                    1 <?php
+                view_shortcodes.php  (1 usage found)
+                    1 <?php
+                viewforum_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\forum\todelete  (2 usages found)
+                forum_post_shortcodes.php  (1 usage found)
+                    1 <?php
+                forum_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\gallery\shortcodes\batch  (1 usage found)
+                gallery_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\hero  (1 usage found)
+                hero_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\links_page  (1 usage found)
+                links_page_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\list_new  (1 usage found)
+                list_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\login_menu  (1 usage found)
+                login_menu_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\online  (1 usage found)
+                online_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\pm  (1 usage found)
+                pm_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\rss_menu  (1 usage found)
+                rss_shortcodes.php  (1 usage found)
+                    1 <?php
+            e107_plugins\signin  (1 usage found)
+                signin_shortcodes.php  (1 usage found)
+                    1 <?php
+
+	 */
 
 
 // ------------------------------------------------
