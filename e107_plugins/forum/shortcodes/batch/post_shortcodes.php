@@ -8,9 +8,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::plugLan('forum', 'front', true);
+
 class plugin_forum_post_shortcodes extends e_shortcode
 {
 	protected $e107;
+	public $threadInfo = array();
+	//public $forum;
 
 	function __construct()
 	{
@@ -18,15 +22,22 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$this->e107 = e107::getInstance();
 	}
 
-	function sc_latestposts($parm) //TODO  move elsewhere?
+	function sc_latestposts($parm=null) //TODO  move elsewhere?
 	{
-		$parm = ($parm ? $parm : 10);
+		$parm = !empty($parm) ? (int) $parm : 10;
+
 		global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
+
+		if(empty($LATESTPOSTS_POST))
+		{
+			return null;
+		}
+
 		$tp = e107::getParser();
 
 		$txt = $tp->parseTemplate($LATESTPOSTS_START, true);
-		$start = max($this->threadInfo['thread_total_replies'] - $parm, 0);
-		$num = min($this->threadInfo['thread_total_replies'], $parm);
+		$start = isset($this->threadInfo['thread_total_replies']) ? max($this->threadInfo['thread_total_replies'] - $parm, 0) : 0;
+		$num = isset($this->threadInfo['thread_total_replies']) ? min($this->threadInfo['thread_total_replies'], $parm) : 0;
 
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], $start, $num);
 
@@ -43,6 +54,12 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_threadtopic()
 	{
 		global $THREADTOPIC_REPLY;
+
+		if(empty($THREADTOPIC_REPLY))
+		{
+			return null;
+		}
+
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], 0, 1);
 		e107::getScBatch('view', 'forum')->setScVar('postInfo', $tmp[0]);
 		return e107::getParser()->parseTemplate($THREADTOPIC_REPLY, true);
@@ -56,11 +73,16 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_forum_post_form_end()
 	{
 		$frm = e107::getForm();
-		return $frm->hidden('action',$this->var['action']).$frm->close();
+		return $frm->hidden('action', varset($this->var['action'])).$frm->close();
 	}
 
 	function sc_forumjump()
 	{
+		if(!is_object($this->forum))
+		{
+			return null;
+		}
+
 		$jumpList = $this->forum->forumGetAllowed('view');
 		$text = "<form class='form-inline' method='post' action='".e_REQUEST_URI."'><div class='btn-group'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox form-control'>";
 		foreach($jumpList as $key => $val)
@@ -135,9 +157,9 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	//	{
 	//		$_POST['subject'] = $this->varp;
 	//	}
-
+		$value = varset($_POST['subject']);
 		$tp = e107::getParser();
-		return e107::getForm()->text('subject',$tp->post_toForm($_POST['subject']), 100, $opts);
+		return e107::getForm()->text('subject',$tp->post_toForm($value), 100, $opts);
 
 
 	//	<input class='tbox form-control' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
@@ -183,7 +205,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$text = '';
 		}
 
-		$editor = $this->forum->prefs->get('editor');
+		$editor = is_object($this->forum) ? $this->forum->prefs->get('editor') : null;
 
 		//$wysiwyg = ($editor === 'bbcode') ? false : null;
 		$wysiwyg = is_null($editor) ? 'default' : $editor;
@@ -230,7 +252,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 		$uploadClass = e107::pref('core','upload_class');
 
-		if ($this->forum->prefs->get('attach') && (check_class($uploadClass) || getperms('0')))
+		if (is_object($this->forum) && $this->forum->prefs->get('attach') && (check_class($uploadClass) || getperms('0')))
 		{
 			if (is_writable(e_PLUGIN.'forum/attachments'))
 			{
@@ -276,7 +298,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		
 		";	
 		//<input class='btn btn-default button' type='button' name='addoption' value=".LAN_FORUM_3020."  />
-		if( $this->forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
+		if(is_object($this->forum) &&  $this->forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 		{
 			return $fileattach;
 		}
@@ -416,7 +438,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_postthreadas()
 	{
 		// Show when creating new topic or when editing the original starting post (make sure post is not a reply)
-		if (MODERATOR && $this->var['action'] == "nt" || $this->var['thread_datestamp'] == $this->var['post_datestamp'])
+		if (deftrue('MODERATOR') && $this->var['action'] == "nt" || varset($this->var['thread_datestamp']) == $this->var['post_datestamp'])
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($this->var['thread_sticky'], 0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
 
@@ -441,6 +463,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
       $_tmp = array();
 		// no reference of 'head' $threadInfo['head']['thread_name']
 		$eaction = ($this->var['action'] == 'edit');
+		if(!is_object($this->forum))
+		{
+			return null;
+		}
+
 		$this->forum->set_crumb(true, ($this->var['action'] == 'nt' ? ($eaction ? LAN_FORUM_3023 : LAN_FORUM_1018) : ($eaction ? LAN_FORUM_3024 : $this->var['thread_name'])), $_tmp);
 //----		return $_tmp->BREADCRUMB;
 		return $_tmp['breadcrumb'];
@@ -451,6 +478,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 
 		$tp = e107::getParser();
+		$url = '';
+		$name = '';
+		$pre = '';
+		$post = '';
 
 		if($this->var['action'] == "rp")
 		{

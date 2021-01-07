@@ -10,6 +10,8 @@
  
 if (!defined('e107_INIT')) { exit; }
 
+e107::plugLan('faqs', 'front', true);
+
 /**
  *
  * @package     e107
@@ -252,7 +254,7 @@ class faqs_shortcodes extends e_shortcode
 	}
 
 
-	function sc_faq_datestamp($parm)
+	function sc_faq_datestamp($parm=null)
 	{
 		$type = vartrue($parm, 'relative');
 		return e107::getParser()->toDate($this->var['faq_datestamp'], $type);
@@ -268,7 +270,7 @@ class faqs_shortcodes extends e_shortcode
 			return e107::getParser()->toHTML($customCaption[e_LANGUAGE],true);
 		}
 
-		return LAN_PLUGIN_FAQS_FRONT_NAME;
+		return defset('LAN_PLUGIN_FAQS_FRONT_NAME');
 	}
 
 
@@ -281,7 +283,7 @@ class faqs_shortcodes extends e_shortcode
 			return "<span class='faq-total'>(".($this->counter -1).")</span>";
 		}
 
- 		return $this->var['f_count'];
+ 		return isset($this->var['f_count']) ? $this->var['f_count'] : 0;
 	}
 	
 	function sc_faq_cat_diz()
@@ -295,7 +297,7 @@ class faqs_shortcodes extends e_shortcode
 		return "<img src='".e_PLUGIN_ABS."faq/images/faq.png'  alt='' />";	
 	}
 
-	function sc_faq_submit_question($parms)
+	function sc_faq_submit_question($parms=null)
 	{
 
 		$faqpref = e107::pref('faqs');
@@ -317,7 +319,7 @@ class faqs_shortcodes extends e_shortcode
 			$button = "";
 		}
 
-		if ($faqpref['submit_question'] != e_UC_NOBODY)
+		if (varset($faqpref['submit_question']) != e_UC_NOBODY)
 		{
 			$frm = e107::getForm();
 
@@ -361,7 +363,7 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$faqpref = e107::pref('faqs');
 
-		if (check_class($faqpref['submit_question']))
+		if (isset($faqpref['submit_question']) && check_class($faqpref['submit_question']))
 		{
 			$tp = e107::getParser();
 
@@ -419,13 +421,13 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$array = array();
 	//	$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
-		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>LAN_PLUGIN_FAQS_NAME);
+		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>defset('LAN_PLUGIN_FAQS_NAME'));
 
 		if(!empty($_GET['srch']))
 		{
 			$array[1] = array('url'=> null, 'text'=>LAN_FAQS_002 .": ".e107::getParser()->filter($_GET['srch'], 'w'));
 		}
-			
+
 		return e107::getForm()->breadcrumb($array);
 		
 	}

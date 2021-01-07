@@ -55,7 +55,7 @@
  * @param string $parm
  * @return string page navigation bar HTML
  */
-function nextprev_shortcode($parm = '')
+function nextprev_shortcode($parm = null)
 {
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
@@ -76,7 +76,7 @@ function nextprev_shortcode($parm = '')
 		}
 
 		// Calculate
-		$total_items = intval($parm['total']);
+		$total_items = isset($parm['total']) ? (int) $parm['total'] : 0;
 
 		if(empty($total_items))
 		{
