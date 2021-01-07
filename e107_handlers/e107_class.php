@@ -1744,7 +1744,7 @@ class e107
 
 	/**
 	 * Retrieve date handler singleton object
-	 *
+	 * @deprecated Use e107::getDate();
 	 * @return convert
 	 */
 	public static function getDateConvert()
@@ -3495,6 +3495,9 @@ class e107
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]_admin.php
 	 * 	e107::plugLan('myplug', true);
 	 *
+	 * // import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage].php // FOR BC only.
+	 * 	e107::plugLan('myplug', null);
+	 *
 	 * 	// import defeinitions from /e107_plugins/myplug/languages/[CurrentLanguage]/[CurrentLanguage]_front.php
 	 * 	e107::plugLan('myplug', 'front', true);
 	 *
@@ -3529,6 +3532,10 @@ class e107
 		{
 			//$fname = "admin/".e_LANGUAGE;
 			 $fname = e_LANGUAGE."_admin";
+		}
+		elseif($fname === null)
+		{
+			$fname = e_LANGUAGE;
 		}
 		else
 		{

@@ -7,7 +7,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class plugin_hero_hero_shortcodes extends e_shortcode
 {
-	public $count;
+	public $count =0;
 
 	/**
 	* {hero_ID}
@@ -52,7 +52,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	{
 		$target = !empty($parm['target']) ? $parm['target'] : 'carousel-hero';
 		$class = !empty($parm['class']) ? $parm['class'] : '';
-		$total = (int) $this->var['hero_total_slides'];
+		$total = (int) vartrue($this->var['hero_total_slides'], 0);
 
 		if(empty($total))
 		{
@@ -81,7 +81,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_slide_active($parm=null)
 	{
-		return $this->var['hero_slide_active'];
+		return varset($this->var['hero_slide_active']);
 	}
 
 	public function sc_hero_slide_interval($parm=null)
@@ -135,7 +135,8 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_text()
 	{
-		return e107::getParser()->toHTML($this->var['hero_bullets'][$this->count]['text'],true,'BODY');
+		$count = (int) $this->count;
+		return e107::getParser()->toHTML($this->var['hero_bullets'][$count]['text'],true,'BODY');
 	}
 
 
@@ -209,12 +210,12 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	/**
 	* {HERO_BULLETS}
-	*/
+	*//*
 	public function sc_hero_bullets($parm=null)
 	{
 		return $this->var['hero_bullets'];
 	}
-	
+	*/
 
 	/**
 	* {hero_BUTTON1_xxxx}

@@ -143,9 +143,15 @@
 			return FALSE;
 		}
 
-		if ($parms[1] == 'value')
+		if ($parms[1] === 'value')
 		{
 			$uVal = isset($parms[0]) && isset($udata['user_'.$parms[0]]) ?  str_replace(chr(1), '', $udata['user_'.$parms[0]]) : '';
+
+			if(!isset($parms[0]) || !isset($ueStruct["user_".$parms[0]]) || !isset($ueStruct["user_".$parms[0]]['user_extended_struct_type']))
+			{
+				return null;
+			}
+
 			switch ($ueStruct["user_".$parms[0]]['user_extended_struct_type'])
 			{
 
