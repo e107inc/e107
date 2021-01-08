@@ -327,7 +327,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_external_links($parm='')
 			{
 
-				global $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
+				global $LOGIN_MENU_EXTERNAL_LINK;
+				$menu_pref = e107::getConfig('menu')->getPref();
 
 				$tp = e107::getParser();
 				require_once(e_PLUGIN."login_menu/login_menu_class.php");
@@ -359,7 +360,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 					{
 						$lbox_item['link_id'] = $stackid . '_' . $num;
 						e107::setRegistry('login_menu_linkdata', $lbox_item);
-						$ret .= $tp->parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
+						$ret .= $tp->parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $this);
 					}
 				}
 

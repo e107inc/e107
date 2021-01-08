@@ -186,6 +186,11 @@
 			$actual = $this->dateObj->computeLapse($newer, $time, false, true, 'long');
 			$this->assertEquals("Just now", $actual);
 
+			// Test "Just now" on identical timestamps
+			$actual = $this->dateObj->computeLapse($older, $older, false, true, 'long');
+			$this->assertEquals("Just now", $actual);
+
+
 			// XXX Improve output
 		/*	$newer = strtotime("18 months ago");
 			$actual = $this->dateObj->computeLapse($newer, time(), false, true, 'short');

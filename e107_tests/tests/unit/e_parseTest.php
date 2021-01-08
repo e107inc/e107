@@ -145,10 +145,16 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		public function testParseTemplateWithCoreAddonShortcodes()
 		{
+			$shortcodeObject = e107::getScBatch('online', true);
+
+			$expected = "<a href=''>lost</a>";
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false, $shortcodeObject);
+			$this->assertEquals($expected, $result);
+
 			e107::getPlugin()->uninstall('online');
 			$sc = e107::getScParser();
 			$sc->__construct();
-			$sc->clearRegistered();
+		//	$sc->resetscClass('online', null);
 
 			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
 			$this->assertEmpty($result);
@@ -162,11 +168,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false, $shortcodeObject);
 			$this->assertEquals($expected, $result);
 
-			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
+			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
 			$this->assertEmpty($result);
 
-			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
-			$this->assertEquals($expected, $result);
+		//	$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
+		//	$this->assertEquals($expected, $result);
 		}
 
 		public function testParseTemplateWithNonCoreShortcodes()
