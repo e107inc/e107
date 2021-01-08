@@ -12,8 +12,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-register_shortcode('online_shortcodes', true);
-$online_shortcodes = initShortcodeClass('online_shortcodes');
+//register_shortcode('online_shortcodes', true);
+// $online_shortcodes = initShortcodeClass('online_shortcodes');
 
 e107::plugLan('online', null);
 
@@ -73,6 +73,7 @@ class online_shortcodes extends e_shortcode
 		}
 
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
+
 		return $seen_ago;
 		// return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
 	}
