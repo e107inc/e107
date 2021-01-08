@@ -15,6 +15,8 @@ if (!defined('e107_INIT')) { exit; }
 register_shortcode('online_shortcodes', true);
 $online_shortcodes = initShortcodeClass('online_shortcodes');
 
+e107::plugLan('online', null);
+
 class online_shortcodes extends e_shortcode
 {
 	protected $e107;
@@ -55,9 +57,9 @@ class online_shortcodes extends e_shortcode
 	// Last Seen Menu
 	function sc_lastseen_userlink()
 	{
-		$uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
+		$uparams = array('id' => varset($this->currentUser['user_id']), 'name' => varset($this->currentUser['user_name']));
 		$link = e107::getUrl()->create('user/profile/view', $uparams);
-		return "<a href='".$link."'>".$this->currentUser['user_name']."</a>";
+		return "<a href='".$link."'>".varset($this->currentUser['user_name'])."</a>";
 
 	// $uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
 	//	return "<a href='".e_BASE."user.php?id.".$this->currentUser['user_id']."'>".$this->currentUser['user_name']."</a>";
@@ -65,6 +67,11 @@ class online_shortcodes extends e_shortcode
 
 	function sc_lastseen_date()
 	{
+		if(empty($this->currentUser['user_currentvisit']))
+		{
+			return null;
+		}
+
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
 		return $seen_ago;
 		// return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
@@ -186,8 +193,13 @@ class online_shortcodes extends e_shortcode
 	}
 
 
-	function sc_online_most_datestamp($parm='short')
+	function sc_online_most_datestamp($parm=null)
 	{
+		if(empty($parm))
+		{
+			$parm = 'short';
+		}
+
 		return $this->gen->convert_date($this->memberInfo->get('most_online_datestamp'), $parm);
 	}
 
@@ -284,16 +296,15 @@ class online_shortcodes extends e_shortcode
 			$parm= array('type'=> $parm);
 		}
 
-		if($parm['type'] == 'avatar')
+		if(isset($parm['type']) && ($parm['type'] === 'avatar'))
 		{
 			$userData = array(
-				'user_image' => $this->currentMember['oimage'],
-				'user_name'	=> $this->currentMember['oname']
+				'user_image' => varset($this->currentMember['oimage']),
+				'user_name'	=> varset($this->currentMember['oname'])
 			);
 
 			return e107::getParser()->toAvatar($userData, $parm);
-			
-		//	return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
+
 		}
 		
 		return "<img src='".e_IMAGE_ABS."admin_images/users_16.png' alt='' style='vertical-align:middle' />";

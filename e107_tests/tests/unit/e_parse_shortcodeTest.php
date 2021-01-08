@@ -276,11 +276,11 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     public function testLoginShortcodes()
     {
-        require_once(e_CORE."shortcodes/batch/error_shortcodes.php");
+        require_once(e_CORE."shortcodes/batch/login_shortcodes.php");
 
         try
 		{
-			$sc = $this->make('error_shortcodes');
+			$sc = $this->make('login_shortcodes');
 		}
 		catch (Exception $e)
 		{
@@ -405,7 +405,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
-	  public function testPageShortcodes()
+	 public function testPageShortcodes()
     {
         require_once(e_CORE."shortcodes/batch/page_shortcodes.php");
 
@@ -454,6 +454,73 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$exclude = array('sc_cpagemessage'); // system messages
 
         $this->processShortcodeMethods($sc, $exclude);
+
+    }
+
+     public function testPageEShortcodes()
+    {
+        require_once(e_PLUGIN."page/e_shortcode.php");
+
+        try
+		{
+			/** @var page_shortcodes $sc */
+			$sc = $this->make('page_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$vars =  array('page_id' => '1',
+/*			'page_title' => 'Article 1',
+			'page_subtitle' => 'My subtitle goes here.',
+			'page_sef' => 'article-1',
+			'page_chapter' => '2',
+			'page_metakeys' => 'keywords',
+			'page_metadscr' => 'Meta Description',
+			'page_metarobots' => 'noindex',
+			'page_text' => '[html]<p>Lorem ipsum dolor sit amet, <sup>1</sup> consectetur adipiscing elit. Donec libero ipsum; imperdiet at risus non, dictum sagittis odio! Nulla facilisi. Pellentesque adipiscing facilisis pharetra. Morbi imperdiet augue in ligula luctus, et iaculis est porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In ultricies vitae nisi ut porttitor. Curabitur lectus tellus, feugiat a elit vel, gravida iaculis dui. Nulla vulputate turpis dui, ac faucibus enim dignissim non. Ut non tellus suscipit, scelerisque orci sed, scelerisque sapien. Aenean convallis sodales nulla in porttitor. In pretium ante sapien, a tempor eros blandit nec <sup>2</sup>.<br><br>Nulla non est nibh? Fusce lacinia quam adipiscing magna posuere dapibus. Sed mollis condimentum rhoncus. Morbi sollicitudin tellus a ligula luctus, ac varius arcu ullamcorper. Mauris in aliquet tellus, nec porttitor dui. Quisque interdum euismod mi sed bibendum. Vivamus non odio quis quam lacinia rhoncus in nec nibh. Integer vitae turpis condimentum, laoreet diam nec viverra fusce.</p>[/html]',
+			'page_author' => '1',
+			'page_datestamp' => '1371420000',
+			'page_rating_flag' => '1',
+			'page_comment_flag' => '1',
+			'page_password' => '',
+			'page_class' => '0',
+			'page_ip_restrict' => '',
+			'page_template' => 'default',
+			'page_order' => '20',
+			'page_fields' => NULL,'menu_name' => '',
+			'menu_title' => 'Heading 1',
+			'menu_text' => '[html]<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor egestas condimentum. Suspendisse placerat nunc orci, a ultrices tortor eleifend in. Vestibulum tincidunt fringilla malesuada? Phasellus dolor risus, aliquam eu odio quis, mattis cursus magna. Integer ut blandit purus; vitae posuere ante. Vivamus sapien nisl, pulvinar vel turpis a, malesuada vehicula lorem! Curabitur magna justo; laoreet at congue sit amet, tincidunt sit amet erat. Integer vehicula eros quis odio tincidunt, nec dapibus sem molestie. Cras sed viverra eros. Nulla ut lectus tellus.</p>[/html]',
+			'menu_image' => '{e_THEME}steminst_eu/_content/2019-07/chromosome_dna_pattern_genetic_3_d_psychedelic_1920x1200.jpg',
+			'menu_icon' => '',
+			'menu_template' => 'button',
+			'menu_class' => '0',
+			'menu_button_url' => '',
+			'menu_button_text' => '',*/
+			'chapter_id' => '1',
+			'chapter_parent' => '0',
+			'chapter_name' => 'General',
+			'chapter_sef' => 'general',
+			'chapter_meta_description' => 'Lorem ipsum dolor sit amet.',
+			'chapter_meta_keywords' => '',
+			'chapter_manager' => '0',
+			'chapter_icon' => '',
+			'chapter_image' => '',
+			'chapter_order' => '0',
+			'chapter_template' => '',
+			'chapter_visibility' => '0',
+			'chapter_fields' => NULL
+
+			)
+			;
+
+
+		$sc->setVars($vars);
+
+	//	$exclude = array('sc_cpagemessage'); // system messages
+
+        $this->processShortcodeMethods($sc);
 
     }
 
@@ -828,6 +895,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$sc->setVars($vars);
 
+		$exclude = array('sc_info'); // uses time with seconds.
+
         $this->processShortcodeMethods($sc);
 
     }
@@ -1128,6 +1197,26 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		}
 
 
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+     public function testOnlineShortcodes()
+    {
+        require_once(e_PLUGIN."online/online_shortcodes.php");
+
+        try
+		{
+			/** @var online_shortcodes $sc */
+			$sc = $this->make('online_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
 
         $this->processShortcodeMethods($sc);
 
