@@ -13,16 +13,16 @@
 if (!defined('e107_INIT')) { exit; }
 
 //global $pref;
-global $menu_pref;
+$menu_pref = e107::getConfig('menu')->getPref();
 
 $tp = e107::getParser();
 
 e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
-require_once(e_PLUGIN.'online/online_shortcodes.php');
+// require_once(e_PLUGIN.'online/online_shortcodes.php');
 $mode = empty($menu_pref['online_show_memberlist_extended']) ? 'default' : 'extended';
 
-$online_shortcodes = new online_shortcodes;
+$online_shortcodes = e107::getScBatch('online', true);
 $online_shortcodes->wrapper('online_menu/'.$mode);
 
 if(deftrue('BOOTSTRAP'))
