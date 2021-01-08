@@ -41,8 +41,7 @@ if (!defined('e107_INIT'))
 
 $cobj = e107::getComment();
 
-global $menu_pref;
-
+$menu_pref = e107::getConfig('menu')->getPref();
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
 

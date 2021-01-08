@@ -18,7 +18,7 @@
 
 		function __construct()
 		{
-			$this->gen = new convert; // TODO replace all usage with e107::getParser()->toDate();
+			$this->gen = e107::getDate(); // TODO replace all usage with e107::getParser()->toDate();
 //		$this->forum_rules = forum_rules('check');
 		}
 
@@ -902,7 +902,7 @@
 		 */
 		function sc_threadname($parm=null)
 		{
-			global $menu_pref, $forum;
+			global $forum;
 			$tp = e107::getParser();
 
 			$thread_name = strip_tags($tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off'));
@@ -922,6 +922,7 @@
 				$tip_length = $forum->prefs->get('tiplength', 400);
 				if(strlen($thread_thread) > $tip_length)
 				{
+					$menu_pref = e107::getConfig('menu')->getPref();
 					//$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
 					$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);    // Doesn't split entities
 				}
