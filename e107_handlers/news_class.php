@@ -442,13 +442,15 @@ class news {
 	 */
 	function render_newsgrid($parm=null)
 	{
+
 		$cacheString = 'nq_news_grid_menu_'.md5(serialize($parm));
 
 		$cached = e107::getCache()->retrieve($cacheString);
 
 		if(false === $cached)
 		{
-			e107::plugLan('news');
+
+			e107::plugLan('news', null);
 
 			if(is_string($parm))
 			{

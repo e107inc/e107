@@ -780,13 +780,52 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this->assertTrue($res);
 			}
-
+*/
 			public function testPlugLan()
 			{
-				$res = null;
-				$this->assertTrue($res);
-			}
+				// Make sure nothing else loaded the language files.
+				$this->assertFalse(defined('BANNERLAN_19'), 'BANNERLAN_19 is already defined!');
+			//	$this->assertFalse(defined('LAN_FORUM_0002'), 'LAN_FORUM_0002 is already defined!');
+				$this->assertFalse(defined('LAN_GALLERY_ADMIN_01'), 'LAN_GALLERY_ADMIN_01 is already defined!');
+				$this->assertFalse(defined('CM_L1'), 'Comment Menu English file already defined');
+				$this->assertFalse(defined('LAN_FORUM_MENU_001'),'LAN_FORUM_MENU_001 is already defined!');
+				$this->assertFalse(defined('BNRLAN_11'),'BNRLAN_11 is already defined!');
+				$this->assertFalse(defined('CHATBOX_L1'),'CHATBOX_L1 is already defined!');
 
+				$this->assertTrue(defined('LAN_PLUGIN_GALLERY_SEF_01')); // global so it is defined already.
+
+				$e107 = $this->e107;
+
+				// Test 1
+				$e107::plugLan('banner'); // languages/English_front.php
+				$this->assertTrue(defined('BANNERLAN_19'), 'plugLan() test #1 failed');
+
+				// Test 2 - conflict with shortcode testing.
+			//	$e107::plugLan('forum', 'front', true); // languages/English/English_front.php
+			//	$this->assertTrue(defined('LAN_FORUM_0002'),'plugLan() test #2 failed');
+
+				// Test 3
+				$e107::plugLan('gallery', true, true); // languages/English/English_admin.php
+				$this->assertTrue(defined('LAN_GALLERY_ADMIN_01'),'plugLan() test #3 failed');
+
+				// Test 4
+				$e107::plugLan('forum','menu', true); // languages/English/English_menu.php
+				$this->assertTrue(defined('LAN_FORUM_MENU_001'),'plugLan() test #4 failed');
+
+				// Test 5
+				$e107::plugLan('banner', true);  // languages/English_admin.php
+				$this->assertTrue(defined('BNRLAN_11'),'plugLan() test #5 failed');
+
+				// Test 6
+				$e107::plugLan('chatbox_menu', e_LANGUAGE); // languages/English/English.php
+				$this->assertTrue(defined('CHATBOX_L1'),'plugLan() test #6 failed');
+
+				// Test 7
+				$e107::plugLan('comment_menu', null); // languages/English.php - BC path.
+				$this->assertTrue(defined('CM_L1'), 'plugLan() test #7 failed');
+
+			}
+/*
 			public function testThemeLan()
 			{
 				$res = null;
