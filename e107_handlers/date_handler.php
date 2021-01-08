@@ -597,7 +597,9 @@ class e_date
 	 */
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
 	{
-		if($newer_date === false)
+		$older_date = (int) $older_date;
+
+		if(empty($newer_date))
 		{
 			$newer_date = time();
 		}
@@ -635,6 +637,8 @@ class e_date
 			'seconds'   => array($interval->s, $sec, $secs),
 		);
 
+
+
 		if($show_secs !== true)
 		{
 			unset($result['seconds']);
@@ -654,7 +658,7 @@ class e_date
 			if($format === 'short') { break; }
 		}
 
-		if(strpos($ret[0],$sec) !== false)
+		if(empty($ret) || strpos($ret[0],$sec) !== false)
 		{
 			$justNow = deftrue('LANDT_10',"Just now");
 			return $mode ? array($justNow) : $justNow;
