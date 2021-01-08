@@ -64,6 +64,8 @@
 
 		public function testGetStructure()
 		{
+			e107::setRegistry('core/userextended/structure'); // clear the registry.
+
 			$result = $this->ue->getStructure();
 
 			foreach($this->typeArray as $k=>$v)

@@ -114,7 +114,7 @@
 			{
 				return false;
 			}
-			
+
 			$text_val = $ueStruct['user_'.$parms[0]]['user_extended_struct_text'];
 
 			if($text_val)
