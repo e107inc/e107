@@ -135,6 +135,13 @@ class e_parse_shortcode
 
 	}
 
+	public function clearRegistered()
+	{
+		$this->registered_codes = array();
+		$this->scClasses = array();
+
+	}
+
 	/**
 	 * Register shortcode
 	 * $classFunc could be function name, class name or object

@@ -146,13 +146,15 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		public function testParseTemplateWithCoreAddonShortcodes()
 		{
 			e107::getPlugin()->uninstall('online');
-			e107::getScParser()->__construct();
+			$sc = e107::getScParser();
+			$sc->__construct();
+			$sc->clearRegistered();
 
 			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
 			$this->assertEmpty($result);
 
 			$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
-			$this->assertEmpty($result);
+			$this->assertEmpty($result, "{ONLINE_MEMBER_PAGE} wasn't empty: ".$result);
 
 			$shortcodeObject = e107::getScBatch('online', true);
 
