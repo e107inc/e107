@@ -3530,10 +3530,9 @@ class e107
 		}
 		elseif($fname === true) // admin file.
 		{
-			//$fname = "admin/".e_LANGUAGE;
 			 $fname = e_LANGUAGE."_admin";
 		}
-		elseif($fname === null)
+		elseif($fname === null) // BC usage. English.php
 		{
 			$fname = e_LANGUAGE;
 		}
@@ -3567,7 +3566,14 @@ class e107
 
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path);
+		$ret = self::includeLan($path);
+
+		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0)
+		{
+			self::getMessage()->addError("Couldn't load: ".$path);
+		}
+
+		return $ret;
 	}
 
 	/**
@@ -3661,7 +3667,7 @@ class e107
 	 * @example e107::lan('gallery', true, true); // Loads e_PLUGIN."gallery/languages/English/English_admin.php (if English is the current language)
 	 * @example e107::lan('gallery', false, true); // Loads e_PLUGIN."gallery/languages/English/English_front.php (if English is the current language)
 	 */
-	public static function lan($type, $fname = null, $options = null)
+	public static function lan($type, $fname = '', $options = null)
 	{
 		$options = $options ? true : false;
 		switch ($type)
