@@ -714,6 +714,7 @@ class e107Test extends \Codeception\Test\Unit
 	public function testGetTemplate()
 	{
 		e107::getConfig()->set('sitetheme', '_blank');
+		require_once(e_PLUGIN."download/languages/English/English_front.php"); // LANS in template files.
 
 		$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
 		$this->assertEquals('{DOWNLOAD_BREADCRUMB} Custom', $template['header']); // ie. should be from _blank theme download template (override of plugin).

@@ -110,11 +110,13 @@
 
 		if ($parms[1] == 'text')
 		{
-			if(!isset($ueStruct['user_'.$parms[0]]))
+			if(!isset($parms[0]) || !isset($ueStruct['user_'.$parms[0]]) || !isset($ueStruct['user_'.$parms[0]]['user_extended_struct_text']))
 			{
-				return FALSE;
+				return false;
 			}
+			
 			$text_val = $ueStruct['user_'.$parms[0]]['user_extended_struct_text'];
+
 			if($text_val)
 			{
 				return (defined($text_val) ? constant($text_val) : $text_val);
