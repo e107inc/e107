@@ -33,6 +33,8 @@ class listclass
 	var $list_pref;
 	var $mode;
 	var $shortcodes = FALSE;
+	private $pf; // profanity filter class.
+	public $data;
 
 	/**
 	 * constructor
@@ -180,7 +182,10 @@ class listclass
 				$arr[$s]['amount'] 		= vartrue($this->list_pref[$s."_".$mode."_amount"]);
 				$arr[$s]['order'] 		= vartrue($this->list_pref[$s."_".$mode."_order"]);
 				$arr[$s]['section'] 	= $s;
+
+
 			}
+
 		}
 		//sort array on order values set in preferences
 		usort($arr, function($e, $f)
@@ -225,6 +230,8 @@ class listclass
 		{
 			return;
 		}
+
+		$content_name = '';
 
 		$content_types = array();
 
@@ -302,63 +309,63 @@ class listclass
 				{
 					if ($plugin_installed = isset($pref['plug_installed'][e107::getParser()->toDB($s, true)]))
 					{
-						$prf["$s_recent_menu_caption"] = $s;
-						$prf["$s_recent_page_caption"] = $s;
-						$prf["$s_new_menu_caption"] = $s;
-						$prf["$s_new_page_caption"] = $s;
+						$prf[$s."_recent_menu_caption"] = $s;
+						$prf[$s."_recent_page_caption"] = $s;
+						$prf[$s."_new_menu_caption"] = $s;
+						$prf[$s."_new_page_caption"] = $s;
 					}
 				}
 				else
 				{
-					$prf["$s_recent_menu_caption"] = $this->titles[$i];
-					$prf["$s_recent_page_caption"] = $this->titles[$i];
-					$prf["$s_new_menu_caption"] = $this->titles[$i];
-					$prf["$s_new_page_caption"] = $this->titles[$i];
+					$prf[$s."_recent_menu_caption"] = $this->titles[$i];
+					$prf[$s."_recent_page_caption"] = $this->titles[$i];
+					$prf[$s."_new_menu_caption"] = $this->titles[$i];
+					$prf[$s."_new_page_caption"] = $this->titles[$i];
 				}
 			}
 			else
 			{
-				$prf["$s_recent_menu_caption"] = $s;
-				$prf["$s_recent_page_caption"] = $s;
-				$prf["$s_new_menu_caption"] = $s;
-				$prf["$s_new_page_caption"] = $s;
+				$prf[$s."_recent_menu_caption"] = $s;
+				$prf[$s."_recent_page_caption"] = $s;
+				$prf[$s."_new_menu_caption"] = $s;
+				$prf[$s."_new_page_caption"] = $s;
 			}
 
-			$prf["$s_recent_menu_display"] = "1";
-			$prf["$s_recent_menu_open"] = "0";
-			$prf["$s_recent_menu_author"] = "0";
-			$prf["$s_recent_menu_category"] = "0";
-			$prf["$s_recent_menu_date"] = "1";
-			$prf["$s_recent_menu_amount"] = "5";
-			$prf["$s_recent_menu_order"] = ($i+1);
-			$prf["$s_recent_menu_icon"] = '';
+			$prf[$s."_recent_menu_display"] = "1";
+			$prf[$s."_recent_menu_open"] = "0";
+			$prf[$s."_recent_menu_author"] = "0";
+			$prf[$s."_recent_menu_category"] = "0";
+			$prf[$s."_recent_menu_date"] = "1";
+			$prf[$s."_recent_menu_amount"] = "5";
+			$prf[$s."_recent_menu_order"] = ($i+1);
+			$prf[$s."_recent_menu_icon"] = '';
 
-			$prf["$s_recent_page_display"] = "1";
-			$prf["$s_recent_page_open"] = "1";
-			$prf["$s_recent_page_author"] = "1";
-			$prf["$s_recent_page_category"] = "1";
-			$prf["$s_recent_page_date"] = "1";
-			$prf["$s_recent_page_amount"] = "10";
-			$prf["$s_recent_page_order"] = ($i+1);
-			$prf["$s_recent_page_icon"] = "1";
+			$prf[$s."_recent_page_display"] = "1";
+			$prf[$s."_recent_page_open"] = "1";
+			$prf[$s."_recent_page_author"] = "1";
+			$prf[$s."_recent_page_category"] = "1";
+			$prf[$s."_recent_page_date"] = "1";
+			$prf[$s."_recent_page_amount"] = "10";
+			$prf[$s."_recent_page_order"] = ($i+1);
+			$prf[$s."_recent_page_icon"] = "1";
 
-			$prf["$s_new_menu_display"] = "1";
-			$prf["$s_new_menu_open"] = "0";
-			$prf["$s_new_menu_author"] = "0";
-			$prf["$s_new_menu_category"] = "0";
-			$prf["$s_new_menu_date"] = "1";
-			$prf["$s_new_menu_amount"] = "5";
-			$prf["$s_new_menu_order"] = ($i+1);
-			$prf["$s_new_menu_icon"] = "1";
+			$prf[$s."_new_menu_display"] = "1";
+			$prf[$s."_new_menu_open"] = "0";
+			$prf[$s."_new_menu_author"] = "0";
+			$prf[$s."_new_menu_category"] = "0";
+			$prf[$s."_new_menu_date"] = "1";
+			$prf[$s."_new_menu_amount"] = "5";
+			$prf[$s."_new_menu_order"] = ($i+1);
+			$prf[$s."_new_menu_icon"] = "1";
 
-			$prf["$s_new_page_display"] = "1";
-			$prf["$s_new_page_open"] = "1";
-			$prf["$s_new_page_author"] = "1";
-			$prf["$s_new_page_category"] = "1";
-			$prf["$s_new_page_date"] = "1";
-			$prf["$s_new_page_amount"] = "10";
-			$prf["$s_new_page_order"] = ($i+1);
-			$prf["$s_new_page_icon"] = "1";
+			$prf[$s."_new_page_display"] = "1";
+			$prf[$s."_new_page_open"] = "1";
+			$prf[$s."_new_page_author"] = "1";
+			$prf[$s."_new_page_category"] = "1";
+			$prf[$s."_new_page_date"] = "1";
+			$prf[$s."_new_page_amount"] = "10";
+			$prf[$s."_new_page_order"] = ($i+1);
+			$prf[$s."_new_page_icon"] = "1";
 		}
 
 		//new menu preferences
@@ -583,16 +590,15 @@ class listclass
 				if (e107::getPref('profanity_filter'))
 				{
 					$tp = e107::getParser();
-					if (!is_object($parser->e_pf))
+					if (!is_object($this->pf))
 					{
-					//	require_once(e_HANDLER.'profanity_filter.php');
-						$parser->e_pf = new e_profanityFilter;
+						$this->pf = new e_profanityFilter;
 					}
 					foreach ($listArray as $k => $v)
 					{
 						if (isset($v['heading']))
 						{
-							$listArray[$k]['heading'] = $tp->e_pf->filterProfanities($v['heading']);
+							$listArray[$k]['heading'] = $this->pf->filterProfanities($v['heading']);
 						}
 					}
 				}
@@ -780,6 +786,8 @@ class listclass
 	function displayPage()
 	{
 		global $qs;
+
+		$text = '';
 
 		//get preferences
 		if(!isset($this->list_pref))

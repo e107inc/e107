@@ -159,10 +159,9 @@ class rss_ui extends e_admin_ui
 		global $i,$rss_shortcodes, $feed, $pref;
 
 		require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
+		$rss_shortcodes = e107::getScBatch('rss_menu', true);
 
-		if(!isset($RSS_ADMIN_IMPORT_HEADER))
-		{
-			$RSS_ADMIN_IMPORT_HEADER = "
+		$RSS_ADMIN_IMPORT_HEADER = "
 			<form action='".e_SELF."' id='imlistform' method='post' >
 			<table class='table table-striped adminlist'>
 			<thead>
@@ -175,10 +174,8 @@ class rss_ui extends e_admin_ui
 				<th>".RSS_LAN_ADMIN_12."</td>
 			</tr>
 			</thead><tbody>";
-				}
-				if(!isset($RSS_ADMIN_IMPORT_TABLE))
-				{
-					$RSS_ADMIN_IMPORT_TABLE = "
+
+			$RSS_ADMIN_IMPORT_TABLE = "
 			<tr>
 				<td class='first center'>{RSS_ADMIN_IMPORT_CHECK}</td>
 					<td>{RSS_ADMIN_IMPORT_NAME} - {RSS_ADMIN_IMPORT_TEXT}</td>
@@ -187,85 +184,22 @@ class rss_ui extends e_admin_ui
 				<td>{RSS_ADMIN_IMPORT_URL}</td>
 				<td>{RSS_ADMIN_IMPORT_TOPICID}</td>
 			</tr>";
-				}
 
-				if(!isset($RSS_ADMIN_IMPORT_FOOTER))
-				{
-					$RSS_ADMIN_IMPORT_FOOTER = "</tbody>
+
+			$RSS_ADMIN_IMPORT_FOOTER = "</tbody>
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('import_rss',LAN_ADD,'submit')."
 			</div>
 			</form>
 			";
-		}
 
-
-
-
-		//	global $RSS_ADMIN_IMPORT_HEADER, $RSS_ADMIN_IMPORT_TABLE, $RSS_ADMIN_IMPORT_FOOTER;
 
 			$sqli = new db;
 			$feedlist = array();
 
 			// @see e107_plugins/news/e_rss.php
-			/*
-			// News
-			$feed['name']		= ADLAN_0;
-			$feed['url']		= 'news';	// The identifier for the rss feed url
-			$feed['topic_id']	= '';		// The topic_id, empty on default (to select a certain category)
-			$feed['path']		= 'news';	// This is the plugin path location
-			$feed['text']		= RSS_PLUGIN_LAN_7;
-			$feed['class']		= '0';
-			$feed['limit']		= '9';
-			$feedlist[]			= $feed;
 
-			// News categories
-			if($sqli ->select("news_category", "*","category_id!='' ORDER BY category_name "))
-			{
-				while($rowi = $sqli ->fetch())
-				{
-					$feed['name']		= ADLAN_0.' > '.$rowi['category_name'];
-					$feed['url']		= 'news';
-					$feed['topic_id']	= $rowi['category_id'];
-					$feed['path']		= 'news';
-					$feed['text']		= RSS_PLUGIN_LAN_10.' '.$rowi['category_name'];
-					$feed['class']		= '0';
-					$feed['limit']		= '9';
-					//	$feed['exclude_class'] = '';
-					$feedlist[]			= $feed;
-				}
-			}*/
-
-			/*		// Download
-					$feed['name']		= ADLAN_24;
-					$feed['url']		= 'download';
-					$feed['topic_id']	= '';
-					$feed['path']		= 'download';
-					$feed['text']		= RSS_PLUGIN_LAN_8;
-					$feed['class']		= '0';
-					$feed['limit']		= '9';
-					$feedlist[]			= $feed;
-
-					// Download categories
-					if($sqli ->select("download_category", "*","download_category_id!='' ORDER BY download_category_order "))
-					{
-						while($rowi = $sqli ->fetch())
-						{
-							$feed['name']		= ADLAN_24.' > '.$rowi['download_category_name'];
-							$feed['url']		= 'download';
-							$feed['topic_id']	= $rowi['download_category_id'];
-							$feed['path']		= 'download';
-							$feed['text']		= RSS_PLUGIN_LAN_11.' '.$rowi['download_category_name'];
-							$feed['class']		= '0';
-							$feed['limit']		= '9';
-							$feedlist[]			= $feed;
-						}
-					}
-			*/
-
-
-			//
 			// Comments
 			$feed['name']		= LAN_COMMENTS;
 			$feed['url']		= 'comments';
@@ -318,10 +252,12 @@ class rss_ui extends e_admin_ui
 				if(!$sql->select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
 				{
 					$render = TRUE;
+					$rss_shortcodes->setVars($feed);
 					$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_TABLE, FALSE, $rss_shortcodes);
 					$i++;
 				}
 			}
+
 			$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_FOOTER, FALSE, $rss_shortcodes);
 
 			if(!$render)
@@ -330,7 +266,6 @@ class rss_ui extends e_admin_ui
 			}
 			else
 			{
-		//		$ns->tablerender(RSS_LAN_ADMIN_11, $mes->render(). $text);
 
 				return $text;
 			}
