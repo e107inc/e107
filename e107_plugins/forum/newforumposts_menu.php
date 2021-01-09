@@ -11,7 +11,9 @@
 if (!defined('e107_INIT'))  exit;
 
 e107::lan('forum','menu',true);  // English_menu.php or {LANGUAGE}_menu.php
+
 include_once(e_PLUGIN.'forum/forum_class.php');
+
 
 
 if(!class_exists('forum_newforumposts_menu'))

@@ -745,6 +745,10 @@ class language{
 			{
 				define($old, constant($new));
 			}
+			elseif(empty($new) && !defined($old))
+			{
+				define($old,'');
+			}
 
 		}
 

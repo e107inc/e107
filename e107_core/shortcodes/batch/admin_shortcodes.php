@@ -1270,7 +1270,7 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_19."</b>
 			<br />
-			".date('r').
+			".strftime('%A %d %B %Y - %H:%M').
 			"<br />";
 
 			return e107::getRender()->tablerender(FOOTLAN_13, $text, '', TRUE);

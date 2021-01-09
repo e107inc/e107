@@ -20,6 +20,44 @@ e107::css('forum','forum.css');
 
 e107::lan('forum', "front", true);
 
+if(!deftrue('BOOTSTRAP')) // test with 'jayya'
+{
+		$bcDefs = array(
+			'FORLAN_11' => 'LAN_FORUM_0039',
+			'FORLAN_12' => 'LAN_FORUM_0040',
+			'FORLAN_13' => 'LAN_FORUM_0040',
+			'FORLAN_14' => 'LAN_FORUM_0040',
+			'FORLAN_15' => '',
+			'FORLAN_16' => 'LAN_FORUM_1012',
+			'FORLAN_17' => 'LAN_FORUM_1013',
+			'FORLAN_18' => 'LAN_FORUM_1014',
+			'LAN_435'   => 'LAN_DELETE',
+			'LAN_401'   => 'LAN_FORUM_4011',
+			'LAN_398'   => 'LAN_FORUM_4012',
+			'LAN_399'   => 'LAN_FORUM_4013',
+			'LAN_400'   => 'LAN_FORUM_4014',
+			'LAN_402'   => 'LAN_FORUM_5019',
+			'LAN_199'   => 'LAN_SEARCH',
+			'LAN_397'   => 'LAN_FORUM_0030',
+			'LAN_396'   => 'LAN_FORUM_1013',
+			'LAN_392'   => 'LAN_FORUM_0070',
+			'LAN_391'   => 'LAN_FORUM_4009',
+			'LAN_400'   => 'LAN_EDIT',
+			'LAN_401'   => 'LAN_FORUM_2041',
+			'LAN_406'   => 'LAN_EDIT',
+			'LAN_435'   => 'LAN_DELETE',
+			'LAN_397'   => 'LAN_FORUM_2044',
+			'LAN_398'   => 'LAN_FORUM_4007',
+			'FORLAN_105'    => 'LAN_FORUM_3052',
+			'LAN_408'   => 'LAN_FORUM_0007',
+			'LAN_413'   => 'LAN_FORUM_2046',
+			'FORLAN_10' => 'LAN_FORUM_1018',
+
+		);
+
+		e107::getLanguage()->bcDefs($bcDefs);
+}
+
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 {
