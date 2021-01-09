@@ -260,7 +260,7 @@ class online_shortcodes extends e_shortcode
 						$online_location_page = 'comment';
 					}
 
-					list($oid, $oname) = explode('.', $uinfo, 2);
+				//	list($oid, $oname) = explode('.', $uinfo, 2);
 
 					$data = array(
 						'oid' 	=> $row['user_id'],
