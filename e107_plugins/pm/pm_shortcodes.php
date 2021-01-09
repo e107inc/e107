@@ -654,15 +654,19 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 		}
 
-
-		public function sc_pm_send_pm_link()
+		/**
+		 * @example {PM_SEND_PM_LINK}
+		 * @bcfix If broken on old theme try {PM_SEND_PM_LINK=button}
+		 * @param null $parm
+		 * @return string
+		 */
+		public function sc_pm_send_pm_link($parm=null)
 		{
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 			if($pm_outbox['outbox']['filled'] < 100)
 			{
-//				$link = $this->url('action/new');
-//				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".LAN_PLUGIN_PM_NEW."</a>";
-				return $this->url('action/new');
+				$link = $this->url('action/new');
+				return ($parm === 'button') ? "<a class='btn btn-mini btn-xs btn-primary' href='{$link}'>".LAN_PLUGIN_PM_NEW."</a>" : $link ;
 			}
 //			return '';
 		}
