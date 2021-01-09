@@ -3123,10 +3123,13 @@ class e107
 		 * "front" and "global" LANs might not be loaded come self::_getTemplate(),
 		 * so the following calls to self::plugLan() fix that.
 		 */
-		self::plugLan($plug_name, null, true);
-		self::plugLan($plug_name, null);
-		self::plugLan($plug_name, 'global', true);
-		self::plugLan($plug_name, 'global');
+		if(is_dir(e_PLUGIN.$plug_name."/languages"))
+		{
+			self::plugLan($plug_name, null, true);
+			self::plugLan($plug_name, null);
+			self::plugLan($plug_name, 'global', true);
+			self::plugLan($plug_name, 'global');
+		}
 
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
@@ -3568,9 +3571,10 @@ class e107
 
 		$ret = self::includeLan($path);
 
-		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0)
+		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0 && strpos($path, '_global.php') === false )
 		{
-			self::getMessage()->addError("Couldn't load: ".$path);
+			$result = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
+			self::getMessage()->addError("Couldn't load: ".$path.print_a($result,true));
 		}
 
 		return $ret;
