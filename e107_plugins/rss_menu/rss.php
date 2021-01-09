@@ -112,14 +112,15 @@ if (empty($rss_type))
 			}
 		}
 
-		$text = $tp->parseTemplate($RSS_LIST_HEADER);
+		$text = $tp->parseTemplate($RSS_LIST_HEADER, true);
 
 		while($row = $sql->fetch())
 		{
+			$sc->setVars($row);
 			$text .= $tp->parseTemplate($RSS_LIST_TABLE, false, $sc);
 		}
 
-		$text .= $tp->parseTemplate($RSS_LIST_FOOTER);
+		$text .= $tp->parseTemplate($RSS_LIST_FOOTER, true);
 
 		$ns->tablerender(RSS_MENU_L2, $text);
 	}

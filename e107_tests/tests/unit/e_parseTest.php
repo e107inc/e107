@@ -710,12 +710,25 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testSimpleParse()
 		{
+			$vars = array(
+				'CONTACT_SUBJECT'=> "My Subject",
+				'CONTACT_PERSON' => "My Name"
+			);
+
+			$template = "{CONTACT_SUBJECT} <b>{CONTACT_PERSON}</b>{MISSING_SHORTCODE}";
+
+			$result = $this->tp->simpleParse($template, $vars);
+			$this->assertEquals("My Subject <b>My Name</b>", $result);
+
+			$result = $this->tp->simpleParse($template, null);
+			$this->assertEquals(" <b></b>", $result);
+
 
 		}
-*/
+
 		public function testToText()
 		{
 			$arr = array(

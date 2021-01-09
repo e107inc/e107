@@ -19,6 +19,7 @@ if (!defined('e107_INIT'))
 	exit();
 }
 
+e107::plugLan('login_menu', null);
 
 class plugin_signin_signin_shortcodes extends e_shortcode
 {
@@ -166,7 +167,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 		{
 			return "<input type='hidden' name='autologin' id='autologin' value='1' />";
 		}
-		if ($pref['user_tracking'] !== "session")
+		if (varset($pref['user_tracking']) !== "session")
 		{
 			return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />" . ($parm ? $parm : "" . LAN_LOGINMENU_6 );
 		}

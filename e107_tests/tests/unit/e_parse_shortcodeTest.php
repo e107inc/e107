@@ -1222,6 +1222,146 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+    public function testPMShortcodes()
+    {
+        require_once(e_PLUGIN."pm/pm_shortcodes.php");
+
+        try
+		{
+			/** @var plugin_pm_pm_shortcodes $sc */
+			$sc = $this->make('plugin_pm_pm_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+		$vars = array(
+			'pm_id' => 5,
+			'pm_sent' => time(),
+			'pm_read' => 0,
+			'pm_from' => 1,
+			'from_name' => 'admin',
+			'pm_to' => 1,
+			'pm_block_datestamp' => time(),
+			'pm_block_from'=> 2,
+
+		);
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+	public function testRSSShortcodes()
+    {
+        require_once(e_PLUGIN."rss_menu/rss_shortcodes.php");
+
+        try
+		{
+			/** @var rss_menu_shortcodes $sc */
+			$sc = $this->make('rss_menu_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+		$vars =  array(
+			'rss_id'        => '1',
+			'rss_name'      => 'News',
+			'rss_url'       => 'news',
+			'rss_topicid'   => '0',
+			'rss_path'      => '0',
+			'rss_text'      => 'The rss feed of the news',
+			'rss_datestamp' => '1456448477',
+			'rss_class'     => '0',
+			'rss_limit'     => '10',
+			// import shortcodes. 
+			'name'		    => "Comments",
+			'url'           => 'comments',
+			'topic_id'      => '',
+			'path'		    => 'comments',
+			'text'		    => 'the rss feed of comments',
+			'class'		    => '0',
+			'limit'		    => '9',
+		);
+
+		$sc->setVars($vars);
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+
+
+	public function testSigninShortcodes()
+    {
+        require_once(e_PLUGIN."signin/signin_shortcodes.php");
+
+        try
+		{
+			/** @var plugin_signin_signin_shortcodes $sc */
+			$sc = $this->make('plugin_signin_signin_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+        $this->processShortcodeMethods($sc);
+
+    }
+
+    public function testListShortcodes()
+    {
+        require_once(e_PLUGIN."list_new/list_shortcodes.php");
+        require_once(e_PLUGIN."list_new/list_class.php");
+
+        try
+		{
+			/** @var list_shortcodes $sc */
+			$sc = $this->make('list_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->rc = new listclass;
+
+		$vars = array (
+			'caption' => 'My Caption',
+			 'display' => '1',
+			 'open' => '1',
+			 'author' => '',
+			 'category' => '1',
+			 'date' => '',
+			 'icon' => '',
+			 'amount' => '1',
+			 'order' => '1',
+			 'section' => 'news',
+        );
+
+
+		$sc->row = $vars;
+
+		$exclude = array('sc_list_category');  // unknown issue.
+
+        $this->processShortcodeMethods($sc, $exclude);
+
+    }
+
+
+
 
 	/*
 
@@ -1229,24 +1369,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
             e107_plugins\links_page  (1 usage found)
                 links_page_shortcodes.php  (1 usage found)
                     1 <?php
-            e107_plugins\list_new  (1 usage found)
-                list_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\login_menu  (1 usage found)
-                login_menu_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\online  (1 usage found)
-                online_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\pm  (1 usage found)
-                pm_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\rss_menu  (1 usage found)
-                rss_shortcodes.php  (1 usage found)
-                    1 <?php
-            e107_plugins\signin  (1 usage found)
-                signin_shortcodes.php  (1 usage found)
-                    1 <?php
+
 
 	 */
 
