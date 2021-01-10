@@ -12,7 +12,8 @@
 	class e107_user_extendedTest extends \Codeception\Test\Unit
 	{
 
-		private $typeArray;
+		private $structTypes;
+		private $structLabels;
 
 		/** @var e107_user_extended */
 		protected $ue;
@@ -31,7 +32,7 @@
 
 			$this->ue->__construct();
 
-			$this->typeArray = array(
+			$this->structTypes = array(
 			'text'          => EUF_TEXT,
 			'homepage'      => EUF_TEXT,
 			'radio'         => EUF_RADIO,
@@ -47,6 +48,24 @@
 			'addon'         => EUF_ADDON,
 			'country'       => EUF_COUNTRY,
 			'richtextarea' 	=> EUF_RICHTEXTAREA,
+			);
+
+			$this->structLabels = array (
+			  'text'         => 'Text',
+			  'homepage'     => 'UE_LAN_HOMEPAGE', // test constant use as well.
+			  'radio'        => 'Radio',
+			  'dropdown'     => 'Dropdown',
+			  'dbfield'      => 'Dbfield',
+			  'textarea'     => 'Textarea',
+			  'integer'      => 'Integer',
+			  'date'         => 'Date',
+			  'language'     => 'Language',
+			  'list'         => 'List',
+			  'checkbox'     => 'Checkbox',
+			  'predefined'   => 'Predefined',
+			  'country'      => 'Country',
+			  'richtextarea' => 'Richtextarea',
+			  'addon'        => 'Addon'
 			);
 
 			$this->structValues = array(
@@ -68,13 +87,13 @@
 
 
 			// Add a field of each type.
-			foreach($this->typeArray as $k=>$v)
+			foreach($this->structTypes as $k=> $v)
 			{
 				$value = (isset($this->structValues[$k])) ? $this->structValues[$k] : null;
 
 				$insert = array(
 					'name'      => $k,
-					'text'      => ucfirst($k),
+					'text'      => $this->structLabels[$k],
 					'type'      => $v,
 					'parms'     => null,
 					'values'    => (isset($this->structValues[$k])) ? $this->structValues[$k] : null,
@@ -84,6 +103,30 @@
 				$this->ue->user_extended_add($insert);
 			//	$this->ue->user_extended_add($k, ucfirst($k), $v , null, $value);
 			}
+
+			// Insert a User-Extended Category
+			$insertCategory = array(
+					'name'         => 'mycategory',
+					'text'         => 'Category Name',
+					'type'         => 0,
+					'read'         => e_UC_PUBLIC,
+					'write'        => e_UC_ADMIN,
+					'applicable'   => e_UC_MEMBER
+			);
+
+			$this->ue->user_extended_add($insertCategory);
+
+					// Insert a User-Extended Category
+			$insertCategory2 = array(
+					'name'         => 'mycategory2 ',
+					'text'         => 'Category Name 2',
+					'type'         => 0,
+					'read'         => e_UC_ADMIN,
+					'write'        => e_UC_ADMIN,
+					'applicable'   => e_UC_MEMBER
+			);
+
+			$this->ue->user_extended_add($insertCategory2);
 
 			// As $_POSTED.
 			$this->userValues = array(
@@ -143,7 +186,7 @@
 			$legacyExpectedValues = array (
 			  'text'         => 'Some Text',
 			  'homepage'     => 'https://e107.org',
-			  'radio'        => 'M',
+			  'radio'        => 'Male',
 			  'dropdown'     => 'drop3',
 			  'dbfield'      => 'News',
 			  'textarea'     => 'Text area value',
@@ -168,36 +211,19 @@
 			}
 
 
-			$legacyExpectedLabels = array (
-			  'text'         => 'Text',
-			  'homepage'     => 'Homepage',
-			  'radio'        => 'Radio',
-			  'dropdown'     => 'Dropdown',
-			  'dbfield'      => 'Dbfield',
-			  'textarea'     => 'Textarea',
-			  'integer'      => 'Integer',
-			  'date'         => 'Date',
-			  'language'     => 'Language',
-			  'list'         => 'List',
-			  'checkbox'     => 'Checkbox',
-			  'predefined'   => 'Predefined',
-			  'country'      => 'Country',
-			  'richtextarea' => 'Richtextarea',
-
-			);
-
 			foreach($this->userValues as $field => $value)
 			{
 				$parm = $field.'.text.1';
 				$result = $tp->parseTemplate('{USER_EXTENDED='.$parm.'}', true);  // retrieve value for $field of user_id: 1.
-				$this->assertEquals($legacyExpectedLabels[$field], $result);
+				$expected = defset($this->structLabels[$field],$this->structLabels[$field]);
+				$this->assertEquals($expected, $result);
 			}
 
 
 			$legacyExpectedLabelValues = array (
 				  'text'         => 'Text: Some Text',
 				  'homepage'     => 'Homepage: https://e107.org',
-				  'radio'        => 'Radio: M',
+				  'radio'        => 'Radio: Male',
 				  'dropdown'     => 'Dropdown: drop3',
 				  'dbfield'      => 'Dbfield: News',
 				  'textarea'     => 'Textarea: Text area value',
@@ -254,7 +280,7 @@
 
 			$result = $this->ue->getStructure();
 
-			foreach($this->typeArray as $k=>$v)
+			foreach($this->structTypes as $k=> $v)
 			{
 				$key = 'user_'.$k;
 				$this->assertArrayHasKey($key,$result);
@@ -278,6 +304,36 @@
 
 			$this->assertEquals(EUF_RADIO,$result);
 		}
+
+		public function testGetFieldValues()
+		{
+			foreach($this->structValues as $key=>$value)
+			{
+				$result = $this->ue->getFieldValues('user_'.$key);
+				$this->assertEquals($value, $result);
+			}
+
+		}
+
+		public function testGetFieldLabel()
+		{
+			foreach($this->structLabels as $field => $label)
+			{
+				$result = $this->ue->getFieldLabel('user_'.$field);
+				$this->assertSame(defset($label, $label), $result);
+			}
+		}
+
+		function testGetFieldAttibute()
+		{
+			foreach($this->structValues as $field=>$val)
+			{
+				$result = $this->ue->getFieldAttribute('user_'.$field,'values');
+				$this->assertSame($val, $result);
+			}
+
+		}
+
 /*
 		public function testUser_extended_getvalue()
 		{
@@ -357,6 +413,78 @@
 			$this->assertEquals($expected, $result);
 
 		}
+
+		public function testGetCategoryAttribute()
+		{
+			$result = $this->ue->getCategoryAttribute('mycategory', 'read');
+			$this->assertSame(e_UC_PUBLIC, $result);
+
+			$result = $this->ue->getCategoryAttribute('mycategory', 'write');
+			$this->assertSame(e_UC_ADMIN, $result);
+
+			$result = $this->ue->getCategoryAttribute('user_text', 'read');
+			$this->assertSame(false, $result);
+
+			$result = $this->ue->getCategoryAttribute('not-a-category', 'read');
+			$this->assertSame(false, $result);
+
+		}
+
+		public function testGetCategories()
+		{
+			$expected = array (
+			  0 =>
+			  array (
+			 //   'user_extended_struct_id' => '16',
+			    'user_extended_struct_name' => 'mycategory',
+			    'user_extended_struct_text' => 'Category Name',
+			    'user_extended_struct_type' => '0',
+			    'user_extended_struct_parms' => '',
+			    'user_extended_struct_values' => '',
+			    'user_extended_struct_default' => '',
+			    'user_extended_struct_read' => '0',
+			    'user_extended_struct_write' => '254',
+			    'user_extended_struct_required' => '0',
+			    'user_extended_struct_signup' => '0',
+			    'user_extended_struct_applicable' => '253',
+			    'user_extended_struct_order' => '0',
+			    'user_extended_struct_parent' => '0',
+			  ),
+			  1 =>
+			  array (
+			//    'user_extended_struct_id' => '17',
+			    'user_extended_struct_name' => 'mycategory2',
+			    'user_extended_struct_text' => 'Category Name 2',
+			    'user_extended_struct_type' => '0',
+			    'user_extended_struct_parms' => '',
+			    'user_extended_struct_values' => '',
+			    'user_extended_struct_default' => '',
+			    'user_extended_struct_read' => '254',
+			    'user_extended_struct_write' => '254',
+			    'user_extended_struct_required' => '0',
+			    'user_extended_struct_signup' => '0',
+			    'user_extended_struct_applicable' => '253',
+			    'user_extended_struct_order' => '0',
+			    'user_extended_struct_parent' => '0',
+			  ),
+			);
+
+
+			$result = $this->ue->getCategories(false);
+
+			$this->assertNotEmpty($result);
+
+			$id = 0;
+			foreach($result as $row)
+			{
+				unset($row['user_extended_struct_id']);
+				$this->assertSame($expected[$id], $row);
+				$id++;
+			}
+
+		}
+
+
 /*
 		public function testUser_extended_edit()
 		{
@@ -397,12 +525,92 @@
 		{
 
 		}
-
+*/
 		public function testUser_extended_get_categories()
 		{
+			$expected = array (
+				  'mycategory' =>
+				  array (
+				    'user_extended_struct_name' => 'mycategory',
+				    'user_extended_struct_text' => 'Category Name',
+				    'user_extended_struct_type' => '0',
+				    'user_extended_struct_parms' => '',
+				    'user_extended_struct_values' => '',
+				    'user_extended_struct_default' => '',
+				    'user_extended_struct_read' => '0',
+				    'user_extended_struct_write' => '254',
+				    'user_extended_struct_required' => '0',
+				    'user_extended_struct_signup' => '0',
+				    'user_extended_struct_applicable' => '253',
+				    'user_extended_struct_order' => '0',
+				    'user_extended_struct_parent' => '0',
+				  ),
+				  'mycategory2' =>
+				  array (
+				    'user_extended_struct_name' => 'mycategory2',
+				    'user_extended_struct_text' => 'Category Name 2',
+				    'user_extended_struct_type' => '0',
+				    'user_extended_struct_parms' => '',
+				    'user_extended_struct_values' => '',
+				    'user_extended_struct_default' => '',
+				    'user_extended_struct_read' => '254',
+				    'user_extended_struct_write' => '254',
+				    'user_extended_struct_required' => '0',
+				    'user_extended_struct_signup' => '0',
+				    'user_extended_struct_applicable' => '253',
+				    'user_extended_struct_order' => '0',
+				    'user_extended_struct_parent' => '0',
+				  ),
+				);
+
+			// Test 1.
+			$result = $this->compileCategoryResult($this->ue->user_extended_get_categories());
+			$this->assertNotEmpty($result);
+			$this->assertEquals($expected, $result);
+
+			// Test 2
+			$result = $this->compileCategoryResult($this->ue->user_extended_get_categories(false), false);
+			$this->assertNotEmpty($result);
+			$this->assertEquals($expected, $result);
+
 
 		}
 
+		/**
+		 * Remove ID since it could change during testing.
+		 * @param array $result
+		 */
+		private function compileCategoryResult($result, $other=true)
+		{
+			if(empty($result))
+			{
+				return array();
+			}
+
+			$myresult = [];
+
+			if($other === false)
+			{
+				$result = array($result);
+			}
+
+			foreach($result as $row)
+			{
+				foreach($row as $arr)
+				{
+					unset($arr['user_extended_struct_id']);
+					$id = (string) $arr['user_extended_struct_name'];
+					foreach($arr as $field=>$val)
+					{
+						$myresult[$id][$field] = $val;
+					}
+
+				}
+			}
+
+			return $myresult;
+		}
+/*
 		public function testAddDefaultFields()
 		{
 
