@@ -44,6 +44,7 @@ class e107_user_extended
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
 	private $fieldAttributes   	= array(); // Field Permissionss with field name as key.
+	private $catAttributes      = array();
 	private $lastError;
 
 	public function __construct()
@@ -139,20 +140,34 @@ class e107_user_extended
 		{
 			while($row = $sql->fetch())
 			{
+
+
 				if ($row['user_extended_struct_type'] == 0)
 				{	// Its a category
+					$id = $row['user_extended_struct_name'];
 					$this->catDefinitions[$row['user_extended_struct_id']] = $row;
+					$this->catAttributes[$id] = array(
+						'read'          => (int) $row['user_extended_struct_read'],
+						'write'         => (int) $row['user_extended_struct_write'],
+						'applicable'    => (int) $row['user_extended_struct_applicable'],
+					);
 				}
 				else
 				{	// Its a field definition
-					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
 					$id = 'user_' . $row['user_extended_struct_name'];
+					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
+
 
 					$this->fieldAttributes[$id] = array(
-							'read' => $row['user_extended_struct_read'],
-							'write' => $row['user_extended_struct_write'],
-							'type'  => $row['user_extended_struct_type']
+							'read'          => (int) $row['user_extended_struct_read'],
+							'write'         => (int) $row['user_extended_struct_write'],
+							'type'          => $row['user_extended_struct_type'],
+							'values'        => $row['user_extended_struct_values'],
+							'parms'         => $row['user_extended_struct_parms'],
+							'applicable'    => (int) $row['user_extended_struct_applicable'],
+							'required'      => (int) $row['user_extended_struct_required'],
 					);
+
 					$this->nameIndex['user_' . $row['user_extended_struct_name']] = $row['user_extended_struct_id'];            // Create name to ID index
 
 					if($row['user_extended_struct_text'] == '_system_')
@@ -514,16 +529,18 @@ class e107_user_extended
 	 */
 	function getCategories($byID = TRUE)
 	{
-		return $this->user_extended_get_categories($byID);	
+		return $this->catDefinitions;
 	}
 
 	/**
-	 * BC Alias of getCategories()
+	 * Return a list of the user-extended categories.
+	 * @deprecated Use getCategories() instead.
 	 * @param bool $byID
 	 * @return array
 	 */
 	function user_extended_get_categories($byID = TRUE)
 	{
+
 	   	$ret = array();
 		$sql = e107::getDb('ue');
 		
@@ -679,9 +696,56 @@ class e107_user_extended
 	public function getFieldType($field)
 	{
 
-		if(!empty($this->fieldAttributes[$field]['type']))
+		if(isset($this->fieldAttributes[$field]['type']))
 		{
 			return (int) $this->fieldAttributes[$field]['type'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the field attributes of a given field-name.
+	 * @param string $field
+	 * @param string read|write|type|values|parms|applicable
+	 * @return bool|int|string
+	 */
+	public function getFieldAttribute($field, $att)
+	{
+		if(isset($this->fieldAttributes[$field][$att]))
+		{
+			return e107::getParser()->toHtml($this->fieldAttributes[$field][$att],false);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the category attributes of a given category-name.
+	 * @param string $field
+	 * @param string read|write|applicable
+	 * @return bool|int
+	 */
+	public function getCategoryAttribute($field, $att)
+	{
+		if(isset($this->catAttributes[$field][$att]))
+		{
+			return (int) $this->catAttributes[$field][$att];
+		}
+
+		return false;
+	}
+
+		/**
+	 * Get the field structure values of a given field-name.
+	 * @param $field
+	 * @return bool|string
+	 */
+	public function getFieldValues($field)
+	{
+		if(!empty($this->fieldAttributes[$field]['values']))
+		{
+			return e107::getParser()->toHTML($this->fieldAttributes[$field]['values'], false);
 		}
 
 		return false;
@@ -1347,6 +1411,28 @@ class e107_user_extended
 	}
 
 	/**
+	 * @param string $field
+	 * @return false|mixed|null
+	 */
+	public function getFieldLabel($field)
+	{
+		if(strpos($field, 'user_') !== 0)
+		{
+			$field = 'user_' . $field;
+		}
+
+		if(!isset($this->nameIndex[$field]) || !isset($this->fieldDefinitions[$this->nameIndex[$field]]['user_extended_struct_text']))
+		{
+			return null;
+		}
+
+		$text = $this->fieldDefinitions[$this->nameIndex[$field]]['user_extended_struct_text'];
+
+		return defset($text, $text);
+
+	}
+
+	/**
 	 * Replacement Method for user_extended_getvalue(); Returns extended field data in the original posted format.
 	 * @param int $uid
 	 * @param string $field_name
@@ -1384,7 +1470,6 @@ class e107_user_extended
 
 			default:
 				$ret = $uinfo[$field_name];
-				// code to be executed if n is different from all labels;
 		}
 
 		return $ret;
@@ -1537,65 +1622,126 @@ class e107_user_extended
 	/**
 	 * Render Extended User Field Data in a read-only fashion.
 	 * @param $value
-	 * @param $type
+	 * @param int|string $type field type number or field name.
 	 * @return array|string
 	 */
 	public function renderValue($value, $type=null)
 	{
 
+		if(!empty($type) && !is_numeric($type))
+		{
+			$fieldname = $type;
+			$type = $this->getFieldType($type);
+		}
 
-		//TODO FIXME Add more types.
+		$ret = null;
 
 		switch($type)
 		{
+			case EUF_RADIO:
+
+				if(isset($fieldname))
+				{
+					$tmp = $this->getFieldAttribute($fieldname, 'values');
+					$choices = explode(',', $tmp);
+
+					foreach($choices as $choice)
+					{
+						$choice = trim($choice);
+						$choice = e107::getParser()->toHTML($choice);
+
+						if(strpos($choice,"|")!==FALSE)
+						{
+			                list($val,$label) = explode("|",$choice);
+						}
+						elseif(strpos($choice," => ")!==FALSE) // new in v2.x
+						{
+			                list($val,$label) = explode(" => ",$choice);
+						}
+						else
+						{
+			                $val = $choice;
+							$label = $choice;
+						}
+
+						if($val == $value)
+						{
+							$ret = defset($label, $label);
+							break;
+						}
+					}
+				}
+			break;
+
 
 			case EUF_COUNTRY:
 				if(!empty($value))
 				{
-					return e107::getForm()->getCountry($value);
+					$ret = e107::getForm()->getCountry($value);
 				}
-
-				return null;
-			break;
-
-
-
-			case EUF_CHECKBOX:
-					$value = e107::unserialize($value);
-
-					if(!empty($value))
-					{
-
-						sort($value);
-						return implode('<br />',$value);
-
-					/*
-						$text = '<ul>';
-						foreach($uVal as $v)
-						{
-							$text .= "<li>".$v."</li>";
-
-						}
-						$text .= "</ul>";
-						$ret_data = $text;*/
-					}
 				break;
 
-			case EUF_DATE :		//check for 0000-00-00 in date field
-					if($value == '0000-00-00') { $value = ''; }
-					return $value;
-					break;
+			case EUF_CHECKBOX:
+				$value = e107::unserialize($value);
+
+				if(!empty($value))
+				{
+					sort($value);
+					$ret = implode(', ', $value);
+				}
+
+				break;
+
+			case EUF_DATE :        //check for 0000-00-00 in date field
+				if($value == '0000-00-00')
+				{
+					$value = '';
+				}
+				$ret = $value;
+				break;
 
 			case EUF_RICHTEXTAREA:
-				return e107::getParser()->toHTML($value, true);
+				$ret = e107::getParser()->toHTML($value, true);
+				break;
+
+			case EUF_DB_FIELD :        // check for db_lookup type
+				if(!isset($fieldname))
+				{
+					return null;
+				}
+
+				$structValues = $this->getFieldValues($fieldname);
+				$tmp = explode(',', $structValues);
+
+				if(empty($tmp[1]) || empty($tmp[2]))
+				{
+					return null;
+				}
+
+				$sql_ue = e107::getDb('euf_db');            // Use our own DB object to avoid conflicts
+				if($sql_ue->select($tmp[0], "{$tmp[1]}, {$tmp[2]}", "{$tmp[1]} = '{$value}'"))
+				{
+
+					$row = $sql_ue->fetch();
+					$ret = varset($row[$tmp[2]]);
+				}
+
+				break;
+
+			case EUF_PREDEFINED :    // Predefined field - have to look up display string in relevant file
+				if(isset($fieldname))
+				{
+					$structValues = $this->getFieldValues($fieldname);
+					$ret = $this->user_extended_display_text($structValues, $value);
+				}
 				break;
 
 			default:
-				return $value;
-				// code to be executed if n is different from all labels;
+				$ret = $value;
+			// code to be executed if n is different from all labels;
 		}
 
-		return null;
+		return $ret;
 	}
 
 }

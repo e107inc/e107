@@ -483,7 +483,7 @@ class signup_shortcodes extends e_shortcode
 		// 'unallocated' entries are `user_extended_struct_parent` = 0
 		
 		// Get a list of defined categories
-		$catList = $ue->getCategories(FALSE);
+		$catList = $ue->getCategories();
 		// Add in category zero - the 'no category' category
 		array_unshift($catList,array('user_extended_struct_parent' => 0, 'user_extended_struct_id' => '0'));
 		

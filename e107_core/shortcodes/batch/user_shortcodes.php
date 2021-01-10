@@ -764,13 +764,11 @@ class user_shortcodes extends e_shortcode
 		";
 		*/
 
-		require_once(e_HANDLER."user_extended_class.php");
-		
-		$ue = new e107_user_extended;
+		$ue = e107::getUserExt();
 		$ueCatList = $ue->user_extended_get_categories();
 		$ueFieldList = $ue->user_extended_get_fields();
-		
-		
+
+
 		
 		$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44, 'user_extended_struct_text' => '');
 		

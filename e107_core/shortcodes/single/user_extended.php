@@ -14,31 +14,30 @@
 	function user_extended_shortcode($parm)
 	{
 
-		$currentUser = e107::user();
+	//	$currentUser = e107::user();
 		$tp = e107::getParser();
+		$ue = e107::getUserExt();
 
 		global $loop_uid, $e107, $sc_style;
 
-	//	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
-
-		$parms = explode('.', $parm);
+		$tmp = explode('.', $parm);
+		$fieldname = $tmp[0];
+		$type = $tmp[1];
+		$user = varset($tmp[2], 0);
 
 		if(isset($loop_uid) && intval($loop_uid) == 0)
 		{
 			return '';
 		}
 
-		$key = $parms[0].".".$parms[1];
+		$key = $fieldname.".".$type;
 
 		$sc_style['USER_EXTENDED']['pre'] = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : '');
 		$sc_style['USER_EXTENDED']['post'] = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : '');
 
-		//include_once(e_HANDLER.'user_extended_class.php');
-		$ueStruct = e107::getUserExt()->user_extended_getStruct();
-	//	$ueStruct = e107_user_extended::user_extended_getStruct();
+		$uid = (int) $user;
 
-		$uid = intval(varset($parms[2],0));
-		if($uid == 0)
+		if($uid === 0)
 		{
 			if(isset($loop_uid) && intval($loop_uid) > 0)
 			{
@@ -57,7 +56,7 @@
 
 		if(!empty($udata['user_admin']))
 		{
-			$udata['user_class'].= ','.e_UC_ADMIN;
+			$udata['user_class'] .= ','.e_UC_ADMIN;
 		}
 
 
@@ -66,167 +65,108 @@
 		/**
 		 *	@todo - must be a better way of picking up the 'Miscellaneous' category
 		 */
-		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
+	//	e107::coreLan('user');
 
-		if (($parms[1] != 'icon') && ($parms[0] != LAN_USER_44))
+		if(($type !== 'icon') && ($ue->getCategoryAttribute($fieldname, 'read') === false))
 		{
-			$fkeyApplic = varset($ueStruct["user_".$parms[0]]['user_extended_struct_applicable']);
-			$fkeyRead = varset($ueStruct["user_".$parms[0]]['user_extended_struct_read']);
-			$fkeyStruct = varset($ueStruct["user_".$parms[0]]['user_extended_struct_parms']);
+			$fkeyApplic = $ue->getFieldAttribute("user_" . $fieldname, 'applicable');
+			$fkeyRead   = $ue->getFieldAttribute("user_" . $fieldname, 'read');
+			$fkeyStruct = $ue->getFieldAttribute("user_" . $fieldname, 'parms');
 
 			$ret_cause = 0;
-			if (!check_class($fkeyApplic, $udata['user_class'])) $ret_cause = 1;
-			if (!check_class($fkeyRead, $udata['user_class'])) $ret_cause = 2;
-			if (($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))) $ret_cause = 3;
-			if ((!ADMIN && substr($fkeyStruct, -1) == 1
-				&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $uid != USERID)) $ret_cause = 4;
-			if ($ret_cause != 0)
+
+			if(!check_class($fkeyApplic, $udata['user_class']))
 			{
-				return FALSE;
+				$ret_cause = 1;
 			}
-		}
 
-		if($parms[1] == 'text_value')
-		{
-		//	$_value = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.value}");
-			$_value = user_extended_shortcode($parms[0].".value");
-			//print_a($parms);
-
-			if($_value)
+			if(!check_class($fkeyRead, $udata['user_class']))
 			{
-				$__pre = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : '');
-				$__post = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : '');
-
-		//		$_text = $tp->parseTemplate("{USER_EXTENDED={$parms[0]}.text}");
-
-				$_text = user_extended_shortcode($parms[0].".text");
-
-
-				$_mid = (isset($sc_style['USER_EXTENDED'][$key]['mid']) ? $sc_style['USER_EXTENDED'][$key]['mid'] : ': ');
-				return $__pre.$_text.$_mid.$_value.$__post;
+				$ret_cause = 2;
 			}
-			return false;
-		}
 
-		if ($parms[1] == 'text')
-		{
-			if(!isset($parms[0]) || !isset($ueStruct['user_'.$parms[0]]) || !isset($ueStruct['user_'.$parms[0]]['user_extended_struct_text']))
+			if(($fkeyRead == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID)))
+			{
+				$ret_cause = 3;
+			}
+
+			if((!ADMIN && substr($fkeyStruct, -1) == 1	&& strpos($udata['user_hidden_fields'], "^user_" . $fieldname . "^") !== false && $uid != USERID))
+			{
+				$ret_cause = 4;
+			}
+			
+			if(!empty($ret_cause))
 			{
 				return false;
 			}
-
-			$text_val = $ueStruct['user_'.$parms[0]]['user_extended_struct_text'];
-
-			if($text_val)
-			{
-				return (defined($text_val) ? constant($text_val) : $text_val);
-			}
-			else
-			{
-				return FALSE;
-			}
 		}
 
-		if ($parms[1] == 'icon')
+
+
+		$ret = false;
+
+		switch($type)
 		{
-			if(defined(strtoupper($parms[0]).'_ICON'))
-			{
-				return constant(strtoupper($parms[0]).'_ICON');
-			}
-			elseif(is_readable(e_IMAGE."user_icons/user_{$parms[0]}.png"))
-			{
-				return "<img src='".e_IMAGE_ABS."user_icons/user_{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
-			}
-			elseif(is_readable(e_IMAGE."user_icons/{$parms[0]}.png"))
-			{
-				return "<img src='".e_IMAGE_ABS."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
-			}
-			//return '';
-			return FALSE;
-		}
+			case "text_value":
+				$_value = user_extended_shortcode($fieldname.".value.".$user);
 
-		if ($parms[1] === 'value')
-		{
-			$uVal = isset($parms[0]) && isset($udata['user_'.$parms[0]]) ?  str_replace(chr(1), '', $udata['user_'.$parms[0]]) : '';
-
-			if(!isset($parms[0]) || !isset($ueStruct["user_".$parms[0]]) || !isset($ueStruct["user_".$parms[0]]['user_extended_struct_type']))
-			{
-				return null;
-			}
-
-			switch ($ueStruct["user_".$parms[0]]['user_extended_struct_type'])
-			{
-
-				case EUF_CHECKBOX:
-
-					$uVal = e107::unserialize($uVal);
-
-					if(!empty($uVal))
-					{
-						return implode(', ',$uVal);
-
-					/*
-						$text = '<ul>';
-						foreach($uVal as $v)
-						{
-							$text .= "<li>".$v."</li>";
-
-						}
-						$text .= "</ul>";
-						$ret_data = $text;*/
-					}
+				if($_value)
+				{
+					$__pre = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : '');
+					$__post = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : '');
+					$_text = $ue->getFieldLabel($fieldname); // user_extended_shortcode($fieldname.".text");
+					$_mid = (isset($sc_style['USER_EXTENDED'][$key]['mid']) ? $sc_style['USER_EXTENDED'][$key]['mid'] : ': ');
+					$ret = $__pre.$_text.$_mid.$_value.$__post;
+				}
 
 				break;
-				case EUF_COUNTRY:
-					if(!empty($uVal))
+
+			case "text":
+				if(isset($fieldname))
+				{
+					$ret = $ue->getFieldLabel($fieldname);
+				}
+				break;
+
+
+			case "icon":
+				if(defined(strtoupper($fieldname).'_ICON'))
+				{
+					$ret = constant(strtoupper($fieldname).'_ICON');
+				}
+				elseif(is_readable(e_IMAGE."user_icons/user_{$fieldname}.png"))
+				{
+					$ret = "<img src='".e_IMAGE_ABS."user_icons/user_{$fieldname}.png' style='width:16px; height:16px' alt='' />";
+				}
+				elseif(is_readable(e_IMAGE."user_icons/{$fieldname}.png"))
+				{
+					$ret = "<img src='".e_IMAGE_ABS."user_icons/{$fieldname}.png' style='width:16px; height:16px' alt='' />";
+				}
+			break;
+
+
+			case "value":
+				$uVal = isset($fieldname) && isset($udata['user_'.$fieldname]) ?  str_replace(chr(1), '', $udata['user_'.$fieldname]) : '';
+
+				if(!empty($uVal))
+				{
+
+					$ret = $ue->renderValue($uVal, "user_".$fieldname);
+
+					if(!empty($ret))
 					{
-						return e107::getForm()->getCountry($uVal);
+						$ret = $tp->toHTML($ret, TRUE, 'no_make_clickable', "class:{$udata['user_class']}");
 					}
-					return false;
-				break; 
-				case EUF_DB_FIELD :		// check for db_lookup type
-					$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
+				}
+			break;
 
-					if(empty($tmp[1]) || empty($tmp[2]))
-					{
-						return null;
-					}
-
-
-					$sql_ue = new db;			// Use our own DB object to avoid conflicts
-					if($sql_ue->select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
-					{
-						$row = $sql_ue->fetch();
-						$ret_data = $row[$tmp[2]];
-					}
-					else
-					{
-						$ret_data = FALSE;
-					}
-					break;
-				case EUF_DATE :		//check for 0000-00-00 in date field
-					if($uVal == '0000-00-00') { $uVal = ''; }
-					$ret_data = $uVal;
-					break;
-				case EUF_PREDEFINED :	// Predefined field - have to look up display string in relevant file
-					$ret_data = e107::getUserExt()->user_extended_display_text($ueStruct['user_'.$parms[0]]['user_extended_struct_values'],$uVal);
-					break;
-				case EUF_RICHTEXTAREA :
-					$ret_data = e107::getParser()->toHTML($uVal);
-					break;
-				default :
-					$ret_data = $uVal;
-			}
-
-			if(!empty($ret_data))
-			{
-				return $tp->toHTML($ret_data, TRUE, 'no_make_clickable', "class:{$udata['user_class']}");
-			}
-
-			return FALSE;
+				// code to be executed if n is different from all labels;
 		}
-// return TRUE;
-		return FALSE;
+
+
+
+
+		return $ret;
 
 	}
