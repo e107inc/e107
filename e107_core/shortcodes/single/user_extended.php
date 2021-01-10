@@ -8,11 +8,12 @@
 	/**
 	 * @param $parm
 	 * @usage {USER_EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
-	 * @example {USER_EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
+	 * @example {USER_EXTENDED=gender.value.5}  will show the value of the extended field user_gender for user #5
 	 * @return bool|string
 	 */
 	function user_extended_shortcode($parm)
 	{
+
 		$currentUser = e107::user();
 		$tp = e107::getParser();
 
