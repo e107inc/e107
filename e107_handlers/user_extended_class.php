@@ -44,6 +44,7 @@ class e107_user_extended
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
 	private $fieldAttributes   	= array(); // Field Permissionss with field name as key.
+	private $lastError;
 
 	public function __construct()
 	{
@@ -206,9 +207,14 @@ class e107_user_extended
 		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
 		foreach ($target['data'] as $k => $v)
 		{
-			if (isset($this->nameIndex[$k]))
-			{
-				switch ($this->fieldDefinitions[$this->nameIndex[$k]]['user_extended_struct_type'])
+
+		//	if (isset($this->nameIndex[$k]))
+		//	{
+				if($type = $this->getDbFieldType($k))
+				{
+					$target['_FIELD_TYPES'][$k] = $type;
+				}
+		/*		switch ($this->fieldDefinitions[$this->nameIndex[$k]]['user_extended_struct_type'])
 				{
 					case EUF_TEXT :
 					case EUF_DB_FIELD :
@@ -227,16 +233,62 @@ class e107_user_extended
 						$target['_FIELD_TYPES'][$k] = 'array';
 						break;
 
-					
+
 					case EUF_INTEGER :
 						$target['_FIELD_TYPES'][$k] = 'int';
 						break;
-				}
-			}
+				}*/
+		//	}
 		}
 	}
 
+	/**
+	 * Given the field name, returns the database FIELD_TYPE
+	 * @param $fieldname
+	 * @return string|null
+	 */
+	public function getDBFieldType($fieldname)
+	{
+		if(strpos($fieldname, 'user_') !== 0)
+		{
+		//	$fieldname = 'user_'. $fieldname;
+			var_dump($fieldname);
+		}
 
+		if (!isset($this->nameIndex[$fieldname]))
+		{
+			return null;
+		}
+
+		$ret = null;
+
+		$index = $this->nameIndex[$fieldname];
+
+		switch ($this->fieldDefinitions[$index]['user_extended_struct_type'])
+		{
+			case EUF_TEXT :
+			case EUF_DB_FIELD :
+			case EUF_TEXTAREA :
+			case EUF_RICHTEXTAREA :
+			case EUF_DROPDOWN :
+			case EUF_DATE :
+			case EUF_LANGUAGE :
+			case EUF_PREDEFINED :
+			case EUF_RADIO :
+				$ret  = 'todb';
+				break;
+
+			case EUF_CHECKBOX :
+				$ret = 'array';
+				break;
+
+			case EUF_INTEGER :
+				$ret = 'int';
+				break;
+		}
+
+		return $ret;
+	}
 
 	/**
 	 * For all UEFs not in the target array, adds the default value
@@ -743,6 +795,9 @@ class e107_user_extended
 	  return $this->user_extended_add($name, '_system_', $type, $source, '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
+
+
+
 	function user_extended_add($name, $text='', $type='', $parms='', $values='', $default='', $required='', $read='', $write='', $applicable='', $order='', $parent='')
 	{
 		
@@ -798,34 +853,37 @@ class e107_user_extended
 			$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
 		}
 
-		/*	TODO
 			$extStructInsert = array(
-			'user_extended_struct_id'           => '_NULL_',
-			'user_extended_struct_name'         => '',
-			'user_extended_struct_text'         => '',
-			'user_extended_struct_type'         => '',
-			'user_extended_struct_parms'        => '',
-			'user_extended_struct_values'       => '',
-			'user_extended_struct_default'      => '',
-			'user_extended_struct_read'         => '',
-			'user_extended_struct_write'        => '',
-			'user_extended_struct_required'     => '',
-			'user_extended_struct_signup'       => '',
-			'user_extended_struct_applicable'   => '',
-			'user_extended_struct_order'        => '',
-			'user_extended_struct_parent'       => ''
+		//	'user_extended_struct_id'           => null,
+			'user_extended_struct_name'         => $tp -> toDB($name, true),
+			'user_extended_struct_text'         => (string) $tp -> toDB($text, true),
+			'user_extended_struct_type'         => (int) $type,
+			'user_extended_struct_parms'        => (string) $tp -> toDB($parms, true),
+			'user_extended_struct_values'       => (string) $tp -> toDB($values, true),
+			'user_extended_struct_default'      => (string) $tp -> toDB($default, true),
+			'user_extended_struct_read'         => (int) $read,
+			'user_extended_struct_write'        => (int) $write,
+			'user_extended_struct_required'     => (int) $required,
+			'user_extended_struct_signup'       => '0',
+			'user_extended_struct_applicable'   => (int) $applicable,
+			'user_extended_struct_order'        => (int) $order,
+			'user_extended_struct_parent'       => (int) $parent
 			);
-		*/
+
 
 		if(!$this->user_extended_field_exist($name))
 		{
-			$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+			$sql->insert('user_extended_struct', $extStructInsert);
+
+		//	$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 		}
 
 		if($this->user_extended_field_exist($name))
 		{
 		    return true;
 		}
+
+		echo $sql->getLastErrorText()."\n\n";
 
 		return false;
 	}
@@ -1289,7 +1347,7 @@ class e107_user_extended
 	}
 
 	/**
-	 * Proxy Method to retrieve the value of an extended field
+	 * Replacement Method for user_extended_getvalue(); Returns extended field data in the original posted format.
 	 * @param int $uid
 	 * @param string $field_name
 	 * @param mixed $ifnotset [optional]
@@ -1297,7 +1355,39 @@ class e107_user_extended
 	 */
 	function get($uid, $field_name, $ifnotset=false)
 	{
-		return $this->user_extended_getvalue($uid, $field_name, $ifnotset);
+
+		$uid = (int) $uid;
+
+		if(strpos($field_name, 'user_') !== 0)
+		{
+			$field_name = 'user_' . $field_name;
+		}
+
+		$uinfo = e107::user($uid);
+
+		if(!isset($uinfo[$field_name]))
+		{
+			return $ifnotset;
+		}
+
+		$type = $this->getDbFieldType($field_name);
+
+		switch($type)
+		{
+			case "int":
+				$ret = (int) $uinfo[$field_name];
+				break;
+
+			case "array":
+				$ret = e107::unserialize($uinfo[$field_name]); //  code
+				break;
+
+			default:
+				$ret = $uinfo[$field_name];
+				// code to be executed if n is different from all labels;
+		}
+
+		return $ret;
 	}
 
 
@@ -1336,6 +1426,12 @@ class e107_user_extended
 		$tp = e107::getParser();
 
 		$uid = (int)$uid;
+
+		$target = array('data' => array('user_'.$field_name => $newvalue));
+		$this->addFieldTypes($target);
+
+		$fieldType = isset($target['_FIELD_TYPES']['user_'.$field_name]) ? $target['_FIELD_TYPES']['user_'.$field_name] : $fieldType;
+
 		switch($fieldType)
 		{
 			case 'int':
@@ -1346,20 +1442,43 @@ class e107_user_extended
 				$newvalue = "'".$sql->escape($newvalue)."'";
 				break;
 
+			case 'array':
+				if(is_array($newvalue))
+				{
+					$newvalue = "'".e107::serialize($newvalue, true)."'";
+				}
+				else
+				{
+					$newvalue = "'". (string) $newvalue."'";
+				}
+			break;
+
 			default:
 				$newvalue = "'".$tp->toDB($newvalue)."'";
 				break;
 		}
-		if(substr($field_name, 0, 5) != 'user_')
+
+		if(strpos($field_name, 'user_') !== 0)
 		{
 			$field_name = 'user_'.$field_name;
 		}
+
+
 		$qry = "
 		INSERT INTO `#user_extended` (user_extended_id, {$field_name})
 		VALUES ({$uid}, {$newvalue})
 		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
 		";
-		return $sql->gen($qry);
+
+		if(!$result = $sql->gen($qry))
+		{
+			$this->lastError = $sql->getLastErrorText();
+			echo (ADMIN) ? $this->lastError : '';
+		}
+
+		e107::setRegistry('core/e107/user/'.$uid); // reset the registry since the values changed.
+
+		return $result;
 	}
 
 
@@ -1376,13 +1495,21 @@ class e107_user_extended
 	 */
 	function user_extended_getvalue($uid, $field_name, $ifnotset=false)
 	{
-		$uid = intval($uid);
-		if(substr($field_name, 0, 5) != 'user_')
+
+		$uid = (int) $uid;
+
+		if(strpos($field_name, 'user_') !== 0)
 		{
-			$field_name = 'user_'.$field_name;
+			$field_name = 'user_' . $field_name;
 		}
+
 		$uinfo = e107::user($uid);
-		if (!isset($uinfo[$field_name])) return $ifnotset;
+
+		if(!isset($uinfo[$field_name]))
+		{
+			return $ifnotset;
+		}
+
 		return $uinfo[$field_name];
 	}
 
