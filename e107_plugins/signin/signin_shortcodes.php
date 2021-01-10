@@ -187,6 +187,18 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 	}
 
+	function sc_signin_login_href($parm = '')
+	{
+
+		if ($this->regMode == 0 )
+		{
+			return null;
+		}
+
+		return e_LOGIN;
+
+	}
+	
 	function sc_signin_resend_href($parm=null)
 	{
 		if ($this->regMode !== 1 || $this->authMethod !== 'e107')
