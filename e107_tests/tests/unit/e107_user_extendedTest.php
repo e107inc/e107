@@ -279,7 +279,7 @@
 				}
 
 				$parm = $field.'.icon.1';
-				$result = $tp->parseTemplate('{USER_EXTENDED='.$parm.'}', true);  // retrieve value for $field of user_id: 1.
+				$result = (string) $tp->parseTemplate('{USER_EXTENDED='.$parm.'}', true);  // retrieve value for $field of user_id: 1.
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
 			}
 
