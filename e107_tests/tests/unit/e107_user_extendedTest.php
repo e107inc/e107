@@ -94,7 +94,12 @@
 				'country'   => 17,
 			);
 
-
+			// clear the table.
+			$sql = e107::getDb();
+			if($sql->select('user_extended_struct', 'user_extended_struct_id', "user_extended_struct_text = '_system_'"))
+			{
+				$sql->truncate('user_extended_struct');
+			}
 
 
 			// Add a field of each type.
@@ -273,13 +278,15 @@
 
 			foreach($this->userValues as $field => $value)
 			{
-				if(empty($value))
+				if(!isset($legacyExpectedIcons[$field]))
 				{
 					continue;
 				}
 
 				$parm = $field.'.icon.1';
 				$result = (string) $tp->parseTemplate('{USER_EXTENDED='.$parm.'}', true);  // retrieve value for $field of user_id: 1.
+
+
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
 			}
 

@@ -180,7 +180,7 @@
 		{
 			$this->pluginInstall('forum');
 			$this->pluginUninstall('forum');
-			e107::getDb()->truncate('user_extended_struct'); // clear the table
+
 		}
 
 		public function testGallery()
