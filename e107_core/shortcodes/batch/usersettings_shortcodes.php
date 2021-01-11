@@ -350,8 +350,12 @@ class usersettings_shortcodes extends e_shortcode
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
-		
+
+		if(empty($this->var['userclass_list']) && ADMIN)
+		{
+			return '$this->var[\'userclass_list\'] is empty';
+		}
+
 		$qry = "
 		SELECT * FROM #user_extended_struct
 		WHERE user_extended_struct_applicable IN (".$tp -> toDB($this->var['userclass_list'], true).")
@@ -392,9 +396,7 @@ class usersettings_shortcodes extends e_shortcode
 				$tabs[] = array('caption'=>$catName, 'text'=>$text);
 			}
 		}
-		
-		
-		
+
 		if(($parm == 'tabs') && !empty($tabs) && deftrue('BOOTSTRAP'))
 		{
 			return e107::getForm()->tabs($tabs);		
@@ -445,6 +447,7 @@ class usersettings_shortcodes extends e_shortcode
 			}
 		}
 
+
 		if($catInfo)
 		{
 			$qry = "
@@ -462,9 +465,7 @@ class usersettings_shortcodes extends e_shortcode
 				foreach($fieldList as $field)
 				{
 					e107::setRegistry("extendedfield_{$field['user_extended_struct_name']}", $field);
-					//TODO use $this instead of parseTemplate(); 
 					$ret .= $this->sc_userextended_field($field['user_extended_struct_name']);
-					//		$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
 				}
 			}
 		}
@@ -483,6 +484,28 @@ class usersettings_shortcodes extends e_shortcode
 
 		return $ret;
 	}
+
+	public function getUserExtendedFieldData($name)
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+
+		$fInfo = array();
+
+		$qry = "
+			SELECT * FROM #user_extended_struct
+			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
+			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
+			AND user_extended_struct_name = '" . $tp->toDB($name, true) . "'
+			";
+			if($sql->gen($qry))
+			{
+				$fInfo = $sql->fetch();
+			}
+
+		return $fInfo;
+	}
+
 
 
 	function sc_userextended_field($parm = null)
@@ -522,16 +545,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		if(!$fInfo)
 		{
-			$qry = "
-			SELECT * FROM #user_extended_struct
-			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
-			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
-			AND user_extended_struct_name = '" . $tp->toDB($parm, true) . "'
-			";
-			if($sql->gen($qry))
-			{
-				$fInfo = $sql->fetch();
-			}
+			$fInfo = $this->getUserExtendedFieldData($parm);
 		}
 
 		if($fInfo)
@@ -571,6 +585,8 @@ class usersettings_shortcodes extends e_shortcode
 
 
 			$rVal = !empty($fInfo['user_extended_struct_required']) ;
+
+
 
 			$ret = $USEREXTENDED_FIELD;
 			$ret = str_replace("{FIELDNAME}", $fname, $ret);

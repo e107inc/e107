@@ -155,6 +155,9 @@ class e107_user_extended
 				else
 				{	// Its a field definition
 					$id = 'user_' . $row['user_extended_struct_name'];
+
+					$row['user_extended_struct_parent'] = (int) $row['user_extended_struct_parent'];
+
 					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
 
 
@@ -575,17 +578,13 @@ class e107_user_extended
 
 	// Get the definition of all fields, or those in a specific category, grouped by category ID
 	// Reads non-system fields only
-	function user_extended_get_fields($cat = "")
+	public function user_extended_get_fields($cat = "")
 	{
-		$sql = e107::getDb('ue');
+		$list = $this->getFieldList($cat);
 		$ret = array();
-		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
-		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
+		foreach($list as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$ret[$row['user_extended_struct_parent']][] = $row;
-			}
+			$ret[$row['user_extended_struct_parent']][] = $row;
 		}
 		return $ret;
 	}
@@ -646,7 +645,28 @@ class e107_user_extended
 		{
 			 $indexField = 'user_extended_struct_id';	
 		}
-		
+
+		$ret = [];
+		foreach($this->fieldDefinitions as $row)
+		{
+			if(!empty($cat) && ($row['user_extended_struct_parent'] !== (int) $cat))
+			{
+				continue;
+			}
+
+			if($system == false && ($row['user_extended_struct_text'] === '_system_'))
+			{
+				continue;
+			}
+
+			$id = $row[$indexField];
+			$ret[$id] = $row;
+
+		}
+
+		return $ret;
+
+		/*
 		$sql = e107::getDb('ue');
 
 		$ret = array();
@@ -662,7 +682,7 @@ class e107_user_extended
 			}
 		}
 
-		return $ret;
+		return $ret;*/
 	}
 
 
@@ -673,18 +693,14 @@ class e107_user_extended
 	function getFieldNames()
 	{
 		$ret = array();
-		
-		$sql = e107::getDb('ue');
-		
-		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 ORDER BY user_extended_struct_order ASC"))
+
+		foreach($this->fieldDefinitions as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$ret[] = 'user_'.$row['user_extended_struct_name'];
-			}
+			$ret[] = 'user_'.$row['user_extended_struct_name'];
+
 		}
+
 		return $ret;
-		
 	}
 
 

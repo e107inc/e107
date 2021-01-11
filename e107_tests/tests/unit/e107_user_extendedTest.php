@@ -18,6 +18,7 @@
 		/** @var e107_user_extended */
 		protected $ue;
 
+
 		protected function _before()
 		{
 
@@ -37,7 +38,7 @@
 			'homepage'      => EUF_TEXT,
 			'radio'         => EUF_RADIO,
 			'dropdown'      => EUF_DROPDOWN,
-			'dbfield'      => EUF_DB_FIELD,
+			'dbfield'       => EUF_DB_FIELD,
 			'textarea'      => EUF_TEXTAREA,
 			'integer'       => EUF_INTEGER,
 			'date'          => EUF_DATE,
@@ -85,6 +86,15 @@
 
 			);
 
+			$this->structParent = array(
+				'list'      => 16,
+				'radio'     => 16,
+				'textarea'  => 16,
+				'country'   => 17,
+			);
+
+
+
 
 			// Add a field of each type.
 			foreach($this->structTypes as $k=> $v)
@@ -98,6 +108,7 @@
 					'parms'     => null,
 					'values'    => (isset($this->structValues[$k])) ? $this->structValues[$k] : null,
 					'default'   => (isset($this->structDefault[$k])) ? $this->structDefault[$k] : null,
+					'parent'    => (isset($this->structParent[$k])) ? $this->structParent[$k] : 0,
 				);
 
 				$this->ue->user_extended_add($insert);
@@ -148,11 +159,7 @@
 
 			);
 
-
-
-
 			$this->ue->init();
-
 
 		}
 
@@ -270,6 +277,50 @@
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
 			}
 
+
+		}
+
+
+		public function testUserExtendedAllShortcode()
+		{
+
+			$sc = e107::getScBatch('usersettings');
+
+			$sc->setVars(array('userclass_list' => '253,251,0,254,250'));
+
+			$result = e107::getParser()->parseTemplate('{USEREXTENDED_ALL}', false, $sc);
+
+			$this->assertStringContainsString('<h3>Category Name</h3>',$result);
+			$this->assertStringContainsString('<h3>Category Name 2</h3>',$result);
+			$this->assertStringContainsString('<h3>Miscellaneous</h3>', $result);
+
+		}
+
+		public function testGetUserExtendedFieldData()
+		{
+			$sc = e107::getScBatch('usersettings');
+
+			$sc->setVars(array('userclass_list' => '253,251,0,254,250'));
+
+			$expected = array (
+			  'user_extended_struct_id' => '3',
+			  'user_extended_struct_name' => 'radio',
+			  'user_extended_struct_text' => 'Radio',
+			  'user_extended_struct_type' => '2',
+			  'user_extended_struct_parms' => '',
+			  'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
+			  'user_extended_struct_default' => 'F',
+			  'user_extended_struct_read' => '0',
+			  'user_extended_struct_write' => '0',
+			  'user_extended_struct_required' => '0',
+			  'user_extended_struct_signup' => '0',
+			  'user_extended_struct_applicable' => '0',
+			  'user_extended_struct_order' => '2',
+			  'user_extended_struct_parent' => '16',
+			);
+
+			$result = $sc->getUserExtendedFieldData('radio');
+			$this->assertEquals($result, $expected);
 
 		}
 
@@ -505,12 +556,32 @@
 		{
 
 		}
-
+*/
 		public function testGetFieldNames()
 		{
+			$expected = array (
+			  0 => 'user_text',
+			  1 => 'user_homepage',
+			  2 => 'user_radio',
+			  3 => 'user_dropdown',
+			  4 => 'user_dbfield',
+			  5 => 'user_textarea',
+			  6 => 'user_integer',
+			  7 => 'user_date',
+			  8 => 'user_language',
+			  9 => 'user_list',
+			  10 => 'user_checkbox',
+			  11 => 'user_predefined',
+			  12 => 'user_addon',
+			  13 => 'user_country',
+			  14 => 'user_richtextarea',
+			);
+
+			$result = $this->ue->getFieldNames();
+			$this->assertSame($expected, $result);
 
 		}
-
+/*
 		public function testUser_extended_modify()
 		{
 
@@ -615,12 +686,72 @@
 		{
 
 		}
-
+*/
 		public function testUser_extended_get_fields()
 		{
+			$expected = array (
+			  16 =>
+			  array (
+			    0 =>
+			    array (
+			      'user_extended_struct_id' => '3',
+			      'user_extended_struct_name' => 'radio',
+			      'user_extended_struct_text' => 'Radio',
+			      'user_extended_struct_type' => '2',
+			      'user_extended_struct_parms' => '',
+			      'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
+			      'user_extended_struct_default' => 'F',
+			      'user_extended_struct_read' => '0',
+			      'user_extended_struct_write' => '0',
+			      'user_extended_struct_required' => '0',
+			      'user_extended_struct_signup' => '0',
+			      'user_extended_struct_applicable' => '0',
+			      'user_extended_struct_order' => '2',
+			      'user_extended_struct_parent' => '16',
+			    ),
+			    1 =>
+			    array (
+			      'user_extended_struct_id' => '6',
+			      'user_extended_struct_name' => 'textarea',
+			      'user_extended_struct_text' => 'Textarea',
+			      'user_extended_struct_type' => '5',
+			      'user_extended_struct_parms' => '',
+			      'user_extended_struct_values' => '',
+			      'user_extended_struct_default' => '',
+			      'user_extended_struct_read' => '0',
+			      'user_extended_struct_write' => '0',
+			      'user_extended_struct_required' => '0',
+			      'user_extended_struct_signup' => '0',
+			      'user_extended_struct_applicable' => '0',
+			      'user_extended_struct_order' => '5',
+			      'user_extended_struct_parent' => '16',
+			    ),
+			    2 =>
+			    array (
+			      'user_extended_struct_id' => '10',
+			      'user_extended_struct_name' => 'list',
+			      'user_extended_struct_text' => 'List',
+			      'user_extended_struct_type' => '9',
+			      'user_extended_struct_parms' => '',
+			      'user_extended_struct_values' => 'timezones',
+			      'user_extended_struct_default' => '',
+			      'user_extended_struct_read' => '0',
+			      'user_extended_struct_write' => '0',
+			      'user_extended_struct_required' => '0',
+			      'user_extended_struct_signup' => '0',
+			      'user_extended_struct_applicable' => '0',
+			      'user_extended_struct_order' => '9',
+			      'user_extended_struct_parent' => '16',
+			    ),
+			  ),
+			);
+
+
+			$result = $this->ue->user_extended_get_fields(16);
+			$this->assertEquals($expected, $result);
 
 		}
-
+/*
 		public function testUser_extended_type_text()
 		{
 
@@ -722,12 +853,67 @@
 		{
 
 		}
-
+*/
 		public function testUser_extended_get_fieldList()
 		{
+			$expected = array (
+			  'radio' =>
+			  array (
+			    'user_extended_struct_id' => '3',
+			    'user_extended_struct_name' => 'radio',
+			    'user_extended_struct_text' => 'Radio',
+			    'user_extended_struct_type' => '2',
+			    'user_extended_struct_parms' => '',
+			    'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
+			    'user_extended_struct_default' => 'F',
+			    'user_extended_struct_read' => '0',
+			    'user_extended_struct_write' => '0',
+			    'user_extended_struct_required' => '0',
+			    'user_extended_struct_signup' => '0',
+			    'user_extended_struct_applicable' => '0',
+			    'user_extended_struct_order' => '2',
+			    'user_extended_struct_parent' => 16,
+			  ),
+			  'textarea' =>
+			  array (
+			    'user_extended_struct_id' => '6',
+			    'user_extended_struct_name' => 'textarea',
+			    'user_extended_struct_text' => 'Textarea',
+			    'user_extended_struct_type' => '5',
+			    'user_extended_struct_parms' => '',
+			    'user_extended_struct_values' => '',
+			    'user_extended_struct_default' => '',
+			    'user_extended_struct_read' => '0',
+			    'user_extended_struct_write' => '0',
+			    'user_extended_struct_required' => '0',
+			    'user_extended_struct_signup' => '0',
+			    'user_extended_struct_applicable' => '0',
+			    'user_extended_struct_order' => '5',
+			    'user_extended_struct_parent' => 16,
+			  ),
+			  'list' =>
+			  array (
+			    'user_extended_struct_id' => '10',
+			    'user_extended_struct_name' => 'list',
+			    'user_extended_struct_text' => 'List',
+			    'user_extended_struct_type' => '9',
+			    'user_extended_struct_parms' => '',
+			    'user_extended_struct_values' => 'timezones',
+			    'user_extended_struct_default' => '',
+			    'user_extended_struct_read' => '0',
+			    'user_extended_struct_write' => '0',
+			    'user_extended_struct_required' => '0',
+			    'user_extended_struct_signup' => '0',
+			    'user_extended_struct_applicable' => '0',
+			    'user_extended_struct_order' => '9',
+			    'user_extended_struct_parent' => 16,
+			  ),
+			);
 
+			$result = $this->ue->user_extended_get_fieldList(16, 'user_extended_struct_name');
+			$this->assertSame($expected, $result);
 		}
-*/
+
 
 
 

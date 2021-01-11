@@ -252,6 +252,7 @@
 			$this->assertNotEmpty($result['plugin_path'], "plugin_path was empty" );
 			$this->assertEmpty($result['plugin_installflag'], "plugin_installflag was true when it should be false");
 
+			e107::getDb()->truncate('user_extended_struct');// reset.
 		}
 /*
 		public function testGetAdminCaption()

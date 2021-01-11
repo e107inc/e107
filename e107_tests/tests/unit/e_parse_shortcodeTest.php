@@ -663,7 +663,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$sc->__construct();
 		$sc->setVars($vars);
 
-		$exclude = array('sc_userextended_all'); // uses e107::setRegistry() to avoid duplicate rendering.
+		// these are tested in the user-extended test.
+		$exclude = array('sc_userextended_all', 'sc_userextended_cat', 'sc_userextended_field'); // uses e107::setRegistry() to avoid duplicate rendering.
         $this->processShortcodeMethods($sc, $exclude);
 
     }
