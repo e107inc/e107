@@ -20,6 +20,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	public $pref;
 	public $param;
 
+
 	// $param is sent from nfp menu.
 
 	function __construct()
@@ -633,9 +634,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_visits()
 	{
 
-		if(!empty($this->postInfo['user_name']))
+		if(!empty($this->postInfo['user_name']) && isset($this->postInfo['user_visits']))
 		{
-			return LAN_FORUM_2033 . ': ' . varset($this->postInfo['user_visits']) . '<br />';
+			return LAN_FORUM_2033 . ': ' . ($this->postInfo['user_visits']) . '<br />';
 		}
 	}
 
@@ -669,7 +670,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_editimg()
 	{
 
-		if(USER && !empty($this->postInfo['post_user']) && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active'])
+		if(USER && !empty($this->postInfo['post_user']) && $this->postInfo['post_user'] == USERID && $this->var['thread_active'])
 		{
 			$qry = array('f' => 'edit', 'id' => $this->postInfo['post_thread'], 'post' => $this->postInfo['post_id']);
 			$editURL = e107::url('forum', 'post', null, array('query' => $qry));
@@ -854,8 +855,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		//	$text2 = $this->sc_level('special');
 		//	$text .= $this->sc_level('pic');
-
-		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}", true);
+		$uid = (int) $this->postInfo['post_user'];
+		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value".$uid."}", true);
 		$username = (empty($this->postInfo['user_name'])) ? LAN_ANONYMOUS : $this->postInfo['user_name'];
 
 		$userUrl = empty($this->postInfo['post_user']) ? '#' : e107::getUrl()->create('user/profile/view', array('user_id' => $this->postInfo['post_user'], 'user_name' => $username));
@@ -939,7 +940,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		// Edit
-		if((USER && isset($this->postInfo['post_user']) && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
+		if((USER && isset($this->postInfo['post_user']) && $this->postInfo['post_user'] == USERID && $this->var['thread_active']))
 		{
 
 
@@ -954,7 +955,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			/* only show delete button when post is not the initial post of the topic
 			 * AND if this post is the last post in the thread */
-			if($this->thread->threadInfo['thread_active'] && empty($this->postInfo['thread_start']))
+			if($this->var['thread_active'] && empty($this->postInfo['thread_start']))
 			{
 				$text .= "<li class='text-right float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 			}
@@ -977,7 +978,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			//	print_a($this->postInfo);
 
-			if((USER && isset($this->postInfo['post_user']) && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
+			if((USER && isset($this->postInfo['post_user']) && $this->postInfo['post_user'] != USERID && $this->var['thread_active']))
 			{
 
 				$url = e107::url('forum', 'post') . "?f=edit&amp;id=" . $threadID . "&amp;post=" . $postID;

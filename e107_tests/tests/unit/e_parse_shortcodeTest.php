@@ -1032,20 +1032,27 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'post_forum' => '4',
 			'post_status' => '0',
 			'post_datestamp' => '1367307189',
-			'post_user' => '2',
+			'post_user' => 1,
 			'post_edit_datestamp' => NULL,
 			'post_edit_user' => NULL,
 			'post_ip' => NULL,
 			'post_user_anon' => NULL,
 			'post_attachments' => NULL,
-			'post_options' => NULL
-
-
+			'post_options' => NULL,
+			'user_join'     => time(),
+			'user_id'       => 1,
+			'user_name'     => USERNAME,
+			'user_hideemail'    => 1,
+			'user_plugin_forum_posts' => 3,
+			'user_visits' => 6,
+			'user_admin' => 1,
+			'user_join' => time() - 8000,
 		);
 
 		$sc->__construct();
 
 		$sc->setVars($vars);
+		$sc->setScVar('postInfo', $vars);
 
         $this->processShortcodeMethods($sc);
 
