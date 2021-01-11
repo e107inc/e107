@@ -730,7 +730,7 @@ class e107_user_extended
 	{
 		if(isset($this->fieldAttributes[$field][$att]))
 		{
-			return e107::getParser()->toHtml($this->fieldAttributes[$field][$att],false);
+			return html_entity_decode($this->fieldAttributes[$field][$att]);
 		}
 
 		return false;
@@ -761,7 +761,7 @@ class e107_user_extended
 	{
 		if(!empty($this->fieldAttributes[$field]['values']))
 		{
-			return e107::getParser()->toHTML($this->fieldAttributes[$field]['values'], false);
+			return html_entity_decode($this->fieldAttributes[$field]['values']);
 		}
 
 		return false;
@@ -953,7 +953,8 @@ class e107_user_extended
 
 		if(!$this->user_extended_field_exist($name))
 		{
-			$sql->insert('user_extended_struct', $extStructInsert);
+			$nid = $sql->insert('user_extended_struct', $extStructInsert);
+			$this->init(); // rebuild the list.
 
 		//	$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 		}
@@ -963,7 +964,7 @@ class e107_user_extended
 		    return true;
 		}
 
-		echo $sql->getLastErrorText()."\n\n";
+		trigger_error("Extended User Field ".$name." doesn't exist", E_USER_NOTICE);
 
 		return false;
 	}
@@ -1128,7 +1129,7 @@ class e107_user_extended
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
-					$choice = $tp->toHTML($choice);
+					$choice = html_entity_decode($choice);
 
 					if(strpos($choice,"|")!==FALSE)
 					{
@@ -1573,7 +1574,7 @@ class e107_user_extended
 
 		if(!$result = $sql->gen($qry))
 		{
-			$this->lastError = $sql->getLastErrorText();
+		//	$this->lastError = $sql->getLastErrorText();
 			echo (ADMIN) ? $this->lastError : '';
 		}
 
@@ -1661,18 +1662,23 @@ class e107_user_extended
 					$tmp = $this->getFieldAttribute($fieldname, 'values');
 					$choices = explode(',', $tmp);
 
+					if(empty($choices))
+					{
+						trigger_error('User Extended RADIO field is missing configured selection values', E_USER_NOTICE);
+						return null;
+					}
+
 					foreach($choices as $choice)
 					{
 						$choice = trim($choice);
-						$choice = e107::getParser()->toHTML($choice);
 
-						if(strpos($choice,"|")!==FALSE)
+						if(strpos($choice,"|") !==false)
 						{
 			                list($val,$label) = explode("|",$choice);
 						}
-						elseif(strpos($choice," => ")!==FALSE) // new in v2.x
+						elseif(strpos($choice," => ") !==false) // new in v2.x
 						{
-			                list($val,$label) = explode(" => ",$choice);
+			                list($val, $label) = explode(" => ",$choice);
 						}
 						else
 						{
@@ -1698,7 +1704,10 @@ class e107_user_extended
 				break;
 
 			case EUF_CHECKBOX:
-				$value = e107::unserialize($value);
+				if(is_string($value))
+				{
+					$value = e107::unserialize($value);
+				}
 
 				if(!empty($value))
 				{

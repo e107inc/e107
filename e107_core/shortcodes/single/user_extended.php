@@ -20,17 +20,24 @@
 
 		global $loop_uid, $e107, $sc_style;
 
+		if(empty($parm))
+		{
+			trigger_error('{USER_EXTENDED} was sent an empty $parm',E_USER_NOTICE);
+			return null;
+		}
+
 		$tmp = explode('.', $parm);
-		$fieldname = $tmp[0];
-		$type = $tmp[1];
+
+		$fieldname = trim($tmp[0]);
+		$type = trim($tmp[1]);
 		$user = varset($tmp[2], 0);
 
-		if(isset($loop_uid) && intval($loop_uid) == 0)
+		if(isset($loop_uid) && $loop_uid === 0)
 		{
 			return '';
 		}
 
-		$key = $fieldname.".".$type;
+		$key = $fieldname. '.' .$type;
 
 		$sc_style['USER_EXTENDED']['pre'] = (isset($sc_style['USER_EXTENDED'][$key]['pre']) ? $sc_style['USER_EXTENDED'][$key]['pre'] : '');
 		$sc_style['USER_EXTENDED']['post'] = (isset($sc_style['USER_EXTENDED'][$key]['post']) ? $sc_style['USER_EXTENDED'][$key]['post'] : '');
@@ -39,7 +46,7 @@
 
 		if($uid === 0)
 		{
-			if(isset($loop_uid) && intval($loop_uid) > 0)
+			if(isset($loop_uid) && $loop_uid > 0)
 			{
 				$uid = $loop_uid;
 			}
@@ -52,7 +59,7 @@
 		$udata = e107::user($uid);
 
 		$udata['user_class'] .= ($udata['user_class'] == '' ? '' : ',');
-		$udata['user_class'] .= e_UC_PUBLIC.",".e_UC_MEMBER;
+		$udata['user_class'] .= e_UC_PUBLIC. ',' .e_UC_MEMBER;
 
 		if(!empty($udata['user_admin']))
 		{
@@ -70,9 +77,9 @@
 
 		if(($type !== 'icon') && ($ue->getCategoryAttribute($fieldname, 'read') === false))
 		{
-			$fkeyApplic = $ue->getFieldAttribute("user_" . $fieldname, 'applicable');
-			$fkeyRead   = $ue->getFieldAttribute("user_" . $fieldname, 'read');
-			$fkeyStruct = $ue->getFieldAttribute("user_" . $fieldname, 'parms');
+			$fkeyApplic = $ue->getFieldAttribute('user_' . $fieldname, 'applicable');
+			$fkeyRead   = $ue->getFieldAttribute('user_' . $fieldname, 'read');
+			$fkeyStruct = $ue->getFieldAttribute('user_' . $fieldname, 'parms');
 
 			$ret_cause = 0;
 
@@ -91,7 +98,7 @@
 				$ret_cause = 3;
 			}
 
-			if((!ADMIN && substr($fkeyStruct, -1) == 1	&& strpos($udata['user_hidden_fields'], "^user_" . $fieldname . "^") !== false && $uid != USERID))
+			if((!ADMIN && substr($fkeyStruct, -1) == 1	&& strpos($udata['user_hidden_fields'], '^user_' . $fieldname . '^') !== false && $uid != USERID))
 			{
 				$ret_cause = 4;
 			}
@@ -108,8 +115,8 @@
 
 		switch($type)
 		{
-			case "text_value":
-				$_value = user_extended_shortcode($fieldname.".value.".$user);
+			case 'text_value':
+				$_value = user_extended_shortcode($fieldname. '.value.' .$user);
 
 				if($_value)
 				{
@@ -122,7 +129,7 @@
 
 				break;
 
-			case "text":
+			case 'text':
 				if(isset($fieldname))
 				{
 					$ret = $ue->getFieldLabel($fieldname);
@@ -130,7 +137,7 @@
 				break;
 
 
-			case "icon":
+			case 'icon':
 				if(defined(strtoupper($fieldname).'_ICON'))
 				{
 					$ret = constant(strtoupper($fieldname).'_ICON');
@@ -146,19 +153,24 @@
 			break;
 
 
-			case "value":
-				$uVal = isset($fieldname) && isset($udata['user_'.$fieldname]) ?  str_replace(chr(1), '', $udata['user_'.$fieldname]) : '';
+			case 'value':
+				$fullField = 'user_'.$fieldname;
+				$uVal = isset($fieldname, $udata[$fullField]) ?  str_replace(chr(1), '', $udata[$fullField]) : '';
 
 				if(!empty($uVal))
 				{
-
-					$ret = $ue->renderValue($uVal, "user_".$fieldname);
+					$ret = $ue->renderValue($uVal, $fullField);
 
 					if(!empty($ret))
 					{
 						$ret = $tp->toHTML($ret, TRUE, 'no_make_clickable', "class:{$udata['user_class']}");
 					}
 				}
+				elseif(!isset($udata[$fullField]))
+				{
+				//	trigger_error($fullField. ' is not defined: '.print_r($udata, true), E_USER_NOTICE);
+				}
+
 			break;
 
 				// code to be executed if n is different from all labels;

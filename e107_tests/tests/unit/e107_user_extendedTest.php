@@ -14,6 +14,7 @@
 
 		private $structTypes;
 		private $structLabels;
+		private $userValues;
 
 		/** @var e107_user_extended */
 		protected $ue;
@@ -272,6 +273,11 @@
 
 			foreach($this->userValues as $field => $value)
 			{
+				if(empty($value))
+				{
+					continue;
+				}
+
 				$parm = $field.'.icon.1';
 				$result = $tp->parseTemplate('{USER_EXTENDED='.$parm.'}', true);  // retrieve value for $field of user_id: 1.
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
@@ -351,9 +357,15 @@
 */
 		public function testGetFieldType()
 		{
-			$result = $this->ue->getFieldType('user_radio');
 
-			$this->assertEquals(EUF_RADIO,$result);
+			foreach($this->structTypes as $field=>$type)
+			{
+				$fieldname = 'user_'.$field;
+				$result = $this->ue->getFieldType($fieldname);
+				$this->assertEquals($type, $result);
+			}
+
+
 		}
 
 		public function testGetFieldValues()
@@ -551,12 +563,36 @@
 		{
 
 		}
-
+*/
 		public function testRenderValue()
 		{
+			$expectedRenderedValues = array (
+			  'text'         => 'Some Text',
+			  'homepage'     => 'https://e107.org',
+			  'radio'        => 'Male',
+			  'dropdown'     => 'drop3',
+			  'dbfield'      => 'News',
+			  'textarea'     => 'Text area value',
+			  'integer'      => '21',
+			  'date'         => '2001-01-11',
+			  'language'     => 'English',
+			  'list'         => 'America/Aruba (-04:00)',
+			  'checkbox'     => 'value2, value3',
+			  'predefined'   => 'predefined',
+			  'country'      => 'United States',
+			  'richtextarea' => '<b>Rich text</b>',
+			);
+
+			foreach($this->userValues as $field => $v)
+			{
+				$name  = 'user_'.$field;
+				$result = $this->ue->renderValue($v, $name);
+				$this->assertEquals($expectedRenderedValues[$field], $result);
+			}
+
 
 		}
-*/
+
 		public function testGetFieldNames()
 		{
 			$expected = array (
