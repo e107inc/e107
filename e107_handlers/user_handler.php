@@ -687,6 +687,11 @@ class UserHandler
 	 */
 	public function makeUserCookie($lode,$autologin = false)
 	{
+		if(e107::isCli())
+		{
+			return true;
+		}
+
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if (e107::getPref('user_tracking') == 'session')
 		{
