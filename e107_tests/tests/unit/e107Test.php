@@ -871,6 +871,7 @@ class e107Test extends \Codeception\Test\Unit
 			e_PLUGIN_ABS . 'forum/forum_viewtopic.php?f=post&amp;id=123',
 			$url, "Generated href does not match expectation"
 		);
+		e107::getDb()->truncate('user_extended_struct');// reset.
 	}
 
 	public function testUrlOptionQueryUrlEncoded()
@@ -888,6 +889,7 @@ class e107Test extends \Codeception\Test\Unit
 			'forum/post/?didn%27t=%3Ctag%20attr%3D%22such%20wow%22%3E%3C/tag%3E&amp;did=much%20doge',
 			$url, "Generated href query string did not have expected URL encoding"
 		);
+		e107::getDb()->truncate('user_extended_struct');// reset.
 	}
 
 	public function testUrlEscapesHtmlSpecialChars()
@@ -904,6 +906,7 @@ class e107Test extends \Codeception\Test\Unit
 			'forum/&lt;&gt;/#Arts &amp; Crafts &lt;tag attr=&quot;can&#039;t inject here&quot;&gt;&lt;/tag&gt;',
 			$url, "Generated href did not prevent HTML tag injection as expected"
 		);
+		e107::getDb()->truncate('user_extended_struct');// reset.
 	}
 	/*
 			public function testRedirect()
