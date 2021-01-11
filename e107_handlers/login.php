@@ -96,7 +96,7 @@ class userlogin
 		
 		$autologin = intval($autologin);		// Will decode to zero if forced login
 		$authorized = false;
-		if (!$forceLogin && $this->e107->isInstalled('alt_auth'))
+		if (!$forceLogin && e107::isInstalled('alt_auth'))
 		{
 			$authMethod[0] = varset($pref['auth_method'], 'e107');		// Primary authentication method
 			$authMethod[1] = varset($pref['auth_method2'], 'none');		// Secondary authentication method (if defined)
@@ -291,7 +291,11 @@ class userlogin
 			}
 		}
 
-		if($noredirect) return true;
+		if($noredirect)
+		{
+			return true;
+		}
+
 		$redir = e_REQUEST_URL;
 		//$redir = e_SELF;
 		//if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
@@ -521,12 +525,15 @@ class userlogin
 			'LOGIN_DB_ERROR'=> -12,		// Error adding user to main DB
 		);
 
+		$ret = [];
 		foreach($errors as $k=>$v)
 		{
-			$this->invalidLogin("John Smith", $v, 'Custom error text');
-			echo "<h4>".$k."</h4>";
-			echo e107::getMessage()->render();
+			$ret[] = $this->invalidLogin("John Smith", $v, 'Custom error text');
+		//	echo "<h4>".$k."</h4>";
+		//	$ret[] = e107::getMessage()->render();
 		}
+
+		return $ret;
 
 	}
 
@@ -537,7 +544,7 @@ class userlogin
 	 */
 	protected function invalidLogin($username, $reason, $extra_text = '')
 	{
-		global $pref, $sql;
+		global $pref;
 
 		$doCheck = FALSE;			// Flag set if need to ban check
 		$this->userData = array();
@@ -633,7 +640,7 @@ class userlogin
 		{
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
 			{
-				$fails = $sql->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
 
