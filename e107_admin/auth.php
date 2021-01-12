@@ -148,6 +148,7 @@ else
 
 		if ($row[0] == "authfail")
 		{
+			e107::coreLan('log_messages', true);
 			$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 

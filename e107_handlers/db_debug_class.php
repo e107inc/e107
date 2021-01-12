@@ -518,7 +518,7 @@
 
 			$obj = new ArrayObject($this->aTimeMarks);
 			$it = $obj->getIterator();
-
+			$head = '';
 
 		    // while(list($tKey, $tMarker) = each($this->aTimeMarks))
 			foreach ($it as $tKey=>$tMarker)
@@ -807,6 +807,21 @@
 			return $text;
 		}
 
+		private function includeVar($value)
+		{
+			$prefix = array('ADMIN', 'E_', 'e_', 'E107', 'SITE', 'USER', 'CORE');
+
+			foreach($prefix as $c)
+			{
+				if(strpos($value, $c) === 0)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		function Show_PATH($force = false)
 		{
 
@@ -841,15 +856,18 @@
 			$userCon = get_defined_constants(true);
 			ksort($userCon['user']);
 
+
+			$c = 0;
 			foreach($userCon['user'] as $k => $v)
 			{
-				if(E107_DBG_ALLERRORS || in_array($k, $inc) || substr($k, 0, 5) == 'ADMIN' || substr($k, 0, 2) == 'E_' || substr($k, 0, 2) == 'e_' || substr($k, 0, 4) == 'E107' || substr($k, 0, 4) == 'SITE' || substr($k, 0, 4) == 'USER' || substr($k, 0, 4) == 'CORE')
+				if(E107_DBG_ALLERRORS || in_array($k, $inc) || $this->includeVar($k))
 				{
 					$text .= "
 				<tr>
 					<td>" . $k . "</td>
 					<td>" . htmlspecialchars($v) . "</td>
 				</tr>";
+					$c++;
 				}
 			}
 
