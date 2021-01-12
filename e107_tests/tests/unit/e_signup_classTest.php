@@ -32,7 +32,7 @@
 		}
 
 
-		public function testRenderEmailPreview()
+/*		public function testRenderEmailPreview()
 		{
 
 		}
@@ -45,7 +45,7 @@
 		public function testRender_after_signup()
 		{
 
-		}
+		}*/
 
 		public function testProcessActivationLink()
 		{

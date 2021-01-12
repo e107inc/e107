@@ -37,13 +37,13 @@ class e_signup
 	}
 
 
-	public function run()
+	public function run($query='')
 	{
 		$ns = e107::getRender();
 
-		if(substr(e_QUERY,0,9)=='activate.')
+		if(strpos($query,'activate.') === 0)
 		{
-			$result = $this->processActivationLink(e_QUERY);
+			$result = $this->processActivationLink($query);
 
 			switch($result)
 			{
@@ -72,7 +72,7 @@ class e_signup
 			return null;
 		}
 
-		if((e_QUERY == 'resend') && (!USER || $this->testMode) && ($this->pref['user_reg_veri'] === 1))
+		if(($query === 'resend') && (!USER || $this->testMode) && ($this->pref['user_reg_veri'] === 1))
 		{
 			if(empty($_POST['submit_resend']))
 			{
@@ -84,19 +84,19 @@ class e_signup
 			}
 		}
 
-		if($this->testMode == true)
+		if($this->testMode === true)
 		{
-			if(e_QUERY == 'preview')
+			if($query === 'preview')
 			{
 				$this->renderEmailPreview();
 			}
 
-			if(e_QUERY == "preview.aftersignup")
+			if($query === "preview.aftersignup")
 			{
 				$this->renderAfterSignupPreview();
 			}
 
-			if(e_QUERY == 'test')
+			if($query === 'test')
 			{
 				$this->sendEmailPreview();
 			}
@@ -193,7 +193,7 @@ class e_signup
 
 		$row['activation_url'] = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
 
-		$eml = $this->render_email($row);
+		$eml = $this->renderEmail($row);
 		$eml['e107_header'] = $row['user_id'];
 
 
@@ -287,7 +287,7 @@ class e_signup
 	private function sendEmailPreview()
 	{
 		$temp = array();
-		$eml = $this->render_email($temp, TRUE); // It ignores the data, anyway
+		$eml = $this->renderEmail($temp, TRUE); // It ignores the data, anyway
 		$mailer = e107::getEmail();
 
 		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
@@ -308,7 +308,7 @@ class e_signup
 		$tp = e107::getParser();
 
 		$temp = array();
-		$eml = $this->render_email($temp, true); // It ignores the data, anyway
+		$eml = $this->renderEmail($temp, true); // It ignores the data, anyway
 		$ns->tablerender('Email Preview', $tp->replaceConstants($eml['preview'],'abs'));
 
 	}
@@ -322,7 +322,7 @@ class e_signup
 	    $allData['data']['user_email'] = "example@email.com";
 		$allData['data']['user_loginname'] = "user_loginname";
 
-	  	$after_signup = self::render_after_signup(null);
+	  	$after_signup = self::renderAfterSignup(null);
 
 		$ns->tablerender($after_signup['caption'], $after_signup['text']);
 	}
@@ -439,7 +439,7 @@ class e_signup
 	 * @param bool  $preview
 	 * @return array of data for mailer - field names directly compatible
 	 */
-	function render_email($userInfo, $preview = FALSE)
+	function renderEmail($userInfo, $preview = FALSE)
 	{
 
 		if($preview == TRUE)
@@ -461,7 +461,7 @@ class e_signup
 
 
 
-	static function render_after_signup($error_message='')
+	static function renderAfterSignup($error_message='')
 	{
 
 		$ret = array();
