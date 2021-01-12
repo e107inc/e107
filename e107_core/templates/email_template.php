@@ -38,8 +38,8 @@ See e_HANDLER.mail.php for more information
 if (!defined('e107_INIT')) { exit; }
 
 $includeSiteButton = e107::getPref('sitebutton');
-e107::lan('core','signup'); // required for when mailer runs under CLI.
-
+e107::coreLan('signup'); // required for when mailer runs under CLI.
+e107::coreLan('users', true);
 /*
 $SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96.' {SITENAME}';
 $SIGNUPEMAIL_USETHEME = 1; 			// Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded

@@ -9,7 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "User Posts");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "User Posts"); // todo fix me
+}
 
 define("UP_LAN_0", "All Forum Posts for [x]");
 define("UP_LAN_1", "All Comments for [x]");

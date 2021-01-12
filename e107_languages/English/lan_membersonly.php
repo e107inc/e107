@@ -9,7 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members Only");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Members Only");
+}
 
 define("LAN_MEMBERS_0", "restricted area");
 define("LAN_MEMBERS_1", "This is a restricted area.");

@@ -191,6 +191,8 @@
 		 */
 		public function testUserExtendedShortcode()
 		{
+			e107::setRegistry('corelan/English_user_extended_front');
+
 			foreach($this->userValues as $field => $value)
 			{
 				$this->ue->set(1, $field, $value); // set user extended value for user_id:  1.
