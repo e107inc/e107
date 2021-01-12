@@ -26,9 +26,6 @@ require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 
 
-
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
-
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
 
@@ -88,7 +85,40 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 		else
 		{
-			$bcDefs = array('LAN_418'=>'LAN_USET_31');
+			$bcDefs = array(
+				'LAN_418'   => 'LAN_USET_31',
+				'LAN_7'     => 'LAN_USER_01',
+				'LAN_8'     => 'LAN_USER_80',
+				'LAN_9'     => 'LAN_USER_81',
+				'LAN_10'    => 'LAN_USER_82',
+				'LAN_112'   => 'LAN_USER_60',
+				'LAN_113'   => 'LAN_USER_83',
+				'LAN_114'   => 'LAN_USER_84',
+				'LAN_120'   => 'LAN_USER_71', // Signature
+				'LAN_152'   => 'LAN_USET_24',
+				'LAN_153'   => 'LAN_USET_25',
+				'LAN_154'   => 'LAN_USET_37',
+				'LAN_308'   => 'LAN_USER_63',
+				'LAN_401'   => 'LAN_USET_23',
+				'LAN_404'   => 'LAN_USET_32',
+				'LAN_414'   => 'LAN_USET_27',
+				'LAN_415'   => 'LAN_USET_26',
+				'LAN_420'   => 'LAN_USER_07', // Avatar
+				'LAN_421'   => 'LAN_USET_33',
+				'LAN_422'   => 'LAN_USET_34',
+				'LAN_423'   => 'LAN_USET_35',
+				'LAN_424'   => 'LAN_USET_36',
+				'LAN_425'   => 'LAN_USER_06',
+				'LAN_426'   => 'LAN_USET_28',
+				'LAN_433'   => '',
+				'LAN_434'   => '',
+				'LAN_435'   => '',
+				'LAN_122'   => 'UE_LAN_TIMEZONE',
+				'LAN_CUSTOMTITLE'   => 'LAN_USER_04'
+
+			);
+
+
 			e107::getLanguage()->bcDefs($bcDefs);
 
 			global $sc_style;
