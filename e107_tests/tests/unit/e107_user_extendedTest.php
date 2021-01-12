@@ -129,7 +129,8 @@
 					'type'         => 0,
 					'read'         => e_UC_PUBLIC,
 					'write'        => e_UC_ADMIN,
-					'applicable'   => e_UC_MEMBER
+					'applicable'   => e_UC_MEMBER,
+					'order'        => 1,
 			);
 
 			$this->ue->user_extended_add($insertCategory);
@@ -141,7 +142,8 @@
 					'type'         => 0,
 					'read'         => e_UC_ADMIN,
 					'write'        => e_UC_ADMIN,
-					'applicable'   => e_UC_MEMBER
+					'applicable'   => e_UC_MEMBER,
+					'order'        => 2,
 			);
 
 			$this->ue->user_extended_add($insertCategory2);
@@ -545,7 +547,7 @@
 			    'user_extended_struct_required' => '0',
 			    'user_extended_struct_signup' => '0',
 			    'user_extended_struct_applicable' => '253',
-			    'user_extended_struct_order' => '0',
+			    'user_extended_struct_order' => '1',
 			    'user_extended_struct_parent' => '0',
 			  ),
 			  1 =>
@@ -562,7 +564,7 @@
 			    'user_extended_struct_required' => '0',
 			    'user_extended_struct_signup' => '0',
 			    'user_extended_struct_applicable' => '253',
-			    'user_extended_struct_order' => '0',
+			    'user_extended_struct_order' => '2',
 			    'user_extended_struct_parent' => '0',
 			  ),
 			);
@@ -684,7 +686,7 @@
 				    'user_extended_struct_required' => '0',
 				    'user_extended_struct_signup' => '0',
 				    'user_extended_struct_applicable' => '253',
-				    'user_extended_struct_order' => '0',
+				    'user_extended_struct_order' => '1',
 				    'user_extended_struct_parent' => '0',
 				  ),
 				  'mycategory2' =>
@@ -700,7 +702,7 @@
 				    'user_extended_struct_required' => '0',
 				    'user_extended_struct_signup' => '0',
 				    'user_extended_struct_applicable' => '253',
-				    'user_extended_struct_order' => '0',
+				    'user_extended_struct_order' => '2',
 				    'user_extended_struct_parent' => '0',
 				  ),
 				);
