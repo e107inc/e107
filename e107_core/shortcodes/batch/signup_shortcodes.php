@@ -20,6 +20,7 @@ e107::coreLan('signup');
 
 class signup_shortcodes extends e_shortcode
 {
+	public $template = array();
 
 	function sc_signup_coppa_text($parm=null)
 	{
@@ -462,78 +463,76 @@ class signup_shortcodes extends e_shortcode
 		return $tp->simpleParse($USERCLASS_SUBSCRIBE_ROW, $shortcodes);*/
 
 	}
-	
-	
-	
-	function sc_signup_extended_user_fields($parm=null)
-	{ 
-		global $SIGNUP_EXTENDED_USER_FIELDS, $SIGNUP_EXTENDED_CAT;
+
+
+	function sc_signup_extended_user_fields($parm = null)
+	{
+
 		$text = "";
-		
+
 		$search = array(
-		'{EXTENDED_USER_FIELD_TEXT}',
-		'{EXTENDED_USER_FIELD_REQUIRED}',
-		'{EXTENDED_USER_FIELD_EDIT}'
+			'{EXTENDED_USER_FIELD_TEXT}',
+			'{EXTENDED_USER_FIELD_REQUIRED}',
+			'{EXTENDED_USER_FIELD_EDIT}'
 		);
-		
+
+		/** @var e107_user_extended $ue */
 		$ue = e107::getUserExt();
 		$tp = e107::getParser();
-		// What we need is a list of fields, ordered first by parent, and then by display order?
-		// category entries are `user_extended_struct_type` = 0
-		// 'unallocated' entries are `user_extended_struct_parent` = 0
-		
-		// Get a list of defined categories
-		$catList = $ue->getCategories();
-		// Add in category zero - the 'no category' category
-		array_unshift($catList,array('user_extended_struct_parent' => 0, 'user_extended_struct_id' => '0'));
-		
 
-		
+		$catList = $ue->getCategories();
+
+		// Add in category zero - the 'no category' category
+		array_unshift($catList, array('user_extended_struct_parent' => 0, 'user_extended_struct_id' => '0'));
+
 		foreach($catList as $cat)
 		{
-		  $extList = $ue->user_extended_get_fieldList($cat['user_extended_struct_id']);
-		
-		  $done_heading = FALSE;
-		  
-		  if(!count($extList))
-		  {
-			continue;	
-		  }
+			$extList = $ue->getFieldList($cat['user_extended_struct_id']);
 
+			$done_heading = false;
+
+			if(empty($extList))
+			{
+				continue;
+			}
 
 			foreach($extList as $ext)
 			{
-			     $opts = $parm;
-				if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2)
+				$opts = $parm;
+				$required = (int) $ext['user_extended_struct_required'];
+
+				if($required === 0) // "No - Will not show on Signup page".
 				{
-					if(!$done_heading && ($cat['user_extended_struct_id'] > 0))
-					{    // Add in a heading
-						$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
-						if(defined($catName))
-						{
-							$catName = constant($catName);
-						}
-						$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
-						$done_heading = true;
-					}
-
-					$label = $tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs');
-
-                    if(isset($opts['placeholder']))
-                    {
-                        $opts['placeholder'] = str_replace('[label]', $label, $opts['placeholder']);
-                    }
-
-					$replace = array(
-						$label,
-						($ext['user_extended_struct_required'] == 1 ? $this->sc_signup_is_mandatory('true') : ''),
-						$ue->renderElement($ext, $_POST['ue']['user_' . $ext['user_extended_struct_name']], $opts)
-					);
-
-					$text .= str_replace($search, $replace, $SIGNUP_EXTENDED_USER_FIELDS);
+					continue;
 				}
+
+				if(!$done_heading && !empty($cat['user_extended_struct_id']))  // Add in a heading
+				{
+					$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
+					$catName = defset($catName, $catName);
+
+					$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'emotes_off,defs'), $this->template['extended-category']);
+					$done_heading = true;
+				}
+
+				$label = $tp->toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), false, 'emotes_off,defs');
+
+				if(isset($opts['placeholder']))
+				{
+					$opts['placeholder'] = str_replace('[label]', $label, $opts['placeholder']);
+				}
+
+				$replace = array(
+					$label,
+					($required === 1 ? $this->sc_signup_is_mandatory('true') : ''),
+					$ue->renderElement($ext, varset($_POST['ue']['user_' . $ext['user_extended_struct_name']]), $opts)
+				);
+
+				$text .= str_replace($search, $replace, $this->template['extended-user-fields']);
+
 			}
 		}
+
 		return $text;
 	}
 	

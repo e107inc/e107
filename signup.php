@@ -83,10 +83,15 @@ if($template = e107::getCoreTemplate('signup'))
 else
 {
 	require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+	$template  = array(
+		'extended-user-fields'  => $SIGNUP_EXTENDED_USER_FIELDS,
+		'extended-category'     => $SIGNUP_EXTENDED_CAT
+	);
 }
 
 $signup_shortcodes = e107::getScBatch('signup');
 $signup_shortcodes->wrapper('signup');
+$signup_shortcodes->template = $template;
 // $facebook_shortcodes = e107::getScBatch('facebook',TRUE);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
