@@ -164,7 +164,7 @@ class e_formTest extends \Codeception\Test\Unit
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
 		include_once(e_CORE."templates/admin_icons_template.php");
 		include_once(e_PLUGIN.'forum/forum_class.php');
-		include_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
+		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
 		$legacyDir = APP_PATH."/e107_files/downloadimages/";
 		$legacyFile = APP_PATH."/e107_files/downloadimages/butterfly.jpg";

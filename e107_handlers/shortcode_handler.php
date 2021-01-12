@@ -856,15 +856,15 @@ class e_parse_shortcode
 				{
 					// TODO use Library Manager...
 					e107::js('footer', '{e_WEB}js/jquery.contenteditable.js', 'jquery', 2);
-
-					$_SESSION['editable'][e_TOKEN] = $this->editableCodes;
+					$token = defset('e_TOKEN','token-missing');
+					$_SESSION['editable'][$token] = $this->editableCodes;
 
 					e107::js('footer-inline', '$(".e-editable-front").each(function ()
 					{
 
 						var sc   = $(this).attr("data-edit-sc");
 						var id      = $(this).attr("data-edit-id");
-						var token    = "'.e_TOKEN.'";
+						var token    = "'.$token.'";
 						var box     = $(this).parent("div, span"); 
 						var container = this; 
 
@@ -1334,7 +1334,7 @@ class e_parse_shortcode
 				$error['problem']   = $scCode;
 
                 e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
-
+                trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
 			}
 
 			if($ret === false && E107_DEBUG_LEVEL > 0 ) // Error in Code.

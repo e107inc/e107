@@ -298,7 +298,7 @@ class comment
 	
 			$text .= "
 			<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />
-			<input type='hidden' name='e-token' value='".e_TOKEN."' />
+			<input type='hidden' name='e-token' value='".defset('e_TOKEN','')."' />
 			<input type='hidden' name='table' value='".$table."' />
 			<input type='hidden' name='itemid' value='".$itemid."' />
 			

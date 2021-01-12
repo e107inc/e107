@@ -8,6 +8,11 @@ function imageselector_shortcode($parm = '', $mod = '')
 	$sql = e107::getDb('imageselector.sc');
 	$tp = e107::getParser();
 
+	if(empty($parm))
+	{
+		return null;
+	}
+
 	if (strpos($parm, "=") !== false)
 	{ // query style parms.
 		parse_str($parm, $parms);

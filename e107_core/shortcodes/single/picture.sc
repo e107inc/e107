@@ -4,9 +4,12 @@ if(empty($parm) && is_numeric($loop_uid))
 {
 	$parm = $loop_uid;
 }
+
+$image = '';
+
 if(is_numeric($parm))
 {
-	if((int) $parm == USERID)
+	if((int) $parm == USERID && deftrue('USERPHOTO'))
 	{
 		$image = USERPHOTO;
 	}
@@ -22,7 +25,12 @@ elseif($parm)
 }
 else
 {
-	$image = USERPHOTO;
+	$image = deftrue('USERPHOTO');
+}
+
+if(empty($image))
+{
+    return null;
 }
 
 return e107::getParser()->parseTemplate("{USER_AVATAR=".$image."}",true);

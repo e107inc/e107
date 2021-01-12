@@ -16,6 +16,11 @@ class sitelinks_alt
 	static function sitelinks_alt_shortcode($parm)
 	{
 
+		if(empty($parm))
+		{
+			return null;
+		}
+
 		$params = explode('+', $parm);
 		
 		if (vartrue($params[0]) && ($params[0] != 'no_icons') && ($params[0] != 'default'))

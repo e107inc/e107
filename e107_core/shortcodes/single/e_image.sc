@@ -1,2 +1,1 @@
-global $IMAGES_DIRECTORY;
-return $IMAGES_DIRECTORY;
+return e107::getFolder('IMAGES'); // $IMAGES_DIRECTORY;

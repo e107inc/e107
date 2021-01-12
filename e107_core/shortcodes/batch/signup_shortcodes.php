@@ -467,6 +467,11 @@ class signup_shortcodes extends e_shortcode
 
 	function sc_signup_extended_user_fields($parm = null)
 	{
+		if(empty($this->template['extended-user-fields']))
+		{
+			return (ADMIN) ? "SIGNUP 'extended-user-fields' template not defined" : '';
+		}
+
 
 		$text = "";
 
