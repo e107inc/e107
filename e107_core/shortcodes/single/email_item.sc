@@ -5,6 +5,10 @@ if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 	return '';
 }
 
+if(empty($parm))
+{
+    return null;
+}
 
 $parms = explode("^",$parm);
 

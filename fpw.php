@@ -35,88 +35,6 @@ else
 }
 
 
-class fpw_shortcodes extends e_shortcode
-{	
-	private $secImg;
-	
-	function __construct()
-	{
-		parent::__construct();
-		global $sec_img; 
-		$this->secImg = $sec_img;	
-	}
-
-	function sc_fpw_username($parm=null) // used when email login is disabled
-	{
-		// return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
-		return e107::getForm()->text('username'); // $frm->userpicker()?
-	}
-
-	function sc_fpw_useremail($parm=null)
-	{
-		// return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
-		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
-		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
-	}
-
-	function sc_fpw_submit($parm=null)
-	{
-		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
-		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
-		$label = deftrue('LAN_FPW_102', LAN_SUBMIT);
-		return e107::getForm()->button('pwsubmit', $label); 
-	}
-
-	function sc_fpw_captcha_lan($parm=null)
-	{
-		return LAN_ENTER_CODE;
-	}
-	
-	function sc_fpw_captcha_hidden($parm=null)
-	{
-		return; // no longer required - included in renderInput();
-	}
-
-	/**
-	 * @param string $parm
-	 * @return mixed|null|string
-	 */
-	function sc_fpw_captcha_img($parm='')
-	{
-		if(USE_IMAGECODE)
-		{
-			return $this->secImg->renderImage();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param string $parm
-	 * @return mixed|null|string
-	 */
-	function sc_fpw_captcha_input($parm=null)
-	{
-		if(USE_IMAGECODE)
-		{
-			return $this->secImg->renderInput();
-		}
-
-		return null;
-	}
-
-	function sc_fpw_logo($parm='')
-	{
-		// Unused at the moment. 	
-	}
-	
-	function sc_fpw_text($parm=null)
-	{
-		return deftrue('LAN_FPW_101',"Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");	
-	}
-}
-
-
 if ($pref['membersonly_enabled'])
 {
 	$sc = array (
@@ -407,7 +325,6 @@ $sc = array(); // needed?
 
 if(deftrue('BOOTSTRAP'))
 {
-	// TODO do we want the <form> element outside the template?
 	$FPW_TABLE = "<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>";
 
 	if(getperms('0'))
@@ -426,7 +343,7 @@ elseif(!$FPW_TABLE)
 	$caption = LAN_03;
 }
 
-$sc = new fpw_shortcodes;
+$sc = e107::getScBatch('fpw'); // fpw_shortcodes;
 
 // New Shortcode names in v2. BC Fix. 
 $bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
@@ -434,8 +351,6 @@ $nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCH
 $FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
 
 $text = $tp->parseTemplate($FPW_TABLE, true, $sc);
-
-// $text = $tp->simpleParse($FPW_TABLE, $sc);
 
 $ns->tablerender($caption, $text, 'fpw');
 require_once(FOOTERF);

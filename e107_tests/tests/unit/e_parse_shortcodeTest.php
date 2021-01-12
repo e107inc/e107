@@ -541,6 +541,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+		$sc->__construct();
+
 		$exclude = array('sc_signup_coppa_text'); // uses random email obfiscation.
         $this->processShortcodeMethods($sc, $exclude);
 
@@ -858,7 +860,20 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	public function testFpwShortcodes() // todo move fpw shortcodes out of fpw.php to its own file.
 	{
+		require_once(e_CORE."shortcodes/batch/fpw_shortcodes.php");
 
+        try
+		{
+			$sc = $this->make('fpw_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+        $this->processShortcodeMethods($sc);
 
 
 	}
@@ -1416,6 +1431,57 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         }
 
 
+
+    }
+
+	/**
+	 * Execute all single shortcodes to check for PHP errors.
+	 */
+    public function testSingleShortcodes()
+    {
+        $list = scandir(e_CORE."shortcodes/single");
+        $tp = e107::getParser();
+
+        $parms = array(
+            'email'         => 'myemail@somewhere.com-link',
+            'emailto'       => '2',
+            'email_item'    => 'Some Message^plugin:forum.45',
+            'glyph'         => 'fa-anchor',
+        	'url'           => 'news/view/item|news_id=1&news_sef=sef-string&category_id=1&category_sef=category-sef&options[full]=1',
+            'user_extended' => 'name.text.1',
+            'lan'           => 'LAN_EDIT',
+            'search'        => 'all'
+        );
+
+		foreach($list as $sc)
+		{
+			$ext = pathinfo($sc);
+			$name = $ext['filename'];
+
+			if($ext['extension'] !== 'sc' && $ext['extension'] !== 'php')
+			{
+				continue;
+			}
+
+
+			$shortcode = '{';
+			$shortcode .= strtoupper($name);
+			$shortcode .= isset($parms[$name]) ? '='.$parms[$name] : '';
+			$shortcode .= '}';
+		//	echo "\n".$shortcode."\n";
+			$result = $tp->parseTemplate($shortcode,true);
+
+			if($name === 'search')
+			{
+				echo $result."\n\n";
+			}
+
+			if(isset($parms[$name]) && $name !== 'user_extended')
+			{
+				$this->assertNotEmpty($result, $shortcode." returned nothing!");
+			}
+
+		}
 
     }
 

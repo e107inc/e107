@@ -75,9 +75,14 @@ function uploadfile_shortcode($parm)
 	{
 		return LAN_UPLOAD_SERVEROFF;
 	}
-	if(USER_AREA === TRUE && !check_class(e107::getPref('upload_class')))
+	if(deftrue('USER_AREA') && !check_class(e107::getPref('upload_class')))
 	{
 		return LAN_DISABLED;
+	}
+
+	if(empty($parm))
+	{
+		return null;
 	}
 
 	$parm = explode('|', $parm, 2);
@@ -142,15 +147,15 @@ function uploadfile_shortcode($parm)
 	$onclickd = " onclick=\"duplicateHTML('{$parms['up_row']}','{$parms['up_container']}');\"";
 	$name = $parms['name'].'[]';
 
-	$text .="
+	$text ="
 	        <!-- Upload Shortcode -->
 			<div>
 				<div class='field-spacer'>
-					<button class='action duplicate' type='button' value='no-value'{$onclickd}><span>".LAN_UPLOAD_ADDFILE."</span></button>";
+					<button class='action duplicate' type='button' value='no-value' {$onclickd}><span>".LAN_UPLOAD_ADDFILE."</span></button>";
 
 	// Media Manager does the submit, not the shortcode.
 	if(!$parms['disable_button'])
-		$text .= "<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value'{$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>";
+		$text .= "<button class='upload' type='submit' name='{$parms['trigger']}' value='no-value' {$onclickt}><span>".LAN_UPLOAD_FILES."</span></button>";
 
 	$text .= "
 				</div>

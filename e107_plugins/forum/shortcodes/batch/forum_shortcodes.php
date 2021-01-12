@@ -86,11 +86,11 @@ class forum_shortcodes extends e_shortcode
 
 		 return "
 		<table class='table table-bordered' style='width:100%'>\n<tr>
-		<td style='width:2%'>".IMAGE_new_small."</td>
+		<td style='width:2%'>".defset('IMAGE_new_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
-		<td style='width:2%'>".IMAGE_nonew_small."</td>
+		<td style='width:2%'>".defset('IMAGE_nonew_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0040."</span></td>
-		<td style='width:2%'>".IMAGE_closed_small."</td>
+		<td style='width:2%'>".defset('IMAGE_closed_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
 		</tr>\n</table>\n";
   }

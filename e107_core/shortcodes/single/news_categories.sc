@@ -15,6 +15,8 @@ $pref = e107::getPref();
 $tp = e107::getParser();
 $scbatch = e107::getScBatch('news');
 
+
+
 $cString = 'nq_news_categories_sc';
 $cached = e107::getCache()->retrieve($cString);
 
@@ -174,10 +176,12 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
     			//$row['category_name'] = $category_name;
     			//$row['category_icon'] = $category_icon;
     			$row = array_merge($row, $row3);
+
     			$textbody .= $ix -> render_newsitem($row, 'return', '', $NEWSCAT_ITEM, $param);
-    
+
     		}
 		}
+
 // ----------------------------------
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
 		$replace[0] = $scbatch->sc_newscaticon('url');

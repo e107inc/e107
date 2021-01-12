@@ -20,6 +20,10 @@ if(!defined('e107_INIT'))
 
 function menuarea_shortcode($parm, $mode='')
 {
+	if(empty($parm))
+	{
+		return null;
+	}
 
 	return e107::getMenu()->renderArea($parm);
 

@@ -720,7 +720,7 @@ class news_shortcodes extends e_shortcode
 
 		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
-		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
+		if (!empty($this->news_item) && $this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
 			$es = (defined('EXTENDEDSTRING')) ? EXTENDEDSTRING : LAN_MORE;
 			$es1 = (defined('PRE_EXTENDEDSTRING')) ? PRE_EXTENDEDSTRING : '';
