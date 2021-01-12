@@ -5,8 +5,10 @@
  * Forgotten password language file - Password reset
  *
 */
-
-define("PAGE_NAME", "Password Reset");
+if(!defined('PAGE_NAME')) // TODO Fix me.
+{
+	define("PAGE_NAME", "Password Reset");
+}
 
 define("LAN_02", "Sorry, unable to send email - please contact the main site administrator.");
 define("LAN_03", "Password Reset");
@@ -15,7 +17,7 @@ define("LAN_06", "Attempted password reset");
 define("LAN_07", "Someone with IP address ");
 define("LAN_08", "attempted to reset the main admin password.");
 define("LAN_09", "Password reset from ");
-define("LAN_112", "Email address registered on this site");
+// define("LAN_112", "Email address registered on this site"); // conflict removal.
 // define("LAN_156", "Submit");
 define("LAN_213", "That username/email address was not found in database.");
 define("LAN_214", "Unable to reset password");
@@ -45,7 +47,7 @@ define("LAN_FPW18", "Password reset requested");
 define("LAN_FPW19", "Email send failed");
 define("LAN_FPW20", "Email send succeeded");
 define("LAN_FPW21", "User clicked on password reset link");
-
+define("LAN_FPW22", "Email address registered on this site");
 
 define("LAN_FPW_100", "Forgot your password?");
 define("LAN_FPW_101", "Not to worry. Just enter your email address below and we'll send you an email with instructions to get it back.");

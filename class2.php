@@ -2018,6 +2018,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		define('USER', true);
 		define('USERID', 1);
 		define('USERNAME', 'e107-cli');
+		define('ADMINNAME', 'e107-cli');
 		define('USERTHEME', false);
 		define('ADMIN', true);
 		define('ADMINPERMS', '0');

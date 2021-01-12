@@ -727,7 +727,7 @@ class language{
 
 	/**
 	 * Define Legacy LAN constants based on a supplied array.
-	 * @param null $bcList
+	 * @param array $bcList legacyLAN => Replacement-LAN
 	 */
 	public function bcDefs($bcList = null)
 	{

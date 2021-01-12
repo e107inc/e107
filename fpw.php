@@ -131,6 +131,8 @@ if ($pref['membersonly_enabled'])
 	}
 	else
 	{
+		$oldDefs = array('LAN_112' => 'LAN_FPW22');
+		e107::getLanguage()->bcDefs($oldDefs);
 		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 	}
 

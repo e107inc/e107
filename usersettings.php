@@ -88,6 +88,9 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 		else
 		{
+			$bcDefs = array('LAN_418'=>'LAN_USET_31');
+			e107::getLanguage()->bcDefs($bcDefs);
+
 			global $sc_style;
 			$REQUIRED_FIELD                     = '';
 			$USER_EXTENDED_CAT                  = '';

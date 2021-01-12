@@ -133,7 +133,7 @@ define("LAN_401", "Leave blank to keep existing password");
 define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 define("LAN_414", "Upload your photograph");
 define("LAN_415", "Upload your avatar");
-define("LAN_418", "Registration information");
+// define("LAN_418", "Registration information");
 define("LAN_420", "Avatar");
 define("LAN_421", "Choose site-stored avatar");
 define("LAN_422", "Use remote avatar");
