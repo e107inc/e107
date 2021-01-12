@@ -115,6 +115,7 @@
 					'values'    => (isset($this->structValues[$k])) ? $this->structValues[$k] : null,
 					'default'   => (isset($this->structDefault[$k])) ? $this->structDefault[$k] : null,
 					'parent'    => (isset($this->structParent[$k])) ? $this->structParent[$k] : 0,
+					'required'    => 1, // show in signup shortcode.
 				);
 
 				$this->ue->user_extended_add($insert);
@@ -314,6 +315,27 @@
 			$this->assertStringContainsString('<h3>Miscellaneous</h3>', $result);
 
 		}
+
+		public function testSignupExtendedUserFieldsShortcode()
+		{
+
+			$sc = e107::getScBatch('signup');
+
+			$template = array(
+				'extended-category'     => "-- {EXTENDED_CAT_TEXT} --",
+				'extended-user-fields'  => "<label>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>" // {EXTENDED_USER_FIELD_EDIT}
+			);
+
+			$expected = "<label>Text<span class='required'><!-- empty --></span></label><label>Homepage<span class='required'><!-- empty --></span></label><label>Dropdown<span class='required'><!-- empty --></span></label><label>Dbfield<span class='required'><!-- empty --></span></label><label>Integer<span class='required'><!-- empty --></span></label><label>Date<span class='required'><!-- empty --></span></label><label>Language<span class='required'><!-- empty --></span></label><label>Checkbox<span class='required'><!-- empty --></span></label><label>Predefined<span class='required'><!-- empty --></span></label><label>Addon<span class='required'><!-- empty --></span></label><label>Richtextarea<span class='required'><!-- empty --></span></label>-- Category Name --<label>Radio<span class='required'><!-- empty --></span></label><label>Textarea<span class='required'><!-- empty --></span></label><label>List<span class='required'><!-- empty --></span></label>-- Category Name 2 --<label>Country<span class='required'><!-- empty --></span></label>";
+
+			$sc->template = $template;
+
+			$result = e107::getParser()->parseTemplate('{SIGNUP_EXTENDED_USER_FIELDS}', false, $sc);
+			$this->assertSame($expected, $result);
+
+		}
+
+
 
 		public function testGetUserExtendedFieldData()
 		{

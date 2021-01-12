@@ -591,12 +591,12 @@ class e107_user_extended
 
 
 	/**
-	 * Alias of user_extended_get_fieldList().
+	 * Get a list of fields in a particular category.
 	 * @param string $cat
 	 * @param string $indexField
 	 * @return mixed
 	 */
-	function getFieldList($cat = "", $indexField = 'user_extended_struct_id')
+	function getFieldList($cat = null, $indexField = 'user_extended_struct_id')
 	{
 		return $this->user_extended_get_fieldList($cat, $indexField); 	
 	}
@@ -639,17 +639,18 @@ class e107_user_extended
 	 * @param $system - include system fields.
 	 * @return array
 	 */
-	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id', $system = false)
+	function user_extended_get_fieldList($cat = null, $indexField = 'user_extended_struct_id', $system = false)
 	{
-		if(!$indexField)
+		if(empty($indexField))
 		{
-			 $indexField = 'user_extended_struct_id';	
+			$indexField = 'user_extended_struct_id';
 		}
 
 		$ret = [];
+
 		foreach($this->fieldDefinitions as $row)
 		{
-			if(!empty($cat) && ($row['user_extended_struct_parent'] !== (int) $cat))
+			if($cat !== null && ($row['user_extended_struct_parent'] !== (int) $cat))
 			{
 				continue;
 			}
