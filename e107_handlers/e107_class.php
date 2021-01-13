@@ -3782,6 +3782,11 @@ class e107
 		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
 		$legacy = array('news', 'page', 'search', 'user', 'download', 'gallery');
 
+		if($plugin === 'search')
+		{
+			$plugin = 'search/index';
+		}
+
 		if (strpos($plugin, '/') !== false)
 		{
 			$tmp = explode("/", $plugin, 2);
@@ -3869,6 +3874,7 @@ class e107
 		if (empty($sefActive[$plugin])) // SEF disabled.
 		{
 			self::getDebug()->log('SEF URL for <b>' . $plugin . '</b> disabled.');
+			trigger_error('SEF URL for <b>' . $plugin . '</b> disabled.', E_USER_NOTICE);
 			$active = false;
 		}
 
@@ -4559,6 +4565,7 @@ class e107
 		if(self::isCli()) // Maintain relative path consistency in CLI mode
 		{
 			chdir(e_ROOT);
+			define('e_HTTP', '/'); // fixes generate URLs by not using $this->server_path
 		}
 
 		$path = dirname(self::getRelativePath(getcwd(), $target_path)) . "/";

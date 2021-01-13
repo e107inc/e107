@@ -61,6 +61,7 @@ class search extends e_shortcode
 								'ep' => LAN_SEARCH_26,
 								'be' => LAN_SEARCH_27
 							);
+	private $searchtype;
 	
 	function __construct()
 	{

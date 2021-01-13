@@ -5524,12 +5524,20 @@ return;
 
     private function grantScriptAccess()
     {
-         $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
+        if(!in_array('script', $this->allowedTags))
+        {
+            $this->allowedTags = array_merge($this->allowedTags, $this->scriptTags);
+        }
 
         foreach($this->allowedAttributes as $tag => $att)
         {
             foreach($this->scriptAttributes as $new)
             {
+                if(in_array($new, $this->allowedAttributes[$tag]))
+                {
+                    continue;
+                }
+
                 $this->allowedAttributes[$tag][] = $new;
             }
         }
