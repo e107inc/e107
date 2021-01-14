@@ -913,6 +913,7 @@ class e107_user_extended
 		// wrong type
 		if(false === $field_info)
 		{
+			trigger_error('$field_info is false: '.__METHOD__, E_USER_NOTICE);
 			e107::getMessage()->addDebug("\$field_info is false ".__METHOD__);
 			return false;
 		}
