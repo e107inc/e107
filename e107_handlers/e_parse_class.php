@@ -5292,12 +5292,6 @@ class e_parser
 		*/
 
 		$cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
-		 // Workaround for https://bugs.php.net/bug.php?id=76285
-		//  Part 2 of 2
-	    // prevent replacement of &nbsp; with spaces. - convert back.
-
-	    // convert shortcode temporary triple-curly braces back to entities.
-	    // convert shortcode temporary triple-curly braces back to entities.
 
 	    $cleaned = str_replace(
 	            array("\n", '__E_PARSER_CLEAN_HTML_LINE_BREAK__', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '{{{', '}}}', '__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__', '<body>', '</body>', '<html>', '</html>'),
@@ -5343,101 +5337,6 @@ class e_parser
     }   
     
        
-    
-    /**
-     * XSS HTML code to test against
-     */
-    public function getXss()
-    {
-
-$html = <<<EOF
-Internationalization Test: 
-ภาษาไทย <br />
-日本語 <br />
-简体中文 <br />
-<a href='somewhere.html' src='invalidatrribute' >Test</a>
-A GOOD LINK: <a href='http://mylink.php'>Some Link</a>
-<a href='javascript: something' src='invalidatrribute' >Test regex</a>
-<img href='invalidattribute' src='myimage.jpg' />
-<frameset onload=alert(1) data-something=where>
-<table background="javascript:alert(1)"><tr><td><a href="something.php" onclick="alert(1)">Hi there</a></td></tr></table>
-<div>
-<!--<img src="--><img src=x onerror=alert(1)//">
-<comment><img src="</comment><img src=x onerror=alert(1)//">
-<ul>
-<li style=list-style:url() onerror=alert(1)></li> <div style=content:url(data:image/svg+xml,%3Csvg/%3E);visibility:hidden onload=alert(1)></div>
-</ul>
-</div>
-</frameset>
-<head><base href="javascript://"/></head><body><a href="/. /,alert(1)//#">XXX</a></body>
-<SCRIPT FOR=document EVENT=onreadystatechange>alert(1)</SCRIPT>
-<OBJECT CLASSID="clsid:333C7BC4-460F-11D0-BC04-0080C7055A83"><PARAM NAME="DataURL" VALUE="javascript:alert(1)"></OBJECT>
-<b <script>alert(1)//</script>0</script></b>
-<div id="div1"><input value="``onmouseover=alert(1)"></div> <div id="div2"></div><
-script>document.getElementById("div2").innerHTML = document.getElementById("div1").innerHTML;</script>
-Some example text<br />
-<b>This is bold</b><br />
-<i>This is italic</i><br />
-<small>Some small text</small>
-<pre>This is pre-formatted
-        <script>alert('something')</script>
-        <b>Bold Stuff</b>
-        <pre>something</pre>
-        <code>code</code>
-        <b>BOLD</b>
-        function myfunction()
-        {
-            
-        }
- </pre>
-<code>
-        function myfunction()
-        {
-            
-        }
-
-<script>alert('something')</script>
-</code>
-<svg><![CDATA[><image xlink:href="]]><img src=xx:x onerror=alert(2)//"></svg>
-<style><img src="</style><img src=x onerror=alert(1)//">
-<x '="foo"><x foo='><img src=x onerror=alert(1)//'> <!-- IE 6-9 --> <! '="foo"><x foo='><img src=x onerror=alert(2)//'> <? '="foo"><x foo='><img src=x onerror=alert(3)//'>
-<embed src="javascript:alert(1)"></embed> // O10.10↓, OM10.0↓, GC6↓, FF <img src="javascript:alert(2)"> <image src="javascript:alert(2)"> // IE6, O10.10↓, OM10.0↓ <script src="javascript:alert(3)"></script> // IE6, O11.01↓, OM10.1↓
-<div style=width:1px;filter:glow onfilterchange=alert(1)>x</div>
-<object allowscriptaccess="always" data="test.swf"></object>
-[A] <? foo="><script>alert(1)</script>"> <! foo="><script>alert(1)</script>"> </ foo="><script>alert(1)</script>"> [B] <? foo="><x foo='?><script>alert(1)</script>'>"> [C] <! foo="[[[x]]"><x foo="]foo><script>alert(1)</script>"> [D] <% foo><x foo="%><script>alert(1)</script>">
-<iframe src=mhtml:http://html5sec.org/test.html!xss.html></iframe> <iframe src=mhtml:http://html5sec.org/test.gif!xss.html></iframe>
-<html> <body> <b>some content without two new line \n\n</b> Content-Type: multipart/related; boundary="******"<b>some content without two new line</b> --****** Content-Location: xss.html Content-Transfer-Encoding: base64 PGlmcmFtZSBuYW1lPWxvIHN0eWxlPWRpc3BsYXk6bm9uZT48L2lmcmFtZT4NCjxzY3JpcHQ+DQp1 cmw9bG9jYXRpb24uaHJlZjtkb2N1bWVudC5nZXRFbGVtZW50c0J5TmFtZSgnbG8nKVswXS5zcmM9 dXJsLnN1YnN0cmluZyg2LHVybC5pbmRleE9mKCcvJywxNSkpO3NldFRpbWVvdXQoImFsZXJ0KGZy YW1lc1snbG8nXS5kb2N1bWVudC5jb29raWUpIiwyMDAwKTsNCjwvc2NyaXB0PiAgICAg --******-- </body> </html>
-<!-- IE 5-9 --> <div id=d><x xmlns="><iframe onload=alert(1)"></div> <script>d.innerHTML+='';</script> <!-- IE 10 in IE5-9 Standards mode --> <div id=d><x xmlns='"><iframe onload=alert(2)//'></div> <script>d.innerHTML+='';</script>
-<img[a][b]src=x[d]onerror[c]=[e]"alert(1)">
-<a href="[a]java[b]script[c]:alert(1)">XXX</a>
-<img src="x` `<script>alert(1)</script>"` `>
-<img src onerror /" '"= alt=alert(1)//">
-<title onpropertychange=alert(1)></title><title title=></title>
-<!-- IE 5-8 standards mode --> <a href=http://foo.bar/#x=`y></a><img alt="`><img src=xx:x onerror=alert(1)></a>"> <!-- IE 5-9 standards mode --> <!a foo=x=`y><img alt="`><img src=xx:x onerror=alert(2)//"> <?a foo=x=`y><img alt="`><img src=xx:x onerror=alert(3)//">
-<!--[if]><script>alert(1)</script --> <!--[if<img src=x onerror=alert(2)//]> -->
-<script> Blabla </script>
-<script src="/\example.com\foo.js"></script> // Safari 5.0, Chrome 9, 10 <script src="\\example.com\foo.js"></script> // Safari 5.0
-<object id="x" classid="clsid:CB927D12-4FF7-4a9e-A169-56E4B8A75598"></object> <object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" onqt_error="alert(1)" style="behavior:url(#x);"><param name=postdomevents /></object>
-<!-- `<img/src=xx:xx onerror=alert(1)//--!>
-<xmp> <% </xmp> <img alt='%></xmp><img src=xx:x onerror=alert(1)//'> <script> x='<%' </script> %>/ alert(2) </script> XXX <style> *['<!--']{} </style> -->{} *{color:red}</style>
-<a style="-o-link:'javascript:alert(1)';-o-link-source:current">X</a>
-<style>p[foo=bar{}*{-o-link:'javascript:alert(1)'}{}*{-o-link-source:current}*{background:red}]{background:green};</style>
-<div style="font-family:'foo[a];color:red;';">XXX</div>
-<form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
-<input onfocus=write(1) autofocus>
-<video poster=javascript:alert(1)//></video>
-<video>somemovei.mp4</video>
-<body onscroll=alert(1)><br><br><br><br><br><br>...<br><br><br><br><input autofocus>
-
-<article id="something">Some text goes here</article>
-
-
-EOF;
-
-return $html;            
-            
-    }
-
 
 
 
