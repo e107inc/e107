@@ -118,7 +118,7 @@ class e_session
 	
 	protected $_namespace;
 	protected $_name;
-	protected $_sessionStarted = false; // Fixes lost $_SESSION value problem. 
+	protected static $_sessionStarted = false; // Fixes lost $_SESSION value problem.
 
 	/**
 	 * Validation options
@@ -477,7 +477,7 @@ class e_session
 	public function start($sessionName = null)
 	{
 	
-		if (isset($_SESSION) && ($this->_sessionStarted == true))
+		if (isset($_SESSION) && (self::$_sessionStarted === true))
 		{
 			return $this;
 		}
@@ -544,7 +544,7 @@ class e_session
 		
 	
 		session_start();
-		$this->_sessionStarted = true;
+		self::$_sessionStarted = true;
 		return $this;
 	}
 
@@ -591,7 +591,7 @@ class e_session
 		if (!empty($name) && preg_match('#^[0-9a-z_]+$#i', $name))
 		{
 			$this->_name = $name;
-			return session_name($name);
+		//	return session_name($name);
 		}
 		return false;
 	}
