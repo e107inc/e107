@@ -46,7 +46,7 @@ class InstallCest
 		$I->see("Blue");
 
 	}
-
+/*
 	public function installVoux(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 with Voux theme and db starting with digits");
@@ -55,7 +55,7 @@ class InstallCest
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
-	}
+	}*/
 
 	private function installe107(AcceptanceTester $I, $params = array())
 	{
