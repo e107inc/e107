@@ -1206,7 +1206,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 									"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 									"class='img-rounded rounded user-avatar'",
 									"<a class='e-tip' title=",
-									"usersettings.php"
+									e107::getUrl()->create('user/myprofile/edit')
 								)
 				),
 				5   => array(
@@ -1227,7 +1227,8 @@ while(&#036;row = &#036;sql-&gt;fetch())
 								)
 				),
 				/** @fixme - doesn't pass under CLI  */
-			/*	6   => array(
+				/*
+				7   => array(
 					'input'     => array('user_image'=>'avatartest.png'),
 					'parms'     => array('w'=>50, 'h'=>50, 'crop'=>true, 'base64'=>true, 'shape'=>'circle'),
 					'expected'  => array(

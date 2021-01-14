@@ -15,6 +15,7 @@
 		private $structTypes;
 		private $structLabels;
 		private $userValues;
+		private $structRequired;
 
 		/** @var e107_user_extended */
 		protected $ue;
@@ -94,6 +95,24 @@
 				'country'   => 17,
 			);
 
+			$this->structRequired = array(
+				 'text'         => 1,
+				  'homepage'     => 0, // test constant use as well.
+				  'radio'        => 1,
+				  'dropdown'     => 1,
+				  'dbfield'      => 1,
+				  'textarea'     => 0,
+				  'integer'      => 1,
+				  'date'         => 1,
+				  'language'     => 1,
+				  'list'         => 1,
+				  'checkbox'     => 1,
+				  'predefined'   => 1,
+				  'country'      => 1,
+				  'richtextarea' => 1,
+				  'addon'        => 1
+			);
+
 			// clear the table.
 			$sql = e107::getDb();
 			if($sql->select('user_extended_struct', 'user_extended_struct_id', "user_extended_struct_text = '_system_'"))
@@ -115,7 +134,7 @@
 					'values'    => (isset($this->structValues[$k])) ? $this->structValues[$k] : null,
 					'default'   => (isset($this->structDefault[$k])) ? $this->structDefault[$k] : null,
 					'parent'    => (isset($this->structParent[$k])) ? $this->structParent[$k] : 0,
-					'required'    => 1, // show in signup shortcode.
+					'required'    => (isset($this->structRequired[$k])) ? $this->structRequired[$k] : 0,
 				);
 
 				$this->ue->user_extended_add($insert);
@@ -328,12 +347,21 @@
 				'extended-user-fields'  => "<label>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>" // {EXTENDED_USER_FIELD_EDIT}
 			);
 
-			$expected = "<label>Text<span class='required'><!-- empty --></span></label><label>Homepage<span class='required'><!-- empty --></span></label><label>Dropdown<span class='required'><!-- empty --></span></label><label>Dbfield<span class='required'><!-- empty --></span></label><label>Integer<span class='required'><!-- empty --></span></label><label>Date<span class='required'><!-- empty --></span></label><label>Language<span class='required'><!-- empty --></span></label><label>Checkbox<span class='required'><!-- empty --></span></label><label>Predefined<span class='required'><!-- empty --></span></label><label>Addon<span class='required'><!-- empty --></span></label><label>Richtextarea<span class='required'><!-- empty --></span></label>-- Category Name --<label>Radio<span class='required'><!-- empty --></span></label><label>Textarea<span class='required'><!-- empty --></span></label><label>List<span class='required'><!-- empty --></span></label>-- Category Name 2 --<label>Country<span class='required'><!-- empty --></span></label>";
+			$expected = "<label>Text<span class='required'><!-- empty --></span></label><label>Dropdown<span class='required'><!-- empty --></span></label><label>Dbfield<span class='required'><!-- empty --></span></label><label>Integer<span class='required'><!-- empty --></span></label><label>Date<span class='required'><!-- empty --></span></label><label>Language<span class='required'><!-- empty --></span></label><label>Checkbox<span class='required'><!-- empty --></span></label><label>Predefined<span class='required'><!-- empty --></span></label><label>Addon<span class='required'><!-- empty --></span></label><label>Richtextarea<span class='required'><!-- empty --></span></label>-- Category Name --<label>Radio<span class='required'><!-- empty --></span></label><label>List<span class='required'><!-- empty --></span></label>-- Category Name 2 --<label>Country<span class='required'><!-- empty --></span></label>";
 
 			$sc->template = $template;
 
 			$result = e107::getParser()->parseTemplate('{SIGNUP_EXTENDED_USER_FIELDS}', false, $sc);
 			$this->assertSame($expected, $result);
+
+			foreach($this->structRequired as $field=>$v)
+			{
+				if($v === 0)
+				{
+					$this->assertStringNotContainsString($this->structLabels[$field], $result);
+				}
+
+			}
 
 		}
 
@@ -793,7 +821,7 @@
 			      'user_extended_struct_default' => '',
 			      'user_extended_struct_read' => '0',
 			      'user_extended_struct_write' => '0',
-			      'user_extended_struct_required' => '1',
+			      'user_extended_struct_required' => '0',
 			      'user_extended_struct_signup' => '0',
 			      'user_extended_struct_applicable' => '0',
 			      'user_extended_struct_order' => '5',
@@ -958,7 +986,7 @@
 			    'user_extended_struct_default' => '',
 			    'user_extended_struct_read' => '0',
 			    'user_extended_struct_write' => '0',
-			    'user_extended_struct_required' => '1',
+			    'user_extended_struct_required' => '0',
 			    'user_extended_struct_signup' => '0',
 			    'user_extended_struct_applicable' => '0',
 			    'user_extended_struct_order' => '5',
