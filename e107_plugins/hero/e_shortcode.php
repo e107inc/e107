@@ -22,8 +22,8 @@ class hero_shortcodes extends e_shortcode
 	{
 		parent::__construct();
 
-		$pref = e107::pref('hero');
-		$this->active = check_class($pref['visibility']);
+		$visibility = e107::pref('hero', 'visibility');
+		$this->active = check_class($visibility);
 
 	}
 

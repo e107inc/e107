@@ -82,7 +82,7 @@ class log_shortcodes extends e_shortcode
 	}
 
 
-	function sc_log_pagecounter($parm)
+	function sc_log_pagecounter($parm=null)
 	{
 
 		//print_a($this->dbPageInfo);

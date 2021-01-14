@@ -426,7 +426,7 @@ class social_shortcodes extends e_shortcode
 	/**
 	 * @example {TWITTER_TIMELINE: id=xxxxxxx&theme=light}
 	 */
-	function sc_twitter_timeline($parm)
+	function sc_twitter_timeline($parm=null)
 	{
 		$ns = e107::getRender();
 		
