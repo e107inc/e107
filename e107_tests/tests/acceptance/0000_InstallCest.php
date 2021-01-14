@@ -47,15 +47,15 @@ class InstallCest
 
 	}
 
-/*	public function installLandingZero(AcceptanceTester $I)
+	public function installVoux(AcceptanceTester $I)
 	{
-		$I->wantTo("Install e107 with landingzero");
-		$this->installe107($I, array('sitetheme'=>'landingzero'));
+		$I->wantTo("Install e107 with Voux theme and db starting with digits");
+		$this->installe107($I, array('sitetheme'=>'voux', 'db'=>'123xyz'));
 		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
 
-	}*/
+	}
 
 	private function installe107(AcceptanceTester $I, $params = array())
 	{
@@ -71,12 +71,18 @@ class InstallCest
 
 		$db = $I->getDbModule();
 
+		$database = !empty($params['db']) ? $params['db'] : $db->_getDbName();
+
 		$I->fillField('server',     $db->_getDbHostname());
 		$I->fillField('name',       $db->_getDbUsername());
 		$I->fillField('password',   $db->_getDbPassword());
-		$I->fillField('db',         $db->_getDbName());
+		$I->fillField('db',         $database);
 
-		$I->uncheckOption('createdb');
+		if(empty($params['db']))
+		{
+			$I->uncheckOption('createdb');
+		}
+
 		$I->click('submit');
 
 		// Step 3
