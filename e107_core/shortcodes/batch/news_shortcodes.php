@@ -31,7 +31,6 @@ class news_shortcodes extends e_shortcode
 	
 	private $imageItem;
 
-	public $param = array();
 
 	// protected $param; // do not enable - erases param. .
 	
@@ -40,7 +39,7 @@ class news_shortcodes extends e_shortcode
 	{
 		parent::__construct($eVars);
 		$this->e107 = e107::getInstance();
-		
+
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
@@ -80,6 +79,7 @@ class news_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
 
+		$action = isset($this->param['current_action']) ? $this->param['current_action'] : '';
 
 		$news_body = '';
 
@@ -88,7 +88,7 @@ class news_shortcodes extends e_shortcode
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 		
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || varset($this->param['current_action']) === 'extend') && ($parm !== 'noextend' && $parm !== 'body'))
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $action === 'extend') && ($parm !== 'noextend' && $parm !== 'body'))
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
@@ -630,13 +630,15 @@ class news_shortcodes extends e_shortcode
 
 		$class = !empty($parm['class']) ? " ".$parm['class'] : " btn btn-default btn-secondary";
 
-		if(empty($this->param['commentlink']))
+		$param = $this->getScVar('param');
+
+		if(empty($param['commentlink']))
 		{
-			$this->param['commentlink'] = e107::getParser()->toGlyph('fa-comment');
+			$param['commentlink'] = e107::getParser()->toGlyph('fa-comment','');
 		}
 
 		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
-		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." ".LAN_COMMENTS."' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." ".LAN_COMMENTS."' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$param['commentlink'].'</a>');
 		return $text;
 	}
 

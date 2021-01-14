@@ -3574,7 +3574,7 @@ class e107
 		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0 && strpos($path, '_global.php') === false )
 		{
 			$result = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
-			self::getMessage()->addError("Couldn't load: ".$path.print_a($result,true));
+			self::getDebug()->log("Couldn't load: ".$path.print_a($result,true));
 		}
 
 		return $ret;
