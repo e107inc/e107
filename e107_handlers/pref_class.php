@@ -579,10 +579,11 @@ class e_pref extends e_front_model
 						unset($new, $old);
 						
 					}
-					
+
 					// Backup 
 					if($this->set_backup === true && e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
+					//	trigger_error("Performing a pref backup", E_USER_NOTICE);
 						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
 						if(deftrue('e_DEBUG'))
@@ -655,6 +656,7 @@ class e_pref extends e_front_model
 				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 				
 			e107::getMessage()->moveStack($this->prefid);
+			trigger_error("Settings not saved", E_USER_NOTICE);
 			return false;
 		}
 		else

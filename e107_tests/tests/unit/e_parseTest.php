@@ -858,11 +858,217 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		public function testGetAllowedAttributes()
 		{
+			$expected = array (
+			  'default' =>
+			  array (
+			    0 => 'id',
+			    1 => 'style',
+			    2 => 'class',
+			    3 => 'title',
+			    4 => 'lang',
+			    5 => 'accesskey',
+			  ),
+			  'img' =>
+			  array (
+			    0 => 'src',
+			    1 => 'alt',
+			    2 => 'width',
+			    3 => 'height',
+			    4 => 'id',
+			    5 => 'style',
+			    6 => 'class',
+			    7 => 'title',
+			    8 => 'lang',
+			    9 => 'accesskey',
+			  ),
+			  'a' =>
+			  array (
+			    0 => 'href',
+			    1 => 'target',
+			    2 => 'rel',
+			    3 => 'id',
+			    4 => 'style',
+			    5 => 'class',
+			    6 => 'title',
+			    7 => 'lang',
+			    8 => 'accesskey',
+			  ),
+			  'script' =>
+			  array (
+			    0 => 'type',
+			    1 => 'src',
+			    2 => 'language',
+			    3 => 'async',
+			    4 => 'id',
+			    5 => 'style',
+			    6 => 'class',
+			    7 => 'title',
+			    8 => 'lang',
+			    9 => 'accesskey',
+			  ),
+			  'iframe' =>
+			  array (
+			    0 => 'src',
+			    1 => 'frameborder',
+			    2 => 'width',
+			    3 => 'height',
+			    4 => 'id',
+			    5 => 'style',
+			    6 => 'class',
+			    7 => 'title',
+			    8 => 'lang',
+			    9 => 'accesskey',
+			  ),
+			  'input' =>
+			  array (
+			    0 => 'type',
+			    1 => 'name',
+			    2 => 'value',
+			    3 => 'id',
+			    4 => 'style',
+			    5 => 'class',
+			    6 => 'title',
+			    7 => 'lang',
+			    8 => 'accesskey',
+			  ),
+			  'form' =>
+			  array (
+			    0 => 'action',
+			    1 => 'method',
+			    2 => 'target',
+			    3 => 'id',
+			    4 => 'style',
+			    5 => 'class',
+			    6 => 'title',
+			    7 => 'lang',
+			    8 => 'accesskey',
+			  ),
+			  'audio' =>
+			  array (
+			    0 => 'src',
+			    1 => 'controls',
+			    2 => 'autoplay',
+			    3 => 'loop',
+			    4 => 'muted',
+			    5 => 'preload',
+			    6 => 'id',
+			    7 => 'style',
+			    8 => 'class',
+			    9 => 'title',
+			    10 => 'lang',
+			    11 => 'accesskey',
+			  ),
+			  'video' =>
+			  array (
+			    0 => 'autoplay',
+			    1 => 'controls',
+			    2 => 'height',
+			    3 => 'loop',
+			    4 => 'muted',
+			    5 => 'poster',
+			    6 => 'preload',
+			    7 => 'src',
+			    8 => 'width',
+			    9 => 'id',
+			    10 => 'style',
+			    11 => 'class',
+			    12 => 'title',
+			    13 => 'lang',
+			    14 => 'accesskey',
+			  ),
+			  'td' =>
+			  array (
+			    0 => 'colspan',
+			    1 => 'rowspan',
+			    2 => 'id',
+			    3 => 'style',
+			    4 => 'class',
+			    5 => 'title',
+			    6 => 'lang',
+			    7 => 'accesskey',
+			  ),
+			  'th' =>
+			  array (
+			    0 => 'colspan',
+			    1 => 'rowspan',
+			    2 => 'id',
+			    3 => 'style',
+			    4 => 'class',
+			    5 => 'title',
+			    6 => 'lang',
+			    7 => 'accesskey',
+			  ),
+			  'col' =>
+			  array (
+			    0 => 'span',
+			    1 => 'id',
+			    2 => 'style',
+			    3 => 'class',
+			    4 => 'title',
+			    5 => 'lang',
+			    6 => 'accesskey',
+			  ),
+			  'embed' =>
+			  array (
+			    0 => 'src',
+			    1 => 'wmode',
+			    2 => 'type',
+			    3 => 'width',
+			    4 => 'height',
+			    5 => 'id',
+			    6 => 'style',
+			    7 => 'class',
+			    8 => 'title',
+			    9 => 'lang',
+			    10 => 'accesskey',
+			  ),
+			  'x-bbcode' =>
+			  array (
+			    0 => 'alt',
+			    1 => 'id',
+			    2 => 'style',
+			    3 => 'class',
+			    4 => 'title',
+			    5 => 'lang',
+			    6 => 'accesskey',
+			  ),
+			  'label' =>
+			  array (
+			    0 => 'for',
+			    1 => 'id',
+			    2 => 'style',
+			    3 => 'class',
+			    4 => 'title',
+			    5 => 'lang',
+			    6 => 'accesskey',
+			  ),
+			  'source' =>
+			  array (
+			    0 => 'media',
+			    1 => 'sizes',
+			    2 => 'src',
+			    3 => 'srcset',
+			    4 => 'type',
+			    5 => 'id',
+			    6 => 'style',
+			    7 => 'class',
+			    8 => 'title',
+			    9 => 'lang',
+			    10 => 'accesskey',
+			  ),
+			);
+
+
+
+
             $result = $this->tp->getAllowedAttributes();
+			$this->assertSame($expected, $result);
 
-            $true = is_array($result) && in_array('style',$result['img']);
 
-            $this->assertTrue($true);
+		//	var_export($result);
+          //  $true = is_array($result) && in_array('style',$result['img']);
+
+          //  $this->assertTrue($true);
 		}
 /*
 		public function testSetScriptTags()

@@ -3874,7 +3874,7 @@ class e107
 		if (empty($sefActive[$plugin])) // SEF disabled.
 		{
 			self::getDebug()->log('SEF URL for <b>' . $plugin . '</b> disabled.');
-			trigger_error('SEF URL for <b>' . $plugin . '</b> disabled.', E_USER_NOTICE);
+		//	trigger_error('SEF URL for ' . $plugin . ' disabled.', E_USER_NOTICE);
 			$active = false;
 		}
 

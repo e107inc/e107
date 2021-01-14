@@ -1471,11 +1471,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		//	echo "\n".$shortcode."\n";
 			$result = $tp->parseTemplate($shortcode,true);
 
-			if($name === 'search')
-			{
-				echo $result."\n\n";
-			}
-
 			if(isset($parms[$name]) && $name !== 'user_extended')
 			{
 				$this->assertNotEmpty($result, $shortcode." returned nothing!");

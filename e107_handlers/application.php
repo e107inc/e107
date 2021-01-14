@@ -1048,7 +1048,7 @@ class eRouter
 	protected function _init()
 	{
 		// Gather all rules, add-on info, cache, module for main namespace etc
-		$this->_loadConfig()
+		$this->loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
 		$this->setMainModule(e107::getPref('url_main_module', ''));
@@ -1099,12 +1099,23 @@ class eRouter
 	 * Load config and url rules, if not available - build it on the fly
 	 * @return eRouter
 	 */
-	protected function _loadConfig()
+	public function loadConfig($forceRebuild = false)
 	{
-		if(!is_readable(e_CACHE_URL.'config.php')) $config = $this->buildGlobalConfig();
-		else $config = include(e_CACHE_URL.'config.php');
-		
-		if(!$config) $config = array();
+
+		if(!is_readable(e_CACHE_URL . 'config.php') || $forceRebuild == true)
+		{
+			$config = $this->buildGlobalConfig();
+		}
+		else
+		{
+			$config = include(e_CACHE_URL . 'config.php');
+		}
+
+		if(empty($config))
+		{
+			trigger('URL Config is empty', E_USER_NOTICE);
+			$config = array();
+		}
 		
 		$rules = array();
 		
@@ -1115,6 +1126,7 @@ class eRouter
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
+
 		$this->setRuleSets($rules);
 
 		return $this;
@@ -1125,15 +1137,20 @@ class eRouter
 		if(file_exists(e_CACHE_URL.'config.php'))
 		{
 			@unlink(e_CACHE_URL.'config.php');	
-		}			
+		}
 	}
-	
+
 	/**
 	 * Build unified config.php
 	 */
 	public function buildGlobalConfig($save = true)
 	{
 		$active = e107::getPref('url_config', array());
+
+		if(empty($active))
+		{
+			trigger_error('url_config pref is empty', E_USER_NOTICE);
+		}
 		
 		$config = array();
 		foreach ($active as $module => $location) 
@@ -2257,7 +2274,7 @@ class eRouter
 		# Modify params if required
 		if($params) 
 		{
-			if(varset($config['mapVars']))
+			if(!empty($config['mapVars']))
 			{
 				foreach ($config['mapVars'] as $srcKey => $dstKey)
 				{
@@ -2265,6 +2282,10 @@ class eRouter
 					{
 						$params[$dstKey] = $params[$srcKey];
 						unset($params[$srcKey]);
+					}
+					else
+					{
+						trigger_error("Missing ".$srcKey." during URL creation in ".$module, E_USER_NOTICE);
 					}
 				}	
 			}
@@ -2280,7 +2301,14 @@ class eRouter
 				$params = array();
 				foreach ($config['allowVars'] as $key)
 				{
-					if(isset($copy[$key])) $params[$key] = $copy[$key];
+					if(isset($copy[$key]))
+					{
+						$params[$key] = $copy[$key];
+					}
+					else
+					{
+						trigger_error("Missing ".$key." during URL creation in ".$module, E_USER_NOTICE);
+					}
 				}
 				unset($copy);
 			}
