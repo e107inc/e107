@@ -243,7 +243,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$actual = $this->tp->toForm($db);
 			$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
 			$this->assertEquals($expected, $actual);
-			
+
+
+			$actual = $this->tp->toForm("[html]Something &quot;hi&quot;[/html]");
+			$this->assertSame('[html]Something "hi"[/html]', $actual);
+
 		}
 /*
 		public function testUstristr()
@@ -477,10 +481,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		}
 /*
-		public function testHtml_truncate_old()
-		{
-
-		}
 
 		public function testToJSONhelper()
 		{
@@ -491,12 +491,16 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
-		public function testPost_toForm()
+*/
+		public function testPostToForm()
 		{
+			$text = "<div class='something'>My Test</div>";
+			$expected = '&lt;div class=&#039;something&#039;&gt;My Test&lt;/div&gt;';
+			$result = $this->tp->post_toForm($text);
+			$this->assertSame($expected, $result);
 
 		}
-
+/*
 		public function testHtml_truncate()
 		{
 
@@ -697,11 +701,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		}
 
-		public function testMakeClickable()
-		{
-
-		}
-
 		public function testSetThumbSize()
 		{
 
@@ -817,11 +816,19 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testPost_toHTML()
 		{
+			$text = "<di style='width:100%'>Test</di>"; // invalid html.
+			$result = $this->tp->post_toHTML($text);
+			$this->assertEmpty($result);
 
-		}*/
+			$text = "<div style='width:100%'>Test</div>"; // valid html.
+			$cleaned = '<div style="width:100%">Test</div>'; // valid and cleaned html.
+			$result = $this->tp->post_toHTML($text);
+			$this->assertSame($cleaned, $result);
+
+		}
 
 		/*
 		public function testAddAllowedTag()
