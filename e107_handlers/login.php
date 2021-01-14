@@ -224,6 +224,8 @@ class userlogin
 		$userpass = '';				// Finished with any plaintext password - can get rid of it
 
 
+
+
 		$ret = $e_event->trigger("preuserlogin", $username);
 		if ($ret != '')
 		{
@@ -247,7 +249,13 @@ class userlogin
 		}
 
 
+
 		// User login definitely accepted here
+
+		if($ret = $e_event->trigger("user_validlogin", $user_id))
+		{
+			return false;
+		}
 
 		$cookieval = $this->userMethods->makeUserCookie($this->userData,$autologin);
 
@@ -649,7 +657,7 @@ class userlogin
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
 					e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17);
 					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
 				}
 			}

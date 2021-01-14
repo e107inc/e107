@@ -319,13 +319,33 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
-	/*
-			public function testGetSession()
-			{
-				$res = null;
-				$this->assertTrue($res);
-			}
+	/**
+	 * Test sessions and namespaced sessions.
+	 * Make sure data is kept separate.
+	 */
+	public function testGetSession()
+	{
 
+		$e107 = $this->e107;
+
+		// Simple session set/get
+		$sess = $e107::getSession();
+		$input = 'test-key-result';
+		$sess->set('test-key', $input);
+		$this->assertSame($input, $sess->get('test-key'));
+
+		// Create Session 2 with namespace. Make sure Session 1 key is not present.
+		$sess2 = $e107::getSession('other');
+		$this->assertEmpty($sess2->get('test-key'));
+
+		// Make sure Session 2 key is set and not present in Session 1.
+		$sess2->set('other-key', true);
+		$this->assertEmpty($sess->get('other-key'));
+		$this->assertTrue($sess2->get('other-key'));
+
+	}
+
+	/*
 			public function testGetRedirect()
 			{
 				$res = null;
@@ -709,7 +729,8 @@ class e107Test extends \Codeception\Test\Unit
 */
 	public function testGetCoreTemplate()
 	{
-		$templates = scandir(e_CORE."templates");
+
+		$templates = scandir(e_CORE . "templates");
 		$e107 = $this->e107;
 
 		$exclude = array(
@@ -722,7 +743,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		foreach($templates as $file)
 		{
-			if(strpos($file,'_template.php') === false || in_array($file, $exclude))
+			if(strpos($file, '_template.php') === false || in_array($file, $exclude))
 			{
 				continue;
 			}
@@ -738,8 +759,8 @@ class e107Test extends \Codeception\Test\Unit
 
 			$result = $e107::getCoreTemplate($path);
 
-			$this->assertIsArray($result, $path."  template was not an array");
-			$this->assertNotEmpty($result, $path." template was empty");
+			$this->assertIsArray($result, $path . "  template was not an array");
+			$this->assertNotEmpty($result, $path . " template was empty");
 
 		}
 
@@ -890,8 +911,9 @@ class e107Test extends \Codeception\Test\Unit
 		*/
 
 
-	private function generateRows($var, $plugin )
+	private function generateRows($var, $plugin)
 	{
+
 		preg_match_all('#\{([a-z_]*)\}#', $var['sef'], $matches);
 
 
@@ -918,6 +940,7 @@ class e107Test extends \Codeception\Test\Unit
 			}
 
 		}
+
 		/*else
 		{
 			echo "\n".$plugin.' had no matches for: '.varset($var['sef'])."\n";
@@ -929,17 +952,18 @@ class e107Test extends \Codeception\Test\Unit
 
 	private function generateExpected($string, $rows)
 	{
+
 		$search = array('&');;
 		$replace = array('&amp;');
 
-		foreach($rows as $k=>$v)
+		foreach($rows as $k => $v)
 		{
-			$search[] = '{'.$k.'}';
+			$search[] = '{' . $k . '}';
 			$replace[] = $v;
 
 		}
 
-		return SITEURL.str_replace($search, $replace, $string);
+		return SITEURL . str_replace($search, $replace, $string);
 
 	}
 
@@ -962,9 +986,9 @@ class e107Test extends \Codeception\Test\Unit
 		$tests = array();
 
 		$all = e107::getAddonConfig('e_url');
-		foreach($all as $plugin=>$var)
+		foreach($all as $plugin => $var)
 		{
-			foreach($var as $key=>$value)
+			foreach($var as $key => $value)
 			{
 				$rows = $this->generateRows($value, $plugin);
 				$tests[] = array(
@@ -991,7 +1015,7 @@ class e107Test extends \Codeception\Test\Unit
 
 			if(empty($var['_expected_']))
 			{
-				echo $result."\n";
+				echo $result . "\n";
 				continue;
 			}
 			$this->assertEquals($var['_expected_'], $result);
@@ -1002,25 +1026,25 @@ class e107Test extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * 		/*
-		 * e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
-		e107::getUrl()->create('user/profile/view', $this->news_item)
-		e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['user_id']));
-		e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
-		e107::getUrl()->create('user/myprofile/edit');
-		e107::getUrl()->create('gallery/index/list', $this->var);
-		e107::getUrl()->create('news/view/item', $row, array('full' => 1));
-		e107::getUrl()->create('news/list/all'),
-		e107::getUrl()->create('page/view/index',$row),
-		e107::getUrl()->create('page/chapter/index', $sef),
-		($sef = $row;
-				$sef['chapter_sef'] = $this->getSef($row['chapter_id']);
-				$sef['book_sef']	= $this->getSef($row['chapter_parent']);)
-
-				e107::getUrl()->create('news/list/tag', array('tag' => $word));
-					$LINKTOFORUM = e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
-e107::getUrl()->create('search');
-		 */
+	 *        /*
+	 * e107::getUrl()->create('page/book/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+	 * e107::getUrl()->create('user/profile/view', $this->news_item)
+	 * e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['user_id']));
+	 * e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') ;
+	 * e107::getUrl()->create('user/myprofile/edit');
+	 * e107::getUrl()->create('gallery/index/list', $this->var);
+	 * e107::getUrl()->create('news/view/item', $row, array('full' => 1));
+	 * e107::getUrl()->create('news/list/all'),
+	 * e107::getUrl()->create('page/view/index',$row),
+	 * e107::getUrl()->create('page/chapter/index', $sef),
+	 * ($sef = $row;
+	 * $sef['chapter_sef'] = $this->getSef($row['chapter_id']);
+	 * $sef['book_sef']    = $this->getSef($row['chapter_parent']);)
+	 *
+	 * e107::getUrl()->create('news/list/tag', array('tag' => $word));
+	 * $LINKTOFORUM = e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+	 * e107::getUrl()->create('search');
+	 */
 	public function testUrlLegacy()
 	{
 
@@ -1043,25 +1067,25 @@ e107::getUrl()->create('search');
 
 			0 => array(
 				'route'      => 'news/view/item',
-				'row'        => array('news_id' => 1, 'news_sef'=>'my-news-item', 'category_sef'=>'my-category'),
+				'row'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/news/my-category/my-news-item'
 			),
 			1 => array(
 				'route'      => 'news/view/item',
-				'row'        => array('id' => 1, 'name'=>'my-news-item', 'category'=>'my-category'),
+				'row'        => array('id' => 1, 'name' => 'my-news-item', 'category' => 'my-category'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/news/my-category/my-news-item'
 			),
 			2 => array(
 				'route'      => 'news/list/short',
-				'row'        => array('id' => 1, 'name'=>'my-news-item', 'category'=>'my-category'),
+				'row'        => array('id' => 1, 'name' => 'my-news-item', 'category' => 'my-category'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/news/short/my-news-item'
 			),
 			3 => array(
 				'route'      => 'news/list/tag',
-				'row'        => array('tag'=>'myword'),
+				'row'        => array('tag' => 'myword'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/news/tag/myword'
 			),
@@ -1073,32 +1097,28 @@ e107::getUrl()->create('search');
 			),
 			5 => array(
 				'route'      => 'user/profile/view',
-				'row'        => array('user_id' => 3, 'user_name'=>'john'),
+				'row'        => array('user_id' => 3, 'user_name' => 'john'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/user/john'
 			),
 			6 => array(
 				'route'      => 'page/book/index',
-				'row'        => array('chapter_id'=>2,'chapter_sef'=>'my-book'),
+				'row'        => array('chapter_id' => 2, 'chapter_sef' => 'my-book'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/page/my-book'
 			),
 			7 => array(
 				'route'      => 'page/chapter/index',
-				'row'        => array('chapter_id'=>2,'chapter_sef'=>'my-chapter','book_sef'=>'my-book'),
+				'row'        => array('chapter_id' => 2, 'chapter_sef' => 'my-chapter', 'book_sef' => 'my-book'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/page/my-book/my-chapter'
 			),
 			8 => array(
 				'route'      => 'page/view',
-				'row'        => array('page_id'=>3, 'page_sef'=>'my-page','chapter_id'=>2,'chapter_sef'=>'my-chapter','book_sef'=>'my-book'),
+				'row'        => array('page_id' => 3, 'page_sef' => 'my-page', 'chapter_id' => 2, 'chapter_sef' => 'my-chapter', 'book_sef' => 'my-book'),
 				'options'    => 'full=1',
 				'_expected_' => 'https://localhost/e107/page/my-book/my-chapter/my-page'
 			),
-
-
-
-
 
 
 			// todo add more.
@@ -1118,40 +1138,31 @@ e107::getUrl()->create('search');
 
 			if(empty($var['_expected_']))
 			{
-				echo $result."\n";
-				echo $lresult."\n\n";
+				echo $result . "\n";
+				echo $lresult . "\n\n";
 				continue;
 			}
 
-			$this->assertEquals($result, $lresult, "Legacy Test #".$index." -- e107::getUrl()->create('".$var['route']."') didn't match e107::url('".$var['route']."')" );
-			$this->assertEquals($var['_expected_'], $result, 'Legacy URL index #'.$index.' failed');
+			$this->assertEquals($result, $lresult, "Legacy Test #" . $index . " -- e107::getUrl()->create('" . $var['route'] . "') didn't match e107::url('" . $var['route'] . "')");
+			$this->assertEquals($var['_expected_'], $result, 'Legacy URL index #' . $index . ' failed');
 
 
 		}
 
 
-
-
-
-
-
-
 		$this->setUrlConfig($oldConfig);  // return config to previous state.
 
 
-
-
 	}
-
-
 
 
 	/**
 	 * Save the url_config preference
 	 * @param array $newConfig
 	 */
-	private function setUrlConfig($newConfig=array())
+	private function setUrlConfig($newConfig = array())
 	{
+
 		if(empty($newConfig))
 		{
 			return null;

@@ -156,7 +156,7 @@ class plugin_featurebox_category extends e_model
 				'random' => $this->getParam('random', $this->get('fb_category_random')),
 				'ids' => $this->getParam('ids', '')
 			);
-			$this->_tree->load($this->getId(), $options, $force);
+			$this->_tree->load($this->getId(), $force, $options);
 		}
 		
 		return $this->_tree;
