@@ -1506,6 +1506,106 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
     }
 
 
+    public function testAddonShortcodes()
+    {
+        $vars = array(
+            'gallery'   => array(
+                'media_caption'     => 'caption',
+				'media_url'         => '{e_IMAGE}logo.png',
+				'media_description' => 'diz',
+				'media_cat_title'   => 'category',
+				'media_cat_diz'     => 'category description',
+				'media_cat_image'   => '',
+				'media_cat_sef'     => 'gallery-cat-sef',
+            ),
+			'pm'=> array(
+				'pm_id' => 5,
+				'pm_sent' => time(),
+				'pm_read' => 0,
+				'pm_from' => 1,
+				'from_name' => 'admin',
+				'pm_to' => 1,
+				'pm_block_datestamp' => time(),
+				'pm_block_from'=> 2,
+				'pm_class'  => '0',
+			),
+
+
+
+
+
+        );
+
+
+
+
+
+        $list = e107::getPlug()->getCorePluginList();
+
+        foreach($list as $plug)
+        {
+            $path = e_PLUGIN.$plug."/e_shortcode.php";
+
+            if(!file_exists($path) || $plug ==='page' || $plug === 'news') // news/page have their own test for this.
+            {
+                continue;
+            }
+
+			require_once($path);
+
+			try
+			{
+				$sc = $this->make($plug.'_shortcodes');
+			}
+			catch (Exception $e)
+			{
+				$this->fail($e->getMessage());
+			}
+
+			$methods = get_class_methods($sc);
+
+			if(empty($methods))
+			{
+				continue;
+			}
+
+			if(isset($vars[$plug]))
+			{
+				$sc->setVars($vars[$plug]);
+			}
+
+			foreach($methods as $meth)
+			{
+				if(strpos($meth, 'sc_') !== 0)
+				{
+					continue;
+				}
+
+				if(in_array('__construct', $methods))
+				{
+					$sc->__construct();
+				}
+
+				$result = $sc->$meth();
+			}
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+
 /*
 	public function testInitShortcodeClass()
 	{

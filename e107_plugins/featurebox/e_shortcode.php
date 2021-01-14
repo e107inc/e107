@@ -288,7 +288,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * @param string $parm parameters
 	 * @param string $mod category template
 	 */
-	function sc_featurebox_items($parm, $mod = '')
+	function sc_featurebox_items($parm=null, $mod = '')
 	{
 		// TODO cache
 		if(!e107::isInstalled('featurebox')) //just in case
@@ -304,8 +304,11 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$ctemplate = $mod;
 		}
-		
-		parse_str($parm, $parm);
+
+		if(!empty($parm))
+		{
+			parse_str($parm, $parm);
+		}
 		
 		$category = clone $this->getCategoryModel($ctemplate);
 		if(!$category->hasData())

@@ -12,6 +12,7 @@
 
 			try
 			{
+				/** @var userlogin lg */
 				$this->lg = $this->make('userlogin');
 			}
 

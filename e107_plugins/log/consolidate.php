@@ -467,7 +467,8 @@ class logConsolidate
 
 			if($logQry == false)
 			{
-				list($pageName,$tmp) = explode("?",$pageName);
+				$tmp = explode("?",$pageName);
+				$pageName = $tmp[0];
 			}
 
 			if(empty($pageName))

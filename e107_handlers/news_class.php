@@ -722,20 +722,20 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param integer $id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
 	 */
-	public function load($category_id = 0, $force = false, $params = array())
+	public function load($id = 0, $force = false, $params = array())
 	{
-		$category_id = intval($category_id);
-		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($category_id);
+		$id = intval($id);
+		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($id);
 		
 		$this->setParam('model_class', 'e_news_item')
 			->setParam('db_order', vartrue($params['db_order'], 'news_datestamp DESC'))
 			->setParam('db_limit', vartrue($params['db_limit'], '0,10'))
-			->setParam('db_where', $category_id ? 'news_category='.$category_id : '')
+			->setParam('db_where', $id ? 'news_category='.$id : '')
 			->setParam('noCacheStringModify', false);
 			
 		return parent::load($force);

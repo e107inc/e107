@@ -20,7 +20,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$path = (strpos(SITEBUTTON, 'http:') !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}
 
-		if($parm['type'] == 'email' || $parm == 'email') // (retain {}  constants )
+		if(varset($parm['type']) == 'email' || $parm == 'email') // (retain {}  constants )
 		{
 			$h = !empty($parm['h']) ? $parm['h'] : 100;
 
@@ -213,7 +213,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return $image;
 	}
 
-	function sc_theme_disclaimer($parm)
+	function sc_theme_disclaimer($parm=null)
 	{
 		$pref = e107::getPref();
 		return (defined('THEME_DISCLAIMER') && $pref['displaythemeinfo'] ? THEME_DISCLAIMER : '');

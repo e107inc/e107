@@ -38,7 +38,7 @@ class pm_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-		if(!check_class($this->prefs['pm_class']))
+		if(!isset($this->prefs['pm_class']) || !check_class($this->prefs['pm_class']))
 		{
 			return null;
 		}
@@ -94,7 +94,7 @@ class pm_shortcodes extends e_shortcode
 		
 		$pm_prefs = e107::getPlugPref('pm');
 
-		$url = e107::url('pm','index').'?send.'.$parm['user'];
+		$url = e107::url('pm','index').'?send.'.varset($parm['user']);
 
 		require_once(e_PLUGIN."pm/pm_class.php");
 
@@ -104,7 +104,7 @@ class pm_shortcodes extends e_shortcode
 		$class  = empty($parm['class']) ? 'sendpm btn btn-sm btn-default btn-secondary' : $parm['class'];
 
 
-		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm['user'])) // check $this->pmPrefs['send_to_class'].
+		if(isset($pm_prefs['pm_class']) && check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm['user'])) // check $this->pmPrefs['send_to_class'].
 		{
 		    if(deftrue('FONTAWESOME') && deftrue('BOOTSTRAP'))
 		    {
