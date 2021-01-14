@@ -33,7 +33,7 @@ if (empty($parm))
 }
 else
 {
-  $type = $tp -> toAttribute($parm);
+  $type = e107::getParser()->toAttribute($parm);
   $listtext = "\n<ol class='bbcode ".$type."' style='list-style-type: $type'>";
   $trailer = "</ol>";
 }

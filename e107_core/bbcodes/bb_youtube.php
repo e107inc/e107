@@ -202,8 +202,11 @@ class bb_youtube extends e_bb_base
 	{
 		if(empty($code_text)) return '';
 
-		list($dimensions,$tmp) = explode('|', $parm, 2);
-		
+		$t = explode('|', $parm, 2);
+
+		$dimensions = varset($t[0]);
+		$tmp = varset($t[1]);
+
 		if($tmp)
 		{
 			parse_str(varset($tmp, ''), $bbparm);
