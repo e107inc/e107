@@ -101,7 +101,10 @@ class social_shortcodes extends e_shortcode
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newList[$v] = $social[$v];
+				if(isset($social[$v]))
+				{
+					$newList[$v] = $social[$v];
+				}
 
 			}
 
@@ -387,7 +390,10 @@ class social_shortcodes extends e_shortcode
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newlist[$v] = $opt[$v];
+				if(isset($opt[$v]))
+				{
+					$newlist[$v] = $opt[$v];
+				}
 			}
 
 			$opt = $newlist;
