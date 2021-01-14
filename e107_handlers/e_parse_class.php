@@ -29,11 +29,6 @@ class e_parse extends e_parser
 	 */
 	protected $utfAction;
 
-	// Shortcode processor - see __get()
-	//var $e_sc;
-
-	// BBCode processor
-	protected $e_bb;
 
 	// Profanity filter
 	public $e_pf;
@@ -72,6 +67,8 @@ class e_parse extends e_parser
 
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
+
+	private $bbList = array();
 
 
 	// Set up the defaults
@@ -265,6 +262,7 @@ class e_parse extends e_parser
 			$this->e_SuperMods[$key] = array_merge($this->e_optDefault , $this->e_SuperMods[$key]);
 			$this->e_SuperMods[$key]['context'] = $key;
 		}
+
 	}
 
 
@@ -621,149 +619,21 @@ class e_parse extends e_parser
 	 */
 	public function htmlAbuseFilter($data, $tagList = '')
 	{
-		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
-
-		if (empty($tagList))
-		{
-			$checkTags = array('textarea', 'input', 'td', 'tr', 'table');
-		}
-		else
-		{
-			$checkTags = explode(',', $tagList);
-		}
-		$tagArray = array_flip($checkTags);
-		foreach ($tagArray as &$v) { $v = 0; }		// Data fields become zero; keys are tag names.
-		$data = strtolower(preg_replace('#\[code\].*?\[\/code\]#i', '', $data));            // Ignore code blocks. All lower case simplifies the rest
-		$matches = array();
-		if (!preg_match_all('#<(\/|)([^<>]*?[^\/])>#', $data, $matches, PREG_SET_ORDER))
-		{
-			//echo "No tags found<br />";
-			return TRUE;				// No tags found; so all OK
-		}
-		//print_a($matches);
-		foreach ($matches as $m)
-		{
-			// $m[0] is the complete tag; $m[1] is '/' or empty; $m[2] is the tag and any attributes
-			list ($tag) = explode(' ', $m[2], 2);
-			if (!isset($tagArray[$tag]))
-			{
-				continue;
-			}            // Not a tag of interest
-			if ($m[1] === '/')
-			{	// Closing tag
-				if ($tagArray[$tag] == 0) 
-				{
-					//echo "Close before open: {$tag}<br />";
-					return TRUE;		// Closing tag before we've had an opening tag
-				}
-				$tagArray[$tag]--;		// Obviously had at least one opening tag
-			}
-			else
-			{	// Opening tag
-				$tagArray[$tag]++;
-			}
-		}
-		//print_a($tagArray);
-		foreach ($tagArray as $t)
-		{
-			if ($t > 0)
-			{
-				return TRUE;
-			}        // More opening tags than closing tags
-		}
-		return FALSE;						// OK now
+		trigger_error('<b>'.__METHOD__.' is deprecated. Use $tp->cleanHtml() instead.</b>', E_USER_WARNING); // NO LAN
+		return $data;
 	}
 
 
-
-
 	/**
-	 * @DEPRECATED XXX TODO Remove this horrible thing which adds junk to a db. 
+	 * @deprecated
 	 *	Checks a string for potentially dangerous HTML tags, including malformed tags
 	 *
 	 */
 	public function dataFilter($data, $mode='bbcode')
 	{
-					
-
-		$ans = '';
-		$vetWords = array('<applet', '<body', '<embed', '<frame', '<script','%3Cscript',
-						 '<frameset', '<html', '<iframe', '<style', '<layer', '<link',
-						 '<ilayer', '<meta', '<object', '<plaintext', 'javascript:',
-						 'vbscript:','data:text/html');
-		
-		$ret = preg_split('#(\[code.*?\[/code.*?])#mis', $data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-
-		foreach ($ret as $s)
-		{
-			if (strpos($s, '[code') !== 0)
-			{
-				$vl = array();
-				$t = html_entity_decode(rawurldecode($s), ENT_QUOTES, CHARSET);
-				$t = str_replace(array("\r", "\n", "\t", "\v", "\f", "\0"), '', $t);
-				$t1 = strtolower($t);
-				foreach ($vetWords as $vw)
-				{
-					if (strpos($t1, $vw) !== FALSE)
-					{
-						$vl[] = $vw;		// Add to list of words found
-					}
-					if (strpos($vw, '<') === 0)
-					{
-						$vw = '</'.substr($vw, 1);
-						if (strpos($t1, $vw) !== FALSE)
-						{
-							$vl[] = $vw;		// Add to list of words found
-						}
-					}
-				}
-				// More checks here
-				if (count($vl))
-				{	// Do something
-					$s = preg_replace_callback('#('.implode('|', $vl).')#mis', array($this, 'modtag'), $t);
-				}
-			}
-			$s = preg_replace('#(?:onmouse.+?|onclick|onfocus)\s*?\=#', '[sanitised]$0[/sanitised]', $s);
-			$s = preg_replace_callback('#base64([,\(])(.+?)([\)\'\"])#mis', array($this, 'proc64'), $s);
-			$ans .= $s;
-		}
-		
-		if($mode === 'link' && count($vl))
-		{
-			return '#sanitized';
-		}
-		
-		return $ans;
+		trigger_error('$tp->dateFilter() is deprecated. Use $tp->filter() instead.', E_USER_WARNING);
+		return $data;
 	}
-
-
-	/**
-	 * Check base-64 encoded code
-	 */
-	private function proc64($match)
-	{
-		$decode = base64_decode($match[2]);
-		return 'base64'.$match[1].base64_encode($this->dataFilter($decode)).$match[3];
-	}
-
-
-	// XXX REmove ME. 
-	private function modTag($match)
-	{
-
-		if (isset($match[1]))
-		{
-			$chop = (int) (strlen($match[1]) / 2);
-			$ans = substr($match[1], 0, $chop).'##xss##'.substr($match[1], $chop);
-		}
-		else
-		{
-			$ans = '?????';
-		}
-		return '[sanitised]'.$ans.'[/sanitised]';
-
-	}
-
 
 
 	/**
@@ -775,13 +645,12 @@ class e_parse extends e_parser
 	 */
 	public function preFilter($data)
 	{
-		if (!is_object($this->e_bb))
+		if(!$this->isBBcode($data))
 		{
-			require_once(e_HANDLER.'bbcode_handler.php');
-			$this->e_bb = new e_bbcode;
+			return $data;
 		}
-		$ret = $this->e_bb->parseBBCodes($data, defset('USERID'), 'default', 'PRE');			// $postID = logged in user here
-		return $ret;
+
+		return e107::getBB()->parseBBCodes($data, defset('USERID'), 'default', 'PRE');			// $postID = logged in user here
 	}
 
 
@@ -868,40 +737,6 @@ class e_parse extends e_parser
 	}
 
 
-	/**
-	 * Check if we are using the simple-Parse array format, or a legacy .sc format which contains 'return '
-	 *
-	 * @param array $extraCodes
-	 * @return bool
-	 */
-	private function isSimpleParse($extraCodes)
-	{
-		
-		if(!is_array($extraCodes))
-		{
-			return false;	
-		}
-		
-		foreach ($extraCodes as $sc => $code)
-		{
-			if(preg_match('/return(.*);/',$code)) // still problematic. 'return;' Might be used in common speech.
-			{
-				return false;
-			}
-
-			return true;
-			/*	if(!strpos($code, 'return '))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}*/
-		}		
-	}
-
-
 
 	/**
 	 * Simple parser
@@ -918,6 +753,7 @@ class e_parse extends e_parser
 		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
 	}
 
+
 	protected function simpleReplace($tmp) 
 	{
 
@@ -932,7 +768,16 @@ class e_parse extends e_parser
 		return (!empty($this->replaceVars) && ($this->replaceVars->$key !== null)) ? $this->replaceVars->$key : $unset; // Doesn't work.
 	}
 
-
+	/**
+	 * @todo find a modern replacement
+	 * @param $str
+	 * @param $width
+	 * @param string $break
+	 * @param string $nobreak
+	 * @param string $nobr
+	 * @param false $utf
+	 * @return string
+	 */
 	public function htmlwrap($str, $width, $break = "\n", $nobreak = 'a', $nobr = 'pre', $utf = FALSE)
 	{
 		/*
@@ -1156,7 +1001,7 @@ class e_parse extends e_parser
 	 * Truncate a HTML string
 	 *
 	 * Cuts a string to the length of $length and adds the value of $ending if the text is longer than length.
-	 *
+	 * @todo find a modern replacement
 	 * @param string  $text String to truncate.
 	 * @param integer $length Length of returned string, including ellipsis.
 	 * @param string $ending It will be used as Ending and appended to the trimmed string.
@@ -1253,90 +1098,6 @@ class e_parse extends e_parser
 		return $truncate;
 	}
 
-	/**
-	 * Truncate a HTML string to a maximum length $len ­ append the string $more if it was truncated
-	 *
-	 * @param string $text String to process
-	 * @param integer $len [optional] Length of characters to be truncated - default 200
-	 * @param string $more [optional] String which will be added if truncation - default ' ... '
-	 * @return string
-	 */
-	public function html_truncate_old ($text, $len = 200, $more = ' ... ')
-	{
-		$pos = 0;
-		$curlen = 0;
-		$tmp_pos = 0;
-		$intag = FALSE;
-		while($curlen < $len && $curlen < strlen($text))
-		{
-			switch($text [$pos] )
-			{
-				case '<':
-					if($text [$pos + 1] === '/')
-					{
-						$closing_tag = TRUE;
-					}
-					$intag = TRUE;
-					$tmp_pos = $pos - 1;
-					$pos++;
-				break;
-
-
-				case '>':
-					if($text [$pos - 1] === '/')
-					{
-						$closing_tag = TRUE;
-					}
-					if($closing_tag == TRUE)
-					{
-						$tmp_pos = 0;
-						$closing_tag = FALSE;
-					}
-					$intag = FALSE;
-					$pos++;
-				break;
-
-
-				case '&':
-					if($text [$pos + 1] === '#')
-					{
-						$end = strpos(substr($text, $pos, 7), ';');
-						if($end !== FALSE)
-						{
-							$pos += ($end + 1);
-							if(!$intag)
-							{
-								$curlen++;
-							}
-						break;
-						}
-					}
-
-					$pos++;
-					if(!$intag)
-					{
-						$curlen++;
-					}
-
-					break;
-
-				default:
-					$pos++;
-					if(!$intag)
-					{
-						$curlen++;
-					}
-				break;
-			}
-		}
-		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos+1) : substr($text, 0, $pos));
-		if($pos < strlen($text))
-		{
-			$ret .= $more;
-		}
-		return $ret;
-	}
-
 
 	/**
 	 * Truncate a string of text to a maximum length $len ­ append the string $more if it was truncated
@@ -1380,7 +1141,7 @@ class e_parse extends e_parser
 	}
 
 
-	public function textclean ($text, $wrap = 100)
+	public function textclean($text, $wrap = 100)
 	{
 		$text = str_replace("\n\n\n", "\n\n", $text);
 		$text = $this->htmlwrap($text, $wrap);
@@ -1490,28 +1251,8 @@ class e_parse extends e_parser
 
 	public function parseBBCodes($text, $postID)
 	{
-		if (!is_object($this->e_bb))
-		{
-			require_once(e_HANDLER.'bbcode_handler.php');
-			$this->e_bb = new e_bbcode;
-		}
-
-
-		$text = $this->e_bb->parseBBCodes($text, $postID);
-
-		return $text;
+		return e107::getBB()->parseBBCodes($text, $postID);
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 
 	/**
@@ -1891,35 +1632,30 @@ class e_parse extends e_parser
 
 
 						//   BBCode processing (other than the four already done, which shouldn't appear at all in the text)
-						if ($parseBB !== FALSE)
+						if ($parseBB !== false)
 						{
-							if (!is_object($this->e_bb))
-							{
-								require_once(e_HANDLER.'bbcode_handler.php');
-								$this->e_bb = new e_bbcode;
-							}
-							if ($parseBB === TRUE)
+							if ($parseBB === true)
 							{
 								// 'Normal' or 'legacy' processing
 								if($modifiers === 'WYSIWYG')
 								{
-									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'wysiwyg');	
+									$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'wysiwyg');
 								}
 								else 
 								{
-									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);
+									$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID);
 								}
 								
 							}
 							elseif ($parseBB === 'STRIP')
 							{
 								// Need to strip all BBCodes
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', TRUE);
+								$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'default', TRUE);
 							}
 							else
 							{
 								// Need to strip just some BBCodes
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', $parseBB);
+								$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'default', $parseBB);
 							}
 						}
 
@@ -3307,6 +3043,7 @@ class e_parse extends e_parser
 			return $new;
 		}
 
+		$replace_absolute = array();
 
 		if(!empty($mode))
 		{
@@ -3815,7 +3552,7 @@ class e_parse extends e_parser
 
 
 			default:
-				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
+			//	trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
 				return NULL;
 			break;
 		}
@@ -4429,6 +4166,7 @@ class e_parser
 		$linkStart  = '';
 		$linkEnd    =  '';
 		$full       = !empty($options['base64']) ? true : false;
+		$file       = '';
 
 		if(!empty($options['mode']) && $options['mode'] === 'full')
 		{
@@ -4797,6 +4535,11 @@ class e_parser
 			$html .= "\n";
 		}
 
+		if(empty($path))
+		{
+			return null;
+		}
+
 		$html .= "<img {$id}class=\"{$class}\" src=\"".$path. '" alt="' .$alt. '" ' .$srcset.$width.$height.$style.$loading.$title. ' />';
 
 		$html .= ($this->convertToWebP) ? "\n</picture>" : '';
@@ -4977,13 +4720,12 @@ class e_parser
 
 		if(strpos($file, "{e_") === 0)
 		{
-			$file = e107::getParser()->replaceConstants($file);
+			$file = $this->replaceConstants($file);
 		}
-
 
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 
-		return $ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg';
+		return ($ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg' || $ext === 'webp');
 	}
 
 
@@ -5222,236 +4964,11 @@ class e_parser
 
 
 
-    /**
-     * Perform and render XSS Test Comparison
-     */
-    public function test($text='',$advanced = false)
-    {
-      //  $tp = e107::getParser();
-        $sql = e107::getDb();
-        $tp = e107::getParser();
-
-	    if(empty($text))
-	    {
-		    $text = <<<TMPL
-[html]<p><strong>bold print</strong></p>
-<pre class="prettyprint linenums">&lt;a href='#'&gt;Something&lt;/a&gt;</pre>
-<p>Some text's and things.</p>
-<p>&nbsp;</p>
-<p><a href="/test.php?w=9&amp;h=12">link</a></p>
-<p>日本語 简体中文</p>
-<p>&nbsp;</p>
-[/html]
-TMPL;
-	    }
-
-	    //   $text .= '[code=inline]<b class="something">Something</b>[/code]日本語 ';
-
-        // -------------------- Encoding ----------------
-
-		$acc = $this->getScriptAccess();
-		$accName = e107::getUserClass()->getName($acc);
-
-		echo "<h2>e107 Parser Test <small>with script access by <span class='label label-warning'>".$accName. '</span></small></h2>';
-		echo '<h3>User-input <small>(eg. from $_POST)</small></h3>';
-
-	    print_a($text);
-
-	    $dbText = $tp->toDB($text,true);
-
-		echo '<h3>User-input &gg; toDB() ';
-
-		if($this->isHtml == true)
-		{
-			echo "<small>detected as <span class='label label-warning'>HTML</span></small>";
-		}
-		else
-		{
-			echo "<small>detected as <span class='label label-info'>Plain text</span></small>";
-		}
-
-		echo '</h3>';
-
-	    print_a($dbText);
-
-
-	    if(!empty($advanced))
-	    {
-			echo "<div class='alert alert-warning'>";
-		    $dbText2 = $tp->toDB($text, true, false, 'no_html');
-		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
-		    print_a($dbText2);
-
-		    echo "<div class='alert alert-warning'>";
-		    $dbText3 = $tp->toDB($text, false, false, 'pReFs');
-		    echo "<h3>User-input &gg; toDb(\$text, false, false, 'pReFs')</h3>";
-		    print_a($dbText3);
-
-		   // toClean
-		    $filter3 = $tp->filter($text, 'wds');
-		    echo "<h3>User-input &gg; filter(\$text, 'wds')</h3>";
-		    print_a( $filter3);
-
-		    // Filter by String.
-		    $filter1 = $tp->filter($text);
-		    echo "<h3>User-input &gg; filter(\$text, 'str')</h3>";
-		    print_a($filter1);
-
-		    // Filter by Encoded.
-		    $filter2 = $tp->filter($text,'enc');
-		    echo "<h3>User-input &gg; filter(\$text, 'enc')</h3>";
-		    print_a($filter2);
-
-
-		    // toAttribute
-		    $toAtt = $tp->toAttribute($text);
-		    echo '<h3>User-input &gg; toAttribute($text)</h3>';
-		    print_a($toAtt);
-
-		    // toEmail
-		    $toEmail = $tp->toEmail($dbText);
-		    echo '<h3>User-input &gg; toEmail($text) <small>from DB</small></h3>';
-		    print_a($toEmail);
-
-		    // toEmail
-		    $toRss = $tp->toRss($text);
-		    echo '<h3>User-input &gg; toRss($text)</h3>';
-		    print_a($toRss);
-
-		    echo '</div>';
-
-
-
-	    }
-
-	    echo '<h3>toDB() &gg; toHTML()</h3>';
-		$html = $tp->toHTML($dbText,true);
-	    print_a($html);
-
-	    echo '<h3>toDB &gg; toHTML() <small>(rendered)</small></h3>';
-	    echo $html;
-
-	    echo '<h3>toDB &gg; toForm()</h3>';
-		$toForm = $tp->toForm($dbText);
-	    $toFormRender = e107::getForm()->open('test');
-	    $toFormRender .= "<textarea cols='100' style='width:100%;height:300px' >".$toForm. '</textarea>';
-	    $toFormRender .= e107::getForm()->close();
-
-		echo  $toFormRender;
-
-
-		 echo '<h3>toDB &gg; bbarea</h3>';
-	    echo e107::getForm()->bbarea('name',$toForm);
-
-		if(!empty($advanced))
-		{
-
-			echo '<h3>Allowed Tags</h3>';
-			print_a($this->allowedTags);
-
-
-		    echo '<h3>Converted Paths</h3>';
-		    print_a($this->pathList);
-
-		    echo '<h3>Removed Tags and Attributes</h3>';
-		    print_a($this->removedList);
-
-		    echo '<h3>Nodes to Convert</h3>';
-			print_a($this->nodesToConvert);
-
-			  echo '<h3>Nodes to Disable SC</h3>';
-			print_a($this->nodesToDisableSC);
-		}
-
-	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
-	    $scoreStyle = ($perc > 98) ? 'label-success' : 'label-danger';
-	    echo "<h3><span class='label ".$scoreStyle."'>Similarity:  ".number_format($perc). '%</span></h3>';
-
-		echo "<table class='table table-bordered'>
-
-
-		<tr>
-			<th style='width:50%'>User-input</th>
-			<th style='width:50%'>toForm() output</th>
-		</tr>
-		<tr>
-			<td>".print_a($text,true). '</td>
-			<td>' . $toFormRender. '</td>
-		</tr>
-
-		</table>';
-	  /*  <tr>
-			<td>".print_a(json_encode($text),true)."</td>
-			<td>". print_a(json_encode(html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8')),true)."</td>
-		</tr>*/
-
-	//    print_a($text);
-
-return;
-
-//return;
-        // ---------------------------------
-
-
-		$html = $text;
-
-		$sql = e107::getDb();
-		$tp = e107::getParser();
-		$dbg = e107::getDebug(); 
-        
-      //  $html = $this->getXss();
-                   
-        echo '<h2>Unprocessed XSS</h2>';
-        // echo $html; // Remove Comment for a real mess! 
-        print_a($html);
- 
-        echo '<h2>Standard v2 Parser</h2>';
-        echo '<h3>$tp->dataFilter()</h3>';
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-       $dbg->logTime('------ Start Parser Test -------');
-        print_a($tp->dataFilter($html));
-       $dbg->logTime('tp->dataFilter');
-         
-        echo '<h3>$tp->toHTML()</h3>';
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess! 
-        print_a($tp->toHTML($html));
-       $dbg->logTime('tp->toHtml');     
-        
-        echo '<h3>$tp->toDB()</h3>';
-        // echo $tp->dataFilter($html); // Remove Comment for a real mess!
-        $todb = $tp->toDB($html);
-        print_a( $todb);
-       $dbg->logTime('tp->toDB');
-
-	    echo '<h3>$tp->toForm() with toDB input.</h3>';
-       print_a( $tp->toForm($todb));
-        
-        echo '<h2>New Parser</h2>'; 
-        echo '<h3>Processed</h3>';
-        $cleaned = $this->cleanHtml($html);  // false = don't check html pref.
-        print_a($cleaned);
-       $dbg->logTime('new Parser');    
-      // $dbg->logTime('------ End Parser Test -------');
-        echo '<h3>Processed &amp; Rendered</h3>';
-        echo $cleaned;
-        
-        echo '<h2>New Parser - Data</h2>'; 
-        echo '<h3>Converted Paths</h3>';
-        print_a($this->pathList);
-                   
-        echo '<h3>Removed Tags and Attributes</h3>';
-        print_a($this->removedList);
-        
-         //   print_a($p); 
-    }
-
-
-
 	/**
 	 * Filters/Validates using the PHP5 filter_var() method.
-	 * @param $text
-	 * @param $type string str|int|email|url|w|wds|file
-	 * @return string | boolean | array
+	 * @param string|array $text
+	 * @param string $type string str|int|email|url|w|wds|file
+	 * @return string|boolean| array
 	 */
 	public function filter($text, $type='str', $validate=false)
 	{
@@ -5460,65 +4977,67 @@ return;
 			return $text;
 		}
 
-		if($type === 'w') // words only.
+		switch($type)
 		{
-			return preg_replace('/[^\w]/', '',$text);
+			case "w":
+				$ret = preg_replace('/[^\w]/', '',$text);
+				break;
+
+			case "d":
+				$ret = preg_replace('/[^\d]/', '',$text);
+				break;
+
+			case "wd":
+				$ret = preg_replace('/[^\w\d]/', '',$text);
+				break;
+
+			case "wds":
+				$ret = preg_replace('/[^\w\d ]/', '',$text);
+				break;
+
+			case "file":
+				$ret = preg_replace('/[^\w\d_\.-]/', '-',$text);
+				break;
+
+			case "version":
+				$ret = preg_replace('/[^\d_\.]/', '',$text);
+				break;
+
+			default:
+
+				if($validate == false)
+				{
+					$filterTypes = array(
+						'int'   => FILTER_SANITIZE_NUMBER_INT,
+						'str'   => FILTER_SANITIZE_STRING, // no html.
+						'email' => FILTER_SANITIZE_EMAIL,
+						'url'   => FILTER_SANITIZE_URL,
+						'enc'   => FILTER_SANITIZE_ENCODED
+					);
+				}
+				else
+				{
+					$filterTypes = array(
+						'int'   => FILTER_VALIDATE_INT,
+						'email' => FILTER_VALIDATE_EMAIL,
+						'ip'    => FILTER_VALIDATE_IP,
+						'url'   => FILTER_VALIDATE_URL,
+
+					);
+				}
+
+				if(is_array($text))
+				{
+					$ret = filter_var_array($text, $filterTypes[$type]);
+				}
+				else
+				{
+					$ret = filter_var($text, $filterTypes[$type]);
+				}
+
 		}
 
-		if($type === 'd') // digits only.
-		{
-			return preg_replace('/[^\d]/', '',$text);
-		}
-
-		if($type === 'wd') // words and digits only.
-		{
-			return preg_replace('/[^\w\d]/', '',$text);
-		}
-
-		if($type === 'wds') // words, digits and spaces only.
-		{
-			return preg_replace('/[^\w\d ]/', '',$text);
-		}
-
-		if($type === 'file')
-		{
-			return preg_replace('/[^\w\d_\.-]/', '-',$text);
-		}
-
-		if($type === 'version')
-		{
-			return preg_replace('/[^\d_\.]/', '',$text);
-		}
-
-		if($validate == false)
-		{
-			$filterTypes = array(
-				'int'   => FILTER_SANITIZE_NUMBER_INT,
-				'str'   => FILTER_SANITIZE_STRING, // no html.
-				'email' => FILTER_SANITIZE_EMAIL,
-				'url'   => FILTER_SANITIZE_URL,
-				'enc'   => FILTER_SANITIZE_ENCODED
-			);
-		}
-		else
-		{
-			$filterTypes = array(
-				'int'   => FILTER_VALIDATE_INT,
-				'email' => FILTER_VALIDATE_EMAIL,
-				'ip'    => FILTER_VALIDATE_IP,
-				'url'   => FILTER_VALIDATE_URL,
-
-			);
-		}
-
-		if(is_array($text))
-		{
-			return filter_var_array($text, $filterTypes[$type]);
-		}
-
-
-		return filter_var($text, $filterTypes[$type]);
-
+		return $ret;
 	}
 
 

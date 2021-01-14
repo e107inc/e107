@@ -163,7 +163,7 @@
 				$text = '';
 				foreach($imgParms as $key => $val)
 				{
-					$text .= $key . "='" . $tp->toAttribute($val) . "' ";
+					$text .= $key . "='" . e107::getParser()->toAttribute($val) . "' ";
 				}
 
 				return $text;
@@ -223,7 +223,7 @@
 
 
 			$code_text = str_replace($search, $replace, $code_text);
-			$code_text = $tp->toAttribute($code_text);
+			$code_text = e107::getParser()->toAttribute($code_text);
 
 			$img_file = pathinfo($code_text);        // 'External' file name. N.B. - might still contain a constant such as e_IMAGE
 

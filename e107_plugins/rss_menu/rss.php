@@ -42,18 +42,8 @@ $tp = e107::getParser();
 //require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 require_once(e_HANDLER.'userclass_class.php');
 
-/*
-global $tp;
-if (!is_object($tp->e_bb))
-{
-	require_once(e_HANDLER.'bbcode_handler.php');
-	$tp->e_bb = new e_bbcode;
-}
-*/
-
 // Get language file
 e107::includeLan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
-
 
 
 // Query handler

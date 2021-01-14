@@ -23,7 +23,7 @@ class banner_shortcodes extends e_shortcode
 // $parm now can be array, old campaign $parm still allowed....
 	function sc_banner($parm = '')
 	{
-		
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		mt_srand((double) microtime() * 1000000);

@@ -1260,7 +1260,7 @@ class news_admin_ui extends e_admin_ui
 		if ($sql->select("submitnews", "*", "submitnews_id=".intval($id)))
 		{
 			$row = $sql->fetch();
-			$data['news_title'] = $tp->dataFilter($row['submitnews_title']);
+			$data['news_title'] = $tp->filter($row['submitnews_title']);
 			$data['news_body'] = $row['submitnews_item'];
 			$data['news_category'] = intval( $row['submitnews_category']);
 			$data['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";

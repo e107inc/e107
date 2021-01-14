@@ -130,6 +130,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		}
 */
 
+
 		public function testParseTemplateWithEnabledCoreShortcodes()
 		{
 			$needle = '<ul class="nav navbar-nav nav-main ml-auto">';
@@ -1556,6 +1557,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				4   => array('input' => 'test123 xxx.jpg',  'mode' => 'file',     'expected' => 'test123-xxx.jpg'),
 				5   => array('input' => '2.1.4 (test)',     'mode' => 'version',  'expected' => '2.1.4'),
 				6   => array('input' => $url,               'mode'=>'url',        'expected' => $url),
+				7   => array('input' => array('1', 'xxx'),  'mode'=>'str',        'expected' => array('1', 'xxx')),
 			);
 
 			foreach($tests as $var)

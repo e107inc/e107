@@ -8,6 +8,6 @@ parse_str($parm, $tmp);
 
 foreach($tmp as $key => $p)
 {
-  $tastr .= $tp -> toAttribute($key)." = '".$tp -> toAttribute($p)."' ";
+  $tastr .= e107::getParser()->toAttribute($key)." = '".e107::getParser()->toAttribute($p)."' ";
 }
 return "<textarea class='{$class}' $tastr>$code_text</textarea>";
