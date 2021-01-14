@@ -10,6 +10,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = WMLAN_13 ;
-$ns -> tablerender( WMLAN_12, $text);
+$text = defset('WMLAN_13');
+$ns -> tablerender( defset('WMLAN_12'), $text);
 
