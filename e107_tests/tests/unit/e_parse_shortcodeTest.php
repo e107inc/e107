@@ -375,9 +375,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'news_id'               => '1',
 			'news_title'            => 'Welcome',
 			'news_sef'              => 'welcome-to-e107-me-again-x',
-			'news_body'             => '[html]<p>Lorem ipsum dolor sit amet, no meis semper dicunt est, petentium eloquentiam quo ne. At vero facer eam. Ex nam altera oportere, nisl natum prima id pro. Rebum augue dissentiet eum te, vel veniam eirmod option ea, at eos velit repudiare. Ius sumo dicit adolescens id, an cum efficiantur concludaturque.<br><br>Summo sensibus cum ne, et duo torquatos conceptam. No aeque elitr constituam qui. Nostro corpora nec no, diam verterem tincidunt has et. Altera accumsan urbanitas pro eu, ei assum voluptaria sed. Eam tibique nominavi consequuntur an.<br><br>Ei perfecto delicata usu, quo eius noster blandit te. Eu doctus volumus pri. Meis argumentum an nam, eos odio prima autem an. Te complectitur intellegebat pro, ius id alterum maiestatis. Ea facer accusata sed, ex illum antiopam quo.<br><br>Altera putent pri ad, in phaedrum dissentiunt per. Te eum everti dolores. Ut mea vero autem viderer, mel brute harum senserit id. Minim senserit eloquentiam duo in, sit ei justo graece petentium. Sea id homero oporteat invenire.<br><br>Pri semper dolorum ad. Cu eius repudiare eos. Eum in eleifend necessitatibus. Ne has mutat intellegebat.ok asdasdasd asdasd okay. okayasdasd okokokok wowow sdf okoko lk</p>[/html]',
-			'news_extended'         => '[html]<p><strong>Lorem ipsum</strong> is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It&#039;s also called placeholder (or filler) text. It&#039;s a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout. Lorem ipsum is mostly a part of a Latin text by the classical author and philosopher Cicero. Its words and letters have been changed by addition or removal, so to deliberately render its content nonsensical; it&#039;s not genuine, correct, or comprehensible Latin anymore.</p>
-			<p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]',
+			'news_body'             => '[html]<p>Main Body</p>[/html]',
+			'news_extended'         => '[html]<p><strong>Extended Body</strong></p>[/html]',
 			'news_meta_keywords'    => 'welcome,new website',
 			'news_meta_description' => 'Description for Facebook and search engines.',
 			'news_meta_robots'      => '',
@@ -396,12 +395,25 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'news_template'         => 'default'
 		);
 
+        $parms = array(
+            'news_body'         => array(
+                '=body'             => '<!-- bbcode-html-start --><p>Main Body</p><!-- bbcode-html-end -->',
+                '=extended'         => '<!-- bbcode-html-start --><p><strong>Extended Body</strong></p><!-- bbcode-html-end -->',
+            ),
+            'newscommentlink'   => array(
+                ': class=me'    => "<a title='0 Comments' class='e-tip me' href='".e107::url('news/view/item', ['news_id'=>1, 'news_sef'=>'welcome-to-e107-me-again-x'])."'><i class='fa fa-comment' ><!-- --></i></a>"
+
+            ),
+
+		);
+
 	//	$sc->setVars($vars);
 		$sc->__construct();
 		$sc->setScVar('news_item', $vars);
-		$sc->setScVar('param', array('current_action'=>'list'));
+		$sc->setScVar('param', array('current_action'=>'extend'));
 
-        $this->processShortcodeMethods($sc);
+
+        $this->processShortcodeMethods($sc, $parms);
 
     }
 
@@ -456,7 +468,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$exclude = array('sc_cpagemessage'); // system messages
 
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -544,7 +556,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$sc->__construct();
 
 		$exclude = array('sc_signup_coppa_text'); // uses random email obfiscation.
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -614,7 +626,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$sc->setVars($vars);
 
 		$exclude = array('sc_user_email'); // uses random obfiscation.
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -670,7 +682,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		// these are tested in the user-extended test.
 		$exclude = array('sc_userextended_all', 'sc_userextended_cat', 'sc_userextended_field'); // uses e107::setRegistry() to avoid duplicate rendering.
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -1129,7 +1141,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$sc->setVars($vars);
 		$exclude = array('sc_gallery_slides'); // uses a counter.
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -1390,7 +1402,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$exclude = array('sc_list_category');  // unknown issue.
 
-        $this->processShortcodeMethods($sc, $exclude);
+        $this->processShortcodeMethods($sc, null, $exclude);
 
     }
 
@@ -1411,7 +1423,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 // ------------------------------------------------
 
 
-    private function processShortcodeMethods($sc, $exclude=array())
+    private function processShortcodeMethods($sc, $parms=array(), $exclude=array())
     {
     	$list = get_class_methods($sc);
 
@@ -1422,12 +1434,25 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
                 continue;
             }
 
-            $scName = '{'.strtoupper(str_replace('sc_', '', $meth)).'}';
+			$name = str_replace('sc_', '', $meth);
+            $scName = '{'.strtoupper($name).'}';
 
             $result = e107::getParser()->parseTemplate($scName, true, $sc);
             $expected = $sc->$meth();
 
             $this->assertEquals($expected,$result, $scName.' != '.$meth.'()');
+
+            if(!empty($parms[$name]))
+            {
+            	foreach($parms[$name] as $parm=>$expect)
+                {
+                    $scWithParm = str_replace('}', $parm.'}', $scName);
+                    $actual = e107::getParser()->parseTemplate($scWithParm, true, $sc);
+                    $this->assertEquals($expect, $actual);
+                }
+            }
+
+
         }
 
 

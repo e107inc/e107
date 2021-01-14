@@ -1208,9 +1208,14 @@ class news_front
 
 				if(empty($tmp))
 				{
+					$this->addDebug('template', "news_view_template.php");
 					$newsViewTemplate = !empty($news['news_template']) ? $news['news_template'] : 'default';
 					$tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
 					$param['template_key'] = 'news_view/'.$newsViewTemplate;
+				}
+				else
+				{
+					$this->addDebug('template', "news_template.php");
 				}
 
 				$template = $tmp['item'];
