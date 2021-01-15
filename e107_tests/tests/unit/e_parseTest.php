@@ -28,6 +28,11 @@
             $this->tp->__construct();
 		}
 
+		public function testInit()
+		{
+			$this->tp->init();
+		}
+
 
 
 /*
@@ -731,6 +736,247 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			$result = $this->tp->simpleParse($template, null);
 			$this->assertEquals(" <b></b>", $result);
+
+
+			$vars = array(
+				'aaBB_123'   => "Simple Replacement"
+			);
+
+			$template = "-- {aaBB_123} --";
+			$result = $this->tp->simpleParse($template, $vars);
+			$this->assertEquals('-- Simple Replacement --', $result);
+
+		}
+
+		public function testGetModifierList()
+		{
+			$expected = array (
+				'TITLE'        =>
+					 array (
+					 'context'      => 'TITLE',
+					 'fromadmin'    => false,
+					 'emotes'       => false,
+					 'defs'         => true,
+					 'constants'    => false,
+					 'hook'         => true,
+					 'scripts'      => true,
+					 'link_click'   => false,
+					 'link_replace' => true,
+					 'parse_sc'     => true,
+					 'no_tags'      => false,
+					 'value'        => false,
+					 'nobreak'      => true,
+					 'retain_nl'    => true,
+				 ),
+				 'TITLE_PLAIN'  =>
+				    array (
+					 'context'      => 'TITLE_PLAIN',
+					 'fromadmin'    => false,
+					 'emotes'       => false,
+					 'defs'         => true,
+					 'constants'    => false,
+					 'hook'         => true,
+					 'scripts'      => true,
+					 'link_click'   => false,
+					 'link_replace' => true,
+					 'parse_sc'     => true,
+					 'no_tags'      => true,
+					 'value'        => false,
+					 'nobreak'      => true,
+					 'retain_nl'    => true,
+				 ),
+				 'USER_TITLE'   =>
+				 array (
+				 'context'      => 'USER_TITLE',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => false,
+				 'constants'    => false,
+				 'hook'         => false,
+				 'scripts'      => false,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => false,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => true,
+				 'retain_nl'    => true,
+				 ),
+				 'E_TITLE'      =>
+				 array (
+				 'context'      => 'E_TITLE',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => true,
+				 'constants'    => false,
+				 'hook'         => true,
+				 'scripts'      => false,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => true,
+				 'retain_nl'    => true,
+				 ),
+				 'SUMMARY'      =>
+				 array (
+				 'context'      => 'SUMMARY',
+				 'fromadmin'    => false,
+				 'emotes'       => true,
+				 'defs'         => true,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => true,
+				 'link_click'   => true,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => false,
+				 ),
+				 'DESCRIPTION'  =>
+				 array (
+				 'context'      => 'DESCRIPTION',
+				 'fromadmin'    => false,
+				 'emotes'       => true,
+				 'defs'         => true,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => true,
+				 'link_click'   => true,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => false,
+				 ),
+				 'BODY'         =>
+				 array (
+				 'context'      => 'BODY',
+				 'fromadmin'    => false,
+				 'emotes'       => true,
+				 'defs'         => true,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => true,
+				 'link_click'   => true,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => false,
+				 ),
+				 'WYSIWYG'      =>
+				 array (
+				 'context'      => 'WYSIWYG',
+				 'fromadmin'    => false,
+				 'emotes'       => true,
+				 'defs'         => false,
+				 'constants'    => false,
+				 'hook'         => false,
+				 'scripts'      => true,
+				 'link_click'   => false,
+				 'link_replace' => false,
+				 'parse_sc'     => false,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => true,
+				 ),
+				 'USER_BODY'    =>
+				 array (
+				 'context'      => 'USER_BODY',
+				 'fromadmin'    => false,
+				 'emotes'       => true,
+				 'defs'         => false,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => false,
+				 'link_click'   => true,
+				 'link_replace' => true,
+				 'parse_sc'     => false,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => false,
+				 'nostrip'      => false,
+				 ),
+				 'E_BODY'       =>
+				 array (
+				 'context'      => 'E_BODY',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => true,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => false,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => false,
+				 ),
+				 'E_BODY_PLAIN' =>
+				 array (
+				 'context'      => 'E_BODY_PLAIN',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => true,
+				 'constants'    => 'full',
+				 'hook'         => true,
+				 'scripts'      => false,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => true,
+				 'value'        => false,
+				 'nobreak'      => false,
+				 'retain_nl'    => true,
+				 ),
+				 'LINKTEXT'     =>
+				 array (
+				 'context'      => 'LINKTEXT',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => true,
+				 'constants'    => false,
+				 'hook'         => false,
+				 'scripts'      => true,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => true,
+				 'no_tags'      => false,
+				 'value'        => false,
+				 'nobreak'      => true,
+				 'retain_nl'    => true,
+				 ),
+				 'RAWTEXT'      =>
+				 array (
+				 'context'      => 'RAWTEXT',
+				 'fromadmin'    => false,
+				 'emotes'       => false,
+				 'defs'         => false,
+				 'constants'    => false,
+				 'hook'         => false,
+				 'scripts'      => true,
+				 'link_click'   => false,
+				 'link_replace' => true,
+				 'parse_sc'     => false,
+				 'no_tags'      => true,
+				 'value'        => false,
+				 'nobreak'      => true,
+				 'retain_nl'    => true,
+				 ),
+				 );
+
+			$list = $this->tp->getModifierList();
+			$this->assertSame($expected, $list);
 
 
 		}
