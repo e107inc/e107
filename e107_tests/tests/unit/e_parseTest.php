@@ -137,7 +137,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		function testToHTMLModifiers()
 		{
-			e107::getConfig()->set('make_clickable', 0)->save(false, true);
+		//	e107::getConfig()->set('make_clickable', 0)->save(false, true);
 
 			$list = $this->tp->getModifierList();
 
