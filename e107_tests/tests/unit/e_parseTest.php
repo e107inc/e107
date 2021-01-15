@@ -135,6 +135,209 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		}
 */
 
+		function testToHTMLModifiers()
+		{
+			e107::getConfig()->set('make_clickable', 0)->save(false, true);
+
+			$list = $this->tp->getModifierList();
+
+			$tests = array (
+				'emotes_off'        =>
+					array(
+						'input'    => ":-)",
+						'expected' => ':-)',
+					),
+				'emotes_on'         =>
+					array(
+						'input'    => ":-)",
+						'expected' => '<img class=\'e-emoticon\' src=\'https://localhost/e107/e107_images/emotes/default/smile.png\' alt="smile"  />',
+					),
+				'no_hook'           =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+				'do_hook'           =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+				'scripts_off'       =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+				'scripts_on'        =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+				'no_make_clickable' =>
+					array(
+						'input'    => "www.somewhere.com mailto:myemail@somewhere.com",
+						'expected' => 'www.somewhere.com mailto:myemail@somewhere.com',
+					),
+				'make_clickable'    =>
+					array(
+						'input'    => "www.somewhere.com mailto:myemail@somewhere.com",
+						'expected' => '', // random obfiscation
+					),
+				'no_replace'        =>
+					array(
+						'input'    => "www.somewhere.com",
+						'expected' => '',
+					),
+				'replace'           =>
+					array(
+						'input'    => "www.somewhere.com",
+						'expected' => '',
+					),
+				'consts_off'        =>
+					array(
+						'input'    => "{e_PLUGIN}",
+						'expected' => '{e_PLUGIN}',
+					),
+				'consts_rel'        =>
+					array(
+						'input'    => "{e_PLUGIN}",
+						'expected' => 'e107_plugins/',
+					),
+				'consts_abs'        =>
+					array(
+						'input'    => "{e_PLUGIN}",
+						'expected' => '/e107_plugins/',
+					),
+				'consts_full'       =>
+					array(
+						'input'    => "{e_PLUGIN}",
+						'expected' => 'https://localhost/e107/e107_plugins/',
+					),
+				'scparse_off'       =>
+					array(
+						'input'    => "{SITENAME}",
+						'expected' => '{SITENAME}',
+					),
+				'scparse_on'        =>
+					array(
+						'input'    => "{SITENAME}",
+						'expected' => 'e107',
+					),
+				'no_tags'           =>
+					array(
+						'input'    => "<b>bold</b>",
+						'expected' => 'bold',
+					),
+				'do_tags'           =>
+					array(
+						'input'    => "<b>bold</b>",
+						'expected' => '<b>bold</b>',
+					),
+				'fromadmin'         =>
+					array(
+						'input'    => "My Text {SITENAME} {e_PLUGIN} www.somewhere.com \nNew line :-)",
+						'expected' => '',
+					),
+				'notadmin'          =>
+					array(
+						'input'    => "My Text {SITENAME} {e_PLUGIN} www.somewhere.com \nNew line :-)",
+						'expected' => '',
+					),
+				'er_off'            =>
+					array(
+						'input'    => "My Text {SITENAME} {e_PLUGIN} www.somewhere.com \nNew line :-)",
+						'expected' => '',
+					),
+				'er_on'             =>
+					array(
+						'input'    => "My Text {SITENAME} {e_PLUGIN} www.somewhere.com \nNew line :-)",
+						'expected' => '',
+					),
+				'defs_off'          =>
+					array(
+						'input'    => "LAN_THANK_YOU",
+						'expected' => 'LAN_THANK_YOU',
+					),
+				'defs_on'           =>
+					array(
+						'input'    => "LAN_THANK_YOU",
+						'expected' => 'Thank you',
+					),
+				'dobreak'           =>
+					array(
+						'input'    => "Line 1\nLine 2\nLine 3",
+						'expected' => 'Line 1<br />Line 2<br />Line 3',
+					),
+				'nobreak'           =>
+					array(
+						'input'    => "Line 1\nLine 2\nLine 3",
+						'expected' => "Line 1\nLine 2\nLine 3",
+					),
+				'lb_nl'             =>
+					array(
+						'input'    => "Line 1\nLine 2\nLine 3",
+						'expected' => "Line 1\nLine 2\nLine 3",
+					),
+				'lb_br'             =>
+					array(
+						'input'    => "Line 1\nLine 2\nLine 3",
+						'expected' => 'Line 1<br />Line 2<br />Line 3',
+					),
+				'retain_nl'         =>
+					array(
+						'input'    => "Line 1\nLine 2\nLine 3",
+						'expected' => "Line 1\nLine 2\nLine 3",
+					),
+				'defs'              =>
+					array(
+						'input'    => "LAN_THANK_YOU",
+						'expected' => 'Thank you',
+					),
+				'parse_sc'          =>
+					array(
+						'input'    => "{SITENAME}",
+						'expected' => 'e107',
+					),
+				'constants'         =>
+					array(
+						'input'    => "{e_PLUGIN}",
+						'expected' => 'e107_plugins/',
+					),
+				'value'             =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+				'wysiwyg'           =>
+					array(
+						'input'    => "",
+						'expected' => '',
+					),
+			);
+
+
+
+			$ret = [];
+			foreach($list as $mod => $val)
+			{
+				if(empty($tests[$mod]['expected']))
+				{
+					continue;
+				}
+
+				$result = $this->tp->toHTML($tests[$mod]['input'], false, 'defaults_off,'.$mod);
+				$this->assertSame($tests[$mod]['expected'], $result, $mod." didn't match the expected result.");
+			//	$ret[$mod] = $result;
+
+			}
+
+
+		//	e107::getConfig()->set('make_clickable', 0)->save(false, true);
+		//	var_export($ret);
+
+		}
+
+
+
 		function testToHTMLWithBBcode()
 		{
 			$tests = array(
@@ -1161,9 +1364,25 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				 'nobreak'      => true,
 				 'retain_nl'    => true,
 				 ),
+				 'NODEFAULT' => array(
+			        'context' => 'NODEFAULT',
+			        'fromadmin' => false,
+			        'emotes' => false,
+			        'defs' => false,
+			        'constants' => false,
+			        'hook' => false,
+			        'scripts' => false,
+			        'link_click' => false,
+			        'link_replace' => false,
+			        'parse_sc' => false,
+			        'no_tags' => false,
+			        'value' => false,
+			        'nobreak' => false,
+			        'retain_nl' => false,
+			        )
 				 );
 
-			$list = $this->tp->getModifierList();
+			$list = $this->tp->getModifierList('super');
 			$this->assertSame($expected, $list);
 
 

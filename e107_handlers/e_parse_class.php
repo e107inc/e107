@@ -32,6 +32,8 @@ class e_parse
 	 */
 	private $multibyte = false; // previously $utfAction
 
+	private $pref; // core prefs used in toHTML.
+
 	// Profanity filter
 	private $e_pf;
 
@@ -102,8 +104,8 @@ class e_parse
 		'link_replace' => true,
 
 		// Parse shortcodes - TRUE enables parsing
-
 		'parse_sc'  => false,
+
 		// remove HTML tags.
 		'no_tags'   => false,
 
@@ -182,6 +184,11 @@ class e_parse
 		'RAWTEXT'      =>
 			array(
 				'nobreak' => true, 'retain_nl' => true, 'link_click' => false, 'emotes' => false, 'hook' => false, 'no_tags' => true
+			),
+		'NODEFAULT'  =>
+			array ('context' => false, 'fromadmin' => false, 'emotes' => false, 'defs' => false, 'constants' => false, 'hook' => false,
+            'scripts' => false, 'link_click' => false, 'link_replace' => false, 'parse_sc' => false, 'no_tags' => false, 'value' => false,
+             'nobreak' => false, 'retain_nl' => false
 			)
 	);
 
@@ -316,9 +323,14 @@ class e_parse
 
 	}
 
-	public function getModifierList()
+	public function getModifierList($type = '')
 	{
-		return $this->e_SuperMods;
+		if($type === 'super')
+		{
+			return $this->e_SuperMods;
+		}
+
+		return $this->e_Modifiers;
 	}
 
 
@@ -1348,28 +1360,23 @@ class e_parse
 			return $text;
 		}
 
-		$pref = e107::getPref();
+		if(empty($this->pref)) // cache the prefs.
+		{
+			$prefsUsed = array('smiley_activate', 'make_clickable', 'link_replace', 'main_wordwrap', 'link_text',
+								'email_text', 'links_new_window', 'profanity_filter', 'tohtml_hook', 'e_tohtml_list', 'e_parse_list'
+			);
+
+			$cfg = e107::getConfig();
+			foreach($prefsUsed as $v)
+			{
+				$this->pref[$v] = $cfg->get($v);
+			}
+		}
 
 		global $fromadmin;
 
 		// Set default modifiers to start
 		$opts = $this->getModifiers($modifiers);
-
-		// Turn off a few things if not enabled in options
-		if(empty($pref['smiley_activate']))
-		{
-			$opts['emotes'] = false;
-		}
-
-		if(empty($pref['make_clickable']))
-		{
-			$opts['link_click'] = false;
-		}
-
-		if(empty($pref['link_replace']))
-		{
-			$opts['link_replace'] = false;
-		}
 
 		if($this->isHtml($text)) //BC FIx for when HTML is saved without [html][/html]
 		{
@@ -1405,9 +1412,9 @@ class e_parse
 */
 
 		// Make sure we have a valid count for word wrapping
-		if(!$wrap && !empty($pref['main_wordwrap']))
+		if(!$wrap && !empty($this->pref['main_wordwrap']))
 		{
-			$wrap = $pref['main_wordwrap'];
+			$wrap = $this->pref['main_wordwrap'];
 		}
 //		$text = " ".$text;
 
@@ -1570,10 +1577,10 @@ class e_parse
 							if($opts['link_replace'] && defset('ADMIN_AREA') !== true)
 							{
 
-								$link_text = $pref['link_text'];
-								$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : LAN_EMAIL_SUBS;
+								$link_text = $this->pref['link_text'];
+								$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
 
-								$sub_blk = $this->makeClickable($sub_blk, 'url', array('sub' => $link_text, 'ext' => $pref['links_new_window']));
+								$sub_blk = $this->makeClickable($sub_blk, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
 								$sub_blk = $this->makeClickable($sub_blk, 'email', array('sub' => $email_text));
 							}
 							else
@@ -1661,7 +1668,7 @@ class e_parse
 
 
 						// profanity filter
-						if(!empty($pref['profanity_filter']))
+						if($this->pref['profanity_filter'])
 						{
 							if(!is_object($this->e_pf))
 							{
@@ -1686,12 +1693,12 @@ class e_parse
 						if($opts['hook']) //Run any hooked in parsers
 						{
 
-							if(!empty($pref['tohtml_hook']))
+							if(!empty($this->pref['tohtml_hook']))
 							{
 								//		trigger_error('<b>tohtml_hook is deprecated.</b> Use e_parse.php instead.', E_USER_DEPRECATED); // NO LAN
 
 								//Process the older tohtml_hook pref (deprecated)
-								foreach(explode(',', $pref['tohtml_hook']) as $hook)
+								foreach(explode(',', $this->pref['tohtml_hook']) as $hook)
 								{
 									if(!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/' . $hook . '.php'))
 									{
@@ -1710,10 +1717,10 @@ class e_parse
 							/**
 							 * / @deprecated
 							 */
-							if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
+							if(isset($this->pref['e_tohtml_list']) && is_array($this->pref['e_tohtml_list']))
 							{
 
-								foreach($pref['e_tohtml_list'] as $hook)
+								foreach($this->pref['e_tohtml_list'] as $hook)
 								{
 									if(empty($hook))
 									{
@@ -1741,9 +1748,9 @@ class e_parse
 							/**
 							 * / Preferred 'hook'
 							 */
-							if(!empty($pref['e_parse_list']))
+							if(!empty($this->pref['e_parse_list']))
 							{
-								foreach($pref['e_parse_list'] as $plugin)
+								foreach($this->pref['e_parse_list'] as $plugin)
 								{
 									$hookObj = e107::getAddon($plugin, 'e_parse');
 									if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
@@ -5320,6 +5327,11 @@ class e_parse
 		{
 			return $opts;
 		}
+
+		if(strpos($modifiers,'defaults_off') !== false)
+		{
+			$opts = $this->e_SuperMods['NODEFAULT'];
+		}
 		// Now process any modifiers that are specified
 		$aMods = explode(',', $modifiers);
 
@@ -5351,6 +5363,21 @@ class e_parse
 			}
 		}
 
+			// Turn off a few things if not enabled in options
+		if(empty($this->pref['smiley_activate']))
+		{
+			$opts['emotes'] = false;
+		}
+
+		if(empty($this->pref['make_clickable']))
+		{
+			$opts['link_click'] = false;
+		}
+
+		if(empty($this->pref['link_replace']))
+		{
+			$opts['link_replace'] = false;
+		}
 
 		return $opts;
 	}
