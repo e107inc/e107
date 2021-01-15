@@ -3,17 +3,16 @@
 
 	function setimage_shortcode($parm, $mode='')
 	{
-		### Reset to defaults TODO site prefs
 		if(isset($parm['default']))
 		{
 			$parm['w'] = 100;
 			$parm['h'] = 0;
 			$parm['crop'] = 0;
 		}
-		e107::getParser()->thumbWidth = varset($parm['w'],0);
-		e107::getParser()->thumbHeight = varset($parm['h'],0);
-		e107::getParser()->thumbCrop = varset($parm['crop'],0);
+		e107::getParser()->thumbWidth(varset($parm['w'],0));
+		e107::getParser()->thumbHeight(varset($parm['h'],0));
+		e107::getParser()->thumbCrop(varset($parm['crop'],0));
 		
 	}
 
-?>
+

@@ -133,18 +133,6 @@ if(!defined('e_ROOT'))
 	unset($e_ROOT);
 }
 
-// MOVED TO $e107->prepare_request()
-// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
-//if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
-//{
-//	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
-//	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url.'?'.$_SERVER['QUERY_STRING'] : $new_url;
-//	header('Location: '.$new_loc);
-//	exit();
-//}
-// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-//$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
-
 //
 // D: Setup PHP error handling
 //    (Now we can see PHP errors) -- but note that DEBUG is not yet enabled!
@@ -156,15 +144,6 @@ $error_handler = new error_handler();
 // E: Setup other essential PHP parameters
 //
 define('e107_INIT', true);
-
-
-// MOVED TO $e107->prepare_request()
-// setup some php options
-//e107_ini_set('magic_quotes_runtime',     0);
-//e107_ini_set('magic_quotes_sybase',      0);
-//e107_ini_set('arg_separator.output',     '&amp;');
-//e107_ini_set('session.use_only_cookies', 1);
-//e107_ini_set('session.use_trans_sid',    0);
 
 
 // DEPRECATED, use e107::getConfig() and e107::getPlugConfig()
@@ -179,47 +158,6 @@ else
 {
 	unset($retrieve_prefs);
 }
-
-// MOVED TO e107->set_constants()
-//define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
-//
-//// Define the domain name and subdomain name.
-//if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
-//{
-//	$srvtmp = '';  // Host is an IP address.
-//}
-//else
-//{
-//	$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
-//}
-//
-//define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
-//
-//if(e_SUBDOMAIN)
-//{
-//   	unset($srvtmp[0]);
-//}
-//
-//define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
-//
-//unset($srvtmp);
-
-
-// MOVED TO $e107->prepare_request()
-//  Ensure thet '.' is the first part of the include path
-//$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
-//if($inc_path[0] != '.')
-//{
-//	array_unshift($inc_path, '.');
-//	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-//	e107_ini_set('include_path', $inc_path);
-//}
-//unset($inc_path);
-
-//
-// F: Grab e107_config, get directory paths and create $e107 object
-//
-
 
 @include(e_ROOT.'e107_config.php');
 
@@ -311,58 +249,14 @@ if(!defined('e_SECURITY_LEVEL'))
 	define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_BALANCED);
 }
 
-// MOVED TO $e107->set_request()
-//$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
-//if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
-//{
-//	foreach($inArray as $res)
-//	{
-//		if(stristr($_SERVER['QUERY_STRING'], $res))
-//		 {
-//			die('Access denied.');
-//		}
-//	}
-//}
-
-
-
 //
 // Start the parser; use it to grab the full query string
 //
-
-//DEPRECATED, BC
-//$e107->url = e107::getUrl(); - caught by __get()
-//TODO - find & replace $e107->url
-//DEPRECATED, BC, $e107->tp caught by __get()
 if(!isset($_E107['no_parser']))
 {
 	$tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 }
-//define("e_QUERY", $matches[2]);
-//define("e_QUERY", $_SERVER['QUERY_STRING']);
 
-
-// MOVED TO $e107->set_request()
-//$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
-//define('e_QUERY', $e_QUERY);
-
-//$e_QUERY = e_QUERY;
-
-// MOVED TO $e107->set_request()
-//define('e_TBQS', $_SERVER['QUERY_STRING']);
-//$_SERVER['QUERY_STRING'] = e_QUERY;
-
-// MOVED TO $e107->set_constants()
-//define('e_UC_PUBLIC', 0);
-//define('e_UC_MAINADMIN', 250);
-//define('e_UC_READONLY', 251);
-//define('e_UC_GUEST', 252);
-//define('e_UC_MEMBER', 253);
-//define('e_UC_ADMIN', 254);
-//define('e_UC_NOBODY', 255);
-
-// MOVED TO $e107->set_urls() - DEPRECATED, use e107->getFolder()
-//define('ADMINDIR', $ADMIN_DIRECTORY);
 
 //
 // H: Initialize debug handling
@@ -371,8 +265,12 @@ if(!isset($_E107['no_parser']))
 // i.e. from here on you can use E107_DEBUG_LEVEL or any
 // E107_DBG_* constant for debug testing.
 //
+
+
+
 require_once(e_HANDLER.'debug_handler.php');
 e107_debug::init(); // defines E107_DEBUG_LEVEL
+/** @var e107_db_debug $dbg */
 $dbg = e107::getDebug();
 
 if(E107_DEBUG_LEVEL)
@@ -399,8 +297,6 @@ if(E107_DEBUG_LEVEL)
 //
 e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 //$eTraffic->Calibrate($eTraffic);
-
-// e107_require_once(e_HANDLER.'mysql_class.php');
 
 //DEPRECATED, BC, $e107->sql caught by __get()
 /** @var e_db $sql */
