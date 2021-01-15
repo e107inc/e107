@@ -89,8 +89,8 @@
 					  'block' =>
 					  array (
 					  ),
-					  'code' =>
-					  array (
+					  'code' => array (
+
 					  ),
 					  'glyph' =>
 					  array (
@@ -217,6 +217,7 @@
 				{
 					$input = '['.$bbcode.']http://mysite.com[/'.$bbcode.']';
 					$result = $this->bb->parseBBCodes($input, true); // parsing to check for PHP errors.
+				//	$this->assertNotEmpty($result, $input." was empty.");
 					continue;
 				}
 
