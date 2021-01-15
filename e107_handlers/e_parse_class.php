@@ -15,8 +15,6 @@ if(!defined('e107_INIT'))
 	exit();
 }
 
-// Directory for the hard-coded utf-8 handling routines
-define('E_UTF8_PACK', e_HANDLER . 'utf8/');
 
 define('E_NL', chr(2));
 
@@ -64,7 +62,7 @@ class e_parse
 
 	private $staticCount = 0;
 
-	protected $staticUrl = null;
+	protected $staticUrl;
 
 	/** @var array Stored relative paths - used by replaceConstants() */
 	private $relativePaths = array();
@@ -77,7 +75,7 @@ class e_parse
 
 
 	// Set up the defaults
-	protected $e_optDefault = array(
+	private $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
 		'context'      => 'OLDDEFAULT',
 		//
@@ -121,7 +119,7 @@ class e_parse
 	);
 
 	// Super modifiers override default option values
-	protected $e_SuperMods = array(
+	private $e_SuperMods = array(
 		//text is part of a title (e.g. news title)
 		'TITLE'        =>
 			array(
@@ -189,7 +187,7 @@ class e_parse
 	);
 
 	// Individual modifiers change the current context
-	protected $e_Modifiers = array(
+	private $e_Modifiers = array(
 		'emotes_off'        => array('emotes' => false),
 		'emotes_on'         => array('emotes' => true),
 		'no_hook'           => array('hook' => false),
@@ -248,20 +246,20 @@ class e_parse
 	/**
 	 * @var DOMDocument
 	 */
-	public $domObj = null;
-	public $isHtml = false;
+	private $domObj;
+	private $isHtml = false;
 
+	private $bootstrap;
+	private $fontawesome;
+	private $convertToWebP = false;
 
-	protected $bootstrap = null;
-	protected $fontawesome = null;
-	protected $convertToWebP = false;
+	private $removedList = array();
+	private $nodesToDelete = array();
+	private $nodesToConvert = array();
+	private $nodesToDisableSC = array();
+	private $pathList = array();
 
-	protected $removedList = array();
-	protected $nodesToDelete = array();
-	protected $nodesToConvert = array();
-	protected $nodesToDisableSC = array();
-	protected $pathList = array();
-	protected $allowedAttributes = array(
+	private $allowedAttributes = array(
 		'default'  => array('id', 'style', 'class', 'title', 'lang', 'accesskey'),
 		'img'      => array('src', 'alt', 'width', 'height'),
 		'a'        => array('href', 'target', 'rel'),
@@ -281,25 +279,25 @@ class e_parse
 
 	);
 
-	protected $badAttrValues = array('javascript[\s]*?:', 'alert\(', 'vbscript[\s]*?:', 'data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
+	private $badAttrValues = array('javascript[\s]*?:', 'alert\(', 'vbscript[\s]*?:', 'data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
 
-	protected $replaceAttrValues = array(
+	private $replaceAttrValues = array(
 		'default' => array()
 	);
 
-	protected $allowedTags = array('html', 'body', 'div', 'a', 'img', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
+	private $allowedTags = array('html', 'body', 'div', 'a', 'img', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
 		'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p',
 		'div', 'pre', 'section', 'article', 'blockquote', 'hgroup', 'aside', 'figure', 'figcaption', 'abbr', 'span', 'audio', 'video', 'source', 'br',
 		'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
 	);
-	protected $scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
+	private $scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
 
-	protected $scriptAttributes = array('onclick', 'onchange', 'onblur', 'onload', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup',
+	private $scriptAttributes = array('onclick', 'onchange', 'onblur', 'onload', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup',
 		'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel',
 		'onwheel', 'oncopy', 'oncut', 'onpaste'
 	);
 
-	protected $blockTags = array('pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
+	private $blockTags = array('pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
 
 
 	private $scriptAccess = false; // nobody.
@@ -316,17 +314,16 @@ class e_parse
 		$this->domObj = new DOMDocument('1.0', 'utf-8');
 		$this->init();
 		$this->compileAttributeDefaults();
-		
+
 		$this->initCharset();
 
-		// Preprocess the supermods to be useful default arrays with all values
-		foreach($this->e_SuperMods as $key => $val)
-		{
-			// precalculate super defaults
-			$this->e_SuperMods[$key] = array_merge($this->e_optDefault, $this->e_SuperMods[$key]);
-			$this->e_SuperMods[$key]['context'] = $key;
-		}
 
+
+	}
+
+	public function getModifierList()
+	{
+		return $this->e_SuperMods;
 	}
 
 
@@ -759,7 +756,8 @@ class e_parse
 		$search = array('&#036;', '&quot;', '<', '>', '+');
 		$replace = array('$', '"', '&lt;', '&gt;', '%2B');
 		$text = str_replace($search, $replace, $text);
-		if(e107::wysiwyg() !== true && is_string($text))
+
+		if(is_string($text) && e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
 			$text = urldecode($text);
@@ -769,19 +767,25 @@ class e_parse
 		return $text;
 	}
 
-
+	/**
+	 * @param $text
+	 * @return array|string
+	 */
 	public function post_toForm($text)
 	{
 
 		if(is_array($text))
 		{
+			$arr = array();
 			foreach($text as $key => $value)
 			{
-				$text[$this->post_toForm($key)] = $this->post_toForm($value);
+				$key = $this->post_toForm($key);
+				$arr[$key] = $this->post_toForm($value);
 			}
 
-			return $text;
+			return $arr;
 		}
+
 		if(MAGIC_QUOTES_GPC == true)
 		{
 			$text = stripslashes($text);
@@ -832,7 +836,7 @@ class e_parse
 		$this->replaceVars = $vars;
 		$this->replaceUnset = $replaceUnset;
 
-		return preg_replace_callback("#\{([a-zA-Z0-9_]+)\}#", array($this, 'simpleReplace'), $template);
+		return preg_replace_callback("#\{([\w]+)\}#", array($this, 'simpleReplace'), $template);
 	}
 
 
@@ -1788,10 +1792,10 @@ class e_parse
 								//Process the older tohtml_hook pref (deprecated)
 								foreach(explode(',', $pref['tohtml_hook']) as $hook)
 								{
-									if(!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . "/" . $hook . ".php"))
+									if(!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/' . $hook . '.php'))
 									{
-										require_once(e_PLUGIN . $hook . "/" . $hook . ".php");
-										$hook_class = "e_" . $hook;
+										require_once(e_PLUGIN . $hook . '/' . $hook . '.php');
+										$hook_class = 'e_' . $hook;
 										$this->e_hook[$hook] = new $hook_class;
 									}
 
@@ -1815,11 +1819,11 @@ class e_parse
 										continue;
 									}
 
-									if(empty($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . "/e_tohtml.php") /*&& !is_object($this->e_hook[$hook])*/)
+									if(empty($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/e_tohtml.php') /*&& !is_object($this->e_hook[$hook])*/)
 									{
-										require_once(e_PLUGIN . $hook . "/e_tohtml.php");
+										require_once(e_PLUGIN . $hook . '/e_tohtml.php');
 
-										$hook_class = "e_tohtml_" . $hook;
+										$hook_class = 'e_tohtml_' . $hook;
 
 										$this->e_hook[$hook] = new $hook_class;
 									}
@@ -2770,10 +2774,8 @@ class e_parse
 
 			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE . $staticFile))
 			{
-				$staticImg = $this->staticUrl(e_CACHE_IMAGE_ABS . $staticFile);
+				return $this->staticUrl(e_CACHE_IMAGE_ABS . $staticFile);
 
-				//	var_dump($staticImg);
-				return $staticImg;
 			}
 
 			//	echo "<br />static-not-found: ".$staticFile;
@@ -3736,6 +3738,13 @@ class e_parse
 			$this->staticUrl = e_HTTP_STATIC;
 		}
 
+		// Preprocess the supermods to be useful default arrays with all values
+		foreach($this->e_SuperMods as $key => $val)
+		{
+			// precalculate super defaults
+			$this->e_SuperMods[$key] = array_merge($this->e_optDefault, $this->e_SuperMods[$key]);
+			$this->e_SuperMods[$key]['context'] = $key;
+		}
 
 	}
 
@@ -3863,7 +3872,6 @@ class e_parse
 	 */
 	public function leadingZeros($num, $numDigits)
 	{
-
 		return (string) sprintf('%0' . $numDigits . 'd', $num);
 	}
 
@@ -4265,7 +4273,7 @@ class e_parse
 			{
 				$url = $image;
 			}
-			elseif(strpos($image, "-upload-") === 0)
+			elseif(strpos($image, '-upload-') === 0)
 			{
 
 				$image = substr($image, 8); // strip the -upload- from the beginning.
@@ -4324,7 +4332,7 @@ class e_parse
 
 		if($shape === 'img-circle')
 		{
-			$shape .= " rounded-circle";
+			$shape .= ' rounded-circle';
 		}
 
 		if(!empty($options['type']) && $options['type'] === 'url')
@@ -4761,7 +4769,7 @@ class e_parse
 
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
 
-		return $ext === 'youtube' || $ext === 'youtubepl';
+		return $ext === 'youtube' || $ext === 'youtubepl' || $ext === 'mp4';
 
 	}
 
@@ -4778,7 +4786,7 @@ class e_parse
 			return false;
 		}
 
-		if(strpos($file, "{e_") === 0)
+		if(strpos($file, '{e_') === 0)
 		{
 			$file = $this->replaceConstants($file);
 		}
@@ -5038,27 +5046,27 @@ class e_parse
 
 		switch($type)
 		{
-			case "w":
+			case 'w':
 				$ret = preg_replace('/[^\w]/', '', $text);
 				break;
 
-			case "d":
+			case 'd':
 				$ret = preg_replace('/[^\d]/', '', $text);
 				break;
 
-			case "wd":
-				$ret = preg_replace('/[^\w\d]/', '', $text);
+			case 'wd':
+				$ret = preg_replace('/[^\w]/', '', $text);
 				break;
 
-			case "wds":
-				$ret = preg_replace('/[^\w\d ]/', '', $text);
+			case 'wds':
+				$ret = preg_replace('/[^\w ]/', '', $text);
 				break;
 
-			case "file":
-				$ret = preg_replace('/[^\w\d_\.-]/', '-', $text);
+			case 'file':
+				$ret = preg_replace('/[^\w_\.-]/', '-', $text);
 				break;
 
-			case "version":
+			case 'version':
 				$ret = preg_replace('/[^\d_\.]/', '', $text);
 				break;
 
@@ -5231,7 +5239,7 @@ class e_parse
 				if(!in_array($name, $allow))
 				{
 
-					if(strpos($name, 'data-') === 0 && $this->scriptAccess == true)
+					if($this->scriptAccess == true && strpos($name, 'data-') === 0 )
 					{
 						continue;
 					}
