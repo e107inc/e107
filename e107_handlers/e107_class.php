@@ -192,6 +192,7 @@ class e107
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
 		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
+		'e_emote'                        => '{e_HANDLER}e_emote_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
@@ -209,6 +210,7 @@ class e107
 		'e_parser'                       => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'              => '{e_HANDLER}shortcode_handler.php',
 		'e_plugin'                       => '{e_HANDLER}plugin_class.php',
+		'e_profanity'                       => '{e_HANDLER}e_profanity_class.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
@@ -3992,6 +3994,26 @@ class e107
 	public static function getError()
 	{
 		return self::getSingleton('error_page');
+	}
+
+	/**
+	 * Retrieve e_emote filter .
+	 *
+	 * @return e_emote
+	 */
+	public static function getEmote()
+	{
+		return self::getSingleton('e_emote');
+	}
+
+	/**
+	* Retrieve Profanity filter .
+	 *
+	 * @return e_profanity
+	 */
+	public static function getProfanity()
+	{
+		return self::getSingleton('e_profanity');
 	}
 
 

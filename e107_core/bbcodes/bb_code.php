@@ -43,11 +43,7 @@ class bb_code extends e_bb_base
 			
 		if($pref['smiley_activate']) 
 		{
-			if (!is_object($tp->e_emote))
-			{
-				$tp->e_emote = new e_emoteFilter;
-			}
-			$code_text = $tp->e_emote->filterEmotesRev($code_text);
+			$code_text = e107::getEmote()->filterEmotesRev($code_text);
 		}
 			
 		$search = array(E_NL,'&#092;','&#036;', '&lt;');

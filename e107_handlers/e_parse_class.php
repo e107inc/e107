@@ -1592,12 +1592,7 @@ class e_parse extends e_parser
 						// Convert emoticons to graphical icons, if enabled
 						if ($opts['emotes'])
 						{
-							if (!is_object($this->e_emote))
-							{
-							//	require_once(e_HANDLER.'emote_filter.php');
-								$this->e_emote = new e_emoteFilter;
-							}
-							$sub_blk = $this->e_emote->filterEmotes($sub_blk);
+							$sub_blk = e107::getEmote()->filterEmotes($sub_blk);
 						}
 
 
@@ -2207,7 +2202,7 @@ class e_parse extends e_parser
 	 * @param string $text
 	 * @return mixed|string
 	 */
-	public function ampEncode($text='')
+	private function ampEncode($text='')
 	{
 		// Fix any left-over '&'
 		//first revert any previously converted.
@@ -3014,7 +3009,7 @@ class e_parse extends e_parser
 
 	public function getEmotes()
 	{
-		return $this->e_emote->emotes;		
+		return e107::getEmote()->getList();
 	}
 
 
@@ -3236,7 +3231,7 @@ class e_parse extends e_parser
 	}
 
 
-	public function doReplace($matches)
+	private function doReplace($matches)
 	{
 		if(defined($matches[1]) && (deftrue('ADMIN') || strpos($matches[1], 'ADMIN') === FALSE))
 		{
@@ -5343,253 +5338,3 @@ class e_parser
 }
 
 
-
-class e_emotefilter
-{
-	private $search         = array();
-	private $replace        = array();
-	public $emotes;
-	private $singleSearch   = array();
-	private $singleReplace  = array();
-	 
-	public function __construct()
-	{		
-		$pref = e107::getPref();
-		
-		if(empty($pref['emotepack']))
-		{	
-			$pref['emotepack'] = 'default';
-			e107::getConfig('emote')->clearPrefCache('emote');
-			e107::getConfig('core')->set('emotepack','default')->save(false,true,false);
-		}
-
-		$this->emotes = e107::getConfig('emote')->getPref();
-
-		if(empty($this->emotes))
-		{
-			return;
-		}
-
-		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC)  ? e_HTTP_STATIC : SITEURLBASE;
-
-		foreach($this->emotes as $key => $value)
-		{
-
-		  $value = trim($value);
-
-		  if ($value)
-		  {	// Only 'activate' emote if there's a substitution string set
-
-
-			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
-			// Next two probably to sort out legacy issues - may not be required any more
-		//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
-
-			  $key = str_replace('!', '_', $key);
-
-			  $filename = e_IMAGE. 'emotes/' . $pref['emotepack'] . '/' . $key;
-
-
-			  
-			  $fileloc = $base.e_IMAGE_ABS. 'emotes/' . $pref['emotepack'] . '/' . $key;
-
-			  $alt = str_replace(array('.png','.gif', '.jpg'),'', $key);
-
-			  if(file_exists($filename))
-			  {
-			        $tmp = explode(' ', $value);
-					foreach($tmp as $code)
-					{
-						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt. '"  />';
-
-				        $this->search[]     = "\n".$code;
-				        $this->replace[]    = "\n".$img;
-
-						$this->search[]     = ' ' .$code;
-				        $this->replace[]    = ' ' .$img;
-
-				        $this->search[]     = '>' .$code; // Fix for emote within html.
-				        $this->replace[]    = '>' .$img;
-
-				        $this->singleSearch[] = $code;
-				        $this->singleReplace[] = $img;
-
-					}
-
-
-			  /*
-				if(strstr($value, " "))
-				{
-					$tmp = explode(" ", $value);
-					foreach($tmp as $code)
-					{
-						$this->search[] = " ".$code;
-						$this->search[] = "\n".$code;
-
-						$this->replace[] = " <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  /> ";
-						$this->replace[] = "\n <img class='e-emoticon' src='".$fileloc."'alt=\"".$alt."\"   /> ";
-					}
-					unset($tmp);
-				}
-				else
-				{
-					if($value)
-					{
-						$this->search[] = " ".$value;
-						$this->search[] = "\n".$value;
-
-						$this->replace[] = " <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"   /> ";
-						$this->replace[] = "\n <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"   /> ";
-					}
-				}*/
-			  }
-		  }
-		  else
-		  {
-			unset($this->emotes[$key]);
-		  }
-
-
-		}
-
-	//	print_a($this->regSearch);
-	//	print_a($this->regReplace);
-
-	}
-
-
-	public function filterEmotes($text)
-	{
-
-		if(empty($text))
-		{
-			return '';
-		}
-
-		if(!empty($this->singleSearch) && (strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
-		{
-			return str_replace($this->singleSearch,$this->singleReplace,$text);
-		}
-
-		return str_replace($this->search, $this->replace, $text);
-
-	}
-
-	 
-	public function filterEmotesRev($text)
-	{
-		return str_replace($this->replace, $this->search, $text);
-	}
-}
-
-
-class e_profanityFilter 
-{
-	protected $profanityList;
-	private $pref;
-
-	public function __construct()
-	{
-
-		$this->pref = e107::getPref();
-
-		if(empty($this->pref['profanity_words']))
-		{
-			return null;
-		}
-
-		$words = explode(',', $this->pref['profanity_words']);
-        $word_array = array();
-		foreach($words as $word) 
-		{
-			$word = trim($word);
-			if($word != '')
-			{
-				$word_array[] = $word;
-				if (strpos($word, '&#036;') !== FALSE)
-				{
-					$word_array[] = str_replace('&#036;', '\$', $word);		// Special case - '$' may be 'in clear' or as entity
-				}
-			}
-		}
-		if(count($word_array))
-		{
-			$this->profanityList = str_replace('#','\#',implode("\b|\b", $word_array));		// We can get entities in the string - confuse the regex delimiters
-		}
-		unset($words);
-		return TRUE;
-	}
-
-	public function filterProfanities($text)
-	{
-
-		if (empty($this->profanityList))
-		{
-			return $text;
-		}
-
-		if(!empty($this->pref['profanity_replace']))
-		{
-			return preg_replace("#\b".$this->profanityList."\b#is", $this->pref['profanity_replace'], $text);
-		}
-
-		return preg_replace_callback("#\b".$this->profanityList."\b#is", array($this, 'replaceProfanities'), $text);
-	}
-
-	public function replaceProfanities($matches)
-	{
-		/*!
-		@function replaceProfanities callback
-		@abstract replaces vowels in profanity words with stars
-		@param text string - text string to be filtered
-		@result filtered text
-		*/
-
-		return preg_replace('#a|e|i|o|u#i', '*', $matches[0]);
-	}
-}
-
-
-/**
- * Backwards Compatibility Class textparse
- */
-class textparse {
-
-	public function editparse($text, $mode = 'off')
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toForm($text) instead. ', E_USER_DEPRECATED);
-
-		return e107::getParser()->toForm($text);
-	}
-
-	public function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toHTML($text) instead. ', E_USER_DEPRECATED);
-
-		return e107::getParser()->toHTML($text, true, $mode, $poster_id);
-	}
-
-	public function tpj($text)
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated. ', E_USER_DEPRECATED);
-
-		return $text;
-	}
-
-	public function formtpa($text, $mode = '')
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toDB($text) instead. ', E_USER_DEPRECATED);
-
-		unset($mode); // keep PHPStorm happy
-
-		return e107::getParser()->toDB($text);
-	}
-
-	public function formtparev($text)
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated. Use e107::getParser()->toForm($text) instead. ', E_USER_DEPRECATED);
-
-		return e107::getParser()->toForm($text);
-	}
-
-}
