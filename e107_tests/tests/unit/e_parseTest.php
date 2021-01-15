@@ -286,17 +286,54 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
+*/
+	/*	public function testTextclean()
+		{
+			$string = "\n\n\nSomething\n\n\n";
+			$result = $this->tp->textclean($string);
+			var_export($result);
+			//$this->assertSame();
+		}*/
 
-		public function testTextclean()
+		public function testMultibyte()
 		{
 
+			// enable multibyte mode.
+			$this->tp->setMultibyte(true);
+
+			$input = "русские";
+
+			// strtoupper
+			$result = $this->tp->ustrtoupper($input);
+			$this->assertEquals('РУССКИЕ', $result);
+
+			// strlen
+			$result = $this->tp->ustrlen($input);
+			$this->assertEquals(7, $result);
+
+			// strtolower
+			$result = $this->tp->ustrtolower('РУССКИЕ');
+			$this->assertEquals($input, $result);
+
+			// strpos
+			$result = $this->tp->ustrpos($input, 'и');
+			$this->assertEquals(5, $result);
+
+			// substr
+			$result = $this->tp->usubstr($input, 0, 5);
+			$this->assertEquals('русск', $result);
+
+			// stristr
+			$result = $this->tp->ustristr($input, 'ские', true);
+			$this->assertEquals('рус', $result);
+
+			// strrpos (last occurance of a string)
+			$result = $this->tp->ustrrpos($input, 'с');
+			$this->assertEquals(3, $result);
+
+
 		}
-
-		public function testUstrtoupper()
-		{
-
-		}
-
+/*
 		public function testUstrlen()
 		{
 
@@ -511,12 +548,67 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 
 		}
-/*
+
 		public function testHtml_truncate()
 		{
+			$this->tp->setMultibyte(true);
+
+			$tests  = array(
+				0   => array(
+					'input'     => '<p>Lorem ipsum dolor sit amet.</p>',
+					'expected'  => '<p>Lorem ipsum dolor...</p>',
+				),
+				1   => array(
+					'input'     => '<p>Lorem ipsum <a href="">dolor</a> sit amet.</p>',
+					'expected'  => '<p>Lorem ipsum <a href="">dolor...</a></p>',
+				),
+				2   => array(
+					'input'     => '<p>Lorem ipsum <img src="#" style="width:100px" /> dolor</img> sit amet.</p>',
+					'expected'  => '<p>Lorem ipsum <img src="#" style="width:100px" /> dolo...</p>',
+				),
+				3   => array(
+					'input'     => '<p>Это <a href="#">предложение на русском</a> языке</p>',
+					'expected'  => '<p>Это <a href="#">предложение н...</a></p>',
+				),
+				4   => array(
+					'input'     => '<p>Lorem ipsum &amp; dolor sit amet.</p>',
+					'expected'  => '<p>Lorem ipsum &amp; dol...</p>',
+				),
+				5   => array(
+					'input'     => '<p>Это <a href="#">предложение на русском</a> языке</p>',
+					'expected'  => '<p>Это <a href="#">предложение...</a></p>',
+					'exact'     => false,
+				),
+			/*	6   => array(
+					'input'     => '<script>$();</script><!-- Start div --><div>Lorem</div><!-- End div --> ipsum dolor sit amet',
+					'expected'  => '',
+				),
+				*/
+
+			);
+
+			foreach($tests as $index => $var)
+			{
+				if(empty($var['input']))
+				{
+					continue;
+				}
+
+				$exact = isset($var['exact']) ? $var['exact']: true;
+				$result = $this->tp->html_truncate($var['input'], 17, '...', $exact);
+
+				if(empty($var['expected']))
+				{
+					echo $result."\n\n";
+					continue;
+				}
+
+				$this->assertSame($var['expected'], $result, "Failed on test #".$index);
+			}
+
 
 		}
-
+/*
 		public function testCheckHighlighting()
 		{
 
@@ -558,9 +650,13 @@ while(&#036;row = &#036;sql-&gt;fetch())
 /*
 		public function testHtmlwrap()
 		{
+			$html = "<div><p>My paragraph <b>bold</b></p></div>";
 
-		}
-*/
+			$result = $this->tp->htmlwrap($html, 20);
+
+			var_dump($result);
+		}*/
+
 		public function testToRss()
 		{
 		/*	if(PHP_VERSION_ID <  71000 )
@@ -706,12 +802,21 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 
 		}
-/*
+
 		public function testText_truncate()
 		{
+			$string = "This is a long string that will be truncated." ;
+			$expected = 'This is a long  ... ';
+			$result = $this->tp->text_truncate($string, 20);
+			$this->assertSame($expected, $result);
+
+			$string = "This is has something &amp; something" ;
+			$expected = 'This is has something &  ... ';
+			$result = $this->tp->text_truncate($string, 29);
+			$this->assertSame($expected, $result);
 
 		}
-
+/*
 		public function testSetThumbSize()
 		{
 

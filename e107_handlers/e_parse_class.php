@@ -30,21 +30,20 @@ class e_parse
 	 *
 	 * @var integer
 	 */
-	protected $utfAction;
-
+	private $multibyte = false; // previously $utfAction
 
 	// Profanity filter
-	public $e_pf;
+	private $e_pf;
 
 	// Emote filter
-	public $e_emote;
+	private $e_emote;
 
 	// 'Hooked' parsers (array)
-	protected $e_hook = array();
+	private $e_hook = array();
 
-	public $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
+	private $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
-	public $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
+	private $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
 
 	// Set to TRUE or FALSE once it has been calculated
 	protected $e_highlighting;
@@ -52,11 +51,11 @@ class e_parse
 	// Highlight query
 	protected $e_query;
 
-	public $thumbWidth = 100;
+	private $thumbWidth = 100;
 
-	public $thumbHeight = 0;
+	private $thumbHeight = 0;
 
-	public $thumbCrop = 0;
+	private $thumbCrop = 0;
 
 	private $thumbEncode = 0;
 
@@ -315,10 +314,6 @@ class e_parse
 		$this->init();
 		$this->compileAttributeDefaults();
 
-		$this->initCharset();
-
-
-
 	}
 
 	public function getModifierList()
@@ -335,78 +330,65 @@ class e_parse
 	 *
 	 * @return void
 	 */
-	private function initCharset()
+	public function setMultibyte($bool)
 	{
-
-		// Start by working out what, if anything, we do about utf-8 handling.
-		// 'Do nothing' is the simple option
-		$this->utfAction = 0;
-
-		if(PHP_MAJOR_VERSION < 6 && extension_loaded('mbstring'))
+	//	var_dump(e_LAN);
+	//	var_dump(e_LANGUAGE);
+		if($bool === false)
 		{
-			// Check for function overloading
-			$temp = ini_get('mbstring.func_overload');
-			// Just check the string functions - will be non-zero if overloaded
-			if(defined('MB_OVERLOAD_STRING') && ($temp & MB_OVERLOAD_STRING) == 0)
-			{
-				// Can use the mb_string routines
-				$this->utfAction = 1;
-			}
-			// Set the default encoding, so we don't have to specify every time
+			$this->multibyte = false;
+			return null;
+		}
+
+		if(extension_loaded('mbstring'))
+		{
+			$this->multibyte = true;
 			mb_internal_encoding('UTF-8');
 		}
 	}
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/strlen strlen PHP function.
 	 * Returns the length of the given string.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strlen strlen PHP function.
 	 *
 	 * @param string $str The UTF-8 encoded string being measured for length.
 	 * @return integer The length (amount of UTF-8 characters) of the string on success, and 0 if the string is empty.
 	 */
 	public function ustrlen($str)
 	{
-
-		switch($this->utfAction)
+		if($this->multibyte)
 		{
-			case 0:
-				return strlen($str);
-			case 1:
-				return mb_strlen($str);
+			return mb_strlen($str);
 		}
-		// Default case shouldn't happen often
-		// Save a call - invoke the function directly
-		return strlen(utf8_decode($str));
+
+		return strlen($str);
+
+	//	return strlen(utf8_decode($str));
 	}
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtolower strtolower PHP function.
 	 * Make a string lowercase.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtolower strtolower PHP function.
 	 *
 	 * @param string $str The UTF-8 encoded string to be lowercased.
 	 * @return string Specified string with all alphabetic characters converted to lowercase.
 	 */
 	public function ustrtolower($str)
 	{
-
-		switch($this->utfAction)
+		if($this->multibyte)
 		{
-
-			case 1:
-				return mb_strtolower($str);
-			case 0:
-			default:
-				return strtolower($str);
+			return mb_strtolower($str);
 		}
 
+		return strtolower($str);
 	}
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtoupper strtoupper PHP function.
 	 * Make a string uppercase.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtoupper strtoupper PHP function.
 	 *
 	 * @param string $str The UTF-8 encoded string to be uppercased.
 	 * @return string Specified string with all alphabetic characters converted to uppercase.
@@ -414,7 +396,7 @@ class e_parse
 	public function ustrtoupper($str)
 	{
 
-		if($this->utfAction === 1)
+		if($this->multibyte)
 		{
 			return mb_strtoupper($str);
 		}
@@ -425,8 +407,9 @@ class e_parse
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/strpos strpos PHP function.
 	 * Find the position of the first occurrence of a case-sensitive UTF-8 encoded string.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strpos strpos PHP function.
+	 *
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the first occurrence of needle in the haystack string.
 	 *
@@ -439,7 +422,7 @@ class e_parse
 	public function ustrpos($haystack, $needle, $offset = 0)
 	{
 
-		if($this->utfAction === 1)
+		if($this->multibyte)
 		{
 			return mb_strpos($haystack, $needle, $offset);
 		}
@@ -449,8 +432,8 @@ class e_parse
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/strrpos strrpos PHP function.
 	 * Find the position of the last  occurrence of a case-sensitive UTF-8 encoded string.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strrpos strrpos PHP function.
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the last occurrence of needle in the haystack string.
 	 *
@@ -462,45 +445,39 @@ class e_parse
 	 */
 	public function ustrrpos($haystack, $needle, $offset = 0)
 	{
-
-		if($this->utfAction === 1)
+		if($this->multibyte)
 		{
 			return mb_strrpos($haystack, $needle, $offset);
 		}
 
 		return strrpos($haystack, $needle, $offset);
-
 	}
 
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/stristr stristr PHP function.
 	 * Returns all of haystack starting from and including the first occurrence of needle to the end.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/stristr stristr PHP function.
 	 *
 	 * @param string $haystack The UTF-8 encoded string to search in.
 	 * @param mixed $needle If needle is not a string, it is converted to an integer and applied as the ordinal value of a character.
-	 * @param integer $before_needle [optional] (PHP 5.3+) If TRUE, returns the part of the haystack before the first occurrence of the needle (excluding needle).
+	 * @param bool $before_needle [optional] (PHP 5.3+) If TRUE, returns the part of the haystack before the first occurrence of the needle (excluding needle).
 	 * @return string Returns the matched substring. If needle is not found, returns FALSE.
 	 */
 	public function ustristr($haystack, $needle, $before_needle = false)
 	{
 
-		switch($this->utfAction)
+		if($this->multibyte)
 		{
-			case 0:
-				return stristr($haystack, $needle, $before_needle);
-			case 1:
-				//return mb_substr($haystack, $needle, $before_needle);
-				return mb_stristr($haystack, $needle, $before_needle);
+			return mb_stristr($haystack, $needle, $before_needle);
 		}
 
-		// No utf8 pack backup
 		return stristr($haystack, $needle, $before_needle);
+
 	}
 
 	/**
-	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 * Returns the portion of string specified by the start and length parameters.
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 *
 	 * NOTE: May be subtle differences in return values dependent on which routine is used.
 	 *  Native substr() routine can return FALSE. mb_substr() and utf8_substr() just return an empty string.
@@ -515,7 +492,7 @@ class e_parse
 	public function usubstr($str, $start, $length = null)
 	{
 
-		if($this->utfAction === 1)
+		if($this->multibyte)
 		{
 			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);
 		}

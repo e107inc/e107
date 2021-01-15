@@ -380,6 +380,9 @@ class language{
 	{
 		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $tp->lanVars() instead.', E_USER_DEPRECATED); // NO LAN
 
+		$search = array();
+		$replace = array();
+
 		foreach($array as $k=>$v)
 		{
 			$search[] = "[".$k."]";
@@ -656,6 +659,12 @@ class language{
 		
 		$this->e_language = $user_language;
 		$this->setDefs();
+
+		if(e_LAN !== 'en')
+		{
+			e107::getParser()->setMultibyte(true);
+		}
+
 		return;
 	}
 
