@@ -353,6 +353,10 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					'text'  => '[php]<?php $something = "something";[/php]', // legacy usage, now deprecated.
 					'expected'  => "",
 				),
+				3 => array(
+					'text'  => "[table][tr]\n[td]cell[/td]\n[/tr][/table]", 
+					'expected'  => "<table class='table table-striped table-bordered bbcode-table'><tr>\n<td>cell</td>\n</tr></table>",
+				),
 
 
 			);
@@ -521,9 +525,26 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 
 		}
-/*
+
 		public function testToNumber()
 		{
+			$result = $this->tp->toNumber('v2a');
+			$this->assertEquals('2', $result);
+
+			$result = $this->tp->toNumber('v1.5');
+			$this->assertEquals('1.5', $result);
+
+
+			$result = $this->tp->toNumber('v3.5');
+			$this->assertEquals('3.5', $result);
+		}
+/*
+		public function testthumbUrlSEF()
+		{
+		//	$this->tp->thumbUrlSEF($url);
+
+
+
 
 		}
 */
@@ -959,6 +980,9 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$this->assertTrue($valid);
 			}
 
+
+
+
 		}
 
 		private function isValidXML($xmlContent)
@@ -1029,6 +1053,52 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				$this->assertStringContainsString($val['expected'], $actual);
 				//echo $$actual."\n\n";
 			}
+
+
+		}
+
+		public function testThumbUrlSEF()
+		{
+			$urls = array(
+				0 => array(
+					'path'      => '{e_MEDIA_IMAGE}butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200),
+					'expected'  =>'/media/img/300x200/butterfly.jpg'
+					),
+				1 => array(
+					'path'      => '{e_THEME}dummy/Freesample.svg',
+					'options'   =>  array('w'=>300, 'h'=>200),
+					'expected'  =>'/theme/img/300x200/dummy/Freesample.svg'
+					),
+				2 => array(
+					'path'      => '{e_AVATAR}avatar.jpg',
+					'options'   =>  array('w'=>100, 'h'=>100),
+					'expected'  =>'/media/avatar/100x100/avatar.jpg'
+					),
+
+				/*2 => array(
+					'path'      => '{e_MEDIA_IMAGE}gallery/images/butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200, 'type'=>'webp'),
+					'expected'  =>'/media/img/300x200/gallery/images/butterfly.webp'
+					),*/
+				3 => array(
+					'path'      => '{e_MEDIA_IMAGE}gallery/images/butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200, 'scale'=>'2x'),
+					'expected'  =>'/media/img/600x400/gallery/images/butterfly.jpg'
+					),
+
+			);
+
+			foreach($urls as $val)
+			{
+				$actual = $this->tp->thumbUrlSEF($val['path'],$val['options']);
+				$this->assertStringContainsString($val['expected'], $actual);
+				//echo $$actual."\n\n";
+			}
+
+
+
+
 
 
 		}
@@ -2101,12 +2171,26 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testIsImage()
 		{
+			$this->assertTrue($this->tp->isImage('/path-to-file/myfile.jpg'));
+			$this->assertFalse($this->tp->isImage('/path-to-file/myfile.mov'));
 
 		}
 
+		public function testtoAudio()
+		{
+			$expected = '<audio controls style="max-width:100%" >
+<source src="/e107_media/000000test/myfile.mp3" type="audio/mpeg">
+Your browser does not support the audio tag.
+</audio>';
+
+			$result = $this->tp->toAudio('{e_MEDIA}myfile.mp3');
+			$this->assertEquals($expected, $result);
+
+		}
+/*
 		public function testToVideo()
 		{
 
