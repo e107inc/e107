@@ -135,6 +135,43 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		}
 */
 
+		function testToHTMLWithBBcode()
+		{
+			$tests = array(
+				0 => array(
+					'text'  => '[code]$something = "something";[/code]',
+					'expected'  => "<pre class='prettyprint linenums code_highlight code-box bbcode-code' style='unicode-bidi: embed; direction: ltr'>\$something = &quot;something&quot;;</pre>",
+				),
+				1 => array(
+					'text'  => '[b]Title[/b][code]$something = "something"; [b]Not parsed[/b][/code]',
+					'expected'  => "<strong class='bbcode bold bbcode-b'>Title</strong><pre class='prettyprint linenums code_highlight code-box bbcode-code' style='unicode-bidi: embed; direction: ltr'>\$something = &quot;something&quot;; &#091;b]Not parsed&#091;/b]</pre>",
+				),
+				2 => array(
+					'text'  => '[php]<?php $something = "something";[/php]', // legacy usage, now deprecated.
+					'expected'  => "",
+				),
+
+
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->toHTML($var['text'], true);
+
+				if(!isset($var['expected']))
+				{
+					echo $result."\n\n";
+					continue;
+				}
+
+				$this->assertEquals($var['expected'], $result);
+			}
+
+
+
+		}
+
+
 
 		public function testParseTemplateWithEnabledCoreShortcodes()
 		{
@@ -295,7 +332,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			//$this->assertSame();
 		}*/
 
-		public function testMultibyte()
+		public function testMultibyteOn()
 		{
 
 			// enable multibyte mode.
@@ -330,6 +367,46 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			// strrpos (last occurance of a string)
 			$result = $this->tp->ustrrpos($input, 'с');
 			$this->assertEquals(3, $result);
+
+			$this->tp->setMultibyte(false); // disable after test.
+
+		}
+
+		public function testMultibyteOff()
+		{
+
+			// enable multibyte mode.
+			$this->tp->setMultibyte(false);
+
+			$input = "an example of text";
+
+			// strtoupper
+			$result = $this->tp->ustrtoupper($input);
+			$this->assertEquals('AN EXAMPLE OF TEXT', $result);
+
+			// strlen
+			$result = $this->tp->ustrlen($input);
+			$this->assertEquals(18, $result);
+
+			// strtolower
+			$result = $this->tp->ustrtolower('AN EXAMPLE OF TEXT');
+			$this->assertEquals($input, $result);
+
+			// strpos
+			$result = $this->tp->ustrpos($input, 't');
+			$this->assertEquals(14, $result);
+
+			// substr
+			$result = $this->tp->usubstr($input, 0, 5);
+			$this->assertEquals('an ex', $result);
+
+			// stristr
+			$result = $this->tp->ustristr($input, 'of', true);
+			$this->assertEquals('an example ', $result);
+
+			// strrpos (last occurance of a string)
+			$result = $this->tp->ustrrpos($input, 'e');
+			$this->assertEquals(15, $result);
 
 
 		}
@@ -733,6 +810,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					'options'   =>  array('w'=>300, 'h'=>200, 'type'=>'webp'),
 					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=300&amp;h=200&amp;type=webp'
 					),
+				3 => array(
+					'path'      => '{e_PLUGIN}gallery/images/butterfly.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200, 'scale'=>'2x'),
+					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=600&amp;h=400'
+					),
+
 			);
 
 			foreach($urls as $val)
@@ -1833,6 +1916,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				array("before http://something.com after",  'before <a class="e-url" href="http://something.com" >http://something.com</a> after'),
 				array("before https://someplace.com after", 'before <a class="e-url" href="https://someplace.com" >https://someplace.com</a> after'),
 				array("before (www.something.com) after",   'before (<a class="e-url" href="http://www.something.com" >www.something.com</a>) after'),
+				array('', ''),
 			);
 
 			foreach($tests as $row)

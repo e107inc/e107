@@ -332,8 +332,7 @@ class e_parse
 	 */
 	public function setMultibyte($bool)
 	{
-	//	var_dump(e_LAN);
-	//	var_dump(e_LANGUAGE);
+
 		if($bool === false)
 		{
 			$this->multibyte = false;
@@ -1072,7 +1071,6 @@ class e_parse
 	 * @param string $ending It will be used as Ending and appended to the trimmed string.
 	 * @param boolean $exact If false, $text will not be cut mid-word
 	 * @return string Trimmed string.
-	 * @todo find a modern replacement
 	 */
 	public function html_truncate($text, $length = 100, $ending = '...', $exact = true)
 	{
@@ -1355,42 +1353,7 @@ class e_parse
 		global $fromadmin;
 
 		// Set default modifiers to start
-		$opts = $this->e_optDefault;
-
-
-		// Now process any modifiers that are specified
-		if($modifiers)
-		{
-			$aMods = explode(',', $modifiers);
-
-			// If there's a supermodifier, it must be first, and in uppercase
-			$psm = trim($aMods[0]);
-			if(isset($this->e_SuperMods[$psm]))
-			{
-				// Supermodifier found - override default values where necessary
-				$opts = array_merge($opts, $this->e_SuperMods[$psm]);
-				$opts['context'] = $psm;
-				unset($aMods[0]);
-			}
-
-			// Now find any regular modifiers; use them to modify the context
-			// (there should only be one or two out of the list of possibles)
-			foreach($aMods as $mod)
-			{
-				// Slight concession to varying coding styles - stripping spaces is a waste of CPU cycles!
-				$mod = trim($mod);
-				if(isset($this->e_Modifiers[$mod]))
-				{
-					// This is probably quicker than array_merge
-					// - especially as usually only one or two loops
-					foreach($this->e_Modifiers[$mod] as $k => $v)
-					{
-						// Update our context-specific options
-						$opts[$k] = $v;
-					}
-				}
-			}
-		}
+		$opts = $this->getModifiers($modifiers);
 
 		// Turn off a few things if not enabled in options
 		if(empty($pref['smiley_activate']))
@@ -1434,12 +1397,12 @@ class e_parse
 		{
 			$text = strip_tags($text);
 		}
-
+/*
 		if(MAGIC_QUOTES_GPC === true) // precaution for badly saved data.
 		{
 			$text = stripslashes($text);
 		}
-
+*/
 
 		// Make sure we have a valid count for word wrapping
 		if(!$wrap && !empty($pref['main_wordwrap']))
@@ -1484,6 +1447,7 @@ class e_parse
 			else
 			{
 				// Set the options for this pass
+
 				$opts = $saveOpts;
 
 				// Have to have a good test in case a 'non-key' bbcode starts the block
@@ -1501,34 +1465,21 @@ class e_parse
 					// $matches[5] - closing tag
 					// In case we decide to load a file
 
-					$bbPath = e_CORE . 'bbcodes/';
-					$bbFile = strtolower(str_replace('_', '', $matches[2]));
-					$bbcode = '';
-					$className = '';
+				//	$bbPath = e_CORE . 'bbcodes/';
+				//	$bbFile = strtolower(str_replace('_', '', $matches[2]));
+				//	$bbcode = '';
+				//	$className = '';
 					$full_text = '';
 					$code_text = $matches[4];
-					$parm = $matches[3] ? substr($matches[3], 1) : '';
+				//	$parm = $matches[3] ? substr($matches[3], 1) : '';
 					$last_bbcode = $matches[2];
 
 					switch($matches[2])
 					{
 						case 'php' :
-							// Probably run the output through the normal processing functions - but put here so the PHP code can disable if desired
-							$proc_funcs = true;
 
-							// This is just the contents of the php.bb file pulled in - its short, so will be quicker
-							//				$search = array("&quot;", "&#039;", "&#036;", '<br />', E_NL, "-&gt;", "&lt;br /&gt;");
-							//				$replace = array('"', "'", "$", "\n", "\n", "->", "<br />");
-							// Shouldn't have any parameter on this bbcode
-							// Not sure whether checks are necessary now we've reorganised
-							//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
-							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
-							// [SecretR] - avoid php code injections, missing php.bb will completely disable user posted php blocks
-							$bbcode = file_get_contents($bbPath . $bbFile . '.bb');
-							if(!$matches[3])
-							{
-								$code_text = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
-							}
+							$proc_funcs = false;
+							$code_text = '';
 							break;
 
 						case 'html' : // This overrides and deprecates html.bb
@@ -1560,40 +1511,13 @@ class e_parse
 						case 'hide' :
 							$proc_funcs = true;
 
-						default :        // Most bbcodes will just execute their normal file
-							// @todo should we cache these bbcodes? require_once should make class-related codes quite efficient
-							if(file_exists($bbPath . 'bb_' . $bbFile . '.php'))
-							{    // Its a bbcode class file
-								require_once($bbPath . 'bb_' . $bbFile . '.php');
-								$className = 'bb_' . $last_bbcode;
-
-								$this->bbList[$last_bbcode] = new $className();
-							}
-							elseif(file_exists($bbPath . $bbFile . '.bb'))
-							{
-								$bbcode = file_get_contents($bbPath . $bbFile . '.bb');
-							}
-					}   // end - switch ($matches[2])
-
-					if($className)
-					{
-						/** @var e_bb_base $tempCode */
-						$tempCode = new $className();
-
-						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
+						case 'scode':
+						case 'code' :
+							$parseBB = false;
+							$full_text = $this->parseBBcodes('['.$last_bbcode.']'.$code_text.'[/'.$last_bbcode.']', $postID);
+						break;
 					}
-					elseif($bbcode)
-					{    // Execute the file
-						$full_text = eval($bbcode);            // Require output of bbcode to be returned
-						// added to remove possibility of nested bbcode exploits ...
-						//   (same as in bbcode_handler - is it right that it just operates on $bbcode_return and not on $bbcode_output? - QUERY XXX-02
-					}
-					if(strpos($full_text, '[') !== false)
-					{
-						$exp_search = array('eval', 'expression');
-						$exp_replace = array('ev<b></b>al', 'expres<b></b>sion');
-						$bbcode_return = str_replace($exp_search, $exp_replace, $full_text);
-					}
+
 				}
 			}
 
@@ -1776,7 +1700,7 @@ class e_parse
 										$this->e_hook[$hook] = new $hook_class;
 									}
 
-									if(is_object($this->e_hook[$hook])) // precaution for old plugins. 
+									if(is_object($this->e_hook[$hook])) // precaution for old plugins.
 									{
 										$sub_blk = $this->e_hook[$hook]->$hook($sub_blk, $opts['context']);
 									}
@@ -5382,6 +5306,53 @@ class e_parse
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param $modifiers
+	 * @return array
+	 */
+	private function getModifiers($modifiers)
+	{
+		$opts = $this->e_optDefault;
+
+		if(empty($modifiers))
+		{
+			return $opts;
+		}
+		// Now process any modifiers that are specified
+		$aMods = explode(',', $modifiers);
+
+		// If there's a supermodifier, it must be first, and in uppercase
+		$psm = trim($aMods[0]);
+		if(isset($this->e_SuperMods[$psm]))
+		{
+			// Supermodifier found - override default values where necessary
+			$opts = array_merge($opts, $this->e_SuperMods[$psm]);
+			$opts['context'] = $psm;
+			unset($aMods[0]);
+		}
+
+		// Now find any regular modifiers; use them to modify the context
+		// (there should only be one or two out of the list of possibles)
+		foreach($aMods as $mod)
+		{
+			// Slight concession to varying coding styles - stripping spaces is a waste of CPU cycles!
+			$mod = trim($mod);
+			if(isset($this->e_Modifiers[$mod]))
+			{
+				// This is probably quicker than array_merge
+				// - especially as usually only one or two loops
+				foreach($this->e_Modifiers[$mod] as $k => $v)
+				{
+					// Update our context-specific options
+					$opts[$k] = $v;
+				}
+			}
+		}
+
+
+		return $opts;
 	}
 
 
