@@ -1411,11 +1411,6 @@ class e_parse
 		}
 */
 
-		// Make sure we have a valid count for word wrapping
-		if(!$wrap && !empty($this->pref['main_wordwrap']))
-		{
-			$wrap = $this->pref['main_wordwrap'];
-		}
 //		$text = " ".$text;
 
 
@@ -1572,229 +1567,7 @@ class e_parse
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
-						if($opts['link_click'])
-						{
-							if($opts['link_replace'] && defset('ADMIN_AREA') !== true)
-							{
-
-								$link_text = $this->pref['link_text'];
-								$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
-
-								$sub_blk = $this->makeClickable($sub_blk, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
-								$sub_blk = $this->makeClickable($sub_blk, 'email', array('sub' => $email_text));
-							}
-							else
-							{
-
-								$sub_blk = $this->makeClickable($sub_blk, 'url', array('ext' => true));
-								$sub_blk = $this->makeClickable($sub_blk, 'email');
-
-							}
-						}
-
-
-						// Convert emoticons to graphical icons, if enabled
-						if($opts['emotes'])
-						{
-							$sub_blk = e107::getEmote()->filterEmotes($sub_blk);
-						}
-
-
-						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
-						if(!$opts['nobreak'])
-						{
-							if($convertNL && ($this->preformatted($sub_blk) === false)) // eg. html or markdown
-							{
-								// We may need to convert to <br /> later
-								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
-							}
-							else
-							{
-								// Not doing any more - its HTML or Markdown so keep it as is.
-								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);
-							}
-						}
-
-
-						//	Entity conversion
-						// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
-						if($opts['value'])
-						{
-							// output used for attribute values.
-							$sub_blk = str_replace($this->replace, $this->search, $sub_blk);
-						}
-						else
-						{
-							// output not used for attribute values.
-							$sub_blk = str_replace($this->search, $this->replace, $sub_blk);
-						}
-
-
-						//   BBCode processing (other than the four already done, which shouldn't appear at all in the text)
-						if($parseBB !== false)
-						{
-							if($parseBB === true)
-							{
-								// 'Normal' or 'legacy' processing
-								if($modifiers === 'WYSIWYG')
-								{
-									$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'wysiwyg');
-								}
-								else
-								{
-									$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID);
-								}
-
-							}
-							elseif($parseBB === 'STRIP')
-							{
-								// Need to strip all BBCodes
-								$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'default', true);
-							}
-							else
-							{
-								// Need to strip just some BBCodes
-								$sub_blk = e107::getBB()->parseBBCodes($sub_blk, $postID, 'default', $parseBB);
-							}
-						}
-
-
-						// replace all {e_XXX} constants with their e107 value. modifier determines relative/absolute conversion
-						// (Moved to after bbcode processing by Cameron)
-						if($opts['constants'])
-						{
-							$sub_blk = $this->replaceConstants($sub_blk, $opts['constants']);        // Now decodes text values
-						}
-
-
-						// profanity filter
-						if($this->pref['profanity_filter'])
-						{
-							if(!is_object($this->e_pf))
-							{
-								//	require_once(e_HANDLER."profanity_filter.php");
-								$this->e_pf = new e_profanityFilter;
-							}
-							$sub_blk = $this->e_pf->filterProfanities($sub_blk);
-						}
-
-
-						//	Shortcodes
-						// Optional short-code conversion
-						if($opts['parse_sc'])
-						{
-							$sub_blk = $this->parseTemplate($sub_blk, true);
-						}
-
-
-						/**
-						 * / @deprecated
-						 */
-						if($opts['hook']) //Run any hooked in parsers
-						{
-
-							if(!empty($this->pref['tohtml_hook']))
-							{
-								//		trigger_error('<b>tohtml_hook is deprecated.</b> Use e_parse.php instead.', E_USER_DEPRECATED); // NO LAN
-
-								//Process the older tohtml_hook pref (deprecated)
-								foreach(explode(',', $this->pref['tohtml_hook']) as $hook)
-								{
-									if(!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/' . $hook . '.php'))
-									{
-										require_once(e_PLUGIN . $hook . '/' . $hook . '.php');
-										$hook_class = 'e_' . $hook;
-										$this->e_hook[$hook] = new $hook_class;
-									}
-
-									if(is_object($this->e_hook[$hook])) // precaution for old plugins.
-									{
-										$sub_blk = $this->e_hook[$hook]->$hook($sub_blk, $opts['context']);
-									}
-								}
-							}
-
-							/**
-							 * / @deprecated
-							 */
-							if(isset($this->pref['e_tohtml_list']) && is_array($this->pref['e_tohtml_list']))
-							{
-
-								foreach($this->pref['e_tohtml_list'] as $hook)
-								{
-									if(empty($hook))
-									{
-										continue;
-									}
-
-									if(empty($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/e_tohtml.php') /*&& !is_object($this->e_hook[$hook])*/)
-									{
-										require_once(e_PLUGIN . $hook . '/e_tohtml.php');
-
-										$hook_class = 'e_tohtml_' . $hook;
-
-										$this->e_hook[$hook] = new $hook_class;
-									}
-
-									if(is_object($this->e_hook[$hook]))
-									{
-										/** @var e_tohtml_linkwords $deprecatedHook */
-										$deprecatedHook = $this->e_hook[$hook];
-										$sub_blk = $deprecatedHook->to_html($sub_blk, $opts['context']);
-									}
-								}
-							}
-
-							/**
-							 * / Preferred 'hook'
-							 */
-							if(!empty($this->pref['e_parse_list']))
-							{
-								foreach($this->pref['e_parse_list'] as $plugin)
-								{
-									$hookObj = e107::getAddon($plugin, 'e_parse');
-									if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
-									{
-										$sub_blk = $tmp;
-									}
-
-								}
-
-							}
-
-
-						}
-
-
-						// 	Word wrap
-						if($wrap && !$opts['nobreak'])
-						{
-							$sub_blk = $this->textclean($sub_blk, $wrap);
-						}
-
-
-						//	Search highlighting
-						if($opts['emotes'] && $this->checkHighlighting())            // Why??
-						{
-							$sub_blk = $this->e_highlight($sub_blk, $this->e_query);
-						}
-
-
-						if($convertNL == true)
-						{
-							// Default replaces all \n with <br /> for HTML display
-							$nl_replace = '<br />';
-							if($opts['nobreak'])
-							{
-								$nl_replace = '';
-							}
-							elseif($opts['retain_nl'])
-							{
-								$nl_replace = "\n";
-							}
-
-							$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
-						}
+						$sub_blk = $this->processModifiers($opts, $sub_blk, $convertNL, $parseBB, $modifiers, $postID);
 
 						$ret_parser .= $sub_blk;
 					}    // End of 'normal' processing for a block of text
@@ -5323,11 +5096,6 @@ class e_parse
 	{
 		$opts = $this->e_optDefault;
 
-		if(empty($modifiers))
-		{
-			return $opts;
-		}
-
 		if(strpos($modifiers,'defaults_off') !== false)
 		{
 			$opts = $this->e_SuperMods['NODEFAULT'];
@@ -5379,7 +5147,237 @@ class e_parse
 			$opts['link_replace'] = false;
 		}
 
+
 		return $opts;
+	}
+
+	/**
+	 * @param array $opts
+	 * @param string $text
+	 * @param bool $convertNL
+	 * @param bool|string $parseBB
+	 * @param $modifiers
+	 * @param int $postID
+	 * @return array|bool|mixed|string|null
+	 */
+	private function processModifiers($opts, $text, $convertNL, $parseBB, $modifiers, $postID)
+	{
+
+		if($opts['link_click'])
+		{
+
+			if($opts['link_replace'] && defset('ADMIN_AREA') !== true)
+			{
+
+				$link_text = $this->pref['link_text'];
+				$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
+
+				$text = $this->makeClickable($text, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
+				$text = $this->makeClickable($text, 'email', array('sub' => $email_text));
+			}
+			else
+			{
+
+				$text = $this->makeClickable($text, 'url', array('ext' => true));
+				$text = $this->makeClickable($text, 'email');
+
+			}
+		}
+
+
+		// Convert emoticons to graphical icons, if enabled
+		if($opts['emotes'])
+		{
+			$text = e107::getEmote()->filterEmotes($text);
+		}
+
+
+		// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
+		if(!$opts['nobreak'])
+		{
+			if($convertNL && ($this->preformatted($text) === false)) // eg. html or markdown
+			{
+				// We may need to convert to <br /> later
+				$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
+			}
+			else
+			{
+				// Not doing any more - its HTML or Markdown so keep it as is.
+				$text = preg_replace("#[\r]*\n[\r]*#", "\n", $text);
+			}
+		}
+
+
+		//	Entity conversion
+		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
+		if($opts['value'])
+		{
+			// output used for attribute values.
+			$text = str_replace($this->replace, $this->search, $text);
+		}
+		else
+		{
+			// output not used for attribute values.
+			$text = str_replace($this->search, $this->replace, $text);
+		}
+
+
+		//   BBCode processing (other than the four already done, which shouldn't appear at all in the text)
+		if($parseBB !== false)
+		{
+			if($parseBB === true)
+			{
+				// 'Normal' or 'legacy' processing
+				if($modifiers === 'WYSIWYG')
+				{
+					$text = e107::getBB()->parseBBCodes($text, $postID, 'wysiwyg');
+				}
+				else
+				{
+					$text = e107::getBB()->parseBBCodes($text, $postID);
+				}
+
+			}
+			elseif($parseBB === 'STRIP') // Need to strip all BBCodes
+			{
+				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', true);
+			}
+			else // Need to strip just some BBCodes
+			{
+				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', $parseBB);
+			}
+		}
+
+
+		// replace all {e_XXX} constants with their e107 value. modifier determines relative/absolute conversion
+		// (Moved to after bbcode processing by Cameron)
+		if($opts['constants'])
+		{
+			$text = $this->replaceConstants($text, $opts['constants']);        // Now decodes text values
+		}
+
+		// profanity filter
+		if($this->pref['profanity_filter'])
+		{
+			$text = e107::getProfanity()->filterProfanities($text);
+		}
+
+		// Optional short-code conversion
+		if($opts['parse_sc'])
+		{
+			$text = $this->parseTemplate($text, true);
+		}
+
+		/**
+		 * / @deprecated
+		 */
+		if($opts['hook']) //Run any hooked in parsers
+		{
+
+			if(!empty($this->pref['tohtml_hook']))
+			{
+				//		trigger_error('<b>tohtml_hook is deprecated.</b> Use e_parse.php instead.', E_USER_DEPRECATED); // NO LAN
+
+				//Process the older tohtml_hook pref (deprecated)
+				foreach(explode(',', $this->pref['tohtml_hook']) as $hook)
+				{
+					if(!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/' . $hook . '.php'))
+					{
+						require_once(e_PLUGIN . $hook . '/' . $hook . '.php');
+						$hook_class = 'e_' . $hook;
+						$this->e_hook[$hook] = new $hook_class;
+					}
+
+					if(is_object($this->e_hook[$hook])) // precaution for old plugins.
+					{
+						$text = $this->e_hook[$hook]->$hook($text, $opts['context']);
+					}
+				}
+			}
+
+			/**
+			 * / @deprecated
+			 */
+			if(isset($this->pref['e_tohtml_list']) && is_array($this->pref['e_tohtml_list']))
+			{
+
+				foreach($this->pref['e_tohtml_list'] as $hook)
+				{
+					if(empty($hook))
+					{
+						continue;
+					}
+
+					if(empty($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/e_tohtml.php') /*&& !is_object($this->e_hook[$hook])*/)
+					{
+						require_once(e_PLUGIN . $hook . '/e_tohtml.php');
+
+						$hook_class = 'e_tohtml_' . $hook;
+
+						$this->e_hook[$hook] = new $hook_class;
+					}
+
+					if(is_object($this->e_hook[$hook]))
+					{
+						/** @var e_tohtml_linkwords $deprecatedHook */
+						$deprecatedHook = $this->e_hook[$hook];
+						$text = $deprecatedHook->to_html($text, $opts['context']);
+					}
+				}
+			}
+
+			/**
+			 * / Preferred 'hook'
+			 */
+			if(!empty($this->pref['e_parse_list']))
+			{
+				foreach($this->pref['e_parse_list'] as $plugin)
+				{
+					$hookObj = e107::getAddon($plugin, 'e_parse');
+					if($tmp = e107::callMethod($hookObj, 'toHTML', $text, $opts['context']))
+					{
+						$text = $tmp;
+					}
+
+				}
+
+			}
+
+
+		}
+
+
+		// 	Word wrap
+		if(!empty($this->pref['main_wordwrap']) && !$opts['nobreak'])
+		{
+			$text = $this->textclean($text, $this->pref['main_wordwrap']);
+		}
+
+
+		//	Search highlighting
+		if($opts['emotes'] && $this->checkHighlighting())            // Why??
+		{
+			$text = $this->e_highlight($text, $this->e_query);
+		}
+
+
+		if($convertNL == true)
+		{
+			// Default replaces all \n with <br /> for HTML display
+			$nl_replace = '<br />';
+			if($opts['nobreak'])
+			{
+				$nl_replace = '';
+			}
+			elseif($opts['retain_nl'])
+			{
+				$nl_replace = "\n";
+			}
+
+			$text = str_replace(E_NL, $nl_replace, $text);
+		}
+
+		return $text;
 	}
 
 
