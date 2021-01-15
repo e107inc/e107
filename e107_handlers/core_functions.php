@@ -402,6 +402,8 @@ if (!function_exists('asortbyindex'))
        asort ($sort_values);
        reset ($sort_values);
 
+       $sorted_arr = array();
+
        foreach($sort_values as $arr_key =>$arr_val)
        {
               $sorted_arr[] = $array[$arr_key];
@@ -418,21 +420,17 @@ if (!function_exists('r_emote'))
 	 */
 	function r_emote()
 	{
-		global $sysprefs, $pref;
-		$tp = e107::getParser();
-	
-		if (!is_object($tp->e_emote))
-		{
-		//	require_once(e_HANDLER.'emote_filter.php');
-			$tp->e_emote = new e_emoteFilter;
-		}
-		
+
+		$pack = e107::getPref('emotepack');
+
+		$list = e107::getEmote()->getList();
+
 		$str = '';
-		foreach($tp->e_emote->emotes as $key => $value)		// filename => text code
+		foreach($list as $key => $value)		// filename => text code
 		{
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
-			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+			$key = e_IMAGE_ABS."emotes/" . $pack . "/" .$key;		// Add in the file path
 	
 			$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
@@ -509,6 +507,7 @@ if (!function_exists('multiarray_sort'))
  			$key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys. 
  			$sorted_arr[$key] = $array[$arr_key];
         }*/
+		$sorted_arr = array();
 
         foreach($sort_values as $arr_key=>$arr_val)
         {

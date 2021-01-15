@@ -499,6 +499,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$result = $this->tp->post_toForm($text);
 			$this->assertSame($expected, $result);
 
+			$array = array($text);
+			$arrayExp = array($expected);
+			$result = $this->tp->post_toForm($array);
+			$this->assertSame($arrayExp, $result);
+
+
 		}
 /*
 		public function testHtml_truncate()

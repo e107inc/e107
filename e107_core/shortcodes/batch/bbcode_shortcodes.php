@@ -388,7 +388,7 @@ class bbcode_shortcodes extends e_shortcode
 
 	function renderEmotes()
 	{
-		$emotes = e107::getParser()->getEmotes();
+		$emotes = e107::getEmote()->getList();
 		$pref = e107::getPref();
 		$text = "";
 		
