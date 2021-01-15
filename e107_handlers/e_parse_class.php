@@ -1506,7 +1506,6 @@ class e_parse
 							break;
 
 						case 'table' : // strip <br /> from inside of <table>		
-
 							$convertNL = false;
 						//	break;
 
@@ -2665,7 +2664,7 @@ class e_parse
 	 * @return string
 	 * @see e107.htaccess
 	 */
-	private function thumbUrlSEF($url = '', $options = array())
+	public function thumbUrlSEF($url = '', $options = array())
 	{
 
 		if(!empty($options['full']))
@@ -2712,6 +2711,14 @@ class e_parse
 
 		// Build URL for ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4
 		$sefUrl = $base . $sefPath;
+
+		if(!empty($options['scale']))
+		{
+			$multiInt = (int) $options['scale'];
+			$options['w'] = $options['w'] * $multiInt;
+			$options['h'] = $options['h'] * $multiInt;
+		}
+
 
 		if(!empty($options['aw']) || !empty($options['ah']))
 		{
@@ -4493,10 +4500,13 @@ class e_parse
 		$autoplay = !empty($parm['autoplay']) ? 'autoplay ' : '';
 		$controls = !empty($parm['controls']) ? 'controls' : '';
 
-		$text = '<audio controls style="max-width:100%" ' . $autoplay . $controls . '>
-					<source src="' . $file . '" type="' . $mime . '">
-					  Your browser does not support the audio tag.
-				</audio>';
+		$text = '<audio controls style="max-width:100%" ' . $autoplay . $controls . '>';
+		$text .= "\n";
+		$text .= '<source src="' . $file . '" type="' . $mime . '">';
+		$text .= "\n";
+		$text .= 'Your browser does not support the audio tag.';
+		$text .= "\n";
+		$text .= '</audio>';
 
 		return $text;
 
