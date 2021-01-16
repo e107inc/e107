@@ -8,18 +8,11 @@
 *
 */
 
-//@see https://dev.twitter.com/web/embedded-timelines
+//@see https://publish.twitter.com/
 e107::lan('social',false, true);
 
 if(deftrue('XURL_TWITTER'))	
 {
-
-	e107::js('footer-inline',	'
-
-	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?\'http\':\'https\';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-
-	');
-
 
 	$pref = e107::pref('social');
 
@@ -27,12 +20,11 @@ if(deftrue('XURL_TWITTER'))
 	$limit          = vartrue($pref['twitter_menu_limit'], 5);
 	$height         = vartrue($pref['twitter_menu_height'], 600);
 	$theme          = vartrue($pref['twitter_menu_theme'], 'light');
-	$widgetId       = '585932823665647616'; //@e107
 
 
+	$extras = 'data-theme="'.$theme.'" data-tweet-limit="'.$limit.'"  style="height:'.$height.'px;max-width:100%" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar"';
 
-	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px;max-width:100%" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">'.LAN_SOCIAL_201."@".$screenName.'</a>';
-
+	$text = '<a class="twitter-timeline" href="https://twitter.com/'.$screenName.'?ref_src=twsrc%5Etfw" '.$extras.'>'.LAN_SOCIAL_201."@".$screenName.'</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
 
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 
