@@ -89,8 +89,10 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 //if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml"))
 //  header("Content-type: application/xhtml+xml; charset=utf-8", TRUE);
 //else
-  header("Content-type: text/html; charset=utf-8", TRUE);
-
+if(!e107::isCli())
+{
+	header("Content-type: text/html; charset=utf-8", true);
+}
 // NEW - HTML5 default
 // TODO - more precise controlo over page header depending on the HTML5 mode
 if(!defined("XHTML4"))
