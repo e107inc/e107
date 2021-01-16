@@ -341,6 +341,9 @@ class UserHandler
 
 
 
+
+
+
 	/**
 	 * Detect Password Hash Algorythm type
 	 * @param string $hash - Password hash to analyse
@@ -491,6 +494,22 @@ class UserHandler
 		if ($this->passwordEmail) return TRUE;
 		return false;
 	}
+
+	public function newUserExpired($userjoined)
+	{
+		$new_user_period = (int) e107::getPref('user_new_period', 0);
+
+		if(empty($new_user_period))
+		{
+			return true;
+		}
+
+		$userjoined = (int) $userjoined;
+
+		return (time() > ($userjoined + ( $new_user_period)*86400));
+
+	}
+
 
 
 

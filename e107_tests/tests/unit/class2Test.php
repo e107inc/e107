@@ -98,6 +98,12 @@
 			$result = check_class(e_UC_NOBODY, "253,254,250,251,0");
 			$this->assertFalse($result);
 
+			$result = check_class(e_UC_NEWUSER, "247,253,254,250,251,0");
+			$this->assertTrue($result);
+
+			$result = check_class(e_UC_NEWUSER, "253,254,250,251,0");
+			$this->assertFalse($result);
+
 			unset($_E107['phpunit']);
 		}
 

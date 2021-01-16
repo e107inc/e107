@@ -257,47 +257,13 @@ class userlogin
 			return false;
 		}
 
-		$cookieval = $this->userMethods->makeUserCookie($this->userData,$autologin);
-
-
-		// Calculate class membership - needed for a couple of things
-		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
-
-	//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-
-	/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
-		{  // Need to note in user audit trail
-			$log = e107::getLog();
-			$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
-		}*/
-
-		$edata_li = array('user_id' => $user_id, 'user_name' => $user_name, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin, 'user_admin'=>$user_admin, 'user_email'=> $user_email);
-		e107::getEvent()->trigger("login", $edata_li);
+		$cookieval = $this->validLogin($this->userData, $autologin);
 
 		if($_E107['cli'])
 		{
 			return $cookieval;
 		}
 
-		if (in_array(e_UC_NEWUSER,$class_list))//XXX Why not just add a check in check_class ?
-		{
-			if (time() > ($this->userData['user_join'] + (varset($pref['user_new_period'],0)*86400)))
-			{	// 'New user' probationary period expired - we can take them out of the class
-				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
-//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
-
-				/**
-				 * issue e107inc/e107#3657: Third argument of update() function is for debugging purposes and NOT used for the WHERE clause.
-				 * Therefore the query was run without WHERE, which resulted into applyiing the new classes to all users....
-				 */
-				//$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']. " LIMIT 1");
-				$sql->update('user',"`user_class` = '" . $this->userData['user_class'] . "' WHERE `user_id`=" . $this->userData['user_id'] . " LIMIT 1");
-				unset($class_list[e_UC_NEWUSER]);
-				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'user_email'=> $user_email);
-				$e_event->trigger('userNotNew', $edata_li);
-			}
-		}
 
 		if($noredirect)
 		{
@@ -305,6 +271,7 @@ class userlogin
 		}
 
 		$redir = e_REQUEST_URL;
+		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
 		//$redir = e_SELF;
 		//if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
 		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
@@ -699,6 +666,54 @@ class userlogin
 	{
 		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
 		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+	}
+
+
+
+	/**
+	 * Assumes the user is valid and logs them in.
+	 * @param array $userData ie. user_id, user_name, user_email,user_join, user_admin
+	 * @param bool $autologin 
+	 * @return array
+	 */
+	public function validLogin($userData, $autologin=false)
+	{
+
+		$cookieval = $this->userMethods->makeUserCookie($userData, $autologin);
+
+		// Calculate class membership - needed for a couple of things
+		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
+		$class_list = $this->userMethods->addCommonClasses($userData, true);
+
+		//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+
+		/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
+			{  // Need to note in user audit trail
+				$log = e107::getLog();
+				$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
+			}*/
+
+		$edata_li = array('user_id'    => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => implode(',', $class_list), /*'remember_me' => $autologin,*/
+		                  'user_admin' => $userData['user_admin'], 'user_email' => $userData['user_email']);
+		
+		e107::getEvent()->trigger("login", $edata_li);
+
+
+		if(check_class(e_UC_NEWUSER, $class_list))
+		{
+			if($this->userMethods->newUserExpired($userData['user_join']))  // 'New user' probationary period expired - we can take them out of the class
+			{
+				$userData['user_class'] = e107::getUserClass()->ucRemove(e_UC_NEWUSER, $userData['user_class']);
+//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$userData['user_class'],FALSE,FALSE);
+
+				e107::getDb()->update('user', "`user_class` = '" . $userData['user_class'] . "' WHERE `user_id`=" . $userData['user_id'] . " LIMIT 1");
+
+				$edata_li = array('user_id' => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => $userData['user_class'], 'user_email' => $userData['user_email']);
+				e107::getEvent()->trigger('userNotNew', $edata_li);
+			}
+		}
+
+		return $cookieval;
 	}
 
 
