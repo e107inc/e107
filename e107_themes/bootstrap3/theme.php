@@ -47,11 +47,11 @@ class theme implements e_theme_render
      * @param array $info : current style and other menu data.
      * @return null
      */
-    public function tablestyle($caption, $text, $id='', $info=array())
+    public function tablestyle($caption, $text, $id=null, $info=array())
 	{
 
 
-		$style = $info['setStyle']; //	global $style; // no longer needed.
+		$style = is_string($info['setStyle']) ? $info['setStyle'] : ''; //	global $style; // no longer needed.
 
 	    echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
 

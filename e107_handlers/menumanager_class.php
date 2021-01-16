@@ -11,6 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 $frm = e107::getForm();
+e107::coreLan('menus', true);
 
 class e_menuManager
 {

@@ -2975,13 +2975,12 @@ class themeHandler
 	
 	function renderPlugins($pluginOpts)
 	{
-		global $frm,$sql;
-		
+
 		// if there is 1 entry, then it's not the same array.
 	//	$tmp = (varset($pluginOpts['plugin'][1])) ? $pluginOpts['plugin'] : $pluginOpts;
 		$text = "";
-
-
+		$frm = e107::getForm();
+		$sql = e107::getDb();
 		
 		foreach ($pluginOpts as $p)
 		{

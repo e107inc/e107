@@ -337,7 +337,7 @@ class news {
 			} 
 			else 
 			{
-				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".LAN_NEWS_100." {NEWSDATE} | {NEWSCOMMENTS}</div>";
+				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".defset('LAN_NEWS_300', 'On')." {NEWSDATE} | {NEWSCOMMENTS}</div>";
 			}
 		}
 		else 

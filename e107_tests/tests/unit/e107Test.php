@@ -1335,7 +1335,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testInAdminDir()
 	{
-
+		$this->markTestSkipped("Skipped until admin-area conflict can be resolved."); // FIXME
 		$tests = array(
 			0  => array('path' => 'thumb.php', 'plugdir' => false, 'expected' => false),
 			1  => array('path' => 'index.php', 'plugdir' => false, 'expected' => false),
