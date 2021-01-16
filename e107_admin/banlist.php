@@ -11,7 +11,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms('4'))
 {
@@ -991,6 +991,6 @@ e107::getAdminUI()->runPage();
 
 
 require_once(e_ADMIN.'footer.php');
-exit;
+
 
 

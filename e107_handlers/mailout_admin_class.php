@@ -355,7 +355,7 @@ class mailoutAdminClass extends e107MailManager
 
 		global $user_pref;
 		$this->mode = $mode;
-		$curTable = $this->tasks[$this->mode]['defaultTable'];
+		$curTable = varset($this->tasks[$this->mode]['defaultTable']);
 		if ($curTable)
 		{
 			if (isset($user_pref['admin_mailout_columns'][$mode]) && is_array($user_pref['admin_mailout_columns'][$mode]))
@@ -380,7 +380,7 @@ class mailoutAdminClass extends e107MailManager
 		// Possibly the sort field needs changing
 		if (!isset($this->fields[$curTable][$this->sortField]))
 		{
-			$this->sortField = $this->tasks[$mode]['defaultSort'];
+			$this->sortField = varset($this->tasks[$mode]['defaultSort']);
 		}
 
 		// Now hide any fields that need to be for this mode
@@ -563,7 +563,7 @@ class mailoutAdminClass extends e107MailManager
 
 		$pref = e107::getPref();
 
-		$pref['mailout_enabled'] = str_replace('core', 'user', $pref['mailout_enabled']); // BC fix.
+		$pref['mailout_enabled'] = str_replace('core', 'user', varset($pref['mailout_enabled'])); // BC fix.
 
 		$ret = 0;
 		$toLoad = explode(',', $options);
@@ -1308,7 +1308,7 @@ class mailoutAdminClass extends e107MailManager
 		if ($mailData === false)
 		{
 			$mes->addInfo(LAN_MAILOUT_79);
-			$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_171, $mes->render() . $text);
+			$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_171, $mes->render() );
 			exit;
 		}
 
@@ -1323,7 +1323,7 @@ class mailoutAdminClass extends e107MailManager
 			<tbody>";
 
 		$text .= $this->showMailDetail($mailData, 'template');
-		$text .= '<tr><td>' . LAN_MAILOUT_172 . '</td><td>' . $this->statusToText($mailData['mail_content_status']) . "<input type='hidden' name='mailIDConf' value='{$mailID}' /></td></tr>";
+		$text .= '<tr><td>' . LAN_MAILOUT_172 . '</td><td>' . $this->statusToText($mailData['mail_content_status']) . "<input type='hidden' name='mailIDConf' value='".$mailId."' /></td></tr>";
 
 		$text .= "</tbody></table>\n</fieldset>";
 

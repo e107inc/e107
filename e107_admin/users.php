@@ -17,7 +17,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 
 if (!defined('e107_INIT'))
 {
-	require_once("../class2.php");
+	require_once(__DIR__.'/../class2.php');
 }
 
 if (!getperms('4|U0|U1|U2|U3'))

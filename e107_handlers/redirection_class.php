@@ -355,6 +355,11 @@ class redirection
 	 */
 	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
+		if(e107::isCli())
+		{
+			return null;
+		}
+
 		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url;
 
 		if(empty($url))

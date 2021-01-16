@@ -10,7 +10,7 @@
 
 // FILE IS DEPRECATED - UP FOR REMOVAL IN THE FUTURE
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 e107::coreLan('message', true);
 

@@ -28,16 +28,17 @@ if(!defined('USER_AREA'))
 
 e107::getDebug()->logTime('(Header Top)');
 
-
 if(!deftrue('e_MENUMANAGER_ACTIVE'))
 {
 
 	if (defined('THEME') && file_exists(THEME.'admin_template.php')) // Admin template
 	{
 		require_once (THEME.'admin_template.php');
+
 	}
 	else
 	{
+
 		require_once (e_CORE.'templates/admin_template.php');
 	}
 
@@ -450,9 +451,16 @@ echo "\n<!-- *PRELOAD* -->\n";
 // I: Calculate JS onload() functions for the BODY tag [user mode only]
 //
 // XXX DEPRECATED $body_onload and related functionality
-if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
-$body_onload='';
-if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
+if(defined('THEME_ONLOAD'))
+{
+	$js_body_onload[] = THEME_ONLOAD;
+}
+
+$body_onload = '';
+if(!empty($js_body_onload))
+{
+	$body_onload = " onload=\"" . implode(" ", $js_body_onload) . "\"";
+}
 
 
 if(deftrue('e_MENUMANAGER_ACTIVE'))

@@ -248,7 +248,10 @@ class e_menuManager
 			$FOOTER = array();
 			foreach($LAYOUT as $key=>$template)
 			{
-				list($hd,$ft) = explode("{---}",$template);
+				$tmp = explode("{---}",$template);
+				$hd = varset($tmp[0]);
+				$ft = varset($tmp[1]);
+
 				$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
 				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;		
 			}	

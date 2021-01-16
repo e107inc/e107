@@ -10,7 +10,7 @@
  *
  */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms("I"))
 {
@@ -944,7 +944,7 @@ echo "<h2>Preview (To-Do)</h2>";
 echo $tp->parseTemplate("{SITELINKS_ALT}");
 */
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 

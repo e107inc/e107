@@ -9,8 +9,8 @@
  */
 
 define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
-require_once('../class2.php');
 
+require_once(__DIR__.'/../class2.php');
 
 if(varset($_GET['mode']) == 'customize')
 {
@@ -75,6 +75,7 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_HANDLER.'upload_handler.php');
+
 new admin_start;
 
 require_once(e_ADMIN.'auth.php');
@@ -875,4 +876,4 @@ function log_request()
 
 require_once("footer.php");
 
-?>
+

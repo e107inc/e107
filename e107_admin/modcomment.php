@@ -8,7 +8,7 @@
  * Exists only for BC. 
  */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms("B")) 
 {
@@ -19,11 +19,11 @@ if (!getperms("B"))
 
 $tmp	= explode(".", e_QUERY);
 $table	= $tmp[0];
-$id		= intval($tmp[1]);
-$editid	= intval($tmp[2]);
+$id		= (int) varset($tmp[1]);
+$editid	= (int) varset($tmp[2]);
 
 $url = e_ADMIN_ABS."comment.php?searchquery=".$id."&filter_options=comment_type__".e107::getComment()->getCommentType($table);
 
 e107::getRedirect()->go($url);
-exit;
+
 

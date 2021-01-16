@@ -14,7 +14,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 {
 	$_POST['e-token'] = '';
 }
-require_once ("../class2.php");
+require_once (__DIR__."/../class2.php");
 
 if(isset($_POST['newver']))
 {
@@ -319,7 +319,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 $text = "
 <div id='core-prefs'>
 	<form class='admin-menu' method='post' action='".e_SELF."' autocomplete='off'>
-	<input type='hidden' name='e-token' value='".e_TOKEN."' />
+	<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='table adminform'>
@@ -1445,21 +1445,21 @@ $text .= "
 						<td><label for='user-tracking-cookie'>".PRFLAN_48."</label></td>
 						<td >
 							<div class='form-inline'>
-							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
+							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), varset($pref['user_tracking']))."
 						</div></td>
 					</tr>
 					
 				
 					<tr>
 						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
-						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
+						<td >".$frm->text('cookie_name', varset($pref['cookie_name']), 20)."
 						<div class='field-help'>".PRFLAN_263.".</div></td></tr>
 
 
 					<tr>
 						<td><label for='session-lifetime'>".PRFLAN_272."</label></td>
 						<td>
-							".$frm->number('session_lifetime', $pref['session_lifetime'],6)."
+							".$frm->number('session_lifetime', varset($pref['session_lifetime']), 6)."
 							<div class='smalltext field-help'>".PRFLAN_273."</div>
 						</td>
 					</tr>
@@ -1474,7 +1474,7 @@ $text .= "
 	                <tr>
 						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
 						<td class='form-inline'>
-							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], $pref['session_save_method'])."
+							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], varset($pref['session_save_method']))."
 							<!-- <div class='smalltext field-help'>".PRFLAN_273."</div>-->
 							<!-- <span class='label label-warning'>Experimental</span>-->
 						</td>
@@ -2023,7 +2023,7 @@ $text .= "
 ";
 
 $auth_dropdown = '';
-if($authlist)
+if(!empty($authlist))
 {
 	$auth_dropdown = "\n".$frm->select_open('auth_method')."\n";
 	foreach($authlist as $a)

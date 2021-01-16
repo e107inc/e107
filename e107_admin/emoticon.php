@@ -11,7 +11,7 @@
  *
 */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 if (!getperms("F"))
 {
 	e107::redirect('admin');
@@ -700,23 +700,3 @@ class emotec
 
 
 require_once("footer.php");
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	/*	require_once(e_HANDLER.'js_helper.php');
-
-		$ret = "
-			<script type='text/javascript'>
-				//add required core lan - delete confirm message
-			</script>
-			<script type='text/javascript' src='".e_JS."core/admin.js'></script>
-		";
-
-		return $ret;*/
-}
-
-?>

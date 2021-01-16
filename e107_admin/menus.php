@@ -36,14 +36,17 @@ if(isset($_GET['configure']))
 }
 else
 {
-	define('e_ADMIN_AREA', true);
-	define("USER_AREA", false);
-	define('ADMIN_AREA', true);
+	if(!defined('e_ADMIN_AREA'))
+	{
+		define('e_ADMIN_AREA', true);
+		define("USER_AREA", false);
+		define('ADMIN_AREA', true);
+	}
 
 	define('e_MENUMANAGER_ACTIVE', false);
 }
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 
 if(e_MENUMANAGER_ACTIVE === false )
@@ -639,7 +642,8 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 //{
 
 
-
+if(!function_exists('e_help'))
+{
 	function e_help()
 	{
 		if(deftrue("e_DEBUG_MENUMANAGER"))
@@ -651,6 +655,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 		return e_menu_layout::menuSelector();
 
 	}
+}
 //}
 
 
