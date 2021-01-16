@@ -1149,9 +1149,10 @@
 
 	//	$ADMIN_DIRECTORY = e107::getFolder('admin');
 
-		if($GLOBALS['E107_CLEAN_EXIT'])
-		{
 
+
+		if(!empty($GLOBALS['E107_CLEAN_EXIT']))
+		{
 			return;
 		}
 
@@ -1171,7 +1172,7 @@
 // 
 // Error while in the footer, or during startup, or during above processing
 //
-		if($GLOBALS['E107_CLEAN_EXIT'])
+		if(!empty($GLOBALS['E107_CLEAN_EXIT']))
 		{
 			return;
 		}
