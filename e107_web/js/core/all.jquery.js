@@ -1557,14 +1557,14 @@ function SyncWithServerTime(serverTime, path, domain)
 		if(!domain) domain = '';
 		else domain = '; domain=' + domain;
 	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain; /* server time when set */
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain+'; samesite=strict'; /* server time when set */
 	}
 
 	var tzCookie = 'e107_tzOffset=';
 //	if (document.cookie.indexOf(tzCookie) < 0) {
 		/* set if not already set */
 		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain;
+		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain+'; samesite=strict';
 //	}
 }
 	
