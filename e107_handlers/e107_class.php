@@ -285,10 +285,7 @@ class e107
 	 */
 	protected function __construct()
 	{
-	  /*  if(defined('e_PDO') && e_PDO === false) // TODO
-        {
-            self::$_known_handlers['db'] = '{e_HANDLER}mysql_class.php';
-        }*/
+
 		// FIXME registered shutdown functions not executed after the $page output in footer - investigate
 		// Currently manually called in front-end/admin footer
 		//register_shutdown_function(array($this, 'destruct'));
@@ -344,6 +341,22 @@ class e107
 				echo $tp->parseTemplate($line, true, $sc) . "\n";  // retain line-breaks.
 			}
 
+		}
+	}
+
+	/**
+	 * @param string $plug_name
+	 */
+	private static function _loadPluginLans($plug_name)
+	{
+
+		if(is_dir(e_PLUGIN . $plug_name . "/languages"))
+		{
+			self::plugLan($plug_name, '', true); // English/English_front.php
+			self::plugLan($plug_name, null, true); // English/English.php
+			self::plugLan($plug_name, null); // English_front.php
+			self::plugLan($plug_name, 'global', true); // English/English_global.php
+			self::plugLan($plug_name, 'global'); // English_global.php
 		}
 	}
 
@@ -538,7 +551,6 @@ class e107
 	//	$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
 	//	$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_BASE_DIRECTORY'];
 
-		// FIXME - remove this condition because:
 		// $this->site_path is appended to MEDIA_DIRECTORY in defaultDirs(), which is called above.
 		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
 		{
@@ -552,7 +564,6 @@ class e107
 			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.
 		}
 
-		// FIXME Quick fix - override base cache folder for legacy configs (e.g. e107_files/cache), discuss
 		if(strpos($this->e107_dirs['CACHE_DIRECTORY'], $this->site_path) === false)
 		{
 			$this->e107_dirs['CACHE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY']."cache/"; // multisite support.
@@ -1083,7 +1094,7 @@ class e107
 	public static function getConfig($name = 'core', $load = true, $refresh=false)
 	{
 
-		if(isset(self::$_plug_config_arr[$name])) //FIXME Load pluginPref Object instead - Not quite working with calendar_menu.
+		if(isset(self::$_plug_config_arr[$name]))
 		{
 			return self::getPlugConfig($name);
 		}
@@ -2655,8 +2666,7 @@ class e107
 
 	/**
 	 * Retrieves class Object for specific plugin's addon such as e_url.php, e_cron.php, e_sitelink.php
-	 * FIXME override from e.g. core/override/addons/
-	 *
+	 * 	 *
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
@@ -2667,7 +2677,7 @@ class e107
 	{
 		$filename = $addonName; // e.g. 'e_cron';
 
-		// fixme, temporary adding 's' to className, should be core fixed, better naming
+
 		if($className === true)
 		{
 			$className = $pluginName . '_' . substr($addonName, 2);
@@ -2687,7 +2697,6 @@ class e107
 			return null;
 		}
 
-		// TODO override check comes here
 		$path = e_PLUGIN.$pluginName.'/'.$filename.'.php';
 		// e.g. include e_module, e_meta etc
 		if($className === false)
@@ -2897,7 +2906,6 @@ class e107
 	 */
 	public static function getThemeInfo($for = true, $path = '')
 	{
-	//	global $user_pref; // FIXME - user model, kill user_pref global
 
 		if($for === true)
 		{
@@ -3125,13 +3133,7 @@ class e107
 		 * "front" and "global" LANs might not be loaded come self::_getTemplate(),
 		 * so the following calls to self::plugLan() fix that.
 		 */
-		if(is_dir(e_PLUGIN.$plug_name."/languages"))
-		{
-			self::plugLan($plug_name, null, true);
-			self::plugLan($plug_name, null);
-			self::plugLan($plug_name, 'global', true);
-			self::plugLan($plug_name, 'global');
-		}
+		self::_loadPluginLans($plug_name);
 
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
@@ -3267,7 +3269,6 @@ class e107
 	/**
 	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['my_id'] -> array('id' => 'My Id'))
 	 *
-	 * FIXME - the format of $allinfo=true array is not usable at all, convert it so that it's compatible with e_form::selectbox() method
 	 *
 	 * @param string $plugin_name
 	 * @param string $template_id [optional] if different from $plugin_name;
@@ -3286,6 +3287,8 @@ class e107
 		}
 		else // Plugin template
 		{
+			self::_loadPluginLans($plugin_name);
+
 			$id = (!$template_id) ? $plugin_name : $template_id;
 			$tmp = self::getTemplate($plugin_name, $id, null, $where, $merge);
 			$tmp_info = self::getTemplateInfo($plugin_name, $id, null, $where, $merge);
@@ -3324,7 +3327,7 @@ class e107
 				$templates[$key] = defset($tmp_info[$key]['title'], $tmp_info[$key]['title']);
 				continue;
 			}
-			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key))); //TODO add LANS?
+			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key)));
 		}
 		return ($allinfo ? array($templates, $tmp_info) : $templates);
 	}
@@ -3572,9 +3575,10 @@ class e107
 		self::setRegistry($cstring, true);
 
 		$ret = self::includeLan($path);
-
+		
 		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0 && strpos($path, '_global.php') === false )
 		{
+
 			$result = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
 			self::getDebug()->log("Couldn't load: ".$path.print_a($result,true));
 		}
@@ -4551,7 +4555,6 @@ class e107
 
 	/**
 	 * Set all environment vars and constants
-	 * FIXME - remove globals
 	 * @return e107
 	 */
 	public function set_paths()
@@ -4567,6 +4570,7 @@ class e107
 		}
 
 		$path = "";
+		$target_path = '';
 
 		$needle = "/class2.php";
 		if (file_exists(__DIR__."/..".$needle))
@@ -4864,7 +4868,7 @@ class e107
 
 
 		// START New - request uri/url detection, XSS protection
-		// TODO - move it to a separate method
+
 		$requestUri = $requestUrl = '';
 		if (isset($_SERVER['HTTP_X_REWRITE_URL']))
 		{
@@ -4886,11 +4890,11 @@ class e107
 			$requestUrl = $_self;
             if(defset('e_QUERY'))
 			{
-				$requestUri .= '?'.e_QUERY; // TODO e_SINGLE_ENTRY check, separate static method for cleaning QUERY_STRING
+				$requestUri .= '?'.e_QUERY;
 				$requestUrl .= '?'.e_QUERY;
 			}
 		}
-		// FIXME - basic security - add url sanitize method to e_parse
+
 		$check = rawurldecode($requestUri); // urlencoded by default
 
 		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
@@ -5170,60 +5174,11 @@ class e107
 		return ($this->HTTP_SCHEME === 'https');
 	}
 
-	/**
-	 * Check if current user is banned
-	 *
-	 * Generates the queries to interrogate the ban list, then calls $this->check_ban().
-	 * If the user is banned, $check_ban() never returns - so a return from this routine indicates a non-banned user.
-	 * FIXME -  moved to ban helper, replace all calls
-	 * @return void
-	 */
-	 /* No longer required - moved to eIPHelper class
-	public function ban()
-	{
-	} */
 
 	/**
-	 * Check the banlist table. $query is used to determine the match.
-	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
-	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
-	 * FIXME - moved to ban helper, replace all calls
 	 *
-	 *
-	 * @param string $query
-	 * @param boolean $show_error
-	 * @param boolean $do_return
-	 * @return boolean
-	 */
-	 /* No longer required - moved to eIPHelper class
-	public function check_ban($query, $show_error = TRUE, $do_return = FALSE)
-	{
-	} */
-
-
-	/**
-	 * Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins
-	 * Returns TRUE if ban accepted.
-	 * Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
-	 * FIXME - moved to IP handler, replace all calls
-	 * @param string $bantype
-	 * @param string $ban_message
-	 * @param string $ban_ip
-	 * @param integer $ban_user
-	 * @param string $ban_notes
-	 *
-	 * @return boolean check result
-	 */
-	 /*
-	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
-	{
-		return e107::getIPHandler()->add_ban($bantype, $ban_message, $ban_ip, $ban_user, $ban_notes);
-	} */
-
-	/**
 	 * Get the current user's IP address
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
-	 * FIXME - call ipHandler directly (done for core - left temporarily for BC)
 	 * @return string
 	 */
 	public function getip()
@@ -5234,7 +5189,7 @@ class e107
 	/**
 	 * Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	 * Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
-	 * FIXME - moved to ipHandler - check for calls elsewhere
+	 * @deprecated Use getIPHandler()->ipEncode($ip) instead.
 	 * @param string $ip
 	 * @param string $div divider
 	 * @return string encoded IP
@@ -5250,7 +5205,7 @@ class e107
 	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format,
 	 * FALSE to display in standard IPV6 format
 	 * Should handle most things that can be thrown at it.
-	 * FIXME - moved to ipHandler - check for calls elsewhere - core done; left temporarily for BC
+	 * @deprecated Use getIPHandler()->ipDecode($ip, $IP4Legacy); instead.
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
 	 * @return string decoded IP
@@ -5260,23 +5215,10 @@ class e107
 		return self::getIPHandler()->ipDecode($ip, $IP4Legacy);
 	}
 
-	/**
-	 * Given a string which may be IP address, email address etc, tries to work out what it is
-	 * Movet to eIPHandler class
-	 * FIXME - moved to ipHandler - check for calls elsewhere
-	 * @param string $string
-	 * @return string ip|email|url|ftp|unknown
-	 */
-	 /*
-	public function whatIsThis($string)
-	{
-		//return e107::getIPHandler()->whatIsThis($string);
-	} */
 
 	/**
 	 * Retrieve & cache host name
 	 * @deprecated Use getIPHandler()->get_host_name() instead. Still needed by some old plugins/menus.
-	 * @todo Find old calls and replace with code within.
 	 * @param string $ip_address
 	 * @return string host name
 	 */
@@ -5288,9 +5230,7 @@ class e107
 	}
 
 	/**
-	 * MOVED TO eHelper::parseMemorySize()
-	 * FIXME - find all calls, replace with eHelper::parseMemorySize() (once eHelper lives in a separate file)
-	 *
+	 * @deprecated Use eHelper::parseMemorySize() instead.
 	 * @param integer $size
 	 * @param integer $dp
 	 * @return string formatted size
@@ -5404,7 +5344,7 @@ class e107
 	 * }
 	 * </code>
 	 * We use now spl_autoload[_*] for core autoloading (PHP5 > 5.1.2)
-	 * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
+	 * At this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
 	 *
 	 * @todo plugname/e_shortcode.php auto-detection (hard, near impossible at this time) - we need 'plugin_' prefix to
 	 * distinguish them from the core batches
@@ -5582,7 +5522,7 @@ class e107
 	/**
 	 *
 	 */
-	public function destruct() //FIXME $path is not defined anywhere.
+	public function destruct()
 	{
 		if(self::$_instance === null)
 		{

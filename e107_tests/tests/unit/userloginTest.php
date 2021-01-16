@@ -64,6 +64,37 @@
 
 		}
 
+		public function testLoginNewUser()
+		{
+
+				e107::getConfig()->set('user_new_period', 3)->save(false,true); // set new user period to 3 days.
+
+				$insert = array(
+					'user_name'			=> 'newuser',
+					'user_email'		=> 'newuser@newuser.com',
+					'user_loginname'	=> 'newuser',
+					'user_password'		=> md5('newuser'),
+					'user_login'		=> 'newuser',
+					'user_join'			=> strtotime('5 days ago'),
+					'user_class'        => e_UC_NEWUSER.',3,'.e_UC_MODS,
+
+				);
+
+				$newid = e107::getDb()->insert('user',$insert);
+				$this->assertNotEmpty($newid);
+
+				$result = $this->lg->login('newuser', 'newuser', 0, '', true);
+				$this->assertTrue($result);
+
+				$class = e107::getDb()->retrieve('user', 'user_class', "user_id = ".$newid);
+
+				$this->assertSame("3,248", $class); // new user class was removed!
+
+
+		}
+
+
+
 		public function testErrorMessages()
 		{
 			$result = $this->lg->test();
