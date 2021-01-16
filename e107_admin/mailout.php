@@ -65,7 +65,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\POP3;
 use PHPMailer\PHPMailer\Exception;
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 
 
@@ -702,7 +702,7 @@ class mailout_main_ui extends e_admin_ui
 			return;
 		}
 		
-		$id = intval($_POST['email_id']);
+		$id = (int) varset($_POST['email_id']);
 				
 		if(vartrue($_POST['email_send']))
 		{
@@ -2727,38 +2727,40 @@ function mailout_adminmenu()
 */
 
 
-
-function headerjs()
+if(!function_exists('headerjs'))
 {
-
-	$text = "
-	<script type='text/javascript'>
-		
-
-	function bouncedisp(type)
+	function headerjs()
 	{
-		if(type == 'auto')
+
+		$text = "
+		<script type='text/javascript'>
+			
+	
+		function bouncedisp(type)
 		{
-			document.getElementById('mail_bounce_auto').style.display = '';
+			if(type == 'auto')
+			{
+				document.getElementById('mail_bounce_auto').style.display = '';
+				document.getElementById('mail_bounce_mail').style.display = 'none';
+				return;
+			}
+	
+			if(type =='mail')
+			{
+	            document.getElementById('mail_bounce_auto').style.display = 'none';
+				document.getElementById('mail_bounce_mail').style.display = '';
+				return;
+			}
+	
+			document.getElementById('mail_bounce_auto').style.display = 'none';
 			document.getElementById('mail_bounce_mail').style.display = 'none';
-			return;
 		}
+		</script>";
 
-		if(type =='mail')
-		{
-            document.getElementById('mail_bounce_auto').style.display = 'none';
-			document.getElementById('mail_bounce_mail').style.display = '';
-			return;
-		}
+		$mailAdmin = e107::getRegistry('_mailout_admin');
+	// 	$text .= $mailAdmin->_cal->load_files();
 
-		document.getElementById('mail_bounce_auto').style.display = 'none';
-		document.getElementById('mail_bounce_mail').style.display = 'none';
+		return $text;
 	}
-	</script>";
-
-	$mailAdmin = e107::getRegistry('_mailout_admin');
-// 	$text .= $mailAdmin->_cal->load_files();
-
-	return $text;
 }
-?>
+

@@ -22,7 +22,7 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 global $error_handler,$db_time,$ADMIN_FOOTER;
 
 // Legacy fix - call header if not already done, mainly fixing left side menus to work proper
-if(!deftrue('e_ADMIN_UI') /*&& !deftrue('ADMIN_AREA')*/)
+if(!deftrue('e_ADMIN_UI') )
 {
 	// close the old buffer
 	$content =  ob_get_contents();
@@ -31,6 +31,7 @@ if(!deftrue('e_ADMIN_UI') /*&& !deftrue('ADMIN_AREA')*/)
 	ob_start();
 	require_once(e_ADMIN.'header.php');
 	echo $content;
+
 }
 
 //
@@ -394,14 +395,17 @@ if($tmp1)
 
 // New - see class2.php
 $ehd = new e_http_header;
+
 if($tmp)
 {
+
 	$ehd->setContent('buffer',$tmp['search'],$tmp['replace']);
 }
 else
 {
 	$ehd->setContent('buffer');
 }
+
 unset($tmp1, $tmp1);
 $ehd->send();
 $page = $ehd->getOutput();
@@ -414,7 +418,10 @@ unset($In_e107_Footer);
 
 
 // Clean session shutdown
-e107::getSession()->shutdown();
-// Shutdown
-$e107->destruct();
-$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
+if(!e107::isCli())
+{
+	e107::getSession()->shutdown();
+	// Shutdown
+	$e107->destruct();
+	$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
+}

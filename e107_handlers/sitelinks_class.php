@@ -1400,7 +1400,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
             || e_REQUEST_HTTP === varset($e107_vars[$act]['link'])
 			)
 			{
-				$temp = $tmpl['button_active'.$kpost];
+				$temp = varset($tmpl['button_active'.$kpost]);
 			}
 			else
 			{
@@ -1423,7 +1423,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if(!empty($e107_vars[$act]['template']))
 			{
 				$tmplateKey = 'button_'.$e107_vars[$act]['template'].$kpost;
-				$temp = $tmpl[$tmplateKey];
+				$temp = varset($tmpl[$tmplateKey]);
 
 				// e107::getDebug()->log($tmplateKey);
 			}

@@ -19,7 +19,7 @@
 
 // [debug=8] shows the operations on major table update
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function

@@ -11,7 +11,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 e107::lan('core','updateadmin',true);
@@ -110,7 +110,7 @@ else
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />".
+				<input type='hidden' name='ac' value='".md5(defset('ADMINPWCHANGE'))."' />".
 				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
 				
 			</div>

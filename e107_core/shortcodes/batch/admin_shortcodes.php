@@ -2048,15 +2048,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? "<span title=\"".ADLAN_120."\" class=\"text-info\"><i class=\"fa fa-database\"></i></span>" : '<!-- -->';
 
-			return $template['start']. '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .$template['end'];
+			return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 
 		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
 		{
-			$template = $$tmpl;
+			$template = (array) $$tmpl;
 
-			$template['start'] = $template['start_other'];
+			$template['start'] = varset($template['start_other']);
 
 			$menu_vars = $this->getOtherNav($parm);
 			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);

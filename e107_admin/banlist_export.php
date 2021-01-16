@@ -10,7 +10,7 @@
  *
  */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('4')) 
 {
 	e107::redirect('admin');
@@ -18,7 +18,7 @@ if (!getperms('4'))
 }
 
 /*
-Output a selection of data from the banlist table as a CSV
+Output a selection of data from the banlist table arequire_once(__DIR__.'/../class2.php');s a CSV
 Selection data:
   $_POST['ban_types'] - array of 0..9
   $_POST['ban_separator'] - 1 or 2
@@ -42,12 +42,15 @@ $format_array = array(
   'banlist_notes' => 1
 );
 
-$use_separator = varset($separator_char[intval($_POST['ban_separator'])],$separator_char[1]);
-$use_quote = varset($quote_char[intval($_POST['ban_quote'])],$quote_char[2]);
+$banSep = (int)  varset($_POST['ban_separator']);
+$banQuote = (int) varset($_POST['ban_quote']);
+$use_separator = varset($separator_char[$banSep],$separator_char[1]);
+$use_quote = varset($quote_char[$banQuote],$quote_char[2]);
 
 
 $type_list = '';
-if (is_array($_POST['ban_types']))
+
+if (!empty($_POST['ban_types']))
 {
 	$validBanTypes = banlistManager::getValidReasonList();
 	$spacer = '';

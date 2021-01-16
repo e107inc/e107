@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('K'))
 {
 	e107::redirect('admin');
@@ -847,7 +847,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				
 				$id = 'eurl-'.str_replace('_', '-', $obj->module).'-'.$index;
 				
-				$checked = varset($obj->current[$module]) == $location ? ' checked="checked"' : '';
+				$checked = (isset($obj->current[$module]) && $obj->current[$module] == $location) ? ' checked="checked"' : '';
 				
 				$path = eDispatcher::getConfigPath($module, $location, false);
 				if(!is_readable($path))
@@ -881,7 +881,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
                  $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
                 }
  */
-                $selected = varset($obj->current[$module]) == $location ? "selected='selected'" : '';
+                $selected = (isset($obj->current[$module]) && ($obj->current[$module] == $location)) ? "selected='selected'" : '';
 				$opt .= "<option value='{$location}' {$selected} >".$diz.": ".varset($exampleUrl[0])."</option>";
 
 				$info .= "<tr><td>".$label."

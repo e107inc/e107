@@ -18,7 +18,7 @@ if(!empty($_GET['action']) && $_GET['action'] === 'dialog')
 
 if (!defined('e107_INIT'))
 {
-	require_once('../class2.php');
+	require_once(__DIR__.'/../class2.php');
 }
 
 if (!getperms('A') && ($_GET['action'] !== 'dialog') && ($_GET['action'] !== 'youtube'))

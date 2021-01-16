@@ -10,7 +10,7 @@
  *
 */
 
-require_once ("../class2.php");
+require_once (__DIR__."/../class2.php");
 $theme = e107::getPref('sitetheme');
 define("EXPORT_PATH","{e_THEME}".$theme."/install/");
 

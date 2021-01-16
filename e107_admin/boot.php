@@ -16,7 +16,12 @@ if (!defined('e107_INIT'))
 }
 
 e107::getDebug()->logTime('(Start boot.php)');
-header('Content-type: text/html; charset=utf-8', TRUE);
+
+if(!e107::isCli())
+{
+	header('Content-type: text/html; charset=utf-8', TRUE);
+}
+
 define('ADMINFEED', 'https://e107.org/adminfeed');
 
 

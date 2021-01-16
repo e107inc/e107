@@ -260,7 +260,7 @@ function nextprev_shortcode($parm = null)
 		// caption, e.g. 'Page 1 of 20' box
 		if($e_vars->caption)
 		{
-			$ret .= $tp->simpleParse($tmpl[$tprefix.'nav_caption'], $e_vars);
+			$ret .= $tp->simpleParse(varset($tmpl[$tprefix.'nav_caption']), $e_vars);
 		}
 
 		$ret_array = array();

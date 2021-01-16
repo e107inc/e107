@@ -10,7 +10,7 @@
  *
 */
 
-require_once("../class2.php");
+require_once(__DIR__."/../class2.php");
 
 $css = "body 				{ text-align: left; font-size:13px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
 			p 					{ margin:0px 5px 10px 5px; }
@@ -60,5 +60,3 @@ require_once(e_ADMIN."auth.php");
 $ns->tablerender("",$text);
 
 require_once(e_ADMIN."footer.php");
-
-exit;

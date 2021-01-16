@@ -56,7 +56,18 @@ class E107Preparer implements Preparer
 
 		if(is_dir($dirPath))
 		{
-			rmdir($dirPath);
+			try
+			{
+				rmdir($dirPath);
+			}
+			catch (Exception $e)
+			{
+				echo $e->getMessage()."\n";
+			/*	echo "Contents: \n";
+				$list = scandir($dirPath);
+				var_export($list);*/
+			   // do something
+			}
 		}
 	}
 }

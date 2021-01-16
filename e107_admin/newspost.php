@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms('H|N|H0|H1|H2|H3|H4|H5'))
 {
@@ -1623,4 +1623,4 @@ if(!e_AJAX_REQUEST)
 	 require_once("footer.php");
 }
 
-exit;
+

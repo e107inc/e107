@@ -2506,8 +2506,8 @@ class e_http_header
 	
 	function setContent($content,$search=null,$replace=null)
 	{
-
-		if($content == 'buffer')
+		global $_E107;
+		if($content == 'buffer' && empty($_E107['cli']))
 		{
 			$this->length = ob_get_length();
 			$this->content =  ob_get_clean();

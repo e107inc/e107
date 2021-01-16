@@ -19,7 +19,7 @@ if(!empty($_GET['action']) && $_GET['action'] === 'progress' && !empty($_GET['sc
 }
 
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 
 
@@ -253,7 +253,7 @@ require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 
@@ -464,7 +464,7 @@ class file_inspector {
 		<td style='width: 35%'>
 		".LAN_SHOW." ".FC_LAN_5.":
 		</td>
-		<td colspan='2' style='width: 65%'>".$frm->select('core',$coreOpts,$_POST['core'])."	</td>
+		<td colspan='2' style='width: 65%'>".$frm->select('core',$coreOpts,varset($_POST['core']))."	</td>
 		</tr>";
 
 
@@ -473,7 +473,7 @@ class file_inspector {
 		<td style='width: 35%'>
 		".FC_LAN_14.":
 		</td>
-		<td colspan='2' style='width: 65%'>".$frm->select('type', $dispOpt, $_POST['type'])."	</td>
+		<td colspan='2' style='width: 65%'>".$frm->select('type', $dispOpt, varset($_POST['type']))."	</td>
 		</td>
 		</tr>";
 
@@ -483,8 +483,8 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_13.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
-		<input type='radio' name='missing' value='0'".($_POST['missing'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
+		<input type='radio' name='missing' value='1'".((varset($_POST['missing']) == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='missing' value='0'".(varset($_POST['missing']) == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td>
 		</tr>";
 
@@ -493,8 +493,8 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_7.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
-		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
+		<input type='radio' name='noncore' value='1'".((varset($_POST['noncore']) == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='noncore' value='0'".(varset($_POST['noncore']) == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td>
 		</tr>";
 
@@ -503,8 +503,8 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_21.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
-		<input type='radio' name='oldcore' value='0'".($_POST['oldcore'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
+		<input type='radio' name='oldcore' value='1'".((varset($_POST['oldcore']) == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='oldcore' value='0'".(varset($_POST['oldcore']) == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td>
 		</tr>";
 
