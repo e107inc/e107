@@ -1145,12 +1145,13 @@
 		}
 
 
-		global $error_handler, $e107_Clean_Exit, $In_e107_Footer, $ADMIN_DIRECTORY;
+		global $error_handler,  $In_e107_Footer, $ADMIN_DIRECTORY;
 
 	//	$ADMIN_DIRECTORY = e107::getFolder('admin');
 
-		if(isset($e107_Clean_Exit))
+		if($GLOBALS['E107_CLEAN_EXIT'])
 		{
+
 			return;
 		}
 
@@ -1170,10 +1171,10 @@
 // 
 // Error while in the footer, or during startup, or during above processing
 //
-		if(isset($e107_Clean_Exit))
+		if($GLOBALS['E107_CLEAN_EXIT'])
 		{
 			return;
-		} // We've now sent a footer...
+		}
 
 //	echo isset($In_e107_Footer) ? "In footer" : "In startup".'<br />';
 

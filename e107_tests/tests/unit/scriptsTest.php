@@ -29,14 +29,11 @@
 			}
 
 			global $pref, $ns, $tp, $frm;
-			global $error_handler, $e107_Clean_Exit, $In_e107_Footer, $ADMIN_DIRECTORY;
 
 			$pref = e107::getPref();
 			$ns = e107::getRender();
 			$tp = e107::getParser();
 			$frm = e107::getForm();
-
-
 
 			global $_E107;
 			$_E107['cli'] = true;
