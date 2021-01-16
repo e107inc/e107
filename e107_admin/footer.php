@@ -424,4 +424,5 @@ if(!e107::isCli())
 	// Shutdown
 	$e107->destruct();
 }
-$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
+
+$GLOBALS['E107_CLEAN_EXIT'] = true;  // For registered shutdown function -- let it know all is well!
