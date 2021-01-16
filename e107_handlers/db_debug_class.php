@@ -1146,6 +1146,9 @@
 
 
 		global $error_handler, $e107_Clean_Exit, $In_e107_Footer, $ADMIN_DIRECTORY;
+
+	//	$ADMIN_DIRECTORY = e107::getFolder('admin');
+
 		if(isset($e107_Clean_Exit))
 		{
 			return;

@@ -423,5 +423,5 @@ if(!e107::isCli())
 	e107::getSession()->shutdown();
 	// Shutdown
 	$e107->destruct();
-	$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
 }
+$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
