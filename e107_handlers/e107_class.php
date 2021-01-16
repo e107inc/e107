@@ -775,9 +775,10 @@ class e107
 	/**
 	 * Get folder name (e107_config)
 	 * Replaces all $(*)_DIRECTORY globals
+	 * @example
 	 * Example: <code>$e107->getFolder('images')</code>;
 	 *
-	 * @param string $for
+	 * @param string $for admin | plugin |
 	 * @return string
 	 */
 	public static function getFolder($for)
