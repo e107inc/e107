@@ -146,7 +146,7 @@ define("NWSLAN_128", "Set a string to be used in news pages URL. This will only 
 // define("LAN_NEWS_21", "News updated in database.");
 
 // define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose an image or video for this news item");
+// define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");
@@ -210,7 +210,7 @@ define("LAN_NEWS_73", "Sidebar - Othernews 2");
 define("LAN_NEWS_74", "Carousel");
 define("LAN_NEWS_75", "Featurebox");
 
-define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
+//define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
 define("LAN_NEWS_88", "Determines how the default news page should appear.");
 define("LAN_NEWS_89", "Notify these services when you create/update news items.");
 define("LAN_NEWS_90", "One per line.");

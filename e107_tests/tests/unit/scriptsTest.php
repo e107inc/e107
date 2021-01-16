@@ -21,7 +21,7 @@
 			$config = e107::getConfig();
 
 			$preInstall = array('banner', 'page');
-			$exclude = array('index.php');
+			$exclude = array('index.php', 'menus.php'); // FIXME menus defines e_ADMIN_AREA which messes up other tests.
 
 			foreach($preInstall as $plug)
 			{
@@ -69,7 +69,7 @@
 					$this->fail("Couldn't load ".$file);
 				}
 
-				
+
 
 			}
 

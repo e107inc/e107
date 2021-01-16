@@ -139,7 +139,7 @@ class admin_shortcodes
 		if(function_exists('show_admin_menu'))
 		{
 			$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
-			return e107::getRender()->tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
+			return e107::getRender()->tablerender(FOOTLAN_14,$text, /*array('id' => 'admin_docs', 'style' => 'button_menu'),*/ TRUE); //FIXME array to string conversion
 		}
 	}
 
@@ -1063,7 +1063,7 @@ class admin_shortcodes
 			if(function_exists('e_admin_menu'))
 			{
 				$text = e_admin_menu('', '', $e107_var);
-				return $ns->tablerender(LAN_HEADER_01, $text, array('id' => 'admin_nav', 'style' => 'button_menu'), TRUE);
+				return $ns->tablerender(LAN_HEADER_01, $text, /*array('id' => 'admin_nav', 'style' => 'button_menu'),*/ TRUE); // FIXME array to string issue.
 			}
 		}
 	}
