@@ -441,9 +441,11 @@ unset($In_e107_Footer);
 
 
 // Clean session shutdown
-e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
-// Shutdown
-$e107->destruct();
-$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
-
+if(!e107::isCli())
+{
+	e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
+	// Shutdown
+	$e107->destruct();
+	$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
+}
 

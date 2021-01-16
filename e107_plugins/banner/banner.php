@@ -137,7 +137,7 @@ if (isset($_POST['clientsubmit']))
 }
 	
 $scArray = array();
-$scArray['BANNER_LOGIN_TABLE_LOGIN'] 	= $frm->text("clientlogin", $id);
+$scArray['BANNER_LOGIN_TABLE_LOGIN'] 	= $frm->text("clientlogin");
 $scArray['BANNER_LOGIN_TABLE_PASSW'] 	= $frm->password("clientpassword", '');
 $scArray['BANNER_LOGIN_TABLE_SUBMIT'] 	= $frm->button("clientsubmit", LAN_CONTINUE, "submit");
 

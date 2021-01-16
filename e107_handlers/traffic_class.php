@@ -53,6 +53,12 @@ class e107_traffic
 	{
 		$tFrom = explode(' ', $tStart);
 		$tTo = explode(' ', $tFinish);
+
+		if(!isset($tFrom[1]))
+		{
+			$tFrom[1] = 0;
+		}
+
 		$tTot = ((float) $tTo[0] + (float) $tTo[1]) - ((float) $tFrom[0] + (float) $tFrom[1]);
 		return $tTot;
 	}

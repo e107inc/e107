@@ -2545,6 +2545,11 @@ class e_http_header
 	
 	function setHeader($header, $force=false, $response_code=null)
 	{
+		if(e107::isCli())
+		{
+			return null;
+		}
+
 		list($key,$val) = explode(':',$header,2);
 		$this->headers[$key] = $val;
 		header($header, $force, $response_code);
@@ -2605,7 +2610,7 @@ class e_http_header
 		
 	// $this->setHeader("Cache-Control: must-revalidate", true); 
 		 
-		if($_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout' && $canCache && !deftrue('e_NOCACHE'))
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout' && $canCache && !deftrue('e_NOCACHE'))
 		{
 			// header("Cache-Control: must-revalidate", true);	
 			if(e107::getPref('site_page_expires')) // TODO - allow per page
