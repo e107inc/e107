@@ -1057,7 +1057,7 @@ class e107Test extends \Codeception\Test\Unit
 			'search'  => 'core/rewrite',
 			'system'  => 'core/rewrite',
 			'user'    => 'core/rewrite',
-			'gallery' => 'plugin/rewrite'
+	//		'gallery' => 'plugin/rewrite'
 		);
 
 

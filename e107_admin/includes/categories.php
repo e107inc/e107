@@ -19,7 +19,7 @@ $text = "<div style='text-align:center'>
 	
 $admin_cat = e107::getNav()->adminCats();
 
- $newarray = e107::getNav()->adminLinks('core');
+$newarray = e107::getNav()->adminLinks('core');
 $plugin_array = e107::getNav()->adminLinks('plugin');
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id)
