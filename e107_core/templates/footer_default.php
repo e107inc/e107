@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-$In_e107_Footer = TRUE; // For registered shutdown function
+$GLOBALS['E107_IN_FOOTER'] = true; // For registered shutdown function
 
 $magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
@@ -437,7 +437,7 @@ echo $page;
 
 
 
-unset($In_e107_Footer);
+$GLOBALS['E107_IN_FOOTER'] = false;
 
 
 // Clean session shutdown
