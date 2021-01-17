@@ -133,10 +133,7 @@ e107::coreLan('admin', true);
 
 if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
-    if(class_exists('theme')) // v2.3.0+
-    {
-        $tmpTemp = new theme; // load __construct() in case it contains CSS etc.
-    }
+	e107::callMethod('theme', 'init'); // v2.3.0+ new theme
 
 	$JSMODAL = <<<TEMPL
 	$(function() {
