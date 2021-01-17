@@ -1463,7 +1463,7 @@ class e107
 	}
 
 	/**
-	 * Retrieve user-session singleton object
+	 * Retrieve user-session 'UserHandler' singleton object
 	 *
 	 * @return UserHandler
 	 */
@@ -1887,7 +1887,7 @@ class e107
 	}
 
 	/**
-	 * Retrieve user model object.
+	 * Retrieve user model 'e_user' object.
 	 *
 	 * @param integer $user_id target user
 	 * @param boolean $checkIfCurrent if tru user_id will be compared to current user, if there is a match

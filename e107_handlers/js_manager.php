@@ -283,7 +283,7 @@ class e_jsmanager
 		}
 		$this->_dependence = null;
 	
-		if($vis != 'auto')
+		if($vis != 'auto') // TODO FIX ME - should it be in the loop above?
 		{
 			$this->checkLibDependence(null, $core);
 		}
@@ -1720,7 +1720,7 @@ class e_jsmanager
 	    // resolve relative paths
 	    for ($i = 0, $iMax = count($parts); $i < $iMax; $i +=1)
 	    {
-	        if ($parts[$i] === "..")   // resolve ..
+	        if (isset($parts[$i]) && ($parts[$i] === ".."))   // resolve ..
 	        {
 	            if ($i === 0)
 	            {

@@ -649,7 +649,7 @@ if(!function_exists('e_help'))
 		}
 			
 	
-		return e_menu_layout::menuSelector();
+		return e_layout::menuSelector();
 
 	}
 }
@@ -886,9 +886,319 @@ class e_layout
 
 	}
 
-	
-	
-	
+	public static function menuSelector()
+	{
+
+		//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+
+		$done = array();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
+		while($row = $sql->fetch())
+		{
+
+			if(in_array($row['menu_name'], $done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
+
+		foreach($pageMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' (' . substr($row['menu_path'], 0, -1) . ')' : " (#" . $row['menu_path'] . ")";
+			$tab1 .= "<li>" . $frm->checkbox('menuselect[]', $row['menu_id'], '', array('label' => "<span>" . $row['menu_name'] . "<small>" . $menuInf . "</small></span>")) . "</li>";
+		}
+
+		$tab1 .= '</ul></div>';
+
+		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
+		foreach($pluginMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' (' . substr($row['menu_path'], 0, -1) . ')' : " (#" . $row['menu_path'] . ")";
+			$tab2 .= "<li>" . $frm->checkbox('menuselect[]', $row['menu_id'], '', array('label' => "<span>" . $row['menu_name'] . "<small>" . $menuInf . "</small></span>")) . "</li>";
+		}
+
+		$tab2 .= '</ul></div>';
+
+		$tabs = array(
+			'custom' => array('caption' => '<i title="' . MENLAN_49 . '" class="S16 e-custom-16"></i>', 'text' => $tab1),
+			'plugin' => array('caption' => '<i title="' . ADLAN_CL_7 . '" class="S16 e-plugins-16"></i>', 'text' => $tab2)
+
+		);
+
+
+		$defLayout = e107::getRegistry('core/e107/menu-manager/curLayout');;
+
+		$text = '<form id="e-mm-selector" action="' . e_ADMIN_ABS . 'menus.php?configure=' . $defLayout . '" method="post" target="e-mm-iframe">';
+
+		$text .= "<input type='hidden' id='curLayout' value='" . $defLayout . "' />";
+
+
+		$layouts = self::getLayouts();
+		$tp = e107::getParser();
+
+		//	 var_dump($layouts['menus']);
+
+
+		$text .= '
+
+		    <div class="dropdown pull-right e-mm-selector-container">
+
+		        <a class="btn btn-default btn-secondary btn-sm e-mm-selector " title="' . LAN_ACTIVATE . '">' . LAN_GO . " " . e107::getParser()->toGlyph('fa-chevron-right') . '</a>';
+
+		$menuButtonLabel = defset("MENLAN_59", "Area [x]");
+
+		foreach($layouts['menus'] as $name => $areas)
+		{
+			$text .= '<ul class="dropdown-menu e-mm-selector ' . $name . '" >
+					<li><div>';
+
+			foreach($areas as $menu_act)
+			{
+				$text .= "<input type='submit' class='btn btn-sm btn-primary col-xs-6'  name='menuActivate[" . trim($menu_act) . "]' value=\"" . $tp->lanVars($menuButtonLabel, trim($menu_act)) . "\" />\n";
+			}
+
+			$text .= '</div></li></ul>';
+
+		}
+
+		$text .= '
+
+		    </div>';
+
+
+		$text .= $frm->tabs($tabs);
+
+
+		$text .= '</form>';
+
+		$tp = e107::getParser();
+
+		$caption = MENLAN_22;;
+
+
+		return array('caption' => $caption, 'text' => $text);
+
+
+	}
+
+	public static function getLayouts($theme = null)
+	{
+
+		if(empty($theme))
+		{
+			$theme = e107::pref('core', 'sitetheme');
+		}
+
+		$sql = e107::getDb(); // required
+		$tp = e107::getParser();
+
+		$HEADER = null;
+		$FOOTER = null;
+		$LAYOUT = null;
+		$CUSTOMHEADER = null;
+		$CUSTOMFOOTER = null;
+
+		$path = e_THEME . $theme . '/';
+		$file = $path . "theme.php";
+
+		if(!is_readable($file))
+		{
+			return false;
+		}
+
+		e107::set('css_enabled', false);
+		e107::set('js_enabled', false);
+
+		// new v2.2.2 HTML layout support.
+		if(is_dir($path . "layouts") && is_readable($path . "theme.html"))
+		{
+			$lyt = scandir($path . "layouts");
+			$LAYOUT = array();
+
+			foreach($lyt as $lays)
+			{
+				if($lays === '.' || $lays === '..')
+				{
+					continue;
+				}
+
+				$key = str_replace("_layout.html", '', $lays);
+
+				if($lm = e_theme::loadLayout($key, $theme))
+				{
+					$LAYOUT = $LAYOUT + $lm;
+				}
+
+			}
+
+		}
+		else // prior to v2.2.2
+		{
+
+			$themeFileContent = file_get_contents($file);
+
+			$srch = array('<?php', '?>');
+
+			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
+
+			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
+
+			$themeFileContent = str_replace("class " . $theme . "_theme", "class " . $theme . "__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
+
+			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
+			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
+
+			try
+			{
+				@eval($themeFileContent);
+			}
+			catch(ParseError $e)
+			{
+				echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
+			}
+		}
+
+
+		e107::set('css_enabled', true);
+		e107::set('js_enabled', true);
+
+		$head = array();
+		$foot = array();
+
+
+		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))
+		{
+			$fallbackLan = "This theme is using deprecated elements. All [x]HEADER and [x]FOOTER variables should be removed from theme.php."; // DO NOT TRANSLATE!
+			$warningLan = $tp->lanVars(deftrue('MENLAN_60', $fallbackLan), '$');
+			echo "<div class='alert alert-danger'>" . $warningLan . "</div>";
+
+		}
+
+
+		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
+		{
+			foreach($LAYOUT as $key => $template)
+			{
+				if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
+				{
+					continue;
+				}
+
+				if(strpos($template, '{---}') !== false)
+				{
+					list($hd, $ft) = explode("{---}", $template);
+					$head[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+					$foot[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft;
+				}
+				else
+				{
+					e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["' . $key . '"] ');
+				}
+			}
+			unset($hd, $ft);
+		}
+
+
+		if(is_string($CUSTOMHEADER))
+		{
+			$head['legacyCustom'] = $CUSTOMHEADER;
+		}
+		elseif(is_array($CUSTOMHEADER))
+		{
+			foreach($CUSTOMHEADER as $k => $v)
+			{
+				$head[$k] = $v;
+			}
+		}
+
+		if(is_string($HEADER))
+		{
+			$head['legacyDefault'] = $HEADER;
+		}
+		elseif(is_array($HEADER))
+		{
+			foreach($HEADER as $k => $v)
+			{
+				$head[$k] = $v;
+			}
+
+		}
+
+		if(is_string($CUSTOMFOOTER))
+		{
+			$foot['legacyCustom'] = $CUSTOMFOOTER;
+		}
+		elseif(is_array($CUSTOMFOOTER))
+		{
+			foreach($CUSTOMFOOTER as $k => $v)
+			{
+				$foot[$k] = $v;
+			}
+		}
+
+
+		if(is_string($FOOTER))
+		{
+			$foot['legacyDefault'] = $FOOTER;
+		}
+		elseif(is_array($FOOTER))
+		{
+			foreach($FOOTER as $k => $v)
+			{
+				$foot[$k] = $v;
+			}
+		}
+
+		$layout = array();
+
+
+		foreach($head as $k => $v)
+		{
+			$template = $head[$k] . "\n{---}" . $foot[$k];
+			$layout['templates'][$k] = $template;
+			$layout['menus'][$k] = self::countMenus($template, $k);
+		}
+
+
+		return $layout;
+
+
+	}
+
+	private static function countMenus($template, $name)
+	{
+
+		if(preg_match_all("/\{(?:MENU|MENUAREA)=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
+		{
+			sort($matches[1]);
+
+			return $matches[1];
+		}
+
+		e107::getDebug()->log("No Menus Found in Template:" . $name . " with strlen: " . strlen($template));
+
+		return array();
+	}
 
 
 	/**
