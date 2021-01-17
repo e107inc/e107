@@ -69,6 +69,10 @@ if (varset($e107_popup) != 1)
 	//
 	if(!deftrue('e_IFRAME'))
     {
+		if(!isset($LAYOUT['_modal_']))
+		{
+			$LAYOUT['_modal_'] = '';
+		}
 
         $psc = array(
          '</body>'          => '',
