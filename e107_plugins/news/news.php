@@ -222,13 +222,10 @@ class news_front
 
 		$unique = $this->getRenderId();
 
-		if($this->caption !== null)
+		if(defset('THEME_VERSION') === 2.3 || $this->caption !== null) // always use tablerender with 2.3 theme spec
 		{
 
-
 			$this->addDebug("tablerender ID", $unique);
-
-
 
 			e107::getRender()->setUniqueId($unique)->tablerender($this->caption, $this->text, 'news');
 
@@ -1222,7 +1219,7 @@ class news_front
 
 
 
-				if(isset($tmp['caption']) && $tmp['caption'] !== null) // to initiate tablerender() usage.
+				if(defset('THEME_VERSION') === 2.3 || (isset($tmp['caption']) && $tmp['caption'] !== null)) // to initiate tablerender() usage.
 				{
 					$this->addDebug('Internal Route', $this->route);
 					$this->route = 'news/view'; // used for tablerender id.
