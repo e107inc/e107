@@ -815,12 +815,25 @@ if (!class_exists('e107table', false))
 		private $thm;
 
 		
-		public function init()
+		public function _init()
 		{
 			$this->legacyThemeClass  = e107::getPref('sitetheme'). '_theme'; // disabled at the moment.
 			$this->adminThemeClass 	= e107::getPref('admintheme'). '_admintheme';	// Check for a class.
 
             $this->load();
+		}
+
+		// Called in header.
+		public function init()
+		{
+			if(empty($this->thm) || !method_exists($this->thm, 'init'))
+            {
+                return null;
+            }
+
+			ob_start(); // don't allow init() to echo.
+            $this->thm->init();
+            ob_end_clean();
 		}
 
         /**
@@ -853,7 +866,7 @@ if (!class_exists('e107table', false))
 				if(ADMIN && !$this->thm instanceof e_theme_render)
 				{
 				    // debug - no need to translate.
-                    echo "<div class='alert alert-danger'>class <b>".$this->themeClass."</b> is missing 'implements e_theme_render'</div>";
+                    echo "<div class='alert alert-danger'>class <b>".$this->themeClass."</b> is missing 'implements e_theme_render'. Make sure there is an init() method also!</div>";
                 }
             }
 			elseif(class_exists($this->legacyThemeClass)) // legacy v2.x
@@ -1406,7 +1419,7 @@ if(!isset($_E107['no_theme']))
 		}
 	}
 	$dbg->logTime("Init Theme Class");
-	e107::getRender()->init(); // initialize theme class.
+	e107::getRender()->_init(); // initialize theme class.
 
 	if ($pref['anon_post'])
 	{
