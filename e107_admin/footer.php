@@ -17,7 +17,9 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-$In_e107_Footer = TRUE; // For registered shutdown function
+
+$GLOBALS['E107_IN_FOOTER'] = true;  // For registered shutdown function
+
 
 global $error_handler,$db_time,$ADMIN_FOOTER;
 
@@ -414,7 +416,7 @@ $page = $ehd->getOutput();
 // real output
 echo $page;
 
-unset($In_e107_Footer);
+$GLOBALS['E107_IN_FOOTER'] = false;
 
 
 // Clean session shutdown

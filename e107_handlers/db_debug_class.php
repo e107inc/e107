@@ -1145,19 +1145,18 @@
 		}
 
 
-		global $error_handler,  $In_e107_Footer, $ADMIN_DIRECTORY;
-
-	//	$ADMIN_DIRECTORY = e107::getFolder('admin');
-
-
+		global $error_handler;
+		
 
 		if(!empty($GLOBALS['E107_CLEAN_EXIT']))
 		{
 			return;
 		}
 
-		if(!isset($In_e107_Footer))
+		if(empty($GLOBALS['E107_IN_FOOTER']))
 		{
+			$ADMIN_DIRECTORY = e107::getFolder('admin');
+
 			if(deftrue('ADMIN_AREA'))
 			{
 				$filewanted = realpath(__DIR__) . '/../' . $ADMIN_DIRECTORY . 'footer.php';
@@ -1176,8 +1175,6 @@
 		{
 			return;
 		}
-
-//	echo isset($In_e107_Footer) ? "In footer" : "In startup".'<br />';
 
 		while(ob_get_level() > 0)
 		{
