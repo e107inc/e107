@@ -3394,6 +3394,8 @@ interface e_theme_config
  */
 interface e_theme_render
 {
+	public function init();
+
 	public function tablestyle($caption, $text, $mode='', $data=array());
 
 }

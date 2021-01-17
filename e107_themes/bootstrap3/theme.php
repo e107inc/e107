@@ -17,11 +17,10 @@ if(!defined('e107_INIT'))
 }
 
 
-
 class theme implements e_theme_render
 {
 
-    function __construct()
+    public function init()
     {
 
         e107::meta('viewport',"width=device-width, initial-scale=1.0");
@@ -40,6 +39,8 @@ class theme implements e_theme_render
     }
 
 
+
+
     /**
      * @param string $caption
      * @param string $text
@@ -49,6 +50,7 @@ class theme implements e_theme_render
      */
     public function tablestyle($caption, $text, $id=null, $info=array())
 	{
+
 
 
 		$style = is_string($info['setStyle']) ? $info['setStyle'] : ''; //	global $style; // no longer needed.

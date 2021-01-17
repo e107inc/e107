@@ -16,13 +16,13 @@ if(!defined('USER_AREA'))
 	//overload is now possible, prevent warnings
 	define('USER_AREA',TRUE);
 }
-define('ADMIN_AREA',FALSE);
+define('ADMIN_AREA', FALSE);
 
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 
 e107::getDebug()->logTime('(Header Top)');
-
+e107::getRender()->init();
 
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
