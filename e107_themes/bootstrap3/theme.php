@@ -16,6 +16,7 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+// e107::lan('theme');
 
 class theme implements e_theme_render
 {

@@ -12,12 +12,11 @@
 	class e_menu_layoutTest extends \Codeception\Test\Unit
 	{
 
-		/** @var e_menu_layout */
 		protected $menu;
 
 		protected function _before()
 		{
-			require_once(e_HANDLER."menumanager_class.php");
+		//	require_once(e_HANDLER."menumanager_class.php");
 		}
 
 		private function copydir( $src, $dst )

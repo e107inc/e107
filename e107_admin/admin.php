@@ -787,7 +787,7 @@ function render_clean() // still used by classis, tabbed etc.
 {
 	global $td;
 	$text = "";
-	while ($td <= ADLINK_COLS)
+	while ($td <= defset('ADLINK_COLS', 5))
 	{
 		$text .= "<td class='td' style='width:20%;'></td>";
 		$td++;
@@ -799,7 +799,7 @@ function render_clean() // still used by classis, tabbed etc.
 
 
 
-if(is_object($adp))
+if(isset($adp) && is_object($adp))
 {
 	$adp->render();
 }

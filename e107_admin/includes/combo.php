@@ -24,6 +24,7 @@ foreach($newarray as $key=>$funcinfo)
 	$buts .= e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
 $text .= $buts;
+$td = 0;
 while ($td <= 5) {
 	$text .= "<td class='td' style='width:20%;' ></td>";
 	$td++;

@@ -566,8 +566,11 @@ class admin_shortcodes
 
 	function sc_admin_log($parm=null)
 	{
+		e107::coreLan('log_messages', true);
+
 		if (getperms('0'))
 		{
+
 			if (!function_exists('admin_log'))
 			{
 				function admin_log()
@@ -575,7 +578,7 @@ class admin_shortcodes
 
 					$sql = e107::getDb();
 					$ns = e107::getRender();
-					$text = E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
+					$text = "<ul class='list-group'><li class='list-group-item'>".E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
 					if (e_QUERY == 'logall')
 					{
 						$text .= "<div id='adminlog'>";
@@ -586,16 +589,16 @@ class admin_shortcodes
 						$text .= "<div style='display: none;' id='adminlog'>";
 						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
 					}
-					$text .= ($cnt) ? '<ul>' : '';
-					$gen = e107::getDateConvert();
+					$text .= ($cnt) ? '<ul class="list-group">' : '';
+					$gen = e107::getDate();
 					while ($row = $sql ->fetch())
 					{
 						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
-						$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
+						$text .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] )."</li>";
 					}
 					$text .= ($cnt ? '</ul>' : '');
-					$text .= "[ <a href='".e_ADMIN_ABS."admin_log.php?adminlog'>".ADLAN_117."</a> ]";
-					$text .= "<br />[ <a href='".e_ADMIN_ABS."admin_log.php?config'>".ADLAN_118."</a> ]";
+					$text .= "<p><a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php'>".ADLAN_117."</a> ";
+					$text .= "<a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php?mode=main&action=maintenance'>".ADLAN_118."</a></p>";
 
 					//			$text .= "<br />[ <a href='".e_ADMIN."admin_log.php?purge' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\">".ADLAN_118."</a> ]\n";
 

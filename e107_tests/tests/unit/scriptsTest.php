@@ -7,21 +7,45 @@
 
 		protected function _before()
 		{
-			define("SEP", " <span class='fa fa-angle-double-right e-breadcrumb'></span> ");
+			if(!defined('SEP'))
+			{
+				define("SEP", " <span class='fa fa-angle-double-right e-breadcrumb'></span> ");
+			}
+		}
+
+		public function testAdminScripts()
+		{
+			$exclude = array('index.php', 'menus.php'); // FIXME menus defines e_ADMIN_AREA which messes up other tests.
+			$this->loadScripts(e_ADMIN, $exclude);
+
+		}
+
+		public function testAdminIncludes()
+		{
+			ob_start();
+			require_once(e_ADMIN."admin.php");
+			ob_end_clean();
+			$this->loadScripts(e_ADMIN."includes/");
+
+		}
+
+		public function testAdminLayouts()
+		{
+			$this->loadScripts(e_ADMIN.'includes/layouts/');
 		}
 
 
-		public function testAdminScripts()
+		private function loadScripts($folder, $exclude= array())
 		{
 		//	$globalList = e107::getPref('lan_global_list');
 
 
-			$list = scandir(e_ADMIN);
+			$list = scandir($folder);
 
 			$config = e107::getConfig();
 
 			$preInstall = array('banner', 'page');
-			$exclude = array('index.php', 'menus.php'); // FIXME menus defines e_ADMIN_AREA which messes up other tests.
+
 
 			foreach($preInstall as $plug)
 			{
@@ -41,7 +65,7 @@
 
 			foreach($list as $file)
 			{
-				$ext = pathinfo(e_ADMIN.$file, PATHINFO_EXTENSION);
+				$ext = pathinfo($folder.$file, PATHINFO_EXTENSION);
 
 				if($ext !== 'php' || in_array($file, $exclude))
 				{
@@ -53,7 +77,7 @@
 				// test for PHP Notice/Warning etc.
 				$error = false;
 
-				if(require_once(e_ADMIN.$file))
+				if(require_once($folder.$file))
 				{
 					$this->assertTrue(true, "loading ".$file);
 				}
