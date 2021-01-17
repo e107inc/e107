@@ -82,7 +82,14 @@ $no_core_css = TRUE;
 class bootstrap3_admintheme implements e_theme_render
 {
 
-	function tablestyle($caption, $text, $mode='', $data=array())
+	public function init()
+	{
+
+
+	}
+
+
+	public function tablestyle($caption, $text, $mode='', $data=array())
 	{
 		// global $style;
 
