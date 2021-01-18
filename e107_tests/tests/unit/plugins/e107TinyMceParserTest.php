@@ -73,6 +73,9 @@ Plain text paragraph 3<br />';
 
 		}
 
+		/**
+		 * Test parsing of input from user via TinyMce.
+		 */
 		public function testToBBcode()
 		{
 
@@ -117,7 +120,32 @@ Plain text paragraph 3<br />';
 
 
 
+		}
 
+
+
+		function testParsingOfScriptTags()
+		{
+
+			// test parsing of scripts.
+
+			$string = '<p><script type="text/javascript" src="https://cdn.myscript.net/js/1.js" async></script></p>';
+			$result = $this->tm->toBBcode($string);
+			$this->assertSame('[html]'.$string.'[/html]', $result);
+
+
+			$result = $this->tm->toHTML($string);
+			$this->assertSame($string, $result);
 
 		}
+
+
+
+
+
+
+
+
+
+
 	}

@@ -18,6 +18,7 @@ $_E107['no_online'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_maintenance'] = true;
+$_E107['minimal'] = true;
 
 if (!defined('e_ADMIN_AREA')) define('e_ADMIN_AREA', true);
 if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
