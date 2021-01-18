@@ -363,7 +363,9 @@ define("LAN_HEIGHT","Height");
 
 define("LAN_ON","On");
 define("LAN_OFF", "Off");
+define("LAN_DISABLE", "Disable");
 define("LAN_DISABLED","Disabled");
+define("LAN_ENABLE", "Enable");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
 
