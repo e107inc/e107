@@ -128,12 +128,54 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		{
 
 		}
-
+*/
 		public function testThumbUrlDecode()
 		{
+			$tests = array(
+				0   => array(
+					'input' => '/media/img/a400xa500/myimage.jpg',
+					'expected' => array (
+					  'src' => 'e_MEDIA_IMAGE/myimage.jpg',
+					  'aw' => '400',
+					  'ah' => '500',
+					)
+				),
+				1   => array(
+					'input' => '/media/img/400x500/myimage2.jpg',
+					'expected' => array (
+					  'src' => 'e_MEDIA_IMAGE/myimage2.jpg',
+					  'w' => '400',
+					  'h' => '500',
+					)
+				),
+				2   => array(
+					'input' => '/theme/img/a400xa500/mytheme/myimage.jpg',
+					'expected' => array (
+					  'src' => 'e_THEME/mytheme/myimage.jpg',
+					  'aw' => '400',
+					  'ah' => '500',
+					)
+				),
+				3   => array(
+					'input' => '/theme/img/400x500/mytheme/myimage2.jpg',
+					'expected' => array (
+					  'src' => 'e_THEME/mytheme/myimage2.jpg',
+					  'w' => '400',
+					  'h' => '500',
+					)
+				),
+
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->thumbUrlDecode($var['input']);
+				$this->assertSame($var['expected'], $result);
+			}
+
 
 		}
-*/
+
 
 		function testToHTMLModifiers()
 		{
@@ -981,6 +1023,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			}
 
 
+			// Test with $tags = false;
+			$html = '<div class="something">One & Two < and > " or \'</div>';
+			$result = $this->tp->toRss($html);
+			$this->assertSame("One &amp; Two &lt; and &gt; \" or '", $result);
+			$valid = $this->isValidXML('<tag>'.$result.'</tag>');
+			$this->assertTrue($valid);
 
 
 		}
@@ -1004,6 +1052,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 	        if(!empty($errors))
 	        {
+	            var_dump($errors);
 	            codecept_debug($errors);
 	        }
 
@@ -2325,6 +2374,8 @@ Your browser does not support the audio tag.
 		{
 			$url = 'http://www.domain.com/folder/folder2//1234_1_0.jpg';
 
+			// Filter tests.
+
 			$tests = array(
 				0   => array('input' => 'test123 xxx',      'mode' => 'w',        'expected' => 'test123xxx'),
 				1   => array('input' => 'test123 xxx',      'mode' => 'd',        'expected' => '123'),
@@ -2334,16 +2385,48 @@ Your browser does not support the audio tag.
 				5   => array('input' => '2.1.4 (test)',     'mode' => 'version',  'expected' => '2.1.4'),
 				6   => array('input' => $url,               'mode'=>'url',        'expected' => $url),
 				7   => array('input' => array('1', 'xxx'),  'mode'=>'str',        'expected' => array('1', 'xxx')),
+				8   => array('input' => 'myemail@email.com',  'mode'=>'email',    'expected' => 'myemail@email.com'),
 			);
 
-			foreach($tests as $var)
+			foreach($tests as $index=>$var)
 			{
 				$result = $this->tp->filter($var['input'],$var['mode']);
-				$this->assertEquals($var['expected'],$result);
+				$this->assertEquals($var['expected'],$result, "Failed on index: ".$index);
 			}
 
+			// Validate.
+
+			$tests2 = array(
+				0   => array('input' => 'http://www.domain.com/folder/file.zip', 'mode'=>'url'), // good url
+				1   => array('input' => 'http:/www.domain.com/folder/file.zip', 'mode'=>'url'), // bad url
+				2   => array('input' => array('1', 'xxx'),  'mode'=>'int'), // good and bad integer
+				3   => array('input' => 'myemail@email.com',  'mode'=>'email'), // good email
+				4   => array('input' => 'bad-email.com',  'mode'=>'email'), // bad email
+				5   => array('input' => '123.23.123.125',  'mode'=>'ip'), // good ip
+				6   => array('input' => 'xx.23.123.125',  'mode'=>'ip'), // bad ip
+			);
+
+			$expected2 = array (
+			  0       => 'http://www.domain.com/folder/file.zip',
+			  1       => false,
+			  2       =>  array ( 1, false),
+			  3       => 'myemail@email.com',
+			  4       => false,
+			  5       => '123.23.123.125',
+			  6       => false,
+			);
+
+		//	$ret = [];
+			foreach($tests2 as $index=>$var)
+			{
+				$result = $this->tp->filter($var['input'],$var['mode'], true);
+			//	$ret[$index] = $result;
+				$this->assertSame($expected2[$index], $result);
+			}
 
 		}
+
+
 
 		public function testCleanHtml()
 		{
