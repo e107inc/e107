@@ -316,7 +316,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'link_parent'      => '0',
 			'link_open'        => '0',
 			'link_class'       => '0',
-			'link_function'    => 'news::last_ten',
+			'link_function'    => 'page::bookNav',
 			'link_sefurl'      => 'index',
 			'link_owner'       => 'news'
 		);
@@ -324,6 +324,45 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$sc->setVars($vars);
 		
         $this->processShortcodeMethods($sc);
+
+
+        // Test sub links with deep level array.
+        $template =  e107::getCoreTemplate('navigation', 'main');
+		$sc->template =  $template;
+
+        $outArray 	= array();
+		$data 		= array($vars);
+
+		$ret = e107::getNav()->compile($data, $outArray);
+
+		$sc->setVars($ret[0]);
+		$actual = e107::getParser()->parseTemplate('{LINK_SUB}', true, $sc);
+		$this->assertStringContainsString('<a href="https://localhost/e107/page.php?bk=1">General</a>', $actual);
+		$this->assertStringContainsString('<li role="menuitem" class="dropdown-submenu lower">', $actual);
+		$this->assertStringContainsString('<li role="menuitem" class="link-depth-3">', $actual);
+
+		// test sublink with HTML.
+
+		$vars['link_function'] = 'theme::sc_bootstrap_megamenu_example';
+
+	    $outArray 	= array();
+		$data 		= array($vars);
+
+		$ret = e107::getNav()->compile($data, $outArray);
+
+		// HTML in {LINK_SUB}
+		$sc->setVars($ret[0]);
+		$actual = e107::getParser()->parseTemplate('{LINK_SUB}', false, $sc);
+		$this->assertStringContainsString('<div class="dropdown-menu">', $actual);
+
+		// HTML in {NAV_LINK_SUB}
+		$actual = e107::getParser()->parseTemplate('{NAV_LINK_SUB}', false, $sc);
+		$this->assertStringContainsString('<div class="dropdown-menu">', $actual);
+
+		// test HTML with core template using e107::getNav()->render();
+		$result = e107::getNav()->render($ret, $template);
+		$this->assertStringContainsString('<li class="nav-item dropdown theme-sc-bootstrap-megamenu-example">', $result);
+		$this->assertStringContainsString('<div class="dropdown-menu"><div class="container mega-menu-example">', $result);
 
     }
 
