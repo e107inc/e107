@@ -1071,7 +1071,32 @@ class e_parse
 		return $drain;
 	}
 
+
 	/**
+	 * Universal text/bbcode/html truncate method. 
+	 * new in v2.3.1
+	 * @param $text
+	 * @param int $length
+	 * @param string $ending
+	 */
+	public function truncate($text, $length = 100, $ending = '...')
+	{
+		if($this->isHtml($text))
+		{
+			return $this->html_truncate($text, $length, $ending); 
+		}
+		
+		if($this->isBBcode($text))
+		{
+			$text = $this->toText($text);
+		}
+		
+		return $this->text_truncate($text, $length, $ending);
+	
+	}
+
+	/**
+	 * @deprecated Soon to be made private. Use $tp->truncate() instead. 
 	 * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
 	 * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
 	 *
@@ -1177,24 +1202,33 @@ class e_parse
 	}
 
 
+
+
+
+
 	/**
-	 * Truncate a string of text to a maximum length $len ­ append the string $more if it was truncated
-	 * Uses current CHARSET ­ for utf-8, returns $len characters rather than $len bytes
+	 * @deprecated for public use. Will be made private. Use $tp->truncate() instead.
+	 * Truncate a string of text to a maximum length $len append the string $more if it was truncated
+	 * Uses current CHARSET  for utf-8, returns $len characters rather than $len bytes
 	 *
-	 * @param string $text ­ string to process
-	 * @param integer $len ­ length of characters to be truncated
-	 * @param string $more ­ string which will be added if truncation
-	 * @return string
+	 * @param string $text  string to process
+	 * @param integer $len  length of characters to be truncated
+	 * @param string $more  string which will be added if truncation
+	 * @return string Always returns text. 
 	 */
 	public function text_truncate($text, $len = 200, $more = ' ... ')
 	{
-
-		// Always valid
-
+		
 		if($this->ustrlen($text) <= $len)
 		{
 			return $text;
 		}
+
+		if($this->isBBcode($text) || $this->isHtml($text))
+		{
+			$text = $this->toText($text);
+		}
+
 
 		$text = html_entity_decode($text, ENT_QUOTES, 'utf-8');
 

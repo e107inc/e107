@@ -247,6 +247,76 @@
 			$this->pluginUninstall('tagcloud');
 		}
 
+/*
+		public function testThirdParty()
+		{
+
+
+
+
+			$coreList = e107::getPlug()->getCorePluginList();
+			$all = scandir(e_PLUGIN);
+			unset($all[0], $all[1]);
+
+			$diff = array_diff($all, $coreList);
+
+			foreach($diff as $plug)
+			{
+				if(!is_dir(e_PLUGIN.$plug) || !is_dir(e_PLUGIN.$plug.'/tests'))
+				{
+					continue;
+				}
+
+				$tests = scandir(e_PLUGIN.$plug.'/tests');
+				unset($tests[0], $tests[1]);
+
+				foreach($tests as $t)
+				{
+					require_once(e_PLUGIN.$plug.'/tests/'.$t);
+					$Codecept = new \Codeception\Codecept(array(
+					    'steps' => true,
+					    'verbosity' => 1,
+					    // some other options (see Codeception docs/sources)
+					 ));
+
+				//	 var_export($Codecept);
+
+					 $Codecept->run('unit');
+		//			require_once '/path/to/codeception/autoload.php';
+
+
+
+				}
+
+
+
+			}
+
+
+			//array_intersect(
+
+
+
+		}*/
+
+		public function  testVstore()
+		{
+			if(!is_dir(e_PLUGIN."vstore"))
+			{
+				return ;
+			}
+
+			$this->pluginInstall('vstore');
+			$this->pluginRefresh('vstore');
+
+			$links = e107::getDb()->retrieve('links', '*', 'link_owner = "vstore"', true);
+			$this->assertNotEmpty($links);
+			$this->assertCount(2, $links);
+
+			$this->pluginUninstall('vstore');
+
+		}
+
 		public function testplugInstalledStatus()
 		{
 			$sql = e107::getDb();
@@ -384,7 +454,10 @@
 
 		}
 
-
+		private function pluginRefresh($pluginDir)
+		{
+			$return_text = e107::getPlugin()->refresh($pluginDir);
+		}
 
 
 		private function pluginInstall($pluginDir)
@@ -1288,3 +1361,5 @@ DATA
 			);
 		}
 	}
+
+

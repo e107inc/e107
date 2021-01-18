@@ -2079,6 +2079,13 @@ $dbg->logTime('(After Go online)');
  */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
 {
+	global $_E107;
+
+	if(!empty($_E107['cli']))
+	{
+		return null;
+	}
+
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
 	{
 		$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : "";

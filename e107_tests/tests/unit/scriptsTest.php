@@ -61,7 +61,7 @@
 
 			global $_E107;
 			$_E107['cli'] = true;
-			$_E107['no_theme'] = true; //FIXME unable to change to admin theme in testing environment.
+		//	$_E107['no_theme'] = true; //FIXME unable to change to admin theme in testing environment.
 
 			foreach($list as $file)
 			{

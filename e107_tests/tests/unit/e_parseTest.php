@@ -1162,14 +1162,39 @@ while(&#036;row = &#036;sql-&gt;fetch())
 		public function testText_truncate()
 		{
 			$string = "This is a long string that will be truncated." ;
-			$expected = 'This is a long  ... ';
 			$result = $this->tp->text_truncate($string, 20);
-			$this->assertSame($expected, $result);
+			$this->assertSame('This is a long  ... ', $result);
 
 			$string = "This is has something &amp; something" ;
-			$expected = 'This is has something &  ... ';
 			$result = $this->tp->text_truncate($string, 29);
-			$this->assertSame($expected, $result);
+			$this->assertSame('This is has something &  ... ', $result);
+
+			$string = "Can't fail me now [b]Bold[/b]";
+			$result = $this->tp->text_truncate($string, 25);
+			$this->assertSame("Can't fail me now Bold", $result);
+
+			$string = "Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>";
+			$result = $this->tp->text_truncate($string, 25);
+			$this->assertSame("Can't fail me now Bold", $result);
+
+		}
+
+		public function testTruncate()
+		{
+			// html
+			$string = "Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>";
+			$result = $this->tp->truncate($string, 25);
+			$this->assertSame("Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>", $result); // html ignored in char count.
+
+			// bbcode - stripped.
+			$string = "Can't fail me now [b]Bold[/b]";
+			$result = $this->tp->truncate($string, 25);
+			$this->assertSame("Can't fail me now Bold", $result);
+
+			// text
+			$string = "This is a long string that will be truncated." ;
+			$result = $this->tp->truncate($string, 20);
+			$this->assertSame('This is a long st...', $result);
 
 		}
 /*
