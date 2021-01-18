@@ -337,7 +337,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$sc->setVars($ret[0]);
 		$actual = e107::getParser()->parseTemplate('{LINK_SUB}', true, $sc);
-		$this->assertStringContainsString('<a href="https://localhost/e107/page.php?bk=1">General</a>', $actual);
+		$this->assertStringContainsString('General</a>', $actual);
 		$this->assertStringContainsString('<li role="menuitem" class="dropdown-submenu lower">', $actual);
 		$this->assertStringContainsString('<li role="menuitem" class="link-depth-3">', $actual);
 

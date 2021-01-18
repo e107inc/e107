@@ -213,7 +213,7 @@
 		 */
 		public function testUserExtendedShortcode()
 		{
-			e107::setRegistry('corelan/English_user_extended_front');
+		//	e107::setRegistry('corelan/English_user_extended_front');
 
 			foreach($this->userValues as $field => $value)
 			{
@@ -350,6 +350,8 @@
 			$expected = "<label>Text<span class='required'><!-- empty --></span></label><label>Dropdown<span class='required'><!-- empty --></span></label><label>Dbfield<span class='required'><!-- empty --></span></label><label>Integer<span class='required'><!-- empty --></span></label><label>Date<span class='required'><!-- empty --></span></label><label>Language<span class='required'><!-- empty --></span></label><label>Checkbox<span class='required'><!-- empty --></span></label><label>Predefined<span class='required'><!-- empty --></span></label><label>Addon<span class='required'><!-- empty --></span></label><label>Richtextarea<span class='required'><!-- empty --></span></label>-- Category Name --<label>Radio<span class='required'><!-- empty --></span></label><label>List<span class='required'><!-- empty --></span></label>-- Category Name 2 --<label>Country<span class='required'><!-- empty --></span></label>";
 
 			$sc->template = $template;
+
+			$this->assertNotEmpty($sc->template);
 
 			$result = e107::getParser()->parseTemplate('{SIGNUP_EXTENDED_USER_FIELDS}', false, $sc);
 			$this->assertSame($expected, $result);
