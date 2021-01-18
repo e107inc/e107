@@ -15,6 +15,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		public $active;
 		public $depth = 0;
 		public $navClass;
+		private $activeSubFound = false;
 
 		/**
 		 * As set by {NAVIGATION: class=xxxx}
@@ -286,17 +287,17 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 			if(is_string($this->var['link_sub'])) // html override option.
 			{
-
 				//	e107::getDebug()->log($this->var);
 
 				return $this->var['link_sub'];
 			}
 
 			$this->depth++;
+
 			// Assume it's an array.
 
-			$startTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerstart'] : $this->template['submenu_start'];
-			$endTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] : $this->template['submenu_end'];
+			$startTemplate = is_array($this->var['link_sub']) && !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerstart'] : $this->template['submenu_start'];
+			$endTemplate = is_array($this->var['link_sub']) && !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] : $this->template['submenu_end'];
 
 
 
