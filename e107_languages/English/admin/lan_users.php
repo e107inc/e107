@@ -126,7 +126,7 @@ define("USRLAN_128", "Username (login name)");
 define("USRLAN_129", "Real Name");
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
-define("USRLAN_132", "Enable");
+//define("USRLAN_132", "Enable");
 
 define("USRLAN_133", "Force user to update settings");
 define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
