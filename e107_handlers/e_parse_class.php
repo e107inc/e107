@@ -34,12 +34,6 @@ class e_parse
 
 	private $pref; // core prefs used in toHTML.
 
-	// Profanity filter
-	private $e_pf;
-
-	// Emote filter
-	private $e_emote;
-
 	// 'Hooked' parsers (array)
 	private $e_hook = array();
 
@@ -71,8 +65,6 @@ class e_parse
 
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
-
-	private $bbList = array();
 
 
 	// Set up the defaults
@@ -1549,7 +1541,7 @@ class e_parse
 						case 'scode':
 						case 'code' :
 							$parseBB = false;
-							$full_text = $this->parseBBcodes('['.$last_bbcode.']'.$code_text.'[/'.$last_bbcode.']', $postID);
+							$full_text = $this->parseBBCodes('['.$last_bbcode.']'.$code_text.'[/'.$last_bbcode.']', $postID);
 						break;
 					}
 
@@ -1822,135 +1814,15 @@ class e_parse
 	 */
 	public function toJSON($var, $force_object = false)
 	{
-
-		// The PHP version cannot change within a request.
-		static $php530;
-
-		if(!isset($php530))
+		if($force_object === true)
 		{
-			$php530 = version_compare(PHP_VERSION, '5.3.0', '>=');
-		}
-
-		if($php530)
-		{
-			if($force_object === true)
-			{
-				// Encode <, >, ', &, and " using the json_encode() options parameter.
-				return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT);
-			}
-
 			// Encode <, >, ', &, and " using the json_encode() options parameter.
-			return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+			return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT);
 		}
 
-		return $this->toJSONhelper($var);
-	}
+		// Encode <, >, ', &, and " using the json_encode() options parameter.
+		return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
-
-	/**
-	 * Encodes a PHP variable to HTML-safe JSON for PHP versions below 5.3.0.
-	 *
-	 * @param mixed $var
-	 * @return string
-	 */
-	public function toJSONhelper($var)
-	{
-
-		switch(gettype($var))
-		{
-			case 'boolean':
-				return $var ? 'true' : 'false'; // Lowercase necessary!
-
-			case 'integer':
-			case 'double':
-				return $var;
-
-			case 'resource':
-			case 'string':
-				// Always use Unicode escape sequences (\u0022) over JSON escape
-				// sequences (\") to prevent browsers interpreting these as
-				// special characters.
-				$replace_pairs = array(
-					// ", \ and U+0000 - U+001F must be escaped according to RFC 4627.
-					'\\'           => '\u005C',
-					'"'            => '\u0022',
-					"\x00"         => '\u0000',
-					"\x01"         => '\u0001',
-					"\x02"         => '\u0002',
-					"\x03"         => '\u0003',
-					"\x04"         => '\u0004',
-					"\x05"         => '\u0005',
-					"\x06"         => '\u0006',
-					"\x07"         => '\u0007',
-					"\x08"         => '\u0008',
-					"\x09"         => '\u0009',
-					"\x0a"         => '\u000A',
-					"\x0b"         => '\u000B',
-					"\x0c"         => '\u000C',
-					"\x0d"         => '\u000D',
-					"\x0e"         => '\u000E',
-					"\x0f"         => '\u000F',
-					"\x10"         => '\u0010',
-					"\x11"         => '\u0011',
-					"\x12"         => '\u0012',
-					"\x13"         => '\u0013',
-					"\x14"         => '\u0014',
-					"\x15"         => '\u0015',
-					"\x16"         => '\u0016',
-					"\x17"         => '\u0017',
-					"\x18"         => '\u0018',
-					"\x19"         => '\u0019',
-					"\x1a"         => '\u001A',
-					"\x1b"         => '\u001B',
-					"\x1c"         => '\u001C',
-					"\x1d"         => '\u001D',
-					"\x1e"         => '\u001E',
-					"\x1f"         => '\u001F',
-					// Prevent browsers from interpreting these as as special.
-					"'"            => '\u0027',
-					'<'            => '\u003C',
-					'>'            => '\u003E',
-					'&'            => '\u0026',
-					// Prevent browsers from interpreting the solidus as special and
-					// non-compliant JSON parsers from interpreting // as a comment.
-					'/'            => '\u002F',
-					// While these are allowed unescaped according to ECMA-262, section
-					// 15.12.2, they cause problems in some JSON parsers.
-					"\xe2\x80\xa8" => '\u2028', // U+2028, Line Separator.
-					"\xe2\x80\xa9" => '\u2029', // U+2029, Paragraph Separator.
-				);
-
-				return '"' . strtr($var, $replace_pairs) . '"';
-
-			case 'array':
-				// Arrays in JSON can't be associative. If the array is empty or if it
-				// has sequential whole number keys starting with 0, it's not associative
-				// so we can go ahead and convert it as an array.
-				if(empty($var) || array_keys($var) === range(0, count($var) - 1))
-				{
-					$output = array();
-					foreach($var as $v)
-					{
-						$output[] = $this->toJSONhelper($v);
-					}
-
-					return '[ ' . implode(', ', $output) . ' ]';
-				}
-				break;
-
-			// Otherwise, fall through to convert the array as an object.
-			case 'object':
-				$output = array();
-				foreach($var as $k => $v)
-				{
-					$output[] = $this->toJSONhelper((string) $k) . ':' . $this->toJSONhelper($v);
-				}
-
-				return '{' . implode(', ', $output) . '}';
-
-			default:
-				return 'null';
-		}
 	}
 
 
@@ -1968,6 +1840,7 @@ class e_parse
 		{
 			$text = $this->toHTML($text, true);
 			$text = strip_tags($text);
+
 		}
 
 		$text = $this->toEmail($text);
@@ -1981,9 +1854,13 @@ class e_parse
 		// if CDATA happens to be quoted in the text.
 		$text = str_replace(['<![CDATA', ']]>'], ['&lt;![CDATA', ']]&gt;'], $text);
 
-		if($tags == true && ($text))
+		if($tags === true)
 		{
-			$text = '<![CDATA[' . $text . ']]>';
+			$text = !empty($text) ? '<![CDATA[' . $text . ']]>' : '';
+		}
+		else
+		{
+			$text = str_replace(['<','>'],['&lt;','&gt;'], $text);
 		}
 
 		return $text;
@@ -4769,35 +4646,50 @@ class e_parse
 			return $text;
 		}
 
+		$regex = array(
+			'w'       => '/[^\w]/',
+			'd'       => '/[^\d]/',
+			'wd'      => '/[^\w]/',
+			'wds'     => '/[^\w ]/',
+			'file'    => '/[^\w_\.-]/',
+			'version' => '/[^\d_\.]/',
+		);
+
 		switch($type)
 		{
 			case 'w':
-				$ret = preg_replace('/[^\w]/', '', $text);
-				break;
-
 			case 'd':
-				$ret = preg_replace('/[^\d]/', '', $text);
-				break;
-
 			case 'wd':
-				$ret = preg_replace('/[^\w]/', '', $text);
-				break;
-
 			case 'wds':
-				$ret = preg_replace('/[^\w ]/', '', $text);
+			case 'version':
+
+				if($validate === true)
+				{
+					trigger_error("Unsupported type '".$type."' for validation used in e107::getParser()->filter().", E_USER_WARNING);
+				}
+				else
+				{
+					$reg = $regex[$type];
+					$ret = preg_replace($reg, '', $text);
+				}
 				break;
 
 			case 'file':
-				$ret = preg_replace('/[^\w_\.-]/', '-', $text);
-				break;
 
-			case 'version':
-				$ret = preg_replace('/[^\d_\.]/', '', $text);
+				if($validate === true)
+				{
+					trigger_error("Unsupported type '".$type."' used in e107::getParser()->filter().", E_USER_WARNING);
+				}
+				else
+				{
+					$reg = $regex['file'];
+					$ret = preg_replace('/[^\w_\.-]/', '-', $text);
+				}
 				break;
 
 			default:
 
-				if($validate == false)
+				if($validate === false)
 				{
 					$filterTypes = array(
 						'int'   => FILTER_SANITIZE_NUMBER_INT,
@@ -4816,6 +4708,11 @@ class e_parse
 						'url'   => FILTER_VALIDATE_URL,
 
 					);
+				}
+
+				if(!isset($filterTypes[$type]))
+				{
+					trigger_error("Unsupported type '".$type."' used in e107::getParser()->filter().", E_USER_WARNING);
 				}
 
 				if(is_array($text))
