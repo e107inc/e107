@@ -1090,9 +1090,9 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 	}
 
 
-	if (class_exists('e107table'))
+	if (class_exists('e_render'))
 	{
-	  $ns = new e107table;
+	  $ns = new e_render;
 	}
 
 	switch($mode)
