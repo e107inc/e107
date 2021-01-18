@@ -210,8 +210,9 @@ class e107
 		'e_parser'                       => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'              => '{e_HANDLER}shortcode_handler.php',
 		'e_plugin'                       => '{e_HANDLER}plugin_class.php',
-		'e_profanity'                       => '{e_HANDLER}e_profanity_class.php',
+		'e_profanity'                    => '{e_HANDLER}e_profanity_class.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
+		'e_render'                       => '{e_HANDLER}e_render_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
 		'e_theme'                        => '{e_HANDLER}theme_handler.php',
@@ -1525,11 +1526,11 @@ class e107
 	/**
 	 * Retrieve render singleton object
 	 *
-	 * @return e107table
+	 * @return e_render
 	 */
 	public static function getRender()
 	{
-		return self::getSingleton('e107table');
+		return self::getSingleton('e_render');
 	}
 
 	/**

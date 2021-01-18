@@ -185,7 +185,7 @@ class comment
 		if ($this->getCommentPermissions() == 'rw')
 		{
 			$itemid = $id;
-			$ns = new e107table;
+
 			if ($action == "reply" && substr($subject, 0, 4) != "Re: ")
 			{
 				$subject = COMLAN_325.' '.$subject;
@@ -309,7 +309,7 @@ class comment
 			
 			if ($tablerender)
 			{
-				$text = $ns->tablerender($caption, $text, '', TRUE);
+				$text = e107::getRender()->tablerender($caption, $text, '', TRUE);
 			}
 		}
 		else
@@ -554,7 +554,7 @@ class comment
 			
 			ORDER BY comment_datestamp
 			";
-			$sql_nc = new db; /* a new db must be created here, for nested comment  */
+			$sql_nc = e107::getDb('nc'); /* a new db must be created here, for nested comment  */
 			if ($sub_total = $sql_nc->gen($sub_query))
 			{
 				while ($row1 = $sql_nc->fetch())
@@ -757,6 +757,7 @@ class comment
 		$subject = $tp->toDB($subject);
 		$cuser_id = 0;
 		$cuser_name = 'Anonymous'; // Preset as an anonymous comment
+		$cuser_mail = '';
 		
 		if (!$sql->select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' "))
 		{
