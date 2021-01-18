@@ -2266,7 +2266,10 @@ class e107plugin
 		if ($action == 'add')
 		{
 			$link_t = $sql->count('links');
-			if (!$sql->count('links', '(*)', "WHERE link_url = '{$path}' OR link_name = '{$link_name}'"))
+
+			$countQry = !empty($options['link_owner']) ? "link_owner = '".$options['link_owner']."' AND link_url = '".$path."'" : "link_url = '{$path}' OR link_name = '".$link_name."'";
+
+			if (!$sql->count('links', '(*)', "WHERE ".$countQry))
 			{
 					$linkData = array(
 						'link_name'			 => $link_name,
@@ -2286,6 +2289,7 @@ class e107plugin
 			}
 			else
 			{
+				e107::getMessage()->addDebug("Skipped inserting of sitelink. Count Qry: ".$countQry);
 				return null;
 			}
 		}
@@ -3494,6 +3498,7 @@ class e107plugin
 	 */
 	function XmlSiteLinks($function, $plug_vars)
 	{
+
 		$this->log("Running ".__FUNCTION__);
 
 		$status = false;
@@ -3505,6 +3510,8 @@ class e107plugin
 			return null;
 		}
 
+
+
 		if($function == 'refresh')
 		{
 			$mes->addDebug("Checking Plugin Site-links");
@@ -3512,7 +3519,9 @@ class e107plugin
 		}
 
 		
-		$array = $plug_vars['siteLinks']; 
+		$array = $plug_vars['siteLinks'];
+
+
 
 		foreach ($array['link'] as $link)
 		{
@@ -4251,7 +4260,7 @@ class e107plugin
 		
 		$plug = e107plugin::getPluginRecord($dir);
 		
-		$this->options = array('nolinks'=>true);
+	//	$this->options = array('nolinks'=>true);
 		
 		if(!is_array($plug))
 		{
