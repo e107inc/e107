@@ -1632,7 +1632,7 @@ form#simplesef h4 { margin: 4px }
 .admin-icon-debug i {  margin-right:5px; cursor:help}
 
 .admin-icon-debug > li.dropdown > a.dropdown-toggle { border-left: 0 !important }
-.admin-icon-debug .dropdown-menu > .active > a { font-weight:500 }
+.admin-icon-debug .dropdown-menu > .active > a { color: orange }
 .admin-icon-debug .dropdown-menu > .active > a:after { font-family: FontAwesome; content: '\f0d9'; position: absolute;
 padding-left: 5px; }
 

@@ -84,7 +84,7 @@ class links_admin_ui extends e_admin_ui
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
+		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'filter'=>true, 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
@@ -181,9 +181,16 @@ class links_admin_ui extends e_admin_ui
 			$this->getTreeModel()->current_id = intval($searchFilter[1]);
 			$this->current_parent = intval($searchFilter[1]);
 		}
+
+		$this->fields['link_owner']['type'] = 'method';
+
 		parent::ListObserver();
 
 	}
+
+
+
+
 	public function ListAjaxObserver()
 	{
 		$searchFilter = $this->_parseFilterRequest($this->getRequest()->getQuery('filter_options', ''));
@@ -595,6 +602,8 @@ class links_admin_form_ui extends e_admin_form_ui
 	
 	private $linkFunctions;
 
+	private $link_owner = array();
+
 	function init()
 	{
 		
@@ -642,8 +651,21 @@ class links_admin_form_ui extends e_admin_form_ui
 			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
 		}
 
+		if($tmp = e107::getDb()->retrieve('links', 'link_owner', "GROUP BY link_owner ORDER BY link_owner", true))
+		{
+			foreach($tmp as $arr)
+			{
+				if(empty($arr['link_owner']))
+				{
+					continue;
+				}
 
-	//	var_dump($methods );
+				$plug = $arr['link_owner'];
+			//	$def = 'LAN_PLUGIN_'.strtoupper($plug).'_NAME';
+
+				$this->link_owner[$plug] = $plug;
+			}
+		}
 
 
 	}
@@ -722,6 +744,21 @@ class links_admin_form_ui extends e_admin_form_ui
 
 
 			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
+		}
+	}
+
+
+	function link_owner($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $curVal;
+		}
+
+		if($mode === 'filter')
+		{
+			return $this->link_owner;
+
 		}
 	}
 
