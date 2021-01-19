@@ -967,6 +967,18 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	public function testCanonical()
+	{
+		$e107 = $this->e107;
+
+		$e107::canonical('news');
+
+		$result = $e107::canonical();
+		$this->assertSame("https://localhost/e107/news", $result);
+
+	}
+
+
 	public function testUrl()
 	{
 

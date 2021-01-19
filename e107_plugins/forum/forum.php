@@ -90,6 +90,10 @@ if(isset($_GET['f']))
 			break;
 	}
 }
+else
+{
+	e107::canonical('forum');
+}
 
 
 

@@ -105,12 +105,13 @@ a.cpage-np.current { text-decoration: none; }
 /* validate result inline message */
 .validate-result {}
 
-/* message text (overall) */
+/* message text (overall) - Too generic - creates conflicts  */
+/*
 .warning { color: #FF6600 }
 .success { color: green; }
 .error { color: #A94442; }
 .info {}
-.required { color:#A94442; }
+.required { color:#A94442; }*/
 
 /******** Tooltip info */
 .e-info {}

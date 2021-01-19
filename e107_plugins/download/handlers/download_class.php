@@ -164,37 +164,34 @@ class download
 
 		$pref = e107::getPref();
 
-
-
-		//if($this->qry['action'] == 'maincats')
-	//	{
-		//
-	//	}
-
-		if($this->qry['action'] == 'list')
+		switch($this->qry['action'])
 		{
-			$this->loadList();
+			case 'maincats':
+				e107::canonical('download', 'index');
+			break;
+
+			case "list":
+				$this->loadList();
+				break;
+
+			case "view":
+				$this->loadView();
+				break;
+
+			case "report":
+				if(check_class($pref['download_reportbroken']))
+				{
+					$this->loadReport();
+				}
+				break;
+		/*
+			case 'mirror':
+			case 'error':
+
+			break; */
+
 		}
 
-		if($this->qry['action'] == 'view')
-		{
-			$this->loadView();
-		}
-
-		if ($this->qry['action'] == "report" && check_class($pref['download_reportbroken']))
-		{
-			$this->loadReport();
-		}
-
-		//if($this->qry['action'] == 'mirror')
-	//	{
-		//
-	//	}
-
-	//	if($this->qry['action'] == 'error')
-	//	{
-
-	//	}
 
 	}
 
@@ -428,11 +425,14 @@ class download
 	{
 		if($dlrow = $this->getCategory($this->qry['id']))
 		{
-			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
+			e107::title(LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
+			e107::canonical('download', 'category', $dlrow);
+		//	define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
 		}
 		else
 		{  // No access to this category
-			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);
+			e107::title(LAN_PLUGIN_DOWNLOAD_NAME);
+			//define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);
 		}
 
 		return null;
@@ -559,7 +559,9 @@ class download
 
 		$DL_TITLE = e107::getParser()->parseTemplate($this->template['pagetitle'], true, $sc);
 
-		define("e_PAGETITLE", $DL_TITLE);
+	//	define("e_PAGETITLE", $DL_TITLE);
+		e107::title($DL_TITLE);
+		e107::canonical('download', 'item', $dlrow);
 
 		return null;
 	}

@@ -3771,19 +3771,35 @@ class e107
 
 	/**
 	 * Quick method to set alias - uses e107::url format.
-	 * @param string $plugin
-	 * @param null $key
+	 * @param string $plugin if empty will return the last assigned canonical url.
+	 * @param string|array $key
 	 * @param array $row
 	 */
 	public static function canonical($plugin = '', $key = 'index', $row = array())
 	{
-		if($url = e107::url($plugin, $key, $row, array('mode' => 'full')))
+
+		$alreadyDone = e107::getRegistry('core/e107/canonical');
+
+		if(empty($plugin))
+		{
+			return $alreadyDone;
+		}
+
+		if(empty($alreadyDone) && $url = e107::url($plugin, $key, $row, array('mode' => 'full')))
 		{
 			self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
+			e107::setRegistry('core/e107/canonical', $url);
 		}
+
+		if(!empty($alreadyDone))
+		{
+			$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+			$url = "More than one canonical was set: ".print_a($backtrace[1], true);
+		}
+
 		if(deftrue('e_DEBUG_CANONICAL'))
 		{
-			self::getMessage()->addInfo("Debug Canonical URL: ".$url);
+			self::getMessage()->addInfo("Debug Canonical URL: <a href='".$url."'>".$url."</a>");
 		}
 	}
 
