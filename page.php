@@ -50,7 +50,9 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
 	$id = $e107CorePage->setRequest('listPages');
     $e107CorePage->listPages($id);
-    e107::canonical('page/chapter/index', $e107CorePage->getChapterData($id));
+    $chData = $e107CorePage->getChapterData($id);
+    var_dump($chData);
+    e107::canonical('page/chapter/index',$chData);
 	unset($row);
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
@@ -63,7 +65,9 @@ else
 	$e107CorePage->processViewPage();
     $e107CorePage->setPage();
 
-	e107::canonical('page/view',  $e107CorePage->page);
+    $canRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view';
+
+	e107::canonical( $canRoute,  $e107CorePage->page);
 	require_once(HEADERF);
 
 	$ns = e107::getRender();
@@ -209,7 +213,7 @@ class pageClass
 
 		$row = $this->chapterData[$chapter];
 
-		$row['book_sef']	        = $this->getSef($row['chapter_id']);
+		$row['book_sef']	        = $this->getSef($row['chapter_parent']);
 		$row['book_id']             = (int) $row['chapter_parent'];
 		$row['book_name'] 			= $this->getName($row['chapter_parent']);
 		$row['book_icon']			= $this->getIcon($row['chapter_parent']);
