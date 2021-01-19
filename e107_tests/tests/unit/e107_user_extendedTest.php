@@ -720,7 +720,11 @@
 			);
 
 			$result = $this->ue->getFieldNames();
-			$this->assertSame($expected, $result);
+
+			foreach($expected as $field)
+			{
+				$this->assertContains($field, $result);
+			}
 
 		}
 /*
