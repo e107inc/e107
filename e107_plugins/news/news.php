@@ -348,6 +348,11 @@ class news_front
 					$newsRoute = 'list/'.$this->action;
 				break;
 
+				case 'item':
+				case 'extend':
+					$newsRoute = 'view/item';
+				break;
+
 				default:
 					$newsRoute = 'list/items';
 				break;
@@ -531,7 +536,10 @@ class news_front
 
 	}
 
-
+	/**
+	 * @param array $news news and category table row. ie. news_id, news_title, news_sef ... category_id etc.
+	 * @param string $type
+	 */
 	private function setNewsFrontMeta($news, $type='news')
 	{
 
@@ -545,6 +553,7 @@ class news_front
 
 			case "all":
 				e107::meta('robots', 'noindex');
+
 			break;
 
 			case "tag":
@@ -590,12 +599,13 @@ class news_front
 				break;
 
 			case "news":
-
+				e107::canonical($this->route, $news);
 			break;
 
 
 			default:
 				e107::meta('robots', 'noindex');
+			//	e107::canonical('news');
 		}
 
 

@@ -27,7 +27,7 @@ $sec_img = new secure_image;
 e107::lan('core','contact');
 
 define('PAGE_NAME', LANCONTACT_00);
-
+e107::canonical('contact');
 require_once(HEADERF);
 
 $tp = e107::getParser();
