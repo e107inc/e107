@@ -35,6 +35,7 @@
 
 			$this->ue->__construct();
 
+
 			$this->structTypes = array(
 			'text'          => EUF_TEXT,
 			'homepage'      => EUF_TEXT,
@@ -76,7 +77,11 @@
 				'dbfield'  => 'core_media_cat,media_cat_id,media_cat_title,media_cat_order',
 				'list'      => 'timezones',
 				'radio'     => 'M => UE_LAN_MALE,F => UE_LAN_FEMALE',
-				'checkbox'  => 'check1,check2,check3'
+				'checkbox'  => 'check1,check2,check3',
+				'addon'     => e107::serialize(
+								array('type'=> 'number', 'data' => 'int',  'title' => $this->structLabels['addon']),
+								'json')
+
 			);
 
 			$this->structDefault = array(
@@ -136,6 +141,13 @@
 					'parent'    => (isset($this->structParent[$k])) ? $this->structParent[$k] : 0,
 					'required'    => (isset($this->structRequired[$k])) ? $this->structRequired[$k] : 0,
 				);
+
+				// simulate data from e_user.php 'settings' method.
+				if($v === EUF_ADDON)
+				{
+					$insert['fieldType']    = 'int(2)';
+					$insert['parms']    = '_blank'; // plugin dir.
+				}
 
 				$this->ue->user_extended_add($insert);
 			//	$this->ue->user_extended_add($k, ucfirst($k), $v , null, $value);
@@ -213,7 +225,7 @@
 		 */
 		public function testUserExtendedShortcode()
 		{
-		//	e107::setRegistry('corelan/English_user_extended_front');
+			$this->fixRegistry('before');
 
 			foreach($this->userValues as $field => $value)
 			{
@@ -318,7 +330,7 @@
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
 			}
 
-
+			$this->fixRegistry('after');
 		}
 
 
@@ -339,6 +351,11 @@
 
 		public function testSignupExtendedUserFieldsShortcode()
 		{
+			$this->fixRegistry('before');
+
+
+
+
 
 			$sc = e107::getScBatch('signup');
 
@@ -365,9 +382,31 @@
 
 			}
 
+			$this->fixRegistry('after');
+
+
+
 		}
 
+		private function fixRegistry($mode)
+		{
+			$regID = 'core/e107/singleton/e107_user_extended';
 
+			static $originalRegistry;
+
+			if($mode == 'before')
+			{
+				$originalRegistry = e107::getRegistry($regID);
+				e107::setRegistry($regID, $this->ue);
+			}
+
+			if($mode === 'after')
+			{
+				e107::setRegistry($regID, $originalRegistry);
+			}
+
+
+		}
 
 		public function testGetUserExtendedFieldData()
 		{

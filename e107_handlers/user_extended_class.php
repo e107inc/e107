@@ -282,7 +282,11 @@ class e107_user_extended
 
 		$index = $this->nameIndex[$fieldname];
 
-		switch ($this->fieldDefinitions[$index]['user_extended_struct_type'])
+		$type = $this->fieldDefinitions[$index]['user_extended_struct_type'];
+
+		$ret = null;
+
+		switch($type)
 		{
 			case EUF_TEXT :
 			case EUF_DB_FIELD :
@@ -293,7 +297,7 @@ class e107_user_extended
 			case EUF_LANGUAGE :
 			case EUF_PREDEFINED :
 			case EUF_RADIO :
-				$ret  = 'todb';
+				$ret = 'todb';
 				break;
 
 			case EUF_CHECKBOX :
@@ -303,9 +307,30 @@ class e107_user_extended
 			case EUF_INTEGER :
 				$ret = 'int';
 				break;
-		}
+
+			// admin-ui format 'data' ie. 'str', 'int', 'array';
+			case EUF_ADDON :
+				$ret = 'JSON';
+
+				if(!empty($this->fieldDefinitions[$index]['user_extended_struct_values']))
+				{
+					if($tmp = e107::unserialize($this->fieldDefinitions[$index]['user_extended_struct_values']))
+					{
+						if(isset($tmp['data']))
+						{
+							$ret = $tmp['data'];
+						}
+
+					}
+
+				}
+
+				break;
+			}
+
 
 		return $ret;
+
 	}
 
 	/**
@@ -837,7 +862,7 @@ class e107_user_extended
 		 case EUF_ADDON:
 		    return 'JSON';
 		 break;
-		 
+
 		default:
 			e107::getMessage()->addDebug("<strong>Unknown type '{$type}' for user extended field.</strong>"); 
 			return false;
@@ -878,7 +903,6 @@ class e107_user_extended
 
 
 
-
 	function user_extended_add($name, $text='', $type='', $parms='', $values='', $default='', $required='', $read='', $write='', $applicable='', $order='', $parent='')
 	{
 		
@@ -909,6 +933,11 @@ class e107_user_extended
 		}
 
 		$field_info = $this->user_extended_type_text($type, $default);
+
+		if($type === EUF_ADDON && !empty($fieldType))
+		{
+			$field_info = $fieldType;
+		}
 		
 		// wrong type
 		if(false === $field_info)
@@ -941,7 +970,7 @@ class e107_user_extended
 			'user_extended_struct_text'         => (string) $tp -> toDB($text, true),
 			'user_extended_struct_type'         => (int) $type,
 			'user_extended_struct_parms'        => (string) $tp -> toDB($parms, true),
-			'user_extended_struct_values'       => (string) $tp -> toDB($values, true),
+			'user_extended_struct_values'       => ($type === EUF_ADDON) ? (string) $values : (string) $tp -> toDB($values, true),
 			'user_extended_struct_default'      => (string) $tp -> toDB($default, true),
 			'user_extended_struct_read'         => (int) $read,
 			'user_extended_struct_write'        => (int) $write,
@@ -955,6 +984,8 @@ class e107_user_extended
 
 		if(!$this->user_extended_field_exist($name))
 		{
+
+
 			$nid = $sql->insert('user_extended_struct', $extStructInsert);
 			$this->init(); // rebuild the list.
 
@@ -1111,6 +1142,29 @@ class e107_user_extended
 
 		switch($struct['user_extended_struct_type'])
 		{
+
+			case EUF_ADDON:
+				$attributes = e107::unserialize($struct['user_extended_struct_values']);
+
+				$plug = $struct['user_extended_struct_parms'];
+				if(!$form = e107::getAddon($plug,'e_user',$plug."_user_form")) // custom form.
+				{
+					$form = e107::getForm();
+				}
+
+		//		$method = str_replace('plugin_'.$plug.'_', '', $struct['user_extended_struct_name']);
+
+				if(empty($attributes['type']))
+				{
+					trigger_error("'type' is missing from field definition", E_USER_NOTICE);
+					return null;
+				}
+
+				$attributes['method'] = 'user_'.$struct['user_extended_struct_name'];
+
+				return $form->renderElement($fname,$curval, $attributes);
+			break;
+
 
 			case EUF_COUNTRY:
 				return e107::getForm()->country($fname,$curval, $opts);
@@ -1770,6 +1824,8 @@ class e107_user_extended
 
 		return $ret;
 	}
+
+
 
 }
 

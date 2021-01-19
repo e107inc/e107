@@ -6679,7 +6679,15 @@ var_dump($select_options);*/
 					$cls = $this;
 				}
 
-				$ret =  call_user_func_array(array($cls, $meth), array($value, 'write', $parms));
+				if(method_exists($cls, $meth))
+				{
+					$ret =  call_user_func_array(array($cls, $meth), array($value, 'write', $parms));
+				}
+				else
+				{
+					$ret = "(Method ".$meth." not found in ".get_class($cls).")";
+				}
+
 			break;
 
 			case 'upload': //TODO - from method

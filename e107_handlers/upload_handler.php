@@ -144,14 +144,14 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	{
 		if (UH_DEBUG)
 		{
-			e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
+	//		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
 		}
 		
 		return FALSE; // Need a valid directory
 	}
 	if (UH_DEBUG)
 	{
-		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
+	//	e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
 	}
 	
 	$final_chmod = varset($options['final_chmod'], 0644);
@@ -167,9 +167,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 	$max_file_count = varset($options['max_file_count'], 0);
 
-	if (!is_array($files))
+	if (empty($files))
 	{
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 		{
 			e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "No files uploaded", FALSE, FALSE);
 		}
@@ -184,9 +184,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 	// That's the basics set up - we can start processing files now
 
-	if (UH_DEBUG)
+	if (deftrue('UH_DEBUG'))
 	{
-		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
+	//	e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
 	}
 	
 	$c = 0;

@@ -118,6 +118,22 @@
 			);
 		}
 
+				/**
+		 * @see https://github.com/e107inc/e107/issues/3547
+		 */
+		public function testBlank()
+		{
+		//	$this->_debugPlugin = '_blank';
+
+			$this->pluginInstall('_blank');
+
+		//	$this->pluginUninstall('_blank');
+
+
+		}
+
+
+
 		/**
 		 * @see https://github.com/e107inc/e107/issues/3547
 		 */

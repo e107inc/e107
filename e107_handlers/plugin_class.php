@@ -2881,8 +2881,8 @@ class e107plugin
 			$this->XmlMediaCategories($function, $plug_vars);
 		}
 
-		$this->XmlMenus($this->plugFolder, $function, $plug_vars['files']);
-
+		$this->addonMenu($this->plugFolder, $function, $plug_vars['files']);
+		$this->addonUser($this->plugFolder, $function);
 
 		$this->manage_icons($this->plugFolder, $function);
 
@@ -2999,7 +2999,110 @@ class e107plugin
 
 	}
 
-	private function XmlMenus($plug, $function, $files)
+
+	/**
+	 * Manager e_user extended fields
+	 * @param string $plug
+	 * @param string $function
+	 * @param array $opts
+	 * @return null
+	 */
+	private function addonUser($plug, $function, $opts=array())
+	{
+		$this->log("Running ".__FUNCTION__);
+		$path = e_PLUGIN.$plug.'/e_user.php';
+
+		if(!file_exists(e_PLUGIN.$plug.'/e_user.php'))
+		{
+			$this->log("No e_user.php addon found.");
+			return null;
+		}
+
+		require_once($path);
+
+		if(!$list = e107::callMethod($plug.'_user', 'settings'))
+		{
+			$this->log("Settings method NOT found");
+			return null;
+		}
+
+		$this->log("Settings method found: ".print_r($list, true));
+
+		$ue = e107::getUserExt();
+
+		foreach($list as $field=>$attrib)
+		{
+			$read = varset($attrib['read'], e_UC_MEMBER);
+			$write = varset($attrib['write'], e_UC_MEMBER);
+			$applic = varset($attrib['applicable'], e_UC_MEMBER);
+			$req   = varset($attrib['required'], 0);
+			$type  = varset($attrib['fieldType'], 'VARCHAR(255)');
+
+			unset($attrib['read'], $attrib['write'], $attrib['applicable'], $attrib['required'], $attrib['fieldType']);
+
+			$name = $this->ue_field_name($plug, EUF_ADDON, $field);
+
+			$insert = array(
+					'name'      => $name,
+					'text'      => varset($attrib['title'], "None Specified"),
+					'type'      => EUF_ADDON,
+					'parms'     => $plug,
+					'values'    => e107::serialize($attrib, 'json'),
+					'default'   => null,
+					'parent'    => 0,
+					'required'  => $req,
+					'read'      => $read,
+					'write'     => $write,
+					'applicable' => $applic,
+					'fieldType' => $type,
+			);
+
+			switch($function)
+			{
+				case "install":
+					if($ue->user_extended_add($insert))
+					{
+						$this->log("User Ext. field added. (".$field.")");
+						e107::getMessage()->addSuccess(EPL_ADLAN_249 .$name.' ... ');
+					}
+					else
+					{
+						e107::getMessage()->addError(EPL_ADLAN_249 .$name.' ... ');
+						$this->log("ERROR: User Ext. field couldn't be added. ".print_r($insert,true));
+					}
+					break;
+
+				case "uninstall":
+					if($ue->user_extended_remove($name, $name))
+					{
+						e107::getMessage()->addSuccess(EPL_ADLAN_250 .$name.' ... ');
+						$this->log("User Ext. field removed. (".$field.")");
+					}
+					else
+					{
+						e107::getMessage()->addError(EPL_ADLAN_250 .$name.' ... ');
+						$this->log("ERROR: User Ext. field couldn't be removed. (".$field.")");
+					}
+					break;
+
+				default:
+					// code to be executed if n is different from all labels;
+			}
+
+
+		}
+
+	}
+
+
+	/**
+	 * Manage xxxxx_menu files.
+	 * @param string $plug
+	 * @param string $function
+	 * @param $files
+	 * @return false|null
+	 */
+	private function addonMenu($plug, $function, $files)
 	{
 		$this->log("Running ".__FUNCTION__);
 
@@ -4197,7 +4300,7 @@ class e107plugin
 
 		$this->manage_notify('add', $eplug_folder);
 
-		$this->XmlMenus($plug_vars['folder'], $function, $plug_vars['files']);
+		$this->addonMenu($plug_vars['folder'], $function, $plug_vars['files']);
 
 		$eplug_addons = $this->getAddons($eplug_folder);
 
@@ -4463,7 +4566,7 @@ class e107plugin
 										$sql->delete('menus', "menu_name='{$eplug_menu_name}' ");
 									}*/
 				$folderFiles = scandir(e_PLUGIN . $plug['plugin_path']);
-				$this->XmlMenus($eplug_folder, 'uninstall', $folderFiles);
+				$this->addonMenu($eplug_folder, 'uninstall', $folderFiles);
 
 				if ($eplug_link)
 				{
