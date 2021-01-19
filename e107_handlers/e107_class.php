@@ -362,6 +362,83 @@ class e107
 	}
 
 	/**
+	 * Returns the frontpage setting (ie. selected in e107_admin/frontpage.php) for the current user.
+	 * @return string
+	 */
+	public static function getFrontpage()
+	{
+
+		$fpref = e107::getPref('frontpage');
+		$location = '';
+		$class_list = explode(',', USERCLASS_LIST);
+
+		if(isset($fpref['all']) && $fpref['all'])
+		{ // 0.7 method
+			$location = $fpref['all'];
+		}
+		else
+		{ // This is the 'new' method - assumes $fpref is an ordered list of rules
+			if(!empty($fpref))
+			{
+				foreach($fpref as $fk => $fp)
+				{
+					if(in_array($fk, $class_list))
+					{
+						$location = $fp;
+						break;
+					}
+				}
+			}
+		}
+
+		if(!$location)
+		{ // Try and use the 'old' method (this bit can go later)
+			if(ADMIN)
+			{
+				$location = $fpref[e_UC_ADMIN];
+			}
+			elseif(USER)
+			{ // This is the key bit - what to do for a 'normal' logged in user
+				// We have USERCLASS_LIST - comma separated. Also e_CLASS_REGEXP
+				$inclass = false;
+				foreach($class_list as $fp_class)
+				{
+					if(!$inclass && check_class($fp_class['userclass_id']))
+					{
+						$location = $fpref[$fp_class['userclass_id']];
+						$inclass = true;
+					}
+				}
+				$location = $location ? $location : $fpref[e_UC_MEMBER];
+			}
+			else
+			{
+				$location = $fpref[e_UC_GUEST];
+			}
+		}
+
+		$location = trim($location);
+
+
+		// Defaults to news
+		if(!$location)
+		{
+			$location = 'url:/news';
+		}
+		// Former Welcome Message front-page. Should be handled by current theme layout
+		elseif($location == 'index.php' || $location == 'url:/' || $location == 'route:/' || $location == '/')
+		{
+			$location = false;
+		}
+		elseif($location[0] === '{')
+		{
+			$location = e107::getParser()->replaceConstants($location, true);
+		}
+
+		return $location;
+	}
+
+	/**
 	 * Cloning is not allowed
 	 *
 	 */
@@ -3771,7 +3848,7 @@ class e107
 
 	/**
 	 * Quick method to set alias - uses e107::url format.
-	 * @param string $plugin if empty will return the last assigned canonical url.
+	 * @param string $plugin if empty will return the last assigned canonical url._SITEURL_ will set canonical to the SITEURL.
 	 * @param string|array $key
 	 * @param array $row
 	 */
@@ -3785,21 +3862,35 @@ class e107
 			return $alreadyDone;
 		}
 
-		if(empty($alreadyDone) && $url = e107::url($plugin, $key, $row, array('mode' => 'full')))
+		if(empty($alreadyDone))
 		{
-			self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
-			e107::setRegistry('core/e107/canonical', $url);
+			if($plugin === '_SITEURL_')
+			{
+				$url = SITEURL;
+			}
+			else
+			{
+				$url = e107::url($plugin, $key, $row, array('mode' => 'full'));
+			}
+
+			if(!empty($url))
+			{
+				self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
+				e107::setRegistry('core/e107/canonical', $url);
+				$message = "Debug: Setting Canonical URL: <b><a href='".$url."'>".$url."</a></b>";
+			}
+
 		}
 
 		if(!empty($alreadyDone))
 		{
 			$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-			$url = "More than one canonical was set: ".print_a($backtrace[1], true);
+			$message = "Debug: More than one canonical was attempted. This was ignored: ".print_a($backtrace[1], true);
 		}
 
-		if(deftrue('e_DEBUG_CANONICAL'))
+		if(deftrue('e_DEBUG_CANONICAL') && !empty($message))
 		{
-			self::getMessage()->addInfo("Debug Canonical URL: <a href='".$url."'>".$url."</a>");
+			self::getMessage()->addInfo($message);
 		}
 	}
 
