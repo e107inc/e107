@@ -3471,7 +3471,9 @@ class e107
 			self::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		}
 
-		$cstring  = 'corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
+		$cstring  = 'core/e107/corelan/'.e_LANGUAGE.'_'.$fname.($admin ? '_admin' : '_front');
+
+
 		if(self::getRegistry($cstring))
 		{
 			return null;
@@ -3522,7 +3524,9 @@ class e107
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false)
 	{
-		$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
+	//	$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
+		$cstring  = 'core/e107/pluglan/'.$plugin.'/'.e_LANGUAGE.'/'.$fname.($flat ? '_1' : '_0');
+
 		if(self::getRegistry($cstring))
 		{
 			return null;

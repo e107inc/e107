@@ -387,7 +387,7 @@ class usersettings_shortcodes extends e_shortcode
 		
 		foreach($catList as $cat)
 		{
-			e107::setRegistry("extendedcat_{$cat['user_extended_struct_id']}", $cat);
+			e107::setRegistry("core/shortcodes/usersettings/userextended/cat_".$cat['user_extended_struct_id'], $cat);
 			$text = $this->sc_userextended_cat($cat['user_extended_struct_id']);
 			$ret .= $text;
 			$catName = vartrue($cat['user_extended_struct_text'], $cat['user_extended_struct_name']);
@@ -432,7 +432,7 @@ class usersettings_shortcodes extends e_shortcode
 		}
 
 		$ret = "";
-		$catInfo = e107::getRegistry("extendedcat_{$parm}");
+		$catInfo = e107::getRegistry("core/shortcodes/usersettings/userextended/cat_{$parm}");
 		if(!$catInfo)
 		{
 			$qry = "
@@ -464,7 +464,7 @@ class usersettings_shortcodes extends e_shortcode
 				$fieldList = $sql->db_getList();
 				foreach($fieldList as $field)
 				{
-					e107::setRegistry("extendedfield_{$field['user_extended_struct_name']}", $field);
+					e107::setRegistry("core/shortcodes/usersettings/userextended/{$field['user_extended_struct_name']}", $field);
 					$ret .= $this->sc_userextended_field($field['user_extended_struct_name']);
 				}
 			}
