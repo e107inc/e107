@@ -20,6 +20,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					speed: settings.gallery.speed,  // speed of the transition (any valid fx speed value)
 					timeout: settings.gallery.timeout,
 					slideExpr: '.slide',
+                    cleartypeNoBg:    true, 
 					pause: 1, // pause on hover - TODO pref
 					activePagerClass: '.gallery-slide-jumper-selected',
 					before: function (currSlideElement, nextSlideElement, options, forwardFlag)
