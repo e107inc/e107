@@ -51,7 +51,6 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	$id = $e107CorePage->setRequest('listPages');
     $e107CorePage->listPages($id);
     $chData = $e107CorePage->getChapterData($id);
-    var_dump($chData);
     e107::canonical('page/chapter/index',$chData);
 	unset($row);
 	require_once(HEADERF);
