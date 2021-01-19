@@ -1899,7 +1899,7 @@ class e_parse
 	 * @param string $text
 	 * @return mixed|string
 	 */
-	private function ampEncode($text = '')
+	public function ampEncode($text = '')
 	{
 
 		// Fix any left-over '&'

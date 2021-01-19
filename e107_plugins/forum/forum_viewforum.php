@@ -56,7 +56,7 @@
 			echo __FILE__ . ' Line: ' . __LINE__;
 			exit;
 		}
-		$url = e107::url('forum', 'index', 'full');
+		$url = e107::url('forum', 'index', null, ['mode'=>'full']);
 		e107::getRedirect()->go($url);
 		//header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 		exit;
@@ -100,7 +100,7 @@
 	{
 		// header('Location:'.e107::getUrl()->create('forum/forum/main'));
 
-		$url = e107::url('forum', 'index', 'full');
+		$url = e107::url('forum', 'index', null, ['mode'=>'full']);
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
@@ -118,6 +118,8 @@
 	}
 
 	$forumInfo = $forum->forumGet($forumId);
+	e107::canonical('forum', 'forum', $forumInfo);
+
 	$forumSCvars = array();
 //----$threadsViewed = $forum->threadGetUserViewed();
 

@@ -41,6 +41,7 @@ if (!e107::isInstalled('forum'))
 //e107::lan('forum','English_front');
 e107::lan('forum', "front", true);
 e107::css('forum','forum.css');
+// e107::canonical('forum', 'post');
 
 
 

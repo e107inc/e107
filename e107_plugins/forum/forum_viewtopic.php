@@ -627,7 +627,7 @@ else
 	unset($ret);
 }
 
-
+e107::canonical('forum', 'topic', $thread->threadInfo);
 require_once (HEADERF);
 
 
