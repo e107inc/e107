@@ -1712,6 +1712,20 @@ if(!isset($_E107['no_online']))
 }
 
 $dbg->logTime('(After Go online)');
+$dbg->logTime('Frontpage detection');
+
+$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));
+$fpPref = e107::getFrontpage();
+
+if($fpUrl === $fpPref)
+{
+	e107::canonical('_SITEURL_');
+}
+unset($fpUrl, $fpPref);
+
+
+
+
 
 /**
  * Set Cookie

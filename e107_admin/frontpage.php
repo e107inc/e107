@@ -32,7 +32,7 @@ $mes = e107::getMessage();
 $frontPref = e107::pref('core'); // Get prefs
 
 // Get list of possible options for front page
-
+	$front_page = array();
 	// Welcome message is 'hardcoded' intentionally 
 	$front_page['wmessage'] = array(
 		'page' 	=> 'index.php', 
@@ -91,10 +91,10 @@ if(is_array($frontPref['frontpage']))
 	$i = 1;
 	foreach($frontPref['frontpage'] as $class => $val)
 	{
-		if($class == 'all')
+		if($class == 'all' || $class === 0)
 		{
 			$class = e_UC_PUBLIC;
-			$gotpub = TRUE;
+			$gotpub = true;
 		}
 		if($val)
 		{ // Only add non-null pages

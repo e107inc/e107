@@ -106,6 +106,12 @@ class e_url
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		if(empty($this->_request)) // likely 'index.php' ie. the home page.
+		{
+			$this->_request = e107::getFrontPage();
+			e107::canonical('_SITEURL_');
+		}
+
 		if(empty($this->_config) || empty($this->_request) || $this->_request === 'index.php' || $this->isLegacy() === true)
 		{
 			return false;
@@ -187,6 +193,18 @@ class e_url
 						{
 							define('e_PAGE', basename($file));
 						}
+
+
+						$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));
+						$fpPref = e107::getFrontpage();
+
+						if($fpUrl === $fpPref)
+						{
+
+						}
+						unset($fpUrl, $fpPref);
+
+
 						$this->_include= $file;
 						return true;
 					//	exit;
@@ -1255,6 +1273,7 @@ class eRouter
 	{
 		$f = e107::getFile();
 		$ret = array('core' => array(), 'plugin' => array(), 'override' => array());
+		$plugins = array();
 		
 		if($type == 'all' || $type = 'core')
 		{
