@@ -775,11 +775,11 @@ class e107
 
 	/**
 	 * Get folder name (e107_config)
-	 * Replaces all $(*)_DIRECTORY globals
+	 * Replaces all $(*)_DIRECTORY globals.
 	 * @example
 	 * Example: <code>$e107->getFolder('images')</code>;
 	 *
-	 * @param string $for admin | plugin |
+	 * @param string $for admin | plugins | themes | files | handlers
 	 * @return string
 	 */
 	public static function getFolder($for)
@@ -3770,6 +3770,24 @@ class e107
 	}
 
 	/**
+	 * Quick method to set alias - uses e107::url format.
+	 * @param string $plugin
+	 * @param null $key
+	 * @param array $row
+	 */
+	public static function canonical($plugin = '', $key = 'index', $row = array())
+	{
+		if($url = e107::url($plugin, $key, $row, array('mode' => 'full')))
+		{
+			self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
+		}
+		if(deftrue('e_DEBUG_CANONICAL'))
+		{
+			self::getMessage()->addInfo("Debug Canonical URL: ".$url);
+		}
+	}
+
+	/**
 	 * Generate a plugin's search engine-friendly URL with HTML special characters escaped
 	 *
 	 * Can be spliced directly into HTML code like <a href="…"></a>
@@ -3805,6 +3823,22 @@ class e107
 
 			if (in_array($tmp[0], $legacy))
 			{
+				if(isset($options['mode']) && $options['mode'] === 'full')
+				{
+					if(is_array($row))
+					{
+						$row['full'] = 1;
+					}
+					elseif(is_string($row))
+					{
+						$row .= '&full=1';
+					}
+					elseif(is_null($row))
+					{
+						$row = 'full=1';
+					}
+				}
+
 				return self::getUrl()->create($plugin, $key, $row);
 			}
 

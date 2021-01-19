@@ -13,11 +13,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if(deftrue('USER_AREA') && (defset('e_PAGE') ===  'gsitemap.php'))
-{
-	$canonicalurl = e107::url('gsitemap', 'index', null, array('mode' => 'full'));
-	e107::link(array('rel'=>"canonical", "href" =>$canonicalurl));
-}
 
 
 

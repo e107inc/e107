@@ -972,16 +972,41 @@ class e107Test extends \Codeception\Test\Unit
 
 		$obj = $this->e107;
 
+		// Test FULL url option on Legacy url with new options['mode']
 		$tests = array(
 			0 => array(
-				'plugin'     => 'news',
-				'key'        => 'index',
+				'plugin'     => 'news/view/item',
+				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'        => array(),
+				'options'    => ['mode' => 'full'],
+			),
+			1 => array(
+				'plugin'     => 'news/view/item',
+				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'        => 'full=1&encode=0',
+				'options'    => ['mode' => 'full'],
+			),
+			2 => array(
+				'plugin'     => 'news/view/item',
+				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
 				'row'        => '',
 				'options'    => ['mode' => 'full'],
-				'_expected_' => 'https://localhost/e107/news'
+			),
+			3 => array(
+				'plugin'     => 'news/view/item',
+				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'        => null,
+				'options'    => ['mode' => 'full'],
 			),
 
 		);
+		foreach($tests as $v)
+		{
+			$result = $obj::url($v['plugin'], $v['key'], $v['row'], $v['options']);
+			$this->assertStringContainsString('http', $result);
+		}
+
+
 
 		$tests = array();
 
