@@ -117,7 +117,7 @@
 			);
 
 			// clear the table.
-			/*
+
 			$sql = e107::getDb();
 			$fieldCount = (int) $sql->count('user_extended_struct');
 
@@ -127,7 +127,7 @@
 				$sql->truncate('user_extended_struct');
 				$this->ue->init(); // reload the extended fields from db.
 			}
-*/
+
 
 			// Add a field of each type.
 			foreach($this->structTypes as $k=> $v)
