@@ -167,7 +167,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
 			//
-			$dimensions[0] = $parm['w'];
+			$dimensions[0] = isset($parm['w']) ? $parm['w'] : 0;
 			$dimensions[1] = !empty($parm['h']) ? $parm['h'] : 0;
 
 			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.

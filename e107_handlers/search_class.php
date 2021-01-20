@@ -335,8 +335,8 @@ class e_search
 						foreach ($matches as $this -> text) 
 						{
 							$this -> text = nl2br($this -> text);
-							$t_search = $tp -> search;
-							$t_replace = $tp -> replace;
+							$t_search = $tp->search;
+							$t_replace = $tp->replace;
 							$s_search = array('<br />', '[', ']');
 							$s_replace = array(' ', '<', '>');
 							$search = array_merge($t_search, $s_search);

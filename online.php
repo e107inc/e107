@@ -26,15 +26,15 @@
 	 */
 
 	require_once('class2.php');
-	e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/lan_' . e_PAGE);
+	e107::coreLan('online');
 
 	require_once(HEADERF);
 
-	if(!$pref['track_online'])
+	if(!isset($pref['track_online']))
 	{
 		$ns->tablerender(ONLINE_EL4, ONLINE_EL16);
 		require_once(FOOTERF);
-		exit;
+		return;
 	}
 	
 	$ONLINE_TABLE = '';
@@ -322,7 +322,7 @@
 	}
 
 
-	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = ONLINE_EL1 . GUESTS_ONLINE;
+	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = defset('ONLINE_EL1') . GUESTS_ONLINE;
 	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = ONLINE_EL2 . MEMBERS_ONLINE;
 
 	if(!isset($gen) || !is_object($gen))

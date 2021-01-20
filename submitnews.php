@@ -15,7 +15,8 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	$_POST['e-token'] = '';
 } 
 require_once("class2.php");
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('submitnews');
+// e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
@@ -353,7 +354,7 @@ class submitNews
 			      <tr>
 			        <td colspan='2' style='text-align:center' class='forumheader'>
 			          <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
-			           <input type='hidden' name='e-token' value='".e_TOKEN."' />
+			           <input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			        </td>
 			      </tr>
 			    </table>
@@ -387,7 +388,7 @@ class submitNewsForm extends e_form
 		{
 			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
 			$text .= "<div class='form-group'>";
-			$text .= $this->text('submitnews_media['.$i.']', $_POST['submitnews_media'][$i], 255, array('placeholder'=>$help) );
+			$text .= $this->text('submitnews_media['.$i.']', varset($_POST['submitnews_media'][$i]), 255, array('placeholder'=>$help) );
 			$text .= "</div>";
 		}
 

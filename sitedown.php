@@ -28,7 +28,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 $sitedown_shortcodes= e107::getScBatch('sitedown');
 
-if (!$SITEDOWN_TABLE)
+if (!isset($SITEDOWN_TABLE))
 {
 	if (file_exists(THEME.'templates/sitedown_template.php')) //v2.x location. 
 	{

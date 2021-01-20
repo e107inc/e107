@@ -7,7 +7,10 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
-define("PAGE_NAME", "Submit News");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Submit News");
+}
 //define("LAN_7", "Name: ");//LAN_NAME
 //define("LAN_62", "News Title: ");//LAN_TITLE
 //define("LAN_112", "Email Address: ");//LAN_EMAIL

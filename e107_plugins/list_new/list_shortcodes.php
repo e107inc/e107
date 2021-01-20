@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 //register_shortcode('list_shortcodes', true);
 //initShortcodeClass('list_shortcodes');
 
-class list_shortcodes
+class list_shortcodes extends e_shortcode
 {
 	var $rc; // list class.
 	var $e107;

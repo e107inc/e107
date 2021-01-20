@@ -952,9 +952,9 @@ class news_shortcodes extends e_shortcode
 	function sc_news_video($parm=null)
 	{
 		$tmp = $this->handleMultiple($parm,'video');	
-		$file = $tmp['file'];	
+		$file = varset($tmp['file']);
 			
-		if($video = e107::getParser()->toVideo($file, array('class'=> 'news-video-'.$tmp['count'])))
+		if($video = e107::getParser()->toVideo($file, array('class'=> 'news-video-'.varset($tmp['count']))))
 		{
 			return $video;
 		}

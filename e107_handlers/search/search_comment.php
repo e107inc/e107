@@ -50,7 +50,7 @@ $search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
 $where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
-$order = array('comment_datestamp' => DESC);
+$order = array('comment_datestamp' => 'DESC');
 $table = "comments AS c ".implode(' ', $join);
 
 $ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);

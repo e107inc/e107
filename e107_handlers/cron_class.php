@@ -967,11 +967,11 @@ class cronScheduler
 	 */
 	public function __construct()
 	{
-		global $_E107, $pref;
+		global $_E107;
 
 		$this->cron = new CronParser();
 		$this->debug = $_E107['debug'];
-		$this->pref = $pref;
+		$this->pref = e107::getPref();
 	}
 
 	/**
@@ -1157,7 +1157,7 @@ class cronScheduler
 			$pwd = str_replace('token=', '', $pwd);
 		}
 
-		if(($this->pref['e_cron_pwd'] != $pwd) || empty($this->pref['e_cron_pwd']))
+		if(empty($this->pref['e_cron_pwd']) || (varset($this->pref['e_cron_pwd']) != $pwd))
 		{
 			if(!empty($pwd))
 			{
@@ -1165,7 +1165,7 @@ class cronScheduler
 				$msg .= "<br /><br />";
 				$msg .= "Sent from cron: " . $pwd;
 				$msg .= "<br />";
-				$msg .= "Stored in e107: " . $this->pref['e_cron_pwd'];
+				$msg .= "Stored in e107: " . varset($this->pref['e_cron_pwd'], "(none set)");
 				$msg .= "<br /><br />";
 				$msg .= "You should regenerate the cron command in admin and enter it again in your server configuration.";
 

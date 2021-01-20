@@ -12,7 +12,7 @@
 
 require_once("class2.php");
 
-if(vartrue($_POST['email2'])) // spam-trap. 
+if(!empty($_POST['email2'])) // spam-trap.
 {
 	exit; 	
 }
@@ -25,6 +25,21 @@ if($qs[0] != 'activate')
 	//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
+
+e107::js('inline', "
+function addtext3(sc){
+		document.getElementById('signupform').image.value = sc;
+	}
+
+	function addsig(sc){
+		document.getElementById('signupform').signature.value += sc;
+	}
+	function help(help){
+		document.getElementById('signupform').helpb.value = help;
+	}
+");
+
+
 
 e107::coreLan('user'); // Generic user-related language defines
 
@@ -155,6 +170,7 @@ if(e_QUERY && e_QUERY != 'stage1')
 	$suObj = new e_signup;
 	$suObj->run(e_QUERY);
 	require_once(FOOTERF);
+	return;
 	exit;
 }
 
@@ -643,7 +659,7 @@ function req($field)
 	return ($field == 2 ? "<span class='required'></span>" : "");
 }
 //----------------------------------
-
+/*
 function headerjs()
 {
 	return "
@@ -660,4 +676,4 @@ function headerjs()
 	}
 	</script>\n";
 
-}
+}*/
