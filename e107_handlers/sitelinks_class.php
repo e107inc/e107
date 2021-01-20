@@ -1370,7 +1370,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				continue;
 			}
 			
-			if (isset($e107_vars[$act]['divider'])) 
+			if (isset($e107_vars[$act]['divider']) && !empty($tmpl['divider']))
 			{
 			 //	$text .= "<li class='divider'></li>";	
 			 	$text .= $tmpl['divider'];

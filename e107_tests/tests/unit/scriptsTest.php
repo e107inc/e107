@@ -123,7 +123,7 @@
 					continue;
 				}
 
-				echo " --- ".$file." --- \n";
+		//		echo " --- ".$file." --- \n";
 				ob_start();
 				// test for PHP Notice/Warning etc.
 				$error = false;
