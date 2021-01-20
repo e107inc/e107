@@ -394,6 +394,10 @@ class usersettings_shortcodes extends e_shortcode
 		{
 			$this->loadUECatData();
 		}
+		if(empty($this->fieldInfo))
+		{
+			$this->loadUEFieldData();
+		}
 
 		$catList = $this->catInfo;
 
