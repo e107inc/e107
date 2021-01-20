@@ -127,7 +127,7 @@ class e107_user_extended
 
 	public function init()
 	{
-		$sql = e107::getDb();
+		$sql = e107::getDb('ue');
 
 		// Read in all the field and category fields
 		// At present we load all fields into common array - may want to split system and non-system
@@ -195,13 +195,23 @@ class e107_user_extended
 	/**
 	 * Check read/write access on extended user-fields
 	 * @param string $field eg. user_something
-	 * @param string $type read|write
+	 * @param string $type read|write|applicable
 	 * @return boolean true if
 	 */
-	public function hasPermission($field, $type='read')
+	public function hasPermission($field, $type='read', $classList=null)
 	{
-		$class = ($type == 'read') ? $this->fieldAttributes[$field]['read'] : $this->fieldAttributes[$field]['write'];
-		return check_class($class);
+		if($classList === null)
+		{
+			$classList = USERCLASS_LIST;
+		}
+
+		if(!isset($this->fieldAttributes[$field][$type]))
+		{
+			trigger_error('$this->fieldAttributes['.$field.']['.$type.'] was not set', E_USER_NOTICE);
+		}
+
+		$class = $this->fieldAttributes[$field][$type];
+		return check_class($class, $classList);
 	}
 
 
@@ -552,10 +562,9 @@ class e107_user_extended
 	/**
 	 * alias of user_extended_get_categories();
 	 *
-	 * @param bool $byID
 	 * @return array
 	 */
-	function getCategories($byID = TRUE)
+	function getCategories()
 	{
 		return $this->catDefinitions;
 	}
@@ -591,13 +600,14 @@ class e107_user_extended
 
 
 	/**
-	 * BC Alias of getFields();
+	 * Returns an array of fields for the selected category.
+	 * The keys are the field name, minus the 'user_'.
 	 * @param string $cat
-	 * @return mixed
+	 * @return array
 	 */
-	public function getFields($cat = "")
+	public function getFields($cat = null)
 	{
-		return $this->user_extended_get_fieldList($cat);	
+		return $this->user_extended_get_fieldList($cat, 'user_extended_struct_name');
 	}
 
 
@@ -885,7 +895,7 @@ class e107_user_extended
 
 	function user_extended_field_exist($name)
 	{
-	  	$sql = e107::getDb('sql2');
+	  	$sql = e107::getDb('ue');
 		$tp = e107::getParser();
 		return $sql->count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
@@ -984,7 +994,6 @@ class e107_user_extended
 
 		if(!$this->user_extended_field_exist($name))
 		{
-
 
 			$nid = $sql->insert('user_extended_struct', $extStructInsert);
 			$this->init(); // rebuild the list.
@@ -1580,7 +1589,7 @@ class e107_user_extended
 	 */
 	function user_extended_setvalue($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{
-		$sql = e107::getDb();
+		$sql = e107::getDb('ue');
 		$tp = e107::getParser();
 
 		$uid = (int)$uid;
