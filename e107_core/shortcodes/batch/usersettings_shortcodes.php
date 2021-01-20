@@ -543,10 +543,10 @@ class usersettings_shortcodes extends e_shortcode
 		$ue = e107::getUserExt();
 		$data = (array) $ue->getFields($cat);
 
-		if(empty($data))
-		{
-			trigger_error('$data was empty', E_USER_NOTICE);
-		}
+	//	if(empty($data))
+	//	{
+			// trigger_error('$data was empty', E_USER_NOTICE);
+	//	}
 
 		$this->fieldInfo = [];
 		foreach($data as $k => $row)

@@ -124,6 +124,7 @@
 				}
 
 		//		echo " --- ".$file." --- \n";
+			//	codecept_debug("Loading file: ".$file);
 				ob_start();
 				// test for PHP Notice/Warning etc.
 				$error = false;
