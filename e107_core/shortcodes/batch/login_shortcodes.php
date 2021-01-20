@@ -40,7 +40,7 @@ class login_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return LOGINMESSAGE;
+		return defset('LOGINMESSAGE');
 	}
 	
 	/* example: {LOGIN_TABLE_USERNAME} */

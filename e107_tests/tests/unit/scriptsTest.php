@@ -35,7 +35,58 @@
 		}
 
 
-		private function loadScripts($folder, $exclude= array())
+		public function testFrontend()
+		{
+			e107::getConfig()->setPref('plug_installed/gsitemap', '1.0');
+
+			$include = 	array (
+				  0 => 'banner.php',
+			//	  1 => 'class2.php',
+			//	  2 => 'comment.php',
+				  3 => 'contact.php',
+
+			//	  5 => 'cron.php',
+			//	  6 => 'download.php',
+			//	  7 => 'e107_config.php',
+
+			//	  12 => 'email.php',
+				  13 => 'error.php',
+
+				  15 => 'fpw.php',
+				  16 => 'gsitemap.php',
+			//	  17 => 'index.php', // redirects
+			//	  18 => 'install.php', // not compatible with core.
+
+				  20 => 'login.php',
+				  21 => 'membersonly.php',
+			//	  22 => 'metaweblog.php',
+				  23 => 'news.php',
+				  24 => 'online.php',
+				  25 => 'page.php',
+			//	  26 => 'print.php',
+			//	  27 => 'rate.php', // has a redirect.
+			//	  28 => 'request.php', // redirects
+				  29 => 'search.php',
+			//	  30 => 'signup.php', too many 'exit';
+				  31 => 'sitedown.php',
+				  32 => 'submitnews.php',
+
+			//	  34 => 'thumb.php', // separate test.
+				  35 => 'top.php',
+				  36 => 'unsubscribe.php',
+		//		  37 => 'upload.php', // FIXME LAN conflict.
+				  38 => 'user.php',
+			//	  39 => 'userposts.php', // FIXME needs a rework
+				  40 => 'usersettings.php',
+				);
+
+			$this->loadScripts(e_BASE, array(), $include);
+		}
+
+
+
+
+		private function loadScripts($folder, $exclude= array(), $include=array())
 		{
 		//	$globalList = e107::getPref('lan_global_list');
 
@@ -67,12 +118,12 @@
 			{
 				$ext = pathinfo($folder.$file, PATHINFO_EXTENSION);
 
-				if($ext !== 'php' || in_array($file, $exclude))
+				if($ext !== 'php' || in_array($file, $exclude) || (!empty($include) && !in_array($file,$include)))
 				{
 					continue;
 				}
 
-			//	echo " --- ".$file." --- \n";
+				echo " --- ".$file." --- \n";
 				ob_start();
 				// test for PHP Notice/Warning etc.
 				$error = false;

@@ -213,6 +213,7 @@ class e107
 		'e_profanity'                    => '{e_HANDLER}e_profanity_class.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_render'                       => '{e_HANDLER}e_render_class.php',
+		'e_search'                       => '{e_HANDLER}search_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
 		'e_theme'                        => '{e_HANDLER}theme_handler.php',
@@ -1459,6 +1460,16 @@ class e107
 		return self::getSingleton('e_parse_shortcode');
 	}
 
+	/**
+	 * Retrieve search class singleton object
+	 *
+	 * @return array|Object|secure_image
+	 */
+	public static function getSearch()
+	{
+		return self::getSingleton('e_search'); // more flexible.
+		// return self::getObject('secure_image');
+	}
 
 	/**
 	 * Retrieve secure_image singleton object
@@ -3854,6 +3865,11 @@ class e107
 	 */
 	public static function canonical($plugin = '', $key = 'index', $row = array())
 	{
+		if($plugin === '_RESET_') // for testing only, may be removed in future.
+		{
+			e107::setRegistry('core/e107/canonical');
+		}
+
 
 		$alreadyDone = e107::getRegistry('core/e107/canonical');
 

@@ -16,9 +16,11 @@ require_once("class2.php");
 e107::coreLan('print');
 
 $qs = explode(".", e_QUERY,2);
-if ($qs[0] == "") {
+
+if ($qs[0] == "")
+{
 	e107::redirect();
-	 exit;
+	exit;
 }
 
 $CSS = <<<CSS
@@ -65,7 +67,7 @@ if(strpos($source,'plugin:') !== FALSE)
 	else
 	{
 		echo LAN_FILE_NOT_FOUND;
-		exit;
+		return;
 	}
 }
 else
@@ -134,6 +136,7 @@ else
 		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
 		<form action='#'><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
 }
+
 require_once(FOOTERF);
 
-?>
+

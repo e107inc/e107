@@ -121,6 +121,3 @@ if (!USER || getperms('0'))
 
 require_once(FOOTERF);
 
-exit;
-
-?>

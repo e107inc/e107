@@ -4,8 +4,10 @@ if (!defined('e107_INIT'))
 {
 	require_once("class2.php");
 }
-
-define('e_IFRAME', true);
+if(!defined('e_IFRAME'))
+{
+	define('e_IFRAME', true);
+}
 require_once(HEADERF);
 
 class e_unsubscribe
@@ -139,10 +141,7 @@ class e_unsubscribe
 new e_unsubscribe;
 
 
-
-
-
 require_once(FOOTERF);
-exit;
+
 
 

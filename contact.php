@@ -25,8 +25,10 @@ require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;
 
 e107::lan('core','contact');
-
-define('PAGE_NAME', LANCONTACT_00);
+if(!defined('PAGE_NAME'))
+{
+	define('PAGE_NAME', LANCONTACT_00); // FIX ME
+}
 e107::canonical('contact');
 require_once(HEADERF);
 
@@ -292,5 +294,4 @@ elseif($active == e_UC_MEMBER && ($pref['sitecontacts'] != e_UC_NOBODY))
 
 
 require_once(FOOTERF);
-exit;
-?>
+

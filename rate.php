@@ -64,7 +64,7 @@ else // Ajax Used.
 		echo 		e107::getRate()->submitVote($table,$itemid,$rate);
 	}
 	
-	exit;		
+exit;
 }
 	
 	

@@ -14,7 +14,7 @@ define("NWSLAN_4", "News - Existing News");
 define("NWSLAN_6", "Category");
 
 // define("NWSLAN_9", "tick to confirm");
-define("NWSLAN_10", "No news categories");
+// define("NWSLAN_10", "No news categories");
 // define("NWSLAN_11", "Add/Edit Categories");
 //define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");

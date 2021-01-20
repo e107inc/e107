@@ -168,6 +168,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+		$sc->__construct();
+
+
         $this->processShortcodeMethods($sc);
 
     }
@@ -184,6 +187,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
+
+		$sc->__construct();
 
         $this->processShortcodeMethods($sc);
 
@@ -230,6 +235,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	        'user_join'             => 1518441749
 	   );
 
+		$sc->__construct();
 		$sc->setVars($values);
 
         $this->processShortcodeMethods($sc);
@@ -251,6 +257,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+		$sc->__construct();
         $this->processShortcodeMethods($sc);
 
     }
@@ -269,6 +276,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+		$sc->__construct();
         $this->processShortcodeMethods($sc);
 
     }
@@ -286,6 +294,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
+
+		$sc->__construct();
 
         $this->processShortcodeMethods($sc);
 
@@ -321,6 +331,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'link_owner'       => 'news'
 		);
 
+		$sc->__construct();
 		$sc->setVars($vars);
 		
         $this->processShortcodeMethods($sc);
@@ -389,6 +400,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'user_name'         => 'admin'
 		);
 
+		$sc->__construct();
 		$sc->setVars($vars);
 
         $this->processShortcodeMethods($sc);
@@ -502,7 +514,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'menu_button_text'  => ''
 		);
 
-
+		$sc->__construct();
 		$sc->setVars($vars);
 
 		$exclude = array('sc_cpagemessage'); // system messages
@@ -569,7 +581,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			)
 			;
 
-
+		$sc->__construct();
 		$sc->setVars($vars);
 
 	//	$exclude = array('sc_cpagemessage'); // system messages
@@ -613,6 +625,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+		$sc->__construct();
         $this->processShortcodeMethods($sc);
 
     }
@@ -662,7 +675,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 			);
 
+		$sc->__construct();
 		$sc->setVars($vars);
+
 
 		$exclude = array('sc_user_email'); // uses random obfiscation.
         $this->processShortcodeMethods($sc, null, $exclude);
@@ -742,6 +757,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
+
 		$vars = array(
 			'cb_id'        => '11',
 			'cb_nick'      => '1.admin',
@@ -751,6 +767,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'cb_ip'        => '0000:0000:0000:0000:0000:ffff:7f00:0001'
 		);
 
+		$sc->__construct();
 		$sc->setVars($vars);
 
         $this->processShortcodeMethods($sc);
@@ -804,6 +821,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	   );
 
+		$sc->__construct();
 		$sc->setVars($values);
         $this->processShortcodeMethods($sc);
 
@@ -903,6 +921,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		);
 
+		$sc->__construct();
 		$sc->setVars($vars);
 
         $this->processShortcodeMethods($sc);
@@ -1177,7 +1196,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		);
 
 
-
+		$sc->__construct();
 		$sc->setVars($vars);
 		$exclude = array('sc_gallery_slides'); // uses a counter.
         $this->processShortcodeMethods($sc, null, $exclude);
@@ -1259,7 +1278,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		);
 
 
-
+		$sc->__construct();
 		$sc->setVars($vars);
 	//	$exclude = array('sc_gallery_slides'); // uses a counter.
         $this->processShortcodeMethods($sc);
@@ -1281,7 +1300,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			$this->fail($e->getMessage());
 		}
 
-
+		$sc->__construct();
 
         $this->processShortcodeMethods($sc);
 
@@ -1415,11 +1434,14 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		{
 			/** @var list_shortcodes $sc */
 			$sc = $this->make('list_shortcodes');
+
 		}
 		catch (Exception $e)
 		{
 			$this->fail($e->getMessage());
 		}
+
+		$sc->__construct();
 
 		$sc->rc = new listclass;
 
@@ -1464,6 +1486,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     private function processShortcodeMethods($sc, $parms=array(), $exclude=array())
     {
+        $sc->wrapper('non-existent/wrapper');
+
     	$list = get_class_methods($sc);
 
         foreach($list as $meth)

@@ -16,7 +16,10 @@ if(!defined('USER_AREA'))
 	//overload is now possible, prevent warnings
 	define('USER_AREA',TRUE);
 }
-define('ADMIN_AREA', FALSE);
+if(!defined('ADMIN_AREA'))
+{
+	define('ADMIN_AREA', false);
+}
 
 $e107 = e107::getInstance();
 $sql = e107::getDb();
@@ -730,7 +733,10 @@ if(deftrue('BOOTSTRAP'))
 
 
 // Header included notification, from this point header includes are not possible
-define('HEADER_INIT', TRUE);
+if(!defined('HEADER_INIT'))
+{
+	define('HEADER_INIT', TRUE);
+}
 
 e107::getDebug()->logTime("Main Page Body");
 

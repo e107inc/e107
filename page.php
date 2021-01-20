@@ -33,7 +33,7 @@ if(!e_QUERY)
 	}*/
 	
 	require_once(FOOTERF);
-	exit;
+
 }
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
@@ -44,7 +44,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
 	require_once(FOOTERF);
-	exit;	
+
 }
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
@@ -56,7 +56,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
 	require_once(FOOTERF);
-	exit;		
+
 }
 else
 {
@@ -78,7 +78,7 @@ else
 
 	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], $e107CorePage->pageOutput['mode']);
 	require_once(FOOTERF);
-	exit;
+
 }
 
 /* EOF */

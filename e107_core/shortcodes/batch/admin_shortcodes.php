@@ -13,7 +13,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class admin_shortcodes
+class admin_shortcodes extends e_shortcode
 {
 
 	const ADMIN_NAV_HOME = 'enav_home'; // Must match with admin_template. ie. {ADMIN_NAVIGATION=enav_home} and $E_ADMIN_NAVIGATION['button_enav_home']

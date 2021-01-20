@@ -575,7 +575,10 @@ function getAlert()
 
 
 // Header included notification, from this point header includes are not possible
-define('HEADER_INIT', TRUE);
+if(!defined('HEADER_INIT'))
+{
+	define('HEADER_INIT', TRUE);
+}
 
 e107::getDebug()->logTime("End Head, Start Body");
 

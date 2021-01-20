@@ -4494,7 +4494,10 @@ class e107plugin
 
 			if (file_exists($_path . 'plugin.xml'))
 			{
-				unset($_POST['uninstall_confirm']);
+				if(isset($_POST['uninstall_confirm']))
+				{
+					unset($_POST['uninstall_confirm']);
+				}
 				$this->install_plugin_xml($plug, 'uninstall', $options); //$_POST must be used.
 			}
 			else

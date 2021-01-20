@@ -1266,12 +1266,14 @@ class e_parse_shortcode
 						$_class = strtolower($code);
 						$_path = e_CORE.'shortcodes/single/'.strtolower($code).'.php';
 
-						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
+						include_once($_path);
+
 
 						if (class_exists($_class, false)) // prevent __autoload - performance
 						{
 							// SecretR - fix array(parm, sc_mode) causing parm to become an array, see issue 424
-							$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
+						//	$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
+							$ret = e107::callMethod($_class, $_function, $parm, $sc_mode); // v2.3.1
 						}
 						elseif (function_exists($_function))
 						{

@@ -20,7 +20,7 @@ if (!e107::isInstalled('banner'))
 	exit;
 }
 
-e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
+// e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
 e107::lan('banner');
 
 

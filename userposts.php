@@ -279,6 +279,9 @@ else
 	exit;
 }
 
+
+
+
 require_once(FOOTERF);
 
 
@@ -310,4 +313,4 @@ function parse_userposts_comments_table($row, $template)
 	return e107::getParser()->simpleParse($template, $vars);
 }
 
-?>
+
