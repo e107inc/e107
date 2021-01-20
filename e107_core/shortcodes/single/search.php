@@ -14,7 +14,7 @@ function search_shortcode($parm=null)
 
 	$text = "";
 
-	if(!isset($SEARCH_SHORTCODE))
+	if(empty($SEARCH_SHORTCODE))
 	{
 		if(!$SEARCH_SHORTCODE = e107::getCoreTemplate('search','shortcode'))
 		{
@@ -22,6 +22,11 @@ function search_shortcode($parm=null)
 		}
 	}
 
+	if(empty($SEARCH_SHORTCODE))
+	{
+		trigger_error('$SEARCH_SHORTCODE template was empty', E_USER_NOTICE);
+		return null;
+	}
 
 	$ref = array();
 
@@ -60,10 +65,7 @@ function search_shortcode($parm=null)
 		$page = 'all';
 	}
 
-	if(empty($SEARCH_SHORTCODE))
-	{
-		return null;
-	}
+
 
 	$sc = e107::getScBatch('search');
 	$sc->wrapper('search/shortcode');

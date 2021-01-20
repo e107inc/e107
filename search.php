@@ -43,7 +43,7 @@ if (isset($_GET['t']) && is_numeric($_GET['t']))
 }
 
 
-class search extends e_shortcode
+class search_front extends e_shortcode
 {
 	
 	private $search_prefs = array();
@@ -1006,7 +1006,7 @@ class search extends e_shortcode
 }
 
 
-$srchObj 		= new search;
+$srchObj 		= new search_front;
 $search_info 	= $srchObj->getConfig();
 $search_prefs	= $srchObj->getPrefs();
 

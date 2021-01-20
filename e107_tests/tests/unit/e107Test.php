@@ -1025,7 +1025,7 @@ class e107Test extends \Codeception\Test\Unit
 		$all = e107::getAddonConfig('e_url');
 		foreach($all as $plugin => $var)
 		{
-			if($plugin === 'gallery') // fixme - sef may be enabled or disabled each time tests are run
+			if($plugin === 'gallery' || $plugin === 'rss_menu') // fixme - sef may be enabled or disabled each time tests are run
 			{
 				continue;
 			}

@@ -2202,20 +2202,22 @@ class e_admin_controller
 		$triggerEnabled = $this->triggersEnabled();
 		if(!e_AJAX_REQUEST && $triggerEnabled)
 		{
-			$posted = $request->getPosted();
-			foreach ($posted as $key => $value)
+			if($posted = $request->getPosted())
 			{
-				if(strpos($key, 'etrigger_') === 0)
+				foreach ($posted as $key => $value)
 				{
-					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
-					if(method_exists($this, $actionTriggerName))
+					if(strpos($key, 'etrigger_') === 0)
 					{
-						$this->$actionTriggerName($value);
-					}
-					//Check if triggers are still enabled
-					if(!$triggerEnabled)
-					{
-						break;
+						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
+						if(method_exists($this, $actionTriggerName))
+						{
+							$this->$actionTriggerName($value);
+						}
+						//Check if triggers are still enabled
+						if(!$triggerEnabled)
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -3878,6 +3880,7 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			
 				case 'datestamp':
+					$opt = array();
 					if(!is_numeric($value))
 					{
 						if(!empty($attributes['writeParms']))
@@ -3893,7 +3896,7 @@ class e_admin_controller_ui extends e_admin_controller
 						}
 
 						
-						$format = $opt['type'] ? ('input'.$opt['type']) : 'inputdate';
+						$format = !empty($opt['type']) ? ('input'.$opt['type']) : 'inputdate';
 						$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;
 					}
 				break;
@@ -5583,6 +5586,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$data = $this->featurebox;
 		
 		$scount = 0;
+		$category = 0;
+
         foreach($selected as $id)
         {
         	if(!$tree->hasNode($id)) 
@@ -5639,7 +5644,7 @@ class e_admin_ui extends e_admin_controller_ui
         if($scount > 0)
         {
 			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_PLUGIN_FEATUREBOX_NAME);
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
 			return $scount;        
         }
         
