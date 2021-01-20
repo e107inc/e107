@@ -1093,7 +1093,7 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 
 		// e107::scStyle($sc_style);
-		e107::getScBatch('usersettings')->setVars($curVal);
+		e107::getScBatch('usersettings')->setVars($curVal)->reset();
 
 		$USERSETTINGS_EDIT = $this->getTemplate('edit');
 		$USERSETTINGS_EDIT_CAPTION = $this->getTemplate('edit_caption');
