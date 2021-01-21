@@ -206,7 +206,7 @@ if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 // re-initalize in case globals are destroyed from $e_headers includes
 $e_js = e107::getJs();
 $e_pref = e107::getConfig();
-
+$pref = e107::getPref();
 
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';

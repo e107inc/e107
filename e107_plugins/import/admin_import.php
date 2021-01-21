@@ -33,7 +33,7 @@ Options supported:
  define('IMPORT_DEBUG',TRUE);
 // define('IMPORT_DEBUG',TRUE);
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 // define("USE_PERSISTANT_DB",TRUE);
 
 

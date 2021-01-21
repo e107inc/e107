@@ -50,7 +50,7 @@ class downloadCategory
 	 */
 	function down_cat_tree($nest_level = 1, $load_cat_class = USERCLASS_LIST, $main_cat_load = '', $accum = FALSE)
 	{
-		global $sql2;
+		$sql2 = e107::getDb('sql2');
 
 		$catlist = array();
 		$this->cat_count = 0;

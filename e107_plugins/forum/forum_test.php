@@ -1,5 +1,5 @@
 <?php
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
 	
 $timestart = microtime();

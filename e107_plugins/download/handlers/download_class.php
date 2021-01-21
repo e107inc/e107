@@ -99,7 +99,7 @@ class download
 	
 		$tmp = explode('.', e_QUERY);
 		
-		$order = str_replace("download_","",$pref['download_order']);
+		$order = str_replace("download_","", varset($pref['download_order'], 'id'));
 						
 		// Set Defaults
 		$this->qry['action']		= 'maincats';
@@ -134,7 +134,7 @@ class download
 			   $this->qry['order'] 		= preg_replace("#\W#", "", $tp->toDB($tmp[4]));
 			   $this->qry['sort'] 		= preg_replace("#\W#", "", $tp->toDB($tmp[5]));
 		   	}
-			elseif($tmp[1])
+			elseif(!empty($tmp[1]))
 		   	{
 			   $this->qry['action'] 	= preg_replace("#\W#", "", $tp->toDB($tmp[0]));
 			   $this->qry['id'] 		= intval($tmp[1]);
@@ -310,7 +310,7 @@ class download
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	   // Read in tree of categories which this user is allowed to see
-		$dlcat = new downloadCategory(varset($pref['download_subsub'],1),USERCLASS_LIST,$maincatval,varset($pref['download_incinfo'],FALSE));
+		$dlcat = new downloadCategory(varset($pref['download_subsub'],1),USERCLASS_LIST, null ,varset($pref['download_incinfo'],FALSE));
 
 		if ($dlcat->down_count == 0)
 	   	{

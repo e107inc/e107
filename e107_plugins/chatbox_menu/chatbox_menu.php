@@ -15,7 +15,7 @@ if(isset($_POST['chatbox_ajax']))
 	define('e_MINIMAL', true);
 	if(!defined('e107_INIT'))
 	{
-		require_once('../../class2.php');
+		require_once(__DIR__.'/../../class2.php');
 	}
 }
 
@@ -232,7 +232,7 @@ if($emessage !== '')
 }
 
 
-if(!$text = $e107cache->retrieve('nq_chatbox'))
+if(!$text = e107::getCache()->retrieve('nq_chatbox'))
 {
 
 	global $pref, $tp;
@@ -317,7 +317,7 @@ if(!$text = $e107cache->retrieve('nq_chatbox'))
 				: CHATBOX_L12) . '</a> (' . $total_chats . ')</div>';
 	}
 
-	$e107cache->set('nq_chatbox', $text);
+	e107::getCache()->set('nq_chatbox', $text);
 }
 
 

@@ -1496,7 +1496,12 @@ class comment
 				return null;
 			}
 
-			global $pref,$sql,$sql2,$tp;
+			$sql = e107::getDb();
+			$tp = e107::getParser();
+			$sql2 = e107::getDb('sql2');
+			$pref = e107::getPref();
+
+
 			$from1 = ($from ? $from : '0');
 			$amount1 = ($amount ? $amount : '10');
 			$valid = ($cdvalid ? $cdvalid : '0');

@@ -12,7 +12,7 @@
 
 if (!defined('e107_INIT'))
 {
-	require_once("../../class2.php");
+	require_once(__DIR__.'/../../class2.php');
 }
 
 if(file_exists(e_PLUGIN."faqs/controllers/list.php")) // bc for old controller.

@@ -11,7 +11,7 @@
  */
 
 $eplug_admin = TRUE;
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 require_once(e_HANDLER."userclass_class.php");
 	
 e107::includeLan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");

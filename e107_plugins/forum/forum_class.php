@@ -1756,15 +1756,17 @@ class e107forum
 		$sql = e107::getDb();
 		$viewed = '';
 
-		if($e107->currentUser['user_plugin_forum_viewed'])
+		$forumViewed = e107::getUserExt()->get(USERID, 'user_plugin_forum_viewed' );
+
+		if($forumViewed)
 		{
-			$viewed = " AND thread_id NOT IN (".$e107->currentUser['user_plugin_forum_viewed'].")";
+			$viewed = " AND thread_id NOT IN (".$forumViewed.")";
 		}
 
 		$_newqry = 	'
 		SELECT DISTINCT f.forum_sub, ft.thread_forum_id FROM `#forum_thread` AS ft
 		LEFT JOIN `#forum` AS f ON f.forum_id = ft.thread_forum_id
-		WHERE ft.thread_lastpost > '.USERLV.' '.$viewed;
+		WHERE ft.thread_lastpost > '.defset('USERLV', strtotime('1 month ago') ).' '.$viewed;
 
 		$ret = array();
 

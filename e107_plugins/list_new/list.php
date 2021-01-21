@@ -22,7 +22,7 @@
  *	@subpackage list_new
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 if (!e107::isInstalled('list_new'))
 {

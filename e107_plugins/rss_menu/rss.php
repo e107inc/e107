@@ -26,7 +26,7 @@ if (!defined('e107_INIT'))
 		$_E107['minimal'] = true;
 	}
 
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 
 $e107 = e107::getInstance();

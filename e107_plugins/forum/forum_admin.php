@@ -9,7 +9,7 @@
  */
 
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('P'))
 {
 	e107::redirect('admin');

@@ -38,7 +38,7 @@ if (!defined('e107_INIT'))
 
 // $cobj = e107::getObject('comment');
 
-
+e107::lan('comment_menu', null);
 $cobj = e107::getComment();
 
 $menu_pref = e107::getConfig('menu')->getPref();
@@ -82,6 +82,8 @@ if(!$TEMPLATE = e107::getTemplate('comment_menu'))
 require_once (e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
 $sc = e107::getScBatch('comment_menu', true);
 $sc->wrapper('comment_menu');
+
+$tp = e107::getParser();
 
 $text .= $tp->parseTemplate($TEMPLATE['start'], true, $sc);
 
