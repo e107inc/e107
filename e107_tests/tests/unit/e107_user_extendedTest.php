@@ -456,7 +456,7 @@
 
 		public function testSignupExtendedUserFieldsShortcode()
 		{
-			$this->fixRegistry('before');
+		//	$this->fixRegistry('before');
 
 
 			$sc = e107::getScBatch('signup');
@@ -504,7 +504,7 @@
 
 			}
 
-			$this->fixRegistry('after');
+		//	$this->fixRegistry('after');
 
 
 
