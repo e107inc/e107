@@ -685,32 +685,27 @@ class userlogin
 		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
 		$class_list = $this->userMethods->addCommonClasses($userData, true);
 
-		//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 
-		/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
-			{  // Need to note in user audit trail
-				$log = e107::getLog();
-				$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
-			}*/
 
 		$edata_li = array('user_id'    => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => implode(',', $class_list), /*'remember_me' => $autologin,*/
 		                  'user_admin' => $userData['user_admin'], 'user_email' => $userData['user_email']);
-		
+
+		$userAuditPref = e107::getPref('user_audit_class', e_UC_NOBODY);
+		if (check_class($userAuditPref, $class_list))
+		{
+			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $edata_li);
+		}
+
 		e107::getEvent()->trigger("login", $edata_li);
 
-
-		if(check_class(e_UC_NEWUSER, $class_list))
+		//  // 'New user' probationary period expired - we can take them out of the class
+		if(check_class(e_UC_NEWUSER, $class_list) && $this->userMethods->newUserExpired($userData['user_join']))
 		{
-			if($this->userMethods->newUserExpired($userData['user_join']))  // 'New user' probationary period expired - we can take them out of the class
-			{
-				$userData['user_class'] = e107::getUserClass()->ucRemove(e_UC_NEWUSER, $userData['user_class']);
-//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$userData['user_class'],FALSE,FALSE);
-
-				e107::getDb()->update('user', "`user_class` = '" . $userData['user_class'] . "' WHERE `user_id`=" . $userData['user_id'] . " LIMIT 1");
-
-				$edata_li = array('user_id' => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => $userData['user_class'], 'user_email' => $userData['user_email']);
-				e107::getEvent()->trigger('userNotNew', $edata_li);
-			}
+			$userData['user_class'] = e107::getUserClass()->ucRemove(e_UC_NEWUSER, $userData['user_class']);
+//			$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$userData['user_class'],FALSE,FALSE);
+			e107::getDb()->update('user', "`user_class` = '" . $userData['user_class'] . "' WHERE `user_id`=" . $userData['user_id'] . " LIMIT 1");
+			$edata_li = array('user_id' => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => $userData['user_class'], 'user_email' => $userData['user_email']);
+			e107::getEvent()->trigger('userNotNew', $edata_li);
 		}
 
 		return $cookieval;

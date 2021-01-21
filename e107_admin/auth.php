@@ -24,9 +24,6 @@ e107::getDebug()->logTime('(Start auth.php)');
 
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
-
-
-
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig('core');
 
@@ -121,14 +118,15 @@ else
 	}
 	
 	require_once(e_ADMIN.'boot.php');
-	
+
 	$sec_img = e107::getSecureImg();
 
 	$use_imagecode = (vartrue($pref['admincode']) && extension_loaded("gd"));
 
-	if ($_POST['authsubmit'])
+
+	// login check.
+	if(!empty($_POST['authsubmit']))
 	{
-		$obj = new auth;
 
 		if ($use_imagecode)
 		{	
@@ -136,83 +134,31 @@ else
 			{
 				e107::getRedirect()->redirect('admin.php?failed');
 				exit;
-			//	echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-			//	header("location: ../index.php");
-			//	exit;
 			}
 		}
 
-	//	require_once (e_HANDLER.'user_handler.php');
-		/** @var array $row */
-		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass'], varset($_POST['hashchallenge'], ''));
-
-		if ($row[0] == "authfail")
+		if(!$result = e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge']), true))
 		{
-			e107::coreLan('log_messages', true);
-			$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
-			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+				e107::coreLan('log_messages', true);
+				e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
+				echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 
-			e107::getRedirect()->redirect('admin.php?failed');
-			exit;
+				e107::getRedirect()->redirect('admin.php?failed');
+				exit;
 		}
-		else
-		{
 
-			$reHashedPass = e107::getUserSession()->rehashPassword($row,$_POST['authpass']);
-			if($reHashedPass !==false)
-			{
-				e107::getLog()->add('ADMINPW_02', '', E_LOG_INFORMATIVE, '', LOG_TO_ADMIN, $row);
-				$row['user_password'] = $reHashedPass;
-			}
+		e107::getRedirect()->go('admin');
+		exit;
 
-			$cookieval = $row['user_id'].".".md5($row['user_password']);
-
-
-
-			// Calculate class membership - needed for a couple of things
-			// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-			$class_list = explode(',', $row['user_class']);
-			if ($row['user_admin'] && strlen($row['user_perms']))
-			{
-				$class_list[] = e_UC_ADMIN;
-				if (strpos($row['user_perms'], '0') === 0)
-				{
-					$class_list[] = e_UC_MAINADMIN;
-				}
-			}
-			$class_list[] = e_UC_MEMBER;
-			$class_list[] = e_UC_PUBLIC;
-
-
-			if (in_array(varset($pref['user_audit_class'], ''), $class_list))
-			{
-				e107::getLog()->user_audit(USER_AUDIT_LOGIN, ['Login via admin page'], $row['user_id'], $row['user_name']);
-			}
-
-			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
-			
-			// Fix - set cookie before login trigger
-			$sessionLife = (int) e107::getPref('session_lifetime', ( 3600 * 24 * 30)); // default 1 month.
-
-			if($sessionLife > 0)
-			{
-				$sessionLife = time() + $sessionLife;
-			}
-
-			session_set(e_COOKIE, $cookieval, $sessionLife);
-
-			unset($sessionLife,$cookieval);
-		
-			// ---
-			
-			e107::getEvent()->trigger("login", $edata_li);
-
-
-
-			e107::getRedirect()->redirect(e_ADMIN_ABS.'admin.php');
-			//echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
-		}
 	}
+
+
+
+
+
+
+
+
 
 	$e_sub_cat = 'logout';
 	if (ADMIN == FALSE)
@@ -407,91 +353,6 @@ class auth
 	}
 
 
-	/**
-	 * Admin auth check
-	 * @param string $authname, entered name
-	 * @param string $authpass, entered pass
-	 * @param object $authresponse [optional]
-	 * @return array if fail, 'authfail' will contain a message.
-	 *
-	 */
-	public function authcheck($authname, $authpass, $authresponse = '')
-	{
-		$pref 		= e107::getPref();
-		$tp 		= e107::getParser();
-		$sql_auth 	= e107::getDb('sql_auth');
-		$user_info 	= e107::getUserSession();
-		$reason 	= '';
-
-		$authname = $tp->toDB(preg_replace("/\sOR\s|\=|\#/", "", trim($authname)));
-		$authpass = trim($authpass);
-
-		if ((($authpass == '') && ($authresponse == '')) || ($authname == ''))
-			$reason = 'np';
-		if (strlen($authname) > varset($pref['loginname_maxlength'], 30))
-			$reason = 'lu';
-
-		if (!$reason)
-		{
-			if ($sql_auth->select("user", "*", "user_loginname='{$authname}' AND user_admin = 1 "))
-			{
-				$row = $sql_auth->fetch();
-			}
-			elseif ($sql_auth->select("user", "*", "(user_name='{$authname}' OR user_email='{$authname}' ) AND user_admin=1 "))
-			{
-				$row = $sql_auth->fetch();
-				$authname = $row['user_loginname'];
-			}
-			else
-			{
-				$reason = 'iu';
-			}
-		}
-
-		if (!$reason && ($row['user_id'])) // Can validate password
-		{
-			$session = e107::getSession();
-			if (($authresponse && $session->is('prevchallenge')) && ($authresponse != $session->get('prevchallenge')))
-			{ // Verify using CHAP (can't handle login by email address - only loginname - although with this code it does still work if the password is stored unsalted)
-				/*
-				$title = 'Login via admin';
-				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
-				$text = 'CHAP: '.$username.' ('.$extra_text.')';
-				$title = e107::getParser()->toDB($title);
-				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-
-				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
-				*/
-				
-				if (($pass_result = $user_info->CheckCHAP($session->get('prevchallenge'), $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
-				{
-					return $row;
-				}
-			}
-			else
-			{ // Plaintext password
-				/*
-				$title = 'Login via admin';
-				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
-				$text = 'STD: '.$username.' ('.$extra_text.')';
-				$title = e107::getParser()->toDB($title);
-				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-
-//				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
-				*/
-
-				if (($pass_result = $user_info->CheckPassword($authpass, $authname, $row['user_password'])) !== PASSWORD_INVALID)
-				{
-					return $row;
-				}
-
-			}
-		}
-		return array("authfail", "reason"=>$reason);
-	}
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-?>
+
