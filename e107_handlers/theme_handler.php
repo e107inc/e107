@@ -3063,8 +3063,13 @@ class themeHandler
 
 			$this->id = $name;
 			$this->loadThemeConfig();
-			$className = get_class($this->themeConfigObj);
 
+			$className = '';
+
+			if(!empty($this->themeConfigObj))
+			{
+				$className = get_class($this->themeConfigObj);
+			}
 			if($className === 'theme_config') // new way.  2.1.4
 			{
 				$themeConfig = e107::getThemeConfig($name);
