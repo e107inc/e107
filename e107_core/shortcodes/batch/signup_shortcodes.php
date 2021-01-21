@@ -483,6 +483,7 @@ class signup_shortcodes extends e_shortcode
 
 		/** @var e107_user_extended $ue */
 		$ue = e107::getUserExt();
+		$ue->init();
 		$tp = e107::getParser();
 
 		$catList = $ue->getCategories();
