@@ -66,7 +66,7 @@ class forumStats
 		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
 		$fp = $sql->fetch();
 
-		$open_ds = $fp['post_datestamp'];
+		$open_ds = (int) varset($fp['post_datestamp']);
 		$open_date = $gen->convert_date($open_ds, 'long');
 		$open_since = $gen -> computeLapse($open_ds);
 		$open_days = floor((time()-$open_ds) / 86400);
@@ -77,6 +77,8 @@ class forumStats
 		$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
 		$sql->gen($query);
 		$array = $sql -> db_getList();
+		$db_size = 0;
+		$avg_row_len = 0;
 		foreach($array as $table)
 		{
 			if($table['Name'] == MPREFIX.'forum_post')
@@ -153,6 +155,7 @@ class forumStats
 		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
 
 		$top_repliers = array();
+		$top_repliers_sort = array();
 		foreach($top_repliers_data as $uid => $poster)
 		{
 			$poster['post_count'] = $poster['post_count'] - $top_repliers_data_c[$uid]['thread_count'];
