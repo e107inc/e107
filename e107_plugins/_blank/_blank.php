@@ -11,7 +11,7 @@
 */
 if (!defined('e107_INIT'))
 {
-	require_once("../../class2.php");
+	require_once(__DIR__.'/../../class2.php');
 }
 
 
@@ -47,7 +47,7 @@ class _blank_front
 	//	$template = e107::getTemplate('_blank','_blank','default');
 	//	$text = $tp->parseTemplate($template['start'],true, $sc);
 
-		if($rows = $sql->retrieve('blank','*',false,'',true)) 	// combined select and fetch function - returns an array.
+		if($rows = $sql->retrieve('blank','*',false,true)) 	// combined select and fetch function - returns an array.
 		{
 			// print_a($rows);
 			foreach($rows as $key=>$value)		// loop throug
@@ -56,7 +56,7 @@ class _blank_front
 			//	$sc->setVars($value); // if shortcodes are enabled.
 			//	$text .= $tp->parseTemplate($template['item'],true, $sc);
 
-				$text .=  $tp->toHTML($value['blank_type'])."<br />";
+				$text .=  $tp->toHTML(varset($value['blank_type']))."<br />";
 			}
 
 		//	$text .= $tp->parseTemplate($template['end'],true, $sc);
@@ -128,7 +128,7 @@ $_blankFront = new _blank_front;
 require_once(HEADERF); 					// render the header (everything before the main content area)
 $_blankFront->run();
 require_once(FOOTERF);					// render the footer (everything after the main content area)
-exit; 
+
 
 // For a more elaborate plugin - please see e107_plugins/gallery
 

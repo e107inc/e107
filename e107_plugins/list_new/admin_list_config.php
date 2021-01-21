@@ -23,7 +23,7 @@
  */
 
 //include and require several classes
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 if(!getperms("1") || !e107::isInstalled('list_new'))
 {
 	e107::redirect('admin');

@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('D') && !getperms('P'))
 {
 	e107::redirect('admin');
@@ -644,7 +644,7 @@ require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 //TODO - Put client/password in a separate table?

@@ -23,7 +23,7 @@ e107::plugLan('download', 'front', true);
  */
 class download_shortcodes extends e_shortcode
 {
-	public $qry;
+	public $qry = array();
 	public $dlsubrow;
 	public $dlsubsubrow;
 	public $mirror;
@@ -45,7 +45,9 @@ class download_shortcodes extends e_shortcode
 	{
 		$breadcrumb 	= array();
 
-		switch ($this->qry['action'])
+		$action = varset($this->qry['action']);
+
+		switch ($action)
 		{
 			case 'mirror':
 				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,					'url' => e107::url('download', 'index'));
@@ -71,7 +73,11 @@ class download_shortcodes extends e_shortcode
 					$breadcrumb[]	= array('text' => $this->parent['download_category_name'],	'url' => ($this->parent['download_category_id']) ?  e107::url('download', 'category', $this->parent) : null);
 				}
 
-				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ?  e107::url('download', 'category', $this->var) : null);
+				if(isset($this->var['download_category_name']))
+				{
+					$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ?  e107::url('download', 'category', $this->var) : null);
+				}
+
 				$breadcrumb[]	= array('text' => varset($this->var['download_name']),			'url' => null);
 			break;
 		}

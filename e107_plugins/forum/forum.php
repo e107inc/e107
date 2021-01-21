@@ -11,7 +11,7 @@
 */
 if(!defined('e107_INIT'))
 {
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 $e107 = e107::getInstance();
 $tp = e107::getParser();
@@ -214,82 +214,6 @@ foreach ($forumList['parents'] as $parent)
 }
 
 
-function parse_forum($f, $restricted_string = '')
-{
-
-	global $FORUM_MAIN_FORUM, $forumList, $sc;
-
-	$tp = e107::getParser();
-
-	if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
-	{
-		$lastPost = explode('.', $f['forum_lastpost_info']);
-		$lastpost_datestamp = reset($lastPost);
-		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
-
-		$f['forum_threads'] += $ret['threads'];
-		$f['forum_replies'] += $ret['replies'];
-		if(isset($ret['lastpost_info']))
-		{
-			$f['forum_lastpost_info'] = $ret['lastpost_info'];
-			$f['forum_lastpost_user'] = $ret['lastpost_user'];
-			$f['forum_lastpost_user_anon'] = $ret['lastpost_user_anon'];
-			$f['user_name'] = $ret['user_name'];
-		}
-
-		$f['text'] = $ret['text'];
-	}
-
-	$sc->setVars($f);
-
-	$sc->wrapper('forum/main/forum');
-
-	return $tp->parseTemplate($FORUM_MAIN_FORUM, true, $sc);
-}
-
-
-
-function parse_subs($forumList, $id, $lastpost_datestamp)
-{
-
-	$tp = e107::getParser();
-	$ret = array();
-
-	$subList = $forumList['subs'][$id];
-
-	$ret['text'] = '';
-	$ret['threads'] = 0;
-	$ret['replies'] = 0;
-
-	foreach($subList as $sub)
-	{
-	//	print_a($sub);
-
-		$ret['text'] .= ($ret['text'] ? ', ' : '');
-
-		$urlData                = $sub;
-		$urlData['parent_sef']  = $forumList['all'][$sub['forum_sub']]['forum_sef']; //   = array('parent_sef'=>
-		$suburl                 = e107::url('forum','forum', $urlData);
-
-		$ret['text']            .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
-		$ret['threads']         += $sub['forum_threads'];
-		$ret['replies']         += $sub['forum_replies'];
-		$tmp                    = explode('.', $sub['forum_lastpost_info']);
-
-		if($tmp[0] > $lastpost_datestamp)
-		{
-			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
-			$ret['lastpost_user'] = $sub['forum_lastpost_user'];
-			$ret['lastpost_user_anon'] = $sub['forum_lastpost_user_anon'];
-			$ret['user_name'] = $sub['user_name'];
-			$lastpost_datestamp = $tmp[0];
-		}
-	}
-
-
-	return $ret;
-}
-
 //if (e_QUERY == 'track')
 //{
 
@@ -468,7 +392,7 @@ function forum_track()
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 
 				$data['NEWIMAGE'] = $IMAGE_nonew_small;
-				
+
 				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
 				{
 					$data['NEWIMAGE'] = $IMAGE_new_small;
@@ -476,7 +400,7 @@ function forum_track()
 
 				$data['LASTPOSTUSER'] = !empty($row['user_name']) ? "<a href='".e107::url('user/profile/view', array('name' => $row['user_name'], 'id' => $row['thread_lastuser']))."'>".$row['user_name']."</a>" : LAN_ANONYMOUS;
 				$data['LASTPOSTDATE'] = $tp->toDate($row['thread_lastpost'],'relative');
-				
+
 				$buttonId = "forum-track-button-".intval($row['thread_id']);
 
 				$forumUrl = e107::url('forum','forum',$row);
@@ -536,5 +460,84 @@ function forum_track()
 
 	return null;
 }
+
+
+
+function parse_forum($f, $restricted_string = '')
+{
+
+	global $FORUM_MAIN_FORUM, $forumList, $sc;
+
+	$tp = e107::getParser();
+
+	if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
+	{
+		$lastPost = explode('.', $f['forum_lastpost_info']);
+		$lastpost_datestamp = reset($lastPost);
+		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
+
+		$f['forum_threads'] += $ret['threads'];
+		$f['forum_replies'] += $ret['replies'];
+		if(isset($ret['lastpost_info']))
+		{
+			$f['forum_lastpost_info'] = $ret['lastpost_info'];
+			$f['forum_lastpost_user'] = $ret['lastpost_user'];
+			$f['forum_lastpost_user_anon'] = $ret['lastpost_user_anon'];
+			$f['user_name'] = $ret['user_name'];
+		}
+
+		$f['text'] = $ret['text'];
+	}
+
+	$sc->setVars($f);
+
+	$sc->wrapper('forum/main/forum');
+
+	return $tp->parseTemplate($FORUM_MAIN_FORUM, true, $sc);
+}
+
+
+
+function parse_subs($forumList, $id, $lastpost_datestamp)
+{
+
+	$tp = e107::getParser();
+	$ret = array();
+
+	$subList = $forumList['subs'][$id];
+
+	$ret['text'] = '';
+	$ret['threads'] = 0;
+	$ret['replies'] = 0;
+
+	foreach($subList as $sub)
+	{
+	//	print_a($sub);
+
+		$ret['text'] .= ($ret['text'] ? ', ' : '');
+
+		$urlData                = $sub;
+		$urlData['parent_sef']  = $forumList['all'][$sub['forum_sub']]['forum_sef']; //   = array('parent_sef'=>
+		$suburl                 = e107::url('forum','forum', $urlData);
+
+		$ret['text']            .= "<a href='{$suburl}'>".$tp->toHTML($sub['forum_name']).'</a>';
+		$ret['threads']         += $sub['forum_threads'];
+		$ret['replies']         += $sub['forum_replies'];
+		$tmp                    = explode('.', $sub['forum_lastpost_info']);
+
+		if($tmp[0] > $lastpost_datestamp)
+		{
+			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
+			$ret['lastpost_user'] = $sub['forum_lastpost_user'];
+			$ret['lastpost_user_anon'] = $sub['forum_lastpost_user_anon'];
+			$ret['user_name'] = $sub['user_name'];
+			$lastpost_datestamp = $tmp[0];
+		}
+	}
+
+
+	return $ret;
+}
+
 
 

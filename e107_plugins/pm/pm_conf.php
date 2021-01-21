@@ -33,7 +33,7 @@ TODO:
 
 $retrieve_prefs[] = 'pm_prefs';
 $eplug_admin = TRUE;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 
 if (!e107::isInstalled('pm') || !getperms('P'))
 {

@@ -12,7 +12,7 @@
 
 	if(!defined('e107_INIT'))
 	{
-		require_once('../../class2.php');
+		require_once(__DIR__.'/../../class2.php');
 	}
 	$e107 = e107::getInstance();
 	if(!e107::isInstalled('forum'))

@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 e107::lan('faqs', 'admin',true);
 //TODO LANS

@@ -12,7 +12,7 @@
 
 
 $eplug_admin = TRUE;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('1')) 
 {
 	e107::redirect('admin');
@@ -62,7 +62,7 @@ $text = "
     </colgroup>
 	<tr>
 		<td>".CLOCK_AD_L2.": </td>
-		<td><input class='tbox' type='text' name='clock_caption' size='20' value='".$menu_pref['clock_caption']."' maxlength='100' />	</td>
+		<td><input class='tbox' type='text' name='clock_caption' size='20' value='".varset($menu_pref['clock_caption'])."' maxlength='100' />	</td>
 	</tr>
 	
 	<tr>
@@ -72,27 +72,27 @@ $text = "
 
 	<tr>
 		<td>".CLOCK_AD_L7.": </td>
-		<td><input class='tbox' type='text' name='clock_dateprefix' size='10' value='".$menu_pref['clock_dateprefix']."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L8."</span></td>
+		<td><input class='tbox' type='text' name='clock_dateprefix' size='10' value='".varset($menu_pref['clock_dateprefix'])."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L8."</span></td>
 	</tr>
 	
 	<tr>
 		<td>".CLOCK_AD_L9.": </td>
-		<td><input class='tbox' type='text' name='clock_datesuffix1' size='10' value='".$menu_pref['clock_datesuffix1']."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
+		<td><input class='tbox' type='text' name='clock_datesuffix1' size='10' value='".varset($menu_pref['clock_datesuffix1'])."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
 	</tr>
 	
 	<tr>
 		<td>".CLOCK_AD_L10.": </td>
-		<td><input class='tbox' type='text' name='clock_datesuffix2' size='10' value='".$menu_pref['clock_datesuffix2']."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
+		<td><input class='tbox' type='text' name='clock_datesuffix2' size='10' value='".varset($menu_pref['clock_datesuffix2'])."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
 	</tr>
 	
 	<tr>
 		<td>".CLOCK_AD_L11.": </td>
-		<td><input class='tbox' type='text' name='clock_datesuffix3' size='10' value='".$menu_pref['clock_datesuffix3']."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
+		<td><input class='tbox' type='text' name='clock_datesuffix3' size='10' value='".varset($menu_pref['clock_datesuffix3'])."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
 	</tr>
 	
 	<tr>
 		<td>".CLOCK_AD_L12.": </td>
-		<td><input class='tbox' type='text' name='clock_datesuffix4' size='10' value='".$menu_pref['clock_datesuffix4']."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
+		<td><input class='tbox' type='text' name='clock_datesuffix4' size='10' value='".varset($menu_pref['clock_datesuffix4'])."' maxlength='50' /><span class='field-help'>".CLOCK_AD_L13."</span></td>
 	</tr>
 	</table>
 	

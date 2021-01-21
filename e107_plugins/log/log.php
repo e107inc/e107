@@ -25,7 +25,7 @@
 //error_reporting(0);
 // error_reporting(E_ALL);
 define('e_MINIMAL',true);
-require_once("../../class2.php"); // More secure to include it. 
+require_once(__DIR__.'/../../class2.php'); // More secure to include it.
 header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 

@@ -11,7 +11,7 @@
 */
 
 $eplug_admin = TRUE;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
 if (!getperms('1')) 

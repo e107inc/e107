@@ -133,6 +133,50 @@
 		}
 
 
+		public function testPluginScripts()
+		{
+
+			$core = e107::getPlug()->getCorePluginList();
+
+
+			foreach($core as $plug)
+			{
+				$parm = null; //
+				e107::plugLan($plug, 'global'); // load global language (usually done in class2.php)
+				e107::getConfig()->setPref('plug_installed/'.$plug, 1); // simulate installed.
+
+				$path = e_PLUGIN.$plug;
+				$files = scandir($path);
+				unset($files[0], $files[1]);  // . and ..
+
+				foreach($files as $f)
+				{
+					$filePath = $path.'/'.$f;
+
+					if(is_dir($filePath) || (strpos($f, '_sql.php') !== false) || strpos($f, '.php') === false)
+					{
+						continue;
+					}
+
+					echo " --- ".$filePath." --- \n";
+					ob_start();
+					require_once( $filePath);
+					ob_end_clean();
+				//	echo $plug.'/'.$f."\n";
+
+				}
+
+			}
+
+
+		}
+
+
+
+
+
+
+
 
 		/**
 		 * @see https://github.com/e107inc/e107/issues/3547
