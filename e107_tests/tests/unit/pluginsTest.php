@@ -132,11 +132,13 @@
 
 		}
 
-
+/*
 		public function testPluginScripts()
 		{
 
 			$core = e107::getPlug()->getCorePluginList();
+
+			$exclude = array('forum_post.php');
 
 
 			foreach($core as $plug)
@@ -153,7 +155,7 @@
 				{
 					$filePath = $path.'/'.$f;
 
-					if(is_dir($filePath) || (strpos($f, '_sql.php') !== false) || strpos($f, '.php') === false)
+					if(is_dir($filePath) || (strpos($f, '_sql.php') !== false) || strpos($f, '.php') === false || in_array($f, $exclude))
 					{
 						continue;
 					}
@@ -172,7 +174,7 @@
 		}
 
 
-
+*/
 
 
 
