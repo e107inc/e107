@@ -86,7 +86,7 @@
 
 	$sc = e107::getScBatch('viewforum', 'forum');
 
-	$forumId = (int) $_REQUEST['id'];
+	$forumId = (int) varset($_REQUEST['id']);
 
 	if(!$forumId && e_QUERY) // BC Fix for old links.
 	{
@@ -98,10 +98,8 @@
 
 	if(!$forum->checkPerm($forumId, 'view'))
 	{
-		// header('Location:'.e107::getUrl()->create('forum/forum/main'));
-
 		$url = e107::url('forum', 'index', null, ['mode'=>'full']);
-
+/*
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			print_a($_REQUEST);
@@ -110,7 +108,7 @@
 			echo "   forumId: " . $forumId;
 			exit;
 		}
-
+*/
 
 		e107::getRedirect()->go($url);
 

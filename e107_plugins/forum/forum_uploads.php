@@ -26,7 +26,7 @@ e107::lan('forum', "front", true);
 
 
 
-if(is_array($_POST['delete']))
+if(!empty($_POST['delete']) && is_array($_POST['delete']))
 {
 	foreach(array_keys($_POST['delete']) as $fname)
 	{
@@ -48,7 +48,7 @@ if(is_array($_POST['delete']))
 
 include_once(e_HANDLER."file_class.php");
 include_once(HEADERF);
-if($msg)
+if(!empty($msg))
 {
 	$ns->tablerender(LAN_FORUM_7004, $msg);
 }
@@ -68,7 +68,7 @@ if(is_array($fileList))
 	<form method='post' action='".e_SELF."'>
 	<table style='width:98%'>
 	<tr>
-		<td class='fcaption'>".FRMUP_5."</td>
+		<td class='fcaption'>".defset('LAN_FORUM_7010', "Filename")."</td>
 		<td class='fcaption'>".LAN_FORUM_7006."</td>
 	</tr>";
 	foreach($fileList as $finfo)
@@ -110,12 +110,15 @@ if(is_array($fileList))
 	}
 	$txt .= "</table>";
 }
-if(!$filecount) {
+if(!$filecount)
+{
 	$ns->tablerender(LAN_FORUM_7001,LAN_FORUM_7009);
-	include_once(FOOTERF);
-	exit;
+}
+else
+{
+	$ns->tablerender(LAN_FORUM_7001, $txt);
 }
 
-$ns->tablerender(LAN_FORUM_7001, $txt);
-include_once(FOOTERF);
+
+require_once(FOOTERF);
 

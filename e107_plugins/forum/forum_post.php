@@ -128,7 +128,7 @@ class forum_post_handler
 
 		if (!e_QUERY || empty($_GET['id']))
 		{
-			$url = e107::url('forum','index',null,'full');
+			$url = e107::url('forum','index',null,['mode'=>'full']);
 			$this->redirect($url);
 		//	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 			exit;
@@ -183,7 +183,7 @@ class forum_post_handler
 				break;
 
 			default:
-				$url = e107::url('forum','index',null,'full');
+				$url = e107::url('forum','index',null,['mode'=>'full']);
 				$this->redirect($url);
 			//	header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 				exit;
@@ -1756,7 +1756,7 @@ class forum_post_handler
 require_once(HEADERF);
 new forum_post_handler;
 require_once(FOOTERF);
-exit;
+
 
 
 
