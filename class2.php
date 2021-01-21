@@ -1746,18 +1746,43 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 	{
 		return null;
 	}
-
+/*
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
 	{
 		$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : "";
-	}	
+	}
+	*/
+	if((empty($domain) && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
+	{
+		$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : '';
+	}
+
+	if(defined('e_MULTISITE_MATCH') && deftrue('e_ADMIN_AREA'))
+	{
+		$path = '/';
+	}
 	
 	setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
-// generic function for retaining values across pages. ie. cookies or sessions.
+//
+/**
+ *
+ * generic function for retaining values across pages. ie. cookies or sessions.
+ * @deprecated Use e107::getUserSession()->makeUserCookie($userData, $autologin); instead.
+ * @param $name
+ * @param $value
+ * @param string $expire
+ * @param string $path
+ * @param string $domain
+ * @param int $secure
+ */
 function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $secure = 0)
 {
+
+	//$userData = ['user_name
+//	e107::getUserSession()->makeUserCookie($userData, $autologin);
+
 	global $pref;
 	if ($pref['user_tracking'] === 'session')
 	{
