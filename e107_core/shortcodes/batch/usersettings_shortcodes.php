@@ -481,10 +481,11 @@ class usersettings_shortcodes extends e_shortcode
 				$ret .= $this->sc_userextended_field($field);
 			}
 		}
-		else
-		{
-			trigger_error(__METHOD__ . ' -- $fieldList is empty. Line: ' . __LINE__, E_USER_NOTICE);
-		}
+
+	//	if(empty($ret))
+	//	{
+		//	trigger_error(__METHOD__ . ' returned nothing. Line: ' . __LINE__, E_USER_NOTICE);
+	//	}
 
 
 		if(!empty($ret) && ($this->extendedTabs === false))
@@ -493,10 +494,7 @@ class usersettings_shortcodes extends e_shortcode
 			$ret = str_replace("{CATNAME}", $tp->toHTML($catName, false, 'TITLE'), $USER_EXTENDED_CAT) . $ret;
 		}
 
-		if(empty($ret))
-		{
-			trigger_error(__METHOD__ . ' returned nothing. Line: ' . __LINE__, E_USER_NOTICE);
-		}
+
 
 		$this->extendedShown['cat'][$parm] = true;
 
