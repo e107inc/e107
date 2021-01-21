@@ -5,6 +5,7 @@
 [![GitHub Workflow "Unit Tests" Status](https://img.shields.io/github/workflow/status/e107inc/e107/Unit%20Tests?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAOCAQAAABnEe8CAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAAA3cAAAN3Aa+SYCgAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABG0lEQVQoFW3By0pUARgA4H8O05AQZWjkImjprr0LL7guJ3VcidAmkFZBi0AHDyNCtu4FeoF6hbQLw5CiKIX2BLWa0+jshj6P13Tq++KUfjWbDrTtWnUvrnAzjpmU2Vc14aGXdhwaizP6VNyKCFM6qirWNR2qe2ROT+Qk5qWKEeGO36peaxiWKBnx3u3IGVL3NE5Ztqei4breuOCut34ajnO2LfpoJMIDqWKEoucy2+7HX1rKMknkvPHZjF28cyMu01KWSSKn1y/8UVOIq2ypWjcaJzzRNhP/UrNn2lc9kVMwqKQU3fTLLHnlu3GJgiGfPFOIbh7rSE1b09T0xawXPrgW3ZQ1/ZAqm7Dgm5bZ+B99UhtaDmxZMRBdjgBnPOGTaoNcdgAAAABJRU5ErkJggg==)](https://github.com/e107inc/e107/actions)
 [![Code coverage](https://img.shields.io/codeclimate/coverage/e107inc/e107?logo=code-climate)](https://codeclimate.com/github/e107inc/e107/test_coverage)
 [![Join the chat at https://gitter.im/e107inc/e107](https://img.shields.io/gitter/room/e107inc/e107?logo=gitter&color=ED1965)](https://gitter.im/e107inc/e107?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Download e107](https://img.shields.io/sourceforge/dt/e107.svg)](https://sourceforge.net/projects/e107/files/latest/download)
 
 **[e107][1]** is a free and open-source content management system (CMS) which allows you to manage and publish your content online with ease. Developers can save time in building websites and powerful online applications. Users can avoid programming completely! Blogs, websites, intranets – e107 does it all. 
 
