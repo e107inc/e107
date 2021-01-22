@@ -193,7 +193,7 @@ else
 	require_once(HEADERF);
 	$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_1);
 	require_once(FOOTERF);
-	exit;
+
 }
 
 class rssCreate

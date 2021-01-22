@@ -29,8 +29,14 @@ if (!e107::isInstalled('newsfeed'))
 	return;
 }
 
-define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
-define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+if(!defined('NEWSFEED_LIST_CACHE_TAG'))
+{
+	define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
+}
+if(!defined('NEWSFEED_NEWS_CACHE_TAG'))
+{
+	define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+}
 
 define('NEWSFEED_DEBUG', false);
 

@@ -2367,7 +2367,7 @@ switch ($action)
 			show_prefs($mailAdmin);
 		}
 		break;
-
+/*
 	case 'maint' :
 		if (getperms('0'))
 		{
@@ -2380,7 +2380,7 @@ switch ($action)
 		{
 			show_maint(TRUE);
 		}
-		break;
+		break;*/
 
 	case 'saved' :				// Show template emails
 	case 'sent' :
@@ -2653,6 +2653,7 @@ function sendImmediately($id)
 //-----------------------------------------------------------
 //			MAINTENANCE OPTIONS
 //-----------------------------------------------------------
+/*
 function show_maint($debug = FALSE)
 {
 	return;
@@ -2680,7 +2681,7 @@ function show_maint($debug = FALSE)
 
 		$ns->tablerender(ADLAN_136.SEP.ADLAN_40, $mes->render().$text);
 }
-
+*/
 
 /*
 function mailout_adminmenu() 

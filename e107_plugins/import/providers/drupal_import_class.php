@@ -12,7 +12,7 @@
  * b) The array index of certain variables.
  */
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 /**
  * Class drupal_import.

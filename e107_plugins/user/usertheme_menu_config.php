@@ -66,6 +66,8 @@ if (isset($_POST['update_theme']))
 	}
 }
 
+$themeList = array();
+
 if (isset($pref['allowed_themes']))
 {
 	$allThemes = FALSE;

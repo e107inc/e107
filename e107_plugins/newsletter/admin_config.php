@@ -123,6 +123,8 @@ class newsletter
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 
+		$text = '';
+
 		if(!$sql->select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
 			$mes->addInfo(NLLAN_05);
@@ -168,7 +170,8 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
-		unset($text);
+
+		$text = '';
 
 		if(!$sql->select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{

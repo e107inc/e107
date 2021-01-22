@@ -421,15 +421,98 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			return $this->export('export');
 		}
 
+
+		function runExport()
+		{
+
+			if (isset($_POST['create_export']) )
+			{
+				$export_type = $_POST['export_type'];
+				$export_month = $_POST['export_month'];
+				$export_year = $_POST['export_year'];
+				$export_day = $_POST['export_day'];
+				$export_date = $_POST['export_date'];
+				$export2_date = $_POST['export2_date'];
+
+				$first_date = 0;
+				$last_date = 0;
+				$date_error = FALSE;
+				if ($export_type == 'page')
+				{
+					switch ($export_date)
+					{
+						case '1' :		//	Single day
+							$first_date = gmmktime(0,0,0,$export_month,$export_day,$export_year);
+							$last_date = $first_date+86399;
+							$export_filter = " `log_id`='".date("Y-m-j",$first_date)."'";
+							break;
+						case '2' :		// Daily for a month
+							$first_date = gmmktime(0,0,0,$export_month,1,$export_year);
+							$last_date = gmmktime(0,0,0,$export_month+1,1,$export_year) - 1;
+							$export_filter = " LEFT(`log_id`,8)='".gmstrftime("%Y-%m-",$first_date)."'";
+							break;
+						case '3' :		// Monthly for a Year
+							$first_date = gmmktime(0,0,0,1,1,$export_year);
+							$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
+							$export_filter = " LENGTH(`log_id`)=7 AND LEFT(`log_id`,5)='".gmstrftime("%Y-",$first_date)."'";
+							break;
+						case '4' :		// Accumulated
+						case '5' :
+							$export_filter = "`log_id`='pageTotal'";
+							$date_error = 'ignore';
+							break;
+					}
+				}
+				else
+				{  // Calculate strings for non-page sources
+					$prefix_len = 0;
+					$export_date = $export2_date;
+					if (isset($stats_list[$export_type]))
+					{
+						$prefix_len = strlen($export_type) + 1;
+						switch ($export2_date)
+						{
+							case '3' :		// Monthly for a Year
+								if ($prefix_len > 0)
+								{
+									$first_date = gmmktime(0,0,0,1,1,$export_year);
+									$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
+									$export_filter = " LENGTH(`log_id`)='".($prefix_len + 7)."' AND LEFT(`log_id`,".($prefix_len + 5).")='".$export_type.":".gmstrftime("%Y-",$first_date)."'";
+								}
+								break;
+							case '4' :		// Accumulated
+								$export_filter = " `log_id`='".$export_type."'";
+								$date_error = 'ignore';
+								break;
+						}
+					}
+					else
+					{
+						$message = ADSTAT_LAN_54;
+					}
+				}
+				if (($date_error != 'ignore') && (($first_date == 0) || ($last_date == 0) || $date_error))
+				{
+					$message = ADSTAT_LAN_47;
+				}
+			}
+
+
+
+
+		}
+
 		private function export($action)
 		{
+			$this->runExport();
+
 			global $export_type, $export_date, $export2_date, $export_day, $export_month, $export_year, $separator_list,
 			       $export_char, $quote_list, $export_quote, $export_filter;
 
 			$frm = e107::getForm();
 			$sql = e107::getDb();
 
-			$text = "<div style='text-align:center'>";
+			$text = "<div>";
 
 			if ($action == 'export')
 			{
@@ -442,8 +525,8 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			$text .= "<table class='table adminform'>
 			<colgroup>
-			  <col style='width:50%' />
-			  <col style='width:50%' />
+			  <col style='width:25%' />
+			  <col  />
 			</colgroup>
 			";
 
@@ -471,8 +554,8 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			// Period selection type for non-page data
 			$text .= "
 				<select class='tbox' name='export2_date' id='export2_date' onchange=\"setdatebox(this.value);\"  ".($export_type=='page' ? "style='display:none'" : "").">\n
-				<option value='3'".($export2_date==3 ? " selected='selected'" : "").">".ADSTAT_LAN_44."</option>\n
-				<option value='4'".($export2_date==4 ? " selected='selected'" : "").">".ADSTAT_LAN_45."</option>\n
+				<option value='3' ".($export2_date==3 ? " selected='selected'" : "").">".ADSTAT_LAN_44."</option>\n
+				<option value='4' ".($export2_date==4 ? " selected='selected'" : "").">".ADSTAT_LAN_45."</option>\n
 				</select>";
 
 			$text .= "</td></tr>";
@@ -530,7 +613,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 						foreach ($quote_list as $k=>$v)
 						{
 							$selected = $export_quote == $k ? " selected='selected'" : "";
-							$text .= "<option value='{$k}'".$selected.">{$v}</option>\n";
+							$text .= "<option value='{$k}' ".$selected.">{$v}</option>\n";
 						}
 						$text .= "</select>\n</td></tr>";
 
@@ -808,7 +891,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 				for ($i = 1; $i < 13; $i++)
 				{
 					$selected = $match_month == $i ? " selected='selected'" : "";
-					$text .= "<option value='{$i}'".$selected.">".nl_langinfo(constant('MON_'.$i))."</option>\n";
+					$text .= "<option value='{$i}' ".$selected.">".nl_langinfo(constant('MON_'.$i))."</option>\n";
 				}
 				
 				$text .= "</select>\n&nbsp;&nbsp;&nbsp;";
@@ -819,7 +902,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 				for ($i = $this_year; $i > $this_year - 6; $i--)
 				{
 					$selected = ($this_year - 2) == $i ? " selected='selected'" : "";
-					$text .= "<option value='{$i}'{$selected}>{$i}</option>\n";
+					$text .= "<option value='{$i}' {$selected}>{$i}</option>\n";
 				}
 				
 				$text .= "</select>\n</td></tr>";
@@ -882,7 +965,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 		public function prefsPage()
 		{
 
-			global $pref;
+			$pref = e107::getPref();
 
 			$frm = e107::getForm();
 
@@ -896,31 +979,31 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			<tr>
 				<td>".ADSTAT_LAN_4."</td>
-				<td>".$frm->radio_switch('statActivate', $pref['statActivate'])."</td>
+				<td>".$frm->radio_switch('statActivate', varset($pref['statActivate']))."</td>
 			</tr>
 			<tr>
 				<td>".ADSTAT_LAN_18."</td>
-				<td>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
+				<td>".r_userclass("statUserclass", varset($pref['statUserclass']),'off','public, member, admin, classes')."</td>
 			</tr>
 			<tr>
 				<td>".ADSTAT_LAN_20."</td>
-				<td>".$frm->radio_switch('statCountAdmin', $pref['statCountAdmin'])."</td>
+				<td>".$frm->radio_switch('statCountAdmin', varset($pref['statCountAdmin']))."</td>
 			</tr>
 			<tr>
 				<td>".ADSTAT_LAN_21."</td>
-				<td><input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' /></td>
+				<td><input class='tbox' type='text' name='statDisplayNumber' size='8' value='".varset($pref['statDisplayNumber'])."' maxlength='3' /></td>
 			</tr>
 			<tr>
 				<td>".ADSTAT_LAN_5."</td>
 				<td>
-				".$this->gen_select(ADSTAT_LAN_6, 'statBrowser',$pref['statBrowser'])
-				.$this->gen_select(ADSTAT_LAN_7, 'statOs',$pref['statOs'])
-				.$this->gen_select(ADSTAT_LAN_8, 'statScreen',$pref['statScreen'])
-				.$this->gen_select(ADSTAT_LAN_9, 'statDomain',$pref['statDomain'])
-				.$this->gen_select(ADSTAT_LAN_10, 'statRefer',$pref['statRefer'])
-				.$this->gen_select(ADSTAT_LAN_11, 'statQuery',$pref['statQuery'])
+				".$this->gen_select(ADSTAT_LAN_6, 'statBrowser', varset($pref['statBrowser']))
+				.$this->gen_select(ADSTAT_LAN_7, 'statOs', varset($pref['statOs']))
+				.$this->gen_select(ADSTAT_LAN_8, 'statScreen',varset($pref['statScreen']))
+				.$this->gen_select(ADSTAT_LAN_9, 'statDomain',varset($pref['statDomain']))
+				.$this->gen_select(ADSTAT_LAN_10, 'statRefer',varset($pref['statRefer']))
+				.$this->gen_select(ADSTAT_LAN_11, 'statQuery',varset($pref['statQuery']))
 				."<div class='clearfix' style='padding-bottom: 4px'><span class='pull-left float-left'>".ADSTAT_LAN_19."</span><span class='pull-right float-right'>
-				 ".$frm->radio_switch('statRecent', $pref['statRecent'])."</span></div>
+				 ".$frm->radio_switch('statRecent', varset($pref['statRecent']))."</span></div>
 				</td>
 			</tr>
 
@@ -1147,152 +1230,10 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 	e107::getAdminUI()->runPage();
 
 	require_once(e_ADMIN."footer.php");
-	exit;
+
+
 
 /*
-
-require_once(e_ADMIN.'auth.php');
-
-require_once(e_HANDLER.'userclass_class.php');
-$frm = e107::getForm();
-$mes = e107::getMessage();
-
-*/
-
-
-if (e_QUERY) 
-{
-	$sl_qs = explode('.', e_QUERY);
-}
-$action = varset($sl_qs[0],'config');
-$params = varset($sl_qs[1],'');
-
-
-
-
-if (isset($_POST['create_export']) && (($action == 'export') || ($action == 'datasets')))
-{
-	$first_date = 0;
-	$last_date = 0;
-	$date_error = FALSE;
-	if ($export_type == 'page')
-	{
-		switch ($export_date)
-		{
-			case '1' :		//	Single day
-				$first_date = gmmktime(0,0,0,$export_month,$export_day,$export_year);
-				$last_date = $first_date+86399;
-				$export_filter = " `log_id`='".date("Y-m-j",$first_date)."'";
-				break;
-			case '2' :		// Daily for a month
-				$first_date = gmmktime(0,0,0,$export_month,1,$export_year);
-				$last_date = gmmktime(0,0,0,$export_month+1,1,$export_year) - 1;
-				$export_filter = " LEFT(`log_id`,8)='".gmstrftime("%Y-%m-",$first_date)."'";
-				break;
-			case '3' :		// Monthly for a Year
-				$first_date = gmmktime(0,0,0,1,1,$export_year);
-				$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
-				$export_filter = " LENGTH(`log_id`)=7 AND LEFT(`log_id`,5)='".gmstrftime("%Y-",$first_date)."'";
-				break;
-			case '4' :		// Accumulated
-			case '5' :
-				$export_filter = "`log_id`='pageTotal'";
-				$date_error = 'ignore';
-				break;
-		}
-	}
-	else
-	{  // Calculate strings for non-page sources
-		$prefix_len = 0;
-		$export_date = $export2_date;
-		if (isset($stats_list[$export_type]))
-		{
-			$prefix_len = strlen($export_type) + 1;
-			switch ($export2_date)
-			{
-				case '3' :		// Monthly for a Year
-					if ($prefix_len > 0)
-					{
-						$first_date = gmmktime(0,0,0,1,1,$export_year);
-						$last_date = gmmktime(0,0,0,1,1,$export_year+1) - 1;
-						$export_filter = " LENGTH(`log_id`)='".($prefix_len + 7)."' AND LEFT(`log_id`,".($prefix_len + 5).")='".$export_type.":".gmstrftime("%Y-",$first_date)."'";
-					}
-					break;
-				case '4' :		// Accumulated
-					$export_filter = " `log_id`='".$export_type."'";
-					$date_error = 'ignore';
-					break;
-			}
-		}
-		else
-		{
-			$message = ADSTAT_LAN_54;
-		}
-	}
-	if (($date_error != 'ignore') && (($first_date == 0) || ($last_date == 0) || $date_error))
-	{
-		$message = ADSTAT_LAN_47;
-	}
-}
-
-
-
-//---------------------------------------------
-//		Remove page entries
-//---------------------------------------------
-if(isset($_POST['openRemPageD']))
-{
-  $action = 'rempage';
-}
-
-
-
-
-
-
-
-
-
-
-echo  $mes->render() ;
-
-
-
-
-
-
-switch ($action)
-{
-  case 'config' :
-
-	break;  // case config
-	
-  case 'rempage' :			// Remove pages
-//	rempage();
-    break;
-	
-	
-  case 'export' :			// Export file
-  case 'datasets' :
-	//===========================================================
-	//				EXPORT DATA
-	//===========================================================
-
-    break;	// case 'export'
-	
-  case 'history' :
-	//===========================================================
-	//				DELETE HISTORY
-	//===========================================================
-
-    break;	// case 'history'
-
-}
-
-
-require_once(e_ADMIN."footer.php");
-
-
 function headerjs()
 {
   $script_js = "<script type=\"text/javascript\">
@@ -1368,50 +1309,6 @@ function headerjs()
   return $script_js;
 }
 
-
-
-//---------------------------------------------
-//		Remove page entries - prompt/list
-//---------------------------------------------
-function rempage()
-{
-
-}
-
-
-//---------------------------------------------
-//		Remove page entries - action
-//---------------------------------------------
-
-
-
-
-function admin_config_adminmenu()
-{
-  if (e_QUERY) 
-  {
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-  }
-  if (empty($action)) $action = "config";
-
-  $var['config']['text'] = ADSTAT_LAN_35;
-  $var['config']['link'] = 'admin_config.php';
-
-  $var['export']['text'] = ADSTAT_LAN_36;
-  $var['export']['link'] ='admin_config.php?export';
-
-//  $var['datasets']['text'] = ADSTAT_LAN_63;
-//  $var['datasets']['link'] ='admin_config.php?datasets';
-
-  $var['rempage']['text'] = ADSTAT_LAN_26;
-  $var['rempage']['link'] ='admin_config.php?rempage';
-
-  $var['history']['text'] = ADSTAT_LAN_69;
-  $var['history']['link'] ='admin_config.php?history';
-
-  show_admin_menu(ADSTAT_LAN_39, $action, $var);
-}
-
+*/
 
 

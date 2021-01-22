@@ -95,11 +95,8 @@
 	$pm_prefs = e107::getPlugPref('pm');
 
 
-	$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
-	if($pm_prefs['perpage'] == 0)
-	{
-		$pm_prefs['perpage'] = 10;
-	}
+	$pm_prefs['perpage'] = (int) varset($pm_prefs['perpage'], 10);
+
 
 	if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	{
@@ -952,5 +949,5 @@
 
 
 	require_once(FOOTERF);
-	exit;
+
 

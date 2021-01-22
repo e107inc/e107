@@ -640,5 +640,5 @@ e107::js('hero', 'js/bootstrap-iconpicker.min.js');
 
 
 require_once(e_ADMIN."footer.php");
-exit;
+
 

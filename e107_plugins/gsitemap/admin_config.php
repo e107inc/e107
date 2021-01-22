@@ -185,7 +185,7 @@ class gsitemap_ui extends e_admin_ui
 			$caption = LAN_HELP;
 			$text = 'Some help text';
 
-			return array('caption'=>$caption,'text'=> $text);
+		//	return array('caption'=>$caption,'text'=> $text);
 
 		}
 
@@ -636,7 +636,7 @@ new gsitemap_adminArea();
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
-if(deftrue('e_DEBUG'))
+if(deftrue('e_DEBUG_GSITEMAP_ADMIN'))
 {
 	echo "Debug Comparison<hr /> ";
 	$gsm = new gsitemap;
@@ -1032,6 +1032,7 @@ class gsitemap
 require_once(e_ADMIN."footer.php");
 
 // loaded automatically.
+/*
 function admin_config_adminmenu() 
 {
 	$action = (e_QUERY) ? e_QUERY : "list";
@@ -1049,5 +1050,5 @@ function admin_config_adminmenu()
 	$var['import']['perm'] = "0";
 	
 	show_admin_menu(LAN_PLUGIN_GSITEMAP_NAME, $action, $var);
-}
+}*/
 

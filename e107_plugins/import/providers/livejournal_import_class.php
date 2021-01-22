@@ -12,7 +12,7 @@
  * $Author: secretr $
  */
 
-// require_once('import_classes.php');
+// require_once(__DIR__.'/../import_classes.php');
 require_once('rss_import_class.php');
 
 //$import_class_names['livejournal_import'] 		= 'LiveJournal';

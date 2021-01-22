@@ -16,7 +16,8 @@ if (!e107::isInstalled('newsletter') || !ADMIN)
 	e107::redirect();
 	exit(); 
 }
-e107::includeLan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
+
+e107::plugLan('newsletter', null);
 require_once(HEADERF);
 
 $sql = e107::getDb();

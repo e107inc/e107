@@ -16,8 +16,8 @@
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
 if ( ! defined('e107_INIT')) { exit(); }
 
-require_once(e_HANDLER.'language_class.php');
-$slng = new language;
+e107::plugLan('user', null);
+$slng = e107::getLanguage();
 
 $languageList = explode(',', e_LANLIST);
 sort($languageList);

@@ -327,7 +327,7 @@
 
 	if(!isset($gen) || !is_object($gen))
 	{
-		$gen = new convert;
+		$gen = e107::getDate();
 	}
 
 	$siteHistory = e107::getConfig('history')->getPref('');
@@ -339,6 +339,7 @@
 	$scArray['ONLINE_TABLE_MOST_GUESTS_ONLINE'] = ONLINE_EL1 . $siteHistory['most_guests_online'];
 	$scArray['ONLINE_TABLE_DATESTAMP'] = $datestamp;
 
+	$sql = e107::getDb();
 	$total_members = $sql->count("user", "(*)", "where user_ban = 0");
 
 	if($total_members > 1)

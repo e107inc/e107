@@ -100,7 +100,7 @@ if (USER == TRUE || ADMIN == TRUE)
 
     //prepare
 	$new_total = 0;
-	$time = USERLV;
+	$time = defset('USERLV', 0);
 	$menu_data = array();
 
 		// ------------ News Stats -----------

@@ -170,4 +170,4 @@ class gallery
 new gallery;
 
 require_once(FOOTERF);
-exit;
+

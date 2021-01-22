@@ -22,7 +22,7 @@ require_once('tagcloud_class.php');
 
 
 // http://lotsofcode.github.io/tag-cloud/
-if (!class_exists('tagcloud_menu'))
+if(!class_exists('tagcloud_menu'))
 {
 	class tagcloud_menu
 	{
@@ -32,10 +32,9 @@ if (!class_exists('tagcloud_menu'))
 		function __construct()
 		{
 			$this->template = e107::getTemplate('tagcloud', 'tagcloud_menu', 'default');
-
 		}
 
-		function render($parm = null)
+		public function render($parm = null)
 		{
 
 			$cloud = new TagCloud();
@@ -106,10 +105,17 @@ if (!class_exists('tagcloud_menu'))
 
 	}
 }
-/* TODO: add template type as parm, now always default */
-$tag = new tagcloud_menu;
-$text = $tag->render($parm);
 
+/* TODO: add template type as parm, now always default */
+if(class_exists('tagcloud_menu'))
+{
+	$tag = new tagcloud_menu;
+	$text = $tag->render($parm);
+}
+else
+{
+	$text = '';
+}
 
 if (!empty($parm))
 {
