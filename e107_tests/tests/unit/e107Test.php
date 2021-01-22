@@ -851,7 +851,7 @@ class e107Test extends \Codeception\Test\Unit
 	//	$this->assertFalse(defined('BANNERLAN_19'), 'BANNERLAN_19 is already defined!');
 		//	$this->assertFalse(defined('LAN_FORUM_0002'), 'LAN_FORUM_0002 is already defined!');
 		$this->assertFalse(defined('LAN_GALLERY_ADMIN_01'), 'LAN_GALLERY_ADMIN_01 is already defined!');
-		$this->assertFalse(defined('CM_L1'), 'Comment Menu English file already defined');
+//		$this->assertFalse(defined('CM_L1'), 'Comment Menu English file already defined');
 		$this->assertFalse(defined('LAN_FORUM_MENU_001'), 'LAN_FORUM_MENU_001 is already defined!');
 		$this->assertFalse(defined('BNRLAN_11'), 'BNRLAN_11 is already defined!');
 		$this->assertFalse(defined('CHATBOX_L1'), 'CHATBOX_L1 is already defined!');

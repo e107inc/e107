@@ -26,7 +26,7 @@ $cached = e107::getCache()->retrieve($cString);
 
 if(false === $cached)
 {
-
+	$sql = e107::getDb();
 	require_once(e_PLUGIN."blogcalendar_menu/calendar.php");
 	require_once(e_PLUGIN."blogcalendar_menu/functions.php");
 	

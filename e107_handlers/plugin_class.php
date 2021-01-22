@@ -368,7 +368,7 @@ class e_plugin
 			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
 		}
 
-		return $this->_data[$this->_plugdir]['legacy'];
+		return varset($this->_data[$this->_plugdir]['legacy']);
 	}
 
 
