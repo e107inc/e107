@@ -82,7 +82,8 @@ if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 class e107forum
 {
 //	var $fieldTypes = array();
-	private $userViewed, $permList;
+	private $userViewed;
+	private $permList = array();
 	public $modArray, $prefs;
 	private $forumData = array();
 
@@ -680,7 +681,12 @@ class e107forum
 
 	public function getForumPermList($what = null)
 	{
-		if(null !== $what) return (isset($this->permList[$what]) ? $this->permList[$what] : null);
+
+		if(null !== $what)
+		{
+			return (isset($this->permList[$what]) ? $this->permList[$what] : array());
+		}
+
 		return $this->permList;
 	}
 
