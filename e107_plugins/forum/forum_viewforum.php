@@ -10,43 +10,70 @@
 	*
 	*/
 
-	if(!defined('e107_INIT'))
+if(!defined('e107_INIT'))
+{
+	require_once(__DIR__ . '/../../class2.php');
+}
+$e107 = e107::getInstance();
+if(!e107::isInstalled('forum'))
+{
+	e107::redirect();
+	exit;
+}
+e107::lan('forum', "front", true);
+
+if(!deftrue('BOOTSTRAP'))
+{
+	$bcDefs = array(
+		'FORLAN_11' => 'LAN_FORUM_0039',
+		'FORLAN_12' => 'LAN_FORUM_0040',
+		'FORLAN_13' => 'LAN_FORUM_0040',
+		'FORLAN_14' => 'LAN_FORUM_0040',
+		'FORLAN_16' => 'LAN_FORUM_1012',
+		'FORLAN_17' => 'LAN_FORUM_1013',
+		'FORLAN_18' => 'LAN_FORUM_1014',
+		'LAN_435'   => 'LAN_DELETE',
+		'LAN_401'   => 'LAN_FORUM_4011',
+		'LAN_398'   => 'LAN_FORUM_4012',
+		'LAN_399'   => 'LAN_FORUM_4013',
+		'LAN_400'   => 'LAN_FORUM_4014',
+		'LAN_402'   => 'LAN_FORUM_5019',
+
+	);
+
+	e107::getLanguage()->bcDefs($bcDefs);
+}
+
+define('NAVIGATION_ACTIVE', 'forum');
+
+
+class forum_viewforum_front
+{
+
+	function __construct()
 	{
-		require_once(__DIR__.'/../../class2.php');
-	}
-	$e107 = e107::getInstance();
-	if(!e107::isInstalled('forum'))
-	{
-		e107::redirect();
-		exit;
-	}
-	e107::lan('forum', "front", true);
-//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php'); // now uses English_front.php
+		$this->init();
 
-	if(!deftrue('BOOTSTRAP'))
-	{
-		$bcDefs = array(
-			'FORLAN_11' => 'LAN_FORUM_0039',
-			'FORLAN_12' => 'LAN_FORUM_0040',
-			'FORLAN_13' => 'LAN_FORUM_0040',
-			'FORLAN_14' => 'LAN_FORUM_0040',
-			'FORLAN_16' => 'LAN_FORUM_1012',
-			'FORLAN_17' => 'LAN_FORUM_1013',
-			'FORLAN_18' => 'LAN_FORUM_1014',
-			'LAN_435'   => 'LAN_DELETE',
-			'LAN_401'   => 'LAN_FORUM_4011',
-			'LAN_398'   => 'LAN_FORUM_4012',
-			'LAN_399'   => 'LAN_FORUM_4013',
-			'LAN_400'   => 'LAN_FORUM_4014',
-			'LAN_402'   => 'LAN_FORUM_5019',
-
-		);
-
-		e107::getLanguage()->bcDefs($bcDefs);
 	}
 
+/**
+ * @param $FORUM_VIEW_START
+ * @param $urlparms
+ * @param $doNothing
+ * @return array
+ */
+function init()
+{
+	// todo - remove all these globals.
+	global $FORUM_VIEW_START, $urlparms, $doNothing;
+	global $sc, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE;
+	global $forum_info, $FORUM_CRUMB;
+	global $forum;
 
-	define('NAVIGATION_ACTIVE', 'forum');
+	$sql = e107::getDb();
+	$tp = e107::getParser();
+	$ns = e107::getRender();
+	$pref = e107::getPref();
 
 
 	if(!e_QUERY && empty($_GET))
@@ -54,12 +81,14 @@
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			echo __FILE__ . ' Line: ' . __LINE__;
-			exit;
+			return null;
 		}
-		$url = e107::url('forum', 'index', null, ['mode'=>'full']);
+
+
+		$url = e107::url('forum', 'index', null, ['mode' => 'full']);
 		e107::getRedirect()->go($url);
 		//header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
-		exit;
+		return null;
 	}
 
 	if(!empty($_GET['sef']))
@@ -82,7 +111,7 @@
 	$page = (varset($_GET['p']) ? $_GET['p'] : 1);
 	$threadFrom = ($page - 1) * $view;
 
-	global $forum_info, $FORUM_CRUMB;
+
 
 	$sc = e107::getScBatch('viewforum', 'forum');
 
@@ -98,21 +127,21 @@
 
 	if(!$forum->checkPerm($forumId, 'view'))
 	{
-		$url = e107::url('forum', 'index', null, ['mode'=>'full']);
-/*
-		if(E107_DEBUG_LEVEL > 0)
-		{
-			print_a($_REQUEST);
-			print_a($_GET);
-			echo __FILE__ . ' Line: ' . __LINE__;
-			echo "   forumId: " . $forumId;
-			exit;
-		}
-*/
+		$url = e107::url('forum', 'index', null, ['mode' => 'full']);
+		/*
+				if(E107_DEBUG_LEVEL > 0)
+				{
+					print_a($_REQUEST);
+					print_a($_GET);
+					echo __FILE__ . ' Line: ' . __LINE__;
+					echo "   forumId: " . $forumId;
+					exit;
+				}
+		*/
 
 		e107::getRedirect()->go($url);
 
-		exit;
+		return null;
 	}
 
 	$forumInfo = $forum->forumGet($forumId);
@@ -178,7 +207,9 @@
 	$forumInfo['forum_description'] = $tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
 	$_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
-	define('e_PAGETITLE', $_forum_name . ' / ' . LAN_FORUM_1001);
+
+	e107::title($_forum_name . ' / ' . LAN_FORUM_1001);
+	// define('e_PAGETITLE', $_forum_name . ' / ' . LAN_FORUM_1001);
 
 // SEO - meta description (auto)
 	if(!empty($forumInfo['forum_description']))
@@ -376,7 +407,7 @@
 				$unstuck = true;
 			}
 
-			$forum_view_forum .= parse_thread($thread_info);
+			$forum_view_forum .= $this->parse_thread($thread_info);
 		}
 	}
 	else
@@ -422,7 +453,8 @@
 	}
 	</script>";
 
-	require_once(FOOTERF);
+	return array($forum_info, $FORUM_CRUMB, $forumSCvars, $FORUM_VIEW_CAPTION);
+}
 
 
 
@@ -463,7 +495,7 @@
 
 	}
 
-
+/*
 	function forumjump()
 	{
 
@@ -478,155 +510,12 @@
 
 		return $text;
 	}
+*/
 
 
 
-	function fadminoptions($thread_info)
-	{
 
-//-- $tVars here???
-//----	$tVars = new e_vars;
-		$e107 = e107::getInstance();
-		$tp = e107::getParser();
-
-//	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu pull-right float-right">	
-   ';
-
-		//FIXME - not fully working.
-
-		$moveUrl = e107::url('forum', 'move', $thread_info);
-// What's the use of $splitUrl?????
-		$splitUrl = e107::url('forum', 'split', $thread_info);
-
-		$lockUnlock = ($thread_info['thread_active']) ? 'lock' : 'unlock';
-		$stickUnstick = ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
-		$id = intval($thread_info['thread_id']);
-
-		$lan = array('stick' => LAN_FORUM_8007, 'unstick' => LAN_FORUM_8008, 'lock' => LAN_FORUM_8009, 'unlock' => LAN_FORUM_8010);
-		$icon = array(
-			'unstick' => $tp->toGlyph('fa-chevron-down'),
-			'stick'   => $tp->toGlyph('fa-chevron-up'),
-			'lock'    => $tp->toGlyph('fa-lock'),
-			'unlock'  => $tp->toGlyph('fa-unlock'),
-		);
-
-
-		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='delete' data-confirm='".LAN_JSCONFIRM."' data-forum-thread='" . $id . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
-		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $stickUnstick . "' data-forum-thread='" . $id . "'>" . $lan[$stickUnstick] . " " . $icon[$stickUnstick] . "</a></li>";
-		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $lockUnlock . "' data-forum-thread='" . $id . "'>" . $lan[$lockUnlock] . " " . $icon[$lockUnlock] . "</a></li>";
-
-		$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></li>";
-
-		//if(e_DEVELOPER)
-	//	{
-//		$text .= "<li class='text-right'><a href='{$splitUrl}'>Split ".$tp->toGlyph('scissors')."</i></a></li>";
-//		print_a($thread_info);
-	//	}
-
-		/*
-			$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
-
-			$text .= "<li>".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> Unstick" : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> Stick")."
-				</li>";
-
-			$text .= "<li>".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> Lock" : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> Unlock"). "
-				</li>";
-
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/move', "id={$thread_info['thread_id']}")."'>Move</a></li>";
-		*/
-
-		$text .= "</ul></div>";
-
-//	$text .= "</form>";
-		return $text;
-	}
-
-
-	function fpages($thread_info, $replies)
-	{
-
-		global $forum;
-		$tp = e107::getParser();
-
-		$replies = (int) $replies;
-		$postsPerPage = (int) $forum->prefs->get('postspage');
-
-		// Add 1 for the first post in the topic (which technically is not a reply), to make it consistent with the nextprev in the forum_viewtopic page
-		$replies = $replies + 1;
-
-		$pages = ceil(($replies) / $postsPerPage);
-
-		$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'], 'dashl');
-		$urlparms = $thread_info;
-		$text = '';
-
-		if($pages > 1)
-		{
-			if($pages > 6)
-			{
-				for($a = 0; $a <= 2; $a++)
-				{
-					$aa = $a + 1;
-					$text .= $text ? ' ' : '';
-					//	$urlparms['page'] = $aa;
-
-					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
-					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
-				}
-				$text .= ' ... ';
-				for($a = $pages - 3; $a <= $pages - 1; $a++)
-				{
-					$aa = $a + 1;
-					$text .= $text ? ' ' : '';
-					//	$urlparms['page'] = $aa;
-					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
-					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
-				}
-			}
-			else
-			{
-
-				for($a = 0; $a <= ($pages - 1); $a++)
-				{
-					$aa = $a + 1;
-					$text .= $text ? ' ' : '';
-					//	$urlparms['page'] = $aa;
-					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
-					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
-				}
-			}
-
-			if(deftrue('BOOTSTRAP'))
-			{
-				$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
-						<li>";
-
-				$text .= implode("</li><li>", $opts); // ."</div>";
-				$text .= "</li></ul>";
-			}
-			else
-			{
-				$text = implode(" ", $opts); // ."</div>";
-			}
-
-		}
-		else
-		{
-			$text = '';
-		}
-
-		return $text;
-	}
+/*
 
 	function newthreadjump($url)
 	{
@@ -653,5 +542,15 @@
 
 		return $text;
 	}
+*/
 
 
+}
+
+
+
+//list($forum_info, $FORUM_CRUMB, $forumSCvars, $FORUM_VIEW_CAPTION) = init();
+
+new forum_viewforum_front();
+
+require_once(FOOTERF);

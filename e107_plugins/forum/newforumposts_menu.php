@@ -59,10 +59,11 @@ if(!class_exists('forum_newforumposts_menu'))
 			$this->total['topics'] = $sql->count("forum_thread");
 			$this->total['replies'] = $sql->count("forum_post");
 
-			$sql->gen("SELECT sum(thread_views) as sum FROM #forum_thread");
-			$tmp = $sql->fetch();
-			$this->total['views'] = intval($tmp["sum"]);
-
+			if($sql->gen("SELECT sum(thread_views) as sum FROM #forum_thread"))
+			{
+				$tmp = $sql->fetch();
+				$this->total['views'] = intval($tmp["sum"]);
+			}
 
 			$this->render();
 
@@ -76,7 +77,8 @@ if(!class_exists('forum_newforumposts_menu'))
 			$max_age = vartrue($this->menuPref['maxage'], 0);
 			$max_age = ($max_age == 0) ? '' : '(p.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
-			$forumList = implode(',', $this->forumObj->getForumPermList('view'));
+			$viewPerm = $this->forumObj->getForumPermList('view');
+			$forumList = implode(',', $viewPerm);
 
 			// if forumlist is empty (no forum categories created yet), return false;
 			if(!$forumList)
