@@ -356,7 +356,8 @@ class e107
 		{
 			self::plugLan($plug_name, '', true); // English/English_front.php
 			self::plugLan($plug_name, null, true); // English/English.php
-			self::plugLan($plug_name, null); // English_front.php
+	//		self::plugLan($plug_name, 'front'); // English_front.php
+			self::plugLan($plug_name, null); // English.php
 			self::plugLan($plug_name, 'global', true); // English/English_global.php
 			self::plugLan($plug_name, 'global'); // English_global.php
 		}
@@ -3211,7 +3212,9 @@ class e107
 		{
 			$id = $plug_name;
 		}
-		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
+		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
+		$reg_path .= ($override) ? '/ext' : '';
+
 		$path = self::templatePath($plug_name, $id, $override);
 
 		if(ADMIN && E107_DBG_INCLUDES)
@@ -3606,16 +3609,22 @@ class e107
 	 * </code>
 	 *
 	 * @param string $plugin plugin name
-	 * @param string $fname filename without the extension part (e.g. 'common')
+	 * @param string|bool|null $fname filename without the extension part (e.g. 'common')
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
+	 * @param boolean $return When true, returns the path, but does not include the file or set the registry.
 	 * @return bool|null
 	 */
-	public static function plugLan($plugin, $fname = '', $flat = false)
+	public static function plugLan($plugin, $fname = '', $flat = false, $returnPath = false)
 	{
 	//	$cstring  = 'pluglan/'.e_LANGUAGE.'_'.$plugin.'_'.$fname.($flat ? '_1' : '_0');
-		$cstring  = 'core/e107/pluglan/'.$plugin.'/'.e_LANGUAGE.'/'.$fname.($flat ? '_1' : '_0');
 
-		if(self::getRegistry($cstring))
+		$cstring  = 'core/e107/pluglan/'.$plugin.'/'.e_LANGUAGE.'/';
+		$cstring .= ($fname === null) ? 'null' : '';
+		$cstring .= ($fname === true) ? 'true' : '';
+		$cstring .= is_string($fname) ? $fname : '';
+		$cstring .= ($flat) ? '/flat' : '/noflat';
+
+		if(self::getRegistry($cstring) && ($returnPath === false))
 		{
 			return null;
 		}
@@ -3653,6 +3662,11 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';
 		}
 
+		if($returnPath === true)
+		{
+			return $path;
+		}
+
 		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			$adminLanguage = self::getPref('adminlanguage');
@@ -3666,7 +3680,7 @@ class e107
 		}
 
 
-		self::setRegistry($cstring, true);
+			self::setRegistry($cstring, true);
 
 		$ret = self::includeLan($path);
 		

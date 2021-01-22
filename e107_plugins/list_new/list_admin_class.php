@@ -24,7 +24,7 @@ class list_admin
 	/**
 	 * constructor
 	 * 
-	 * @param object $parent the parent object
+	 * @param list_admin_class $parent the parent object
 	 * @return void
 	 * 
 	 */
@@ -81,7 +81,6 @@ class list_admin
 	 */
 	function display()
 	{
-		global $rs;
 
 		$text = $this->parseTemplate('ADMIN_START');
 
@@ -104,7 +103,8 @@ class list_admin
 	 */
 	function parse_global_options($type)
 	{
-		global $rs;
+
+		$frm = e107::getForm();
 		$fl = e107::getFile();
 
 		$text = '';
@@ -117,7 +117,10 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			// form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = '', $form_js = '') 
+		
+		
+			$this->row['FIELD'] .= $frm->checkbox($this->parent->sections[$i]."_".$type."_display", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -129,7 +132,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $frm->checkbox($this->parent->sections[$i]."_".$type."_open", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -141,7 +144,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $frm->checkbox($this->parent->sections[$i]."_".$type."_author", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -153,7 +156,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-category";
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $frm->checkbox($this->parent->sections[$i]."_".$type."_category", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -165,7 +168,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-date";
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $frm->checkbox($this->parent->sections[$i]."_".$type."_date", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -176,6 +179,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-icon";
 		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		$iconlist = $fl->get_files($this->parent->plugin_dir."images/");
+
 		$frm = e107::getForm();
 		
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
@@ -186,24 +190,16 @@ class list_admin
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
 			$this->row['FIELD_ITEM'] = $frm->iconpicker($name,$curVal, LAN_SELECT);		// TODO: Is this a reasonable label to use? Might not be used
 		//	$this->row['FIELD_ITEM'] = $frm->iconpicker($this->parent->sections[$i]."_".$type."_icon",$this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"]).
-		//	$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
-			
-		//		<input  type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
-		//	$this->row['FIELD_ITEM'] .= div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
-				
-				
-			//	foreach($iconlist as $icon)
-		//		{
-			//		$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a> ";
-			//	}
-		//		$this->row['FIELD_ITEM'] .= "</div>";
+
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
-		//amount
+
+			//amount
+
 		$maxitems_amount = "50";
 		$this->row['TOPIC'] = LIST_ADMIN_SECT_16;
 		$this->row['HEADING'] = LIST_ADMIN_SECT_17;
@@ -213,12 +209,12 @@ class list_admin
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_amount");
+			$this->row['FIELD_ITEM'] = $frm->open($this->parent->sections[$i]."_".$type."_amount");
 			for($a=1; $a<=$maxitems_amount; $a++)
 			{
-				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_amount"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
+				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_amount"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a, 0));
 			}
-			$this->row['FIELD_ITEM'] .= $rs->form_select_close();
+			$this->row['FIELD_ITEM'] .= $frm->close();
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
@@ -234,16 +230,19 @@ class list_admin
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_order");
+			$this->row['FIELD_ITEM'] = $frm->open($this->parent->sections[$i]."_".$type."_order");
 			for($a=1; $a<=$max; $a++)
 			{
-				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_order"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
+				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_order"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a,  0));
 			}
-			$this->row['FIELD_ITEM'] .= $rs->form_select_close();
+			$this->row['FIELD_ITEM'] .= $frm->close();
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
+
+	// form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = 'tbox form-control', $form_readonly = '', $form_tooltip = '', $form_js = '') {
+	// text($name, $value = '', $maxlength = 80, $options= null)
 
 		//caption
 		$this->row['TOPIC'] = LIST_ADMIN_SECT_25;
@@ -254,7 +253,7 @@ class list_admin
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, e107::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
+			$this->row['FIELD_ITEM'] = $frm->text($this->parent->sections[$i]."_".$type."_caption", e107::getParser()->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), 50);
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
@@ -274,7 +273,12 @@ class list_admin
 	 */
 	function parse_menu_options($type)
 	{
-		global $rs;
+
+		$frm = e107::getForm();
+
+		//  form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = '', $form_js = '')
+		// radio($name, $value, $checked = false, $options = null)
+
 		$tp = e107::getParser();
 
 		$this->row['ID'] = "list-new-".str_replace('_', '-', $type);
@@ -288,7 +292,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_4');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-caption";
-		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_caption", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : icon : use
@@ -297,8 +301,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_7');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-icon-use";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_icon_use", "0", ($this->parent->list_pref[$type."_icon_use"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_icon_use", "0", ($this->parent->list_pref[$type."_icon_use"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -308,8 +312,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_MENU_4');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-icon-show";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_icon_default", "0", ($this->parent->list_pref[$type."_icon_default"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_icon_default", "0", ($this->parent->list_pref[$type."_icon_default"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -318,7 +322,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_9;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_10');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-amount-chars";
-		$this->row['FIELD'] = $rs->form_text($type."_char_heading", "3", $this->parent->list_pref[$type."_char_heading"], "3", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_char_heading", $this->parent->list_pref[$type."_char_heading"], 3);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : postfix
@@ -326,7 +330,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_12;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_13');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-postfix";
-		$this->row['FIELD'] = $rs->form_text($type."_char_postfix", "3", $this->parent->list_pref[$type."_char_postfix"], "3", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_char_postfix", $this->parent->list_pref[$type."_char_postfix"], 3);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : date
@@ -334,7 +338,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_15;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_16');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-date";
-		$this->row['FIELD'] = $rs->form_text($type."_datestyle", "30", $this->parent->list_pref[$type."_datestyle"], "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_datestyle", $this->parent->list_pref[$type."_datestyle"], 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : date today
@@ -342,7 +346,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_18;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_19');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-datet";
-		$this->row['FIELD'] = $rs->form_text($type."_datestyletoday", "30", $this->parent->list_pref[$type."_datestyletoday"], "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_datestyletoday",$this->parent->list_pref[$type."_datestyletoday"], 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//menu preference : show empty
@@ -351,8 +355,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_28');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-sempty";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_showempty", "0", ($this->parent->list_pref[$type."_showempty"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_showempty", "0", ($this->parent->list_pref[$type."_showempty"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -362,8 +366,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_41');
 		$this->row['CONTID'] = "list-new-menu-{$type}-expandable-osie";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_openifrecords", "0", ($this->parent->list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_openifrecords", "0", ($this->parent->list_pref[$type."_openifrecords"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -382,7 +386,7 @@ class list_admin
 	 */
 	function parse_page_options($type)
 	{
-		global $rs;
+		$frm = e107::getForm();
 		$tp = e107::getParser();
 
 		$display = ($type == "recent_page" ? "display:none;" : '');
@@ -398,7 +402,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_3;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_4');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-caption";
-		$this->row['FIELD'] = $rs->form_text($type."_caption", "30", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_caption", $tp->toHTML($this->parent->list_pref[$type."_caption"],"","defs"), 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : icon : use
@@ -407,8 +411,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_7');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-icon-use";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_icon_use", "0", ($this->parent->list_pref[$type."_icon_use"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_icon_use", "1", ($this->parent->list_pref[$type."_icon_use"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_icon_use", "0", ($this->parent->list_pref[$type."_icon_use"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -418,8 +422,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_31');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-icon-show";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_icon_default", "0", ($this->parent->list_pref[$type."_icon_default"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_icon_default", "1", ($this->parent->list_pref[$type."_icon_default"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_icon_default", "0", ($this->parent->list_pref[$type."_icon_default"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -428,7 +432,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_9;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_10');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-amount-chars";
-		$this->row['FIELD'] = $rs->form_text($type."_char_heading", "3", $this->parent->list_pref[$type."_char_heading"], "3", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_char_heading", $this->parent->list_pref[$type."_char_heading"], 3);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : postfix
@@ -436,7 +440,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_12;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_13');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-postfix";
-		$this->row['FIELD'] = $rs->form_text($type."_char_postfix", "3", $this->parent->list_pref[$type."_char_postfix"], "3", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_char_postfix", $this->parent->list_pref[$type."_char_postfix"], 3);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : date
@@ -444,7 +448,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_15;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_16');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-date";
-		$this->row['FIELD'] = $rs->form_text($type."_datestyle", "30", $this->parent->list_pref[$type."_datestyle"], "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_datestyle", $this->parent->list_pref[$type."_datestyle"], 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : date today
@@ -452,7 +456,7 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_18;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_19');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-datet";
-		$this->row['FIELD'] = $rs->form_text($type."_datestyletoday", "30", $this->parent->list_pref[$type."_datestyletoday"], "50", "tbox");
+		$this->row['FIELD'] = $frm->text($type."_datestyletoday", $this->parent->list_pref[$type."_datestyletoday"], 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//page preference : show empty
@@ -461,8 +465,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_28');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-showe";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_showempty", "0", ($this->parent->list_pref[$type."_showempty"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_showempty", "1", ($this->parent->list_pref[$type."_showempty"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_showempty", "0", ($this->parent->list_pref[$type."_showempty"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -471,20 +475,22 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_21;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_22');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-colomn";
-		$this->row['FIELD'] = $rs->form_select_open($type."_colomn");
+		$this->row['FIELD'] = $frm->open($type."_colomn");
 			for($a=1, $aMax = count($this->parent->sections); $a<= $aMax; $a++)
 			{
-				$this->row['FIELD'] .= ($this->parent->list_pref[$type."_colomn"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
+				$this->row['FIELD'] .= ($this->parent->list_pref[$type."_colomn"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a, 0));
 			}
-			$this->row['FIELD'] .= $rs->form_select_close();
+			$this->row['FIELD'] .= $frm->close();
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
+	// form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = '',
+ // textarea($name, $value, $rows = 10, $cols = 80, $options = null,
 		//page preference : welcome text
 		$this->row['TOPIC'] = LIST_ADMIN_LAN_23;
 		$this->row['HEADING'] = LIST_ADMIN_LAN_24;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_25');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-wtext";
-		$this->row['FIELD'] = $rs->form_textarea($type."_welcometext", "50", "5", $tp->toHTML($this->parent->list_pref[$type."_welcometext"],"","defs"), "", "tbox");
+		$this->row['FIELD'] = $frm->textarea($type."_welcometext", $tp->toHTML($this->parent->list_pref[$type."_welcometext"],"","defs"), 5, 50);
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		if($type == "new_page")
@@ -495,8 +501,8 @@ class list_admin
 			$this->row['HELP'] = defset('LIST_ADMIN_LAN_38');
 			$this->row['CONTID'] = "list-new-page-{$type}-expandable-timelapse-show";
 			$this->row['FIELD'] = "
-				".$rs->form_radio($type."_timelapse", "1", ($this->parent->list_pref[$type."_timelapse"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-				".$rs->form_radio($type."_timelapse", "0", ($this->parent->list_pref[$type."_timelapse"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+				".$frm->radio($type."_timelapse", "1", ($this->parent->list_pref[$type."_timelapse"] ? "1" : "0")).LIST_ADMIN_7."
+				".$frm->radio($type."_timelapse", "0", ($this->parent->list_pref[$type."_timelapse"] ? "0" : "1")).LIST_ADMIN_8."
 			";
 			$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -505,7 +511,7 @@ class list_admin
 			$this->row['HEADING'] = LIST_ADMIN_LAN_33;
 			$this->row['HELP'] = defset('LIST_ADMIN_LAN_34');
 			$this->row['CONTID'] = "list-new-page-{$type}-expandable-timelapse-dnm";
-			$this->row['FIELD'] = $rs->form_text($type."_timelapse_days", "3", $this->parent->list_pref[$type."_timelapse_days"], "3", "tbox")." ".LIST_ADMIN_LAN_35;
+			$this->row['FIELD'] = $frm->text($type."_timelapse_days", $this->parent->list_pref[$type."_timelapse_days"],3)." ".LIST_ADMIN_LAN_35;
 			$text .= $this->parseTemplate('TOPIC_ROW');
 		}
 
@@ -515,8 +521,8 @@ class list_admin
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_41');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-osie";
 		$this->row['FIELD'] = "
-			".$rs->form_radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
-			".$rs->form_radio($type."_openifrecords", "0", ($this->parent->list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+			".$frm->radio($type."_openifrecords", "1", ($this->parent->list_pref[$type."_openifrecords"] ? "1" : "0")).LIST_ADMIN_7."
+			".$frm->radio($type."_openifrecords", "0", ($this->parent->list_pref[$type."_openifrecords"] ? "0" : "1")).LIST_ADMIN_8."
 		";
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -536,11 +542,13 @@ class list_admin
 	 */
 	function parseTemplate($template)
 	{
-		$text = preg_replace_callback( '/\{(.*?)\}/', function($matches) {
-	        return($this->row[$matches[1]]);
-	    }, $this->parent->template[$template]);
+		if(empty($this->parent->template[$template]))
+		{
+			return null;
+		}
 
-		return $text;
+		return e107::getParser()->parseTemplate($this->parent->template[$template], false, $this->row);
+
 		//return preg_replace("/\{(.*?)\}/e", '$this->row[\'\1\']', $this->parent->template[$template]);
 	}
 
@@ -552,7 +560,7 @@ class list_admin
 	 */
 	function pref_submit()
 	{
-		global $rs;
+
 		$frm = e107::getForm();
 		
 		$this->row['TOPIC'] = LIST_ADMIN_11;

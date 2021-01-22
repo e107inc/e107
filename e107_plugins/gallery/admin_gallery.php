@@ -709,4 +709,4 @@ new plugin_gallery_admin();
 require_once(e_ADMIN . "auth.php");
 e107::getAdminUI()->runPage(); //gallery/includes/admin.php is auto-loaded.
 require_once(e_ADMIN . "footer.php");
-exit;
+

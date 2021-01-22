@@ -14,7 +14,7 @@
  * $Author$
  */
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class phpbb3_import extends base_import_class
 {

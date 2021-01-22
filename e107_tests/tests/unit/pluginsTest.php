@@ -132,13 +132,30 @@
 
 		}
 
-/*
+
 		public function testPluginScripts()
 		{
 
 			$core = e107::getPlug()->getCorePluginList();
 
-			$exclude = array('forum_post.php');
+			$exclude = array(
+				'forum/forum_post.php',
+				'forum/forum_viewtopic.php',   // needs a major cleanup.
+				'forum/index.php',
+				'log/log.php', // headers
+				'log/loginfo.php', // include.
+				'log/stats.php', // FIXME or remove the plugin
+				'log/stats_csv.php',
+				'online/online_menu.php', // FIXME missing template for member/new
+				'pm/pm.php', // FIXME contains exit, needs rework.
+				'poll/admin_config.php', // FIXME convert to admin-ui
+				'rss_menu/rss.php', // FIXME rework code into class.
+				'tagcloud/tagcloud_menu.php', // FIXME - strange (PHP bug?), doesn't see the render() method.
+				'tinymce4/wysiwyg.php', // javascript generator.
+			);
+
+			//DEBUG A SPECIFIC FILE :  dir => file
+		//	$focus = array('tagcloud'=>'tagcloud_menu.php');
 
 
 			foreach($core as $plug)
@@ -151,19 +168,35 @@
 				$files = scandir($path);
 				unset($files[0], $files[1]);  // . and ..
 
+				if(!empty($focus) && !isset($focus[$plug]))
+				{
+					continue;
+				}
+
 				foreach($files as $f)
 				{
 					$filePath = $path.'/'.$f;
 
-					if(is_dir($filePath) || (strpos($f, '_sql.php') !== false) || strpos($f, '.php') === false || in_array($f, $exclude))
+					if(!empty($focus) && $f !== $focus[$plug])
 					{
 						continue;
 					}
 
-					echo " --- ".$filePath." --- \n";
-					ob_start();
+					if(is_dir($filePath) || (strpos($f, '_sql.php') !== false) || strpos($f, '.php') === false || in_array($plug.'/'.$f, $exclude))
+					{
+						continue;
+					}
+
+				//	echo " --- ".$filePath." --- \n";
+					if(empty($focus))
+					{
+						ob_start();
+					}
 					require_once( $filePath);
-					ob_end_clean();
+					if(empty($focus))
+					{
+						ob_end_clean();
+					}
 				//	echo $plug.'/'.$f."\n";
 
 				}
@@ -174,7 +207,7 @@
 		}
 
 
-*/
+
 
 
 

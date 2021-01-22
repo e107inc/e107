@@ -1183,8 +1183,11 @@
 				{
 					if(E107_DEBUG_LEVEL > 0 && ADMIN)
 					{
-						echo "file failed =" . $file . "<br />";
-						echo "path =" . $path . "<br />";
+						$mes =  __METHOD__." -- File failed: " . $file . "\n";
+						$mes .= "Path: " . $path . "\n";
+						$mes .= "Backtrace: ";
+						$mes .= print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
+						trigger_error($mes, E_USER_NOTICE);
 						exit();
 					}
 					else

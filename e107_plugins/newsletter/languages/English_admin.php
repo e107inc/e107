@@ -60,8 +60,8 @@ define("NLLAN_44", "Newsletter Front Page"); // FIXME admin_menu
 define("NLLAN_45", "Create Newsletter"); // FIXME admin_menu
 define("NLLAN_46", "Create Mailing"); // FIXME admin_menu
 define("NLLAN_47", "Newsletter Options");
-define("NLLAN_48", "Newsletter Subscribers");
-define("NLLAN_49", "Newsletter: ");
+// define("NLLAN_48", "Newsletter Subscribers");
+// define("NLLAN_49", "Newsletter: ");
 
 define("NLLAN_54", "Sending");
 

@@ -21,7 +21,7 @@
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 // Module based on ikonboard version current about September 2007 - may well support other versions
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class ikonboard_import extends base_import_class
 {

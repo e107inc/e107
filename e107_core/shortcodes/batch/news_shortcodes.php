@@ -815,20 +815,22 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_news_thumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format
 	{
-		$tmp = $this->handleMultiple($parm,'all');
-		$newsThumb = $tmp['file'];
+		if($tmp = $this->handleMultiple($parm,'all'))
+		{
+			$newsThumb = $tmp['file'];
+		}
 		
-		$class = 'news-thumbnail-'.$tmp['count'];
+		$class = 'news-thumbnail-'.varset($tmp['count']);
 		$dimensions = null;
 		$srcset = null;
 		$tp = e107::getParser();
 		
-		if(!$newsThumb && $parm != 'placeholder')
+		if(!isset($newsThumb) && $parm != 'placeholder')
 		{
 			return '';
 		}
 		
-		if($vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
+		if(isset($newsThumb) && $vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
 			$src = $vThumb;
 			$_src = '#';
@@ -846,7 +848,7 @@ class news_shortcodes extends e_shortcode
 			
 			if(isset($parms[2]['legacy']) && $parms[2]['legacy']==true) // Legacy mode - swap out thumbnails for actual images and update paths.  
 			{
-				if($newsThumb[0] != '{') // Fix old paths. 
+				if($newsThumb[0] !== '{') // Fix old paths.
 				{
 					$newsThumb = '{e_IMAGE}newspost_images/'.$newsThumb;	
 				}
@@ -862,10 +864,16 @@ class news_shortcodes extends e_shortcode
 			}
 			
 			// We store SC path in DB now + BC
-			$_src = $src = ($newsThumb[0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
+			if(!empty($newsThumb))
+			{
+				$_src = $src = (($newsThumb[0] === '{')) || varset($parms[1]) === 'placeholder' ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
+			}
+			else
+			{
+				$src = '';
+			}
 		
-		
-			if(!empty($parms[2]) || $parms[1] == 'placeholder')
+			if(!empty($parms[2]) || varset($parms[1]) === 'placeholder')
 			{
 				//  $srcset = "srcset='".$tp->thumbSrcSet($src,'all')."' size='100vw' ";
 				  $attr = !empty($parms[2]) ? $parms[2] : null;

@@ -14,7 +14,10 @@
  * $Author$
  */
 
-define("PAGE_NAME", "Statistics");
+if(!defined('PAGE_NAME')) // TODO FIX ME - use English_global.php
+{
+	define("PAGE_NAME", "Statistics");
+}
 
 define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");
 define("ADSTAT_L2", "The statistics logger has been successfully installed. To convert your existing stats to the new system, please <a href='".e_PLUGIN."log/update_routine.php'>click here to run update routine</a>.");

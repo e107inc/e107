@@ -23,7 +23,7 @@
 
 
 
-// require_once('import_classes.php');
+// require_once(__DIR__.'/../import_classes.php');
 require_once('rss_import_class.php');
 
 

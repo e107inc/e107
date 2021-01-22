@@ -28,7 +28,7 @@ class listclass
 	var $defaultArray;
 	var $sections;
 	var $titles;
-	var $content_types;
+	private $content_types= array();
 	var $content_name;
 	var $list_pref;
 	var $mode;
@@ -92,7 +92,7 @@ class listclass
 	{
 		//for each call to the template, provide the correct data set through load_globals
 		//list_shortcodes::load_globals();
-		return e107::getParser()->parseTemplate($this->template[$template], true, $this->shortcodes);
+		return e107::getParser()->parseTemplate(varset($this->template[$template]), true, $this->shortcodes);
 	}
 
 	/**
@@ -263,15 +263,15 @@ class listclass
 	 */
 	function getSections()
 	{
-		global $pref;
 
+		$list = e107::getPref('e_list_list', array());
 		$this->getDefaultSections();
 
-		if(is_array($pref['e_list_list']))
+		if(!empty($list))
 		{
-			foreach($pref['e_list_list'] as $file)
+			foreach($list as $file)
 			{
-				if ($plugin_installed = isset($pref['plug_installed'][$file]))
+				if ($plugin_installed = e107::isInstalled($file))
 				{
 					if($file == "content")
 					{
@@ -296,7 +296,8 @@ class listclass
 	 */
 	function getDefaultPrefs()
 	{
-		global $pref;
+
+		$pref = e107::getPref();
 
 		$prf = array();
 		//section preferences

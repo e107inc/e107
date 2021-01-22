@@ -37,11 +37,11 @@ if (e_QUERY)
 }
 if ($action == 'top')
 {
-	define('e_PAGETITLE', LAN_8);
-} 
+	e107::title(LAN_8);
+}
 elseif ($action == 'active')
 {
-	define('e_PAGETITLE', LAN_7);
+	e107::title(LAN_7);
 }
 else
 {

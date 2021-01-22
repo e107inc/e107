@@ -25,7 +25,7 @@
 
 // Mambo and joomla have the same DB format apart from the default prefix - 'jos_' for Joomla
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class joomla_import extends base_import_class
 {
