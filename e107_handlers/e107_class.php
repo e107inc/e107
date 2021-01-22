@@ -3196,7 +3196,7 @@ class e107
 	 *
 	 * @param string $plug_name if null getCoreTemplate method will be called
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
-	 * @param string|null $key
+	 * @param string|null $key $YOURTEMPLATE_TEMPLATE[$key]
 	 * @param boolean $override see {@link getThemeInfo()}
 	 * @param boolean $merge merge theme with plugin templates, default is false
 	 * @param boolean $info retrieve template info only
@@ -3208,10 +3208,12 @@ class e107
 		{
 			return self::getCoreTemplate($id, $key, $override, $merge, $info);
 		}
+
 		if($id == null || $id === true) // loads {$plug_name}/templates/{$plug_name}_template.php and an array ${PLUG_NAME}_TEMPLATE
 		{
 			$id = $plug_name;
 		}
+
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
 		$reg_path .= ($override) ? '/ext' : '';
 
@@ -3494,7 +3496,7 @@ class e107
 			return $ret;
 		}
 
-		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : false);
+		return ($ret && is_array($ret) && isset($ret[$key])) ? $ret[$key] : false;
 	}
 
 	/**

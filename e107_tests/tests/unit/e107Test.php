@@ -812,48 +812,70 @@ class e107Test extends \Codeception\Test\Unit
 	}
 */
 
+	public function testGetTemplateOverride()
+	{
+		// Loads e107_themes/bootstrap3/templates/gallery/gallery_template.php
+		$template = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
+		$this->assertEquals("My Gallery", $template['list']['caption']);
+
+		// Duplicate to load registry
+		$template2 = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
+		$this->assertEquals("My Gallery", $template2['list']['caption']);
+
+		$this->assertSame($template, $template2);
+
+	}
+
+
+	public function testGetTemplateOverrideMerge()
+	{
+		// Loads e107_plugins/gallery/templates/gallery_template.php then overwrites it with e107_themes/bootstrap3/templates/gallery/gallery_template.php
+		$template = e107::getTemplate('gallery', null, null, true, true); // theme override is enabled, and theme merge is enabled.
+		$this->assertArrayHasKey('merged-example', $template);
+		$this->assertEquals("My Gallery", $template['list']['caption']); // ie. from the original
+		$this->assertNotEmpty($template['merged-example']);
+
+		// duplicate to load registry
+		$template2 = e107::getTemplate('gallery', null, null, true, true); // theme override is enabled, and theme merge is enabled.
+		$this->assertArrayHasKey('merged-example', $template2);
+		$this->assertEquals("My Gallery", $template2['list']['caption']); // ie. from the original
+		$this->assertNotEmpty($template2['merged-example']);
+
+		$this->assertSame($template, $template2);
+
+	}
+
+	public function testGetTemplateMerge()
+	{
+
+		// // ie. should be from plugin template, not theme.
+		$template = e107::getTemplate('gallery', null, null, false, true); // theme override is disabled, theme merge is enabled.
+		$this->assertEquals("Gallery", $template['list']['caption']);
+		$this->assertArrayNotHasKey('merged-example', $template);
+
+		// duplicate to load registry.
+		$template2 = e107::getTemplate('gallery', null, null, false, true); // theme override is disabled, theme merge is enabled.
+		$this->assertEquals("Gallery", $template2['list']['caption']);
+		$this->assertArrayNotHasKey('merged-example', $template2);
+
+		$this->assertSame($template, $template2);
+
+	}
 
 	/**
-	 * This test checks getTemplate() use on loading between the core download plugin template and the _blank theme download template
+	 * This test checks getTemplate() with no merging or override.
 	 */
 	public function testGetTemplate()
 	{
-		// clear all template related registry entries.
-	//	$cleared = $this->clearRelatedRegistry('templates/download');
-		return null; // FIXME - getTemplate() registry issue.
-		// cached with bootstrap3 theme template.
-		//FIXME Remove 'false' from the line below to see Undefined 'header' issue with registry.
-		$template = e107::getTemplate('download', null, null, false); // theme override is enabled by default.
+		// Loads e107_plugins/gallery/templates/gallery_template.php
+		$template = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
+		$this->assertEquals("Gallery", $template['list']['caption']);
 
-	//	e107::getConfig()->set('sitetheme', '_blank');
-		e107::plugLan('download', 'front', true);
+		// Duplicate to load registry.
+		$template2 = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
+		$this->assertEquals("Gallery", $template2['list']['caption']);
 
-		// FIXME getTemplate registry doesn't handle the theme change correctly.
-
-/*
-		$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
-		$this->assertEquals('{DOWNLOAD_BREADCRUMB} Custom', $template['header']); // ie. should be from _blank theme download template (override of plugin).
-		$footer = empty($template['footer']); // theme overrides everything, since merge is not enabled. theme does not contain 'footer'.
-		$this->assertTrue($footer);*/
-
-		$template = e107::getTemplate('download', null, null, false); // theme override is disabled.
-		$this->assertEquals("{DOWNLOAD_BREADCRUMB}", $template['header']); // ie. should be from plugin template, not theme.
-		$this->assertEquals('', $template['footer']); // main plugin template is active, since override is false. 'footer' is set.
-/*
-		$template = e107::getTemplate('download', null, null, true, true); // theme override is enabled, and theme merge is enabled.
-		$this->assertEquals("{DOWNLOAD_BREADCRUMB} Custom", $template['header']); //from theme
-		$this->assertEquals("", $template['footer']); // 'footer' missing from theme, so plugin template used. ie. arrays have been merged.
-*/
-
-		$template = e107::getTemplate('download', null, null, false, true); // theme override is disabled, theme merge is enabled.
-		$this->assertEquals("{DOWNLOAD_BREADCRUMB}", $template['header']); // ie. should be from plugin template, not theme.
-		//	$this->assertEquals("test", $template['other']); // 'test' is missing from plugin template, but merge is enabled. Not an override of plugin template key so merge is okay.
-		// FIXME above..
-		//	var_dump($template['other']);
-
-	//	e107::getConfig()->set('sitetheme', 'bootstrap3');
-
-
+		$this->assertSame($template, $template2);
 	}
 
 	/*
