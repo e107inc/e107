@@ -1429,7 +1429,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 	
 
-			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
 
 			// valid URLs
 			$replace['LINK_URL'] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
