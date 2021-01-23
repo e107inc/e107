@@ -5464,25 +5464,12 @@ class e107
 		$e107 = $tp->filter($e107info['e107_version'], 'version');
 		$version = $tp->filter($version, 'version');
 
-		$tmp = explode('.', $version);
-
-		if((int) $tmp[0] === 1) // version 1, assumed to be incompatible.
+		if((int) $version === 1) // version 1, assumed to be incompatible.
 		{
 			return false;
 		}
 
-		if(isset($tmp[2])) // ie. 2.3.1
-		{
-			return version_compare($e107  ,$version, '>=');
-		}
-		elseif(isset($tmp[1]))
-		{
-			return ((float) $e107 >= $version);
-		}
-
-		return ((int) $e107 >= (int) $version);
-
-
+		return version_compare($e107  ,$version, '>=');
 	}
 
 	/**
