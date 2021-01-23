@@ -96,7 +96,7 @@ class plugman_adminArea extends e_admin_dispatcher
 
 		'installed/list'		=> array('caption'=> EPL_ADLAN_22, 'perm' => 'Z'),
 		'avail/list'			=> array('caption'=> EPL_ADLAN_23, 'perm' => 'Z'),
-		'online/list'			=> array('caption'=> EPL_ADLAN_220, 'perm' => 'Z'),
+		'online/grid'			=> array('caption'=> EPL_ADLAN_220, 'perm' => 'Z'),
 		'avail/upload'			=> array('caption'=>EPL_ADLAN_38, 'perm' => '0'),
 		'create/build'          =>  array('caption'=>EPL_ADLAN_114, 'perm' => '0'),
 
@@ -111,7 +111,8 @@ class plugman_adminArea extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'installed/uninstall'	=> 'installed/list',
-		'lans/list'             => 'create/build'
+		'lans/list'             => 'create/build',
+		'online/list'           => 'online/grid',
 	);
 
 	protected $adminMenuIcon = 'e-plugmanager-24';
@@ -143,13 +144,14 @@ class plugman_adminArea extends e_admin_dispatcher
 				'plugin_icon'        => array('title' => LAN_ICON, 'type' => 'icon', 'data' => false, "width" => "5%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		        'plugin_name'        => array('title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		        'plugin_version'     => array('title' => LAN_VERSION, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+				'plugin_description' => array('title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => 'expand=1&truncate=180&bb=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+
 				'plugin_date'       => array('title' => LAN_RELEASED, 'type' => 'text', 'data' => false,  "width" => "8%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 			    'plugin_category'    => array('title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',),
 
 				'plugin_author'      => array('title' => LAN_AUTHOR, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 				"plugin_license"	 => array("title" => "License", 	 'nolist'=>false,'data'=>false,	 "type"=>"text", "width" => "5%", "thclass" => "left"),
   				'plugin_compatible'  => array('title' => EPL_ADLAN_13, 'type' => 'method', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
-				'plugin_description' => array('title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => 'expand=1&truncate=180&bb=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 
 				'plugin_path'        => array('title' => LAN_PATH, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		        'plugin_installflag' => array('title' => EPL_ADLAN_22, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'filter' => false, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
@@ -1069,11 +1071,14 @@ class plugin_online_ui extends e_admin_ui
 		protected $pluginName		= 'core';
 	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
 		protected $table			= false;
-		protected $pid				= '';
+		protected $pid				= 'plugin_id';
 		protected $perPage			= 10;
 		protected $batchDelete		= true;
 		protected $batchExport     = true;
 		protected $batchCopy		= true;
+
+		protected $grid             = array();
+
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
@@ -1084,13 +1089,14 @@ class plugin_online_ui extends e_admin_ui
 
 		protected $fields 		= array ();
 
-		protected $fieldpref = array('plugin_icon', 'plugin_name', 'plugin_version', 'plugin_license', 'plugin_description', 'plugin_compatible', 'plugin_date','plugin_author', 'plugin_category','plugin_installflag');
+		protected $fieldpref = array('plugin_icon', 'plugin_name', 'plugin_version',  'plugin_description', 'plugin_license', 'plugin_compatible', 'plugin_date','plugin_author', 'plugin_category','plugin_installflag');
 
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
 		);
 
+		/** @var e_marketplace  */
 		protected $mp = null;
 
 
@@ -1098,9 +1104,11 @@ class plugin_online_ui extends e_admin_ui
 		{
 
 			$this->fields = plugman_adminArea::getPluginManagerFields();
+			unset($this->fields['checkboxes']);
 			$this->fields['plugin_category']['writeParms']['optArray'] = e107::getPlug()->getCategoryList(); // array('plugin_category_0','plugin_category_1', 'plugin_category_2'); // Example Drop-down array.
 			$this->fields["plugin_license"]['nolist'] = false;
 			$this->fields['plugin_category']['inline'] = false;
+
 			parent:: __construct($request, $response, $params);
 
 		}
@@ -1204,11 +1212,78 @@ class plugin_online_ui extends e_admin_ui
 
         public function ListObserver()
         {
-      //    parent::ListObserver();
+            $this->setupGridData();
+             $this->setPlugData();
+            parent::ListObserver();
 
-	        $this->setPlugData();
         }
 
+		public function ListAjaxObserver()
+		{
+			parent::ListAjaxObserver();
+			$this->setPlugData();
+		}
+
+		public function GridAjaxObserver()
+		{
+			$this->setupGridData();
+			$this->setPlugData();
+
+			parent::GridAjaxObserver();
+		}
+
+
+		public function GridObserver()
+		{
+			$this->setupGridData();
+			$this->setPlugData();
+
+
+			parent::GridObserver();
+
+
+		}
+
+		private function setupGridData()
+		{
+
+			$this->fields['plugin_description']['readParms'] = 'expand=0&truncate=1800&bb=1';
+			$this->fields['plugin_license']['class'] = 'right';
+
+			$this->grid = array(
+				'price'    => 'plugin_license',
+				'title'    => 'plugin_name',
+				'image'    => 'plugin_icon',
+				'date'      => 'plugin_date',
+				'body'     => 'plugin_description',
+				'version'   => 'plugin_version',
+				'class'    => 'col-md-6 col-lg-4',
+				'author'    => 'plugin_author',
+				'perPage'  => 6,
+				'carousel' => true
+			);
+
+
+			$this->grid['template'] = '
+
+				 <div class="panel panel-primary" style="height:190px" >
+				 	<table class="table" style="height:180px;display:block" >
+				 	<tr>
+				 	<td style="width:25%">
+					<div class="text-center" style="height:90px;">{IMAGE}
+					</div>
+					</td>
+					<td><h4>{TITLE} <small> v{VERSION} {PRICE}</small></h4>
+					<div style="height:100px; overflow:hidden">{BODY}</div>
+					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right">&nbsp; {OPTIONS}</span></div>
+					</td></tr>
+					</table>
+					
+				</div>';
+
+			$this->perPage = 180;
+
+		}
 
 
 		/**
@@ -1295,75 +1370,160 @@ class plugin_online_ui extends e_admin_ui
 		</div>";
 	}
 
-		private function setPlugData()
+	private function truncateSentence($string, 	$limit = 120 )
+	{
+		if(strlen($string) <= $limit)
+		{
+			$text = nl2br($string);
+			return $string;
+		}
+
+		$tmp = explode(".", $string);
+
+		$chars = 0;
+
+		$arr = array();
+		foreach($tmp as $line)
+		{
+			$line = str_replace("\n", '', trim($line));
+			$len = strlen($line);
+
+			if($chars >= $limit)
+			{
+				break;
+			}
+
+			$arr[] = $line;
+			$chars += $len;
+
+		}
+
+		$text = implode('. ', $arr).'.';
+
+		$text = nl2br($text);
+
+		return $text;
+
+	}
+
+
+
+	private function setPlugData()
+	{
+
+		$from = $this->getQuery('from', 0);
+		$srch = $this->getQuery('searchquery');
+		//	$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch']));
+
+		$mp = $this->getMarketplace();
+		$cat = '';
+
+		if($filter = $this->getQuery('filter_options'))
+		{
+			list($bla, $cat) = explode("__",$filter);
+		}
+
+
+		// do the request, retrieve and parse data
+		$xdata = $mp->call('getList', array(
+			'type'   => 'plugin',
+			'params' => array('limit' => $this->perPage, 'search' => $srch, 'from' => $from, 'cat'=>$cat)
+		));
+
+		$total = (int) $xdata['params']['count'];
+
+	//	e107::getDebug()->log($xdata);
+
+		$tree = $this->getTreeModel();
+		$tree->setTotal($total);
+		$tp = e107::getParser();
+
+
+		foreach($xdata['data'] as $id => $row)
 		{
 
-			//	$this->setTreeModel();
+			$v['id'] = $id;
 
-			/*   $tree = $this->getTreeModel();
+			$model = new e_model($v);
+			$tree->setNode($id, $model);
 
-				$plg = e107::getPlug();
+			$badge = $this->compatibilityLabel($row['compatibility']);;
+			$featured = ($row['featured'] == 1) ? " <span class='label label-info'>" . EPL_ADLAN_91 . "</span>" : '';
+			$price = (!empty($row['price'])) ? "<span class='label label-primary'>" . $row['price'] . " " . $row['currency'] . "</span>" : "<span class='label label-success'>" . EPL_ADLAN_93 . "</span>";
 
-	            foreach ($tree->getTree() as $id => $model)
-	            {
-					$path = $model->get('plugin_path');
+			$node = array(
+				'plugin_id'          => $row['params']['id'],
+				'plugin_mode'        => $row['params']['mode'],
+				'plugin_icon'        => vartrue($row['icon'], e_IMAGE."logo_template.png"),
+				'plugin_name'        => stripslashes($row['name']),
+				'plugin_description' => $this->truncateSentence(vartrue($row['description'])),
+				'plugin_featured'    => $featured,
+				'plugin_sef'         => '',
+				'plugin_folder'      => $row['folder'],
+				'plugin_path'        => $row['folder'],
+				'plugin_date'        => $tp->toDate(strtotime($row['date']), 'relative'),
+				'plugin_category'    => vartrue($row['category'], 'n/a'),
+				'plugin_author'      => vartrue($row['author']),
+				'plugin_version'     => $row['version'],
 
-					$plg->load($path);
+				'plugin_compatible' => $row['compatibility'], // $badge,
 
-		            $model->set('plugin_name',$plg->getName());
-		            $model->set('plugin_date',$plg->getDate());
-		            $model->set('plugin_author',$plg->getAuthor());
-		            $model->set('plugin_compatible',$plg->getCompat());
-		            $model->set('plugin_admin_url',$plg->getAdminUrl());
-		            $model->set('plugin_description',$plg->getDescription());
-		            $model->set('plugin_version_file',$plg->getVersion());
-		            $model->set('plugin_install_required',$plg->getInstallRequired());
-	                $model->set('plugin_icon',$plg->getIcon(32, 'path'));
+				'plugin_website'     => vartrue($row['authorUrl']),
+				'plugin_url'         => $row['urlView'],
+				'plugin_notes'       => '',
+				'plugin_price'       => $row['price'],
+				'plugin_license'     => $price,
+				'plugin_installflag' => e107::isInstalled($row['folder']),
+				'options'       => $row,
+			);
 
-	            }*/
+			$model->setData($node);
 
 		}
 
 
-		public function listPage()
-		{
+	}
 
 
-			global $plugin, $e107SiteUsername, $e107SiteUserpass;
-			$tp = e107::getParser();
-			$frm = $this->getUI();
+	public function listoldPage()
+	{
 
-			$caption	= EPL_ADLAN_89;
+		//	e107SiteUsername
+		global $plugin;
+		$tp = e107::getParser();
+		$frm = $this->getUI();
 
-			$e107 = e107::getInstance();
-			$xml = e107::getXml();
-			$mes = e107::getMessage();
+		$caption = EPL_ADLAN_89;
+
+		$e107 = e107::getInstance();
+		$xml = e107::getXml();
+		$mes = e107::getMessage();
 
 		//	$mes->addWarning("Some older plugins may produce unpredictable results.");
-			// check for cURL
-			if(!function_exists('curl_init'))
-			{
-				$mes->addWarning(EPL_ADLAN_90);
-			}
+		// check for cURL
+		if(!function_exists('curl_init'))
+		{
+			$mes->addWarning(EPL_ADLAN_90);
+		}
 
-			//TODO use admin_ui including filter capabilities by sending search queries back to the xml script.
-			$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
-			$srch = preg_replace('/[^\w]/','', vartrue($_GET['srch']));
+		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script.
+		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
+		$srch = preg_replace('/[^\w]/', '', vartrue($_GET['srch']));
 
 
-			$mp = $this->getMarketplace();
+		$mp = $this->getMarketplace();
 
-			// auth
-			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		// auth
+		//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 
-			// do the request, retrieve and parse data
-			$xdata = $mp->call('getList', array(
-				'type' => 'plugin',
-				'params' => array('limit' => $this->perPage, 'search' => $srch, 'from' => $from)
-			));
-			$total = $xdata['params']['count'];
+		// do the request, retrieve and parse data
+		$xdata = $mp->call('getList', array(
+			'type'   => 'plugin',
+			'params' => array('limit' => $this->perPage, 'search' => $srch, 'from' => $from)
+		));
+		$total = $xdata['params']['count'];
 
-			// OLD BIT OF CODE ------------------------------->
+		// OLD BIT OF CODE ------------------------------->
 		/*
 		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
 			$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
@@ -1378,120 +1538,122 @@ class plugin_online_ui extends e_admin_ui
 
 			$xdata['data'] = $xdata['plugin'];
 			*/
-			// OLD BIT OF CODE END ------------------------------->
+		// OLD BIT OF CODE END ------------------------------->
 
 
-	// print_a($xdata);
+		// print_a($xdata);
 
-			$c = 1;
-			foreach($xdata['data'] as $row)
-			{
-				//$row = $r['@attributes'];
+		$c = 1;
+		foreach($xdata['data'] as $row)
+		{
+			//$row = $r['@attributes'];
 
-				//	print_a($row);
+			//	print_a($row);
 
-					$badge 		= $this->compatibilityLabel($row['compatibility']);;
-					$featured 	= ($row['featured']== 1) ? " <span class='label label-info'>".EPL_ADLAN_91."</span>" : '';
-					$price 		= (!empty($row['price'])) ? "<span class='label label-primary'>".$row['price']." ".$row['currency']."</span>" : "<span class='label label-success'>".EPL_ADLAN_93."</span>";
+			$badge = $this->compatibilityLabel($row['compatibility']);;
+			$featured = ($row['featured'] == 1) ? " <span class='label label-info'>" . EPL_ADLAN_91 . "</span>" : '';
+			$price = (!empty($row['price'])) ? "<span class='label label-primary'>" . $row['price'] . " " . $row['currency'] . "</span>" : "<span class='label label-success'>" . EPL_ADLAN_93 . "</span>";
 
-					$data[] = array(
-						'plugin_id'				=> $row['params']['id'],
-						'plugin_mode'			=> $row['params']['mode'],
-						'plugin_icon'			=> vartrue($row['icon'],'e-plugins-32'),
-						'plugin_name'			=> stripslashes($row['name']),
-						'plugin_featured'		=> $featured,
-						'plugin_sef'			=> '',
-						'plugin_folder'			=> $row['folder'],
-						'plugin_path'			=> $row['folder'],
-						'plugin_date'			=> vartrue($row['date']),
-						'plugin_category'		=> vartrue($row['category'], 'n/a'),
-						'plugin_author'			=> vartrue($row['author']),
-						'plugin_version'		=> $row['version'],
-						'plugin_description'	=> nl2br(vartrue($row['description'])),
-						'plugin_compatible'		=> $badge,
+			$data[] = array(
+				'plugin_id'          => $row['params']['id'],
+				'plugin_mode'        => $row['params']['mode'],
+				'plugin_icon'        => vartrue($row['icon'], 'e-plugins-32'),
+				'plugin_name'        => stripslashes($row['name']),
+				'plugin_featured'    => $featured,
+				'plugin_sef'         => '',
+				'plugin_folder'      => $row['folder'],
+				'plugin_path'        => $row['folder'],
+				'plugin_date'        => vartrue($row['date']),
+				'plugin_category'    => vartrue($row['category'], 'n/a'),
+				'plugin_author'      => vartrue($row['author']),
+				'plugin_version'     => $row['version'],
+				'plugin_description' => nl2br(vartrue($row['description'])),
+				'plugin_compatible'  => $badge,
 
-						'plugin_website'		=> vartrue($row['authorUrl']),
-						'plugin_url'			=> $row['urlView'],
-						'plugin_notes'			=> '',
-						'plugin_price'			=> $row['price'],
-						'plugin_license'		=> $price,
-						'plugin_installflag'    => e107::isInstalled($row['folder'])
-					);
+				'plugin_website'     => vartrue($row['authorUrl']),
+				'plugin_url'         => $row['urlView'],
+				'plugin_notes'       => '',
+				'plugin_price'       => $row['price'],
+				'plugin_license'     => $price,
+				'plugin_installflag' => e107::isInstalled($row['folder'])
+			);
 
-				$c++;
-			}
+			$c++;
+		}
 
-			$fieldList = $this->fields;
-			unset($fieldList['checkboxes']);
+		$fieldList = $this->fields;
+		unset($fieldList['checkboxes']);
 
-			$text = "
-				<form class='form-search form-inline' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>
-				<div id='admin-ui-list-filter' class='e-search '>".$frm->search('srch', $srch, 'go').$frm->hidden('mode','online')."
+		$text = "
+				<form class='form-search form-inline' action='" . e_SELF . "?" . e_QUERY . "' id='core-plugin-list-form' method='get'>
+				<div id='admin-ui-list-filter' class='e-search '>" . $frm->search('srch', $srch, 'go') . $frm->hidden('mode', 'online') . "
 				</div>
 				</form>
 
-				<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
+				<form action='" . e_SELF . "?" . e_QUERY . "' id='core-plugin-list-form' method='post'>
 					<fieldset class='e-filter' id='core-plugin-list'>
-						<legend class='e-hideme'>".$caption."</legend>
+						<legend class='e-hideme'>" . $caption . "</legend>
 
 
 
 
 
 						<table id=core-plugin-list' class='table adminlist table-striped'>
-							".$frm->colGroup($fieldList,$this->fieldpref).
-							$frm->thead($fieldList,$this->fieldpref)."
+							" . $frm->colGroup($fieldList, $this->fieldpref) .
+			$frm->thead($fieldList, $this->fieldpref) . "
 							<tbody>
 			";
 
 
-
-			foreach($data as $key=>$val	)
-			{
+		foreach($data as $key => $val)
+		{
 			//	print_a($val);
-				$text .= "<tr>";
+			$text .= "<tr>";
 
-				foreach($this->fields as $v=>$foo)
+			foreach($this->fields as $v => $foo)
+			{
+				if(!in_array($v, $this->fieldpref) || $v == 'checkboxes' || $v === 'options')
 				{
-					if(!in_array($v,$this->fieldpref) || $v == 'checkboxes' || $v === 'options')
-					{
-						continue;
-					}
-
-					$_value = $val[$v];
-					if($v == 'plugin_name') $_value .= $val['plugin_featured'];
-					// echo '<br />v='.$v;
-					$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
+					continue;
 				}
-				$text .= "<td class='center'>".$this->options($val)."</td>";
-				$text .= "</tr>";
 
+				$_value = $val[$v];
+				if($v == 'plugin_name')
+				{
+					$_value .= $val['plugin_featured'];
+				}
+				// echo '<br />v='.$v;
+				$text .= "<td style='height: 40px' class='" . vartrue($this->fields[$v]['class'], 'left') . "'>" . $frm->renderValue($v, $_value, $this->fields[$v], $key) . "</td>\n";
 			}
+			$text .= "<td class='center'>" . $this->options($val) . "</td>";
+			$text .= "</tr>";
+
+		}
 
 
-			$text .= "
+		$text .= "
 							</tbody>
 						</table>";
-			$text .= "
+		$text .= "
 					</fieldset>
 				</form>
 			";
 
-			if($total > $this->perPage)
+		if($total > $this->perPage)
+		{
+			$parms = $total . "," . $this->perPage . "," . $from . "," . e_SELF . '?mode=online&amp;action=list&amp;frm=[FROM]';
+
+			if(!empty($srch))
 			{
-				$parms = $total.",".$this->perPage.",".$from.",".e_SELF.'?mode=online&amp;action=list&amp;frm=[FROM]';
-
-				if(!empty($srch))
-				{
-					$parms .= '&amp;srch='.$srch;
-				}
-
-				$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
+				$parms .= '&amp;srch=' . $srch;
 			}
 
-			return $text;
-
+			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>" . $tp->parseTemplate("{NEXTPREV=$parms}", true) . "</div>";
 		}
+
+		return $text;
+
+	}
 
 
 
@@ -1627,9 +1789,76 @@ class plugin_form_online_ui extends e_admin_form_ui
 	}
 
 
-	function options($data)
+	function plugin_icon($curVal, $mode)
 	{
-return null;
+		return e107::getParser()->toIcon($curVal);
+	}
+
+
+	function options($bla, $data)
+	{
+		$action = $this->getController()->getAction();
+
+		if(e107::isInstalled($data['folder']))
+		{
+			if($action === 'grid')
+			{
+				return "<button class='btn btn-sm btn-default btn-secondary' disabled>".LAN_INSTALLED."</button>";
+			}
+
+			return '&nbsp; <span class="label label-default">'.LAN_INSTALLED."</span>";
+			return null;
+		}
+
+
+		$id = 'plug_'.$data['params']['id'];
+		$modalCaption = (!empty($data['price'])) ? EPL_ADLAN_92." ".$data['name']." ".$data['version'] : EPL_ADLAN_230." ".$data['name']." ".$data['version'];
+
+		$srcData = array(
+			'plugin_id'     => $data['params']['id'],
+			'plugin_folder' => $data['folder'],
+			'plugin_price'  => $data['price'],
+			'plugin_mode'   =>  'addon',
+			'plugin_url'    => $data['url'],
+		);
+
+		$url = $this->getController()->getMarketplace()->getDownloadModal('plugin', $data);
+
+		$button = ADMIN_INSTALLPLUGIN_ICON;
+		$class = 'btn btn-sm btn-default btn-secondary';
+		$disable = '';
+		$title = EPL_ADLAN_237;
+		$tp = e107::getParser();
+
+		if($action === 'grid')
+		{
+			$button = e107::getParser()->toGlyph('fa-bolt').ADLAN_121; // Install
+			$class = 'btn btn-sm btn-primary';
+
+			$version = $tp->filter(e_VERSION,'version');
+			$compat = (float)  $tp->filter($data['compatibility'], 'version');
+
+			if($compat == 2)
+			{
+				$compat = $version;
+			}
+
+
+			if(!e107::isCompatible($compat))
+			{
+				$button = e107::getParser()->toGlyph('fa-bolt').ADLAN_121;
+				$class = 'btn btn-sm btn-warning';
+			//	$disable = 'data-confirm="This plugin may not be compatible with your version of e107. Are you sure?"';
+				$title = "Install: May not be compatible";
+			}
+		}
+
+
+		$dicon = '<a title="'.$title.'" '.$disable.' class="e-modal '.$class.'" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.$button.'</a>';
+	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
+
+		return $dicon;
+
 	}
 
 }
