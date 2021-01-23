@@ -296,7 +296,7 @@ class e_parse
 		'onwheel', 'oncopy', 'oncut', 'onpaste'
 	);
 
-	private $blockTags = array('pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
+	private $blockTags = array('p', 'pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
 
 
 	private $scriptAccess = false; // nobody.
@@ -1362,6 +1362,25 @@ class e_parse
 	{
 
 		return e107::getBB()->parseBBCodes($text, $postID);
+	}
+
+	/**
+	 * Strips block tags from html.
+	 * ie. <p> <div> <blockquote> <h1> <h2> <h3> etc are removed.
+	 * @param string $text
+	 * @return string
+	 */
+	public function stripBlockTags($html)
+	{
+		$diff = array_diff($this->allowedTags, $this->blockTags);
+
+		$parm = '';
+		foreach($diff as $tag)
+		{
+			$parm .= '<'.$tag.'>';
+		}
+
+		return strip_tags($html, $parm);
 	}
 
 

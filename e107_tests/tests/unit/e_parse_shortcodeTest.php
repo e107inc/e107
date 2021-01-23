@@ -493,7 +493,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'page_metakeys'     => 'keywords',
 			'page_metadscr'     => 'Meta Description',
 			'page_metarobots'   => 'noindex',
-			'page_text'         => '[html]<p>Lorem ipsum dolor sit amet, <sup>1</sup> consectetur adipiscing elit. Donec libero ipsum; imperdiet at risus non.</p>[/html]',
+			'page_text'         => '[html]<p>Lorem ipsum dolor sit amet</p><p>Suspendisse <b>placerat</b> nunc orci</p>[/html]',
 			'page_author'       => '1',
 			'page_datestamp'    => '1371420000',
 			'page_rating_flag'  => '1',
@@ -518,6 +518,17 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$sc->setVars($vars);
 
 		$exclude = array('sc_cpagemessage'); // system messages
+
+		 $parms = array(
+            'cpagebody'         => array(
+                ': strip=blocks'    => '<!-- bbcode-html-start --><p>Main Body</p><!-- bbcode-html-end -->',
+                '=extended'         => '<!-- bbcode-html-start --><p><strong>Extended Body</strong></p><!-- bbcode-html-end -->',
+            ),
+		 );
+
+
+
+
 
         $this->processShortcodeMethods($sc, null, $exclude);
 
@@ -928,7 +939,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
-	public function testFpwShortcodes() // todo move fpw shortcodes out of fpw.php to its own file.
+	public function testFpwShortcodes()
 	{
 		require_once(e_CORE."shortcodes/batch/fpw_shortcodes.php");
 

@@ -33,7 +33,33 @@
 			$this->tp->init();
 		}
 
+		public function testStripBlockTags()
+		{
+			$tests = array(
+				0 => array(
+					'text'  => '<p>Paragraph 1</p><p><b>Paragraph 2<br >Line 3</b></p>',
+					'expected'  => "Paragraph 1<b>Paragraph 2<br >Line 3</b>",
+				),
 
+
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->tp->stripBlockTags($var['text']);
+
+				if(empty($var['expected']))
+				{
+					echo $result."\n\n";
+					continue;
+				}
+
+				$this->assertEquals($var['expected'], $result);
+			}
+
+
+
+		}
 
 /*
 		public function testHtmlAbuseFilter()
