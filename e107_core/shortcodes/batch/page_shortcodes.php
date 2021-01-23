@@ -103,9 +103,17 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
-	function sc_cpagebody($parm='')
+	function sc_cpagebody($parm=null)
 	{
 		$text = $this->var['page_text'];
+
+
+		if(varset($parm['strip']) === 'blocks')
+		{
+			$text = e107::getParser()->stripBlockTags($text);
+		}
+
+
 		return $text ? e107::getParser()->toHTML($text, true, 'BODY') : '';
 	}
 

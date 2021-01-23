@@ -5448,6 +5448,43 @@ class e107
 		return self::getConfig()->isData('plug_installed/'.$plugname);
 	}
 
+
+	/**
+	 * Returns true if the number is compatible with this version of e107.
+	 * @param string $version The minimum version requirement
+	 * @return bool
+	 */
+	public static function isCompatible($version)
+	{
+		$tp = e107::getParser();
+
+		$e107info = [];
+		include(e_ADMIN."ver.php"); // $e107info['e107_version'];
+
+		$e107 = $tp->filter($e107info['e107_version'], 'version');
+		$version = $tp->filter($version, 'version');
+
+		$tmp = explode('.', $version);
+
+		if((int) $tmp[0] === 1) // version 1, assumed to be incompatible.
+		{
+			return false;
+		}
+
+		if(isset($tmp[2])) // ie. 2.3.1
+		{
+			return version_compare($e107  ,$version, '>=');
+		}
+		elseif(isset($tmp[1]))
+		{
+			return ((float) $e107 >= $version);
+		}
+
+		return ((int) $e107 >= (int) $version);
+
+
+	}
+
 	/**
 	 * Safe way to set ini var
 	 * @param string $var

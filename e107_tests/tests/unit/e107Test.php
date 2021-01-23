@@ -1624,6 +1624,39 @@ class e107Test extends \Codeception\Test\Unit
 		// var_dump($result);
 		$this->assertTrue($result);
 	}
+
+
+	public function testIsCompatible()
+	{
+		// version => expected
+		$tests = array (
+			'1'     => false, // assumed incompatible.
+			'2'     => true, // assumed to work with all versions from 2+
+			'2.0'   => true,  // assumed to work with all versions from 2+
+			'2.3'   => true,  // assumed to work with all versions from 2.3 onward.
+			'2.1.0' => true,
+			'2.2.0' => true,
+			'2.3.0' => true,
+			'2.3.1' => true,
+			'1.7b'  => false,
+			'2.9'   => false,
+			'2.9.2' => false,
+			'3'     => false,
+
+		);
+
+		$e107 = $this->e107;
+	//	$ret = [];
+		foreach($tests as $input=>$expected)
+		{
+			$result = $e107::isCompatible($input);
+			$this->assertSame($expected, $result);
+		//	$ret[$input] = $result;
+		}
+
+
+
+	}
 	/*
 			public function testIni_set()
 			{
