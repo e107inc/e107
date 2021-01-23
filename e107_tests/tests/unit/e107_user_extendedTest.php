@@ -383,7 +383,9 @@
 
 		public function testUserExtendedAllShortcode()
 		{
+			e107::getUserExt()->init();
 
+			/** @var usersettings_shortcodes $sc */
 			$sc = e107::getScBatch('usersettings');
 			$sc->wrapper('not-a-real-wrapper');
 			$sc->reset();
