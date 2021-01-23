@@ -15,8 +15,6 @@
 require_once("class2.php");
 e107::coreLan('membersonly');
 
-//e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
-
 if(deftrue('BOOTSTRAP')) //v2.x
 {
 	$MEMBERSONLY_TEMPLATE = e107::getCoretemplate('membersonly');
@@ -43,58 +41,12 @@ if(!defined('e_IFRAME'))
 	define('e_IFRAME', true);
 }
 
-
-class membersonly
-{
-
-	function sc_membersonly_signup()
-	{
-
-		$pref = e107::pref('core');
-
-		if(intval($pref['user_reg']) === 1)
-		{
-			$srch = array("[", "]");
-			$repl = array("<a class='alert-link' href='" . e_SIGNUP . "'>", "</a>");
-
-			return str_replace($srch, $repl, LAN_MEMBERS_3);
-		}
-
-	}
-
-	function sc_membersonly_returntohome()
-	{
-
-		$pref = e107::pref('core');
-		if($pref['membersonly_redirect'] == 'login')
-		{
-			return "<a class='alert-link' href='" . e_HTTP . "index.php'>" . LAN_MEMBERS_4 . "</a>";
-		}
-	}
-
-	function sc_membersonly_restricted_area()
-	{
-
-		return LAN_MEMBERS_1;
-	}
-
-	function sc_membersonly_login()
-	{
-
-		$srch = array("[", "]");
-		$repl = array("<a class='alert-link' href='" . e_LOGIN . "'>", "</a>");
-
-		return str_replace($srch, $repl, LAN_MEMBERS_2);
-	}
-
-}
-
-
+$sc = e107::getScBatch('membersonly');
+$sc->wrapper('membersonly/default');
 require_once(HEADERF);
 
-$mem = new membersonly;
 
-$BODY = e107::getParser()->parseTemplate($MEMBERSONLY_TEMPLATE['default']['body'], true, $mem);
+$BODY = e107::getParser()->parseTemplate($MEMBERSONLY_TEMPLATE['default']['body'], true, $sc);
 
 echo $MEMBERSONLY_TEMPLATE['default']['header'];
 e107::getRender()->tablerender($MEMBERSONLY_TEMPLATE['default']['caption'], $BODY, 'membersonly');
