@@ -1275,7 +1275,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
  * @param bool|mixed|string $ap
  * @return bool
  */
-function getperms($arg, $ap = ADMINPERMS)
+function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)
 {
 	// $ap = "4"; // Just for testing.
 
@@ -1294,11 +1294,12 @@ function getperms($arg, $ap = ADMINPERMS)
 		return true;
 	}
 
-	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', e_SELF, $matches))
+	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
 	{
 		$sql = e107::getDb('psql');
+	/*	$id = e107::getPlug()->load($matches[2])->getId();
+		$arg = 'P'.$id;*/
 
-		// FIXME - cache it, avoid sql query here
 		if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
 			$row = $sql->fetch();

@@ -461,8 +461,9 @@
 		{
 		//	$this->fixRegistry('before');
 
-
+			e107::getUserExt()->init();
 			$sc = e107::getScBatch('signup');
+
 
 			$template = array(
 				'extended-category'     => "-- {EXTENDED_CAT_TEXT} --",
