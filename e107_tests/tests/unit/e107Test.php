@@ -1631,6 +1631,8 @@ class e107Test extends \Codeception\Test\Unit
 		// version => expected
 		$tests = array (
 			'1'     => false, // assumed incompatible.
+			'1.2.3' => false,
+			'1.2'   => false,
 			'2'     => true, // assumed to work with all versions from 2+
 			'2.0'   => true,  // assumed to work with all versions from 2+
 			'2.3'   => true,  // assumed to work with all versions from 2.3 onward.
@@ -1642,7 +1644,6 @@ class e107Test extends \Codeception\Test\Unit
 			'2.9'   => false,
 			'2.9.2' => false,
 			'3'     => false,
-
 		);
 
 		$e107 = $this->e107;
