@@ -1435,33 +1435,7 @@ class e107plugin
 		//$parsed_plugin = array();
 	}
 
-	/**
-	 * @deprecated to be removed. Use e_plugin instead.
-	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
-	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
-	 * @return array|bool plugin details
-	 */
-	private function getall($flag)
-	{
-		$sql = e107::getDb();
 
-		if($flag === 'all')
-		{
-			$qry = "SELECT * FROM #plugin ORDER BY plugin_path ASC";	
-		}
-		else
-		{
-			$qry = "SELECT * FROM #plugin WHERE plugin_installflag = ".(int) $flag." ORDER BY plugin_path ASC";		
-		}
-
-		if ($sql->gen($qry))
-		{
-			$ret = $sql->db_getList();
-			return $ret;
-		}
-
-		return false;
-	}
 
 	/**
 	* Return a list of core plugins. 
