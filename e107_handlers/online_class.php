@@ -285,7 +285,8 @@ class e_online
 			}
 
 			// Always allow localhost - any problems are usually semi-intentional!
-			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP)  && (varset($row['online_ip']) != e107::LOCALHOST_IP2))
+			$onlineIP = varset($row['online_ip']);
+			if (($onlineIP !== '127.0.0.1') && ($onlineIP !== e107::LOCALHOST_IP)  && ($onlineIP != e107::LOCALHOST_IP2))
 			{
 				// Check for excessive access
 				if ($row['online_pagecount'] > $online_bancount)
@@ -330,8 +331,6 @@ class e_online
 					while ($row = $sql->fetch())
 					{
 
-
-
 						$row['online_bot'] = $this->isBot($row['online_agent']);
 				
 						// Sort into usable format and add bot field. 
@@ -371,13 +370,15 @@ class e_online
 						
 					}
 				}
-				define('TOTAL_ONLINE', $total_online);
-				define('MEMBERS_ONLINE', $members_online);
-				define('GUESTS_ONLINE', $total_online - $members_online);
-				$dbg->logTime('Go online (db count) Line:'.__LINE__);
-				define('ON_PAGE', $sql->count('online', '(*)', "WHERE `online_location` = '{$page}' "));
-				define('MEMBER_LIST', $member_list);
-
+				if(!defined('TOTAL_ONLINE'))
+				{
+					define('TOTAL_ONLINE', $total_online);
+					define('MEMBERS_ONLINE', $members_online);
+					define('GUESTS_ONLINE', $total_online - $members_online);
+					$dbg->logTime('Go online (db count) Line:'.__LINE__);
+					define('ON_PAGE', $sql->count('online', '(*)', "WHERE `online_location` = '{$page}' "));
+					define('MEMBER_LIST', $member_list);
+				}
 				//update most ever online
 				$olCountPrefs = e107::getConfig('history');			// Get historic counts of members on line
 				$olCountPrefs->setParam('nologs', true);
@@ -409,11 +410,7 @@ class e_online
 		if($debug === true)
 		{
 			//print_a($this->users);
-			$data = e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
-
-		//	print_a($data);
-
-			return $data;
+			return e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
 		}
 
 
@@ -422,30 +419,14 @@ class e_online
 
 	function guestList()
 	{
-		return $this->guests;		
-		
+		return $this->guests;
 	}
 
 	
 	
 	function isBot($userAgent='')
 	{
-		if(!$userAgent){ return false; }
-		
-		$botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
-		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
-		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
-		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
-		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
-		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
-		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
-		"Butterfly","Twitturls","Me.dium","Twiceler");
-		
-		foreach($botlist as $bot)
-		{
-			if(strpos($userAgent, $bot) !== false){ return true; }
-		}
-		return false;
+		return e107::getUser()->isBot($userAgent);
 	}
 	
 
