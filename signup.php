@@ -197,7 +197,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 	if($invalid = e107::getEvent()->trigger("usersup_veri", $_POST))
 	{
-    	$extraErrors[] = $invalid."\\n";
+    	$extraErrors[] = $invalid;
         $error = TRUE;
 	}
 
