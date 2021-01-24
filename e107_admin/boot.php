@@ -235,11 +235,14 @@ e107::coreLan('footer', true);
 
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 e107::getDebug()->logTime('[boot.php: Loading admin_icons]');
-include_once(e107::coreTemplatePath('admin_icons'));
+e107::loadAdminIcons();
+e107::getDebug()->logTime('[boot.php: After Loading admin_icons]');
+//include_once(e107::coreTemplatePath('admin_icons'));
 
 
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
 {
+	e107::getDebug()->logTime('[boot.php: Loading adminLinks(\'legacy\')]');
 	$array_functions = e107::getNav()->adminLinks('legacy'); // replacement see e107_handlers/sitelinks.php
 	foreach($array_functions as $val)
 	{

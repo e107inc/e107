@@ -8255,11 +8255,7 @@ class e_admin_form_ui extends e_form
 	}
 }
 
-
-
-
-
-include_once(e107::coreTemplatePath('admin_icons'));
+e107::loadAdminIcons();
 
 /**
  * TODO:

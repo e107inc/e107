@@ -142,10 +142,6 @@
 				'forum/forum_post.php',
 				'forum/forum_viewtopic.php',   // needs a major cleanup.
 				'forum/index.php',
-				'log/log.php', // headers
-				'log/loginfo.php', // include.
-				'log/stats.php', // FIXME or remove the plugin
-				'log/stats_csv.php',
 				'online/online_menu.php', // FIXME missing template for member/new
 				'pm/pm.php', // FIXME contains exit, needs rework.
 				'poll/admin_config.php', // FIXME convert to admin-ui

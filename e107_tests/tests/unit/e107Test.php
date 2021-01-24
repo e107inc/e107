@@ -727,14 +727,23 @@ class e107Test extends \Codeception\Test\Unit
 		$this->assertTrue($res);
 	}
 */
-	public function testGetCoreTemplate()
+	public function testLoadAdminIcons()
 	{
-
-		$templates = scandir(e_CORE . "templates");
 		$e107 = $this->e107;
 
+		$e107::loadAdminIcons();
+		$e107::loadAdminIcons();
+	}
+
+
+	public function testGetCoreTemplate()
+	{
+		$e107 = $this->e107;
+		$templates = scandir(e_CORE . "templates");
+
+
 		$exclude = array(
-			'admin_icons_template.php',
+		//	'admin_icons_template.php',
 			'admin_template.php',// FIXME - convert the template to v2.x standards.
 			'bbcode_template.php',
 			'online_template.php', // FIXME - convert the template to v2.x standards.

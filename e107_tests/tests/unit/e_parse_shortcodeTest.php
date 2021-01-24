@@ -155,9 +155,11 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
     public function testAdminShortcodes()
     {
         require_once(e_CORE."shortcodes/batch/admin_shortcodes.php");
-        require_once(e_CORE."templates/admin_icons_template.php");
+
         require_once(e_LANGUAGEDIR.'English/admin/lan_header.php');
         require_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
+
+		e107::loadAdminIcons();
 
         try
 		{
