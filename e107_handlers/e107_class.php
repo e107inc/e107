@@ -48,8 +48,8 @@ class e107
 	public $file_path;
 	public $site_path;
 	public $relative_base_path;
-	public $_ip_cache;
-	public $_host_name_cache;
+//	public $_ip_cache;
+//	public $_host_name_cache;
 
 	public $site_theme; // class2 -> check valid theme
 //	public $http_theme_dir; // class2 -> check valid theme
@@ -89,7 +89,7 @@ class e107
 	 *
 	 * @var boolean
 	 */
-	protected static $_sc_core_loaded = false;
+//	protected static $_sc_core_loaded = false;
 
 	/**
 	 * Singleton instance
@@ -2000,10 +2000,7 @@ class e107
 		if($user === null)
 		{
 			$user = self::getObject('e_system_user');
-			if($user_id)
-			{
 				$user->load($user_id);
-			} // self registered on load
 		}
 		return $user;
 	}
@@ -2348,7 +2345,7 @@ class e107
 						'href' => $libraryPath.$pre['path']
 					];
 
-					$browserCache = !empty($pre['browsercache']) ? true : false;
+					$browserCache = !empty($pre['browsercache']);
 
 					unset($pre['path'],$pre['browsercache']);
 					$linkArr2 = array_merge($linkArr,$pre);
@@ -3043,15 +3040,15 @@ class e107
 
 	/**
 	 * Load admin icons template and define their constants
-	 * @return void;
+	 * @return array;
 	 */
 	public static function loadAdminIcons()
 	{
-		$regID = 'e107/core/adminicons/loaded';
+		$regID = 'core/e107/templates/admin_icons';
 
-		if(self::getRegistry($regID))
+		if($temp = self::getRegistry($regID))
 		{
-			return null;
+			return $temp;
 		}
 
 		$ADMIN_ICONS_TEMPLATE = self::getCoreTemplate('admin_icons', null, false);
@@ -3059,11 +3056,11 @@ class e107
 		if(defset('THEME_STYLE') === 'css/kadmin.css')
 		{
 
-			$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON'] = "<i class='fa fa-edit fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON'] = "<i class='fa fa-trash fa-2x fa-fw text-danger'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON'] = "<i class='fa fa-power-off fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON'] = "<i class='fa fa-sort fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON'] = "<i class='fa fa-file-text-o fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']        = "<i class='fa fa-edit fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']      = "<i class='fa fa-trash fa-2x fa-fw text-danger'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']     = "<i class='fa fa-power-off fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']        = "<i class='fa fa-sort fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']       = "<i class='fa fa-file-text-o fa-2x fa-fw'></i>";
 		}
 
 		foreach($ADMIN_ICONS_TEMPLATE as $def=>$val)
@@ -3071,7 +3068,9 @@ class e107
 			define($def, $val);
 		}
 
-		self::setRegistry($regID, true);
+		self::setRegistry($regID, $ADMIN_ICONS_TEMPLATE);
+
+		return $ADMIN_ICONS_TEMPLATE;
 	}
 
 	/**
@@ -4744,10 +4743,8 @@ class e107
 		{
 			return $this->e107_dirs[$dir.'_SERVER'];
 		}
-		$ret = e_BASE.$this->e107_dirs[$dir.'_DIRECTORY'];
 
-
-		return $ret;
+		return e_BASE.$this->e107_dirs[$dir.'_DIRECTORY'];
 	}
 
 	/**
@@ -5856,7 +5853,7 @@ class e107
 
 		if(version_compare($curVersion,$newVersion) === -1)
 		{
-			$data = array(
+			return array(
 				'name'          => $xdata['core'][0]['@attributes']['name'],
 				'url'           => $xdata['core'][0]['@attributes']['url'],
 				'date'          => $xdata['core'][0]['@attributes']['date'],
@@ -5865,7 +5862,6 @@ class e107
 				'description'   => $xdata['core'][0]['description'],
 			);
 
-			return $data;
 		}
 
 		return false;
