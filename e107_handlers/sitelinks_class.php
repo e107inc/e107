@@ -675,7 +675,8 @@ class e_navigation
 	{
 		if(!defined('E_32_MAIN'))
 		{
-			e107::getCoreTemplate('admin_icons');
+		//	e107::getCoreTemplate('admin_icons');
+			e107::loadAdminIcons();
 		}
 		
 		

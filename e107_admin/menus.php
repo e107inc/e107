@@ -737,8 +737,9 @@ class e_layout
 
 
 			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
-			
-			require_once(e_CORE."templates/admin_icons_template.php");
+
+			e107::loadAdminIcons();
+		//	require_once(e_CORE."templates/admin_icons_template.php");
 
 
 			

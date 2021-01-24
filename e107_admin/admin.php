@@ -35,7 +35,9 @@ if($info = e107::getLibrary()->load('bootstrap'))
     }
 }
 
-include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
+e107::getDebug()->logTime('[admin.php: Loading admin_icons]');
+//include_once(e107::coreTemplatePath('admin_icons'));
+e107::loadAdminIcons(); // Needs to be loaded before infopanel AND in boot.php
 
 /*if(vartrue($_GET['iframe']) == 1)
 {

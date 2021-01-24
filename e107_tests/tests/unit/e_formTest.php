@@ -162,7 +162,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
-		include_once(e_CORE."templates/admin_icons_template.php");
+		e107::loadAdminIcons();
+
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
