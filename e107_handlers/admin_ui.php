@@ -7516,7 +7516,7 @@ class e_admin_form_ui extends e_form
 							' .$this->select_close()."
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var). '
-							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false, 'title' =>LAN_FILTER)). '
+							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false, 'title' =>LAN_FILTER, 'loading' => false)). '
 							
 							' .$this->renderPagination()."	
 							".$gridToggle."
@@ -7614,13 +7614,14 @@ class e_admin_form_ui extends e_form
 				});
 			};
 			var searchQueryHandler = function (e) {
+				
 				var el = \$(this), frm = el.parents('form'), cont = frm.nextAll('.e-container');
 				if(cont.length < 1 || frm.length < 1 || (el.val().length > 0 && el.val().length < 3)) return;
 				e.preventDefault();
 				
 				if(filterRunning && request) request.abort();
 				filterRunning = true;
-				
+				\$('#admin-ui-list-filter .indicator').show();
 				cont.css({ opacity: 0.5 });
 				
 				request = \$.get(frm.attr('action'), frm.serialize(), function(data){
@@ -7631,6 +7632,7 @@ class e_admin_form_ui extends e_form
 							return;
 						}
 						cont.html(data).css({ opacity: 1 });
+						\$('#admin-ui-list-filter .indicator').hide();
 						// TODO remove applyAfterAjax() and use behaviors!
 						applyAfterAjax(cont);
 						// Attach behaviors to the newly loaded contents.
@@ -7643,6 +7645,16 @@ class e_admin_form_ui extends e_form
 				});
 			};
 			\$('#searchquery').on('keyup', searchQueryHandler);
+			
+			\$('#filter-options').on('change', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+			
+			\$('#etrigger-filter').on('click', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+			
+			
 		", 'jquery');
 
 		return $text;
