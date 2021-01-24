@@ -1360,7 +1360,7 @@ class e107plugin
 
 	protected $core_plugins = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
-		"chatbox_menu",	"clock_menu","comment_menu",
+		"chatbox_menu",	"comment_menu",
 		"contact", "download", "featurebox", "forum","gallery",
 		"gsitemap","hero", "import", "linkwords", "list_new", "log", "login_menu",
 		"metaweblog", "newforumposts_main", "news", "newsfeed",
