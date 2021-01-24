@@ -2,11 +2,9 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2021 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Administration Icons, should handle all icons in the future (somehow)
  *
 */
 
@@ -16,8 +14,6 @@ $ADMIN_ICONS_TEMPLATE['E_16_TWITTER']               = "<img class='icon S16' src
 $ADMIN_ICONS_TEMPLATE['E_16_GITHUB']                = "<img class='icon S16' src='" . e_IMAGE . "admin_images/github_16.png' alt='' />";
 $ADMIN_ICONS_TEMPLATE['E_16_E107']                  = "<img class='icon S16' src='" . e_IMAGE . "e107_icon_16.png' alt='' />";
 $ADMIN_ICONS_TEMPLATE['E_32_E107']                  = "<img class='icon S32' src='" . e_IMAGE . "e107_icon_32.png' alt='' />";
-
-
 
 $ADMIN_ICONS_TEMPLATE['E_32_ADMIN']                 = "<i class='S32 e-admins-32'></i>";
 $ADMIN_ICONS_TEMPLATE['E_32_ADPASS']                = "<i class='S32 e-adminpass-32'></i>";
@@ -56,14 +52,12 @@ $ADMIN_ICONS_TEMPLATE['E_32_LANGUAGE']              = "<i class='S32 e-language-
 
 // Large Admin Other Link Images
 
-$ADMIN_ICONS_TEMPLATE['E_24_PLUGIN']                = "<i class='S24 e-plugins-24'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_PLUGIN']                = "<i class='S32 e-plugins-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_PLUGMANAGER']           = "<i class='S32 e-plugmanager-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_MAIN']                  = "<i class='S32 e-main-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_THEMEMANAGER']          = "<i class='S32 e-themes-32'></i> ";
 
 // Large Admin Other Images
-
 $ADMIN_ICONS_TEMPLATE['E_32_COMMENT']               = "<i class='S32 e-comments-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_ADMINLOG']              = "<i class='S32 e-adminlogs-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_LOGOUT']                = "<i class='S32 e-logout-32'></i> ";
@@ -73,7 +67,6 @@ $ADMIN_ICONS_TEMPLATE['E_32_SETTINGS']              = "<i class='S32 e-settings-
 $ADMIN_ICONS_TEMPLATE['E_32_SYSINFO']               = "<i class='S32 e-sysinfo-32'></i> ";
 
 // Large Category Images
-
 $ADMIN_ICONS_TEMPLATE['E_32_CAT_SETT']              = "<i class='S32 e-cat_settings-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_CAT_USER']              = "<i class='S32 e-cat_users-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_CAT_CONT']              = "<i class='S32 e-cat_content-32'></i> ";
@@ -84,6 +77,7 @@ $ADMIN_ICONS_TEMPLATE['E_32_CAT_MANAGE']            = "<i class='S32 e-manage-32
 $ADMIN_ICONS_TEMPLATE['E_32_CAT_MISC']              = "<i class='S32 e-settings-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_CAT_ABOUT']             = "<i class='S32 e-info-32'></i> ";
 
+// Small Category Images.
 $ADMIN_ICONS_TEMPLATE['E_16_ADMIN']                 = "<i class='S16 e-admins-16'></i>";
 $ADMIN_ICONS_TEMPLATE['E_16_ADPASS']                = "<i class='S16 e-adminpass-16'></i>";
 $ADMIN_ICONS_TEMPLATE['E_16_BANLIST']               = "<i class='S16 e-banlist-16'></i>";
@@ -130,13 +124,9 @@ $ADMIN_ICONS_TEMPLATE['E_16_PLUGIN']                = "<i class='S16 e-plugins-1
 $ADMIN_ICONS_TEMPLATE['E_16_PLUGMANAGER']           = "<i class='S16 e-plugmanager-16'></i>";
 $ADMIN_ICONS_TEMPLATE['E_16_THEMEMANAGER']          = "<i class='S16 e-themes-16'></i>";
 
-
-
-$ADMIN_ICONS_TEMPLATE['ADMIN_FALSE_ICON']           = "<span class='text-danger admin-false-icon'>&#10799;</span>"; /*"<i class='fa fa-times text-danger'></i>"*/
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON']         = "<i class='fa fa-warning text-warning'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_GRID_ICON']            = "<i class='fa fa-th'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_LIST_ICON']            = "<i class='fa fa-th-list'></i>";
-
 $ADMIN_ICONS_TEMPLATE['ADMIN_ADD_ICON']             = "<i class='S32 e-add-32'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_INFO_ICON']            = "<i class='fa fa-question-circle'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_CONFIGURE_ICON']       = "<i class='S32 e-settings-32'></i>";
@@ -150,13 +140,10 @@ $ADMIN_ICONS_TEMPLATE['ADMIN_UP_ICON']              = "<i class='S32 e-up-32'></
 $ADMIN_ICONS_TEMPLATE['ADMIN_DOWN_ICON']            = "<i class='S32 e-down-32'></i>";
 
 // FOR BC
-
 $ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON_PATH']       = e_IMAGE_ABS . "admin_images/edit_32.png";
 $ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON_PATH']     = e_IMAGE_ABS . "admin_images/delete_32.png";
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON_PATH']    = e_IMAGE_ABS . "admin_images/warning_32.png";
 
-$ADMIN_ICONS_TEMPLATE['ADMIN_TRUE_ICON_PATH']       = e_IMAGE_ABS . "admin_images/true_16.png"; //XXX DEPRECATED but used in v1.x
-$ADMIN_ICONS_TEMPLATE['ADMIN_FALSE_ICON_PATH']      = e_IMAGE_ABS . "admin_images/false_16.png"; //XXX DEPRECATED but used in v1.x
 
 $ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']            = "<i class='S32 e-edit-32'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']          = "<i class='S32 e-delete-32'></i>";
@@ -164,10 +151,28 @@ $ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']            = "<i class='S32 e-sort-32'>
 $ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']         = "<i class='S32 e-execute-32'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']           = "<i class='S32 e-custom-32'></i>";
 
-$ADMIN_ICONS_TEMPLATE['E_32_TRUE'] = "<i class='S32 e-true-32'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_CHILD_ICON'] = '<img src="' . e_IMAGE_ABS . 'generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />'; // must use single quotes.
-$ADMIN_ICONS_TEMPLATE['ADMIN_FILTER_ICON'] = "<i class='fa fa-filter'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_TRUE_ICON'] = "<span class='text-success admin-true-icon'>&#10004;</span>"; /*"<i class='fa fa-check text-success'></i>" */
+$ADMIN_ICONS_TEMPLATE['E_32_TRUE']                  = "<i class='S32 e-true-32'></i>";
+
+$ADMIN_ICONS_TEMPLATE['ADMIN_CHILD_ICON']           = '<img src="' . e_IMAGE_ABS . 'generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />'; // must use single quotes.
+$ADMIN_ICONS_TEMPLATE['ADMIN_FILTER_ICON']          = "<i class='fa fa-filter'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_TRUE_ICON']            = "<span class='text-success admin-true-icon'>&#10004;</span>"; /*"<i class='fa fa-check text-success'></i>" */
+$ADMIN_ICONS_TEMPLATE['ADMIN_FALSE_ICON']           = "<span class='text-danger admin-false-icon'>&#10799;</span>";
+
+$ADMIN_ICONS_TEMPLATE['E_24_PLUGIN']                = "<i class='S24 e-plugins-24'></i> ";
+
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_MAIN']              = "<i class='S32 e-main-32'></i> ";
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_DOCS']              = "<i class='S32 e-docs-32'></i> ";
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_LEAV']              = "<i class='S32 e-leave-32'></i> ";
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_LGOT']              = "<i class='S32 e-logout-32'></i> ";
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_ARROW']             = "<i class='S32 e-arrow-32'></i> ";
+$ADMIN_ICONS_TEMPLATE['E_32_NAV_ARROW_OVER']        = "<i class='S32 e-arrow_over-32'></i> ";
+
+
+/**
+ * @deprecated
+
+$ADMIN_ICONS_TEMPLATE['ADMIN_TRUE_ICON_PATH']       = e_IMAGE_ABS . "admin_images/true_16.png"; //XXX DEPRECATED but used in v1.x
+$ADMIN_ICONS_TEMPLATE['ADMIN_FALSE_ICON_PATH']      = e_IMAGE_ABS . "admin_images/false_16.png"; //XXX DEPRECATED but used in v1.x
 $ADMIN_ICONS_TEMPLATE['ADMIN_TRUE_ICON'] = "<i class='S16 e-true-16'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_FALSE_ICON'] = "<i class='S16 e-false-16'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON'] = "<i class='S16 e-warning-16'></i>";
@@ -200,10 +205,6 @@ $ADMIN_ICONS_TEMPLATE['ADMIN_UNINSTALLPLUGIN_ICON'] ="<i class='S16 e-plugin_uni
 $ADMIN_ICONS_TEMPLATE['ADMIN_UPGRADEPLUGIN_ICON'] = 	"<i class='S16 e-up-16'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON'] =  		"<i class='S16 e-execute-16'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON'] = 			"<i class='S16 e-sort'></i>";
-
-/**
- * @deprecated
-
 $ADMIN_ICONS_TEMPLATE['E_32_CUSTOMFIELD'] = "<img class='icon S16' src='".e_IMAGE."admin_images/custom_field_32.png' alt='' />";
 $ADMIN_ICONS_TEMPLATE['E_16_CAT_SETT'] = e_IMAGE.'admin_images/cat_settings_16.png');
 $ADMIN_ICONS_TEMPLATE['E_16_CAT_USER'] = e_IMAGE.'admin_images/cat_users_16.png');
@@ -233,18 +234,9 @@ $ADMIN_ICONS_TEMPLATE['E_32_NAV_LGOT'] = "<i class='S32 e-logout-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_NAV_ARROW'] = "<i class='S32 e-arrow-32'></i> ";
 $ADMIN_ICONS_TEMPLATE['E_32_NAV_ARROW_OVER'] = "<i class='S32 e-arrow_over-32'></i> ";
 
-// Small Admin Main Link Images
-
-
-
-
-// Small Admin Other Link Images
-
 
  *
 // Small Admin Other Images
-
-
 
 $ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON_PATH'] = e_IMAGE_ABS."admin_images/edit_16.png";			//XXX DEPRECATED but used in v1.x
 $ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON_PATH'] = e_IMAGE_ABS."admin_images/delete_16.png"; 	//XXX DEPRECATED but used in v1.x
