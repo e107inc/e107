@@ -7518,11 +7518,11 @@ class e_admin_form_ui extends e_form
 							".implode("\n", $filter_preserve_var). '
 							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false, 'title' =>LAN_FILTER)). '
 							
-							' .$this->renderPagination()."
-							<span class='indicator' style='display: none;'>
-								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
-							</span>
+							' .$this->renderPagination()."	
 							".$gridToggle."
+							<span class='indicator' style='display: none;'>
+								<i class='fa fa-spin fa-spinner fa-fw'></i>
+							</span>
 						</div>
 						<div id='admin-ui-list-db-language' class='span4 col-md-4 text-right' >";
 

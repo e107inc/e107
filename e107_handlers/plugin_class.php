@@ -84,7 +84,7 @@ class e_plugin
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu",	"clock_menu","comment_menu",
 		"contact", "download", "featurebox", "forum","gallery",
-		"gsitemap", "hero", "import", "linkwords", "list_new", "log", "login_menu",
+		"gsitemap", "hero", "import", "linkwords", "list_new",  "login_menu",
 		 "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
 		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
