@@ -580,8 +580,11 @@
 
 		//	$this->echoMem();
 
+			$zoneKeys = array_keys($zones);
+			$expectedKeys = array_keys($expected);
 
-			$this->assertSame($expected, $zones);
+
+			$this->assertSame($expectedKeys, $zoneKeys);
 
 
 
