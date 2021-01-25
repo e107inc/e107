@@ -900,6 +900,15 @@ class e107Test extends \Codeception\Test\Unit
 		$template2 = $e107::loadAdminIcons();
 
 		$this->assertSame($new, $template2);
+
+		$range = range(1,10);
+		foreach($range as $t)
+		{
+			e107::loadAdminIcons();
+			$e107::loadAdminIcons();
+		}
+
+
 	}
 
 
