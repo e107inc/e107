@@ -15,6 +15,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	public function _before()
 	{
+		e107::loadAdminIcons();
+
 		try
 		{
 			$this->scParser = $this->make('e_parse_shortcode');
