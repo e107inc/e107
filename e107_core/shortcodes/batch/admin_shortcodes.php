@@ -24,15 +24,15 @@ class admin_shortcodes extends e_shortcode
 	{
 		$mes = e107::getMessage();
 		
-            if($cacheData == 'up-to-date')
+            if($cacheData === 'up-to-date')
             {
                 return '';
             }
     	
-			$installUrl = "#"; // TODO 
+			$installUrl = '#'; // TODO
 		
 		
-            if($parm=='alert')
+            if($parm === 'alert')
             {	//TODO LANVARS
 				$text = ADLAN_122.'  v'.$cacheData.'</a>.
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
@@ -41,7 +41,7 @@ class admin_shortcodes extends e_shortcode
 				return null; //  $mes->render();
 			}
             
-            if($parm=='icon')
+            if($parm === 'icon')
             {
 				
 				return '<ul class="nav navbar pill navbar-nav">
@@ -63,14 +63,14 @@ class admin_shortcodes extends e_shortcode
     }
    
     // {ADMIN_COREUPDATE}
-    function sc_admin_coreupdate($parm='')
+    public function sc_admin_coreupdate($parm='')
 	{
         $che = e107::getCache();
         $mes = e107::getMessage();
         
         $che->setMD5(e_LANGUAGE);
     
-        $cacheData = $che->retrieve("releasecheck",3600, TRUE); // 2.0.1 | 'up-to-date' | false ; 
+        $cacheData = $che->retrieve('releasecheck',3600, TRUE); // 2.0.1 | 'up-to-date' | false ;
     	
   		$cacheData = 2.1; // XXX Remove to test for real. 
     	
@@ -82,7 +82,7 @@ class admin_shortcodes extends e_shortcode
         }
        
 
-        require_once(e_HANDLER."cron_class.php");
+        require_once(e_HANDLER. 'cron_class.php');
         $cron = new _system_cron();
         
         if($result = $cron->checkCoreUpdate())
@@ -96,7 +96,7 @@ class admin_shortcodes extends e_shortcode
 	
 
 	
-	function sc_admin_credits()
+	public function sc_admin_credits()
 	{
 		if (!ADMIN) { return ''; }
 		return "
@@ -105,7 +105,7 @@ class admin_shortcodes extends e_shortcode
 		</div>";
 	}
 
-	function sc_admin_docs()
+	public function sc_admin_docs()
 	{
 		if (!ADMIN) { return ''; }
 
@@ -118,7 +118,7 @@ class admin_shortcodes extends e_shortcode
 		}
 		while ($file = readdir($handle))
 		{
-			if($file != '.' && $file != '..' && $file != 'CVS')
+			if($file !== '.' && $file !== '..' && $file !== 'CVS')
 			{
 				$helplist[$i] = $file;
 				$i++;
@@ -143,7 +143,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_adminui_help()
+	public function sc_adminui_help()
 	{
 		if (!ADMIN) { return ''; }
 
@@ -155,7 +155,7 @@ class admin_shortcodes extends e_shortcode
 		return null;
 	}
 
-	function sc_admin_help()
+	public function sc_admin_help()
 	{
 		if (!ADMIN) { return ''; }
 	
@@ -170,7 +170,7 @@ class admin_shortcodes extends e_shortcode
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
-		if(e_PAGE === "menus.php") // quite fix to disable e107_admin/menus.php help file in all languages.
+		if(e_PAGE === 'menus.php') // quite fix to disable e107_admin/menus.php help file in all languages.
 		{
 			return $help_text;
 		}
@@ -214,14 +214,13 @@ class admin_shortcodes extends e_shortcode
 		{
 			ob_start();
 			include_once($helpfile);
-			$help_text .= ob_get_contents();
-			ob_end_clean();
+			$help_text .= ob_get_clean();
 		}
 
 		return $help_text;
 	}
 
-	function sc_admin_icon()
+	public function sc_admin_icon()
 	{
 		$tp = e107::getParser();
 		
@@ -260,9 +259,9 @@ class admin_shortcodes extends e_shortcode
 						}
 					}
 				}
-				elseif (is_readable('plugin.php'))
+				elseif (is_readable(e_PLUGIN_DIR.'plugin.php'))
 				{
-					include('plugin.php');
+					include(e_PLUGIN_DIR.'plugin.php');
 				}
 				else
 				{
@@ -278,13 +277,11 @@ class admin_shortcodes extends e_shortcode
 			}
 			return $icon;
 		}
-		else
-		{
-			return E_32_LOGOUT;
-		}
+
+		return E_32_LOGOUT;
 	}
 
-	function sc_admin_lang($parm=null)
+	public function sc_admin_lang($parm=null)
 	{
 		if (!ADMIN || !e107::getPref('multilanguage')) { return ''; }
 		
@@ -321,10 +318,10 @@ class admin_shortcodes extends e_shortcode
 
 		$slng = e107::getLanguage();
 
-		if(!getperms($sql->mySQLlanguage) && $lanperms)
+		if($lanperms && !getperms($sql->mySQLlanguage))
 		{
 			$slng->set($lanperms[0]);
-			if ($pref['user_tracking'] == "session" && $pref['multilanguage_subdomain'])
+			if ($pref['user_tracking'] === 'session' && $pref['multilanguage_subdomain'])
 			{
 				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
 			}
@@ -348,21 +345,21 @@ class admin_shortcodes extends e_shortcode
 			foreach($GLOBALS['mySQLtablelist'] as $tabs)
 			{
 				$clang = strtolower($sql->mySQLlanguage);
-				if(strpos($tabs,"lan_".$clang) && $clang !="")
+				if($clang !="" && strpos($tabs, 'lan_' .$clang))
 				{
-					$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
+					$aff[] = str_replace(MPREFIX. 'lan_' .$clang. '_', '',$tabs);
 				}
 			}
         }
 
-		$text .= "
+		$text .= '
 		<div>
-		";
+		';
 		if(isset($aff))
 		{
 			$text .= $sql->mySQLlanguage;
-			$text .= " (".$slng->convert($sql->mySQLlanguage).")
-			: <span class='btn btn-default btn-secondary button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			$text .= ' (' .$slng->convert($sql->mySQLlanguage).")
+			: <span class='btn btn-default btn-secondary button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff). ' ' .UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode('<br />', $aff);
@@ -377,7 +374,7 @@ class admin_shortcodes extends e_shortcode
 		{
 			$text .= $pref['sitelanguage'];
 		}
-		$text .= "<br /><br /></div>";
+		$text .= '<br /><br /></div>';
 
 		e107::includeLan(e_PLUGIN.'user/languages/English.php');
 
@@ -389,11 +386,11 @@ class admin_shortcodes extends e_shortcode
 			<select class='tbox' name='lang_select' id='sitelanguage' onchange=\"location.href=this.options[selectedIndex].value\">";
 			foreach($lanperms as $lng)
 			{
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
+				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : '';
 				$urlval = $slng->subdomainUrl($lng);
 				$select .= "<option value='".$urlval."' {$selected}>$lng</option>\n";
 			}
-			$select .= "</select>";
+			$select .= '</select>';
 
 		}
 		/*elseif(isset($params['nobutton']))
@@ -426,15 +423,15 @@ class admin_shortcodes extends e_shortcode
 				//$langval = ($lng == $pref['sitelanguage'] && $lng == 'English') ? "" : $lng;
 				//$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
 				//$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
-				$selected = ($lng == e_LANGUAGE) ? " selected='selected'" : "";
+				$selected = ($lng == e_LANGUAGE) ? " selected='selected'" : '';
 				$select .= "<option value='".$lng."' {$selected}>$lng</option>\n";
 				
 			}
-			$select .= "</select> ".(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1."</span></button>" : '')."
-			".e107::getForm()->hidden('setlanguage', '1')."
+			$select .= '</select> ' .(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1. '</span></button>' : ''). '
+			' .e107::getForm()->hidden('setlanguage', '1'). '
 			</div>
 			</form>
-			";
+			';
 		}
 
 		if(isset($params['nomenu'])) { return $select; }
@@ -444,9 +441,9 @@ class admin_shortcodes extends e_shortcode
 
 	}
 
-	function sc_admin_latest($parm=null)
+	public function sc_admin_latest($parm=null)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
+		if(($parm === 'infopanel' || $parm === 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return null;
 		}
@@ -464,7 +461,7 @@ class admin_shortcodes extends e_shortcode
 
 					$active_uploads 	= $sql->count('upload', '(*)', 'WHERE upload_active = 0');
 					$submitted_news 	= $sql->count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
-					$comments_pending 	= $sql->count("comments", "(*)", "WHERE comment_blocked = 2 ");
+					$comments_pending 	= $sql->count('comments', '(*)', 'WHERE comment_blocked = 2 ');
 
 				//	$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 				//	$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT. " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a></div>";		
@@ -472,14 +469,14 @@ class admin_shortcodes extends e_shortcode
 			//		$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS." <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a></div>";
 
 					$oldconfigs = array();
-					$oldconfigs['e-news'][0] = array('icon'=>E_16_NEWS, 'title'=>ADLAN_LAT_2, 'url'=> e_ADMIN."newspost.php?mode=sub&amp;action=list", 'total'=>$submitted_news);
+					$oldconfigs['e-news'][0] = array('icon' =>E_16_NEWS, 'title' =>ADLAN_LAT_2, 'url' => e_ADMIN. 'newspost.php?mode=sub&amp;action=list', 'total' =>$submitted_news);
 
-					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
 					{
-						$oldconfigs['e-comment'][0] = array('icon'=>E_16_COMMENT, 'title'=>ADLAN_LAT_9, 'url'=> e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2", 'total'=>$comments_pending);
+						$oldconfigs['e-comment'][0] = array('icon' =>E_16_COMMENT, 'title' =>ADLAN_LAT_9, 'url' => e_ADMIN_ABS. 'comment.php?searchquery=&filter_options=comment_blocked__2', 'total' =>$comments_pending);
 					}
 
-					$oldconfigs['e-upload'][0] = array('icon'=>E_16_UPLOADS, 'title'=>ADLAN_LAT_7, 'url'=> e_ADMIN."upload.php", 'total'=>$active_uploads);
+					$oldconfigs['e-upload'][0] = array('icon' =>E_16_UPLOADS, 'title' =>ADLAN_LAT_7, 'url' => e_ADMIN. 'upload.php', 'total' =>$active_uploads);
 				
 					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
 					$queryString = '';
@@ -493,7 +490,7 @@ class admin_shortcodes extends e_shortcode
 					{
 					//	$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 						
-						$oldconfigs['e-generic'][0] = array('icon'=>E_16_NOTIFY, 'title'=>ADLAN_LAT_8, 'url'=> e_ADMIN_ABS."message.php", 'total'=>$amount);
+						$oldconfigs['e-generic'][0] = array('icon' =>E_16_NOTIFY, 'title' =>ADLAN_LAT_8, 'url' => e_ADMIN_ABS. 'message.php', 'total' =>$amount);
 					}
 				
 
@@ -501,13 +498,13 @@ class admin_shortcodes extends e_shortcode
 					{
 						foreach($pref['e_latest_list'] as $val)
 						{
-							$text = "";
+							$text = '';
 							if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
 							{
 								include_once(e_PLUGIN.$val.'/e_latest.php');
-								if(!class_exists($val."_latest"))
+								if(!class_exists($val. '_latest'))
 								{
-									trigger_error("<strong>".$val ."</strong> is using a deprecated e_latest method. See plugin: _blank/e_dashboard.php ", E_USER_DEPRECATED);
+									trigger_error('<strong>' .$val . '</strong> is using a deprecated e_latest method. See plugin: _blank/e_dashboard.php ', E_USER_DEPRECATED);
 
 									$oldconfigs[$val] = admin_shortcodes::legacyToConfig($text);
 								}
@@ -533,28 +530,25 @@ class admin_shortcodes extends e_shortcode
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
-							$link =  "<a  href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$link =  "<a  href='".$val['url']."'>".$val['icon']. ' ' .str_replace(':', ' ',$val['title'])." <span class='".$class."'>".$val['total']. '</span></a>';
 							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
-					$text .= "</ul>";
+					$text .= '</ul>';
 
 
 				
 				//	$text .= "</div>";
 					$ns->setUniqueId('e-latest-list');
-					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
+					return ($parm !== 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
 				}
 			}
 
-			if ($parm == 'request')
+			if ($parm === 'request')
 			{
-				if (function_exists('latest_request'))
+				if (function_exists('latest_request') && latest_request())
 				{
-					if (latest_request())
-					{
-						return admin_latest($parm);
-					}
+					return admin_latest($parm);
 				}
 			}
 			else
@@ -564,7 +558,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_log($parm=null)
+	public function sc_admin_log($parm=null)
 	{
 		e107::coreLan('log_messages', true);
 
@@ -579,10 +573,10 @@ class admin_shortcodes extends e_shortcode
 					$sql = e107::getDb();
 					$ns = e107::getRender();
 					$text = "<ul class='list-group'><li class='list-group-item'>".E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
-					if (e_QUERY == 'logall')
+					if (e_QUERY === 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql ->select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
+						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC', 'no_where');
 					}
 					else
 					{
@@ -594,28 +588,25 @@ class admin_shortcodes extends e_shortcode
 					while ($row = $sql ->fetch())
 					{
 						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
-						$text .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] )."</li>";
+						$text .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] ). '</li>';
 					}
 					$text .= ($cnt ? '</ul>' : '');
-					$text .= "<p><a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php'>".ADLAN_117."</a> ";
-					$text .= "<a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php?mode=main&action=maintenance'>".ADLAN_118."</a></p>";
+					$text .= "<p><a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php'>".ADLAN_117. '</a> ';
+					$text .= "<a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php?mode=main&action=maintenance'>".ADLAN_118. '</a></p>';
 
 					//			$text .= "<br />[ <a href='".e_ADMIN."admin_log.php?purge' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\">".ADLAN_118."</a> ]\n";
 
-					$text .= "</div>";
+					$text .= '</div>';
 
 					return $ns -> tablerender(ADLAN_135, $text, '', TRUE);
 				}
 			}
 
-			if ($parm == 'request')
+			if ($parm === 'request')
 			{
-				if (function_exists('log_request'))
+				if (function_exists('log_request') && log_request())
 				{
-					if (log_request())
-					{
-						return admin_log();
-					}
+					return admin_log();
 				}
 			}
 			else
@@ -625,7 +616,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_logged($parm='')
+	public function sc_admin_logged($parm='')
 	{
 		if (ADMIN)
 		{
@@ -634,10 +625,8 @@ class admin_shortcodes extends e_shortcode
 			{
 				return '<b>'.ADLAN_48.':</b> '.defset('ADMINNAME').' ('.ADLAN_49.') '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 			}
-			else
-			{
-				return '<b>'.ADLAN_48.':</b> '.defset('ADMINNAME').' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
-			}
+
+			return '<b>'.ADLAN_48.':</b> '.defset('ADMINNAME').' '.( defined('e_DBLANGUAGE') ? '<b>'.LAN_HEADER_05.'</b>: '.e_DBLANGUAGE : '' );
 		}
 		else
 		{
@@ -645,7 +634,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_logo($parm=null)
+	public function sc_admin_logo($parm=null)
 	{
 		//	parse_str($parm);
 
@@ -668,11 +657,11 @@ class admin_shortcodes extends e_shortcode
 
 		$dimensions = getimagesize($path);
 
-		$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' alt='".ADLAN_153."' />\n";
+		$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]. 'px; height: ' .$dimensions[1]."px' alt='".ADLAN_153."' />\n";
 
 		if (isset($link) && $link)
 		{
-			if ($link == 'index')
+			if ($link === 'index')
 			{
 				$image = "<a href='".e_ADMIN_ABS."index.php'>".$image.'</a>';
 			}
@@ -684,7 +673,7 @@ class admin_shortcodes extends e_shortcode
 		return $image;
 	}
 
-	function sc_admin_menu($parm=null)
+	public function sc_admin_menu($parm=null)
 	{
 		if (!ADMIN)
 		{
@@ -699,8 +688,8 @@ class admin_shortcodes extends e_shortcode
 			ob_start();
 			// FIXME - renderMenu(), respectively e_adm/in_menu() should return, not output content!
 			$tmp->renderMenu();
-			$ret = ob_get_contents();
-			ob_end_clean();
+			$ret = ob_get_clean();
+
 			return $ret;
 		}
 		unset($tmp);
@@ -712,7 +701,7 @@ class admin_shortcodes extends e_shortcode
 		ob_start();
 		//Show upper_right menu if the function exists
 		$tmp = explode('.',$curScript);
-        $adminmenu_parms = "";
+        $adminmenu_parms = '';
 
 		$adminmenu_func = $tmp[0].'_adminmenu';
 		if(function_exists($adminmenu_func))
@@ -746,8 +735,8 @@ class admin_shortcodes extends e_shortcode
 				return 'pre';
 			}
 		}
-		$ret = ob_get_contents();
-		ob_end_clean();
+		$ret = ob_get_clean();
+
 		return $ret;
 	}
 
@@ -755,7 +744,7 @@ class admin_shortcodes extends e_shortcode
 	 * Admin area debug dropdown menu.
 	 * @return string|null
 	 */
-	function sc_admin_debug()
+	public function sc_admin_debug()
 	{
 		if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
 		{
@@ -778,7 +767,7 @@ class admin_shortcodes extends e_shortcode
 		}
 
 		$current = e107_debug::getShortcut();
-		$currentAlias = !empty($items[$current]) ? " (".$items[$current].")" : '';
+		$currentAlias = !empty($items[$current]) ? ' (' .$items[$current]. ')' : '';
 
 		$active = deftrue('e_DEBUG') ? 'text-warning' : null;
 
@@ -805,11 +794,11 @@ class admin_shortcodes extends e_shortcode
 					$after = '';
 				}
 
-				$link = $before."?[debug=".$var."!]".$after;
+				$link = $before. '?[debug=' .$var. '!]' .$after;
 			}
 			else
 			{
-				$link = e_REQUEST_URI."?[debug=".$var."!]";
+				$link = e_REQUEST_URI. '?[debug=' .$var. '!]';
 			}
 
 			if(in_array($var,$dividerBefore))
@@ -839,9 +828,12 @@ class admin_shortcodes extends e_shortcode
 
 
 	// FIXME - make it work
-	function sc_admin_pm($parm=null)
+	public function sc_admin_pm($parm=null)
 	{
-		if(!e107::isInstalled('pm')) return;
+		if(!e107::isInstalled('pm'))
+		{
+			return;
+		}
         
         $sql = e107::getDb();
 		$tp = e107::getParser();
@@ -908,9 +900,9 @@ class admin_shortcodes extends e_shortcode
 	}
 
 
-	function sc_admin_multisite($parm=null)
+	public function sc_admin_multisite($parm=null)
 	{
-		$file = e_SYSTEM_BASE."multisite.json";
+		$file = e_SYSTEM_BASE. 'multisite.json';
 
 		if(!getperms('0') || !file_exists($file))
 		{
@@ -960,18 +952,15 @@ class admin_shortcodes extends e_shortcode
 	}
 
 
-	function sc_admin_msg($parm=null)
+	public function sc_admin_msg($parm=null)
 	{
-		if (ADMIN)
+		if (ADMIN && !FILE_UPLOADS)
 		{
-			if(!FILE_UPLOADS)
-			{
-				return e107::getRender()->tablerender(LAN_WARNING,LAN_HEADER_02,'admin_msg',true);
-			}
+			return e107::getRender()->tablerender(LAN_WARNING,LAN_HEADER_02,'admin_msg',true);
 		}
 	}
 
-	function sc_admin_nav($parm=null)
+	public function sc_admin_nav($parm=null)
 	{
 		if (ADMIN)
 		{
@@ -994,7 +983,7 @@ class admin_shortcodes extends e_shortcode
 			$e107_var['x']['text'] = ADLAN_52;
 			$e107_var['x']['link'] = e_ADMIN_ABS.'admin.php';
 			$e107_var['y']['text'] = ADLAN_53;
-			$e107_var['y']['link'] = e_HTTP."index.php";
+			$e107_var['y']['link'] = e_HTTP. 'index.php';
 
 			//$text .= show_admin_menu("",$active_page,$e107_var);
 			$e107_var['afuncs']['text'] = ADLAN_93;
@@ -1071,7 +1060,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_plugins($parm=null)
+	public function sc_admin_plugins($parm=null)
 	{
 		if (ADMIN)
 		{
@@ -1079,7 +1068,7 @@ class admin_shortcodes extends e_shortcode
 			if ($pref['admin_alerts_ok'] == 1)
 			{
 				ob_start();
-				$text = "";
+				$text = '';
 				$i = 0;
 				if (strpos(e_SELF, '/admin.php') !== false)
 				{
@@ -1120,7 +1109,7 @@ class admin_shortcodes extends e_shortcode
 							}
 							else
 							{
-								$text .= "<br />";
+								$text .= '<br />';
 							}
 							$i++;
 						}
@@ -1132,22 +1121,22 @@ class admin_shortcodes extends e_shortcode
 				{
 					$ns -> tablerender($caption, $text);
 				}
-				$plug_text = ob_get_contents();
-				ob_end_clean();
+				$plug_text = ob_get_clean();
+
 				return $plug_text;
 			}
 		}
 	}
 
-	function sc_admin_preset($parm=null)
+	public function sc_admin_preset($parm=null)
 	{
 		//DEPRECATED
 	}
 
-	function sc_admin_pword()
+	public function sc_admin_pword()
 	{
 
-		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php") !==false)
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS. 'menus.php') !==false)
 		{
 			return false;
 		}
@@ -1166,7 +1155,7 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_sel_lan()
+	public function sc_admin_sel_lan()
 	{
 		global $pref;
 		if (ADMIN && $pref['multilanguage'])
@@ -1176,9 +1165,9 @@ class admin_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_admin_siteinfo($parm='')
+	public function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE !== "credits.php"  && e_PAGE !== "phpinfo.php" && e_PAGE !== 'e107_update.php')
+		if($parm === 'creditsonly' && e_PAGE !== 'credits.php' && e_PAGE !== 'phpinfo.php' && e_PAGE !== 'e107_update.php')
 		{
 			return null;
 		}	
@@ -1197,17 +1186,17 @@ class admin_shortcodes extends e_shortcode
 			//	include(e_ADMIN.'ver.php');
 			}
 			
-			if($parm == "version")
+			if($parm === 'version')
 			{
 				return e_VERSION;
 			}
 
 			$install_date = e107::getDate()->convert_date($pref['install_date'], '%A %d %B %Y - %H:%M');
 			
-			if(is_readable(THEME."theme.xml"))
+			if(is_readable(THEME. 'theme.xml'))
 			{
 				$xml = e107::getXml();
-				$data = $xml->loadXMLfile(THEME."theme.xml",true);
+				$data = $xml->loadXMLfile(THEME. 'theme.xml',true);
 			
 				$themename = $data['@attributes']['name'];
 				$themeversion = $data['@attributes']['version'];
@@ -1215,66 +1204,66 @@ class admin_shortcodes extends e_shortcode
 				$themeauthor = !empty($data['author']['@attributes']['name']) ? $data['author']['@attributes']['name'] : '';
 			}
 			
-			$text = "<b>".FOOTLAN_1."</b>
-			<br />".
-			SITENAME."
+			$text = '<b>' .FOOTLAN_1. '</b>
+			<br />' .
+			SITENAME. '
 			<br /><br />
-			<b>".FOOTLAN_2."</b>
+			<b>' .FOOTLAN_2. '</b>
 			<br />
-			<a href=\"mailto:".SITEADMINEMAIL."\">".SITEADMIN."</a>
+			<a href="mailto:' .SITEADMINEMAIL. '">' .SITEADMIN. '</a>
 			<br />
 			<br />
 			<b>e107</b>
 			<br />
-			".FOOTLAN_3." ".e_VERSION."
+			' .FOOTLAN_3. ' ' .e_VERSION. '
 			<br /><br />
-			<b>".FOOTLAN_20."</b>
+			<b>' .FOOTLAN_20. '</b>
 			<br />
-			[".e_SECURITY_LEVEL."] ".defset('LAN_SECURITYL_'.e_SECURITY_LEVEL, 'n/a')." 
+			[' .e_SECURITY_LEVEL. '] ' .defset('LAN_SECURITYL_'.e_SECURITY_LEVEL, 'n/a'). ' 
 			<br /><br />
-			<b>".FOOTLAN_18."</b>
-			<br />".$pref['sitetheme']."<br /><br />
-			<b>".FOOTLAN_5."</b>
+			<b>' .FOOTLAN_18. '</b>
+			<br />' .$pref['sitetheme']. '<br /><br />
+			<b>' .FOOTLAN_5. '</b>
 			<br />
-			".$themename." v".$themeversion." ".($themeauthor ? FOOTLAN_6.' '.$themeauthor : '')." ".($themedate ? "(".$themedate.")" : "");
+			' .$themename. ' v' .$themeversion. ' ' .($themeauthor ? FOOTLAN_6.' '.$themeauthor : ''). ' ' .($themedate ? '(' .$themedate. ')' : '');
 
-			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
+			$text .= $themeinfo ? '<br />' .FOOTLAN_7. ': ' .$themeinfo : '';
 
-			$sqlMode = str_replace(",", ", ", e107::getDb()->getMode());
+			$sqlMode = str_replace(',', ', ', e107::getDb()->getMode());
 
-			$text .= "<br /><br />
-			<b>".FOOTLAN_8."</b>
+			$text .= '<br /><br />
+			<b>' .FOOTLAN_8. '</b>
 			<br />
-			".$install_date."
-			<br />";
+			' .$install_date. '
+			<br />';
 
 			$text .= $this->getLastGitUpdate();
 
-			$text .= "<br />
-			<b>".FOOTLAN_9."</b>
-			<br />".
-			preg_replace("/PHP.*/i", "", varset($_SERVER['SERVER_SOFTWARE']))."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
+			$text .= '<br />
+			<b>' .FOOTLAN_9. '</b>
+			<br />' .
+			preg_replace('/PHP.*/i', '', varset($_SERVER['SERVER_SOFTWARE'])). '<br />(' .FOOTLAN_10. ': ' .$_SERVER['SERVER_NAME']. ')
 			<br /><br />
-			<b>".FOOTLAN_11."</b>
+			<b>' .FOOTLAN_11. '</b>
 			<br />
-			".phpversion()."
+			' . PHP_VERSION . '
 			<br /><br />
-			<b>".FOOTLAN_12."</b>
+			<b>' .FOOTLAN_12. '</b>
 			<br />
-			".e107::getDb()->getServerInfo(). // mySqlServerInfo.
+			' .e107::getDb()->getServerInfo(). // mySqlServerInfo.
 
-			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
-			<br />PDO: ".((e107::getDb()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
-			<br />Mode: <small>".$sqlMode."</small>
+				'<br />' .FOOTLAN_16. ': ' .$mySQLdefaultdb. '
+			<br />PDO: ' .((e107::getDb()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED). '
+			<br />Mode: <small>' .$sqlMode. '</small>
 
 			<br /><br />
-			<b>".FOOTLAN_17."</b>
+			<b>' .FOOTLAN_17. '</b>
 			<br />utf-8
 			<br /><br />
-			<b>".FOOTLAN_19."</b>
+			<b>' .FOOTLAN_19. '</b>
 			<br />
-			".strftime('%A %d %B %Y - %H:%M').
-			"<br />";
+			' .strftime('%A %d %B %Y - %H:%M').
+				'<br />';
 
 			return e107::getRender()->tablerender(FOOTLAN_13, $text, '', TRUE);
 
@@ -1288,17 +1277,17 @@ class admin_shortcodes extends e_shortcode
 		{
 			$unix = filemtime($gitFetch);
 
-			$text = "<br /><b>Last Git Update</b><br />"; // NO LAN required. Developer-Only
-			$text.= ($unix) ? date('r',$unix)  : "Never";
-			$text .= "<br />";
+			$text = '<br /><b>Last Git Update</b><br />'; // NO LAN required. Developer-Only
+			$text.= ($unix) ? date('r',$unix)  : 'Never';
+			$text .= '<br />';
 			return $text;
 		}
 
 	}
 
-	function sc_admin_status($parm=null)
+	public function sc_admin_status($parm=null)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
+		if(($parm === 'infopanel' || $parm === 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return;
 		}
@@ -1336,25 +1325,25 @@ class admin_shortcodes extends e_shortcode
 					// for BC only. 	
 	
 					
-					$oldconfigs['e-user'][0] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_110, 'url'=> e_ADMIN_ABS."users.php?searchquery=&amp;filter_options=user_ban__0", 'total'=>$members, 'invert'=>1);
-					$oldconfigs['e-user'][1] 		= array('icon'=>E_16_USER, 'title'=>ADLAN_111, 'url'=> e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2", 'total'=>$unverified);
-					$oldconfigs['e-user'][2] 		= array('icon'=>E_16_BANLIST, 'title'=>ADLAN_112, 'url'=> e_ADMIN."users.php?searchquery=&filter_options=user_ban__1", 'total'=>$banned);
+					$oldconfigs['e-user'][0] 		= array('icon' =>E_16_USER, 'title' =>ADLAN_110, 'url' => e_ADMIN_ABS. 'users.php?searchquery=&amp;filter_options=user_ban__0', 'total' =>$members, 'invert' =>1);
+					$oldconfigs['e-user'][1] 		= array('icon' =>E_16_USER, 'title' =>ADLAN_111, 'url' => e_ADMIN. 'users.php?searchquery=&amp;filter_options=user_ban__2', 'total' =>$unverified);
+					$oldconfigs['e-user'][2] 		= array('icon' =>E_16_BANLIST, 'title' =>ADLAN_112, 'url' => e_ADMIN. 'users.php?searchquery=&filter_options=user_ban__1', 'total' =>$banned);
 
 
-					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') == 'e107')
+					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
 					{
-						$oldconfigs['e-comments'][0] 	= array('icon'=>E_16_COMMENT, 'title'=>LAN_COMMENTS, 'url'=> e_ADMIN_ABS."comment.php", 'total'=>$comments);
+						$oldconfigs['e-comments'][0] 	= array('icon' =>E_16_COMMENT, 'title' =>LAN_COMMENTS, 'url' => e_ADMIN_ABS. 'comment.php', 'total' =>$comments);
 					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
-						$oldconfigs['e-failed'][0]	= array('icon'=>E_16_FAILEDLOGIN, 'title'=>ADLAN_146, 'url'=>e_ADMIN_ABS."banlist.php?mode=failed&action=list", 'total'=>$flo);
+						$oldconfigs['e-failed'][0]	= array('icon' =>E_16_FAILEDLOGIN, 'title' =>ADLAN_146, 'url' =>e_ADMIN_ABS. 'banlist.php?mode=failed&action=list', 'total' =>$flo);
 					}
 
-					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
+					if($emls = $sql->count('mail_recipients', '(*)', 'WHERE mail_status = 13'))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>ADLAN_167, 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
+						$oldconfigs['e-mailout'][0]	= array('icon' =>E_16_MAIL, 'title' =>ADLAN_167, 'url' =>e_ADMIN_ABS. 'mailout.php?mode=pending&action=list', 'total' =>$emls);
 					}
 					
 					
@@ -1363,14 +1352,14 @@ class admin_shortcodes extends e_shortcode
 					{
 						foreach($pref['e_status_list'] as $val)
 						{
-							$text = "";
+							$text = '';
 							if (is_readable(e_PLUGIN.$val.'/e_status.php'))
 							{
 								
 								include_once(e_PLUGIN.$val.'/e_status.php');
-								if(!class_exists($val."_status"))
+								if(!class_exists($val. '_status'))
 								{
-									trigger_error("<strong>".$val ."</strong> is using a deprecated e_status method method. See plugin: _blank/e_dashboard.php ", E_USER_DEPRECATED);
+									trigger_error('<strong>' .$val . '</strong> is using a deprecated e_status method method. See plugin: _blank/e_dashboard.php ', E_USER_DEPRECATED);
 
 								//	$mes->addDebug("<strong>".$val ."</strong> using deprecated e_status method. See the chatbox plugin folder for a working example of the new one. ");
 								}
@@ -1400,11 +1389,11 @@ class admin_shortcodes extends e_shortcode
 						{
 							$type = empty($val['invert']) ? 'latest' : 'invert';
 							$class = admin_shortcodes::getBadge($val['total'], $type);
-							$link =  "<a href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$link =  "<a href='".$val['url']."'>".$val['icon']. ' ' .str_replace(':', ' ',$val['title'])." <span class='".$class."'>".$val['total']. '</span></a>';
 							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
-					$text .= "</ul>";
+					$text .= '</ul>';
 
 				//	if($parm == 'list')
 				//	{
@@ -1414,18 +1403,15 @@ class admin_shortcodes extends e_shortcode
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
 					$ns->setUniqueId('e-status-list');
-					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
+					return ($parm !== 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
 				}
 			}
 
-			if ($parm == 'request')
+			if ($parm === 'request')
 			{
-				if (function_exists('status_request'))
+				if (function_exists('status_request') && status_request())
 				{
-					if (status_request())
-					{
-						return admin_status($parm);
-					}
+					return admin_status($parm);
 				}
 			}
 			else
@@ -1446,7 +1432,7 @@ Important 	6 	<span class="badge badge-important">6</span>
 Info 	8 	<span class="badge badge-info">8</span>
 Inverse 	10 	<span class="badge badge-inverse">10</span>
 		 */
-		 if($type != 'invert')
+		 if($type !== 'invert')
 		 {
 			 $important = 'label-important label-danger';
 			 $warning   = 'label-warning';
@@ -1469,11 +1455,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$class .= 'label-success';
 		}
-		elseif($total > 100 && $type == 'latest')
+		elseif($total > 100 && $type === 'latest')
 		{
 			$class .= $important;
 		}
-		elseif($total > 50 && $type == 'latest')
+		elseif($total > 50 && $type === 'latest')
 		{
 			$class .= $warning;
 		}
@@ -1513,7 +1499,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 	}
 			
-	function sc_admin_addon_updates()
+	public function sc_admin_addon_updates()
 	{
 		if(!getperms('0') || !deftrue('e_ADMIN_HOME'))
 		{
@@ -1573,12 +1559,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		switch($type)
 		{
-			case "theme":
+			case 'theme':
 				$versions = $mp->getVersionList('theme');
 				$list = e107::getTheme()->getList('version');
 				break;
 
-			case "plugin":
+			case 'plugin':
 				$versions = $mp->getVersionList('plugin');
 				$plg = e107::getPlug();
 				$tmp = $plg->getInstalled();
@@ -1599,12 +1585,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$version = $var['version'];
 			$author = $var['author'];
 
-			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<') && ($versions[$folder]['author'] === $author))
+			if(!empty($versions[$folder]['version']) && ($versions[$folder]['author'] === $author) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
 				$versions[$folder]['modalDownload'] = $mp->getDownloadModal($type, $versions[$folder]);
 				$ret[] = $versions[$folder];
-				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
-				e107::getMessage()->addDebug("Local author: ".$$author." Remote author: ".$versions[$folder]['author']);
+				e107::getMessage()->addDebug('Local version: ' .$version. ' Remote version: ' .$versions[$folder]['version']);
+				e107::getMessage()->addDebug('Local author: ' .$$author. ' Remote author: ' .$versions[$folder]['author']);
 			}
 
 		}
@@ -1629,7 +1615,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		foreach($list as $row)
 		{
 
-			$caption = LAN_DOWNLOAD.": ".$row['name']." ".$row['version'];
+			$caption = LAN_DOWNLOAD. ': ' .$row['name']. ' ' .$row['version'];
 
 			$ls = '<a href="'.$row['modalDownload'].'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
 			$le = '</a>';
@@ -1640,7 +1626,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			  <li class="media">
 			    <div class="media-left">
 			      '.$ls.'
-			        <img class="media-object" src="'.$thumb.'" width="96">
+			        <img class="media-object" src="'.$thumb.'" width="96" alt="'.LAN_DOWNLOAD.'" />
 			      '.$le.'
 			    </div>
 			    <div class="media-body">
@@ -1656,14 +1642,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 
-		$text .= "</ul>";
+		$text .= '</ul>';
 
 
 		return $text;
 	}
 
 
-	function sc_admin_update()
+	public function sc_admin_update()
 	{
 		if (!ADMIN) { return null; }
 
@@ -1678,7 +1664,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if(!$cached = e107::getCache()->retrieve($cacheTag, 1440, true, true))
 		{
-			e107::getDebug()->log("Checking for Core Update");
+			e107::getDebug()->log('Checking for Core Update');
 			$status = e107::coreUpdateAvailable();
 
 			if($status === false)
@@ -1691,7 +1677,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 		else
 		{
-			e107::getDebug()->log("Using Cached Core Update Data");
+			e107::getDebug()->log('Using Cached Core Update Data');
 
 		}
 
@@ -1728,7 +1714,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	}
 
 	// Does actually the same than ADMIN_SEL_LAN
-	function sc_admin_userlan()
+	public function sc_admin_userlan()
 	{
 		/*
 		if (isset($_COOKIE['userlan']) && $_COOKIE['userlan'])
@@ -2017,7 +2003,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * New Admin Navigation Routine. v2.1.5
 	 */
-	function sc_admin_navigation($parm=null)
+	public function sc_admin_navigation($parm=null)
 	{
 
 		if(!ADMIN)
@@ -2039,7 +2025,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		global $$tmpl;
 
 
-		if($parm == 'enav_popover') // @todo move to template and make generic.
+		if($parm === 'enav_popover') // @todo move to template and make generic.
 		{
 			if('0' != ADMINPERMS)
 			{
@@ -2049,13 +2035,13 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$template = $$tmpl;
 
 
-			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? "<span title=\"".ADLAN_120."\" class=\"text-info\"><i class=\"fa fa-database\"></i></span>" : '<!-- -->';
+			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
 
 			return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 
-		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm === 'pm')
 		{
 			$template = (array) $$tmpl;
 
@@ -2153,7 +2139,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					}
 				}
 
-				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
+				if($tmp)
+				{
+					$menu_vars[$catid]['sub'][$key] = $tmp;
+				}
 		}
 
 
@@ -2225,7 +2214,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	e107::getDebug()->log($menu_vars);
 
 
-		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl);
 
 	}
 
@@ -2239,7 +2228,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-	function getOtherNav($type)
+	private function getOtherNav($type)
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
@@ -2247,7 +2236,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		if($type === self::ADMIN_NAV_HOME)
 		{
 		
-			$menu_vars[$type]['text'] =  ""; // ADLAN_53;
+			$menu_vars[$type]['text'] = ''; // ADLAN_53;
 			$menu_vars[$type]['link'] = e_HTTP.'index.php';
 			$menu_vars[$type]['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars[$type]['image_src'] = ADLAN_151;
@@ -2256,7 +2245,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$menu_vars[$type]['template'] = $type;
 			
 			// Sub Links for 'home'. 
-			require_once(e_HANDLER."sitelinks_class.php");
+			require_once(e_HANDLER. 'sitelinks_class.php');
 			$slinks = new sitelinks;
 			$slinks->getlinks(1);
 			$tmp = array();	
@@ -2265,12 +2254,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			{
 				$subid = 'home_'.$k;
 				$subid = $c;
-				$link = (substr($lk['link_url'],0,1)!="/" && substr($lk['link_url'],0,3)!="{e_" && substr($lk['link_url'],0,4)!='http') ? "{e_BASE}".$lk['link_url'] : $lk['link_url'];
+				$link = (strpos($lk['link_url'], "/") !== 0 && strpos($lk['link_url'], "{e_") !== 0 && strpos($lk['link_url'], 'http') !== 0) ? '{e_BASE}' .$lk['link_url'] : $lk['link_url'];
 								
 				$tmp[$c]['text'] = $tp->toHTML($lk['link_name'],'','defs');
 				$tmp[$c]['description'] = $tp->toHTML($lk['link_description'],'','defs');
 				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
-				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": "" ;
+				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
 				$tmp[$c]['image_large'] = '';
 				$tmp[$c]['image_src'] = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
@@ -2297,10 +2286,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			// If not Main Admin and "Apply dashboard preferences to all administrators"
 			// is checked in admin theme settings.
 			$adminPref = e107::getConfig()->get('adminpref', 0);
-			if(getperms("1") || $adminPref == 0)
+			if($adminPref == 0 || getperms('1'))
 			{
 				$tmp[2]['text'] = LAN_PERSONALIZE;
-				$tmp[2]['description'] = "Customize administration panels";
+				$tmp[2]['description'] = 'Customize administration panels';
 				$tmp[2]['link'] = e_ADMIN . 'admin.php?mode=customize';
 				$tmp[2]['image'] = "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
 				$tmp[2]['image_large'] = '';
@@ -2324,14 +2313,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[4]['text'] = LAN_LOGOUT;
 			$tmp[4]['description'] = ADLAN_151;
 			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[4]['image'] = "";
+			$tmp[4]['image'] = '';
 			$tmp[4]['image_large'] = '';
 			$tmp[4]['image_src'] = '';
 			$tmp[4]['image_large_src'] = '';
 			$tmp[4]['link_class']	= 'divider';
 			
 							
-			$tmp[5]['text'] 			= "e107 Website";
+			$tmp[5]['text'] 			= 'e107 Website';
 			$tmp[5]['description'] 		= '';
 			$tmp[5]['link'] 			= 'http://e107.org';
 			$tmp[5]['image'] 			= E_16_E107;
@@ -2341,7 +2330,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[5]['link_class']		= '';
 
 										
-			$tmp[6]['text'] 			= "e107 on Twitter";
+			$tmp[6]['text'] 			= 'e107 on Twitter';
 			$tmp[6]['description'] 		= '';
 			$tmp[6]['link'] 			= 'http://twitter.com/e107';
 			$tmp[6]['image'] 			= E_16_TWITTER; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -2351,7 +2340,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[6]['link_class']		= '';
 								
 							
-			$tmp[7]['text'] 			= "e107 on Facebook";
+			$tmp[7]['text'] 			= 'e107 on Facebook';
 			$tmp[7]['description'] 		= '';
 			$tmp[7]['link'] 			= 'https://www.facebook.com/e107CMS';
 			$tmp[7]['image'] 			= E_16_FACEBOOK; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -2361,7 +2350,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[7]['link_class']		= '';	
 	
 			
-			$tmp[8]['text'] 			= "e107 on Github";
+			$tmp[8]['text'] 			= 'e107 on Github';
 			$tmp[8]['description'] 		= '';
 			$tmp[8]['link'] 			= 'https://github.com/e107inc';
 			$tmp[8]['image'] 			= E_16_GITHUB; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
@@ -2409,7 +2398,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					
 					if($lng == e_LANGUAGE)
 					{
-						$checked = $tp->toGlyph('fa-check', array('fw'=>1))." ";
+						$checked = $tp->toGlyph('fa-check', array('fw'=>1)). ' ';
 						$link = '#';
 					}
 					elseif(in_array(e_DOMAIN,$multiDoms))
@@ -2454,14 +2443,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-	function sc_admin_menumanager($parm=null)  // List all menu-configs for easy-navigation
+	public function sc_admin_menumanager($parm=null)  // List all menu-configs for easy-navigation
 	{
-		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php")===false)
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS. 'menus.php')===false)
 		{
 			return false;
 		}
 
-		if($parm == 'selection')
+		if($parm === 'selection')
 		{
 			return $this->menuManagerSelection();
 		}
@@ -2470,8 +2459,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-		$search = array("_","legacyDefault","legacyCustom");
-		$replace = array(" ",MENLAN_31,MENLAN_33);
+		$search = array('_', 'legacyDefault', 'legacyCustom');
+		$replace = array(' ',MENLAN_31,MENLAN_33);
 
 		$var = array();
 
@@ -2480,19 +2469,19 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		foreach($pref['sitetheme_layouts'] as $key=>$val)
 		{
 			$layoutName = str_replace($search,$replace,$key);
-			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".LAN_DEFAULT.")" : "";
+			$layoutName .=($key==$pref['sitetheme_deflayout']) ? ' (' .LAN_DEFAULT. ')' : '';
 		//	$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
 
 
 			//$url = e_SELF."?configure=".$key;
-			$url = e_SELF."?configure=".$key;
+			$url = e_SELF. '?configure=' .$key;
 
 		//	$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
-			$var[$key]['text'] = str_replace(":"," / ",$layoutName);
+			$var[$key]['text'] = str_replace(':', ' / ',$layoutName);
 			$var[$key]['link'] = '#'.$key;
 			$var[$key]['link_class'] = ' menuManagerSelect';
-			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']) ? true: false;
-			$var[$key]['include'] = " data-url='". e_SELF."?configure=".$key."' data-layout='".$key."' ";
+			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']);
+			$var[$key]['include'] = " data-url='". e_SELF. '?configure=' .$key."' data-layout='".$key."' ";
 		}
 		$action = $pref['sitetheme_deflayout'];
 
@@ -2503,11 +2492,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
 
 		$icon  = e107::getParser()->toIcon('e-menus-24');
-		$caption = $icon."<span>".ADLAN_6."</span>";
+		$caption = $icon. '<span>' .ADLAN_6. '</span>';
 
 				$diz = MENLAN_58;
 
-		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
+		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .ADMIN_INFO_ICON. '</a></span>';
 
 	   return e107::getNav()->admin($caption,$action, $var);
 
@@ -2571,7 +2560,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$pageMenu = array();
 		$pluginMenu = array();
 
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+		$sql->select('menus', 'menu_name, menu_id, menu_pages, menu_path', '1 GROUP BY menu_name ORDER BY menu_name ASC');
 
 		while ($row = $sql->fetch())
 		{
@@ -2587,23 +2576,23 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 		$text = "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
-		$text .= "<h4>Your Menus</h4>";
+		$text .= '<h4>Your Menus</h4>';
 
 		foreach($pageMenu as $row)
 		{
 			if(!empty($row['menu_name']))
 			{
-				$text .= "<div class='item' >".$row['menu_name']."</div>";
+				$text .= "<div class='item' >".$row['menu_name']. '</div>';
 			}
 		}
 
-		$text .= "<h4>Plugin Menus</h4>";
+		$text .= '<h4>Plugin Menus</h4>';
 		foreach($pluginMenu as $row)
 		{
-			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5)."</div>";
+			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5). '</div>';
 		}
 
-		$text .=  "</div>";
+		$text .= '</div>';
 
 
 
@@ -2611,7 +2600,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-		return e107::getRender()->tablerender("Drag-N-Drop Menus", $text, null, true);
+		return e107::getRender()->tablerender('Drag-N-Drop Menus', $text, null, true);
 
 
 
