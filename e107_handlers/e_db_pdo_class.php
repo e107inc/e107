@@ -222,7 +222,7 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			$this->mySQLaccess->query("use `".$database."`");
+			$this->mySQLaccess->exec("use `".$database."`");
        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
 	    }
 		catch (PDOException $e)

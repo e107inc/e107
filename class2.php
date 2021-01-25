@@ -1515,7 +1515,6 @@ function init_session()
 	# - scope public
 	*/
 
-	
 	// ----------------------------------------
 
 	// Set 'UTC' as default timezone to avoid PHP warnings.
@@ -1523,15 +1522,19 @@ function init_session()
 
 	global $user_pref, $currentUser, $_E107;
 
+	e107::getDebug()->logTime('[init_session: getInstance]');
 	$e107 = e107::getInstance();
 
 	// New user model
+	e107::getDebug()->logTime('[init_session: getUser]');
 	$user = e107::getUser();
 
 	// Get user timezone.
+	e107::getDebug()->logTime('[init_session: getTimezone]');
 	$tzUser = $user->getTimezone();
 
 	// If user timezone is valid.
+	e107::getDebug()->logTime('[init_session: systemTimeZoneIsValid]');
 	if (varset($tzUser, false) && systemTimeZoneIsValid($tzUser))
 	{
 		// Sets the default timezone used by all date/time functions.
@@ -1555,10 +1558,12 @@ function init_session()
 		unset($tz);
 	}
 
-e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
+	e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 
-
+	e107::getDebug()->logTime('[init_session: getIP]');
 	define('USERIP', e107::getIPHandler()->getIP());
+
+	e107::getDebug()->logTime('[init_session: getToken]');
 	define('POST_REFERER', md5($user->getToken()));
 
 	// Check for intruders - outside the model for now
@@ -1589,6 +1594,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		return;
 	}
 
+	e107::getDebug()->logTime('[init_session: hasBan]');
 	if ($user->hasBan())
 	{
 		$msg = e107::findPref('ban_messages/6');
@@ -1596,6 +1602,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		exit;
 	}
 
+	e107::getDebug()->logTime('[init_session: Constants]');
 	define('ADMIN', $user->isAdmin());
 	define('ADMINID', $user->getAdminId());
 	define('ADMINNAME', $user->getAdminName());
@@ -1603,6 +1610,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 	define('ADMINEMAIL', $user->getAdminEmail());
 	define('ADMINPWCHANGE', $user->getAdminPwchange());
 
+	e107::getDebug()->logTime('[init_session: isUser]');
 	if (!$user->isUser())
 	{
 		define('USER', false);
@@ -1698,6 +1706,7 @@ e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
 		$user_pref = $user->getPref();
 	}
 
+	e107::getDebug()->logTime('[init_session: getClassList]');
 	define('USERCLASS_LIST', $user->getClassList(true));
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
