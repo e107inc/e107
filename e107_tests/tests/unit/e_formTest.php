@@ -152,8 +152,8 @@ class e_formTest extends \Codeception\Test\Unit
 	{
 		try
 		{
-			$this->_frm = $this->make('e_form');
-			$this->_frm->__construct();
+			$this->_frm = e107::getForm();
+		//	$this->_frm->__construct();
 		}
 		catch (Exception $e)
 		{

@@ -156,7 +156,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     public function testAdminShortcodes()
     {
-        require_once(e_CORE."shortcodes/batch/admin_shortcodes.php");
+
+      //  require_once(e_CORE."shortcodes/batch/admin_shortcodes.php");
+        e107::getScBatch('admin');
 
         require_once(e_LANGUAGEDIR.'English/admin/lan_header.php');
         require_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
@@ -608,11 +610,11 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     public function testSignupShortcodes()
     {
-        require_once(e_CORE."shortcodes/batch/signup_shortcodes.php");
+      //  require_once(e_CORE."shortcodes/batch/signup_shortcodes.php");
 
         try
 		{
-			$sc = $this->make('signup_shortcodes');
+			$sc = e107::getScBatch('signup'); // $this->make('signup_shortcodes');
 		}
 		catch (Exception $e)
 		{
@@ -702,12 +704,13 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	public function testUserSettingsShortcodes()
     {
-        require_once(e_CORE."shortcodes/batch/usersettings_shortcodes.php");
+   //     require_once(e_CORE."shortcodes/batch/usersettings_shortcodes.php");
 
         try
 		{
 			/** @var user_shortcodes $sc */
-			$sc = $this->make('usersettings_shortcodes');
+	//		$sc = $this->make('usersettings_shortcodes');
+			$sc = e107::getScBatch('usersettings');
 		}
 		catch (Exception $e)
 		{
@@ -746,7 +749,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 			);
 
-		$sc->__construct();
+	//	$sc->__construct();
 		$sc->setVars($vars);
 
 		// these are tested in the user-extended test.
