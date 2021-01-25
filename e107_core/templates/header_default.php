@@ -341,51 +341,41 @@ unset($CSSORDER);
 $e_js->renderCached('css');
 
 
-
-/*
-$e_js->renderJs('other_css', false, 'css', false);
-echo "\n<!-- footer_other_css -->\n";
-
-// Core CSS
-$e_js->renderJs('core_css', false, 'css', false);
-echo "\n<!-- footer_core_css -->\n";
-
-// Plugin CSS
-$e_js->renderJs('plugin_css', false, 'css', false);
-echo "\n<!-- footer_plugin_css -->\n";
-
-// Theme CSS
-//echo "<!-- Theme css -->\n";
-$e_js->renderJs('theme_css', false, 'css', false);
-echo "\n<!-- footer_theme_css -->\n";
-
-
-// Inline CSS - not sure if this should stay at all!
-$e_js->renderJs('inline_css', false, 'css', false);
-echo "\n<!-- footer_inline_css -->\n";
-*/
-
-
-//
-// Style for unobtrusive JS, prevent 3rd party code overload
-//
-// require_once(e_FILE."/e_css.php"); see e107_web/css/e107.css
-
 //
 // E: Send JS all in once
 // Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
+function renderAllJavascript()
+{
 
 // [JSManager] Load JS Includes - Zone 1 - Before Library
-e107::getJs()->renderJs('header', 1);
-e107::getJs()->renderJs('header_inline', 1);
+	e107::getJs()->renderJs('header', 1);
+	e107::getJs()->renderJs('header_inline', 1);
 
 // Send Javascript Libraries ALWAYS (for now) - loads e_jslib.php
-$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
-$jslib->renderHeader('front', false);
+	$jslib = e107::getObject('e_jslib', null, e_HANDLER . 'jslib_handler.php');
+	$jslib->renderHeader('front', false);
 
 // [JSManager] Load JS Includes - Zone 2 - After Library
-e107::getJs()->renderJs('header', 2);
-e107::getJs()->renderJs('header_inline', 2);
+	e107::getJs()->renderJs('header', 2);
+	e107::getJs()->renderJs('header_inline', 2);
+
+// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before headerjs()
+	e107::getJs()->renderJs('header', 3);
+	e107::getJs()->renderJs('header_inline', 3);
+
+// [JSManager] Load JS Includes - Zone 4 - After headerjs
+	e107::getJs()->renderJs('header', 4);
+	e107::getJs()->renderJs('header_inline', 4);
+
+// [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
+	e107::getJs()->renderJs('header', 5);
+}
+
+if(!deftrue('e_DEBUG_JS_FOOTER'))
+{
+	renderAllJavascript();
+}
+
 
 // Send Plugin JS Files
 //DEPRECATED, $eplug_js will be removed soon - use e107::getJs()->headerPlugin('myplug', 'myplug/js/my.js');
@@ -434,34 +424,14 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
   	$js_body_onload[] = "getChallenge();";
 }
 
-//headerjs moved below
-
-// Deprecated function finally removed
-//if(function_exists('core_head')){ echo core_head(); }
-
-// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before headerjs()
-e107::getJs()->renderJs('header', 3);
-e107::getJs()->renderJs('header_inline', 3);
-
-// [JSManager] Load JS Includes - Zone 4 - After headerjs
-e107::getJs()->renderJs('header', 4);
-e107::getJs()->renderJs('header_inline', 4);
-
-// [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
-e107::getJs()->renderJs('header', 5);
-
-
 //
-// F: Send Meta Tags, Icon links
+// F: Send Legacy Meta Tags, Icon links
 //
 
 // --- Send plugin Meta  --------
 echo $e_meta_content; // e_meta already loaded
 
-
-
-//
-// G: Send Theme Headers
+// G: Send Legacy Theme Headers
 //
 if(function_exists('theme_head'))
 {

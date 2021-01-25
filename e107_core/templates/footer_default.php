@@ -280,6 +280,14 @@ if ((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $e
 //
 // E Last themed footer code, usually JS
 //
+
+if(deftrue('e_DEBUG_JS_FOOTER'))
+{
+	renderAllJavascript();
+}
+
+
+
 if (function_exists('theme_foot'))
 {
 	echo theme_foot();
