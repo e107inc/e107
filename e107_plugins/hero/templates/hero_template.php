@@ -5,7 +5,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$HERO_TEMPLATE = array();
+
 
 $HERO_TEMPLATE['default']['header'] 	= '<!-- Hero Menu: header -->{SETIMAGE: w=400&h=400}
 											<div id="carousel-hero" class="carousel carousel-fade slide" data-bs-ride="carousel" data-ride="carousel" data-interval="{HERO_SLIDE_INTERVAL}" data-bs-interval="{HERO_SLIDE_INTERVAL}">
