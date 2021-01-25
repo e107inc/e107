@@ -16,6 +16,7 @@
 
 		protected function _before()
 		{
+			e107::loadAdminIcons(); // for plugin admin area scripts.
 			/*try
 			{
 				$this->_plg = $this->make('e107plugin');
