@@ -125,7 +125,7 @@
 			{
 				codecept_debug("Truncating user_extended_struct");
 				$sql->truncate('user_extended_struct');
-				$this->ue->init(); // reload the extended fields from db.
+
 			}
 
 
@@ -272,7 +272,7 @@
 		 */
 		public function testUserExtendedShortcode()
 		{
-			$this->fixRegistry('before');
+		//	$this->fixRegistry('before');
 
 			foreach($this->userValues as $field => $value)
 			{
@@ -377,7 +377,7 @@
 				$this->assertStringContainsString($legacyExpectedIcons[$field], $result);
 			}
 
-			$this->fixRegistry('after');
+		//	$this->fixRegistry('after');
 		}
 
 
@@ -568,7 +568,7 @@
 
 		public function testGetStructure()
 		{
-			e107::setRegistry('core/userextended/structure'); // clear the registry.
+		//	e107::setRegistry('core/userextended/structure'); // clear the registry.
 
 			$result = $this->ue->getStructure();
 
