@@ -453,12 +453,17 @@
 		}
 
 
-		private function highlight($label, $value = 0, $threshold = 0)
+		private function highlight($label, $value = 0, $thresholdHigh = 0)
 		{
 
-			if($value > $threshold)
+			if($value > $thresholdHigh)
 			{
-				return "<span class='label label-danger'>" . $label . "</span>";
+				return "<span class='label label-danger' style='font-size:0.9em'>" . $label . "</span>";
+			}
+
+			if($value == 0)
+			{
+				return "<span class='label label-success'>" . $label . "</span>";
 			}
 
 			return $label;
@@ -609,7 +614,9 @@
 
 					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
 					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
-					$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
+				//	$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
+					$dbTime = number_format($tMarker['DB Time'] * 1000.0, 1);
+					$tMarker['DB Time'] = $this->highlight($dbTime,$dbTime, 10);
 
 					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
 				}

@@ -93,7 +93,10 @@ function custom_shortcode($parm)
 
 		case 'clock':
 			$clock_flat = true;
-			include_once(e_PLUGIN.'clock_menu/clock_menu.php');
+			if(is_dir(e_PLUGIN.'clock_menu'))
+			{
+				include_once(e_PLUGIN.'clock_menu/clock_menu.php');
+			}
 			return '';
 			break;
 

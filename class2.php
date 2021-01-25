@@ -310,7 +310,7 @@ unset($sql_info);
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 
-$dbg->logTime('Prefs, misc tables');
+
 
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
 if(!isset($_E107['no_log']))
@@ -334,10 +334,12 @@ if(!isset($_E107['no_log']))
 //
 
 /* PHP Compatabilty should *always* be on. */
+$dbg->logTime('Php compatibility handler');
 e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 
 // SITEURL constant depends on the database
 // See https://github.com/e107inc/e107/issues/3033 for details.
+$dbg->logTime('Set urlsdeferred');
 $e107->set_urls_deferred();
 
 //
@@ -360,11 +362,10 @@ if(!isset($_E107['no_event']))
 {
 	$e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 }
-// TODO - DEPRECATED - remove
+
 
 $dbg->logTime('Load Core Prefs');
-e107_require_once(e_HANDLER. 'pref_class.php');
-$sysprefs = new prefs;
+
 
 
 // Check core preferences
@@ -411,8 +412,12 @@ if(!e107::getConfig()->hasData())
 
 }
 
+$pref = e107::getPref(); // include pref class.
+// e107_require_once(e_HANDLER. 'pref_class.php');
+// TODO - DEPRECATED - remove
+$sysprefs = new prefs;
 //DEPRECATED, BC, call e107::getPref/findPref() instead
-$pref = e107::getPref();
+
 
 if(e_ADMIN_AREA !== true && !isset($_E107['no_parser']) && !empty($pref['thumb_to_webp']))
 {
@@ -916,6 +921,19 @@ function systemTimeZones()
 	{
 		$zonelist = timezone_identifiers_list();
 		$timeNow = date('m/d/Y H:i', $_SERVER['REQUEST_TIME']);
+/*
+		$zonelist = DateTimeZone::listIdentifiers(
+			DateTimeZone::AFRICA |
+			DateTimeZone::AMERICA |
+			DateTimeZone::ANTARCTICA |
+			DateTimeZone::ASIA |
+			DateTimeZone::ATLANTIC |
+			DateTimeZone::AUSTRALIA |
+			DateTimeZone::EUROPE |
+			DateTimeZone::INDIAN |
+			DateTimeZone::PACIFIC |
+			DateTimeZone::UTC
+		);*/
 
 		foreach($zonelist as $zone)
 		{
@@ -951,6 +969,7 @@ function systemTimeZones()
 function systemTimeZoneIsValid($zone = '')
 {
 	$zones = systemTimeZones();
+
 	$zoneKeys = array_keys($zones);
 
 	if(in_array($zone, $zoneKeys, true))

@@ -82,7 +82,7 @@ class e_plugin
 
 	protected $_core_plugins = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
-		"chatbox_menu",	"clock_menu","comment_menu",
+		"chatbox_menu", "comment_menu",
 		"contact", "download", "featurebox", "forum","gallery",
 		"gsitemap", "hero", "import", "linkwords", "list_new",  "login_menu",
 		 "newforumposts_main", "news", "newsfeed",
