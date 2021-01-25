@@ -571,7 +571,10 @@
 
 		}
 
-		function testSystemTimeZones()
+		/**
+		 * Will vary from system to system.
+		 */
+		/*function testSystemTimeZones()
 		{
 			$expected = $this->getExpectedZones();
 
@@ -585,12 +588,7 @@
 
 
 			$this->assertSame($expectedKeys, $zoneKeys);
-
-
-
-		//	var_export($zones);
-
-		}
+		}*/
 
 
 		private function echoMem()
