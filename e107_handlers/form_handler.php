@@ -2013,7 +2013,7 @@ class e_form
 	 */
 	public function file($name, $options = array())
 	{
-		if(e_ADMIN_AREA && empty($options['class']))
+		if(deftrue('e_ADMIN_AREA') && empty($options['class']))
 		{
 			$options = array('class'=>'tbox well file');
 		}
@@ -2828,7 +2828,7 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
-		if(e_ADMIN_AREA === true)
+		if(deftrue('e_ADMIN_AREA'))
 		{
 			$options['switch'] = 'small';
 			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
@@ -2912,7 +2912,7 @@ class e_form
 
 		$options += $switchAttributes;
 
-		if(e_ADMIN_AREA === true)
+		if(deftrue('e_ADMIN_AREA'))
 		{
 			$options['data-wrapper'] = 'wrapper form-control';
 
@@ -3512,18 +3512,18 @@ var_dump($select_options);*/
 		switch ($image)
 		{
 			case 'edit':
-				$icon = (e_ADMIN_AREA === true) ? ADMIN_EDIT_ICON : $tp->toIcon('e-edit-32');
+				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_EDIT_ICON : $tp->toIcon('e-edit-32');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
 			break;
 
 			case 'delete':
-				$icon = (e_ADMIN_AREA === true) ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
+				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
-				$icon = (e_ADMIN_AREA === true) ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
+				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action execute' : $options['class'];
 			break;
 
@@ -6917,7 +6917,7 @@ var_dump($select_options);*/
 				$parms = 'total='.$total;
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
-				if(defined('ADMIN_AREA') && ADMIN_AREA)
+				if(deftrue('e_ADMIN_AREA'))
 				{
 					$parms .= '&tmpl_prefix=admin';
 				}
@@ -7138,7 +7138,7 @@ var_dump($select_options);*/
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
 
-				if(ADMIN_AREA)
+				if(deftrue('e_ADMIN_AREA'))
 				{
 					$parms .= '&tmpl_prefix=admin';
 				}

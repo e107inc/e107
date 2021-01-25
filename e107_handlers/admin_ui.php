@@ -7426,6 +7426,13 @@ class e_admin_form_ui extends e_form
 
 		$paginate       = http_build_query($vars, null, '&amp;');
 
+		e107::js('footer-inline', "
+				\$('#admin-ui-list-filter a.nextprev-item').on('click', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+		
+		");
+
 		return $this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'));
 
 	}
