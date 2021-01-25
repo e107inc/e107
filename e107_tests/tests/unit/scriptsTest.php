@@ -15,7 +15,13 @@
 
 		public function testAdminScripts()
 		{
-			$exclude = array('index.php', 'menus.php'); // FIXME menus defines e_ADMIN_AREA which messes up other tests.
+			$exclude = array(
+				'index.php',
+				'menus.php', // FIXME menus defines e_ADMIN_AREA which messes up other tests.
+				'header.php',
+				'footer.php'
+			);
+			
 			$this->loadScripts(e_ADMIN, $exclude);
 
 		}
