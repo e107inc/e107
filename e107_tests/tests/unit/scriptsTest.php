@@ -11,6 +11,8 @@
 			{
 				define("SEP", " <span class='fa fa-angle-double-right e-breadcrumb'></span> ");
 			}
+
+			e107::loadAdminIcons();
 		}
 
 		public function testAdminScripts()
