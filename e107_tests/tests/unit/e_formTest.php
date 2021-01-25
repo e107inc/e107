@@ -160,9 +160,9 @@ class e_formTest extends \Codeception\Test\Unit
 			$this->assertTrue(false, "Couldn't load e_form object");
 		}
 
+		e107::loadAdminIcons();
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
-		e107::loadAdminIcons();
 
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');

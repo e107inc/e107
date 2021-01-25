@@ -4,24 +4,10 @@
 	class e_navigationTest extends \Codeception\Test\Unit
 	{
 
-		/** @var e_navigation */
-		/*
-		protected $ep;
-
 		protected function _before()
 		{
-
-			try
-			{
-				$this->ep = $this->make('e_navigation');
-			}
-
-			catch(Exception $e)
-			{
-				$this->assertTrue(false, $e->getMessage());
-			}
-
-		}*/
+			e107::loadAdminIcons();
+		}
 /*
 		public function testCompile()
 		{
