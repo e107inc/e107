@@ -458,7 +458,7 @@
 			    'icon' => '<img src=\'./e107_plugins/featurebox/images/featurebox_16.png\' alt="Feature Box"  class=\'icon S16\'  />',
 			    'icon_32' => '<img src=\'./e107_plugins/featurebox/images/featurebox_32.png\' alt="Feature Box"  class=\'icon S32\'  />',
 			    'cat' => 3,
-			  ),*/
+			  ),
 			  'plugnav-gallery' =>
 			  array (
 			    'text' => 'Gallery',
@@ -497,6 +497,7 @@
 			    'icon_32' => '<img src=\'./e107_plugins/rss_menu/images/rss_32.png\' alt="RSS"  class=\'icon S32\'  />',
 			    'cat' => 7,
 			  ),
+			*/
 			  'plugnav-social' =>
 			  array (
 			    'text' => 'Social',
