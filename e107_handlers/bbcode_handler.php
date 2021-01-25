@@ -37,7 +37,7 @@ class e_bbcode
 	{
 		$pref = e107::getPref();
 
-		$this->resizePrefs = $pref['resize_dimensions'];
+		$this->resizePrefs = varset($pref['resize_dimensions']);
 
 		$this->core_bb = array(
 			'alert',

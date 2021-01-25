@@ -1605,7 +1605,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				{
 					foreach($tmp as $val)
 					{
-						$tmp2 = (array) $val['link_sub'];
+						if(!is_array($val))
+						{
+							continue;
+						}
+
+						$tmp2 = $val['link_sub'];
 						unset($val['link_sub']);
 						$newArr[] = $val;
 						if(!empty($tmp2))
