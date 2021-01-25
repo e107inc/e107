@@ -56,7 +56,7 @@ class tabbed
          foreach ($admin_cat['id'] as $id => $cat_id)
          {
              $cls = ($id == 1) ? "active" : "";
-            $text .= "<div class='tab-pane {$cls} adminform' style='width:95%' id='core-main-{$id}'>".$this->renderCat($id)."</div>";
+            $text .= "<div class='tab-pane {$cls} adminform' style='padding-top:10px' id='core-main-{$id}'>".$this->renderCat($id)."</div>";
          }
         $text .= "</div>";
           $text .= "</div>";
@@ -171,4 +171,3 @@ class tabbed
     
     }
 }
-?>
