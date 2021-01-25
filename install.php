@@ -256,14 +256,14 @@ if(isset($_POST['previous_steps']))
 	$tmp = unserialize(base64_decode($_POST['previous_steps']));
 
 	// Save unfiltered admin password (#4004) - " are transformed into &#34;
-	$tmpadminpass1 = !empty($tmp['admin']['password']) ? $tmp['admin']['password'] : '';
+	$tmpadminpass1 = (isset($tmp['admin']) && !empty($tmp['admin']['password'])) ? $tmp['admin']['password'] : '';
 	
 	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING); 
 
 	// Restore unfiltered admin password
 	$tmp['admin']['password'] = $tmpadminpass1;
 
-	$override = (isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
+	$override = (isset($tmp['paths']) && isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
 	unset($tmpadminpass1);
 }
@@ -389,7 +389,7 @@ class e_install
 			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
 
 			// Save unfiltered admin password (#4004) - " are transformed into &#34;
-			$tmpadminpass2 = $this->previous_steps['admin']['password']; 
+			$tmpadminpass2 = (isset($this->previous_steps['admin'])) ? $this->previous_steps['admin']['password'] : '';
 			
 			$this->previous_steps = $tp->filter($this->previous_steps);
 
@@ -1050,7 +1050,7 @@ class e_install
 			$this->add_button("retest_perms", LANINS_009);
 			$this->stage = 3; // make the installer jump back a step
 		}
-		elseif ($perms_pass && !$version_fail && ($extensionCheck['xml']['status'] == true))
+		elseif (!$version_fail && ($extensionCheck['xml']['status'] == true))
 		{
 			$this->add_button("continue_install", LAN_CONTINUE);
 		}
@@ -2369,7 +2369,7 @@ class SimpleTemplate
 		'Data' => $Data
 		);
 	}
-
+/*
 	function RemoveTag($TagName)
 	{
 		unset($this->Tags[$TagName]);
@@ -2378,7 +2378,7 @@ class SimpleTemplate
 	function ClearTags()
 	{
 		$this->Tags = array();
-	}
+	}*/
 
 	function ParseTemplate($Template, $template_type = TEMPLATE_TYPE_FILE)
 	{
