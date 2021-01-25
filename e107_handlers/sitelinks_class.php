@@ -92,7 +92,7 @@ class sitelinks
 		$pref = e107::getPref();
 		$e107cache = e107::getCache();
 
-		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
+		$usecache = (!(trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != ""));
 
 		if($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_' . $cat . md5($linkstyle . e_PAGE . e_QUERY))))
 		{
@@ -178,7 +178,7 @@ class sitelinks
 			foreach($this->eLinkList['head_menu'] as $key => $link)
 			{
 				$main_linkid = "sub_" . $link['link_id'];
-				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
+				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
 				$render_link[$key] = $this->makeLink($link, '', $style, $css_class);
 
 				if(!defined("LINKSRENDERONLYMAIN") && !isset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
@@ -259,7 +259,7 @@ class sitelinks
 			return null;
 		}
 
-		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
+		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
 						
 		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
  		{
@@ -280,7 +280,7 @@ class sitelinks
 		foreach ($this->eLinkList[$main_linkid] as $sub)
 		{
 			$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
-			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id]));
 			$class = "sublink-level-".($level+1);
 			$class .= ($css_class) ? " ".$css_class : "";
 			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
@@ -529,7 +529,7 @@ class sitelinks
 		{
 			if($link_qry)
 			{	// plugin links with queries
-				return (strpos(e_SELF,$link_slf) && e_QUERY == $link_qry) ? TRUE : FALSE;
+				return (strpos(e_SELF, $link_slf) && e_QUERY == $link_qry);
 			}
 			else
 			{	// plugin links without queries
@@ -553,7 +553,7 @@ class sitelinks
 
 				if($qry[0] === "item")
 				{
-					return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
+					return $qry[2] == $lnk[1];
 				}
 
 				if($qry[0] === "all" && $lnk[0] === "all")
@@ -1590,7 +1590,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$newArr = array();
 			foreach($ret as $row)
 			{
-				$ignore = (!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#')) ? true : false;
+				$ignore = (!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#'));
 
 				$tmp = (array) $row['link_sub'];
 

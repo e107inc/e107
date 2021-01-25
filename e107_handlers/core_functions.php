@@ -590,7 +590,7 @@ class e_array {
 			$ArrayData = (string) substr($ArrayData,8);
 		}
 
-        if(strtolower(substr($ArrayData,0,5)) !== 'array')
+        if(stripos($ArrayData, 'array') !== 0)
         {
             return false;
         }

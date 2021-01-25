@@ -666,7 +666,7 @@ class user_class
 		$ret = '';
 		$nest_level++;
 		$listIndex = abs($listnum);
-		$classSign = (substr($listnum, 0, 1) == '-') ? '-' : '+';
+		$classSign = (strpos($listnum, '-') === 0) ? '-' : '+';
 		//echo "Subtree: {$listnum}, {$nest_level}, {$current_value}, {$classSign}:{$listIndex}<br />";
 		if(isset($this->class_tree[$listIndex]['class_children']))
 		{
@@ -776,7 +776,7 @@ class user_class
 	public function select($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		if ($classIndex == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 		$tmp = explode(',',$current_value);
 		$sel = in_array($classnum, $tmp) ? " selected='selected'" : '';
@@ -813,7 +813,7 @@ class user_class
 		$frm = e107::getForm();
 		
 		$classIndex 		= abs($classnum);			// Handle negative class values
-		$classSign 			= (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign 			= (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -862,7 +862,7 @@ class user_class
 	public function checkbox_desc($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -2107,7 +2107,7 @@ class user_class_admin extends user_class
 			$xml .= "\t</item>\n";
 		}
 		$xml .= "</dbTable>\n";
-		return (file_put_contents(e_TEMP.'userclasses.xml', $xml) === FALSE) ? FALSE : TRUE;
+		return file_put_contents(e_TEMP . 'userclasses.xml', $xml) !== false;
 	}
 
 

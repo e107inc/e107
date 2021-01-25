@@ -88,7 +88,7 @@ if (count($this->aTrafficTimed))
 
 	foreach ($this->aTrafficTimed as $key => $aVals)
 	{
-		if (substr($key, 0, 8) == 'TRAF_CAL')
+		if (strpos($key, 'TRAF_CAL') === 0)
 		{
 			continue;
 		}

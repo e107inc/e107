@@ -396,8 +396,7 @@ class e_bbcode
 			$error = $debugFile." -- ".$e->getMessage();
 		}
 
-		$bbcode_output = ob_get_contents();
-		ob_end_clean();
+		$bbcode_output = ob_get_clean();
 
 		if(!empty($error))
 		{
@@ -429,7 +428,7 @@ class e_bbcode
 			return null;
 		}
 
-		if(substr(ltrim($text),0,6) == '[html]' && $type == 'img') // support for html img tags inside [html] bbcode.
+		if(strpos(ltrim($text), '[html]') === 0 && $type == 'img') // support for html img tags inside [html] bbcode.
 		{
 
 			$tmp = e107::getParser()->getTags($text,'img');

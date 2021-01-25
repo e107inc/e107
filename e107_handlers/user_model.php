@@ -261,7 +261,7 @@ class e_user_model extends e_admin_model
 
 		if(empty($new_user_period))	{ return false; }
 
-		return (($this->get('user_join') > strtotime($new_user_period." days ago")) ? true : false);
+		return ($this->get('user_join') > strtotime($new_user_period . " days ago"));
 	}
 
 	final public function isBot($userAgent = null)
@@ -490,12 +490,12 @@ class e_user_model extends e_admin_model
 
 	final public function hasBan()
 	{
-		return ((integer)$this->get('user_ban') === 1 ? true : false);
+		return ((integer) $this->get('user_ban') === 1);
 	}
 
 	final public function hasRestriction()
 	{
-		return ((integer)$this->get('user_ban') === 0 ? false : true);
+		return ((integer) $this->get('user_ban') !== 0);
 	}
 
 	public function hasEditor()
@@ -2911,7 +2911,7 @@ class e_user_pref extends e_front_model
 			if(!empty($data))
 			{
 				// BC
-				$data = substr($data, 0, 5) == "array" ? e107::unserialize($data) : unserialize($data);
+				$data = strpos($data, "array") === 0 ? e107::unserialize($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();

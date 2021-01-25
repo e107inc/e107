@@ -229,7 +229,7 @@
 		{
 			$ret = array();
 			$invert = false;
-			if(substr($fmask, 0, 1) == '~')
+			if(strpos($fmask, '~') === 0)
 			{
 				$invert = true;                        // Invert selection - exclude files which match selection
 				$fmask = substr($fmask, 1);
@@ -1574,7 +1574,7 @@
 
 			//   print_a($headers);
 
-			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302")) ? true : false;
+			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
 		}
 
 

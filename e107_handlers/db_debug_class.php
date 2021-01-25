@@ -1014,8 +1014,7 @@
 
 			ob_start();
 			var_dump($message);
-			$content = ob_get_contents();
-			ob_end_clean();
+			$content = ob_get_clean();
 
 			$bt = debug_backtrace();
 

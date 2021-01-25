@@ -1249,8 +1249,8 @@ class e_jsmanager
 
 		if($return)
 		{
-			$ret = ob_get_contents();
-			ob_end_clean();
+			$ret = ob_get_clean();
+
 			return $ret;
 		}
 	}
@@ -1565,7 +1565,7 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' || strpos($path, 'wysiwyg.php')!==false )
+		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos($path, '//') === 0 || strpos($path, 'wysiwyg.php')!==false )
 		{
 			return false;
 		}

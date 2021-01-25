@@ -223,7 +223,7 @@
 
 			$mailManager = e107::getBulkEmail();
 
-			$debug = ($this->debug === 2) ? true : false;
+			$debug = $this->debug === 2;
 
 			$mailManager->controlDebug($debug);
 

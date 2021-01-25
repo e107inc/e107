@@ -2124,8 +2124,8 @@ class e_db_mysql implements e_db
 						$table[] = str_replace($prefix,"",$rows[0]);
 					}
 				}
-				$ret = array($language=>$table);
-				return $ret;
+
+				return array($language =>$table);
 			}
 			else
 			{

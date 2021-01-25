@@ -53,7 +53,7 @@ class receiveMail
 		$mail_header=imap_header($this->marubox,$mid);
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
-		$stat = (strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster') ? FALSE : TRUE;
+		$stat = !(strtolower($sender->mailbox) != 'mailer-daemon' && strtolower($sender->mailbox) != 'postmaster');
         if(strpos($mail_header->subject,"delayed")){
            $stat = FALSE;
 		}

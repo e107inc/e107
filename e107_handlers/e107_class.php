@@ -932,8 +932,8 @@ class e107
 	 */
 	function getSitePath()
 	{
-		$self = self::getInstance();
-		return $self->site_path;
+
+		return self::getInstance()->site_path;
 	}
 
 	/**

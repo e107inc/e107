@@ -73,7 +73,7 @@ class e_search
 					$this -> keywords['boolean'][$k_key] = FALSE;
 					$this -> keywords['match'][$k_key] = $key;
 				}
-				$this -> keywords['exact'][$k_key] = ($tp->ustrpos($key, ' ') !== FALSE) ? TRUE : FALSE;
+				$this -> keywords['exact'][$k_key] = $tp->ustrpos($key, ' ') !== false;
 				$this -> keywords['match'][$k_key] = $tp -> toDB($this -> keywords['match'][$k_key]);
 			}
 			 else {
