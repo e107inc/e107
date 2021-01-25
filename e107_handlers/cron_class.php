@@ -160,7 +160,7 @@ class _system_cron
 		$userVars = array();
 		foreach($userCon['user'] as $k=>$v)
 		{
-			if(substr($k,0,2) == 'e_')
+			if(strpos($k, 'e_') === 0)
 			{
 				$userVars[$k] = $v;
 			}
@@ -697,34 +697,30 @@ class CronParser
 	function _getLastMonth()
 	{
 		$months = $this->_getMonthsArray();
-		$month = array_pop($months);
 
-		return $month;
+		return array_pop($months);
 	}
 
 	function _getLastDay($month, $year)
 	{
 		//put the available days for that month into an array
 		$days = $this->_getDaysArray($month, $year);
-		$day = array_pop($days);
 
-		return $day;
+		return array_pop($days);
 	}
 
 	function _getLastHour()
 	{
 		$hours = $this->_getHoursArray();
-		$hour = array_pop($hours);
 
-		return $hour;
+		return array_pop($hours);
 	}
 
 	function _getLastMinute()
 	{
 		$minutes = $this->_getMinutesArray();
-		$minute = array_pop($minutes);
 
-		return $minute;
+		return array_pop($minutes);
 	}
 
 	//remove the out of range array elements. $arr should be sorted already and does not contain duplicates

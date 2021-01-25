@@ -365,7 +365,7 @@ class UserHandler
 			$num = PASSWORD_E107_MD5;
 			$name = 'md5';
 		}
-		elseif ((strlen($hash) === 35) && (substr($hash,0,3) == PASSWORD_E107_ID))
+		elseif ((strlen($hash) === 35) && (strpos($hash, PASSWORD_E107_ID) === 0))
 		{
 			$num = PASSWORD_E107_SALT;
 			$name = 'md5-salt';

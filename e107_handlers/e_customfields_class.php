@@ -133,7 +133,7 @@
 			$tp = e107::getParser();
 
 			$value = $this->_data[$key];
-			$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw') ? true : false;
+			$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw');
 			$type = (!empty($parm['type'])) ? $parm['type'] : null;
 
 			$fieldType = $this->_config[$key]['type'];
@@ -536,7 +536,7 @@
 
 			foreach($new_data as $k=>$v)
 			{
-				if(substr($k,0,$len) === $fieldname)
+				if(strpos($k, $fieldname) === 0)
 				{
 					list($tmp,$newkey) = explode('__',$k);
 					$new_data[$fieldname][$newkey] = $v;

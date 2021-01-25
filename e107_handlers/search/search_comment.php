@@ -59,8 +59,7 @@ $results = $ps['results'];
 
 function search_comment($row) {	
 	if (is_callable('com_search_'.$row['comment_type'])) {
-		$res = call_user_func('com_search_'.$row['comment_type'], $row);
-		return $res;
+		return call_user_func('com_search_'.$row['comment_type'], $row);
 	}
 }
 

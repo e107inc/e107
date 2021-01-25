@@ -396,9 +396,7 @@ class e_theme
 
 		$get = eHelper::removeTrackers($get);
 
-		$ret = empty($get) ? $site : $site.'?'.http_build_query($get);
-
-		return $ret;
+		return empty($get) ? $site : $site.'?'.http_build_query($get);
 	}
 
 
@@ -901,7 +899,7 @@ class e_theme
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
-		$vars['html']           = file_exists(e_THEME.$path.'/theme.html') && is_dir(e_THEME.$path.'/layouts') ? true : false;
+		$vars['html']           = (file_exists(e_THEME . $path . '/theme.html') && is_dir(e_THEME . $path . '/layouts'));
 
 
 		if(!empty($vars['themePrefs']))
@@ -997,7 +995,7 @@ class e_theme
 			foreach($vars['stylesheets']['css'] as $val)
 			{
 			//	$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
-				$notadmin = (varset($val['@attributes']['scope']) !== 'admin') ? true : false;
+				$notadmin = varset($val['@attributes']['scope']) !== 'admin';
 
 				$vars['css'][] = array(
 					"name"      => $val['@attributes']['file'],
@@ -2103,7 +2101,7 @@ class themeHandler
 				foreach($theme['preview'] as $pic)
 				{
 					
-					$picFull = (substr($pic,0,4) == 'http') ? $pic : e_THEME.$theme['path']."/".$pic;
+					$picFull = (strpos($pic, 'http') === 0) ? $pic : e_THEME.$theme['path']."/".$pic;
 					
 					
 					$text .= "<div class='col-md-6'>
@@ -2840,7 +2838,7 @@ class themeHandler
 				{
 					foreach($theme['files'] as $val) // get wildcard list of css files.
 					{
-						if(substr($val,-4) == '.css' && substr($val, 0, 6) != "admin_")
+						if(substr($val,-4) == '.css' && strpos($val, "admin_") !== 0)
 						{
 							$detected[$val] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
 						}
@@ -2865,7 +2863,7 @@ class themeHandler
 				if($mode === self::RENDER_SITEPREFS)
 				{
 
-					if(substr($vl['name'], 0, 6) == "admin_")
+					if(strpos($vl['name'], "admin_") === 0)
 					{
 						$remove[$k] = $vl['name'];
 					}

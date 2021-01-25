@@ -589,9 +589,8 @@ class eDispatcher
 		
 		$controller->dispatch($actionName);
 		
-		$content = ob_get_contents();
-		ob_end_clean();
-		
+		$content = ob_get_clean();
+
 		$response->appendBody($content);
 		unset($controller);
 	}
@@ -3204,7 +3203,7 @@ class eController
      */
     public function __call($methodName, $args)
     {
-        if ('action' == substr($methodName, 0, 6)) 
+        if (strpos($methodName, 'action') === 0)
         {
             $action = substr($methodName, 6);
             throw new eException('Action "'.$action.'" does not exist', 2404);

@@ -198,7 +198,7 @@ class eIPHandler
 
 	public function debug($value)
 	{
-		$this->debug = ($value === true) ? true: false;
+		$this->debug = $value === true;
 	}
 
 
@@ -314,7 +314,7 @@ class eIPHandler
 		if ($ip == 'ff02:0000:0000:0000:0000:0000:0000:0001') return FALSE;
 		if ($ip == '::1') return FALSE;											// localhost
 		if ($ip == '0000:0000:0000:0000:0000:0000:0000:0001') return FALSE;
-		if (substr($ip, 0, 5) == 'fc00:') return FALSE;							// local addresses
+		if (strpos($ip, 'fc00:') === 0) return FALSE;							// local addresses
 		// @todo add:
 		// ::0 (all zero) - invalid
 		// ff02::1:ff00:0/104 - Solicited-Node multicast addresses - add?
@@ -397,7 +397,7 @@ class eIPHandler
 
 		$vals  = file($fileName);
 		if ($vals === FALSE || count($vals) == 0) return;
-		if (substr($vals[0], 0, 5) != '<?php')
+		if (strpos($vals[0], '<?php') !== 0)
 		{
 			echo 'Invalid message file';
 			die();
@@ -405,7 +405,7 @@ class eIPHandler
 		unset($vals[0]);
 		foreach ($vals as $line)
 		{
-			if (substr($line, 0, 1) == ';') continue;
+			if (strpos($line, ';') === 0) continue;
 			if (strpos($line, $search) === 0)
 			{	// Found the action line
 				if (e107::getPref('ban_retrigger'))
@@ -467,7 +467,7 @@ class eIPHandler
 
 		$vals  = file($fileName);
 		if ($vals === FALSE || count($vals) == 0) return $ret;
-		if (substr($vals[0], 0, 5) != '<?php')
+		if (strpos($vals[0], '<?php') !== 0)
 		{
 			echo 'Invalid list file';
 			die();			// Debatable, because admins can't get in if this fails. But can manually delete the file.
@@ -475,7 +475,7 @@ class eIPHandler
 		unset($vals[0]);
 		foreach ($vals as $line)
 		{
-			if (substr($line, 0, 1) == ';') continue;
+			if (strpos($line, ';') === 0) continue;
 			if (trim($line))
 			{
 				$tmp = explode(' ',$line);
@@ -711,7 +711,7 @@ class eIPHandler
 		{  // Need to add trailing zeros, or double colon
 			if ($zc > 1) $ret .= '::'; else $ret .= ':0';
 		}
-		if ($IP4Legacy && (substr($ret,0,7) == '::ffff:'))
+		if ($IP4Legacy && (strpos($ret, '::ffff:') === 0))
 		{
 			$temp = str_replace(':', '', substr($ip,-9, 9));
 			$tmp = str_split($temp, 2);			// Four 2-character hex values
@@ -1553,11 +1553,11 @@ class banlistManager
 
 		$vals  = file($fileName);
 		if ($vals === FALSE) return $ret;
-		if (substr($vals[0], 0, 5) == '<?php')
+		if (strpos($vals[0], '<?php') === 0)
 		{
 			unset($vals[0]);
 		}
-		if (substr($vals[0], 0, 1) == ';') unset($vals[0]);
+		if (strpos($vals[0], ';') === 0) unset($vals[0]);
 		$numEntry = count($vals);
 		if ($start > $numEntry) return $ret;		// Empty return if beyond the end
 		if ($count == 0) return $vals;				// Special case - return the lot in ascending date order

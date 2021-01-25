@@ -1093,7 +1093,7 @@ class e_library_manager
 
 		$libraryPath = !empty($library['library_path']) ? e107::getParser()->replaceConstants($library['library_path']) : '';
 
-		if(empty($library['library_path']) || (!empty($libraryPath) && !file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
+		if(empty($library['library_path']) || (!empty($libraryPath) && !file_exists($libraryPath) && strpos($libraryPath, 'http') !== 0))
 		{
 			$library['error'] = LAN_NOT_FOUND;
 
@@ -2104,7 +2104,7 @@ class e_library_manager
 
 		// If remote file (e.g. CDN URL)... we download file to temp, and get version number.
 		// The library will be cached with version number, so this only run once per library.
-		if(substr($file, 0, 4) == 'http')
+		if(strpos($file, 'http') === 0)
 		{
 			$content = e107::getFile()->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');

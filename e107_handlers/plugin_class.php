@@ -217,7 +217,7 @@ class e_plugin
 
 		if(isset($this->_data[$this->_plugdir]['@attributes']['installRequired']))
 		{
-			return ($this->_data[$this->_plugdir]['@attributes']['installRequired'] === 'false') ? false : true;
+			return $this->_data[$this->_plugdir]['@attributes']['installRequired'] !== 'false';
 		}
 
 		return false;
@@ -486,7 +486,7 @@ class e_plugin
 
 	public function isValidAddonMarkup($content='')
     {
-       if ((substr($content, 0, 5) != '<'.'?php'))
+       if ((strpos($content, '<' . '?php') !== 0))
        {
             return false;
        }
@@ -1173,7 +1173,7 @@ class e_plugin
 					}
 				}
 				// new shortcodes location - shortcodes/single/*.php
-				elseif (substr($adds, 0, 3) === "sc_")
+				elseif (strpos($adds, "sc_") === 0)
 				{
 					$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
 
@@ -1196,7 +1196,7 @@ class e_plugin
                     	$bb_array[$bb_name] = "0"; // default userclass.
 					}
 					// bbcode class
-					elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -4) == ".php")
+					elseif(strpos($adds, "bb_") === 0 && substr($adds, -4) == ".php")
 					{
 						$bb_name = substr($adds, 0,-4); // remove the .php
 						$bb_name = substr($bb_name, 3);
@@ -2513,7 +2513,7 @@ class e107plugin
 		$newvals = array_unique($newvals);
 		$pref[$prefname] = implode(',', $newvals);
 
-		if (substr($pref[$prefname], 0, 1) == ",")
+		if (strpos($pref[$prefname], ",") === 0)
 		{
 			$pref[$prefname] = substr($pref[$prefname], 1);
 		}
@@ -3604,7 +3604,7 @@ class e107plugin
 		{
 			$attrib 	= $link['@attributes'];
 			$linkName 	= (defset($link['@value'])) ? constant($link['@value']) : vartrue($link['@value'],'');
-			$remove 	= (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+			$remove 	= varset($attrib['deprecate']) == 'true';
 			$url 		= vartrue($attrib['url']);
 			$perm 		= vartrue($attrib['perm'],'everyone'); 
 			$sef		= vartrue($attrib['sef']);
@@ -3656,7 +3656,7 @@ class e107plugin
 			}
 		}
 
-		return ($status === E_MESSAGE_SUCCESS) ? true : false;
+		return $status === E_MESSAGE_SUCCESS;
 	}
 
 	/**
@@ -3834,7 +3834,7 @@ class e107plugin
 			$attrib = $uclass['@attributes'];
 			$name = $attrib['name'];
 			$description = $attrib['description'];
-			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+			$remove = varset($attrib['deprecate']) == 'true';
 
 			switch ($function)
 			{
@@ -3905,7 +3905,7 @@ class e107plugin
 			
 			//$name = 'plugin_'.$this->plugFolder.'_'.$attrib['name'];
 			$source = 'plugin_'.$this->plugFolder;
-			$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+			$remove = varset($attrib['deprecate']) == 'true';
 
 			if(!isset($attrib['system']))
 			{
@@ -3913,7 +3913,7 @@ class e107plugin
 			}
 			else
 			{
-				$attrib['system'] = ($attrib['system'] === 'true') ? true : false;
+				$attrib['system'] = $attrib['system'] === 'true';
 			}
 
 			switch ($function)
@@ -4001,7 +4001,7 @@ class e107plugin
 				$value = $tmp;
 			}
 			
-			$remove = (varset($tag['@attributes']['deprecate']) == 'true') ? TRUE : FALSE;
+			$remove = varset($tag['@attributes']['deprecate']) == 'true';
 
 			if (varset($tag['@attributes']['value']))
 			{
@@ -4682,7 +4682,7 @@ class e107plugin
 						}
 					}
 					// new shortcodes location - shortcodes/single/*.php
-					elseif (substr($adds, 0, 3) === "sc_")
+					elseif (strpos($adds, "sc_") === 0)
 					{
 						$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
 						
@@ -4705,7 +4705,7 @@ class e107plugin
 	                    	$bb_array[$bb_name] = "0"; // default userclass.
 						}
 						// bbcode class
-						elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -4) == ".php") 
+						elseif(strpos($adds, "bb_") === 0 && substr($adds, -4) == ".php")
 						{
 							$bb_name = substr($adds, 0,-4); // remove the .php
 							$bb_name = substr($bb_name, 3);
@@ -4798,7 +4798,7 @@ class e107plugin
 				{
 					$passfail = '';
 					$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$addonPHP);
-					if ((substr($file_text, 0, 5) != '<'.'?php') || ((substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE)))
+					if ((strpos($file_text, '<' . '?php') !== 0) || ((substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE)))
 					{
 						$passfail = '<b>fail</b>';
 					}
@@ -4901,7 +4901,7 @@ class e107plugin
 		}
 
 		// Generic markup check
-		if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+		if ((strpos($content, '<' . '?php') !== 0) || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
 		{
 			return 1;
 		}

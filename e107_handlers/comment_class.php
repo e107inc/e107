@@ -186,7 +186,7 @@ class comment
 		{
 			$itemid = $id;
 
-			if ($action == "reply" && substr($subject, 0, 4) != "Re: ")
+			if ($action == "reply" && strpos($subject, "Re: ") !== 0)
 			{
 				$subject = COMLAN_325.' '.$subject;
 			}
@@ -657,7 +657,7 @@ class comment
 	{	
 		if ($var == e_UC_MEMBER) // different behavior to check_class();
 		{
-			return (USER == TRUE && ADMIN == FALSE) ? TRUE : FALSE;
+			return (USER == true && ADMIN == false);
 		}
 		
 		return check_class($var);

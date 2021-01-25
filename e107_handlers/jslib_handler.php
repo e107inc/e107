@@ -172,10 +172,9 @@ class e_jslib
         $pref = e107::getPref();
         $encoding = $this->browser_enc();
         
-        $contents = ob_get_contents();
-        ob_end_clean();
-        
-        if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
+        $contents = ob_get_clean();
+
+	    if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
         
         $etag = md5($page).($encoding ? '-'.$encoding : '');
     	header('ETag: '.$etag, true);

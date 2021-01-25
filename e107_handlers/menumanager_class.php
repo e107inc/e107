@@ -219,9 +219,8 @@ class e_menuManager
 	function menuRenderMessage()
 	{
 	  //	return $this->menuMessage;
-		$text = e107::getMessage()->render('menuUi');
-	  //	$text .= "ID = ".$this->menuId;
-		return $text;
+		//	$text .= "ID = ".$this->menuId;
+		return e107::getMessage()->render('menuUi');
 		
 	}
 
