@@ -2007,7 +2007,7 @@ class e107
 
 	/**
 	 * Simple replacement for deprecated get_user_data(). e107::user();
-	 * @param $uid integer user_id or leave empty for currently logged in user.
+	 * @param $uid integer user_id. Use e107::user(USERID) for currently logged in user. 
 	 * @return array|false of user data
 	 */
 	public static function user($uid=null)
