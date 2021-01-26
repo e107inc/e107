@@ -453,6 +453,10 @@ class language{
 				return $natList;
 				break;
 
+			case 'count':
+				return count($this->lanlist);
+			break;
+
 			case "english":
 			default:
 				return $this->lanlist;

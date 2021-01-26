@@ -462,12 +462,17 @@ function render_meta($type)
 
 	if($type == "tag")
 	{
-		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
+		$ret = "\n<!-- Start custom head tag -->\n";
+		$ret .= varset($pref['meta_tag'][e_LANGUAGE])."\n";
+	//	$ret .= str_replace("&lt;", "<", $pref['meta_tag'][e_LANGUAGE]."\n";
+		$ret .= "<!-- End custom head tag -->\n\n";
 	}
 	else
 	{
-		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
+		$ret = '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
 	}
+
+	return $ret;
 }
 
 // legay meta-tag checks.
@@ -649,6 +654,10 @@ elseif(!defined('BODYTAG')) // @deprecated.
 
 	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
+	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
+	{
+		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
+	}
 }
 else
 {
@@ -663,6 +672,10 @@ else
 	{
 
 		echo BODYTAG."\n";	
+	}
+	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
+	{
+		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
 	}
 }
 
@@ -743,14 +756,17 @@ e107::getDebug()->logTime('Render Layout');
 
 
 		$psc = array(
-		'{THEME}'       => THEME_ABS,
-		'{BODY_ONLOAD}' => $body_onload,
-		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
-		'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
-		'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
-        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
-		);
-		
+			'magicSC'=>array(
+					'{THEME}'       => THEME_ABS,
+					'{BODY_ONLOAD}' => $body_onload,
+					'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
+					'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
+					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
+			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
+					),
+			'bodyStart' => varset($pref['meta_bodystart'][e_LANGUAGE])
+			);
+
    		e107::renderLayout($HEADER, $psc);
 
 	//	echo $HEADER;

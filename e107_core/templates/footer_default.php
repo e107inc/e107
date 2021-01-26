@@ -82,7 +82,7 @@ if (varset($e107_popup) != 1)
          '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
         );
 
-	   e107::renderLayout($FOOTER, $psc);
+	   e107::renderLayout($FOOTER, array('magicSC'=>$psc));
     }
     
 	$eTimingStop = microtime();
@@ -407,6 +407,14 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 //XXX Must not contain IDs or Classes 	
 // echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 unset($show);
+
+if(isset($pref['meta_bodyend'][e_LANGUAGE]))
+{
+	echo "\n<!-- Start custom body-end tag -->\n";
+	echo $pref['meta_bodyend'][e_LANGUAGE]."\n";
+	echo "<!-- End custom body-end tag -->\n\n";
+}
+
 echo "\n</body>\n</html>";
 
 //hook into the end of page (usefull for example for capturing output buffering)

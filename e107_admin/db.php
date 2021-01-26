@@ -1446,7 +1446,7 @@ class system_tools
 
 		foreach($spref as $key => $val)
 		{
-			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			$ptext = (is_array($val)) ? "<pre>".htmlentities(print_r($val, TRUE))."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
 			$ptext = $tp->textclean($ptext, 80);
 
 			$text .= "
