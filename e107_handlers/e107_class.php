@@ -308,7 +308,7 @@ class e107
 	/**
 	 * Render layout - replacement for legacy parseheader() function in header_default.php
 	 * @param string $LAYOUT
-	 * @param array $opts - magic shortcode key=>value pair replacements
+	 * @param array $opts - 'magicSC' => array of magic shortcode key=>value pair replacements and 'bodyStart' - code to place after body tag.
 	 * @return void
 	 */
 	public static function renderLayout($LAYOUT, $opts = array())
@@ -318,27 +318,58 @@ class e107
 
 		$tmp = explode("\n", $LAYOUT);
 
+
+
 		$sc = self::getScBatch('_theme_'); // include the theme shortcodes.
 
-		$search = array_keys($opts);
-		$replace = array_values($opts);
+		$parseMagic = false;
+		$bodyStart = false;
+		$bodyTag = false;
 
-		foreach ($tmp as $line)
+		if(isset($opts['magicSC']))
 		{
+			$search = array_keys($opts['magicSC']);
+			$replace = array_values($opts['magicSC']);
+			$parseMagic = true;
+		}
+
+		if(isset($opts['bodyStart']) && !empty($opts['bodyStart']))
+		{
+			$bodyStart = true;
+		}
+
+		foreach ($tmp as $k=>$line)
+		{
+
 			if(empty($line))
 			{
 				continue;
 			}
 
-			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
+			if($bodyStart)
+			{
+				if($bodyTag)
+				{
+					echo "\n<!-- Start custom body-start tag -->\n";
+					echo trim($opts['bodyStart'])."\n";
+					echo "<!-- End custom body-start tag -->\n\n";
+				}
+
+				$bodyTag = (strpos(trim($line), '<body') === 0) ? true : false;
+			}
+
+
+			if($parseMagic)
+			{
+				$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
+			}
 
 			if (strpos($line,'{') === false)
 			{
 				echo $line . "\n"; // retain line-breaks.
 				continue;
 			}
-
-			if (preg_match("/{.+?}/", $line))
+			else
 			{
 				echo $tp->parseTemplate($line, true, $sc) . "\n";  // retain line-breaks.
 			}
