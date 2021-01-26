@@ -56,17 +56,122 @@ class e107Test extends \Codeception\Test\Unit
 	public function testRenderLayout()
 	{
 
-		$LAYOUT = file_get_contents(e_THEME . "bootstrap3/theme.html");
+		$opts = array (
+			'magicSC'   => array(
+				'{---HEADER---}' => '<h3>MY HEADER</h3>',
+				'{---FOOTER---}' => '<h3>MY FOOTER</h3>',
+			),
+			'bodyStart' => '<script>google code</script>'
+		);
+
+
+		// test code insertion.
+		$LAYOUT = '<body id="page-top">
+			<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			      <div class="container">
+			        <div class="navbar-header">
+			          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			            <span class="sr-only">Toggle navigation</span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			          </button>
+			          <a class="navbar-brand" href="{SITEURL}">{BOOTSTRAP_BRANDING}</a>
+			        </div>
+			        <div class="navbar-collapse collapse {BOOTSTRAP_NAV_ALIGN}">
+			            {NAVIGATION=main}
+			            {BOOTSTRAP_USERNAV: placement=top}
+			        </div><!--/.navbar-collapse -->
+			      </div>
+			    </div>
+			
+			<!--- Optional custom header template controlled by theme_shortcodes -->
+			{---HEADER---}
+			
+			<!-- Page Content -->
+			{---LAYOUT---}
+			
+			<!-- Footer --> 
+			
+			{SETSTYLE=default}
+			<footer>
+				<div class="container">
+					<div class="row">
+			
+						<div>
+							<div class="col-lg-6">
+								{MENU=100}
+							</div>
+							<div class="col-lg-6">
+								{MENU=101}
+							</div>
+						</div>
+			
+						<div>
+							<div class="col-sm-12 col-lg-4">
+								{MENU=102}
+							</div>
+			
+							<div class="col-sm-12 col-lg-8">
+								{MENU=103}
+							</div>
+						</div>
+			
+						<div >
+							<div class="col-lg-12">
+								{MENU=104}
+							</div>
+						</div>
+			
+						<div>
+							<div class="col-lg-6">
+								{MENU=105}
+								{NAVIGATION=footer}
+								{MENU=106}
+							</div>
+							<div class="col-lg-6 text-right">
+								{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
+							</div>
+						</div>
+			
+						<div>
+							<div class="col-lg-12">
+					
+							</div>
+						</div>
+			
+						<div>
+							<div id="sitedisclaimer" class="col-lg-12 text-center">
+								<small >{SITEDISCLAIMER}</small>
+							</div>
+						</div>
+			
+					</div>	 <!-- /row -->
+				</div> <!-- /container -->
+			</footer>
+			
+			{---MODAL---}
+			<!--- Optional custom footer template controlled by theme_shortcodes -->
+			{---FOOTER---}
+			
+			
+			<!-- Javascripts and other information are automatically added below here -->
+			</body> <!-- This tag is not necessary and is ignored and replaced. Left here only as a reference -->';
+
+
 		ob_start();
 
-		e107::renderLayout($LAYOUT);
+		e107::renderLayout($LAYOUT, $opts);
 
 		$result = ob_get_clean();
 
-		$this->assertStringNotContainsString('{MENU=1}', $result);
-		$this->assertStringNotContainsString('{NAVIGATION=main}', $result);
+
+		$this->assertStringContainsString('<h3>MY HEADER</h3>', $result);
+		$this->assertStringContainsString('<h3>MY FOOTER</h3>', $result);
+		$this->assertStringContainsString('<script>google code</script>', $result);
 		$this->assertStringNotContainsString('{BOOTSTRAP_BRANDING}', $result);
 
+	//	var_export($result);
 
 	}
 

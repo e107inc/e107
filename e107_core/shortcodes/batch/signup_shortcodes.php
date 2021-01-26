@@ -469,7 +469,16 @@ class signup_shortcodes extends e_shortcode
 	{
 		if(empty($this->template['extended-user-fields']))
 		{
-			return (ADMIN) ? "SIGNUP 'extended-user-fields' template not defined" : '';
+			$msg = "SIGNUP 'extended-user-fields' template is not defined or empty";
+			trigger_error($ms);
+			return (ADMIN) ? $msg : '';
+		}
+
+		if(empty($this->template['extended-category']))
+		{
+			$msg = "SIGNUP 'extended-user-fields' template is not defined or empty";
+			trigger_error($ms);
+			return (ADMIN) ? $msg : '';
 		}
 
 
@@ -517,7 +526,7 @@ class signup_shortcodes extends e_shortcode
 					$catName = $cat['user_extended_struct_text'] ? $cat['user_extended_struct_text'] : $cat['user_extended_struct_name'];
 					$catName = defset($catName, $catName);
 
-					$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'emotes_off,defs'), $this->template['extended-category']);
+					$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($catName, false, 'TITLE'), $this->template['extended-category']);
 					$done_heading = true;
 				}
 
