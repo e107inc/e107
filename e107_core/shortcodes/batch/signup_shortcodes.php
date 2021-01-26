@@ -22,6 +22,13 @@ class signup_shortcodes extends e_shortcode
 {
 	public $template = array();
 
+	function __construct()
+	{
+		parent::__construct();
+		e107::coreLan('user');
+		$this->template = e107::getCoreTemplate('signup');
+	}
+
 	function sc_signup_coppa_text($parm=null)
 	{
 		$text = LAN_SIGNUP_77. " <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>". LAN_SIGNUP_14."</a>. ".
@@ -470,14 +477,14 @@ class signup_shortcodes extends e_shortcode
 		if(empty($this->template['extended-user-fields']))
 		{
 			$msg = "SIGNUP 'extended-user-fields' template is not defined or empty";
-			trigger_error($ms);
+			trigger_error($msg);
 			return (ADMIN) ? $msg : '';
 		}
 
 		if(empty($this->template['extended-category']))
 		{
 			$msg = "SIGNUP 'extended-user-fields' template is not defined or empty";
-			trigger_error($ms);
+			trigger_error($msg);
 			return (ADMIN) ? $msg : '';
 		}
 

@@ -565,7 +565,7 @@ class e_form
 
 			
 			$active = ($key ==$initTab) ? ' class="nav-item active"' : ' class="nav-item"';
-			$text .= '<li'.$active.'><a class="nav-link" href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
+			$text .= '<li'.$active.'><a class="nav-link" href="#'.$key.'" data-toggle="tab" data-bs-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
@@ -3232,7 +3232,7 @@ class e_form
 <option value="faq_parent__4">Test 3</option>
 	</optgroup>
 
-						</select><div class="btn-group bootstrap-select e-tip tbox select filter"><button id="filter-options" class="btn dropdown-toggle clearfix" data-toggle="dropdown"><span class="filter-option pull-left">Display All</span>&nbsp;<span class="caret"></span></button><ul style="max-height: none; overflow-y: auto;" class="dropdown-menu" role="menu"><li rel="0"><a tabindex="-1" class="">Display All</a></li><li rel="1"><a tabindex="-1" class="">Clear Filter</a></li><li rel="2"><dt class="optgroup-div">Filter by&nbsp;Category</dt><a tabindex="-1" class="opt ">General</a></li><li rel="3"><a tabindex="-1" class="opt ">Misc</a></li><li rel="4"><a tabindex="-1" class="opt ">Test 3</a></li></ul></div>
+						</select><div class="btn-group bootstrap-select e-tip tbox select filter"><button id="filter-options" class="btn dropdown-toggle clearfix" data-toggle="dropdown" data-bs-toggle="dropdown"><span class="filter-option pull-left">Display All</span>&nbsp;<span class="caret"></span></button><ul style="max-height: none; overflow-y: auto;" class="dropdown-menu" role="menu"><li rel="0"><a tabindex="-1" class="">Display All</a></li><li rel="1"><a tabindex="-1" class="">Clear Filter</a></li><li rel="2"><dt class="optgroup-div">Filter by&nbsp;Category</dt><a tabindex="-1" class="opt ">General</a></li><li rel="3"><a tabindex="-1" class="opt ">Misc</a></li><li rel="4"><a tabindex="-1" class="opt ">Test 3</a></li></ul></div>
 						<div class="e-autocomplete"></div>
 						
 						
@@ -3575,7 +3575,7 @@ var_dump($select_options);*/
 			$align = vartrue($options['align'],'left');
 					
 			$text = '<div class="btn-group pull-'.$align.'">
-			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" href="#">
+			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
@@ -4254,7 +4254,7 @@ var_dump($select_options);*/
 	// navbar-header nav-header
 	// navbar-header nav-header
 		$text = '<div class="col-selection dropdown e-tip pull-right float-right" data-placement="left">
-    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
     <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
@@ -4304,7 +4304,7 @@ var_dump($select_options);*/
 	
 	/*
 	$text = '<div class="dropdown">
-    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
     <li>hi</li>
     </ul>
@@ -4823,7 +4823,7 @@ var_dump($select_options);*/
 
 		$dialog     = vartrue($parms['target']) === 'dialog' ? ' e-modal' : ''; // iframe
 		$ext        = vartrue($parms['target']) === 'blank' ? " rel='external' " : ''; // new window
-		$modal      = vartrue($parms['target']) === 'modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : '';
+		$modal      = vartrue($parms['target']) === 'modal' ? " data-toggle='modal' data-bs-toggle='modal' data-cache='false' data-target='#uiModal' " : '';
 
 		$link = null;
 
@@ -4942,7 +4942,7 @@ var_dump($select_options);*/
 			}
 
 			$query = http_build_query($query, null, '&amp;');
-			$text .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+			$text .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 				".$editIconDefault. '</a>';
 		}
 
@@ -7247,7 +7247,7 @@ var_dump($select_options);*/
 					foreach($data['tabs'] as $i=>$label)
 					{	
 						$class = ((string) $i === $curTab) ? 'class="active" ' : '';
-						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab">'.$label.'</a></li>';
+						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab" data-bs-toggle="tab">'.$label.'</a></li>';
 					}
 					$text .= ' </ul><div class="tab-content">';	
 					
@@ -7581,7 +7581,7 @@ var_dump($select_options);*/
 							{
 
 								$text .=
-								'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+								'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown" data-bs-toggle="dropdown">
 										<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu col-selection">

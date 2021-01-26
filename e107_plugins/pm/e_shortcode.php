@@ -61,7 +61,7 @@ class pm_shortcodes extends e_shortcode
 		$urlOutbox = e107::url('pm','index','', array('query'=>array('mode'=>'outbox')));
 		$urlCompose = e107::url('pm','index','', array('query'=>array('mode'=>'send')));
 
-		return '<a class="pm-nav nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">'.$icon.$count.'</a>
+		return '<a class="pm-nav nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-toggle="dropdown" href="#">'.$icon.$count.'</a>
 		<ul class="dropdown-menu dropdown-menu-end">
 		<li>
 			<a class="dropdown-item" href="'.$urlInbox.'">'.LAN_PLUGIN_PM_INBOX.'</a>

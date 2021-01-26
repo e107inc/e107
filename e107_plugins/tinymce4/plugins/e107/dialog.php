@@ -137,11 +137,11 @@ class e_bootstrap
 		$text .= '
 		<ul class="nav nav-tabs">';
 		
-		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';
+		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab" data-bs-toggle="tab">Buttons</a></li>';
 		
-		$text .= '<li><a href="#badges" data-toggle="tab">Labels &amp; Badges</a></li>';
+		$text .= '<li><a href="#badges" data-toggle="tab" data-bs-toggle="tab">Labels &amp; Badges</a></li>';
 	
-		$text .= '<li><a href="#glyphs" data-toggle="tab">Glyphicons</a></li>';	
+		$text .= '<li><a href="#glyphs" data-toggle="tab" data-bs-toggle="tab">Glyphicons</a></li>';
 		
 		$text .= '</ul>';
 		 

@@ -315,7 +315,7 @@ class news_sub_form_ui extends e_admin_form_ui
 	//	$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
 		
 		
-		$text   = "<a data-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."' class='e-tip' title='".LAN_PREVIEW."'>";
+		$text   = "<a data-toggle='modal' data-bs-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."' class='e-tip' title='".LAN_PREVIEW."'>";
 		$text .= $tp->toHTML($submitnews_title,FALSE,'emotes_off, no_make_clickable');	
 		$text .= '</a>';
 		
@@ -387,7 +387,7 @@ class news_sub_form_ui extends e_admin_form_ui
 	//	$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
 
 
-			$text   = "<a class='btn btn-default btn-secondary  btn-large' data-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."'  title='".LAN_PREVIEW."'>".ADMIN_VIEW_ICON."</a>";
+			$text   = "<a class='btn btn-default btn-secondary  btn-large' data-toggle='modal' data-bs-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."'  title='".LAN_PREVIEW."'>".ADMIN_VIEW_ICON."</a>";
 
 
 
@@ -1496,8 +1496,8 @@ class news_form_ui extends e_admin_form_ui
 
 
 		$text = '<ul class="nav nav-tabs">
-		    <li class="active"><a href="#news-body-container" data-toggle="tab">'.NWSLAN_13.'</a></li>
-		    <li><a href="#news-extended-container" data-toggle="tab">'.NWSLAN_14.'</a></li>
+		    <li class="active"><a href="#news-body-container" data-toggle="tab" data-bs-toggle="tab">'.NWSLAN_13.'</a></li>
+		    <li><a href="#news-extended-container" data-toggle="tab" data-bs-toggle="tab">'.NWSLAN_14.'</a></li>
 		  </ul>
 		  <div class="tab-content">';
 

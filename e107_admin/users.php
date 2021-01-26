@@ -2766,7 +2766,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		$btn =  '<div class="btn-group pull-right">
 
-		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown">
+		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('fa-cog').'</span>
 		<span class="caret"></span>
 		</button>
@@ -2957,7 +2957,7 @@ class users_admin_form_ui extends e_admin_form_ui
 				$query['id'] = $id;
 				$query = http_build_query($query, null, '&amp;');
 
-				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 
 				$special = $this->getController()->getListModel()->get('gen_datestamp');

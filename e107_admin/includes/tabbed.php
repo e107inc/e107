@@ -47,7 +47,7 @@ class tabbed
         foreach ($admin_cat['id'] as $cat_key => $cat_id)
         {
             $cls = ($cat_key == 1) ? "class='active'" : "";
-            $text .= "<li {$cls} ><a data-toggle='tab' href='#core-main-".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
+            $text .= "<li {$cls} ><a data-toggle='tab' data-bs-toggle='tab' href='#core-main-".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
         }
         
         $text .= "</ul>";
@@ -109,7 +109,7 @@ class tabbed
                     foreach ($admin_cat['id'] as $cat_key => $cat_id)
         			{
         				// $text .= "<li id='tab-main_".$cat_key."' ><span style='white-space:nowrap'><img class='icon S16' src='".$admin_cat['img'][$cat_key]."' alt='' style='margin-right:3px' /><a href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></span></li>";
-        				$text .= "<li id='tab-main_".$cat_key."' ><a data-toggle='tab' href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
+        				$text .= "<li id='tab-main_".$cat_key."' ><a data-toggle='tab' data-bs-toggle='tab' href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
         			}
         			$text .= "</ul>";
         

@@ -128,8 +128,8 @@ class emotec
 		$text = "
 	
 		<ul class='nav nav-tabs'>
-			<li class='active'><a href='#emoticon-activate' data-toggle='tab'>" . EMOLAN_1 . "</a></li>
-			<li><a href='#emoticon-packages' data-toggle='tab'>" . EMOLAN_13 . "</a></li>
+			<li class='active'><a href='#emoticon-activate' data-toggle='tab' data-bs-toggle='tab'>" . EMOLAN_1 . "</a></li>
+			<li><a href='#emoticon-packages' data-toggle='tab' data-bs-toggle='tab'>" . EMOLAN_13 . "</a></li>
 		</ul>
 		
 		<div class='tab-content'>

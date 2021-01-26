@@ -2137,7 +2137,7 @@ function prefs_adminmenu()
 function libraryGetName($machineName, $details)
 {
 	$text = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_27, array($machineName));
-	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $details['name'] . '</span>';
+	return '<span data-toggle="tooltip" data-bs-toggle="tooltip" data-placement="top" title="' . $text . '">' . $details['name'] . '</span>';
 }
 
 /**
@@ -2216,7 +2216,7 @@ function libraryGetProvider($details)
 		$provider = LAN_THEME;
 	}
 
-	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $provider . '</span>';
+	return '<span data-toggle="tooltip" data-bs-toggle="tooltip" data-placement="top" title="' . $text . '">' . $provider . '</span>';
 }
 
 /**
@@ -2230,12 +2230,12 @@ function libraryGetStatus($details)
 	{
 		$icon = $tp->toGlyph('fa-check');
 		$text = LAN_OK;
-		return '<span class="text-success" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
+		return '<span class="text-success" data-toggle="tooltip" data-bs-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 	}
 
 	$icon = $tp->toGlyph('fa-remove');
 	$text = $details['error'];
-	return '<span class="text-danger" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
+	return '<span class="text-danger" data-toggle="tooltip" data-bs-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 }
 
 /**

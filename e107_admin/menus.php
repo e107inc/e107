@@ -1590,7 +1590,7 @@ class e_layout
 		
 		foreach($layouts as $title)
 		{
-			$text .= '<li '.$active.'><a href="#'.$title.'" data-toggle="tab">'.$title.'</a></li>';	
+			$text .= '<li '.$active.'><a href="#'.$title.'" data-toggle="tab" data-bs-toggle="tab">'.$title.'</a></li>';
 			$active = '';
 		}
 				

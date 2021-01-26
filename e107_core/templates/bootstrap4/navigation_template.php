@@ -32,7 +32,7 @@ $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';
 // Main Link which has a sub menu.
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = "
 	<li class='nav-item dropdown'>
-		<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' id='navbarDropdownMenuLink-{NAV_LINK_ID}' data-target='#' aria-haspopup='true' aria-expanded='false' href='#' title='{NAV_LINK_DESCRIPTION}'>
+		<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' data-bs-toggle='dropdown' id='navbarDropdownMenuLink-{NAV_LINK_ID}' data-target='#' aria-haspopup='true' aria-expanded='false' href='#' title='{NAV_LINK_DESCRIPTION}'>
 		 {NAV_LINK_ICON}{NAV_LINK_NAME}
 		</a>
 		{NAV_LINK_SUB}
@@ -42,7 +42,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = "
 // Main Link which has a sub menu - active state.
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 	<li class="nav-item dropdown active {NAV_LINK_IDENTIFIER}">
-		<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" id="navbarDropdownMenuLink-{NAV_LINK_ID}" aria-haspopup="true" aria-expanded="true" data-target="#" href="#">
+		<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-toggle="dropdown" id="navbarDropdownMenuLink-{NAV_LINK_ID}" aria-haspopup="true" aria-expanded="true" data-target="#" href="#">
 		 {NAV_LINK_ICON}{NAV_LINK_NAME}
 		</a>
 		{NAV_LINK_SUB}
@@ -134,16 +134,16 @@ $NAVIGATION_TEMPLATE['footer']['item_active'] = "<li class='nav-item active' {NA
 	<a class='nav-link' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>{NAV_LINK_ICON}{NAV_LINK_NAME}</a></li>";
 $NAVIGATION_TEMPLATE['footer']['end'] = '</ul>';
 
-// 2rd Sub menu data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+// 2rd Sub menu data-toggle="dropdown" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
 $NAVIGATION_TEMPLATE['footer']['item_submenu'] = "
 <li class='nav-item dropdown'>
-	<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-target='#' aria-haspopup='true'
+	<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' data-target='#' aria-haspopup='true'
 	 aria-expanded='false' href='#' title='{NAV_LINK_DESCRIPTION}'>{NAV_LINK_ICON}{NAV_LINK_NAME}</a>
 	{NAV_LINK_SUB}
 </li>";
 $NAVIGATION_TEMPLATE['footer']['item_submenu_active'] = "
 <li class='nav-item dropdown active'>
-	<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-target='#' aria-haspopup='true' aria-expanded='false' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>
+	<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' data-target='#' aria-haspopup='true' aria-expanded='false' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>
 	 {NAV_LINK_ICON}{NAV_LINK_NAME}
 	</a>
 	{NAV_LINK_SUB}

@@ -1468,7 +1468,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					break;
 						
 					case 'div':
-						$text .= "<div class='core-mainpanel-block col-md-2'><a data-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default btn-secondary muted' href='".$link."' title='{$description}'>".$icon."
+						$text .= "<div class='core-mainpanel-block col-md-2'><a data-toggle='tooltip' data-bs-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default btn-secondary muted' href='".$link."' title='{$description}'>".$icon."
 						<small class='core-mainpanel-link-text'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</small></a>	
 						</div>";					
 					break;

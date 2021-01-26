@@ -1363,7 +1363,7 @@ class plugin_online_ui extends e_admin_ui
 		// Temporary Pop-up version.
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 
-	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
+	//	$dicon = "<a data-toggle='modal' data-bs-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
 		return "<div id='{$id}' class='center' >
 		{$dicon}
@@ -1855,7 +1855,7 @@ class plugin_form_online_ui extends e_admin_form_ui
 
 
 		$dicon = '<a title="'.$title.'" '.$disable.' class="e-modal '.$class.'" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.$button.'</a>';
-	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
+	//	$dicon = "<a data-toggle='modal' data-bs-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
 		return $dicon;
 
@@ -2694,7 +2694,7 @@ class pluginBuilder
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&action=build&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
 			
 			$text .= "<ul class='nav nav-tabs'>\n";
-			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
+			$text .= "<li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
 			
 			$this->tableCount = count($ret['tables']);
 
@@ -2703,14 +2703,14 @@ class pluginBuilder
 				foreach($ret['tables'] as $key=>$table)
 				{
 					$label = "Table: ".$table;
-					$text .= "<li><a data-toggle='tab'  href='#".$table."'>".$label."</a></li>";
+					$text .= "<li><a data-toggle='tab' data-bs-toggle='tab'  href='#".$table."'>".$label."</a></li>";
 					$this->tableList[] = $table;
 				}
 			}
 
 
-			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
-			$text .= "<li><a data-toggle='tab'  href='#addons'>".LAN_ADDONS."</a></li>"; //TODO LAN
+			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
+			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab'  href='#addons'>".LAN_ADDONS."</a></li>"; //TODO LAN
 
 			
 			$text .= "</ul>";

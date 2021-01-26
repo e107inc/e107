@@ -103,7 +103,7 @@ $E_ADMIN_NAVIGATION['button_pm'] = '
 		<i class="icon-envelope active"></i> 3
 		<b class="caret"></b>
 		</a> 
-		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px;">
+		<div id="dropdown" class="dropdown-menu pull-right dropdown-menu-end float-right e-noclick" style="padding:10px;width:300px;">
 		    <ul class="nav-list">
 	    <li class="dropdown-header nav-header">Unread Messages</li>
 	    <li><a href="#">Incoming Message Number 1</a></li>
@@ -132,7 +132,7 @@ $E_ADMIN_NAVIGATION['start_sub'] = '
 ';
 
 $E_ADMIN_NAVIGATION['start_other_sub'] = '
-		<ul class="dropdown-menu pull-right" role="menu" >
+		<ul class="dropdown-menu dropdown-menu-end pull-right float-right" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['button_sub'] = '

@@ -1089,7 +1089,7 @@ class e_formTest extends \Codeception\Test\Unit
 			1   => array(
 				'value'     => 'Some text',
 				'parms'     => array('link'=>'myurl.php?id=[id]', 'target'=>'modal'),
-				'expected'  => "<a class='e-tip'  href='myurl.php?id=3'  data-toggle='modal' data-cache='false' data-target='#uiModal'  title='Quick View' >Some text</a>"
+				'expected'  => "<a class='e-tip'  href='myurl.php?id=3'  data-toggle='modal' data-bs-toggle='modal' data-cache='false' data-target='#uiModal'  title='Quick View' >Some text</a>"
 			),
 			2   => array(
 				'value'     => 'Some text',
