@@ -209,7 +209,7 @@ class e_ranks
 			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
 
-		if(isset($userData['user_admin']))
+		if(!empty($userData['user_admin']))
 		{
 			if($userData['user_perms'] == '0')
 			{
