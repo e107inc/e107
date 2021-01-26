@@ -85,11 +85,11 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-			$text = '<div class="btn-group">';
+			$text = '<div class="btn-group mb-2">';
 /*
 			$text .=
 			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
-		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 		    	'.($this->var['ntUrl'] ? '' : LAN_FORUM_1001." ".LAN_FORUM_8013).'<span class="caret"></span>
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
@@ -98,7 +98,7 @@
 */
 			$href = "#";
 			$disabled = " disabled";
-			$restricted_to_members_only = " data-toggle='tooltip' title='".LAN_FORUM_0006."'
+			$restricted_to_members_only = " data-toggle='tooltip' data-bs-toggle='tooltip' title='".LAN_FORUM_0006."'
 			style='cursor: not-allowed; pointer-events: all !important;'";
 			$extra_space = "<span>&nbsp;</span>";
 			if ($this->var['ntUrl'])
@@ -110,11 +110,8 @@
 			}
 
 			$text .=
-			'<a href="'.$href.
-			'" class="btn btn-primary'.$disabled.'"'
-			.$restricted_to_members_only.'>'.LAN_FORUM_1018.'</a>
-			'.$extra_space.'
-			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+			'<a href="'.$href.'" class="btn btn-primary'.$disabled.'"'.$restricted_to_members_only.'>'.LAN_FORUM_1018.'</a>'.$extra_space.'
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 			';
 			if($bootstrap !== 4)
 			{
@@ -123,7 +120,7 @@
 		    $text .= '
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
-		    	<ul class="dropdown-menu pull-right float-right">
+		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
 		    	';
 			
 			//--	foreach($jumpList as $key => $val)
@@ -1026,7 +1023,7 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 				$text .= ' ... ';
 				for($a = $pages - 3; $a <= $pages - 1; $a++)
@@ -1037,7 +1034,7 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 			}
 			else
@@ -1051,7 +1048,7 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 			}
 
@@ -1135,10 +1132,10 @@
 		$tp = e107::getParser();
 
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
+		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu pull-right float-right">	
+    <ul class="dropdown-menu pull-right dropdown-menu-end float-right">	
    ';
 
 		//FIXME - not fully working.

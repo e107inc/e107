@@ -525,7 +525,7 @@ function init()
 
 		$text = '<div class="btn-group">
 	    <a href="' . $url . '" class="btn btn-primary">' . LAN_FORUM_1018 . '</a>
-	    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+	    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 	    <span class="caret"></span>
 	    </button>
 	    <ul class="dropdown-menu pull-right float-right">

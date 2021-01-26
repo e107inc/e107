@@ -98,8 +98,8 @@ class e_marketplace
 		    <div class="well">
 		    <img src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="" style="margin-bottom:15px" />
 		    <ul class="nav nav-tabs">
-			    <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-			    <li><a href="#create" data-toggle="tab">Create Account</a></li>
+			    <li class="active"><a href="#login" data-toggle="tab" data-bs-toggle="tab">Login</a></li>
+			    <li><a href="#create" data-toggle="tab" data-bs-toggle="tab">Create Account</a></li>
 		    </ul>
 		    <div id="myTabContent" class="tab-content">
 		    <div class="tab-pane active in" id="login">

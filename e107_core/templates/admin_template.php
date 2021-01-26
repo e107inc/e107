@@ -26,7 +26,7 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar
 
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
 		 {LINK_IMAGE}
 
 		</a> 
@@ -38,7 +38,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
 		 {LINK_IMAGE}
 
 		</a>
@@ -54,7 +54,7 @@ $E_ADMIN_NAVIGATION['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -64,7 +64,7 @@ $E_ADMIN_NAVIGATION['button_enav_home'] = '
 // Change Language
 $E_ADMIN_NAVIGATION['button_enav_language'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -87,7 +87,7 @@ $E_ADMIN_NAVIGATION['button_enav_language'] = '
 // Logout / Settings / Personalize
 $E_ADMIN_NAVIGATION['button_enav_logout'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -99,11 +99,11 @@ $E_ADMIN_NAVIGATION['button_enav_logout'] = '
 // Private Messaging - //TODO Discuss and make this work..
 $E_ADMIN_NAVIGATION['button_pm'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
 		<i class="icon-envelope active"></i> 3
 		<b class="caret"></b>
 		</a> 
-		<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px;">
+		<div id="dropdown" class="dropdown-menu dropdown-menu-end pull-right float-right e-noclick" style="padding:10px;width:300px;">
 		    <ul class="nav-list">
 	    <li class="dropdown-header nav-header">Unread Messages</li>
 	    <li><a href="#">Incoming Message Number 1</a></li>
@@ -132,7 +132,7 @@ $E_ADMIN_NAVIGATION['start_sub'] = '
 ';
 
 $E_ADMIN_NAVIGATION['start_other_sub'] = '
-		<ul class="dropdown-menu pull-right" role="menu" >
+		<ul class="dropdown-menu dropdown-menu-end pull-right float-right" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['button_sub'] = '
@@ -187,7 +187,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-bs-toggle="collapse" data-target=".navbar-collapse">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>

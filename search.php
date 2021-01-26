@@ -164,7 +164,7 @@ class search_front extends e_shortcode
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
 		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>
-		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'>
+		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' data-bs-toggle='dropdown' type='button'>
 		";
 
 		if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)

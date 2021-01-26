@@ -495,8 +495,8 @@ class frontpage
 		";
 		
 		$text .= '<ul class="nav nav-tabs" id="myTabs">
-			<li class="active"><a data-toggle="tab" href="#home">'.FRTLAN_49.'</a></li>
-			<li><a data-toggle="tab" href="#postlogin">'.FRTLAN_35.'</a></li>
+			<li class="active"><a data-toggle="tab" data-bs-toggle="tab" href="#home">'.FRTLAN_49.'</a></li>
+			<li><a data-toggle="tab" data-bs-toggle="tab" href="#postlogin">'.FRTLAN_35.'</a></li>
 			</ul>
 			 ';
 			

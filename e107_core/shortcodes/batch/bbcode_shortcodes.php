@@ -46,7 +46,7 @@ class bbcode_shortcodes extends e_shortcode
 		if(defined('BOOTSTRAP') && BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
-				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="">';
 				$text .= LANHELP_55;
 				$text .= ' <span class="caret"></span></a>';
 				$text .= "<ul class='dropdown-menu'>\n";
@@ -296,7 +296,7 @@ class bbcode_shortcodes extends e_shortcode
 			$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 
 			$text = '<div class="btn-group">';
-			$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
+			$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
 		//	$text .= "<img src='".e_IMAGE_ABS."bbcode/fontsize.png' alt=''  />\n";
 			$text .= $this->button(e_IMAGE_ABS."bbcode/fontsize.png", 'text-height');
 			
@@ -351,7 +351,7 @@ class bbcode_shortcodes extends e_shortcode
 			if(deftrue('BOOTSTRAP'))
 			{
 				$text = '<div class="btn-group" >';
-				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
 				$text .= $this->button(e_IMAGE_ABS."bbcode/emotes.png","smile-o"); 
 			//	$text .= ' <span class="caret"></span>';
 				

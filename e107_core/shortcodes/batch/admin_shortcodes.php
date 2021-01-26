@@ -46,7 +46,7 @@ class admin_shortcodes extends e_shortcode
 				
 				return '<ul class="nav navbar pill navbar-nav">
 						<li class="dropdown">
-						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" href="#">
+						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
 						'.E_16_E107.' <b class="caret"></b>
 						</a> 
 						<ul class="dropdown-menu" role="menu">
@@ -773,7 +773,7 @@ class admin_shortcodes extends e_shortcode
 
 		$text = "<ul class='nav nav-admin navbar-nav navbar-right admin-icon-debug'>
 				<li class='dropdown'>
-				<a class='dropdown-toggle' title=\"Set DEBUG mode".$currentAlias."\" role='button' data-toggle='dropdown' data-target='#' href='#'>
+				<a class='dropdown-toggle' title=\"Set DEBUG mode".$currentAlias."\" role='button' data-toggle='dropdown' data-bs-toggle='dropdown' data-target='#' href='#'>
 		";
 
 		$text .= e107::getParser()->toGlyph('fa-bug', array('class'=>$active))."<b class='caret ".$active."'></b></a>";
@@ -855,7 +855,7 @@ class admin_shortcodes extends e_shortcode
 
        $text = '<ul class="nav nav-admin navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'
             </a> 
             <ul class="dropdown-menu" role="menu" >
@@ -878,7 +878,7 @@ class admin_shortcodes extends e_shortcode
         
 		$text = '
 		<li class="dropdown">
-			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
 				<i class="icon-envelope icon-white active"></i> 3 <b class="caret"></b>
 			</a> 
 			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
@@ -921,7 +921,7 @@ class admin_shortcodes extends e_shortcode
 
 		  $text = '<ul class="nav nav-admin navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="Multisite" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="Multisite" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-clone').'
             </a> 
             <ul class="dropdown-menu" role="menu" >';
@@ -1699,7 +1699,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		return '<ul class="core-update-available nav navbar-nav navbar-left">
         <li class="dropdown open">
-            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" href="#" aria-expanded="true">
+            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
                 <i class="fa fa-cloud-download  text-success"></i>
             </a>
             <ul class="dropdown-menu" role="menu">
@@ -2037,7 +2037,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
 
-			return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
+			return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-bs-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 

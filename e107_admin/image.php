@@ -1473,7 +1473,7 @@ class media_admin_ui extends e_admin_ui
 		
 		if($bbcodeQuery !== 'video' && $bbcodeQuery !== 'glyph')
 		{
-			$text .= "<li class='active'><a data-toggle='tab' href='#core-media-select'>".ADLAN_105."</a></li>\n";
+			$text .= "<li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-select'>".ADLAN_105."</a></li>\n";
 		}
 		else
 		{
@@ -1493,23 +1493,23 @@ class media_admin_ui extends e_admin_ui
 		
 		if(varset($options['bbcode']) === 'img')
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";
+			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-style'>".IMALAN_152."</a></li>\n";
 		}
 
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') === 'video')
 		{
-			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>"."Youtube</a></li>\n";
+			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-youtube'>"."Youtube</a></li>\n";
 		}
 
 
 		if($this->getQuery('glyph') == 1 || $this->getQuery('bbcode') === 'glyph')
 		{
-			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' href='#core-media-glyphs'>"."Glyphs</a></li>\n";
+			$text .= "<li class='{$glyphActive}'><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-glyphs'>"."Glyphs</a></li>\n";
 		}
 
 		if(getperms('A|A1') && ($this->getQuery('bbcode') !== 'video' && $this->getQuery('bbcode') !== 'glyph'))
 		{
-			$text .= "<li><a data-toggle='tab' href='#core-media-upload'>".IMALAN_150. '</a></li>';
+			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-upload'>".IMALAN_150. '</a></li>';
 		}
 
 		

@@ -864,7 +864,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$text = '<div class="btn-group ">
 
     <a class="btn btn-default btn-secondary btn-sm btn-small" href="' . $userUrl . '">' . $username . '</a>
-    <button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
+    <button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">
@@ -914,8 +914,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$postID = !empty($this->postInfo['post_id']) ? $this->postInfo['post_id'] : 0;
 		// {EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
 
-		$text = '<div class="btn-group pull-right float-right">
-    		<button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
+		$text = '<div class="btn-group pull-right float-right float-end">
+    		<button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
     		' . LAN_FORUM_8013 . '
     	    ';
 
@@ -926,7 +926,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$text .= '
     		</button>
-    		<ul class="dropdown-menu pull-right float-right text-right">';
+    		<ul class="dropdown-menu pull-right dropdown-menu-end float-right text-right">';
 
 
 		$text .= "<li class='text-right float-right float-right'><a href='" . e_HTTP . "email.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
@@ -1206,7 +1206,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		$replyUrl = "<a class='btn btn-primary" . ($url ? "" : " disabled") . "' "
-			. ($url ? "" : " data-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
+			. ($url ? "" : " data-toggle='tooltip' data-bs-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
 	style='cursor: not-allowed; pointer-events: all !important;'") . " href='" . ($url ?: "#") . "'>" . LAN_FORUM_2006 . "</a>" . ($url ? "" : "<span>&nbsp;</span>");
 
 		if($this->forum->checkPerm($this->var['thread_forum_id'], 'post'))
@@ -1235,7 +1235,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$text = '<div class="btn-group">
 	   	' . $replyUrl . '
-	    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+	    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 	    ';
 
 		if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
@@ -1246,7 +1246,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$text .= '
     	<span class="sr-only">Toggle Dropdown</span>
     	</button>
-    	<ul class="dropdown-menu pull-right float-right">
+    	<ul class="dropdown-menu pull-right dropdown-menu-end float-right">
     	';
 
 		foreach($options as $key => $val)

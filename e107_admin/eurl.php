@@ -756,7 +756,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
        
         $id = 'eurl_'.$this->name2id($title);
         
-        $text = "<a data-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
+        $text = "<a data-toggle='modal' data-bs-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
         $text .= $title;  
         $text .= '</a>';
         

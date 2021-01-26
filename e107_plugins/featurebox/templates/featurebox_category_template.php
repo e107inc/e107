@@ -242,7 +242,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_separator'] = '<div class=
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_empty'] = '';
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_start'] = '<ul class="nav nav-tabs">';
-$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" href="#tab-{FEATUREBOX_COLSCOUNT}">{FEATUREBOX_TITLE}</a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" data-bs-toggle="tab" href="#tab-{FEATUREBOX_COLSCOUNT}">{FEATUREBOX_TITLE}</a></li>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_end'] = '</ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_separator'] = '';
 //<div class="e-bootstrap_tabs">

@@ -1283,9 +1283,9 @@ $columnInfo = array(
 	      $text = "
 	     
 	         <ul class='nav nav-tabs'>
-	            <li class='active'><a data-toggle='tab' href='#download-create'>".DOWLAN_175."</a></li>
-	            <li><a data-toggle='tab' href='#download-edit-external'>".DOWLAN_176."</a></li>
-	            <li><a data-toggle='tab' href='#download-edit-mirror'>".DOWLAN_128."</a></li>
+	            <li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#download-create'>".DOWLAN_175."</a></li>
+	            <li><a data-toggle='tab' data-bs-toggle='tab' href='#download-edit-external'>".DOWLAN_176."</a></li>
+	            <li><a data-toggle='tab' data-bs-toggle='tab' href='#download-edit-mirror'>".DOWLAN_128."</a></li>
 	         </ul>
 	         <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
 	          <div class='tab-content'>
@@ -2167,11 +2167,11 @@ $columnInfo = array(
 		   	$text = "
 				   
 					   <ul class='nav nav-tabs'>
-						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
+						   <li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
+						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
+						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
+						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
+						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
 					   </ul>
 						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n

@@ -2127,10 +2127,10 @@ class e_userperms
 	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area.
 	$text .= '
 		 <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
-		    <li><a href="#tab2" data-toggle="tab">'.$this->renderSectionDiz('plugin').'</a></li>
-		    <li><a href="#tab3" data-toggle="tab">'.$this->renderSectionDiz('language').'</a></li>
-		     <li><a href="#tab4" data-toggle="tab">'.$this->renderSectionDiz('main').'</a></li>
+		    <li class="active"><a href="#tab1" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
+		    <li><a href="#tab2" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('plugin').'</a></li>
+		    <li><a href="#tab3" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('language').'</a></li>
+		     <li><a href="#tab4" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('main').'</a></li>
 		  </ul>
 		  
 		  <div class="tab-content">
