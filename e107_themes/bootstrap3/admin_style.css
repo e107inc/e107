@@ -1081,7 +1081,7 @@ i.e-welcome-32{ background-position: -814px -37px; width: 32px; height: 32px; }
 i.browsers {
     background: url(images/browsers.png) no-repeat top left;
  	display:inline-block;
- 	 	*margin-right: .3em;
+    margin-right: .3em;
 	line-height: 14px;
 	vertical-align: text-top;
 

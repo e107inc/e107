@@ -391,6 +391,7 @@ class e_user_model extends e_admin_model
 				'Orbiter',
 				'PageBites',
 				'Peew',
+				'petalbot',
 				'polybot',
 				'Pompos',
 				'PostPost',
