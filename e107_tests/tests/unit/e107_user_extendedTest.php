@@ -33,7 +33,6 @@
 				$this->assertTrue(false, "Couldn't load e107_user_extended object");
 			}
 
-
 			$this->structTypes = array(
 			'text'          => EUF_TEXT,
 			'homepage'      => EUF_TEXT,
@@ -170,7 +169,10 @@
 					'order'        => 1,
 			);
 
-			$this->ue->user_extended_add($insertCategory);
+			if($this->ue->user_extended_add($insertCategory) === false)
+			{
+				trigger_error("failed to create user-extended category");
+			}
 
 					// Insert a User-Extended Category
 			$insertCategory2 = array(
@@ -183,7 +185,10 @@
 					'order'        => 2,
 			);
 
-			$this->ue->user_extended_add($insertCategory2);
+			if($this->ue->user_extended_add($insertCategory2) === false)
+			{
+				trigger_error("failed to create user-extended category");
+			}
 
 			// As $_POSTED.
 			$this->userValues = array(
@@ -468,8 +473,8 @@
 
 
 			$template = array(
-				'extended-category'     => "-- {EXTENDED_CAT_TEXT} --",
-				'extended-user-fields'  => "<label>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>" // {EXTENDED_USER_FIELD_EDIT}
+				'extended-category'     => "\n-- {EXTENDED_CAT_TEXT} --\n",
+				'extended-user-fields'  => "<label>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>\n" // {EXTENDED_USER_FIELD_EDIT}
 			);
 
 			$expected = array(
