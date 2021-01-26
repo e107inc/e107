@@ -321,16 +321,16 @@ class lancheck
 
 	public function errorsOnly($val)
 	{
-		$this->errorsOnly = $val;
+		$this->errorsOnly = (bool) $val;
 
 	}
 	
 	public function init()
 	{
 
-		$mode   = $_GET['sub'];
-		$lan    = $_GET['lan'];
-		$file   = $_GET['file'];
+		$mode   = varset($_GET['sub']);
+		$lan    = varset($_GET['lan']);
+		$file   = varset($_GET['file']);
 
 		$this->transLanguage = $lan;
 
@@ -865,12 +865,13 @@ class lancheck
 		$xml = e107::getXml();
 
 		$feed = 'https://e107.org/languagepacks.xml';
-
 		$version = e_VERSION;
 
 		if(!empty($version))
 		{
-			list($ver,$tmp) = explode("-", $version);
+			$tmp = explode("-", $version);
+			$ver = varset($tmp[0]); 
+
 			$feed .= "?ver=". preg_replace('/[^\d\.]/','', $ver);
 		}
 
@@ -913,7 +914,7 @@ class lancheck
 
 				$languages[$id] = array(
 					'name'          => $att['name'],
-					'author'        => $att['author'],
+					'author'        => varset($att['author']),
 					'infoURL'       => $att['infourl'],
 					'tag'           => $att['tag'],
 				//	'folder'        => $att['folder'],

@@ -647,6 +647,33 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+    public function testSocialShortcodes()
+    {
+    	require_once(e_PLUGIN."social/e_shortcode.php");
+
+        try
+		{
+			/** @var social_shortcodes $sc */
+			$sc = $this->make('social_shortcodes');
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+		parse_str('type=facebook,twitter,youtube,flickr,vimeo,google-plus,github,instagram,linkedin&size=3x', $parm);
+
+		$result = $sc->sc_xurl_icons($parm);
+
+		$this->assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);
+		$this->assertStringContainsString('<span class="e-social-youtube fa-3x"></span>', $result);
+
+    }
+
+
+
     public function testUserShortcodes()
     {
         require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
