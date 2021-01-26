@@ -90,10 +90,10 @@ class social_shortcodes extends e_shortcode
 		);
  			
 		// print_a($social);
-	
-		$class      = (!empty($parm['size'])) ?  'fa-'.$parm['size'] : '';
-		$class      .= (isset($parm['class'])) ? (string) $parm['class'] : $class;
 
+
+		$class      = (isset($parm['class'])) ? (string) $parm['class'] : '';
+		$class      .= (!empty($parm['size'])) ?  'fa-'.$parm['size'] : '';
 
 		if(!empty($parm['type']))
 		{

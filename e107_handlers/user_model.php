@@ -293,6 +293,7 @@ class e_user_model extends e_admin_model
 				'Accoona-AI-Agent',
 				'AddSugarSpiderBot',
 				'AnyApexBot',
+				'applebot',
 				'Arachmo',
 				'B-l-i-t-z-B-O-T',
 				'Baiduspider',
