@@ -24,10 +24,10 @@ class user_dashboard // plugin-folder + '_url'
 		$tp = e107::getParser();
 
 		$config[] = array(
-			0 => array(	'text'		=> $this->renderChart(), 'caption'	=> $tp->toGlyph('fa-signal').' '.LAN_STATS),
+		//	0 => array(	'text'		=> $this->renderChart(), 'caption'	=> $tp->toGlyph('fa-signal').' '.LAN_STATS),
 			1 => array('caption'    =>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers()),
 
-			2 => array(	'text'		=> $this->registered('user_new_thismonth'), 'caption'	=> $this->title),
+			2 => array(	'text'		=> $this->registered('newUsersThisMonth'), 'caption'	=> $this->title),
 		);
 		
 		return $config;
@@ -42,7 +42,7 @@ class user_dashboard // plugin-folder + '_url'
 		}
 		else
 		{
-			return $this->renderStats('demo');
+		//	return $this->renderStats('demo');
 		}
 
 	}
@@ -350,7 +350,7 @@ class user_dashboard // plugin-folder + '_url'
 	//	print_a($data);
 			
 		$options = array(
-			'chartArea'	=>array('left'=>'60', 'width'=>'90%', 'top'=>'25'),
+			'chartArea'	=>array('left'=>'60', 'width'=>'100%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
 			'vAxis'		=> array('title'=> UC_LAN_9, 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
 			'hAxis'		=> array('title'=>date('M Y', $month_start), 'slantedText'=>true, 'slantedTextAngle'=>60, 'ticks'=>$ticks, 'titleFontSize'=>14, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines' => array('color'=>'transparent'), 'textStyle'=>array('color' => '#ccc') ),
@@ -480,7 +480,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		if($row['user_bot'] === true)
 		{
-			return "<i class='browser e-bot-16'></i>";
+			return "<i class='browsers e-bot-16'></i>";
 		}
 
 		foreach($types as $icon=>$b)
