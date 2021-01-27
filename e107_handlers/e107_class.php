@@ -3085,12 +3085,17 @@ class e107
 
 		if(self::getPref('admincss') === 'css/kadmin.css')
 		{
+			$ADMIN_ICONS_TEMPLATE['ADMIN_INSTALLPLUGIN_ICON']   = "<i class='fa fa-cog fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_UNINSTALLPLUGIN_ICON'] = "<i class='fa fa-times fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_UPGRADEPLUGIN_ICON']   = "<i class='fa fa-caret-up fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_REPAIRPLUGIN_ICON']    = "<i class='fa fa-wrench fa-2x fa-fw'></i>";
 
-			$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']        = "<i class='fa fa-edit fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']      = "<i class='fa fa-trash fa-2x fa-fw text-danger'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']     = "<i class='fa fa-power-off fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']        = "<i class='fa fa-sort fa-2x fa-fw'></i>";
-			$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']       = "<i class='fa fa-file-text-o fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_CONFIGURE_ICON']       = "<i class='fa fa-cog fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']            = "<i class='fa fa-edit fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']          = "<i class='fa fa-trash fa-2x fa-fw text-danger'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']         = "<i class='fa fa-power-off fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']            = "<i class='fa fa-sort fa-2x fa-fw'></i>";
+			$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']           = "<i class='fa fa-file-text-o fa-2x fa-fw'></i>";
 		}
 
 		foreach($ADMIN_ICONS_TEMPLATE as $def=>$val)
