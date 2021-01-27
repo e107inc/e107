@@ -199,7 +199,7 @@ class theme_admin_ui extends e_admin_ui
            	'name'				        => array('title'=> LAN_TITLE, 			'type' => 'text',		'data' => 'str',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'thumbnail'	   			    => array('title'=> LAN_IMAGE, 			'type' => 'image',      'readParms'=>array('thumb'=>1,'w'=>300,'h'=>169,'crop'=>1, 'link'=>false, 'fallback'=>'{e_IMAGE}admin_images/nopreview.png'),	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 			'folder' 				    => array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'category' 				    => array('title'=> LAN_CATEGORY, 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
+			'category' 				    => array('title'=> LAN_CATEGORY, 		'type' => 'dropdown', 		'data' => 'str', 'filter'=>true,		'width' => 'auto',	'thclass' => '', 'writeParms'=>array()),
 			'version' 			        => array('title'=> 'Version',			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'price' 				    => array('title'=> LAN_AUTHOR,			'type' => 'method', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
      //    	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
@@ -222,6 +222,8 @@ class theme_admin_ui extends e_admin_ui
 		{
 			require_once(e_HANDLER."theme_handler.php");
 			$this->themeObj = new themeHandler; // handles POSTed data.
+			$this->fields['category']['writeParms']['optArray'] = e107::getTheme()->getCategoryList(); // array('plugin_category_0','plugin_category_1', 'plugin_category_2'); // Example Drop-down array.
+
 			parent::__construct($request,$response,$params);
 		}
 
@@ -317,7 +319,9 @@ class theme_admin_ui extends e_admin_ui
 
 		public function OnlineObserver()
 		{
-			$this->ChooseObserver();
+			unset($this->fields['checkboxes']);
+			$this->perPage = 500;
+
 		}
 		
 		public function ChooseAjaxObserver()
@@ -350,7 +354,7 @@ class theme_admin_ui extends e_admin_ui
 			return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
 
 		}
-
+/*
 		public function OnlinePageOld()
 		{
 			global $e107SiteUsername, $e107SiteUserpass;
@@ -386,7 +390,7 @@ class theme_admin_ui extends e_admin_ui
 			$amount =$limit;
 
 
-			$c = 1;
+			$c = 1;*/
 
 		/*	$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
@@ -396,7 +400,7 @@ class theme_admin_ui extends e_admin_ui
 			$text .= "{CAROUSEL_INDICATORS}";
 			$text .= "</div>";
 			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';*/
-
+/*
 			if(is_array($xdata['data'] ))
 			{
 
@@ -471,7 +475,7 @@ class theme_admin_ui extends e_admin_ui
 
 			return $text;
 		}
-
+*/
 
 		public function InfoPage()
 		{
@@ -668,13 +672,98 @@ class theme_admin_ui extends e_admin_ui
 				e107::getMessage()->addWarning(TPVLAN_79);
 			}
 
+			$this->setThemeData();
+
 			return $this->GridPage();
 		}
 
 		public function OnlineAjaxPage()
 		{
+			unset($this->fields['checkboxes']);
+			$this->perPage = 500;
+			$this->setThemeData();
 			return $this->GridAjaxPage();
 		}
+
+	/**
+	 * Load data from online
+	 * @param bool $force
+	 */
+	function setThemeData($force=false)
+	{
+		$themeList  = e107::getTheme()->getList();
+
+		$mes 	= e107::getMessage();
+		require_once(e_HANDLER.'e_marketplace.php');
+
+		$mp 	= new e_marketplace(); // autodetect the best method
+	//	$from 	= intval(varset($_GET['frm']));
+
+		$from = $this->getQuery('from', 0);
+		$srch = $this->getQuery('searchquery');
+
+		$cat = '';
+
+		if($filter = $this->getQuery('filter_options'))
+		{
+			list($bla, $cat) = explode("__",$filter);
+		}
+
+		$limit 	= 96;
+	//	$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch']));
+
+		$xdata = $mp->call('getList', array(
+			'type'   => 'theme',
+			'params' => array('limit' => 96, 'search' => $srch, 'from' => $from, 'cat'=>$cat)
+		));
+
+
+		$total = $xdata['params']['count'];
+		$tree = $this->getTreeModel();
+
+		$c = 0;
+		if(!empty($xdata['data']) && is_array($xdata['data'] ))
+		{
+
+			foreach($xdata['data'] as $r)
+			{
+				if(E107_DBG_PATH)
+				{
+					$mes->addDebug(print_a($r,true));
+				}
+
+				$v = array(
+						'id'			=> $r['params']['id'],
+						'type'			=> 'theme',
+						'mode'			=> $r['params']['mode'],
+						'name'			=> stripslashes($r['name']),
+						'category'		=> $r['category'],
+						'preview' 		=> varset($r['screenshots']['image']),
+						'date'			=> $r['date'],
+						'version'		=> $r['version'],
+						'thumbnail'		=> $r['thumbnail'],
+						'url'			=> $r['urlView'],
+						'author'		=> $r['author'],
+						'website'		=> varset($r['authorUrl']),
+						'compatibility'	=> $r['compatibility'],
+						'description'	=> $r['description'],
+						'price'			=> $r['price'],
+						'livedemo'		=> $r['livedemo'],
+					);
+
+
+				$c++;
+				$tmp = new e_model($v);
+				$tree->setNode($r['params']['id'],$tmp);
+
+			}
+		}
+
+
+		$tree->setTotal($c);
+	}
+
+
 
 
 		public function renderHelp()
@@ -783,85 +872,6 @@ class theme_admin_tree_model extends e_tree_model
 class theme_admin_online_tree_model extends e_tree_model
 {
 
-	/**
-	 * Load data from theme meta file.
-	 * @param bool $force
-	 */
-	function loadBatch($force=false)
-	{
-		$themeList  = e107::getTheme()->getList();
-
-		$parms      = $this->getParams();
-
-		$mes 	= e107::getMessage();
-		require_once(e_HANDLER.'e_marketplace.php');
-
-		$mp 	= new e_marketplace(); // autodetect the best method
-		$from 	= intval(varset($_GET['frm']));
-		$limit 	= 96; // FIXME - ajax pages load
-		$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch']));
-
-		// do the request, retrieve and parse data
-		$xdata = $mp->call('getList', array(
-				'type' => 'theme',
-				'params' => array('limit' => $limit, 'search' => $srch, 'from' => $from)
-			));
-
-		$total = $xdata['params']['count'];
-
-		$c = 0;
-		if(is_array($xdata['data'] ))
-		{
-
-			foreach($xdata['data'] as $r)
-			{
-				if(E107_DBG_PATH)
-				{
-					$mes->addDebug(print_a($r,true));
-				}
-
-				$v = array(
-						'id'			=> $r['params']['id'],
-						'type'			=> 'theme',
-						'mode'			=> $r['params']['mode'],
-						'name'			=> stripslashes($r['name']),
-						'category'		=> $r['category'],
-						'preview' 		=> varset($r['screenshots']['image']),
-						'date'			=> $r['date'],
-						'version'		=> $r['version'],
-						'thumbnail'		=> $r['thumbnail'],
-						'url'			=> $r['urlView'],
-						'author'		=> $r['author'],
-						'website'		=> varset($r['authorUrl']),
-						'compatibility'	=> $r['compatibility'],
-						'description'	=> $r['description'],
-						'price'			=> $r['price'],
-						'livedemo'		=> $r['livedemo'],
-					);
-
-
-				$c++;
-				$tmp = new e_model($v);
-				$this->setNode($r['params']['id'],$tmp);
-
-			}
-		}
-
-/*
-		foreach($themeList as $k=>$v)
-		{
-
-			$v['id'] = $k;
-
-			$v['thumbnail'] = !empty($v['thumbnail']) ? '{e_THEME}'.$v['path'].'/'.$v['thumbnail'] : null;
-			$tmp = new e_model($v);
-			$this->setNode($k,$tmp);
-
-		}*/
-
-		$this->setTotal($c);
-	}
-
 
 }
 
@@ -873,6 +883,7 @@ class theme_admin_online_tree_model extends e_tree_model
 class theme_admin_form_ui extends e_admin_form_ui
 {
 
+	private $approvedAdminThemes = array('bootstrap3', 'bootstrap5');
 
 
 	function price($curVal)
@@ -896,7 +907,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 	}
 
 
-
+/*
 	function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
 		if($this->getController()->getAction() == 'choose')
@@ -911,7 +922,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 			<div class='col-md-12'>";
 		//	$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
 			$text .= "<div class='form-inline clearfix row-fluid'>";
-			$text .= $this->search('srch', $_GET['srch'], 'go'/*, $filterName, $filterArray, $filterVal*/);
+			$text .= $this->search('srch', $_GET['srch'], 'go');
 
 			$gets = $this->getController()->getQuery();
 
@@ -929,7 +940,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 					</div></fieldset></form>";
 
 		return $text;
-	}
+	}*/
 
 	function options()
 	{
@@ -956,10 +967,6 @@ class theme_admin_form_ui extends e_admin_form_ui
 		$infoPath       = e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info&iframe=1";
 		$previewPath    = $tp->replaceConstants($theme['thumbnail'],'abs');
 
-	//	$version = $tp->filter(e_VERSION,'version');
-	//	$compat = $tp->filter($theme['compatibility'], 'version');
-
-
 		$disabled = '';
 		$mainTitle = TPVLAN_10;
 
@@ -970,15 +977,18 @@ class theme_admin_form_ui extends e_admin_form_ui
 			$mainTitle = defset('TPVLAN_97', "This theme requires a newer version of e107.");
 		}
 
-	//	e107::getDebug()->log($theme['path']." - ".$disabled. "  (".$compat.")");
-
-		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button  ".$disabled." class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['path']."]' alt=\"".$mainTitle."\" title=\"".$mainTitle."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		$main_icon 		= ($pref['sitetheme'] !== $theme['path']) ? "<button  ".$disabled." class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['path']."]' alt=\"".$mainTitle."\" title=\"".$mainTitle."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoPath."'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
-	//	$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		$admin_icon     = '';
+
+		if(in_array($theme['path'], $this->approvedAdminThemes))
+		{
+			$admin_icon 	= ($pref['admintheme'] !== $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		}
 
 		$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 
-		return $main_icon.$info_icon.$preview_icon;
+		return $main_icon.$admin_icon.$info_icon.$preview_icon;
 	}
 
 
