@@ -7241,40 +7241,22 @@ var_dump($select_options);*/
 			{
 				$elid = $form['id'].'-'.$elid;
 
-				if(vartrue($data['tabs'])) // Tabs Present 
+				if(!empty($data['tabs'])) // Tabs Present
 				{
-					$text .= '<ul class="nav nav-tabs">';
-					foreach($data['tabs'] as $i=>$label)
-					{	
-						$class = ((string) $i === $curTab) ? 'class="active" ' : '';
-						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab" data-bs-toggle="tab">'.$label.'</a></li>';
-					}
-					$text .= ' </ul><div class="tab-content">';	
-					
-					foreach($data['tabs'] as $tabId=>$label)
+					$tabs = [];
+					foreach($data['tabs'] as $tabId => $label)
 					{
-						$active = ((string) $tabId === $curTab) ? 'active' : '';
-						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
-
-					//	e107::getDebug()->log('elid: '.$elid. " tabid: ".$tabId);
-					//	e107::getDebug()->log($data);
-					//	e107::getDebug()->log($model);
-
-
-						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
-						$text .= '</div>';
+						$tabs[$tabId] = array('caption'=> $label, 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
 					}
-					
-					$text .= '</div>';
-					$text .= $this->renderCreateButtonsBar( $data, $model->getId());	// Create/Update Buttons etc.
-				 	
+
+					$text .= $this->tabs($tabs);
 				}
 				else   // No Tabs Present 
 				{
-					$text .= $this->renderCreateFieldset($elid, $data, $model, false);		
-					$text .= $this->renderCreateButtonsBar( $data, $model->getId());	// Create/Update Buttons etc.
+					$text .= $this->renderCreateFieldset($elid, $data, $model, false);
 				}
-				
+
+				$text .= $this->renderCreateButtonsBar( $data, $model->getId());	// Create/Update Buttons etc.
 				
 			}
 
