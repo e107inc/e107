@@ -3084,7 +3084,7 @@ class e107
 
 		$ADMIN_ICONS_TEMPLATE = self::getCoreTemplate('admin_icons', null, false);
 
-		if(defset('THEME_STYLE') === 'css/kadmin.css')
+		if(self::getPref('admincss') === 'css/kadmin.css')
 		{
 
 			$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']        = "<i class='fa fa-edit fa-2x fa-fw'></i>";

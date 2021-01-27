@@ -14385,9 +14385,9 @@ ul.chats li.out .message {
 
 /**************** Custom *************************/
 html { height: auto !important; }
-body { margin-top: 51px;
-padding: 0 !important; }
-
+body { margin-top: 51px; padding: 0 !important; color: #666666 !important; }
+.dropdown-menu li a {   color: #333333; }
+.dropdown-menu li a:hover {   color: #111111; }
 .navbar-fixed-top { background-color: #1e1e1e; color: #ffffff; border:0; margin:0!important }
 .navbar-fixed-top a { color: #ffffff }
 
