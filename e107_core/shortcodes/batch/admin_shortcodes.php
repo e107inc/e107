@@ -2022,7 +2022,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
-		global $$tmpl;
+	//	global $$tmpl;
+		$template = e107::getCoreTemplate('admin', 'nav', false);
 
 
 		if($parm === 'enav_popover') // @todo move to template and make generic.
@@ -2032,7 +2033,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				return null;
 			}
 
-			$template = $$tmpl;
+		//	$template = $$tmpl;
 
 
 			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
@@ -2043,7 +2044,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm === 'pm')
 		{
-			$template = (array) $$tmpl;
+		//	$template = (array) $$tmpl;
 
 			$template['start'] = varset($template['start_other']);
 
@@ -2214,7 +2215,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	e107::getDebug()->log($menu_vars);
 
 
-		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl);
+		return e107::getNav()->admin('', $active, $menu_vars, $template);
 
 	}
 

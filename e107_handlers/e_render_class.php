@@ -16,7 +16,7 @@
 		private $themeClass   = 'theme';  // v2.3.0+
 		private $legacyThemeClass;
 		private $adminThemeClass;
-		public  $frontend     = false;
+		public  $adminarea    = false;
 		private $uniqueId     = null;
 		private $content      = array();
 		private $contentTypes = array('header', 'footer', 'text', 'title', 'image', 'list');
@@ -24,8 +24,9 @@
 		private $thm;
 
 
-		public function _init()
+		public function _init($adminarea=false)
 		{
+			$this->adminarea = (bool) $adminarea;
 
 			$this->legacyThemeClass = e107::getPref('sitetheme') . '_theme'; // disabled at the moment.
 			$this->adminThemeClass = e107::getPref('admintheme') . '_admintheme';    // Check for a class.
@@ -60,10 +61,19 @@
 				return null;
 			}
 
-			if(($this->frontend === false) && class_exists($this->adminThemeClass))
+			if(($this->adminarea === true))
 			{
 				/** @var e_theme_render $thm */
-				$this->thm = new $this->adminThemeClass();
+
+				if(class_exists($this->adminThemeClass))
+				{
+					$this->thm = new $this->adminThemeClass();
+				}
+				else
+				{
+					echo "<h3>COULDN'T FIND ".$this->adminThemeClass." CLASS</h3>";
+				}
+
 			}
 			elseif(class_exists($this->themeClass)) // v2.3.0+
 			{

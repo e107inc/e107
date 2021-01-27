@@ -1353,12 +1353,12 @@ class themeHandler
 				}
 			}*/
 
-			if(strpos($key, "selectadmin") !== false)
+		/*	if(strpos($key, "selectadmin") !== false)
 			{
 				$this->id = key($post);
 				$this->setAdminTheme();
 				$this->refreshPage('admin');
-			}
+			}*/
 		}
 
 
@@ -3054,7 +3054,7 @@ class themeHandler
 	function setAdminTheme()
 	{
 		global $pref,$e107cache;
-		
+
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
 		

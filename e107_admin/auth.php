@@ -26,8 +26,8 @@ define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig('core');
-
-if($core->get('admintheme') != 'bootstrap3')
+$adminTheme = $core->get('admintheme');
+if($adminTheme !== 'bootstrap3' && $adminTheme !== 'bootstrap5')
 {
 	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');

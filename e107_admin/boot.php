@@ -24,7 +24,6 @@ if(!e107::isCli())
 
 define('ADMINFEED', 'https://e107.org/adminfeed');
 
-
 if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 {
 	define('e_IFRAME', true);
@@ -45,7 +44,7 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET
 
 		e107::getSession()->set('core-update-checked',false);
 
-		$status = (update_check() === true) ? true : false;
+		$status = update_check() === true;
 
 		e107::getSession()->set('core-update-status',$status);
 
@@ -237,7 +236,6 @@ e107::coreLan('footer', true);
 e107::getDebug()->logTime('[boot.php: Loading admin_icons]');
 e107::loadAdminIcons();
 e107::getDebug()->logTime('[boot.php: After Loading admin_icons]');
-//include_once(e107::coreTemplatePath('admin_icons'));
 
 
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))
@@ -263,9 +261,7 @@ if (!defined('ADMIN_WIDTH')) //BC Only
 
 
 /**
- * Automate DB system messages DEPRECATED
- * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
- *
+ * @deprecated
  * @param integer|bool $update return result of db::db_Query
  * @param string $type update|insert|update
  * @param string|bool $success forced success message
@@ -273,14 +269,11 @@ if (!defined('ADMIN_WIDTH')) //BC Only
  * @param bool $output false suppress any function output
  * @return integer|bool db::db_Query result
  */
- // TODO - This function often needs to be available BEFORE header.php is loaded. 
- 
- 
- //XXX DEPRECATED It has been copied to message_handler.php as addAuto();
- 
-function admin_updXXate($update, $type = 'update', $success = false, $failed = false, $output = true)
+function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true)
 {
-	e107::getMessage()->addDebug("Using deprecated admin_update () which has been replaced by \$mes->addAuto();"); 
+	$message = "admin_update() is deprecated (). Use e107::getMessage()->addAuto(); instead. ";
+	e107::getMessage()->addDebug($message);
+	trigger_error($message);
 	return e107::getMessage()->addAuto($update, $type, $success , $failed , $output);
 }
 
@@ -320,24 +313,43 @@ function admin_purge_related($table, $id)
 $ns = e107::getRender();
 $e107_var = array();
 
-// Left in for BC for now. 
 
+/**
+ * @deprecated  Left in for BC for now. Use admin-ui instead.
+ * @param $title
+ * @param $active_page
+ * @param $e107_vars
+ * @param array $tmpl
+ * @param false $sub_link
+ * @param false $sortlist
+ * @return string|null
+ */
 function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 {
-			
-	global $E_ADMIN_MENU;
 	if (!$tmpl)
-		$tmpl = $E_ADMIN_MENU;
-	
-	
+	{
+		$tmpl = e107::getCoreTemplate('admin', 'menu', false);
+	}
+
 	return e107::getNav()->admin($title, $active_page, $e107_vars, $tmpl, $sub_link , $sortlist );
 }
 
 /*
  *  DEPRECATED - use e_adm/in_menu()  e107::getNav()->admin
  */
+
 if (!function_exists('show_admin_menu'))
 {
+	/**
+	 * @deprecated Use admin-ui instead.
+	 * @param $title
+	 * @param $active_page
+	 * @param $e107_vars
+	 * @param false $js
+	 * @param false $sub_link
+	 * @param false $sortlist
+	 * @return string|null
+	 */
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
 	{
 		unset($js,$sub_link);
@@ -345,25 +357,5 @@ if (!function_exists('show_admin_menu'))
 	}
 }
 
-if (!function_exists("parse_admin"))
-{
-	function parse_admin($ADMINLAYOUT)
-	{
-		$sc = e107::getScBatch('admin');
-		$tp = e107::getParser();
+// parse_admin() has been replaced by e107::renderLayout()
 
-		$adtmp = explode("\n", $ADMINLAYOUT);
-		
-		for ($a = 0, $aMax = count($adtmp); $a < $aMax; $a++)
-		{
-			if (preg_match("/{.+?}/", $adtmp[$a]))
-			{
-				echo $tp->parseTemplate($adtmp[$a], true, $sc);
-			}
-			else
-			{
-				echo $adtmp[$a];
-			}
-		}
-	}
-}

@@ -21,7 +21,7 @@ if (!defined('e107_INIT'))
 $GLOBALS['E107_IN_FOOTER'] = true;  // For registered shutdown function
 
 
-global $error_handler,$db_time,$ADMIN_FOOTER;
+global $error_handler,$db_time;
 
 // Legacy fix - call header if not already done, mainly fixing left side menus to work proper
 if(!deftrue('e_ADMIN_UI') )
@@ -98,7 +98,8 @@ if (varset($e107_popup) != 1)
 	//NEW - Iframe mod
 	if (!deftrue('e_IFRAME'))
 	{
-		parse_admin($ADMIN_FOOTER);
+		$ADMIN_FOOTER = e107::getCoreTemplate('admin', 'footer', false);
+		e107::renderLayout($ADMIN_FOOTER, ['sc'=>'admin']);
 	}
 	
 	$eTimingStop = microtime();

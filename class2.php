@@ -1085,7 +1085,7 @@ if(!isset($_E107['no_theme']))
 		}
 	}
 	$dbg->logTime("Init Theme Class");
-	e107::getRender()->_init(); // initialize theme class.
+	e107::getRender()->_init(e_ADMIN_AREA); // initialize theme class.
 
 	if ($pref['anon_post'])
 	{
