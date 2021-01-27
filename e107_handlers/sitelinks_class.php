@@ -1163,14 +1163,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	function admin($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 	{
 			
-		global $E_ADMIN_MENU; //TODO remove me?
-
-
 		$tp = e107::getParser();
 		
 		if (!$tmpl)
 		{
-			$tmpl = $E_ADMIN_MENU;
+			$tmpl = e107::getCoreTemplate('admin', 'menu', false);
 		}
 	
 		/*

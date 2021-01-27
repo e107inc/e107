@@ -17,16 +17,15 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-//e107::lan('theme', 'admin',true);
 
 
-$E_ADMIN_NAVIGATION['start'] = '<ul class="nav nav-admin navbar-nav navbar-left">';
+$ADMIN_TEMPLATE['nav']['start'] = '<ul class="nav nav-admin navbar-nav navbar-left">';
 
-$E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar-right">';
+$ADMIN_TEMPLATE['nav']['start_other'] = '<ul class="nav nav-admin navbar-nav navbar-right">';
 
-$E_ADMIN_NAVIGATION['button'] = '
+$ADMIN_TEMPLATE['nav']['button'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
 		 {LINK_IMAGE}
 
 		</a> 
@@ -36,9 +35,9 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 
 
-$E_ADMIN_NAVIGATION['button_active'] = '
+$ADMIN_TEMPLATE['nav']['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
 		 {LINK_IMAGE}
 
 		</a>
@@ -49,12 +48,12 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 
 
 
-// Leave Admin Area.
-$E_ADMIN_NAVIGATION['button_enav_home'] = '
+// Leave Admin Area. 
+$ADMIN_TEMPLATE['nav']['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -62,9 +61,9 @@ $E_ADMIN_NAVIGATION['button_enav_home'] = '
 ';
 
 // Change Language
-$E_ADMIN_NAVIGATION['button_enav_language'] = '
+$ADMIN_TEMPLATE['nav']['button_enav_language'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -73,7 +72,7 @@ $E_ADMIN_NAVIGATION['button_enav_language'] = '
 ';
 
 			$str = str_replace('.', '', ADMINPERMS);
-
+			
 			if ($str == '0')
 			{
 				$label = ADLAN_48.': '.ADMINNAME.' ('.ADLAN_49.') ';
@@ -81,13 +80,13 @@ $E_ADMIN_NAVIGATION['button_enav_language'] = '
 			else
 			{
 				$label = ADLAN_48.': '.ADMINNAME.' ';
-			}
+			}	
 
 
-// Logout / Settings / Personalize
-$E_ADMIN_NAVIGATION['button_enav_logout'] = '
+// Logout / Settings / Personalize 			
+$ADMIN_TEMPLATE['nav']['button_enav_logout'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -96,14 +95,14 @@ $E_ADMIN_NAVIGATION['button_enav_logout'] = '
 ';
 
 
-// Private Messaging - //TODO Discuss and make this work..
-$E_ADMIN_NAVIGATION['button_pm'] = '
+// Private Messaging - //TODO Discuss and make this work.. 
+$ADMIN_TEMPLATE['nav']['button_pm'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
+		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
 		<i class="icon-envelope active"></i> 3
 		<b class="caret"></b>
 		</a> 
-		<div id="dropdown" class="dropdown-menu dropdown-menu-end pull-right float-right e-noclick" style="padding:10px;width:300px;">
+		<div id="dropdown" class="dropdown-menu pull-right dropdown-menu-end float-right e-noclick" style="padding:10px;width:300px;">
 		    <ul class="nav-list">
 	    <li class="dropdown-header nav-header">Unread Messages</li>
 	    <li><a href="#">Incoming Message Number 1</a></li>
@@ -119,7 +118,7 @@ $E_ADMIN_NAVIGATION['button_pm'] = '
 
 
 
-$E_ADMIN_NAVIGATION['button_other'] = '
+$ADMIN_TEMPLATE['nav']['button_other'] = '
 	<li>
 		<a  role="button" href="{LINK_URL}" >
 		{LINK_TEXT} 
@@ -127,28 +126,28 @@ $E_ADMIN_NAVIGATION['button_other'] = '
 	</li>
 ';
 
-$E_ADMIN_NAVIGATION['start_sub'] = '
+$ADMIN_TEMPLATE['nav']['start_sub'] = '
 		<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >
 ';
 
-$E_ADMIN_NAVIGATION['start_other_sub'] = '
+$ADMIN_TEMPLATE['nav']['start_other_sub'] = '
 		<ul class="dropdown-menu dropdown-menu-end pull-right float-right" role="menu" >
 ';
 
-$E_ADMIN_NAVIGATION['button_sub'] = '
+$ADMIN_TEMPLATE['nav']['button_sub'] = '
 			<li role="menuitem" class="{LINK_CLASS}">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_TEXT}</a>
 			</li>
 ';
-$E_ADMIN_NAVIGATION['button_active_sub'] = '
+$ADMIN_TEMPLATE['nav']['button_active_sub'] = '
 			<li role="menuitem" class="active">
 				<a href="{LINK_URL}">{LINK_IMAGE}{LINK_TEXT}</a>
 			</li>
 ';
 
-$E_ADMIN_NAVIGATION['end_sub'] = '</ul>';
+$ADMIN_TEMPLATE['nav']['end_sub'] = '</ul>';
 
-$E_ADMIN_NAVIGATION['end'] = '</ul>';
+$ADMIN_TEMPLATE['nav']['end'] = '</ul>';
 
 /*
    <div class="admin-navigation">
@@ -158,9 +157,9 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
  */
 
 // $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
+    
 
-
-$ADMIN_MODAL = '
+$ADMIN_TEMPLATE['modal'] = '
 <div id="uiModal" class="modal fade">
 	<div id="admin-ui-modal" class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -183,11 +182,11 @@ $ADMIN_MODAL = '
 ';
 
 
-$ADMIN_HEADER = $ADMIN_MODAL . '
+$ADMIN_TEMPLATE['header'] =  '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-bs-toggle="collapse" data-target=".navbar-collapse">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -219,7 +218,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 $adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
 if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET['mode']) != 'customize')
 {
-	$ADMIN_HEADER .= '
+	$ADMIN_TEMPLATE['header'] .= '
 		<div class="col-sm-12">
 			<div class="admin-main-content is-table-row">
 	';
@@ -227,7 +226,7 @@ if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET
 else
 {
 
-	$ADMIN_HEADER .= '
+	$ADMIN_TEMPLATE['header'] .= '
 		<div class="col-md-3 col-lg-2 admin-left-panel hidden-print">
 			{SETSTYLE=warning}
 			{ADMIN_ADDON_UPDATES}
@@ -269,7 +268,7 @@ else
 }
 
 // TODO - LANs
-$ADMIN_FOOTER = '
+$ADMIN_TEMPLATE['footer'] = '
 			</div>
 		</div>
 	</div><!--/.row-->
@@ -282,50 +281,50 @@ $ADMIN_FOOTER = '
 /* NEW ADMIN MENU TEMPLATE
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
-$E_ADMIN_MENU['start'] = '
+$ADMIN_TEMPLATE['menu']['start'] = '
 <div class="nav-panel-body">
 <ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
-$E_ADMIN_MENU['button'] = '
+$ADMIN_TEMPLATE['menu']['button'] = '
 	<li>
 		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
-$E_ADMIN_MENU['button_active'] = '
+$ADMIN_TEMPLATE['menu']['button_active'] = '
 	<li class="active">
 		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 		{SUB_MENU}
 	</li>
 ';
 
-$E_ADMIN_MENU['start_sub'] = '
+$ADMIN_TEMPLATE['menu']['start_sub'] = '
 		<ul class="plugin-navigation-sub{SUB_CLASS}" {SUB_ID}>
 ';
 
-$E_ADMIN_MENU['button_sub'] = '
+$ADMIN_TEMPLATE['menu']['button_sub'] = '
 			<li>
 				<a class="link" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 				{SUB_MENU}
 			</li>
 ';
-$E_ADMIN_MENU['button_active_sub'] = '
+$ADMIN_TEMPLATE['menu']['button_active_sub'] = '
 			<li>
 				<a class="link-active" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
 				{SUB_MENU}
 			</li>
 ';
 
-$E_ADMIN_MENU['end_sub'] = '
+$ADMIN_TEMPLATE['menu']['end_sub'] = '
 		</ul>
 ';
 
-$E_ADMIN_MENU['end'] = '
+$ADMIN_TEMPLATE['menu']['end'] = '
 </ul>
 </div>
 ';
 
-$E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
+$ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"></li>';
 
 

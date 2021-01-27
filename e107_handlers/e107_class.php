@@ -319,8 +319,7 @@ class e107
 		$tmp = explode("\n", $LAYOUT);
 
 
-
-		$sc = self::getScBatch('_theme_'); // include the theme shortcodes.
+		$sc = isset($opts['sc']) ? self::getScBatch($opts['sc']) : self::getScBatch('_theme_'); // include the theme shortcodes.
 
 		$parseMagic = false;
 		$bodyStart = false;

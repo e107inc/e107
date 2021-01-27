@@ -305,6 +305,11 @@ class theme_admin_ui extends e_admin_ui
 				}
 			}
 
+			if(!empty($_POST['selectadmin']))
+			{
+				$id = key($_POST['selectadmin']);
+				$this->setAdminTheme($id);
+			}
 
 
 
@@ -315,6 +320,26 @@ class theme_admin_ui extends e_admin_ui
 			$param['searchqry'] = $this->getQuery('searchquery', '');
 
 			$this->getTreeModel()->setParams($param)->loadBatch(); // load the tree model above from the class below.
+		}
+
+		private	function setAdminTheme($folder)
+		{
+
+			$adminCSS = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
+
+			e107::getConfig()->set('admintheme',$folder)->set('admincss',$adminCSS)->save(true,true,true);
+
+			e107::getCache()->clear_sys();
+
+	/*		if(save_prefs())
+			{
+				// Default Message
+				$mes->add(TPVLAN_40." <b>'".$themeArray[$this->id]."'</b>", E_MESSAGE_SUCCESS);
+				$this->theme_adminlog('02', $pref['admintheme'].', '.$pref['admincss']);
+			}*/
+
+			//	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+			//  $this->showThemes('admin');
 		}
 
 		public function OnlineObserver()
@@ -689,7 +714,7 @@ class theme_admin_ui extends e_admin_ui
 	 * Load data from online
 	 * @param bool $force
 	 */
-	function setThemeData($force=false)
+	private function setThemeData($force=false)
 	{
 		$themeList  = e107::getTheme()->getList();
 
@@ -983,7 +1008,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 		if(in_array($theme['path'], $this->approvedAdminThemes))
 		{
-			$admin_icon 	= ($pref['admintheme'] !== $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+			$admin_icon 	= ($pref['admintheme'] !== $theme['path'] ) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['path']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		}
 
 		$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
