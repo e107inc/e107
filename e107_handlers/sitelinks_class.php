@@ -1386,8 +1386,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 
 
-		//	$text .= preg_replace($search, $replace, $temp);
-			$text .= $tp->parseTemplate($temp, false, $replace); // ($search, $replace, $temp);
+			$text .= $tp->simpleParse($temp, $replace); 
 		//	echo "<br />".$title." act=".$act;
 			//print_a($e107_vars[$act]);
 		}

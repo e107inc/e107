@@ -1024,8 +1024,6 @@ class e107Test extends \Codeception\Test\Unit
 
 
 		$exclude = array(
-		//	'admin_icons_template.php',
-			'admin_template.php',// FIXME - convert the template to v2.x standards.
 			'bbcode_template.php',
 			'online_template.php', // FIXME - convert the template to v2.x standards.
 			'sitedown_template.php', // FIXME - convert the template to v2.x standards.
