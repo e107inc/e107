@@ -702,12 +702,68 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testButton()
 			{
+				$tests = array(
+					0   => array(
+							'name'      => 'form_button',
+							'value'     => 'go',
+							'action'    => 'button',
+							'label'     => '',
+							'options'   => array('class' => 'btn-primary custom-class', 'data-my-value' => '1323')
+					),
+					1   => array(
+							'name'      => 'form_update',
+							'value'     => '1',
+							'action'    => 'update',
+							'label'     => '',
+							'options'   => array('class' => 'btn-custom', 'data-my-value' => '365')
+					),
+					2   => array(
+							'name'      => 'form_noaction',
+							'value'     => 'go',
+							'action'    => null,
+							'label'     => '',
+							'options'   => array( 'data-my-value' => '365')
+					),
+					3   => array(
+							'name'      => 'form_checkall',
+							'value'     => 1,
+							'action'    => 'checkall',
+							'label'     => 'Check All',
+							'options'   => array( 'data-my-value' => '365')
+					),
+					4   => array(
+							'name'      => 'form_submit',
+							'value'     => 'My Label',
+							'action'    => '',
+							'label'     => '',
+							'options'   => array('loading'=>false)
+					),
 
+
+				);
+
+				$expected = array (
+					  0 => "<button data-loading-icon='fa-spinner' type='button' name='form_button' value='go' id='form-button' class='btn btn-primary custom-class' data-my-value='1323'><span>go</span></button>",
+					  1 => "<button data-loading-icon='fa-spinner' type='submit' name='form_update' value='1' id='form-update' class='btn update btn-custom btn-success' data-my-value='365'><span>1</span></button>",
+					  2 => "<button data-loading-icon='fa-spinner' type='submit' name='form_noaction' value='go' id='form-noaction' class='btn btn-default' data-my-value='365'><span>go</span></button>",
+					  3 => "<button data-loading-icon='fa-spinner' type='submit' name='form_checkall' value='1' id='form-checkall' class='btn checkall btn-default btn-mini btn-xs' data-my-value='365'><span>Check All</span></button>",
+					  4 => "<button  type='submit' name='form_submit' value='My Label' id='form-submit' class='btn btn-default'><span>My Label</span></button>",
+				);
+
+			//	$ret = [];
+				foreach($tests as $index => $var)
+				{
+					$result = $this->_frm->button($var['name'], $var['value'], $var['action'], $var['label'], $var['options']);
+					$this->assertSame($expected[$index],$result, "Mismatch on #".$index);
+				//	$ret[] = $result;
+				}
+
+			//	var_export($ret);
 			}
-
+/*
 			public function testBreadcrumb()
 			{
 

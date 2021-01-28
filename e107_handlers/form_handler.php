@@ -69,7 +69,7 @@ class e_form
 	protected   $_field_warnings = array();
 	private     $_inline_token;
 	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
-
+	private     $_fontawesome = false;
 	/**
 	 * @var user_class
 	 */
@@ -88,6 +88,11 @@ class e_form
 		if(defset('THEME_VERSION') === 2.3)
 		{
 			$this->_snippets = true;
+		}
+
+		if(deftrue('FONTAWESOME'))
+		{
+			$this->_fontawesome = true;
 		}
 	}
 
@@ -3618,7 +3623,7 @@ var_dump($select_options);*/
 		
 		$opt = array();
 		
-		$homeicon = (deftrue('FONTAWESOME')) ? 'fa-home' : 'icon-home.glyph';
+		$homeicon = ($this->_fontawesome) ? 'fa-home' : 'icon-home.glyph';
 		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
@@ -3690,7 +3695,7 @@ var_dump($select_options);*/
 	public function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$btype = 'submit';
-		if(strpos($action, 'action') === 0)
+		if(strpos($action, 'action') === 0 || $action === 'button')
 		{
 			$btype = 'button';
 		}
@@ -3702,8 +3707,7 @@ var_dump($select_options);*/
 		}
 		else
 		{
-			// $include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
-			$include = (deftrue('FONTAWESOME')) ? "data-loading-icon='fa-spinner' " : ''; // data-disable breaks db.php charset Fix.
+			$include = ($this->_fontawesome) ? "data-loading-icon='fa-spinner'" : ''; // data-disable breaks db.php charset Fix.
 		}
 
 		$confirmation = LAN_JSCONFIRM;
@@ -3715,19 +3719,27 @@ var_dump($select_options);*/
 
 		$options = $this->format_options('admin_button', $name, $options);
 
-		$options['class'] = vartrue($options['class']);
-		$options['class'] .= ' btn ' . $action;
+		$class = 'btn';
+		$class .= (!empty($action) && $action !== 'button') ? ' '. $action : '';
+
+		if(!empty($options['class']))
+		{
+			$class .= ' '.$options['class'];
+		}
+				// Ability to use any kind of button class for the selected action.
+		if(!$this->defaultButtonClassExists($class))
+		{
+			$class .= ' ' . $this->getDefaultButtonClassByAction($action);
+		}
+
+
+		$options['class'] = $class;
 
 		if(empty($label))
 		{
 			$label = $value;
 		}
 
-		// Ability to use any kind of button class for the selected action.
-		if (!$this->defaultButtonClassExists($options['class']))
-		{
-			$options['class'] .= ' ' . $this->getDefaultButtonClassByAction($action);
-		}
 
 		switch ($action)
 		{
@@ -3766,7 +3778,7 @@ var_dump($select_options);*/
 	 * @return bool
 	 *  True if $class already contains a button class. Otherwise false.
 	 */
-	public function defaultButtonClassExists($class = '')
+	private function defaultButtonClassExists($class = '')
 	{
 		// Bootstrap button classes.
 		// @see http://getbootstrap.com/css/#buttons-options
@@ -3780,7 +3792,8 @@ var_dump($select_options);*/
 			'btn-link',
 		);
 
-		foreach($btnClasses as $btnClass) {
+		foreach($btnClasses as $btnClass)
+		{
 			if(strpos($class, $btnClass) !== false)
 			{
 				return true;
@@ -3804,7 +3817,7 @@ var_dump($select_options);*/
 	 * @return string $class
 	 *  Default button class.
 	 */
-	public function getDefaultButtonClassByAction($action)
+	private function getDefaultButtonClassByAction($action)
 	{
 		switch($action)
 		{
