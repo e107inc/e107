@@ -189,7 +189,9 @@ class e_chart
 		if(!empty($type))
 		{
 			$this->provider = $type;	
-		}	
+		}
+
+		return $this;
 	}
 	
 	public function getProvider()
