@@ -712,7 +712,7 @@ class UserHandler
 		}
 
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if (e107::getPref('user_tracking') == 'session'|| e_ADMIN_AREA)
+		if (e107::getPref('user_tracking','session') == 'session')
 		{
 			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
 		}

@@ -137,17 +137,20 @@ else
 			}
 		}
 
-		if(!$result = e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge']), true))
+		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge']), true)!==false)
 		{
-				e107::coreLan('log_messages', true);
-				e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
-				echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+			e107::getRedirect()->go('admin');
+		//	var_dump($_COOKIE);
+		}
+		else
+		{
+			e107::coreLan('log_messages', true);
+			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
+			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+			e107::getRedirect()->redirect('admin.php?failed');
 
-				e107::getRedirect()->redirect('admin.php?failed');
-				exit;
 		}
 
-		e107::getRedirect()->go('admin');
 		exit;
 
 	}
