@@ -40,7 +40,7 @@ class _blank_event // plugin-folder + '_event'
 
 	function myfunction($data) // the method to run.
 	{
-		print_a($data);
+		// var_dump($data);
 	}
 
 

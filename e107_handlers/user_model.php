@@ -1224,7 +1224,7 @@ class e_user_model extends e_admin_model
 		}
 
 		if($return) return $ret;
-		print_a($ret);
+		var_dump($ret);
 	}
 
 	public function destroy()
@@ -1386,7 +1386,7 @@ class e_system_user extends e_user_model
 			if($this->debug)
 			{
 				echo '$eml returned nothing on Line '.__LINE__.' of user_model.php using $type = '.$type;
-				print_a($userInfo);
+				var_dump($userInfo);
 			}
 			 return false;
 		}
@@ -1395,9 +1395,9 @@ class e_system_user extends e_user_model
 			if($this->debug)
 			{
 				echo '<h3>$eml array</h3>';
-				print_a($eml);
+				var_dump($eml);
 				$temp = var_export($eml, true);
-				print_a($temp);
+				var_dump($temp);
 			}	
 		}
 		
