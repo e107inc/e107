@@ -1779,14 +1779,21 @@ class e_user extends e_user_model
 	 */
 	final public function login($uname, $upass_plain, $uauto = false, $uchallange = false, $noredirect = true)
 	{
-		if($this->isUser()) return false;
+		if($this->isUser())
+		{
+			return false;
+		}
 
 		$userlogin = new userlogin();
 		$loginSuccess = $userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
 
 		$userdata  = $userlogin->getUserData(); 
 		$this->setSessionData(true)->setData($userdata);
-		if ($loginSuccess === false) return false;
+
+		if ($loginSuccess === false)
+		{
+			 return false;
+		}
 
 		e107::getEvent()->trigger('user_login', $userdata); 	
 
