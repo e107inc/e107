@@ -2936,7 +2936,7 @@ class e_front_model extends e_model
 		}
 		if($return) return $ret;
 
-		print_a($ret);
+		var_dump($ret);
 	}
 }
 
