@@ -235,7 +235,7 @@ else
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
 
-
+			<div class="sidebar-toggle-panel">
 			{ADMIN_MENUMANAGER}
 	
 
@@ -256,7 +256,7 @@ else
 			{ADMIN_PLUGINS}
 		
 			<!--<div class="admin-copyright"><small>Copyright &copy; 2008-2017 e107.org</small></div>-->
-		
+			</div>
 			{SETSTYLE=default}			
 		</div>
 		<div class="col-md-9 col-lg-10 admin-right-panel">
@@ -282,7 +282,7 @@ $ADMIN_TEMPLATE['footer'] = '
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $ADMIN_TEMPLATE['menu']['start'] = '
-<div class="nav-panel-body">
+<div class="nav-panel-body sidebar-toggle-panel">
 <ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
@@ -325,6 +325,6 @@ $ADMIN_TEMPLATE['menu']['end'] = '
 </div>
 ';
 
-$ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"></li>';
+$ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"><!-- --></li>';
 
-
+$ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar" title="Toggle Sidebar" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch"><!-- --></span>';

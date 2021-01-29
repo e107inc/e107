@@ -1681,7 +1681,13 @@ class e_admin_dispatcher
 			$icon = e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24);
 		}
 
-		return e107::getNav()->admin($icon. '<span>' .$this->menuTitle. '</span>', $selected, $var);
+		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
+
+		$var['_extras_'] = array('icon'=> $icon);
+
+	//	$var['_icon_'] = $icon;
+
+		return e107::getNav()->admin($this->menuTitle, $selected, $var);
 	}
 
 

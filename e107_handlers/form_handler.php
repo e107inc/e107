@@ -6348,7 +6348,7 @@ var_dump($select_options);*/
 				for ($i=0; $i < $max; $i++)
 				{
 					$k 		= $key.'['.$i.'][path]';
-					$ival 	= $value[$i]['path'];
+					$ival 	= isset($value[$i]) ? $value[$i]['path'] : '';
 
 					$ret .=  $this->mediapicker($k, $ival, $parms);
 				}

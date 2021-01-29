@@ -679,20 +679,17 @@ class admin_shortcodes extends e_shortcode
 		{
 			return '';
 		}
-		global $ns, $pref;
 
 		// SecretR: NEW v0.8
-		$tmp = e107::getAdminUI();
-		if($tmp)
+		if($tmp = e107::getAdminUI())
 		{
-			ob_start();
-			// FIXME - renderMenu(), respectively e_adm/in_menu() should return, not output content!
-			$tmp->renderMenu();
-			$ret = ob_get_clean();
-
-			return $ret;
+			return $tmp->renderMenu();
 		}
+
 		unset($tmp);
+
+		$ns = e107::getRender();
+		$pref = e107::getPref();
 
 
 		$curScript = basename($_SERVER['SCRIPT_FILENAME']);

@@ -882,7 +882,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('pref: Admin theme upgrade to bootstrap3 ');
 
 		$pref['admintheme'] = 'bootstrap3';
-		$pref['admincss']    = 'admin_dark.css';
+		$pref['admincss']    = 'css/bootstrap-dark.min.css';
 
 		$do_save = true;
 	}

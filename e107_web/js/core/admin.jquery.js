@@ -407,25 +407,37 @@ $(document).ready(function()
 		);
 
 
-		$('a[data-toggle-sidebar]').on('click', function(e)
+		$('a[data-toggle-sidebar], .e-toggle-sidebar').on('click', function(e)
         {
             e.preventDefault();
 
-	        var $leftPanel = $(".admin-left-panel");
+	        var $leftPanel = $(".sidebar-toggle-panel");
 	        var $rightPanel = $(".admin-right-panel");
 
 	        if ($rightPanel.hasClass('col-md-12'))
 	        {
+	             console.log('has class');
 		        $rightPanel.toggleClass("col-md-9 col-md-12");
 		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        $leftPanel.toggle(1000);
+		        $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
+		        $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
+		        $leftPanel.toggle(500);
+
 	        }
 	        else
 	        {
-		        $leftPanel.toggle(1000, function() {
-			        $rightPanel.toggleClass("col-md-9 col-md-12");
+
+                  $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
+                  $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
+	              $rightPanel.toggleClass("col-md-9 col-md-12");
+			      $rightPanel.toggleClass("col-lg-10 col-lg-12");
+                  $leftPanel.toggle(500);
+              /*
+                $leftPanel.toggle(500, function() {
+                     $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
+	               $rightPanel.toggleClass("col-md-9 col-md-12");
 			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        });
+		        });*/
 	        }
 
         });

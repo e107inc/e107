@@ -1173,10 +1173,17 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		/*
 		 * Search for id
 		 */
+		$extraParms = array();
 		$temp = explode('--id--', $title, 2);
 		$title = $temp[0];
 		$id = str_replace(array(' ', '_'), '-', varset($temp[1]));
-	
+
+		if(isset($e107_vars['_extras_'])) // hold icon info, but could be more.
+		{
+			$extraParms = $e107_vars['_extras_'];
+			unset($e107_vars['_extras_']);
+		}
+
 		unset($temp);
 	
 		/*
@@ -1400,9 +1407,18 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 		$ns = e107::getRender();
 		$ns->setUniqueId($id);
-		$ns->tablerender($title, $text);
+
+		$srch = array('{ICON}', '{CAPTION}');
+		$repl = array(varset($extraParms['icon']), $title);
+
+		$title = str_replace($srch,$repl, $tmpl['caption']);
+
+
+
+		$ret = $ns->tablerender($title, $text, 'default', true);
 		$ns->setUniqueId(null);
-		return '';
+
+		return $ret;
 	}
 			
 
