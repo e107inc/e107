@@ -1418,7 +1418,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$ret = $ns->tablerender($title, $text, 'default', true);
 		$ns->setUniqueId(null);
 
-		return $ret;
+		if(!empty($extraParms['return']))
+		{
+			return $ret;
+		}
+
+		echo $ret;
 	}
 			
 

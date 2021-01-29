@@ -1683,7 +1683,7 @@ class e_admin_dispatcher
 
 		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
 
-		$var['_extras_'] = array('icon'=> $icon);
+		$var['_extras_'] = array('icon'=> $icon, 'return'=>true);
 
 	//	$var['_icon_'] = $icon;
 
