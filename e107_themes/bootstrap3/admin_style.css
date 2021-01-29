@@ -1840,8 +1840,10 @@ td img.thumbnail { margin-bottom:0 }
 }
 
 /* Cleanup table borders/headers */
+/*
 #admin-ui-list-batch ,
 .adminlist > thead > tr { background-color: rgba(0,0,0,0.1); }
+*/
 
 .adminlist { border:1px solid rgba(0,0,0,0.1);  }
 
@@ -1881,6 +1883,12 @@ td img.thumbnail { margin-bottom:0 }
 
 tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: rgba(0,0,0,0.15); }
 tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: rgba(0,0,0,0.15);  }
+
+
+.admin-left-panel-collapsed { width:60px;  }
+.admin-left-panel-collapsed .admin-menu,
+.admin-left-panel-collapsed .admin-menu .panel-heading { border-top-right-radius: 10px;
+border-bottom-right-radius: 10px; }
 
 
 

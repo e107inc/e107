@@ -3050,7 +3050,7 @@ class themeHandler
 			return "";
 		}
 	}
-	
+	/*
 	function setAdminTheme()
 	{
 		global $pref,$e107cache;
@@ -3072,7 +3072,7 @@ class themeHandler
 		
 		//	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 		//  $this->showThemes('admin');
-	}
+	}*/
 
 	/**
 	 * @todo add admin log
