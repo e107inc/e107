@@ -577,6 +577,11 @@ class e_pref extends e_front_model
 					//	$log->logArrayDiffs($new, $old, 'PREFS_02', false);
 						$log->addArray($new,$old);
 						unset($new, $old);
+						if(deftrue('e_DEBUG'))
+						{
+							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
+						}
 						
 					}
 

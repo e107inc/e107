@@ -35,8 +35,10 @@ if($sql->select('menus', "*", "menu_name='chatbox_menu'"))
 if ( ! isset($pref['cb_mod'])) {
 	$pref['cb_mod'] = e_UC_ADMIN;
 }
-
-define('CB_MOD', check_class($pref['cb_mod']));
+if(!defined('CB_MOD'))
+{
+	define('CB_MOD', check_class($pref['cb_mod']));
+}
 
 if ( ! empty($_POST['moderate']) && CB_MOD) {
 

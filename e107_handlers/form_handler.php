@@ -986,7 +986,7 @@ class e_form
 	 * @param $ajax
 	 * @return string
 	 */
-	public function iconpicker($name, $default, $label, $options = array(), $ajax = true)
+	public function iconpicker($name, $default, $label='', $options = array(), $ajax = true)
 	{
 		//v2.2.0
 		unset($label,$ajax);  // no longer used.
@@ -4062,6 +4062,11 @@ var_dump($select_options);*/
 		if($id_value === false)
 		{
 			 return '';
+		}
+
+		if(is_array($value))
+		{
+			$value = null;
 		}
 
 		//format data first

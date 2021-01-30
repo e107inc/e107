@@ -1411,9 +1411,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$srch = array('{ICON}', '{CAPTION}');
 		$repl = array(varset($extraParms['icon']), $title);
 
-		$title = str_replace($srch,$repl, $tmpl['caption']);
-
-
+		$title = str_replace($srch,$repl, varset($tmpl['caption']));
 
 		$ret = $ns->tablerender($title, $text, 'default', true);
 		$ns->setUniqueId(null);
