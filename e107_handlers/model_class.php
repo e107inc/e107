@@ -2678,6 +2678,28 @@ class e_front_model extends e_model
 		return $qry;
 	}
 
+	public function isValidFieldKey($key)
+	{
+		if(isset($this->_data_fields[$key]))
+		{
+			return $this->_data_fields[$key];
+		}
+
+		// Check key against a multi/dimensional/field name.
+		// FIXME make this more accurate - commonly used field names could conflict. @see e_front_modelTest::testSanitize()
+		foreach($this->_data_fields as $k=>$var)
+		{
+			if(strpos($k,'/') !== false && strpos($k, $key) !== false)
+			{
+				return $this->_data_fields[$k];
+			}
+		}
+
+		return false;
+	}
+
+
+
 	/**
 	 * Sanitize value based on its db field type ($_data_fields),
 	 * method will return null only if db field rule is not found.
@@ -2693,81 +2715,83 @@ class e_front_model extends e_model
 	public function sanitize($key, $value = null)
 	{
 		$tp = e107::getParser();
+
 		if(is_array($key))
 		{
 			$ret = array();
 			foreach ($key as $k=>$v)
 			{
-	            if(isset($this->_data_fields[$k]))
+	            if($this->isValidFieldKey($k))
 	            {
-	               $ret[$k] = $this->sanitize($k, $v);
+	               $ret[$k] = is_array($v) ? $this->sanitize($v) : $this->sanitize($k, $v);
 	            }
 			}
 			return $ret;
 		}
 
-		if(!isset($this->_data_fields[$key]))
+		if(!$type = $this->isValidFieldKey($key))
 		{
 			return null;
 		}
-		$type =  $this->_data_fields[$key];
+
+	//	$type =  $this->_data_fields[$key];
 		if(null === $value)
 		{
 			$value = $this->getPostedData($key);
 		}
 
+		$ret = null; // default
 
 		switch ($type)
 		{
 			case 'int':
 			case 'integer':
 				//return intval($this->toNumber($value));
-				return intval($tp->toNumber($value));
+				$ret = (int) $tp->toNumber($value);
 			break;
 
 			case 'safestr':
-				return $tp->filter($value);
+				$ret = $tp->filter($value);
 			break;
 
 			case 'str':
 			case 'string':
 			case 'array':
 				$type = $this->getFieldInputType($key);
-				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
+				$ret = $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
 			break;
 
 			case 'json':
-				if(empty($value))
+				if(!empty($value))
 				{
-					return null;
+					$ret = e107::serialize($value,'json');
 				}
-				return e107::serialize($value,'json');
 			break;
 
 			case 'code':
-				return $tp->toDB($value, false, false, 'pReFs');
+				$ret = $tp->toDB($value, false, false, 'pReFs');
 			break;
 
 			case 'float':
 				// return $this->toNumber($value);
-				return $tp->toNumber($value);
+				$ret = $tp->toNumber($value);
 			break;
 
 			case 'bool':
 			case 'boolean':
-				return ($value ? true : false);
+				$ret = ($value ? true : false);
 			break;
 
 			case 'model':
-				return $value->mergePostedData(false, true, true);
+				$ret = $value->mergePostedData(false, true, true);
 			break;
 
 			case 'null':
-				return ($value ? $tp->toDB($value) : null);
+				$ret = ($value ? $tp->toDB($value) : null);
 			break;
 	  	}
 
-		return null;
+		return $ret;
 	}
 
 
