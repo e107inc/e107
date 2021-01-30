@@ -1157,11 +1157,11 @@
 		);
 
 
-		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='delete' data-confirm='".LAN_JSCONFIRM."' data-forum-thread='" . $id . "'>" . LAN_DELETE . " " . $tp->toGlyph('trash') . "</a></li>";
+		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='delete' data-confirm='".LAN_JSCONFIRM."' data-forum-thread='" . $id . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $stickUnstick . "' data-forum-thread='" . $id . "'>" . $lan[$stickUnstick] . " " . $icon[$stickUnstick] . "</a></li>";
 		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $lockUnlock . "' data-forum-thread='" . $id . "'>" . $lan[$lockUnlock] . " " . $icon[$lockUnlock] . "</a></li>";
 
-		$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></li>";
+		$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
 
 		//if(e_DEVELOPER)
 	//	{
