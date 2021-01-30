@@ -53,7 +53,7 @@ $HERO_TEMPLATE['default']['end'] 	            = '</ul>
  											</div>
 					                      <div class="hero-buttons text-right">
 					     
-					                          <a href="{HERO_BUTTON1_URL}" class="btn btn-{HERO_BUTTON1_CLASS} btn-raised animated fadeInRight animation-delay-28">
+					                          <a target="_blank" href="{HERO_BUTTON1_URL}" class="btn btn-{HERO_BUTTON1_CLASS} btn-raised animated fadeInRight animation-delay-28">
 					                            {HERO_BUTTON1_ICON} {HERO_BUTTON1_LABEL}
 					                          </a>
 					                        
