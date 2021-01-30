@@ -10,6 +10,7 @@
 **
 */
 
+e107::lan('hero',true, true);
 
 if(!class_exists("hero_setup"))
 {
