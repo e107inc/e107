@@ -20,7 +20,7 @@
 	</screenshots>
 	<libraries>
 		<library name="bootstrap" version="3" scope="all"/>
-		<library name="fontawesome" version="4"  scope="all"/>
+		<library name="fontawesome" version="5"  scope="all"/>
 		<library name="bootstrap.editable" scope="admin"/>
 	</libraries>
 	<stylesheets>

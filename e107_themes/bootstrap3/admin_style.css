@@ -1890,7 +1890,7 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 .admin-left-panel-collapsed .admin-menu .panel-heading { border-top-right-radius: 10px;
 border-bottom-right-radius: 10px; }
 
-
+.adminlist img.icon { max-width: 64px }
 
 
 @media (min-width: 1101px ){

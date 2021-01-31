@@ -923,11 +923,12 @@ class media_admin_ui extends e_admin_ui
 	protected $cats = array();
 	protected $owner = array();
 	protected $ownercats = array();
+	protected $fontawesome; // frontend loaded version from theme.xml.
 
 
 	function init()
 	{
-
+		$this->fontawesome = (int) e107::getTheme()->getFontAwesome(); 
 
 		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE. '</a>';
 
@@ -948,6 +949,7 @@ class media_admin_ui extends e_admin_ui
 		//	$ownerLabel = (substr($owner,0,1) == '_') ? '' : $owner.": ";
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
+
 		asort($this->cats);
 		
 		
@@ -2067,44 +2069,89 @@ class media_admin_ui extends e_admin_ui
 		
 		);
 
+
+
+		// --------------------------
+
 		$items = array();
-
-		$bs2 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
-
 		$md = e107::getMedia();
-		
-		foreach($bs2 as $val)
+
+
+		if($this->fontawesome === 5)
 		{
-			$items[] = array(
-					'previewHtml'   => $md->previewTag($val, array('type'=>'glyph')),
-					'previewUrl'	=> 'glyphicon '.$val,
-					'saveValue'		=> $val.'.glyph',
-					'thumbUrl'		=> $val,
-					'title'			=> $val,
-					'slideCaption'	=> 'Bootstrap',
-					'slideCategory'	=> 'bootstrap'
-			); 		
-				
+		//	e107::getParser()->setFontAwesome(5);
+			$fab = e107::getMedia()->getGlyphs('fab');
+
+			foreach($fab as $val)
+			{
+				$items[] = array(
+						'previewHtml'   => $md->previewTag('fab-'.$val,array('type'=>'glyph')),
+						'previewUrl'	=> 'fab fa-'.$val,
+						'saveValue'		=> 'fab-'.$val.'.glyph',
+						'thumbUrl'		=> 'fab-'.$val,
+						'title'			=> 'FA5 fa-'.$val,
+						'slideCaption'	=> 'Font-Awesome 5 (brand)',
+						'slideCategory'	=> 'font-awesome'
+				);
+
+			}
+
+			$fas = e107::getMedia()->getGlyphs('fas');
+
+			foreach($fas as $val)
+			{
+				$items[] = array(
+						'previewHtml'   => $md->previewTag('fas-'.$val, array('type'=>'glyph')),
+						'previewUrl'	=> 'fas fa-'.$val,
+						'saveValue'		=> 'fas-'.$val.'.glyph',
+						'thumbUrl'		=> 'fas-'.$val,
+						'title'			=> 'FA5 fa-'.$val,
+						'slideCaption'	=> 'Font-Awesome 5 (free)',
+						'slideCategory'	=> 'font-awesome'
+				);
+
+			}
+
+		}
+		else
+		{
+
+			$fa4 = e107::getMedia()->getGlyphs('fa4');
+
+			foreach($fa4 as $val)
+			{
+				$items[] = array(
+						'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
+						'previewUrl'	=> 'fa fa-'.$val,
+						'saveValue'		=> 'fa-'.$val.'.glyph',
+						'thumbUrl'		=> 'fa-'.$val,
+						'title'			=> 'FA4 '.$val,
+						'slideCaption'	=> 'Font-Awesome 4',
+						'slideCategory'	=> 'font-awesome'
+				);
+
+			}
 		}
 
-		
-		$fa4 = e107::getMedia()->getGlyphs('fa4');
-
-
-		foreach($fa4 as $val)
+		if($this->fontawesome === false || ($this->fontawesome < 4))
 		{
-			$items[] = array(
-					'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
-					'previewUrl'	=> 'fa fa-'.$val,
-					'saveValue'		=> 'fa-'.$val.'.glyph',
-					'thumbUrl'		=> 'fa-'.$val,
-					'title'			=> $val,
-					'slideCaption'	=> 'Font-Awesome 4',
-					'slideCategory'	=> 'font-awesome'
-			); 		
+
+			$bs3 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
+
+			foreach($bs3 as $val)
+			{
+				$items[] = array(
+						'previewHtml'   => $md->previewTag($val, array('type'=>'glyph')),
+						'previewUrl'	=> 'glyphicon '.$val,
+						'saveValue'		=> $val.'.glyph',
+						'thumbUrl'		=> $val,
+						'title'			=> 'BS3 '.$val,
+						'slideCaption'	=> 'Bootstrap',
+						'slideCategory'	=> 'bootstrap'
+				);
+			}
 
 		}
-
 
 
 		$custom = e107::getThemeGlyphs();
@@ -2115,7 +2162,7 @@ class media_admin_ui extends e_admin_ui
 			{
 
 
-				$tmp = e107::getMedia()->getGlyphs($glyphConfig,$glyphConfig['prefix']);
+				$tmp = e107::getMedia()->getGlyphs($glyphConfig, $glyphConfig['prefix']);
 
 				if(!empty($tmp))
 				{

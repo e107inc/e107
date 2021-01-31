@@ -3655,35 +3655,8 @@ class e_parse
 		$size = null;
 		$tag = 'i';
 
-		//	return print_r($fa4,true);
-		/*
-				if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also.
-				{
-					$prefix = 'fa fa-';
-					$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
-					$tag 	= 'i';
-					$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
-					$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
-					$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
-				}
-				elseif(deftrue("BOOTSTRAP"))
-				{
-					if(BOOTSTRAP === 3 && in_array($id ,$bs3))
-					{
-						$prefix = 'glyphicon glyphicon-';
-						$tag = 'span';
-					}
-					else
-					{
-				//		$prefix = 'icon-';
-						$tag = 'i';
-					}
-
-					$size = '';
-
-				}
-				*/
-		if(strpos($text, 'fa-') === 0) // Font-Awesome 4 & 5
+		// FontAwesome General settings.
+		if(strpos($text, 'fa-') === 0 || strpos($text, 'fab-') === 0 ||  strpos($text, 'fas-') === 0)
 		{
 			$prefix = 'fa ';
 			$size = (vartrue($parm['size'])) ? ' fa-' . $parm['size'] : '';
@@ -3691,23 +3664,37 @@ class e_parse
 			$spin = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-' . (int) $parm['rotate'] : '';
 			$fixedW = !empty($parm['fw']) ? ' fa-fw' : '';
+		}
 
-			if($this->fontawesome === 5)
+
+		if(strpos($text, 'fab-') === 0)
+		{
+			$prefix = 'fab ';
+			$id = str_replace('fab-', 'fa-', $id);
+		}
+		elseif(strpos($text, 'fas-') === 0)
+		{
+			$prefix = 'fas ';
+			$id = str_replace('fas-', 'fa-', $id);
+		}
+		elseif($this->fontawesome === 5)
+		{
+			$fab = e107::getMedia()->getGlyphs('fab');
+			$fas = e107::getMedia()->getGlyphs('fas');
+
+			$code = substr($id, 3);
+
+			if(in_array($code, $fab))
 			{
-				$fab = e107::getMedia()->getGlyphs('fab');
-				$fas = e107::getMedia()->getGlyphs('fas');
-
-				$code = substr($id, 3);
-
-				if(in_array($code, $fab))
-				{
-					$prefix = 'fab ';
-				}
-				elseif(in_array($code, $fas))
-				{
-					$prefix = 'fas ';
-				}
-
+				$prefix = 'fab ';
+			}
+			elseif(in_array($code, $fas))
+			{
+				$prefix = 'fas ';
+			}
+			else
+			{
+				trigger_error($code. " not found.");
 			}
 
 		}
@@ -4057,6 +4044,15 @@ class e_parse
 
 		$alt = (!empty($parm['alt'])) ? $this->toAttribute($parm['alt']) : basename($path);
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'icon';
+
+		if($ext === 'svg')
+		{
+			$class .= ' icon-svg fa-2x';
+			if(!empty($parm['size']))
+			{
+				$class .= ' icon-svg-'.$parm['size'];
+			}
+		}
 
 		return "<img class='" . $class . "' src='" . $path . "' alt='" . $alt . "' " . $dimensions . ' />';
 	}

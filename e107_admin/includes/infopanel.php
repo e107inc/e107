@@ -547,8 +547,8 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='fa fa-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='fa fa-check'></i> ".LAN_APPROVE."</button>
 	            </div>
 				<div class='media-body'>
 					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />

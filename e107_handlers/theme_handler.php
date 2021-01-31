@@ -189,7 +189,7 @@ class e_theme
 			}
 
 			// If no scope set, we load library on both areas.
-			if(empty($library['scope']) || $library['scope'] === 'all')
+			if(empty($library['scope']) || $library['scope'] === 'all' || (deftrue('e_ADMIN_AREA') && $library['scope'] === 'admin'))
 			{
 				if($library['name'] === 'bootstrap' && !empty($library['version']))
 				{
@@ -381,6 +381,24 @@ class e_theme
 		}
 
 		return isset($this->_data[$this->_current][$var]) ? $this->_data[$this->_current][$var] : false;
+	}
+
+	/**
+	 * Returns the fontawesome version of the currently loaded theme.
+	 * @return integer|false
+	 */
+	public function getFontAwesome()
+	{
+		$lib = $this->get('library');
+		foreach($lib as $var)
+		{
+			if($var['name'] === 'fontawesome' && !empty($var['version']) )
+			{
+				return (int) $var['version'];
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1930,7 +1948,7 @@ class themeHandler
 //		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description']);
 		$compat			= (version_compare(1.9,$theme['compatibility'],'<')) ? "<span class='label label-".$compatLabelType."'>".$theme['compatibility']."</span><span class='text-".$compatLabelType."'> ".$compatLabel."</span>": vartrue($theme['compatibility'],'1.0');
-		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
+		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='fa fa-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
 		$text = e107::getForm()->open('theme-info','post');
 		$text .= "<table class='table table-striped'>";

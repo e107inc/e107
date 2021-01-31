@@ -35,6 +35,13 @@ td.text-center	{ text-align:center; }
 .S64 			{ width: 64px; height: 64px }
 .S128 			{ width: 128px; height: 128px }
 
+.icon-svg       { width: 1em; }
+.icon-svg-2x    { width: 2em; }
+.icon-svg-3x    { width: 3em; }
+.icon-svg-4x    { width: 4em; }
+.icon-svg-5x    { width: 5em; }
+
+
 /* Decorate JS - see core/decorate.js */
 .odd 			{  }
 .even 			{ background-color: #F5F5F5 }
