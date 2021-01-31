@@ -3588,12 +3588,14 @@ class e_parse
 
 	/**
 	 * Parse xxxxx.glyph file to bootstrap glyph format.
-	 * @param string $text
+	 * @param string $text ie. fa-xxxx, fab-xxx, fas-xxxx
 	 * @param array|string $options
 	 * @param bool $options ['size'] 2x, 3x, 4x, or 5x
 	 * @param bool $options ['fw'] Fixed-Width
 	 * @param bool $options ['spin'] Spin
 	 * @param int $options ['rotate'] Rotate in Degrees.
+	 * @example $tp->toGlyph('fab-mailchimp');
+	 * @example $tp->toGlyph('fas-camera');
 	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
 	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
 	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
@@ -3621,31 +3623,18 @@ class e_parse
 			$parm = array();
 		}
 
-		if(strpos($text, 'e-') === 0)    // e107 admin icon.
+		$cat = '';
+		$name = '';
+		list($id) = explode('.glyph', $text, 2); // trim .glyph from the end.
+		if(strpos($id,'-') !== false)
 		{
-			$size = (substr($text, -3) === '-32') ? 'S32' : 'S16';
+			list($cat,$name) = explode('-',$id, 2);
 
-			if(substr($text, -3) === '-24')
+			if(empty($name)) // eg. missing something after 'fa-'
 			{
-				$size = 'S24';
+				return null;
 			}
-
-			return "<i class='" . $size . ' ' . $text . "'></i>";
 		}
-
-		// Get Glyph names.
-		//	$bs3 = e107::getMedia()->getGlyphs('bs3','');
-		//	$fa4 = e107::getMedia()->getGlyphs('fa4','');
-
-
-		list($id) = explode('.glyph', $text, 2);
-		//	list($type, $tmp2) = explode("-",$text,2);
-
-		//	return $cls;
-
-		//	$removePrefix = array('glyphicon-','icon-','fa-');
-
-		//	$id = str_replace($removePrefix, "", $cls);
 
 
 		$spin = null;
@@ -3655,71 +3644,112 @@ class e_parse
 		$size = null;
 		$tag = 'i';
 
+
 		// FontAwesome General settings.
-		if(strpos($text, 'fa-') === 0 || strpos($text, 'fab-') === 0 ||  strpos($text, 'fas-') === 0)
+		switch($cat)
 		{
-			$prefix = 'fa ';
-			$size = (vartrue($parm['size'])) ? ' fa-' . $parm['size'] : '';
-			$tag = 'i';
-			$spin = !empty($parm['spin']) ? ' fa-spin' : '';
-			$rotate = !empty($parm['rotate']) ? ' fa-rotate-' . (int) $parm['rotate'] : '';
-			$fixedW = !empty($parm['fw']) ? ' fa-fw' : '';
+			// Core eg. e-database-32
+			case 'e':
+
+				$size = (substr($text, -3) === '-32') ? 'S32' : 'S16';
+
+				if(substr($text, -3) === '-24')
+				{
+					$size = 'S24';
+				}
+
+				return "<i class='" . $size . ' ' . $text . "'></i>";
+
+			break;
+
+
+			case "far":
+			case "fab":
+			case "fas":
+				$prefix = $cat.' ';
+				$id = str_replace($cat.'-', 'fa-', $id);
+				break;
+
+			case "fa":
+			default:
+				if($this->fontawesome === 5)
+				{
+					$fab = e107::getMedia()->getGlyphs('fab');
+					$fas = e107::getMedia()->getGlyphs('fas');
+					$far = e107::getMedia()->getGlyphs('far');
+					$shims = e107::getMedia()->getGlyphs('fa5-shims');
+					$fa4 = e107::getMedia()->getGlyphs('fa4');
+
+					list($tmp) = explode('-',$id);
+					$code = str_replace($tmp.'-','', $id);
+
+					if(isset($shims[$code]))
+					{
+						$prefix = '';
+						$id = $shims[$code];
+					}
+					elseif(in_array($code, $fab))
+					{
+						$prefix = 'fab ';
+					}
+					elseif(in_array($code, $fas))
+					{
+						$prefix = 'fas ';
+						$id = 'fa-'.$code;
+					}
+					elseif(in_array($code, $far))
+					{
+						$prefix = 'far ';
+					}
+					elseif(in_array($code, $fa4))
+					{
+						$prefix = 'fa ';
+						$id = 'fa-'.$code;
+					}
+					else
+					{
+						$prefix = ($this->bootstrap === 3) ? 'glyphicon glyphicon-' : 'fa fa-';
+					}
+
+				}
+				elseif($this->fontawesome === 4)
+				{
+					$fa4 = e107::getMedia()->getGlyphs('fa4');
+					if(isset($fa4[$name]))
+					{
+						$prefix = 'fa ';
+						$id = 'fa-'.$name;
+					}
+
+
+
+
+				}
+				elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
+				{
+					$prefix = 'glyphicon ';
+					$tag = 'span';
+
+				}
+				elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
+				{
+					if($this->bootstrap !== 2) // bootrap 2 icon but running bootstrap3.
+					{
+						$prefix = 'glyphicon ';
+						$tag = 'span';
+						$id = str_replace('icon-', 'glyphicon-', $id);
+					}
+					else
+					{
+						$prefix = '';
+						$tag = 'i';
+					}
+
+				}
 		}
 
 
-		if(strpos($text, 'fab-') === 0)
-		{
-			$prefix = 'fab ';
-			$id = str_replace('fab-', 'fa-', $id);
-		}
-		elseif(strpos($text, 'fas-') === 0)
-		{
-			$prefix = 'fas ';
-			$id = str_replace('fas-', 'fa-', $id);
-		}
-		elseif($this->fontawesome === 5)
-		{
-			$fab = e107::getMedia()->getGlyphs('fab');
-			$fas = e107::getMedia()->getGlyphs('fas');
-
-			$code = substr($id, 3);
-
-			if(in_array($code, $fab))
-			{
-				$prefix = 'fab ';
-			}
-			elseif(in_array($code, $fas))
-			{
-				$prefix = 'fas ';
-			}
-			else
-			{
-				trigger_error($code. " not found.");
-			}
-
-		}
-		elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
-		{
-			$prefix = 'glyphicon ';
-			$tag = 'span';
-
-		}
-		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
-		{
-			if($this->bootstrap !== 2) // bootrap 2 icon but running bootstrap3.
-			{
-				$prefix = 'glyphicon ';
-				$tag = 'span';
-				$id = str_replace('icon-', 'glyphicon-', $id);
-			}
-			else
-			{
-				$prefix = '';
-				$tag = 'i';
-			}
-
-		}
-		elseif($custom = e107::getThemeGlyphs()) // Custom Glyphs
+		if($custom = e107::getThemeGlyphs()) // Custom Glyphs
 		{
 			foreach($custom as $glyphConfig)
 			{
@@ -3730,7 +3760,13 @@ class e_parse
 					continue;
 				}
 			}
-
+		}
+		else // FontAwesome shouldn't hurt legacy icons.
+		{
+			$size   = !empty($parm['size']) ? ' fa-' . $parm['size'] : '';
+			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-' . (int) $parm['rotate'] : '';
+			$fixedW = !empty($parm['fw']) ? ' fa-fw' : '';
 		}
 
 

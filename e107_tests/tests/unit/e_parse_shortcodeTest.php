@@ -458,7 +458,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
                 '=extended'         => '<!-- bbcode-html-start --><p><strong>Extended Body</strong></p><!-- bbcode-html-end -->',
             ),
             'newscommentlink'   => array(
-                ': class=me'    => "<a title='0 Comments' class='e-tip me' href='".e107::url('news/view/item', ['news_id'=>1, 'news_sef'=>'welcome-to-e107-me-again-x'])."'><i class='fa fa-comment' ><!-- --></i></a>"
+                ': class=me'    => "<a title='0 Comments' class='e-tip me' href='".e107::url('news/view/item', ['news_id'=>1, 'news_sef'=>'welcome-to-e107-me-again-x'])."'><i class='fas fa-comment' ><!-- --></i></a>"
 
             ),
 

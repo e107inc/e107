@@ -2106,32 +2106,45 @@ class media_admin_ui extends e_admin_ui
 						'saveValue'		=> 'fas-'.$val.'.glyph',
 						'thumbUrl'		=> 'fas-'.$val,
 						'title'			=> 'FA5 fa-'.$val,
-						'slideCaption'	=> 'Font-Awesome 5 (free)',
+						'slideCaption'	=> 'Font-Awesome 5 (solid)',
 						'slideCategory'	=> 'font-awesome'
 				);
 
 			}
 
-		}
-		else
-		{
+			$far = e107::getMedia()->getGlyphs('far');
 
-			$fa4 = e107::getMedia()->getGlyphs('fa4');
-
-			foreach($fa4 as $val)
+			foreach($far as $val)
 			{
 				$items[] = array(
-						'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
-						'previewUrl'	=> 'fa fa-'.$val,
-						'saveValue'		=> 'fa-'.$val.'.glyph',
-						'thumbUrl'		=> 'fa-'.$val,
-						'title'			=> 'FA4 '.$val,
-						'slideCaption'	=> 'Font-Awesome 4',
+						'previewHtml'   => $md->previewTag('far-'.$val, array('type'=>'glyph')),
+						'previewUrl'	=> 'far fa-'.$val,
+						'saveValue'		=> 'far-'.$val.'.glyph',
+						'thumbUrl'		=> 'far-'.$val,
+						'title'			=> 'FA5 far-'.$val,
+						'slideCaption'	=> 'Font-Awesome 5 (regular)',
 						'slideCategory'	=> 'font-awesome'
 				);
 
 			}
+
 		}
+
+		$fa4 = e107::getMedia()->getGlyphs('fa4');
+
+		foreach($fa4 as $val)
+		{
+			$items[] = array(
+					'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
+					'previewUrl'	=> 'fa fa-'.$val,
+					'saveValue'		=> 'fa-'.$val.'.glyph',
+					'thumbUrl'		=> 'fa-'.$val,
+					'title'			=> 'FA4 '.$val,
+					'slideCaption'	=> 'Font-Awesome 4',
+					'slideCategory'	=> 'font-awesome'
+			);
+		}
+
 
 		if($this->fontawesome === false || ($this->fontawesome < 4))
 		{
