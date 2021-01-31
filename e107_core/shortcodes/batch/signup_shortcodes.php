@@ -142,7 +142,7 @@ class signup_shortcodes extends e_shortcode
 						break;
 				}
 
-				if (defset('FONTAWESOME') && in_array($ic, e107::getMedia()->getGlyphs()))
+				if (defset('FONTAWESOME') && in_array($ic, e107::getMedia()->getGlyphs('fa4')))
 					$button = "<span title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "'>" . $tp->toGlyph('fa-' . $ic, array('size' => $size, 'fw' => true)) . "</span>";
 				elseif (is_file(e107::getFolder('images') . "xup/{$ic}.png"))
 					$button = "<img class='e-tip' title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "' src='" . e_IMAGE_ABS . "xup/{$ic}.png' alt='' />";

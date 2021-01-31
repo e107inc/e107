@@ -1891,7 +1891,7 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 border-bottom-right-radius: 10px; }
 
 .adminlist img.icon { max-width: 64px }
-
+body#admin-image-main-dialog { margin-top: 0 }
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }

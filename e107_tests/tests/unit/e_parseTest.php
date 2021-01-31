@@ -1972,6 +1972,62 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$result = $this->tp->toGlyph('fas-camera'); // spefific call
 			$this->assertSame( "<i class='fas fa-camera' ><!-- --></i> ", $result);
 
+			// test core, shims and old identifiers with FontAwesome 5 installed.
+			$this->tp->setFontAwesome(5);
+
+			$tests = array(
+				'e-database-16'     => "<i class='S16 e-database-16'></i>",
+				'e-database-32'     => "<i class='S32 e-database-32'></i>",
+				'fa-sun-o'          => "<i class='far fa-sun' ><!-- --></i> ",
+				'fa-comments-o'     => "<i class='far fa-comments' ><!-- --></i> ",
+				'fa-file-text-o'    => "<i class='far fa-file-alt' ><!-- --></i> ",
+				'fa-bank'           => "<i class='fa fa-university' ><!-- --></i> ",
+				'fa-warning'        => "<i class='fa fa-exclamation-triangle' ><!-- --></i> ",
+				'glyphicon-star'    => "<i class='fas fa-star' ><!-- --></i> ",
+				'icon-star'         => "<i class='fas fa-star' ><!-- --></i> ",
+				'floppy-disk'       => "<i class='glyphicon glyphicon-floppy-disk' ><!-- --></i> ",
+				'icon-user'         => "<i class='fas fa-user' ><!-- --></i> ",
+				'user'              => "<i class='fas fa-user' ><!-- --></i> ",
+				'flag'              => "<i class='fas fa-flag' ><!-- --></i> ",
+				'fa-'               => null,
+
+			);
+
+			foreach($tests as $icon => $expected)
+			{
+				$result = $this->tp->toGlyph($icon);
+				$this->assertSame($expected, $result);
+			}
+
+
+			// test core, shims and old identifiers with FontAwesome 4 installed.
+			$this->tp->setFontAwesome(4);
+
+			$tests = array(
+				'e-database-16'     => "<i class='S16 e-database-16'></i>",
+				'e-database-32'     => "<i class='S32 e-database-32'></i>",
+				'fa-sun-o'          => "<i class='fa fa-sun-o' ><!-- --></i> ",
+				'fa-comments-o'     => "<i class='fa fa-comments-o' ><!-- --></i> ",
+				'fa-file-text-o'    => "<i class='fa fa-file-text-o' ><!-- --></i> ",
+				'fa-bank'           => "<i class='fa fa-bank' ><!-- --></i> ",
+				'fa-warning'        => "<i class='fa fa-warning' ><!-- --></i> ",
+				'glyphicon-star'    => "<i class='fa fa-star' ><!-- --></i> ",
+				'icon-star'         => "<i class='fa fa-star' ><!-- --></i> ",
+				'floppy-disk'       => "<i class='glyphicon glyphicon-floppy-disk' ><!-- --></i> ",
+				'icon-user'         => "<i class='fa fa-user' ><!-- --></i> ",
+				'user'              => "<i class='glyphicon glyphicon-user' ><!-- --></i> ",
+				'flag'              => "<i class='glyphicon glyphicon-flag' ><!-- --></i> ",
+				'fa-'               => null,
+
+			);
+
+			foreach($tests as $icon => $expected)
+			{
+				$result = $this->tp->toGlyph($icon);
+				$this->assertSame($expected, $result, 'Input was: '.$icon);
+			}
+
+
 
 
 		}
@@ -2330,7 +2386,7 @@ Your browser does not support the audio tag.
 			// -----
 
 			$result = $tp->makeClickable($email, 'email', array('sub' => 'fa-envelope.glyph'));
-			$this->assertStringContainsString("<i class='fa fa-envelope' ><!-- --></i></a>", $result);
+			$this->assertStringContainsString("fa-envelope' ><!-- --></i></a>", $result);
 
 			// links standard.
 			$tests = array(

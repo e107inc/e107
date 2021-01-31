@@ -207,17 +207,91 @@
 
 		}
 */
+
+		private function compileFontAwesome5Meta()
+		{
+			$raw = file_get_contents(e_WEB."lib/font-awesome/5/metadata/icons.json");
+			$icons = e107::unserialize($raw);
+
+			$ret = [];
+
+			$keys = array('brands'  => 'fab', 'solid' => 'fas', 'regular'=> 'far');
+
+			foreach($icons as $icon => $meta)
+			{
+				foreach($meta['free'] as $type)
+				{
+					$key = $keys[$type];
+
+					$ret[$key][] = $icon;
+				}
+
+			}
+
+			$ret['fa5-shims'] = $this->compileFontAwesome5Shims();
+
+			return $ret;
+
+		}
+
+		private function compileFontAwesome5Shims()
+		{
+			$raw = file_get_contents(e_WEB."lib/font-awesome/5/metadata/shims.json");
+			$icons = e107::unserialize($raw);
+
+			$ret = [];
+			foreach($icons as $var)
+			{
+				$i = $var[0];
+				$prefix = !empty($var[1]) ? $var[1] : 'fa';
+				$ico = !empty($var[2]) ? $var[2] : $i ;
+
+				$ret[$i] = $prefix." fa-".$ico;
+
+			}
+			return $ret;
+		}
+
 		public function testGetGlyphs()
 		{
+
+			// @todo uncomment to rebuild  getGlyphs() arrays for fontawesome. (requires 'metadata' folder)
+		//	$meta = $this->compileFontAwesome5Meta();
+		//	var_export($meta);
+		//	$far = $this->md->getGlyphs('far');
+		//	$this->assertSame($meta['far'], $far);
+		// 	$fas = $this->md->getGlyphs('fas');
+		//	$this->assertSame($meta['fas'], $fas);
+		// 	$fab = $this->md->getGlyphs('fab');
+		//	$this->assertSame($meta['fab'], $fab);
+			// Check that FontAwesome 5 meta arrays are up-to-date.
+
+
+			// FontAwesome 5
+			$fab = $this->md->getGlyphs('fab');
+			$this->assertContains('500px', $fab);
+
+			$fas = $this->md->getGlyphs('fas');
+			$this->assertContains('address-book', $fas);
+
+			$far = $this->md->getGlyphs('far');
+			$this->assertContains('arrow-alt-circle-down', $far);
+
+			// Check FontAwesome 4
+			$fa4 = $this->md->getGlyphs('fas');
+			$this->assertContains('heart', $fa4);
+
+			// Check Bootstrap 3
 			$result = $this->md->getGlyphs('bs3');
-			$this->assertEquals('adjust', $result[0]);
-			$this->assertEquals('zoom-out', $result[198]);
+			$this->assertNotEmpty($result['adjust']);
+			$this->assertNotEmpty($result['zoom-out']);
 
-			$result = $this->md->getGlyphs('fab');
-			$this->assertTrue(in_array('xbox', $result));
+			// Check FontAweomse 5 Shims
+			$fa5Shims = $this->md->getGlyphs('fa5-shims');
+			$this->assertArrayHasKey('glass', $fa5Shims);
 
-			$result = $this->md->getGlyphs('fas');
-			$this->assertTrue(in_array('check-circle', $result));
+			$prefixTest = $this->md->getGlyphs('fab', 'myprefix-');
+			 $this->assertContains('myprefix-500px', $prefixTest);
 
 		}
 /*

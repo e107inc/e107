@@ -255,10 +255,10 @@ class theme_shortcodes extends e_shortcode
 		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{USER_AVATAR: w=30&h=30&crop=1&shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
-			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
+			<a href="{LM_USERSETTINGS_HREF}">{GLYPH=fa-cog}'.LAN_SETTINGS.'</a>
 		</li>
 		<li>
-			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}"><span class="glyphicon glyphicon-user"></span> '.LAN_LOGINMENU_13.'</a>
+			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}">{GLYPH=fa-user}'.LAN_LOGINMENU_13.'</a>
 		</li>
 		<li class="divider"></li>';
 		
@@ -268,7 +268,7 @@ class theme_shortcodes extends e_shortcode
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout"><span class="glyphicon glyphicon-off"></span> '.LAN_LOGOUT.'</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout">{GLYPH=fa-off}'.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>

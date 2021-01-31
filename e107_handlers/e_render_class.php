@@ -40,6 +40,14 @@
 
 			if(empty($this->thm) || !method_exists($this->thm, 'init'))
 			{
+				if(deftrue('FONTAWESOME'))
+				{
+					e107::getParser()->setFontAwesome(FONTAWESOME);
+				}
+				if(deftrue('BOOTSTRAP'))
+				{
+					e107::getParser()->setBootstrap(BOOTSTRAP);
+				}
 				return null;
 			}
 
