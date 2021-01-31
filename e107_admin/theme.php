@@ -926,7 +926,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 			return '';
 		}
 
-		$text =(!empty($curVal)) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$curVal."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
+		$text =(!empty($curVal)) ? "<span class='label label-primary'><i class='fa fa-shopping-cart icon-white'></i> ".$curVal."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
 		return '<span class="price pull-right">'.$text.'</span>';
 	}

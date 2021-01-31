@@ -1950,6 +1950,7 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		public function testToGlyph()
 		{
+			$this->tp->setFontAwesome(4);
 
 			$result = $this->tp->toGlyph('fa-envelope.glyph');
 			$expected = "<i class='fa fa-envelope' ><!-- --></i> ";
@@ -1962,6 +1963,24 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$this->assertEquals($expected, $result);
 
 
+			$this->tp->setFontAwesome(4);
+
+			$result = $this->tp->toGlyph('fab-mailchimp'); // spefific call
+			$expected = "<i class='fab fa-mailchimp' ><!-- --></i> ";
+			$this->assertEquals($expected, $result);
+
+			$result = $this->tp->toGlyph('fas-camera'); // spefific call
+			$this->assertSame( "<i class='fas fa-camera' ><!-- --></i> ", $result);
+
+
+
+		}
+
+		function testToGlyphFallback()
+		{
+			$this->tp->setFontAwesome(5);
+			$result =  $this->tp->toGlyph('fa-paypal.glyph');
+			$this->assertSame("<i class='fab fa-paypal' ><!-- --></i> ", $result);
 		}
 /*
 		public function testToBadge()

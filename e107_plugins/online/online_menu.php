@@ -143,7 +143,7 @@ $caption = $img.' '.vartrue($menu_pref['online_caption'], LAN_ONLINE_4);
 if (getperms('1')) 
 {
 	$path = e_PLUGIN_ABS."online/config.php?iframe=1";
-	$caption .= "<a class='e-modal pull-right float-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='glyphicon glyphicon-cog'></i></a>";
+	$caption .= "<a class='e-modal pull-right float-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='fa fa-cog'></i></a>";
 }
 
 

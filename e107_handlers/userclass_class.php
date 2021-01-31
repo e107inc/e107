@@ -1416,7 +1416,7 @@ class user_class_admin extends user_class
 		$pref = e107::getPref();
 	
 		$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
-		$this->top_icon = "<i class='icon-user{$style}'></i> ";
+		$this->top_icon = "<i class='fa fa-user{$style}'></i> ";
 	}
 
 
