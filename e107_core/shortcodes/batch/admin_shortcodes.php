@@ -66,10 +66,10 @@ class admin_shortcodes extends e_shortcode
     {
         if(varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
         {
-            return 'col-md-9 col-lg-12';
+            return 'col-md-12 col-lg-12';
         }
 
-        return 'col-md-12 col-lg-10';
+        return 'col-md-9 col-lg-10';
 
     }
 

@@ -415,9 +415,9 @@ $(document).ready(function()
 	        var $rightPanel = $(".admin-right-panel");
 
 
-	        if ($rightPanel.hasClass('col-md-12'))
+	        if ($(".admin-left-panel").hasClass("admin-left-panel-collapsed"))
 	        {
-
+                console.log('admin panel collapsed already');
 		        $rightPanel.toggleClass("col-md-9 col-md-12");
 		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
 		        $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
