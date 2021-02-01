@@ -43,7 +43,7 @@ $SIGNIN_TEMPLATE['signin'] = '
 
 
 $SIGNIN_WRAPPER['signout']['SIGNIN_ADMIN_HREF'] = '<li><a class="dropdown-item signin-sc admin" id="signin-sc-admin" href="{---}"><span class="fa fa-cogs"></span> {LAN=LAN_LOGINMENU_11}</a></li>';
-$SIGNIN_WRAPPER['signout']['SIGNIN_PM_NAV'] = '<li class="dropdown">{---}</li>';
+$SIGNIN_WRAPPER['signout']['SIGNIN_PM_NAV'] = '<li class="dropdown dropdown-pm">{---}</li>';
 
 
 $SIGNIN_TEMPLATE['signout'] = '
