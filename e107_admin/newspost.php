@@ -83,7 +83,7 @@ class news_admin extends e_admin_dispatcher
 		'other2' 		=> array('divider'=> true),
 		'main/settings' 	=> array('caption'=> LAN_PREFS, 'icon'=>'fa-cog'), // Preferences
 	//	'main/submitted'	=> array('caption'=> LAN_NEWS_64, 'perm' => 'N'), // Submitted News
-		'sub/list'			=> array('caption'=> NWSLAN_47), // Submitted News
+		'sub/list'			=> array('caption'=> NWSLAN_47, 'icon'=>'fa-user-edit'), // Submitted News
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
 
