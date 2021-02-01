@@ -411,45 +411,28 @@ $(document).ready(function()
         {
             e.preventDefault();
 
-	        var $leftPanel = $(".sidebar-toggle-panel");
-	        var $rightPanel = $(".admin-right-panel");
-
-
-	        if ($(".admin-left-panel").hasClass("admin-left-panel-collapsed"))
+	        if ($(".is-table-row").hasClass("admin-left-panel-collapsed"))
 	        {
-                console.log('admin panel collapsed already');
-		        $rightPanel.toggleClass("col-md-9 col-md-12");
-		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
-		        $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
-		    //    $leftPanel.toggle(500);
-
+		        $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
 	        else
 	        {
-
-                  $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
-                  $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
-
-	              $rightPanel.toggleClass("col-md-9 col-md-12");
-			      $rightPanel.toggleClass("col-lg-10 col-lg-12");
-               //   $leftPanel.toggle(500);
-
+                  $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
 
 
-           var tmp =  $(".admin-left-panel").hasClass("admin-left-panel-collapsed");
+            var tmp =  $(".is-table-row").hasClass("admin-left-panel-collapsed");
 
-             if(tmp === true)
-             {
-                var toggleStatus = 'closed';
-              }
-              else
-              {
-                 var toggleStatus = 'open';
-              }
+            if(tmp === true)
+            {
+               var toggleStatus = 'closed';
+            }
+            else
+            {
+               var toggleStatus = 'open';
+            }
 
-              document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; expires = 1; samesite=strict';
+            document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; expires = 1; samesite=strict';
 
 
         });

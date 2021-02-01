@@ -212,7 +212,7 @@ $ADMIN_TEMPLATE['header'] =  '
 	</div>
 </div>
 <div class="admin-container container-fluid">
-	<div class="row is-table-row">
+	<div class="row is-table-row {ADMIN_LEFTPANEL_TOGGLE}">
 ';
 
 $adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
@@ -220,14 +220,14 @@ if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET
 {
 	$ADMIN_TEMPLATE['header'] .= '
 		<div class="col-sm-12">
-			<div class="admin-main-content is-table-row">
+			<div class="admin-main-content is-table-row {ADMIN_LEFTPANEL_TOGGLE}">
 	';
 }
 else
 {
 
 	$ADMIN_TEMPLATE['header'] .= '
-		<div class="admin-left-panel hidden-print {ADMIN_LEFTPANEL_TOGGLE}">
+		<div class="admin-left-panel hidden-print col-md-3 col-lg-2">
 			{SETSTYLE=warning}
 			{ADMIN_ADDON_UPDATES}
 			{SETSTYLE=site_info}
@@ -259,9 +259,9 @@ else
 			</div>
 			{SETSTYLE=default}			
 		</div>
-		<div class="admin-right-panel {ADMIN_RIGHTPANEL_TOGGLE}">
+		<div class="admin-right-panel col-md-9 col-lg-10">
 			<div class="sidebar-toggle">
-				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
+				<a href="#"  title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
 			</div>
 			<div class="admin-main-content">
 	';
@@ -288,13 +288,13 @@ $ADMIN_TEMPLATE['menu']['start'] = '
 
 $ADMIN_TEMPLATE['menu']['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
 		{SUB_MENU}
 	</li>
 ';
 $ADMIN_TEMPLATE['menu']['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
 		{SUB_MENU}
 	</li>
 ';
@@ -327,4 +327,4 @@ $ADMIN_TEMPLATE['menu']['end'] = '
 
 $ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"><!-- --></li>';
 
-$ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar" title="Toggle Sidebar" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch"><!-- --></span>';
+$ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar e-tip"  data-placement="right" title="Toggle" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch"><!-- --></span>';
