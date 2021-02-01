@@ -61,7 +61,7 @@ class admin_shortcodes extends e_shortcode
 			} 
 			  
     }
-
+/*
     public function sc_admin_rightpanel_toggle($parm=null)
     {
         if(varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
@@ -71,7 +71,7 @@ class admin_shortcodes extends e_shortcode
 
         return 'col-md-9 col-lg-10';
 
-    }
+    }*/
 
     public function sc_admin_leftpanel_toggle($parm=null)
     {
@@ -80,7 +80,7 @@ class admin_shortcodes extends e_shortcode
             return 'admin-left-panel-collapsed';
         }
 
-        return 'col-md-3 col-lg-2';
+     //   return 'col-md-3 col-lg-2';
     
     }
    

@@ -441,7 +441,7 @@ a.brand:hover img 			{
 img.image-selector							{ margin-bottom:0; }
       
 .nav-collapse 								{ margin-top:8px; }
-.dropdown-menu 								{ box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); }
+.dropdown-menu 								{ box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
 .dropdown-menu i,
 .dropdown-menu img 							{ padding: 0 0; margin-right: 10px; }
 
