@@ -1604,6 +1604,11 @@ class e_admin_dispatcher
 						$v = (array) $v;
 					break;
 
+					case 'icon':
+						$k2 = 'image_src';
+						$v = (string) $v.'.glyph';
+					break;
+
 					default:
 						$k2 = $k;
 						
