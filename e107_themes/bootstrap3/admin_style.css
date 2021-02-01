@@ -192,7 +192,7 @@ ul.checkboxes { display: inline-block; list-style: none; margin: 0; padding: 0;}
 #admin-ui-list-batch img                { padding-top:5px }
 #admin-ui-list-filter                   { margin-bottom: 15px }
 #admin-ui-list-search #searchquery       { padding-right:5px }
-#admin-ui-list-search:before            { content: "\f002"; margin-left:12px; position:absolute; top: 50%; transform: translateY(-50%); font-family: "FontAwesome"  }
+#admin-ui-list-search:before            { content: "\f002"; margin-left:12px; position:absolute; top: 50%; transform: translateY(-50%); font-family: "Font Awesome 5 Free" ; font-weight: 900 }
 
 .form-control-feedback-left              { left:0; top:0 }
 .has-feedback-left input                { padding-left:30px; }
@@ -568,8 +568,8 @@ img.S32:hover 				{}
 .adminlist tr.last td						{ border-bottom: 0 solid;}
 .adminlist th a.sorted-asc,
 .adminlist th a.sorted-desc                 { text-decoration: none }
-.adminlist th a.sorted-asc:after            { padding-left:5px;  font-family: FontAwesome; content: '\f0d8' }
-.adminlist th a.sorted-desc:after            { padding-left:5px; font-family: FontAwesome; content: '\f0d7' }
+.adminlist th a.sorted-asc:after            { padding-left:5px;  font-family:'Font Awesome 5 Free'; font-weight: 900; content: '\f0d8' }
+.adminlist th a.sorted-desc:after            { padding-left:5px; font-family:'Font Awesome 5 Free'; font-weight: 900; content: '\f0d7' }
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
 table.adminlist								{ margin-bottom: 0 }
@@ -1127,7 +1127,7 @@ ul.col-selection ul.nav > li                  { padding:0 }
 ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
 ul.col-selection li.col-selection-list      { padding: 5px; }
 ul.col-selection input                      { opacity:0; }
-ul.col-selection label.active:before        { font-family:FontAwesome;  margin-left:-20px ; margin-right:6px ; content: '\f00c'; color: #51a351; position:relative; }
+ul.col-selection label.active:before        { font-family:'Font Awesome 5 Free'; font-weight: 900; margin-left:-20px ; margin-right:6px ; content: '\f00c'; color: #51a351; position:relative; }
 
 
 .nav ul li ul.dropdown-menu 				{ border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
@@ -1634,7 +1634,7 @@ form#simplesef h4 { margin: 4px }
 
 .admin-icon-debug > li.dropdown > a.dropdown-toggle { border-left: 0 !important }
 .admin-icon-debug .dropdown-menu > .active > a { color: orange }
-.admin-icon-debug .dropdown-menu > .active > a:after { font-family: FontAwesome; content: '\f0d9'; position: absolute;
+.admin-icon-debug .dropdown-menu > .active > a:after { font-family: 'Font Awesome 5 Free'; font-weight: 900; content: '\f0d9'; position: absolute;
 padding-left: 5px; }
 
 
@@ -1847,7 +1847,9 @@ td img.thumbnail { margin-bottom:0 }
 
 .adminlist { border:1px solid rgba(0,0,0,0.1);  }
 
-.nav-admin .fa { font-size:18px }
+.nav-admin .fa, .nav-admin .fas, .nav-admin .far, .nav-admin .fab {
+    font-size: 18px
+}
 .nav-admin.navbar-left li a { padding-left:20px; padding-right:20px}
 .navbar-nav > li.active a.dropdown-toggle i {
     opacity:1;
@@ -1877,21 +1879,50 @@ td img.thumbnail { margin-bottom:0 }
 
 
 
-.editableform-loading:before { font-size:24px; font-family: "FontAwesome"; content: '\f110'; }
+.editableform-loading:before { font-size:24px; font-family: "Font Awesome 5 Free"; font-weight: 900; content: '\f110' }
 
 .editable-input input[type=text] { padding-top: 1px; padding-bottom: 1px; }
 
 tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: rgba(0,0,0,0.15); }
 tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: rgba(0,0,0,0.15);  }
 
+.admin-left-panel, .admin-right-panel {
+    transition: width 0.5s;
+}
 
-.admin-left-panel-collapsed { width:60px;  }
+.admin-left-panel-collapsed {
+    width: 60px;
+}
+
 .admin-left-panel-collapsed .admin-menu,
-.admin-left-panel-collapsed .admin-menu .panel-heading { border-top-right-radius: 10px;
-border-bottom-right-radius: 10px; }
+.admin-left-panel-collapsed .admin-menu .panel-heading {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
 
-.adminlist img.icon { max-width: 64px }
-body#admin-image-main-dialog { margin-top: 0 }
+.adminlist img.icon {
+    max-width: 64px
+}
+
+body#admin-image-main-dialog {
+    margin-top: 0
+}
+
+div.admin-left-panel-collapsed .sidebar-toggle-panel { /*display:none; */
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+
+
+
+
+
+
+
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }

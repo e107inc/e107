@@ -227,7 +227,7 @@ else
 {
 
 	$ADMIN_TEMPLATE['header'] .= '
-		<div class="col-md-3 col-lg-2 admin-left-panel hidden-print">
+		<div class="admin-left-panel hidden-print {ADMIN_LEFTPANEL_TOGGLE}">
 			{SETSTYLE=warning}
 			{ADMIN_ADDON_UPDATES}
 			{SETSTYLE=site_info}
@@ -259,7 +259,7 @@ else
 			</div>
 			{SETSTYLE=default}			
 		</div>
-		<div class="col-md-9 col-lg-10 admin-right-panel">
+		<div class="admin-right-panel {ADMIN_RIGHTPANEL_TOGGLE}">
 			<div class="sidebar-toggle">
 				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
 			</div>
