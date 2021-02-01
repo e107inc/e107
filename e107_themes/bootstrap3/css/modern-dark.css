@@ -812,7 +812,7 @@ select[multiple].input-lg,textarea.input-lg{height:auto}
 .btn-group-xs>.btn,.btn-xs{padding:1px 5px;font-size:12px;line-height:1.5;border-radius:3px}
 .btn-block{display:block}
 .btn-block+.btn-block{margin-top:5px}
-.fade{opacity:0;-webkit-transition:opacity .15s linear;-o-transition:opacity .15s linear;transition:opacity .15s linear}
+.fade{opacity:0;-webkit-transition:opacity .5s linear;-o-transition:opacity .5s linear;transition:opacity .5s linear}
 .fade.in{opacity:1}
 .collapse{display:none}
 .collapse.in{display:block}
@@ -1561,6 +1561,18 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
     display: block;
     min-height: 1000px;
 }
+
+div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:1.25em; opacity: 0; width:0;  }
+div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
+div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
+div.admin-left-panel .nav-pills > li.active > a > span > i { color: white }
+
+/*
+
+.admin-left-panel, .admin-right-panel {
+    transition: width 0.5s;
+}
+*/
 
 @media only screen and (min-width : 768px) {
     .is-table-row {

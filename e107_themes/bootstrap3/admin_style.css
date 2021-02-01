@@ -1886,12 +1886,12 @@ td img.thumbnail { margin-bottom:0 }
 tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: rgba(0,0,0,0.15); }
 tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: rgba(0,0,0,0.15);  }
 
-.admin-left-panel, .admin-right-panel {
-    transition: width 0.5s;
+.admin-left-panel, .admin-right-panel, .sidebar-toggle {
+   transition: width 0.5s;
 }
 
-.admin-left-panel-collapsed {
-    width: 60px;
+.admin-left-panel-collapsed .admin-menu {
+    width: 55px;
 }
 
 .admin-left-panel-collapsed .admin-menu,
@@ -1908,16 +1908,23 @@ body#admin-image-main-dialog {
     margin-top: 0
 }
 
+.sidebar-toggle-panel {  transition: opacity 0.5s ease-in-out;  }
+
+.sidebar-toggle-panel { width: auto }
+
+
 div.admin-left-panel-collapsed .sidebar-toggle-panel { /*display:none; */
-    transition: opacity 1s ease-in-out;
+
+    display:inline-block;
     opacity: 0;
     height: 0;
     width: 0;
     overflow: hidden;
+
 }
 
-
-
+div.admin-left-panel .nav-pills > li > a > span > i { opacity: 0; width:0; }
+div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 
 
 

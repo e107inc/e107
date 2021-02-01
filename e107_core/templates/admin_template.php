@@ -282,19 +282,19 @@ $ADMIN_TEMPLATE['footer'] = '
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $ADMIN_TEMPLATE['menu']['start'] = '
-<div class="nav-panel-body sidebar-toggle-panel">
+<div class="nav-panel-body">
 <ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
 $ADMIN_TEMPLATE['menu']['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
 		{SUB_MENU}
 	</li>
 ';
 $ADMIN_TEMPLATE['menu']['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}>&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
 		{SUB_MENU}
 	</li>
 ';
