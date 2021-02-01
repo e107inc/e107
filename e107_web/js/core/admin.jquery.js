@@ -414,14 +414,15 @@ $(document).ready(function()
 	        var $leftPanel = $(".sidebar-toggle-panel");
 	        var $rightPanel = $(".admin-right-panel");
 
+
 	        if ($rightPanel.hasClass('col-md-12'))
 	        {
-	             console.log('has class');
+
 		        $rightPanel.toggleClass("col-md-9 col-md-12");
 		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
 		        $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
 		        $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
-		        $leftPanel.toggle(500);
+		    //    $leftPanel.toggle(500);
 
 	        }
 	        else
@@ -429,16 +430,27 @@ $(document).ready(function()
 
                   $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
                   $(".admin-left-panel").toggleClass("admin-left-panel-collapsed");
+
 	              $rightPanel.toggleClass("col-md-9 col-md-12");
 			      $rightPanel.toggleClass("col-lg-10 col-lg-12");
-                  $leftPanel.toggle(500);
-              /*
-                $leftPanel.toggle(500, function() {
-                     $(".admin-left-panel").toggleClass("col-md-3 col-lg-2");
-	               $rightPanel.toggleClass("col-md-9 col-md-12");
-			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        });*/
+               //   $leftPanel.toggle(500);
+
 	        }
+
+
+           var tmp =  $(".admin-left-panel").hasClass("admin-left-panel-collapsed");
+
+             if(tmp === true)
+             {
+                var toggleStatus = 'closed';
+              }
+              else
+              {
+                 var toggleStatus = 'open';
+              }
+
+              document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; expires = 1; samesite=strict';
+
 
         });
 

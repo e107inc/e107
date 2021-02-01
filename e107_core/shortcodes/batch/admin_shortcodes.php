@@ -61,6 +61,28 @@ class admin_shortcodes extends e_shortcode
 			} 
 			  
     }
+
+    public function sc_admin_rightpanel_toggle($parm=null)
+    {
+        if(varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
+        {
+            return 'col-md-9 col-lg-12';
+        }
+
+        return 'col-md-12 col-lg-10';
+
+    }
+
+    public function sc_admin_leftpanel_toggle($parm=null)
+    {
+        if(varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
+        {
+            return 'admin-left-panel-collapsed';
+        }
+
+        return 'col-md-3 col-lg-2';
+    
+    }
    
     // {ADMIN_COREUPDATE}
     public function sc_admin_coreupdate($parm='')
