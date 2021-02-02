@@ -354,7 +354,7 @@ e107::js('footer-inline', js());
 		protected $fields 		= array (
 		    'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		    'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'method', 'data' => 'str', 'readonly'=>true, 'width' => '350px', 'help' => '', 'readParms' => '', 'writeParms' => 'tdClassRight=form-inline&pre=user_ ', 'class' => 'left', 'thclass' => 'left',  ),
+		    'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'method', 'data' => 'str', 'readonly'=>true, 'width' => '350px', 'help' => '', 'readParms' => '', 'writeParms' => array('tdClassRight' => 'form-inline', 'pre' => 'user_ ', 'required'=>true), 'class' => 'left', 'thclass' => 'left',  ),
 		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => array('required'=>true), 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_values' =>   array ( 'title' => EXTLAN_82, 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -896,15 +896,23 @@ e107::js('footer-inline', js());
 		}
 
 		// Custom Method/Function
-		function user_extended_struct_name($curVal,$mode)
+		function user_extended_struct_name($curVal,$mode, $att)
 		{
 			switch($mode)
 			{
 				case 'read': // List Page
-				case 'write': // Edit Page
+
 					return str_replace('plugin_', "<span class='label label-primary'>".LAN_PLUGIN."</span> ",$curVal);
 					break;
 
+				case 'write': // Edit Page
+					$field = [];
+					$field['type'] = 'text';
+					$field['writeParms'] = $att;
+
+
+					return $this->renderElement('user_extended_struct_name', $curVal, $field);
+				break;
 
 				case 'filter':
 				case 'batch':
