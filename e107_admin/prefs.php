@@ -318,7 +318,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 
 $text = "
 <div id='core-prefs'>
-	<form class='admin-menu' method='post' action='".e_SELF."' autocomplete='off'>
+	<form method='post' action='".e_SELF."' autocomplete='off'>
 	<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
@@ -1100,7 +1100,13 @@ $text .= "
 						</td>
 					</tr>
 
-
+					<tr>
+						<td><label for='old_np'>".PRFLAN_124.":</label></td>
+						<td>
+							".$frm->radio_switch('old_np', $pref['old_np'])."
+							<div class='smalltext field-help'>".PRFLAN_125."</div>
+						</td>
+					</tr>
 
 
 ";
@@ -1282,13 +1288,7 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 							<div class='smalltext field-help'>".PRFLAN_123."</div>
 						</td>
 					</tr>
-					<tr>
-						<td><label for='old_np'>".PRFLAN_124.":</label></td>
-						<td>
-							".$frm->radio_switch('old_np', $pref['old_np'])."
-							<div class='smalltext field-help'>".PRFLAN_125."</div>
-						</td>
-					</tr>
+					
 					
 ";
 
@@ -2099,29 +2099,55 @@ function pref_submit($post_id = '')
 
 function prefs_adminmenu()
 {
-		$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
+	$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
+
 	$var['core-prefs-main']['text'] = PRFLAN_1;
+	$var['core-prefs-main']['image_src'] = 'fa-home.glyph';
+
 	$var['core-prefs-email']['text'] = PRFLAN_254;
+	$var['core-prefs-email']['image_src'] = 'fa-envelope.glyph';
+
 	$var['core-prefs-gdpr']['text'] = PRFLAN_277;
+	$var['core-prefs-gdpr']['image_src'] = 'fa-cookie.glyph';
+
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
+	$var['core-prefs-registration']['image_src'] = 'fas-user-plus.glyph';
+
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
-//	$var['core-prefs-sociallogin']['text'] = "Social Options"; // Moved into plugin.
+	$var['core-prefs-signup']['image_src'] = 'fas-clipboard-list.glyph';
 	
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
-	$var['core-prefs-uploads']['text'] = PRFLAN_255;
-	
-	$var['core-prefs-header2']['header'] = PRFLAN_256;
-	
-	$var['core-prefs-display']['text'] = PRFLAN_13;
-	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
-	$var['core-prefs-textpost']['text'] = PRFLAN_101;
-	$var['core-prefs-security']['text'] = PRFLAN_47;
-	$var['core-prefs-date']['text'] = PRFLAN_21;	
-	$var['core-prefs-javascript']['text'] = PRFLAN_257;
-	$var['core-prefs-advanced']['text'] = PRFLAN_149;
+	$var['core-prefs-comments']['image_src'] = 'fa-comments.glyph';
 
-	$icon = e107::getParser()->toIcon('e-prefs-24');
-	$caption = $icon."<span>".LAN_PREFS."</span>";
+	$var['core-prefs-uploads']['text'] = PRFLAN_255;
+	$var['core-prefs-uploads']['image_src'] = 'file-upload.glyph';
+
+	$var['core-prefs-header2']['header'] = PRFLAN_256;
+
+	$var['core-prefs-display']['text'] = PRFLAN_13;
+	$var['core-prefs-display']['image_src'] = 'fas-info-circle.glyph';
+
+	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
+	$var['core-prefs-admindisp']['image_src'] = 'fa-dashboard.glyph';
+
+	$var['core-prefs-textpost']['text'] = PRFLAN_101;
+	$var['core-prefs-textpost']['image_src'] = 'fa-filter.glyph';
+
+	$var['core-prefs-security']['text'] = PRFLAN_47;
+	$var['core-prefs-security']['image_src'] = 'fas-shield-alt.glyph';
+
+	$var['core-prefs-date']['text'] = PRFLAN_21;
+	$var['core-prefs-date']['image_src'] = 'fa-calendar.glyph';
+
+	$var['core-prefs-javascript']['text'] = PRFLAN_257;
+	$var['core-prefs-javascript']['image_src'] = 'fab-js.glyph';
+
+	$var['core-prefs-advanced']['text'] = PRFLAN_149;
+	$var['core-prefs-advanced']['image_src'] = 'fa-cogs.glyph';
+
+	$caption = "<span>".LAN_PREFS."</span>";
+
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-prefs-24');
 
 	e107::getNav()->admin($caption.'--id--prev_nav', 'core-prefs-main', $var);
 }

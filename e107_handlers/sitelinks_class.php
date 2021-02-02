@@ -1261,7 +1261,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			
 			if (isset($e107_vars[$act]['header'])) 
 			{
-			 	$text .= "<li class='nav-header'>".$e107_vars[$act]['header']."</li>";	//TODO add to Template. 
+				$text .= str_replace('{HEADING}', $e107_vars[$act]['header'], $tmpl['heading']);
+
+			// 	$text .= "<li class='nav-header'>".$e107_vars[$act]['header']."</li>";	//TODO add to Template.
 				continue;
 			}
 			

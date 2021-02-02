@@ -63,10 +63,10 @@ class users_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
-		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
+		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1', 'icon'=>'fas-user-plus'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
-		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perm' => '4')
+		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3', 'icon'=>'fas-user-tie'),
+		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perm' => '4', 'icon'=>'fas-toolbox')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	

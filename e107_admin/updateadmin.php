@@ -53,7 +53,7 @@ if (isset($_POST['update_settings']))
 			$check = $sql->update('user',$userData);
 			if ($check) 
 			{
-				e107::getLog()->add('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('ADMINPW_01', '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
 				
@@ -124,4 +124,3 @@ else
 
 require_once(e_ADMIN.'footer.php');
 
-?>

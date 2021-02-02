@@ -148,8 +148,9 @@ function admin_chatbox_adminmenu()
 	$var['main']['text'] = LAN_PREFS;
 	$var['main']['link'] = e_SELF;
 
-	$icon  = e107::getParser()->toIcon(e_PLUGIN."chatbox_menu/images/chatbox_32.png");
-	$caption = $icon."<span>".LAN_PLUGIN_CHATBOX_MENU_NAME."</span>";
+	$caption = "<span>".LAN_PLUGIN_CHATBOX_MENU_NAME."</span>";
+
+	$var['_extras_']['icon']  = e107::getParser()->toIcon(e_PLUGIN."chatbox_menu/images/chatbox_32.png");
 
 	e107::getNav()->admin($caption, $mode, $var);
 }

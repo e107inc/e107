@@ -344,16 +344,22 @@ if (!function_exists('show_admin_menu'))
 	 * @deprecated Use admin-ui instead.
 	 * @param $title
 	 * @param $active_page
-	 * @param $e107_vars
+	 * @param $vars
 	 * @param false $js
 	 * @param false $sub_link
 	 * @param false $sortlist
 	 * @return string|null
 	 */
-	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
+	function show_admin_menu($title, $active_page, $var, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE)
 	{
 		unset($js,$sub_link);
-		return e107::getNav()->admin($title, $active_page, $e107_vars, false, false, $sortlist);
+
+		if(!isset($var['_extras_']['icon']) && deftrue('e_CURRENT_PLUGIN'))
+		{
+			$var['_extras_'] = array('icon'=>  e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24), 'return'=>false);
+		}
+
+		return e107::getNav()->admin($title, $active_page, $var, false, false, $sortlist);
 	}
 }
 
