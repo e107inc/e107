@@ -188,13 +188,16 @@ class cpage_shortcodes extends e_shortcode
 
 		if(e107::getPref('comments_disabled') == 0 && !$comflag)
 		{
-			if(defined('BOOTSTRAP') && BOOTSTRAP)
+			if(ADMIN)
 			{
-				return e107::getMessage()->addInfo(LAN_PAGE_17)->render(); 
-			}
-			else
-			{
-				return "<br /><div style='text-align:center'><b>".LAN_PAGE_17."</b></div>";
+				if(defined('BOOTSTRAP') && BOOTSTRAP)
+				{
+					return e107::getMessage()->addDebug(LAN_PAGE_17)->render(); 
+				}
+				else
+				{
+					return "<br /><div style='text-align:center'><b>".LAN_PAGE_17."</b></div>";
+				}
 			}
 		}
 		
