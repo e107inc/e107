@@ -240,8 +240,8 @@ function admin_config_adminmenu()
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";*/
 
-	$icon  = e107::getParser()->toIcon(e_PLUGIN.'poll/images/polls_32.png');
-	$caption = $icon."<span>".LAN_PLUGIN_POLL_NAME."</span>";
+	//$icon  = e107::getParser()->toIcon(e_PLUGIN.'poll/images/polls_32.png');
+	$caption = "<span>".LAN_PLUGIN_POLL_NAME."</span>";
 
 	show_admin_menu($caption, $action, $var);
 }

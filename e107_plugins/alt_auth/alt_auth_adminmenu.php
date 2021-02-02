@@ -572,8 +572,8 @@ function alt_auth_adminmenu()
 	$var['main']['link'] = e_PLUGIN . 'alt_auth/alt_auth_conf.php';
 
 
-	$icon = e107::getParser()->toIcon(e_PLUGIN . 'alt_auth/images/alt_auth_32.png');
-	$caption = $icon . "<span>alt auth</span>";
+	// $icon = e107::getParser()->toIcon(e_PLUGIN . 'alt_auth/images/alt_auth_32.png');
+	$caption = "<span>alt auth</span>";
 
 	show_admin_menu($caption, ALT_AUTH_ACTION, $var);
 

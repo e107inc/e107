@@ -325,6 +325,8 @@ $ADMIN_TEMPLATE['menu']['end'] = '
 </div>
 ';
 
+$ADMIN_TEMPLATE['menu']['heading'] = '<li class="nav-header sidebar-toggle-panel">{HEADING}</li>';
+
 $ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"><!-- --></li>';
 
 $ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar e-tip"  data-placement="right" title="Toggle" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch"><!-- --></span>';

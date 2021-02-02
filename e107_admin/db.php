@@ -178,13 +178,13 @@ class system_tools
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
 			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65),
 			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67),
-			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69)
+			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69, 'icon'=>'fas-archive.glyph')
 		);
 		
 		if(deftrue('e_DEVELOPER'))
 		{
 			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' );
-			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112 );
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112, 'icon'=>'fab-github.glyph' );
 		}
 
 
@@ -1675,10 +1675,12 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 	{
 		$var[$key]['text'] = $val['label'];
 		$var[$key]['link'] = e_SELF."?mode=".$key;
+		$var[$key]['image_src'] = $val['icon'];
 	}
 
-	$icon  = e107::getParser()->toIcon('e-database-24');
-	$caption = $icon."<span>".DBLAN_10."</span>";
+	$caption = "<span>".DBLAN_10."</span>";
+
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-database-24');
 
 	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
