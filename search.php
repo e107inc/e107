@@ -817,8 +817,8 @@ class search_front extends e_shortcode
 					//	}
 
 					//	print_a($ps);
-
-						$text .= '<ul id="search-results" class="list-unstyled search-block">';
+						$idkey = str_replace('_', '-', $key);
+						$text .= '<ul id="search-results-'.$idkey.'" class="list-unstyled search-block">';
 						$text .= $ps['text'];
 						$text .= '</ul>';
 						$results = $ps['results'];	
