@@ -1317,13 +1317,16 @@ class news_front
 			// Only show message if global comments are enabled, but current news item comments are disabled
 			if(e107::getPref('comments_disabled') == 0 && $news['news_allow_comments'] == 1)
 			{
-				if(defined('BOOTSTRAP') && BOOTSTRAP)
+				if(ADMIN)
 				{
-					return e107::getMessage()->addInfo(LAN_NEWS_13)->render(); 
-				}
-				else
-				{
-					return "<br /><div style='text-align:center'><b>".LAN_NEWS_13."</b></div>";
+					if(defined('BOOTSTRAP') && BOOTSTRAP)
+					{
+						return e107::getMessage()->addDebug(LAN_NEWS_13)->render(); 
+					}
+					else
+					{
+						return "<br /><div style='text-align:center'><b>".LAN_NEWS_13."</b></div>";
+					}
 				}
 			}
 		}
