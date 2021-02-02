@@ -2723,7 +2723,8 @@ class e_front_model extends e_model
 			{
 	            if($this->isValidFieldKey($k))
 	            {
-	               $ret[$k] = is_array($v) ? $this->sanitize($v) : $this->sanitize($k, $v);
+	                $ret[$k] = $this->sanitize($k, $v);
+	         //      $ret[$k] = is_array($v) ? $this->sanitize($v) : $this->sanitize($k, $v);
 	            }
 			}
 			return $ret;
