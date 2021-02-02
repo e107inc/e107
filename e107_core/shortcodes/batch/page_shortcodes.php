@@ -188,7 +188,7 @@ class cpage_shortcodes extends e_shortcode
 
 		if(e107::getPref('comments_disabled') == 0 && !$comflag)
 		{
-			if(ADMIN)
+			if(ADMIN && deftrue('e_DEBUG'))
 			{
 				if(defined('BOOTSTRAP') && BOOTSTRAP)
 				{
