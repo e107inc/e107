@@ -98,7 +98,7 @@ class forum_front
 				case 'rules':
 					include_once(HEADERF);
 
-					forum_rules('show');
+					$this->forum_rules('show');
 					include_once(FOOTERF);
 					exit;
 					break;
@@ -106,7 +106,7 @@ class forum_front
 				case 'track':
 					include_once(HEADERF);
 
-					forum_track();
+					$this->forum_track();
 					include_once(FOOTERF);
 					exit;
 					break;
