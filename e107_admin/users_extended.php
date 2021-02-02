@@ -290,8 +290,8 @@ e107::js('footer-inline', js());
 		protected $adminMenu = array(
 
 			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
-			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0|4'),
-			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4'),
+			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0|4', 'icon'=>'fa-plus'),
+			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4', 'icon'=>'fa-user-edit'),
 			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0|4'),
 			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0|4'),
 
@@ -355,7 +355,7 @@ e107::js('footer-inline', js());
 		    'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		    'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'method', 'data' => 'str', 'readonly'=>true, 'width' => '350px', 'help' => '', 'readParms' => '', 'writeParms' => 'tdClassRight=form-inline&pre=user_ ', 'class' => 'left', 'thclass' => 'left',  ),
-		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => array('required'=>true), 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_values' =>   array ( 'title' => EXTLAN_82, 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'user_extended_struct_default' =>   array ( 'title' => EXTLAN_16, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
