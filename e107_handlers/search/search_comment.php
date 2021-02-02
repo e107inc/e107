@@ -48,7 +48,7 @@ foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 
 $search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
-$no_results = LAN_198;
+$no_results = "<div class='alert alert-danger'>".LAN_198."</div>"; //LAN_198;
 $where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
 $order = array('comment_datestamp' => 'DESC');
 $table = "comments AS c ".implode(' ', $join);
