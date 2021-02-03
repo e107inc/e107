@@ -7087,7 +7087,7 @@ var_dump($select_options);*/
 				}
 
 
-				$cls        = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-md-2';
+				$cls        = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-sm-6 col-md-4 col-lg-2';
 				$pid        = $options['pid'];
 				$perPage    = $options['grid']['perPage'];
 

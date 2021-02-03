@@ -96,9 +96,9 @@ class plugman_adminArea extends e_admin_dispatcher
 
 		'installed/list'		=> array('caption'=> EPL_ADLAN_22, 'perm' => 'Z'),
 		'avail/list'			=> array('caption'=> EPL_ADLAN_23, 'perm' => 'Z'),
-		'online/grid'			=> array('caption'=> EPL_ADLAN_220, 'perm' => 'Z'),
+		'online/grid'			=> array('caption'=> EPL_ADLAN_220, 'perm' => 'Z', 'icon'=>'fas-search'),
 		'avail/upload'			=> array('caption'=>EPL_ADLAN_38, 'perm' => '0'),
-		'create/build'          =>  array('caption'=>EPL_ADLAN_114, 'perm' => '0'),
+		'create/build'          =>  array('caption'=>EPL_ADLAN_114, 'perm' => '0', 'icon'=>'fas-toolbox'),
 
 	//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 

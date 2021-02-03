@@ -1512,3 +1512,13 @@ thead tr{background-color:#363636;background-image:linear-gradient(to bottom,#44
 .tab-content{background-color:#373737}
 input:invalid:focus,select:invalid:focus,textarea:invalid:focus{border-color:red;box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset}
 td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
+.admin-left-panel-collapsed .admin-left-panel { width: 70px }
+.admin-left-panel-collapsed .admin-right-panel { width: calc(100% - 70px) }
+.admin-left-panel-collapsed .nav-pills > li > a { border-radius:0}
+div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:1.25em; opacity: 0; width:0;  }
+div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
+div.admin-left-panel-collapsed .nav-pills > li > a:hover > span > i,
+div.admin-left-panel-collapsed .nav-pills > li.active > a > span > i
+ { color: white }
+.admin-left-panel .close { opacity: .4; }
+.admin-left-panel .tooltip { margin-left:35px }

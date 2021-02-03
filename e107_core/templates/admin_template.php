@@ -260,9 +260,6 @@ else
 			{SETSTYLE=default}			
 		</div>
 		<div class="admin-right-panel col-md-9 col-lg-10">
-			<div class="sidebar-toggle">
-				<a href="#"  title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
-			</div>
 			<div class="admin-main-content">
 	';
 }
@@ -329,4 +326,4 @@ $ADMIN_TEMPLATE['menu']['heading'] = '<li class="nav-header sidebar-toggle-panel
 
 $ADMIN_TEMPLATE['menu']['divider'] = '<li role="separator" class="divider"><!-- --></li>';
 
-$ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar e-tip"  data-placement="right" title="Toggle" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch"><!-- --></span>';
+$ADMIN_TEMPLATE['menu']['caption'] = '<span class="e-toggle-sidebar e-tip"  data-placement="right" title="Toggle" style="cursor:pointer">{ICON}</span><span class="sidebar-toggle-panel">{CAPTION}</span><span class="close e-toggle-sidebar sidebar-toggle-panel sidebar-toggle-switch">×</span>';

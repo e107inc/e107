@@ -126,7 +126,7 @@ $ADMIN_ICONS_TEMPLATE['E_16_THEMEMANAGER']          = "<i class='S16 e-themes-16
 
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON']         = "<i class='fa fa-warning text-warning'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_GRID_ICON']            = "<i class='fa fa-th'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_LIST_ICON']            = "<i class='fa fa-th-list'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_LIST_ICON']            = "<i class='fas fa-list'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_ADD_ICON']             = "<i class='S32 e-add-32'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_INFO_ICON']            = "<i class='fa fa-question-circle'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_CONFIGURE_ICON']       = "<i class='S32 e-settings-32'></i>";
