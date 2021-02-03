@@ -748,7 +748,7 @@
         .form-horizontal .form-group-lg .control-label{padding-top:15px;font-size:18px}
         .form-horizontal .form-group-sm .control-label{padding-top:6px;font-size:12px}
         }
-        .btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:16px;line-height:1.42857143;border-radius:4px;user-select:none}
+        .btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:16px;line-height:22px;border-radius:4px;user-select:none}
         .btn,.plupload_button,button.button,input.button{touch-action:manipulation;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
         .btn.active.focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn:active:focus,.btn:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
         .btn.focus,.btn:focus,.btn:hover{color:#fff;text-decoration:none}
