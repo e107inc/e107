@@ -662,13 +662,13 @@
         label{display:inline-block;max-width:100%;margin-bottom:5px}
         input[type=search]{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-appearance:none}
         input[type=checkbox],input[type=radio]{margin:4px 0 0;margin-top:1px\9;line-height:normal}
-        .form-control,output{display:block;font-size:14px;line-height:1.42857143;color:rgba(0,0,0,0.75)}
+        .form-control,output{display:block;font-size:16px;line-height:1.42857143;color:rgba(0,0,0,0.75)}
         input[type=file]{display:block}
         input[type=range]{display:block;width:100%}
         select[multiple],select[size]{height:auto}
         input[type=file]:focus,input[type=checkbox]:focus,input[type=radio]:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
         output{padding-top:9px}
-        .form-control{width:100%;height:38px;padding:8px 12px;background-color:rgba(0,0,0,0.05);border:1px solid rgba(0,0,0,0.3);border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}
+        .form-control{width:100%;height:40px;padding:8px 12px;background-color:rgba(0,0,0,0.05);border:1px solid rgba(0,0,0,0.3);border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}
         .form-control:focus{border-color:#66afe9;outline:0;}
         .form-control::-moz-placeholder{color:#999;opacity:1}
         .form-control:-ms-input-placeholder{color:#999}
@@ -748,7 +748,7 @@
         .form-horizontal .form-group-lg .control-label{padding-top:15px;font-size:18px}
         .form-horizontal .form-group-sm .control-label{padding-top:6px;font-size:12px}
         }
-        .btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:14px;line-height:1.42857143;border-radius:4px;user-select:none}
+        .btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:16px;line-height:1.42857143;border-radius:4px;user-select:none}
         .btn,.plupload_button,button.button,input.button{touch-action:manipulation;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
         .btn.active.focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn:active:focus,.btn:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
         .btn.focus,.btn:focus,.btn:hover{color:#fff;text-decoration:none}
@@ -874,7 +874,7 @@
         .nav>li,.nav>li>a{position:relative;display:block}
         .input-group .form-control:not(:first-child):not(:last-child),.input-group-addon:not(:first-child):not(:last-child),.input-group-btn:not(:first-child):not(:last-child){border-radius:0}
         .input-group-addon,.input-group-btn{width:1%;white-space:nowrap;vertical-align:middle}
-        .input-group-addon{padding:8px 12px;font-size:14px;font-weight:400;line-height:1;text-align:center;background-color:#222;border:1px solid #171717;border-radius:4px}
+        .input-group-addon{padding:8px 12px;font-size:16px;font-weight:400;line-height:1;text-align:center;background-color:#222;border:1px solid #171717;border-radius:4px}
         .input-group-addon.input-sm{padding:5px 10px;font-size:12px;border-radius:3px}
         .input-group-addon.input-lg{padding:14px 16px;font-size:18px;border-radius:6px}
         .input-group-addon input[type=checkbox],.input-group-addon input[type=radio]{margin-top:0}
@@ -1287,7 +1287,7 @@
         .tooltip.bottom{margin-top:3px;padding:5px 0}
         .tooltip.left{margin-left:-3px;padding:0 5px}
         .tooltip-inner{max-width:200px;padding:3px 8px;color:#fff;text-align:center;background-color:rgba(0,0,0,.9);border-radius:4px}
-        .popover,.popover-title{font-size:14px;background-color:#337ab7}
+        .popover,.popover-title{font-size:16px;background-color:#337ab7}
         .tooltip-arrow{position:absolute;width:0;height:0;border-color:transparent;border-style:solid}
         .tooltip.top .tooltip-arrow{bottom:0;left:50%;margin-left:-5px;border-width:5px 5px 0;border-top-color:rgba(0,0,0,.9)}
         .tooltip.top-left .tooltip-arrow{right:5px}
@@ -1435,7 +1435,7 @@
         .navbar-nav>li>a:hover{background-image:-webkit-linear-gradient(#000,#000 40%,#000);background-image:-o-linear-gradient(#000,#000 40%,#000);background-image:linear-gradient(#000,#000 40%,#000);background-repeat:no-repeat;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000', endColorstr='#ff000000', GradientType=0);filter:none}
         .navbar .nav .open>a{border-color:transparent}
         .navbar-form{margin-left:5px;margin-right:5px}
-        .plupload_button,button.button,input.button{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;background-image:none;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:14px;line-height:1.42857143;border-radius:4px;user-select:none}
+        .plupload_button,button.button,input.button{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;vertical-align:middle;cursor:pointer;background-image:none;border:1px solid transparent;white-space:nowrap;padding:8px 12px;font-size:16px;line-height:1.42857143;border-radius:4px;user-select:none}
         .plupload_button.active.focus,.plupload_button.active:focus,.plupload_button.focus,.plupload_button:active.focus,.plupload_button:active:focus,.plupload_button:focus,button.button.active.focus,button.button.active:focus,button.button.focus,button.button:active.focus,button.button:active:focus,button.button:focus,input.button.active.focus,input.button.active:focus,input.button.focus,input.button:active.focus,input.button:active:focus,input.button:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
         .plupload_button.focus,.plupload_button:focus,.plupload_button:hover,button.button.focus,button.button:focus,button.button:hover,input.button.focus,input.button:focus,input.button:hover{color:#fff;text-decoration:none}
         .plupload_button.active,.plupload_button:active,button.button.active,button.button:active,input.button.active,input.button:active{outline:0;background-image:none;-webkit-box-shadow:inset 0 3px 5px rgba(0,0,0,.125);box-shadow:inset 0 3px 5px rgba(0,0,0,.125)}
@@ -1467,7 +1467,7 @@
         .table-responsive>.table{background-color:#373737}
         label{font-weight:400}
         .well,input,select,textarea{color:rgba(0,0,0,0.75);background-color:rgba(0,0,0,0.1)}
-        input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid rgba(0,0,0,0.3);border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:14px}
+        input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid rgba(0,0,0,0.3);border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:16px}
         .has-warning .control-label,.has-warning .form-control-feedback,.has-warning .help-block{color:#f89406}
         .has-warning .form-control,.has-warning .form-control:focus{border-color:#f89406}
         .has-error .control-label,.has-error .form-control-feedback,.has-error .help-block{color:#ee5f5b}
