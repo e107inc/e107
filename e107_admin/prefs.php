@@ -636,7 +636,10 @@ $text .= "
 		</fieldset>
 ";
 
-// Admin Display Areas
+
+/**
+ * @note Admin Display Options.
+ */
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-admindisp'>
 			<legend>".PRFLAN_77."</legend>
@@ -671,10 +674,25 @@ $text .= "
 					<tr>
 						<td><label for='admin-separate-plugins'>".PRFLAN_204."</label></td>
 						<td>
-							".$frm->radio_switch('admin_separate_plugins', $pref['admin_separate_plugins'])."
+							".$frm->radio_switch('admin_separate_plugins', varset($pref['admin_separate_plugins']))."
 							<div class='field-help'>".PRFLAN_205."</div>
 						</td>
 					</tr>
+					<tr>
+						<td><label for='admin-collapse-sidebar'>".PRFLAN_283."</label></td>
+						<td>
+							".$frm->radio_switch('admin_navbar_labels', varset($pref['admin_navbar_labels']))."
+						</td>
+					</tr>
+					<tr>
+						<td><label for='admin-collapse-sidebar'>".PRFLAN_284."</label></td>
+						<td>
+							".$frm->radio_switch('admin_collapse_sidebar', varset($pref['admin_collapse_sidebar']))."
+						</td>
+					</tr>
+					
+					
+					
 				</tbody>
 			</table>
 			".pref_submit('admindisp')."

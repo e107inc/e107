@@ -25,9 +25,9 @@ $ADMIN_TEMPLATE['nav']['start_other'] = '<ul class="nav nav-admin navbar-nav nav
 
 $ADMIN_TEMPLATE['nav']['button'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		 {LINK_IMAGE}
-
+		{LINK_TEXT}
 		</a> 
 		{SUB_MENU}
 	</li>
@@ -37,9 +37,9 @@ $ADMIN_TEMPLATE['nav']['button'] = '
 
 $ADMIN_TEMPLATE['nav']['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE}
-
+		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
+		{LINK_IMAGE}
+		{LINK_TEXT}
 		</a>
 		{SUB_MENU}
 	</li>

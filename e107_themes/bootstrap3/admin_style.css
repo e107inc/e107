@@ -98,7 +98,7 @@ right: 5px; }
 
 body#admin-menus #sc-admin-help { position: relative }
 
-.admin-menu .panel-title .e-help-icon a {
+.admin-ui-nav-menu .panel-title .e-help-icon a {
 display: inline-block;
 vertical-align: middle;
 cursor: help;
@@ -1678,10 +1678,9 @@ padding-top: 15px;
 margin-top: 0; }
 
 
-/*
-Optional: Display Admin Nav Button Labels.
-ul.nav-admin a.navbar-admin-button:after { content: attr(title) }
- */
+/** Optional: Display Admin Nav Button Labels. -- moved to a pref. Cleared to prevent possible conflict.  */
+ul.nav-admin a.navbar-admin-button:after { content: none !important; }
+ul.nav-admin a.navbar-admin-button:before { content: none !important; }
 
 /*
 
@@ -1892,7 +1891,7 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
    transition: width 0.5s;
 }
 
-.admin-left-panel-collapsed .admin-menu {
+.admin-left-panel-collapsed .admin-ui-nav-menu {
     width: 55px;
 }
 

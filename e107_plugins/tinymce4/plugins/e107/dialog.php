@@ -443,11 +443,11 @@ class e_bootstrap
 					
 		$text .= "<ul class='glyphicons well clearfix'>";
 		
-		$inverse = (e107::getPref('admincss') == "admin_dark.css") ? " icon-white" : "";
+	//	$inverse = (e107::getPref('admincss') == "admin_dark.css") ? " icon-white" : "";
 		
 		foreach($icons as $ic)
 		{
-			$text .= '<li><i class="'.$ic.$inverse.'"></i> '.$ic.'</li>';
+			$text .= '<li><i class="'.$ic.'"></i> '.$ic.'</li>';
 			$text .= "\n";
 		}
 					

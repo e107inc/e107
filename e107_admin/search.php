@@ -551,4 +551,3 @@ function search_adminmenu()
 
 	e107::getNav()->admin($caption, $action, $var);
 }
-?>

@@ -174,7 +174,7 @@ class bootstrap3_admintheme implements e_theme_render
 				break;
 
 				case 'admin_menu':
-				echo '<div class="admin-menu panel panel-default" >
+				echo '<div class="admin-menu admin-ui-nav-menu panel panel-default" >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>

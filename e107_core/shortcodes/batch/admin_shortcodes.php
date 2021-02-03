@@ -62,25 +62,39 @@ class admin_shortcodes extends e_shortcode
 			  
     }
 
-
+	/**
+	 * Controls the collapsing of the admin left panel sidebar
+	 * @param null $parm
+	 * @return string|null
+	 */
     public function sc_admin_leftpanel_toggle($parm=null)
     {
-        $exclude = array('menus.php', 'phpinfo.php', 'credits.php', 'docs.php');
+        $exclude = array(
+            'admin.php',
+            'menus.php',
+            'phpinfo.php',
+            'credits.php',
+            'docs.php',
+            'cache.php',
+            'emoticon.php',
+            'updateadmin.php',
+            'administrator.php',
 
-        if(in_array(e_PAGE, $exclude))
+        );
+
+        if(!deftrue('e_CURRENT_PLUGIN') && in_array(e_PAGE, $exclude))
         {
             return null;
         }
 
+		$collapse = (bool) e107::getPref('admin_collapse_sidebar');
 
-
-        if(varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
+        if((!isset($_COOKIE['e107_adminLeftPanel']) && $collapse) || varset($_COOKIE['e107_adminLeftPanel']) === 'closed')
         {
             return 'admin-left-panel-collapsed';
         }
 
-     //   return 'col-md-3 col-lg-2';
-    
+
     }
    
     // {ADMIN_COREUPDATE}
@@ -2079,6 +2093,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$array_plugins          = e107::getNav()->adminLinks('plugin2');
 
 
+		$displayLabels = (bool) varset($pref['admin_navbar_labels'], false);
+
 		// MAIN LINK
 		/*
 		if($parm != 'no-main')
@@ -2095,15 +2111,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
   		foreach($admin_cat['id'] as $i => $cat)
 		{
-
 			$id = $admin_cat['id'][$i];
-			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['link'] = '#';
-			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
-			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
-			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
-			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
+			$menu_vars[$id]['text']             = ($displayLabels) ? $admin_cat['title'][$i] : '';
+			$menu_vars[$id]['description']      = ($displayLabels === false) ? $admin_cat['title'][$i] : '' ;
+			$menu_vars[$id]['link']             = '#';
+			$menu_vars[$id]['image']            = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
+			$menu_vars[$id]['image_large']      = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
+			$menu_vars[$id]['image_src']        = $admin_cat['img'][$i];
+			$menu_vars[$id]['image_large_src']  = $admin_cat['lrg_img'][$i];
 			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
 			//$menu_vars[$id]['perm'] = '';
 			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];

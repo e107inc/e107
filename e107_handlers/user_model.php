@@ -392,6 +392,7 @@ class e_user_model extends e_admin_model
 				'PageBites',
 				'Peew',
 				'petalbot',
+				'Pinterestbot',
 				'polybot',
 				'Pompos',
 				'PostPost',

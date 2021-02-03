@@ -303,3 +303,6 @@ define("PRFLAN_280", "URL to the website terms and conditions");
 define("PRFLAN_281", "The 2 links above are used on various page on this site (e.g. signup and contact form/menu).\nPlease create 2 pages (if not already done) that contain your 'Privacy Policy' and the websites 'Terms and conditions'.\nThere are several websites that can generate those text for you.\nCopy the urls of this websites into the fields above (e.g. /page/privacy-policy or /page/terms-and-conditions).\nJust make sure, the pages and urls exist and are working!");
 
 define("PRFLAN_282", "Session Save Method");
+
+define("PRFLAN_283", "Display navigation-bar labels");
+define("PRFLAN_284", "Collapse navigation side-bar by default");

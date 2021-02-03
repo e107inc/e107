@@ -39,7 +39,7 @@ class meta_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/meta' => array('caption' => LAN_MANAGE, 'perm' => '0'),
+		'main/meta' => array('caption' => LAN_MANAGE, 'perm' => '0', 'icon'=>'fas-cogs'),
 	);
 
 	protected $adminMenuAliases = array(//	'main/edit'	=> 'main/list'

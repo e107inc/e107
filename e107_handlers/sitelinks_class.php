@@ -663,6 +663,56 @@ class e_navigation
 		
 	}
 
+	/**
+	 * Guess the admin menu item icon based on the path
+	 * @param $key
+	 * @return string
+	 */
+	public static function guessMenuIcon($key)
+	{
+
+		list($mode, $action) = explode('/', $key);
+
+		switch($action)
+		{
+			case 'main':
+			case 'list':
+				$ret = $ret = ($mode === 'cat') ? 'fa-folder.glyph' : 'fa-list.glyph';
+				break;
+
+			case 'options':
+			case 'prefs':
+			case 'settings':
+			case 'config':
+			case 'configure':
+				$ret = 'fa-cog.glyph';
+				break;
+
+			case 'create':
+				$ret = ($mode === 'cat') ? 'fa-folder-plus.glyph' : 'fa-plus.glyph';
+				break;
+
+			case 'tools':
+			case 'maint':
+				$ret = 'fas-toolbox.glyph';
+				break;
+
+			case 'import':
+			case 'upload':
+				$ret = 'fa-upload.glyph';
+				break;
+
+			default:
+				$ret = 'fa-question.glyph';
+			// code to be executed if n is different from all labels;
+		}
+
+
+		return $ret;
+
+	}
+
+
 	function getIconArray()
 	{
 		return $this->iconArray;	
@@ -1327,6 +1377,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 
 			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
+			$replace['LINK_DESCRIPTION'] = varset($e107_vars[$act]['description']);
 
 			// valid URLs
 			$replace['LINK_URL'] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
@@ -1345,6 +1396,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
 			$replace['SUB_CLASS'] = '';
+
+			if(!isset($e107_vars[$act]['image_src']) && !isset($e107_vars[$act]['icon']))
+			{
+		//	 e107::getDebug()->log($e107_vars[$act]);
+				$e107_vars[$act]['image_src'] = self::guessMenuIcon($act.'/'.$act);
+			}
 			
 			if(!empty($e107_vars[$act]['image_src']) && strpos($e107_vars[$act]['image_src'], '.glyph') !== false)
 			{

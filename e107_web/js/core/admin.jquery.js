@@ -432,7 +432,7 @@ $(document).ready(function()
                var toggleStatus = 'open';
             }
 
-            document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; expires = 1; samesite=strict';
+            document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; path=/; expires = 1; samesite=strict';
 
 
         });

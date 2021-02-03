@@ -40,7 +40,7 @@ if($adminTheme !== 'bootstrap3' && $adminTheme !== 'bootstrap5')
 $admincss = trim($core->get('admincss'));
 if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
 {
-	$core->update('admincss','css/bootstrap-dark.min.css');
+	$core->update('admincss','css/modern-light.css');
 	$core->save(false,true);
 	e107::getRedirect()->redirect(e_SELF);
 }
