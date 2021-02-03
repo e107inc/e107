@@ -908,7 +908,7 @@ class core_library
 			'vendor_url'        => 'https://fontawesome.com/',
 			'version_arguments' => array(
 				'file'    => 'css/all.css',
-				'pattern' => '/(\d\.\d\.\d+)/',
+				'pattern' => '/(\d\.\d*\.\d+)/',
 				'lines'   => 3,
 			),
 			'files'             => array(
@@ -939,7 +939,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
-			'version'           => '5.8.1',
+			'version'           => '5.15.2',
 		);
 
 
