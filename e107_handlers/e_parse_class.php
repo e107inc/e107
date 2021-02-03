@@ -709,6 +709,54 @@ class e_parse
 	}
 
 
+	/**
+	 * Takes a multi-dimensional array and converts the keys to a list of routing paths.
+	 * paths are the key and value are the top most key.
+	 * @param array $array
+	 * @return false|array
+	 */
+	public function toRoute($array)
+	{
+		$res = $this->_processRoute($array);
+		$tmp = explode("_#_", $res);
+		$ret = [];
+		foreach($tmp as $v)
+		{
+			list($k) = explode('/',$v);
+			$ret[$v] = $k;
+		}
+
+		return $ret;
+	}
+
+	private function _processRoute($array, $prefix='')
+	{
+		$text = [];
+
+		if(is_array($array))
+		{
+			foreach($array as $key=>$val)
+			{
+				if($tag = $this->_processRoute($val, $key.'/'))
+				{
+					$add = $tag;
+				}
+				else
+				{
+					$add = $key;
+				}
+
+				$text[] = $prefix.$add;
+			}
+		}
+
+		return implode('_#_',$text);
+
+	}
+
+
+
+
 	public function toForm($text)
 	{
 
