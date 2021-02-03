@@ -77,7 +77,9 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 .e-overlay .thumbnail           { margin:0; }
 
 .admin-ui-grid img.fallback { opacity: 0.3; }
-.admin-ui-grid img.thumbnail { max-width: 100%; height:auto; }
+.admin-ui-grid img { max-width: 100%; height:auto; margin-left: auto; margin-right: auto; display:flex}
+.admin-ui-grid img.icon {  padding:15px; max-height: 250px; margin-left: auto; margin-right: auto; display: flex; }
+.admin-ui-grid img.icon-svg { width: 100%; }
 .admin-ui-grid .panel-footer { font-size:1em; /*height:30px; overflow:hidden*/}
 .admin-ui-grid .panel-footer a { overflow: hidden; white-space: nowrap; width: 88%; display: inline-block; }
 
@@ -1894,11 +1896,6 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
     width: 55px;
 }
 
-.admin-left-panel-collapsed .admin-menu,
-.admin-left-panel-collapsed .admin-menu .panel-heading {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
 
 .adminlist img.icon {
     max-width: 64px

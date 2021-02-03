@@ -826,8 +826,7 @@ class media_admin_ui extends e_admin_ui
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = IMALAN_129;
 
-		protected $grid             = array('title'=>'media_name', 'image'=>'media_preview', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
-
+		protected $grid             = array('title'=>'media_name', 'image'=>'media_preview', 'body'=>'',  'class'=>'col-sm-6 col-md-4 col-lg-2', 'perPage'=>12, 'carousel'=>false);
 
 
     	protected $preftabs			= array(IMALAN_78,IMALAN_89, 'Youtube');

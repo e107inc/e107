@@ -1544,7 +1544,7 @@
         .admin-left-panel .panel-default .panel-heading { color:white; background:none; padding-top: 28px; }
 
         span.sidebar-toggle-switch { float: right;  display: block;  width: 20px; height: 20px; cursor: pointer; }
-        span.sidebar-toggle-switch:after {  content: '×'; }
+
         thead tr, .navbar { background-image: none !important; border-left:0; border-right:0; /*background-color: rgba(0,0,0,0.05);*/ }
         thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; border-right:0 }
 
@@ -1607,7 +1607,7 @@
 
         .form-control.bootstrap-switch span.bootstrap-switch-default { background: rgba(0,0,0,0.1) }
 
-
+.e-debug { margin-left: 60px; } 
 
 
         @media only screen and (min-width : 768px) {

@@ -58,12 +58,12 @@ class theme_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0|1|TMP'),
-		'main/admin' 		=> array('caption'=> TPVLAN_34, 'perm' => '0'),
-		'main/choose' 		=> array('caption'=> TPVLAN_51, 'perm' => '0'),
-		'main/online'		=> array('caption'=> TPVLAN_62, 'perm' => '0'),
+		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0|1|TMP', 'icon'=>'fas-home'),
+		'main/admin' 		=> array('caption'=> TPVLAN_34, 'perm' => '0', 'icon'=>'fas-tachometer-alt'),
+		'main/choose' 		=> array('caption'=> TPVLAN_51, 'perm' => '0', 'icon'=>'fas-exchange-alt'),
+		'main/online'		=> array('caption'=> TPVLAN_62, 'perm' => '0', 'icon'=>'fas-search'),
 		'main/upload'		=> array('caption'=> TPVLAN_38, 'perm' => '0'),
-		'convert/main'		=> array('caption'=> ADLAN_CL_6, 'perm' => '0')
+		'convert/main'		=> array('caption'=> ADLAN_CL_6, 'perm' => '0', 'icon'=>'fas-toolbox')
 	);
 
 
