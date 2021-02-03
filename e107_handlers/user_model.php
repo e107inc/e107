@@ -1785,6 +1785,12 @@ class e_user extends e_user_model
 		}
 
 		$userlogin = new userlogin();
+
+		if(e_PAGE === 'admin.php')
+		{
+			$userlogin->setSecureImageMode('admin'); // use the admin secure code pref.
+		}
+
 		$loginSuccess = $userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
 
 		$userdata  = $userlogin->getUserData(); 

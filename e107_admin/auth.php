@@ -25,7 +25,7 @@ e107::getDebug()->logTime('(Start auth.php)');
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 // Required for a clean v1.x -> v2 upgrade. 
-$core = e107::getConfig('core');
+$core = e107::getConfig();
 $adminTheme = $core->get('admintheme');
 if($adminTheme !== 'bootstrap3' && $adminTheme !== 'bootstrap5')
 {
@@ -123,31 +123,19 @@ else
 
 	$use_imagecode = (vartrue($pref['admincode']) && extension_loaded("gd"));
 
-
 	// login check.
 	if(!empty($_POST['authsubmit']))
 	{
-
-		if ($use_imagecode)
-		{	
-			if ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify']))
-			{
-				e107::getRedirect()->redirect('admin.php?failed');
-				exit;
-			}
-		}
-
-		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge']), true)!==false)
+		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge'])) !== false)
 		{
-			e107::getRedirect()->go('admin');
+			e107::getRedirect()->go('admin'); // successful login.
 		}
 		else
 		{
 			e107::coreLan('log_messages', true);
 			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
-		//	echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-			e107::getRedirect()->redirect('admin.php?failed');
 
+			e107::getRedirect()->redirect('admin.php?failed');
 		}
 
 		exit;
@@ -241,12 +229,15 @@ else
 			
 			h2					{ text-align: center; color: #FAAD3D;  }
 			
-			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
+			#username           { background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
 
-			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
+			#userpass           { background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
 
 			#code-verify		{ width: 220px; padding: 7px; margin-left: auto; margin-right: auto; }
 
+			input, input:focus, 
+			input:hover         { color: rgb(238, 238, 238); background-color: #222222 !important }
+			
 			input[disabled] 	{ color: silver;	}
 			button[disabled] span	{	color: silver;	}
 			.title_clean		{ display:none; }
@@ -324,15 +315,15 @@ class auth
 		    	<div class='field-help' data-placement='right'>".LAN_PWD_REQUIRED."</div>
 		    </div>";
 		
-		if ($use_imagecode)
-		{
-			$text .= "
-			<div class='field'>
-				<label for='code-verify'>".LAN_ENTER_CODE."</label>"
-				.$sec_img->renderImage().
-				$sec_img->renderInput()."	
-			</div>";
-		}
+			if ($use_imagecode)
+			{
+				$text .= "
+				<div class='field'>
+					<label for='code-verify'>".LAN_ENTER_CODE."</label>"
+					.$sec_img->renderImage().
+					$sec_img->renderInput()."	
+				</div>";
+			}
 			    
 		    $text .= "<div class='admin-submit'>"
 		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');				

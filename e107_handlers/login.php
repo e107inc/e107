@@ -45,13 +45,25 @@ class userlogin
 	protected $userData = array();	// Information for current user
 	protected $passResult = false;	// USed to determine if stored password needs update
 	protected $testMode   = false;
-
+	protected $secImageType = 'logcode';
 
 	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
 		$this->userIP = e107::getIPHandler()->getIP();
 		$this->userMethods = e107::getUserSession();
+	}
+
+	public function setSecureImageMode($area)
+	{
+		$modes = array(
+			'admin' => 'admincode',
+			'login' => 'logcode',
+		//	'fpw'   => '',
+		);
+
+		$this->secImageType = varset($modes[$area],'not-a-pref');
+
 	}
 
 	/**
@@ -161,7 +173,7 @@ class userlogin
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 
 		// Check secure image
-		if (!$forceLogin && $pref['logcode'] && extension_loaded('gd'))
+		if (!$forceLogin && !empty($pref[$this->secImageType]) && extension_loaded('gd'))
 		{
 			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // Invalid code
 			{
