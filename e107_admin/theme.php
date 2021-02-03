@@ -325,9 +325,12 @@ class theme_admin_ui extends e_admin_ui
 		private	function setAdminTheme($folder)
 		{
 
-			$adminCSS = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
+		//	$adminCSS = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
 
-			e107::getConfig()->set('admintheme',$folder)->set('admincss',$adminCSS)->save(true,true,true);
+			$cfg = e107::getConfig();
+			$cfg->set('admintheme',$folder);
+		//	$cfg->set('admincss',$adminCSS);  //todo get the default from theme.xml
+			$cfg->save(true,true,true);
 
 			e107::getCache()->clear_sys();
 

@@ -1635,7 +1635,7 @@ class e_admin_dispatcher
 			// guess an icon.
 			if(!isset($var[$key]['image_src']))
 			{
-				$var[$key]['image_src'] = $this->guessMenuIcon($key);
+				$var[$key]['image_src'] = e_navigation::guessMenuIcon($key);
 			}
 			
 			
@@ -1699,50 +1699,6 @@ class e_admin_dispatcher
 		return e107::getNav()->admin($this->menuTitle, $selected, $var);
 	}
 
-
-	/**
-	 * Guess the admin menu item icon based on the path
-	 * @param $key
-	 * @return string
-	 */
-	private function guessMenuIcon($key)
-	{
-		list($mode, $action) = explode('/',$key);
-
-		switch($action)
-		{
-			case 'list':
-				$ret = $ret = ($mode === 'cat') ? 'fa-folder.glyph' : 'fa-list.glyph';
-				break;
-
-			case 'options':
-			case 'prefs':
-				$ret = 'fa-cog.glyph';
-				break;
-
-			case 'create':
-				$ret = ($mode === 'cat') ? 'fa-folder-plus.glyph' : 'fa-plus.glyph';
-				break;
-
-			case 'tools':
-			case 'maint':
-				$ret = 'fas-toolbox.glyph';
-			break;
-
-			case 'import':
-			case 'upload':
-				$ret = 'fa-upload.glyph';
-			break;
-
-			default:
-				$ret = 'fa-question.glyph';
-				// code to be executed if n is different from all labels;
-		}
-
-
-		return $ret;
-
-	}
 
 	/**
 	 * Render Help Text in <ul> format. XXX TODO

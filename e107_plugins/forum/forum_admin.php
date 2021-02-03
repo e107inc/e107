@@ -70,14 +70,14 @@ e107::css('inline',"
 			'main/opt1'         => array('divider' => true),
 
 			'main/rules'		=> array('caption' => WMGLAN_5, 'perm' => 'P'),
-			'mods/list'         => array('caption' => LAN_FORUM_2003, 'perm'=>'P'),
+			'mods/list'         => array('caption' => LAN_FORUM_2003, 'perm'=>'P', 'icon'=>'fas-user-tie'),
 			'main/prefs' 		=> array('caption' => LAN_PREFS, 'perm' => 'P'),
 
 			'main/opt2'         => array('divider' => true),
 
-			'report/list'       => array('caption' => FORLAN_116, 'perm'=>'P'),
+			'report/list'       => array('caption' => FORLAN_116, 'perm'=>'P', 'icon'=>'fas-flag'),
 			'post/list'         => array('caption' => LAN_PLUGIN_FORUM_LATESTPOSTS, 'perm'=>'P'),
-			'main/prune'		=> array('caption' => LAN_PRUNE, 'perm' => 'P'),
+			'main/prune'		=> array('caption' => LAN_PRUNE, 'perm' => 'P', 'icon'=>'fas-filter'),
 			'main/tools'        => array('caption' => FORLAN_153, 'perm'=>'p')
 		);
 

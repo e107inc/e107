@@ -49,7 +49,7 @@ if(!empty($_GET['iframe']))
 		protected $adminMenu = array(
 
 			'main/prefs'	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L')
+			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L', 'icon'=>'fas-tools')
 
 		);
 
@@ -70,7 +70,7 @@ if(!empty($_GET['iframe']))
 			{
 				$this->adminMenu = array(
 					'main/prefs'    => $this->adminMenu['main/prefs'],
-					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P'),
+					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P', 'icon'=>'fas-database'),
 					'main/tools'    => $this->adminMenu['main/tools'],
 				);
 			}

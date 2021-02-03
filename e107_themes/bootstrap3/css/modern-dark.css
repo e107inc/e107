@@ -674,7 +674,7 @@ legend{display:block;width:100%;margin-bottom:20px;font-size:21px;line-height:in
 label{display:inline-block;max-width:100%;margin-bottom:5px}
 input[type=search]{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-appearance:none}
 input[type=checkbox],input[type=radio]{margin:4px 0 0;margin-top:1px\9;line-height:normal}
-.form-control,output{display:block;font-size:16px;line-height:1.42857143;color:#eee}
+.form-control,output{display:block;font-size:14px;line-height:1.42857143;color:#eee}
 input[type=file]{display:block}
 input[type=range]{display:block;width:100%}
 select[multiple],select[size]{height:auto}
@@ -1480,7 +1480,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .table-responsive>.table{background-color:#373737}
 label{font-weight:400}
 .well,input,select,textarea{color:#eee;background-color:#222}
-input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid #171717;border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:16px}
+input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid #171717;border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:14px}
 .has-warning .control-label,.has-warning .form-control-feedback,.has-warning .help-block{color:#f89406}
 .has-warning .form-control,.has-warning .form-control:focus{border-color:#f89406}
 .has-error .control-label,.has-error .form-control-feedback,.has-error .help-block{color:#ee5f5b}
@@ -1578,7 +1578,7 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
         }
 
 
-div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:1.25em; opacity: 0; width:0;  }
+div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:16px; opacity: 0; width:0;  }
 div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
 div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
 div.admin-left-panel-collapsed .nav-header.sidebar-toggle-panel { display: none; }

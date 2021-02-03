@@ -741,10 +741,5 @@ function frontpage_adminmenu()
 
 	return e107::getNav()->admin($caption, $action, $var);
 
-
-
-	// show_admin_menu($caption, $action, $var);
 }
 
-
-?>
