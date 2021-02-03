@@ -168,22 +168,7 @@ class adminlog_admin extends e_admin_dispatcher
 	
 	protected $menuTitle = ADLAN_155;
 	
-	function init()
-	{
-		
-		e107::css('inline', "
-		
-		.fa { font-size:130% }
-		.fa-question-circle	{ }
-		.fa-exclamation-circle { color: #FAA732 }
-		.fa-warning { color: red }
-		
-		
-		
-		");	
-		
-		
-	}
+
 }
 
 
@@ -755,7 +740,7 @@ class audit_log_ui extends e_admin_ui
 {
 			
 		protected $pluginTitle		=  ADLAN_155;
-		protected $pluginName		= 'adminlog';
+		protected $pluginName		= 'core';
 		protected $table			= 'audit_log';
 		protected $pid				= 'dblog_id';
 		protected $perPage 			= 10;
@@ -810,7 +795,7 @@ class dblog_ui extends e_admin_ui
 {
 			
 		protected $pluginTitle		=  ADLAN_155;
-		protected $pluginName		= 'adminlog';
+		protected $pluginName		= 'core';
 		protected $table			= 'dblog';
 		protected $pid				= 'dblog_id';
 		protected $perPage 			= 15; 
