@@ -431,6 +431,7 @@ else
 	$bodyID = deftrue("e_CURRENT_PLUGIN") ? e_CURRENT_PLUGIN : str_replace(".php", "", e_PAGE);
 	$bodyID .= (!empty($_GET['mode']) && !empty($_GET['action'])) ? "-" . $_GET['mode'] . '-' . $_GET['action'] : '';
 	$body_onload .= " id=\"admin-" . e107::getForm()->name2id($bodyID) . "\" ";
+	$body_onload .= deftrue('e_IFRAME') ? " class=\"e-modal-content\" " : '';
 	unset($bodyID);
 }
 
@@ -591,7 +592,7 @@ if($e107_popup != 1)
 	}
 	elseif(!vartrue($_GET['configure']))
 	{
-		e107::css("inline", "body { padding:0px } "); // default padding for iFrame-only.
+		e107::css("inline", "body { padding:0px; margin:0; } "); // default padding for iFrame-only.
 	}
 
 	e107::getDebug()->logTime('(End: Parse Admin Header)');

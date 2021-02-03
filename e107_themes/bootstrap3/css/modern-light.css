@@ -316,8 +316,8 @@
         body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#c6c6c6}
         button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
         a{color:#77acd9;text-decoration:none}
-        .admin-right-panel a { color:#337ab7 }
-        .admin-right-panel a.btn { color:#fff }
+        .admin-right-panel a, body.e-modal-content a { color:#337ab7 }
+        .admin-right-panel a.btn, body.e-modal-content a.btn { color:#fff }
         a:focus,a:hover{color:#000000;text-decoration:none}
         a:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
         .carousel-inner>.item>a>img,.carousel-inner>.item>img,.img-responsive,.thumbnail a>img,.thumbnail>img{display:block;max-width:100%;height:auto}
@@ -1260,7 +1260,7 @@
         .modal.in .modal-dialog{-webkit-transform:translate(0,0);-ms-transform:translate(0,0);-o-transform:translate(0,0);transform:translate(0,0)}
         .modal-open .modal{overflow-x:hidden;overflow-y:auto}
         .modal-dialog{position:relative;width:auto;margin:10px}
-        .modal-content{position:relative;background-color:#373737;border:1px solid #999;border:1px solid rgba(0,0,0,.2);border-radius:6px;-webkit-box-shadow:0 3px 9px rgba(0,0,0,.5);box-shadow:0 3px 9px rgba(0,0,0,.5);outline:0}
+        .modal-content{position:relative;background-color:#f2f2f2;border:1px solid #999;border:1px solid rgba(0,0,0,.2);border-radius:6px;-webkit-box-shadow:0 3px 9px rgba(0,0,0,.5);box-shadow:0 3px 9px rgba(0,0,0,.5);outline:0}
         .modal-backdrop{position:fixed;top:0;z-index:1040;background-color:#000}
         .modal-backdrop.fade{opacity:0;filter:alpha(opacity=0)}
         .modal-backdrop.in{opacity:.5;filter:alpha(opacity=50)}
@@ -1505,7 +1505,7 @@
         thead tr{background-color:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.3)}
         .datetimepicker,.datetimepicker tfoot tr:first-child th:hover,.datetimepicker thead tr:first-child th:hover{background-color:#191919}
         .nav-collapse .dropdown-menu a:focus,.nav-collapse .dropdown-menu a:hover,.nav-collapse .nav>li>a:focus,.nav-collapse .nav>li>a:hover{background-color:#363636}
-        #admin-ui-media-manager.nav-tabs,.table-striped>tbody>tr.highlight-even,.table-striped>tbody>tr.highlight-odd,tr.highlight-even,tr.highlight-odd{background-color:#212121}
+/*        .table-striped>tbody>tr.highlight-even,.table-striped>tbody>tr.highlight-odd,tr.highlight-even,tr.highlight-odd{background-color:#212121}*/
         .datetimepicker table tr td span:hover,.datetimepicker table tr td.day:hover{color:#000}
         .bootstrap-select.btn-group .dropdown-menu .optgroup-div{color:#363636}
         .btn-primary>[class^=icon-],.dropdown-menu>.active>a>[class*=" icon-"],.dropdown-menu>.active>a>[class^=icon-],.dropdown-menu>li>a:hover>[class*=" icon-"],.dropdown-menu>li>a:hover>[class^=icon-],.dropdown-submenu:hover>a>[class*=" icon-"],.dropdown-submenu:hover>a>[class^=icon-],.icon-white,.nav-list>.active>a>[class*=" icon-"],.nav-list>.active>a>[class^=icon-],.nav-pills>.active>a>[class*=" icon-"],.nav-pills>.active>a>[class^=icon-],.nav-tabs>li>a>[class^=icon-],.navbar-inverse .nav>.active>a>[class*=" icon-"],.navbar-inverse .nav>.active>a>[class^=icon-],h1>[class^=icon-],h2>[class^=icon-],h3>[class^=icon-],h4>[class^=icon-],h5>[class^=icon-]{background-image:none}
@@ -1517,8 +1517,10 @@
         /* Custom */
 
         html { height: auto !important; }
-        body { margin-top: 51px; padding: 0 !important; background: #373737 }
-
+        body { margin-top: 51px; padding: 0 !important; background: #373737; }
+        body.e-modal-content { background: #f2f2f2; }
+        body.e-modal-content a.btn,
+        body.e-modal-content a.plupload_button { color: #fff }
 
 
         div.admin-left-panel {
@@ -1530,7 +1532,8 @@
             min-width: 50px;
         }
 
-        div.admin-right-panel { padding-top: 20px; border-top-left-radius: 5px; background: #f2f2f2; color: rgba(0, 0, 0, 0.75) }
+        div.admin-right-panel { padding-top: 20px; border-top-left-radius: 5px;  }
+        div.admin-right-panel, body.e-modal-content { background: #f2f2f2; color: rgba(0, 0, 0, 0.75) }
         h1, h2, h3, h4, h5, h6 { color: rgba(0, 0, 0, 0.75) }
 
 
