@@ -3753,9 +3753,8 @@ class e107
 
 		$ret = self::includeLan($path);
 		
-		if(($ret === false) && defset('E107_DEBUG_LEVEL') > 0 && strpos($path, '_global.php') === false )
+		if(($ret === false) && deftrue('E107_DBG_INCLUDES') && strpos($path, '_global.php') === false )
 		{
-
 			$result = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
 			self::getDebug()->log("Couldn't load: ".$path.print_a($result,true));
 		}

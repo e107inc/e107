@@ -47,16 +47,15 @@ if(!isset($mySQLserver))
 
 // require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img_handler.php"));
 
-require_once(e_HANDLER."secure_img_handler.php");
+$sim = e107::getSecureImg();
 
-$sim = new secure_image();
 
 if(!isset($_GET['id']))
 {
 	exit;	
 }
 
-$code = $_GET['id'];
+$code = (int) $_GET['id'];
 
 if(!empty($_GET['clr']) && preg_match('/^[a-f0-9]{6}$/i', $_GET['clr'])) //hex color is valid
 {
@@ -72,4 +71,3 @@ $sim->render($code,$color);
 
 exit;
 
-?>
