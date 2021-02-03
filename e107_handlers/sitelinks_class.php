@@ -670,8 +670,9 @@ class e_navigation
 	 */
 	public static function guessMenuIcon($key)
 	{
-
-		list($mode, $action) = explode('/', $key);
+		$tmp = explode('/', $key);
+		$mode = varset($tmp[0]);
+		$action = varset($tmp[1]);
 
 		switch($action)
 		{
