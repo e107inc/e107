@@ -33,6 +33,38 @@
 			$this->tp->init();
 		}
 
+		public function testToRoute()
+		{
+
+			$posted = array(
+				'myfield'  => array(
+					'computer' => array(
+						'apple' => array('imac' => '1')
+					),
+					'os' => array(
+						'microsoft' => array('windows' => 'xp')
+					)
+				),
+				'myfield2' => array(
+					'house' => array('car' => 'red')
+				),
+				'myfield3' => 'string',
+
+			);
+
+			$expected = array (
+			  'myfield/computer/apple/imac' => 'myfield',
+			  'myfield/os/microsoft/windows' => 'myfield',
+			  'myfield2/house/car' => 'myfield2',
+			  'myfield3' => 'myfield3',
+			);
+
+			$result = $this->tp->toRoute($posted);
+			$this->assertSame($expected, $result);
+
+		}
+
+
 		public function testStripBlockTags()
 		{
 			$tests = array(

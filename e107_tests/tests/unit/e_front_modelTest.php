@@ -26,11 +26,14 @@
 				'myfield'                   => 'str',
 				'myfield2'                  => 'int',
 				'myfield3'                  => 'str',
-				'other/active'              => 'bool',
-				'other/bla/active'          => 'array',
+				'myfield4'                  => 'json',
+				'myfield5'                  => 'array',
+				'myfield6'                  => 'str',
 				'gateways/other'            => 'str',
 				'gateways/paypal/active'    => 'int',
 				'gateways/paypal/title'     => 'str',
+				'other/active'              => 'bool',
+				'other/bla/active'          => 'array',
 				'another/one/active'        => 'bool',
 			);
 
@@ -38,6 +41,8 @@
 			$this->model->setDataFields($this->dataFields);
 
 		}
+
+
 /*
 		public function testIsValidFieldKey()
 		{
@@ -58,7 +63,7 @@
 		 */
 		public function testSanitize()
 		{
-
+			// test simple text field.
 			$result = $this->model->sanitize('myfield', 'My Field Value');
 			$this->assertSame('My Field Value', $result);
 
@@ -66,9 +71,38 @@
 			$result = $this->model->sanitize(array('myfield' => 'My Field Value'));
 			$this->assertSame(array( 'myfield' => 'My Field Value' ), $result);
 
+
+
+			// test posting of array and conversion to json.
+			$posted = array('myfield4' => array('level1' => array('level2' => 'level2 value')) );
+			$expected = array (
+  'myfield4' => '{
+    "level1": {
+        "level2": "level2 value"
+    }
+}',
+);
+			$result = $this->model->sanitize($posted);
+
+			$this->assertSame($expected, $result);
+
+			// test posting of array returned as array.
+			$posted = array('myfield5' => array('level1' => array('level2' => 'level2 value')) );
+			$result = $this->model->sanitize($posted);
+			$this->assertSame($posted, $result);
+
+
+			// test posting of array returned as array.
+			$posted = array('myfield6' => array('opt1', 'opt2', 'opt3'));
+			$result = $this->model->sanitize($posted);
+			$this->assertSame($posted, $result);
+
+
+			// test undefined field.
 			$result = $this->model->sanitize('non_field', 1);
 			$this->assertNull($result);
 
+			// test multi-dimensional field.
 			$result = $this->model->sanitize('gateways/paypal/active', 1);
 			$this->assertSame(1, $result);
 
@@ -77,12 +111,12 @@
 				    array (
 				      'paypal' =>
 				        array (
-				          'active' =>  '0',
 				          'title' => 'PayPal Express' ,
 				          'icon' =>  'fa-paypal',
 						)
 				    )
 			);
+
 
 			// Real example from vstore prefs. key becomes multi-dimensional array when posted.
 			$posted = array(
@@ -96,7 +130,7 @@
 						)
 				),
 				'other' => array(
-					'active' => 1,
+					'active' => 5,
 
 				),
 				'another' => array(
@@ -112,6 +146,7 @@
 			    array (
 			      'active' => 1, // converted to int.
 			      'title' => 'PayPal Express',
+			      // icon removed - as not valid.
 			    ),
 			  ),
 			  'other' =>
@@ -127,7 +162,7 @@
 			  ),
 			);
 
-			// @todo FIXME - doesn't pass. More accurate check required.
+			// @todo FIXME - doesn't pass. More accurate check has been made, but not injected into the array yet.
 			$result = $this->model->sanitize($posted);
 		//	$this->assertSame($expected, $result);
 
@@ -136,7 +171,7 @@
 		}
 
 
-		public function testSanitizeCustomFields()
+		public function testCustomFieldsSantizie()
 		{
 			$dataFields = array ( 'chapter_id' => 'int', 'chapter_icon' => 'str', 'chapter_parent' => 'str', 'chapter_name' => 'str', 'chapter_template' => 'str', 'chapter_meta_description' => 'str', 'chapter_meta_keywords' => 'str', 'chapter_sef' => 'str', 'chapter_manager' => 'int', 'chapter_order' => 'str', 'chapter_visibility' => 'int', 'chapter_fields' => 'json', 'chapter_image' => 'str', );
 			$this->model->setDataFields($dataFields);
@@ -153,7 +188,6 @@
   'chapter_manager' => 254,
   'chapter_order' => '0',
   'chapter_visibility' => 0,
-  'chapter_image' => '',
   'chapter_fields' => '{
     "__tabs__": {
         "additional": "Custom Fields 10"
@@ -261,6 +295,7 @@
         "help": ""
     }
 }',
+  'chapter_image' => '',
 );
 			$result = $this->model->sanitize($posted);
 			$this->assertSame($expected, $result);

@@ -2715,84 +2715,68 @@ class e_front_model extends e_model
 	public function sanitize($key, $value = null)
 	{
 		$tp = e107::getParser();
-
+		
 		if(is_array($key))
 		{
-			$ret = array();
-			foreach ($key as $k=>$v)
+			$ret = [];
+
+			foreach($this->_data_fields as $fld => $type)
 			{
-	            if($this->isValidFieldKey($k))
-	            {
-	                $ret[$k] = $this->sanitize($k, $v);
-	         //      $ret[$k] = is_array($v) ? $this->sanitize($v) : $this->sanitize($k, $v);
-	            }
+				list($field) = explode("/", $fld); // ie the field being posted as an array.
+
+				if(!isset($key[$field]))
+				{
+					continue;
+				}
+
+				if(strpos($fld, '/') !== false) // multi-dimensional array field key name.
+				{
+					$md = explode('/', $fld); // split the field name
+					$value = $key[$field];
+					foreach($md as $f) // loop through the path (depth/of/array) to check $value[x][y][z] etc.
+					{
+						if(isset($value[$f]))
+						{
+							if(is_array($value[$f]))
+							{
+								$value = $value[$f];
+							}
+							else // the actual field being saved. .
+							{
+								// FIXME add the sanitized value into the end of the array.
+								$sanitized = $this->sanitizeValue($type, $value[$f], $fld);
+								$ret[$field] = $key[$field];
+							}
+
+						}
+
+					}
+
+				}
+				else // regular field.
+				{
+					$ret[$field] = $this->sanitize($field, $key[$field]);
+				}
+
 			}
+
 			return $ret;
 		}
 
-		if(!$type = $this->isValidFieldKey($key))
+
+		if(!isset($this->_data_fields[$key]))
 		{
 			return null;
 		}
-
-	//	$type =  $this->_data_fields[$key];
+		$type =  $this->_data_fields[$key];
 		if(null === $value)
 		{
 			$value = $this->getPostedData($key);
 		}
 
-		$ret = null; // default
 
-		switch ($type)
-		{
-			case 'int':
-			case 'integer':
-				//return intval($this->toNumber($value));
-				$ret = (int) $tp->toNumber($value);
-			break;
+		return $this->sanitizeValue($type, $value, $key);
 
-			case 'safestr':
-				$ret = $tp->filter($value);
-			break;
-
-			case 'str':
-			case 'string':
-			case 'array':
-				$type = $this->getFieldInputType($key);
-				$ret = $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
-			break;
-
-			case 'json':
-				if(!empty($value))
-				{
-					$ret = e107::serialize($value,'json');
-				}
-			break;
-
-			case 'code':
-				$ret = $tp->toDB($value, false, false, 'pReFs');
-			break;
-
-			case 'float':
-				// return $this->toNumber($value);
-				$ret = $tp->toNumber($value);
-			break;
-
-			case 'bool':
-			case 'boolean':
-				$ret = ($value ? true : false);
-			break;
-
-			case 'model':
-				$ret = $value->mergePostedData(false, true, true);
-			break;
-
-			case 'null':
-				$ret = ($value ? $tp->toDB($value) : null);
-			break;
-	  	}
-
-		return $ret;
 	}
 
 
@@ -2962,6 +2946,70 @@ class e_front_model extends e_model
 		if($return) return $ret;
 
 		var_dump($ret);
+	}
+
+	/**
+	 * @param $type
+	 * @param $value
+	 * @param $key
+	 * @return array|bool|float|int|mixed|string|null
+	 */
+	private function sanitizeValue($type, $value, $key)
+	{
+
+		$ret = null; // default
+		$tp = e107::getParser();
+
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				//return intval($this->toNumber($value));
+				$ret = (int) $tp->toNumber($value);
+				break;
+
+			case 'safestr':
+				$ret = $tp->filter($value);
+				break;
+
+			case 'str':
+			case 'string':
+			case 'array':
+				$type = $this->getFieldInputType($key);
+				$ret = $tp->toDB($value, false, false, 'model', array('type' => $type, 'field' => $key));
+				break;
+
+			case 'json':
+				if(!empty($value))
+				{
+					$ret = e107::serialize($value, 'json');
+				}
+				break;
+
+			case 'code':
+				$ret = $tp->toDB($value, false, false, 'pReFs');
+				break;
+
+			case 'float':
+				// return $this->toNumber($value);
+				$ret = $tp->toNumber($value);
+				break;
+
+			case 'bool':
+			case 'boolean':
+				$ret = ($value ? true : false);
+				break;
+
+			case 'model':
+				$ret = $value->mergePostedData(false, true, true);
+				break;
+
+			case 'null':
+				$ret = ($value ? $tp->toDB($value) : null);
+				break;
+		}
+
+		return $ret;
 	}
 }
 
