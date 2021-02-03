@@ -955,7 +955,7 @@ class e107Test extends \Codeception\Test\Unit
 		  'ADMIN_FALSE_ICON'           => '<span class=\'text-danger admin-false-icon\'>&#10799;</span>',
 		  'ADMIN_WARNING_ICON'         => '<i class=\'fa fa-warning text-warning\'></i>',
 		  'ADMIN_GRID_ICON'            => '<i class=\'fa fa-th\'></i>',
-		  'ADMIN_LIST_ICON'            => '<i class=\'fa fa-th-list\'></i>',
+		  'ADMIN_LIST_ICON'            => '<i class=\'fas fa-list\'></i>',
 		  'ADMIN_EDIT_ICON'            => '<i class=\'S32 e-edit-32\'></i>',
 		  'ADMIN_DELETE_ICON'          => '<i class=\'S32 e-delete-32\'></i>',
 		  'ADMIN_SORT_ICON'            => '<i class=\'S32 e-sort-32\'></i>',
