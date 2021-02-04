@@ -1574,6 +1574,7 @@
         }
 
 
+
         div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:16px; opacity: 0; width:0;  }
         div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
         div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
@@ -1608,9 +1609,13 @@
 
         }
 
+
+
         .form-control.bootstrap-switch span.bootstrap-switch-default { background: rgba(0,0,0,0.1) }
 
 .e-debug { margin-left: 60px; } 
+.admin-ui-help-tip { color: rgba(0,0,0,0.3) !important; }
+.admin-ui-help-tip:hover { color: #5bc0de !important }
 
 
         @media only screen and (min-width : 768px) {

@@ -1029,7 +1029,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".NWSLAN_127."</td>
 								<td>
 									".$frm->select('news_default_template', $newsTemplates, $pref['news_default_template'])."
-									<div class='field-help'>".LAN_NEWS_88."</div>
+									".$frm->help(LAN_NEWS_88, 'after')."
 								</td>
 							</tr>
 
@@ -1044,7 +1044,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".LAN_NEWS_91."</td>
 								<td>
 									".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'])."
-									<div class='field-help'>".LAN_NEWS_92."</div>
+									".$frm->help(LAN_NEWS_92, 'after')."
 								</td>
 							</tr>
 
@@ -1052,7 +1052,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".LAN_NEWS_93."</td>
 								<td>
 									".$frm->checkboxes('news_list_templates', $this->news_renderTypes, varset($pref['news_list_templates'],0), array('useKeyValues' => 1))."
-									<div class='field-help'>".LAN_NEWS_94."</div>
+									".$frm->help(LAN_NEWS_94, 'after')."
 								</td>
 							</tr>
 							";
@@ -1063,7 +1063,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".LAN_NEWS_110."</td>
 								<td>
 									".$frm->number('news_cache_timeout',varset($pref['news_cache_timeout'],0), 6)."
-									<div class='field-help'>".LAN_NEWS_111."</div>
+									".$frm->help(LAN_NEWS_111, 'after')."
 								</td>
 							</tr>";
 
@@ -1086,7 +1086,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".NWSLAN_115."</td>
 								<td id='newsposts-archive-cont'>
 									".$frm->select('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']))."
-									<div class='field-help'>".NWSLAN_116."</div>
+									".$frm->help(NWSLAN_116, 'after')."
 								</td>
 							</tr>
 							<tr>
@@ -1160,7 +1160,7 @@ class news_admin_ui extends e_admin_ui
 								<td>".NWSLAN_101."</td>
 								<td>
 									".$frm->number('subnews_resize', $pref['subnews_resize'], 5, 'size=6&class=tbox')."
-									<div class='field-help'>".NWSLAN_102."</div>
+									".$frm->help(NWSLAN_102, 'after')."
 								</td>
 							</tr>
 							<tr>
@@ -1179,7 +1179,7 @@ class news_admin_ui extends e_admin_ui
 								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->radio_switch('news_newdateheader', $pref['news_newdateheader'])."
-										<div class='field-help'>".NWSLAN_112."</div>
+										".$frm->help(NWSLAN_112, 'after')."
 									</div>
 								</td>
 							</tr>
@@ -1188,7 +1188,7 @@ class news_admin_ui extends e_admin_ui
 								<td>
 									<div class='auto-toggle-area autocheck'>
 										".$frm->radio_switch('news_unstemplate', vartrue($pref['news_unstemplate']))."
-										<div class='field-help'>".NWSLAN_114."</div>
+										".$frm->help(NWSLAN_114, 'after')."
 									</div>
 								</td>
 							</tr>

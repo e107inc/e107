@@ -1046,14 +1046,14 @@ class system_tools
 				</colgroup>
 				<tbody>";
 				
-		$text = "<div>";
+		$text = "<div class='row'>";
 
 
 		foreach($this->_options as $key=>$val)
 		{
 			
-			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
-			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true])."</a>
+			$text .= "<div class='col-md-6 col-lg-4' style='height:80px; padding-bottom:10px'>
+			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		

@@ -412,15 +412,15 @@ class social_ui extends e_admin_ui
 				$keypref = "xurl[".$k."]";
 				$text_label = "xurl-".$k."";
 				$def = "XURL_". strtoupper($k);
-
+				$help = LAN_SOCIAL_ADMIN_13." ".$var['label']." ".LAN_SOCIAL_ADMIN_12." (".$def.")";
 				$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);
 
 				$text2 .= "
 					<tr>
-						<td><label for='".$text_label."'>".LAN_SOCIAL_ADMIN_11." ".$var['label']." ".LAN_SOCIAL_ADMIN_12."</label></td>
+						<td><label for='".$text_label."'>".LAN_SOCIAL_ADMIN_11." ".$var['label']." ".LAN_SOCIAL_ADMIN_12."</label>".$frm->help($help, 'before')."</td>
 						<td>
-							".$frm->text($keypref, varset($pref['xurl'][$k]), false, $opts)."
-							<div class='field-help'>".LAN_SOCIAL_ADMIN_13." ".$var['label']." ".LAN_SOCIAL_ADMIN_12." (".$def.")</div>
+							".$frm->text($keypref, varset($pref['xurl'][$k]), false, $opts).
+							$frm->help($help, 'after')."
 						</td>
 					</tr>
 				";

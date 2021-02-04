@@ -515,14 +515,17 @@ class banlist_ui extends e_admin_ui
 			foreach ($ipAdministrator->getValidReasonList() as $bt)
 			{
 				$i = abs($bt) + 1;		// Forces a single-digit positive number
+
+				$helpTip = $ipAdministrator->getBanTypeString($bt, TRUE);
 				$text .= "
 						<tr>
 							<td>
 								<strong>".$ipAdministrator->getBanTypeString($bt, FALSE)."</strong>
-								<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
+								".$frm->help($helpTip, 'before')."
 							</td>
 							<td class='left'>
 								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120, array('size'=>'xxlarge'))."
+								".$frm->help($helpTip, 'after')."
 							</td>
 							<td class='center'>". self::ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_' . ($i)) ."</td>
 						</tr>
@@ -605,46 +608,46 @@ class banlist_ui extends e_admin_ui
 							</colgroup>
 							<tbody>
 								<tr>
-									<td>".BANLAN_63."</td>
+									<td>".BANLAN_63."".$frm->help(BANLAN_65, 'before')."</td>
 									<td>
 										<div class='auto-toggle-area autocheck'>
 											".$frm->checkbox('ban_rdns_on_access', 1, $pref['enable_rdns'] == 1)."
-											<div class='field-help'>".BANLAN_65."</div>
+											".$frm->help(BANLAN_65, 'after')."
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<td>".BANLAN_64."</td>
+									<td>".BANLAN_64.$frm->help(BANLAN_66, 'before')."</td>
 									<td>
 										<div class='auto-toggle-area autocheck'>
 											".$frm->checkbox('ban_rdns_on_ban', 1, $pref['enable_rdns_on_ban'] == 1)."
-											<div class='field-help'>".BANLAN_66."</div>
+											".$frm->help(BANLAN_66, 'after')."
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<td>".BANLAN_67."</td>
+									<td>".BANLAN_67.$frm->help(BANLAN_68, 'before')."</td>
 									<td>
 										<div class='field-spacer'>".$this->drop_box('ban_access_guest', $ban_access_guest).BANLAN_70."</div>
 										<div class='field-spacer'>".$this->drop_box('ban_access_member', $ban_access_member).BANLAN_69."</div>
-										<div class='field-help'>".BANLAN_68."</div>
+										".$frm->help(BANLAN_68, 'after')."
 									</td>
 								</tr>
 								<tr>
-									<td>".BANLAN_71."</td>
+									<td>".BANLAN_71.$frm->help(BANLAN_73, 'before')."</td>
 									<td>
 										<div class='auto-toggle-area autocheck'>
 											".$frm->checkbox('ban_retrigger', 1, $pref['ban_retrigger'] == 1)."
-											<div class='field-help'>".BANLAN_73."</div>
+											".$frm->help(BANLAN_73, 'after')."
 										</div>
 									</td>
 								</tr>
 	
 								<tr>
-								  <td>".BANLAN_91."</td>
+								  <td>".BANLAN_91.$frm->help(BANLAN_92, 'before')."</td>
 								  <td>
 								  ".$frm->text('ban_date_format', varset($pref['ban_date_format'], '%H:%M %d-%m-%y'), 40)."
-								  <div class='field-help'>".BANLAN_92."</div>
+								  ".$frm->help(BANLAN_92, 'after')."
 								  </td>
 								</tr>
 							</tbody>

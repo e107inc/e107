@@ -1583,7 +1583,7 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padd
 div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
 div.admin-left-panel-collapsed .nav-header.sidebar-toggle-panel { display: none; }
 div.admin-left-panel .nav-pills > li.active > a > span > i {  color: #5bc0de }
-
+div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white }
 /*
 
 .admin-left-panel, .admin-right-panel {

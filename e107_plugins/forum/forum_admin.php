@@ -455,11 +455,11 @@ e107::css('inline',"
 			</tr>
 
 			<tr>
-				<td>".LAN_TYPE."</td>
+				<td>".LAN_TYPE."".$frm->help(FORLAN_2, 'before')."</td>
 				<td>
 					".$frm->radio('prune_type','delete',false, array('label'=>FORLAN_89)).
 					$frm->radio('prune_type','make_inactive',true, array('label'=>FORLAN_90))."
-					<div class='field-help'>".FORLAN_2."</div>
+					".$frm->help(FORLAN_2, 'after')."
 				</td>
 			</tr>
 
