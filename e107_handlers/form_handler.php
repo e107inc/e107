@@ -70,6 +70,7 @@ class e_form
 	private     $_inline_token;
 	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
 	private     $_fontawesome = false;
+	private     $_help_location = 0;
 	/**
 	 * @var user_class
 	 */
@@ -94,6 +95,27 @@ class e_form
 		{
 			$this->_fontawesome = true;
 		}
+
+		$this->_help_location = (int) e107::getPref('admin_helptip_location');
+	}
+
+	/**
+	 * Set the location of where tooltips will be rendered.
+	 * @param $val
+	 */
+	public function setHelpLocation($val)
+	{
+		$opts = array(
+			'before'    => 1, // icon
+			'after'     => 0, // hover
+			'none'      => -1 // disabled.
+		);
+
+		if(isset($opts[$val]))
+		{
+			$this->_help_location = $opts[$val];
+		}
+
 	}
 
 	/**
@@ -3029,9 +3051,22 @@ class e_form
 		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
 	
-	public function help($text)
+	public function help($text, $mode)
 	{
-		return !empty($text) ? '<div class="field-help">'.$text.'</div>' : '';
+		if(empty($text)
+		|| $this->_help_location === -1
+		|| ($this->_help_location === 0 && $mode === 'before')
+		|| ($this->_help_location === 1 && $mode === 'after')
+		)
+		{
+			return null;
+		}
+
+		$ret = '';
+		$ret .= ($mode === 'before') ? '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>' : '';
+		$ret .= '<div class="field-help" data-placement="left">'.defset($text,$text).'</div>';
+
+		return $ret;
 	}
 
 	public function select_open($name, $options = array())
@@ -7327,7 +7362,7 @@ var_dump($select_options);*/
 		$hidden_fields = array();
 
 
-		$helpTipLocation = (int) e107::getPref('admin_helptip_location');
+		$helpTipLocation = $this->_help_location;
 		$help = '';
 
 
@@ -7358,7 +7393,7 @@ var_dump($select_options);*/
 
 			if($helpTipLocation !== -1) // -1 = help disabled.
 			{
-				$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
+			//	$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
 			}
 
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
@@ -7445,9 +7480,10 @@ var_dump($select_options);*/
 
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title'])). '</span>' .$required.$label;
 
-				$leftCell .= (!empty($help) && $helpTipLocation === 1)  ? "<i class='admin-ui-help-tip far fa-question-circle'><!-- --></i>".$help : '';
+				$leftCell .= $this->help(varset($att['help']), 'before');
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId()). ' '.$help;
-				$rightCell .= (!empty($help) && $helpTipLocation === 0) ? $help : '';
+				$rightCell .= $this->help(varset($att['help']), 'after');
+
 				$att['writeParms'] = $writeParms;
 				 
 				$text .= $this->renderCreateFieldRow($leftCell, $rightCell, $att);

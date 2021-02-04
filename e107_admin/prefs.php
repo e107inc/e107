@@ -252,7 +252,7 @@ function sendTest()
 	else
 	{
 		$mailheader_e107id = USERID;
-		$pref = e107::pref('core');
+		$pref = e107::pref();
 
 		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).") " : ' (PHP)';
 
@@ -291,7 +291,7 @@ function sendTest()
 		else 
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			$log->add('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+			$log->add('MAIL_01',$sendto);
 		}
 	}
 
@@ -335,24 +335,24 @@ $text = "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='siteurl'>".PRFLAN_3."</label></td>
+						<td><label for='siteurl'>".PRFLAN_3."</label>".$frm->help(PRFLAN_159.": <strong>".SITEURL."</strong>", 'before')."</td>
 						<td>
 							".$frm->text('siteurl', $pref['siteurl'], 150, 'size=xxlarge')."
-							".($pref['siteurl'] == SITEURL ? "" : "<div class='field-help'>".PRFLAN_159.": <strong>".SITEURL."</strong></div>")."
+							".($pref['siteurl'] == SITEURL ? "" : $frm->help(PRFLAN_159.": <strong>".SITEURL."</strong>", 'after'))."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='redirectsiteurl'>".PRFLAN_134."</label></td>
+						<td><label for='redirectsiteurl'>".PRFLAN_134."</label>".$frm->help(PRFLAN_135, 'before')."</td>
 						<td>";
 						/*
 							".$frm->radio('redirectsiteurl', 1, $pref['redirectsiteurl'], array('label'=>LAN_ENABLED))." 
 							".$frm->radio('redirectsiteurl', 0, !$pref['redirectsiteurl'], array('label'=>LAN_DISABLED))."
 						*/
-						$text .= $frm->radio_switch('redirectsiteurl', $pref['redirectsiteurl'])."<div class='field-help'>".PRFLAN_135."</div>
+						$text .= $frm->radio_switch('redirectsiteurl', $pref['redirectsiteurl']).$frm->help(PRFLAN_135, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='sitebutton'>".PRFLAN_4."</label></td>
+						<td><label for='sitebutton'>".PRFLAN_4."</label>".$frm->help(PRFLAN_225, 'before')."</td>
 						<td>
 ";
 /*
@@ -391,29 +391,29 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
+						<td><label for='sitelogo'>".PRFLAN_214."</label>".$frm->help(PRFLAN_226, 'before')."</td>
 						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','w=200&help='.PRFLAN_226)."</td>
 					</tr>
 					<tr>
-						<td><label for='sitetag'>".PRFLAN_5."</label></td>
+						<td><label for='sitetag'>".PRFLAN_5."</label>".$frm->help(PRFLAN_227, 'before')."</td>
 						<td>
 							".$frm->textarea('sitetag', $tp->toForm($pref['sitetag']), 3, 59, array('size'=>'xxlarge'))."
-							<div class='field-help'>".PRFLAN_227."</div>
+							".$frm->help(PRFLAN_227, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='sitedescription'>".PRFLAN_6."</label></td>
+						<td><label for='sitedescription'>".PRFLAN_6."</label>".$frm->help(PRFLAN_228, 'before')."</td>
 						<td>
 							".$frm->textarea('sitedescription', $tp->toForm($pref['sitedescription']), 3, 80, array('size'=>'xxlarge'))."
-							<div class='field-help'>".PRFLAN_228."</div>
+							".$frm->help(PRFLAN_228, 'after')."
 						</td>
 					</tr>
 					
 					<tr>
-						<td><label for='sitedisclaimer'>".PRFLAN_9."</label></td>
+						<td><label for='sitedisclaimer'>".PRFLAN_9."</label>".$frm->help(PRFLAN_229, 'before')."</td>
 						<td>
 							".$frm->textarea('sitedisclaimer',$tp->toForm( $pref['sitedisclaimer']), 3, 80, array('size'=>'xxlarge'))."
-							<div class='field-help'>".PRFLAN_229."</div>
+							".$frm->help(PRFLAN_229, 'after')."
 						</td>
 					</tr>
 				</tbody>
@@ -446,17 +446,17 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						</td>
 					</tr>
 					<tr>
-						<td><label for='replyto-name'>".PRFLAN_174."</label></td>
+						<td><label for='replyto-name'>".PRFLAN_174."</label>".$frm->help(PRFLAN_175, 'before')."</td>
 						<td>
 							".$frm->text('replyto_name', $pref['replyto_name'], 100, array('size'=>'xlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_175."</div>
+							".$frm->help(PRFLAN_175, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='replyto-email'>".PRFLAN_176."</label></td>
+						<td><label for='replyto-email'>".PRFLAN_176."</label>".$frm->help(PRFLAN_177, 'before')."</td>
 						<td>
 							".$frm->text('replyto_email', $pref['replyto_email'], 100, array('size'=>'xlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_177."</div>
+							".$frm->help(PRFLAN_177, 'after')."
 						</td>
 					</tr>
 							
@@ -496,48 +496,48 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					
 
 					<tr>
-						<td><label for='sitecontactinfo'>".PRFLAN_162."</label></td>
+						<td><label for='sitecontactinfo'>".PRFLAN_162."</label>".$frm->help(PRFLAN_163, 'before')."</td>
 						<td>
 							".$frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_163."</div>
+							".$frm->help(PRFLAN_163, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='sitecontacts'>".PRFLAN_168."</label></td>
+						<td><label for='sitecontacts'>".PRFLAN_168."</label>".$frm->help(PRFLAN_169, 'before')."</td>
 						<td>
 							".$e_userclass->uc_dropdown('sitecontacts', $pref['sitecontacts'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>".PRFLAN_169."</div>
+							".$frm->help(PRFLAN_169, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='contact_visibility'>".PRFLAN_258."</label></td>
+						<td><label for='contact_visibility'>".PRFLAN_258."</label>".$frm->help(PRFLAN_274, 'before')."</td>
 						<td>
 							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), null, "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>".PRFLAN_274."</div>
+							".$frm->help(PRFLAN_274, 'after')."
 						</td>
 					</tr>
 
 					<tr>
-						<td><label for='contact-filter'>".PRFLAN_270."</label></td>
+						<td><label for='contact-filter'>".PRFLAN_270."</label>".$frm->help(PRFLAN_271, 'before')."</td>
 						<td>
 							".$frm->textarea('contact_filter', $pref['contact_filter'], 5, 59, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_271."</div>
+							".$frm->help(PRFLAN_271, 'after')."
 						</td>
 					</tr>
 
 
 
 					<tr>
-						<td><label for='contact-emailcopy'>".PRFLAN_164."</label></td>
+						<td><label for='contact-emailcopy'>".PRFLAN_164."</label>".$frm->help(PRFLAN_165, 'before')."</td>
 						<td>";
 						/*
 							".$frm->radio('contact_emailcopy', 1, $pref['contact_emailcopy'])."
 							".$frm->label(LAN_ENABLED, 'contact_emailcopy', 1)."&nbsp;&nbsp;
 							".$frm->radio('contact_emailcopy', 0, !$pref['contact_emailcopy'])."
 							".$frm->label(LAN_DISABLED, 'contact_emailcopy', 0)."
-							<div class='smalltext field-help'>".PRFLAN_165."</div>
+							".$frm->help(PRFLAN_165, 'after')."
 						*/
-					$text .= $frm->radio_switch('contact_emailcopy', $pref['contact_emailcopy'])."<div class='smalltext field-help'>".PRFLAN_165."</div>
+					$text .= $frm->radio_switch('contact_emailcopy', $pref['contact_emailcopy']).$frm->help(PRFLAN_165, 'after')."
 
 
 
@@ -561,25 +561,25 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='gdpr-privacypolicy'>".PRFLAN_278."</label></td>
+						<td><label for='gdpr-privacypolicy'>".PRFLAN_278."</label>".$frm->help(PRFLAN_279, 'before')."</td>
 						<td>
 							".$frm->text('gdpr_privacypolicy', $pref['gdpr_privacypolicy'], 200, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_279."</div>
+							".$frm->help(PRFLAN_279, 'after')."
 						</td>
 					</tr>
 
 					<tr>
-						<td><label for='gdpr-termsandconditions'>".PRFLAN_280."</label></td>
+						<td><label for='gdpr-termsandconditions'>".PRFLAN_280."</label>".$frm->help(PRFLAN_279, 'before')."</td>
 						<td>
 							".$frm->text('gdpr_termsandconditions', $pref['gdpr_termsandconditions'], 200, array('size'=>'xxlarge'))."
-							<div class='smalltext field-help'>".PRFLAN_279."</div>
+							".$frm->help(PRFLAN_279, 'after')."
 						</td>
 					</tr>
 
 					<tr>
-						<td><label>".LAN_DESCRIPTION."</label></td>
+						<td><label>".LAN_DESCRIPTION."</label>".$frm->help(nl2br(PRFLAN_281), 'before')."</td>
 						<td>
-							<div class='field-help'>".nl2br(PRFLAN_281)."</div>
+							".$frm->help(nl2br(PRFLAN_281), 'after')."
 						</td>
 					</tr>
 				</tbody>
@@ -650,32 +650,32 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='admin-alerts-ok'>".PRFLAN_95."</label></td>
+						<td><label for='admin-alerts-ok'>".PRFLAN_95."</label>".$frm->help(PRFLAN_96, 'before')."</td>
 						<td>
 							".$frm->radio_switch('admin_alerts_ok', $pref['admin_alerts_ok'])."
-							<div class='field-help'>".PRFLAN_96."</div>
+							".$frm->help(PRFLAN_96, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='admin-alerts-uniquemenu'>".PRFLAN_97."</label></td>
+						<td><label for='admin-alerts-uniquemenu'>".PRFLAN_97."</label>".$frm->help(PRFLAN_98, 'before')."</td>
 						<td>
 							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
-							<div class='field-help'>".PRFLAN_98."</div>
+							".$frm->help(PRFLAN_98, 'after')."
 						</td>
 					</tr>";
 					/*<tr>
 						<td>".PRFLAN_199."</td>
 						<td>
 							".$frm->radio_switch('admin_slidedown_subs', $pref['admin_slidedown_subs'])."
-							<div class='field-help'>".PRFLAN_200."</div>
+							".$frm->help(PRFLAN_200, 'after')."
 						</td>
 					</tr>*/
 					$text .= "
 					<tr>
-						<td><label for='admin-separate-plugins'>".PRFLAN_204."</label></td>
+						<td><label for='admin-separate-plugins'>".PRFLAN_204."</label>".$frm->help(PRFLAN_205, 'before')."</td>
 						<td>
 							".$frm->radio_switch('admin_separate_plugins', varset($pref['admin_separate_plugins']))."
-							<div class='field-help'>".PRFLAN_205."</div>
+							".$frm->help(PRFLAN_205, 'after')."
 						</td>
 					</tr>
 					<tr>
@@ -707,12 +707,15 @@ $text .= "
 	";
 
 // Date options.
+$dateHelp = PRFLAN_25." <a target='_blank' href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a>";
+
 $ga = e107::getDate();
-$date1 = $ga->convert_date(time(), "short");
-$date2 = $ga->convert_date(time(), "long");
-$date3 = $ga->convert_date(time(), "forum");
+$date1 = $ga->convert_date(time(), "short")."<br />".$dateHelp;
+$date2 = $ga->convert_date(time(), "long")."<br />".$dateHelp;
+$date3 = $ga->convert_date(time(), "forum")."<br />".$dateHelp;
 //$core_pref$date4 = e107::getDate()->convert(time(),"input");
 $date4 = $tp->toDate(time(),"input");
+
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
@@ -724,25 +727,24 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='shortdate'>".PRFLAN_22."</label></td>
+						<td><label for='shortdate'>".PRFLAN_22."</label>".$frm->help(PRFLAN_83.": ".$date1,'before')."</td>
 						<td>
 							".$frm->text('shortdate', $pref['shortdate'], 50)."
-							<div class='field-help'>".PRFLAN_83.": {$date1}</div>
+							".$frm->help(PRFLAN_83.": ".$date1,'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='longdate'>".PRFLAN_23."</label></td>
+						<td><label for='longdate'>".PRFLAN_23."</label>".$frm->help(PRFLAN_83.": ".$date2, 'before')."</td>
 						<td>
 							".$frm->text('longdate', $pref['longdate'], 50)."
-							<div class='field-help'>".PRFLAN_83.": {$date2}</div>
+							".$frm->help(PRFLAN_83.": ".$date2, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='forumdate'>".PRFLAN_24."</label></td>
+						<td><label for='forumdate'>".PRFLAN_24."</label>".$frm->help(PRFLAN_83.": ".$date3,'before')."</td>
 						<td>
 							".$frm->text('forumdate', $pref['forumdate'], 50)."
-							<div class='field-help'>".PRFLAN_83.": {$date3}</div>
-							<div class='field-help'>".PRFLAN_25." <a target='_blank' href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
+							".$frm->help(PRFLAN_83.": ".$date3,'after')."
 						</td>
 					</tr>";
 					
@@ -842,17 +844,22 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='user-reg'>".PRFLAN_224."</label></td>
+						<td><label for='user-reg'>".PRFLAN_224."</label>".$frm->help(PRFLAN_30, 'before')."</td>
 						<td>
 							".$frm->radio('user_reg', $elements, $pref['user_reg'])."
-							<div class='smalltext field-help'>".PRFLAN_30."</div>
+							".$frm->help(PRFLAN_30, 'after')."
 						</td>
-					</tr>
+					</tr>";
 
 
+					$srch = array('[', ']');
+					$repl = array("<a href='".e_ADMIN_ABS."notify.php'>", '</a>');
 
+					$PRFLAN_154a = str_replace($srch,$repl, PRFLAN_154a);
+
+					$text .= "
 					<tr>
-						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
+						<td><label for='user-reg-veri'>".PRFLAN_154."</label>".$frm->help($PRFLAN_154a, 'before')."</td>
 						<td>
 							".$frm->select_open('user_reg_veri', array('size'=>'xlarge'));
                             $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
@@ -862,14 +869,11 @@ $text .= "
 								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
 							}
 
-					$srch = array('[', ']');
-					$repl = array("<a href='".e_ADMIN_ABS."notify.php'>", '</a>');
 
-					$PRFLAN_154a = str_replace($srch,$repl, PRFLAN_154a);
 
 					$text .= "
 							</select>
-							<div class='field-help'>".$PRFLAN_154a."</div>
+							".$frm->help($PRFLAN_154a, 'after')."
 						</td>
 					</tr>
 					
@@ -908,32 +912,32 @@ $text .= "
 					$text .= "
 
 					<tr>
-						<td><label for='membersonly-enabled'>".PRFLAN_58."</label></td>
+						<td><label for='membersonly-enabled'>".PRFLAN_58."</label>".$frm->help(PRFLAN_59, 'before')."</td>
 						<td>";
 					
 					$memDisp = !vartrue($pref['membersonly_enabled']) ? "e-hideme" : "";
 						
 					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
-							<div class='field-help'>".PRFLAN_59."</div>
+							".$frm->help(PRFLAN_59, 'after')."
 							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>
 							<div class='form-group clearfix'>
-							".
+							".$frm->help(PRFLAN_266, 'before').
 							$frm->select('membersonly_redirect',$membersOnlyRedirectOptions,$pref['membersonly_redirect'], array('size'=>'xxlarge'))."
-							<div class='field-help'>".PRFLAN_266."</div>
+							".$frm->help(PRFLAN_266, 'after')."
 								</div>
-							<div class='form-group clearfix'>".
+							<div class='form-group clearfix'>".$frm->help(PRFLAN_207, 'before').
 							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'size=xxlarge&placeholder='.PRFLAN_206)."
-							<div class='field-help'>".PRFLAN_207."</div></div>
+							".$frm->help(PRFLAN_207, 'after')."</div>
 
 							</div>
 						</td>
 					</tr>
               
                		<tr>
-						<td><label for='autologinpostsignup'>".PRFLAN_197."</label></td>
+						<td><label for='autologinpostsignup'>".PRFLAN_197."</label>".$frm->help(PRFLAN_198, 'before')."</td>
 						<td>
 							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
-							<div class='smalltext field-help'>".PRFLAN_198."</div>
+							".$frm->help(PRFLAN_198, 'after')."
 						</td>
 					</tr>
 
@@ -957,10 +961,10 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td><label for='signup-maxip'>".PRFLAN_136."</label></td>
+						<td><label for='signup-maxip'>".PRFLAN_136."</label>".$frm->help(PRFLAN_78, 'before')."</td>
 						<td>
 							".$frm->number('signup_maxip', $pref['signup_maxip'], 3)."
-							<div class='field-help'>".PRFLAN_78."</div>
+							".$frm->help(PRFLAN_78, 'after')."
 						</td>
 					</tr>
 
@@ -1064,13 +1068,17 @@ $text .= "
 
 
 </table>
-						</td></tr>
+						</td></tr>";
+
+					$useCoppaHelp = PRFLAN_46." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a>";
+
+						$text .= "
 
 					<tr>
-						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
+						<td><label for='use-coppa'>".PRFLAN_45."</label>".$frm->help($useCoppaHelp, 'before')."</td>
 						<td>
 							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a></div>
+							".$frm->help($useCoppaHelp, 'after')."
 						</td>
 					</tr>";
 
@@ -1095,24 +1103,25 @@ $text .= "
 						<td>
 							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 80, array('size'=>'xxlarge'))."
 						</td>
-					</tr>
-					
-				
+					</tr>";
+
+					$predefinedloginnameHelp = "<div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div>";
+					$text .= "				
 					<tr>
-						<td><label for='predefinedloginname'>".PRFLAN_192.":</label></td>
+						<td><label for='predefinedloginname'>".PRFLAN_192.":</label>".$frm->help($predefinedloginnameHelp,'before')."</td>
 						<td>
 							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
-							<div class='field-help'><div style='text-align:left'>".PRFLAN_193."<br />".str_replace("[br]","<br /> ",PRFLAN_194)."</div></div>
+							".$frm->help($predefinedloginnameHelp,'after')."
 						</td>
 					</tr>
 
 
 
 						<tr>
-						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label></td>
+						<td><label for='signup-disallow-text'>".CUSTSIG_18."</label>".$frm->help(CUSTSIG_19, 'before')."</td>
 						<td>
 							".$frm->tags('signup_disallow_text', $pref['signup_disallow_text'], 500)."
-							<div class='field-help'>".CUSTSIG_19."</div>
+							".$frm->help(CUSTSIG_19, 'after')."
 						</td>
 					</tr>
 
@@ -1125,10 +1134,10 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td><label for='old_np'>".PRFLAN_124.":</label></td>
+						<td><label for='old_np'>".PRFLAN_124.":</label>".$frm->help(PRFLAN_125, 'before')."</td>
 						<td>
 							".$frm->radio_switch('old_np', $pref['old_np'])."
-							<div class='smalltext field-help'>".PRFLAN_125."</div>
+							".$frm->help(PRFLAN_125, 'after')."
 						</td>
 					</tr>
 
@@ -1197,10 +1206,10 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 				</colgroup>
 				<tbody>
 					<tr>
-						<td><label for='make-clickable'>".PRFLAN_127.":</label></td>
+						<td><label for='make-clickable'>".PRFLAN_127.":</label>".$frm->help(PRFLAN_128, 'before')."</td>
 						<td>
 							".$frm->radio_switch('make_clickable', $pref['make_clickable'])."
-							<div class='smalltext field-help'>".PRFLAN_128."</div>
+							".$frm->help(PRFLAN_128, 'after')."
 						</td>
 					</tr>";
 					
@@ -1210,32 +1219,35 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 					<tr>
 						<td><label for='link-replace'>".PRFLAN_102."?:</label></td>
 						<td>
+							".$frm->help(PRFLAN_103, 'before')."
 							".$frm->radio_switch('link_replace', $pref['link_replace'],'', '', 'expandit=1')."
-							<div class='smalltext field-help'>".PRFLAN_103."</div>
+							".$frm->help(PRFLAN_103, 'after')."
 							<div class='e-expandit-container {$replaceDisp}'>
+							".$frm->help(PRFLAN_105, 'before')."
 							".$frm->text('link_text', $pref['link_text'], 200, 'placeholder='.PRFLAN_104)."
-							<div class='smalltext field-help'>".PRFLAN_105."</div>".
+							".$frm->help(PRFLAN_105, 'after')
+							.$frm->help(PRFLAN_108, 'before').
 							$frm->text('email_text', $tp->post_toForm($pref['email_text']), 200, 'placeholder='.PRFLAN_107)."
-							<div class='smalltext field-help'>".PRFLAN_108."</div>
+							".$frm->help(PRFLAN_108, 'after')."
 							
 							</div>
 						</td>
 					</tr>
 			
 					<tr >
-						<td><label for='links-new-window'>".PRFLAN_145."?:</label></td>
+						<td><label for='links-new-window'>".PRFLAN_145."?:</label>".$frm->help(PRFLAN_146, 'before')."</td>
 						<td>
 							".$frm->radio_switch('links_new_window', $pref['links_new_window'])."
-							<div class='smalltext field-help'>".PRFLAN_146."</div>
+							".$frm->help(PRFLAN_146, 'after')."
 						</td>
 					</tr>
 					
 					
 					<tr>
-						<td><label for='profanity-filter'>".PRFLAN_40."</label></td>
+						<td><label for='profanity-filter'>".PRFLAN_40."</label>".$frm->help(PRFLAN_41, 'before')."</td>
 						<td>
 							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
-							<div class='smalltext field-help'>".PRFLAN_41."</div>
+							".$frm->help(PRFLAN_41, 'after')."
 						</td>
 					</tr>
 
@@ -1246,70 +1258,70 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 						</td>
 					</tr>
 					<tr>
-						<td><label for='profanity-words'>".PRFLAN_43.":</label></td>
+						<td><label for='profanity-words'>".PRFLAN_43.":</label>".$frm->help(PRFLAN_44, 'before')."</td>
 						<td>
 							".$frm->tags('profanity_words', $pref['profanity_words'], 250, array('maxItems'=>40))."
-							<div class='field-help'>".PRFLAN_44."</div>
+							".$frm->help(PRFLAN_44, 'after')."
 						</td>
 					</tr>
 					
 				
 					<tr>
-						<td><label for='main-wordwrap'>".PRFLAN_109.":</label></td>
+						<td><label for='main-wordwrap'>".PRFLAN_109.":</label>".$frm->help(PRFLAN_110, 'before')."</td>
 						<td>
 							".$frm->number('main_wordwrap', $pref['main_wordwrap'], 3)."
-							<div class='smalltext field-help'>".PRFLAN_110."</div>
+							".$frm->help(PRFLAN_110, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='menu-wordwrap'>".PRFLAN_111.":</label></td>
+						<td><label for='menu-wordwrap'>".PRFLAN_111.":</label>".$frm->help(PRFLAN_110, 'before')."</td>
 						<td>
 							".$frm->number('menu_wordwrap', $pref['menu_wordwrap'], 3)."
-							<div class='smalltext field-help'>".PRFLAN_110."</div>
+							".$frm->help(PRFLAN_110, 'after')."
 						</td>
 					</tr>
 
 					<tr>
-						<td><label for='post-html'>".PRFLAN_116.":</label></td>
+						<td><label for='post-html'>".PRFLAN_116.":</label>".$frm->help(PRFLAN_117, 'before')."</td>
 						<td>
 							".$e_userclass->uc_dropdown('post_html', $pref['post_html'], 'nobody,public,member,admin,main,classes', "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>".PRFLAN_117."</div>
+							".$frm->help(PRFLAN_117, 'after')."
 						</td>
 					</tr>
 
 					<tr>
-						<td><label for='post-script'>".PRFLAN_215.":</label></td>
+						<td><label for='post-script'>".PRFLAN_215.":</label>".$frm->help(PRFLAN_216, 'before')."</td>
 						<td>
 							".$e_userclass->uc_dropdown('post_script',$pref['post_script'],'nobody,admin,main,classes,no-excludes')."
-							<div class='smalltext field-help'>".PRFLAN_216."</div>
+							".$frm->help(PRFLAN_216, 'after')."
 						</td>
 					</tr>
 						<tr>
-						<td><label for='inline-editing'>".PRFLAN_268.":</label></td>
+						<td><label for='inline-editing'>".PRFLAN_268.":</label>".$frm->help(PRFLAN_269, 'before')."</td>
 						<td>
 							".$frm->userclass('inline_editing',$pref['inline_editing'],'off','nobody,admin,main,classes,no-excludes')."
-							<div class='smalltext field-help'>".PRFLAN_269."</div>
+							".$frm->help(PRFLAN_269, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='filter-script'>".PRFLAN_217.":</label></td>
+						<td><label for='filter-script'>".PRFLAN_217.":</label>".$frm->help(PRFLAN_218, 'before')."</td>
 						<td>
 							".$frm->radio_switch('filter_script', varset($pref['filter_script'], 1))."
-							<div class='smalltext field-help'>".PRFLAN_218."</div>
+							".$frm->help(PRFLAN_218, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='html-abuse'>".PRFLAN_220.":</label></td>
+						<td><label for='html-abuse'>".PRFLAN_220.":</label>".$frm->help(PRFLAN_221, 'before')."</td>
 						<td>
 							".$frm->radio_switch('html_abuse', varset($pref['html_abuse'], 1))."
-							<div class='smalltext field-help'>".PRFLAN_221."</div>
+							".$frm->help(PRFLAN_221, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='wysiwyg'>".PRFLAN_122.":</label></td>
+						<td><label for='wysiwyg'>".PRFLAN_122.":</label>".$frm->help(PRFLAN_123, 'before')."</td>
 						<td>
 							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'])."
-							<div class='smalltext field-help'>".PRFLAN_123."</div>
+							".$frm->help(PRFLAN_123, 'after')."
 						</td>
 					</tr>
 					
@@ -1318,19 +1330,20 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 
 if(file_exists(e_PLUGIN."geshi/geshi.php"))
 {
+	$usegeshiHelp = str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119);
 	$text .= "
 					<tr>
-						<td><label for='usegeshi'>".PRFLAN_118."?:</label></td>
+						<td><label for='usegeshi'>".PRFLAN_118."?:</label>".$frm->help($usegeshiHelp, 'before')."</td>
 						<td>
 							".$frm->radio_switch('useGeshi', $pref['useGeshi'])."
-							<div class='smalltext field-help'>".str_replace("[link]", "http://qbnz.com/highlighter/", PRFLAN_119)."</div>
+							".$frm->help($usegeshiHelp, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='defaultlangeshi'>".PRFLAN_120."?:</label></td>
+						<td><label for='defaultlangeshi'>".PRFLAN_120."?:</label>".$frm->help(PRFLAN_121, 'before')."</td>
 						<td>
 							".$frm->text('defaultLanGeshi', ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php"), 20)."
-							<div class='smalltext field-help'>".PRFLAN_121."</div>
+							".$frm->help(PRFLAN_121, 'after')."
 						</td>
 					</tr>
 	";
@@ -1349,7 +1362,7 @@ function multi_radio($name, $textsVals, $currentval = '')
 	foreach($textsVals as $v => $t)
 	{
 		$sel = ($v == $currentval) ? " checked='checked'" : "";
-		$ret .= $gap."<input type='radio' name='{$name}' value='{$v}'{$sel} /> ".$t."";
+		$ret .= $gap."<input type='radio' name='{$name}' value='{$v}' {$sel} /> ".$t."";
 		$gap = "&nbsp;&nbsp;";
 	}
 	return $ret;
@@ -1371,14 +1384,14 @@ $text .= "
 
 		$text .="
 					<tr>
-						<td><label for='ssl-enabled'>".PRFLAN_60."</label></td>
+						<td><label for='ssl-enabled'>".PRFLAN_60."</label>".$frm->help(PRFLAN_61, 'before')."</td>
 
 						<td>";
 
 							if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')     // Only allow if an SSL login has been made.
 							{
 								$text .= $frm->radio_switch('ssl_enabled', $pref['ssl_enabled']);
-								$text .= "<div class='field-help'>".PRFLAN_61."</div>";
+								$text .= $frm->help(PRFLAN_61, 'after');
 							}
 							else
 							{
@@ -1398,7 +1411,7 @@ $text .= "
 		
 		$label = str_replace($srch,$repl,$label);
 		
-		$text .= "<tr><td><label for='".$key."'>".$label."</label></td><td>";	
+		$text .= "<tr><td><label for='".$key."'>".$label."</label>".$frm->help(PRFLAN_223, 'before')."</td><td>";
 		if($hasGD)
 		{
 			$text .= $frm->radio_switch($key, $pref[$key]);
@@ -1409,7 +1422,7 @@ $text .= "
 		}
 		
 		$text .= "
-		<div class='field-help'>".PRFLAN_223."</div>
+		".$frm->help(PRFLAN_223, 'after')."
 		</td></tr>\n";
 		
 	}
@@ -1458,10 +1471,10 @@ $text .= "
     $text .= "
 
 					<tr>
-						<td><label for='disallowmultilogin'>".PRFLAN_129."</label></td>
+						<td><label for='disallowmultilogin'>".PRFLAN_129."</label>".$frm->help(PRFLAN_130, 'before')."</td>
 						<td>
 							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_130."</div>
+							".$frm->help(PRFLAN_130, 'after')."
 						</td>
 					</tr>
 
@@ -1475,16 +1488,17 @@ $text .= "
 					
 				
 					<tr>
-						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
+						<td><label for='cookie-name'>".PRFLAN_55."</label>".$frm->help(PRFLAN_263, 'before')."</td>
 						<td >".$frm->text('cookie_name', varset($pref['cookie_name']), 20)."
-						<div class='field-help'>".PRFLAN_263.".</div></td></tr>
-
+						".$frm->help(PRFLAN_263, 'after')."
+						</td>
+					</tr>
 
 					<tr>
-						<td><label for='session-lifetime'>".PRFLAN_272."</label></td>
+						<td><label for='session-lifetime'>".PRFLAN_272."</label>".$frm->help(PRFLAN_273, 'before')."</td>
 						<td>
 							".$frm->number('session_lifetime', varset($pref['session_lifetime']), 6)."
-							<div class='smalltext field-help'>".PRFLAN_273."</div>
+							".$frm->help(PRFLAN_273, 'after')."
 						</td>
 					</tr>
 					";
@@ -1499,8 +1513,7 @@ $text .= "
 						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
 						<td class='form-inline'>
 							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], varset($pref['session_save_method']))."
-							<!-- <div class='smalltext field-help'>".PRFLAN_273."</div>-->
-							<!-- <span class='label label-warning'>Experimental</span>-->
+							
 						</td>
 					</tr>
                     ";
@@ -1529,7 +1542,7 @@ $text .= "
 				//	$text .= $frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189);
 
 						$text .= "
-							<div class='smalltext field-help'></div>
+							<div class='field-help'></div>
 						</td>
 					</tr>
 					<tr>";
@@ -1537,7 +1550,7 @@ $text .= "
 					$CHAP_list = array(PRFLAN_180, PRFLAN_181, PRFLAN_182);
 	
 					$text .= "
-						<td><label for='password-chap'>".PRFLAN_178."</label></td>
+						<td><label for='password-chap'>".PRFLAN_178."</label>".$frm->help(PRFLAN_183."<br />".PRFLAN_179, 'before')."</td>
 						<td>";
 
 						$CHAPopt = !empty($pref['ssl_enabled']) || !empty($pref['passwordEncoding']) ? array('disabled'=>1) : null;
@@ -1546,8 +1559,7 @@ $text .= "
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
 
-						$text .= "
-							<div class='smalltext field-help'>".PRFLAN_183."<br />".PRFLAN_179."</div>
+						$text .= $frm->help(PRFLAN_183."<br />".PRFLAN_179, 'after')."
 						</td>
 					</tr>
 					
@@ -1558,14 +1570,14 @@ $text .= "
 						</td>
 					</tr>
 					<tr>
-						<td><label for='antiflood-timeout'>".PRFLAN_36."</label></td>
+						<td><label for='antiflood-timeout'>".PRFLAN_36."</label>".$frm->help(PRFLAN_38, 'before')."</td>
 						<td>
 							".$frm->number('antiflood_timeout', $pref['antiflood_timeout'], 3)."
-							<div class='smalltext field-help'>".PRFLAN_38."</div>
+							".$frm->help(PRFLAN_38, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='autoban'>".PRFLAN_37."</label></td>
+						<td><label for='autoban'>".PRFLAN_37."</label>".$frm->help(PRFLAN_91, 'before')."</td>
 						<td>
 							".$frm->select_open('autoban');
 
@@ -1586,14 +1598,14 @@ foreach($autoban_list as $ab => $ab_title)
 
 $text .= "
 							</select>
-							<div class='field-help'>".PRFLAN_91."</div>
+							".$frm->help(PRFLAN_91, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td><label for='failed-login-limit'>".PRFLAN_231."</label></td>
+						<td><label for='failed-login-limit'>".PRFLAN_231."</label>".$frm->help(PRFLAN_232, 'before')."</td>
 						<td>
 							".$frm->number('failed_login_limit', varset($pref['failed_login_limit'],10), 3, array('max'=>10, 'min'=>0))."
-							<div class='smalltext field-help'>".PRFLAN_232."</div>
+							".$frm->help(PRFLAN_232, 'after')."
 						</td>
 					</tr>
 					<tr>
@@ -1624,10 +1636,10 @@ $text .= "
 						</td>
 					</tr>
              		<tr>
-						<td>".PRFLAN_32."</td>
+						<td>".PRFLAN_32."".$frm->help(PRFLAN_33, 'before')."</td>
 						<td>
 							".$frm->radio_switch('anon_post', $pref['anon_post'], LAN_YES, LAN_NO)."
-							<div class='field-help'>".PRFLAN_33."</div>
+							".$frm->help(PRFLAN_33, 'after')."
 						</td>
 					</tr>
 					<tr>
@@ -1658,13 +1670,13 @@ $text .= "
 					</tr>
 
 					<tr>
-						<td>".PRFLAN_233."</td>
+						<td><label>".PRFLAN_233."</label>".$frm->help(PRFLAN_234, 'before')."</td>
 						<td>
 							".
 							
 							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
 							"
-							<div class='field-help'>".PRFLAN_234."</div>
+							".$frm->help(PRFLAN_234, 'after')."
 						</td>
 					</tr>
 					<tr>
@@ -1742,29 +1754,29 @@ $text .= "
 				</colgroup>
 				<tbody>
 	<tr>
-	<td>".UPLLAN_25."</td>
+	<td><label>".UPLLAN_25."</label>".$frm->help(UPLLAN_26, 'before')."</td>
 	<td>".
 	
 	$frm->radio_switch('upload_enabled', $pref['upload_enabled'])
 	."
-	<div class='field-help'>".UPLLAN_26."</div>
+	".$frm->help(UPLLAN_26, 'after')."
 	</td>
 	</tr>
 
 	<tr>
-	<td>".UPLLAN_33."<br />
+	<td><label>".UPLLAN_33."</label>".$frm->help(UPLLAN_34, 'before')."
 	</td>
 	<td>".
 	$frm->text('upload_maxfilesize', $pref['upload_maxfilesize'], 10)
 	 ."
-	 <div class='field-help'>".UPLLAN_34."</div>
+	 ".$frm->help(UPLLAN_34, 'after')."
 	</td>
 	</tr>
 
 	<tr>
-	<td>".UPLLAN_37."</td>
+	<td><label>".UPLLAN_37."</label>".$frm->help(UPLLAN_38, 'before')."</td>
 	<td>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,classes")."
-	<div class='field-help'>".UPLLAN_38."</div>
+	".$frm->help(UPLLAN_38, 'after')."
 	</td>
 	</tr>
 	<tr><td>".PRFLAN_240."</td>
@@ -1858,31 +1870,31 @@ if(E107_DEBUG_LEVEL > 0)
 				</thead>
 				<tbody>
 					<tr>
-						<td>" . PRFLAN_248 . "</td>
+						<td><label>" . PRFLAN_248 . "</label>".$frm->help( PRFLAN_249 , 'before')."</td>
 						<td>
 							" . $frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO) . "
-							<div class='smalltext field-help'>" . PRFLAN_249 . "</div>
+							".$frm->help( PRFLAN_249 , 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td>" . PRFLAN_250 . "</td>
+						<td><label>" . PRFLAN_250 ."</label>".$frm->help( PRFLAN_251 , 'before')."</td>
 						<td>
 							" . $frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO) . "
-							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
+							".$frm->help( PRFLAN_251 , 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td>" . PRFLAN_252 . "</td>
+						<td><label>" . PRFLAN_252 . "</label>".$frm->help( PRFLAN_251 , 'before')."</td>
 						<td>
 							" . $frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO) . "
-							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
+							".$frm->help( PRFLAN_251 , 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td>" . PRFLAN_253 . "</td>
+						<td><label>" . PRFLAN_253 . "</label>".$frm->help( PRFLAN_251 , 'before')."</td>
 						<td>
 							" . $frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO) . "
-							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
+							".$frm->help( PRFLAN_251 , 'after')."
 						</td>
 					</tr>
 		";
@@ -1952,7 +1964,7 @@ $text .= pref_submit('javascript');
  */
 
 $text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
-$text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
+$text .= '<table class="table table-striped">';
 $text .= '<thead>';
 $text .= '<tr>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
@@ -2025,17 +2037,17 @@ $text .= "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_147.":</td>
+						<td>".PRFLAN_147.":".$frm->help(PRFLAN_148, 'before')."</td>
 						<td>
 							".$frm->radio_switch('developer', $pref['developer'])."
-							<div class='smalltext field-help'>".PRFLAN_148."</div>
+							".$frm->help(PRFLAN_148, 'after')."
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_196."</td>
+						<td>".PRFLAN_196."".$frm->help(PRFLAN_196a." <strong>".e_LOG."</strong>", 'before')."</td>
 						<td>
 						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'])."
-						<div class='field-help'>".PRFLAN_196a." <strong>".e_LOG."</strong></div>
+						".$frm->help(PRFLAN_196a." <strong>".e_LOG."</strong>", 'after')."
 						</td>
 					</tr>
 					<tr>
