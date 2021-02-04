@@ -166,24 +166,24 @@ class system_tools
 		$this->_utf8_exclude = array(MPREFIX."core");
 
 		$this->_options = array(
-			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
-			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
-			'optimize_sql'			=> array('diz'=>DBLAN_6, 'label'=> DBLAN_7),
-			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29),
-			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20),
+			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16, 'icon'=>'fas-angle-double-up.glyph'),
+			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5, 'icon'=>'fas-database.glyph'),
+			'optimize_sql'			=> array('diz'=>DBLAN_6, 'label'=> DBLAN_7, 'icon'=>'fas-wrench.glyph'),
+			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29, 'icon'=>'fas-plug.glyph'),
+			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20, 'icon'=>'fas-edit.glyph'),
 		//	'backup_core'			=> array('diz'=>DBLAN_8, 'label'=> DBLAN_9),
 		//	'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
-			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
-			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
-			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
-			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65),
-			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67),
+			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59, 'icon'=>'fas-file-import.glyph'),
+			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58, 'icon'=>'fas-file-export.glyph'),
+			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56, 'icon'=>'fas-search.glyph'),
+			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65, 'icon'=>'fas-language.glyph'),
+			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67, 'icon'=>'fas-folder.glyph'),
 			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69, 'icon'=>'fas-archive.glyph')
 		);
 		
 		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' );
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' , 'icon'=>'fas-clone.glyph');
 			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112, 'icon'=>'fab-github.glyph' );
 		}
 
@@ -1032,7 +1032,8 @@ class system_tools
 	private function render_options()
 	{
 
-		$mes = e107::getMessage(); 
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 		$text = "
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
@@ -1052,7 +1053,7 @@ class system_tools
 		{
 			
 			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
-			<a class='btn btn-default btn-secondary btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true])."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		

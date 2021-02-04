@@ -87,7 +87,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.fieldHelpTooltip = {
 		attach: function (context, settings)
 		{
-			var selector = 'div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
+			var selector = '.admin-ui-help-tip,div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
 
 			$(context).find(selector).once('field-help-tooltip').each(function ()
 			{
