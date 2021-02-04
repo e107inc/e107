@@ -908,11 +908,11 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 .nav .open>a,.nav .open>a:focus,.nav .open>a:hover{background-color:#2f2f2f;border-color:#77acd9}
 .nav .nav-divider{height:1px;margin:9px 0;overflow:hidden;background-color:#e5e5e5}
 .nav>li>a>img{max-width:none}
-.nav-tabs{border-bottom:1px solid #999}
+.nav-tabs{border-bottom:1px solid rgba(255,255,255,0.2);}
 .nav-tabs>li{float:left;margin-bottom:-1px}
 .nav-tabs>li>a{margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:4px 4px 0 0}
-.nav-tabs>li>a:hover{border-color:#999}
-.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover{color:#fff;background-color:#373737;border:1px solid #999;border-bottom-color:transparent;cursor:default}
+.nav-tabs>li>a:hover{border-color:rgba(255,255,255,0.2);border-bottom-color:rgba(255,255,255,0.15);}
+.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover{color:#fff;background-color:#373737;border:1px solid rgba(255,255,255,0.15);border-bottom-color:transparent;cursor:default}
 .nav-tabs.nav-justified{width:100%;border-bottom:0}
 .nav-tabs.nav-justified>li{float:none}
 .nav-tabs.nav-justified>li>a{text-align:center;margin-bottom:5px;margin-right:0;border-radius:4px}
@@ -1523,7 +1523,7 @@ thead tr{background-color:#363636;background-image:linear-gradient(to bottom,#44
 .bootstrap-select.btn-group .dropdown-menu .optgroup-div{color:#363636}
 .btn-primary>[class^=icon-],.dropdown-menu>.active>a>[class*=" icon-"],.dropdown-menu>.active>a>[class^=icon-],.dropdown-menu>li>a:hover>[class*=" icon-"],.dropdown-menu>li>a:hover>[class^=icon-],.dropdown-submenu:hover>a>[class*=" icon-"],.dropdown-submenu:hover>a>[class^=icon-],.icon-white,.nav-list>.active>a>[class*=" icon-"],.nav-list>.active>a>[class^=icon-],.nav-pills>.active>a>[class*=" icon-"],.nav-pills>.active>a>[class^=icon-],.nav-tabs>li>a>[class^=icon-],.navbar-inverse .nav>.active>a>[class*=" icon-"],.navbar-inverse .nav>.active>a>[class^=icon-],h1>[class^=icon-],h2>[class^=icon-],h3>[class^=icon-],h4>[class^=icon-],h5>[class^=icon-]{background-image:none}
 #admin-ui-nav-menu a.link-active{color:#fff}
-.tab-content{background-color:#373737}
+.tab-content{background-color:#373737; border-left:1px solid rgba(255,255,255,0.1); border-right:1px solid rgba(255,255,255,0.1);border-bottom:1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;border-top-right-radius: 4px;}
 input:invalid:focus,select:invalid:focus,textarea:invalid:focus{border-color:red;box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset}
 td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
 

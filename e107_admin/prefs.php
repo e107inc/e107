@@ -690,6 +690,12 @@ $text .= "
 							".$frm->radio_switch('admin_collapse_sidebar', varset($pref['admin_collapse_sidebar']))."
 						</td>
 					</tr>
+					<tr>
+						<td><label for='admin-collapse-sidebar'>".PRFLAN_285."</label></td>
+						<td>
+							".$frm->radio('admin_helptip_location',['-1'=> LAN_DISABLED, '0' => PRFLAN_286, '1' => PRFLAN_287], varset($pref['admin_helptip_location']))."
+						</td>
+					</tr>
 					
 					
 					

@@ -88,7 +88,8 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 #core-admin-log-list-form .fa-exclamation-circle { color: #FAA732 }
 #core-admin-log-list-form .fa-warning { color: #ee5f5b }
 
-
+.admin-ui-help-tip { padding-top: 5px; font-size: 18px; cursor: help; color: rgb(192, 192, 192,0.5);  float: right; }
+.admin-ui-help-tip:hover { color: #5bc0de; }
 /*
 
 #admin-ui-carousel .carousel-inner { min-height: 65vh; }

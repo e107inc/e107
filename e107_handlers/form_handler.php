@@ -7326,6 +7326,11 @@ var_dump($select_options);*/
 		$required_help = false;
 		$hidden_fields = array();
 
+
+		$helpTipLocation = (int) e107::getPref('admin_helptip_location');
+		$help = '';
+
+
 		foreach($fdata['fields'] as $key => $att)
 		{
 			if($tab !== false && varset($att['tab'], 0) !== $tab)
@@ -7350,8 +7355,11 @@ var_dump($select_options);*/
 				parse_str($parms, $parms);
 			}
 			$label = !empty($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
-			$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
 
+			if($helpTipLocation !== -1) // -1 = help disabled.
+			{
+				$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
+			}
 
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
 			$keyName = $key;
@@ -7436,8 +7444,10 @@ var_dump($select_options);*/
 				}
 
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title'])). '</span>' .$required.$label;
-				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId()). ' ' .$help;
 
+				$leftCell .= (!empty($help) && $helpTipLocation === 1)  ? "<i class='admin-ui-help-tip far fa-question-circle'><!-- --></i>".$help : '';
+				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId()). ' '.$help;
+				$rightCell .= (!empty($help) && $helpTipLocation === 0) ? $help : '';
 				$att['writeParms'] = $writeParms;
 				 
 				$text .= $this->renderCreateFieldRow($leftCell, $rightCell, $att);
