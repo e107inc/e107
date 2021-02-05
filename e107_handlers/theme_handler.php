@@ -2270,6 +2270,7 @@ class themeHandler
 
 
 
+		$theme['css'] = $this->filterStylesheets($mode, $theme);
 		$price 			= '';
 
 
@@ -2290,8 +2291,25 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 			$class = 'admin-theme-nopreview';
 		}
+
+		if($mode === self::RENDER_ADMINPREFS)
+		{
+			foreach($theme['css'] as $val)
+			{
+				if(($pref['admincss'] === $val['name']) && !empty($val['thumbnail']) )
+				{
+					$thumbPath = e_THEME.$theme['path'] ."/".$val['thumbnail'];
+					$previewPath = $thumbPath;
+					break;
+				}
+			
+			}
+
+		}
 		
 		$thumbnail = "<img class='".$class."' src='".$thumbPath."' style='max-width:100%'  alt='' />";
+
+	
 
 		$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		
@@ -2305,7 +2323,7 @@ class themeHandler
 		// load customn theme configuration fields.
 		$this->loadThemeConfig();
 
-		$text = '';
+		$text = '<div style="padding-bottom:100px">';
 
 		$text .= "
         
@@ -2550,12 +2568,39 @@ class themeHandler
 					$text .= varset($itext);
 
 
-					$theme['css'] = $this->filterStylesheets($mode, $theme);
 
-					
-					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']))
+					// Render skin previews.
+					if(self::RENDER_ADMINPREFS === $mode)
 					{
-						$pLabel = (self::RENDER_ADMINPREFS === $mode) ? TPVLAN_95 : TPVLAN_22;
+						$parms = [];
+						$parms['path'] = e_THEME.$theme['path'].'/';
+						$parms['block-class'] = 'admin-css-selector col-md-3';
+
+						foreach($theme['css'] as $val)
+						{
+							$kid = $val['name'];
+						 // $val['description'];
+							$parms['optArray'][$kid] = array(
+								'thumbnail' => $val['thumbnail'],
+								'label'     => $val['info']."<br /><small>".$val['description']."</small>",
+							);
+						}
+
+						$text .= "<tr><td style='vertical-align:top;'><b>".TPVLAN_95.":</b></td>
+								<td colspan='2' style='vertical-align:top'>
+								";
+						$text .= e107::getForm()->radioImage('admincss', vartrue($pref['admincss']), $parms);
+						$text .= "</td></tr>";
+
+
+					}
+
+
+
+
+					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']) && self::RENDER_SITEPREFS === $mode)
+					{
+						$pLabel =  TPVLAN_22;
 
 						$text .= "
 							<tr><td style='vertical-align:top;'><b>".$pLabel.":</b></td>
@@ -2572,28 +2617,12 @@ class themeHandler
 								
 							$text2 = "";
 
-							switch($mode)
-							{
-								case self::RENDER_ADMINPREFS: // admin mode.
-									$for = $frm->name2id("admincss-".$css['name']);
-									$text2 = "<td class='center'>";
-									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'], array('id'=>$for));
-									$text2 .= "</td>";
-									$text2 .= "<td><label for='".$for."' title=\"".$css['name']."\">".$css['info']."</label></td>";
-									$text2 .= "<td>".($css['description'] ? $css['description'] : '')."</td>\n";
-									break;
-
-								case self::RENDER_SITEPREFS: // front 'sitetheme' mode.
-
-									$text2 = "
-									<td class='center'>
-									<input id='".$frm->name2id($css['name'])."' type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
-									</td>
-									<td><label for='".$frm->name2id($css['name'])."' >".$css['name']."</lable></td>
-									<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-								break;
-
-							}
+							$text2 = "
+								<td class='center'>
+								<input id='".$frm->name2id($css['name'])."' type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+								</td>
+								<td><label for='".$frm->name2id($css['name'])."' >".$css['name']."</lable></td>
+								<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 
 							$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
 						
@@ -2661,6 +2690,7 @@ class themeHandler
 		
 				$text .= "</div>
 			</div>
+        </div>
         </div>
 		\n";
 		

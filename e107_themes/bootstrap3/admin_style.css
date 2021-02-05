@@ -90,6 +90,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 .admin-ui-help-tip { padding-top: 5px; font-size: 18px; cursor: help; color: rgb(192, 192, 192,0.5);  float: right; }
 .admin-ui-help-tip:hover { color: #5bc0de; }
+
 /*
 
 #admin-ui-carousel .carousel-inner { min-height: 65vh; }
@@ -112,8 +113,8 @@ cursor: help;
 		.e-image-radio             {  padding-left:0;}
 
 		.e-image-radio label > input { visibility: hidden;  position: absolute; 	}
-		.e-image-radio label > input + div{  cursor:pointer;  border:2px solid transparent; border-radius:4px;height: 60px; padding: 5px; vertical-align: middle; }
-		.e-image-radio label > input:checked + div {    border:2px solid #337ab7; 	}
+		.e-image-radio label > input + div{  cursor:pointer;  border:3px solid silver; border-radius:4px;/*height: 60px;padding: 5px;*/  vertical-align: middle; }
+		.e-image-radio label > input:checked + div {    border:3px solid #337ab7; 	}
 		.e-image-radio label > input + div span { visibility: hidden; float:right; margin-right:10px; color:#337ab7	}
 		.e-image-radio label > input:checked + div span { visibility: initial;	}
 
@@ -228,10 +229,7 @@ td .file.well                              { margin-bottom:0 }
 #admin-ui-edit-db-language.tabs         { margin-top: 0; margin-bottom: -30px; padding-top: 5px; }
 
 #admin-ui-list-db-language span,
-#admin-ui-edit-db-language span          { color: #FAA732; cursor: help; }
-
-#admin-ui-edit-db-language span.default,
-#admin-ui-list-db-language span.default  { color: white }
+#admin-ui-edit-db-language span          { cursor: help; }
 
 
 
@@ -581,8 +579,8 @@ img.S32:hover 				{}
 table.adminlist								{ margin-bottom: 0 }
 table.adminlist td .video-responsive        { height: auto; padding:0 }
 
-.admin-true-icon                            {  color: #51a351; font-weight:bold; font-size:1.2em; }
-.admin-false-icon                           {  color: #ee5f5b; font-weight:bold; font-size:1.2em; }
+.admin-true-icon                            {  color: #51a351; font-weight:bold; font-size:20px; }
+.admin-false-icon                           {  color: #ee5f5b; font-weight:bold; font-size:20px; }
 
  select.e-editable-boolean.admin-true-icon option[value='1'],
  select.e-editable-boolean.admin-false-icon option[value='1']        {  color: #51a351; }
@@ -1120,15 +1118,14 @@ th, .fcaption								{ font: 12px HelveticaNeue,Helvetica,Arial;  }
 /* Dark Drop-Down Menus */
 
 
-ul.col-selection 				            { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:310px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+ul.col-selection 				            { padding:5px; text-align:left;  border: 1px outset black; width:310px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
 
 
-ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;  background-color: rgb(23, 23, 23); }
-ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
-ul.col-selection > li a 					{ padding: 3px 0 0 5px; color: rgb(153, 153, 153); }
+ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;  }
+
+ul.col-selection > li a 					{ padding: 3px 0 0 5px;  }
 ul.col-selection > li a label 				{ padding-left:20px; display:block; /*line-height:25px;*/ }
-ul.col-selection > li a:hover 				{ color: #FFF; background-image: linear-gradient(to bottom, #08C, #0077B3);}
-ul.col-selection 							{ background-color: rgb(39, 39, 39);}
+
 ul.col-selection ul.nav > li                  { padding:0 }
 ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
 ul.col-selection li.col-selection-list      { padding: 5px; }
@@ -1925,9 +1922,8 @@ div.admin-left-panel-collapsed .sidebar-toggle-panel { /*display:none; */
 
 div.admin-left-panel .nav-pills > li > a > span > i { opacity: 0; width:0; }
 div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
-
-
-
+#core-thememanager-configure .admin-css-selector { margin-bottom:15px;  }
+#core-thememanager-configure .admin-css-selector .active { opacity: 1 }
 
 
 
