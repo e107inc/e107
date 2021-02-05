@@ -2300,6 +2300,7 @@ class themeHandler
 				{
 					$thumbPath = e_THEME.$theme['path'] ."/".$val['thumbnail'];
 					$previewPath = $thumbPath;
+					$class = 'admin-theme-preview';
 					break;
 				}
 			
