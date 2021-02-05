@@ -1620,7 +1620,7 @@
 ul.col-selection > li a {  border-bottom: 1px solid rgba(0,0,0,0.3); }
 ul.col-selection { background-color: #FCFDFF; }
 .selectize-control.multi .selectize-input > div {    background: rgba(0,0,0,0.1); }
-
+.e-chart svg text { fill: rgba(0,0,0,0.75); }  /* Google charts */
 
         @media only screen and (min-width : 768px) {
             .is-table-row {

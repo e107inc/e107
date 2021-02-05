@@ -193,7 +193,7 @@ $ADMIN_TEMPLATE['header'] =  '
 				<span class="icon-bar"></span>
 			</button>
 			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="'.LAN_RETURN_TO_FRONT_PANEL.'">
-				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
+				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/logo.webp" alt="e107"  />
 			</a>
 		</div>
 		<div class="navbar-collapse collapse">

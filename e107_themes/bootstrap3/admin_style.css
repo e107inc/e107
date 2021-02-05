@@ -598,7 +598,7 @@ span.e-search i								{ margin-right:-20px; margin-left:5px; margin-top:-7px; z
 
 
 i.s-message-icon {
-    background: url(images/adminicons_32.png) no-repeat top left;
+    background: url(images/adminicons_32.webp) no-repeat top left;
  	display: inline-block;
 	width:32px;
 	height:32px;
@@ -806,7 +806,7 @@ th label.checkbox { min-height:inherit; } /* Bootstrap Fix but doesn't work */
 
 
 i.S16, li.plupload_done a {
-    background: url(images/adminicons_16.png) no-repeat top left;
+    background: url(images/adminicons_16.webp) no-repeat top left;
  	display:inline-block;
  	width:17px;
  	height:16px;
@@ -903,14 +903,14 @@ li.plupload_done a {
 
 
 i.S32 {
-    background: url(images/adminicons_32.png) no-repeat top left;
+    background: url(images/adminicons_32.webp) no-repeat top left;
  	display: inline-block;
  	width:32px;
  	height:32px;
 }
 
 i.S24  {
-  background: url(images/adminicons_32.png) no-repeat top left;
+  background: url(images/adminicons_32.webp) no-repeat top left;
  	display: inline-block;
  	background-size: 1522px;
  	width:24px;
@@ -1083,7 +1083,7 @@ i.e-warning-32{ background-position: -777px -37px; width: 32px; height: 32px; }
 i.e-welcome-32{ background-position: -814px -37px; width: 32px; height: 32px; } 
 
 i.browsers {
-    background: url(images/browsers.png) no-repeat top left;
+    background: url(images/browsers.webp) no-repeat top left;
  	display:inline-block;
     margin-right: .3em;
 	line-height: 14px;
@@ -1157,7 +1157,7 @@ ul.col-selection label.active:before        { font-family:'Font Awesome 5 Free';
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar-brand   { padding: 10px 15px; }
+.navbar-brand   { padding: 10px 11px; }
 
 ul.recent-comments {padding: 0px;
 margin: 0;
@@ -1418,7 +1418,7 @@ a.plupload_disabled:hover {background: transparent; border-color:inherit }
 
 li.plupload_delete a {
 	
-	 background: url(images/adminicons_16.png) no-repeat top left;
+	 background: url(images/adminicons_16.webp) no-repeat top left;
  	display:inline-block;
  	height:16px;
  	*margin-right: .3em;
