@@ -52,7 +52,7 @@ class tabbed
         
         $text .= "</ul>";
     //    print_a($this->links);
-           $text .= "<div class='tab-content adminform'>";
+           $text .= "<div class='tab-content adminform clearfix'>";
          foreach ($admin_cat['id'] as $id => $cat_id)
          {
              $cls = ($id == 1) ? "active" : "";

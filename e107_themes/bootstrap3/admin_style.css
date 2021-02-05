@@ -1157,7 +1157,7 @@ ul.col-selection label.active:before        { font-family:'Font Awesome 5 Free';
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar-brand   { padding: 10px 11px; }
+.navbar-brand   { padding: 10px 12px; }
 
 ul.recent-comments {padding: 0px;
 margin: 0;

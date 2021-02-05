@@ -1548,6 +1548,9 @@ div.admin-right-panel { padding-top: 20px; border-top-left-radius: 5px; backgrou
 .admin-container { padding:0 }
 
 div.admin-left-panel .panel  { background: none; border:0}
+.admin-left-panel .close { opacity: 1; }
+.admin-left-panel .close:hover { color: white }
+.admin-left-panel .tooltip { margin-left:35px }
 .admin-left-panel .panel-heading { padding-top:40px; }
 .admin-left-panel .panel-heading {  background: none; border:0; color: white}
 .admin-left-panel .panel-default .panel-heading { color:white; background:none; padding-top: 28px; }
