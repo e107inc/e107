@@ -53,9 +53,9 @@ $ADMIN_TEMPLATE['nav']['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><span class="hidden-xs hidden-sm hidden-md"><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
-		</a>
+		</a></span>
 		{SUB_MENU}
 	</li>
 ';
@@ -85,7 +85,7 @@ $ADMIN_TEMPLATE['nav']['button_enav_language'] = '
 
 // Logout / Settings / Personalize 			
 $ADMIN_TEMPLATE['nav']['button_enav_logout'] = '
-	<li class="dropdown">
+	<li class="dropdown admin-nav-logout">
 		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
@@ -235,14 +235,14 @@ else
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
 
-			<div class="sidebar-toggle-panel">
+			
 			{ADMIN_MENUMANAGER}
 	
 
 				{SETSTYLE=site_info}
 				{ADMINUI_HELP}
 				{ADMIN_HELP}
-
+			<div class="sidebar-toggle-panel">
 	
 			{ADMIN_SITEINFO=creditsonly}
 

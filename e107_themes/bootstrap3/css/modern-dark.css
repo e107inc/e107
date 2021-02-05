@@ -1010,7 +1010,9 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 @media (min-width:768px){.navbar-text{float:left;margin-left:15px;margin-right:15px}
 .navbar-left{float:left!important}
 .navbar-right{float:right!important;margin-right:-15px}
-.navbar-right~.navbar-right{margin-right:0}
+    /*
+        .navbar-right~.navbar-right{margin-right:0}
+       */
 }
 .navbar-default{background-color:#212121;border-color:#101010}
 .navbar-default .navbar-brand{color:#c6c6c6}

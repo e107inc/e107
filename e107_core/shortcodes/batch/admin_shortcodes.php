@@ -184,7 +184,11 @@ class admin_shortcodes extends e_shortcode
 
 		if($tmp = e107::getRegistry('core/e107/adminui/help'))
 		{
-			return  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+			$text = '<div class="sidebar-toggle-panel">';
+			$text .=  e107::getRender()->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+			$text .= '</div>';
+			$text .= $this->renderHelpIcon();
+			return $text;
 		}
 
 		return null;
@@ -252,7 +256,10 @@ class admin_shortcodes extends e_shortcode
 			$help_text .= ob_get_clean();
 		}
 
-		return $help_text;
+		$text = '<div class="sidebar-toggle-panel">'.$help_text.'</div>';
+		$text .= $this->renderHelpIcon();
+
+		return $text;
 	}
 
 	public function sc_admin_icon()
@@ -2639,6 +2646,26 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
+	}
+
+	/**
+	 * @param string $text
+	 * @return string
+	 */
+	private function renderHelpIcon()
+	{
+		$text = '
+		<ul class="nav nav-pills nav-stacked" style="position: absolute;bottom: 100px;">
+			<li>
+				<a href="#" class="e-toggle-sidebar e-tip" data-placement="right" title="'.LAN_HELP.'">
+				<span><i class="far fa-question-circle" ><!-- --></i></span>
+				</a>
+			</li>
+		</ul>
+		
+		';
+
+		return $text;
 	}
 
 
