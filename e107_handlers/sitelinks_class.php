@@ -1313,33 +1313,23 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if (isset($e107_vars[$act]['header'])) 
 			{
 				$text .= str_replace('{HEADING}', $e107_vars[$act]['header'], $tmpl['heading']);
-
-			// 	$text .= "<li class='nav-header'>".$e107_vars[$act]['header']."</li>";	//TODO add to Template.
 				continue;
 			}
 			
 			if (isset($e107_vars[$act]['divider']) && !empty($tmpl['divider']))
 			{
-			 //	$text .= "<li class='divider'></li>";	
 			 	$text .= $tmpl['divider'];
 				continue;	
 			}
-			
-			
-			
+
 			// check class so that e.g. e_UC_NOBODY will result no permissions granted (even for main admin)
 			if (isset($e107_vars[$act]['userclass']) && !e107::getUser()->checkClass($e107_vars[$act]['userclass'], false)) // check userclass perms 
 			{
 				continue;
 			}
-	
-			//  print_a($e107_vars[$act]);
-	
+
 			$replace = array();
 
-
-
-			
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 			
 			//XXX  && !is_numeric($act) ???
@@ -1372,8 +1362,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			{
 				$tmplateKey = 'button_'.$e107_vars[$act]['template'].$kpost;
 				$temp = varset($tmpl[$tmplateKey]);
-
-				// e107::getDebug()->log($tmplateKey);
 			}
 	
 
@@ -1400,7 +1388,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 			if(!isset($e107_vars[$act]['image_src']) && !isset($e107_vars[$act]['icon']))
 			{
-		//	 e107::getDebug()->log($e107_vars[$act]);
 				$e107_vars[$act]['image_src'] = self::guessMenuIcon($act.'/'.$act);
 			}
 			
@@ -1454,8 +1441,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 
 			$text .= $tp->simpleParse($temp, $replace); 
-		//	echo "<br />".$title." act=".$act;
-			//print_a($e107_vars[$act]);
+
 		}
 	
 		$text .= (!$sub_link && isset($tmpl['end'])) ? $tmpl['end'] : '';
