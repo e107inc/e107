@@ -315,7 +315,7 @@ h2,h3{page-break-after:avoid}
 *,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#c6c6c6}
 button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
-a{color:#77acd9;text-decoration:none}
+a{color:#8BC0ED;text-decoration:none}
 a:focus,a:hover{color:#fff;text-decoration:none}
 a:focus{outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
 .carousel-inner>.item>a>img,.carousel-inner>.item>img,.img-responsive,.thumbnail a>img,.thumbnail>img{display:block;max-width:100%;height:auto}
@@ -801,8 +801,8 @@ select[multiple].input-lg,textarea.input-lg{height:auto}
 .btn-danger.active,.btn-danger:active,.btn-danger:hover,.open>.dropdown-toggle.btn-danger{color:#fff;background-color:#e9322d;border-color:#dc1c17}
 .btn-danger.active.focus,.btn-danger.active:focus,.btn-danger.active:hover,.btn-danger:active.focus,.btn-danger:active:focus,.btn-danger:active:hover,.open>.dropdown-toggle.btn-danger.focus,.open>.dropdown-toggle.btn-danger:focus,.open>.dropdown-toggle.btn-danger:hover{color:#fff;background-color:#dc1c17;border-color:#9f1411}
 .btn-danger.disabled.focus,.btn-danger.disabled:focus,.btn-danger.disabled:hover,.btn-danger[disabled].focus,.btn-danger[disabled]:focus,.btn-danger[disabled]:hover,fieldset[disabled] .btn-danger.focus,fieldset[disabled] .btn-danger:focus,fieldset[disabled] .btn-danger:hover{background-color:#ee5f5b;border-color:#ec4844}
-.btn-danger .badge{color:#ee5f5b;background-color:#fff}
-.btn-link{color:#77acd9;font-weight:400;border-radius:0}
+.btn-danger .badge{color:#F86965;background-color:#fff}
+.btn-link{color:#8BC0ED;font-weight:400;border-radius:0}
 .btn-link,.btn-link.active,.btn-link:active,.btn-link[disabled],fieldset[disabled] .btn-link{background-color:transparent;-webkit-box-shadow:none;box-shadow:none}
 .btn-link,.btn-link:active,.btn-link:focus,.btn-link:hover{border-color:transparent}
 .btn-link:focus,.btn-link:hover{color:#fff;text-decoration:none;background-color:transparent}
@@ -1064,7 +1064,7 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 .breadcrumb>.active{color:#c6c6c6}
 .pagination{padding-left:0;margin:20px 0;border-radius:4px}
 .pager li,.pagination>li{display:inline}
-.pagination>li>a,.pagination>li>span{position:relative;float:left;padding:8px 12px;line-height:1.42857143;text-decoration:none;color:#77acd9;background-color:#212121;border:1px solid rgba(0,0,0,.6);margin-left:-1px}
+.pagination>li>a,.pagination>li>span{position:relative;float:left;padding:8px 12px;line-height:1.42857143;text-decoration:none;color:#8BC0ED;background-color:#212121;border:1px solid rgba(0,0,0,.6);margin-left:-1px}
 .pagination>li:first-child>a,.pagination>li:first-child>span{margin-left:0;border-bottom-left-radius:4px;border-top-left-radius:4px}
 .pagination>li:last-child>a,.pagination>li:last-child>span{border-bottom-right-radius:4px;border-top-right-radius:4px}
 .pagination>li>a:focus,.pagination>li>a:hover,.pagination>li>span:focus,.pagination>li>span:hover{z-index:2;color:#fff;background-color:transparent;border-color:rgba(0,0,0,.6)}
@@ -1103,7 +1103,7 @@ a.label:focus,a.label:hover{color:#fff;text-decoration:none;cursor:pointer}
 .media-object,.thumbnail{display:block}
 .btn-group-xs>.btn .badge,.btn-xs .badge{top:0;padding:1px 5px}
 a.badge:focus,a.badge:hover{color:#fff;text-decoration:none;cursor:pointer}
-.list-group-item.active>.badge,.nav-pills>.active>a>.badge{color:#77acd9;background-color:#222}
+.list-group-item.active>.badge,.nav-pills>.active>a>.badge{color:#8BC0ED;background-color:#222}
 .jumbotron,.jumbotron .h1,.jumbotron h1{color:inherit}
 .list-group-item>.badge{float:right}
 .list-group-item>.badge+.badge{margin-right:5px}
@@ -1253,7 +1253,7 @@ a.list-group-item-danger.active,a.list-group-item-danger.active:focus,a.list-gro
 .panel-warning>.panel-heading{color:#fff;background-color:#f89406}
 .panel-warning>.panel-heading .badge{color:#f89406;background-color:#fff}
 .panel-danger>.panel-heading{color:#fff;background-color:#ee5f5b}
-.panel-danger>.panel-heading .badge{color:#ee5f5b;background-color:#fff}
+.panel-danger>.panel-heading .badge{color:#F86965;background-color:#fff}
 .embed-responsive{position:relative;display:block;height:0;padding:0}
 .embed-responsive .embed-responsive-item,.embed-responsive embed,.embed-responsive iframe,.embed-responsive object,.embed-responsive video{position:absolute;top:0;left:0;bottom:0;height:100%;width:100%;border:0}
 .embed-responsive-16by9{padding-bottom:56.25%}
@@ -1262,9 +1262,9 @@ a.list-group-item-danger.active,a.list-group-item-danger.active:focus,a.list-gro
 .well blockquote{border-color:#ddd;border-color:rgba(0,0,0,.15)}
 .well-lg{padding:24px;border-radius:6px}
 .well-sm{padding:9px;border-radius:3px}
-.close{float:right;font-size:21px;line-height:1;color:#000;text-shadow:0 1px 0 #fff;opacity:.2;filter:alpha(opacity=20)}
+.close{float:right;font-size:21px;line-height:1;color:#fff;text-shadow:0 1px 0 #fff;opacity:.5}
 .popover,.tooltip{text-decoration:none;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-style:normal;font-weight:400;letter-spacing:normal;line-break:auto;line-height:1.42857143;text-shadow:none;text-transform:none;white-space:normal;word-break:normal;word-spacing:normal;word-wrap:normal}
-.close:focus,.close:hover{color:#000;text-decoration:none;cursor:pointer;opacity:.5;filter:alpha(opacity=50)}
+.close:focus,.close:hover{color:rgba(255,255,255,0.6);text-decoration:none;cursor:pointer;opacity:.5;filter:alpha(opacity=50)}
 button.close{padding:0;cursor:pointer;background:0 0;border:0;-webkit-appearance:none}
 .modal-content,.popover{background-clip:padding-box}
 .modal{display:none;position:fixed;top:0;z-index:1050;-webkit-overflow-scrolling:touch;outline:0}
@@ -1471,7 +1471,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .breadcrumb,.input-group-addon,.nav-pills>li>a,.pager>li>a,.pagination>li>a,td.forumheader{text-shadow:1px 1px 1px rgba(0,0,0,.3)}
 .text-primary,.text-primary:hover{color:#337ab7}
 .text-success,.text-success:hover{color:#51a351}
-.text-danger,.text-danger:hover{color:#ee5f5b}
+.text-danger,.text-danger:hover{color:#F86965}
 .text-warning,.text-warning:hover{color:#f89406}
 .text-info,.text-info:hover{color:#5bc0de}
 .table a{text-decoration:underline}
@@ -1483,7 +1483,7 @@ label{font-weight:400}
 input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],select,textarea{line-height:1.42857;background-image:none;border:1px solid #171717;border-radius:4px;transition:border-color .15s ease-in-out 0s,box-shadow .15s ease-in-out 0s;padding:8px 12px;font-size:14px}
 .has-warning .control-label,.has-warning .form-control-feedback,.has-warning .help-block{color:#f89406}
 .has-warning .form-control,.has-warning .form-control:focus{border-color:#f89406}
-.has-error .control-label,.has-error .form-control-feedback,.has-error .help-block{color:#ee5f5b}
+.has-error .control-label,.has-error .form-control-feedback,.has-error .help-block{color:#F86965}
 .has-error .form-control,.has-error .form-control:focus{border-color:#ee5f5b}
 .has-success .control-label,.has-success .form-control-feedback,.has-success .help-block{color:#51a351}
 .has-success .form-control,.has-success .form-control:focus{border-color:#51a351}
@@ -1584,6 +1584,13 @@ div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
 div.admin-left-panel-collapsed .nav-header.sidebar-toggle-panel { display: none; }
 div.admin-left-panel .nav-pills > li.active > a > span > i {  color: #5bc0de }
 div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white }
+ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
+.admin-true-icon { color: #65B765 !important }
+.admin-false-icon { color: #F86965 !important }
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary {
+    color: #fff;
+    background: #2E77B6;
+}
 /*
 
 .admin-left-panel, .admin-right-panel {

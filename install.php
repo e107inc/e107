@@ -1150,7 +1150,7 @@ class e_install
 				{
 					$key = $val['name'];
 
-					if(empty($val['thumbnail']))
+					if($key !== 'css/modern-light.css' && ($key !== 'css/modern-dark.css'))
 					{
 						continue;
 					}

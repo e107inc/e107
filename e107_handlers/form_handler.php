@@ -6809,6 +6809,44 @@ var_dump($select_options);*/
 		return $ret;
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $parms
+	 * @return string
+	 */
+	public function radioImage($name,$value,$parms)
+	{
+		if(!empty($parms['path']))
+		{
+			$parms['legacy'] = $parms['path'];
+		}
+
+		$text = '<div class="clearfix">';
+		$class = varset($parms['block-class'],'col-md-2');
+
+		foreach($parms['optArray'] as $key=>$val)
+		{
+
+			$thumbnail    = e107::getParser()->toImage($val['thumbnail'],$parms);
+			$selected = ($key === $value) ? " checked='checked'" : '';
+			$active = ($key === $value) ? ' active' : '';
+
+			$text .= "<div class='e-image-radio ".$class."' >
+							<label class='theme-selection".$active."' title=\"".varset($val['title'])."\"><input type='radio' name='".$name."' value='".$key."' required='required' $selected />
+							<div>".$thumbnail. "</div></label>
+						";
+
+			$text .= isset($val['label']) ? "<div class='e-image-radio-label'>".$val['label']."</div>" : '';
+				$text .= "
+			</div>";
+
+		}
+
+		$text .= '</div>';
+
+		return $text;
+	}
 
 	private function imageradio($name,$value,$parms)
 	{
@@ -6818,26 +6856,22 @@ var_dump($select_options);*/
 			$parms['legacy'] = $parms['path'];
 		}
 
-
 		$text = '<div class="clearfix">';
-
-
 
 		foreach($parms['optArray'] as $key=>$val)
 		{
+
 			$thumbnail    = e107::getParser()->toImage($val,$parms);
-
-		//	$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
-
-
-					$selected = ($val == $value) ? ' checked' : '';
-
-					$text .= "
+			$selected = ($val == $value) ? ' checked' : '';
+				$text .= "
 									<div class='col-md-2 e-image-radio' >
-										<label class='theme-selection' title=\"".$key."\"><input type='radio' name='".$name."' value='{$val}' required='required' $selected />
-										<div>".$thumbnail. '</div>
-										</label>
-									</div>';
+										<label class='theme-selection' title=\"".varset($parms['titles'][$key],$key)."\"><input type='radio' name='".$name."' value='{$val}' required='required' $selected />
+										<div>".$thumbnail. "</div>
+										</label>";
+
+				$text .= isset($parms['labels'][$key]) ? "<div class='e-image-radio-label'>".$parms['labels'][$key]."</div>" : '';
+				$text .= "
+							</div>";
 
 		}
 

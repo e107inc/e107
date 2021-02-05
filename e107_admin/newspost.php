@@ -1026,7 +1026,7 @@ class news_admin_ui extends e_admin_ui
 						</colgroup>
 						<tbody>
 							<tr>
-								<td>".NWSLAN_127."</td>
+								<td>".NWSLAN_127.$frm->help(LAN_NEWS_88, 'before')."</td>
 								<td>
 									".$frm->select('news_default_template', $newsTemplates, $pref['news_default_template'])."
 									".$frm->help(LAN_NEWS_88, 'after')."
@@ -1041,7 +1041,7 @@ class news_admin_ui extends e_admin_ui
 							</tr>
 
 							<tr>
-								<td>".LAN_NEWS_91."</td>
+								<td>".LAN_NEWS_91.$frm->help(LAN_NEWS_92, 'before')."</td>
 								<td>
 									".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'])."
 									".$frm->help(LAN_NEWS_92, 'after')."
@@ -1049,7 +1049,7 @@ class news_admin_ui extends e_admin_ui
 							</tr>
 
 							<tr>
-								<td>".LAN_NEWS_93."</td>
+								<td>".LAN_NEWS_93.$frm->help(LAN_NEWS_94, 'before')."</td>
 								<td>
 									".$frm->checkboxes('news_list_templates', $this->news_renderTypes, varset($pref['news_list_templates'],0), array('useKeyValues' => 1))."
 									".$frm->help(LAN_NEWS_94, 'after')."
@@ -1060,7 +1060,7 @@ class news_admin_ui extends e_admin_ui
 								
 						$tab1 .= "
 							<tr>
-								<td>".LAN_NEWS_110."</td>
+								<td>".LAN_NEWS_110.$frm->help(LAN_NEWS_111, 'before')."</td>
 								<td>
 									".$frm->number('news_cache_timeout',varset($pref['news_cache_timeout'],0), 6)."
 									".$frm->help(LAN_NEWS_111, 'after')."
@@ -1083,7 +1083,7 @@ class news_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 							<tr>
-								<td>".NWSLAN_115."</td>
+								<td>".NWSLAN_115.$frm->help(NWSLAN_116, 'before')."</td>
 								<td id='newsposts-archive-cont'>
 									".$frm->select('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']))."
 									".$frm->help(NWSLAN_116, 'after')."
