@@ -1636,5 +1636,5 @@ ul.col-selection { background-color: #FCFDFF; }
 
             }
 
-            .admin-left-panel {  max-width: 300px; }
+            #admin-cron  .admin-left-panel {  max-width: 300px; }
         }

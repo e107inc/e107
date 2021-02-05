@@ -201,6 +201,7 @@ class admin_shortcodes extends e_shortcode
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$help_text = '';
+		$ret = '';
 
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
@@ -256,10 +257,13 @@ class admin_shortcodes extends e_shortcode
 			$help_text .= ob_get_clean();
 		}
 
-		$text = '<div class="sidebar-toggle-panel">'.$help_text.'</div>';
-		$text .= $this->renderHelpIcon();
+		if(!empty($help_text))
+		{
+			$ret = '<div class="sidebar-toggle-panel">'.$help_text.'</div>';
+			$ret .= $this->renderHelpIcon();
+		}
 
-		return $text;
+		return $ret;
 	}
 
 	public function sc_admin_icon()
@@ -2654,6 +2658,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	 */
 	private function renderHelpIcon()
 	{
+
 		$text = '
 		<ul class="nav nav-pills nav-stacked" style="position: absolute;bottom: 100px;">
 			<li>

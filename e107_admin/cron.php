@@ -548,7 +548,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 			
 			
 			return "<a class='e-tip' href=''>".ADMIN_INFO_ICON."</a>
-			<div class='field-help>".$text."</div>";
+			<div class='field-help'>".$text."</div>";
 
 		}
 		
