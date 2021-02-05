@@ -1617,5 +1617,5 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
        vertical-align: top;
     }
 
-            .admin-left-panel {  max-width: 300px; }
+    #admin-cron  .admin-left-panel {  max-width: 300px; }
 }
