@@ -32,12 +32,12 @@ if(!class_exists("hero_setup"))
 
 			if(!empty($ret['success']))
 			{
-				e107::getMessage()->addSuccess(LAN_HERO_SUCC);
+				e107::getMessage()->addSuccess(LAN_HERO_ADMIN_001);
 			}
 
 			if(!empty($ret['failed']))
 			{
-				e107::getMessage()->addError(LAN_HERO_ERR);
+				e107::getMessage()->addError(LAN_HERO_ADMIN_002);
 				e107::getMessage()->addDebug(print_a($ret['failed'],true));
 			}
 
