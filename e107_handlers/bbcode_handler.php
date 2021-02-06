@@ -26,11 +26,11 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_bbcode
 {
-	var $bbList;			// Caches the file contents for each bbcode processed
-	var $bbLocation = array();		// Location for each file - 'core' or a plugin name
-	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
-	var $core_bb = array();
-	var $class = FALSE;
+	private $bbList;			// Caches the file contents for each bbcode processed
+	private $bbLocation = array();		// Location for each file - 'core' or a plugin name
+	private $preProcess = false;	// Set when processing bbcodes prior to saving
+	private $core_bb = array();
+	private $class = false;
 	private $resizePrefs = array();
 
 	function __construct()
@@ -855,7 +855,7 @@ class e_bbcode
 
 	    $text = $tp->cleanHtml($text);
 
-	    $tp->init(); // reset to default; // FIXME needs to reset the above values to default. 
+	    $tp->init(); // reset to default;
 
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
