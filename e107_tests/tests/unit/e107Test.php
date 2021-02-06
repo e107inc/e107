@@ -1848,13 +1848,24 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this->assertTrue($res);
 			}
-
+*/
 			public function testSet_request()
 			{
-				$res = null;
-				$this->assertTrue($res);
-			}
+				$tests = array(
+					'mode=main&action=create'                       => 'mode=main&amp;action=create',
+					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
+			//		'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main', //FIXME Fails.
+				);
 
+				foreach($tests as $input => $expected)
+				{
+					$result = $this->e107->set_request(true, $input);
+					$this->assertSame($expected, $result);
+				}
+
+
+			}
+/*
 			public function testCanCache()
 			{
 				$res = null;

@@ -5150,13 +5150,13 @@ class e107
 		}
 
 		// e_MENU fix
-		if(e_MENU)
+		if(deftrue('e_MENU'))
 		{
 			$requestUri = str_replace('['.e_MENU.']', '', $requestUri);
 			$requestUrl = str_replace('['.e_MENU.']', '', $requestUrl);
 			if(defset('e_QUERY'))
 			{
-				parse_str(e_QUERY, $_GET);
+				parse_str(str_replace('&amp;', '&', e_QUERY), $_GET);
 			}
 		}
 
@@ -5311,33 +5311,45 @@ class e107
 	}
 
 	/**
-	 * Set request related constants
+	 * Defines e_QUERY in a format that can be used in HTML and defines e_MENU
 	 * @param boolean $no_cbrace remove curly brackets from the url
-	 * @return e107
+	 * @return string parsed query string.
 	 */
-	public function set_request($no_cbrace = true)
+	public function set_request($no_cbrace = true, $queryString =null)
 	{
+
+		if($queryString === null)
+		{
+			$queryString = $_SERVER['QUERY_STRING'] ;
+		}
 
 		$inArray = array("'", '/**/', '/UNION/', '/SELECT/', 'AS ');
 
 		foreach($inArray as $res)
 		{
-			if(stripos($_SERVER['QUERY_STRING'], $res) !== false)
+			if(stripos($queryString, $res) !== false)
 			 {
 				die('Access denied.');
 			}
 		}
 
-		$eMENUQry = str_replace(array('%5B','%5D'),array('[',']'),$_SERVER['QUERY_STRING']); //FIX for urlencoded QUERY_STRING without breaking the '+' used by debug.
+		$eMENUQry = str_replace(array('%5B','%5D'),array('[',']'), $queryString); //FIX for urlencoded QUERY_STRING without breaking the '+' used by debug.
 		if (strpos($eMENUQry, ']') && preg_match('#\[(.*?)](.*)#', $eMENUQry, $matches))
 		{
-			define('e_MENU', $matches[1]);
+			if(!defined('e_MENU'))
+			{
+				define('e_MENU', $matches[1]);
+			}
 			$e_QUERY = $matches[2];
 		}
 		else
 		{
-			define('e_MENU', '');
-			$e_QUERY = $_SERVER['QUERY_STRING'];
+			if(!defined('e_MENU'))
+			{
+				define('e_MENU', '');
+			}
+
+			$e_QUERY = $queryString;
 		}
 
 		if ($no_cbrace)
@@ -5345,19 +5357,25 @@ class e107
 			$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		}
 
-	//	$e_QUERY = htmlentities(self::getParser()->post_toForm($e_QUERY)); //@see https://github.com/e107inc/e107/issues/719
 		$e_QUERY = htmlspecialchars(self::getParser()->post_toForm($e_QUERY));
 
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			define('e_QUERY', filter_var($e_QUERY, FILTER_SANITIZE_URL));
-			$_SERVER['QUERY_STRING'] = e_QUERY;
+			$e_QUERY = filter_var($e_QUERY, FILTER_SANITIZE_URL); //FIXME Breaks non-latin chars: @see https://github.com/e107inc/e107/issues/719
+			if(!defined('e_QUERY'))
+			{
+				define('e_QUERY', $e_QUERY);
+				$_SERVER['QUERY_STRING'] = $e_QUERY;
+			}
 		}
 
+		if(!defined('e_TBQS')) // for the unit tests.
+		{
+			define('e_TBQS', $_SERVER['QUERY_STRING']);
+		}
 
-
-		define('e_TBQS', $_SERVER['QUERY_STRING']);
+		return $e_QUERY;
 	}
 
 	/**
