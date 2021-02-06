@@ -1165,7 +1165,7 @@ class e_install
 
 				}
 
-				$output .= $this->thumbnailSelector('admincss', $opts, 'css/bootstrap-dark.min.css');
+				$output .= $this->thumbnailSelector('admincss', $opts, 'css/modern-dark.css');
 
 				$output .= "
 						
