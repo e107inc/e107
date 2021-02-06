@@ -10,8 +10,8 @@
 +----------------------------------------------------------------------+
 */
 
-define("LAN_HERO_SUCC", "Default slides imported.");
-define("LAN_HERO_ERR", "Failed to import default slides.");
+define("LAN_HERO_ADMIN_001", "Default slides imported.");
+define("LAN_HERO_ADMIN_002", "Failed to import default slides.");
 define("LAN_HERO_BACKGROUND", "Background");
 define("LAN_HERO_IMAGE_VIDEO", "Image/Video");
 define("LAN_HERO_MEDIA", "Media");
