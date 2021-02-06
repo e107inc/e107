@@ -56,7 +56,7 @@ class installLog
 	static function errorHandler($errno=null, $errstr=null, $errfile=null, $errline=null)
 	{
 
-		$error = "Error on line $errline in file ".$errfile." : ".$errstr;
+		$error = "Error on line ".$errline." in file ".$errfile." : ".$errstr;
 
 		switch($errno)
 		{
@@ -84,10 +84,15 @@ class installLog
 		        self::add($error, "debug");
 		        break;
 		    default:
-		        self::add($error, "warn");
+		        if(!empty($errno))
+		        {
+		             self::add($error, "warn");
+		        }
+
 
 		}
 
+		return true;
 	}
 
 
@@ -132,6 +137,8 @@ class installLog
 set_exception_handler(array('installLog','exceptionHandler'));
 set_error_handler(array('installLog',"errorHandler"));
 register_shutdown_function(array('installLog',"errorHandler"));
+
+
 
 /*define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -527,10 +534,8 @@ class e_install
 		$this->stage = 1;
 		installLog::clear();
 		installLog::add('Stage 1 started');
-	//	installLog::add('Stage 1 started');
 
 
-		
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_003);
@@ -1313,12 +1318,14 @@ class e_install
 					$themeInfo 	= $this->get_theme_xml($val);
 
 
+
 					$opts[$val] = array(
 						'title' =>vartrue($themeInfo['@attributes']['name']),
 						'category' 	=> vartrue($themeInfo['category']),
 						'preview'   =>  e_THEME.$val."/".$themeInfo['thumbnail'],
 						'description'   => vartrue($themeInfo['info'])
 					);
+
 
 	/*				$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
@@ -2168,16 +2175,6 @@ if($this->pdo == true)
 			if (!$this->dbqry($sql_table))
 			{
 				installLog::add("Query Failed in ".$filename." : ".$sql_table, 'error');
-			/*	if($this->debug)
-				{
-					echo "<h3>filename</h3>";
-					var_dump($filename);
-
-					echo "<h3>sql_table</h3>";
-					var_dump($sql_table);
-					echo "<h3>result[0]</h3>";
-					var_dump($result[0]);
-				}*/
 				return nl2br(LANINS_061."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 			}
 		}
