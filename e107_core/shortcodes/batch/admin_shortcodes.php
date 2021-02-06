@@ -2658,6 +2658,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	 */
 	private function renderHelpIcon()
 	{
+		if(deftrue('THEME_STYLE') !== 'css/modern-light.css' && deftrue('THEME_STYLE') !=='css/modern-dark.css')
+		{
+			return null;
+		}
 
 		$text = '
 		<ul class="nav nav-pills nav-stacked" style="position: absolute;bottom: 100px;">

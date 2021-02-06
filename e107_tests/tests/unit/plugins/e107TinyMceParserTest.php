@@ -76,8 +76,10 @@ Plain text paragraph 3<br />';
 		/**
 		 * Test parsing of input from user via TinyMce.
 		 */
-		public function testToBBcode()
+		public function testToDB()
 		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+
 
 			$test_1 = '<ul>
 <li>one<a class="bbcode bbcode-link" href="http://www.three.co.uk/"></a></li>
@@ -88,7 +90,7 @@ Plain text paragraph 3<br />';
 <sup>2</sup>
 ';
 
-			$actual_1 = $this->tm->toBBcode($test_1);
+			$actual_1 = $this->tm->toDB($test_1);
 			$expected_1 = '[html]<ul>
 <li>one<a class="bbcode bbcode-link" href="http://www.three.co.uk/"></a></li>
 <li>two</li>
@@ -110,7 +112,7 @@ Plain text paragraph 3<br />';
 
 
 
-			$actual_2 = $this->tm->toBBcode($test_2);
+			$actual_2 = $this->tm->toDB($test_2);
 
 			$expected_2 = '[html]<p>[img class=bbcode-img-right&width=300]{e_MEDIA_IMAGE}2017-11/e107_about.png[/img]Some text</p>
 <p>[img class=bbcode-img-left&width=600]{e_MEDIA_IMAGE}2017-11/e107_about.png[/img]Some other text</p>[/html]';
@@ -122,25 +124,121 @@ Plain text paragraph 3<br />';
 
 		}
 
-
-
-		function testParsingOfScriptTags()
+		/**
+		 * Simulate TinyMce usage by a user without access to post HTML.
+		 */
+		function testToDBUser()
 		{
+			$text = "An example,<br />
+	<br />
+	Thank you for your purchase.<br />
+	Your order reference number is: #{ORDER_DATA: order_ref}<br />
+	<br />
+	<table class='table'>
+	<colgroup>	
+		<col style='width:50%' />
+		<col style='width:50%' />
+	</colgroup>
+	<tr>
+		<th>Merchant</th>
+		<th>Customer</th>
+	</tr>
+	<tr>
+		<td>{ORDER_MERCHANT_INFO}</td>
+		<td>
+			<h4>Billing address</h4>
+			{ORDER_DATA: cust_firstname} {ORDER_DATA: cust_lastname}<br />
+		</td>
+	</tr>
+	</table>
+	<hr />";
 
+		global $_E107;
+		$_E107['phpunit']  = true;  // enable the user of check_class();
+
+		$this->tm->setHtmlClass(e_UC_NOBODY);
+		$result = $this->tm->toDB($text);
+
+		$_E107['phpunit']  = false;
+
+		}
+
+
+
+
+		function testtoDBOnScriptTags()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
 			// test parsing of scripts.
 
 			$string = '<p><script type="text/javascript" src="https://cdn.myscript.net/js/1.js" async></script></p>';
-			$result = $this->tm->toBBcode($string);
+			$result = $this->tm->toDB($string);
 			$this->assertSame('[html]'.$string.'[/html]', $result);
 
 
 			$result = $this->tm->toHTML($string);
 			$this->assertSame($string, $result);
 
+
+
+
+
+
+
 		}
 
 
+		public function testParsingofTable()
+		{
+				// -----------
 
+			$string = "Hello {ORDER_DATA: cust_firstname} {ORDER_DATA: cust_lastname},<br />
+	<br />
+	Thank you for your purchase.<br />
+	Your order reference number is: #{ORDER_DATA: order_ref}<br />
+	<br />
+	<table class='table'>
+	<colgroup>	
+		<col style='width:50%' />
+		<col style='width:50%' />
+	</colgroup>
+	<tr>
+		<th>Merchant</th>
+		<th>Customer</th>
+	</tr>
+	<tr>
+		<td>{ORDER_MERCHANT_INFO}</td>
+		<td>
+			<h4>Billing address</h4>
+			{ORDER_DATA: cust_firstname} {ORDER_DATA: cust_lastname}<br />
+			{ORDER_DATA: cust_company}<br />
+			{ORDER_DATA: cust_address}<br />
+			{ORDER_DATA: cust_city} &nbsp;{ORDER_DATA: cust_state} &nbsp;{ORDER_DATA: cust_zip}<br />
+			{ORDER_DATA: cust_country}
+			<br />
+			<h4>Shipping address</h4>
+			{ORDER_DATA: ship_firstname} {ORDER_DATA: ship_lastname}<br />
+			{ORDER_DATA: ship_company}<br />
+			{ORDER_DATA: ship_address}<br />
+			{ORDER_DATA: ship_city} &nbsp;{ORDER_DATA: ship_state} &nbsp;{ORDER_DATA: ship_zip}<br />
+			{ORDER_DATA: ship_country}
+		</td>
+	</tr>
+	</table>";
+
+	$this->tm->setHtmlClass(254);
+	$result = $this->tm->toDB($string);
+	$this->assertSame('[html]'.$string.'[/html]', $result);
+
+	$result = $this->tm->toHTML($string);
+	$this->assertSame($string, $result);
+
+
+
+
+
+
+		}
 
 
 

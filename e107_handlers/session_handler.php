@@ -990,7 +990,7 @@ class e_core_session extends e_session
 				return false;
 			}
 
-				$this->log('Session Token Okay!', E_LOG_NOTICE);
+			$this->log('Session Token Okay!', defset('E_LOG_NOTICE', 1));
 
 		}
 		

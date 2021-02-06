@@ -3457,6 +3457,11 @@ class e_parse
 		$this->scriptAccess = $val;
 	}
 
+	public function setScriptAttibutes($arr)
+	{
+		$this->scriptAttributes = (array) $arr;
+	}
+
 	public function getAllowedTags()
 	{
 

@@ -13,7 +13,7 @@
 	{
 
 		/** @var e_bbcode */
-		protected $bb;
+		protected e_bbcode $bb;
 
 		protected function _before()
 		{
@@ -47,12 +47,39 @@
 		{
 
 		}
-
+*/
 		public function testHtmltoBBcode()
 		{
+			$text = '<h1 style="text-align: center;">Heading 1</h1>
+<h2 style="text-align: right;">Heading 2</h2>
+<h3 style="text-align: left;">Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+<div style="background-color: #333; color: white; padding: 10px;">
+<p>Paragraph.</p>
+<table onclick="alert(1)">
+<colgroup>
+<col style="width:30%" />
+<col style="width:70%" />
+</colgroup>
+<thead>
+<tr><th>Column 1</th><th>Column 2</th></tr>
+</thead>
+<tbody>
+	<tr><td><a href="#">link</a></td><td></td></tr>
+</tbody>
+</table>
+</div>';
+
+			$result = $this->bb->htmltoBbcode($text);
+
+			$expected = strip_tags($result);
+
+			$this->assertSame($expected, $result);
 
 		}
-
+/*
 		public function testImgToBBcode()
 		{
 

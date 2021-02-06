@@ -7,23 +7,26 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
-
 if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	header('Content-Length: 0');
 	exit;
 }
 
-$_E107['no_online'] = true;
-$_E107['no_menus'] = true;
-$_E107['no_forceuserupdate'] = true;
-$_E107['no_maintenance'] = true;
-$_E107['minimal'] = true;
+if(!defined('e_ADMIN_AREA'))
+{
+	define('e_ADMIN_AREA', true);
+}
 
-if (!defined('e_ADMIN_AREA')) define('e_ADMIN_AREA', true);
 if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
-	require_once("../../../../class2.php");
+	$_E107['no_online'] = true;
+	$_E107['no_menus'] = true;
+	$_E107['no_forceuserupdate'] = true;
+	$_E107['no_maintenance'] = true;
+	$_E107['minimal'] = true;
+
+	require_once(__DIR__."/../../../../class2.php");
 }
 
 /**
@@ -35,15 +38,14 @@ if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 */
 class e107TinyMceParser
 {
-
 	protected $gzipCompression = false;
+	protected $postHtmlClass;
 
-	/**
-	 *
-	 */
 	function __construct()
 	{
-		$_POST['mode'] = isset($_POST['mode']) ? $_POST['mode'] : 'tohtml';
+		$this->postHtmlClass = (int) e107::getPref('post_html', e_UC_NOBODY);
+
+		$mode = isset($_POST['mode']) ? $_POST['mode'] : 'tohtml';
 		$_POST['content'] = isset($_POST['content']) ? $_POST['content'] : '';
 
 		$html = '';
@@ -80,24 +82,16 @@ TEMPL;
 			$debug = false;
 		}
 
-		if($_POST['mode'] == 'tohtml')
+		if($mode === 'tohtml')
 		{
 			$html =  $this->toHTML($_POST['content']);
 		}
-
-		if($_POST['mode'] == 'tobbcode')
+		elseif($mode === 'tobbcode')
 		{
-			$html = $this->toBBcode($_POST['content']);
+			$html = $this->toDB($_POST['content']);
 		}
 
-		if($debug == true)
-		{
-			print_a($html);
-			echo "<hr />";
-			echo "<h1>Rendered</h1>";
-			echo $html;
-		}
-		elseif($this->gzipCompression == true)
+		if($this->gzipCompression == true)
 		{
 			header('Content-Encoding: gzip');
 			$gzipoutput = gzencode($html,6);
@@ -111,12 +105,14 @@ TEMPL;
 
 	}
 
+	public function setHtmlClass($value)
+	{
+		$this->postHtmlClass = (int) $value;
+	}
 
 
 	public function toHTML($content)
 	{
-		// global $pref; //XXX faster?
-		$pref = e107::getPref();
 		$tp = e107::getParser();
 		// XXX @Cam possible fix - convert to BB first, see news admin AJAX request/response values for reference why
 		$content = stripslashes($content);
@@ -124,11 +120,8 @@ TEMPL;
 		//	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
 		e107::getBB()->setClass($this->getMediaCategory());
 
-		if(check_class($pref['post_html'])) // raw HTML within [html] tags.
+		if(check_class($this->postHtmlClass)) // raw HTML within [html] tags.
 		{
-
-			//	$content = $tp->replaceConstants($content,'abs');
-
 			if(strpos($content,"[html]") === false) // BC - convert old BB code text to html.
 			{
 				e107::getBB()->clearClass();
@@ -147,22 +140,7 @@ TEMPL;
 			$content 		= $tp->parseBBTags($content,true); // parse the <bbcode> tag so we see the HTML equivalent while editing!
 			$content 		= e107::getBB()->parseBBCodes($content); 
 
-
-			if(!empty($content) && E107_DEBUG_LEVEL > 0)
-			{
-		//		$content =  "-- DEBUG MODE ACTIVE -- \n".$content;
-				//	echo htmlentities($content)."\n";
-				//	echo "<pre>".$content."</pre>";
-				$text = $content;
-				return $text;
-				// exit;
-			}
-			else
-			{
-				$text = $content;
-			}
-
-
+			$text = $content;
 
 		}
 		else  // bbcode Mode.
@@ -176,12 +154,6 @@ TEMPL;
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";
-			if(!empty($content) && E107_DEBUG_LEVEL > 0)
-			{
-				$text .= "<!-- bbcode mode -->";
-				//print_r(htmlentities($content))."\n";
-				//exit;
-			}
 
 			$text .= $content;
 		}
@@ -193,37 +165,26 @@ TEMPL;
 
 
 
-	function toBBcode($content)
+	function toDB($content)
 	{
-		// echo $_POST['content'];
-	//	global $pref;
-		$pref = e107::getPref();
-	//	$tp = e107::getParser();
-
 		e107::getBB()->setClass($this->getMediaCategory());
 
 		$content = stripslashes($content);
 
-		if(check_class($pref['post_html'])) // Plain HTML mode.
+		if(check_class($this->postHtmlClass)) // Plain HTML mode.
 		{
-
 			$content = trim($content);
-		//	$content = $this->updateImg($content);
 			$content = e107::getBB()->imgToBBcode($content);
-		//	$content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent
 
 			if(strip_tags($content, '<i>') == '&nbsp;') // Avoid this: [html]<p>&nbsp;</p>[/html]
 			{
 				exit;
 			}
 
-			$text = $content ? "[html]".$content."[/html]" : ""; // Add the tags before saving to DB.
+			$text = !empty($content) ? "[html]".$content."[/html]" : ''; // Add the tags before saving to DB.
 		}
-		else  // bbcode Mode. //XXX Disabled at the moment in tinymce/e_meta.php - post_html is required to activate.
+		else  // User doesn't have HTML access -  bbcode Mode.
 		{
-			//   [img width=400]/e107_2.0/thumb.php?src={e_MEDIA_IMAGE}2012-12/e107org_white_stripe.png&w=400&h=0[/img]
-			// $content = str_replace("{e_BASE}","", $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-
 			$text = e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.
 		}
 

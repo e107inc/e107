@@ -831,10 +831,35 @@ class e_bbcode
 	 */
 	function htmltoBBcode($text)
 	{
-	    
-       
+		$allowedTags = array('html', 'body','div', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'b',
+			'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li',  'h2', 'h3', 'h4', 'h5', 'h6', 'p',
+			'blockquote', /*'audio', 'video',*/ 'br', 'small'
+		);
+
+		$allowedAttributes = array(
+		'default'  => array(),
+		'img'      => array('src', 'alt', 'width', 'height'),
+		'a'        => array('href', 'target', 'rel'),
+		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
+		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+		'td'       => array('colspan', 'rowspan'),
+		'th'       => array('colspan', 'rowspan'),
+		'x-bbcode' => array('alt'),
+		);
+
+
+	    $tp = e107::getParser();
+	    $tp->setAllowedTags($allowedTags);
+	    $tp->setAllowedAttributes($allowedAttributes);
+	    $tp->setScriptAttibutes(null);
+
+	    $text = $tp->cleanHtml($text);
+
+	    $tp->init(); // reset to default; // FIXME needs to reset the above values to default. 
+
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
+
 	//	$text = str_replace('<!-- pagebreak -->',"[newpage=]",$text);
     
         
@@ -891,10 +916,16 @@ class e_bbcode
 		
 			
 		// Mostly closing tags. 
-		$convert = array(		
+		$convert = array(
+
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
 			array(	"\n",			"</p>\n"),
+			array(	"",			    "<div>\n"),
+			array(	"",			    "\t"),
+			array(	"",			    "</div>\n"),
+			array(	"\n",			"<thead>\n"),
+			array(	"\n",			"</thead>\n"),
 			array(	"\n",			"</p>"),
 			array(	"[/list]",		'</ul>\n'),
 			array(	"[/list]",		'</ul>'),
@@ -906,14 +937,22 @@ class e_bbcode
 			array(	"[h=3]",		'<h3 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=3]",		'<h3>'),
 			array(	"[/h]",			'</h3>'),
+			array(	"[h=4]",		'<h4>'),
+			array(	"[/h]",		    '</h4>'),
+			array(	"[h=5]",		'<h5>'),
+			array(	"[/h]",		    '</h5>'),
+			array(	"[h=6]",		'<h6>'),
+			array(	"[/h]",		    '</h6>'),
 			array(	"[/b]",			'</strong>'),
 			array(	"[/i]",			'</em>'),
 			array(	"[/block]",		'</div>'),
-			array(	"[/table]",	'</table>'),
-			array(	"[/tbody]",	'</tbody>'),
+			array(	"[/table]",	    '</table>'),
+			array(	"[/tbody]",	    '</tbody>'),
 			array(	"[/code]\n",	'</code>'),
-			array(	"[/tr]",	'</tr>'),
-			array(	"[/td]",		'</td>'),	
+			array(	"[/tr]",	    '</tr>'),
+			array(	"[/td]",		'</td>'),
+			array(	"[td]",		    '<th>'),
+			array(	"[/td]",		'</th>'),
 			array(	"[/blockquote]",'</blockquote>'),
 			array(	"]",			' style=]')
 				

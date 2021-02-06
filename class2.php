@@ -83,7 +83,7 @@ if(!empty($_E107['minimal']))
 	$_E107['no_maintenance'] = true;
 	$_E107['no_forceuserupdate'] = true;
 	$_E107['no_event'] = true;
-	$_E107['no_session'] = true;
+//	$_E107['no_session'] = true;
 //	$_E107['no_parser'] = true;
 	$_E107['no_override'] = true;
 	$_E107['no_log'] = true;
