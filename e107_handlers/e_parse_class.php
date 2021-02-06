@@ -258,46 +258,19 @@ class e_parse
 	private $nodesToDisableSC = array();
 	private $pathList = array();
 
-	private $allowedAttributes = array(
-		'default'  => array('id', 'style', 'class', 'title', 'lang', 'accesskey'),
-		'img'      => array('src', 'alt', 'width', 'height'),
-		'a'        => array('href', 'target', 'rel'),
-		'script'   => array('type', 'src', 'language', 'async'),
-		'iframe'   => array('src', 'frameborder', 'width', 'height'),
-		'input'    => array('type', 'name', 'value'),
-		'form'     => array('action', 'method', 'target'),
-		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
-		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
-		'td'       => array('colspan', 'rowspan'),
-		'th'       => array('colspan', 'rowspan'),
-		'col'      => array('span'),
-		'embed'    => array('src', 'wmode', 'type', 'width', 'height'),
-		'x-bbcode' => array('alt'),
-		'label'    => array('for'),
-		'source'   => array('media', 'sizes', 'src', 'srcset', 'type'),
+	private $allowedAttributes = array();
 
-	);
 
-	private $badAttrValues = array('javascript[\s]*?:', 'alert\(', 'vbscript[\s]*?:', 'data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
+	private $badAttrValues = array();
 
-	private $replaceAttrValues = array(
-		'default' => array()
-	);
+	private $replaceAttrValues = array();
 
-	private $allowedTags = array('html', 'body', 'div', 'a', 'img', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
-		'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p',
-		'div', 'pre', 'section', 'article', 'blockquote', 'hgroup', 'aside', 'figure', 'figcaption', 'abbr', 'span', 'audio', 'video', 'source', 'br',
-		'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
-	);
-	private $scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
+	private $allowedTags = array();
+	private $scriptTags = array();
 
-	private $scriptAttributes = array('onclick', 'onchange', 'onblur', 'onload', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup',
-		'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel',
-		'onwheel', 'oncopy', 'oncut', 'onpaste'
-	);
+	private $scriptAttributes = array();
 
-	private $blockTags = array('p', 'pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
-
+	private $blockTags = array();
 
 	private $scriptAccess = false; // nobody.
 
@@ -3412,6 +3385,47 @@ class e_parse
 			$this->e_SuperMods[$key] = array_merge($this->e_optDefault, $this->e_SuperMods[$key]);
 			$this->e_SuperMods[$key]['context'] = $key;
 		}
+
+		$this->allowedTags = array('html', 'body', 'div', 'a', 'img', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
+		'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p',
+		'section', 'article', 'blockquote', 'hgroup', 'aside', 'figure', 'figcaption', 'abbr', 'span', 'audio', 'video', 'source', 'br',
+		'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
+		);
+
+		$this->scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
+
+		$this->allowedAttributes = array(
+		'default'  => array('id', 'style', 'class', 'title', 'lang', 'accesskey'),
+		'img'      => array('src', 'alt', 'width', 'height'),
+		'a'        => array('href', 'target', 'rel'),
+		'script'   => array('type', 'src', 'language', 'async'),
+		'iframe'   => array('src', 'frameborder', 'width', 'height'),
+		'input'    => array('type', 'name', 'value'),
+		'form'     => array('action', 'method', 'target'),
+		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
+		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+		'td'       => array('colspan', 'rowspan'),
+		'th'       => array('colspan', 'rowspan'),
+		'col'      => array('span'),
+		'embed'    => array('src', 'wmode', 'type', 'width', 'height'),
+		'x-bbcode' => array('alt'),
+		'label'    => array('for'),
+		'source'   => array('media', 'sizes', 'src', 'srcset', 'type'),
+
+		);
+
+		$this->scriptAttributes = array('onclick', 'onchange', 'onblur', 'onload', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup',
+		'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel',
+		'onwheel', 'oncopy', 'oncut', 'onpaste'
+		);
+
+		$this->blockTags = array('p', 'pre', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'); // element includes its own line-break.
+
+		$this->badAttrValues = array('javascript[\s]*?:', 'alert\(', 'vbscript[\s]*?:', 'data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
+
+		$this->replaceAttrValues = array(
+			'default' => array()
+		);
 
 	}
 

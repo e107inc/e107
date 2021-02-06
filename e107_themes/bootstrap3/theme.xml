@@ -16,7 +16,7 @@
 		<word>clean</word>
 	</keywords>
 	<screenshots>
-		<image>preview_frontend.webp</image>
+		<image>preview_frontend.png</image>
 	</screenshots>
 	<libraries>
 		<library name="bootstrap" version="3" scope="all"/>
