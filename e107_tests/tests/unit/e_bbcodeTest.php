@@ -13,7 +13,7 @@
 	{
 
 		/** @var e_bbcode */
-		protected e_bbcode $bb;
+		protected $bb;
 
 		protected function _before()
 		{
