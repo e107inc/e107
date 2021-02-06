@@ -1447,7 +1447,16 @@ class system_tools
 
 		foreach($spref as $key => $val)
 		{
-			$ptext = (is_array($val)) ? "<pre>".htmlentities(print_r($val, TRUE))."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			if(is_array($val))
+			{
+				$varView = deftrue('e_DEBUG') ? var_export($val, true): print_r($val, true);
+				$ptext = "<pre>".htmlentities($varView)."</pre>" ;
+			}
+			else
+			{
+				$ptext = htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			}
+
 			$ptext = $tp->textclean($ptext, 80);
 
 			$text .= "
