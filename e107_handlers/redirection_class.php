@@ -31,7 +31,7 @@ class redirection
 	protected $self_exceptions = array();
 	
 	/**
-	 * List of pages to not check against e_PAGE
+	 * List of pages to not check against defset('e_PAGE')
 	 *
 	 * @var array
 	 */
@@ -75,7 +75,7 @@ class redirection
 	{
 		if(!$url)
 		{
-			// e_SELF, e_PAGE and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
+			// e_SELF, defset('e_PAGE') and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
 			if(defset('e_SELF') && in_array(e_SELF, $this->self_exceptions))
 			{
 				return;
@@ -215,7 +215,7 @@ class redirection
 			return;	
 		}
 		
-		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
+		if(e107::getPref('maintainance_flag') && defset('e_PAGE') !== 'secure_img_render.php')
 		{
 			// if not admin
 			
@@ -260,7 +260,7 @@ class redirection
 		{
 			return;
 		}
-		if(strpos(e_PAGE, 'admin') !== FALSE)
+		if(strpos(defset('e_PAGE'), 'admin') !== false)
 		{
 			return;
 		}
@@ -268,14 +268,14 @@ class redirection
 		{
 			return;
 		}
-		if(in_array(e_PAGE, $this->page_exceptions))
+		if(in_array(defset('e_PAGE'), $this->page_exceptions))
 		{
 			return;
 		}
 		foreach (e107::getPref('membersonly_exceptions') as $val)
 		{
 			$srch = trim($val);
-			if(strpos(e_SELF, $srch) !== FALSE)
+			if(strpos(e_SELF, $srch) !== false)
 			{
 				return;
 			}
@@ -283,7 +283,7 @@ class redirection
 		
 		/*
 		echo "e_SELF=".e_SELF;
-		echo "<br />e_PAGE=".e_PAGE;
+		echo "<br />defset('e_PAGE')=".defset('e_PAGE');
 		print_a( $this->self_exceptions);
 		print_a($this->page_exceptions);
 		*/
@@ -374,12 +374,12 @@ class redirection
 
 
 					
-		if(defset('e_DEBUG') === 'redirect')
+		if(deftrue('e_DEBUG_REDIRECT'))
 		{
 			$error = debug_backtrace();
 
 			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
-			e107::getLog()->addDebug($message, true);
+			e107::getLog()->addDebug($message);
 			echo "Debug active";
 			print_a($message);
 			echo "Go to : <a href='".$url."'>".$url."</a>";
@@ -393,8 +393,8 @@ class redirection
 		}
 		if($preventCache)
 		{
-			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', true);
-			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true); 
+			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 		}
 		// issue #3179 redirect with response code >= 400 doesn't work. Only response codes below 400.
 		if(null === $http_response_code || $http_response_code >= 400)
