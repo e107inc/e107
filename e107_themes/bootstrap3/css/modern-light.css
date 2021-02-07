@@ -1286,7 +1286,7 @@
         .tooltip.right{margin-left:3px;padding:0 5px}
         .tooltip.bottom{margin-top:3px;padding:5px 0}
         .tooltip.left{margin-left:-3px;padding:0 5px}
-        .tooltip-inner{max-width:200px;padding:3px 8px;color:#fff;text-align:center;background-color:rgba(0,0,0,.9);border-radius:4px}
+        .tooltip-inner{max-width:200px;padding:3px 8px;color:#fff;text-align:left;background-color:rgba(0,0,0,.9);border-radius:4px}
         .popover,.popover-title{font-size:16px;background-color:#337ab7}
         .tooltip-arrow{position:absolute;width:0;height:0;border-color:transparent;border-style:solid}
         .tooltip.top .tooltip-arrow{bottom:0;left:50%;margin-left:-5px;border-width:5px 5px 0;border-top-color:rgba(0,0,0,.9)}
