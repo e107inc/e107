@@ -336,7 +336,7 @@ td .mediaselector-multi .mediaselector-container { margin-bottom: 20px }
 	display: block;
 	margin-top: 35%;
 	text-align: center;
-	opacity: 0.2;
+	opacity: 0.5;
 	}
 
 .dz-drag-hover { outline:2px dotted silver }

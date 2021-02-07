@@ -1229,7 +1229,7 @@ class media_admin_ui extends e_admin_ui
 
 
 		$cat = $this->getQuery('for');		
-		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? TRUE : FALSE;
+		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? true : false;
 		$mes = e107::getMessage();
 		$mes->addDebug('For:' .$cat);
 		$mes->addDebug('Bbcode: ' .$this->getQuery('bbcode'));
@@ -1243,12 +1243,14 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 		$this->processUploadUrl(true, $cat);
-		
+
 		if($file)
 		{
+		//	echo $this->fileTab($cat); // FIXME use this instead.
 			$this->setFileListMode($cat);
 
 			echo $this->mediaSelectUpload('file');
+
 
 			$tagid = e107::getParser()->filter($this->getQuery('tagid'));
 
@@ -1471,25 +1473,11 @@ class media_admin_ui extends e_admin_ui
 						
 		$text = "<ul id='admin-ui-media-manager' class='nav nav-tabs'>\n";
 		$bbcodeQuery = $this->getQuery('bbcode');
-		
-		if($bbcodeQuery !== 'video' && $bbcodeQuery !== 'glyph')
-		{
-			$text .= "<li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-select'>".ADLAN_105."</a></li>\n";
-		}
-		else
-		{
-			if($bbcodeQuery === 'glyph')
-			{
-				$glyphActive = 'active';	
-			}
-			else 
-			{
-				$youtubeActive = 'active';
-			}
-				
-					
-		}
-		
+
+		// files.
+		$text .= "<li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-media-select'>".$tp->toGlyph('fa-file').ADLAN_CL_5."</a></li>\n";
+
+
 
 		
 		if(varset($options['bbcode']) === 'img')
