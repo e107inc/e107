@@ -6739,7 +6739,7 @@ var_dump($select_options);*/
 				}
 				else
 				{
-					$ret = "(Method ".$meth." not found in ".get_class($cls).")";
+					$ret = "<div class='alert alert-warning' style='display:inline'>Method <b>".$meth."</b> not found in <b>".get_class($cls)."</b></div>";
 				}
 
 			break;
@@ -7336,6 +7336,7 @@ var_dump($select_options);*/
 						$tabs[$tabId] = array('caption'=> $label, 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
 					}
 
+
 					$text .= $this->tabs($tabs);
 				}
 				else   // No Tabs Present 
@@ -7391,14 +7392,10 @@ var_dump($select_options);*/
 		$text = '';
 
 		// required fields - model definition
-		$model_required = $model->getValidationRules();
-		$required_help = false;
-		$hidden_fields = array();
-
-
-		$helpTipLocation = $this->_help_location;
-		$help = '';
-
+		$model_required     = $model->getValidationRules();
+		$required_help      = false;
+		$hidden_fields      = array();
+		$helpTipLocation    = $this->_help_location;
 
 		foreach($fdata['fields'] as $key => $att)
 		{
@@ -7415,7 +7412,7 @@ var_dump($select_options);*/
 			
 			if($key === 'checkboxes' || $key === 'options' || (varset($att['type']) === null) || (varset($att['type']) === false))
 			{
-				continue;	
+				continue;
 			}
 
 			$parms = vartrue($att['formparms'], array());
@@ -7425,10 +7422,6 @@ var_dump($select_options);*/
 			}
 			$label = !empty($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
 
-			if($helpTipLocation !== -1) // -1 = help disabled.
-			{
-			//	$help = !empty($att['help']) ? '<div class="field-help" data-placement="left">'.deftrue($att['help'], $att['help']).'</div>' : '';
-			}
 
 			$valPath = trim(vartrue($att['dataPath'], $key), '/');
 			$keyName = $key;
@@ -7476,7 +7469,7 @@ var_dump($select_options);*/
 				}
 				unset($tmp);
 			}
-			
+
 			// type null - system (special) fields
 			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
 			{
@@ -7515,11 +7508,11 @@ var_dump($select_options);*/
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title'])). '</span>' .$required.$label;
 
 				$leftCell .= $this->help(varset($att['help']), 'before');
-				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId()). ' '.$help;
+				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
 				$rightCell .= $this->help(varset($att['help']), 'after');
 
 				$att['writeParms'] = $writeParms;
-				 
+
 				$text .= $this->renderCreateFieldRow($leftCell, $rightCell, $att);
 				
 				
