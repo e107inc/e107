@@ -60,6 +60,20 @@
 			$this->assertEquals($expected, $result);
 
 
+			// Multi-dimensional array support.
+			$newsess = e107::getSession('newtest');
+
+			$newsess->set('customer', array('firstname'=>'Fred'));
+			$newsess->set('customer/lastname', 'Smith');
+
+			$expected = array (
+			  'firstname' => 'Fred',
+			  'lastname' => 'Smith',
+			);
+
+			$result = $newsess->get('customer');
+			$this->assertSame($expected, $result);
+
 		}
 /*
 		public function testGetOption()

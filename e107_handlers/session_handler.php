@@ -303,13 +303,34 @@ class e_session
 	/**
 	 * Set value in current session namespace
 	 * Equals to $_SESSION[NAMESPACE][$key] = $value
-	 * @param string $key
+	 * @param string $key Also accepts multi-dimensinal format. key1/key2
 	 * @param mixed $value
 	 * @return e_session
 	 */
 	public function set($key, $value)
 	{
-		$this->_data[$key] = $value;
+		if(strpos($key,'/') !== false) // multi-dimensional
+		{
+			$keyArr = explode('/',$key);
+			$count = count($keyArr);
+
+		    if($count === 2)
+		    {
+		        list($k1, $k2) = $keyArr;
+		        $this->_data[$k1][$k2] = $value;
+		    }
+		    elseif($count === 3)
+		    {
+		        list($k1, $k2, $k3) = $keyArr;
+		        $this->_data[$k1][$k2][$k3] = $value;
+		    }
+
+		}
+		else
+		{
+			$this->_data[$key] = $value;
+		}
+
 		return $this;
 	}
 	
