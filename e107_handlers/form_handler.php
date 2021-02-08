@@ -5648,24 +5648,31 @@ var_dump($select_options);*/
 			break;
 			
 			case 'files':
-				if(!empty($value) && !is_array($value))
-				{
-					return "Type 'files' must have a data type of 'array' or 'json'";
-				}
-				$ret = '<ol>';
-				for ($i=0; $i < 5; $i++) 
-				{				
-					$ival 	= $value[$i]['path'];
 
-					if(empty($ival))
+				if(!empty($value))
+				{
+					if(!is_array($value))
 					{
-						continue;
+						return "Type 'files' must have a data type of 'array' or 'json'";
 					}
 
-					$ret .=  '<li>'.$ival.'</li>';		
+					$ret = '<ol>';
+					for ($i=0; $i < 5; $i++)
+					{
+						$ival 	= $value[$i]['path'];
+
+						if(empty($ival))
+						{
+							continue;
+						}
+
+						$ret .=  '<li>'.$ival.'</li>';
+					}
+					$ret .= '</ol>';
+					$value = $ret;
 				}
-				$ret .= '</ol>';
-				$value = $ret;
+
+
 			break; 
 			
 			case 'datestamp':
