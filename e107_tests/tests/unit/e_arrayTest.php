@@ -126,6 +126,14 @@ $data = array (
 				$result = $this->arrObj->unserialize($var['string']);
 				$this->assertEquals($var['expected'], $result);
 			}
+
+			// test with already an array.
+
+			$input = array('myarray'=>'myvalue');
+			$result = $this->arrObj->unserialize($input);
+			$this->assertSame($input, $result);
+
+
 		//	var_dump($actual);
 
 		}
