@@ -1787,7 +1787,7 @@ class e_user extends e_user_model
 
 		$userlogin = new userlogin();
 
-		if(e_PAGE === 'admin.php')
+		if(defset('e_PAGE') === 'admin.php')
 		{
 			$userlogin->setSecureImageMode('admin'); // use the admin secure code pref.
 		}

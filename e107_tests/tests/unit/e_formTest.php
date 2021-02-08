@@ -79,8 +79,8 @@ class e_formTest extends \Codeception\Test\Unit
 		'bbarea_001'        => array('title'=>'BBarea',     'type'=>'bbarea',       'inline'=>false),
 		'icon_001'          => array('title'=>'Icon',       'type'=>'icon',         'inline'=>false),
 		//	'media_001'         => array('title'=>'Media',      'type'=>'media',        'inline'=>false),
-		//	'file_001'          => array('title'=>'File',       'type'=>'file',         'inline'=>false), //FIXME
-		//		'files_001'         => array('title'=>'File',       'type'=>'files',        'inline'=>false), //FIXME
+		'file_001'          => array('title'=>'File',       'type'=>'file',         'inline'=>false),
+		'files_001'         => array('title'=>'Files',       'type'=>'files',    'data'=> 'json', 'inline'=>false),
 		'datestamp_001'     => array('title'=>'Datestamp',  'type'=>'datestamp',    'inline'=>false),
 		'date_001'          => array('title'=>'Date',       'type'=>'date'),
 		'userclass_001'     => array('title'=>'Userclass',   'type'=>'userclass'),
@@ -92,6 +92,9 @@ class e_formTest extends \Codeception\Test\Unit
 		//	'method_001'        => array('title'=>'Method' ,    'type'=>'method',       'inline'=>false),
 		'language_001'      => array('title'=>'Language' ,  'type'=>'language'),
 		'userclass_002'     => array('title'=>'Userclass',   'type'=>'userclass', 'writeParms'=>array('default'=>255 /* e_UC_NOBODY*/)),
+
+		'media_001'     => array('title'=>'Media',   'type'=>'media', 'data'=>'json', 'inline'=>false),
+
 		//	'lanlist_001'       => array('title'=>'Lanlist' ,   'type'=>'lanlist',      'inline'=>false),
 
 
@@ -128,9 +131,35 @@ class e_formTest extends \Codeception\Test\Unit
 		'tags_001'          => 'keyword1,keyword2,keyword3',
 		'bbarea_001'        => '[html]<b>bold</b>[/html]',
 		'icon_001'          => '{e_IMAGE}e107_icon_32.png',
-		//	'media_001'         => '', // TODO - saves as json format.
+
 		'file_001'          => '{e_MEDIA_FILE}test.zip',
-		//	'files_001'         => '{e_MEDIA_FILE}test.zip',
+		'files_001'         => '[
+    {
+        "path": "{e_MEDIA_FILE}test.zip",
+        "name": "test.zip",
+        "id": "171"
+    },
+    {
+        "path": "",
+        "name": "",
+        "id": ""
+    },
+    {
+        "path": "",
+        "name": "",
+        "id": ""
+    },
+    {
+        "path": "",
+        "name": "",
+        "id": ""
+    },
+    {
+        "path": "",
+        "name": "",
+        "id": ""
+    }
+]',
 		'datestamp_001'     => 1454367600,
 		'date_001'          => '2018-08-23',
 		'userclass_001'     => 0,
@@ -142,6 +171,14 @@ class e_formTest extends \Codeception\Test\Unit
 		'method_001'        => 'custom-value',
 		'language_001'      => 'fr',
 		'userclass_002'     => '',
+		'media_001'         => '[
+    {
+        "path": "{e_MEDIA_IMAGE}2020-12\/logo_alone_1050.jpg"
+    },
+    {
+        "path": "{e_MEDIA_IMAGE}2020-12\/no1.png"
+    },
+]'
 		//		'lanlist_001'       => 'German',
 	);
 
@@ -946,9 +983,9 @@ class e_formTest extends \Codeception\Test\Unit
 			'tags_001'          => 'keyword1, keyword2, keyword3',
 			'bbarea_001'        => '<!-- bbcode-html-start --><b>bold</b><!-- bbcode-html-end -->',
 			'icon_001'          => "<span class='icon-preview'><img class='icon' src='".e_HTTP."e107_images/e107_icon_32.png' alt='e107_icon_32.png'  /></span>",
-			'media_001'         => '',
-			//		'file_001'          => '<a href="'.e_HTTP.'e107_media/0f00f1d468/files/test.zip" title="Direct link to {e_MEDIA_FILE}test.zip" rel="external">{e_MEDIA_FILE}test.zip</a>',
-			//		'files_001'         => '{e_MEDIA_FILE}test.zip',
+
+			'file_001'          => '<a href="'.SITEURL.'e107_media/000000test/files/test.zip" title="Direct link to {e_MEDIA_FILE}test.zip" rel="external">{e_MEDIA_FILE}test.zip</a>',
+			'files_001'         => '<ol><li>{e_MEDIA_FILE}test.zip</li></ol>',
 			'datestamp_001'     => '01 Feb 2016 : 15:00',
 			'date_001'          => '2018-08-23',
 			'userclass_001'     => 'Everyone (public)',
@@ -960,6 +997,7 @@ class e_formTest extends \Codeception\Test\Unit
 			//	'method_001'        => 'custom-value',
 			'language_001'      => 'French',
 			'userclass_002'     => 'Everyone (public)',
+			'media_001'         => '',
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 
 
@@ -1061,9 +1099,9 @@ class e_formTest extends \Codeception\Test\Unit
 
 			//	'bbarea_001'        => '<!-- bbcode-html-start --><b>bold</b><!-- bbcode-html-end -->',
 			//		'icon_001'          => "<span class='icon-preview'><img class='icon' src='".e_HTTP."e107_images/e107_icon_32.png' alt='e107_icon_32.png'  /></span>",
-			//		'media_001'         => '',
-			//		'file_001'          => '<a href="'.e_HTTP.'e107_media/0f00f1d468/files/test.zip" title="Direct link to {e_MEDIA_FILE}test.zip" rel="external">{e_MEDIA_FILE}test.zip</a>',
-			//		'files_001'         => '{e_MEDIA_FILE}test.zip',
+
+			'file_001'          => "<input type='hidden' name='file_001' id='file-001' value='{e_MEDIA_FILE}test.zip' style='width:400px' /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=file-001&amp;iframe=1'><span id='file-001_prev' class='btn btn-default btn-secondary btn-small'>{e_MEDIA_FILE}test.zip</span></a>",
+			'files_001'         => "<ol><li><input type='hidden' name='files_001[0][path]' id='files-001-0-path' value='{e_MEDIA_FILE}test.zip'  /><input type='hidden' name='files_001[0][name]' id='files-001-0-name' value='test.zip'  /><input type='hidden' name='files_001[0][id]' id='files-001-0-id' value='171'  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-0&amp;iframe=1'><span id='files-001-0_prev' class='btn btn-default btn-secondary btn-small'>{e_MEDIA_FILE}test.zip</span></a></li><li><input type='hidden' name='files_001[1][path]' id='files-001-1-path' value=''  /><input type='hidden' name='files_001[1][name]' id='files-001-1-name' value=''  /><input type='hidden' name='files_001[1][id]' id='files-001-1-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-1&amp;iframe=1'><span id='files-001-1_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[2][path]' id='files-001-2-path' value=''  /><input type='hidden' name='files_001[2][name]' id='files-001-2-name' value=''  /><input type='hidden' name='files_001[2][id]' id='files-001-2-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-2&amp;iframe=1'><span id='files-001-2_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[3][path]' id='files-001-3-path' value=''  /><input type='hidden' name='files_001[3][name]' id='files-001-3-name' value=''  /><input type='hidden' name='files_001[3][id]' id='files-001-3-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-3&amp;iframe=1'><span id='files-001-3_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[4][path]' id='files-001-4-path' value=''  /><input type='hidden' name='files_001[4][name]' id='files-001-4-name' value=''  /><input type='hidden' name='files_001[4][id]' id='files-001-4-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-4&amp;iframe=1'><span id='files-001-4_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li></ol>",
 			'datestamp_001'     => "<input class='tbox e-date input-xlarge form-control' type='text' size='40' id='e-datepicker-datestamp-001' value='Monday, 01 Feb, 2016' data-date-unix ='true' data-date-format='DD, dd M, yyyy' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='datestamp_001' id='datestamp-001' value='1454367600' />",
 			'date_001'          => "<input class='tbox e-date input-xlarge form-control' type='text' size='40' id='e-datepicker-date-001' value='Thursday, 23 Aug, 2018' data-date-unix ='true' data-date-format='DD, dd M, yyyy' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_001' id='date-001' value='1535007600' />",
 			'userclass_001'     => "<select name='userclass_001' id='userclass-001' class='tbox select form-control' tabindex='18'><option value='0' selected='selected'>Everyone (public)</option><option value='254'>&nbsp;&nbsp;Admin</option><option value='249'>&nbsp;&nbsp;Admins and Mods</option><option value='2'>&nbsp;&nbsp;CONTACT PEOPLE</option><option value='248'>&nbsp;&nbsp;Forum Moderators</option><option value='252'>&nbsp;&nbsp;Guests</option><option value='250'>&nbsp;&nbsp;Main Admin</option><option value='253'>&nbsp;&nbsp;Members</option><option value='1'>&nbsp;&nbsp;PRIVATEMENU</option><option value='255'>No One (inactive)</option><option value='3'>&nbsp;&nbsp;NEWSLETTER</option><optgroup label='Everyone but..'><option value='-254'>&nbsp;&nbsp;Not Admin</option><option value='-249'>&nbsp;&nbsp;Not Admins and Mods</option><option value='-2'>&nbsp;&nbsp;Not CONTACT PEOPLE</option><option value='-248'>&nbsp;&nbsp;Not Forum Moderators</option><option value='-252'>&nbsp;&nbsp;Not Guests</option><option value='-250'>&nbsp;&nbsp;Not Main Admin</option><option value='-253'>&nbsp;&nbsp;Not Members</option><option value='-1'>&nbsp;&nbsp;Not PRIVATEMENU</option><option value='-3'>&nbsp;&nbsp;Not NEWSLETTER</option></optgroup></select>",
@@ -1075,6 +1113,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'hidden_001'        => "<input type='hidden' name='hidden_001' value='hidden-value' id='hidden-001-hidden-value' />",
 			//	'method_001'        => 'custom-value',
 			'language_001'      => "<select name='language_001' id='language-001' class='tbox select form-control' tabindex='23'><option value='aa'>Afar</option><option value='ab'>Abkhazian</option><option value='af'>Afrikaans</option><option value='am'>Amharic</option><option value='ar'>Arabic</option><option value='as'>Assamese</option><option value='ae'>Avestan</option><option value='ay'>Aymara</option><option value='az'>Azerbaijani</option><option value='ba'>Bashkir</option><option value='be'>Belarusian</option><option value='bn'>Bengali</option><option value='bh'>Bihari</option><option value='bi'>Bislama</option><option value='bo'>Tibetan</option><option value='bs'>Bosnian</option><option value='br'>Brazilian</option><option value='bg'>Bulgarian</option><option value='my'>Burmese</option><option value='ca'>Catalan</option><option value='cs'>Czech</option><option value='ch'>Chamorro</option><option value='ce'>Chechen</option><option value='cn'>ChineseSimp</option><option value='tw'>ChineseTrad</option><option value='cv'>Chuvash</option><option value='kw'>Cornish</option><option value='co'>Corsican</option><option value='da'>Danish</option><option value='nl'>Dutch</option><option value='dz'>Dzongkha</option><option value='de'>German</option><option value='en'>English</option><option value='eo'>Esperanto</option><option value='et'>Estonian</option><option value='eu'>Basque</option><option value='fo'>Faroese</option><option value='fa'>Persian</option><option value='fj'>Fijian</option><option value='fi'>Finnish</option><option value='fr' selected='selected'>French</option><option value='fy'>Frisian</option><option value='gd'>Gaelic</option><option value='el'>Greek</option><option value='ga'>Irish</option><option value='gl'>Gallegan</option><option value='gn'>Guarani</option><option value='gu'>Gujarati</option><option value='ha'>Hausa</option><option value='he'>Hebrew</option><option value='hz'>Herero</option><option value='hi'>Hindi</option><option value='ho'>Hiri Motu</option><option value='hr'>Croatian</option><option value='hu'>Hungarian</option><option value='hy'>Armenian</option><option value='iu'>Inuktitut</option><option value='ie'>Interlingue</option><option value='id'>Indonesian</option><option value='ik'>Inupiaq</option><option value='is'>Icelandic</option><option value='it'>Italian</option><option value='jw'>Javanese</option><option value='ja'>Japanese</option><option value='kl'>Kalaallisut</option><option value='kn'>Kannada</option><option value='ks'>Kashmiri</option><option value='ka'>Georgian</option><option value='kk'>Kazakh</option><option value='km'>Khmer</option><option value='ki'>Kikuyu</option><option value='rw'>Kinyarwanda</option><option value='ky'>Kirghiz</option><option value='kv'>Komi</option><option value='ko'>Korean</option><option value='ku'>Kurdish</option><option value='lo'>Lao</option><option value='la'>Latin</option><option value='lv'>Latvian</option><option value='ln'>Lingala</option><option value='lt'>Lithuanian</option><option value='lb'>Letzeburgesch</option><option value='mh'>Marshall</option><option value='ml'>Malayalam</option><option value='mr'>Marathi</option><option value='mk'>Macedonian</option><option value='mg'>Malagasy</option><option value='mt'>Maltese</option><option value='mo'>Moldavian</option><option value='mn'>Mongolian</option><option value='mi'>Maori</option><option value='ms'>Malay</option><option value='gv'>Manx</option><option value='na'>Nauru</option><option value='nv'>Navajo</option><option value='ng'>Ndonga</option><option value='ne'>Nepali</option><option value='no'>Norwegian</option><option value='ny'>Chichewa</option><option value='or'>Oriya</option><option value='om'>Oromo</option><option value='pa'>Panjabi</option><option value='pi'>Pali</option><option value='pl'>Polish</option><option value='pt'>Portuguese</option><option value='ps'>Pushto</option><option value='qu'>Quechua</option><option value='ro'>Romanian</option><option value='rn'>Rundi</option><option value='ru'>Russian</option><option value='sg'>Sango</option><option value='sa'>Sanskrit</option><option value='si'>Sinhala</option><option value='sk'>Slovak</option><option value='sl'>Slovenian</option><option value='sm'>Samoan</option><option value='sn'>Shona</option><option value='sd'>Sindhi</option><option value='so'>Somali</option><option value='es'>Spanish</option><option value='sq'>Albanian</option><option value='sc'>Sardinian</option><option value='sr'>Serbian</option><option value='ss'>Swati</option><option value='su'>Sundanese</option><option value='sw'>Swahili</option><option value='sv'>Swedish</option><option value='ty'>Tahitian</option><option value='ta'>Tamil</option><option value='tt'>Tatar</option><option value='te'>Telugu</option><option value='tg'>Tajik</option><option value='tl'>Tagalog</option><option value='th'>Thai</option><option value='ti'>Tigrinya</option><option value='tn'>Tswana</option><option value='ts'>Tsonga</option><option value='tk'>Turkmen</option><option value='tr'>Turkish</option><option value='ug'>Uighur</option><option value='uk'>Ukrainian</option><option value='ur'>Urdu</option><option value='uz'>Uzbek</option><option value='vi'>Vietnamese</option><option value='cy'>Welsh</option><option value='wo'>Wolof</option><option value='xh'>Xhosa</option><option value='yi'>Yiddish</option><option value='yo'>Yoruba</option><option value='za'>Zhuang</option><option value='zu'>Zulu</option></select>",
+			'media_001'         => "<div class='mediaselector-multi field-element-media'><div  class='mediaselector-container e-tip well well-small '  style='position:relative;vertical-align:top;margin-right:15px; display:inline-block; width:206px;min-height:190px;'><div id='media-001-0-path_prev' class='mediaselector-preview'></div><div class='overlay'>				    <div class='text'><a title='Add' class='btn btn-sm btn-default e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common&amp;tagid=media-001-0-path&amp;iframe=1&amp;w=206'><i class='fas fa-plus fa-fw' ><!-- --></i></a></div>				  </div></div><input type='hidden' name='media_001[0][path]' id='media-001-0-path' value='' /><input type='hidden' name='mediameta_media_001[0][path]' id='media-001-0-path-meta' value='' /></div>",
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 		);
 
@@ -1088,7 +1127,7 @@ class e_formTest extends \Codeception\Test\Unit
 			$result = str_replace(array("\n", "\r"), "", $result);
 
 
-			if(empty($expected[$field]))
+			if(!isset($expected[$field]))
 			{
 				continue;
 				//	echo $result;
