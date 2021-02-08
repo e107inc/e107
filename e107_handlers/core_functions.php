@@ -541,7 +541,7 @@ class e_array {
 
         if(is_array($ArrayData))
         {
-            return false;
+            return $ArrayData;
         }
         
         // Saftety mechanism for 0.7 -> 0.8 transition.

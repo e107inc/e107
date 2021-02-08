@@ -1133,7 +1133,7 @@ class e_form
 		$class = !empty($extras['class']) ? $extras['class']. ' ' : '';
 		$title = !empty($extras['title']) ? $extras['title'] : $title;
 
-	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-submit='true' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label. '</a>'; // using bootstrap.
+	    $ret = "<a title='".$title."' class='".$class."e-modal' data-modal-submit='true' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label. '</a>'; // using bootstrap.
 
 		if(!e107::getRegistry('core/form/mediaurl'))
 		{
@@ -1449,9 +1449,9 @@ class e_form
 
 		$ret .= $preview; // image, video. audio tag etc.
 
-		$ret .= '</div><div class="overlay">
-				    <div class="text">'.$editIcon.$previewIcon.'</div>
-				  </div>';
+		$ret .= "</div><div class='overlay'>
+				    <div class='text'>".$editIcon.$previewIcon."</div>
+				  </div>";
 
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />";
@@ -1589,7 +1589,7 @@ class e_form
 
 		$ret = '';
 
-		if($sc_parameters['data'] === 'array')
+		if(isset($sc_parameters['data']) && $sc_parameters['data'] === 'array')
 		{
 			// Do not use $this->hidden() method - as it will break 'id' value. 
 			$ret .=	"<input type='hidden' name='".$name."[path]' id='".$this->name2id($name. '[path]')."' value='".varset($default['path'])."'  />";
@@ -5036,6 +5036,10 @@ var_dump($select_options);*/
 	public function renderValue($field, $value, $attributes, $id = 0)
 	{
 
+		if(!empty($value) && !empty($attributes['data']) && ($attributes['data'] === 'array' || $attributes['data'] === 'json'))
+		{
+			$value = e107::unserialize($value);
+		}
 
 		if(!empty($attributes['multilan']) && is_array($value))
 		{
@@ -5638,22 +5642,26 @@ var_dump($select_options);*/
 
 
 			case 'media':
-
-				if(!empty($value) && $attributes['data'] === 'json')
-				{
-					$tmp = e107::unserialize($value);
-					$value = !empty($tmp[0]['path']) ? $tmp[0]['path'] : null; // display first item.
-				}
-
-				return e107::getMedia()->previewTag($value, $parms);
+			case 'images':
+				$firstItem = !empty($value[0]['path']) ? $value[0]['path'] : null; // display first item.
+				return e107::getMedia()->previewTag($firstItem, $parms);
 			break;
 			
 			case 'files':
+				if(!empty($value) && !is_array($value))
+				{
+					return "Type 'files' must have a data type of 'array' or 'json'";
+				}
 				$ret = '<ol>';
 				for ($i=0; $i < 5; $i++) 
 				{				
-					//$k 		= $key.'['.$i.'][path]';
 					$ival 	= $value[$i]['path'];
+
+					if(empty($ival))
+					{
+						continue;
+					}
+
 					$ret .=  '<li>'.$ival.'</li>';		
 				}
 				$ret .= '</ol>';
@@ -5924,11 +5932,6 @@ var_dump($select_options);*/
 				$method = varset($attributes['field']); // prevents table alias in method names. ie. u.my_method.
 				$_value = $value;
 
-				if(!empty($attributes['data']) && $attributes['data'] === 'array') // FIXME @SecretR - please move this to where it should be.
-				{
-					$value = e107::unserialize($value); // (saved as array, return it as an array)
-				}
-
 				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $method;
 
 				if(strpos($meth,'::')!==false)
@@ -6105,6 +6108,12 @@ var_dump($select_options);*/
 	 */
 	public function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
+
+		if(!empty($value) && !empty($attributes['data']) && ($attributes['data'] === 'array' || $attributes['data'] === 'json'))
+		{
+			$value = e107::unserialize($value);
+		}
+
 		$tp = e107::getParser();
 		$ret = '';
 
@@ -6356,7 +6365,7 @@ var_dump($select_options);*/
 			break;
 			
 			case 'images':
-			//	return print_a($value, true);
+
 				$ret = '';
 				$label = varset($parms['label'], 'LAN_EDIT');
 				$max = varset($parms['max'],5);
@@ -6379,11 +6388,6 @@ var_dump($select_options);*/
 
 				$max = varset($parms['max'],1);
 
-				if(!empty($value) && $attributes['data'] === 'json')
-				{
-					$value = e107::unserialize($value);
-				}
-
 				$ret = "<div class='mediaselector-multi field-element-media'>";
 				for ($i=0; $i < $max; $i++)
 				{
@@ -6399,8 +6403,10 @@ var_dump($select_options);*/
 			break;
 			
 			case 'files':
+
+
 				$label = varset($parms['label'], 'LAN_EDIT');
-				if($attributes['data'] === 'array')
+				if(!empty($attributes['data']) && ($attributes['data'] === 'array' || $attributes['data'] === 'json'))
 				{
 					$parms['data'] = 'array';	
 				}
