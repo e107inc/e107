@@ -3051,7 +3051,7 @@ class e_form
 		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
 	
-	public function help($text, $mode)
+	public function help($text, $mode='after')
 	{
 		if(empty($text)
 		|| $this->_help_location === -1
