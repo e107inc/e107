@@ -290,7 +290,7 @@ class e_db_pdo implements e_db
 			'dblog_ip'          => $ip,
 			'dblog_caller'      => '',
 			'dblog_title'       => $log_remark,
-			'dblog_remarks'     => $qry
+			'dblog_remarks'     => is_array($qry) ? e107::serialize($qry) : $qry
 
 		);
 
@@ -350,7 +350,7 @@ class e_db_pdo implements e_db
 			{
 				foreach($query['BIND'] as $k=>$v)
 				{
-					$prep->bindValue(':'.$k, $v['value'],$v['type']);
+					$prep->bindValue(':'.$k, $v['value'], $v['type']);
 				}
 			}
 

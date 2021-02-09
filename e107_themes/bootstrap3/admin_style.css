@@ -1924,7 +1924,7 @@ div.admin-left-panel .nav-pills > li > a > span > i { opacity: 0; width:0; }
 div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 #core-thememanager-configure .admin-css-selector { margin-bottom:15px;  }
 #core-thememanager-configure .admin-css-selector .active { opacity: 1 }
-
+#admin-ui-edit td > ol { padding-left: 1.2em; }
 
 
 @media (min-width: 1101px ){
