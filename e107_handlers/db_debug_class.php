@@ -1052,9 +1052,9 @@
                 return null;
             }
 
-			if(is_array($message) || is_object($message))
+			if(!is_string($message))
 			{
-				$message = "<pre>" . print_r($message, true) . "</pre>";
+				$message = "<pre>" . var_export($message, true) . "</pre>";
 			}
 
 			if(!deftrue('E107_DBG_BASIC') && !deftrue('E107_DBG_ALLERRORS') && !deftrue('E107_DBG_SQLDETAILS') && !deftrue('E107_DBG_NOTICES'))
