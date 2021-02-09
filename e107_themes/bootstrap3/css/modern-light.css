@@ -1503,7 +1503,7 @@
         .btn:focus,.nav-pills>li>a,.nav-tabs>li>a,.navbar-default .navbar-nav>li>a,.navbar-inverse .navbar-nav>li>a,a,a:active,a:hover{outline:0}
         th a,tr.first a{ color:rgba(0,0,0,0.75) }
         thead tr{background-color:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.3)}
-        .datetimepicker,.datetimepicker tfoot tr:first-child th:hover,.datetimepicker thead tr:first-child th:hover{background-color:#191919}
+        .datetimepicker,.datetimepicker tfoot tr:first-child th:hover,.datetimepicker thead tr:first-child th:hover{background-color:transparent}
         .nav-collapse .dropdown-menu a:focus,.nav-collapse .dropdown-menu a:hover,.nav-collapse .nav>li>a:focus,.nav-collapse .nav>li>a:hover{background-color:#363636}
 /*        .table-striped>tbody>tr.highlight-even,.table-striped>tbody>tr.highlight-odd,tr.highlight-even,tr.highlight-odd{background-color:#212121}*/
         .datetimepicker table tr td span:hover,.datetimepicker table tr td.day:hover{color:#000}
@@ -1612,7 +1612,21 @@
 
 
 
-        .form-control.bootstrap-switch span.bootstrap-switch-default { background: rgba(0,0,0,0.1) }
+.datetimepicker { margin-top: 52px; font-size:16px; width: 270px; color: rgba(0,0,0,0.75) }
+.datetimepicker table { width: 100%;  }
+
+.datetimepicker .prev,
+.datetimepicker .switch,
+.datetimepicker .next { color: #3073a9 }
+
+
+[class*=" datetimepicker-dropdown"]::before {
+    border-bottom-color: rgba(0,0,0,0.6);
+}
+
+
+
+.form-control.bootstrap-switch span.bootstrap-switch-default { background: rgba(0,0,0,0.1) }
 
 .e-debug { margin-left: 60px; } 
 .admin-ui-help-tip { color: rgba(0,0,0,0.3) !important; }
