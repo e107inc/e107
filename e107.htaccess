@@ -72,7 +72,8 @@
     ReWriteRule ^static\/[0-9]*\/(.*)$ $1 [NC,L]
 
 ### send 404 on missing files in these folders 
-	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
+	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/
+    RewriteCond %{REQUEST_URI} !\.(css|js|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$ [NC]
 
 ### don't rewrite for existing files, directories and links
 	RewriteCond %{REQUEST_FILENAME} !-f
