@@ -129,8 +129,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement: placement,
 					container: 'body',
 					delay: {
-						show: 150,
-						hide: 700
+						show: 0,
+						hide: 600
 					}
 				});
 			});

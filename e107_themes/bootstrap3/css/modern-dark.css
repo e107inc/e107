@@ -1562,6 +1562,9 @@ span.sidebar-toggle-switch { float: right;  display: block;  width: 20px; height
 thead tr, .navbar { background-image: none !important; border-left:0; border-right:0; background-color: #2f2f2f; }
 thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; border-right:0 }
 
+
+
+
 .admin-main-content {
     display: block;
     min-height: 1000px;
@@ -1603,7 +1606,17 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
 }
 */
 
-.e-debug { margin-left: 60px; } 
+.datetimepicker { margin-top: 52px; font-size:16px; width: 270px }
+.datetimepicker table { width: 100%;  }
+
+.e-debug { margin-left: 60px; }
+
+.datetimepicker .prev,
+.datetimepicker .switch,
+.datetimepicker .next { color: #8BC0ED }
+
+
+
 @media only screen and (min-width : 768px) {
     .is-table-row {
         display: table;
