@@ -125,6 +125,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					fade: true,
 					html: true,
 					opacity: 1.0,
+			//		trigger: 'hover focus',
 					placement: placement,
 					container: 'body',
 					delay: {

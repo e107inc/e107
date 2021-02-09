@@ -3064,7 +3064,7 @@ class e_form
 
 		$ret = '';
 		$ret .= ($mode === 'before') ? '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>' : '';
-		$ret .= '<div class="field-help" data-placement="left">'.defset($text,$text).'</div>';
+		$ret .= '<div class="field-help" data-placement="left" style="display:none">'.defset($text,$text).'</div>'; // display:none to prevent visibility during page load. 
 
 		return $ret;
 	}
