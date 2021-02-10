@@ -1613,6 +1613,14 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+    public function testGlyphShortcode()
+    {
+         $tp = e107::getParser();
+         $result = $tp->parseTemplate('{GLYPH=fa-user}');
+         $this->assertSame("<i class='fas fa-user' ><!-- --></i>", $result);
+
+    }
+
 
     public function testAddonShortcodes()
     {
