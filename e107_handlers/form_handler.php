@@ -3624,7 +3624,7 @@ var_dump($select_options);*/
 			
 			foreach($value as $k=>$v)
 			{
-				$text .= '<li>'.$v.'</li>';	
+				$text .= '<li class="dropdown-item">'.$v.'</li>';
 			}
 			
 			$text .= '

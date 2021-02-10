@@ -20,68 +20,68 @@ if (!defined('e107_INIT')) { exit; }
 // e107 v2. bootstrap4 compatible template. 
 $USERSETTINGS_WRAPPER = array();
 
-$USERSETTINGS_WRAPPER['edit']['USERNAME'] =				"<div class='form-group row'>
-															<label for='username' class='col-sm-3 col-form-label'>".LAN_USER_01."</label>
+$USERSETTINGS_WRAPPER['edit']['USERNAME'] =				"<div class='form-group row mb-3'>
+															<label for='username' class='col-sm-3 col-form-label form-label'>".LAN_USER_01."</label>
 														    <div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
 
-$USERSETTINGS_WRAPPER['edit']['LOGINNAME'] = 			"<div class='form-group row'>
-															<label for='loginname' class='col-sm-3 col-form-label'>".LAN_USER_81."</label>
+$USERSETTINGS_WRAPPER['edit']['LOGINNAME'] = 			"<div class='form-group row mb-3'>
+															<label for='loginname' class='col-sm-3 col-form-label form-label'>".LAN_USER_81."</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
-$USERSETTINGS_WRAPPER['edit']['PASSWORD1'] = 			"<div class='form-group row'>
-															<label for='password1' class='col-sm-3 col-form-label'>".LAN_USET_24."</label>
+$USERSETTINGS_WRAPPER['edit']['PASSWORD1'] = 			"<div class='form-group row mb-3'>
+															<label for='password1' class='col-sm-3 col-form-label form-label'>".LAN_USET_24."</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
-$USERSETTINGS_WRAPPER['edit']['PASSWORD2'] =			"<div class='form-group row'>
-															<label for='password2' class='col-sm-3 col-form-label'>".LAN_USET_25."</label>
-														       	<div class='col-sm-9'>{---}</div>
-														   </div>
-														";
-
-$USERSETTINGS_WRAPPER['edit']['REALNAME'] =			"<div class='form-group row'>
-															<label for='realname' class='col-sm-3 col-form-label'>".LAN_USER_63."{REQUIRED=realname}</label>
+$USERSETTINGS_WRAPPER['edit']['PASSWORD2'] =			"<div class='form-group row mb-3'>
+															<label for='password2' class='col-sm-3 col-form-label form-label'>".LAN_USET_25."</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
-$USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group row'>
-															<label for='customtitle' class='col-sm-3 col-form-label'>".LAN_USER_04.':'."{REQUIRED=customtitle}</label>
+$USERSETTINGS_WRAPPER['edit']['REALNAME'] =			"<div class='form-group row mb-3'>
+															<label for='realname' class='col-sm-3 col-form-label form-label'>".LAN_USER_63."{REQUIRED=realname}</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
-$USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group row'>
+$USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group row mb-3'>
+															<label for='customtitle' class='col-sm-3 col-form-label form-label'>".LAN_USER_04.':'."{REQUIRED=customtitle}</label>
+														       	<div class='col-sm-9'>{---}</div>
+														   </div>
+														";
+
+$USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group row mb-3'>
 															<label  class='col-sm-3'>".LAN_USER_76.":"."{REQUIRED=class}</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
 
-$USERSETTINGS_WRAPPER['edit']['AVATAR_UPLOAD'] = 		"<div class='form-group row'>
-														<label for='avatar' class='col-sm-3 col-form-label'>".LAN_USET_26."</label>
+$USERSETTINGS_WRAPPER['edit']['AVATAR_UPLOAD'] = 		"<div class='form-group row mb-3'>
+														<label for='avatar' class='col-sm-3 col-form-label form-label'>".LAN_USET_26."</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 														";
-$USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group row'>
-														<label for='photo' class='col-sm-3 col-form-label'>".LAN_USER_06."</label>
+$USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group row mb-3'>
+														<label for='photo' class='col-sm-3 col-form-label form-label'>".LAN_USER_06."</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 														";
 														
 														
 
-$USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group row'>
-														<label for='signature' class='col-sm-3 col-form-label'>".LAN_USER_71."{REQUIRED=signature}</label>
+$USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group row mb-3'>
+														<label for='signature' class='col-sm-3 col-form-label form-label'>".LAN_USER_71."{REQUIRED=signature}</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 													 ";
 
-	// $USERSETTINGS_WRAPPER['edit']['USEREXTENDED_ALL']	= "<div class='form-group row'>{---}</div>";
+	// $USERSETTINGS_WRAPPER['edit']['USEREXTENDED_ALL']	= "<div class='form-group row mb-3'>{---}</div>";
 
 
 
@@ -100,8 +100,8 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{LOGINNAME}
 
 
-	<div class='form-group row'>
-	<label for='email' class='col-sm-3 col-form-label'>".LAN_USER_60."{REQUIRED=email}</label>
+	<div class='form-group row mb-3'>
+	<label for='email' class='col-sm-3 col-form-label form-label'>".LAN_USER_60."{REQUIRED=email}</label>
 	<div class='col-sm-9'>
 		{EMAIL}
 	</div>
@@ -116,15 +116,15 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{PASSWORD2}
 
 
-	<div class='form-group row'>
+	<div class='form-group row mb-3'>
 	<label for='hideemail' class='col-sm-3'>".LAN_USER_83."</label>
         <div class='col-sm-9'>
                 {HIDEEMAIL=radio}
         </div>
 	</div>
 
-	<div class='form-group row'>
-	<label class='col-sm-3 col-form-label'>".LAN_USER_07."{REQUIRED=image}</label>
+	<div class='form-group row mb-3'>
+	<label class='col-sm-3 col-form-label form-label'>".LAN_USER_07."{REQUIRED=image}</label>
         <div class='col-sm-9'>
         {AVATAR_REMOTE}
         </div>
@@ -140,7 +140,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	{SIGNATURE}
 	{SIGNATURE_HELP}
 
-	 <div class='form-group row'>
+	 <div class='form-group row mb-3'>
       <div class='offset-sm-3 col-sm-9'>
 		{UPDATESETTINGSBUTTON}
 		{DELETEACCOUNTBUTTON}
@@ -151,8 +151,8 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 ";
 
 $USERSETTINGS_TEMPLATE['extended-category'] = "<h3>{CATNAME}</h3>";
-$USERSETTINGS_TEMPLATE['extended-field'] = "<div class='form-group row'>
-	<label class='col-sm-3 col-form-label'>{FIELDNAME} {REQUIRED}</label>
+$USERSETTINGS_TEMPLATE['extended-field'] = "<div class='form-group row mb-3'>
+	<label class='col-sm-3 col-form-label form-label'>{FIELDNAME} {REQUIRED}</label>
 	<div class='col-sm-9'>
 	{FIELDVAL} {HIDEFIELD}
 	</div>
