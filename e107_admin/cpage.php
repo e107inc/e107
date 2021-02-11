@@ -214,7 +214,7 @@ class page_chapters_ui extends e_admin_ui
 
 			if($this->getAction() === 'list')
 			{
-				$this->fields['chapter_parent']['title'] = CUSLAN_56;
+				$this->fields['chapter_parent']['title'] = LAN_PARENT;
 			}
 			elseif(deftrue('e_DEBUG'))
 			{
