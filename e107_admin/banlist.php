@@ -361,7 +361,7 @@ class banlist_ui extends e_admin_ui
 	
 							</tbody>
 						</table>
-						<div class='buttons-bar center'>" . $frm->admin_button('ban_export', BANLAN_39, 'export', BANLAN_39) . "</div>
+						<div class='buttons-bar center'>" . $frm->admin_button('ban_export', LAN_UI_BATCH_EXPORT, 'export', BANLAN_39) . "</div>
 							<input type='hidden' name='e-token' value='" . e_TOKEN . "' />
 					</fieldset>
 				</form>
@@ -402,7 +402,7 @@ class banlist_ui extends e_admin_ui
 					</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						" . $frm->admin_button('ban_import', BANLAN_45, 'import') . $frm->token(). "
+						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . $frm->token(). "
 						</div>
 	
 	
@@ -453,8 +453,7 @@ class banlist_ui extends e_admin_ui
 				 *****************************************/
 				$ipAdministrator->writeBanMessageFile();
 				banlist_adminlog('08','');
-				//$ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
-			//	$mes->addSuccess(BANLAN_33);
+
 			}	
 			
 			

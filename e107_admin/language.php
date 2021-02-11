@@ -958,7 +958,7 @@ class lanDeveloper
 
 			if($_POST['deprecatedLanFile'][0] !='auto') //override.
 			{
-				$lanfile = $tp->filter($_POST['deprecatedLanFile'], 'file');
+				$lanfile = $tp->filter($_POST['deprecatedLanFile']);
 			}
 
 
@@ -1030,23 +1030,18 @@ class lanDeveloper
 	}
 
 
-
 	static function form()
 	{
+
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$text = "";
 
 		$text .= "
-		<form id='lanDev' method='post' action='".e_REQUEST_URI."'>
+		<form id='lanDev' method='post' action='" . e_REQUEST_URI . "'>
 			<fieldset id='core-language-package'>
 
-				<table class='table adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tbody>";
+			";
 
 
 		$fl = e107::getFile();
@@ -1057,115 +1052,115 @@ class lanDeveloper
 		if(!$_SESSION['languageTools_lanFileList'])
 		{
 
-			$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_LANGUAGEDIR."English",'.*?(English|lan_).*?\.php$','standard',3);
+			$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_LANGUAGEDIR . "English", '.*?(English|lan_).*?\.php$', 'standard', 3);
 		}
 
 		//	print_a($_SESSION['languageTools_lanFileList']);
 
 
-		$text .= "	<tr>
-						<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
-					</tr>
-					<tr>
-						<td class='form-inline'>
-							<select name='deprecatedLans[]' multiple style='height:200px'>
-								<option value=''>".LANG_LAN_141."</option>";
+		$text .= "	<div class='alert-info alert alert-block'>" . e107::getParser()->toHTML(LANG_LAN_140, true) . "</div>
+	<div class='row'>
+					<div class='col-md-4'>
+							<select name='deprecatedLans[]' class='form-control' multiple style='height:200px'>
+								<option value=''>" . LANG_LAN_141 . "</option>";
 
 
-		$omit = array('languages','\.png','\.gif','handlers');
-		$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+		$omit = array('languages', '\.png', '\.gif', 'handlers');
+		$lans = $fl->get_files(e_ADMIN, '.php', 'standard', 0);
 		asort($lans);
 
 		$fl->setFileFilter(array("^e_"));
-		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
+		$root = $fl->get_files(e_BASE, '.*?/?.*?\.php', $omit, 0);
 		asort($root);
 
-		$templates = $fl->get_files(e_CORE."templates",'.*?/?.*?\.php',$omit,0);
+		$templates = $fl->get_files(e_CORE . "templates", '.*?/?.*?\.php', $omit, 0);
 		asort($templates);
 
-		$shortcodes = $fl->get_files(e_CORE."shortcodes",'.*?/?.*?\.php',$omit,1);
+		$shortcodes = $fl->get_files(e_CORE . "shortcodes", '.*?/?.*?\.php', $omit, 1);
 		asort($shortcodes);
 
 		$exclude = array('lan_admin.php');
 
-		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
+		$srch = array(e_ADMIN, e_PLUGIN, e_CORE, e_BASE);
 
 
-		$text .= "<optgroup label='".LAN_ADMIN."'>";
-		foreach($lans as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_ADMIN . "'>";
+
+		foreach($lans as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
+
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace('../e107_',"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace('../e107_', "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='".LAN_ROOT."'>";
-		foreach($root as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_ROOT . "'>";
+
+		foreach($root as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
 
-		$text .= "<optgroup label='".LAN_TEMPLATES."'>";
-		foreach($templates as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_TEMPLATES . "'>";
+		foreach($templates as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='".LAN_SHORTCODES."'>";
-		foreach($shortcodes as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_SHORTCODES . "'>";
+		foreach($shortcodes as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
-		
+
 //TODO LANs - not sure if this can be replaced with LANS?
 		$depOptions = array(
 			1 => "Script > Lan File",
 			0 => "Script < Lan File"
-
 		);
 
-		$text .= "
-								</select> ".
-			$frm->select('deprecatedLansReverse',$depOptions,e107::getParser()->filter($_POST['deprecatedLansReverse']),'class=select')." ";
+		$text .= "</select></div><div class='col-md-4 text-center'>";
 
-		$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR."English/",e_THEME);
-		$replace = array("Plugins ","Admin ","Core ","Themes ");
+		$text .= $frm->select('deprecatedLansReverse', $depOptions, e107::getParser()->filter($_POST['deprecatedLansReverse']), 'class=select form-control') . " ";
+		$text .= "<p>" . $frm->admin_button('searchDeprecated', LAN_RUN, 'other') . "</p>";
 
+		$search = array(e_PLUGIN, e_ADMIN, e_LANGUAGEDIR . "English/", e_THEME);
+		$replace = array("Plugins ", "Admin ", "Core ", "Themes ");
 
 		$prev = 'Core';
-		$text .= "<select name='deprecatedLanFile[]' multiple style='height:200px'>
+		$text .= "</div><div class='col-md-4'><select name='deprecatedLanFile[]' class='form-control' multiple style='height:200px'>
 
 								";
 
-		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
-		$text .= "<option value='auto' {$selected}>".LANG_LAN_142."</option><optgroup label='".LANG_LAN_143."'>\n";//Auto-Detect
+		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" : "";
+		$text .= "<option value='auto' {$selected}>" . LANG_LAN_142 . "</option><optgroup label='" . LANG_LAN_143 . "'>\n";//Auto-Detect
 		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
@@ -1176,15 +1171,15 @@ class lanDeveloper
 
 
 			$selected = (!empty($_POST['deprecatedLanFile']) && in_array($val, $_POST['deprecatedLanFile'])) ? "selected='selected'" : "";
-			$diz 		= str_replace($search,$replace,$val);
-			list($type,$label) = explode(" ",$diz);
+			$diz = str_replace($search, $replace, $val);
+			list($type, $label) = explode(" ", $diz);
 
 			if($type !== $prev)
 			{
-				$text .= "</optgroup><optgroup label='".$type."'>\n";
+				$text .= "</optgroup><optgroup label='" . $type . "'>\n";
 			}
 
-			$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
+			$text .= "<option value='" . $val . "' " . $selected . ">" . $label . "</option>\n";
 			$prev = $type;
 
 		}
@@ -1192,26 +1187,16 @@ class lanDeveloper
 		$text .= "</optgroup>";
 		$text .= "</select>";
 
-		// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)').
-		$text .= $frm->admin_button('searchDeprecated',LAN_GO,'other');
-		//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
-		$text .= "
-							</td>
-						</tr>";
-
-
-		$text .= "
-					</tbody>
-				</table>
+		$text .= "</div>
+			</div>
 			</fieldset>
 		</form>
-	";
+		";
 
-		return $mes->render().$text;
-
-
+		return $mes->render() . $text . "<hr />";
 
 	}
+
 
 	function getCommon()
 	{
