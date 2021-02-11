@@ -729,13 +729,38 @@ class e107Test extends \Codeception\Test\Unit
 		$res = null;
 		$this->assertTrue($res);
 	}
-
+*/
 	public function testLibrary()
 	{
-		$res = null;
-		$this->assertTrue($res);
-	}
+		$e107 = $this->e107;
 
+		$expected = array (
+		  'css' =>
+		  array (
+		    0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
+		    1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+		  ),
+		);
+
+		$result = $e107::library('files', 'fontawesome5');
+		$this->assertSame($expected, $result);
+
+		$expected = array (
+		  'css' =>
+		  array (
+		    0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
+		  ),
+		  'js' =>
+		  array (
+		    0 => '{e_WEB}lib/bootstrap/5/js/bootstrap.bundle.min.js',
+		  ),
+		);
+
+		$result = $e107::library('files', 'bootstrap5');
+		$this->assertSame($expected, $result);
+
+	}
+/*
 	public function testGetJs()
 	{
 		$res = null;

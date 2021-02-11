@@ -154,6 +154,71 @@ class e_theme
 		//	$ns->tablerender(TPVLAN_2, $text);
 	}
 
+	/**
+	 * @param string $type library | stylesheet (as defined in theme.xml)
+	 * @param string $scope  front | admin | all | auto (as defined in theme.xml)
+	 */
+	public function getScope($type, $scope)
+	{
+		if($scope === 'auto')
+		{
+			$scope = 'front';
+
+			if(deftrue('e_ADMIN_AREA', false))
+			{
+				$scope = 'admin';
+			}
+		}
+
+
+		if($type === 'library')
+		{
+			$themeXMLData = $this->get('library');
+		}
+		if($type === 'stylesheet')
+		{
+			$themeXMLData = $this->get('css');
+		}
+
+		$ret = [];
+
+		foreach($themeXMLData as $info)
+		{
+			$tmp = explode(',', $info['scope']);
+			foreach($tmp as $scp)
+			{
+				$scp = trim($scp);
+
+				if($scp === $scope || $scp === 'all')
+				{
+					$name = $info['name'];
+					unset($info['name']);
+					unset($info['scope']);
+					$ret[$name] = $info;
+				//	$ret[$name] = e107::library('files', $name);
+				}
+
+			}
+		}
+
+		return $ret;
+
+		/**
+		 * 					if($name === 'bootstrap' && !empty($info['version']) && (intval($info['version']) > 3))
+					{
+						$name .= (string) $info['version'];
+					}
+					elseif($name === 'fontawesome' && !empty($info['version']) && (intval($info['version']) > 4))
+					{
+						$name .= (string) $info['version'];
+					}
+		 */
+
+	}
+
+
+
+
 
 	/**
 	 * Load library dependencies.
@@ -180,6 +245,7 @@ class e_theme
 			return;
 		}
 
+		$loaded = [];
 
 		foreach($libraries as $library)
 		{
@@ -223,6 +289,7 @@ class e_theme
 				e107::library('load', $library['name']);
 				e107::library('preload', $library['name']);
 
+				$loaded[] = $library['name'];
 
 				continue;
 			}
@@ -231,10 +298,12 @@ class e_theme
 			{
 				e107::library('load', $library['name']);
 				e107::library('preload', $library['name']);
-
+				$loaded[] = $library['name'];
 				continue;
 			}
 		}
+
+		return $loaded;
 	}
 
 	/**
