@@ -44,12 +44,202 @@
 		{
 
 		}
-
-		public function testLoadLibrary()
+*/
+		public function testGetScope()
 		{
+			$tests = array(
+				0   => array(
+					'theme'    => 'front',
+					'type'     => 'library',
+					'scope'    => 'front',
+					'expected' => array (
+						  'bootstrap' =>
+						  array (
+						    'version' => '3',
+						  ),
+						  'fontawesome' =>
+						  array (
+						    'version' => '5',
+						  ),
+						)
+					),
+				1   => array(
+					'theme'    => 'front',
+					'type'     => 'library',
+					'scope'    => 'all',
+					'expected' => array (
+						  'bootstrap' =>
+						  array (
+						    'version' => '3',
+						  ),
+						  'fontawesome' =>
+						  array (
+						    'version' => '5',
+						  ),
+						)
+					),
+				2   => array(
+					'theme'    => 'front',
+					'type'     => 'library',
+					'scope'    => 'admin',
+					'expected' => array (
+						  'bootstrap' =>
+						  array (
+						    'version' => '3',
+						  ),
+						  'fontawesome' =>
+						  array (
+						    'version' => '5',
+						  ),
+						  'bootstrap.editable' =>
+						  array (
+						    'version' => '',
+						  ),
+						)
+					),
+			   	3   => array(
+					'theme'    => '_blank',
+					'type'     => 'library',
+					'scope'    => 'front',
+					'expected' => array (
+						  'bootstrap' =>
+						  array (
+						    'version' => '3',
+						  ),
+						  'fontawesome' =>
+						  array (
+						    'version' => '4',
+						  ),
+						)
+					),
+
+			);
+
+			foreach($tests as $index => $var)
+			{
+				$result = e107::getTheme($var['theme'])->getScope($var['type'], $var['scope']);
+				$this->assertSame($var['expected'], $result, 'Test #'.$index.' failed.');
+			}
 
 		}
 
+
+		public function testLoadLibrary()
+		{
+			$tests = array(
+				0   => array(
+					'theme'    => 'front',
+					'scope'    => 'front',
+					'expected' => ['bootstrap', 'fontawesome5']
+					),
+				1   => array(
+					'theme'    => 'front',
+					'scope'    => 'admin',
+					'expected' => ['bootstrap', 'fontawesome5', 'bootstrap.editable']
+					),
+			   	2   => array(
+					'theme'    => '_blank',
+					'scope'    => 'front',
+					'expected' => ['bootstrap', 'fontawesome']
+					),
+
+			);
+
+			foreach($tests as $index => $var)
+			{
+				$loaded = e107::getTheme($var['theme'],true)->loadLibrary($var['scope']);
+				$this->assertSame($var['expected'], $loaded, 'Test #'.$index.' failed.');
+			}
+
+		//	var_export($loaded);
+
+
+
+
+		}
+
+		public function testGet()
+		{
+			$tests = array(
+				0   => array(
+					'theme'    => 'front',
+					'type'     => 'library',
+					'expected' => array (
+						  0 =>
+						  array (
+						    'name' => 'bootstrap',
+						    'version' => '3',
+						    'scope' => 'all',
+						  ),
+						  1 =>
+						  array (
+						    'name' => 'fontawesome',
+						    'version' => '5',
+						    'scope' => 'all',
+						  ),
+						  2 =>
+						  array (
+						    'name' => 'bootstrap.editable',
+						    'version' => '',
+						    'scope' => 'admin',
+						  ),
+						)
+					),
+				1   => array(
+					'theme'    => 'bootstrap3',
+					'type'     => 'library',
+					'expected' => array (
+						  0 =>
+						  array (
+						    'name' => 'bootstrap',
+						    'version' => '3',
+						    'scope' => 'all',
+						  ),
+						  1 =>
+						  array (
+						    'name' => 'fontawesome',
+						    'version' => '5',
+						    'scope' => 'all',
+						  ),
+						  2 =>
+						  array (
+						    'name' => 'bootstrap.editable',
+						    'version' => '',
+						    'scope' => 'admin',
+						  ),
+						)
+					),
+			   	2   => array(
+					'theme'    => '_blank',
+					'type'     => 'library',
+					'expected' => array (
+						  0 =>
+						  array (
+						    'name' => 'bootstrap',
+						    'version' => '3',
+						    'scope' => 'all',
+						  ),
+						  1 =>
+						  array (
+						    'name' => 'fontawesome',
+						    'version' => '4',
+						    'scope' => 'all',
+						  ),
+						)
+					),
+
+			);
+
+
+			foreach($tests as $index => $var)
+			{
+				$result = e107::getTheme($var['theme'])->get($var['type']);
+				$this->assertSame($var['expected'], $result, 'Test #'.$index.' failed');
+			}
+
+
+		}
+/*
 		public function testParse_theme_php()
 		{
 
@@ -168,14 +358,14 @@
 
 
 
-		public function testLoadLayout()
-		{
+	//	public function testLoadLayout()
+	//	{
 			// $res = e_theme::loadLayout('full', 'bootstrap4');
 
 		//	var_dump($res);
 
 
-		}
+	//	}
 /*
 		public function testGetThemesMigrations()
 		{

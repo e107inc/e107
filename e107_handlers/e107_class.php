@@ -2353,6 +2353,27 @@ class e107
 				return $libraryHandler->info($library);
 				break;
 
+			case 'files':
+				$info = $libraryHandler->info($library);
+				$ret = [];
+				if(!empty($info['files']['css']))
+				{
+					foreach($info['files']['css'] as $path => $other)
+					{
+						$ret['css'][] = $info['library_path'].'/'.$info['path'].'/'.$path;
+					}
+				}
+				if(!empty($info['files']['js']))
+				{
+					foreach($info['files']['js'] as $path => $other)
+					{
+						$ret['js'][] = $info['library_path'].'/'.$info['path'].'/'.$path;
+					}
+				}
+
+				return $ret;
+				break;
+
 			case 'preload':
 
 				$info = $libraryHandler->info($library);
