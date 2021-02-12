@@ -877,8 +877,9 @@ class plugin_ui extends e_admin_ui
 			{
 				$text .= "<tr>\n<td class='top'>".$tp->toHTML($val['label'],FALSE,'TITLE');
 				$text .= varset($val['preview']) ? "<div class='indent'>".$val['preview']."</div>" : "";
+				$text .= varset($val['helpText']) ? "".$frm->help($val['helpText'])."" : "";
 				$text .= "</td>\n<td>".$frm->select($key,$val['itemList'],$val['itemDefault']);
-				$text .= varset($val['helpText']) ? "".$frm->help($val['helpText'], 'after')."" : "";
+
 				$text .= "</td>\n</tr>\n";
 			}
 

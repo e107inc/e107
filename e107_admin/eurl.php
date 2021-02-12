@@ -1085,12 +1085,11 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		</tr>";
 
 			$text .= "<tr>";
-			$text .= "<td>".$lanDef[1].$this->help(LAN_EURL_FORM_HELP_DEFAULT, 'before')."</td>";
+			$text .= "<td>".$lanDef[1].$this->help(LAN_EURL_FORM_HELP_DEFAULT)."</td>";
 			$text .= "<td class='form-inline'>";
 			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal, 255, 'size=xlarge');
 		//	$text .= ' ['.$lanDef[1].']';
 			$text .= "</td><td>";
-			$text .= $this->help(LAN_EURL_FORM_HELP_DEFAULT, 'after');
 
 			$text .= "</td>";
 		//	$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';

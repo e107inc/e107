@@ -1926,6 +1926,10 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 #core-thememanager-configure .admin-css-selector .active { opacity: 1 }
 #admin-ui-edit td > ol { padding-left: 1.2em; }
 
+/* Bootstrap switch expandit in pure-css */
+.bootstrap-switch-on + .e-expandit-container { max-height:500px; overflow:hidden; transition:all 1s ease-in-out; }
+.bootstrap-switch-off + .e-expandit-container { max-height:0; overflow:hidden; transition: all 1s ease-in-out;  }
+
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
