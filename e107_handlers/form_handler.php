@@ -2329,7 +2329,7 @@ class e_form
 
 	 * @return string
 	 */
-	public function bbarea($name, $value, $template = '', $mediaCat='_common', $size = 'large', $options = array())
+	public function bbarea($name, $value='', $template = '', $mediaCat='_common', $size = 'large', $options = array())
 	{
 		if(is_string($options))
 		{

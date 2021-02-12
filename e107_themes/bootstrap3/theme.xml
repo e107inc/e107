@@ -19,12 +19,12 @@
 		<image>preview_frontend.png</image>
 	</screenshots>
 	<libraries>
-		<library name="bootstrap" version="3" scope="all"/>
-		<library name="fontawesome" version="5"  scope="all"/>
+		<library name="bootstrap" version="3" scope="front,admin,wysiwyg"/>
+		<library name="fontawesome" version="5"  scope="front,admin,wysiwyg"/>
 		<library name="bootstrap.editable" scope="admin"/>
 	</libraries>
 	<stylesheets>
-		<css file="style.css" name="Default"/>
+		<css file="style.css" name="Default" scope="front" />
 		<css file="css/modern-light.css" name="Modern Light" description="A high-contrast light skin" thumbnail='images/admin_modern-light.webp' scope='admin' exclude='bootstrap'/>
         <css file="css/modern-dark.css" name="Modern Dark" description="A high-contrast dark skin" thumbnail='images/admin_modern-dark.webp' scope='admin' exclude='bootstrap'/>
         <css file="css/bootstrap-dark.min.css" name="Legacy Dark Admin" description="A dark admin area skin" thumbnail='images/admin_bootstrap-dark.webp' scope='admin' exclude='bootstrap'/>

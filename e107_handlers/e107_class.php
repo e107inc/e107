@@ -2360,14 +2360,20 @@ class e107
 				{
 					foreach($info['files']['css'] as $path => $other)
 					{
-						$ret['css'][] = $info['library_path'].'/'.$info['path'].'/'.$path;
+						$file = $info['library_path'].'/';
+						$file .= !empty($info['path']) ? $info['path'].'/' : '';
+						$file .= $path;
+						$ret['css'][] = $file;
 					}
 				}
 				if(!empty($info['files']['js']))
 				{
 					foreach($info['files']['js'] as $path => $other)
 					{
-						$ret['js'][] = $info['library_path'].'/'.$info['path'].'/'.$path;
+						$file = $info['library_path'].'/';
+						$file .= !empty($info['path']) ? $info['path'].'/' : '';
+						$file .= $path;
+						$ret['js'][] = $file;
 					}
 				}
 
