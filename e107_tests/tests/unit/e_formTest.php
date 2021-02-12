@@ -280,32 +280,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 			public function testHelp()
 			{
-				// disabled
-				$this->_frm->setHelpLocation('none');
-				$result = $this->_frm->help('my tip', 'before');
-				$this->assertEmpty($result);
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertEmpty($result);
-
-				// display after only.
-				$this->_frm->setHelpLocation('after');
-				$result = $this->_frm->help('my tip', 'before');
-				$this->assertEmpty($result);
-
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertSame('<div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
-
-
-				// display as icon before field only.
-				$this->_frm->setHelpLocation('before');
-				$result = $this->_frm->help('my tip', 'before');
+				$result = $this->_frm->help('my tip');
 				$this->assertSame('<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i><div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertEmpty($result);
-
-
-				$this->_frm->setHelpLocation('after');
-
 
 			}
 /*

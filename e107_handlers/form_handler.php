@@ -70,7 +70,7 @@ class e_form
 	private     $_inline_token;
 	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
 	private     $_fontawesome = false;
-	private     $_help_location = 0;
+	private     $_helptip = 1;
 	/**
 	 * @var user_class
 	 */
@@ -96,27 +96,9 @@ class e_form
 			$this->_fontawesome = true;
 		}
 
-		$this->_help_location = (int) e107::getPref('admin_helptip_location');
+		$this->_helptip = (int) e107::getPref('admin_helptip', 1);
 	}
 
-	/**
-	 * Set the location of where tooltips will be rendered.
-	 * @param $val
-	 */
-	public function setHelpLocation($val)
-	{
-		$opts = array(
-			'before'    => 1, // icon
-			'after'     => 0, // hover
-			'none'      => -1 // disabled.
-		);
-
-		if(isset($opts[$val]))
-		{
-			$this->_help_location = $opts[$val];
-		}
-
-	}
 
 	/**
 	 * @param $tmp
@@ -3051,19 +3033,15 @@ class e_form
 		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
 	
-	public function help($text, $mode='after')
+	public function help($text)
 	{
-		if(empty($text)
-		|| $this->_help_location === -1
-		|| ($this->_help_location === 0 && $mode === 'before')
-		|| ($this->_help_location === 1 && $mode === 'after')
-		)
+		if(empty($text) || $this->_helptip === 0)
 		{
 			return null;
 		}
 
 		$ret = '';
-		$ret .= ($mode === 'before') ? '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>' : '';
+		$ret .= '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>';
 		$ret .= '<div class="field-help" data-placement="left" style="display:none">'.defset($text,$text).'</div>'; // display:none to prevent visibility during page load. 
 
 		return $ret;
@@ -7408,7 +7386,7 @@ var_dump($select_options);*/
 		$model_required     = $model->getValidationRules();
 		$required_help      = false;
 		$hidden_fields      = array();
-		$helpTipLocation    = $this->_help_location;
+		$helpTipLocation    = $this->_helptip;
 
 		foreach($fdata['fields'] as $key => $att)
 		{
@@ -7520,9 +7498,9 @@ var_dump($select_options);*/
 
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title'])). '</span>' .$required.$label;
 
-				$leftCell .= $this->help(varset($att['help']), 'before');
+				$leftCell .= $this->help(varset($att['help']));
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
-				$rightCell .= $this->help(varset($att['help']), 'after');
+
 
 				$att['writeParms'] = $writeParms;
 

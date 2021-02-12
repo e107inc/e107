@@ -567,9 +567,9 @@ class import_main_ui extends e_admin_ui
 	
 		$text .= "
 			<tr>
-				<td>".LAN_CONVERT_38."".$frm->help(LAN_CONVERT_39, 'before')."</td>
+				<td>".LAN_CONVERT_38."".$frm->help(LAN_CONVERT_39)."</td>
 				<td>".$frm->radio_switch('import_delete_existing_data', $_POST['import_delete_existing_data'])."
-				".$frm->help(LAN_CONVERT_39, 'after')."</td>
+				</td>
 			</tr>";
 		
 		//TODO 

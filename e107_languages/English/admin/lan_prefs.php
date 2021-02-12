@@ -307,5 +307,4 @@ define("PRFLAN_282", "Session Save Method");
 define("PRFLAN_283", "Display navigation-bar labels");
 define("PRFLAN_284", "Collapse navigation side-bar by default");
 define("PRFLAN_285", "Display field help tips");
-define("PRFLAN_286", "When hovering over the field.");
-define("PRFLAN_287", "When hovering on a help icon to the left of the field.");
+

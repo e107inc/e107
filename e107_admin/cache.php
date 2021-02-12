@@ -140,43 +140,39 @@ $text = "
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_11."</strong>
-							".$frm->help(CACLAN_13, 'before')."
+							".$frm->help(CACLAN_13)."
 						</td>
 						<td>{$contentcache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
-							".$frm->help(CACLAN_13, 'after')."
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_12."</strong>
-							".$frm->help(CACLAN_14, 'before')."
+							".$frm->help(CACLAN_14)."
 						</td>
 						<td>{$syscache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
-							".$frm->help(CACLAN_14, 'after')."
 						</td>
 					</tr>
 
 						<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_28."</strong>".$frm->help(CACLAN_29, 'before')."
+							<strong class='e-tip'>".CACLAN_28."</strong>".$frm->help(CACLAN_29)."
 							
 						</td>
 						<td>{$jscsscache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('jscsscachestatus', e107::getPref('jscsscachestatus'))."
-							".$frm->help(CACLAN_29, 'after')."
 						</td>
 					</tr>
 
 
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_20."</strong>".$frm->help(CACLAN_21, 'before')."
-							".$frm->help(CACLAN_21, 'after')."
+							<strong class='e-tip'>".CACLAN_20."</strong>".$frm->help(CACLAN_21)."
 						</td>
 						<td>{$dbcache_label}</td>
 						<td class='left middle'>
@@ -185,8 +181,7 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_22."</strong>".$frm->help(CACLAN_23, 'before')."
-							".$frm->help(CACLAN_23, 'after')."
+							<strong class='e-tip'>".CACLAN_22."</strong>".$frm->help(CACLAN_23)."
 						</td>
 						<td>{$imgcache_label}</td>
 						<td class='left middle'>
