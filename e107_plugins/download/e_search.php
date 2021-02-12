@@ -6,7 +6,8 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  * 
- * Chatbox e_search addon 
+ * Download e_search addon 
+ * 
  */
  
 
@@ -46,11 +47,35 @@ class download_search extends e_search // include plugin-folder in the name.
 								'author'=> array('type'	=> 'author',		'text' => LAN_SEARCH_61)
 							),
 							
-			'return_fields'	=> array('d.download_id', 'd.download_sef','d.download_category', 'c.download_category_id', 'd.download_name', 'd.download_description', 'd.download_author', 'd.download_author_website', 'd.download_datestamp', 'd.download_class', 'c.download_category_name', 'c.download_category_class'),
-			'search_fields'	=> array('d.download_name'=> '1.2', 'd.download_url' => '0.9', 'd.download_description'=>'0.6', 'd.download_author'=>'0.6', 'd.download_author_website'=>'0.4'), // fields and weights.
+			'return_fields'	=> array(
+					'd.download_id', 
+					'd.download_sef',
+					'd.download_category', 
+					'd.download_name', 
+					'd.download_description', 
+					'd.download_author', 
+					'd.download_author_website', 
+					'd.download_datestamp', 
+					'd.download_class', 
+					'c.download_category_id',
+					'c.download_category_name',
+					'c.download_category_sef', 
+					'c.download_category_class'
+			),
+
+			// fields and weights.
+			'search_fields'	=> array(
+				'd.download_name'			=> '1.2', 
+				'd.download_url' 			=> '0.9', 
+				'd.download_description'	=> '0.6', 
+				'd.download_author'			=> '0.6', 
+				'd.download_author_website'	=> '0.4'
+			), 
 			
 			'order'			=> array('download_datestamp' => 'DESC'),
-			'refpage'		=> e_PLUGIN_ABS.'download/download.php'
+			
+			//'refpage'		=> 'download.php'
+			'refpage'		=> e107::url('download', 'index'), 
 		);
 
 
@@ -64,7 +89,9 @@ class download_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		//TODO SEF URLs for list below. 
+		$download_index_url 	= 	e107::url('download', 'index');
+		$download_category_url 	= 	e107::url('download', 'category', $row);
+
 		//TODO Remove html from pre_summary and use additional vars instead. 
 
 		$res = array();
@@ -74,14 +101,11 @@ class download_search extends e_search // include plugin-folder in the name.
 		$res['link'] 		= e107::url('download', 'item', $row);
 		$res['pre_title'] 	= $tp->toHTML($row['download_category_name'],false,'TITLE_PLAIN')." | ";
 		$res['title'] 		= $row['download_name'];
-		$res['pre_summary'] = "<div class='smalltext'><a href='download.php'>".LAN_197."</a> -> <a href='download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a></div>";
+		$res['pre_summary'] = "<div class='smalltext'><a href='".$download_index_url."'>".LAN_197."</a> -> <a href='".$download_category_url."'>".$row['download_category_name']."</a></div>";
 		$res['summary'] 	= $row['download_description'];
 		$res['detail'] 		= LAN_SEARCH_15." ".$row['download_author']." | ".LAN_SEARCH_66.": ".$datestamp;
 
-
-
 		return $res;
-		
 	}
 
 
@@ -118,4 +142,3 @@ class download_search extends e_search // include plugin-folder in the name.
 }
 
 
-?>

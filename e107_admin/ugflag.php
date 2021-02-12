@@ -9,7 +9,7 @@
  * Administration - Site Maintenance
  *
  */
-require_once ('../class2.php');
+require_once (__DIR__.'/../class2.php');
 
 if(!getperms('9'))
 {
@@ -60,11 +60,7 @@ if(isset($_POST['updatesettings']))
 
 	$pref = e107::getConfig('core', true, true)->getPref();
 		
-	if(!e_AJAX_REQUEST)
-	{
-	//	header("location:".e_SELF);
-	//	exit();
-	}
+
 }
 
 require_once("auth.php");
@@ -110,16 +106,17 @@ $text .= "
 ";
 
 //Ajax Support
-if(!e_AJAX_REQUEST)
+if(e_AJAX_REQUEST)
 {
-	echo "<div id='ajax-container'>\n";
 	$ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
-	echo "\n</div>";
-	require_once (e_ADMIN."footer.php");
-	exit();
+	exit;
 }
 
+echo "<div id='ajax-container'>\n";
 $ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
+echo "\n</div>";
+require_once (e_ADMIN."footer.php");
+
 
 /**
  * Handle page DOM within the page header

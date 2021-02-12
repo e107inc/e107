@@ -12,7 +12,7 @@ if(!defined('e107_INIT')){ exit; }
 
 if (!getperms("2")) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 	exit;
 }
 

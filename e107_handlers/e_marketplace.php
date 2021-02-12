@@ -9,6 +9,8 @@
  * Application store client
  *
  */
+
+e107::coreLan('theme', true);
  
 class e_marketplace
 {
@@ -96,8 +98,8 @@ class e_marketplace
 		    <div class="well">
 		    <img src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="" style="margin-bottom:15px" />
 		    <ul class="nav nav-tabs">
-			    <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-			    <li><a href="#create" data-toggle="tab">Create Account</a></li>
+			    <li class="active"><a href="#login" data-toggle="tab" data-bs-toggle="tab">Login</a></li>
+			    <li><a href="#create" data-toggle="tab" data-bs-toggle="tab">Create Account</a></li>
 		    </ul>
 		    <div id="myTabContent" class="tab-content">
 		    <div class="tab-pane active in" id="login">
@@ -229,7 +231,7 @@ class e_marketplace
 	 * @param $data - e107.org plugin/theme feed data.
 	 * @return bool|string
 	 */
-	public function getDownloadModal($type='plugin',$data)
+	public function getDownloadModal($type='plugin',$data=array())
 	{
 
 		$url = false;
@@ -409,7 +411,7 @@ abstract class e_marketplace_adapter_abstract
 	 */
 	public function hasAuthKey()
 	{
-		return ($this->authKey !== null) ? true : false;	
+		return $this->authKey !== null;
 	}
 	
 	/**
@@ -558,8 +560,8 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	
 	public function __construct()
 	{
-		e107_ini_set('soap.wsdl_cache_enabled', 0);
-		e107_ini_set('soap.wsdl_cache_ttl', 0);
+		ini_set('soap.wsdl_cache_enabled', 0);
+		ini_set('soap.wsdl_cache_ttl', 0);
 		
 		$options = array(
 			"trace" 				=> true, 
@@ -1084,7 +1086,7 @@ class eAuth
 	/**
 	 * Load credentials stored in a system file
 	 * @param boolean $force
-	 * @return e_marketplace_adapter_abstract adapter instance
+	 * @return e_marketplace_adapter_abstract|eAuth
 	 */
 	public function loadSysCredentials($force = false)
 	{
@@ -1167,7 +1169,7 @@ class eAuth
 		$total = array();
 		foreach($params as $k => $v)
 		{
-			if(substr($k, 0, 5) != "eauth") continue;
+			if(strpos($k, "eauth") !== 0) continue;
 			if(is_array($v))
 			{
 				throw new Exception('Arrays not supported in headers', 200);

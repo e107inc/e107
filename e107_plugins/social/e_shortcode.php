@@ -31,7 +31,7 @@ class social_shortcodes extends e_shortcode
 			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=> $tp->lanVars(LAN_SOCIAL_001, "Facebook"),	    'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
 			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Facebook"),	    'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
 			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Twitter"),	    'url' => "http://twitter.com/share?url=[u]&text=[t]"),
-			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+		//	'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
 
 			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
 			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "LinkedIn"),	    'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
@@ -64,13 +64,19 @@ class social_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$tmpl = !empty($parm['template']) ? $parm['template'] : 'default';
 
-		$template = e107::getTemplate('social','social_xurl',$tmpl);
+		$template = e107::getTemplate('social','social_xurl', $tmpl);
+
+		if(empty($template)) // backup if the theme changes.
+		{
+			$template = e107::getTemplate('social','social_xurl', 'default');
+		//	return (ADMIN) ? "Unable to load social template [".$tmpl."]" : ''; // NO LAN
+		}
 
 		$social = array(
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
 			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
-			'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
+		//	'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
 			'linkedin'		=> array('href'=> deftrue('XURL_LINKEDIN'),		'title'=>'LinkedIn'),
 			'github'		=> array('href'=> deftrue('XURL_GITHUB'),		'title'=>'Github'),
 			'pinterest'		=> array('href'=> deftrue('XURL_PINTEREST'),	'title'=>'Pinterest'),
@@ -78,33 +84,27 @@ class social_shortcodes extends e_shortcode
 			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
 			'youtube'		=> array('href'=> deftrue('XURL_YOUTUBE'),		'title'=>'YouTube'),
 			'steam'			=> array('href'=> deftrue('XURL_STEAM'),		'title'=>'Steam'),
-			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
+			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo'),
+			'twitch'		=> array('href'=> deftrue('XURL_TWITCH'),		'title'=>'Twitch'),
+			'vk'			=> array('href'=> deftrue('XURL_VK'),			'title'=>'VK (Vkontakte)')
 		);
  			
-		
-	
-		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
+		// print_a($social);
 
-		// @deprecated - use template.
-		/*
-		$tooltipPos = vartrue($parm['tip-pos'], 'top');
 
-		if(isset($parm['tip']))
-		{
-			$tooltip = ($parm['tip'] == 'false' || empty($parm['tooltip'])) ? '' : 'e-tip';
-		}
-		else
-		{
-			$tooltip = 'e-tip';
-		}
+		$class      = (isset($parm['class'])) ? (string) $parm['class'] : '';
+		$class      .= (!empty($parm['size'])) ?  'fa-'.$parm['size'] : '';
 
-	*/	if(!empty($parm['type']))
+		if(!empty($parm['type']))
 		{
 			$newList = array();
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newList[$v] = $social[$v];
+				if(isset($social[$v]))
+				{
+					$newList[$v] = $social[$v];
+				}
 
 			}
 
@@ -164,7 +164,7 @@ class social_shortcodes extends e_shortcode
 
 	function sc_social_login($parm=null)
 	{
-		$pref = e107::pref('core', 'social_login_active');
+		$pref = e107::getUserProvider()->isSocialLoginEnabled();
 
 
 
@@ -297,7 +297,7 @@ class social_shortcodes extends e_shortcode
 
 		if(empty($parm['providers'])) // No parms so use prefs instead.
 		{
-			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'google-plus1',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
+			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
 			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : $defaultProviders;
 		}
 		else
@@ -390,7 +390,10 @@ class social_shortcodes extends e_shortcode
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newlist[$v] = $opt[$v];
+				if(isset($opt[$v]))
+				{
+					$newlist[$v] = $opt[$v];
+				}
 			}
 
 			$opt = $newlist;
@@ -405,7 +408,7 @@ class social_shortcodes extends e_shortcode
 
 
 			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
-				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-secondary btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
+				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-secondary btn-'.$size.' dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu" >
 				  
@@ -429,7 +432,7 @@ class social_shortcodes extends e_shortcode
 	/**
 	 * @example {TWITTER_TIMELINE: id=xxxxxxx&theme=light}
 	 */
-	function sc_twitter_timeline($parm)
+	function sc_twitter_timeline($parm=null)
 	{
 		$ns = e107::getRender();
 		
@@ -447,4 +450,3 @@ TMPL;
 
 }
 
-?>

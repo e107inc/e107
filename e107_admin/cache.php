@@ -10,7 +10,7 @@
  *
 */
 
-require_once("../class2.php");
+require_once(__DIR__."/../class2.php");
 
 if (!getperms("C"))
 {
@@ -50,33 +50,34 @@ if (isset($_POST['submit_cache']))
 
 if (isset($_POST['trigger_empty_cache']))
 {
-	e107::getAdminLog()->logSuccess(CACLAN_6);
+	e107::getLog()->addSuccess(CACLAN_6);
 	switch ($_POST['option_clear_cache'])
 	{
 		case 'empty_contentcache':
 			e107::getCache()->clearAll('content');
-			e107::getAdminLog()->flushMessages(CACLAN_5);
+			e107::getLog()->flushMessages(CACLAN_5);
 		break;
 
 		case 'empty_syscache':
 			e107::getCache()->clearAll('system');
-			e107::getAdminLog()->flushMessages(CACLAN_16);
+			e107::getLog()->flushMessages(CACLAN_16);
+			e107::getSession()->clear('addons-update-status');
 		break;
 
 		case 'empty_dbcache':
 			e107::getCache()->clearAll('db');
-			e107::getAdminLog()->flushMessages(CACLAN_24);
+			e107::getLog()->flushMessages(CACLAN_24);
 		break;
 
 		case 'empty_imgcache':
 			e107::getCache()->clearAll('image');
-			e107::getAdminLog()->flushMessages(CACLAN_25);
+			e107::getLog()->flushMessages(CACLAN_25);
 		break;
 		
 		// used in standard page output and internal JS includes
 		case 'empty_browsercache':
 			e107::getCache()->clearAll('browser');
-			e107::getAdminLog()->flushMessages(CACLAN_25);
+			e107::getLog()->flushMessages(CACLAN_25);
 		break;
 
 		case 'empty_jscss':
@@ -94,7 +95,8 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('browser');
 			e107::getCache()->clearAll('js');
 			e107::getCache()->clearAll('css');
-			e107::getAdminLog()->flushMessages(CACLAN_26);
+			e107::getSession()->clear('addons-update-status');
+			e107::getLog()->flushMessages(CACLAN_26);
 		break;
 	}
 }
@@ -138,40 +140,43 @@ $text = "
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_11."</strong>
-							<div class='field-help'>".CACLAN_13."</div>
+							".$frm->help(CACLAN_13, 'before')."
 						</td>
 						<td>{$contentcache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
+							".$frm->help(CACLAN_13, 'after')."
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_12."</strong>
-							<div class='field-help'>".CACLAN_14."</div>
+							".$frm->help(CACLAN_14, 'before')."
 						</td>
 						<td>{$syscache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
+							".$frm->help(CACLAN_14, 'after')."
 						</td>
 					</tr>
 
 						<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_28."</strong>
-							<div class='field-help'>".CACLAN_29."</div>
+							<strong class='e-tip'>".CACLAN_28."</strong>".$frm->help(CACLAN_29, 'before')."
+							
 						</td>
 						<td>{$jscsscache_label}</td>
 						<td class='left middle'>
 							".$frm->radio_switch('jscsscachestatus', e107::getPref('jscsscachestatus'))."
+							".$frm->help(CACLAN_29, 'after')."
 						</td>
 					</tr>
 
 
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_20."</strong>
-							<div class='field-help'>".CACLAN_21."</div>
+							<strong class='e-tip'>".CACLAN_20."</strong>".$frm->help(CACLAN_21, 'before')."
+							".$frm->help(CACLAN_21, 'after')."
 						</td>
 						<td>{$dbcache_label}</td>
 						<td class='left middle'>
@@ -180,8 +185,8 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_22."</strong>
-							<div class='field-help'>".CACLAN_23."</div>
+							<strong class='e-tip'>".CACLAN_22."</strong>".$frm->help(CACLAN_23, 'before')."
+							".$frm->help(CACLAN_23, 'after')."
 						</td>
 						<td>{$imgcache_label}</td>
 						<td class='left middle'>

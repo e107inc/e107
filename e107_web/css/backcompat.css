@@ -1,4 +1,7 @@
 /* Backwards Compatibility Stylesheet for v1.x */
+/* v1.x e107.css */
+table { margin-left:auto; margin-right:auto; }
+
 
 /* Bootstrap Alerts */
 .alert          { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }
@@ -62,6 +65,9 @@ table.table { width: 100% }
     background-color: #f9f9f9;
 }
 
+.s-message a.close { cursor: pointer }
+
+
 /* Bootstrap classes that hide content for all devices except screen readers (accessibility) */
 .sr-only {
   position: absolute;
@@ -82,3 +88,8 @@ table.table { width: 100% }
   overflow: visible;
   clip: auto;
 }
+
+.mt-0 { margin-top: 0 }
+.mb-0 { margin-bottom: 0 }
+.mt-3 { margin-top: 1rem !important; }
+.d-flex { display: flex !important; }

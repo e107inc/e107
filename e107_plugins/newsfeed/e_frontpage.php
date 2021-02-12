@@ -44,4 +44,3 @@ class newsfeed_frontpage // include plugin-folder in the name.
 
 
 
-?>

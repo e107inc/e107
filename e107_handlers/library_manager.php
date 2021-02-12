@@ -80,6 +80,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery',
 			'path'              => '2.2.4',
+			'version'           => '2.2.4',
 		);
 
 		// jQuery (local).
@@ -114,6 +115,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/jquery',
 			'path'              => '2.2.4',
+			'version'           => '2.2.4',
 		);
 
 		// jQuery Once (CDN).
@@ -150,6 +152,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
 			'path'              => '2.1.2',
+			'version'           => '2.1.2',
 		);
 
 		// jQuery Once (local).
@@ -185,6 +188,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-once',
+			'version'   => '2.1.2',
 		);
 
 		// jQuery UI (CDN).
@@ -232,6 +236,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui',
 			'path'              => '1.11.4',
+			'version'           => '1.11.4',
 		);
 
 		// jQuery UI (local).
@@ -276,7 +281,110 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-ui',
+			'version'           => '1.12.1'
 		);
+
+
+		// ----------------- Bootstrap 5 ---------------------------//
+
+			// Bootstrap (CDN).
+		$libraries['cdn.bootstrap5'] = array(
+			'name'              => 'Bootstrap 5 (CDN)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.bundle.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.min.css' => array(
+						'zone' => 1,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				/*'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),*/
+
+
+			),
+			// Override library path to CDN.
+		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1',
+			'path'              => '',
+			'version'           => '5.0.0',
+		);
+
+
+			// Bootstrap (local).
+		$libraries['bootstrap5'] = array(
+			'name'              => 'Bootstrap 5 (local)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap.bundle.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap.bundle.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+		/*	'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.bundle.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),*/
+			'library_path'      => '{e_WEB}lib/bootstrap',
+			'path'              => '5',
+			'version'           => '5.0.0',
+		);
+
+
+
+
 
 
 
@@ -328,6 +436,7 @@ class core_library
 		//	https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js
 			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1',
 			'path'              => '',
+			'version'           => '4.3.1',
 		);
 
 		// Bootstrap (local).
@@ -372,6 +481,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '4',
+			'version'           => '4.3.1',
 		);
 
 
@@ -422,8 +532,10 @@ class core_library
 
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
-			'path'              => '3.3.7',
+		//	'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap',
+			'path'              => '3.4.1',
+			'version'           => '3.4.1',
 		);
 
 		// Bootstrap (local).
@@ -431,19 +543,19 @@ class core_library
 			'name'              => 'Bootstrap (local)',
 			'vendor_url'        => 'http://getbootstrap.com/',
 			'version_arguments' => array(
-				'file'    => 'dist/js/bootstrap.min.js',
+				'file'    => 'js/bootstrap.min.js',
 				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
 				'lines'   => 5,
 			),
 			'files'             => array(
 				'js'  => array(
-					'dist/js/bootstrap.min.js' => array(
+					'js/bootstrap.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
 					),
 				),
 				'css' => array(
-					'dist/css/bootstrap.min.css' => array(
+					'css/bootstrap.min.css' => array(
 						'zone' => 2,
 					),
 				),
@@ -453,13 +565,13 @@ class core_library
 				'dev' => array(
 					'files' => array(
 						'js'  => array(
-							'dist/js/bootstrap.js' => array(
+							'js/bootstrap.js' => array(
 								'zone' => 2,
 								'type' => 'footer',
 							),
 						),
 						'css' => array(
-							'dist/css/bootstrap.css' => array(
+							'css/bootstrap.css' => array(
 								'zone' => 2,
 							),
 						),
@@ -467,7 +579,18 @@ class core_library
 				),
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
-			'path'              => '3.3.7',
+			'path'              => '3',
+			'version'           => '3.4.1',
+			'preload'           => array(
+				0   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'fonts/glyphicons-halflings-regular.woff2',
+					'crossorigin'   => true,
+					'browsercache'  => false,
+				),
+
+			),
 		);
 
 		// Bootstrap Editable (CDN).
@@ -513,6 +636,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.editable',
 			'path'              => '1.5.1',
+			'version'           => '1.5.1',
 		);
 
 		// Bootstrap Editable (local).
@@ -557,6 +681,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}js/bootstrap3-editable',
+			'version'           => '1.5.1',
 		);
 
 		// Bootstrap Switch (CDN).
@@ -602,6 +727,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.switch',
 			'path'              => '3.3.2',
+			'version'           => '3.3.2',
 		);
 
 		// Bootstrap Switch (local).
@@ -646,6 +772,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/bootstrap-switch',
+			'version'           => '3.3.2',
 		);
 
 		// Font-Awesome 4 (CDN).
@@ -679,6 +806,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome',
 			'path'              => '4.7.0',
+			'version'           => '4.7.0',
 		);
 
 		// Font-Awesome (local).
@@ -712,6 +840,25 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '4.7.0',
+			'version'           => '4.7.0',
+			// preload in header using <link> tag. for speed optimization.
+			'preload'           => array(
+				0   => array(
+					'as'            => 'style',
+					'type'          => '',
+					'path'          => 'css/font-awesome.min.css',
+					'crossorigin'   => false,
+					'browsercache'  => true, // add the generated ?xxxxxx to the path.
+				),
+				1   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'fonts/fontawesome-webfont.woff2?v=4.7.0',
+					'crossorigin'   => true,
+					'browsercache'  => false,
+				),
+
+			),
 		);
 
 
@@ -752,6 +899,7 @@ class core_library
 			// Override library path to CDN.
 			'library_path'      => 'https://use.fontawesome.com/releases',
 			'path'              => 'v5.8.1',
+			'version'           => '5.8.1',
 		);
 
 		// Font-Awesome (local).
@@ -760,7 +908,7 @@ class core_library
 			'vendor_url'        => 'https://fontawesome.com/',
 			'version_arguments' => array(
 				'file'    => 'css/all.css',
-				'pattern' => '/(\d\.\d\.\d+)/',
+				'pattern' => '/(\d\.\d*\.\d+)/',
 				'lines'   => 3,
 			),
 			'files'             => array(
@@ -791,6 +939,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
+			'version'           => '5.15.2',
 		);
 
 
@@ -826,6 +975,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/animate.css',
 		//	'path'              => '3.5.2',
+			'version'           => '3.5.2',
 		);
 
 
@@ -836,6 +986,7 @@ class core_library
 
 	/**
 	 * Alters library information before detection and caching takes place.
+	 * @param array $libraries
 	 */
 	function config_alter(&$libraries)
 	{
@@ -867,6 +1018,8 @@ class core_library
  */
 class e_library_manager
 {
+	/** @var array list of callbacks to track performance  */
+	private $callbacks = array();
 
 	/**
 	 * Constructor
@@ -890,12 +1043,17 @@ class e_library_manager
 	{
 	}
 
+	public function getCallbackLog()
+	{
+		return $this->callbacks;
+	}
+
 	/**
 	 * Tries to detect a library and its installed version.
 	 *
 	 * @param $name
 	 *   The machine name of a library to return registered information for.
-	 *
+	 * @param bool $force - removes the 'version' and has the callback look it up from the library file.
 	 * @return array|false
 	 *   An associative array containing registered information for the library specified by $name, or FALSE if the
 	 *   library $name is not registered. In addition to the keys returned by info(), the following keys are
@@ -907,10 +1065,11 @@ class e_library_manager
 	 *     "not found", "not detected", "not supported".
 	 *   - error_message: If an error occurred during library detection, a detailed error_message.
 	 */
-	public function detect($name)
+	public function detect($name, $force = false)
 	{
+
 		// Re-use the statically cached value of info() to save memory.
-		$library = &$this->info($name);
+		$library = &$this->info($name, $force);
 
 		// Exit early if the library was not found.
 		if($library === false)
@@ -927,17 +1086,18 @@ class e_library_manager
 		$library['installed'] = false;
 
 		// Check whether the library exists.
-		if(!isset($library['library_path']))
+		if(!isset($library['library_path']) && !empty($library['machine_name']))
 		{
 			$library['library_path'] = $this->detectPath($library['machine_name']);
 		}
 
-		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
-		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
+		$libraryPath = !empty($library['library_path']) ? e107::getParser()->replaceConstants($library['library_path']) : '';
+
+		if(empty($library['library_path']) || (!empty($libraryPath) && !file_exists($libraryPath) && strpos($libraryPath, 'http') !== 0))
 		{
 			$library['error'] = LAN_NOT_FOUND;
 
-			$replace_with = array($library['name']);
+			$replace_with = array($name);
 			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
 
 			return $library;
@@ -947,12 +1107,20 @@ class e_library_manager
 		// Invoke callbacks in the 'pre_detect' group.
 		$this->invoke('pre_detect', $library);
 
+		if($force === true)
+		{
+			unset($library['version']);
+		}
+
 		// Detect library version, if not hardcoded.
 		if(!isset($library['version']))
 		{
+
 			// If version_callback is a method in $this class.
-			if(method_exists($this, $library['version_callback']))
+			if(method_exists($this, $library['version_callback'])) // runs getVersion() which will be slow.
 			{
+				$this->callbacks[] = $name;
+				e107::getDebug()->logTime("[Looking up version of ".$name."]");
 				// We support both a single parameter, which is an associative array, and an indexed array of multiple
 				// parameters.
 				if(isset($library['version_arguments'][0]))
@@ -974,11 +1142,11 @@ class e_library_manager
 				$library['version'] = '';
 				$class = false;
 
-				if(varset($library['plugin'], false))
+				if(!empty($library['plugin']))
 				{
 					$class = e107::getAddon($library['plugin'], 'e_library');
 				}
-				elseif(varset($library['theme'], false))
+				elseif(!empty($library['theme']))
 				{
 					// e107::getAddon() does not support theme folders.
 					if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
@@ -1172,6 +1340,7 @@ class e_library_manager
 	public function load($name, $variant = null)
 	{
 		// Re-use the statically cached value to save memory.
+
 		static $loaded;
 
 		if(!isset($loaded[$name]))
@@ -1186,7 +1355,7 @@ class e_library_manager
 				$library = e107::unserialize($cached);
 			}
 
-			if(!varset($library, false))
+			if(empty($library))
 			{
 				$library = $this->detect($name);
 				$cacheData = e107::serialize($library, 'json');
@@ -1340,18 +1509,23 @@ class e_library_manager
 	 *
 	 * The returned information is unprocessed; i.e., as registered by plugins.
 	 *
-	 * @param $library
+	 * @param string $library
 	 *   (optional) The machine name of a library to return registered information for. If omitted, information
 	 *   about all registered libraries is returned.
+	 *
+	 * @param bool $force - ignore any cached values and reload.
 	 *
 	 * @return array|false
 	 *   An associative array containing registered information for all libraries, the registered information for the
 	 *   library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	public function &info($library = null)
+	public function &info($library = null, $force = false)
 	{
 		// This static cache is re-used by detect() to save memory.
-		static $libraries;
+		if($force === false)
+		{
+			static $libraries;
+		}
 
 		if(!isset($libraries))
 		{
@@ -1698,11 +1872,11 @@ class e_library_manager
 				}
 			}
 		}
-		else
-		{
+		//else
+	//	{
 			// TODO: Provide the ability to use third-party callbacks (are defined in e_library.php files) for groups:
 			// 'info', 'pre_detect', 'post_detect', 'pre_dependencies_load', 'pre_load', 'post_load'
-		}
+	//	}
 	}
 
 	/**
@@ -1930,7 +2104,7 @@ class e_library_manager
 
 		// If remote file (e.g. CDN URL)... we download file to temp, and get version number.
 		// The library will be cached with version number, so this only run once per library.
-		if(substr($file, 0, 4) == 'http')
+		if(strpos($file, 'http') === 0)
 		{
 			$content = e107::getFile()->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');

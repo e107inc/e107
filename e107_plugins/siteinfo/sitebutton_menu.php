@@ -17,7 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 // echo "parm=".$parm; //FIXME - just for testing only.
 
-if(strstr(SITEBUTTON, "://")) // external url. 
+if(strpos(SITEBUTTON, "://") !== false) // external url.
 {
 	$path = SITEBUTTON;
 } 

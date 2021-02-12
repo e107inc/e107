@@ -140,13 +140,15 @@ class e107_event
 	 */
 	function register($eventname, $function, $include='')
 	{
-		$this->includes[$eventname] = array();
+
+
 		if(!isset($this->functions[$eventname]) || !in_array($function, $this->functions[$eventname]))
 		{
 			if (!empty($include))
 			{
 				$this->includes[$eventname][] = $include;
 			}
+
 			$this->functions[$eventname][] = $function;
 		}
 	}
@@ -155,11 +157,12 @@ class e107_event
 
 	function debug()
 	{
-		echo "<h3>Event Functions</h3>";
-		print_a($this->functions);
-		echo "<h3>Event Includes</h3>";
-		print_a($this->includes);	
-		
+		$text = "<h3>Event Functions</h3>";
+		$text .= print_a($this->functions,true);
+		$text .= "<h3>Event Includes</h3>";
+		$text .= print_a($this->includes,true);
+
+		return $text;
 	}
 
 
@@ -182,6 +185,10 @@ class e107_event
 				}
 			}
 		}*/
+
+	//	echo ($this->debug());
+
+
 		if (isset($this->functions[$eventname]))
 		{
 			foreach($this->functions[$eventname] as $i => $evt_func)
@@ -190,9 +197,12 @@ class e107_event
 				if(isset($this->includes[$eventname][$i])) //no checks
 				{
 					$location = $this->includes[$eventname][$i];
+
 					e107_include_once($location); 
 					unset($this->includes[$eventname][$i]);
+
 				}
+
 				if(is_array($evt_func)) //class, method
 				{
 					$class = $evt_func[0];
@@ -348,4 +358,4 @@ class e107_event
 	}
 }
 
-?>
+

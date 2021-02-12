@@ -8,11 +8,6 @@
 *
 * Custom download install/uninstall/update routines
 *
-* $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_setup.php,v $
-* $Revision$
-* $Date$
-* $Author$
-*
 */
 
 class download_setup
@@ -43,7 +38,13 @@ class download_setup
 
 	function upgrade_required()
 	{
-			return false;
+
+		// Check if e_dashboard and e_notify addons are loaded 
+		if(!e107::getAddon('download','e_notify') || !e107::getAddon('download','e_dashboard'))
+		{
+			return true;
+		}
+
 	}
 
 
@@ -64,6 +65,13 @@ class download_setup
 		 * 			$this->upgrade_from_1();
 		 * 		}
 		 */
+
+		// Make sure e_notify and e_dashboard addons are loaded
+		if(!e107::getAddon('download','e_notify') || !e107::getAddon('download','e_dashboard'))
+		{
+			e107::getPlug()->clearCache()->buildAddonPrefLists();	
+		}
+		
 
 		$config = e107::getPref('url_config');
 
@@ -103,7 +111,7 @@ class download_setup
 		{
 			if($needed == TRUE){ return "Incorrect download image paths"; } // Signal that an update is required.
 
-			if($sql->db_Update("download","download_image = CONCAT('{e_FILE}downloadimages/',download_image) WHERE download_image !='' "))
+			if($sql->update("download","download_image = CONCAT('{e_FILE}downloadimages/',download_image) WHERE download_image !='' "))
 			{
 				$mes->addSuccess("Updated Download-Image paths");
 			}
@@ -112,7 +120,7 @@ class download_setup
 				$mes->addError("Failed to update Download-Image paths");
 			}
 
-			if($sql->db_Update("download"," download_thumb = CONCAT('{e_FILE}downloadthumbs/',download_thumb) WHERE download_thumb !='' "))
+			if($sql->update("download"," download_thumb = CONCAT('{e_FILE}downloadthumbs/',download_thumb) WHERE download_thumb !='' "))
 			{
 				$mes->addSuccess("Updated Download-Thumbnail paths");
 			}
@@ -128,7 +136,7 @@ class download_setup
 			// Signal that an update is required.
 			if($needed == TRUE){ return "Downloads-Category icon paths need updating"; } // Must have a value if an update is needed. Text used for debug purposes.
 
-			if($sql->db_Update("download_category","download_category_icon = CONCAT('{e_IMAGE}icons/',download_category_icon) WHERE download_category_icon !='' "))
+			if($sql->update("download_category","download_category_icon = CONCAT('{e_IMAGE}icons/',download_category_icon) WHERE download_category_icon !='' "))
 			{
 				$mes->addSuccess("Updated Download-Image paths");
 			}

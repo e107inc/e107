@@ -34,4 +34,3 @@ define("DBVLAN_26", "[x] table(s) have problems.");
 
 // IMPORTANT NOTE: DBLAN has been replaced by DBBLAN in this file since 0.7 due to conflicts with db.php
 
-?>

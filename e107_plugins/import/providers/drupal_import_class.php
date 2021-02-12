@@ -12,7 +12,7 @@
  * b) The array index of certain variables.
  */
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 /**
  * Class drupal_import.
@@ -130,7 +130,7 @@ class drupal_import extends base_import_class
 				$result = $this->_setupQueryUsers();
 				$this->copyUserInfo = !$blank_user;
 				break;
-
+/*
 			case 'news':
 				break;
 
@@ -138,7 +138,7 @@ class drupal_import extends base_import_class
 				break;
 
 			case 'links':
-				break;
+				break;*/
 
 			default:
 				break;

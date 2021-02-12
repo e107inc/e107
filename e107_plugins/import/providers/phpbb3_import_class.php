@@ -14,7 +14,7 @@
  * $Author$
  */
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class phpbb3_import extends base_import_class
 {
@@ -36,7 +36,8 @@ class phpbb3_import extends base_import_class
  
 	function init()
 	{
-		$this->forum_attachment_path	= vartrue(trim($_POST['forum_attachment_path'],"/" ), false);
+		$formattach = trim($_POST['forum_attachment_path'],"/" );
+		$this->forum_attachment_path	= vartrue($formattach, false);
 		
 		if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
 		{
@@ -110,17 +111,14 @@ class phpbb3_import extends base_import_class
 				if ($result === FALSE) return FALSE;	  
 			break;
 
-				
-		  	case 'polls' :
+
+		    case 'news':
+		    case 'polls' :
 		    	return FALSE;
-			break;  
-			
-		  	case 'news' :
-				  return FALSE;	
 			break;
-		  
-			  
-		  	default :
+
+
+		    default :
 		    return FALSE;
 		}
 
@@ -188,7 +186,8 @@ class phpbb3_import extends base_import_class
 		 * 
 		 */
 	}  
-	  
+
+
 	function convertUserBan($data)
 	{
 		if($data == 3) // founder in phpbb3, but 'bounced' in e107. 
@@ -526,4 +525,3 @@ thread_options
 
 
 
-?>

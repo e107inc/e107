@@ -32,4 +32,3 @@ function plugin_forum_admin_events_clear_moderators()
 	$e107->ecache->clear_sys('nomd5_forum_moderators');
 }
 
-?>

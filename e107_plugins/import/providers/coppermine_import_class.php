@@ -25,7 +25,7 @@
 //$import_default_prefix['coppermine_import'] = 'CPG_';
 
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class coppermine_import extends base_import_class
 {
@@ -45,7 +45,7 @@ class coppermine_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
+	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
 		if ($result === FALSE) return FALSE;
 		break;
 	  default :
@@ -96,4 +96,4 @@ class coppermine_import extends base_import_class
 }
 
 
-?>
+

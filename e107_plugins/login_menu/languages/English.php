@@ -75,4 +75,3 @@ define("LAN_LOGINMENU_49", "Email: ");
 define("LAN_LOGINMENU_50", "Username or Email: ");
 define("LAN_LOGINMENU_51", "Sign In");
 
-?>

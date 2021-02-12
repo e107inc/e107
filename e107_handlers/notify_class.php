@@ -42,7 +42,7 @@ class notify
 
 		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
-			e107::getMessage()->addDebug('Notify is disabled!');
+			e107::getMessage()->addDebug('All notifications are inactive!');
 			return false;
 		}
 
@@ -88,34 +88,42 @@ class notify
 			}
 		}
 
+		return null;
 	//	e107::getEvent()->debug();
 	}
 
 
 	/**
-	 * Generic Notification method when none defined. 
+	 * Generic Notification method when none defined.
+	 *
+	 * @param $data
+	 * @param $id
 	 */
 	function generic($data,$id)
 	{
+	    if(isset($data['user_password']))
+        {
+            unset($data['user_password']);
+        }
+
 		$message = print_a($data,true); 
 		$this->send($id, 'Event Triggered: '.$id, $message);	
 	}
-
-
 
 
 	/**
 	 * Send an email notification following an event.
 	 *
 	 * The email is sent via a common interface, which will send immediately for small numbers of recipients, and queue for larger.
-	 * 
-	 * @param string $id - identifies event actions
+	 *
+	 * @param string $id      - identifies event actions
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
+	 * @param array  $media
 	 * @return void
 	 *
-	 *	@todo handle 'everyone except' clauses (email address filter done)
-	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
+	 * @todo handle 'everyone except' clauses (email address filter done)
+	 * @todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
 	function send($id, $subject, $message, $media=array())
 	{
@@ -128,6 +136,7 @@ class notify
 	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
 		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
+		$qry = '';
 
 		if ($notifyTarget == '-email')
 		{
@@ -216,7 +225,9 @@ class notify
 
 		}
 
-		if(E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
+		$devMode =  e107::getPref('developer', false);
+
+		if((ADMIN || $devMode) && E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
 
@@ -257,14 +268,14 @@ class notify
 				}
 			}
 			
-			$result = $mailer->sendEmails('notify', $mailData, $recipients);
+			$mailer->sendEmails('notify', $mailData, $recipients);
 
-			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 		else
 		{
 			$data = array('qry'=>$qry, 'error'=>'No recipients');
-			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING_, "NOTIFY_DBG");
+			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING, "NOTIFY_DBG");
 		}
 	}
 
@@ -275,8 +286,10 @@ class notify
 	// ---------------------------------------
 
 
-
-	function notify_usersup($data)
+	/**
+	 * @param $data
+	 */
+	public function notify_usersup($data)
 	{
 		$message = "";
 		foreach ($data as $key => $value)
@@ -321,7 +334,9 @@ class notify
 			$message .= $key.': '.$value.'<br />';
 		}
 
-		$this->send('login', NT_LAN_LI_1, $message);
+		$user = !empty($data['user_name']) ? " (".$data['user_name'].")" : "";
+
+		$this->send('login', NT_LAN_LI_1 . $user, $message);
 	}
 
 	function notify_logout()

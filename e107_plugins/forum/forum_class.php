@@ -20,6 +20,44 @@ e107::css('forum','forum.css');
 
 e107::lan('forum', "front", true);
 
+if(!deftrue('BOOTSTRAP')) // test with 'jayya'
+{
+		$bcDefs = array(
+			'FORLAN_11' => 'LAN_FORUM_0039',
+			'FORLAN_12' => 'LAN_FORUM_0040',
+			'FORLAN_13' => 'LAN_FORUM_0040',
+			'FORLAN_14' => 'LAN_FORUM_0040',
+			'FORLAN_15' => '',
+			'FORLAN_16' => 'LAN_FORUM_1012',
+			'FORLAN_17' => 'LAN_FORUM_1013',
+			'FORLAN_18' => 'LAN_FORUM_1014',
+			'LAN_435'   => 'LAN_DELETE',
+			'LAN_401'   => 'LAN_FORUM_4011',
+			'LAN_398'   => 'LAN_FORUM_4012',
+			'LAN_399'   => 'LAN_FORUM_4013',
+			'LAN_400'   => 'LAN_FORUM_4014',
+			'LAN_402'   => 'LAN_FORUM_5019',
+			'LAN_199'   => 'LAN_SEARCH',
+			'LAN_397'   => 'LAN_FORUM_0030',
+			'LAN_396'   => 'LAN_FORUM_1013',
+			'LAN_392'   => 'LAN_FORUM_0070',
+			'LAN_391'   => 'LAN_FORUM_4009',
+			'LAN_400'   => 'LAN_EDIT',
+			'LAN_401'   => 'LAN_FORUM_2041',
+			'LAN_406'   => 'LAN_EDIT',
+			'LAN_435'   => 'LAN_DELETE',
+			'LAN_397'   => 'LAN_FORUM_2044',
+			'LAN_398'   => 'LAN_FORUM_4007',
+			'FORLAN_105'    => 'LAN_FORUM_3052',
+			'LAN_408'   => 'LAN_FORUM_0007',
+			'LAN_413'   => 'LAN_FORUM_2046',
+			'FORLAN_10' => 'LAN_FORUM_1018',
+
+		);
+
+		e107::getLanguage()->bcDefs($bcDefs);
+}
+
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 {
@@ -44,7 +82,8 @@ if(!defined('IMAGE_new') && !defined('IMAGE_e'))
 class e107forum
 {
 //	var $fieldTypes = array();
-	private $userViewed, $permList;
+	private $userViewed;
+	private $permList = array();
 	public $modArray, $prefs;
 	private $forumData = array();
 
@@ -400,7 +439,7 @@ class e107forum
 			}
 			else
 			{
-				$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+				$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
 				$ret['status'] 	= 'error';
 			}
 		}
@@ -537,7 +576,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
+						$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -642,7 +681,12 @@ class e107forum
 
 	public function getForumPermList($what = null)
 	{
-		if(null !== $what) return (isset($this->permList[$what]) ? $this->permList[$what] : null);
+
+		if(null !== $what)
+		{
+			return (isset($this->permList[$what]) ? $this->permList[$what] : array());
+		}
+
 		return $this->permList;
 	}
 
@@ -704,12 +748,12 @@ class e107forum
 					$tmp[$row['forum_parent']] = 1;
 				}
 				ksort($tmp);
-				if($key == 'post')
-				{
+				//if($key == 'post')
+			//	{
 					//echo "<h3>Raw Perms</h3>";
 				//	echo "Qry: ".$qryList['post'];
 				//	print_a($tmp);
-				}
+			//	}
 				$this->permList[$key] = array_keys($tmp);
 				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 			}
@@ -1294,7 +1338,7 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$sql  = e107::getDb();
-		$log  = e107::getAdminLog(); 
+		$log  = e107::getLog();
 
 		$id = (int)$id;
 		if(!$id) { return; }
@@ -1584,7 +1628,7 @@ class e107forum
 		}
 		else
 		{
-			$this->modArray = e107::getUserClass()->get_users_in_class($uclass, 'user_name', true);
+			$this->modArray = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
 		}
 
 
@@ -1718,15 +1762,17 @@ class e107forum
 		$sql = e107::getDb();
 		$viewed = '';
 
-		if($e107->currentUser['user_plugin_forum_viewed'])
+		$forumViewed = e107::getUserExt()->get(USERID, 'user_plugin_forum_viewed' );
+
+		if($forumViewed)
 		{
-			$viewed = " AND thread_id NOT IN (".$e107->currentUser['user_plugin_forum_viewed'].")";
+			$viewed = " AND thread_id NOT IN (".$forumViewed.")";
 		}
 
 		$_newqry = 	'
 		SELECT DISTINCT f.forum_sub, ft.thread_forum_id FROM `#forum_thread` AS ft
 		LEFT JOIN `#forum` AS f ON f.forum_id = ft.thread_forum_id
-		WHERE ft.thread_lastpost > '.USERLV.' '.$viewed;
+		WHERE ft.thread_lastpost > '.defset('USERLV', strtotime('1 month ago') ).' '.$viewed;
 
 		$ret = array();
 
@@ -1942,6 +1988,11 @@ class e107forum
 
 	function forumGetAllowed($type='view')
 	{
+		if(empty($this->permList[$type]))
+		{
+			return array();
+		}
+
 		$sql = e107::getDb();
 		$forumList = implode(',', $this->permList[$type]);
 		$qry = "
@@ -2068,10 +2119,10 @@ class e107forum
 			//	return $row['thread_id'];
 
 			}
-			else
-			{
+			//else
+		//	{
 			//	e107::getMessage()->addDebug(ucfirst($which)." Thread Qry Returned Nothing: ".$qry);
-			}
+		//	}
 
 			return false;
 	}
@@ -2271,7 +2322,7 @@ class e107forum
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
 	 * $thread_title is needed for post-related breadcrumbs
 	 */
-	function set_crumb($forum_href=false, $thread_title='', &$templateVar)
+	function set_crumb($forum_href=false, $thread_title='', &$templateVar=null)
 	{
 
 		$tp = e107::getParser();
@@ -2575,10 +2626,6 @@ class e107forum
 
 	}
 
-
-
-
-
 }
 
 
@@ -2604,6 +2651,11 @@ function img_path($filename)
 		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename))
 		{
 			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename)) ? THEME_ABS.'forum/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/'.$filename;
+		}
+		// #3948 - added for consistency with plugin folder structure. Also check THEME/forum/images/icons/ folder 
+		elseif(file_exists(THEME.'forum/images/icons/'.$filename) || is_readable(THEME.'forum/images/icons/'.e_LANGUAGE.'_'.$filename))
+		{
+			$image = ($ML && is_readable(THEME.'forum/images/icons/'.e_LANGUAGE.'_'.$filename)) ? THEME_ABS.'forum/images/icons/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/images/icons/'.$filename;
 		}
 		else
 		{
@@ -2634,8 +2686,3 @@ function img_path($filename)
 
 	return $image;
 }
-
-
-
-
-?>

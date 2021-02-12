@@ -74,4 +74,3 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		$ns->tablerender(LAN_UMENU_THEME_2, $text, 'usertheme');
 	}
 }
-?>

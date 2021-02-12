@@ -212,7 +212,7 @@ define("FORLAN_185", "Indicates who can create new threads");
 define("FORLAN_186", "Threads per page");
 define("FORLAN_187", "Number of threads displayed per page");
 // define("FORLAN_188", "Latest Posts");
-define("FORLAN_189", "Click the 'delete' button to delete the report.<br /><br />Click the 'view' button to view the topic/thread");
+define("FORLAN_189", "Click the 'delete' button to delete the report.[br][br]Click the 'view' button to view the topic/thread.[br][br]To be notified of any new reports, please see to the [notify settings].");
 
 define("FORLAN_200", "Topic tracking");
 define("FORLAN_201", "Enable this to allow your users to track topics.");
@@ -237,5 +237,5 @@ define("FORLAN_219", "Rich Text Editor");
 define("FORLAN_220", "Post editor");
 define("FORLAN_221", "Which editor should be used to create/edit posts?");
 define("FORLAN_222", "Quick reply editor");
-define("FORLAN_223", "Use only plain text (no bbcode or html allowed!)")
-?>
+define("FORLAN_223", "Use only plain text (no bbcode or html allowed!)");
+

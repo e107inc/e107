@@ -9,7 +9,7 @@
  */
 
 $eplug_admin = TRUE;
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 e107::includeLan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
 
 require_once(e_HANDLER.'userclass_class.php');
@@ -56,13 +56,17 @@ if (isset($_POST['update_theme']))
 	$themeeditclass = intval($_POST['themeeditclass']);
 	if (($newThemes != $pref['allowed_themes']) || ($themeeditclass != $pref['allow_theme_select']))
 	{
-		$pref['allowed_themes'] = $newThemes;
-		$pref['allow_theme_select'] = $themeeditclass;
-		save_prefs();
+		$cfg = e107::getConfig();
+		$cfg->set('allowed_themes', $newThemes);
+		$cfg->set('allow_theme_select', $themeeditclass);
+		$cfg->save(true,true,true);
+
 		$woffle = LAN_UMENU_THEME_8.$pref['allowed_themes'].'[!br!]'.LAN_UMENU_THEME_9.$pref['allow_theme_select'];
 		e107::getLog()->add('UTHEME_01',$woffle,E_LOG_INFORMATIVE,'');
 	}
 }
+
+$themeList = array();
 
 if (isset($pref['allowed_themes']))
 {
@@ -126,4 +130,3 @@ function headerjs()
 
 }
 */
-?>

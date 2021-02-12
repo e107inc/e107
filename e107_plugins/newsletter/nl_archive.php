@@ -10,13 +10,14 @@
  *
 */
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!e107::isInstalled('newsletter') || !ADMIN)
 {
 	e107::redirect();
 	exit(); 
 }
-e107::includeLan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
+
+e107::plugLan('newsletter', null);
 require_once(HEADERF);
 
 $sql = e107::getDb();
@@ -27,13 +28,15 @@ if(e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 	$action				= $tmp[0];
-	$action_parent_id	= varset(intval($tmp[1], 0));
-	$action_nl_id		= varset(intval($tmp[2], 0));
+	$parID              = intval($tmp[1], 0);
+	$nlID               = intval($tmp[2], 0);
+	$action_parent_id	= varset($parID);
+	$action_nl_id		= varset($nlID);
 	unset($tmp);
 }
 
 $page_size = 10; // Might become a preference setting later on
-$text .= "<div style='text-align: center; margin-left: auto; margin-right: auto; width: 100%;'>";
+$text = "<div style='text-align: center; margin-left: auto; margin-right: auto; width: 100%;'>";
 
 if (($action <> 'show' && $action <> 'showp') || ($action_parent_id == 0))
 { 	// Action 'show' displays initial page, 'showp' displays following pages
@@ -134,4 +137,3 @@ $text .= "</div>";
 
 $ns -> tablerender(NLLAN_67, $text);
 require_once(FOOTERF);
-?>

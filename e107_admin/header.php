@@ -12,68 +12,47 @@
  * $Id:$
 */
 
-if (!defined('e107_INIT'))
+if(!defined('e107_INIT'))
 {
 	exit;
 }
-if (!defined('ADMIN_AREA'))
+
+if(!defined('ADMIN_AREA')) //avoid PHP warning
 {
-	//avoid PHP warning
-	define("ADMIN_AREA", TRUE);
+	define("ADMIN_AREA", true);
 }
 if(!defined('USER_AREA'))
 {
-	define("USER_AREA", FALSE);
+	define("USER_AREA", false);
 }
 
-e107::getDb()->db_Mark_Time('(Header Top)');
-
-
-if(!deftrue('e_MENUMANAGER_ACTIVE'))
-{
-
-	if (defined('THEME') && file_exists(THEME.'admin_template.php')) // Admin template
-	{
-		require_once (THEME.'admin_template.php');
-	}
-	else
-	{
-		require_once (e_CORE.'templates/admin_template.php');
-	}
-
-
-	// FIXME - remove ASAP
-	if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
-	{
-		$threshold = (time() - ($pref['del_unv'] * 60));
-		e107::getDb()->delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
-	}
-}
+e107::getDebug()->logTime('(Header Top)');
 
 
 function loadJSAddons()
 {
+
 	if(deftrue('e_MENUMANAGER_ACTIVE'))
 	{
-		return; 
+		return;
 	}
 
 	// TODO use Library Manager. Remove unused libraries...
 
 	e107::css('core', 'bootstrap-select/bootstrap-select.min.css', 'jquery');
 	e107::js('footer', '{e_WEB}js/bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
-	
-	// e107::css('core', 'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
+
+//	e107::css('core', 'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
 	e107::js('footer', '{e_WEB}js/bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
 
 	// TODO: remove typeahead.
 	e107::js('footer', '{e_WEB}js/bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
-	
+
 	e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
 	e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
-	
-	e107::js('footer','{e_WEB}js/jquery.h5validate.min.js','jquery', 2);
-	
+
+	e107::js('footer', '{e_WEB}js/jquery.h5validate.min.js', 'jquery', 2);
+
 	e107::js('footer', '{e_WEB}js/jquery.elastic.js', 'jquery', 2);
 	e107::js('footer', '{e_WEB}js/jquery.at.caret.min.js', 'jquery', 2);
 
@@ -85,19 +64,15 @@ function loadJSAddons()
 
 	$plUpload = 'plupload/i18n/' . e_LAN . '.js';
 
-    if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
-    {
-     e107::js('footer', e_WEB_JS. $plUpload, 'jquery', 5);
-    }
+	if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
+	{
+		e107::js('footer', e_WEB_JS . $plUpload, 'jquery', 5);
+	}
 }
 
 
 // Load other JS files.
 loadJSAddons();
-
-
-
-
 
 
 // e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
@@ -151,35 +126,31 @@ loadJSAddons();
 // C: Send start of HTML
 //
 echo "<!doctype html>\n";
-echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";
-echo "<head>\n";
+echo "<html" . (defined("TEXTDIRECTION") ? " dir='" . TEXTDIRECTION . "'" : "") . (defined("CORE_LC") ? " lang=\"" . CORE_LC . "\"" : "") . ">\n";
+echo "<head>\n<title>" . (defined("e_PAGETITLE") ? e_PAGETITLE . " - " : (defined("PAGE_NAME") ? PAGE_NAME . " - " : "")) . LAN_HEADER_04 . " :: " . SITENAME . "</title>\n";
 echo "<meta charset='utf-8' />\n";
 echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.8, maximum-scale=1\" />\n"; // Works better for iOS but still has some issues.
-echo "<title>".(defined("e_PAGETITLE") ? e_PAGETITLE." - " : (defined("PAGE_NAME") ? PAGE_NAME." - " : "")).LAN_HEADER_04." :: ".SITENAME."</title>\n";
 
 //
 // D: Send CSS
 //
 echo "<!-- *CSS* -->\n";
-$e_js =  e107::getJs();
-
+$e_js = e107::getJs();
 
 // Core CSS - XXX awaiting for path changes
-if (!isset($no_core_css) || !$no_core_css)
+if(!isset($no_core_css) || !$no_core_css)
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
 
-
-
 // Register Plugin specific CSS (BC)
-if (isset($eplug_css) && $eplug_css)
+if(isset($eplug_css) && $eplug_css)
 {
-	e107::getMessage()->addDebug('Deprecated $eplug_css method detected. Use e107::css() in an e_header.php file instead.'.print_a($eplug_css,true)); 
-	
-    if(!is_array($eplug_css))
+	e107::getMessage()->addDebug('Deprecated $eplug_css method detected. Use e107::css() in an e_header.php file instead.' . print_a($eplug_css, true));
+
+	if(!is_array($eplug_css))
 	{
 		$eplug_css = array($eplug_css);
 	}
@@ -189,9 +160,6 @@ if (isset($eplug_css) && $eplug_css)
 		$e_js->otherCSS($kcss);
 	}
 }
-
-
-
 
 
 if(deftrue('e_MENUMANAGER_ACTIVE')) // load frontend style.css
@@ -209,36 +177,30 @@ else // backend css.
 		$e_js->otherCSS($val['path']);
 	}
 
-		//NEW - Iframe mod
-		/*
-	if(!deftrue('e_IFRAME') && !empty($pref['admincss']))
-	{
-		$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
-		//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-		$e_js->themeCSS($css_file);
+	//NEW - Iframe mod
+	/*
+if(!deftrue('e_IFRAME') && !empty($pref['admincss']))
+{
+	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	$e_js->themeCSS($css_file);
 
-	}
-	elseif(isset($pref['themecss']) && $pref['themecss'])
-	{
-		$css_file = (file_exists(THEME.'admin_'.$pref['themecss'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
-		//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-		// $e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap.
-	}
-	else
-	{
-		$css_file = (file_exists(THEME.'admin_style.css')) ? 'admin_style.css' : 'style.css';
-		//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-		$e_js->themeCSS($css_file);
-	}*/
-
+}
+elseif(isset($pref['themecss']) && $pref['themecss'])
+{
+	$css_file = (file_exists(THEME.'admin_'.$pref['themecss'])) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	// $e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap.
+}
+else
+{
+	$css_file = (file_exists(THEME.'admin_style.css')) ? 'admin_style.css' : 'style.css';
+	//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
+	$e_js->themeCSS($css_file);
+}*/
 
 
 }
-
-
-
-
-
 
 
 // FIXME: TEXTDIRECTION compatibility CSS (marj?)
@@ -246,19 +208,19 @@ else // backend css.
 // possibility to overwrite some CSS definition according to TEXTDIRECTION
 // especially usefull for rtl.css
 // see _blank theme for examples
-if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
+if(defined('TEXTDIRECTION') && file_exists(THEME . '/' . strtolower(TEXTDIRECTION) . '.css'))
 {
-	$e_js->themeCSS(strtolower(TEXTDIRECTION).'.css');
+	$e_js->themeCSS(strtolower(TEXTDIRECTION) . '.css');
 }
 
 
 // --- Load plugin Header  files  before all CSS nad JS zones.  --------
-if (!empty($pref['e_header_list']) && is_array($pref['e_header_list']))
+if(!empty($pref['e_header_list']) && is_array($pref['e_header_list']))
 {
 	foreach($pref['e_header_list'] as $val)
 	{
 		// no checks fore existing file - performance
-		e107_include_once(e_PLUGIN.$val."/e_header.php");
+		e107_include_once(e_PLUGIN . $val . "/e_header.php");
 	}
 }
 unset($e_headers);
@@ -268,30 +230,29 @@ unset($e_headers);
 
 echo "\n<!-- Library CSS -->\n";
 
-$e_js->renderJs('library_css', false, 'css', false);
+$e_js->renderJs('library_css', false, 'css');
 echo "\n<!-- footer_library_css -->\n"; // substituted in footer when detected.
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
-$e_js->renderJs('other_css', false, 'css', false);
+$e_js->renderJs('other_css', false, 'css');
 echo "\n<!-- footer_other_css -->\n"; // substituted in footer when detected.
 
 // Core CSS
-$e_js->renderJs('core_css', false, 'css', false);
+$e_js->renderJs('core_css', false, 'css');
 echo "\n<!-- footer_core_css -->\n";
-
 
 
 // Theme CSS
 //echo "<!-- Theme css -->\n";
-$e_js->renderJs('theme_css', false, 'css', false);
+$e_js->renderJs('theme_css', false, 'css');
 echo "\n<!-- footer_theme_css -->\n";
 
 // Plugin CSS
-$e_js->renderJs('plugin_css', false, 'css', false);
+$e_js->renderJs('plugin_css', false, 'css');
 echo "\n<!-- footer_plugin_css -->\n";
 
 // Inline CSS - not sure if this should stay at all!
-$e_js->renderJs('inline_css', false, 'css', false);
+$e_js->renderJs('inline_css', false, 'css');
 echo "\n<!-- footer_inline_css -->\n";
 
 //
@@ -313,7 +274,7 @@ e107::getJs()->renderJs('header', 1);
 e107::getJs()->renderJs('header_inline', 1);
 
 // Load Javascript Library consolidation script
-$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
+$jslib = e107::getObject('e_jslib', null, e_HANDLER . 'jslib_handler.php');
 $jslib->renderHeader('admin', false);
 
 // [JSManager] Load JS Includes - Zone 2 - After Library, before CSS
@@ -321,9 +282,9 @@ e107::getJs()->renderJs('header', 2);
 e107::getJs()->renderJs('header_inline', 2);
 
 /* @deprecated -use e107::js('myplug','js/my.js') instead; */
-if (!empty($eplug_js))
+if(!empty($eplug_js))
 {
-	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.'.print_a($eplug_js,true));
+	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.' . print_a($eplug_js, true));
 	echo "\n<!-- eplug_js -->\n";
 
 	if(!is_array($eplug_js))
@@ -338,18 +299,17 @@ if (!empty($eplug_js))
 
 }
 
-//FIXME - theme.js/user.js should be registered/rendered through e_jsmanager
 // BC Fix.
-if (file_exists(THEME.'theme.js'))
+if(file_exists(THEME . 'theme.js'))
 {
-	e107::js('theme','theme.js',null,3); 
+	e107::js('theme', 'theme.js', null, 3);
 //	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
 }
 
 
-if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js'))
+if(is_readable(e_FILE . 'user.js') && filesize(e_FILE . 'user.js'))
 {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n";
+	echo "<script type='text/javascript' src='" . e_FILE_ABS . "user.js'></script>\n";
 }
 
 
@@ -363,35 +323,45 @@ e107::getJs()->renderJs('header_inline', 3);
 echo "<!-- *META* -->\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
-if (vartrue($pref['e_meta_list']))
+
+/** @var array $incompatibleMeta - plugins that may cause jQuery conflicts etc if loaded. */
+$incompatibleMeta = array('aa_jquery', 'fancybox', 'lightwindow', 'e107slider');
+
+if(!empty($pref['e_meta_list']))
 {
-	foreach ($pref['e_meta_list'] as $val)
+	foreach($pref['e_meta_list'] as $val)
 	{
-		if (is_readable(e_PLUGIN.$val."/e_meta.php"))
+		if(in_array($val, $incompatibleMeta))
 		{
-			echo "<!-- $val meta -->\n";
-			require_once (e_PLUGIN.$val."/e_meta.php");
+			continue;
+		}
+
+		if(is_readable(e_PLUGIN . $val . "/e_meta.php"))
+		{
+			echo "\n\n<!-- $val meta -->\n";
+			require_once(e_PLUGIN . $val . "/e_meta.php");
 		}
 	}
 }
 
+unset($incompatibleMeta);
 
 
-if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+if(!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'], 0))
 {
-	if ($pref['password_CHAP'] == 2)
-  	{
+	if($pref['password_CHAP'] == 2)
+	{
 		// *** Add in the code to swap the display tags
 //		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
 		$js_body_onload[] = "expandit('loginmenuchap');";
 		$js_body_onload[] = "expandit('nologinmenuchap');";
-  	}
-  	echo "<script type='text/javascript' src='".e_JS."chap_script.js'></script>\n";
-  	$js_body_onload[] = "getChallenge();";
+	}
+	echo "<script type='text/javascript' src='" . e_JS . "chap_script.js'></script>\n";
+	$js_body_onload[] = "getChallenge();";
 }
 
 
-if (function_exists('headerjs'))// required for BC.
+if(function_exists('headerjs'))// required for BC.
 {
 	echo headerjs();
 }
@@ -412,20 +382,20 @@ e107::getJs()->renderJs('header_inline', 4);
 // ---------- Favicon ---------
 
 $sitetheme = e107::getPref('sitetheme');
-if (file_exists(e_THEME.$sitetheme."/favicon.ico"))
+if(file_exists(e_THEME . $sitetheme . "/favicon.ico"))
 {
-	echo "<link rel='icon' href='".e_THEME_ABS.$sitetheme."/favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".e_THEME_ABS.$sitetheme."/favicon.ico' type='image/xicon' />\n";
+	echo "<link rel='icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/xicon' />\n";
 }
-elseif (file_exists(e_BASE."favicon.ico"))
+elseif(file_exists(e_BASE . "favicon.ico"))
 {
-	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+	echo "<link rel='icon' href='" . SITEURL . "favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . SITEURL . "favicon.ico' type='image/xicon' />\n";
 }
 unset($sitetheme);
 //
 // G: Send Theme Headers
 //
 
-if (function_exists('theme_head'))
+if(function_exists('theme_head'))
 {
 	echo "\n<!-- *THEME HEAD* -->\n";
 	echo theme_head();
@@ -440,18 +410,29 @@ echo "\n<!-- *PRELOAD* -->\n";
 // I: Calculate JS onload() functions for the BODY tag [user mode only]
 //
 // XXX DEPRECATED $body_onload and related functionality
-if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
-$body_onload='';
-if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
+if(defined('THEME_ONLOAD'))
+{
+	$js_body_onload[] = THEME_ONLOAD;
+}
+
+$body_onload = '';
+if(!empty($js_body_onload))
+{
+	$body_onload = " onload=\"" . implode(" ", $js_body_onload) . "\"";
+}
 
 
 if(deftrue('e_MENUMANAGER_ACTIVE'))
 {
-	$body_onload .= " id=\"layout-".e107::getForm()->name2id(THEME_LAYOUT)."\" ";
+	$body_onload .= " id=\"layout-" . e107::getForm()->name2id(THEME_LAYOUT) . "\" ";
 }
 else
 {
-	$body_onload .= " id=\"admin-".str_replace(".php","",e_PAGE)."\" ";
+	$bodyID = deftrue("e_CURRENT_PLUGIN") ? e_CURRENT_PLUGIN : str_replace(".php", "", e_PAGE);
+	$bodyID .= (!empty($_GET['mode']) && !empty($_GET['action'])) ? "-" . $_GET['mode'] . '-' . $_GET['action'] : '';
+	$body_onload .= " id=\"admin-" . e107::getForm()->name2id($bodyID) . "\" ";
+	$body_onload .= deftrue('e_IFRAME') ? " class=\"e-modal-content\" " : '';
+	unset($bodyID);
 }
 
 //
@@ -498,7 +479,7 @@ if(deftrue('e_MENUMANAGER_ACTIVE') && defset('THEME_LAYOUT') && e_theme::loadLay
 else
 {
 	echo "
-	<body".$body_onload.">\n";
+	<body" . $body_onload . ">\n";
 
 	echo getModal();
 	echo getAlert();
@@ -508,7 +489,7 @@ function getModal()
 {
 
 	if(deftrue('BOOTSTRAP'))  // see bootstrap3/admin_template.php
-    {
+	{
 		return '';
 	}
 
@@ -516,13 +497,14 @@ function getModal()
 	{
 		return null;
 	}
+
 	/*
 	if(e_PAGE == "image.php")
 	{
 			return;
 	}
 		*/
-		
+
 	return '
        
          <div id="uiModal" class="modal  fade" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -542,32 +524,35 @@ function getModal()
             		</div>
                </div>
 		    </div>
-        </div>';        
-            
+        </div>';
+
 }
 
 function getAlert()
 {
+
 	return '<div id="uiAlert" class="notifications center"><!-- empty --></div>';
 }
 
 
-
 // Header included notification, from this point header includes are not possible
-define('HEADER_INIT', TRUE);
+if(!defined('HEADER_INIT'))
+{
+	define('HEADER_INIT', true);
+}
 
-e107::getDb()->db_Mark_Time("End Head, Start Body");
+e107::getDebug()->logTime("End Head, Start Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)
 //
 
 // require $e107_popup =1; to use it as header for popup without menus
-if (!isset($e107_popup))
+if(!isset($e107_popup))
 {
 	$e107_popup = 0;
 }
-if ($e107_popup != 1)
+if($e107_popup != 1)
 {
 
 	//
@@ -585,7 +570,7 @@ if ($e107_popup != 1)
 	// moved to boot.php
 	//$ns = new e107table;
 	//$e107_var = array();
-	
+
 	// function e_admin_me/nu moved to boot.php (e107::getNav()->admin)
 	// legacy function show_admin_menu moved to boot.php
 	// include admin_template.php moved to boot.php
@@ -594,24 +579,27 @@ if ($e107_popup != 1)
 	// (legacy?) function admin_purge_related moved to boot.php
 
 
-	e107::getDb()->db_Mark_Time('Parse Admin Header');
-		
+	e107::getDebug()->logTime('Parse Admin Header');
+
 	//NEW - Iframe mod
-	if (!deftrue('e_IFRAME'))
+	if(!deftrue('e_IFRAME'))
 	{
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
-		parse_admin($ADMIN_HEADER);
+		$ADMIN_HEADER = e107::getCoreTemplate('admin', 'header', false);
+		$ADMIN_MODAL = e107::getCoreTemplate('admin', 'modal', false);
+
+		e107::renderLayout($ADMIN_MODAL . $ADMIN_HEADER, ['sc'=>'admin']);
 	}
-	elseif(!vartrue($_GET['configure'])) 
+	elseif(!vartrue($_GET['configure']))
 	{
-		e107::css("inline","body { padding:0px } "); // default padding for iFrame-only. 
+		e107::css("inline", "body { padding:0px; margin:0; } "); // default padding for iFrame-only.
 	}
 
-	e107::getDb()->db_Mark_Time('(End: Parse Admin Header)');
+	e107::getDebug()->logTime('(End: Parse Admin Header)');
 }
 
 // XXX - we don't need this (use e107::getMessage()) - find out what's using it and remove it
-if (!varset($emessage) && !is_object($emessage))
+if(!varset($emessage) && !is_object($emessage))
 {
 	$emessage = e107::getMessage();
 }

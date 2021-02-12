@@ -46,7 +46,7 @@ class list_download
 		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry."
 		   ORDER BY download_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount'])." ";
 
-		$downloads = $this->parent->e107->sql->db_Select_gen($qry);
+		$downloads = $this->parent->e107->sql->gen($qry);
 		if($downloads == 0)
 		{
 			$list_data = LIST_DOWNLOAD_2;
@@ -54,7 +54,7 @@ class list_download
 		else
 		{
 			$list_data = array();
-			while($row = $this->parent->e107->sql->db_Fetch())
+			while($row = $this->parent->e107->sql->fetch())
 			{
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['download_name']);
@@ -76,4 +76,3 @@ class list_download
 		);
 	}
 }
-?>

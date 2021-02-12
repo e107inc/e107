@@ -88,4 +88,5 @@ $BBCODE_TEMPLATE_CPAGE = "
 	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
-?>
+
+

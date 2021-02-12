@@ -6,7 +6,7 @@
 * Navigation Template 
 */
 
- 
+
 // TEMPLATE FOR {NAVIGATION=main}
 $NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav nav-main ml-auto">';
 
@@ -31,7 +31,7 @@ $NAVIGATION_TEMPLATE['main']['item_active'] = '
 // Main Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 	<li class="nav-item dropdown {LINK_IDENTIFIER}">
-		<a class="nav-link dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
+		<a class="nav-link dropdown-toggle"  role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		 {LINK_ICON}{LINK_NAME} 
 		 <span class="caret"></span>
 		</a> 
@@ -42,7 +42,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 // Main Link which has a sub menu - active state.
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 	<li class="nav-item dropdown active {LINK_IDENTIFIER}">
-		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
+		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_ICON}{LINK_NAME}
 		 <span class="caret"></span>
 		</a>
@@ -183,4 +183,3 @@ $NAVIGATION_TEMPLATE['alt6']['start'] 				= '<ul class="nav nav-list nav-alt6">'
 
 
 
-?>

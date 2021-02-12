@@ -240,8 +240,19 @@ class error_page
 			'content'  => $this->content,
 		));
 
-		$body = $tp->parseTemplate($tpl, true, $sc);
-		e107::getRender()->tablerender('', $body, 'error_page_'.$status_code);
+         $body = $tp->parseTemplate($tpl, true, $sc);
+
+		// set title, mode and body for when SEF (index.php) is handling it.
+		$front = eFront::instance();
+		$front->getResponse()->setTitle(LAN_ERROR);
+		$front->getResponse()->setRenderMod('error_page_'.$status_code);
+        $front->getResponse()->setBody($body);
+
+
+
+        // return $body for when error.php is handling it.
+        return $body;
+		// e107::getRender()->tablerender('', $body, 'error_page_'.$status_code); // caused double-render.test with e107v4a theme
 	}
 
 }

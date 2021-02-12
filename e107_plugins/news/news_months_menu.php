@@ -71,7 +71,7 @@ if(false === $cached)
 	}
 	
 	$req_year = $cur_year;
-	if(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
+	if(e_PAGE == 'news.php' && strpos(e_QUERY, "month") !== false)
 	{
 		$tmp = explode('.', e_QUERY);
 		$item = $tmp[1];
@@ -86,8 +86,8 @@ if(false === $cached)
 	$xmonth_cnt = array();
 	$month_links = array();
 	
-	$sql->db_Mark_Time('News months menu');
-	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
+	e107::getDebug()->logTime('News months menu');
+	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND (FIND_IN_SET('0', news_render_type) OR FIND_IN_SET(1, news_render_type)) AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
 	{
 		e107::getCache()->set($cString, '');
 		return '';

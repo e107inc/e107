@@ -9,7 +9,7 @@
 	 */
 
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 /**
 * @usage replace 'template' with the name of the other cms and rename this file.
@@ -463,4 +463,3 @@ class template_import extends base_import_class
 }
 
 
-?>	 

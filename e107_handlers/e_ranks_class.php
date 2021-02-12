@@ -55,7 +55,7 @@ class e_ranks
 					}
 				}
 			}
-			$e107->ecache->set_sys('nomd5_user_ranks', $e107->arrayStorage->WriteArray($this->ranks, false));
+			$e107->ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
 		}
 
 		// defaults
@@ -209,7 +209,7 @@ class e_ranks
 			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
 
-		if($userData['user_admin'])
+		if(!empty($userData['user_admin']))
 		{
 			if($userData['user_perms'] == '0')
 			{
@@ -235,7 +235,7 @@ class e_ranks
 
 		$lastRank = count($this->ranks['data']);
 		$rank = false;
-		if($level <= $this->ranks['data'][0]['thresh'])
+		if($level <= varset($this->ranks['data'][0]['thresh']))
 		{
 			$rank = 1;
 		}
@@ -303,4 +303,3 @@ class e_ranks
 }
 
 
-?>

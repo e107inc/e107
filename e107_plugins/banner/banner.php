@@ -11,7 +11,7 @@
 
 if (!defined('e107_INIT'))
 { 
-	require_once("../../class2.php");
+	require_once(__DIR__.'/../../class2.php');
 }
 
 if (!e107::isInstalled('banner'))
@@ -20,7 +20,7 @@ if (!e107::isInstalled('banner'))
 	exit;
 }
 
-e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
+// e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
 e107::lan('banner');
 
 
@@ -137,7 +137,7 @@ if (isset($_POST['clientsubmit']))
 }
 	
 $scArray = array();
-$scArray['BANNER_LOGIN_TABLE_LOGIN'] 	= $frm->text("clientlogin", $id);
+$scArray['BANNER_LOGIN_TABLE_LOGIN'] 	= $frm->text("clientlogin");
 $scArray['BANNER_LOGIN_TABLE_PASSW'] 	= $frm->password("clientpassword", '');
 $scArray['BANNER_LOGIN_TABLE_SUBMIT'] 	= $frm->button("clientsubmit", LAN_CONTINUE, "submit");
 

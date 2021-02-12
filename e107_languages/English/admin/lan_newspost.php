@@ -14,7 +14,7 @@ define("NWSLAN_4", "News - Existing News");
 define("NWSLAN_6", "Category");
 
 // define("NWSLAN_9", "tick to confirm");
-define("NWSLAN_10", "No news categories");
+// define("NWSLAN_10", "No news categories");
 // define("NWSLAN_11", "Add/Edit Categories");
 //define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
@@ -146,7 +146,7 @@ define("NWSLAN_128", "Set a string to be used in news pages URL. This will only 
 // define("LAN_NEWS_21", "News updated in database.");
 
 // define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose an image or video for this news item");
+// define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");
@@ -159,8 +159,8 @@ define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_32", "Date stamp");
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
-define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Add trackback URLs");
+// define("LAN_NEWS_34", "Trackback");
+// define("LAN_NEWS_35", "Add trackback URLs");
 // define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
 define("LAN_NEWS_37", "One URL per line)");
 // define("LAN_NEWS_38", "Insert images");
@@ -210,7 +210,7 @@ define("LAN_NEWS_73", "Sidebar - Othernews 2");
 define("LAN_NEWS_74", "Carousel");
 define("LAN_NEWS_75", "Featurebox");
 
-define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
+//define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
 define("LAN_NEWS_88", "Determines how the default news page should appear.");
 define("LAN_NEWS_89", "Notify these services when you create/update news items.");
 define("LAN_NEWS_90", "One per line.");

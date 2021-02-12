@@ -22,7 +22,7 @@
 	$retrieve_prefs[] = 'pm_prefs';
 	if(!defined('e107_INIT'))
 	{
-		require_once("../../class2.php");
+		require_once(__DIR__.'/../../class2.php');
 	}
 
 
@@ -95,11 +95,8 @@
 	$pm_prefs = e107::getPlugPref('pm');
 
 
-	$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
-	if($pm_prefs['perpage'] == 0)
-	{
-		$pm_prefs['perpage'] = 10;
-	}
+	$pm_prefs['perpage'] = (int) varset($pm_prefs['perpage'], 10);
+
 
 	if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	{
@@ -142,6 +139,7 @@
 		 */
 		function show_send($to_uid)
 		{
+		//	 trigger_error('Method ' . __METHOD__ . ' is deprecated. Use e107::serialize() instead.', E_USER_DEPRECATED);
 			$pm_info = array();
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 
@@ -951,5 +949,5 @@
 
 
 	require_once(FOOTERF);
-	exit;
-?>
+
+

@@ -1,0 +1,12 @@
+/config.yml
+/config.local.yml
+/tests/_output/*
+/tests/_support/_generated/*
+composer.phar
+/vendor/**/*
+
+error_log
+
+*.swp
+*.swo
+.idea

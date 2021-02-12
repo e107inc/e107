@@ -13,7 +13,7 @@
 
 if(!defined('e107_INIT'))
 {
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 
 // Now defined in shortcodes that handle the editors
@@ -41,6 +41,7 @@ if (!e107::isInstalled('forum'))
 //e107::lan('forum','English_front');
 e107::lan('forum', "front", true);
 e107::css('forum','forum.css');
+// e107::canonical('forum', 'post');
 
 
 
@@ -127,7 +128,7 @@ class forum_post_handler
 
 		if (!e_QUERY || empty($_GET['id']))
 		{
-			$url = e107::url('forum','index',null,'full');
+			$url = e107::url('forum','index',null,['mode'=>'full']);
 			$this->redirect($url);
 		//	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 			exit;
@@ -182,7 +183,7 @@ class forum_post_handler
 				break;
 
 			default:
-				$url = e107::url('forum','index',null,'full');
+				$url = e107::url('forum','index',null,['mode'=>'full']);
 				$this->redirect($url);
 			//	header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 				exit;
@@ -947,7 +948,7 @@ class forum_post_handler
 								<div class='alert alert-block alert-warning'>
 								<h4>".LAN_FORUM_2025.': '.$thread_name."</h4>
 									".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."
-								<a class='pull-right float-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
+								<a class='pull-right float-right float-end btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
 									".$tp->toHTML($this->data['post_entry'],true)."
@@ -1220,7 +1221,7 @@ class forum_post_handler
 				case 'nt':
 
 					$threadInfo['thread_sticky']    = (MODERATOR ? (int)$_POST['threadtype'] : 0);
-					$threadInfo['thread_name']      = $_POST['subject'];
+					$threadInfo['thread_name']      = e107::getParser()->toDB($_POST['subject']);
 					$threadInfo['thread_forum_id']  = $this->id;
 					$threadInfo['thread_active']    = 1;
 					$threadInfo['thread_datestamp'] = $time;
@@ -1247,8 +1248,6 @@ class forum_post_handler
 						$this->data['thread_id'] = $newThreadId;
 					//	$this->data['thread_sef'] = $postResult['threadsef'];
 						$this->data['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
-
-
 
 						if($_POST['email_notify'])
 						{
@@ -1638,7 +1637,7 @@ class forum_post_handler
 						$_thumb = '';
 						$_fname = '';
 						$fpath = '';
-						if(strstr($upload['type'], 'image'))
+						if(strpos($upload['type'], 'image') !== false)
 						{
 							$_type = 'img';
 
@@ -1712,11 +1711,11 @@ class forum_post_handler
 
 				return $ret;
 			}
-			else
-			{
+			//else
+		//	{
 				// e107::getMessage()->addError('There was a problem with the attachment.');
 				// e107::getMessage()->addDebug(print_a($_FILES['file_userfile'],true));
-			}
+		//	}
 		}
 		/* no file uploaded at all, proceed with creating the topic or reply
 		// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
@@ -1757,7 +1756,7 @@ class forum_post_handler
 require_once(HEADERF);
 new forum_post_handler;
 require_once(FOOTERF);
-exit;
 
 
-?>
+
+

@@ -34,4 +34,4 @@ define("WMLAN_11","Enclosed with Carousel");
 define("WMLAN_12","Welcome Message Help");
 define("WMLAN_13","This page allows you to set a message that will appear at the top of your front page all the time it's activated. You can set a different message for guests, registered/logged-in members and administrators.");
 
-?>
+

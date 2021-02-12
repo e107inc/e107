@@ -150,7 +150,7 @@ class news_sitelink // include plugin-folder in the name.
 					'link_order'		=> '',
 					'link_parent'		=> '',
 					'link_open'			=> '',
-					'link_class'		=> intval($row['news_class'])
+					'link_class'		=> 0
 				);
 
 
@@ -166,4 +166,3 @@ class news_sitelink // include plugin-folder in the name.
 
 
 
-?>

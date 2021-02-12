@@ -7,11 +7,11 @@ if (!defined('e107_INIT')) { exit; }
 // License GNU/GPL - Vincent Blavet - Janvier 2001
 // http://www.phpconcept.net & http://phpconcept.free.fr
 // --------------------------------------------------------------------------------
-// Français :
+// FranÃ§ais :
 //   La description de l'usage de la librairie PCL Trace 1.0 n'est pas encore
-//   disponible. Celle-ci n'est pour le moment distribuée qu'avec l'application
+//   disponible. Celle-ci n'est pour le moment distribuÃ©e qu'avec l'application
 //   et la librairie PhpZip.
-//   Une version indépendante sera bientot disponible sur http://www.phpconcept.net
+//   Une version indÃ©pendante sera bientot disponible sur http://www.phpconcept.net
 //
 // English :
 //   The PCL Trace 1.0 library description is not available yet. This library is
@@ -22,17 +22,17 @@ if (!defined('e107_INIT')) { exit; }
 //
 //   * Avertissement :
 //
-//   Cette librairie a été créée de façon non professionnelle.
-//   Son usage est au risque et péril de celui qui l'utilise, en aucun cas l'auteur
-//   de ce code ne pourra être tenu pour responsable des éventuels dégats qu'il pourrait
+//   Cette librairie a Ã©tÃ© crÃ©Ã©e de faÃ§on non professionnelle.
+//   Son usage est au risque et pÃ©ril de celui qui l'utilise, en aucun cas l'auteur
+//   de ce code ne pourra Ãªtre tenu pour responsable des Ã©ventuels dÃ©gats qu'il pourrait
 //   engendrer.
-//   Il est entendu cependant que l'auteur a réalisé ce code par plaisir et n'y a
-//   caché aucun virus, ni malveillance.
-//   Cette libairie est distribuée sous la license GNU/GPL (http://www.gnu.org)
+//   Il est entendu cependant que l'auteur a rÃ©alisÃ© ce code par plaisir et n'y a
+//   cachÃ© aucun virus, ni malveillance.
+//   Cette libairie est distribuÃ©e sous la license GNU/GPL (http://www.gnu.org)
 //
 //   * Auteur :
 //
-//   Ce code a été écrit par Vincent Blavet (vincent@blavet.net) sur son temps
+//   Ce code a Ã©tÃ© Ã©crit par Vincent Blavet (vincent@blavet.net) sur son temps
 //   de loisir.
 //
 // --------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ if (!defined("PCLTRACE_LIB"))
       $g_pcl_trace_name .= ",".$p_name;
 
     // ----- Update the function entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = $p_name;
     $g_pcl_trace_entries[$i][param] = $p_param;
     $g_pcl_trace_entries[$i][message] = "";
@@ -173,7 +173,7 @@ if (!defined("PCLTRACE_LIB"))
     // ----- Update the message entry
     if ($p_message != "")
     {
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -231,7 +231,7 @@ if (!defined("PCLTRACE_LIB"))
     // ----- Update the message entry
     if ($p_message != "")
     {
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -242,7 +242,7 @@ if (!defined("PCLTRACE_LIB"))
     }
 
     // ----- Update the function entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = $v_name;
     $g_pcl_trace_entries[$i][param] = $p_return;
     $g_pcl_trace_entries[$i][message] = "";
@@ -275,7 +275,7 @@ if (!defined("PCLTRACE_LIB"))
       return;
 
     // ----- Update the entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -308,7 +308,7 @@ if (!defined("PCLTRACE_LIB"))
       return;
 
     // ----- Update the entry
-    $i = sizeof($g_pcl_trace_entries);
+    $i = count($g_pcl_trace_entries);
     $g_pcl_trace_entries[$i][name] = "";
     $g_pcl_trace_entries[$i][param] = "";
     $g_pcl_trace_entries[$i][message] = $p_message;
@@ -360,7 +360,7 @@ if (!defined("PCLTRACE_LIB"))
 
     // ----- Display
     $v_again=0;
-    for ($i=0; $i<sizeof($g_pcl_trace_entries); $i++)
+    for ($i=0, $iMax = count($g_pcl_trace_entries); $i< $iMax; $i++)
     {
       // ---- Row header
       echo "<tr>";
@@ -453,4 +453,3 @@ if (!defined("PCLTRACE_LIB"))
 
 // ----- End of double include look
 }
-?>

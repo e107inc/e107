@@ -11,16 +11,16 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	function sc_sitebutton($parm=null)
 	{
 		
-		if($_POST['sitebutton'] && $_POST['ajax_used'])
+		if(!empty($_POST['sitebutton']) && !empty($_POST['ajax_used']))
 		{
 			$path = e107::getParser()->replaceConstants($_POST['sitebutton']);
 		}
 		else 
 		{
-			$path = (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+			$path = (strpos(SITEBUTTON, 'http:') !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}
 
-		if($parm['type'] == 'email' || $parm == 'email') // (retain {}  constants )
+		if(varset($parm['type']) == 'email' || $parm == 'email') // (retain {}  constants )
 		{
 			$h = !empty($parm['h']) ? $parm['h'] : 100;
 
@@ -33,7 +33,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 			$realPath = e107::getParser()->replaceConstants($path);
 
-			if(defined('e_MEDIA') && is_writeable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
+			if(defined('e_MEDIA') && is_writable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
 			{
 				$path = e107::getParser()->createConstants($resized);
 			}
@@ -51,7 +51,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	 */
 	function sc_sitedisclaimer()
 	{
-		$default = "Proudly powered by <a href='http://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
+		$default = "Proudly powered by <a href='https://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
@@ -167,7 +167,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
 			//
-			$dimensions[0] = $parm['w'];
+			$dimensions[0] = isset($parm['w']) ? $parm['w'] : 0;
 			$dimensions[1] = !empty($parm['h']) ? $parm['h'] : 0;
 
 			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.
@@ -213,11 +213,10 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return $image;
 	}
 
-	function sc_theme_disclaimer($parm)
+	function sc_theme_disclaimer($parm=null)
 	{
 		$pref = e107::getPref();
 		return (defined('THEME_DISCLAIMER') && $pref['displaythemeinfo'] ? THEME_DISCLAIMER : '');
 	}
 
 }
-?>

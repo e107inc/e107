@@ -108,13 +108,13 @@ class e_pref extends e_front_model
 	 * Simple getter - $pref_name is not parsed (no multidimensional arrays support), alias of {@link e_model::get()}
 	 * This is the prefered (performance wise) method when simple preference is retrieved
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function get($pref_name, $default = null)
+	public function get($key, $default = null)
 	{
-		return parent::get((string) $pref_name, $default);
+		return parent::get((string) $key, $default);
 	}
 
 	/**
@@ -202,20 +202,20 @@ class e_pref extends e_front_model
 	 * Simple setter - $pref_name is not parsed (no multidimensional arrays support)
 	 * Adding new pref is allowed
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set($pref_name, $value=null, $strict = false)
+	public function set($key, $value=null, $strict = false)
 	{
 		global $pref;
-		if(empty($pref_name) || !is_string($pref_name))
+		if(empty($key) || !is_string($key))
 		{
 			return $this;
 		}
 		
-		if(!isset($this->_data[$pref_name]) || $this->_data[$pref_name] != $value) $this->data_has_changed = true;
-		$this->_data[$pref_name] = $value;
+		if(!isset($this->_data[$key]) || $this->_data[$key] != $value) $this->data_has_changed = true;
+		$this->_data[$key] = $value;
 
 		//BC
 		if($this->alias === 'core')
@@ -302,14 +302,14 @@ class e_pref extends e_front_model
 	 * Remove single preference
 	 * $pref_name is not parsed as a path
 	 *
-	 * @see e_model::remove()
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @return e_pref
+	 *@see e_model::remove()
 	 */
-	public function remove($pref_name)
+	public function remove($key)
 	{
 		global $pref;
-		parent::remove((string) $pref_name);
+		parent::remove((string) $key);
 
 		//BC
 		if($this->alias === 'core')
@@ -337,15 +337,15 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::addData()
 	 * Disallow preference override
 	 *
-	 * @param string|array $pref_name
+	 * @param string|array $key (pref name or array)
 	 * @param mixed value
 	 * @param boolean $strict
 	 * @return $this|\e_model
 	 */
-	final public function addData($pref_name, $value = null, $override = true)
+	final public function addData($key, $value = null, $override = true)
 	{
 		global $pref;
-		parent::addData($pref_name, $value, false);
+		parent::addData($key, $value, false);
 		//BC
 		if($this->alias === 'core')
 		{
@@ -358,26 +358,26 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::setData()
 	 * Only data merge possible
 	 *
-	 * @param string|array $pref_name
+	 * @param string|array $key
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData($pref_name, $value = null, $strict = false)
+	final public function setData($key, $value = null, $strict = false)
 	{
 		global $pref;
-		if(empty($pref_name))
+		if(empty($key))
 		{
 			return $this;
 		}
 
 		//Merge only allowed
-		if(is_array($pref_name))
+		if(is_array($key))
 		{
-			$this->mergeData($pref_name, false, false, false);
+			$this->mergeData($key, false, false, false);
 			return $this;
 		}
 
-		parent::setData($pref_name, $value, false);
+		parent::setData($key, $value, false);
 
 		//BC
 		if($this->alias === 'core')
@@ -391,13 +391,13 @@ class e_pref extends e_front_model
 	 * Disallow public use of e_model::removeData()
 	 * Object data reseting is not allowed
 	 *
-	 * @param string $pref_name
+	 * @param string $key (pref name)
 	 * @return e_pref
 	 */
-	final public function removeData($pref_name=null)
+	final public function removeData($key=null)
 	{
 		global $pref;
-		parent::removeData((string) $pref_name);
+		parent::removeData((string) $key);
 
 		//BC
 		if($this->alias === 'core')
@@ -424,7 +424,7 @@ class e_pref extends e_front_model
 				$data = e107::getParser()->toDB($data);
 			}
 			parent::setData($data, null, false);
-			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
+			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			//BC
 			if($this->alias === 'core')
 			{
@@ -471,7 +471,7 @@ class e_pref extends e_front_model
 
 		if(!empty($data))
 		{
-			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
+			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			$this->loadData((array) $data, false);
 			return $this;
 		}
@@ -483,7 +483,7 @@ class e_pref extends e_front_model
 			if($this->serial_bc)
 			{
 				$data = unserialize($row['e107_value']);
-				$row['e107_value'] = e107::getArrayStorage()->WriteArray($data, false);
+				$row['e107_value'] = e107::getArrayStorage()->serialize($data, false);
 			}
 			else
 			{
@@ -539,7 +539,7 @@ class e_pref extends e_front_model
 			return 0;
 		}
 
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$disallow_logs = $this->getParam('nologs', false);
 
 		//Save to DB
@@ -577,15 +577,21 @@ class e_pref extends e_front_model
 					//	$log->logArrayDiffs($new, $old, 'PREFS_02', false);
 						$log->addArray($new,$old);
 						unset($new, $old);
+						if(deftrue('e_DEBUG_PREFS'))
+						{
+							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
+						}
 						
 					}
-					
+
 					// Backup 
 					if($this->set_backup === true && e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
+					//	trigger_error("Performing a pref backup", E_USER_NOTICE);
 						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
-						if(deftrue('e_DEBUG'))
+						if(deftrue('e_DEBUG_PREFS'))
 						{
 							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
 							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
@@ -608,7 +614,10 @@ class e_pref extends e_front_model
 				{
 					$logId = 'PREFS_01';	
 				}
-				
+
+				// FIXME: Admin LAN dependency out of nowhere
+				e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
+
 				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
 
 				$uid = USERID;
@@ -634,8 +643,8 @@ class e_pref extends e_front_model
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
 				if(!$disallow_logs)
-					$log->logError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
-					->logError('Settings not saved.', true, $session_messages)
+					$log->addError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
+					->addError('Settings not saved.', true, $session_messages)
 					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
 					
 				e107::getMessage()->moveStack($this->prefid);
@@ -648,10 +657,11 @@ class e_pref extends e_front_model
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			if(!$disallow_logs)
-				$log->logError('Settings not saved.', true, $session_messages)
+				$log->addError('Settings not saved.', true, $session_messages)
 				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 				
 			e107::getMessage()->moveStack($this->prefid);
+			trigger_error("Settings not saved", E_USER_NOTICE);
 			return false;
 		}
 		else
@@ -692,7 +702,7 @@ class e_pref extends e_front_model
 	{
 		if(is_array($cache_string))
 		{
-			$cache_string = e107::getArrayStorage()->WriteArray($cache_string, false);
+			$cache_string = e107::serialize($cache_string, false);
 		}
 		if(is_bool($save))
 		{
@@ -798,7 +808,7 @@ final class e_core_pref extends e_pref
 		'menu' 			=> 'menu_pref',
 		'search' 		=> 'search_prefs',
 		'notify' 		=> 'notify_prefs',
-		'history'		=> 'history_prefs'
+		'history'		=> 'history_prefs',
 	);
 
 	/**
@@ -1163,9 +1173,9 @@ class prefs
 
 		// Data not in cache - retrieve from DB
 		$get_sql = new db; // required so sql loops don't break using $tp->toHTML().
-		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default'))
+		if($get_sql->select('core', '*', "`e107_name` = '{$Name}'", 'default'))
 		{
-			$row = $get_sql->db_Fetch();
+			$row = $get_sql->fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
 		}
@@ -1222,17 +1232,18 @@ class prefs
 		}
 		$val = addslashes($val);
 
-		switch ($table ) {
+		switch ($table )
+		{
 			case 'core':
-			if(!$sql->db_Update($table, "e107_value='$val' WHERE e107_name='$name'"))
+			if(!$sql->update($table, "e107_value='$val' WHERE e107_name='$name'"))
 			{
-				$sql->db_Insert($table, "'{$name}', '{$val}'");
+				$sql->insert($table, "'{$name}', '{$val}'");
 			}
 			$this->prefVals[$table][$name] = $val;
 			unset($this->prefArrays[$table][$name]);
 			break;
 			case 'user':
-			$sql->db_Update($table, "user_prefs='$val' WHERE user_id=$uid");
+			$sql->update($table, "user_prefs='$val' WHERE user_id=$uid");
 			break;
 		}
 	}
@@ -1279,9 +1290,9 @@ class prefs
 				$$name[$key] = $tp->toDB($prefvalue);
 			}
 		}
-		$tmp = e107::getArrayStorage()->WriteArray($$name, FALSE);		// $this->set() adds slashes now
+		$tmp = e107::serialize($$name, FALSE);		// $this->set() adds slashes now
 	//	$tmp = serialize($$name);
 		$this->set($tmp, $name, $table, $uid);
 	}
 }
-?>
+

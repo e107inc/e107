@@ -9,7 +9,10 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Error");
+if(!defined('PAGE_NAME')) // FIXME.
+{
+	define("PAGE_NAME", "Error");
+}
 define("LAN_ERROR_TITLE", "Oops!");
 
 define("LAN_ERROR_1", "Error 401 - Authentication Failed");
@@ -68,4 +71,4 @@ define("LAN_ERROR_47", "Validation error: News title can't be empty!");
 define("LAN_ERROR_48", "Validation error: News SEF URL value is required field and can't be empty!");
 define("LAN_ERROR_49", "Validation error: News SEF URL is unique field - current value already in use! Please choose another SEF URL value.");
 define("LAN_ERROR_50", "Validation error: News category can't be empty!");
-?>
+

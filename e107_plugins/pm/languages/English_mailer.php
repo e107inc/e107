@@ -32,4 +32,4 @@ define("LAN_EC_PM_06", "Start bulk PM processing for [y] recipients ");
 define("LAN_EC_PM_07", "");
 
 
-?>
+

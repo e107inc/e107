@@ -119,4 +119,4 @@ define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 // Predefined list
 define("EXTLAN_HELP_9", "Specify a predefined list. The value field selects the type of list - at present only 'timezones' is a valid entry");
 
-?>
+

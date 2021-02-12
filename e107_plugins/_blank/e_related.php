@@ -43,14 +43,13 @@ class _blank_related // include plugin-folder in the name.
 			
 			return $items;
 	    }
-		elseif(ADMIN)
-		{
+	//	elseif(ADMIN)
+	//	{
 		//	return array(array('title'=>$query,'url'=>''));	
-		}
+	//	}
 	}
 	
 }
 
 
 
-?>

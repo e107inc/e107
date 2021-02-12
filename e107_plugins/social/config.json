@@ -1,0 +1,292 @@
+{
+  "name": "",
+  "css_prefix_text": "e-social-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "bf882b30900da12fca090d9796bc3030",
+      "css": "mail",
+      "code": 59424,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "ccc2329632396dc096bb638d4b46fb98",
+      "css": "mail-alt",
+      "code": 59425,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "acf41aa4018e58d49525665469e35665",
+      "css": "thumbs-up",
+      "code": 59423,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "895405dfac8a3b7b2f23b183c6608ee6",
+      "css": "export",
+      "code": 59428,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "a32d12927584e3c8a3dff23eb816d360",
+      "css": "foursquare",
+      "code": 59426,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "afdef1656447e2558662b393d6b4bb75",
+      "css": "share",
+      "code": 59427,
+      "src": "iconic"
+    },
+    {
+      "uid": "500cde26773d15aaac1bfaa2a33cc5a9",
+      "css": "spread",
+      "code": 59419,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "1e2035b7cbaeb3d902cf9849e456069d",
+      "css": "delicious",
+      "code": 59411,
+      "src": "zocial"
+    },
+    {
+      "uid": "c71d7db10ede1349b3a8ae0293b1dbf8",
+      "css": "flattr",
+      "code": 59420,
+      "src": "zocial"
+    },
+    {
+      "uid": "e566d3f1d24f22981f6552d5188e7265",
+      "css": "gplus",
+      "code": 59392,
+      "src": "zocial"
+    },
+    {
+      "uid": "76a8a77019900916d16bad3eb4ee432c",
+      "css": "stumbleupon",
+      "code": 59393,
+      "src": "zocial"
+    },
+    {
+      "uid": "799d6108751f684ac9d018983251a08f",
+      "css": "pinterest",
+      "code": 59394,
+      "src": "zocial"
+    },
+    {
+      "uid": "8625d6e45fba1219638069e21eedbce8",
+      "css": "digg",
+      "code": 59395,
+      "src": "zocial"
+    },
+    {
+      "uid": "b3a537446285bb3510bba57d20374818",
+      "css": "reddit",
+      "code": 59396,
+      "src": "zocial"
+    },
+    {
+      "uid": "2dd7e3046b63beb19616dce63c5782a6",
+      "css": "blogger",
+      "code": 59397,
+      "src": "zocial"
+    },
+    {
+      "uid": "003ba8187d6b00ec3e1ba75d00f1246a",
+      "css": "dribbble",
+      "code": 59398,
+      "src": "zocial"
+    },
+    {
+      "uid": "231eeeedfdda9dd5d03dc8d03060007d",
+      "css": "flickr",
+      "code": 59421,
+      "src": "zocial"
+    },
+    {
+      "uid": "6d6d0efe9717ec2962ef0a77c6210df9",
+      "css": "google",
+      "code": 59417,
+      "src": "zocial"
+    },
+    {
+      "uid": "5cf33e5f0b89834df4fb10609aec90d6",
+      "css": "instapaper",
+      "code": 59422,
+      "src": "zocial"
+    },
+    {
+      "uid": "cc4e62d1721c863fdc6944d2fd87521d",
+      "css": "linkedin",
+      "code": 59399,
+      "src": "zocial"
+    },
+    {
+      "uid": "2a3192d0f8fe0c7cf959168e68eb16d8",
+      "css": "rss",
+      "code": 59418,
+      "src": "zocial"
+    },
+    {
+      "uid": "1884ff7f89cc02840606d28f9bcf930a",
+      "css": "skype",
+      "code": 59400,
+      "src": "zocial"
+    },
+    {
+      "uid": "b1ec8e90c2c85cf0035849980a3789b3",
+      "css": "twitter",
+      "code": 59401,
+      "src": "zocial"
+    },
+    {
+      "uid": "57a4f84c40a0c44d47387105f162a427",
+      "css": "youtube",
+      "code": 59402,
+      "src": "zocial"
+    },
+    {
+      "uid": "e47352cd4c5e069288b29a2c9ab9d305",
+      "css": "vimeo",
+      "code": 59403,
+      "src": "zocial"
+    },
+    {
+      "uid": "aa86b5f7dd6d1087f35cbed951970cd1",
+      "css": "yahoo",
+      "code": 59404,
+      "src": "zocial"
+    },
+    {
+      "uid": "a58032f4aafd0eec54803075f5b320d4",
+      "css": "email",
+      "code": 59405,
+      "src": "zocial"
+    },
+    {
+      "uid": "d0ce443b8d7376716584f5f660a6bf72",
+      "css": "dropbox",
+      "code": 59406,
+      "src": "zocial"
+    },
+    {
+      "uid": "6f7586c6f99798c3c1de6123d1f6cfa9",
+      "css": "facebook",
+      "code": 59407,
+      "src": "zocial"
+    },
+    {
+      "uid": "90d3360c550556afb7e5d3ea58a34e43",
+      "css": "tumblr",
+      "code": 59409,
+      "src": "zocial"
+    },
+    {
+      "uid": "5d8165146a6d5f2784982aa955f963ce",
+      "css": "yelp",
+      "code": 59410,
+      "src": "zocial"
+    },
+    {
+      "uid": "fd1c420f4755e275d578d856d7b20c50",
+      "css": "acrobat",
+      "code": 59412,
+      "src": "zocial"
+    },
+    {
+      "uid": "a38dfae0ec2d11e1aff10800200c9a66",
+      "css": "blogger-rect",
+      "code": 59414,
+      "src": "brandico"
+    },
+    {
+      "uid": "e9e96618b0f44170930f9b179237c76e",
+      "css": "linkedin-rect",
+      "code": 59413,
+      "src": "brandico"
+    },
+    {
+      "uid": "dad4e7f8dc2e57c92cffc0231202d9a0",
+      "css": "instagram-1",
+      "code": 59415,
+      "src": "brandico"
+    },
+    {
+      "uid": "cc20f2a7fa05a475130c406740bbbd26",
+      "css": "instagram-filled",
+      "code": 59416,
+      "src": "brandico"
+    },
+    {
+      "uid": "a7632b6db17256019e34ec72fb236be0",
+      "css": "pocket",
+      "code": 59429,
+      "src": "zocial"
+    },
+    {
+      "uid": "0636c283a9822288a767609062bbf4a4",
+      "css": "wordpress",
+      "code": 59430,
+      "src": "zocial"
+    },
+    {
+      "uid": "c91522256a4c3972e9a2765b995b7252",
+      "css": "pinboard",
+      "code": 59431,
+      "src": "zocial"
+    },
+    {
+      "uid": "4c1ef492f1d2c39a2250ae457cee2a6e",
+      "css": "instagram",
+      "code": 59432,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "12db1f260b5b2ccd1aa4d8942cc7f6dd",
+      "css": "vk",
+      "code": 59433,
+      "src": "zocial"
+    },
+    {
+      "uid": "676cf66256441f09e4934ae6378b3e2d",
+      "css": "vine",
+      "code": 59434,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "3da502d7bf60ce54298aafe7b6dca55f",
+      "css": "meetup",
+      "code": 59435,
+      "src": "zocial"
+    },
+    {
+      "uid": "47a1f80457068fbeab69fdb83d7d0817",
+      "css": "youtube-play",
+      "code": 59436,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "2ec1790207a8ba67a7192c6af1eafec4",
+      "css": "steam",
+      "code": 61878,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "e70df9acbabaebfbbf9c1dbc3e52ab13",
+      "css": "twitch",
+      "code": 61928,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "0f6a2573a7b6df911ed199bb63717e27",
+      "css": "github-circled-1",
+      "code": 61595,
+      "src": "fontawesome"
+    }
+  ]
+}

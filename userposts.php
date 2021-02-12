@@ -52,8 +52,7 @@ if ($action == 'exit')
 
 if ($action == "comments")
 {
-		//$sql->db_Select("user", "user_name", "user_id=".$id);
-		//$row = $sql->db_Fetch();
+
 		if($id == e107::getUser()->getId())
 		{
 			$user_name = USERNAME;
@@ -70,11 +69,8 @@ if ($action == "comments")
 	$sql2 = e107::getDb('sql2');
 	if($user_name)
 	{
-	//	$ccaption = UP_LAN_1.$user_name;
 		$ccaption = str_replace('[x]', $user_name, UP_LAN_1);
-		/*$sql->db_Select("user", "user_comments", "user_id=".$id);
-		$row = $sql->db_Fetch();
-		$ctotal = $row['user_comments'];*/
+
 		$ctotal = e107::getSystemUser($id, false)->getValue('comments', 0); // user_* getter shorthand
 		$data = $cobj->getCommentData(10, $from, 'comment_author_id ='.$id);
 	}
@@ -283,6 +279,9 @@ else
 	exit;
 }
 
+
+
+
 require_once(FOOTERF);
 
 
@@ -314,4 +313,4 @@ function parse_userposts_comments_table($row, $template)
 	return e107::getParser()->simpleParse($template, $vars);
 }
 
-?>
+

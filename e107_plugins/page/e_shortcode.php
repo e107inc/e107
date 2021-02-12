@@ -125,8 +125,13 @@ class page_shortcodes extends e_shortcode
 		/**
 		 *  New in v2.x. eg. {CMENU=feature-1} Renders a menu called 'feature-1' as found in the e107_page table  See admin Pages/Menus . 
 		 */
-		function sc_cmenu($parm='')
+		function sc_cmenu($parm=null)
 		{
+			if(empty($parm))
+			{
+				return null;
+			}
+
 			return e107::getMenu()->renderMenu($parm,  false, false, true);									
 		}
 
@@ -140,6 +145,16 @@ class page_shortcodes extends e_shortcode
 		 */
 		function sc_chapter_menus($parm=null)
 		{
+			if(empty($parm['name']))
+			{
+				if(ADMIN)
+				{
+					return "<div class='alert alert-danger'>Missing 'name'. eg: {CHAPTER_MENUS: name=chapter-sef-url}</div>";
+				}
+
+				return null;
+			}
+
 			$tp = e107::getParser();
 
 			$text = '';
@@ -271,13 +286,21 @@ class page_shortcodes extends e_shortcode
 		 * @example {BOOK_CHAPTERS: name=book-sef-url&template=xxxxx&limit=3}
 		 * @return string
 		 */
-		function sc_book_chapters($parm)
+		function sc_book_chapters($parm=null)
 		{
+			if(empty($parm['name']))
+			{
+				if(ADMIN)
+				{
+					return "<div class='alert alert-danger'>Missing 'name'. eg: {BOOK_CHAPTER: name=book-sef-url}</div>";
+				}
+
+				return null;
+			}
+
 			$tp = e107::getParser();
 
 			$sef = $tp->filter($parm['name'],'str');
-
-
 
 			$tmplKey = varset($parm['template'],'panel');
 			$limit = (int) varset($parm['limit'], 3);

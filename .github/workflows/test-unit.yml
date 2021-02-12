@@ -1,0 +1,154 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  MYSQL_DATABASE: app
+  MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+  #CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  CC_TEST_REPORTER_ID: 8948074581c1ffe7f4e47995c65d7d303882310256edd73536723d7c92adb1e3
+
+jobs:
+  test-unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        interpreter:
+          - image: php:5.6
+          - image: php:7.0
+          - image: php:7.1
+          - image: php:7.2
+          - image: php:7.3
+          - image: php:7.4
+          - image: php:8.0
+        db:
+          - image: mysql:5.5
+          - image: mysql:5.6
+          - image: mysql:5.7
+          - image: bitnami/mysql:8.0
+          - image: mariadb:10.0
+          - image: mariadb:10.1
+          - image: mariadb:10.2
+          - image: mariadb:10.3
+          - image: mariadb:10.4
+          - image: mariadb:10.5
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.interpreter.image }}
+    services:
+      db:
+        image: ${{ matrix.db.image }}
+        env:
+          MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+          MYSQL_DATABASE: 'app'
+          MYSQL_AUTHENTICATION_PLUGIN: 'mysql_native_password'
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Enable Debian backports
+      run: |
+        grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
+        awk '$3 = $3"-backports"' >> /etc/apt/sources.list
+
+    - name: Update operating system software repository
+      run: apt-get update
+
+    - name: Install operating system dependencies
+      run: |
+        DEBIAN_RELEASE=$(
+          grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
+          awk '{print $3}'
+        )
+        apt-get -t "${DEBIAN_RELEASE}-backports" install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev
+
+    - name: Configure PHP gd extension with default bundle
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          docker-php-ext-configure gd --with-jpeg --with-webp
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
+        else
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-vpx-dir=/usr
+        fi
+
+    - name: Install necessary PHP extensions
+      run: |
+        docker-php-ext-install -j "$(nproc)" \
+        zip bz2 gd pdo_mysql mysqli
+
+    - name: PECL install xdebug
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.1.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.9.8
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.7.2
+        else
+          pecl install xdebug-2.5.5
+        fi
+        docker-php-ext-enable xdebug
+
+    - uses: actions/checkout@v2
+
+    - name: Install Composer
+      run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+    - name: Install test dependencies
+      run: composer update --prefer-dist --no-progress
+      working-directory: ./e107_tests/
+
+    - name: Download Git submodule dependencies
+      run: git submodule update --init --recursive --remote
+
+    - name: Install the CI test configuration file
+      run: cp ./e107_tests/lib/ci/config.ci.yml ./e107_tests/config.yml
+
+    - name: Download Code Climate test reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+      working-directory: ./e107_tests/vendor/bin/
+      continue-on-error: true
+
+    - name: Code Climate report before build
+      run: ./e107_tests/vendor/bin/cc-test-reporter before-build
+      continue-on-error: true
+
+    - name: Run unit tests
+      run: |
+        if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
+        then
+          php -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
+        else
+          echo "Warning: xdebug not available; skipping coverage..."
+          php ./vendor/bin/codecept run unit --steps --debug
+        fi
+      working-directory: ./e107_tests/
+
+    - name: Send code coverage report to Code Climate
+      run: |
+        ./e107_tests/vendor/bin/cc-test-reporter format-coverage \
+          --input-type clover \
+          --output ./e107_tests/tests/_output/coverage/codeclimate.json \
+          ./e107_tests/tests/_output/coverage.xml
+        ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
+          --input ./e107_tests/tests/_output/coverage/codeclimate.json
+      continue-on-error: true
+
+    - name: Upload test output
+      uses: actions/upload-artifact@v1
+      with:
+        name: tests_output
+        path: ./e107_tests/tests/_output/

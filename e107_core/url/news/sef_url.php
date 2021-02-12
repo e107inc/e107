@@ -140,7 +140,7 @@ class core_news_sef_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_NEWS, // Module name
 				'label' => LAN_EURL_NEWS_REWRITEX_LABEL, // Current profile name
 				'description' => LAN_EURL_NEWS_REWRITEX_DESCR, //
-				'examples'  => array('{SITEURL}news/1/news-title')
+				'examples'  => array('{SITEURL}news/view/1/news-category/news-title')
 			),
 			'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
@@ -172,9 +172,9 @@ class core_news_sef_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
+		if($sql->select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['news_id']);
 		}
 		else $request->setRequestParam('name', 0);
@@ -200,9 +200,9 @@ class core_news_sef_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$id = e107::getParser()->toDB($name);
-		if($sql->db_Select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
+		if($sql->select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['category_id']);
 		}
 		else $request->setRequestParam('name', 0);

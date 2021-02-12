@@ -24,7 +24,7 @@
 require_once('class2.php');
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-	if (vartrue(e107::getPref('comments_disabled')))
+	if (!empty(e107::getPref('comments_disabled')))
 	{
 		exit;
 	}
@@ -107,7 +107,8 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$pid 				= intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 		$row 				= array();
-		$clean_authorname 	= vartrue(filter_var($_POST['author_name'],FILTER_SANITIZE_STRING),USERNAME);
+		$authName           = filter_var($_POST['author_name'],FILTER_SANITIZE_STRING);
+		$clean_authorname 	= vartrue($authName,USERNAME);
 		$clean_comment 		= e107::getParser()->toText($_POST['comment']);
 		$clean_subject 		= e107::getParser()->filter($_POST['subject'],'str');
 		$clean_table        = e107::getParser()->filter($_POST['table'],'str');
@@ -145,7 +146,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 			 * Fix for issue e107inc/e107#3154 (Comments not refreshing on submission)
 			 * Missing 6th argument ($subject) caused an exception
 			 */
-			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width, $tp->toDB($clean_subject));
+			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment', (int) $_POST['itemid'], $width, $tp->toDB($clean_subject));
 			$ret['html'] .= "</li>\n<!-- end Appended -->\n";
 			
 			$ret['error'] = false;	
@@ -407,7 +408,7 @@ elseif ($action == 'comment')
 		switch ($table)
 		{
 			case 'news' :
-				if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
+				/*if(!empty($pref['trackbackEnabled']))
 				{
 					$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -419,14 +420,14 @@ elseif ($action == 'comment')
 					GROUP by n.news_id";
 				}
 				else
-				{
+				{*/
 					$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 					WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
 					AND n.news_id={$id}
 					AND n.news_allow_comments=0";
-				}
+			//	}
 
 				if (!$sql->gen($query))
 				{
@@ -541,16 +542,16 @@ else
 	e107::redirect();
 	exit;
 }
-
+/*
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'news')
 {
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".SITEURLBASE.e_PLUGIN_ABS."trackback/trackback.php?pid={$id}</span>";
-}
+}*/
 
 $field = ($field ? $field : ($id ? $id : ""));			// ID of associated source item
 $width = (isset($width) && $width ? $width : "");
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
-
+/*
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'news')
 {
 	if($sql->select("trackback", "*", "trackback_pid={$id}"))
@@ -596,7 +597,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 	{
 		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}
-}
+}*/
 
 
 //if (!strstr(e_QUERY, "poll"))

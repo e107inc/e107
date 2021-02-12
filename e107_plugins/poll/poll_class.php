@@ -47,7 +47,7 @@ class poll
 			foreach($_COOKIE as $cookie_name => $cookie_val)
 			{	// Collect poll cookies
 
-				if(substr($cookie_name,0,5) == 'poll_')
+				if(strpos($cookie_name,'poll_') === 0)
 				{
 					// e107::getDebug()->log("Poll: ".$cookie_name);
 					list($str, $int) = explode('_', $cookie_name, 2);
@@ -62,7 +62,7 @@ class poll
 		if (count($arr_polls_cookies) > 1) 
 		{	// Remove all except first (assumption: there is always only one active poll)
 			rsort($arr_polls_cookies);
-			for($i = 1; $i < count($arr_polls_cookies); $i++)
+			for($i = 1, $iMax = count($arr_polls_cookies); $i < $iMax; $i++)
 			{
 				cookie("poll_{$arr_polls_cookies[$i]}", "", (time() - 2592000));
 			}
@@ -175,7 +175,7 @@ class poll
 		else 
 		{
 			$votes = '';
-			for($a=1; $a<=count($_POST['poll_option']); $a++)
+			for($a=1, $aMax = count($_POST['poll_option']); $a<= $aMax; $a++)
 			{
 				$votes .= '0'.chr(1);
 			}
@@ -274,7 +274,6 @@ class poll
 		{
 			if ($_POST['votea'])
 			{
-//					$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $pollArray;
 				extract($row);
 				$poll_votes = varset($poll_votes);
@@ -517,7 +516,7 @@ class poll
 			case 'voted':
 			case 'results' :
 
-				if ($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
+				if ($pollArray['poll_result_type'] && strpos(e_SELF, "comment.php") === false)
 				{
 					$text = "<div style='text-align: center;'><br /><br />".LAN_THANK_YOU."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
 				}
@@ -604,7 +603,7 @@ class poll
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';	
 			
@@ -676,7 +675,7 @@ class poll
 					$opt = ($count==1) ? "poll_answer" : "";
 
 					$text .= "<div class='form-group' id='".$opt."'>
-								".$frm->text('poll_option[]', $_POST['poll_option'][($count-1)], '200', array('placeholder' => POLLAN_4, 'id' => $opt))."
+								".$frm->text('poll_option[]', varset($_POST['poll_option'][($count-1)]), '200', array('placeholder' => POLLAN_4, 'id' => $opt))."
 							  </div>";
 				}
 
@@ -1007,7 +1006,7 @@ class poll_shortcodes extends e_shortcode
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';
 
@@ -1095,4 +1094,4 @@ e107::js('inline', '
 		');*/
 
 
-?>
+

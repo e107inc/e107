@@ -69,7 +69,7 @@ class eCLI
 				if(preg_match("/^-([a-zA-Z0-9]+)/", $matches[0], $match))
 				{
 					$string = $match[1];
-					for($i=0; strlen($string) > $i; $i++)
+					for($i=0, $iMax = strlen($string); $iMax > $i; $i++)
 					{
 						$_ARG[$string[$i]] = true;
 					}

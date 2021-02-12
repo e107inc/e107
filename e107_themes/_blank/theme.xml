@@ -5,6 +5,10 @@
 	<description>Blank e107 Theme</description>
 	<category>generic</category>
 	<compliance xhtml="1.1" css="2.1" />
+	<libraries>
+		<library name="bootstrap" version="3" scope="all"/>
+		<library name="fontawesome" version="4"  scope="all"/>
+	</libraries>
     <plugins>
 		<plugin name='chatbox_menu' url='core' />
 	</plugins>
@@ -16,10 +20,6 @@
 		<word>empty</word>
 		<word>template</word>
 	</keywords>
-	<libraries>
-		<library name="bootstrap" version="3" scope="all"/>
-		<library name="fontawesome" scope="all"/>
-	</libraries>
 	<layouts>
 		<layout name='default' title='Default' default='true' />
 		<layout name='home' title='Home'>

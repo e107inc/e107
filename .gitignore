@@ -1,11 +1,21 @@
-# Ignore PhpStorm IDE files
+# Ignore IDE files
 .idea
 .project
+composer.phar
+
+# Ignore third-party files
+phpDocumentor.phar
+# Uncomment the following line for e107 v3. See ./e107_handlers/vendor/README.md for details.
+#e107_handlers/vendor/
+
+# Ignore user files
 .htaccess
+e107.htaccess
 e107_config.php
 e107_config_*.php
 e107_media/*
 e107_system/*
+e107InstallLog.log
 /.settings
 e107_core/override
 test/*
@@ -15,5 +25,3 @@ phpunit/
 # Ignore Vim swap files
 *.swp
 *.swo
-e107.htaccess
-e107InstallLog.log

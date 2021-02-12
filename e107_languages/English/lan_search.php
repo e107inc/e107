@@ -5,8 +5,10 @@
  * Language file - Search
  *
 */
-
-define("PAGE_NAME", "Search");
+if(!defined('PAGE_NAME')) // TODO fix me
+{
+	define("PAGE_NAME", "Search");
+}
 
 define("LAN_140", "Members");
 // define("LAN_180", "Search");

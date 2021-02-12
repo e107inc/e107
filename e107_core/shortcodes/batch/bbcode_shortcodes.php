@@ -43,10 +43,10 @@ class bbcode_shortcodes extends e_shortcode
 		); 
 		
 		
-		if(BOOTSTRAP)
+		if(defined('BOOTSTRAP') && BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
-				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="">';
 				$text .= LANHELP_55;
 				$text .= ' <span class="caret"></span></a>';
 				$text .= "<ul class='dropdown-menu'>\n";
@@ -296,7 +296,7 @@ class bbcode_shortcodes extends e_shortcode
 			$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 
 			$text = '<div class="btn-group">';
-			$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
+			$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
 		//	$text .= "<img src='".e_IMAGE_ABS."bbcode/fontsize.png' alt=''  />\n";
 			$text .= $this->button(e_IMAGE_ABS."bbcode/fontsize.png", 'text-height');
 			
@@ -351,7 +351,7 @@ class bbcode_shortcodes extends e_shortcode
 			if(deftrue('BOOTSTRAP'))
 			{
 				$text = '<div class="btn-group" >';
-				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
 				$text .= $this->button(e_IMAGE_ABS."bbcode/emotes.png","smile-o"); 
 			//	$text .= ' <span class="caret"></span>';
 				
@@ -388,7 +388,7 @@ class bbcode_shortcodes extends e_shortcode
 
 	function renderEmotes()
 	{
-		$emotes = e107::getParser()->getEmotes();
+		$emotes = e107::getEmote()->getList();
 		$pref = e107::getPref();
 		$text = "";
 		
@@ -519,12 +519,10 @@ class bbcode_shortcodes extends e_shortcode
 	
 			
 	
-	function sc_bb($parm)
+	function sc_bb($parm=null)
 	{
-		
-		
-		
-		if(method_exists($this,"bb_".$parm)) // start of the big cleanup. 
+
+		if(!empty($parm) && method_exists($this,"bb_".$parm)) // start of the big cleanup.
 		{
 			$meth = "bb_".$parm;
 	
@@ -548,9 +546,9 @@ class bbcode_shortcodes extends e_shortcode
 		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 	
-		$eplug_bb = $this->var['eplug_bb'] ? $this->var['eplug_bb'] : array();
+		$eplug_bb = isset($this->var['eplug_bb']) ? $this->var['eplug_bb'] : array();
 
-		$bbcode_func = ($this->var['trigger']) ? $this->var['trigger'] : "addtext";
+		$bbcode_func = isset($this->var['trigger']) ? $this->var['trigger'] : "addtext";
 		
 		
 		$bbcode_help  = ($bbcode_help) ? $bbcode_help : "help";
@@ -589,7 +587,7 @@ class bbcode_shortcodes extends e_shortcode
 	//	$bbcode['preimage'] 	= array("e-dialog",		"preimage_selector_".$rand, LANHELP_45.$imagedir_display,"preimage.png","PreImage_Select","preimage_selector_".$rand);
 	//	$bbcode['prefile'] 		= array("expandit",		"prefile_selector_".$rand, LANHELP_39,"prefile.png","PreFile_Select",'prefile_selector_'.$rand);
 
-		if(!isset($iconpath[$parm]))
+		if(!isset($iconpath[$parm]) && !empty($parm))
 		{
 			$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME_ABS."bbcode/" : e_IMAGE_ABS."bbcode/");
 			$iconpath[$parm] .= varset($bbcode[$parm][3]);
@@ -627,7 +625,7 @@ class bbcode_shortcodes extends e_shortcode
 			}
 		}
 		
-		if(!$iconpath[$parm]) return '';
+		if(empty($iconpath[$parm])) return '';
 
 		$pre = "\n";
 		$post = "\n";
@@ -672,7 +670,7 @@ class bbcode_shortcodes extends e_shortcode
 		return $text;
 	}
 
-	function sc_bb_help($parm)
+	function sc_bb_help($parm=null)
 	{
 		return ''; // Use tooltips instead. 
 		/*
@@ -691,7 +689,7 @@ class bbcode_shortcodes extends e_shortcode
 		return "<input id='{$bbcode_helptag}' class='helpbox {$bbcode_helpsize}' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
 	}
 
-	function sc_bb_preimagedir($parm)
+	function sc_bb_preimagedir($parm=null)
 	{
 
 	//	global $bbcode_imagedir;

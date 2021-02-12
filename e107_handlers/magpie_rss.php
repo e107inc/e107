@@ -120,8 +120,7 @@ class MagpieRSS {
         # setup handlers
         #
         xml_set_object( $this->parser, $this );
-        xml_set_element_handler($this->parser, 
-                'feed_start_element', 'feed_end_element' );
+        xml_set_element_handler($this->parser, 'feed_start_element', 'feed_end_element' );
                         
         xml_set_character_data_handler( $this->parser, 'feed_cdata' ); 
     
@@ -144,7 +143,7 @@ class MagpieRSS {
         $this->normalize();
     }
     
-    function feed_start_element($p, $element, &$attrs) {
+    function feed_start_element($p, $element, $attrs) {
         $el = $element = strtolower($element);
         $attrs = array_change_key_case($attrs, CASE_LOWER);
         
@@ -224,7 +223,7 @@ class MagpieRSS {
         elseif ($this->feed_type == ATOM and $this->incontent ) 
         {
             // if tags are inlined, then flatten
-            $attrs_str = join(' ', 
+            $attrs_str = implode(' ',
                     array_map('map_attrs', 
                     array_keys($attrs), 
                     array_values($attrs) ) );
@@ -265,7 +264,7 @@ class MagpieRSS {
             $this->append_content( $text );
         }
         else {
-            $current_el = join('_', array_reverse($this->stack));
+            $current_el = implode('_', array_reverse($this->stack));
             $this->append($current_el, $text);
         }
     }
@@ -382,7 +381,7 @@ class MagpieRSS {
         // if atom populate rss fields
         if ( $this->is_atom() ) {
             $this->channel['description'] = $this->channel['tagline'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['summary']) )
                     $item['description'] = $item['summary'];
@@ -402,7 +401,7 @@ class MagpieRSS {
         }
         elseif ( $this->is_rss() ) {
             $this->channel['tagline'] = $this->channel['description'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['description']))
                     $item['summary'] = $item['description'];
@@ -560,10 +559,10 @@ class MagpieRSS {
 
     function error ($errormsg, $lvl=E_USER_WARNING) {
         // append PHP's error message if track_errors enabled
-        if ( $php_errormsg ) { 
+     /*   if ( $php_errormsg ) {
             $errormsg .= " ({$php_errormsg})";
-        }
-        if ( MAGPIE_DEBUG ) {
+        }*/
+        if ( defined('MAGPIE_DEBUG') &&  MAGPIE_DEBUG) {
             trigger_error( $errormsg, $lvl);        
         }
         else {
@@ -627,4 +626,4 @@ function parse_w3cdtf ( $date_str ) {
     }
 }
 
-?>
+

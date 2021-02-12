@@ -7424,7 +7424,7 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #999999;
+  color: #666666;
   text-decoration: none;
 }
 a:hover,
@@ -14385,9 +14385,13 @@ ul.chats li.out .message {
 
 /**************** Custom *************************/
 html { height: auto !important; }
-body { margin-top: 51px;
-padding: 0 !important; }
-
+body { margin-top: 51px; padding: 0 !important; color: #666666 !important; }
+.panel-default .panel-body, .nav-panel-body a { color: rgb(192, 192, 192) }
+.nav-panel-body a:hover { color: #666666 }
+/*.admin-main-content a { color: rgb(220, 103, 103) !important; }*/
+/*.nav-tabs li.active a, a.btn { color: white !important }*/
+.dropdown-menu li a {   color: #333333; }
+.dropdown-menu li a:hover {   color: #111111; }
 .navbar-fixed-top { background-color: #1e1e1e; color: #ffffff; border:0; margin:0!important }
 .navbar-fixed-top a { color: #ffffff }
 
@@ -14413,7 +14417,7 @@ padding-right: 0;
 padding-left: 0; }
 
 .admin-left-panel .panel { background: none; border:0 }
-.admin-menu.panel  { background: none; border:0}
+.admin-ui-nav-menu.panel  { background: none; border:0}
 .admin-left-panel .panel-heading { padding-top:40px; }
 .admin-left-panel .panel-heading {  background: none; border:0; color: white}
 .admin-left-panel .panel-default .panel-heading { color:white; background:none; border-bottom: 1px solid #484848; padding-top: 28px; }
@@ -14450,7 +14454,7 @@ i.searchquery { margin-top: 10px; }
 
 }
 
-.admin-menu.panel .panel-title {
+.admin-ui-nav-menu.panel .panel-title {
     padding-top: 0;
       padding-bottom: 10px;
     margin-top: -10px;
@@ -14472,7 +14476,7 @@ margin-bottom: 15px;
 .dropdown-menu.oversized { width: 380px;  }
 .dropdown-menu.oversized li {  width: 190px; height:38px; float:left; display:inline-block; overflow:hidden; }
 
-
+.fa-2x { font-size:1.5em }
 
 
 @media only screen and (min-width : 768px) {

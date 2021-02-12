@@ -102,6 +102,7 @@ define("LAN_NEXT", "Next");
 define("LAN_PREVIOUS", "Previous");
 define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
+define("LAN_VERIFY", "Verify");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
 define("LAN_INCORRECT_PASSWORD", "Incorrect Password");
@@ -147,3 +148,5 @@ define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_CHOOSE_FILE", "Choose a file");
 
 define("LAN_REQUIRED", "Required");
+
+define("LAN_DEVELOPERMODE_CHECK", "[b]Developer mode is currently enabled. Use this mode only when developing![/b] [br]Please disable developer mode when using your website in live production. When developer mode is enabled, sensitive information may be shown to the public!");

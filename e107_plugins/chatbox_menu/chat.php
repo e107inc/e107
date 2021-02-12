@@ -9,7 +9,7 @@
  * e107 chatbox_menu Plugin
  *
 */
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if ( ! e107::isInstalled('chatbox_menu')) {
 	e107::redirect();
 	exit;
@@ -19,21 +19,26 @@ e107::lan('chatbox_menu', e_LANGUAGE);
 
 require_once(HEADERF);
 $mes = e107::getMessage();
-$sql->select('menus', "*", "menu_name='chatbox_menu'");
-$row = $sql->fetch();
+if($sql->select('menus', "*", "menu_name='chatbox_menu'"))
+{
+	$row = $sql->fetch();
 
-if ( ! check_class((int)$row['menu_class'])) {
-	$mes->addError(CHATBOX_L24);
-	$ns->tablerender(LAN_ERROR, $mes->render());
-	require_once(FOOTERF);
-	exit;
+	if(!check_class((int) $row['menu_class']))
+	{
+		$mes->addError(CHATBOX_L24);
+		$ns->tablerender(LAN_ERROR, $mes->render());
+		require_once(FOOTERF);
+		exit;
+	}
 }
 
 if ( ! isset($pref['cb_mod'])) {
 	$pref['cb_mod'] = e_UC_ADMIN;
 }
-
-define('CB_MOD', check_class($pref['cb_mod']));
+if(!defined('CB_MOD'))
+{
+	define('CB_MOD', check_class($pref['cb_mod']));
+}
 
 if ( ! empty($_POST['moderate']) && CB_MOD) {
 
@@ -87,22 +92,22 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 
 $fs = false;
 
-if (strstr(e_QUERY, "fs")) {
+if (strpos(e_QUERY, "fs") !== false) {
 	$cgtm = intval(str_replace(".fs", "", e_QUERY));
 	$fs = true;
 }
 // end search
 
-if (e_QUERY ? $from = intval(e_QUERY) : $from = 0) {
-	;
-}
+//if (e_QUERY ? $from = intval(e_QUERY) : $from = 0) {
+
+//}
 
 $chat_total = $sql->count('chatbox');
 
 $qry_where = (CB_MOD ? "1" : "cb_blocked=0");
 
 
-
+$from = 0;
 // when coming from search.php calculate page number
 if ($fs) {
 

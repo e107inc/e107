@@ -72,21 +72,22 @@ class user_class
 		$this->isAdmin = FALSE;
 
 		$this->fixed_classes = array(
-							e_UC_PUBLIC => UC_LAN_0,
-							e_UC_GUEST => UC_LAN_1,
-							e_UC_NOBODY => UC_LAN_2,
-							e_UC_MEMBER => UC_LAN_3,
-							e_UC_ADMIN => UC_LAN_5,
-							e_UC_MAINADMIN => UC_LAN_6,
-							e_UC_READONLY => UC_LAN_4,
-							e_UC_NEWUSER => UC_LAN_9,
-							e_UC_BOTS => UC_LAN_10
-							);
+				e_UC_PUBLIC    => UC_LAN_0,
+				e_UC_GUEST     => UC_LAN_1,
+				e_UC_NOBODY    => UC_LAN_2,
+				e_UC_MEMBER    => UC_LAN_3,
+				e_UC_ADMIN     => UC_LAN_5,
+				e_UC_MAINADMIN => UC_LAN_6,
+				e_UC_READONLY  => UC_LAN_4,
+				e_UC_NEWUSER   => UC_LAN_9,
+				e_UC_BOTS      => UC_LAN_10,
+		//		e_UC_MODS      => UC_LAN_7 // specific to Forum plugin
+		);
 							
 		
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER, 'mods' => e_UC_MODS,
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,/* 'mods' => e_UC_MODS,*/
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
 									
 		
@@ -469,7 +470,8 @@ class user_class
 		if(is_array($extra_js))
 		{
 			$options = $extra_js;
-			unset($extra_js);
+			$extra_js = '';
+
 		}
 
 		$class = "tbox form-control";
@@ -636,7 +638,7 @@ class user_class
 			{
 				// $c = (in_array($k,$curArray)) ?  " checked='checked'" : '';
 				$c = (in_array($k,$curArray)) ?  true : false;
-				if ($showdescription) $v .= ' ('.$this->uc_get_classdescription($k).')';
+				if ($showdescription) $v .= ' ('.$this->getDescription($k).')';
 				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
 				$name = $fieldname.'['.$k.']';
 				$ret[] = $frm->checkbox($name,$k,$c,$v);
@@ -664,7 +666,7 @@ class user_class
 		$ret = '';
 		$nest_level++;
 		$listIndex = abs($listnum);
-		$classSign = (substr($listnum, 0, 1) == '-') ? '-' : '+';
+		$classSign = (strpos($listnum, '-') === 0) ? '-' : '+';
 		//echo "Subtree: {$listnum}, {$nest_level}, {$current_value}, {$classSign}:{$listIndex}<br />";
 		if(isset($this->class_tree[$listIndex]['class_children']))
 		{
@@ -774,7 +776,7 @@ class user_class
 	public function select($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		if ($classIndex == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 		$tmp = explode(',',$current_value);
 		$sel = in_array($classnum, $tmp) ? " selected='selected'" : '';
@@ -811,7 +813,7 @@ class user_class
 		$frm = e107::getForm();
 		
 		$classIndex 		= abs($classnum);			// Handle negative class values
-		$classSign 			= (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign 			= (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -836,10 +838,20 @@ class user_class
 		}
 		
 		$checked = in_array($classnum, $tmp) ? true : false;
-		return "<div {$style}>".$frm->checkbox($treename.'[]',$classSign.$classIndex,$checked,array('label'=> $ucString))."</div>\n";
+
+		$pre = "<div {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.$frm->checkbox($treename.'[]',$classSign.$classIndex, $checked, array('label'=> $ucString)).$post;
 		
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
+	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
 	}
 
 
@@ -850,7 +862,7 @@ class user_class
 	public function checkbox_desc($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -879,7 +891,16 @@ class user_class
 
 		$id ="{$treename}_{$classSign}{$classnum}";
 
-		return "<div class='checkbox' {$style}>".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description))."</div>\n";
+		$pre = "<div class='checkbox' {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description)).$post;
 		
 	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
@@ -918,6 +939,7 @@ class user_class
 	 */
 	public function getName($id)
 	{
+		$id = (int) $id;
 		$cn = abs($id);
 		$ucString = 'Class:'.$id;			// Debugging aid - this should be overridden
 		
@@ -998,6 +1020,8 @@ class user_class
 	 */
 	public function uc_get_classname($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getName() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getName($id);
 	}
 
@@ -1012,6 +1036,8 @@ class user_class
 	 */
 	public function uc_get_classdescription($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getDescription($id) instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getDescription($id);
 	}
 
@@ -1134,6 +1160,8 @@ class user_class
 	 */
 	public function get_users_in_class($classes, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getUsersInClass() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getUsersInClass($classes, $fieldList, $includeAncestors, $orderBy);
 	}
 
@@ -1143,7 +1171,7 @@ class user_class
 	 *
 	 *  Could potentially be verrrrryyyy slow - has to scan the whole user database at present.
 	 *	@param string $$classes - comma separated list of classes
-	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
+	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry, prefix with 'ue.' to retrieve extended user fields.
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
 	 *	@return array indexed by user_id, each element is an array (database row) containing the requested fields
@@ -1203,14 +1231,18 @@ class user_class
 
 		$ret = array();
 
-		$query = "SELECT user_id,{$fields} FROM `#user` WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
+		$lj = strpos($fields,'ue.') !== false ? "LEFT JOIN `#user_extended` AS ue ON user_id = ue.user_extended_id " : "";
+
+		$query = "SELECT user_id,{$fields} FROM `#user` ".$lj." WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
 
 		if ($sql->gen($query))
 		{
 			while ($row = $sql->fetch())
 			{
+				$row['user_id'] = (int) $row['user_id'];
 				$ret[$row['user_id']] = $row;
 			}
+
 		}
 
 		return $ret;
@@ -1308,7 +1340,7 @@ function r_userclass_name($id)
 //  echo "Call r_userclass_name<br />";
 	global $e_userclass;
 	if (!is_object($e_userclass)) $e_userclass = new user_class;
-	return $e_userclass->uc_get_classname($id);
+	return $e_userclass->getName($id);
 }
 
 
@@ -1383,8 +1415,8 @@ class user_class_admin extends user_class
 		
 		$pref = e107::getPref();
 	
-		$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
-		$this->top_icon = "<i class='icon-user{$style}'></i> ";
+	//	$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
+		$this->top_icon = "<i class='fa fa-user'></i> ";
 	}
 
 
@@ -1746,7 +1778,7 @@ class user_class_admin extends user_class
 				$classrec['userclass_accum'] = implode(',',$temp);
 			}
 		}
-		if ($this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
+		if ($this->sql_r->insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
 		{
 			return FALSE;
 		}
@@ -1796,7 +1828,7 @@ class user_class_admin extends user_class
 				$spacer = ", ";
 			}
 		}
-		if ($this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
+		if ($this->sql_r->update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
 		{
 			return FALSE;
 		}
@@ -1868,7 +1900,7 @@ class user_class_admin extends user_class
 	{
 		if (self::queryCanDeleteClass($classID) === FALSE) return FALSE;
 
-		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
+		if ($this->sql_r->delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
 		$this->clearCache();
 		$this->readTree(TRUE);			// Re-read the class tree
 		return TRUE;
@@ -2021,12 +2053,12 @@ class user_class_admin extends user_class
 							'userclass_parent' => e_UC_NOBODY,
 							'userclass_visibility' => e_UC_MEMBER
 							),
-						array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
+					/*	array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
 							'userclass_description' => UCSLAN_78,
 							'userclass_editclass' => e_UC_MAINADMIN,
 							'userclass_parent' => e_UC_ADMINMOD,
 							'userclass_visibility' => e_UC_MEMBER
-							),
+							),*/
 						array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9,
 							'userclass_description' => UCSLAN_87,
 							'userclass_editclass' => e_UC_MAINADMIN,
@@ -2075,7 +2107,7 @@ class user_class_admin extends user_class
 			$xml .= "\t</item>\n";
 		}
 		$xml .= "</dbTable>\n";
-		return (file_put_contents(e_TEMP.'userclasses.xml', $xml) === FALSE) ? FALSE : TRUE;
+		return file_put_contents(e_TEMP . 'userclasses.xml', $xml) !== false;
 	}
 
 
@@ -2092,4 +2124,4 @@ class user_class_admin extends user_class
 
 
 
-?>
+

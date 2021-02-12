@@ -30,7 +30,7 @@ class faqs_setup
 			(3, 1, 'What is a plugin?', 'A plugin is an additional program that integrates with the e107 core system.\r\n\r\nActually plugins are enhancements to the existing system. Some other CMS systems call it extensions, components or modules.\r\n\r\nAlready some core plugins are included in the full install package of e107.\r\n\r\nYou can activate them using Admin > Plugin Manager, and click on Install for the ones you want. They will appear in your Admin Area for configuration.\r\n\r\nThere are all kinds of plugins: small and large, core plugins and third party plugins. There are plugins for all kinds of purposes. ', 0, 123123123, 1, 2);
 		";
 		
-		$status = ($sql->db_Select_gen($query)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$status = ($sql->gen($query)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add(LAN_DEFAULT_TABLE_DATA.": faqs", $status);
 
 		
@@ -39,7 +39,7 @@ class faqs_setup
 			(2, 'Misc', 'Other FAQs', 0, 0, 1, '', '', '');
 		";
 
-		$status = ($sql->db_Select_gen($query2)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$status = ($sql->gen($query2)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add(LAN_DEFAULT_TABLE_DATA.": faqs_info", $status);
 
 	}

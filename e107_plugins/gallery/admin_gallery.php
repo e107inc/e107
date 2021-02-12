@@ -12,7 +12,7 @@
 
 $eplug_admin = true;
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 if(!getperms("P") || !e107::isInstalled('gallery'))
 {
@@ -678,7 +678,7 @@ class gallery_cat_admin_form_ui extends e_admin_form_ui
 				break;
 
 			case 'write':
-				return $this->selectbox('gallery_category_parent', $controller->getDownloadCategoryTree(), $curVal);
+				return $this->select('gallery_category_parent', $controller->getDownloadCategoryTree(), $curVal);
 				break;
 
 			case 'filter':
@@ -709,4 +709,4 @@ new plugin_gallery_admin();
 require_once(e_ADMIN . "auth.php");
 e107::getAdminUI()->runPage(); //gallery/includes/admin.php is auto-loaded.
 require_once(e_ADMIN . "footer.php");
-exit;
+

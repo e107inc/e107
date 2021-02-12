@@ -8,13 +8,13 @@
 	 *
 	 */
 
-	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['start']   = "<ul class='media-list newforumposts-menu'>{SETIMAGE: w=48&h=48&crop=1}";
-	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['item']    = "<li class='media'>
-														<div class='media-left'>
-															<a href='{POST_URL}'>{POST_AUTHOR_AVATAR: shape=circle}</a>
+	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['start']   = "<ul class='media-list list-unstyled newforumposts-menu'>{SETIMAGE: w=48&h=48&crop=1}";
+	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['item']    = "<li class='media d-flex mt-3'>
+														<div class='media-left me-3'>
+															<a class='mr-3' href='{POST_URL}'>{POST_AUTHOR_AVATAR: shape=circle}</a>
 															</div>
 															<div class='media-body'>
-																<h4 class='media-heading'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR_NAME} {POST_DATESTAMP}</small>
+																<h4 class='mt-0 mb-0 media-heading'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR_NAME} {POST_DATESTAMP}</small>
 														</div></li>";
 	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['end']     = "</ul>";
 

@@ -68,6 +68,7 @@ function defset($str, $default='')
  */
 function varsettrue(&$val, $default='')
 {
+	trigger_error('<b>varsettrue() is deprecated.</b> Use vartrue() instead.', E_USER_DEPRECATED); // NO LAN
 	return vartrue($val, $default);
 }
 
@@ -94,6 +95,7 @@ function vartrue(&$val, $default='')
  */
 function defsettrue($str, $default='')
 {
+    trigger_error('<b>defsettrue() is deprecated.</b> Use deftrue() instead.', E_USER_DEPRECATED); // NO LAN
 	if (defined($str) && constant($str)) { return constant($str); }
 	return $default;
 }
@@ -113,34 +115,34 @@ function deftrue($str, $default='')
 
 function e107_include($fname)
 {
-	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include($fname) : @include($fname));
+	global $_E107;
+	$ret = (isset($_E107['debug']) || deftrue('e_DEBUG')) ? include($fname) : @include($fname);
 	return $ret;
 }
 
 function e107_include_once($fname)
 {
-	global $e107_debug, $_E107;
+	global $_E107;
 	if(is_readable($fname))
 	{
-		$ret = ($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? include_once($fname) : @include_once($fname);
+		$ret = (isset($_E107['debug']) || deftrue('e_DEBUG')) ? include_once($fname) : @include_once($fname);
 	}
 	return (isset($ret)) ? $ret : '';
 }
 
 function e107_require_once($fname)
 {
-	global $e107_debug, $_E107;
+	global $_E107;
 	
-	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require_once($fname) : @require_once($fname));
+	$ret = ((isset($_E107['debug']) || deftrue('e_DEBUG')) ? require_once($fname) : @require_once($fname));
 	
 	return $ret;
 }
 
 function e107_require($fname)
 {
-	global $e107_debug, $_E107;
-	$ret = (($e107_debug || isset($_E107['debug']) || deftrue('e_DEBUG')) ? require($fname) : @require($fname));
+	global $_E107;
+	$ret = ((isset($_E107['debug']) || deftrue('e_DEBUG')) ? require($fname) : @require($fname));
 	return $ret;
 }
 
@@ -152,10 +154,9 @@ function print_a($var, $return = FALSE)
 		echo '<pre>'.htmlspecialchars(print_r($var, TRUE), ENT_QUOTES, 'utf-8').'</pre>';
 		return TRUE;
 	}
-	else
-	{
-		return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
-	}
+
+	return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
+
 }
 
 function e_print($expr = null)
@@ -180,20 +181,19 @@ function e_dump($expr = null)
 
 /**
  * Strips slashes from a var if magic_quotes_gqc is enabled
- *
+ * @deprecated
  * @param mixed $data
  * @return mixed
  */
 function strip_if_magic($data)
 {
-	if (MAGIC_QUOTES_GPC == true)
+	if (MAGIC_QUOTES_GPC === true)
 	{
 		return array_stripslashes($data);
 	}
-	else
-	{
-		return $data;
-	}
+
+	return $data;
+
 }
 
 /**
@@ -205,7 +205,7 @@ function array_diff_recursive($array1, $array2)
 
 	foreach($array1 as $key => $val) 
 	{
-    	if(array_key_exists($key, $array2)) 
+    	if(is_array($array2) && array_key_exists($key, $array2))
     	{
       		if(is_array($val)) 
       		{
@@ -272,9 +272,8 @@ function echo_gzipped_page()
 
     if($encoding)
 	{
-        $contents = ob_get_contents();
-        ob_end_clean();
-        header('Content-Encoding: '.$encoding);
+        $contents = ob_get_clean();
+		header('Content-Encoding: '.$encoding);
         print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
         $size = strlen($contents);
         $contents = gzcompress($contents, 9);
@@ -282,12 +281,113 @@ function echo_gzipped_page()
         print($contents);
         exit();
     }
-	else
-	{
-        ob_end_flush();
-        exit();
-    }
+
+    ob_end_flush();
+    exit();
+
 }
+
+/**
+ * @deprecated but necessary. BC Fix.
+ * @return string
+ */
+function getip()
+{
+	trigger_error('<b>getip() is deprecated.</b> Use e107::getIPHandler()->ipDecode(USERIP) instead.', E_USER_DEPRECATED); // NO LAN
+
+	return e107::getIPHandler()->ipDecode(USERIP);
+}
+
+/**
+ * @deprecated - use e107::loadLanFiles();
+ * @param $unitName
+ * @param string $type
+ * @return bool|string
+ * Routine looks in standard paths for language files associated with a plugin or theme - primarily for core routines, which won't know
+ * for sure where the author has put them.
+ * $unitName is the name (directory path) of the plugin or theme
+ * $type determines what is to be loaded:
+ * 'runtime'	- the standard runtime language file for a plugin
+ * 'admin'		- the standard admin language file for a plugin
+ * 'theme'		- the standard language file for a plugin (these are usually pretty small, so one is enough)
+ * Otherwise, $type is treated as part of a filename within the plugin's language directory, prefixed with the current language
+ * Returns false on failure (not found).
+ * Returns the include_once error return if there is one
+ * Otherwise returns an empty string.
+ *
+ * Note - if the code knows precisely where the language file is located, use include_lan()
+ *
+ * $pref['noLanguageSubs'] can be set true to prevent searching for the English files if the files for the current site language don't exist.
+ */
+function loadLanFiles($unitName, $type='runtime')
+{
+	trigger_error('<b>loadLanFiles() is deprecated.</b> Use e107::loadLanFiles() instead.', E_USER_DEPRECATED); // NO LAN
+
+	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true));
+	return e107::loadLanFiles($unitName, $type);
+}
+
+
+/**
+ * @deprecated Use ini_set() directly.
+ * @param $var
+ * @param $value
+ * @return false|string
+ */
+function e107_ini_set($var, $value)
+{
+	trigger_error('<b>e107_ini_set() is deprecated.</b> Use ini_set() instead.', E_USER_DEPRECATED); // NO LAN
+
+	if (function_exists('ini_set'))
+	{
+		return ini_set($var, $value);
+	}
+
+	return false;
+}
+
+/**
+ * @deprecated - use e107::isInstalled();
+ * @param $plugname
+ * @return bool
+ */
+function plugInstalled($plugname)
+{
+	trigger_error('<b>plugInstalled() is deprecated.</b> Use <e107::isInstalled() instead.', E_USER_DEPRECATED); // NO LAN
+
+	return e107::isInstalled($plugname);
+	/*global $pref;
+	// Could add more checks here later if appropriate
+	return isset($pref['plug_installed'][$plugname]);*/
+}
+
+/*
+// -----------------------------------------------------------------------------
+function table_exists($check)
+{
+	if (!$GLOBALS['mySQLtablelist'])
+	{
+		$tablist=mysql_list_tables($GLOBALS['mySQLdefaultdb']);
+		while (list($temp) = mysql_fetch_array($tablist))
+		{
+			$GLOBALS['mySQLtablelist'][] = $temp;
+		}
+	}
+
+	$mltable=MPREFIX.strtolower($check);
+
+	foreach ($GLOBALS['mySQLtablelist'] as $lang)
+	{
+		if (strpos($lang, $mltable) !== false)
+		{
+			return true;
+		}
+	}
+}
+*/
+
+
 
 
 // Better Array-sort by key function by acecream (22-Apr-2003 11:02) http://php.net/manual/en/function.asort.php
@@ -301,6 +401,8 @@ if (!function_exists('asortbyindex'))
        }
        asort ($sort_values);
        reset ($sort_values);
+
+       $sorted_arr = array();
 
        foreach($sort_values as $arr_key =>$arr_val)
        {
@@ -318,25 +420,21 @@ if (!function_exists('r_emote'))
 	 */
 	function r_emote()
 	{
-		global $sysprefs, $pref;
-		$tp = e107::getParser();
-	
-		if (!is_object($tp->e_emote))
-		{
-		//	require_once(e_HANDLER.'emote_filter.php');
-			$tp->e_emote = new e_emoteFilter;
-		}
-		
+
+		$pack = e107::getPref('emotepack');
+
+		$list = e107::getEmote()->getList();
+
 		$str = '';
-		foreach($tp->e_emote->emotes as $key => $value)		// filename => text code
+		foreach($list as $key => $value)		// filename => text code
 		{
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
-			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+			$key = e_IMAGE_ABS."emotes/" . $pack . "/" .$key;		// Add in the file path
 	
 			$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
-			$value = ($value == '&|') ? ':((' : $value;
+			$value = ($value === '&|') ? ':((' : $value;
 			$value = " ".$value." ";
 
 		//	$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
@@ -388,12 +486,12 @@ if (!function_exists('multiarray_sort'))
 
         if(!$natsort) 
         {
-            ($order=='asc')? asort($sort_values) : arsort($sort_values);
+            ($order==='asc')? asort($sort_values) : arsort($sort_values);
         }
         elseif(isset($sort_values))
         {
              $case ? natsort($sort_values) : natcasesort($sort_values);
-             if($order != 'asc') $sort_values = array_reverse($sort_values, true);
+             if($order !== 'asc') $sort_values = array_reverse($sort_values, true);
         }
         
 
@@ -409,6 +507,7 @@ if (!function_exists('multiarray_sort'))
  			$key = is_numeric($arr_key) ? "" : $arr_key; // retain assoc-array keys. 
  			$sorted_arr[$key] = $array[$arr_key];
         }*/
+		$sorted_arr = array();
 
         foreach($sort_values as $arr_key=>$arr_val)
         {
@@ -435,21 +534,30 @@ class e_array {
         $ArrayData = $sourceArrayData;
 
 
-        if ($ArrayData == "")
+        if (empty($ArrayData))
         {
             return false;
         }
 
         if(is_array($ArrayData))
         {
-            return false;
+            return $ArrayData;
         }
         
-        // Saftety mechanism for 0.7 -> 0.8 transition. 
-        if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:') // php serialize.
+        // Saftety mechanism for 0.7 -> 0.8 transition.
+        $first2Chars = substr($ArrayData,0,2);
+        if($first2Chars === 'a:' || $first2Chars === 's:') // php serialize.
         {
-            $dat = unserialize($ArrayData);
-            $ArrayData = $this->WriteArray($dat,FALSE);
+            if(PHP_MAJOR_VERSION > 5)
+            {
+                 $dat = unserialize($ArrayData, ['allowed_classes' => false]);
+            }
+            else
+            {
+                $dat = unserialize($ArrayData);
+            }
+
+            $ArrayData = $this->serialize($dat,FALSE);
         }
 		elseif(strpos($ArrayData,'{') === 0 || strpos($ArrayData,'[') === 0) // json
 	    {
@@ -457,12 +565,17 @@ class e_array {
 
 	     //   e107::getDebug()->log("Json data found");
 
-	        if(json_last_error() !=  JSON_ERROR_NONE && (e_DEBUG === true))
+	        if(deftrue('e_DEBUG') && json_last_error() !=  JSON_ERROR_NONE && !e107::isCli())
 	        {
-	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
-		        echo "<pre>";
-				debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-				echo "</pre>";
+	            e107::getDebug()->log("e107::unserialize() Parser Error (json)");
+
+				$dbg = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 9);
+
+				$fileName = e_LOG.'unserializeError_'.time().'.log';
+
+	            file_put_contents($fileName, "input:". $sourceArrayData."\nbacktrace:\n".print_r($dbg,true));
+
+				return null;
 	        }
 
 	        return $dat;
@@ -477,12 +590,12 @@ class e_array {
 			$ArrayData = (string) substr($ArrayData,8);
 		}
 
-        if(strtolower(substr($ArrayData,0,5)) != 'array')
+        if(stripos($ArrayData, 'array') !== 0)
         {
             return false;
         }
 
-		if(strpos($ArrayData,"0 => \'")!=false)
+		if(strpos($ArrayData,"0 => \'")!==false)
 		{
              $ArrayData = stripslashes($ArrayData);
 		}
@@ -494,7 +607,7 @@ class e_array {
 	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
 
 
-	    if(trim($ArrayData) == 'Array') // Something went wrong with storage.
+	    if(trim($ArrayData) === 'Array') // Something went wrong with storage.
         {
             $debug = debug_backtrace(false);
             e107::getMessage()->addDebug("Bad Array Storage found: ". print_a($debug,true));
@@ -539,14 +652,13 @@ class e_array {
 			@eval($ArrayData);
 	        if (!isset($data) || !is_array($data))
 	        {
-	            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
-
 	            if(e_DEBUG === true)
 				{
 	                file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
 				}
 
-	            return false;
+	            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
+
 	        }
 
 		}
@@ -572,12 +684,21 @@ class e_array {
 
         if($mode === 'json')
         {
-            return json_encode($ArrayData, JSON_PRETTY_PRINT);
+            //todo discuss - move to e_parse::toJSON() ?
+            $encoded =  json_encode($ArrayData, JSON_PRETTY_PRINT);
+            if(json_last_error() === JSON_ERROR_UTF8)
+            {
+                $ArrayData = e107::getParser()->toUTF8($ArrayData);
+                $encoded = json_encode($ArrayData, JSON_PRETTY_PRINT);
+                //todo log
+            }
+
+            return $encoded;
         }
 
         $Array = var_export($ArrayData, true);
 
-        if ($mode == true)
+        if ($mode === true)
         {
             $Array = addslashes($Array);
         }
@@ -586,26 +707,28 @@ class e_array {
     }
 
 
+
+
     /**
-     * @DEPRECATED - Backwards Compatible. Use e107::serialize() instead; 
+     * @deprecated - Backwards Compatible. Use e107::serialize() instead;
     * @param array $ArrayData array to be stored
     * @param bool $AddSlashes default true, add slashes for db storage, else false
     * @return string a string containg exported array data.
      */
-    function WriteArray($ArrayData, $AddSlashes = true) {
-        
+    function WriteArray($ArrayData, $AddSlashes = true)
+    {
+        trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::serialize() instead.', E_USER_DEPRECATED); // no LAN
         return  $this->serialize($ArrayData, $AddSlashes);   
 
     }
 	
-	function write($ArrayData, $AddSlashes = true) {
-        
-        return  $this->serialize($ArrayData, $AddSlashes);   
-
+	function write($ArrayData, $AddSlashes = true)
+	{
+        return  $this->serialize($ArrayData, $AddSlashes);
     }
 
     /**
-    * @DEPRECATED: Use e107::unserialize(); instead. 
+    * @deprecated: Use e107::unserialize(); instead.
     * Returns an array from stored array data.
     * @deprecated
     * @param string $ArrayData
@@ -613,6 +736,7 @@ class e_array {
     */
     function ReadArray($ArrayData) 
     {
+        trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::unserialize() instead.', E_USER_DEPRECATED); // NO LAN
         return $this->unserialize($ArrayData);
     }
 	
@@ -628,7 +752,7 @@ class e_array {
 	 * 
 	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
 	 * @param string $extension [optional] file extension, default is 'php'
-	 * @return array or false when file not found (or on error)
+	 * @return array|false false when file not found (or on error)
 	 */
 	public function load($systemLocationFile, $extension = 'php')
 	{
@@ -642,16 +766,17 @@ class e_array {
 
 		return $this->read($content);
 	}
-	
-	/**
-	 * Serialize and store data to a local file inside SYSTEM folder
-	 * @example e107::getArrayStorage()->store($arrayData, 'import/somefile'); // -> e_SYSTEM/import/somefile.php
-	 * @example e107::getArrayStorage()->store($arrayData, 'somefile', 'weird'); // -> e_SYSTEM/somefile.weird
-	 * 
-	 * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
-	 * @param string $extension [optional] file extension, default is 'php'
-	 * @return array or false when file not found (or on error)
-	 */
+
+    /**
+     * Serialize and store data to a local file inside SYSTEM folder
+     * @example e107::getArrayStorage()->store($arrayData, 'import/somefile'); // -> e_SYSTEM/import/somefile.php
+     * @example e107::getArrayStorage()->store($arrayData, 'somefile', 'weird'); // -> e_SYSTEM/somefile.weird
+     *
+     * @param array $array
+     * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
+     * @param string $extension [optional] file extension, default is 'php'
+     * @return array|false when file not found (or on error)
+     */
 	public function store($array, $systemLocationFile, $extension = 'php')
 	{
 		if($extension) $extension = '.'.$extension;

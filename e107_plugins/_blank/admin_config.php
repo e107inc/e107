@@ -10,7 +10,7 @@
  *
 */
 
-require_once("../../class2.php");
+require_once(__DIR__."/../../class2.php");
 if (!getperms("P"))
 {
 	e107::redirect('admin');
@@ -91,19 +91,21 @@ class plugin_blank_admin_ui extends e_admin_ui
 		 * Example: 'r.blank'
 		 * @var string
 		 */
-		protected $table = "_blank";
+		protected $table = "blank"; // must match _blank_sql.php
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
-		 * Write your list query without any Order or Limit.
+		 * Write your list query without any Group, Order or Limit.
 		 *
 		 * @var string [optional]
 		 */
 		protected $listQry = "";
-		//
 
-		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
-		//protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
+		protected $listOrder        = 'blank_id DESC';
+
+	//  protected $listGroup        = 'somefield';  // (optional: when needing control over JOINs)
+
+	//  protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
 
 		// required - if no custom model is set in init() (primary id)
 		protected $pid = "blank_id";
@@ -112,6 +114,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $perPage = 20;
 
 		protected $batchDelete = true;
+		
 
 	//	protected \$sortField		= 'somefield_order';
 
@@ -252,10 +255,12 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-         	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
-			'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
-			'blank_url' 				=> array('title'=> LAN_URL,		'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),
+         	'blank_authorURL' 			=> array('title'=> LAN_URL, 			'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => array('type' => 'datetime')),
+			'blank_compatibility' 		=> array('title'=> 'Compatible',		'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
+			'blank_url' 				=> array('title'=> LAN_FILE,		        'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, enter valid URL'),
+			'blank_media' 				=> array('title'=> "Media",		        'type' => 'media', 		'data' => 'json',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'writeParms'=>array(/*'w'=>200, 'h'=>150,*/ 'image'=>1, 'video'=>1, 'youtube'=>1, 'audio'=>1, 'glyph'=>1),  'validate' => false),
+
 			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => false,		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'blank_class'               => array('title'=> LAN_VISIBILITY,      'type' => 'userclass',  'data'=>'int', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'width'=>'auto'),
 
@@ -297,6 +302,16 @@ class plugin_blank_admin_ui extends e_admin_ui
 			$text = "Hello World!";
 			$ns->tablerender("Hello",$text);	
 			
+		}
+	
+		// left-panel help menu area. (replaces e_help.php used in old plugins)	
+		public function renderHelp()
+		{
+			 $caption = LAN_HELP;
+			 $text = 'Some help text';
+
+			return array('caption'=> $caption,'text'=> $text);
+
 		}
 
 		public function beforePrefsSave($new_data, $old_data)

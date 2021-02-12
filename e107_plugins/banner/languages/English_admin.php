@@ -7,7 +7,6 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
- 
 
 define("BNRLAN_00", "No banners created yet."); // 15
 define("BNRLAN_01", "Banner ID not found.");
@@ -71,7 +70,6 @@ define("BNRLAN_48", "All selected campaigns (no box rendering)");
 define("BNRLAN_50", "Local");
 define("BNRLAN_51", "Remote");
 
-define("BNRLAN_HELP_01", "Banner Help");
-define("BNRLAN_HELP_02", "Use this plugin to manage advertising on your website.<br /><br />When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. <br /><br />You can enable the banner menu using the menu manager and perform further configuration from there.");
+//define("BNRLAN_HELP_01", "Banner Help"); LAN_HELP
 
-?>
+define("BNRLAN_HELP_02", "Use this plugin to manage advertising on your website.[br][br]When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. [br][br]You can enable the banner menu using the menu manager and perform further configuration from there.");

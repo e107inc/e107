@@ -18,7 +18,7 @@
 
 		function __construct()
 		{
-			$this->gen = new convert; // TODO replace all usage with e107::getParser()->toDate();
+			$this->gen = e107::getDate(); // TODO replace all usage with e107::getParser()->toDate();
 //		$this->forum_rules = forum_rules('check');
 		}
 
@@ -71,8 +71,9 @@
 
 		function sc_newthreadbuttonx()
 		{
+			$bootstrap = defined('BOOTSTRAP') ? BOOTSTRAP : false;
 
-			if(!BOOTSTRAP)
+			if(!$bootstrap)
 			{
 				return $this->sc_newthreadbutton();
 			}
@@ -84,33 +85,42 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-			$text = '<div class="btn-group">';
+			$text = '<div class="btn-group mb-2">';
 /*
 			$text .=
 			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
-		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 		    	'.($this->var['ntUrl'] ? '' : LAN_FORUM_1001." ".LAN_FORUM_8013).'<span class="caret"></span>
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
 		    	<ul class="dropdown-menu pull-right">
 		    	';
 */
+			$href = "#";
+			$disabled = " disabled";
+			$restricted_to_members_only = " data-toggle='tooltip' data-bs-toggle='tooltip' title='".LAN_FORUM_0006."'
+			style='cursor: not-allowed; pointer-events: all !important;'";
+			$extra_space = "<span>&nbsp;</span>";
+			if ($this->var['ntUrl'])
+			{
+				$href = $this->var['ntUrl'];
+				$disabled = "";
+				$restricted_to_members_only = "";
+				$extra_space = "";
+			}
+
 			$text .=
-			'<a href="'.($this->var['ntUrl'] ?:"#").
-			'" class="btn btn-primary'.($this->var['ntUrl'] ?"":" disabled").'"'
-			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='".LAN_FORUM_0006."'
-			style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>
-			'.($this->var['ntUrl'] ?"":"<span>&nbsp;</span>").'
-			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+			'<a href="'.$href.'" class="btn btn-primary'.$disabled.'"'.$restricted_to_members_only.'>'.LAN_FORUM_1018.'</a>'.$extra_space.'
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 			';
-			if(BOOTSTRAP !== 4)
+			if($bootstrap !== 4)
 			{
 		    	$text .= '<span class="caret"></span>';
 		    }
 		    $text .= '
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
-		    	<ul class="dropdown-menu pull-right float-right">
+		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
 		    	';
 			
 			//--	foreach($jumpList as $key => $val)
@@ -889,7 +899,7 @@
 		 */
 		function sc_threadname($parm=null)
 		{
-			global $menu_pref, $forum;
+			global $forum;
 			$tp = e107::getParser();
 
 			$thread_name = strip_tags($tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off'));
@@ -909,6 +919,7 @@
 				$tip_length = $forum->prefs->get('tiplength', 400);
 				if(strlen($thread_thread) > $tip_length)
 				{
+					$menu_pref = e107::getConfig('menu')->getPref();
 					//$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
 					$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);    // Doesn't split entities
 				}
@@ -971,7 +982,7 @@
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			$ret = fpages($this->var, $this->var['thread_total_replies']);
+			$ret = $this->fpages($this->var, $this->var['thread_total_replies']);
 
 			if(!empty($ret))
 			{
@@ -981,6 +992,87 @@
 			return null;
 		}
 
+	function fpages($thread_info, $replies)
+	{
+
+		global $forum;
+		$tp = e107::getParser();
+
+		$replies = (int) $replies;
+		$postsPerPage = (int) $forum->prefs->get('postspage');
+
+		// Add 1 for the first post in the topic (which technically is not a reply), to make it consistent with the nextprev in the forum_viewtopic page
+		$replies = $replies + 1;
+
+		$pages = ceil(($replies) / $postsPerPage);
+
+		$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'], 'dashl');
+		$urlparms = $thread_info;
+		$text = '';
+
+		if($pages > 1)
+		{
+			if($pages > 6)
+			{
+				for($a = 0; $a <= 2; $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+				$text .= ' ... ';
+				for($a = $pages - 3; $a <= $pages - 1; $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+			}
+			else
+			{
+
+				for($a = 0; $a <= ($pages - 1); $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+			}
+
+			if(deftrue('BOOTSTRAP'))
+			{
+				$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
+						<li>";
+
+				$text .= implode("</li><li>", $opts); // ."</div>";
+				$text .= "</li></ul>";
+			}
+			else
+			{
+				$text = implode(" ", $opts); // ."</div>";
+			}
+
+		}
+		else
+		{
+			$text = '';
+		}
+
+		return $text;
+	}
 
 		function sc_pagesx()
 		{
@@ -1023,13 +1115,78 @@
 			}
 			else if (MODERATOR)
 			{
-				return fadminoptions($this->var);
+				return $this->fadminoptions($this->var);
 			}
 			else
 			{
 				return '';
 			}
 		}
+
+	function fadminoptions($thread_info)
+	{
+
+//-- $tVars here???
+//----	$tVars = new e_vars;
+		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+
+//	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
+		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu pull-right dropdown-menu-end float-right">	
+   ';
+
+		//FIXME - not fully working.
+
+		$moveUrl = e107::url('forum', 'move', $thread_info);
+// What's the use of $splitUrl?????
+		$splitUrl = e107::url('forum', 'split', $thread_info);
+
+		$lockUnlock = ($thread_info['thread_active']) ? 'lock' : 'unlock';
+		$stickUnstick = ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
+		$id = intval($thread_info['thread_id']);
+
+		$lan = array('stick' => LAN_FORUM_8007, 'unstick' => LAN_FORUM_8008, 'lock' => LAN_FORUM_8009, 'unlock' => LAN_FORUM_8010);
+		$icon = array(
+			'unstick' => $tp->toGlyph('fa-chevron-down'),
+			'stick'   => $tp->toGlyph('fa-chevron-up'),
+			'lock'    => $tp->toGlyph('fa-lock'),
+			'unlock'  => $tp->toGlyph('fa-unlock'),
+		);
+
+
+		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='delete' data-confirm='".LAN_JSCONFIRM."' data-forum-thread='" . $id . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $stickUnstick . "' data-forum-thread='" . $id . "'>" . $lan[$stickUnstick] . " " . $icon[$stickUnstick] . "</a></li>";
+		$text .= "<li class='text-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $lockUnlock . "' data-forum-thread='" . $id . "'>" . $lan[$lockUnlock] . " " . $icon[$lockUnlock] . "</a></li>";
+
+		$text .= "<li class='text-right'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
+
+		//if(e_DEVELOPER)
+	//	{
+//		$text .= "<li class='text-right'><a href='{$splitUrl}'>Split ".$tp->toGlyph('scissors')."</i></a></li>";
+//		print_a($thread_info);
+	//	}
+
+		/*
+			$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
+
+			$text .= "<li>".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> Unstick" : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> Stick")."
+				</li>";
+
+			$text .= "<li>".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> Lock" : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> Unlock"). "
+				</li>";
+
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/move', "id={$thread_info['thread_id']}")."'>Move</a></li>";
+		*/
+
+		$text .= "</ul></div>";
+
+//	$text .= "</form>";
+		return $text;
+	}
+
 
 
 		function sc_poster()
@@ -1104,4 +1261,4 @@
 	}
 
 
-?>
+

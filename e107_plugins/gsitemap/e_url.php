@@ -10,7 +10,7 @@
  *
  * 	if (!defined('e107_INIT'))
  * 	{
- * 		require_once("../../class2.php");
+ * 		require_once(__DIR__.'/../../class2.php');
  * 	}
  *
  */
@@ -31,6 +31,14 @@ class gsitemap_url // plugin-folder + '_url'
 			'regex'			=> '^{alias}/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> '{alias}', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_BASE}gsitemap.php?show=1', 		// file-path of what to load when the regex returns true.
+
+		);
+
+		$config['xml'] = array(
+			'alias'         => 'sitemap',
+			'regex'			=> '^sitemap\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'sef'			=> 'sitemap.xml', 							// used by e107::url(); to create a url from the db table.
+			'redirect'		=> '{e_BASE}gsitemap.php', 		// file-path of what to load when the regex returns true.
 
 		);
 

@@ -78,7 +78,7 @@ class page_search extends e_search // include plugin-folder in the name.
 			'return_fields'	=> array('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_text', 'p.page_chapter', 'p.page_datestamp', 'p.menu_image'), 
 			'search_fields'	=> array('p.page_title' => '1.2', 'p.page_text' => '0.6', 'p.page_metakeys'=> '1.0', 'p.page_fields' => '0.5'), // fields and their weights.
 	
-			'order'			=> array('page_datestamp' => DESC),
+			'order'			=> array('page_datestamp' => 'DESC'),
 			'refpage'		=> 'page.php'
 		);
 		

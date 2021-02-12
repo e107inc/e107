@@ -10,7 +10,7 @@
 
 if(!defined('e107_INIT'))
 {
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 
 if (!e107::isInstalled('forum'))
@@ -66,7 +66,7 @@ class forumStats
 		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
 		$fp = $sql->fetch();
 
-		$open_ds = $fp['post_datestamp'];
+		$open_ds = (int) varset($fp['post_datestamp']);
 		$open_date = $gen->convert_date($open_ds, 'long');
 		$open_since = $gen -> computeLapse($open_ds);
 		$open_days = floor((time()-$open_ds) / 86400);
@@ -77,6 +77,8 @@ class forumStats
 		$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
 		$sql->gen($query);
 		$array = $sql -> db_getList();
+		$db_size = 0;
+		$avg_row_len = 0;
 		foreach($array as $table)
 		{
 			if($table['Name'] == MPREFIX.'forum_post')
@@ -108,7 +110,7 @@ class forumStats
 		$sql->gen($query);
 		$most_viewedArray = $sql->db_getList();
 
-			/*$sql->db_Select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
+			/*$sql->select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
 			$posters = $sql -> db_getList();
 			$top_posters = array();
 			foreach($posters as $poster)
@@ -153,6 +155,7 @@ class forumStats
 		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
 
 		$top_repliers = array();
+		$top_repliers_sort = array();
 		foreach($top_repliers_data as $uid => $poster)
 		{
 			$poster['post_count'] = $poster['post_count'] - $top_repliers_data_c[$uid]['thread_count'];
@@ -199,7 +202,7 @@ class forumStats
 			GROUP BY t_user
 			ORDER BY ucount DESC
 			LIMIT 0,10";
-			$sql -> db_Select_gen($query);
+			$sql -> gen($query);
 			$posters = $sql -> db_getList();
 			$top_topic_starters = array();
 			foreach($posters as $poster)
@@ -216,7 +219,7 @@ class forumStats
 			GROUP BY t_user
 			ORDER BY ucount DESC
 			LIMIT 0,10";
-			$sql -> db_Select_gen($query);
+			$sql -> gen($query);
 			$posters = $sql -> db_getList();
 
 			$top_repliers = array();
@@ -516,7 +519,6 @@ class forumStats
 			ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$this->from}, {$this->view}
 			";
 
-			//		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
 			$text = "
 			<div>
 			<table style='width:95%' class='table table-striped fborder'>

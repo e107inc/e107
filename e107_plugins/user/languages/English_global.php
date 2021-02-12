@@ -11,4 +11,3 @@
 define("LAN_PLUGIN_USER_NAME", "User");
 define("LAN_PLUGIN_USER_DESC", "User Theme and Language Menus");
 
-?>

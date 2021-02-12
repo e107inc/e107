@@ -3,6 +3,11 @@
 
 function lan_shortcode($parm = '')
 {
+	if(empty($parm))
+	{
+		return null;
+	}
+
 	$lan = trim($parm);
 	if(defined($lan))
 	{

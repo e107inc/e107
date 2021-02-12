@@ -95,9 +95,9 @@ $feed['limit']		= '9';
 
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
 $rss = array();
-if($items = $sql -> db_Select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$this -> limit)){
+if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$this -> limit)){
 	$i=0;
-	while($rowrss = $sql -> db_Fetch()){
+	while($rowrss = $sql ->fetch()){
 		$tmp						= explode(".", $rowrss['cb_nick']);
 		$rss[$i]['author']			= $tmp[1];
 		$rss[$i]['author_email']	= '';

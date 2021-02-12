@@ -153,4 +153,4 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	
 	return $text;
 }
-?>
+

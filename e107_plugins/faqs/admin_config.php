@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 e107::lan('faqs', 'admin',true);
 //TODO LANS
@@ -171,7 +171,7 @@ class faq_cat_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write':
-				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
+				return $this->select('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
 			break;
 			
 			case 'filter':
@@ -367,7 +367,7 @@ class faq_admin_form_ui extends e_admin_form_ui
 			
 			case 'write':
 
-				return $this->selectbox('faq_parent', $controller->getFaqCategoryTree(), $curVal).$this->hidden('pending', $pending);
+				return $this->select('faq_parent', $controller->getFaqCategoryTree(), $curVal).$this->hidden('pending', $pending);
 			break;
 			
 			case 'filter':

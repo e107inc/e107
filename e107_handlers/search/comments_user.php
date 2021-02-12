@@ -26,4 +26,3 @@ function com_search_profile($row) {
 	return $res;
 }
 
-?>

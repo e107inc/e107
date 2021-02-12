@@ -30,4 +30,3 @@ $text = "
 </p>
 ";
 $ns->tablerender($caption, $text, 'admin_help');
-?>

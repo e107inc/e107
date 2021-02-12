@@ -32,9 +32,9 @@ define("LANHELP_21", "Click to open color dialog ...");
 define("LANHELP_22", "Click to open size dialog ...");
 
 define("LANHELP_23", "Insert link:\n[link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
-define("LANHELP_24", "Bold text:\n[b]This text will be bold[/b]", "font-weight:bold; width: 20px");
-define("LANHELP_25", "Italic text:\n[i]This text will be italicised[/i]", "font-style:italic; width: 20px");
-define("LANHELP_26", "Underline text:\n[u]This text will be underlined[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_24", "Bold text:\n[b]This text will be bold[/b]");
+define("LANHELP_25", "Italic text:\n[i]This text will be italicised[/i]");
+define("LANHELP_26", "Underline text:\n[u]This text will be underlined[/u]");
 define("LANHELP_27", "Insert image:\n[img]mypicture.jpg[/img]");
 define("LANHELP_28", "Center align:\n[center]This text will be centered[/center]");
 define("LANHELP_29", "Left align:\n[left]This text will be left aligned[/left]");

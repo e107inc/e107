@@ -16,7 +16,7 @@
 		$_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 		$_E107['no_maintenance'] = true;
 
-		$class2 = realpath(dirname(__FILE__) . "/../") . "/class2.php";
+		$class2 = realpath(__DIR__ . "/../") . "/class2.php";
 
 		@require_once($class2);
 	}
@@ -223,7 +223,7 @@
 
 			$mailManager = e107::getBulkEmail();
 
-			$debug = ($this->debug === 2) ? true : false;
+			$debug = $this->debug === 2;
 
 			$mailManager->controlDebug($debug);
 
@@ -365,7 +365,7 @@
 			elseif(self::is_RFC1892_multipart_report($head_hash) === true)
 			{
 				$rpt_hash = self::parse_machine_parsable_body_part($mime_sections['machine_parsable_body_part']);
-				for($i = 0; $i < count($rpt_hash['per_recipient']); $i++)
+				for($i = 0, $iMax = count($rpt_hash['per_recipient']); $i < $iMax; $i++)
 				{
 					$output[$i]['recipient'] = self::get_recipient($rpt_hash['per_recipient'][$i]);
 					$output[$i]['status'] = $rpt_hash['per_recipient'][$i]['Status'];
@@ -378,7 +378,7 @@
 				//  Up to 50 email addresses can be listed on each header.
 				//  There can be multiple X-Failed-Recipients: headers. - (not supported)
 				$arrFailed = explode(',', $head_hash['X-failed-recipients']);
-				for($j = 0; $j < count($arrFailed); $j++)
+				for($j = 0, $jMax = count($arrFailed); $j < $jMax; $j++)
 				{
 					$output[$j]['recipient'] = trim($arrFailed[$j]);
 					$output[$j]['status'] = self::get_status_code_from_text($output[$j]['recipient'], $arrBody, 0);
@@ -389,7 +389,7 @@
 			{
 				// oh god it could be anything, but at least it has mime parts, so let's try anyway
 				$arrFailed = self::find_email_addresses($mime_sections['first_body_part']);
-				for($j = 0; $j < count($arrFailed); $j++)
+				for($j = 0, $jMax = count($arrFailed); $j < $jMax; $j++)
 				{
 					$output[$j]['recipient'] = trim($arrFailed[$j]);
 					$output[$j]['status'] = self::get_status_code_from_text($output[$j]['recipient'], $arrBody, 0);
@@ -404,7 +404,7 @@
 				// about 100% accuracy or if you want very fast performance.
 				// Leave it turned on if you know that all messages to be analyzed are bounces.
 				$arrFailed = self::find_email_addresses($body);
-				for($j = 0; $j < count($arrFailed); $j++)
+				for($j = 0, $jMax = count($arrFailed); $j < $jMax; $j++)
 				{
 					$output[$j]['recipient'] = trim($arrFailed[$j]);
 					$output[$j]['status'] = self::get_status_code_from_text($output[$j]['recipient'], $arrBody, 0);
@@ -421,12 +421,12 @@
 		static function get_status_code_from_text($recipient, $arrBody, $index)
 		{
 
-			for($i = $index; $i < count($arrBody); $i++)
+			for($i = $index, $iMax = count($arrBody); $i < $iMax; $i++)
 			{
 				$line = trim($arrBody[$i]);
 
 				/******** recurse into the email if you find the recipient ********/
-				if(stristr($line, $recipient) !== false)
+				if(stripos($line, $recipient) !== false)
 				{
 					// the status code MIGHT be in the next few lines after the recipient line,
 					// depending on the message from the foreign host... What a laugh riot!
@@ -440,83 +440,83 @@
 
 				/******** exit conditions ********/
 				// if it's the end of the human readable part in this stupid bounce
-				if(stristr($line, '------ This is a copy of the message') !== false)
+				if(stripos($line, '------ This is a copy of the message') !== false)
 				{
 					return '';
 				}
 				//if we see an email address other than our current recipient's,
 				if(count(self::find_email_addresses($line)) >= 1
-					&& stristr($line, $recipient) === false
-					&& strstr($line, 'FROM:<') === false)
+					&& stripos($line, $recipient) === false
+					&& strpos($line, 'FROM:<') === false)
 				{ // Kanon added this line because Hotmail puts the e-mail address too soon and there actually is error message stuff after it.
 					return '';
 				}
 				/******** pattern matching ********/
-				if(stristr($line, 'no such address') !== false
-					|| stristr($line, 'Recipient address rejected') !== false
-					|| stristr($line, 'User unknown in virtual alias table') !== false)
+				if(stripos($line, 'no such address') !== false
+					|| stripos($line, 'Recipient address rejected') !== false
+					|| stripos($line, 'User unknown in virtual alias table') !== false)
 				{
 					return '5.1.1';
 				}
-				elseif(stristr($line, 'unrouteable mail domain') !== false
-					|| stristr($line, 'Esta casilla ha expirado por falta de uso') !== false)
+				elseif(stripos($line, 'unrouteable mail domain') !== false
+					|| stripos($line, 'Esta casilla ha expirado por falta de uso') !== false)
 				{
 					return '5.1.2';
 				}
-				elseif(stristr($line, 'mailbox is full') !== false
-					|| stristr($line, 'Mailbox quota usage exceeded') !== false
-					|| stristr($line, 'User mailbox exceeds allowed size') !== false)
+				elseif(stripos($line, 'mailbox is full') !== false
+					|| stripos($line, 'Mailbox quota usage exceeded') !== false
+					|| stripos($line, 'User mailbox exceeds allowed size') !== false)
 				{
 					return '4.2.2';
 				}
-				elseif(stristr($line, 'not yet been delivered') !== false)
+				elseif(stripos($line, 'not yet been delivered') !== false)
 				{
 					return '4.2.0';
 				}
-				elseif(stristr($line, 'mailbox unavailable') !== false)
+				elseif(stripos($line, 'mailbox unavailable') !== false)
 				{
 					return '5.2.0';
 				}
-				elseif(stristr($line, 'Unrouteable address') !== false)
+				elseif(stripos($line, 'Unrouteable address') !== false)
 				{
 					return '5.4.4';
 				}
-				elseif(stristr($line, 'retry timeout exceeded') !== false)
+				elseif(stripos($line, 'retry timeout exceeded') !== false)
 				{
 					return '4.4.7';
 				}
-				elseif(stristr($line, 'The account or domain may not exist, they may be blacklisted, or missing the proper dns entries.') !== false)
+				elseif(stripos($line, 'The account or domain may not exist, they may be blacklisted, or missing the proper dns entries.') !== false)
 				{ // Kanon added
 					return '5.2.0'; // I guess.... seems like 5.1.1, 5.1.2, or 5.4.4 would fit too, but 5.2.0 seemed most generic
 				}
-				elseif(stristr($line, '554 TRANSACTION FAILED') !== false)
+				elseif(stripos($line, '554 TRANSACTION FAILED') !== false)
 				{ // Kanon added
 					return '5.5.4'; // I think this should be 5.7.1. "SMTP error from remote mail server after end of data: ... (HVU:B1) http://postmaster.info.aol.com/errors/554hvub1.html" -- AOL rejects messages that have links to certain sites in them.
 				}
-				elseif(stristr($line, 'Status: 4.4.1') !== false
-					|| stristr($line, 'delivery temporarily suspended') !== false)
+				elseif(stripos($line, 'Status: 4.4.1') !== false
+					|| stripos($line, 'delivery temporarily suspended') !== false)
 				{ // Kanon added
 					return '4.4.1';
 				}
-				elseif(stristr($line, '550 OU-002') !== false
-					|| stristr($line, 'Mail rejected by Windows Live Hotmail for policy reasons') !== false)
+				elseif(stripos($line, '550 OU-002') !== false
+					|| stripos($line, 'Mail rejected by Windows Live Hotmail for policy reasons') !== false)
 				{ // Kanon added
 					return '5.5.0'; // Again, why isn't this 5.7.1 instead?
 				}
-				elseif(stristr($line, 'PERM_FAILURE: DNS Error: Domain name not found') !== false)
+				elseif(stripos($line, 'PERM_FAILURE: DNS Error: Domain name not found') !== false)
 				{ // Kanon added
 					return '5.1.2'; // Not sure if this is right code. Just copied from above.
 				}
-				elseif(stristr($line, 'Delivery attempts will continue to be made for') !== false)
+				elseif(stripos($line, 'Delivery attempts will continue to be made for') !== false)
 				{ // Kanon added. From Symantec_AntiVirus_for_SMTP_Gateways@uqam.ca
 					return '4.2.0'; // I'm not sure why Symantec delayed this message, but x.2.x means something to do with the mailbox, which seemed appropriate. x.5.x (protocol) or x.7.x (security) also seem possibly appropriate. It seems a lot of times it's x.5.x when it seems to me it should be x.7.x, so maybe x.5.x is standard when mail is rejected due to spam-like characteristics instead of x.7.x like I think it should be.
 				}
-				elseif(stristr($line, '554 delivery error:') !== false)
+				elseif(stripos($line, '554 delivery error:') !== false)
 				{
 					return '5.5.4'; // rogers.com
 				}
-				elseif(strstr($line, '550-5.1.1') !== false
-					|| stristr($line, 'This Gmail user does not exist.') !== false)
+				elseif(strpos($line, '550-5.1.1') !== false
+					|| stripos($line, 'This Gmail user does not exist.') !== false)
 				{ // Kanon added
 					return '5.1.1'; // Or should it be 5.5.0?
 				}
@@ -724,7 +724,7 @@
 				$hash['per_message']['Reporting-mta']['addr'] = trim($arr[1]);
 			}
 			//Per-Recipient DSN fields
-			for($i = 0; $i < count($hash['per_recipient']); $i++)
+			for($i = 0, $iMax = count($hash['per_recipient']); $i < $iMax; $i++)
 			{
 				$temp = self::standard_parser(explode("\r\n", $hash['per_recipient'][$i]));
 				$arr = explode(';', $temp['Final-recipient']);
@@ -749,7 +749,7 @@
 
 				if($judgement == 'transient')
 				{
-					if(stristr($temp['Action'], 'failed') !== false)
+					if(stripos($temp['Action'], 'failed') !== false)
 					{
 						$temp['Action'] = 'transient';
 						$temp['Status'] = '4.3.0';
@@ -822,7 +822,7 @@
 
 			$hash = array();
 
-			for($i = 0; $i < count($dsn_fields); $i++)
+			for($i = 0, $iMax = count($dsn_fields); $i < $iMax; $i++)
 			{
 				if($i == 0)
 				{

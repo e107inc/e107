@@ -72,4 +72,3 @@ class list_members
 	}
 }
 
-?>

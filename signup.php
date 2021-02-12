@@ -12,7 +12,7 @@
 
 require_once("class2.php");
 
-if(vartrue($_POST['email2'])) // spam-trap. 
+if(!empty($_POST['email2'])) // spam-trap.
 {
 	exit; 	
 }
@@ -25,6 +25,21 @@ if($qs[0] != 'activate')
 	//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
+
+e107::js('inline', "
+function addtext3(sc){
+		document.getElementById('signupform').image.value = sc;
+	}
+
+	function addsig(sc){
+		document.getElementById('signupform').signature.value += sc;
+	}
+	function help(help){
+		document.getElementById('signupform').helpb.value = help;
+	}
+");
+
+
 
 e107::coreLan('user'); // Generic user-related language defines
 
@@ -70,8 +85,28 @@ $SIGNUP_END  = null;
 $COPPA_TEMPLATE = null;
 $COPPA_FAIL = null;
 
-require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+if($template = e107::getCoreTemplate('signup'))
+{
+	$SIGNUP_BEGIN                   = $template['start'];
+	$SIGNUP_BODY                    = $template['body'];
+	$SIGNUP_END                     = $template['end'];
+	$COPPA_TEMPLATE                 = $template['coppa'];
+	$COPPA_FAIL                     = $template['coppa-fail'];
+	$SIGNUP_EXTENDED_USER_FIELDS    = $template['extended-user-fields'];
+	$SIGNUP_EXTENDED_CAT            = $template['extended-category'];
+}
+else
+{
+	require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+	$template  = array(
+		'extended-user-fields'  => $SIGNUP_EXTENDED_USER_FIELDS,
+		'extended-category'     => $SIGNUP_EXTENDED_CAT
+	);
+}
+
 $signup_shortcodes = e107::getScBatch('signup');
+$signup_shortcodes->wrapper('signup');
+$signup_shortcodes->template = $template;
 // $facebook_shortcodes = e107::getScBatch('facebook',TRUE);
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
@@ -132,9 +167,10 @@ require_once(e_HANDLER."e_signup_class.php");
 if(e_QUERY && e_QUERY != 'stage1')
 {
 	require_once(HEADERF);
-	$suObj = new e_signup_class;
-	$suObj->run();
+	$suObj = new e_signup;
+	$suObj->run(e_QUERY);
 	require_once(FOOTERF);
+	return;
 	exit;
 }
 
@@ -161,7 +197,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 	if($invalid = e107::getEvent()->trigger("usersup_veri", $_POST))
 	{
-    	$extraErrors[] = $invalid."\\n";
+    	$extraErrors[] = $invalid;
         $error = TRUE;
 	}
 
@@ -207,10 +243,11 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
-		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
+
+		validatorClass::checkMandatory('user_name,user_loginname', $allData);
+		// Check for missing fields (email done in userValidation() )
 		validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);		// Do basic DB-related checks
 		$userMethods->userValidation($allData);
-
 
 		$savePassword = null;
 
@@ -419,7 +456,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		
 	//	if (SIGNUP_DEBUG)
 	//	{
-		//	 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		//	 $admin_log->addEvent(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
 	//	}
 
 		// Log to user audit log if enabled
@@ -502,13 +539,13 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}
 
 			e107::getEvent()->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
-			e107::getEvent()->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('userpartial', array_merge($allData['data'], (array) $eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 			e107::getEvent()->trigger('user_signup_submitted', $_POST);
 
 
 			require_once(HEADERF);
 
-			$after_signup = e_signup_class::render_after_signup($error_message);
+			$after_signup = e_signup::renderAfterSignup($error_message);
 			$ns->tablerender($after_signup['caption'], $after_signup['text']);
 
 			require_once(FOOTERF);
@@ -535,7 +572,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				
 				if($user_class_update === FALSE)
 				{
-					//$admin_log->e_log_event(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
+					//$admin_log->addEvent(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
 					require_once(HEADERF);
 					$ns->tablerender(LAN_SIGNUP_75, LAN_SIGNUP_101);
 					require_once(FOOTERF);
@@ -590,7 +627,7 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 		if(!vartrue($_POST['coppa']))
 		{
 			$text = $tp->parseTemplate($COPPA_FAIL);
-			$ns->tablerender(LAN_SIGNUP_78, $text);
+			$ns->tablerender(LAN_SIGNUP_78, $text, 'coppa');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -622,10 +659,10 @@ function req($field)
 	return ($field == 2 ? "<span class='required'></span>" : "");
 }
 //----------------------------------
-
+/*
 function headerjs()
 {
-	$script_txt = "
+	return "
 	<script type=\"text/javascript\">
 	function addtext3(sc){
 		document.getElementById('signupform').image.value = sc;
@@ -639,7 +676,4 @@ function headerjs()
 	}
 	</script>\n";
 
-	//global $cal; // XXX - can this be removed completely?
-	//$script_txt .= $cal->load_files();
-	return $script_txt;
-}
+}*/

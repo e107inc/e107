@@ -304,7 +304,7 @@ class rater
 			$rating = array();
 
 			$rateusers = explode(".", $rowgr['rate_voters']);
-			for($i = 0; $i < count($rateusers); $i++)
+			for($i = 0, $iMax = count($rateusers); $i < $iMax; $i++)
 			{
 				if(strpos($rateusers[$i], $sep))
 				{
@@ -484,8 +484,7 @@ class rater
 				
 			if($row = $sql->insert("rate", $insert))
 			{
-                //$row = $sql->db_Fetch();
-                $edata = array(
+                    $edata = array(
                     'like_pid' => $row,
                     'like_table' => $table,
                     'like_item_id' => $itemid,
@@ -526,7 +525,7 @@ class rater
 				
 			if($ajax == false)
 			{
-				header("location:".e_BASE."index.php");
+				e107::redirect();
 				exit;	
 			}
 			else
@@ -651,7 +650,7 @@ class rater
 					}
 				}
 				$rate .= "<img src='".e_IMAGE_ABS."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-				if($ratearray[2] == ""){ $ratearray[2] = 0; }
+				if(empty($ratearray[2])){ $ratearray[2] = 0; }
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){
 					$rate .= " - ".$ratearray[0]."&nbsp;";

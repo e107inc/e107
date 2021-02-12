@@ -19,7 +19,7 @@
 require_once('class2.php');
 if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect('Location: '.e_BASE.'index.php');
 	exit();
 }
 
@@ -115,10 +115,10 @@ if (isset($_POST['emailsubmit']))
 			$message .= "\n\n".LAN_EMAIL_1." ".$author;
 		}
 	}
-	else
-	{
+	//else
+//	{
 //		$message .= $comments."\n";			// Added to message later on
-	}
+//	}
 	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 
@@ -153,9 +153,9 @@ if (isset($_POST['emailsubmit']))
 	{
 		$emailurl = strip_tags($_POST['referer']);
 		$message = '';
-		if($sql->db_Select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
+		if($sql->select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			$message = "<h3 class='email_heading'>".$row['news_title']."</h3><br />".$row['news_body']."<br />".$row['news_extended']."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
 			$message = $tp->toEmail($message);
 		}
@@ -255,4 +255,3 @@ $text .= "
 $ns->tablerender(LAN_EMAIL_5, $text);
 
 require_once(FOOTERF);
-?>

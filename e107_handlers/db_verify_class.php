@@ -130,11 +130,13 @@ class db_verify
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
+		$expected['default'] = isset($expected['default']) ? $expected['default'] : '';
+		$actual['default']   = isset($actual['default'])   ? $actual['default']   : '';
+
 		if($expected['type'] === 'JSON') // Fix for JSON alias MySQL 5.7+
 		{
 			$expected['type'] = 'LONGTEXT';
 		}
-
 
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
@@ -150,6 +152,16 @@ class db_verify
 		{
 			$expected['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $expected['default']);
 			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
+		}
+
+		/**
+		 * Display width specification for integer data types was deprecated in MySQL 8.0.17
+		 * @see https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
+		 */
+		if(1 === preg_match('/([A-Z]*INT)/i', $expected['type']))
+		{
+			$expected['value'] = '';
+			$actual['value'] = '';
 		}
 
 		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
@@ -410,7 +422,7 @@ class db_verify
 			{
 				$this->{$results}[$tbl][$key]['_status'] = 'ok';
 
-				if(!is_array($sqlData[$type][$key]))
+				if(!isset($sqlData[$type][$key]) || !is_array($sqlData[$type][$key]))
 				{
 					$this->errors[$tbl]['_status'] = 'error'; // table status
 					$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
@@ -737,7 +749,7 @@ class db_verify
 	{
 		$key = array_flip($tabl);
 		
-		if(substr($cur,0,4)=="lan_") // language table adjustment. 
+		if(strpos($cur,"lan_") === 0) // language table adjustment.
 		{
 			list($tmp,$lang,$cur) = explode("_",$cur,3);
 		}
@@ -761,7 +773,7 @@ class db_verify
 	function getFixQuery($mode, $table, $field, $sqlFileData, $engine = 'MyISAM' )
 	{
 
-		if(substr($mode,0,5)== 'index')
+		if(strpos($mode, 'index') === 0)
 		{
 			$fdata = $this->getIndex($sqlFileData);
 			$newval = $this->toMysql($fdata[$field],'index');
@@ -815,7 +827,7 @@ class db_verify
 	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		if(!is_array($fixArray))
 		{
@@ -892,7 +904,7 @@ class db_verify
 	//	print_a($sql_data);
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
-		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+	//	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
 		// also support non-alphanumeric chars.
 	 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
@@ -950,9 +962,9 @@ class db_verify
 		foreach($tmp as $line)
 		{
 			$line = trim($line);
-			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*)/","`$1`", $line);				
+			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*[0-9]?)/","`$1`", $line);
 		}
-		
+
 		$data = implode("\n",$newline);
 		// --------------------
 		
@@ -961,12 +973,6 @@ class db_verify
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
 
-		if(e_DEBUG)
-		{
-		//	e107::getMessage()->addDebug("Regex: ".print_a($data,true));
-		//	e107::getMessage()->addDebug("Regex: ".$regex);
-
-		}
 
 	//	echo $regex."<br /><br />";
 	
@@ -1123,7 +1129,7 @@ class db_verify
 	function getSqlLanguages()
 	{
 		$sql = e107::getDb();
-		$list = $sql->db_TableList('lan');
+		$list = $sql->tables('lan');
 		
 		$array = array();
 		
@@ -1755,4 +1761,4 @@ function table_list()
 */
 
 
-?>
+

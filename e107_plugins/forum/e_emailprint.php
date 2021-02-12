@@ -55,4 +55,3 @@ function email_item($thread_id)
 	return $text;
 }
 
-?>

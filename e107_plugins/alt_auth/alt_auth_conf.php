@@ -28,7 +28,7 @@
 	2. Change admin log references
  */
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
 	e107::redirect('admin');
@@ -72,8 +72,8 @@ if(isset($_POST['updateeufs']))
 	$au = implode(',',$authExtended);
 	if ($au != $pref['auth_extended'])
 	{
-		$pref['auth_extended'] = $au;				// @TODO:
-		save_prefs();
+
+		e107::getConfig()->set('auth_extended', $au)->save(true,true,true);
 		e107::getLog()->add('AUTH_02',$au,'');
 	}
 }
@@ -85,14 +85,23 @@ if (!isset($pref['auth_noconn'])) $pref['auth_noconn'] = 0;
 // Convert prefs
 if (isset($pref['auth_nouser']))
 {
-	$pref['auth_method2'] = 'none';		// Default to no fallback
-	if ($pref['auth_nouser'])
+	$cfg = e107::getConfig();
+	$cfg->set('auth_method2', 'none');
+
+	if($pref['auth_nouser'])
 	{
-		$pref['auth_method2'] = 'e107';
+		$cfg->set('auth_method2', 'e107');
 	}
-	unset($pref['auth_nouser']);
-	if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
-	save_prefs();			// @TODO
+
+	$cfg->remove('auth_nouser');
+
+	if (!isset($pref['auth_badpassword']))
+	{
+		$cfg->set('auth_badpassword', 0);
+	}
+
+	$cfg->save(false, true, true);
+
 }
 
 
@@ -173,7 +182,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', varset($pref['auth_method2']), 'none')."
 <div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
@@ -218,7 +227,7 @@ if ($euf->userCount)
 			<td class='center'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
 			<td>{$f['user_extended_struct_name']}</td>
 			<td>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
-			<td>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
+			<td>". varset($euf->user_extended_types[$f['user_extended_struct_type']])."</td></tr>\n";
 		}
 	$text .= "</tbody>
 </table><div class='buttons-bar center'>
@@ -242,4 +251,3 @@ function alt_auth_conf_adminmenu()
 }
 
 
-?>

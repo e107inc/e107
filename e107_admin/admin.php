@@ -6,16 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
-require_once('../class2.php');
+define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 
+require_once(__DIR__.'/../class2.php');
 
 if(varset($_GET['mode']) == 'customize')
 {
@@ -30,13 +25,24 @@ if(varset($_GET['mode']) == 'customize')
 	}
 }
 
+// check that the bootstrap library path is up-to-date before the header is loaded.
+/*if($info = e107::getLibrary()->load('bootstrap'))
+{
+    if($info['path'] !== '3')
+    {
+        e107::getCache()->clearAll('library');
+        e107::getCache()->clearAll('browser');
+    }
+}*/
 
-include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
+e107::getDebug()->logTime('[admin.php: Loading admin_icons]');
+//include_once(e107::coreTemplatePath('admin_icons'));
+e107::loadAdminIcons(); // Needs to be loaded before infopanel AND in boot.php
 
-if(vartrue($_GET['iframe']) == 1)
+/*if(vartrue($_GET['iframe']) == 1)
 {
 	define('e_IFRAME', true);
-}
+}*/
 
 
 
@@ -67,19 +73,20 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 //e107::getSession()->clear('addons-update-status');
 //e107::getSession()->set('addons-update-checked',false); // set to recheck it.
 
-define('e_ADMIN_HOME', true); // used by some admin shortcodes.
+
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_HANDLER.'upload_handler.php');
+
 new admin_start;
 
 require_once(e_ADMIN.'auth.php');
 
 
-e107::getDb()->db_Mark_Time('(Start Admin Checks)');
+e107::getDebug()->logTime('(Start Admin Checks)');
 
 
-e107::getDb()->db_Mark_Time('(After Admin Checks)');
+e107::getDebug()->logTime('(After Admin Checks)');
 $mes = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn't be needed - but just in case
@@ -90,7 +97,7 @@ if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn'
 
 class admin_start
 {
-	
+
 	private $incompat = array(
 			array('banhelper',      1.5),
 			array('banhelper',      1.7),
@@ -109,6 +116,7 @@ class admin_start
 			array('jshelpers',      '0.3b'),
 			array('akismet',        7.0),
 			array('newforumposts_main', 1),
+			array('fancybox',       '2.06b'),
 	);
 
 
@@ -117,6 +125,7 @@ class admin_start
 	private $exit = false;
 
 	private $deprecated = array();
+	private $upgradeRequiredFirst = false;
 	
 	function __construct()
 	{
@@ -126,33 +135,14 @@ class admin_start
 			return null;
 		}
 
+		if(!e107::getDb()->isTable('admin_log')) // Upgrade from v1.x to v2.x required.
+		{
+		    $this->upgradeRequiredFirst = true;
+        }
+
 		// Files that can cause comflicts and problems.
-		$this->deprecated = array(
-			e_ADMIN."ad_links.php",
-			e_PLUGIN."tinymce4/e_meta.php",
-			e_THEME."bootstrap3/css/bootstrap_dark.css",
-			e_PLUGIN."search_menu/languages/English.php",
-			e_LANGUAGEDIR.e_LANGUAGE."/lan_parser_functions.php",
-			e_LANGUAGEDIR.e_LANGUAGE."/admin/help/theme.php",
-			e_HANDLER."np_class.php",
-			e_CORE."shortcodes/single/user_extended.sc",
-			e_ADMIN."download.php",
-			e_PLUGIN."banner/config.php",
-			e_PLUGIN."forum/newforumposts_menu_config.php",
-			e_PLUGIN."forum/e_latest.php",
-			e_PLUGIN."forum/e_status.php",
-			e_PLUGIN."forum/forum_post_shortcodes.php",
-			e_PLUGIN."forum/forum_shortcodes.php",
-			e_PLUGIN."forum/forum_update_check.php",
-			e_PLUGIN."online_extended_menu/online_extended_menu.php",
-			e_PLUGIN."online_extended_menu/images/user.png",
-			e_PLUGIN."online_extended_menu/languages/English.php",
-			e_PLUGIN."pm/sendpm.sc",
-			e_PLUGIN."pm/shortcodes/",
-			e_PLUGIN."social/e_header.php",
-		//	e_PLUGIN."download/url/url.php", // removed by download_setup.php
-		//	e_PLUGIN."download/url/sef_url.php",
-		);
+        $fileInspector = e107::getFileInspector();
+		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
 
 		$this->checkCoreVersion();
 
@@ -164,34 +154,34 @@ class admin_start
 		unset($_SESSION['lancheck']);
 
 
-		e107::getDb()->db_Mark_Time('Check Paths');
+		e107::getDebug()->logTime('Check Paths');
 		$this->checkPaths();
 
-		e107::getDb()->db_Mark_Time('Check Timezone');
+		e107::getDebug()->logTime('Check Timezone');
 		$this->checkTimezone();
 
-		e107::getDb()->db_Mark_Time('Check Writable');
+		e107::getDebug()->logTime('Check Writable');
 		$this->checkWritable();
 
-		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
+		e107::getDebug()->logTime('Check Incompatible Plugins');
 		$this->checkIncompatiblePlugins();
 
-		e107::getDb()->db_Mark_Time('Check Filetypes');
+		e107::getDebug()->logTime('Check Filetypes');
 		$this->checkFileTypes();
 
-		e107::getDb()->db_Mark_Time('Check Suspect Files');
+		e107::getDebug()->logTime('Check Suspect Files');
 		$this->checkSuspiciousFiles();
 
-		e107::getDb()->db_Mark_Time('Check Deprecated');
+		e107::getDebug()->logTime('Check Deprecated');
 		$this->checkDeprecated();
 
-		e107::getDb()->db_Mark_Time('Check HTMLArea');
+		e107::getDebug()->logTime('Check HTMLArea');
 		$this->checkHtmlarea();
 
-		e107::getDb()->db_Mark_Time('Check Htaccess');
+		e107::getDebug()->logTime('Check Htaccess');
 		$this->checkHtaccess();
 
-		e107::getDb()->db_Mark_Time('Check Core Update');
+		e107::getDebug()->logTime('Check Core Update');
 		$this->checkCoreUpdate();
 
 		if($this->exit === true)
@@ -199,23 +189,29 @@ class admin_start
 			return null;
 		}
 
-		e107::getDb()->db_Mark_Time('Check New Install');
+		e107::getDebug()->logTime('Check New Install');
 		$this->checkNewInstall();
 
-	/*	e107::getDb()->db_Mark_Time('Check Plugin Update');
+	/*	e107::getDebug()->logTime('Check Plugin Update');
 		$this->checkPluginUpdate();
 
-		e107::getDb()->db_Mark_Time('Check Theme Update');
+		e107::getDebug()->logTime('Check Theme Update');
 		$this->checkThemeUpdate();
 		*/
-		e107::getDb()->db_Mark_Time('Check Password Encryption');
+		e107::getDebug()->logTime('Check Password Encryption');
 		$this->checkPasswordEncryption();
+
+		//Check if developer mode is enabled
+		$this->checkDeveloperMode(); 
 
 
 		if($this->refresh == true)
 		{
 			e107::getRedirect()->go(e_REQUEST_SELF);
 		}
+
+		// delete half-completed user accounts. (previously called in header.php )
+		e107::getUserSession()->deleteExpired();
 
 	}	
 
@@ -268,7 +264,7 @@ class admin_start
 
 		require(e_ADMIN."ver.php");
 
-		if(!empty($e107info['e107_version']) && (e_VERSION !==  $e107info['e107_version']))
+		if(!empty($e107info['e107_version']) && defined('e_VERSION') && (e_VERSION !==  $e107info['e107_version']))
 		{
 			e107::getConfig()->set('version', $e107info['e107_version'])->save(false,true,false);
 
@@ -290,6 +286,13 @@ class admin_start
 		{
 			return null;
 		}
+
+        if($this->upgradeRequiredFirst)
+        {
+            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php'>".LAN_CONTINUE." ".SEP."</a></p>";
+            e107::getMessage()->addInfo($message);
+        }
+
 
 		return null;
 
@@ -521,6 +524,11 @@ TMPO;
 
 	private function checkIncompatiblePlugins()
 	{
+	    if($this->upgradeRequiredFirst)
+	    {
+	        return null;
+        }
+
 		$mes = e107::getMessage();
 		
 		$installedPlugs = e107::getPref('plug_installed');
@@ -535,14 +543,14 @@ TMPO;
 
 			if(!empty($installedPlugs[$folder]) && ($version == $installedPlugs[$folder] || $version === '*'))
 			{
-				$inCompatText .= "<li>".$folder." v".$installedPlugs[$folder]."</li>";				
+				$inCompatText .= "<li><a title='".LAN_UNINSTALL."' href='".e_ADMIN."plugin.php?mode=installed&action=uninstall&path=".$folder."'>".$folder." v".$installedPlugs[$folder]."</a></li>";
 			}	
 		}
 		
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning(ADLAN_189."&nbsp;".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>".LAN_UNINSTALL."</a>");
+			$mes->addWarning(ADLAN_189."&nbsp;<br /><br />".$text);
 		}	
 		
 	}
@@ -550,6 +558,11 @@ TMPO;
 
 	private function checkPasswordEncryption()
 	{
+	    if($this->upgradeRequiredFirst)
+	    {
+	        return null;
+        }
+
 		$us = e107::getUserSession();
 		$mes = e107::getMessage();
 
@@ -563,6 +576,18 @@ TMPO;
 
 	}
 
+	private function checkDeveloperMode()
+	{
+		$pref 	= e107::getPref();
+		$tp 	= e107::getParser();
+
+		if($pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
+		{
+			e107::getMessage()->addWarning($tp->toHTML(LAN_DEVELOPERMODE_CHECK, true));
+		}
+	}
+
+
 
 	private function checkDependencies()
 	{
@@ -573,14 +598,17 @@ TMPO;
 
 	private function checkDeprecated()
 	{
-
+        if($this->upgradeRequiredFirst)
+        {
+            return null;
+        }
 
 		$found = array();
 		foreach($this->deprecated as $path)
 		{
 			if(file_exists($path))
 			{
-				$found[] = $path;
+				$found[] = str_replace(e_BASE, "", $path);
 			}
 
 
@@ -607,7 +635,7 @@ TMPO;
 		$mes = e107::getMessage();
 
 
-
+        $error = 0;
 
 		foreach($this->deprecated as $file)
 		{
@@ -626,8 +654,16 @@ TMPO;
 			{
 				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED_FAILED, array('x'=>$file));
 				$mes->addError($message);
+				$error++;
 			}
 		}
+
+        $logFile = e_LOG."fileinspector/deprecatedFiles.log";
+
+        if($error === 0 && file_exists($logFile))
+        {
+            @unlink($logFile);
+        }
 
 	}
 
@@ -756,7 +792,7 @@ function render_clean() // still used by classis, tabbed etc.
 {
 	global $td;
 	$text = "";
-	while ($td <= ADLINK_COLS)
+	while ($td <= defset('ADLINK_COLS', 5))
 	{
 		$text .= "<td class='td' style='width:20%;'></td>";
 		$td++;
@@ -768,7 +804,7 @@ function render_clean() // still used by classis, tabbed etc.
 
 
 
-if(is_object($adp))
+if(isset($adp) && is_object($adp))
 {
 	$adp->render();
 }
@@ -845,4 +881,4 @@ function log_request()
 
 require_once("footer.php");
 
-?>
+

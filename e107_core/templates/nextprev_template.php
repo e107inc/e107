@@ -201,4 +201,4 @@ $NEXTPREV_TEMPLATE['page_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
 $NEXTPREV_TEMPLATE['page_separator'] = '<br />';
-?>
+

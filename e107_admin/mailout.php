@@ -58,8 +58,16 @@ Valid subparameters (where required):
 	$_GET['m'] - id of mail info in db
 	$_GET['t'] - id of target info in db
 */
-// header('Content-Encoding: none'); // turn off gzip. 
-require_once('../class2.php');
+// header('Content-Encoding: none'); // turn off gzip.
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\POP3;
+use PHPMailer\PHPMailer\Exception;
+
+require_once(__DIR__.'/../class2.php');
+
+
 
 if (!getperms('W'))
 {
@@ -140,13 +148,6 @@ if(e_AJAX_REQUEST)
 }
 		
 	
-
-if(vartrue($_GET['mode']) == "progress")
-{
-//	session_write_close();
-//	sendProgress();
-//	exit;
-}
 
 
 $mes = e107::getMessage();
@@ -296,7 +297,7 @@ class mailout_main_ui extends e_admin_ui
 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
+			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'number', 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
 			'mail_selectors'		=> array('title' => LAN_MAILOUT_03, 'type'=>'method', 'data'=>false, 'nolist' => true, 'writeParms'=>'nolabel=0'),
 			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>''),
@@ -373,7 +374,7 @@ class mailout_main_ui extends e_admin_ui
 	);
 
 
-	function afterDelete($del_data,$id)
+	function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
 	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
@@ -624,7 +625,7 @@ class mailout_main_ui extends e_admin_ui
 		else
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
 		}
 
 		
@@ -656,17 +657,17 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	function afterCopy($firstInsert, $copied)
+	function afterCopy($result, $selected)
 	{
 		$num = array();
 		$count = 0; 
-		foreach($copied as $tmp)
+		foreach($selected as $tmp)
 		{
-			$num[] = ($firstInsert + $count);
+			$num[] = ($result + $count);
 			$count ++; 	
 		} 
 		
-		if(!empty($firstInsert))
+		if(!empty($result))
 		{
 			$update = array(
 				'mail_content_status'	=> MAIL_STATUS_TEMP,
@@ -701,7 +702,7 @@ class mailout_main_ui extends e_admin_ui
 			return;
 		}
 		
-		$id = intval($_POST['email_id']);
+		$id = (int) varset($_POST['email_id']);
 				
 		if(vartrue($_POST['email_send']))
 		{
@@ -730,7 +731,7 @@ class mailout_main_ui extends e_admin_ui
 	
 	private function emailSend($mailId)
 	{
-		$log 		= e107::getAdminLog();	
+		$log 		= e107::getLog();
 			
 		$notify 	= isset($_POST['mail_notify_complete']) ? 3 : 2;
 		$first 		= 0;
@@ -750,7 +751,7 @@ class mailout_main_ui extends e_admin_ui
 		if ($this->mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			e107::getMessage()->addSuccess(LAN_MAILOUT_185);
-			$log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+			$log->add('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -985,7 +986,8 @@ class mailout_main_ui extends e_admin_ui
 	function testPage()
 	{
 
-		require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
+		require_once(e_HANDLER.'vendor/autoload.php');
+	//	require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
 
 		/** @var SMTP $smtp */
 		$smtp = new SMTP;
@@ -1359,10 +1361,7 @@ class mailout_main_ui extends e_admin_ui
 	{
 		$status = LAN_MAILOUT_162;
 	}
-	else 
-	{
-	//	$text .= " ".ADMIN_TRUE_ICON;	
-	}
+
 	
 	if(!empty($status))
 	{
@@ -1549,7 +1548,7 @@ class mailout_main_ui extends e_admin_ui
 			if ($t === NULL) $t = '';
 		}
 		$pref = e107::pref('core');              		 	// Core Prefs Array.
-		if (e107::getAdminLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
+		if (e107::getLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
 		{
 			e107::getConfig()->updatePref($temp);
 			e107::getConfig()->save(false);		// Only save if changes - generates its own message
@@ -1821,15 +1820,15 @@ class mailout_recipients_ui extends e_admin_ui
 	/**
 	 * Fix Total counts after recipient deletion. 
 	 */
-	public function afterDelete($data, $id, $deleted_check)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		
-		if($data['mail_status'] < MAIL_STATUS_PENDING)
+		if($deleted_data['mail_status'] < MAIL_STATUS_PENDING)
 		{
 			return;	
 		}
 						
-		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($data['mail_detail_id'])." LIMIT 1";
+		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($deleted_data['mail_detail_id'])." LIMIT 1";
 
 		if(!e107::getDb()->update('mail_content',$query))
 		{
@@ -1955,11 +1954,11 @@ $targetId = intval(varset($_GET['t'],0));
 // Create mail admin object, load all mail handlers
 $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
 e107::setRegistry('_mailout_admin', $mailAdmin);
-if ($mailAdmin->loadMailHandlers() == 0)
-{	// No mail handlers loaded
+//if ($mailAdmin->loadMailHandlers() == 0)
+//{	// No mail handlers loaded
 //	echo 'No mail handlers loaded!!';
 	//exit;
-}
+//}
 
 require_once(e_ADMIN.'auth.php');
 
@@ -2239,6 +2238,7 @@ switch ($action)
 	case 'mailshowtemplate' :
 		if (isset($_POST['etrigger_ecolumns']))
 		{
+			$nothing='';
 	//		$mailAdmin->mailbodySaveColumnPref($action);
 		}
 		break;
@@ -2336,10 +2336,7 @@ switch ($midAction)
 		break;
 }
 
-if(isset($_POST['email_sendnow']))
-{
-//	sendImmediately($mailId);
-}
+
 
 // --------------------- Display errors and results ------------------------
 if (is_array($errors) && (count($errors) > 0))
@@ -2370,7 +2367,7 @@ switch ($action)
 			show_prefs($mailAdmin);
 		}
 		break;
-
+/*
 	case 'maint' :
 		if (getperms('0'))
 		{
@@ -2383,7 +2380,7 @@ switch ($action)
 		{
 			show_maint(TRUE);
 		}
-		break;
+		break;*/
 
 	case 'saved' :				// Show template emails
 	case 'sent' :
@@ -2656,6 +2653,7 @@ function sendImmediately($id)
 //-----------------------------------------------------------
 //			MAINTENANCE OPTIONS
 //-----------------------------------------------------------
+/*
 function show_maint($debug = FALSE)
 {
 	return;
@@ -2683,7 +2681,7 @@ function show_maint($debug = FALSE)
 
 		$ns->tablerender(ADLAN_136.SEP.ADLAN_40, $mes->render().$text);
 }
-
+*/
 
 /*
 function mailout_adminmenu() 
@@ -2730,38 +2728,40 @@ function mailout_adminmenu()
 */
 
 
-
-function headerjs()
+if(!function_exists('headerjs'))
 {
-
-	$text = "
-	<script type='text/javascript'>
-		
-
-	function bouncedisp(type)
+	function headerjs()
 	{
-		if(type == 'auto')
+
+		$text = "
+		<script type='text/javascript'>
+			
+	
+		function bouncedisp(type)
 		{
-			document.getElementById('mail_bounce_auto').style.display = '';
+			if(type == 'auto')
+			{
+				document.getElementById('mail_bounce_auto').style.display = '';
+				document.getElementById('mail_bounce_mail').style.display = 'none';
+				return;
+			}
+	
+			if(type =='mail')
+			{
+	            document.getElementById('mail_bounce_auto').style.display = 'none';
+				document.getElementById('mail_bounce_mail').style.display = '';
+				return;
+			}
+	
+			document.getElementById('mail_bounce_auto').style.display = 'none';
 			document.getElementById('mail_bounce_mail').style.display = 'none';
-			return;
 		}
+		</script>";
 
-		if(type =='mail')
-		{
-            document.getElementById('mail_bounce_auto').style.display = 'none';
-			document.getElementById('mail_bounce_mail').style.display = '';
-			return;
-		}
+		$mailAdmin = e107::getRegistry('_mailout_admin');
+	// 	$text .= $mailAdmin->_cal->load_files();
 
-		document.getElementById('mail_bounce_auto').style.display = 'none';
-		document.getElementById('mail_bounce_mail').style.display = 'none';
+		return $text;
 	}
-	</script>";
-
-	$mailAdmin = e107::getRegistry('_mailout_admin');
-// 	$text .= $mailAdmin->_cal->load_files();
-
-	return $text;
 }
-?>
+

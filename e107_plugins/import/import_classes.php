@@ -385,4 +385,3 @@ class base_import_class
 }
 
 
-?>

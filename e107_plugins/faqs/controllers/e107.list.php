@@ -96,7 +96,7 @@ class plugin_faqs_list_controller extends eControllerFront
 
 		$text = $tp->parseTemplate($FAQ_START, true, $sc);
 		
-		while ($rw = $sql->db_Fetch())
+		while ($rw = $sql->fetch())
 		{
 			$sc->setVars($rw);	
 			

@@ -50,4 +50,3 @@ class download_cron // include plugin-folder in the name.
 
 
 
-?>

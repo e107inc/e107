@@ -24,7 +24,7 @@ class receiveMail
 
 	var $email='';
 
-	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
+	function __construct($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
 	{
 		if($servertype=='imap')
 		{
@@ -53,7 +53,7 @@ class receiveMail
 		$mail_header=imap_header($this->marubox,$mid);
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
-		$stat = (strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster') ? FALSE : TRUE;
+		$stat = !(strtolower($sender->mailbox) != 'mailer-daemon' && strtolower($sender->mailbox) != 'postmaster');
         if(strpos($mail_header->subject,"delayed")){
            $stat = FALSE;
 		}
@@ -111,7 +111,7 @@ class receiveMail
 			}
 			if($structure->type == 1) /* multipart */
 			{
-				while(list($index, $sub_structure) = each($structure->parts))
+				foreach($structure->parts as $index => $sub_structure)
 				{
 					if($part_number)
 					{
@@ -158,7 +158,7 @@ class receiveMail
 				if ($enc == 4)
 					$message = quoted_printable_decode($message);
 				if ($enc == 5)
-					$message = $message;
+				//	$message = $message;
 				$fp=fopen($path.$name,"w");
 				fwrite($fp,$message);
 				fclose($fp);
@@ -176,7 +176,7 @@ class receiveMail
 		{
 			$body = $this->get_part($this->marubox, $mid, "TEXT/HTML");
 		}
-		if (($body == "") || $mode == 'plain')
+		if (empty($body) || $mode == 'plain')
 			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN");
 		if ($body == "") {
 			return "";
@@ -196,4 +196,3 @@ class receiveMail
 		imap_close($this->marubox,CL_EXPUNGE);
 	}
 }
-?>
