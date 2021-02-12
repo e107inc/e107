@@ -1056,7 +1056,7 @@ class e_admin_dispatcher
 			define('e_ADMIN_UI', true);
 		}
 
-		if(!empty($_GET['iframe']))
+		if(!empty($_GET['iframe']) && !defined('e_IFRAME'))
 		{
 			define('e_IFRAME', true);
 		}
