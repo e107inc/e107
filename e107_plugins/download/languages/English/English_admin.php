@@ -20,6 +20,7 @@ define("LAN_DL_SUBSUB_CAT",            "Show sub-sub-categories");
 define("LAN_DL_SUBSUB_CAT_INFO",       "Checking this will show the sub-sub-categories on the main download page");
 define("LAN_DL_SUBSUB_COUNT",          "Combine category counts");
 define("LAN_DL_SUBSUB_COUNT_INFO",     "Include sub-sub-category counts in sub-category counts");
+define("LAN_DL_BROKENDOWNLOADSREPORTS", "Broken downloads reports");
 
 define("DOWLAN_1",   "Download added to database.");
 define("DOWLAN_2",   "Download updated in database.");
@@ -160,7 +161,7 @@ define("DOWLAN_146", "Custom Download-denial message or URL");
 // define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update date stamp to current time");
 define("DOWLAN_149", "URL"); //FIXME Use Generic
-define("DOWLAN_150", "Email admin when broken download reported");
+//define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
 define("DOWLAN_152", "Couldn't move file");
 define("DOWLAN_153", "Move file into download folder");
@@ -209,7 +210,7 @@ define("DOWLAN_195", "Mirror type");
 define("DOWLAN_196", "list"); //FIXME Use Generic
 define("DOWLAN_197", "random");
 // define("DOWLAN_198", "Filter"); //FIXME Use Generic
-
+define("DOWLAN_199", "Submitted by"); 
 
 // define('DOWLAN_FP_01', 'Front page');
 // define('DOWLAN_FP_02', 'Category list');
@@ -225,6 +226,8 @@ define("DOWLAN_HELP_7", "Help for mirror");
 define("DOWLAN_HELP_8", "Help for upload list");
 define("DOWLAN_HELP_9", "Help for upload types");
 define("DOWLAN_HELP_10", "Help for upload options");
+
+define("DOWLAN_HELP_11", "Click the 'delete' button to delete the report.[br][br]Click the 'view' button to manage the download.[br][br]To be notified of any new reports, please see to the [notify settings].");
 
 // define("DOWLAN_INSTALL_DONE", "Your download plugin is now installed");
 // define("DOWLAN_DESCRIPTION", "This plugin is a fully featured Download system");

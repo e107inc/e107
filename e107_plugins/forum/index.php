@@ -11,4 +11,3 @@
 header("location: forum.php");
 exit;
 
-?>

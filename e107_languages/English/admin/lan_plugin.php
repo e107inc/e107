@@ -311,4 +311,6 @@ define("EPL_ADLAN_254", "This will check your plugin's language files for errors
 define("EPL_ADLAN_255", "Overwrite Files");
 define("EPL_ADLAN_256", "Skipped [x] (already exists)");
 
+define ("EPL_ADLAN_257","Readonly");
+
 

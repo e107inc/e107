@@ -27,7 +27,7 @@ if (!defined('e107_INIT')) { exit; }
 
 if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
 {
-	define('PM_INBOX_ICON', e107::getParser()->toGlyph('fa-inbox'));
+	define('PM_INBOX_ICON', e107::getParser()->toGlyph('fa-inbox').e107::getParser()->toGlyph('fa-arrow-down'));
 	// Icon candidate to stacked fontawesome icons...
 	define('PM_OUTBOX_ICON', e107::getParser()->toGlyph('fa-inbox').e107::getParser()->toGlyph('fa-arrow-up'));
 	// Icon candidate to animated fontawesome icons...
@@ -58,7 +58,7 @@ $sc_style['PM_BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS
 $sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
 */
 //$PM_MENU_WRAPPER['PM_SEND_PM_LINK']= "<br /><br />{---}";
-$PM_MENU_WRAPPER['PM_SEND_PM_LINK']= "<a class='btn btn-mini btn-xs btn-default' href='{---}'>".LAN_PLUGIN_PM_NEW."</a>";
+$PM_MENU_WRAPPER['PM_SEND_PM_LINK']= "<a class='btn btn-sm btn-mini btn-xs btn-primary' href='{---}'>".LAN_PLUGIN_PM_NEW."</a>";
 $PM_MENU_WRAPPER['PM_INBOX_FILLED']=$PM_MENU_WRAPPER['PM_OUTBOX_FILLED']= "[{---}%]";
 $PM_MENU_WRAPPER['PM_NEWPM_ANIMATE']= "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>{---}</a>";
 $PM_MENU_WRAPPER['PM_BLOCKED_SENDERS_MANAGE']= "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>{---}</a> ]";

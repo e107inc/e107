@@ -100,4 +100,3 @@
 
 		e107::getRender()->tablerender($caption, $text, 'rss_menu');
 	}
-?>

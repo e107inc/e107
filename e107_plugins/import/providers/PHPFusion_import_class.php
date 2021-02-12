@@ -19,7 +19,7 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class PHPFusion_import extends base_import_class
 {
@@ -360,4 +360,3 @@ class PHPFusion_import extends base_import_class
 }
 
 
-?>

@@ -37,11 +37,11 @@ if (e_QUERY)
 }
 if ($action == 'top')
 {
-	define('e_PAGETITLE', LAN_8);
-} 
+	e107::title(LAN_8);
+}
 elseif ($action == 'active')
 {
-	define('e_PAGETITLE', LAN_7);
+	e107::title(LAN_7);
 }
 else
 {
@@ -122,7 +122,7 @@ if ($action == 'active')
 
 		$text .= "</table>\n</div>";
 
-		$ftotal = $sql->db_Count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
+		$ftotal = $sql->count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
 		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
@@ -137,10 +137,19 @@ if ($action == 'top')
 {
 	//require_once (e_HANDLER.'level_handler.php');
 	$rank = e107::getRank();
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_main_admin_image', (!empty($pref['rank_main_admin_image']) && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
+	}
 
-	define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
-	define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
-	define('IMAGE_rank_moderator_image', ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_admin_image', (!empty($pref['rank_admin_image']) && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
+	}
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_moderator_image', (!empty($pref['rank_moderator_image']) && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
+	}
 
 	if ($subaction == 'forum' || $subaction == 'all')
 	{
@@ -153,7 +162,7 @@ if ($action == 'top')
 		WHERE ue.user_plugin_forum_posts > 0
 		ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$from}, {$view}
 		";
-		//		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
+
 		$text = "
 			<div>
 			<table style='width:95%' class='table table-striped fborder'>

@@ -17,12 +17,14 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-$In_e107_Footer = TRUE; // For registered shutdown function
 
-global $error_handler,$db_time,$ADMIN_FOOTER;
+$GLOBALS['E107_IN_FOOTER'] = true;  // For registered shutdown function
+
+
+global $error_handler,$db_time;
 
 // Legacy fix - call header if not already done, mainly fixing left side menus to work proper
-if(!deftrue('e_ADMIN_UI') && !deftrue('ADMIN_AREA'))
+if(!deftrue('e_ADMIN_UI') )
 {
 	// close the old buffer
 	$content =  ob_get_contents();
@@ -31,10 +33,8 @@ if(!deftrue('e_ADMIN_UI') && !deftrue('ADMIN_AREA'))
 	ob_start();
 	require_once(e_ADMIN.'header.php');
 	echo $content;
-}
 
-// Clean session shutdown
-e107::getSession()->shutdown();
+}
 
 //
 // SHUTDOWN SEQUENCE
@@ -98,7 +98,8 @@ if (varset($e107_popup) != 1)
 	//NEW - Iframe mod
 	if (!deftrue('e_IFRAME'))
 	{
-		parse_admin($ADMIN_FOOTER);
+		$ADMIN_FOOTER = e107::getCoreTemplate('admin', 'footer', false);
+		e107::renderLayout($ADMIN_FOOTER, ['sc'=>'admin']);
 	}
 	
 	$eTimingStop = microtime();
@@ -198,18 +199,18 @@ if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
  usage: add ?showsql to query string, must be admin
  */
 
-// XXX - Too old? Something using this? 
+// XXX Part of DEBUG info
 if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
 	echo "<div class='e-debug query-notice'>
-		<table class='fborder table table-bordered table-striped' style='width: 100%;'>
+		<table class='table table-bordered table-striped' style='width: 100%;'>
 		<tr>
-		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
+		<th style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+		echo "<tr>\n<td style='width: 5%;'>{$c}</td><td style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table></div>";
@@ -305,8 +306,7 @@ if (is_array($pref['e_footer_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}	
 	}
 
@@ -396,20 +396,19 @@ if($tmp1)
 	$tmp['replace'][] = $tmp1;
 }
 
-
-// Shutdown
-$e107->destruct();
-
 // New - see class2.php
 $ehd = new e_http_header;
+
 if($tmp)
 {
+
 	$ehd->setContent('buffer',$tmp['search'],$tmp['replace']);
 }
 else
 {
 	$ehd->setContent('buffer');
 }
+
 unset($tmp1, $tmp1);
 $ehd->send();
 $page = $ehd->getOutput();
@@ -418,8 +417,15 @@ $page = $ehd->getOutput();
 // real output
 echo $page;
 
-
-unset($In_e107_Footer);
-$e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!
+$GLOBALS['E107_IN_FOOTER'] = false;
 
 
+// Clean session shutdown
+if(!e107::isCli())
+{
+	e107::getSession()->shutdown();
+	// Shutdown
+	$e107->destruct();
+}
+
+$GLOBALS['E107_CLEAN_EXIT'] = true;  // For registered shutdown function -- let it know all is well!

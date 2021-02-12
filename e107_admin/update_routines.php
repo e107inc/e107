@@ -19,7 +19,7 @@
 
 // [debug=8] shows the operations on major table update
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
@@ -76,20 +76,7 @@ $dont_check_update = false;
 
 if (!$dont_check_update)
 {
-	/*
-	if ($sql->db_Select('plugin', 'plugin_id, plugin_version, plugin_path', 'plugin_installflag=1'))
-	{
-		while ($row = $sql->db_Fetch())
-		{  // Mark plugins for update which have a specific update file, or a plugin.php file to check
-			if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_setup.php'))
-			{
-				$dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
-				//TODO - Add support for {plugins}_setup.php upgrade check and routine. 
-			}
-		}
-	}
-	*/
-	
+
 	if($dbupdateplugs = e107::getConfig('core')->get('plug_installed'))
 	{
 		// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
@@ -125,10 +112,10 @@ if (!$dont_check_update)
 //	$dbupdate['218_to_219'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.8','2.1.9')), 'message'=> null, 'hide_when_complete'=>true);
 
 //	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
-
-	$dbupdate['20x_to_220'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
-	
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
+
+	$dbupdate['20x_to_220'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
+	
 
 
 	// always run these last.
@@ -186,10 +173,7 @@ class e107Update
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-
-	//	foreach($this->core as $func => $data)
-	//	{
-			if(function_exists('update_'.$func)) // Legacy Method. 
+			if(function_exists('update_'.$func)) // Legacy Method.
 			{
 				$installed = call_user_func("update_".$func);
 				//?! (LAN_UPDATE == $_POST[$func])
@@ -210,6 +194,10 @@ class e107Update
 						{
 							 $mes->add($message, E_MESSAGE_SUCCESS);
 							 e107::getCache()->clear_sys('Update_core');
+							 $search = ['[',']'];
+							 $replace = ["<a class='alert-link' href='".e_ADMIN."fileinspector.php'>", "</a>"];
+							 $fileInspectorMessage = LAN_UPDATE_58; // running file-inspector is recommended..
+							 $mes->addInfo(str_replace($search,$replace, $fileInspectorMessage));
 						}
 					}
 				}	
@@ -219,7 +207,7 @@ class e107Update
 				$mes->addDebug("could not run 'update_".$func);
 			}
 
-		//}
+
 		
 	}
 	
@@ -401,7 +389,7 @@ function update_check()
 			if(function_exists('update_' . $func))
 			{
 
-				$sql->db_Mark_Time('Check Core Update_' . $func . ' ');
+				e107::getDebug()->logTime('Check Core Update_' . $func . ' ');
 				if(!call_user_func('update_' . $func, false))
 				{
 					$dbUpdatesPref[$func] = 0;
@@ -469,7 +457,7 @@ function update_core_prefs($type='')
 	global $e107info; // $pref,  $pref must be kept as global 
 	
 	$pref = e107::getConfig('core', true, true)->getPref();
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 	$do_save = FALSE;
 	$should = get_default_prefs();
 
@@ -529,7 +517,7 @@ function update_core_database($type = '')
 	/** @var db_verify $dbv */
 	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 
-	$log = e107::getAdminLog();
+	$log = e107::getLog();
 
 	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
 	{
@@ -638,7 +626,7 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_20x_to_220($type='')
+	 function update_20x_to_230($type='')
 	{
 
 		$sql = e107::getDb();
@@ -681,6 +669,17 @@ function update_core_database($type = '')
 			}
 
 			e107::getConfig()->set('themecss','style.css')->save(false,true,false);
+		}
+
+
+		if(isset($pref['flood_protect']))
+		{
+			if ($just_check)
+			{
+		        return update_needed("Old flood protection pref needs to be removed.");
+			}
+
+			e107::getConfig()->remove('flood_protect')->save(false,true,false);
 		}
 
 
@@ -746,7 +745,7 @@ function update_706_to_800($type='')
 
 	//$mes = new messageLog;		// Combined logging and message displaying handler
 	//$mes = e107::getMessage();
-	$log 	= e107::getAdminLog();		// Used for combined logging and message displaying
+	$log 	= e107::getLog();		// Used for combined logging and message displaying
 	$sql 	= e107::getDb();
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
@@ -766,7 +765,7 @@ function update_706_to_800($type='')
 				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
-	$obs_tables = array('flood',  'stat_info', 'stat_counter', 'stat_last', 'session', 'preset', 'tinymce');
+	$obs_tables = array('flood',  'stat_info', 'stat_counter', 'stat_last',  'preset', 'tinymce');
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
@@ -883,7 +882,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('pref: Admin theme upgrade to bootstrap3 ');
 
 		$pref['admintheme'] = 'bootstrap3';
-		$pref['admincss']    = 'admin_dark.css';
+		$pref['admincss']    = 'css/bootstrap-dark.min.css';
 
 		$do_save = true;
 	}
@@ -994,11 +993,11 @@ function update_706_to_800($type='')
 
 	// Leave this one here.. just in case.. 
 	//delete record for online_extended_menu (now only using one online menu)
-	if($sql->db_Select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
+	if($sql->select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 	{
 		if ($just_check) return update_needed("The Menu table needs to have some paths corrected in its data.");
 
-		$row=$sql->db_Fetch();
+		$row=$sql->fetch();
 
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
@@ -1016,7 +1015,7 @@ function update_706_to_800($type='')
 	}
 
 	//change menu_path for online_menu (if it still exists)
-	if($sql->db_Select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
+	if($sql->select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
 	{
 		if ($just_check) return update_needed('change menu_path for online menu');
 
@@ -1224,10 +1223,10 @@ function update_706_to_800($type='')
 			// catch_error($sql);
 		  }
 	    }
-	    else
-		{
+	//    else
+	//	{
 			// Got a strange error here
-		}
+	//	}
 	  }
 	}
 
@@ -1371,7 +1370,7 @@ function update_706_to_800($type='')
 	if ($nt_changed)
 	{
 		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		$s_prefs = e107::serialize($s_prefs);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
 		$status = ($sql -> update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$message = str_replace('[x]',$nt_changed,LAN_UPDATE_20);
@@ -1411,7 +1410,7 @@ function update_706_to_800($type='')
 				'mail_body' => $row['gen_chardata'],
 				'mail_content_status' => MAIL_STATUS_SAVED
 			);
-			$mailHandler->mailtoDb($mailRecord, TRUE);
+			$mailHandler->mailToDb($mailRecord, TRUE);
 			$mailHandler->saveEmail($mailRecord, TRUE);
 			$sql2->delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
 			$i++;
@@ -1437,8 +1436,8 @@ function update_706_to_800($type='')
 		e107::getConfig()->save(false,true,false);
 
 	  	$ep = e107::getPlugin();
-		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
-		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
+		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
+		$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
 	}
 	
 	 	
@@ -1510,7 +1509,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Avatar paths require updating.');
 		foreach($avatar_images as $av)
 		{
-			$apath = (strstr($av['path'],'public/')) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
+			$apath = (strpos($av['path'], 'public/') !== false) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
 			
 			if(rename($av['path'].$av['fname'], $apath. $av['fname'])===false)
 			{
@@ -1651,10 +1650,10 @@ function update_706_to_800($type='')
 		$med->import('page',e_IMAGE.'custom');
 		
 	}
-	else 
-	{
+//	else
+//	{
 //		$log->addDebug("Media COUNT was ".$count. " LINE: ".__LINE__);
-	}
+//	}
 	
 	// Check for Legacy Download Images. 
 
@@ -1736,12 +1735,14 @@ function update_706_to_800($type='')
 		(0, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
 		(0, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
 		";
-		
-		if(!$sql->gen($query))
-		{
+
+		$sql->gen($query);
+
+	//	if(!$sql->gen($query))
+	//	{
 			// echo "mysyql error";
 		 	// error or already exists.	
-		}
+	//	}
 		
 		$med->importIcons(e_PLUGIN);
 		$med->importIcons(e_IMAGE."icons/");
@@ -1886,9 +1887,9 @@ function core_media_import($cat,$epath)
 		'media_type'	=> $f['mime']
 		);
 
-		if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
+		if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
 		{
-			if($sql->db_Insert("core_media",$insert))
+			if($sql->insert("core_media",$insert))
 			{
 				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
 			}
@@ -1935,7 +1936,7 @@ function update_70x_to_706($type='')
 	  {
 		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
-        $emessage->add($mesg, E_MESSAGE_ERROR);
+        e107::getMessage()->add($mesg, E_MESSAGE_ERROR);
        	catch_error($sql);
 	  }
 	}
@@ -1949,7 +1950,7 @@ function update_70x_to_706($type='')
 
 	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp"))
 	{
-	  $row = $sql -> db_Fetch();
+	  $row = $sql ->fetch();
 	  if (!in_array('tmp_ip', $row))
 	  {
 		if ($just_check) return update_needed();
@@ -2015,9 +2016,9 @@ function copy_user_timezone()
 
 	e107::getMessage()->addDebug("Line:".__LINE__);
 	// Created the field - now copy existing data
-	if ($sql->db_Select('user','user_id, user_timezone'))
+	if ($sql->select('user','user_id, user_timezone'))
 	{
-		while ($row = $sql->db_Fetch())
+		while ($row = $sql->fetch())
 		{
 			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
 		}
@@ -2063,7 +2064,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 	if ($sql->gen("SHOW INDEX FROM ".MPREFIX.$target))
 	{
 		$found = FALSE;
-		while ($row = $sql -> db_Fetch())
+		while ($row = $sql ->fetch())
 		{		// One index per field
 			if (in_array($indexSpec, $row))
 			{
@@ -2083,8 +2084,8 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 
 /**	Check for database access errors
- *	@param reference $target - pointer to db object
- *	@return none
+ *	@param object e_db $target - pointer to db object
+ *	@return null
  */
 function catch_error(&$target)
 {
@@ -2094,7 +2095,7 @@ function catch_error(&$target)
 		$tmp = $target->getLastErrorText();
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
-	return;
+	return null;
 }
 
 

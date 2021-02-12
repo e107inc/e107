@@ -24,4 +24,4 @@ define("NFLAN_48", "Unable to save raw data in database.");
 
 
 
-?>
+

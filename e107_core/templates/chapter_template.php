@@ -31,10 +31,10 @@ $CHAPTER_TEMPLATE['default']['listBooks']['end']					= "</ul>";
 
 $CHAPTER_TEMPLATE['nav']['listChapters']['caption']					= "Articles";
 
-$CHAPTER_TEMPLATE['nav']['listChapters']['start'] 					= '<ul class="page-nav">';
+$CHAPTER_TEMPLATE['nav']['listChapters']['start'] 					= '<ul class="list-group page-nav">';
 	
 $CHAPTER_TEMPLATE['nav']['listChapters']['item']					= '
-																	<li>
+																	<li class="list-group-item">
 																		<a role="button" href="{LINK_URL}" >
 																		 {LINK_NAME} 
 																		</a> 
@@ -43,7 +43,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item']					= '
 	
 
 $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu']	 		= '
-																	<li>
+																	<li class="list-group-item">
 																		<a role="button" href="{LINK_URL}" >
 																		 {LINK_NAME} 
 																		</a> 
@@ -52,7 +52,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu']	 		= '
 																	';
 	
 $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu_active']		= '
-																	<li class="active">
+																	<li class="list-group-item active">
 																		<a role="button"  href="{LINK_URL}">
 																		 {LINK_NAME}
 																		</a>
@@ -61,7 +61,7 @@ $CHAPTER_TEMPLATE['nav']['listChapters']['item_submenu_active']		= '
 																	';	
 																	
 $CHAPTER_TEMPLATE['nav']['listChapters']['item_active'] 			= '
-																	<li class="active">
+																	<li class="list-group-item active">
 																		<a crole="button" href="{LINK_URL}">
 																		 {LINK_NAME}
 																		</a>

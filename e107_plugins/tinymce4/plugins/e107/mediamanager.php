@@ -15,4 +15,3 @@ header("Location: ".e_ADMIN_ABS.'image.php?mode=main&action=dialog&for='.$_SESSI
 exit; 
 
 
-?>

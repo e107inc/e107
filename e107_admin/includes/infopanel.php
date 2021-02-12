@@ -517,10 +517,10 @@ class adminstyle_infopanel
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if(!check_class('B')) // XXX problems?
-		{
+		//if(!check_class('B')) // XXX problems?
+	//	{
 	//		return;
-		}		
+	//	}
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
@@ -547,8 +547,8 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='fa fa-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='fa fa-check'></i> ".LAN_APPROVE."</button>
 	            </div>
 				<div class='media-body'>
 					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
@@ -692,7 +692,7 @@ class adminstyle_infopanel
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
-			while ($row = e107::getDb()->db_Fetch())
+			while ($row = e107::getDb()->fetch())
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))

@@ -306,6 +306,7 @@ CREATE TABLE news (
   news_extended longtext NOT NULL,
   news_meta_keywords  varchar(255) NOT NULL default '',
   news_meta_description text NOT NULL,
+  news_meta_robots  varchar(255) default '',
   news_datestamp int(10) unsigned NOT NULL default '0',
   news_author int(10) unsigned NOT NULL default '0',
   news_category tinyint(3) unsigned NOT NULL default '0',
@@ -377,10 +378,12 @@ CREATE TABLE online (
 CREATE TABLE page (
   page_id int(10) unsigned NOT NULL auto_increment,
   page_title varchar(250) NOT NULL default '',
+  page_subtitle varchar(250) NOT NULL default '',
   page_sef varchar (250) NOT NULL default '',
   page_chapter int(10) unsigned NOT NULL default '0',
   page_metakeys varchar (250) NOT NULL default '',
   page_metadscr mediumtext,
+  page_metarobots varchar (250) default '',
   page_text mediumtext,
   page_author int(10) unsigned NOT NULL default '0',
   page_datestamp int(10) unsigned NOT NULL default '0',
@@ -467,6 +470,20 @@ CREATE TABLE rate (
 # --------------------------------------------------------
 
 #
+# Table structure for table `session`
+#
+
+CREATE TABLE session (
+  session_id varchar(250) NOT NULL default '',
+  session_expires int(10) unsigned NOT NULL default 0,
+  session_user int(10) unsigned default NULL,
+  session_data mediumtext NOT NULL,
+  PRIMARY KEY  (session_id)
+) ENGINE=MyISAM;
+# --------------------------------------------------------
+
+
+#
 # Table structure for table `submitnews`
 #
 
@@ -543,7 +560,7 @@ CREATE TABLE user (
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
   user_image varchar(255) NOT NULL default '',
-  user_hideemail tinyint(3) unsigned NOT NULL default '0',
+  user_hideemail tinyint(3) unsigned NOT NULL default 1,
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',
   user_currentvisit int(10) unsigned NOT NULL default '0',

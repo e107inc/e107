@@ -12,7 +12,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE = array();
 
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_start'] = '
-<div id="carousel-example-generic" class="featurebox carousel slide" data-ride="carousel">  
+<div id="carousel-example-generic" class="featurebox carousel slide" data-ride="carousel" data-bs-ride="carousel">  
 {FEATUREBOX_NAVIGATION|bootstrap3_carousel=loop&uselimit=1}
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
@@ -23,10 +23,10 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap3_carousel']['list_end'] = '
 	  </div>
 
 	<!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev" data-bs-slide="prev">
     <span class="glyphicon glyphicon-chevron-left"></span>
   </a>
-  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next" data-bs-slide="next">
     <span class="glyphicon glyphicon-chevron-right"></span>
   </a>
                     
@@ -69,8 +69,8 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_carousel']['list_end'] = '
 				</div>
 	 				
 	 				<!-- Carousel nav -->
-                    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-                    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev" data-bs-slide="prev">&lsaquo;</a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next" data-bs-slide="next">&rsaquo;</a>
                     
 			</div><!-- end myCarousel -->
 		</div><!-- end span12 -->
@@ -242,7 +242,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_separator'] = '<div class=
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['item_empty'] = '';
 
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_start'] = '<ul class="nav nav-tabs">';
-$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" href="#tab-{FEATUREBOX_COLSCOUNT}">{FEATUREBOX_TITLE}</a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_item'] = '<li class="{FEATUREBOX_ACTIVE}"><a data-toggle="tab" data-bs-toggle="tab" href="#tab-{FEATUREBOX_COLSCOUNT}">{FEATUREBOX_TITLE}</a></li>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_end'] = '</ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['bootstrap_tabs']['nav_separator'] = '';
 //<div class="e-bootstrap_tabs">
@@ -345,4 +345,3 @@ $FEATUREBOX_CATEGORY_INFO = array(
 //  DEPRECATED	'dynamic' 				=> array('title' => 'Dynamic (prototype.js)', 	'description' => 'Load items on click (AJAX)'),
 // DEPRECATED	'tabs-proto' 			=> array('title' => 'Tabs (prototype.js)'	, 	'description' => 'Tabbed Feature box items')
 );
-?>

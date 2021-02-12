@@ -5,7 +5,12 @@ if (!USER)
 	return "";
 }
 
-$image = IMAGE_email;
+if(empty($parm))
+{
+    return null;
+}
+
+$image = defset('IMAGE_email');
 
 if(is_numeric($parm))
 {

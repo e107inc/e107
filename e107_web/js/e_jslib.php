@@ -82,7 +82,10 @@ function e_jslib_cache_out()
 	if ($cacheFile)
 	{
 		//kill any output buffering - better performance and 304 not modified requirement
-		while (@ob_end_clean()); 
+		while (ob_get_length() !== false)  // destroy all ouput buffering
+		{
+	        ob_end_clean();
+		}
 		
 		/* IT CAUSES GREAT TROUBLES ON SOME BROWSERS!
 		if (function_exists('date_default_timezone_set')) 

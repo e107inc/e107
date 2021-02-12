@@ -23,4 +23,4 @@ define("LAN_PRINT_307", "Print this page");//TODO LANS GENERIC CANDIDATE
 
 define("LAN_PRINT_1", "printer friendly");//TODO LANS GENERIC CANDIDATE
 
-?>
+

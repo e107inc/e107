@@ -57,8 +57,8 @@ if(!$OTHERNEWS_STYLE)
 		}
 		$template = e107::getTemplate('news', 'news_menu', 'other', true, true);
 		
-		$item_selector = '<div class="btn-group pull-right float-right"><a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="prev">‹</a>  
- 		<a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="next">›</a></div>';
+		$item_selector = '<div class="btn-group pull-right float-right float-end"><a class="btn btn-mini btn-sm btn-xs btn-default btn-secondary" href="#otherNews" data-slide="prev" data-bs-slide="prev">‹</a>  
+ 		<a class="btn btn-sm btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="next" data-bs-slide="next">›</a></div>';
 
 		if(!empty($parms['caption']))
 		{
@@ -210,4 +210,3 @@ if ($sql->gen($query))
 	e107::getCache()->set("nq_othernews", $cache_data);
 }
 
-?>

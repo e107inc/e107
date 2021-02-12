@@ -42,7 +42,7 @@ class forum_event
 		fclose($myfile);
 		echo('hola');
 		print_a($data);*/
-		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = NULL WHERE user_extended_id = ".$data[user_id]); 
+		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = NULL WHERE user_extended_id = ".$data['user_id']);
 		
 	}
 

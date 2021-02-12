@@ -540,7 +540,7 @@ class eMessage
 		
 		foreach ($typesArray as $type)
 		{
-			if(E_MESSAGE_DEBUG === $type && !deftrue('E107_DEBUG_LEVEL'))
+			if(E_MESSAGE_DEBUG === $type && (!deftrue('E107_DEBUG_LEVEL') || !ADMIN))
 			{
 				continue;
 			}
@@ -591,8 +591,17 @@ class eMessage
 		$icon = !empty(self::$_customIcon[$type]) ? "s-message-empty fa fa-2x ".self::$_customIcon[$type] : "s-message-".$type;
 
 		
-		$text = "<div class='s-message alert alert-block fade in {$type} {$bclass}'>";
-		$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert'>×</a>" : "";
+		$text = "<div class='s-message alert alert-block alert-dismissible fade in show {$type} {$bclass}' role='alert'>";
+
+		if(defset('BOOTSTRAP') === 5)
+		{
+			$text .= (self::$_close[$type] === true) ? "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='".LAN_CLOSE."'></button>" : "";
+		}
+		else
+		{
+			$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert' aria-label='".LAN_CLOSE."'>×</a>" : "";
+		}
+
 		$text .= "<i class='s-message-icon ".$icon."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
@@ -1081,9 +1090,9 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 	}
 
 
-	if (class_exists('e107table'))
+	if (class_exists('e_render'))
 	{
-	  $ns = new e107table;
+	  $ns = new e_render;
 	}
 
 	switch($mode)
@@ -1130,7 +1139,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			break;
 
 		case "MESSAGE":
-			if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here.
+			if(strpos(e_SELF, "forum_post.php") !== false) //FIXME Shouldn't be here.
 			{
 				return;
 			}

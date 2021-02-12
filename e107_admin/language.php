@@ -9,7 +9,7 @@
  * Administration Area - Languages
 
  */
-require_once ("../class2.php");
+require_once (__DIR__."/../class2.php");
 if (!getperms('L'))
 {
 	e107::redirect('admin');
@@ -49,7 +49,7 @@ if(!empty($_GET['iframe']))
 		protected $adminMenu = array(
 
 			'main/prefs'	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L')
+			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L', 'icon'=>'fas-tools')
 
 		);
 
@@ -70,7 +70,7 @@ if(!empty($_GET['iframe']))
 			{
 				$this->adminMenu = array(
 					'main/prefs'    => $this->adminMenu['main/prefs'],
-					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P'),
+					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P', 'icon'=>'fas-database'),
 					'main/tools'    => $this->adminMenu['main/tools'],
 				);
 			}
@@ -179,10 +179,11 @@ if(!empty($_GET['iframe']))
 		function ToolsPage()
 		{
 			$this->loadPackInfo();
-			$pref = e107::getPref();
+			$pref = e107::getPref('multilanguage_verify_errorsonly', false);
+			/** @var lancheck $lck */
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
 
-			$lck->errorsOnly($pref['multilanguage_verify_errorsonly']);
+			$lck->errorsOnly($pref);
 			// show_packs();
 
 			if($return = $lck->init())
@@ -378,6 +379,11 @@ if(!empty($_GET['iframe']))
 			$text = '';
 
 			$tp = e107::getParser();
+
+			if(empty($this->onlinePacks))
+			{
+				return null;
+			}
 
 
 			foreach($this->onlinePacks as $lan=>$value)
@@ -611,7 +617,7 @@ if(!empty($_GET['iframe']))
 			foreach ($tabs as $table_name)
 			{
 				$installed = 'lan_'.strtolower($languageSelected)."_".$table_name;
-				if (stristr($languageSelected, $installed) === FALSE)
+				if (stripos($languageSelected, $installed) === false)
 				{
 
 					$selected = ($sql->isTable($table_name,$languageSelected)) ? " checked='checked'" : "";
@@ -630,7 +636,7 @@ if(!empty($_GET['iframe']))
 
 
 					$text .= "
-								<input type='checkbox' class='checkbox e-expandit' data-return='true' data-target='language-datacopy-{$table_name}' id='language-action-{$table_name}' name='{$table_name}' value='1'{$selected}  />
+								<input type='checkbox' class='checkbox e-expandit' data-return='true' data-target='language-datacopy-{$table_name}' id='language-action-{$table_name}' name='{$table_name}' value='1' {$selected}  />
 							</div>
 
 									<div id='language-datacopy-{$table_name}' class='offset1 e-hideme e-pointer'>".
@@ -853,363 +859,7 @@ if(!empty($_GET['iframe']))
 	e107::getAdminUI()->runPage();
 
 	require_once(e_ADMIN."footer.php");
-	exit;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-
-
-
-
-
-
-require_once ("auth.php");
-
-
-$frm = e107::getForm();
-$mes = e107::getMessage();
-
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
-require_once(e_ADMIN."lancheck.php");
-require_once(e_HANDLER."language_class.php");
-
-// $ln = new language;
-$ln = $lng;
-
-$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
-
-$tabs = table_list(); // array("news","content","links");
-$lanlist = e107::getLanguage()->installed();// Bugfix - don't use e_LANLIST as it's cached (SESSION)
-$message = '';
-
-if (e_QUERY)
-{
-	$tmp = explode('.', e_QUERY);
-	$action = varset($tmp[0]);
-	$sub_action = varset($tmp[1]);
-	$id = varset($tmp[2]);
-	unset($tmp);
-}
-elseif(!getperms('0'))
-{
-	$action = 'tools';
-}
-
-
-
-
-if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']) && getperms('0'))
-{
-	unset($temp);
-	$changes = array();
-	$temp['multilanguage'] = $_POST['multilanguage'];
-	$temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
-	$temp['multilanguage_domain'] = $_POST['multilanguage_domain'];
-	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
-	$temp['adminlanguage'] = $_POST['mainadminlanguage'];
-	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
-		
-	e107::getConfig()->setPref($temp)->save(true);
-	
-	e107::getSession()->clear('e_language');
-
-}
-// ----------------- delete tables ---------------------------------------------
-if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
-{
-	$lang = strtolower($_POST['lang_choices']);
-
-	foreach ($tabs as $del_table)
-	{
-		if ($sql->isTable($del_table, $lang))
-		{
-			//	echo $del_table." exists<br />";
-			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
-			if (mysql_query($qry))
-			{
-				$msg = $tp->lanVars(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table);
-				$message .= $msg.'[!br!]'; 
-				$mes->addSuccess($msg);
-			}
-			else
-			{
-				$msg = $tp->lanVars(LANG_LAN_101, $_POST['lang_choices'].' '.$del_table);
-				$message .= $msg.'[!br!]';  
-				$mes->addWarning($msg);
-			}
-		}
-	}
-
-	e107::getLog()->add('LANG_02', $message.'[!br!]', E_LOG_INFORMATIVE, '');
-	$sql->db_ResetTableList();
-
-
-}
-// ----------create tables -----------------------------------------------------
-if (isset($_POST['create_tables']) && $_POST['language'])
-{
-	$table_to_copy = array();
-	$lang_to_create = array();
-	foreach ($tabs as $value)
-	{
-		$lang = strtolower($_POST['language']);
-		if (isset($_POST[$value]))
-		{
-			$copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
-			if ($sql->db_CopyTable($value, "lan_".$lang."_".$value, $_POST['drop'], $copdata))
-			{
-				$msg = $tp->lanVars(LANG_LAN_103,  $_POST['language'].' '.$value); 
-				$message .= $msg . '[!br!]'; // Used in admin log. 
-				$mes->addSuccess($msg);
-			}
-			else
-			{
-				if (!$_POST['drop'])
-				{
-					$msg = $tp->lanVars(LANG_LAN_00, $_POST['language'].' '.$value);
-					$message .= $msg . '[!br!]';
-					$mes->addWarning($msg);
-				}
-				else
-				{
-					$msg = $tp->lanVars(LANG_LAN_01, $_POST['language'].' '.$value);
-					$message .= $msg . '[!br!]';
-					$mes->addWarning($msg);
-				}
-			}
-		}
-		elseif ($sql->isTable($value,$_POST['language']))
-		{
-			if ($_POST['remove'])
-			{
-				// Remove table.
-				if (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value))
-				{
-					$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]'; // can be removed?
-					$mes->addSuccess($_POST['language'].' '.$value.' '.LAN_DELETED);
-				}
-				else
-				{
-					$msg = $tp->lanVars(LANG_LAN_02, $_POST['language'].' '.$value);
-					$message .= $msg . '[!br!]';
-					$mes->addWarning($msg);
-				}
-			}
-			else
-			{
-				// leave table. LANG_LAN_104
-			
-				$msg = $tp->lanVars(LANG_LAN_104, $_POST['language'].' '.$value);
-				$message .= $msg . '[!br!]';
-				$mes->addInfo($msg);
-			}
-		}
-	}
-	e107::getLog()->add('LANG_03', $message, E_LOG_INFORMATIVE, '');
-	$sql->db_ResetTableList();
-}
-
- if(isset($message) && $message)
- {
- $ns->tablerender(LAN_OK, $message);
- }
-
- 
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-$debug = "<br />f=".$_GET['f'];
-$debug .= "<br />mode=".$_GET['mode'];
-$debug .= "<br />lan=".$_GET['lan'];
-// $ns->tablerender("Debug",$debug);
-
- $rendered = $lck->init(); // Lancheck functions.
-
-
-
-
-
-
-
-
-
-
-
-
-new lanDeveloper;
-
-
-
-
-
-
-
-require_once (e_ADMIN."footer.php");
-// ---------------------------------------------------------------------------
-
-
-function multilang_prefs()
-{
-	if(!getperms('0'))
-	{
-		return;
-	}
-	
-	global $lanlist;
-	$pref = e107::getPref();
-	$mes = e107::getMessage();
-	$frm = e107::getForm();
-	
-	//XXX Remove later. 
-	// Enable only for developers - SetEnv E_ENVIRONMENT develop
-//	if(!isset($_SERVER['E_DEV_LANGUAGE']) || $_SERVER['E_DEV_LANGUAGE'] !== 'true') 
-//	{
-	//	$lanlist = array('English'); 
-	//	$mes->addInfo("Alpha version currently supports only the English language. After most features are stable and English terms are optimized - translation will be possible.");
-//	}
-	
-	$text = "
-	<form method='post' action='".e_SELF."' id='linkform'>
-		<fieldset id='core-language-settings'>
-			<legend class='e-hideme'>".LANG_LAN_13."</legend>
-			<table class='table adminform'>
-				<colgroup>
-					<col class='col-label' />
-					<col class='col-control' />
-				</colgroup>
-				<tbody>
-					<tr>
-						<td>".LANG_LAN_14.": </td>
-						<td>";
-
-						$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
-					
-						$text .= $frm->select('mainsitelanguage',$lanlist,$sellan,"useValues=1");
-						$text .= "
-						</td>
-					</tr>";
-					
-					
-				//	if(isset($_SERVER['E_DEV_LANGUAGE']) &&  $_SERVER['E_DEV_LANGUAGE'] === 'true') 
-					{
-					
-						$text .= "	
-						<tr>
-							<td>".LANG_LAN_50.": </td>
-							<td>";
-	
-							$sellan = preg_replace("/lan_*.php/i", "", $pref['adminlanguage']);
-						
-							$text .= $frm->select('mainadminlanguage',$lanlist,$sellan,array("useValues"=>1,"default" => LANG_LAN_14));
-							$text .= "
-							</td>
-						</tr>";
-					
-					}
-
-
-
-					$text .= "
-					<tr>
-						<td>".LANG_LAN_12.": </td>
-						<td>
-							<div class='auto-toggle-area autocheck'>";
-						$checked = ($pref['multilanguage'] == 1) ? " checked='checked'" : "";
-						$text .= "
-													<input class='checkbox' type='checkbox' name='multilanguage' value='1'{$checked} />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>".LANG_LAN_26.":</td>
-						<td>
-							<div class='auto-toggle-area autocheck'>\n";
-					$checked = ($pref['noLanguageSubs'] == 1) ? " checked='checked'" : "";
-					$text .= "
-								<input class='checkbox' type='checkbox' name='noLanguageSubs' value='1'{$checked} />
-								<div class='smalltext field-help'>".LANG_LAN_27."</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							".LANG_LAN_18."
-							<small>".LANG_LAN_19."</small>
-						</td>
-						<td>
-							<textarea name='multilanguage_subdomain' rows='5' cols='15' placeholder='mydomain.com'>{$pref['multilanguage_subdomain']}</textarea>
-							<div class='smalltext field-help'>".LANG_LAN_20."</div>
-						</td>
-						
-					</tr>";
-					
-					
-					$opt = "";
-					$langs = explode(",",e_LANLIST);
-					foreach($langs as $val)
-					{
-						if($val != $pref['sitelanguage'])
-						{
-							$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";	
-						}		
-					}
-					
-					if($opt)
-					{
-						//TODO class2.php check.
-						$text .= "	
-						<tr>
-							<td>
-							".LANG_LAN_106."
-							<div class='label-note'>".LANG_LAN_107."</div>
-							</td>
-							<td><table style='margin-left:0px;width:400px'>".$opt."</table></td>
-						</tr>";
-					}
-					
-					$text .= "
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>".
-				$frm->admin_button('submit_prefs','no-value','update',LAN_SAVE)."
-			</div>
-		</fieldset>
-	</form>\n";
-	
-	e107::getRender()->tablerender(ADLAN_132.SEP.LAN_PREFS, $mes->render().$text); // "Language Preferences";
-}
-
-
-*/
 
 
 
@@ -1308,7 +958,7 @@ class lanDeveloper
 
 			if($_POST['deprecatedLanFile'][0] !='auto') //override.
 			{
-				$lanfile = $tp->filter($_POST['deprecatedLanFile'], 'file');
+				$lanfile = $tp->filter($_POST['deprecatedLanFile']);
 			}
 
 
@@ -1380,23 +1030,18 @@ class lanDeveloper
 	}
 
 
-
 	static function form()
 	{
+
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$text = "";
 
 		$text .= "
-		<form id='lanDev' method='post' action='".e_REQUEST_URI."'>
+		<form id='lanDev' method='post' action='" . e_REQUEST_URI . "'>
 			<fieldset id='core-language-package'>
 
-				<table class='table adminform'>
-					<colgroup>
-						<col class='col-label' />
-						<col class='col-control' />
-					</colgroup>
-					<tbody>";
+			";
 
 
 		$fl = e107::getFile();
@@ -1407,134 +1052,134 @@ class lanDeveloper
 		if(!$_SESSION['languageTools_lanFileList'])
 		{
 
-			$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_LANGUAGEDIR."English",'.*?(English|lan_).*?\.php$','standard',3);
+			$_SESSION['languageTools_lanFileList'] = $fl->get_files(e_LANGUAGEDIR . "English", '.*?(English|lan_).*?\.php$', 'standard', 3);
 		}
 
 		//	print_a($_SESSION['languageTools_lanFileList']);
 
 
-		$text .= "	<tr>
-						<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
-					</tr>
-					<tr>
-						<td class='form-inline'>
-							<select name='deprecatedLans[]' multiple style='height:200px'>
-								<option value=''>".LANG_LAN_141."</option>";
+		$text .= "	<div class='alert-info alert alert-block'>" . e107::getParser()->toHTML(LANG_LAN_140, true) . "</div>
+	<div class='row'>
+					<div class='col-md-4'>
+							<select name='deprecatedLans[]' class='form-control' multiple style='height:200px'>
+								<option value=''>" . LANG_LAN_141 . "</option>";
 
 
-		$omit = array('languages','\.png','\.gif','handlers');
-		$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+		$omit = array('languages', '\.png', '\.gif', 'handlers');
+		$lans = $fl->get_files(e_ADMIN, '.php', 'standard', 0);
 		asort($lans);
 
 		$fl->setFileFilter(array("^e_"));
-		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
+		$root = $fl->get_files(e_BASE, '.*?/?.*?\.php', $omit, 0);
 		asort($root);
 
-		$templates = $fl->get_files(e_CORE."templates",'.*?/?.*?\.php',$omit,0);
+		$templates = $fl->get_files(e_CORE . "templates", '.*?/?.*?\.php', $omit, 0);
 		asort($templates);
 
-		$shortcodes = $fl->get_files(e_CORE."shortcodes",'.*?/?.*?\.php',$omit,1);
+		$shortcodes = $fl->get_files(e_CORE . "shortcodes", '.*?/?.*?\.php', $omit, 1);
 		asort($shortcodes);
 
 		$exclude = array('lan_admin.php');
 
-		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
+		$srch = array(e_ADMIN, e_PLUGIN, e_CORE, e_BASE);
 
 
-		$text .= "<optgroup label='".LAN_ADMIN."'>";
-		foreach($lans as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_ADMIN . "'>";
+
+		foreach($lans as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
+
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace('../e107_',"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace('../e107_', "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='".LAN_ROOT."'>";
-		foreach($root as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_ROOT . "'>";
+
+		foreach($root as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
 
-		$text .= "<optgroup label='".LAN_TEMPLATES."'>";
-		foreach($templates as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_TEMPLATES . "'>";
+		foreach($templates as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='".LAN_SHORTCODES."'>";
-		foreach($shortcodes as $script=>$lan)
+		$text .= "<optgroup label='" . LAN_SHORTCODES . "'>";
+		foreach($shortcodes as $script => $lan)
 		{
-			if(in_array(basename($lan),$exclude))
+			if(in_array(basename($lan), $exclude))
 			{
 				continue;
 			}
 			$selected = (!empty($_POST['deprecatedLans']) && in_array($lan, $_POST['deprecatedLans'])) ? "selected='selected'" : "";
-			$text .= "<option value='".$lan."' {$selected}>".str_replace($srch,"",$lan)."</option>\n";
+			$text .= "<option value='" . $lan . "' {$selected}>" . str_replace($srch, "", $lan) . "</option>\n";
 		}
 
 		$text .= "</optgroup>";
-		
+
 //TODO LANs - not sure if this can be replaced with LANS?
 		$depOptions = array(
 			1 => "Script > Lan File",
 			0 => "Script < Lan File"
-
 		);
 
-		$text .= "
-								</select> ".
-			$frm->select('deprecatedLansReverse',$depOptions,e107::getParser()->filter($_POST['deprecatedLansReverse']),'class=select')." ";
+		$text .= "</select></div><div class='col-md-4 text-center'>";
 
-		$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR."English/",e_THEME);
-		$replace = array("Plugins ","Admin ","Core ","Themes ");
+		$text .= $frm->select('deprecatedLansReverse', $depOptions, e107::getParser()->filter($_POST['deprecatedLansReverse']), 'class=select form-control') . " ";
+		$text .= "<p>" . $frm->admin_button('searchDeprecated', LAN_RUN, 'other') . "</p>";
 
+		$search = array(e_PLUGIN, e_ADMIN, e_LANGUAGEDIR . "English/", e_THEME);
+		$replace = array("Plugins ", "Admin ", "Core ", "Themes ");
 
 		$prev = 'Core';
-		$text .= "<select name='deprecatedLanFile[]' multiple style='height:200px'>
+		$text .= "</div><div class='col-md-4'><select name='deprecatedLanFile[]' class='form-control' multiple style='height:200px'>
 
 								";
 
-		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
-		$text .= "<option value='auto' {$selected}>".LANG_LAN_142."</option><optgroup label='".LANG_LAN_143."'>\n";//Auto-Detect
+		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" : "";
+		$text .= "<option value='auto' {$selected}>" . LANG_LAN_142 . "</option><optgroup label='" . LANG_LAN_143 . "'>\n";//Auto-Detect
 		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
-			if(strstr($val,e_SYSTEM))
+			if(strpos($val, e_SYSTEM) !== false)
 			{
 				continue;
 			}
 
 
 			$selected = (!empty($_POST['deprecatedLanFile']) && in_array($val, $_POST['deprecatedLanFile'])) ? "selected='selected'" : "";
-			$diz 		= str_replace($search,$replace,$val);
-			list($type,$label) = explode(" ",$diz);
+			$diz = str_replace($search, $replace, $val);
+			list($type, $label) = explode(" ", $diz);
 
 			if($type !== $prev)
 			{
-				$text .= "</optgroup><optgroup label='".$type."'>\n";
+				$text .= "</optgroup><optgroup label='" . $type . "'>\n";
 			}
 
-			$text .= "<option value='".$val."' ".$selected.">".$label."</option>\n";
+			$text .= "<option value='" . $val . "' " . $selected . ">" . $label . "</option>\n";
 			$prev = $type;
 
 		}
@@ -1542,26 +1187,16 @@ class lanDeveloper
 		$text .= "</optgroup>";
 		$text .= "</select>";
 
-		// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)').
-		$text .= $frm->admin_button('searchDeprecated',LAN_GO,'other');
-		//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
-		$text .= "
-							</td>
-						</tr>";
-
-
-		$text .= "
-					</tbody>
-				</table>
+		$text .= "</div>
+			</div>
 			</fieldset>
 		</form>
-	";
+		";
 
-		return $mes->render().$text;
-
-
+		return $mes->render() . $text . "<hr />";
 
 	}
+
 
 	function getCommon()
 	{
@@ -1765,10 +1400,10 @@ class lanDeveloper
 			$label .= " <span class='label label-inverse'>".LAN_DISABLED."</span>";
 		}
 
-		if(empty($found) && $disabled === true)
-		{
+	//	if(empty($found) && $disabled === true)
+	//	{
 			// $needle = "<span class='e-tip' style='cursor:help' title=\"".$value."\">".$needle."</span>";
-		}
+	//	}
 
 		return "<tr><td class='".$class."' style='width:15%;$color'>".$needle ."</td><td>".$label. "</td>
 	<td class='".$class."'>".print_r($value,true)."</td>
@@ -1781,11 +1416,11 @@ class lanDeveloper
 
 	/**
 	 * Compare Language File against script and find unused LANs
-	 * @param object $lanfile
-	 * @param object $script
-	 * @return string|boolean FALSE on error
+	 * @param array|string $lanfile
+	 * @param array|string $script
+	 * @return array|bool|string
 	 */
-	function unused($lanfile,$script,$reverse=false)
+	function unused($lanfile, $script, $reverse=false)
 	{
 
 		$mes = e107::getMessage();
@@ -1971,7 +1606,7 @@ class lanDeveloper
 		}
 		else
 		{
-	        return FALSE;
+	        return false;
 		}
 
 	}

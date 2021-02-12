@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-$In_e107_Footer = TRUE; // For registered shutdown function
+$GLOBALS['E107_IN_FOOTER'] = true; // For registered shutdown function
 
 $magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
@@ -56,6 +56,7 @@ if(!defined('e_NOCACHE'))
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 $pref = e107::getPref();
+$tp = e107::getParser();
 
 if (varset($e107_popup) != 1)
 {
@@ -68,12 +69,20 @@ if (varset($e107_popup) != 1)
 	//
 	if(!deftrue('e_IFRAME'))
     {
+		if(!isset($LAYOUT['_modal_']))
+		{
+			$LAYOUT['_modal_'] = '';
+		}
 
         $psc = array(
-         '</body>'       => '',
+         '</body>'          => '',
+         '{THEME}'          => THEME_ABS,
+         '{---MODAL---}'    => $LAYOUT['_modal_'],
+         '{---HEADER---}'   => $tp->parseTemplate('{HEADER}',true),
+         '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
         );
 
-	   parseheader($FOOTER, $psc);
+	   e107::renderLayout($FOOTER, array('magicSC'=>$psc));
     }
     
 	$eTimingStop = microtime();
@@ -198,12 +207,15 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder table table-striped table-bordered' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'>
+	<h4>SQL</h4>
+	<table class='table table-striped table-bordered' style='width: 100%;'>
 		<tr>
-		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
+		<th style='width: 5%;'>ID</th><th style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+		echo "<tr>\n<td style='width: 5%;'>{$c}</td>
+			<td style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table></div>";
@@ -268,6 +280,14 @@ if ((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $e
 //
 // E Last themed footer code, usually JS
 //
+
+if(deftrue('e_DEBUG_JS_FOOTER'))
+{
+	renderAllJavascript();
+}
+
+
+
 if (function_exists('theme_foot'))
 {
 	echo theme_foot();
@@ -277,6 +297,11 @@ if (function_exists('theme_foot'))
 // F any included JS footer scripts
 // DEPRECATED - use  e107::getJs()->footerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 //
+if(!empty($pref['jscsscachestatus']))
+{
+	e107::getJs()->renderCached('js');
+	e107::getJs()->renderJs('header_inline', 5);
+}
 global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
 {
@@ -299,8 +324,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 
 		}	
 	}
@@ -351,7 +375,7 @@ e107::getJs()->renderJs('footer_inline', true);
 // see e107.js and class2.php
 // This must be done as late as possible in page processing.
 $_serverTime = time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? intval($_COOKIE['e107_tdSetTime']) : 0;
+$lastSet = isset($_COOKIE['e107_tdSetTime']) ? (int) $_COOKIE['e107_tdSetTime'] : 0;
 $_serverPath = e_HTTP;
 $_serverDomain = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
 if (abs($_serverTime - $lastSet) > 120)
@@ -383,6 +407,14 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 //XXX Must not contain IDs or Classes 	
 // echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 unset($show);
+
+if(isset($pref['meta_bodyend'][e_LANGUAGE]))
+{
+	echo "\n<!-- Start custom body-end tag -->\n";
+	echo $pref['meta_bodyend'][e_LANGUAGE]."\n";
+	echo "<!-- End custom body-end tag -->\n\n";
+}
+
 echo "\n</body>\n</html>";
 
 //hook into the end of page (usefull for example for capturing output buffering)
@@ -395,8 +427,7 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}
 	}
 	unset($ret);
@@ -426,13 +457,16 @@ echo $page;
 
 
 
-unset($In_e107_Footer);
+$GLOBALS['E107_IN_FOOTER'] = false;
 
 
 // Clean session shutdown
-e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
-// Shutdown
-$e107->destruct();
-$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
+if(!e107::isCli())
+{
+	e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
+	// Shutdown
+	$e107->destruct();
+}
 
+$GLOBALS['E107_CLEAN_EXIT'] = true;  	// For registered shutdown function -- let it know all is well!
 

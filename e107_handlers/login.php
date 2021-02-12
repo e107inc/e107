@@ -45,13 +45,25 @@ class userlogin
 	protected $userData = array();	// Information for current user
 	protected $passResult = false;	// USed to determine if stored password needs update
 	protected $testMode   = false;
-
+	protected $secImageType = 'logcode';
 
 	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
 		$this->userIP = e107::getIPHandler()->getIP();
 		$this->userMethods = e107::getUserSession();
+	}
+
+	public function setSecureImageMode($area)
+	{
+		$modes = array(
+			'admin' => 'admincode',
+			'login' => 'logcode',
+		//	'fpw'   => '',
+		);
+
+		$this->secImageType = varset($modes[$area],'not-a-pref');
+
 	}
 
 	/**
@@ -85,25 +97,25 @@ class userlogin
 		$forceLogin = ($autologin === 'signup');
 		if(!$forceLogin && $autologin === 'provider') $forceLogin = 'provider';
 
-		if($username == "" || (($userpass == "") && ($response == '') && $forceLogin !== 'provider'))
+		if(empty($username) || (empty($userpass) && empty($response) && $forceLogin !== 'provider'))
 		{	// Required fields blank
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
 		}
 
-//	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
+//	    $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'IP: '.$fip,FALSE,LOG_TO_ROLLING);
 //		$this->e107->check_ban("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 		e107::getIPHandler()->checkBan("banlist_ip='{$this->userIP}' ",FALSE);			// This will exit if a ban is in force
 		
 		$autologin = intval($autologin);		// Will decode to zero if forced login
 		$authorized = false;
-		if (!$forceLogin && $this->e107->isInstalled('alt_auth'))
+		if (!$forceLogin && e107::isInstalled('alt_auth'))
 		{
 			$authMethod[0] = varset($pref['auth_method'], 'e107');		// Primary authentication method
 			$authMethod[1] = varset($pref['auth_method2'], 'none');		// Secondary authentication method (if defined)
 			$result = false;
 			foreach ($authMethod as $method)
 			{
-				if ($method == 'e107')
+				if ($method == 'e107' OR $method == 'e107db')
 				{
 					if ($this->lookupUser($username, $forceLogin))
 					{
@@ -145,7 +157,7 @@ class userlogin
 									$authorized = true;
 								break;
 								case LOGIN_TRY_OTHER:
-									continue;
+									continue 2;
 								break;
 							}
 						}
@@ -161,7 +173,7 @@ class userlogin
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 
 		// Check secure image
-		if (!$forceLogin && $pref['logcode'] && extension_loaded('gd'))
+		if (!$forceLogin && !empty($pref[$this->secImageType]) && extension_loaded('gd'))
 		{
 			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // Invalid code
 			{
@@ -174,13 +186,13 @@ class userlogin
 		{
 			if (!$this->lookupUser($username, $forceLogin))
 			{
-				return $this->invalidLogin($username,LOGIN_BAD_USERNAME);		// User doesn't exist
+				return false;		// User doesn't exist
 			}
 		}
 
 		if ($authorized !== true && $this->checkUserPassword($username, $userpass, $response, $forceLogin) !== true)
 		{
-			return $this->invalidLogin($username,LOGIN_BAD_PW);
+			return false;
 		}
 
 
@@ -205,7 +217,7 @@ class userlogin
 
 
 		// User is OK as far as core is concerned
-//	    $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
+//	    $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User login",'User passed basics',FALSE,LOG_TO_ROLLING);
 		if (($this->passResult !== FALSE) && ($this->passResult !== PASSWORD_VALID))
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
@@ -222,6 +234,8 @@ class userlogin
 
 
 		$userpass = '';				// Finished with any plaintext password - can get rid of it
+
+
 
 
 		$ret = $e_event->trigger("preuserlogin", $username);
@@ -247,58 +261,35 @@ class userlogin
 		}
 
 
+
 		// User login definitely accepted here
 
-		$cookieval = $this->userMethods->makeUserCookie($this->userData,$autologin);
+		if($ret = $e_event->trigger("user_validlogin", $user_id))
+		{
+			return false;
+		}
 
-
-		// Calculate class membership - needed for a couple of things
-		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
-
-	//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-
-	/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
-		{  // Need to note in user audit trail
-			$log = e107::getLog();
-			$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
-		}*/
-
-		$edata_li = array('user_id' => $user_id, 'user_name' => $user_name, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin, 'user_admin'=>$user_admin, 'user_email'=> $user_email);
-		e107::getEvent()->trigger("login", $edata_li);
+		$cookieval = $this->validLogin($this->userData, $autologin);
 
 		if($_E107['cli'])
 		{
 			return $cookieval;
 		}
 
-		if (in_array(e_UC_NEWUSER,$class_list))//XXX Why not just add a check in check_class ?
-		{
-			if (time() > ($this->userData['user_join'] + (varset($pref['user_new_period'],0)*86400)))
-			{	// 'New user' probationary period expired - we can take them out of the class
-				$this->userData['user_class'] = $this->e107->user_class->ucRemove(e_UC_NEWUSER, $this->userData['user_class']);
-//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$this->userData['user_class'],FALSE,FALSE);
 
-				/**
-				 * issue e107inc/e107#3657: Third argument of update() function is for debugging purposes and NOT used for the WHERE clause.
-				 * Therefore the query was run without WHERE, which resulted into applyiing the new classes to all users....
-				 */
-				//$sql->update('user',"`user_class` = '".$this->userData['user_class']."'", 'WHERE `user_id`='.$this->userData['user_id']. " LIMIT 1");
-				$sql->update('user',"`user_class` = '" . $this->userData['user_class'] . "' WHERE `user_id`=" . $this->userData['user_id'] . " LIMIT 1");
-				unset($class_list[e_UC_NEWUSER]);
-				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'user_email'=> $user_email);
-				$e_event->trigger('userNotNew', $edata_li);
-			}
+		if($noredirect)
+		{
+			return true;
 		}
 
-		if($noredirect) return true;
 		$redir = e_REQUEST_URL;
+		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
 		//$redir = e_SELF;
 		//if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
 		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
 		{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
 //		  $log_info = "New user: ".$this->userData['user_name']."  Class: ".$this->userData['user_class']."  Admin: ".$this->userData['user_admin']."  Perms: ".$this->userData['user_perms'];
-//		  $this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
+//		  $this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
 			// FIXME - front page now supports SEF URLs - make a check here
 			foreach ($pref['frontpage_force'] as $fk=>$fp)
 			{
@@ -313,7 +304,7 @@ class userlogin
 						}
 						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$tp->replaceConstants($fp, TRUE, FALSE);
 						$redir = e107::getParser()->replaceConstants($fp, TRUE, FALSE);
-		//				$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
+		//				$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Redirect active",$redir,FALSE,FALSE);
 					}
 					break;
 				}
@@ -342,8 +333,8 @@ class userlogin
 	 * Note: PASSWORD IS NOT VERIFIED BY THIS ROUTINE
 	 * @param string $username - as entered
 	 * @param boolean $forceLogin - TRUE if login is being forced from clicking signup link; normally FALSE
-	 * @return TRUE if name exists, and $this->userData array set up
-	 *		   otherwise FALSE
+	 * @return boolean TRUE if name exists, and $this->userData array set up
+	 *		           FALSE otherwise
 	 */
 	protected function lookupUser($username, $forceLogin)
 	{
@@ -430,7 +421,7 @@ class userlogin
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		if($forceLogin === 'provider') return true;
 		/*
@@ -462,7 +453,7 @@ class userlogin
 			//$aLogVal = "U: {$username}, P: ******, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']} Prf: {$pref['password_CHAP']}/{$gotChallenge}";
 			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
-			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
+			  	//$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
 				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
@@ -476,7 +467,7 @@ class userlogin
 			  	$auditLog = array(
 					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
 					'login_name'        => $login_name,
-					'userpass'          => $userpass,
+				//	'userpass'          => $userpass,
 					'pwdHash'           => $this->userData['user_password']
 				);
 
@@ -521,12 +512,15 @@ class userlogin
 			'LOGIN_DB_ERROR'=> -12,		// Error adding user to main DB
 		);
 
+		$ret = [];
 		foreach($errors as $k=>$v)
 		{
-			$this->invalidLogin("John Smith", $v, 'Custom error text');
-			echo "<h4>".$k."</h4>";
-			echo e107::getMessage()->render();
+			$ret[] = $this->invalidLogin("John Smith", $v, 'Custom error text');
+		//	echo "<h4>".$k."</h4>";
+		//	$ret[] = e107::getMessage()->render();
 		}
+
+		return $ret;
 
 	}
 
@@ -537,10 +531,10 @@ class userlogin
 	 */
 	protected function invalidLogin($username, $reason, $extra_text = '')
 	{
-		global $pref, $sql;
+		global $pref;
 
 		$doCheck = FALSE;			// Flag set if need to ban check
-
+		$this->userData = array();
 
 		switch($reason)
 		{
@@ -625,7 +619,7 @@ class userlogin
 			return $message;
 		}
 
-		define('LOGINMESSAGE', $message);
+		defined('LOGINMESSAGE') or define('LOGINMESSAGE', $message);
 
 	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
 
@@ -633,7 +627,7 @@ class userlogin
 		{
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
 			{
-				$fails = $sql->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
 
@@ -642,7 +636,7 @@ class userlogin
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
 					e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17);
 					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
 				}
 			}
@@ -669,8 +663,8 @@ class userlogin
 		$debug[0] = e_REQUEST_URI;
 
 	//	$array = debug_backtrace();
-	//	e107::getLog()->e_log_event(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-		e107::getLog()->e_log_event(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "LOGIN", $title, $debug, FALSE, LOG_TO_ROLLING);
+	//	e107::getLog()->addEvent(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
+		e107::getLog()->addEvent(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "LOGIN", $title, $debug, FALSE, LOG_TO_ROLLING);
 	}
 
 
@@ -684,6 +678,49 @@ class userlogin
 	{
 		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
 		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+	}
+
+
+
+	/**
+	 * Assumes the user is valid and logs them in.
+	 * @param array $userData ie. user_id, user_name, user_email,user_join, user_admin
+	 * @param bool $autologin 
+	 * @return array
+	 */
+	public function validLogin($userData, $autologin=false)
+	{
+
+		$cookieval = $this->userMethods->makeUserCookie($userData, $autologin);
+
+		// Calculate class membership - needed for a couple of things
+		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
+		$class_list = $this->userMethods->addCommonClasses($userData, true);
+
+
+
+		$edata_li = array('user_id'    => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => implode(',', $class_list), /*'remember_me' => $autologin,*/
+		                  'user_admin' => $userData['user_admin'], 'user_email' => $userData['user_email']);
+
+		$userAuditPref = e107::getPref('user_audit_class', e_UC_NOBODY);
+		if (check_class($userAuditPref, $class_list))
+		{
+			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $edata_li);
+		}
+
+		e107::getEvent()->trigger("login", $edata_li);
+
+		//  // 'New user' probationary period expired - we can take them out of the class
+		if(check_class(e_UC_NEWUSER, $class_list) && $this->userMethods->newUserExpired($userData['user_join']))
+		{
+			$userData['user_class'] = e107::getUserClass()->ucRemove(e_UC_NEWUSER, $userData['user_class']);
+//			$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$userData['user_class'],FALSE,FALSE);
+			e107::getDb()->update('user', "`user_class` = '" . $userData['user_class'] . "' WHERE `user_id`=" . $userData['user_id'] . " LIMIT 1");
+			$edata_li = array('user_id' => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => $userData['user_class'], 'user_email' => $userData['user_email']);
+			e107::getEvent()->trigger('userNotNew', $edata_li);
+		}
+
+		return $cookieval;
 	}
 
 

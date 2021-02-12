@@ -26,9 +26,6 @@ require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 
 
-
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
-
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
 
@@ -81,13 +78,49 @@ class usersettings_front // Begin Usersettings rewrite.
 
 			$usersettings_shortcodes->wrapper('usersettings/edit');
 
-			e107::css('inline', "
+		/*	e107::css('inline', "
 
 				.usersettings-form .col-sm-9 .checkboxes { margin-left:20px }
-			");
+			");*/
 		}
 		else
 		{
+			$bcDefs = array(
+				'LAN_418'   => 'LAN_USET_31',
+				'LAN_7'     => 'LAN_USER_01',
+				'LAN_8'     => 'LAN_USER_80',
+				'LAN_9'     => 'LAN_USER_81',
+				'LAN_10'    => 'LAN_USER_82',
+				'LAN_112'   => 'LAN_USER_60',
+				'LAN_113'   => 'LAN_USER_83',
+				'LAN_114'   => 'LAN_USER_84',
+				'LAN_120'   => 'LAN_USER_71', // Signature
+				'LAN_152'   => 'LAN_USET_24',
+				'LAN_153'   => 'LAN_USET_25',
+				'LAN_154'   => 'LAN_USET_37',
+				'LAN_308'   => 'LAN_USER_63',
+				'LAN_401'   => 'LAN_USET_23',
+				'LAN_404'   => 'LAN_USET_32',
+				'LAN_414'   => 'LAN_USET_27',
+				'LAN_415'   => 'LAN_USET_26',
+				'LAN_420'   => 'LAN_USER_07', // Avatar
+				'LAN_421'   => 'LAN_USET_33',
+				'LAN_422'   => 'LAN_USET_34',
+				'LAN_423'   => 'LAN_USET_35',
+				'LAN_424'   => 'LAN_USET_36',
+				'LAN_425'   => 'LAN_USER_06',
+				'LAN_426'   => 'LAN_USET_28',
+				'LAN_433'   => '',
+				'LAN_434'   => '',
+				'LAN_435'   => '',
+				'LAN_122'   => 'UE_LAN_TIMEZONE',
+				'LAN_CUSTOMTITLE'   => 'LAN_USER_04'
+
+			);
+
+
+			e107::getLanguage()->bcDefs($bcDefs);
+
 			global $sc_style;
 			$REQUIRED_FIELD                     = '';
 			$USER_EXTENDED_CAT                  = '';
@@ -348,13 +381,23 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if (!empty($_POST['updatesettings']))
 		{
-			$ueVals = $_POST['ue'];
-
+			// Do not filter these values (saving)
+			$ueVals   	= $_POST['ue'];
+			$passtemp1 	= $_POST['password1'];
+			$passtemp2  = $_POST['password2'];
+			
+			// Filter the others
 			$_POST = e107::getParser()->filter($_POST);
+			
+			// Pass the original values back (restoring)
+			$_POST['ue'] 		= $ueVals;
+			$_POST['password1']	= $passtemp1;
+			$_POST['password2']	= $passtemp2; 
 
-			$_POST['ue'] = $ueVals;
-
+			// Unset temporary vars
 			unset($ueVals);
+			unset($passtemp1);
+			unset($passtemp2);
 
 			if (!vartrue($pref['auth_method']))
 			{
@@ -509,7 +552,7 @@ class usersettings_front // Begin Usersettings rewrite.
 						{
 							if (US_DEBUG)
 							{
-								e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
+								e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
 							}
 							$changedUserData['user_class'] = $nid;
 						}
@@ -654,7 +697,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 			// We can update the basic user record now - can just update fields from $changedUserData
-			if (US_DEBUG) { e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
+			if (US_DEBUG) { e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
 			if (isset($changedUserData) && count($changedUserData))
 			{
 				$changedData['data'] = $changedUserData;
@@ -1050,7 +1093,7 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 
 		// e107::scStyle($sc_style);
-		e107::getScBatch('usersettings')->setVars($curVal);
+		e107::getScBatch('usersettings')->setVars($curVal)->reset();
 
 		$USERSETTINGS_EDIT = $this->getTemplate('edit');
 		$USERSETTINGS_EDIT_CAPTION = $this->getTemplate('edit_caption');

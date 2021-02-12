@@ -327,7 +327,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	</div>
 
 	<div class='row row-fluid'>
-		<div class='col-md-9 span9 pull-left float-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right float-right right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
+		<div class='col-md-9 span9 pull-left float-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right float-right float-end right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
 	</div>
 	
 	{MESSAGE}
@@ -366,7 +366,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
 											<div class='visible-xs col-xs-12'><hr /></div>
@@ -405,7 +405,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 		{GOTOPAGES}
 	</div>
 	<div class='col-xs-12 col-md-4'>
-		<div class='pull-right float-right'>
+		<div class='pull-right float-right float-end'>
 			{BUTTONSX}
 		</div>
 	</div>
@@ -454,7 +454,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
 											<div class='visible-xs col-xs-12'><hr /></div>

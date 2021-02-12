@@ -227,7 +227,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch())) return FALSE;
+		if (!($row = $sql->fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],
@@ -303,7 +303,7 @@ class core_mailout
 		
 			if (is_numeric($selectVals['email_to']))
 			{
-				$_to = LAN_MAILOUT_23.e107::getUserClass()->uc_get_classname(intval($selectVals['email_to']));
+				$_to = LAN_MAILOUT_23.e107::getUserClass()->getName(intval($selectVals['email_to']));
 			}
 			else
 			{
@@ -350,4 +350,3 @@ class core_mailout
 
 
 
-?>

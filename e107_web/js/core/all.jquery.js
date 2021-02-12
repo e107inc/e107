@@ -147,6 +147,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						loadingIcon: $element.attr('data-loading-icon'),
 						// ID or class of container to place loading-icon within. eg. #mycontainer or .mycontainer
 						loadingTarget: $element.attr('data-loading-target'),
+                        // ID or class of form element to clear upon success. eg. #my-form-element
+						clearTarget: $element.attr('data-clear-target'),
 						// If this is a navigation controller, e.g. pager.
 						nav: $element.attr('data-nav-inc'),
 						// Old way - href='myscript.php#id-to-target.
@@ -591,11 +593,18 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// BC.
 		if(options.target && options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
 		{
+		    console.log('BC Mode: adding # to target');
 			options.target = "#" + options.target;
 		}
 
 		var form = $element.closest("form");
 		var data = form.serialize() || '';
+
+		if($element.attr('data-disable') == 'true')
+		{
+			$element.addClass('disabled');
+			$element.prop('disabled', true);
+		}
 
 		$.ajax({
 			type: options.type || 'POST',
@@ -608,15 +617,32 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$('.e-ajax-loading').hide();
 				}
 
+
+
+
+
 				if($loadingImage)
 				{
 					$loadingImage.remove();
+				}
+
+				if($element.attr('data-disable') == 'true')
+				{
+					setTimeout( function(){
+						$element.removeClass('disabled');
+						$element.prop('disabled', false)
+					}, 4000 );
 				}
 			},
 			success: function (response)
 			{
 				var $target = $(options.target);
 				var jsonObject = response;
+
+				if(options.clearTarget !== null)
+                {
+                    $(options.clearTarget).val('');
+                }
 
 				if(typeof response == 'string')
 				{
@@ -639,7 +665,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					// If result is a simple text/html.
 					e107.callbacks.ajaxResponseHandler($target, options, response);
 				}
-			}
+			},
+			error: function(response)
+            {
+
+                console.log("e-ajax Error");
+                console.log("e-ajax URL: "+options.url);
+       
+
+            }
 		});
 	};
 
@@ -1523,14 +1557,14 @@ function SyncWithServerTime(serverTime, path, domain)
 		if(!domain) domain = '';
 		else domain = '; domain=' + domain;
 	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain; /* server time when set */
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain+'; samesite=strict'; /* server time when set */
 	}
 
 	var tzCookie = 'e107_tzOffset=';
 //	if (document.cookie.indexOf(tzCookie) < 0) {
 		/* set if not already set */
 		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain;
+		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain+'; samesite=strict';
 //	}
 }
 	

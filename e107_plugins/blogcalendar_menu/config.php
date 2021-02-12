@@ -10,7 +10,7 @@
  *
 */
 $eplug_admin = TRUE;
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 require_once(e_HANDLER."userclass_class.php");
 	
 e107::includeLan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
@@ -49,8 +49,7 @@ $text = "
 			<select class='tbox' name='blogcal_mpr'>";
 	
 			// if the nr of months per row is undefined, default to 3
-			$months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:
-			"3";
+			$months_per_row = isset($pref['blogcal_mpr']) ? $pref['blogcal_mpr']: 3;
 			for($i = 1; $i <= 12; $i++) {
 				$text .= "<option value='$i'";
 				$text .= $months_per_row == $i?"selected":
@@ -66,8 +65,7 @@ $text = "
 		<td>".BLOGCAL_CONF2.": </td>
 		<td><input class='tbox' type='text' name='blogcal_padding' size='20' value='";
 		// if the cellpadding isn't defined
-		$padding = $pref['blogcal_padding']?$pref['blogcal_padding']:
-		"2";
+		$padding = isset($pref['blogcal_padding']) ? $pref['blogcal_padding'] : 2;
 		$text .= $padding;
 		$text .= "' maxlength='100' />
 		</td>
@@ -84,4 +82,3 @@ $text = "
 $ns->tablerender(BLOGCAL_CONF4, $text);
 	
 require_once(e_ADMIN."footer.php");
-?>

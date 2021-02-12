@@ -275,6 +275,7 @@ define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
 //define("LAN_MAILOUT_258", "Template: ");//LAN_TEMPLATE
+define("LAN_MAILOUT_259", "No 'email address sources' selected in Preferences"); 
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");

@@ -79,14 +79,13 @@ class page_related // replace 'e_' with 'plugin-folder_'
 			
 			return $items;
 	    }
-		else
-		{
+		//else
+		//{
 			// return array(array('title'=>$query,'url'=>''));	
-		}
+		//}
 	}
 	
 }
 
 
 
-?>

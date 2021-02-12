@@ -23,7 +23,7 @@
  */
 
 //include and require several classes
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 if(!getperms("1") || !e107::isInstalled('list_new'))
 {
 	e107::redirect('admin');
@@ -73,14 +73,15 @@ e107::getRender()->tablerender(LAN_PLUGIN_LIST_NEW_NAME, $mes->render(). $text);
  */
 function admin_list_config_adminmenu()
 {
-
-	unset($var);
-	$var=array();
+	$var = [];
 	//$var['general']['text'] = LIST_ADMIN_OPT_1;
 	$var['list-new-recent-page']['text'] = LIST_ADMIN_OPT_2;
 	$var['list-new-recent-menu']['text'] = LIST_ADMIN_OPT_3;
 	$var['list-new-new-page']['text'] = LIST_ADMIN_OPT_4;
 	$var['list-new-new-menu']['text'] = LIST_ADMIN_OPT_5;
+
+	$var['_extras_']['icon']  = e107::getParser()->toIcon(e_PLUGIN."list_new/icon/list_32.png");
+
 	e107::getNav()->admin(LAN_OPTIONS.'--id--list_new', 'list-new-recent-page', $var);
 
 	return null;

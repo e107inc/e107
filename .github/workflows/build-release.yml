@@ -1,0 +1,44 @@
+name: Build Release
+
+on:
+  push:
+  pull_request:
+
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update operating system software repository
+        run: sudo apt-get update
+
+      - name: Install operating system dependencies
+        run: sudo apt-get install -y git tar gzip xz-utils zip php-cli
+
+      - uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Fetch version information
+        run: |
+          git remote set-url origin "$(git remote get-url origin | sed 's|^git@github\.com:|https://github.com/|')"
+          git fetch origin +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
+
+      # Remove this step if the old version tags make it to the official repository.
+      - name: Fetch version information from really old releases
+        run: |
+          git remote add deltik https://github.com/Deltik/e107.git
+          git fetch deltik +refs/tags/*:refs/tags/* +refs/heads/*:refs/remotes/origin/*
+
+      - name: Run build script
+        run: php -dphar.readonly=0 e107_make.php
+        working-directory: ./.github/workflows/build-release/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: release_files
+          path: ./.github/workflows/build-release/target/e107/release/

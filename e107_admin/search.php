@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('X'))
 {
 	e107::redirect('admin');
@@ -30,7 +30,10 @@ $e_userclass = new user_class();
 
 $query = explode('.', e_QUERY);
 
-$search_prefs = $sysprefs -> getArray('search_prefs');
+$search_prefs = e107::getConfig('search')->getPref();
+
+
+
 
 
 
@@ -136,9 +139,9 @@ if (isset($_POST['update_handler']))
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
 //	$tmp = addslashes(serialize($search_prefs));
-	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
+	$tmp = e107::serialize($search_prefs, true);
 
-	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
+	$check = $sql ->update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);
@@ -493,7 +496,7 @@ else
 	{
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
 
-		if($value['dir'] == 'download' && !e107::isInstalled($value['dir']))
+		if(($value['dir'] == 'download' || $key == 'download') && !e107::isInstalled('download'))
 		{
 			continue;
 		}
@@ -541,9 +544,10 @@ function search_adminmenu()
 	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
-		$icon  = e107::getParser()->toIcon('e-search-24');
-		$caption = $icon."<span>".SEALAN_40."</span>";
+
+	$caption ="<span>".SEALAN_40."</span>";
+
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-search-24');
 
 	e107::getNav()->admin($caption, $action, $var);
 }
-?>

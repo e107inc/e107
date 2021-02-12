@@ -10,8 +10,5 @@
  *
 */
 
-
-exit;
-
 // -- No Longer used - see banlist.php
 

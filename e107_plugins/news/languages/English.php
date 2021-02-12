@@ -13,4 +13,3 @@ define("LAN_NEWSCAT_MENU_TITLE", "News Categories");
 define("LAN_NEWSLATEST_MENU_TITLE", "Latest News");
 define("LAN_NEWSARCHIVE_MENU_TITLE", "News Archive");
 
-?>

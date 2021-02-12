@@ -60,8 +60,8 @@ define("NLLAN_44", "Newsletter Front Page"); // FIXME admin_menu
 define("NLLAN_45", "Create Newsletter"); // FIXME admin_menu
 define("NLLAN_46", "Create Mailing"); // FIXME admin_menu
 define("NLLAN_47", "Newsletter Options");
-define("NLLAN_48", "Newsletter Subscribers");
-define("NLLAN_49", "Newsletter: ");
+// define("NLLAN_48", "Newsletter Subscribers");
+// define("NLLAN_49", "Newsletter: ");
 
 define("NLLAN_54", "Sending");
 
@@ -79,4 +79,4 @@ define("NLLAN_65", "Subscribers overview newsletter ID");
 define("NLLAN_66", "Your news letter subscriber list has been sanitised.");
 
 // Up to NLLAN_72 used in "public" file
-?>
+

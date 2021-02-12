@@ -43,7 +43,7 @@ class error_front
 			$this->errorNumber = intval(e_QUERY);
 		}
 
-		$this->renderErrorPage();
+		e107::getRender()->tablerender(LAN_ERROR,$this->renderErrorPage(), 'error_page_'.$this->errorNumber);
 	}
 
 	/**
@@ -54,29 +54,31 @@ class error_front
 		switch($this->errorNumber)
 		{
 			case 400:
-				e107::getError()->render(400);
+				$body = e107::getError()->render(400);
 				break;
 
 			case 401:
-				e107::getError()->render(401);
+				$body = e107::getError()->render(401);
 				break;
 
 			case 403:
-				e107::getError()->render(403);
+				$body = e107::getError()->render(403);
 				break;
 
 			case 404:
-				e107::getError()->render(404);
+				$body = e107::getError()->render(404);
 				break;
 
 			case 500:
-				e107::getError()->render(500);
+				$body = e107::getError()->render(500);
 				break;
 
 			default:
-				e107::getError()->render('unknown');
+				$body = e107::getError()->render('unknown');
 				break;
 		}
+
+		return $body;
 	}
 
 }

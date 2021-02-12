@@ -3,6 +3,11 @@
 
 function plugin_shortcode($parm = '')
 {
+	if(empty($parm))
+	{
+		return null;
+	}
+
 	$tp = e107::getParser();
 
 	@list($menu,$parms) = explode('|',$parm.'|', 2);

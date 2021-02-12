@@ -305,7 +305,7 @@ define("LAN_FORUM_7006","Result"); // LAN_FORUM_7006
 define("LAN_FORUM_7007","Found in thread"); // LAN_FORUM_7007
 define("LAN_FORUM_7008","NOT FOUND"); // LAN_FORUM_7008
 define("LAN_FORUM_7009","No uploaded files found"); // LAN_FORUM_7009
-
+define("LAN_FORUM_7010", "Filename");
 
 
 // -------- Tracking Email ------------
@@ -663,4 +663,4 @@ define("LAN_FORUM_2", "Duplicate post");
 define("LAN_FORUMPOST_EMOTES", "Deactivate emoticons for this post");
 */
 
-?>
+

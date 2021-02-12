@@ -19,7 +19,7 @@
 //define("UCSLAN_7", "No user classes yet.");//LAN_NO_RECORDS_FOUND
 //define("UCSLAN_8", "Existing Classes");//NOT USED
 //define("UCSLAN_9", "No Icon");//NOT USED
-define("UCSLAN_10", "Class not deleted - it is a core class, or is used in the definition of another class, as either parent or edit class");
+// define("UCSLAN_10", "Class not deleted - it is a core class, or is used in the definition of another class, as either parent or edit class");
 //define("UCSLAN_11", "tick to confirm");//NOT USED
 //define("UCSLAN_12", "Class Name");//LAN_NAME
 //define("UCSLAN_13", "Class Description");//LAN_DESCRIPTION
@@ -108,4 +108,4 @@ define("UCSLAN_91", "Class Structure");
 //define("UCSLAN_UPDATE", "Update");//NOT USED ... LAN_UPDATE
 
 
-?>
+

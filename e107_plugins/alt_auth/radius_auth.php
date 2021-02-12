@@ -44,7 +44,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration, initialise connection to LDAP database
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return int AUTH_xxxx result code
 	 */
 	function __construct()
 	{
@@ -247,4 +247,4 @@ class auth_login extends alt_auth_base
 		return AUTH_SUCCESS;
 	}
 }
-?>
+

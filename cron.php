@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 
 /**
@@ -34,7 +34,7 @@ $_E107['no_menus'] = true;
 $_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 $_E107['no_maintenance'] = true;
 
-require_once(realpath(dirname(__FILE__) . "/class2.php"));
+require_once(realpath(__DIR__ . "/class2.php"));
 require_once(e_HANDLER . "cron_class.php");
 
 $cron = new cronScheduler();

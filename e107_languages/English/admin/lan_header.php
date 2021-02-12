@@ -13,4 +13,4 @@ define("LAN_HEADER_04", "Admin Area");
 define("LAN_HEADER_05", "language displayed in admin area");
 define("LAN_HEADER_06", "Plugins info");
 
-?>
+

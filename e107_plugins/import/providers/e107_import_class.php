@@ -26,7 +26,7 @@
 //$import_default_prefix['e107_import'] = 'e107_';
 
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class e107_import extends base_import_class
 {
@@ -71,7 +71,7 @@ class e107_import extends base_import_class
 		{
 		    case 'users' :
 		  	    $query =  "SELECT * FROM {$this->DBPrefix}user WHERE `user_id` != 1";
-		        $result = $this->ourDB->db_Select_gen($query);
+		        $result = $this->ourDB->gen($query);
 	
 				if ($result === false) return false;
 			break;
@@ -230,4 +230,3 @@ class e107_import extends base_import_class
 }
 
 
-?>

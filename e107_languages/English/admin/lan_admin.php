@@ -363,7 +363,9 @@ define("LAN_HEIGHT","Height");
 
 define("LAN_ON","On");
 define("LAN_OFF", "Off");
+define("LAN_DISABLE", "Disable");
 define("LAN_DISABLED","Disabled");
+define("LAN_ENABLE", "Enable");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
 
@@ -491,6 +493,7 @@ define("LAN_UI_FILTER_PAST_HOUR", "Past Hour");
 define("LAN_UI_FILTER_PAST_24_HOURS", "Past 24 hours");
 define("LAN_UI_FILTER_PAST_WEEK", "Past Week");
 define("LAN_UI_FILTER_PAST_MONTH", "Past Month");
+define("LAN_UI_FILTER_PAST_XMONTHS", "Past [x] Months");
 define("LAN_UI_FILTER_PAST_YEAR", "Past Year");
 
 
@@ -557,6 +560,7 @@ define("LAN_UI_FILTER_NEXT_HOUR", "Next Hour");
 define("LAN_UI_FILTER_NEXT_24_HOURS", "Next 24 hours");
 define("LAN_UI_FILTER_NEXT_WEEK", "Next Week");
 define("LAN_UI_FILTER_NEXT_MONTH", "Next Month");
+define("LAN_UI_FILTER_NEXT_XMONTHS", "Next [x] Months");
 define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
 define("LAN_UI_FILTER_IS_EMPTY", "Is Empty");
 define("LAN_RECALCULATE_COMMENT_COUNT", "Recalculate comment count");
@@ -569,4 +573,10 @@ define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");
 
 define("LAN_UI_FILTER_SEARCH_IN_FIELD", "Search in Field");
 
+define("LAN_ROBOTS", "Robots");
+define("LAN_ROBOTS_NOINDEX", "Prevent search engines from indexing this item.");
+define("LAN_ROBOTS_NOFOLLOW", "Prevent search engines from following links in this item.");
+define("LAN_ROBOTS_NOARCHIVE", "Prevent cached copies of this item from appearing in search results.");
+define("LAN_ROBOTS_NOIMAGE", "Prevent search engines from indexing images of this item.");
 
+define("LAN_NAVIGATION", "Navigation");

@@ -13,15 +13,16 @@
 if (!defined('e107_INIT')) { exit; }
 
 //global $pref;
-global $menu_pref;
+$menu_pref = e107::getConfig('menu')->getPref();
 
 $tp = e107::getParser();
 
 e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
-require_once(e_PLUGIN.'online/online_shortcodes.php');
+// require_once(e_PLUGIN.'online/online_shortcodes.php');
 $mode = empty($menu_pref['online_show_memberlist_extended']) ? 'default' : 'extended';
-$online_shortcodes = new online_shortcodes;
+
+$online_shortcodes = e107::getScBatch('online', true);
 $online_shortcodes->wrapper('online_menu/'.$mode);
 
 if(deftrue('BOOTSTRAP'))
@@ -142,7 +143,7 @@ $caption = $img.' '.vartrue($menu_pref['online_caption'], LAN_ONLINE_4);
 if (getperms('1')) 
 {
 	$path = e_PLUGIN_ABS."online/config.php?iframe=1";
-	$caption .= "<a class='e-modal pull-right float-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='glyphicon glyphicon-cog'></i></a>";
+	$caption .= "<a class='e-modal pull-right float-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='fa fa-cog'></i></a>";
 }
 
 

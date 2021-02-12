@@ -6,21 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Banner Administration
+ * Banner Administration - Handles the display and sequencing of banners on web pages, including counting impressions
  *
 */
 
-/**
- *	e107 Banner management plugin
- *
- *	Handles the display and sequencing of banners on web pages, including counting impressions
- *
- *	@package	e107_plugins
- *	@subpackage	banner
- *
- */
-
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('D') && !getperms('P'))
 {
 	e107::redirect('admin');
@@ -59,8 +49,6 @@ e107::js('footer-inline','
 
 
 ');
-
-
 
 
 class banner_admin extends e_admin_dispatcher
@@ -109,7 +97,7 @@ class banner_ui extends e_admin_ui
 		protected $pid				= 'banner_id';
 		protected $perPage			= 10; 
 		protected $batchDelete		= true;
-	//	protected $batchCopy		= true;		
+		protected $batchCopy		= true;		
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 		protected $tabs				= array(LAN_BASIC, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
@@ -159,16 +147,16 @@ class banner_ui extends e_admin_ui
 		public function init()
 		{
 
-			if (!empty($_POST['update_menu']))
+			/*if (!empty($_POST['update_menu']))
 			{
 				$this->menuPageSave();
-			}
+			}*/
 		}
 
 		
 		// ------- Customize Create --------
-		
-		public function beforeCreate($new_data)
+
+		public function beforeCreate($new_data, $old_data)
 		{
 		//	e107::getMessage()->addDebug(print_a($new_data,true)); 
 			
@@ -239,6 +227,7 @@ class banner_ui extends e_admin_ui
 			// do something		
 		}		
 		
+		/*
 		private function menuPageSave()
 		{
 			$temp = array(); 
@@ -273,10 +262,10 @@ class banner_ui extends e_admin_ui
 				$menu_pref = e107::getConfig('menu')->getPref('');
 				//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
 			}	
+		
 			
 			
-			
-		}
+		}*/
 			
 	
 		public function menuPage()
@@ -285,7 +274,7 @@ class banner_ui extends e_admin_ui
 			return e107::getMessage()->addInfo("The menu is now configured within the menu-manager.")->render();
 
 
-			$ns = e107::getRender();
+			/*$ns = e107::getRender();
 			$sql = e107::getDb();
 			$menu_pref = e107::getConfig('menu')->getPref('');
 			$frm = e107::getForm();
@@ -384,8 +373,14 @@ class banner_ui extends e_admin_ui
 				return $mes->render().$text; 
 			
 			//	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.BNRLAN_36, $mes->render() . $text);
+			*/
 		}
-	
+
+		public function renderHelp()
+		{
+			$help_text = str_replace("[br]", "<br />", BNRLAN_HELP_02);
+			return array('caption' => LAN_HELP, 'text' => $help_text);
+		}
 			
 }
 				
@@ -444,7 +439,7 @@ class banner_form_ui extends e_admin_form_ui
 
 	function banner_image($curVal,$mode)
 	{
-		$frm = e107::getForm();
+
 
 		switch($mode)
 		{
@@ -491,26 +486,9 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->clients;
 			break;
 		}
+
+		return null;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	
 	// Custom Method/Function 
@@ -547,6 +525,8 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->clients; 
 			break;
 		}
+
+		return null;
 	}
 
 	
@@ -570,6 +550,8 @@ class banner_form_ui extends e_admin_form_ui
 				return null;
 			break;
 		}
+
+		return null;
 	}
 
 	// Custom Method/Function 
@@ -628,6 +610,8 @@ class banner_form_ui extends e_admin_form_ui
 				return  $this->campaigns; 
 			break;
 		}
+
+		return null;
 	}
 	
 	
@@ -638,50 +622,29 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			return null;
 		}
-		
-		$frm = e107::getForm();		
-		
+
+		unset($curVal); // keep inspector happy.
+
 		$banner_row = $this->getController()->getListModel()->getData(); 
 		 
 	//	 return print_a($banner_row,true); 		
-		$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
-		
-		return $clickpercentage; 
+		return ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
+
 		//$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
 	//	$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 	}	
-	
-	
-	
-		
-	
-	
-	
+
 
 }		
 		
 
-new banner_admin();
+new banner_admin;
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 //TODO - Put client/password in a separate table?
-
-
-
-
-
-
-// ---------------------------- UNUSED Below here -------------------------------------------- // 
-
-
-
-
-
-
-

@@ -4,7 +4,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_tagwords_download
 {
-	function e_tagwords_download()
+	function __construct()
 	{
 		$this->e107 = e107::getInstance();
 
@@ -43,4 +43,3 @@ class e_tagwords_download
 	}
 }
 
-?>

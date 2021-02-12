@@ -14,172 +14,95 @@
  * $Author: e107coders $
  */
 
-if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH", "width:100%"); }
-
-
-$sc_style['SIGNUP_DISPLAYNAME']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' ><label for='username'>"
-		.LAN_SIGNUP_89."{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>".LAN_SIGNUP_90."</span></label>
-	</td>
-	<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_DISPLAYNAME']['post'] = "
-	</td>
-</tr>";
-
-$sc_style['SIGNUP_REALNAME']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='realname'>"
-		.LAN_SIGNUP_91."{SIGNUP_IS_MANDATORY=realname}</label>
-	</td>
-	<td class='forumheader3' style='width:70%' >";
-$sc_style['SIGNUP_REALNAME']['post'] = "
-	</td>
-</tr>";
-
-
-
-
-if(!defined($SIGNUP_PASSWORD_LEN))
+if(!defined('e107_INIT'))
 {
-	$SIGNUP_PASSWORD_LEN = "
-	<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+	exit;
 }
 
-if(!defined($SIGNUP_EXTENDED_USER_FIELDS))
-{
-	$SIGNUP_EXTENDED_USER_FIELDS	= "
-	<tr>
-		<td style='width:40%' class='forumheader3'>
-			<label>{EXTENDED_USER_FIELD_TEXT}
-			{EXTENDED_USER_FIELD_REQUIRED}</label>
-		</td>
-		<td style='width:60%' class='forumheader3'>
-			{EXTENDED_USER_FIELD_EDIT}
-		</td>
-	</tr>";
-}
+// Shortcode Wrappers
+
+$SIGNUP_WRAPPER['SIGNUP_DISPLAYNAME'] = 		"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='username'>"
+													. LAN_SIGNUP_89 . "{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>" . LAN_SIGNUP_90 . "</span></label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
+
+$SIGNUP_WRAPPER['SIGNUP_REALNAME'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='realname'>" . LAN_SIGNUP_91 . "{SIGNUP_IS_MANDATORY=realname}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
+
+$SIGNUP_WRAPPER['SIGNUP_GDPR_INFO']             = "<div class='form-group row m-2 text-center'>{---}</div> ";
 
 
+$SIGNUP_WRAPPER['SIGNUP_SIGNATURE'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='signature'>" . LAN_SIGNUP_93 . " {SIGNUP_IS_MANDATORY=signature}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_SIGNATURE']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' ><label for='signature'>".LAN_SIGNUP_93." {SIGNUP_IS_MANDATORY=signature}</label></td>
-	<td class='forumheader3' style='width:70%'>";
-	
-$sc_style['SIGNUP_SIGNATURE']['post'] = "
-	</td>
-</tr>";
-	
-$sc_style['SIGNUP_IMAGES']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' ><label for='avatar'>".LAN_SIGNUP_94."{SIGNUP_IS_MANDATORY=avatar}</label></td>
-	<td class='forumheader3' style='width:70%;vertical-align:top'>";
-$sc_style['SIGNUP_IMAGES']['post'] = "
-	</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_IMAGES'] = 				"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label'for='avatar'>" . LAN_SIGNUP_94 . "{SIGNUP_IS_MANDATORY=avatar}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_IMAGECODE']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%'><label for='code-verify'>".e107::getSecureImg()->renderLabel()."{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_IMAGECODE']['post'] = "
-	</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_IMAGECODE'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='code-verify'>" . e107::getSecureImg()->renderLabel() . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_LOGINNAME']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%'><label for='loginname'>".LAN_SIGNUP_81."{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_LOGINNAME']['post'] = "
-	</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_LOGINNAME'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='loginname'>" . LAN_SIGNUP_81 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_HIDE_EMAIL']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_USER_83."</label></td>
-	<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_HIDE_EMAIL']['post'] = "
-	</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_HIDE_EMAIL'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label'>" . LAN_USER_83 . "</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_EMAIL_CONFIRM']['pre'] = "
-<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email-confirm'>".LAN_SIGNUP_39."{SIGNUP_IS_MANDATORY=true}</label></td>
-	<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
-	</td>
-</tr>";
+$SIGNUP_WRAPPER['SIGNUP_EMAIL_CONFIRM'] = 		"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='email-confirm'>" . LAN_SIGNUP_39 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
-$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>".LAN_SIGNUP_120."</span></h2></div>";
+$SIGNUP_WRAPPER['SIGNUP_XUP']                   = "<div class='text-center'>{---}
+												<h2 class='signup-divider'><span>" . LAN_SIGNUP_120 . "</span></h2></div>";
 
-$sc_style['SIGNUP_PASSWORD1']['pre'] = "<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password1'>".LAN_SIGNUP_83."{SIGNUP_IS_MANDATORY=true}</label></td>
-				<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_PASSWORD1']['post'] = "</td>
-			</tr>";
+$SIGNUP_WRAPPER['SIGNUP_PASSWORD1'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='password1'>" . LAN_SIGNUP_83 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_PASSWORD2']['pre'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password2'>".LAN_SIGNUP_84."{SIGNUP_IS_MANDATORY=true}</label></td>
-			<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_PASSWORD2']['post'] = "</td>
-		</tr>";
+$SIGNUP_WRAPPER['SIGNUP_PASSWORD2'] = 			"<div class='form-group row m-2'>
+													<label class='col-sm-3 control-label' for='password2'>" . LAN_SIGNUP_84 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<div class='col-sm-9'>{---}</div>
+												</div>";
 
-$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['pre'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_SIGNUP_113."{SIGNUP_IS_MANDATORY=subscribe}</label></td>
-			<td class='forumheader3' style='width:70%'>";
-$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['post'] = "</td>
-		</tr>";
+$SIGNUP_WRAPPER['SIGNUP_USERCLASS_SUBSCRIBE'] = "<div class='form-group row m-2 '>
+													<label class='col-sm-3 control-label'>" . LAN_SIGNUP_113 . "{SIGNUP_IS_MANDATORY=subscribe}</label>
+													<div class='col-sm-9 checkbox'>{---}</div>
+												</div>";
+ 
 
 
-if(!defined($COPPA_TEMPLATE))
-{
-	$COPPA_TEMPLATE = 
-	LAN_SIGNUP_77." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
-	.LAN_SIGNUP_15." ".e107::getParser()->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."<br />
-	<br />
-	<div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
-		{SIGNUP_COPPA_FORM}
-	</div>";
-}
+// Signup Template
 
-if(!defined($COPPA_FAIL))
-{
-	$COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
-}
 
-//if(!defined($SIGNUP_TEXT))
-{
-	//$SIGNUP_TEXT =	$tp->parseTemplate("{SIGNUP_SIGNUP_TEXT}"); // .
-	//LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".
-	//LAN_SIGNUP_30."<br />".
-	//LAN_SIGNUP_85;
-}
-
-if(!defined($SIGNUP_BEGIN))
-{
-	$SIGNUP_BEGIN = "
+$SIGNUP_TEMPLATE['start'] = "
 	{SIGNUP_FORM_OPEN} {SIGNUP_ADMINOPTIONS} {SIGNUP_SIGNUP_TEXT}";
-}
 
-if(!defined($SIGNUP_BODY))
-{
-	$SIGNUP_BODY = "
+
+$SIGNUP_TEMPLATE['body'] = "
 	{SIGNUP_XUP}
 	<div id='default'>
 		{SIGNUP_XUP_ACTION}
-		<table class='table fborder' style='".USER_WIDTH."'>
 			{SIGNUP_DISPLAYNAME}
 			{SIGNUP_LOGINNAME}
 			{SIGNUP_REALNAME}
-			<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</label></td>
-				<td class='forumheader3' style='width:70%'>
-					{SIGNUP_EMAIL}
-				</td>
-			</tr>
+			<div class='form-group row m-2'>
+				<label class='col-sm-3 control-label' for='password1'>{LAN=LAN_USER_60}{SIGNUP_IS_MANDATORY=email}</label>
+				<div class='col-sm-9'>{SIGNUP_EMAIL}</div>
+			</div>
 			{SIGNUP_EMAIL_CONFIRM}
 			{SIGNUP_PASSWORD1}
 			{SIGNUP_PASSWORD2}
@@ -189,46 +112,29 @@ if(!defined($SIGNUP_BODY))
 			{SIGNUP_SIGNATURE}
 			{SIGNUP_IMAGES}
 			{SIGNUP_IMAGECODE}
-			
-			<tr style='vertical-align:top'>
-				<td class='forumheader' colspan='2'  style='text-align:center'>
-					{SIGNUP_GDPR_INFO}
-				</td>
-			</tr>
-			
-			<tr style='vertical-align:top'>
-				<td class='forumheader' colspan='2'  style='text-align:center'>
-					<input class='button btn btn-success' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
-					<br />
-				</td>
-			</tr>
-		</table>
+			{SIGNUP_GDPR_INFO}
+			<div class='form-group row m-2 text-center'>
+				{SIGNUP_BUTTON}
+			</div>	 
 	</div>
 	{SIGNUP_FORM_CLOSE}";
-}
 
-if(!defined($SIGNUP_EXTENDED_CAT))
-{
-	$SIGNUP_EXTENDED_CAT = "
-	<tr>
-		<td colspan='2' class='forumheader'>
-			{EXTENDED_CAT_TEXT}
-		</td>	
-	</tr>";
-}
+$SIGNUP_TEMPLATE['end']                     = '';
 
-if(!defined($SIGNUP_END))
-{
-	$SIGNUP_END = '';
-}
+$SIGNUP_TEMPLATE['coppa']                   = "{SIGNUP_COPPA_TEXT}<br /><br />
+											<div style='text-align:center'><b>{LAN=LAN_SIGNUP_17}</b>
+												{SIGNUP_COPPA_FORM}
+											</div>";
 
+$SIGNUP_TEMPLATE['coppa-fail']              = "<div class='alert alert-danger alert-block' style='text-align:center'>{LAN=LAN_SIGNUP_9}</div>";
 
+$SIGNUP_TEMPLATE['extended-category']       = "
+											<div class='form-group row m-2'>
+												<div class='col-sm-9 col-md-offset-3'>{EXTENDED_CAT_TEXT}</div>
+											</div>";
 
-
-// v2.x to-do
-$SIGNUP_TEMPLATE = array();
-$SIGNUP_TEMPLATE['start'] = $SIGNUP_BEGIN;
-$SIGNUP_TEMPLATE['end'] = $SIGNUP_END;
-$SIGNUP_TEMPLATE['body'] = $SIGNUP_BODY;
-$SIGNUP_TEMPLATE['extended-user-fields'] = $SIGNUP_EXTENDED_USER_FIELDS;
-$SIGNUP_TEMPLATE['coppa']= '';
+$SIGNUP_TEMPLATE['extended-user-fields']    = "
+											<div class='form-group row m-2'>
+												<label class='col-sm-3 control-label'>{EXTENDED_USER_FIELD_TEXT}{EXTENDED_USER_FIELD_REQUIRED}</label>
+												<div class='col-sm-9'>{EXTENDED_USER_FIELD_EDIT}</div>
+											</div>";

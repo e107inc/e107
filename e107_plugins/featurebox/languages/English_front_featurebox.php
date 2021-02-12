@@ -8,4 +8,3 @@
 
 // define("FBLAN_01", "Feature Box");
 // define("FBLAN_02", "read more"); // Already used in admin area. 
-?>

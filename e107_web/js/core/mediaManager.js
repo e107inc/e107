@@ -417,7 +417,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// convert base64 encoded HTML preview information to HTML.
 		if(previewHTML)
 		{
-			var previewSrc = atob(previewHTML).trim();
+			var previewSrc = atob(previewHTML);
 		}
 		
 		if($htmlHolder.length > 0)
@@ -792,7 +792,7 @@ console.log('Bbcode: '+bbcode);
 		}
 
 		var src = $(e).attr("data-src"); // heep here.
-		if(src === null) // old way - href='myscript.php#id-to-target
+		if(src !== null) // old way - href='myscript.php#id-to-target
 		{
 			var tmp = src.split('#');
 			id = tmp[1];
@@ -898,7 +898,7 @@ console.log('Bbcode: '+bbcode);
 
 			// Specify what files to browse for
 			filters: [
-				{title: "Image files", extensions: extImg || "jpg,gif,png,jpeg,svg"},
+				{title: "Image files", extensions: extImg || "jpg,gif,png,jpeg,svg,apng,webp"},
 				{title: "Zip files", extensions: extArchive || "zip,gz,rar"},
 				{title: "Document files", extensions: extDoc || "pdf,doc,docx,xls,xlsm,xml"},
 				{title: "Media files", extensions: 'mp3,mp4,wav,ogg,webm,mid,midi'},

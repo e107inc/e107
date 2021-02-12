@@ -30,16 +30,21 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var url = $this.attr('href');
 					var caption = $this.attr('data-modal-caption');
 					var height = ($(window).height() * 0.7) - 120;
-
+					var target = $this.attr('data-modal-target');
 
 					if(caption === undefined)
 					{
 						caption = '';
 					}
 
-					$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-					$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
-					$('.modal').modal('show');
+					if(target === undefined)
+					{
+						target = '#uiModal';
+					}
+
+					$(target+' .modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$(target+'.modal').modal('show');
 
 					$("#e-modal-iframe").on("load", function ()
 					{
@@ -82,7 +87,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.fieldHelpTooltip = {
 		attach: function (context, settings)
 		{
-			var selector = 'div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
+			var selector = '.admin-ui-help-tip,div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
 
 			$(context).find(selector).once('field-help-tooltip').each(function ()
 			{
@@ -95,12 +100,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement = 'top';
 				}
 
+				// custom position defined in field-help container class
 				var custPlace = $fieldHelp.attr('data-placement'); // ie top|left|bottom|right
-
 				if(custPlace !== undefined)
 				{
 					placement = custPlace;
 				}
+
+				// custom position defined in selector tag.
+				var pos = $(this).attr('data-tooltip-position');
+				if(pos !== undefined)
+				{
+					placement = pos;
+				}
+				
 
 				$fieldHelp.hide();
 
@@ -112,10 +125,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					fade: true,
 					html: true,
 					opacity: 1.0,
+			//		trigger: 'hover focus',
 					placement: placement,
 					container: 'body',
 					delay: {
-						show: 300,
+						show: 0,
 						hide: 600
 					}
 				});
@@ -161,6 +175,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 $(document).ready(function()
 {
+            $('a.e-spinner').on('click', function() {
+
+			  	var orig = $(this).text();
+			  	var spin = "<i class='fa fa-spin fa-spinner fa-fw'></i>";
+
+				$(this).html(orig + spin);
+            });
+
+
 
 			$('#e-modal-submit').click(function () {
 			  $('#e-modal-iframe').contents().find('#etrigger-submit').trigger('click');
@@ -385,26 +408,33 @@ $(document).ready(function()
 		);
 
 
-		$('a[data-toggle-sidebar]').on('click', function(e)
+		$('a[data-toggle-sidebar], .e-toggle-sidebar').on('click', function(e)
         {
             e.preventDefault();
 
-	        var $leftPanel = $(".admin-left-panel");
-	        var $rightPanel = $(".admin-right-panel");
-
-	        if ($rightPanel.hasClass('col-md-12'))
+	        if ($(".is-table-row").hasClass("admin-left-panel-collapsed"))
 	        {
-		        $rightPanel.toggleClass("col-md-9 col-md-12");
-		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        $leftPanel.toggle(1000);
+		        $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
 	        else
 	        {
-		        $leftPanel.toggle(1000, function() {
-			        $rightPanel.toggleClass("col-md-9 col-md-12");
-			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        });
+                  $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
+
+
+            var tmp =  $(".is-table-row").hasClass("admin-left-panel-collapsed");
+
+            if(tmp === true)
+            {
+               var toggleStatus = 'closed';
+            }
+            else
+            {
+               var toggleStatus = 'open';
+            }
+
+            document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; path=/; expires = 1; samesite=strict';
+
 
         });
 
@@ -489,7 +519,7 @@ $(document).ready(function()
 					clearInterval(progresspump);
 			        $("#"+target).closest('.progress').removeClass("active");
 
-			        $("#"+target).html("Done");
+
 			        
 			        if(hide !== 'undefined')
 			        {
@@ -500,7 +530,8 @@ $(document).ready(function()
 			        {
 						$('#'+show).show('slow');	
 			        }
-			      
+
+			         $("#"+target).html("Done");
 		        
 					}
 		    
@@ -557,7 +588,8 @@ $(document).ready(function()
 		$("select.tbox").each(function() {
 			
 			var multi = $(this).attr('multiple');
-			
+			var tagName = $(this).attr('name');
+
 			if(multi === undefined)
 			{
 			//	 $(this).selectpicker();	// causes HTML5 validation alert to be hidden. 
@@ -565,8 +597,33 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).multiselect({ buttonClass: 'btn btn-default'} );
+				$(this).multiselect({
+					buttonClass: 'btn btn-default',
+					 buttonText: function(options) {
+						if (options.length == 0) {
+
+							return '(Optional) <b class="caret"></b><input type="hidden" name="' + tagName + '" value="" />'; // send empty value to server so value is saved.
+						}
+						else if (options.length > 5) {
+							return options.length + ' selected <b class="caret"></b>';
+						}
+						else {
+							var selected = '';
+							options.each(function() {
+								selected += $(this).text() + ', ';
+							});
+							return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+						}
+					},
+
+
+					});
 			}
+			
+
+			/*            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            }*/
 			
 		});
 		
@@ -737,6 +794,21 @@ $(document).ready(function()
 			//	$(selector).removeAttr("checked");
 			}
 		});
+
+
+    $("ul.col-selection input[type='checkbox']").click(function(evt){
+
+        if(this.checked)
+        {
+             $(this).closest("label").addClass( "active", 0 );
+        //    $(this).closest("tr.even").switchClass( "even", "highlight-even", 50 );
+        }
+        else
+        {
+            $(this).closest("label").removeClass( "active", 0 );
+        }
+
+    });
 		
 		// highlight checked row
 		$(".adminlist input[type='checkbox']").click(function(evt){
@@ -777,6 +849,20 @@ $(document).ready(function()
             target      = $(this).attr("data-target");
             toconvert   = $('#'+src).val();
             script      = window.location;
+            confirmation = $(this).attr("data-sef-generate-confirm");
+            targetLength = $('#'+target).val().length ;
+
+            if(confirmation !== undefined && targetLength > 0)
+			{
+				answer = confirm(confirmation);
+
+				if(answer === false)
+				{
+					return;
+				}
+			}
+
+
 
             $.ajax({
                 type: "POST",
@@ -804,10 +890,22 @@ $(document).ready(function()
 
 
 		$('body').on('slid.bs.carousel', '.carousel', function(){
-		  var currentIndex = $(this).find('.active').index();
-		  var text = (currentIndex + 1);
-		  var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
-		  $('#'+id).text(text);
+
+			var label = $(this).find('.carousel-item.active').attr('data-label');
+			var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
+
+			if(label !== undefined)
+			{
+				$('#'+id).text(label);
+			}
+			else
+			{
+				var currentIndex = $(this).find('.active').index();
+				var text = (currentIndex + 1);
+
+				$('#'+id).text(text);
+			}
+
 
 			// this takes commented content for each carousel slide and enables it, one slide at a time as we scroll.
 

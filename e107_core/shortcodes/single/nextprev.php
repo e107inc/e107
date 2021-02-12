@@ -55,7 +55,7 @@
  * @param string $parm
  * @return string page navigation bar HTML
  */
-function nextprev_shortcode($parm = '')
+function nextprev_shortcode($parm = null)
 {
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
@@ -76,7 +76,7 @@ function nextprev_shortcode($parm = '')
 		}
 
 		// Calculate
-		$total_items = intval($parm['total']);
+		$total_items = isset($parm['total']) ? (int) $parm['total'] : 0;
 
 		if(empty($total_items))
 		{
@@ -86,7 +86,7 @@ function nextprev_shortcode($parm = '')
 
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
+		if(!empty($parm['glyphs']) && (deftrue('BOOTSTRAP')))
 		{
 			if(deftrue('FONTAWESOME'))
 			{
@@ -260,7 +260,7 @@ function nextprev_shortcode($parm = '')
 		// caption, e.g. 'Page 1 of 20' box
 		if($e_vars->caption)
 		{
-			$ret .= $tp->simpleParse($tmpl[$tprefix.'nav_caption'], $e_vars);
+			$ret .= $tp->simpleParse(varset($tmpl[$tprefix.'nav_caption']), $e_vars);
 		}
 
 		$ret_array = array();
@@ -440,7 +440,8 @@ function nextprev_shortcode($parm = '')
 		else // new - page support in format 'p:1'
 		{
 			$perpage = 1;
-			$current_start = intval(array_pop(explode(':', $p[2], 2)));
+			$exp            = explode(':', $p[2], 2);
+			$current_start = intval(array_pop($exp));
 			$current_page = $current_start;
 			$total_pages = $total_items;
 			$index_add = 1;
@@ -583,7 +584,7 @@ function nextprev_shortcode($parm = '')
 
 
 
-		if($cached_parms = getcachedvars('nextprev'))
+		if($cached_parms = e107::getRegistry('nextprev'))
 		{
 			$tmp = $cached_parms;
 			foreach($tmp as $key => $val)

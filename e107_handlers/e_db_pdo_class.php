@@ -1,20 +1,21 @@
 <?php
 /**
- * Created by PhpStorm.
- * Date: 2/8/2019
- * Time: 11:46 AM
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * PDO MySQL Handler
  */
 
 // Legacy Fix.
-define('MYSQL_ASSOC', 1);
-define('MYSQL_NUM', 2);
-define('MYSQL_BOTH', 3);
-define('ALLOW_AUTO_FIELD_DEFS', true);
+defined('MYSQL_ASSOC') or define('MYSQL_ASSOC', 1);
+defined('MYSQL_NUM') or define('MYSQL_NUM', 2);
+defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
-
-
 
 /**
  * PDO MySQL class. All legacy mysql_ methods removed.
@@ -141,7 +142,7 @@ class e_db_pdo implements e_db
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
-	 * @param string $newLink force a new link connection if TRUE. Default false
+	 * @param bool $newLink force a new link connection if TRUE. Default false
 	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
@@ -167,7 +168,7 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			$this->mySQLaccess = new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 		}
 		catch(PDOException $ex)
 		{
@@ -221,7 +222,7 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			$this->mySQLaccess->query("use `".$database."`");
+			$this->mySQLaccess->exec("use `".$database."`");
        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
 	    }
 		catch (PDOException $e)
@@ -289,7 +290,7 @@ class e_db_pdo implements e_db
 			'dblog_ip'          => $ip,
 			'dblog_caller'      => '',
 			'dblog_title'       => $log_remark,
-			'dblog_remarks'     => $qry
+			'dblog_remarks'     => is_array($qry) ? e107::serialize($qry) : $qry
 
 		);
 
@@ -327,7 +328,7 @@ class e_db_pdo implements e_db
 		{
 			$this->dbg->log($query);
 		}
-		if ($debug !== false || strstr($_SERVER['QUERY_STRING'], 'showsql'))
+		if ($debug !== false || strpos($_SERVER['QUERY_STRING'], 'showsql') !== false)
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -349,7 +350,7 @@ class e_db_pdo implements e_db
 			{
 				foreach($query['BIND'] as $k=>$v)
 				{
-					$prep->bindValue(':'.$k, $v['value'],$v['type']);
+					$prep->bindValue(':'.$k, $v['value'], $v['type']);
 				}
 			}
 
@@ -442,6 +443,7 @@ class e_db_pdo implements e_db
 
 				if(is_array($query))
 				{
+					$query['BIND'] = isset($query['BIND']) ? $query['BIND'] : null;
 					$query = "PREPARE: " . $query['PREPARE'] . "<br />BIND:" . print_a($query['BIND'], true); // ,true);
 				}
 
@@ -488,7 +490,7 @@ class e_db_pdo implements e_db
 	 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
 	 * }
 	 *
-	 * // Using whole query example, in this case default mode is 'single'
+	 * // Using whole query example, in this case default mode is 'one'
 	 * $array = e107::getDb()->retrieve('SELECT
 	 *    p.*, u.user_email, u.user_name FROM `#user` AS u
 	 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
@@ -570,7 +572,10 @@ class e_db_pdo implements e_db
 		{
 			// gen()
 			$select = false;
-			if($mode == 'one') $mode = 'single';
+			if($mode == 'one' && !preg_match('/[,*]+[\s\S]*FROM/im',$table)) // if a comma or astericks is found before "FROM" then leave it in 'one' row mode.
+			{
+			    $mode = 'single';
+			}
 		}
 		// auto detect noWhere - if where string starts with upper case LATIN word
 		elseif(!$where || preg_match('/^[A-Z]+\S.*$/', trim($where)))
@@ -579,10 +584,11 @@ class e_db_pdo implements e_db
 			$noWhere = true;
 		}
 
+
 		// execute & fetch
 		switch ($mode)
 		{
-			case 'single':
+			case 'single': // single field value returned.
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
 				{
 					return null;
@@ -595,7 +601,7 @@ class e_db_pdo implements e_db
 				return array_shift($rows);
 			break;
 
-			case 'one':
+			case 'one': // one row returned.
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
 				{
 					return array();
@@ -775,9 +781,10 @@ class e_db_pdo implements e_db
 
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && defined('ALLOW_AUTO_FIELD_DEFS') && ALLOW_AUTO_FIELD_DEFS === true)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
@@ -804,7 +811,8 @@ class e_db_pdo implements e_db
 			foreach($arg['data'] as $fk => $fv)
 			{
 				$tmp[] = ':'.$fk;
-				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk],$this->_getPDOValue($fieldTypes[$fk],$fv)));
+				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
 			}
 
 			$valList= implode(', ', $tmp);
@@ -984,9 +992,10 @@ class e_db_pdo implements e_db
 	   		if(!isset($arg['data'])) { return false; }
 
 			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			if(!isset($arg['_FIELD_TYPES']))
 			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
 			}
 
 			$fieldTypes = $this->_getTypes($arg);
@@ -1606,7 +1615,7 @@ class e_db_pdo implements e_db
 			foreach($this->mySQLtableList as $tab)
 			{
 
- 				if(substr($tab,0,4) == "lan_")
+ 				if(strpos($tab,"lan_") === 0)
 				{
 					list($tmp,$lng,$tableName) = explode("_",$tab,3);
 
@@ -2071,11 +2080,11 @@ class e_db_pdo implements e_db
 	 */
 	function escape($data, $strip = true)
 	{
-
+/*
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
-		}
+		}*/
 
 		$this->_getMySQLaccess();
 
@@ -2185,8 +2194,8 @@ class e_db_pdo implements e_db
 						$table[] = str_replace($prefix,"",$rows[0]);
 					}
 				}
-				$ret = array($language=>$table);
-				return $ret;
+
+				return array($language =>$table);
 			}
 			else
 			{
@@ -2268,13 +2277,13 @@ class e_db_pdo implements e_db
 
 			foreach($this->mySQLtableList as $tab)
 			{
-				if(substr($tab,0,4)!='lan_')
+				if(strpos($tab,'lan_') === 0)
 				{
-					$nolan[] = $tab;
+					$lan[] = $tab;
 				}
 				else
 				{
-					$lan[] = $tab;
+					$nolan[] = $tab;
 				}
 			}
 
@@ -2295,44 +2304,56 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		if($fields === '*')
-		{
-			$fields = $this->db_FieldList($table);
-			$unique = $this->_getUnique($table);
+		for ($retries = 0; $retries < 3; $retries ++) {
+			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
 
-			$flds = array();
-			// randomize fields that must be unique.
-			foreach($fields as $fld)
-			{
-				if(isset($unique[$fld]))
-				{
-					$flds[] = $unique[$fld] === 'PRIMARY' ? 0 : "'rand-".rand(0,999)."'"; // keep it short.
-					continue;
-				}
-
-				$flds[] = $fld;
+			if (empty($fieldList)) {
+				$this->mysqlLastErrText = "copyRow \$fields list was empty";
+				return false;
 			}
 
-			$fieldList = implode(",", $fields);
-			$fieldList2 = implode(",", $flds);
+			$beforeLastInsertId = $this->lastInsertId();
+			$query = "INSERT INTO " . $this->mySQLPrefix . $table .
+				"(" . $fieldList . ") SELECT " .
+				$fieldList2 .
+				" FROM " . $this->mySQLPrefix . $table .
+				" WHERE " . $args;
+			$id = $this->gen($query);
+			$lastInsertId = $this->lastInsertId();
+			if ($beforeLastInsertId !== $lastInsertId) break;
 		}
-		else
-		{
-			$fieldList = $fields;
-			$fieldList2 = $fieldList;
-		}
-
-		if(empty($fieldList))
-		{
-			$this->mysqlLastErrText = "copyRow \$fields list was empty";
-			return false;
-		}
-
-		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList2." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
-		$lastInsertId = $this->lastInsertId();
 
 		return ($id && $lastInsertId) ? $lastInsertId : false;
+	}
 
+	/**
+	 * Determine before and after fields for a table
+	 * @param $table string Table name, without the prefix
+	 * @param $fields string Field list in query format (i.e. separated by commas) or all of them ("*")
+	 * @return array Index 0 is before and index 1 is after
+	 */
+	private function generateCopyRowFieldLists($table, $fields)
+	{
+		if ($fields !== '*') return array($fields, $fields);
+
+		$fieldList = $this->db_FieldList($table);
+		$unique = $this->_getUnique($table);
+
+		$flds = array();
+		// randomize fields that must be unique.
+		foreach ($fieldList as $fld) {
+			if (isset($unique[$fld])) {
+				$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+					"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
+				continue;
+			}
+
+			$flds[] = $fld;
+		}
+
+		$fieldList = implode(",", $fieldList);
+		$fieldList2 = implode(",", $flds);
+		return array($fieldList, $fieldList2);
 	}
 
 
@@ -2362,7 +2383,7 @@ class e_db_pdo implements e_db
 			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
+			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
 		}
 		else
 		{
@@ -2412,7 +2433,7 @@ class e_db_pdo implements e_db
 
 	//	$dbtable 		= $this->mySQLdefaultdb;
 		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table;
-		$fileName	 	= preg_replace('/[^\w]/i',"",$fileName);
+		$fileName	 	= preg_replace('/[\W]/',"",$fileName);
 
 		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
 
@@ -2432,9 +2453,7 @@ class e_db_pdo implements e_db
 		}
 
 
-        include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
-
-        $config = e107::getMySQLConfig();
+   //     include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
 
 		$dumpSettings = array(
 	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
@@ -2456,13 +2475,13 @@ class e_db_pdo implements e_db
 
         foreach($tableList as $tab)
         {
-            $dumpSettings['include-tables'][] = $config['mySQLprefix'].trim($tab);
+            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim($tab);
         }
 
 
         try
         {
-            $dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host='.$config['mySQLserver'].';dbname='.$config['mySQLdefaultdb'], $config['mySQLuser'], $config['mySQLpassword'], $dumpSettings);
+            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings);
 		    $dump->start($backupFile);
 		    return $backupFile;
 		}
@@ -2660,7 +2679,7 @@ class e_db_pdo implements e_db
 			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
 			$temp = file_get_contents($defFile);
 			// Strip any comments  (only /*...*/ supported)
-			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
+			$temp = preg_replace("#\/\*.*?\*\/#ms", '', $temp);
 			//echo "Check: {$defFile}, {$tableName}<br />";
 			if ($temp !== false)
 			{
@@ -2705,62 +2724,12 @@ class e_db_pdo implements e_db
 		$dbAdm = new db_table_admin();
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
+		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
+		if (!$fieldDefs) return false;
 
-		$outDefs = array();
+		$outDefs = $dbAdm->make_field_types($fieldDefs);
 
-
-		foreach ($fieldDefs as $k => $v)
-		{
-			switch ($v['type'])
-			{
-				case 'field' :
-					if (vartrue($v['autoinc']))
-					{
-						//break;		Probably include autoinc fields in array
-					}
-
-					$baseType = preg_replace('#\(\d+?\)#', '', $v['fieldtype']);		// Should strip any length
-
-					switch ($baseType)
-					{
-						case 'int' :
-						case 'integer':
-						case 'smallint':
-						case 'shortint' :
-						case 'tinyint' :
-						case 'mediumint':
-							$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
-							break;
-
-						case 'char' :
-						case 'text' :
-						case 'varchar' :
-						case 'tinytext' :
-						case 'mediumtext' :
-						case 'longtext' :
-							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues.
-							break;
-					}
-
-				//	if($v['name'])
-
-
-					if (isset($v['nulltype']) && !isset($v['default']))
-					{
-						$outDefs['_NOTNULL'][$v['name']] = '';
-					}
-					break;
-				case 'pkey' :
-				case 'ukey' :
-				case 'key' :
-				case 'ftkey' :
-					break;			// Do nothing with keys for now
-				default :
-					echo "Unexpected field type: {$k} => {$v['type']}<br />";
-			}
-		}
-	//	$array = e107::getArrayStorage();
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
@@ -2785,19 +2754,11 @@ class e_db_pdo implements e_db
 	 */
 	private function _getMySQLaccess()
 	{
-		/*if (!$this->mySQLaccess) {
-			global $db_ConnectionID;
-			$this->mySQLaccess = $db_ConnectionID;
-			debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-
-		}*/
-		
 		if (!$this->mySQLaccess)
 		{
-		//	debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-			$this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
-			$this->database($this->mySQLdefaultdb);
-			//$this->mySQLaccess = e107::getDb()->get_mySQLaccess();
+			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
+			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
+			if (!$success) throw new PDOException($this->mySQLlastErrText);
 		}
 	}
 

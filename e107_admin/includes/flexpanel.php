@@ -102,6 +102,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	 */
 	public function render()
 	{
+		/** @var admin_shortcodes $admin_sc */
 		$admin_sc = e107::getScBatch('admin');
 		$tp = e107::getParser();
 		$ns = e107::getRender();

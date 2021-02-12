@@ -106,6 +106,12 @@ class e_url
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		if(empty($this->_request)) // likely 'index.php' ie. the home page.
+		{
+			$this->_request = e107::getFrontPage();
+			e107::canonical('_SITEURL_');
+		}
+
 		if(empty($this->_config) || empty($this->_request) || $this->_request === 'index.php' || $this->isLegacy() === true)
 		{
 			return false;
@@ -183,6 +189,21 @@ class e_url
 						define('e_CURRENT_PLUGIN', $plug);
 						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
 						define('e_URL_LEGACY', $redirect);
+						if(!defined('e_PAGE'))
+						{
+							define('e_PAGE', basename($file));
+						}
+
+
+						$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));
+						$fpPref = e107::getFrontpage();
+
+						if($fpUrl === $fpPref)
+						{
+
+						}
+						unset($fpUrl, $fpPref);
+
 
 						$this->_include= $file;
 						return true;
@@ -393,7 +414,7 @@ class eFront
 		
 		$router = new eRouter();
 		$this->setRouter($router);
-		
+
 		/** @var eResponse $response */
 		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);
@@ -568,9 +589,8 @@ class eDispatcher
 		
 		$controller->dispatch($actionName);
 		
-		$content = ob_get_contents();
-		ob_end_clean();
-		
+		$content = ob_get_clean();
+
 		$response->appendBody($content);
 		unset($controller);
 	}
@@ -886,6 +906,8 @@ class eDispatcher
 			
 			if(!class_exists($className, false)) return null;
 		}
+
+		/** @var eUrlConfig $obj */
 		$obj = new $className();
 		$obj->init();
 		self::$_configObjects[$reg] = $obj;
@@ -1043,7 +1065,7 @@ class eRouter
 	protected function _init()
 	{
 		// Gather all rules, add-on info, cache, module for main namespace etc
-		$this->_loadConfig()
+		$this->loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
 		$this->setMainModule(e107::getPref('url_main_module', ''));
@@ -1094,12 +1116,23 @@ class eRouter
 	 * Load config and url rules, if not available - build it on the fly
 	 * @return eRouter
 	 */
-	protected function _loadConfig()
+	public function loadConfig($forceRebuild = false)
 	{
-		if(!is_readable(e_CACHE_URL.'config.php')) $config = $this->buildGlobalConfig();
-		else $config = include(e_CACHE_URL.'config.php');
-		
-		if(!$config) $config = array();
+
+		if(!is_readable(e_CACHE_URL . 'config.php') || $forceRebuild == true)
+		{
+			$config = $this->buildGlobalConfig();
+		}
+		else
+		{
+			$config = include(e_CACHE_URL . 'config.php');
+		}
+
+		if(empty($config))
+		{
+			trigger('URL Config is empty', E_USER_NOTICE);
+			$config = array();
+		}
 		
 		$rules = array();
 		
@@ -1110,6 +1143,7 @@ class eRouter
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
+
 		$this->setRuleSets($rules);
 
 		return $this;
@@ -1120,15 +1154,20 @@ class eRouter
 		if(file_exists(e_CACHE_URL.'config.php'))
 		{
 			@unlink(e_CACHE_URL.'config.php');	
-		}			
+		}
 	}
-	
+
 	/**
 	 * Build unified config.php
 	 */
 	public function buildGlobalConfig($save = true)
 	{
 		$active = e107::getPref('url_config', array());
+
+		if(empty($active))
+		{
+			trigger_error('url_config pref is empty', E_USER_NOTICE);
+		}
 		
 		$config = array();
 		foreach ($active as $module => $location) 
@@ -1233,6 +1272,7 @@ class eRouter
 	{
 		$f = e107::getFile();
 		$ret = array('core' => array(), 'plugin' => array(), 'override' => array());
+		$plugins = array();
 		
 		if($type == 'all' || $type = 'core')
 		{
@@ -1848,7 +1888,7 @@ class eRouter
 			eFront::isLegacy(varset($config['legacy']));
 			
 			// Don't allow single entry if required by module config
-			if(vartrue($config['noSingleEntry']))
+			if(!empty($config['noSingleEntry']))
 			{
 				$request->routed = true;
 				if(!eFront::isLegacy())
@@ -1879,10 +1919,10 @@ class eRouter
 			}
 			
 			// parse callback
-			if(vartrue($config['selfParse']))
+			if(!empty($config['selfParse']))
 			{
 				// controller/action[/additional/parms]
-				if(vartrue($config['urlSuffix'])) $rawPathInfo = $this->removeUrlSuffix($rawPathInfo, $config['urlSuffix']);
+				if(!empty($config['urlSuffix'])) $rawPathInfo = $this->removeUrlSuffix($rawPathInfo, $config['urlSuffix']);
 				$route = $this->configCallback($module, 'parse', array($rawPathInfo, $_GET, $request, $this, $config), $config['location']);
 			}
 			// default module route
@@ -1931,7 +1971,7 @@ class eRouter
 									if(isset($_GET[$key]) && !$request->isRequestParam($key))
 									{
 										// sanitize
-										$vars->$key = preg_replace('/[^\d\w\-]/', '', $_GET[$key]); 
+										$vars->$key = preg_replace('/[^\w\-]/', '', $_GET[$key]);
 									}
 								}
 							}
@@ -2172,7 +2212,7 @@ class eRouter
 		$urlSuffix = '';
 		
 		// Fix base url for legacy links
-		if(vartrue($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
+		if(!empty($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
 		elseif(self::FORMAT_GET !== $config['format'])
 		{
 			$urlSuffix = $this->urlSuffix;
@@ -2180,7 +2220,7 @@ class eRouter
 		} 
 		
 		// Create by config callback
-		if(vartrue($config['selfCreate']))
+		if(!empty($config['selfCreate']))
 		{
 			$tmp = $this->configCallback($module, 'create', array(array($route[1], $route[2]), $params, $options), $config['location']); 
 			
@@ -2252,7 +2292,7 @@ class eRouter
 		# Modify params if required
 		if($params) 
 		{
-			if(varset($config['mapVars']))
+			if(!empty($config['mapVars']))
 			{
 				foreach ($config['mapVars'] as $srcKey => $dstKey)
 				{
@@ -2260,6 +2300,10 @@ class eRouter
 					{
 						$params[$dstKey] = $params[$srcKey];
 						unset($params[$srcKey]);
+					}
+					else
+					{
+						trigger_error("Missing ".$srcKey." during URL creation in ".$module, E_USER_NOTICE);
 					}
 				}	
 			}
@@ -2275,7 +2319,14 @@ class eRouter
 				$params = array();
 				foreach ($config['allowVars'] as $key)
 				{
-					if(isset($copy[$key])) $params[$key] = $copy[$key];
+					if(isset($copy[$key]))
+					{
+						$params[$key] = $copy[$key];
+					}
+					else
+					{
+						trigger_error("Missing ".$key." during URL creation in ".$module, E_USER_NOTICE);
+					}
 				}
 				unset($copy);
 			}
@@ -2370,7 +2421,7 @@ class eRouter
 		if ('' === $pathInfo) return;
 		
 		if ($equal != $ampersand) $pathInfo = str_replace($equal, $ampersand, $pathInfo);
-		$segs = explode($ampersand, $pathInfo.$ampersand);
+	//	$segs = explode($ampersand, $pathInfo.$ampersand);
 		
 		$segs = explode('/', $pathInfo);
 		$ret = array();
@@ -3018,7 +3069,7 @@ class eController
 	 * Add document title
 	 * @param string $title
 	 * @param boolean $meta auto-add it as meta-title
-	 * @return eResponse
+	 * @return eController
 	 */
 	public function addTitle($title, $meta = true)
 	{
@@ -3152,7 +3203,7 @@ class eController
      */
     public function __call($methodName, $args)
     {
-        if ('action' == substr($methodName, 0, 6)) 
+        if (strpos($methodName, 'action') === 0)
         {
             $action = substr($methodName, 6);
             throw new eException('Action "'.$action.'" does not exist', 2404);
@@ -3689,7 +3740,7 @@ class eRequest
 	/**
 	 * Set current route
 	 * @param string $route module/controller/action
-	 * @return eRequest
+	 * @return array|eRequest
 	 */
 	public function setRoute($route)
 	{
@@ -3757,7 +3808,7 @@ class eRequest
 	/**
 	 * Populate module, controller and action from route string
 	 * @param string $route
-	 * @return array route data
+	 * @return array|eRequest
 	 */
 	public function initFromRoute($route)
 	{
@@ -3958,9 +4009,10 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
-	protected $_meta_name_only = array('keywords', 'viewport'); // Keep FB happy.
+	protected $_meta_name_only = array('keywords', 'viewport', 'robots'); // Keep FB happy.
 	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
 	protected $_meta = array();
+	protected $_meta_robot_types = array('noindex'=>'NoIndex', 'nofollow'=>'NoFollow','noarchive'=>'NoArchive','noimageindex'=>'NoImageIndex' );
 	protected $_title_separator = ' &raquo; ';
 	protected $_content_type = 'html';
 	protected $_content_type_arr =  array(
@@ -3979,7 +4031,23 @@ class eResponse
 		'jsonNoTitle' => false,
 		'jsonRender' => false,
 	);
-	
+
+	public function getRobotTypes()
+	{
+		return $this->_meta_robot_types;
+	}
+
+	public function getRobotDescriptions()
+	{
+		$_meta_robot_descriptions = array(
+			'noindex'       => LAN_ROBOTS_NOINDEX,
+			'nofollow'      => LAN_ROBOTS_NOFOLLOW,
+			'noarchive'     => LAN_ROBOTS_NOARCHIVE,
+			'noimageindex'  => LAN_ROBOTS_NOIMAGE );
+
+		return $_meta_robot_descriptions;
+	}
+
 	public function setParam($key, $value)
 	{
 		$this->_params[$key] = $value;
@@ -4048,8 +4116,8 @@ class eResponse
 	
 	/**
 	 * Append content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	public function appendBody($body, $ns = 'default')
@@ -4065,8 +4133,8 @@ class eResponse
 	
 	/**
 	 * Set content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	public function setBody($body, $ns = 'default')
@@ -4128,8 +4196,8 @@ class eResponse
 	
 	/**
 	 * Prepend content
-	 * @param str $body
-	 * @param str $ns namespace
+	 * @param string $body
+	 * @param string $ns namespace
 	 * @return eResponse
 	 */
 	function prependBody($body, $ns = 'default')
@@ -4138,7 +4206,7 @@ class eResponse
 		{
 			$this->_body[$ns] = '';
 		}
-		$this->_body[$ns] = $content.$this->_body[$ns];
+		// $this->_body[$ns] = $content.$this->_body[$ns];
 		
 		return $this;
 	}
@@ -4296,7 +4364,10 @@ class eResponse
 		
 		//TODO need an option that allows subsequent entries to overwrite existing ones. 
 		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data. 
-		
+
+
+
+
 		$attr = array();
 				
 		if(null !== $name)
@@ -4322,8 +4393,20 @@ class eResponse
 			if(!empty($attr))  $attr = array_merge($attr, $extended);
 			else $attr = $extended;
 		}
-		
-		if(!empty($attr)) $this->_meta[] = $attr;
+
+
+		if(!empty($attr))
+		{
+			if($name === 'keywords') // prevent multiple keyword tags.
+			{
+			    $this->_meta['keywords'] = $attr;
+			}
+			else
+			{
+				$this->_meta[] = $attr;
+			}
+		}
+
 		return $this;
 	}
 	
@@ -4336,6 +4419,23 @@ class eResponse
 		$attrData = '';
 
 		e107::getEvent()->trigger('system_meta_pre', $this->_meta);
+
+		$pref = e107::getPref();
+
+		if(!empty($pref['meta_keywords'][e_LANGUAGE])) // Always append (global) meta keywords to the end.
+		{
+			$tmp1 = (array) explode(",", $this->getMetaKeywords());
+			$tmp2 = (array) explode(",", $pref['meta_keywords'][e_LANGUAGE]);
+
+			$tmp3 = array_unique(array_merge($tmp1,$tmp2));
+
+			$this->setMeta('keywords', implode(',',$tmp3));
+		}
+
+
+
+		e107::getDebug()->log($this->_meta);
+
 
 		foreach ($this->_meta as $attr)
 		{
@@ -4400,12 +4500,17 @@ class eResponse
 	 * @param string $title
 	 * @return eResponse
 	 */
-	function addMetaTitle($title)
+	public function addMetaTitle($title, $reset=false)
 	{
+		if($reset)
+		{
+			$this->_e_PAGETITLE = array();
+		}
+
 		return $this->addMetaData('e_PAGETITLE', $title);
 	}
 
-	function getMetaTitle()
+	public function getMetaTitle()
 	{
 		return $this->getMetaData('e_PAGETITLE', $this->_meta_title_separator);
 	}
@@ -4562,7 +4667,7 @@ class eResponse
 		$override = array_merge(array(
 			'header' => $title,
 			'body' => $content,
-			'footer' => $statusText,
+		//	'footer' => $statusText, // FIXME $statusText has no value.
 		), $override);
 		echo $jshelper->buildJsonResponse($override);
 		$jshelper->sendJsonResponse(null);
@@ -4709,7 +4814,7 @@ class eHelper
 
 		$title = str_replace(array('/',' ',","),' ',$title);
 		$title = str_replace(array("&","(",")"),'',$title);
-		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = preg_replace('/[^\w\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---
 
@@ -4944,7 +5049,7 @@ class eHelper
 	 */
 	public static function removeTrackers($get = array())
 	{
-		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign','elan');
+		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign','elan', 'msclkid', 'gclid');
 
 		foreach($trackers as $val)
 		{

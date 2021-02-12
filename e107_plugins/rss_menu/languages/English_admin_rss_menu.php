@@ -104,4 +104,4 @@ define("LAN_AL_RSS_05","RSS limits updated");
 define("LAN_AL_RSS_06","RSS settings updated");
 define("LAN_AL_RSS_07","");
 */
-?>
+

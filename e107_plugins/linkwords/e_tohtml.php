@@ -6,20 +6,10 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 /**
  *	e107 Linkword plugin
- *
- *	@package	e107_plugins
- *	@subpackage	linkwords
- *	@version 	$Id$;
  *
  *	'Hook' page
  *	The class is 'hooked' by the parser, to add linkword capability to any context where its enabled.
@@ -32,12 +22,12 @@ if (!defined('e107_INIT')) { exit; }
 
 define('LW_CACHE_ENABLE', FALSE);
 
-
 class e_tohtml_linkwords
 {
 	protected $lw_enabled = FALSE;		// Default to disabled to start
 	var $lwAjaxEnabled = FALSE;		// Adds in Ajax-compatible links
 	var $utfMode	= '';			// Flag to enable utf-8 on regex
+	
 	protected $word_list 	= array();		// List of link words/phrases
 	var $link_list	= array();		// Corresponding list of links to apply
 	var $ext_list	= array();		// Flags to determine 'open in new window' for link
@@ -53,13 +43,10 @@ class e_tohtml_linkwords
 	protected $word_limit   = array();
 //	protected $maxPerWord   = 3;
 
-
 	public function enable()
 	{
 		$this->lw_enabled = true;
 	}
-
-
 
 	public function setWordData($arr = array())
 	{
@@ -72,7 +59,6 @@ class e_tohtml_linkwords
 			$this->word_limit[] = $val['limit'];
 		}
 	}
-
 
 	public function setAreaOpts($arr = array())
 	{
@@ -89,16 +75,13 @@ class e_tohtml_linkwords
 	/* constructor */
 	function __construct()
 	{
-
-
-
-		$tp = e107::getParser();
-	    $pref = e107::pref('core');
-	    $frm = e107::getForm();
+		$tp 	= e107::getParser();
+	    $pref 	= e107::pref('core');
+	    $frm 	= e107::getForm();
 
 	//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
 		$this->customClass      = vartrue($pref['lw_custom_class'],'');
-		$this->area_opts        = $pref['lw_context_visibility'];
+		$this->area_opts        = varset($pref['lw_context_visibility']);
 		$this->utfMode          = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex //@TODO utfMode probably obsolete
 		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
 
@@ -243,14 +226,13 @@ class e_tohtml_linkwords
 			$this->area_opts = array();
 		}
 
-
 		if (!$this->lw_enabled || empty($this->area_opts) || !array_key_exists($area,$this->area_opts) || !$this->area_opts[$area])
 		{
-		//	e107::getDebug()->log("Link words skipped on ".substr($text, 0, 50));
+			// e107::getDebug()->log("Link words skipped on ".substr($text, 0, 50));
 		    return $text;		// No linkwords in disabled areas
 		}
 	
-// Split up by HTML tags and process the odd bits here
+		// Split up by HTML tags and process the odd bits here
 		$ptext = "";
 		$lflag = FALSE;
 
@@ -274,9 +256,10 @@ class e_tohtml_linkwords
 				else
 				{
 					if (trim($cont))
-					{  // Some non-white space - worth word matching
+					{  
+						// Some non-white space - worth word matching
 						$ptext .= $this->linksproc($cont,0,count($this->word_list));
-//						echo "Check linkwords: ".count($this->word_list).'<br />';
+						// echo "Check linkwords: ".count($this->word_list).'<br />';
 					}
 					else
 					{
@@ -303,15 +286,11 @@ class e_tohtml_linkwords
 		$tp = e107::getParser();
 		$doSamePage = !e107::getPref('lw_notsamepage');
 
-		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
-//		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-
-
-
-		while (($first < $limit) && (strpos($tp->ustrtolower($text),$this->word_list[$first]) === false))
+		for (; $first < $limit; $first ++)
 		{
-			$first++;
-		}		// *utf
+			if (empty($this->word_list[$first])) continue;
+			if (strpos($tp->ustrtolower($text), $this->word_list[$first]) !== false) break;
+		}
 
 		if ($first == $limit)
 		{
@@ -327,12 +306,10 @@ class e_tohtml_linkwords
 		$ret = '';
 		$linkwd = '';
 		$linkrel = array();
-//		$linkwd = "href='#' ";				// Not relevant for Prototype, but needed with 'pure' JS to make tooltip stuff work - doesn't find link elements without href
+		//		$linkwd = "href='#' ";				// Not relevant for Prototype, but needed with 'pure' JS to make tooltip stuff work - doesn't find link elements without href
 		$lwClass  = array();
 		$lw = $this->word_list[$first];		// This is the word we're matching - in lower case in our 'master' list
 		$tooltip = '';
-
-
 
 		if ($this->tip_list[$first])
 		{	// Got tooltip
@@ -363,10 +340,11 @@ class e_tohtml_linkwords
 			$lwClass[] = $this->word_class[$first];
 		}
 
-		if (!count($lwClass))
-		{
-	//		return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
-		}
+	//	if (!count($lwClass))
+	//	{
+			//	return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
+	//	}
+
 		if (count($linkrel))
 		{
 			$linkwd .= " rel='".implode(' ',$linkrel)."'";
@@ -374,7 +352,7 @@ class e_tohtml_linkwords
 
 		// This splits the text into blocks, some of which will precisely contain a linkword
 		$split_line = preg_split('#\b('.$lw.')(\s|\b)#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
-	//	$class = "".implode(' ',$lwClass)."' ";
+		//	$class = "".implode(' ',$lwClass)."' ";
 		$class = implode(' ',$lwClass);
 
 		$hash = md5($lw);
@@ -386,10 +364,8 @@ class e_tohtml_linkwords
 
 		foreach ($split_line as $count=>$sl)
 		{
-
 			if ($tp->ustrtolower($sl) == $lw && $this->wordCount[$hash] < (int) $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
 			{
-
 				$this->wordCount[$hash]++;
 
 				$classCount = " lw-".$this->wordCount[$hash];
@@ -417,7 +393,3 @@ class e_tohtml_linkwords
 	} 
 }
 
-
-
-
-?>

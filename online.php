@@ -26,15 +26,15 @@
 	 */
 
 	require_once('class2.php');
-	e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/lan_' . e_PAGE);
+	e107::coreLan('online');
 
 	require_once(HEADERF);
 
-	if(!$pref['track_online'])
+	if(!isset($pref['track_online']))
 	{
 		$ns->tablerender(ONLINE_EL4, ONLINE_EL16);
 		require_once(FOOTERF);
-		exit;
+		return;
 	}
 	
 	$ONLINE_TABLE = '';
@@ -65,7 +65,7 @@
 		list($oid, $oname) = explode(".", $uinfo, 2);
 		$online_location = $pinfo;
 		$online_location_page = substr(strrchr($online_location, "/"), 1);
-		if(!strstr($online_location, "forum_") || !strstr($online_location, "content.php") || !strstr($online_location, "comment.php"))
+		if(strpos($online_location, "forum_") === false || strpos($online_location, "content.php") === false || strpos($online_location, "comment.php") === false)
 		{
 			$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
 		}
@@ -180,12 +180,12 @@
 		$scArray = array();
 
 
-		if(strstr($online_location, "content.php"))
+		if(strpos($online_location, "content.php") !== false)
 		{
 			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . intval($tmp[1]) . "'");
+				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
 				$content = $sql->fetch();
 				$online_location_page = ARTICLE . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
@@ -197,7 +197,7 @@
 			}
 			elseif($tmp[0] == "review")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . intval($tmp[1]) . "'");
+				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
 				$content = $sql->fetch();
 				$online_location_page = REVIEW . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
@@ -221,7 +221,7 @@
 			}
 		}
 
-		if(strstr($online_location, "comment.php"))
+		if(strpos($online_location, "comment.php") !== false)
 		{
 			$tmp = explode(".php.", $online_location);
 			$tmp = explode(".", $tmp[1]);
@@ -253,10 +253,10 @@
 			}
 		}
 
-		if(strstr($online_location, "forum"))
+		if(strpos($online_location, "forum") !== false)
 		{
 			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
-			if(strstr($online_location, "_viewtopic"))
+			if(strpos($online_location, "_viewtopic") !== false)
 			{
 				if($tmp[2])
 				{
@@ -281,7 +281,7 @@
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
 				}
 			}
-			elseif(strstr($online_location, "_viewforum"))
+			elseif(strpos($online_location, "_viewforum") !== false)
 			{
 				$sql->select("forum", "forum_name, forum_class", "forum_id=" . intval($tmp[0]));
 				$forum = $sql->fetch();
@@ -293,7 +293,7 @@
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
 				}
 			}
-			elseif(strstr($online_location, "_post"))
+			elseif(strpos($online_location, "_post") !== false)
 			{
 				$sql->select("forum_thread", "thread_name, thread_forum_id", "thread_forum_id=" . intval($tmp[0]) . " AND thread_parent=0");
 				$forum_thread = $sql->fetch();
@@ -304,7 +304,7 @@
 			}
 		}
 
-		if(strstr($online_location, "admin"))
+		if(strpos($online_location, "admin") !== false)
 		{
 			$class_check = false;
 			$online_location_page = ADMINAREA;
@@ -322,12 +322,12 @@
 	}
 
 
-	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = ONLINE_EL1 . GUESTS_ONLINE;
+	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = defset('ONLINE_EL1') . GUESTS_ONLINE;
 	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = ONLINE_EL2 . MEMBERS_ONLINE;
 
 	if(!isset($gen) || !is_object($gen))
 	{
-		$gen = new convert;
+		$gen = e107::getDate();
 	}
 
 	$siteHistory = e107::getConfig('history')->getPref('');
@@ -339,6 +339,7 @@
 	$scArray['ONLINE_TABLE_MOST_GUESTS_ONLINE'] = ONLINE_EL1 . $siteHistory['most_guests_online'];
 	$scArray['ONLINE_TABLE_DATESTAMP'] = $datestamp;
 
+	$sql = e107::getDb();
 	$total_members = $sql->count("user", "(*)", "where user_ban = 0");
 
 	if($total_members > 1)

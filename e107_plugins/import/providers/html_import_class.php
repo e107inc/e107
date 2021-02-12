@@ -6,12 +6,6 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/import/wordpress_import_class.php,v $
- * $Revision: 11315 $
- * $Date: 2010-02-10 10:18:01 -0800 (Wed, 10 Feb 2010) $
- * $Author: secretr $
  */
 
 //$import_class_names['html_import'] 		= 'HTML';
@@ -19,7 +13,7 @@
 //$import_class_support['html_import'] 	= array('news','page');
 //$import_default_prefix['html_import'] 	= '';
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class html_import extends base_import_class
 {
@@ -38,11 +32,18 @@ class html_import extends base_import_class
 	private $localPath	= '';
 	private $content 	= array();
 	private $contentArray = array();
-	
+
+
 	function init()
 	{
 		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
 		$this->feedUrl 	= rtrim($this->feedUrl,"/");
+
+		if(!extension_loaded("tidy")) 
+		{
+			$this->useTidy = false;
+			e107::getMessage()->addWarning("PHP Tidy extension is NOT loaded!");
+		}
 		
 		if($_POST['preview'])
 		{
@@ -54,9 +55,8 @@ class html_import extends base_import_class
 		{
 			$import = $this->sortSelection();	
 			$this->doConversion($import);
-
 		}
-		
+	
 	}
 
 
@@ -81,12 +81,8 @@ class html_import extends base_import_class
 	
 	function doConversion($data)
 	{
-		
-		print_a($data);	
-		
+		print_a($data);
 	}
-	
-	
 	
 	
 	function config()
@@ -98,8 +94,8 @@ class html_import extends base_import_class
 	}
 	
 
-  // Set up a query for the specified task.
-  // Returns TRUE on success. FALSE on error
+  	// Set up a query for the specified task.
+  	// Returns TRUE on success. FALSE on error
 	function setupQuery($task, $blank_user=FALSE)
 	{
 		$this->arrayData = array();
@@ -138,18 +134,15 @@ class html_import extends base_import_class
 		$this->copyUserInfo = !$blank_user;
 		$this->currentTask = $task;
 		return TRUE;
-  }
+  	}
 
-  
-  
-  
-  
   
 	private function getAll($root = '')
 	{
 		$html = $this->getRawHtml($root);
 		$pages = $this->findLinks($html);
 		$c = 0;
+
 		foreach($pages as $url=>$p)
 		{
 			// echo "url=".$url;
@@ -163,7 +156,7 @@ class html_import extends base_import_class
 		
 			$this->content[$url] = array(
 				'title'	=> str_replace("\n","",$p['title']),
-		//		'raw'	=> $html,
+				// 'raw'	=> $html,
 				'body'	=> $body
 			);
 			
@@ -180,8 +173,6 @@ class html_import extends base_import_class
 		
 	}
 		
-		
-		
 				
 	private function previewContent()
 	{
@@ -191,8 +182,8 @@ class html_import extends base_import_class
 		
 		$content = $this->getAll();	
 		
-		
-		$text = "<form method='post' action='".e_SELF."?import_type=html_import' id='core-import-form'>
+		$text = "
+		<form method='post' action='".e_SELF."?import_type=html_import' id='core-import-form'>
 		<fieldset id='core-import-select-type'>
 		<legend class='e-hideme'>".DBLAN_10."</legend>
             <table class='table adminlist'>
@@ -214,9 +205,8 @@ class html_import extends base_import_class
 			<tbody>\n";
 
 
-        foreach ($content as $key=>$data)
+        foreach($content as $key=>$data)
 		{
-			
           	$text .= "<tr>
 				
 			<td>".$data['title']."</td>\n
@@ -234,7 +224,6 @@ class html_import extends base_import_class
 			 </tr>";
 		}
 
-
 		$text .= "
 				</tbody>
 			</table>
@@ -248,12 +237,10 @@ class html_import extends base_import_class
 				<input type='hidden' name='siteUrl' value='".$this->feedUrl."' />	
 			</div>
 		</fieldset>
-	</form>";
+		</form>";
 
-	$ns->tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$this->feedUrl,$text);
-		
-		
-		
+		$ns->tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$this->feedUrl,$text);
+	
 	}		
 		
 
@@ -279,9 +266,10 @@ class html_import extends base_import_class
 		
 		if($this->useTidy)
 		{
-			$tidy = new tidy();
-			$options = array("output-xhtml" => true, "clean" => true);
-			$parsed = tidy_parse_file(e_TEMP.$local_file,$options);
+			$tidy 		= new tidy();
+			$options 	= array("output-xhtml" => true, "clean" => true);
+			$parsed 	= tidy_parse_file(e_TEMP.$local_file,$options);
+
 			return $parsed->value;
 		}
 		elseif(!$html = file_get_contents(e_TEMP.$local_file))
@@ -291,10 +279,6 @@ class html_import extends base_import_class
 			
 		return $html;
 	}
-			
-	
-	
-	
 	
 			
 	private function findLinks($content,$type='html')
@@ -302,14 +286,14 @@ class html_import extends base_import_class
 		$doc = new DOMDocument(); 
 		$doc->loadHTML($content);
 		
-		$urls = $doc->getElementsByTagName('a');	
-		$pages = array();
+		$urls 	= $doc->getElementsByTagName('a');	
+		$pages 	= array();
 						
 		foreach ($urls as $u) 
 		{
-			$title = str_replace("\n","",$u->nodeValue);
-			$href = $u->attributes->getNamedItem('href')->value;
-			$href = ltrim(str_replace($this->feedUrl,"",$href),"/");	
+			$title 	= str_replace("\n","",$u->nodeValue);
+			$href 	= $u->attributes->getNamedItem('href')->value;
+			$href 	= ltrim(str_replace($this->feedUrl,"",$href),"/");	
 			
 			if($type == 'html' && (substr($href,-5,5)=='.html' || substr($href,-4,4)=='.htm'))
 			{	
@@ -321,8 +305,6 @@ class html_import extends base_import_class
 		
 	}	
 		
-
-
 
   //------------------------------------
   //	Internal functions below here
@@ -379,7 +361,7 @@ class html_import extends base_import_class
 		//	$target['news_extended']			= '';
 		$target['news_meta_keywords']			= implode(",",$keywords);
 		//	$target['news_meta_description']	= '';
-			$target['news_datestamp']			= strtotime($source['pubDate'][0]);
+		$target['news_datestamp']				= strtotime($source['pubDate'][0]);
 		//	$target['news_author']				= $source['post_author'];
 		//	$target['news_category']			= '';
 		//	$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
@@ -393,7 +375,6 @@ class html_import extends base_import_class
 		//	$target['news_sticky']				= '';
 
 		
-		
 		return $target;  // comment out to debug 
 		
 		$this->renderDebug($source,$target);
@@ -403,8 +384,13 @@ class html_import extends base_import_class
 	}
 
 
-	function process($type='description',$source)
+	function process($type, $source)
 	{
+		if(empty($type))
+		{
+			$type = 'description';
+		}
+
 		switch ($type) 
 		{			
 			case 'category':
@@ -489,7 +475,6 @@ class html_import extends base_import_class
 	//	$target['link_sefurl']			= $source['post_password'];
 		
 		
-		
 		return $target;  // comment out to debug 
 			
 		$this->renderDebug($source,$target);
@@ -547,10 +532,6 @@ class html_import extends base_import_class
 	
 
 	
-	
-	
-	
-	
 	function renderDebug($source,$target)
 	{
 		
@@ -571,4 +552,3 @@ class html_import extends base_import_class
 }
 
 
-?>

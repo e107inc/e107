@@ -16,13 +16,16 @@ if(!defined('USER_AREA'))
 	//overload is now possible, prevent warnings
 	define('USER_AREA',TRUE);
 }
-define('ADMIN_AREA',FALSE);
+if(!defined('ADMIN_AREA'))
+{
+	define('ADMIN_AREA', false);
+}
 
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 
-$sql->db_Mark_Time('(Header Top)');
-
+e107::getDebug()->logTime('(Header Top)');
+e107::getRender()->init();
 
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
@@ -79,33 +82,6 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 // A: Define themeable header parsing
 //
 
-if (!function_exists("parseheader")) 
-{
-	function parseheader($LAYOUT, $opts=array())
-	{
-		$tp 	= e107::getParser();
-		$tmp 	= explode("\n", $LAYOUT);
-
-		$sc = e107::getScBatch('_theme_');
-
-		$search = array_keys($opts);
-		$replace = array_values($opts);
-		
-		foreach ($tmp as $line) 
-		{
-			$line = str_replace($search, $replace, $line); // Quick-fix allow for use of {THEME} shortcode.
-
-			if (preg_match("/{.+?}/", $line))
-			{
-				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
-			} 
-			else 
-			{
-				echo $line."\n"; // retain line-breaks. 
-			}
-		}
-	}
-}
 
 //
 // B: Send HTTP headers (these come before ANY html)
@@ -116,8 +92,10 @@ if (!function_exists("parseheader"))
 //if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml"))
 //  header("Content-type: application/xhtml+xml; charset=utf-8", TRUE);
 //else
-  header("Content-type: text/html; charset=utf-8", TRUE);
-
+if(!e107::isCli())
+{
+	header("Content-type: text/html; charset=utf-8", true);
+}
 // NEW - HTML5 default
 // TODO - more precise controlo over page header depending on the HTML5 mode
 if(!defined("XHTML4"))
@@ -139,6 +117,14 @@ else
 	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 }
 
+// Load early
+if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
+{
+	define('e_PAGETITLE', $_PAGE_TITLE);
+	unset($_PAGE_TITLE);
+}
+
+
 //
 // C: Send start of HTML
 //
@@ -147,13 +133,13 @@ if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pre
 if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if(!empty($pref['sitebutton']))
 {
-	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitebutton'],'w=800',false, true) : $tp->replaceConstants($pref['sitebutton'],'full');
+	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitebutton'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitebutton'],'full');
 	e107::meta('og:image',$siteButton);
 	unset($siteButton);
 }
 elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
 {
-	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitelogo'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitelogo'],'full');
 	e107::meta('og:image',$siteLogo);
 	unset($siteLogo);
 }
@@ -175,8 +161,8 @@ if ($e_headers && is_array($e_headers))
 }
 unset($e_headers);
 
-// echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
-echo e107::getSingleton('eResponse')->renderMeta()."\n";
+
+echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 
 if (deftrue('e_FRONTPAGE'))
 {
@@ -185,7 +171,10 @@ if (deftrue('e_FRONTPAGE'))
 }
 else
 {
-	echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	unset($_PAGE_TITLE);
 }
 
 
@@ -194,12 +183,12 @@ else
 //
 $e_js = e107::getJs();
 
-$e_pref = e107::getConfig('core');
+$e_pref = e107::getConfig();
 
 // Other Meta tags. 
 
 
-// Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
+// Register Core CSS first
 // NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
 if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==true) && defset('CORE_CSS') !== false) 
 {
@@ -210,13 +199,14 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
+	$e_js->footerFile('{e_WEB_JS}core/backcompat.js');
 }
 
 
 // re-initalize in case globals are destroyed from $e_headers includes
 $e_js = e107::getJs();
-$e_pref = e107::getConfig('core');
-
+$e_pref = e107::getConfig();
+$pref = e107::getPref();
 
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';
@@ -231,7 +221,7 @@ if (is_array($pref['e_meta_list']))
 		
 		if(is_readable($fname))
 		{
-			$ret = (!empty($e107_debug) || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 		}	
 	}
 	// content will be added later
@@ -245,7 +235,7 @@ if (is_array($pref['e_meta_list']))
 
 if(isset($pref['sitebutton']))
 {
-	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
+	$appleIcon = e107::getParser()->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
 	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
 	unset($appleIcon);
 }
@@ -310,8 +300,6 @@ else
 		}
 	}
 	
-	// FIXME: TEXTDIRECTION compatibility CSS (marj?)
-	// TODO: probably better to externalise along with some other things above
 	// possibility to overwrite some CSS definition according to TEXTDIRECTION
 	// especially usefull for rtl.css
 	// see _blank theme for examples
@@ -319,10 +307,11 @@ else
 	{
 		//echo '
 		//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
-		$e_js->themeCSS(TEXTDIRECTION.'.css', 'all');
+		$e_js->themeCSS(TEXTDIRECTION.'.css');
 	}
 }
 
+$e_js->renderLinks();
 
 //
 // Render CSS - all in once
@@ -343,7 +332,7 @@ $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library', 'othe
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
-	$e_js->renderJs($cssId, false, 'css', false);		
+	$e_js->renderJs($cssId, false, 'css');
 }
 
 unset($CSSORDER);
@@ -351,55 +340,42 @@ unset($CSSORDER);
 
 $e_js->renderCached('css');
 
-$e_js->renderLinks();
-
-/*
-$e_js->renderJs('other_css', false, 'css', false);
-echo "\n<!-- footer_other_css -->\n";
-
-// Core CSS
-$e_js->renderJs('core_css', false, 'css', false);
-echo "\n<!-- footer_core_css -->\n";
-
-// Plugin CSS
-$e_js->renderJs('plugin_css', false, 'css', false);
-echo "\n<!-- footer_plugin_css -->\n";
-
-// Theme CSS
-//echo "<!-- Theme css -->\n";
-$e_js->renderJs('theme_css', false, 'css', false);
-echo "\n<!-- footer_theme_css -->\n";
-
-
-// Inline CSS - not sure if this should stay at all!
-$e_js->renderJs('inline_css', false, 'css', false);
-echo "\n<!-- footer_inline_css -->\n";
-*/
-
-
-//
-// Style for unobtrusive JS, prevent 3rd party code overload
-//
-// require_once(e_FILE."/e_css.php"); see e107_web/css/e107.css
 
 //
 // E: Send JS all in once
 // Read here why - http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts
-// TODO - more work (zones, eplug_js, headerjs etc order, external JS/CSS)
-// TODO - mobile support
-
+function renderAllJavascript()
+{
 
 // [JSManager] Load JS Includes - Zone 1 - Before Library
-e107::getJs()->renderJs('header', 1);
-e107::getJs()->renderJs('header_inline', 1);
+	e107::getJs()->renderJs('header', 1);
+	e107::getJs()->renderJs('header_inline', 1);
 
 // Send Javascript Libraries ALWAYS (for now) - loads e_jslib.php
-$jslib = e107::getObject('e_jslib', null, e_HANDLER.'jslib_handler.php');
-$jslib->renderHeader('front', false);
+	$jslib = e107::getObject('e_jslib', null, e_HANDLER . 'jslib_handler.php');
+	$jslib->renderHeader('front', false);
 
 // [JSManager] Load JS Includes - Zone 2 - After Library
-e107::getJs()->renderJs('header', 2);
-e107::getJs()->renderJs('header_inline', 2);
+	e107::getJs()->renderJs('header', 2);
+	e107::getJs()->renderJs('header_inline', 2);
+
+// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before headerjs()
+	e107::getJs()->renderJs('header', 3);
+	e107::getJs()->renderJs('header_inline', 3);
+
+// [JSManager] Load JS Includes - Zone 4 - After headerjs
+	e107::getJs()->renderJs('header', 4);
+	e107::getJs()->renderJs('header_inline', 4);
+
+// [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
+	e107::getJs()->renderJs('header', 5);
+}
+
+if(!deftrue('e_DEBUG_JS_FOOTER'))
+{
+	renderAllJavascript();
+}
+
 
 // Send Plugin JS Files
 //DEPRECATED, $eplug_js will be removed soon - use e107::getJs()->headerPlugin('myplug', 'myplug/js/my.js');
@@ -434,8 +410,7 @@ else
  	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
 
-//FIXME - CHAP JS
-// TODO - convert it to e107::getJs()->header/footerFile() call
+// Old Deprecated CHAP Support.
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
 	if ($pref['password_CHAP'] == 2)
@@ -449,34 +424,14 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
   	$js_body_onload[] = "getChallenge();";
 }
 
-//headerjs moved below
-
-// Deprecated function finally removed
-//if(function_exists('core_head')){ echo core_head(); }
-
-// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before headerjs()
-e107::getJs()->renderJs('header', 3);
-e107::getJs()->renderJs('header_inline', 3);
-
-// [JSManager] Load JS Includes - Zone 4 - After headerjs
-e107::getJs()->renderJs('header', 4);
-e107::getJs()->renderJs('header_inline', 4);
-
-// [JSManager] Load JS Includes - Zone 5 - End of header JS, just before e_meta content and e107:loaded trigger
-e107::getJs()->renderJs('header', 5);
-
-
 //
-// F: Send Meta Tags, Icon links
+// F: Send Legacy Meta Tags, Icon links
 //
 
 // --- Send plugin Meta  --------
 echo $e_meta_content; // e_meta already loaded
 
-
-
-//
-// G: Send Theme Headers
+// G: Send Legacy Theme Headers
 //
 if(function_exists('theme_head'))
 {
@@ -487,6 +442,10 @@ if(function_exists('theme_head'))
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
+/**
+ * @param $type
+ * @return string
+ */
 function render_meta($type)
 {
 	$tp = e107::getParser();
@@ -503,12 +462,17 @@ function render_meta($type)
 
 	if($type == "tag")
 	{
-		return str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n";
+		$ret = "\n<!-- Start custom head tag -->\n";
+		$ret .= varset($pref['meta_tag'][e_LANGUAGE])."\n";
+	//	$ret .= str_replace("&lt;", "<", $pref['meta_tag'][e_LANGUAGE]."\n";
+		$ret .= "<!-- End custom head tag -->\n\n";
 	}
 	else
 	{
-		return '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
+		$ret = '<meta name="'.$type.'" content="'.$pref['meta_'.$type][e_LANGUAGE].'" />'."\n";
 	}
+
+	return $ret;
 }
 
 // legay meta-tag checks.
@@ -546,56 +510,20 @@ elseif (file_exists(e_BASE."favicon.ico"))
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
-//
-// FIXME H: Generate JS for image preloads (do we really need this?)
-/* @DEPRECATED  */
-/*
-if ($pref['image_preload'] && is_dir(THEME.'images'))
+// Theme JS
+/** const THEME_ONLOAD @deprecated */
+if (defined('THEME_ONLOAD'))
 {
-	$ejs_listpics = '';
+	trigger_error('<b>THEME_ONLOAD is deprecated.</b> Use e107::js() instead.', E_USER_DEPRECATED); // NO LAN
 
-	$handle=opendir(THEME.'images');
-	while ($file = readdir($handle)) 
-	{
-		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) 
-		{
-			$ejs_listpics .= $file.",";
-		}
-	}
-
-	$ejs_listpics = substr($ejs_listpics, 0, -1);
-	closedir($handle);
-
-	if (!isset($script_text)) $script_text = '';
-	$script_text .= "ejs_preload('".THEME_ABS."images/','".$ejs_listpics."');\n";
+	$js_body_onload[] = THEME_ONLOAD;
 }
 
-if (isset($script_text) && $script_text) 
+$body_onload = '';
+if (count($js_body_onload))
 {
-	echo "<script type='text/javascript'>\n";
-	echo "<!--\n";
-	echo $script_text;
-	echo "// -->\n";
-	echo "</script>\n";
-}*/
-
-
-//
-// FIXME - I: Calculate JS onload() functions for the BODY tag
-//
-// Fader menu
-// OLD CODE REMOVAL
-//global $eMenuActive, $eMenuArea;
-//if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
-
-// External links handling
-//$js_body_onload = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
-
-// Theme JS
-// XXX DEPRECATED $body_onload and related functionality
-if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
-$body_onload='';
-if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
+	$body_onload = " onload=\"" . implode(" ", $js_body_onload) . "\"";
+}
 
 //
 // J: Send end of <head> and start of <body>
@@ -614,10 +542,14 @@ e107Event.trigger('loaded', null, document);
 });
 ",'prototype',5);
 
-e107::getJs()->renderJs('header_inline', 5);
+if(empty($pref['jscsscachestatus'])) // render in header when cache disabled, otherwise render in footer. (see footer_default.php)
+{
+	e107::getJs()->renderCached('js');
+	e107::getJs()->renderJs('header_inline', 5);
+}
 
 
-e107::getJs()->renderCached('js');
+
 
 
 echo "</head>\n";
@@ -628,12 +560,21 @@ echo "</head>\n";
 
     $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 	$noBody = false;
-	// v2.2.2 --- Experimental --
+
+	// v2.2.2
 	if($tmp = e_theme::loadLayout(THEME_LAYOUT))
 	{
 		$LAYOUT = $tmp;
+		$HEADER = array();
+		$FOOTER = array();
 		$noBody = true;
 		unset($tmp);
+
+		if(!class_exists('theme') && ADMIN) // 2.3.0+ required class.
+        {
+            // debug - no translation needed.
+            echo "<div class='alert alert-danger'>Required class <b>theme</b> is missing. See <b>".e_THEME."bootstrap3/theme.php</b> for an example.</div>";
+        }
 	}
 
 
@@ -669,8 +610,8 @@ echo "</head>\n";
       //    echo "MODE 0.6";
         if($def == 'legacyCustom')
         {
-            $HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-            $FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+            $HEADER = isset($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+            $FOOTER = isset($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
         }
     }
     elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7/1.x themes
@@ -695,12 +636,12 @@ echo "</head>\n";
     
     if(deftrue('e_IFRAME'))
     {
-        $HEADER = deftrue('e_IFRAME_HEADER',"");
-        $FOOTER = deftrue('e_IFRAME_FOOTER',"");
+        $HEADER = deftrue('e_IFRAME_HEADER');
+        $FOOTER = deftrue('e_IFRAME_FOOTER');
         $body_onload .= " class='e-iframe'";
     }
 
-	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
+	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE'),$HEADER);
 
 	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 
@@ -708,21 +649,33 @@ if($noBody === true) // New in v2.2.2 - remove need for BODYTAG.
 {
 	echo "\n<!-- Start theme.html -->\n";
 }
-elseif(!deftrue('BODYTAG')) //TODO Discuss a better way?
+elseif(!defined('BODYTAG')) // @deprecated.
 {
+
 	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
+	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
+	{
+		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
+	}
 }
 else
 {
+	trigger_error('<b>BODYTAG is deprecated.</b> Use a theme.html file instead.', E_USER_DEPRECATED); // NO LAN
+
 	if ($body_onload)
 	{
 		// Kludge to get the CHAP code included
-		echo substr(trim(BODYTAG), 0, -1).' '.$body_onload.">\n";			// FIXME - must be a better way!
+		echo substr(trim(BODYTAG), 0, -1).' '.$body_onload.">\n";
 	}
 	else
 	{
+
 		echo BODYTAG."\n";	
+	}
+	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
+	{
+		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
 	}
 }
 
@@ -763,14 +716,16 @@ if(deftrue('BOOTSTRAP'))
 
 
 // Header included notification, from this point header includes are not possible
-define('HEADER_INIT', TRUE);
+if(!defined('HEADER_INIT'))
+{
+	define('HEADER_INIT', TRUE);
+}
 
-$sql->db_Mark_Time("Main Page Body");
+e107::getDebug()->logTime("Main Page Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)
 //
-//echo "XXX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if(!isset($e107_popup))
 {
@@ -785,10 +740,11 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
-	//XXX - remove all page detections
+e107::getDebug()->logTime('Render Layout');
+	// BC Fix
 	if (defset('e_PAGE') == 'news.php' && isset($NEWSHEADER))
 	{
-		parseheader($NEWSHEADER);
+		e107::renderLayout($NEWSHEADER);
 	}
 	else
 	{	
@@ -800,13 +756,18 @@ if ($e107_popup != 1) {
 
 
 		$psc = array(
-		'{THEME}'       => THEME_ABS,
-		'{BODY_ONLOAD}' => $body_onload,
-		'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
-		'{---MODAL---}' => $LAYOUT['_modal_'],
-		);
-		
-   		parseheader($HEADER, $psc);
+			'magicSC'=>array(
+					'{THEME}'       => THEME_ABS,
+					'{BODY_ONLOAD}' => $body_onload,
+					'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
+					'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
+					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
+			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
+					),
+			'bodyStart' => varset($pref['meta_bodystart'][e_LANGUAGE])
+			);
+
+   		e107::renderLayout($HEADER, $psc);
 
 	//	echo $HEADER;
 	}
@@ -818,11 +779,18 @@ if ($e107_popup != 1) {
 //
 // N: Send other top-of-body HTML
 //
+e107::getDebug()->logTime('Render Other');
 
 	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{
 		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
 	}
+
+	if(ADMIN && $pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
+	{
+		echo "<div class='installer alert alert-danger alert-block text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."</div>";
+	}
+
 	
 	//XXX TODO LAN in English.php 
 	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
@@ -837,12 +805,12 @@ if ($e107_popup != 1) {
      * fix - only when e_FRONTPAGE set to true
      * @see core_index_index_controller/actionIndex
      */
-    if(deftrue('e_FRONTPAGE') && strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref.
+    if(deftrue('e_FRONTPAGE') && strpos($HEADER, "{WMESSAGE") === false && strpos($FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
 
-	if(!deftrue('e_IFRAME') && (strstr($HEADER,"{ALERTS}")===false && strstr($FOOTER,"{ALERTS}")===false)) // Old theme, missing {ALERTS}
+	if(!deftrue('e_IFRAME') && (strpos($HEADER, "{ALERTS}") === false && strpos($FOOTER, "{ALERTS}") === false)) // Old theme, missing {ALERTS}
 	{
 		if(deftrue('e_DEBUG'))
 		{
@@ -852,10 +820,9 @@ if ($e107_popup != 1) {
 		echo e107::getParser()->parseTemplate("{ALERTS}");
 	}
 
-
-	if(defined("PREVIEWTHEME")) 
+	if(defined("PREVIEWTHEME"))
 	{
-		themeHandler::showPreview();
+		e_theme::showPreview();
 	}
 
 

@@ -9,7 +9,7 @@
  */
 
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class smf_import extends base_import_class
 {
@@ -490,4 +490,3 @@ CREATE TABLE {$db_prefix}members (
 }
 
 
-?>

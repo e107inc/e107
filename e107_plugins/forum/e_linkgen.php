@@ -26,4 +26,3 @@ $sublink_type['forum']['fielddiz'] = 'forum_description';
 $sublink_type['forum']['sef'] = 'forum/forum';
 
 
-?>

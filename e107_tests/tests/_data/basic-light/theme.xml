@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Basic-Light" version="1.2" date="2017-01-29" compatibility="2.0">
+	<author name ="mcpeace" email="mcpeace.manatwork@gmail.com" url="http://manatwork.info" />
+	<summary>Basic Bootstrap 3 Theme</summary>
+	<description>Basic Bootstrap 3 theme for e107 v.2</description>
+	<category>generic</category>
+    <copyright>mcpeace</copyright>
+    <complince>HTML5, CSS3</complince>
+	<screenshots>
+		<image>preview_frontend.png</image>
+	</screenshots>
+	<keywords>
+		<word>bootstrap</word>
+		<word>light</word>
+	</keywords>
+	<layouts>
+		<layout name='default' title='Default' default='true' />
+		<layout name='default-home' title='Landing Page'>
+			<custompages>FRONTPAGE</custompages>	
+		</layout>
+		<layout name='simple-page' title='Simple Page'>
+            <custompages>news.php?extend page.php? contact.php /download /gallery /chatbox_menu /pm /log</custompages>
+        </layout>
+		<layout name='wide-page' title='Wide Page'>
+            <custompages>/forum /blogcalendar_menu /calendar_menu</custompages>
+        </layout>
+	</layouts>
+</e107Theme>

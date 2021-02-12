@@ -10,7 +10,7 @@
 
 require_once('class2.php');
 e107::coreLan('search');
-e107_require(e_HANDLER.'search_class.php');
+
 
 if (!check_class($pref['search_restrict'])) 
 {
@@ -43,7 +43,7 @@ if (isset($_GET['t']) && is_numeric($_GET['t']))
 }
 
 
-class search extends e_shortcode
+class search_front extends e_shortcode
 {
 	
 	private $search_prefs = array();
@@ -61,6 +61,7 @@ class search extends e_shortcode
 								'ep' => LAN_SEARCH_26,
 								'be' => LAN_SEARCH_27
 							);
+	private $searchtype;
 	
 	function __construct()
 	{
@@ -74,9 +75,9 @@ class search extends e_shortcode
 			$SEARCH_TOP_TABLE 	= $tmp['start'];
 			$SEARCH_BOT_TABLE 	= $tmp['end'];
 			$SEARCH_CATS		= $tmp['category'];
-			$SEARCH_TYPE		= $tmp['type'];
+			$SEARCH_TYPE		= varset($tmp['type']);
 			$SEARCH_ADV			= $tmp['advanced'];
-			$SEARCH_ENHANCED	= $tmp['enhanced'];
+			$SEARCH_ENHANCED	= varset($tmp['enhanced']);
 			$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
 			
 			$this->template = $tmp;
@@ -163,10 +164,10 @@ class search extends e_shortcode
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
 		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>
-		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' type='button'>
+		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' data-bs-toggle='dropdown' type='button'>
 		";
 
-		if(BOOTSTRAP !== 4)
+		if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
 		{
 			$text .= "<span class='caret'></span></button>";
 		}
@@ -264,7 +265,7 @@ class search extends e_shortcode
 
 		$search_count = count($this->search_info);
 		$google_id = $search_count + 1;
-
+		$checkboxes = '';
 
 		if ($this->search_prefs['selector'] == 2) 
 		{
@@ -275,10 +276,7 @@ class search extends e_shortcode
 				$dropdown .= "<option value='all'>".LAN_SEARCH_22."</option>";
 			}
 		} 
-		else 
-		{
-		  $checkboxes = '';
-		}
+
 		
 		foreach($this->search_info as $key => $value) 
 		{
@@ -353,7 +351,7 @@ class search extends e_shortcode
 		{
 			$var['ENHANCED_TEXT'] 		= $ENHANCED_TEXT;
 			$var['ENHANCED_DISPLAY_ID'] = "en_".$en_id;
-			$var['ENHANCED_FIELD'] 		= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm($_GET[$en_id])."' maxlength='50' />";
+			$var['ENHANCED_FIELD'] 		= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm(varset($_GET[$en_id]))."' maxlength='50' />";
 		
 			$text .= $tp->simpleParse($this->template['enhanced'], $var);
 		}
@@ -382,7 +380,7 @@ class search extends e_shortcode
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('search');
-		
+		$advanced = array();
 			
 		if(!$parm)
 		{
@@ -508,7 +506,7 @@ class search extends e_shortcode
 			{
 				$search_info = array();
 				require_once($plug_require);
-				$ret = $search_info[0];
+				$ret = varset($search_info[0]);
 			} 
 			else 
 			{
@@ -583,7 +581,7 @@ class search extends e_shortcode
 			}
 		}
 		
-		
+		/* BELOW CODE HAS BEEN MOVED TO e107_plugins/user/e_search.php)
 		if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
 		{
 			if ($search_info['users'] = $this->search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
@@ -594,6 +592,7 @@ class search extends e_shortcode
 				unset($search_info['users']);
 			}
 		}
+		*/
 		
 	/*
 		if ($search_info['pages'] = $this->search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
@@ -603,7 +602,11 @@ class search extends e_shortcode
 		}
 	*/
 		 $e_searchList = e107::getConfig('core')->get('e_search_list');
-		
+
+		 if(empty($this->search_prefs['plug_handlers']))
+		 {
+		    return array();
+		 }
 		
 		//plugin search routines    // plugin folder is used as the search key. ie. $_GET['t'] = 'chatbox';
 		foreach ($this->search_prefs['plug_handlers'] as $plug_dir => $active) 
@@ -617,7 +620,7 @@ class search extends e_shortcode
 			{
 				if ($search_info[$plug_dir] = $this->search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
 				{
-					$search_info[$plug_dir]['listorder'] = $active['order'];
+					$search_info[$plug_dir]['listorder'] = varset($active['order']);
 				  //	$search_id++;
 				}
 				else
@@ -637,10 +640,10 @@ class search extends e_shortcode
 		 $search_info = $this->array_sort($search_info, 'listorder', SORT_ASC);
 		 $this->search_info = $search_info;
 
-		if(e_DEBUG)
-		{
+		//if(e_DEBUG)
+	//	{
 	//		echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();
-		}
+	//	}
 
 		 return $search_info;
 	}	
@@ -761,13 +764,13 @@ class search extends e_shortcode
 	
 		$con = e107::getDateConvert(); // BC Fix
 
-        $sch = new e_search; // BC Fix
+        $sch = e107::getSearch(); // new e_search; // BC Fix
 
 		$query = $this->query;
 
 		
-		$_GET['q'] = rawurlencode($_GET['q']);
-		$_GET['t'] = preg_replace('/[^\w\-]/i', '', $_GET['t']);
+		$_GET['q'] = rawurlencode(varset($_GET['q']));
+		$_GET['t'] = preg_replace('/[^\w\-]/i', '', varset($_GET['t']));
 		
 		$search_prefs	= $this->search_prefs;
 		$result_flag	= $this->result_flag;
@@ -807,15 +810,15 @@ class search extends e_shortcode
 						
 						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
 
-						if(e_DEBUG)
-						{
+						//if(e_DEBUG)
+					//	{
 						//	echo e107::getMessage()->addDebug(print_a($this->search_info,true))->render();// "DEBUG: Order is missing";
 
-						}
+					//	}
 
 					//	print_a($ps);
-
-						$text .= '<ul id="search-results" class="list-unstyled search-block">';
+						$idkey = str_replace('_', '-', $key);
+						$text .= '<ul id="search-results-'.$idkey.'" class="list-unstyled search-block">';
 						$text .= $ps['text'];
 						$text .= '</ul>';
 						$results = $ps['results'];	
@@ -841,10 +844,10 @@ class search extends e_shortcode
 					{
 						$temp = preg_replace('/[^\w_]/i','',$pparm_key);
 						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
-						if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
-						{
+						//if (($temp == $pparm_key) && !isset($core_parms[$pparm_key]))
+					//	{
 						//	$parms .= "&".$pparm_key."=".$temp1; //FIXME Unused
-						}
+					//	}
 					}
 					if ($results > $search_res) 
 					{
@@ -1003,7 +1006,7 @@ class search extends e_shortcode
 }
 
 
-$srchObj 		= new search;
+$srchObj 		= new search_front;
 $search_info 	= $srchObj->getConfig();
 $search_prefs	= $srchObj->getPrefs();
 
@@ -1026,7 +1029,7 @@ if ($perform_search)
 	if (isset($_GET['t'][$google_id]) && ($_GET['t']==$google_id) && $_GET['t'][$google_id]) 
 	{
 //	echo "We think google should be used using checkboxes<br />";
-		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
+		e107::redirect("http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
   } 
@@ -1034,7 +1037,7 @@ if ($perform_search)
   { 
 	if (isset($_GET['t']) && $_GET['t'] == $google_id) 
 	{
-		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
+		e107::redirect("http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
 	}
   }
@@ -1047,18 +1050,18 @@ $enhanced_types['ex'] = LAN_SEARCH_25.':';
 $enhanced_types['ep'] = LAN_SEARCH_26.':';
 $enhanced_types['be'] = LAN_SEARCH_27.':';
 
-$SEARCH_VARS->ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
+$SEARCH_VARS->ENHANCED_DISPLAY = isset($enhanced) ? "" : "style='display: none'";
 
 // advanced search config
 if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
 {
-  foreach ($_GET as $gk => $gv) 
-  {
-	if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') 
-	{
+  //foreach ($_GET as $gk => $gv)
+ // {
+	//if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv')
+	//{
 //	  unset($_GET[$gk]);
-	}
-  }
+	//}
+ // }
 }
 
 //$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
@@ -1091,7 +1094,7 @@ if ($perform_search)
 {
   $con = e107::getDate();
  
-  $sch = new e_search;
+  $sch = e107::getSearch();
 
   // omitted words message
   $stop_count = count($sch -> stop_keys);
@@ -1130,7 +1133,7 @@ if(deftrue('BOOTSTRAP'))
 	$SEARCH_TOP_TABLE 	= $tmp['start'];
 	$SEARCH_BOT_TABLE 	= $tmp['end'];
 	$SEARCH_CATS		= $tmp['category'];
-	$SEARCH_TYPE		= $tmp['type'];
+	$SEARCH_TYPE		= varset($tmp['type']);
 	$SEARCH_ADV			= $tmp['advanced'];
 	$SEARCH_ENHANCED	= $tmp['enhanced'];
 	$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
@@ -1215,14 +1218,13 @@ function parsesearch($text, $match)
 }
 
 
-function headerjs() {
-	global $search_count, $google_id, $search_prefs, $js_adv, $search_info;
-	if ($search_prefs['selector'] == 1) {
+	$script= '';
+	if (varset($search_prefs['selector']) == 1) {
 		
 		$types = array_keys($search_info);
 		$types = implode("', '", $types);
 		
-		$script = "<script type='text/javascript'>
+		$script = "
 		<!--
 		var i;
 		var stypes = new Array('".$types."');
@@ -1246,15 +1248,15 @@ function headerjs() {
 		}
 
 		$script .= "// -->
-		</script>";
+		";
 
 	}
 
+	if(!empty($script))
+	{
+		e107::js('inline', $script);
+	}
 
-
-	return $script;
-}
 
 require_once(FOOTERF);
 
-?>

@@ -104,4 +104,3 @@ class list_comment
 	}
 }
 
-?>

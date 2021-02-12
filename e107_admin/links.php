@@ -10,7 +10,7 @@
  *
  */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms("I"))
 {
@@ -46,14 +46,14 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = ADLAN_138;
+	protected $menuTitle = LAN_NAVIGATION;
 
 		protected $adminMenuIcon = 'e-links-24';
 }
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= ADLAN_138;
+	protected $pluginTitle 	= LAN_NAVIGATION;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';
@@ -84,7 +84,7 @@ class links_admin_ui extends e_admin_ui
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
+		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'filter'=>true, 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
@@ -103,12 +103,12 @@ class links_admin_ui extends e_admin_ui
 	protected $_link_array	= null;
 	
 	
-	function afterCreate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterCreate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');	
 	}
 	
-	function afterUpdate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterUpdate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');
 	}	
@@ -181,9 +181,16 @@ class links_admin_ui extends e_admin_ui
 			$this->getTreeModel()->current_id = intval($searchFilter[1]);
 			$this->current_parent = intval($searchFilter[1]);
 		}
+
+		$this->fields['link_owner']['type'] = 'method';
+
 		parent::ListObserver();
 
 	}
+
+
+
+
 	public function ListAjaxObserver()
 	{
 		$searchFilter = $this->_parseFilterRequest($this->getRequest()->getQuery('filter_options', ''));
@@ -247,7 +254,7 @@ class links_admin_ui extends e_admin_ui
 									<option value='{$key}'{$selected}>".$type['title']."</option>
 					";*/
 		}
-		$text .= $ui->selectbox('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
+		$text .= $ui->select('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
 
 		$text .= "
 							</td>
@@ -342,11 +349,11 @@ class links_admin_ui extends e_admin_ui
 		$pid = intval($this->getPosted('link_parent'));
 		$sublink = $this->sublink_data($subtype);
 
-		if(!$pid)
-		{
+	//	if(!$pid)
+	//	{
 		//	$mes->addWarning(LCLAN_109);
 		//	return;
-		}
+	//	}
 		if(!$subtype)
 		{
 			$mes->addWarning(LCLAN_110);
@@ -456,15 +463,12 @@ class links_admin_ui extends e_admin_ui
 			}
 		}
 
-		if($message) // TODO admin log
-		{
-			// sitelinks_adminlog('01', $message); // 'Sublinks generated'
-		}
+
 	}
 
 	/**
 	 * Product tree model
-	 * @return links_model_admin_tree
+	 * @return links_admin_ui|links_model_admin_tree
 	 */
 	public function _setTreeModel()
 	{
@@ -598,6 +602,8 @@ class links_admin_form_ui extends e_admin_form_ui
 	
 	private $linkFunctions;
 
+	private $link_owner = array();
+
 	function init()
 	{
 		
@@ -645,8 +651,21 @@ class links_admin_form_ui extends e_admin_form_ui
 			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
 		}
 
+		if($tmp = e107::getDb()->retrieve('links', 'link_owner', "GROUP BY link_owner ORDER BY link_owner", true))
+		{
+			foreach($tmp as $arr)
+			{
+				if(empty($arr['link_owner']))
+				{
+					continue;
+				}
 
-	//	var_dump($methods );
+				$plug = $arr['link_owner'];
+			//	$def = 'LAN_PLUGIN_'.strtoupper($plug).'_NAME';
+
+				$this->link_owner[$plug] = $plug;
+			}
+		}
 
 
 	}
@@ -661,9 +680,9 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					if(null === $this->current_parent)
 					{
-						if(e107::getDb()->db_Select('links', 'link_name', 'link_id='.$current))
+						if(e107::getDb()->select('links', 'link_name', 'link_id='.$current))
 						{
-							$tmp = e107::getDb()->db_Fetch();
+							$tmp = e107::getDb()->fetch();
 							$this->current_parent = $tmp['link_name'];
 						}
 					}
@@ -680,7 +699,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				$cats	= $this->getController()->getLinkArray($catid);
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
-				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
+				return $this->select('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
 			break;
 
 			case 'batch':
@@ -703,7 +722,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{			
-			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
+			return $this->select('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
 		}
 
 		else
@@ -725,6 +744,21 @@ class links_admin_form_ui extends e_admin_form_ui
 
 
 			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
+		}
+	}
+
+
+	function link_owner($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $curVal;
+		}
+
+		if($mode === 'filter')
+		{
+			return $this->link_owner;
+
 		}
 	}
 
@@ -895,7 +929,7 @@ class links_admin_form_ui extends e_admin_form_ui
 	 *
 	 * @return string
 	 */
-	public function getList($ajax = false)
+	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();
@@ -947,7 +981,7 @@ echo "<h2>Preview (To-Do)</h2>";
 echo $tp->parseTemplate("{SITELINKS_ALT}");
 */
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 

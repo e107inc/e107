@@ -19,11 +19,12 @@ class parseXml extends xmlClass // BC with v1.x
 {
 	private $xmlData = array();
 	private $counterArray = array();
+
 	
 	function __construct()
 	{
 		$data = debug_backtrace(true);
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$log->addDebug('Deprecated XML Parser Used');
 		
 		$log->addArray($data);
@@ -40,7 +41,7 @@ class parseXml extends xmlClass // BC with v1.x
 	{	
 	//	$data = $this->getRemoteFile($address, $timeout);	
 		$fl = e107::getFile();
-		$data = $fl->getRemoteContent($address);
+		$data = $fl->getRemoteContent($address, ['timeout' => $timeout]);
 
 		$this->xmlLegacyContents = $data;
 
@@ -49,7 +50,7 @@ class parseXml extends xmlClass // BC with v1.x
 	
 	function parseXmlContents ()
 	{
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		foreach($this -> xmlData as $key => $value)
 		{
@@ -85,7 +86,7 @@ class parseXml extends xmlClass // BC with v1.x
 		foreach($array as $data)
 		{
 
-			if(strlen($data == 4096))
+			if(strlen($data) == 4096)
 			{
 				$log->addDebug("The XML cannot be parsed as it is badly formed.")->save('XML');
 				return FALSE;
@@ -131,7 +132,7 @@ class parseXml extends xmlClass // BC with v1.x
 
 	function characterData ($p, $data)
 	{
-		$data = trim ( chop ( $data ));
+		$data = trim ( rtrim ( $data ));
 		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
 		if(!array_key_exists($this -> current_tag, $this -> xmlData))
 		{
@@ -227,9 +228,9 @@ class xmlClass
 
 	public $errors;
 
-	private $arrayTags = false;
+	private $arrayTags;
 
-	private $stringTags = false;
+	private $stringTags;
 
 	private $urlPrefix = false;
 
@@ -297,8 +298,8 @@ class xmlClass
 	/**
 	 * Constructor - set defaults
 	 *
-	 */
-	function __constructor()
+	 *//*
+	function __construct()
 	{
 		$this->reset();
 
@@ -306,7 +307,7 @@ class xmlClass
 		{
 			$this->filePathConvKeys = array_keys($this->filePathConversions);
 		}
-	}
+	}*/
 
 	/**
 	 * Reset object
@@ -504,7 +505,7 @@ class xmlClass
 	 * XXX New parser in testing phase - see e_marketplace::parse()
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
-	 * @return array
+	 * @return array|string
 	 */
 	function xml2array($xml, $rec_parent = '')
 	{
@@ -534,7 +535,7 @@ class xmlClass
 			$tags = array_keys($tags);
 			foreach ($tags as $tag)
 			{
-				if($tag == '@attributes')
+				if($tag === '@attributes')
 				{
 					$tmp = (array) $xml->attributes();
 					$ret['@attributes'] = $tmp['@attributes'];
@@ -825,7 +826,7 @@ class xmlClass
 			}
 			if ($parse)
 			{
-				return $this->parseXML('', ($parse === true));
+				return $this->parseXml('', ($parse === true));
 			}
 			else
 			{
@@ -870,7 +871,7 @@ class xmlClass
 
 		if(is_array($val))
 		{
-			$val = e107::serialize($val,false);
+			$val = e107::serialize($val);
 
 			if($val === null)
 			{
@@ -903,7 +904,7 @@ class xmlClass
 	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
+	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
 	{
 	//	error_reporting(0);
 	//	$e107info = array();
@@ -931,7 +932,7 @@ class xmlClass
 				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
-					if($type == 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || substr($key,0,2) == 'e_'))
+					if($type === 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || strpos($key, 'e_') === 0))
 					{
 						continue;
 					}
@@ -975,6 +976,28 @@ class xmlClass
 			$text .= "\t</pluginPrefs>\n";
 		}
 
+		if(!empty($themePrefs))
+		{
+			$text .= "\t<themePrefs>\n";
+
+			foreach($themePrefs as $plug)
+			{
+				$prefs = e107::getThemeConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</themePrefs>\n";
+		}
+
 
 
 
@@ -987,11 +1010,11 @@ class xmlClass
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
 				e107::getDb()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
-				$count = 1;
+			//	$count = 1;
 				while($row = e107::getDb()->fetch())
 				{
 
-					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
+					if($this->convertFilePaths == true && $eTable === 'core_media' && strpos($row['media_url'], '{e_MEDIA') !== 0)
 					{
 						continue;
 					}
@@ -1004,7 +1027,7 @@ class xmlClass
 					}
 
 					$text .= "\t\t</item>\n";
-					$count++;
+			//		$count++;
 				}
 				$text .= "\t</dbTable>\n";
 
@@ -1071,7 +1094,22 @@ class xmlClass
 	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
 
-		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+		switch($mode)
+		{
+			case "plugin":
+				$key = 'pluginPrefs';
+				break;
+
+			case "theme":
+				$key = 'themePrefs';
+				break;
+
+			case "core":
+			default:
+				$key = 'prefs';
+		}
+
+	//	$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
 
 		if(!vartrue($XMLData[$key][$prefType]))
 		{
@@ -1191,10 +1229,39 @@ class xmlClass
 			}
 		}
 
+		 // ---------------   Save Theme Prefs  ---------------------
+
+		if(!empty($xmlArray['themePrefs']))
+		{
+			foreach($xmlArray['themePrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'theme');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getThemeConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getThemeConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getThemeConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
 
 
 
-		if(vartrue($xmlArray['database']))
+		if(!empty($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
@@ -1216,7 +1283,7 @@ class xmlClass
 						$insert_array[$fieldkey] = $fieldval;
 
 					}
-					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
+					if(($mode === "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}

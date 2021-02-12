@@ -1,0 +1,83 @@
+---
+
+# Path (absolute or relative) to the app intended to be tested
+# Absolute path begins with "/"; relative path does not begin with "/"
+app_path: '../'
+
+# Which deployer to use to set up tests. Options:
+#
+# 'none'
+#   Dummy deployer that does nothing. Tests that depend on a deployer will fail.
+# 'local'
+#   Use this if the acceptance test web server directly serves files from "app_path".
+#   Configure the "url" and "db" sections.
+# 'sftp'
+#   Deploys the files in "app_path" to an SFTP account.
+#   Configure the "url", "db", and "fs" sections.
+# 'cpanel'
+#   Deploys the files in "app_path" to a cPanel account's main domain.
+#   Configure the "hosting" section.
+deployer: 'local'
+
+# Configure this section for fully automated test deployments to a hosting control panel
+hosting:
+
+  # Control panel domain without the port number
+  hostname: ''
+
+  # Control panel account username
+  username: ''
+
+  # Control panel account password
+  password: ''
+
+# URL (with trailing slash) at which the app can be reached for acceptance tests
+url: 'http://set-this-to-your-acceptance-test-url.local/'
+
+# Only MySQL/MariaDB is supported
+db:
+
+  # Hostname or IP address; use 'localhost' for a local server
+  host: 'set-this-to-your-test-database-hostname.local'
+
+  # Port number of the server
+  port: '3306'
+
+  # Database name; must exist already
+  dbname: 'e107'
+
+  # Username; must exist already
+  user: 'root'
+
+  # Password; set to blank string for no password
+  password: ''
+
+  # If set to true, the database populator will populate the database with the dump specified in the "dump_path" key
+  # If set to false, the test database needs to be set up separately
+  # Affects all tests and modes of deployment
+  populate: true
+
+  # Path (absolute or relative) to the database dump of a testable installation of the app
+  # Absolute path begins with "/"; relative path does not begin with "/"
+  dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+
+# Configure this section for deployers that need file upload configuration
+fs:
+
+  # Hostname or IP address to the remote destination
+  host: ''
+
+  # Port number of the file transfer server
+  port: '22'
+
+  # Username used for the file transfer
+  user: ''
+
+  # Path to the private key of the user. Takes precedence over "fs.password"
+  privkey_path: ''
+
+  # Password of the file transfer user. Ignored if "fs.privkey_path" is specified
+  password: ''
+
+  # Absolute path to where the remote web server serves "url"
+  path: ''

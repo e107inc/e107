@@ -28,4 +28,3 @@ define("LAN_UMENU_THEME_7", "Class which can select themes");
 define("LAN_UMENU_THEME_8", "Allowed themes: ");
 define("LAN_UMENU_THEME_9", "Class which can select themes: ");
 
-?>

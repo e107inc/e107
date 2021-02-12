@@ -57,19 +57,19 @@ define("LAN_dl_45", "Report broken download");
 define("LAN_dl_46", "click here to download");
 
 define("LAN_dl_47", "Post has been reported");
-define("LAN_dl_48", "Download has been reported to administrator.<br />Thank you.");
+define("LAN_dl_48", "Download has been reported to administrator. Thank you.");
 define("LAN_dl_49", "Click here to return to download");
-define("LAN_dl_50", "Broken download reported");
-define("LAN_dl_51", "Reporting download: ");
+//define("LAN_dl_50", "Broken download reported");
+//define("LAN_dl_51", "Reporting download: ");
 //define("LAN_dl_52", "Guest");//LAN_GUEST
 define("LAN_dl_53", "Click to view download");
 define("LAN_dl_54", "An administrator will be made aware of this download, please leave a message if you feel it necessary.");
 define("LAN_dl_55", "Do not use this form to contact the admin for any other reason.");
 // define("LAN_dl_56", "Report broken download");  already defined above.
-define("LAN_dl_57", "reported by");
-define("LAN_dl_58", "The following download has been reported as broken from site");
-define("LAN_dl_59", "Reported by: ");
-define("LAN_dl_60", "Broken download report from");
+//define("LAN_dl_57", "reported by");
+//define("LAN_dl_58", "The following download has been reported as broken from site");
+//define("LAN_dl_59", "Reported by: ");
+//define("LAN_dl_60", "Broken download report from");
 
 //define("LAN_dl_61", "Download Error"); //LAN_ERROR
 define("LAN_dl_62", "You have been prevented from downloading this file; you have exceeded your download quota");
@@ -94,5 +94,6 @@ define("LAN_dl_75", "no image available ");
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
 define('LAN_dl_78', "That download has been disabled or discontinued. Please check in the [downloads area] for a more recent version.");
+define("LAN_dl_79", "You do not have the correct permissions to report this download item as broken.");
 
-?>
+

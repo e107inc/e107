@@ -26,18 +26,18 @@ if (!defined('e107_INIT')) { exit; }
 
 class e_bbcode
 {
-	var $bbList;			// Caches the file contents for each bbcode processed
-	var $bbLocation;		// Location for each file - 'core' or a plugin name
-	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
-	var $core_bb = array();
-	var $class = FALSE;
+	private $bbList;			// Caches the file contents for each bbcode processed
+	private $bbLocation = array();		// Location for each file - 'core' or a plugin name
+	private $preProcess = false;	// Set when processing bbcodes prior to saving
+	private $core_bb = array();
+	private $class = false;
 	private $resizePrefs = array();
 
 	function __construct()
 	{
 		$pref = e107::getPref();
 
-		$this->resizePrefs = $pref['resize_dimensions'];
+		$this->resizePrefs = varset($pref['resize_dimensions']);
 
 		$this->core_bb = array(
 			'alert',
@@ -139,7 +139,7 @@ class e_bbcode
 		// $matches[4] - '=' or ':' according to the separator used
 		// $matches[5] - any parameter
 
-		$content = preg_split('#(\[(?:\w|/\w).*?\])#mis', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$content = preg_split('#(\[(?:\w|/\w).*?\])#ms', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
 		foreach ($content as $cont)
 		{  // Each chunk is either a bbcode or a piece of text
@@ -224,7 +224,7 @@ class e_bbcode
 							else
 							{  // Opening code to process
 								// If its a single code, we can process it now. Otherwise just stack the value
-								if (array_key_exists('_'.$bbword,$this->bbLocation))
+								if (array_key_exists('_'.$bbword, $this->bbLocation))
 								{  // Single code to process
 									if (count($code_stack) == 0)
 									{
@@ -367,8 +367,6 @@ class e_bbcode
 			
 			e107::getDebug()->logCode(1, $code, $parm, print_a($info,true));
 		}
-		
-		global $e107_debug;
 
 		if (is_object($this->bbList[$code]))
 		{
@@ -377,10 +375,10 @@ class e_bbcode
 				//echo "Preprocess: ".htmlspecialchars($code_text).", params: {$param1}<br />";
 				return $this->bbList[$code]->bbPreSave($code_text, $param1);
 			}
-			if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior. 
-			{
+		//	if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior.
+		//	{
 			// 	return $this->bbList[$code]->bbWYSIWYG($code_text, $param1);					
-			}
+		//	}
 			return $this->bbList[$code]->bbPreDisplay($code_text, $param1);
 		}
 		if ($this->preProcess == 'toDB') return $full_text;		// No change
@@ -389,9 +387,21 @@ class e_bbcode
 		 *	@todo - capturing output deprecated
 		 */
 		ob_start();
-		$bbcode_return = eval($bbcode); //FIXME notice removal
-		$bbcode_output = ob_get_contents();
-		ob_end_clean();
+		try
+	    {
+			$bbcode_return = eval($bbcode); //FIXME notice removal
+	    }
+		catch (ParseError $e)
+		{
+			$error = $debugFile." -- ".$e->getMessage();
+		}
+
+		$bbcode_output = ob_get_clean();
+
+		if(!empty($error))
+		{
+			trigger_error($error, E_USER_NOTICE);
+		}
 
 		/* added to remove possibility of nested bbcode exploits ... */
 		if(strpos($bbcode_return, "[") !== FALSE)
@@ -408,17 +418,19 @@ class e_bbcode
 	 * @var string $type  - bbcode eg. 'img' or 'youtube'
 	 * @var string $text  - text to be processed for bbcode content
 	 * @var string $path - optional path to prepend to output if http or {e_xxxx} is not found. 
-	 * @return array
+	 * @return array|null
 	 */
 	function getContent($type,$text,$path='')
 	{
+
 		if(!in_array($type,$this->core_bb))
 		{
-			return;
+			return null;
 		}
 
-		if(substr(ltrim($text),0,6) == '[html]' && $type == 'img') // support for html img tags inside [html] bbcode.
+		if(strpos(ltrim($text), '[html]') === 0 && $type == 'img') // support for html img tags inside [html] bbcode.
 		{
+
 			$tmp = e107::getParser()->getTags($text,'img');
 
 			if(!empty($tmp['img']))
@@ -438,7 +450,7 @@ class e_bbcode
 			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
 		}
 
-		
+
 
 		$ret = array();
 		
@@ -448,11 +460,11 @@ class e_bbcode
 			foreach($mtch[1] as $i)
 			{
 
-				if(substr($i,0,4)=='http')
+				if(strpos($i,'http') === 0)
 				{
 					$ret[] = $i;
 				}
-				elseif(substr($i,0,3)=="{e_")
+				elseif(strpos($i,"{e_") === 0)
 				{
 					$ret[] = $tp->replaceConstants($i,'full');
 				}
@@ -735,6 +747,7 @@ class e_bbcode
 			print_a($arr);
 		}
 
+		$arr['img'] = isset($arr['img']) && is_array($arr['img']) ? $arr['img'] : [];
 		foreach($arr['img'] as $img)
 		{
 			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
@@ -818,15 +831,40 @@ class e_bbcode
 	 */
 	function htmltoBBcode($text)
 	{
-	    
-       
+		$allowedTags = array('html', 'body','div', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'b',
+			'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li',  'h2', 'h3', 'h4', 'h5', 'h6', 'p',
+			'blockquote', /*'audio', 'video',*/ 'br', 'small'
+		);
+
+		$allowedAttributes = array(
+		'default'  => array(),
+		'img'      => array('src', 'alt', 'width', 'height'),
+		'a'        => array('href', 'target', 'rel'),
+		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
+		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+		'td'       => array('colspan', 'rowspan'),
+		'th'       => array('colspan', 'rowspan'),
+		'x-bbcode' => array('alt'),
+		);
+
+
+	    $tp = e107::getParser();
+	    $tp->setAllowedTags($allowedTags);
+	    $tp->setAllowedAttributes($allowedAttributes);
+	    $tp->setScriptAttibutes(null);
+
+	    $text = $tp->cleanHtml($text);
+
+	    $tp->init(); // reset to default;
+
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
+
 	//	$text = str_replace('<!-- pagebreak -->',"[newpage=]",$text);
     
         
 
-		if(substr($text,0,6)=='[html]')
+		if(strpos($text,'[html]') === 0)
 		{
 			return $text;
 		}
@@ -878,10 +916,16 @@ class e_bbcode
 		
 			
 		// Mostly closing tags. 
-		$convert = array(		
+		$convert = array(
+
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
 			array(	"\n",			"</p>\n"),
+			array(	"",			    "<div>\n"),
+			array(	"",			    "\t"),
+			array(	"",			    "</div>\n"),
+			array(	"\n",			"<thead>\n"),
+			array(	"\n",			"</thead>\n"),
 			array(	"\n",			"</p>"),
 			array(	"[/list]",		'</ul>\n'),
 			array(	"[/list]",		'</ul>'),
@@ -893,14 +937,22 @@ class e_bbcode
 			array(	"[h=3]",		'<h3 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=3]",		'<h3>'),
 			array(	"[/h]",			'</h3>'),
+			array(	"[h=4]",		'<h4>'),
+			array(	"[/h]",		    '</h4>'),
+			array(	"[h=5]",		'<h5>'),
+			array(	"[/h]",		    '</h5>'),
+			array(	"[h=6]",		'<h6>'),
+			array(	"[/h]",		    '</h6>'),
 			array(	"[/b]",			'</strong>'),
 			array(	"[/i]",			'</em>'),
 			array(	"[/block]",		'</div>'),
-			array(	"[/table]",	'</table>'),
-			array(	"[/tbody]",	'</tbody>'),
+			array(	"[/table]",	    '</table>'),
+			array(	"[/tbody]",	    '</tbody>'),
 			array(	"[/code]\n",	'</code>'),
-			array(	"[/tr]",	'</tr>'),
-			array(	"[/td]",		'</td>'),	
+			array(	"[/tr]",	    '</tr>'),
+			array(	"[/td]",		'</td>'),
+			array(	"[td]",		    '<th>'),
+			array(	"[/td]",		'</th>'),
 			array(	"[/blockquote]",'</blockquote>'),
 			array(	"]",			' style=]')
 				
@@ -1013,4 +1065,3 @@ class e_bb_base
 	}
 }
 
-?>

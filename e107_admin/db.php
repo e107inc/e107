@@ -10,7 +10,7 @@
  *
 */
 
-require_once ("../class2.php");
+require_once (__DIR__."/../class2.php");
 $theme = e107::getPref('sitetheme');
 define("EXPORT_PATH","{e_THEME}".$theme."/install/");
 
@@ -22,7 +22,7 @@ if(!getperms('0'))
 
 if(isset($_POST['back']))
 {
-	header("location: ".e_SELF);
+	e107::redirect(e_SELF);
 	exit();
 }
 
@@ -35,12 +35,12 @@ $mes = e107::getMessage();
 
 if(isset($_GET['mode']))
 {
-    $_GET['mode'] = preg_replace('/[^\w-]/', '', $_GET['mode']);
+    $_GET['mode'] = preg_replace('/[^\w\-]/', '', $_GET['mode']);
 }
 
 if(isset($_GET['type']))
 {
-    $_GET['type'] = preg_replace('/[^\w-]/', '', $_GET['type']);
+    $_GET['type'] = preg_replace('/[^\w\-]/', '', $_GET['type']);
 }
 
 /*
@@ -68,7 +68,7 @@ if(isset($_POST['exportXmlFile']))
 {
 
 
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'], $_POST['package_images'], false))
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'],$_POST['xml_themeprefs'], $_POST['package_images'], false))
 	{
 		$mes = e107::getMessage();
 		$mes->add(LAN_CREATED, E_MESSAGE_SUCCESS);
@@ -80,7 +80,10 @@ if(e_AJAX_REQUEST )
 {
 
 	session_write_close();
-	while (@ob_end_clean()); 
+	while (ob_get_length() !== false)  // destroy all ouput buffering
+	{
+        ob_end_clean();
+	}
 
 	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
@@ -112,7 +115,7 @@ if(e_AJAX_REQUEST )
 		
 		echo DBLAN_62." <small>(".$dbfile.")</small>";
 
-		e107::getAdminLog()->addSuccess($zip." ".$dbfile, false)->save(DBLAN_63);
+		e107::getLog()->addSuccess($zip." ".$dbfile, false)->save(DBLAN_63);
 		
 	}
 	
@@ -163,25 +166,25 @@ class system_tools
 		$this->_utf8_exclude = array(MPREFIX."core");
 
 		$this->_options = array(
-			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
-			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
-			'optimize_sql'			=> array('diz'=>DBLAN_6, 'label'=> DBLAN_7),
-			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29),
-			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20),
+			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16, 'icon'=>'fas-angle-double-up.glyph'),
+			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5, 'icon'=>'fas-database.glyph'),
+			'optimize_sql'			=> array('diz'=>DBLAN_6, 'label'=> DBLAN_7, 'icon'=>'fas-wrench.glyph'),
+			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29, 'icon'=>'fas-plug.glyph'),
+			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20, 'icon'=>'fas-edit.glyph'),
 		//	'backup_core'			=> array('diz'=>DBLAN_8, 'label'=> DBLAN_9),
 		//	'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
-			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
-			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
-			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
-			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65),
-			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67),
-			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69)
+			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59, 'icon'=>'fas-file-import.glyph'),
+			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58, 'icon'=>'fas-file-export.glyph'),
+			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56, 'icon'=>'fas-search.glyph'),
+			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65, 'icon'=>'fas-language.glyph'),
+			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67, 'icon'=>'fas-folder.glyph'),
+			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69, 'icon'=>'fas-archive.glyph')
 		);
 		
 		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' );
-			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112 );
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' , 'icon'=>'fas-clone.glyph');
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112, 'icon'=>'fab-github.glyph' );
 		}
 
 
@@ -326,13 +329,16 @@ class system_tools
 	// Developer Mode ONly.. No LANS required. 
 	private function githubSync()
 	{
-
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$pref = e107::pref();
 
-		//	$message = DBLAN_70;
-		//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
-
+		if(empty($pref['developer']))
+		{
+			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
+			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
+			return;
+		}
 
 		// Check for minimum required PHP version, and display warning instead of sync button to avoid broken functionality after syncing
 		// MIN_PHP_VERSION constant only defined in install.php, thus hardcoded here
@@ -340,7 +346,7 @@ class system_tools
 		
 		if(version_compare(PHP_VERSION, $min_php_version, "<"))
 		{
-			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No nee to translate, developer mode only
+			$mes->addWarning("The minimum required PHP version is <strong>".$min_php_version."</strong>. You are using PHP version <strong>".PHP_VERSION."</strong>. <br /> Syncing with Github has been disabled to avoid broken fuctionality."); // No need to translate, developer mode only
 		}
 		else 
 		{
@@ -352,7 +358,6 @@ class system_tools
 			$mes->addInfo($message);
 		} 
 		
-		//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 	}
@@ -392,6 +397,8 @@ class system_tools
 		}
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
+
+		e107::getCache()->clearAll('system');
 
 	}
 
@@ -537,10 +544,11 @@ class system_tools
 				$mes->addError($sql->getLastErrorText());
 				return false;
 			}
-			else
+/*			else
 			{
 				// $mes->addDebug($sql_table);
 			}
+*/
 		}	
 		
 		return true;
@@ -1024,7 +1032,8 @@ class system_tools
 	private function render_options()
 	{
 
-		$mes = e107::getMessage(); 
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 		$text = "
 		<form method='post' action='".e_SELF."' id='core-db-main-form'>
@@ -1037,14 +1046,14 @@ class system_tools
 				</colgroup>
 				<tbody>";
 				
-		$text = "<div>";
+		$text = "<div class='row'>";
 
 
 		foreach($this->_options as $key=>$val)
 		{
 			
-			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
-			<a class='btn btn-default btn-secondary btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+			$text .= "<div class='col-md-6 col-lg-4' style='height:80px; padding-bottom:10px'>
+			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		
@@ -1201,6 +1210,42 @@ class system_tools
 							</tr>";
 						}
 					}
+
+
+				// theme preferences
+					$sitetheme = e107::pref('core','sitetheme'); // currently just sitetheme, but could easily be expanded.
+					$themelist = array($sitetheme);
+
+					$text .= "</tbody><thead><tr>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_plugprefs')." &nbsp;Theme ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
+
+					</tr></thead><tbody>";
+
+				//	ksort($themelist);
+
+					foreach($themelist as $plug)
+					{
+						$data = e107::getThemeConfig($plug)->getPref();
+
+						$key = $plug;
+
+						$checked = false;
+
+						if(!empty($data))
+						{
+							$rows = count($data);
+
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_themeprefs[".$key."]",$key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
+							<td class='text-right'>".$rows."</td>
+
+							</tr>";
+						}
+					}
+
 
 
 
@@ -1402,7 +1447,16 @@ class system_tools
 
 		foreach($spref as $key => $val)
 		{
-			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			if(is_array($val))
+			{
+				$varView = deftrue('e_DEBUG') ? var_export($val, true): print_r($val, true);
+				$ptext = "<pre>".htmlentities($varView)."</pre>" ;
+			}
+			else
+			{
+				$ptext = htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			}
+
 			$ptext = $tp->textclean($ptext, 80);
 
 			$text .= "
@@ -1535,9 +1589,14 @@ class system_tools
 
 		$plg->buildAddonPrefLists();
 
+		$plgClass = e107::getPlugin();
+
+
 		foreach($plg->getDetected() as $folder)
 		{
 			$plg->load($folder);
+			$plgClass->plugFolder = $folder;
+			$plgClass->XmlLanguageFiles('refresh');
 
 			$name   = $plg->getName();
 			$addons = $plg->getAddons();
@@ -1626,10 +1685,12 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 	{
 		$var[$key]['text'] = $val['label'];
 		$var[$key]['link'] = e_SELF."?mode=".$key;
+		$var[$key]['image_src'] = $val['icon'];
 	}
 
-	$icon  = e107::getParser()->toIcon('e-database-24');
-	$caption = $icon."<span>".DBLAN_10."</span>";
+	$caption = "<span>".DBLAN_10."</span>";
+
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-database-24');
 
 	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
@@ -1642,7 +1703,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  * @param object $debug [optional]
  * @return bool|null
  */
-function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=FALSE)
+function exportXmlFile($prefs,$tables=array(),$plugPrefs=array(), $themePrefs=array(), $package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getXml();
 	$tp = e107::getParser();
@@ -1673,7 +1734,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=
 
 	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
-	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
+	if($xml->e107Export($prefs,$tables,$plugPrefs, $themePrefs, $mode))
 	{
 		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))

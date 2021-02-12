@@ -35,4 +35,3 @@ define("LAN_EMAIL_189", "I thought you might be interested in this article from"
 define("LAN_EMAIL_190", "Enter visible code");
 define("LAN_SOCIAL_LINK_CHK",  "Check out this link: "); //called in soc.plugin
 
-?>

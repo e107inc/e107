@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 if (!getperms("M")) 
 {
 	e107::redirect('admin');
@@ -67,7 +67,7 @@ class generic_ui extends e_admin_ui
 		protected $perPage			= 10; 
 		protected $batchDelete		= true;
 		protected $batchCopy		= true;		
-		
+		protected $batchExport		= true;	
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
@@ -155,16 +155,7 @@ class generic_form_ui extends e_admin_form_ui
 		
 		
 new wmessage_admin();
-
 require_once(e_ADMIN."auth.php");
-
 e107::getAdminUI()->runPage();
-
 require_once(e_ADMIN."footer.php");
-exit;
-
-
-
-
-
 

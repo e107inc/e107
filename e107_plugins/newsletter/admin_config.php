@@ -11,7 +11,7 @@
 */
 
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('P')) 
 {
 	e107::redirect('admin');
@@ -123,6 +123,8 @@ class newsletter
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 
+		$text = '';
+
 		if(!$sql->select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
 			$mes->addInfo(NLLAN_05);
@@ -168,7 +170,8 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
-		unset($text);
+
+		$text = '';
 
 		if(!$sql->select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
@@ -467,10 +470,10 @@ class newsletter
 		{
 			$mailMainID = $mailData['mail_source_id'] = $result;
 		}
-		else
-		{
+		//else
+		//{
 				// TODO: Handle error
-		}
+		//}
   
 
 		$mailer->mailInitCounters($mailMainID);			// Initialise counters for emails added
@@ -483,7 +486,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -548,14 +551,14 @@ class newsletter
 	/**
 	 * Delete a newsletter
 	 *
-	 * @return none
+	 * @return null
 	 */
 	function deleteNewsletter()
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$tmp = each($_POST['delete']);
+		$tmp = key($_POST['delete']);
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
@@ -581,7 +584,7 @@ class newsletter
 	 */
 	function show_options($action)
 	{
-		if ($action == "")
+		if (empty($action))
 		{
 			$action = "main";
 		}
@@ -610,7 +613,7 @@ class newsletter
 		$vs_text = '';
 
 
-		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
+		if(!$nl_sql->select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
@@ -638,7 +641,7 @@ class newsletter
 					<td>".LAN_OPTIONS."</td>
 				</tr>";
 
-			if($nl_row = $nl_sql-> db_Fetch())
+			if($nl_row = $nl_sql->fetch())
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
 				sort($subscriber_list);
@@ -646,7 +649,7 @@ class newsletter
 			}
 			if ($subscribers_total_count<1) 
 			{
-				header("location:".e_SELF);
+				e107::redirect(e_SELF);
 				exit;
 			}
 			// Loop through each user in the array subscribers_list & sanatize
@@ -729,4 +732,4 @@ function admin_config_adminmenu()
 	global $action;
 	$nl->show_options($action);
 }
-?>
+

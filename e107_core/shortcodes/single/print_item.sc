@@ -1,5 +1,9 @@
 //<?php
 
+if(empty($parm))
+{
+    return null;
+}
 
 $parms = explode("^",$parm);
 

@@ -249,7 +249,7 @@ class e_jsmanager
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
 		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
-		if(vartrue($customJqueryUrls) && $this->_in_admin === false)
+		if(!empty($customJqueryUrls) && $this->_in_admin === false)
 		{
 			$this->_libraries['jquery'] = explode("\n", $customJqueryUrls);	
 		}
@@ -269,7 +269,7 @@ class e_jsmanager
 
 				if(!$this->libDisabled($id,$vis))
 				{
-					if(vartrue($this->_libraries[$id]))
+					if(!empty($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
 						{
@@ -283,7 +283,7 @@ class e_jsmanager
 		}
 		$this->_dependence = null;
 	
-		if($vis != 'auto')
+		if($vis != 'auto') // TODO FIX ME - should it be in the loop above?
 		{
 			$this->checkLibDependence(null, $core);
 		}
@@ -692,11 +692,8 @@ class e_jsmanager
 				case 'front':
 					return ($this->isInAdmin()) ? true : false;	
 				break;
-				
+
 				case 'none':
-					return true;	
-				break;
-				
 				default:
 					return true;
 				break;
@@ -772,11 +769,24 @@ class e_jsmanager
 
 	/**
 	 * Add a <link> tag to the head.
-	 * @param array $attributes key>value pairs
+	 * @param array|string $attributes key>value pairs or html attributes string
+	 * @param bool $browserCache - set to true to add the cacheId to the href.
 	 * @example addLink(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
+	 * @example addLink('rel="preload" href="{THEME}assets/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin');
 	 */
-	public function addLink($attributes=array())
+	public function addLink($attributes, $browserCache=false)
 	{
+		if(is_array($attributes) && !empty($attributes['href']))
+		{
+			$attributes['href'] .= ($browserCache === true) ?  "?".$this->getCacheId() : '';
+			$attributes['href'] = e107::getParser()->staticUrl($attributes['href']);
+		}
+
+		if(is_string($attributes))
+		{
+			$attributes = e107::getParser()->staticUrl($attributes);
+		}
+
 		if(!empty($attributes))
 		{
 			$this->_e_link[] = $attributes;
@@ -786,24 +796,38 @@ class e_jsmanager
 
 	/**
 	 * Render all link tags. (other than css)
-	 * @return null
+	 * @param bool $return - when true will not echo the result, will return it instead.
+	 * @return null|string
 	 */
-	public function renderLinks()
+	public function renderLinks($return = false)
 	{
-
 		if(empty($this->_e_link))
 		{
 			return null;
 		}
 
-		$text = '';
+		$text = "\n\n<!-- [JSManager] Links -->\n";
 
 		foreach($this->_e_link as $v)
 		{
+			if(is_string($v))
+			{
+				if(strpos($v, "text/css") !== false)
+				{
+					e107::getDebug()->log("e107::link(".$v.") ignored. Use e107::css() instead for css stylesheets");
+					continue;
+				}
+
+				$text .= "\n<link ".$v." />";
+				continue;
+			}
+
+
 			if(!empty($v['type']))
 			{
 				if($v['type'] == 'text/css' || $v['rel'] == 'stylesheet') // not for this purpose. use e107::css();
 				{
+					e107::getDebug()->log("e107::link(".$v['href'].") ignored. Use e107::css() instead for css stylesheets");
 					continue;
 				}
 			}
@@ -812,6 +836,12 @@ class e_jsmanager
 			$text .= "\n<link";
 			foreach($v as $key=>$val)
 			{
+				if($key === 'crossorigin' && $val === true)
+				{
+					$text .= " crossorigin";
+					continue;
+				}
+
 				if(!empty($val))
 				{
 					$text .= " ".$key."=\"".$val."\"";
@@ -819,6 +849,11 @@ class e_jsmanager
 			}
 			$text .= " />";
 
+		}
+
+		if(!empty($return))
+		{
+			return $text;
 		}
 
 		echo $text;
@@ -913,11 +948,11 @@ class e_jsmanager
 			return $this;
 			
 		}
-		else
-		{
+		//else
+		//{
 			// echo $this->_dependence." :: ENABLED<br />";
 			 // echo $this->_dependence."::".$file_path." : DISABLED<br />";		
-		}
+	//	}
 		
 		
 
@@ -1166,6 +1201,15 @@ class e_jsmanager
 			case 'footer':
 				if(true === $zone)
 				{
+					if(!empty($this->_runtime_header)) // late stage header js.
+					{
+						foreach ($this->_runtime_header as $priority => $path_array)
+						{
+							$this->renderFile($path_array, $external, 'Late Header JS include - priority #'.$priority, $mod);
+						}
+						$this->_runtime_header = array();
+					}
+
 					ksort($this->_runtime_footer, SORT_NUMERIC);
 					foreach ($this->_runtime_footer as $priority => $path_array)
 					{
@@ -1205,8 +1249,8 @@ class e_jsmanager
 
 		if($return)
 		{
-			$ret = ob_get_contents();
-			ob_end_clean();
+			$ret = ob_get_clean();
+
 			return $ret;
 		}
 	}
@@ -1223,7 +1267,7 @@ class e_jsmanager
 				// Renumber integer keys as array_merge_recursive() does. Note that PHP
 				// automatically converts array keys that are integer strings (e.g., '1')
 				// to integers.
-				if (is_integer($key)) {
+				if (is_int($key)) {
 					$result[] = $value;
 				}
 				// Recurse when both values are arrays.
@@ -1262,7 +1306,7 @@ class e_jsmanager
 		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
-			e107::getDb()->db_Mark_Time("Load JS/CSS: ".$label);
+			e107::getDebug()->logTime("Load JS/CSS: ".$label);
 		}
 
 
@@ -1521,7 +1565,7 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' || strpos($path, 'wysiwyg.php')!==false )
+		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos($path, '//') === 0 || strpos($path, 'wysiwyg.php')!==false )
 		{
 			return false;
 		}
@@ -1567,6 +1611,7 @@ class e_jsmanager
 				{
 					$content .= "/* File: ".str_replace("../",'',$path)." */\n";
 					$content .= $this->getCacheFileContent($path, $type);
+					$content .= ($type === 'js') ? ";" : ""; // precaution in case it is missing from a js file.
 					$content .= "\n\n";
 				}
 
@@ -1577,7 +1622,7 @@ class e_jsmanager
 
 			}
 
-			echo "\n\n<!-- Cached ".$type." -->\n";
+			echo "\n\n<!-- [JSManager] Cached ".strtoupper($type)." -->\n";
 
 			if($type == 'js')
 			{
@@ -1645,7 +1690,7 @@ class e_jsmanager
 				continue;
 			}
 
-			$http = $tp->staticUrl(null, array('full'=>1)); // returns SITEURL or Static URL if enabled.
+			$http = $tp->staticUrl(null); // returns SITEURL or Static URL if enabled.  array('full'=>1) removed.
 			$path = $this->normalizePath($basePath.$v);
 			$dir = "url(".$http.$path.")";
 
@@ -1673,9 +1718,9 @@ class e_jsmanager
 	    $parts = preg_split(":[\\\/]:", $path); // split on known directory separators
 
 	    // resolve relative paths
-	    for ($i = 0; $i < count($parts); $i +=1)
+	    for ($i = 0, $iMax = count($parts); $i < $iMax; $i +=1)
 	    {
-	        if ($parts[$i] === "..")   // resolve ..
+	        if (isset($parts[$i]) && ($parts[$i] === ".."))   // resolve ..
 	        {
 	            if ($i === 0)
 	            {
@@ -1694,7 +1739,7 @@ class e_jsmanager
 	            $i -= 1;
 	        }
 
-	        if ($i > 0 && $parts[$i] === "")  // remove empty parts
+	        if ($i > 0 && empty($parts[$i]))  // remove empty parts
 	        {
 	            unset($parts[$i]);
 	            $parts = array_values($parts);

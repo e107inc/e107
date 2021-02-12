@@ -172,10 +172,9 @@ class e_jslib
         $pref = e107::getPref();
         $encoding = $this->browser_enc();
         
-        $contents = ob_get_contents();
-        ob_end_clean();
-        
-        if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
+        $contents = ob_get_clean();
+
+	    if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
         
         $etag = md5($page).($encoding ? '-'.$encoding : '');
     	header('ETag: '.$etag, true);
@@ -199,7 +198,7 @@ class e_jslib
             $crc = crc32($contents);
             
             $gzdata .= gzcompress($contents, 9);
-            $gzdata = substr($gzdata, 0, strlen($gzdata) - 4);
+            $gzdata = substr($gzdata, 0, -4);
             $gzdata .= pack("V", $crc) . pack("V", $size);
             
             $gsize = strlen($gzdata);
@@ -292,4 +291,3 @@ class e_jslib
         return $cacheFile;
     }
 }
-?>

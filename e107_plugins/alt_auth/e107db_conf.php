@@ -20,7 +20,7 @@
  *	@version 	$Id$;
  */
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'form_handler.php');
 e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_e107db_conf.php');
@@ -132,4 +132,4 @@ function e107db_conf_adminmenu()
 	alt_auth_adminmenu();
 }
 
-?>
+

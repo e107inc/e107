@@ -20,11 +20,11 @@ function wmessage_shortcode($parm='')
 	//	return;
 	}
 	*/
-	
+	$front_qry = '';
 	if ($parm != 'force')
 		{
 			$full_url = 'news.php';					// Set a default in case
-			$front_qry = '';
+
 			$uc_array = explode(',', USERCLASS_LIST);
 			if(varset($pref['frontpage']))
 			{
@@ -112,4 +112,3 @@ function wmessage_shortcode($parm='')
 		}
 	}
 }
-?>

@@ -10,6 +10,8 @@
  
 if (!defined('e107_INIT')) { exit; }
 
+e107::plugLan('faqs', 'front', true);
+
 /**
  *
  * @package     e107
@@ -28,6 +30,9 @@ class faqs_shortcodes extends e_shortcode
 	private $share = false;
 	private $datestamp = false;
 	private $questionCharLimit = 255;
+	public $pref;
+	public $tag;
+	public $category;
 
 
 	public function __construct()
@@ -56,6 +61,16 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_counter($parm='')
 	{
 		return $this->counter;	
+	}
+
+	function sc_faq_hide($parm=null)
+	{
+		if(empty($parm))
+		{
+			$parm = 'collapse';
+		}
+
+		return ($this->item != $this->var['faq_id']) ? $parm : '';
 	}
 	
 	
@@ -100,7 +115,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if($this->share == true)
 			{
-				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=xs&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
+				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
 			}
 
 			$text .= "</div></div>
@@ -109,10 +124,23 @@ class faqs_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true, 'BODY');
+			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
 		}
 		return $text;
 	}
+
+
+	function sc_faq_share($parm=null)
+	{
+		$tp = e107::getParser();
+
+		$url        = e107::url('faqs','item', $this->var, 'full');
+		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+
+		return $tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
+
+	}
+
 	
 	function sc_faq_question_link($parm='')
 	{
@@ -169,13 +197,19 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$faqpref = e107::getPlugConfig('faqs')->getPref();
-		if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
-		{
+		//if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
+	//	{
 			// UNDER CONSTRUCTION
 		 	//return "[ <a href='faqs.php?edit.".$this->var['faq_parent'].".".$this->var['faq_id']."'>Edit</a> ]";
-		}	
+	//	}
 	}
 	
+	/* {FAQ_CATEGORY_ID} */ 
+	function sc_faq_category_id($parm = '')
+	{
+	  return $this->var['faq_parent'];
+	}
+
 	function sc_faq_category($parm = '')
 	{
 	//	$tp = e107::getParser();
@@ -220,7 +254,7 @@ class faqs_shortcodes extends e_shortcode
 	}
 
 
-	function sc_faq_datestamp($parm)
+	function sc_faq_datestamp($parm=null)
 	{
 		$type = vartrue($parm, 'relative');
 		return e107::getParser()->toDate($this->var['faq_datestamp'], $type);
@@ -236,7 +270,7 @@ class faqs_shortcodes extends e_shortcode
 			return e107::getParser()->toHTML($customCaption[e_LANGUAGE],true);
 		}
 
-		return LAN_PLUGIN_FAQS_FRONT_NAME;
+		return defset('LAN_PLUGIN_FAQS_FRONT_NAME');
 	}
 
 
@@ -249,7 +283,7 @@ class faqs_shortcodes extends e_shortcode
 			return "<span class='faq-total'>(".($this->counter -1).")</span>";
 		}
 
- 		return $this->var['f_count'];
+ 		return isset($this->var['f_count']) ? $this->var['f_count'] : 0;
 	}
 	
 	function sc_faq_cat_diz()
@@ -263,7 +297,7 @@ class faqs_shortcodes extends e_shortcode
 		return "<img src='".e_PLUGIN_ABS."faq/images/faq.png'  alt='' />";	
 	}
 
-	function sc_faq_submit_question($parms)
+	function sc_faq_submit_question($parms=null)
 	{
 
 		$faqpref = e107::pref('faqs');
@@ -285,7 +319,7 @@ class faqs_shortcodes extends e_shortcode
 			$button = "";
 		}
 
-		if ($faqpref['submit_question'] != e_UC_NOBODY)
+		if (varset($faqpref['submit_question']) != e_UC_NOBODY)
 		{
 			$frm = e107::getForm();
 
@@ -329,7 +363,7 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$faqpref = e107::pref('faqs');
 
-		if (check_class($faqpref['submit_question']))
+		if (isset($faqpref['submit_question']) && check_class($faqpref['submit_question']))
 		{
 			$tp = e107::getParser();
 
@@ -373,7 +407,7 @@ class faqs_shortcodes extends e_shortcode
 			
 			$text = $frm->open('faq-search-form','get', $target);
 			$text .= '<span class="input-group e-search">';
-			$text .= $frm->text('srch', $_GET['srch'], 20,'class=search-query&placeholder='.LAN_SEARCH).'
+			$text .= $frm->text('srch', varset($_GET['srch']), 20,'class=search-query&placeholder='.LAN_SEARCH).'
    			 <span class="input-group-btn"><button class="btn btn-primary"  type="submit">'.$tp->toGlyph('fa-search').'</button>';
 			$text .= '</span></span>';
 			$text .= $frm->close();
@@ -387,13 +421,13 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$array = array();
 	//	$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
-		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>LAN_PLUGIN_FAQS_NAME);
+		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>defset('LAN_PLUGIN_FAQS_NAME'));
 
 		if(!empty($_GET['srch']))
 		{
 			$array[1] = array('url'=> null, 'text'=>LAN_FAQS_002 .": ".e107::getParser()->filter($_GET['srch'], 'w'));
 		}
-			
+
 		return e107::getForm()->breadcrumb($array);
 		
 	}

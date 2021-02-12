@@ -1,0 +1,15 @@
+---
+deployer: 'sftp'
+url: 'http://target/e107/'
+db:
+  host: 'db'
+  dbname: 'app'
+  user: 'root'
+  password: 'Database Password for Continuous Integration'
+  populate: true
+fs:
+  host: 'target'
+  user: 'www-data'
+  port: '22'
+  password: 'UNIX Password for Continuous Integration'
+  path: '/var/www/html/e107/'

@@ -353,6 +353,11 @@
 
 
 		/**
+		 * TODO: Document this method
+		 */
+		public function resetTableList();
+
+		/**
 		 * Return a filtered list of DB tables.
 		 *
 		 * @param string $mode [optional] all|lan|nolan|nologs
@@ -383,6 +388,18 @@
 		 * @return string $lang English, French etc.
 		 */
 		public function getLanguage();
+
+
+
+		/**
+		 * XXX: e_db_pdo and e_db_mysql have differing implementations of this method.
+		 * @param string $oldtable
+		 * @param string $newtable
+		 * @param bool $drop
+		 * @param bool $data
+		 * @return bool|int|PDOStatement|resource
+		 */
+		public function copyTable($oldtable, $newtable, $drop = false, $data = false);
 
 
 

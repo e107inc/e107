@@ -61,7 +61,7 @@ class e_menu
 	 * Constructor
 	 *
 	 */
-	function __construct()
+	public function __construct()
 	{
 	}
 
@@ -74,19 +74,19 @@ class e_menu
 	{
 		global $_E107;
 
-		if(vartrue($_E107['cli']))
+		if(!empty($_E107['cli']))
 		{
 			return;
 		}
 		
 		//	print_a($eMenuArea);
-		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x Experimental
+		if(varset($_SERVER['E_DEV_MENU']) === 'true') // New in v2.x Experimental
 		{
 			$layouts = e107::getPref('menu_layouts');
 			if(!is_array($layouts))
 			{
 				$converted = $this->convertMenuTable();
-				e107::getConfig('core')->set('menu_layouts', $converted)->save();
+				e107::getConfig()->set('menu_layouts', $converted)->save();
 			}
 			
 			$eMenuArea = $this->getData(THEME_LAYOUT);
@@ -145,7 +145,7 @@ class e_menu
 		{
 			$layout 	= vartrue($row['menu_layout'],'default');	
 			$location 	= $row['menu_location'];
-			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=> intval($row['menu_class']),'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);	
+			$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=> (int)$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);
 		}
 		
 		return $data;		
@@ -203,6 +203,8 @@ class e_menu
 		{
 			return array();	
 		}
+
+		$ret = array();
 		
 		foreach($mpref[$layout] as $area=>$v)
 		{
@@ -210,7 +212,7 @@ class e_menu
 					
 			foreach($v as $val)
 			{
-				$class = intval($val['class']);
+				$class = (int)$val['class'];
 				
 				if(!check_class($class))
 				{
@@ -255,7 +257,7 @@ class e_menu
 	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
 	{
 		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
-		$qry .= ($location != 'all') ? 'menu_location='.intval($location) : '';
+		$qry .= ($location !== 'all') ? 'menu_location='. (int)$location : '';
 
 		return  e107::getDb()->update('menus', $qry);
 	}
@@ -366,15 +368,16 @@ class e_menu
 	private function getDataLegacy()
 	{
 		$sql = e107::getDb();
-		$menu_layout_field = THEME_LAYOUT!=e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
+		$menu_layout_field = THEME_LAYOUT != e107::getPref('sitetheme_deflayout') ? THEME_LAYOUT : "";
 		
 	//	e107::getCache()->CachePageMD5 = md5(e_LANGUAGE.$menu_layout_field); // Disabled by line 93 of Cache class. 
 		//FIXME add a function to the cache class for this.
 
-		$cacheData = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
-
-	//	$menu_data = json_decode($cacheData,true);
-		$menu_data = e107::unserialize($cacheData);
+		if(!defined('PREVIEWTHEME'))
+		{
+			$cacheData = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+			$menu_data = e107::unserialize($cacheData);
+		}
 
 		$eMenuArea = array();
 		// $eMenuList = array();
@@ -383,7 +386,9 @@ class e_menu
 		
 		if(empty($menu_data) || !is_array($menu_data))
 		{
-			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
+			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.')  ';
+			$menu_qry .= !defined('PREVIEWTHEME') ? 'AND menu_layout = "'.$menu_layout_field.'" ' : '';
+			$menu_qry .= 'ORDER BY menu_location,menu_order';
 			
 			if($sql->gen($menu_qry))
 			{
@@ -414,7 +419,7 @@ class e_menu
 	 * Returns true if a menu is currently active. 
 	 * @param string $menuname (without the '_menu.php' )
 	 */
-	function isLoaded($menuname)
+	public function isLoaded($menuname)
 	{
 		if(empty($menuname))
 		{
@@ -440,12 +445,7 @@ class e_menu
 
 	protected function isFrontPage()
 	{
-		if(e_REQUEST_SELF == SITEURL)
-		{
-			return true;
-		}
-
-		return false;
+		return e_REQUEST_SELF == SITEURL;
 	}
 
 
@@ -481,7 +481,7 @@ class e_menu
 
 					foreach($pagelist as $p)
 					{
-						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						if($p === 'FRONTPAGE' && $this->isFrontPage())
 						{
 							$show_menu = true;
 							break;
@@ -508,7 +508,7 @@ class e_menu
 					$show_menu = true;
 					foreach($pagelist as $p)
 					{
-						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						if($p === 'FRONTPAGE' && $this->isFrontPage())
 						{
 							$show_menu = false;
 							break;
@@ -516,7 +516,7 @@ class e_menu
 
 
 						$p = $tp->replaceConstants($p, 'full');
-						if(substr($p, -1)=='!')
+						if(substr($p, -1) === '!')
 						{
 							$p = substr($p, 0, -1);
 							if(substr($check_url, strlen($p)*-1) == $p)
@@ -558,7 +558,7 @@ class e_menu
 		$buffer_output = (E107_DBG_INCLUDES) ? false : true; // Turn off when trouble-shooting includes. Default - return all output.
 		
 
-		if(isset($tmp[1])&&$tmp[1]=='echo')
+		if(isset($tmp[1])&&$tmp[1] === 'echo')
 		{
 			$buffer_output = false;
 		}
@@ -580,9 +580,7 @@ class e_menu
 		e107::getRender()->eMenuArea = null;
 		if($buffer_output)
 		{
-			$ret = ob_get_contents();
-			ob_end_clean();
-			return $ret;
+			return ob_get_clean();
 		}
 	}
 
@@ -600,7 +598,7 @@ class e_menu
 	//	global $sql; // required at the moment.
 
 
-		global $sc_style, $e107_debug;
+		global $sc_style;
 				
 
 		$sql        = e107::getDb();
@@ -627,11 +625,11 @@ class e_menu
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
-		e107::getDB()->db_Mark_Time($mname);
+		e107::getDebug()->logTime($mname);
 		
 		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
-			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=".intval($mpath)." "; // load by ID or load by menu-name (menu_name)
+			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=". (int)$mpath ." "; // load by ID or load by menu-name (menu_name)
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
@@ -639,13 +637,13 @@ class e_menu
 			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
 			{
 				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
-				return;	
+				return null;
 			}
 			
 			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
 			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
-			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
+			if(!empty($page['menu_template'])) // New v2.x templates. see core/menu_template.php
 			{
 				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
@@ -659,7 +657,7 @@ class e_menu
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 
 				$ns->setUniqueId('cmenu-'.$page['menu_name']);
-				$caption .= e107::getForm()->instantEditButton(e_ADMIN_ABS."cpage.php?mode=menu&action=edit&tab=2&id=".intval($page['page_id']),'J');
+				$caption .= e107::getForm()->instantEditButton(e_ADMIN_ABS."cpage.php?mode=menu&action=edit&tab=2&id=". (int)$page['page_id'],'J');
 
 				$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
 			}
@@ -694,9 +692,9 @@ class e_menu
 			$pref = e107::getPref(); // possibly used by plugin menu.
 
 
-			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
+			deftrue('e_DEBUG') ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
-		e107::getDB()->db_Mark_Time("(After ".$mname.")");
+		e107::getDebug()->logTime("(After ".$mname.")");
 
 		if(e_DEBUG === true)
 		{
@@ -705,9 +703,10 @@ class e_menu
 
 		if($return)
 		{
-			$ret = ob_get_contents();
-			ob_end_clean();
-			return $ret;
+			return ob_get_clean();
 		}
+
+		unset($pref);
+		return null;
 	}
 }

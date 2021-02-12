@@ -56,4 +56,4 @@ define("SEALAN_48", "This setting only applies when the search sort method is PH
 define("SEALAN_49", "If your site includes Ideographic languages, such as Chinese and Japanese, you must use the PHP sort method.");
 
 
-?>
+

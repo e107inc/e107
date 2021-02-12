@@ -4,11 +4,13 @@ if (!defined('e107_INIT'))
 {
 	require_once("class2.php");
 }
-
-define('e_IFRAME', true);
+if(!defined('e_IFRAME'))
+{
+	define('e_IFRAME', true);
+}
 require_once(HEADERF);
 
-class unsubscribe
+class e_unsubscribe
 {
 	
 	function __construct()
@@ -23,6 +25,7 @@ class unsubscribe
 		
 		if(empty($_GET['id']))
 		{
+		    $this->invalidURL();
 			return;	
 		}
 		
@@ -135,14 +138,10 @@ class unsubscribe
 }
 
 
-new unsubscribe;
-
-
-
+new e_unsubscribe;
 
 
 require_once(FOOTERF);
-exit;
 
 
-?>
+

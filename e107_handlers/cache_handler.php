@@ -14,7 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-define('CACHE_PREFIX','<?php exit;');
+define('CACHE_PREFIX','<?php exit; ?>');
 
 /**
  * Class to cache data as files, improving site speed and throughput.
@@ -31,8 +31,10 @@ class ecache {
 	public $CachenqMD5;
 	public $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
 	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
+	private $lastError;
+	private $lastFile;
 
-	const CACHE_PREFIX = '<?php exit;';
+	const CACHE_PREFIX = '<?php exit; ?>';
 
 	function __construct()
 	{
@@ -118,6 +120,7 @@ class ecache {
 
 		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
+		$this->lastFile = $fname;
 		return $fname;
 	}
 
@@ -146,24 +149,53 @@ class ecache {
 				else
 				{
 					$ret = file_get_contents($cache_file);
-					if (substr($ret,0,strlen(self::CACHE_PREFIX)) == self::CACHE_PREFIX)
+
+					if($ret === false)
+					{
+						$this->lastError = "Couldn't read ".$cache_file;
+					}
+
+					if (strpos($ret, self::CACHE_PREFIX) === 0)
 					{
 						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					elseif(substr($ret,0,5) == '<?php')
+					elseif(strpos($ret, '<?php exit;') === 0)
+					{
+						$ret = substr($ret, 11);
+					}
+					elseif(strpos($ret,'<?php') === 0)
 					{
 						$ret = substr($ret, 5);		// Handle the history for now
 					}
+
 					return $ret;
 				}
 			}
 			else
 			{
-			//	e107::getDebug()->log("Couldn't find cache file: ".json_encode($cache_file));
+				$this->lastError = "Cache file not found: ".$cache_file;
 				return false;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Return the last error encountered during cache processing.
+	 * @return mixed
+	 */
+	public function getLastError()
+	{
+		return $this->lastError;
+	}
+
+	/**
+	 * Return the last error encountered during cache processing.
+	 * @return mixed
+	 */
+	public function getLastFile()
+	{
+		return $this->lastFile;
 	}
 
 	/**
@@ -225,7 +257,7 @@ class ecache {
 	{
 		if(isset($this) && $this instanceof ecache)
 		{
-			return $this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
+			$this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
 		}
 		else
 		{

@@ -16,9 +16,9 @@ class secure_image
 	protected $HANDLERS_DIRECTORY;
 	protected $IMAGES_DIRECTORY;
 	protected $FONTS_DIRECTORY;
-	protected $THIS_DIR;
 	protected $BASE_DIR;
 	public $FONT_COLOR = "90,90,90";
+	private $secret;
 
 	function __construct()
 	{
@@ -29,8 +29,8 @@ class secure_image
 	 		return call_user_func($user_func);
 		}
  * */
-		list($usec, $sec) = explode(" ", microtime());
-		$this->random_number = str_replace(".", "", $sec.$usec);
+        $this->createCode();
+
         $this->BASE_DIR             = e_BASE;
 
         $CORE_DIRECTORY             = e107::getFolder('CORE');
@@ -40,74 +40,83 @@ class secure_image
 
 	}
 
+	/**
+	 * @deprecated Use createCode() instead.
+	 * Legacy version of createCode();
+	 * @return int
+	 */
+	public function create_code()
+	{
+		return $this->createCode();
+	}
 
 
-	function create_code()
+	/**
+	 * Generates a public code and a secret code. Returns the public code.
+	 * @return int
+	 */
+	public function createCode()
 	{
 		if ($user_func = e107::getOverride()->check($this,'create_code'))
 		{
 	 		return call_user_func($user_func);
 		}
 
-	//	$pref = e107::getPref();
-	//	$sql = e107::getDb();
+		list($usec, $sec)     = explode(" ", microtime());
+		$this->random_number  = str_replace(".", "", $sec.$usec);
 
-	//	mt_srand ((double)microtime() * 1000000);
-	//	$maxran = 1000000;
-	//	$rand_num = mt_rand(0, $maxran);
-	//	$datekey = date("r");
-	//	$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey));
-	//	$code = substr($rcode, 2, 6);
-		$recnum = $this->random_number;
-	//	$del_time = time()+1200;
+		$this->secret = e107::getUserSession()->generateRandomString('*****');
 
-		$code =e107::getUserSession()->generateRandomString('*****');
+		e107::getSession('secureImage')->set($this->random_number, $this->secret);
 
-		$_SESSION['secure_img'][$recnum] = $code;
-
-		return $recnum;
+		return $this->random_number;
 	}
 
-	/* Return TRUE if code is valid, otherwise return FALSE 
-	 * 
+	/**
+	 * The secret code that should be entered by the user. Must be called after createCode();
+	 * @return mixed
 	 */
-	function verify_code($recnum, $checkstr)
+	public function getSecret()
+	{
+		return $this->secret;
+	}
+
+
+	/**
+	 * @deprecated Use invalidCode() instead. Returns true when the code doesn't match.
+	 * Return true if code is valid, otherwise return FALSE
+	 * @param integer $recnum The public code - returned by create_code()
+	 * @param string $checkstr - code entered by the user.
+	 * @return bool|mixed
+	 */
+	public function verify_code($recnum, $checkstr)
 	{
 		if ($user_func = e107::getOverride()->check($this,'verify_code'))
 		{
 	 		return call_user_func($user_func,$recnum,$checkstr);
 		}
-		
-	//	$sql = e107::getDb();
-	//	$tp = e107::getParser();
 
-		if(!empty($_SESSION['secure_img'][$recnum]) && $_SESSION['secure_img'][$recnum] === $checkstr )
+		$secret = e107::getSession('secureImage')->get($recnum);
+
+		if(!empty($secret) && ($secret === $checkstr))
 		{
-			unset($_SESSION['secure_img']);
+			e107::getSession('secureImage')->clear();
+
 			return true;
 		}
 		else
 		{
 			return false;
 		}
-/*
-		if ($sql->select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
-			$row = $sql->fetch();
-			$sql->delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
-			//list($code, $path) = explode(",", $row['tmp_info']);
-			$code = intval($row['tmp_info']);
-			return ($checkstr == $code);
-		}
-		return FALSE;*/
+
 	}
 	
-	
-	
-	// Return an Error message (true) if check fails, otherwise return false. 
+
 	/**
+	 * Returns an Error message (true) if check fails, otherwise return false.
 	 * @param $rec_num
 	 * @param $checkstr
-	 * @return bool|mixed|string
+	 * @return bool
 	 */
 	function invalidCode($rec_num=null, $checkstr=null)
 	{
@@ -124,16 +133,15 @@ class secure_image
 		{
 			return LAN_INVALID_CODE;	
 		}
-		
 
 	}
 	
-	
-	//XXX Discuss - Add more posibilities for themers? e_CAPTCHA_BGIMAGE, e_CAPTCH_WIDTH, e_CAPTCHA_HEIGHT?
+
 	/**
-	 * @return mixed|string
+	 * @deprecated Use renderImage() instead.
+	 * @return string
 	 */
-	function r_image()
+	public function r_image()
 	{
 		if ($user_func = e107::getOverride()->check($this,'r_image'))
 		{
@@ -148,21 +156,22 @@ class secure_image
 		{
 			$color = 'cccccc';		
 		}
-		
-		$code = $this->create_code();
-		return "<img src='".e_IMAGE_ABS."secimg.php?id={$code}&amp;clr={$color}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
+	
+		return "<img src='".e_IMAGE_ABS."secimg.php?id={$this->random_number}&amp;clr={$color}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
 	}
-	
-	
-	
-	
-	function renderImage() // Alias of r_image
+
+
+	/**
+	 * Return the rendered code/image.
+	 * @return mixed|string
+	 */
+	public function renderImage() // Alias of r_image
 	{
 		return $this->r_image();			
 	}
 
 
-	function hex2rgb($hex) 
+	private function hex2rgb($hex)
 	{
 		$hex = str_replace("#", "", $hex);
 
@@ -186,7 +195,8 @@ class secure_image
 
 
 	/**
-	 * @return mixed|string
+	 * Render the input where the user will enter the code.
+	 * @return string
 	 */
 	function renderInput()
 	{
@@ -202,6 +212,7 @@ class secure_image
 
 
 	/**
+	 * Return the label to accompany the input.
 	 * @return mixed|string
 	 */
 	function renderLabel()
@@ -259,9 +270,9 @@ class secure_image
 	//	$code = intval($row['tmp_info']); // new value
 
 
-		if(isset($_SESSION['secure_img'][$recnum]))
+		if($tmp = e107::getSession('secureImage')->get($recnum))
 		{
-			$code = $_SESSION['secure_img'][$recnum];
+			$code = $tmp; 
 		}
 		else
 		{
@@ -433,7 +444,7 @@ class secure_image
 	}
 
 
-	function imageCreateTransparent($x, $y) 
+	private function imageCreateTransparent($x, $y)
 	{
     	$imageOut = imagecreatetruecolor($x, $y);
     	$backgroundColor = imagecolorallocatealpha($imageOut, 0, 0, 0, 127);
@@ -446,4 +457,4 @@ class secure_image
 
 
 }
-?>
+

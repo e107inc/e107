@@ -32,7 +32,7 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 			'return_fields'	=> array('cb_id', 'cb_nick', 'cb_message', 'cb_datestamp'), 
 			'search_fields'	=> array('cb_nick' => '1', 'cb_message' => '1'), // fields and weights. 
 			
-			'order'			=> array('cb_datestamp' => DESC),
+			'order'			=> array('cb_datestamp' => 'DESC'),
 			'refpage'		=> 'chat.php'
 		);
 
@@ -92,4 +92,3 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 //Old v1.
 // $search_info[] = array('sfile' => e_PLUGIN.'chatbox_menu/search/search_parser.php', 'qtype' => CB_SCH_LAN_1, 'refpage' => 'chat.php', 'advanced' => e_PLUGIN.'chatbox_menu/search/search_advanced.php');
 
-?>

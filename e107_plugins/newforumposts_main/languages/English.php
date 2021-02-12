@@ -33,4 +33,3 @@ define('NFPM_L22', 'Closed Sticky Thread');
 define('NFPM_L23', 'Announcement');
 define('NFPM_L24', 'Closed Thread');	
 	
-?>

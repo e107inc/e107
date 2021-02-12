@@ -265,7 +265,7 @@ class e_object
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return e_tree_model
+	 * @return mixed|e_tree_model
 	 */
 	public function setParam($key, $value)
 	{
@@ -334,7 +334,7 @@ class e_object
 	 */
 	public function toString($AddSlashes = false)
 	{
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
 	/**
@@ -590,7 +590,7 @@ class e_model extends e_object
 	/**
 	 * Optional DB table - used for auto-load data from the DB
 	 * @param string $table
-	 * @return e_model
+	 * @return string
 	 */
 	public function getModelTable()
 	{
@@ -665,10 +665,16 @@ class e_model extends e_object
 
 		$eurl = e107::getUrl();
 
-		if(empty($options)) $options = array();
-		elseif(!is_array($options)) parse_str($options, $options);
+	    if (empty($options))
+	    {
+		    $options = array();
+	    }
+	    elseif(is_string($options))
+	    {
+		    parse_str($options, $options);
+	    }
 
-		$vars = $this->toArray();
+	    $vars = $this->toArray();
 		if(!isset($options['allow']) || empty($options['allow']))
 		{
 			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
@@ -1404,14 +1410,14 @@ class e_model extends e_object
 
 		if(!empty($logData))
 		{
-			e107::getAdminLog()->addArray($logData);
+			e107::getLog()->addArray($logData);
 		}
 		else
 		{
-			e107::getAdminLog()->addError($message,false);
+			e107::getLog()->addError($message,false);
 		}
 
-		e107::getAdminLog()->save('ADMINUI_04', E_LOG_WARNING);
+		e107::getLog()->save('ADMINUI_04', E_LOG_WARNING);
 
 		return $this;
 	}
@@ -1823,11 +1829,11 @@ class e_model extends e_object
 			$value = $this->getData($key);
 			if(is_array($value))
 			{
-				return e107::getArrayStorage()->WriteArray($value, $AddSlashes);
+				return e107::serialize($value, $AddSlashes);
 			}
 			return (string) $value;
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
 	public function destroy()
@@ -2102,7 +2108,7 @@ class e_front_model extends e_model
     {
     	$d = $this->getDataFields();
 		
-		if(!empty($d[$key]) && ($d[$key] == 'array'))
+		if(!empty($d[$key]) && ($d[$key] === 'array' || $d[$key] === 'json'))
 		{
 			return e107::unserialize($this->getData((string) $key, $default, $index));	
 		}   
@@ -2300,7 +2306,7 @@ class e_front_model extends e_model
 		}
 
 	//	$newData = $this->getPostedData();
-		e107::getAdminLog()->addArray($data,$oldData);
+		e107::getLog()->addArray($data,$oldData);
 	//	$this->addMessageDebug("NEWD".print_a($data,true));
 
 		$tp = e107::getParser();
@@ -2309,7 +2315,7 @@ class e_front_model extends e_model
     		// get values form validated array when possible
     		// we need it because of advanced validation methods e.g. 'compare'
     		// FIX - security issue, toDb required
-    		if(isset($valid_data[$field])) $dt = $tp->toDb($valid_data[$field]);
+    		if(isset($valid_data[$field])) $dt = $tp->toDB($valid_data[$field]);
 
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
@@ -2672,6 +2678,28 @@ class e_front_model extends e_model
 		return $qry;
 	}
 
+	public function isValidFieldKey($key)
+	{
+		if(isset($this->_data_fields[$key]))
+		{
+			return $this->_data_fields[$key];
+		}
+
+		// Check key against a multi/dimensional/field name.
+		// FIXME make this more accurate - commonly used field names could conflict. @see e_front_modelTest::testSanitize()
+		foreach($this->_data_fields as $k=>$var)
+		{
+			if(strpos($k,'/') !== false && strpos($k, $key) !== false)
+			{
+				return $this->_data_fields[$k];
+			}
+		}
+
+		return false;
+	}
+
+
+
 	/**
 	 * Sanitize value based on its db field type ($_data_fields),
 	 * method will return null only if db field rule is not found.
@@ -2687,18 +2715,54 @@ class e_front_model extends e_model
 	public function sanitize($key, $value = null)
 	{
 		$tp = e107::getParser();
+		
 		if(is_array($key))
 		{
-			$ret = array();
-			foreach ($key as $k=>$v)
+			$ret = [];
+
+			foreach($this->_data_fields as $fld => $type)
 			{
-	            if(isset($this->_data_fields[$k]))
-	            {
-	               $ret[$k] = $this->sanitize($k, $v);
-	            }
+				list($field) = explode("/", $fld); // ie the field being posted as an array.
+
+				if(!isset($key[$field]))
+				{
+					continue;
+				}
+
+				if(strpos($fld, '/') !== false) // multi-dimensional array field key name.
+				{
+					$md = explode('/', $fld); // split the field name
+					$value = $key[$field];
+					foreach($md as $f) // loop through the path (depth/of/array) to check $value[x][y][z] etc.
+					{
+						if(isset($value[$f]))
+						{
+							if(is_array($value[$f]))
+							{
+								$value = $value[$f];
+							}
+							else // the actual field being saved. .
+							{
+								// FIXME add the sanitized value into the end of the array.
+								$sanitized = $this->sanitizeValue($type, $value[$f], $fld);
+								$ret[$field] = $key[$field];
+							}
+
+						}
+
+					}
+
+				}
+				else // regular field.
+				{
+					$ret[$field] = $this->sanitize($field, $key[$field]);
+				}
+
 			}
+
 			return $ret;
 		}
+
 
 		if(!isset($this->_data_fields[$key]))
 		{
@@ -2711,57 +2775,8 @@ class e_front_model extends e_model
 		}
 
 
-		switch ($type)
-		{
-			case 'int':
-			case 'integer':
-				//return intval($this->toNumber($value));
-				return intval($tp->toNumber($value));
-			break;
+		return $this->sanitizeValue($type, $value, $key);
 
-			case 'safestr':
-				return $tp->filter($value);
-			break;
-
-			case 'str':
-			case 'string':
-			case 'array':
-				$type = $this->getFieldInputType($key);
-				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
-			break;
-
-			case 'json':
-				if(empty($value))
-				{
-					return null;
-				}
-				return e107::serialize($value,'json');
-			break;
-
-			case 'code':
-				return $tp->toDB($value, false, false, 'pReFs');
-			break;
-
-			case 'float':
-				// return $this->toNumber($value);
-				return $tp->toNumber($value);
-			break;
-
-			case 'bool':
-			case 'boolean':
-				return ($value ? true : false);
-			break;
-
-			case 'model':
-				return $value->mergePostedData(false, true, true);
-			break;
-
-			case 'null':
-				return ($value ? $tp->toDB($value) : null);
-			break;
-	  	}
-
-		return null;
 	}
 
 
@@ -2840,11 +2855,11 @@ class e_front_model extends e_model
 
 			return 0;
 		}
-		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
+		$this->clearCache()->addMessageSuccess(LAN_UPDATED. " #".$this->getId());
 
-		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
-		e107::getAdminLog()->save('ADMINUI_02');
+		e107::getLog()->addSuccess('TABLE: '.$table, false);
+		e107::getLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
+		e107::getLog()->save('ADMINUI_02');
 
 
 		return $res;
@@ -2925,12 +2940,76 @@ class e_front_model extends e_model
 		if($undo)
 		{
 			$this->setData($ret['model_base_data'])
-				->isModified($ret['model_base_ismodfied'])
-				->setPostedData($ret['posted_data']);
+				->isModified($ret['model_base_ismodfied']);
+			$this->setPostedData($ret['posted_data']);
 		}
 		if($return) return $ret;
 
-		print_a($ret);
+		var_dump($ret);
+	}
+
+	/**
+	 * @param $type
+	 * @param $value
+	 * @param $key
+	 * @return array|bool|float|int|mixed|string|null
+	 */
+	private function sanitizeValue($type, $value, $key)
+	{
+
+		$ret = null; // default
+		$tp = e107::getParser();
+
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				//return intval($this->toNumber($value));
+				$ret = (int) $tp->toNumber($value);
+				break;
+
+			case 'safestr':
+				$ret = $tp->filter($value);
+				break;
+
+			case 'str':
+			case 'string':
+			case 'array':
+				$type = $this->getFieldInputType($key);
+				$ret = $tp->toDB($value, false, false, 'model', array('type' => $type, 'field' => $key));
+				break;
+
+			case 'json':
+				if(!empty($value))
+				{
+					$ret = e107::serialize($value, 'json');
+				}
+				break;
+
+			case 'code':
+				$ret = $tp->toDB($value, false, false, 'pReFs');
+				break;
+
+			case 'float':
+				// return $this->toNumber($value);
+				$ret = $tp->toNumber($value);
+				break;
+
+			case 'bool':
+			case 'boolean':
+				$ret = ($value ? true : false);
+				break;
+
+			case 'model':
+				$ret = $value->mergePostedData(false, true, true);
+				break;
+
+			case 'null':
+				$ret = ($value ? $tp->toDB($value) : null);
+				break;
+		}
+
+		return $ret;
 	}
 }
 
@@ -3038,13 +3117,13 @@ class e_admin_model extends e_front_model
 			return false;
 		}
 
-	    e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->save('ADMINUI_01');
+	    e107::getLog()->addSuccess('TABLE: '.$table, false);
+		e107::getLog()->save('ADMINUI_01');
 	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
 
 		// Set the reutrned ID
 		$this->setId($res);
-		$this->clearCache()->addMessageSuccess(LAN_CREATED);
+		$this->clearCache()->addMessageSuccess(LAN_CREATED. " #".$this->getId());
 
 		return $res;
     }
@@ -3068,7 +3147,7 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$table = $this->getModelTable();
-		$res = $sql->db_Insert($table, $this->toSqlQuery('replace'));
+		$res = $sql->insert($table, $this->toSqlQuery('replace'));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3139,8 +3218,8 @@ class e_admin_model extends e_front_model
 			if($table != 'admin_log')
 			{
 				$logData = array('TABLE'=>$table, 'WHERE'=>$where);
-				e107::getAdminLog()->addSuccess($table,false);
-				e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+				e107::getLog()->addSuccess($table,false);
+				e107::getLog()->addArray($logData)->save('ADMINUI_03');
 			}
 
 			$this->clearCache();
@@ -3519,7 +3598,7 @@ class e_tree_model extends e_front_model
 
 		foreach($tree as $item)
 		{
-			$children = $item['_children'];
+			$children = isset($item['_children']) ? $item['_children'] : null;
 			unset($item['_children']);
 			$item['_depth'] = $depth;
 			if($depth > 0)
@@ -3571,7 +3650,9 @@ class e_tree_model extends e_front_model
 	 */
 	protected function countResults($sql)
 	{
-		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		$total = $sql->foundRows();
+		$this->_total = is_int($total) ? $total : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 		{
 			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
@@ -3600,7 +3681,7 @@ class e_tree_model extends e_front_model
 	protected function prepareSimulatedPagination()
 	{
 		$db_query = $this->getParam('db_query');
-		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET){0,1}[ ]*([\d]*)/i", function($matches)
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET)?[ ]*([\d]*)/i", function($matches)
 		{
 			// Count only
 			if (empty($matches[2]))
@@ -3800,7 +3881,7 @@ class e_tree_model extends e_front_model
 		{
 			return $this->getNode($node_id)->toString($AddSlashes);
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
+		return (string) e107::getArrayStorage()->serialize($this->toArray($total), $AddSlashes);
 	}
 
 	public function update($from_post = true, $force = false, $session_messages = false)
@@ -4029,7 +4110,7 @@ class e_admin_tree_model extends e_front_tree_model
 		if($table != 'admin_log')
 		{
 			$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
-			e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+			e107::getLog()->addArray($logData)->save('ADMINUI_03');
 		}
 		return $res;
 	}
@@ -4112,7 +4193,7 @@ class e_admin_tree_model extends e_front_tree_model
 	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
 	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
 
-		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+		e107::getXml()->e107Export(null,$table,null,null, array('file'=>$filename,'query'=>$query));
 
 		return null;
 

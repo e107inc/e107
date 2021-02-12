@@ -12,10 +12,10 @@ if (!defined('e107_INIT')) { exit; }
 
 global $e107;
 
-if(defined("POLLRENDERED"))
-{
+//if(defined("POLLRENDERED"))
+//{
 //	return;
-}
+//}
 
 if (!e107::isInstalled('poll'))
 {
@@ -60,4 +60,4 @@ $poll->remove_poll_cookies();
 
 $poll->render_poll($query, $pollType, $pollMode);
 
-?>
+

@@ -86,7 +86,8 @@ class login_menu_class
 		{
             foreach ($list_arr as $item) 
 			{
-                $tmp = end(explode('/', trim($item['path'], '/.')));
+				$path = explode('/', trim($item['path'], '/.'));
+                $tmp = end($path);
                 
                 if(e107::isInstalled($tmp)) 
 				{
@@ -113,10 +114,10 @@ class login_menu_class
     }
 
 
-    function parse_external_list($active=false, $order=true) 
+    function parse_external_list($active=false, $order=true)
 	{
         //prevent more than 1 call
-        if(($tmp = getcachedvars('loginbox_elist')) !== FALSE) return $tmp;
+        if(($tmp = e107::getRegistry('loginbox_elist')) !== FALSE) return $tmp;
         
         $ret = array();
         //$lbox_admin = varsettrue($eplug_admin, false);
@@ -163,7 +164,8 @@ class login_menu_class
                 
             }
         }
-        cachevars('loginbox_elist', $ret);
+
+        e107::setRegistry('loginbox_elist', $ret);
         
         return $ret;
     }
@@ -191,9 +193,9 @@ class login_menu_class
         	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
         	";
         	
-        	if($sql->db_Select_gen($qry)) 
+        	if($sql->gen($qry))
 			{
-        		$row = $sql->db_Fetch();
+        		$row = $sql->fetch();
         		$lbox_stats['forum'][0]['stat_new'] = $row['count'];
         	}
         }
@@ -213,8 +215,10 @@ class login_menu_class
         $lbox_stats[0]['stat_items']    = LAN_LOGINMENU_17;
         $lbox_stats[0]['stat_new']      = 0;
         $lbox_stats[0]['stat_nonew']    = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_17;
-        if(vartrue($get_stats)) {
-            $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
+
+        if(!empty($get_stats))
+        {
+            $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
         }
         
         return $lbox_stats;
@@ -345,7 +349,7 @@ class login_menu_class
 	 */
     function get_plugin_data($plugid) 
 	{
-        if(($tmp = getcachedvars('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
+        if(($tmp = e107::getRegistry('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
 
         $ret = array();
 		if (is_readable(e_PLUGIN.$plugid.'/plugin.xml'))
@@ -369,14 +373,18 @@ class login_menu_class
 			return array();
 		}
 		// Valid data here
-		cachevars('loginbox_eplug_data_'.$plugid, $ret);
+		e107::setRegistry('loginbox_eplug_data_'.$plugid, $ret);
+
         return $ret;
     }
     
     
     function clean_links($link_items) 
 	{
-        if(empty($link_items)) return;
+        if(empty($link_items))
+        {
+			return array();
+        }
     
         foreach($link_items as $key => $value) 
 		{
@@ -391,4 +399,3 @@ class login_menu_class
 
 }
 
-?>

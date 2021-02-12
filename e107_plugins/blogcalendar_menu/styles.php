@@ -45,4 +45,3 @@ $arch_cell = "";
 $arch_cell_header = "";
 $arch_cell_body = "";
 
-?>

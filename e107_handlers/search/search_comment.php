@@ -48,9 +48,9 @@ foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 
 $search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
-$no_results = LAN_198;
+$no_results = "<div class='alert alert-danger'>".LAN_198."</div>"; //LAN_198;
 $where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
-$order = array('comment_datestamp' => DESC);
+$order = array('comment_datestamp' => 'DESC');
 $table = "comments AS c ".implode(' ', $join);
 
 $ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
@@ -59,9 +59,7 @@ $results = $ps['results'];
 
 function search_comment($row) {	
 	if (is_callable('com_search_'.$row['comment_type'])) {
-		$res = call_user_func('com_search_'.$row['comment_type'], $row);
-		return $res;
+		return call_user_func('com_search_'.$row['comment_type'], $row);
 	}
 }
 
-?>

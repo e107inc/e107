@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 // IMPORTANT : Entire file is deprecated. see: bbcode_shortcodes.php and bbcode_hanlder.php 
 // Left in place only for BC. 
 /**
- *  @DEPRECATED use $frm->bbarea() instead. 
+ *  @deprecated use $frm->bbarea() instead.
  */
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
@@ -245,15 +245,6 @@ function PreFile_Select($formid='prefile_selector')
 	$filelist = array();
 	$downloadList = array();
 
-	/*$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		if($download_url)
-		{
-			$filelist[] = array('id' => $download_id, 'name' => $download_name, 'url' => $download_url, 'class' => $download_class);
-			$downloadList[] = $download_url;
-		}
-	}*/
 
 	$tmp = $fl->get_files(e_FILE.'downloads/');
 	foreach($tmp as $value)
@@ -324,4 +315,3 @@ function Emoticon_Select($formid='emoticon_selector') {
 	return $text;
 }
 
-?>

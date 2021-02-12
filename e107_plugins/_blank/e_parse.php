@@ -67,4 +67,3 @@ class _blank_parse
 
 
 
-?>

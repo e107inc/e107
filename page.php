@@ -19,6 +19,7 @@ if(!e_QUERY)
 	$e107CorePage->setRequest('listBooks');
     $e107CorePage->listBooks();
 
+	e107::canonical('page/list/index');
 	require_once(HEADERF);
 
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], "cpage-full-list");
@@ -32,27 +33,30 @@ if(!e_QUERY)
 	}*/
 	
 	require_once(FOOTERF);
-	exit;
+
 }
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
-	$e107CorePage->setRequest('listChapters');
-    $e107CorePage->listChapters($_GET['bk']);
+	$id = $e107CorePage->setRequest('listChapters');
+    $e107CorePage->listChapters($id);
+    e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
 	
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
 	require_once(FOOTERF);
-	exit;	
+
 }
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
-	$e107CorePage->setRequest('listPages');
-    $e107CorePage->listPages($_GET['ch']);
-
+	$id = $e107CorePage->setRequest('listPages');
+    $e107CorePage->listPages($id);
+    $chData = $e107CorePage->getChapterData($id);
+    e107::canonical('page/chapter/index',$chData);
+	unset($row);
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
 	require_once(FOOTERF);
-	exit;		
+
 }
 else
 {
@@ -60,6 +64,9 @@ else
 	$e107CorePage->processViewPage();
     $e107CorePage->setPage();
 
+    $canRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view';
+
+	e107::canonical( $canRoute,  $e107CorePage->page);
 	require_once(HEADERF);
 
 	$ns = e107::getRender();
@@ -71,7 +78,7 @@ else
 
 	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], $e107CorePage->pageOutput['mode']);
 	require_once(FOOTERF);
-	exit;
+
 }
 
 /* EOF */
@@ -115,16 +122,16 @@ class pageClass
 		if(!vartrue($_GET['id'])) // legacy URLs  /page.php?x
 		{
 			$tmp 				= explode(".", e_QUERY);
-			$this->pageID 		= intval($tmp[0]);
-			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+			$this->pageID 		= (int) $tmp[0];
+			$this->pageSelected = (isset($tmp[1]) ? (int) $tmp[1] : 0);
 			$this->pageTitles 	= array();
 			$this->bullet 		= '';
 		}
 		else // NEW URLS  /page.php?id=x 
 		{
 			$tmp 				= explode(".", e_QUERY);
-			$this->pageID 		= intval($_GET['id']);
-			$this->pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0); // Not sure what this is?
+			$this->pageID 		= (int) $_GET['id'];
+			$this->pageSelected = (isset($tmp[1]) ? (int) $tmp[1] : 0); // Not sure what this is?
 			$this->pageTitles 	= array();
 			$this->bullet 		= '';	// deprecated - use CSS instead.  	
 		}
@@ -164,17 +171,16 @@ class pageClass
 		
 	}
 
-	// XXX temporary solution - upcoming page rewrite
 	public function setRequest($request)
 	{
 		switch ($request) 
 		{
 			case 'listChapters':
-				$id = intval($_GET['bk']);
+				$id = (int) $_GET['bk'];
 			break;
 			
 			case 'listPages':
-				$id = intval($_GET['ch']);
+				$id = (int) $_GET['ch'];
 			break;
 			
 			case 'showPage':
@@ -187,9 +193,33 @@ class pageClass
 			break;
 		}
 		e107::setRegistry('core/page/request', array('action' => $request, 'id' => $id));
+
+		return $id;
 	}
 
-	
+
+
+	/**
+	 * @param $chapter
+	 * @return array|mixed
+	 */
+	public function getChapterData($chapter)
+	{
+		if(!isset($this->chapterData[$chapter]))
+		{
+			return array();
+		}
+
+		$row = $this->chapterData[$chapter];
+
+		$row['book_sef']	        = $this->getSef($row['chapter_parent']);
+		$row['book_id']             = (int) $row['chapter_parent'];
+		$row['book_name'] 			= $this->getName($row['chapter_parent']);
+		$row['book_icon']			= $this->getIcon($row['chapter_parent']);
+		$row['book_description']	= $this->getDescription($row['chapter_parent']);
+
+		return $row;
+	}
 	
 	private function getSef($chapter)
 	{
@@ -303,7 +333,7 @@ class pageClass
 		$frm = e107::getForm();
 		
 		// retrieve book information. 
-		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
+		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description,chapter_meta_keywords','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
 		{
 			$layout = 'default';
 		}
@@ -311,14 +341,21 @@ class pageClass
 		{
 			$layout = $brow['chapter_template'];
 		}
+
+
 		
 		if($this->displayAllMode === true)
 		{
 			$layout = e107::getPref('listBooksTemplate');	
 		}
-		
-	
-		
+
+		if(empty($layout) && ADMIN)
+		{
+			e107::getMessage()->addError("Admin Only Message: The chapter template is empty. Reverting to 'default'."); // NO LAN
+			$layout = 'default';
+		}
+
+
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
 		
 		$error = array('listChapters' => array('start'=>"Chapter template not found: ".$layout));
@@ -423,7 +460,7 @@ class pageClass
 		$frm 			= e107::getForm();
 
 		// retrieve the template to use for this chapter. 
-		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_meta_keywords,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
 		
 		if($this->displayAllMode === true)
 		{
@@ -454,7 +491,7 @@ class pageClass
 			'book_id'       => $row['chapter_parent']
 		);
 		
-		
+
 		//print_a($this->chapterData);
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
@@ -692,10 +729,19 @@ class pageClass
 		$this->batch->setVars($this->page);
 		$this->batch->breadcrumb();
 
-		
-		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
+
+		e107::title(eHelper::formatMetaTitle($this->page['page_title']));
+
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
-		if($this->page['page_metakeys']) define('META_KEYWORDS', eHelper::formatMetaKeys($this->page['page_metakeys']));
+		if(!empty($this->page['page_metakeys']))
+		{
+			e107::meta('keywords', eHelper::formatMetaKeys($this->page['page_metakeys']));
+		}
+
+		if(!empty($this->page['page_metarobots']))
+		{
+			e107::meta('robots', $this->page['page_metarobots']);
+		}
 
 		$tp = e107::getParser();
 
@@ -1090,4 +1136,4 @@ class pageClass
 	}
 }
 
-?>
+

@@ -128,9 +128,9 @@ class plugin_featurebox_category extends e_model
 	{
 		if($force || null === $this->_loaded_data)
 		{
-			if(e107::getDb()->db_Select('featurebox_category', '*', 'fb_category_class IN ('.USERCLASS_LIST.') AND fb_category_template=\''.e107::getParser()->toDB($template).'\''))
+			if(e107::getDb()->select('featurebox_category', '*', 'fb_category_class IN ('.USERCLASS_LIST.') AND fb_category_template=\''.e107::getParser()->toDB($template).'\''))
 			{
-				$this->setData(e107::getDb()->db_Fetch());
+				$this->setData(e107::getDb()->fetch());
 				$this->_loaded_data = true;
 			}
 		}
@@ -156,7 +156,7 @@ class plugin_featurebox_category extends e_model
 				'random' => $this->getParam('random', $this->get('fb_category_random')),
 				'ids' => $this->getParam('ids', '')
 			);
-			$this->_tree->load($this->getId(), $options, $force);
+			$this->_tree->load($this->getId(), $force, $options);
 		}
 		
 		return $this->_tree;

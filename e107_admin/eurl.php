@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('K'))
 {
 	e107::redirect('admin');
@@ -35,9 +35,9 @@ class eurl_admin extends e_admin_dispatcher
 	);
 
 	protected $adminMenu = array(
-		'main/config'		=> array('caption'=> LAN_EURL_MENU_PROFILES, 'perm' => 'L'),
-		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
-		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
+		'main/config'		=> array('caption'=> LAN_EURL_MENU_PROFILES, 'perm' => 'L', 'icon'=>'fas-list'),
+		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L', 'icon'=>'fas-edit'),
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L', 'icon'=>'fas-sliders-h'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
 
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
@@ -119,7 +119,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			e107::getMessage()->addInfo("Mod-rewrite is disabled. To enable, please add the following line to your <b>e107_config.php</b> file:<br /><pre>define('e_MOD_REWRITE',true);</pre>");
 		}
 	
-		if(is_array($_POST['rebuild']))
+		if(isset($_POST['rebuild']) && is_array($_POST['rebuild']))
 		{
 			$table = key($_POST['rebuild']);
 			list($primary, $input, $output) = explode("::",$_POST['rebuild'][$table]);
@@ -242,8 +242,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$pref = e107::getPref('e_url_alias');
 		$sefActive = e107::getPref('e_url_list');
 
+
+
 		if(empty($eUrl))
 		{
+			e107::getMessage()->addDebug("Unable to load e_url configurations.");
 			return false;
 		}
 
@@ -261,6 +264,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		foreach($eUrl as $plug=>$val)
 		{
+
 
 			$plg->load($plug);
 
@@ -287,6 +291,21 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 			foreach($val as $k=>$v)
 			{
+
+					if(!isset($v['alias']))
+					{
+						$v['alias'] = '';
+					}
+
+					if(!isset($v['regex']))
+					{
+						$v['regex'] = '';
+					}
+
+					if(!isset($v['redirect']))
+					{
+						$v['redirect'] = '';
+					}
 
 					$alias          = vartrue($pref[e_LAN][$plug][$k], $v['alias']);
 				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
@@ -340,7 +359,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$admin = $obj->admin();
 			$labels = vartrue($admin['labels'], array());
 
-			$this->prefs['url_main_module']['writeParms'][$module] = vartrue($section['name'], eHelper::labelize($module));
+			$this->prefs['url_main_module']['writeParms'][$module] = eHelper::labelize($module); // vartrue($section['name'], eHelper::labelize($module));
 		}
 
 		ksort($this->prefs['url_main_module']['writeParms']);
@@ -681,7 +700,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * Set extended (UI) Form instance
-	 * @return e_admin_ui
+	 * @return eurl_admin_ui
 	 */
 	public function _setUI()
 	{
@@ -693,7 +712,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * Set Config object
-	 * @return e_admin_ui
+	 * @return eurl_admin_ui
 	 */
 	protected function _setConfig()
 	{
@@ -737,7 +756,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
        
         $id = 'eurl_'.$this->name2id($title);
         
-        $text = "<a data-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
+        $text = "<a data-toggle='modal' data-bs-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
         $text .= $title;  
         $text .= '</a>';
         
@@ -828,7 +847,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				
 				$id = 'eurl-'.str_replace('_', '-', $obj->module).'-'.$index;
 				
-				$checked = varset($obj->current[$module]) == $location ? ' checked="checked"' : '';
+				$checked = (isset($obj->current[$module]) && $obj->current[$module] == $location) ? ' checked="checked"' : '';
 				
 				$path = eDispatcher::getConfigPath($module, $location, false);
 				if(!is_readable($path))
@@ -844,7 +863,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				    
 
 				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
-				$cssClass = $checked ? 'e-showme' : 'e-hideme';
+			//	$cssClass = $checked ? 'e-showme' : 'e-hideme';
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 
 				 $exampleUrl = array();
@@ -856,14 +875,14 @@ class eurl_admin_form_ui extends e_admin_form_ui
 
 	                }
 				 }
-
+/*
                  if(strpos($path,'noid')!==false)
                 {
-               //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
+                 $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
                 }
-                
-                $selected = varset($obj->current[$module]) == $location ? "selected='selected'" : '';
-				$opt .= "<option value='{$location}' {$selected} >".$diz.": ".$exampleUrl[0]."</option>";
+ */
+                $selected = (isset($obj->current[$module]) && ($obj->current[$module] == $location)) ? "selected='selected'" : '';
+				$opt .= "<option value='{$location}' {$selected} >".$diz.": ".varset($exampleUrl[0])."</option>";
 
 				$info .= "<tr><td>".$label."
 					
@@ -890,10 +909,10 @@ class eurl_admin_form_ui extends e_admin_form_ui
                     <td><select name='eurl_config[$module]' class='form-control input-block-level'>".$opt."</select></td>
                     <td>";
 		
-			$bTable = ($admin['generate']['table']);
-			$bInput = $admin['generate']['input'];
-			$bOutput = $admin['generate']['output'];
-			$bPrimary = $admin['generate']['primary'];
+			$bTable = varset($admin['generate']['table']);
+			$bInput = varset($admin['generate']['input']);
+			$bOutput = varset($admin['generate']['output']);
+			$bPrimary = varset($admin['generate']['primary']);
 			
 		
 			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete', LAN_EURL_REBUILD) : "";	  
@@ -1066,12 +1085,12 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		</tr>";
 
 			$text .= "<tr>";
-			$text .= "<td>".$lanDef[1]."</td>";
+			$text .= "<td>".$lanDef[1].$this->help(LAN_EURL_FORM_HELP_DEFAULT, 'before')."</td>";
 			$text .= "<td class='form-inline'>";
 			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal, 255, 'size=xlarge');
 		//	$text .= ' ['.$lanDef[1].']';
 			$text .= "</td><td>";
-			$text .= $this->help(LAN_EURL_FORM_HELP_DEFAULT);
+			$text .= $this->help(LAN_EURL_FORM_HELP_DEFAULT, 'after');
 
 			$text .= "</td>";
 		//	$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';

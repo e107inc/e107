@@ -18,7 +18,6 @@
 		<pref name="download_sort"></pref>
 		<pref name="download_reportbroken">0</pref>
 		<pref name="mirror_order"></pref>
-		<pref name="download_email"></pref>
 		<pref name="agree_flag"></pref> <!-- needs download prefix? -->
 		<pref name="agree_text"></pref>
 		<pref name="download_denied"></pref>
