@@ -155,11 +155,16 @@ class e_theme
 	}
 
 	/**
-	 * @param string $type library | stylesheet (as defined in theme.xml)
+	 * Return an array of theme library or stylesheet values (as defined in theme.xml) that match the desired scope.
+	 * @note New in v2.3.1+
+	 * @param string $type library | stylesheet
 	 * @param string $scope  front | admin | all | auto (as defined in theme.xml)
+	 * @return array
 	 */
 	public function getScope($type, $scope)
 	{
+		$validScopes = array('auto', 'all', 'front', 'admin', 'wysiwyg');
+
 		if($scope === 'auto')
 		{
 			$scope = 'front';
@@ -169,13 +174,17 @@ class e_theme
 				$scope = 'admin';
 			}
 		}
+		elseif(!in_array($scope, $validScopes))
+		{
+			return false;
+		}
 
 
 		if($type === 'library')
 		{
 			$themeXMLData = $this->get('library');
 		}
-		if($type === 'stylesheet')
+		elseif($type === 'css')
 		{
 			$themeXMLData = $this->get('css');
 		}
@@ -184,18 +193,24 @@ class e_theme
 
 		foreach($themeXMLData as $info)
 		{
+			if(!isset($info['scope']))
+			{
+				continue;
+			}
+
 			$tmp = explode(',', $info['scope']);
+			$name = $info['name'];
+
 			foreach($tmp as $scp)
 			{
 				$scp = trim($scp);
 
-				if($scp === $scope || $scp === 'all')
+				if($scp === $scope || $scp === 'all' || $scope === 'all')
 				{
-					$name = $info['name'];
 					unset($info['name']);
 					unset($info['scope']);
+
 					$ret[$name] = $info;
-				//	$ret[$name] = e107::library('files', $name);
 				}
 
 			}
@@ -203,20 +218,48 @@ class e_theme
 
 		return $ret;
 
-		/**
-		 * 					if($name === 'bootstrap' && !empty($info['version']) && (intval($info['version']) > 3))
-					{
-						$name .= (string) $info['version'];
-					}
-					elseif($name === 'fontawesome' && !empty($info['version']) && (intval($info['version']) > 4))
-					{
-						$name .= (string) $info['version'];
-					}
-		 */
-
 	}
 
+	/**
+	 * Returns an array of all files defined in theme.xml based on the specified scope.
+	 * @param $type
+	 * @param $scope
+	 * @return array
+	 */
+	function getThemeFiles($type, $scope)
+	{
+		$data = $this->getScope($type, $scope);
 
+		$ret = [];
+
+		if($type === 'library')
+		{
+			foreach($data as $name => $var)
+			{
+				if($name === 'bootstrap' && ((int) $var['version'] > 3)) // quick fix.
+				{
+					$name .= (string) $var['version'];
+				}
+				elseif($name === 'fontawesome' && ((int) $var['version'] > 4)) // quick fix.
+				{
+					$name .= (string) $var['version'];
+				}
+
+				$ret[] = e107::library('files', $name);
+			}
+		}
+		elseif($type === 'css')
+		{
+			$ret['css'] = array();
+			foreach($data as $file => $var)
+			{
+				$ret['css'][] = '{e_THEME}'.$this->get('path').'/'.$file;
+			}
+
+		}
+
+		return $ret;
+	}
 
 
 
@@ -228,17 +271,8 @@ class e_theme
 	 */
 	public function loadLibrary($scope = 'auto')
 	{
-		if($scope === 'auto')
-		{
-			$scope = 'front';
 
-			if(deftrue('e_ADMIN_AREA', false))
-			{
-				$scope = 'admin';
-			}
-		}
-
-		$libraries = $this->get('library');
+		$libraries = $this->getScope('library', $scope);
 
 		if(empty($libraries))
 		{
@@ -247,60 +281,48 @@ class e_theme
 
 		$loaded = [];
 
-		foreach($libraries as $library)
+		foreach($libraries as $name => $library)
 		{
-			if(empty($library['name']))
+
+			if(empty($name))
 			{
 				continue;
 			}
 
-			// If no scope set, we load library on both areas.
-			if(empty($library['scope']) || $library['scope'] === 'all' || (deftrue('e_ADMIN_AREA') && $library['scope'] === 'admin'))
+			if($name === 'bootstrap' && !empty($library['version']))
 			{
-				if($library['name'] === 'bootstrap' && !empty($library['version']))
+				if((int) $library['version'] > 3) // quick fix.
 				{
-					if(intval($library['version']) > 3) // quick fix.
-					{
-						$library['name'] .= (string) $library['version'];
-					}
-
-					 e107::getParser()->setBootstrap($library['version']);
-
-					if(!defined('BOOTSTRAP'))
-					{
-						define('BOOTSTRAP', (int) $library['version']);
-					}
-				}
-				elseif($library['name'] === 'fontawesome' && !empty($library['version']))
-				{
-					if(intval($library['version']) > 4) // quick fix.
-					{
-						$library['name'] .= (string) $library['version'];
-					}
-
-					e107::getParser()->setFontAwesome($library['version']);
-
-					if(!defined('FONTAWESOME'))
-					{
-						define('FONTAWESOME', (int) $library['version']);
-					}
+					$name .= (string) $library['version'];
 				}
 
-				e107::library('load', $library['name']);
-				e107::library('preload', $library['name']);
+				e107::getParser()->setBootstrap($library['version']);
 
-				$loaded[] = $library['name'];
-
-				continue;
+				if(!defined('BOOTSTRAP'))
+				{
+					define('BOOTSTRAP', (int) $library['version']);
+				}
 			}
-
-			if($library['scope'] === $scope)
+			elseif($name === 'fontawesome' && !empty($library['version']))
 			{
-				e107::library('load', $library['name']);
-				e107::library('preload', $library['name']);
-				$loaded[] = $library['name'];
-				continue;
+				if((int) $library['version'] > 4) // quick fix.
+				{
+					$name .= (string) $library['version'];
+				}
+
+				e107::getParser()->setFontAwesome($library['version']);
+
+				if(!defined('FONTAWESOME'))
+				{
+					define('FONTAWESOME', (int) $library['version']);
+				}
 			}
+
+			e107::library('load', $name);
+			e107::library('preload', $name);
+
+			$loaded[] = $name;
+
 		}
 
 		return $loaded;
@@ -1090,13 +1112,13 @@ class e_theme
 				$notadmin = varset($val['@attributes']['scope']) !== 'admin';
 
 				$vars['css'][] = array(
-					"name"      => $val['@attributes']['file'],
-					"info"      => $val['@attributes']['name'],
-					"nonadmin"  => $notadmin,
-					'scope'     => vartrue($val['@attributes']['scope']),
-					'exclude'   => vartrue($val['@attributes']['exclude']),
+					"name"          => $val['@attributes']['file'],
+					"info"          => $val['@attributes']['name'],
+					"nonadmin"      => $notadmin,
+					'scope'         => vartrue($val['@attributes']['scope']),
+					'exclude'       => vartrue($val['@attributes']['exclude']),
 					'description'   => vartrue($val['@attributes']['description']),
-					'thumbnail'   => vartrue($val['@attributes']['thumbnail'])
+					'thumbnail'     => vartrue($val['@attributes']['thumbnail'])
 				);
 			}
 

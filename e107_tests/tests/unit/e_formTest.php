@@ -198,6 +198,7 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 
 		e107::loadAdminIcons();
+		e107::getParser()->setFontAwesome(5);
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
 

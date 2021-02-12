@@ -34,8 +34,7 @@ $result = e107::lan('tinymce4', true);
 		protected $adminMenu = array(
 
 			'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-
-			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+			 'main/preview'		=> array('caption'=> LAN_PREVIEW, 'perm' => 'P', 'icon'=>'fa-eye')
 		);
 
 		protected $adminMenuAliases = array(
@@ -57,17 +56,18 @@ $result = e107::lan('tinymce4', true);
 
 
 		protected $prefs = array(
-			'paste_as_text'		    => array('title'=> TMCEALAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
-			'browser_spellcheck'    => array('title'=> TMCEALAN_2, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_3),
-			'visualblocks'          => array('title'=> TMCEALAN_4, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_5),
-			'code_highlight_class'  => array('title'=> TMCEALAN_6, 'type'=>'text', 'data' => 'str','help'=> ''),
-
+			'paste_as_text'		    => array('title' => TMCEALAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck'    => array('title' => TMCEALAN_2, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_3),
+			'visualblocks'          => array('title' => TMCEALAN_4, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_5),
+			'use_theme_style'       => array('title' => TMCEALAN_7, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_8),
+			'code_highlight_class'  => array('title' => TMCEALAN_6, 'type'=>'text', 'data' => 'str','help'=> ''),
 		);
 
 
-		public function init()
+		function previewPage()
 		{
-
+			e107::wysiwyg(true);
+			return e107::getForm()->bbarea('preview');
 
 		}
 	}
@@ -79,11 +79,10 @@ $result = e107::lan('tinymce4', true);
 	}
 
 
-	new tinymce4_admin();
+new tinymce4_admin();
 
-	require_once(e_ADMIN."auth.php");
-	e107::getAdminUI()->runPage();
-
-	require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
+require_once(e_ADMIN."footer.php");
 
 

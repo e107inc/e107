@@ -16,6 +16,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	public function _before()
 	{
 		e107::loadAdminIcons();
+		e107::getParser()->setFontAwesome(5);
 
 		try
 		{

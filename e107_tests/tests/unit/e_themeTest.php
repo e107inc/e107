@@ -7,6 +7,7 @@
 	 */
 
 
+
 	class e_themeTest extends \Codeception\Test\Unit
 	{
 
@@ -16,16 +17,16 @@
 		protected function _before()
 		{
 			// require_once(e_HANDLER."e_marketplace.php");
-
 			try
 			{
 				$this->tm = $this->make('e_theme');
-
 			}
 			catch (Exception $e)
 			{
 				$this->assertTrue(false, "Couldn't load e_theme object");
 			}
+
+			$this->tm->clearCache();
 		}
 
 
@@ -76,6 +77,10 @@
 						  array (
 						    'version' => '5',
 						  ),
+						  'bootstrap.editable' =>
+						  array (
+						    'version' => '',
+						  ),
 						)
 					),
 				2   => array(
@@ -112,16 +117,175 @@
 						  ),
 						)
 					),
-
+				 4   => array(
+					'theme'    => 'bootstrap3',
+					'type'     => 'css',
+					'scope'    => 'front',
+					'expected' => array (
+						  'style.css' =>
+						  array (
+						    'info' => 'Default',
+						    'nonadmin' => true,
+						    'exclude' => '',
+						    'description' => '',
+						    'thumbnail' => '',
+						  ),
+						),
+					),
+					5   => array(
+					'theme'    => 'bootstrap3',
+					'type'     => 'css',
+					'scope'    => 'admin',
+					'expected' => array (
+						  'css/modern-light.css' =>
+						  array (
+						    'info' => 'Modern Light',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => 'A high-contrast light skin',
+						    'thumbnail' => 'images/admin_modern-light.webp',
+						  ),
+						  'css/modern-dark.css' =>
+						  array (
+						    'info' => 'Modern Dark',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => 'A high-contrast dark skin',
+						    'thumbnail' => 'images/admin_modern-dark.webp',
+						  ),
+						  'css/bootstrap-dark.min.css' =>
+						  array (
+						    'info' => 'Legacy Dark Admin',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => 'A dark admin area skin',
+						    'thumbnail' => 'images/admin_bootstrap-dark.webp',
+						  ),
+						  'css/kadmin.css' =>
+						  array (
+						    'info' => 'K-Admin Inspired',
+						    'nonadmin' => false,
+						    'exclude' => '',
+						    'description' => 'A light admin area skin',
+						    'thumbnail' => 'images/admin_kadmin.webp',
+						  ),
+						  'css/corporate.css' =>
+						  array (
+						    'info' => 'Corporate',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => '',
+						    'thumbnail' => 'images/admin_corporate.webp',
+						  ),
+						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css' =>
+						  array (
+						    'info' => 'Flatly',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => '',
+						    'thumbnail' => 'images/admin_flatly.webp',
+						  ),
+						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css' =>
+						  array (
+						    'info' => 'Sandstone',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => '',
+						    'thumbnail' => 'images/admin_sandstone.webp',
+						  ),
+						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css' =>
+						  array (
+						    'info' => 'Superhero',
+						    'nonadmin' => false,
+						    'exclude' => 'bootstrap',
+						    'description' => '',
+						    'thumbnail' => 'images/admin_superhero.webp',
+						  ),
+						),
+					),
 			);
 
 			foreach($tests as $index => $var)
 			{
 				$result = e107::getTheme($var['theme'])->getScope($var['type'], $var['scope']);
+				if(empty($var['expected']))
+				{
+					var_export($result);
+					continue;
+				}
 				$this->assertSame($var['expected'], $result, 'Test #'.$index.' failed.');
 			}
 
 		}
+
+
+		public function testGetThemeFiles()
+		{
+
+			$expected = array (
+			  0 =>
+			  array (
+			    'css' =>
+			    array (
+			      0 => '{e_WEB}lib/bootstrap/3/css/bootstrap.min.css',
+			    ),
+			    'js' =>
+			    array (
+			      0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
+			    ),
+			  ),
+			  1 =>
+			  array (
+			    'css' =>
+			    array (
+			      0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
+			      1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+			    ),
+			  ),
+			);
+
+			/** Expecting bootstrap 3 files fontawesome 5 files  */
+			$result = e107::getTheme('bootstrap3')->getThemeFiles('library', 'front');
+			$this->assertSame($expected, $result);
+
+
+			$expected = array (
+				  0 =>
+				  array (
+				    'css' =>
+				    array (
+				      0 => '{e_WEB}lib/bootstrap/3/css/bootstrap.min.css',
+				    ),
+				    'js' =>
+				    array (
+				      0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
+				    ),
+				  ),
+				  1 =>
+				  array (
+				    'css' =>
+				    array (
+				      0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
+				      1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+				    ),
+				  ),
+				);
+
+			$result = e107::getTheme('bootstrap3')->getThemeFiles('library', 'wysiwyg');
+			$this->assertSame($expected, $result);
+
+			$expected = array (
+			  'css' =>
+			  array (
+			  ),
+			);
+
+			$result = e107::getTheme('bootstrap3')->getThemeFiles('css', 'wysiwyg');
+			$this->assertSame($expected, $result);
+
+
+		}
+
 
 
 		public function testLoadLibrary()
@@ -147,7 +311,7 @@
 
 			foreach($tests as $index => $var)
 			{
-				$loaded = e107::getTheme($var['theme'],true)->loadLibrary($var['scope']);
+				$loaded = e107::getTheme($var['theme'])->loadLibrary($var['scope']);
 				$this->assertSame($var['expected'], $loaded, 'Test #'.$index.' failed.');
 			}
 
@@ -169,13 +333,13 @@
 						  array (
 						    'name' => 'bootstrap',
 						    'version' => '3',
-						    'scope' => 'all',
+						    'scope' => 'front,admin,wysiwyg',
 						  ),
 						  1 =>
 						  array (
 						    'name' => 'fontawesome',
 						    'version' => '5',
-						    'scope' => 'all',
+						    'scope' => 'front,admin,wysiwyg',
 						  ),
 						  2 =>
 						  array (
@@ -193,13 +357,13 @@
 						  array (
 						    'name' => 'bootstrap',
 						    'version' => '3',
-						    'scope' => 'all',
+						    'scope' => 'front,admin,wysiwyg',
 						  ),
 						  1 =>
 						  array (
 						    'name' => 'fontawesome',
 						    'version' => '5',
-						    'scope' => 'all',
+						    'scope' => 'front,admin,wysiwyg',
 						  ),
 						  2 =>
 						  array (

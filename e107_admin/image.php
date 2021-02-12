@@ -2049,7 +2049,7 @@ class media_admin_ui extends e_admin_ui
 			'type'		=>'glyph', 
 			'tagid'		=> $this->getQuery('tagid'), 
 			'action'	=>'glyph', 								// Used by AJAX to identify correct function. 
-			'perPage'	=> 80,
+			'perPage'	=> 70,
 			'gridClass'	=> 'media-carousel-item-glyph pull-left icon-preview',
 			'bbcode'	=>'glyph',
 			'close'		=> 'true'		

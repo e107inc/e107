@@ -417,7 +417,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// convert base64 encoded HTML preview information to HTML.
 		if(previewHTML)
 		{
-			var previewSrc = atob(previewHTML).trim();
+			var previewSrc = atob(previewHTML);
 		}
 		
 		if($htmlHolder.length > 0)
