@@ -188,12 +188,17 @@ if(!empty($_GET['iframe']))
 
 			if($return = $lck->init())
 			{
-				if($return['caption'])
+				if(isset($return['caption']))
 				{
 					$this->addTitle($return['caption']);
 				}
 
-				return $return['text'];
+				if(isset($return['text']))
+				{
+					return $return['text'];
+				}
+
+				return null;
 			}
 
 
@@ -846,8 +851,14 @@ if(!empty($_GET['iframe']))
 
 			if($opt)
 			{
-				return "<table class='table table-striped table-bordered' style='margin-left:0px;width:600px'>".$opt."</table>";
+				$text = "<table class='table table-striped table-bordered' style='margin-left:0px;width:600px'>".$opt."</table>";
 			}
+			else
+			{
+				$text = "<span class='label label-default'>".LANG_LAN_155."</span>";
+			}
+
+			return $text;
 		}
 	}
 
