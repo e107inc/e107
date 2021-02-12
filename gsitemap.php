@@ -44,7 +44,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 		$text = '';
 	}
 
-	$text .= "<div style='text-align:left'><ul>";
+	$text .= "<div style='text-align:left' class='gsitemap'><ul>";
 
 	foreach($nfArray as $nfa)
 	{
