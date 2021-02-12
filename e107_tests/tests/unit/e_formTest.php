@@ -187,6 +187,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
+		e107::loadAdminIcons();
+
 		try
 		{
 			$this->_frm = e107::getForm();
@@ -197,8 +199,9 @@ class e_formTest extends \Codeception\Test\Unit
 			$this->assertTrue(false, "Couldn't load e_form object");
 		}
 
-		e107::loadAdminIcons();
+
 		e107::getParser()->setFontAwesome(5);
+
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
 
