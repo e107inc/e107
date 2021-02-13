@@ -64,7 +64,7 @@ $ADMIN_TEMPLATE['nav']['button_enav_home'] = '
 $ADMIN_TEMPLATE['nav']['button_enav_language'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
-		 {LINK_IMAGE} {LINK_TEXT} 
+		  {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
 		{SUB_MENU}

@@ -384,13 +384,13 @@
 						  array (
 						    'name' => 'bootstrap',
 						    'version' => '3',
-						    'scope' => 'all',
+						    'scope' => 'front',
 						  ),
 						  1 =>
 						  array (
 						    'name' => 'fontawesome',
 						    'version' => '4',
-						    'scope' => 'all',
+						    'scope' => 'front',
 						  ),
 						)
 					),
