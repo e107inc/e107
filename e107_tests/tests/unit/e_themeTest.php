@@ -27,6 +27,7 @@
 			}
 
 			$this->tm->clearCache();
+			e107::getTheme()->clearCache();
 		}
 
 
@@ -203,6 +204,7 @@
 						  ),
 						),
 					),
+
 			);
 
 			foreach($tests as $index => $var)
@@ -215,6 +217,7 @@
 				}
 				$this->assertSame($var['expected'], $result, 'Test #'.$index.' failed.');
 			}
+
 
 		}
 

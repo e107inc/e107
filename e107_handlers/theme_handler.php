@@ -1095,7 +1095,7 @@ class e_theme
 				$vars['library'][] = array(
 					'name'  => $val['@attributes']['name'],
 					'version' => varset($val['@attributes']['version']),
-					'scope' => varset($val['@attributes']['scope']),
+					'scope' => varset($val['@attributes']['scope'], 'front'),
 				);
 			}
 
