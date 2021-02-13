@@ -72,6 +72,10 @@ if(e_MENUMANAGER_ACTIVE === false )
 	}*/
 
 	e107::getJs()->inlineCSS("
+		.admin-left-panel { width: 315px !important; } 
+		.admin-right-panel { width: 100% !important; } 
+		span.sidebar-toggle-switch { display: none !important } 
+		.sidebar-toggle-panel { display: initial !important } 
 		.menu-manager-items          { padding-right:15px}
 		.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
 		.menu-manager-sticky {
@@ -256,7 +260,7 @@ TEMPL;
 	.ui-sortable-placeholder * { visibility: hidden; }
 
 	i.S16 {
-    background: url(".e_THEME."bootstrap3/images/adminicons_16.png) no-repeat top left;
+    background: url(".e_THEME."bootstrap3/images/adminicons_16.webp) no-repeat top left;
  	display:inline-block;  	width:17px;  	height:16px;
  	*margin-right: .3em;
 	line-height: 14px;
@@ -964,7 +968,7 @@ class e_layout
 
 		    <div class="dropdown pull-right e-mm-selector-container">
 
-		        <a class="btn btn-default btn-secondary btn-sm e-mm-selector " title="' . LAN_ACTIVATE . '">' . LAN_GO . " " . e107::getParser()->toGlyph('fa-chevron-right') . '</a>';
+		        <a class="btn btn-primary btn-sm e-mm-selector " title="' . LAN_ACTIVATE . '">' . LAN_ADD . " " . e107::getParser()->toGlyph('fa-chevron-right') . '</a>';
 
 		$menuButtonLabel = defset("MENLAN_59", "Area [x]");
 
