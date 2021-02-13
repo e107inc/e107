@@ -6,8 +6,8 @@
 	<category>generic</category>
 	<compliance xhtml="1.1" css="2.1" />
 	<libraries>
-		<library name="bootstrap" version="3" scope="all"/>
-		<library name="fontawesome" version="4"  scope="all"/>
+		<library name="bootstrap" version="3" scope="front"/>
+		<library name="fontawesome" version="4"  scope="front"/>
 	</libraries>
     <plugins>
 		<plugin name='chatbox_menu' url='core' />
