@@ -1845,7 +1845,7 @@ class plugin_form_online_ui extends e_admin_form_ui
 			}
 
 
-			if(!e107::isCompatible($compat))
+			if(!e107::isCompatible($compat, 'plugin'))
 			{
 				$button = e107::getParser()->toGlyph('fa-bolt').ADLAN_121;
 				$class = 'btn btn-sm btn-warning';

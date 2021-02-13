@@ -1953,7 +1953,7 @@ class e107Test extends \Codeception\Test\Unit
 	public function testIsCompatible()
 	{
 		// version => expected
-		$tests = array (
+		$testPlugin = array (
 			'1'     => false, // assumed incompatible.
 			'1.2.3' => false,
 			'1.2'   => false,
@@ -1971,14 +1971,36 @@ class e107Test extends \Codeception\Test\Unit
 		);
 
 		$e107 = $this->e107;
-	//	$ret = [];
-		foreach($tests as $input=>$expected)
+
+		foreach($testPlugin as $input=>$expected)
 		{
-			$result = $e107::isCompatible($input);
+			$result = $e107::isCompatible($input, 'plugin');
+			$this->assertSame($expected, $result);
+		}
+
+		$testTheme = array (
+			'1'     => true, // assumed incompatible.
+			'1.2.3' => true,
+			'1.2'   => true,
+			'2'     => true, // assumed to work with all versions from 2+
+			'2.0'   => true,  // assumed to work with all versions from 2+
+			'2.3'   => true,  // assumed to work with all versions from 2.3 onward.
+			'2.1.0' => true,
+			'2.2.0' => true,
+			'2.3.0' => true,
+			'2.3.1' => true,
+			'1.7b'  => true,
+			'2.9'   => false,
+			'2.9.2' => false,
+			'3'     => false,
+		);
+
+		foreach($testTheme as $input=>$expected)
+		{
+			$result = $e107::isCompatible($input, 'theme');
 			$this->assertSame($expected, $result);
 		//	$ret[$input] = $result;
 		}
-
 
 
 	}
