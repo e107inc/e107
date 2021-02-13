@@ -5561,10 +5561,12 @@ class e107
 	/**
 	 * Returns true if the number is compatible with this version of e107.
 	 * @param string $version The minimum version requirement
+	 * @param string theme|plugin
 	 * @return bool
 	 */
-	public static function isCompatible($version)
+	public static function isCompatible($version, $mode)
 	{
+
 		$tp = e107::getParser();
 
 		$e107info = [];
@@ -5573,9 +5575,9 @@ class e107
 		$e107 = $tp->filter($e107info['e107_version'], 'version');
 		$version = $tp->filter($version, 'version');
 
-		if((int) $version === 1) // version 1, assumed to be incompatible.
+		if(((int) $version === 1)) // version 1, assumed to be incompatible.
 		{
-			return false;
+			return ($mode === 'plugin') ? false : true;
 		}
 
 		return version_compare($e107  ,$version, '>=');

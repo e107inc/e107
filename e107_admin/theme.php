@@ -998,8 +998,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		$disabled = '';
 		$mainTitle = TPVLAN_10;
 
-	//	if(version_compare($compat,$version, '<=') === false)
-		if(!e107::isCompatible($theme['compatibility']))
+		if(!e107::isCompatible($theme['compatibility'], 'theme'))
 		{
 			$disabled = 'disabled';
 			$mainTitle = defset('TPVLAN_97', "This theme requires a newer version of e107.");
