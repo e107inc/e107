@@ -901,6 +901,7 @@
         .nav-tabs>li>a{margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:4px 4px 0 0}
         .nav-tabs>li>a:hover{border-color:#999}
         .nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover{color:rgba(0,0,0,0.9);color: black; /*background-color:#373737;*/border:1px solid #999;border-bottom-color:#ebedf0;cursor:default}
+   .admin-left-panel  .nav-tabs>li.active>a, .admin-left-panel.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover { border-bottom: none; }
         .nav-tabs.nav-justified{width:100%;border-bottom:0}
         .nav-tabs.nav-justified>li{float:none}
         .nav-tabs.nav-justified>li>a{text-align:center;margin-bottom:5px;margin-right:0;border-radius:4px}
@@ -1585,9 +1586,9 @@
         div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white }
 
         .nav-tabs .nav-link:hover { color: black }
-        .nav-tabs .nav-item.active, .tab-content { background: rgba(255,255,255,0.5); }
+    .admin-right-panel .nav-tabs .nav-item.active, .admin-right-panel .tab-content { background: rgba(255,255,255,0.5); }
         .tab-content .table { background: transparent }
-        .tab-content { border: 1px solid rgb(153, 153, 153); border-top:0;  }
+    .admin-right-panel .tab-content { border: 1px solid rgb(153, 153, 153); border-top:0;  }
         input.button { color: white }
 
         .btn-default,
@@ -1611,6 +1612,10 @@
         }
 
 
+
+
+#admin-menus #sc-admin-help .panel-body { border-top:1px solid rgba(0,0,0,0.15); }
+#e-mm-selector .btn { margin-top:15px }
 
 .datetimepicker { margin-top: 52px; font-size:16px; width: 270px; color: rgba(0,0,0,0.75) }
 .datetimepicker table { width: 100%;  }
