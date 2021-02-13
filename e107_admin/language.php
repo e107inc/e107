@@ -845,7 +845,7 @@ if(!empty($_GET['iframe']))
 			{
 				if($val != $pref['sitelanguage'])
 				{
-					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
+					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".varset($pref['multilanguage_domain'][$val])."\" /></td></tr>";
 				}
 			}
 
