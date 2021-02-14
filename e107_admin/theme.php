@@ -804,10 +804,14 @@ class theme_admin_ui extends e_admin_ui
 			switch($type)
 			{
 				case "main/main":
-					$text = "<b>".TPVLAN_56."</b><br />"; // Visbility Filter
-					$text .= "<br />".$tp->toHTML(TPVLANHELP_03,true);
-					$text .= "<ul style='padding-left:10px;margin-top:10px'><li>".$tp->toHTML(TPVLANHELP_04,true)."</li>";
-					$text .= "<li>".$tp->toHTML(TPVLANHELP_05,true)."</li></ul>";
+					$text = '<b>'.TPVLAN_56.'</b><br />'; // Visbility Filter
+					$text .= '<br />'.$tp->toHTML(TPVLANHELP_03,true);
+					$text .= '<ul style="padding-left:10px;margin-top:10px">
+						<li>'.$tp->toHTML(TPVLANHELP_06,true).'</li>
+						<li>'.$tp->toHTML(TPVLANHELP_04,true).'</li>
+						<li>'.$tp->toHTML(TPVLANHELP_05,true).'</li>
+						</ul>';
+
 					break;
 
 				case "label2":
@@ -815,7 +819,7 @@ class theme_admin_ui extends e_admin_ui
 					break;
 
 				default:
-					$text = TPVLANHELP_01."<br /><br />".TPVLANHELP_02;
+					$text = TPVLANHELP_01.'<br /><br />'.TPVLANHELP_02;
 			}
 
 
