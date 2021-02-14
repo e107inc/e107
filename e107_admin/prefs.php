@@ -1230,7 +1230,7 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 					<tr>
 						<td><label for='profanity-words'>".PRFLAN_43.":</label>".$frm->help(PRFLAN_44)."</td>
 						<td>
-							".$frm->tags('profanity_words', $pref['profanity_words'], 250, array('maxItems'=>40))."
+							".$frm->tags('profanity_words', $pref['profanity_words'], 250, array('maxItems'=>1000))."
 						</td>
 					</tr>
 					

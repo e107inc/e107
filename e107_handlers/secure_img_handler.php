@@ -67,7 +67,30 @@ class secure_image
 
 		$this->secret = e107::getUserSession()->generateRandomString('*****');
 
-		e107::getSession('secureImage')->set($this->random_number, $this->secret);
+		$secImg = e107::getSession('secureImage');
+
+		$list = $secImg->get('secret');
+
+		$maxCache = 6;
+
+		if(!empty($list) && count($list) > $maxCache)
+		{
+			$total = count($list) - $maxCache;
+			$c = 1;
+			foreach($list as $key=>$v)
+			{
+				if($c > $total)
+				{
+					continue;
+				}
+
+				$secImg->clear('secret/'.$key);
+				$c++;
+			}
+		}
+
+
+		$secImg->set('secret/'.$this->random_number, $this->secret);
 
 		return $this->random_number;
 	}
@@ -96,7 +119,8 @@ class secure_image
 	 		return call_user_func($user_func,$recnum,$checkstr);
 		}
 
-		$secret = e107::getSession('secureImage')->get($recnum);
+		$tmp = e107::getSession('secureImage')->get('secret');
+		$secret = varset($tmp[$recnum]);
 
 		if(!empty($secret) && ($secret === $checkstr))
 		{
@@ -269,10 +293,10 @@ class secure_image
 
 	//	$code = intval($row['tmp_info']); // new value
 
-
-		if($tmp = e107::getSession('secureImage')->get($recnum))
+		$tmp = e107::getSession('secureImage')->get('secret');
+		if(isset($tmp[$recnum]))
 		{
-			$code = $tmp; 
+			$code = $tmp[$recnum];
 		}
 		else
 		{
