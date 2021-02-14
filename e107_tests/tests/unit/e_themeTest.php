@@ -57,10 +57,12 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						    'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						)
@@ -72,14 +74,17 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						  'bootstrap.editable' =>
 						  array (
+						    'name' => 'bootstrap.editable',
 						    'version' => '',
 						  ),
 						)
@@ -91,14 +96,17 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						  'bootstrap.editable' =>
 						  array (
+						    'name' => 'bootstrap.editable',
 						    'version' => '',
 						  ),
 						)
@@ -110,10 +118,12 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '4',
 						  ),
 						)
@@ -125,6 +135,7 @@
 					'expected' => array (
 						  'style.css' =>
 						  array (
+						    'name'   => 'style.css',
 						    'info' => 'Default',
 						    'nonadmin' => true,
 						    'exclude' => '',
@@ -140,6 +151,7 @@
 					'expected' => array (
 						  'css/modern-light.css' =>
 						  array (
+						    'name'   => 'css/modern-light.css',
 						    'info' => 'Modern Light',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -148,6 +160,7 @@
 						  ),
 						  'css/modern-dark.css' =>
 						  array (
+						    'name'   => 'css/modern-dark.css',
 						    'info' => 'Modern Dark',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -156,6 +169,7 @@
 						  ),
 						  'css/bootstrap-dark.min.css' =>
 						  array (
+						    'name'  => 'css/bootstrap-dark.min.css',
 						    'info' => 'Legacy Dark Admin',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -164,6 +178,7 @@
 						  ),
 						  'css/kadmin.css' =>
 						  array (
+						    'name'  => 'css/kadmin.css',
 						    'info' => 'K-Admin Inspired',
 						    'nonadmin' => false,
 						    'exclude' => '',
@@ -172,6 +187,7 @@
 						  ),
 						  'css/corporate.css' =>
 						  array (
+						    'name'  => 'css/corporate.css',
 						    'info' => 'Corporate',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -180,6 +196,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css',
 						    'info' => 'Flatly',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -188,6 +205,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css',
 						    'info' => 'Sandstone',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -196,6 +214,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css',
 						    'info' => 'Superhero',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -286,7 +305,8 @@
 			$result = e107::getTheme('bootstrap3')->getThemeFiles('css', 'wysiwyg');
 			$this->assertSame($expected, $result);
 
-
+			$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
+			var_export($result);
 		}
 
 
