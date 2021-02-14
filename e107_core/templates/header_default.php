@@ -33,6 +33,11 @@ $e107 = e107::getInstance();
 $sql = e107::getDb();
 
 e107::getDebug()->logTime('(Header Top)');
+if($themeSC = e107::getScBatch('theme')) // init theme_shortcodes after THEME_LAYOUT is available.
+{
+	$themeSC->init();
+	unset($themeSC); 
+}
 e107::getRender()->init();
 
 

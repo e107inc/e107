@@ -292,7 +292,7 @@ class e_parse_shortcode
 		{
 			$this->scClasses[$class] = new $class();
 
-			if(method_exists($this->scClasses[$class], 'init'))
+			if($class !== 'theme_shortcodes' && method_exists($this->scClasses[$class], 'init'))
 			{
 				$this->scClasses[$class]->init();
 			}
