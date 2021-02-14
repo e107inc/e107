@@ -2806,6 +2806,7 @@ class themeHandler
 		if($mode == self::RENDER_SITEPREFS)
 		{
 			$detected = e107::getTheme()->getScope('css', 'front');
+			$all = e107::getTheme()->getScope('css', 'all');
 
 			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
 			{
@@ -2813,7 +2814,7 @@ class themeHandler
 				{
 					foreach($theme['files'] as $val) // get wildcard list of css files.
 					{
-						if(isset($detected[$val]))
+						if(isset($detected[$val]) || isset($all[$val]))
 						{
 							continue;
 						}
