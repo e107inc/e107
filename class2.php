@@ -1052,11 +1052,7 @@ if(!isset($_E107['no_theme']))
 }
 //echo "\nRun Time:  " . number_format(( microtime(true) - $startTime), 4) . " Seconds\n";
 // -----------------------------------------------------------------------
-if(!isset($_E107['no_menus']))
-{
-	$dbg->logTime('Init Menus');
-	e107::getMenu()->init();
-}
+
 
 // here we USE the theme
 if(!isset($_E107['no_theme']))

@@ -194,6 +194,10 @@ class e_url
 							define('e_PAGE', basename($file));
 						}
 
+						if(!defined('e_ROUTE')) // subject to removal at any time.
+						{
+							define('e_ROUTE', $plug.'/'.$k);
+						}
 
 						$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));
 						$fpPref = e107::getFrontpage();

@@ -21,6 +21,14 @@ if(!defined('ADMIN_AREA'))
 	define('ADMIN_AREA', false);
 }
 
+e_theme::initThemeLayout();
+
+if(!isset($_E107['no_menus']))
+{
+	e107::getDebug()->logTime('Init Menus');
+	e107::getMenu()->init();
+}
+
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 
