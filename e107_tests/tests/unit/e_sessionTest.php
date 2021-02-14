@@ -49,6 +49,26 @@
 
 		}
 
+		public function testClear()
+		{
+			$this->sess->set('clear/one', 'Test 1');
+			$this->sess->set('clear/two', 'Test 2');
+			$this->sess->set('clear/three', 'Test 3');
+
+			$this->sess->clear('clear/two');
+
+			$expected = array (
+			  'one' => 'Test 1',
+			  'three' => 'Test 3',
+			);
+
+			$result = $this->sess->get('clear');
+			$this->assertSame($expected, $result);
+
+		}
+
+
+
 		public function testSetGet()
 		{
 			$expected = '123456';

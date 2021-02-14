@@ -397,7 +397,29 @@ class e_session
 			$this->_data = array(); // must be set to array() not unset.
 		}
 
-		unset($this->_data[$key]);
+		if(strpos($key,'/') !== false) // multi-dimensional
+		{
+			$keyArr = explode('/',$key);
+			$count = count($keyArr);
+
+		    if($count === 2)
+		    {
+		        list($k1, $k2) = $keyArr;
+		        unset($this->_data[$k1][$k2]);
+		    }
+		    elseif($count === 3)
+		    {
+		        list($k1, $k2, $k3) = $keyArr;
+		        unset($this->_data[$k1][$k2][$k3]);
+		    }
+
+		}
+		else
+		{
+			unset($this->_data[$key]);
+		}
+
+
 		return $this;
 	}
 	
