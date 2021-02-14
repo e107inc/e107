@@ -88,7 +88,11 @@
 	$request->setLegacyQstring();
 	$request->setLegacyPage();
 
-
+	if(!defined('e_ROUTE') && ($rq = $request->getRoute()))
+	{
+		define('e_ROUTE', $rq);
+		unset($rq);
+	}
 
 	$inc = $front->isLegacy();
 	if($inc)
