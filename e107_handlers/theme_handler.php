@@ -496,7 +496,7 @@ class e_theme
 	 * @param string $url
 	 * @return string
 	 */
-	private function filterTrackers($url)
+	private static function filterTrackers($url)
 	{
 		if(strpos($url,'?') === false || empty($url))
 		{
@@ -514,26 +514,25 @@ class e_theme
 
 
 	/**
-	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
+	 * Calculate THEME_LAYOUT constant based on theme preferences and current request. (url, script, route)
 	 *
-	 * @param array  $cusPagePref
+	 * @param array $cusPagePref
 	 * @param string $defaultLayout
-	 * @param string $request_url (optional) defaults to e_REQUEST_URL
-	 * @param string $request_script $_SERVER['SCRIPT_FILENAME'];
+	 * @param array $request url =>  (optional) defaults to e_REQUEST_URL, 'script'=> $_SERVER['SCRIPT_FILENAME'], 'route' => e_ROUTE
 	 * @return int|string
 	 */
-	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null, $request_script = null)
+	public static function getThemeLayout($cusPagePref, $defaultLayout, $request)
 	{
+		$request_url = isset($request['url']) ? $request['url'] : null;
+		$request_script = isset($request['script']) ? $request['script'] : null;
 
 		if($request_url === null)
 		{
 			$request_url = e_REQUEST_URL;
 		}
 
-
 		$def = "";   // no custom pages found yet.
 		$matches = array();
-
 
 		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 		{
@@ -542,7 +541,7 @@ class e_theme
 			// FIX - check against urldecoded strings
 			$c_url = rtrim(rawurldecode($c_url), '?');
 
-			$c_url = $this->filterTrackers($c_url);
+			$c_url = self::filterTrackers($c_url);
 
 			// First check all layouts for exact matches - possible fix for future issues?.
 			/*
@@ -565,13 +564,19 @@ class e_theme
 				if(!is_array($cusPageArray)) { continue; }
 
 				// NEW - Front page template check - early
-				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
+				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') === SITEURL.'index.php'))
 				{
 					return $lyout;
 				}
 
 	            foreach($cusPageArray as $kpage)
 				{
+					// e_ROUTE
+					if(!empty($request['route']) && (strpos($kpage,':'.$request['route']) === 0))
+					{
+						return $lyout;
+					}
+
 					$kpage = str_replace('&#036;', '$', $kpage); // convert database encoding.
 
 					$lastChar = substr($kpage, -1);
@@ -584,8 +589,6 @@ class e_theme
 							return $lyout;
 						}
 					}
-
-
 
 					if($lastChar === '!')
 					{
@@ -1218,6 +1221,10 @@ class e_theme
 
 	}
 
+	/**
+	 * Define the THEME_STYLE constant
+	 * @param $pref
+	 */
 	public static function initThemeStyle($pref)
 	{
 
@@ -1240,20 +1247,34 @@ class e_theme
 
 	}
 
+	/**
+	 * define the THEME_LAYOUT constant.
+	 * @return null
+	 */
 	public static function initThemeLayout()
 	{
-		if(!defined('THEME_LAYOUT'))
+		if(defined('THEME_LAYOUT'))
 		{
-			$sitetheme_custompages  = e107::getPref('sitetheme_custompages', array());
-			$sitetheme_deflayout  = e107::getPref('sitetheme_deflayout');
-
-			$user_pref      = e107::getUser()->getPref();
-			$cusPagePref    = !empty($user_pref['sitetheme_custompages']) ? $user_pref['sitetheme_custompages'] : $sitetheme_custompages;
-			$cusPageDef     = !empty($user_pref['sitetheme_deflayout']) ? $user_pref['sitetheme_deflayout'] : $sitetheme_deflayout;
-			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
-			define('THEME_LAYOUT',$deflayout);
-
+			return null;
 		}
+
+		$sitetheme_custompages  = e107::getPref('sitetheme_custompages', array());
+		$sitetheme_deflayout    = e107::getPref('sitetheme_deflayout');
+
+		$user_pref      = e107::getUser()->getPref();
+		$cusPagePref    = !empty($user_pref['sitetheme_custompages']) ? $user_pref['sitetheme_custompages'] : $sitetheme_custompages;
+		$cusPageDef     = !empty($user_pref['sitetheme_deflayout']) ? $user_pref['sitetheme_deflayout'] : $sitetheme_deflayout;
+
+		$request = [
+			'url'       => e_REQUEST_URL,
+			'script'    => varset($_SERVER['SCRIPT_FILENAME'],null),
+			'route'     => deftrue('e_ROUTE', null),
+		];
+
+		$deflayout      = self::getThemeLayout($cusPagePref, $cusPageDef, $request);
+
+		define('THEME_LAYOUT',$deflayout);
+
 
 	}
 
@@ -1317,7 +1338,7 @@ class e_theme
 		define('THEME_LEGACY', false);
 		define('USERTHEME', 'bootstrap3');
 		define('BOOTSTRAP', 3);
-		define('FONTAWESOME', 4);
+		define('FONTAWESOME', 5);
 
 		if (ADMIN && (e_ADMIN_AREA !== true))
 		{

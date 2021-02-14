@@ -452,6 +452,8 @@
 					array (
 						0 => 'forum',
 						1 => 'user.php!', // <-- exact match of URL
+						2 => ':forum/index',
+
 			//			2 => '/user', // <-- Expecting URL to match both user and usersetting since it contains no "!"
 					),
 				'jumbotron_sidebar_right' =>
@@ -469,6 +471,7 @@
 						3 => '/user/settings?',
 						4 => 'script.php$',
 						5 => '/news/?bla',
+						6 => ':news/view/index',
 					),
 				'script_match' =>
 					array(
@@ -506,13 +509,17 @@
 				22 => array('url' => SITEURL."news/my-news-title",      'script' => '/news.php',             'expected' => 'jumbotron_sidebar_right'),
 				23 => array('url' => SITEURL."news/?bla",                  'script' => '/news.php',             'expected' => 'other_layout'),
 
+				// Using e_ROUTE;
+				24 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'news/view/index', 'expected'=> 'other_layout'),
+				25 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'forum/index', 'expected'=> 'jumbotron_full'),
+
 			);
 
 			foreach($tests as $item=>$var)
 			{
 				$var['script'] = isset($var['script']) ? $var['script'] : null;
 
-				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url'], $var['script']);
+				$result = $this->tm::getThemeLayout($pref, $defaultLayout, $var);
 				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}

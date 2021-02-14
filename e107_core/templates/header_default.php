@@ -21,7 +21,9 @@ if(!defined('ADMIN_AREA'))
 	define('ADMIN_AREA', false);
 }
 
-e_theme::initThemeLayout();
+e107::getDebug()->logTime('(Header Top)');
+
+e_theme::initThemeLayout(); // set THEME_LAYOUT
 
 if(!isset($_E107['no_menus']))
 {
@@ -32,13 +34,13 @@ if(!isset($_E107['no_menus']))
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 
-e107::getDebug()->logTime('(Header Top)');
+
 if($themeSC = e107::getScBatch('theme')) // init theme_shortcodes after THEME_LAYOUT is available.
 {
 	$themeSC->init();
 	unset($themeSC); 
 }
-e107::getRender()->init();
+e107::getRender()->init(); // init 'theme' class. 
 
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
