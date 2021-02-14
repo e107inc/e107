@@ -674,7 +674,7 @@
         .form-control:-ms-input-placeholder{color:#999}
         .form-control::-webkit-input-placeholder{color:#999}
         .form-control::-ms-expand{border:0;background-color:transparent}
-        .form-control[disabled],.form-control[readonly],fieldset[disabled] .form-control{background-color:#222;opacity:1}
+        .form-control[disabled],.form-control[readonly],fieldset[disabled] .form-control{opacity:0.7}
         .form-control[disabled],fieldset[disabled] .form-control{cursor:not-allowed}
         textarea.form-control{height:auto}
         @media screen and (-webkit-min-device-pixel-ratio:0){input[type=date].form-control,input[type=time].form-control,input[type=datetime-local].form-control,input[type=month].form-control{line-height:38px}
