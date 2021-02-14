@@ -1218,7 +1218,7 @@ class e_theme
 
 	}
 
-	private static function initThemeLayout($pref)
+	public static function initThemeStyle($pref)
 	{
 
 		e107::getDebug()->logTime('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
@@ -1226,6 +1226,7 @@ class e_theme
 		if(deftrue('e_ADMIN_AREA'))
 		{
 			define('THEME_STYLE', $pref['admincss']);
+			self::initThemeLayout();  // the equivalent for frontend is in header_default.php
 		}
 		elseif(!empty($pref['themecss']) && file_exists(THEME.$pref['themecss']))
 		{
@@ -1236,20 +1237,27 @@ class e_theme
 			define('THEME_STYLE', 'style.css');
 		}
 
-		if(!defined('THEME_LAYOUT'))
-		{
-			$user_pref      = e107::getUser()->getPref();
-			$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
-			$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
-			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
-
-			define('THEME_LAYOUT',$deflayout);
-
-		    unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
-		}
-
 
 	}
+
+	public static function initThemeLayout()
+	{
+		if(!defined('THEME_LAYOUT'))
+		{
+			$sitetheme_custompages  = e107::getPref('sitetheme_custompages', array());
+			$sitetheme_deflayout  = e107::getPref('sitetheme_deflayout');
+
+			$user_pref      = e107::getUser()->getPref();
+			$cusPagePref    = !empty($user_pref['sitetheme_custompages']) ? $user_pref['sitetheme_custompages'] : $sitetheme_custompages;
+			$cusPageDef     = !empty($user_pref['sitetheme_deflayout']) ? $user_pref['sitetheme_deflayout'] : $sitetheme_deflayout;
+			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
+			define('THEME_LAYOUT',$deflayout);
+
+		}
+
+	}
+
+
 	/**
 	 * Replacement of checkvalidtheme()
 	 * @param string $themeDir
@@ -1268,7 +1276,7 @@ class e_theme
 		{
 			$layout = !empty($_GET['layout']) ? $_GET['layout'] : null;
 			self::initThemePreview($_GET['themepreview'], $layout);
-			self::initThemeLayout($pref);
+			self::initThemeStyle($pref);
 			return;
 		}
 
@@ -1295,7 +1303,7 @@ class e_theme
 			$e107->site_theme = $themeDir;
 			e107::getDebug()->logTime('Theme Check End');
 
-			self::initThemeLayout($pref);
+			self::initThemeStyle($pref);
 			return;
 		}
 
@@ -1317,7 +1325,7 @@ class e_theme
 		}
 
 		e107::getDebug()->logTime('Theme Check End');
-		self::initThemeLayout($pref);
+		self::initThemeStyle($pref);
 
 	}
 
