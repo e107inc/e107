@@ -207,7 +207,6 @@ class e_theme
 
 				if($scp === $scope || $scp === 'all' || $scope === 'all')
 				{
-					unset($info['name']);
 					unset($info['scope']);
 
 					$ret[$name] = $info;
@@ -2794,18 +2793,24 @@ class themeHandler
 	private function filterStylesheets($mode, $theme)
 	{
 
-		$remove = array();
 		$detected = array();
 
 		if($mode == self::RENDER_SITEPREFS)
 		{
+			$detected = e107::getTheme()->getScope('css', 'front');
+
 			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
 			{
 				if($v['name'] == '*')
 				{
 					foreach($theme['files'] as $val) // get wildcard list of css files.
 					{
-						if(substr($val,-4) == '.css' && strpos($val, "admin_") !== 0)
+						if(isset($detected[$val]))
+						{
+							continue;
+						}
+
+						if(substr($val,-4) === '.css' && strpos($val, "admin_") !== 0)
 						{
 							$detected[$val] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
 						}
@@ -2813,87 +2818,14 @@ class themeHandler
 					break;
 				}
 			}
+
 		}
-
-
-
-
-		foreach($theme['css'] as $k=>$vl) // as defined.
+		elseif($mode === self::RENDER_ADMINPREFS)
 		{
-			if(!empty($detected[$vl['name']])) // remove any detected files which are listed
-			{
-				unset($detected[$vl['name']]);
-			}
-
-
-				 // frontend
-				if($mode === self::RENDER_SITEPREFS)
-				{
-
-					if(strpos($vl['name'], "admin_") === 0)
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['scope'] == 'admin')
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['name'] == '*' )
-					{
-						$remove[$k] = $vl['name'];
-
-						$wildcard = true;
-						continue;
-					}
-
-				}
-
-				if($mode === self::RENDER_ADMINPREFS)
-				{
-
-					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['name'] == '*' )
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['scope'] === 'front')
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if(!empty($vl['nonadmin']))
-					{
-						$remove[$k] = $vl['name'];
-					}
-				}
-
-
-
-
+			$detected = e107::getTheme('admin')->getScope('css', 'admin');
 		}
 
-		foreach($remove as $k=>$file)
-		{
-			unset($theme['css'][$k]);
-		//	unset($detected[$file]);
-		}
-
-		foreach($detected as $k=>$v)
-		{
-			$theme['css'][] = $v;
-		}
-
-	//	print_a($detected);
-	//	print_a($remove);
-
-		return $theme['css'];
+		return $detected;
 
 	}
 
