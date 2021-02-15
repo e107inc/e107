@@ -103,6 +103,71 @@ class contact_shortcodes extends e_shortcode
 		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
 	}
 
+	function sc_contact_map($parm=null)
+	{
+		$pref = e107::getPref('contact_info');
+
+		if(empty($pref['address']))
+		{
+			return null;
+		}
+
+		$address = trim($pref['address']);
+
+		$zoom = varset($parm['zoom'], 'street');
+
+		$zoomOpts = [
+			'street' => 17,
+			'district'  => 14,
+			'city'  => 12,
+
+		];
+
+		$zoom = (int) varset($zoomOpts[$zoom],$zoom);
+
+// &z='.$zoom.'
+
+		return '<iframe class="sc-contact-map" src="https://maps.google.com/maps?q='.$address.'&output=embed&z='.$zoom.'"></iframe>';
+
+	}
+
+	function sc_contact_info($parm=null)
+	{
+		$ipref = e107::getPref('contact_info');
+		$type = varset($parm['type']);
+
+		if(empty($type) || empty($ipref[$type]))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+		$ret = '';
+
+		switch($type)
+		{
+			case "company":
+				$ret = $tp->toHTML($ipref[$type], true, 'TITLE');
+				break;
+
+			case 'email1':
+			case 'email2':
+			case 'phone1':
+			case 'phone2':
+			case 'phone3':
+			case 'fax':
+				$ret = $tp->obfuscate($ipref[$type]);
+				break;
+
+			default:
+				$ret = $tp->toHTML($ipref[$type], true, 'BODY');
+				// code to be executed if n is different from all labels;
+		}
+
+		return $ret;
+	}
+
+
 
 
 	/* example {CONTACT_EMAIL} */

@@ -33,6 +33,8 @@
 		<core name="comments_moderate">247</core>
 		<core name="comments_sort">desc</core>
 		<core name="compress_output">0</core>
+		<core name="contact_info"><![CDATA[array (
+)]]></core>
 		<core name="contact_emailcopy">0</core>
         <core name="contact_visibility">0</core>
         <core name="contact_filter"></core>

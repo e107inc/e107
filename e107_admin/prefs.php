@@ -38,9 +38,8 @@ e107::coreLan('mailout', true);
 require_once (e_ADMIN."auth.php");
 
 $e_userclass = e107::getUserClass(); 
-require_once (e_HANDLER."user_extended_class.php");
 require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
-$ue = new e107_user_extended();
+$ue = e107::getUserExt();
 $core_pref = e107::getConfig();
 
 if(!$core_pref->get('timezone'))
@@ -321,7 +320,7 @@ $text = "
 	<form method='post' action='".e_SELF."' autocomplete='off'>
 	<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		<fieldset id='core-prefs-main'>
-			<legend>".PRFLAN_1."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_1."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -423,7 +422,7 @@ $text .= "
 // Email and Contact Information --------------
 
 $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
-			<legend>".PRFLAN_13."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_13."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -492,8 +491,53 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 					<tr>
 						<td><label for='sitecontactinfo'>".PRFLAN_162."</label>".$frm->help(PRFLAN_163)."</td>
-						<td>
-							".$frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59, array('size'=>'xxlarge'))."
+						<td>";
+
+						if(!empty($pref['sitecontactinfo']))
+						{
+							$text .= $frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59, array('size'=>'xxlarge'));
+						}
+						else
+						{
+							$text .= "<table class='table table-bordered table-striped' style='margin:0; max-width:690px'>
+								<colgroup>
+								<col style='width:150px' />
+								<col />
+								</colgroup>
+								<tr>";
+
+							$text .= "<td>Company</td>
+									<td>".$frm->text('contact_info[company]', varset($pref['contact_info']['company']), 200, ['size'=>'block-level', 'placeholder'=>'My Company'])."</td>
+									</tr>";
+
+								$text .= "<td>Address</td>
+									<td>".$frm->textarea('contact_info[address]', varset($pref['contact_info']['address']), 2, 80, ['size'=>'block-level', 'placeholder'=>'123 address st. city, state, zip/postal, country'])."</td>
+									</tr>";
+
+							$contactFields = [
+								'phone1'  => ['label'=>'Phone', 'placeholder'=>'+1-555-555-5555'],
+								'phone2'  => ['label'=>'Phone', 'placeholder'=>'+1-444-444-4444'],
+								'phone3'  => ['label'=>'Phone', 'placeholder'=>'+1-333-333-3333'],
+								'fax'     => ['label'=>'Fax', 'placeholder'=>'+1-555-555-5555'],
+								'email1'  => ['label'=>LAN_EMAIL, 'placeholder'=>'info@mycompany.com'],
+								'email2'  => ['label'=>LAN_EMAIL, 'placeholder'=>'sales@mycompany.com']
+							];
+
+							foreach($contactFields as $type => $var)
+							{
+								$text .= "<td>".$var['label']."</td>
+									<td>".$frm->text('contact_info['.$type.']', varset($pref['contact_info'][$type]), 200, ['size'=>'block-level', 'placeholder'=>varset($var['placeholder'])])."</td>
+									</tr>
+									";
+							}
+
+
+
+							$text .= "</table>";
+
+						}
+
+						$text .= "
 						</td>
 					</tr>
 					<tr>
@@ -544,7 +588,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 // GDPR Settings -----------------------------
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-gdpr'>
-			<legend>".PRFLAN_277."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_277."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -580,7 +624,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-display'>
-			<legend>".PRFLAN_13."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_13."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -630,7 +674,7 @@ $text .= "
  */
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-admindisp'>
-			<legend>".PRFLAN_77."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_77."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -703,7 +747,7 @@ $date4 = $tp->toDate(time(),"input");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
-			<legend>".PRFLAN_21."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_21."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -817,7 +861,7 @@ $elements = array(1=> PRFLAN_259, 2=> PRFLAN_260, 0=>LAN_DISABLED);
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-registration'>
-			<legend>".PRFLAN_28."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_28."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -962,7 +1006,7 @@ $prefOptionPassword = (isset($pref['signup_option_password'])) ? $pref['signup_o
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-signup'>
-			<legend>".PRFLAN_19."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_19."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1166,7 +1210,7 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 
 	$text .= "
 		<fieldset class='e-hideme' id='core-prefs-textpost'>
-			<legend>".PRFLAN_101."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_286."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1332,7 +1376,7 @@ $hasGD = extension_loaded("gd");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-security'>
-			<legend>".PRFLAN_47."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_47."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1575,7 +1619,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-comments'>
-			<legend>".PRFLAN_87."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_87."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1646,7 +1690,7 @@ $text .= "
 				</tbody>
 			</table>
 
-			<legend>".PRFLAN_209."</legend>
+			<h4 class='caption'>".PRFLAN_209."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1679,7 +1723,7 @@ $text .= "
 	
 	$text .= "
 	<fieldset class='e-hideme' id='core-prefs-uploads'>
-			<legend>".PRFLAN_238."</legend>";
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_238."</h4>";
 	
 	
 	$upload_max_filesize = ini_get('upload_max_filesize');
@@ -1764,7 +1808,8 @@ $text .= "
 		</fieldset>";
 
 
-$text .= "<fieldset class='e-hideme' id='core-prefs-javascript'>";
+$text .= "<fieldset class='e-hideme' id='core-prefs-javascript'>
+<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_257 . "</h4>";
 
 if(E107_DEBUG_LEVEL > 0)
 {
@@ -1772,7 +1817,7 @@ if(E107_DEBUG_LEVEL > 0)
 
 	// Javascript Control
 	$text .= "
-			<legend>" . PRFLAN_242 . "</legend>
+			<h4>".PRFLAN_242 . "</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1972,7 +2017,7 @@ $text .= "</fieldset>";
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-advanced'>
-			<legend>".PRFLAN_149."</legend>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_149."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -2043,8 +2088,8 @@ $text .= "
 	</form>
 </div>
 ";
-
-$ns->tablerender(PRFLAN_53, $mes->render().$text);
+//PRFLAN_53
+$ns->tablerender(null, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
 
@@ -2107,7 +2152,7 @@ function prefs_adminmenu()
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
 	$var['core-prefs-admindisp']['image_src'] = 'fa-dashboard.glyph';
 
-	$var['core-prefs-textpost']['text'] = PRFLAN_101;
+	$var['core-prefs-textpost']['text'] = PRFLAN_286;
 	$var['core-prefs-textpost']['image_src'] = 'fa-filter.glyph';
 
 	$var['core-prefs-security']['text'] = PRFLAN_47;
