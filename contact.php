@@ -252,7 +252,9 @@ class contact_front
 				message_handler("P_ALERT", $error);
 			}
 
-		}
+	}
+
+		$contact_shortcodes = e107::getScBatch('contact');
 
 		if(deftrue('SITECONTACTINFO') || !empty($pref['contact_info']))
 		{
@@ -261,7 +263,7 @@ class contact_front
 				$CONTACT_INFO = e107::getCoreTemplate('contact','info');
 			}
 
-			$contact_shortcodes = e107::getScBatch('contact');
+
 			$contact_shortcodes->wrapper('contact/info');
 			$text = $tp->parseTemplate($CONTACT_INFO, true, $contact_shortcodes);
 			$ns->tablerender(LANCONTACT_01, $text,"contact-info");
