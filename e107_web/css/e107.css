@@ -382,6 +382,7 @@ cursor: pointer;
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
 #uiAlert.notifications { top: 48%; left: 0; width: 100%; }
 
+#contactInfo iframe.sc-contact-map { width:100%; min-height:195px }
 
 
 #login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }

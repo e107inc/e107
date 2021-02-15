@@ -61,7 +61,7 @@ define("PRFLAN_59", "ticking will restrict all areas apart from the front page a
 define("PRFLAN_60", "Use SSL only");
 define("PRFLAN_61", "Redirect all traffic through SSL (https)");
 define("PRFLAN_76", "Display CAPTCHA on signup page.");
-define("PRFLAN_77", "Admin Display Options ");
+define("PRFLAN_77", "Admin Display");
 define("PRFLAN_78", "Leave blank to disable");
 // define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Display CAPTCHA on login page.");
@@ -99,7 +99,7 @@ define("PRFLAN_95", "Display plugins info:");
 define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type of feature");
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If disabled, each plugin will display its own info in an individual menu. If enabled all info will be displayed in one menu.");
-define("PRFLAN_101", "Text Rendering");
+// define("PRFLAN_101", "Text Rendering");
 define("PRFLAN_102", "Replace clickable URLs");
 define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs or Email addresses are displayed as a hyperlink using text from the textboxes below. This keeps very long URLs/Emails from breaking layout.");
 define("PRFLAN_104", "URL replacement text");
@@ -307,4 +307,4 @@ define("PRFLAN_282", "Session Save Method");
 define("PRFLAN_283", "Display navigation-bar labels");
 define("PRFLAN_284", "Collapse navigation side-bar by default");
 define("PRFLAN_285", "Display field help tips");
-
+define("PRFLAN_286", "Content Filters");

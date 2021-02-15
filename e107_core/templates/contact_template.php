@@ -12,11 +12,40 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$CONTACT_WRAPPER['info']['CONTACT_INFO'] = "<div>{---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=company'] = "<h4>{---}</h4>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=address'] = "<address>{GLYPH=fa-map-marker} {---}</address>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=email1'] = "<div>{GLYPH=fa-envelope} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=email2'] = "<div>{GLYPH=fa-envelope} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone1'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone2'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone3'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=fax'] = "<div>{GLYPH=fa-fax} {---}</div>";
 
 $CONTACT_TEMPLATE['info'] = "
 
 	<div id='contactInfo' >
-		<address>{SITECONTACTINFO}</address>
+		
+		<!-- Backward Compat. Contact Info -->
+		{SITECONTACTINFO}
+		<!-- New Contact Info -->
+		{CONTACT_INFO: type=company}
+		<div class='row'>
+			<div class ='col-md-6 col-lg-4 h=100'>
+				{CONTACT_INFO: type=address}	
+				<div class='form-group'>	
+				{CONTACT_INFO: type=phone1}
+				{CONTACT_INFO: type=phone2}
+				{CONTACT_INFO: type=phone3}
+				{CONTACT_INFO: type=fax}
+				</div>
+				{CONTACT_INFO: type=email1}
+				{CONTACT_INFO: type=email2}
+			</div>
+			<div class ='col-md-6 col-lg-8 h=100'>
+				{CONTACT_MAP: zoom=city}
+			</div>
+		</div>
 	</div>
 
 ";
