@@ -37,7 +37,7 @@ class contact_front
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 
-		$CONTACT_FORM = $GLOBALS['CONTACT_FORM'];
+		$CONTACT_FORM = varset($GLOBALS['CONTACT_FORM']);
 
 		if (empty($CONTACT_FORM))
 		 {
