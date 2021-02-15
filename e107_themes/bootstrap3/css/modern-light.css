@@ -1633,7 +1633,8 @@
 
 .form-control.bootstrap-switch span.bootstrap-switch-default { background: rgba(0,0,0,0.1) }
 
-.e-debug { margin-left: 60px; } 
+.e-debug { margin-left: 60px; color: rgba(0,0,0,0.8) }
+.e-debug h4 { color: white }
 .admin-ui-help-tip { color: rgba(0,0,0,0.3) !important; }
 .admin-ui-help-tip:hover { color: #5bc0de !important }
 ul.col-selection > li a {  border-bottom: 1px solid rgba(0,0,0,0.3); }
