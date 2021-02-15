@@ -843,4 +843,6 @@ e107::getDebug()->logTime('Render Other');
 
 	unset($text);
 }
+
+$GLOBALS['FOOTER'] = $FOOTER;
 //Trim whitepsaces after end of the script
