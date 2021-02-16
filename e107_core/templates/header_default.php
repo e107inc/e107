@@ -117,7 +117,7 @@ if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
 	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
-	echo deftrue('HTMLTAG', $htmlTag)."\n";
+	echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }
@@ -139,6 +139,18 @@ if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->g
 	unset($_PAGE_TITLE);
 }
 
+if (deftrue('e_FRONTPAGE'))
+{
+	// Ignore any additional title when current page is the frontpage
+	echo "<title>".SITENAME."</title>\n\n";
+}
+else
+{
+
+	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	unset($_PAGE_TITLE);
+}
 
 //
 // C: Send start of HTML
@@ -179,18 +191,7 @@ unset($e_headers);
 
 echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 
-if (deftrue('e_FRONTPAGE'))
-{
-	// Ignore any additional title when current page is the frontpage
-	echo "<title>".SITENAME."</title>\n\n";
-}
-else
-{
 
-	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
-
-	unset($_PAGE_TITLE);
-}
 
 
 //

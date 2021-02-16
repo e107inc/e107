@@ -1078,10 +1078,11 @@
 		/**
 		 * File retrieval function. by Cam.
 		 *
-		 * @param $file string actual path or {e_xxxx} path to file.
+		 * @param string $file actual path or {e_xxxx} path to file.
+		 * @param string $opts (optional) type | disposition | encoding values.
 		 *
 		 */
-		function send($file)
+		function send($file, $opts = array())
 		{
 
 			global $e107;
@@ -1159,12 +1160,22 @@
 						fseek($res, $seek);
 					}
 					$data_len -= $seek;
-					header("Expires: 0");
+
+					$contentType = vartrue($opts['type'], 'application/force-download');
+					$contentDisp = vartrue($opts['disposition'], 'attachment');
+
+					header('Expires: 0');
 					header("Cache-Control: max-age=30");
-					header("Content-Type: application/force-download");
-					header("Content-Disposition: attachment; filename=\"{$file}\"");
+					header('Content-Type: '.$contentType);
+					header('Content-Disposition: '.$contentDisp.'; filename="'.$file.'"');
 					header("Content-Length: {$data_len}");
 					header("Pragma: public");
+
+					if(!empty($opts['encoding']))
+					{
+						header('Content-Transfer-Encoding: '.$opts['encoding']);
+					}
+
 					if($seek)
 					{
 						header("Accept-Ranges: bytes");
