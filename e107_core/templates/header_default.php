@@ -109,7 +109,7 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 //else
 if(!e107::isCli())
 {
-	header("Content-type: text/html; charset=utf-8", true);
+	header("Content-type: text/html; charset=utf-8");
 }
 // NEW - HTML5 default
 // TODO - more precise controlo over page header depending on the HTML5 mode
@@ -678,20 +678,24 @@ else
 {
 	trigger_error('<b>BODYTAG is deprecated.</b> Use a theme.html file instead.', E_USER_DEPRECATED); // NO LAN
 
+	$BODYTAG = str_replace('THEME_LAYOUT', THEME_LAYOUT, BODYTAG);  // BC Fix, but will fail with PHP8.
+
 	if ($body_onload)
 	{
 		// Kludge to get the CHAP code included
-		echo substr(trim(BODYTAG), 0, -1).' '.$body_onload.">\n";
+		echo substr(trim($BODYTAG), 0, -1).' '.$body_onload.">\n";
 	}
 	else
 	{
 
-		echo BODYTAG."\n";	
+		echo $BODYTAG."\n";
 	}
 	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
 	{
 		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
 	}
+
+	unset($BODYTAG);
 }
 
 // Bootstrap Modal Window
@@ -775,9 +779,10 @@ e107::getDebug()->logTime('Render Layout');
 					'{THEME}'       => THEME_ABS,
 					'{BODY_ONLOAD}' => $body_onload,
 					'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
+					'THEME_LAYOUT'  => THEME_LAYOUT, // BC Fall-back: Catch and replace the missing constant- ony works with PHP < 8
 					'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
-					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
-			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
+					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}'),
+			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}'),
 					),
 			'bodyStart' => varset($pref['meta_bodystart'][e_LANGUAGE])
 			);
