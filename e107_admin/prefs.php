@@ -506,21 +506,24 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 								</colgroup>
 								<tr>";
 
-							$text .= "<td>Company</td>
-									<td>".$frm->text('contact_info[company]', varset($pref['contact_info']['company']), 200, ['size'=>'block-level', 'placeholder'=>'My Company'])."</td>
+							$text .= "<td>Organization</td>
+									<td>".$frm->text('contact_info[organization]', varset($pref['contact_info']['organization']), 200, ['size'=>'block-level', 'placeholder'=>'eg. My Company Inc.'])."</td>
 									</tr>";
 
 								$text .= "<td>Address</td>
-									<td>".$frm->textarea('contact_info[address]', varset($pref['contact_info']['address']), 2, 80, ['size'=>'block-level', 'placeholder'=>'123 address st. city, state, zip/postal, country'])."</td>
+									<td>".$frm->textarea('contact_info[address]', varset($pref['contact_info']['address']), 2, 80, ['size'=>'block-level', 'placeholder'=>"eg. 123 Address St.\nCity, State, Zip/postal\nCountry"])."</td>
 									</tr>";
+
+
 
 							$contactFields = [
 								'phone1'  => ['label'=>'Phone', 'placeholder'=>'+1-555-555-5555'],
 								'phone2'  => ['label'=>'Phone', 'placeholder'=>'+1-444-444-4444'],
 								'phone3'  => ['label'=>'Phone', 'placeholder'=>'+1-333-333-3333'],
 								'fax'     => ['label'=>'Fax', 'placeholder'=>'+1-555-555-5555'],
-								'email1'  => ['label'=>LAN_EMAIL, 'placeholder'=>'info@mycompany.com'],
-								'email2'  => ['label'=>LAN_EMAIL, 'placeholder'=>'sales@mycompany.com']
+								'email1'  => ['label'=>LAN_EMAIL, 'placeholder'=>'info@myorganization.com'],
+								'email2'  => ['label'=>LAN_EMAIL, 'placeholder'=>'sales@myorganization.com'],
+								'coordinates'  => ['label'=>"Map Coordinates", 'placeholder'=>'eg. 36.169941,-115.139832 or leave blank to use address'],
 							];
 
 							foreach($contactFields as $type => $var)
@@ -531,7 +534,13 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 									";
 							}
 
+							$text .= "<td>Hours</td>
+									<td>".$frm->textarea('contact_info[hours]', varset($pref['contact_info']['hours']), 2, 80, ['size'=>'block-level', 'placeholder'=>"eg. Mon - Fri (9am-5pm)\nSat (closed)\nSun (closed)"])."</td>
+									</tr>";
 
+							$text .= "<td>Custom message</td>
+									<td>".$frm->textarea('contact_info[message]', varset($pref['contact_info']['message']), 2, 80, ['size'=>'block-level', 'placeholder'=>"(Optional) Custom text message."])."</td>
+									</tr>";
 
 							$text .= "</table>";
 

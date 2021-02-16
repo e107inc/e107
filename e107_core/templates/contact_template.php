@@ -13,7 +13,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 $CONTACT_WRAPPER['info']['CONTACT_INFO'] = "<div>{---}</div>";
-$CONTACT_WRAPPER['info']['CONTACT_INFO: type=company'] = "<h4>{---}</h4>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=organization'] = "<h4>{---}</h4>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=message'] = "<p>{---}</p>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=address'] = "<address>{GLYPH=fa-map-marker} {---}</address>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=email1'] = "<div>{GLYPH=fa-envelope} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=email2'] = "<div>{GLYPH=fa-envelope} {---}</div>";
@@ -21,6 +22,7 @@ $CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone1'] = "<div>{GLYPH=fas-phone-a
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone2'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone3'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=fax'] = "<div>{GLYPH=fa-fax} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=hours'] = "<div>{GLYPH=fa-clock} {---}</div>";
 
 $CONTACT_TEMPLATE['info'] = "
 
@@ -29,9 +31,10 @@ $CONTACT_TEMPLATE['info'] = "
 		<!-- Backward Compat. Contact Info -->
 		{SITECONTACTINFO}
 		<!-- New Contact Info -->
-		{CONTACT_INFO: type=company}
+		{CONTACT_INFO: type=organization}
+		{CONTACT_INFO: type=message}
 		<div class='row'>
-			<div class ='col-md-6 col-lg-4 h=100'>
+			<div class ='col-md-6 col-lg-4'>			
 				{CONTACT_INFO: type=address}	
 				<div class='form-group'>	
 				{CONTACT_INFO: type=phone1}
@@ -41,8 +44,10 @@ $CONTACT_TEMPLATE['info'] = "
 				</div>
 				{CONTACT_INFO: type=email1}
 				{CONTACT_INFO: type=email2}
+				<br />
+				{CONTACT_INFO: type=hours}
 			</div>
-			<div class ='col-md-6 col-lg-8 h=100'>
+			<div class ='col-md-6 col-lg-8 flex-row'>
 				{CONTACT_MAP: zoom=city}
 			</div>
 		</div>
