@@ -83,7 +83,7 @@ class news_front
 
 		$breadcrumb = array();
 
-		$breadcrumb[] = array('text'=> PAGE_NAME, 'url'=>e107::url('news', 'index'));
+		$breadcrumb[] = array('text'=> LAN_PLUGIN_NEWS_NAME, 'url'=>e107::url('news', 'index'));
 
 		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
 
@@ -880,7 +880,7 @@ class news_front
 			$query .= "
 			ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
-			$category_name = ($this->defaultTemplate == 'list') ? PAGE_NAME : "All";
+			$category_name = ($this->defaultTemplate == 'list') ? LAN_PLUGIN_NEWS_NAME : "All";
 			unset($renTypeQry);
 		}
 		elseif ($this->action == 'cat') // show archive of all news items in a particular category using list-style template.
@@ -1768,7 +1768,7 @@ class news_front
 
 				if(empty($this->action)) // default page.
 				{
-					$row['category_name'] = PAGE_NAME;
+					$row['category_name'] = LAN_PLUGIN_NEWS_NAME;
 				}
 
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);
