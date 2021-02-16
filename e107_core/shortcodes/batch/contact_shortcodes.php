@@ -107,12 +107,14 @@ class contact_shortcodes extends e_shortcode
 	{
 		$pref = e107::getPref('contact_info');
 
-		if(empty($pref['address']))
+		if(empty($pref['address']) && empty($pref['coordinates']))
 		{
 			return null;
 		}
 
-		$address = trim($pref['address']);
+		$address = !empty($pref['coordinates']) ? $pref['coordinates'] : $pref['address'];
+		$address = trim($address);
+		$address = str_replace("\n", " ", $address);
 
 		$zoom = varset($parm['zoom'], 'street');
 
@@ -127,7 +129,7 @@ class contact_shortcodes extends e_shortcode
 
 // &z='.$zoom.'
 
-		return '<iframe class="sc-contact-map" src="https://maps.google.com/maps?q='.$address.'&output=embed&z='.$zoom.'"></iframe>';
+		return '<iframe class="sc-contact-map" src="https://www.google.com/maps?q='.$address.'&output=embed&z='.$zoom.'"></iframe>';
 
 	}
 
@@ -146,7 +148,7 @@ class contact_shortcodes extends e_shortcode
 
 		switch($type)
 		{
-			case "company":
+			case "organization":
 				$ret = $tp->toHTML($ipref[$type], true, 'TITLE');
 				break;
 
@@ -195,7 +197,7 @@ class contact_shortcodes extends e_shortcode
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
-		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject'], 'str') : '';
+		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject']) : '';
 		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
 	}
 	
@@ -249,11 +251,12 @@ class contact_shortcodes extends e_shortcode
 		$pp = e107::getParser()->replaceConstants($pp, 'full'); 
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
 		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LANCONTACT_22);
-		$text = e107::getParser()->lanVars(LANCONTACT_23, $link);
-		return $text;
+
+		return e107::getParser()->lanVars(LANCONTACT_23, $link);
+
 	}
 
 
 }
 
-?>
+
