@@ -1615,7 +1615,7 @@
 
 
 #admin-menus #sc-admin-help .panel-body { border-top:1px solid rgba(0,0,0,0.15); }
-#e-mm-selector .btn { margin-top:15px }
+#e-mm-selector .btn.e-mm-selector { margin-top:15px }
 
 .datetimepicker { margin-top: 52px; font-size:16px; width: 270px; color: rgba(0,0,0,0.75) }
 .datetimepicker table { width: 100%;  }
@@ -1641,6 +1641,15 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(0,0,0,0.3); }
 ul.col-selection { background-color: #FCFDFF; }
 .selectize-control.multi .selectize-input > div {    background: rgba(0,0,0,0.1); }
 .e-chart svg text { fill: rgba(0,0,0,0.75); }  /* Google charts */
+
+.admin-right-panel .alert a.close { text-shadow: 0 1px 0 #fff; color: rgba(0,0,0,0.6) }
+
+#admin-menus #sc-admin-help { background: #373737 }
+
+
+
+
+
 
         @media only screen and (min-width : 768px) {
             .is-table-row {
