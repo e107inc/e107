@@ -634,7 +634,7 @@
         .table-bordered,.table-bordered>tbody>tr>td,.table-bordered>tbody>tr>th,.table-bordered>tfoot>tr>td,.table-bordered>tfoot>tr>th,.table-bordered>thead>tr>td,.table-bordered>thead>tr>th{border:1px solid rgba(0,0,0,0.3)}
         .table-bordered>thead>tr>td,.table-bordered>thead>tr>th{border-bottom-width:2px}
         .table-striped>tbody>tr:nth-of-type(odd){background-color:#fff}
-        .table-hover>tbody>tr:hover,.table>tbody>tr.active>td,.table>tbody>tr.active>th,.table>tbody>tr>td.active,.table>tbody>tr>th.active,.table>tfoot>tr.active>td,.table>tfoot>tr.active>th,.table>tfoot>tr>td.active,.table>tfoot>tr>th.active,.table>thead>tr.active>td,.table>thead>tr.active>th,.table>thead>tr>td.active,.table>thead>tr>th.active{background-color:#565656}
+        .table-hover>tbody>tr:hover,.table>tbody>tr.active>td,.table>tbody>tr.active>th,.table>tbody>tr>td.active,.table>tbody>tr>th.active,.table>tfoot>tr.active>td,.table>tfoot>tr.active>th,.table>tfoot>tr>td.active,.table>tfoot>tr>th.active,.table>thead>tr.active>td,.table>thead>tr.active>th,.table>thead>tr>td.active,.table>thead>tr>th.active{background-color: rgba(0,0,0,0.1);}
         table col[class*=col-]{position:static;float:none;display:table-column}
         table td[class*=col-],table th[class*=col-]{position:static;float:none;display:table-cell}
         .btn-group>.btn-group,.btn-toolbar .btn,.btn-toolbar .btn-group,.btn-toolbar .input-group,.dropdown-menu{float:left}
@@ -1643,7 +1643,8 @@ ul.col-selection { background-color: #FCFDFF; }
 .e-chart svg text { fill: rgba(0,0,0,0.75); }  /* Google charts */
 
 .admin-right-panel .alert a.close { text-shadow: 0 1px 0 #fff; color: rgba(0,0,0,0.6) }
-
+.admin-right-panel .dropdown-menu { background-color: rgb(252, 253, 255); color: rgba(0,0,0,0.75) }
+.admin-right-panel .dropdown-menu a { color: rgba(0,0,0,0.75); }
 #admin-menus #sc-admin-help { background: #373737 }
 
 
