@@ -3021,6 +3021,19 @@ class e107
 
 					$array = self::callMethod($obj, $methodName,$profile);
 
+					if($mode === 'route' && !empty($array))
+					{
+						foreach($array as $k=>$v)
+						{
+							if(empty($v['alias']) && !empty($obj->alias))
+							{
+								$v['alias'] = $obj->alias;
+							}
+							$new_addon[$key.'/'.$k] = $v;
+						}
+						continue;
+					}
+
 					if($array)
 					{
 						foreach($array as $k=>$v)

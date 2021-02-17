@@ -832,13 +832,42 @@ class e107Test extends \Codeception\Test\Unit
 		$res = null;
 		$this->assertTrue($res);
 	}
-
+*/
 	public function testGetUrlConfig()
 	{
-		$res = null;
-		$this->assertTrue($res);
-	}
 
+
+		$expected =  array (
+		    'index' =>
+		    array (
+		      'alias' => 'contact',
+		      'regex' => '^{alias}\\/?$',
+		      'sef' => '{alias}',
+		      'redirect' => '{e_BASE}contact.php',
+		    ),
+		  );
+
+		$result = e107::getUrlConfig();
+		$this->assertNotEmpty($result['contact']);
+		$this->assertSame($expected, $result['contact']);
+
+		// ----
+
+		$expected =  array (
+		    'alias' => 'contact',
+		    'regex' => '^{alias}\\/?$',
+		    'sef' => '{alias}',
+		    'redirect' => '{e_BASE}contact.php',
+		  );
+
+		$result = e107::getUrlConfig('route');
+		$this->assertNotEmpty($result['contact/index']);
+		$this->assertSame($expected, $result['contact/index']);
+
+
+
+	}
+/*
 	public function testGetThemeInfo()
 	{
 		$res = null;
