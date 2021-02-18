@@ -130,10 +130,19 @@ $CONTACT_TEMPLATE['form'] = "
 
 	</form>";
 
+
+// Set the layout and  order of the info and form.
+$CONTACT_TEMPLATE['layout'] = '{---CONTACT-INFO---}
+							   {---CONTACT-FORM---} 
+							   ';
+
+
+
 	// Customize the email subject
 	// Variables:  CONTACT_SUBJECT and CONTACT_PERSON as well as any custom fields set in the form. )
 $CONTACT_TEMPLATE['email']['subject'] = "{CONTACT_SUBJECT}";
 
-	
+
+
 
 
