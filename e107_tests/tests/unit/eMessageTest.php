@@ -137,12 +137,21 @@
 		{
 			$this->mes->reset();
 
+			$result = $this->mes->hasMessage();
+			$this->assertFalse($result);
+
 			$result= $this->mes->hasMessage(E_MESSAGE_WARNING);
 			$this->assertFalse($result);
 
 			$this->mes->addWarning("Warning message");
 			$result= $this->mes->hasMessage(E_MESSAGE_WARNING);
 			$this->assertTrue($result);
+
+			$result = $this->mes->hasMessage();
+			$this->assertTrue($result);
+
+			$result= $this->mes->hasMessage(E_MESSAGE_INFO);
+			$this->assertFalse($result);
 
 		}
 /*
