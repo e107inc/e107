@@ -268,7 +268,7 @@ class pageClass
 			$tmpl 		= varset($tml[$layout]);
 			$template 	= $tmpl['listBooks'];
 			
-			$text = $template['start'];
+			$text = $tp->parseTemplate($template['start']);
 			
 			
 			
@@ -290,7 +290,7 @@ class pageClass
 					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $sef,'allow=chapter_id,chapter_sef,book_sef,page_sef') 
 				);
 			
-				$text .= $tp->simpleParse($template['item'],$var);
+				$text .= $tp->parseTemplate($template['item'], true, $var);
 			}			
 		}	
 		
@@ -370,7 +370,7 @@ class pageClass
 				'BOOK_DESCRIPTION'	=> $tp->toHTML($brow['chapter_meta_description'],true,'BODY'),
 			);
 		
-		$caption = $tp->simpleParse($template['caption'],$bvar);
+		$caption = $tp->parseTemplate($template['caption'], true, $bvar);
 
         if($brow)
         {
@@ -382,7 +382,7 @@ class pageClass
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
-			$text = $tp->simpleParse($template['start'],$bvar);
+			$text = $tp->parseTemplate($template['start'],true, $bvar);
 			
 			while($row = $sql->fetch())
 			{
@@ -408,11 +408,11 @@ class pageClass
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
 				);
 				
-				$text .= $tp->simpleParse($template['item'],$var);
+				$text .= $tp->parseTemplate($template['item'], true, $var);
 
 			}
 			
-			$text .= $tp->simpleParse($template['end'], $bvar);		
+			$text .= $tp->parseTemplate($template['end'], true, $bvar);
 			
 		}
 		else
@@ -526,8 +526,7 @@ class pageClass
 				
 				$pageArray = $sql->db_getList();
 
-				$header = $tp->simpleParse($template['start'],$var);
-				$text = $tp->parseTemplate($header,true); // for parsing {SETIMAGE} etc.
+				$text = $tp->parseTemplate($template['start'], true, $var); // for parsing {SETIMAGE} etc.
 				
 				foreach($pageArray as $page)
 				{
@@ -557,7 +556,7 @@ class pageClass
 					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
 				
-				$text .= $tp->simpleParse($template['end'], $var);
+				$text .= $tp->parseTemplate($template['end'], true, $var);
 				
 		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
@@ -566,7 +565,7 @@ class pageClass
 
 
 
-			$caption = $tp->simpleParse($template['caption'], $var);
+			$caption = $tp->parseTemplate($template['caption'], true, $var);
 		#return array('caption'=>$caption, 'text'=> $text);
 		$this->pageOutput = array('caption'=>$caption, 'text'=> $text);
         return $this->pageOutput;
@@ -898,7 +897,7 @@ class pageClass
 		}
 		else 
 		{
-			$ret = e107::getParser()->simpleParse($template, $vars);
+			$ret = e107::getParser()->parseTemplate($template, true, $vars);
 		}
 
         if($this->renderMode)
