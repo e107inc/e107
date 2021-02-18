@@ -58,11 +58,14 @@ class contact_front
 			$LAYOUT = '{---CONTACT-INFO---} {---CONTACT-FORM---}  ';
 		}
 
-		echo str_replace(
+
+		$LAYOUT = str_replace(
 			['{---CONTACT-FORM---}', '{---CONTACT-INFO---}'],
 			[$form, $info],
 			$LAYOUT
 		);
+
+		echo e107::getParser()->parseTemplate($LAYOUT, true, e107::getScBatch('contact'));
 	}
 
 	/**
