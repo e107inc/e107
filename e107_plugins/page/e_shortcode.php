@@ -24,7 +24,7 @@ class page_shortcodes extends e_shortcode
 			
 			if(($action == 'listPages' || $action == 'listChapters') && vartrue($this->request['id']))
 			{
-				$this->var = e107::getDb()->retrieve('page_chapters','chapter_name, chapter_meta_description, chapter_sef','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
+				$this->var = e107::getDb()->retrieve('page_chapters','chapter_id, chapter_name, chapter_meta_description, chapter_sef','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
 			}
 			
 			if($action == 'showPage' && vartrue($this->request['id'])) // get chapter and description from current. 
