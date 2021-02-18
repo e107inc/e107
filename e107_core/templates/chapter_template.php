@@ -23,7 +23,7 @@ $CHAPTER_TEMPLATE['default']['listChapters']['start']				= "<ul class='page-chap
 $CHAPTER_TEMPLATE['default']['listChapters']['item']				= "<li><h4><a href='{CHAPTER_URL}'>{CHAPTER_NAME}</a></h4>{PAGES}";
 $CHAPTER_TEMPLATE['default']['listChapters']['end']					= "</ul>";
 
-$CHAPTER_TEMPLATE['default']['listBooks']['start']					= "<ul class='page-chapters-list'>";
+$CHAPTER_TEMPLATE['default']['listBooks']['start']					= "<ul class='page-books-list'>";
 $CHAPTER_TEMPLATE['default']['listBooks']['item']					= "<li><h3><a href='{BOOK_URL}'>{BOOK_NAME}</a></h3>{CHAPTERS}";
 $CHAPTER_TEMPLATE['default']['listBooks']['end']					= "</ul>";
 
@@ -120,7 +120,7 @@ $CHAPTER_TEMPLATE['panel']['listChapters']['end']				= "</div>";
 
 $CHAPTER_TEMPLATE['panel']['listPages']['caption']				= "{CHAPTER_NAME}";
 $CHAPTER_TEMPLATE['panel']['listPages']['start'] 				= "<!-- Chapter Template: Panel listPages -->{CHAPTER_BREADCRUMB}<div class='chapter-pages-list'>";
-$CHAPTER_TEMPLATE['panel']['listPages']['item'] 				= "<div class='section'><div class='row'>{CPAGEMENU}</div></div>";
+$CHAPTER_TEMPLATE['panel']['listPages']['item'] 				= "<div class='section'>{CPAGEMENU}</div>";
 $CHAPTER_TEMPLATE['panel']['listPages']['end'] 					= "</div>";	
 
 
