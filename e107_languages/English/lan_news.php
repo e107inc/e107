@@ -12,7 +12,7 @@
 
 
 
-
+define("LAN_PLUGIN_NEWS_NAME", "News");
 define("LAN_NEWS_1", "News for specific members only");
 define("LAN_NEWS_2", "You are not allowed to see this news");
 //define("LAN_NEWS_5", "Error! Was unable to update news item into database!");
