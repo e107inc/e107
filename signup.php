@@ -136,6 +136,7 @@ if(!$_POST)
 
 if (!empty($pref['membersonly_enabled']))
 {
+	e107::coreLan('membersonly');
 	$template = e107::getCoreTemplate('membersonly','signup');
 	define('e_IFRAME',true);
 	define('e_IFRAME_HEADER', $template['header'] );
