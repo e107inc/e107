@@ -3632,6 +3632,11 @@ var_dump($select_options);*/
 			return null;
 		}
 
+		if(deftrue('e_FRONTPAGE'))
+		{
+			return null;
+		}
+
 		if(!is_array($array)){ return; }
 		
 		$opt = array();
