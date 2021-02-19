@@ -42,4 +42,8 @@ define("LANCONTACT_22", "Privacy policy");
 define("LANCONTACT_23", "You can find our privacy policy here: [x]");
 define("LANCONTACT_24", "GDPR Agreement");
 
+define("LANCONTACT_25", "Phone");
+define("LANCONTACT_26", "Adress");
+define("LANCONTACT_27", "Email");   //for Email Adress use LAN_EMAIL
+
 
