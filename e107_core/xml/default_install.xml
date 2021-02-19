@@ -171,6 +171,7 @@
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
 		<core name="lan_global_list"><![CDATA[array (
+  'news' => 'news',
   'page' => 'page',
   'social' => 'social',
   'rss_menu' => 'rss_menu',
