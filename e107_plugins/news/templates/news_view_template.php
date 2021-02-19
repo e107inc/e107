@@ -22,14 +22,11 @@ $NEWS_VIEW_INFO = array(
 $NEWS_VIEW_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left float-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
 
-$NEWS_VIEW_TEMPLATE['default']['caption'] = null; // add a value to user tablerender()
+$NEWS_VIEW_TEMPLATE['default']['caption'] = '{NEWS_TITLE}'; // null; // add a value to user tablerender()
 $NEWS_VIEW_TEMPLATE['default']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
-
-        <hr class="news-heading-sep">
-         	<div class="row">
+          	<div class="row">
         		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
         		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>

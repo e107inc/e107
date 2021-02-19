@@ -144,6 +144,11 @@ class theme implements e_theme_render
 			        echo '<h2 class="caption">'.$caption.'</h2>';
 			    }
 
+			    if($info['styleCount'] === 1) // add the breadcrumb the first time the 'default' style is rendered.
+			    {
+			        echo '{---BREADCRUMB---}';
+			    }
+
 			    echo $text;
 				// code to be executed if n is different from all labels;
 		}
