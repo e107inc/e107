@@ -495,7 +495,7 @@ class pageClass
 		//print_a($this->chapterData);
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
-		$tmpl = varset($tml[$layout]);
+		$tmpl = varset($tml[$layout], $tml['default']);
 		
 		$bread = array(
 			0 => array('text' => $tp->toHTML($bookTitle), 'url'=> e107::getUrl()->create('page/book/index', $urlData,'allow=chapter_id,chapter_sef,book_id,book_sef,page_sef'))

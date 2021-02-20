@@ -1136,7 +1136,7 @@
         @keyframes progress-bar-stripes{from{background-position:40px 0}
         to{background-position:0 0}
         }
-        .progress{height:20px;margin-bottom:20px;background-color:#222;border-radius:4px;-webkit-box-shadow:inset 0 1px 2px rgba(0,0,0,.1)}
+        .progress{height:20px;margin-bottom:20px;background-color:rgba(0,0,0,0.1);border-radius:4px;-webkit-box-shadow:inset 0 1px 2px rgba(0,0,0,.1)}
         .progress-bar{float:left;width:0;height:100%;font-size:12px;line-height:20px;color:#fff;text-align:center;background-color:#337ab7;-webkit-box-shadow:inset 0 -1px 0 rgba(0,0,0,.15);box-shadow:inset 0 -1px 0 rgba(0,0,0,.15);-webkit-transition:width .6s ease;-o-transition:width .6s ease;transition:width .6s ease}
         .progress-bar-striped,.progress-striped .progress-bar{background-image:linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-size:40px 40px}
         .progress-bar.active,.progress.active .progress-bar{-webkit-animation:progress-bar-stripes 2s linear infinite;-o-animation:progress-bar-stripes 2s linear infinite;animation:progress-bar-stripes 2s linear infinite}
@@ -1441,7 +1441,7 @@
         .plupload_button.focus,.plupload_button:focus,.plupload_button:hover,button.button.focus,button.button:focus,button.button:hover,input.button.focus,input.button:focus,input.button:hover{color:#fff;text-decoration:none}
         .plupload_button.active,.plupload_button:active,button.button.active,button.button:active,input.button.active,input.button:active{outline:0;background-image:none;-webkit-box-shadow:inset 0 3px 5px rgba(0,0,0,.125);box-shadow:inset 0 3px 5px rgba(0,0,0,.125)}
         .plupload_button.disabled,.plupload_button[disabled],button.button.disabled,button.button[disabled],fieldset[disabled] .plupload_button,fieldset[disabled] button.button,fieldset[disabled] input.button,input.button.disabled,input.button[disabled]{cursor:not-allowed;opacity:.65;filter:alpha(opacity=65);-webkit-box-shadow:none;box-shadow:none}
-        .btn,.btn:hover,button.button,input.button{border-color:rgba(0,0,0,.6);text-shadow:1px 1px 1px rgba(0,0,0,.3)}
+        .btn,.btn:hover,button.button,input.button{ text-shadow:1px 1px 1px rgba(0,0,0,.3)}
         .btn-default{background-image:-webkit-linear-gradient(#303030,#212121 60%,#171717);background-image:-o-linear-gradient(#303030,#212121 60%,#171717);background-image:linear-gradient(#303030,#212121 60%,#171717);background-repeat:no-repeat;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff303030', endColorstr='#ff171717', GradientType=0);filter:none}
         .btn-default:hover{background-image:-webkit-linear-gradient(#000,#000 40%,#000);background-image:-o-linear-gradient(#000,#000 40%,#000);background-image:linear-gradient(#000,#000 40%,#000);background-repeat:no-repeat;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000', endColorstr='#ff000000', GradientType=0);filter:none}
         .btn-primary,.plupload_add{background-image:-webkit-linear-gradient(#3f8aca,#337ab7 60%,#2f6fa7);background-image:-o-linear-gradient(#3f8aca,#337ab7 60%,#2f6fa7);background-image:linear-gradient(#3f8aca,#337ab7 60%,#2f6fa7);background-repeat:no-repeat;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3f8aca', endColorstr='#ff2f6fa7', GradientType=0);filter:none}
@@ -1479,7 +1479,7 @@
         legend{color:#fff}
         .input-group-addon{background-image:-webkit-linear-gradient(#303030,#212121 60%,#171717);background-image:-o-linear-gradient(#303030,#212121 60%,#171717);background-image:linear-gradient(#303030,#212121 60%,#171717);background-repeat:no-repeat;filter:none;color:#fff}
         .breadcrumb,.darkwell,.form-control,.hero-unit,.progress,.uneditable-input,code,input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],pre,select,textarea{}
-        optgroup{background-color:#494949}
+        optgroup{/*background-color:#494949*/}
         .nav-pills>li>a{border:0;background:0 0}
         .nav-pills>li>a:hover{background:#3c3c3c;border:0}
         .nav-pills>li.active>a{background-color:#337ab7}
