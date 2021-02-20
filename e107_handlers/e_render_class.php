@@ -379,6 +379,11 @@
 
 			if(!empty($this->eSetStyle))
 			{
+				if(!isset($this->styleCount[$this->eSetStyle]))
+				{
+					$this->styleCount[$this->eSetStyle] = 0;
+				}
+
 				$this->styleCount[$this->eSetStyle]++;
 			}
 
