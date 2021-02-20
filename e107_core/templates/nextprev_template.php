@@ -146,11 +146,9 @@ $NEXTPREV_TEMPLATE['admin_separator'] = '&nbsp;';
 
 $NEXTPREV_TEMPLATE['dropdown_start'] = '
 <!-- Start of Next/Prev -->
-<div class="nextprev form-group form-inline">
-';
+<div class="nextprev form-group form-inline input-group">';
 
-$NEXTPREV_TEMPLATE['dropdown_end'] = '
-</div>
+$NEXTPREV_TEMPLATE['dropdown_end'] = '</div>
 <!-- End of Next/Prev -->
 ';
 
