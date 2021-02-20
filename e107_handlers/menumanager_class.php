@@ -278,6 +278,23 @@ class e_menuManager
 			$HEADER = $HEADER[$this->curLayout];
 			$FOOTER = $FOOTER[$this->curLayout];
 		}
+		elseif($this->curLayout && ($this->curLayout !== 'legacyDefault') && (e_MENUMANAGER_ACTIVE === true))
+		{
+			if(!empty($HEADER) && is_string($HEADER) && 'legacyDefault')
+			{
+				$msg = '$HEADER is a string. It should be an array with a key: <strong>'.$this->curLayout.'</strong>'; // NO LAN
+			}
+
+			if(is_array($HEADER) && !isset($HEADER[$this->curLayout]))
+			{
+				$msg = '$HEADER is missing a key for this layout. ('.$this->curLayout.')';
+			}
+
+			if(!empty($msg))
+			{
+				echo '<div class="alert alert-block alert-danger" style="font-size:16px"><b>THEME ISSUE:</b> '.$msg.'</div>';
+			}
+		}
 
        // Almost the same code as found in templates/header_default.php  ---------
 
@@ -1364,7 +1381,7 @@ class e_menuManager
 
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function menuSelectLayout()
+/*	function menuSelectLayout()
 	{
 		$pref = e107::getPref();
 		
@@ -1400,7 +1417,7 @@ class e_menuManager
 		
 		  return $text;
 	}
-
+*/
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function parseheader($LAYOUT, $check = FALSE)
 	{
@@ -2012,6 +2029,1023 @@ class e_menuManager
 
 	}
 }  // end of Class.
+
+
+
+
+// XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
+// TODO Get Drag & Drop Working with the iFrame
+// TODO Sorting, visibility, parameters and delete.
+// TODO Get THIS http://jsbin.com/odiqi3  working with iFrames!! XXX XXX
+
+class e_layout
+{
+	private $menuData = array();
+	private	$iframe = false;
+	private $cnt = 0;
+
+	function __construct()
+	{
+		$pref = e107::getPref();
+		$ns = e107::getRender();
+	//	$this->convertMenuTable();
+
+		$this->menuData = e107::getPref('menu_layouts');
+
+		if(e_AJAX_REQUEST)
+		{
+
+			if(varset($_POST['data']))
+			{
+				$this->processPost();
+			}
+
+
+			if(vartrue($_GET['enc']))
+			{
+				$string = base64_decode($_GET['enc']);
+				parse_str($string,$_GET);
+			}
+
+			if(vartrue($_GET['vis']))
+			{
+				$text = $this->renderVisibilityOptions();
+			}
+
+			// print_a($_GET);
+
+			if(vartrue($_GET['parmsId']))
+			{
+				$text = $this->renderInstanceParameters();
+			}
+
+			if(vartrue($_POST['mode']))
+			{
+			//	print_r($_POST);
+			//	$men->setMenuId($this->menuId);
+				$text = $this->menuSaveAjax($_POST['mode']);
+			}
+
+
+
+			echo $text;
+
+
+
+
+			exit;
+
+		}
+
+
+		if(vartrue($_GET['configure'])) //ie Inside the IFRAME.
+		{
+
+			global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style;
+
+
+
+			$this->HEADER 		= $HEADER;
+			$this->FOOTER 		= $FOOTER;
+			$this->CUSTOMHEADER = $CUSTOMHEADER;
+			$this->CUSTOMFOOTER = $CUSTOMFOOTER;
+			$this->style		= $style;
+
+
+			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
+
+			e107::loadAdminIcons();
+		//	require_once(e_CORE."templates/admin_icons_template.php");
+
+
+
+		 /*
+
+			e107::js('inline', "
+
+			win = document.getElementById('menu_iframe').contentWindow;
+			win.jQuery(dragelement,parent.document).draggable({
+				connectToSortable : $('#sortable')
+			});
+
+			",'jquery');
+
+
+		*/
+
+			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
+			$this->renderLayout($this->curLayout);
+
+
+
+
+		}
+		else // Parent - ie. main admin page.
+		{
+			e107::css('inline',"
+				.menuOption { display: none }
+			
+			");
+
+
+			$theme = e107::getPref('sitetheme');
+			require_once(e_THEME.$theme."/theme.php");
+
+
+
+			$this->HEADER 		= $HEADER;
+			$this->FOOTER 		= $FOOTER;
+			$this->CUSTOMHEADER = $CUSTOMHEADER;
+			$this->CUSTOMFOOTER = $CUSTOMFOOTER;
+			$this->style		= $style;
+
+				// XXX HELP _ i don't work with iFrames.
+		//	$("#sortable")
+		//$("iframe").contents().find(".sortable")
+
+		/*
+		e107::js('inline','
+		 $(function()
+		 {
+			$( ".sortable" ).sortable({
+				revert: true
+			});
+
+
+
+			$("iframe").load(function(){
+
+				var frameid = $("#iframe-default").contents().find(".sortable").attr("id")
+
+				$( ".draggable" ).draggable({
+					connectToSortable: "#" + frameid,
+					helper: "clone",
+					revert: "invalid",
+					cursor: "move",
+					iframeFix: true
+
+
+				});
+
+			});
+
+		 	//	$( "ul, li" ).disableSelection();
+
+
+		});
+
+
+		','jquery');
+		*/
+
+
+			$this->scanForNew();
+
+			$this->renderInterface();
+		}
+	}
+
+
+	/**
+	 * Save Menu Pref
+	 */
+	protected function processPost()
+	{
+		$cnf 		= e107::getConfig('core');
+		$existing 	= $cnf->get('menu_layouts');
+
+		$data 	= $_POST['data'];
+		$layout = $_POST['layout'];
+		$area	= $_POST['area'];
+
+		$save = array();
+
+
+		foreach($_POST['data']['layout']['area'] as $v) // reset key values.
+		{
+			$save[] = $v;
+		}
+
+	//	$save[$layout][$area] = $_POST['data']['layout']['area'];
+		echo "\nLAYOUT=".$layout."\n";
+		echo "AREA=".$area."\n";
+		//print_r($save);
+
+		e107::getConfig('core')->setPref('menu_layouts/'.$layout."/".$area, $save)->save();
+
+	}
+
+
+
+
+	/**
+	 * Substitute all {MENU=X} and Render output.
+	 */
+	private function renderLayout($layout='')
+	{
+		$ALL = $this->getHeadFoot();
+
+		$HEADER = $ALL['HEADER'];
+		$FOOTER = $ALL['FOOTER'];
+
+		$tp = e107::getParser();
+
+		$head = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $HEADER[THEME_LAYOUT]);
+		$foot = preg_replace_callback("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", array($this, 'renderMenuArea'), $FOOTER[THEME_LAYOUT]);
+
+		global $style;
+
+		$style = $this->style;
+
+		echo $tp->parseTemplate($head);
+	//	echo "<div>MAIN CONTENT</div>";
+		echo $tp->parseTemplate($foot);
+
+	}
+
+	public static function menuSelector()
+	{
+
+		//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+
+		$done = array();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
+		while($row = $sql->fetch())
+		{
+
+			if(in_array($row['menu_name'], $done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
+
+		foreach($pageMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' (' . substr($row['menu_path'], 0, -1) . ')' : " (#" . $row['menu_path'] . ")";
+			$tab1 .= "<li>" . $frm->checkbox('menuselect[]', $row['menu_id'], '', array('label' => "<span>" . $row['menu_name'] . "<small>" . $menuInf . "</small></span>")) . "</li>";
+		}
+
+		$tab1 .= '</ul></div>';
+
+		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
+		foreach($pluginMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' (' . substr($row['menu_path'], 0, -1) . ')' : " (#" . $row['menu_path'] . ")";
+			$tab2 .= "<li>" . $frm->checkbox('menuselect[]', $row['menu_id'], '', array('label' => "<span>" . $row['menu_name'] . "<small>" . $menuInf . "</small></span>")) . "</li>";
+		}
+
+		$tab2 .= '</ul></div>';
+
+		$tabs = array(
+			'custom' => array('caption' => '<i title="' . MENLAN_49 . '" class="S16 e-custom-16"></i>', 'text' => $tab1),
+			'plugin' => array('caption' => '<i title="' . ADLAN_CL_7 . '" class="S16 e-plugins-16"></i>', 'text' => $tab2)
+
+		);
+
+
+		$defLayout = e107::getRegistry('core/e107/menu-manager/curLayout');;
+
+		$text = '<form id="e-mm-selector" action="' . e_ADMIN_ABS . 'menus.php?configure=' . $defLayout . '" method="post" target="e-mm-iframe">';
+
+		$text .= "<input type='hidden' id='curLayout' value='" . $defLayout . "' />";
+
+
+		$layouts = self::getLayouts();
+		$tp = e107::getParser();
+
+		//	 var_dump($layouts['menus']);
+
+
+		$text .= '
+
+		    <div class="dropdown pull-right e-mm-selector-container">
+
+		        <a class="btn btn-primary btn-sm e-mm-selector " title="' . LAN_ACTIVATE . '">' . LAN_ADD . " " . e107::getParser()->toGlyph('fa-chevron-right') . '</a>';
+
+		$menuButtonLabel = defset("MENLAN_59", "Area [x]");
+
+		foreach($layouts['menus'] as $name => $areas)
+		{
+			$text .= '<ul class="dropdown-menu e-mm-selector ' . $name . '" >
+					<li><div>';
+
+			foreach($areas as $menu_act)
+			{
+				$text .= "<input type='submit' class='btn btn-sm btn-primary col-xs-6'  name='menuActivate[" . trim($menu_act) . "]' value=\"" . $tp->lanVars($menuButtonLabel, trim($menu_act)) . "\" />\n";
+			}
+
+			$text .= '</div></li></ul>';
+
+		}
+
+		$text .= '
+
+		    </div>';
+
+
+		$text .= $frm->tabs($tabs);
+
+
+		$text .= '</form>';
+
+		$tp = e107::getParser();
+
+		$caption = MENLAN_22;;
+
+
+		return array('caption' => $caption, 'text' => $text);
+
+
+	}
+
+	public static function getLayouts($theme = null)
+	{
+
+		if(empty($theme))
+		{
+			$theme = e107::pref('core', 'sitetheme');
+		}
+
+		$sql = e107::getDb(); // required
+		$tp = e107::getParser();
+
+		$HEADER = null;
+		$FOOTER = null;
+		$LAYOUT = null;
+		$CUSTOMHEADER = null;
+		$CUSTOMFOOTER = null;
+
+		$path = e_THEME . $theme . '/';
+		$file = $path . "theme.php";
+
+		if(!is_readable($file))
+		{
+			return false;
+		}
+
+		e107::set('css_enabled', false);
+		e107::set('js_enabled', false);
+
+		// new v2.2.2 HTML layout support.
+		if(is_dir($path . "layouts") && is_readable($path . "theme.html"))
+		{
+			$lyt = scandir($path . "layouts");
+			$LAYOUT = array();
+
+			foreach($lyt as $lays)
+			{
+				if($lays === '.' || $lays === '..')
+				{
+					continue;
+				}
+
+				$key = str_replace("_layout.html", '', $lays);
+
+				if($lm = e_theme::loadLayout($key, $theme))
+				{
+					$LAYOUT = $LAYOUT + $lm;
+				}
+
+			}
+
+		}
+		else // prior to v2.2.2
+		{
+
+			$themeFileContent = file_get_contents($file);
+
+			$srch = array('<?php', '?>');
+
+			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
+
+			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
+
+			$themeFileContent = str_replace("class " . $theme . "_theme", "class " . $theme . "__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
+
+			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
+			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
+
+			try
+			{
+				@eval($themeFileContent);
+			}
+			catch(ParseError $e)
+			{
+				echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
+			}
+		}
+
+
+		e107::set('css_enabled', true);
+		e107::set('js_enabled', true);
+
+		$head = array();
+		$foot = array();
+
+
+		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))
+		{
+			$fallbackLan = "This theme is using deprecated elements. All [x]HEADER and [x]FOOTER variables should be removed from theme.php."; // DO NOT TRANSLATE!
+			$warningLan = $tp->lanVars(deftrue('MENLAN_60', $fallbackLan), '$');
+			echo "<div class='alert alert-danger'>" . $warningLan . "</div>";
+
+		}
+
+
+		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
+		{
+			foreach($LAYOUT as $key => $template)
+			{
+				if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
+				{
+					continue;
+				}
+
+				if(strpos($template, '{---}') !== false)
+				{
+					list($hd, $ft) = explode("{---}", $template);
+					$head[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+					$foot[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft;
+				}
+				else
+				{
+					e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["' . $key . '"] ');
+				}
+			}
+			unset($hd, $ft);
+		}
+
+
+		if(is_string($CUSTOMHEADER))
+		{
+			$head['legacyCustom'] = $CUSTOMHEADER;
+		}
+		elseif(is_array($CUSTOMHEADER))
+		{
+			foreach($CUSTOMHEADER as $k => $v)
+			{
+				$head[$k] = $v;
+			}
+		}
+
+		if(is_string($HEADER))
+		{
+			$head['legacyDefault'] = $HEADER;
+		}
+		elseif(is_array($HEADER))
+		{
+			foreach($HEADER as $k => $v)
+			{
+				$head[$k] = $v;
+			}
+
+		}
+
+		if(is_string($CUSTOMFOOTER))
+		{
+			$foot['legacyCustom'] = $CUSTOMFOOTER;
+		}
+		elseif(is_array($CUSTOMFOOTER))
+		{
+			foreach($CUSTOMFOOTER as $k => $v)
+			{
+				$foot[$k] = $v;
+			}
+		}
+
+
+		if(is_string($FOOTER))
+		{
+			$foot['legacyDefault'] = $FOOTER;
+		}
+		elseif(is_array($FOOTER))
+		{
+			foreach($FOOTER as $k => $v)
+			{
+				$foot[$k] = $v;
+			}
+		}
+
+		$layout = array();
+
+
+		foreach($head as $k => $v)
+		{
+			$template = $head[$k] . "\n{---}" . $foot[$k];
+			$layout['templates'][$k] = $template;
+			$layout['menus'][$k] = self::countMenus($template, $k);
+		}
+
+
+		return $layout;
+
+
+	}
+
+	private static function countMenus($template, $name)
+	{
+
+		if(preg_match_all("/\{(?:MENU|MENUAREA)=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
+		{
+			sort($matches[1]);
+
+			return $matches[1];
+		}
+
+		e107::getDebug()->log("No Menus Found in Template:" . $name . " with strlen: " . strlen($template));
+
+		return array();
+	}
+
+
+	/**
+	 * Render {MENU=X}
+	 */
+	private function renderMenuArea($matches)
+	{
+		$frm = e107::getForm();
+		$area = $matches[1];
+
+		// return print_a($this->menuData,true);
+		$text = "<div class='menu-panel'>";
+		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".MENLAN_14." ".$area."</div>\n";
+		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
+		$text .= "<ul id='area-".$area."' class='sortable unstyled list-unstyled'>
+			<li>&nbsp;</li>";
+
+		if(vartrue($this->menuData[THEME_LAYOUT]) && is_array($this->menuData[THEME_LAYOUT][$area]))
+		{
+
+			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
+			{
+				$text .= $this->renderMenu($val, THEME_LAYOUT, $area,$count);
+				$this->cnt++;
+			}
+
+		}
+
+		$text .= "</ul>";
+		$text .= "</div>";
+
+	//	$text .= $frm->button('submit','submit','submit','submit');
+
+		$text .= $frm->hidden('layout',THEME_LAYOUT);
+		$text .= $frm->hidden('area',$area);
+		$text .= $frm->close();
+
+		return $text;
+	}
+
+
+
+
+	private function renderMenu($row, $layout, $area, $count)
+	{
+	//	return print_a($row,true);
+		$frm = e107::getForm();
+		$uniqueId = "menu_".$frm->name2id($row['path']).'_'.$this->cnt;
+
+		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area, $this->cnt, $uniqueId).' </li>
+		'; // TODO perhaps a simple counter for the id
+
+		return $TEMPLATE;
+
+	}
+
+
+
+
+	/**
+	 * @param $row (array of data from $pref['menu_layouts']
+	 * @param $layout . eg. 'default' or 'home'
+	 * @param number $area as in {MENU=x}
+	 * @param incrementor number.
+	 */
+	public function renderMenuOptions($row, $layout, $area, $c , $uniqueId='xxx')
+	{
+		$frm = e107::getForm();
+
+	//	$text = "<i class='icon-align-justify'></i> ";
+		$text = str_replace("_menu","",$row['name']);
+
+	//	$layout = 'layout';
+	//	$area = 'area';
+		//TODO Delete, Config etc.
+
+		//$data[$layout][$location][] = array('name'=>$row['menu_name'],'class'=>$row['menu_class'],'path'=>$row['menu_path'],'pages'=>$row['menu_pages'],'parms'=>$row['menu_parms']);
+	//	$area = 'area_'.$area;
+
+		// 'layout' and 'area' will later be substituted.
+
+
+
+		$text .= $frm->hidden('data[layout][area]['.$c.'][name]',$row['name'],array('id'=>'name-'.$area.'-'.$c) );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][class]',$row['class'], array('id'=>'class-'.$area.'-'.$c)  );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][path]',$row['path'], array('id'=>'path-'.$area.'-'.$c)  );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'], array('id'=>'pages-'.$area.'-'.$c)  );
+		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'], array('id'=>'parms-'.$area.'-'.$c)  );
+
+		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$area.'-'.$c.'&iframe=1&class='.$row['class'].'&pages='.$row['pages']);
+
+
+		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
+
+		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
+
+		/*
+
+
+		$text .= '<span class="menu-options-buttons">
+		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
+
+		if($conf)
+		{
+			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$layout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'"
+			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
+		}
+
+		$editLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&parmsId='.$menu_id.'&iframe=1');
+		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
+
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$layout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
+
+		</span>';
+		*/
+
+
+
+
+
+
+
+
+
+
+
+		return $text;
+
+	}
+
+/*
+	function menuSaveAjax($mode = null)
+	{
+
+		if($mode == 'visibility')
+		{
+
+			$ret = $this->menuSaveVisibility();
+		//	echo json_encode($ret);
+			return;
+		}
+
+
+		if($mode == 'parms')
+		{
+		//	echo "hi there";
+			$ret =  array('msg'=>'hi there','error'=>true);
+		//	$ret = $this->menuSaveParameters();
+			echo json_encode($ret);
+			return;
+		}
+
+
+
+     //	print_r($_POST);
+		return;
+
+
+	}
+*/
+	/**
+	 * Scan Plugin folders for new _menu files.
+	 */
+	private function scanForNew()
+	{
+		$fl 			= e107::getFile();
+		$fl->dirFilter 	= array('/', 'CVS', '.svn', 'languages');
+		$files 			= $fl->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+
+		$data = array();
+
+		foreach($files as $file)
+		{
+
+			if($file == 'e_menu.php')
+			{
+				continue;
+			}
+
+			$valid_menu = false;
+
+			if (file_exists($file['path'].'/plugin.xml') || file_exists($file['path'].'/plugin.php'))
+			{
+			//	if (e107::isInstalled($file['path'])) //FIXME need a check that doesn't exlude page, news and others that don't require installation.
+				{
+					$valid_menu = TRUE;		// Whether new or existing, include in list
+				}
+			}
+			else  // Just add the menu anyway
+			{
+				$valid_menu = TRUE;
+			}
+
+			$path = trim(str_replace(e_PLUGIN,"",$file['path']),"/");
+
+			if($valid_menu)
+			{
+				$fname = str_replace(".php","",$file['fname']);
+				$data[$fname] = $path;
+			}
+		}
+
+		$config = e107::getConfig('core');
+		$config->set('e_menu_list',$data);
+		$config->save();
+
+	}
+
+	private function renderVisibilityOptions()
+	{
+		if(!vartrue($_GET['vis'])) return;
+
+	//	print_a($_GET);
+
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$ns = e107::getRender();
+		$frm = e107::getForm();
+
+		require_once(e_HANDLER."userclass_class.php");
+
+	/*
+		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		}
+
+		$row = $sql->fetch();
+	*/
+
+
+		$listtype 	= substr($_GET['pages'], 0, 1);
+		$menu_pages = substr($_GET['pages'], 2);
+		$menu_pages = str_replace("|", "\n", $menu_pages);
+
+		$text = "<div>
+			<form class='form-horizontal' id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."&amp;iframe=1'>
+	        <fieldset>
+			<legend>". MENLAN_7." ".$row['menu_name']."</legend>
+	        <table class='table adminform'>
+			<tr>
+			<td>
+			".LAN_VISIBLE_TO." ".
+			r_userclass('menu_class', intval($_GET['class']), "off", "public,member,guest,admin,main,classes,nobody")."
+			</td>
+			</tr>
+			<tr><td><div class='radio'>
+		";
+
+		$checked = ($listtype == 1) ? " checked='checked' " : "";
+
+		$text .= $frm->radio('listtype', 1, $checked, array('label'=> $tp->toHTML(MENLAN_26,true), 'class'=> 'e-save'));
+		$text .= "<br />";
+	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
+		$checked = ($listtype == 2) ? " checked='checked' " : "";
+
+		$text .= $frm->radio('listtype', 2, $checked, array('label'=>  $tp->toHTML(MENLAN_27,true), 'class'=> 'e-save'));
+
+
+		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
+
+		$text .= "</div>
+		<div class='row' style='padding:10px'>
+			
+			<div class='pull-left span3' >
+		
+				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>".$menu_pages."</textarea>
+			</div>
+			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
+		</div></td></tr>
+		</table>";
+
+		$text .= $frm->hidden('mode','visibility');
+		$text .= $frm->hidden('menu_id',$_GET['vis']); // is NOT an integer
+
+		/*
+		$text .= "
+		<div class='buttons-bar center'>";
+        $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
+
+
+		</div>";
+		 */
+		$text .= "
+		</fieldset>
+		</form>
+		</div>";
+
+
+		return $text;
+		//$caption = MENLAN_7." ".$row['menu_name'];
+		//$ns->tablerender($caption, $text);
+		//echo $text;
+	}
+
+
+
+
+	/**
+	 * This one will be greatly extended, allowing menus to offer UI and us
+	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
+	 * @see menuInstanceParameters() in menumanager_class.php
+	 */
+/*
+	private function renderInstanceParameters()
+	{
+		if(!vartrue($_GET['parmsId'])) return;
+		$id = intval($_GET['parmsId']);
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+
+		if(!$sql->select("menus", "*", "menu_id=".$id))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		};
+		$row = $sql->fetch();
+
+		$text = "<div style='text-align:center;'>
+		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+        <fieldset id='core-menus-parametersform'>
+		<legend>".MENLAN_44." ".$row['menu_name']."</legend>
+        <table class='table adminform'>
+		<tr>
+		<td>
+		".MENLAN_45."</td><td>
+		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save ')."
+		</td>
+		</tr>
+		</table>";
+
+
+		//	$text .= "
+		//	<div class='buttons-bar center'>";
+		//	$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
+		//	$text .= "<input type='hidden' name='menu_id' value='".$id."' />
+		//	</div>";
+
+
+		$text .= $frm->hidden('mode','parms');
+		$text .= $frm->hidden('menu_id',$id);
+		$text .= "
+		</fieldset>
+		</form>
+		</div>";
+
+		return $text;
+
+	}
+*/
+
+	/**
+	 * Render the main area with TABS and iframes.
+	 */
+	private function renderInterface()
+	{
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+
+		$TEMPL = $this->getHeadFoot();
+
+
+		$layouts = array_keys($TEMPL['HEADER']);
+
+		e107::js('inline','
+		 $(function() 
+		 {
+			$(".draggable").draggable({
+					connectToSortable: $(".sortable"),
+					helper: "clone",
+					revert: "invalid",
+					cursor: "move",
+					iframeFix: true,
+			        refreshPositions: true
+			       
+				});
+		 })'
+		 );
+
+
+
+
+		$text = '<ul class="nav nav-tabs">';
+
+		$active = ' class="active" ';
+
+		foreach($layouts as $title)
+		{
+			$text .= '<li '.$active.'><a href="#'.$title.'" data-toggle="tab" data-bs-toggle="tab">'.$title.'</a></li>';
+			$active = '';
+		}
+
+		$text .= '</ul>';
+		$active = 'active';
+
+		$text .= '		
+		<div class="tab-content">';
+
+			foreach($layouts as $title)
+			{
+				$text .= '
+					<div class="tab-pane '.$active.'" id="'.$title.'">
+					<iframe id="iframe-'.$frm->name2id($title).'" class="well" width="100%" scrolling="no" style="width: 100%; height: 6933px; border: 0px none;" src="'.e_ADMIN_ABS.'menus.php?configure='.$title.'"></iframe>
+					</div>';
+
+				$active = '';
+			}
+
+		$text .= '</div>';
+
+	//	$ns->frontend = false;
+
+		$ns->tablerender(MENLAN_55,$text);
+	}
+
+
+
+
+
+
+	private function getHeadFoot()
+	{
+
+		$H = array();
+		$F = array();
+
+		if(is_string($this->HEADER))
+		{
+			$H['default'] = $this->HEADER;
+			$F['default'] = $this->FOOTER;
+		}
+		else
+		{
+			$H = $this->HEADER;
+			$F = $this->FOOTER;
+		}
+
+
+
+	      //   0.6 / 0.7-1.x
+	    if(isset($this->CUSTOMHEADER) && isset($this->CUSTOMHEADER))
+		{
+	         if(!is_array($this->CUSTOMHEADER))
+			 {
+					$H['legacyCustom'] = $this->CUSTOMHEADER;
+	            	$F['legacyCustom'] = $this->CUSTOMFOOTER;
+			 }
+			 else
+			 {
+					foreach($this->CUSTOMHEADER as $k=>$v)
+					{
+						$H[$k] = $v;
+					}
+					foreach($this->CUSTOMFOOTER as $k=>$v)
+					{
+						$F[$k] = $v;
+					}
+			 }
+		}
+
+
+
+		return array('HEADER'=>$H, 'FOOTER'=>$F);
+	}
+
+	//$ns = e107::getRender();
+
+}
 
 
 
