@@ -3837,7 +3837,7 @@ class e107
 		}
 		else
 		{
-			$theme = e_THEME . preg_replace('#[^\w/]#', '', $theme) . '/languages/';
+			$theme = e_THEME . filter_var($theme) . '/languages/';
 		}
 
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');

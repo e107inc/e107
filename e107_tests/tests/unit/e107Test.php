@@ -1314,13 +1314,14 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
-	/*
+
 				public function testThemeLan()
 				{
-					$res = null;
-					$this->assertTrue($res);
-				}
+					$result = e107::themeLan(null, 'basic-light');
+					var_dump($result);
 
+				}
+	/*
 				public function testLan()
 				{
 					$res = null;
