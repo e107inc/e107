@@ -2038,7 +2038,12 @@ class e_menuManager
 // TODO Sorting, visibility, parameters and delete.
 // TODO Get THIS http://jsbin.com/odiqi3  working with iFrames!! XXX XXX
 
-class e_layout
+
+/**
+ * Used only for the menu-selector at the moment.
+ * Class e_layout
+ */
+class e_mm_layout
 {
 	private $menuData = array();
 	private	$iframe = false;
@@ -2436,7 +2441,18 @@ class e_layout
 
 			$srch = array('<?php', '?>');
 
+			// replace LAN file load.
+			$themeFileContent = preg_replace("/e107::lan\(['|\"]theme.*\);/","e107::themeLan(null, '".$theme."');", $themeFileContent);
+		//	$themeFileContent = preg_replace("/define\(['|\"]BOOTSTRAP['|\"].*;/", '', $themeFileContent);
+		//	$themeFileContent = preg_replace("/define\(['|\"]FONTAWESOME['|\"].*;/", '', $themeFileContent);
+			$themeFileContent = preg_replace("/LAN_[\w]*/", '""', $themeFileContent);
+			$themeFileContent = preg_replace("/include_lan\(.*;/", '', $themeFileContent);
+
+			$themeFileContent = preg_replace("/define\(.*;/", '', $themeFileContent);
+
 			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
+
+			$themeFileContent = str_replace('USER_WIDTH', "''", $themeFileContent);
 
 			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
 
@@ -2445,13 +2461,35 @@ class e_layout
 			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
 			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
 
-			try
+
+
+			if(PHP_MAJOR_VERSION > 6)
 			{
-				@eval($themeFileContent);
+				try
+				{
+					eval($themeFileContent);
+				}
+				catch(Error $e)
+				{
+
+					trigger_error("Couldn't parse theme.php file. ". $e->getMessage()."\n\n".$themeFileContent);
+					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
+					file_put_contents(e_LOG."menuManagerParseDebug.log", $themeFileContent);
+				}
 			}
-			catch(ParseError $e)
+			else
 			{
-				echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
+				try
+				{
+					eval($themeFileContent);
+				}
+				catch(ParseError $e)
+				{
+					trigger_error("Couldn't parse theme.php file.". $e->getMessage());
+					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
+
+				}
+
 			}
 		}
 
@@ -3046,6 +3084,8 @@ class e_layout
 	//$ns = e107::getRender();
 
 }
+
+
 
 
 

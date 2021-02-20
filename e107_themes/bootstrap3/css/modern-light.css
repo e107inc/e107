@@ -1645,8 +1645,8 @@ ul.col-selection { background-color: #FCFDFF; }
 .admin-right-panel .alert a.close { text-shadow: 0 1px 0 #fff; color: rgba(0,0,0,0.6) }
 .admin-right-panel .dropdown-menu { background-color: rgb(252, 253, 255); color: rgba(0,0,0,0.75) }
 .admin-right-panel .dropdown-menu a { color: rgba(0,0,0,0.75); }
-#admin-menus #sc-admin-help { background: #373737 }
-
+#admin-menus #sc-admin-help ,
+#admin-menus .admin-ui-nav-menu { background: #373737 }
 
 
 
