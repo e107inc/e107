@@ -412,3 +412,8 @@ div.e-debug .label-danger       { background-color: #ee5f5b; }
 div.e-debug .btn                { display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle;
                                   cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap;
                                   padding: 8px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; user-select: none; }
+
+/* Bootstrap 5 Shims */
+.pagination                     { display: flex !important; }
+.justify-content-between        { justify-content: space-between !important; }
+.page-link.disabled             { pointer-events: none; opacity: 0.5; color: #959595; }
