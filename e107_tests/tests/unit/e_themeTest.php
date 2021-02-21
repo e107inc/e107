@@ -305,8 +305,8 @@
 			$result = e107::getTheme('bootstrap3')->getThemeFiles('css', 'wysiwyg');
 			$this->assertSame($expected, $result);
 
-			$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
-			var_export($result);
+		//	$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
+
 		}
 
 
