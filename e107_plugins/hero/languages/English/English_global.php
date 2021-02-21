@@ -10,4 +10,6 @@
 +----------------------------------------------------------------------+
 */
 
-define("LAN_PLUGIN_HERO_DESCR", "Image and text slider, animated bullet points for the hero area of your home page.");
+define("LAN_PLUGIN_HERO_NAME", "Hero");
+define("LAN_PLUGIN_HERO_SUMMARY", "Home page 'Hero' area management");
+define("LAN_PLUGIN_HERO_DESCRIPTION", "Image and text slider, animated bullet points for the hero area of your home page.");
