@@ -81,15 +81,15 @@ class hero_ui extends e_admin_ui
 		protected $fields 		= array (
 		   'checkboxes'         =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'hero_id'           =>   array ( 'title' => LAN_ID, 'type' => null, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'hero_media'       => array('title'=> LAN_HERO_IMAGE_VIDEO, 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
-          'hero_bg'         => array('title'=> LAN_HERO_BACKGROUND, 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
+		  'hero_media'       => array('title'=> LAN_HERO_ADMIN_004, 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^',  'video' => 1)),
+          'hero_bg'         => array('title'=> LAN_HERO_ADMIN_003, 'type'=>'image', 'noedit'=>true, 'data'=>'str', 'readParms'=>array('thumb'=>'100x80'), 'writeParms'=>array('media'=>'hero^')),
 
 		  'hero_title'        =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => '18%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'hero_description'  =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'text', 'data' => 'str', 'width' => '30%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'block-level'), 'class' => 'left', 'thclass' => 'left',  ),
-		  'hero_bullets'      =>   array ( 'title' => LAN_HERO_BULLETS, 'type' => 'method', 'data' => 'json', 'width' => '35%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'hero_images'        => array('title'=> LAN_HERO_MEDIA, 'type'=>'method', 'data'=>false, 'nolist'=>true),
-		  'hero_button1'      =>   array ( 'title' => LAN_HERO_BUTTON.'-1', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'hero_button2'      =>   array ( 'title' => LAN_HERO_BUTTON.'-2', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'hero_bullets'      =>   array ( 'title' => LAN_ICON, 'type' => 'method', 'data' => 'json', 'width' => '35%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'hero_images'        => array('title'=> LAN_HERO_ADMIN_005, 'type'=>'method', 'data'=>false, 'nolist'=>true),
+		  'hero_button1'      =>   array ( 'title' => LAN_HERO_ADMIN_015.'-1', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'hero_button2'      =>   array ( 'title' => LAN_HERO_ADMIN_015.'-2', 'type' => 'method', 'data' => 'json', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		   'hero_order'      =>   array ( 'title' => LAN_ORDER, 'tab'=>1 , 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 	       'hero_class'      =>   array ( 'title' => LAN_VISIBILITY, 'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
@@ -102,8 +102,8 @@ class hero_ui extends e_admin_ui
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
 			'visibility'		=> array('title'=> LAN_VISIBILITY, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>'', 'writeParms'=>array('classlist' => 'public,member,guest,admin,main,classes,nobody, no-excludes')),
-			'icon_pack'		=> array('title'=> LAN_HERO_ICON_PACK, 'tab'=>0, 'type'=>'method', 'data' => 'str', 'writeParms'=>array(),'help'=>''),
-			'slide_interval'    => array('title'=>LAN_HERO_SLIDE_INTERVAL, 'type'=>'dropdown', 'data'=>'int', 'writeParms'=>array('optArray'=>array())),
+			'icon_pack'		=> array('title'=> LAN_HERO_ADMIN_009, 'tab'=>0, 'type'=>'method', 'data' => 'str', 'writeParms'=>array(),'help'=>''),
+			'slide_interval'    => array('title'=>LAN_HERO_ADMIN_011, 'type'=>'dropdown', 'data'=>'int', 'writeParms'=>array('optArray'=>array())),
 		);
 
 	
@@ -115,7 +115,7 @@ class hero_ui extends e_admin_ui
 			$opts = array();
 			foreach($r as $v)
 			{
-				$opts[$v] = str_replace('000', '', $v).' '.LAN_HERO_SEC;
+				$opts[$v] = str_replace('000', '', $v).' '.LAN_HERO_ADMIN_016;
 			}
 
 			$this->prefs['slide_interval']['writeParms']['optArray'] = $opts;
@@ -197,7 +197,7 @@ class hero_ui extends e_admin_ui
 		public function renderHelp()
 		{
 			$caption = LAN_HELP;
-			$text = LAN_HERO_HELP;
+			$text = LAN_HERO_ADMIN_007;
 
 			return array('caption'=>$caption,'text'=> $text);
 
@@ -417,10 +417,10 @@ class hero_form_ui extends e_admin_form_ui
 				</colgroup>
 				<tr>
 					<th class='text-center'>".LAN_ICON."</th>
-					<th class='text-center'>".LAN_HERO_ICON_STYLE."</th>
-					<th>".LAN_HERO_TEXT."</th>
-					<th>".LAN_HERO_ANIMATION."</th>
-					<th>".LAN_HERO_DELAY."</th>
+					<th class='text-center'>".LAN_HERO_ADMIN_010."</th>
+					<th>".LAN_HERO_ADMIN_012."</th>
+					<th>".LAN_HERO_ADMIN_013."</th>
+					<th>".LAN_HERO_ADMIN_014."</th>
 					</tr>";
 
 
@@ -513,7 +513,7 @@ class hero_form_ui extends e_admin_form_ui
 
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
-								<td>".$this->text($name.'[label]', varset($val['label']), 255, array('size'=>'block-level', 'placeholder'=>LAN_HERO_LABEL))."</td>
+								<td>".$this->text($name.'[label]', varset($val['label']), 255, array('size'=>'block-level', 'placeholder'=>LAN_HERO_ADMIN_006))."</td>
 								<td> ".$this->text($name.'[url]', varset($val['url']), 255, array('size'=>'block-level', 'placeholder'=>'URL'))."</td>
 								<td> ".$this->btnClass($name.'[class]', varset($val['class']))."</td>
 							</tr>";
@@ -615,8 +615,8 @@ class hero_form_ui extends e_admin_form_ui
 
 		return "<table class='table table-condensed table-bordered' style='margin:0;width:auto'>
 				<tr>
-					<th class='text-center'>".LAN_HERO_BACKGROUND."</th>
-					<th class='text-center'>".LAN_HERO_IMAGE_VIDEO."</th>
+					<th class='text-center'>".LAN_HERO_ADMIN_003."</th>
+					<th class='text-center'>".LAN_HERO_ADMIN_004."</th>
 				</tr>
 				<tr>
 					<td class='text-center' style='padding-left:15px'>".$this->imagepicker('hero_bg', $bg, null, array('media'=>'hero^'))."</td>
