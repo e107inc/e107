@@ -97,7 +97,6 @@ class forum_front
 
 				case 'rules':
 					include_once(HEADERF);
-
 					$this->forum_rules('show');
 					include_once(FOOTERF);
 					exit;

@@ -1748,6 +1748,19 @@ if($fpUrl === $fpPref)
 }
 unset($fpUrl, $fpPref);
 
+$dbg->logTime('Legacy Route detection');
+// Reverse lookup of current URI against legacy e_url entry to determine route.
+if(!deftrue('e_SINGLE_ENTRY') && deftrue('e_CURRENT_PLUGIN'))
+{
+	if($route = e107::detectRoute(e_CURRENT_PLUGIN, e_REQUEST_URI))
+	{
+		e107::route($route);
+	}
+
+	unset($route);
+}
+
+
 
 
 
