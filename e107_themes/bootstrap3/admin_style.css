@@ -1597,7 +1597,7 @@ li.rssRow > div {
 
 #e-online table                { margin-top:10px; margin-left:auto; margin-right:auto }
 #admin-plugin-online-list .admin-main-content img.icon, #core-plugin-list img.icon    { width: 32px; height:32px }
-#admin-plugin-online-grid .admin-main-content img.icon { width: 128px; height: 128px }
+#admin-plugin-online-grid .admin-main-content img.icon { width: 128px; /*height: 128px*/ }
 .tab-content #coreFeed,
 .tab-content #pluginFeed,
 .tab-content #themeFeed             { padding-top:20px }
