@@ -22,6 +22,6 @@ if(deftrue('e_FRONTPAGE'))
 }
 elseif(ADMIN)
 {
-	$text = "<div class='alert alert-danger'>".LAN_HERO_ALERT_DANGER."</div>";
+	$text = "<div class='alert alert-danger'>".LAN_HERO_MENU_001."</div>";
 	e107::getRender()->tablerender(null, $text,'hero-menu');
 }
