@@ -120,13 +120,14 @@ $FORUM_TEMPLATE['main']['start']			= "{FORUM_BREADCRUMB}
 											<th colspan='5'>{FORUMTITLE}</th>
 											</tr>";
 
-$FORUM_TEMPLATE['main']['parent']			= 	"<tr class='forum-parent'>
+$FORUM_TEMPLATE['main']['parent_start']			= 	"<tr class='forum-parent'>
 											<th colspan='2'>{PARENTIMAGE:h=50}{PARENTNAME} {PARENTSTATUS}</th>
 											<th class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
 											<th class='text-center'>".LAN_FORUM_0002."</th>
 											<th class='hidden-xs text-center'>".LAN_FORUM_0004."</th>
 											</tr>";
 
+$FORUM_TEMPLATE['main']['parent_end']	    = '';
 
 
 $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
