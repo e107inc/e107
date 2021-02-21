@@ -1314,13 +1314,51 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	function testDetectRoute()
+	{
+		e107::getPlugin()->install('forum');
 
+		$tests = array(
+			0 => array(
+				'plugin'    => 'forum',
+				'uri'       => '/e107_plugins/forum/forum.php?f=rules',
+				'expected'  => 'forum/rules',
+			),
+			1 => array(
+				'plugin'    => 'forum',
+				'uri'       => '/e107_plugins/forum/forum_viewforum.php?id=543123',
+				'expected'  => 'forum/forum',
+			),
+
+		);
+
+		foreach($tests as $index => $var)
+		{
+			$result = e107::detectRoute($var['plugin'], $var['uri']);
+			if(empty($var['expected']))
+			{
+				echo $result."\n";
+				continue;
+			}
+
+			$this->assertSame($var['expected'], $result);
+		}
+
+
+
+
+
+		e107::getPlugin()->uninstall('forum');
+
+	}
+
+/*
 				public function testThemeLan()
 				{
 					$result = e107::themeLan(null, 'basic-light');
 					var_dump($result);
 
-				}
+				}*/
 	/*
 				public function testLan()
 				{

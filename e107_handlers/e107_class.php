@@ -4033,6 +4033,65 @@ class e107
 	}
 
 	/**
+	 * Reverse lookup of current URI against legacy e_url entry for the specified plugin.
+	 * Useful for when SEF (e_SINGLE_ENTRY) is not in use.
+	 * @param string $route eg. forum/index (must match SEF route )
+	 */
+	public static function detectRoute($plugin=null, $uri=null)
+	{
+		if(empty($plugin) || empty($uri))
+		{
+			return null;
+		}
+
+		if(!$addon = e107::getAddon($plugin,'e_url'))
+		{
+			trigger_error("Couldn't load e_url for ".$plugin);
+			return null;
+		}
+
+		if(!$result = e107::callMethod($addon, 'config'))
+		{
+			trigger_error($plugin.' - e_url::config() method returned nothing');
+			return null;
+		}
+
+		foreach($result as $key=>$var)
+		{
+			if(empty($var['legacy']))
+			{
+				continue;
+			}
+
+			$legacy = self::getParser()->replaceConstants($var['legacy'], 'abs'); // remove {e_PLUGIN}
+			$legacy = preg_replace('/\{[\w]*\}/', '__XXX__', $legacy); // replace {fields} with placeholder.
+			$legacy = preg_quote($legacy,'/'); // add slashes
+
+			$pattern = '/'. str_replace('__XXX__', '([\w]*)', $legacy) .'/'; // replace placeholder with regexp
+
+			if(preg_match($pattern,  $uri))
+			{
+				return $plugin.'/'.$key;
+			}
+
+		}
+
+		return null;
+	}
+
+
+	public static function route($route)
+	{
+		if(defined('e_ROUTE'))
+		{
+			return null;
+		}
+
+		define('e_ROUTE', $route);
+	}
+
+
+	/**
 	 * Generate a plugin's search engine-friendly URL with HTML special characters escaped
 	 *
 	 * Can be spliced directly into HTML code like <a href="…"></a>
