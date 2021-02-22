@@ -338,6 +338,7 @@ class contact_front
 e107::lan('core','contact');
 e107::title(LANCONTACT_00);
 e107::canonical('contact');
+e107::route('contact/index');  
 
 require_once(HEADERF);
 
