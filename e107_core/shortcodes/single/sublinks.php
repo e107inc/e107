@@ -5,7 +5,8 @@
 function sublinks_shortcode($parm)
 {
 
-	global $sql, $linkstyle;;
+	$sql = e107::getDb();
+	$linkstyle = varset($GLOBALS['linkstyle'], array());
 
 	if($parm)
 	{
@@ -28,7 +29,7 @@ function sublinks_shortcode($parm)
 	}
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
-	$text .= $style['prelink'];
+	$text .= varset($style['prelink']);
 	if($sql->select("links", "link_id", "link_url= '{$page}' AND link_category = {$cat} LIMIT 1"))
 	{
 		$row = $sql->fetch();
@@ -37,10 +38,10 @@ function sublinks_shortcode($parm)
 		$link_total = $sql->select("links", "*", "link_class IN (" . USERCLASS_LIST . ") AND link_parent={$parent} ORDER BY link_order ASC");
 		while($linkInfo = $sql->fetch())
 		{
-			$text .= $sublinks->makeLink($linkInfo, true, $style, false);
+			$text .= $sublinks->makeLink($linkInfo, true, $style);
 		}
 
-		$text .= $style['postlink'];
+		$text .= varset($style['postlink']);
 	}
 	$text .= "\n\n<!-- Sublinks End -->\n\n";
 
