@@ -3645,7 +3645,7 @@ var_dump($select_options);*/
 		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
-		$opt[] = "<a href='".e_HTTP."'>".$homeIcon. '</a>'; // Add Site-Pref to disable?
+		$opt[] = "<a href='".e_HTTP."' aria-label='Homepage'>".$homeIcon. '</a>'; // Add Site-Pref to disable?
 		
 		$text = "\n<ul class=\"breadcrumb\">\n";
 		$text .= '<li class="breadcrumb-item">';
