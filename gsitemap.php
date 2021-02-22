@@ -26,6 +26,7 @@ e107::lan('gsitemap');
 if(e_QUERY == "show" || !empty($_GET['show']))
 {
 	e107::canonical('gsitemap');
+	e107::route('gsitemap/index');
 
 	require_once(HEADERF);
 
