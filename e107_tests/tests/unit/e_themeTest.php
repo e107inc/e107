@@ -515,11 +515,13 @@
 
 			);
 
+			$themeObj = $this->tm;
+
 			foreach($tests as $item=>$var)
 			{
 				$var['script'] = isset($var['script']) ? $var['script'] : null;
 
-				$result = $this->tm::getThemeLayout($pref, $defaultLayout, $var);
+				$result = $themeObj::getThemeLayout($pref, $defaultLayout, $var);
 				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}
