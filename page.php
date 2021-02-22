@@ -20,6 +20,7 @@ if(!e_QUERY)
     $e107CorePage->listBooks();
 
 	e107::canonical('page/list/index');
+	e107::route('page/list/index'); 
 	require_once(HEADERF);
 
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], "cpage-full-list");
@@ -40,6 +41,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	$id = $e107CorePage->setRequest('listChapters');
     $e107CorePage->listChapters($id);
     e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
+	e107::route('page/book/index'); 
 	
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
@@ -52,6 +54,8 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
     $e107CorePage->listPages($id);
     $chData = $e107CorePage->getChapterData($id);
     e107::canonical('page/chapter/index',$chData);
+	e107::route('page/chapter/index'); 
+	
 	unset($row);
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
@@ -65,8 +69,11 @@ else
     $e107CorePage->setPage();
 
     $canRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view';
-
+    $pageRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view/index';
+	
 	e107::canonical( $canRoute,  $e107CorePage->page);
+	e107::route($pageRoute);
+	
 	require_once(HEADERF);
 
 	$ns = e107::getRender();
