@@ -257,7 +257,7 @@ class theme_admin extends e_admin_dispatcher
 	/**
 	 * @return array
 	 */
-	private function getAllRoutes(): array
+	private function getAllRoutes()
 	{
 
 		$legacy = array(
@@ -1172,7 +1172,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 		e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
-		$d = http_build_query($srcData,false,'&');
+		$d = http_build_query($srcData,false);
 		$base64 = base64_encode($d);
 
 		$id = $this->name2id($theme['name']);
