@@ -89,10 +89,10 @@ $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<table style='".USER_WIDTH."' class='fborder table'>
 	<tr>
 	<td style='width:20%; text-align:center' class='fcaption'>
-	".LAN_AUTHOR."
+	{LAN=AUTHOR}
 	</td>
 	<td style='width:80%; text-align:center' class='fcaption'>
-	".LAN_FORUM_2015."
+	{LAN=FORUM_2015}
 	</td>
 	</tr>";
 
@@ -182,7 +182,7 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 
 	/*
 	<div style='text-align:center' class='spacer'>
-	<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_FORUM_0012."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_FORUM_0013."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
+	<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='{LAN=FORUM_0012}' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='{LAN=FORUM_0013}' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='{LAN=433}' style='vertical-align: middle; border: 0;' /></a>
 	</div>
 	*/
 

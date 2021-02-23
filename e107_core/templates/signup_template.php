@@ -22,13 +22,12 @@ if(!defined('e107_INIT'))
 // Shortcode Wrappers
 
 $SIGNUP_WRAPPER['SIGNUP_DISPLAYNAME'] = 		"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='username'>"
-													. LAN_SIGNUP_89 . "{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>" . LAN_SIGNUP_90 . "</span></label>
+													<label class='col-sm-3 control-label' for='username'>{LAN=SIGNUP_89}{SIGNUP_IS_MANDATORY=true}<br /><span class='smalltext'>{LAN=SIGNUP_90}</span></label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_REALNAME'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='realname'>" . LAN_SIGNUP_91 . "{SIGNUP_IS_MANDATORY=realname}</label>
+													<label class='col-sm-3 control-label' for='realname'>{LAN=SIGNUP_91}{SIGNUP_IS_MANDATORY=realname}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
@@ -36,50 +35,50 @@ $SIGNUP_WRAPPER['SIGNUP_GDPR_INFO']             = "<div class='form-group row m-
 
 
 $SIGNUP_WRAPPER['SIGNUP_SIGNATURE'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='signature'>" . LAN_SIGNUP_93 . " {SIGNUP_IS_MANDATORY=signature}</label>
+													<label class='col-sm-3 control-label' for='signature'>{LAN=SIGNUP_93}{SIGNUP_IS_MANDATORY=signature}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_IMAGES'] = 				"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label'for='avatar'>" . LAN_SIGNUP_94 . "{SIGNUP_IS_MANDATORY=avatar}</label>
+													<label class='col-sm-3 control-label'for='avatar'>{LAN=SIGNUP_94}{SIGNUP_IS_MANDATORY=avatar}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_IMAGECODE'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='code-verify'>" . e107::getSecureImg()->renderLabel() . "{SIGNUP_IS_MANDATORY=true}</label>
+													<label class='col-sm-3 control-label' for='code-verify'>" . e107::getSecureImg()->renderLabel()."{SIGNUP_IS_MANDATORY=true}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_LOGINNAME'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='loginname'>" . LAN_SIGNUP_81 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<label class='col-sm-3 control-label' for='loginname'>{LAN=SIGNUP_81}{SIGNUP_IS_MANDATORY=true}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_HIDE_EMAIL'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label'>" . LAN_USER_83 . "</label>
+													<label class='col-sm-3 control-label'>{LAN=USER_83}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_EMAIL_CONFIRM'] = 		"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='email-confirm'>" . LAN_SIGNUP_39 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<label class='col-sm-3 control-label' for='email-confirm'>{LAN=SIGNUP_39}{SIGNUP_IS_MANDATORY=true}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_XUP']                   = "<div class='text-center'>{---}
-												<h2 class='signup-divider'><span>" . LAN_SIGNUP_120 . "</span></h2></div>";
+												<h2 class='signup-divider'><span>{LAN=SIGNUP_120}</span></h2></div>";
 
 $SIGNUP_WRAPPER['SIGNUP_PASSWORD1'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='password1'>" . LAN_SIGNUP_83 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<label class='col-sm-3 control-label' for='password1'>{LAN=SIGNUP_83}{SIGNUP_IS_MANDATORY=true}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_PASSWORD2'] = 			"<div class='form-group row m-2'>
-													<label class='col-sm-3 control-label' for='password2'>" . LAN_SIGNUP_84 . "{SIGNUP_IS_MANDATORY=true}</label>
+													<label class='col-sm-3 control-label' for='password2'>{LAN=SIGNUP_84}{SIGNUP_IS_MANDATORY=true}</label>
 													<div class='col-sm-9'>{---}</div>
 												</div>";
 
 $SIGNUP_WRAPPER['SIGNUP_USERCLASS_SUBSCRIBE'] = "<div class='form-group row m-2 '>
-													<label class='col-sm-3 control-label'>" . LAN_SIGNUP_113 . "{SIGNUP_IS_MANDATORY=subscribe}</label>
+													<label class='col-sm-3 control-label'>{LAN=SIGNUP_113}{SIGNUP_IS_MANDATORY=subscribe}</label>
 													<div class='col-sm-9 checkbox'>{---}</div>
 												</div>";
  

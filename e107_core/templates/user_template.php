@@ -43,12 +43,12 @@ if (!defined('e107_INIT')) { exit; }
 
 	$USER_TEMPLATE['list']['start']  = "
 		<div class='content user-list'>
-		<div class='center'>".LAN_USER_56." {TOTAL_USERS}
+		<div class='center'>{LAN=USER_56} {TOTAL_USERS}
 		<br />
 		<br />
 		{USER_FORM_START}
 		<div class='form-inline'>
-		".LAN_SHOW.": {USER_FORM_RECORDS} ".LAN_USER_57." {USER_FORM_ORDER}
+		{LAN=SHOW}: {USER_FORM_RECORDS} {LAN=USER_57} {USER_FORM_ORDER}
 		{USER_FORM_SUBMIT}
 		</div>
 		{USER_FORM_END}
@@ -59,9 +59,9 @@ if (!defined('e107_INIT')) { exit; }
 		<thead>
 		<tr>
 		<th class='fcaption' style='width:2%'>&nbsp;</th>
-		<th class='fcaption' style='width:20%'>".LAN_USER_58."</th>
-		<th class='fcaption' style='width:20%'>".LAN_USER_60."</th>
-		<th class='fcaption' style='width:20%'>".LAN_USER_59."</th>
+		<th class='fcaption' style='width:20%'>{LAN=USER_58}</th>
+		<th class='fcaption' style='width:20%'>{LAN=USER_60}</th>
+		<th class='fcaption' style='width:20%'>{LAN=USER_59}</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -86,7 +86,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 	// View shortcode wrappers.
-	$USER_WRAPPER['view']['USER_COMMENTPOSTS']      = '<div class="col-xs-12 col-md-4">'.LAN_USER_68.'</div><div class="col-xs-12 col-md-8">{---}';
+	$USER_WRAPPER['view']['USER_COMMENTPOSTS']      = '<div class="col-xs-12 col-md-4">{LAN=USER_68}</div><div class="col-xs-12 col-md-8">{---}';
 	$USER_WRAPPER['view']['USER_COMMENTPER']        = ' ( {---}% )</div>';
 	$USER_WRAPPER['view']['USER_SIGNATURE']         = '<div>{---}</div>';
 	$USER_WRAPPER['view']['USER_RATING']            = '<div>{---}</div>';
@@ -100,7 +100,7 @@ if (!defined('e107_INIT')) { exit; }
 	    <div class="col-md-12">
 	        <div class="panel panel-default panel-profile clearfix">
 	            <div class="panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
-	                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}</h5>
+	                <h5 class="user-id">{LAN=USER_58} {USER_ID}</h5>
 	            </div>
 	            <div class="panel-body text-center">
 	                {SETIMAGE: w=200&h=200&crop=1}
@@ -113,13 +113,13 @@ if (!defined('e107_INIT')) { exit; }
 	                </div>
 	            </div>
 	            <div class="panel-body">
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_63.'</div><div class="col-xs-12 col-md-8">{USER_REALNAME}</div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_02.'</div><div class="col-xs-12 col-md-8">{USER_LOGINNAME}</div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_60.'</div><div class="col-xs-12 col-md-8">{USER_EMAIL}</div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_54.'</div><div class="col-xs-12 col-md-8">{USER_LEVEL}</div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_65.'</div><div class="col-xs-12 col-md-8">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_59.'</div><div class="col-xs-12 col-md-8">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></div></div>
-	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_66.'</div><div class="col-xs-12 col-md-8">{USER_VISITS}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_63}</div><div class="col-xs-12 col-md-8">{USER_REALNAME}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_02}</div><div class="col-xs-12 col-md-8">{USER_LOGINNAME}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_60}</div><div class="col-xs-12 col-md-8">{USER_EMAIL}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_54}</div><div class="col-xs-12 col-md-8">{USER_LEVEL}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_65}</div><div class="col-xs-12 col-md-8">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_59}</div><div class="col-xs-12 col-md-8">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">{LAN=USER_66}</div><div class="col-xs-12 col-md-8">{USER_VISITS}</div></div>
 	                {USER_ADDONS}
 	                <div class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</div>
 	                {USER_EXTENDED_ALL}

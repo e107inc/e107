@@ -68,7 +68,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                        	{NEWS_SUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-small btn-primary">'.LAN_READ_MORE.'</a>
+                       <a href="{NEWSURL}" class="btn btn-small btn-primary">{LAN=READ_MORE}</a>
                    </p>
  				</div>
 		</div>

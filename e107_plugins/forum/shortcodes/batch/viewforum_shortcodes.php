@@ -209,7 +209,7 @@
 		{
 			$FORUM_VIEWFORUM_TEMPLATE = varset($GLOBALS['FORUM_VIEWFORUM_TEMPLATE']);
 
-			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
+			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true, $this) : "
 				<table class='table table-bordered' style='width:100%'>
 				<tr>
 				<td style='vertical-align:middle; text-align:center; width:2%'>" . IMAGE_new_small . "</td>
@@ -806,9 +806,28 @@
 			return $this->gen->computeLapse($this->var['thread_datestamp'], time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
 		}
 
-
-		function sc_icon()
+		private function keyIcon($parm)
 		{
+			$size = 'small';
+
+			if(!empty($parm['type']))
+			{
+				return deftrue('IMAGE_'.$parm['type'].'_'.$size);
+			}
+		}
+
+
+		function sc_icon($parm)
+		{
+
+			if(!empty($parm))
+			{
+				return $this->keyIcon($parm);
+			}
+
+
+
+
 			global $forum;
 //	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, 
 //$threadsViewed = $forum->threadGetUserViewed();

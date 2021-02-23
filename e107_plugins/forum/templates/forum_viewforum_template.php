@@ -180,9 +180,9 @@ if (empty($FORUM_VIEW_END))
 		<div class='spacer'>";
 	//	hardcoded deprecated rss links
 	//	<div style='text-align:center;'>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='{LAN=431}' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='{LAN=432}' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='{LAN=433}' style='vertical-align: middle; border: 0;' /></a>
 	//	</div>
 	//	
 		$FORUM_VIEW_END .= "
@@ -217,10 +217,10 @@ if (empty($FORUM_VIEW_SUB_START))
 		<table style='width:100%'>
 		<tr>
 			<td class='fcaption' style='width: 5%'>&nbsp;</td>
-			<td class='fcaption' style='width: 45%'>".LAN_FORUM_1002."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0002."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0003."</td>
-			<td class='fcaption' style='width: 30%'>".LAN_FORUM_0004."</td>
+			<td class='fcaption' style='width: 45%'>{LAN=FORUM_1002}</td>
+			<td class='fcaption' style='width: 10%'>{LAN=FORUM_0002}</td>
+			<td class='fcaption' style='width: 10%'>{LAN=FORUM_0003}</td>
+			<td class='fcaption' style='width: 30%'>{LAN=FORUM_0004}</td>
 		</tr>
 	";
 }
@@ -249,13 +249,13 @@ if (empty($FORUM_VIEW_SUB_END))
 }
 
 if (empty($FORUM_IMPORTANT_ROW)) {
-	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1006."</b></span></td></tr>";
+	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>{LAN=FORUM_1006}</b></span></td></tr>";
 }
 
 
 if (empty($FORUM_NORMAL_ROW))
 {
-	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>";
+	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>{LAN=FORUM_1007}</b></span></td></tr>";
 }
 
 
@@ -308,7 +308,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 												        <div class='row'>
 												            <div class='col-xs-12 col-md-9'>
 												            {THREADNAME}
-												            <div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+												            <div><small>{LAN=FORUM_1004}: {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
 												            </div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
 												        </div>
 												    </td>
@@ -322,10 +322,10 @@ $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item']
 
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr>
-													<th colspan='2'>".LAN_FORUM_1002."</th>
-													<th class='text-center'>".LAN_FORUM_0003."</th>
-													<th class='hidden-xs text-center'>".LAN_FORUM_0002."</th>
-													<th class='hidden-xs'>".LAN_FORUM_0004."</th>
+													<th colspan='2'>{LAN=FORUM_1002}</th>
+													<th class='text-center'>{LAN=FORUM_0003}</th>
+													<th class='hidden-xs text-center'>{LAN=FORUM_0002}</th>
+													<th class='hidden-xs'>{LAN=FORUM_0004}</th>
 												</tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
@@ -339,13 +339,13 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
 /* Examples top divider with shortcodes - working
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006." {FORUMTITLE}</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007." {FORUMTITLE}</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>{LAN=FORUM_1006} {FORUMTITLE}</th><th class='text-center'>{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>{LAN=FORUM_1007} {FORUMTITLE}</th><th class='text-center' >{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
 */
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>{LAN=FORUM_1006}</th><th class='text-center'>{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>{LAN=FORUM_1007}</th><th class='text-center' >{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
 
-$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div>";
+$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>{LAN=FORUM_8012}</div><div class='panel-body'>{---}</div></div>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row row-fluid d-flex justify-content-between'>
@@ -354,9 +354,9 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 
 												</div>
 
-												<div class=>
+												<div class='mb-4'>
 													<div class='panel panel-default' style='margin-top:50px'>
-													<div class='panel-heading'>".LAN_FORUM_8011."</div>
+													<div class='panel-heading'>{LAN=FORUM_8011}</div>
 													<div class='panel-body'>
 													{ICONKEY}
 													</div>
@@ -372,17 +372,17 @@ $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "</div>\n<!--- END --> \n";
 // define {ICONKEY}
 $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>".IMAGE_new_small." ".LAN_FORUM_0039."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_small." ".LAN_FORUM_0040."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_sticky_small." ".LAN_FORUM_1011."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_announce_small." ".LAN_FORUM_1013."</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=new} {LAN=FORUM_0039}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=nonew} {LAN=FORUM_0040}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=sticky} {LAN=FORUM_1011}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=announce} {LAN=FORUM_1013}</div>
 												</div>
 
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>".IMAGE_new_popular_small." ".LAN_FORUM_0039." ".LAN_FORUM_1010."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_popular_small." ".LAN_FORUM_0040." ".LAN_FORUM_1010."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_noreplies_small." ".LAN_FORUM_1021."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_closed_small." ".LAN_FORUM_1014."</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=new_popular} {LAN=FORUM_0039} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=nonew_popular} {LAN=FORUM_0040} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=noreplies} {LAN=FORUM_1021}</div>
+													<div class='col-sm-3 col-xs-6'>{ICON: type=closed} {LAN=FORUM_1014}</div>
 												</div>
 												";
 
