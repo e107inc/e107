@@ -103,7 +103,7 @@ $FORUM_TRACK_END	= "<br />TRACK-END";
 $FORUM_TEMPLATE['main']['start']			= "{FORUM_BREADCRUMB}
 											<div class=''>
 
-												<div class='form-group right'>
+												<div class='form-group right float-right float-end mb-3'>
 													{SEARCH}
 												</div>
 											</div>

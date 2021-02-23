@@ -155,6 +155,7 @@ function init()
 		if(THEME_LEGACY !== true)
 		{
 			$FORUM_VIEWFORUM_TEMPLATE = e107::getTemplate('forum', 'forum_viewforum');
+			$GLOBALS['FORUM_VIEWFORUM_TEMPLATE'] = $FORUM_VIEWFORUM_TEMPLATE;
 		}
 		else
 		{
