@@ -137,7 +137,7 @@ if(!isset($POST_CHECKBOXES))
 $SEARCH_TEMPLATE['form']['start'] = '
 					<form class="form-horizontal" role="form" id="searchform" method="get" action="{SEARCH_FORM_URL}">
 						<div class="form-group">
-					        <label for="inputEmail3" class="col-sm-3 control-label">'.LAN_199.'</label>
+					        <label for="inputEmail3" class="col-sm-3 control-label">{LAN=199}</label>
 						    <div class="col-sm-9">{SEARCH_MAIN}
 						    </div>
 					    </div>
@@ -170,7 +170,7 @@ $SEARCH_TEMPLATE['form']['enhanced'] = '
 /*
 $SEARCH_TEMPLATE['form']['type'] = '
 	<div class="form-group">
-	    <label for="inputPassword3" class="col-sm-3 control-label">'.LAN_SEARCH_75.'</label>
+	    <label for="inputPassword3" class="col-sm-3 control-label">{LAN=SEARCH_75}</label>
 	    <div class="col-sm-9">
 	    {SEARCH_TYPE_SEL}
 	    </div>
@@ -179,7 +179,7 @@ $SEARCH_TEMPLATE['form']['type'] = '
 
 $SEARCH_TEMPLATE['form']['category'] = '
 										<div class="form-group">
-										    <label for="inputPassword3" class="col-sm-3 control-label">'.LAN_SEARCH_19.'</label>
+										    <label for="inputPassword3" class="col-sm-3 control-label">{LAN=SEARCH_19}</label>
 										    <div class="col-sm-9">
 										   {SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;
 										    </div>

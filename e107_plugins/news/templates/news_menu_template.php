@@ -53,7 +53,7 @@ $NEWS_MENU_TEMPLATE['other']['item']		= '<div class="carousel-item item {ACTIVE}
 												{NEWSTHUMBNAIL=placeholder}
               									<h3>{NEWSTITLE}</h3>
               									<p>{NEWSSUMMARY}</p>
-              									<p class="text-right text-end"><a class="btn btn-sm btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
+              									<p class="text-right text-end"><a class="btn btn-sm btn-primary btn-othernews" href="{NEWSURL}">{LAN=READ_MORE} &raquo;</a></p>
             									</div>';									
 $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 
@@ -71,7 +71,7 @@ $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled list-u
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media d-flex'>
 										<span class='media-object pull-left float-left mr-3 me-3'>{NEWSTHUMBNAIL=placeholder}</span> 
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
-										<p class='text-right text-end'><a class='btn btn-sm btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
+										<p class='text-right text-end'><a class='btn btn-sm btn-primary btn-othernews2' href='{NEWSURL}'>{LAN=READ_MORE} &raquo;</a></p>
 										</div>
 										</li>\n";
 										
