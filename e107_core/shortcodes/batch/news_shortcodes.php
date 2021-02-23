@@ -207,10 +207,10 @@ class news_shortcodes extends e_shortcode
 			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
 		}
 
-		$caption = vartrue($parm['text'],LAN_BACK);
+		$caption = vartrue($parm['text'], LAN_BACK);
 		
-		$text = '<ul class="pager hidden-print">
-  			<li><a href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
+		$text = '<ul class="pagination hidden-print">
+  			<li class="page-item"><a class="page-link" href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
 		</ul>';
 		
 		if(defined('BOOTSTRAP') && BOOTSTRAP === 4)
