@@ -479,9 +479,10 @@ class comment
 		//	$width2 = 100 - $width;
 		//	$total_width = "95%";
 			if ($width)
-			{		
+			{
+
 				$renderstyle = $COMMENT_TEMPLATE['item_start'];
-				$renderstyle .= "<div class='media offset".$width." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";	
+				$renderstyle .= "<div class='row media offset".$width." col-md-".(12 - (int) $width)." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";
 				$renderstyle .= $COMMENT_TEMPLATE['item_end'];					
 			}
 			else
