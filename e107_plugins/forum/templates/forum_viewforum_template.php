@@ -288,8 +288,8 @@ $FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "<div id='forum-viewforum'>";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
-													<div class='col-md-9 span9 pull-left float-left'><h3>{FORUMIMAGE:h=60}{FORUMTITLE}</h3></div>
-													<div class='col-md-3 span3 pull-right float-right float-end right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
+													<div class='col-md-9 span9 pull-left float-left float-start'><h3>{FORUMIMAGE:h=60}{FORUMTITLE}</h3></div>
+													<div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div></div>
 													<table class='table table-hover table-striped table-bordered'>
 													<colgroup>
 													<col style='width:3%' />
@@ -348,18 +348,17 @@ $FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_
 $SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
-												<div class='row row-fluid'>
+												<div class='row row-fluid d-flex justify-content-between'>
 
-												<div class='col-md-5 span5 pull-left float-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right float-end right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
+												<div class='col-md-5 span5 pull-left float-left float-start left'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div>
 
 												</div>
 
-												<div>
+												<div class=>
 													<div class='panel panel-default' style='margin-top:50px'>
 													<div class='panel-heading'>".LAN_FORUM_8011."</div>
 													<div class='panel-body'>
 													{ICONKEY}
-
 													</div>
 													</div>
 												</div>

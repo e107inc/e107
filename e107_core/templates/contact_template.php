@@ -58,20 +58,20 @@ $CONTACT_TEMPLATE['info'] = "
 
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label for="contactName">'.LANCONTACT_03.'</label>
 				{CONTACT_NAME}
 		 </div>
 		 
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label class="control-label" for="contactEmail">'.LANCONTACT_04.'</label>
 				{CONTACT_EMAIL}
 		</div>
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label for="contactBody" >'.LANCONTACT_06.'</label>
 				{CONTACT_BODY=rows=5&cols=30}
 		</div>
-		<div class="form-group"><label for="gdpr">'.LANCONTACT_24.'</label>
+		<div class="form-group mb-3"><label for="gdpr">'.LANCONTACT_24.'</label>
 			<div class="checkbox form-check">
 				<label>{CONTACT_GDPR_CHECK} '.LANCONTACT_21.'</label>
 				<div class="help-block">{CONTACT_GDPR_LINK}</div> 

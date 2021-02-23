@@ -327,7 +327,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	</div>
 
 	<div class='row row-fluid'>
-		<div class='col-md-9 span9 pull-left float-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right float-right float-end right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
+		<div class='col-md-9 span9 pull-left float-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right float-right float-end right text-right'>{TRACK} {BUTTONSX}</div>
 	</div>
 	
 	{MESSAGE}

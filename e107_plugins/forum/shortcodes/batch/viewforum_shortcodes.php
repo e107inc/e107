@@ -85,7 +85,7 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-			$text = '<div class="btn-group mb-2">';
+			$text = '<div class="btn-group mb-3">';
 /*
 			$text .=
 			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
@@ -207,39 +207,7 @@
 
 		function sc_iconkey()
 		{
-			global $FORUM_VIEWFORUM_TEMPLATE;
-
-			/*--
-			if(defset('BOOTSTRAP')==3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) // v2.x
-			{
-				return e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'],true);
-			}
-			// v1.x
-
-				return "
-				<table class='table table-bordered' style='width:100%'>
-				<tr>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1011."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_announce_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1013."</td>
-				</tr>
-				<tr>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
-				<td style='width:2%' class='smallblacktext'>".LAN_FORUM_0039." ".LAN_FORUM_1010."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040." ".LAN_FORUM_1010."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1012."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_closed_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1014."</td>
-				</tr>
-				</table>";
-			--*/
+			$FORUM_VIEWFORUM_TEMPLATE = varset($GLOBALS['FORUM_VIEWFORUM_TEMPLATE']);
 
 			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
 				<table class='table table-bordered' style='width:100%'>
@@ -827,14 +795,14 @@
 
 		function sc_threaddate()
 		{
-//	global $gen;
+
 			return $this->gen->convert_date($this->var['thread_datestamp'], 'forum');
 		}
 
 
 		function sc_threadtimelapse()
 		{
-//	global $gen;
+
 			return $this->gen->computeLapse($this->var['thread_datestamp'], time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
 		}
 

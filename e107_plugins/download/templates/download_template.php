@@ -418,7 +418,7 @@ $DOWNLOAD_TEMPLATE['categories']['end'] = "
 	</div>
 	<div class='clearfix table'>
 		<div class='pull-left float-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
-		<div class='pull-right float-right'>{DOWNLOAD_CAT_SEARCH}</div>
+		<div class='pull-right float-right float-end'>{DOWNLOAD_CAT_SEARCH}</div>
 	</div>";
 
 // ##### ------------------------------------------------------------------------------------------
