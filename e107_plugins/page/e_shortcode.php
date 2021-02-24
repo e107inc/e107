@@ -348,7 +348,7 @@ class page_shortcodes extends e_shortcode
 				$text .= $tp->parseTemplate($template['item'],true,$sc);
 			}
 
-			$end = $tp->parseTemplate($template['start'],true,$sc);
+			$end = $tp->parseTemplate($template['end'],true,$sc);
 			$end .= "<!-- sc_book_chapters end template: ". $tmplKey." -->";
 
 			if(!empty($text))
