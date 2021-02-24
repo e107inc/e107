@@ -2,6 +2,3 @@
 	path = e107_tests/lib/cpaneluapi
 	url = https://github.com/N1ghteyes/cpanel-UAPI-php-class.git
 	branch = master
-[submodule "e107_web/lib/bootstrap-suggest"]
-	path = e107_web/lib/bootstrap-suggest
-	url = https://github.com/e107inc/bootstrap-suggest.git
