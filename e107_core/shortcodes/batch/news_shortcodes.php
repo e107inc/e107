@@ -192,20 +192,7 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsnavlink($parm=null) //TODO add more options.
 	{
-		$url = e107::getUrl()->create('news/list/items'); // default for now.
-
-		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
-		{
-			$url = e107::getUrl()->create('news/list/all');
-		}
-		elseif(varset($parm['list']) == 'category') 
-		{
-			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
-		}
-		elseif(varset($parm['items']) == 'category') 
-		{
-			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
-		}
+		$url = $this->sc_news_nav_url($parm);
 
 		$caption = vartrue($parm['text'], LAN_BACK);
 		
@@ -222,6 +209,27 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+
+	public function sc_news_nav_url($parm)
+	{
+		$url = e107::getUrl()->create('news/list/items'); // default for now.
+
+		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
+		{
+			$url = e107::getUrl()->create('news/list/all');
+		}
+		elseif(varset($parm['list']) == 'category')
+		{
+			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
+		}
+		elseif(varset($parm['items']) == 'category')
+		{
+			$url = e107::getUrl()->create('news/list/category', $this->news_item);
+		}
+
+		return $url;
+
+	}
 
 
 	function sc_newsheader($parm=null)
@@ -1186,5 +1194,82 @@ class news_shortcodes extends e_shortcode
 
 	}
 
+	/**
+	 * @example {NEWS_NAV_NEXT}
+	 * @return string|null
+	 */
+	function sc_news_nav_next()
+	{
+		return $this->parseNavTemplate('next');
+	}
+
+	/**
+	 * {NEWS_NAV_PREVIOUS}
+	 * @return string|null
+	 */
+	function sc_news_nav_previous()
+	{
+		return $this->parseNavTemplate('previous');
+	}
+
+	/**
+	 * {NEWS_NAV_PREVIOUS}
+	 * @return string|null
+	 */
+	function sc_news_nav_current()
+	{
+		$template = e107::getTemplate('news', 'news_view', 'nav');
+		return e107::getParser()->parseTemplate($template['current'], true, $this);
+	}
+
+	/**
+	 * Retrieves the data from the previous/next news record and renders the corresponding template.
+	 * @param string $type next|previous
+	 * @return string|null
+	 */
+	private function parseNavTemplate($type)
+	{
+		if(!$data = $this->getNavQuery($type))
+		{
+			return null;
+		}
+
+		$template = e107::getTemplate('news', 'news_view', 'nav');
+		$orig = $this->getScVar('news_item');
+		$this->setScVar('news_item', $data);
+		$text = e107::getParser()->parseTemplate($template[$type], true, $this);
+		$this->setScVar('news_item', $orig);
+
+		return $text;
+	}
+
+	/**
+	 * Retrieve table data from the previous or next news item.
+	 * @param string $type next/previous
+	 * @return array|string
+	 */
+	private function getNavQuery($type)
+	{
+		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+
+		$var = $this->getScVar('news_item');
+
+		$dir = ($type === 'next') ? '>=' : '<=';
+		$sort = ($type === 'next') ? 'ASC' : 'DESC';
+
+		$query = "
+				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
+				FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
+				AND n.news_datestamp ".$dir . (int) $var['news_datestamp']. " AND n.news_id != ".(int) $var['news_id']." ORDER by n.news_datestamp ".$sort." LIMIT 1";
+
+		return e107::getDb()->retrieve($query);
+	}
+
 }
-?>
+
