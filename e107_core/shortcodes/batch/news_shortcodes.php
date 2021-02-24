@@ -210,7 +210,7 @@ class news_shortcodes extends e_shortcode
 
 
 
-	public function sc_news_nav_url($parm)
+	public function sc_news_nav_url($parm=null)
 	{
 		$url = e107::getUrl()->create('news/list/items'); // default for now.
 
