@@ -56,7 +56,7 @@
     "class": ""
 }</field>
 			<field name="hero_order">0</field>
-			<field name="hero_media">https://via.placeholder.com/800x300.jpg?text=Image+1</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+1</field>
 			<field name="hero_bg"></field>
 		</item>
 		<item>
@@ -113,7 +113,7 @@
     "class": ""
 }</field>
 			<field name="hero_order">1</field>
-			<field name="hero_media">https://via.placeholder.com/800x300.jpg?text=Image+2</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+2</field>
 			<field name="hero_bg"></field>
 		</item>
 		<item>
@@ -170,7 +170,7 @@
     "class": ""
 }</field>
 			<field name="hero_order">2</field>
-			<field name="hero_media">https://via.placeholder.com/800x300.jpg?text=Image+3</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+3</field>
 			<field name="hero_bg"></field>
 		</item>
 	</dbTable>
