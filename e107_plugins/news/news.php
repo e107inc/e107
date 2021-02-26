@@ -553,16 +553,21 @@ class news_front
 
 			case "all":
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/items'); 
 			break;
 
 			case "tag":
+				e107::title($this->subAction);
+				e107::meta('og:title', $this->subAction);
+				e107::meta('robots', 'noindex');
+				e107::route('news/list/tag');
+				break;				
 			case "author":
 
 				e107::title($this->subAction);
 				e107::meta('og:title', $this->subAction);
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/author'); 
 				break;
 
 			case "list":
@@ -571,7 +576,7 @@ class news_front
 				e107::title($title);
 				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/category'); 
 				break;
 
 			case "day":
@@ -596,15 +601,25 @@ class news_front
 				e107::title($title);
 				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
+				
+				if($type == 'day') {
+                  e107::route('news/list/day'); 
+                }
+                else {
+                 e107::route('news/list/month'); 
+                }
+				
 				break;
 
 			case "news":
 				e107::canonical($this->route, $news);
+				e107::route('news/view/item');      
 			break;
 
 
 			default:
 				e107::meta('robots', 'noindex');
+				e107::route('news/list/items'); 
 			//	e107::canonical('news');
 		}
 
