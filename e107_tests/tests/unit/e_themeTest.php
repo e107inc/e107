@@ -453,6 +453,7 @@
 						0 => 'forum',
 						1 => 'user.php!', // <-- exact match of URL
 						2 => ':forum/index',
+						3 => ':myplugin/',
 
 			//			2 => '/user', // <-- Expecting URL to match both user and usersetting since it contains no "!"
 					),
@@ -512,6 +513,7 @@
 				// Using e_ROUTE;
 				24 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'news/view/index', 'expected'=> 'other_layout'),
 				25 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'forum/index', 'expected'=> 'jumbotron_full'),
+				26 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'myplugin/index', 'expected'=> 'jumbotron_full'),
 
 			);
 
@@ -522,7 +524,8 @@
 				$var['script'] = isset($var['script']) ? $var['script'] : null;
 
 				$result = $themeObj::getThemeLayout($pref, $defaultLayout, $var);
-				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);
+				$diz = isset($var['route']) ? $var['route'] : $var['url'];
+				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$diz);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}
 
