@@ -340,12 +340,40 @@
 		{
 
 		}
-
+*/
 		public function testDetectType()
 		{
+			$tests = array(
+				0 => array(
+					'input'     => 'gallery/images/butterfly.jpg',
+					'expected' => 'image'
+				),
+				1 => array(
+					'input'     => 'myfile.mov',
+					'expected' => 'video'
+				),
+				2 => array(
+					'input'     => 'myfile.mp4',
+					'expected' => 'video'
+				),
+				3 => array(
+					'input'     => 'https://via.placeholder.com/728x90.png?text=Label',
+					'expected' => 'image'
+				),
+
+
+
+			);
+
+			foreach($tests as $index => $var)
+			{
+				$result = $this->md->detectType($var['input']);
+				$this->assertSame($var['expected'], $result, 'Failed on index #'.$index. ': '.$var['input']);
+			}
+
 
 		}
-
+/*
 		public function testGetVideos()
 		{
 

@@ -9,23 +9,23 @@ if (!defined('e107_INIT')) { exit; }
 
 $HERO_TEMPLATE['default']['header'] 	= '<!-- Hero Menu: header -->{SETIMAGE: w=400&h=400}
 											<div id="carousel-hero" class="carousel carousel-fade slide" data-bs-ride="carousel" data-ride="carousel" data-interval="{HERO_SLIDE_INTERVAL}" data-bs-interval="{HERO_SLIDE_INTERVAL}">
-							                <div class="carousel-inner" role="listbox">';
+							                <div class="carousel-inner d-flex" role="listbox">';
 
 
 $HERO_TEMPLATE['default']['footer'] 	= '</div><div class="carousel-controls">
 						                  <!-- Controls -->
 						                  <a class="left carousel-left carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="prev" data-bs-slide="prev">
 						                    <i class="fa fa-chevron-left fa-fw"></i>
-						                    <span class="sr-only">Previous</span>
+						                    <span class="sr-only">{LAN=PREVIOUS}</span>
 						                  </a>
 						                  <a class="right carousel-right carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="next" data-bs-slide="next">
 						                    <i class="fa fa-chevron-right fa-fw"></i>
-						                    <span class="sr-only">Next</span>
+						                    <span class="sr-only">{LAN=NEXT}</span>
 						                  </a>
 						                  <!-- Indicators -->
 						                  {HERO_CAROUSEL_INDICATORS: target=carousel-hero&class=animated fadeInUpBig}
 						
-						                  </ol>
+						                 
 						                </div>
 						              </div>';
 
@@ -47,7 +47,7 @@ $HERO_TEMPLATE['default']['end'] 	            = '</ul>
 	                                            	</div>
 	                                            	<div class="col-md-6 ">
 		                                            <div class="pull-right animated fadeInRight animation-delay-10">
-		                                            {HERO_MEDIA}
+		                                            {HERO_MEDIA: class=img-responsive img-fluid d-block w-100}
 		                                            </div>
 	                                            </div>
  											</div>

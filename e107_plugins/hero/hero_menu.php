@@ -13,15 +13,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-e107::lan('hero',true, true);
+// e107::lan('hero','menu', true);
 
-if(deftrue('e_FRONTPAGE'))
-{
-	$text = e107::getParser()->parseTemplate("{HERO}", true);
-	e107::getRender()->tablerender(null, $text, 'hero-menu');
-}
-elseif(ADMIN)
-{
-	$text = "<div class='alert alert-danger'>".LAN_HERO_MENU_001."</div>";
-	e107::getRender()->tablerender(null, $text,'hero-menu');
-}
+$text = e107::getParser()->parseTemplate("{HERO}");
+e107::getRender()->tablerender(null, $text, 'hero-menu');
+

@@ -4171,7 +4171,7 @@ class e_parse
 			return null;
 		}
 
-		if(!empty($file))
+		if(!empty($file) && (strpos($file, 'http') === false))
 		{
 			$srcset = null;
 			$path = null;

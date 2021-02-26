@@ -87,11 +87,11 @@ li .hero-list-text {
 #carousel-hero.carousel .carousel-indicators li {
 	vertical-align: top;
 	display: inline-block;
-	background-color: #78909c;
+	background-color: rgba(255,255,255,0.5);
 	border: none;
 	border: 0;
 	height: 3px;
-	width: 14px;
+	width: 20px;
 	margin: 2px;
 	margin-top: 10px;
 	border-radius: 2px;
@@ -151,7 +151,8 @@ li .hero-list-text {
 	}
 
 #carousel-hero.carousel .carousel-inner {
-	overflow: visible
+	overflow: visible;
+	height:600px;
 	}
 
 #carousel-hero.carousel .carousel-inner .item .carousel-caption {
@@ -160,7 +161,7 @@ li .hero-list-text {
 	}
 
 #carousel-hero.carousel .carousel-inner .item {
-	background-color: #eee;
+	background-color: rgb(127,127,127);
 	background-size: cover;
 	}
 
@@ -184,6 +185,7 @@ li .hero-list-text {
 #carousel-hero h2 { font-size: 1.2em}
 
 /* CAROUSEL FADE */
+/*
 #carousel-hero.carousel-fade .carousel-inner .item {
 	-webkit-transition-property: opacity;
 	transition-property: opacity; }
@@ -208,6 +210,7 @@ li .hero-list-text {
 
 #carousel-hero.carousel-fade .carousel-control {
 	z-index: 2; }
+*/
 
 /* ANIMATION */
 .animation-delay-1 {
