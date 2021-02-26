@@ -50,7 +50,7 @@ class hero_shortcodes extends e_shortcode
 
 		$sc = e107::getScBatch('hero', true, 'hero');
 
-		$template = e107::getTemplate('hero','hero','default'); // todo use a table field to make layout dynamic.
+		$template = e107::getTemplate('hero','hero', varset($parm['template'],'default')); // todo use a table field to make layout dynamic.
 
 		$tp = e107::getParser();
 

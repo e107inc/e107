@@ -44,10 +44,15 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	{
 		if(empty($this->var['hero_bg']))
 		{
-			return null;
+			return 'none';
 		}
 
-		return e107::getParser()->replaceConstants($this->var['hero_bg'], 'full');
+		if($url = e107::getParser()->replaceConstants($this->var['hero_bg'], 'full'))
+		{
+			return 'url('.$url.')';
+		}
+
+		return 'none';
 	}
 
 	public function sc_hero_carousel_indicators($parm=null)

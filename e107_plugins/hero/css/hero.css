@@ -34,8 +34,10 @@ li .hero-list-icon .hero-icon {
 	border-radius: 50%
 	}
 
-.hero-buttons { padding-right:20px }
 
+.carousel-hero-menu .hero-buttons { padding-right:30px }
+.carousel-hero-menu .hero-media-container { padding-right: 45px }
+.carousel-hero-menu h1, .carousel-hero-menu h2, .carousel-hero-menu ul.hero-list { margin-left: 30px; }
 
 .text-bold { font-weight: bold; }
 
@@ -163,6 +165,7 @@ li .hero-list-text {
 #carousel-hero.carousel .carousel-inner .item {
 	background-color: rgb(127,127,127);
 	background-size: cover;
+	height: 100%;
 	}
 
 #carousel-hero .hero-text-container .hero-title {
@@ -175,12 +178,12 @@ li .hero-list-text {
 	padding-left: 10000px;
 	z-index: 6;
 	margin-bottom: 40px;
-	margin-bottom: 4rem;
+/*	margin-bottom: 4rem;*/
 	}
 
 #carousel-hero .hero-list li { padding-bottom: 15px }
 
-#carousel-hero h1, #carousel-hero h2, #carousel-hero ul.hero-list { margin-left: 20px; }
+
 
 #carousel-hero h2 { font-size: 1.2em}
 

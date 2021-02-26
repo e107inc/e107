@@ -15,6 +15,6 @@ if (!defined('e107_INIT')) { exit; }
 
 // e107::lan('hero','menu', true);
 
-$text = e107::getParser()->parseTemplate("{HERO}");
+$text = e107::getParser()->parseTemplate("{HERO: template=menu}");
 e107::getRender()->tablerender(null, $text, 'hero-menu');
 
