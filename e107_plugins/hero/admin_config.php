@@ -110,12 +110,19 @@ class hero_ui extends e_admin_ui
 		public function init()
 		{
 			// Set drop-down values (if any).
+
+			$tp = e107::getParser();
 			$r = range(1000,10000,1000);
 
-			$opts = array();
+			$opts = array(
+				'false' => LAN_DISABLED
+			);
+
+
 			foreach($r as $v)
 			{
-				$opts[$v] = str_replace('000', '', $v).' '.LAN_HERO_ADMIN_016;
+				$x = str_replace('000', '', $v);
+				$opts[$v] = $tp->lanVars(LAN_HERO_ADMIN_016, $x);
 			}
 
 			$this->prefs['slide_interval']['writeParms']['optArray'] = $opts;

@@ -34,6 +34,8 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			$parm['h'] = e107::getParser()->thumbHeight();
 		}
 
+
+
 		return e107::getMedia()->previewTag($this->var['hero_media'], $parm);
 	//	return e107::getParser()->replaceConstants($this->var['hero_media'], 'full');
 	}
