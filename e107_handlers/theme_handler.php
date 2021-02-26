@@ -572,7 +572,7 @@ class e_theme
 	            foreach($cusPageArray as $kpage)
 				{
 					// e_ROUTE
-					if(!empty($request['route']) && (strpos($kpage,':'.$request['route']) === 0))
+					if(!empty($request['route']) && (strpos(':'.$request['route'], $kpage) === 0))
 					{
 						return $lyout;
 					}
