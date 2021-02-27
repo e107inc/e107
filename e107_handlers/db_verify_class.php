@@ -355,7 +355,7 @@ class db_verify
 			if(isset($debugA) && (e_PAGE === 'db.php'))
 			{
 									
-				$debug = "<table class='table' border='1'>
+				$debug = "<table class='table table-bordered table-condensed'>
 				<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl." (key=".$key.")</td>
 				<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
 				</tr>
