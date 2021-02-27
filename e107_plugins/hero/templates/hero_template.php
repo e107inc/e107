@@ -14,11 +14,11 @@ $HERO_TEMPLATE['default']['header'] 	= '<!-- Hero Menu: header -->{SETIMAGE: w=4
 
 $HERO_TEMPLATE['default']['footer'] 	= '</div><div class="carousel-controls">
 						                  <!-- Controls -->
-						                  <a class="left carousel-left carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="prev" data-bs-slide="prev">
+						                  <a title="{LAN=PREVIOUS}" class="left carousel-left carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="prev" data-bs-slide="prev">
 						                    <i class="fa fa-chevron-left fa-fw"></i>
 						                    <span class="sr-only">{LAN=PREVIOUS}</span>
 						                  </a>
-						                  <a class="right carousel-right carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="next" data-bs-slide="next">
+						                  <a title="{LAN=NEXT}" class="right carousel-right carousel-control animated zoomIn animation-delay-30" href="#carousel-hero" role="button" data-slide="next" data-bs-slide="next">
 						                    <i class="fa fa-chevron-right fa-fw"></i>
 						                    <span class="sr-only">{LAN=NEXT}</span>
 						                  </a>
