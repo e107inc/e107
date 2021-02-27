@@ -623,6 +623,7 @@
         .col-lg-offset-0{margin-left:0}
         }
         table{background-color: #fbfbfb;/* #ebedf0*/}
+        .alert table { background-color: transparent }
         caption{padding-top:8px;padding-bottom:8px;color:#c6c6c6}
         .table{width:100%;max-width:100%;margin-bottom:20px}
         .table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{padding:8px;line-height:1.42857143;vertical-align:top;border-top:1px solid rgb(153, 153, 153)}
@@ -1497,7 +1498,7 @@
         .alert .alert-link,.alert a{color:#fff;text-decoration:underline}
         .alert .close,.alert a.btn{text-decoration:none}
         .alert .close{color:#000}
-        pre{background-color: rgba(0,0,0,.1);margin-top: 10px;color: rgba(0,0,0,0.75);}
+        pre{background-color: rgba(0,0,0,.25); color: rgba(0,0,0,0.85); margin:0}
         a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover{border-color:#0f0f0f}
         .jumbotron{border:1px solid rgba(0,0,0,.6)}
         .panel-danger .panel-heading,.panel-info .panel-heading,.panel-primary .panel-heading,.panel-success .panel-heading,.panel-warning .panel-heading{border-color:#000}
