@@ -50,10 +50,10 @@ $ADMIN_TEMPLATE['nav']['button_active'] = '
 
 // Leave Admin Area. 
 $ADMIN_TEMPLATE['nav']['button_enav_home'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
+	<li class="dropdown admin-nav-home">
+		<a class="dropdown-toggle nav-home-main" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a style="display:inline-block;border-left:0;margin-left:0;padding-left:4px;" class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		 </a><a class="dropdown-toggle nav-home-caret" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 <b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -62,7 +62,7 @@ $ADMIN_TEMPLATE['nav']['button_enav_home'] = '
 
 // Change Language
 $ADMIN_TEMPLATE['nav']['button_enav_language'] = '
-	<li class="dropdown">
+	<li class="dropdown admin-nav-language">
 		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		  {LINK_TEXT} 
 		<b class="caret"></b>

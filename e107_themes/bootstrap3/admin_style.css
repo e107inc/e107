@@ -1930,6 +1930,9 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 .bootstrap-switch-on + .e-expandit-container { max-height:500px; overflow:hidden; transition:all 1s ease-in-out; }
 .bootstrap-switch-off + .e-expandit-container { max-height:0; overflow:hidden; transition: all 1s ease-in-out;  }
 
+.admin-nav-home .nav-home-main { display:inline-block; margin-right:0; padding-right:0}
+.admin-nav-home .nav-home-caret { display:inline-block;border-left:0; margin-left:0; padding-left:2px; }
+
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
