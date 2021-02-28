@@ -5461,7 +5461,7 @@ class e107
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			$e_QUERY = filter_var($e_QUERY, FILTER_SANITIZE_URL); //FIXME Breaks non-latin chars: @see https://github.com/e107inc/e107/issues/719
+			$e_QUERY = filter_var($e_QUERY, FILTER_SANITIZE_FULL_SPECIAL_CHARS); //FIXME Breaks non-latin chars: @see https://github.com/e107inc/e107/issues/719
 			if(!defined('e_QUERY'))
 			{
 				define('e_QUERY', $e_QUERY);
