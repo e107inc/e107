@@ -7002,7 +7002,7 @@ var_dump($select_options);*/
 				$parms = 'total='.$total;
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
-				if(deftrue('e_ADMIN_AREA'))
+				if(deftrue('e_ADMIN_AREA') || deftrue('e_ADMIN_UI'))
 				{
 					$parms .= '&tmpl_prefix=admin';
 				}
