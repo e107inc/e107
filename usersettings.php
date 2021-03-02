@@ -21,7 +21,10 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 
@@ -1032,6 +1035,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				<input type='hidden' name='updated_key' value='{$validation_key}' />
 				<input type='hidden' name='updated_extended' value='{$updated_extended}' />
 				<input type='hidden' name='extended_key' value='{$extended_key}' />
+				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 				</td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<tr><td style='text-align:center'>
@@ -1085,8 +1089,6 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		$text = '<form method="post" action="'.$target.'" id="dataform" class="usersettings-form form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
 
-		//$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
-
 		if (e_QUERY == "update")
 		{
 			$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
@@ -1102,15 +1104,13 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 		$text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
+				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		</form>
 		";
 
 		$caption = (isset($USERSETTINGS_EDIT_CAPTION)) ? $USERSETTINGS_EDIT_CAPTION : LAN_USET_39; // 'Update User Settings'
 
 		$ns->tablerender($caption, $text);
-
-
-
 
 
 	}
