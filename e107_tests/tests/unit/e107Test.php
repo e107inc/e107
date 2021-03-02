@@ -1947,7 +1947,7 @@ class e107Test extends \Codeception\Test\Unit
 				$tests = array(
 					'mode=main&action=create'                       => 'mode=main&amp;action=create',
 					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
-			//		'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main', //FIXME Fails.
+					'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main',
 				);
 
 				foreach($tests as $input => $expected)
