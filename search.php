@@ -15,7 +15,7 @@ e107::coreLan('search');
 if (!check_class($pref['search_restrict'])) 
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_SEARCH_20, "<div style='text-align: center'>".LAN_SEARCH_21."</div>");
+	e107::getRender()->tablerender(LAN_SEARCH_20, "<div style='text-align: center'>".LAN_SEARCH_21."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -68,10 +68,10 @@ class search_front extends e_shortcode
 		$this->search_prefs = e107::getConfig('search')->getPref();		
 		$this->search_info 	= $this->searchConfig();
 
-		
-		if(deftrue('BOOTSTRAP'))
+		if(THEME_LEGACY === false)
 		{
-			$tmp 				= e107::getCoreTemplate('search','form');
+			$tmp = e107::getCoreTemplate('search','form');
+
 			$SEARCH_TOP_TABLE 	= $tmp['start'];
 			$SEARCH_BOT_TABLE 	= $tmp['end'];
 			$SEARCH_CATS		= $tmp['category'];
@@ -81,21 +81,11 @@ class search_front extends e_shortcode
 			$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
 			
 			$this->template = $tmp;
-		
-			
-			
+
 			unset($tmp);
 		}
 		else
 		{
-			$SEARCH_TOP_TABLE = '';
-			$SEARCH_BOT_TABLE = '';
-			$SEARCH_CATS = '';
-			$SEARCH_TYPE = '';
-			$SEARCH_ADV = '';
-			$SEARCH_ENHANCED = '';
-			$SEARCH_ADV_COMBO = '';
-
 			if (file_exists(THEME."templates/search_template.php"))
 			{
 				require(THEME."templates/search_template.php");
@@ -106,26 +96,29 @@ class search_front extends e_shortcode
 			} 
 			else 
 			{
-				require(e_CORE."templates/search_template.php");
+				require(e_CORE."templates/legacy/search_template.php");
 			}
-			
+
+			if(!isset($SEARCH_TOP_TABLE))
+			{
+				$SEARCH_TOP_TABLE = '';
+			}
+
 			$SEARCH_TOP_TABLE .= "{SEARCH_ENHANCED}";
 			
 			$tmp = array();
 			
-			$tmp['start']  			= $SEARCH_TOP_TABLE ;
-			$tmp['end'] 			= $SEARCH_BOT_TABLE ;
-			$tmp['category'] 		= $SEARCH_CATS;
-			$tmp['type'] 			= $SEARCH_TYPE;
-			$tmp['advanced'] 		= $SEARCH_ADV;
-			$tmp['enhanced'] 		= $SEARCH_ENHANCED;
-			$tmp['advanced-combo'] 	= $SEARCH_ADV_COMBO;
-			
+			$tmp['start']  			= varset($SEARCH_TOP_TABLE);
+			$tmp['end'] 			= varset($SEARCH_BOT_TABLE);
+			$tmp['category'] 		= varset($SEARCH_CATS);
+			$tmp['type'] 			= varset($SEARCH_TYPE);
+			$tmp['advanced'] 		= varset($SEARCH_ADV);
+			$tmp['enhanced'] 		= varset($SEARCH_ENHANCED);
+			$tmp['advanced-combo'] 	= varset($SEARCH_ADV_COMBO);
+			$tmp['message']         = varset($SEARCH_TABLE_MSG);
+
 			$this->template = $tmp;
 		}
-
-
-
 
 
 		if(e_AJAX_REQUEST)
@@ -140,13 +133,18 @@ class search_front extends e_shortcode
 
 	}
 
-	function getPrefs()
+	public function getPrefs()
 	{
 		return $this->search_prefs;	
 	}
 
+	public function getTemplate()
+	{
+		return $this->template;
+	}
 
-	function getConfig()
+
+	public function getConfig()
 	{
 		return $this->search_info;	
 	}
@@ -571,7 +569,7 @@ class search_front extends e_shortcode
 			unset($search_info['news']);
 		}
 		*/
-		if(e107::getConfig('core')->get('comments_disabled')!=1)  // Only when comments are enabled.
+		if(e107::getConfig()->get('comments_disabled')!=1)  // Only when comments are enabled.
 		{
 			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_COMMENTS, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
 			   //	$search_id++;
@@ -601,7 +599,7 @@ class search_front extends e_shortcode
 			unset($search_info['pages']);
 		}
 	*/
-		 $e_searchList = e107::getConfig('core')->get('e_search_list');
+		 $e_searchList = e107::getConfig()->get('e_search_list');
 
 		 if(empty($this->search_prefs['plug_handlers']))
 		 {
@@ -762,7 +760,7 @@ class search_front extends e_shortcode
 
 		$tp = e107::getParser();
 	
-		$con = e107::getDateConvert(); // BC Fix
+		$con = e107::getDate(); // BC Fix
 
         $sch = e107::getSearch(); // new e_search; // BC Fix
 
@@ -837,7 +835,7 @@ class search_front extends e_shortcode
 								'tmpl_prefix'	=>'default'
 					);
 					
-					$npParms = http_build_query($nextprev,false,'&');
+					$npParms = http_build_query($nextprev,false);
 					
 					$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 					foreach ($_GET as $pparm_key => $pparm_value) 
@@ -958,7 +956,7 @@ class search_front extends e_shortcode
 			{
 				$time = time() - $this->search_prefs['time_secs'];
 				$query_check = $tp->toDB($full_query);
-				$ip = e107::getIPHandler()->getIP(FALSE);
+				$ip = e107::getIPHandler()->getIP();
 				
 				if ($sql->select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) 
 				{
@@ -1127,45 +1125,15 @@ require_once(HEADERF);
 
 // render search config
 
-if(deftrue('BOOTSTRAP'))
-{
-	$tmp 				= e107::getCoreTemplate('search','form');
-	$SEARCH_TOP_TABLE 	= $tmp['start'];
-	$SEARCH_BOT_TABLE 	= $tmp['end'];
-	$SEARCH_CATS		= $tmp['category'];
-	$SEARCH_TYPE		= varset($tmp['type']);
-	$SEARCH_ADV			= $tmp['advanced'];
-	$SEARCH_ENHANCED	= $tmp['enhanced'];
-	$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
-	
-	$srchObj->template = $tmp;
-	unset($tmp);
-}
-else
-{
-	if (file_exists(THEME."templates/search_template.php"))
-	{
-		require(THEME."templates/search_template.php");
-	}
-	elseif (file_exists(THEME."search_template.php"))
-	{
-		require(THEME."search_template.php");
-	} 
-	else 
-	{
-		require(e_CORE."templates/search_template.php");
-	}
-
-	$SEARCH_TOP_TABLE .= "{SEARCH_ENHANCED}";
-}
 
 
+$template = $srchObj->getTemplate();
 $tp = e107::getParser();
-$text =  $tp->parseTemplate($SEARCH_TOP_TABLE,true,$srchObj);
+$text =  $tp->parseTemplate($template['start'], true, $srchObj);
 
 if ($search_prefs['user_select']) 
 {
-	$text .= $tp->parseTemplate($SEARCH_CATS,true, $srchObj);
+	$text .= $tp->parseTemplate($template['category'], true, $srchObj);
 }
 
 // $text .= $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
@@ -1179,9 +1147,9 @@ $text .= "</div>";*/
 //$
 
 // $text .= $SEARCH_MESSAGE ? preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TABLE_MSG) : "";
-$text .= $SEARCH_VARS->SEARCH_MESSAGE ? $tp->simpleParse($SEARCH_TABLE_MSG, $SEARCH_VARS) : "";
+$text .= $SEARCH_VARS->SEARCH_MESSAGE ? $tp->simpleParse(varset($template['message']), $SEARCH_VARS) : "";
 //$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
-$text .= $tp->simpleParse($SEARCH_BOT_TABLE, $SEARCH_VARS);
+$text .= $tp->simpleParse($template['end'], $SEARCH_VARS);
 
 if(!isset($_GET['nf'])) // no form flag.
 {
