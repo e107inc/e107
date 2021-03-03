@@ -278,7 +278,7 @@ class e_menuManager
 			$HEADER = $HEADER[$this->curLayout];
 			$FOOTER = $FOOTER[$this->curLayout];
 		}
-		elseif($this->curLayout && ($this->curLayout !== 'legacyDefault') && (e_MENUMANAGER_ACTIVE === true))
+		elseif($this->curLayout && ($this->curLayout !== 'legacyDefault') && (deftrue('e_MENUMANAGER_ACTIVE')))
 		{
 			if(!empty($HEADER) && is_string($HEADER) && 'legacyDefault')
 			{
@@ -2081,14 +2081,14 @@ class e_mm_layout
 
 			if(vartrue($_GET['parmsId']))
 			{
-				$text = $this->renderInstanceParameters();
+			//	$text = $this->renderInstanceParameters();
 			}
 
 			if(vartrue($_POST['mode']))
 			{
 			//	print_r($_POST);
 			//	$men->setMenuId($this->menuId);
-				$text = $this->menuSaveAjax($_POST['mode']);
+			//	$text = $this->menuSaveAjax($_POST['mode']);
 			}
 
 
@@ -2158,11 +2158,11 @@ class e_mm_layout
 
 
 
-			$this->HEADER 		= $HEADER;
-			$this->FOOTER 		= $FOOTER;
-			$this->CUSTOMHEADER = $CUSTOMHEADER;
-			$this->CUSTOMFOOTER = $CUSTOMFOOTER;
-			$this->style		= $style;
+			$this->HEADER 		= varset($HEADER);
+			$this->FOOTER 		= varset($FOOTER);
+			$this->CUSTOMHEADER = varset($CUSTOMHEADER);
+			$this->CUSTOMFOOTER = varset($CUSTOMFOOTER);
+			$this->style		= varset($style);
 
 				// XXX HELP _ i don't work with iFrames.
 		//	$("#sortable")
@@ -2636,7 +2636,7 @@ class e_mm_layout
 
 			foreach($this->menuData[THEME_LAYOUT][$area] as $val)
 			{
-				$text .= $this->renderMenu($val, THEME_LAYOUT, $area,$count);
+				$text .= $this->renderMenu($val, THEME_LAYOUT, $area);
 				$this->cnt++;
 			}
 
@@ -2657,16 +2657,13 @@ class e_mm_layout
 
 
 
-	private function renderMenu($row, $layout, $area, $count)
+	private function renderMenu($row, $layout, $area)
 	{
 	//	return print_a($row,true);
 		$frm = e107::getForm();
 		$uniqueId = "menu_".$frm->name2id($row['path']).'_'.$this->cnt;
 
-		$TEMPLATE = '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area, $this->cnt, $uniqueId).' </li>
-		'; // TODO perhaps a simple counter for the id
-
-		return $TEMPLATE;
+		return '<li class="regularMenu" id="'.$uniqueId.'"> '.$this->renderMenuOptions($row, $layout, $area, $this->cnt, $uniqueId)." </li>\n";
 
 	}
 
@@ -3056,7 +3053,7 @@ class e_mm_layout
 
 
 	      //   0.6 / 0.7-1.x
-	    if(isset($this->CUSTOMHEADER) && isset($this->CUSTOMHEADER))
+	    if(!empty($this->CUSTOMHEADER))
 		{
 	         if(!is_array($this->CUSTOMHEADER))
 			 {
