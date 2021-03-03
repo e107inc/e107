@@ -579,8 +579,8 @@ img.S32:hover 				{}
 table.adminlist								{ margin-bottom: 0 }
 table.adminlist td .video-responsive        { height: auto; padding:0 }
 
-.admin-true-icon                            {  color: #51a351; font-weight:bold; font-size:20px; }
-.admin-false-icon                           {  color: #ee5f5b; font-weight:bold; font-size:20px; }
+.admin-true-icon                            {  color: #51a351 !important; font-weight:bold; font-size:20px; }
+.admin-false-icon                           {  color: #ee5f5b !important; font-weight:bold; font-size:20px; }
 
  select.e-editable-boolean.admin-true-icon option[value='1'],
  select.e-editable-boolean.admin-false-icon option[value='1']        {  color: #51a351; }
