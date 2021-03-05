@@ -1085,7 +1085,7 @@ class e_db_pdo implements e_db
 		}
 		else
 		{
-			$this->dbError("db_Update ({$query})");
+			$this->dbError('db_Update ('.print_r($query, true).')');
 			return false;
 		}
 	}
