@@ -67,6 +67,17 @@ abstract class E107Base extends Base
 		$this->workaroundOldPhpUnitPhpCodeCoverage();
 	}
 
+	public function _failed($test, $fail)
+	{
+		parent::_failed($test, $fail);
+		$this->revokeLocalE107Config();
+		$this->preparer->rollback();
+		$this->restoreLocalE107Config();
+		$this->workaroundOldPhpUnitPhpCodeCoverage();
+
+	}
+
+
 	protected function revokeLocalE107Config()
 	{
 		if (file_exists(self::APP_PATH_E107_CONFIG))
