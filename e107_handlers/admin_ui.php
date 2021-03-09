@@ -5548,19 +5548,19 @@ class e_admin_ui extends e_admin_controller_ui
             
             if($res !== FALSE)
             {
-				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_SITELINK. ': ' .($name ? $name : 'n/a'));
+				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_NAVIGATION. ': ' .($name ? $name : 'n/a'));
 				$scount++; 
             }
             else 
             {
                 if($sql->getLastErrorNumber())
                 {
-					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_SITELINK. ': ' .$name. ': ' .LAN_SQL_ERROR);
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_NAVIGATION. ': ' .$name. ': ' .LAN_SQL_ERROR);
                     e107::getMessage()->addDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
                 }
 				else
 				{
-					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_SITELINK. ': ' .$name. ': ' .LAN_UNKNOWN_ERROR);//Unknown Error
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_NAVIGATION. ': ' .$name. ': ' .LAN_UNKNOWN_ERROR);//Unknown Error
 				}
             }
 
@@ -5568,8 +5568,8 @@ class e_admin_ui extends e_admin_controller_ui
         
 		if($scount > 0)
 		{
-			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .ADLAN_138);
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>".LAN_CONFIGURE. ' ' .ADLAN_138. '</a>');
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_NAVIGATION_LINKS);
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>".LAN_CONFIGURE. ' ' .LAN_NAVIGATION. '</a>');
 			return $scount;        
 		}
         
