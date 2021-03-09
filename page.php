@@ -904,7 +904,7 @@ class pageClass
 		}
 		else 
 		{
-			$ret = e107::getParser()->parseTemplate($template, true, $vars);
+			$ret = e107::getParser()->simpleParse($template, $vars);
 		}
 
         if($this->renderMode)
