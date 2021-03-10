@@ -405,7 +405,7 @@ class lancheck
 			// return true;
 		}	
 		
-		return FALSE;
+		return false;
 	}
 	
 	
@@ -1202,7 +1202,7 @@ class lancheck
 		else
 		{
 		//	$caption = LAN_SAVED." <b>".$lan."/".$writeit."</b>";
-			$caption = LAN_SAVED." <b>".$writeit."</b>";
+			$caption = LAN_SAVED." <b>".str_replace('..','',$writeit)."</b>";
 			$status = e107::getMessage()->addSuccess($caption)->render();
 		}
 		fclose($fp);
@@ -1272,7 +1272,7 @@ class lancheck
 					if(!empty($check['bom'][$bomkey]))
 					{
 						$bom_error = "<i>".$tp->lanVars(LAN_CHECK_15,array("'&lt;?php'","'?&gt;'"))."</i><br />";  // illegal chars
-						$this->checkLog('bom',1);;
+						$this->checkLog('bom',1);
 					}
 					else
 					{
@@ -1325,7 +1325,7 @@ class lancheck
 
 				$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
 				$text .="<td class='center' style='width:5%'>
-				<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button'>".LAN_EDIT."</a>";
+				<a href='".$editUrl."' data-modal-submit='true'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button'>".LAN_EDIT."</a>";
 				$text .="</td></tr>";
 
 		}
@@ -1527,7 +1527,7 @@ class lancheck
 				list($pluginDirectory, $other) = explode("/",$tmpDir, 2);
 
 
-				if($mode == 'plugins' && ($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
+				if(($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
 				{
 					continue;
 				}
@@ -1540,7 +1540,7 @@ class lancheck
 				list($themeDirectory, $other) = explode("/",$tmpDir, 2);
 
 
-				if($mode == 'themes' && ($this->thirdPartyPlugins !== true) && !in_array($themeDirectory, $this->core_themes))
+				if(($this->thirdPartyPlugins !== true) && !in_array($themeDirectory, $this->core_themes))
 				{
 					continue;
 				}
@@ -1827,7 +1827,8 @@ class lancheck
 		{
 			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
-			if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
+			if(empty($trans['tran'][$sk]) && !empty($trans['orig'][$sk]))
+			{
 				$hglt1="<span class='label label-danger label-important e-tip' title='".LAN_MISSING."'>";//Missing
 				$hglt2="</span>";
 			}
@@ -1841,10 +1842,10 @@ class lancheck
 			<td style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
 			$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
 			$text .= ($writable) ? "<textarea  class='input-xxlarge' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
-			$text .= htmlentities(str_replace("ndef++","",$trans['tran'][$sk]));
+			$text .= htmlentities(str_replace("ndef++","", varset($trans['tran'][$sk])));
 			$text .= ($writable) ? "</textarea>" : "";
 			//echo "orig --> ".$trans['orig'][$sk]."<br />";
-			if (strpos($trans['orig'][$sk],"ndef++") !== False)
+			if (strpos($trans['orig'][$sk],"ndef++") !== false)
 			{
 				//echo "+orig --> ".$trans['orig'][$sk]." <> ".strpos($trans['orig'][$sk],"ndef++")."<br />";
 				$text .= "<input type='hidden' name='newdef[]' value='ndef++".$sk."' />";
@@ -1864,10 +1865,10 @@ class lancheck
 		
 		if($writable)
 		{
-			$text .="<div class='buttons-bar center'>
-			<input type='hidden' name='lan' value='{$lan}' />
-			<input class='btn btn-warning' type='submit' name='saveLanguageFile' value=\"".LAN_SAVE." ".str_replace($dir2,"",$root_file)." \" />
-			</div>";
+			$text .= '<div class="buttons-bar center">
+			<input type="hidden" name="lan" value="'.$lan.'" />
+			<button id="etrigger-submit" class="btn btn-warning" type="submit" name="saveLanguageFile" value="1" >'.LAN_SAVE.' '.str_replace($dir2,'',$root_file).'</button>
+			</div>';
 	
 			if($root_file)
 			{			

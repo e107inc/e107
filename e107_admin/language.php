@@ -188,12 +188,17 @@ if(!empty($_GET['iframe']))
 
 			if($return = $lck->init())
 			{
-				if($return['caption'])
+				if(isset($return['caption']))
 				{
 					$this->addTitle($return['caption']);
 				}
 
-				return $return['text'];
+				if(isset($return['text']))
+				{
+					return $return['text'];
+				}
+
+				return null;
 			}
 
 
@@ -840,14 +845,20 @@ if(!empty($_GET['iframe']))
 			{
 				if($val != $pref['sitelanguage'])
 				{
-					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
+					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".varset($pref['multilanguage_domain'][$val])."\" /></td></tr>";
 				}
 			}
 
 			if($opt)
 			{
-				return "<table class='table table-striped table-bordered' style='margin-left:0px;width:600px'>".$opt."</table>";
+				$text = "<table class='table table-striped table-bordered' style='margin-left:0px;width:600px'>".$opt."</table>";
 			}
+			else
+			{
+				$text = "<span class='label label-default'>".LANG_LAN_155."</span>";
+			}
+
+			return $text;
 		}
 	}
 

@@ -21,11 +21,26 @@ if(!defined('ADMIN_AREA'))
 	define('ADMIN_AREA', false);
 }
 
+e107::getDebug()->logTime('(Header Top)');
+
+e_theme::initThemeLayout(); // set THEME_LAYOUT
+
+if(!isset($_E107['no_menus']))
+{
+	e107::getDebug()->logTime('Init Menus');
+	e107::getMenu()->init();
+}
+
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 
-e107::getDebug()->logTime('(Header Top)');
-e107::getRender()->init();
+
+if($themeSC = e107::getScBatch('theme')) // init theme_shortcodes after THEME_LAYOUT is available.
+{
+	$themeSC->init();
+	unset($themeSC); 
+}
+e107::getRender()->init(); // init 'theme' class. 
 
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
@@ -94,7 +109,7 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 //else
 if(!e107::isCli())
 {
-	header("Content-type: text/html; charset=utf-8", true);
+	header("Content-type: text/html; charset=utf-8");
 }
 // NEW - HTML5 default
 // TODO - more precise controlo over page header depending on the HTML5 mode
@@ -102,7 +117,7 @@ if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
 	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
-	echo deftrue('HTMLTAG', $htmlTag)."\n";
+	echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }
@@ -124,6 +139,18 @@ if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->g
 	unset($_PAGE_TITLE);
 }
 
+if (deftrue('e_FRONTPAGE'))
+{
+	// Ignore any additional title when current page is the frontpage
+	echo "<title>".SITENAME."</title>\n\n";
+}
+else
+{
+
+	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+
+	unset($_PAGE_TITLE);
+}
 
 //
 // C: Send start of HTML
@@ -164,18 +191,7 @@ unset($e_headers);
 
 echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 
-if (deftrue('e_FRONTPAGE'))
-{
-	// Ignore any additional title when current page is the frontpage
-	echo "<title>".SITENAME."</title>\n\n";
-}
-else
-{
 
-	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
-
-	unset($_PAGE_TITLE);
-}
 
 
 //
@@ -663,20 +679,24 @@ else
 {
 	trigger_error('<b>BODYTAG is deprecated.</b> Use a theme.html file instead.', E_USER_DEPRECATED); // NO LAN
 
+	$BODYTAG = str_replace('THEME_LAYOUT', THEME_LAYOUT, BODYTAG);  // BC Fix, but will fail with PHP8.
+
 	if ($body_onload)
 	{
 		// Kludge to get the CHAP code included
-		echo substr(trim(BODYTAG), 0, -1).' '.$body_onload.">\n";
+		echo substr(trim($BODYTAG), 0, -1).' '.$body_onload.">\n";
 	}
 	else
 	{
 
-		echo BODYTAG."\n";	
+		echo $BODYTAG."\n";
 	}
 	if(isset($pref['meta_bodystart'][e_LANGUAGE]))
 	{
 		echo $pref['meta_bodystart'][e_LANGUAGE]."\n";
 	}
+
+	unset($BODYTAG);
 }
 
 // Bootstrap Modal Window
@@ -760,9 +780,10 @@ e107::getDebug()->logTime('Render Layout');
 					'{THEME}'       => THEME_ABS,
 					'{BODY_ONLOAD}' => $body_onload,
 					'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
+					'THEME_LAYOUT'  => THEME_LAYOUT, // BC Fall-back: Catch and replace the missing constant- ony works with PHP < 8
 					'{---MODAL---}' => (isset($LAYOUT['_modal_']) ? $LAYOUT['_modal_'] : '') ,
-					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}',true),
-			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}',true),
+					'{---HEADER---}'  => e107::getParser()->parseTemplate('{HEADER}'),
+			        '{---FOOTER---}'  => e107::getParser()->parseTemplate('{FOOTER}'),
 					),
 			'bodyStart' => varset($pref['meta_bodystart'][e_LANGUAGE])
 			);
@@ -828,4 +849,6 @@ e107::getDebug()->logTime('Render Other');
 
 	unset($text);
 }
+
+$GLOBALS['FOOTER'] = $FOOTER;
 //Trim whitepsaces after end of the script

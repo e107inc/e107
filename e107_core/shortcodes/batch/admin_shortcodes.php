@@ -2280,51 +2280,50 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		
 		if($type === self::ADMIN_NAV_HOME)
 		{
-		
-			$menu_vars[$type]['text'] = ''; // ADLAN_53;
-			$menu_vars[$type]['link'] = e_HTTP.'index.php';
-			$menu_vars[$type]['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$data   = e107::getNav()->initData();
+
+			/** @var navigation_shortcodes $sc */
+			$sc     = e107::getScBatch('navigation');
+
+			$tmp    = array();
+			$c      = 0;
+
+			$menu_vars = [];
+			$menu_vars[$type]['text']      = ''; // ADLAN_53;
+			$menu_vars[$type]['link']      = e_HTTP.'index.php';
+			$menu_vars[$type]['image']     = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars[$type]['image_src'] = ADLAN_151;
-			$menu_vars[$type]['sort'] = 1;
+			$menu_vars[$type]['sort']      = 1;
 			$menu_vars[$type]['sub_class'] = 'sub';
-			$menu_vars[$type]['template'] = $type;
-			
-			// Sub Links for 'home'. 
-			require_once(e_HANDLER. 'sitelinks_class.php');
-			$slinks = new sitelinks;
-			$slinks->getlinks(1);
-			$tmp = array();	
-			$c= 0;
-			foreach($slinks->eLinkList['head_menu'] as $k=>$lk)
+			$menu_vars[$type]['template']  = $type;
+
+			foreach($data as $k=>$lk)
 			{
-				$subid = 'home_'.$k;
-				$subid = $c;
-				$link = (strpos($lk['link_url'], "/") !== 0 && strpos($lk['link_url'], "{e_") !== 0 && strpos($lk['link_url'], 'http') !== 0) ? '{e_BASE}' .$lk['link_url'] : $lk['link_url'];
-								
-				$tmp[$c]['text'] = $tp->toHTML($lk['link_name'],'','defs');
-				$tmp[$c]['description'] = $tp->toHTML($lk['link_description'],'','defs');
-				$tmp[$c]['link'] = $tp->replaceConstants($link,'full');
-				$tmp[$c]['image'] = vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
-				$tmp[$c]['image_large'] = '';
-				$tmp[$c]['image_src'] = vartrue($lk['link_button']);
+				$sc->setVars($lk);
+
+				$tmp[$c]['text']            = $sc->sc_nav_link_name();;
+				$tmp[$c]['description']     = $tp->toHTML($lk['link_description'], '', 'defs');
+				$tmp[$c]['link']            = $sc->sc_nav_link_url(); // $tp->replaceConstants($link,'full');
+				$tmp[$c]['image']           = $sc->sc_nav_link_icon(); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
+				$tmp[$c]['image_large']     = '';
+				$tmp[$c]['image_src']       = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
 			//	$tmp[$c]['perm'] = '';
 				$c++;
 			}
 
 			$menu_vars[$type]['sub'] = $tmp;
-			// --------------------
 		}
 		elseif($type == self::ADMIN_NAV_LOGOUT)
 		{
 			$tmp = array();
 			
-			$tmp[1]['text'] = LAN_SETTINGS;
-			$tmp[1]['description'] = ADLAN_151;
-			$tmp[1]['link'] = e_BASE.'usersettings.php';
-			$tmp[1]['image'] =  "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[1]['image_large'] = '';
-			$tmp[1]['image_src'] = '';
+			$tmp[1]['text']            = LAN_SETTINGS;
+			$tmp[1]['description']     = ADLAN_151;
+			$tmp[1]['link']            = e_BASE.'usersettings.php';
+			$tmp[1]['image']           = "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[1]['image_large']     = '';
+			$tmp[1]['image_src']       = '';
 			$tmp[1]['image_large_src'] = '';
 
 
@@ -2344,25 +2343,24 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			}
 			
 			
-			$tmp[3]['text'] = LAN_LOGOUT;
-			$tmp[3]['description'] = ADLAN_151;
-			$tmp[3]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[3]['image'] = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[3]['image_large'] = '';
-			$tmp[3]['image_src'] = '';
+			$tmp[3]['text']            = LAN_LOGOUT;
+			$tmp[3]['description']     = ADLAN_151;
+			$tmp[3]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[3]['image']           = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[3]['image_large']     = '';
+			$tmp[3]['image_src']       = '';
 			$tmp[3]['image_large_src'] = '';
 
-				
-				
-					
-			$tmp[4]['text'] = LAN_LOGOUT;
-			$tmp[4]['description'] = ADLAN_151;
-			$tmp[4]['link'] = e_ADMIN_ABS.'admin.php?logout';
-			$tmp[4]['image'] = '';
-			$tmp[4]['image_large'] = '';
-			$tmp[4]['image_src'] = '';
+
+			$tmp[4]['text']            = LAN_LOGOUT;
+			$tmp[4]['description']     = ADLAN_151;
+			$tmp[4]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[4]['image']           = '';
+			$tmp[4]['image_large']     = '';
+			$tmp[4]['image_src']       = '';
 			$tmp[4]['image_large_src'] = '';
-			$tmp[4]['link_class']	= 'divider';
+			$tmp[4]['link_class']      = 'divider';
+
 			
 							
 			$tmp[5]['text'] 			= 'e107 Website';

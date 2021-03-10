@@ -187,6 +187,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
+		e107::loadAdminIcons();
+
 		try
 		{
 			$this->_frm = e107::getForm();
@@ -197,8 +199,9 @@ class e_formTest extends \Codeception\Test\Unit
 			$this->assertTrue(false, "Couldn't load e_form object");
 		}
 
-		e107::loadAdminIcons();
+
 		e107::getParser()->setFontAwesome(5);
+
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		e107::includeLan(e_PLUGIN.'forum/languages/English/English_front.php');
 
@@ -277,32 +280,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 			public function testHelp()
 			{
-				// disabled
-				$this->_frm->setHelpLocation('none');
-				$result = $this->_frm->help('my tip', 'before');
-				$this->assertEmpty($result);
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertEmpty($result);
-
-				// display after only.
-				$this->_frm->setHelpLocation('after');
-				$result = $this->_frm->help('my tip', 'before');
-				$this->assertEmpty($result);
-
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertSame('<div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
-
-
-				// display as icon before field only.
-				$this->_frm->setHelpLocation('before');
-				$result = $this->_frm->help('my tip', 'before');
+				$result = $this->_frm->help('my tip');
 				$this->assertSame('<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i><div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
-				$result = $this->_frm->help('my tip', 'after');
-				$this->assertEmpty($result);
-
-
-				$this->_frm->setHelpLocation('after');
-
 
 			}
 /*
@@ -1083,8 +1062,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 			'textarea_001' => "<textarea name='textarea_001' rows='5' cols='40' id='textarea-001' class='form-control input-xlarge' tabindex='5'>the quick brown fox jumps over the lazy dog</textarea>",
 
-			'layout_001'    => "<select name='layout_001' id='news_view' class='tbox select form-control' tabindex='6'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option></select>",
-			'layout_002'    => "<select name='layout_002' id='news_view' class='tbox select form-control' tabindex='7'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option></select>",
+			'layout_001'    => "<select name='layout_001' id='news_view' class='tbox select form-control' tabindex='6'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option><option value='nav'>Nav</option></select>",
+			'layout_002'    => "<select name='layout_002' id='news_view' class='tbox select form-control' tabindex='7'><option value='default' selected='selected'>Default</option><option value='videos'>Videos (experimental)</option><option value='nav'>Nav</option></select>",
 
 			'image_001'     => "<a href=\"".e_HTTP."e107_themes/bootstrap3/images/e107_adminlogo.png\" data-modal-caption=\"e107_adminlogo.png\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"e107_adminlogo.png\" rel=\"external\"><img class=\"thumbnail e-thumb\" src=\"".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=60&amp;h=0\" alt=\"e107_adminlogo.png\" srcset=\"".e_HTTP."thumb.php?src=e_THEME%2Fbootstrap3%2Fimages%2Fe107_adminlogo.png&amp;w=240&amp;h=0 4x\" width=\"60\"  /></a><input type='hidden' name='image_001' value='{e_THEME}bootstrap3/images/e107_adminlogo.png' id='image-001-e-THEME-bootstrap3-images-e107-adminlogo-png' />",
 			'image_002'     => "<a href=\"".e_HTTP."e107_files/downloadimages/butterfly.jpg\" data-modal-caption=\"butterfly.jpg\" data-target=\"#uiModal\" class=\"e-modal e-image-preview\" title=\"butterfly.jpg\" rel=\"external\"><img class=\"thumbnail e-thumb\" src=\"".e_HTTP."e107_files/downloadimages/butterfly.jpg\" alt=\"butterfly.jpg\" width=\"60\"  /></a><input type='hidden' name='image_002' value='butterfly.jpg' id='image-002-butterfly-jpg' />",

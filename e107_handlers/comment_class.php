@@ -263,7 +263,7 @@ class comment
 			
 			// -------------------------------------------------------------
 			
-			$indent = ($action == 'reply') ? " class='media col-md-offset-1 offset1' " : " class='media' ";
+			$indent = ($action == 'reply') ? " class='media offset-md-1 col-md-offset-1 offset1' " : " class='media' ";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
 			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
@@ -479,9 +479,10 @@ class comment
 		//	$width2 = 100 - $width;
 		//	$total_width = "95%";
 			if ($width)
-			{		
+			{
+
 				$renderstyle = $COMMENT_TEMPLATE['item_start'];
-				$renderstyle .= "<div class='media offset".$width." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";	
+				$renderstyle .= "<div class='row media offset".$width." col-md-".(12 - (int) $width)." offset-md-".$width." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";
 				$renderstyle .= $COMMENT_TEMPLATE['item_end'];					
 			}
 			else

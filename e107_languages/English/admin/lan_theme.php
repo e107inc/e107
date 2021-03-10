@@ -139,4 +139,5 @@ define("TPVLANHELP_03", "By default, the visibility filter will change the theme
 define("TPVLANHELP_04", "End lines with a [b]![/b] to exactly match against the end of URL.");
 define("TPVLANHELP_05", "End lines with a [b]$[/b] to exactly match against the end of script path.");
 
+define("TPVLANHELP_06", "Start lines with a [b]:[/b] to partially or fully match against the e_ROUTE constant.");
 define("TPVLAN_97", "This theme requires a newer version of e107.");

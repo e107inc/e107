@@ -100,8 +100,75 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
 		$value      = 	!empty($_POST['author_name']) ?  e107::getParser()->filter( $_POST['author_name']) : $userName;
-		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
+		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' aria-label='".LANCONTACT_17."' aria-labelledby='contactName' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
 	}
+
+	function sc_contact_map($parm=null)
+	{
+		$pref = e107::getPref('contact_info');
+
+		if(empty($pref['address']) && empty($pref['coordinates']))
+		{
+			return null;
+		}
+
+		$address = !empty($pref['coordinates']) ? $pref['coordinates'] : $pref['address'];
+		$address = trim($address);
+		$address = str_replace("\n", " ", $address);
+
+		$zoom = varset($parm['zoom'], 'street');
+
+		$zoomOpts = [
+			'street' => 17,
+			'district'  => 14,
+			'city'  => 12,
+
+		];
+
+		$zoom = (int) varset($zoomOpts[$zoom],$zoom);
+
+// &z='.$zoom.'
+
+		return '<iframe class="sc-contact-map" src="https://www.google.com/maps?q='.$address.'&output=embed&z='.$zoom.'"></iframe>';
+
+	}
+
+	function sc_contact_info($parm=null)
+	{
+		$ipref = e107::getPref('contact_info');
+		$type = varset($parm['type']);
+
+		if(empty($type) || empty($ipref[$type]))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+		$ret = '';
+
+		switch($type)
+		{
+			case "organization":
+				$ret = $tp->toHTML($ipref[$type], true, 'TITLE');
+				break;
+
+			case 'email1':
+			case 'email2':
+			case 'phone1':
+			case 'phone2':
+			case 'phone3':
+			case 'fax':
+				$ret = $tp->obfuscate($ipref[$type]);
+				break;
+
+			default:
+				$ret = $tp->toHTML($ipref[$type], true, 'BODY');
+				// code to be executed if n is different from all labels;
+		}
+
+		return $ret;
+	}
+
 
 
 
@@ -117,7 +184,7 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
 		$value = !empty($_POST['email_send'] ) ? e107::getParser()->filter($_POST['email_send'],'email') : USEREMAIL;
-		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
+		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' aria-label='".LANCONTACT_18."'  aria-labelledby='contactEmail' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
 	}
 	
 	
@@ -130,8 +197,8 @@ class contact_shortcodes extends e_shortcode
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
-		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject'], 'str') : '';
-		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
+		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject']) : '';
+		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' aria-label='".LANCONTACT_19."' aria-labelledby='contactSubject' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
 	}
 	
 	
@@ -153,7 +220,7 @@ class contact_shortcodes extends e_shortcode
 
 		$value = !empty($_POST['body']) ? stripslashes($_POST['body']) : '';
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' aria-label='".LANCONTACT_20."' aria-labelledby='contactBody' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
 	}
 	
 	
@@ -184,11 +251,12 @@ class contact_shortcodes extends e_shortcode
 		$pp = e107::getParser()->replaceConstants($pp, 'full'); 
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
 		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LANCONTACT_22);
-		$text = e107::getParser()->lanVars(LANCONTACT_23, $link);
-		return $text;
+
+		return e107::getParser()->lanVars(LANCONTACT_23, $link);
+
 	}
 
 
 }
 
-?>
+

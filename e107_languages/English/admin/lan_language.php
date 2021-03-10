@@ -70,3 +70,5 @@ define("LANG_LAN_151", "Available");
 define("LANG_LAN_152", "Courtesy of the [e107 translations team]");
 define("LANG_LAN_153", "Pre-release");
 define("LANG_LAN_154", "The Language Pack has been created. You can now submit it to the Github repository as instructed [here].");
+
+define("LANG_LAN_155", "Requires additional language packs be installed.");

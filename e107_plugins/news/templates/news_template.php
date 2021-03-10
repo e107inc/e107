@@ -43,7 +43,7 @@ $NEWS_TEMPLATE['list']['first'] = '
           <div class="text-justify">
        
           </div>
-           <div class="text-right">
+           <div class="text-right text-end">
 			<a href="{NEWS_URL}" class="btn btn-primary">{LAN=LAN_READ_MORE}</a>
 			</div>
         <hr>
@@ -68,7 +68,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                        	{NEWS_SUMMARY}
 					</p>
                     <p>
-                       <a href="{NEWSURL}" class="btn btn-small btn-primary">'.LAN_READ_MORE.'</a>
+                       <a href="{NEWSURL}" class="btn btn-small btn-primary">{LAN=READ_MORE}</a>
                    </p>
  				</div>
 		</div>
@@ -124,7 +124,7 @@ $NEWS_TEMPLATE['default']['item'] = '
         <hr class="news-heading-sep">
          	<div class="row">
         		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
-        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
+        		<div class="col-md-6 text-right text-end options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
         <hr>
           {NEWSIMAGE: item=1}
@@ -134,7 +134,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           <div class="text-justify">
           {NEWS_BODY}
           </div>
-          <div class="text-right">
+          <div class="text-right text-end">
           {EXTENDED}
           </div>
 		  <hr>
@@ -159,7 +159,7 @@ $NEWS_TEMPLATE['2-column']['item']     = '<div class="item col-md-6">
 											{NEWSTHUMBNAIL=placeholder}
 	                                            <h3>{NEWS_TITLE}</h3>
 	                                            <p>{NEWS_SUMMARY}</p>
-	                                         	<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+	                                         	<p class="text-right text-end"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
             							  </div>';
 $NEWS_TEMPLATE['2-column']['end']      = '</div>';
 

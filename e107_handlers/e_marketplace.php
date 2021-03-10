@@ -743,9 +743,9 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 
 		// settings based on current method
 		$this->prepareClient($method, $client);
-		
+
 		// authorization data
-		$data['auth'] = $this->getAuthKey();
+	//	$data['auth'] = $this->getAuthKey();
 		$data['action'] = $method;
 
 		foreach($data['params'] as $k=>$v)
@@ -787,7 +787,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	{
 		$ret = $this->parse($result);
 		$this->fetchParams($ret);
-		
+
 		switch ($method) 
 		{
 			// normalize
@@ -811,7 +811,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		$tags = array_keys(get_object_vars($xml));
 		$count = $xml->count();
 		$tcount = count($tags);
-		
+
 		if($count === 0)
 		{
 			$attr = (array) $xml->attributes();
@@ -828,48 +828,66 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 			}
 			return $ret;
 		}
-		
+
 		/**
 		 * <key>
-		 * 	<value />
-		 * 	<value />
+		 *    <value />
+		 *    <value />
 		 * </key>
 		 */
 		if($tcount === 1 && $count > 1)
 		{
-			foreach ($xml as $name => $node) 
+			foreach($xml as $name => $node)
 			{
 				$_res = $this->parse($node, $name);
 				if(is_string($_res))
 				{
-					 $_res = trim($_res);
+					$_res = trim($_res);
 				}
-				
+
 				$ret[$name][] = $this->parse($node, $name);
 			}
 		}
 		// default
 		else
 		{
-			foreach ($xml as $name => $node) 
+			foreach($xml as $name => $node)
 			{
 				if(in_array($name, $this->_forceArray))
 				{
 					$_res = $this->parse($node, $name);
-					if(is_string($_res)) $_res = trim($_res);
-					
-					if(empty($_res)) $ret[$name] = array(); // empty
-					elseif(is_string($_res)) $ret[$name][] = $_res; // string
-					else 
+					if(is_string($_res))
 					{
-						if(in_array($name, $this->_forceNumericalArray)) $ret[$name][] = $_res; //array - controlled force numerical array
-						else $ret[$name] = $_res; //array, no force
+						$_res = trim($_res);
+					}
+
+					if(empty($_res))
+					{
+						$ret[$name] = array();
+					}
+					elseif(is_string($_res)) // empty
+					{
+						$ret[$name][] = $_res;
+					} // string
+					else
+					{
+						if(in_array($name, $this->_forceNumericalArray))
+						{
+							$ret[$name][] = $_res;
+						} //array - controlled force numerical array
+						else
+						{
+							$ret[$name] = $_res;
+						} //array, no force
 					}
 				}
-				else $ret[$name] = $this->parse($node, $name);
+				else
+				{
+					$ret[$name] = $this->parse($node, $name);
+				}
 			}
 		}
-		
+
 
 		$attr = (array) $xml->attributes();
 		if(!empty($attr))
@@ -923,7 +941,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		switch ($method) 
 		{
 			case 'getList':
-				$this->_forceArray = array('item', 'screenshots', 'image');
+				$this->_forceArray = array('item', 'screenshots', 'image', 'data');
 				$this->_forceNumericalArray = array('item', 'image');
 				//$client->setOptArrayTags('item,screenshots,image')
 				//	->setOptStringTags('icon,folder,version,author,authorURL,date,compatibility,url,thumbnail,featured,livedemo,price,name,description,category,image');

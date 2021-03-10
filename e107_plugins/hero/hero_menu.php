@@ -13,13 +13,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if(deftrue('e_FRONTPAGE'))
-{
-	$text = e107::getParser()->parseTemplate("{HERO}", true);
-	e107::getRender()->tablerender(null, $text, 'hero-menu');
-}
-elseif(ADMIN)
-{
-	$text = "<div class='alert alert-danger'>Hero only runs on the frontpage of your site.</div>";
-	e107::getRender()->tablerender(null, $text,'hero-menu');
-}
+// e107::lan('hero','menu', true);
+
+$text = e107::getParser()->parseTemplate("{HERO: template=menu}");
+e107::getRender()->tablerender(null, $text, 'hero-menu');
+

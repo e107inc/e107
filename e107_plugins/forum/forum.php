@@ -97,7 +97,6 @@ class forum_front
 
 				case 'rules':
 					include_once(HEADERF);
-
 					$this->forum_rules('show');
 					include_once(FOOTERF);
 					exit;
@@ -157,10 +156,15 @@ class forum_front
 			}
 
 			$FORUM_MAIN_START = $FORUM_TEMPLATE['main']['start'];
-			$FORUM_MAIN_PARENT = $FORUM_TEMPLATE['main']['parent'];
+			$FORUM_MAIN_PARENT = varset($FORUM_TEMPLATE['main']['parent']);
 			$FORUM_MAIN_PARENT_END = varset($FORUM_TEMPLATE['main']['parent_end']);
 			$FORUM_MAIN_FORUM = $FORUM_TEMPLATE['main']['forum'];
 			$FORUM_MAIN_END = $FORUM_TEMPLATE['main']['end'];
+
+			if(isset($FORUM_TEMPLATE['main']['parent_start']))
+			{
+				$FORUM_MAIN_PARENT = $FORUM_TEMPLATE['main']['parent_start'];
+			}
 
 			$FORUM_NEWPOSTS_START = $FORUM_TEMPLATE['main']['start']; // $FORUM_TEMPLATE['new-start'];
 			$FORUM_NEWPOSTS_MAIN = $FORUM_TEMPLATE['main']['forum']; // $FORUM_TEMPLATE['new-main'];

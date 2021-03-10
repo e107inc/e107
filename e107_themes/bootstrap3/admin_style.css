@@ -88,7 +88,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 #core-admin-log-list-form .fa-exclamation-circle { color: #FAA732 }
 #core-admin-log-list-form .fa-warning { color: #ee5f5b }
 
-.admin-ui-help-tip { padding-top: 5px; font-size: 18px; cursor: help; color: rgb(192, 192, 192,0.5);  float: right; }
+.admin-ui-help-tip { padding-top: 2px; font-size: 18px; cursor: help; color: rgba(127, 127, 127, 0.7);  float: right !important; margin-left:5px; }
 .admin-ui-help-tip:hover { color: #5bc0de; }
 
 /*
@@ -579,8 +579,8 @@ img.S32:hover 				{}
 table.adminlist								{ margin-bottom: 0 }
 table.adminlist td .video-responsive        { height: auto; padding:0 }
 
-.admin-true-icon                            {  color: #51a351; font-weight:bold; font-size:20px; }
-.admin-false-icon                           {  color: #ee5f5b; font-weight:bold; font-size:20px; }
+.admin-true-icon                            {  color: #51a351 !important; font-weight:bold; font-size:20px; }
+.admin-false-icon                           {  color: #ee5f5b !important; font-weight:bold; font-size:20px; }
 
  select.e-editable-boolean.admin-true-icon option[value='1'],
  select.e-editable-boolean.admin-false-icon option[value='1']        {  color: #51a351; }
@@ -1597,7 +1597,7 @@ li.rssRow > div {
 
 #e-online table                { margin-top:10px; margin-left:auto; margin-right:auto }
 #admin-plugin-online-list .admin-main-content img.icon, #core-plugin-list img.icon    { width: 32px; height:32px }
-#admin-plugin-online-grid .admin-main-content img.icon { width: 128px; height: 128px }
+#admin-plugin-online-grid .admin-main-content img.icon { width: 128px; /*height: 128px*/ }
 .tab-content #coreFeed,
 .tab-content #pluginFeed,
 .tab-content #themeFeed             { padding-top:20px }
@@ -1925,6 +1925,13 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 #core-thememanager-configure .admin-css-selector { margin-bottom:15px;  }
 #core-thememanager-configure .admin-css-selector .active { opacity: 1 }
 #admin-ui-edit td > ol { padding-left: 1.2em; }
+
+/* Bootstrap switch expandit in pure-css */
+.bootstrap-switch-on + .e-expandit-container { max-height:500px; overflow:hidden; transition:all 1s ease-in-out; }
+.bootstrap-switch-off + .e-expandit-container { max-height:0; overflow:hidden; transition: all 1s ease-in-out;  }
+
+.admin-nav-home .nav-home-main { display:inline-block; margin-right:0; padding-right:0}
+.admin-nav-home .nav-home-caret { display:inline-block;border-left:0; margin-left:0; padding-left:2px; }
 
 
 @media (min-width: 1101px ){

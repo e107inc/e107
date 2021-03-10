@@ -207,7 +207,6 @@ class e_theme
 
 				if($scp === $scope || $scp === 'all' || $scope === 'all')
 				{
-					unset($info['name']);
 					unset($info['scope']);
 
 					$ret[$name] = $info;
@@ -497,7 +496,7 @@ class e_theme
 	 * @param string $url
 	 * @return string
 	 */
-	private function filterTrackers($url)
+	private static function filterTrackers($url)
 	{
 		if(strpos($url,'?') === false || empty($url))
 		{
@@ -515,26 +514,25 @@ class e_theme
 
 
 	/**
-	 * Calculate THEME_LAYOUT constant based on theme preferences and current URL.
+	 * Calculate THEME_LAYOUT constant based on theme preferences and current request. (url, script, route)
 	 *
-	 * @param array  $cusPagePref
+	 * @param array $cusPagePref
 	 * @param string $defaultLayout
-	 * @param string $request_url (optional) defaults to e_REQUEST_URL
-	 * @param string $request_script $_SERVER['SCRIPT_FILENAME'];
+	 * @param array $request url =>  (optional) defaults to e_REQUEST_URL, 'script'=> $_SERVER['SCRIPT_FILENAME'], 'route' => e_ROUTE
 	 * @return int|string
 	 */
-	public function getThemeLayout($cusPagePref, $defaultLayout, $request_url = null, $request_script = null)
+	public static function getThemeLayout($cusPagePref, $defaultLayout, $request)
 	{
+		$request_url = isset($request['url']) ? $request['url'] : null;
+		$request_script = isset($request['script']) ? $request['script'] : null;
 
 		if($request_url === null)
 		{
 			$request_url = e_REQUEST_URL;
 		}
 
-
 		$def = "";   // no custom pages found yet.
 		$matches = array();
-
 
 		if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 		{
@@ -543,7 +541,7 @@ class e_theme
 			// FIX - check against urldecoded strings
 			$c_url = rtrim(rawurldecode($c_url), '?');
 
-			$c_url = $this->filterTrackers($c_url);
+			$c_url = self::filterTrackers($c_url);
 
 			// First check all layouts for exact matches - possible fix for future issues?.
 			/*
@@ -566,13 +564,19 @@ class e_theme
 				if(!is_array($cusPageArray)) { continue; }
 
 				// NEW - Front page template check - early
-				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
+				if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') === SITEURL.'index.php'))
 				{
 					return $lyout;
 				}
 
 	            foreach($cusPageArray as $kpage)
 				{
+					// e_ROUTE
+					if(!empty($request['route']) && (strpos(':'.$request['route'], $kpage) === 0))
+					{
+						return $lyout;
+					}
+
 					$kpage = str_replace('&#036;', '$', $kpage); // convert database encoding.
 
 					$lastChar = substr($kpage, -1);
@@ -585,8 +589,6 @@ class e_theme
 							return $lyout;
 						}
 					}
-
-
 
 					if($lastChar === '!')
 					{
@@ -1095,7 +1097,7 @@ class e_theme
 				$vars['library'][] = array(
 					'name'  => $val['@attributes']['name'],
 					'version' => varset($val['@attributes']['version']),
-					'scope' => varset($val['@attributes']['scope']),
+					'scope' => varset($val['@attributes']['scope'], 'front'),
 				);
 			}
 
@@ -1219,7 +1221,11 @@ class e_theme
 
 	}
 
-	private static function initThemeLayout($pref)
+	/**
+	 * Define the THEME_STYLE constant
+	 * @param $pref
+	 */
+	public static function initThemeStyle($pref)
 	{
 
 		e107::getDebug()->logTime('Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
@@ -1227,6 +1233,7 @@ class e_theme
 		if(deftrue('e_ADMIN_AREA'))
 		{
 			define('THEME_STYLE', $pref['admincss']);
+			self::initThemeLayout();  // the equivalent for frontend is in header_default.php
 		}
 		elseif(!empty($pref['themecss']) && file_exists(THEME.$pref['themecss']))
 		{
@@ -1237,20 +1244,41 @@ class e_theme
 			define('THEME_STYLE', 'style.css');
 		}
 
-		if(!defined('THEME_LAYOUT'))
+
+	}
+
+	/**
+	 * define the THEME_LAYOUT constant.
+	 * @return null
+	 */
+	public static function initThemeLayout()
+	{
+		if(defined('THEME_LAYOUT'))
 		{
-			$user_pref      = e107::getUser()->getPref();
-			$cusPagePref    = (!empty($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages'],array());
-			$cusPageDef     = (empty($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
-			$deflayout      = e107::getTheme()->getThemeLayout($cusPagePref, $cusPageDef, e_REQUEST_URL, varset($_SERVER['SCRIPT_FILENAME']));
-
-			define('THEME_LAYOUT',$deflayout);
-
-		    unset($cusPageDef,$lyout,$cusPagePref,$menus_equery,$deflayout);
+			return null;
 		}
+
+		$sitetheme_custompages  = e107::getPref('sitetheme_custompages', array());
+		$sitetheme_deflayout    = e107::getPref('sitetheme_deflayout');
+
+		$user_pref      = e107::getUser()->getPref();
+		$cusPagePref    = !empty($user_pref['sitetheme_custompages']) ? $user_pref['sitetheme_custompages'] : $sitetheme_custompages;
+		$cusPageDef     = !empty($user_pref['sitetheme_deflayout']) ? $user_pref['sitetheme_deflayout'] : $sitetheme_deflayout;
+
+		$request = [
+			'url'       => e_REQUEST_URL,
+			'script'    => varset($_SERVER['SCRIPT_FILENAME'],null),
+			'route'     => deftrue('e_ROUTE', null),
+		];
+
+		$deflayout      = self::getThemeLayout($cusPagePref, $cusPageDef, $request);
+
+		define('THEME_LAYOUT',$deflayout);
 
 
 	}
+
+
 	/**
 	 * Replacement of checkvalidtheme()
 	 * @param string $themeDir
@@ -1269,7 +1297,7 @@ class e_theme
 		{
 			$layout = !empty($_GET['layout']) ? $_GET['layout'] : null;
 			self::initThemePreview($_GET['themepreview'], $layout);
-			self::initThemeLayout($pref);
+			self::initThemeStyle($pref);
 			return;
 		}
 
@@ -1296,7 +1324,7 @@ class e_theme
 			$e107->site_theme = $themeDir;
 			e107::getDebug()->logTime('Theme Check End');
 
-			self::initThemeLayout($pref);
+			self::initThemeStyle($pref);
 			return;
 		}
 
@@ -1310,7 +1338,7 @@ class e_theme
 		define('THEME_LEGACY', false);
 		define('USERTHEME', 'bootstrap3');
 		define('BOOTSTRAP', 3);
-		define('FONTAWESOME', 4);
+		define('FONTAWESOME', 5);
 
 		if (ADMIN && (e_ADMIN_AREA !== true))
 		{
@@ -1318,7 +1346,7 @@ class e_theme
 		}
 
 		e107::getDebug()->logTime('Theme Check End');
-		self::initThemeLayout($pref);
+		self::initThemeStyle($pref);
 
 	}
 
@@ -2571,7 +2599,7 @@ class themeHandler
 							//if(isset($pref['sitetheme_custompages'][$key]))
 							//{
 								$itext .= $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'>
-										<textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
+										<textarea class='input-custompages' style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
 
 
 
@@ -2794,18 +2822,25 @@ class themeHandler
 	private function filterStylesheets($mode, $theme)
 	{
 
-		$remove = array();
 		$detected = array();
 
 		if($mode == self::RENDER_SITEPREFS)
 		{
+			$detected = e107::getTheme()->getScope('css', 'front');
+			$all = e107::getTheme()->getScope('css', 'all');
+
 			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
 			{
 				if($v['name'] == '*')
 				{
 					foreach($theme['files'] as $val) // get wildcard list of css files.
 					{
-						if(substr($val,-4) == '.css' && strpos($val, "admin_") !== 0)
+						if(isset($detected[$val]) || isset($all[$val]))
+						{
+							continue;
+						}
+
+						if(substr($val,-4) === '.css' && strpos($val, "admin_") !== 0)
 						{
 							$detected[$val] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
 						}
@@ -2813,87 +2848,14 @@ class themeHandler
 					break;
 				}
 			}
+
 		}
-
-
-
-
-		foreach($theme['css'] as $k=>$vl) // as defined.
+		elseif($mode === self::RENDER_ADMINPREFS)
 		{
-			if(!empty($detected[$vl['name']])) // remove any detected files which are listed
-			{
-				unset($detected[$vl['name']]);
-			}
-
-
-				 // frontend
-				if($mode === self::RENDER_SITEPREFS)
-				{
-
-					if(strpos($vl['name'], "admin_") === 0)
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['scope'] == 'admin')
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['name'] == '*' )
-					{
-						$remove[$k] = $vl['name'];
-
-						$wildcard = true;
-						continue;
-					}
-
-				}
-
-				if($mode === self::RENDER_ADMINPREFS)
-				{
-
-					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['name'] == '*' )
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if($vl['scope'] === 'front')
-					{
-						$remove[$k] = $vl['name'];
-					}
-
-					if(!empty($vl['nonadmin']))
-					{
-						$remove[$k] = $vl['name'];
-					}
-				}
-
-
-
-
+			$detected = e107::getTheme('admin')->getScope('css', 'admin');
 		}
 
-		foreach($remove as $k=>$file)
-		{
-			unset($theme['css'][$k]);
-		//	unset($detected[$file]);
-		}
-
-		foreach($detected as $k=>$v)
-		{
-			$theme['css'][] = $v;
-		}
-
-	//	print_a($detected);
-	//	print_a($remove);
-
-		return $theme['css'];
+		return $detected;
 
 	}
 

@@ -1052,11 +1052,7 @@ if(!isset($_E107['no_theme']))
 }
 //echo "\nRun Time:  " . number_format(( microtime(true) - $startTime), 4) . " Seconds\n";
 // -----------------------------------------------------------------------
-if(!isset($_E107['no_menus']))
-{
-	$dbg->logTime('Init Menus');
-	e107::getMenu()->init();
-}
+
 
 // here we USE the theme
 if(!isset($_E107['no_theme']))
@@ -1751,6 +1747,19 @@ if($fpUrl === $fpPref)
 	e107::canonical('_SITEURL_');
 }
 unset($fpUrl, $fpPref);
+
+$dbg->logTime('Legacy Route detection');
+// Reverse lookup of current URI against legacy e_url entry to determine route.
+if(!deftrue('e_SINGLE_ENTRY') && deftrue('e_CURRENT_PLUGIN'))
+{
+	if($route = e107::detectRoute(e_CURRENT_PLUGIN, e_REQUEST_URI))
+	{
+		e107::route($route);
+	}
+
+	unset($route);
+}
+
 
 
 

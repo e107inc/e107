@@ -83,7 +83,7 @@ class news_front
 
 		$breadcrumb = array();
 
-		$breadcrumb[] = array('text'=> PAGE_NAME, 'url'=>e107::url('news', 'index'));
+		$breadcrumb[] = array('text'=> LAN_PLUGIN_NEWS_NAME, 'url'=>e107::url('news', 'index'));
 
 		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
 
@@ -553,16 +553,21 @@ class news_front
 
 			case "all":
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/items'); 
 			break;
 
 			case "tag":
+				e107::title($this->subAction);
+				e107::meta('og:title', $this->subAction);
+				e107::meta('robots', 'noindex');
+				e107::route('news/list/tag');
+				break;				
 			case "author":
 
 				e107::title($this->subAction);
 				e107::meta('og:title', $this->subAction);
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/author'); 
 				break;
 
 			case "list":
@@ -571,7 +576,7 @@ class news_front
 				e107::title($title);
 				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
-
+				e107::route('news/list/category'); 
 				break;
 
 			case "day":
@@ -596,15 +601,25 @@ class news_front
 				e107::title($title);
 				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
+				
+				if($type == 'day') {
+                  e107::route('news/list/day'); 
+                }
+                else {
+                 e107::route('news/list/month'); 
+                }
+				
 				break;
 
 			case "news":
 				e107::canonical($this->route, $news);
+				e107::route('news/view/item');      
 			break;
 
 
 			default:
 				e107::meta('robots', 'noindex');
+				e107::route('news/list/items'); 
 			//	e107::canonical('news');
 		}
 
@@ -880,7 +895,7 @@ class news_front
 			$query .= "
 			ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
-			$category_name = ($this->defaultTemplate == 'list') ? PAGE_NAME : "All";
+			$category_name = ($this->defaultTemplate == 'list') ? LAN_PLUGIN_NEWS_NAME : "All";
 			unset($renTypeQry);
 		}
 		elseif ($this->action == 'cat') // show archive of all news items in a particular category using list-style template.
@@ -1768,7 +1783,7 @@ class news_front
 
 				if(empty($this->action)) // default page.
 				{
-					$row['category_name'] = PAGE_NAME;
+					$row['category_name'] = LAN_PLUGIN_NEWS_NAME;
 				}
 
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);

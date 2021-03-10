@@ -67,7 +67,14 @@
 
 			if(is_array($data))
 			{
+				if(isset($data['__tabs__']))
+				{
+					$this->_tab = $data['__tabs__'];
+					unset($data['__tabs__']);
+				}
+
 				$this->_config = $data;
+
 				return $this;
 			}
 
@@ -305,6 +312,7 @@
 
 		public function renderConfigForm($name)
 		{
+
 			$frm = e107::getForm();
 			$curVal = $this->_config;
 			$value = array();
@@ -319,7 +327,6 @@
 					$i++;
 				}
 			}
-
 
 			$text = "
 			<div class='form-group'>

@@ -14,24 +14,21 @@
 $NEWS_VIEW_INFO = array(
 
 	'default' 	=> array('title' => LAN_DEFAULT, 							'description' => 'unused'),
-	'videos' 	=> array('title' => "Videos (experimental)", 							'description' => 'unused'),
+	'videos' 	=> array('title' => "Videos (experimental)", 				'description' => 'unused'),
 );
 
 
 // Default
 $NEWS_VIEW_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left float-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+$NEWS_VIEW_WRAPPER['default']['item']['NEWSRELATED'] = '<hr />{---}<hr />';
 
-
-$NEWS_VIEW_TEMPLATE['default']['caption'] = null; // add a value to user tablerender()
+$NEWS_VIEW_TEMPLATE['default']['caption'] = '{NEWS_TITLE}'; // null; // add a value to user tablerender()
 $NEWS_VIEW_TEMPLATE['default']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
-
-        <hr class="news-heading-sep">
-         	<div class="row">
+          	<div class="row">
         		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
-        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
+        		<div class="col-md-6 text-right text-end options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
         <hr>
 
@@ -80,10 +77,13 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 
 	</div>
 
-	<hr />
 	{NEWSRELATED}
-	<hr>
-	{NEWSNAVLINK}
+
+	<ul class="pagination justify-content-between my-5 news-view-pagination">
+		<li class="page-item col-md-4">{NEWS_NAV_PREVIOUS}</li>
+		<li class="page-item col-md-4 text-center">{NEWS_NAV_CURRENT}</li>
+		<li class="page-item col-md-4 text-right text-end">{NEWS_NAV_NEXT}</li>
+	</ul>
 
 ';
 
@@ -106,7 +106,10 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 
 
 // Videos
-$NEWS_VIEW_TEMPLATE['videos']['item'] = '<div class="view-item"><div class="alert alert-warning">Empty news_view_template.php (videos) - have ideas? let us know.</div></div>';
+ $NEWS_VIEW_TEMPLATE['videos']['item'] = '<div class="view-item"><div class="alert alert-warning">Empty news_view_template.php (videos) - have ideas? let us know.</div></div>';
 
 
-
+// Navigation/Pagination
+$NEWS_VIEW_TEMPLATE['nav']['previous'] = '<a href="{NEWS_URL}">{GLYPH=fa-chevron-left}<span class="mx-1">{NEWS_TITLE} {NEWS_ID}</span></a>';
+$NEWS_VIEW_TEMPLATE['nav']['current'] = '<a class="text-center" href="{NEWS_NAV_URL}">{LAN=BACK}</span></a>';
+$NEWS_VIEW_TEMPLATE['nav']['next'] = '<a class="text-right" href="{NEWS_URL}"><span class="mx-1">{NEWS_ID} {NEWS_TITLE}</span>{GLYPH=fa-chevron-right}</a> ';

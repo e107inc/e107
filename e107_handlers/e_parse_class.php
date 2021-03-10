@@ -1496,7 +1496,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[\/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		}
 
 
@@ -1519,25 +1519,13 @@ class e_parse
 
 				$opts = $saveOpts;
 
+
 				// Have to have a good test in case a 'non-key' bbcode starts the block
 				// - so pull out the bbcode parameters while we're there
 				if(($parseBB !== false) && preg_match('#(^\[(table|html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
 				{
-					// It's one of the 'key' bbcodes
-					// Usually don't want 'normal' processing if its a 'special' bbcode
-					$proc_funcs = false;
-					// $matches[0] - complete block from opening bracket of opening tag to closing bracket of closing tag
-					// $matches[1] - complete opening tag (inclusive of brackets)
-					// $matches[2] - bbcode word
-					// $matches[3] - parameter, including '='
-					// $matches[4] - bit between the tags (i.e. text to process)
-					// $matches[5] - closing tag
-					// In case we decide to load a file
 
-				//	$bbPath = e_CORE . 'bbcodes/';
-				//	$bbFile = strtolower(str_replace('_', '', $matches[2]));
-				//	$bbcode = '';
-				//	$className = '';
+					$proc_funcs = false;
 					$full_text = '';
 					$code_text = $matches[4];
 				//	$parm = $matches[3] ? substr($matches[3], 1) : '';
@@ -1581,8 +1569,7 @@ class e_parse
 
 						case 'scode':
 						case 'code' :
-							$parseBB = false;
-							$full_text = $this->parseBBCodes('['.$last_bbcode.']'.$code_text.'[/'.$last_bbcode.']', $postID);
+							$full_text = $this->parseBBCodes($matches[0], $postID);
 						break;
 					}
 
@@ -4184,7 +4171,7 @@ class e_parse
 			return null;
 		}
 
-		if(!empty($file))
+		if(!empty($file) && (strpos($file, 'http') === false))
 		{
 			$srcset = null;
 			$path = null;
@@ -5435,6 +5422,7 @@ class e_parse
 			}
 
 			$text = str_replace(E_NL, $nl_replace, $text);
+
 		}
 
 		return $text;

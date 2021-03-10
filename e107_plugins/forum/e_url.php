@@ -29,18 +29,21 @@ class forum_url // plugin-folder + '_url'
 			'regex'			=> '^forum/rules/?',
 			'sef'			=> 'forum/rules',
 			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=rules',
+			'legacy'		=> '{e_PLUGIN}forum/forum.php?f=rules',
 		);
 
 		$config['stats'] = array(
 			'regex'			=> '^forum/stats/?',
 			'sef'			=> 'forum/stats',
 			'redirect'		=> '{e_PLUGIN}forum/forum_stats.php',
+			'legacy'		=> '{e_PLUGIN}forum/forum_stats.php',
 		);
 
 		$config['track'] = array(
 			'regex'			=> '^forum/track/?',
 			'sef'			=> 'forum/track',
 			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=track',
+			'legacy'		=> '{e_PLUGIN}forum/forum.php?f=track',
 		);
 
 		$config['markread']  = array(
@@ -53,13 +56,15 @@ class forum_url // plugin-folder + '_url'
 		$config['new']  = array(
             'regex'			=> '^forum/new$/?',
 			'sef'           => 'forum/new',
-			'redirect'      => '{e_PLUGIN}forum/forum.php?new'
+			'redirect'      => '{e_PLUGIN}forum/forum.php?new',
+			'legacy'        => '{e_PLUGIN}forum/forum.php?new'
 		);
 
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_post.php',
+			'legacy'		=> '{e_PLUGIN}forum/forum_post.php',
 		);
 
 		// only create url  - parsed above.
@@ -94,7 +99,7 @@ class forum_url // plugin-folder + '_url'
 			'regex'			=> '^forum\/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> 'forum', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}forum/forum.php', 		// file-path of what to load when the regex returns true.
-
+			'legacy'		=> '{e_PLUGIN}forum/forum.php',
 		);
 
 
@@ -104,8 +109,6 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
 			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
 		);
-
-
 
 
 		return $config;

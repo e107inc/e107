@@ -31,6 +31,79 @@ if(!empty($_GET['iframe']))
 }
 
 
+//e107::js('core','bootstrap-suggest/dist/bootstrap-suggest.min.js');
+//e107::css('core','bootstrap-suggest/dist/bootstrap-suggest.css');
+//e107::js('core','bootstrap-suggest/bootstrap-suggest.js');
+//e107::css('core','bootstrap-suggest/bootstrap-suggest.css');
+e107::library('load', 'bootstrap-suggest');
+/*
+e107::js('footer-inline', "
+$('textarea').suggest(':', {
+  data: function(q, lookup) {
+ 
+      $.getJSON('theme.php', {q : q }, function(data) {
+			console.log(data);
+			console.log(lookup);
+			lookup.call(data);
+      });
+
+      // we aren't returning any
+
+  }
+  
+});
+
+
+");*/
+
+
+e107::js('footer-inline', "
+
+$('textarea.input-custompages').suggest(':', {
+	
+  data: function() {
+  
+  var i = $.ajax({
+		type: 'GET',
+		url: 'theme.php',
+		async: false,
+		data: {
+			mode: 'suggest'
+		}
+		}).done(function(data) {
+		//	console.log(data);
+			return data; 
+		}).responseText;		
+    	
+	try
+	{
+		var d = $.parseJSON(i);
+	} 
+	catch(e)
+	{
+		// Not JSON.
+		return;
+	}
+	
+	return d;   
+  },
+  filter: {
+  	casesensitive: false,
+  	limit: 300
+	},
+	endKey: \"\\n\",
+  map: function(item) {
+    return {
+      value: item.value,
+      text: item.value
+    }
+  }
+})
+
+");
+
+
+
 class theme_admin extends e_admin_dispatcher
 {
 	/**
@@ -77,6 +150,18 @@ class theme_admin extends e_admin_dispatcher
 
 	function init()
 	{
+
+
+		if(e_AJAX_REQUEST)
+		{
+
+			$newRoutes = $this->getAllRoutes();
+
+			echo json_encode($newRoutes);
+
+
+			exit;
+		}
 
 	}
 
@@ -169,7 +254,57 @@ class theme_admin extends e_admin_dispatcher
 
 		}
 
+	/**
+	 * @return array
+	 */
+	private function getAllRoutes()
+	{
 
+		$legacy = array(
+			'gallery/index/category',
+			'gallery/index/list',
+			'news/list/items',
+			'news/list/category',
+			'news/list/all',
+			'news/list/short',
+			'news/list/day',
+			'news/list/month',
+			'news/list/tag',
+			'news/list/author',
+			'news/view/item',
+			'page/chapter/index',
+			'page/book/index',
+			'page/view/index',
+			'page/view/other',
+			'page/list/index',
+			'search/index/index',
+			'system/error/notfound',
+			'user/myprofile/view',
+			'user/myprofile/edit',
+			'user/profile/list',
+			'user/profile/view',
+			'user/login/index',
+			'user/register/index'
+		);
+
+
+		$newRoutes = e107::getUrlConfig('route');
+
+		foreach($legacy as $v)
+		{
+			$newRoutes[$v] = $v;
+		}
+
+		ksort($newRoutes);
+
+		$ret = [];
+		foreach($newRoutes as $k => $v)
+		{
+			$ret[] = array('value' => $k, 'label' => $k);
+		}
+
+		return $ret;
+	}
 
 
 }
@@ -804,10 +939,14 @@ class theme_admin_ui extends e_admin_ui
 			switch($type)
 			{
 				case "main/main":
-					$text = "<b>".TPVLAN_56."</b><br />"; // Visbility Filter
-					$text .= "<br />".$tp->toHTML(TPVLANHELP_03,true);
-					$text .= "<ul style='padding-left:10px;margin-top:10px'><li>".$tp->toHTML(TPVLANHELP_04,true)."</li>";
-					$text .= "<li>".$tp->toHTML(TPVLANHELP_05,true)."</li></ul>";
+					$text = '<b>'.TPVLAN_56.'</b><br />'; // Visbility Filter
+					$text .= '<br />'.$tp->toHTML(TPVLANHELP_03,true);
+					$text .= '<ul style="padding-left:10px;margin-top:10px">
+						<li>'.$tp->toHTML(TPVLANHELP_06,true).'</li>
+						<li>'.$tp->toHTML(TPVLANHELP_04,true).'</li>
+						<li>'.$tp->toHTML(TPVLANHELP_05,true).'</li>
+						</ul>';
+
 					break;
 
 				case "label2":
@@ -815,7 +954,7 @@ class theme_admin_ui extends e_admin_ui
 					break;
 
 				default:
-					$text = TPVLANHELP_01."<br /><br />".TPVLANHELP_02;
+					$text = TPVLANHELP_01.'<br /><br />'.TPVLANHELP_02;
 			}
 
 
@@ -998,8 +1137,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		$disabled = '';
 		$mainTitle = TPVLAN_10;
 
-	//	if(version_compare($compat,$version, '<=') === false)
-		if(!e107::isCompatible($theme['compatibility']))
+		if(!e107::isCompatible($theme['compatibility'], 'theme'))
 		{
 			$disabled = 'disabled';
 			$mainTitle = defset('TPVLAN_97', "This theme requires a newer version of e107.");
@@ -1034,7 +1172,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 		e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
-		$d = http_build_query($srcData,false,'&');
+		$d = http_build_query($srcData,false);
 		$base64 = base64_encode($d);
 
 		$id = $this->name2id($theme['name']);

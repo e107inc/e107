@@ -56,7 +56,7 @@ $COMMENT_TEMPLATE['item'] = '
 		<div class="media-object comment-box-left pull-left  col-md-2 span1">
 			{COMMENT_AVATAR: shape=circle}
 		</div>	
-		<div class="media-body col-md-10 comment-box-right ">
+		<div class="media-body comment-box-right ">
 			<div class="row">
 				
 					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>

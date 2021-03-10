@@ -381,7 +381,8 @@ cursor: pointer;
 #uiAlert    { z-index: 10001 }
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
 #uiAlert.notifications { top: 48%; left: 0; width: 100%; }
-
+#contactInfo .row { display: flex }
+#contactInfo iframe.sc-contact-map { width:100%; height:100%; }
 
 
 #login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
@@ -411,3 +412,63 @@ div.e-debug .label-danger       { background-color: #ee5f5b; }
 div.e-debug .btn                { display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle;
                                   cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap;
                                   padding: 8px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; user-select: none; }
+
+/* Bootstrap 5 Shims */
+.pagination                     { display: flex !important; }
+.justify-content-between        { justify-content: space-between !important; }
+.page-link.disabled             { pointer-events: none; opacity: 0.5; color: #959595; }
+.news-view-pagination > li      { padding-left: 0; padding-right: 0; }
+.news-view-pagination > li > a  { float:none; display:inline-block }
+
+.mx-0 {
+ margin-right:0!important;
+ margin-left:0!important
+}
+.mx-1 {
+ margin-right:.25rem!important;
+ margin-left:.25rem!important
+}
+.mx-2 {
+ margin-right:.5rem!important;
+ margin-left:.5rem!important
+}
+.mx-3 {
+ margin-right:1rem!important;
+ margin-left:1rem!important
+}
+.mx-4 {
+ margin-right:1.5rem!important;
+ margin-left:1.5rem!important
+}
+.mx-5 {
+ margin-right:3rem!important;
+ margin-left:3rem!important
+}
+.mx-auto {
+ margin-right:auto!important;
+ margin-left:auto!important
+}
+.my-0 {
+ margin-top:0!important;
+ margin-bottom:0!important
+}
+.my-1 {
+ margin-top:.25rem!important;
+ margin-bottom:.25rem!important
+}
+.my-2 {
+ margin-top:.5rem!important;
+ margin-bottom:.5rem!important
+}
+.my-3 {
+ margin-top:1rem!important;
+ margin-bottom:1rem!important
+}
+.my-4 {
+ margin-top:1.5rem!important;
+ margin-bottom:1.5rem!important
+}
+.my-5 {
+ margin-top:3rem!important;
+ margin-bottom:3rem!important
+}

@@ -3021,6 +3021,19 @@ class e107
 
 					$array = self::callMethod($obj, $methodName,$profile);
 
+					if($mode === 'route' && !empty($array))
+					{
+						foreach($array as $k=>$v)
+						{
+							if(empty($v['alias']) && !empty($obj->alias))
+							{
+								$v['alias'] = $obj->alias;
+							}
+							$new_addon[$key.'/'.$k] = $v;
+						}
+						continue;
+					}
+
 					if($array)
 					{
 						foreach($array as $k=>$v)
@@ -3824,7 +3837,7 @@ class e107
 		}
 		else
 		{
-			$theme = e_THEME . preg_replace('#[^\w/]#', '', $theme) . '/languages/';
+			$theme = e_THEME . filter_var($theme) . '/languages/';
 		}
 
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
@@ -4018,6 +4031,65 @@ class e107
 			self::getMessage()->addInfo($message);
 		}
 	}
+
+	/**
+	 * Reverse lookup of current URI against legacy e_url entry for the specified plugin.
+	 * Useful for when SEF (e_SINGLE_ENTRY) is not in use.
+	 * @param string $route eg. forum/index (must match SEF route )
+	 */
+	public static function detectRoute($plugin=null, $uri=null)
+	{
+		if(empty($plugin) || empty($uri))
+		{
+			return null;
+		}
+
+		if(!$addon = e107::getAddon($plugin,'e_url'))
+		{
+			trigger_error("Couldn't load e_url for ".$plugin);
+			return null;
+		}
+
+		if(!$result = e107::callMethod($addon, 'config'))
+		{
+			trigger_error($plugin.' - e_url::config() method returned nothing');
+			return null;
+		}
+
+		foreach($result as $key=>$var)
+		{
+			if(empty($var['legacy']))
+			{
+				continue;
+			}
+
+			$legacy = self::getParser()->replaceConstants($var['legacy'], 'abs'); // remove {e_PLUGIN}
+			$legacy = preg_replace('/\{[\w]*\}/', '__XXX__', $legacy); // replace {fields} with placeholder.
+			$legacy = preg_quote($legacy,'/'); // add slashes
+
+			$pattern = '/'. str_replace('__XXX__', '([\w]*)', $legacy) .'/'; // replace placeholder with regexp
+
+			if(preg_match($pattern,  $uri))
+			{
+				return $plugin.'/'.$key;
+			}
+
+		}
+
+		return null;
+	}
+
+
+	public static function route($route)
+	{
+		if(defined('e_ROUTE'))
+		{
+			return null;
+		}
+
+		define('e_ROUTE', $route);
+	}
+
 
 	/**
 	 * Generate a plugin's search engine-friendly URL with HTML special characters escaped
@@ -5389,7 +5461,6 @@ class e107
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			$e_QUERY = filter_var($e_QUERY, FILTER_SANITIZE_URL); //FIXME Breaks non-latin chars: @see https://github.com/e107inc/e107/issues/719
 			if(!defined('e_QUERY'))
 			{
 				define('e_QUERY', $e_QUERY);
@@ -5561,10 +5632,12 @@ class e107
 	/**
 	 * Returns true if the number is compatible with this version of e107.
 	 * @param string $version The minimum version requirement
+	 * @param string theme|plugin
 	 * @return bool
 	 */
-	public static function isCompatible($version)
+	public static function isCompatible($version, $mode)
 	{
+
 		$tp = e107::getParser();
 
 		$e107info = [];
@@ -5573,9 +5646,9 @@ class e107
 		$e107 = $tp->filter($e107info['e107_version'], 'version');
 		$version = $tp->filter($version, 'version');
 
-		if((int) $version === 1) // version 1, assumed to be incompatible.
+		if(((int) $version === 1)) // version 1, assumed to be incompatible.
 		{
-			return false;
+			return ($mode === 'plugin') ? false : true;
 		}
 
 		return version_compare($e107  ,$version, '>=');

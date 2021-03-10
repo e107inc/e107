@@ -15,7 +15,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-if(USER_AREA && $sql->select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
+if(USER_AREA && e107::getDb()->select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
 {
 
     $tp = e107::getParser();

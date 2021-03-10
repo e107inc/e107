@@ -538,7 +538,7 @@
 			{
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					e107::getAdminLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
+					e107::getLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
 				}
 
 				return false;            // May not be installed
@@ -1078,10 +1078,11 @@
 		/**
 		 * File retrieval function. by Cam.
 		 *
-		 * @param $file string actual path or {e_xxxx} path to file.
+		 * @param string $file actual path or {e_xxxx} path to file.
+		 * @param string $opts (optional) type | disposition | encoding values.
 		 *
 		 */
-		function send($file)
+		function send($file, $opts = array())
 		{
 
 			global $e107;
@@ -1159,12 +1160,22 @@
 						fseek($res, $seek);
 					}
 					$data_len -= $seek;
-					header("Expires: 0");
+
+					$contentType = vartrue($opts['type'], 'application/force-download');
+					$contentDisp = vartrue($opts['disposition'], 'attachment');
+
+					header('Expires: 0');
 					header("Cache-Control: max-age=30");
-					header("Content-Type: application/force-download");
-					header("Content-Disposition: attachment; filename=\"{$file}\"");
+					header('Content-Type: '.$contentType);
+					header('Content-Disposition: '.$contentDisp.'; filename="'.$file.'"');
 					header("Content-Length: {$data_len}");
 					header("Pragma: public");
+
+					if(!empty($opts['encoding']))
+					{
+						header('Content-Transfer-Encoding: '.$opts['encoding']);
+					}
+
 					if($seek)
 					{
 						header("Accept-Ranges: bytes");
@@ -1304,7 +1315,7 @@
 			if($archive->create($filePaths, PCLZIP_OPT_REMOVE_PATH, $removePath) == 0)
 			{
 				$error = $archive->errorInfo(true);
-				e107::getAdminLog()->addError($error)->save('FILE', E_LOG_NOTICE);
+				e107::getLog()->addError($error)->save('FILE', E_LOG_NOTICE);
 
 				return false;
 			}

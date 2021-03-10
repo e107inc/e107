@@ -27,6 +27,7 @@
 			}
 
 			$this->tm->clearCache();
+			e107::getTheme()->clearCache();
 		}
 
 
@@ -56,10 +57,12 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						    'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						)
@@ -71,14 +74,17 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						  'bootstrap.editable' =>
 						  array (
+						    'name' => 'bootstrap.editable',
 						    'version' => '',
 						  ),
 						)
@@ -90,14 +96,17 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '5',
 						  ),
 						  'bootstrap.editable' =>
 						  array (
+						    'name' => 'bootstrap.editable',
 						    'version' => '',
 						  ),
 						)
@@ -109,10 +118,12 @@
 					'expected' => array (
 						  'bootstrap' =>
 						  array (
+						     'name'   => 'bootstrap',
 						    'version' => '3',
 						  ),
 						  'fontawesome' =>
 						  array (
+						    'name'   => 'fontawesome',
 						    'version' => '4',
 						  ),
 						)
@@ -124,6 +135,7 @@
 					'expected' => array (
 						  'style.css' =>
 						  array (
+						    'name'   => 'style.css',
 						    'info' => 'Default',
 						    'nonadmin' => true,
 						    'exclude' => '',
@@ -139,6 +151,7 @@
 					'expected' => array (
 						  'css/modern-light.css' =>
 						  array (
+						    'name'   => 'css/modern-light.css',
 						    'info' => 'Modern Light',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -147,6 +160,7 @@
 						  ),
 						  'css/modern-dark.css' =>
 						  array (
+						    'name'   => 'css/modern-dark.css',
 						    'info' => 'Modern Dark',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -155,6 +169,7 @@
 						  ),
 						  'css/bootstrap-dark.min.css' =>
 						  array (
+						    'name'  => 'css/bootstrap-dark.min.css',
 						    'info' => 'Legacy Dark Admin',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -163,6 +178,7 @@
 						  ),
 						  'css/kadmin.css' =>
 						  array (
+						    'name'  => 'css/kadmin.css',
 						    'info' => 'K-Admin Inspired',
 						    'nonadmin' => false,
 						    'exclude' => '',
@@ -171,6 +187,7 @@
 						  ),
 						  'css/corporate.css' =>
 						  array (
+						    'name'  => 'css/corporate.css',
 						    'info' => 'Corporate',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -179,6 +196,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css',
 						    'info' => 'Flatly',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -187,6 +205,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css',
 						    'info' => 'Sandstone',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -195,6 +214,7 @@
 						  ),
 						  'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css' =>
 						  array (
+						    'name'  => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css',
 						    'info' => 'Superhero',
 						    'nonadmin' => false,
 						    'exclude' => 'bootstrap',
@@ -203,6 +223,7 @@
 						  ),
 						),
 					),
+
 			);
 
 			foreach($tests as $index => $var)
@@ -215,6 +236,7 @@
 				}
 				$this->assertSame($var['expected'], $result, 'Test #'.$index.' failed.');
 			}
+
 
 		}
 
@@ -283,6 +305,7 @@
 			$result = e107::getTheme('bootstrap3')->getThemeFiles('css', 'wysiwyg');
 			$this->assertSame($expected, $result);
 
+		//	$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
 
 		}
 
@@ -381,13 +404,13 @@
 						  array (
 						    'name' => 'bootstrap',
 						    'version' => '3',
-						    'scope' => 'all',
+						    'scope' => 'front',
 						  ),
 						  1 =>
 						  array (
 						    'name' => 'fontawesome',
 						    'version' => '4',
-						    'scope' => 'all',
+						    'scope' => 'front',
 						  ),
 						)
 					),
@@ -429,6 +452,9 @@
 					array (
 						0 => 'forum',
 						1 => 'user.php!', // <-- exact match of URL
+						2 => ':forum/index',
+						3 => ':myplugin/',
+
 			//			2 => '/user', // <-- Expecting URL to match both user and usersetting since it contains no "!"
 					),
 				'jumbotron_sidebar_right' =>
@@ -446,6 +472,7 @@
 						3 => '/user/settings?',
 						4 => 'script.php$',
 						5 => '/news/?bla',
+						6 => ':news/view/index',
 					),
 				'script_match' =>
 					array(
@@ -483,14 +510,22 @@
 				22 => array('url' => SITEURL."news/my-news-title",      'script' => '/news.php',             'expected' => 'jumbotron_sidebar_right'),
 				23 => array('url' => SITEURL."news/?bla",                  'script' => '/news.php',             'expected' => 'other_layout'),
 
+				// Using e_ROUTE;
+				24 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'news/view/index', 'expected'=> 'other_layout'),
+				25 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'forum/index', 'expected'=> 'jumbotron_full'),
+				26 => array('url' => 'whatever.php', 'script'=>'whatever.php', 'route'=> 'myplugin/index', 'expected'=> 'jumbotron_full'),
+
 			);
+
+			$themeObj = $this->tm;
 
 			foreach($tests as $item=>$var)
 			{
 				$var['script'] = isset($var['script']) ? $var['script'] : null;
 
-				$result = $this->tm->getThemeLayout($pref, $defaultLayout, $var['url'], $var['script']);
-				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$var['url']);
+				$result = $themeObj::getThemeLayout($pref, $defaultLayout, $var);
+				$diz = isset($var['route']) ? $var['route'] : $var['url'];
+				$this->assertEquals($var['expected'],$result, "Wrong theme layout returned for item [".$item."] ".$diz);
 			//	echo $var['url']."\t\t\t".$result."\n\n";
 			}
 

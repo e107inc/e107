@@ -21,6 +21,7 @@
 		private $content      = array();
 		private $contentTypes = array('header', 'footer', 'text', 'title', 'image', 'list');
 		private $mainRenders  = array(); // all renderered with style = 'default' or 'main'.
+		private $styleCount   = array();
 		private $thm;
 
 
@@ -34,7 +35,7 @@
 			$this->load();
 		}
 
-		// Called in header.
+		// Called in header_default.php.
 		public function init()
 		{
 
@@ -331,7 +332,7 @@
 		private function hasLegacyCode()
 		{
 
-			$legacy = ['VIEWPORT', 'THEME_DISCLAIMER', 'IMODE', 'BODYTAG', 'COMMENTLINK', 'OTHERNEWS_LIMIT',
+			$legacy = ['VIEWPORT', 'THEME_DISCLAIMER', 'IMODE', 'HTMLTAG', 'BODYTAG', 'COMMENTLINK', 'OTHERNEWS_LIMIT',
 				'PRE_EXTENDEDSTRING', 'COMMENTOFFSTRING', 'CORE_CSS', 'TRACKBACKSTRING', 'TRACKBACKBEFORESTRING'];
 
 			foreach($legacy as $const)
@@ -375,6 +376,19 @@
 			{
 				$this->mainRenders[] = $options;
 			}
+
+			if(!empty($this->eSetStyle))
+			{
+				if(!isset($this->styleCount[$this->eSetStyle]))
+				{
+					$this->styleCount[$this->eSetStyle] = 0;
+				}
+
+				$this->styleCount[$this->eSetStyle]++;
+			}
+
+			$options['styleCount'] = varset($this->styleCount[$this->eSetStyle]);
+
 
 			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();
 

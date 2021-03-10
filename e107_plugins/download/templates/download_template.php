@@ -418,7 +418,7 @@ $DOWNLOAD_TEMPLATE['categories']['end'] = "
 	</div>
 	<div class='clearfix table'>
 		<div class='pull-left float-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
-		<div class='pull-right float-right'>{DOWNLOAD_CAT_SEARCH}</div>
+		<div class='pull-right float-right float-end'>{DOWNLOAD_CAT_SEARCH}</div>
 	</div>";
 
 // ##### ------------------------------------------------------------------------------------------
@@ -506,18 +506,19 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 */
 
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
-    <ul class="pager download-view-nextprev">
-    <li class="previous">
+	<nav aria-label="Download Navigation">
+    <ul class="pagination justify-content-between download-view-nextprev">
+    <li class="page-item previous">
     	{DOWNLOAD_VIEW_PREV}
     </li>
-	<li>
+	<li class="page-item text-center">
     	{DOWNLOAD_BACK_TO_LIST}
     </li>
-    <li class="next">
+    <li class="page-item next">
     	{DOWNLOAD_VIEW_NEXT}
     </li>
     </ul>
-
+    </nav>
 ';
 
 // ##### ------------------------------------------------------------------------------------------

@@ -10,6 +10,7 @@
 **
 */
 
+e107::lan('hero',true, true);
 
 if(!class_exists("hero_setup"))
 {
@@ -31,12 +32,12 @@ if(!class_exists("hero_setup"))
 
 			if(!empty($ret['success']))
 			{
-				e107::getMessage()->addSuccess("Default slides imported.");
+				e107::getMessage()->addSuccess(LAN_HERO_ADMIN_001);
 			}
 
 			if(!empty($ret['failed']))
 			{
-				e107::getMessage()->addError("Failed to import default slides.");
+				e107::getMessage()->addError(LAN_HERO_ADMIN_002);
 				e107::getMessage()->addDebug(print_a($ret['failed'],true));
 			}
 

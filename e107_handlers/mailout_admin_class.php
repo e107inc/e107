@@ -1342,7 +1342,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $nextPage - 'mode' specification for page to return to following delete
 	 * @return text for display
 	 */
-	/*
+
 	 public function showDeleteConfirm($mailID, $nextPage = 'saved')
 	 {
 	 $mailData = $this->retrieveEmail($mailID);
@@ -1390,7 +1390,7 @@ class mailoutAdminClass extends e107MailManager
 
 	 $ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_171, $text);
 	 }
-	 */
+
 
 	/**
 	 * Generate the HTML to show a list of emails of a particular type, in tabular

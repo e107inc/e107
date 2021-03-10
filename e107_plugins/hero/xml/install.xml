@@ -44,10 +44,10 @@
     }
 ]</field>
 			<field name="hero_button1">{
-    "icon": "fa-",
-    "label": "",
+    "icon": "fa-arrow-circle-o-down",
+    "label": "Button",
     "url": "",
-    "class": ""
+    "class": "primary"
 }</field>
 			<field name="hero_button2">{
     "icon": "fa-",
@@ -56,8 +56,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">0</field>
-			<field name="hero_media"></field>
-			<field name="hero_bg">{e_PLUGIN}hero/images/slide1.jpg</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+1</field>
+			<field name="hero_bg"></field>
 		</item>
 		<item>
 			<field name="hero_id">2</field>
@@ -113,8 +113,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">1</field>
-			<field name="hero_media"></field>
-			<field name="hero_bg">{e_PLUGIN}hero/images/slide2.jpg</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+2</field>
+			<field name="hero_bg"></field>
 		</item>
 		<item>
 			<field name="hero_id">3</field>
@@ -170,8 +170,8 @@
     "class": ""
 }</field>
 			<field name="hero_order">2</field>
-			<field name="hero_media"></field>
-			<field name="hero_bg">{e_PLUGIN}hero/images/slide3.jpg</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+3</field>
+			<field name="hero_bg"></field>
 		</item>
 	</dbTable>
 	</database>

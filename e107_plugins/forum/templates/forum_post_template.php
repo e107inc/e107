@@ -19,17 +19,17 @@ $FORUM_POST_TEMPLATE['form']		= "
 										<div>{FORUM_POST_BREADCRUMB}</div>
 									</div>
 
-									<div class='form-group'>
-										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_3010."</label>
+									<div class='form-group row mb-3'>
+										<label for='name' class='col-sm-3 control-label'>{LAN=FORUM_3010}</label>
 										 <div class='col-sm-9'>{FORUM_POST_AUTHOR}</div>
 									</div>
 
-									<div class='form-group'>
-										<label for='subject' class='col-sm-3 control-label'>".LAN_FORUM_3011."</label>
+									<div class='form-group row mb-3'>
+										<label for='subject' class='col-sm-3 control-label'>{LAN=FORUM_3011}</label>
 										 <div class='col-sm-9'>{FORUM_POST_SUBJECT}</div>
 									</div>
 
-									<div class='form-group'>
+									<div class='form-group row mb-3'>
 										<label class='col-sm-3 control-label'>{FORUM_POST_TEXTAREA_LABEL}</label>
 										 <div class='col-sm-9'>
 										 	{FORUM_POST_TEXTAREA}
@@ -37,12 +37,12 @@ $FORUM_POST_TEMPLATE['form']		= "
 										</div>
 									</div>
 
-									<div class='form-group'>
+									<div class='form-group row mb-3'>
 										<label class='col-sm-3 control-label'>{FORUM_POST_OPTIONS_LABEL}</label>
 										 <div class='col-sm-9'>{FORUM_POST_OPTIONS}</div>
 									</div>
 
-									<div class='form-group text-center'>
+									<div class='form-group my-5 text-center'>
 										{FORUM_POST_BUTTONS}
 									</div>
 									{FORUM_POST_FORM_END}

@@ -1649,7 +1649,6 @@ class users_admin_ui extends e_admin_ui
 				<td>".USRLAN_239."</td>
 				<td>
 					".$frm->select('sendconfemail', array('0' => USRLAN_240, '1' => USRLAN_241, '2' => USRLAN_242), (int) varset($_POST['sendconfemail'], 0), array('size'=>'xlarge'))."
-					".$frm->help(USRLAN_181, 'after')."
 				</td>
 			</tr>";
 

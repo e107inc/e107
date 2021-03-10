@@ -20,7 +20,7 @@
 													<div class="item col-sm-6">
 		                                                <h3>{NEWSTITLE}</h3>
 		                                                <p>{NEWSMETADIZ: limit=100}</p>
-		                                                <p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+		                                                <p class="text-right text-end"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">{LAN=READ_MORE}</a></p>
 	                                                </div>
 	                                               </div>
 	                                               </div>
@@ -31,7 +31,7 @@
 												{NEWSTHUMBNAIL=placeholder}
               									<h3>{NEWS_TITLE}</h3>
               									<p>{NEWS_SUMMARY}</p>
-              									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+              									<p class="text-right text-end"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">{LAN=READ_MORE}</a></p>
             							   </div>';
 
 	$NEWS_GRID_TEMPLATE['col-md-6']['end'] = '</div>';
@@ -46,7 +46,7 @@
 													{NEWSTHUMBNAIL=placeholder}
 	                                                <h3>{NEWS_TITLE}</h3>
 	                                                <p>{NEWS_SUMMARY}</p>
-	                                                <p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+	                                                <p class="text-right text-end"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">{LAN=READ_MORE}</a></p>
             							        </div>';
 	$NEWS_GRID_TEMPLATE['col-md-4']['end']      = $NEWS_GRID_TEMPLATE['col-md-6']['end'];
 
@@ -62,7 +62,7 @@
 													{NEWSTHUMBNAIL=placeholder}
 	                                                <h3>{NEWS_TITLE}</h3>
 	                                                <p>{NEWS_SUMMARY}</p>
-	                                                <p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+	                                                <p class="text-right text-end"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">{LAN=READ_MORE}</a></p>
             							        </div>';
 	$NEWS_GRID_TEMPLATE['col-md-3']['end']      = $NEWS_GRID_TEMPLATE['col-md-6']['end'];
 
