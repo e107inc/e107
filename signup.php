@@ -136,6 +136,7 @@ if(!$_POST)
 
 if (!empty($pref['membersonly_enabled']))
 {
+	e107::coreLan('membersonly');
 	$template = e107::getCoreTemplate('membersonly','signup');
 	define('e_IFRAME',true);
 	define('e_IFRAME_HEADER', $template['header'] );
@@ -581,7 +582,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}	
 
 			e107::getEvent()->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
-			e107::getEvent()->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('userfull', array_merge($allData['data'], varset($eufVals['data'], array())));  // New trigger - send everything in the template, including extended fields.
 
 			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{

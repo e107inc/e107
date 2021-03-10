@@ -6,7 +6,7 @@
 		<core name="admin_separate_plugins">0</core>
 		<core name="admin_collapse_sidebar">0</core>
 		<core name="admin_navbar_labels">0</core>
-		<core name="admin_helptip_location">1</core>
+		<core name="admin_helptip">1</core>
 		<core name="admincode">0</core>		
 		<core name="admincss">css/modern-light.css</core>
 		<core name="adminlanguage"></core>
@@ -33,6 +33,8 @@
 		<core name="comments_moderate">247</core>
 		<core name="comments_sort">desc</core>
 		<core name="compress_output">0</core>
+		<core name="contact_info"><![CDATA[array (
+)]]></core>
 		<core name="contact_emailcopy">0</core>
         <core name="contact_visibility">0</core>
         <core name="contact_filter"></core>
@@ -169,6 +171,7 @@
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
 		<core name="lan_global_list"><![CDATA[array (
+  'news' => 'news',
   'page' => 'page',
   'social' => 'social',
   'rss_menu' => 'rss_menu',

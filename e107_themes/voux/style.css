@@ -531,6 +531,7 @@ img.news-image-1 { margin-bottom:15px }
 
 .menu span.badge { float:right}
 .menu ul { padding-left:15px; margin-left:15px }
+.menu ul.list-group, .menu ul.media-list { padding-left:0; margin-left:0 }
 .menu ul li { padding-bottom:8px }
 .menu ul.list-unstyled { padding-left:0}
 

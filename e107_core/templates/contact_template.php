@@ -12,11 +12,45 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$CONTACT_WRAPPER['info']['CONTACT_INFO'] = "<div>{---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=organization'] = "<h4>{---}</h4>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=message'] = "<p>{---}</p>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=address'] = "<address>{GLYPH=fa-map-marker} {---}</address>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=email1'] = "<div>{GLYPH=fa-envelope} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=email2'] = "<div>{GLYPH=fa-envelope} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone1'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone2'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone3'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=fax'] = "<div>{GLYPH=fa-fax} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=hours'] = "<div>{GLYPH=fa-clock} {---}</div>";
 
 $CONTACT_TEMPLATE['info'] = "
 
 	<div id='contactInfo' >
-		<address>{SITECONTACTINFO}</address>
+		
+		<!-- Backward Compat. Contact Info -->
+		{SITECONTACTINFO}
+		<!-- New Contact Info -->
+		{CONTACT_INFO: type=organization}
+		{CONTACT_INFO: type=message}
+		<div class='row'>
+			<div class ='col-md-6 col-lg-4'>			
+				{CONTACT_INFO: type=address}	
+				<div class='form-group'>	
+				{CONTACT_INFO: type=phone1}
+				{CONTACT_INFO: type=phone2}
+				{CONTACT_INFO: type=phone3}
+				{CONTACT_INFO: type=fax}
+				</div>
+				{CONTACT_INFO: type=email1}
+				{CONTACT_INFO: type=email2}
+				<br />
+				{CONTACT_INFO: type=hours}
+			</div>
+			<div class ='col-md-6 col-lg-8 flex-row'>
+				{CONTACT_MAP: zoom=city}
+			</div>
+		</div>
 	</div>
 
 ";
@@ -24,20 +58,20 @@ $CONTACT_TEMPLATE['info'] = "
 
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label for="contactName">'.LANCONTACT_03.'</label>
 				{CONTACT_NAME}
 		 </div>
 		 
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label class="control-label" for="contactEmail">'.LANCONTACT_04.'</label>
 				{CONTACT_EMAIL}
 		</div>
-		<div class="control-group form-group">
+		<div class="control-group form-group mb-3">
 			<label for="contactBody" >'.LANCONTACT_06.'</label>
 				{CONTACT_BODY=rows=5&cols=30}
 		</div>
-		<div class="form-group"><label for="gdpr">'.LANCONTACT_24.'</label>
+		<div class="form-group mb-3"><label for="gdpr">'.LANCONTACT_24.'</label>
 			<div class="checkbox form-check">
 				<label>{CONTACT_GDPR_CHECK} '.LANCONTACT_21.'</label>
 				<div class="help-block">{CONTACT_GDPR_LINK}</div> 
@@ -96,10 +130,19 @@ $CONTACT_TEMPLATE['form'] = "
 
 	</form>";
 
+
+// Set the layout and  order of the info and form.
+$CONTACT_TEMPLATE['layout'] = '{---CONTACT-INFO---}
+							   {---CONTACT-FORM---} 
+							   ';
+
+
+
 	// Customize the email subject
 	// Variables:  CONTACT_SUBJECT and CONTACT_PERSON as well as any custom fields set in the form. )
 $CONTACT_TEMPLATE['email']['subject'] = "{CONTACT_SUBJECT}";
 
-	
+
+
 
 

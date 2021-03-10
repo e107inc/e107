@@ -469,7 +469,6 @@ class plugin_ui extends e_admin_ui
 			$text = e107::getPlugin()->uninstall($id, $post);
 
 
-
 			// make sure ALL plugin/addon pref lists get update and are current
 			e107::getPlug()->clearCache()->buildAddonPrefLists();
 
@@ -690,14 +689,14 @@ class plugin_ui extends e_admin_ui
 
 				$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$eplug_version. "({e_PLUGIN}".$info['plugin_path'].")";
 
-				e107::getLog()->add('PLUGMAN_02', $name, E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('PLUGMAN_02', $name);
 				$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 				$sql->update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
 				$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
 
-				e107::getConfig('core')->setPref($pref);
+				e107::getConfig()->setPref($pref);
 				$plugin->rebuildUrlConfig();
-				e107::getConfig('core')->save();
+				e107::getConfig()->save();
 			}
 
 			$mes->addSuccess($text);
@@ -823,11 +822,11 @@ class plugin_ui extends e_admin_ui
 			}
 
 			$med = e107::getMedia();
-			$icons = $med->listIcons(e_PLUGIN.$path);
+			$icons = (array) $med->listIcons(e_PLUGIN.$path);
 
 			$iconText = '';
 
-			if(count($icons)>0)
+			if(count($icons) > 0)
 			{
 				foreach($icons as $key=>$val)
 				{
@@ -877,8 +876,9 @@ class plugin_ui extends e_admin_ui
 			{
 				$text .= "<tr>\n<td class='top'>".$tp->toHTML($val['label'],FALSE,'TITLE');
 				$text .= varset($val['preview']) ? "<div class='indent'>".$val['preview']."</div>" : "";
+				$text .= varset($val['helpText']) ? "".$frm->help($val['helpText'])."" : "";
 				$text .= "</td>\n<td>".$frm->select($key,$val['itemList'],$val['itemDefault']);
-				$text .= varset($val['helpText']) ? "".$frm->help($val['helpText'], 'after')."" : "";
+
 				$text .= "</td>\n</tr>\n";
 			}
 
@@ -1447,7 +1447,7 @@ class plugin_online_ui extends e_admin_ui
 			$model = new e_model($v);
 			$tree->setNode($id, $model);
 
-			$badge = $this->compatibilityLabel($row['compatibility']);;
+			$badge = $this->compatibilityLabel($row['compatibility']);
 			$featured = ($row['featured'] == 1) ? " <span class='label label-info'>" . EPL_ADLAN_91 . "</span>" : '';
 			$price = (!empty($row['price'])) ? "<span class='label label-primary'>" . $row['price'] . " " . $row['currency'] . "</span>" : "<span class='label label-success'>" . EPL_ADLAN_93 . "</span>";
 
@@ -1550,7 +1550,7 @@ class plugin_online_ui extends e_admin_ui
 
 			//	print_a($row);
 
-			$badge = $this->compatibilityLabel($row['compatibility']);;
+			$badge = $this->compatibilityLabel($row['compatibility']);
 			$featured = ($row['featured'] == 1) ? " <span class='label label-info'>" . EPL_ADLAN_91 . "</span>" : '';
 			$price = (!empty($row['price'])) ? "<span class='label label-primary'>" . $row['price'] . " " . $row['currency'] . "</span>" : "<span class='label label-success'>" . EPL_ADLAN_93 . "</span>";
 
@@ -1648,7 +1648,7 @@ class plugin_online_ui extends e_admin_ui
 				$parms .= '&amp;srch=' . $srch;
 			}
 
-			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>" . $tp->parseTemplate("{NEXTPREV=$parms}", true) . "</div>";
+			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>" . $tp->parseTemplate("{NEXTPREV=$parms}") . "</div>";
 		}
 
 		return $text;
@@ -1844,7 +1844,7 @@ class plugin_form_online_ui extends e_admin_form_ui
 			}
 
 
-			if(!e107::isCompatible($compat))
+			if(!e107::isCompatible($compat, 'plugin'))
 			{
 				$button = e107::getParser()->toGlyph('fa-bolt').ADLAN_121;
 				$class = 'btn btn-sm btn-warning';
@@ -1854,10 +1854,9 @@ class plugin_form_online_ui extends e_admin_form_ui
 		}
 
 
-		$dicon = '<a title="'.$title.'" '.$disable.' class="e-modal '.$class.'" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.$button.'</a>';
+		return '<a title="'.$title.'" '.$disable.' class="e-modal '.$class.'" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.$button.'</a>';
 	//	$dicon = "<a data-toggle='modal' data-bs-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
-		return $dicon;
 
 	}
 
@@ -1984,8 +1983,7 @@ class pluginLanguage extends e_admin_ui
 		function renderSimilar($data,$mode='')
 		{
 
-			$sim = $this->findSimilar($data);
-
+			$sim =  (array) $this->findSimilar($data);
 
 			if(empty($sim) || ($mode == 'script' && count($sim) < 2))
 			{
@@ -2623,7 +2621,7 @@ class pluginBuilder
 		{
 			
 			$frm = e107::getForm();
-			return "<div>".$frm->textarea('mysql','', 10,80)."</div>";	
+			return "<div>".$frm->textarea('mysql','')."</div>";
 			
 		}
 
@@ -3354,8 +3352,8 @@ $content .= '}';
 
 			$req = ($required == true) ? "&required=1" : "";	
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
-			$pat = ($pattern) ? "&pattern=".$pattern : "";
-			$sz = ($xsize) ? "&size=".$xsize : "";
+			$pat = !empty($pattern) ? "&pattern=".$pattern : "";
+			$sz = !empty($xsize) ? "&size=".$xsize : "";
 			
 			switch ($type) 
 			{
@@ -3436,13 +3434,14 @@ $content .= '}';
 			foreach($data as $key=>$val)
 			{
 				$key = strtoupper(str_replace("-","_",$key));
-				$newArray[$key] = $val;	
-				
+				$newArray[$key] = $val;
 			}
 			
 			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHTML($newArray['DESCRIPTION_DESCRIPTION'],true));
 
 			$_POST['pluginPrefs'] = $tp->filter($_POST['pluginPrefs']);
+
+			$plugPref = array();
 
 			foreach($_POST['pluginPrefs'] as $val)
 			{
@@ -3455,7 +3454,7 @@ $content .= '}';
 			
 		//	print_a($_POST['pluginPrefs']);
 			
-			if(count($plugPref))
+			if(!empty($plugPref))
 			{
 				$xmlPref = "<pluginPrefs>\n";
 				foreach($plugPref as $k=>$v)
@@ -3549,13 +3548,13 @@ TEMPLATE;
 			$frm = e107::getForm();
 					
 			$modes = array(
-				"main"=>EPL_ADLAN_157,
-				"cat"=>EPL_ADLAN_158,
-				"other1"=>EPL_ADLAN_159,
-				"other2"=>EPL_ADLAN_160,
-				"other3"=>EPL_ADLAN_161,
-				"other4"=>EPL_ADLAN_162,
-				'exclude'=>EPL_ADLAN_163,
+				"main"    => EPL_ADLAN_157,
+				"cat"     => EPL_ADLAN_158,
+				"other1"  => EPL_ADLAN_159,
+				"other2"  => EPL_ADLAN_160,
+				"other3"  => EPL_ADLAN_161,
+				"other4"  => EPL_ADLAN_162,
+				'exclude' => EPL_ADLAN_163,
 			);
 			
 		//	echo "TABLE COUNT= ".$this->tableCount ;
@@ -3566,9 +3565,11 @@ TEMPLATE;
 			$c=0;
 			foreach($modes as $id=>$md)
 			{
-				$tbl = $this->tableList[$c];
-				$defaultMode[$tbl] = $id;	
-				$c++;
+				if($tbl = varset($this->tableList[$c], false))
+				{
+					$defaultMode[$tbl] = $id;
+					$c++;
+				}
 			}
 			
 		//	print_a($defaultMode);
@@ -3619,8 +3620,6 @@ TEMPLATE;
 						
 			foreach($fieldArray as $name=>$val)
 			{
-				list($tmp,$nameDef) = explode("_",$name,2);
-				// 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp'
 				$text .= "<tr>
 					<td>".$name."</td>
 					<td>".$frm->text($this->table."[fields][".$name."][title]", $this->guess($name, $val,'title'),35, 'required=1')."</td>
@@ -4657,7 +4656,7 @@ $text .= "
 
 			foreach($vars['fields'] as $key=>$val)
 			{
-				$FIELDS .= "\t\t\t'".str_pad($key."'",25," ",STR_PAD_RIGHT)."=> ".str_replace($srch,$repl,var_export($val,true)).",\n";
+				$FIELDS .= "\t\t\t'".str_pad($key."'",25," ")."=> ".str_replace($srch,$repl,var_export($val,true)).",\n";
 			}
 
 			$FIELDS .= "\t\t)";

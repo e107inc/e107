@@ -16,23 +16,26 @@
 
 		protected function _before()
 		{
-		//	require_once(e_HANDLER."menumanager_class.php");
+			require_once(e_HANDLER."menumanager_class.php");
 		}
 
 		private function copydir( $src, $dst )
 		{
 			if(!is_dir($src) || is_dir($dst))
 			{
+				echo 'Skipping directory creation. '.$dst.' already exists.'."\n";
 				return false;
 			}
 
-
-			$dir = opendir($src);
-			@mkdir(dirname($dst));
+			mkdir($dst);
 
 			$DS = DIRECTORY_SEPARATOR ;
 
-			while(false !== ($file = readdir($dir)))
+			$files = scandir($src);
+
+			unset($files[0], $files[1]);
+
+			foreach($files as $file)
 			{
 				if($file != '.' && $file != '..')
 				{
@@ -47,7 +50,7 @@
 				}
 			}
 
-			closedir($dir);
+			// closedir($dir);
 		}
 
 
@@ -63,7 +66,8 @@
 
 		public function testGetLayouts()
 		{
-			/* FIXME: https://github.com/e107inc/e107/issues/4030
+			//FIXME: https://github.com/e107inc/e107/issues/4030
+
 			$src1 = codecept_data_dir()."testcore";
 			$dest1 = e_THEME."testcore";
 
@@ -74,6 +78,7 @@
 
 			$this->copydir($src2,$dest2);
 
+
 			$src3 = codecept_data_dir()."basic-light";
 			$dest3 = e_THEME."basic-light";
 
@@ -82,11 +87,11 @@
 			$tests = array(
 
 				'bootstrap3'   => array (
-					'templates' => array( // template key and string length
-						'jumbotron_home'            => 3132,
-						'modern_business_home'      => 3842,
-						'jumbotron_full'            => 2239,
-						'jumbotron_sidebar_right'   => 2973
+					'templates' => array (
+					  0 => 'jumbotron_full',
+					  1 => 'jumbotron_home',
+					  2 => 'jumbotron_sidebar_right',
+					  3 => 'modern_business_home',
 					),
 					'menus'     => array (
 						'jumbotron_home'            => array ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','100','101','102','103','104','105','106','107',),
@@ -99,8 +104,8 @@
 
 				'testkubrick'   => array (
 					'templates' => array(
-						'legacyCustom' => 267,
-						'legacyDefault' => 308
+						'legacyCustom',
+						'legacyDefault'
 					),
 					'menus'     => array(
 						'legacyCustom' => array(),
@@ -110,9 +115,9 @@
 
 				'testcore'      => array (
 					'templates' => array (
-						'HOME' => 1494,
-						'FULL' => 1269,
-						'legacyDefault'=> 1654
+						'HOME',
+						'FULL',
+						'legacyDefault'
 					),
 					'menus'     => array(
 						'HOME' => array('2', '3', '4'),
@@ -123,10 +128,10 @@
 
 				'basic-light' => array(
 					'templates' => array(
-						'default'       => 3274,
-						'default-home'  => 3274,
-						'simple-page'   => 1553,
-						'wide-page'     => 1235
+						'default' ,
+						'default-home',
+						'simple-page',
+						'wide-page'
 					),
 					'menus' => array(
 						'default'       => array('1', '2', '3', '4'),
@@ -142,8 +147,19 @@
 			foreach($tests as $theme=>$vars)
 			{
 
-				$result = e_menu_layout::getLayouts($theme);
+				$result = e_mm_layout::getLayouts($theme);
+				$templates = array_keys($result['templates']);
+				$this->assertSame($vars['templates'], $templates);
 
+				foreach($vars['menus'] as $key=>$arr)
+				{
+					$this->assertSame($arr, $result['menus'][$key], $key." is different");
+				}
+
+			//	$this->assertEquals($templates, $vars['templates']);
+
+
+/*
 				foreach($vars['templates'] as $key=>$length)
 				{
 					$content = str_replace(array("\r", "\n"),'',$result['templates'][$key]);
@@ -158,14 +174,14 @@
 				foreach($vars['menus'] as $key=>$arr)
 				{
 					$this->assertEquals($arr, $result['menus'][$key], $key." is different");
-				}
+				}*/
 
 
 			}
 
 
 
-			*/
+
 		}
 
 

@@ -17,8 +17,8 @@ class download
 	
 	private $orderOptions = array('download_id','download_datestamp','download_filesize','download_name','download_author','download_requested');
 	
-	private $templateHeader = '';
-	private $templateFooter = '';
+	private $templateHeader;
+	private $templateFooter;
 
 	private $subCategories = array();
 	private $categories = array();
@@ -168,19 +168,24 @@ class download
 		{
 			case 'maincats':
 				e107::canonical('download', 'index');
+				e107::route('download/index');
 			break;
 
 			case "list":
+				e107::route('download/category');
 				$this->loadList();
 				break;
 
 			case "view":
+				e107::route('download/item');
 				$this->loadView();
 				break;
 
 			case "report":
+
 				if(check_class($pref['download_reportbroken']))
 				{
+					e107::route('download/report');
 					$this->loadReport();
 				}
 				break;
@@ -889,7 +894,7 @@ class download
 
 		global $nextprev_parms;
 	
-		$nextprev_parms  = http_build_query($nextprev,false,'&'); // 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='. $total_downloads.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
+		$nextprev_parms  = http_build_query($nextprev,false); // 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='. $total_downloads.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
 
 		$text .= $tp->parseTemplate($DOWNLOAD_LIST_NEXTPREV, TRUE, $sc);	
 
@@ -985,7 +990,7 @@ class download
 			  </div>
 			   <div class='form-group clearfix'> ".$frm->textarea('report_add', '')."</div>
 				<div class='form-group text-center'>
-					".$frm->button('report_download',LAN_dl_45,'submit')."
+					".$frm->button('report_download',LAN_dl_45)."
 				</div>
 		   </form>";
 		   	  

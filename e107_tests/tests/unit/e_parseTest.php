@@ -458,10 +458,20 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					'expected'  => "<table class='table table-striped table-bordered bbcode-table'><tr>\n<td>cell</td>\n</tr></table>",
 				),
 
+				4 => array(
+					'text'  => "Test\n[b]first line[/b][b]\nsecond line[/b]",
+					'expected'  => "Test<br /><strong class='bbcode bold bbcode-b'>first line</strong><strong class='bbcode bold bbcode-b'><br />second line</strong>",
+				),
+
+				5 => array(
+					'text'  => "Test\n[code]1st [b]line[/b] of code[/code]\n[code]2nd line of code[/code]",
+					'expected'  => "Test<br /><pre class='prettyprint linenums code_highlight code-box bbcode-code' style='unicode-bidi: embed; direction: ltr'>1st &#091;b]line&#091;/b] of code</pre><pre class='prettyprint linenums code_highlight code-box bbcode-code' style='unicode-bidi: embed; direction: ltr'>2nd line of code</pre>",
+				),
+
 
 			);
 
-			foreach($tests as $var)
+			foreach($tests as $index => $var)
 			{
 				$result = $this->tp->toHTML($var['text'], true);
 
@@ -471,14 +481,12 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					continue;
 				}
 
-				$this->assertEquals($var['expected'], $result);
+				$this->assertEquals($var['expected'], $result, 'Test #'.$index.' failed.');
 			}
 
 
 
 		}
-
-
 
 		public function testParseTemplateWithEnabledCoreShortcodes()
 		{

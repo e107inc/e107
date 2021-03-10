@@ -832,13 +832,42 @@ class e107Test extends \Codeception\Test\Unit
 		$res = null;
 		$this->assertTrue($res);
 	}
-
+*/
 	public function testGetUrlConfig()
 	{
-		$res = null;
-		$this->assertTrue($res);
-	}
 
+
+		$expected =  array (
+		    'index' =>
+		    array (
+		      'alias' => 'contact',
+		      'regex' => '^{alias}\\/?$',
+		      'sef' => '{alias}',
+		      'redirect' => '{e_BASE}contact.php',
+		    ),
+		  );
+
+		$result = e107::getUrlConfig();
+		$this->assertNotEmpty($result['contact']);
+		$this->assertSame($expected, $result['contact']);
+
+		// ----
+
+		$expected =  array (
+		    'alias' => 'contact',
+		    'regex' => '^{alias}\\/?$',
+		    'sef' => '{alias}',
+		    'redirect' => '{e_BASE}contact.php',
+		  );
+
+		$result = e107::getUrlConfig('route');
+		$this->assertNotEmpty($result['contact/index']);
+		$this->assertSame($expected, $result['contact/index']);
+
+
+
+	}
+/*
 	public function testGetThemeInfo()
 	{
 		$res = null;
@@ -1285,13 +1314,52 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
-	/*
+	function testDetectRoute()
+	{
+		e107::getPlugin()->install('forum');
+
+		$tests = array(
+			0 => array(
+				'plugin'    => 'forum',
+				'uri'       => '/e107_plugins/forum/forum.php?f=rules',
+				'expected'  => 'forum/rules',
+			),
+			1 => array(
+				'plugin'    => 'forum',
+				'uri'       => '/e107_plugins/forum/forum_viewforum.php?id=543123',
+				'expected'  => 'forum/forum',
+			),
+
+		);
+
+		foreach($tests as $index => $var)
+		{
+			$result = e107::detectRoute($var['plugin'], $var['uri']);
+			if(empty($var['expected']))
+			{
+				echo $result."\n";
+				continue;
+			}
+
+			$this->assertSame($var['expected'], $result);
+		}
+
+
+
+
+
+		e107::getPlugin()->uninstall('forum');
+
+	}
+
+/*
 				public function testThemeLan()
 				{
-					$res = null;
-					$this->assertTrue($res);
-				}
+					$result = e107::themeLan(null, 'basic-light');
+					var_dump($result);
 
+				}*/
+	/*
 				public function testLan()
 				{
 					$res = null;
@@ -1879,7 +1947,7 @@ class e107Test extends \Codeception\Test\Unit
 				$tests = array(
 					'mode=main&action=create'                       => 'mode=main&amp;action=create',
 					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
-			//		'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main', //FIXME Fails.
+					'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main',
 				);
 
 				foreach($tests as $input => $expected)
@@ -1953,7 +2021,7 @@ class e107Test extends \Codeception\Test\Unit
 	public function testIsCompatible()
 	{
 		// version => expected
-		$tests = array (
+		$testPlugin = array (
 			'1'     => false, // assumed incompatible.
 			'1.2.3' => false,
 			'1.2'   => false,
@@ -1971,14 +2039,36 @@ class e107Test extends \Codeception\Test\Unit
 		);
 
 		$e107 = $this->e107;
-	//	$ret = [];
-		foreach($tests as $input=>$expected)
+
+		foreach($testPlugin as $input=>$expected)
 		{
-			$result = $e107::isCompatible($input);
+			$result = $e107::isCompatible($input, 'plugin');
+			$this->assertSame($expected, $result);
+		}
+
+		$testTheme = array (
+			'1'     => true, // assumed incompatible.
+			'1.2.3' => true,
+			'1.2'   => true,
+			'2'     => true, // assumed to work with all versions from 2+
+			'2.0'   => true,  // assumed to work with all versions from 2+
+			'2.3'   => true,  // assumed to work with all versions from 2.3 onward.
+			'2.1.0' => true,
+			'2.2.0' => true,
+			'2.3.0' => true,
+			'2.3.1' => true,
+			'1.7b'  => true,
+			'2.9'   => false,
+			'2.9.2' => false,
+			'3'     => false,
+		);
+
+		foreach($testTheme as $input=>$expected)
+		{
+			$result = $e107::isCompatible($input, 'theme');
 			$this->assertSame($expected, $result);
 		//	$ret[$input] = $result;
 		}
-
 
 
 	}

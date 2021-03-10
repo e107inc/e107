@@ -105,6 +105,32 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	}
 
+	public function testParseCodesWithMagicShortcodes()
+	{
+		$template = '{SITENAME} {---BREADCRUMB---}';
+		$expected = 'e107 {---BREADCRUMB---}';
+
+		$result = $this->scParser->parseCodes($template, true);
+		$this->assertSame($expected, $result);
+		
+		$array = array(
+			'LINK_TEXT' => 'Content',
+		    'LINK_URL' => '#',
+		    'ONCLICK' => '',
+		    'SUB_HEAD' => '',
+		    'SUB_MENU' => '',
+		);
+
+		$result = $this->scParser->parseCodes($template, true, $array);
+		$this->assertSame($expected, $result);
+
+		$sc = e107::getScBatch('_blank', true, '_blank');
+	    $this->assertIsObject($sc);
+		$result = $this->scParser->parseCodes($template, true, $sc);
+		$this->assertSame($expected, $result);
+
+	}
+
 
 	public function testParseCodesWithClass()
 	{

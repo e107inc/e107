@@ -4,9 +4,9 @@ CREATE TABLE `hero` (
   `hero_description` varchar(255) default '',
   `hero_bg` varchar(255) NOT NULL,
   `hero_media` varchar(255) default '',
-  `hero_bullets` text default '',
-  `hero_button1` text default '',
-  `hero_button2` text default '',
+  `hero_bullets` text,
+  `hero_button1` text,
+  `hero_button2` text,
   `hero_order` tinyint(3) unsigned NOT NULL default '0',
   `hero_class` int(5) default '0',
   PRIMARY KEY  (hero_id)

@@ -1600,6 +1600,12 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
     color: #fff;
     background: #2E77B6;
 }
+#admin-menus #sc-admin-help .panel-body { border-top:1px solid rgba(255,255,255,0.15); }
+#e-mm-selector .btn { margin-top:15px }
+
+
+
+
 /*
 
 .admin-left-panel, .admin-right-panel {

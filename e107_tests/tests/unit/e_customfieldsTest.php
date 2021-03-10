@@ -17,7 +17,7 @@
 
 		protected $config = '{
 		    "__tabs__": {
-                "extra": "My Tab"
+                "additional": "My Tab"
             },
 		    "image": {
 		        "title": "Image",
@@ -191,6 +191,8 @@
 				$this->fail("Couldn't load e_customfields object");
 			}
 
+			$this->cf->__construct();
+
 			setlocale(LC_TIME, 'C');
 			date_default_timezone_set('UTC');
 
@@ -313,12 +315,18 @@
 		{
 
 		}
-
+*/
 		public function testRenderConfigForm()
 		{
+			$this->cf->loadConfig($this->config)->loadData($this->data);
+			$tab = $this->cf->getTabId();
+			$this->assertSame('additional', $tab);
+
+			$result= $this->cf->renderConfigForm('custom');
+			$this->assertStringNotContainsString('__tab__', $result);
 
 		}
-
+/*
 		public function testGetFieldValue()
 		{
 

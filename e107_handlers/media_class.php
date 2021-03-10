@@ -39,7 +39,7 @@ class e_media
 				'application'	=> array('zip','doc','gz'),
 				'audio'			=> array('mp3','wav'),
 				'image'			=> array('jpeg','jpg','png','gif', 'svg', 'webp'),
-				'video'			=> array('mp4', 'youtube','youtubepl'),
+				'video'			=> array('mp4', 'youtube','youtubepl', 'mov'),
 				'other'			=> array(),
 			//	'glyph'         => array('glyph')
 		);
@@ -1188,6 +1188,11 @@ class e_media
 			return $key;
 		}
 
+		if(strpos($mediaURL, 'via.placeholder') !== false)
+		{
+			return 'image';
+		}
+
 		return null;
 	}
 
@@ -1222,7 +1227,7 @@ class e_media
 				break;
 
 			case "image":
-				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'crop'=>$crop, 'class'=>'image-selector img-responsive img-fluid', 'legacy'=>varset($options['legacyPath'])));
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'crop'=>$crop, 'class'=> varset($options['class'],'image-selector img-responsive img-fluid'), 'legacy'=>varset($options['legacyPath'])));
 			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
 				break;
 

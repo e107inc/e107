@@ -289,10 +289,13 @@ $sc->setScVar('thisIsTheLastPost', false);
 
 foreach ($postList as $c => $postInfo)
 {
-	if($postInfo['post_options'])
+	$postInfo['thread_active'] = $thread->threadInfo['thread_active'];
+
+	if(!empty($postInfo['post_options']))
 	{
 		$postInfo['post_options'] = unserialize($postInfo['post_options']);
 	}
+
 	$loop_uid = (int)$postInfo['post_user'];
 
 	$lastPostDetectionCounter--;
@@ -431,7 +434,7 @@ function showmodoptions()
 	$ret .= "
 		<div>
 		<a class='e-tip' href='" . $editURL."' title=\"".LAN_EDIT."\">" . IMAGE_admin_edit . "</a>
-		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
+		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' alt='".LAN_DELETE."' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
 		<input type='hidden' name='mod' value='1'/>
 		";
 	if ($type == 'Thread')

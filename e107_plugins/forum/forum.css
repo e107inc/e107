@@ -16,6 +16,7 @@
 
 .forum-attachment-file                                  { margin-top:15px; }
 .forum-user-combo                                       { padding-bottom:5px }
+#forum-viewtopic .forum-user-combo .dropdown-menu       { text-align: left }
 
 /*
 

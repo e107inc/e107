@@ -346,6 +346,12 @@ $EMAIL_TEMPLATE['whatsnew']['body']				= "Hi {USERNAME},<br />{BODY}";
 $EMAIL_TEMPLATE['whatsnew']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 
+$EMAIL_TEMPLATE['blank']['name']				= "Blank";
+$EMAIL_TEMPLATE['blank']['subject']			    = '{SUBJECT}';
+$EMAIL_TEMPLATE['blank']['header']			    = '';
+$EMAIL_TEMPLATE['blank']['body']				= '{BODY}';
+$EMAIL_TEMPLATE['blank']['footer']			    = '';
+
 
 // ------ A Dummy Example for theme developers. 
 

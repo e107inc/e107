@@ -20,6 +20,7 @@ if(!e_QUERY)
     $e107CorePage->listBooks();
 
 	e107::canonical('page/list/index');
+	e107::route('page/list/index'); 
 	require_once(HEADERF);
 
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], "cpage-full-list");
@@ -40,6 +41,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	$id = $e107CorePage->setRequest('listChapters');
     $e107CorePage->listChapters($id);
     e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
+	e107::route('page/book/index'); 
 	
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-chapter-list');
@@ -52,6 +54,8 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
     $e107CorePage->listPages($id);
     $chData = $e107CorePage->getChapterData($id);
     e107::canonical('page/chapter/index',$chData);
+	e107::route('page/chapter/index'); 
+	
 	unset($row);
 	require_once(HEADERF);
     e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage-page-list');
@@ -65,8 +69,11 @@ else
     $e107CorePage->setPage();
 
     $canRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view';
-
+    $pageRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view/index';
+	
 	e107::canonical( $canRoute,  $e107CorePage->page);
+	e107::route($pageRoute);
+	
 	require_once(HEADERF);
 
 	$ns = e107::getRender();
@@ -161,7 +168,7 @@ class pageClass
 			$this->debug .= "<b>pageSelected</b> ".$this->pageSelected." <br />";
 		}
 		
-		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name,chapter_parent,chapter_meta_description,chapter_image,chapter_icon FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
@@ -268,7 +275,7 @@ class pageClass
 			$tmpl 		= varset($tml[$layout]);
 			$template 	= $tmpl['listBooks'];
 			
-			$text = $template['start'];
+			$text = $tp->parseTemplate($template['start']);
 			
 			
 			
@@ -290,7 +297,7 @@ class pageClass
 					'BOOK_URL'			=> e107::getUrl()->create('page/book/index', $sef,'allow=chapter_id,chapter_sef,book_sef,page_sef') 
 				);
 			
-				$text .= $tp->simpleParse($template['item'],$var);
+				$text .= $tp->parseTemplate($template['item'], true, $var);
 			}			
 		}	
 		
@@ -370,7 +377,7 @@ class pageClass
 				'BOOK_DESCRIPTION'	=> $tp->toHTML($brow['chapter_meta_description'],true,'BODY'),
 			);
 		
-		$caption = $tp->simpleParse($template['caption'],$bvar);
+		$caption = $tp->parseTemplate($template['caption'], true, $bvar);
 
         if($brow)
         {
@@ -382,7 +389,7 @@ class pageClass
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
 		{
-			$text = $tp->simpleParse($template['start'],$bvar);
+			$text = $tp->parseTemplate($template['start'],true, $bvar);
 			
 			while($row = $sql->fetch())
 			{
@@ -408,11 +415,11 @@ class pageClass
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
 				);
 				
-				$text .= $tp->simpleParse($template['item'],$var);
+				$text .= $tp->parseTemplate($template['item'], true, $var);
 
 			}
 			
-			$text .= $tp->simpleParse($template['end'], $bvar);		
+			$text .= $tp->parseTemplate($template['end'], true, $bvar);
 			
 		}
 		else
@@ -495,7 +502,7 @@ class pageClass
 		//print_a($this->chapterData);
 		
 		$tml = e107::getCoreTemplate('chapter','', true, true); // always merge	
-		$tmpl = varset($tml[$layout]);
+		$tmpl = varset($tml[$layout], $tml['default']);
 		
 		$bread = array(
 			0 => array('text' => $tp->toHTML($bookTitle), 'url'=> e107::getUrl()->create('page/book/index', $urlData,'allow=chapter_id,chapter_sef,book_id,book_sef,page_sef'))
@@ -526,8 +533,7 @@ class pageClass
 				
 				$pageArray = $sql->db_getList();
 
-				$header = $tp->simpleParse($template['start'],$var);
-				$text = $tp->parseTemplate($header,true); // for parsing {SETIMAGE} etc.
+				$text = $tp->parseTemplate($template['start'], true, $var); // for parsing {SETIMAGE} etc.
 				
 				foreach($pageArray as $page)
 				{
@@ -557,7 +563,7 @@ class pageClass
 					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
 				
-				$text .= $tp->simpleParse($template['end'], $var);
+				$text .= $tp->parseTemplate($template['end'], true, $var);
 				
 		
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
@@ -566,7 +572,7 @@ class pageClass
 
 
 
-			$caption = $tp->simpleParse($template['caption'], $var);
+			$caption = $tp->parseTemplate($template['caption'], true, $var);
 		#return array('caption'=>$caption, 'text'=> $text);
 		$this->pageOutput = array('caption'=>$caption, 'text'=> $text);
         return $this->pageOutput;

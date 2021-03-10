@@ -24,6 +24,7 @@ class cpage_shortcodes extends e_shortcode
 	// var $var; // parsed DB values
 	private $chapterData = array();
 	private $cpageFieldName = null;
+	private $breadcrumbComplete = false;
 	
 	// Grab all book/chapter data. 
 	function __construct()
@@ -658,21 +659,33 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$breadcrumb = array();
 
+		$request = e107::getRegistry('core/page/request');
+		$action = varset($request['action']);
+
 		$row = $this->getChapter();
 		$brow = $this->getBook($row['chapter_parent']);
 
-		if(empty($brow['chapter_sef']))
+		if(empty($brow['chapter_sef']) || $this->breadcrumbComplete === true || ($action === 'listBooks'))
 		{
 			//e107::getDebug()->log($this);
 			return null;
 		}
 
+
 		$row['book_sef']  = vartrue($brow['chapter_sef'],"no-sef-found"); //$this->getBook();
 
 		$breadcrumb[] = array('text'=> $brow['chapter_name'], 'url'=> e107::getUrl()->create('page/book/index', $brow,'allow=chapter_id,chapter_sef,book_sef,page_sef'));
-		$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
+
+		if($action !== 'listChapters')
+		{
+			$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
+		}
+
+
+
 
 		e107::breadcrumb($breadcrumb);
+		$this->breadcrumbComplete = true;
 	}
 
 

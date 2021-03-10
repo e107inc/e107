@@ -944,7 +944,7 @@ class core_library
 
 
 
-			// Animate (local).
+		// Animate (local).
 		$libraries['animate.css'] = array(
 			'name'              => 'Animate.css (local)',
 			'vendor_url'        => 'https://daneden.github.io/animate.css/',
@@ -960,25 +960,38 @@ class core_library
 					),
 				),
 			),
-		/*	'variants'          => array(
-				// 'unminified' version for debugging.
-				'dev' => array(
-					'files' => array(
-						'css' => array(
-							'css/font-awesome.css' => array(
-								'zone' => 2,
-							),
-						),
-					),
-				),
-			),*/
-			// Override library path.
+
 			'library_path'      => '{e_WEB}lib/animate.css',
 		//	'path'              => '3.5.2',
 			'version'           => '3.5.2',
 		);
 
+		// Animate (local).
+		$libraries['bootstrap-suggest'] = array(
+			'name'              => 'Bootstrap Suggest (local)',
+			'vendor_url'        => 'https://github.com/lodev09/bootstrap-suggest',
+			'version_arguments' => array(
+				'file'    => 'bootstrap-suggest.js',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 3,
+			),
+			'files'             => array(
+				'css' => array(
+					'bootstrap-suggest.css' => array(
+						'zone' => 2,
+					),
+				),
+				'js' => array(
+					'bootstrap-suggest.min.js' => array(
+						'zone' => 2,
+					),
+				),
+			),
 
+			'library_path'      => '{e_WEB}lib/bootstrap-suggest',
+			'path'              => 'dist',
+			'version'           => '2.0.3',
+		);
 
 
 		return $libraries;
