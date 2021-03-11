@@ -1117,7 +1117,7 @@ class e_theme
 					"name"          => $val['@attributes']['file'],
 					"info"          => $val['@attributes']['name'],
 					"nonadmin"      => $notadmin,
-					'scope'         => vartrue($val['@attributes']['scope']),
+					'scope'         => vartrue($val['@attributes']['scope'], 'front'),
 					'exclude'       => vartrue($val['@attributes']['exclude']),
 					'description'   => vartrue($val['@attributes']['description']),
 					'thumbnail'     => vartrue($val['@attributes']['thumbnail'])

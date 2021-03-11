@@ -142,6 +142,14 @@
 						    'description' => '',
 						    'thumbnail' => '',
 						  ),
+						  '*' => array (
+						        'name' => '*',
+						        'info' => '*',
+						        'nonadmin' => true,
+						        'exclude' => '',
+						        'description' => '',
+						        'thumbnail' => '',
+						    ),
 						),
 					),
 					5   => array(
