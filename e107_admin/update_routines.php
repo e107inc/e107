@@ -114,7 +114,7 @@ if (!$dont_check_update)
 //	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
-	$dbupdate['20x_to_220'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.2.0')), 'message'=> null, 'hide_when_complete'=>false);
+	$dbupdate['20x_to_231'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.3.1')), 'message'=> null, 'hide_when_complete'=>false);
 	
 
 
@@ -626,13 +626,26 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_20x_to_230($type='')
+	 function update_20x_to_231($type='')
 	{
 
 		$sql = e107::getDb();
 		$log = e107::getLog();
 		$just_check = ($type == 'do') ? false : true;
 		$pref = e107::getPref();
+
+
+		if(!isset($pref['lan_global_list']['news']))
+		{
+			if($just_check)
+			{
+				return update_needed("News is missing from global lan list. ");
+			}
+
+			$plgClass = e107::getPlugin();
+			$plgClass->plugFolder = 'news';
+			$plgClass->XmlLanguageFiles('refresh');
+		}
 
 
 		if(!$sql->select('core_media_cat', 'media_cat_id', "media_cat_category = '_icon_svg' LIMIT 1"))
@@ -722,6 +735,9 @@ function update_core_database($type = '')
 			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
 			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
 		}
+
+
+
 
 
 
