@@ -66,7 +66,7 @@ abstract class E107Base extends Base
 		$this->restoreLocalE107Config();
 		$this->workaroundOldPhpUnitPhpCodeCoverage();
 	}
-
+/*
 	public function _failed($test, $fail)
 	{
 		parent::_failed($test, $fail);
@@ -75,7 +75,7 @@ abstract class E107Base extends Base
 		$this->restoreLocalE107Config();
 		$this->workaroundOldPhpUnitPhpCodeCoverage();
 
-	}
+	}*/
 
 
 	protected function revokeLocalE107Config()
