@@ -407,8 +407,6 @@
 						}
 
 						$this->assertEmpty($result, $folder." > ".$this_addon." returned error #".$result.$errMsg);
-					//	echo $folder;
-					//	var_dump($result);
 					}
 
 

@@ -1357,7 +1357,6 @@ class e107Test extends \Codeception\Test\Unit
 				public function testThemeLan()
 				{
 					$result = e107::themeLan(null, 'basic-light');
-					var_dump($result);
 
 				}*/
 	/*
@@ -1887,9 +1886,6 @@ class e107Test extends \Codeception\Test\Unit
 
 		//	$this->e107->prepare_request();
 
-		//	var_dump($_SERVER['QUEST_STRING']);
-
-
 		// 	$res = null;
 		// $this->assertTrue($res);
 	}
@@ -2009,12 +2005,10 @@ class e107Test extends \Codeception\Test\Unit
 
 		$result = $obj::isInstalled('user');
 
-		// var_dump($result);
 		$this->assertTrue($result);
 
 		$result = $obj::isInstalled('news');
 
-		// var_dump($result);
 		$this->assertTrue($result);
 	}
 

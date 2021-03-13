@@ -132,10 +132,6 @@ $data = array (
 			$input = array('myarray'=>'myvalue');
 			$result = $this->arrObj->unserialize($input);
 			$this->assertSame($input, $result);
-
-
-		//	var_dump($actual);
-
 		}
 /*
 

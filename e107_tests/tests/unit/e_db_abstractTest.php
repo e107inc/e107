@@ -1010,10 +1010,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		);
 
 		$this->assertEquals($expected, $actual);
-
-
-		//$actual = $this->db->getFieldDefs('userclass_classes');
-		//var_dump($actual);
 	}
 
 
