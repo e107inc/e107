@@ -668,9 +668,6 @@ class e_themeTest extends \Codeception\Test\Unit
 	//	{
 	// $res = e_theme::loadLayout('full', 'bootstrap4');
 
-	//	var_dump($res);
-
-
 	//	}
 	/*
 			public function testGetThemesMigrations()

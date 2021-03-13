@@ -1124,7 +1124,6 @@
 		{
 			$data = $this->ue->getFields();
 			$this->assertArrayHasKey('text', $data);
-		//	var_dump($data);
 		//	$this->assertCount(15, $data);
 
 			$data = $this->ue->getFields(16);
