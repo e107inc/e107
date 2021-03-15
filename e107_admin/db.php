@@ -971,8 +971,7 @@ class system_tools
 
 		$deleted_list = "";
 
-		$config = ($mode == 'core' || $mode=='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
-
+		$config = $this->getPrefConfig($mode);
 
 		// Single Pref Deletion	using button
 		if(varset($_POST['delpref']))
@@ -1384,6 +1383,25 @@ class system_tools
 		return null;
 	}
 
+	private function getPrefConfig($type)
+	{
+		if(strpos($type,'plugin_') === 0)
+		{
+			$config = e107::getPlugConfig(substr($type,7));
+		}
+		elseif(strpos($type,'theme_') === 0)
+		{
+			$config = e107::getThemeConfig(substr($type,6));
+		}
+		else
+		{
+			$config = e107::getConfig($type);
+		}
+
+		return $config;
+
+	}
+
 	/**
 	 * Preferences Editor
 	 * @param string $type
@@ -1391,7 +1409,6 @@ class system_tools
 	 */
 	private function pref_editor($type='core')
 	{
-		//TODO Add drop-down for editing personal perfs also. ie. user pref of self. (admin)
 
 		global $e107;
 		$frm = e107::getForm();
@@ -1399,8 +1416,9 @@ class system_tools
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 
-		$config = ($type == 'core' || $type == 'search'  || $type == 'notify') ? e107::getConfig($type) : e107::getPlugConfig($type);
-		
+
+		$config = $this->getPrefConfig($type);
+
 		$spref = $config->getPref();
 
 		ksort($spref);
@@ -1416,15 +1434,27 @@ class system_tools
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=notify'>Notify</option>\n";
 
 	//	e107::getConfig($type)->aliases
-
+		$text .= '<optgroup label="'.LAN_PLUGIN.'">';
 		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
 		while ($row = e107::getDb()->fetch())
 		{
-			$key = str_replace("plugin_","",$row['e107_name']);
+			$label = str_replace("plugin_","",$row['e107_name']);
+			$key = $row['e107_name'];
 			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
-			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($key)."</option>\n";
+			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($label)."</option>\n";
 		}
+		$text .= '</optgroup>';
 
+		$text .= '<optgroup label="'.LAN_THEME.'">';
+		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('theme_%') ORDER BY e107_name");
+		while ($row = e107::getDb()->fetch())
+		{
+			$label = str_replace("theme_","",$row['e107_name']);
+			$key = $row['e107_name'];
+			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
+			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($label)."</option>\n";
+		}
+		$text .= '</optgroup>';
 
 		$text .= "</select></div>
 						<table class='table adminlist'>
@@ -1480,7 +1510,21 @@ class system_tools
 					</fieldset>
 				</form>\n\n";
 
-		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_20.SEP.ucwords($type), $mes->render().$text);
+		if(strpos($type,'plugin_') === 0)
+		{
+			$caption = LAN_PLUGIN . SEP . ucfirst(substr($type,7));
+		}
+		elseif(strpos($type,'theme_') === 0)
+		{
+			$caption = LAN_THEME . SEP . ucfirst(substr($type,6));
+		}
+		else
+		{
+			$caption = ucwords($type);
+		}
+
+
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_20.SEP.$caption, $mes->render().$text);
 
 		return $text;
 	}
