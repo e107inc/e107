@@ -53,7 +53,7 @@ class links_admin extends e_admin_dispatcher
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= LAN_NAVIGATION;
+	protected $pluginTitle 	= LAN_NAVIGATION_LINKS;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';
