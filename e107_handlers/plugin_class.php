@@ -46,8 +46,8 @@ class e_plugin
 		'e_linkgen',
 		'e_list',
 
-		'e_meta', // @Deprecated
-		'e_emailprint',
+		'e_meta', // @deprecated
+		'e_emailprint', /* @deprecated - see e_print */
 		'e_print', // new v2.2
 		'e_frontpage',
 		'e_latest', /* @deprecated  - see e_dashboard */
@@ -71,6 +71,7 @@ class e_plugin
 		'e_tohtml', /* @deprecated  - use e_parse */
 		'e_featurebox',
 		'e_parse',
+		'e_print',  // new v2.3.1
 		'e_related',
 		'e_rss',
 		'e_upload',
