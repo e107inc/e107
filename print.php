@@ -48,17 +48,21 @@ CSS;
 
 e107::css('inline',$CSS);
 
-define('e_IFRAME', true); 
+define('e_IFRAME', true);
 
 $source = preg_replace('/[^\w\d_\:]/',"", $qs[0]);
-$parms = varset($qs[1],'');
+$parms = varset($qs[1]);
 unset($qs);
 
-if(strpos($source,'plugin:') !== FALSE)
+if(strpos($source,'plugin:') !== false)
 {
-	$plugin = substr($source,7);
+	$plugin = substr($source, 7);
 
-	if(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
+	if($obj = e107::getAddon($plugin, 'e_print'))
+	{
+		$print_text = e107::callMethod($obj,'render', $parms);
+	}
+	elseif(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
 	{
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
 		$print_text = print_item($parms);
@@ -70,7 +74,7 @@ if(strpos($source,'plugin:') !== FALSE)
 		return;
 	}
 }
-else
+else // @todo move to e107_plugins/news/e_print.php
 {
 	//$con = new convert;
 //	$id = intval($parms);
@@ -88,8 +92,9 @@ else
         $tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
     }
 
-    $title = $tp->toText($row['news_title']);
-    define('e_PAGETITLE', '[print] '. $title);
+    $title = e107::getParser()->toText($row['news_title']);
+  //   define('e_PAGETITLE', '[print] '. $title);
+    e107::title('[print] '. $title);
     e107::meta('robots', 'noindex');
 
 	$template = $tmp['item'];
@@ -106,35 +111,43 @@ else
 	<br />
 	".$newsUrl."
 	";
-	
-	
+
+
 
 }
 
 
-if(defined("TEXTDIRECTION") && TEXTDIRECTION == "rtl"){
+if(defined("TEXTDIRECTION") && TEXTDIRECTION === "rtl")
+{
 	$align = 'right';
-}else{
+}
+else
+{
 	$align = 'left';
 }
 
 // Header down here to give us a chance to set a page title
 require_once(HEADERF);
 
-//temporary solution - object of future cahges
-if(is_readable(THEME.'print_template.php'))
+
+if(is_readable(THEME.'print_template.php')) // legacy location.
 {
 	$PRINT_TEMPLATE = '';
 	include_once(THEME.'print_template.php');
-	echo $tp->parseTemplate($PRINT_TEMPLATE);
+	echo e107::getParser()->parseTemplate($PRINT_TEMPLATE);
 }
-else 
+else // v2.3.1+
 {
-	echo "
-		<div style='background-color:white'>
-		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO: h=100}", TRUE)."</div><hr />
-		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-		<form action='#'><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+	$PRINT_TEMPLATE = e107::getCoreTemplate('print', 'default');
+
+	$vars = array(
+		'TEXT'    => $print_text,
+		'ALIGN'   => $align,
+		'BUTTON'  => "<button class='btn btn-primary ' type='button' onclick='window.print()' />".LAN_PRINT_307."</button>"
+	);
+
+	echo e107::getParser()->parseTemplate($PRINT_TEMPLATE, true, $vars);
+
 }
 
 require_once(FOOTERF);
