@@ -870,7 +870,6 @@ class admin_shortcodes extends e_shortcode
 
 
 
-	// FIXME - make it work
 	public function sc_admin_pm($parm=null)
 	{
 		if(!e107::isInstalled('pm'))
@@ -898,14 +897,14 @@ class admin_shortcodes extends e_shortcode
 
        $text = '<ul class="nav nav-admin navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.defset('LAN_PM').'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_INBOX.'" data-target="#uiModal" href="'.$inboxUrl.'" >'.LAN_PLUGIN_PM_INBOX.'</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_OUTBOX.'" data-target="#uiModal" href="'.$outboxUrl.'">'.LAN_PLUGIN_PM_OUTBOX.'</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PM_35.'" data-target="#uiModal" href="'.$composeUrl.'">'.LAN_PM_35.'</a></li>
+                <li class="nav-header navbar-header dropdown-header">'.defset('LAN_PM').'</li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_INBOX').'" data-target="#uiModal" href="'.$inboxUrl.'" >'.defset('LAN_PLUGIN_PM_INBOX').'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_OUTBOX').'" data-target="#uiModal" href="'.$outboxUrl.'">'.defset('LAN_PLUGIN_PM_OUTBOX').'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PM_35').'" data-target="#uiModal" href="'.$composeUrl.'">'.defset('LAN_PM_35').'</a></li>
                 </ul>
         </li>
         </ul>
@@ -2301,7 +2300,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			{
 				$sc->setVars($lk);
 
-				$tmp[$c]['text']            = $sc->sc_nav_link_name();;
+				$tmp[$c]['text']            = $sc->sc_nav_link_name();
 				$tmp[$c]['description']     = $tp->toHTML($lk['link_description'], '', 'defs');
 				$tmp[$c]['link']            = $sc->sc_nav_link_url(); // $tp->replaceConstants($link,'full');
 				$tmp[$c]['image']           = $sc->sc_nav_link_icon(); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
@@ -2661,7 +2660,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return null;
 		}
 
-		$text = '
+		return '
 		<ul class="nav nav-pills nav-stacked" style="position: absolute;bottom: 100px;">
 			<li>
 				<a href="#" class="e-toggle-sidebar e-tip" data-placement="right" title="'.LAN_HELP.'">
@@ -2671,8 +2670,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		</ul>
 		
 		';
-
-		return $text;
+		
 	}
 
 
