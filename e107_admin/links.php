@@ -118,17 +118,17 @@ class links_admin_ui extends e_admin_ui
 	function init()
 	{
 		$this->fields['link_category']['writeParms']['optArray'] = array(
-			1	=> "1 - Main",
-			2	=> "2 - Sidebar",
-			3	=> "3 - Footer",
-			4	=> "4 - Alt",
-			5	=> "5 - Alt",
-			6	=> "6 - Alt", // If more than 6 are required, then something is not right with the themeing method. 
+			1	=> LCLAN_112,
+			2	=> LCLAN_113,
+			3	=> LCLAN_114,
+			4	=> "4 -". LCLAN_115,
+			5	=> "5 -". LCLAN_115,
+			6	=> "6 -". LCLAN_115, // If more than 6 are required, then something is not right with the themeing method. 
 	//		7	=> "7 - Alt",
 	//		8	=> "8 - Alt",
 	//		9	=> "9 - Alt",
 	//		10	=> "10 - Alt"
-	       255 => "(Unassigned)",
+	       255 => LCLAN_116
 		);
 
 
