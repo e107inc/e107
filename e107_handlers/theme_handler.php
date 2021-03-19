@@ -2331,17 +2331,21 @@ class themeHandler
 			if($name === 'theme_config') // v2.1.4 - don't use process() method.
 			{
 				$pref = e107::getThemeConfig();
-
-				$theme_pref = array();
-
+				$values = e107::getThemeConfig($this->id)->getPref();
+				
 				$fields = call_user_func(array(&$this->themeConfigObj, 'config'));
 
 				foreach($fields as $field=>$data)
 				{
-					$theme_pref[$field] = $_POST[$field];
+					if(!empty($data['multilan']))
+					{
+						$values[$field][e_LANGUAGE] =	$_POST[$field][e_LANGUAGE];							
+					} else {
+						$values[$field] = $_POST[$field];
+					}
 				}
 
-				if($pref->setPref($theme_pref)->save(true,true,false))
+				if($pref->setPref($values)->save(true,true,false))
 				{
 					$siteThemePref = e107::getConfig()->get('sitetheme_pref');
 					if(!empty($siteThemePref))
