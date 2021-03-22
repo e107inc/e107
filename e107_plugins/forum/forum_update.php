@@ -472,10 +472,11 @@ function step5()
 	}
 
 	$counts = array(
-		'parents' => 0,
-		'forums'  => 0,
-		'subs'    => 0
-	);
+        'parents' => 0,
+        'forums' => 0,
+        'subs' => 0, 
+        'sefs' => 1, // start on 1, so that a duplicate sef gets "-2" as suffix
+    );
 	//XXX Typo on 'parents' ?
 
 	if($sql->select('forum'))
@@ -504,9 +505,10 @@ function step5()
 			$forum_sef = eHelper::title2sef($forum['forum_name'], 'dashl');
 
 			if(isset($sefs[$forum_sef]))
-			{
-				$forum_sef .= "-2";
-			}
+            {
+                $counts['sefs']++;
+                $forum_sef .= "-".$counts['sefs']; // adds "-2", "-3", etc.. when duplicate sef is found. 
+            }
 
 			$tmp['forum_sef'] = $forum_sef;
 
@@ -1328,7 +1330,7 @@ class forumUpgrade
 		//		echo "logf = ".$this->logf."<br />";
 		$txt = sprintf("%s - %s\n", date('m/d/Y H:i:s'), $msg);
 		//		echo $txt."<br />";
-		$flag = ($append ? FILE_APPEND : '');
+		$flag = ($append ? FILE_APPEND : 0);
 		file_put_contents($this->logf, $txt, $flag);
 	}
 
