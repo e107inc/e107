@@ -161,6 +161,11 @@
 				$ret[$sc] = isset($val[$var]) ? (string) $val[$var] : null;
 			}
 
+			if($tmp = e107::callMethod('theme_shortcodes', 'sc_caption', varset($val['caption'])))
+			{
+				$ret['{---CAPTION---}'] = $tmp;
+			}
+
 			$bread = e107::breadcrumb();
 			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread, true);
 
