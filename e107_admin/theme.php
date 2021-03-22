@@ -818,7 +818,7 @@ class theme_admin_ui extends e_admin_ui
 
 		public function ChoosePage()
 		{
-			e107::getTheme()->clearCache();
+			e107::getTheme('front', true); // clear cache and reload from disk.
 			return $this->GridPage();
 		}
 
@@ -1267,7 +1267,6 @@ class theme_builder extends e_admin_ui
 			if(vartrue($_GET['step']) == 3)
 			{
 				return $this->step3();
-
 			}
 
 			if(vartrue($_GET['step']) == 2)
@@ -1360,8 +1359,6 @@ class theme_builder extends e_admin_ui
 			$frm = e107::getForm();
 
 
-
-
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
 			    'author' 		=> array('name','url'),
@@ -1372,7 +1369,10 @@ class theme_builder extends e_admin_ui
 				'category'		=> array('category'),
 				'livedemo'      => array('livedemo'),
 				'copyright' 	=> array('copyright'),
-				'stylesheets' 	=> array('stylesheets')
+		//		'libraries'     => array('libraries'),
+		//		'layouts'       => array('layouts'),
+		//		'stylesheets' 	=> array('stylesheets'),
+
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
 			);
@@ -1531,6 +1531,55 @@ class theme_builder extends e_admin_ui
 			$mes = e107::getMessage();
 			$tp = e107::getParser();
 
+			$newArray = array(
+				'LIBRARIES'     => '',
+				'PREFS'         => '',
+				'STYLESHEETS'   => ''
+			);
+
+			$LAYOUTS = '';
+
+			$source = e107::getTheme($this->themeSrc)->get();
+
+			if(!empty($source['library']))
+			{
+				$newArray['LIBRARIES'] = '<libraries>';
+
+				foreach($source['library'] as $val)
+				{
+					$newArray['LIBRARIES'] .= "\n\t\t".'<library name="'.$val['name'].'" version="'.$val['version'].'" scope="'.$val['scope'].'"/>';
+				}
+
+				$newArray['LIBRARIES'] .= "\n\t</libraries>";
+			}
+
+			if(!empty($source['preferences']))
+			{
+				$newArray['PREFS'] = "\n\t<themePrefs>";
+
+				foreach($source['preferences'] as $key=>$val)
+				{
+					$newArray['PREFS'] .= "\n\t\t".'<pref name="'.$key.'">'.$val.'</pref>';
+				}
+
+				$newArray['PREFS'] .= "\n\t</themePrefs>";
+			}
+
+			if(!empty($source['css']))
+			{
+				$newArray['STYLESHEETS'] = "\n\t<stylesheets>";
+
+				foreach($source['css'] as $val)
+				{
+					$newArray['STYLESHEETS'] .= "\n\t\t".'<css file="'.$val['name'].'" name="'.$val['info'].'" scope="'.$val['scope'].'"';
+					$newArray['STYLESHEETS'] .= !empty($val['exclude']) ? ' exclude="'.$val['exclude'].'"' : '';
+					$newArray['STYLESHEETS'] .= ' />';
+				}
+
+				$newArray['STYLESHEETS'] .= "\n\t</stylesheets>";
+			}
+
+			// customized data.
 			foreach($data as $key=>$val)
 			{
 				$key = strtoupper(str_replace("-","_",$key));
@@ -1544,40 +1593,25 @@ class theme_builder extends e_admin_ui
 				$LAYOUTS .= "			<custompages>{CUSTOMPAGES}</custompages>\n";
 				$LAYOUTS .= "		</layout>";
 			}
-			else
+			elseif(!empty($source['layouts']))
 			{
-				$LAYOUTS = "";
-			}
-
-			if(!empty($newArray['STYLESHEETS_STYLESHEETS']))
-			{
-				$STYLESHEETS = '';
-				foreach($newArray['STYLESHEETS_STYLESHEETS'] as $val)
+				foreach($source['layouts'] as $name=>$val)
 				{
-					if(empty($val['file']))
-					{
-						continue;
-					}
-
-					$STYLESHEETS .= "\t\t<css file=\"".$val['file']."\" name=\"".$val['name']."\" />\n";
+					$LAYOUTS .= "\n\t\t<layout name=\"".$name."\" title=\"".varset($val['@attributes']['title'])."\"";
+					$LAYOUTS .= !empty($val['@attributes']['default']) ? ' default="'.$val['@attributes']['default'].'"' : '';
+					$LAYOUTS .= ">\n";
+					$LAYOUTS .= "\t\t\t<custompages>".varset($val['custompages'])."</custompages>\n";
+					$LAYOUTS .= "\t\t</layout>";
 				}
-
-				if(!empty($STYLESHEETS))
-				{
-					$STYLESHEETS = "\n\t<stylesheets>\n".$STYLESHEETS."\t</stylesheets>";
-				}
-
-				unset($newArray['STYLESHEETS_STYLESHEETS']);
 			}
 			else
 			{
-				$STYLESHEETS = "";
+				$LAYOUTS = "<layout name='default' title='Default' default='true' />";
 			}
 
-			$newArray['STYLESHEETS'] = $STYLESHEETS;
 
+			$newArray['MAIN_DATE'] = date('Y-m-d', $newArray['MAIN_DATE']);
 		//	print_a($newArray);
-
 
 $template = <<<TEMPLATE
 <?xml version="1.0" encoding="utf-8"?>
@@ -1595,9 +1629,9 @@ $template = <<<TEMPLATE
 		<image>preview.jpg</image>
 		<image>fullpreview.jpg</image>
 	</screenshots>{STYLESHEETS}
-	<layouts>
-		<layout name='default' title='Default' default='true' />{LAYOUTS}
-	</layouts>
+	{LIBRARIES}
+	<layouts>{LAYOUTS}
+	</layouts>{PREFS}
 </e107Theme>
 TEMPLATE;
 
@@ -1619,6 +1653,7 @@ TEMPLATE;
 			if(file_put_contents($path,$result))
 			{
 				$mes->addSuccess("Saved: ".$path);
+				e107::getTheme('front', true); // clear cache and reload.
 			}
 			else
 			{
@@ -1749,18 +1784,27 @@ TEMPLATE;
 			{
 
 				case 'stylesheets':
-					$fl = e107::getFile();
+				//	$fl = e107::getFile();
 
-					$fl->setMode('full');
-					$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", null, 1);
-					foreach($stylesheets as $key=>$path)
+					$source = e107::getTheme($this->themeSrc)->get();
+var_dump($source['css']);
+				//	$fl->setMode('full');
+				//	$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", null, 1);
+
+
+					foreach($source['css'] as $key=>$var)
 					{
-						$file = str_replace(e_THEME.$this->themeName."/",'',$path);
+						$file = $var['name'];
+						$default = varset($var['info']);
+
 						$text .= "<div class='row-fluid'>";
 						$text .= "<div class='controls'>";
 						$text .= "<div class='col-md-3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
 						<div class='field-help'>".TPVLAN_CONV_14."</div></div>";
-						$text .= "<div class='col-md-3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
+						$text .= "<div class='col-md-3'>"
+						.$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)
+						.$frm->hidden($name.'['.$key.'][scope]', $var['scope'], $size, 'placeholder='.$file . $req. $pat).
+						"
 						<div class='field-help'>".TPVLAN_CONV_15."</div></div>";
 					//	$text .= "<div class='span2'>".$frm->checkbox('css['.$key.'][file]',$file, false, array('label'=>$file))."</div>";
 					//	$text .= "<div class='span2'>".$frm->text('css['.$key.'][name]', $default, $size, 'placeholder='.$placeholder . $req. $pat)."</div>";
@@ -1800,8 +1844,8 @@ TEMPLATE;
 				break;
 			}
 
-
 			$text .= ($help) ? "<span class='field-help'>".$help."</span>" : "";
+		//	$text .= ($help) ? $frm->help($help) : '';
 			return $text;
 
 		}
