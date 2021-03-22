@@ -1386,7 +1386,7 @@ function update_706_to_800($type='')
 	if ($nt_changed)
 	{
 		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = e107::serialize($s_prefs);
+		$s_prefs = e107::serialize($s_prefs, true);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
 		$status = ($sql -> update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$message = str_replace('[x]',$nt_changed,LAN_UPDATE_20);
