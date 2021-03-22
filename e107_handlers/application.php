@@ -1134,7 +1134,7 @@ class eRouter
 
 		if(empty($config))
 		{
-			trigger('URL Config is empty', E_USER_NOTICE);
+			trigger_error('URL Config is empty', E_USER_NOTICE);
 			$config = array();
 		}
 		
