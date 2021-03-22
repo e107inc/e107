@@ -4600,9 +4600,10 @@ var_dump($select_options);*/
 		
 		if(count($list))
 		{
-			return "<div class='e-related clearfix hidden-print'>".$head.implode("\n",$list).$tp->parseTemplate($TEMPLATE['end']). '</div>';
+			$text = "<div class='e-related clearfix hidden-print'>".$head.implode("\n",$list).$tp->parseTemplate($TEMPLATE['end']). '</div>';
+			$caption = $tp->parseTemplate(varset($TEMPLATE['caption']));
+			return e107::getRender()->tablerender($caption, $text, 'related', true);
 
-		//	return "<div class='e-related clearfix hidden-print'><hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>".implode("\n",$list)."</div>"; //XXX Tablerender?
 		}
 		
 	}		

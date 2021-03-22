@@ -94,8 +94,8 @@ $PAGE_TEMPLATE['default']['end'] = '{CPAGERELATED: types=page,news}</div>';
 // define different tablerender mode here
 $PAGE_TEMPLATE['default']['tableRender'] = 'cpage';
 
-
-$PAGE_TEMPLATE['default']['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">{LAN=LAN_RELATED}</h2><div class="row">';
+$PAGE_TEMPLATE['default']['related']['caption'] = '{LAN=RELATED}';
+$PAGE_TEMPLATE['default']['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<div class="row">';
 $PAGE_TEMPLATE['default']['related']['item'] = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
 $PAGE_TEMPLATE['default']['related']['end'] = '</div>';
 
