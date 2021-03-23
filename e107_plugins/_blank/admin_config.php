@@ -251,7 +251,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_id'					=> array('title'=> LAN_ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',  'class'=>'center',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
            	'blank_icon'				=> array('title'=> LAN_ICON, 			'type' => 'icon',		'data' => 'str',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable          
             'blank_type'	   			=> array('title'=> LAN_TYPE, 				'type' => 'method', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
+			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'dropdown', 		'data' => 'str',		'width' => 'auto',	'thclass' => '', 'writeParms'=>array('optArray'=>array('_NULL_'=>'Empty', 'opt1'=>'Option 1', 'opt2'=>'Option 2'))),
 			'blank_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
