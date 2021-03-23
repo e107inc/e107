@@ -592,6 +592,18 @@ echo "</head>\n";
             echo "<div class='alert alert-danger'>Required class <b>theme</b> is missing. See <b>".e_THEME."bootstrap3/theme.php</b> for an example.</div>";
         }
 	}
+	else // Legacy Theme.
+	{
+		$legacyGlobals = ['HEADER','FOOTER', 'LAYOUT', 'CUSTOMHEADER', 'CUSTOMFOOTER'];
+		foreach($legacyGlobals as $lg)
+		{
+			if(isset($GLOBALS[$lg]))
+			{
+				$$lg  = $GLOBALS[$lg];
+			}
+
+		}
+	}
 
 
 	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
