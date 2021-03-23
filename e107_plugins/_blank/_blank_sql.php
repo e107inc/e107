@@ -48,7 +48,7 @@ CREATE TABLE blank (
   `blank_icon` varchar(255) NOT NULL,
   `blank_type` varchar(10) NOT NULL,
   `blank_name` varchar(50) NOT NULL,
-  `blank_folder` varchar(50) NOT NULL,
+  `blank_folder` varchar(50) DEFAULT NULL,
   `blank_version` varchar(5) NOT NULL,
   `blank_author` varchar(50) NOT NULL,
   `blank_authorURL` varchar(255) NOT NULL,
