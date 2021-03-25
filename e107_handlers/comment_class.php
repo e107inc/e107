@@ -41,7 +41,9 @@ class comment
 	
 	private $table = null;
 
-	private $engine = 'e107';
+	private $engine;
+
+	private $nestedComments = array();
 
 	function __construct()
 	{
@@ -266,7 +268,7 @@ class comment
 			$indent = ($action == 'reply') ? " class='media offset-md-1 col-md-offset-1 offset1' " : " class='media' ";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
-			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
+			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false);//temporary here
 			
 		//	$text .= "Indent = ".$indent;
 			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
@@ -298,7 +300,7 @@ class comment
 	
 			$text .= "
 			<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />
-			<input type='hidden' name='e-token' value='".defset('e_TOKEN','')."' />
+			<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			<input type='hidden' name='table' value='".$table."' />
 			<input type='hidden' name='itemid' value='".$itemid."' />
 			
@@ -333,7 +335,7 @@ class comment
 
 				if(!empty($socialLogin))
 				{
-					$text .= $tp->parseTemplate("{SOCIAL_LOGIN}",true);
+					$text .= $tp->parseTemplate("{SOCIAL_LOGIN}");
 				//	$text .= "<br />";
 				}
 			}
@@ -394,7 +396,7 @@ class comment
 	 * @param integer $addrating
 	 * @return string|null html
 	 */
-	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
+	function render_comment($row, $table, $action, $id, $width=0, $subject='', $addrating = FALSE)
 	{
 
 		if($this->engine != 'e107')
@@ -429,11 +431,7 @@ class comment
 
 		//FIXME - new level handler, currently commented to avoid parse errors
 		//require_once (e_HANDLER."level_handler.php");
-		
-		if (!$width)
-		{
-			$width = 0;
-		}
+
 		if (!defined("IMAGE_nonew_comments"))
 		{
 			define("IMAGE_nonew_comments", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/nonew_comments.png' alt=''  />"));
@@ -474,13 +472,12 @@ class comment
 
 		e107::getParser()->setThumbSize(100,100); // BC FIx.  Set a default image size, in case the template doesn't have one.
 
-		if (vartrue($pref['nested_comments']))
+		if (!empty($pref['nested_comments']))
 		{
 		//	$width2 = 100 - $width;
 		//	$total_width = "95%";
 			if ($width)
 			{
-
 				$renderstyle = $COMMENT_TEMPLATE['item_start'];
 				$renderstyle .= "<div class='row media offset".$width." col-md-".(12 - (int) $width)." offset-md-".$width." col-md-offset-".$width."' >".$COMMENT_TEMPLATE['item']."</div>";
 				$renderstyle .= $COMMENT_TEMPLATE['item_end'];					
@@ -537,55 +534,27 @@ class comment
 
 		
 		$text = $tp->parseTemplate($renderstyle, TRUE, $comment_shortcodes);
-			
-		//FIXME - dramatically increases the number of queries performed. 
-		
-		if ($action == "comment" && vartrue($pref['nested_comments']))
+
+		if ($action == "comment" && !empty($pref['nested_comments']))
 		{
 			$type = $this->getCommentType($thistable);
-			$sub_query = "
-			SELECT c.*, u.*, ue.*, r.*
-			FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-			
-			WHERE comment_item_id='".intval($thisid)."' AND comment_type='".$tp->toDB($type, true)."' AND comment_pid='".intval($comrow['comment_id'])."'
-			
-			
-			ORDER BY comment_datestamp
-			";
-			$sql_nc = e107::getDb('nc'); /* a new db must be created here, for nested comment  */
-			if ($sub_total = $sql_nc->gen($sub_query))
+
+			if ($nested = $this->getNested($comrow['comment_id'], $type))
 			{
-				while ($row1 = $sql_nc->fetch())
+				foreach ($nested as $row1)
 				{
-					
-					if($this->isPending($row1))
-					{
-						$sub_total = $sub_total - 1;
-				 		continue;	
-					}	
-					
-					
-					if ($pref['nested_comments'])
-					{
-						
 					//	$width = min($width + 1, 80);
-						$width = $width+1;
-					//	$width = $width=+1;
-					//	$text .= "WIDTH=".$width;
-					}
+					$width = $width+1;
 					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
 				}
+
+				$this->totalComments += count($nested);
 			}
 			
-			$this->totalComments = $this->totalComments + $sub_total;
+
 		} // End (nested comment handling)
-		
-		
-		
+
 		return $text;
 	}
 
@@ -952,7 +921,7 @@ class comment
 				$type = 6;
 				break;
 			default :
-				$type = $table;
+				$type = e107::getParser()->toDB($table, true);
 				break;
 				/****************************************
 				Add your comment type here in same format as above, ie ...
@@ -1011,7 +980,7 @@ class comment
 	function getCommentPermissions()
 	{
 
-		$pref = e107::pref('core');
+		$pref = e107::pref();
 
 		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
@@ -1106,7 +1075,7 @@ class comment
 				$ret['comment_form'] = '';
 				$ret['caption'] = '';
 
-				return (!$return) ? "" : $ret;
+				return $ret;
 			}
 
 			return '';
@@ -1243,12 +1212,8 @@ class comment
 
 
 	
-	function getComments($table,$id,$from=0,$att=null)
+	public function getComments($table,$id,$from=0,$att=null)
 	{
-		// global $e107cache, $totcc;
-		
-		//TODO Cache 
-		
 		$sql 		= e107::getDb();
 		$tp 		= e107::getParser();
 		$pref 		= e107::getPref();
@@ -1289,6 +1254,11 @@ class comment
 
 		if ($rows = $sql->retrieve($query,true))
 		{
+			if($pref['nested_comments'])
+			{
+				$this->loadNested($id, $type, $sort);
+			}
+
 		//	$text .= "<ul class='comments'>";
 						
 			$width = 0; 	
@@ -1302,21 +1272,15 @@ class comment
 				}					
 									
 				$lock = $row['comment_lock'];
-	
-				if ($pref['nested_comments'])
-				{
-					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-				}
-				else
-				{
-					$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
-				}
+
+				$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
+
 			} // end loop
 			
 		//	$text .= "</ul>";
 			
 		} // end if
-					
+
 		return array('comments'=> $text,'lock'=> $lock);		
 	}
 
@@ -1657,5 +1621,57 @@ class comment
 			}
 		}
 		return $reta;
+	}
+
+	/**
+	 * Returns all nested comment data for the selected parent id.
+	 * @param int $pid comment_pid
+	 * @param int|str $type comment_type
+	 * @return array|false
+	 */
+	public function getNested($pid, $type)
+	{
+		if(!empty($this->nestedComments[$type][$pid]))
+		{
+			return $this->nestedComments[$type][$pid];
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param int $id comment_item_id
+	 * @param int|string $type plugin name. eg. 'news'
+	 * @param string $sort ASC | DESC
+	 * @return array
+	 */
+	public function loadNested($id, $type, $sort)
+	{
+		$tp = e107::getParser();
+
+		$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
+					LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+					LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
+					LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
+					
+					WHERE c.comment_item_id='" . intval($id) . "' AND c.comment_type='" . $tp->toDB($type, true) . "' AND c.comment_pid > 0 
+					ORDER BY c.comment_datestamp " . $sort;
+
+		if($nested = e107::getDb()->retrieve($query, true))
+		{
+			foreach($nested as $row)
+			{
+				if($this->isPending($row))
+				{
+					continue;
+				}
+
+				$pid = (int) $row['comment_pid'];
+				$this->nestedComments[$type][$pid][] = $row;
+			}
+		}
+
+
+		return $this->nestedComments;
 	}
 } //end class

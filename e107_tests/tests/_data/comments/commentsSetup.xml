@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.3.1 (git)" timestamp="1616700542" >
+	<database>
+	<dbTable name="comments">
+		<item>
+			<field name="comment_id">1</field>
+			<field name="comment_pid">0</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700193</field>
+			<field name="comment_comment">blue</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">2</field>
+			<field name="comment_pid">0</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700266</field>
+			<field name="comment_comment">red</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">3</field>
+			<field name="comment_pid">0</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700270</field>
+			<field name="comment_comment">green</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">4</field>
+			<field name="comment_pid">2</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">Re: New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700295</field>
+			<field name="comment_comment">sub-red 1</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">5</field>
+			<field name="comment_pid">2</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">Re: New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700310</field>
+			<field name="comment_comment">sub-red 2</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">6</field>
+			<field name="comment_pid">4</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">Re: New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700310</field>
+			<field name="comment_comment">sub-red 1 child-1</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+		<item>
+			<field name="comment_id">7</field>
+			<field name="comment_pid">4</field>
+			<field name="comment_item_id">55</field>
+			<field name="comment_subject">Re: New Title</field>
+			<field name="comment_author_id">1</field>
+			<field name="comment_author_name">admin</field>
+			<field name="comment_author_email">nowhere@mail.com</field>
+			<field name="comment_datestamp">1616700310</field>
+			<field name="comment_comment">sub-red 1 child-2</field>
+			<field name="comment_blocked">0</field>
+			<field name="comment_ip">0000:0000:0000:0000:0000:ffff:7f00:0001</field>
+			<field name="comment_type">profile</field>
+			<field name="comment_lock">0</field>
+			<field name="comment_share">0</field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

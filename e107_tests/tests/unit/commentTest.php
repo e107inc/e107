@@ -9,6 +9,19 @@
 
 		protected function _before()
 		{
+			if(e107::getDb()->isEmpty('comments'))
+			{
+				$path = codecept_data_dir().'comments/commentsSetup.xml';
+				$result = e107::getXml()->e107Import($path);
+				if(!empty($result['failed']))
+				{
+					$this->fail("Vstore setup failed. ".print_r($result['failed'], true));
+				}
+
+			}
+
+
+
 
 			try
 			{
@@ -99,6 +112,33 @@
 			$this->assertIsString($result);
 
 			$this->assertStringContainsString('e-comment-form',$result);
+
+		}
+
+		public function testLoadNested()
+		{
+			$result = $this->cm->loadNested(55,'profile', 'desc');
+
+			$this->assertNotempty($result['profile']);
+			$this->assertCount(2, $result['profile'][2]);
+			$this->assertCount(2, $result['profile'][4]);
+		}
+
+
+
+		public function testGetNested()
+		{
+			$this->cm->loadNested(55, 'profile', 'desc');
+
+			$result = $this->cm->getNested(4, 'profile');
+
+			$this->assertEquals('sub-red 1 child-1', $result[0]['comment_comment']);
+			$this->assertEquals('sub-red 1 child-2', $result[1]['comment_comment']);
+
+			$result = $this->cm->getNested(2, 'profile');
+
+			$this->assertEquals('sub-red 2', $result[0]['comment_comment']);
+			$this->assertEquals('sub-red 1', $result[1]['comment_comment']);
 
 		}
 /*
