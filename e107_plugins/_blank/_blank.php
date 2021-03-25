@@ -112,10 +112,7 @@ class _blank_front
 		$subject = 'My blank item subject';
 		$rate   = true;
 
-		$ret = e107::getComment()->render($plugin, $id, $subject, $rate);
-
-		e107::getRender()->tablerender($ret['caption'],$ret['comment_form']. $ret['comment']);
-
+		return e107::getComment()->render($plugin, $id, $subject, $rate);
 
 	}
 
