@@ -68,7 +68,7 @@ $('textarea.input-custompages').suggest(':', {
 		url: 'theme.php',
 		async: false,
 		data: {
-			mode: 'suggest'
+			action: 'route'
 		}
 		}).done(function(data) {
 		//	console.log(data);
@@ -151,15 +151,10 @@ class theme_admin extends e_admin_dispatcher
 	function init()
 	{
 
-
-		if(e_AJAX_REQUEST)
+		if((e_AJAX_REQUEST) && varset($_GET['action']) === 'route')
 		{
-
 			$newRoutes = $this->getAllRoutes();
-
 			echo json_encode($newRoutes);
-
-
 			exit;
 		}
 
