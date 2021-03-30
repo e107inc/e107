@@ -15,9 +15,9 @@ $foot = '</form>';
 
 $template = e107::getCoreTemplate('contact','menu');
 $contact_shortcodes = e107::getScBatch('contact');                
-$text = $tp->parseTemplate($head. $template . $foot, true, $contact_shortcodes);
+$text = e107::getParser()->parseTemplate($head. $template . $foot, true, $contact_shortcodes);
 
 
-$ns->tablerender(LANCONTACT_00, $text, 'contact-menu');
+e107::getRender()->tablerender(defset('LAN_CONTACT_00', 'Contact Us'), $text, 'contact-menu');
 
 

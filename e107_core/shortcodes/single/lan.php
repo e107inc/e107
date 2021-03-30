@@ -19,6 +19,6 @@ function lan_shortcode($parm = '')
 	}
 	elseif(ADMIN)
 	{
-		return "<span class='alert alert-danger'><strong>".$parm ."</strong> is undefined</span>"; // debug info
+		return "<span class='alert alert-danger' style='padding:0'><strong>".$parm ."</strong> is undefined</span>"; // debug info
 	}
 }

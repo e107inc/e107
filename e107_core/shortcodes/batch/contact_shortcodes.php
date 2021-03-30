@@ -92,7 +92,7 @@ class contact_shortcodes extends e_shortcode
 	
 	/* example {CONTACT_NAME} */
 	/* example {CONTACT_NAME: class=form-control} */
-	/* example {CONTACT_NAME: class=col-md-12&placeholder=".LANCONTACT_03." *} */
+	/* example {CONTACT_NAME: class=col-md-12&placeholder=".LAN_CONTACT_03." *} */
 		
 	function sc_contact_name($parm=null)
 	{
@@ -100,7 +100,7 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
 		$value      = 	!empty($_POST['author_name']) ?  e107::getParser()->filter( $_POST['author_name']) : $userName;
-		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' aria-label='".LANCONTACT_17."' aria-labelledby='contactName' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
+		return "<input type='text'   id='contactName' title='".LAN_CONTACT_17."' aria-label='".LAN_CONTACT_17."' aria-labelledby='contactName' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
 	}
 
 	function sc_contact_map($parm=null)
@@ -174,7 +174,7 @@ class contact_shortcodes extends e_shortcode
 
 	/* example {CONTACT_EMAIL} */
 	/* example {CONTACT_EMAIL: class=form-control} */
-	/* example {CONTACT_EMAIL: class=col-md-12&placeholder=".LANCONTACT_04." *} */
+	/* example {CONTACT_EMAIL: class=col-md-12&placeholder=".LAN_CONTACT_04." *} */
 
 	function sc_contact_email($parm=null)
 	{
@@ -184,21 +184,21 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
 		$value = !empty($_POST['email_send'] ) ? e107::getParser()->filter($_POST['email_send'],'email') : USEREMAIL;
-		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' aria-label='".LANCONTACT_18."'  aria-labelledby='contactEmail' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
+		return "<input type='email'   ".$disabled." id='contactEmail' title='".LAN_CONTACT_18."' aria-label='".LAN_CONTACT_18."'  aria-labelledby='contactEmail' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
 	}
 	
 	
 	
 	/* example {CONTACT_SUBJECT} */
 	/* example {CONTACT_SUBJECT: class=form-control} */
-	/* example {CONTACT_SUBJECT: class=col-md-12&placeholder=".LANCONTACT_05." *} */
+	/* example {CONTACT_SUBJECT: class=col-md-12&placeholder=".LAN_CONTACT_05." *} */
 	
 	function sc_contact_subject($parm=null)
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
 		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject']) : '';
-		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' aria-label='".LANCONTACT_19."' aria-labelledby='contactSubject' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
+		return "<input type='text' id='contactSubject' title='".LAN_CONTACT_19."' aria-label='".LAN_CONTACT_19."' aria-labelledby='contactSubject' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
 	}
 	
 	
@@ -220,7 +220,7 @@ class contact_shortcodes extends e_shortcode
 
 		$value = !empty($_POST['body']) ? stripslashes($_POST['body']) : '';
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' aria-label='".LANCONTACT_20."' aria-labelledby='contactBody' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LAN_CONTACT_20."' aria-label='".LAN_CONTACT_20."' aria-labelledby='contactBody' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
 	}
 	
 	
@@ -230,7 +230,7 @@ class contact_shortcodes extends e_shortcode
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-primary button';
 		
-		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='".$class."' />";	
+		return "<input type='submit' name='send-contactus' value=\"".LAN_CONTACT_08."\" class='".$class."' />";	
 	}
 
 	function sc_contact_gdpr_check($parm=null)
@@ -250,9 +250,9 @@ class contact_shortcodes extends e_shortcode
 		}
 		$pp = e107::getParser()->replaceConstants($pp, 'full'); 
 		$class = (!empty($parm['class'])) ? $parm['class'] : '';
-		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LANCONTACT_22);
+		$link = sprintf('<span class="%s"><a href="%s" target="_blank">%s</a></span>', $class, $pp, LAN_CONTACT_22);
 
-		return e107::getParser()->lanVars(LANCONTACT_23, $link);
+		return e107::getParser()->lanVars(LAN_CONTACT_23, $link);
 
 	}
 
