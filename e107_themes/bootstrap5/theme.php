@@ -20,39 +20,18 @@ if(!defined('e107_INIT'))
 
             //e107::meta('apple-mobile-web-app-capable','yes');
 
-
-            $bootswatch = e107::pref('theme', 'bootswatch', false);
-            if($bootswatch) {
+            if($bootswatch = e107::pref('theme', 'bootswatch', false))
+            {
                 e107::css('url', 'https://bootswatch.com/4/' . $bootswatch . '/bootstrap.min.css');
                 e107::css('url', 'https://bootswatch.com/4/' . $bootswatch . '/bootstrap.min.css');
             }
-
-            $inlinecss = e107::pref('theme', 'inlinecss', false);
-            if($inlinecss)
-            {
-                e107::css("inline", $inlinecss);
-            }
-            $inlinejs = e107::pref('theme', 'inlinejs');
-            if($inlinejs)
-            {
-                e107::js("footer-inline", $inlinejs);
-            }
-
-            e107::js("theme", 'custom.js', 'jquery');
 
             $login_iframe  = e107::pref('theme', 'login_iframe', false);
 
-            //XXX FIXME - e_IFRAME cannot be redefined.
-            if (THEME_LAYOUT == "singlelogin" && $login_iframe)
+            if(THEME_LAYOUT === "splash" && $login_iframe)
             {
                 define('e_IFRAME', '0');
             }
-            if (THEME_LAYOUT == "singlesignup" && $login_iframe)
-            {
-                define('e_IFRAME', '0');
-            }
-
-
 
         }
 
