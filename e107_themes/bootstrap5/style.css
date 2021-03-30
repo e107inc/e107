@@ -102,6 +102,7 @@ ul.social-buttons li a {
 
 /* */
 .jumbotron {
+  margin-top: 60px;
   padding: 2rem 1rem;
   margin-bottom: 2rem;
   background-color: #e9ecef;
