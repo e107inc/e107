@@ -18,9 +18,9 @@ $CONTACT_WRAPPER['info']['CONTACT_INFO: type=message'] = "<p>{---}</p>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=address'] = "<address>{GLYPH=fa-map-marker} {---}</address>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=email1'] = "<div>{GLYPH=fa-envelope} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=email2'] = "<div>{GLYPH=fa-envelope} {---}</div>";
-$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone1'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
-$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone2'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
-$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone3'] = "<div>{GLYPH=fas-phone-alt} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone1'] = "<div>{GLYPH=fas-phone} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone2'] = "<div>{GLYPH=fas-phone} {---}</div>";
+$CONTACT_WRAPPER['info']['CONTACT_INFO: type=phone3'] = "<div>{GLYPH=fas-phone} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=fax'] = "<div>{GLYPH=fa-fax} {---}</div>";
 $CONTACT_WRAPPER['info']['CONTACT_INFO: type=hours'] = "<div>{GLYPH=fa-clock} {---}</div>";
 
@@ -59,21 +59,21 @@ $CONTACT_TEMPLATE['info'] = "
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
 		<div class="control-group form-group mb-3">
-			<label for="contactName">'.LANCONTACT_03.'</label>
+			<label for="contactName">{LAN=CONTACT_03}</label>
 				{CONTACT_NAME}
 		 </div>
 		 
 		<div class="control-group form-group mb-3">
-			<label class="control-label" for="contactEmail">'.LANCONTACT_04.'</label>
+			<label class="control-label" for="contactEmail">{LAN=CONTACT_04}</label>
 				{CONTACT_EMAIL}
 		</div>
 		<div class="control-group form-group mb-3">
-			<label for="contactBody" >'.LANCONTACT_06.'</label>
+			<label for="contactBody" >{LAN=CONTACT_06}</label>
 				{CONTACT_BODY=rows=5&cols=30}
 		</div>
-		<div class="form-group mb-3"><label for="gdpr">'.LANCONTACT_24.'</label>
+		<div class="form-group mb-3"><label for="gdpr">{LAN=CONTACT_24}</label>
 			<div class="checkbox form-check">
-				<label>{CONTACT_GDPR_CHECK} '.LANCONTACT_21.'</label>
+				<label>{CONTACT_GDPR_CHECK} {LAN=CONTACT_21}</label>
 				<div class="help-block">{CONTACT_GDPR_LINK}</div> 
 			</div>
 		</div>
@@ -86,38 +86,37 @@ $CONTACT_TEMPLATE['menu'] =  '
 // Shortcode wrappers.
 $CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<div class='control-group form-group'><label for='code-verify'>{CONTACT_IMAGECODE_LABEL}</label> {---}";
 $CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</div>";
-$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<div class='control-group form-group'>{---}".LANCONTACT_07."</div>";
-$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<div class='control-group form-group'><label for='contactPerson'>".LANCONTACT_14."</label>{---}</div>";
+$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<div class='control-group form-group'>{---}{LAN=CONTACT_07}</div>";
+$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<div class='control-group form-group'><label for='contactPerson'>{LAN=CONTACT_14}</label>{---}</div>";
 
 
 
 
 $CONTACT_TEMPLATE['form'] = "
-	<form action='".e_SELF."' method='post' id='contactForm' >
-
+	<form action='".e_SELF."' method='post' id='contactForm' class='mt-5' >
 	{CONTACT_PERSON}
-	<div class='control-group form-group'><label for='contactName'>".LANCONTACT_03."</label>
+	<div class='control-group form-group'><label for='contactName'>{LAN=CONTACT_03}</label>
 		{CONTACT_NAME}
 	</div>
-	<div class='control-group form-group'><label for='contactEmail'>".LANCONTACT_04."</label>
+	<div class='control-group form-group'><label for='contactEmail'>{LAN=CONTACT_04}</label>
 		{CONTACT_EMAIL}
 	</div>
-	<div class='control-group form-group'><label for='contactSubject'>".LANCONTACT_05."</label>
+	<div class='control-group form-group'><label for='contactSubject'>{LAN=CONTACT_05}</label>
 		{CONTACT_SUBJECT}
 	</div>
 
 		{CONTACT_EMAIL_COPY}
 
-	<div class='control-group form-group'><label for='contactBody'>".LANCONTACT_06."</label>
+	<div class='control-group form-group'><label for='contactBody'>{LAN=CONTACT_06}</label>
 		{CONTACT_BODY}
 	</div>
 
 	{CONTACT_IMAGECODE}
 	{CONTACT_IMAGECODE_INPUT}
 
-	<div class='form-group'><label for='gdpr'>".LANCONTACT_24."</label>
+	<div class='form-group'><label for='gdpr'>{LAN=CONTACT_24}</label>
 		<div class='checkbox'>
-			<label>{CONTACT_GDPR_CHECK} ".LANCONTACT_21."</label>
+			<label>{CONTACT_GDPR_CHECK} {LAN=CONTACT_21}</label>
 			<div class='help-block'>{CONTACT_GDPR_LINK}</div> 
 		</div>
 	</div>
@@ -127,7 +126,6 @@ $CONTACT_TEMPLATE['form'] = "
 	<div class='form-group'>
 	{CONTACT_SUBMIT_BUTTON}
 	</div>
-
 	</form>";
 
 

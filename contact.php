@@ -17,12 +17,28 @@ class contact_front
 {
 	function __construct()
 	{
+		$range = range(00,24);
+		$tp = e107::getParser();
+		$defs = array();
+
+		foreach($range as $val)
+		{
+			$inc = $tp->leadingZeros($val,2);
+			$legacy = 'LAN_CONTACT_'.$inc;
+			$defs[$legacy] = 'LANCONTACT_'.$inc;
+
+		}
+
+		e107::getLanguage()->bcDefs($defs);
+
 		$this->init();
 
 	}
 
 	function init()
 	{
+		$pref = e107::pref();
+
 		$active = varset($pref['contact_visibility'], e_UC_PUBLIC);
 		$contactInfo = trim(SITECONTACTINFO);
 		$pref = e107::getPref();
@@ -34,7 +50,7 @@ class contact_front
 
 		if(isset($_POST['send-contactus']))
 		{
-			$this->processFormSubmit($sql);
+			$this->processFormSubmit();
 		}
 
 		$form = '';
@@ -118,51 +134,30 @@ class contact_front
 		// Check Image-Code
 		if(isset($_POST['rand_num']) && ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify'])))
 		{
-			$error .= LANCONTACT_15 . "\\n";
+			$error .= LAN_CONTACT_15 . "\\n";
 		}
 
 		// Check message body.
 		if(strlen(trim($body)) < 15)
 		{
-			$error .= LANCONTACT_12 . "\\n";
+			$error .= LAN_CONTACT_12 . "\\n";
 		}
 
 		// Check subject line.
 		if(isset($_POST['subject']) && strlen(trim($subject)) < 2)
 		{
-			$error .= LANCONTACT_13 . "\\n";
+			$error .= LAN_CONTACT_13 . "\\n";
 		}
 
 		if(!strpos(trim($sender), "@"))
 		{
-			$error .= LANCONTACT_11 . "\\n";
+			$error .= LAN_CONTACT_11 . "\\n";
 		}
-
-
-		// Check email address on remote server (if enabled). XXX Problematic!
-		/*
-		if ($pref['signup_remote_emailcheck'] && $error == '')
-		{
-			require_once(e_HANDLER."mail_validation_class.php");
-			list($adminuser,$adminhost) = explode('@', SITEADMINEMAIL, 2);
-			$validator = new email_validation_class;
-			$validator->localuser= $adminuser;
-			$validator->localhost= $adminhost;
-			$validator->timeout=3;
-			//	$validator->debug=1;
-			//	$validator->html_debug=1;
-			if($validator->ValidateEmailBox($sender) != 1)
-			{
-				$error .= LANCONTACT_11."\\n";
-			}
-
-		}
-		*/
 
 		// No errors - so proceed to email the admin and the user (if selected).
 		if($ignore === true)
 		{
-			$ns->tablerender('', "<div class='alert alert-success'>" . LANCONTACT_09 . "</div>"); // ignore and leave them none the wiser.
+			$ns->tablerender('', "<div class='alert alert-success'>" . LAN_CONTACT_09 . "</div>"); // ignore and leave them none the wiser.
 			e107::getDebug()->log("Contact form post ignored");
 			require_once(FOOTERF);
 			exit;
@@ -257,7 +252,7 @@ class contact_front
 			);
 
 
-			$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml) ? LANCONTACT_09 : LANCONTACT_10;
+			$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml) ? LAN_CONTACT_09 : LAN_CONTACT_10;
 
 			//	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
 
@@ -295,7 +290,7 @@ class contact_front
 
 		$contact_shortcodes->wrapper('contact/info');
 		$text = e107::getParser()->parseTemplate($CONTACT_INFO, true, $contact_shortcodes);
-		return e107::getRender()->tablerender(LANCONTACT_01, $text, "contact-info", true);
+		return e107::getRender()->tablerender(LAN_CONTACT_01, $text, "contact-info", true);
 
 	}
 
@@ -317,7 +312,7 @@ class contact_front
 
 		if(trim($text) !== '')
 		{
-			return e107::getRender()->tablerender(LANCONTACT_02, $text, "contact-form", true);
+			return e107::getRender()->tablerender(LAN_CONTACT_02, $text, "contact-form", true);
 		}
 	}
 
@@ -327,16 +322,16 @@ class contact_front
 
 		$srch = array("[", "]");
 		$repl = array("<a class='alert-link' href='" . e_SIGNUP . "'>", "</a>");
-		$message = LANCONTACT_16; // "You must be [registered] and signed-in to use this form.";
+		$message = LAN_CONTACT_16; // "You must be [registered] and signed-in to use this form.";
 
-		e107::getRender()->tablerender(LANCONTACT_02, "<div class='alert alert-info'>" . str_replace($srch, $repl, $message) . "</div>", "contact");
+		e107::getRender()->tablerender(LAN_CONTACT_02, "<div class='alert alert-info'>" . str_replace($srch, $repl, $message) . "</div>", "contact");
 	}
 
 }
 
 
 e107::lan('core','contact');
-e107::title(LANCONTACT_00);
+e107::title(LAN_CONTACT_00);
 e107::canonical('contact');
 e107::route('contact/index');  
 
