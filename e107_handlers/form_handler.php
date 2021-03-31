@@ -5381,6 +5381,11 @@ var_dump($select_options);*/
 					$value = defset($value,$value);
 				}
 
+				if(is_array($value) && ($attributes['data'] === 'json'))
+				{
+					$value = e107::serialize($value, 'json');
+				}
+
 				if(!empty($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
@@ -6758,6 +6763,11 @@ var_dump($select_options);*/
 				else
 				{
 					$ret = '';
+				}
+
+				if(is_array($value) && ($attributes['data'] === 'json'))
+				{
+					$value = e107::serialize($value, 'json');
 				}
 
 				$ret .=  $this->hidden($key, $value);
