@@ -409,6 +409,7 @@ class e_user_model extends e_admin_model
 				'SearchSight',
 				'Seekbot',
 				'semanticdiscovery',
+				'SemrushBot',
 				'Sensis Web Crawler',
 				'SEOChat::Bot',
 				'SeznamBot',
