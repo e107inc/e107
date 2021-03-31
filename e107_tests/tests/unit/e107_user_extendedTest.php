@@ -118,14 +118,17 @@
 			// clear the table.
 
 			$sql = e107::getDb();
-			$fieldCount = (int) $sql->count('user_extended_struct');
+		/*	$fieldCount = (int) $sql->count('user_extended_struct');
 
 			if($fieldCount > 17)
 			{
 				codecept_debug("Truncating user_extended_struct");
 				$sql->truncate('user_extended_struct');
 
-			}
+			}*/
+
+			$sql->truncate('user_extended_struct');
+
 
 
 			// Add a field of each type.
