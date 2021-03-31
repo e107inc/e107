@@ -12,6 +12,10 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 {
 	/** @var e_parse_shortcode */
 	private $scParser;
+	/**
+	 * @var e_render
+	 */
+	private $original_e_render;
 
 	public function _before()
 	{
@@ -28,6 +32,15 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		}
 
 		$this->scParser->__construct();
+
+		$this->original_e_render = e107::getRender();
+		$mock_e_render = $this->make('e_render');
+		e107::setRegistry('core/e107/singleton/e_render', $mock_e_render);
+	}
+
+	public function _after()
+	{
+		e107::setRegistry('core/e107/singleton/e_render', $this->original_e_render);
 	}
 
 //	public function testShortcode_SITELINKS_ALT()
