@@ -1648,6 +1648,7 @@ class comment
 	public function loadNested($id, $type, $sort)
 	{
 		$tp = e107::getParser();
+		$this->nestedComments = array();
 
 		$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
 					LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
