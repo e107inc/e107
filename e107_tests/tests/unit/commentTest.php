@@ -9,19 +9,13 @@
 
 		protected function _before()
 		{
-			if(e107::getDb()->isEmpty('comments'))
+			e107::getDb()->truncate('comments');
+			$path = codecept_data_dir().'comments/commentsSetup.xml';
+			$result = e107::getXml()->e107Import($path);
+			if(!empty($result['failed']))
 			{
-				$path = codecept_data_dir().'comments/commentsSetup.xml';
-				$result = e107::getXml()->e107Import($path);
-				if(!empty($result['failed']))
-				{
-					$this->fail("Vstore setup failed. ".print_r($result['failed'], true));
-				}
-
+				$this->fail("Comment setup failed. ".print_r($result['failed'], true));
 			}
-
-
-
 
 			try
 			{
