@@ -1076,6 +1076,7 @@ class e107Test extends \Codeception\Test\Unit
 		$e107 = $this->e107;
 		$templates = scandir(e_CORE . "templates");
 
+		// Load these constants before other tests fail because of what this test does:
 		$e107::loadAdminIcons();
 
 		$exclude = array(
