@@ -3645,7 +3645,7 @@ class e_tree_model extends e_front_model
 	 *
 	 * Sets the count in $this->_total
 	 *
-	 * @param resource $sql SQL resource that executed a query
+	 * @param e_db_pdo $sql SQL resource that executed a query
 	 * @return int Number of results from the latest query
 	 */
 	protected function countResults($sql)
