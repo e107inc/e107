@@ -416,7 +416,7 @@ class comment_shortcodes extends e_shortcode
 			else
 			{
 				//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$this->var['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-mini btn-xs e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
+				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-sm btn-mini btn-xs e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
 			}
 		}
 		else
