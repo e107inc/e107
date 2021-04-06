@@ -4,7 +4,6 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
-
 e107::lan('download','download');
 
 class download_request
@@ -18,7 +17,7 @@ class download_request
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		$pref = e107::pref('core');
+		$pref = e107::pref();
 
 		if(!is_numeric(e_QUERY) && empty($_GET['id']))
 		{
@@ -53,9 +52,9 @@ class download_request
 				extract($row);
 				if(check_class($row['download_category_class']) && check_class($row['download_class']))
 				{
-					if($pref['download_limits'] && $row['download_active'] == 1)
+					if(!empty($pref['download_limits']) && $row['download_active'] == 1)
 					{
-						check_download_limits();
+						self::check_download_limits();
 					}
 					$mirrorList = explode(chr(1), $row['download_mirror']);
 					$mstr = "";
@@ -77,7 +76,11 @@ class download_request
 					}
 					$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '" . intval($download_id) . "'");
 					$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '" . intval($mirror_id) . "'");
-					header("Location: " . decorate_download_location($gaddress));
+
+					if(!empty($gaddress))
+					{
+						header("Location: " . self::decorate_download_location($gaddress));
+					}
 					exit();
 				}
 
@@ -157,7 +160,7 @@ class download_request
 
 					if($pref['download_limits'] && $row['download_active'] == 1)
 					{
-						check_download_limits();
+						self::check_download_limits();
 					}
 					extract($row);
 					if($row['download_mirror'])
@@ -192,8 +195,10 @@ class download_request
 						}
 						$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '" . intval($download_id) . "'");
 						$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '" . intval($mirror_id) . "'");
-
-						header("Location: " . decorate_download_location($gaddress));
+						if(!empty($gaddress))
+						{
+							header("Location: " . self::decorate_download_location($gaddress));
+						}
 						exit();
 					}
 
@@ -203,7 +208,7 @@ class download_request
 					$ip = e107::getIPHandler()->getIP(false);
 					$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '" . time() . "'";
 					//add request info to db
-					$sql->insert("download_requests", $request_data, false);
+					$sql->insert("download_requests", $request_data);
 					//	if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result))
 					//	{
 					//		$bid = $result[1];
@@ -220,8 +225,8 @@ class download_request
 					//	}
 					if(strpos($row['download_url'], "http://") !== false || strpos($row['download_url'], "ftp://") !== false || strpos($row['download_url'], "https://") !== false)
 					{
-						$download_url = e107::getParser()->parseTemplate($row['download_url'], true); // support for shortcode-driven dynamic URLS.
-						e107::redirect(decorate_download_location($download_url));
+						$download_url = e107::getParser()->parseTemplate($row['download_url']); // support for shortcode-driven dynamic URLS.
+						e107::redirect(self::decorate_download_location($download_url));
 						// header("Location: {$download_url}");
 						exit();
 					}
@@ -318,7 +323,7 @@ class download_request
 		if(strpos($image, "http") !== false)
 		{
 			e107::redirect($image);
-			return;
+			exit();
 		}
 		else
 		{
@@ -370,9 +375,12 @@ class download_request
 	}
 
 
-	function check_download_limits()
+	private static function check_download_limits()
 	{
-		global $pref, $sql, $HEADER;
+		global $HEADER;
+		$sql = e107::getDb();
+		$pref = e107::getPref();
+
 		// Check download count limits
 		$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata >= 0 AND gen_intdata >= 0) ORDER BY count_perday DESC";
 		if($sql->gen($qry))
@@ -385,7 +393,7 @@ class download_request
 			}
 			else
 			{
-				$ip = e107::getIPHandler()->getIP(FALSE);
+				$ip = e107::getIPHandler()->getIP();
 				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 			}
 			$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
@@ -418,7 +426,7 @@ class download_request
 			}
 			else
 			{
-				$ip = e107::getIPHandler()->getIP(FALSE);
+				$ip = e107::getIPHandler()->getIP();
 				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 			}
 			$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
@@ -441,11 +449,15 @@ class download_request
 		}
 	}
 
-	function decorate_download_location($url)
+	private static function decorate_download_location($url)
 	{
 		$pref = e107::getPref();
-		if ($pref['download_security_mode'] !== 'nginx-secure_link_md5')
+
+		if (varset($pref['download_security_mode']) !== 'nginx-secure_link_md5')
+		{
 			return $url;
+		}
+
 		require_once(__DIR__."/handlers/NginxSecureLinkMd5Decorator.php");
 		$decorator = new NginxSecureLinkMd5Decorator($url, $pref);
 		return $decorator->decorate();
