@@ -1666,15 +1666,29 @@ class media_admin_ui extends e_admin_ui
 
 	private function mediaManagerPlaceholders()
 	{
-			$type = (E107_DEBUG_LEVEL > 0) ? 'text' : 'hidden';
-		$br = (E107_DEBUG_LEVEL > 0) ?  "<br style='clear:both' />" : '';
+		$type = (E107_DEBUG_LEVEL > 0) ? 'text' : 'hidden';
 
-		$text = '
-		' .$br."<input title='bbcode' type='{$type}' style=readonly='readonly' class='span11 col-md-11' id='bbcode_holder' name='bbcode_holder' value='' />
-		".$br."<input title='html/wysiwyg' type='{$type}' class='span11 col-md-11' readonly='readonly' id='html_holder' name='html_holder' value='' />
-		".$br."<input title='(preview) src' type='{$type}' class='span11 col-md-11' readonly='readonly' id='src' name='src' value='' />
-		".$br."<input title='path (saved to db)' type='{$type}' class='span11 col-md-11' readonly='readonly' id='path' name='path' value='' />
-		";
+
+		$valueHolders = [
+			'bbcode_holder' => 'bbcode',
+			'html_holder'   => 'html/wysiwyg',
+			'src'           => '(preview) src',
+			'path'          => 'path (save to db)'
+		];
+
+		$text = '';
+		foreach($valueHolders as $name => $label)
+		{
+			$text .= (E107_DEBUG_LEVEL > 0) ?  "<br /><span style='margin-left:20px;display:inline-block;width:150px'>".$label."&nbsp;</span>" : '';
+			$text .= "<input title='".$label."' type='{$type}' readonly style='width:800px' class='' id='".$name."' name='".$name."' value='' />\n";
+
+		}
+
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$text .= "<br /><span style='margin-left:20px;display:inline-block;width:150px'>FontAwesome</span>".e107::getTheme()->getFontAwesome();
+		}
+
 
 		return $text;
 	}
@@ -2117,21 +2131,24 @@ class media_admin_ui extends e_admin_ui
 
 		}
 
-		$fa4 = e107::getMedia()->getGlyphs('fa4');
-
-		foreach($fa4 as $val)
+		if($this->fontawesome === 4)
 		{
-			$items[] = array(
-					'previewHtml'   => $md->previewTag('fa-'.$val,array('type'=>'glyph')),
-					'previewUrl'	=> 'fa fa-'.$val,
-					'saveValue'		=> 'fa-'.$val.'.glyph',
-					'thumbUrl'		=> 'fa-'.$val,
-					'title'			=> 'FA4 '.$val,
-					'slideCaption'	=> 'Font-Awesome 4',
-					'slideCategory'	=> 'font-awesome'
-			);
-		}
+			e107::getParser()->setFontAwesome(4);;
+			$fa4 = e107::getMedia()->getGlyphs('fa4');
 
+			foreach($fa4 as $val)
+			{
+				$items[] = array(
+						'previewHtml'   => $md->previewTag('fa-'.$val, array('type'=>'glyph')),
+						'previewUrl'	=> 'fa fa-'.$val,
+						'saveValue'		=> 'fa-'.$val.'.glyph',
+						'thumbUrl'		=> 'fa-'.$val,
+						'title'			=> 'FA4 '.$val,
+						'slideCaption'	=> 'Font-Awesome 4',
+						'slideCategory'	=> 'font-awesome'
+				);
+			}
+		}
 
 		if($this->fontawesome === false || ($this->fontawesome < 4))
 		{
