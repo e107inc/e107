@@ -943,12 +943,12 @@ class wysiwyg
 	/**
 	 * @return array
 	 */
-	public function getEditorCSS()
+	public function getEditorCSS($theme = 'front')
 	{
 
 		$tp = e107::getParser();
 
-		$libraries = e107::getTheme('admin')->getThemeFiles('library', 'wysiwyg');
+		$libraries = e107::getTheme($theme)->getThemeFiles('library', 'wysiwyg');
 
 		$ret = [];
 
@@ -967,7 +967,7 @@ class wysiwyg
 
 		if($useThemeStyle)
 		{
-			$theme = e107::getTheme()->getThemeFiles('css', 'wysiwyg');
+			$theme = e107::getTheme($theme)->getThemeFiles('css', 'wysiwyg');
 			if(!empty($theme['css']))
 			{
 				foreach($theme['css'] as $path)

@@ -1103,6 +1103,15 @@ class e_theme
 
 			unset($vars['libraries']);
 		}
+		else // detect defined constants in legacy theme.php file.
+		{
+			if($data = self::getLegacyBSFA($path))
+			{
+				$vars['library'] = $data;
+			}
+
+
+		}
 
 		if(!empty($vars['stylesheets']['css']))
 		{
@@ -1158,6 +1167,37 @@ class e_theme
 		return $vars;
 	}
 
+	/**
+	 * Read legacy bootstrap/fontawesome constants from theme.php
+	 * @param string $path theme directory
+	 */
+	public static function getLegacyBSFA($path)
+	{
+		if(!$content = file_get_contents(e_THEME.$path.'/theme.php'))
+		{
+			return false;
+		}
+
+		$ret = [];
+
+		if(preg_match('/define[ ]*?\([\'|"]BOOTSTRAP[\'|"],[ \t]*(\d)\);/', $content, $m))
+		{
+			$ret[] = array('name'  => 'bootstrap',
+					'version' => $m[1],
+					'scope' => 'front,wysiwyg',
+			);
+		}
+
+		if(preg_match('/define[ ]*?\([\'|"]FONTAWESOME[\'|"],[ \t]*(\d)\);/', $content, $m))
+		{
+			$ret[] = array('name'  => 'fontawesome',
+					'version' => $m[1],
+					'scope' => 'front,wysiwyg',
+			);
+		}
+
+		return $ret;
+	}
 
 		/**
 	 * Validate and return the name of the categories.
