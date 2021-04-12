@@ -25,8 +25,8 @@ class contact_front
 		{
 			$inc = $tp->leadingZeros($val,2);
 			$legacy = 'LAN_CONTACT_'.$inc;
-			$defs[$legacy] = 'LANCONTACT_'.$inc;
-
+		//	$defs[$legacy] = 'LANCONTACT_'.$inc;
+			$defs['LANCONTACT_'.$inc] = 'LAN_CONTACT_'.$inc;
 		}
 
 		e107::getLanguage()->bcDefs($defs);
