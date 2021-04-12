@@ -3386,7 +3386,7 @@ class e_parse
 		'img'      => array('src', 'alt', 'width', 'height'),
 		'a'        => array('href', 'target', 'rel'),
 		'script'   => array('type', 'src', 'language', 'async'),
-		'iframe'   => array('src', 'frameborder', 'width', 'height'),
+		'iframe'   => array('src', 'frameborder', 'width', 'height', 'allowfullscreen', 'allow'),
 		'input'    => array('type', 'name', 'value'),
 		'form'     => array('action', 'method', 'target'),
 		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),

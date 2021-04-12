@@ -1785,16 +1785,18 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			  ),
 			  'iframe' =>
 			  array (
-			    0 => 'src',
-			    1 => 'frameborder',
-			    2 => 'width',
-			    3 => 'height',
-			    4 => 'id',
-			    5 => 'style',
-			    6 => 'class',
-			    7 => 'title',
-			    8 => 'lang',
-			    9 => 'accesskey',
+			    'src',
+			    'frameborder',
+			    'width',
+			    'height',
+			    'allowfullscreen',
+			    'allow',
+			    'id',
+			    'style',
+			    'class',
+			    'title',
+			    'lang',
+			    'accesskey',
 			  ),
 			  'input' =>
 			  array (
