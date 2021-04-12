@@ -4955,14 +4955,13 @@ class e_parse
 				continue;
 			}
 
+			$removeAttributes = array();
 			foreach($node->attributes as $attr)
 			{
 				$name = $attr->nodeName;
 				$value = $attr->nodeValue;
 
 				$allow = isset($this->allowedAttributes[$tag]) ? $this->allowedAttributes[$tag] : $this->allowedAttributes['default'];
-
-				$removeAttributes = array();
 
 				if(!in_array($name, $allow))
 				{
