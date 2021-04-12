@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'f9492a8c89860284979e9b947dc04836bc20d33b',
+    'reference' => '2862e18db94899361a4d5be20c3e2d990b79e67a',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -41,34 +41,25 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'f9492a8c89860284979e9b947dc04836bc20d33b',
-    ),
-    'firebase/php-jwt' => 
-    array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'feb0e820b8436873675fd3aca04f3728eb2185cb',
+      'reference' => '2862e18db94899361a4d5be20c3e2d990b79e67a',
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.7.0',
-      'version' => '1.7.0.0',
+      'pretty_version' => '1.8.1',
+      'version' => '1.8.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '53330f47520498c0ae1f61f7e2c90f55690c06a3',
+      'reference' => '35ea11d335fd638b5882ff1725228b3d35496ab1',
     ),
     'hybridauth/hybridauth' => 
     array (
-      'pretty_version' => '3.6.0',
-      'version' => '3.6.0.0',
+      'pretty_version' => '3.7.1',
+      'version' => '3.7.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '222ab4e6ee6ffd81caa77283142f3aa97afa5863',
+      'reference' => '0ec1b8cb8b230aae739422c5e42bc5733b3a7316',
     ),
     'ifsnop/mysqldump-php' => 
     array (
@@ -90,12 +81,12 @@ private static $installed = array (
     ),
     'matthiasmullie/minify' => 
     array (
-      'pretty_version' => '1.3.65',
-      'version' => '1.3.65.0',
+      'pretty_version' => '1.3.66',
+      'version' => '1.3.66.0',
       'aliases' => 
       array (
       ),
-      'reference' => '227f19062451c55a797e0cc667ef983834e6580c',
+      'reference' => '45fd3b0f1dfa2c965857c6d4a470bea52adc31a6',
     ),
     'matthiasmullie/path-converter' => 
     array (
@@ -108,21 +99,12 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.2.0',
-      'version' => '6.2.0.0',
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e38888a75c070304ca5514197d4847a59a5c853f',
-    ),
-    'phpseclib/phpseclib' => 
-    array (
-      'pretty_version' => '2.0.30',
-      'version' => '2.0.30.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '136b9ca7eebef78be14abf90d65c5e57b6bc5d36',
+      'reference' => '050d430203105c27c30efd1dce7aa421ad882d01',
     ),
     'psr/http-message' => 
     array (

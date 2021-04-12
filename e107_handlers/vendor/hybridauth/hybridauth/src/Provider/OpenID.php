@@ -7,7 +7,7 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter;
 
 /**
  * Generic OpenID providers adapter.
@@ -39,6 +39,6 @@ use Hybridauth\Adapter\OpenID as OpenIDAdapter;
  *       echo $e->getMessage() ;
  *   }
  */
-class OpenID extends OpenIDAdapter
+class OpenID extends Adapter\OpenID
 {
 }
