@@ -2635,7 +2635,13 @@ Your browser does not support the audio tag.
 				14 => array(
                     'html'      => '<script>alert(1)</script>', // test removal of 'script' tags
                     'expected'  => ''
-                )
+                ),
+
+                15  => array(
+                    'html'  => '<iframe width="640" height="360" frameborder="0" allowfullscreen src="http://nowhere.com" this-attribute-should-be-removed="value1" this-attribute-should-also-be-removed="value2"></iframe>',
+                    'expected'  => '<iframe width="640" height="360" frameborder="0" allowfullscreen="" src="http://nowhere.com"></iframe>'
+
+				),
 
 
 			);
