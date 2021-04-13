@@ -356,7 +356,7 @@ e107::js('footer-inline', js());
 		    'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'method', 'data' => 'str', 'readonly'=>true, 'width' => '350px', 'help' => '', 'readParms' => '', 'writeParms' => array('tdClassRight' => 'form-inline', 'pre' => 'user_ ', 'required'=>true), 'class' => 'left', 'thclass' => 'left',  ),
 		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => array('required'=>true), 'class' => 'left', 'thclass' => 'left',  ),
-			'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'user_extended_struct_type' =>   array ( 'title' => LAN_PREVIEW, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_values' =>   array ( 'title' => EXTLAN_82, 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'user_extended_struct_default' =>   array ( 'title' => EXTLAN_16, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'tab'=>1, 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
@@ -395,7 +395,9 @@ e107::js('footer-inline', js());
 		{
 			parent::EditObserver();
 
-			$parms = e107::getDb()->retrieve('user_extended_struct', 'user_extended_struct_parms',"user_extended_struct_id = ".intval($_GET['id']));
+			$row = e107::getDb()->retrieve('user_extended_struct', 'user_extended_struct_type,user_extended_struct_parms',"user_extended_struct_id = ".intval($_GET['id']));
+
+			$parms = $row['user_extended_struct_parms'];
 			$tmp = explode('^,^', $parms);
 
 			$this->fields['field_include']['writeParms']['default']     =  $tmp[0];
@@ -404,6 +406,20 @@ e107::js('footer-inline', js());
 			$this->fields['field_userhide']['writeParms']['default']    =  $tmp[3];
 			$this->fields['field_placeholder']['writeParms']['default'] =  $tmp[4];
 			$this->fields['field_helptip']['writeParms']['default']     =  $tmp[5];
+
+			if((int) $row['user_extended_struct_type'] === 12) // EUF_ADDON
+			{
+				unset(
+				$this->fields['field_include'],
+				$this->fields['field_regex'],
+				$this->fields['field_regexfail'],
+				$this->fields['field_userhide'],
+				$this->fields['field_placeholder'],
+				$this->fields['field_helptip'],
+				$this->fields['user_extended_struct_default']
+				);
+			}
+
 
 		}
 
@@ -569,7 +585,8 @@ e107::js('footer-inline', js());
 
 			if ($ue->user_extended_field_exist($new_data['user_extended_struct_name']))
 			{
-				$field_info = $ue->user_extended_type_text($new_data['user_extended_struct_type'], $new_data['user_extended_struct_default']);
+				$type = isset($new_data['user_extended_struct_type']) ? $new_data['user_extended_struct_type'] : $old_data['user_extended_struct_type'];
+				$field_info = $ue->user_extended_type_text($type, $new_data['user_extended_struct_default']);
 
 				if(false === $field_info) 	// wrong type
 				{
@@ -846,11 +863,9 @@ e107::js('footer-inline', js());
 			{
 				case 'read': // List Page
 					$ext = $this->getController()->getListModel()->getData();
-
-
 				//	return print_a($ext,true);
 					$ext['user_extended_struct_required'] = 0; // so the form can be posted.
-					return e107::getUserExt()->user_extended_edit($ext,$ext['user_extended_struct_default']);
+					return e107::getUserExt()->renderElement($ext,$ext['user_extended_struct_default']);
 				//	reutrn e107::getParser()>toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")
 					break;
 
@@ -862,6 +877,11 @@ e107::js('footer-inline', js());
 					}
 
 					$types = e107::getUserExt()->getFieldTypes();
+
+					if($curVal == EUF_ADDON)
+					{
+						return LAN_PLUGIN;
+					}
 
 					return $this->select('user_extended_struct_type', $types, $curVal, array('class'=>'tbox e-select'));
 
@@ -952,6 +972,11 @@ e107::js('footer-inline', js());
 			$current = $this->getController()->getModel()->getData();
 
 			$type = (int) varset($current['user_extended_struct_type']);
+
+			if($type === EUF_ADDON)
+			{
+				return '-';
+			}
 
 			$val_hide = ($type !== EUF_DB_FIELD && $type !== EUF_TEXT && $type !== EUF_COUNTRY ) ? "visible" : "none";
 
