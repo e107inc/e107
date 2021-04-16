@@ -166,8 +166,6 @@
 					$expectedLength = $length;
 					$actualLength = strlen($content);
 
-					//var_dump($key. " = ".$actualLength);
-
 					$this->assertEquals($expectedLength, $actualLength, $key. " is different");
 				}
 

@@ -1062,8 +1062,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			$html = "<div><p>My paragraph <b>bold</b></p></div>";
 
 			$result = $this->tp->htmlwrap($html, 20);
-
-			var_dump($result);
 		}*/
 
 		public function testToRss()
@@ -1118,7 +1116,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 	        if(!empty($errors))
 	        {
-	            var_dump($errors);
 	            codecept_debug($errors);
 	        }
 
@@ -2201,8 +2198,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 				{
 					$this->assertStringContainsString($str, $result, "Failed on index #".$index);
 				}
-				//var_dump($result);
-
 			}
 
 
@@ -2233,7 +2228,6 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			{
 				$result = $this->tp->toIcon($var['input'],$var['parms']);
 				$this->assertStringContainsString($var['expected'],$result);
-				//var_dump($result);
 			}
 		}
 

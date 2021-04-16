@@ -116,20 +116,8 @@
 			);
 
 			// clear the table.
-
 			$sql = e107::getDb();
-		/*	$fieldCount = (int) $sql->count('user_extended_struct');
-
-			if($fieldCount > 17)
-			{
-				codecept_debug("Truncating user_extended_struct");
-				$sql->truncate('user_extended_struct');
-
-			}*/
-
 			$sql->truncate('user_extended_struct');
-
-
 
 			// Add a field of each type.
 			foreach($this->structTypes as $k=> $v)
@@ -1124,7 +1112,6 @@
 		{
 			$data = $this->ue->getFields();
 			$this->assertArrayHasKey('text', $data);
-		//	var_dump($data);
 		//	$this->assertCount(15, $data);
 
 			$data = $this->ue->getFields(16);
