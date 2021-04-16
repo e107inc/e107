@@ -851,11 +851,17 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testIsEmpty()
 	{
-		$result = $this->db->isEmpty('plugin');
+		$this->db->copyTable('user', 'test_is_empty', true, true);
+
+		$result = $this->db->isEmpty('test_is_empty');
 		$this->assertFalse($result);
 
-	//	$result = $this->db->isEmpty('comments');
-	//	$this->assertTrue($result);
+		$this->db->truncate('test_is_empty');
+
+		$result = $this->db->isEmpty('test_is_empty');
+		$this->assertTrue($result);
+
+		$this->db->dropTable('test_is_empty');
 
 		$result = $this->db->isEmpty();
 		$this->assertFalse($result);
@@ -1010,10 +1016,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		);
 
 		$this->assertEquals($expected, $actual);
-
-
-		//$actual = $this->db->getFieldDefs('userclass_classes');
-		//var_dump($actual);
 	}
 
 

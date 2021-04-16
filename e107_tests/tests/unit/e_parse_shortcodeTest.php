@@ -16,6 +16,10 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	 * @var e_render
 	 */
 	private $original_e_render;
+	/**
+	 * @var e_date
+	 */
+	private $original_e_date;
 
 	public function _before()
 	{
@@ -36,11 +40,18 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$this->original_e_render = e107::getRender();
 		$mock_e_render = $this->make('e_render');
 		e107::setRegistry('core/e107/singleton/e_render', $mock_e_render);
+
+		$this->original_e_date = e107::getDate();
+		$mock_e_date = $this->make('e_date', [
+			'computeLapse' => 'E107_TEST_STUBBED_OUT'
+		]);
+		e107::setRegistry('core/e107/singleton/e_date', $mock_e_date);
 	}
 
 	public function _after()
 	{
 		e107::setRegistry('core/e107/singleton/e_render', $this->original_e_render);
+		e107::setRegistry('core/e107/singleton/e_date', $this->original_e_date);
 	}
 
 //	public function testShortcode_SITELINKS_ALT()
@@ -125,7 +136,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$result = $this->scParser->parseCodes($template, true);
 		$this->assertSame($expected, $result);
-		
+
 		$array = array(
 			'LINK_TEXT' => 'Content',
 		    'LINK_URL' => '#',
@@ -360,7 +371,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
-		
+
 		$vars = array(
 			'link_id'          => '6',
 			'link_name'        => 'News',
@@ -379,7 +390,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$sc->__construct();
 		$sc->setVars($vars);
-		
+
         $this->processShortcodeMethods($sc);
 
 
@@ -529,7 +540,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		}
 
 		$sc->__construct();
-		
+
 		$vars =  array(
 			'page_id'           => '1',
 			'page_title'        => 'Article 1',
@@ -727,7 +738,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
-		
+
 		$vars = array(
 			'user_id'           => '1',
 			'user_name'         => 'admin',

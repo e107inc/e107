@@ -25,12 +25,7 @@
 			{
 				$result = preg_replace('/[^\w\-:.]/', '', $var['text']); // this pattern used in parts of the admin-ui.
 				$this->assertEquals($var['expected'], $result);
-				//var_dump($result);
 			}
-
-			// echo array_flip(get_defined_constants(true)['pcre'])[preg_last_error()];
-
-
 		}
 
 

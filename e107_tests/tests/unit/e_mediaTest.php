@@ -80,10 +80,7 @@
 				$json = $this->md->processAjaxImport($file,$var['param']);
 
 				$result = json_decode($json, JSON_PRETTY_PRINT);
-			//	var_dump($result);
 				$this->assertNotFalse($result);
-
-			//	var_dump($result);
 
 				$this->assertStringEndsWith('/'.basename($var['file']), $result['result']);
 
