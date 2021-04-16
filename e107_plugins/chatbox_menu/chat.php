@@ -19,6 +19,10 @@ e107::lan('chatbox_menu', e_LANGUAGE);
 
 require_once(HEADERF);
 $mes = e107::getMessage();
+$tp = e107::getParser();
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if($sql->select('menus', "*", "menu_name='chatbox_menu'"))
 {
 	$row = $sql->fetch();
@@ -42,7 +46,9 @@ if(!defined('CB_MOD'))
 
 if ( ! empty($_POST['moderate']) && CB_MOD) {
 
-	if (isset($_POST['block'])) {
+	if (isset($_POST['block']))
+	{
+		$kk = array();
 
 		foreach (array_keys($_POST['block']) as $k) {
 			$kk[] = intval($k);
@@ -53,8 +59,10 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 	}
 
 
-	if (isset($_POST['unblock'])) {
-
+	if (isset($_POST['unblock']))
+	{
+		$k = array();
+		$kk = array();
 		foreach (array_keys($_POST['unblock']) as $k) {
 			$kk[] = intval($k);
 		}
@@ -118,13 +126,15 @@ if ($fs) {
 
 	while ($row = $sql->fetch()) {
 
-		if ($row['cb_id'] == $cgtm) {
+		if ($row['cb_id'] == $cgtm)
+		{
 			$from = $page_count;
 			break;
 		}
 
 		$row_count++;
-		if ($row_count == 30) {
+		if ($row_count == 30)
+		{
 			$row_count = 0;
 			$page_count += 30;
 		}
