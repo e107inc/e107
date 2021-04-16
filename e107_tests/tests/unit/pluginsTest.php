@@ -133,6 +133,15 @@
 
 		}
 
+		public function testSortOrderPeriodUnderscore()
+		{
+			$expected = ['banner.php', 'banner_menu.php'];
+			$input = ['banner_menu.php', 'banner.php'];
+
+			sort($input);
+
+			$this->assertEquals($expected, $input);
+		}
 
 		public function testPluginScripts()
 		{
@@ -164,6 +173,8 @@
 				$path = e_PLUGIN.$plug;
 				$files = scandir($path);
 				unset($files[0], $files[1]);  // . and ..
+
+				sort($files);
 
 				if(!empty($focus) && !isset($focus[$plug]))
 				{
