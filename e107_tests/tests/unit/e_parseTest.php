@@ -583,6 +583,44 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 		}
 */
+		public function testToFlatArray()
+		{
+			$input = [
+				'a' => [
+					'b' => [
+						'c' => 'value',
+					],
+				],
+			];
+			$expected = [
+				'prepend/xyza/b/c' => 'value'
+			];
+
+			$tp = $this->tp;
+			$actual = $tp->toFlatArray($input, 'prepend/xyz');
+
+			$this->assertSame($expected, $actual);
+		}
+
+		public function testFromFlatArray()
+		{
+			$input = [
+				'prepend/xyza/b/c' => 'value'
+			];
+			$expected = [
+				'a' => [
+					'b' => [
+						'c' => 'value',
+					],
+				],
+			];
+
+			$tp = $this->tp;
+			$actual = $tp->fromFlatArray($input, 'prepend/xyz');
+
+			$this->assertSame($expected, $actual);
+		}
+
 		public function testToForm()
 		{
 

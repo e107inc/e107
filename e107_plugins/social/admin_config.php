@@ -656,7 +656,7 @@ class social_ui extends e_admin_ui
 					<tr><td>".LAN_TYPE."</td><td>$provider_type</td></tr>
 						";
 
-		$fieldInfo = self::array_slash($slcm->getFieldsOf($provider_name));
+		$fieldInfo = e107::getParser()->toFlatArray($slcm->getFieldsOf($provider_name));
 
 
 
@@ -706,7 +706,7 @@ class social_ui extends e_admin_ui
 						";
 
 		$text .= "<td><table class='table table-bordered table-condensed' style='margin:0'>";
-		$fieldInfo = self::array_slash($slcm->getFieldsOf($provider_name));
+		$fieldInfo = e107::getParser()->toFlatArray($slcm->getFieldsOf($provider_name));
 		foreach ($fieldInfo as $fieldSlash => $description)
 		{
 			$field = str_replace("/", "][", $fieldSlash);
@@ -746,33 +746,6 @@ class social_ui extends e_admin_ui
 					";
 
 		return $text;
-	}
-
-	/**
-	 * Based on Illuminate\Support\Arr::dot()
-	 * @copyright Copyright (c) Taylor Otwell
-	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
-	 * @param $array
-	 * @param string $prepend
-	 * @return array
-	 */
-	private static function array_slash($array, $prepend = '')
-	{
-		$results = [];
-
-		foreach ($array as $key => $value)
-		{
-			if (is_array($value) && !empty($value))
-			{
-				$results = array_merge($results, static::array_slash($value, $prepend . $key . '/'));
-			}
-			else
-			{
-				$results[$prepend . $key] = $value;
-			}
-		}
-
-		return $results;
 	}
 
 	private static function getPlaceholderFor($providerName, $fieldSlash)
