@@ -575,7 +575,7 @@ class e_thumbnail
 
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
 
-		header('location: https://placehold.it/'.$getsize);
+		header('location: https://via.placeholder.com/'.$getsize);
 		header('Content-Length: 0');
 		exit();
 	}
