@@ -126,7 +126,6 @@
 				        array (
 				          'active' =>  '0',
 				          'title' => 'PayPal Express' ,
-				          'icon' =>  'fa-paypal',
 						)
 				),
 				'other' => array(
@@ -144,9 +143,8 @@
 			  array (
 			    'paypal' =>
 			    array (
-			      'active' => 1, // converted to int.
+			      'active' => 0, // converted to int.
 			      'title' => 'PayPal Express',
-			      // icon removed - as not valid.
 			    ),
 			  ),
 			  'other' =>
@@ -162,16 +160,41 @@
 			  ),
 			);
 
-			// @todo FIXME - doesn't pass. More accurate check has been made, but not injected into the array yet.
 			$result = $this->model->sanitize($posted);
-		//	$this->assertSame($expected, $result);
-
-
-
+			$this->assertSame($expected, $result);
+			$this->assertNotSame($result, $posted);
 		}
 
+		public function testSanitizeNoUnexpectedFields()
+		{
+			$dataFields = [
+				'expected' => 'bool',
+				'nested/expected' => 'int',
+			];
 
-		public function testCustomFieldsSantizie()
+			$input = [
+				'expected' => '5',
+				'unexpected' => 'SHOULD_BE_REMOVED',
+				'nested' => [
+					'expected' => "7331",
+					'unexpected' => 'SHOULD BE REMOVED',
+				]
+			];
+
+			$expected = [
+				'expected' => true,
+				'nested' => [
+					'expected' => 7331
+				]
+			];
+
+			$this->model->setDataFields($dataFields);
+
+			$result = $this->model->sanitize($input);
+			$this->assertSame($expected, $result);
+		}
+
+		public function testCustomFieldsSanitize()
 		{
 			$dataFields = array ( 'chapter_id' => 'int', 'chapter_icon' => 'str', 'chapter_parent' => 'str', 'chapter_name' => 'str', 'chapter_template' => 'str', 'chapter_meta_description' => 'str', 'chapter_meta_keywords' => 'str', 'chapter_sef' => 'str', 'chapter_manager' => 'int', 'chapter_order' => 'str', 'chapter_visibility' => 'int', 'chapter_fields' => 'json', 'chapter_image' => 'str', );
 			$this->model->setDataFields($dataFields);
@@ -188,6 +211,7 @@
   'chapter_manager' => 254,
   'chapter_order' => '0',
   'chapter_visibility' => 0,
+  'chapter_image' => '',
   'chapter_fields' => '{
     "__tabs__": {
         "additional": "Custom Fields 10"
@@ -295,7 +319,6 @@
         "help": ""
     }
 }',
-  'chapter_image' => '',
 );
 			$result = $this->model->sanitize($posted);
 			$this->assertSame($expected, $result);

@@ -2706,7 +2706,7 @@ class e_front_model extends e_model
 	 * If $value is null, it'll be retrieved from object posted data
 	 * If $key is an array, $value is omitted.
 	 *
-	 * NOTE: If $key is not found in object's _data_fields array, null is returned
+	 * NOTE: If $key is not found in object's _data_fields array, it is removed
 	 *
 	 * @param mixed $key string key name or array data to be sanitized
 	 * @param mixed $value
@@ -2714,55 +2714,11 @@ class e_front_model extends e_model
 	 */
 	public function sanitize($key, $value = null)
 	{
-		$tp = e107::getParser();
-		
 		if(is_array($key))
 		{
-			$ret = [];
-
-			foreach($this->_data_fields as $fld => $type)
-			{
-				list($field) = explode("/", $fld); // ie the field being posted as an array.
-
-				if(!isset($key[$field]))
-				{
-					continue;
-				}
-
-				if(strpos($fld, '/') !== false) // multi-dimensional array field key name.
-				{
-					$md = explode('/', $fld); // split the field name
-					$value = $key[$field];
-					foreach($md as $f) // loop through the path (depth/of/array) to check $value[x][y][z] etc.
-					{
-						if(isset($value[$f]))
-						{
-							if(is_array($value[$f]))
-							{
-								$value = $value[$f];
-							}
-							else // the actual field being saved. .
-							{
-								// FIXME add the sanitized value into the end of the array.
-								$sanitized = $this->sanitizeValue($type, $value[$f], $fld);
-								$ret[$field] = $key[$field];
-							}
-
-						}
-
-					}
-
-				}
-				else // regular field.
-				{
-					$ret[$field] = $this->sanitize($field, $key[$field]);
-				}
-
-			}
-
-			return $ret;
+			$expectedFields = e107::getParser()->fromFlatArray($this->_data_fields);
+			return $this->sanitizeRecursive($key, $expectedFields);
 		}
-
 
 		if(!isset($this->_data_fields[$key]))
 		{
@@ -2774,12 +2730,36 @@ class e_front_model extends e_model
 			$value = $this->getPostedData($key);
 		}
 
-
 		return $this->sanitizeValue($type, $value, $key);
 
 	}
 
-
+	/**
+	 * @param array $data
+	 * @param array $fields
+	 * @return array
+	 */
+	private function sanitizeRecursive($data, $fields)
+	{
+		foreach ($data as $fieldKey => $value)
+		{
+			if (!array_key_exists($fieldKey, $fields))
+			{
+				unset($data[$fieldKey]);
+				continue;
+			}
+			$expectedType = $fields[$fieldKey];
+			if (is_array($value) && is_array($expectedType))
+			{
+				$data[$fieldKey] = $this->sanitizeRecursive($value, $fields[$fieldKey]);
+			}
+			else
+			{
+				$data[$fieldKey] = $this->sanitizeValue($expectedType, $value, $fieldKey);
+			}
+		}
+		return $data;
+	}
 
 	public function destroy()
 	{
