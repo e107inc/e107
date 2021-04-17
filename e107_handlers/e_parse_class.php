@@ -1807,6 +1807,65 @@ class e_parse
 
 
 	/**
+	 * Flatten a multi-dimensional associative array with slashes.
+	 *
+	 * Based on Illuminate\Support\Arr::dot()
+	 * @copyright Copyright (c) Taylor Otwell
+	 * @license https://github.com/illuminate/support/blob/master/LICENSE.md MIT License
+	 * @param $array
+	 * @param string $prepend
+	 * @return array
+	 */
+	public static function toFlatArray($array, $prepend = '')
+	{
+		$results = [];
+
+		foreach ($array as $key => $value)
+		{
+			if (is_array($value) && !empty($value))
+			{
+				$results = array_merge($results, static::toFlatArray($value, $prepend . $key . '/'));
+			}
+			else
+			{
+				$results[$prepend . $key] = $value;
+			}
+		}
+
+		return $results;
+	}
+
+
+	/**
+	 * Convert a flattened slash-delimited multi-dimensional array back into an actual multi-dimensional array
+	 *
+	 * Inverse of {@link e_parse::toFlatArray()}
+	 *
+	 * @param        $array
+	 * @param string $unprepend
+	 * @return array
+	 */
+	public static function fromFlatArray($array, $unprepend = '')
+	{
+		$output = [];
+		foreach ($array as $key => $value)
+		{
+			if (!empty($unprepend) && substr($key, 0, strlen($unprepend)) == $unprepend)
+				$key = substr($key, strlen($unprepend));
+			$parts = explode('/', $key);
+			$nested = &$output;
+			while (count($parts) > 1)
+			{
+				$nested = &$nested[array_shift($parts)];
+				if (!is_array($nested)) $nested = [];
+			}
+			$nested[array_shift($parts)] = $value;
+		}
+		return $output;
+	}
+
+
+	/**
 	 * Convert text blocks which are to be embedded within JS
 	 *
 	 * @param string|array $stringarray
