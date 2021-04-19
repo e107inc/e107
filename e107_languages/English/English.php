@@ -138,10 +138,6 @@ define("LAN_LIST", "List");
 define("LAN_DATESTAMP","Date stamp");
 define("LAN_SUBJECT","Subject");
 
-define("LAN_KEYWORDS","Keywords");
-define("LAN_TAG", "Tag");
-define("LAN_TAGS", "Tags");
-
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password
 define("LAN_SHOW", "Show");
