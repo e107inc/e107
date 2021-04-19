@@ -425,6 +425,8 @@ define("LAN_RUN","Run");
 define("LAN_SEFURL","SEF URL");
 define("LAN_COPY","Copy");
 define("LAN_KEYWORDS","Keywords");
+define("LAN_TAG", "Tag");
+define("LAN_TAGS", "Tags");
 
 define("LAN_TEMPLATE","Template");
 define("LAN_TEMPLATES","Templates");
