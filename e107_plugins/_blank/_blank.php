@@ -65,7 +65,7 @@ class _blank_front
 
 		}
 
-
+		echo $this->renderComments();
 
 	}
 
