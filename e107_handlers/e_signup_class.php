@@ -25,7 +25,7 @@ class e_signup
 
 	function __construct()
 	{
-		$this->pref = e107::pref('core');
+		$this->pref = e107::pref();
 
 		$this->pref['user_reg_veri'] = intval($this->pref['user_reg_veri']);
 
@@ -134,7 +134,7 @@ class e_signup
 			$clean_email = "xxx";
 		}*/
 
-		$new_email = $tp->toDB(varset($_POST['resend_newemail'], ''));
+		$new_email = $tp->toDB(varset($_POST['resend_newemail']));
 		if(!check_email($new_email ))
 		{
 			$new_email = FALSE;
@@ -210,7 +210,7 @@ class e_signup
 			return true;
 		}
 
-		$result = e107::getEmail()->sendEmail($row['user_email'], $row['user_name'], $eml, false);
+		$result = e107::getEmail()->sendEmail($row['user_email'], $row['user_name'], $eml);
 
 		if(!$result)
 		{
@@ -244,16 +244,16 @@ class e_signup
 
 		$text = "<div id='signup-resend-email'>
 		<form method='post' class='form-horizontal' action='".e_SELF."?resend' id='resend_form' autocomplete='off'>
-		<table style='".USER_WIDTH."' class='table fborder'>
+		<table style='".defset('USER_WIDTH')."' class='table fborder'>
 		<tr>
 			<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_48."</td>
-            <td class='forumheader3'>".$frm->text('resend_email','',80)."
+            <td class='forumheader3'>".$frm->text('resend_email')."
             <a class='e-expandit' href='#different'>".LAN_SIGNUP_121."</a></td>
 		</tr>
 		</table>
 
 		<div  id='different' class='e-hideme'>
-			<table  style='".USER_WIDTH."' class='table fborder'>
+			<table  style='".defset('USER_WIDTH')."' class='table fborder'>
 				<tr>
 					<td class='forumheader3' colspan='2'>".LAN_SIGNUP_49."</td>
 				</tr>
@@ -385,7 +385,7 @@ class e_signup
 
 
 					// Set initial classes, and any which the user can opt to join
-					if ($init_class = $userMethods->userClassUpdate($row, 'userfull'))
+					if ($init_class = $userMethods->userClassUpdate($row))
 					{
 						//print_a($init_class); exit;
 						$dbData['data']['user_class'] = $init_class;
@@ -412,7 +412,7 @@ class e_signup
 					{
 						require_once(e_HANDLER.'login.php');
 						$usr = new userlogin();
-						$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+						$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup');
 					}
 
 
