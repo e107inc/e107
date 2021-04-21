@@ -136,8 +136,8 @@ class theme implements e_theme_render
 				break;
 
 
-
-			default:
+			case 'default':
+			case 'main':
 
 			    if(!empty($caption))
 			    {
@@ -150,7 +150,17 @@ class theme implements e_theme_render
 			    }
 
 			    echo $text;
-				// code to be executed if n is different from all labels;
+			break;
+
+
+			default:
+
+			    if(!empty($caption))
+			    {
+			        echo '<h2 class="caption">'.$caption.'</h2>';
+			    }
+
+			    echo $text;
 		}
 
 	    return null;
