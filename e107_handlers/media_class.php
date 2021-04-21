@@ -2232,6 +2232,7 @@ class e_media
 			rename("{$filePath}.part", $filePath);
 		}
 
+
 		return $this->processAjaxImport($filePath, $_REQUEST); 
 		
 	}
@@ -2254,6 +2255,13 @@ class e_media
 
 		$targetDir = e_IMPORT;
 		$fileName = basename($filePath);
+
+		if(e107::getFile()->isAllowedType($filePath) !== true)
+		{
+			$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "Unapproved file-type. (".__METHOD__.")");
+			@unlink($filePath);
+			return '{"jsonrpc" : "2.0", "error" : {"code": 120, "message": "Unapproved file-type detected. '.$filePath.'"}, "id" : "id"}';
+		}
 	
 		if(e107::getFile()->isClean($filePath) !== true)
 		{
