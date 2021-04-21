@@ -1779,8 +1779,53 @@ $text .= "
 	<td>".r_userclass("upload_class", $pref['upload_class'],"off","nobody,public,guest,member,admin,classes")."
 	</td>
 	</tr>
-	<tr><td>".PRFLAN_240."</td>
-	<td>
+	<tr><td>".PRFLAN_240."<sup>**</sup></td>
+	<td>";
+
+	$fType = [e_UC_MEMBER => UC_LAN_3, e_UC_ADMIN => UC_LAN_5, e_UC_MAINADMIN => UC_LAN_6 ];
+	$tabs = [];
+
+	foreach($fType as $class => $label)
+	{
+		$tabs[$class] = array('caption' => $label, 'text' => filePermRender($class));
+	}
+
+	function filePermRender($class)
+	{
+		$fl = e107::getFile();
+		$text = "<table class='table table-striped table-bordered' style='margin:0'>
+		<tr><th>".LAN_TYPE."</th><th>".UPLLAN_33."</th></tr>";
+
+			$data = $fl->getAllowedFileTypes($class);
+
+			if(empty($data))
+			{
+				$data = $fl->getAllowedFileTypes(e_UC_MEMBER);
+			}
+
+			foreach($data as $k=>$v)
+			{
+				if(empty($k))
+				{
+					continue;
+				}
+
+				$text .= "<tr><td class='col-label'>".$k."</td>
+				<td>".$fl->file_size_encode($v)."</td>
+				</tr>";
+			}
+
+			$text .= "</table>";
+
+			return $text;
+
+	}
+
+
+
+	$text .= e107::getForm()->tabs($tabs);
+/*
+	$text .= "
 
 	<table class='table table-striped table-bordered'>
 	<tr><th>".LAN_TYPE."</th><th>".UPLLAN_33."</th>
@@ -1801,9 +1846,10 @@ $text .= "
 	
 
 	
-	$text .= "</table>
-	
-	<div>".PRFLAN_241." <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div>
+	$text .= "</table>";
+	*/
+	$text .= "
+	<div style='padding:15px 0'>".PRFLAN_241." <b>".str_replace("../",'',e_SYSTEM).e_READ_FILETYPES."</b></div>
 	</td>
 	
 	

@@ -39,6 +39,8 @@ class e_fileTest extends \Codeception\Test\Unit
 		$content = '<?xml version="1.0" encoding="utf-8"?>
 						<e107Filetypes>
 							<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
+							<class name="admin" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="4M" />
+							<class name="main" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf,mov" maxupload="5M" />
 						</e107Filetypes>';
 
 		file_put_contents($this->filetypesFile, $content);
@@ -71,20 +73,58 @@ class e_fileTest extends \Codeception\Test\Unit
 
 	public function testGetAllowedFileTypes()
 	{
-		$actual = $this->fl->getAllowedFileTypes();
 
-		$expected = array (
-			'zip' => 2097152, // 2M in bytes
-			'gz' => 2097152,
-			'jpg' => 2097152,
-			'jpeg' => 2097152,
-			'png' => 2097152,
-			'gif' => 2097152,
-			'xml' => 2097152,
-			'pdf' => 2097152,
+
+		$tests = array(
+			e_UC_MEMBER => array (
+				'zip' => 2097152, // 2M in bytes
+				'gz' => 2097152,
+				'jpg' => 2097152,
+				'jpeg' => 2097152,
+				'png' => 2097152,
+				'gif' => 2097152,
+				'xml' => 2097152,
+				'pdf' => 2097152,
+			),
+			e_UC_ADMIN => array (
+				  'zip' => 4194304,
+				  'gz' => 4194304,
+				  'jpg' => 4194304,
+				  'jpeg' => 4194304,
+				  'png' => 4194304,
+				  'gif' => 4194304,
+				  'xml' => 4194304,
+				  'pdf' => 4194304,
+				),
+			e_UC_MAINADMIN => array (
+				  'zip' => 5242880,
+				  'gz' => 5242880,
+				  'jpg' => 5242880,
+				  'jpeg' => 5242880,
+				  'png' => 5242880,
+				  'gif' => 5242880,
+				  'webp' => 5242880,
+				  'xml' => 5242880,
+				  'pdf' => 5242880,
+				  'mov' => 5242880,
+				),
 		);
 
-		$this->assertEquals($expected,$actual);
+		foreach($tests as $class => $expected)
+		{
+			$actual = $this->fl->getAllowedFileTypes($class);
+
+			if(empty($expected))
+			{
+				var_export($actual);
+				continue;
+			}
+
+
+			$this->assertSame($expected,$actual);
+		}
+
+
 
 	}
 

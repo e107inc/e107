@@ -1648,7 +1648,9 @@ if($this->pdo == true)
 	{
 		$data = '<?xml version="1.0" encoding="utf-8"?>
 <e107Filetypes>
-	<class name="253" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="2M" />
+	<class name="member" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="2M" />
+	<class name="admin" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="10M" />
+	<class name="main" type="zip,gz,rar,jpg,jpeg,png,gif,webp,xml,pdf,mov,mp4,mp3,doc,docx,xls,xlsm,mp3,mp4,wav,ogg,webm,mid,midi,torrent,txt,dmg,msi" maxupload="50M" />
 </e107Filetypes>';
 
 		return file_put_contents($this->e107->e107_dirs['SYSTEM_DIRECTORY']."filetypes.xml",$data);

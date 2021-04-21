@@ -1106,7 +1106,7 @@
 			{
 				ob_end_clean();
 			}
-			@ob_implicit_flush(true);
+			@ob_implicit_flush();
 
 
 			$filename = $file;
@@ -1198,7 +1198,7 @@
 						$mes .= "Path: " . $path . "\n";
 						$mes .= "Backtrace: ";
 						$mes .= print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
-						trigger_error($mes, E_USER_NOTICE);
+						trigger_error($mes);
 						exit();
 					}
 					else
@@ -1726,7 +1726,8 @@
 
 
 		/**
-		 *    Get an array of permitted filetypes according to a set hierarchy.
+		 * @deprecated Use getAllowedFileTypes()
+		 *  Get an array of permitted filetypes according to a set hierarchy.
 		 *    If a specific file name given, that's used. Otherwise the default hierarchy is used
 		 *
 		 * @param string|boolean $file_mask - comma-separated list of allowed file types
@@ -2436,23 +2437,23 @@
 		 *  Get array of file types (file extensions) which are permitted - reads an XML-formatted definition file.
 		 *    (Similar to @See{get_allowed_filetypes()}, but expects an XML file)
 		 *
-		 * @param string $file_mask - comma-separated list of allowed file types - only those specified in both $file_mask and $def_file are returned
+		 * @param string $class - e_UC_MEMBER etc if a specific class of file-types is required. Otherwise, it defaults to the perms of the current user.
 		 * @return array - where key is the file type (extension); value is max upload size
 		 */
-		public function getAllowedFileTypes($file_mask = '')
+		public function getAllowedFileTypes($class = null)
 		{
 
 			$ret = array();
 			$file_array = array();
 
-			if($file_mask)
+	/*		if($file_mask)
 			{
 				$file_array = explode(',', $file_mask);
 				foreach($file_array as $k => $f)
 				{
 					$file_array[$k] = trim($f);
 				}
-			}
+			}*/
 
 			if(!is_readable(e_SYSTEM . "filetypes.xml"))
 			{
@@ -2473,7 +2474,13 @@
 			foreach($temp_vars['class'] as $v1)
 			{
 				$v = $v1['@attributes'];
-				if(check_class($v['name']))
+
+				if(!is_numeric($v['name']))
+				{
+					$v['name'] = e107::getUserClass()->getClassFromKey($v['name'], $v['name']); // convert 'admin' etc to numeric equivalent.
+				}
+
+				if(($class === null && check_class($v['name'])) || (int) $class === (int) $v['name'])
 				{
 					$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
 					$a_filetypes = explode(',', $v['type']);
@@ -2481,7 +2488,7 @@
 					{
 						$ftype = strtolower(trim(str_replace('.', '', $ftype))); // File extension
 
-						if(!$file_mask || in_array($ftype, $file_array)) // We can load this extension
+					//	if(!$file_mask || in_array($ftype, $file_array)) // We can load this extension
 						{
 							if(isset($ret[$ftype]))
 							{
