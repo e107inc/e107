@@ -26,6 +26,15 @@
 				$this->fail($e->getMessage());
 			}
 
+			$filetypesFile = e_SYSTEM."filetypes.xml";
+
+			$content = '<?xml version="1.0" encoding="utf-8"?>
+							<e107Filetypes>
+								<class name="253" type="zip,gz,jpg,jpeg,png,webp,gif,xml,pdf" maxupload="2M" />
+							</e107Filetypes>';
+
+			file_put_contents($filetypesFile, $content);
+
 		}
 
 
@@ -80,14 +89,41 @@
 				$json = $this->md->processAjaxImport($file,$var['param']);
 
 				$result = json_decode($json, JSON_PRETTY_PRINT);
+
 				$this->assertNotFalse($result);
-
 				$this->assertStringEndsWith('/'.basename($var['file']), $result['result']);
-
 				$this->assertNotEmpty($result['preview']);
 			}
 
-		
+			$refusalTests = array(
+			0 => array(
+						'file'  => codecept_data_dir()."mediaTest/vulnerable.png.svg",
+						'param' => array (
+							  'for' => 'news ',
+							  'w' => '206',
+							  'h' => '190',
+						),
+						'error' => 120
+				),
+			);
+
+			foreach($refusalTests as $index => $var)
+			{
+				$source = $var['file'];
+				$file = e_IMPORT.basename($var['file']);
+				copy($source,$file);
+
+				$json = $this->md->processAjaxImport($file,$var['param']);
+
+				$result = json_decode($json, JSON_PRETTY_PRINT);
+
+				$this->assertNotFalse($result);
+				$this->assertNotEmpty($result['error']);
+				$this->assertNotEmpty($result['error']['code']);
+				$this->assertSame($var['error'], $result['error']['code']);
+			}
+
+
 		}
 
 
