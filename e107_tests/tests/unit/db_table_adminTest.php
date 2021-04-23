@@ -346,7 +346,13 @@
 
 			$result = $this->dta->get_current_table('core');
 
-			$this->assertSame($result,$expected);
+			// MySQL 8.0+: Alias CHARSET=utf8mb3 to CHARSET=utf8
+			array_walk_recursive($result, function(&$element)
+			{
+				$element = str_replace("CHARSET=utf8mb3", "CHARSET=utf8", $element);
+			});
+
+			$this->assertSame($expected, $result);
 
 		}
 
