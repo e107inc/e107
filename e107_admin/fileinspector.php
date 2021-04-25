@@ -222,7 +222,7 @@ class fileinspector_ui extends e_admin_ui
          //   $text .= '<button id="start-render" type="button" data-loading-icon="fa-spinner" data-loading-target="#start-render" class="e-ajax btn-sm btn btn-primary" data-src="'.$source.'" data-target="#results-container">Other</button>';
 
 
-			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress&scan='.filter_var($_GET['scan']).'" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> Begin</a>';
+			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress&scan='.filter_var($_GET['scan']).'" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> '.FR_LAN_33.'</a>';
 			$text .= ' <a data-progress-target="inspector-progress" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
 
 
