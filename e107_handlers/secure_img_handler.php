@@ -230,7 +230,7 @@ class secure_image
 		}
 			
 		$frm = e107::getForm();	
-		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array( "size"=>20, 'required'=>1, 'placeholder'=>LAN_ENTER_CODE, 'autocomplete' => 'one-time-code'));
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array( "size"=>20, 'required'=>1, 'placeholder'=>LAN_ENTER_CODE, 'autocomplete' => 'off'));
 	}
 
 
