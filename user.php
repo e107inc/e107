@@ -217,7 +217,7 @@ if (isset($id))
 
 	if($text = renderuser($id))
 	{
-		$ns->tablerender(LAN_USER_50, e107::getMessage()->render(). $text);
+		$ns->tablerender(LAN_USER_50, e107::getMessage()->render(). $text, 'user');
 	}
 	else
 	{
