@@ -658,7 +658,7 @@ echo "</head>\n";
 	    }
 	    else // Debug info only. No need for LAN.
 	    {
-	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b>")->render();
+	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b> or your layout is missing {---}. ")->render();
 	    }
     }
     
@@ -805,7 +805,7 @@ e107::getDebug()->logTime('Render Layout');
 	//	echo $HEADER;
 	}
 
-	unset($def, $noBody, $psc);
+
 
 // -----------------------------------------------------------------------------
 
@@ -838,7 +838,7 @@ e107::getDebug()->logTime('Render Other');
      * fix - only when e_FRONTPAGE set to true
      * @see core_index_index_controller/actionIndex
      */
-    if(deftrue('e_FRONTPAGE') && strpos($HEADER, "{WMESSAGE") === false && strpos($FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
+    if(deftrue('e_FRONTPAGE') && ($noBody !== true) && strpos($HEADER, "{WMESSAGE") === false && strpos($FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
@@ -862,5 +862,7 @@ e107::getDebug()->logTime('Render Other');
 	unset($text);
 }
 
+unset($def, $noBody, $psc);
 $GLOBALS['FOOTER'] = $FOOTER;
+
 //Trim whitepsaces after end of the script
