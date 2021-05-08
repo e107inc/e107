@@ -1828,9 +1828,9 @@ function table_list()
 
 	foreach($tables as $e107tab)
 	{
-		$count = e107::getDb()->gen("SELECT * FROM #".$e107tab);
+		$count = (int) e107::getDb()->count($e107tab);
 
-		if($count)
+		if(!empty($count))
 		{
 			$tabs[$e107tab] = $count;
 		}

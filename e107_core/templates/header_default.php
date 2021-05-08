@@ -847,7 +847,16 @@ e107::getDebug()->logTime('Render Other');
 	{
 		if(deftrue('e_DEBUG'))
 		{
-			e107::getMessage()->addDebug("The {ALERTS} shortcode was not found in the \$HEADER or \$FOOTER template. It has been automatically added here. ");
+			if($noBody === true)
+			{
+				e107::getMessage()->addDebug("The {ALERTS} shortcode was not found in theme.html or ".THEME_LAYOUT."_layout.html");
+
+			}
+			else
+			{
+				e107::getMessage()->addDebug("The {ALERTS} shortcode was not found in the \$HEADER or \$FOOTER template. It has been automatically added here. ");
+			}
+
 		}
 
 		echo e107::getParser()->parseTemplate("{ALERTS}");
