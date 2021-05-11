@@ -1273,7 +1273,7 @@ class system_tools
 							<td>
 								".$frm->checkbox("xml_tables[".$name."]", $name, $checked, array('label'=>DBLAN_99." ".$name)).
 							"</td>
-							<td class='right'>$count</td>
+							<td class='right'>".$count."</td>
 						</tr>";
 					}
 
