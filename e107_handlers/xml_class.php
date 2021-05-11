@@ -491,7 +491,7 @@ class xmlClass
 		{
 			$this->errors = $this->getErrors($xmlData);
 			return FALSE;
-		};
+		}
 
 		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
@@ -1006,8 +1006,21 @@ class xmlClass
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
+				$primaryKey = '';
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
+
+				// order by the primary-key
+				if($pri = e107::getDb()->index($eTable, 'PRIMARY', null, true))
+				{
+					$primaryKey = varset($pri[0]['Column_name']);
+				}
+
+				if(empty($eQry) && !empty($primaryKey))
+				{
+					$eQry = " 1 ORDER BY ".$primaryKey." ASC";
+				}
+
 				e107::getDb()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 			//	$count = 1;
