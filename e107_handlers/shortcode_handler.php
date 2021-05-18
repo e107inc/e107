@@ -1359,7 +1359,7 @@ class e_parse_shortcode
 			}
 		}
 
-		if(E107_DBG_BBSC && $this->wrapperDebugDone[$this->wrapper]==false && !empty($this->wrapper))
+		if(E107_DBG_BBSC && !empty($this->wrapper) && $this->wrapperDebugDone[$this->wrapper]==false)
 		{
 			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
 
