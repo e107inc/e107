@@ -767,7 +767,7 @@
 
 			$this->scbbcodes[$this->scbcount]['type'] = $type;
 			$this->scbbcodes[$this->scbcount]['code'] = $code;
-			$this->scbbcodes[$this->scbcount]['parm'] = (string) $parm;
+			$this->scbbcodes[$this->scbcount]['parm'] = is_array($parm) ? var_export($parm, true) : (string) $parm;
 			$this->scbbcodes[$this->scbcount]['details'] = $details;
 			$this->scbcount++;
 
