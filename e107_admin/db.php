@@ -491,7 +491,7 @@ class system_tools
 			if(vartrue($_POST['createdb']))
 			{
 			
-				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8`"))
+				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8mb4`"))
 				{
 					$mes->addSuccess(DBLAN_75);
 					
@@ -556,7 +556,7 @@ class system_tools
 		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
 
 
-		$sql->gen('SET NAMES `utf8`');
+		$sql->gen('SET NAMES `utf8mb4`');
 
 		foreach ($result[0] as $sql_table)
 		{
@@ -769,11 +769,11 @@ class system_tools
 					<td>".$row['Name']."</td>
 					<td>".$row['Engine']."</td>
 					<td>".$row['Collation']."</td>
-					<td>".(($row['Collation'] == 'utf8_general_ci') ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
+					<td>".(($row['Collation'] == 'utf8mb4_general_ci') ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
 					</tr>";
 			//	 print_a($row);
 				
-				if($row['Collation'] != 'utf8_general_ci')
+				if($row['Collation'] != 'utf8mb4_general_ci')
 				{
 					$invalidCollations = true;	
 				}
@@ -842,12 +842,12 @@ class system_tools
 		
 	
 		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci'  and data_type LIKE '%char%';");
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%text%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';");
 
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM information_schema.columns WHERE TABLE_SCHEMA ='".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%'  AND COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%char%';");
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8_general_ci' and data_type LIKE '%text%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA ='".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%'  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';");
 
 
 	//	$sql->gen("USE ".$dbtable);
@@ -881,7 +881,7 @@ class system_tools
 		// Convert Table Fields to utf8
 		$sql2 = e107::getDb('sql2');
 		
-		$sql->gen('SHOW TABLE STATUS WHERE Collation != "utf8_general_ci" ');
+		$sql->gen('SHOW TABLE STATUS WHERE Collation != "utf8mb4_general_ci" ');
 		while ($row = $sql->fetch())
 		{
    			$table = $row['Name'];
@@ -892,7 +892,7 @@ class system_tools
 			}
 			
 			
-			$tab_query = "ALTER TABLE ".$table."  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+			$tab_query = "ALTER TABLE ".$table."  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; ";
 
 			//echo "TABQRT= ".$tab_query;
 
@@ -927,7 +927,7 @@ class system_tools
 
 		//------------
 
-		$lastQry = "ALTER DATABASE `".$dbtable."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$lastQry = "ALTER DATABASE `".$dbtable."` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;";
 
 		if(!$sql->db_Query($lastQry))
 		{
@@ -936,11 +936,10 @@ class system_tools
 		elseif($ERROR != TRUE)
 		{
 			$message = DBLAN_93;
-			//$message .= "<br />Please now add the following line to your e107_config.php file:<br /><b>\$mySQLcharset   = 'utf8';</b>";
 
 			$mes->add($message, E_MESSAGE_SUCCESS);
 			$mes->addSuccess(DBLAN_94);
-			$mes->addSuccess('$mySQLcharset   = "utf8";');
+			$mes->addSuccess('$mySQLcharset   = "utf8mb4";');
 			
 		}
 

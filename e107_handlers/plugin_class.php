@@ -3412,9 +3412,8 @@ class e107plugin
 			return null;
 		}
 
+		/** @var db_verify $dbv */
 		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
-	//	require_once(e_HANDLER."db_verify_class.php");
-	//	$dbv = new db_verify;
 		$sql = e107::getDb();
 
 		// Add or Remove Table --------------
@@ -3436,12 +3435,15 @@ class e107plugin
 
 			foreach($tableData['tables'] as $k=>$v)
 			{
+				$engine = $dbv->getIntendedStorageEngine($tableData['engine'][$k]);
+				$charset = $dbv->getIntendedCharset($tableData['charset'][$k]);
+
 				switch($function)
 				{
 					case "install":
 						$query = "CREATE TABLE  `".MPREFIX.$v."` (\n";
 						$query .= $tableData['data'][$k];
-						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
+						$query .= "\n) ENGINE=$engine DEFAULT CHARSET=$charset ";
 
 						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
 						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
@@ -4633,7 +4635,7 @@ class e107plugin
 	/**
 	 * Installs a plugin by ID or folder name
 	 *
-	 * @param int $id
+	 * @param int|string $id
 	 * @param array $options (currently only 'nolinks' - set to true to prevent sitelink creation during install)
 	 */
 	function install($id, $options = array())
