@@ -49,6 +49,8 @@
   table_summary text,
   table_media text,
   table_email2 tinyint(3) unsigned NOT NULL default '0',
+  table_email90 tinyint(3) unsigned NOT NULL default '0',
+  e107_name varchar(100) NOT NULL default '',
   PRIMARY KEY  (table_id)";
 
 	$expected = array (
@@ -188,6 +190,22 @@
 		    'null' => 'NOT NULL',
 		    'default' => 'DEFAULT \'0\'',
 		  ),
+		  'table_email90' =>
+			  array (
+				  'type' => 'TINYINT',
+				  'value' => '3',
+				  'attributes' => 'UNSIGNED',
+				  'null' => 'NOT NULL',
+				  'default' => 'DEFAULT \'0\'',
+			  ),
+  		  'e107_name' =>
+  		  array (
+  		  	'type' => 'VARCHAR',
+		    'value' => '100',
+		    'attributes' => '',
+		    'null' => 'NOT NULL',
+		    'default' => 'DEFAULT \'\'',
+	      ),
 		);
 
            $actual =  $this->dbv->getFields($data);
@@ -355,7 +373,7 @@
 				  PRIMARY KEY  (table_id)
 				  UNIQUE KEY `table_email` (`table_email`),
 				  KEY `table_user` (`table_user`)
-				  ) ENGINE=InnoDB;';
+				  ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;';
 
 			$expected = str_replace("\t", "",$expected);
 			$actual = str_replace("\t", "",$actual);
@@ -762,6 +780,11 @@
 			$fileData['index']	= $this->dbv->getIndex($file);
 			$sqlData['index']	= $this->dbv->getIndex($sql);
 
+			$fileData['engine'] = $this->dbv->getIntendedStorageEngine("InnoDB");
+			$sqlData['engine'] = $this->dbv->getCanonicalStorageEngine("InnoDB");
+
+			$fileData['charset'] = $this->dbv->getIntendedCharset("utf8mb4");
+			$sqlData['charset'] = $this->dbv->getCanonicalCharset("utf8mb4");
 
 			$this->dbv->prepareResults('schedule', 'myplugin', $sqlData, $fileData);
 
@@ -899,4 +922,75 @@
 		{
 
 		}*/
+
+		public function testGetCanonicalStorageEngine()
+		{
+			$input = "InnoDB";
+
+			$output = $this->dbv->getCanonicalStorageEngine($input);
+
+			$this->assertEquals($input, $output);
+		}
+
+		public function testGetCanonicalStorageEngineUnknownStorageEngine()
+		{
+			$this->expectException(UnexpectedValueException::class);
+
+			$this->dbv->getCanonicalStorageEngine("FakeEngine");
+		}
+
+		public function testGetCanonicalCharsetUtf8Alias()
+		{
+			$input = "utf8";
+			$expected = "utf8mb4";
+
+			$output = $this->dbv->getCanonicalCharset($input);
+
+			$this->assertEquals($expected, $output);
+		}
+
+		public function testGetCanonicalCharsetOther()
+		{
+			$inputs = ["latin1", "utf8mb3", "utf8mb4"];
+
+			foreach ($inputs as $input)
+			{
+				$output = $this->dbv->getCanonicalCharset($input);
+
+				$this->assertEquals($input, $output);
+			}
+		}
+
+		public function testGetIntendedStorageEngine()
+		{
+			$output = $this->dbv->getIntendedStorageEngine("MyISAM");
+			$this->assertEquals("InnoDB", $output);
+
+			$output = $this->dbv->getIntendedStorageEngine("InnoDB");
+			$this->assertEquals("InnoDB", $output);
+
+			$output = $this->dbv->getIntendedStorageEngine("Aria");
+			$this->assertContains($output, ["Aria", "Maria", "MyISAM"]);
+
+			$output = $this->dbv->getIntendedStorageEngine("MEMORY");
+			$this->assertEquals("MEMORY", $output);
+		}
+
+		public function testGetIntendedCharset()
+		{
+			$output = $this->dbv->getIntendedCharset("");
+			$this->assertEquals("utf8mb4", $output);
+
+			$output = $this->dbv->getIntendedCharset();
+			$this->assertEquals("utf8mb4", $output);
+
+			$output = $this->dbv->getIntendedCharset("utf8");
+			$this->assertEquals("utf8mb4", $output);
+
+			$output = $this->dbv->getIntendedCharset("utf8mb3");
+			$this->assertEquals("utf8mb3", $output);
+
+			$output = $this->dbv->getIntendedCharset("latin1");
+			$this->assertEquals("latin1", $output);
+		}
 	}

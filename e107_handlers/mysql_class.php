@@ -2388,7 +2388,7 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * Check if MySQL version is utf8 compatible and may be used as it accordingly to the user choice
+	 * Check if MySQL version is utf8mb4 compatible and may be used as it accordingly to the user choice
 	 *
 	 * @TODO Simplify when the conversion script will be available
 	 * @access public
@@ -2401,15 +2401,16 @@ class e_db_mysql implements e_db
 	{
 		// Get the default user choice
 		global $mySQLcharset;
-		if (isset($mySQLcharset) && $mySQLcharset != 'utf8')
+		if (isset($mySQLcharset) && $mySQLcharset != 'utf8mb4')
 		{
-			// Only utf8 is accepted
+			// Only utf8mb4 is accepted
 			$mySQLcharset = '';
 		}
 		$charset = ($charset ? $charset : $mySQLcharset);
 		$message = (( ! $charset && $debug) ? 'Empty charset!' : '');
 		if($charset)
 		{
+			$this->mySQLaccess->set_charset($charset);
 			if ( ! $debug)
 			{
 			   @mysqli_query($this->mySQLaccess, "SET NAMES `$charset`");

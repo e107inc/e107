@@ -40,7 +40,7 @@ class e_db_pdoTest extends e_db_abstractTest
 		$this->db->setCharset();
 		$result = $this->db->getCharset();
 
-		$this->assertEquals('utf8', $result);
+		$this->assertEquals('utf8mb4', $result);
 	}
 
 	public function testBackup()
