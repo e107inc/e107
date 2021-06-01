@@ -4079,15 +4079,21 @@ class e107
 		return null;
 	}
 
-
-	public static function route($route)
+	/**
+	 * Set the route or get the current route when $route is null.
+	 * @param string $route
+	 * @return string|null
+	 */
+	public static function route($route = null)
 	{
 		if(defined('e_ROUTE'))
 		{
-			return null;
+			return e_ROUTE;
 		}
 
 		define('e_ROUTE', $route);
+
+		return null;
 	}
 
 
