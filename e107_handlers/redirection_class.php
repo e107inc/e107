@@ -374,9 +374,14 @@ class redirection
 
 
 					
-		if(deftrue('e_DEBUG_REDIRECT'))
+		if(deftrue('e_DEBUG_REDIRECT') && strpos($url, 'sitedown.php') === false)
 		{
 			$error = debug_backtrace();
+
+			$sent = headers_list();
+			$message = "Headers previously sent: ".print_r($sent,true);
+			e107::getLog()->addDebug($message);
+			print_a($message);
 
 			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
 			e107::getLog()->addDebug($message);
