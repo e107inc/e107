@@ -789,7 +789,7 @@ e107::getDebug()->logTime('Render Layout');
 
 		$psc = array(
 			'magicSC'=>array(
-					'{THEME}'       => THEME_ABS,
+				//	'{THEME}'       => THEME_ABS, // moved to e107_core/shortcodes/single/
 					'{BODY_ONLOAD}' => $body_onload,
 					'{LAYOUT_ID}'   => 'layout-'.e107::getForm()->name2id(THEME_LAYOUT),
 					'THEME_LAYOUT'  => THEME_LAYOUT, // BC Fall-back: Catch and replace the missing constant- ony works with PHP < 8

@@ -1263,7 +1263,7 @@ class e_parse_shortcode
 					if (is_readable(e_CORE.'shortcodes/single/'.strtolower($code).'.php'))
 					{
 						$_function = strtolower($code).'_shortcode';
-						$_class = strtolower($code);
+						$_class = ($code === 'sitelinks_alt') ? sitelinks_alt : null; // all others are plain functions.
 						$_path = e_CORE.'shortcodes/single/'.strtolower($code).'.php';
 
 						include_once($_path);
@@ -1274,7 +1274,7 @@ class e_parse_shortcode
 							// SecretR - fix array(parm, sc_mode) causing parm to become an array, see issue 424
 							if(!method_exists($_class, $_function))
 							{
-								trigger_error($_function." doesn't exist in ".$_path, E_USER_NOTICE);
+								trigger_error("Method ".$_function." doesn't exist in class ".$_class." within file ".$_path);
 							}
 							else
 							{
