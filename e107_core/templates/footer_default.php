@@ -76,7 +76,7 @@ if (varset($e107_popup) != 1)
 
         $psc = array(
          '</body>'          => '',
-         '{THEME}'          => THEME_ABS,
+    //     '{THEME}'          => THEME_ABS, // moved to e107_core/shortcodes/single/
          '{---MODAL---}'    => $LAYOUT['_modal_'],
          '{---HEADER---}'   => $tp->parseTemplate('{HEADER}',true),
          '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
