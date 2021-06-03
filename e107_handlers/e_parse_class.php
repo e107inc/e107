@@ -4630,7 +4630,7 @@ class e_parse
 
 		$ytqry = http_build_query($ytpref, null, '&amp;');
 
-		$defClass = !empty($this->bootstrap) ? 'embed-responsive embed-responsive-16by9' : 'video-responsive'; // levacy backup.
+		$defClass = !empty($this->bootstrap) ? 'embed-responsive embed-responsive-16by9 ratio ratio-16x9' : 'video-responsive'; // levacy backup.
 
 
 		if($type === 'youtube')
