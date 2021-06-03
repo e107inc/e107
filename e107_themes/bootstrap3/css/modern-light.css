@@ -1649,7 +1649,7 @@ ul.col-selection { background-color: #FCFDFF; }
 #admin-menus #sc-admin-help ,
 #admin-menus .admin-ui-nav-menu { background: #373737 }
 h4.caption { margin-bottom: 15px !important; }
-.s-message-body .well { color: white; }
+.s-message-body .well, s-message-item pre { color: white; }
 
 
 

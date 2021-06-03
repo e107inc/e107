@@ -821,7 +821,9 @@ e107::getDebug()->logTime('Render Other');
 
 	if(ADMIN && $pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
 	{
-		echo "<div class='installer alert alert-danger alert-block alert-dismissible text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."<button type='button' class='close btn-close' data-bs-dismiss='alert' data-dismiss='alert' aria-label='".LAN_CLOSE."'></button></div>";
+		$devMessage = e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true);
+		e107::getMessage()->setTitle("Developer Mode", E_MESSAGE_ERROR)->addError($devMessage);
+		// echo "<div class='installer alert alert-danger alert-block alert-dismissible text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."<button type='button' class='close btn-close' data-bs-dismiss='alert' data-dismiss='alert' aria-label='".LAN_CLOSE."'></button></div>";
 	}
 
 	

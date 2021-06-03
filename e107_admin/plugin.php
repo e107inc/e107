@@ -2694,7 +2694,7 @@ class pluginBuilder
 			$text .= "<ul class='nav nav-tabs'>\n";
 			$text .= "<li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
 			
-			$this->tableCount = count($ret['tables']);
+			$this->tableCount = !empty($ret['tables']) ? count($ret['tables']) : 0;
 
 			if(!empty($ret['tables']))
 			{
