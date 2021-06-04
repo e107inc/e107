@@ -167,7 +167,15 @@
 			}
 
 			$bread = e107::breadcrumb();
-			$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread, true);
+
+			if($tmp = e107::callMethod('theme_shortcodes', 'sc_breadcrumb', $bread))
+			{
+				$ret['{---BREADCRUMB---}'] = $tmp;
+			}
+			else
+			{
+				$ret['{---BREADCRUMB---}'] = e107::getForm()->breadcrumb($bread, true);
+			}
 
 			return $ret;
 

@@ -76,6 +76,26 @@ class theme_shortcodes extends e_shortcode
 	}
 
 	/**
+	 * Optional {---BREADCRUMB---} processing.
+	 * @shortcode {---BREADCRUMB---}
+	 * @return string
+	 */
+	 /*
+	function sc_breadcrumb($array)
+	{
+		$route = e107::route();
+
+		if(strpos($route,'news/') === 0)
+		{
+			$array[0]['text'] = 'Blog';
+		}
+
+		return e107::getForm()->breadcrumb($array, true);
+
+	}
+	*/
+
+	/**
 	 * Will only function on the news page.
 	 * @example {THEME_NEWS_BANNER: type=date}
 	 * @example, {THEME_NEWS_BANNER: type=image}
