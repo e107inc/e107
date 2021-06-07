@@ -235,7 +235,7 @@
 
 				case 'textarea':
 				case 'bbarea':
-					$ret = $tp->toHTML($value, true, 'BODY');
+					$ret = ($raw) ? $value : $tp->toHTML($value, true, 'BODY');
 					break;
 
 
@@ -266,7 +266,7 @@
 					break;
 
 				default:
-					$ret = $tp->toHTML($value);
+					$ret = ($raw) ? $value : $tp->toHTML($value);
 			}
 
 
