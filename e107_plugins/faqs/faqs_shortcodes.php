@@ -283,7 +283,7 @@ class faqs_shortcodes extends e_shortcode
 			return "<span class='faq-total'>(".($this->counter -1).")</span>";
 		}
 
- 		return isset($this->var['f_count']) ? $this->var['f_count'] : 0;
+ 		return isset($this->var['f_count']) ? $this->var['f_count'] : '';
 	}
 	
 	function sc_faq_cat_diz()
