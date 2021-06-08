@@ -1024,6 +1024,60 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/4512
+	 * @throws Exception
+	 */
+	public function testFaqShortcodesDisplayFaqTotal()
+	{
+		require_once(e_PLUGIN."faqs/faqs_shortcodes.php");
+
+		/** @var faqs_shortcodes $sc */
+		$sc = $this->make('faqs_shortcodes');
+
+		$faqsConfig = e107::getPlugConfig("faqs");
+		$beforePref = $faqsConfig->getPref("display_total");
+		try
+		{
+			$faqsConfig->setPref("display_total", true);
+			$sc->counter = $counter = 593407;
+
+			$output = e107::getParser()->parseTemplate("<small>{FAQ_COUNT}</small>", true, $sc);
+			$this->assertEquals("<small><span class='faq-total'>(".($counter-1).")</span></small>", $output);
+		}
+		finally
+		{
+			$faqsConfig->setPref("display_total", $beforePref);
+		}
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/4512
+	 * @throws Exception
+	 */
+	public function testFaqShortcodesDoNotDisplayFaqTotal()
+	{
+		require_once(e_PLUGIN . "faqs/faqs_shortcodes.php");
+
+		/** @var faqs_shortcodes $sc */
+		$sc = $this->make('faqs_shortcodes');
+
+		$faqsConfig = e107::getPlugConfig("faqs");
+		$beforePref = $faqsConfig->getPref("display_total");
+		try
+		{
+			$faqsConfig->setPref("display_total", false);
+			$sc->counter = 1017703;
+
+			$output = e107::getParser()->parseTemplate("<small>{FAQ_COUNT}</small>", true, $sc);
+			$this->assertEquals("<small></small>", $output);
+		}
+		finally
+		{
+			$faqsConfig->setPref("display_total", $beforePref);
+		}
+	}
+
 	public function testFpwShortcodes()
 	{
 		require_once(e_CORE."shortcodes/batch/fpw_shortcodes.php");
