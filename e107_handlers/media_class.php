@@ -100,7 +100,7 @@ class e_media
 
 		$img_array = $fl->get_files($epath, $fmask,'',2);
 	
-		if(!count($img_array))
+		if(empty($img_array))
 		{
 			e107::getMessage()->addDebug("Media-Import could not find any files in <b>".$epath."</b> with fmask: ".$fmask);
 			return $this;
@@ -119,11 +119,13 @@ class e_media
 			
 			if(vartrue($options['min-width']) && ($f['img-width'] < $options['min-width']))
 			{
+				$mes->addDebug("Skipped: ".$f['fname']);
 				continue;	
 			}
 			
 			if(vartrue($options['min-size']) && ($f['fsize'] < $options['min-size']))
 			{
+				$mes->addDebug("Skipped: ".$f['fname']);
 				continue;	
 			}
 			
@@ -145,7 +147,7 @@ class e_media
 				'media_tags'		=> '',
 				'media_type'		=> $f['mime']
 			);
-	
+
 			if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
 			{
 			
@@ -159,11 +161,15 @@ class e_media
 					$mes->addError("Media not imported: ".$f['fname']);
 				}
 			}
+			else
+			{
+				$mes->addDebug("Skipped (already exists): ".$f['fname']);
+			}
 		}
 
-	//	if($count)
+		if(!empty($count))
 		{
-			// $mes->addSuccess("Imported {$count} Media items.");
+			 $mes->addDebug("Imported {$count} Media items.");
 		}
 		
 		return $this;

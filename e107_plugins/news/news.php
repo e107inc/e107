@@ -1167,7 +1167,7 @@ class news_front
 		else
 		{*/
 			$query = "
-		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, u.user_login, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 		    FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
