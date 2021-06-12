@@ -18,6 +18,11 @@ if (!e107::isInstalled('tagcloud'))
 	return '';
 }
 
+/**
+ * @example {MENU: path=tagcloud&order=size,desc}
+ * @example {MENU: path=tagcloud&order=tag,asc&limit=20}
+ */
+
 require_once('tagcloud_class.php');
 
 
@@ -39,6 +44,11 @@ if(!class_exists('tagcloud_menu'))
 
 			$cloud = new TagCloud();
 			$sql = e107::getDb();
+
+			if(is_string($parm))
+			{
+				parse_str($parm,$parm);
+			}
 
 			e107::getCache()->setMD5(e_LANGUAGE);
 
@@ -86,9 +96,24 @@ if(!class_exists('tagcloud_menu'))
 				return $text;
 			});
 
-			$cloud->setOrder('size', 'DESC');
+
+
+			if(!empty($parm['order']))
+			{
+				list($o1,$o2) = explode(',', $parm['order']);
+				$cloud->setOrder($o1, strtoupper($o2));
+			}
+			else
+			{
+				$cloud->setOrder('size', 'DESC');
+			}
 
 			$limit = !empty($parm['tagcloud_limit']) ? intval($parm['tagcloud_limit']) : 50;
+
+			if(!empty($parm['limit']))
+			{
+				$limit = (int) $parm['limit'];
+			}
 
 			$cloud->setLimit($limit);
 

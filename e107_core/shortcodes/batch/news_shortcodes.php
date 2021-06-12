@@ -99,6 +99,12 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+	function sc_news_author_realname($parm=null)
+	{
+		return !empty($this->news_item['user_login']) ? $this->news_item['user_login'] : null;
+	}
+
+
 
 	function sc_news_author($parm=null)
 	{
@@ -115,6 +121,8 @@ class news_shortcodes extends e_shortcode
 		}
 		return "<a href='http://e107.org'>e107</a>";
 	}
+
+
 
 
 	function sc_newscomments($parm=null)
