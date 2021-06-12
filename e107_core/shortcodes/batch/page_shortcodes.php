@@ -681,8 +681,10 @@ class cpage_shortcodes extends e_shortcode
 			$breadcrumb[] = array('text'=> $row['chapter_name'], 'url'=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef'));
 		}
 
-
-
+		if($action === 'showPage')
+		{
+			$breadcrumb[] = array('text'=> $this->var['page_title']); 
+		}
 
 		e107::breadcrumb($breadcrumb);
 		$this->breadcrumbComplete = true;
