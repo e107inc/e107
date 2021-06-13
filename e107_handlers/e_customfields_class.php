@@ -150,6 +150,8 @@
 				return null;
 			}
 
+			$ret = null;
+
 			switch($fieldType)
 			{
 				case 'dropdown':
@@ -160,11 +162,7 @@
 
 				case 'video':
 
-					if(empty($value))
-					{
-						$ret = null;
-					}
-					else
+					if(!empty($value))
 					{
 						$ret = ($raw) ? 'https://www.youtube.com/watch?v='.str_replace('.youtube', '', $value) : $tp->toVideo($value);
 					}
@@ -173,7 +171,10 @@
 
 
 				case 'image':
-					$ret = ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
+					if(!empty($value))
+					{
+						$ret = ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
+					}
 					break;
 
 				case 'icon':
@@ -198,11 +199,7 @@
 					break;
 
 				case 'file':
-					if(empty($value))
-					{
-						$ret = null;
-					}
-					else
+					if(!empty($value))
 					{
 						$ret = ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
 					}

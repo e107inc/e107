@@ -258,7 +258,7 @@
 		$expectedRawValues = array (
 		  'image'       => 'thumb.php?src=',
 		  'video'       => 'https://www.youtube.com/watch?v=WcuRPzB4RNc',
-		  'bbarea'      => '<!-- bbcode-html-start --><p><b>Rich text.</b></p><!-- bbcode-html-end -->',
+		  'bbarea'      => '[html]<p><b>Rich text.</b></p>[/html]',
 		  'boolean'     => '1',
 		  'checkboxes'  => 'boat,plane',
 		  'country'     => 'ad',
