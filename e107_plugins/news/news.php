@@ -1073,10 +1073,7 @@ class news_front
 			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strpos(e_QUERY, "month") !== false ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 		}
 
-		if(!empty($template['end']))
-		{
-			$text .= $tp->parseTemplate($template['end'], true);
-		}
+
 
 		$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
@@ -1089,7 +1086,23 @@ class news_front
 
 		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
-		$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
+		$paginationSC = false;
+		if(!empty($template['end']))
+		{
+			e107::setRegistry('core/news/pagination', $parms);
+			$text .= $tp->parseTemplate($template['end'], true);
+			if(strpos($template['end'], '{NEWS_PAGINATION') !== false)
+			{
+				$paginationSC = true;
+				$this->addDebug("Pagination Shortcode", 'true');
+			}
+		}
+
+		if($paginationSC === false) // BC Fix
+		{
+			$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+			$this->addDebug("Pagination Shortcode", 'false');
+		}
 
 
 		if(isset($template['caption'])) // v2.x
@@ -1105,7 +1118,7 @@ class news_front
 			$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 		}
 
-		if($this->defaultTemplate != 'list')
+		if($this->defaultTemplate != 'list' && ($paginationSC === false))
 		{
 			$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
 		}
@@ -1682,10 +1695,7 @@ class news_front
 			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
 
 			$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
-
-			//    $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-			//    $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
-			//    $text=''.$text.'<center>'.$nextprev.'</center>';
+			// This section is deprecated so no pagination shortcode support should be added.
 
 		//	echo $text;
 			$this->setNewsCache($this->cacheString, $text);
@@ -1869,28 +1879,39 @@ class news_front
 				$i++;
 			}
 
-			if(!empty($tmpl['end']))
-			{
-				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
-				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
-			}
-
 
 
 
 			$amount = ITEMVIEW;
 			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-			
+
+			$this->addDebug('News Pagination Parms', $this->newsUrlparms);
+
 			// Example of passing route data instead building the URL outside the shortcode - for a reference only
 			// $url = rawurlencode('url::'.$newsRoute.'::'.http_build_query($newsUrlparms, null, '&'));
+
 			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
 
-			echo $tp->parseTemplate("{NEXTPREV={$parms}}");
+			$paginationSC = false;
 
-			//	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-			//	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-			// 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+			if(!empty($tmpl['end']))
+			{
+				e107::setRegistry('core/news/pagination', $parms);
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
+				if(strpos($tmpl['end'], '{NEWS_PAGINATION') !== false) // BC fix.
+				{
+					$paginationSC = true;
+					$this->addDebug("Pagination Shortcode", 'true');
+				}
+			}
+
+			if($paginationSC === false) // BC Fix.
+			{
+				echo $tp->parseTemplate("{NEXTPREV={$parms}}");
+				$this->addDebug("Pagination Shortcode", 'false');
+			}
 
 			$cache_data = ob_get_clean();
 
