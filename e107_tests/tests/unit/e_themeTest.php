@@ -599,7 +599,13 @@ class e_themeTest extends \Codeception\Test\Unit
 					    'version' => '5',
 					    'scope' => 'front',
 					  ),
+					   2 => array (
+			            'name' => 'animate.css',
+			            'version' => '',
+			            'scope' => 'front',
+			         )
 					),
+
 
 			),
 			'voux'  => array( // theme using defines for FONTAWESOME and BOOTSTRAP

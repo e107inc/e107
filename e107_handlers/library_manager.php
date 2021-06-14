@@ -333,7 +333,7 @@ class core_library
 		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
 			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1',
 			'path'              => '',
-			'version'           => '5.0.0',
+			'version'           => '5.0.1',
 		);
 
 
@@ -379,7 +379,7 @@ class core_library
 			),*/
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '5',
-			'version'           => '5.0.0',
+			'version'           => '5.0.1',
 		);
 
 
