@@ -49,7 +49,7 @@ class forum_event
 	function forum_eventnewpost($data) // Remove thread id from user_plugin_forum_viewed when a new reply is posted
 	{
 		//e107::getDb()->update('user_extended', "user_plugin_forum_viewed = REPLACE(user_plugin_forum_viewed, '{$data[post_thread]}', '0') WHERE user_extended_id != ".$data[post_user]); 
-		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), ',".$data[post_thread].",', ',')) WHERE FIND_IN_SET('".$data[post_thread]."', user_plugin_forum_viewed) AND user_extended_id != ".$data[post_user]); 
+		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), ',".$data['post_thread'].",', ',')) WHERE FIND_IN_SET('".$data['post_thread']."', user_plugin_forum_viewed) AND user_extended_id != ".$data['post_user']);
 
 	}
 
