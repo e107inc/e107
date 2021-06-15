@@ -219,8 +219,13 @@ class redirection
 		{
 			// if not admin
 			
-			$allowed = e107::getPref('maintainance_flag'); 
-			
+			$allowed = e107::getPref('maintainance_flag');
+
+			if(defset('e_PAGE') === 'login.php' && empty($_POST)) // allow admins/members to login.
+			{
+				return null;
+			}
+
 	//		if(!ADMIN 
 			// or if not mainadmin - ie e_UC_MAINADMIN
 	//		|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
