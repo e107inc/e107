@@ -806,7 +806,8 @@ $text .= "
 						
 						"%Y-%m-%d"		=> strftime("%Y-%m-%d",$def),
 						"%d-%m-%Y"		=> strftime("%d-%m-%Y",$def),
-						"%m/%d/%Y"		=> strftime("%m/%d/%Y",$def)
+						"%m/%d/%Y"		=> strftime("%m/%d/%Y",$def),
+						"%d.%m.%Y"		=> strftime("%d.%m.%Y",$def)
 					);
 					
 			
