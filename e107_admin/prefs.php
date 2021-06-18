@@ -1505,7 +1505,7 @@ $text .= "
 					<tr>
 						<td><label for='session-lifetime'>".PRFLAN_272."</label>".$frm->help(PRFLAN_273)."</td>
 						<td>
-							".$frm->number('session_lifetime', varset($pref['session_lifetime']), 6)."
+							".$frm->number('session_lifetime', varset($pref['session_lifetime']), 86400)."
 						</td>
 					</tr>
 					";

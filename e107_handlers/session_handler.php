@@ -216,7 +216,7 @@ class e_session
 
             $config['SavePath']     = e107::getPref('session_save_path', false); // FIXME - new pref
             $config['SaveMethod']   = e107::getPref('session_save_method', $saveMethod);
-            $options['lifetime']    = (integer)e107::getPref('session_lifetime', 86400);
+            $options['lifetime']    = (int) e107::getPref('session_lifetime', 86400);
             $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
             $options['secure']      = e107::getPref('ssl_enabled', false); //
 
@@ -226,6 +226,8 @@ class e_session
             {
                 ini_set('session.cookie_secure', 1);
             }
+
+            ini_set('session.gc_maxlifetime', $options['lifetime']);
         }
 
         if (defined('SESSION_SAVE_PATH')) // safer than a pref.
