@@ -419,7 +419,7 @@ $sysprefs = new prefs;
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 
 
-if(e_ADMIN_AREA !== true && !isset($_E107['no_parser']) && !empty($pref['thumb_to_webp']))
+if(e_ADMIN_AREA !== true && !isset($_E107['no_parser']) && !empty($pref['thumb_to_webp']) && (strpos( $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false))
 {
 	$tp->setConvertToWebP(true);
 }

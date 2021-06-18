@@ -2361,6 +2361,11 @@ class e_parse
 			parse_str($options, $options);
 		}
 
+		if($this->convertToWebP)
+		{
+			$options['type'] = 'webp';
+		}
+
 		if(!empty($options['scale'])) // eg. scale the width height 2x 3x 4x. etc.
 		{
 			$options['return'] = 'src';
@@ -2557,6 +2562,7 @@ class e_parse
 			$encode = (!empty($width['x'])) ? $width['x'] : false;
 			$width = $width['size'];
 		}
+
 
 
 		//	$encode =  $this->thumbEncode();;
@@ -4345,17 +4351,16 @@ class e_parse
 		}
 
 		$html = '';
-
+/*
 		if($this->convertToWebP)
 		{
-			$parm['type'] = 'webp';
 			$source = $tp->thumbUrl($file, $parm);
 			$html = "<picture class=\"{$class}\">\n";
 
 			if(!empty($parm['srcset']))
 			{
 				list($webPSourceSet, $webPSize) = explode(' ', $parm['srcset']);
-				$html .= '<source type="image/webp" srcset="' . $webPSourceSet . '&amp;type=webp ' . $webPSize . '">';
+				$html .= '<source type="image/webp" srcset="' . $webPSourceSet . ' ' . $webPSize . '">';
 				$html .= "\n";
 				$html .= '<source type="image/' . str_replace('jpg', 'jpeg', $ext) . '" srcset="' . $parm['srcset'] . '">';
 				$html .= "\n";
@@ -4364,7 +4369,7 @@ class e_parse
 
 			$html .= '<source type="image/webp" srcset="' . $source . '">';
 			$html .= "\n";
-		}
+		}*/
 
 		if(empty($path))
 		{
@@ -4373,7 +4378,7 @@ class e_parse
 
 		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
 
-		$html .= ($this->convertToWebP) ? "\n</picture>" : '';
+	//	$html .= ($this->convertToWebP) ? "\n</picture>" : '';
 
 		return $html;
 

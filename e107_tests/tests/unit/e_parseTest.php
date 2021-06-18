@@ -1192,6 +1192,11 @@ while(&#036;row = &#036;sql-&gt;fetch())
 					'options'   =>  array('w'=>300, 'h'=>200, 'scale'=>'2x'),
 					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=600&amp;h=400'
 					),
+				4 => array(
+					'path'      => '{e_PLUGIN}gallery/images/horse.jpg',
+					'options'   =>  array('w'=>300, 'h'=>200, 'scale'=>'2x', 'type'=>'webp'),
+					'expected'  =>'/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fhorse.jpg&amp;w=600&amp;h=400&amp;type=webp'
+					),
 
 			);
 
@@ -2298,14 +2303,15 @@ while(&#036;row = &#036;sql-&gt;fetch())
 
 			$this->tp->setConvertToWebP(true);
 			$result6 = $this->tp->toImage($src);
+			$expected = '<img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp" alt="butterfly.jpg" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320&amp;type=webp 4x" width="80" height="80"  />';
 
-
+/*
 			$expected = '<picture class="img-responsive img-fluid">
 <source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320&amp;type=webp 4x">
 <source type="image/jpeg" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=320&amp;h=320 4x">
 <source type="image/webp" srcset="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80&amp;type=webp">
 <img class="img-responsive img-fluid" src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=80&amp;h=80" alt="butterfly.jpg" width="80" height="80"  />
-</picture>';
+</picture>';*/
 
 		//	$tempDir = str_replace(['C:','\\'],['','/'], sys_get_temp_dir()).'/'; // FIXME
 			$result6 = preg_replace('/"([^"]*)thumb.php/','"thumb.php', $result6);
