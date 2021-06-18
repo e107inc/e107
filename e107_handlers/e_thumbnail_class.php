@@ -45,6 +45,8 @@ class e_thumbnail
 
 	protected $_upsize = true;
 
+	protected $_forceWebP = false;
+
 	/**
 	 * Constructor - init paths
 	 *
@@ -86,6 +88,7 @@ class e_thumbnail
 
 		$this->_upsize = ((isset($this->_request['w']) && $this->_request['w'] > 110) || (isset($this->_request['aw']) && ($this->_request['aw'] > 110))); // don't resizeUp the icon images.
 
+		$this->_forceWebP = empty($this->_request['type']) && !empty($pref['thumb_to_webp']) && (strpos( $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false) ? true : false;
 	//	var_dump($this);
 	//	exit;
 		return null;
@@ -156,7 +159,7 @@ class e_thumbnail
 	{
 		$thumbnfo = pathinfo($this->_src_path);
 
-		if(!empty($this->_request['type']) && $this->_request['type'] == 'webp')
+		if($this->_forceWebP === true || (!empty($this->_request['type']) && $this->_request['type'] == 'webp'))
 		{
 			$thumbnfo['extension'] = 'webp';
 		}
