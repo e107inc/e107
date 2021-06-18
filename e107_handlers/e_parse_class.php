@@ -250,7 +250,6 @@ class e_parse
 
 	private $bootstrap;
 	private $fontawesome;
-	private $convertToWebP = false;
 
 	private $removedList = array();
 	private $nodesToDelete = array();
@@ -2361,11 +2360,6 @@ class e_parse
 			parse_str($options, $options);
 		}
 
-		if($this->convertToWebP)
-		{
-			$options['type'] = 'webp';
-		}
-
 		if(!empty($options['scale'])) // eg. scale the width height 2x 3x 4x. etc.
 		{
 			$options['return'] = 'src';
@@ -2442,9 +2436,9 @@ class e_parse
 
 		}
 
-		if(!empty($options['type']) && ($options['type'] === 'webp'))
+		if(!empty($options['type']))
 		{
-			$thurl .= '&amp;type=webp';
+			$thurl .= '&amp;type='.$options['type'];
 		}
 
 
@@ -3590,15 +3584,6 @@ class e_parse
 	{
 
 		$this->bootstrap = (int) $version;
-	}
-
-	/**
-	 * @param bool $bool
-	 */
-	public function setConvertToWebP($bool)
-	{
-
-		$this->convertToWebP = (bool) $bool;
 	}
 
 

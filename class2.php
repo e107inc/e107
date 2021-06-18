@@ -418,11 +418,6 @@ $pref = e107::getPref(); // include pref class.
 $sysprefs = new prefs;
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 
-
-if(e_ADMIN_AREA !== true && !isset($_E107['no_parser']) && !empty($pref['thumb_to_webp']) && (strpos( $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false))
-{
-	$tp->setConvertToWebP(true);
-}
 //this could be part of e107->init() method now, prefs will be auto-initialized
 //when proper called (e107::getPref())
 // $e107->set_base_path(); moved to init().
