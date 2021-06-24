@@ -344,6 +344,11 @@ $e_js->renderLinks();
 
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library', 'other','core','plugin','theme','inline');
 
+/** Experimental - Subject to removal at any time. Use at own risk  */
+if(method_exists('theme', 'css'))
+{
+	$e_js->set('_theme_css_processor', true);
+}
 
 foreach($CSSORDER as $val)
 {

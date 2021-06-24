@@ -185,6 +185,8 @@ class e_jsmanager
 
 	protected $_sep = '#|#';
 
+	protected $_theme_css_processor = false;
+
 	/**
 	 * Constructor
 	 *
@@ -662,6 +664,11 @@ class e_jsmanager
 	{
 		$this->_dependence = null;
 	}
+
+	public function set($name, $value)
+	{
+		$this->$name = $value;
+	}
 	
 	/**
 	 * Return TRUE if the library is disabled. ie. prototype or jquery. 
@@ -953,7 +960,7 @@ class e_jsmanager
 			// echo $this->_dependence." :: ENABLED<br />";
 			 // echo $this->_dependence."::".$file_path." : DISABLED<br />";		
 	//	}
-		
+
 		
 
 		$tp = e107::getParser();
@@ -1168,11 +1175,20 @@ class e_jsmanager
 			break;
 
 			case 'core_css': //e_jslib
+				if($this->_theme_css_processor)
+				{
+					$this->_e_css['core'] = e107::callMethod('theme', 'css', $this->_e_css['core'], 'core');
+					e107::getMessage()->addDebug('Theme css() method is experimental and is subject to removal at any time. Use at own risk');
+				}
 				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', $mod, false);
 				unset($this->_e_css['core']);
 			break;
 
 			case 'plugin_css': //e_jslib
+				if($this->_theme_css_processor)
+				{
+					$this->_e_css['plugin'] = e107::callMethod('theme', 'css', $this->_e_css['plugin'], 'plugin');
+				}
 				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', $mod, false);
 				unset($this->_e_css['plugin']);
 			break;
@@ -1183,6 +1199,10 @@ class e_jsmanager
 			break;
 
 			case 'other_css':
+				if($this->_theme_css_processor)
+				{
+					$this->_e_css['other'] = e107::callMethod('theme', 'css', $this->_e_css['other'], 'other');
+				}
 				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', $mod, false);
 				unset($this->_e_css['other']);
 			break;
