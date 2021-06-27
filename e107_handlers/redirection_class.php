@@ -280,7 +280,7 @@ class redirection
 		foreach (e107::getPref('membersonly_exceptions') as $val)
 		{
 			$srch = trim($val);
-			if(strpos(e_SELF, $srch) !== false)
+			if(!empty($srch) && strpos(e_SELF, $srch) !== false)
 			{
 				return;
 			}
