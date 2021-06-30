@@ -150,29 +150,35 @@ class search_front extends e_shortcode
 	}
 	
 	// Shortcodes  -----------------------
-	
-	function sc_search_main($parm = '')
+
+	/**
+	 * @param null $parm
+	 * @example {SEARCH_MAIN: mode=basic}
+	 * @return string
+	 */
+	function sc_search_main($parm = null)
 	{
 		$tp = e107::getParser();
 		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
 
-
-		
 		$text = "<div class='input-group'>
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
-		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>
-		<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' data-bs-toggle='dropdown' type='button'>
-		";
+		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>";
 
-		if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
+		if(empty($parm['mode']))
 		{
-			$text .= "<span class='caret'></span></button>";
+			$text .= "<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' data-bs-toggle='dropdown' type='button'>";
+
+			if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
+			{
+				$text .= "<span class='caret'></span></button>";
+			}
+
+			$text .= '<ul class="dropdown-menu pull-right">
+	          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
+	        </ul>';
 		}
-		
-		$text .= '<ul class="dropdown-menu pull-right">
-          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
-        </ul>';
 		
 		$text .= "
 		</div>
@@ -273,7 +279,7 @@ class search_front extends e_shortcode
 			{
 				$dropdown .= "<option value='all'>".LAN_SEARCH_22."</option>";
 			}
-		} 
+		}
 
 		
 		foreach($this->search_info as $key => $value) 
@@ -296,7 +302,7 @@ class search_front extends e_shortcode
 			else if ($this->search_prefs['selector'] == 1) 
 			{
 				$checkboxes .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
-			} 
+			}
 			else 
 			{
 				$checkboxes .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
@@ -367,7 +373,25 @@ class search_front extends e_shortcode
 	{
 		$hiddenBlock = (!empty($_GET['t'])) ? "" : "class='e-hideme'";
 		$text = "<div {$hiddenBlock} id='search-advanced' >";
-		$text .= $this->sc_search_advanced_block(vartrue($_GET['t']));
+
+		if(!empty($_GET['t']) )
+		{
+			if(is_array($_GET['t']))
+			{
+				foreach($_GET['t'] as $type => $tmp)
+				{
+					$text .= $this->sc_search_advanced_block($type);
+				}
+
+			}
+			else
+			{
+				$text .= $this->sc_search_advanced_block($_GET['t']);
+			}
+
+		}
+
+
 		$text .= "</div>";
 		return $text;
 
@@ -1074,7 +1098,7 @@ foreach ($search_info as $key => $value)
   }
 }
 
-if (isset($_GET['t']) && isset($search_info[$_GET['t']]['advanced'])) 
+if (isset($_GET['t']) && is_string($_GET['t']) && isset($search_info[$_GET['t']]['advanced']))
 {
   $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "";
 } 
