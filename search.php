@@ -164,7 +164,7 @@ class search_front extends e_shortcode
 		$text = "<div class='input-group'>
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
 		<div class='input-group-btn'>
-		<button class='btn btn-primary' type='submit' name='s' value='1' >".$tp->toGlyph('fa-search',false)."</button>";
+		<button class='btn btn-primary' type='submit' name='s' value='1' data-loading-icon='fa-spinner' >".$tp->toGlyph('fa-search',false)."</button>";
 
 		if(empty($parm['mode']))
 		{
