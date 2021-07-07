@@ -223,6 +223,7 @@
 		<core name="news_default_template">default</core>
 		<core name="news_list_limit">10</core>
 		<core name="news_newdateheader">0</core>
+        <core name="news_pagination">record</core>
 		<core name="newsposts">10</core>
 		<core name="newsposts_archive">0</core>
 		<core name="newsposts_archive_title"></core>

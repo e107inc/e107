@@ -403,7 +403,16 @@ class news_front
 			$this->newsUrlparms['author'] = $tp->filter($_GET['author']);
 			$this->from = intval(varset($_GET['page'],0));
 
+
+
 		}
+
+		// New in v2.3.1 Pagination with "Page" instead of "Record".
+		if(!empty($this->pref['news_pagination']) && $this->pref['news_pagination'] === 'page' && !empty($_GET['page']))
+		{
+			$this->from = (int) ($_GET['page'] - 1)  * ITEMVIEW;
+		}
+
 	}
 
 
@@ -1082,7 +1091,6 @@ class news_front
 		$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 		$url 		= rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
 		$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
-
 
 		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
