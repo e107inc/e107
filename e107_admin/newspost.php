@@ -955,6 +955,7 @@ class news_admin_ui extends e_admin_ui
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
+		$temp['news_pagination']        = filter_var($_POST['news_pagination']);
 
 		$temp['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_default_template']);
 		$temp['news_list_limit']		= intval($_POST['news_list_limit']);
@@ -1053,6 +1054,16 @@ class news_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 							";
+
+						$paginationOpts = ['record'=> "Record", 'page'=>'Page'];
+
+						$tab1 .= "
+							<tr>
+								<td>".LAN_PAGINATION.$frm->help(LAN_NEWS_112)."</td>
+								<td>
+									".$frm->select('news_pagination',$paginationOpts, varset($pref['news_pagination'],'record'))."
+								</td>
+							</tr>";
 
 								
 						$tab1 .= "
