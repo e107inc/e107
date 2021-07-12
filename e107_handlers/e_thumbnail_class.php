@@ -238,6 +238,7 @@ class e_thumbnail
 
 		$thumbnfo = $this->getImageInfo();
 		$options = $this->getRequestOptions();
+
 		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 		$cache_filename = e_CACHE_IMAGE . $fname;
 
@@ -495,6 +496,10 @@ class e_thumbnail
 		if(!empty($this->_request['type']))
 		{
 			$ret['type'] = $this->_request['type'];
+		}
+		elseif($this->_forceWebP)
+		{
+			$ret['type'] = 'webp'; 
 		}
 
 		return $ret;
