@@ -1818,7 +1818,7 @@ $columnInfo = array(
 	      // See if any mirrors defined
 	      // Need to check all the possible mirror names - might have deleted the first one if we're in edit mode
 	      
-	      if(count($_POST['download_mirror_name']))
+	      if(is_array($_POST['download_mirror_name']))
 		  {
 				foreach ($_POST['download_mirror_name'] as $mn)
 				{

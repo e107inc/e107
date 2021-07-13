@@ -460,7 +460,7 @@ class forumStats
 			$frm = e107::getForm();
 
 			$breadarray = array(
-				array('text'=> e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME), 'url' => e107::url('forum','index') ),
+				array('text'=> e107::pref('forum','title', defset('LAN_PLUGIN_FORUM_NAME')), 'url' => e107::url('forum','index') ),
 				array('text'=>LAN_FORUM_6013, 'url'=>null)
 			);
 

@@ -17,6 +17,7 @@ if (!getperms('P'))
 }
 
 
+e107::lan('forum', 'global', true);
 e107::lan('forum', 'admin', true);
 e107::lan('forum', 'front', true);
 
