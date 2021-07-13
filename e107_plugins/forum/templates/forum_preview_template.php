@@ -12,7 +12,7 @@ if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
 $FORUM_PREVIEW = "<div>
-<table style='".USER_WIDTH."' class='fborder table'>
+<table style='".defset('USER_WIDTH')."' class='fborder table'>
 <tr>
 	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_FORUM_3005.
 	($action != "nt" ? "</td>" : " ( ".LAN_FORUM_3011.": {PREVIEW_SUBJECT} )</td>")."

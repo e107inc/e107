@@ -1200,8 +1200,12 @@ function check_email($email)
 	 * @param int   $uid
 	 * @return bool
 	 */
-function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
+function check_class($var, $userclass = null, $uid = 0)
 {
+	if ($userclass === null)
+	{
+		$userclass = defset('USERCLASS_LIST', '0');
+	}
 	$e107 = e107::getInstance();
 	if ($var === e_LANGUAGE)
 	{

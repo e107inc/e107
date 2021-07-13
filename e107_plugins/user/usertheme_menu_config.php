@@ -61,7 +61,7 @@ if (isset($_POST['update_theme']))
 		$cfg->set('allow_theme_select', $themeeditclass);
 		$cfg->save(true,true,true);
 
-		$woffle = LAN_UMENU_THEME_8.$pref['allowed_themes'].'[!br!]'.LAN_UMENU_THEME_9.$pref['allow_theme_select'];
+		$woffle = defset('LAN_UMENU_THEME_8').$pref['allowed_themes'].'[!br!]'.defset('LAN_UMENU_THEME_9').$pref['allow_theme_select'];
 		e107::getLog()->add('UTHEME_01',$woffle,E_LOG_INFORMATIVE,'');
 	}
 }
@@ -79,7 +79,7 @@ $themeeditclass = varset($pref['allow_theme_select'],e_UC_NOBODY);
 $text = "
 	<form method='post' action='".e_SELF."' id='menu_conf_form'>
 	<fieldset id='core-user_menu-usertheme'>
-	<legend class='e-hideme'>".LAN_UMENU_THEME_6."</legend>
+	<legend class='e-hideme'>".defset('LAN_UMENU_THEME_6')."</legend>
 	<table class='table adminlist'>
 		<colgroup span='2'>
 		<col style='width: 50%' />
@@ -87,7 +87,7 @@ $text = "
 	</colgroup>
     <thead>
 	<tr>
-		<th colspan='2'>".LAN_UMENU_THEME_4."</th>
+		<th colspan='2'>".defset('LAN_UMENU_THEME_4')."</th>
 	</tr>
 	</thead>
 		<tbody>";
@@ -103,7 +103,7 @@ $text = "
 		}
 		$text .= "
 				<tr>
-					<td>".LAN_UMENU_THEME_7."</td>
+					<td>".defset('LAN_UMENU_THEME_7')."</td>
 					<td>".$e_userclass->uc_dropdown("themeeditclass", $themeeditclass, "main,member,admin,classes,matchclass,nobody")."</td>
 				</tr>";
 
@@ -118,7 +118,7 @@ $text = "
 	";
 	$mes = e107::getMessage();
 	
-$ns->tablerender(LAN_UMENU_THEME_6,$mes->render().$text);
+$ns->tablerender(defset('LAN_UMENU_THEME_6'),$mes->render().$text);
 	
 require_once(e_ADMIN."footer.php");
 
