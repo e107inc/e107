@@ -940,6 +940,36 @@ class core_library
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
 			'version'           => '5.15.2',
+		/*	'preload'           => array(
+				1   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff',
+					'path'          => 'webfonts/fa-solid-900.woff',
+					'crossorigin'   => false,
+					'browsercache'  => false,
+				),
+				2   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff',
+					'path'          => 'webfonts/fa-brands-400.woff',
+					'crossorigin'   => false,
+					'browsercache'  => false,
+				),
+				3   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'webfonts/fa-solid-900.woff2',
+					'crossorigin'   => false,
+					'browsercache'  => false,
+				),
+				4   => array(
+					'as'            => 'font',
+					'type'          => 'font/woff2',
+					'path'          => 'webfonts/fa-brands-400.woff2',
+					'crossorigin'   => false,
+					'browsercache'  => false,
+				),
+			),*/
 		);
 
 
