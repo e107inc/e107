@@ -2587,6 +2587,21 @@ class e107
 		self::getJs()->addLink($attributes, $browserCache);
 	}
 
+	/**
+	 * @param string $type eg. 'active'
+	 * @param mixed $value eg. existing link-url value.
+	 */
+	public static function nav($type, $value=null)
+	{
+		if($value === null)
+		{
+			return e107::getRegistry('core/e107/navigation/'.$type);
+		}
+
+		return e107::setRegistry('core/e107/navigation/'.$type, $value);
+
+	}
+
 
 	/**
 	 * CSS Common Public Function. Prefered is shortcode script path

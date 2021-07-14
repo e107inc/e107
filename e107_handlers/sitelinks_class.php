@@ -1872,9 +1872,19 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			return true;		
 		}
+
+		// New e107 v.2.3.1  - using e107::nav('active', link url);
+		$manualOverride = e107::getRegistry('core/e107/navigation/active');
+		if(!empty($manualOverride) && empty($data['link_sub']))
+		{
+			if(strpos($data['link_url'], $manualOverride) !==false)
+			{
+				return true;
+			}
+		}
 		
 		
-		// XXX Temporary Fix - TBD. 
+		// XXX Temporary Fix - @deprecated.
 		// Set the URL matching in the page itself. see: forum_viewforum.php and forum_viewtopic.php 
 		if(defined("NAVIGATION_ACTIVE") && empty($data['link_sub']))
 		{
