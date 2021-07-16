@@ -3912,7 +3912,11 @@ class e_admin_controller_ui extends e_admin_controller
 
 						
 						$format = !empty($opt['type']) ? ('input'.$opt['type']) : 'inputdate';
-						$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;
+
+						if($attributes['data'] !== false)
+						{
+							$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;
+						}
 					}
 				break;
 
