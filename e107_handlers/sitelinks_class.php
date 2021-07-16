@@ -1877,7 +1877,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$manualOverride = e107::getRegistry('core/e107/navigation/active');
 		if(!empty($manualOverride) && empty($data['link_sub']))
 		{
-			if(strpos($data['link_url'], $manualOverride) !==false)
+			if(strpos($dbLink, $manualOverride) !==false)
 			{
 				return true;
 			}
