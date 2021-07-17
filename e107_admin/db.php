@@ -913,11 +913,10 @@ class system_tools
 		elseif($ERROR != TRUE)
 		{
 			$message = DBLAN_93;
-			//$message .= "<br />Please now add the following line to your e107_config.php file:<br /><b>\$mySQLcharset   = 'utf8';</b>";
 
 			$mes->add($message, E_MESSAGE_SUCCESS);
 			$mes->addSuccess(DBLAN_94);
-			$mes->addSuccess('$mySQLcharset   = "utf8";');
+			$mes->addSuccess('$mySQLcharset   = "utf8mb4";');
 			
 		}
 
