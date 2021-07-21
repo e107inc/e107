@@ -315,10 +315,10 @@ class e107forum
 
 			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
 
-			$postInfo['user_name'] = USERNAME;
-			$postInfo['user_email'] = USEREMAIL;
-			$postInfo['user_image'] = USERIMAGE;
-			$postInfo['user_signature'] = USERSIGNATURE;
+			$postInfo['user_name'] = defset('USERNAME');
+			$postInfo['user_email'] = defset('USEREMAIL');
+			$postInfo['user_image'] = defset('USERIMAGE');
+			$postInfo['user_signature'] = defset('USERSIGNATURE');
 
 			if($_POST['insert'] == 1)
 			{

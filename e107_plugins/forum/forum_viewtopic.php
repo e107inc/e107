@@ -365,14 +365,14 @@ $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 //---- Orphan $currentUser???
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
 
-if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
+if ($thread->threadInfo['thread_lastpost'] > defset('USERLV') && !in_array($thread->threadId, $threadsViewed))
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
 	$mes->addDebug("Marking Forum as read: ".$thread->threadId." result: ".$tst);
 }
 else
 {
-	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>USERLV, 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
+	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>defset('USERLV'), 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
 	e107::getDebug()->log($ret);
 	unset($ret);
 }

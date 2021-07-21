@@ -7760,20 +7760,35 @@ class e_admin_form_ui extends e_form
 				<div class='span6 col-md-6'>";
 
 		$selectStart = "<div class='form-inline input-inline'>
-					".ADMIN_CHILD_ICON."
+					".defset('ADMIN_CHILD_ICON')."
 	         		 		<div class='input-group input-append'>
 						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false)). '
-						' .$this->option(LAN_BATCH_LABEL_SELECTED, '');
+						' .$this->option(defset('LAN_BATCH_LABEL_SELECTED'), '');
 
 		$selectOpt = '';
 				
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
-			$selectOpt .= !empty($options['copy']) ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['delete']) ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['export']) ? $this->option(LAN_UI_BATCH_EXPORT, 'export', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['url']) ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['featurebox']) ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['copy']) ? $this->option(defset('LAN_COPY'),
+				'copy',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['delete']) ? $this->option(defset('LAN_DELETE'),
+				'delete',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['export']) ? $this->option(defset('LAN_UI_BATCH_EXPORT'),
+				'export',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['url']) ? $this->option(defset('LAN_UI_BATCH_CREATELINK'),
+				'url',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['featurebox']) ? $this->option(defset('LAN_PLUGIN_FEATUREBOX_BATCH'),
+				'featurebox',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
 
 		//	if(!empty($parms['sef'])
 
