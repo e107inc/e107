@@ -223,7 +223,7 @@ class gsitemap_ui extends e_admin_ui
 						'table' => 'links',
 						'id'    => $row['link_id'],
 						'name' => $row['link_name'],
-						'url' => $row['link_url'],
+						'url' => !empty($row['link_owner']) && !empty($row['link_sefurl']) ? e107::url($row['link_owner'], $row['link_sefurl']) : $row['link_url'],
 						'type' => GSLAN_1);
 				}
 			}
