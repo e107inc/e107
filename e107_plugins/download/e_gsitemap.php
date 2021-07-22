@@ -35,7 +35,8 @@ class download_gsitemap
 				'table' => 'download_category',
 				'name' => $row['download_category_name'],
 			     'url' => e107::url('download', 'category', $row,   array('mode' => 'full' )),
-				'type' => LAN_PLUGIN_DOWNLOAD_NAME
+				'type' => LAN_PLUGIN_DOWNLOAD_NAME,
+				'class' => 0
 			);
 		}
 
@@ -47,7 +48,8 @@ class download_gsitemap
 				'table' => 'download',
 				'name'  => $row['download_name'],
 			    'url'   => e107::url('download', 'item', $row,   array('mode' => 'full' )),
-				'type'  => LAN_PLUGIN_DOWNLOAD_NAME
+				'type'  => LAN_PLUGIN_DOWNLOAD_NAME,
+				'class' => 0
 			);
 		}
 

@@ -224,12 +224,13 @@ class gsitemap_ui extends e_admin_ui
 						'id'    => $row['link_id'],
 						'name' => $row['link_name'],
 						'url' => !empty($row['link_owner']) && !empty($row['link_sefurl']) ? e107::url($row['link_owner'], $row['link_sefurl']) : $row['link_url'],
-						'type' => GSLAN_1);
+						'type' => GSLAN_1,
+						'class' => (int) $row['link_class']);
 				}
 			}
 
 			/* custom pages ... */
-			$query = "SELECT p.page_id, p.page_title, p.page_sef, p.page_chapter, ch.chapter_sef as chapter_sef, b.chapter_sef as book_sef FROM #page as p
+			$query = "SELECT p.page_id, p.page_title, p.page_sef, p.page_class, p.page_chapter, ch.chapter_sef as chapter_sef, b.chapter_sef as book_sef FROM #page as p
 					LEFT JOIN #page_chapters as ch ON p.page_chapter = ch.chapter_id
 					LEFT JOIN #page_chapters as b ON ch.chapter_parent = b.chapter_id
 					WHERE page_title !='' ORDER BY page_datestamp ASC";
@@ -247,7 +248,8 @@ class gsitemap_ui extends e_admin_ui
 						'id'    => $row['page_id'],
 						'name' => $row['page_title'],
 						'url' => e107::getUrl()->create($route, $row, array('full'=>1, 'allow' => 'page_sef,page_title,page_id, chapter_sef, book_sef')),
-						'type' => "Page"
+						'type' => "Page",
+						'class' => $row['page_class']
 						);
 				}
 			}
@@ -279,8 +281,9 @@ class gsitemap_ui extends e_admin_ui
 			<colgroup>
 				<col class='center' style='width:5%;' />
 				<col style='width:15%' />
-				<col style='width:40%' />
-				<col style='width:40%' />
+				<col style='width:30%' />
+				<col style='width:auto' />
+				<col style='width:115px' />
 			</colgroup>
 			<thead>
 				<tr>
@@ -288,15 +291,29 @@ class gsitemap_ui extends e_admin_ui
 				<th>".LAN_TYPE."</th>
 				<th>".LAN_NAME."</th>
 				<th>".LAN_URL."</th>
+				<th class='center'>".defset('GSLAN_50', 'Publicly visible')."</th>
 			</tr>
 			</thead>
 			<tbody>
 			";
 
 
+			$uc = e107::getUserClass();
+
 			foreach($importArray as $k=>$ia)
 			{
 				$id = 'gs-'.$k;
+
+				$class = '';
+				$classLabel = ADMIN_FALSE_ICON;
+
+				if(isset($ia['class']) && ((int) $ia['class'] === e_UC_PUBLIC))
+				{
+					$class = 'label-success';
+					$classLabel = ADMIN_TRUE_ICON;
+				}
+
+
 				$text .= "
 				<tr>
 					<td class='center'><input id='".$id."' type='checkbox' name='importid[]' 
@@ -304,6 +321,7 @@ class gsitemap_ui extends e_admin_ui
 					<td><label for='".$id."' style='cursor:pointer' >".$ia['type']."</label></td>
 					<td><label for='".$id."' style='cursor:pointer'>".defset($ia['name'],$ia['name'])."</label></td>
 					<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
+					<td class='center'>". $classLabel."</td>
 				</tr>
 				";
 			}
