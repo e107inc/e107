@@ -62,4 +62,6 @@ define("GSLAN_39", "No links in sitemap - import sitelinks?");
 // define('GSLAN_41', "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>");
 //define('GSLAN_42', 'Installation Successful..');
 
+define("GSLAN_50", "Publicly visible");
+
 

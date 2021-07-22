@@ -36,7 +36,8 @@ class news_gsitemap
 				'table' => 'news_category',
 				'name' => $row['category_name'],
 				'url' => $this->url('news_category', $row), //  e107::getUrl()->create('news/list/category', $row, array('full' => 1)) ,
-				'type' => LAN_NEWS_23
+				'type' => LAN_NEWS_23,
+				'class'=> 0
 			);
 		}
 
@@ -57,7 +58,8 @@ class news_gsitemap
 				'table' => 'news',
 				'name' => $row['news_title'],
 				'url' => $this->url('news', $row),
-				'type' => ADLAN_0
+				'type' => ADLAN_0,
+				'class' => (int) $row['news_class'],
 			);
 		}
 
