@@ -627,7 +627,7 @@ class news_front
 
 
 			default:
-				e107::meta('robots', 'noindex');
+			//	e107::meta('robots', 'noindex');
 				e107::route('news/list/items'); 
 			//	e107::canonical('news');
 		}
