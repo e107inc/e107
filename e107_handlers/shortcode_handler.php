@@ -1260,11 +1260,12 @@ class e_parse_shortcode
 				{
 					// Code is not registered, let's look for .sc or .php file
 					// .php file takes precedence over .sc file
-					if (is_readable(e_CORE.'shortcodes/single/'.strtolower($code).'.php'))
+					$codeLower = strtolower($code);
+					if (is_readable(e_CORE.'shortcodes/single/'.$codeLower.'.php'))
 					{
-						$_function = strtolower($code).'_shortcode';
-						$_class = ($code === 'sitelinks_alt') ? sitelinks_alt : null; // all others are plain functions.
-						$_path = e_CORE.'shortcodes/single/'.strtolower($code).'.php';
+						$_function = $codeLower.'_shortcode';
+						$_class = ($codeLower === 'sitelinks_alt') ? 'sitelinks_alt' : null; // all others are plain functions.
+						$_path = e_CORE.'shortcodes/single/'.$codeLower.'.php';
 
 						include_once($_path);
 
@@ -1289,7 +1290,7 @@ class e_parse_shortcode
 					}
 					else
 					{
-						$scFile = e_CORE.'shortcodes/single/'.strtolower($code).'.sc';
+						$scFile = e_CORE.'shortcodes/single/'.$codeLower.'.sc';
 						$_path = $scFile;
 					}
 				}

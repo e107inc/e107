@@ -1688,7 +1688,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         	'url'           => 'news/view/item|news_id=1&news_sef=sef-string&category_id=1&category_sef=category-sef&options[full]=1',
             'user_extended' => 'name.text.1',
             'lan'           => 'LAN_EDIT',
-            'search'        => 'all'
+            'search'        => 'all',
+            'sitelinks_alt' => '/e107_themes/bootstrap3/images/logo.webp+noclick',
         );
 
 		foreach($list as $sc)
@@ -1700,7 +1701,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			{
 				continue;
 			}
-
 
 			$shortcode = '{';
 			$shortcode .= strtoupper($name);
