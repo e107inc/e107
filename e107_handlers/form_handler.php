@@ -6327,6 +6327,11 @@ var_dump($select_options);*/
 					$parms['size'] = 'xxlarge';
 				}
 
+				if(!empty($parms['maxlength']) && empty($parms['post']))
+				{
+					$charMsg = e107::getParser()->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'),"<span>".$parms['maxlength']."</span>");
+					$parms['post'] = "<small id='". $this->name2id($key)."-char-count' class='text-muted' style='display:none'>".$charMsg."</small>";
+				}
 
 				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
