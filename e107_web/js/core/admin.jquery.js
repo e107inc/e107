@@ -183,6 +183,28 @@ $(document).ready(function()
 				$(this).html(orig + spin);
             });
 
+            $('textarea').on("input", function(){
+
+                if($(this).attr("maxlength") === undefined)
+                {
+                    return;
+                }
+
+                var maxlength = $(this).attr("maxlength");
+                var currentLength = $(this).val().length;
+                var countID = $(this).attr('id') + '-char-count';
+
+                if( currentLength >= maxlength )
+                {
+                   $('#'+ countID + ' span').text('0');
+                }
+                else
+                {
+                    $('#'+ countID).show();
+                    $('#'+ countID + ' span').text(maxlength - currentLength);
+                }
+            });
+
 
 
 			$('#e-modal-submit').click(function () {
