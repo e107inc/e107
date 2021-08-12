@@ -184,8 +184,15 @@ class sitelinks_alt
 		static function render_sub($linklist, $id, $params, $icon)
 		{
 			$tp = e107::getParser();
+
+			if(!isset($linklist['sub_'.$id]) || !is_array($linklist['sub_'.$id]))
+			{
+				return null;
+			}
 			
 			$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
+
+
 			foreach ($linklist['sub_'.$id] as $sub)
 			{
 				// Filter title for backwards compatibility ---->
