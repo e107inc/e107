@@ -666,6 +666,9 @@ class e_themeTest extends \Codeception\Test\Unit
 		);
 
 		$this->assertSame($expected, $result);
+
+		// $result = e_theme::getLegacyBSFA('basic-light');
+		// var_dump($result);
 	}
 
 
