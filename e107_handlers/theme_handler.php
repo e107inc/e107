@@ -1180,7 +1180,7 @@ class e_theme
 
 		$ret = [];
 
-		if(preg_match('/define[ ]*?\([\'|"]BOOTSTRAP[\'|"],[ \t]*(\d)\);/', $content, $m))
+		if(preg_match('/define[ ]*?\([\'|"]BOOTSTRAP[\'|"],[ \t]*(\d)\);/', $content, $m) && strpos($content,'bootstrap.min.css') === false && strpos($content,'bootstrap.min.js') === false)
 		{
 			$ret[] = array('name'  => 'bootstrap',
 					'version' => $m[1],
@@ -1188,13 +1188,15 @@ class e_theme
 			);
 		}
 
-		if(preg_match('/define[ ]*?\([\'|"]FONTAWESOME[\'|"],[ \t]*(\d)\);/', $content, $m))
+		if(preg_match('/define[ ]*?\([\'|"]FONTAWESOME[\'|"],[ \t]*(\d)\);/', $content, $m) && strpos($content, 'font-awesome.min.css') === false)
 		{
 			$ret[] = array('name'  => 'fontawesome',
 					'version' => $m[1],
 					'scope' => 'front,wysiwyg',
 			);
 		}
+
+		e107::getDebug()->log($ret);
 
 		return $ret;
 	}
