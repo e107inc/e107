@@ -1782,7 +1782,7 @@ TEMPLATE;
 				//	$fl = e107::getFile();
 
 					$source = e107::getTheme($this->themeSrc)->get();
-var_dump($source['css']);
+
 				//	$fl->setMode('full');
 				//	$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", null, 1);
 
