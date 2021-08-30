@@ -53,6 +53,8 @@ jobs:
     steps:
     - name: Enable Debian backports
       run: |
+        apt-get update
+        apt-get install -y debian-archive-keyring
         grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
         awk '$3 = $3"-backports"' >> /etc/apt/sources.list
 
