@@ -529,7 +529,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 					$srch = array("<br />","'");
 					$rep = array("\\n","\'");
 					return "<script type='text/javascript'>
-						alert('".$tp->toJS(LOGINMESSAGE)."');
+						alert(".$tp->toJSON(LOGINMESSAGE).");
 						</script>";
 				}
 				else

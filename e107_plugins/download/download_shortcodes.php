@@ -373,15 +373,15 @@ class download_shortcodes extends e_shortcode
 	  
       if ($parm == "request")
       {
-      	$agreetext = $tp->toJS($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'));
+      	$agreetext = $tp->toAttribute($tp->toJSON($tp->filter($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str')));
 		
       	if ($this->var['download_mirror_type'])
       	{
-      		$text = ($this->pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
+      		$text = ($this->pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' onclick= \"return confirm({$agreetext});\">" : "<a href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
       	}
       	else
       	{
-      		$text = ($this->pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
+      		$text = ($this->pref['agree_flag'] ? "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm({$agreetext});\">" : "<a href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' title='".LAN_DOWNLOAD."'>");
       	}
 		
       	$text .= $tp->toHTML($this->var['download_name'], FALSE, 'TITLE')."</a>";
@@ -473,7 +473,7 @@ class download_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$img = '';
 
-      	$agreetext = !empty($this->pref['agree_text']) ? $tp->toJS($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION')) : '';
+      	$agreetext = !empty($this->pref['agree_text']) ? $tp->toAttribute($tp->toJSON($tp->filter($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str'))) : '';
 
 		if(defined('IMAGE_DOWNLOAD'))
 		{
@@ -493,7 +493,7 @@ class download_shortcodes extends e_shortcode
      	else
      	{
      		$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true, $this); // $this->sc_download_request_url();
-     	  	return (!empty($this->pref['agree_flag']) ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' >{$img}</a>");
+     	  	return (!empty($this->pref['agree_flag']) ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' onclick= \"return confirm({$agreetext});\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' >{$img}</a>");
    
 		//	return ($this->pref['agree_flag'] ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' >{$img}</a>");
      	}
@@ -653,7 +653,7 @@ class download_shortcodes extends e_shortcode
 	  
       if (!empty($this->pref['agree_flag']))
       {
-       	return "<a href='".$url."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$this->var['download_name']."</a>";
+       	return "<a href='".$url."' onclick= \"return confirm(".$tp->toAttribute($tp->toJSON($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'))).");\" title='".LAN_dl_46."'>".$this->var['download_name']."</a>";
     //  	return "<a href='".e_PLUGIN_ABS."download/request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       } 
       else 
@@ -799,7 +799,7 @@ class download_shortcodes extends e_shortcode
 		
 		if(!empty($this->pref['agree_flag']))
 		{
-      		$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($this->pref['agree_text'],true,'emotes, no_tags'))."\")'";
+      		$click = " onclick='return confirm(".$tp->toAttribute($tp->toJSON($tp->toHTML($this->pref['agree_text'],true,'emotes, no_tags'))).")'";
 		}
 		
 		$url = 	$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true,$this); //$this->sc_download_request_url();
@@ -955,7 +955,7 @@ class download_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$img = '';
 
- 		$click = !empty($this->pref['agree_text']) ? " onclick='return confirm(\"".$tp->toJS($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'))."\")'" : '';
+ 		$click = !empty($this->pref['agree_text']) ? " onclick='return confirm(".$tp->toAttribute($tp->toJSON($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'))).")'" : '';
 
 		if(defined('IMAGE_DOWNLOAD'))
 		{

@@ -410,6 +410,20 @@ $columnInfo = array(
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
 		);
 
+	/**
+	 * @var e_parse
+	 */
+	private $tp;
+
+	/**
+	 * @inheritDoc
+	 */
+	public function __construct($request, $response, $params = array())
+	{
+		parent::__construct($request, $response, $params);
+		$this->tp = e107::getParser();
+	}
+
 		
 		public function observe()
 		{
@@ -796,7 +810,7 @@ $columnInfo = array(
 		                     $text .= '<td>'.$tp->toHTML($row['download_category_name']).'</td>';
 		                     $text .= '<td>
 		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
-		   				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm('. $this->getJsConfirm($row["download_id"]) .') \'/>
 		   				               </td>';
 		                     $text .= '</tr>';
 		                  }
@@ -888,7 +902,7 @@ $columnInfo = array(
 		                     $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
 		                     $text .= '<td>
 		                                 <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.missing">'.ADMIN_EDIT_ICON.'</a>
-		   					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm('. $this->getJsConfirm($row["download_id"]) .') \'/>
 		   					            </td>';
 		                     $text .= '</tr>';
 		                  }
@@ -944,7 +958,7 @@ $columnInfo = array(
 		                  }
 		                  $text .= '<td>
 		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.inactive">'.ADMIN_EDIT_ICON.'</a>
-		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm('. $this->getJsConfirm($row["download_id"]) .') \'/>
 		   				            </td>';
 		                  $text .= '</tr>';
 		               }
@@ -996,7 +1010,7 @@ $columnInfo = array(
 		                  }
 		                  $text .= '<td>
 		                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.nocategory">'.ADMIN_EDIT_ICON.'</a>
-		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm('. $this->getJsConfirm($row["download_id"]) .') \'/>
 		   				            </td>';
 		                  $text .= '</tr>';
 		               }
@@ -1047,7 +1061,7 @@ $columnInfo = array(
 		                        $text .= '</td>';
 		                        $text .= '<td>
 		                                    <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.filesize">'.ADMIN_EDIT_ICON.'</a>
-		   					                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
+		   					                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm('. $this->getJsConfirm($row["download_id"]) .') \'/>
 		   					               </td>';
 		                        $text .= '</tr>';
 		                     }
@@ -2444,9 +2458,18 @@ $columnInfo = array(
 	      }
 	      return $ret;
 	   }
-	   
-	   
-	   
+
+	/**
+	 * @param string|int $download_id
+	 * @return string
+	 */
+	private function getJsConfirm($download_id)
+	{
+		$tp = $this->tp;
+		return $tp->toAttribute($tp->toJSON(DOWLAN_33 . ' [ID: ' . $download_id . ' ]'));
+	}
+
+
 }
 
 class download_main_admin_form_ui extends e_admin_form_ui

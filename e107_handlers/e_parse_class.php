@@ -1871,9 +1871,16 @@ class e_parse
 	 *
 	 * @param string|array $stringarray
 	 * @return string
+	 * @deprecated v2.3.1 This method will not escape a string properly for use as a JavaScript or JSON string. Use
+	 *             {@see e_parse::toJSON()} instead. When using {@see e_parse::toJSON()}, do not surround its output
+	 *             with quotation marks, and do not attempt to escape sequences like "\n" as "\\n". If HTML tags need to
+	 *             be removed, consider {@see e_parse::toText()} separately. If the text needs to be used in an HTML
+	 *             tag attribute (e.g. &lt;a onclick="ATTRIBUTE"&gt;&lt;/a&gt;), surround the string with
+	 *             {@see e_parse::toAttribute()} and either single-quote or double-quote the attribute value.
 	 */
 	public function toJS($stringarray)
 	{
+		trigger_error('<b>' . __METHOD__ . ' is deprecated. See method DocBlock for alternatives.</b>', E_USER_WARNING); // NO LAN
 
 		$search = array("\r\n", "\r", '<br />', "'");
 		$replace = array("\\n", '', "\\n", "\'");
