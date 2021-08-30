@@ -450,7 +450,7 @@ function init()
 	echo "<script type=\"text/javascript\">
 	function confirm_(thread_id)
 	{
-		return confirm(\"" . $tp->toJS(LAN_JSCONFIRM) . "\");
+		return confirm(" . $tp->toJSON(LAN_JSCONFIRM) . ");
 	}
 	</script>";
 

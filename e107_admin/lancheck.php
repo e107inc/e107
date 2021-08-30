@@ -1027,7 +1027,7 @@ class lancheck
 	
 		$just_go_diz = (deftrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
 		$lang_sel_diz = (deftrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
-		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ? LAN_PLEASEWAIT : "Please Wait";
 		
 		$message .= "
 		<br /><br />

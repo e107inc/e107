@@ -3910,8 +3910,7 @@ var_dump($select_options);*/
 		//
 		foreach ($options as $option => $optval)
 		{
-			$optval = trim((string) $optval);
-			$optval = htmlspecialchars($optval,  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$optval = htmlspecialchars(trim((string) $optval),  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 			switch ($option)
 			{
 
