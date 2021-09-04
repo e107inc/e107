@@ -992,8 +992,7 @@ class e_parse_shortcode
 		//	print_a($this);
 		}
 
-
-		$ret = preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $text); // must always start with uppercase letter
+		$ret = preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), (string) $text); // must always start with uppercase letter
 		// $ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
@@ -1270,7 +1269,7 @@ class e_parse_shortcode
 						include_once($_path);
 
 
-						if (class_exists($_class, false)) // prevent __autoload - performance
+						if (is_string($_class) && class_exists($_class, false)) // prevent __autoload - performance
 						{
 							// SecretR - fix array(parm, sc_mode) causing parm to become an array, see issue 424
 							if(!method_exists($_class, $_function))

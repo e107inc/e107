@@ -1864,10 +1864,10 @@ class news_front
 
 
 				//        render new date header if pref selected ...
-				$thispostday = strftime("%j", $news['news_datestamp']);
+				$thispostday = e_date::strftime("%j", $news['news_datestamp']);
 				if ($newpostday != $thispostday && (isset($this->pref['news_newdateheader']) && $this->pref['news_newdateheader']))
 				{
-					echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+					echo "<div class='".DATEHEADERCLASS."'>".e_date::strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 				}
 				$newpostday = $thispostday;
 				$news['category_id'] = $news['news_category'];

@@ -320,7 +320,6 @@ class ecache {
 	* @scope private
 	*/
 	function delete($dir, $pattern = "*.*", $syscache = false) {
-		$deleted = false;
 		$pattern = ($syscache ? "S_" : "C_").$pattern;
 		$pattern = str_replace(array("\*", "\?"), array(".*", "."), preg_quote($pattern));
 		if (substr($dir, -1) != "/") {
@@ -331,9 +330,7 @@ class ecache {
  			$d = opendir($dir);
 			while ($file = readdir($d)) {
 				if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
-					if (unlink($dir.$file)) {
-						$deleted[] = $file;
-					}
+					unlink($dir.$file);
 				}
 			}
 			closedir($d);

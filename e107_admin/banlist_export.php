@@ -65,7 +65,7 @@ if (!empty($_POST['ban_types']))
 	}
 }
 
-$filename = 'banlist_'.strftime("%Y%m%d_%H%M%S").'.csv';
+$filename = 'banlist_'.e_date::strftime("%Y%m%d_%H%M%S").'.csv';
 
 if ($error_string = do_export($filename, $type_list, $format_array, $use_separator, $use_quote))
 {
@@ -98,7 +98,7 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 			  break;
 			case 'banlist_datestamp' :
 			case 'banlist_banexpires' :
-			  if ($row[$f]) $line .= $spacer.$quot.strftime($v,$row[$f]).$quot; else $line .= $spacer.$quot.'0'.$quot;
+			  if ($row[$f]) $line .= $spacer.$quot.e_date::strftime($v,$row[$f]).$quot; else $line .= $spacer.$quot.'0'.$quot;
 			  break;
 		  }
 		  $spacer = $sep;

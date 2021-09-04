@@ -2400,7 +2400,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		$att['type'] = 'boolean';
 
 //		$uid = $this->getController()->getModel()->get('user_id');
-		$perms = $this->getController()->getModel()->get('user_perms');
+		$perms = (string) $this->getController()->getModel()->get('user_perms');
 
 		if($mode == 'filter' && getperms('3'))
 		{

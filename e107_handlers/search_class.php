@@ -32,7 +32,7 @@ class e_search
 	function __construct($query = '')
 	{
 		$tp = e107::getParser();
-		$this->query = $query;
+		$this->query = (string) $query;
 		$this->bullet = '';
 		
 		if(defined('GLYPH'))

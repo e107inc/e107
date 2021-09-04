@@ -1046,7 +1046,7 @@ class e_plugin
 
 		if(empty($ver))
 		{
-			return null;
+			return '';
 		}
 
 		$ver = str_replace('e107','',$ver);
@@ -1079,7 +1079,7 @@ class e_plugin
 
 		);
 
-		return str_replace($pathFilter,'', $path);
+		return str_replace($pathFilter,'', (string) $path);
 	}
 
 

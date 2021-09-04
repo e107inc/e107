@@ -389,6 +389,7 @@ class e_bbcode
 		ob_start();
 		try
 	    {
+			$bbcode = isset($bbcode) && is_string($bbcode) ? $bbcode : '';
 			$bbcode_return = eval($bbcode); //FIXME notice removal
 	    }
 		catch (ParseError $e)
@@ -403,6 +404,7 @@ class e_bbcode
 			trigger_error($error, E_USER_NOTICE);
 		}
 
+		$bbcode_return = isset($bbcode_return) ? $bbcode_return : '';
 		/* added to remove possibility of nested bbcode exploits ... */
 		if(strpos($bbcode_return, "[") !== FALSE)
 		{
@@ -548,7 +550,7 @@ class e_bbcode
 	 */
 	function renderButtons($template='', $id='', $options=array())
 	{
-		
+		$template = (string) $template;
 		$tp = e107::getParser();
 
 		// Notice Removal
@@ -804,7 +806,7 @@ class e_bbcode
 			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
 
 			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
-			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img)) : "";
 
 			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
 

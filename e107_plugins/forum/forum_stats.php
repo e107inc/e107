@@ -65,6 +65,7 @@ class forumStats
 
 		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
 		$fp = $sql->fetch();
+		$fp = is_array($fp) ? $fp : array();
 
 		$open_ds = (int) varset($fp['post_datestamp']);
 		$open_date = $gen->convert_date($open_ds, 'long');

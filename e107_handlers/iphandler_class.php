@@ -157,7 +157,7 @@ class eIPHandler
 	 */
 	public function __construct($configDir = '')
 	{
-		$configDir = trim($configDir);
+		$configDir = trim((string) $configDir);
 
 		if ($configDir)
 		{
@@ -1452,7 +1452,7 @@ class banlistManager
 	private function dateFormat($date)
 	{
 		if ($date == 0) return '0';
-		return strftime('%Y%m%d_%H%M%S',$date);
+		return e_date::strftime('%Y%m%d_%H%M%S',$date);
 	}
 
 
