@@ -96,8 +96,8 @@ if (isset($_POST['clientsubmit']))
 	{
 		while ($row = $sql->fetch()) 
 		{			 
-			$start_date = ($row['banner_startdate'] ? strftime("%d %B %Y", $row['banner_startdate']) : BANNERLAN_31);
-			$end_date 	= ($row['banner_enddate'] ? strftime("%d %B %Y", $row['banner_enddate']) : BANNERLAN_31);
+			$start_date = ($row['banner_startdate'] ? e_date::strftime("%d %B %Y", $row['banner_startdate']) : BANNERLAN_31);
+			$end_date 	= ($row['banner_enddate'] ? e_date::strftime("%d %B %Y", $row['banner_enddate']) : BANNERLAN_31);
 
 			$scArray = array();
 			$scArray['BANNER_TABLE_CLICKPERCENTAGE'] 		= ($row['banner_clicks'] && $row['banner_impressions'] ? round(($row['banner_clicks'] / $row['banner_impressions']) * 100)."%" : "-");

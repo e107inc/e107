@@ -642,7 +642,7 @@ class usersettings_shortcodes extends e_shortcode
 		}
 
 		$uVal = str_replace(chr(1), "", varset($this->var['user_' . $parm]));
-		$fval = $ue->user_extended_edit($fInfo, $uVal);
+		$fval = (string) $ue->user_extended_edit($fInfo, $uVal);
 
 
 		$rVal = !empty($fInfo['user_extended_struct_required']);

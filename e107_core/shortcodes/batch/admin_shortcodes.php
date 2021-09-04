@@ -136,7 +136,7 @@ class admin_shortcodes extends e_shortcode
 		if (!ADMIN) { return ''; }
 		return "
 		<div style='text-align: center'>
-		<input class='btn btn-default btn-secondary button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
+		<input class='btn btn-default btn-secondary button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".defset('LAN_CREDITS')."' />
 		</div>";
 	}
 
@@ -495,6 +495,7 @@ class admin_shortcodes extends e_shortcode
 		}
 		
 		if (ADMIN) {
+			e107::coreLan('', true);
 			if (!function_exists('admin_latest')) //XXX Is this still necessary?
 			{
 				function admin_latest($parm='')
@@ -515,14 +516,14 @@ class admin_shortcodes extends e_shortcode
 			//		$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS." <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a></div>";
 
 					$oldconfigs = array();
-					$oldconfigs['e-news'][0] = array('icon' =>E_16_NEWS, 'title' =>ADLAN_LAT_2, 'url' => e_ADMIN. 'newspost.php?mode=sub&amp;action=list', 'total' =>$submitted_news);
+					$oldconfigs['e-news'][0] = array('icon' =>defset('E_16_NEWS'), 'title' =>defset('ADLAN_LAT_2'), 'url' => e_ADMIN. 'newspost.php?mode=sub&amp;action=list', 'total' =>$submitted_news);
 
 					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
 					{
-						$oldconfigs['e-comment'][0] = array('icon' =>E_16_COMMENT, 'title' =>ADLAN_LAT_9, 'url' => e_ADMIN_ABS. 'comment.php?searchquery=&filter_options=comment_blocked__2', 'total' =>$comments_pending);
+						$oldconfigs['e-comment'][0] = array('icon' =>defset('E_16_COMMENT'), 'title' =>defset('ADLAN_LAT_9'), 'url' => e_ADMIN_ABS. 'comment.php?searchquery=&filter_options=comment_blocked__2', 'total' =>$comments_pending);
 					}
 
-					$oldconfigs['e-upload'][0] = array('icon' =>E_16_UPLOADS, 'title' =>ADLAN_LAT_7, 'url' => e_ADMIN. 'upload.php', 'total' =>$active_uploads);
+					$oldconfigs['e-upload'][0] = array('icon' =>defset('E_16_UPLOADS'), 'title' =>defset('ADLAN_LAT_7'), 'url' => e_ADMIN. 'upload.php', 'total' =>$active_uploads);
 				
 					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
 					$queryString = '';
@@ -536,7 +537,7 @@ class admin_shortcodes extends e_shortcode
 					{
 					//	$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 						
-						$oldconfigs['e-generic'][0] = array('icon' =>E_16_NOTIFY, 'title' =>ADLAN_LAT_8, 'url' => e_ADMIN_ABS. 'message.php', 'total' =>$amount);
+						$oldconfigs['e-generic'][0] = array('icon' =>defset('E_16_NOTIFY'), 'title' =>defset('ADLAN_LAT_8'), 'url' => e_ADMIN_ABS. 'message.php', 'total' =>$amount);
 					}
 				
 
@@ -1304,7 +1305,7 @@ class admin_shortcodes extends e_shortcode
 			<br /><br />
 			<b>' .FOOTLAN_19. '</b>
 			<br />
-			' .strftime('%A %d %B %Y - %H:%M').
+			' .e_date::strftime('%A %d %B %Y - %H:%M').
 				'<br />';
 
 			return e107::getRender()->tablerender(FOOTLAN_13, $text, '', TRUE);
@@ -2146,7 +2147,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				continue;
 			}
 
-				$catid = $admin_cat['id'][$subitem[4]];
+				$catid = isset($admin_cat['id'][$subitem[4]]) ? $admin_cat['id'][$subitem[4]] : null;
 				$tmp = array();
 				$tmp['text'] = $subitem[1];
 				$tmp['description'] = $subitem[2];
@@ -2415,7 +2416,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$languages = $slng->installed();//array('English','French');
 			$multiDoms = array();
 			
-			if($langSubs = explode("\n", e107::getPref('multilanguage_subdomain')))
+			if($langSubs = explode("\n", (string) e107::getPref('multilanguage_subdomain')))
 			{
 				
 				foreach($langSubs as $v)

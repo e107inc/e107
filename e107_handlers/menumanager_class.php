@@ -601,7 +601,7 @@ class e_menuManager
 
     function menuPresetPerms($val)
 	{
-		$link_class = strtolower(trim($val));
+		$link_class = strtolower(trim((string) $val));
    		$menu_perm['everyone'] = e_UC_PUBLIC;
 		$menu_perm['guest'] = e_UC_GUEST;
 	  	$menu_perm['member'] = e_UC_MEMBER;

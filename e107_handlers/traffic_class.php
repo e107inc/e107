@@ -51,8 +51,8 @@ class e107_traffic
 	 */
 	function TimeDelta($tStart, $tFinish)
 	{
-		$tFrom = explode(' ', $tStart);
-		$tTo = explode(' ', $tFinish);
+		$tFrom = explode(' ', (string) $tStart);
+		$tTo = explode(' ', (string) $tFinish);
 
 		if(!isset($tFrom[1]))
 		{

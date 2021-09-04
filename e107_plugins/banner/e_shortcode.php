@@ -26,8 +26,6 @@ class banner_shortcodes extends e_shortcode
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		mt_srand((double) microtime() * 1000000);
-		$seed = mt_rand(1, 2000000000);
 		$time = time();
 		$campaign = (isset($parm['campaign']) ? $parm['campaign'] : $parm);
 
@@ -40,7 +38,7 @@ class banner_shortcodes extends e_shortcode
 			$query .= " AND banner_keywords REGEXP " . $tags_regexp;
 		}
 
-		$query .= "	ORDER BY RAND($seed) LIMIT 1";
+		$query .= "	ORDER BY RAND() LIMIT 1";
 
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{

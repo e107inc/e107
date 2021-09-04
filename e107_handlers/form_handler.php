@@ -2745,7 +2745,7 @@ class e_form
 
 		if(!is_array($options))
 		{
-			parse_str($options, $options);
+			parse_str((string) $options, $options);
 		}
 		
 		if(is_array($value))
@@ -2979,7 +2979,7 @@ class e_form
 		}
 		if(!is_array($options))
 		{
-			parse_str($options, $options);
+			parse_str((string) $options, $options);
 		}
 
 		if(!empty($options['help']))
@@ -3052,7 +3052,7 @@ class e_form
 
 		if(!is_array($options))
 		{
-			parse_str($options, $options);
+			parse_str((string) $options, $options);
 		}
 
 
@@ -3109,7 +3109,7 @@ class e_form
 	{
 		if(!is_array($options))
 		{
-			parse_str($options, $options);
+			parse_str((string) $options, $options);
 		}
 
 		if($option_array === 'yesno')
@@ -3712,6 +3712,7 @@ var_dump($select_options);*/
 	 */
 	public function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
+		$action = (string) $action;
 		$btype = 'submit';
 		if(strpos($action, 'action') === 0 || $action === 'button')
 		{
@@ -3909,7 +3910,8 @@ var_dump($select_options);*/
 		//
 		foreach ($options as $option => $optval)
 		{
-			$optval = trim($optval);
+			$optval = trim((string) $optval);
+			$optval = htmlspecialchars($optval,  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 			switch ($option)
 			{
 
@@ -4384,14 +4386,15 @@ var_dump($select_options);*/
 
 	public function thead($fieldarray, $columnPref = array(), $querypattern = '', $requeststr = '')
 	{
+		$tp = e107::getParser();
         $text = '';
 
-        $querypattern = filter_var($querypattern, FILTER_SANITIZE_STRING);
+        $querypattern = $tp->filter($querypattern, 'str');
         if(!$requeststr)
         {
 	        $requeststr = rawurldecode(e_QUERY);
         }
-        $requeststr = filter_var($requeststr, FILTER_SANITIZE_STRING);
+        $requeststr = $tp->filter($requeststr, 'str');
 
 		// Recommended pattern: mode=list&field=[FIELD]&asc=[ASC]&from=[FROM]
 		if(strpos($querypattern,'&')!==FALSE)
@@ -4787,7 +4790,7 @@ var_dump($select_options);*/
 		{
 			foreach($array as $k=>$v)
 			{
-				$jsonArray[$k] = str_replace("'", '`', $v);
+				$jsonArray[$k] = str_replace("'", '`', (string) $v);
 			}
 		}
 
@@ -4978,7 +4981,7 @@ var_dump($select_options);*/
 				$eModalCap .= " data-modal-submit='true'";
 			}
 
-			$query = http_build_query($query, null, '&amp;');
+			$query = http_build_query($query, '', '&amp;');
 			$text .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 				".$editIconDefault. '</a>';
 		}
@@ -5226,10 +5229,11 @@ var_dump($select_options);*/
 					parse_str($attributes['writeParms'], $attributes['writeParms']);
 				}
 				$wparms = $attributes['writeParms'];
-				
-				if(!is_array(varset($wparms['__options'])))
+
+				if (!isset($wparms['__options'])) $wparms['__options'] = null;
+				if(!is_array($wparms['__options']))
 				{
-					parse_str($wparms['__options'], $wparms['__options']);
+					parse_str((string) $wparms['__options'], $wparms['__options']);
 				}
 
 				if(!empty($wparms['optArray']))
