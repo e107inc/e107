@@ -384,6 +384,16 @@ class users_admin_ui extends e_admin_ui
 
 			foreach ($rows as $row)
 			{
+				if((int) $row['user_extended_struct_type'] === 12) // EUF_ADDON
+				{
+					$attrib = e107::unserialize($row['user_extended_struct_values']);
+					if(!empty($attrib['nolist']))
+					{
+						continue;
+					}
+				}
+			
+			
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHTML($row['user_extended_struct_text'],false,'defs');
