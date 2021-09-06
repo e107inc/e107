@@ -17,8 +17,7 @@ We release patches for security vulnerabilities in e107 from v2.0.0 onwards. The
 
 ## Disclosure Policy
 
-The e107 team and community takes all security related reports seriously. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your
-contributions. 
+The e107 team and community takes all security related reports seriously. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions. 
 
 **Please submit your security reports by emailing security@e107.org**
 
