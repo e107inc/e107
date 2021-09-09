@@ -21,6 +21,7 @@ if (!e107::isInstalled('tagcloud'))
 /**
  * @example {MENU: path=tagcloud&order=size,desc}
  * @example {MENU: path=tagcloud&order=tag,asc&limit=20}
+ * @example {MENU: path=tagcloud&order=tag,asc&words=2}
  */
 
 require_once('tagcloud_class.php');
@@ -44,10 +45,16 @@ if(!class_exists('tagcloud_menu'))
 
 			$cloud = new TagCloud();
 			$sql = e107::getDb();
+			$words = 25; // Number of words to read from each record.
 
 			if(is_string($parm))
 			{
 				parse_str($parm,$parm);
+			}
+
+			if(!empty($parm['words']))
+			{
+				$words = (int) $parm['words'];
 			}
 
 			e107::getCache()->setMD5(e_LANGUAGE);
@@ -66,11 +73,19 @@ if(!class_exists('tagcloud_menu'))
 				{
 
 					$tmp = explode(",", $row['news_meta_keywords']);
+					$c = 0;
 					foreach ($tmp as $word)
 					{
 						//$newsUrlparms = array('id'=> $row['news_id'], 'name'=>'a name');
 						$url = e107::getUrl()->create('news/list/tag', array('tag' => $word)); // SITEURL."news.php?tag=".$word;
 						$cloud->addTag(array('tag' => $word, 'url' => $url));
+
+						$c++;
+
+						if($c >= $words)
+						{
+							continue;
+						}
 
 					}
 				}
