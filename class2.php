@@ -782,7 +782,14 @@ if(!isset($_E107['no_module']))
 if(!defined('USERTHEME') && !isset($_E107['no_theme']))
 {
 	$dbg->logTime('Load Theme');
-	define('USERTHEME', (e107::getUser()->getPref('sitetheme') && file_exists(e_THEME.e107::getUser()->getPref('sitetheme'). '/theme.php') ? e107::getUser()->getPref('sitetheme') : false));
+	$userSiteTheme = e107::getUser()->getPref('sitetheme');
+	if (
+		empty($userSiteTheme) ||
+		(defined('e_MENUMANAGER_ACTIVE') && e_MENUMANAGER_ACTIVE === true) ||
+		!file_exists(e_THEME.$userSiteTheme. '/theme.php')
+	)
+		$userSiteTheme = false;
+	define('USERTHEME', $userSiteTheme);
 }
 
 
