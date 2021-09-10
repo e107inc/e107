@@ -361,7 +361,7 @@ class banlist_ui extends e_admin_ui
 	
 							</tbody>
 						</table>
-						<div class='buttons-bar center'>" . $frm->admin_button('ban_export', LAN_UI_BATCH_EXPORT, 'export', BANLAN_39) . "</div>
+						<div class='buttons-bar center'>" . $frm->admin_button('ban_export', LAN_UI_BATCH_EXPORT, 'export', LAN_UI_BATCH_EXPORT) . "</div>
 							<input type='hidden' name='e-token' value='" . e_TOKEN . "' />
 					</fieldset>
 				</form>
