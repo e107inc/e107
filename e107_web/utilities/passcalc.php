@@ -1,2 +1,2 @@
 <?php
-// Deprecated
+// DEPRECATED
