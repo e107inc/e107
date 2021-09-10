@@ -128,6 +128,7 @@ class db_table_admin
 	// Returns an array where each entry is the definitions of a field or index
 	function parse_field_defs($text)
 	{
+		$text = (string) $text;
 		$ans = array(
 		);
 		$text = str_replace("\r", "\n", $text);

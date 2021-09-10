@@ -6686,9 +6686,10 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function parseAliases()
 	{
 		// parse table
-		if(strpos($this->table, '.') !== false)
+		$tableName = $this->getTableName();
+		if(strpos($tableName, '.') !== false)
 		{
-			$tmp = explode('.', $this->table, 2);
+			$tmp = explode('.', $tableName, 2);
 			$this->table = $tmp[1];
 			$this->tableAlias = $tmp[0];
 			unset($tmp);
@@ -7443,7 +7444,7 @@ class e_admin_form_ui extends e_form
 		$vars           = $this->getController()->getQuery();
 		$vars['from']   = '[FROM]';
 
-		$paginate       = http_build_query($vars, null, '&amp;');
+		$paginate       = http_build_query($vars, '', '&amp;');
 
 		e107::js('footer-inline', "
 				\$('#admin-ui-list-filter a.nextprev-item').on('click', function() {
@@ -7517,7 +7518,7 @@ class e_admin_form_ui extends e_form
 			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
 			$gridQuery = (array) $_GET;
 			$gridQuery['action'] = $gridAction;
-			$toggleUrl = e_REQUEST_SELF. '?' .http_build_query($gridQuery, null, '&amp;');
+			$toggleUrl = e_REQUEST_SELF. '?' .http_build_query($gridQuery, '', '&amp;');
 			$gridIcon = ($gridAction === 'grid') ? ADMIN_GRID_ICON : ADMIN_LIST_ICON;
 			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
 			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle. '">' .$gridIcon. '</a>';
@@ -8082,10 +8083,10 @@ class e_admin_form_ui extends e_form
 							$parms['__options'] = $fopts;
 						}
 
-
-						if(!is_array(varset($parms['__options'])))
+						if (!isset($parms['__options'])) $parms['__options'] = null;
+						if(!is_array($parms['__options']))
 						{
-							parse_str($parms['__options'], $parms['__options']);
+							parse_str((string) $parms['__options'], $parms['__options']);
 						}
 						$opts = $parms['__options'];
 						if(!empty($opts['multiple']) && $type === 'batch')

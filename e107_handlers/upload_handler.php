@@ -195,7 +195,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	foreach ($files['name'] as $key=>$name)
 	{
-		$name = filter_var($name, FILTER_SANITIZE_STRING);
+		$name = $tp->filter($name, 'str');
 
 		$first_error = FALSE; // Clear error flag
 		if (($name != '') || $files['size'][$key]) // Need this check for things like file manager which allow multiple possible uploads

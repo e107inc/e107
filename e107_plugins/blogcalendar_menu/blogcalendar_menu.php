@@ -19,7 +19,7 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-
+$parm = isset($parm) && is_string($parm) ? $parm : '';
 $cString = 'nq_news_blogacalendar_menu_'.preg_replace('#[^\w]#', '', $parm);
 $cached = e107::getCache()->retrieve($cString);
 

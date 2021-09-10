@@ -1177,6 +1177,7 @@ class e_media
 	 */
 	public function detectType($mediaURL)
 	{
+		$mediaURL = (string) $mediaURL;
 		$type = pathinfo($mediaURL,PATHINFO_EXTENSION);
 
 		if($type == 'glyph')
@@ -1456,7 +1457,7 @@ class e_media
 			return $path;
 		}
 
-		$ext = e107::getFile()->getFileExtension($mime);
+		$ext = (string) e107::getFile()->getFileExtension($mime);
 
 		$len = strlen($ext);
 

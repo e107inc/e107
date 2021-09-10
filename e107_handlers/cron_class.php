@@ -391,7 +391,7 @@ class CronParser
 
 	function getLastRan()
 	{
-		return explode(",", strftime("%M,%H,%d,%m,%w,%Y", $this->lastRan)); //Get the values for now in a format we can use
+		return explode(",", e_date::strftime("%M,%H,%d,%m,%w,%Y", $this->lastRan)); //Get the values for now in a format we can use
 	}
 
 	function getLastRanUnix()
@@ -505,7 +505,7 @@ class CronParser
 		}
 
 		//put the current time into an array
-		$t = strftime("%M,%H,%d,%m,%w,%Y", time());
+		$t = e_date::strftime("%M,%H,%d,%m,%w,%Y", time());
 		$this->now = explode(",", $t);
 
 		$this->year = $this->now[5];

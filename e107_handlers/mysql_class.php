@@ -133,6 +133,11 @@ class e_db_mysql implements e_db
 
 		$this->dbg = e107::getDebug();
 
+		/**
+		 * Revert PHP 8.1 mysqli default error mode
+		 * @link https://github.com/php/php-src/blob/4025cf2875f895e9f7193cebb1c8efa4290d052e/UPGRADING#L101-L105
+		 */
+		mysqli_report(MYSQLI_REPORT_OFF);
 	}
 
 	function getPDO()
@@ -430,7 +435,7 @@ class e_db_mysql implements e_db
 			/** @var $db_debug e107_db_debug */
 			global $db_debug;
 			$aTrace = debug_backtrace();
-			$pTable = $this->mySQLcurTable;
+			$pTable = (string) $this->mySQLcurTable;
 			if (!strlen($pTable)) {
 				$pTable = '(complex query)';
 			} else {
@@ -2464,7 +2469,7 @@ class e_db_mysql implements e_db
 		{
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php', FILE_TEXT);
+				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php');
 				if ($temp !== FALSE)
 				{
 					$typeDefs = e107::unserialize($temp);

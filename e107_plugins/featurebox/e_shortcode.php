@@ -151,7 +151,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$ctemplate = $mod;
 		}
-		parse_str($parm, $parm);
+		parse_str((string) $parm, $parm);
 		
 		$category = $this->getCategoryModel($ctemplate); 
 		
