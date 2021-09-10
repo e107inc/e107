@@ -154,8 +154,8 @@ class core_library
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
-			'path'              => '2.1.2',
-			'version'           => '2.1.2',
+			'path'              => '2.2.3',
+			'version'           => '2.2.3',
 		);
 
 		// jQuery Once (local).
@@ -1176,11 +1176,20 @@ class e_library_manager
 	private $callbacks = array();
 
 	/**
+	 * @var e_file
+	 */
+	private $fileHandler;
+
+	/**
 	 * Constructor
 	 * Use {@link getInstance()}, direct instantiating is not possible for signleton objects.
+	 *
+	 * @param e_file|null $fileHandler
 	 */
-	public function __construct()
+	public function __construct($fileHandler = null)
 	{
+		if ($fileHandler === null) $fileHandler = e107::getFile();
+		$this->fileHandler = $fileHandler;
 	}
 
 	/**
@@ -1615,7 +1624,7 @@ class e_library_manager
 		$directories = array();
 
 		// Retrieve list of directories.
-		$file = e107::getFile();
+		$file = $this->fileHandler;
 		$dirs = $file->get_dirs($dir);
 
 		foreach($dirs as $dirName)
@@ -2263,7 +2272,7 @@ class e_library_manager
 		// The library will be cached with version number, so this only run once per library.
 		if(strpos($file, 'http') === 0)
 		{
-			$content = e107::getFile()->getRemoteContent($file);
+			$content = $this->fileHandler->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
 
 			if($tmpFile)

@@ -20,7 +20,15 @@
 
 			try
 			{
-				$this->lib = $this->make('e_library_manager');
+				$fakeFile = $this->make('e_file', [
+					'getRemoteContent' => function($url)
+					{
+						throw new RuntimeException("Test needs rewriting. Blocked Internet fetch of URL: $url");
+					},
+				]);
+				$this->lib = $this->make('e_library_manager', [
+					'fileHandler' => $fakeFile,
+				]);
 			}
 			catch(Exception $e)
 			{
@@ -72,7 +80,7 @@
 			foreach($this->libraries as $name)
 			{
 				$coded = $this->lib->detect($name);
-				$detected = $this->lib->detect($name, true);
+				$detected = $this->lib->detect(str_replace('cdn.', '', $name), true);
 
 				if(empty($coded['version']))
 				{
