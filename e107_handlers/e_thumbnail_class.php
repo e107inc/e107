@@ -485,7 +485,7 @@ class e_thumbnail
 		$ret['h'] = isset($this->_request['h']) ? intval($this->_request['h']) : $ret['w'];
 		$ret['aw'] = isset($this->_request['aw']) ? intval($this->_request['aw']) : false;
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
-		$ret['c'] = isset($this->_request['c']) ? strtoupper(substr(filter_var($this->_request['c'],FILTER_SANITIZE_STRING),0,1)) : false;
+		$ret['c'] = isset($this->_request['c']) ? strtoupper(substr(e107::getParser()->filter($this->_request['c'], 'str'),0,1)) : false;
 	//	$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
 
 		if($ret['c'] == 'A') // auto

@@ -261,15 +261,6 @@ $override = array();
 if(isset($_POST['previous_steps']))
 {
 	$tmp = unserialize(base64_decode($_POST['previous_steps']));
-
-	// Save unfiltered admin password (#4004) - " are transformed into &#34;
-	$tmpadminpass1 = (isset($tmp['admin']) && !empty($tmp['admin']['password'])) ? $tmp['admin']['password'] : '';
-	
-	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING); 
-
-	// Restore unfiltered admin password
-	$tmp['admin']['password'] = $tmpadminpass1;
-
 	$override = (isset($tmp['paths']) && isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
 	unset($tmpadminpass1);

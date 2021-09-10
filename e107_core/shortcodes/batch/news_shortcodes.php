@@ -1209,7 +1209,7 @@ class news_shortcodes extends e_shortcode
 	/** New in v2.3 {NEWS_PAGINATION}  */
 	function sc_news_pagination($parm=null)
 	{
-		$params = e107::getRegistry('core/news/pagination');
+		$params = (string) e107::getRegistry('core/news/pagination');
 
 		parse_str($params,$opts);
 

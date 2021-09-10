@@ -62,6 +62,7 @@ global $pref, $parm;
     	$extras = "rel=external";
 	}
 
+    $extras = (string) $extras;
 	if($extras == "external" || strpos($extras,"rel=external")!==FALSE)
 	{
     	$insert = "rel='external' ";

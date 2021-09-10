@@ -1386,7 +1386,20 @@ class validatorClass
 									break;
 								}
 								$field = varset($options['dbFieldName'], $f);
-								if ($temp = $u_sql->count($targetTable, "(*)", "WHERE `{$f}`='" . filter_var($v, FILTER_SANITIZE_STRING) . "' AND `user_id` != " . $userID))
+								// XXX: Different implementations due to missing API for preventing SQL injections
+								$count = 0;
+								if ($u_sql instanceof e_db_mysql)
+								{
+									$v = $u_sql->escape($v);
+									$count = $u_sql->count($targetTable, "(*)", "WHERE `{$f}`='$v' AND `user_id` != " . $userID);
+								}
+								else
+								{
+									$u_sql->select($targetTable, "COUNT(*)", "`{$f}`=:value", ['value' => $v]);
+									$row = $u_sql->fetch('num');
+									$count = $row[0];
+								}
+								if ($count)
 								{
 									$errMsg = ERR_DUPLICATE;
 								}

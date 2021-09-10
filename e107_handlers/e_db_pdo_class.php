@@ -426,7 +426,7 @@ class e_db_pdo implements e_db
 		if ($this->debugMode === true)
 		{
 			$aTrace = debug_backtrace();
-			$pTable = $this->mySQLcurTable;
+			$pTable = (string) $this->mySQLcurTable;
 
 			if(!strlen($pTable))
 			{
@@ -2558,6 +2558,11 @@ class e_db_pdo implements e_db
 	private function setSQLMode()
 	{
 		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
+		/**
+		 * Disable PHP 8.1 PDO result set typing casting for consistency with PHP 5.6 through 8.0
+		 * @link https://github.com/php/php-src/blob/4025cf2875f895e9f7193cebb1c8efa4290d052e/UPGRADING#L130-L134
+		 */
+		$this->mySQLaccess->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 	}
 
 
@@ -2623,7 +2628,7 @@ class e_db_pdo implements e_db
 		{
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php', FILE_TEXT);
+				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php');
 				if ($temp !== false)
 				{
 					$typeDefs = e107::unserialize($temp);

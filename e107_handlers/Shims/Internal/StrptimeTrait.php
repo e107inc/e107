@@ -12,6 +12,9 @@
 
 namespace e107\Shims\Internal;
 
+use DateTimeZone;
+use e_date;
+
 trait StrptimeTrait
 {
 	/**
@@ -38,7 +41,8 @@ trait StrptimeTrait
 	{
 		$result = false;
 		if (function_exists('strptime') && (new \ReflectionFunction('strptime'))->isInternal())
-			$result = strptime($date, $format);
+			// @ to suppress PHP 8.1 deprecation warning
+			$result = @strptime($date, $format);
 		if (!is_array($result))
 			$result = self::strptime_alt($date, $format);
 		return $result;
@@ -76,10 +80,10 @@ trait StrptimeTrait
 
 		for ($i = 1; $i <= 12; $i++)
 		{
-			$k = strftime('%B', mktime(0, 0, 0, $i));
+			$k = e_date::strftime('%B', mktime(0, 0, 0, $i));
 			$fullmonth[$k] = $i;
 
-			$j = strftime('%b', mktime(0, 0, 0, $i));
+			$j = e_date::strftime('%b', mktime(0, 0, 0, $i));
 			$abrevmonth[$j] = $i;
 		}
 
@@ -153,8 +157,10 @@ trait StrptimeTrait
 
 			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
 
-			$vals['tm_wday'] = (int)strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
-			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
+			$datetime = date_create("@$unxTimestamp");
+			$datetime->setTimezone(new DateTimeZone(date_default_timezone_get()));
+			$vals['tm_wday'] = date_format($datetime, 'w'); // Days since Sunday (0-6)
+			$vals['tm_yday'] = date_format($datetime, 'z'); // Days since January 1 (0-365)
 		}
 
 		return !empty($vals) ? $vals : false;

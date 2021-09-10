@@ -966,7 +966,7 @@ class e_admin_log
 		}
 		else 
 		{
-			$app = null;
+			$app = 0;
 			$text = $head . $text;	
 		}
 

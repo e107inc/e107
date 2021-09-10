@@ -451,6 +451,7 @@ class user_class
 	*/
 	public function uc_dropdown($fieldname, $curval = 0, $optlist = '', $extra_js = '')
 	{
+		$optlist = (string) $optlist;
 		$show_classes = self::uc_required_class_list($optlist);		// Get list of classes which meet criteria
 
 		$text = '';

@@ -199,7 +199,7 @@ class signup_shortcodes extends e_shortcode
 		if (check_class($pref['displayname_class']))
 		{
 			$dis_name_len = varset($pref['displayname_maxlength'],15);
-			$val = !empty($_POST['username']) ? filter_var($_POST['username'], FILTER_SANITIZE_STRING) : '';
+			$val = !empty($_POST['username']) ? e107::getParser()->filter($_POST['username'], 'str') : '';
 			return e107::getForm()->text('username', $val,  $dis_name_len);
 
 		}
@@ -230,7 +230,7 @@ class signup_shortcodes extends e_shortcode
 			$options['class'] = vartrue($parm['class'],'');
 			$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : '';
 
-			$val = !empty($_POST['loginname']) ? filter_var($_POST['loginname'], FILTER_SANITIZE_STRING) : '';
+			$val = !empty($_POST['loginname']) ? e107::getParser()->filter($_POST['loginname'], 'str') : '';
 
 			return e107::getForm()->text('loginname', $val, $log_name_length, $options);
 		}
@@ -252,7 +252,7 @@ class signup_shortcodes extends e_shortcode
 		$options['class']   = vartrue($parm['class'],'');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
 
-		$val = ($_POST['realname']) ? filter_var($_POST['realname'], FILTER_SANITIZE_STRING) : '';
+		$val = ($_POST['realname']) ? e107::getParser()->filter($_POST['realname'], 'str') : '';
 
 		return e107::getForm()->text('realname', $val, 100, $options);
 

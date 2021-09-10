@@ -37,17 +37,17 @@ class e_date
 
 				for ($i=1; $i < 8; $i++)
 				{
-					$day = strftime('%A', mktime(1,1,1, 1, $i, 2012));
-					$dates['days'][] = 	$day;
-					$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));
-					$dates['daysMin'][] = substr($day,0,2);
+					$day = e_date::strftime('%A', mktime(1, 1, 1, 1, $i, 2012));
+					$dates['days'][] = $day;
+					$dates['daysShort'][] = e_date::strftime('%a', mktime(1, 1, 1, 1, $i, 2012));
+					$dates['daysMin'][] = substr($day, 0, 2);
 				}
 
 
 				for ($i=1; $i < 13; $i++)
 				{
-					$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));
-					$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));
+					$dates['months'][] = e_date::strftime('%B', mktime(1, 1, 1, $i, 2, 2013));
+					$dates['monthsShort'][] = e_date::strftime('%h', mktime(1, 1, 1, $i, 2, 2013));
 				}
 
 
@@ -86,11 +86,11 @@ class e_date
 		{
 			$val = ($type == 'month-short') ? '%b' : '%B';  //eg. 'Aug' / 'August'
 			$marray = array();
-			for ($i=1; $i < 13; $i++) 
-			{ 
-				$marray[$i] = strftime($val,mktime(1,1,1,$i,1,2000));
+			for ($i = 1; $i < 13; $i++)
+			{
+				$marray[$i] = e_date::strftime($val, mktime(1, 1, 1, $i, 1, 2000));
 			}
-			
+
 			return $marray;
 		}	
 		
@@ -102,15 +102,15 @@ class e_date
 				switch ($type) 
 				{
 					case 'day-shortest': // eg. 'Tu'
-						$days[] = substr(strftime('%a',mktime(1,1,1,6,$i,2014)),0,2);	
+						$days[] = substr(e_date::strftime('%a', mktime(1, 1, 1, 6, $i, 2014)), 0, 2);
 					break;
 					
 					case 'day-short':  // eg. 'Tue'
-						$days[] = strftime('%a',mktime(1,1,1,6,$i,2014));	
+						$days[] = e_date::strftime('%a', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 					
 					default:  // eg. 'Tuesday'
-						$days[] = strftime('%A',mktime(1,1,1,6,$i,2014));	
+						$days[] = e_date::strftime('%A', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 				}
 			}
@@ -196,7 +196,7 @@ class e_date
 			break;
 		}
 
-		$dateString = strftime($mask, $datestamp);
+		$dateString = e_date::strftime($mask, $datestamp);
 
 		if (!e107::getParser()->isUTF8($dateString))
 		{
@@ -206,8 +206,95 @@ class e_date
 		return $dateString;
 	}
 
+	/**
+	 * Polyfill for {@see strftime()}, which was deprecated in PHP 8.1
+	 *
+	 * The implementation is an approximation that may be wrong for some obscure formatting characters.
+	 *
+	 * @param string   $format    The old {@see strftime()} format string
+	 * @param int|null $timestamp A Unix epoch timestamp. If null, defaults to the value of {@see time()}.
+	 * @return string Datetime formatted according to the provided arguments
+	 */
+	public static function strftime($format, $timestamp = null)
+	{
+		if ($timestamp === null) $timestamp = time();
+		$datetime = date_create("@$timestamp");
+		$datetime->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
+		$formatMap = [
+			'%a' => 'D',
+			'%A' => 'l',
+			'%d' => 'd',
+			'%e' => function($datetime)
+			{
+				return str_pad(date_format($datetime, 'n'), 2, " ", STR_PAD_LEFT);
+			},
+			'%j' => function($datetime)
+			{
+				return str_pad(date_format($datetime, 'z'), 3, "0", STR_PAD_LEFT);
+			},
+			'%u' => 'N',
+			'%w' => 'w',
+			'%U' => 'W',
+			'%V' => 'W',
+			'%W' => 'W',
+			'%b' => 'M',
+			'%B' => 'F',
+			'%h' => 'M',
+			'%m' => 'm',
+			'%C' => function($datetime)
+			{
+				return (string) ((int) date_format($datetime, 'Y') / 100);
+			},
+			'%g' => 'y',
+			'%G' => 'Y',
+			'%y' => 'y',
+			'%Y' => 'Y',
+			'%H' => 'H',
+			'%k' => function($datetime)
+			{
+				return str_pad(date_format($datetime, 'G'), 2, " ", STR_PAD_LEFT);
+			},
+			'%I' => 'h',
+			'%l' => function($datetime)
+			{
+				return str_pad(date_format($datetime, 'g'), 2, " ", STR_PAD_LEFT);
+			},
+			'%M' => 'i',
+			'%p' => 'A',
+			'%P' => 'a',
+			'%r' => 'h:i:s A',
+			'%R' => 'H:i',
+			'%S' => 's',
+			'%T' => 'H:i:s',
+			'%X' => 'H:i:s',
+			'%z' => 'O',
+			'%Z' => 'T',
+			'%c' => 'r',
+			'%D' => 'm/d/y',
+			'%F' => 'Y-m-d',
+			'%s' => 'U',
+			'%x' => 'Y-m-d',
+			'%n' => "\n",
+			'%t' => "\t",
+			'%%' => '\%',
+		];
 
+		foreach ($formatMap as $strftime_key => $date_format_key)
+		{
+			if (is_callable($date_format_key))
+			{
+				$replacement = chunk_split($date_format_key($datetime), 1, "\\");
+			}
+			else
+			{
+				$replacement = $date_format_key;
+			}
+			$format = str_replace($strftime_key, $replacement, $format);
+		}
+
+		return date_format($datetime, $format);
+	}
 
 	/**
 	 * @deprecated - for internal use only.
@@ -787,11 +874,12 @@ class e_date
 	 */
 	public function strptime($str, $format)
 	{
-		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use eShims::strptime() instead', E_USER_DEPRECATED); // NO LAN
+		trigger_error('<b>' . __METHOD__ . ' is deprecated.</b>  Use eShims::strptime() instead', E_USER_DEPRECATED); // NO LAN
 
 		$vals = eShims::strptime($str, $format); // PHP5 is more accurate than below.
-		$vals['tm_amon'] = strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
-		$vals['tm_fmon'] = strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_amon'] = e_date::strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_fmon'] = e_date::strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+
 		return $vals;
 	}
 
@@ -870,12 +958,7 @@ class e_date
 		// Evaluate the formats whilst suppressing any errors.
 		foreach($strftimeFormats as $format => $description)
 		{
-		    //if (False !== ($value = @strftime("%{$format}")))
-			$value = @strftime("%{$format}");
-		    if (False !== $value)
-		    {
-		        $strftimeValues[$format] = $value;
-		    }
+			$strftimeValues[$format] = e_date::strftime("%{$format}");
 		}
 		
 		// Find the longest value.

@@ -1233,7 +1233,7 @@ function check_class($var, $userclass = null, $uid = 0)
 
 	$class_array = !is_array($userclass) ? explode(',', $userclass) : $userclass;
 
-	$varList = !is_array($var) ? explode(',', $var) : $var;
+	$varList = !is_array($var) ? explode(',', (string) $var) : $var;
 	$latchedAccess = false;
 
 	foreach ($varList as $v)

@@ -397,6 +397,7 @@ class e_session
 		if($key == null) // clear all under this namespace.
 		{
 			$this->_data = array(); // must be set to array() not unset.
+			return $this;
 		}
 
 		if(strpos($key,'/') !== false) // multi-dimensional
@@ -538,7 +539,14 @@ class e_session
 			//	ini_set('session.save_handler', 'user');
 
 				$session = new e_session_db;
-				session_set_save_handler($session, true);
+				session_set_save_handler(
+					[$session, 'open'],
+					[$session, 'close'],
+					[$session, 'read'],
+					[$session, 'write'],
+					[$session, 'destroy'],
+					[$session, 'gc']
+				);
 				$session->setSaveHandler();
 			break;
 
@@ -1112,7 +1120,12 @@ class e_core_session extends e_session
 }
 
 
-class e_session_db implements SessionHandlerInterface
+/**
+ * Database session handler
+ *
+ * @todo PHP 8.1 support with {@see SessionHandlerInterface}
+ */
+class e_session_db #implements SessionHandlerInterface
 {
 	/**
 	 * @var e_db

@@ -672,7 +672,7 @@ class media_form_ui extends e_admin_form_ui
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
 	
-		$for = $this->getController()->getQuery('for');
+		$for = (string) $this->getController()->getQuery('for');
 
 
 

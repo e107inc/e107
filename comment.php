@@ -107,7 +107,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$pid 				= intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
 		$row 				= array();
-		$authName           = filter_var($_POST['author_name'],FILTER_SANITIZE_STRING);
+		$authName           = e107::getParser()->filter($_POST['author_name'], 'str');
 		$clean_authorname 	= vartrue($authName,USERNAME);
 		$clean_comment 		= e107::getParser()->toText($_POST['comment']);
 		$clean_subject 		= e107::getParser()->filter($_POST['subject'],'str');

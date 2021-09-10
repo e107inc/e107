@@ -370,6 +370,7 @@
 		 */
 		private function tablestyle($caption, $text, $mode)
 		{
+			$text = (string) $text;
 
 			// Automatic list detection .
 			$isList = (strncmp(ltrim($text), '<ul', 3) === 0);

@@ -118,6 +118,9 @@ class pmbox_manager
 			}
 			else
 			{
+				if (!isset($pm_info['inbox']) || !is_array($pm_info['inbox'])) $pm_info['inbox'] = [];
+				if (!isset($pm_info['outbox']) || !is_array($pm_info['outbox'])) $pm_info['outbox'] = [];
+
 				$pm_info['inbox']['limit'] = '';
 				$pm_info['outbox']['limit'] = '';
 				$pm_info['inbox']['filled'] = '';

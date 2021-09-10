@@ -85,7 +85,7 @@ class page_shortcodes extends e_shortcode
 			
 			if($parm)
 			{
-				 $parm = http_build_query($parm, null, '&');
+				 $parm = http_build_query($parm);
 			}
 			else
 			{

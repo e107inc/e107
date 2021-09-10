@@ -508,7 +508,7 @@ class e_parse
 			foreach($data as $key => $var)
 			{
 				//Fix - sanitize keys as well
-				$key = filter_var($key, FILTER_SANITIZE_STRING);
+				$key = str_replace(['"', "'"], ['&quot;', '&#039;'], $key);
 				$ret[$key] = $this->toDB($var, $nostrip, $no_encode, $mod, $parm);
 			}
 
@@ -786,6 +786,8 @@ class e_parse
 
 			return $arr;
 		}
+
+		$text = (string) $text;
 
 		if(MAGIC_QUOTES_GPC == true)
 		{
@@ -2003,6 +2005,7 @@ class e_parse
 	 */
 	public function toText($text)
 	{
+		$text = (string) $text;
 
 		if($this->isBBcode($text) === true) // convert any bbcodes to html
 		{
@@ -2338,6 +2341,7 @@ class e_parse
 	 */
 	public function thumbUrl($url = null, $options = array(), $raw = false, $full = false)
 	{
+		$url = (string) $url;
 
 		$this->staticCount++; // increment counter.
 
@@ -3717,7 +3721,7 @@ class e_parse
 			$parm = $options;
 			$options = varset($parm['space'], '');
 		}
-		elseif(strpos($options, '='))
+		elseif (is_string($options) && strpos($options, '='))
 		{
 			parse_str($options, $parm);
 			$options = varset($parm['space'], '');
@@ -4618,7 +4622,7 @@ class e_parse
 			$ytpref['cc_lang_pref'] = e_LAN; // switch captions with chosen user language.
 		}
 
-		$ytqry = http_build_query($ytpref, null, '&amp;');
+		$ytqry = http_build_query($ytpref, '', '&amp;');
 
 		$defClass = !empty($this->bootstrap) ? 'embed-responsive embed-responsive-16by9 ratio ratio-16x9' : 'video-responsive'; // levacy backup.
 
@@ -4848,7 +4852,7 @@ class e_parse
 				{
 					$filterTypes = array(
 						'int'   => FILTER_SANITIZE_NUMBER_INT,
-						'str'   => FILTER_SANITIZE_STRING, // no html.
+						'str'   => function($input) { return strip_tags($input); },
 						'email' => FILTER_SANITIZE_EMAIL,
 						'url'   => FILTER_SANITIZE_URL,
 						'enc'   => FILTER_SANITIZE_ENCODED
@@ -4870,13 +4874,19 @@ class e_parse
 					trigger_error("Unsupported type '".$type."' used in e107::getParser()->filter().", E_USER_WARNING);
 				}
 
-				if(is_array($text))
+				$filter = $filterTypes[$type];
+				$filter = function($element) use ($filter)
 				{
-					$ret = filter_var_array($text, $filterTypes[$type]);
+					$element = (string) $element;
+					return is_callable($filter) ? $filter($element) : filter_var($element, $filter);
+				};
+				if (is_array($text))
+				{
+					$ret = filter_var($text, FILTER_CALLBACK, ['options' => $filter]);
 				}
 				else
 				{
-					$ret = filter_var($text, $filterTypes[$type]);
+					$ret = $filter($text);
 				}
 
 		}
