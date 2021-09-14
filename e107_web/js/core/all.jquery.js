@@ -33,7 +33,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 *
 	 * Behaviors should use
 	 * @code
-	 *   $(selector).once('behavior-name', function () {
+	 *   $(selector).one('behavior-name', function () {
 	 *     ...
 	 *   });
 	 * @endcode
@@ -123,7 +123,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eAJAX = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-ajax').once('e-ajax').each(function ()
+			$(context).find('.e-ajax').one('e-ajax').each(function ()
 			{
 				var $this = $(this);
 				var event = $this.attr('data-event') || e107.callbacks.getDefaultEventHandler($this);
@@ -198,7 +198,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			if(typeof $.fn.tooltip !== 'undefined')
 			{
-				$(context).find('[data-toggle="tooltip"]').once('bootstrap-tooltip').each(function ()
+				$(context).find('[data-toggle="tooltip"]').one('bootstrap-tooltip').each(function ()
 				{
 					$(this).tooltip();
 				});
@@ -214,7 +214,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eExpandIt = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-expandit').once('e-expandit').each(function ()
+			$(context).find('.e-expandit').one('e-expandit').each(function ()
 			{
 				$(this).show();
 
@@ -304,7 +304,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eDialogClose = {
 		attach: function (context, settings)
 		{
-			//$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
+			//$(context).find('.e-dialog-close').one('e-dialog-close').each(function ()
 			//{
 			//	$(this).click(function ()
             $(context).on('click', '.e-dialog-close', function()
@@ -340,7 +340,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eHideMe = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-hideme').once('e-hide-me').each(function ()
+			$(context).find('.e-hideme').one('e-hide-me').each(function ()
 			{
 				$(this).hide();
 			});
@@ -355,7 +355,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.buttonSubmit = {
 		attach: function (context, settings)
 		{
-			$(context).find('button[type=submit]').once('button-submit').each(function ()
+			$(context).find('button[type=submit]').one('button-submit').each(function ()
 			{
 				$(this).on('click', function ()
 					{
