@@ -3538,7 +3538,7 @@ var_dump($select_options);*/
 			case 'delete':
 				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
-				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+				$options['data-confirm'] = LAN_JSCONFIRM;
 			break;
 
 			case 'execute':
@@ -3768,10 +3768,7 @@ var_dump($select_options);*/
 
 			case 'delete':
 			case 'danger':
-
-
-
-				$options['other'] = 'data-confirm="'.$confirmation.'"';
+				$options['data-confirm'] = $confirmation;
 				break;
 
 			case 'batch':
