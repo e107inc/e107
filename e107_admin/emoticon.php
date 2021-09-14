@@ -10,7 +10,10 @@
  *
  *
 */
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once(__DIR__.'/../class2.php');
 if (!getperms("F"))
 {
@@ -157,6 +160,7 @@ class emotec
 						</table>
 						<div class='buttons-bar center'>
 						" . $frm->admin_button('active', 'active', 'update', LAN_UPDATE) . "
+						<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 						</div>
 					<fieldset>
 				</form>
@@ -228,7 +232,7 @@ class emotec
 			}
 
 			$text .= $frm->admin_button('XMLPack_' . $pack, 'submit', 'default', EMOLAN_28);
-			$text .= "
+			$text .= "<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 								</td>
 							</tr>
 			";

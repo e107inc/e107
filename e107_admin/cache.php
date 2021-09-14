@@ -10,6 +10,10 @@
  *
 */
 
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once(__DIR__."/../class2.php");
 
 if (!getperms("C"))
@@ -205,6 +209,7 @@ $text = "
 					'empty_browsercache' => CACLAN_27,
 				))."
 				".$frm->admin_button('trigger_empty_cache', LAN_DELETE, 'delete')."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>";

@@ -9,7 +9,10 @@
  * Search Administration
  *
 */
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once(__DIR__.'/../class2.php');
 if (!getperms('X'))
 {
@@ -277,6 +280,7 @@ if ($query[0] == 'settings')
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('update_prefs', LAN_UPDATE, 'update')."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>
@@ -348,6 +352,7 @@ elseif ($query[0] == 'edit')
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('update_handler', 'no-value', 'update', LAN_UPDATE)."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>
@@ -520,6 +525,7 @@ else
 			</table>
 			<div class='buttons-bar center'>
 			".$frm->admin_button('update_main','no-value','update',LAN_UPDATE)."
+			<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 		</form>

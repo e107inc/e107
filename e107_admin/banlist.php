@@ -10,7 +10,10 @@
  *
  *
 */
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once(__DIR__.'/../class2.php');
 
 if (!getperms('4'))
@@ -534,7 +537,7 @@ class banlist_ui extends e_admin_ui
 						</table>
 						<div class='buttons-bar center'>
 							".$frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update')."
-							<input type='hidden' name='e-token' value='".e_TOKEN."' />
+							<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 						</div>
 					</fieldset>
 				</form>
@@ -651,7 +654,7 @@ class banlist_ui extends e_admin_ui
 						</table>
 						<div class='buttons-bar center'>
 							".$frm->admin_button('update_ban_options', LAN_UPDATE, 'update')."
-							<input type='hidden' name='e-token' value='".e_TOKEN."' />
+							<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 						</div>
 					</fieldset>
 					<fieldset id='core-banlist-options-ban'>
@@ -666,7 +669,7 @@ class banlist_ui extends e_admin_ui
 									<td>".BANLAN_75."</td>
 									<td>
 										".$frm->admin_button('remove_expired_bans', BANLAN_76, 'delete')."
-										<input type='hidden' name='e-token' value='".e_TOKEN."' />
+										<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 									</td>
 								</tr>
 							</tbody>

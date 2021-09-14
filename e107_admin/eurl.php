@@ -9,7 +9,10 @@
  * URL and front controller Management
  *
 */
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once(__DIR__.'/../class2.php');
 if (!getperms('K'))
 {
@@ -328,7 +331,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}	
 
 		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE, 'submit')."</div>";
+		$text .= $frm->token();
 		$text .= $frm->close();
+
 		$text .= "</div>";
 		return $text;		
 	}
@@ -444,7 +449,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>
-						".$form->admin_button('update', LAN_UPDATE, 'update')."
+						".$form->admin_button('update', LAN_UPDATE, 'update').
+						$form->token()."
 					</div>
 				</fieldset>
 			</form>
@@ -564,7 +570,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>
-						".$form->admin_button('update', LAN_UPDATE, 'update')."
+						".$form->admin_button('update', LAN_UPDATE, 'update').
+						$form->token()."
 					</div>
 				</fieldset>
 			</form>
