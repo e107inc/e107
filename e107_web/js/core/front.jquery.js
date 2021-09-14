@@ -25,7 +25,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			if(window.location.hash && e107.callbacks.isValidSelector(window.location.hash))
 			{
-				$(context).find('body').once('initialize-smooth-scrolling').each(function ()
+				$(context).find('body').one('initialize-smooth-scrolling').each(function ()
 				{
 					if($(window.location.hash).length !== 0)
 					{
@@ -48,7 +48,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eModalFront = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-modal').once('e-modal-front').each(function ()
+			$(context).find('.e-modal').one('e-modal-front').each(function ()
 			{
 				var $that = $(this);
 
