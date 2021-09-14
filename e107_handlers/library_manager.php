@@ -47,9 +47,12 @@ class core_library
 	{
 		$libraries = array();
 
+
+
+
 		// jQuery (CDN).
 		$libraries['cdn.jquery'] = array(
-			'name'              => 'jQuery (CDN)',
+			'name'              => 'jQuery 2 (CDN)',
 			'vendor_url'        => 'https://jquery.com/',
 			'version_arguments' => array(
 				'file'    => 'jquery.min.js',
@@ -85,7 +88,7 @@ class core_library
 
 		// jQuery (local).
 		$libraries['jquery'] = array(
-			'name'              => 'jQuery (local)',
+			'name'              => 'jQuery 2 (local)',
 			'vendor_url'        => 'https://jquery.com/',
 			'version_arguments' => array(
 				'file'    => 'dist/jquery.min.js',
@@ -285,6 +288,46 @@ class core_library
 		);
 
 
+
+		// ----------------- jQuery 3 (frontend only) --------------//
+		// https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js
+           https://cdn.jsdelivr.net/jquery/npm/jquery@3.6.0/dist/jquery.min.js
+		$libraries['cdn.jquery3'] = array(
+			'name'              => 'jQuery 3 (CDN)',
+			'vendor_url'        => 'https://jquery.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/jquery.min.js',
+				'pattern' => '/jQuery\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'dist/jquery.min.js' => array(
+						'zone' => 1,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js' => array(
+							'jquery.js' => array(
+								'zone' => 1,
+								'type' => 'url',
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/',
+			'path'              => 'jquery@3.6.0',
+			'version'           => '3.6.0',
+		);
+
+
 		// ----------------- Bootstrap 5 ---------------------------//
 
 			// Bootstrap (CDN).
@@ -331,9 +374,9 @@ class core_library
 			),
 			// Override library path to CDN.
 		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.0',
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.1',
 			'path'              => '',
-			'version'           => '5.1.0',
+			'version'           => '5.1.1',
 		);
 
 
@@ -379,7 +422,7 @@ class core_library
 			),*/
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '5',
-			'version'           => '5.1.0',
+			'version'           => '5.1.1',
 		);
 
 
