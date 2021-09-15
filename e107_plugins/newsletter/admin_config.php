@@ -157,7 +157,7 @@ class newsletter
 					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
 					<td>
 						<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
-						<input class='btn btn-default btn-secondary btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/>
+						<input class='btn btn-default btn-secondary btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")).") \"/>
 
 					</td>
 				</tr>
@@ -206,8 +206,8 @@ class newsletter
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_issue']."</td>
 					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default btn-secondary button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
-					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
+					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default btn-secondary button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_18)).") \" />")."</td>
+					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_19." [ID: ".$data['newsletter_id']." ]")).") \"/>
 				
 				</td>
 				</tr>

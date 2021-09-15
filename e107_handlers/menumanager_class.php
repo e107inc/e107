@@ -1329,7 +1329,7 @@ class e_menuManager
 		{
 			if(isset($pref['sitetheme_layouts'][$layout]['menuPresets']))
 			{
-		    	$text .= "<input type='submit' class='menu-btn' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm('".$tp->toJS(MENLAN_41)."')\" /><br /><br />\n";  // Use Menu Presets
+		    	$text .= "<input type='submit' class='menu-btn' name='menuUsePreset' value=\"".MENLAN_40."\" onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(MENLAN_41)).")\" /><br /><br />\n";  // Use Menu Presets
 				$text .= "<input type='hidden' name='menuPreset' value='".$layout."' />";
 			}
 			$text .= "<input type='hidden'  name='curLayout' value='".$layout."' />";
