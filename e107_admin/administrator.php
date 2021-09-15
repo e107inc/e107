@@ -160,7 +160,7 @@ function show_admins()
 		{
     		$text .= "
 							".$frm->submit_image("edit_admin[{$row['user_id']}]", 'edit', 'edit', LAN_EDIT)."
-							".$frm->submit_image("del_admin[{$row['user_id']}]", 'del', 'delete', $tp->toJS(ADMSLAN_59."? [".$row['user_name']."]"))."
+							".$frm->submit_image("del_admin[{$row['user_id']}]", 'del', 'delete', ADMSLAN_59."? [".$row['user_name']."]")."
 
 			";
     	}

@@ -396,9 +396,9 @@ else
 echo "<script type=\"text/javascript\">
 	function confirm_(mode, forum_id, thread_id, thread) {
 	if (mode == 'Thread') {
-	return confirm(\"" . $tp->toJS(LAN_FORUM_2009) . "\");
+	return confirm(" . $tp->toJSON(LAN_FORUM_2009) . ");
 	} else {
-	return confirm(\"" . $tp->toJS(LAN_FORUM_2010) . " [ " . $tp->toJS(LAN_FORUM_0074) . " \" + thread + \" ]\");
+	return confirm(" . $tp->toJSON(LAN_FORUM_2010 . " [ " . LAN_FORUM_0074) . " + thread + \" ]\");
 	}
 	}
 	</script>";

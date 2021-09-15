@@ -271,7 +271,7 @@ if(!empty($_GET['iframe']))
 
 			$release_diz = defset("LANG_LAN_30","Release Date");
 			$compat_diz = defset("LANG_LAN_31", "Compatibility");
-			$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+			$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ? LAN_PLEASEWAIT : "Please Wait";
 
 
 			$text = "<form id='lancheck' method='post' action='".e_REQUEST_URI."'>

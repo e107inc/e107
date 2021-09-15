@@ -1152,11 +1152,11 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 
 		case "ALERT":
 			$message = isset($emessage[$message]) ? $emessage[$message] : $message;
-			echo "<noscript>$message</noscript><script type='text/javascript'>alert(".json_encode($message)."); window.history.go(-1); </script>\n"; exit;
+			echo "<noscript>$message</noscript><script type='text/javascript'>alert(".$tp->toJSON($message)."); window.history.go(-1); </script>\n"; exit;
 			break;
 
 		case "P_ALERT":
-			echo "<script type='text/javascript'>alert(".json_encode($message)."); </script>\n";
+			echo "<script type='text/javascript'>alert(".$tp->toJSON($message)."); </script>\n";
 			break;
 
 		case 'POPUP':

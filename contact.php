@@ -134,24 +134,24 @@ class contact_front
 		// Check Image-Code
 		if(isset($_POST['rand_num']) && ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify'])))
 		{
-			$error .= LAN_CONTACT_15 . "\\n";
+			$error .= LAN_CONTACT_15 . "\n";
 		}
 
 		// Check message body.
 		if(strlen(trim($body)) < 15)
 		{
-			$error .= LAN_CONTACT_12 . "\\n";
+			$error .= LAN_CONTACT_12 . "\n";
 		}
 
 		// Check subject line.
 		if(isset($_POST['subject']) && strlen(trim($subject)) < 2)
 		{
-			$error .= LAN_CONTACT_13 . "\\n";
+			$error .= LAN_CONTACT_13 . "\n";
 		}
 
 		if(!strpos(trim($sender), "@"))
 		{
-			$error .= LAN_CONTACT_11 . "\\n";
+			$error .= LAN_CONTACT_11 . "\n";
 		}
 
 		// No errors - so proceed to email the admin and the user (if selected).
