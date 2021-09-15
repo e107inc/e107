@@ -204,22 +204,26 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 			### 0 - same window, 1 - target blank, 4 - 600x400 popup, 5 - 800x600 popup
 			### TODO - JS modal (i.e. bootstrap)
+
+			$text = '';
+
 			switch($type)
 			{
 				case 1:
-					return ' target="_blank"';
+					$text = ' target="_blank"';
+					$text .= (strpos($this->var['link_url'], 'http') !== false) ? ' rel="noopener noreferrer"'  : '';
 					break;
 
 				case 4:
-					return " onclick=\"open_window('" . $this->var['link_url'] . "',600,400); return false;\"";
+					$text = " onclick=\"open_window('" . $this->var['link_url'] . "',600,400); return false;\"";
 					break;
 
 				case 5:
-					return " onclick=\"open_window('" . $this->var['link_url'] . "',800,600); return false;\"";
+					$text = " onclick=\"open_window('" . $this->var['link_url'] . "',800,600); return false;\"";
 					break;
 			}
 
-			return '';
+			return $text;
 		}
 
 
