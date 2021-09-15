@@ -373,7 +373,7 @@ class download_shortcodes extends e_shortcode
 	  
       if ($parm == "request")
       {
-      	$agreetext = $tp->toAttribute($tp->toJSON($tp->filter($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str')));
+      	$agreetext = $tp->toAttribute($tp->toJSON($tp->toText($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str'));
 		
       	if ($this->var['download_mirror_type'])
       	{
@@ -473,7 +473,7 @@ class download_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$img = '';
 
-      	$agreetext = !empty($this->pref['agree_text']) ? $tp->toAttribute($tp->toJSON($tp->filter($tp->toHTML($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str'))) : '';
+      	$agreetext = !empty($this->pref['agree_text']) ? $tp->toAttribute($tp->toJSON($tp->toText($this->pref['agree_text'],FALSE,'DESCRIPTION'), 'str')) : '';
 
 		if(defined('IMAGE_DOWNLOAD'))
 		{
