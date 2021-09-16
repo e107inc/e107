@@ -1550,7 +1550,7 @@ class e_jsmanager
 			{
 				$path .= "&amp;".$this->getCacheId();
 			}
-			else
+			elseif($cacheId === true)
 			{
 				$path .= "?".$this->getCacheId();
 			}
@@ -1655,11 +1655,11 @@ class e_jsmanager
 
 			if($type == 'js')
 			{
-				echo "<script type='text/javascript' src='".$this->url(e_WEB_ABS."cache/".$fileName,'js','cache')."'></script>\n\n";
+				echo "<script type='text/javascript' src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."'></script>\n\n";
 			}
 			else
 			{
-				echo "<link type='text/css' href='".$this->url(e_WEB_ABS."cache/".$fileName,'cache')."' rel='stylesheet' property='stylesheet'  />\n\n";
+				echo "<link type='text/css' href='".$this->url(e_WEB_ABS."cache/".$fileName,false)."' rel='stylesheet' property='stylesheet'  />\n\n";
 				if(!empty($this->_cache_list['css_inline']))
 				{
 					echo $this->_cache_list['css_inline'];
@@ -1819,6 +1819,8 @@ class e_jsmanager
 		{
 			$id .= str_replace("../","",$p);
 		}
+
+		$id .= $this->getCacheId();
 
 		return hash('crc32', $id) ;
 
