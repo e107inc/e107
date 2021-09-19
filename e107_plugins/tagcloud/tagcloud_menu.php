@@ -59,12 +59,13 @@ if(!class_exists('tagcloud_menu'))
 
 			e107::getCache()->setMD5(e_LANGUAGE);
 
-			if ($text = e107::getCache()->retrieve('tagcloud', 5, false))
+			if ($text = e107::getCache()->retrieve('tagcloud', 5))
 			{
 				return $text;
 			}
 
 			$nobody_regexp = "'(^|,)(" . str_replace(",", "|", e_UC_NOBODY) . ")(,|$)'";
+			$wordCount = 0;
 
 			if ($result = $sql->retrieve('news', 'news_id,news_meta_keywords', "news_meta_keywords !='' AND news_class REGEXP '" . e_CLASS_REGEXP . "' AND NOT (news_class REGEXP " . $nobody_regexp . ")
 					AND news_start < " . time() . " AND (news_end=0 || news_end>" . time() . ")", true))
@@ -73,19 +74,23 @@ if(!class_exists('tagcloud_menu'))
 				{
 
 					$tmp = explode(",", $row['news_meta_keywords']);
+
 					$c = 0;
 					foreach ($tmp as $word)
 					{
-						//$newsUrlparms = array('id'=> $row['news_id'], 'name'=>'a name');
-						$url = e107::getUrl()->create('news/list/tag', array('tag' => $word)); // SITEURL."news.php?tag=".$word;
-						$cloud->addTag(array('tag' => $word, 'url' => $url));
-
-						$c++;
 
 						if($c >= $words)
 						{
 							continue;
 						}
+
+
+
+						//$newsUrlparms = array('id'=> $row['news_id'], 'name'=>'a name');
+						$url = e107::getUrl()->create('news/list/tag', array('tag' => $word)); // SITEURL."news.php?tag=".$word;
+						$cloud->addTag(array('tag' => $word, 'url' => $url));
+						$c++;
+						$wordCount++;
 
 					}
 				}
@@ -94,6 +99,12 @@ if(!class_exists('tagcloud_menu'))
 			else
 			{
 				$text = "No tags Found";
+			}
+
+			if(empty($wordCount))
+			{
+				e107::getCache()->clear('tagcloud');
+				return "No Tags Found";
 			}
 
 			$cloud->setHtmlizeTagFunction(function ($tag, $size)
@@ -105,10 +116,9 @@ if(!class_exists('tagcloud_menu'))
 					'TAG_COUNT' => $tag['size'],
 				);
 
-				$text = $tp->simpleParse($this->template['item'], $var);
+				return $tp->simpleParse($this->template['item'], $var);
 				//$text = "<a class='tag' href='".$tag['url']."'><span class='size".$size."'>".$tag['tag']."</span></a> ";
-
-				return $text;
+				
 			});
 
 
@@ -150,12 +160,18 @@ if(!class_exists('tagcloud_menu'))
 if(class_exists('tagcloud_menu'))
 {
 	$tag = new tagcloud_menu;
+	if(!isset($parm))
+	{
+		$parm = null;
+	}
 	$text = $tag->render($parm);
 }
 else
 {
 	$text = '';
 }
+
+$caption = LAN_PLUGIN_TAGCLOUD_NAME;
 
 if (!empty($parm))
 {
@@ -164,10 +180,6 @@ if (!empty($parm))
 	{
 		$caption = $parm['tagcloud_caption'][e_LANGUAGE];
 	}
-}
-else
-{
-	$caption = LAN_PLUGIN_TAGCLOUD_NAME;
 }
 
 $var = array('TAGCLOUD_MENU_CAPTION' => $caption);
