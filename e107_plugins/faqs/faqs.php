@@ -142,9 +142,6 @@ if (isset($_POST['commentsubmit']))
 
 		$pageTitle = '';
 
-
-	//	define("e_PAGETITLE", $ftmp['caption']);
-
 		if (vartrue($faqpref['page_title']))
 		{
 			$pageTitle = $faqpref['page_title'][e_LANGUAGE];
@@ -158,20 +155,18 @@ if (isset($_POST['commentsubmit']))
 		{
 			$pageTitle .= ": ".$ftmp['pagetitle'];
 		}
-		e107::getMessage()->addDebug("TITLE: " . $pageTitle);
+
+	//	e107::getMessage()->addDebug("TITLE: " . $pageTitle);
 
 		e107::meta('og:title', $pageTitle);
+		e107::title($pageTitle);
 
 		if(!empty($ftmp['pagedescription']))
 		{
-
 			e107::meta('og:description', $ftmp['pagedescription']);
 		}
 
-		define('e_PAGETITLE', $pageTitle);
-
-
-
+		
 		require_once (HEADERF);
 				
 		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
