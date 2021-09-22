@@ -46,9 +46,17 @@ if(false === $cached)
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
-	
+
+	/* Prevent data-overwrite if menu is called within news template and more news shortcodes are called after */
+	$origParam = e107::getScBatch('news')->getScVar('param');
+	$origData = e107::getScBatch('news')->getScVar('news_item');
+
 	$cached = $ntree->loadJoinActive(vartrue($parms['category'], 0), false, $treeparm)->render($template, $parms, true);
 	e107::getCache()->set($cacheString, $cached);
+
+	e107::getScBatch('news')->setScVar('param', $origParam);
+	e107::getScBatch('news')->setScVar('news_item', $origData);
+
 }
 
 echo $cached;

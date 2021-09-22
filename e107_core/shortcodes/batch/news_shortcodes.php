@@ -1245,7 +1245,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 	/**
-	 * {NEWS_NAV_PREVIOUS}
+	 * {NEWS_NAV_CURRENT}
 	 * @return string|null
 	 */
 	function sc_news_nav_current()
