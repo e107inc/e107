@@ -136,6 +136,7 @@ else
 if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
 {
 	define('e_PAGETITLE', $_PAGE_TITLE);
+	e107::meta('og:title', $_PAGE_TITLE); // will only populate if not already defined.
 	unset($_PAGE_TITLE);
 }
 

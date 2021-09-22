@@ -158,7 +158,6 @@ if (isset($_POST['commentsubmit']))
 
 	//	e107::getMessage()->addDebug("TITLE: " . $pageTitle);
 
-		e107::meta('og:title', $pageTitle);
 		e107::title($pageTitle);
 
 		if(!empty($ftmp['pagedescription']))
@@ -166,7 +165,7 @@ if (isset($_POST['commentsubmit']))
 			e107::meta('og:description', $ftmp['pagedescription']);
 		}
 
-		
+
 		require_once (HEADERF);
 				
 		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
