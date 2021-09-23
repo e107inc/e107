@@ -583,4 +583,5 @@ define("LAN_NAVIGATION", "Navigation");
 define("LAN_NAVIGATION_LINKS", "Navigation Links");
 define("LAN_PAGINATION", "Pagination");
 define("LAN_X_CHARS_REMAINING", "[x] chars. remaining");
+define("LAN_UI_BATCH_NOW", "Current Date/Time");
 

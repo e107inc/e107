@@ -8126,44 +8126,52 @@ class e_admin_form_ui extends e_form
 
 					case 'datestamp':
 						$tp = e107::getParser();
-						$dateFilters = array (
-							'hour'   => LAN_UI_FILTER_PAST_HOUR,
-							'day'    => LAN_UI_FILTER_PAST_24_HOURS,
-							'week'   => LAN_UI_FILTER_PAST_WEEK,
-							'month'  => LAN_UI_FILTER_PAST_MONTH,
-							'month3' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,3),
-							'month6' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,6),
-							'month9' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,9),
-							'year'   => LAN_UI_FILTER_PAST_YEAR
-						);
-
-						$dateFiltersFuture = array (
-							'nhour'   => LAN_UI_FILTER_NEXT_HOUR,
-							'nday'    => LAN_UI_FILTER_NEXT_24_HOURS,
-							'nweek'   => LAN_UI_FILTER_NEXT_WEEK,
-							'nmonth'  => LAN_UI_FILTER_NEXT_MONTH,
-							'nmonth3' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,3),
-							'nmonth6' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,6),
-							'nmonth9' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,9),
-							'nyear'   => LAN_UI_FILTER_NEXT_YEAR
-						);
-
-						if($val['filter'] === 'future' )
+						if($type !== 'batch')
 						{
-							$dateFilters = $dateFiltersFuture;
+							$dateFilters = array (
+								'hour'   => LAN_UI_FILTER_PAST_HOUR,
+								'day'    => LAN_UI_FILTER_PAST_24_HOURS,
+								'week'   => LAN_UI_FILTER_PAST_WEEK,
+								'month'  => LAN_UI_FILTER_PAST_MONTH,
+								'month3' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,3),
+								'month6' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,6),
+								'month9' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,9),
+								'year'   => LAN_UI_FILTER_PAST_YEAR
+							);
+
+							$dateFiltersFuture = array (
+								'nhour'   => LAN_UI_FILTER_NEXT_HOUR,
+								'nday'    => LAN_UI_FILTER_NEXT_24_HOURS,
+								'nweek'   => LAN_UI_FILTER_NEXT_WEEK,
+								'nmonth'  => LAN_UI_FILTER_NEXT_MONTH,
+								'nmonth3' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,3),
+								'nmonth6' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,6),
+								'nmonth9' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,9),
+								'nyear'   => LAN_UI_FILTER_NEXT_YEAR
+							);
+
+							if($val['filter'] === 'future' )
+							{
+								$dateFilters = $dateFiltersFuture;
+							}
+
+							if($val['filter'] === 'both')
+							{
+								$dateFilters += $dateFiltersFuture;
+							}
+
+							foreach($dateFilters as $k => $name)
+							{
+								$option['datestamp__'.$key.'__'.$k] = $name;
+							}
 						}
-
-						if($val['filter'] === 'both')
+						else // batch
 						{
-							$dateFilters += $dateFiltersFuture;
+							$time = time();
+							$option[$key.'__'.$time] = LAN_UI_BATCH_NOW;
 						}
 					    
-						foreach($dateFilters as $k => $name)
-						{
-							$option['datestamp__'.$key.'__'.$k] = $name;
-						//	$option['bool__'.$key.'__0'] = LAN_NO;	
-						//	$option[$key.'__'.$k] = $name;
-						}
+
 					break;
 
 					case 'userclass':
