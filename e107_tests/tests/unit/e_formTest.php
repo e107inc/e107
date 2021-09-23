@@ -867,6 +867,22 @@ class e_formTest extends \Codeception\Test\Unit
 
 				$this->assertSame($expected, $actual);
 			}
+
+			/**
+			 * @link https://github.com/e107inc/e107/issues/4572
+			 */
+			public function testGet_attributesOther()
+			{
+				$options = array(
+					'size'  => '300px',
+					'other' => 'v-bind:class="{ active: isActive }"',
+				);
+
+				$actual = $this->_frm->get_attributes($options);
+				$expected = ' size=\'300px\' v-bind:class="{ active: isActive }"';
+
+				$this->assertSame($expected, $actual);
+			}
 /*
 			public function test_format_id()
 			{
@@ -879,7 +895,7 @@ class e_formTest extends \Codeception\Test\Unit
 				$expected   = 'something-hello-there-and-test';
 
 				$result = $this->_frm->name2id($text);
-				
+
 				$this->assertEquals($expected, $result);
 			}
 /*

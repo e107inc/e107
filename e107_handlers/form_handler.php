@@ -3907,7 +3907,10 @@ var_dump($select_options);*/
 		//
 		foreach ($options as $option => $optval)
 		{
-			$optval = htmlspecialchars(trim((string) $optval),  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			if ($option !== 'other')
+			{
+				$optval = htmlspecialchars(trim((string) $optval),  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			}
 			switch ($option)
 			{
 
