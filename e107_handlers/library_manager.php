@@ -290,6 +290,35 @@ class core_library
 
 
 		// ----------------- jQuery 3 (frontend only) --------------//
+
+
+		// jQuery (local).
+		$libraries['jquery3'] = array(
+			'name'              => 'jQuery 3 (local)',
+			'vendor_url'        => 'https://jquery.com/',
+			'version_arguments' => array(
+				'file'    => 'jquery.min.js',
+				'pattern' => '/v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'jquery.min.js' => array(
+						'zone' => 1,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+			),
+			'library_path'      => '{e_WEB}lib/jquery',
+			'path'              => '3',
+			'version'           => '3.6.0',
+		);
+
+
+
+
 		// https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js
            https://cdn.jsdelivr.net/jquery/npm/jquery@3.6.0/dist/jquery.min.js
 		$libraries['cdn.jquery3'] = array(
@@ -309,23 +338,16 @@ class core_library
 				),
 			),
 			'variants'          => array(
-				// 'unminified' version for debugging.
-				'dev' => array(
-					'files' => array(
-						'js' => array(
-							'jquery.js' => array(
-								'zone' => 1,
-								'type' => 'url',
-							),
-						),
-					),
-				),
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/jquery',
 			'path'              => '3.6.0',
 			'version'           => '3.6.0',
 		);
+
+
+
+
 
 
 		// ----------------- Bootstrap 5 ---------------------------//
