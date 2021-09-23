@@ -22,7 +22,7 @@
 
 		private $_data = array();
 
-		private $_field_limit = 20;
+		private $_field_limit = 30;
 
 		private $_tab = array();
 

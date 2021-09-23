@@ -738,7 +738,10 @@ class pageClass
 
 		e107::title(eHelper::formatMetaTitle($this->page['page_title']));
 
-		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
+
+
+
+
 		if(!empty($this->page['page_metakeys']))
 		{
 			e107::meta('keywords', eHelper::formatMetaKeys($this->page['page_metakeys']));
@@ -749,11 +752,23 @@ class pageClass
 			e107::meta('robots', $this->page['page_metarobots']);
 		}
 
+		if($this->page['page_metadscr'])
+		{
+			$metaDiz = eHelper::formatMetaDescription($this->page['page_metadscr']);
+			define('META_DESCRIPTION', $metaDiz);
+			e107::meta('og:description', $metaDiz);
+		}
+
 		$tp = e107::getParser();
 
-		if($tp->isImage($this->page['menu_image']))
+		if($tp->isImage($this->page['page_metaimage']))
 		{
-			$mimg = $tp->thumbUrl($this->page['menu_image'],'w=800', false, true);
+			$mimg = $tp->thumbUrl($this->page['page_metaimage'],'w=1200', false, true);
+			e107::meta('og:image',$mimg);
+		}
+		elseif($tp->isImage($this->page['menu_image']))
+		{
+			$mimg = $tp->thumbUrl($this->page['menu_image'],'w=1200', false, true);
 			e107::meta('og:image',$mimg);
 		}
 

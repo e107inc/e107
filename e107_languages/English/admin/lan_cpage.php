@@ -51,6 +51,8 @@ define("CUSLAN_77", "deleted");
 define("CUSLAN_78", "Couldn't delete menu with path ");
 define("CUSLAN_79", "You must enter either a page title or a menu name.");
 define("CUSLAN_80", "Sub Title");
+define("CUSLAN_81", "Meta image");
+define("CUSLAN_82", "Optional. Used by social media when sharing this page.");
 
 
 

@@ -383,6 +383,7 @@ CREATE TABLE page (
   page_chapter int(10) unsigned NOT NULL default '0',
   page_metakeys varchar (250) NOT NULL default '',
   page_metadscr mediumtext,
+  page_metaimage varchar (250) NOT NULL default '',
   page_metarobots varchar (250) default '',
   page_text mediumtext,
   page_author int(10) unsigned NOT NULL default '0',
