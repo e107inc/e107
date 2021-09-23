@@ -1127,7 +1127,7 @@ ul.col-selection > li a 					{ padding: 3px 0 0 5px;  }
 ul.col-selection > li a label 				{ padding-left:20px; display:block; /*line-height:25px;*/ }
 
 ul.col-selection ul.nav > li                  { padding:0 }
-ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
+ul.scroll-menu 								{ max-height:350px; overflow:auto; scrollbar-width: thin;   }
 ul.col-selection li.col-selection-list      { padding: 5px; }
 ul.col-selection input                      { opacity:0; }
 ul.col-selection label.active:before        { font-family:'Font Awesome 5 Free'; font-weight: 900; margin-left:-20px ; margin-right:6px ; content: '\f00c'; color: #51a351; position:relative; }
@@ -1807,6 +1807,7 @@ body#admin-menus .admin-left-panel .admin-menu  {
   display: -webkit-flex;
   flex: 1 100%;
   flex-flow: column nowrap;
+  scrollbar-width: thin;
 }
 body#admin-menus #sc-admin-help  {
 	overflow-y:hidden;
@@ -1814,6 +1815,7 @@ body#admin-menus #sc-admin-help  {
 
 body#admin-menus #sc-admin-help .panel-body {
 	overflow-y:scroll;
+	scrollbar-width: thin;
 	}
 
 .form-control[disabled] { opacity: 0.5; 	}

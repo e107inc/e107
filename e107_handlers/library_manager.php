@@ -296,13 +296,13 @@ class core_library
 			'name'              => 'jQuery 3 (CDN)',
 			'vendor_url'        => 'https://jquery.com/',
 			'version_arguments' => array(
-				'file'    => 'dist/jquery.min.js',
+				'file'    => 'jquery.min.js',
 				'pattern' => '/jQuery\s+v(\d\.\d\.\d+)/',
 				'lines'   => 5,
 			),
 			'files'             => array(
 				'js' => array(
-					'dist/jquery.min.js' => array(
+					'jquery.min.js' => array(
 						'zone' => 1,
 						'type' => 'url',
 					),
@@ -322,8 +322,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/',
-			'path'              => 'jquery@3.6.0',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/jquery',
+			'path'              => '3.6.0',
 			'version'           => '3.6.0',
 		);
 

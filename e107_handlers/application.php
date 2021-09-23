@@ -4401,9 +4401,9 @@ class eResponse
 
 		if(!empty($attr))
 		{
-			if($name === 'keywords') // prevent multiple keyword tags.
+			if($name === 'keywords' || $name === 'og:title') // prevent multiple keyword tags.
 			{
-			    $this->_meta['keywords'] = $attr;
+			    $this->_meta[$name] = $attr;
 			}
 			else
 			{
