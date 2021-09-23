@@ -194,9 +194,20 @@ class page_sitelink // include plugin-folder in the name.
 
 	private function pageArray($row,$options=array())
 	{
+
+		if(!empty($options['name']))
+		{
+			$name = $options['name'];
+			$link_name = $row[$name];
+		}
+		else
+		{
+			$link_name = !empty($row['page_title']) ? $row['page_title'] : 'No title';   // FIXME lan
+		}
+
 		return array(
 				'link_id'			=> $row['page_id'],
-				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
+				'link_name'			=> $link_name,
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
 				'link_description'	=> '',
 				'link_button'		=> (!empty($options['icon']) && $options['icon'] === 'menu_image') ? $row['menu_image'] : '',
