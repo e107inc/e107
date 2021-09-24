@@ -703,6 +703,7 @@ class news_front
 
 			$url = e107::getUrl()->create('news/view/item', $news,'full=1');
 			e107::meta('og:url',$url);
+			e107::meta('og:updated_time', strtotime('10 minutes ago'));
 
 			e107::meta('article:section',$news['category_name']);
 			e107::meta('article:modified_time', date('c', $news['news_datestamp']));
