@@ -779,6 +779,8 @@ class pageClass
 			e107::meta('og:image',($im));
 		}
 
+		e107::meta('og:updated_time', strtotime('10 minutes ago'));
+
 			//return $ret;
 	}
 
