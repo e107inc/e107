@@ -671,8 +671,9 @@ class news_front
 					{
 						continue;
 					}
-					e107::meta('og:image',$tp->thumbUrl($mimg,'w=500',false,true) );
-				//	e107::meta('og:image',$mimg);
+					e107::meta('og:image',$tp->thumbUrl($mimg,'w=1200',false,true) );
+					e107::meta('og:image:width', 1200);
+
 				}
 
 			}
@@ -704,6 +705,8 @@ class news_front
 			e107::meta('og:url',$url);
 
 			e107::meta('article:section',$news['category_name']);
+			e107::meta('article:modified_time', date('c', $news['news_datestamp']));
+
 
 			if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
 			{

@@ -4014,7 +4014,10 @@ class eResponse
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
 	protected $_meta_name_only = array('keywords', 'viewport', 'robots'); // Keep FB happy.
-	protected $_meta_property_only = array('article:section', 'article:tag'); // Keep FB happy.
+	protected $_meta_property_only = array(  // Keep FB happy.
+							'article:section', 'article:tag', 'article:modified_time',
+							'og:description', 'og:image', 'og:title',
+	);
 	protected $_meta = array();
 	protected $_meta_robot_types = array('noindex'=>'NoIndex', 'nofollow'=>'NoFollow','noarchive'=>'NoArchive','noimageindex'=>'NoImageIndex' );
 	protected $_title_separator = ' &raquo; ';

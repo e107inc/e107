@@ -1196,7 +1196,7 @@ class e_theme
 			);
 		}
 
-		e107::getDebug()->log($ret);
+	//	e107::getDebug()->log($ret);
 
 		return $ret;
 	}
