@@ -372,7 +372,7 @@ class social_shortcodes extends e_shortcode
 				$btnClass .= ' social-share-mobile';
 			}
 			
-			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
+			$opt[$k] = "<a rel='noopener' class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
