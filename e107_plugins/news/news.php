@@ -933,6 +933,7 @@ class news_front
 		elseif($this->action === 'tag')
 		{
 			$tagsearch = e107::getParser()->filter($_GET['tag']);
+			$tagsearch2 = str_replace('-', ' ',$tagsearch);
 
 			$query = "
 			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
@@ -940,14 +941,16 @@ class news_front
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_meta_keywords LIKE '%".$tagsearch."%'
+			WHERE n.news_meta_keywords LIKE '%".$tagsearch."%' OR n.news_meta_keywords LIKE '%".$tagsearch2."%'
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
 			$category_name = defset('LAN_NEWS_309','Tag').': "'.$tagsearch.'"';
 
+			$tagsearch = $tagsearch2;
 			$this->tagAuthor = $tagsearch;
+
 
 		}
 		elseif($this->action === 'author')
