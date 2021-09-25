@@ -478,8 +478,9 @@ CREATE TABLE session (
   session_id varchar(250) NOT NULL default '',
   session_expires int(10) unsigned NOT NULL default 0,
   session_user int(10) unsigned default NULL,
-  session_data mediumtext NOT NULL,
-  PRIMARY KEY  (session_id)
+  session_data longtext NOT NULL,
+  PRIMARY KEY  (session_id),
+  INDEX (session_expires)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
