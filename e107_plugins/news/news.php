@@ -941,7 +941,7 @@ class news_front
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_meta_keywords LIKE '%".$tagsearch."%' OR n.news_meta_keywords LIKE '%".$tagsearch2."%'
+			WHERE (n.news_meta_keywords LIKE '%".$tagsearch."%' OR n.news_meta_keywords LIKE '%".$tagsearch2."%')
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
