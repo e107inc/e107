@@ -331,7 +331,7 @@ class e_tohtml_linkwords
 			if ($doSamePage || ($newLink != e_SELF.'?'.e_QUERY))
 			{
 				$linkwd = " href=\"".$newLink."\" ";
-				if ($this->ext_list[$first]) { $linkrel[] = 'external'; }		// Determine external links
+				if ($this->ext_list[$first]) { $linkrel[] = 'noopener external'; }		// Determine external links
 				$lwClass[] = 'lw-link '.$this->customClass;
 			}
 		}
