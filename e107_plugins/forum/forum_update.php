@@ -1314,6 +1314,9 @@ class forumUpgrade
 	public $updateInfo = array();
 	private $attachmentData;
 	private $logf;
+	private $deprecated = array(
+				'e_latest.php','e_status.php', 'forum_post_shortcodes.php','forum_shortcodes.php',
+				'forum_update_check.php', 'newforumposts_menu_config.php');
 
 	public function __construct()
 	{
@@ -1322,6 +1325,34 @@ class forumUpgrade
 		$this->attachmentData = array();
 		$this->logf = e_LOG . 'forum_upgrade.log';
 		$this->getUpdateInfo();
+
+		if(empty($updateInfo))
+		{
+			$this->removeDeprecatedFiles();
+		}
+
+	}
+
+	private function removeDeprecatedFiles()
+	{
+		foreach($this->deprecated as $file)
+		{
+			$path = e_PLUGIN."forum/".$file;
+			if(file_exists($path))
+			{
+				if(unlink($path))
+				{
+					e107::getMessage()->addDebug("Deprecated file deleted: <b>".$path."</b>");
+				}
+				else
+				{
+					e107::getMessage()->addWarning("Was unable to delete the following deprecated file: <b>".$path."</b> (please remove manually)");
+				}
+
+			}
+		}
+
+
 	}
 
 	public function log($msg, $append = true)
@@ -1511,24 +1542,29 @@ class forumUpgrade
 		$thread['thread_user'] = $userInfo['user_id'];
 		$thread['thread_user_anon'] = $userInfo['anon_name'];
 
+		$sql = e107::getDb();
+
 		//  If thread marked as 'tracked by starter', we must convert to using
 		// forum_track table
 		if($thread['thread_active'] == 99 && $thread['thread_user'] > 0)
 		{
-			$forum->track('add', $thread['thread_user'], $thread['thread_id'], true);
+			if(!$forum->track('add', $thread['thread_user'], $thread['thread_id'], true))
+			{
+				$this->log(__METHOD__." (track): ".$sql->getLastErrorText(), true);
+			}
 			$thread['thread_active'] = 1;
 		}
 
 		//		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 		//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent
 		// double entities
-		$sql = e107::getDb();
+
 
 		$result = $sql->insert('forum_thread', $thread);
 
 		if($result === false)
 		{
-			$this->log($sql->getLastErrorText(), true);
+			$this->log(__METHOD__.": ".$sql->getLastErrorText(), true);
 		}
 
 		return $result;
@@ -1584,7 +1620,7 @@ class forumUpgrade
 
 		if($result === false)
 		{
-			$this->log($sql->getLastErrorText(), true);
+			$this->log(__METHOD__.": ".$sql->getLastErrorText(), true);
 		}
 
 		return $result;

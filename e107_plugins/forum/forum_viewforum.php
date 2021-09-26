@@ -67,7 +67,7 @@ function init()
 	// todo - remove all these globals.
 	global $FORUM_VIEW_START, $urlparms, $doNothing;
 	global $sc, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE;
-	global $forum_info, $FORUM_CRUMB;
+	global $forum_info, $FORUM_CRUMB, $forumInfo;
 	global $forum;
 
 	$sql = e107::getDb();
