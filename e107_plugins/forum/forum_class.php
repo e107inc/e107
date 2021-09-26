@@ -2351,10 +2351,11 @@ class e107forum
 			$replace 	= array($tp->toHTML($forumInfo['parent_name']), e107::url('forum','index')."#".$frm->name2id($forumInfo['parent_name']));
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
+
 			if($forumInfo['forum_sub'])
 			{
 				$search 	= array('{SUBPARENT_TITLE}', '{SUBPARENT_HREF}');
-				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), e107::url('forum', 'forum', array('forum_id'=>$forumInfo['parent_id'],'forum_sef'=>$forumInfo['parent_sef'])));
+				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), e107::url('forum', 'forum', array('forum_id'=>$forumInfo['forum_sub'],'forum_sef'=>$forumInfo['parent_sef'])));
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
