@@ -1533,7 +1533,7 @@ li.rssRow > div {
     color: #ffffff;
 }*/
 
-.selectize-input                        { width: 530px; max-width: 90%; }
+.selectize-input                        { width: 530px; max-width: 100%; }
 
 /*
 

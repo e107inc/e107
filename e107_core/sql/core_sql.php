@@ -221,6 +221,7 @@ CREATE TABLE links (
   link_order int(10) unsigned NOT NULL default '0',
   link_parent int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
+  link_rel varchar(200) NOT NULL default '',
   link_class varchar(255) NOT NULL default '0',
   link_function varchar(100) NOT NULL default '',
   link_sefurl varchar(255) NOT NULL,

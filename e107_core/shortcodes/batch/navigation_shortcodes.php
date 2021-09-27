@@ -151,7 +151,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 			if(strpos($url, "{") !== false)
 			{
-				$url = $tp->parseTemplate($url, true); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
+				$url = $tp->parseTemplate($url); // BC Fix shortcode in URL support - dynamic urls for multilanguage.
 			}
 
 			return $url;
@@ -193,6 +193,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		}
 
 		/**
+		 * Optional link attributes. onclick, rel etc.
 		 * @param null $parm
 		 * @example {NAV_LINK_OPEN}
 		 * @return string
@@ -206,12 +207,13 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			### TODO - JS modal (i.e. bootstrap)
 
 			$text = '';
+			$rel = '';
 
 			switch($type)
 			{
 				case 1:
 					$text = ' target="_blank"';
-					$text .= (strpos($this->var['link_url'], 'http') !== false) ? ' rel="noopener noreferrer"'  : '';
+					$rel = (strpos($this->var['link_url'], 'http') !== false) ? 'noopener noreferrer'  : '';
 					break;
 
 				case 4:
@@ -223,8 +225,20 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 					break;
 			}
 
+			if(!empty($this->var['link_rel']))
+			{
+				$rel = str_replace(',', ' ', $this->var['link_rel']);
+			}
+
+			if(!empty($rel))
+			{
+				$text .= " rel='".$rel."'";
+			}
+
 			return $text;
 		}
+
+
 
 
 		/**
