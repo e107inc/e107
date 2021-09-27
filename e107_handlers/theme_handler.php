@@ -873,14 +873,19 @@ class e_theme
 		preg_match('/themeinfo(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 		$themeArray['info'] = varset($match[3]);
 		preg_match('/xhtmlcompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
-		$xhtml = strtolower($match[2]);
+
+		$xhtml = !empty($match[2]) ? strtolower($match[2]) : '';
 		$themeArray['xhtmlcompliant'] = ($xhtml == "true" ? "1.1" : false);
 
 		preg_match('/csscompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
-		$css = strtolower($match[2]);
+
+		$css = !empty($match[2]) ? strtolower($match[2]) : '';
 		$themeArray['csscompliant'] = ($css == "true" ? "2.1" : false);
 
-		$themeArray['version'] = str_replace(array('<br />','<br>','<br/>'),' ',$themeArray['version']);
+		if(!empty($themeArray['version']))
+		{
+			$themeArray['version'] = str_replace(array('<br />','<br>','<br/>'),' ', $themeArray['version']);
+		}
 
 		/*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 		 $themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
