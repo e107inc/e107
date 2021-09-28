@@ -140,6 +140,8 @@ class e107Update
 	
 	function __construct($core=null)
 	{
+		e107::getCache()->clear_sys();
+
 		$mes = e107::getMessage();
 		
 		$this->core = $core;

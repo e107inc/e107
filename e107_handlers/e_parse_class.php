@@ -5425,11 +5425,13 @@ class e_parse
 						require_once(e_PLUGIN . $hook . '/e_tohtml.php');
 
 						$hook_class = 'e_tohtml_' . $hook;
-
-						$this->e_hook[$hook] = new $hook_class;
+						if(class_exists($hook_class))
+						{
+							$this->e_hook[$hook] = new $hook_class;
+						}
 					}
 
-					if(is_object($this->e_hook[$hook]))
+					if(isset($this->e_hook[$hook]) && is_object($this->e_hook[$hook]))
 					{
 						/** @var e_tohtml_linkwords $deprecatedHook */
 						$deprecatedHook = $this->e_hook[$hook];

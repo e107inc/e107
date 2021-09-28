@@ -83,7 +83,7 @@ class links_admin_ui extends e_admin_ui
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first', 'writeParms'=>array('size'=>'xlarge')),
-		'link_rel'			=> array('title'=> LINKLAN_11, 		'type' => 'tags', 'inline'=>true, 'width' => 'auto', 'batch'=>false, 'filter'=>false, 'thclass' => 'left', 'help'=>LINKLAN_12, 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge')),
+		'link_rel'			=> array('title'=> LAN_RELATIONSHIP, 		'type' => 'tags', 'inline'=>true, 'width' => 'auto', 'batch'=>false, 'filter'=>false, 'thclass' => 'left', 'help'=>LAN_RELATIONSHIP_HELP, 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge')),
 
 		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
 		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'filter'=>true, 'data'=>'str'),
