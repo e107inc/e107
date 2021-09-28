@@ -68,6 +68,8 @@ if(!class_exists("linkwords_setup"))
 					'lw_notsamepage'		=> 'lw_notsamepage',
 					'linkword_omit_pages'	=> 'linkword_omit_pages',
 					'lw_custom_class'       => 'lw_custom_class',
+					'lw_max_per_word'       => 'lw_max_per_word',
+					'lw_page_visibility'    => 'lw_page_visibility',
 				);
 
 				if($saveData = e107::getConfig()->migrateData($plugPrefs, true))
