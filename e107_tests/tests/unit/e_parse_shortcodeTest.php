@@ -43,7 +43,11 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$this->original_e_date = e107::getDate();
 		$mock_e_date = $this->make('e_date', [
-			'computeLapse' => 'E107_TEST_STUBBED_OUT'
+			'computeLapse' => 'E107_TEST_STUBBED_OUT',
+			'convert_date' => function($datestamp, $mask = '')
+			{
+				return $this->original_e_date->convert_date(0, $mask);
+			},
 		]);
 		e107::setRegistry('core/e107/singleton/e_date', $mock_e_date);
 	}
