@@ -19,9 +19,10 @@ if (!getperms('P') || !e107::isInstalled('linkwords'))
 }
 
 e107::lan('linkwords', true); 
-
-define('LW_CACHE_TAG', 'nomd5_linkwords');
-
+if(!defined('LW_CACHE_TAG'))
+{
+	define('LW_CACHE_TAG', 'nomd5_linkwords');
+}
 
 class linkwords_admin extends e_admin_dispatcher
 {
@@ -40,7 +41,7 @@ class linkwords_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+		'main/test'		=> array('caption'=> LAN_TEST, 'perm' => 'P')
 	);
 
 	protected $adminMenuAliases = array(
@@ -79,6 +80,8 @@ class linkwords_ui extends e_admin_ui
 	    'linkword_limit'       =>   array ( 'title' => LWLAN_67, 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
 	    'linkword_tip_id'       =>   array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LAN_LW_HELP_16, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
 	    'linkword_newwindow'    =>   array ( 'title' => LWLAN_55, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_17, 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		'linkword_rel'    =>   array ( 'title' => LAN_RELATIONSHIP, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_RELATIONSHIP_HELP, 'filter'=>false, 'readParms' => '', 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge'), 'class' => 'center', 'thclass' => 'center',  ),
+
 		'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 	);
 
@@ -173,6 +176,35 @@ class linkwords_ui extends e_admin_ui
 	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		e107::getCache()->clear_sys(LW_CACHE_TAG);
+
+	}
+
+	public function testPage()
+	{
+		$text = '';
+
+		if(!empty($_POST['runLinkwordTest']))
+		{
+		//	$text .= "<strong>Result:</strong><br />";
+			$result = e107::getParser()->toHTML($_POST['test_body'], false, 'BODY');
+
+			$text .= "<div class='well' style='padding:30px'>".$result."</div>";
+			$text .= "<div class='well' style='padding:30px; margin-bottom:30px'>".htmlentities($result)."</div>";
+		}
+
+		$frm = $this->getUI();
+		$text .= $frm->open('linkwordsTest');
+		$text .= "<div style='width:800px'>";
+		$text .= $frm->textarea('test_body', varset($_POST['test_body']), 10, 80, ['class'=>'form-control','placeholder'=>'Start writing...']);
+
+		$text .= "<div class='buttons-bar center'><p>";
+		$text .= $frm->submit('runLinkwordTest', LAN_TEST);
+		$text .= "</p></div>";
+		$text .= "</div>";
+		$text .= $frm->close();
+
+		return $text;
+
 
 	}
 

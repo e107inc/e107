@@ -17,10 +17,10 @@
 
 		protected function _before()
 		{
-			require_once(e_PLUGIN."linkwords/e_tohtml.php");
+			require_once(e_PLUGIN."linkwords/e_parse.php");
 			try
 			{
-				$this->lw = $this->make('e_tohtml_linkwords');
+				$this->lw = $this->make('linkwords_parse');
 			} catch(Exception $e)
 			{
 				$this->assertTrue(false, "Couldn't load e_tohtml_linkwords object");
@@ -65,7 +65,7 @@
 
 			foreach($tests as $val)
 			{
-				$result = $this->lw->to_html($val['text'], 'BODY');
+				$result = $this->lw->toHTML($val['text'], 'BODY');
 				$this->assertEquals($val['expected'],$result);
 
 			}

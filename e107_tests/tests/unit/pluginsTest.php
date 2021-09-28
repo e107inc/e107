@@ -308,15 +308,15 @@
 		{
 			$this->pluginInstall('linkwords');
 
-			$pref1 = e107::pref('core', 'lw_custom_class');
+			$pref1 = e107::pref('linkwords', 'lw_custom_class');
 			$this->assertNotEmpty($pref1);
 
-			$pref2 = e107::pref('core', 'lw_context_visibility');
+			$pref2 = e107::pref('linkwords', 'lw_context_visibility');
 			$this->assertNotEmpty($pref2['SUMMARY']);
 
 			$this->pluginUninstall('linkwords');
 
-			$pref2 = e107::pref('core', 'lw_context_visibility');
+			$pref2 = e107::pref('linkwords', 'lw_context_visibility');
 			$this->assertEmpty($pref2);
 		}
 
