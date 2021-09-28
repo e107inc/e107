@@ -381,7 +381,7 @@ class pageClass
 
         if($brow)
         {
-            define('e_PAGETITLE', eHelper::formatMetaTitle($brow['chapter_name']));
+            e107::title(eHelper::formatMetaTitle($brow['chapter_name']));
             if($brow['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($brow['chapter_meta_description']));
             if($brow['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($brow['chapter_meta_keywords']));
         }
@@ -480,7 +480,7 @@ class pageClass
 
         if($row)
         {
-            define('e_PAGETITLE', eHelper::formatMetaTitle($row['chapter_name']));
+            e107::title(eHelper::formatMetaTitle($row['chapter_name']));
             if($row['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($row['chapter_meta_description']));
             if($row['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($row['chapter_meta_keywords']));
         }
@@ -637,8 +637,8 @@ class pageClass
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
 			$this->batch->breadcrumb();
 			
-			
-			define("e_PAGETITLE", $this->page['page_title']);
+
+			e107::title($this->page['page_title']);
 			
 			return;
 		}
@@ -822,7 +822,8 @@ class pageClass
 			$sc->breadcrumb();
 			$comments = $sc->cpagecomments();
 		} 
-		define('e_PAGETITLE', eHelper::formatMetaTitle($this->cacheData['TITLE']));
+
+		e107::title(eHelper::formatMetaTitle($this->cacheData['TITLE']));
 		define('META_DESCRIPTION', $this->cacheData['META_DSCR']);
 		define('META_KEYWORDS', $this->cacheData['META_KEYS']);
 		if($this->debug)
