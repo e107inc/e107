@@ -82,7 +82,7 @@ class emailprint
 		{
 			$ico_print = (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT) ? "<img src='".THEME_ABS."images/".ICONPRINT."' alt='".LAN_PRINT_1."'  />" : $genericPrint);
 			//TODO CSS class
-			$text_emailprint .= "<a class='e-tip ".$class." hidden-print' href='".e_HTTP."print.php?".$print.".".$id."' title='".LAN_PRINT_1."'>".$ico_print."</a>";
+			$text_emailprint .= "<a rel='alternate' class='e-tip ".$class." hidden-print' href='".e_HTTP."print.php?".$print.".".$id."' title='".LAN_PRINT_1."'>".$ico_print."</a>";
 		}
 		return $text_emailprint;
 	}

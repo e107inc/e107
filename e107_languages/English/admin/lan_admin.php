@@ -584,4 +584,5 @@ define("LAN_NAVIGATION_LINKS", "Navigation Links");
 define("LAN_PAGINATION", "Pagination");
 define("LAN_X_CHARS_REMAINING", "[x] chars. remaining");
 define("LAN_UI_BATCH_NOW", "Current Date/Time");
-
+define("LAN_RELATIONSHIP", "Relationship");
+define("LAN_RELATIONSHIP_HELP", "Optional 'rel' attribute. Comma separated.");
