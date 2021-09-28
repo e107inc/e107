@@ -72,7 +72,7 @@ class linkwords_ui extends e_admin_ui
 
 	protected $fields 		= array (  
 		'checkboxes'             =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-    	'linkword_id'           =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+    	'linkword_id'           =>   array ( 'title' => LAN_ID, 'type'=>'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 	    'linkword_word'         =>   array ( 'title' => LWLAN_21, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_11, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 	    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_12, 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 	    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' =>  LAN_LW_HELP_13, 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
