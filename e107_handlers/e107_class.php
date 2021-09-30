@@ -4004,11 +4004,11 @@ class e107
 	{
 		if($plugin === '_RESET_') // for testing only, may be removed in future.
 		{
-			e107::setRegistry('core/e107/canonical');
+			self::setRegistry('core/e107/canonical');
 		}
 
 
-		$alreadyDone = e107::getRegistry('core/e107/canonical');
+		$alreadyDone = self::getRegistry('core/e107/canonical');
 
 		if(empty($plugin))
 		{
@@ -4023,13 +4023,15 @@ class e107
 			}
 			else
 			{
-				$url = e107::url($plugin, $key, $row, array('mode' => 'full'));
+				$url = self::url($plugin, $key, $row, array('mode' => 'full'));
 			}
 
 			if(!empty($url))
 			{
 				self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
-				e107::setRegistry('core/e107/canonical', $url);
+				self::meta('og:url', $url);
+				self::meta('twitter:url', $url);
+				self::setRegistry('core/e107/canonical', $url);
 				$message = "Debug: Setting Canonical URL: <b><a href='".$url."'>".$url."</a></b>";
 			}
 
@@ -4059,13 +4061,13 @@ class e107
 			return null;
 		}
 
-		if(!$addon = e107::getAddon($plugin,'e_url'))
+		if(!$addon = self::getAddon($plugin,'e_url'))
 		{
 			trigger_error("Couldn't load e_url for ".$plugin);
 			return null;
 		}
 
-		if(!$result = e107::callMethod($addon, 'config'))
+		if(!$result = self::callMethod($addon, 'config'))
 		{
 			trigger_error($plugin.' - e_url::config() method returned nothing');
 			return null;

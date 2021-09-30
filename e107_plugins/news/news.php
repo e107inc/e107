@@ -654,11 +654,13 @@ class news_front
 			{
 				e107::meta('description',$news['news_meta_description']);
 				e107::meta('og:description',$news['news_meta_description']);
+				e107::meta('twitter:description',$news['news_meta_description']);
 				//define('META_DESCRIPTION', $news['news_meta_description']); // deprecated
 			}
 			elseif($news['news_summary']) // BC compatibility
 			{
-				e107::meta('og:description',$news['news_summary']);
+				e107::meta('og:description', $news['news_summary']);
+				e107::meta('twitter:description', $news['news_summary']);
 			}
 
 			// include news-thumbnail/image in meta. - always put this one first.
@@ -672,8 +674,11 @@ class news_front
 					{
 						continue;
 					}
-					e107::meta('og:image',$tp->thumbUrl($mimg,'w=1200',false,true) );
+					$metaImg = $tp->thumbUrl($mimg,'w=1200',false,true) ;
+					e107::meta('og:image',$metaImg);
 					e107::meta('og:image:width', 1200);
+					e107::meta('twitter:image', $metaImg);
+					e107::meta('twitter:card', 'summary_large_image');
 
 				}
 
@@ -700,10 +705,6 @@ class news_front
 				$c++;
 			}
 
-
-
-			$url = e107::getUrl()->create('news/view/item', $news,'full=1');
-			e107::meta('og:url',$url);
 			$modifiedTime = strtotime('30 minutes ago');
 			e107::meta('og:updated_time', $modifiedTime);
 
