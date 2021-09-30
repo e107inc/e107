@@ -735,9 +735,9 @@ class pageClass
 		$this->batch->setVars($this->page);
 		$this->batch->breadcrumb();
 
-
-		e107::title(eHelper::formatMetaTitle($this->page['page_title']));
-
+		$metaTitle = eHelper::formatMetaTitle($this->page['page_title']);
+		e107::title($metaTitle);
+		e107::meta('twitter:title', $metaTitle);
 
 
 
@@ -757,6 +757,7 @@ class pageClass
 			$metaDiz = eHelper::formatMetaDescription($this->page['page_metadscr']);
 			define('META_DESCRIPTION', $metaDiz);
 			e107::meta('og:description', $metaDiz);
+			e107::meta('twitter:description', $metaDiz);
 		}
 
 		$tp = e107::getParser();
@@ -765,11 +766,15 @@ class pageClass
 		{
 			$mimg = $tp->thumbUrl($this->page['page_metaimage'],'w=1200', false, true);
 			e107::meta('og:image',$mimg);
+			e107::meta('twitter:image', $mimg);
+			e107::meta('twitter:card', 'summary_large_image');
 		}
 		elseif($tp->isImage($this->page['menu_image']))
 		{
 			$mimg = $tp->thumbUrl($this->page['menu_image'],'w=1200', false, true);
 			e107::meta('og:image',$mimg);
+			e107::meta('twitter:image', $mimg);
+			e107::meta('twitter:card', 'summary_large_image');
 		}
 
 		$images = e107::getBB()->getContent('img',$this->pageText);
@@ -777,6 +782,7 @@ class pageClass
 		{
 			$im = $tp->ampEncode($im);
 			e107::meta('og:image',($im));
+			e107::meta('twitter:image', $im);
 		}
 
 		e107::meta('og:updated_time', strtotime('10 minutes ago'));

@@ -4013,11 +4013,15 @@ class eResponse
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
 	protected $_meta_title_separator = ' - ';
-	protected $_meta_name_only = array('keywords', 'viewport', 'robots'); // Keep FB happy.
+	protected $_meta_name_only = array(
+						'keywords', 'viewport', 'robots', 'twitter:url', 'twitter:title', 'twitter:card',
+						'twitter:image', 'twitter:description',
+	); // Keep FB happy.
 	protected $_meta_property_only = array(  // Keep FB happy.
-							'article:section', 'article:tag', 'article:modified_time',
-							'og:description', 'og:image', 'og:title', 'og:updated_time',
+							'article:section', 'article:tag', 'article:published_time', 'article:modified_time',
+							'og:description', 'og:image', 'og:title', 'og:updated_time','og:url'
 	);
+	protected $_meta_multiple = array('og:image', 'og:image:width','twitter:image');
 	protected $_meta = array();
 	protected $_meta_robot_types = array('noindex'=>'NoIndex', 'nofollow'=>'NoFollow','noarchive'=>'NoArchive','noimageindex'=>'NoImageIndex' );
 	protected $_title_separator = ' &raquo; ';
@@ -4404,11 +4408,11 @@ class eResponse
 
 		if(!empty($attr))
 		{
-			if($name === 'keywords' || $name === 'og:title') // prevent multiple keyword tags.
+			if(!in_array($name, $this->_meta_multiple)) // prevent multiple keyword tags.
 			{
 			    $this->_meta[$name] = $attr;
 			}
-			else
+			else // multiple allowed.
 			{
 				$this->_meta[] = $attr;
 			}
