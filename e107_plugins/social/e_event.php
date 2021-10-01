@@ -46,12 +46,18 @@ class social_event
 	{
 		$ogImage = e107::pref('social', 'og_image', false);
 
+		if(empty($meta['og:type']))
+		{
+			e107::meta('og:image', 'website');
+		}
+
 		if(empty($ogImage) || empty($meta) || e_ADMIN_AREA === true)
 		{
 			return null;
 		}
 
 		// check if we have og:image defined
+
 		foreach($meta as $m)
 		{
 			if($m['name'] === 'og:image')
