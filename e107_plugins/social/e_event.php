@@ -48,7 +48,7 @@ class social_event
 
 		if(empty($meta['og:type']))
 		{
-			e107::meta('og:image', 'website');
+			e107::meta('og:type', 'website');
 		}
 
 		if(empty($ogImage) || empty($meta) || e_ADMIN_AREA === true)
