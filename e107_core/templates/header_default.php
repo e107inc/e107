@@ -118,41 +118,53 @@ if(!defined("XHTML4"))
 	echo "<!doctype html>\n";
 	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
 	echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
-	echo "<head>\n";
-	echo "<meta charset='utf-8' />\n";
+	echo "<head>
+<title>".render_title()."</title>
+<meta charset='utf-8' />\n";
 }
 else 
 {
 	echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("XMLNS") ? " ".XMLNS." " : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
 	echo "<head>
-	<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-	<meta http-equiv='content-style-type' content='text/css' />
+<title>".render_title()."</title>
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
+<meta http-equiv='content-style-type' content='text/css' />
 	";
 	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 }
 
-// Load early
-if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
+function render_title()
 {
-	define('e_PAGETITLE', $_PAGE_TITLE);
-	e107::meta('og:title', $_PAGE_TITLE); // will only populate if not already defined.
-	unset($_PAGE_TITLE);
+	if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
+	{
+		define('e_PAGETITLE', $_PAGE_TITLE);
+		e107::meta('og:title', $_PAGE_TITLE); // will only populate if not already defined.
+	}
+
+	$arr = [];
+
+	if(!deftrue('e_FRONTPAGE'))
+	{
+		if(deftrue('e_PAGETITLE'))
+		{
+			$arr[] = e_PAGETITLE;
+		}
+		elseif(defined('PAGE_NAME'))
+		{
+			$arr[] = PAGE_NAME;
+		}
+	}
+
+	$arr[] = SITENAME;
+
+	if($custom = e107::callMethod('theme', 'title', $arr))
+	{
+		return $custom;
+	}
+
+	return implode(' | ', $arr);
 }
-
-if (deftrue('e_FRONTPAGE'))
-{
-	// Ignore any additional title when current page is the frontpage
-	echo "<title>".SITENAME."</title>\n\n";
-}
-else
-{
-
-	echo "<title>".(deftrue('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
-
-	unset($_PAGE_TITLE);
-}
-
 //
 // C: Send start of HTML
 //
