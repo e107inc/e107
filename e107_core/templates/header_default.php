@@ -129,7 +129,7 @@ else
 	echo "<head>
 <title>".render_title()."</title>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-<meta http-equiv='content-style-type' content='text/css' />
+	<meta http-equiv='content-style-type' content='text/css' />
 	";
 	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 }
@@ -140,6 +140,7 @@ function render_title()
 	{
 		define('e_PAGETITLE', $_PAGE_TITLE);
 		e107::meta('og:title', $_PAGE_TITLE); // will only populate if not already defined.
+		e107::meta('twitter:title', $_PAGE_TITLE);
 	}
 
 	$arr = [];
@@ -154,6 +155,12 @@ function render_title()
 		{
 			$arr[] = PAGE_NAME;
 		}
+	}
+	else // Frontpage
+	{
+		e107::meta('og:type', 'website');
+		e107::meta('og:title', SITENAME);
+		e107::meta('twitter:title', SITENAME);
 	}
 
 	$arr[] = SITENAME;

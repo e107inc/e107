@@ -567,23 +567,19 @@ class news_front
 
 			case "tag":
 				e107::title($this->subAction);
-				e107::meta('og:title', $this->subAction);
 				e107::meta('robots', 'noindex');
 				e107::route('news/list/tag');
 				break;				
 			case "author":
 
 				e107::title($this->subAction);
-				e107::meta('og:title', $this->subAction);
 				e107::meta('robots', 'noindex');
 				e107::route('news/list/author'); 
 				break;
 
 			case "list":
 				$title = $tp->toHTML($news['category_name'],false,'TITLE_PLAIN');
-
 				e107::title($title);
-				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
 				e107::route('news/list/category'); 
 				break;
@@ -608,13 +604,14 @@ class news_front
 				$this->dayMonth = $title;
 
 				e107::title($title);
-				e107::meta('og:title', $title);
 				e107::meta('robots', 'noindex');
 				
-				if($type == 'day') {
+				if($type == 'day')
+				{
                   e107::route('news/list/day'); 
                 }
-                else {
+                else
+                {
                  e107::route('news/list/month'); 
                 }
 				
@@ -644,10 +641,8 @@ class news_front
 			if($news['news_title'])
 			{
 				e107::title($news['news_title']);
-				e107::meta('og:title',$news['news_title']);
 				e107::meta('og:type','article');
 				e107::meta('twitter:card', 'summary');
-				e107::meta('twitter:title',$news['news_title']);
 			}
 
 			if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
