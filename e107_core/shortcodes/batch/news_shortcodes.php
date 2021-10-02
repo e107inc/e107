@@ -628,10 +628,8 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_author_avatar($parm=null)
 	{
-		if(!empty($this->news_item['user_id']))
+		if(!empty($this->news_item['user_id']) && !empty($this->news_item['user_image']))
 		{
-
-
 			return e107::getParser()->toAvatar($this->news_item, $parm);
 		}
 	} 
