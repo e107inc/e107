@@ -11,7 +11,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.galleryCycle = {
 		attach: function (context, settings)
 		{
-			$(context).find("#gallery-slideshow-content").once('gallery-slideshow-content').each(function ()
+			$(context).find("#gallery-slideshow-content").one('gallery-slideshow-content').each(function ()
 			{
 				$(this).cycle({
 					fx: settings.gallery.fx,
@@ -33,7 +33,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				});
 			});
 
-			$(context).find(".gallery-slide-jumper").once('gallery-slide-jumper').each(function ()
+			$(context).find(".gallery-slide-jumper").one('gallery-slide-jumper').each(function ()
 			{
 				$(this).click(function ()
 				{

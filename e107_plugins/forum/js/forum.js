@@ -17,7 +17,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.forumActions = {
 		attach: function (context, settings)
 		{
-			$('a[data-forum-action], input[data-forum-action]', context).once('data-forum-action').each(function ()
+			$('a[data-forum-action], input[data-forum-action]', context).one('data-forum-action').each(function ()
 			{
 				$(this).on('click', function (e)
 				{
