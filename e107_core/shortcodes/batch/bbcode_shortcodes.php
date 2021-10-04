@@ -546,11 +546,10 @@ class bbcode_shortcodes extends e_shortcode
 		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 	
-		$eplug_bb = isset($this->var['eplug_bb']) ? $this->var['eplug_bb'] : array();
+		$eplug_bb = !empty($this->var['eplug_bb']) ? $this->var['eplug_bb'] : array();
 
-		$bbcode_func = isset($this->var['trigger']) ? $this->var['trigger'] : "addtext";
-		
-		
+		$bbcode_func = !empty($this->var['trigger']) ? $this->var['trigger'] : "addtext";
+
 		$bbcode_help  = ($bbcode_help) ? $bbcode_help : "help";
 		$bbcode_tag  = ($bbcode_helptag != 'helpb') ? ",'$bbcode_helptag'" : "";
 
