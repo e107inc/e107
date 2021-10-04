@@ -264,6 +264,7 @@ class faq
 
 	function view_all($srch) // new funtion to render all FAQs
 	{
+		e107::canonical('faqs', 'index');
 		$tp = e107::getParser();
 		$ret = array();
 

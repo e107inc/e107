@@ -562,26 +562,32 @@ class news_front
 
 			case "all":
 				e107::meta('robots', 'noindex');
-				e107::route('news/list/items'); 
+				e107::route('news/list/items');
+				e107::canonical($this->route, $news);
 			break;
 
 			case "tag":
 				e107::title($this->subAction);
 				e107::meta('robots', 'noindex');
 				e107::route('news/list/tag');
+				e107::canonical('news/list/tag', array('tag'=> str_replace(' ','-',$this->subAction)));
 				break;				
 			case "author":
 
 				e107::title($this->subAction);
 				e107::meta('robots', 'noindex');
-				e107::route('news/list/author'); 
+				e107::route('news/list/author');
+				e107::canonical('news/list/author', $news);
 				break;
 
 			case "list":
 				$title = $tp->toHTML($news['category_name'],false,'TITLE_PLAIN');
 				e107::title($title);
 				e107::meta('robots', 'noindex');
-				e107::route('news/list/category'); 
+				e107::route('news/list/category');
+			//	$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+
+				e107::canonical('news/list/category', $news);
 				break;
 
 			case "day":
@@ -608,11 +614,13 @@ class news_front
 				
 				if($type == 'day')
 				{
-                  e107::route('news/list/day'); 
+                  e107::route('news/list/day');
+                  e107::canonical('news/list/day', $news);
                 }
                 else
                 {
-                 e107::route('news/list/month'); 
+                 e107::route('news/list/month');
+                 e107::canonical('news/list/month', $news);
                 }
 				
 				break;
@@ -625,7 +633,10 @@ class news_front
 
 			default:
 			//	e107::meta('robots', 'noindex');
-				e107::route('news/list/items'); 
+				e107::route('news/list/items');
+				e107::canonical($this->route, $news);
+
+
 			//	e107::canonical('news');
 		}
 
