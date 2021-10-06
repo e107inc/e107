@@ -4019,7 +4019,7 @@ class eResponse
 	); // Keep FB happy.
 	protected $_meta_property_only = array(  // Keep FB happy.
 							'article:section', 'article:tag', 'article:published_time', 'article:modified_time',
-							'og:description', 'og:image', 'og:title', 'og:updated_time','og:url'
+							'og:description', 'og:image', 'og:title', 'og:updated_time','og:url', 'og:type'
 	);
 	protected $_meta_multiple = array('og:image', 'og:image:width','twitter:image');
 	protected $_meta = array();
