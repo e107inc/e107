@@ -4800,8 +4800,17 @@ class e_parse
 
 	/**
 	 * Filters/Validates using the PHP5 filter_var() method.
+	 *
 	 * @param string|array $text
-	 * @param string $type string str|int|email|url|w|wds|file
+	 * @param string $type str|int|email|url|w|wds|file
+	 *
+	 *                     If the type is "str" (default), HTML tags are stripped, and quotation marks are escaped for
+	 *                     HTML with the intention of making the string safe to use in both concatenated SQL queries and
+	 *                     HTML code.
+	 *
+	 *                     Despite the intention, strings returned by this function should still be specified as values
+	 *                     in SQL prepared statements or surrounded by {@see mysqli_real_escape_string()} if the string
+	 *                     is to be written to the database.
 	 * @return string|boolean| array
 	 */
 	public function filter($text, $type = 'str', $validate = false)
@@ -4859,7 +4868,10 @@ class e_parse
 				{
 					$filterTypes = array(
 						'int'   => FILTER_SANITIZE_NUMBER_INT,
-						'str'   => function($input) { return strip_tags($input); },
+						'str'   => function($input)
+						{
+							return htmlspecialchars(strip_tags($input), ENT_QUOTES);
+						},
 						'email' => FILTER_SANITIZE_EMAIL,
 						'url'   => FILTER_SANITIZE_URL,
 						'enc'   => FILTER_SANITIZE_ENCODED
