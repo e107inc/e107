@@ -848,7 +848,7 @@ class e_form
 		
 	
 		//never allow id in format name-value for text fields
-		return "<input type='".$type."' name='{$name}' value='{$value}' {$mlength} ".$this->get_attributes($options, $name). ' />';
+		return "<input type='".$type. "' name='" . $name . "' value='" . $value . "' " . $mlength . " " .$this->get_attributes($options, $name). ' />';
 	}
 
 
@@ -3901,6 +3901,27 @@ var_dump($select_options);*/
 		$this->_tabindex_counter = $reset;
 	}
 
+	/**
+	 * Build a series of HTML attributes from the provided array
+	 *
+	 * @param array $attributes Key-value pairs of HTML attributes. The value must not be HTML-encoded. If the value is
+	 *                          boolean true, the value will be set to the key (e.g. `['required' => true]` becomes
+	 *                          "required='required'").
+	 * @return string The HTML attributes to concatenate inside an HTML tag
+	 */
+	private function attributes($attributes)
+	{
+		$stringifiedAttributes = [];
+
+		foreach ($attributes as $key => $value)
+		{
+			if ($value === true) $value = $key;
+			if (!empty($value)) $stringifiedAttributes[] = $key . "='" . htmlspecialchars($value) . "'";
+		}
+
+		return count($stringifiedAttributes) > 0 ? " ".implode(" ", $stringifiedAttributes) : "";
+	}
+
 	public function get_attributes($options, $name = '', $value = '')
 	{
 		$ret = '';
@@ -3909,7 +3930,7 @@ var_dump($select_options);*/
 		{
 			if ($option !== 'other')
 			{
-				$optval = htmlspecialchars(trim((string) $optval),  ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+				$optval = html_entity_decode(trim((string) $optval));
 			}
 			switch ($option)
 			{
@@ -3919,30 +3940,30 @@ var_dump($select_options);*/
 					break;
 
 				case 'class':
-					if(!empty($optval))
-					{
-						$ret .= " class='{$optval}'";
-					}
-					break;
-
 				case 'size':
-					if($optval)
-					{
-						$ret .= " size='{$optval}'";
-					}
-					break;
-
 				case 'title':
-					if($optval)
-					{
-						$ret .= " title='{$optval}'";
-					}
+				case 'label':
+				case 'maxlength':
+				case 'wrap':
+				case 'autocomplete':
+				case 'pattern':
+					$ret .= $this->attributes([$option => $optval]);
 					break;
 
-				case 'label':
-					if($optval)
-					{
-						$ret .= " label='{$optval}'";
+				case 'readonly':
+				case 'multiple':
+				case 'selected':
+				case 'checked':
+				case 'disabled':
+				case 'required':
+				case 'autofocus':
+					$ret .= $this->attributes([$option => (bool) $optval]);
+					break;
+
+				case 'placeholder':
+					if($optval) {  
+					  $optval = deftrue($optval, $optval);  
+					  $ret .= $this->attributes([$option => $optval]);
 					}
 					break;
 
@@ -3958,91 +3979,7 @@ var_dump($select_options);*/
 					else
 					{
 						++$this->_tabindex_counter;
-						$ret .= " tabindex='".$this->_tabindex_counter."'";
-					}
-					break;
-
-				case 'readonly':
-					if($optval)
-					{
-						$ret .= " readonly='readonly'";
-					}
-					break;
-
-				case 'multiple':
-					if($optval)
-					{
-						$ret .= " multiple='multiple'";
-					}
-					break;
-
-				case 'selected':
-					if($optval)
-					{
-						$ret .= " selected='selected'";
-					}
-					break;
-
-				case 'maxlength':
-					if($optval)
-					{
-						$ret .= " maxlength='{$optval}'";
-					}
-					break;
-
-				case 'checked':
-					if($optval)
-					{
-						$ret .= " checked='checked'";
-					}
-					break;
-
-				case 'disabled':
-					if($optval)
-					{
-						$ret .= " disabled='disabled'";
-					}
-					break;
-					
-				case 'required':
-					if($optval)
-					{
-						$ret .= " required='required'";
-					}
-					break;
-					
-				case 'autofocus':
-					if($optval)
-					{
-						$ret .= " autofocus='autofocus'";
-					}
-					break;
-					
-				case 'placeholder':
-					if($optval) {  
-					  $optval = deftrue($optval, $optval);  
-					  $ret .= " placeholder='{$optval}'";
-					}
-					break;
-
-				case 'wrap':
-					if($optval)
-					{
-						$ret .= " wrap='{$optval}'";
-					}
-					break;
-					
-				case 'autocomplete':
-					if($optval)
-					{
-						$ret .= " autocomplete='{$optval}'";
-					}
-					break;
-					
-				case 'pattern':
-					if($optval)
-					{
-						$ret .= " pattern='{$optval}'";
+						$ret .= $this->attributes([$option => $this->_tabindex_counter]);
 					}
 					break;
 
@@ -4056,7 +3993,7 @@ var_dump($select_options);*/
 				default:
 					if(strpos($option,'data-') === 0)
 					{
-						$ret .= ' ' .$option."='{$optval}'";
+						$ret .= $this->attributes([$option => $optval]);
 					}
 				break;
 			}
