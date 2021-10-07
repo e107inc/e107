@@ -2589,7 +2589,22 @@ Your browser does not support the audio tag.
 
 		}
 
+		/**
+		 * e107 v0.6.0 requires strings to be passed around with quotation marks escaped for HTML as a way to prevent
+		 * both SQL injection and cross-site scripting. Although {@see e_parse::toDB()} is supposed to do that, some
+		 * usages, specifically {@see e_front_model::sanitizeValue()} call {@see e_parse::filter()} instead.
+		 *
+		 * @version 2.3.1
+		 */
+		public function testFilterStr()
+		{
+			$input = "<strong>\"e107's\"</strong>";
+			$expected = "&quot;e107&#039;s&quot;";
 
+			$actual = $this->tp->filter($input, 'str');
+
+			$this->assertEquals($expected, $actual);
+		}
 
 		public function testCleanHtml()
 		{
