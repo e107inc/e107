@@ -4000,7 +4000,7 @@ var_dump($select_options);*/
 		foreach ($attributes as $key => $value)
 		{
 			if ($value === true) $value = $key;
-			if (!empty($value) || is_numeric($value))
+			if (!empty($value) || is_numeric($value) || $key === "value")
 			{
 				$stringifiedAttributes[] = $key . "='" . htmlspecialchars($value, ENT_QUOTES) . "'";
 			}
