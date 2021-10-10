@@ -52,6 +52,7 @@ class forum_viewforum_front
 
 	function __construct()
 	{
+
 		$this->init();
 
 	}
@@ -67,7 +68,18 @@ function init()
 	// todo - remove all these globals.
 	global $FORUM_VIEW_START, $urlparms, $doNothing;
 	global $sc, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE;
-	global $forum_info, $FORUM_CRUMB, $forumInfo;
+	global	$FORUM_VIEW_FORUM,
+		$FORUM_VIEW_FORUM_STICKY,
+		$FORUM_VIEW_FORUM_ANNOUNCE,
+		$FORUM_VIEW_END,
+		$FORUM_VIEW_END_CONTAINER,
+		$FORUM_VIEW_SUB_START,
+		$FORUM_VIEW_SUB,
+		$FORUM_VIEW_SUB_END,
+		$FORUM_IMPORTANT_ROW,
+		$FORUM_NORMAL_ROW;
+
+	global $forum_info, $FORUM_CRUMB, $forumInfo, $forumId;
 	global $forum;
 
 	$sql = e107::getDb();
@@ -202,7 +214,6 @@ function init()
 		$FORUM_CRUMB = $FORUM_VIEWFORUM_TEMPLATE['forum-crumb'];
 
 	}
-
 
 	$forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true, 'no_hook, emotes_off');
 	$forumInfo['forum_description'] = $tp->toHTML($forumInfo['forum_description'], true, 'no_hook');

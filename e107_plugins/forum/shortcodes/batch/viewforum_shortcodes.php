@@ -378,121 +378,30 @@
 
 		function sc_subforums()
 		{
+			global $forum, $forumId;
 
-			//  echo "subforums";
+			$text = '';
 
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//global $forum, $forumId, $threadFrom, $view;
-						global $forum, $forumId;
-			//  	var_dump ($forumId);
-			//  	var_dump (vartrue($forumId));
-			//var_dump ($forum->forumGetSubs(vartrue($forum_id)));
-
-			//  	var_dump ($FORUM_VIEW_SUB);
-			//	$tp = e107::getParser();
-
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//  $subsc = e107::getScBatch('viewforum', 'forum', 'viewsubforum');
-			//var_dump ($subsc);
-
-			//-- $forum_id ??????
-			//--$subList = $forum->forumGetSubs(vartrue($forum_id));
-			//--$subList = $forum->forumGetSubs(vartrue($forumId));
 			$subList = $forum->forumGetSubs(false);
-
-			//  	var_dump ($forum);
 
 			if(is_array($subList) && isset($subList[$this->var['forum_parent']][$forumId]))
 			{
-			//-- $newflag_list ??????
-			//--	$newflag_list = $forum->forumGetUnreadForums();
-				$sub_info = '';
 				global $FORUM_VIEW_SUB, $FORUM_VIEW_SUB_START, $FORUM_VIEW_SUB_END;
+
+				$sub_info = '';
+
+				$tp = e107::getParser();
+
 				foreach($subList[$this->var['forum_parent']][$forumId] as $subInfo)
 				{
-
-			//----	global $FORUM_VIEW_SUB, $gen, $newflag_list;
-			//  	var_dump ($FORUM_VIEW_SUB);
-
-			//--	$tp = e107::getParser();
-			//	$tVars = new e_vars;
-
-			//----	$forumName = $tp->toHTML($subInfo['forum_name'], true);
-			//----	$tVars['SUB_FORUMTITLE'] = "<a href='".e107::getUrl()->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
-			//----	$tVars['SUB_DESCRIPTION'] = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
-			//----	$tVars['SUB_THREADS'] = $subInfo['forum_threads'];
-			//----	$tVars['SUB_REPLIES'] = $subInfo['forum_replies'];
-
-			//----	$badgeReplies = ($subInfo['forum_replies']) ? "badge-info" : "";
-			//----	$badgeThreads = ($subInfo['forum_replies']) ? "badge-info" : "";
-
-			//----	$tVars['SUB_THREADSX'] = "<span class='badge {$badgeThreads}'>".$subInfo['forum_threads']."</span>";
-			//----	$tVars['SUB_REPLIESX'] = "<span class='badge {$badgeReplies}'>".$subInfo['forum_replies']."</span>";
-
-			//	$tVars['REPLIESX'] = "<span class='badge badge-info'>".$thread_info['thread_total_replies']."</span>";
-			//	$tVars['VIEWSX'] = "<span class='badge {$badge}'>".$thread_info['thread_views']."</span>";
-
-					/*----
-						if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
-						{
-
-							$tVars['NEWFLAG'] = "<a href='".e107::getUrl()->create('forum/forum/mfar', 'id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
-						}
-						else
-						{
-							$tVars['NEWFLAG'] = IMAGE_nonew;
-						}
-					----*/
-					/*----
-						if($subInfo['forum_lastpost_info'])
-						{
-							$tmp = explode('.', $subInfo['forum_lastpost_info']);
-							$lp_thread = "<a href='".e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
-							$lp_date = $gen->convert_date($tmp[0], 'forum');
-
-							if($subInfo['user_name'])
-							{
-								$lp_name = "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $subInfo['forum_lastpost_user'], 'name' => $subInfo['user_name']))."'>{$subInfo['user_name']}</a>";
-							}
-							else
-							{
-								$lp_name = $subInfo['forum_lastpost_user_anon'];
-							}
-							$tVars['SUB_LASTPOST'] = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
-
-							$tVars['SUB_LASTPOSTDATE'] = $gen->computeLapse($tmp[0], time(), false, false, 'short');
-							$tVars['SUB_LASTPOSTUSER'] = $lp_name;
-						}
-						else
-						{
-							$tVars['SUB_LASTPOST'] = '-';
-							$tVars['SUB_LASTPOSTUSER'] = '';
-							$tVars['SUB_LASTPOSTDATE'] = '';
-						}
-					----*/
-				//----	$tVars['_WRAPPER_'] = 'forum_viewforum';
-				//var_dump ($subInfo);
-
-				// Initial ideia, to have a separate shortcode var ($subsc)....
-				//				$subsc->setVars($subInfo);
-				// Use setVars or addVars???
 					$this->addVars($subInfo);
-			//echo "--------------------------------------";
-
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//	$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false,  $subsc);
-					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $this);
-
-			//var_dump ($sc);
-
-
+					$sub_info .= $tp->parseTemplate($FORUM_VIEW_SUB, false, $this);
 				}
-			//var_dump ("----------->".$FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END."<-----------");
 
-				return $FORUM_VIEW_SUB_START . $sub_info . $FORUM_VIEW_SUB_END;
+				$text = $tp->parseTemplate($FORUM_VIEW_SUB_START) . $sub_info . $tp->parseTemplate($FORUM_VIEW_SUB_END);
 			}
 
-			return '';
+			return $text;
 
 		}
 
