@@ -4164,7 +4164,7 @@ class eResponse
 	{
 		foreach($this->_meta as $k=>$v)
 		{
-			if($v['name'] === $name)
+			if(!empty($v['name']) && ($v['name'] === $name))
 			{
 				$this->_meta[$k]['content'] = $content;
 			}

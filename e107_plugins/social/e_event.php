@@ -60,7 +60,7 @@ class social_event
 
 		foreach($meta as $m)
 		{
-			if($m['name'] === 'og:image')
+			if(varset($m['name']) === 'og:image')
 			{
 				return null;
 			}
