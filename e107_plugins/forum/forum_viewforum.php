@@ -312,7 +312,7 @@ function init()
 	}
 
 //XXX  What is this?
-	if(substr($forumInfo['forum_name'], 0, 1) == '*')
+	if(!empty($forumInfo['forum_name']) && (substr($forumInfo['forum_name'], 0, 1) == '*'))
 	{
 		$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
 		$container_only = true;
@@ -322,7 +322,7 @@ function init()
 		$container_only = false;
 	}
 
-	if(substr($forum_info['sub_parent'], 0, 1) == '*')
+	if(!empty($forum_info['sub_parent']) && (substr($forum_info['sub_parent'], 0, 1) == '*'))
 	{
 		$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
 	}

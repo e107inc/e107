@@ -459,15 +459,17 @@
 
 		function sc_sub_threadsx()
 		{
-			$badgeThreads = ($this->var['forum_replies']) ? "badge-info" : "";
-			return "<span class='badge {$badgeThreads}'>" . $this->var['forum_threads'] . "</span>";
+			return e107::getParser()->toBadge($this->var['forum_threads']);
+		//	$badgeThreads = ($this->var['forum_replies']) ? "badge-info" : "";
+		//	return "<span class='badge {$badgeThreads}'>" . $this->var['forum_threads'] . "</span>";
 		}
 
 
 		function sc_sub_repliesx()
 		{
-			$badgeReplies = ($this->var['forum_replies']) ? "badge-info" : "";
-			return "<span class='badge {$badgeReplies}'>" . $this->var['forum_replies'] . "</span>";
+			return e107::getParser()->toBadge($this->var['forum_replies']);
+			// $badgeReplies = ($this->var['forum_replies']) ? "badge-info" : "";
+			//return "<span class='badge {$badgeReplies}'>" . $this->var['forum_replies'] . "</span>";
 		}
 
 
