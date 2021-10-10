@@ -2367,7 +2367,10 @@ class e107forum
 			$replace 	= array(ltrim($forumInfo['forum_name'], '*'), e107::url('forum', 'forum', $forumInfo));
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
-			$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
+			if(isset($threadInfo['thread_id']))
+			{
+				$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
+			}
 			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
 			$replace 	= array(vartrue($threadInfo['thread_name']), ''); // $thread->threadInfo - no reference found
 
