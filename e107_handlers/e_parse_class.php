@@ -3888,7 +3888,7 @@ class e_parse
 		$idAtt = (!empty($parm['id'])) ? "id='" . $parm['id'] . "' " : '';
 		$style = (!empty($parm['style'])) ? "style='" . $parm['style'] . "' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class'] . ' ' : '';
-		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : '<!-- -->';
+		$placeholder = isset($parm['placeholder']) ? $parm['placeholder'] : '';
 		$title = (!empty($parm['title'])) ? " title='" . $this->toAttribute($parm['title']) . "' " : '';
 
 		$text = '<' . $tag . " {$idAtt}class='" . $class . $prefix . $id . $size . $spin . $rotate . $fixedW . "' " . $style . $title . '>' . $placeholder . '</' . $tag . '>';

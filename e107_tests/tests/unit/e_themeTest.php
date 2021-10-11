@@ -86,7 +86,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					'bootstrap.editable' =>
 						array(
 							'name'    => 'bootstrap.editable',
-							'version' => '',
+				//			'version' => '',
 						),
 				)
 			),
@@ -108,7 +108,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					'bootstrap.editable' =>
 						array(
 							'name'    => 'bootstrap.editable',
-							'version' => '',
+						//	'version' => '',
 						),
 				)
 			),
@@ -256,14 +256,15 @@ class e_themeTest extends \Codeception\Test\Unit
 		$expected = array(
 			0 =>
 				array(
+					'js'  =>
+						array(
+							0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
+					),
 					'css' =>
 						array(
 							0 => '{e_WEB}lib/bootstrap/3/css/bootstrap.min.css',
 						),
-					'js'  =>
-						array(
-							0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
-						),
+
 				),
 			1 =>
 				array(
@@ -272,6 +273,7 @@ class e_themeTest extends \Codeception\Test\Unit
 							0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
 							1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
 						),
+
 				),
 		);
 
@@ -283,14 +285,15 @@ class e_themeTest extends \Codeception\Test\Unit
 		$expected = array(
 			0 =>
 				array(
+				'js'  =>
+						array(
+							0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
+						),
 					'css' =>
 						array(
 							0 => '{e_WEB}lib/bootstrap/3/css/bootstrap.min.css',
 						),
-					'js'  =>
-						array(
-							0 => '{e_WEB}lib/bootstrap/3/js/bootstrap.min.js',
-						),
+
 				),
 			1 =>
 				array(
@@ -299,6 +302,7 @@ class e_themeTest extends \Codeception\Test\Unit
 							0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
 							1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
 						),
+
 				),
 		);
 
@@ -314,6 +318,42 @@ class e_themeTest extends \Codeception\Test\Unit
 		$this->assertSame($expected, $result);
 
 		//	$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
+
+			/** Expecting bootstrap 5 files fontawesome 5 (js only)  */
+
+		$expected = array (
+		  0 =>
+		  array (
+		    'js' =>
+		    array (
+		      0 => '{e_WEB}lib/bootstrap/5/js/bootstrap.bundle.min.js',
+		    ),
+		    'css' =>
+		    array (
+		      0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
+		    ),
+
+		  ),
+		  1 =>
+		  array (
+		    'js' =>
+		    array (
+		      0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
+		      1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
+		    ),
+		  ),
+		  2 =>
+		  array (
+		    'css' =>
+		    array (
+		      0 => '{e_WEB}lib/animate.css/animate.min.css',
+		    ),
+		  ),
+		);
+
+
+		$result = e107::getTheme('bootstrap5')->getThemeFiles('library', 'front');
+		$this->assertSame($expected, $result);
 
 	}
 
@@ -336,6 +376,11 @@ class e_themeTest extends \Codeception\Test\Unit
 				'theme'    => '_blank',
 				'scope'    => 'front',
 				'expected' => ['bootstrap', 'fontawesome']
+			),
+			3 => array(
+				'theme'    => 'bootstrap5',
+				'scope'    => 'front',
+				'expected' => ['bootstrap5', 'fontawesome5', 'animate.css']
 			),
 
 		);
@@ -374,7 +419,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					2 =>
 						array(
 							'name'    => 'bootstrap.editable',
-							'version' => '',
+					//		'version' => '',
 							'scope'   => 'admin',
 						),
 				)
@@ -398,7 +443,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					2 =>
 						array(
 							'name'    => 'bootstrap.editable',
-							'version' => '',
+						//	'version' => '',
 							'scope'   => 'admin',
 						),
 				)
@@ -579,7 +624,7 @@ class e_themeTest extends \Codeception\Test\Unit
 				    2 =>
 				    array (
 				      'name' => 'bootstrap.editable',
-				      'version' => '',
+				//      'version' => '',
 				      'scope' => 'admin',
 				    ),
 				  )
@@ -598,10 +643,11 @@ class e_themeTest extends \Codeception\Test\Unit
 					    'name' => 'fontawesome',
 					    'version' => '5',
 					    'scope' => 'front',
+					    'files'  => 'js',
 					  ),
 					   2 => array (
 			            'name' => 'animate.css',
-			            'version' => '',
+			    //        'version' => '',
 			            'scope' => 'front',
 			         )
 					),

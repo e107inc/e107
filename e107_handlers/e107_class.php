@@ -2290,9 +2290,14 @@ class e107
 	 *  - In case of 'info': An associative array containing registered information for all libraries, the registered
 	 *    information for the library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	public static function library($action = '', $library = null, $variant = null)
+	public static function library($action = '', $library = null, $variant = null, $types = null)
 	{
 		$libraryHandler = self::getLibrary();
+
+		if(empty($types))
+		{
+			$types = array('js', 'css');
+		}
 
 		switch($action)
 		{
@@ -2317,7 +2322,7 @@ class e107
 						if(!empty($variant) && !empty($lib['variants'][$variant]['installed']))
 						{
 							// Load CDN version with the variant.
-							return $libraryHandler->load('cdn.' . $library, $variant);
+							return $libraryHandler->load('cdn.' . $library, $variant, $types);
 						}
 
 						// If CDN version is available, but no variant is specified,
@@ -2325,11 +2330,11 @@ class e107
 						if(empty($variant) && $debug && !empty($lib['variants']['dev']['installed']))
 						{
 							// Load CDN version with 'debug' variant.
-							return $libraryHandler->load('cdn.' . $library, 'dev');
+							return $libraryHandler->load('cdn.' . $library, 'dev', $types);
 						}
 
 						// Load CDN version without variant.
-						return $libraryHandler->load('cdn.' . $library, $variant);
+						return $libraryHandler->load('cdn.' . $library, $variant, $types);
 					}
 				}
 
@@ -2342,11 +2347,11 @@ class e107
 					if($lib && !empty($lib['variants']['dev']['installed']))
 					{
 						// Load library with 'debug' variant.
-						return $libraryHandler->load($library, 'dev');
+						return $libraryHandler->load($library, 'dev', $types);
 					}
 				}
 
-				return $libraryHandler->load($library, $variant);
+				return $libraryHandler->load($library, $variant, $types);
 				break;
 
 			case 'info':
@@ -2356,26 +2361,21 @@ class e107
 			case 'files':
 				$info = $libraryHandler->info($library);
 				$ret = [];
-				if(!empty($info['files']['css']))
+
+				foreach($types as $t)
 				{
-					foreach($info['files']['css'] as $path => $other)
+					if(!empty($info['files'][$t]))
 					{
-						$file = $info['library_path'].'/';
-						$file .= !empty($info['path']) ? $info['path'].'/' : '';
-						$file .= $path;
-						$ret['css'][] = $file;
+						foreach($info['files'][$t] as $path => $other)
+						{
+							$file = $info['library_path'].'/';
+							$file .= !empty($info['path']) ? $info['path'].'/' : '';
+							$file .= $path;
+							$ret[$t][] = $file;
+						}
 					}
 				}
-				if(!empty($info['files']['js']))
-				{
-					foreach($info['files']['js'] as $path => $other)
-					{
-						$file = $info['library_path'].'/';
-						$file .= !empty($info['path']) ? $info['path'].'/' : '';
-						$file .= $path;
-						$ret['js'][] = $file;
-					}
-				}
+
 
 				return $ret;
 				break;
@@ -2480,6 +2480,7 @@ class e107
 				{
 					$jshandler->requireCoreLib($data);
 				}
+
 			break;
 
 			case 'bootstrap': //TODO Eventually add own method and render for bootstrap.
@@ -2539,6 +2540,7 @@ class e107
 				{
 					$jshandler->headerFile($data, 5, $pre, $post);
 				}
+
 			break;
 
 			case 'footer':

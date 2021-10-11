@@ -735,25 +735,48 @@ class e107Test extends \Codeception\Test\Unit
 		$e107 = $this->e107;
 
 		$expected = array (
+			  'js' =>
+		  array (
+		    0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
+		    1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
+		  ),
 		  'css' =>
 		  array (
 		    0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
 		    1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
 		  ),
+
 		);
 
 		$result = $e107::library('files', 'fontawesome5');
 		$this->assertSame($expected, $result);
 
+
+		// -------------------
+
+		// Expecting only the JS portion of the library.
 		$expected = array (
-		  'css' =>
+		  'js' =>
 		  array (
-		    0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
+		    0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
+		    1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
 		  ),
+		);
+
+		$result = $e107::library('files', 'fontawesome5', null, ['js']);
+		$this->assertSame($expected, $result);
+
+		// -------------------
+		$expected = array (
 		  'js' =>
 		  array (
 		    0 => '{e_WEB}lib/bootstrap/5/js/bootstrap.bundle.min.js',
 		  ),
+		  'css' =>
+		  array (
+		    0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
+		  ),
+
 		);
 
 		$result = $e107::library('files', 'bootstrap5');

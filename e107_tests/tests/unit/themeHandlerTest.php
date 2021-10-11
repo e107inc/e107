@@ -132,12 +132,9 @@
 		{
 
 		}
+*/
 
-		public function testParse_theme_xml()
-		{
-
-		}
-
+/*
 		public function testThemeUpload()
 		{
 

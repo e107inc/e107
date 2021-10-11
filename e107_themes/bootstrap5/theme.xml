@@ -15,7 +15,7 @@
 	</keywords>
 	<libraries>
 		<library name="bootstrap" version="5" scope="front"/>
-		<library name="fontawesome" version="5" scope="front"/>
+		<library name="fontawesome" version="5" scope="front" files="js" />
         <library name="animate.css" scope="front" />
 	</libraries>
 	<stylesheets>

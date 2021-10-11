@@ -235,6 +235,13 @@ class e_theme
 		{
 			foreach($data as $name => $var)
 			{
+				$files = !empty($var['files']) ? array($var['files']) : null;
+
+				if(strpos($name,'fontawesome')!==false && ($files === null))
+				{
+					$files = array('css');
+				}
+
 				if($name === 'bootstrap' && ((int) $var['version'] > 3)) // quick fix.
 				{
 					$name .= (string) $var['version'];
@@ -244,7 +251,8 @@ class e_theme
 					$name .= (string) $var['version'];
 				}
 
-				$ret[] = e107::library('files', $name);
+
+				$ret[] = e107::library('files', $name, null, $files);
 			}
 		}
 		elseif($type === 'css')
@@ -315,9 +323,19 @@ class e_theme
 				{
 					define('FONTAWESOME', (int) $library['version']);
 				}
+
+				if(empty($library['files'])) // force CSS only for backward compatibility.
+				{
+					$library['files'] = 'css';
+				}
 			}
 
-			e107::library('load', $name);
+			// support for 'files' attribute in theme.xml library tag. Specific which part of library to load. js || css or leave empty for both.
+			/* @see theme.xml <library name="fontawesome" version="5" scope="front" files=XXX />  */
+
+			$files = !empty($library['files']) ? array($library['files']) : ['js', 'css'];
+
+			e107::library('load', $name, null, $files);
 			e107::library('preload', $name);
 
 			$loaded[] = $name;
@@ -1097,13 +1115,17 @@ class e_theme
 		{
 			$vars['css'] = array();
 
-			foreach($vars['libraries']['library'] as $val)
+			foreach($vars['libraries']['library'] as $c=>$val)
 			{
-				$vars['library'][] = array(
+				foreach($val['@attributes'] as $k=>$v)
+				{
+					$vars['library'][$c][$k] = $v;
+				}
+			/*	$vars['library'][] = array(
 					'name'  => $val['@attributes']['name'],
 					'version' => varset($val['@attributes']['version']),
 					'scope' => varset($val['@attributes']['scope'], 'front'),
-				);
+				);*/
 			}
 
 			unset($vars['libraries']);
