@@ -936,15 +936,25 @@ class core_library
 			'vendor_url'        => 'https://fontawesome.com/',
 			'version_arguments' => array(
 				'file'    => 'css/all.css',
-				'pattern' => '/(\d\.\d\.\d+)/',
-				'lines'   => 10,
+				'pattern' => '/(\d\.\d*\.\d+)/',
+				'lines'   => 2,
 			),
 			'files'             => array(
+				'js'  => array(
+					'js/all.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+					'js/v4-shims.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
 				'css' => array(
-					'css/all.css' => array(
+					'css/all.min.css' => array(
 						'zone' => 2,
 					),
-					'css/v4-shims.css' => array(
+					'css/v4-shims.min.css' => array(
 						'zone' => 2,
 					),
 				),
@@ -962,9 +972,9 @@ class core_library
 				),
 			),*/
 			// Override library path to CDN.
-			'library_path'      => 'https://use.fontawesome.com/releases',
-			'path'              => 'v5.8.1',
-			'version'           => '5.8.1',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0',
+			'path'              => '',
+			'version'           => '5.14.0',
 		);
 
 		// Font-Awesome (local).
@@ -977,6 +987,16 @@ class core_library
 				'lines'   => 3,
 			),
 			'files'             => array(
+				'js'  => array(
+					'js/all.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+					'js/v4-shims.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
 				'css' => array(
 					'css/all.min.css' => array(
 						'zone' => 2,
@@ -1445,7 +1465,7 @@ class e_library_manager
 	 *   - loaded: Either the amount of library files that have been loaded, or FALSE if the library could not be
 	 *   loaded. See MYPLUGIN_library::config() for more information.
 	 */
-	public function load($name, $variant = null)
+	public function load($name, $variant = null, $types = ['js', 'css'])
 	{
 		// Re-use the statically cached value to save memory.
 
@@ -1511,7 +1531,7 @@ class e_library_manager
 				$this->invoke('pre_load', $library);
 
 				// Load all the files associated with the library.
-				$library['loaded'] = $this->loadFiles($library);
+				$library['loaded'] = $this->loadFiles($library, $types);
 
 				// TODO:
 				// Invoke callbacks in the 'post_load' group.
@@ -1996,7 +2016,7 @@ class e_library_manager
 	 * @return int
 	 *   The number of loaded files.
 	 */
-	private function loadFiles($library)
+	private function loadFiles($library, $types = array('js', 'css'))
 	{
 		$siteTheme = e107::getPref('sitetheme');
 		$adminTheme = e107::getPref('admintheme');
@@ -2048,7 +2068,7 @@ class e_library_manager
 		$count = 0;
 
 		// Load both the JavaScript and the CSS files.
-		foreach(array('js', 'css') as $type)
+		foreach($types as $type)
 		{
 			if(!empty($library['files'][$type]))
 			{
