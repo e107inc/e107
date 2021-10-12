@@ -166,12 +166,44 @@
 		{
 
 		}
-
+*/
 		public function testHeaderFile()
 		{
+			$load = array(
+				0 => array(
+					'file'  => '{e_PLUGIN}forum/js/forum.js',
+					'zone' => 5,
+				),
+				1 => array(
+					'file'  => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+					'zone' => 1,
+				),
+				2 => array(
+					'file'  => '{e_WEB}js/bootstrap-notify/js/bootstrap-notify.js',
+					'zone'  => 2
+
+				),
+
+
+			);
+
+			foreach($load as $t)
+			{
+				$this->js->headerFile($t['file'], $t['zone']);
+			}
+
+			$result = $this->js->renderJs('header', 1, true, true);
+			$expected = '
+<!-- [JSManager] Header JS include - zone #1 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+';
+
+			$this->assertSame($expected, $result);
+
+
 
 		}
-
+/*
 		public function testSetDependency()
 		{
 

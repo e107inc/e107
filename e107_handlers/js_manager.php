@@ -330,7 +330,11 @@ class e_jsmanager
 	 */
 	public function coreCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('core_css', $file_path, $media);
+		$opts = [
+			'pre' => $preComment,
+			'post' => $postComment,
+		];
+		$this->addJs('core_css', $file_path, $media, $opts);
 		return $this;
 	}
 
@@ -344,15 +348,21 @@ class e_jsmanager
 	 */
 	public function pluginCSS($plugname, $file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
+		$opts = [
+			'pre' => $preComment,
+			'post' => $postComment,
+		];
+
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fpath => $media_attr)
 			{
-				$this->addJs('plugin_css', $plugname.':'.$fpath, $media_attr, $preComment, $postComment);
+
+				$this->addJs('plugin_css', $plugname.':'.$fpath, $media_attr, $opts);
 			}
 			return $this;
 		}
-		$this->addJs('plugin_css', $plugname.':'.$file_path, $media, $preComment, $postComment);
+		$this->addJs('plugin_css', $plugname.':'.$file_path, $media, $opts);
 		return $this;
 	}
 
@@ -365,7 +375,11 @@ class e_jsmanager
 	 */
 	public function themeCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('theme_css', $file_path, $media, $preComment, $postComment);
+		$opts = [
+			'pre' => $preComment,
+			'post' => $postComment,
+		];
+		$this->addJs('theme_css', $file_path, $media, $opts);
 		return $this;
 	}
 
@@ -378,7 +392,11 @@ class e_jsmanager
 	 */
 	public function libraryCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('library_css', $file_path, $media, $preComment, $postComment);
+		$opts = [
+			'pre' => $preComment,
+			'post' => $postComment,
+		];
+		$this->addJs('library_css', $file_path, $media, $opts);
 		return $this;
 	}
 
@@ -393,7 +411,11 @@ class e_jsmanager
 	 */
 	public function otherCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
 	{
-		$this->addJs('other_css', $file_path, $media, $preComment, $postComment);
+		$opts = [
+			'pre' => $preComment,
+			'post' => $postComment,
+		];
+		$this->addJs('other_css', $file_path, $media, $opts);
 		return $this;
 	}
 
@@ -514,7 +536,12 @@ class e_jsmanager
 	 */
 	public function headerFile($file_path, $zone = 5, $pre = '', $post = '')
 	{
-		$this->addJs('header', $file_path, $zone, $pre, $post);
+		$opts = [
+			'pre' => $pre,
+			'post' => $post,
+		];
+
+		$this->addJs('header', $file_path, $zone, $opts);
 		return $this;
 	}
 
@@ -601,7 +628,11 @@ class e_jsmanager
 	 */
 	public function footerFile($file_path, $priority = 5, $pre = '', $post = '')
 	{
-		$this->addJs('footer', $file_path, $priority, $pre, $post);
+		$opts = [
+			'pre' => $pre,
+			'post' => $post,
+		];
+		$this->addJs('footer', $file_path, $priority, $opts);
 		return $this;
 	}
 
@@ -722,6 +753,12 @@ class e_jsmanager
 	
 	public function checkLibDependence($rlocation, $libs = null)
 	{
+		$opts = [
+			'pre' => '<!-- AutoLoad -->',
+			'post' => '',
+
+		];
+
 		// Load Required Library (prototype | jquery)
 		// called from addJs(), make isDisabled checks for smart runtime library detection
 		if($rlocation && $libs === null && $this->_dependence != null && isset($this->_libraries[$this->_dependence]) && !isset($this->_dependenceLoaded[$this->_dependence][$rlocation])) // load framework
@@ -731,23 +768,26 @@ class e_jsmanager
 				$this->_dependenceLoaded[$this->_dependence][$rlocation] = array();
 				return;
 			}
-			
+
+
+
 			foreach($this->_libraries[$this->_dependence] as $inc)
 			{
 				if(strpos($inc,".css")!==false)
 				{
 					if(strpos($inc,"://")!==false) // cdn 
 					{
-						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
+
+						$this->addJs('other_css', $inc, 'all', $opts);
 					}
 					else
 					{
-						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
+						$this->addJs('core_css', $inc, 'all', $opts);
 					}
 				}
 				else
 				{
-					$this->addJs('core', $inc, $rlocation, '<!-- AutoLoad -->');
+					$this->addJs('core', $inc, $rlocation, $opts);
 				}
 				$this->_dependenceLoaded[$this->_dependence][$rlocation][] = $inc;
 			}
@@ -766,16 +806,16 @@ class e_jsmanager
 				{
 					if(strpos($inc,"://")!==false) // cdn 
 					{
-						$this->addJs('other_css', $inc, 'all', '<!-- AutoLoad -->');	
+						$this->addJs('other_css', $inc, 'all', $opts);
 					}
 					else
 					{
-						$this->addJs('core_css', $inc, 'all', '<!-- AutoLoad -->');
+						$this->addJs('core_css', $inc, 'all', $opts);
 					}
 				}
 				else
 				{
-					$this->addJs('core', $inc, $rlocation, '<!-- AutoLoad -->');
+					$this->addJs('core', $inc, $rlocation, $opts);
 				}
 				$this->_dependenceLoaded[$this->_dependence][$rlocation][] = $inc;
 			}
@@ -889,9 +929,10 @@ class e_jsmanager
 	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css - runtime
 	 * @param string|array $file_path
 	 * @param string|integer $runtime_location admin|front|all|none (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
+	 * @param array $opts  - ['pre'] and ['post']
 	 * @return object $this
 	 */
-	protected function addJs($type, $file_path, $runtime_location = '', $pre = '', $post = '')
+	protected function addJs($type, $file_path, $runtime_location = '', $opts = array())
 	{
 		// TODO FIXME - remove JS framework dependency from front-end and backend. 
 		// ie. no JS errors when prototype.js is completely disabled. 
@@ -900,13 +941,16 @@ class e_jsmanager
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
 
+		$pre = !empty($opts['pre']) ? $opts['pre'] : '';
+		$post = !empty($opts['post']) ? $opts['post'] : '';
+
 		if(empty($file_path))
 		{
 			return $this;
 		}
 		
 		// prevent loop of death
-		if($pre != '<!-- AutoLoad -->') 
+		if($pre !== '<!-- AutoLoad -->')
 		{
 			$rlocation = $runtime_location;
 			if(is_numeric($runtime_location)) $rlocation = $this->isInAdmin() ? 'admin' : 'front';
