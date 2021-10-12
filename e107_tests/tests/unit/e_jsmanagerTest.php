@@ -173,15 +173,23 @@
 				0 => array(
 					'file'  => '{e_PLUGIN}forum/js/forum.js',
 					'zone' => 5,
+					'opts'  => []
 				),
 				1 => array(
 					'file'  => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
 					'zone' => 1,
+					'opts'  => []
 				),
 				2 => array(
 					'file'  => '{e_WEB}js/bootstrap-notify/js/bootstrap-notify.js',
-					'zone'  => 2
+					'zone'  => 2,
+					'opts'  => []
 
+				),
+				3 => array(
+					'file'  => 'https://somewhere/something.min.js',
+					'zone' => 3,
+					'opts'  => array('defer'=>true)
 				),
 
 
@@ -189,18 +197,63 @@
 
 			foreach($load as $t)
 			{
-				$this->js->headerFile($t['file'], $t['zone']);
+				$this->js->headerFile($t['file'], $t['zone'], null, null, $t['opts']);
 			}
 
+			// Test loaded files.
+
 			$result = $this->js->renderJs('header', 1, true, true);
-			$expected = '
-<!-- [JSManager] Header JS include - zone #1 -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-';
+			$this->assertStringContainsString('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
+			$this->assertStringContainsString('zone #1', $result);
 
-			$this->assertSame($expected, $result);
+			$result = $this->js->renderJs('header', 3, true, true);
+			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
+			$this->assertStringContainsString('zone #3', $result);
+
+		}
+
+		public function testFooterFile()
+		{
+			$load = array(
+				0 => array(
+					'file'  => '{e_PLUGIN}forum/js/forum.js',
+					'zone' => 5,
+					'opts'  => []
+				),
+				1 => array(
+					'file'  => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+					'zone' => 1,
+					'opts'  => []
+				),
+				2 => array(
+					'file'  => '{e_WEB}js/bootstrap-notify/js/bootstrap-notify.js',
+					'zone'  => 2,
+					'opts'  => []
+
+				),
+				3 => array(
+					'file'  => 'https://somewhere/something.min.js',
+					'zone' => 3,
+					'opts'  => array('defer'=>true)
+				),
 
 
+			);
+
+			foreach($load as $t)
+			{
+				$this->js->footerFile($t['file'], $t['zone'], null, null, $t['opts']);
+			}
+
+			// Test loaded files.
+
+			$result = $this->js->renderJs('footer', 1, true, true);
+			$this->assertStringContainsString('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
+			$this->assertStringContainsString('priority #1', $result);
+
+			$result = $this->js->renderJs('footer', 3, true, true);
+			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
+			$this->assertStringContainsString('priority #3', $result);
 
 		}
 /*

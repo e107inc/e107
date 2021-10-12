@@ -2451,10 +2451,10 @@ class e107
 	 * JS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
 	 * @param string|array $data depends on the type - path/url or inline js source
+	 * @param string|array $parm parameters. BC string dependence :  null | prototype | jquery OR array of parameters. tbd
 	 * @param integer $zone [optional] leave it null for default zone
-	 * @param string $dep dependence :  null | prototype | jquery
 	 */
-	public static function js($type, $data, $dep = null, $zone = null, $pre = '', $post = '')
+	public static function js($type, $data, $parm = null, $zone = null, $pre = '', $post = '')
 	{
 		if(self::$_js_enabled === false)
 		{
@@ -2462,7 +2462,11 @@ class e107
 		}
 
 		$jshandler = self::getJs();
-		$jshandler->setDependency($dep);
+		if(is_string($parm))
+		{
+			$jshandler->setDependency($parm);
+			$parm = null;
+		}
 
 		switch ($type)
 		{
@@ -2534,11 +2538,11 @@ class e107
 				// data is e.g. 'http://cdn.somesite.com/some.js'
 				if($zone !== null)
 				{
-					$jshandler->headerFile($data, $zone, $pre, $post);
+					$jshandler->headerFile($data, $zone, $pre, $post, $parm);
 				}
 				else
 				{
-					$jshandler->headerFile($data, 5, $pre, $post);
+					$jshandler->headerFile($data, 5, $pre, $post, $parm);
 				}
 
 			break;
@@ -2547,11 +2551,11 @@ class e107
 				// data is e.g. '{e_PLUGIN}myplugin/jslib/myplug.js'
 				if($zone !== null)
 				{
-					$jshandler->footerFile($data, $zone, $pre, $post);
+					$jshandler->footerFile($data, $zone, $pre, $post, $parm);
 				}
 				else
 				{
-					$jshandler->footerFile($data, 5, $pre, $post);
+					$jshandler->footerFile($data, 5, $pre, $post, $parm);
 				}
 			break;
 

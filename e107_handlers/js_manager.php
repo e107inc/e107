@@ -534,12 +534,17 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerFile($file_path, $zone = 5, $pre = '', $post = '')
+	public function headerFile($file_path, $zone = 5, $pre = '', $post = '', $opts = array())
 	{
-		$opts = [
-			'pre' => $pre,
-			'post' => $post,
-		];
+		if(!empty($pre))
+		{
+			$opts['pre'] = $pre;
+		}
+
+		if(!empty($post))
+		{
+			$opts['post'] = $post;
+		}
 
 		$this->addJs('header', $file_path, $zone, $opts);
 		return $this;
@@ -626,12 +631,18 @@ class e_jsmanager
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
-	public function footerFile($file_path, $priority = 5, $pre = '', $post = '')
+	public function footerFile($file_path, $priority = 5, $pre = '', $post = '', $opts=array())
 	{
-		$opts = [
-			'pre' => $pre,
-			'post' => $post,
-		];
+		if(!empty($pre))
+		{
+			$opts['pre'] = $pre;
+		}
+
+		if(!empty($post))
+		{
+			$opts['post'] = $post;
+		}
+
 		$this->addJs('footer', $file_path, $priority, $opts);
 		return $this;
 	}
@@ -1088,23 +1099,50 @@ class e_jsmanager
 
 
 			case 'header':
-				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
-				$zone = intval($runtime_location);
+				$info = [
+					$tp->createConstants($file_path, 'mix'),
+					$pre,
+					$post
+				];
+
+				if(!empty($opts['defer']))
+				{
+					$info[] = 'defer';
+				}
+
+				$file_path = implode($this->_sep, $info);
+				$zone = (int) $runtime_location;
+
 				if($zone > 5 || $zone < 1)
 				{
 					$zone = 5;
 				}
+
 				if(!isset($this->_runtime_header[$zone]))
 				{
 					$this->_runtime_header[$zone] = array();
 				}
+
 				$registry = &$this->_runtime_header[$zone];
 				$runtime = true;
 			break;
 
 			case 'footer':
-				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
-				$zone = intval($runtime_location);
+				$info = [
+					$tp->createConstants($file_path, 'mix'),
+					$pre,
+					$post
+				];
+
+				if(!empty($opts['defer']))
+				{
+					$info[] = 'defer';
+				}
+
+				$file_path = implode($this->_sep, $info);
+
+				$zone = (int) $runtime_location;
+
 				if($zone > 5 || $zone < 1)
 				{
 					$zone = 5;
