@@ -366,6 +366,7 @@ class core_library
 					'dist/js/bootstrap.bundle.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 				),
 				'css' => array(
@@ -374,26 +375,7 @@ class core_library
 					),
 				),
 			),
-			'variants'          => array(
-				// 'unminified' version for debugging.
-				/*'dev' => array(
-					'files' => array(
-						'js'  => array(
-							'js/bootstrap.js' => array(
-								'zone' => 2,
-								'type' => 'footer',
-							),
-						),
-						'css' => array(
-							'css/bootstrap.css' => array(
-								'zone' => 2,
-							),
-						),
-					),
-				),*/
-
-
-			),
+			'variants'          => array(),
 			// Override library path to CDN.
 		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
 			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.1',
@@ -416,6 +398,7 @@ class core_library
 					'js/bootstrap.bundle.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 				),
 				'css' => array(
@@ -424,24 +407,7 @@ class core_library
 					),
 				),
 			),
-		/*	'variants'          => array(
-				// 'unminified' version for debugging.
-				'dev' => array(
-					'files' => array(
-						'js'  => array(
-							'js/bootstrap.bundle.js' => array(
-								'zone' => 2,
-								'type' => 'footer',
-							),
-						),
-						'css' => array(
-							'css/bootstrap.css' => array(
-								'zone' => 2,
-							),
-						),
-					),
-				),
-			),*/
+			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '5',
 			'version'           => '5.1.1',
@@ -944,10 +910,12 @@ class core_library
 					'js/all.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 					'js/v4-shims.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 				),
 				'css' => array(
@@ -959,18 +927,7 @@ class core_library
 					),
 				),
 			),
-		/*	'variants'          => array(
-				// 'unminified' version for debugging.
-				'dev' => array(
-					'files' => array(
-						'css' => array(
-							'css/font-awesome.css' => array(
-								'zone' => 2,
-							),
-						),
-					),
-				),
-			),*/
+			'variants'          => array(),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0',
 			'path'              => '',
@@ -991,10 +948,12 @@ class core_library
 					'js/all.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 					'js/v4-shims.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
+						'defer' => true,
 					),
 				),
 				'css' => array(
@@ -1006,22 +965,8 @@ class core_library
 					),
 				),
 			),
-			'variants'          => array(
-				// 'unminified' version for debugging.
-				'dev' => array(
-					'files' => array(
-						'css' => array(
-							'css/all.css' => array(
-								'zone' => 2,
-							),
-							'css/v4-shims.css' => array(
-								'zone' => 2,
-							),
-						),
-					),
-				),
-			),
-			// Override library path.
+
+			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
 			'version'           => '5.15.2',
@@ -2101,7 +2046,7 @@ class e_library_manager
 					}
 					if($type == 'js')
 					{
-						e107::js($options['type'], $data, null, $options['zone']);
+						e107::js($options['type'], $data, $options, $options['zone']);
 					}
 					elseif($type == 'css')
 					{
