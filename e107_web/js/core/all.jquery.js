@@ -123,12 +123,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eAJAX = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-ajax').one('e-ajax').each(function ()
+			$(context).find('.e-ajax').each(function ()
 			{
 				var $this = $(this);
 				var event = $this.attr('data-event') || e107.callbacks.getDefaultEventHandler($this);
 
-				$this.on(event, function ()
+				$this.one(event, function ()
 				{
 					var $element = $(this);
 
@@ -219,7 +219,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				$(this).show();
 
 				// default 'toggle'.
-				$(this).click(function ()
+				$(this).on('click', function ()
 				{
 
 					var $this = $(this);
