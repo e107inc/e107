@@ -70,6 +70,7 @@ class e_form
 	private     $_inline_token;
 	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
 	private     $_fontawesome = false;
+	private     $_bootstrap;
 	private     $_helptip = 1;
 	/**
 	 * @var user_class
@@ -94,6 +95,11 @@ class e_form
 		if(deftrue('FONTAWESOME'))
 		{
 			$this->_fontawesome = true;
+		}
+
+		if(deftrue('BOOTSTRAP'))
+		{
+			$this->_bootstrap = (int) BOOTSTRAP;
 		}
 
 		$this->_helptip = (int) e107::getPref('admin_helptip', 1);
@@ -649,19 +655,35 @@ class e_form
 		$navigation = isset($options['navigation']) ? $options['navigation'] : true;
 		$indicate = isset($options['indicators']) ? $options['indicators'] : true;
 
+		$prefix = ($this->_bootstrap > 4) ? 'data-bs-' : 'data-';
+
+		$att = [
+				'id'            => $name,
+				'class'         => 'carousel slide'
+		];
+
+		$att[$prefix.'ride'] = 'carousel';
+
+		if(isset($options['wrap']))
+		{
+			$att[$prefix.'wrap'] = (bool) $options['wrap'];
+		}
+
+		if(isset($options['interval']))
+		{
+			$att[$prefix.'interval'] = (int) $options['interval'];
+		}
+
+		if(isset($options['pause']))
+		{
+			$att[$prefix.'pause'] = (string) $options['pause'];
+		}
+
 
 		$start = '
 		<!-- Carousel -->
 		
-		<div' . $this->attributes([
-				'id'            => $name,
-				'class'         => 'carousel slide',
-				'data-ride'     => 'carousel',
-				'data-bs-ride'  => 'carousel',
-				'data-interval' => isset($options['interval']) ? $options['interval'] : null,
-				'data-wrap'     => isset($options['wrap']) ? $options['wrap'] : null,
-				'data-pause'    => isset($options['pause']) ? $options['pause'] : null,
-			]) . '>';
+		<div' .$this->attributes($att) . '>';
 
 		if($indicate && (count($array) > 1))
 		{
@@ -674,7 +696,7 @@ class e_form
 			foreach($array as $key=>$tab)
 			{
 				$active = ($c == $act) ? ' class="active"' : '';
-				$indicators .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" data-bs-target="#'.$name.'" data-bs-slide-to="'.$c.'" '.$active.'></li>';
+				$indicators .=  '<li '.$prefix.'target="#'.$name.'" '.$prefix.'slide-to="'.$c.'" '.$active.'></li>';
 				$c++;
 			}
 
@@ -692,7 +714,7 @@ class e_form
 		foreach($array as $key=>$tab)
 		{
 			$active = ($c == $act) ? ' active' : '';
-			$label = !empty($tab['label']) ? ' data-label="'.$tab['label'].'"' : '';
+			$label = !empty($tab['label']) ? ' '.$prefix.'label="'.$tab['label'].'"' : '';
 			$inner .= '<div class="carousel-item item'.$active.'" id="'.$key.'"'.$label.'>';
 			$inner .= $tab['text'];
 			
@@ -711,10 +733,10 @@ class e_form
 		if($navigation && (count($array) > 1))
 		{
 			$controls = '
-			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" data-slide="prev" data-bs-slide="prev">
+			<a class="left carousel-control carousel-left" href="#'.$name.'" role="button" '.$prefix.'slide="prev">
 	        <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
-			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" data-slide="next" data-bs-slide="next">
+			<a class="right carousel-control carousel-right" href="#'.$name.'" role="button" '.$prefix.'slide="next">
 			<span class="glyphicon glyphicon-chevron-right"></span>
 			</a>';
 		}
@@ -3999,8 +4021,12 @@ var_dump($select_options);*/
 
 		foreach ($attributes as $key => $value)
 		{
-			if ($value === true) $value = $key;
-			if (!empty($value) || is_numeric($value) || $key === "value")
+
+			if ($value === true && (strpos($key,'data-') !== 0))
+			{
+				 $value = $key;
+			}
+			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key,'data-') === 0)
 			{
 				$stringifiedAttributes[] = $key . "='" . htmlspecialchars($value, ENT_QUOTES) . "'";
 			}
