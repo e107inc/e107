@@ -304,12 +304,28 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testCarousel()
 			{
+				$slides = [
+					1 => ['caption'=>'Slide 1', 'text'=>'slide 1'],
+					2 => ['caption'=>'Slide 2', 'text' => 'slide 2'],
+					3 => ['caption' => 'Slide 3', 'text'=> 'slide 3']
+				];
+
+				$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>true, 'interval'=>false, 'data'=>false];
+				$result = $this->_frm->carousel('test-carousel', $slides, $parms);
+				$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='1' data-interval='0'>";
+				$this->assertStringContainsString($expected, $result);
+
+
+				$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>false, 'interval'=>false, 'data'=>false];
+				$result = $this->_frm->carousel('test-carousel', $slides, $parms);
+				$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='' data-interval='0'>";
+				$this->assertStringContainsString($expected, $result);
 
 			}
-
+/*
 			public function testUrl()
 			{
 
