@@ -677,7 +677,7 @@ class rssCreate
 						<name>e107</name>\n";
 						//<email></email>\n
 						echo "
-						<uri>http://e107.org/</uri>\n
+						<uri>https://e107.org/</uri>\n
 					</author>\n
 					<link rel='self' href='".$tp->toRss(e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'rss_topicid'=>$this->topicid),'full'))."' />\n";
 
@@ -688,7 +688,7 @@ class rssCreate
 					<contributor>\n
 						<name>e107</name>\n
 					</contributor>\n
-					<generator uri='http://e107.org/' version='".defset('e_VERSION')."'>e107</generator>\n";
+					<generator uri='https://e107.org/' version='".defset('e_VERSION')."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
 					<logo>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
