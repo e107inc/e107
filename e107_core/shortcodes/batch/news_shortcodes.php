@@ -502,13 +502,14 @@ class news_shortcodes extends e_shortcode
 			'alt'           => basename($srcPath),
 			'style'         => $style,
 			'placeholder'   => varset($parm['placeholder']),
+			'legacy'        => '{e_IMAGE}newspost_images'
 		);
 
 		if(!empty($parm['loading']))
 		{
 		    $imgParms['loading'] = $parm['loading'];
         }
-
+		
 
 		$imgTag = $tp->toImage($srcPath,$imgParms);
 
