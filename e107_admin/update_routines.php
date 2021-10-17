@@ -1027,7 +1027,7 @@ function update_706_to_800($type='')
 		{	//else if the menu is not active
 			//we need to delete the online_extended menu row, and change the online_menu to online
 			$sql->delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
-			$log->logMessage(LAN_UPDATE_31, E_MESSAGE_DEBUG);
+			$log->logMessage(LAN_UPDATE_23, E_MESSAGE_DEBUG);
 		}
 		catch_error($sql);
 	}

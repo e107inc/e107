@@ -53,7 +53,7 @@ if (isset($_POST['submit']))
 {
 	if($_POST['poll_title'])
 	{
-		define("POLLID",$_POST['poll_id']);
+		define("POLLID", (int) $_POST['poll_id']);
 		$poll->submit_poll();
 		$mes->addSuccess(LAN_CREATED);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);

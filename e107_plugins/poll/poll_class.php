@@ -117,11 +117,11 @@ class poll
 	*/
 	function submit_poll($mode=1)
 	{
-		global $admin_log;
-				
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+		$admin_log = e107::getLog();
+
+		$pollID         = (int) varset($_POST['poll_id']);
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp->toDB($_POST['poll_comment']);
 		$multipleChoice	= intval($_POST['multipleChoice']);
@@ -134,13 +134,13 @@ class poll
 
 		$pollOption = $tp->filter($_POST['poll_option']);
 		$pollOption = array_filter($pollOption, 'poll::clean_poll_array');
- 
+
 		foreach ($pollOption as $key => $value)
 		{
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
-		if (POLLACTION == 'edit' || vartrue($_POST['poll_id']))
+		if (defset('POLLACTION') === 'edit' || !empty($pollID))
 		{
 			$sql->update("polls", "poll_title='{$poll_title}', 
 			  				   poll_options='{$poll_options}', 
@@ -150,15 +150,15 @@ class poll
 							   poll_result_type={$showResults}, 
 							   poll_vote_userclass={$pollUserclass}, 
 							   poll_storage_method={$storageMethod}
-							   WHERE poll_id=".intval(POLLID));
+							   WHERE poll_id=".$pollID);
 
 			/* update poll results - bugtracker #1124 .... */
-			$sql->select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
+			$sql->select("polls", "poll_votes", "poll_id='".$pollID."' ");
 			$foo = $sql->fetch();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
-			$poll_option = varset($poll_option, 0);
-			$opt = count($poll_option) - count($voteA);
+		//	$poll_option = varset($poll_options, 0);
+			$opt = count($pollOption) - count($voteA);
 
 			if ($opt)
 			{
@@ -166,10 +166,10 @@ class poll
 				{
 					$foo['poll_votes'] .= '0'.chr(1);
 				}
-				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
+				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".$pollID."' ");
 			}
 
-			e107::getLog()->add('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
+			e107::getLog()->add('POLL_02','ID: '.$pollID.' - '.$poll_title,'');
 			//$message = POLLAN_45;
 		} 
 		else 
@@ -871,7 +871,7 @@ class poll
 			// $text .= "<input  type='submit' name='preview' value='".LAN_PREVIEW."' /> ";
 			$text .= $frm->admin_button('preview',LAN_PREVIEW,'other');
 			
-			if (POLLACTION == 'edit')
+			if (defset('POLLACTION') === 'edit')
 			{
 				$text .= $frm->admin_button('submit', LAN_UPDATE, 'update')."
 				
@@ -918,6 +918,7 @@ class poll_shortcodes extends e_shortcode
 	public $pollPercentage  = 0;
 	public $pollVotes       = 0;
 	public $pollCount       = 0; // total polls in the system
+	public $pollType;
 
 	private $barl = null;
 	private $barr = null;

@@ -274,12 +274,12 @@
 				switch($pref['image_post_disabled_method'])
 				{
 					case '1' :
-						return CORE_LAN17;
+						return defset('CORE_LAN17');
 					case '2' :
 						return '';
 				}
 
-				return CORE_LAN18 . $code_text;
+				return defset('CORE_LAN18') . $code_text;
 			}
 
 
