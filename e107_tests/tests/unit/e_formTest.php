@@ -855,12 +855,15 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testAdmin_button()
 			{
+				$result = $this->_frm->admin_button('update_id', "Update", 'update');
+				$expected = "<button data-loading-icon='fa-spinner' type='submit' name='update_id' value='Update' id='update-id' class='btn update btn-success'><span>Update</span></button>";
 
+				$this->assertSame($expected, $result);
 			}
-
+/*
 			public function testDefaultButtonClassExists()
 			{
 
