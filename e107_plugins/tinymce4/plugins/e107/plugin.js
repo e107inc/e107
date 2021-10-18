@@ -19,40 +19,6 @@
 
             console.log('Initializing e107 TinyMce Plugin');
 
-			ed.on('beforeSetContent', function(e)
-			{
-		        e.content = t['_e107_bbcode2html'](e.content, url);
-
-			});
-
-			ed.on('change', function(e) {
-			//	  console.log('the event object ', e);
-			//	console.log(e);
-           	//	console.log('the editor object ', ed);
-           //		console.log('the content ', ed.getContent());
-			});
-
-
-		//	ed.contentCSS.push(url+'/e107.css');
-
-
-			ed.on('postProcess', function(e) {
-
-          //      console.log(e);
-          //      alert(e.content); // remove comment to test.
-
-				if (e.set) {
-					e.content = t['_e107_bbcode2html'](e.content, url);
-				}
-
-				if (e.get) {
-					e.content = t['_e107_html2bbcode'](e.content, url);
-				}
-
-
-			});
-			
-
 		// Emoticons 
 		//	ed.addButton('e107-bbcode', {
 				ed.addMenuItem('e107-bbcode', {
@@ -195,62 +161,6 @@
 				infourl: 'http://www.tinymce.com/wiki.php/Plugin:bbcode'
 			};
 		},
-
-		// Private methods
-
-		// HTML -> BBCode in PunBB dialect
-		_e107_html2bbcode : function(s, url) {
-			s = tinymce.trim(s);
-
-		//	return s;
-		
-			var p = $.ajax({
-					type: "POST",
-					url: url + "/parser.php",
-					data: { content: s, mode: 'tobbcode' },
-					async: false,
-
-					dataType: "html",
-					success: function(html) {
-				      return html;
-				    },
-				     error: function (request, status, error) {
-                        console.log(request.responseText);
-                    }
-				}).responseText;
-
-			return p;
-
-			
-		},
-
-		// BBCode -> HTML from PunBB dialect
-		_e107_bbcode2html : function(s, url) {
-			s = tinymce.trim(s);
-
-		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
-
-		//	return s;
-
-			var p = $.ajax({
-					type: "POST",
-					url: url + "/parser.php",
-					data: { content: s, mode: 'tohtml' },
-					async: false,
-
-					dataType: "html",
-					success: function(html) {
-				      return html;
-				    },
-				    error: function (request, status, error) {
-                        console.log(request.responseText);
-                    }
-				}).responseText;
-
-				return p;
-
-			
-		}
 	});
 
 	// Register plugin

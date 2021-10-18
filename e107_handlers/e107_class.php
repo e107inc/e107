@@ -2954,7 +2954,7 @@ class e107
 
 			if(method_exists($obj, $method_name))
 			{
-				if(E107_DBG_INCLUDES)
+				if(defined('E107_DBG_INCLUDES') && E107_DBG_INCLUDES)
 				{
 					//$debug_backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
 					$mes->addDebug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');

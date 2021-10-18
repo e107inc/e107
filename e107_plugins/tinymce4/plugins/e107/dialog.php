@@ -71,29 +71,6 @@ $(document).ready(function()
 				tinyMCEPopup.close();
 		});
 	
-		$('#bbcodeInsert').click(function () 
-		{
-				s = $('#bbcodeValue').val();
-				s = s.trim(s);
-	
-				var html = $.ajax({
-					type: 'POST',
-					url: './parser.php',
-					data: { content: s, mode: 'tohtml' },
-					async       : false,
-
-					dataType: 'html',
-					success: function(html) {
-				      return html;
-				    }
-				}).responseText;
-
-				html = '<bbcode alt=\"'+encodeURIComponent(s)+'\">' + html + '</bbcode>   ' ;
-alert(html);
-				tinyMCEPopup.editor.execCommand('mceInsertContent', false, html);
-				tinyMCEPopup.close();
-		});
-	
 		$('a.bbcodeSelect').click(function () {
 			var html = $(this).html();	
 			$('#bbcodeValue').val(html);

@@ -30,11 +30,24 @@ class tinymce4_setup
 		//	print_a(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,8)); 
 			return true; 
 		}
+
+		if ($this->upgrade_required_addon_parse()) return true;
 		
 		return false; 
 	}
-	
 
+	/**
+	 * @return bool true if the e_parse addon is not registered
+	 */
+	private function upgrade_required_addon_parse()
+	{
+		$list = e107::getConfig()->get('e_parse_list');
+
+		if (!is_array($list)) return true;
+		if (!in_array('tinymce4', $list)) return true;
+
+		return false;
+	}
 	
 /*	
  	function install_pre($var)

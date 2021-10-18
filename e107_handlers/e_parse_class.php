@@ -592,7 +592,7 @@ class e_parse
 		}
 
 		// Don't allow hooks to mess with prefs.
-		if($mod !== 'model')
+		if($mod === 'pReFs')
 		{
 			return $ret;
 		}
@@ -608,8 +608,8 @@ class e_parse
 			$opts = array(
 				'nostrip'  => $nostrip,
 				'noencode' => $no_encode,
-				'type'     => $parm['type'],
-				'field'    => $parm['field']
+				'type'     => isset($parm['type']) ? $parm['type'] : null,
+				'field'    => isset($parm['field']) ? $parm['field'] : null,
 			);
 
 			foreach($eParseList as $plugin)

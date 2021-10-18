@@ -2497,6 +2497,7 @@ class e_form
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
 		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
+		$ret .= $this->hidden("__meta_type_{$name}", "bbarea");
 			
 		$ret .= "</div>\n";
 		

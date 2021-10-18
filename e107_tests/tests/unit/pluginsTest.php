@@ -545,7 +545,7 @@
 					'delete_files'   => 1
 			);
 
-			$this->pluginUninstall('nofollow',$opts);
+			@$this->pluginUninstall('nofollow',$opts);
 
 			$status = is_dir(e_PLUGIN."nofollow");
 
