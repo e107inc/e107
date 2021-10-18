@@ -448,7 +448,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 							if(defset("BOOTSTRAP"))
 							{
-								$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='" . $url . "'>" . $saveicon . " {$name}</a><br />";
+								$txt .= "<a class='forum-attachment-file btn btn-sm btn-default btn-secondary' href='" . $url . "'>" . $saveicon . " {$name}</a><br />";
 							}
 							else
 							{
@@ -883,7 +883,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			if($pmButton = $tp->parseTemplate("{SENDPM: user=" . $this->postInfo['post_user'] . "&glyph=envelope&class=pm-send}", true))
 			{
-				$text .= "<li class='divider'></li>";
+				$text .= "<li class='divider'><hr class='dropdown-divider'></li>";
 				$text .= "<li class='dropdown-item'>" . $pmButton . "</li>";
 			}
 
@@ -973,7 +973,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		if(defset('MODERATOR'))
 		{
-			$text .= "<li role='presentation' class='divider'> </li>";
+			$text .= "<li role='presentation' class='divider'><hr class='dropdown-divider'></li>";
 			$type = ($this->postInfo['thread_start']) ? 'thread' : 'Post';
 
 			//	print_a($this->postInfo);
@@ -1102,7 +1102,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$trackDiz = (varset($this->pref['track'], true)) ? LAN_FORUM_3040 : LAN_FORUM_3041;
 
 //	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>";
-			return "<a id='forum-track-button' href='#' title=\"" . $trackDiz . "\" data-token='" . deftrue('e_TOKEN', '') . "' data-forum-insert='forum-track-button'  data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='track' name='track' class='e-tip btn btn-default' >" . $img . "</a>";
+			return "<a id='forum-track-button' href='#' title=\"" . $trackDiz . "\" data-token='" . deftrue('e_TOKEN', '') . "' data-forum-insert='forum-track-button'  data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='track' name='track' class='e-tip btn btn-default btn-secondary' >" . $img . "</a>";
 
 		}
 
@@ -1256,7 +1256,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$jumpList = $this->forum->forumGetAllowed();
 
-		$text .= "<li class='divider'></li>";
+		$text .= "<li class='divider'><hr class='dropdown-divider'></li>";
 
 		foreach($jumpList as $key => $val)
 		{
