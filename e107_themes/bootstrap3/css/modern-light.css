@@ -1503,8 +1503,8 @@
         .jumbotron{border:1px solid rgba(0,0,0,.6)}
         .panel-danger .panel-heading,.panel-info .panel-heading,.panel-primary .panel-heading,.panel-success .panel-heading,.panel-warning .panel-heading{border-color:#000}
         .btn:focus,.nav-pills>li>a,.nav-tabs>li>a,.navbar-default .navbar-nav>li>a,.navbar-inverse .navbar-nav>li>a,a,a:active,a:hover{outline:0}
-        th a,tr.first a{ color:rgba(0,0,0,0.75) }
-        thead tr{background-color:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.3)}
+        th a,tr.first a, div.plupload_filelist_header, div.plupload_filelist_footer, div.plupload_file_status span { color:rgba(0,0,0,0.75) }
+        thead tr, div.plupload_filelist_header, div.plupload_filelist_footer {background-image:none; background-color:rgba(0,0,0,0.05) !important; border:1px solid rgba(0,0,0,0.3) !important }
         .datetimepicker,.datetimepicker tfoot tr:first-child th:hover,.datetimepicker thead tr:first-child th:hover{background-color:transparent}
         .nav-collapse .dropdown-menu a:focus,.nav-collapse .dropdown-menu a:hover,.nav-collapse .nav>li>a:focus,.nav-collapse .nav>li>a:hover{background-color:#363636}
 /*        .table-striped>tbody>tr.highlight-even,.table-striped>tbody>tr.highlight-odd,tr.highlight-even,tr.highlight-odd{background-color:#212121}*/
@@ -1517,12 +1517,13 @@
         td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
 
         /* Custom */
-
+        #uploader_filelist.plupload_filelist {background: rgb(230, 230, 230); box-shadow:0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.2) inset }
         html { height: auto !important; }
         body { margin-top: 51px; padding: 0 !important; background: #373737; }
         body.e-modal-content { background: #f2f2f2; }
         body.e-modal-content a.btn,
-        body.e-modal-content a.plupload_button { color: #fff }
+        body.e-modal-content a.plupload_button,
+        div.plupload_buttons a { color: #fff }
 
 
         div.admin-left-panel {
