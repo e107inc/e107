@@ -870,13 +870,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
     <ul class="dropdown-menu left">
     ';
 
-		$text .= "<li class='dropdown-item'><a href='#'>" . $this->sc_level('userid') . "</a></li>";
-		$text .= "<li class='dropdown-item'><a href='#'>" . $this->sc_joined() . "</a></li>";
+		$text .= "<li><a class='dropdown-item' href='#'>" . $this->sc_level('userid') . "</a></li>";
+		$text .= "<li><a class='dropdown-item' href='#'>" . $this->sc_joined() . "</a></li>";
 		if($ue)
 		{
-			$text .= "<li class='dropdown-item'><a hre='#'>" . $ue . "</a></li>";
+			$text .= "<li><a class='dropdown-item' hre='#'>" . $ue . "</a></li>";
 		}
-		$text .= "<li class='dropdown-item'><a href='#'>" . $this->sc_posts() . "</a></li>";
+		$text .= "<li><a class='dropdown-item' href='#'>" . $this->sc_posts() . "</a></li>";
 
 
 		if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
@@ -929,14 +929,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
     		<ul class="dropdown-menu pull-right dropdown-menu-end float-right text-right text-end">';
 
 
-		$text .= "<li class='dropdown-item text-right text-end float-right float-right'><a href='" . e_HTTP . "email.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
-		$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . e_HTTP . "print.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2045 . " " . $tp->toGlyph('fa-print') . "</a></li>"; // FIXME
+		$text .= "<li class='text-right text-end float-right float-right'><a class='dropdown-item' href='" . e_HTTP . "email.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
+		$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_HTTP . "print.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2045 . " " . $tp->toGlyph('fa-print') . "</a></li>"; // FIXME
 
 		if(USER) // Report
 		{
 			$urlReport = e107::url('forum', 'post') . "?f=report&amp;id=" . $threadID . "&amp;post=" . $postID;
 			//	$urlReport = $this->e107->url->create('forum/thread/report', "id={$threadID}&post={$postID}");
-			$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . $urlReport . "'>" . LAN_FORUM_2046 . " " . $tp->toGlyph('fa-flag') . "</a></li>";
+			$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . $urlReport . "'>" . LAN_FORUM_2046 . " " . $tp->toGlyph('fa-flag') . "</a></li>";
 		}
 
 		// Edit
@@ -946,7 +946,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			$url = e107::url('forum', 'post') . "?f=edit&amp;id=" . $threadID . "&amp;post=" . $postID;
 			//$url = e107::getUrl()->create('forum/thread/edit', array('id' => $threadID, 'post'=>$postID));
-			$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
+			$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
 
 		}
 
@@ -957,7 +957,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			 * AND if this post is the last post in the thread */
 			if($this->var['thread_active'] && empty($this->postInfo['thread_start']))
 			{
-				$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 			}
 		}
 
@@ -965,7 +965,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			$url = e107::url('forum', 'post') . "?f=quote&amp;id=" . $threadID . "&amp;post=" . $postID;
 			//$url = e107::getUrl()->create('forum/thread/quote', array('id' => $threadID, 'post'=>$postID));
-			$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . $url . "'>" . LAN_FORUM_2041 . " " . $tp->toGlyph('fa-share-alt') . "</a></li>";
+			$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . $url . "'>" . LAN_FORUM_2041 . " " . $tp->toGlyph('fa-share-alt') . "</a></li>";
 
 			//	$text .= "<li class='text-right float-right'><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $postID))."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
 		}
@@ -984,24 +984,24 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$url = e107::url('forum', 'post') . "?f=edit&amp;id=" . $threadID . "&amp;post=" . $postID;
 				// $url = e107::getUrl()->create('forum/thread/edit', array('id' => $threadID, 'post'=>$postID));
 
-				$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
+				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . $url . "'>" . LAN_EDIT . " " . $tp->toGlyph('fa-edit') . "</a></li>";
 			}
 
 			// only show delete button when post is not the initial post of the topic
 			//	if(!$this->forum->threadDetermineInitialPost($postID))
 			if(empty($this->postInfo['thread_start']))
 			{
-				$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-confirm='" . LAN_JSCONFIRM . "'  data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost' data-confirm='" . LAN_JSCONFIRM . "'  data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 			}
 
 			if($type == 'thread')
 			{
 				$url = e107::url('forum', 'move', array('thread_id' => $threadID));
-				$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
+				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
 			}
 			elseif(e_DEVELOPER === true) //TODO
 			{
-				$text .= "<li class='dropdown-item text-right text-end float-right'><a href='" . e107::url('forum', 'split', array('thread_id' => $threadID, 'post_id' => $postID)) . "'>" . LAN_FORUM_2043 . " " . $tp->toGlyph('fa-cut') . "</a></li>";
+				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e107::url('forum', 'split', array('thread_id' => $threadID, 'post_id' => $postID)) . "'>" . LAN_FORUM_2043 . " " . $tp->toGlyph('fa-cut') . "</a></li>";
 
 			}
 		}
@@ -1213,7 +1213,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		{
 			$ntUrl = e107::url('forum', 'post') . "?f=nt&amp;id=" . $this->var['thread_forum_id'];
 			//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
-			$options[] = " <a  href='" . $ntUrl . "'>" . LAN_FORUM_2005 . "</a>";
+			$options[] = " <a class='dropdown-item' href='" . $ntUrl . "'>" . LAN_FORUM_2005 . "</a>";
 		}
 
 //	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
@@ -1225,11 +1225,11 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		if($prev !== false)
 		{
-			$options[] = "<a href='" . e107::url('forum', 'topic', $prev) . "'>" . LAN_FORUM_1017 . " " . LAN_FORUM_2001 . "</a>";
+			$options[] = "<a class='dropdown-item' href='" . e107::url('forum', 'topic', $prev) . "'>" . LAN_FORUM_1017 . " " . LAN_FORUM_2001 . "</a>";
 		}
 		if($next !== false)
 		{
-			$options[] = "<a href='" . e107::url('forum', 'topic', $next) . "'>" . LAN_FORUM_1017 . " " . LAN_FORUM_2002 . "</a>";
+			$options[] = "<a class='dropdown-item' href='" . e107::url('forum', 'topic', $next) . "'>" . LAN_FORUM_1017 . " " . LAN_FORUM_2002 . "</a>";
 		}
 
 
@@ -1251,7 +1251,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		foreach($options as $key => $val)
 		{
-			$text .= '<li class="dropdown-item">' . $val . '</li>';
+			$text .= '<li>' . $val . '</li>';
 		}
 
 		$jumpList = $this->forum->forumGetAllowed();
@@ -1260,7 +1260,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		foreach($jumpList as $key => $val)
 		{
-			$text .= '<li class="dropdown-item"><a href ="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . " " . $val['forum_name'] . '</a></li>';
+			$text .= '<li><a class="dropdown-item" href ="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . " " . $val['forum_name'] . '</a></li>';
 		}
 
 		$text .= '
