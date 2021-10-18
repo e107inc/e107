@@ -645,7 +645,14 @@ class e_themeTest extends \Codeception\Test\Unit
 					    'scope' => 'front',
 					    'files'  => 'js',
 					  ),
-					   2 => array (
+					  2 =>
+					  array (
+					    'name' => 'fontawesome',
+					    'version' => '5',
+					    'scope' => 'wysiwyg',
+					    'files'  => 'css',
+					  ),
+					  3 => array (
 			            'name' => 'animate.css',
 			    //        'version' => '',
 			            'scope' => 'front',
