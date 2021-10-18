@@ -32,7 +32,7 @@ class forum_user // plugin-folder + '_user'
 		$url = ($count> 0) ? e_HTTP."userposts.php?0.forums.".$udata['user_id'] : null;
 
 		$var = array(
-			0 => array('label' => LAN_PLUGIN_FORUM_POSTS, 'text' => intval($count)." ( ".$perc."% )", 'url'=> $url)
+			0 => array('label' => defined('LAN_PLUGIN_FORUM_POSTS') && LAN_PLUGIN_FORUM_POSTS, 'text' => intval($count)." ( ".$perc."% )", 'url'=> $url)
 		);
 		
 		return $var;
