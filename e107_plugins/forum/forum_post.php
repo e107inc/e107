@@ -1463,7 +1463,7 @@ class forum_post_handler
 
 		$mes = e107::getMessage();
 
-		if (empty($_POST['subject']) || empty($_POST['post']))
+		if ((isset($_POST['subject']) && empty($_POST['subject'])) || empty($_POST['post']))
 		{
 			$mes->addError(LAN_FORUM_3007);
 			return;
@@ -1507,7 +1507,11 @@ class forum_post_handler
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
 
-			$threadVals['thread_name'] 	 = $_POST['subject'];
+			if(!empty($_POST['subject']))
+			{
+				$threadVals['thread_name'] 	 = $_POST['subject'];
+			}
+
 			$threadVals['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
 
 			$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
