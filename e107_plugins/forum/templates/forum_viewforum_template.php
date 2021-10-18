@@ -306,10 +306,10 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 												    <td>{ICON}</td>
 												    <td>
 												        <div class='row'>
-												            <div class='col-xs-12 col-md-9'>
+												            <div class='col-12 col-xs-12 col-md-9'>
 												            {THREADNAME}
 												            <div><small>{LAN=FORUM_1004}: {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
-												            </div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
+												            </div><div class='col-12 col-xs-12 col-md-3 text-right'> {PAGESX}</div>
 												        </div>
 												    </td>
 												    <td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
@@ -372,17 +372,17 @@ $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "</div>\n<!--- END --> \n";
 // define {ICONKEY}
 $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>{ICON: type=new} {LAN=FORUM_0039}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=nonew} {LAN=FORUM_0040}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=sticky} {LAN=FORUM_1011}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=announce} {LAN=FORUM_1013}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=new} {LAN=FORUM_0039}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=nonew} {LAN=FORUM_0040}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=sticky} {LAN=FORUM_1011}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=announce} {LAN=FORUM_1013}</div>
 												</div>
 
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>{ICON: type=new_popular} {LAN=FORUM_0039} {LAN=FORUM_1010}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=nonew_popular} {LAN=FORUM_0040} {LAN=FORUM_1010}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=noreplies} {LAN=FORUM_1021}</div>
-													<div class='col-sm-3 col-xs-6'>{ICON: type=closed} {LAN=FORUM_1014}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=new_popular} {LAN=FORUM_0039} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=nonew_popular} {LAN=FORUM_0040} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=noreplies} {LAN=FORUM_1021}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=closed} {LAN=FORUM_1014}</div>
 												</div>
 												";
 
