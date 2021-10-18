@@ -138,10 +138,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_subjectbox()
 	{
 		global $subjectbox;
-		return $this->sc_forum_post_subject('boolean') ? e107::getParser()->parseTemplate($subjectbox, true, $this) : '';
+		return $this->sc_forum_post_subject(['return'=>'boolean']) ? e107::getParser()->parseTemplate($subjectbox, true, $this) : '';
 	}
 
-	function sc_forum_post_subject($parm=null)
+	function sc_forum_post_subject($parm=array())
 	{
 		$opts = empty($parm) ? array('size' => 'xlarge') : $parm;
 
@@ -164,7 +164,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			$opts['required'] = 1;
 		}
 
-		if($parm === 'boolean')
+		if(varset($parm['return']) === 'boolean')
 		{
 			return empty($opts['disabled']);
 		}
