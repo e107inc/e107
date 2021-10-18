@@ -97,15 +97,20 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		// return forumjump(); // FIXME - broken in v1 themes
 	}
 
+	/**
+	 * @deprecated
+	 * @return string
+	 */
 	function sc_userbox()
 	{
 		global $userbox;
-		return (USER == false ? $userbox : '');
+		return (USER === false) ? e107::getParser()->parseTemplate($userbox, true, $this) : '';
 	}
 
-	function sc_forum_post_author()
+	function sc_forum_post_author($opts = array())
 	{
-		$opts = array('size' => 'xlarge');
+		$opts['size'] = 'xlarge';
+
 		$tp = e107::getParser();
 
 		if(USER == false)
@@ -126,15 +131,20 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	}
 
+	/**
+	 * @deprecated
+	 * @return string
+	 */
 	function sc_subjectbox()
 	{
 		global $subjectbox;
-		return ($this->var['action'] == 'nt' ? $subjectbox : '');
+		return $this->sc_forum_post_subject('boolean') ? e107::getParser()->parseTemplate($subjectbox, true, $this) : '';
 	}
 
-	function sc_forum_post_subject()
+	function sc_forum_post_subject($parm=null)
 	{
-		$opts = array('size' => 'xlarge');
+		$opts = empty($parm) ? array('size' => 'xlarge') : $parm;
+
 
 		if($this->var['action'] =='rp' || $this->var['action'] =='quote')
 		{
@@ -152,6 +162,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		else
 		{
 			$opts['required'] = 1;
+		}
+
+		if($parm === 'boolean')
+		{
+			return empty($opts['disabled']);
 		}
 	//	elseif($this->var['action'] == 'edit')
 	//	{
