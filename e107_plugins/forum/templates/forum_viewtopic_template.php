@@ -342,35 +342,35 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
 
 												{SETIMAGE: w=100&h=100&crop=1}
-												<div class='col-xs-2 span2 left text-left'>
+												<div class='col-2 col-xs-2 span2 left text-left'>
 													<div class='row'>
-														<div class='col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+														<div class='col-12 col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
 													</div>
 
 												{NEWFLAG} {ANON_IP}</div>
-												<div class='col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
-												<div class='col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
-												<div class='col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
+												<div class='col-4 col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='col-5 col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
+												<div class='col-3 col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
 										
 										</div>
 
 										<div class='row row-fluid'  >
 
-											<div class='col-xs-12 col-md-2 span2 left'>
+											<div class='col-12 col-xs-12 col-md-2 span2 left'>
 													<div class='row'>
 
-													<div class='col-xs-3 col-md-12 text-center'>{AVATAR: shape=rounded}</div>
-													<div class='col-xs-6 visible-xs'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
-														<div class='col-xs-6 col-md-12 hidden-xs'>
+													<div class='col-3 col-xs-3 col-md-12 text-center'>{AVATAR: shape=rounded}</div>
+													<div class='col-6 col-xs-6 visible-xs d-block d-sm-none'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+														<div class='col-6 col-xs-6 col-md-12 hidden-xs'>
 															<small>
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs d-block d-sm-none col-3 col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
-											<div class='visible-xs col-xs-12'><hr /></div>
-											<div class='col-xs-12 col-md-9 span9 forum-thread-text '>
+											<div class='visible-xs d-block d-sm-none col-12 col-xs-12'><hr /></div>
+											<div class='col-12 col-xs-12 col-md-9 span9 forum-thread-text '>
 												{POLL}
 												{THREAD_TEXT}
 												{ATTACHMENTS: modal=1}
@@ -379,14 +379,14 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 										
 										
 										<div class='row row-fluid'>
-											<div class='col-xs-2 span2 finfobar'>
+											<div class='col-2 col-xs-2 span2 finfobar'>
 												&nbsp;
 											</div>
-											<div class='col-xs-9 span9  finfobar' >
+											<div class='col-9 col-xs-9 span9  finfobar' >
 												<small> {SIGNATURE=clean}</small>
 											</div>
 											
-											<div class='col-xs-3 span3'>
+											<div class='col-3 col-xs-3 span3'>
 											</div>
 										</div>
 										
@@ -396,22 +396,22 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									";
 
 $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
-<div class='col-xs-12'>
+<div class='col-12 col-xs-12'>
 	<hr />
 </div>
 <div class='row'>
-	<div class='col-xs-12 col-md-4'></div>
-	<div class='col-xs-12 col-md-4 text-center'>
+	<div class='col-12 col-xs-12 col-md-4'></div>
+	<div class='col-12 col-xs-12 col-md-4 text-center'>
 		{GOTOPAGES}
 	</div>
-	<div class='col-xs-12 col-md-4'>
+	<div class='col-12 col-xs-12 col-md-4'>
 		<div class='pull-right float-right float-end'>
 			{BUTTONSX}
 		</div>
 	</div>
 </div>
 <div class='row'>
-	<div class='col-xs-12 col-md-8 col-md-offset-2'>
+	<div class='col-12 col-xs-12 col-md-8 col-md-offset-2'>
 		{QUICKREPLY}
 	</div>
 </div>
@@ -430,49 +430,49 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
 
 												{SETIMAGE: w=100&h=0&crop=0}
-												<div class='col-xs-2 span2 left text-left'>
+												<div class='col-2 col-xs-2 span2 left text-left'>
 													<div class='row'>
-														<div class='col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+														<div class='col-12 col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
 													</div>
 
 												{NEWFLAG} {ANON_IP}</div>
-												<div class='col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
-												<div class='col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
-												<div class='col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
+												<div class='col-4 col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='col-5 col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
+												<div class='col-3 col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
 
 										</div>
 
 										<div class='row row-fluid'  >
 
-											<div class='col-xs-12 col-md-2 span2 left'>
+											<div class='col-12 col-xs-12 col-md-2 span2 left'>
 													<div class='row'>
 
-													<div class='col-xs-3 col-md-12 text-center'>{AVATAR: shape=rounded}</div>
-													<div class='col-xs-6 visible-xs'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
-														<div class='col-xs-6 col-md-12 hidden-xs'>
+													<div class='col-3 col-xs-3 col-md-12 text-center'>{AVATAR: shape=rounded}</div>
+													<div class='col-6 col-xs-6 visible-xs d-block d-sm-none'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+														<div class='col-6 col-xs-6 col-md-12 hidden-xs'>
 															<small>
 																{LEVEL=badge} {LEVEL=glyph}
 															</small>
 														</div>
-														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+														<div class='visible-xs d-block d-sm-none col-3 col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right float-right float-end'><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
 													</div>
 											</div>
-											<div class='visible-xs col-xs-12'><hr /></div>
-											<div class='col-xs-12 col-md-9 span9 forum-thread-text '>
+											<div class='visible-xs d-block d-sm-none col-12 col-xs-12'><hr /></div>
+											<div class='col-12 col-xs-12 col-md-9 span9 forum-thread-text '>
 												{POSTDELETED}
 											</div>
 										</div>
 
 
 										<div class='row row-fluid'>
-											<div class='col-xs-2 span2 finfobar'>
+											<div class='col-2 col-xs-2 span2 finfobar'>
 												&nbsp;
 											</div>
-											<div class='col-xs-9 span9  finfobar' >
+											<div class='col-9 col-xs-9 span9  finfobar' >
 												<small> {SIGNATURE=clean}</small>
 											</div>
 
-											<div class='col-xs-3 span3'>
+											<div class='col-3 col-xs-3 span3'>
 											</div>
 										</div>
 
