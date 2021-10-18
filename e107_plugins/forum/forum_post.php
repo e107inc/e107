@@ -442,7 +442,7 @@ class forum_post_handler
 			$userbox = "<tr>
 			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3010."</td>
 			<td class='forumheader2' style='width:80%'>
-			<input class='tbox form-control' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
+				{FORUM_POST_AUTHOR: size=block-level}
 			</td>
 			</tr>";
 		}
@@ -452,7 +452,7 @@ class forum_post_handler
 			$subjectbox = "<tr>
 			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3011."</td>
 			<td class='forumheader2' style='width:80%'>
-			<input class='tbox form-control' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
+				{FORUM_POST_SUBJECT: size=block-level}
 			</td>
 			</tr>";
 		}
