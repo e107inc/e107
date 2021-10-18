@@ -747,7 +747,7 @@ class poll
 				<td class='forumheader3' style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' /></td>
 			</tr>";
 
-			$option_count = (count(vartrue($_POST['poll_option'])) ? count($_POST['poll_option']) : 1);
+			$option_count = !empty($_POST['poll_option']) ? count($_POST['poll_option']) : 1;
 			$text .= "
 			<tr>
 				<td class='forumheader3' style='width:20%'>".POLLAN_4."</td>
