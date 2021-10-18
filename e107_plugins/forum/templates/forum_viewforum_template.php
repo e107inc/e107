@@ -350,7 +350,7 @@ $SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row row-fluid d-flex justify-content-between'>
 
-												<div class='col-md-5 span5 pull-left float-left float-start left'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div>
+												<div class='col-md-5 col-lg-2 span5 pull-left float-left float-start left'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div>
 
 												</div>
 
