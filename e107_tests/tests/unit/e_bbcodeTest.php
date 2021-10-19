@@ -79,12 +79,35 @@
 			$this->assertSame($expected, $result);
 
 		}
-/*
+
 		public function testImgToBBcode()
 		{
 
-		}
+			$tests = [
+				0 => [
+					'html'      => '<p><img class="img-rounded rounded bbcode bbcode-img" src="/e107v2/thumb.php?src=e_MEDIA_IMAGE%2F2021-10%2Ftest.jpg&amp;w=0&amp;h=0" alt="test" title="test"></p>',
+					'expected'  =>'<p>[img title=test]{e_MEDIA_IMAGE}2021-10/test.jpg[/img]</p>'
+				],
 
+			/*	1 => [
+					'html'      => '<p><img class="img-rounded rounded bbcode bbcode-img" src="/e107v2/thumb.php?src=e_MEDIA_IMAGE%2F2021-10%2Ftest.jpg&w=0&h=0" alt="test" title="test"></p>',
+					'expected'  =>'<p>[img title=test]{e_MEDIA_IMAGE}2021-10/test.jpg[/img]</p>'
+				],*/
+
+
+
+			];
+
+
+			foreach($tests as $count => $t)
+			{
+				$actual = $this->bb->imgToBBcode($t['html']);
+				$this->assertSame($t['expected'], $actual, 'Test '.$count.' failed');
+
+			}
+
+		}
+/*
 		public function testResizeHeight()
 		{
 
