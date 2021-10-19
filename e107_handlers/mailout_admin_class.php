@@ -509,7 +509,7 @@ class mailoutAdminClass extends e107MailManager
 
 			return 'Error';
 		}
-		$text = "<select name='mailaction[{$mailData['mail_source_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
+		$text = "<select name='mailaction[{$mailData['mail_source_id']}]' onchange='this.form.submit()' class='tbox form-control' style='width:90%'>\n
 				<option selected='selected' value=''>&nbsp;</option>\n";
 		foreach ($this->modeOptions[$mode] as $key => $val)
 		{
@@ -538,7 +538,7 @@ class mailoutAdminClass extends e107MailManager
 
 			return 'Error';
 		}
-		$text = "<select name='targetaction[{$targetData['mail_target_id']}]' onchange='this.form.submit()' class='tbox' style='width:90%'>\n
+		$text = "<select name='targetaction[{$targetData['mail_target_id']}]' onchange='this.form.submit()' class='tbox form-control' style='width:90%'>\n
 				<option selected='selected' value=''>&nbsp;</option>\n";
 		foreach ($this->modeOptions[$mode] as $key => $val)
 		{
@@ -739,7 +739,7 @@ class mailoutAdminClass extends e107MailManager
 		$ret = '';
 		$this->checkDB(2);
 		// Make sure DB object created
-		$ret .= "<select class='tbox' name='{$name}' >
+		$ret .= "<select class='tbox form-control' name='{$name}' >
 		<option value=''>&nbsp;</option>\n";
 
 		foreach ($fixedClasses as $k => $v)
@@ -784,7 +784,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			return false;
 		}
-		$ret = "<select name='{$list_name}' class='tbox'>\n";
+		$ret = "<select name='{$list_name}' class='tbox form-control'>\n";
 		if ($add_blank)
 		{
 			$ret .= "<option value=''>&nbsp;</option>\n";
@@ -1241,7 +1241,7 @@ class mailoutAdminClass extends e107MailManager
 			<div style='position:absolute; bottom:30px; right:125px'>
 			<table class='fborder' style='background-color: #fff'>
 			<tr><td>
-			<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); this.selectedIndex= 0; expandit('{$container}')\">
+			<select class='tbox form-control' name='sc_sel' onchange=\"addtext(this.value); this.selectedIndex= 0; expandit('{$container}')\">
 			<option value=''> -- </option>\n";
 
 		$sc = array(
@@ -1281,7 +1281,7 @@ class mailoutAdminClass extends e107MailManager
 			'=' => LAN_MAILOUT_176,
 			'>' => LAN_MAILOUT_177
 		);
-		$ret = "<select name='{$name}' class='tbox'>\n";
+		$ret = "<select name='{$name}' class='tbox form-control'>\n";
 		foreach ($compVals as $k => $v)
 		{
 			$selected = ($k == $curval) ? " selected='selected'" : '';
@@ -2234,7 +2234,7 @@ class mailoutAdminClass extends e107MailManager
 
 		<tr>
 		<td>" . LAN_MAILOUT_90 . "</td><td>
-		<select class='tbox' name='smtp_options'>\n
+		<select class='tbox form-control' name='smtp_options'>\n
 
 		<option value=''>" . LAN_NONE . "</option>\n";
 		$selected = (in_array('secure=SSL', $smtp_opts) ? " selected='selected'" : '');

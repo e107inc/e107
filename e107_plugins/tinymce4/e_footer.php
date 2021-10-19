@@ -69,15 +69,15 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 	
 	if(ADMIN)
 	{
-	    $insert = "$('#'+id).after('<div>";
+	    $insert = "$('#'+id).after('<div class=\"btn-group\" style=\"margin-top:5px\">";
 
 
 	     if(e_PAGE == 'mailout.php')
         {
-            $insert .= "&nbsp;&nbsp;<a href=\"#\" class=\"btn btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|DISPLAYNAME|\" >".LAN_MAILOUT_14."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|SIGNUP_LINK|\" >".LAN_MAILOUT_17."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|USERID|\" >".LAN_MAILOUT_18."<\/a>";           
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|DISPLAYNAME|\" >".LAN_MAILOUT_14."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|SIGNUP_LINK|\" >".LAN_MAILOUT_17."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|USERID|\" >".LAN_MAILOUT_18."<\/a>";
         }
         
 	    $insert .= "</div>');";
