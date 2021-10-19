@@ -183,10 +183,12 @@ TEMPL;
 				exit;
 			}
 
+			$content = html_entity_decode($content);
 			$text = !empty($content) ? "[html]".$content."[/html]" : ''; // Add the tags before saving to DB.
 		}
 		else  // User doesn't have HTML access -  bbcode Mode.
 		{
+			$content = html_entity_decode($content);
 			$text = e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.
 		}
 

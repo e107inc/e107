@@ -763,12 +763,11 @@ class e_bbcode
 
 			if(strpos($qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
 			{
-				$qr['w'] = $img['width'];
-				$qr['h'] = $img['height'];
+				$qr['w'] = varset($img['width']);
+				$qr['h'] = varset($img['height']);
 			}
 
 			$qr['ebase'] = true;
-
 
 
 			if(!empty($img['class']))
@@ -797,7 +796,7 @@ class e_bbcode
 
 			}
 
-			if($this->resizeWidth() === (int) $img['width'])
+			if($this->resizeWidth() === (int) varset($img['width']))
 			{
 				unset($img['width']);
 			}

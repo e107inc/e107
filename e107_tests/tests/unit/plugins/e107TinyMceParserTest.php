@@ -120,7 +120,14 @@ Plain text paragraph 3<br />';
 			$this->assertEquals($expected_2, $actual_2);
 
 
+			$test_3 = "<p>Nikdy nehovor, že niečo nejde, pretože sa vždy nájde blbec, čo to urobí.</p>";
+			$actual_3 = $this->tm->toDB($test_3);
+			$expected_3 = "[html]<p>Nikdy nehovor, že niečo nejde, pretože sa vždy nájde blbec, čo to urobí.</p>[/html]";
+			$this->assertEquals($expected_3, $actual_3);
 
+
+			$result3 = $this->tm->toHTML($actual_3);
+			$this->assertEquals($test_3, $result3);
 
 		}
 
@@ -213,14 +220,14 @@ Plain text paragraph 3<br />';
 			{ORDER_DATA: cust_firstname} {ORDER_DATA: cust_lastname}<br />
 			{ORDER_DATA: cust_company}<br />
 			{ORDER_DATA: cust_address}<br />
-			{ORDER_DATA: cust_city} &nbsp;{ORDER_DATA: cust_state} &nbsp;{ORDER_DATA: cust_zip}<br />
+			{ORDER_DATA: cust_city} {ORDER_DATA: cust_state} {ORDER_DATA: cust_zip}<br />
 			{ORDER_DATA: cust_country}
 			<br />
 			<h4>Shipping address</h4>
 			{ORDER_DATA: ship_firstname} {ORDER_DATA: ship_lastname}<br />
 			{ORDER_DATA: ship_company}<br />
 			{ORDER_DATA: ship_address}<br />
-			{ORDER_DATA: ship_city} &nbsp;{ORDER_DATA: ship_state} &nbsp;{ORDER_DATA: ship_zip}<br />
+			{ORDER_DATA: ship_city} {ORDER_DATA: ship_state} {ORDER_DATA: ship_zip}<br />
 			{ORDER_DATA: ship_country}
 		</td>
 	</tr>

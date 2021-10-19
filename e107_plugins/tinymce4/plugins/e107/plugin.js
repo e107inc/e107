@@ -202,8 +202,12 @@
 		_e107_html2bbcode : function(s, url) {
 			s = tinymce.trim(s);
 
-		//	return s;
-		
+            if(s === '')
+            {
+                return '';
+            }
+        //    console.log('html2bbcode '+ s);
+
 			var p = $.ajax({
 					type: "POST",
 					url: url + "/parser.php",
@@ -228,9 +232,13 @@
 		_e107_bbcode2html : function(s, url) {
 			s = tinymce.trim(s);
 
-		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
+			if(s === '')
+            {
+                return '';
+            }
 
-		//	return s;
+		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
+        //    console.log('bbcode2html '+ s);
 
 			var p = $.ajax({
 					type: "POST",
