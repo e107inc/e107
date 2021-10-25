@@ -1333,6 +1333,8 @@ class e107Email extends PHPMailer
 		$this->Body = $message;
 		//print_a($message);
 		$textMsg = str_replace("\n", "", $message);
+		$textMsg = str_replace('</td>', "\t", $textMsg);
+		$textMsg = str_replace("</tr>", "\n", $textMsg);
 		$textMsg = str_replace(array('<br />', '<br>'), "\n", $textMsg);		// Modified to make sure newlines carried through
 		$textMsg = preg_replace('#^.*?<body.*?>#', '', $textMsg);		// Knock off everything up to and including the body statement (if present)
 		$textMsg = preg_replace('#</body.*?>.*$#', '', $textMsg);		// Knock off everything after and including the </body> (if present)
@@ -1355,7 +1357,7 @@ class e107Email extends PHPMailer
 			$this->AltBody = 'To view this email message, enable HTML!' . "\n\n";
 		}
 
-		 return $this->Body;
+		return $this->Body;
 	}
 
 
