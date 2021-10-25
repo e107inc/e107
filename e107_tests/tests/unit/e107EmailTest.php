@@ -83,12 +83,34 @@
 		{
 
 		}
-
+*/
 		public function testMsgHTML()
 		{
+			$html = "\n
+Hi <b>Joe</b><br />
+
+Check out <a href='http://e107.org'>http://e107.org</a><br />
+<br />
+Thanks,<br />
+Admin<br />
+<br />
+<table>
+<tr>
+<td>Website:</td><td>https://e107.org</td>
+</tr>
+<tr>
+<td>Github:</td><td>https://github.com/e107inc/</td></tr>
+</table>";
+
+
+			$this->eml->MsgHTML($html);
+
+			$result = json_encode($this->eml->AltBody);
+			$expected = '"Hi Joe\\nCheck out http:\\/\\/e107.org\\n\\nThanks,\\nAdmin\\n\\nWebsite:\\thttps:\\/\\/e107.org\\t\\nGithub:\\thttps:\\/\\/github.com\\/e107inc\\/"';
+			$this->assertSame($expected, $result);
 
 		}
-
+/*
 		public function testSendEmail()
 		{
 
