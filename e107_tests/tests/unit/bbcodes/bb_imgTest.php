@@ -42,23 +42,23 @@
 				array(
 					'codetext'  => '{e_MEDIA_IMAGE}2020-12/5.sm.webp',
 					'parm'      => '',
-					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2F5.sm.webp&amp;w=0&amp;h=0" alt="5.sm.webp"  />'
+					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2F5.sm.webp&amp;w=0&amp;h=0" alt="5.sm.webp" loading="lazy"  />'
 				),
 				array(
 					'codetext'  => '{e_MEDIA}images/2020-12/horse.jpg',
 					'parm'      => 'width=300',
-					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=300&amp;h=0" alt="Horse" srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=600&amp;h=0 2x" width="300" title="Horse"  />'
+					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=300&amp;h=0" alt="Horse" srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=600&amp;h=0 2x" width="300" loading="lazy" title="Horse"  />'
 				),
 				array(
 					'codetext'  => '{e_MEDIA_IMAGE}2020-12/horse.jpg',
 					'parm'      => 'width=300',
-					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=300&amp;h=0" alt="Horse" srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=600&amp;h=0 2x" width="300" title="Horse"  />'
+					'expected'  => '<img class="img-rounded rounded bbcode bbcode-img" src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=300&amp;h=0" alt="Horse" srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fhorse.jpg&amp;w=600&amp;h=0 2x" width="300" loading="lazy" title="Horse"  />'
 				),
 				array(
 					'codetext'  => '{e_THEME}voux/install/gasmask.jpg',
-					'parm'      => 'width=300&alt=Custom',
+					'parm'      => 'width=300&alt=Custom&loading=auto',
 					'expected'  => "<figure>
-<img class=\"img-rounded rounded bbcode bbcode-img\" src=\"thumb.php?src=e_THEME%2Fvoux%2Finstall%2Fgasmask.jpg&amp;w=300&amp;h=0\" alt=\"Custom\" srcset=\"thumb.php?src=e_THEME%2Fvoux%2Finstall%2Fgasmask.jpg&amp;w=600&amp;h=0 2x\" width=\"300\" title=\"Custom\"  /><figcaption>Custom</figcaption>
+<img class=\"img-rounded rounded bbcode bbcode-img\" src=\"thumb.php?src=e_THEME%2Fvoux%2Finstall%2Fgasmask.jpg&amp;w=300&amp;h=0\" alt=\"Custom\" srcset=\"thumb.php?src=e_THEME%2Fvoux%2Finstall%2Fgasmask.jpg&amp;w=600&amp;h=0 2x\" width=\"300\" loading=\"auto\" title=\"Custom\"  /><figcaption>Custom</figcaption>
 </figure>"
 				),
 			);
