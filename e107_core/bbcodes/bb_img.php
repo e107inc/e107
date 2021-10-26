@@ -80,6 +80,11 @@
 				unset($imgParms['figcaption']);
 			}
 
+			if(empty($imgParms['loading']))
+			{
+				$imgParms['loading'] = 'lazy';
+			}
+
 			$resizeWidth = e107::getBB()->resizeWidth();
 
 			$w = !empty($imgParms['width']) ? (int) $imgParms['width'] : vartrue($resizeWidth, 0);

@@ -4109,9 +4109,10 @@ class e_parse
 
 		$class = !empty($options['class']) ? $options['class'] : $shape . ' user-avatar';
 		$style = !empty($options['style']) ? " style='" . $options['style'] . "'" : '';
+		$loading = !empty($options['loading']) ? " loading='".$options['loading']."'" : " loading='lazy'"; // default to lazy.
 
 		$text = $linkStart;
-		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . ' />';
+		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . $loading . ' />';
 		$text .= $linkEnd;
 
 		//	return $url;
