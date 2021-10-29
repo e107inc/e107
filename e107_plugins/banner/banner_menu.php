@@ -82,6 +82,8 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		if(!empty($menu_pref['banner_width']))
 		{
 			e107::getParser()->thumbWidth($menu_pref['banner_width']);
+		    e107::getParser()->thumbHeight(0);
+            e107::getParser()->thumbCrop(0);
 		}
 
 
