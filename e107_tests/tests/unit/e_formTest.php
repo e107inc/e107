@@ -61,6 +61,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'tab'        => 0,
 		),
 
+
 		'textarea_001'      => array('title'=> "Textarea 001",	'type' => 'textarea', 'writeParms'=>array('size'=>'xlarge','rows'=> 5)),
 
 		'layout_001'        => array ( 'title' => 'Layouts 001', 'type' => 'layouts',  'writeParms' => 'plugin=news&id=news_view&merge=1' ), // 'news', 'news_view', 'front'
@@ -95,6 +96,10 @@ class e_formTest extends \Codeception\Test\Unit
 
 		'media_001'     => array('title'=>'Media',   'type'=>'media', 'data'=>'json', 'inline'=>false),
 
+		'dropdown_003' => array ( 'title' => 'Location', 'type' => 'dropdown', 'data' => 'safestr', 'tab' => 2, 'inline' => false, 'readParms' => array ( 'type' => 'checkboxes', ), 'width' => 'auto', 'thclass' => 'left', 'class' => 'left', 'nosort' => false, 'batch' => true, 'filter' => true, 'table' => 'news', 'alias' => 'n.news_render_type', 'field' => 'news_render_type', '__tableField' => 'n.news_render_type', '__tableFrom' => '`#news`.news_render_type AS n.news_render_type', 'writeParms' => array ( 'optArray' => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ), 'multiple' => 1, ), ),
+		'dropdown_004'  => array ( 'title' => 'Robots', 'type' => 'dropdown', 'data' => 'safestr', 'tab' => 1, 'inline' => false, 'readParms' => array ( 'type' => 'checkboxes', ), 'writeParms' => array ( 'multiple' => 1, 'optArray' => array ( 'noindex' => 'NoIndex', 'nofollow' => 'NoFollow', 'noarchive' => 'NoArchive', 'noimageindex' => 'NoImageIndex', ), 'title' => array ( 'noindex' => 'Prevent search engines from indexing this item.', 'nofollow' => 'Prevent search engines from following links in this item.', 'noarchive' => 'Prevent cached copies of this item from appearing in search results.', 'noimageindex' => 'Prevent search engines from indexing images of this item.', ), ), 'width' => 'auto', 'thclass' => 'left', 'class' => 'left', 'nosort' => false, 'batch' => true, 'filter' => true, 'table' => 'news', 'alias' => 'n.news_meta_robots', 'field' => 'news_meta_robots', '__tableField' => 'n.news_meta_robots', '__tableFrom' => '`#news`.news_meta_robots AS n.news_meta_robots', ) ,
+
+
 		//	'lanlist_001'       => array('title'=>'Lanlist' ,   'type'=>'lanlist',      'inline'=>false),
 
 
@@ -113,6 +118,8 @@ class e_formTest extends \Codeception\Test\Unit
 
 		'dropdown_001'      => 'opt_value_2',
 		'dropdown_002'      => '2',
+		'dropdown_003'      => '',
+		'dropdown_004'      => '',
 
 		'textarea_001'      => "the quick brown fox jumps over the lazy dog",
 
@@ -1030,6 +1037,8 @@ class e_formTest extends \Codeception\Test\Unit
 			'language_001'      => 'French',
 			'userclass_002'     => 'Everyone (public)',
 			'media_001'         => '',
+			'dropdown_003'      => '',
+			'dropdown_004'      => '',
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 
 
@@ -1146,6 +1155,10 @@ class e_formTest extends \Codeception\Test\Unit
 			//	'method_001'        => 'custom-value',
 			'language_001'      => "<select name='language_001' id='language-001' class='tbox select form-control' tabindex='23'><option value='aa'>Afar</option><option value='ab'>Abkhazian</option><option value='af'>Afrikaans</option><option value='am'>Amharic</option><option value='ar'>Arabic</option><option value='as'>Assamese</option><option value='ae'>Avestan</option><option value='ay'>Aymara</option><option value='az'>Azerbaijani</option><option value='ba'>Bashkir</option><option value='be'>Belarusian</option><option value='bn'>Bengali</option><option value='bh'>Bihari</option><option value='bi'>Bislama</option><option value='bo'>Tibetan</option><option value='bs'>Bosnian</option><option value='br'>Brazilian</option><option value='bg'>Bulgarian</option><option value='my'>Burmese</option><option value='ca'>Catalan</option><option value='cs'>Czech</option><option value='ch'>Chamorro</option><option value='ce'>Chechen</option><option value='cn'>ChineseSimp</option><option value='tw'>ChineseTrad</option><option value='cv'>Chuvash</option><option value='kw'>Cornish</option><option value='co'>Corsican</option><option value='da'>Danish</option><option value='nl'>Dutch</option><option value='dz'>Dzongkha</option><option value='de'>German</option><option value='en'>English</option><option value='eo'>Esperanto</option><option value='et'>Estonian</option><option value='eu'>Basque</option><option value='fo'>Faroese</option><option value='fa'>Persian</option><option value='fj'>Fijian</option><option value='fi'>Finnish</option><option value='fr' selected='selected'>French</option><option value='fy'>Frisian</option><option value='gd'>Gaelic</option><option value='el'>Greek</option><option value='ga'>Irish</option><option value='gl'>Gallegan</option><option value='gn'>Guarani</option><option value='gu'>Gujarati</option><option value='ha'>Hausa</option><option value='he'>Hebrew</option><option value='hz'>Herero</option><option value='hi'>Hindi</option><option value='ho'>Hiri Motu</option><option value='hr'>Croatian</option><option value='hu'>Hungarian</option><option value='hy'>Armenian</option><option value='iu'>Inuktitut</option><option value='ie'>Interlingue</option><option value='id'>Indonesian</option><option value='ik'>Inupiaq</option><option value='is'>Icelandic</option><option value='it'>Italian</option><option value='jw'>Javanese</option><option value='ja'>Japanese</option><option value='kl'>Kalaallisut</option><option value='kn'>Kannada</option><option value='ks'>Kashmiri</option><option value='ka'>Georgian</option><option value='kk'>Kazakh</option><option value='km'>Khmer</option><option value='ki'>Kikuyu</option><option value='rw'>Kinyarwanda</option><option value='ky'>Kirghiz</option><option value='kv'>Komi</option><option value='ko'>Korean</option><option value='ku'>Kurdish</option><option value='lo'>Lao</option><option value='la'>Latin</option><option value='lv'>Latvian</option><option value='ln'>Lingala</option><option value='lt'>Lithuanian</option><option value='lb'>Letzeburgesch</option><option value='mh'>Marshall</option><option value='ml'>Malayalam</option><option value='mr'>Marathi</option><option value='mk'>Macedonian</option><option value='mg'>Malagasy</option><option value='mt'>Maltese</option><option value='mo'>Moldavian</option><option value='mn'>Mongolian</option><option value='mi'>Maori</option><option value='ms'>Malay</option><option value='gv'>Manx</option><option value='na'>Nauru</option><option value='nv'>Navajo</option><option value='ng'>Ndonga</option><option value='ne'>Nepali</option><option value='no'>Norwegian</option><option value='ny'>Chichewa</option><option value='or'>Oriya</option><option value='om'>Oromo</option><option value='pa'>Panjabi</option><option value='pi'>Pali</option><option value='pl'>Polish</option><option value='pt'>Portuguese</option><option value='ps'>Pushto</option><option value='qu'>Quechua</option><option value='ro'>Romanian</option><option value='rn'>Rundi</option><option value='ru'>Russian</option><option value='sg'>Sango</option><option value='sa'>Sanskrit</option><option value='si'>Sinhala</option><option value='sk'>Slovak</option><option value='sl'>Slovenian</option><option value='sm'>Samoan</option><option value='sn'>Shona</option><option value='sd'>Sindhi</option><option value='so'>Somali</option><option value='es'>Spanish</option><option value='sq'>Albanian</option><option value='sc'>Sardinian</option><option value='sr'>Serbian</option><option value='ss'>Swati</option><option value='su'>Sundanese</option><option value='sw'>Swahili</option><option value='sv'>Swedish</option><option value='ty'>Tahitian</option><option value='ta'>Tamil</option><option value='tt'>Tatar</option><option value='te'>Telugu</option><option value='tg'>Tajik</option><option value='tl'>Tagalog</option><option value='th'>Thai</option><option value='ti'>Tigrinya</option><option value='tn'>Tswana</option><option value='ts'>Tsonga</option><option value='tk'>Turkmen</option><option value='tr'>Turkish</option><option value='ug'>Uighur</option><option value='uk'>Ukrainian</option><option value='ur'>Urdu</option><option value='uz'>Uzbek</option><option value='vi'>Vietnamese</option><option value='cy'>Welsh</option><option value='wo'>Wolof</option><option value='xh'>Xhosa</option><option value='yi'>Yiddish</option><option value='yo'>Yoruba</option><option value='za'>Zhuang</option><option value='zu'>Zulu</option></select>",
 			'media_001'         => "<div class='mediaselector-multi field-element-media'><div  class='mediaselector-container e-tip well well-small '  style='position:relative;vertical-align:top;margin-right:15px; display:inline-block; width:206px;min-height:190px;'><div id='media-001-0-path_prev' class='mediaselector-preview'></div><div class='overlay'>				    <div class='text'><a title='Add' class='btn btn-sm btn-default e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common&amp;tagid=media-001-0-path&amp;iframe=1&amp;w=206'><i class='fas fa-plus fa-fw' ></i></a></div>				  </div></div><input type='hidden' name='media_001[0][path]' id='media-001-0-path' value='' /><input type='hidden' name='mediameta_media_001[0][path]' id='media-001-0-path-meta' /></div>",
+
+			// Test Dropdown Multiple.
+			'dropdown_003'      => "<select name='dropdown_003[]' id='dropdown-003' class='tbox select form-control' tabindex='25' multiple='multiple'><option value='0' selected='selected'>Default Area</option><option value='1'>Default Area - Title</option><option value='4'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option></select>",
+			'dropdown_004'      => "<select name='dropdown_004[]' id='dropdown-004' class='tbox select form-control' tabindex='26' multiple='multiple'><option value='noindex' data-title='Prevent search engines from indexing this item.'>NoIndex</option><option value='nofollow' data-title='Prevent search engines from following links in this item.'>NoFollow</option><option value='noarchive' data-title='Prevent cached copies of this item from appearing in search results.'>NoArchive</option><option value='noimageindex' data-title='Prevent search engines from indexing images of this item.'>NoImageIndex</option></select>",
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 		);
 
@@ -1161,6 +1174,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			if(!isset($expected[$field]))
 			{
+
 				continue;
 				//	echo $result;
 				//	echo "\n\n";
