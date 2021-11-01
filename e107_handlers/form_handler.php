@@ -3487,6 +3487,12 @@ var_dump($select_options);*/
 
 		$opts = $options;
 
+
+		if($selected === array(0=>'')) // quick fix. @see github issue #4609
+		{
+			$selected = 0;
+		}
+
 		foreach ((array) $option_array as $value => $label)
 		{
 
@@ -6740,7 +6746,7 @@ var_dump($select_options);*/
 					$eloptions['multiple'] = true;
 				}
 				unset($parms['__options']);
-				if(!empty($eloptions['multiple']) && !is_array($value))
+				if(!empty($eloptions['multiple']) && !is_array($value) && !empty($value))
 				{
 					$value = explode(',', $value);
 				}

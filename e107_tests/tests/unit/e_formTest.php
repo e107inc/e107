@@ -790,11 +790,11 @@ class e_formTest extends \Codeception\Test\Unit
 
 		);
 
-		foreach($tests as $row)
+		foreach($tests as $index => $row)
 		{
 			$actual = $this->_frm->option_multi($row['options'],$row['value']);
 			$actual = str_replace("\n", '', $actual);
-			$this->assertSame($row['expected'], $actual);
+			$this->assertSame($row['expected'], $actual, 'Test #'.$index.' failed');
 		}
 
 	}
