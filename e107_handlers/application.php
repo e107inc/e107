@@ -194,9 +194,9 @@ class e_url
 							define('e_PAGE', basename($file));
 						}
 
-						if(!defined('e_ROUTE')) // subject to removal at any time.
+						if(!e107::route()) // subject to removal at any time.
 						{
-							define('e_ROUTE', $plug.'/'.$k);
+							e107::route($plug.'/'.$k);
 						}
 
 						$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));

@@ -1337,7 +1337,7 @@ class e_theme
 		$request = [
 			'url'       => e_REQUEST_URL,
 			'script'    => varset($_SERVER['SCRIPT_FILENAME'],null),
-			'route'     => deftrue('e_ROUTE', null),
+			'route'     => e107::route(),
 		];
 
 		$deflayout      = self::getThemeLayout($cusPagePref, $cusPageDef, $request);

@@ -88,9 +88,9 @@
 	$request->setLegacyQstring();
 	$request->setLegacyPage();
 
-	if(!defined('e_ROUTE') && ($rq = $request->getRoute()))
+	if(!e107::route() && ($rq = $request->getRoute()))
 	{
-		define('e_ROUTE', $rq);
+		e107::route($rq);
 		unset($rq);
 	}
 

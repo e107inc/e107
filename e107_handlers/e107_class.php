@@ -4109,12 +4109,12 @@ class e107
 	 */
 	public static function route($route = null)
 	{
-		if(defined('e_ROUTE'))
+		if($route === null)
 		{
-			return e_ROUTE;
+			return self::getRegistry('core/e107/route', false);
 		}
 
-		define('e_ROUTE', $route);
+		self::setRegistry('core/e107/route', $route);
 
 		return null;
 	}
