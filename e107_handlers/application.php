@@ -4473,8 +4473,14 @@ class eResponse
 		$meta = '_' . $meta;
 		if(isset($this->$meta) && !empty($content))
 		{
-			$content = str_replace(array('&amp;', '"', "'"), array('&', '', ''), $content);
-			$this->{$meta}[] = htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8');
+			$content = str_replace('&amp;', '&', $content);
+
+			if($meta !== '_e_PAGETITLE')
+			{
+				$content = htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8');
+			}
+
+			$this->{$meta}[] = $content;
 		}
 		return $this;
 	}
@@ -4517,6 +4523,8 @@ class eResponse
 		{
 			$this->_e_PAGETITLE = array();
 		}
+
+		$title = str_replace(['&#39;','&#039;'], "'", $title);
 
 		return $this->addMetaData('e_PAGETITLE', $title);
 	}
