@@ -96,7 +96,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		'media_001'     => array('title'=>'Media',   'type'=>'media', 'data'=>'json', 'inline'=>false),
 
-		'dropdown_003' => array ( 'title' => 'Location', 'type' => 'dropdown', 'data' => 'safestr', 'tab' => 2, 'inline' => false, 'readParms' => array ( 'type' => 'checkboxes', ), 'width' => 'auto', 'thclass' => 'left', 'class' => 'left', 'nosort' => false, 'batch' => true, 'filter' => true, 'table' => 'news', 'alias' => 'n.news_render_type', 'field' => 'news_render_type', '__tableField' => 'n.news_render_type', '__tableFrom' => '`#news`.news_render_type AS n.news_render_type', 'writeParms' => array ( 'optArray' => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ), 'multiple' => 1, ), ),
+		'dropdown_003' => array ( 'title' => 'Location', 'type' => 'dropdown', 'data' => 'safestr', 'tab' => 2, 'inline' => false, 'readParms' => array ( 'type' => 'checkboxes', ), 'width' => 'auto', 'thclass' => 'left', 'class' => 'left', 'nosort' => false, 'batch' => true, 'filter' => true, 'table' => 'news', 'alias' => 'n.news_render_type', 'field' => 'news_render_type', '__tableField' => 'n.news_render_type', '__tableFrom' => '`#news`.news_render_type AS n.news_render_type', 'writeParms' => array ( 'optArray' => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ), 'multiple' => 1, 'empty'=>'0' ), ),
 		'dropdown_004'  => array ( 'title' => 'Robots', 'type' => 'dropdown', 'data' => 'safestr', 'tab' => 1, 'inline' => false, 'readParms' => array ( 'type' => 'checkboxes', ), 'writeParms' => array ( 'multiple' => 1, 'optArray' => array ( 'noindex' => 'NoIndex', 'nofollow' => 'NoFollow', 'noarchive' => 'NoArchive', 'noimageindex' => 'NoImageIndex', ), 'title' => array ( 'noindex' => 'Prevent search engines from indexing this item.', 'nofollow' => 'Prevent search engines from following links in this item.', 'noarchive' => 'Prevent cached copies of this item from appearing in search results.', 'noimageindex' => 'Prevent search engines from indexing images of this item.', ), ), 'width' => 'auto', 'thclass' => 'left', 'class' => 'left', 'nosort' => false, 'batch' => true, 'filter' => true, 'table' => 'news', 'alias' => 'n.news_meta_robots', 'field' => 'news_meta_robots', '__tableField' => 'n.news_meta_robots', '__tableFrom' => '`#news`.news_meta_robots AS n.news_meta_robots', ) ,
 
 
@@ -756,35 +756,64 @@ class e_formTest extends \Codeception\Test\Unit
 	{
 		$tests = array(
 			0 => array(
-				'options'   => array ( 2 => 'Category 1', 3 => 'Category 2', 1 => 'Misc', ),
+				'optArray'   => array ( 2 => 'Category 1', 3 => 'Category 2', 1 => 'Misc', ),
 				'value'     => '3',
 				'expected'  => "<option value='2'>Category 1</option><option value='3' selected='selected'>Category 2</option><option value='1'>Misc</option>",
 			),
 
 			1 => array(
-				'options'   => array ( 'noindex' => 'NoIndex', 'nofollow' => 'NoFollow', 'noarchive' => 'NoArchive', 'noimageindex' => 'NoImageIndex', ),
+				'optArray'   => array ( 'noindex' => 'NoIndex', 'nofollow' => 'NoFollow', 'noarchive' => 'NoArchive', 'noimageindex' => 'NoImageIndex', ),
 				'value'     => array ( 0 => 'noarchive', 1 => 'noimageindex', ),
 				'expected'  => "<option value='noindex'>NoIndex</option><option value='nofollow'>NoFollow</option><option value='noarchive' selected='selected'>NoArchive</option><option value='noimageindex' selected='selected'>NoImageIndex</option>",
 
 			),
 
 			2 => array(
-				'options'   => array ( 'default' => 'Default', 'nav' => 'Nav', ),
+				'optArray'   => array ( 'noindex' => 'NoIndex', 'nofollow' => 'NoFollow', 'noarchive' => 'NoArchive', 'noimageindex' => 'NoImageIndex', ),
+				'value'     => '',
+				'expected'  => "<option value='noindex'>NoIndex</option><option value='nofollow'>NoFollow</option><option value='noarchive'>NoArchive</option><option value='noimageindex'>NoImageIndex</option>",
+
+			),
+
+			3 => array(
+				'optArray'   => array ( 'default' => 'Default', 'nav' => 'Nav', ),
 				'value'     => 'default',
 				'expected'  => "<option value='default' selected='selected'>Default</option><option value='nav'>Nav</option>",
 
 			),
 
-			3 => array(
-				'options'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
+			4 => array(
+				'optArray'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
 				'value'     => array ( 0 => '1', 1 => '4', ),
 				'expected'  => "<option value='0'>Default Area</option><option value='1' selected='selected'>Default Area - Title</option><option value='4' selected='selected'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option>",
 			),
 
-			4 => array(
-				'options'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
+			5 => array(
+				'optArray'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
 				'value'     => array ( 0 => ''),
 				'expected'  => "<option value='0' selected='selected'>Default Area</option><option value='1'>Default Area - Title</option><option value='4'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option>",
+				'options'   => array('empty'=>'0')
+			),
+
+			6 => array(
+				'optArray'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
+				'value'     => '',
+				'expected'  => "<option value='0' selected='selected'>Default Area</option><option value='1'>Default Area - Title</option><option value='4'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option>",
+				'options'   => array('empty'=>'0')
+			),
+
+			7 => array(
+				'optArray'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
+				'value'     => array ( 0 => ''),
+				'expected'  => "<option value='0'>Default Area</option><option value='1' selected='selected'>Default Area - Title</option><option value='4'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option>",
+				'options'   => array('empty'=>'1')
+			),
+
+			8 => array(
+				'optArray'   => array ( 0 => 'Default Area', 1 => 'Default Area - Title', 4 => 'Default Area - Title/Summary', 2 => 'Sidebar - Othernews', 3 => 'Sidebar - Othernews 2', 5 => 'Carousel', 6 => 'News Grid Menu', ),
+				'value'     => '',
+				'expected'  => "<option value='0'>Default Area</option><option value='1' selected='selected'>Default Area - Title</option><option value='4'>Default Area - Title/Summary</option><option value='2'>Sidebar - Othernews</option><option value='3'>Sidebar - Othernews 2</option><option value='5'>Carousel</option><option value='6'>News Grid Menu</option>",
+				'options'   => array('empty'=>'1')
 			),
 
 
@@ -792,7 +821,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		foreach($tests as $index => $row)
 		{
-			$actual = $this->_frm->option_multi($row['options'],$row['value']);
+			$actual = $this->_frm->option_multi($row['optArray'],$row['value'], varset($row['options'], []));
 			$actual = str_replace("\n", '', $actual);
 			$this->assertSame($row['expected'], $actual, 'Test #'.$index.' failed');
 		}
@@ -1233,6 +1262,19 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 
 
+	}
+
+	public function testRenderElementDropdown()
+	{
+
+
+			$result  = $this->_frm->renderElement('dropdown_004', '', $this->_fields['dropdown_004']);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$expected = "<select name='dropdown_004[]' id='dropdown-004' class='tbox select form-control' multiple='multiple'><option value='noindex' data-title='Prevent search engines from indexing this item.'>NoIndex</option><option value='nofollow' data-title='Prevent search engines from following links in this item.'>NoFollow</option><option value='noarchive' data-title='Prevent cached copies of this item from appearing in search results.'>NoArchive</option><option value='noimageindex' data-title='Prevent search engines from indexing images of this item.'>NoImageIndex</option></select>";
+		
+			$this->assertSame($expected, $result);
 	}
 	/*
 			public function testRenderListForm()

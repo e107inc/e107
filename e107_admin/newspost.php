@@ -920,6 +920,7 @@ class news_admin_ui extends e_admin_ui
 		$this->fields['news_category']['writeParms']['size'] = 'xlarge';
 		$this->fields['news_render_type']['writeParms']['optArray'] = $this->news_renderTypes; // array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2","Featurebox");
 		$this->fields['news_render_type']['writeParms']['multiple'] = 1;
+		$this->fields['news_render_type']['writeParms']['empty'] = '0';
 
 		$this->fields['news_meta_robots']['writeParms']['optArray'] = e107::getSingleton('eResponse')->getRobotTypes();
 		$this->fields['news_meta_robots']['writeParms']['title'] = e107::getSingleton('eResponse')->getRobotDescriptions();
