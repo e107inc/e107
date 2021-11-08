@@ -1338,7 +1338,13 @@ span.tag button.close {
     vertical-align: middle;
 }
 
-/* Override selectize.js styles *//*
+/* Override selectize.js styles */
+.selectize-control {  padding: 0;  border: 0;  height:auto; }
+.editable-input { position: relative; margin-bottom: 15px;}
+.selectize-dropdown { height: auto;}
+
+/*
+
 .selectize-control.multi .selectize-input > div { cursor: pointer; margin: 1px 5px 0 0; padding: 1px 3px; background: #3a87ad; color: #ffffff; border: 0 solid rgba(0, 0, 0, 0); text-shadow: 1px 1px 0 black; box-shadow: 1px 1px 0 black; font-size: 12px; font-weight: bold; }
 .selectize-control.single .selectize-input, .selectize-control.single .selectize-input.input-active, .selectize-control.single .selectize-input.input-active:hover, .selectize-control.single .selectize-input.focus, .selectize-control.multi .selectize-input, .selectize-control.multi .selectize-input.input-active, .selectize-control.multi .selectize-input.input-active:hover, .selectize-control.multi .selectize-input.focus { padding: 5px 5px 5px 5px !important; }
 
