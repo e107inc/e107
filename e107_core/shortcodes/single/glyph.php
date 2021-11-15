@@ -1,7 +1,7 @@
 <?php
 
 
-function glyph_shortcode($parm = '')
+function glyph_shortcode($parm = null)
 {
 	if(!is_array($parm))
 	{
