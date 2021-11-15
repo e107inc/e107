@@ -432,4 +432,9 @@ class faqs_shortcodes extends e_shortcode
 		
 	}
 	
+	function sc_faq_id($parm=null)
+	{
+		return $this->var['faq_id'];
+	}
+	
 }
