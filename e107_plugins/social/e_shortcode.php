@@ -160,6 +160,24 @@ class social_shortcodes extends e_shortcode
 		return $this->var['class'];
 	}
 
+	/** @experimental inline svg  - subject to removal at any time */
+	public function sc_xurl_icons_svg($parm=null)
+	{
+		$path = e_WEB.'lib/font-awesome/5/svgs/brands/';
+		$path .= $this->var['id'].".svg";
+
+		if(!file_exists($path))
+		{
+			return null;
+		}
+
+		if($ret = file_get_contents($path))
+		{
+			return $ret;
+		}
+
+	}
+
 // ------------------------------------------------
 
 	function sc_social_login($parm=null)

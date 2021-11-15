@@ -3783,6 +3783,27 @@ class e_parse
 			case "fas":
 				$prefix = $cat.' ';
 				$id = str_replace($cat.'-', 'fa-', $id);
+
+				/** @experimental - subject to removal at any time. */
+				if(!empty($parm['embed']))
+				{
+					$dirs = ['far'=>'regular', 'fab'=>'brands', 'fas'=>'solid'];
+
+					$path = e_WEB.'lib/font-awesome/5/svgs/';
+					$path .= $dirs[$cat].'/';
+					$path .= str_replace('fa-','',$id).".svg";
+
+					if($ret = file_get_contents($path))
+					{
+						$class = 'svg-inline--fa ';
+						$class .= $id;
+						$class .= ' fa-w-16';
+						$class .= !empty($parm['fw']) ? ' fa-fw' : '';
+
+						return str_replace('<svg', '<svg class="'.$class.'" role="img" ', $ret);
+					}
+				}
+
 				break;
 
 			case "fa":
