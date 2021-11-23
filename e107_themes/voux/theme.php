@@ -295,6 +295,7 @@ $LAYOUT['_footer_'] = '
 	<div id="footer-copyright" class="container">
 		<div class="row">
 			<div class="col-lg-8">
+				<small>{SITEDISCLAIMER}</small><br />
 				<!-- Under the terms of the GNU GPL, this may not be removed or modified -->
 				<small>e107 Theme based on &quot;Voux&quot; by <a href="http://www.themexpose.com/">ThemeXpose</a> which is released under the terms of the GNU General Public license. </small>
 			</div>

@@ -289,7 +289,7 @@
 		<core name="sitebutton">{e_IMAGE}button.png</core>
 		<core name="sitecontacts">255</core>
 		<core name="sitedescription"></core>
-		<core name="sitedisclaimer"><![CDATA[ Copyright Info. All Rights Reserved]]></core>
+		<core name="sitedisclaimer"></core>
 		<core name="sitelang_init">English</core>
 		<core name="sitelanguage">English</core>
 		<core name="sitelogo"></core>
