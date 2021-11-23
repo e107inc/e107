@@ -4333,7 +4333,7 @@ class e_parse
 			else
 			{
 				$log = e107::getLog();
-				$log->addDebug('Broken Image Path: ' . $legacyPath . "\n" . print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2), true), false)->save('IMALAN_00');
+				$log->addDebug('Broken Image Path: ' . $legacyPath . "\n" . print_r(debug_backtrace(0, 2), true), false)->save('IMALAN_00');
 				e107::getDebug()->log('Broken Image Path: ' . $legacyPath);
 			}
 
