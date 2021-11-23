@@ -4048,7 +4048,7 @@ var_dump($select_options);*/
 			}
 			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key,'data-') === 0)
 			{
-				$stringifiedAttributes[] = $key . "='" . htmlspecialchars($value, ENT_QUOTES) . "'";
+				$stringifiedAttributes[] = $key . "='" . htmlspecialchars((string) $value, ENT_QUOTES) . "'";
 			}
 		}
 
