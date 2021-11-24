@@ -633,6 +633,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$sc->__construct();
 		$sc->setVars($vars);
+		$sc->setScVar('pageTitles', []);
+		$sc->setScVar('pageSelected', 0);
+		$sc->setScVar('bullet', '');
 
 		$exclude = array('sc_cpagemessage'); // system messages
 
