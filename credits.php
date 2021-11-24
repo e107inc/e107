@@ -16,8 +16,8 @@ if (!defined('e107_INIT'))
 			.logo				{ margin-bottom:20px }
 			.credits-content	{ padding:20px 40px;}
         	.copyright			{ margin-top:30px}
-        	.well               { min-height: 20px; padding: 19px; border: 1px solid #0f0f0f; border-radius: 6px; -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-								  box-shadow: inset 0 1px 1px rgba(0,0,0,.05); color: #eee; background-color: #222; 
+        	.credits-content    { min-height: 20px; padding: 19px; border: 1px solid #0f0f0f; border-radius: 6px; -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+								  box-shadow: inset 0 1px 1px rgba(0,0,0,.05); color: #eee; background-color: #222 !important; 
 	}  
       ";
 
@@ -52,7 +52,7 @@ if (!defined('e107_INIT'))
         	
 		</div>';
 
-e107::getRender()->tablerender("", $text);
+echo $text;
 
 if(deftrue('e_IFRAME'))
 {
