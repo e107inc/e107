@@ -699,7 +699,7 @@ class pageClass
 		$pagenav = $rating = $comments = '';
 		if($this->authorized === true)
 		{
-			$pagenav = $this->pageIndex();
+		//	$pagenav = $this->pageIndex();
 			$rating = $this->pageRating($this->page['page_rating_flag']);
 			$comments = $this->pageComment($this->page['page_comment_flag']);
 		}
@@ -718,7 +718,7 @@ class pageClass
 	
 		// ---- New --- -
 		$this->page['page_text'] 	    = $this->pageToRender;
-		$this->page['np'] 			    = $pagenav;
+	//	$this->page['np'] 			    = $pagenav;
 		$this->page['rating'] 		    = $rating;
 		$this->page['comments'] 	    = $comments;
 		$this->page['err'] 			    = false;
@@ -736,6 +736,9 @@ class pageClass
 		e107::getEvent()->trigger('user_page_item_viewed',$this->page);
 
 		$this->batch->setVars($this->page);
+		$this->batch->setScVar('pageTitles', $this->pageTitles);
+		$this->batch->setScVar('pageSelected', $this->pageSelected);
+		$this->batch->setScVar('bullet', $this->bullet);
 		$this->batch->breadcrumb();
 
 		$metaTitle = eHelper::formatMetaTitle($this->page['page_title']);
@@ -1039,7 +1042,7 @@ class pageClass
 	}
 
 
-
+	/** @deprecated */
 	function pageIndex()
 	{
     	// Use always nextprev shortcode (with a special default 'page' tempalte)

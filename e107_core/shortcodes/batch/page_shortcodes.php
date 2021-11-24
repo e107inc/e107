@@ -25,7 +25,7 @@ class cpage_shortcodes extends e_shortcode
 	private $chapterData = array();
 	private $cpageFieldName = null;
 	private $breadcrumbComplete = false;
-	
+
 	// Grab all book/chapter data. 
 	function __construct()
 	{
@@ -210,10 +210,30 @@ class cpage_shortcodes extends e_shortcode
 		
 	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
-	
-	function sc_cpagenav()
+
+	/**
+	 * @param array $parm
+	 * @param string $parm['tmpl'] page|dropdown
+	 * @usage {CPAGENAV}
+	 * @usage {CPAGENAV: tmpl=dropdown}
+	 *
+	 * @return string|null
+	 */
+	function sc_cpagenav($parm=null)
 	{
-		return isset($this->var['np']) ? $this->var['np'] : null;
+        $titles = implode("|", $this->scVars->pageTitles);
+        $total_items = count($this->scVars->pageTitles);
+
+		$row = $this->var;
+		$row['page'] = '--FROM--';
+		$url = rawurlencode(e107::getUrl()->create('page/view', $row, 'allow=page_id,page_title,page_sef,page'));
+
+		$template = isset($parm['tmpl']) ? (string) $parm['tmpl'] : 'page';
+
+		$parms = 'nonavcount&bullet='.rawurlencode($this->scVars->bullet.' ').'&caption=<!-- Empty -->&'.'pagetitle='.rawurlencode($titles).'&tmpl_prefix='.deftrue('PAGE_NEXTPREV_TMPL', $template).'&total='.$total_items.'&amount=1&current='.$this->scVars->pageSelected.'&url='.$url;
+        $itext = ($total_items) ? e107::getParser()->parseTemplate("{NEXTPREV={$parms}}") : null;
+
+		return $itext;
 	}
 	
 	function sc_cpagerating()
