@@ -3461,7 +3461,8 @@ class e_parse
 		'form'     => array('action', 'method', 'target'),
 		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
 		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
-		'td'       => array('colspan', 'rowspan'),
+		'table'    => array('border', 'cellpadding', 'cellspacing'), // BC Fix.
+		'td'       => array('colspan', 'rowspan', 'name', 'bgcolor' ),
 		'th'       => array('colspan', 'rowspan'),
 		'col'      => array('span'),
 		'embed'    => array('src', 'wmode', 'type', 'width', 'height'),
