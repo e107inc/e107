@@ -1895,16 +1895,29 @@ while(&#036;row = &#036;sql-&gt;fetch())
 			    13 => 'lang',
 			    14 => 'accesskey',
 			  ),
+			  'table' => array(
+		        0 => 'border',
+		        1 => 'cellpadding',
+		        2 => 'cellspacing',
+		        3 => 'id',
+		        4 => 'style',
+		        5 => 'class',
+		        6 => 'title',
+		        7 => 'lang',
+		        8 => 'accesskey',
+		    ),
 			  'td' =>
 			  array (
-			    0 => 'colspan',
-			    1 => 'rowspan',
-			    2 => 'id',
-			    3 => 'style',
-			    4 => 'class',
-			    5 => 'title',
-			    6 => 'lang',
-			    7 => 'accesskey',
+			  	0 => 'colspan',
+		        1 => 'rowspan',
+		        2 => 'name',
+		        3 => 'bgcolor',
+		        4 => 'id',
+		        5 => 'style',
+		        6 => 'class',
+		        7 => 'title',
+		        8 => 'lang',
+		        9 => 'accesskey',
 			  ),
 			  'th' =>
 			  array (
@@ -2673,9 +2686,19 @@ Your browser does not support the audio tag.
                 ),
 
                 15  => array(
-                    'html'  => '<iframe width="640" height="360" frameborder="0" allowfullscreen src="http://nowhere.com" this-attribute-should-be-removed="value1" this-attribute-should-also-be-removed="value2"></iframe>',
+                    'html'      => '<iframe width="640" height="360" frameborder="0" allowfullscreen src="http://nowhere.com" this-attribute-should-be-removed="value1" this-attribute-should-also-be-removed="value2"></iframe>',
                     'expected'  => '<iframe width="640" height="360" frameborder="0" allowfullscreen="" src="http://nowhere.com"></iframe>'
 
+				),
+				// BC Compat.
+				16 => array(
+					'html'      => '<table border="1" cellpadding="5" cellspacing="7"><tr><td></td></tr></table>',
+					'expected'  => '<table border="1" cellpadding="5" cellspacing="7"><tr><td></td></tr></table>',
+				),
+				// BC Compat.
+				17 => array(
+					'html'      => '<td name="G" bgcolor="#660000">colored</td>',
+					'expected'  => '<td name="G" bgcolor="#660000">colored</td>',
 				),
 
 
