@@ -58,7 +58,7 @@ class cpage_shortcodes extends e_shortcode
 	function getChapter()
 	{
 		
-		$id = $this->var['page_chapter'];
+		$id = varset($this->var['page_chapter']);
 		
 		if(!empty($this->chapterData[$id]['chapter_id']) && $this->chapterData[$id]['chapter_parent'] > 0)
 		{
@@ -663,7 +663,8 @@ class cpage_shortcodes extends e_shortcode
 		$action = varset($request['action']);
 
 		$row = $this->getChapter();
-		$brow = $this->getBook($row['chapter_parent']);
+		$parent = isset($row['chapter_parent']) ? (int) $row['chapter_parent'] : 0;
+		$brow = $this->getBook($parent);
 
 		if(empty($brow['chapter_sef']) || $this->breadcrumbComplete === true || ($action === 'listBooks'))
 		{

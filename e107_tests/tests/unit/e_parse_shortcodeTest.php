@@ -438,6 +438,62 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
+    // "Next/Prev"
+    public function testPaginationShortCode()
+    {
+    	require_once(e_CORE."shortcodes/single/nextprev.php");
+
+        $tests = array(
+            0 => array(
+                'parm' => array (
+                    'nonavcount' => '',
+                    'bullet' => '',
+                    'caption' => '',
+                    'pagetitle' => 'Page 1|Page1|Page2|Page3',
+                    'tmpl_prefix' => 'page',
+                    'total' => '4',
+                    'amount' => '1',
+                    'current' => '0',
+                    'url' => '/new-page-test?page=--FROM--',
+                ),
+                'expected'  => '
+<!-- Start of Next/Prev -->
+<div class="cpage-nav">
+&nbsp;<a class=\'cpage-np current\' href=\'#\' onclick=\'return false;\' title="Page 1">Page 1</a><br />&nbsp;<a class=\'cpage-np\' href=\'/new-page-test?page=1\' title="Page1">Page1</a><br />&nbsp;<a class=\'cpage-np\' href=\'/new-page-test?page=2\' title="Page2">Page2</a><br />&nbsp;<a class=\'cpage-np\' href=\'/new-page-test?page=3\' title="Page3">Page3</a>
+</div>
+<!-- End of Next/Prev -->
+'),
+            1 => array(
+                'parm' => array (
+                    'nonavcount' => '',
+                    'bullet' => '',
+                    'caption' => '',
+                    'pagetitle' => 'Page 1|Page1|Page2|Page3',
+                    'tmpl_prefix' => 'dropdown',
+                    'total' => '4',
+                    'amount' => '1',
+                    'current' => '0',
+                    'url' => '/new-page-test?page=--FROM--',
+                ),
+                'expected'  => '
+<!-- Start of Next/Prev -->
+<div class="nextprev form-group form-inline input-group input-group-btn"><select class="tbox npdropdown nextprev-select form-control form-select" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value"><option value="/new-page-test?page=0" selected="selected">Page 1</option><option value="/new-page-test?page=1">Page1</option><option value="/new-page-test?page=2">Page2</option><option value="/new-page-test?page=3">Page3</option></select><a class="btn btn-default btn-outline-secondary nextprev-item next tbox npbutton" href="/new-page-test?page=1" title="Go to the next page">next</a></div>
+<!-- End of Next/Prev -->
+',
+            ),
+
+
+        );
+
+        foreach($tests as $item)
+        {
+            $result = nextprev_shortcode($item['parm']);
+            $this->assertSame($item['expected'], $result);
+        }
+
+
+    }
+
 
     public function testNewsArchiveShortcodes()
     {

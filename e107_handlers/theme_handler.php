@@ -191,6 +191,11 @@ class e_theme
 
 		$ret = [];
 
+		if(empty($themeXMLData))
+		{
+			return $ret;
+		}
+
 		foreach($themeXMLData as $info)
 		{
 			if(!isset($info['scope']))
