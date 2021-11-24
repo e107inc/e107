@@ -3446,7 +3446,7 @@ class e_parse
 		$this->allowedTags = array('html', 'body', 'div', 'a', 'img', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
 		'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p',
 		'section', 'article', 'blockquote', 'hgroup', 'aside', 'figure', 'figcaption', 'abbr', 'span', 'audio', 'video', 'source', 'br',
-		'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label'
+		'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label', 'dl', 'dt', 'dd',
 		);
 
 		$this->scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
