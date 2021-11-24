@@ -38,6 +38,7 @@ if(!e_QUERY)
 }
 elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 {
+	e107::getDebug()->log("Page Mode: Display list of chapters within a book");
 	$id = $e107CorePage->setRequest('listChapters');
     $e107CorePage->listChapters($id);
     e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
@@ -50,6 +51,7 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 }
 elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 {
+	e107::getDebug()->log("Page Mode: Display list of pages within a chapter");
 	$id = $e107CorePage->setRequest('listPages');
     $e107CorePage->listPages($id);
     $chData = $e107CorePage->getChapterData($id);
@@ -64,6 +66,7 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 }
 else
 {
+	e107::getDebug()->log("Page Mode: Display page");
 	$e107CorePage->setRequest('showPage');
 	$e107CorePage->processViewPage();
     $e107CorePage->setPage();
