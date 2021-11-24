@@ -26,6 +26,7 @@ $insert = (vartrue($parm['book'])) ? "AND chapter_parent = ".intval($parm['book'
 
 //TODO Limits and cache etc. 
 $data = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_visibility IN (".USERCLASS_LIST.") AND chapter_template = 'panel'  ".$insert. " LIMIT 24", true);
+$sc = null;
 
 if(!empty($data))
 {
@@ -50,6 +51,7 @@ elseif(ADMIN)
 {
 	$body = "<div class='alert alert-danger'>No Chapters available</div>";
 }
+
 
 $caption = $tp->parseTemplate($template['listChapters']['caption'], true, $sc);
 
