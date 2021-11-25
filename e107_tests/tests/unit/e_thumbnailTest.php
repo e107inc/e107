@@ -264,7 +264,7 @@ class compareImages
 			    break;
 
 		    case "png":
-			    return imagecreatefrompng($i);
+			    return @imagecreatefrompng($i);
 			    break;
 
 			case "gif":

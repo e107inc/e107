@@ -229,7 +229,7 @@
 		{
 			$ret = array();
 			$invert = false;
-			if(strpos($fmask, '~') === 0)
+			if(!empty($fmask) && strpos($fmask, '~') === 0)
 			{
 				$invert = true;                        // Invert selection - exclude files which match selection
 				$fmask = substr($fmask, 1);

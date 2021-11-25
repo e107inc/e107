@@ -325,6 +325,7 @@ class admin_log_ui extends e_admin_ui
 			$log = e107::getLog();
 			$frm = e107::getForm();
 			$sql = e107::getDb();
+			$tp = e107::getParser();
 
 			$back_count = 0;
 			$action = '';
@@ -371,7 +372,7 @@ class admin_log_ui extends e_admin_ui
 			if(($action == "backdel") && isset($_POST['backdeltype']))
 			{
 			//	$old_date = intval($qs[1]);
-				$old_string = strftime("%d %B %Y", $old_date);
+				$old_string = $tp->toDate($old_date, "%d %B %Y");
 				$qry = "dblog_datestamp < ".$old_date; // Same field for both logs
 
 				switch($_POST['backdeltype'])

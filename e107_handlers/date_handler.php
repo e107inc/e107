@@ -37,17 +37,17 @@ class e_date
 
 				for ($i=1; $i < 8; $i++)
 				{
-					$day = strftime('%A', mktime(1, 1, 1, 1, $i, 2012));
+					$day = eShims::strftime('%A', mktime(1, 1, 1, 1, $i, 2012));
 					$dates['days'][] = $day;
-					$dates['daysShort'][] = strftime('%a', mktime(1, 1, 1, 1, $i, 2012));
+					$dates['daysShort'][] = eShims::strftime('%a', mktime(1, 1, 1, 1, $i, 2012));
 					$dates['daysMin'][] = substr($day, 0, 2);
 				}
 
 
 				for ($i=1; $i < 13; $i++)
 				{
-					$dates['months'][] = strftime('%B', mktime(1, 1, 1, $i, 2, 2013));
-					$dates['monthsShort'][] = strftime('%h', mktime(1, 1, 1, $i, 2, 2013));
+					$dates['months'][] = eShims::strftime('%B', mktime(1, 1, 1, $i, 2, 2013));
+					$dates['monthsShort'][] = eShims::strftime('%h', mktime(1, 1, 1, $i, 2, 2013));
 				}
 
 
@@ -88,7 +88,7 @@ class e_date
 			$marray = array();
 			for ($i = 1; $i < 13; $i++)
 			{
-				$marray[$i] = strftime($val, mktime(1, 1, 1, $i, 1, 2000));
+				$marray[$i] = eShims::strftime($val, mktime(1, 1, 1, $i, 1, 2000));
 			}
 
 			return $marray;
@@ -102,15 +102,15 @@ class e_date
 				switch ($type) 
 				{
 					case 'day-shortest': // eg. 'Tu'
-						$days[] = substr(strftime('%a', mktime(1, 1, 1, 6, $i, 2014)), 0, 2);
+						$days[] = substr(eShims::strftime('%a', mktime(1, 1, 1, 6, $i, 2014)), 0, 2);
 					break;
 					
 					case 'day-short':  // eg. 'Tue'
-						$days[] = strftime('%a', mktime(1, 1, 1, 6, $i, 2014));
+						$days[] = eShims::strftime('%a', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 					
 					default:  // eg. 'Tuesday'
-						$days[] = strftime('%A', mktime(1, 1, 1, 6, $i, 2014));
+						$days[] = eShims::strftime('%A', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 				}
 			}
@@ -196,7 +196,7 @@ class e_date
 			break;
 		}
 
-		$dateString = strftime($mask, $datestamp);
+		$dateString = eShims::strftime($mask, $datestamp);
 
 		if (!e107::getParser()->isUTF8($dateString))
 		{
@@ -788,8 +788,8 @@ class e_date
 		trigger_error('<b>' . __METHOD__ . ' is deprecated.</b>  Use eShims::strptime() instead', E_USER_DEPRECATED); // NO LAN
 
 		$vals = eShims::strptime($str, $format); // PHP5 is more accurate than below.
-		$vals['tm_amon'] = strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
-		$vals['tm_fmon'] = strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_amon'] = eShims::strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_fmon'] = eShims::strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
 
 		return $vals;
 	}
@@ -869,7 +869,7 @@ class e_date
 		// Evaluate the formats whilst suppressing any errors.
 		foreach($strftimeFormats as $format => $description)
 		{
-			$strftimeValues[$format] = strftime("%{$format}");
+			$strftimeValues[$format] = eShims::strftime("%{$format}");
 		}
 		
 		// Find the longest value.
@@ -910,7 +910,71 @@ class e_date
 		return in_array($timezone, timezone_identifiers_list());
 	}
 
+	public function dateFormats($datestamp = null)
+	{
+		if(empty($datestamp))
+		{
+			$datestamp = time();
+		}
 
+		$formats = array(
+						"%A, %d %B, %Y",
+						"%A, %d %b, %Y",
+						"%a, %d %B, %Y",
+						"%a, %d %b, %Y",
+						
+						"%A, %B %d, %Y",
+						"%A, %b %d, %Y",
+						"%A, %b %d, %y",
+						
+						"%B %d, %Y",
+						"%b %d, %Y",
+						"%b %d, %y",
+						
+						"%d %B, %Y",
+						"%d %b, %Y",
+						"%d %b, %y",
+						
+						"%Y-%m-%d",
+						"%d-%m-%Y",
+						"%m/%d/%Y"
+					);
+
+		$ret = [];
+		foreach($formats as $f)
+		{
+			$ret[$f] = eShims::strftime($f,$datestamp);
+
+		}
+
+		return $ret;
+	}
+
+	function timeFormats($datestamp=null)
+	{
+		if(empty($datestamp))
+		{
+			$datestamp = time();
+		}
+
+		$inputtime = array();
+
+		$inputtime["%I:%M %p"]	= eShims::strftime("%I:%M %p",$datestamp);
+		if(e107::getDate()->supported('P'))
+		{
+			$inputtime["%I:%M %P"]	= eShims::strftime("%I:%M %P",$datestamp);
+		}
+		if(e107::getDate()->supported('l'))
+		{
+			$inputtime["%l:%M %p"]	= eShims::strftime("%l:%M %p",$datestamp);
+			$inputtime["%l:%M %P"]	= eShims::strftime("%l:%M %P",$datestamp);
+		}
+
+		$inputtime["%H:%M"]		= eShims::strftime("%H:%M",$datestamp);
+		$inputtime["%H:%M:%S"]	= eShims::strftime("%H:%M:%S",$datestamp);
+
+		return $inputtime;
+	}
 
 
 }

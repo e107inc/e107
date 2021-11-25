@@ -140,7 +140,7 @@ class downloadCategory
 	{
 		$text = "<tr><td>".$cat['download_category_id']."</td><td>".$cat['download_category_parent']."</td><td>";
 		$text .= $prefix.htmlspecialchars($cat['download_category_name']).$postfix."</td><td>".$cat['d_size']."</td>";
-		$text .= "<td>".$cat['d_count']."</td><td>".$cat['d_requests']."</td><td>".strftime('%H:%M %d-%m-%Y',$cat['d_last'])."</td>";
+		$text .= "<td>".$cat['d_count']."</td><td>".$cat['d_requests']."</td><td>".eShims::strftime('%H:%M %d-%m-%Y',$cat['d_last'])."</td>";
 		$text .= "</tr>";
 		return $text;
 	}
