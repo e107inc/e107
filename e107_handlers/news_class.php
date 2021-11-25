@@ -632,7 +632,7 @@ class e_news_item extends e_front_model
 					$params = array($val); //value is always the first callback argument
 					$params = array_merge($params, explode(',', $parm['arg']));
 					//should be done with date handler (awaiting for modifications)
-					return strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
+					return eShims::strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
 				break;
 
 				default:

@@ -34,14 +34,14 @@ if (!function_exists('strptime'))
 	}
 }
 
-
+/*
 if (!function_exists('strftime'))
 {
 	function strftime($format, $timestamp)
 	{
 		return eShims::strftime($format, $timestamp);
 	}
-}
+}*/
 
 
 // Fix for exim missing.

@@ -65,7 +65,7 @@ if (!empty($_POST['ban_types']))
 	}
 }
 
-$filename = 'banlist_'.strftime("%Y%m%d_%H%M%S").'.csv';
+$filename = 'banlist_'.e107::getParser()->toDate(time(), "%Y%m%d_%H%M%S").'.csv';
 
 if ($error_string = do_export($filename, $type_list, $format_array, $use_separator, $use_quote))
 {
@@ -78,6 +78,7 @@ banlist_adminlog('06','File: '.$filename.'<br />'.$error_string);
 function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $quot = '"')
 {
 	$sql = e107::getDb();
+	$tp = e107::getParser();
 	$export_text = '';
 	$qry = "SELECT * FROM `#banlist` ";
 	if ($type_list != '') $qry .= " WHERE`banlist_bantype` IN ({$type_list})";
@@ -98,7 +99,7 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 			  break;
 			case 'banlist_datestamp' :
 			case 'banlist_banexpires' :
-			  if ($row[$f]) $line .= $spacer.$quot.strftime($v,$row[$f]).$quot; else $line .= $spacer.$quot.'0'.$quot;
+			  if ($row[$f]) $line .= $spacer.$quot.$tp->toDate($row[$f], $v).$quot; else $line .= $spacer.$quot.'0'.$quot;
 			  break;
 		  }
 		  $spacer = $sep;

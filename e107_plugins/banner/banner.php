@@ -34,7 +34,7 @@ if(e_QUERY)
 {
 	$query_string = intval(e_QUERY);
 	$row = $sql->retrieve("banner", "*", "banner_id = '{$query_string}'"); // select the banner
-	$ip = e107::getIPHandler()->getIP(FALSE);
+	$ip = e107::getIPHandler()->getIP();
 	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
 	$sql->update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '{$newip}' WHERE `banner_id` = '{$query_string}'");
 //	header("Location: {$row['banner_clickurl']}");
@@ -96,16 +96,16 @@ if (isset($_POST['clientsubmit']))
 	{
 		while ($row = $sql->fetch()) 
 		{			 
-			$start_date = ($row['banner_startdate'] ? strftime("%d %B %Y", $row['banner_startdate']) : BANNERLAN_31);
-			$end_date 	= ($row['banner_enddate'] ? strftime("%d %B %Y", $row['banner_enddate']) : BANNERLAN_31);
+			$start_date = ($row['banner_startdate'] ? $tp->toDate($row['banner_startdate'], "%d %B %Y") : BANNERLAN_31);
+			$end_date 	= ($row['banner_enddate'] ? $tp->toDate($row['banner_enddate'], "%d %B %Y") : BANNERLAN_31);
 
 			$scArray = array();
 			$scArray['BANNER_TABLE_CLICKPERCENTAGE'] 		= ($row['banner_clicks'] && $row['banner_impressions'] ? round(($row['banner_clicks'] / $row['banner_impressions']) * 100)."%" : "-");
 			$scArray['BANNER_TABLE_IMPRESSIONS_LEFT']		= ($row['banner_impurchased'] ? $row['banner_impurchased'] - $row['banner_impressions'] : BANNERLAN_30);
-			$scArray['BANNER_TABLE_IMPRESSIONS_PURCHASED'] = ($row['banner_impurchased'] ? $row['banner_impurchased'] : BANNERLAN_30);
+			$scArray['BANNER_TABLE_IMPRESSIONS_PURCHASED']  = ($row['banner_impurchased'] ? $row['banner_impurchased'] : BANNERLAN_30);
 			$scArray['BANNER_TABLE_CLIENTNAME'] 			= $row['banner_clientname'];
-			$scArray['BANNER_TABLE_BANNER_ID']			= $row['banner_id'];
-			$scArray['BANNER_TABLE_BANNER_CLICKS'] 		= $row['banner_clicks'];
+			$scArray['BANNER_TABLE_BANNER_ID']			    = $row['banner_id'];
+			$scArray['BANNER_TABLE_BANNER_CLICKS'] 		    = $row['banner_clicks'];
 			$scArray['BANNER_TABLE_BANNER_IMPRESSIONS'] 	= $row['banner_impressions'];
 			$scArray['BANNER_TABLE_ACTIVE'] 				= LAN_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
 			$scArray['BANNER_TABLE_STARTDATE']				= LAN_START." ".$start_date;
