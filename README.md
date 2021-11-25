@@ -36,8 +36,9 @@
 
    ### Recommended
 
-   * Apache 2.2 or newer on Linux with PHP 7.0 or newer
-   * MySQL 5.x or newer, or MariaDB
+   * Apache 2.4 or newer on Linux
+   * PHP 7.4 or newer
+   * MySQL 5.6 or newer, or MariaDB 10.3 or newer
    * A registered domain name
    * Access to a server control panel (such as cPanel)
 

@@ -542,9 +542,9 @@ class cron_admin_form_ui extends e_admin_form_ui
 			$text .= "<br />";
 			$text .= ($day != '*') ? LAN_CRON_52 ." ". $day : LAN_CRON_40;  // Day(s)
 			$text .= "<br />";
-			$text .= ($month != '*') ? LAN_CRON_53 ." ". e_date::strftime("%B", mktime(00, 00, 00, (int) $month, 1, 2000)) : LAN_CRON_41; // Month(s)
+			$text .= ($month != '*') ? LAN_CRON_53 ." ". strftime("%B", mktime(00, 00, 00, (int) $month, 1, 2000)) : LAN_CRON_41; // Month(s)
 			$text .= "<br />";		 
-			$text .= ($weekday != '*') ? LAN_CRON_54 ." ". e_date::strftime("%A", mktime(00, 00, 00, 5, (int) $weekday, 2000)) : LAN_CRON_42; // Weekday(s)
+			$text .= ($weekday != '*') ? LAN_CRON_54 ." ". strftime("%A", mktime(00, 00, 00, 5, (int) $weekday, 2000)) : LAN_CRON_42; // Weekday(s)
 			
 			
 			return "<a class='e-tip' href=''>".ADMIN_INFO_ICON."</a>
@@ -711,7 +711,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					{
 						$sel = (in_array($i, $month)) ? "selected='selected'" : "";
 						$diz = mktime(00, 00, 00, $i, 1, 2000);
-						$text .= "<option value='$i' $sel>".e_date::strftime("%B", $diz)."</option>\n";
+						$text .= "<option value='$i' $sel>".strftime("%B", $diz)."</option>\n";
 					}
 					$text .= "</select>
 				
@@ -724,7 +724,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 					for ($i = 0; $i <= 6; $i++)
 					{
 						$sel = (in_array(strval($i), $weekday)) ? "selected='selected'" : "";
-						$text .= "<option value='$i' $sel>".e_date::strftime("%A", mktime(00, 00, 00, 5, $i, 2000))."</option>\n";
+						$text .= "<option value='$i' $sel>".strftime("%A", mktime(00, 00, 00, 5, $i, 2000))."</option>\n";
 					}
 					$text .= "</select>
 				";
