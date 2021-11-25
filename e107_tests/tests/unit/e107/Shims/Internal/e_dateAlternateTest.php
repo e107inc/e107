@@ -37,13 +37,13 @@ function defined($constant_name)
  * @param array|string|int $locales
  * @param string           ...$rest
  * @return false|string
- *//*
+ */
 function setlocale($category, $locales, ...$rest)
 {
 	if (e_dateAlternateTest::$alternate_locale) return 'nl_NL';
 
 	return \setlocale($category, $locales, ...$rest);
-}*/
+}
 
 
 class e_dateAlternateTest extends \e_dateTest
@@ -76,23 +76,18 @@ class e_dateAlternateTest extends \e_dateTest
 
 		try
 		{
-			setlocale(LC_ALL,'nl_NL.utf8', 'nl');
+
 			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'long');
 			$expected = 'maandag 05 februari 2018 - 12:45:03';
 			$this->assertEquals($expected, $actual);
 
-			setlocale(LC_ALL,'es_SP.utf8', 'es');
-
-			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'inputdate');
-			$expected = 'lunes, 05 feb, 2018';
+			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'inputtime');
+			$expected = '12:45 P.M.';
 			$this->assertEquals($expected, $actual);
 		}
 		finally
 		{
 			self::$alternate_locale = false;
-			setlocale(LC_ALL, 'en_GB.UTF-8', 'en_GB.utf8', 'en');
 		}
-
-
 	}
 }
