@@ -1452,7 +1452,7 @@ class banlistManager
 	private function dateFormat($date)
 	{
 		if ($date == 0) return '0';
-		return e_date::strftime('%Y%m%d_%H%M%S',$date);
+		return strftime('%Y%m%d_%H%M%S',$date);
 	}
 
 

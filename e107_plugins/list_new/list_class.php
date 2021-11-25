@@ -727,14 +727,14 @@ class listclass
 				if($thisday == $current_day)
 				{
 					$datepreftoday = $this->list_pref[$this->mode."_datestyletoday"];
-					return e_date::strftime($datepreftoday, $datestamp);
+					return strftime($datepreftoday, $datestamp);
 				}
 			}
 		}
 
 		//else use default date style
 		$datepref = $this->list_pref[$this->mode."_datestyle"];
-		return e_date::strftime($datepref, $datestamp);
+		return strftime($datepref, $datestamp);
 	}
 
 	/**

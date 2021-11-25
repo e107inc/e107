@@ -80,10 +80,10 @@ trait StrptimeTrait
 
 		for ($i = 1; $i <= 12; $i++)
 		{
-			$k = e_date::strftime('%B', mktime(0, 0, 0, $i));
+			$k = strftime('%B', mktime(0, 0, 0, $i));
 			$fullmonth[$k] = $i;
 
-			$j = e_date::strftime('%b', mktime(0, 0, 0, $i));
+			$j = strftime('%b', mktime(0, 0, 0, $i));
 			$abrevmonth[$j] = $i;
 		}
 
