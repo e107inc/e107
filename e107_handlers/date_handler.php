@@ -207,9 +207,9 @@ class e_date
 	}
 
 	/**
-	 * Polyfill for {@see strftime()}, which was deprecated in PHP 8.1
+	 * Alias of {@see eShims::strftime()}
 	 *
-	 * The implementation is an approximation that may be wrong for some obscure formatting characters.
+	 * See {@see eShims::strftime()} for more information.
 	 *
 	 * @param string   $format    The old {@see strftime()} format string
 	 * @param int|null $timestamp A Unix epoch timestamp. If null, defaults to the value of {@see time()}.
@@ -217,83 +217,7 @@ class e_date
 	 */
 	public static function strftime($format, $timestamp = null)
 	{
-		if ($timestamp === null) $timestamp = time();
-		$datetime = date_create("@$timestamp");
-		$datetime->setTimezone(new DateTimeZone(date_default_timezone_get()));
-
-		$formatMap = [
-			'%a' => 'D',
-			'%A' => 'l',
-			'%d' => 'd',
-			'%e' => function($datetime)
-			{
-				return str_pad(date_format($datetime, 'n'), 2, " ", STR_PAD_LEFT);
-			},
-			'%j' => function($datetime)
-			{
-				return str_pad(date_format($datetime, 'z'), 3, "0", STR_PAD_LEFT);
-			},
-			'%u' => 'N',
-			'%w' => 'w',
-			'%U' => 'W',
-			'%V' => 'W',
-			'%W' => 'W',
-			'%b' => 'M',
-			'%B' => 'F',
-			'%h' => 'M',
-			'%m' => 'm',
-			'%C' => function($datetime)
-			{
-				return (string) ((int) date_format($datetime, 'Y') / 100);
-			},
-			'%g' => 'y',
-			'%G' => 'Y',
-			'%y' => 'y',
-			'%Y' => 'Y',
-			'%H' => 'H',
-			'%k' => function($datetime)
-			{
-				return str_pad(date_format($datetime, 'G'), 2, " ", STR_PAD_LEFT);
-			},
-			'%I' => 'h',
-			'%l' => function($datetime)
-			{
-				return str_pad(date_format($datetime, 'g'), 2, " ", STR_PAD_LEFT);
-			},
-			'%M' => 'i',
-			'%p' => 'A',
-			'%P' => 'a',
-			'%r' => 'h:i:s A',
-			'%R' => 'H:i',
-			'%S' => 's',
-			'%T' => 'H:i:s',
-			'%X' => 'H:i:s',
-			'%z' => 'O',
-			'%Z' => 'T',
-			'%c' => 'r',
-			'%D' => 'm/d/y',
-			'%F' => 'Y-m-d',
-			'%s' => 'U',
-			'%x' => 'Y-m-d',
-			'%n' => "\n",
-			'%t' => "\t",
-			'%%' => '\%',
-		];
-
-		foreach ($formatMap as $strftime_key => $date_format_key)
-		{
-			if (is_callable($date_format_key))
-			{
-				$replacement = chunk_split($date_format_key($datetime), 1, "\\");
-			}
-			else
-			{
-				$replacement = $date_format_key;
-			}
-			$format = str_replace($strftime_key, $replacement, $format);
-		}
-
-		return date_format($datetime, $format);
+		return eShims::strftime($format, $timestamp);
 	}
 
 	/**
