@@ -69,7 +69,7 @@ jobs:
         )
         USE_GIT_BPO="$(. /etc/os-release && test $VERSION_ID -lt 10 && echo "-t ${DEBIAN_RELEASE}-backports" || echo)"
         apt-get $USE_GIT_BPO install -y git
-        apt-get -t "${DEBIAN_RELEASE}-backports" install -y zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev
+        apt-get -t "${DEBIAN_RELEASE}-backports" install -y zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev libicu-dev
 
     - name: Configure PHP gd extension with default bundle
       run: |
@@ -86,7 +86,7 @@ jobs:
     - name: Install necessary PHP extensions
       run: |
         docker-php-ext-install -j "$(nproc)" \
-        zip bz2 gd pdo_mysql mysqli
+        zip bz2 gd pdo_mysql mysqli intl
 
     - name: PECL install xdebug
       run: |
