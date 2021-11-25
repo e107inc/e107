@@ -1338,7 +1338,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
             || e_REQUEST_HTTP === varset($e107_vars[$act]['link'])
 			)
 			{
-				$temp = varset($tmpl['button_active'.$kpost]);
+				$temp = isset($tmpl['button_active' . $kpost]) ? $tmpl['button_active' . $kpost] : '';
 			}
 			else
 			{
