@@ -15,5 +15,6 @@ trait InternalShimsTrait
 {
 	use Internal\GetParentClassTrait;
 	use Internal\ReadfileTrait;
+	use Internal\StrftimeTrait;
 	use Internal\StrptimeTrait;
 }
