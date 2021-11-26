@@ -7,7 +7,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class plugin_hero_hero_shortcodes extends e_shortcode
 {
-	public $count =0;
+	public $count = 0;
 
 	/**
 	* {hero_ID}
@@ -66,22 +66,34 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return "(No Slides Found)"; // debug info
 		}
 
-		$text = '<ol class="carousel-indicators '.$class.'">';
-
 		$loop = range(0,$total-1);
 
+		$text = '';
+		$bs5 = '';
 		foreach($loop as $c)
 		{
 			$active = ($c == 0) ? 'active' : '';
+			$current = ($c == 0) ? " aria-current='true'" : '';
 
-			$text .= '<li data-target="#'.$target.'" data-slide-to="'.$c.'" data-bs-slide-to="'.$c.'" class="'.$active.'"></li>';
+			$text .= '<li data-target="#'.$target.'" data-slide-to="'.$c.'" data-bs-slide-to="'.$c.'" class="'.$active.'" '.$current.'></li>';
+			$bs5 .= ' <button type="button" data-bs-target="#'.$target.'" data-bs-slide-to="'.$c.'" aria-label="Slide '.$c.'" class="'.$active.'" '.$current.'></button>';
+
 			$text .= "\n";
 		}
 
-		$text .= '                  
-                </ol>';
+		if(defset('BOOTSTRAP') === 5)
+		{
+			$start = '<div class="carousel-indicators '.$class.'">';
+			$text = $bs5;
+			$end = '</div>';
+		}
+		else
+		{
+			$start = '<ol class="carousel-indicators '.$class.'">';
+			$end = '</ol>';
+		}
 
-		 return $text;
+		 return $start.$text.$end;
 
 
 	}
@@ -142,7 +154,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_text()
 	{
-		$count = (int) $this->count;
+		$count = $this->count;
 		return e107::getParser()->toHTML($this->var['hero_bullets'][$count]['text'],true,'BODY');
 	}
 
@@ -244,12 +256,12 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return e107::getParser()->parseTemplate($this->var['hero_button1']['label'], true);
+		return e107::getParser()->parseTemplate($this->var['hero_button1']['label']);
 	}
 	
 	public function sc_hero_button1_url($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button1']['url'], true);
+		return e107::getParser()->parseTemplate($this->var['hero_button1']['url']);
 	}
 
 	public function sc_hero_button1_class($parm=null)
@@ -274,12 +286,12 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_button2_label($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button2']['label'], true);
+		return e107::getParser()->parseTemplate($this->var['hero_button2']['label']);
 	}
 	
 	public function sc_hero_button2_url($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button2']['url'], true);
+		return e107::getParser()->parseTemplate($this->var['hero_button2']['url']);
 	}
 
 	public function sc_hero_button2_class($parm=null)

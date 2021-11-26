@@ -28,6 +28,11 @@ if(!class_exists("hero_setup"))
 		 */
 		function install_post($var)
 		{
+			if(!e107::getDb()->isEmpty('hero'))
+			{
+				return null; 
+			}
+
 			$ret = e107::getXml(true)->e107Import(e_PLUGIN."hero/xml/install.xml");
 
 			if(!empty($ret['success']))
