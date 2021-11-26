@@ -62,7 +62,7 @@ class plugin_featurebox_item extends e_model
 		$ret = $tp->toHTML($this->get('fb_title'), false, 'TITLE');
 		if(isset($parm['url']) && $this->get('fb_imageurl'))
 		{
-			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$ret.'</a>';
+			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'])).'">'.$ret.'</a>';
 		}
 
 		return $ret;
@@ -98,7 +98,7 @@ class plugin_featurebox_item extends e_model
 		
 		
 		
-		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
+		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'])).'">'.$title.'</a>';
 	}
 	
 	
@@ -147,7 +147,7 @@ class plugin_featurebox_item extends e_model
 		
 		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";
 		
-		if($tp->thumbWidth > 100 || $tp->thumbHeight > 100) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure. 
+		if($tp->thumbWidth() > 100 || $tp->thumbHeight() > 100) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure.
 		{
 			$src = $tp->thumbUrl($imageSrc); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
 		}

@@ -107,6 +107,7 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 
 		$text = '<div style="margin-left:10px;margin-top:10px">';
 		$count = 1;
+		$tp = e107::getParser();
 		foreach($rows['channel']['item'] as $row)
 		{
 			if($count > $limit){ break; }

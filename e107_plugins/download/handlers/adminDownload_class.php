@@ -29,7 +29,7 @@ class adminDownload extends download
    function __construct()
    {
       global $pref;
-      parent::download();
+      parent::__construct();
       $this->userclassOptions = 'blank,nobody,guest,public,main,admin,member,classes';
 
       // Save basic search string

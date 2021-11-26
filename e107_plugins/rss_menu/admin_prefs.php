@@ -266,7 +266,7 @@ class rss_ui extends e_admin_ui
 
 		if(!$render)
 		{
-			$this->show_message(RSS_LAN_ADMIN_11, RSS_LAN_ERROR_6);
+			e107::getMessage()->addWarning(RSS_LAN_ERROR_6);
 		}
 		else
 		{
