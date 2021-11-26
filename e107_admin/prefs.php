@@ -1997,7 +1997,9 @@ foreach($libraries as $machineName => $library)
 	$text .= '<tr>';
 	$text .= '<td>' . $name . '</td>';
 	$text .= '<td class="text-center">' . $provider . '</td>';
-	$text .= '<td class="smalltext">' . varset($details['library_path']) . '</td>';
+	$text .= '<td class="smalltext">' . varset($details['library_path']);
+	$text .= !empty($details['path']) ? '/'. $details['path'] : '';
+	$text .= '</td>';
 	$text .= '<td class="text-center">' . varset($details['version']) . '</td>';
 	$text .= '<td class="text-center">' . $status . '</td>';
 	$text .= '<td>' . varset($details['error_message']) . '</td>';
