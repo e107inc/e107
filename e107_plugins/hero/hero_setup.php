@@ -30,7 +30,7 @@ if(!class_exists("hero_setup"))
 		{
 			if(!e107::getDb()->isEmpty('hero'))
 			{
-				return null; 
+				return null;
 			}
 
 			$ret = e107::getXml(true)->e107Import(e_PLUGIN."hero/xml/install.xml");
