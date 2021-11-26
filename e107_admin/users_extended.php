@@ -929,8 +929,8 @@ e107::js('footer-inline', js());
 					$field = [];
 					$field['type'] = 'text';
 					$field['writeParms'] = $att;
-
-
+					$field['pattern'] = '[0-9a-z_]*';
+					
 					return $this->renderElement('user_extended_struct_name', $curVal, $field);
 				break;
 
