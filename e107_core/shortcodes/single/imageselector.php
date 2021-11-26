@@ -55,7 +55,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 					$imagelist[$row['media_category']][] = array('path' => $row['media_url'], 'fname' => $row['media_name']. " (".$row['media_dimensions'].") ");
 				}
 	
-				asort($opts);
+				asort($imagelist);
 			}
 		}
 		else

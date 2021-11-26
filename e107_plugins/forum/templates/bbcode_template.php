@@ -13,7 +13,6 @@
 
 $BBCODE_TEMPLATE['forum'] = "
 	<div class='field-spacer'><!-- --></div>
-    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
+    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";

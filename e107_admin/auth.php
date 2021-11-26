@@ -86,7 +86,7 @@ if (ADMIN)
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
 			
 			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
-			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			e107::getMessage()->addInfo(e107::getParser()->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
 			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
@@ -133,7 +133,7 @@ else
 		else
 		{
 			e107::coreLan('log_messages', true);
-			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
+			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".e107::getParser()->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 
 			e107::getRedirect()->redirect('admin.php?failed');
 		}

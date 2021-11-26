@@ -432,7 +432,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
 {
 	// Display error messages, accumulate FMESSAGE
 	// Write as a separate routine - returns all messages displayed. Option to only display failures.
-	$f_message = '';
+	$f_message = [];
 	foreach ($upload_array as $k=>$r)
 	{
 		if (!$errors_only || $r['error'])

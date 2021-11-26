@@ -39,13 +39,13 @@ if(varset($_GET['mode']) == "ajax")
 				{
 					$tmp = explode(".", e_QUERY);
 					$action = $tp->filter($tmp[0]);
-					$sub_action = varset($tmp[1], '');
+					$sub_action = varset($tmp[1]);
 					$sub_action = $tp->filter($sub_action);
 					$id = varset($tmp[2], 0);
 					unset($tmp);
 				}
 
-				if($sql->select('user_extended_struct', '*', "user_extended_struct_id = '{$sub_action}'"))
+				if($sql->select('user_extended_struct', '*', "user_extended_struct_id = '$sub_action'"))
 				{
 					$current = $sql->fetch();
 				}
@@ -68,7 +68,7 @@ if(varset($_GET['mode']) == "ajax")
 				foreach($result as $row2)
 				{
 					$fld = $row2;
-					$selected = (varset($_POST['table_db'], '') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+					$selected = (varset($_POST['table_db']) == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
 					$text .= "<option value=\"" . $fld . "\" $selected>" . $fld . "</option>\n";
 				}
 				$text .= "</select></td></tr>";
@@ -79,8 +79,8 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<tr><td>" . EXTLAN_63 . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
-					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					if($sql->gen("DESCRIBE " . MPREFIX . $table_list))
 					{
 						while($row3 = $sql->fetch())
 						{
@@ -95,7 +95,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= EXTLAN_64 . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
-					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
 						while($row3 = $sql->fetch())
@@ -111,7 +111,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= LAN_ORDER . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
-					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
 						while($row3 = $sql->fetch())
@@ -930,7 +930,7 @@ e107::js('footer-inline', js());
 					$field['type'] = 'text';
 					$field['writeParms'] = $att;
 					$field['pattern'] = '[0-9a-z_]*';
-					
+
 					return $this->renderElement('user_extended_struct_name', $curVal, $field);
 				break;
 
@@ -1037,7 +1037,7 @@ e107::js('footer-inline', js());
 			foreach($result as $row2)
 			{
 				$fld = $row2;
-				$selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+				$selected =  (varset($_POST['table_db']) == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
 			//	if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
 				{
 					$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
@@ -1050,7 +1050,7 @@ e107::js('footer-inline', js());
 				// Field ID
 				$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
-				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{
@@ -1065,7 +1065,7 @@ e107::js('footer-inline', js());
 				// Field Value
 				$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
-				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{
@@ -1080,7 +1080,7 @@ e107::js('footer-inline', js());
 
 				$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
-				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{

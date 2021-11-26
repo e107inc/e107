@@ -111,7 +111,7 @@ class bbcode_shortcodes extends e_shortcode
 	//	$data = "[list]\n[*]Item 1\n[*]Item 2\n[/list]"; // works with jquery, but not onclick. 
 	//	$event = $this->getEvent($this->var['trigger'],$data,LANHELP_36);
 		$event = $this->getEvent('addtext',$data,LANHELP_36);
-		$text = "<a {$event} class='btn btn-default' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_36)."'>";
+		$text = "<a {$event} class='btn btn-default btn-secondary' id='{$id}' data-function='insert' href='#{$this->var['tagid']}' data-bbcode='{$data}' title='".$this->br2nl(LANHELP_36)."'>";
 		
 		$text .= $this->button(e_IMAGE_ABS."bbcode/list.png", 'list'); // , LANHELP_36
 		
@@ -207,7 +207,7 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$data = "[link=*]*[/link]";
 		$event = $this->getEvent('addinput',$data,LANHELP_35);
-		$text = "<a {$event} class='btn btn-default btn-secondary e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_23)."' data-bbcode='{$data}'>\n";
+		$text = "<a {$event} class='btn btn-default btn-secondary e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_23)."' data-bbcode='{$data}'>";
 	//	$text .="<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/link.png' alt='' title='".nl2br(LANHELP_23)."' />";
 		
 		$text .= $this->button(e_IMAGE_ABS.'bbcode/link.png', 'link');
@@ -282,7 +282,7 @@ class bbcode_shortcodes extends e_shortcode
 
 		$text .= $this->button(e_IMAGE_ABS."bbcode/prefile.png", 'file');
 	//	$text .= "<img class='btn btn-small bbcode bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/prefile.png' title='".LANHELP_39."' alt='' />";
-		$text .= "</a>\n";
+		$text .= "</a>";
 		return $text;
 	}	
 	
@@ -337,7 +337,7 @@ class bbcode_shortcodes extends e_shortcode
 			$text .= "<option value='[size=".$s."][/size]'>".$s."px</option>\n";
 		}
 		$text .="</select></td></tr></table></div>
-		</div>\n<!-- End of Size selector -->";
+		</div><!-- End of Size selector -->";
 		return $text;	
 	}
 
@@ -379,7 +379,7 @@ class bbcode_shortcodes extends e_shortcode
 					".$this->renderEmotes()."
 					</td></tr></table>
 				</div>
-			</div>\n<!-- End of Emoticon selector -->\n";
+			</div><!-- End of Emoticon selector -->";
 			
 			return $text;
 		}
@@ -400,7 +400,7 @@ class bbcode_shortcodes extends e_shortcode
 						$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
-			$text .= "\n<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";	
+			$text .= "<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";
 			
 		}
 		
@@ -529,7 +529,7 @@ class bbcode_shortcodes extends e_shortcode
 		//	e107::getMessage()->debug("Loaded BB: ".$parm);
 		
 			$unique = $this->var['template']."--".$parm; // works in conjunction with media-manager category
-			return "\n\n<!-- {$parm} -->\n".$this->$meth($unique);
+			return "<!-- {$parm} -->".$this->$meth($unique);
 		}
 		
 		//XXX NOTE: everything below here could be replaced with separate 'bb_xxxx' methods if need be. (see above)
@@ -626,8 +626,8 @@ class bbcode_shortcodes extends e_shortcode
 		
 		if(empty($iconpath[$parm])) return '';
 
-		$pre = "\n";
-		$post = "\n";
+		$pre = "";
+		$post = "";
 
 		$_onclick_func = (isset($bbcode[$parm][0])) ? $bbcode[$parm][0] : $bbcode_func;
 		$_onclick_var = (isset($bbcode[$parm][1])) ? $bbcode[$parm][1] : '';
@@ -638,13 +638,13 @@ class bbcode_shortcodes extends e_shortcode
 		if($_onclick_func == 'e-dialog')
 		{  //  $tagid = "news-body";
 			// $pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
-			$pre = "\n<a href='".e_ADMIN_ABS."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
-			$post = "</a>\n";
+			$pre = "<a href='".e_ADMIN_ABS."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
+			$post = "</a>";
 		}
 		else
 		{
 			$pre = "<a class='btn btn-default btn-secondary  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." >";
-			$post = "</a>\n";	 // btn-small bbcode bbcode_buttons
+			$post = "</a>";	 // btn-small bbcode bbcode_buttons
 		}
 
 		if($bbcode[$parm])  // default - insert text.

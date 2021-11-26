@@ -929,6 +929,8 @@ class system_tools
 		
 		$mes = e107::getMessage();
 		$sql = e107::getDb('utf8-convert');
+
+		$qry = [];
 		
 		if($sql->gen($query))
 		{

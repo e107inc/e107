@@ -644,7 +644,7 @@ class newsletter
 			if($nl_row = $nl_sql->fetch())
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
-				sort($subscriber_list);
+				sort($subscribers_list);
 				$subscribers_total_count = count($subscribers_list) - 1;	// Get a null entry as well
 			}
 			if ($subscribers_total_count<1) 
