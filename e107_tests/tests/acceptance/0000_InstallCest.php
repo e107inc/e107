@@ -23,7 +23,7 @@ class InstallCest
 
 	public function installDefault(AcceptanceTester $I)
 	{
-		$I->wantTo("Install e107 with default settings");
+		$I->wantTo("Install e107 with default settings"); // bootstrap5.
 		$this->installe107($I);
 		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
@@ -46,16 +46,15 @@ class InstallCest
 		$I->see("Blue");
 
 	}
-/*
+
 	public function installVoux(AcceptanceTester $I)
 	{
-		$I->wantTo("Install e107 with Voux theme and db starting with digits");
-		$this->installe107($I, array('sitetheme'=>'voux', 'db'=>'123xyz'));
+		$I->wantTo("Install e107 with Voux theme");
+		$this->installe107($I, array('sitetheme'=>'voux'));
 		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
-
-	}*/
+	}
 
 	private function installe107(AcceptanceTester $I, $params = array())
 	{

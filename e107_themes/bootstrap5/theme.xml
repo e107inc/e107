@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e107Theme name="Bootstrap 5" version="1.0" date="2021-03-22" compatibility="2.3.1">
-	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<author name ="e107 Inc" email="e107inc@something.com" url="https://e107.org" />
 	<summary>Bootstrap 5 basic theme</summary>
 	<description>A starter template for bootstrap5 themes.</description>
 	<category>generic</category>
 	<plugins>
-		<plugin name='social' url='core' />
-		<plugin name='featurebox' url='core' />
+        <plugin name='gallery' url='core' />
+        <plugin name='hero' url='core' />
+        <plugin name='rss_menu' url='core' />
+        <plugin name='social' url='core' />
+        <plugin name='tinymce4' url='core' />
 	</plugins>
 	<keywords>
 		<word>bootstrap</word>
+		<word>bootstrap5</word>
 		<word>clean</word>
         <word>wireframe</word>
 	</keywords>
