@@ -191,7 +191,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-once',
-			'version'   => '2.1.2',
+			'version'   => '2.2.3',
 		);
 
 		// jQuery UI (CDN).
