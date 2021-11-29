@@ -25,7 +25,7 @@ $HANDLERS_DIRECTORY  = "e107_handlers/"; // needed for e107 class init
 header('Content-type: text/html; charset=utf-8');
 
 define("e107_INIT", TRUE);
-define("DEFAULT_INSTALL_THEME", 'voux');
+define("DEFAULT_INSTALL_THEME", 'bootstrap5');
 
 $e107info = array();
 require_once("e107_admin/ver.php");
@@ -124,7 +124,7 @@ class installLog
 		$logFile = __DIR__ .'/'.self::logFile; // e107InstallLog.log';
 
 		$now    = time();
-		$message = $now.', '.gmstrftime('%y-%m-%d %H:%M:%S',$now)."\t".$type."\t".$message."\n";
+		$message = $now.', '.date('c')."\t".$type."\t".$message."\n";
 
 		file_put_contents($logFile, $message, FILE_APPEND);
 
@@ -1505,6 +1505,8 @@ class e_install
 \$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
 \$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 
+\$E107_CONFIG = ['site_path' => '{$this->previous_steps['paths']['hash']}'];
+
 
 // -- Optional --
 // define('e_DEBUG', true); // Enable debug mode to allow displaying of errors
@@ -1655,7 +1657,7 @@ if($this->pdo == true)
 		global $e_forms;
 
 		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);
-		$base = base64_encode(http_build_query($data, null));
+		$base = base64_encode(http_build_query($data, ''));
 		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 

@@ -102,11 +102,11 @@ ul.social-buttons li a {
 
 /* */
 .jumbotron {
-  margin-top: 60px;
+ /* margin-top: 60px;*/
   padding: 2rem 1rem;
-  margin-bottom: 2rem;
+ /* margin-bottom: 2rem;*/
   background-color: #e9ecef;
-  border-radius: .3rem;
+ /* border-radius: .3rem;*/
 }
 
 /* CUSTOM Responsive Styles */
