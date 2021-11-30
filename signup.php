@@ -97,11 +97,21 @@ if($template = e107::getCoreTemplate('signup'))
 }
 else
 {
-	require_once(e107::coreTemplatePath('signup')); //correct way to load a core template.
+	$SIGNUP_EXTENDED_USER_FIELDS = '';
+	$SIGNUP_EXTENDED_CAT = '';
+
+	$tmplPath = e107::coreTemplatePath('signup');
+	require_once($tmplPath); //correct way to load a core template.
+	if(empty($SIGNUP_BODY) && empty($SIGNUP_BEGIN)) // fall-back in case the template has been loaded before.
+	{
+		require($tmplPath);
+	}
 	$template  = array(
 		'extended-user-fields'  => $SIGNUP_EXTENDED_USER_FIELDS,
 		'extended-category'     => $SIGNUP_EXTENDED_CAT
 	);
+	unset($tmplPath);
+
 }
 
 $signup_shortcodes = e107::getScBatch('signup');
