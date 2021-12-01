@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '320287f6ad576aa36e5768420504fc1c4d689ff8',
+    'reference' => '577bcb89e150c75f18cd0d18df82c0a4bc47a24f',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '320287f6ad576aa36e5768420504fc1c4d689ff8',
+      'reference' => '577bcb89e150c75f18cd0d18df82c0a4bc47a24f',
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.8.2',
-      'version' => '1.8.2.0',
+      'pretty_version' => '1.8.3',
+      'version' => '1.8.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
+      'reference' => '1afdd860a2566ed3c2b0b4a3de6e23434a79ec85',
     ),
     'hybridauth/hybridauth' => 
     array (
@@ -49,12 +49,12 @@
     ),
     'intervention/image' => 
     array (
-      'pretty_version' => '2.6.1',
-      'version' => '2.6.1.0',
+      'pretty_version' => '2.7.0',
+      'version' => '2.7.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0925f10b259679b5d8ca58f3a2add9255ffcda45',
+      'reference' => '9a8cc99d30415ec0b3f7649e1647d03a55698545',
     ),
     'matthiasmullie/minify' => 
     array (
@@ -76,12 +76,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.1',
-      'version' => '6.5.1.0',
+      'pretty_version' => 'v6.5.3',
+      'version' => '6.5.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dd803df5ad7492e1b40637f7ebd258fee5ca7355',
+      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
     ),
     'psr/http-message' => 
     array (
