@@ -50,7 +50,7 @@ button, button:active                      { outline: 0; }
 
 /* .core-mainpanel-block 		{ text-align:center; width:140px; float:left; height:100px; display:block; padding:1px; margin: 0;  } */
 .core-mainpanel-block 		{ text-align:center; width:20%; float:left; height:80px; display:block; padding:1px 5px; margin: 0px 0px 10px 0px;  }
-.core-mainpanel-link-text 	{ text-decoration: none; display:block;  }
+.core-mainpanel-link-text 	{ text-decoration: none; display:block; text-overflow: ellipsis; overflow: hidden; }
 /* a.core-mainpanel-link-icon	{ height:100px; width: 141px; padding-top:20px;  } */
 a.core-mainpanel-link-icon	{ height:80px; width: 100%; padding-top:15px;  }
 a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
