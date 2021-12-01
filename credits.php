@@ -5,7 +5,7 @@ if (!defined('e107_INIT'))
 	require_once("class2.php");
 	define('e_IFRAME', true);
 
-	$css = "body 				{ background-color: rgb(55, 55, 55); padding:50px; color: white; text-align: left; font-size:16px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
+	$css = "body 				{ background: rgb(55, 55, 55); padding:50px; color: white; text-align: left; font-size:16px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
 			p 					{ margin:0px 5px 10px 5px; }
 			a					{ color:#F6931E; text-decoration:none; }
 			a:hover				{ color:#fdce8a; text-decoration:none; }
@@ -22,6 +22,11 @@ if (!defined('e107_INIT'))
       ";
 
 	e107::css('inline',$css);
+	e107::link(['rel'=>"canonical", 'href'=> SITEURL."credits.php"]);
+	e107::title('e107 Development Credits and Sponsors');
+	e107::meta('description', 'e107 bootstrap content management system development credits and sponsors.');
+	e107::meta('og:image', SITEURLBASE.e_IMAGE_ABS.'admin_images/credits_logo.png');
+	e107::meta('og:url', SITEURL."credits.php");
 	require_once(HEADERF);
 }
 
@@ -29,7 +34,7 @@ if (!defined('e107_INIT'))
  $text ='<div class="wrapper">
         	<div class="wrapper-middle">
                 <div class="well credits-content">
-                	<img class="logo" src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="e107 Logo" />
+                	<img class="logo" src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="e107 Logo" title="e107  bootstrap content management system logo" />
                 	<div class="wrapper-text">
 	                    <h4 class="text-info">Developers</h4>
 	                    <p>

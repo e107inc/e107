@@ -41,16 +41,26 @@ $phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped ad
 $mes = e107::getMessage();
 
 $extensionCheck = array(
-			'curl'      => array('label'=> 'Curl Library',      'status' => function_exists('curl_version'),        'url'=> 'http://php.net/manual/en/book.curl.php'),
-			'exif'      => array('label'=> "EXIF Extension",    'status' => function_exists('exif_imagetype'),      'url'=> 'http://php.net/manual/en/book.exif.php'),
-			'fileinfo'  => array('label'=> "FileInfo. Extension",    'status' => extension_loaded('fileinfo'),      'url'=> 'https://www.php.net/manual/en/book.fileinfo'),
-			'gd'        => array('label'=> 'GD Library',        'status' => function_exists('gd_info'),             'url'=> 'http://php.net/manual/en/book.image.php'),
-			'mb'        => array('label'=> 'MB String Library', 'status' => extension_loaded('mbstring'),       'url'=> 'http://php.net/manual/en/book.mbstring.php'),
-			'pdo'       => array('label'=> "PDO (MySQL)",       'status' => extension_loaded('pdo_mysql'),          'url'=> 'https://php.net/manual/en/book.pdo.php'),
-			'xml'       => array('label'=> "XML Extension",     'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false),  'url'=> 'http://php.net/manual/en/ref.xml.php'),
+			'curl'      => array('label'=> 'Curl Library',          'status' => function_exists('curl_version'),        'url'=> 'http://php.net/manual/en/book.curl.php'),
+			'exif'      => array('label'=> "EXIF Extension",        'status' => function_exists('exif_imagetype'),      'url'=> 'http://php.net/manual/en/book.exif.php'),
+			'fileinfo'  => array('label'=> "FileInfo. Extension",   'status' => extension_loaded('fileinfo'),      'url'=> 'https://www.php.net/manual/en/book.fileinfo'),
+			'gd'        => array('label'=> 'GD Library',            'status' => function_exists('gd_info'),             'url'=> 'http://php.net/manual/en/book.image.php'),
+			'mb'        => array('label'=> 'MB String Library',     'status' => extension_loaded('mbstring'),       'url'=> 'http://php.net/manual/en/book.mbstring.php'),
+			'pdo'       => array('label'=> "PDO (MySQL)",           'status' => extension_loaded('pdo_mysql'),          'url'=> 'https://php.net/manual/en/book.pdo.php'),
+			'xml'       => array('label'=> "XML Extension",         'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false),  'url'=> 'http://php.net/manual/en/ref.xml.php'),
 );
 
+$languages = e107::getLanguage()->installed('abbr');
 
+if(isset($languages['en']))
+{
+	unset($languages['en']);
+}
+
+if(!empty($languages)) // non-english languages present.
+{
+	$extensionCheck['intl'] = array('label'=> 'Internationalization Functions',      'status' => extension_loaded('intl'),        'url'=> 'https://www.php.net/manual/en/book.intl.php');
+}
 
 
 foreach($extensionCheck as $var)
