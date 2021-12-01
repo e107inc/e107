@@ -427,7 +427,7 @@ class e107
 		{ // Try and use the 'old' method (this bit can go later)
 			if(ADMIN)
 			{
-				$location = $fpref[e_UC_ADMIN];
+				$location = varset($fpref[e_UC_ADMIN]);
 			}
 			elseif(USER)
 			{ // This is the key bit - what to do for a 'normal' logged in user
