@@ -297,9 +297,9 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		global $forum;
 		
 		//. <div>".($pref['image_post'] ? "Attach file / image" : "Attach file")."</div>
-		
-		//$tooltip = "Allowed file types | ".vartrue($allowed_filetypes).". Any other file type will be deleted instantly. Maximum file size: ".(vartrue($max_upload_size) ? $max_upload_size."bytes" : ini_get('upload_max_filesize'));
-		$tooltip = LAN_FORUM_3016.": ".vartrue($allowed_filetypes)." <br />".LAN_FORUM_3017."<br />".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize')); // FIXME <br /> in tooltip, no value $allowed_filetypes on v2/bootstrap
+		$allowedFileTypes = e107::getFile()->getAllowedFileTypes();
+
+		$tooltip = LAN_FORUM_3016.": ".implode(', ',array_keys($allowedFileTypes))."\n".LAN_FORUM_3017."\n".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize'));
 
 		$fileattach = "
 			<div>	

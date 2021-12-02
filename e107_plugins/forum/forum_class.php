@@ -2380,7 +2380,7 @@ class e107forum
 
 			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
 
-			$BREADCRUMB = $tp->parseTemplate('{BREADCRUMB=FORUM_CRUMB}', true);
+			$BREADCRUMB = $tp->parseTemplate('{BREADCRUMB=FORUM_CRUMB}', false); // must stay as 'false' to prevent sending to theme shortcodes.
 		}
 		else
 		{
