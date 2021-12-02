@@ -1635,7 +1635,7 @@ $text .= "
 						<td>
 							".
 							
-							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,admin,main,classes").
+							$frm->uc_select('comments_moderate', $pref['comments_moderate'],"nobody,guest,new,bots,public,member,admin,main,classes").
 							"
 							</td>
 					</tr>
