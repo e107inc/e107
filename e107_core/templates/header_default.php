@@ -742,17 +742,18 @@ if(deftrue('BOOTSTRAP'))
 //	if(empty($LAYOUT['_modal_'])) // leave it set for now.
 	{
 		$LAYOUT['_modal_'] = '<div id="uiModal" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
-					<div class="modal-dialog modal-lg">
+					<div class="modal-dialog modal-lg modal-xl modal-dialog-centered modal-dialog-scrollable">
 						<div class="modal-content">
 				            <div class="modal-header">
-				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				                <h4 class="modal-caption">&nbsp;</h4>
+				            	<h4 class="modal-caption modal-title col-sm-11">&nbsp;</h4>
+				                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+				                
 				             </div>
 				             <div class="modal-body">
 				             <p>Loading…</p>
 				             </div>
 				             <div class="modal-footer">
-				                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+				                <a href="#" data-dismiss="modal" data-bs-dismiss="modal" class="btn btn-primary">Close</a>
 				            </div>
 			            </div>
 		            </div>
