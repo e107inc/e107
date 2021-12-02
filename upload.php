@@ -11,6 +11,9 @@
 require_once("class2.php");
 e107::coreLan('upload');
 
+$bcLans = ['LAN_417'=>'LAN_UL_040'];
+e107::getLanguage()->bcDefs($bcLans);
+
 if (!isset($pref['upload_enabled']) ||( varset($pref['upload_class']) == 255))
 {
 	e107::redirect();
@@ -269,20 +272,20 @@ class userUpload
 				
 		$text = "<div>
 			<form enctype='multipart/form-data' method='post' onsubmit='return frmVerify()' action='".e_SELF."'>
-			<table style='".USER_WIDTH."' class='table fborder'>
+			<table style='".defset('USER_WIDTH')."' class='table fborder'>
 			<colgroup>
 			<col style='width:30%' />
 			<col style='width:70%' />
 			</colgroup>
 			<tr>
-			<td class='forumheader3'>".DOWLAN_11.":</td>
+			<td class='forumheader3'>".LAN_CATEGORY.":</td>
 			<td class='forumheader3'>";
 		
 		//	require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
 		//	$dlparm = (isset($download_category)) ? $download_category : "";
 		//	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes);
 
-		$configs = e107::getAddonConfig('e_upload','','config');
+		$configs = e107::getAddonConfig('e_upload');
 
 		$optArray = e107::getAddonConfig('e_upload','','category');
 
@@ -311,7 +314,7 @@ class userUpload
 		
 		if (count($a_filetypes) == 0)
 		{
-				$ns->tablerender(LAN_417, LAN_UL_025);
+				$ns->tablerender(defset('LAN_UL_040', 'Upload File'), LAN_UL_025);
 				return; 
 		}
 		
@@ -326,7 +329,7 @@ class userUpload
 			
 			foreach ($a_filetypes as $type => $size)
 			{
-		    	$allowed_filetypes .= "<tr><td>{$type}</td><td style='text-align:right'>".eHelper::parseMemorySize($size,0)."</td></tr>";
+		    	$allowed_filetypes .= "<tr><td>".$type."</td><td style='text-align:right'>".eHelper::parseMemorySize($size,0)."</td></tr>";
 		  	}
 			
 		  	$allowed_filetypes .= "</table>";
@@ -407,7 +410,7 @@ class userUpload
 			</div>";
 				
 		
-		$ns->tablerender(LAN_417, $text);
+		$ns->tablerender(defset('LAN_UL_040', 'Upload File'), $text);
 		
 	}
 	
@@ -416,7 +419,7 @@ class userUpload
 	function sc_author()
 	{
 		$poster = '';
-		return "<input class='tbox' style='width:90%' name='file_poster' type='text' size='50' maxlength='100' value='{$poster}' />"; 	
+		return "<input class='tbox' style='width:90%' name='file_poster' type='text' size='50' maxlength='100' value='".$poster."' />";
 		
 	}
 	
