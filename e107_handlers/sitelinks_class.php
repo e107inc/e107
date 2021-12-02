@@ -369,7 +369,7 @@ class sitelinks
 		elseif ($linkInfo['link_url'])
 		{
 			// Only add the e_BASE if it actually has an URL.
-			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? $linkInfo['link_url'] : $linkInfo['link_url']);
+		//	$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? $linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
@@ -1763,13 +1763,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				return array();
 			}
 			
-			if(strpos($method,"("))
-			{
-				list($method,$prm) = explode("(",$method);
-				$parm = rtrim($prm,")");	
-			}
-
-			if(!file_exists(e_PLUGIN.$path."/e_sitelink.php"))
+			if(!file_exists(e_PLUGIN.$path."/e_sitelink.php") || !e107::isInstalled($path))
 			{
 				return array();
 			}
@@ -1777,6 +1771,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
+				if(strpos($method,"("))
+				{
+					list($method,$prm) = explode("(",$method);
+					$parm = rtrim($prm,")");
+				}
+
 				$class = $path."_sitelink";
 				if($sublinkArray = e107::callMethod($class,$method,$parm,$row)) //TODO Cache it.
 				{
