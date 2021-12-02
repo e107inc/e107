@@ -47,11 +47,12 @@ define("LAN_413", "Description");
 define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");
 
-// define("LAN_417", "Upload File");
+// define("LAN_417", "Upload File"); // LAN_UL_040
 define("LAN_418", "Absolute maximum file size: ");
-define("DOWLAN_11", "Category");
+// define("DOWLAN_11", "Category"); LAN_CATEGORY.
 define("LAN_419", "Allowed filetypes");
 define("LAN_420", "fields are required");
 
 define("LAN_UL_039", "Submit and Upload"); // LAN_416
+define("LAN_UL_040", "Upload File");
 
