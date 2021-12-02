@@ -395,9 +395,7 @@ class e107Build
 		$contents .= "* Version file\n";
 		$contents .= "*/\n\n";
 		$contents .= "if (!defined('e107_INIT')) { exit; }\n\n";
-		$contents .= "\$e107info['e107_version'] = \"{$version}\";\n";
-
-		$contents .= "?>\n";
+		$contents .= "\$e107info['e107_version'] = \"{$version}\";\n\n";
 
 		return file_put_contents($fname, $contents);
 	}
