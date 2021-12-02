@@ -209,12 +209,12 @@ class list_admin
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $frm->open($this->parent->sections[$i]."_".$type."_amount");
+			$this->row['FIELD_ITEM'] = $frm->select_open($this->parent->sections[$i]."_".$type."_amount");
 			for($a=1; $a<=$maxitems_amount; $a++)
 			{
 				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_amount"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a, 0));
 			}
-			$this->row['FIELD_ITEM'] .= $frm->close();
+			$this->row['FIELD_ITEM'] .= $frm->select_close();
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
@@ -230,12 +230,12 @@ class list_admin
 		for($i=0, $iMax = count($this->parent->sections); $i< $iMax; $i++)
 		{
 			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
-			$this->row['FIELD_ITEM'] = $frm->open($this->parent->sections[$i]."_".$type."_order");
+			$this->row['FIELD_ITEM'] = $frm->select_open($this->parent->sections[$i]."_".$type."_order");
 			for($a=1; $a<=$max; $a++)
 			{
 				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_order"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a,  0));
 			}
-			$this->row['FIELD_ITEM'] .= $frm->close();
+			$this->row['FIELD_ITEM'] .= $frm->select_close();
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
 		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
@@ -475,12 +475,12 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_LAN_21;
 		$this->row['HELP'] = defset('LIST_ADMIN_LAN_22');
 		$this->row['CONTID'] = "list-new-page-{$type}-expandable-colomn";
-		$this->row['FIELD'] = $frm->open($type."_colomn");
+		$this->row['FIELD'] = $frm->select_open($type."_colomn");
 			for($a=1, $aMax = count($this->parent->sections); $a<= $aMax; $a++)
 			{
 				$this->row['FIELD'] .= ($this->parent->list_pref[$type."_colomn"] == $a ? $frm->option($a, $a, 1) : $frm->option($a, $a, 0));
 			}
-			$this->row['FIELD'] .= $frm->close();
+			$this->row['FIELD'] .= $frm->select_close();
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 	// form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = '',
