@@ -2311,6 +2311,10 @@ class e_parse
 			$http . $base . str_replace('../', '', e_CACHE_IMAGE),
 		);
 
+		// Quickfix for any '/./' that may occur.
+		$srch[] = '/./';
+		$repl[] = '/';
+
 		$ret = str_replace($srch, $repl, $path);
 
 		if(strpos($ret, 'http') !== 0) // if not converted, check media folder also. 
