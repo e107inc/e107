@@ -111,6 +111,11 @@ class e_media
 		$count = 0;
 		foreach($img_array as $f)
 		{
+
+			if(!is_array($f))
+			{
+				continue;
+			}
 			
 			if($f['fsize'] === 0) // prevent zero-byte files. 
 			{
