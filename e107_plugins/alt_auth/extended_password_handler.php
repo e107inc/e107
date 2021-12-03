@@ -271,7 +271,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 *	@param string $stored_hash - required value for password to match
 	 *	@param integer $password_type - constant specifying the type of password to check against
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string
+	 *	@return string  PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
@@ -327,7 +327,7 @@ class ExtendedPasswordHandler extends UserHandler
 			case self::PASSWORD_E107_SALT :
 				//return e107::getUserSession()->CheckPassword($password, $login_name, $stored_hash);
 				return parent::CheckPassword($password, $login_name, $stored_hash);
-				break;
+			//	break;
 
 			case self::PASSWORD_PHPBB_SALT :
 			case self::PASSWORD_WORDPRESS_SALT :

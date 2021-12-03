@@ -185,10 +185,13 @@ class e_marketplace
 		}
 		return $this->adapter;
 	}
-	
+
 	/**
 	 * Retrieve currently used adapter
-	 * @param e_marketplace_adapter_abstract
+	 * @param $method
+	 * @param $data
+	 * @param bool $apply
+	 * @return mixed
 	 */
 	public function call($method, $data, $apply = true)
 	{
@@ -925,7 +928,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 				$result['params'] = $result['@attributes'];
 				unset($result['@attributes']);
 			}
-			elseif(is_array($result[$tag]))
+			elseif(is_array($data))
 			{
 				$this->fetchParams($result[$tag]);
 			}
@@ -1104,7 +1107,7 @@ class eAuth
 	/**
 	 * Load credentials stored in a system file
 	 * @param boolean $force
-	 * @return e_marketplace_adapter_abstract|eAuth
+	 * @return eAuth
 	 */
 	public function loadSysCredentials($force = false)
 	{

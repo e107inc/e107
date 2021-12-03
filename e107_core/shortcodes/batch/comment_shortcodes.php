@@ -392,7 +392,6 @@ class comment_shortcodes extends e_shortcode
 
 			default:
 				return null;
-				break;
 		}
 
 		return "<span id='comment-status-".$this->var['comment_id']."'>".$text."</span>";

@@ -36,7 +36,7 @@ class e107MailTemplate
 	/**
 	 *	Empty our template cache
 	 *
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearTemplateCache()
 	{

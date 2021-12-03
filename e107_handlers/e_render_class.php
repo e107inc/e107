@@ -146,6 +146,9 @@
 		}
 
 
+		/**
+		 * @return array
+		 */
 		function getMagicShortcodes()
 		{
 
@@ -380,7 +383,7 @@
 
 			$options['uniqueId'] = (string) $this->uniqueId;
 			$options['menuArea'] = (int) $this->eMenuArea;
-			$options['menuCount'] = (int) $this->eMenuCount;
+			$options['menuCount'] = $this->eMenuCount;
 			$options['menuTotal'] = (int) varset($this->eMenuTotal[$this->eMenuArea]);
 			$options['setStyle'] = (string) $this->eSetStyle;
 

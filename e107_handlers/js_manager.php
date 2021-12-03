@@ -1648,7 +1648,7 @@ class e_jsmanager
 	 * Check CDN Url is valid.
 	 * Experimental.
 	 * @param $url
-	 * @return resource
+	 * @return bool
 	 */
 	private function isValidUrl($url)
 	{
@@ -1694,11 +1694,10 @@ class e_jsmanager
 	}
 
 
-
-
 	/**
 	 * Render Cached JS or CSS file.
 	 * @param $type
+	 * @return false|void
 	 */
 	public function renderCached($type)
 	{
@@ -1767,7 +1766,7 @@ class e_jsmanager
 	 * Get js/css file to be cached and update url links.
 	 * @param $path string
 	 * @param $type string (js|css)
-	 * @return mixed|string
+	 * @return string
 	 */
 	private function getCacheFileContent($path, $type)
 	{
@@ -1911,8 +1910,9 @@ class e_jsmanager
 	/**
 	 * Render JS/CSS source array
 	 *
-	 * @param array $js_content_array
+	 * @param $content_array
 	 * @param string $label added as comment if non-empty
+	 * @param string $type
 	 * @return void
 	 */
 	function renderInline($content_array, $label = '', $type = 'js')

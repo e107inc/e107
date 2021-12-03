@@ -608,6 +608,7 @@ class news_admin_ui extends e_admin_ui
 	/**
 	 * Display a warning if there is a mismatch with the SEF Url.
 	 * @param $new_data
+	 * @return void|null
 	 */
 	private function checkSEFSimilarity($new_data)
 	{

@@ -1965,12 +1965,13 @@ class e_front_model extends e_model
     	return $this->_validation_rules;
     }
 
-    /**
-     * Set object validation rules if $_validation_rules array is empty
-     *
-     * @param array $vrules
-     * @return e_front_model
-     */
+	/**
+	 * Set object validation rules if $_validation_rules array is empty
+	 *
+	 * @param array $vrules
+	 * @param bool $force
+	 * @return e_front_model
+	 */
     public function setValidationRules(array $vrules, $force = false)
     {
     	if($force || empty($this->_validation_rules))
@@ -2327,18 +2328,19 @@ class e_front_model extends e_model
     	return $this;
     }
 
-    /**
-     * Merge passed data array with the object data
-     * Should be used on edit/update/create record (back-end)
-     *
-     * If $strict is true, only existing object data will be copied (update)
-     * If $validate is true, data will be copied only after successful validation
-     *
-     * @param array $src_data
-     * @param boolean $sanitize
-     * @param boolean $validate perform validation check
-     * @return e_front_model
-     */
+	/**
+	 * Merge passed data array with the object data
+	 * Should be used on edit/update/create record (back-end)
+	 *
+	 * If $strict is true, only existing object data will be copied (update)
+	 * If $validate is true, data will be copied only after successful validation
+	 *
+	 * @param array $src_data
+	 * @param bool $strict
+	 * @param boolean $sanitize
+	 * @param boolean $validate perform validation check
+	 * @return e_front_model
+	 */
     public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
     {
     	//FIXME

@@ -93,7 +93,7 @@ class e_benchmark
 	 * Send result to the stdout
 	 *
 	 * @param string $heading
-	 * @return string
+	 * @return e_benchmark
 	 */
 	public function printResult($heading = '')
 	{

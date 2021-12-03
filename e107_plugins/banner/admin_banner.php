@@ -445,7 +445,7 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return e107::getParser()->toImage($curVal, array('h'=>100, 'legacy'=>'{e_IMAGE}banners'));
-			break;
+		//	break;
 
 			case 'write': // Edit Page
 
@@ -479,12 +479,12 @@ class banner_form_ui extends e_admin_form_ui
 
 				return "<div class='banner-image'>".$this->tabs($tabText)."</div>";
 			//	return $frm->text('banner_clientname',$curVal);
-			break;
+		//	break;
 
 			case 'filter':
 			case 'batch':
 				return  $this->clients;
-			break;
+			//break;
 		}
 
 		return null;
@@ -500,7 +500,7 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
+		//	break;
 			
 			case 'write': // Edit Page
 				$text = '';
@@ -518,12 +518,12 @@ class banner_form_ui extends e_admin_form_ui
 				
 				return $text; 
 			//	return $frm->text('banner_clientname',$curVal);		
-			break;
+			//break;
 			
 			case 'filter':
 			case 'batch':
 				return  $this->clients; 
-			break;
+			//break;
 		}
 
 		return null;

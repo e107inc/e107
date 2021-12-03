@@ -41,7 +41,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration, initialise connection to remote e107 database
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{

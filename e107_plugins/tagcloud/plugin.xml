@@ -3,5 +3,5 @@
 	<author name="e107 Inc." url="https://e107.org" />
 	<description lan="LAN_PLUGIN_TAGCLOUD_DESCRIPTION">Add a Tag Cloud to your site.</description>
 	<category>misc</category>
-	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (https://www.gnu.org/licenses/gpl.txt)</copyright>
 </e107Plugin>

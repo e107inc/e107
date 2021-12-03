@@ -392,11 +392,11 @@ class UserHandler
 	}
 
 
-
 	/**
 	 * Reset the user's password with an auto-generated string.
 	 * @param $uid
 	 * @param string $loginName (optional)
+	 * @param array $options
 	 * @return bool|string rawPassword
 	 */
 	public function resetPassword($uid, $loginName='', $options=array())

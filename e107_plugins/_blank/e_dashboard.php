@@ -95,7 +95,7 @@ class _blank_dashboard // include plugin-folder in the name.
 		{
 			list($yearNumber,$monthNumber,$day) = explode('-',$k);
 			$diz = date('D jS', mktime(1,1,1,$monthNumber,$day, $yearNumber));
-			$data[] = array($diz, $amt[$k]['other'], $amt[$k]['friend'], $amt[$k]['bing'], $amt[$k]['google'], $amt[$k]['facebook']); //	$dateName[$i]
+			$data[] = array($diz, $v['other'], $v['friend'], $v['bing'], $v['google'], $v['facebook']); //	$dateName[$i]
 			$ticks[] = $k;
 		//	$c++;
 		}

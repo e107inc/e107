@@ -87,8 +87,9 @@ require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 
 
 /**
- * Display Progress-bar of real-time mail-out. 
- * @return 
+ * Display Progress-bar of real-time mail-out.
+ * @param $id
+ * @return float
  */
 function sendProgress($id)
 {

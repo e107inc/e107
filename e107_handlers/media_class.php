@@ -1178,7 +1178,7 @@ class e_media
 	/**
 	 * detected Media Type from Media URL
 	 * @param string $mediaURL
-	 * @return int|string
+	 * @return string|null
 	 */
 	public function detectType($mediaURL)
 	{
@@ -1530,7 +1530,7 @@ class e_media
 		
 		foreach($default as $k=>$v)
 		{
-			$data[$k] = isset($row[$k]) ? $row[$k] : $default[$k];	
+			$data[$k] = isset($row[$k]) ? $row[$k] : $v;
 		}
 		
 			

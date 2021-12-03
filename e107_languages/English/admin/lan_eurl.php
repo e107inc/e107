@@ -35,7 +35,7 @@ define("LAN_EURL_SURL_NUPD",    "&nbsp; SEF URLs were NOT updated.");
 // settings
 define("LAN_EURL_SETTINGS_PATHINFO", "Remove filename from the URL");
 define("LAN_EURL_SETTINGS_MAINMODULE", "Associate Root namespace");
-define("LAN_EURL_SETTINGS_MAINMODULE_HELP", "Choose which site area will be connected with your base site URL. Example: When News is your root namespace http://yoursite.com/News-Item-Title will be associated with news (item view page will be resolved)");
+define("LAN_EURL_SETTINGS_MAINMODULE_HELP", "Choose which site area will be connected with your base site URL. Example: When News is your root namespace https://yoursite.com/News-Item-Title will be associated with news (item view page will be resolved)");
 define("LAN_EURL_SETTINGS_REDIRECT", "Redirect to System not found page");
 define("LAN_EURL_SETTINGS_REDIRECT_HELP", "If set to false, not found page will be direct rendered (without browser redirect)");
 define("LAN_EURL_SETTINGS_SEFTRANSLATE", "Automated SEF string creation type");

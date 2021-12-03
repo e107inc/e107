@@ -971,7 +971,8 @@ class e107forum
 	/**
 	 * Remove threadID from the 'viewed list' list of other users.
 	 * @param $threadId
-	*/
+	 * @return false|void
+	 */
 	private function clearReadThreads($threadId)
 	{
 		if(empty($threadId))
@@ -2015,6 +2016,7 @@ class e107forum
 	 * @param $forumId
 	 * @param $from
 	 * @param $view
+	 * @param null $filter
 	 * @return array
 	 */
 	function forumGetThreads($forumId, $from, $view, $filter = null)

@@ -93,7 +93,7 @@ class e_admin_request
 	 * Constructor
 	 *
 	 * @param string|array $qry [optional]
-	 * @return none
+	 * @return void
 	 */
 	public function __construct($request_string = null, $parse = true)
 	{
@@ -867,7 +867,7 @@ class e_admin_response
 	 *
 	 * @param string $name segment
 	 * @param array $options valid keys are: messages|render|meta|return|raw|ajax
-	 * @return mixed
+	 * @return array|string|null
 	 */
 	public function send($name = 'default', $options = array())
 	{
@@ -1108,7 +1108,7 @@ class e_admin_dispatcher
 
 	/**
 	 * User defined constructor - called before _initController() method
-	 * @return e_admin_dispatcher
+	 * @return void
 	 */
 	public function init()
 	{
@@ -2114,7 +2114,7 @@ class e_admin_controller
 
 	/**
 	 * Get current ID, response proxy method
-	 * @return string
+	 * @return int
 	 */
 	public function getId()
 	{
@@ -2445,7 +2445,7 @@ class e_admin_controller
 	 * @param string $action [optional]
 	 * @param string|array $exclude_query [optional]
 	 * @param string|array $merge_query [optional]
-	 * @return none
+	 * @return void
 	 */
 	public function redirectAction($action = null, $exclude_query = '', $merge_query = array())
 	{
@@ -3460,6 +3460,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * @param $val
+	 * @return e_admin_controller_ui
 	 */
 	public function setBatchDelete($val)
 	{
@@ -3468,9 +3469,9 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 
-
 	/**
 	 * @param $val
+	 * @return e_admin_controller_ui
 	 */
 	public function setBatchCopy($val)
 	{
@@ -5231,7 +5232,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Catch fieldpref submit
-	 * @return none
+	 * @return void
 	 */
 	public function ListEcolumnsTrigger()
 	{
@@ -6441,7 +6442,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Edit - send JS to page Header
-	 * @return none
+	 * @return void
 	 */
 	public function EditHeader()
 	{
@@ -6460,7 +6461,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Generic Create observer
-	 * @return string
+	 * @return void
 	 */
 	public function CreateObserver()
 	{
@@ -6516,17 +6517,18 @@ class e_admin_ui extends e_admin_controller_ui
 	 * User defined pre-update logic, return false to prevent DB query execution
 	 * @param $new_data
 	 * @param $old_data
+	 * @param $id
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 	}
 
 
-
 	/**
 	 * User defined after-update logic
-	 * @param $new_data 
+	 * @param $new_data
 	 * @param $old_data
+	 * @param $id
 	 */
 	public function afterUpdate($new_data, $old_data, $id)
 	{
@@ -6536,6 +6538,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 * User defined before pref saving logic
 	 * @param $new_data
 	 * @param $old_data
+	 * @return null
 	 */
 	public function beforePrefsSave($new_data, $old_data)
 	{
@@ -6589,7 +6592,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Create - send JS to page Header
-	 * @return none
+	 * @return void
 	 */
 	public function CreateHeader()
 	{

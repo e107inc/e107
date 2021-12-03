@@ -25,7 +25,6 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 {
 
 	private $use_imagecode = 0;
-	private $sec;
 	private $usernamePlaceholder = LAN_LOGINMENU_1;
 	private $allowEmailLogin;
 	private $authMethod;
@@ -37,7 +36,6 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 
 		$this->use_imagecode = e107::getConfig()->get('logcode');
-		$this->sec = e107::getSecureImg();
 		$this->usernamePlaceholder = '';
 		$this->allowEmailLogin = $pref['allowEmailLogin'];
 

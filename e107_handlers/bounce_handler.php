@@ -756,7 +756,6 @@
 					}
 				}
 
-				$hash['per_recipient'][$i] = '';
 				$hash['per_recipient'][$i] = $temp;
 			}
 
@@ -890,7 +889,7 @@
 			$status_code_subclasses['0.0']['descr'] = "Other undefined status is the only undefined error code. It should be used for all errors for which only the class of the error is known.";
 
 			$status_code_subclasses['1.0']['title'] = "Other address status";
-			$status_code_subclasses['0.0']['descr'] = "Something about the address specified in the message caused this DSN.";
+			$status_code_subclasses['1.0']['descr'] = "Something about the address specified in the message caused this DSN.";
 
 			$status_code_subclasses['1.1']['title'] = "Bad destination mailbox address";
 			$status_code_subclasses['1.1']['descr'] = "The mailbox specified in the address does not exist.  For Internet mail names, this means the address portion to the left of the @ sign is invalid.  This code is only useful for permanent failures.";
@@ -926,10 +925,10 @@
 			$status_code_subclasses['2.2']['descr'] = "The mailbox is full because the user has exceeded a per-mailbox administrative quota or physical capacity.  The general semantics implies that the recipient can delete messages to make more space available.  This code should be used as a persistent transient failure.";
 
 			$status_code_subclasses['2.3']['title'] = "Message length exceeds administrative limit";
-			$status_code_subclasses['2.2']['descr'] = "A per-mailbox administrative message length limit has been exceeded.  This status code should be used when the per-mailbox message length limit is less than the general system limit.  This code should be used as a permanent failure.";
+			$status_code_subclasses['2.3']['descr'] = "A per-mailbox administrative message length limit has been exceeded.  This status code should be used when the per-mailbox message length limit is less than the general system limit.  This code should be used as a permanent failure.";
 
 			$status_code_subclasses['2.4']['title'] = "Mailing list expansion problem";
-			$status_code_subclasses['2.3']['descr'] = "The mailbox is a mailing list address and the mailing list was unable to be expanded.  This code may represent a permanent failure or a persistent transient failure. ";
+			$status_code_subclasses['2.4']['descr'] = "The mailbox is a mailing list address and the mailing list was unable to be expanded.  This code may represent a permanent failure or a persistent transient failure. ";
 
 			$status_code_subclasses['3.0']['title'] = "Other or undefined mail system status";
 			$status_code_subclasses['3.0']['descr'] = "The destination system exists and normally accepts mail, but something about the system has caused the generation of this DSN.";

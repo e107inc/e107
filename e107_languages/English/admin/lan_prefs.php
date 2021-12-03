@@ -131,7 +131,7 @@ define("PRFLAN_130", "Activating this will prevent more than one person logging 
 // define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
 define("PRFLAN_133", "GD extension required, not found");
 define("PRFLAN_134", "Redirect all requests to site URL");
-define("PRFLAN_135", "for example, if your site URL above is set to http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com"); //FIXME HTML
+define("PRFLAN_135", "for example, if your site URL above is set to https://foo.com, anyone requesting https://www.foo.com will be redirected to https://foo.com"); //FIXME HTML
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Display CAPTCHA on forgotten password page.");

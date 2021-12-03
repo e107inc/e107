@@ -342,7 +342,7 @@
 		 * Return an extension for a specific mime-type.
 		 *
 		 * @param $mimeType
-		 * @return mixed|null
+		 * @return string|null
 		 */
 		function getFileExtension($mimeType)
 		{
@@ -569,7 +569,7 @@
 		/**
 		 * @param string     $address
 		 * @param array|null $options
-		 * @return CurlHandle|false|resource
+		 * @return CurlHandle|false
 		 */
 		function initCurl($address, $options = null)
 		{
@@ -1217,7 +1217,7 @@
 		 * @param int         $user userid
 		 * @param boolean     $create
 		 * @param null|string $subDir
-		 * @return bool|string
+		 * @return string
 		 */
 		public function getUserDir($user, $create = false, $subDir = null)
 		{
@@ -2393,7 +2393,7 @@
 		 *
 		 * @param            $filename
 		 * @param bool|false $extended
-		 * @return array|string|false
+		 * @return array|string
 		 */
 		function getImageMime($filename, $extended = false)
 		{

@@ -2589,7 +2589,7 @@ class e_mm_layout
 
 		foreach($head as $k => $v)
 		{
-			$template = $head[$k] . "\n{---}" . $foot[$k];
+			$template = $v . "\n{---}" . $foot[$k];
 			$layout['templates'][$k] = $template;
 			$layout['menus'][$k] = self::countMenus($template, $k);
 		}

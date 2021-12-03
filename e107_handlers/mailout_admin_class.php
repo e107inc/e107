@@ -348,7 +348,7 @@ class mailoutAdminClass extends e107MailManager
 	 * Set up new mode
 	 *
 	 * @param $mode - display mode
-	 * @return none
+	 * @return void
 	 */
 	public function newMode($mode = '')
 	{
@@ -722,7 +722,7 @@ class mailoutAdminClass extends e107MailManager
 	 *
 	 * @param string $name - name for <select>
 	 * @param string $curSel - current select value
-	 * @return text for display
+	 * @return string for display
 	 *
 	 * @TODO: Doesn't give correct count for core classes where no data initialised
 	 */
@@ -772,7 +772,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param string $list_name - name for <select>
 	 * @param string $curval - current select value
 	 * @param boolean $add_blank - add a blank line before the options if TRUE
-	 * @return text for display if any extended fields defined; FALSE if none
+	 * @return false|string for display if any extended fields defined; FALSE if none
 	 * available
 	 */
 	public function ret_extended_field_list($list_name, $curval = '', $add_blank = false)
@@ -927,7 +927,7 @@ class mailoutAdminClass extends e107MailManager
 	 *
 	 * @param $mailSource - array of mail information
 	 * @param $options - controls how much information is displayed
-	 * @return text for display
+	 * @return string for display
 	 */
 	public function showMailDetail(&$mailSource, $options = 'basic')
 	{
@@ -1000,7 +1000,7 @@ class mailoutAdminClass extends e107MailManager
 	 *
 	 * @param $curval - current value
 	 * @param $name name of item
-	 * @return text for display
+	 * @return string for display
 	 */
 	public function sendStyleSelect($curval = '', $name = 'email_send_style', $incTemplates = true)
 	{
@@ -1270,7 +1270,7 @@ class mailoutAdminClass extends e107MailManager
 	 *
 	 * @param $name  string name of select structure
 	 * @param $curval string current value
-	 * @return text for display
+	 * @return string for display
 	 */
 	public function comparisonSelect($name, $curval = '')
 	{
@@ -1340,7 +1340,7 @@ class mailoutAdminClass extends e107MailManager
 	 *
 	 * @param $mailid - number of email
 	 * @param $nextPage - 'mode' specification for page to return to following delete
-	 * @return text for display
+	 * @return void for display
 	 */
 
 	 public function showDeleteConfirm($mailID, $nextPage = 'saved')
@@ -1519,7 +1519,7 @@ class mailoutAdminClass extends e107MailManager
 	 * @param array $mailData - Details of the email, selection criteria etc
 	 * @param boolean $fromHold - FALSE if this is a 'new' email to send, TRUE if its
 	 * already been put on hold (selects processing path)
-	 * @return text for display
+	 * @return false|string for display
 	 */
 	public function sendEmailCircular($mailData, $fromHold = false)
 	{

@@ -109,7 +109,7 @@ if (varset($e107_popup) != 1)
 	// Format for display or logging
 	$rendertime = number_format($clockTime, 2); // Clock time during page render
 	$db_time = number_format($db_time, 2); // Clock time in DB render
-	$dbPercent = number_format($dbPercent, 0); // DB as percent of clock
+	$dbPercent = number_format($dbPercent); // DB as percent of clock
 	$memuse = eHelper::getMemoryUsage(); // Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
 	
@@ -135,7 +135,7 @@ if (varset($e107_popup) != 1)
 		
 		$cpuStart = number_format($cpuStart, 3); // Startup time (i.e. CPU used before class2.php)
 		$cpuTime = number_format($cpuTime, 3); // CPU while we were measuring the clock (cpuTot-cpuStart)
-		$cpuPct = number_format($cpuPct, 0); // CPU Load (CPU/Clock)
+		$cpuPct = number_format($cpuPct); // CPU Load (CPU/Clock)
 	}
 	//
 	// Here's a good place to log CPU usage in case you want graphs and/or your host cares about that
@@ -343,7 +343,7 @@ $tmp = array();
 
 $magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
-$tmp['search'] = array_keys($magicSC);
+$tmp['search'] = (array) array_keys($magicSC);
 $tmp['replace'] = array_values($magicSC);
 
 $e_js =  e107::getJs();

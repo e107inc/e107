@@ -827,7 +827,7 @@ class e107Email extends PHPMailer
 				}
 			}
 		}
-
+/*
 		if(!empty($eml['html']) || strip_tags($eml['template']) != $eml['template']) // HTML Email. 
 		{
 			$eml['shortcodes']['BODY'] 	= !empty($eml['body']) ? $eml['body'] : ''; // using toEmail() on html templates adds unnecessary <br /> to code. 
@@ -836,7 +836,7 @@ class e107Email extends PHPMailer
 		{
 			$eml['shortcodes']['BODY'] 	= !empty($eml['body']) ? $tp->toEmail($eml['body']) : '';	
 		}
-		
+		*/
 		$eml['shortcodes']['BODY'] 		= !empty($eml['body']) ? $eml['body'] : ''; // $tp->toEmail($eml['body']) : '';
 		$eml['shortcodes']['SUBJECT'] 	= !empty($eml['subject']) ? $eml['subject'] : '';
 		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 

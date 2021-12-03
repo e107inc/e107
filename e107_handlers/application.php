@@ -77,7 +77,7 @@ class e_url
 
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getInclude()
 	{
@@ -826,7 +826,7 @@ class eDispatcher
 	 * @param eRequest $request 
 	 * @param boolean $checkReflection deep check - proper subclassing, action
 	 * @param boolean $checkOverride try override controller folder first
-	 * @return mixed class name OR false if not dispatchable
+	 * @return false|string class name OR false if not dispatchable
 	 */
 	public function isDispatchable(eRequest $request, $checkReflection = false, $checkOverride = true)
 	{
@@ -1823,6 +1823,7 @@ class eRouter
 	/**
 	 * Route current request
 	 * @param eRequest $request
+	 * @param bool $checkOnly
 	 * @return boolean
 	 */
 	public function route(eRequest $request, $checkOnly = false)
@@ -2410,15 +2411,15 @@ class eRouter
 		}
 		return implode($ampersand, $pairs);
 	}
-	
+
 	/**
 	 * Parses a path info into URL segments
 	 * Be sure to not use non-unique chars for equal and ampersand signs, or you'll break your URLs
-	 * 
-	 * @param eRequest $request
+	 *
 	 * @param string $pathInfo path info
 	 * @param string $equal
 	 * @param string $ampersand
+	 * @return array|void
 	 */
 	public function parsePathInfo($pathInfo, $equal = '/', $ampersand = '/')
 	{
@@ -2702,7 +2703,7 @@ class eUrlRule
 	 * @param string $route the route
 	 * @param array $params list of parameters
 	 * @param array $options
-	 * @return mixed the constructed URL or false on error
+	 * @return false|string|null the constructed URL or false on error
 	 */
 	public function createUrl($manager, $route, $params, $options)
 	{
@@ -3812,7 +3813,7 @@ class eRequest
 	/**
 	 * Populate module, controller and action from route string
 	 * @param string $route
-	 * @return array|eRequest
+	 * @return eRequest
 	 */
 	public function initFromRoute($route)
 	{
@@ -4761,7 +4762,7 @@ class eHelper
 	 * Type ending with 'l' stands for 'to lowercase', ending with 'c' - 'to camel case'
 	 * @param string $title
 	 * @param string $type dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus|none
-	 * @return mixed|string
+	 * @return array|string|string[]
 	 */
 	public static function title2sef($title, $type = null)
 	{

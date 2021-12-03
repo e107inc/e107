@@ -635,7 +635,7 @@ class e_parse
 	 * @param string $data
 	 * @param string $tagList - if empty, uses default list of input tags. Otherwise a CSV list of tags to check (any type)
 	 *
-	 * @return boolean TRUE if an unopened closing tag found
+	 * @return string TRUE if an unopened closing tag found
 	 *                    FALSE if nothing found
 	 * @deprecated
 	 */
@@ -685,7 +685,7 @@ class e_parse
 	 * Takes a multi-dimensional array and converts the keys to a list of routing paths.
 	 * paths are the key and value are the top most key.
 	 * @param array $array
-	 * @return false|array
+	 * @return array
 	 */
 	public function toRoute($array)
 	{
@@ -1088,11 +1088,12 @@ class e_parse
 
 
 	/**
-	 * Universal text/bbcode/html truncate method. 
+	 * Universal text/bbcode/html truncate method.
 	 * new in v2.3.1
 	 * @param $text
 	 * @param int $length
 	 * @param string $ending
+	 * @return string
 	 */
 	public function truncate($text, $length = 100, $ending = '...')
 	{
@@ -1992,7 +1993,7 @@ class e_parse
 	/**
 	 * Clean and Encode Ampersands '&' for output to browser.
 	 * @param string $text
-	 * @return mixed|string
+	 * @return array|string|string[]
 	 */
 	public function ampEncode($text = '')
 	{
@@ -2008,7 +2009,7 @@ class e_parse
 	/**
 	 * Convert any string back to plain text.
 	 * @param $text
-	 * @return mixed|string
+	 * @return array|string|string[]
 	 */
 	public function toText($text)
 	{
@@ -3929,6 +3930,7 @@ class e_parse
 	/**
 	 * Return a Bootstrap Badge tag
 	 * @param $text
+	 * @param null $parm
 	 * @return string
 	 */
 	public function toBadge($text, $parm = null)
@@ -3943,6 +3945,7 @@ class e_parse
 	/**
 	 * Return a Bootstrap Label tag
 	 * @param $text
+	 * @param null $type
 	 * @return string
 	 */
 	public function toLabel($text, $type = null)
@@ -3967,6 +3970,7 @@ class e_parse
 	/**
 	 * Take a file-path and convert it to a download link.
 	 * @param $text
+	 * @param array $parm
 	 * @return string
 	 */
 	public function toFile($text, $parm = array())

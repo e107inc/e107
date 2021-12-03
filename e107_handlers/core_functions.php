@@ -243,7 +243,7 @@ function array_diff_recursive($array1, $array2)
  * Strips slashes from a string or an array
  *
  * @param mixed $value
- * @return mixed
+ * @return array|string
  */
 function array_stripslashes($data)
 {
@@ -397,7 +397,7 @@ if (!function_exists('asortbyindex'))
     {
        foreach ($array as $i => $k)
        {
-            $sort_values[$i] = $array[$i][$key];
+            $sort_values[$i] = $k[$key];
        }
        asort ($sort_values);
        reset ($sort_values);
@@ -775,7 +775,7 @@ class e_array {
      * @param array $array
      * @param string $systemLocationFile relative to e_SYSTEM file path (without the extension)
      * @param string $extension [optional] file extension, default is 'php'
-     * @return array|false when file not found (or on error)
+     * @return bool when file not found (or on error)
      */
 	public function store($array, $systemLocationFile, $extension = 'php')
 	{

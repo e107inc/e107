@@ -843,7 +843,7 @@ class eMessage
 			}
 			if(isset($stacks[$from_stack]))
 			{
-				if(!isset($SESSION[$_type][$to_stack]))
+				if(!isset($stacks[$to_stack]))
 				{
 					$SESSION[$_type][$to_stack] = array();
 				}

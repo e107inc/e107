@@ -43,7 +43,7 @@ class _blank_user // plugin-folder + '_user'
 
 	/**
 	 * Experimental and subject to change without notice.
-	 * @return mixed
+	 * @return array
 	 */
 	function delete()
 	{

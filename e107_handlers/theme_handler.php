@@ -1039,7 +1039,6 @@ class e_theme
 		$vars['category'] 		= self::getThemeCategory(varset($vars['category']));
 		$vars['xhtmlcompliant'] = varset($vars['compliance']['@attributes']['xhtml']);
 		$vars['csscompliant'] 	= varset($vars['compliance']['@attributes']['css']);
-		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
@@ -3139,6 +3138,7 @@ class themeHandler
 
 	/**
 	 * @param $name
+	 * @return false|void
 	 */
 	function installContentCheck($name)
 	{

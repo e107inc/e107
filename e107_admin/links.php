@@ -556,7 +556,8 @@ class links_model_admin_tree extends e_admin_tree_model
 	 * @param $parent_id
 	 * @param $search
 	 * @param $src
-	 * @param $level
+	 * @param int $level
+	 * @param bool $modified
 	 * @return void
 	 */
 	function _tree_order($parent_id, $search, &$src, $level = 0, $modified = false)

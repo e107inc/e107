@@ -80,7 +80,7 @@ class fpw_shortcodes extends e_shortcode
 
 	/**
 	 * @param string $parm
-	 * @return mixed|null|string
+	 * @return string|null
 	 */
 	function sc_fpw_captcha_input($parm = null)
 	{
