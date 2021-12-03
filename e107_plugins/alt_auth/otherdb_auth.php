@@ -42,7 +42,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{

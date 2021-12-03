@@ -421,8 +421,8 @@
 )]]></core>
 		<core name="xup_enabled">1</core>
 		<core name="xurl"><![CDATA[array ()]]></core>
-		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
-		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>
+		<core name="xmlfeed_languagepacks">https://www.e107.org/themeupdate.php</core>
+		<core name="xmlfeed_security">https://www.e107.org/themeupdate.php</core>
 		<core name="xurl"><![CDATA[array (
 		  'facebook' => '#',
 		  'twitter' => '#',

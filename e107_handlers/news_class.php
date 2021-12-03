@@ -275,7 +275,7 @@ class news {
 		}
 
 		$tmp = array();
-		$tmp['caticon'] 				= defset('ICONSTYLE');
+
 		$tmp['commentoffstring'] 		= defset('COMMENTOFFSTRING', '');
 		$tmp['commentlink'] 			= defset('COMMENTLINK', e107::getParser()->toGlyph('fa-comment'));
 	/*	$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');

@@ -68,6 +68,8 @@ class news_gsitemap
 
 	/**
 	 * Used above and by gsitemap/e_event.php to update the URL when changed in news, pages etc.
+	 *
+	 * @param $table
 	 * @param $row
 	 * @return string
 	 */

@@ -899,7 +899,7 @@ function get_image_mime($filename, $extended = false)
 			{ // Unspecified max - use the global value
 				$allowed_filetypes[$t] = $max_upload_size;
 			}
-			elseif ($allowed_filetypes[$t] > $max_upload_size)
+			elseif ($s > $max_upload_size)
 				$allowed_filetypes[$t] = $max_upload_size;
 			if ($allowed_filetypes[$t] > $new_max)
 				$new_max = $allowed_filetypes[$t];

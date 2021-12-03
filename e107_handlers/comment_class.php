@@ -563,7 +563,7 @@ class comment
 	 * @param $id - comment_id to delete
 	 * @param string $table - comment belongs to this table eg. 'news'
 	 * @param string $itemid - corresponding item from the table. eg. news_id
-	 * @return int|null|void
+	 * @return int|null
 	 */
 	function deleteComment($id, $table='', $itemid='') // delete a single comment by comment id.
 	{
@@ -1198,7 +1198,7 @@ class comment
 	 * @param $comment
 	 * @param $form
 	 * @param $modcomment
-	 * @return mixed
+	 * @return array|string|string[]
 	 */
 	public function parseLayout($comment, $form, $modcomment)
 	{

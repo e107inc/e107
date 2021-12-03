@@ -111,7 +111,7 @@ define ("EPL_ADLAN_92","Buy");
 define ("EPL_ADLAN_93","Free");
 define ("EPL_ADLAN_94","Connecting...");
 define ("EPL_ADLAN_95","Unable to continue");
-define ("EPL_ADLAN_96","eg. http://website.com/some-plugin.zip");
+define ("EPL_ADLAN_96","eg. https://website.com/some-plugin.zip");
 define ("EPL_ADLAN_97","There was a problem extracting the .zip file to your plugin directory.");
 define ("EPL_ADLAN_98","Unknown file:");
 define ("EPL_ADLAN_99","Error messages above this line");

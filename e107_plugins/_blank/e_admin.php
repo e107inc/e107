@@ -28,7 +28,7 @@ class _blank_admin implements e_admin_addon_interface
 
 
 		return array(
-			3   => array('url'=>'http://myurl.com'),
+			3   => array('url'=>'https://myurl.com'),
 		);
 
 
@@ -48,7 +48,7 @@ class _blank_admin implements e_admin_addon_interface
 		$id         = $ui->getId();
 
 		$config = array();
-		$defaultValue = 'http://';
+		$defaultValue = 'https://';
 
 		switch($type)
 		{

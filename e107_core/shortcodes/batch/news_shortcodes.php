@@ -292,16 +292,13 @@ class news_shortcodes extends e_shortcode
 			/* @deprecated - Will cause issues with glyphs */
 			case 'src':
 				return $src;
-			break;
 
 			case 'tag':
 				return $icon;
-			break;
 
 			case 'url':
 			default:
 				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
-			break;
 		}
 	}
 

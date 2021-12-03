@@ -311,7 +311,7 @@ class e_db_pdo implements e_db
 	 * @param bool   $debug
 	 * @param string $log_type
 	 * @param string $log_remark
-	 * @return boolean|PDOStatement | resource - as mysql_query() function.
+	 * @return boolean|int|PDOStatement - as mysql_query() function.
 	 *            false indicates an error
 	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
 	 *            TRUE indicates success in other cases
@@ -1112,11 +1112,11 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	* @return mixed
 	* @param string|array $fieldValue
-	* @desc Return new field value in proper format<br />
+	 * @desc Return new field value in proper format<br />
 	*
 	* @access private
+	*@return array|float|int|string
 	*/
 	private function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
 	{
@@ -1255,6 +1255,7 @@ class e_db_pdo implements e_db
 	/**
 	 * Convert FIELD_TYPE to PDO compatible Field-Type
 	 * @param $type
+	 * @param null $value
 	 * @return int
 	 */
 	private function _getPDOType($type, $value = null)
@@ -1577,7 +1578,7 @@ class e_db_pdo implements e_db
 	* Check for the existence of a matching language table when multi-language tables are active.
 	* @param string|array $table Name of table, without the prefix. or an array of table names.
 	* @access private
-	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
+	* @return array|false|string the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
 	public function hasLanguage($table, $multiple=false)
 	{

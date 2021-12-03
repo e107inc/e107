@@ -470,10 +470,11 @@ class media_form_ui extends e_admin_form_ui
 
 
 	/**
-	 * Resize a single image. 
-	 * @param string
-	 * @param int
-	 * @param int
+	 * Resize a single image.
+	 * @param string $oldpath
+	 * @param int $w
+	 * @param int $h
+	 * @return bool|void
 	 */
 	public function resizeImage($oldpath,$w,$h)
 	{

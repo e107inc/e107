@@ -784,10 +784,11 @@ class news_front
 	}
 
 
-	/**
-	 * @param $cache_tag
-	 * @param string $type 'title' or 'diz' or 'rows' or empty for html.
-	 */
+		/**
+		 * @param        $cachetag
+		 * @param string $type 'title' or 'diz' or 'rows' or empty for html.
+		 * @return array|false|string
+		 */
 	private function getNewsCache($cachetag, $type=null)
 	{
 		if(!empty($type))

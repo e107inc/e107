@@ -5687,7 +5687,7 @@ class e107
 	 * Safe way to set ini var
 	 * @param string $var
 	 * @param string $value
-	 * @return mixed
+	 * @return false|string
 	 */
 	public static function ini_set($var, $value)
 	{

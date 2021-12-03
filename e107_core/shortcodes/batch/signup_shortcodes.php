@@ -273,7 +273,7 @@ class signup_shortcodes extends e_shortcode
 			return false;
 		}
 
-		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
+		$options = array('size'=>30,'class'=>'e-password tbox');
 	//	$options['title'] = 'Password must contain at least 6 characters, including UPPER/lowercase and numbers';
 	    $preLen = e107::getPref('signup_pass_len');
 		$len = vartrue($preLen,6);
@@ -356,9 +356,9 @@ class signup_shortcodes extends e_shortcode
 		
 	function sc_signup_email($parm=null)
 	{	
-		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control e-email');
+		$options = array('size'=>30,'required'=>1);
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
-		$options['class']   = vartrue($parm['class'],'');
+		$options['class']   = vartrue($parm['class'], 'tbox form-control e-email');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
 
 		$val = !empty($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : '';

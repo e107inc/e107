@@ -1070,7 +1070,7 @@ class e107MailManager
 	 * @param $limit - number of units of work to do - zero to clear the queue (or do maximum allowed by a hard-coded limit)
 	 * @param $pauseCount - pause after so many emails
 	 * @param $pauseTime - time in seconds to pause after 'pauseCount' number of emails.
-	 * @return None
+	 * @return void
 	 */
 	public function doEmailTask($limit = 0, $pauseCount = null, $pauseTime = 1)
 	{
@@ -1214,7 +1214,7 @@ class e107MailManager
 	/**
 	 * Initialise a set of counters prior to adding
 	 * @param $handle - as returned by makeEmail()
-	 * @return none
+	 * @return void
 	 */
 	public function mailInitCounters($handle)
 	{
@@ -1228,7 +1228,7 @@ class e107MailManager
 	 * @param $handle - as returned by makeEmail()
 	 * @param $mailRecip is an array of relevant info
 	 * @param $priority - 'E107' priority for email (different to the priority included in the email)
-	 * @return mixed - FALSE if error
+	 * @return false|string|void - FALSE if error
 	 *                 'dup' if duplicate of existing email
 	 *                 integer - number of email recipient in DB
 	 */

@@ -49,7 +49,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	/**
 	 * Returns user_id from cb_nick
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	protected function getUserIdFromNick()
 	{
@@ -63,7 +63,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	/**
 	 * Returns user_name from cb_nick
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	protected function getUserNameFromNick()
 	{
@@ -104,7 +104,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	 *
 	 * @param null $parm
 	 *
-	 * @return mixed|string
+	 * @return string
 	 */
 	public function sc_cb_username($parm = null)
 	{

@@ -1092,7 +1092,7 @@ if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
 $js_adv = '';
 foreach ($search_info as $key => $value) 
 {
-  if (!isset($search_info[$key]['advanced'])) 
+  if (!isset($value['advanced']))
   {
 	$js_adv .= " && abid != '".$key."'";
   }

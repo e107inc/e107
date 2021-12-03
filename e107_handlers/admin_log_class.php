@@ -778,13 +778,15 @@ class e_admin_log
 	{
 		return $this->logMessage($text, ($message ? E_MESSAGE_WARNING : LOG_MESSAGE_NODISPLAY), E_MESSAGE_WARNING, $session);
 	}
-	
-	
+
+
 	/**
 	 * Add an array to the log queue
 	 * @param $array
-	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
-	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS
+	 * @param null $oldArray (optional) - when included, only the changes between the arrays is saved.
+	 * @param string $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS
+	 * @param bool $session
+	 * @return e_admin_log
 	 */
 	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY , $session = false)
 	{

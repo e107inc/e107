@@ -1006,10 +1006,9 @@ class forum_post_handler
 	}
 
 
-
-
 	/**
-	 * @param $text
+	 * @param      $text
+	 * @param bool $caption
 	 */
 	function render($text, $caption = false)
 	{

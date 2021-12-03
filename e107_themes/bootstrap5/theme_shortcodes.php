@@ -10,7 +10,12 @@
  *
 */
 
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Deprecated;
 
+/**
+ *
+ */
 class theme_shortcodes extends e_shortcode
 {
 
@@ -97,11 +102,13 @@ class theme_shortcodes extends e_shortcode
 
 	/**
 	 * Will only function on the news page.
+	 *
 	 * @example {THEME_NEWS_BANNER: type=date}
 	 * @example, {THEME_NEWS_BANNER: type=image}
 	 * @example {THEME_NEWS_BANNER: type=author}
 	 * @param null $parm
 	 * @return string|null
+	 *
 	 */
 	function sc_theme_news_banner($parm=null)
 	{

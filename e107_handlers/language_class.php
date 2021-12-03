@@ -332,10 +332,11 @@ class language{
 		}
 
 	}
-	
+
 	/**
 	 * Check if the specified domain has multi-language subdomains enabled.
-	 * @return 
+	 * @param string $domain
+	 * @return bool|int|string
 	 */
 	function isLangDomain($domain='')
 	{

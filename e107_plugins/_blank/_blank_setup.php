@@ -38,10 +38,10 @@ if(!class_exists("_blank_setup"))
 				'blank_folder'			=>'Folder Value',
 				'blank_version'			=>'1',
 				'blank_author'			=>'1',
-				'blank_authorURL'		=>'http://e107.org',
+				'blank_authorURL'		=>'https://e107.org',
 				'blank_date'			=>'1352871240',
 				'blank_compatibility'	=>'2',
-				'blank_url'				=>'http://e107.org',
+				'blank_url'				=>'https://e107.org',
 				'blank_class'           => 0
 			);
 

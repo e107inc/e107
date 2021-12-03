@@ -415,7 +415,7 @@ class userlogin
 	 * @param string $userpass - as entered
 	 * @param string $response - received string if CHAP used
 	 * @param boolean $forceLogin - TRUE if login is being forced from clicking signup link; normally FALSE
-	 * @return TRUE if valid password
+	 * @return bool|string if valid password
 	 *		   otherwise FALSE
 	 */
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
@@ -526,7 +526,9 @@ class userlogin
 
 	/**
 	 * called to log the reason for a failed login.
-	 * @param string $plugname
+	 * @param $username
+	 * @param $reason
+	 * @param string $extra_text
 	 * @return boolean Currently always returns false - could return some other value
 	 */
 	protected function invalidLogin($username, $reason, $extra_text = '')
@@ -649,7 +651,7 @@ class userlogin
 	 * Make a note of an event in the rolling log
 	 * @param string $title - title of logged event
 	 * @param string $text - detail of event
-	 * @return none
+	 * @return void
 	 */
 	protected function logNote($title, $text)
 	{
@@ -672,7 +674,7 @@ class userlogin
 	 * Make a note of a failed login in the 'generic' table
 	 * @param string $username - as entered
 	 * @param string $msg1 - detail of event
-	 * @return none
+	 * @return void
 	 */
 	protected function genNote($username, $msg1)
 	{
@@ -686,7 +688,7 @@ class userlogin
 	 * Assumes the user is valid and logs them in.
 	 * @param array $userData ie. user_id, user_name, user_email,user_join, user_admin
 	 * @param bool $autologin 
-	 * @return array
+	 * @return bool|void
 	 */
 	public function validLogin($userData, $autologin=false)
 	{

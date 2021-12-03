@@ -2808,9 +2808,10 @@ class e_form
 	/**
 	 * A Radio Button Form Element
 	 * @param $name
-	 * @param @value array pair-values|string - auto-detected. 
+	 * @param $value
 	 * @param $checked boolean
-	 * @param $options 
+	 * @param null $options
+	 * @return array|string|string[]
 	 */
 	public function radio($name, $value, $checked = false, $options = null)
 	{
@@ -3016,16 +3017,14 @@ class e_form
 	}
 
 
-
-
-
 	/**
-	 * XXX INTERNAL ONLY - Use radio() instead. array will automatically trigger this internal method.  
-	 * @param string $name 
+	 * XXX INTERNAL ONLY - Use radio() instead. array will automatically trigger this internal method.
+	 * @param string $name
 	 * @param array|string $elements = arrays value => label
-	 * @param string/integer $checked = current value
-	 * @param boolean $multi_line
+	 * @param $checked
+	 * @param array $options
 	 * @param mixed $help array of field help items or string of field-help (to show on all)
+	 * @return string
 	 */
 	private function radio_multi($name, $elements, $checked, $options=array(), $help = null)
 	{
@@ -3439,13 +3438,14 @@ var_dump($select_options);*/
 		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
 	}
 
-    /**
-     * <option> tag generation. 
-     * @param $option_title 
-     * @param $value
-     * @param $selected
-     * @param $options (eg. disabled=1)
-     */
+	/**
+	 * <option> tag generation.
+	 * @param $option_title
+	 * @param $value
+	 * @param bool $selected
+	 * @param string $options (eg. disabled=1)
+	 * @return string
+	 */
 	public function option($option_title, $value, $selected = false, $options = '')
 	{
 	    if(is_string($options))

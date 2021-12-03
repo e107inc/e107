@@ -1294,6 +1294,7 @@ function check_class($var, $userclass = null, $uid = 0)
 /**
  * @param                   $arg
  * @param bool|mixed|string $ap
+ * @param mixed $path
  * @return bool
  */
 function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)

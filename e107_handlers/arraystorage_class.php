@@ -57,7 +57,7 @@ class ArrayData
 	* Returns an array from stored array data.
 	* @deprecated use e107::unserialize() instead.
 	* @param string $ArrayData
-	* @return bool|array stored data
+	* @return array stored data
 	*/
 	function ReadArray($ArrayData) 
 	{

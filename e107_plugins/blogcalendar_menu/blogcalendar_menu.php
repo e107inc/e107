@@ -120,7 +120,7 @@ if(false === $cached)
 	{
 		$xmonth = date("n", $news['news_datestamp']);
 		$xyear = date("Y", $news['news_datestamp']);
-		if (!isset($month_links[$xmonth]) || empty($month_links[$xmonth]))
+		if (empty($month_links[$xmonth]))
 		{
 			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'id='.formatDate($xyear, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 		}

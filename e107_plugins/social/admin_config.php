@@ -399,12 +399,12 @@ class social_ui extends e_admin_ui
 				'facebook'		=> 	array('label'=>"Facebook", "placeholder"=>"eg. https://www.facebook.com/e107CMS"),
 				'twitter'		=>	array('label'=>"Twitter",	"placeholder"=>"eg. https://twitter.com/e107"),
 				'youtube'		=>	array('label'=>"Youtube",	"placeholder"=>"eg.https://youtube.com/e107Inc"),
-				'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. http://www.linkedin.com/groups?home=&gid=1782682"),
+				'linkedin'		=>	array('label'=>"LinkedIn",	"placeholder"=>"eg. https://www.linkedin.com/groups?home=&gid=1782682"),
 				'github'		=>	array('label'=>"GitHub",	"placeholder"=>"eg. https://github.com/e107inc"),
 				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
 				'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
 				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
-				'steam'			=>	array('label'=>"Steam",		"placeholder"=>"eg. http://steamcommunity.com"),
+				'steam'			=>	array('label'=>"Steam",		"placeholder"=>"eg. https://steamcommunity.com"),
 				'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
 				'twitch'		=> 	array('label'=>"Twitch", 	"placeholder"=>""),
 				'vk'			=> 	array('label'=>"VK (Vkontakte)", "placeholder"=>""),
@@ -689,6 +689,7 @@ class social_ui extends e_admin_ui
 
 	/**
 	 * @param $provider_name
+	 * @param bool $readonly
 	 * @return string Text to append
 	 */
 	private function generateSocialLoginRow($provider_name, $readonly = false)
