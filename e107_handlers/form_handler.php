@@ -5056,13 +5056,9 @@ var_dump($select_options);*/
 				$eModalCap = null;
 			}
 
-			if (!empty($parms['modalSubmit']))
-			{
-				$eModalCap .= " data-modal-submit='true'";
-			}
-
 			$query = http_build_query($query);
-			$text .= "<a" . $this->attributes([
+
+			$att = [
 					'href'               => e_SELF . "?$query",
 					'class'              => "btn btn-default btn-secondary$eModal",
 					'data-modal-caption' => $eModalCap,
@@ -5070,8 +5066,14 @@ var_dump($select_options);*/
 					'data-toggle'        => 'tooltip',
 					'data-bs-toggle'     => 'tooltip',
 					'data-placement'     => 'left',
-				]) . ">
-				" . $editIconDefault . '</a>';
+				];
+
+			if (!empty($parms['modalSubmit']))
+			{
+				$att['data-modal-submit'] = 'true';
+			}
+			
+			$text .= '<a' . $this->attributes($att) . '>' . $editIconDefault . '</a>';
 		}
 
 		$delcls = !empty($attributes['noConfirm']) ? ' no-confirm' : '';
