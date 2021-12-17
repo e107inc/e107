@@ -271,7 +271,7 @@ class comment
 			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false);//temporary here
 			
 		//	$text .= "Indent = ".$indent;
-			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
+			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', e_REQUEST_URI)."'  >";
 					
 			$data = array(
 				'action'	=> $action,

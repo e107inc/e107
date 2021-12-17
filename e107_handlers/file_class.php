@@ -2177,7 +2177,7 @@
 
 		/**
 		 * New in v2.1.9
-		 * Check filename or path against filetypes.xml
+		 * Check filename, path or URL against filetypes.xml
 		 *
 		 * @param        $file - real path to file.
 		 * @param string $targetFile
@@ -2191,12 +2191,26 @@
 				$targetFile = $file;
 			}
 
+			$remote = false;
+
+			if(strpos($targetFile,'http') === 0) // remote file.
+			{
+				$tmp = parse_url($targetFile);
+				$targetFile = $tmp['path'];
+				$remote = true;
+			}
+
 			$ext = pathinfo($targetFile, PATHINFO_EXTENSION);
 
 			$types = $this->getAllowedFileTypes();
 
 			if(isset($types[$ext]))
 			{
+				if($remote)
+				{
+					return true;
+				}
+
 				$maxSize = $types[$ext] * 1024;
 				$fileSize = filesize($file);
 

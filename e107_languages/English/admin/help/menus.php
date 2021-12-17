@@ -27,7 +27,7 @@ if(isset($_POST['reset']))
 		{
 			$sql->select("menus","*", "menu_location='".$mc."' ORDER BY menu_order");
 			$count = 1;
-			$sql2 = new db;
+			$sql2 = e107::getDb('sql2');
 			while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch())
 			{
 				$sql2 ->update("menus", "menu_order='$count' WHERE menu_id='$menu_id' ");
@@ -48,7 +48,7 @@ $text = "The Menu-Manager allows you to place and arrange your menus within your
 If you find the menus are not updating correctly, clicking the refresh button below may help. 
 
 [html]
-<form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
+<form method='post' id='menurefresh' action='".e_SELF."'>
 <div>
 ".$frm->admin_button('reset','Refresh','cancel')."</div>
 </form>
@@ -58,4 +58,4 @@ If you find the menus are not updating correctly, clicking the refresh button be
 ";
 
 $text = $tp->toHTML($text, true);
-$ns->tablerender("Menu Manager Help", $text);
+e107::getRender()->tablerender("Menu Manager Help", $text);
