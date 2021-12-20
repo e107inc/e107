@@ -18,7 +18,7 @@
 
 // Shortcode Wrappers
 $COMMENT_MENU_WRAPPER['CM_DATESTAMP']   = ' {---}';
-$COMMENT_MENU_WRAPPER['CM_AUTHOR']      = CM_L13.'{---}';
+$COMMENT_MENU_WRAPPER['CM_AUTHOR']      = CM_L13.' {---}';
 $COMMENT_MENU_WRAPPER['CM_TYPE']        = '<span class="label label-default badge badge-secondary bg-secondary ">{---}</span>';
 
 
