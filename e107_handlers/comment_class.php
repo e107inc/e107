@@ -1562,10 +1562,17 @@ class comment
 							}
 							break;
 						case 'page': //	Custom Page
-							$ret['comment_type'] = COMLAN_TYPE_PAGE;
-							$ret['comment_title'] = $ret['comment_subject'] ? $ret['comment_subject']:
-							$ret['comment_comment'];
-							$ret['comment_url'] = e_HTTP."page.php?".$row['comment_item_id'];
+							if ($sql2->select("page", "*", "page_id='".$row['comment_item_id']."' AND page_class REGEXP '".e_CLASS_REGEXP."' "))
+							{
+								$row2 = $sql2->fetch();
+
+								$route = ($row2['page_chapter'] == 0) ? "page/view/other" : "page/view/index"; // Determine if page belongs to book/chapter. 
+
+								$ret['comment_type'] = COMLAN_TYPE_PAGE;
+								$ret['comment_title'] = $ret['comment_subject'] ? $ret['comment_subject']:
+								$ret['comment_comment'];
+								$ret['comment_url'] = e107::getUrl()->create($route, $row2);  // e_HTTP."page.php?".$row['comment_item_id'];
+							}
 							break;
 						default:
 							if (isset($e_comment[$row['comment_type']]) && is_array($e_comment[$row['comment_type']]))
