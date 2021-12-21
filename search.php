@@ -353,9 +353,10 @@ class search_front extends e_shortcode
 		
 		foreach ($this->enhancedTypes as $en_id => $ENHANCED_TEXT) 
 		{
-			$var['ENHANCED_TEXT'] 		= $ENHANCED_TEXT;
-			$var['ENHANCED_DISPLAY_ID'] = "en_".$en_id;
-			$var['ENHANCED_FIELD'] 		= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm(varset($_GET[$en_id]))."' maxlength='50' />";
+			$var['ENHANCED_TEXT'] 							= $ENHANCED_TEXT;
+			$var['ENHANCED_DISPLAY_ID'] 				= "en_".$en_id;
+			$var['ENHANCED_DISPLAY_FIELDNAME'] 	= $en_id;
+			$var['ENHANCED_FIELD'] 							= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm(varset($_GET[$en_id]))."' maxlength='50' />";
 		
 			$text .= $tp->simpleParse($this->template['enhanced'], $var);
 		}

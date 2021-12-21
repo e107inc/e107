@@ -5,9 +5,9 @@ if (!defined('e107_INIT')) { exit; }
 // Bootstrap
 
 $SEARCH_TEMPLATE['form']['start'] = '
-					<form class="form-horizontal" role="form" id="searchform" method="get" action="{SEARCH_FORM_URL}">
+					<form class="form-horizontal" id="searchform" method="get" action="{SEARCH_FORM_URL}">
 						<div class="form-group">
-					        <label for="inputEmail3" class="col-sm-3 control-label">{LAN=199}</label>
+					        <label for="q" class="col-sm-3 control-label">{LAN=199}</label>
 						    <div class="col-sm-9">{SEARCH_MAIN}
 						    </div>
 					    </div>
@@ -18,7 +18,7 @@ $SEARCH_TEMPLATE['form']['start'] = '
 
 $SEARCH_TEMPLATE['form']['advanced'] = '
 						<div class="form-group">
-						    <label for="inputPassword3" class="col-sm-3 control-label">{SEARCH_ADV_A}</label>
+						    <label for="t" class="col-sm-3 control-label">{SEARCH_ADV_A}</label>
 						    <div class="col-sm-9">	
 						        
 						      {SEARCH_ADV_B}
@@ -30,7 +30,7 @@ $SEARCH_TEMPLATE['form']['advanced'] = '
 
 $SEARCH_TEMPLATE['form']['enhanced'] = '
 						<div id="{ENHANCED_DISPLAY_ID}" class="form-group">
-						    <label for="inputPassword3" class="col-sm-3 control-label">{ENHANCED_TEXT}</label>
+						    <label for="{ENHANCED_DISPLAY_FIELDNAME}" class="col-sm-3 control-label">{ENHANCED_TEXT}</label>
 						    <div class="col-sm-9">
 						      {ENHANCED_FIELD}
 						    </div>
@@ -49,7 +49,7 @@ $SEARCH_TEMPLATE['form']['type'] = '
 
 $SEARCH_TEMPLATE['form']['category'] = '
 										<div class="form-group">
-										    <label for="inputPassword3" class="col-sm-3 control-label">{LAN=SEARCH_19}</label>
+										    <label for="t" class="col-sm-3 control-label">{LAN=SEARCH_19}</label>
 										    <div class="col-sm-9">
 										   {SEARCH_MAIN_CHECKBOXES}{SEARCH_DROPDOWN}&nbsp;
 										    </div>
