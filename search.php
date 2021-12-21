@@ -840,10 +840,18 @@ class search_front extends e_shortcode
 					//	}
 
 					//	print_a($ps);
-						$idkey = str_replace('_', '-', $key);
-						$text .= '<ul id="search-results-'.$idkey.'" class="list-unstyled search-block">';
-						$text .= $ps['text'];
-						$text .= '</ul>';
+						if($ps['results'] == "0")
+						{
+							$text .= $ps['text'];
+						}
+						else
+						{
+							$idkey = str_replace('_', '-', $key);
+							$text .= '<ul id="search-results-'.$idkey.'" class="list-unstyled search-block">';
+							$text .= $ps['text'];
+							$text .= '</ul>';
+						}
+							
 						$results = $ps['results'];	
 						
 					}
