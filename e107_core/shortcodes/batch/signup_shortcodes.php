@@ -6,13 +6,7 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $URL$
- * $Id$
  */
-
-// Mods to show extended field categories
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -47,18 +41,22 @@ class signup_shortcodes extends e_shortcode
 		{
 			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-primary button';
 			return "
-			<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
-			<div><br />
-			<input type='radio' name='coppa' value='0' id='coppa_no' checked='checked' /> <label class='control-label' for='coppa_no'>".LAN_NO."</label>
-			<input type='radio' name='coppa' value='1' id='coppa_yes' /> <label class='control-label' for='coppa_yes'>".LAN_YES."</label>
+			<form method='post' action='".e_SELF."?stage1' autocomplete='off'>
+			<div>
+			<br />
+			".e107::getForm()->radio_switch("coppa", false, LAN_YES, LAN_NO, array('reverse' => 1))."
 			<br />
 			<br />
 			<input class='".$class."' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
 			</div></form>
 		";
 		}
-	}
 
+		/*
+			<input type='radio' name='coppa' value='0' id='coppa_no' checked='checked' /> <label class='control-label' for='coppa_no'>".LAN_NO."</label>
+			<input type='radio' name='coppa' value='1' id='coppa_yes' /> <label class='control-label' for='coppa_yes'>".LAN_YES."</label>
+		*/
+	}
 
 
 	function sc_signup_xup($param=null) // show it to those who were using xup
