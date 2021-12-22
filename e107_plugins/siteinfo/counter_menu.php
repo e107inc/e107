@@ -19,6 +19,17 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 {
 	//$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
 
+	if(!file_exists(e_PLUGIN."log/consolidate.php"))
+	{
+		if(ADMIN)
+		{
+			$text .= "<span class='smalltext'>".COUNTER_L8."</span>";
+		}
+
+		$ns->tablerender(COUNTER_L7, $text, 'counter');
+		return; 
+	}
+	
 	require_once(e_PLUGIN."log/consolidate.php");
 	$logObj = new logConsolidate;
 
