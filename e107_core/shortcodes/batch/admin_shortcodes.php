@@ -890,31 +890,32 @@ class admin_shortcodes extends e_shortcode
 		
         $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
        
-       if ($count >0)
-       {
+       	if ($count >0)
+       	{
             $countDisp = ' <span class="badge badge-primary">'.$count.'</span> ' ;
-       }
-       else
-      {
+       	}
+       	else
+      	{
             $countDisp = '';    
-      }
+      	}
          
-		$inboxUrl = e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
-		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
+		$inboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
+		$outboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
-       $text = '<ul class="nav nav-admin navbar-nav navbar-right">
-        <li class="dropdown">
-            <a class="dropdown-toggle" title="'.defset('LAN_PM').'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
-                '.$tp->toGlyph('fa-envelope').$countDisp.'
-            </a> 
-            <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">'.defset('LAN_PM').'</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_INBOX').'" data-target="#uiModal" href="'.$inboxUrl.'" >'.defset('LAN_PLUGIN_PM_INBOX').'</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_OUTBOX').'" data-target="#uiModal" href="'.$outboxUrl.'">'.defset('LAN_PLUGIN_PM_OUTBOX').'</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PM_35').'" data-target="#uiModal" href="'.$composeUrl.'">'.defset('LAN_PM_35').'</a></li>
-                </ul>
-        </li>
+      	$text = '
+      	<ul class="nav nav-admin navbar-nav navbar-right">
+        	<li class="dropdown">
+	            <a class="dropdown-toggle" title="'.defset('LAN_PM').'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
+	                '.$tp->toGlyph('fa-envelope').$countDisp.'
+	            </a> 
+	            <ul class="dropdown-menu" role="menu" >
+	                <li class="nav-header navbar-header dropdown-header">'.defset('LAN_PM').'</li>
+	              	<li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_INBOX').'" data-target="#uiModal" href="'.$inboxUrl.'" >'.defset('LAN_PLUGIN_PM_INBOX').'</a></li>
+	                <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PLUGIN_PM_OUTBOX').'" data-target="#uiModal" href="'.$outboxUrl.'">'.defset('LAN_PLUGIN_PM_OUTBOX').'</a></li>
+	                <li><a class="e-modal" data-cache="false" data-modal-caption="'.defset('LAN_PM_35').'" data-target="#uiModal" href="'.$composeUrl.'">'.defset('LAN_PM_35').'</a></li>
+	            </ul>
+        	</li>
         </ul>
         '; 
         
