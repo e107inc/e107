@@ -877,6 +877,13 @@ class admin_shortcodes extends e_shortcode
 		{
 			return;
 		}
+
+		$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'pm'");
+
+		if(!getperms(0) && !getperms('P', 'P'.$pid))
+		{
+			return;
+		}
         
         $sql = e107::getDb();
 		$tp = e107::getParser();
