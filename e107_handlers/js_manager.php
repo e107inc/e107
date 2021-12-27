@@ -951,6 +951,10 @@ class e_jsmanager
 		// e107 Core Minimum should function independently of framework. 
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
+		if(empty($opts))
+		{
+			$opts = [];
+		}
 
 		$pre = !empty($opts['pre']) ? $opts['pre'] : '';
 		$post = !empty($opts['post']) ? $opts['post'] : '';
@@ -1105,9 +1109,14 @@ class e_jsmanager
 					$post
 				];
 
-				if(!empty($opts['defer']))
+				if(isset($opts['defer']) || in_array('defer', $opts, true))
 				{
 					$info[] = 'defer';
+				}
+
+				if(!empty($opts['async']) || in_array('async', $opts, true))
+				{
+					$info[] = 'async';
 				}
 
 				$file_path = implode($this->_sep, $info);
@@ -1134,9 +1143,14 @@ class e_jsmanager
 					$post
 				];
 
-				if(!empty($opts['defer']))
+				if(isset($opts['defer']) || in_array('defer', $opts, true))
 				{
 					$info[] = 'defer';
+				}
+
+				if(!empty($opts['async']) || in_array('async', $opts, true))
+				{
+					$info[] = 'async';
 				}
 
 				$file_path = implode($this->_sep, $info);
@@ -1531,7 +1545,7 @@ class e_jsmanager
 				if($pre) $pre .= "\n";
 				$post = varset($path[2], '');
 				if($post) $post = "\n".$post;
-				$inline = isset($path[3]) ? $path[3] : '';
+				$inline = isset($path[3]) ? str_replace($this->_sep, ' ',$path[3]) : '';
 				if($inline) $inline = " ".$inline;
 				$path = $path[0];
 

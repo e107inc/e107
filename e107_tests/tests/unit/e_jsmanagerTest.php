@@ -191,6 +191,11 @@
 					'zone' => 3,
 					'opts'  => array('defer'=>true)
 				),
+				4 => array(
+					'file'  => 'https://somewhere/async.js',
+					'zone' => 4,
+					'opts'  => array('defer', 'async')
+				),
 
 
 			);
@@ -209,6 +214,10 @@
 			$result = $this->js->renderJs('header', 3, true, true);
 			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
 			$this->assertStringContainsString('zone #3', $result);
+
+			$result = $this->js->renderJs('header', 4, true, true);
+			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/async.js" defer async></script>', $result);
+			$this->assertStringContainsString('zone #4', $result);
 
 		}
 
@@ -237,6 +246,12 @@
 					'opts'  => array('defer'=>true)
 				),
 
+				4 => array(
+					'file'  => 'https://somewhere/async.js',
+					'zone' => 4,
+					'opts'  => array('defer', 'async')
+				),
+
 
 			);
 
@@ -254,6 +269,10 @@
 			$result = $this->js->renderJs('footer', 3, true, true);
 			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
 			$this->assertStringContainsString('priority #3', $result);
+
+			$result = $this->js->renderJs('footer', 4, true, true);
+			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/async.js" defer async></script>', $result);
+			$this->assertStringContainsString('priority #4', $result);
 
 		}
 /*
