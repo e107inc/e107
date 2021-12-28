@@ -1144,8 +1144,8 @@ class e_user_provider
 		else
 		{
 			$this->_config = array(
-				"callback" => $this->generateCallbackUrl($provider),
-				"providers" => $this->social_login_config_manager->getValidConfiguredProviderConfigs(),
+				"callback"   => $this->generateCallbackUrl($provider),
+				"providers"  => $this->social_login_config_manager->getSupportedConfiguredProviderConfigs(),
 				"debug_mode" => 'error',
 				"debug_file" => e_LOG . "hybridAuth.log"
 			);
