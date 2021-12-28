@@ -1117,24 +1117,43 @@ class e_user_provider
 
 	/**
 	 * Hybridauth adapter
-	 * @var \Hybridauth\Adapter\AdapterInterface
+	 *
+	 * @var \Hybridauth\Adapter\AdapterInterface|null
 	 */
 	public $adapter;
 
 	/**
 	 * Hybridauth object
+	 *
 	 * @var Hybridauth\Hybridauth
 	 */
 	protected $hybridauth;
 	protected $_config = array();
 	/**
-	 * @var social_login_config
+	 * @var social_login_config|null
 	 */
-	protected $social_login_config_manager;
+	protected $social_login_config_manager = null;
 
-	public function __construct($provider = null, $config = array())
+	/**
+	 * Create a new Hybridauth-backed social login provider
+	 *
+	 * This constructor suppresses exceptions due to client usages not handling exceptions and instead sends error
+	 * messages to logged in admins. To check if a Hybridauth configuration is valid, use
+	 * {@link e107::getUserProvider()} with the provider name while logged in as an admin.
+	 *
+	 * @param string|null $provider            The name of the provider to use
+	 * @param array       $config              An override Hybridauth configuration that takes precedence over the
+	 *                                         database Hybridauth configuration for this provider. Leave blank to use
+	 *                                         the database configuration.
+	 * @param bool        $suppress_exceptions Set to false to propagate Hybridauth exceptions
+	 * @throws \Hybridauth\Exception\UnexpectedValueException if the provider is disabled
+	 * @throws \Hybridauth\Exception\InvalidArgumentException if the provider configuration validation failed
+	 */
+	public function __construct($provider = null, $config = array(), $suppress_exceptions = true)
 	{
-		require_once(e_PLUGIN . "social/includes/social_login_config.php");
+		@include_once(e_PLUGIN . "social/includes/social_login_config.php");
+		if (!class_exists('social_login_config')) return;
+
 		$this->social_login_config_manager = new social_login_config(e107::getConfig());
 
 		if (!empty($config))
@@ -1466,6 +1485,8 @@ class e_user_provider
 	 */
 	public function isSocialLoginEnabled()
 	{
+		if ($this->social_login_config_manager === null) return false;
+
 		return $this->social_login_config_manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL);
 	}
 
