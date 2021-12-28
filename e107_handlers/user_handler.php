@@ -1171,16 +1171,30 @@ class e_user_provider
 
 		}
 
-		$this->respawnHybridauth();
-		$this->setProvider($provider);
-
-		$providerId = $this->getProvider();
-		if ($providerId && $this->hybridauth->isConnectedWith($providerId))
+		try
 		{
-			$this->adapter = $this->hybridauth->getAdapter($providerId);
+			$this->respawnHybridauth();
+			$this->setProvider($provider);
+
+			$providerId = $this->getProvider();
+			if ($providerId && $this->hybridauth->isConnectedWith($providerId))
+			{
+				$this->adapter = $this->hybridauth->getAdapter($providerId);
+			}
+		}
+		catch (\Hybridauth\Exception\InvalidArgumentException $e)
+		{
+			if (!$suppress_exceptions) throw $e;
+		}
+		catch (\Hybridauth\Exception\UnexpectedValueException $e)
+		{
+			if (!$suppress_exceptions) throw $e;
 		}
 	}
 
+	/**
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 */
 	private function respawnHybridauth()
 	{
 		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
@@ -1237,9 +1251,10 @@ class e_user_provider
 	/**
 	 * Get the social login providers for which we have adapters
 	 *
-	 * This function is slow! Please cache the output instead of calling it multiple times.
+	 * Despite this being a static method, it memoizes (caches) the slow reflection code in the {@link e107} registry
+	 * after the first run, so subsequent calls to this method are fast.
 	 *
-	 * @return array String list of supported providers. Empty if Hybridauth is broken.
+	 * @return string[] String list of supported providers. Empty if Hybridauth is broken.
 	 */
 	public static function getSupportedProviders()
 	{
