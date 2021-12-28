@@ -162,9 +162,13 @@ class social_login_config
 
 	/**
 	 * Get configs of providers that are supported and configured
+	 *
+	 * These configs are not validated here by the social login implementation.
+	 * This method only filters out providers that are not supported and not configured.
+	 *
 	 * @return array Associative array where the key is the denormalized provider name and the value is its config
 	 */
-	public function getValidConfiguredProviderConfigs()
+	public function getSupportedConfiguredProviderConfigs()
 	{
 		$supported_providers = $this->getSupportedProviders();
 		$configured_providers = $this->getConfiguredProviders();
@@ -233,6 +237,9 @@ class social_login_config
 		return $output;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getSocialLoginConfig()
 	{
 		$config = $this->config->get(self::SOCIAL_LOGIN_PREF);
