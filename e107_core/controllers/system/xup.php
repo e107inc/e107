@@ -105,7 +105,7 @@ class core_system_xup_controller extends eController
 	
 	
 		$testUrl = SITEURL."?route=system/xup/test";
-		$providers = $manager->getValidConfiguredProviderConfigs();
+		$providers = $manager->getSupportedConfiguredProviderConfigs();
 
 		foreach($providers as $key=>$var)
 		{
