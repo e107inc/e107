@@ -606,6 +606,19 @@ class social_ui extends e_admin_ui
 
 		foreach ($provider_names as $provider_name)
 		{
+			// Check if the current configuration for the provider is valid
+			try
+			{
+				new e_user_provider($provider_name, [], false);
+			}
+			catch (\Hybridauth\Exception\InvalidArgumentException $e)
+			{
+				e107::getMessage()->addError("[{$e->getCode()}] {$e->getMessage()}");
+			}
+			catch (\Hybridauth\Exception\UnexpectedValueException $ignored)
+			{
+			}
+
 			$text .= $this->generateSocialLoginRow($provider_name, $readonly);
 		}
 

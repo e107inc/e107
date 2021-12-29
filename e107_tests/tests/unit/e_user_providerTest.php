@@ -115,4 +115,32 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$result = e_user_provider::getSupplementalFieldsOf("Vkontakte");
 		$this->assertTrue(array_key_exists('photo_size', $result));
 	}
+
+	public function testNewSuppressExceptions()
+	{
+		$this->assertInstanceOf(
+			e_user_provider::class,
+			new e_user_provider("Facebook", ["providers" => ["Facebook", ["enabled" => true]]])
+		);
+	}
+
+	public function testNewNoSuppressConfigurationException()
+	{
+		$this->expectException(\Hybridauth\Exception\InvalidArgumentException::class);
+		new e_user_provider(
+			"Facebook",
+			["providers" => ["Facebook" => ["enabled" => true]]],
+			false
+		);
+	}
+
+	public function testNewNoSuppressDisabledException()
+	{
+		$this->expectException(\Hybridauth\Exception\UnexpectedValueException::class);
+		new e_user_provider(
+			"Facebook",
+			["providers" => ["Facebook" => ["enabled" => false]]],
+			false
+		);
+	}
 }
