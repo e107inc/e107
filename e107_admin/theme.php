@@ -660,6 +660,12 @@ class theme_admin_ui extends e_admin_ui
 
 		public function DownloadPage()
 		{
+			if(empty($_GET['e-token']))
+			{
+				return e107::getMessage()->addError('Invalid Token')->render('default', 'error');
+			}
+
+
 			$frm = e107::getForm();
 			$mes = e107::getMessage();
 			$string =  base64_decode($_GET['src']);
@@ -1175,7 +1181,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		if(!empty($theme['price'])) // Premium Theme
 		{
 			$LAN_DOWNLOAD = LAN_PURCHASE."/".LAN_DOWNLOAD;
-			$downloadUrl = e_SELF.'?mode=main&action=download&src='.base64_encode($d); // no iframe.
+			$downloadUrl = e_SELF.'?mode=main&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d); // no iframe.
 			$mainTarget = '_blank';
 			$mainClass = '';
 			$modalCaption = ' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
@@ -1183,7 +1189,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		else // Free Theme
 		{
 			$LAN_DOWNLOAD = LAN_DOWNLOAD;
-			$downloadUrl = e_SELF.'?mode=main&iframe=1&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
+			$downloadUrl = e_SELF.'?mode=main&iframe=1&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d);//$url.'&amp;action=download';
 			$mainTarget = '_self';
 			$mainClass = 'e-modal';
 			$modalCaption =  ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'];
