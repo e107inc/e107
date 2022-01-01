@@ -212,6 +212,13 @@ if(!empty($_GET['iframe']))
 
 		function DownloadPage()
 		{
+			if(empty($_GET['e-token']))
+			{
+				e107::getMessage()->addError("Invalid Token"); // Debug - no need for translation.
+				return LAN_ERROR;
+			}
+
+
 			$this->loadPackInfo();
 
 			$lan = $this->getId();
@@ -425,7 +432,7 @@ if(!empty($_GET['iframe']))
 						<td><a href='".$value['authorURL']."'>".$value['author']."</a></td>";*/
 
 
-				$url = 'language.php?mode=main&action=download&id='.$value['name']; // $value['url']
+				$url = 'language.php?mode=main&action=download&e-token='.e_TOKEN.'id='.$value['name']; // $value['url']
 
 				$text .= "
 					<td class='text-left'>".$value['date']."</td>

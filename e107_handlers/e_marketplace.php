@@ -262,7 +262,7 @@ class e_marketplace
 
 		//	if(deftrue('e_DEBUG_PLUGMANAGER'))
 			{
-				$url = e_ADMIN.'plugin.php?mode=online&action=download&src='.base64_encode($d);
+				$url = e_ADMIN.'plugin.php?mode=online&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d);
 			}
 		//	else
 			{
@@ -282,7 +282,7 @@ class e_marketplace
 			);
 
 			$d = http_build_query($srcData,false,'&');
-			$url = e_ADMIN.'theme.php?mode=main&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
+			$url = e_ADMIN.'theme.php?mode=main&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d);//$url.'&amp;action=download';
 
 		}
 
