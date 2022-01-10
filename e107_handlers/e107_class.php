@@ -5221,7 +5221,7 @@ class e107
 
 		if(self::isCli())
 		{
-			if(!empty($_SERVER['argv']) && empty($_GET))
+			if(!empty($_SERVER['argv']) && isset($_SERVER['argv'][1]) && empty($_GET))
 			{
 				parse_str($_SERVER['argv'][1], $_GET); // convert argv to $_GET for script testing via CLI.
 			}

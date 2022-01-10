@@ -362,7 +362,7 @@ class plugin_ui extends e_admin_ui
 			{
 				$plg->load($path);
 				$name = $plg->getName();
-				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&path=".$path."&e-token=".e_TOKEN;
+				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&path=".$path."&e-token=".defset('e_TOKEN');
 				$text .= "<li class='media'>
 				<div class='media-left'>
 					<a href='".$url."'>".$plg->getIcon(32)."</a>
@@ -928,7 +928,7 @@ class plugin_ui extends e_admin_ui
 
 
 
-			$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' /></div>
+			$text .= "<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' /></div>
 			</fieldset>
 			</form>
 			";
@@ -1036,11 +1036,11 @@ class plugin_form_ui extends e_admin_form_ui
 
 			if(!empty($var['plugin_installflag']))
 			{
-				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=".$mode."&action=uninstall&path=".$var['plugin_path']."&e-token=".e_TOKEN."\" title='" . EPL_ADLAN_1 . "'  >" . ADMIN_UNINSTALLPLUGIN_ICON . "</a>";
+				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=".$mode."&action=uninstall&path=".$var['plugin_path']."&e-token=".defset('e_TOKEN')."\" title='" . EPL_ADLAN_1 . "'  >" . ADMIN_UNINSTALLPLUGIN_ICON . "</a>";
 			}
 			else
 			{
-				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=installed&action=install&path=".$var['plugin_path']."&e-token=".e_TOKEN."\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>";
+				$text .= "<a class='btn btn-default' href=\"" . e_SELF . "?mode=installed&action=install&path=".$var['plugin_path']."&e-token=".defset('e_TOKEN')."\" title='" . EPL_ADLAN_0 . "' >" . ADMIN_INSTALLPLUGIN_ICON . "</a>";
 			}
 
 		}
@@ -1062,17 +1062,17 @@ class plugin_form_ui extends e_admin_form_ui
 
 		if($var['plugin_version'] != $var['plugin_version_file'] && $var['plugin_installflag'])
 		{
-			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&path=".$var['plugin_path']."&e-token=".e_TOKEN."' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version_file'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
+			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&path=".$var['plugin_path']."&e-token=".defset('e_TOKEN')."' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version_file'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
 		}
 
 		if($var['plugin_installflag'])
 		{
-			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=repair&path=".$var['plugin_path']."&e-token=".e_TOKEN."' title='" . LAN_REPAIR_PLUGIN_SETTINGS . "'> " . ADMIN_REPAIRPLUGIN_ICON . "</a>";
+			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=repair&path=".$var['plugin_path']."&e-token=".defset('e_TOKEN')."' title='" . LAN_REPAIR_PLUGIN_SETTINGS . "'> " . ADMIN_REPAIRPLUGIN_ICON . "</a>";
 		}
 
 		if($var['plugin_installflag'] && is_dir($_path . ".git"))
 		{
-			$text .= "<a class='plugin-manager btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=pull&path=".$var['plugin_path']."&e-token=".e_TOKEN."' title='" . LAN_SYNC_WITH_GIT_REPO . "'> " . ADMIN_GITSYNC_ICON . "</a>";
+			$text .= "<a class='plugin-manager btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=pull&path=".$var['plugin_path']."&e-token=".defset('e_TOKEN')."' title='" . LAN_SYNC_WITH_GIT_REPO . "'> " . ADMIN_GITSYNC_ICON . "</a>";
 		}
 
 
@@ -1221,7 +1221,7 @@ class plugin_online_ui extends e_admin_ui
 				$upgradable =  e107::getPlug()->getUpgradableList();
 				if(!empty($upgradable[$pluginFolder]))
 				{
-					$mes->addSuccess("<a target='_top' href='".e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$pluginFolder."&e-token=".e_TOKEN."' class='btn btn-primary'>".LAN_UPDATE."</a>");
+					$mes->addSuccess("<a target='_top' href='".e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$pluginFolder."&e-token=".defset('e_TOKEN')."' class='btn btn-primary'>".LAN_UPDATE."</a>");
 				}
 
 				echo $mes->render('default', 'success');
