@@ -313,6 +313,10 @@ class e107
 	 */
 	public static function renderLayout($LAYOUT, $opts = array())
 	{
+		if(empty($LAYOUT))
+		{
+			$LAYOUT = '';
+		}
 
 		$tp = self::getParser();
 

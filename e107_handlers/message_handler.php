@@ -334,7 +334,7 @@ class eMessage
 		if($this->isType($type)) 
 		{
 			// unique messages only
-			if(in_array($mstack, $this->_unique) && in_array($message, $SESSION[$type][$mstack])) return $this;
+			if(in_array($mstack, $this->_unique) && isset($SESSION[$type][$mstack]) && in_array($message, $SESSION[$type][$mstack])) return $this;
 			
 			$SESSION[$type][$mstack][] = $message;
 			$this->getSessionHandler()->set($this->_session_id, $SESSION);

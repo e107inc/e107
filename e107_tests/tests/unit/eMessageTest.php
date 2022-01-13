@@ -136,6 +136,7 @@
 		public function testHasMessage()
 		{
 			$this->mes->reset();
+			$this->mes->reset(false, 'default', true);
 
 			$result = $this->mes->hasMessage();
 			$this->assertFalse($result);
