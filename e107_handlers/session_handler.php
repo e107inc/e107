@@ -1131,7 +1131,7 @@ class e_session_db #implements SessionHandlerInterface
 	 * @var e_db
 	 */
 	protected $_db = null;
-	
+
 	/**
 	 * Table name
 	 * @var string
@@ -1145,7 +1145,7 @@ class e_session_db #implements SessionHandlerInterface
 	
 	public function __construct()
 	{
-		$this->_db = e107::getDb('session');		
+		$this->_db = e107::getDb('session');
 	}
 	
 	public function __destruct()
@@ -1268,10 +1268,12 @@ class e_session_db #implements SessionHandlerInterface
     		'data' => array(
 	    		'session_expires' => time() + $this->getLifetime(),
 	    		'session_data' 	  => base64_encode($session_data),
+	    		'session_user'    => defset('USERID'),
     		),
     		'_FIELD_TYPES' => array(
     			'session_id'		=> 'str',
     			'session_expires'	=> 'int',
+    			'session_user'      => 'int',
     			'session_data'		=> 'str'
     		),
     		'_DEFAULT' => 'str'
@@ -1280,7 +1282,7 @@ class e_session_db #implements SessionHandlerInterface
     	{
     		return false;
     	}
-    	
+
     	$check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
     	
     	if($check)

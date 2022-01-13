@@ -260,6 +260,10 @@ class userlogin
 			}
 		}
 
+		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
+		{
+			$sql->delete('session', "session_user = ".$user_id);
+		}
 
 
 		// User login definitely accepted here
@@ -614,7 +618,7 @@ class userlogin
 				$this->logNote('LAN_ROLL_LOG_10', $username);
 		}
 
-		e107::getMessage()->reset()->addError($message); // prevent duplicates.
+		e107::getMessage()->reset()->addError($message, 'default', true); // prevent duplicates, session=true needed for admin-area login.
 
 		if($this->testMode === true)
 		{
