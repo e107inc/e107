@@ -255,8 +255,23 @@ class userlogin
 		if(!empty($pref['session_save_method']) && ($pref['session_save_method'] === 'db') && !empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
 			// logout any existing user of this account.
-			$sql->delete('session', "session_user = ".$user_id);
-			$sql->delete('online', "online_user_id='".$user_id.".".$user_name."'");
+			$mLog = '';
+			if($sql->delete('session', "session_user = ".$user_id))
+			{
+				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
+			}
+
+			if($onlineIP = $sql->retrieve("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			{
+				$mLog .= ' ('. e107::getIpHandler()->ipDecode($onlineIP).')';
+				$sql->delete('online', "online_user_id='".$user_id.".".$user_name."'");
+			}
+
+			if(!empty($mLog))
+			{
+				$this->logNote('LAN_ROLL_LOG_07', $mLog );
+			}
+
 		}
 		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
@@ -667,6 +682,7 @@ class userlogin
 	//	$text = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS_);
 
 		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
+		$debug[] = $text;
 
 		// unset($debug[0]);
 		$debug[0] = e_REQUEST_URI;
