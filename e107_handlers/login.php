@@ -252,7 +252,13 @@ class userlogin
 		$user_email = $this->userData['user_email'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
+		if(!empty($pref['session_save_method']) && ($pref['session_save_method'] === 'db') && !empty($pref['disallowMultiLogin']) && !empty($user_id))
+		{
+			// logout any existing user of this account.
+			$sql->delete('session', "session_user = ".$user_id);
+			$sql->delete('online', "online_user_id='".$user_id.".".$user_name."'");
+		}
+		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
 			if($sql->select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
@@ -260,10 +266,7 @@ class userlogin
 			}
 		}
 
-		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			$sql->delete('session', "session_user = ".$user_id);
-		}
+
 
 
 		// User login definitely accepted here
