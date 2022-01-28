@@ -3706,6 +3706,34 @@ class e_parse
 		return $ret;
 	}
 
+	/**
+	 * Glyph Embed Method Direct from svg file.
+	 * @param string $cat far|fab|fas
+	 * @param string $id eg. fa-search
+	 * @param array $parm eg. ['fw'=>true]
+	 * @return array|false|string|string[]|void
+	 */
+	private function toGlyphEmbed($cat, $id, $parm=array())
+	{
+		$dirs = ['far'=>'regular', 'fab'=>'brands', 'fas'=>'solid'];
+		$path = e_WEB.'lib/font-awesome/5/svgs/';
+		$path .= $dirs[$cat].'/';
+		$path .= str_replace('fa-','',$id).".svg";
+
+		if($ret = file_get_contents($path))
+		{
+			$class = 'svg-inline--fa ';
+			$class .= $id;
+			$class .= ' fa-w-16';
+			$class .= !empty($parm['fw']) ? ' fa-fw' : '';
+
+			return str_replace('<svg', '<svg class="'.$class.'" role="img" ', $ret);
+		}
+
+		return false;
+
+	}
+
 
 	/**
 	 * Parse xxxxx.glyph file to bootstrap glyph format.
@@ -3793,20 +3821,9 @@ class e_parse
 				/** @experimental - subject to removal at any time. */
 				if(!empty($parm['embed']))
 				{
-					$dirs = ['far'=>'regular', 'fab'=>'brands', 'fas'=>'solid'];
-
-					$path = e_WEB.'lib/font-awesome/5/svgs/';
-					$path .= $dirs[$cat].'/';
-					$path .= str_replace('fa-','',$id).".svg";
-
-					if($ret = file_get_contents($path))
+					if($ret = $this->toGlyphEmbed($cat, $id, $parm))
 					{
-						$class = 'svg-inline--fa ';
-						$class .= $id;
-						$class .= ' fa-w-16';
-						$class .= !empty($parm['fw']) ? ' fa-fw' : '';
-
-						return str_replace('<svg', '<svg class="'.$class.'" role="img" ', $ret);
+						return $ret;
 					}
 				}
 
@@ -3830,11 +3847,11 @@ class e_parse
 						$prefix = '';
 						$id = $shims[$code];
 					}
-					elseif(in_array($code, $fab))
+					elseif(isset($fab[$code]))
 					{
 						$prefix = 'fab ';
 					}
-					elseif(in_array($code, $fas))
+					elseif(isset($fas[$code]))
 					{
 						$prefix = 'fas ';
 						$id = 'fa-'.$code;
@@ -3852,6 +3869,19 @@ class e_parse
 					{
 						$prefix = ($this->bootstrap === 3) ? 'glyphicon glyphicon-' : 'fa fa-';
 					}
+
+					/** @experimental - subject to removal at any time. */
+					if(!empty($parm['embed']))
+					{
+						$cat = trim($prefix);
+
+						if($ret = $this->toGlyphEmbed($cat, $id, $parm))
+						{
+							return $ret;
+						}
+					}
+
+					$cat = trim($prefix);
 
 				}
 				elseif($this->fontawesome === 4)

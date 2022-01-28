@@ -36,7 +36,9 @@ class search_shortcodes extends e_shortcode
 
 		if(isset($parm['label']))
 		{
-			$label = (strpos($parm['label'], '.glyph')!==false) ? e107::getParser()->toGlyph($parm['label'],'') : LAN_SEARCH;
+			$opts = $parm;
+			unset($opts['label'],$opts['class']);
+			$label = (strpos($parm['label'], '.glyph')!==false) ? e107::getParser()->toGlyph($parm['label'], $opts) : LAN_SEARCH;
 			unset($parm['label']);
 		}
 
