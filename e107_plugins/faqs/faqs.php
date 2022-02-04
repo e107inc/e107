@@ -419,7 +419,7 @@ class faq
 			$FAQ_LISTALL['end'] = str_replace($tsrch,$trepl, $FAQ_LISTALL['end']);
 		}
 
-
+		$schemaItems = [];
 		foreach ($data as $rw)
 		{
 			$rw['faq_sef'] = eHelper::title2sef($tp->toText($rw['faq_question']),'dashl');
@@ -428,7 +428,7 @@ class faq
 
 			if(!empty($schemaTemplate['item']))
 			{
-				$schema .= $tp->parseSchemaTemplate($schemaTemplate['item'],false,$sc);
+				$schemaItems[] = $tp->parseSchemaTemplate($schemaTemplate['item'],false,$sc);
 			}
 
 			if($sc->item == $rw['faq_id'])
@@ -452,6 +452,12 @@ class faq
 			$prevcat = $rw['faq_info_order'];
 			$sc->counter++;
 		}
+
+		if(!empty($schemaItems))
+		{
+			$schema .= implode(",", $schemaItems);
+		}
+
 		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
 
 		if(!empty($schemaTemplate['end']))

@@ -837,6 +837,7 @@ class e_parse
 		$parse = e107::getScParser();
 		$parse->setMode('schema');
 		$text = e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
+		$text = str_replace('<!-- >', '', $text); // cleanup
 		$parse->setMode('default');
 		return $text;
 
