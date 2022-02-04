@@ -107,6 +107,7 @@ class e_parse_shortcode
 	protected $editableCodes        = array(); // Array of editable shortcode data.
 	protected $editableActive       = false;
 	protected $nowrap               = false;
+	private   $mode                 = 'default';
 
 	function __construct()
 	{
@@ -1446,11 +1447,19 @@ class e_parse_shortcode
 			
 		}
 
-
-
+		if($this->mode === 'schema' && !empty($ret))
+		{
+			$ret = e107::getParser()->stripAttributes($ret, ['href']);
+			$ret = str_replace('"','',$ret);
+		}
 
 		return isset($ret) ? $ret: '';
 
+	}
+
+	public function setMode($mode)
+	{
+		$this->mode = (string) $mode;
 	}
 
 

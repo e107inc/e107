@@ -274,8 +274,7 @@ class faq
 		$this->sc = e107::getScBatch('faqs',TRUE);
 		
 		$text = $tp->parseTemplate($template['start'], true, $this->sc); // header
-		
-		// var_dump($sc);
+
 		
 		$text .= "<div id='faqs-container'>";
 		
@@ -377,11 +376,19 @@ class faq
 		
 		$FAQ_LISTALL = e107::getTemplate('faqs', true, 'all');
 
+		$schemaTemplate = e107::getTemplate('faqs', true, 'schema');
+
+
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
 		$sc->tag = htmlspecialchars(varset($tag), ENT_QUOTES, 'utf-8');
 		$sc->category = varset($category);
+
+		if(!empty($schemaTemplate['start']))
+		{
+			$schema = $tp->parseSchemaTemplate($schemaTemplate['start'],false,$sc);
+		}
 
 		 if(!empty($_GET['id'])) // expand one specific FAQ.
 		{
@@ -419,6 +426,11 @@ class faq
 
 			$sc->setVars($rw);
 
+			if(!empty($schemaTemplate['item']))
+			{
+				$schema .= $tp->parseSchemaTemplate($schemaTemplate['item'],false,$sc);
+			}
+
 			if($sc->item == $rw['faq_id'])
 			{
 				$this->pageTitle = $rw['faq_question'];
@@ -441,6 +453,17 @@ class faq
 			$sc->counter++;
 		}
 		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
+
+		if(!empty($schemaTemplate['end']))
+		{
+			$schema .= $tp->parseSchemaTemplate($schemaTemplate['end'],false,$sc);
+		}
+
+		if(!empty($schema))
+		{
+
+			e107::schema($schema);
+		}
 //		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
 
 		return $text;

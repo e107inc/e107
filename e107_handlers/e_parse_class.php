@@ -824,6 +824,24 @@ class e_parse
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
+	/**
+	 * @experimental
+	 * @param string $text
+	 * @param bool $parseSCFiles
+	 * @param object|array $extraCodes
+	 * @param object $eVars
+	 * @return string
+	 */
+	public function parseSchemaTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
+	{
+		$parse = e107::getScParser();
+		$parse->setMode('schema');
+		$text = e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
+		$parse->setMode('default');
+		return $text;
+
+	}
+
 
 	/**
 	 * Simple parser
@@ -1405,6 +1423,41 @@ class e_parse
 
 		return strip_tags($html, $parm);
 	}
+
+	public function stripAttributes($s, $allowedattr = array()) {
+
+		if(preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", $s, $res, PREG_SET_ORDER))
+		{
+			foreach($res as $r)
+			{
+				$tag = $r[0];
+				$attrs = array();
+				preg_match_all("/\\s.*=(['\"]).*\\1/msiU", " " . $r[1], $split, PREG_SET_ORDER);
+				foreach($split as $spl)
+				{
+					$attrs[] = $spl[0];
+				}
+				$newattrs = array();
+				foreach($attrs as $a)
+				{
+					$tmp = explode("=", $a);
+					if(trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr))))
+					{
+
+					}
+					else
+					{
+						$newattrs[] = $a;
+					}
+				}
+				$attrs = implode(" ", $newattrs);
+				$rpl = str_replace($r[1], $attrs, $tag);
+				$s = str_replace($tag, $rpl, $s);
+			}
+		}
+
+		return $s;
+}
 
 
 	/**
