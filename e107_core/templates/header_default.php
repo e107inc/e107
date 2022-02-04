@@ -208,6 +208,13 @@ if ($e_headers && is_array($e_headers))
 }
 unset($e_headers);
 
+/** @experimental - subject to change at any time */
+if($schema = e107::schema())
+{
+	echo '<script type="application/ld+json">'.$schema."</script>\n";
+}
+
+unset($schema);
 
 echo e107::getSingleton('eResponse')->renderMeta()."\n";  // render all the e107::meta() entries.
 

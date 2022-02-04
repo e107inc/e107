@@ -3327,7 +3327,7 @@ class e107
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 *
 	 * @param string $plug_name if null getCoreTemplate method will be called
-	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
+	 * @param string $id - file prefix, e.g. calendar for calendar_template.php, or 'true' or 'null' for same as plugin name.
 	 * @param string|null $key $YOURTEMPLATE_TEMPLATE[$key]
 	 * @param boolean $override see {@link getThemeInfo()}
 	 * @param boolean $merge merge theme with plugin templates, default is false
@@ -4364,6 +4364,23 @@ class e107
 	public static function redirect($url = '', $http_response_code = 301)
 	{
 		self::getRedirect()->go($url, true, $http_response_code);
+	}
+
+	/**
+	 * Getter/Setter for schema. eg. Google structured data etc.
+	 * @param string $json
+	 * @return string|bool
+	 */
+	public static function schema($json = null)
+	{
+		if(empty($json))
+		{
+			return self::getRegistry('core/e107/schema', false);
+		}
+
+
+		return self::setRegistry('core/e107/schema',$json);
+
 	}
 
 
