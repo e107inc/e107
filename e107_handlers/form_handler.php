@@ -79,6 +79,11 @@ class e_form
 
 	protected $_required_string;
 
+	/**
+	 * @var e_parse
+	 */
+	private $tp;
+
 	public function __construct($enable_tabindex = false)
 	{
 		e107::loadAdminIcons(); // required below.
@@ -103,6 +108,8 @@ class e_form
 		}
 
 		$this->_helptip = (int) e107::getPref('admin_helptip', 1);
+
+		$this->tp = e107::getParser();
 	}
 
 
@@ -1011,7 +1018,7 @@ class e_form
 		// XXX - $name ?!
 	//	$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters = 'mode=preview&default='.$default.'&id='.$id;
-		return e107::getParser()->parseTemplate('{ICONPICKER=' .$sc_parameters. '}');
+		return $this->tp->parseTemplate('{ICONPICKER=' .$sc_parameters. '}');
 	}
 
 	/**
@@ -1175,8 +1182,7 @@ class e_form
 	 */
 	public function avatarpicker($name, $curVal='', $options=array())
 	{
-		
-		$tp 		= e107::getParser();
+		$tp 		= $this->tp;
 		$pref 		= e107::getPref();
 		
 		$attr 		= 'aw=' .$pref['im_width']. '&ah=' .$pref['im_height'];
@@ -1254,7 +1260,7 @@ class e_form
 			{
 				$EAVATAR = e_AVATAR_DEFAULT;
 				$text .= "<div class='alert alert-danger'>";
-				$text .= e107::getParser()->lanVars(e107::getParser()->toHTML(LAN_EFORM_006, true), array('x'=>$EAVATAR));
+				$text .= $this->tp->lanVars($this->tp->toHTML(LAN_EFORM_006, true), array('x'=>$EAVATAR));
 				$text .= '</div>';
 			}
 
@@ -1310,12 +1316,6 @@ class e_form
 	 */
 	public function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
-
-	//	$tp = e107::getParser();
-
-	//	$name_id = $this->name2id($name);
-	//	$meta_id = $name_id."-meta";
-		
 		if(is_string($sc_parameters))
 		{
 			if(strpos($sc_parameters, '=') === false)
@@ -1373,9 +1373,7 @@ class e_form
 	 */
 	public function mediapicker($name, $default, $parms = '')
 	{
-
-
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$name_id = $this->name2id($name);
 		$meta_id = $name_id. '-meta';
 
@@ -1601,7 +1599,7 @@ class e_form
 	 */
 	public function filepicker($name, $default, $label = '', $sc_parameters = null)
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$name_id = $this->name2id($name);
 		unset($label);
 				
@@ -2693,7 +2691,7 @@ class e_form
 			{
 				$key = $label;
 				//print_a($label);
-				$c = in_array($label, e107::getParser()->toDB($checked)) ? true : false;
+				$c = in_array($label, $this->tp->toDB($checked));
 			}
 			else
 			{
@@ -3297,7 +3295,7 @@ class e_form
 	 */
 	public function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		
 		$text = '<span class="input-append input-group e-search">
     		'.$this->text($name, $searchVal,20,'class=search-query&placeholder='.LAN_SEARCH.'&hellip;').'
@@ -3623,7 +3621,7 @@ var_dump($select_options);*/
 
 	public function submit_image($name, $value, $image, $title='', $options = array())
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 
 		if(!empty($options['icon']))
 		{
@@ -3758,7 +3756,7 @@ var_dump($select_options);*/
 		else
 		{
 			$fallbackIcon = '<svg class="svg-inline--fa fa-home fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!-- Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"></path></svg>';
-			$homeIcon = ($this->_fontawesome) ? e107::getParser()->toGlyph('fa-home.glyph') : $fallbackIcon;
+			$homeIcon = ($this->_fontawesome) ? $this->tp->toGlyph('fa-home.glyph') : $fallbackIcon;
 		}
 
 		
@@ -3812,7 +3810,7 @@ var_dump($select_options);*/
 					'target' => '_blank',
 					'title'  => LAN_EDIT,
 					'href'   => $url,
-				]) . ">" . e107::getParser()->toGlyph('fa-edit') . '</a></span>';
+				]) . ">" . $this->tp->toGlyph('fa-edit') . '</a></span>';
 		}
 
 		return '';
@@ -4037,22 +4035,7 @@ var_dump($select_options);*/
 	 */
 	private function attributes($attributes)
 	{
-		$stringifiedAttributes = [];
-
-		foreach ($attributes as $key => $value)
-		{
-
-			if ($value === true && (strpos($key,'data-') !== 0))
-			{
-				 $value = $key;
-			}
-			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key,'data-') === 0)
-			{
-				$stringifiedAttributes[] = $key . "='" . htmlspecialchars((string) $value, ENT_QUOTES) . "'";
-			}
-		}
-
-		return count($stringifiedAttributes) > 0 ? " ".implode(" ", $stringifiedAttributes) : "";
+		return $this->tp->toAttributes($attributes, true);
 	}
 
 	public function get_attributes($options, $name = '', $value = '')
@@ -4454,7 +4437,6 @@ var_dump($select_options);*/
 
 	public function thead($fieldarray, $columnPref = array(), $querypattern = '', $requeststr = '')
 	{
-		$tp = e107::getParser();
         $text = '';
 
         $querypattern = strip_tags($querypattern);
@@ -4631,7 +4613,7 @@ var_dump($select_options);*/
 
 		
 			
-		$tp = e107::getParser();
+		$tp = $this->tp;
 			
 		$types = explode(',',$parm['types']);
 		$list = array();
@@ -4857,7 +4839,7 @@ var_dump($select_options);*/
 			}
 		}
 
-		$source = e107::getParser()->toJSON($jsonArray, true);
+		$source = $this->tp->toJSON($jsonArray, true);
 		
 		$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode']));
 
@@ -4946,7 +4928,7 @@ var_dump($select_options);*/
 		}
 		elseif (!empty($model)) // old way.
 		{
-			$tp = e107::getParser();
+			$tp = $this->tp;
 
 			$data = $model->getData();
 
@@ -4994,7 +4976,7 @@ var_dump($select_options);*/
 
 	private function renderOptions($parms, $id, $attributes)
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$cls = false;
 
 		$editIconDefault = deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'));
@@ -5134,7 +5116,7 @@ var_dump($select_options);*/
 		}
 
 		// @see custom fields in cpage which accept json params.
-		if(!empty($attributes['writeParms']) && $tmpOpt = e107::getParser()->isJSON($attributes['writeParms']))
+		if(!empty($attributes['writeParms']) && $tmpOpt = $this->tp->isJSON($attributes['writeParms']))
 		{
 			$attributes['writeParms'] = $tmpOpt;
 			unset($tmpOpt);
@@ -5158,7 +5140,7 @@ var_dump($select_options);*/
 
 		$this->renderValueTrigger($field, $value, $parms, $id);
 
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		switch($field) // special fields
 		{
 			case 'options':
@@ -5602,7 +5584,7 @@ var_dump($select_options);*/
 				}
 				else
 				{
-					$url = e107::getParser()->replaceConstants($value, 'full');
+					$url = $this->tp->replaceConstants($value, 'full');
 				}
 				$name = basename($value);
 				$value = '<a href="'.$url.'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
@@ -5640,7 +5622,7 @@ var_dump($select_options);*/
 
 					$vparm = array('thumb'=>'tag','w'=> vartrue($parms['thumb_aw'],'80'));
 					
-					if($video = e107::getParser()->toVideo($value,$vparm))
+					if($video = $tp->toVideo($value,$vparm))
 					{
 						return $video;
 					}
@@ -5653,7 +5635,7 @@ var_dump($select_options);*/
 						$icon = '{e_IMAGE}filemanager/zip_32.png';
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$icon, 'abs');
 					//	return $value;
-						return e107::getParser()->toGlyph('fa-file','size=2x');
+						return $tp->toGlyph('fa-file','size=2x');
 				//		return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
 
@@ -6275,7 +6257,7 @@ var_dump($select_options);*/
 			$value = html_entity_decode($value, ENT_QUOTES);
 		}
 
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$ret = '';
 
 		$parms = vartrue($attributes['writeParms'], array());
@@ -6498,7 +6480,7 @@ var_dump($select_options);*/
 
 				if(!empty($parms['maxlength']) && empty($parms['post']))
 				{
-					$charMsg = e107::getParser()->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'), "<span>" . $parms['maxlength'] . "</span>");
+					$charMsg = $tp->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'), "<span>" . $parms['maxlength'] . "</span>");
 					$parms['post'] = "<small" . $this->attributes([
 							'id'    => $this->name2id($key) . "-char-count",
 							'class' => 'text-muted',
@@ -6928,7 +6910,7 @@ var_dump($select_options);*/
 			case 'upload': //TODO - from method
 				// TODO uploadfile SC is now processing uploads as well (add it to admin UI), write/readParms have to be added (see uploadfile.php parms)
 				$disbut = varset($parms['disable_button'], '0');
-				$ret =  $tp->parseTemplate('{UPLOADFILE=' .(vartrue($parms['path']) ? e107::getParser()->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles&disable_button={$disbut}}");
+				$ret =  $tp->parseTemplate('{UPLOADFILE=' .(vartrue($parms['path']) ? $tp->replaceConstants($parms['path']) : e_UPLOAD)."|nowarn&trigger=etrigger_uploadfiles&disable_button={$disbut}}");
 			break;
 
 			case 'hidden':
@@ -7014,7 +6996,7 @@ var_dump($select_options);*/
 		foreach($parms['optArray'] as $key=>$val)
 		{
 
-			$thumbnail = e107::getParser()->toImage($val['thumbnail'], $parms);
+			$thumbnail = $this->tp->toImage($val['thumbnail'], $parms);
 			$active = ($key === $value) ? ' active' : '';
 
 			$text .= "<div class='e-image-radio " . $class . "' >
@@ -7055,7 +7037,7 @@ var_dump($select_options);*/
 		foreach($parms['optArray'] as $key=>$val)
 		{
 
-			$thumbnail    = e107::getParser()->toImage($val,$parms);
+			$thumbnail    = $this->tp->toImage($val,$parms);
 			$text .= "
 									<div class='col-md-2 e-image-radio' >
 										<label" . $this->attributes([
@@ -7122,7 +7104,7 @@ var_dump($select_options);*/
 	 */
 	public function renderListForm($form_options, $tree_models, $nocontainer = false)
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$text = '';
 		$formPre = '';
 		$formPost = '';
@@ -7294,7 +7276,7 @@ var_dump($select_options);*/
 	 */
 	public function renderGridForm($form_options, $tree_models, $nocontainer = false)
 	{
-		$tp = e107::getParser();
+		$tp = $this->tp;
 		$text = '';
 
 
@@ -7516,7 +7498,7 @@ var_dump($select_options);*/
 			}
 
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
-			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
+			$url = (isset($form['url']) ? $this->tp->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
 			$curTab = (string) varset($_GET['tab'], '0');
 
 			$text .= "
@@ -7902,7 +7884,7 @@ var_dump($select_options);*/
 		foreach ($forms as $fid => $form)
 		{
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
-			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
+			$url = (isset($form['url']) ? $this->tp->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
 
 			$text .= '
 				' .vartrue($form['form_pre'])."
