@@ -91,8 +91,8 @@ class gsitemap_ui extends e_admin_ui
 			'gsitemap_table'          => array (  'title' => 'Table', 'tab'=>1, 'type' => 'text',  'data' => 'safestr',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'batch' => false,),
 			'gsitemap_table_id'       => array (  'title' => LAN_ID,  'tab'=>1,'type' => 'number',  'data' => 'int',  'width' => '5%',  'readonly' => false,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_lastmod'        => array (  'title' => GSLAN_27, 'tab'=>1, 'type' => 'datestamp', 'readonly'=>2, 'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,  'batch' => true,),
-			'gsitemap_freq'           => array (  'title' => GSLAN_28,  'type' => 'dropdown',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,  'batch' => false,),
-			'gsitemap_priority'       => array (  'title' => 'Priority',  'type' => 'method',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,  'batch' => false,),
+			'gsitemap_freq'           => array (  'title' => GSLAN_28,  'type' => 'dropdown',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => true,  'batch' => true,),
+			'gsitemap_priority'       => array (  'title' => 'Priority',  'type' => 'method',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => true,  'batch' => true,),
 			'gsitemap_cat'            => array (  'title' => LAN_CATEGORY, 'tab'=>1, 'type' => 'text',  'data' => 'safestr',  'width' => 'auto',  'batch' => true,  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_order'          => array (  'title' => LAN_ORDER,  'type' => 'number',  'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_img'            => array (  'title' => LAN_IMAGE,  'type' => 'image',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' => 'thumb=80x80',  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
@@ -594,25 +594,25 @@ class gsitemap_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write': // Edit Page
+			case 'batch':
+			case 'filter':
+				$array = [];
 				$text = "<select class='tbox' name='gsitemap_priority' >\n";
 
 				for ($i=0.1; $i<1.0; $i=$i+0.1)
 				{
-					$sel = ($curVal == number_format($i,1))? "selected='selected'" : "";
-					$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
+					$num = (string) number_format($i,1);
+					$sel = ($curVal == $num) ? "selected='selected'" : "";
+					$text .= "<option value='".$num."' $sel>".$num."</option>\n";
+					$array[$num] = $num;
 				}
 
-		$text.="</select>";
-				return $text;
+				$text.="</select>";
+
+				return ($mode === 'write') ? $text : $array;
 			break;
 			
-			case 'filter':
-				return array('customfilter_1' => 'Custom Filter 1', 'customfilter_2' => 'Custom Filter 2');
-			break;
-			
-			case 'batch':
-				return array('custombatch_1' => 'Custom Batch 1', 'custombatch_2' => 'Custom Batch 2');
-			break;
+
 		}
 		
 		return null;
