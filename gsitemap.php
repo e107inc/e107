@@ -49,7 +49,7 @@ class gsitemap_xml
 		}
 		else // From Gsitemap Database Table.
 		{
-			$this->renderXML([], 'gsitemap_');
+			$this->renderXML();
 		}
 
 
@@ -68,7 +68,7 @@ class gsitemap_xml
 		if(empty($items))
 		{
 			$smArray = e107::getDb()->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
-			$xml .= $this->renderXMLItems($smArray);
+			$xml .= $this->renderXMLItems($smArray,  'gsitemap_');
 		}
 		else
 		{

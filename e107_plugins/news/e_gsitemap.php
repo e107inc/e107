@@ -108,8 +108,8 @@ class news_gsitemap
 			$ret[] = [
 				'url'       => $this->url('news', $row),
 				'lastmod'   => (int) $row['news_datestamp'],
-				'freq'      => 'always',
-				'priority'  => 0.7
+				'freq'      => 'hourly',
+				'priority'  => 0.5
 			];
 		}
 
