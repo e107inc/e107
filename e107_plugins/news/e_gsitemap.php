@@ -29,7 +29,8 @@ class news_gsitemap
 		// Viewable from  my-website.com/news-latest-sitemap.xml  ie. plugin-folder + function + 'sitemap.xml'
 		$config[] = array(
 			'name'			=> "Latest News Posts",
-			'function'		=> "latest",
+			'function'		=> "latestPosts",
+			'sef'           => 'latest', // used in URL. eg. news-latest-sitemap.xml
 		);
 
 		return $config;
@@ -96,7 +97,7 @@ class news_gsitemap
 
 
 	/* Custom Function for dynamic sitemap of news posts */
-	function latest()
+	public function latestPosts()
 	{
 		$data = $this->getNewsPosts();
 

@@ -48,7 +48,7 @@ class gsitemap_url // plugin-folder + '_url'
 		{
 			foreach($item as $data )
 			{
-				$key = $plug.'-'.$data['function'];  // eg. news-latest
+				$key = $plug.'-'.$data['sef'];  // eg. news-latest
 				$config[$key] = array(
 					'alias'         => $key,
 					'regex'			=> '^'.$key.'-sitemap\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
