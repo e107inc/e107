@@ -42,6 +42,23 @@ class gsitemap_url // plugin-folder + '_url'
 
 		);
 
+		$addons = e107::getAddonConfig('e_gsitemap', 'gsitemap');
+
+		foreach($addons as $plug => $item)
+		{
+			foreach($item as $data )
+			{
+				$key = $plug.'-'.$data['function'];  // eg. news-latest
+				$config[$key] = array(
+					'alias'         => $key,
+					'regex'			=> '^'.$key.'-sitemap\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
+					'sef'			=> $key.'-sitemap.xml', 							// used by e107::url(); to create a url from the db table.
+					'redirect'		=> '{e_BASE}gsitemap.php?plug='.$plug.'&func='.$data['function'], 		// file-path of what to load when the regex returns true.
+
+				);
+			}
+
+		}
 
 
 		return $config;

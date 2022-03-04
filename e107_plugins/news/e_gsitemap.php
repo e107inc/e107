@@ -20,6 +20,40 @@ e107::coreLan('news');
 
 class news_gsitemap
 {
+
+	// Dynamically Generated Sitemap;
+	function config()
+	{
+		$config = array();
+
+		// Viewable from  my-website.com/news-latest-sitemap.xml  ie. plugin-folder + function + 'sitemap.xml'
+		$config[] = array(
+			'name'			=> "Latest News Posts",
+			'function'		=> "latest",
+		);
+
+		return $config;
+
+	}
+
+	private function getNewsPosts()
+	{
+		/* public, guests */
+		$userclass_list = "0,252";
+		$_t = time();		/* public, quests */
+
+        $query = "SELECT n.*, nc.category_name, nc.category_sef FROM #news AS n 
+                LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
+				WHERE n.news_class IN (". $userclass_list.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".time().") ORDER BY n.news_datestamp ASC ";
+
+	//	$data = $sql->retrieve("news", "*", "news_class IN (" . $userclass_list . ") AND news_start < " . $_t . "   ORDER BY news_datestamp ASC", true);
+
+		return e107::getDb()->retrieve($query,true);
+
+	}
+
+
+
 	function import()
 	{
 		$import = array();
@@ -41,15 +75,8 @@ class news_gsitemap
 			);
 		}
 
+		$data = $this->getNewsPosts();
 
-
-        $query = "SELECT n.*, nc.category_name, nc.category_sef FROM #news AS n 
-                LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
-				WHERE n.news_class IN (". $userclass_list.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".time().") ORDER BY n.news_datestamp ASC ";
-
-	//	$data = $sql->retrieve("news", "*", "news_class IN (" . $userclass_list . ") AND news_start < " . $_t . "   ORDER BY news_datestamp ASC", true);
-
-		$data = $sql->retrieve($query,true);
 
 		foreach($data as $row)
 		{
@@ -65,6 +92,31 @@ class news_gsitemap
 
 		return $import;
 	}
+
+
+
+	/* Custom Function for dynamic sitemap of news posts */
+	function latest()
+	{
+		$data = $this->getNewsPosts();
+
+		$ret = [];
+
+		foreach($data as $row)
+		{
+			$ret[] = [
+				'url'       => $this->url('news', $row),
+				'lastmod'   => (int) $row['news_datestamp'],
+				'freq'      => 'always',
+				'priority'  => 0.7
+			];
+		}
+
+		return $ret;
+
+	}
+
+
 
 	/**
 	 * Used above and by gsitemap/e_event.php to update the URL when changed in news, pages etc.
