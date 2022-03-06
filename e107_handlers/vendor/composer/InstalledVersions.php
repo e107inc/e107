@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '577bcb89e150c75f18cd0d18df82c0a4bc47a24f',
+    'reference' => 'bdbc7e0daed1670296220ee5354266a41a0062cb',
     'name' => 'e107inc/e107',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '577bcb89e150c75f18cd0d18df82c0a4bc47a24f',
+      'reference' => 'bdbc7e0daed1670296220ee5354266a41a0062cb',
     ),
     'guzzlehttp/psr7' => 
     array (
@@ -72,12 +72,12 @@ private static $installed = array (
     ),
     'intervention/image' => 
     array (
-      'pretty_version' => '2.7.0',
-      'version' => '2.7.0.0',
+      'pretty_version' => '2.7.1',
+      'version' => '2.7.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9a8cc99d30415ec0b3f7649e1647d03a55698545',
+      'reference' => '744ebba495319501b873a4e48787759c72e3fb8c',
     ),
     'matthiasmullie/minify' => 
     array (
@@ -99,12 +99,12 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.3',
-      'version' => '6.5.3.0',
+      'pretty_version' => 'v6.6.0',
+      'version' => '6.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
+      'reference' => 'e43bac82edc26ca04b36143a48bde1c051cfd5b1',
     ),
     'psr/http-message' => 
     array (
