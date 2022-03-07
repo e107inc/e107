@@ -586,3 +586,6 @@ define("LAN_X_CHARS_REMAINING", "[x] chars. remaining");
 define("LAN_UI_BATCH_NOW", "Current Date/Time");
 define("LAN_RELATIONSHIP", "Relationship");
 define("LAN_RELATIONSHIP_HELP", "Optional 'rel' attribute. Comma separated.");
+
+define("LAN_NO_SCRIPT_ACCESS", "You don't have permission to use [script] tags.");
+define("LAN_NO_SCRIPT_ACCESS_ASK",  "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]");
