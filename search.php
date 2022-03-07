@@ -161,9 +161,9 @@ class search_front extends e_shortcode
 		$tp = e107::getParser();
 		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
 
-		$text = "<div class='input-group'>
+		$text = "<div class='input-group input-group-btn'>
 		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
-		<div class='input-group-btn'>
+		<div class='btn-group'>
 		<button class='btn btn-primary' type='submit' name='s' value='1' data-loading-icon='fa-spinner' >".$tp->toGlyph('fa-search',false)."</button>";
 
 		if(empty($parm['mode']))
@@ -175,8 +175,8 @@ class search_front extends e_shortcode
 				$text .= "<span class='caret'></span></button>";
 			}
 
-			$text .= '<ul class="dropdown-menu pull-right">
-	          <li><a class="e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
+			$text .= '<ul class="dropdown-menu dropdown-menu-end pull-right">
+	          <li><a class="dropdown-item e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
 	        </ul>';
 		}
 		
@@ -264,8 +264,8 @@ class search_front extends e_shortcode
 	{
 		// standard search config
 		$dropdown = '';
-		$PRE_CHECKBOXES = '';
-		$POST_CHECKBOXES = '';
+		$PRE_CHECKBOXES = '<label class="checkbox form-check">';
+		$POST_CHECKBOXES = '</label>';
 
 		$search_count = count($this->search_info);
 		$google_id = $search_count + 1;
@@ -301,7 +301,7 @@ class search_front extends e_shortcode
 			} 
 			else if ($this->search_prefs['selector'] == 1) 
 			{
-				$checkboxes .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
+				$checkboxes .= $PRE_CHECKBOXES."<input ".$google_js." class='form-check-input' type='checkbox' name='t[".$key."]' ".$sel." />".$value['qtype'].$POST_CHECKBOXES;
 			}
 			else 
 			{
@@ -318,7 +318,7 @@ class search_front extends e_shortcode
 			else if 
 			($this->search_prefs['selector'] == 1)  //FIXME PRE_CHECKBOXES and POST_CHECKBOXES
 			{
-				$checkboxes .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
+				$checkboxes .= $PRE_CHECKBOXES."<input id='google' class='form-check-input' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
 			} 
 			else 
 			{
@@ -455,13 +455,15 @@ class search_front extends e_shortcode
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
 						$vars['SEARCH_ADV_B'] = "
 						
-						<div class='form-inline'>
-						<select id='on' name='on' class='tbox form-control '>
-						<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
-						<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
-						</select>&nbsp;
-					
-						<select id='time' name='time' class='tbox form-control '>";
+						<div class='form-inline row row-cols-lg-auto g-3'>
+						<div class='col col-sm-3'>
+							<select id='on' name='on' class='tbox form-control col'>
+							<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
+							<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
+							</select>&nbsp;
+						</div>
+						<div class='col'>
+							<select id='time' name='time' class='tbox form-control'>";
 						
 						$time = array(LAN_SEARCH_36 => 'any', LAN_SEARCH_37 => 86400, LAN_SEARCH_38 => 172800, LAN_SEARCH_39 => 259200, LAN_SEARCH_40 => 604800, LAN_SEARCH_41 => 1209600, LAN_SEARCH_42 => 1814400, LAN_SEARCH_43 => 2628000, LAN_SEARCH_44 => 5256000, LAN_SEARCH_45 => 7884000, LAN_SEARCH_46 => 15768000, LAN_SEARCH_47 => 31536000, LAN_SEARCH_48 => 63072000, LAN_SEARCH_49 => 94608000);
 						
@@ -471,6 +473,7 @@ class search_front extends e_shortcode
 						}
 						
 						$vars['SEARCH_ADV_B'] .= "</select>
+							</div>
 						</div>";
 					} 
 					else if ($adv_value['type'] == 'author') 
