@@ -5172,6 +5172,16 @@ class e_parse
 		{
 			$this->grantScriptAccess();
 		}
+		elseif(ADMIN && (strpos($html, '</script>') !== false))
+		{
+			$lan1 = defset('LAN_NO_SCRIPT_ACCESS', "You don't have permission to use [script] tags.");
+			$lan2 = defset('', "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]");
+			$srch = ['[', ']'];
+			$repl = ['<b>&lt;', '&gt;</b>'];
+
+			e107::getMessage()->addWarning(str_replace($srch,$repl,$lan1));
+			e107::getMessage()->addWarning(e107::getParser()->toHTML($lan2,true));
+		}
 
 		// Set it up for processing.
 
