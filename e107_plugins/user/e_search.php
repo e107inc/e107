@@ -65,7 +65,7 @@ class user_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$qry = "";
+		$qry = "user_ban = 0 AND ";
 		
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 
 		{
