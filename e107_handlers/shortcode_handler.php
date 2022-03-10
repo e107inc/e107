@@ -849,7 +849,7 @@ class e_parse_shortcode
 				}
 			}
 
-			if(method_exists($this->addedCodes, 'editable'))
+			if($this->editableActive && method_exists($this->addedCodes, 'editable'))
 			{
 				$this->editableCodes = $this->addedCodes->editable();
 
