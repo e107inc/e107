@@ -177,11 +177,11 @@ if (isset($_POST['emailsubmit']))
 
 		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
 		{
-			$text = "<div style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
+			$text = "<div class='alert alert-success alert-block' style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
 		else
 		{
-			$text = "<div style='text-align:center'>".LAN_EMAIL_9."</div>";
+			$text = "<div class='alert alert-dangere alert-block' style='text-align:center'>".LAN_EMAIL_9."</div>";
 		}
 		$ns->tablerender(LAN_EMAIL_11, $text);
 	}
