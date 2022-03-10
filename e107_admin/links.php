@@ -61,6 +61,7 @@ class links_admin_ui extends e_admin_ui
 	protected $perPage 		= 0;
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
+	protected $batchExport  = true;
 	protected $listOrder = 'link_category,link_order ASC';
 	protected $sortField	= 'link_order';
     
@@ -946,6 +947,14 @@ class links_admin_form_ui extends e_admin_form_ui
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
+		$coreBatchOptions = array(
+			'delete'        => $controller->getBatchDelete(),
+			'copy'          => $controller->getBatchCopy(),
+			'url'           => $controller->getBatchLink(),
+			'featurebox'    => $controller->getBatchFeaturebox(),
+			'export'        => $controller->getBatchExport(),
+		);
+
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
@@ -959,7 +968,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch(array('delete'=>$controller->getBatchDelete(),'copy'=>$controller->getBatchCopy())) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($coreBatchOptions, $controller->getBatchOptions()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
