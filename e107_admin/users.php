@@ -313,7 +313,7 @@ class users_admin_ui extends e_admin_ui
 		'user_admin' 		=> array('title' => LAN_USER_22,	'tab'=>0, 'type' => 'method', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_perms' 		=> array('title' => LAN_USER_23,	'tab'=>0, 'type' => 'method', 'data'=>'str',	'width' => 'auto'),
 		'user_pwchange'		=> array('title' => LAN_USER_24,	'tab'=>0, 'noedit'=>true, 'type'=>'datestamp' , 'width' => 'auto'),
-					
+		'user_signature'    => array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'))
 	);
 	
 	protected $fieldpref = array('user_ban','user_name','user_loginname','user_login','user_email','user_class','user_admin');
@@ -411,7 +411,7 @@ class users_admin_ui extends e_admin_ui
 		}
 
 
-		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
+	//	$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
 //		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		$this->fields['options'] = array('title'=> LAN_OPTIONS."&nbsp;",	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'right last', 'class' => 'left');
 
