@@ -32,7 +32,7 @@ $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';
 // Main Link which has a sub menu.
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = "
 	<li class='nav-item dropdown'>
-		<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' data-bs-toggle='dropdown' id='navbarDropdownMenuLink-{NAV_LINK_ID}' data-target='#' aria-haspopup='true' aria-expanded='false' href='#' title='{NAV_LINK_DESCRIPTION}'>
+		<a class='nav-link dropdown-toggle' role='button' data-toggle='dropdown' data-bs-toggle='dropdown' id='navbarDropdownMenuLink-{NAV_LINK_ID}' data-target='#' aria-haspopup='true' aria-expanded='false' href='#' title='{NAV_LINK_DESCRIPTION}'>
 		 {NAV_LINK_ICON}{NAV_LINK_NAME}
 		</a>
 		{NAV_LINK_SUB}
@@ -42,7 +42,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = "
 // Main Link which has a sub menu - active state.
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
 	<li class="nav-item dropdown active {NAV_LINK_IDENTIFIER}">
-		<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-toggle="dropdown" id="navbarDropdownMenuLink-{NAV_LINK_ID}" aria-haspopup="true" aria-expanded="true" data-target="#" href="#">
+		<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" id="navbarDropdownMenuLink-{NAV_LINK_ID}" aria-haspopup="true" aria-expanded="true" data-target="#" href="#">
 		 {NAV_LINK_ICON}{NAV_LINK_NAME}
 		</a>
 		{NAV_LINK_SUB}
