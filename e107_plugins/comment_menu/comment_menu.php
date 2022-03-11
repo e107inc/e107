@@ -39,6 +39,8 @@ if (!defined('e107_INIT'))
 // $cobj = e107::getObject('comment');
 
 e107::lan('comment_menu', null);
+
+/** @var comment $cobj */
 $cobj = e107::getComment();
 
 $menu_pref = e107::getConfig('menu')->getPref();

@@ -1566,7 +1566,9 @@ class comment
 							{
 								$row2 = $sql2->fetch();
 
-								$route = ($row2['page_chapter'] == 0) ? "page/view/other" : "page/view/index"; // Determine if page belongs to book/chapter. 
+								$row2 = pageHelper::addSefFields($row2);
+
+								$route = empty($row2['page_chapter']) ? "page/view/other" : "page/view/index"; // Determine if page belongs to book/chapter.
 
 								$ret['comment_type'] = COMLAN_TYPE_PAGE;
 								$ret['comment_title'] = $ret['comment_subject'] ? $ret['comment_subject']:

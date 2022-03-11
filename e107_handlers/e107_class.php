@@ -259,6 +259,9 @@ class e107
 		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php',
 		'e_library_manager'              => '{e_HANDLER}library_manager.php',
 		'error_page'                     => '{e_HANDLER}error_page_class.php',
+
+		// Core plugin auto-loaders.
+		'pageHelper'                     => '{e_PLUGIN}page/includes/pageHelper.php'
 	);
 
 	/**
@@ -5861,6 +5864,7 @@ class e107
 			// autoload doesn't REQUIRE files, because this will break things like call_user_func()
 			include($filename);
 		}
+
 	}
 
 	/**

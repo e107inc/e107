@@ -14,7 +14,6 @@ if (!defined('e107_INIT')) { exit; }
 class page_sitelink // include plugin-folder in the name.
 {
 	private $chapterSef = array();
-	private $chapterParent = array();
 	private $chapterName = array();
 	
 	function __construct()
@@ -27,7 +26,6 @@ class page_sitelink // include plugin-folder in the name.
 		{
 			$id = $row['chapter_id'];
 			$this->chapterSef[$id] = $row['chapter_sef'];
-			$this->chapterParent[$id] = $row['chapter_parent'];
 			$this->chapterName[$id] = $row['chapter_name'];
 		}	
 		
@@ -44,12 +42,7 @@ class page_sitelink // include plugin-folder in the name.
 	{
 		return vartrue($this->chapterSef[$chapter],'--sef-not-assigned--');		
 	}
-	
-	private function getParent($chapter)
-	{
-		return varset($this->chapterParent[$chapter], false);			
-	}
-	
+
 	
 	function config()
 	{	
@@ -173,19 +166,8 @@ class page_sitelink // include plugin-folder in the name.
 
 		foreach($pages as $row)
 		{
-			$chapter_parent = $this->getParent($row['page_chapter']);
-
-			$row['book_sef'] = $this->getSef($chapter_parent);
-
-			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
-
-			//if(!vartrue($row['chapter_sef']))
-			//{
-			//	$row['chapter_sef'] = '--sef-not-assigned--';
-		//	}
-
+			$row    = pageHelper::addSefFields($row);
 			$arr[]  = $this->pageArray($row);
-
 		}
 
 		return $arr;
@@ -205,10 +187,12 @@ class page_sitelink // include plugin-folder in the name.
 			$link_name = !empty($row['page_title']) ? $row['page_title'] : 'No title';   // FIXME lan
 		}
 
+		$route = !empty($row['page_chapter']) ? 'page/view/index' : 'page/view/other';
+
 		return array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $link_name,
-				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
+				'link_url'			=> e107::getUrl()->create($route, $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
 				'link_description'	=> '',
 				'link_button'		=> (!empty($options['icon']) && $options['icon'] === 'menu_image') ? $row['menu_image'] : '',
 				'link_category'		=> '',
@@ -247,9 +231,9 @@ class page_sitelink // include plugin-folder in the name.
 				$id = $row['chapter_id'];
 
 				$sef = $row;
-				$sef['chapter_sef'] = $this->getSef($row['chapter_id']);	
+				$sef['chapter_sef'] = $this->getSef($row['chapter_id']);
 				$sef['book_sef']	= $this->getSef($row['chapter_parent']);
-				
+
 				$chapters[$id] = array(
 					'link_name'			=> $tp->toHTML($row['chapter_name'],'','TITLE'),
 					'link_url'			=> e107::getUrl()->create('page/chapter/index', $sef), // 'page.php?ch='.$row['chapter_id'],
@@ -367,31 +351,11 @@ class page_sitelink // include plugin-folder in the name.
 		foreach($data as $row)
 		{
 			$pid = $row['page_chapter'];
-			
-			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
-			$book 				= $this->getParent($row['page_chapter']);
-			$row['book_sef']	= $this->getSef($book); 
-			
-			if(!vartrue($row['page_sef']))
-			{
-				$row['page_sef'] = '--sef-not-assigned--';	
-			}
-			
-			$sublinks[$pid][] = $_pdata[] = $this->pageArray($row,$options); /* array(
-				'link_id'			=> $row['page_id'],
-				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
-				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
-				'link_description'	=> '',
-				'link_button'		=> $row['menu_image'],
-				'link_category'		=> '',
-				'link_order'		=> $row['page_order'],
-				'link_parent'		=> $row['page_chapter'],
-				'link_open'			=> '',
-				'link_class'		=> intval($row['page_class']),
-				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage']),
-				'link_identifier'	=> 'page-nav-'.intval($row['page_id']) // used for css id. 
-	
-			);*/
+
+			$row = pageHelper::addSefFields($row);
+
+
+			$sublinks[$pid][] = $_pdata[] = $this->pageArray($row,$options);
 		}
 
 		$filter = "chapter_visibility IN (".USERCLASS_LIST.") " ;

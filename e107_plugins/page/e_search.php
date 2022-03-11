@@ -38,16 +38,6 @@ class page_search extends e_search // include plugin-folder in the name.
 	{
 		return varset($this->catList[$chapter]['chapter_name'], false);			
 	}	
-	
-	private function getSef($chapter)
-	{
-		return vartrue($this->catList[$chapter]['chapter_sef'],false);		
-	}
-	
-	private function getParent($chapter)
-	{
-		return varset($this->catList[$chapter]['chapter_parent'], false);			
-	}	
 
 	private function isVisible($chapter)
 	{
@@ -102,17 +92,9 @@ class page_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 		
-		$book 				= $this->getParent($row['page_chapter']);
-		$row['chapter_sef'] = $this->getSef($row['page_chapter']);
-		$row['book_sef']	= $this->getSef($book); 
-			
-		if(empty($row['page_sef']))
-		{
-			$row['page_sef'] = '--sef-not-assigned--';	
-		}
+		$row    = pageHelper::addSefFields($row);
 
-
-		if($row['page_chapter'] == 0) // Page without category. 
+		if(empty($row['page_chapter'])) // Page without category.
 		{
 			$route = 'page/view/other';
 			$pre = ''; 	
@@ -120,7 +102,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		else // Page with book/chapter 
 		{
 			$route = 'page/view/index'; 	
-			$pre = $tp->toHTML($this->getName($book),false,'TITLE').' &raquo; '. $tp->toHTML($this->getName($row['page_chapter']),false,'TITLE'). " | ";
+			$pre = $tp->toHTML($row['book_name'],false,'TITLE').' &raquo; '. $tp->toHTML($row['chapter_name'],false,'TITLE'). " | ";
 		}
 		
 				
