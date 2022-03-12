@@ -19,10 +19,7 @@ if (!getperms('P') || !e107::isInstalled('linkwords'))
 }
 
 e107::lan('linkwords', true); 
-if(!defined('LW_CACHE_TAG'))
-{
-	define('LW_CACHE_TAG', 'nomd5_linkwords');
-}
+
 
 class linkwords_admin extends e_admin_dispatcher
 {
@@ -93,11 +90,13 @@ class linkwords_ui extends e_admin_ui
 		'lw_notsamepage'		=> array('title' => LWLAN_64, 'type' => 'boolean', 	'data' => 'string', 'help' => LAN_LW_HELP_03),
 		'linkword_omit_pages'	=> array('title' => LWLAN_28, 'type' => 'textarea',	'data' => 'string', 'help' => LAN_LW_HELP_04),
 		'lw_custom_class'	    => array('title' => LWLAN_66, 'type' => 'text', 	'writeParms' => array('placeholder' => LAN_OPTIONAL), 'data' => 'string', 'help' => LAN_LW_HELP_05),
+
 	);
+
+	const LW_CACHE_TAG = 'linkwords';
 
 	public function init()
 	{
-
 		if($this->getAction() == 'list')
 		{
 			$this->fields['linkword_word']['title'] = LWLAN_5;
@@ -122,7 +121,7 @@ class linkwords_ui extends e_admin_ui
 
 		if(!empty($_POST['etrigger_save']))
 		{
-			e107::getCache()->clear_sys(LW_CACHE_TAG);
+			e107::getCache()->clear_sys(self::LW_CACHE_TAG);
 		}
 	}
 
@@ -144,7 +143,7 @@ class linkwords_ui extends e_admin_ui
 
 	public function afterCreate($new_data, $old_data, $id)
 	{
-		e107::getCache()->clear_sys(LW_CACHE_TAG);
+		e107::getCache()->clear_sys(self::LW_CACHE_TAG);
 		// do something
 	}
 
@@ -163,7 +162,7 @@ class linkwords_ui extends e_admin_ui
 
 	public function afterUpdate($new_data, $old_data, $id)
 	{
-		e107::getCache()->clear_sys(LW_CACHE_TAG);
+		e107::getCache()->clear_sys(self::LW_CACHE_TAG);
 		// do something
 	}
 
@@ -175,7 +174,7 @@ class linkwords_ui extends e_admin_ui
 
 	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
-		e107::getCache()->clear_sys(LW_CACHE_TAG);
+		e107::getCache()->clear_sys(self::LW_CACHE_TAG);
 
 	}
 
