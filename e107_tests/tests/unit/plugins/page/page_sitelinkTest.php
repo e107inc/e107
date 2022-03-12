@@ -13,6 +13,15 @@ class page_sitelinkTest extends \Codeception\Test\Unit
 		// Enable SEF Urls. book/chapter/page
 		e107::getConfig()->setPref('url_config/page', 'core/sef_chapters')->save(false, true, false);
 
+		/** @var eRouter $router */
+		$router = e107::getUrl()->router(); // e107::getSingleton('eRouter');
+		$rules = $router->getRuleSets();
+
+		if(empty($rules['page']))
+		{
+			$router->loadConfig(true);
+		}
+
 		require_once(e_PLUGIN . "page/e_sitelink.php");
 		//	e107::getConfig()->set
 		try
