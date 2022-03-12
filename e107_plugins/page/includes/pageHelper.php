@@ -62,11 +62,11 @@ class pageHelper
 		}*/
 
 		// merge in the book data.
-		$chapter = (int) $row['chapter_id'];
+		$parent = (int) $row['chapter_parent'];
 
-		$row['book_id']     = (int) $row['chapter_parent'];
-		$row['book_name'] 	= varset($chaptersList[$chapter]['chapter_name'], '--sef-not-assigned--');
-		$row['book_sef']    = vartrue($chaptersList[$chapter]['chapter_sef'], '--sef-not-assigned--');
+		$row['book_id']     = $parent;
+		$row['book_name'] 	= varset($chaptersList[$parent]['chapter_name'], '--sef-not-assigned--');
+		$row['book_sef']    = vartrue($chaptersList[$parent]['chapter_sef'], '--sef-not-assigned--');
 
 		return $row;
 	}
