@@ -86,12 +86,10 @@ class linkwords_parse
 		$this->area_opts        = (array) varset($pref['lw_context_visibility']);
 		$this->utfMode          = (strtolower(CHARSET) === 'utf-8') ? 'u' : '';
 		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
-		$this->cache            = (int) varset($pref['lw_cache'],false);
 
 		// See whether they should be active on this page - if not, no point doing anything!
 		if(e_ADMIN_AREA === true && empty($_POST['runLinkwordTest']))
 		{
-			$this->cache(false);
 			return;
 		}
 
