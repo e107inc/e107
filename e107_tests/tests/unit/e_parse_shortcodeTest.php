@@ -387,7 +387,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'link_parent'      => '0',
 			'link_open'        => '0',
 			'link_class'       => '0',
-			'link_function'    => 'page::bookNav',
+			'link_function'    => 'page::bookNavChaptersPages',
 			'link_sefurl'      => 'index',
 			'link_owner'       => 'news'
 		);
