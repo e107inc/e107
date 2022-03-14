@@ -309,6 +309,7 @@ CREATE TABLE news (
   news_meta_description text NOT NULL,
   news_meta_robots  varchar(255) default '',
   news_datestamp int(10) unsigned NOT NULL default '0',
+  news_modified int(10) unsigned NOT NULL default '0',
   news_author int(10) unsigned NOT NULL default '0',
   news_category tinyint(3) unsigned NOT NULL default '0',
   news_allow_comments tinyint(3) unsigned NOT NULL default '0',

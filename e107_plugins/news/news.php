@@ -718,7 +718,8 @@ class news_front
 				$c++;
 			}
 
-			$modifiedTime = strtotime('30 minutes ago');
+			$modifiedTime = !empty($news['news_modified']) ? (int) $news['news_modified'] : (int) $news['news_datestamp'];
+
 			e107::meta('og:updated_time', $modifiedTime);
 
 			e107::meta('article:section', $news['category_name']);

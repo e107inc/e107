@@ -107,7 +107,7 @@ class news_gsitemap
 		{
 			$ret[] = [
 				'url'       => $this->url('news', $row),
-				'lastmod'   => (int) $row['news_datestamp'],
+				'lastmod'   => !empty($row['news_modified']) ? $row['news_modified'] : (int) $row['news_datestamp'],
 				'freq'      => 'hourly',
 				'priority'  => 0.5
 			];
