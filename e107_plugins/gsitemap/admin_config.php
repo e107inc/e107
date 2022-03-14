@@ -19,7 +19,7 @@ if(!getperms("P") || !e107::isInstalled('gsitemap'))
 //require_once(e_HANDLER."userclass_class.php");
 
 e107::lan('gsitemap',true);
-
+e107::css('inline', '#admin-gsitemap-main-instructions .block-text ol > li { padding:1rem }');
 
 
 class gsitemap_adminArea extends e_admin_dispatcher
@@ -41,7 +41,7 @@ class gsitemap_adminArea extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> GSLAN_22, 'perm' => 'P'),
 
 		 'main/div0'        => array('divider'=> true),
 		 'main/import'		=> array('caption'=> 'Import', 'perm' => 'P'),
@@ -182,10 +182,6 @@ class gsitemap_ui extends e_admin_ui
 		// left-panel help menu area. (replaces e_help.php used in old plugins)
 		public function renderHelp()
 		{
-			$caption = LAN_HELP;
-			$text = 'Some help text';
-
-		//	return array('caption'=>$caption,'text'=> $text);
 
 		}
 
@@ -377,14 +373,32 @@ class gsitemap_ui extends e_admin_ui
 			$ns = e107::getRender();
 
 
-			$LINK_1 = "https://www.google.com/accounts/ServiceLogin?service=sitemaps";
+			$LINK_1 = "https://search.google.com/search-console/";
 			$LINK_2 = "http://www.google.com/support/webmasters/?hl=en";
 
 			$srch[0] = "[URL]";
-			$repl[0] = "<a href='".$LINK_1."'>".$LINK_1."</a>";
+			$repl[0] = "<a href='".$LINK_1."' target='_blank'>".$LINK_1."</a>";
 
-			$srch[1] = "[URL2]";
-			$repl[1] = "<blockquote><b>".SITEURL."gsitemap.php</b></blockquote>";
+
+			$addons = e107::getAddonConfig('e_gsitemap', 'gsitemap');
+
+			$extraUrls = '';
+			foreach($addons as $plug => $item)
+			{
+				foreach($item as $data )
+				{
+					$lan = defset("GSLAN_51", "Auto-generated from [x]");
+
+					$key = $plug.'-'.$data['sef'];
+					$url = e107::url('gsitemap', $key, [], ['mode'=>'full']);
+					$extraUrls .= '<li><a href="'.$url.'" target="_blank">'.$url.'</a> <small><em>('.str_replace('[x]', $plug, $lan).')</em></small></li>';
+				}
+
+			}
+
+
+			$srch[1] = "[SITEMAP_URLS]";
+			$repl[1] = "<ul style='margin:10px'><li><a href='".SITEURL."sitemap.xml' target='_blank'>".SITEURL."sitemap.xml</a></li>".$extraUrls."</ul>";
 
 			$srch[2] = "[";
 			$repl[2] = "<a href='".e_ADMIN."prefs.php'>";
@@ -392,15 +406,17 @@ class gsitemap_ui extends e_admin_ui
 			$srch[3] = "]";
 			$repl[3] = "</a>";
 
+			$default = "Once you have some entries, go to [URL] and enter one of the following URLs in the Sitemaps section.[SITEMAP_URLS]  If any of these urls look incorrect to you, please make sure your site url is correct in [preferences].";
+
 		//	$text = "<b>".GSLAN_33."</b><br /><br />";
 $text = "
-			<ul>
+			<ol>
 				<li>".GSLAN_34."</li>
 				<li>".GSLAN_35."</li>
 				<li>".GSLAN_36."</li>
-				<li>".str_replace($srch,$repl,GSLAN_37)."</li>
-				<li>".str_replace("[URL]","<a href='".$LINK_2."'>".$LINK_2."</a>",GSLAN_38)."</li>
-			<ul>
+				<li>".str_replace($srch,$repl,defset("GSLAN_52", $default))."</li>
+				<li>".str_replace("[URL]","<a href='".$LINK_2."' target='_blank'>".$LINK_2."</a>",GSLAN_38)."</li>
+			</ol>
 			";
 
 			return $text;
@@ -1016,14 +1032,14 @@ class gsitemap
 		$ns = e107::getRender();
 		
 		
-		$LINK_1 = "https://www.google.com/accounts/ServiceLogin?service=sitemaps";
+		$LINK_1 = "https://search.google.com/search-console/";
 		$LINK_2 = "http://www.google.com/support/webmasters/?hl=en";
 		
 		$srch[0] = "[URL]";
 		$repl[0] = "<a href='".$LINK_1."'>".$LINK_1."</a>";
 		
 		$srch[1] = "[URL2]";
-		$repl[1] = "<blockquote><b>".SITEURL."gsitemap.php</b></blockquote>";
+		$repl[1] = "<blockquote><b>".SITEURL."sitemap.xml</b></blockquote>";
 		
 		$srch[2] = "[";
 		$repl[2] = "<a href='".e_ADMIN."prefs.php'>";
