@@ -472,6 +472,8 @@ class news_admin_ui extends e_admin_ui
 		'news_render_type'		=> array('title' => LAN_LOCATION, 	'type' => 'dropdown',  'data'=>'safestr',  'tab'=>2,  'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 
 		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',   'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 	'inline'=>true,		'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
+    	'news_modified'			=> array('title' => LAN_LAST_UPDATED, 	'type' => 'datestamp', 'readonly'=>true, 'noedit'=>true,  'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 	'inline'=>false,		'class' => 'center', 	'nosort' => false, 'batch'=>false, 'filter'=>true),
+
         'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',  'data'=>'int',  'tab'=>2,	'writeParms'=>'inverse=1',  'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',    'data'=>'int', 'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
@@ -523,7 +525,7 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_datestamp'] = time();
 		}
 
-
+		$new_data['news_modified'] = time();
 
 		$new_data['news_sef'] =  empty($new_data['news_sef']) ?  eHelper::title2sef($new_data['news_title']) : eHelper::secureSef($new_data['news_sef']);
 
@@ -587,6 +589,7 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_sef'] = eHelper::title2sef($new_data['news_title']);
 		}
 
+		$new_data['news_modified'] = time();
 
 		$this->checkSEFSimilarity($new_data);
 
