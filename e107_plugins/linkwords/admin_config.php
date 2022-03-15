@@ -86,8 +86,8 @@ class linkwords_ui extends e_admin_ui
 
 	protected $prefs = array(
 		'lw_context_visibility'	=> array('title' => LWLAN_26, 'type' => 'checkboxes', 'help' => LAN_LW_HELP_01),
-		'lw_ajax_enable'		=> array('title' => LWLAN_59, 'type' => 'boolean', 	'data' => 'string', 'help' => LAN_LW_HELP_02),
-		'lw_notsamepage'		=> array('title' => LWLAN_64, 'type' => 'boolean', 	'data' => 'string', 'help' => LAN_LW_HELP_03),
+		'lw_ajax_enable'		=> array('title' => LWLAN_59, 'type' => 'boolean', 	'data' => 'int', 'help' => LAN_LW_HELP_02),
+		'lw_notsamepage'		=> array('title' => LWLAN_64, 'type' => 'boolean', 	'data' => 'int', 'help' => LAN_LW_HELP_03),
 		'linkword_omit_pages'	=> array('title' => LWLAN_28, 'type' => 'textarea',	'data' => 'string', 'help' => LAN_LW_HELP_04),
 		'lw_custom_class'	    => array('title' => LWLAN_66, 'type' => 'text', 	'writeParms' => array('placeholder' => LAN_OPTIONAL), 'data' => 'string', 'help' => LAN_LW_HELP_05),
 

@@ -80,7 +80,7 @@ define("LWLAN_67", "Max. links/tips");
 // Preferences
 define("LAN_LW_HELP_01", "Many areas of text have an associated 'context', and linkwords will only be displayed in areas matching that context.");
 define("LAN_LW_HELP_02", "The tooltips can use Ajax to get information for display. This usually requires some custom coding.");
-define("LAN_LW_HELP_03", "Usually its pointless for the user to be able to click a link if they're already on the page that it links to. When this option is turned off, the linkwords are not triggered in this case.");
+define("LAN_LW_HELP_03", "Usually its pointless for the user to be able to click a link if they're already on the page that it links to. When this option is turned ON, the linkwords are not triggered in this case.");
 define("LAN_LW_HELP_04", "Linkwords may be disabled on specific pages, or pages matching a pattern. Enter these here (same syntax as for menu visbility), one pattern per line. If the pattern ends in '!', this corresponds to 'end of query', and is usually an exact match. Otherwise any URL containing the specified string will match.");
 define("LAN_LW_HELP_05", "Will add this class to all generated links.");
 // Reserve numbers for further prefences help texts
