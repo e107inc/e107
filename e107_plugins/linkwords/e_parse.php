@@ -19,6 +19,7 @@ class linkwords_parse
 	protected $lwAjaxEnabled = FALSE;		// Adds in Ajax-compatible links
 	protected $utfMode	= '';			// Flag to enable utf-8 on regex
 	protected $cache = true;
+	protected $suppressSamePageLink = false;
 
 	protected $word_list 	= array();		// List of link words/phrases
 	private $link_list	= array();		// Corresponding list of links to apply
@@ -82,10 +83,11 @@ class linkwords_parse
 	    $frm 	= e107::getForm();
 
 	//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
-		$this->customClass      = vartrue($pref['lw_custom_class']);
-		$this->area_opts        = (array) varset($pref['lw_context_visibility']);
-		$this->utfMode          = (strtolower(CHARSET) === 'utf-8') ? 'u' : '';
-		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
+		$this->customClass          = vartrue($pref['lw_custom_class']);
+		$this->area_opts            = (array) varset($pref['lw_context_visibility']);
+		$this->utfMode              = (strtolower(CHARSET) === 'utf-8') ? 'u' : '';
+		$this->lwAjaxEnabled        = varset($pref['lw_ajax_enable'],0);
+		$this->suppressSamePageLink = (bool) vartrue($pref['lw_notsamepage'], false);
 
 		// See whether they should be active on this page - if not, no point doing anything!
 		if(e_ADMIN_AREA === true && empty($_POST['runLinkwordTest']))
@@ -232,7 +234,7 @@ class linkwords_parse
 
 		// Split up by HTML tags and process the odd bits here
 		$ptext = "";
-		$lflag = FALSE;
+		$lflag = false;
 		$cflag = false; // commented code prsent.
 
 		// Shouldn't need utf-8 on next line - just looking for HTML tags
@@ -306,8 +308,6 @@ class linkwords_parse
 	function linksproc($text,$first,$limit)
 	{
 		$tp = e107::getParser();
-		$doSamePage = !e107::getPref('lw_notsamepage');
-
 
 		for (; $first < $limit; $first ++)
 		{
@@ -351,7 +351,8 @@ class linkwords_parse
 		if ($this->link_list[$first])  // Got link
 		{
 			$newLink = $tp->replaceConstants($this->link_list[$first], 'full');
-			if ($doSamePage || ($newLink != e_SELF.'?'.e_QUERY))
+
+			if (!$this->suppressSamePageLink || (($newLink !== e_REQUEST_URL) && $newLink !== e_REQUEST_URI))
 			{
 				$linkwd = " href=\"".$newLink."\" ";
 
