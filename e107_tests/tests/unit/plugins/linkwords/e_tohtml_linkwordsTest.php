@@ -81,13 +81,22 @@
 					'text'      => "<h3>Body only title</h3><p>body only text</p>",
 					'expected'  => "<h3>Body only title</h3><p><a class=\"lw-link  lw-1\"  href=\"/body-link\" >body only</a> text</p>",
 				),
+				// Ignore commented code.
+				6   => array(
+					'text'      => "<!-- <div>Body only title</div> --> <p>body only text</p>",
+					'expected'  => "<!-- <div>Body only title</div> --> <p><a class=\"lw-link  lw-2\"  href=\"/body-link\" >body only</a> text</p>",
+				),
+				7   => array(
+					'text'      => "contact us link <p>body only text</p>",
+					'expected'  => '<a class="lw-tip  lw-link  lw-2"  href="/contact.php"  title="Contact Us Now" >contact us</a> <a class="lw-link  lw-2"  href="/page-link" >link</a> <p><a class="lw-link  lw-3"  href="/body-link" >body only</a> text</p>',
+				),
 
 			);
 
-			foreach($tests as $val)
+			foreach($tests as $index => $val)
 			{
 				$result = $this->lw->toHTML($val['text'], 'BODY');
-				$this->assertEquals($val['expected'],$result);
+				$this->assertEquals($val['expected'],$result, 'Test #'.$index.' failed. ');
 
 			}
 

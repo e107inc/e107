@@ -233,6 +233,7 @@ class linkwords_parse
 		// Split up by HTML tags and process the odd bits here
 		$ptext = "";
 		$lflag = FALSE;
+		$cflag = false; // commented code prsent.
 
 		// Shouldn't need utf-8 on next line - just looking for HTML tags
 		$content = preg_split('#(<.*?>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
@@ -241,12 +242,19 @@ class linkwords_parse
 
 		foreach($content as $cont)
 		{
+			if(strpos($cont, '-->') !== false)
+			{
+				$cflag = false; // end of commented code
+				$ptext .= $cont;
+				continue;
+			}
 
 			if ($cont[0] === "<")  // Its some HTML
 			{
 				$ptext .= $cont;
-				if (strpos($cont, "<a") === 0) $lflag = true;
-				if (strpos($cont, "</a") === 0) $lflag = false;
+				if (strpos($cont, "<!--") === 0) $cflag = true; // start of commented code.
+				if (strpos($cont, "<a") === 0) $lflag = true; // start of link
+				if (strpos($cont, "</a") === 0) $lflag = false; // end of link.
 
 				if($area === 'BODY' && !isset($this->area_opts['TITLE'])) // disable linking on header tag content unless enabled in prefs.
 				{
@@ -263,7 +271,7 @@ class linkwords_parse
 			}
 			else   // Its the text in between
 			{
-				if ($lflag) // Its probably within a link - leave unchanged
+				if ($lflag || $cflag) // Its probably within a link - leave unchanged
 				{
 					$ptext .= $cont;
 				}
