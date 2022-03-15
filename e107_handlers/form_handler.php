@@ -3767,9 +3767,9 @@ var_dump($select_options);*/
 
 		foreach($array as $val)
 		{
-			if($val['url'] === e_REQUEST_URI) // automatic link removal for current page.
+			if(!isset($val['url']) || ($val['url'] === e_REQUEST_URI)) // automatic link removal for current page.
 			{
-				$val['url']= null;
+				$val['url'] = null;
 			}
 
 			$ret = '';
