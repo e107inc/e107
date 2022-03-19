@@ -306,7 +306,7 @@ class usersettings_shortcodes extends e_shortcode
 		//$cols = (isset($cols) ? $cols : 58);
 		//$rows = (isset($rows) ? $rows : 4);
 		//return "<textarea class='tbox signature' name='signature' cols='{$cols}' rows='{$rows}' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$this->var['user_signature']."</textarea>"; 
-		return e107::getForm()->bbarea('signature', $this->var['user_signature'], '', '', 'small');
+		return e107::getForm()->bbarea('signature', $this->var['user_signature'], 'signature', '', 'small');
 	}
 
 
