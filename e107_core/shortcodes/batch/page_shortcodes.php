@@ -114,6 +114,10 @@ class cpage_shortcodes extends e_shortcode
 			$text = e107::getParser()->stripBlockTags($text);
 		}
 
+		if(!empty($parm['raw']))
+		{
+			return $text;
+		}
 
 		return $text ? e107::getParser()->toHTML($text, true, 'BODY') : '';
 	}
