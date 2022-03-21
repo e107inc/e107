@@ -1154,6 +1154,7 @@ class e107forum
 			fp.forum_id AS parent_id, fp.forum_name AS parent_name,
 			sp.forum_id AS forum_sub, sp.forum_name AS sub_parent,
 			fp.forum_sef AS parent_sef,
+			sp.forum_sef AS sub_parent_sef,
 			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
@@ -2436,7 +2437,7 @@ class e107forum
 	
 		if($forumInfo['forum_sub'])
 		{
-			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['parent_sef'])));
+			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['sub_parent_sef'])));
 			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 
 		}
