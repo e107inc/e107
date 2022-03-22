@@ -921,7 +921,7 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 				$text .= ' ... ';
 				for($a = $pages - 3; $a <= $pages - 1; $a++)
@@ -932,7 +932,7 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 			}
 			else
@@ -946,16 +946,16 @@
 					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
 					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
 					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
-					$opts[] = "<a data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
 				}
 			}
 
 			if(deftrue('BOOTSTRAP'))
 			{
 				$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
-						<li>";
+						<li class='page-item'>";
 
-				$text .= implode("</li><li>", $opts); // ."</div>";
+				$text .= implode("</li><li class='page-item'>", $opts); // ."</div>";
 				$text .= "</li></ul>";
 			}
 			else
