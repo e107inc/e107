@@ -6,6 +6,7 @@ class wysiwyg
 	private $js;
 	private $config;
 	private $configName;
+	private $bootstrapVersion;
 
 	function renderConfig($config='')
 	{
@@ -35,7 +36,7 @@ class wysiwyg
 
 	function __construct($config=FALSE)
 	{
-
+		$this->bootstrapVersion = e107::getTheme()->getLibVersion('bootstrap');
 	}
 
 	function tinymce_lang()
@@ -411,14 +412,7 @@ class wysiwyg
                  {title: '1/2 Width Block', block: 'div', classes: 'col-md-6 col-sm-12'},
                 ]},
 
-                 {title: 'Bootstrap Buttons', items: [
-                 {title: 'Button (Default)', selector: 'a', classes: 'btn btn-default'},
-				 {title: 'Button (Primary)', selector: 'a', classes: 'btn btn-primary'},
-                 {title: 'Button (Success)', selector: 'a', classes: 'btn btn-success'},
-                 {title: 'Button (Info)', selector: 'a', classes: 'btn btn-info'},
-                 {title: 'Button (Warning)', selector: 'a', classes: 'btn-warning'},
-                 {title: 'Button (Danger)', selector: 'a', classes: 'btn-danger'},
-                ]},
+                 {title: 'Bootstrap Buttons', items: ".$this->bootstrapButtonStyles()."},
 
 				 {title: 'Bootstrap Images', items: [
 				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive img-fluid'},
@@ -548,7 +542,7 @@ class wysiwyg
 
 	//	$ret['visualblocks_default_state'] = true; //pref
 		$ret['style_formats']  = $formats; // json_encode($formats);
-		$ret['link_class_list'] = "[
+		$ret['link_class_list'] = $this->getLinkClassList(); "[
         {title: 'None', value: ''},
         {title: 'Link', value: 'btn btn-link'},
         {title: 'Alert Link', value: 'alert-link'},
@@ -720,8 +714,7 @@ class wysiwyg
 
 		$this->config = implode(",\n",$text);
 
-
-		return;
+		
 
 		// -------------------------------------------------------------------------------------
 
@@ -855,6 +848,99 @@ class wysiwyg
 
 
 
+	}
+
+	private function bootstrapButtonStyles()
+	{
+		switch($this->bootstrapVersion)
+		{
+			case 4:
+			case 5:
+				$ret = "[
+					{title: 'Button (Primary)', selector: 'a', classes: 'btn btn-primary'},
+					{title: 'Button (Secondary)', selector: 'a', classes: 'btn btn-secondary'},
+	                {title: 'Button (Success)', selector: 'a', classes: 'btn btn-success'},
+	                {title: 'Button (Info)', selector: 'a', classes: 'btn btn-info'},
+	                {title: 'Button (Warning)', selector: 'a', classes: 'btn-warning'},
+	                {title: 'Button (Danger)', selector: 'a', classes: 'btn-danger'},
+	                 
+					{title: 'Button (Light)', selector: 'a', classes: 'btn btn-light'},
+			        {title: 'Button (Dark)', selector: 'a', classes: 'btn btn-dark'},
+	
+			        {title: 'Button (Outline Primary)', selector: 'a', classes: 'btn btn-outline-primary'},
+			        {title: 'Button (Outline Secondary)', selector: 'a', classes: 'btn btn-outline-secondary'},
+			        {title: 'Button (Outline Success)', selector: 'a', classes: 'btn btn-outline-success'},
+			        {title: 'Button (Outline Info)', selector: 'a', classes: 'btn btn-outline-info'},
+			        {title: 'Button (Outline Warning)', selector: 'a', classes: 'btn btn-outline-warning'},
+			        {title: 'Button (Outline Danger)', selector: 'a', classes: 'btn btn-outline-danger'},
+			        {title: 'Button (Outline Light)', selector: 'a', classes: 'btn btn-outline-light'},
+			        {title: 'Button (Outline Dark)', selector: 'a', classes: 'btn btn-outline-dark'},
+	                 
+	                ]";
+			break;
+			default:
+				$ret = "[
+	                 {title: 'Button (Default)', selector: 'a', classes: 'btn btn-default'},
+					 {title: 'Button (Primary)', selector: 'a', classes: 'btn btn-primary'},
+	                 {title: 'Button (Success)', selector: 'a', classes: 'btn btn-success'},
+	                 {title: 'Button (Info)', selector: 'a', classes: 'btn btn-info'},
+	                 {title: 'Button (Warning)', selector: 'a', classes: 'btn-warning'},
+	                 {title: 'Button (Danger)', selector: 'a', classes: 'btn-danger'},
+	                ]";
+			
+		}
+		
+		return $ret; 
+	}
+
+
+
+	private function getLinkClassList()
+	{
+
+
+		switch($this->bootstrapVersion)
+		{
+			case 4:
+			case 5:
+				return "[
+		        {title: 'None', value: ''},
+		        {title: 'Link', value: 'btn btn-link'},
+		        {title: 'Alert Link', value: 'alert-link'},
+		        {title: 'Button (Primary)', value: 'btn btn-primary'},
+		        {title: 'Button (Secondary)', value: 'btn btn-secondary'},
+		        {title: 'Button (Success)', value: 'btn btn-success'},
+		        {title: 'Button (Info)', value: 'btn btn-info'},
+		        {title: 'Button (Warning)', value: 'btn btn-warning'},
+		        {title: 'Button (Danger)', value: 'btn btn-danger'},
+		        {title: 'Button (Light)', value: 'btn btn-light'},
+		        {title: 'Button (Dark)', value: 'btn btn-dark'},
+
+		        {title: 'Button (Outline Primary)', value: 'btn btn-outline-primary'},
+		        {title: 'Button (Outline Secondary)', value: 'btn btn-outline-secondary'},
+		        {title: 'Button (Outline Success)', value: 'btn btn-outline-success'},
+		        {title: 'Button (Outline Info)', value: 'btn btn-outline-info'},
+		        {title: 'Button (Outline Warning)', value: 'btn btn-outline-warning'},
+		        {title: 'Button (Outline Danger)', value: 'btn btn-outline-danger'},
+		        {title: 'Button (Outline Light)', value: 'btn btn-outline-light'},
+		        {title: 'Button (Outline Dark)', value: 'btn btn-outline-dark'},
+
+		        ]";
+				break;
+
+			default:
+				return "[
+		        {title: 'None', value: ''},
+		        {title: 'Link', value: 'btn btn-link'},
+		        {title: 'Alert Link', value: 'alert-link'},
+		        {title: 'Button (Default)', value: 'btn btn-default'},
+		        {title: 'Button (Primary)', value: 'btn btn-primary'},
+		        {title: 'Button (Success)', value: 'btn btn-success'},
+		        {title: 'Button (Info)', value: 'btn btn-info'},
+		        {title: 'Button (Warning)', value: 'btn btn-warning'},
+		        {title: 'Button (Danger)', value: 'btn btn-danger'}
+		        ]";
+		}
 	}
 
 
