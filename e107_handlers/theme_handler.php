@@ -502,16 +502,27 @@ class e_theme
 	 */
 	public function getFontAwesome()
 	{
+		return $this->getLibVersion('fontawesome');
+	}
+
+	/**
+	 * Returns the libarie's version of the currently loaded theme.
+	 * @param string $name eg. 'fontawesome' or 'bootstrap'
+	 * @return false|int
+	 */
+	public function getLibVersion($name)
+	{
 		$lib = $this->get('library');
 		foreach($lib as $var)
 		{
-			if($var['name'] === 'fontawesome' && !empty($var['version']) )
+			if($var['name'] === $name && !empty($var['version']) )
 			{
 				return (int) $var['version'];
 			}
 		}
 
 		return false;
+
 	}
 
 	/**
