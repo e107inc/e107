@@ -48,7 +48,7 @@ if (!defined('e107_INIT'))
 	                    </p>
                    		<h4 class="text-info">Sponsors</h4>
 	                    <p>
-	                        <a target="_blank" href="https://www.jetbrains.com/?from=e107" title="Visit JetBrains">JetBrains</a>, <a target="_blank" href="https://stemaidinstitute.com" title="Visit Stemaid Institute">Stemaid</a>.<br />
+	                        <a target="_blank" href="https://stemaidinstitute.com" title="Visit Stemaid Institute">Stemaid</a>.<br />
 	                    </p>
                     	<div class="copyright">Copyright <a target="_blank" href="https://e107.org/community" title="e107 Team">e107.org</a> 2008-'.date('Y').'.<br />Released under the terms of the GNU GPL License.</div>
                		 </div>
