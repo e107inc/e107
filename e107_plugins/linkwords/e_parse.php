@@ -20,6 +20,8 @@ class linkwords_parse
 	protected $utfMode	= '';			// Flag to enable utf-8 on regex
 	protected $cache = true;
 	protected $suppressSamePageLink = false;
+	protected $hash;
+	protected $admin = false;
 
 	protected $word_list 	= array();		// List of link words/phrases
 	private $link_list	= array();		// Corresponding list of links to apply
@@ -34,10 +36,27 @@ class linkwords_parse
 
 	protected $customClass  = '';
 	protected $wordCount    = array();
+	protected $intLinks = 0;
+	protected $extLinks = 0;
 	protected $word_limit   = array();
 
 	const LW_CACHE_TAG = 'linkwords';
 //	protected $maxPerWord   = 3;
+
+
+	/* constructor */
+	function __construct()
+	{
+
+		// See whether they should be active on this page - if not, no point doing anything!
+		if(e_ADMIN_AREA === true && empty($_POST['runLinkwordTest']))
+		{
+			return;
+		}
+
+		$this->init();
+
+	}
 
 	public function enable()
 	{
@@ -48,6 +67,7 @@ class linkwords_parse
 	{
 		$this->cache = (bool) $var;
 	}
+
 
 	public function setWordData($arr = array())
 	{
@@ -74,121 +94,6 @@ class linkwords_parse
 	}
 
 
-	/* constructor */
-	function __construct()
-	{
-
-		$tp 	= e107::getParser();
-	    $pref 	= e107::pref('linkwords');
-	    $frm 	= e107::getForm();
-
-	//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
-		$this->customClass          = vartrue($pref['lw_custom_class']);
-		$this->area_opts            = (array) varset($pref['lw_context_visibility']);
-		$this->utfMode              = (strtolower(CHARSET) === 'utf-8') ? 'u' : '';
-		$this->lwAjaxEnabled        = varset($pref['lw_ajax_enable'],0);
-		$this->suppressSamePageLink = (bool) vartrue($pref['lw_notsamepage'], false);
-
-		// See whether they should be active on this page - if not, no point doing anything!
-		if(e_ADMIN_AREA === true && empty($_POST['runLinkwordTest']))
-		{
-			return;
-		}
-
-		// Now see if disabled on specific pages
-		$check_url = e_SELF.(defined('e_QUERY') ? "?".e_QUERY : '');
-		$this->block_list = explode("|",substr(varset($pref['lw_page_visibility']),2));    // Knock off the 'show/hide' flag
-
-		foreach($this->block_list as $p)
-		{
-			if($p=trim($p))
-			{
-				if(substr($p, -1) === '!')
-				{
-					$p = substr($p, 0, -1);
-					if(substr($check_url, strlen($p)*-1) == $p) return;
-				}
-				else
-				{
-					if(strpos($check_url, $p) !== FALSE) return;
-				}
-			}
-		}
-
-
-
-		if($this->cache && ($temp = e107::getCache()->retrieve(self::LW_CACHE_TAG, false, true, true)))
-		{
-			if($data = e107::unserialize($temp))
-			{
-				foreach($data as $key=>$val)
-				{
-					$this->$key = $val;
-				}
-
-				$this->lw_enabled = TRUE;
-			}
-			else
-			{
-				trigger_error("Error reading linkwords cache: ".self::LW_CACHE_TAG);
-			}
-
-		}
-
-		if(empty($temp)) 	// Either cache disabled, or no info in cache (or error reading/processing cache)
-		{
-			$link_sql = e107::getDb('link_sql');
-
-			if($link_sql->select("linkwords", "*", "linkword_active!=1"))
-			{
-				$this->lw_enabled = true;
-
-				while($row = $link_sql->fetch())
-				{
-
-					$lw = $tp->ustrtolower($row['linkword_word']);					// It was trimmed when saved		*utf
-					$lw = str_replace('&#039;', "'", $lw); // Fix for apostrophies.
-
-					if($row['linkword_active'] == 2)
-					{
-						$row['linkword_link'] = '';		// Make sure linkword disabled
-					}
-
-					if($row['linkword_active'] < 2)
-					{
-						$row['linkword_tooltip'] = '';	// Make sure tooltip disabled
-					}
-
-
-					if(strpos($lw,',')) // Several words to same link
-					{
-						$lwlist = explode(',',$lw);
-						foreach ($lwlist as $lw)
-						{
-							$this->loadRow($lw,$row);
-						}
-					}
-					else
-					{
-						$this->loadRow($lw,$row);
-					}
-				}
-
-				if($this->cache) // Write to file for next time
-				{
-					$temp = [];
-					foreach (array('word_list', 'word_class', 'word_limit', 'link_list', 'tip_list', 'ext_list', 'rel_list', 'LinkID') as $var)
-					{
-						$temp[$var] = $this->$var;
-					}
-
-					e107::getCache()->set(self::LW_CACHE_TAG, e107::serialize($temp, 'json'), true, true, true);
-				}
-			}
-		}
-
-
-	}
 
 	private function loadRow($lw, $row)
 	{
@@ -390,6 +295,7 @@ class linkwords_parse
 		$class = implode(' ',$lwClass);
 
 		$hash = md5($lw);
+		$this->hash = $hash;
 
 		if(!isset($this->wordCount[$hash]))
 		{
@@ -402,6 +308,8 @@ class linkwords_parse
 			{
 				$this->wordCount[$hash]++;
 
+
+
 				$classCount = " lw-".$this->wordCount[$hash];
 
 				if(empty($linkwd))
@@ -410,6 +318,15 @@ class linkwords_parse
 				}
 				else
 				{
+					if(strpos($linkwd,'http')!==false)
+					{
+						$this->extLinks++;
+					}
+					else
+					{
+						$this->intLinks++;
+					}
+
 					$ret .= "<a class=\"".$class.$classCount."\" ".$linkwd.$tooltip.">".$sl."</a>";
 				}
 
@@ -427,7 +344,130 @@ class linkwords_parse
 		return $ret;
 	}
 
+	function getStats()
+	{
+		return [
+			'internal'  => $this->intLinks,
+			'external'  => $this->extLinks,
+		];
 
+	}
+
+	/**
+	 * @return void
+	 */
+	public function init(): void
+	{
+
+		$tp = e107::getParser();
+		$pref = e107::pref('linkwords');
+		$frm = e107::getForm();
+
+		//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
+		$this->customClass = vartrue($pref['lw_custom_class']);
+		$this->area_opts = (array) varset($pref['lw_context_visibility']);
+		$this->utfMode = (strtolower(CHARSET) === 'utf-8') ? 'u' : '';
+		$this->lwAjaxEnabled = varset($pref['lw_ajax_enable'], 0);
+		$this->suppressSamePageLink = (bool) vartrue($pref['lw_notsamepage'], false);
+
+
+		// Now see if disabled on specific pages
+		$check_url = e_SELF . (defined('e_QUERY') ? "?" . e_QUERY : '');
+		$this->block_list = explode("|", substr(varset($pref['lw_page_visibility']), 2));    // Knock off the 'show/hide' flag
+
+		foreach($this->block_list as $p)
+		{
+			if($p = trim($p))
+			{
+				if(substr($p, -1) === '!')
+				{
+					$p = substr($p, 0, -1);
+					if(substr($check_url, strlen($p) * -1) == $p)
+					{
+						return;
+					}
+				}
+				else
+				{
+					if(strpos($check_url, $p) !== false)
+					{
+						return;
+					}
+				}
+			}
+		}
+
+
+		if($this->cache && ($temp = e107::getCache()->retrieve(self::LW_CACHE_TAG, false, true, true)))
+		{
+			if($data = e107::unserialize($temp))
+			{
+				foreach($data as $key => $val)
+				{
+					$this->$key = $val;
+				}
+
+				$this->lw_enabled = true;
+			}
+			else
+			{
+				trigger_error("Error reading linkwords cache: " . self::LW_CACHE_TAG);
+			}
+
+		}
+
+		if(empty($temp))    // Either cache disabled, or no info in cache (or error reading/processing cache)
+		{
+			$link_sql = e107::getDb('link_sql');
+
+			if($link_sql->select("linkwords", "*", "linkword_active!=1"))
+			{
+				$this->lw_enabled = true;
+
+				while($row = $link_sql->fetch())
+				{
+
+					$lw = $tp->ustrtolower($row['linkword_word']);                    // It was trimmed when saved		*utf
+					$lw = str_replace('&#039;', "'", $lw); // Fix for apostrophies.
+
+					if($row['linkword_active'] == 2)
+					{
+						$row['linkword_link'] = '';        // Make sure linkword disabled
+					}
+
+					if($row['linkword_active'] < 2)
+					{
+						$row['linkword_tooltip'] = '';    // Make sure tooltip disabled
+					}
+
+
+					if(strpos($lw, ',')) // Several words to same link
+					{
+						$lwlist = explode(',', $lw);
+						foreach($lwlist as $lw)
+						{
+							$this->loadRow($lw, $row);
+						}
+					}
+					else
+					{
+						$this->loadRow($lw, $row);
+					}
+				}
+
+				if($this->cache) // Write to file for next time
+				{
+					$temp = [];
+					foreach(array('word_list', 'word_class', 'word_limit', 'link_list', 'tip_list', 'ext_list', 'rel_list', 'LinkID') as $var)
+					{
+						$temp[$var] = $this->$var;
+					}
+
+					e107::getCache()->set(self::LW_CACHE_TAG, e107::serialize($temp, 'json'), true, true, true);
+				}
+			}
+		}
+	}
 }
 
 

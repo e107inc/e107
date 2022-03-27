@@ -21,7 +21,7 @@ if (!getperms('P') || !e107::isInstalled('linkwords'))
 e107::lan('linkwords', true); 
 
 
-class linkwords_admin extends e_admin_dispatcher
+class linkwords_admin_config extends e_admin_dispatcher
 {
 
 	protected $modes = array(
@@ -184,8 +184,10 @@ class linkwords_ui extends e_admin_ui
 
 		if(!empty($_POST['runLinkwordTest']))
 		{
-		//	$text .= "<strong>Result:</strong><br />";
-			$result = e107::getParser()->toHTML($_POST['test_body'], false, 'BODY');
+			/** @var linkwords_admin $hookObj */
+			$hookObj = e107::getAddon('linkwords', 'e_parse');
+			e107::callMethod($hookObj, 'init');
+			$result = e107::callMethod($hookObj, 'toHTML',$_POST['test_body'], 'BODY');
 
 			$text .= "<div class='well' style='padding:30px'>".$result."</div>";
 			$text .= "<div class='well' style='padding:30px; margin-bottom:30px'>".htmlentities($result)."</div>";
@@ -216,7 +218,7 @@ class linkwords_form_ui extends e_admin_form_ui
 
 }
 
-new linkwords_admin();
+new linkwords_admin_config();
 
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
