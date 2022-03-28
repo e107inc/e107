@@ -356,7 +356,7 @@ class linkwords_parse
 	/**
 	 * @return void
 	 */
-	public function init(): void
+	public function init()
 	{
 
 		$tp = e107::getParser();
