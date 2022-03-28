@@ -2263,6 +2263,8 @@ class e107forum
 		$forumId = (int)$forumId;
 		$threads = $sql->count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
 		$replies = $sql->count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
+		$replies = $replies - $threads; 
+		
 		$sql->update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
 		if($recalcThreads == true)
 		{
@@ -2272,7 +2274,7 @@ class e107forum
 			foreach($tlist as $t)
 			{
 				$tid = $t['post_thread'];
-				$replies = (int)$t['replies'];
+				$replies = (int)$t['replies'] - 1;
 				$sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id={$tid}");
 			}
 		}
