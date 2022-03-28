@@ -47,11 +47,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 	/**
 	 * YYYY is automatically replaced with the current year.
+	 * @param array $parm 'class' to set the class of links.
 	 * @return string
 	 */
-	function sc_sitedisclaimer()
+	function sc_sitedisclaimer($parm=array())
 	{
-		$default = "Proudly powered by <a href='https://e107.org'>e107</a> which is <a href='".e_HTTP."credits.php'>released</a> under the terms of the GNU GPL License.";
+		$class = !empty($parm['class']) ? " class='".$parm['class']."'" : '';
+
+		$default = "Proudly powered by <a".$class." href='https://e107.org'>e107</a> which is <a".$class." href='".e_HTTP."credits.php'>released</a> under the terms of the GNU GPL License.";
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
