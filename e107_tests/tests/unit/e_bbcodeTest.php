@@ -215,6 +215,8 @@
 					  ),
 					  'quote' =>
 					  array (
+						'Ted'  => array('input'=>'Quoted Message', 'expected'=>'<blockquote><p>Quoted Message</p><small><cite title="Ted">Ted</cite></small></blockquote>'),
+
 					  ),
 					  'right' =>
 					  array (
