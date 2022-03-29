@@ -7,33 +7,10 @@
 class linkwords_admin implements e_admin_addon_interface
 {
 
-
 	public function load($event, $ids)
 	{
-
-		switch($event)
-		{
-			case "news":
-				$data = e107::getDb()->retrieve("news","*", "news_id IN(".$ids.")",true);
-				foreach($data as $row)
-				{
-					$id = (int) $row['news_id'];
-					$ret[$id]['stats'] = $row['news_body']."\n".$row['news_extended'];
-
-				}
-				break;
-
-
-			default:
-				// code to be executed if n is different from all labels;
-		}
-
-
-		return $ret;
-
-
+		// no table used.
 	}
-
 
 
 	/**
@@ -51,13 +28,9 @@ class linkwords_admin implements e_admin_addon_interface
 
 		switch($type)
 		{
-			case 'news': // hook into the news admin form.
-			//	$body = $ui->getListModel()->getData('news_body');
-			//	var_dump($body);
-
+			case 'news': // hook into the news admin area
+			case 'page': // hook into the page admin area
 				$config['fields']['stats'] =   array ('title' => LAN_PLUGIN_LINKWORDS_NAME, 'type' => 'method', 'tab' =>1, 'noedit'=>true, 'writeParms' => array(), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
-
-			//	$config['batchOptions'] = array('custom'    => 'Custom Batch Command');
 				break;
 		}
 
@@ -75,41 +48,7 @@ class linkwords_admin implements e_admin_addon_interface
 	 */
 	public function process(e_admin_ui $ui, $id=null)
 	{
-
-		$data       = $ui->getPosted(); // ie $_POST field-data
-		$type       = $ui->getEventName(); // eg. 'news'
-		$action     = $ui->getAction(); // current mode: create, edit, list, batch
-		$changed    = $ui->getModel()->dataHasChanged(); // true when data has changed from what is in the DB.
-
-		if($action === 'delete')
-		{
-			return;
-		}
-
-		if($action === 'batch')
-		{
-			$id = (array) $id;
-			$arrayOfRecordIds = $id['ids'];
-			$command = $id['cmd'];
-
-			return;
-		}
-
-/*
-		if(!empty($id) )
-		{
-
-			if(!empty($data['x__blank_url']))
-			{
-
-				// eg. Save the data in 'blank' plugin table. .
-
-			}
-
-		}
-*/
-
-
+		// no data saved.
 	}
 
 
@@ -124,10 +63,8 @@ class linkwords_admin_form extends e_form
 
 	function __construct()
 	{
-
 		$this->lw = e107::getAddon('linkwords','e_parse');
 		$this->lw->init();
-
 	}
 	/**
 	 * @param $curval
@@ -137,6 +74,18 @@ class linkwords_admin_form extends e_form
 	 */
 	function x_linkwords_stats($curval, $mode, $att=null)
 	{
+		/** @var e_admin_controller_ui $controller */
+		$controller = e107::getAdminUI()->getController();
+		$event = $controller->getEventName(); // eg 'news' 'page' etc.
+
+		if($event === 'news')
+		{
+			$curval = $controller->getFieldVar('news_body')."\n".$controller->getFieldVar('news_extended');
+		}
+		else
+		{
+			$curval = $controller->getFieldVar('page_text');
+		}
 
 		unset($att);
 		$vals = array();
@@ -173,26 +122,7 @@ class linkwords_admin_form extends e_form
 
 				return $text;
 				break;
-/*
-			case "write":
-				$text = "<table class='table table-striped table-condensed table-bordered'>
-				<tr><th class='text-right'>No.</th><th>URL</th><th>Title</th></tr>";
 
-				for($i = 1; $i <= 20; $i++)
-				{
-					$text .= "<tr>
-		            <td class='text-right'>" . $i . "</td>
-		             <td>" . $this->text('x_reference_url[url][' . $i . ']', varset($vals['url'][$i]), 255, array('class' => 'x-reference-url', 'id' => 'x-reference-url-url-' . $i, 'size' => 'block-level')) . "</td>
-		            <td>" . $this->text('x_reference_url[name][' . $i . ']', varset($vals['name'][$i]), 255, array('id' => 'x-reference-url-name-' . $i, 'size' => 'block-level')) . "</td>
-		            </tr>";
-				}
-
-				$text .= "</table>";
-
-				$text .= $this->hidden('meta-parse', SITEURLBASE . e_PLUGIN_ABS . "reference/meta.php", array('id' => 'meta-parse'));
-
-				return $text;
-				break;*/
 
 			default:
 				// code to be executed if n is different from all labels;
