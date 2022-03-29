@@ -7,7 +7,12 @@
 class _blank_admin implements e_admin_addon_interface
 {
 
-
+	/**
+	 * Populate custom field values.
+	 * @param string $event
+	 * @param string $ids
+	 * @return array
+	 */
 	public function load($event, $ids)
 	{
 
@@ -37,7 +42,7 @@ class _blank_admin implements e_admin_addon_interface
 
 
 	/**
-	 * Extend Admin-ui Parameters
+	 * Extend Admin-ui Configuration Parameters eg. Fields etc.
 	 * @param $ui admin-ui object
 	 * @return array
 	 */
@@ -53,10 +58,15 @@ class _blank_admin implements e_admin_addon_interface
 		switch($type)
 		{
 			case 'news': // hook into the news admin form.
-				$config['fields']['url'] =   array ('title' => 'Custom Field', 'type' => 'url', 'tab' =>1, 'writeParms' => array('size' =>'xxlarge', 'placeholder' =>'', 'default' =>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+				$config['fields']['url'] =   array ('title' => 'Blank URL', 'type' => 'url', 'tab' =>1, 'writeParms' => array('size' =>'xxlarge', 'placeholder' =>'', 'default' =>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+				$config['fields']['custom'] =   array ('title' => 'Blank Custom', 'type' => 'method', 'tab' =>1, 'writeParms' => array('size' =>'xxlarge', 'placeholder' =>'', 'default' =>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
 
 				$config['batchOptions'] = array('custom'    => 'Custom Batch Command');
-				break;
+			break;
+
+			case 'page':
+
+			break;
 		}
 
 		//Note: 'urls' will be returned as $_POST['x__blank_url']. ie. x_{PLUGIN_FOLDER}_{YOURFIELDKEY}
@@ -79,41 +89,77 @@ class _blank_admin implements e_admin_addon_interface
 		$action     = $ui->getAction(); // current mode: create, edit, list, batch
 		$changed    = $ui->getModel()->dataHasChanged(); // true when data has changed from what is in the DB.
 
-		if($action === 'delete')
+		switch($action)
 		{
-			return;
+			case 'create':
+			case 'edit':
+
+					if(!empty($id) && !empty($data['x__blank_url']))
+					{
+						// eg. Save the data in the 'blank' plugin table.
+					}
+
+			break;
+
+			case 'delete':
+
+			break;
+
+			case 'batch':
+				$id = (array) $id;
+				$arrayOfRecordIds = $id['ids'];
+				$command = $id['cmd'];
+			break;
+
+			default:
+				// code to be executed if n is different from all labels;
 		}
 
-		if($action === 'batch')
-		{
-			$id = (array) $id;
-			$arrayOfRecordIds = $id['ids'];
-			$command = $id['cmd'];
+	}
 
-			return;
+}
+
+
+/**
+ * Custom field methods
+ */
+class _blank_admin_form extends e_form
+{
+	/**
+	 * @param mixed $curval
+	 * @param string $mode
+	 * @param null|array $att
+	 * @return null|string
+	 */
+	function x__blank_custom($curval, $mode, $att=null) // 'x_' + plugin-folder + custom-field name.
+	{
+		/** @var e_admin_controller_ui $controller */
+		$controller = e107::getAdminUI()->getController();
+
+		$event = $controller->getEventName(); // eg 'news' 'page' etc.
+
+		$text = '';
+
+		switch($mode)
+		{
+			case "read":
+				$field = $event.'_id'; // news_id or page_id etc.
+				$text = "<span class='e-tip' title='".$controller->getFieldVar($field)."'>Custom</span>";
+			break;
+
+			case "write":
+			case "filter":
+			case "batch":
+			break;
+
 		}
 
-/*
-		if(!empty($id) )
-		{
-
-			if(!empty($data['x__blank_url']))
-			{
-
-				// eg. Save the data in 'blank' plugin table. .
-
-			}
-
-		}
-*/
-
+		return $text;
 
 	}
 
 
-
 }
-
 
 
 
