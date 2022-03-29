@@ -234,7 +234,7 @@ function init()
 	}
 
 	$moderatorUserIds = $forum->getModeratorUserIdsByForumId($forumId);
-	define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
+	define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0') ));
 
 	if(MODERATOR)
 	{

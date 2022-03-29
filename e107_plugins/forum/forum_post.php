@@ -80,7 +80,7 @@ class forum_post_handler
 			$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($this->id);
 		}
 
-		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
+		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0')));
 
 
 		$this->data = $this->processGet();

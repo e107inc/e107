@@ -86,7 +86,7 @@ $thread->init();
 
 /* Check if use has moderator permissions for this thread */
 $moderatorUserIds = $forum->getModeratorUserIdsByThreadId($thread->threadInfo['thread_id']);
-define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds)));
+define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0') ));
 
 
 if(e_AJAX_REQUEST)
