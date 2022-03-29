@@ -117,6 +117,11 @@ TEMPL;
 		$fa = e107::getTheme()->getFontAwesome(); // get the frontend theme's fontawesome version.
 		$tp->setFontAwesome($fa);
 
+		if(!defined('BOOTSTRAP') && ($bs = e107::getTheme()->getLibVersion('bootstrap')))
+		{
+			define('BOOTSTRAP', (int) $bs);
+		}
+
 		$content = stripslashes($content);
 
 		//	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
