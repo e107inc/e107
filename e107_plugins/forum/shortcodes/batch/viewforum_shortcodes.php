@@ -501,6 +501,11 @@
 
 		function subinfo()
 		{
+			if(empty($this->var['thread_total_replies']))
+			{   
+    			return ''; 
+			}
+			
 			$backtrace = debug_backtrace();
 			$caller = $backtrace[1]['function'];
 			if($this->var['forum_lastpost_info'])
@@ -622,6 +627,11 @@
 
 		function threadlastpostdata()
 		{
+			if(empty($this->var['thread_total_replies']))
+			{   
+    			return ''; 
+			}
+			
 			$backtrace = debug_backtrace();
 			$caller = $backtrace[1]['function'];
 //	if($this->var['thread_views'])
