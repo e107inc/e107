@@ -2490,10 +2490,18 @@ class e_form
 					}
 				}
 			}
-		}
-
-
-		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
+		
+            if (!check_class(e107::getConfig()->get('post_html', e_UC_MAINADMIN))) 
+            {
+                $ret .=	e107::getBB()->renderButtons($template,$help_tagid);
+            }
+        
+        }
+        else 
+        {
+            $ret .=	e107::getBB()->renderButtons($template,$help_tagid);
+        }
+        
 		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
 			
 		$ret .= "</div>\n";
