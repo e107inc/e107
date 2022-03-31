@@ -110,7 +110,10 @@ if (!USER || getperms('0'))
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
 	{
-		echo LOGINMESSAGE;
+		    if(deftrue('e_IFRAME'))
+            {  
+              echo LOGINMESSAGE;
+            }              
 	}
 
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER,true, $sc);
