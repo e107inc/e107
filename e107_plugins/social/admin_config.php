@@ -813,7 +813,7 @@ class social_ui extends e_admin_ui
 	private function generateAdminFormJs()
 	{
 		return <<<EOD
-<script type='text/javascript'>
+<script>
 var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 let socialLoginSwitches = {

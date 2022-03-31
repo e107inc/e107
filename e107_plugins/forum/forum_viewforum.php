@@ -457,7 +457,7 @@ function init()
 		echo $forum_view_start . $forum_view_forum . $forum_view_end;
 	}
 
-	echo "<script type=\"text/javascript\">
+	echo "<script>
 	function confirm_(thread_id)
 	{
 		return confirm(" . $tp->toJSON(LAN_JSCONFIRM) . ");

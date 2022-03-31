@@ -135,7 +135,7 @@ class user_select
 	{
 		global $tp;
 		if ($oldClass !== FALSE) $class = $oldClass;		// Handle legacy position of $class
-		$text = "<script type='text/javascript'>
+		$text = "<script>
 		<!--
 		function uc_switch(uctype) {
 			document.getElementById(uctype).value = '';
@@ -229,7 +229,7 @@ class user_select
 
 		echo "<link rel=stylesheet href='".e_WEB_ABS."js/bootstrap/css/bootstrap.min.css'>
 		<link rel=stylesheet href='".THEME_ABS."style.css'>
-		<script language='JavaScript' type='text/javascript'>
+		<script>
 		<!--
 		function SelectUser() {
 		var d = window.document.results.usersel.value;

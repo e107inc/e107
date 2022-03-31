@@ -1505,7 +1505,7 @@ function check_tables($what)
 		{
 			//very tired and sick of this page, so quick and dirty
 			$text .= "
-					<script type='text/javascript'>
+					<script>
 						\$('core-db-verify-{$what}-legend').hide();
 					</script>
 			";

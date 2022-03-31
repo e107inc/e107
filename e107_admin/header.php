@@ -140,7 +140,6 @@ $e_js = e107::getJs();
 // Core CSS - XXX awaiting for path changes
 if(!isset($no_core_css) || !$no_core_css)
 {
-	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
@@ -294,7 +293,7 @@ if(!empty($eplug_js))
 
 	foreach($eplug_js as $vjss)
 	{
-		echo "<script type='text/javascript' src='{$vjss}'></script>\n";
+		echo "<script src='{$vjss}'></script>\n";
 	}
 
 }
@@ -303,13 +302,12 @@ if(!empty($eplug_js))
 if(file_exists(THEME . 'theme.js'))
 {
 	e107::js('theme', 'theme.js', null, 3);
-//	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
 }
 
 
 if(is_readable(e_FILE . 'user.js') && filesize(e_FILE . 'user.js'))
 {
-	echo "<script type='text/javascript' src='" . e_FILE_ABS . "user.js'></script>\n";
+	echo "<script src='" . e_FILE_ABS . "user.js'></script>\n";
 }
 
 
@@ -356,7 +354,7 @@ if(!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP
 		$js_body_onload[] = "expandit('loginmenuchap');";
 		$js_body_onload[] = "expandit('nologinmenuchap');";
 	}
-	echo "<script type='text/javascript' src='" . e_JS . "chap_script.js'></script>\n";
+	echo "<script src='" . e_JS . "chap_script.js'></script>\n";
 	$js_body_onload[] = "getChallenge();";
 }
 

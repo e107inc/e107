@@ -320,12 +320,6 @@ class e_menuManager
 */
 		header("Location: ".$newurl);
 		exit;
-	 //	echo "URL = ".$newurl;
-	  //	$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$this->menuNewLoc}.php";
-	  //	$newurl = SITEURL.str_replace("//", "/", $newurl);
-	  //	echo "<script type='text/javascript'>alert($newurl);	top.location.href = '{$newurl}'; </script> ";
-	//	exit;
-
 
 	}
 

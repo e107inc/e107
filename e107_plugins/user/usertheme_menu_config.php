@@ -125,7 +125,7 @@ require_once(e_ADMIN."footer.php");
 /*
 function headerjs()
 {
-	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
+	return "<script src='".e_FILE_ABS."jslib/core/admin.js'></script>";
 
 
 }

@@ -34,7 +34,7 @@ if(!isset($SITEDOWN_TABLE))
 		<link rel="stylesheet" href="{SITEDOWN_E107_CSS}" type="text/css" media="all" />
 		<link rel="stylesheet" href="{SITEDOWN_THEME_CSS}" type="text/css" media="all" />
 		<title>{SITEDOWN_TABLE_PAGENAME}</title>
-		<style type="text/css">
+		<style>
 			.img-responsive { display: inline }
 		</style>
 	</head>

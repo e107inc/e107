@@ -1152,11 +1152,11 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 
 		case "ALERT":
 			$message = isset($emessage[$message]) ? $emessage[$message] : $message;
-			echo "<noscript>$message</noscript><script type='text/javascript'>alert(".$tp->toJSON($message)."); window.history.go(-1); </script>\n"; exit;
+			echo "<noscript>$message</noscript><script>alert(".$tp->toJSON($message)."); window.history.go(-1); </script>\n"; exit;
 			break;
 
 		case "P_ALERT":
-			echo "<script type='text/javascript'>alert(".$tp->toJSON($message)."); </script>\n";
+			echo "<script>alert(".$tp->toJSON($message)."); </script>\n";
 			break;
 
 		case 'POPUP':
@@ -1164,7 +1164,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% style='text-align:center'><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></td></tr></table></body></html> ";
 
 			echo "
-			<script type='text/javascript'>
+			<script>
 			winl=(screen.width-200)/2;
 			wint = (screen.height-100)/2;
 			winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';

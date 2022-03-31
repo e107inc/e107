@@ -107,32 +107,7 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 //if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml"))
 //  header("Content-type: application/xhtml+xml; charset=utf-8", TRUE);
 //else
-if(!e107::isCli())
-{
-	header("Content-type: text/html; charset=utf-8");
-}
-// NEW - HTML5 default
-// TODO - more precise controlo over page header depending on the HTML5 mode
-if(!defined("XHTML4"))
-{
-	echo "<!doctype html>\n";
-	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
-	echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
-	echo "<head>
-<title>".render_title()."</title>
-<meta charset='utf-8' />\n";
-}
-else 
-{
-	echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("XMLNS") ? " ".XMLNS." " : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
-	echo "<head>
-<title>".render_title()."</title>
-<meta http-equiv='content-type' content='text/html; charset=utf-8' />
-	<meta http-equiv='content-style-type' content='text/css' />
-	";
-	echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-}
+
 
 function render_title()
 {
@@ -172,10 +147,24 @@ function render_title()
 
 	return implode(' | ', $arr);
 }
-//
-// C: Send start of HTML
-//
 
+
+
+
+if(!e107::isCli())
+{
+	header("Content-type: text/html; charset=utf-8");
+}
+
+//
+// C: Send start of HTML - HTML5 default
+
+echo "<!doctype html>\n";
+$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
+echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
+echo "<head>
+<title>".render_title()."</title>
+<meta charset='utf-8' />\n";
 if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
 if(!empty($pref['sitebutton']))
@@ -435,12 +424,12 @@ if (isset($eplug_js) && $eplug_js)
 	   	$eplug_js_unique = array_unique($eplug_js);
     	foreach($eplug_js_unique as $kjs)
 		{
-        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n";
+        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n"; // could be a .php file  so leave the 'type'.
 		}
 	}
 	else
 	{
-    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; // could be a .php file so leave the 'type'.
 	}
 }
 
@@ -448,12 +437,12 @@ if (isset($eplug_js) && $eplug_js)
 //DEPRECATE this as well?
 if (isset($theme_js_php) && $theme_js_php)
 {
-	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
+	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n"; //  .php file so leave the 'type'.
 }
 else
 {
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+	if (file_exists(THEME.'theme.js')) { echo "<script src='".THEME_ABS."theme.js'></script>\n"; }
+	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script src='".e_FILE_ABS."user.js'></script>\n"; }
 	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
  	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
@@ -468,7 +457,7 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
 		$js_body_onload[] = "expandit('loginmenuchap');";
 		$js_body_onload[] = "expandit('nologinmenuchap');";
   	}
-  	echo "<script type='text/javascript' src='".e_JS."chap_script.js'></script>\n";
+  	echo "<script src='".e_JS."chap_script.js'></script>\n";
   	$js_body_onload[] = "getChallenge();";
 }
 

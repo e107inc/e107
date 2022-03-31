@@ -289,7 +289,7 @@ if (isset($footer_js) && is_array($footer_js))
 	$footer_js = array_unique($footer_js);
 	foreach ($footer_js as $fname)
 	{
-		echo "<script type='text/javascript' src='{$fname}'></script>\n";
+		echo "<script src='{$fname}'></script>\n";
 		$js_included[] = $fname;
 	}
 }
