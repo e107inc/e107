@@ -200,11 +200,11 @@ function headerjs()
 /*
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
-		<script type='text/javascript'>
+		<script>
 			//add required core lan - delete confirm message
 			('".LAN_JSCONFIRM."').addModLan('core', 'delete_confirm');
 		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
+		<script src='".e_JS."core/admin.js'></script>
 	";
 
 	return $ret;*/

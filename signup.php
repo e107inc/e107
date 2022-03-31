@@ -674,7 +674,7 @@ function req($field)
 function headerjs()
 {
 	return "
-	<script type=\"text/javascript\">
+	<script>
 	function addtext3(sc){
 		document.getElementById('signupform').image.value = sc;
 	}

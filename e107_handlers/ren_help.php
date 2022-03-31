@@ -154,7 +154,7 @@ function Color_Select($formid='col_selector') {
 	<div style='width: 221px; position: absolute; left:340px; top:60px;  margin-right:auto; margin-left:auto; display:none; z-index: 1000; id='{$formid}' onclick=\"expandit(this)\" >
 	<div  style='border:1px solid black; position: absolute;  top:30px;  width: 221px; '>";
 
-	$text .= "<script type='text/javascript'>
+	$text .= "<script>
 	//<![CDATA[
 	var maxtd = 18;
 	var maxtddiv = -1;

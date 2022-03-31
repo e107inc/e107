@@ -3035,7 +3035,7 @@ class themeHandler
 	
 	function themePreview()
 	{
-		echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php?themepreview.".$this->id."'</script>\n";
+		echo "<script>document.location.href='".e_BASE."index.php?themepreview.".$this->id."'</script>\n";
 		exit;
 	}
 

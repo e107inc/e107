@@ -471,7 +471,7 @@ if(!function_exists('headerjs'))
 	{
 
 		$js = "
-		<script type='text/javascript'>
+		<script>
 	
 	    function mail_field(val,id)
 		{

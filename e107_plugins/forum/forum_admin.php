@@ -622,7 +622,7 @@ e107::css('inline',"
 
 /*
 			echo "
-			<script type=\"text/javascript\">
+			<script>
 			function addtext1(sc){
 				document.getElementById('wmform').guestrules.value += sc;
 			}

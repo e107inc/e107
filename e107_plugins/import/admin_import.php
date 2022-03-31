@@ -607,7 +607,7 @@ class import_main_ui extends e_admin_ui
 	//  	$temp = '';
 	//  	if(varset($import_source)) { $temp .=  "disp('{$import_source}');"; }
 	//  	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
-	//  	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
+	//  	if (varset($temp)) $text .= "<script> {$temp}</script>";
 		
 		$this->addTitle($importType); 
 		echo $mes->render().$text; 
@@ -1358,7 +1358,7 @@ function headerjs()
   }
 
   $text = "
-	<script type='text/javascript'>{$vals}{$texts}{$blocks}{$comments}
+	<script>{$vals}{$texts}{$blocks}{$comments}
 	function disp(type) 
 	{
 	  if(type == 'csv')

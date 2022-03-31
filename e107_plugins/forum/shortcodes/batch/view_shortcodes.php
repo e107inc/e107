@@ -1082,7 +1082,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						<span id='forum-track-trigger-container'>
 						<a class='btn btn-default btn-sm btn-small e-ajax' data-target='forum-track-trigger' href='{$url}' id='forum-track-trigger'>{$img}</a>
 						</span>
-						<script type='text/javascript'>
+						<script>
 						e107.runOnLoad(function(){
 							$('forum-track-trigger').observe('click', function(e) {
 								e.stop();

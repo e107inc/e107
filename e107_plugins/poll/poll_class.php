@@ -305,7 +305,7 @@ class poll
 				$poll_ip = varset($poll_ip) . varset($userid);
 				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip."^'" : '')." WHERE poll_id=".varset($poll_id));
 				/*echo "
-				<script type='text/javascript'>
+				<script>
 				<!--
 				setcook({$poll_id});
 				//-->

@@ -208,15 +208,15 @@
 			// Test loaded files.
 
 			$result = $this->js->renderJs('header', 1, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
+			$this->assertStringContainsString('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
 			$this->assertStringContainsString('zone #1', $result);
 
 			$result = $this->js->renderJs('header', 3, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
+			$this->assertStringContainsString('<script src="https://somewhere/something.min.js" defer></script>', $result);
 			$this->assertStringContainsString('zone #3', $result);
 
 			$result = $this->js->renderJs('header', 4, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/async.js" defer async></script>', $result);
+			$this->assertStringContainsString('<script src="https://somewhere/async.js" defer async></script>', $result);
 			$this->assertStringContainsString('zone #4', $result);
 
 		}
@@ -263,15 +263,15 @@
 			// Test loaded files.
 
 			$result = $this->js->renderJs('footer', 1, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
+			$this->assertStringContainsString('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>', $result);
 			$this->assertStringContainsString('priority #1', $result);
 
 			$result = $this->js->renderJs('footer', 3, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/something.min.js" defer></script>', $result);
+			$this->assertStringContainsString('<script src="https://somewhere/something.min.js" defer></script>', $result);
 			$this->assertStringContainsString('priority #3', $result);
 
 			$result = $this->js->renderJs('footer', 4, true, true);
-			$this->assertStringContainsString('<script type="text/javascript" src="https://somewhere/async.js" defer async></script>', $result);
+			$this->assertStringContainsString('<script src="https://somewhere/async.js" defer async></script>', $result);
 			$this->assertStringContainsString('priority #4', $result);
 
 		}

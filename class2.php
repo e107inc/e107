@@ -1171,7 +1171,7 @@ function js_location($qry)
 		exit;
 	}
 
-	echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n";
+	echo "<script>document.location.href='{$qry}'</script>\n";
 	exit;
 }
 

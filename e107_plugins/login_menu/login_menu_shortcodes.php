@@ -528,7 +528,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 				if($parm == "popup"){
 					$srch = array("<br />","'");
 					$rep = array("\\n","\'");
-					return "<script type='text/javascript'>
+					return "<script>
 						alert(".$tp->toJSON(LOGINMESSAGE).");
 						</script>";
 				}

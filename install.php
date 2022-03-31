@@ -2404,7 +2404,7 @@ function template_data()
 		<link href="'.e_THEME.'bootstrap3/css/bootstrap-dark.min.css" rel="stylesheet">
 		<link href="'.e_THEME.'bootstrap3/admin_style.css" rel="stylesheet">
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
-		<style type="text/css">
+		<style>
 		
 		body 					{  padding-top: 40px; padding-bottom: 40px; background-color: #181818; }
 		.container-narrow 		{ margin: 0 auto; max-width: 800px; }
@@ -2475,10 +2475,10 @@ function template_data()
 		<!-- The javascript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-		<script type="text/javascript">
+		<script>
 		
 		$(document).ready(function()
 		{

@@ -744,11 +744,11 @@ class e_jsmanager
 				break;
 				
 				case 'admin':
-					return ($this->isInAdmin()) ? false : true;	
+					return !$this->isInAdmin();
 				break;
 				
 				case 'front':
-					return ($this->isInAdmin()) ? true : false;	
+					return $this->isInAdmin();
 				break;
 
 				case 'none':
@@ -1455,7 +1455,7 @@ class e_jsmanager
 						$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 						$path = $this->url($path);
 					}
-					
+
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 				//	$this->cacheList['css'][] = $path;
@@ -1474,7 +1474,8 @@ class e_jsmanager
 					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 					$path = $this->url($path);
-					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
+
+					echo $pre.'<script src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1533,7 +1534,6 @@ class e_jsmanager
 						continue;
 					}
 
-
 					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 
@@ -1575,7 +1575,7 @@ class e_jsmanager
 						continue;
 					}
 
-					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
+					echo $pre.'<script src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1750,7 +1750,7 @@ class e_jsmanager
 
 			if($type == 'js')
 			{
-				echo "<script type='text/javascript' src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."'></script>\n\n";
+				echo "<script src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."'></script>\n\n";
 			}
 			else
 			{
@@ -1968,7 +1968,7 @@ class e_jsmanager
 				{
 					echo "<!-- [JSManager] ".$label." -->\n";
 				}
-				echo '<script type="text/javascript">';
+				echo '<script>';
 				echo "\n//<![CDATA[\n";
 				echo implode("\n\n", $content_array);
 				echo "\n//]]>\n";
@@ -1992,7 +1992,8 @@ class e_jsmanager
 				{
 					$text .= "<!-- [CSSManager] ".$label." -->\n";
 				}
-				$text .= '<style rel="stylesheet" type="text/css" property="stylesheet">';
+
+				$text .= '<style rel="stylesheet" property="stylesheet">';
 				$text .= implode("\n\n", $content_array);
 				$text .= '</style>';
 				$text .= "\n";

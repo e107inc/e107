@@ -1150,7 +1150,7 @@ class forum_post_handler
 		{
 			if ($fp->flood('forum_thread', 'thread_datestamp') == false && !ADMIN)
 			{
-				echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+				echo "<script>document.location.href='".e_BASE."index.php'</script>\n";
 				exit;
 			}
 

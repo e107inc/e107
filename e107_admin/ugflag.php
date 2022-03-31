@@ -128,7 +128,7 @@ require_once (e_ADMIN."footer.php");
 function headerjs()
 {
 	$ret = "
-		<script type='text/javascript'>
+		<script>
 			//Ajax Support
 			var CoreUgflagAjaxPage = function(e_event) {
 				\$('updatesettings').observe('click', function(event) {
@@ -149,7 +149,7 @@ function headerjs()
 			}
 
 		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
+		<script src='".e_JS."core/admin.js'></script>
 	";
 	
 	return $ret;

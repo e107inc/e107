@@ -282,16 +282,16 @@ if ($redirectFlag)
 			header('Location: '.e107::getUrl()->create('news/view/item', 'id='.$redirectFlag));
 			exit;
 		case "poll" :
-			echo "<script type='text/javascript'>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
+			echo "<script>document.location.href='".e_HTTP."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
 			exit;
 		case "download" :
-			echo "<script type='text/javascript'>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
+			echo "<script>document.location.href='".e_HTTP."download.php?view.{$redirectFlag}'</script>\n";
 			exit;
 		case "page" :
-			echo "<script type='text/javascript'>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
+			echo "<script>document.location.href='".e_HTTP."page.php?{$redirectFlag}'</script>\n";
 			exit;
 		case 'user' :
-			echo "<script type='text/javascript'>document.location.href='".e107::getUrl()->create('user/profile/view', 'id='.$redirectFlag)."'</script>\n";
+			echo "<script>document.location.href='".e107::getUrl()->create('user/profile/view', 'id='.$redirectFlag)."'</script>\n";
 			exit;
 	}
 
@@ -306,7 +306,7 @@ if ($redirectFlag)
 	
 	if ($plugin_redir)
 	{
-		echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
+		echo "<script>document.location.href='{$reply_location}'</script>\n";
 		exit;
 	}
 	

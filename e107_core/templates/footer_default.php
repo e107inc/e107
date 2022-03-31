@@ -306,9 +306,10 @@ global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
 {
 	$footer_js = array_unique($footer_js);
+
 	foreach ($footer_js as $fname)
 	{
-		echo "<script type='text/javascript' src='{$fname}'></script>\n";
+		echo "<script src='{$fname}'></script>\n";
 		$js_included[] = $fname;
 	}
 }
@@ -384,7 +385,8 @@ if (abs($_serverTime - $lastSet) > 120)
 	 * Benefit: account for user time corrections and changes in internet delays
 	 * Drawback: each update may cause all server times to display a bit different
 	 */
-	echo "<script type='text/javascript'>\n";
+
+	echo "<script>\n";
 	echo "	SyncWithServerTime('', '{$_serverPath}', '{$_serverDomain}');\n";
 	//tdOffset disabled as it can't live together with HTTP_IF_NONE_MATCH (page load speed)
 	//echo "	SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');\n";

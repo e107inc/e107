@@ -1184,7 +1184,6 @@ class file_inspector {
 		// Core CSS - XXX awaiting for path changes
 		if(!isset($no_core_css) || !$no_core_css)
 		{
-			//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 			$e_js->otherCSS('{e_WEB_CSS}e107.css');
 		}
 
@@ -1192,19 +1191,16 @@ class file_inspector {
 		if(!deftrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'])
 		{
 			$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
-			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 			$e_js->themeCSS($css_file);
 		}
 		elseif(isset($pref['themecss']) && $pref['themecss'])
 		{
 			$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? 'admin_'.$pref['themecss'] : $pref['themecss'];
-			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 			$e_js->themeCSS($css_file);
 		}
 		else
 		{
 			$css_file = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
-			//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 			$e_js->themeCSS($css_file);
 		}
 
@@ -1230,7 +1226,7 @@ class file_inspector {
 		echo "\n<!-- footer_inline_css -->\n";
 
         $text = "
-<style type='text/css'>
+<style>
 <!--\n";
         if (vartrue($_POST['regex']))
         {
@@ -1358,7 +1354,7 @@ e107::js('footer', '{e_WEB}js/core/front.jquery.js', 'jquery', 1); // Load all d
 
 $text = e107::getJs()->renderJs('footer', 1, true, true);
 
-$text .= "<script type='text/javascript'>
+$text .= "<script>
 <!--
 c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
 e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';

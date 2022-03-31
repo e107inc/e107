@@ -59,7 +59,7 @@ if(!function_exists('pm_show_popup'))
         $popuptext = str_replace("\n", '', $popuptext);
         $popuptext = str_replace("\t", '', $popuptext);
         $text = "
-	<script type='text/javascript'>
+	<script>
 	winl=(screen.width-200)/2;
 	wint = (screen.height-100)/2;
 	winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
