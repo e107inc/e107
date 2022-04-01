@@ -671,7 +671,7 @@ class e_news_item extends e_front_model
 		$id = intval($id);
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
-	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
+	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
