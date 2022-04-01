@@ -86,6 +86,13 @@ class forum_url // plugin-folder + '_url'
 			'sef'			=> 'forum/{forum_sef}/{thread_id}/{thread_sef}/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
+        
+		$config['topic-canonical'] = array(
+			'regex'         => 'forum\/([^\/]*)\/([\d]*)(?:\/|-)([\w-]*)/?\??(.*)',
+		//	'regex'			=> '^forum/(.*)/(\d*)(?:-|/)([\w-]*)/?\??(.*)',
+			'sef'			=> 'forum/{forum_sef}/{thread_id}/?p={thread_page}',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
+		);        
 /*
 		$config['subforum'] = array(
 			'regex'			=> '^forum/(.*)/(.*)$',
