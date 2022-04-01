@@ -375,8 +375,10 @@ else
 	e107::getDebug()->log($ret);
 	unset($ret);
 }
+ 
+$thread->threadInfo['thread_page'] = varset($thread->page,1);
+e107::canonical('forum', 'topic-canonical', $thread->threadInfo); 
 
-e107::canonical('forum', 'topic', $thread->threadInfo);
 require_once (HEADERF);
 
 
