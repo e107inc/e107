@@ -235,7 +235,7 @@ class e_ranks
 
 		$lastRank = count($this->ranks['data']);
 		$rank = false;
-		if($level <= varset($this->ranks['data'][0]['thresh']))
+		if($level <= varset($this->ranks['data'][1]['thresh']))
 		{
 			$rank = 1;
 		}
@@ -245,7 +245,7 @@ class e_ranks
 		}
 		else
 		{
-			for($i=0; $i < $lastRank; $i++)
+			for($i=1; $i <= $lastRank; $i++)
 			{
 				if($level >= $this->ranks['data'][$i]['thresh'] && $level < $this->ranks['data'][($i+1)]['thresh'])
 				{
