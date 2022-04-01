@@ -535,7 +535,7 @@ class e107forum
 		}
 
 		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, $moderatorUserIds))
+		if(!in_array(USERID, $moderatorUserIds) && !getperms('0'))
 		{
 			$ret['msg'] 	= ''.LAN_FORUM_8030.'';
 			$ret['hide'] 	= false;
