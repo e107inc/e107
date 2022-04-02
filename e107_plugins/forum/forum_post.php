@@ -1585,7 +1585,16 @@ class forum_post_handler
 
 	//	$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 
-		$url = e107::url('forum','topic',$this->data); // ."&f=post";
+		$page= (varset($_GET['p']) ? (int)$_GET['p'] : 1);
+		if($page > 1) 
+		{
+				$url = e107::url('forum','topic',$this->data)."?p=".$page; 
+		}
+		else {
+				$url = e107::url('forum','topic',$this->data);
+		}
+        
+		//$url = e107::url('forum','topic',$this->data); // ."&f=post";
 
 		$this->redirect($url);
 
