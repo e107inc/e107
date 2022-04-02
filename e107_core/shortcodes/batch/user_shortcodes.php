@@ -182,13 +182,13 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_lastvisit($parm='')
 	{
-		return $this->var['user_currentvisit'] ? e107::getDate()->convert_date($this->var['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
+		return $this->var['user_currentvisit'] ? e107::getDate()->convert_date($this->var['user_currentvisit'], "long") : e107::getDate()->convert_date($this->var['user_lastvisit'], "long");
 	}
 	
 	
 	function sc_user_lastvisit_lapse($parm='')
 	{	
-		return $this->var['user_currentvisit'] ? e107::getDate()->computeLapse($this->var['user_currentvisit']) : '';
+		return $this->var['user_currentvisit'] ? e107::getDate()->computeLapse($this->var['user_currentvisit']) : e107::getDate()->computeLapse($this->var['user_lastvisit']);
 	}
 
 	
