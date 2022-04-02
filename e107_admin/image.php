@@ -1004,10 +1004,10 @@ class media_admin_ui extends e_admin_ui
 			$mimeTypes[$id] = $id; 	
 		}
 
-		$mimeTypes['image/*'] = 'image/*';
-		$mimeTypes['video/*'] = 'video/*';
-		$mimeTypes['audio/*'] = 'audio/*';
-		$mimeTypes['application/*'] = 'application/*';
+		$mimeTypes['image/%'] = 'image/*';
+		$mimeTypes['video/%'] = 'video/*';
+		$mimeTypes['audio/%'] = 'audio/*';
+		$mimeTypes['application/%'] = 'application/*';
 		asort($mimeTypes);
 		
 		$this->fields['media_category']['writeParms'] = $this->cats;
@@ -1203,9 +1203,8 @@ class media_admin_ui extends e_admin_ui
 	/** Wildcard support for media-type filter  */
 	function handleGridMediaTypeFilter($var)
 	{
-		if(strpos($var,'*')!== false)
+		if(strpos($var,'%') !== false)
 		{
-			$var = str_replace('*', '%', $var);
 			return "m.media_type LIKE '".$var."'";
 		}
 
