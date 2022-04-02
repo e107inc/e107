@@ -82,7 +82,7 @@ class e_form
 	/**
 	 * @var e_parse
 	 */
-	private $tp;
+	protected $tp;
 
 	public function __construct($enable_tabindex = false)
 	{
@@ -4989,6 +4989,15 @@ var_dump($select_options);*/
 
 		$editIconDefault = deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'));
 		$deleteIconDefault = deftrue('ADMIN_DELETE_ICON', $tp->toGlyph('fa-trash'));
+
+		// option to set custom icons. @see e107_admin/image.php media_form_ui::options
+		if(!empty($attributes['icons']))
+		{
+			$editIconDefault = !empty($attributes['icons']['edit']) ? $attributes['icons']['edit'] : $editIconDefault;
+			$deleteIconDefault = !empty($attributes['icons']['delete']) ? $attributes['icons']['delete'] : $deleteIconDefault;
+			unset($attributes['icons']);
+		}
+
 /*
 		if($attributes['grid'])
 		{
@@ -5028,8 +5037,10 @@ var_dump($select_options);*/
 		if(($cls === false || check_class($cls)) && varset($parms['edit'],1) == 1)
 		{
 
-			parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
-				// keep other vars in tact
+			$qry = isset($attributes['query']) ? $attributes['query'] : e_QUERY; // @see image.php - media_form_ui::options()
+
+			parse_str(str_replace('&amp;', '&', $qry), $query); //FIXME - FIX THIS
+					// keep other vars in tact
 			$query['action'] = 'edit';
 			$query['id'] = $id;
 
@@ -5053,8 +5064,8 @@ var_dump($select_options);*/
 					'class'              => "btn btn-default btn-secondary$eModal",
 					'data-modal-caption' => $eModalCap,
 					'title'              => LAN_EDIT,
-					'data-toggle'        => 'tooltip',
-					'data-bs-toggle'     => 'tooltip',
+			//		'data-toggle'        => 'tooltip',
+				//	'data-bs-toggle'     => 'tooltip',
 					'data-placement'     => 'left',
 				];
 
