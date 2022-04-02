@@ -2201,6 +2201,42 @@ EXPECTED;
 		}
 
 
+		// test options.
+		$this->tp->setFontAwesome(5);
+		$opts = array(
+			0   => ['size'=>'3x',       'expected'  => "<i class='fas fa-camera fa-3x' ></i>"],
+			1   => ['spin'=>1,          'expected'  => "<i class='fas fa-camera fa-spin' ></i>"],
+			2   => ['rotate'=>180,      'expected'  => "<i class='fas fa-camera fa-rotate-180' ></i>"],
+			3   => ['fw'=>1,            'expected'  => "<i class='fas fa-camera fa-fw' ></i>"],
+		);
+
+		foreach($opts as $parm)
+		{
+			$expected = $parm['expected'];
+			unset($parm['expected']);
+			$result = $this->tp->toGlyph('fa-camera', $parm);
+			$this->assertSame($expected, $result);
+		}
+
+
+			// test options.
+		$this->tp->setFontAwesome(4);
+		$opts = array(
+			0   => ['size'=>'3x',       'expected'  => "<i class='fa fa-camera fa-3x' ></i>"],
+			1   => ['spin'=>1,          'expected'  => "<i class='fa fa-camera fa-spin' ></i>"],
+			2   => ['rotate'=>180,      'expected'  => "<i class='fa fa-camera fa-rotate-180' ></i>"],
+			3   => ['fw'=>1,            'expected'  => "<i class='fa fa-camera fa-fw' ></i>"],
+		);
+
+		foreach($opts as $parm)
+		{
+			$expected = $parm['expected'];
+			unset($parm['expected']);
+			$result = $this->tp->toGlyph('fa-camera', $parm);
+			$this->assertSame($expected, $result);
+		}
+
+
 	}
 
 	function testToGlyphFallback()

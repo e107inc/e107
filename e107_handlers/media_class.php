@@ -1216,37 +1216,34 @@ class e_media
 	 */
 	public function previewTag($default, $options=array())
 	{
+
 		$tp = e107::getParser();
 
-		$type = !empty($options['type']) ? $options['type'] : $this->detectType($default);
+		$type       = !empty($options['type']) ? $options['type'] : $this->detectType($default);
 
-		$width = vartrue($options['w'], 220);
-		$height = vartrue($options['h'], 190);
-		$crop = vartrue($options['crop'], 0);
-		$preview = '';
+		$width      = vartrue($options['w'], 220);
+		$height     = vartrue($options['h'], 190);
+		$crop       = vartrue($options['crop'], 0);
+		$preview    = '';
 
 		switch($type)
 		{
 
 			case "video":
 				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
-			//	$previewURL = $tp->toVideo($default, array('mode'=>'url'));
-				break;
+			break;
 
 			case "audio":
 				$preview = $tp->toAudio($default);
-			//	$previewURL = false;
-				break;
+			break;
 
 			case "image":
 				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'crop'=>$crop, 'class'=> varset($options['class'],'image-selector img-responsive img-fluid'), 'legacy'=>varset($options['legacyPath'])));
-			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
-				break;
+			break;
 
 			case "application": // file.
-			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
-			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
-				break;
+				$preview = "<div class='text-center' style='padding-top:40px; padding-bottom:40px'>".defset('LAN_FILE', 'File')."</div>";
+			break;
 
 			case "glyph":
 				$preview = $tp->toGlyph($default);
@@ -1254,7 +1251,6 @@ class e_media
 
 			case "icon":
 				$preview = $tp->toIcon($default);
-			//	$previewURL = false;
 			break;
 
 			default: // blank
