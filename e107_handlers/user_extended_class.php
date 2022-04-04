@@ -32,6 +32,10 @@ Code uses two tables:
 
 e107::coreLan('user_extended');
 
+
+/**
+ *
+ */
 class e107_user_extended
 {
 	public $user_extended_types;	// Text description corresponding to each field type
@@ -125,6 +129,9 @@ class e107_user_extended
 
 	}
 
+	/**
+	 * @return null
+	 */
 	public function init()
 	{
 		$sql = e107::getDb('ue');
@@ -230,6 +237,11 @@ class e107_user_extended
 
 
 	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
+
+	/**
+	 * @param $target
+	 * @return void
+	 */
 	function addFieldTypes(&$target)
 	{
 		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
@@ -391,6 +403,11 @@ class e107_user_extended
 	// $val is whatever the user entered.
 	// $params is the field definition
 	// Return FALSE if acceptable, TRUE if fail , error message on regex fail if the message is defined
+	/**
+	 * @param $val
+	 * @param $params
+	 * @return array|bool|mixed|string|string[]
+	 */
 	function user_extended_validate_entry($val, $params)
 	{
 		$tp = e107::getParser();
@@ -613,6 +630,10 @@ class e107_user_extended
 
 	// Get the definition of all fields, or those in a specific category, grouped by category ID
 	// Reads non-system fields only
+	/**
+	 * @param $cat
+	 * @return array
+	 */
 	public function user_extended_get_fields($cat = "")
 	{
 		$list = $this->getFieldList($cat);
@@ -629,13 +650,17 @@ class e107_user_extended
 	 * Get a list of fields in a particular category.
 	 * @param string $cat
 	 * @param string $indexField
-	 * @return mixed
+	 * @return array
 	 */
 	function getFieldList($cat = null, $indexField = 'user_extended_struct_id')
 	{
 		return $this->user_extended_get_fieldList($cat, $indexField); 	
 	}
 
+	/**
+	 * @param $listRoot
+	 * @return extended_timezones|false
+	 */
 	private function getFieldTypeClass($listRoot)
 	{
 
@@ -760,7 +785,7 @@ class e107_user_extended
 	 * Get the field attributes of a given field-name.
 	 * @param string $field
 	 * @param string read|write|type|values|parms|applicable
-	 * @return bool|int|string
+	 * @return false|string
 	 */
 	public function getFieldAttribute($field, $att)
 	{
@@ -893,6 +918,10 @@ class e107_user_extended
 	}
 
 
+	/**
+	 * @param $name
+	 * @return int
+	 */
 	function user_extended_field_exist($name)
 	{
 	  	$sql = e107::getDb('ue');
@@ -900,19 +929,44 @@ class e107_user_extended
 		return $sql->count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
 
+	/**
+	 * @return void
+	 */
 	function clear_cache()
 	{
 		e107::getCache()->clear_sys('nomd5_extended_struct');
 	}
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
+
+	/**
+	 * @param $name
+	 * @param $type
+	 * @param $default
+	 * @param $source
+	 * @return bool
+	 */
 	function user_extended_add_system($name, $type, $default = '', $source = '_system_')
 	{
 	  return $this->user_extended_add($name, '_system_', $type, $source, '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
 
-
+	/**
+	 * @param $name
+	 * @param $text
+	 * @param $type
+	 * @param $parms
+	 * @param $values
+	 * @param $default
+	 * @param $required
+	 * @param $read
+	 * @param $write
+	 * @param $applicable
+	 * @param $order
+	 * @param $parent
+	 * @return bool
+	 */
 	function user_extended_add($name, $text='', $type='', $parms='', $values='', $default='', $required='', $read='', $write='', $applicable='', $order='', $parent='')
 	{
 		
@@ -1012,7 +1066,21 @@ class e107_user_extended
 	}
 
 
-
+	/**
+	 * @param $id
+	 * @param $name
+	 * @param $text
+	 * @param $type
+	 * @param $parms
+	 * @param $values
+	 * @param $default
+	 * @param $required
+	 * @param $read
+	 * @param $write
+	 * @param $applicable
+	 * @param $parent
+	 * @return false|int
+	 */
 	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $parent)
 	{
 		$sql = e107::getDb('ue');
@@ -1049,6 +1117,11 @@ class e107_user_extended
 		return false;
 	}
 
+	/**
+	 * @param $id
+	 * @param $name
+	 * @return bool
+	 */
 	function user_extended_remove($id, $name)
 	{
 		$sql = e107::getDb('ue');
@@ -1075,6 +1148,11 @@ class e107_user_extended
 		return false;
 	}
 
+	/**
+	 * @param $struct
+	 * @param $curval
+	 * @return string
+	 */
 	function user_extended_hide($struct, $curval)
 	{
 		$chk = ($curval) ? " checked='checked' " : "";

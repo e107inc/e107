@@ -17,6 +17,10 @@
 if (!defined('e107_INIT')) { exit; }
 
 // Given an image file name, return the mime type string. Returns FALSE if invalid
+/**
+ * @param $fileName
+ * @return false|string
+ */
 function mimeFromFilename($fileName)
 {
 	$fileExt = strtolower(substr(strrchr($fileName, "."), 1));

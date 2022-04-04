@@ -24,6 +24,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class e_bbcode
 {
 	private $bbList;			// Caches the file contents for each bbcode processed
@@ -486,18 +490,30 @@ class e_bbcode
 	}
 	
 	//Set the class type for a bbcode eg. news | page | user | {plugin-folder}
+
+	/**
+	 * @param $mode
+	 * @return void
+	 */
 	function setClass($mode=false)
 	{
 		$this->class = $mode;	
 	}
 	
 	// return the Mode used by the class.  eg. news | page | user | {plugin-folder}
+
+	/**
+	 * @return bool
+	 */
 	function getMode()
 	{
 		return $this->class; 	
 	}
-	
-	
+
+
+	/**
+	 * @return false|int
+	 */
 	function resizeWidth()
 	{
 		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['w']))
@@ -507,7 +523,10 @@ class e_bbcode
 
 		return false;	
 	}
-	
+
+	/**
+	 * @return false|int
+	 */
 	function resizeHeight()
 	{
 		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['h']))
@@ -519,6 +538,11 @@ class e_bbcode
 	}	
 	
 	// return the class for a bbcode
+
+	/**
+	 * @param $type
+	 * @return string
+	 */
 	function getClass($type='')
 	{
 				
@@ -528,9 +552,12 @@ class e_bbcode
 			$ret .= " bbcode-".$type."-".$this->class;
 		}
 		return $ret; 
-	}	
-	
-	
+	}
+
+
+	/**
+	 * @return void
+	 */
 	function clearClass()
 	{
 		$this->setClass();	
@@ -651,10 +678,14 @@ class e_bbcode
 		
   		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel'>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
 	}
-	
-    
 
-   function processTag($tag, $html)
+
+	/**
+	 * @param $tag
+	 * @param $html
+	 * @return array|string|string[]
+	 */
+	function processTag($tag, $html)
     {
         $html = "<html><body>".$html."</body></html>";
         $doc = new DOMDocument();     

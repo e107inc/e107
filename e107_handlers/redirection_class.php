@@ -58,7 +58,9 @@ class redirection
 	}
 
 
-
+	/**
+	 * @return array
+	 */
 	function getSelfExceptions()
 	{
 		return $this->self_exceptions;
@@ -101,7 +103,11 @@ class redirection
 		
 		return $this;
 	}
-	
+
+	/**
+	 * @param $full
+	 * @return array|mixed|string|string[]
+	 */
 	public function getSelf($full = false)
 	{
 		if($full)
@@ -332,7 +338,10 @@ class redirection
 			$this->redirect($url);
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function redirectPrevious()
 	{
 		if($this->getPreviousUrl())
@@ -342,6 +351,13 @@ class redirection
 	}
 
 
+	/**
+	 * @param $url
+	 * @param $replace
+	 * @param $http_response_code
+	 * @param $preventCache
+	 * @return void
+	 */
 	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
 		$this->go($url, $replace, $http_response_code, $preventCache);

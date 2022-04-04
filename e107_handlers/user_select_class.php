@@ -17,7 +17,11 @@
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
-class user_select 
+
+/**
+ *
+ */
+class user_select
 {
 
 	/**
@@ -178,10 +182,13 @@ class user_select
 		
 		return $text;
 	}
-	
 
 
-	function real_name($_id) 
+	/**
+	 * @param $_id
+	 * @return mixed|void
+	 */
+	function real_name($_id)
 	{
 		global $sql;
 		$sql ->select("user", "user_name", "user_id='".intval($_id)."' ");
@@ -295,7 +302,12 @@ class user_select
 		echo "\n</body>\n</html>";
 	}
 
-	function findusers($s,$banned=FALSE) {
+	/**
+	 * @param $s
+	 * @param $banned
+	 * @return false
+	 */
+	function findusers($s, $banned=FALSE) {
 		global $sql, $tp;
 		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
 		if ($sql->select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc))

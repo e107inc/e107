@@ -11,6 +11,9 @@
 
 namespace e107\Shims;
 
+/**
+ *
+ */
 trait InternalShimsTrait
 {
 	use Internal\GetParentClassTrait;

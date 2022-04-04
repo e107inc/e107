@@ -422,7 +422,7 @@ class e_jsmanager
 	/**
 	 * Add CSS code to site header
 	 *
-	 * @param string|array $js_content
+	 * @param string|array $css_content
 	 * @param string $media (not implemented yet) any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
 	 * @return e_jsmanager
 	 */
@@ -595,7 +595,8 @@ class e_jsmanager
 	 *
 	 * @param string $plugname
 	 * @param string $file_path relative to plugin root folder
-	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
+	 * @param string $pre
+	 * @param string $post
 	 * @return e_jsmanager
 	 */
 	public function headerPlugin($plugname, $file_path, $pre, $post)
@@ -704,18 +705,30 @@ class e_jsmanager
 		$this->addJs('settings', $js_settings);
 		return $this;
 	}
-	
-	
+
+
+	/**
+	 * @param $dep
+	 * @return void
+	 */
 	function setDependency($dep)
 	{
 		$this->_dependence = $dep;		
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function resetDependency()
 	{
 		$this->_dependence = null;
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @return void
+	 */
 	public function set($name, $value)
 	{
 		$this->$name = $value;
@@ -761,7 +774,12 @@ class e_jsmanager
 		return false;
 		
 	}
-	
+
+	/**
+	 * @param $rlocation
+	 * @param $libs
+	 * @return $this|void
+	 */
 	public function checkLibDependence($rlocation, $libs = null)
 	{
 		$opts = [
@@ -2101,6 +2119,11 @@ class e_jsmanager
 		return (isset($this->_lastModified[$what]) ? $this->_lastModified[$what] : 0);
 	}
 
+	/**
+	 * @param $mod
+	 * @param $array_newlib
+	 * @return $this
+	 */
 	public function addLibPref($mod, $array_newlib)
 	{
 
@@ -2149,6 +2172,11 @@ class e_jsmanager
 		return $this;
 	}
 
+	/**
+	 * @param $mod
+	 * @param $array_removelib
+	 * @return $this
+	 */
 	public function removeLibPref($mod, $array_removelib)
 	{
 

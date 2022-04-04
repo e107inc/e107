@@ -32,24 +32,30 @@ class e_upgrade
 
 	/**
 	 *
-	 * @param string $curFolder - folder name of the plugin or theme to check
-	 * @param string $curVersions - installed version of the plugin or theme.
-	 * @param string $releaseUrl - url of the XML file in the above format.
-	 * @param boolean $cache
+	 * @param $dataArray
 	 * @return $this
 	 */
-
     public function setOptions($dataArray)
 	{
 		$this->_options = $dataArray;
 		return $this;
 	}
 
+	/**
+	 * @param $key
+	 * @param $default
+	 * @return mixed
+	 */
 	public function getOption($key, $default = '')
 	{
 		return varset($this->_options[$key], $default);
 	}
 
+	/**
+	 * @param $mode
+	 * @param $cache
+	 * @return void
+	 */
 	public function releaseCheck($mode='plugin', $cache=TRUE)
 	{
 		global $e107cache;
@@ -117,10 +123,12 @@ class e_upgrade
 
 
 	}
-	
-	
 
-    function checkAllPlugins()
+
+	/**
+	 * @return void
+	 */
+	function checkAllPlugins()
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDB();
@@ -136,6 +144,9 @@ class e_upgrade
 		}
  	}
 
+	/**
+	 * @return void
+	 */
 	function checkSiteTheme()
 	{
         $curTheme 	= e107::getPref('sitetheme');
@@ -146,7 +157,10 @@ class e_upgrade
 		$this->setOptions($options);
 		$this->releaseCheck('theme',FALSE);
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function listLangPacks()
 	{
 		

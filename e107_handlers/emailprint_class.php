@@ -19,9 +19,21 @@ if (!defined('e107_INIT')) { exit; }
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
 
-class emailprint 
+
+/**
+ *
+ */
+class emailprint
 {
-	static function render_emailprint($mode, $id, $look = 0,$parm=array())
+
+	/**
+	 * @param $mode
+	 * @param $id
+	 * @param $look
+	 * @param $parm
+	 * @return string
+	 */
+	static function render_emailprint($mode, $id, $look = 0, $parm=array())
 	{
 		// $look = 0  --->display all icons
 		// $look = 1  --->display email icon only

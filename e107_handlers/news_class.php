@@ -26,6 +26,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class news {
 
 	protected static $_rewrite_data = array();
@@ -34,6 +38,11 @@ class news {
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
 	//@Deprecated and no longer used by newspost.php 
+	/**
+	 * @param $news
+	 * @param $smessages
+	 * @return array
+	 */
 	function submit_item($news, $smessages = false)
 	{
 		$tp = e107::getParser();
@@ -247,7 +256,15 @@ class news {
 		$data['error'] = $error;
 		return $data;
 	}
-	
+
+	/**
+	 * @param $news
+	 * @param $mode
+	 * @param $n_restrict
+	 * @param $NEWS_TEMPLATE
+	 * @param $param
+	 * @return bool|string|null
+	 */
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param = array())
 	{
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
@@ -420,6 +437,11 @@ class news {
 	}
 
 	//@TDODO deprecated?
+
+	/**
+	 * @param $original
+	 * @return string
+	 */
 	function make_xml_compatible($original)
 	{
 		$original = e107::getParser()->toHTML($original, TRUE);
@@ -431,15 +453,15 @@ class news {
 
 	/**
 	 * Render a news Grid. (currently used in news_grid_menu ) // new v2.1.5
-	 * @param array $parm
-	 * @param string    $parm['caption']        text or constant
-	 * @param integer   $parm['titleLimit']     number of chars fo news title
-	 * @param integer   $parm['summaryLimit']   number of chars for new summary
-	 * @param string    $parm['source']         latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
-	 * @param integer   $parm['order']          n.news_datestamp DESC
-	 * @param integer   $parm['limit']          10
-	 * @param string   $parm['template']        default | or any key as defined in news_grid_template.php
-	 *
+	 * @param array $parm = [
+	 *      'caption'		    => (string)     text or constant
+	 *      'titleLimit'		=> (integer)    number of chars fo news title
+	 *      'summaryLimit'		=> (integer)    number of chars for new summary
+	 *      'source'		    => (string)     latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+	 *      'order'		        => (integer)    n.news_datestamp DESC
+	 *      'limit'		        => (integer)    10
+	 *      'template'		    => (string)     default | or any key as defined in news_grid_template.php
+	 *  ]
 	 * @return string
 	 */
 	function render_newsgrid($parm=null)
@@ -571,6 +593,10 @@ class news {
 
 require_once(e_HANDLER.'model_class.php');
 
+
+/**
+ *
+ */
 class e_news_item extends e_front_model
 {
 	protected $_db_table = 'news';
@@ -582,8 +608,7 @@ class e_news_item extends e_front_model
 	 * THIS IS ONLY TEST, maybe useful for fields requiring simple formatting - it's a way too complicated for designers,
 	 * could be inner used inside the rest of news SCs.
 	 *
-	 * @param string $news_field name without the leading 'news_' prefix
-	 * @param mixed $default
+	 * @param null $parm
 	 * @return string field value
 	 */
 	public function sc_news_field($parm = null)
@@ -684,6 +709,10 @@ class e_news_item extends e_front_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_news_tree extends e_front_tree_model
 {
 	protected $_db_table = 'news';
@@ -708,12 +737,18 @@ class e_news_tree extends e_front_tree_model
 		$this->_current_category_id = $category_id;
 		return $this;
 	}
-	
+
+	/**
+	 * @return array|int
+	 */
 	public function getCurrentCategoryId()
 	{
 		return $this->_current_category_id;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasCurrentCategoryId()
 	{
 		return $this->_current_category_id !== null;
@@ -922,6 +957,10 @@ class e_news_tree extends e_front_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_news_category_item extends e_front_model
 {
 	protected $_db_table = 'news_category';
@@ -939,6 +978,10 @@ class e_news_category_item extends e_front_model
 		return parent::get('category_'.$category_field, $default);
 	}
 
+	/**
+	 * @param $parm
+	 * @return array|string
+	 */
 	public function sc_news_category_title($parm = '')
 	{
 		if('attribute' == $parm)
@@ -949,6 +992,10 @@ class e_news_category_item extends e_front_model
 		return e107::getParser()->toHTML($this->cat('name'),true,'TITLE_PLAIN');
 	}
 
+	/**
+	 * @param $parm
+	 * @return string
+	 */
 	public function sc_news_category_url($parm = '')
 	{
 
@@ -969,11 +1016,18 @@ class e_news_category_item extends e_front_model
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function sc_news_category_link()
 	{
 		return $this->sc_news_category_url('link');
 	}
 
+	/**
+	 * @param $parm
+	 * @return array|string
+	 */
 	public function sc_news_category_icon($parm = '')
 	{
 		if(!$this->cat('icon'))
@@ -1003,6 +1057,10 @@ class e_news_category_item extends e_front_model
 		}
 	}
 
+	/**
+	 * @param $parm
+	 * @return string
+	 */
 	public function sc_news_category_news_count($parm = null)
 	{
 		if(!$this->is('category_news_count'))
@@ -1020,6 +1078,9 @@ class e_news_category_item extends e_front_model
 }
 
 
+/**
+ *
+ */
 class e_news_category_tree extends e_front_tree_model
 {
 	protected $_field_id = 'category_id';

@@ -189,6 +189,10 @@ class eIPHandler
 		// Continue here - user not banned (so far)
 	}
 
+	/**
+	 * @param $ip
+	 * @return void
+	 */
 	public function setIP($ip)
 	{
 		$this->ourIP = $this->ipEncode($ip);
@@ -196,6 +200,10 @@ class eIPHandler
 	}
 
 
+	/**
+	 * @param $value
+	 * @return void
+	 */
 	public function debug($value)
 	{
 		$this->debug = $value === true;
@@ -1116,7 +1124,9 @@ class eIPHandler
 	}
 
 
-
+	/**
+	 * @return false|string
+	 */
 	public function getConfigDir()
 	{
 		return $this->ourConfigDir;

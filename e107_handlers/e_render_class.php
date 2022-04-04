@@ -25,6 +25,10 @@
 		private $thm;
 
 
+		/**
+		 * @param $adminarea
+		 * @return void
+		 */
 		public function _init($adminarea=false)
 		{
 			$this->adminarea = (bool) $adminarea;
@@ -36,6 +40,10 @@
 		}
 
 		// Called in header_default.php.
+
+		/**
+		 * @return void|null
+		 */
 		public function init()
 		{
 
@@ -345,6 +353,9 @@
 		}
 
 
+		/**
+		 * @return bool
+		 */
 		private function hasLegacyCode()
 		{
 

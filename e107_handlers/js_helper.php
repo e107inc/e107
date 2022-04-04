@@ -15,6 +15,10 @@
  *
 */
 
+
+/**
+ *
+ */
 class e_jshelper
 {
     /**
@@ -77,7 +81,8 @@ class e_jshelper
      * will add  array('category-clear','update-category') to ['element-invoke-by-id']['show'] stack
      *
      * @param string $action
-     * @param array $data_array item data for the action
+     * @param string $subaction
+     * @param array $data item data for the action
      * @return e_jshelper
      */
     public function addResponseItem($action, $subaction, $data)
@@ -261,13 +266,12 @@ class e_jshelper
     	}
         return implode('', $content['text']['body']);
     }
-    
-    /**
-     * Add content (optional) and send text response
-     *
-     * @param string $action optional
-     * @param array $data_array optional
-     */
+
+	/**
+	 * Add content (optional) and send text response
+	 *
+	 * @param string $data_text
+	 */
     public function sendTextResponse($data_text = '')
     { 
     	header('Content-type: text/html; charset='.CHARSET);
@@ -278,15 +282,15 @@ class e_jshelper
 		}
     	exit;
     }
-    
-    /**
-     * Send Server Response
-     * Sends the response based on $response_type or the system
-     * prefered response type (could be system preference in the future)
-     *
-     * @param string $action optional Action
-     * @return boolean success
-     */
+
+	/**
+	 * Send Server Response
+	 * Sends the response based on $response_type or the system
+	 * prefered response type (could be system preference in the future)
+	 *
+	 * @param string $response_type
+	 * @return boolean success
+	 */
     public function sendResponse($response_type = '')
     {
     	if(!$response_type)

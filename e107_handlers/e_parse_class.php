@@ -19,6 +19,9 @@ if (!defined('e107_INIT'))
 define('E_NL', chr(2));
 
 
+/**
+ *
+ */
 class e_parse
 {
 
@@ -288,6 +291,10 @@ class e_parse
 
 	}
 
+	/**
+	 * @param string $type
+	 * @return array
+	 */
 	public function getModifierList($type = '')
 	{
 		if ($type === 'super')
@@ -704,6 +711,11 @@ class e_parse
 		return $ret;
 	}
 
+	/**
+	 * @param array $array
+	 * @param string $prefix
+	 * @return string
+	 */
 	private function _processRoute($array, $prefix = '')
 	{
 		$text = [];
@@ -730,6 +742,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param string $text
+	 * @return array|string|string[]
+	 */
 	public function toForm($text)
 	{
 
@@ -799,6 +815,13 @@ class e_parse
 	}
 
 
+	/**
+	 * @param string $text
+	 * @param $original_author
+	 * @param string $extra
+	 * @param bool $mod
+	 * @return string
+	 */
 	public function post_toHTML($text, $original_author = false, $extra = '', $mod = false)
 	{
 
@@ -864,6 +887,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param $tmp
+	 * @return mixed|string|null
+	 */
 	protected function simpleReplace($tmp)
 	{
 
@@ -1288,6 +1315,11 @@ class e_parse
 	}
 
 
+	/**
+	 * @param $text
+	 * @param $wrap
+	 * @return array|string|string[]
+	 */
 	public function textclean($text, $wrap = 100)
 	{
 
@@ -1301,8 +1333,10 @@ class e_parse
 	}
 
 
-	// Test for text highlighting, and determine the text highlighting transformation
-	// Returns TRUE if highlighting is active for this page display
+	/**
+	 * Test for text highlighting, and determine the text highlighting transformation
+	 * @return bool Returns TRUE if highlighting is active for this page display
+	 */
 	public function checkHighlighting()
 	{
 
@@ -1338,9 +1372,11 @@ class e_parse
 	 *
 	 * @param string $text
 	 * @param string $type email|url
-	 * @param array  $opts options. (see below)
-	 * @param string $opts ['sub'] substitute text within links
-	 * @param bool   $opts ['ext'] load link in new window (not for email)
+	 * @param array  $opts options.
+	 *  $opts = [
+	 *      'sub'   => (string) substitute text within links
+	 *      'ext'   => (bool) load link in new window (not for email)
+	 * ]
 	 * @return string
 	 */
 	public function makeClickable($text = '', $type = 'email', $opts = array())
@@ -1400,6 +1436,11 @@ class e_parse
 	}
 
 
+	/**
+	 * @param string $text
+	 * @param $postID
+	 * @return string
+	 */
 	public function parseBBCodes($text, $postID)
 	{
 
@@ -1410,7 +1451,7 @@ class e_parse
 	 * Strips block tags from html.
 	 * ie. <p> <div> <blockquote> <h1> <h2> <h3> etc are removed.
 	 *
-	 * @param string $text
+	 * @param string $html
 	 * @return string
 	 */
 	public function stripBlockTags($html)
@@ -1426,6 +1467,11 @@ class e_parse
 		return strip_tags($html, $parm);
 	}
 
+	/**
+	 * @param $s
+	 * @param $allowedattr
+	 * @return array|mixed|string|string[]
+	 */
 	public function stripAttributes($s, $allowedattr = array())
 	{
 
@@ -1653,11 +1699,6 @@ class e_parse
 					elseif (strpos($sub_blk, '<style') === 0)
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
-						if (defined('DB_INF_SHOW'))
-						{
-							echo "Processing stylesheet: {$sub_blk}<br />";
-						}
-
 						$ret_parser .= $sub_blk;
 					}
 					else
@@ -1764,6 +1805,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param string $text
+	 * @return string
+	 */
 	public function toASCII($text)
 	{
 
@@ -2071,10 +2116,10 @@ class e_parse
 
 		if (!$sep)
 		{
-			return preg_replace('/[^-0-9]/', '', $value);
+			return (int) preg_replace('/[^-0-9]/', '', $value);
 		}
 
-		return (
+		return (float) (
 			preg_replace('/[^-0-9]/', '', substr($value, 0, $sep)) . '.' .
 			preg_replace('/[^0-9]/', '', substr($value, $sep + 1, strlen($value)))
 		);
@@ -2152,6 +2197,10 @@ class e_parse
 
 	}
 
+	/**
+	 * @param $val
+	 * @return int|null
+	 */
 	public function thumbEncode($val = null)
 	{
 
@@ -2325,6 +2374,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param bool|int $val
+	 * @return int
+	 */
 	private function staticCount($val = false)
 	{
 
@@ -2440,15 +2493,17 @@ class e_parse
 	 * Generate an auto-sized Image URL.
 	 *
 	 * @param             $url     - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg
-	 * @param array       $options - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
-	 * @param int         $options ['w'] width (optional)
-	 * @param int         $options ['h'] height (optional)
-	 * @param bool|string $options ['crop'] true/false or A(auto) or T(op) or B(ottom) or C(enter) or L(eft) or R(right)
-	 * @param string      $options ['scale'] '2x' (optional)
-	 * @param bool        $options ['x'] encode/mask the url parms (optional)
-	 * @param bool        $options ['nosef'] when set to true disabled SEF Url being returned (optional)
+	 * @param array       $options = [ width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
+	 *  'w'         => int         width (optional)
+	 *  'h'         => int         height (optional)
+	 *  'crop'      => bool|string true/false or A(auto) or T(op) or B(ottom) or C(enter) or L(eft) or R(right)
+	 *  'scale'     => string      '2x' (optional)
+	 *  'x'         => bool        encode/mask the url parms (optional)
+	 *  'nosef'     => bool        when set to true disabled SEF Url being returned (optional)
+	 *  ]
 	 * @param bool        $raw     set to true when the $url does not being with an e107 variable ie. "{e_XXXX}" eg. {e_MEDIA} (optional)
 	 * @param bool        $full    when true returns full http:// url. (optional)
+	 * ]
 	 * @return string
 	 */
 	public function thumbUrl($url = null, $options = array(), $raw = false, $full = false)
@@ -2712,8 +2767,8 @@ class e_parse
 				$parm['h'] = 0;
 			}
 
-			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiInt) : (intval($this->thumbWidth) * $multiInt);
-			$height = isset($parm['h']) ? (intval($parm['h']) * $multiInt) : (intval($this->thumbHeight) * $multiInt);
+			$width = !empty($parm['w']) ? (intval($parm['w']) * $multiInt) : ($this->thumbWidth * $multiInt);
+			$height = isset($parm['h']) ? (intval($parm['h']) * $multiInt) : ($this->thumbHeight * $multiInt);
 
 		}
 		else
@@ -2767,11 +2822,6 @@ class e_parse
 	}
 
 
-	public function thumbUrlScale($src, $parm)
-	{
-
-
-	}
 
 	/**
 	 * Used by thumbUrl when SEF Image URLS is active. @param $url
@@ -2927,6 +2977,9 @@ class e_parse
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getEmotes()
 	{
 
@@ -3155,6 +3208,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param array $matches
+	 * @return mixed|string
+	 */
 	private function doReplace($matches)
 	{
 
@@ -3346,6 +3403,12 @@ class e_parse
 
 
 	//FIXME - $match not used?
+
+	/**
+	 * @param $text
+	 * @param $match
+	 * @return array|string|string[]|null
+	 */
 	public function e_highlight($text, $match)
 	{
 
@@ -3476,6 +3539,10 @@ class e_parse
 	}
 
 
+	/**
+	 * @param $name
+	 * @return array|e_parse_shortcode|null
+	 */
 	public function __get($name)
 	{
 
@@ -3642,33 +3709,45 @@ class e_parse
 		$this->scriptAccess = $val;
 	}
 
+	/**
+	 * @param array $arr
+	 * @return void
+	 */
 	public function setScriptAttibutes($arr)
 	{
 		$this->scriptAttributes = (array) $arr;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getAllowedTags()
 	{
-
 		return $this->allowedTags;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getAllowedAttributes()
 	{
-
 		return $this->allowedAttributes;
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function getScriptAccess()
 	{
-
 		return $this->scriptAccess;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getRemoved()
 	{
-
 		return $this->removedList;
 	}
 
@@ -3825,7 +3904,7 @@ class e_parse
 	 * @param string $cat  far|fab|fas
 	 * @param string $id   eg. fa-search
 	 * @param array  $parm eg. ['fw'=>true]
-	 * @return array|false|string|string[]|void
+	 * @return string|false
 	 */
 	private function toGlyphEmbed($cat, $id, $parm = array())
 	{
@@ -3853,11 +3932,12 @@ class e_parse
 	 * Parse xxxxx.glyph file to bootstrap glyph format.
 	 *
 	 * @param string       $text    ie. fa-xxxx, fab-xxx, fas-xxxx
-	 * @param array|string $options
-	 * @param bool         $options ['size'] 2x, 3x, 4x, or 5x
-	 * @param bool         $options ['fw'] Fixed-Width
-	 * @param bool         $options ['spin'] Spin
-	 * @param int          $options ['rotate'] Rotate in Degrees.
+	 * @param array|string $options = [
+	 *      'size'  => (string)     2x, 3x, 4x, or 5x
+	 *      'fw'    => (bool)       Fixed-Width
+	 *      'spin'  => (bool)       Spin
+	 *      'rotate'=> (int)        Rotate in Degrees.
+	 *  ]
 	 * @example $tp->toGlyph('fab-mailchimp');
 	 * @example $tp->toGlyph('fas-camera');
 	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
@@ -4141,19 +4221,20 @@ class e_parse
 	 * Render an avatar based on supplied user data or current user when missing.
 	 *
 	 * @param array    $userData - user data from e107_user. ie. user_image, user_id etc.
-	 * @param array    $options
-	 * @param int      $options  ['w'] - image width in px
-	 * @param int      $options  ['h'] - image height in px
-	 * @param int|bool $options  ['crop'] = enables cropping when true
-	 * @param string   $options  ['shape'] - (optional) rounded|circle|thumbnail
-	 * @param string   $options  ['id'] - 'id' attribute will be added to tag.
-	 * @param string   $options  ['class'] - override default 'class' attribute in tag.
-	 * @param string   $options  ['alt'] - override default 'alt' attribute in tag.
-	 * @param bool     $options  ['base64'] - use embedded base64 for image src.
-	 * @param bool     $options  ['hd'] - double the resolution of the image. Useful for retina displays.
-	 * @param string   $options  ['type'] - when set to 'url' returns the URL value instead of the tag.
-	 * @param string   $options  ['style'] - sets the style attribute.
-	 * @param string   $options  ['mode'] - 'full' url mode.
+	 * @param array    $options = [
+	 * 'w'          => (int)        image width in px
+	 * 'h'          => (int)        image height in px
+	 * 'crop'       => *int|bool)   enables cropping when true
+	 * 'shape'		=> (string)		(optional) rounded|circle|thumbnail
+	 * 'id'		    => (string)		'id' attribute will be added to tag.
+	 * 'class'		=> (string)		override default 'class' attribute in tag.
+	 * 'alt'		=> (string)		override default 'alt' attribute in tag.
+	 * 'base64'		=> (bool)		use embedded base64 for image src.
+	 * 'hd'		    => (bool)		double the resolution of the image. Useful for retina displays.
+	 * 'type'		=> (string)		when set to 'url' returns the URL value instead of the tag.
+	 * 'style'		=> (string)		sets the style attribute.
+	 * 'mode'		=> (string)		'full' url mode.
+	 * ]
 	 * @return string <img> tag of avatar.
 	 */
 	public function toAvatar($userData = null, $options = array())
@@ -4392,15 +4473,21 @@ class e_parse
 	 * Render an img tag.
 	 *
 	 * @param string $file
-	 * @param array  $parm keys: legacy|w|h|alt|class|id|crop|loading
-	 * @param array  $parm ['legacy'] Usually a legacy path like {e_FILE}
-	 * @param array  $parm ['type'] Force the returned image to be a jpg, webp etc.
+	 * @param array  $parm = [
+	 *  'w'         => (int)       Width in px
+	 *  'h'         => (int)       Height in px
+	 *  'alt'       => (string)    Alt text.
+	 *  'class'     => (string)
+	 *  'id'        => (string)
+	 *  'loading'   => (string)
+	 *  'legacy'    => (array)		 Usually a legacy path like {e_FILE}
+	 *  'type'		=> (array)		 Force the returned image to be a jpg, webp etc.
+	 * ]
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
 	 */
 	public function toImage($file, $parm = array())
 	{
-
 		if (strpos($file, 'e_AVATAR') !== false)
 		{
 			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for " . $file . '</div>'; // debug info only.
@@ -4427,7 +4514,6 @@ class e_parse
 			}
 		}
 
-		/** @var e_parse $tp */
 		$tp = $this;
 
 		//		e107::getDebug()->log($file);
@@ -4779,7 +4865,7 @@ class e_parse
 	 * Display a Video file.
 	 *
 	 * @param string  $file      - format: id.type eg. x123dkax.youtube
-	 * @param boolean $thumbnail - set to 'tag' to return an image thumbnail and 'src' to return the src url or 'video' for a small video thumbnail.
+	 * @param array $parm - set to 'tag' to return an image thumbnail and 'src' to return the src url or 'video' for a small video thumbnail.
 	 */
 	public function toVideo($file, $parm = array())
 	{
@@ -5018,6 +5104,8 @@ class e_parse
 			'version' => '/[^\d_\.]/',
 		);
 
+		$ret = '';
+
 		switch ($type)
 		{
 			case 'w':
@@ -5103,6 +5191,9 @@ class e_parse
 	}
 
 
+	/**
+	 * @return void
+	 */
 	private function grantScriptAccess()
 	{
 
@@ -5124,8 +5215,6 @@ class e_parse
 			}
 		}
 
-
-		return null;
 	}
 
 
@@ -5376,6 +5465,11 @@ class e_parse
 		return trim($cleaned);
 	}
 
+	/**
+	 * @param $attribute
+	 * @param $value
+	 * @return array|mixed|string|string[]
+	 */
 	public function secureAttributeValue($attribute, $value)
 	{
 

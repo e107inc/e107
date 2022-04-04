@@ -36,6 +36,9 @@ define('MAIL_ADMIN_DEBUG', true);
 require_once(e_HANDLER . 'mail_manager_class.php');
 
 
+/**
+ *
+ */
 class mailoutAdminClass extends e107MailManager
 {
 
@@ -524,8 +527,8 @@ class mailoutAdminClass extends e107MailManager
 	 * Generate the HTML for displaying actions box for emails
 	 *
 	 * Options given depend on $mode, and also values in the email data.
-	 *
-	 * @param $mailData - array of email-related info
+	 * @param string $mode
+	 * @param $targetData - array of email-related info
 	 * @return string HTML for display
 	 */
 	public function makeTargetOptions($mode, $targetData)
@@ -1338,7 +1341,7 @@ class mailoutAdminClass extends e107MailManager
 	/**
 	 * Show a screen to confirm deletion of an email
 	 *
-	 * @param $mailid - number of email
+	 * @param $mailID - number of email
 	 * @param $nextPage - 'mode' specification for page to return to following delete
 	 * @return void for display
 	 */
@@ -2185,6 +2188,11 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
+	/**
+	 * @param $pref
+	 * @param $id
+	 * @return string
+	 */
 	public static function mailerPrefsTable($pref, $id = 'mailer')
 	{
 

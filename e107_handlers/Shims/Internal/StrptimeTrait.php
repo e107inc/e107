@@ -15,6 +15,9 @@ namespace e107\Shims\Internal;
 use DateTimeZone;
 use e_date;
 
+/**
+ *
+ */
 trait StrptimeTrait
 {
 	/**

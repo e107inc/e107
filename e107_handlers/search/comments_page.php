@@ -20,7 +20,11 @@ $comments_title = LAN_418;
 $comments_type_id = 'page';
 $comments_return['page'] = "cp.page_id, cp.page_title";
 $comments_table['page'] = "LEFT JOIN #page AS cp ON c.comment_type='page' AND cp.page_id = c.comment_item_id";
-function com_search_page($row) {
+	/**
+	 * @param $row
+	 * @return array
+	 */
+	function com_search_page($row) {
 	global $con;
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = "page.php?".$row['page_id'];

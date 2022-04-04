@@ -404,6 +404,10 @@ class e_online
 	}
 
 
+	/**
+	 * @param $debug
+	 * @return array|string
+	 */
 	function userList($debug=false)
 	{
 
@@ -417,13 +421,19 @@ class e_online
 		return $this->users;
 	}
 
+	/**
+	 * @return array
+	 */
 	function guestList()
 	{
 		return $this->guests;
 	}
 
-	
-	
+
+	/**
+	 * @param $userAgent
+	 * @return bool
+	 */
 	function isBot($userAgent='')
 	{
 		return e107::getUser()->isBot($userAgent);

@@ -2401,7 +2401,7 @@ class media_admin_ui extends e_admin_ui
 
 	/**
 	 * @param string $parm
-	 * @return mixed|string
+	 * @return string
 	 * @see https://www.googleapis.com/youtube/v3/search
 	 */
 	private function youtubeTab($parm='')
@@ -2636,8 +2636,8 @@ class media_admin_ui extends e_admin_ui
 
 
 	/**
-	 * @deprecated by $prefs.
-	 * @return bool|void
+	 * @return bool|false
+	 *@deprecated by $prefs.
 	 */
 	function settingsPage()
 	{

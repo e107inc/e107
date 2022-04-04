@@ -9,6 +9,10 @@
 
 require_once("e_file_inspector.php");
 
+
+/**
+ *
+ */
 class e_file_inspector_sqlphar extends e_file_inspector
 {
     private $coreImage;

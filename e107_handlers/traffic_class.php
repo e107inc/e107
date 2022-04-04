@@ -19,6 +19,10 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+/**
+ *
+ */
 class e107_traffic
 {
 	var $aTraffic = array(); // Overall system traffic counters
@@ -74,12 +78,12 @@ class e107_traffic
 		$tFrom = explode(' ', $tStart);
 		return (float) $tFrom[0] + (float) $tFrom[1];
 	}
-	
+
 	/**
+	 * @param string $sWhat what to count
+	 * @param int $tStart Start time - unexploded microtime result
+	 * @param int $tFinish
 	 * @return void
-	 * @param string $sWhat  what to count
-	 * @param time $tStart Start time - unexploded microtime result
-	 * @param time $tStop  Finish time - unexploded microtime result
 	 * @desc Count one of anything, optionally with time used
 	 * @access public
 	 */
@@ -146,8 +150,8 @@ class e107_traffic
 	 * @return void
 	 * @param string $sWhat  what to count
 	 * @param int  $level  who to record: default caller. 1-999=N levels up the call tree
-	 * @param time $tStart Start time - unexploded microtime result
-	 * @param time $tStop  Finish time - unexploded microtime result
+	 * @param int $tStart Start time - unexploded microtime result
+	 * @param int $tFinish  Finish time - unexploded microtime result
 	 * @desc Count one of anything, optionally with time used.
 	 * @access public
 	 */
@@ -175,7 +179,12 @@ class e107_traffic
 		
 		$this->aTrafficWho[$sWhat][] = "$sFile($sLine)";
 	}
-	
+
+	/**
+	 * @param e107_traffic $tObject
+	 * @param $count
+	 * @return void
+	 */
 	function Calibrate(e107_traffic $tObject, $count = 10)
 	{
 		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC)
@@ -204,7 +213,10 @@ class e107_traffic
 		$t = $tObject->aTrafficTimed['TRAF_CAL2'];
 		$this->calPassOne = $t['Time'] / $t['Count'];
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	function Display()
 	{
 		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC || E107_DBG_BASIC) // 'Basic' should not display Traffic.
@@ -227,11 +239,17 @@ if (!isset($qTimeOn))
 {
 	$qTimeOn = 0;
 	$qTimeTotal = 0;
+	/**
+	 * @return void
+	 */
 	function eQTimeOn()
 	{
 		$GLOBALS['qTimeOn'] = explode(' ', microtime());
 	}
 
+	/**
+	 * @return void
+	 */
 	function eQTimeOff()
 	{
 		global $qTimeOn;
@@ -239,6 +257,10 @@ if (!isset($qTimeOn))
 		$diff = ((float) $e[0] + (float) $e[1]) - ((float) $qTimeOn[0] + (float) $qTimeOn[1]);
 		$GLOBALS['qTimeTotal'] += $diff;
 	}
+
+	/**
+	 * @return string
+	 */
 	function eQTimeElapsed()
 	{
 		// return elapsed time so far, as text in microseconds, or blank if zero

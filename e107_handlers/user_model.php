@@ -26,6 +26,10 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+/**
+ *
+ */
 class e_user_model extends e_admin_model
 {
 	/**
@@ -194,31 +198,49 @@ class e_user_model extends e_admin_model
 		return ($this->get('user_login') ? $this->get('user_login') : $this->get('user_name'));
 	}
 
+	/**
+	 * @return false|int
+	 */
 	final public function getAdminId()
 	{
 		return ($this->isAdmin() ? $this->getId() : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminName()
 	{
 		return ($this->isAdmin() ? $this->get('user_name') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminEmail()
 	{
 		return ($this->isAdmin() ? $this->get('user_email') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminPwchange()
 	{
 		return ($this->isAdmin() ? $this->get('user_pwchange') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminPerms()
 	{
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	/**
+	 * @return mixed|string
+	 */
 	final public function getTimezone()
 	{
 		// If timezone is not set, we return an empty string in order to use the
@@ -239,22 +261,34 @@ class e_user_model extends e_admin_model
 		}
 		return $this->get('user_token');
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public static function randomKey()
 	{
 		return md5(uniqid(rand(), 1));
 	}
 
+	/**
+	 * @return false
+	 */
 	public function isCurrent()
 	{
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isAdmin()
 	{
 		return ($this->get('user_admin') ? true : false);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isNewUser()
 	{
 		$new_user_period = e107::getPref('user_new_period', 0);
@@ -264,6 +298,10 @@ class e_user_model extends e_admin_model
 		return ($this->get('user_join') > strtotime($new_user_period . " days ago"));
 	}
 
+	/**
+	 * @param $userAgent
+	 * @return bool
+	 */
 	final public function isBot($userAgent = null)
 	{
 		if($userAgent === null  && isset($_SERVER['HTTP_USER_AGENT']))
@@ -477,36 +515,57 @@ class e_user_model extends e_admin_model
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isMainAdmin()
 	{
 		return $this->checkAdminPerms('0');
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isUser()
 	{
 		return ($this->getId() ? true : false);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isGuest()
 	{
 		return ($this->getId() ? false : true);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function hasBan()
 	{
 		return ((integer) $this->get('user_ban') === 1);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function hasRestriction()
 	{
 		return ((integer) $this->get('user_ban') !== 0);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasEditor()
 	{
 		return (null !== $this->_editor);
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _setClassList()
 	{
 		$this->_class_list = array();
@@ -556,7 +615,7 @@ class e_user_model extends e_admin_model
 
 	/**
 	 * @param bool $toString
-	 * @return string|array
+	 * @return string
 	 */
 	final public function getClassList($toString = false)
 	{
@@ -567,6 +626,9 @@ class e_user_model extends e_admin_model
 		return ($toString ? implode(',', $this->_class_list) : $this->_class_list);
 	}
 
+	/**
+	 * @return string
+	 */
 	final public function getClassRegex()
 	{
 		return '(^|,)('.str_replace(',', '|', $this->getClassList(true)).')(,|$)';
@@ -583,12 +645,20 @@ class e_user_model extends e_admin_model
 		return (($allowMain && $this->isMainAdmin()) || check_class($class, $this->getClassList(), 0));
 	}
 
+	/**
+	 * @param $perm_str
+	 * @return bool
+	 */
 	final public function checkAdminPerms($perm_str)
 	{
 		// FIXME - method to replace getperms()
 		return ($this->isAdmin() && getperms($perm_str, $this->getAdminPerms()));
 	}
 
+	/**
+	 * @param $class
+	 * @return bool
+	 */
 	final public function checkEditorPerms($class = '')
 	{
 		if (!$this->hasEditor())
@@ -1176,6 +1246,11 @@ class e_user_model extends e_admin_model
 		return $this;
     }
 
+	/**
+	 * @param $key
+	 * @param $value
+	 * @return void
+	 */
 	protected function _modifyPostedData($key, $value)
     {
     	// TODO - add more here
@@ -1216,6 +1291,12 @@ class e_user_model extends e_admin_model
 		return $ret;
 	}
 
+	/**
+	 * @param $extended
+	 * @param $return
+	 * @param $undo
+	 * @return array|void
+	 */
 	public function saveDebug($extended = true, $return = false, $undo = true)
 	{
 		$ret = array();
@@ -1229,6 +1310,9 @@ class e_user_model extends e_admin_model
 		var_dump($ret);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		$this->clearTarget()
@@ -1325,6 +1409,11 @@ class e_user_model extends e_admin_model
 }
 
 // TODO - add some more useful methods, sc_* methods support
+
+
+/**
+ *
+ */
 class e_system_user extends e_user_model
 {
 	public $debug = false;
@@ -1716,7 +1805,7 @@ class e_user extends e_user_model
 	 * Get parent user ID - present if main admin is browsing
 	 * front-end logged in as another user account
 	 *
-	 * @return integer or false if not present
+	 * @return bool or false if not present
 	 */
 	final public function getParentId()
 	{
@@ -1995,6 +2084,9 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final public function loadAs()
 	{
 		// FIXME - option to avoid it when browsing Admin area
@@ -2063,6 +2155,9 @@ class e_user extends e_user_model
 		}
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroySession()
 	{
 		cookie($this->_session_key, '', (time() - 2592000));
@@ -2071,6 +2166,9 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroyAsSession()
 	{
 		$key = $this->_session_key.'_as';
@@ -2081,12 +2179,18 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroyBadSession()
 	{
 		$this->_session_error = true;
 		return $this->_destroySession();
 	}
 
+	/**
+	 * @return false|int
+	 */
 	final public function getSessionDataAs()
 	{
 		$id = false;
@@ -2106,6 +2210,10 @@ class e_user extends e_user_model
 		return false;
 	}
 
+	/**
+	 * @param $force
+	 * @return $this
+	 */
 	final public function setSessionData($force = false)
 	{
 		if($force || null === $this->_session_data)
@@ -2127,12 +2235,19 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasSessionError()
 	{
 		return $this->_session_error;
 	}
 
 
+	/**
+	 * @param $user_id
+	 * @return array|bool
+	 */
 	final protected function _load($user_id)
 	{
 		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id='.intval($user_id);
@@ -2163,12 +2278,19 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		// not allowed - see logout()
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_model extends e_admin_model
 {
 	/**
@@ -2393,7 +2515,7 @@ class e_user_extended_model extends e_admin_model
 	 * @param mixed $value
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
 	 * @param boolean $strict if false no Applicable check will be made
-	 * @return e_user_model|e_user_extended_model
+	 * @return e_user_extended_model
 	 */
 	public function setSystem($field, $value, $short = true, $strict = true)
 	{
@@ -2403,11 +2525,17 @@ class e_user_extended_model extends e_admin_model
 		return $this;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function getReadData()
 	{
 		// TODO array allowed user profile page data (read mode)
 	}
 
+	/**
+	 * @return void
+	 */
 	public function getWriteData()
 	{
 		// TODO array allowed user settings page data (edit mode)
@@ -2545,7 +2673,7 @@ class e_user_extended_model extends e_admin_model
 
 	/**
 	 * Build manage rules for single field
-	 * @param $structure_model
+	 * @param e_user_extended_structure_model $structure_model
 	 * @return e_user_extended_model
 	 */
 	protected function _buildManageField(e_user_extended_structure_model $structure_model)
@@ -2567,7 +2695,6 @@ class e_user_extended_model extends e_admin_model
 
 	/**
 	 * Build manage rules for single field
-	 * @param $structure_model
 	 * @return e_user_extended_model
 	 */
 	protected function _buildManageRules()
@@ -2650,6 +2777,10 @@ class e_user_extended_model extends e_admin_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_structure_model extends e_model
 {
 	/**
@@ -2688,7 +2819,7 @@ class e_user_extended_structure_model extends e_model
 	 *
 	 * @param string $field
 	 * @param mixed $value
-	 * @return e_user_model|e_user_extended_structure_model
+	 * @return e_user_extended_structure_model
 	 */
 	public function setValue($field, $value)
 	{
@@ -2697,16 +2828,25 @@ class e_user_extended_structure_model extends e_model
 		return $this;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isCategory()
 	{
 		return ($this->getValue('type') ? false : true);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getCategoryId()
 	{
 		return $this->getValue('parent');
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getLabel()
 	{
 		$label = $this->isCategory() ? $this->getValue('name') : $this->getValue('text');
@@ -2722,6 +2862,10 @@ class e_user_extended_structure_model extends e_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_structure_tree extends e_tree_model
 {
 	/**
@@ -2897,6 +3041,10 @@ class e_user_extended_structure_tree extends e_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_pref extends e_front_model
 {
 	/**

@@ -116,6 +116,9 @@ define('MAIL_STATUS_HELD', 21);            // Held pending release
 define('MAIL_STATUS_TEMP', 22);            // Tags entries which aren't yet in any list
 
 
+/**
+ *
+ */
 class e107MailManager
 {
 
@@ -1316,6 +1319,12 @@ class e107MailManager
 	}
 
 
+	/**
+	 * @param $id
+	 * @param $type
+	 * @param $count
+	 * @return false|mixed
+	 */
 	public function updateCounter($id, $type, $count)
 	{
 

@@ -14,7 +14,11 @@ $comments_title = LAN_PLUGIN_DOWNLOAD_NAME;
 $comments_type_id = '2';
 $comments_return['download'] = "d.download_id, d.download_name";
 $comments_table['download'] = "LEFT JOIN #download AS d ON c.comment_type=2 AND d.download_id = c.comment_item_id";
-function com_search_2($row) {
+	/**
+	 * @param $row
+	 * @return array
+	 */
+	function com_search_2($row) {
 	global $con;
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = "download.php?view.".$row['download_id'];

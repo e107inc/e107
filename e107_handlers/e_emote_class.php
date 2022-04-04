@@ -1,6 +1,9 @@
 <?php
 
 
+/**
+ *
+ */
 class e_emote
 {
 

@@ -13,6 +13,10 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
 
+
+/**
+ *
+ */
 class rater
 {
 	private $ratings = array();     // loaded values.
@@ -29,13 +33,13 @@ class rater
 	 *
 	 * @param string $table eg. 'news'
 	 * @param integer $id
-	 * @param array $options
-	 * @param bool $options['multi'] - set to true if used in a loop. ie. mutliple table lookups.
-	 * @param bool $options['readonly']
-	 * @param string $options['label']
-	 * @param string $options['template'] - default is 'STATUS |RATE|VOTES'
-	 * @param string $options['uniqueId'] (optional)  = unique identifer to avoid ID conflicts;
-	 * 	 *
+	 * @param array $options = [
+	 *      'multi'		=> (bool)		 set to true if used in a loop. ie. mutliple table lookups.
+	 *      'readonly'	=> (bool)
+	 *      'label'		=> (string)
+	 *      'template'	=> (string)		 default is 'STATUS |RATE|VOTES'
+	 *      'uniqueId'	=> (string)		 (optional)  = unique identifer to avoid ID conflicts;
+	 * ]
 	 * @return string
 	 */
 	function render($table, $id, $options=array())
@@ -115,11 +119,14 @@ class rater
 		
 		return $text;
 	}
-	
-	
 
-	
-	function renderVotes($votes,$score) // TODO use template?
+
+	/**
+	 * @param $votes
+	 * @param $score
+	 * @return string
+	 */
+	function renderVotes($votes, $score) // TODO use template?
 	{	
 		if(!$votes)
 		{
@@ -136,6 +143,14 @@ class rater
 	
 	
 	// Legacy Rate Selector. 
+
+	/**
+	 * @param $text
+	 * @param $table
+	 * @param $id
+	 * @param $mode
+	 * @return string
+	 */
 	function rateselect($text, $table, $id, $mode=FALSE)
 	{
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
@@ -176,6 +191,11 @@ class rater
 		return $str;
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return string
+	 */
 	function rateradio($table, $id) {
 
 		$table = preg_replace('/\W/', '', $table);
@@ -195,6 +215,11 @@ class rater
 		return $str;
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return bool
+	 */
 	function checkrated($table, $id) {
 		
 		$table = preg_replace('/\W/', '', $table);
@@ -226,6 +251,12 @@ class rater
 		}
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @param $userid
+	 * @return array|false|int[]|mixed|string
+	 */
 	function getrating($table, $id, $userid=false)
 	{
 
@@ -347,9 +378,13 @@ class rater
 	}
 
 
-
-
-	function submitVote($table,$itemid,$rate)
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $rate
+	 * @return string|void|null
+	 */
+	function submitVote($table, $itemid, $rate)
 	{
 		$array = $table."^".$itemid."^^".$rate;
 		return $this->enterrating($array,true);
@@ -357,10 +392,10 @@ class rater
 	}
 	
 	/**
-	 * @param $table: table without prefix that the like is for
-	 * @param $itemid: item id within that table for the item to be liked
-	 * @param $curval: optional array of current values for 'up' and 'down'
-	 * @param $perc: optional percentage mode. Displays percentages instead of totals. 
+	 * @param string $table table without prefix that the like is for
+	 * @param int $itemid: item id within that table for the item to be liked
+	 * @param mixed $curVal: optional array of current values for 'up' and 'down'
+	 * @param bool $perc: optional percentage mode. Displays percentages instead of totals.
 	 */
 	function renderLike($table,$itemid,$curVal=false,$perc=false)
 	{
@@ -391,10 +426,15 @@ class rater
 				<a  class='e-rate-thumb e-rate-down' href='".e_HTTP."rate.php?table={$table}&id={$itemid}&type=down#{$id}'>{$upDown}</a>"; 	
 		return $text;	
 	}
-	
-	
-	
-	protected function getLikes($table,$itemid,$perc=false)
+
+
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $perc
+	 * @return array|int[]|string[]
+	 */
+	protected function getLikes($table, $itemid, $perc=false)
 	{
 		$sql = e107::getDb();
 		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
@@ -416,9 +456,16 @@ class rater
 		
 		return ($perc == false) ? array('up'=>0,'down'=>0,'total'=>0) : array('up'=>'0%','down'=>'0%','total'=>'0%');
 	}
-	
-	
-	function submitLike($table,$itemid,$type,$perc=false)
+
+
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $type
+	 * @param $perc
+	 * @return false|string|null
+	 */
+	function submitLike($table, $itemid, $type, $perc=false)
 	{	
 		$sql 	= e107::getDb();
 			
@@ -512,7 +559,12 @@ class rater
 	}
 
 
-	function enterrating($rateindex,$ajax = false)
+	/**
+	 * @param $rateindex
+	 * @param $ajax
+	 * @return string|void|null
+	 */
+	function enterrating($rateindex, $ajax = false)
 	{
 		
 		$sql = e107::getDb();
@@ -629,10 +681,14 @@ class rater
 	}
 
 
-
-
-
-
+	/**
+	 * @param $table
+	 * @param $id
+	 * @param $enter
+	 * @param $userid
+	 * @param $nojump
+	 * @return string
+	 */
 	function composerating($table, $id, $enter=TRUE, $userid=FALSE, $nojump=FALSE){
 		//enter		: boolean to show (rateselect box + textual info) or not
 		//userid	: used to calculate a users given rating
@@ -678,6 +734,11 @@ class rater
 
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return int
+	 */
 	function delete_ratings($table, $id)
 	{
 		global $tp, $sql;

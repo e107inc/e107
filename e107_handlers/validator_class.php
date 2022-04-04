@@ -460,7 +460,7 @@ class e_validator
 	 * Validate single field
 	 *
 	 * @param string $name
-	 * @param string $newval
+	 * @param string $value
 	 * @param boolean $required
 	 * @return boolean
 	 */
@@ -844,6 +844,10 @@ class e_validator
 		return explode(':', $this->_convertConditionBC($string), 2);
 	}
 
+	/**
+	 * @param $condition
+	 * @return array|mixed|string|string[]|null
+	 */
 	private function _convertConditionBC($condition)
 	{
 
@@ -1097,6 +1101,9 @@ The validator functions use an array of parameters for each variable to be valid
  */
 
 
+/**
+ *
+ */
 class validatorClass
 {
 
@@ -1104,6 +1111,12 @@ class validatorClass
 	// Returns three arrays - one of validated results, one of failed fields and one of errors corresponding to the failed fields
 	// Normally processes only those source fields it finds (and for which it has a definition). If $addDefaults is true, sets defaults for those that have
 	//  ...one and aren't otherwise defined.
+	/**
+	 * @param $sourceFields
+	 * @param $definitions
+	 * @param $addDefaults
+	 * @return array|array[]
+	 */
 	public static function validateFields(&$sourceFields, &$definitions, $addDefaults = false)
 	{
 
@@ -1349,6 +1362,13 @@ class validatorClass
 			3 - Check email address against remote server, only if option enabled
 
 	*/
+	/**
+	 * @param $targetData
+	 * @param $definitions
+	 * @param $targetTable
+	 * @param $userID
+	 * @return bool
+	 */
 	public static function dbValidateArray(&$targetData, &$definitions, $targetTable, $userID = 0)
 	{
 
@@ -1478,6 +1498,11 @@ class validatorClass
 
 	// Given a comma-separated string of required fields, and an array of data, adds an error message for each field which doesn't already have an entry.
 	// Returns TRUE if no changes (which doesn't mean there are no errors - other routines may have found them). FALSE if new errors
+	/**
+	 * @param $fieldList
+	 * @param $target
+	 * @return bool
+	 */
 	public static function checkMandatory($fieldList, &$target)
 	{
 
@@ -1498,6 +1523,12 @@ class validatorClass
 
 	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
 	// $fieldList is the standard definition array
+	/**
+	 * @param $fieldList
+	 * @param $target
+	 * @param $auxList
+	 * @return void
+	 */
 	public static function addFieldTypes($fieldList, &$target, $auxList = false)
 	{
 
@@ -1519,6 +1550,12 @@ class validatorClass
 
 	// Given two arrays, returns an array of those elements in $input which are different from the corresponding element in $refs.
 	// If $addMissing == TRUE, includes any element in $input for which there isn't a corresponding element in $refs
+	/**
+	 * @param $input
+	 * @param $refs
+	 * @param $addMissing
+	 * @return array
+	 */
 	public static function findChanges(&$input, &$refs, $addMissing = false)
 	{
 
@@ -1553,6 +1590,14 @@ class validatorClass
 	// %x is the 'nice name' - possible if parameter list passed. Otherwise field name added
 	// $EOL is inserted after all messages except the last.
 	// If $EOL is an empty string, returns an array of messages.
+	/**
+	 * @param $vars
+	 * @param $constPrefix
+	 * @param $format
+	 * @param $EOL
+	 * @param $niceNames
+	 * @return array|string
+	 */
 	public static function makeErrorList($vars, $constPrefix, $format = '%n - %x %t: %v', $EOL = '<br />', $niceNames = null)
 	{
 

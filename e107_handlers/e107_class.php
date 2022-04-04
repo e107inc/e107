@@ -296,6 +296,9 @@ class e107
 		//register_shutdown_function(array($this, 'destruct'));
 	}
 
+	/**
+	 * @return void
+	 */
 	private static function die_http_400()
 	{
 		header('HTTP/1.0 400 Bad Request', true, 400);
@@ -1442,6 +1445,9 @@ class e107
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public static function getThemeGlyphs()
 	{
 
@@ -2128,7 +2134,6 @@ class e107
 	/**
 	 * Retrieve user model object.
 	 *
-	 * @param integer $user_id target user
 	 * @return e_user_extended_structure_tree
 	 */
 	public static function getUserStructure()
@@ -2439,6 +2444,11 @@ class e107
 	}
 
 
+	/**
+	 * @param $type
+	 * @param $val
+	 * @return void
+	 */
 	public static function set($type=null, $val=true)
 	{
 		if($type === 'js_enabled')
@@ -2839,11 +2849,10 @@ class e107
 
 	/**
 	 * Retrieves class Object for specific plugin's addon such as e_url.php, e_cron.php, e_sitelink.php
-	 * 	 *
+	 *     *
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
-	 * @param mixed $param [optional] construct() param
 	 * @return object
 	 */
 	public static function getAddon($pluginName, $addonName, $className = true)
@@ -3748,7 +3757,7 @@ class e107
 	 * @param string $plugin plugin name
 	 * @param string|bool|null $fname filename without the extension part (e.g. 'common')
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
-	 * @param boolean $return When true, returns the path, but does not include the file or set the registry.
+	 * @param boolean $returnPath When true, returns the path, but does not include the file or set the registry.
 	 * @return bool|null
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false, $returnPath = false)
@@ -4065,7 +4074,9 @@ class e107
 	/**
 	 * Reverse lookup of current URI against legacy e_url entry for the specified plugin.
 	 * Useful for when SEF (e_SINGLE_ENTRY) is not in use.
-	 * @param string $route eg. forum/index (must match SEF route )
+	 * @param string|null $plugin
+	 * @param string|null $uri
+	 * @return string|null
 	 */
 	public static function detectRoute($plugin=null, $uri=null)
 	{
@@ -4454,7 +4465,12 @@ class e107
 	}
 
 
-	public static function minify($js,$options=array())
+	/**
+	 * @param $js
+	 * @param $options
+	 * @return mixed|string|null
+	 */
+	public static function minify($js, $options=array())
 	{
 		if(empty($js))
 		{
@@ -5891,6 +5907,10 @@ class e107
 		}
 	}
 
+	/**
+	 * @param $name
+	 * @return array|e107_event|e_admin_log|e_array|e_db|e_online|e_parse|e_render|ecache|eIPHandler|eURL|mixed|notify|user_class|null
+	 */
 	public function __get($name)
 	{
 		switch ($name)
@@ -6107,18 +6127,18 @@ interface e_admin_addon_interface
 
 
 	/**
-	* Extend Admin-ui Parameters
-	* @param $ui admin-ui object
-	* @return array
-	*/
+	 * Extend Admin-ui Parameters
+	 * @param e_admin_ui $ui admin-ui object
+	 * @return array
+	 */
 	public function config(e_admin_ui $ui);
 
 
 	/**
-	* Process Posted Data.
-	* @param $ui admin-ui object
-	* @param int $id
-	*/
+	 * Process Posted Data.
+	 * @param e_admin_ui $ui admin-ui object
+	 * @param int $id
+	 */
 	public function process(e_admin_ui $ui, $id=0);
 
 

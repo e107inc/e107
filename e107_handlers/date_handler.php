@@ -11,8 +11,12 @@
 if (!defined('e107_INIT')) { exit; }
 
 //e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
-e107::coreLan('date'); 
+e107::coreLan('date');
 
+
+/**
+ *
+ */
 class e_date
 {
 	
@@ -797,9 +801,10 @@ class e_date
 	}
 
 
-
-
-
+	/**
+	 * @param $mode
+	 * @return bool
+	 */
 	function supported($mode = FALSE)
 	{
 		$strftimeFormats = array(
@@ -912,6 +917,10 @@ class e_date
 		return in_array($timezone, timezone_identifiers_list());
 	}
 
+	/**
+	 * @param $datestamp
+	 * @return array
+	 */
 	public function dateFormats($datestamp = null)
 	{
 		if(empty($datestamp))
@@ -953,6 +962,10 @@ class e_date
 		return $ret;
 	}
 
+	/**
+	 * @param $datestamp
+	 * @return array
+	 */
 	function timeFormats($datestamp=null)
 	{
 		if(empty($datestamp))

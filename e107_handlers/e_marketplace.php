@@ -11,7 +11,11 @@
  */
 
 e107::coreLan('theme', true);
- 
+
+
+/**
+ *
+ */
 class e_marketplace
 {
 	/**
@@ -67,7 +71,10 @@ class e_marketplace
 		$this->adapter->setAuthKey($authkey);	
 		return $this;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasAuthKey()
 	{
 		return $this->adapter->hasAuthKey();
@@ -221,8 +228,11 @@ class e_marketplace
 		}
 		throw new Exception("Error Processing Request", 10);
 	}
-	
 
+
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		$this->adapter = null;
@@ -292,9 +302,10 @@ class e_marketplace
 	}
 
 
-
-
-
+	/**
+	 * @param $type
+	 * @return array|string[]
+	 */
 	public function getVersionList($type='plugin')
 	{
 		$cache = e107::getCache();
@@ -346,6 +357,10 @@ class e_marketplace
 
 }
 
+
+/**
+ *
+ */
 abstract class e_marketplace_adapter_abstract
 {
 	/**
@@ -378,10 +393,27 @@ abstract class e_marketplace_adapter_abstract
 	 * @var string
 	 */
 	protected $authKey = null;
-	
+
+	/**
+	 * @param $input
+	 * @return mixed
+	 */
 	abstract public function test($input);
 	//abstract public function call($method, $data, $apply);
+
+	/**
+	 * @param $method
+	 * @param $data
+	 * @param $apply
+	 * @return mixed
+	 */
 	abstract public function call($method, $data, $apply = true); // Fix issue #490
+
+	/**
+	 * @param $method
+	 * @param $result
+	 * @return mixed
+	 */
 	abstract public function fetch($method, &$result);
 	
 	/**
@@ -424,16 +456,18 @@ abstract class e_marketplace_adapter_abstract
 	{
 		return $this->authKey;	
 	}
-	
-	
+
+
 	/**
-	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
+	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder.
 	 * XXX better way to return status (e.g. getError(), getStatus() service call before download)
 	 * XXX temp is not well cleaned
 	 * XXX themes/plugins not well tested after unzip (example - Headline 1.0, non-default structure, same applies to most FS net free themes)
 	 * This method is direct outputting the status. If not needed - use buffer
-	 * @param string $remotefile URL
+	 * @param $id
+	 * @param $mode
 	 * @param string $type plugin or theme
+	 * @return bool
 	 */
 	public function download($id, $mode, $type)
 	{
@@ -499,6 +533,13 @@ abstract class e_marketplace_adapter_abstract
 		
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
+
+	/**
+	 * @param $remote_url
+	 * @param $local_file
+	 * @param $type
+	 * @return bool
+	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
 		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
@@ -541,6 +582,10 @@ abstract class e_marketplace_adapter_abstract
     }
 }
 
+
+/**
+ *
+ */
 class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 {
 	/**
@@ -594,7 +639,11 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			xdebug_disable();
 		}
 	}
-	
+
+	/**
+	 * @param $input
+	 * @return string
+	 */
 	public function test($input)
 	{
 		try
@@ -707,6 +756,9 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		return $result;
 	}
 
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		$this->client = null;
@@ -714,6 +766,10 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	}
 }
 
+
+/**
+ *
+ */
 class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 {
 	/**
@@ -734,12 +790,22 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	public function __construct()
 	{
 	}
-	
+
+	/**
+	 * @param $input
+	 * @return void
+	 */
 	public function test($input)
 	{
 		
 	}
-	
+
+	/**
+	 * @param $method
+	 * @param $data
+	 * @param $apply
+	 * @return array|string
+	 */
 	public function call($method, $data, $apply = true)
 	{
 		$client = $this->client();
@@ -785,7 +851,12 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		}
 		return $result;
 	}
-	
+
+	/**
+	 * @param $method
+	 * @param $result
+	 * @return array|string
+	 */
 	public function fetch($method, &$result)
 	{
 		$ret = $this->parse($result);
@@ -961,6 +1032,10 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	}
 }
 
+
+/**
+ *
+ */
 class eAuth
 {
 	
@@ -1029,25 +1104,40 @@ class eAuth
 	 * @var string
 	 */
 	public $requestMethod = null;
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isClient()
 	{
 		$this->loadSysCredentials();
 		return (!empty($this->eauthConsumerKey) && !empty($this->eauthConsumerSecret));
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isInitialized()
 	{
 		$this->loadSysCredentials();
 		return ($this->isClient() && !empty($this->eauthRequestKey) && !empty($this->eauthRequestSecret));
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasAccess()
 	{
 		$this->loadSysCredentials();
 		return ($this->isClient() && !empty($this->eauthAccessToken) && !empty($this->eauthAccessSecret));
 	}
 
+	/**
+	 * @param $method
+	 * @param $args
+	 * @param $toObject
+	 * @return array|stdClass
+	 */
 	public function serviceAuthData($method, $args, $toObject = true)
 	{
 		// The client has previously registered with the server and obtained the client identifier dpf43f3p2l4k3l03 and client secret kd94hf93k423kf44. 
@@ -1094,6 +1184,10 @@ class eAuth
 	}
 
 
+	/**
+	 * @param $array
+	 * @return stdClass
+	 */
 	public static function toObject($array)
 	{
 		$obj = new stdClass;
@@ -1122,7 +1216,11 @@ class eAuth
 		}
 		return $this;
 	}
-	
+
+	/**
+	 * @param $credentials
+	 * @return bool
+	 */
 	public function storeSysCredentials($credentials = null)
 	{
 		if(null === $credentials)
@@ -1174,7 +1272,12 @@ class eAuth
 		if(null !== $key) return varset($credentials[$key], null);
 		return $credentials;
 	}
-	
+
+	/**
+	 * @param $params
+	 * @return string
+	 * @throws Exception
+	 */
 	public function toAuthHeader($params)
 	{
 		$first = true;
@@ -1201,14 +1304,21 @@ class eAuth
 		}
 		return $out;
 	}
-	
 
+
+	/**
+	 * @return string
+	 */
 	public function cryptMethod()
 	{
 		return function_exists('hash_hmac') ? 'HMAC-SHA1' : 'SHA1';
 	}
-	
-	function random($bits = 256) 
+
+	/**
+	 * @param $bits
+	 * @return string
+	 */
+	function random($bits = 256)
 	{
 	    $bytes = ceil($bits / 8);
 	    $ret = '';
@@ -1218,7 +1328,12 @@ class eAuth
 	    }
 	    return $ret;
 	}
-	
+
+	/**
+	 * @param $string
+	 * @param $secretKey
+	 * @return false|string
+	 */
 	public function crypt($string, $secretKey)
 	{
 		$cMethod = $this->cryptMethod();
@@ -1230,12 +1345,20 @@ class eAuth
 		// use secret key if HMAC-SHA1
 		return hash_hmac('sha1', $string, $secretKey);
 	}
-	
+
+	/**
+	 * @param $timestamp
+	 * @return false|string
+	 */
 	public function nonce($timestamp)
 	{
 		return $this->crypt($this->random().$timestamp, $this->eauthAccessSecret.$this->eauthConsumerSecret);
 	}
 
+	/**
+	 * @param $string
+	 * @return false|int
+	 */
 	public function gmtTime($string)
 	{
 		$ret = false;
@@ -1247,6 +1370,11 @@ class eAuth
 		return $ret;
 	}
 
+	/**
+	 * @param $array
+	 * @param $order
+	 * @return void
+	 */
 	public static function array_kmultisort(&$array, $order = 'asc')
 	{
 		$func = $order == 'asc' ? 'ksort' : 'krsort';

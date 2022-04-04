@@ -85,7 +85,9 @@ class e_url
 	}
 
 
-
+	/**
+	 * @return void
+	 */
 	private function setRootNamespace()
 	{
 
@@ -101,6 +103,9 @@ class e_url
 	}
 
 
+	/**
+	 * @return bool|void
+	 */
 	public function run()
 	{
 		$pref = e107::getPref();
@@ -564,6 +569,12 @@ class eDispatcher
 {
 	protected static $_configObjects = array();
 
+	/**
+	 * @param eRequest|null $request
+	 * @param eResponse|null $response
+	 * @return void
+	 * @throws eException
+	 */
 	public function dispatch(eRequest $request = null, eResponse $response = null)
 	{
 		$controllerName = $request->getControllerName();
@@ -1152,7 +1163,10 @@ class eRouter
 
 		return $this;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public static function clearCache()
 	{
 		if(file_exists(e_CACHE_URL.'config.php'))
@@ -1669,10 +1683,10 @@ class eRouter
 		}
 		return in_array($module, $this->_aliases);
 	}
-	
+
 	/**
 	 * Get all available module aliases
-	 * @param string $lan optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
+	 * @param string|null $lanCode optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
 	 * @return array
 	 */
 	public function getAliases($lanCode = null)
@@ -1810,7 +1824,13 @@ class eRouter
 	}
 
 
-	private function _debug($label,$val=null, $line=null)
+	/**
+	 * @param $label
+	 * @param $val
+	 * @param $line
+	 * @return false|void
+	 */
+	private function _debug($label, $val=null, $line=null)
 	{
 		if(!deftrue('e_DEBUG_SEF'))
 		{
@@ -2473,6 +2493,10 @@ class eRouter
 	}
 }
 
+
+/**
+ *
+ */
 class eException extends Exception
 {
 	
@@ -2672,6 +2696,9 @@ class eUrlRule
 		if ($this->references !== array()) $this->routePattern = '/^'.strtr($this->route, $tr2).'$/u';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getData()
 	{
 		$vars = array_keys(get_class_vars(__CLASS__));
@@ -2683,6 +2710,10 @@ class eUrlRule
 		return $data;
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	protected function setData($data)
 	{
 		if (!is_array($data)) return;
@@ -2879,6 +2910,10 @@ class eUrlRule
 	
 }
 
+
+/**
+ *
+ */
 abstract class eUrlConfig
 {
 	/**
@@ -2912,14 +2947,14 @@ abstract class eUrlConfig
 	 * @return array|string numerical of type (routeParts, GET Params)| string route or false on error
 	 */
 	public function create($route, $params = array(), $options = array()) {}
-	
+
 	/**
 	 * Parse URL callback, called only when config option selfCreate is set to true
-	 * TODO - register variable eURLConfig::currentConfig while initializing the object, remove from method arguments 
+	 * TODO - register variable eURLConfig::currentConfig while initializing the object, remove from method arguments
 	 * @param string $pathInfo
 	 * @param array $params request parameters
-	 * @param eRequest $request
-	 * @param eRouter $router
+	 * @param eRequest|null $request
+	 * @param eRouter|null $router
 	 * @param array $config
 	 * @return string route or false on error
 	 */
@@ -2994,7 +3029,11 @@ class eController
 {
 	protected $_request;
 	protected $_response;
-	
+
+	/**
+	 * @param eRequest $request
+	 * @param eResponse|null $response
+	 */
 	public function __construct(eRequest $request, eResponse $response = null)
 	{
 		$this->setRequest($request)
@@ -3057,13 +3096,21 @@ class eController
 	{
 		return $this->_response;
 	}
-	
+
+	/**
+	 * @param $content
+	 * @return $this
+	 */
 	public function addBody($content)
 	{
 		$this->getResponse()->appendBody($content);
 		return $this;
 	}
-	
+
+	/**
+	 * @param $description
+	 * @return $this
+	 */
 	public function addMetaDescription($description)
 	{
 		$this->getResponse()->addMetaDescription($description);
@@ -3082,14 +3129,23 @@ class eController
 		if($meta) $this->addMetaTitle(strip_tags($title));
 		return $this;
 	}
-	
-	
+
+
+	/**
+	 * @param $title
+	 * @return $this
+	 */
 	public function addMetaTitle($title)
 	{
 		$this->getResponse()->addMetaTitle($title);
 		return $this;
 	}
-	
+
+	/**
+	 * @param $actionMethodName
+	 * @return void
+	 * @throws eException
+	 */
 	public function dispatch($actionMethodName)
 	{
 		$request = $this->getRequest();
@@ -3125,7 +3181,13 @@ class eController
 		}
 		$this->shutdown();
 	}
-	
+
+	/**
+	 * @param eRequest|null $request
+	 * @param eResponse|null $response
+	 * @return eResponse
+	 * @throws eException
+	 */
 	public function run(eRequest $request = null, eResponse $response = null)
 	{
 		if(null === $request) $request = $this->getRequest();
@@ -3141,7 +3203,13 @@ class eController
 		
 		return $this->getResponse();
 	}
-	
+
+	/**
+	 * @param $url
+	 * @param $createURL
+	 * @param $code
+	 * @return void
+	 */
 	protected function _redirect($url, $createURL = false, $code = null)
 	{
 		$redirect = e107::getRedirect();
@@ -3342,22 +3410,34 @@ class eControllerFront extends eController
 		}
 		return true;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function redirect404()
 	{
 		e107::getRedirect()->redirect(SITEURL.$this->e404);
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function redirect403()
 	{
 		e107::getRedirect()->redirect(SITEURL.$this->e403);
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function forward404()
 	{
 		$this->_forward($this->e404route);
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function forward403()
 	{
 		$this->_forward($this->e403route);
@@ -3590,11 +3670,11 @@ class eRequest
 		}
 		return $this->_requestInfo;
 	}
-	
-	
+
+
 	/**
 	 * Override request info
-	 * @param string $pathInfo
+	 * @param string $requestInfo
 	 * @return eRequest
 	 */
 	public function setRequestInfo($requestInfo)
@@ -3745,7 +3825,7 @@ class eRequest
 	/**
 	 * Set current route
 	 * @param string $route module/controller/action
-	 * @return array|eRequest
+	 * @return eRequest
 	 */
 	public function setRoute($route)
 	{
@@ -4005,6 +4085,10 @@ class eRequest
 	}
 }
 
+
+/**
+ *
+ */
 class eResponse
 {
 	protected $_body = array('default' => '');
@@ -4044,11 +4128,17 @@ class eResponse
 		'jsonRender' => false,
 	);
 
+	/**
+	 * @return string[]
+	 */
 	public function getRobotTypes()
 	{
 		return $this->_meta_robot_types;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getRobotDescriptions()
 	{
 		$_meta_robot_descriptions = array(
@@ -4060,45 +4150,79 @@ class eResponse
 		return $_meta_robot_descriptions;
 	}
 
+	/**
+	 * @param $key
+	 * @param $value
+	 * @return $this
+	 */
 	public function setParam($key, $value)
 	{
 		$this->_params[$key] = $value;
 		return $this;
 	}
-	
+
+	/**
+	 * @param $params
+	 * @return $this
+	 */
 	public function setParams($params)
 	{
 		$this->_params = $params;
 		return $this;
 	}
-	
+
+	/**
+	 * @param $key
+	 * @param $default
+	 * @return mixed|null
+	 */
 	public function getParam($key, $default = null)
 	{
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
 	}
-	
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
 	public function isParam($key)
 	{
 		return isset($this->_params[$key]);
 	}
-	
+
+	/**
+	 * @param $typeName
+	 * @param $mediaType
+	 * @return $this
+	 */
 	public function addContentType($typeName, $mediaType)
 	{
 		$this->_content_type_arr[$typeName] = $mediaType;
 		return $this;
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public function getContentType()
 	{
 		return $this->_content_type;
 	}
-	
+
+	/**
+	 * @param $typeName
+	 * @return mixed|string|void
+	 */
 	public function getContentMediaType($typeName)
 	{
 		if(isset($this->_content_type_arr[$typeName]))
 			return $this->_content_type_arr[$typeName];
 	}
-	
+
+	/**
+	 * @param $typeName
+	 * @return void
+	 */
 	public function setContentType($typeName)
 	{
 		$this->_content_type = $typeName;
@@ -4530,6 +4654,9 @@ class eResponse
 		return $this->addMetaData('e_PAGETITLE', $title);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getMetaTitle()
 	{
 		return $this->getMetaData('e_PAGETITLE', $this->_meta_title_separator);
@@ -4544,6 +4671,9 @@ class eResponse
 		return $this->addMetaData('META_DESCRIPTION', $description);
 	}
 
+	/**
+	 * @return string
+	 */
 	function getMetaDescription()
 	{
 		return $this->getMetaData('META_DESCRIPTION');
@@ -4558,6 +4688,9 @@ class eResponse
 		return $this->addMetaData('META_KEYWORDS', $keywords);
 	}
 
+	/**
+	 * @return string
+	 */
 	function getMetaKeywords()
 	{
 		return $this->getMetaData('META_KEYWORDS', ',');
@@ -4712,45 +4845,77 @@ class eHelper
 	protected static $_classRegEx = '#[^\w\s\-]#';
 	protected static $_idRegEx = '#[^\w\-]#';
 	protected static $_styleRegEx = '#[^\w\s\-\.;:!]#';
-	
+
+	/**
+	 * @param $string
+	 * @return array|string|string[]|null
+	 */
 	public static function secureClassAttr($string)
 	{
 		return preg_replace(self::$_classRegEx, '', $string);
 	}
-	
+
+	/**
+	 * @param $string
+	 * @return array|string|string[]|null
+	 */
 	public static function secureIdAttr($string)
 	{
 		$string = str_replace(array('/','_'),'-',$string);
 		return preg_replace(self::$_idRegEx, '', $string);
 	}
-	
+
+	/**
+	 * @param $string
+	 * @return array|string|string[]|null
+	 */
 	public static function secureStyleAttr($string)
 	{
 		return preg_replace(self::$_styleRegEx, '', $string);
 	}
-	
+
+	/**
+	 * @param $safeArray
+	 * @return string
+	 */
 	public static function buildAttr($safeArray)
 	{
 		return http_build_query($safeArray, null, '&');
 	}
-	
+
+	/**
+	 * @param $title
+	 * @return string
+	 */
 	public static function formatMetaTitle($title)
 	{
 		$title = trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($title, TRUE))));
 		return trim(preg_replace('/[\s,]+/', ' ', str_replace('_', ' ', $title)));
 	}
-	
+
+	/**
+	 * @param $sef
+	 * @return string
+	 */
 	public static function secureSef($sef)
 	{
 		return trim(preg_replace('/[^\w\pL\s\-+.,]+/u', '', strip_tags(e107::getParser()->toHTML($sef, TRUE))));
 	}
-	
+
+	/**
+	 * @param $keywordString
+	 * @return string
+	 */
 	public static function formatMetaKeys($keywordString)
 	{
 		$keywordString = preg_replace('/[^\w\pL\s\-.,+]/u', '', strip_tags(e107::getParser()->toHTML($keywordString, TRUE)));
 		return trim(preg_replace('/[\s]?,[\s]?/', ',', str_replace('_', ' ', $keywordString)));
 	}
-	
+
+	/**
+	 * @param $descrString
+	 * @return string
+	 */
 	public static function formatMetaDescription($descrString)
 	{
 		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
@@ -4961,7 +5126,13 @@ class eHelper
 
 		return (null !== $separator ? implode($separator, $ret) : $ret);
 	}
-	
+
+	/**
+	 * @param $str
+	 * @param $all
+	 * @param $space
+	 * @return string
+	 */
 	public static function camelize($str, $all = false, $space = '')
 	{
 		// clever recursion o.O
@@ -4970,28 +5141,41 @@ class eHelper
 		$tmp = explode('-', str_replace(array('_', ' '), '-', e107::getParser()->ustrtolower($str)));
 		return trim(implode($space, array_map('ucfirst', $tmp)), $space);
 	}
-	
+
+	/**
+	 * @param $str
+	 * @param $space
+	 * @return string
+	 */
 	public static function labelize($str, $space = ' ')
 	{
 		return self::camelize($str, true, ' ');
 	}
-	
+
+	/**
+	 * @param $str
+	 * @return array|string|string[]
+	 */
 	public static function dasherize($str)
 	{
 		return str_replace(array('_', ' '), '-', $str);
 	}
 
+	/**
+	 * @param $str
+	 * @return array|string|string[]
+	 */
 	public static function underscore($str)
 	{
 		return str_replace(array('-', ' '), '_', $str);
 	}
-	
+
 	/**
 	 * Parse generic shortcode parameter string
 	 * Format expected: {SC=key=val&key1=val1...}
 	 * Escape strings: \& => &
 	 *
-	 * @param string $parmstr
+	 * @param string $parm
 	 * @return array associative param array
 	 */
 	public static function scParams($parm)

@@ -12,6 +12,9 @@
 
 namespace e107\Shims\Internal;
 
+/**
+ *
+ */
 trait ReadfileTrait
 {
 	/**

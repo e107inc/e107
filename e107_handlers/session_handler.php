@@ -168,6 +168,9 @@ class e_session
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getOptions()
 	{
 		return $this->_options;
@@ -499,6 +502,11 @@ class e_session
 		return $this;
 	}
 
+	/**
+	 * @param $namespace
+	 * @param $sessionName
+	 * @return void
+	 */
 	public function init($namespace, $sessionName = null)
 	{
 		$this->start($sessionName);
@@ -637,7 +645,7 @@ class e_session
 	/**
 	 * Set new session name
 	 * @param string $name alphanumeric characters only
-	 * @return string old session name or false on error
+	 * @return false old session name or false on error
 	 */
 	public function setSessionName($name)
 	{
@@ -891,13 +899,20 @@ class e_session
 		session_destroy();
 		return $this;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function replaceRegistry()
 	{
 		e107::setRegistry('core/e107/session/'.$this->_namespace, $this, true);
 	}
 }
 
+
+/**
+ *
+ */
 class e_core_session extends e_session
 {
 	/**
@@ -958,6 +973,11 @@ class e_core_session extends e_session
 		$this->end();
 	}
 
+	/**
+	 * @param $status
+	 * @param $type
+	 * @return void|null
+	 */
 	private function log($status, $type=E_LOG_FATAL)
 	{
 
@@ -1147,7 +1167,10 @@ class e_session_db #implements SessionHandlerInterface
 	{
 		$this->_db = e107::getDb('session');
 	}
-	
+
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		session_write_close();

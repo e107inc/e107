@@ -55,8 +55,9 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
 
-
-
+/**
+ *
+ */
 class e_db_mysql implements e_db
 {
 	// TODO switch to protected vars where needed
@@ -140,16 +141,26 @@ class e_db_mysql implements e_db
 		mysqli_report(MYSQLI_REPORT_OFF);
 	}
 
+	/**
+	 * @return false
+	 */
 	function getPDO()
 	{
 		return false;
 	}
 
+	/**
+	 * @param $bool
+	 * @return void
+	 */
 	function debugMode($bool)
 	{
 		$this->debugMode = (bool) $bool;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function getMode()
 	{
 		 $this->gen('SELECT @@sql_mode');
@@ -218,17 +229,12 @@ class e_db_mysql implements e_db
 	}
 
 
-
-
-
 	/**
 	 * Connect ONLY  - used in v2.x
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
-	 * @param string $mySQLdefaultdb The database schema to connect to
-	 * @param string $newLink force a new link connection if TRUE. Default FALSE
-	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
+	 * @param bool $newLink force a new link connection if TRUE. Default FALSE
 	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
@@ -266,7 +272,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * Get Server Info
-	 * @return mixed
+	 * @return string
 	 */
 	public function getServerInfo()
 	{
@@ -279,7 +285,7 @@ class e_db_mysql implements e_db
 	/**
 	 * Select the database to use.
 	 * @param string $database name
-	 * @param string $table prefix . eg. e107_
+	 * @param string $prefix prefix . eg. e107_
 	 * @param boolean $multiple set to maintain connection to a secondary database.
 	 * @return boolean true when database selection was successful otherwise false.
 	 */
@@ -432,7 +438,6 @@ class e_db_mysql implements e_db
 
 		if ($this->debugMode === true)
 		{
-			/** @var $db_debug e107_db_debug */
 			global $db_debug;
 			$aTrace = debug_backtrace();
 			$pTable = (string) $this->mySQLcurTable;
@@ -846,6 +851,9 @@ class e_db_mysql implements e_db
 	}
 
 
+	/**
+	 * @return bool|int|string
+	 */
 	public function lastInsertId()
 	{
 		$tmp = mysqli_insert_id($this->mySQLaccess);
@@ -864,7 +872,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * @param mysqli_result $result
-	 * @return false|int
+	 * @return int|string
 	 */
 	public function rowCount($result=null)
 	{
@@ -929,6 +937,11 @@ class e_db_mysql implements e_db
 	}
 
 
+	/**
+	 * @param $tableName
+	 * @param $arg
+	 * @return false|mixed|string
+	 */
 	private function _prepareUpdateArg($tableName, $arg)
 	{
 		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
@@ -1031,6 +1044,10 @@ class e_db_mysql implements e_db
 		return $this->update($tableName, $arg, $debug, $log_type, $log_remark);
 	}
 
+	/**
+	 * @param $arg
+	 * @return array|mixed
+	 */
 	function _getTypes(&$arg)
 	{
 		if(isset($arg['_FIELD_TYPES']))
@@ -1051,11 +1068,11 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	* @return mixed
 	* @param string|array $fieldValue
-	* @desc Return new field value in proper format<br />
+	 * @desc Return new field value in proper format<br />
 	*
 	* @access private
+	*@return array|float|int|string
 	*/
 	function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
 	{
@@ -1472,6 +1489,10 @@ class e_db_mysql implements e_db
 		return $this->gen($query, $debug, $log_type, $log_remark);
 	}
 
+	/**
+	 * @param $matches
+	 * @return string
+	 */
 	function ml_check($matches)
 	{
 		$table = $this->hasLanguage($matches[1]);
@@ -1488,7 +1509,7 @@ class e_db_mysql implements e_db
 	* Check for the existence of a matching language table when multi-language tables are active.
 	* @param string|array $table Name of table, without the prefix. or an array of table names.
 	* @access private
-	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
+	* @return array|false|string the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
 	function hasLanguage($table, $multiple=false)
 	{
@@ -1615,7 +1636,7 @@ class e_db_mysql implements e_db
 	 * @param $table (without the prefix)
 	 * @param $field
 	 * @param string $where (optional)
-	 * @return bool|resource
+	 * @return array|bool|null|string
 	 */
 	public function max($table, $field, $where='')
 	{
@@ -1870,11 +1891,21 @@ class e_db_mysql implements e_db
 	}
 
 
-	function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
+	/**
+	 * @param $table
+	 * @param $fieldid
+	 * @param $key
+	 * @param $retinfo
+	 * @return array|bool
+	 */
+	function db_Field($table, $fieldid="", $key="", $retinfo = FALSE)
 	{
 		return $this->field($table,$fieldid,$key, $retinfo);
 	}
 
+	/**
+	 * @return int
+	 */
 	function columnCount()
 	{
 		return mysqli_num_fields($this->mySQLresult);
@@ -2158,6 +2189,9 @@ class e_db_mysql implements e_db
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function db_ResetTableList()
 	{
 		$this->mySQLtableList = array();
@@ -2274,7 +2308,13 @@ class e_db_mysql implements e_db
 	}
 
 
-
+	/**
+	 * @param $oldtable
+	 * @param $newtable
+	 * @param $drop
+	 * @param $data
+	 * @return bool|int|mysqli_result
+	 */
 	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{
 		$old = $this->mySQLPrefix.strtolower($oldtable);
@@ -2329,7 +2369,7 @@ class e_db_mysql implements e_db
 	 * @param $table string - name without the prefix or '*' for all
 	 * @param $file string - optional file name. or leave blank to generate.
 	 * @param $options - additional preferences.
-	 * @return string|bool backup file path.
+	 * @return bool backup file path.
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
@@ -2361,28 +2401,45 @@ class e_db_mysql implements e_db
 
 
 	// Return error number for last operation
+
+	/**
+	 * @return int
+	 */
 	function getLastErrorNumber()
 	{
 		return $this->mySQLlastErrNum;		// Number of last error
 	}
 
 	// Return error text for last operation
+
+	/**
+	 * @return string
+	 */
 	function getLastErrorText()
 	{
 		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
 	}
 
+	/**
+	 * @return void
+	 */
 	function resetLastError()
 	{
 		$this->mySQLlastErrNum = 0;
 		$this->mySQLlastErrText = '';
 	}
 
+	/**
+	 * @return string
+	 */
 	function getLastQuery()
 	{
 		return $this->mySQLlastQuery;
 	}
 
+	/**
+	 * @return void
+	 */
 	private function setSQLMode()
 	{
 
@@ -2609,7 +2666,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * @deprecated 2.1.9 Used only to provide $mySQLaccess to other instances of e_db_mysql scattered around
-	 * @return resource
+	 * @return mysqli
 	 */
 	public function get_mySQLaccess()
 	{
@@ -2648,6 +2705,9 @@ class e_db_mysql implements e_db
 
 if(!class_exists('db'))
 {
+	/**
+	 *
+	 */
 	class db extends e_db_mysql
 	{
 

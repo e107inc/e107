@@ -21,9 +21,10 @@
  Note: there are some uncommented 'echo' statements which are intentional to highlight that something's gone wrong! (not that it should, of course)
  */
 
- 
 
-
+/**
+ *
+ */
 class db_table_admin
 {
 	protected $file_buffer = ''; // Contents of a file
@@ -32,6 +33,11 @@ class db_table_admin
 	
 	// Get list of fields and keys for a table - return FALSE if unsuccessful
 	// Return as for get_table_def
+	/**
+	 * @param $table_name
+	 * @param $prefix
+	 * @return false|mixed|string
+	 */
 	function get_current_table($table_name, $prefix = "")
 	{
 		$sql = e107::getDb();
@@ -126,6 +132,10 @@ class db_table_admin
 	
 	// Parses the block of lines which make up the field and index definitions
 	// Returns an array where each entry is the definitions of a field or index
+	/**
+	 * @param $text
+	 * @return array|false
+	 */
 	function parse_field_defs($text)
 	{
 		$text = (string) $text;
@@ -273,7 +283,12 @@ class db_table_admin
 		}
 		
 		// Utility routine - given our array-based definition, create a string MySQL field definition
-		function make_def($list)
+
+	/**
+	 * @param $list
+	 * @return mixed|string
+	 */
+	function make_def($list)
 		{
 			switch ($list['type'])
 			{
@@ -317,7 +332,13 @@ class db_table_admin
 		// Return a text list of differences, plus an array of MySQL queries to fix
 		// List1 is the reference, List 2 is the actual
 		// This version looks ahead on a failed match, and moves a field up in the table if already defined - should retain as much as possible
-		function compare_field_lists($list1, $list2, $stop_on_error = FALSE)
+	/**
+	 * @param $list1
+	 * @param $list2
+	 * @param $stop_on_error
+	 * @return array[]|bool
+	 */
+	function compare_field_lists($list1, $list2, $stop_on_error = FALSE)
 		{
 			$i = 0; // Counts records in list1 (required format)
 			$j = 0; // Counts records in $created_list (our 'table so far' list)
@@ -515,8 +536,12 @@ class db_table_admin
 				$error_list, $change_list
 			);
 		}
-		
-		function make_changes_list($result)
+
+	/**
+	 * @param $result
+	 * @return string
+	 */
+	function make_changes_list($result)
 		{
 			if (!is_array($result))
 			{
@@ -534,7 +559,12 @@ class db_table_admin
 		}
 		
 		// Return a table of info from the output of get_table_def
-		function make_table_list($result)
+
+	/**
+	 * @param $result
+	 * @return string
+	 */
+	function make_table_list($result)
 		{
 			if (!is_array($result))
 			{
@@ -553,7 +583,12 @@ class db_table_admin
 		}
 		
 		// Return a table of info from the output of parse_field_defs()
-		function make_field_list($fields)
+
+	/**
+	 * @param $fields
+	 * @return string
+	 */
+	function make_field_list($fields)
 		{
 			$text = "<table>";
 			foreach ($fields as $f)
@@ -619,7 +654,14 @@ class db_table_admin
 		// Return text string if $justCheck is TRUE and changes needed
 		// Return text string on most failures
 		// Return FALSE on certain failures (generally indicative of code/system problems)
-		function update_table_structure($newStructure, $justCheck = FALSE, $makeNewifNotExist = TRUE, $mlUpdate = FALSE)
+	/**
+	 * @param $newStructure
+	 * @param $justCheck
+	 * @param $makeNewifNotExist
+	 * @param $mlUpdate
+	 * @return bool|string
+	 */
+	function update_table_structure($newStructure, $justCheck = FALSE, $makeNewifNotExist = TRUE, $mlUpdate = FALSE)
 		{
 			global $sql;
 			// Pull out table name
@@ -691,8 +733,15 @@ class db_table_admin
 			}
 
 		}
-		
-		function createTable($pathToSqlFile = '', $tableName = '', $addPrefix = true, $renameTable = '')
+
+	/**
+	 * @param $pathToSqlFile
+	 * @param $tableName
+	 * @param $addPrefix
+	 * @param $renameTable
+	 * @return bool|int
+	 */
+	function createTable($pathToSqlFile = '', $tableName = '', $addPrefix = true, $renameTable = '')
 		{
 		//	$e107 = e107::getInstance();
 			$tmp = $this->get_table_def($tableName, $pathToSqlFile);

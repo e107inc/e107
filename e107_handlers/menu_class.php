@@ -443,6 +443,9 @@ class e_menu
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	protected function isFrontPage()
 	{
 		return e_REQUEST_SELF == SITEURL;

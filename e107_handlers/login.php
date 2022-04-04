@@ -54,6 +54,10 @@ class userlogin
 		$this->userMethods = e107::getUserSession();
 	}
 
+	/**
+	 * @param $area
+	 * @return void
+	 */
 	public function setSecureImageMode($area)
 	{
 		$modes = array(
@@ -345,6 +349,9 @@ class userlogin
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getUserData()
 	{
 		return $this->userData;
@@ -513,6 +520,9 @@ class userlogin
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function test()
 	{
 

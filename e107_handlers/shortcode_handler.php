@@ -82,7 +82,9 @@ if (!defined('e107_INIT'))
 	}
 
 
-
+/**
+ *
+ */
 class e_parse_shortcode
 {
 	protected $scList               = array();  // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
@@ -136,6 +138,9 @@ class e_parse_shortcode
 
 	}
 
+	/**
+	 * @return void
+	 */
 	public function clearRegistered()
 	{
 		$this->registered_codes = array();
@@ -723,14 +728,21 @@ class e_parse_shortcode
 	}
 
 
-
+	/**
+	 * @param $code
+	 * @return bool
+	 */
 	function isRegistered($code)
 	{
 		return array_key_exists($code, $this->registered_codes);
 	}
 
 
-
+	/**
+	 * @param $className
+	 * @param $object
+	 * @return $this
+	 */
 	public function resetScClass($className, $object)
 	{
 		if(null === $object)
@@ -744,16 +756,28 @@ class e_parse_shortcode
 		return $this;
 	}
 
+	/**
+	 * @param $className
+	 * @return bool
+	 */
 	function isScClass($className)
 	{
 		return isset($this->scClasses[$className]);
 	}
 
+	/**
+	 * @param $code
+	 * @return bool
+	 */
 	function isOverride($code)
 	{
 		return in_array($code, $this->scOverride);
 	}
 
+	/**
+	 * @param $name
+	 * @return bool
+	 */
 	function isBatchOverride($name)
 	{
 		return in_array($name, $this->scBatchOverride);
@@ -786,7 +810,7 @@ class e_parse_shortcode
 	 *								- if FALSE, only those passed are used.
 	 *	@param array|object|null $extraCodes - if passed, defines additional shortcodes:
 	 *			- if an object or an array, the shortcodes defined by the class of the object are available for this parsing only.
-	 *	@param array|null $eVars - if defined, details values to be substituted for shortcodes. Array key (lower case) is shortcode name (upper case)
+	 *	@param array|object|null $eVars - if defined, details values to be substituted for shortcodes. Array key (lower case) is shortcode name (upper case)
 	 *
 	 *	@return string with shortcodes substituted
 	 */
@@ -1457,6 +1481,10 @@ class e_parse_shortcode
 
 	}
 
+	/**
+	 * @param $mode
+	 * @return void
+	 */
 	public function setMode($mode)
 	{
 		$this->mode = (string) $mode;
@@ -1681,6 +1709,10 @@ class e_parse_shortcode
 	}
 }
 
+
+/**
+ *
+ */
 class e_shortcode
 {
 	/**
@@ -1744,12 +1776,19 @@ class e_shortcode
 	}
 
 
+	/**
+	 * @return null
+	 */
 	public function getWrapperID()
 	{
 		return $this->wrapper;
 	}
 
 
+	/**
+	 * @param $data
+	 * @return $this|null
+	 */
 	public function editable($data=null)
 	{
 		if(null === $data) return $this->editable;
@@ -1879,7 +1918,7 @@ class e_shortcode
 	 * Retrieve all shortcode values
 	 * <code>$some_value = e107::getScBatch('class_name')->getScVars();</code>
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function getScVars()
 	{

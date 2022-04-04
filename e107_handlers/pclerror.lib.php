@@ -56,7 +56,12 @@ if (!defined("PCLERROR_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclErrorLog($p_error_code=0, $p_error_string = "")
+	/**
+	 * @param $p_error_code
+	 * @param $p_error_string
+	 * @return void
+	 */
+	function PclErrorLog($p_error_code=0, $p_error_string = "")
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
@@ -72,7 +77,13 @@ if (!defined("PCLERROR_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclErrorFatal($p_file, $p_line, $p_error_string = "")
+	/**
+	 * @param $p_file
+	 * @param $p_line
+	 * @param $p_error_string
+	 * @return void
+	 */
+	function PclErrorFatal($p_file, $p_line, $p_error_string = "")
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
@@ -90,7 +101,10 @@ if (!defined("PCLERROR_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclErrorReset()
+	/**
+	 * @return void
+	 */
+	function PclErrorReset()
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
@@ -105,7 +119,10 @@ if (!defined("PCLERROR_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclErrorCode()
+	/**
+	 * @return mixed
+	 */
+	function PclErrorCode()
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
@@ -119,7 +136,10 @@ if (!defined("PCLERROR_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclErrorString()
+	/**
+	 * @return string
+	 */
+	function PclErrorString()
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
