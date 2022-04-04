@@ -264,7 +264,7 @@ $LAYOUT['_footer_'] = '
 		<div class="row">
       		<div class="col-lg-offset-1 col-lg-5 col-sm-6">
 		         <div class="caption">
-		            <img class="img-responsive" src="'.THEME_ABS.'install/sketch-subscribe.png">
+		            <img class="img-responsive" src="'.THEME_ABS.'install/sketch-subscribe.png" alt="Subscribe Image" />
 		         </div>
             </div>
             <div class="col-lg-6 col-sm-6">

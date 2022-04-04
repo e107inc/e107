@@ -428,7 +428,7 @@ class e_admin_log
 	{
 		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use add()->save() or addEvent() instead.', E_USER_DEPRECATED);
 
-		return addEvent($importance, $source_call, $eventcode, $event_title, $explain, $finished, $target_logs, $userData);
+		return $this->addEvent($importance, $source_call, $eventcode, $event_title, $explain, $finished, $target_logs, $userData);
 	}
 
 

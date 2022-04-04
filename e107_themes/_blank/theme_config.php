@@ -36,7 +36,7 @@ class theme__blank implements e_theme_config
 	{
 	 	return "
 			<div class='well'>
-		 	<a href='http://e107.org'>All the HTML that you want</a>.<br /><br />
+		 	<a href='https://e107.org'>All the HTML that you want</a>.<br /><br />
 		    Mauris sit amet arcu arcu. Curabitur ultrices, felis ac sagittis elementum, justo dolor posuere eros, eu sollicitudin eros mi nec leo. Quisque sapien justo, ultricies at sollicitudin non; rhoncus vel nisi. Fusce egestas orci a diam vestibulum ut gravida ipsum tristique. Nullam et turpis nibh; eu dapibus ligula. Fusce ornare massa ac ante tincidunt euismod varius augue volutpat? Suspendisse potenti. Morbi eget velit in nulla tristique ultricies suscipit consequat ligula. Integer quis arcu vel sem scelerisque gravida vitae vel tortor! Suspendisse tincidunt scelerisque nibh, quis consectetur mauris varius sit amet! Pellentesque et urna vel est rutrum viverra?
 		    <ul>
 				<li>Curabitur ultrices</li>

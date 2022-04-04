@@ -2373,7 +2373,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 							
 			$tmp[5]['text'] 			= 'e107 Website';
 			$tmp[5]['description'] 		= '';
-			$tmp[5]['link'] 			= 'http://e107.org';
+			$tmp[5]['link'] 			= 'https://e107.org';
 			$tmp[5]['image'] 			= E_16_E107;
 			$tmp[5]['image_large'] 		= '';
 			$tmp[5]['image_src'] 		= '';
@@ -2383,7 +2383,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 										
 			$tmp[6]['text'] 			= 'e107 on Twitter';
 			$tmp[6]['description'] 		= '';
-			$tmp[6]['link'] 			= 'http://twitter.com/e107';
+			$tmp[6]['link'] 			= 'https://twitter.com/e107';
 			$tmp[6]['image'] 			= E_16_TWITTER; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[6]['image_large'] 		= '';
 			$tmp[6]['image_src'] 		= '';
