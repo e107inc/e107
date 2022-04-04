@@ -492,7 +492,7 @@ class rssCreate
 				<pubDate>".date("r",($time))."</pubDate>
 				<lastBuildDate>".date("r",($time))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
-				<generator>e107 (http://e107.org)</generator>
+				<generator>e107 (https://e107.org)</generator>
 				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>
 				<ttl>60</ttl>";
@@ -614,7 +614,7 @@ class rssCreate
 				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time). "</dc:date>
 				<dc:creator>".$this->nospam($pref['siteadminemail'])."</dc:creator>
-				<admin:generatorAgent rdf:resource=\"http://e107.org\" />
+				<admin:generatorAgent rdf:resource=\"https://e107.org\" />
 				<admin:errorReportsTo rdf:resource=\"mailto:".$this->nospam($pref['siteadminemail'])."\" />
 				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>

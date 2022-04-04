@@ -123,7 +123,7 @@ class news_shortcodes extends e_shortcode
 				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."</a>";
 			}
 		}
-		return "<a href='http://e107.org'>e107</a>";
+		return "<a href='https://e107.org'>e107</a>";
 	}
 
 

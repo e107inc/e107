@@ -633,7 +633,7 @@ $columnInfo = array(
 		
 		function maintPage()
 		{
-			showMaint();	
+			$this->showMaint();
 		}
 	
 		function mirrorPage()
