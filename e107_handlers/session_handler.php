@@ -68,7 +68,9 @@ class e_session
 	 * @var integer
 	 */
 	const SECURITY_LEVEL_NONE = 0;
-	
+
+
+	const SECURITY_LEVEL_LOW = 3;
 	/**
 	 * Default system protection, balanced for best user experience, 
 	 * label 'Safe mode - Balanced'
@@ -202,7 +204,7 @@ class e_session
         $config = array(
             'ValidateRemoteAddr' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
             'ValidateHttpVia' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
-            'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
+            'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_LOW),
             'ValidateHttpUserAgent' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
         );
 
@@ -1044,7 +1046,7 @@ class e_core_session extends e_session
 		// TODO e-token required for all system forms?
 		
 		// only if not disabled and not in 'cli' mod
-		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_BALANCED || e107::getE107('cli')) return true;
+		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_LOW || e107::getE107('cli')) return true;
 		
 		if($this->getSessionId())
 		{
