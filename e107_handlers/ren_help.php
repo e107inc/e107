@@ -128,6 +128,10 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Size_Select($formid='size_selector') {
 	$text ="<!-- Start of Size selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
@@ -148,6 +152,10 @@ function Size_Select($formid='size_selector') {
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Color_Select($formid='col_selector') {
 
 	$text = "<!-- Start of Color selector -->
@@ -217,6 +225,10 @@ function Color_Select($formid='col_selector') {
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function PreImage_Select($formid='preimage_selector')
 {
 	global $bbcode_imagedir;
@@ -234,6 +246,10 @@ function PreImage_Select($formid='preimage_selector')
 
 
 // Parameter '$bbcode_filedir' removed - not used in code.
+/**
+ * @param $formid
+ * @return string
+ */
 function PreFile_Select($formid='prefile_selector')
 {
 	require_once(e_HANDLER."userclass_class.php");
@@ -301,6 +317,10 @@ function PreFile_Select($formid='prefile_selector')
 	return $text;
 }
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Emoticon_Select($formid='emoticon_selector') {
 	// require_once(e_HANDLER."emote.php");
 	$text ="<!-- Start of Emoticon selector -->

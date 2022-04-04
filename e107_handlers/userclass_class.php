@@ -53,6 +53,9 @@ define('UC_TYPE_GROUP'		, '1');			// User class is a group or list of subsidiary
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
 
+/**
+ *
+ */
 class user_class
 {
 	public $class_tree;						// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
@@ -96,6 +99,10 @@ class user_class
 	}
 
 
+	/**
+	 * @param $id
+	 * @return false|mixed
+	 */
 	public function getFixedClassDescription($id)
 	{
 		if(isset($this->fixed_classes[$id]))
@@ -138,8 +145,8 @@ class user_class
 	 *	Data is cached if enabled
 	 *
 	 *	@param boolean $force - set to TRUE to force a re-read of the info regardless.
-	 *	@return none
-	*/
+	 *	@return void
+	 */
 	public function readTree($force = FALSE)
 	{
 		if (isset($this->class_tree) && count($this->class_tree) && !$force) return;
@@ -1031,9 +1038,9 @@ class user_class
 
 	/**
 	 * BC Alias of getDescription
-	 * @deprecated
 	 * @param $id
-	 * @return mixed
+	 * @return string
+	 *@deprecated
 	 */
 	public function uc_get_classdescription($id)
 	{
@@ -1088,7 +1095,7 @@ class user_class
 	/**
 	 * BC Alias of getID();
 	 * @param $name
-	 * @return mixed
+	 * @return bool|int
 	 */
 	public function ucGetClassIDFromName($name)
 	{
@@ -1171,7 +1178,7 @@ class user_class
 	 *	Return all users in a particular class or set of classes.
 	 *
 	 *  Could potentially be verrrrryyyy slow - has to scan the whole user database at present.
-	 *	@param string $$classes - comma separated list of classes
+	 *	@param string $classes - comma separated list of classes
 	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry, prefix with 'ue.' to retrieve extended user fields.
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
@@ -1314,6 +1321,12 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "")
 
 // Very similar to r_userclass, but returns a list of check boxes. (currently only used in newspost.php)
 // $curval is a comma separated list of class IDs for boxes which are checked.
+/**
+ * @param $fieldname
+ * @param $curval
+ * @param $optlist
+ * @return array|string
+ */
 function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
 	//  echo "Call r_userclass_check: {$curval}<br />";
@@ -1325,7 +1338,9 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 }
 
 
-
+/**
+ * @return array
+ */
 function get_userclass_list()
 {
 //  echo "Call get_userclass_list<br />";
@@ -1335,7 +1350,10 @@ function get_userclass_list()
 }
 
 
-
+/**
+ * @param $id
+ * @return string
+ */
 function r_userclass_name($id)
 {
 //  echo "Call r_userclass_name<br />";
@@ -1349,6 +1367,11 @@ function r_userclass_name($id)
 
 
 // Deprecated functions to hopefully be removed
+/**
+ * @param $fieldname
+ * @param $curval
+ * @return void
+ */
 function r_userclass_radio($fieldname, $curval = '')
 {
 	echo "Deprecated function r_userclass_radio not used in core - mutter if you'd like it implemented<br />";
@@ -1358,6 +1381,10 @@ function r_userclass_radio($fieldname, $curval = '')
 //			Admin Class handler - could go into separate file later
 //========================================================================
 
+
+/**
+ *
+ */
 class user_class_admin extends user_class
 {
 	protected $field_list = array('userclass_name' => "varchar(100) NOT NULL default ''",
@@ -1425,8 +1452,8 @@ class user_class_admin extends user_class
 	/**
 	 *	Next three routines are used to update the database after adding/deleting a class
 	 *	calc_tree is the public interface
-	 *	@return none
-	*/
+	 *	@return void
+	 */
 	public function calc_tree()
 	{
 		$this->readTree(TRUE);						// Make sure we have accurate data
@@ -1444,6 +1471,11 @@ class user_class_admin extends user_class
 	 *	If the permissions change, sets the 'change_flag' to force rewrite to DB (by other code)
 	 *	@param integer $parent is the class number being processed.
 	 *	@param array $rights is the array of rights accumulated so far in the walk down the tree
+	 */
+	/**
+	 * @param $parent
+	 * @param $rights
+	 * @return void|null
 	 */
 	protected function rebuild_tree($parent, $rights)
 	{
@@ -1488,6 +1520,10 @@ class user_class_admin extends user_class
 	 *	@param integer $our_class - ID of class being processed
 	 *	@return array of class permissions
 	 */
+	/**
+	 * @param $our_class
+	 * @return array|string[]
+	 */
 	protected function topdown_tree($our_class)
 	{
 		$rights  = array($our_class);				// Accumulator always has rights to its own class
@@ -1512,7 +1548,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Called after recalculating the tree to save changed records to the database
-	 *	@return none
+	 *	@return void
 	 */
 	public function save_tree()
 	{
@@ -1587,6 +1623,12 @@ class user_class_admin extends user_class
 	 *	@param int $listnum - class number of first element to display, along with its children
 	 *	@param array $indent_images - array of images with which to start each line
 	 *	@param boolean $is_last - TRUE if this is the last element on the current branch of the tree
+	 */
+	/**
+	 * @param $listnum
+	 * @param $indent_images
+	 * @param $is_last
+	 * @return string
 	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
@@ -1939,7 +1981,7 @@ class user_class_admin extends user_class
 	 *	(Moved in from e_userclass class)
 	 *	@param integer $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
-	 *	@return none
+	 *	@return void
 	 */
 	public function class_add($cid, $uinfoArray)
 	{
@@ -1967,7 +2009,7 @@ class user_class_admin extends user_class
 	 *	(Moved in from e_userclass class)
 	 *	@param integer $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
-	 *	@return none
+	 *	@return void
 	 */
 	public function class_remove($cid, $uinfoArray)
 	{
@@ -2024,7 +2066,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Set a simple default tree structure of classes
-	 *	@return none
+	 *	@return void
 	 */
 	public function set_default_structure()
 	{
@@ -2092,7 +2134,7 @@ class user_class_admin extends user_class
 	/**
 	 *	Write the current userclass tree to the file e_TEMP.'userclasses.xml'
 	 *
-	 *	@return TRUE on success, FALSE on fail.
+	 *	@return bool on success, FALSE on fail.
 	 */
 	public function makeXMLFile()
 	{
@@ -2115,7 +2157,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Clear user class cache
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearCache()
 	{

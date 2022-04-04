@@ -17,6 +17,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class notify
 {
 	public $notify_prefs;
@@ -326,6 +330,10 @@ class notify
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_login($data)
 	{
 		$message = "";
@@ -339,16 +347,27 @@ class notify
 		$this->send('login', NT_LAN_LI_1 . $user, $message);
 	}
 
+	/**
+	 * @return void
+	 */
 	function notify_logout()
 	{
 		$this->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_flood($data)
 	{
 		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_subnews($data)
 	{
 		$message = "";
@@ -360,6 +379,10 @@ class notify
 		$this->send('subnews', NT_LAN_SN_1, $message);
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newspost($data)
 	{
 		$message = '<b>'.$data['news_title'].'</b>';
@@ -369,6 +392,10 @@ class notify
 		$this->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newsupd($data)
 	{
 		$message = '<b>'.$data['news_title'].'</b>';
@@ -378,12 +405,20 @@ class notify
 		$this->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newsdel($data)
 	{
 		$this->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_maildone($data)
 	{
 		$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
@@ -391,6 +426,10 @@ class notify
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_fileupload($data)
 	{
 		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
@@ -398,13 +437,20 @@ class notify
 	}
 
 
-
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_admin_news_created($data)
 	{
 		$this->notify_newspost($data);
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_admin_news_notify($data)
 	{
 		$tp = e107::getParser();

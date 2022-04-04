@@ -24,6 +24,11 @@ e107::coreLan('plugin', true);
 
 
 // new in v2.1.5 - optimized for speed.
+
+
+/**
+ *
+ */
 class e_plugin
 {
 
@@ -122,21 +127,33 @@ class e_plugin
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getCategoryList()
 	{
 		return $this->_accepted_categories;
 	}
 
+	/**
+	 * @return int[]|string[]
+	 */
 	public function getDetected()
 	{
 		return array_keys($this->_data);
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getCorePluginList()
 	{
 		return $this->_core_plugins;
 	}
 
+	/**
+	 * @return $this
+	 */
 	public function clearCache()
 	{
 		$this->_installed = array();
@@ -148,6 +165,9 @@ class e_plugin
 		return $this;
 	}
 
+	/**
+	 * @return array|false[]|string[]
+	 */
 	public function getInstalledWysiwygEditors()
 	{
 		$result = array();
@@ -176,11 +196,17 @@ class e_plugin
 		return $result;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getInstalled()
 	{
 		return $this->_installed;
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getId()
 	{
 		if(empty($this->_plugdir))
@@ -197,6 +223,9 @@ class e_plugin
 	}
 
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getCompat()
 	{
 
@@ -208,6 +237,9 @@ class e_plugin
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getInstallRequired()
 	{
 
@@ -225,7 +257,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return false|mixed
+	 */
 	public function getVersion()
 	{
 		if(empty($this->_plugdir))
@@ -242,7 +276,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return false|mixed
+	 */
 	public function getDate()
 	{
 		if(isset($this->_data[$this->_plugdir]['@attributes']['date']))
@@ -254,6 +290,10 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param $type
+	 * @return false|mixed
+	 */
 	public function getAuthor($type='name')
 	{
 		if(!isset($this->_data[$this->_plugdir]['author']['@attributes'][$type]))
@@ -266,7 +306,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return false|string
+	 */
 	public function getCategory()
 	{
 		if(!isset($this->_data[$this->_plugdir]['category']))
@@ -278,6 +320,9 @@ class e_plugin
 
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getKeywords()
 	{
 		if(!isset($this->_data[$this->_plugdir]['keywords']))
@@ -290,6 +335,9 @@ class e_plugin
 	}
 
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getDescription()
 	{
 		if(!isset($this->_data[$this->_plugdir]['description']['@value']))
@@ -302,7 +350,12 @@ class e_plugin
 	}
 
 
-	public function getIcon($size = 16,$opt='')
+	/**
+	 * @param $size
+	 * @param $opt
+	 * @return mixed|string|null
+	 */
+	public function getIcon($size = 16, $opt='')
 	{
 		if(!isset($this->_data[$this->_plugdir]))
 		{
@@ -332,7 +385,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return array|false|string|string[]
+	 */
 	public function getAdminCaption()
 	{
 		$att = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
@@ -347,7 +402,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return false|string
+	 */
 	public function getAdminUrl()
 	{
 		if(!empty($this->_data[$this->_plugdir]['administration']['configFile']))
@@ -391,7 +448,12 @@ class e_plugin
 	}
 
 
-	function setInstalled($plug,$version)
+	/**
+	 * @param $plug
+	 * @param $version
+	 * @return $this
+	 */
+	function setInstalled($plug, $version)
 	{
 		$this->_installed[$plug] = $version;
 
@@ -404,7 +466,7 @@ class e_plugin
 
 	/**
 	 * Check if the currently loaded plugin is installed
-	 * @return mixed
+	 * @return bool
 	 */
 	public function isInstalled()
 	{
@@ -420,7 +482,7 @@ class e_plugin
 	/**
 	 * Check if the currently loaded plugin's addon has errors.
 	 * @param string e_xxxx addon
-	 * @return mixed
+	 * @return int|array
 	 */
 	public function getAddonErrors($e_xxx)
 	{
@@ -487,6 +549,10 @@ class e_plugin
 
 	}
 
+	/**
+	 * @param $content
+	 * @return bool
+	 */
 	public function isValidAddonMarkup($content='')
     {
        if ((strpos($content, '<' . '?php') !== 0))
@@ -505,6 +571,9 @@ class e_plugin
     }
 
 
+	/**
+	 * @return array|false
+	 */
 	public function getUpgradableList()
 	{
 		$needed = array();
@@ -526,6 +595,9 @@ class e_plugin
 	}
 
 
+	/**
+	 * @return void|null
+	 */
 	private function _initIDs()
 	{
 		$sql = e107::getDb();
@@ -640,6 +712,10 @@ class e_plugin
 
 	}
 
+	/**
+	 * @param $currentStatus
+	 * @return array
+	 */
 	public function getFields($currentStatus = false)
 	{
 		/*if(!isset($this->_data[$this->_plugdir]['@attributes']['name']))
@@ -733,7 +809,10 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @param $force
+	 * @return bool|null
+	 */
 	private function _init($force=false)
 	{
 
@@ -795,6 +874,9 @@ class e_plugin
 	}
 
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getMeta()
 	{
 
@@ -807,6 +889,10 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param $mode
+	 * @return false|mixed|string
+	 */
 	public function getName($mode=null)
 	{
 		if(!empty($this->_data[$this->_plugdir]['@attributes']['lan']))
@@ -831,6 +917,10 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param string $plugName plugin folder name
+	 * @return array|false
+	 */
 	private function parse_plugin_xml($plugName)
 	{
 		// $tp = e107::getParser();
@@ -1027,6 +1117,10 @@ class e_plugin
 
 	}
 
+	/**
+	 * @param $pluginDir
+	 * @return false|mixed
+	 */
 	private function _detectLanGlobal($pluginDir)
 	{
 		$path_a = e_PLUGIN.$pluginDir."/languages/English_global.php"; // always check for English so we have a fall-back
@@ -1041,6 +1135,11 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param $ver
+	 * @param $legacy
+	 * @return array|string|string[]|null
+	 */
 	private function _fixVersion($ver, $legacy=false)
 	{
 
@@ -1058,6 +1157,10 @@ class e_plugin
 
 	}
 
+	/**
+	 * @param $ver
+	 * @return array|string|string[]
+	 */
 	private function _fixCompat($ver)
 	{
 		$ver = $this->_fixVersion($ver);
@@ -1071,6 +1174,11 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param $path
+	 * @param $plugName
+	 * @return array|string|string[]
+	 */
 	private function _fixPath($path, $plugName)
 	{
 		$pathFilter = array(
@@ -1083,6 +1191,10 @@ class e_plugin
 	}
 
 
+	/**
+	 * @param $cat
+	 * @return mixed|string
+	 */
 	private function checkCategory($cat)
 	{
 		$okayCats = array_keys($this->_accepted_categories);
@@ -1098,7 +1210,9 @@ class e_plugin
 	}
 
 
-
+	/**
+	 * @return void
+	 */
 	public function buildAddonPrefLists()
 	{
 		$core = e107::getConfig('core');
@@ -1481,7 +1595,7 @@ class e107plugin
 	/**
 	 * Checks all installed plugins and returns an array of those needing an update. 
 	 * @param string $mode  'boolean' for a quick true/false or null for full array returned. 
-	 * @return mixed 
+	 * @return array|bool
 	 */
 	public function updateRequired($mode=null)
 	{
@@ -1787,6 +1901,10 @@ class e107plugin
 		));
 	}
 
+	/**
+	 * @param $cat
+	 * @return mixed|string
+	 */
 	private function manage_category($cat)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -1800,6 +1918,11 @@ class e107plugin
 		}
 	}
 
+	/**
+	 * @param $plugin
+	 * @param $function
+	 * @return void|null
+	 */
 	private function manage_icons($plugin = '', $function = '')
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -1873,7 +1996,10 @@ class e107plugin
 
 		return $getinfo_results[$id];
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	private function setUe()
 	{
 		if (!isset($this->module['ue']))
@@ -2099,6 +2225,11 @@ class e107plugin
 		return false;
 	}
 
+	/**
+	 * @param $action
+	 * @param $field_name
+	 * @return bool|void
+	 */
 	private function manage_extended_field_sql($action, $field_name)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -2156,6 +2287,12 @@ class e107plugin
 		}
 	}
 
+	/**
+	 * @param $action
+	 * @param $class_name
+	 * @param $class_description
+	 * @return bool|null
+	 */
 	private function manage_userclass($action, $class_name, $class_description='')
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -2216,6 +2353,14 @@ class e107plugin
 		return null;
 	}
 
+	/**
+	 * @param $action
+	 * @param $link_url
+	 * @param $link_name
+	 * @param $link_class
+	 * @param $options
+	 * @return int|void|null
+	 */
 	private function manage_link($action, $link_url, $link_name, $link_class = 0, $options=array())
 	{
 
@@ -2390,6 +2535,11 @@ class e107plugin
 
 	}
 
+	/**
+	 * @param $action
+	 * @param $comment_id
+	 * @return int|void
+	 */
 	function manage_comments($action, $comment_id)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -2415,6 +2565,11 @@ class e107plugin
 	//	 For 'upgrade' - its a query to modify the table (not called from the plugin.xml handler)
 	//	 For 'remove' - its a table name
 	//  'upgrade' and 'remove' operate on all language variants of the same table
+	/**
+	 * @param $action
+	 * @param $var
+	 * @return bool|string
+	 */
 	function manage_tables($action, $var)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -2477,6 +2632,13 @@ class e107plugin
 
 	// DEPRECATED for 0.8 xml files - See XmlPrefs();
 	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
+	/**
+	 * @param $action
+	 * @param $prefname
+	 * @param $plugin_folder
+	 * @param $varArray
+	 * @return void
+	 */
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{ // These prefs are 'cumulative' - several plugins may contribute an array element
 		//	global $pref;
@@ -2526,6 +2688,11 @@ class e107plugin
 
 	}
 
+	/**
+	 * @param $action
+	 * @param $eplug_folder
+	 * @return void
+	 */
 	function manage_search($action, $eplug_folder)
 	{
 		global $sysprefs;
@@ -2592,6 +2759,11 @@ class e107plugin
 
 	}
 
+	/**
+	 * @param $action
+	 * @param $eplug_folder
+	 * @return void
+	 */
 	function manage_notify($action, $eplug_folder)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -2678,6 +2850,11 @@ class e107plugin
 		eRouter::clearCache();
 	}
 
+	/**
+	 * @param $array
+	 * @param $msg
+	 * @return string
+	 */
 	function displayArray(&$array, $msg = '')
 	{
 		$txt = ($msg ? $msg.'<br />' : '');
@@ -2690,11 +2867,18 @@ class e107plugin
 	}
 
 
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	private function log($message)
 	{
 		$this->log[] = $message;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLog()
 	{
 		$text = $this->log;
@@ -2957,6 +3141,10 @@ class e107plugin
 	}
 
 
+	/**
+	 * @param $plug_vars
+	 * @return false
+	 */
 	private function removeCrons($plug_vars)
 	{
 		$this->log("Running ".__METHOD__);
@@ -3573,7 +3761,7 @@ class e107plugin
 	/**
 	 * Process XML Tag <siteLinks>
 	 * @param string $function install|upgrade|refresh|uninstall
-	 * @param array $array
+	 * @param array $plug_vars
 	 * @return null
 	 */
 	function XmlSiteLinks($function, $plug_vars)
@@ -3683,8 +3871,11 @@ class e107plugin
 	}
 
 
-
-
+	/**
+	 * @param $type
+	 * @param $default
+	 * @return int|mixed
+	 */
 	function getPerm($type, $default = 'member')
 	{
 		
@@ -3711,6 +3902,12 @@ class e107plugin
 
 
 	// Only 1 category per file-type allowed. ie. 1 for images, 1 for files. 
+
+	/**
+	 * @param $function
+	 * @param $tag
+	 * @return null
+	 */
 	function XmlMediaCategories($function, $tag)
 	{
 		$this->log("Running ".__FUNCTION__);
@@ -4436,6 +4633,11 @@ class e107plugin
 	}
 
 
+	/**
+	 * @param $id
+	 * @param $options
+	 * @return false|string
+	 */
 	public function uninstall($id, $options = array())
 	{
 		$pref = e107::getPref();
@@ -4758,6 +4960,9 @@ class e107plugin
 		return null;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getAddonsList()
 	{
 		$list = array_diff($this->plugin_addons,$this->plugin_addons_deprecated);
@@ -4766,6 +4971,10 @@ class e107plugin
 		return $list;
 	}
 
+	/**
+	 * @param $v
+	 * @return mixed|string|null
+	 */
 	public function getAddonsDiz($v)
 	{
 		if(!empty($this->plugin_addons_diz[$v]))
@@ -4781,6 +4990,11 @@ class e107plugin
 	// return a list of available plugin addons for the specified plugin. e_xxx etc.
 	// $debug = TRUE - prints diagnostics
 	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
+	/**
+	 * @param $plugin_path
+	 * @param $debug
+	 * @return string
+	 */
 	function getAddons($plugin_path, $debug = FALSE)
 	{
 		$fl = e107::getFile();
@@ -4931,6 +5145,12 @@ class e107plugin
 	}
 
 	// Entry point to read plugin configuration data
+
+	/**
+	 * @param $plugName
+	 * @param $force
+	 * @return bool|string
+	 */
 	function parse_plugin($plugName, $force = false)
 	{
 		$ret = "";
@@ -4958,7 +5178,14 @@ class e107plugin
 	}
 	
 	// return the Icon of the 
-	function getIcon($plugName='',$size=32, $defaultOverride=false)
+
+	/**
+	 * @param $plugName
+	 * @param $size
+	 * @param $defaultOverride
+	 * @return false|mixed|string|null
+	 */
+	function getIcon($plugName='', $size=32, $defaultOverride=false)
 	{
 		if(!$plugName) return false;
 		
@@ -4996,6 +5223,11 @@ class e107plugin
 	
 
 	// Called to parse the (deprecated) plugin.php file
+
+	/**
+	 * @param $plugName
+	 * @return bool
+	 */
 	function parse_plugin_php($plugName)
 	{
 		$tp = e107::getParser();

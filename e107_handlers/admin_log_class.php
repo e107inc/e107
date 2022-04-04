@@ -153,20 +153,18 @@ class e_admin_log
 	{
 		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack, $target);
 	}
-	
-	
-	
+
 
 	/**
-	 * Add and Save an event into the admin, rolling or user log. 
+	 * Add and Save an event into the admin, rolling or user log.
 	 * @param string $event_title
-	 * @param mixed $event_details
+	 * @param string|array $event_detail
 	 * @param integer $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
 	 * @param string $event_code [optional] - eg. 'BOUNCE'
 	 * @param integer $target [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
-	 * @param array $user - user to attribute the log to. array('user_id'=>2, 'user_name'=>'whoever');
+	 * @param null $userData
 	 * @return e_admin_log
-	 * 
+	 *
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
 	 * We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
@@ -176,8 +174,6 @@ class e_admin_log
 	 * For generic calls, leave $event_code as empty, and specify a constant string STRING_nn of less than 10 characters for the event title
 	 * Typically the 'STRING' part of the name defines the area originating the log event, and the 'nn' is a numeric code
 	 * This is stored as 'LAN_AL_STRING_NN', and must be defined in a language file which is loaded during log display.
-	 *
-
 	 */
 	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN, $userData=null )
 	{
@@ -436,6 +432,10 @@ class e_admin_log
 	}
 
 
+	/**
+	 * @param $plugdir
+	 * @return $this
+	 */
 	public function setCurrentPlugin($plugdir)
 	{
 		$this->_current_plugin = $plugdir;
@@ -444,17 +444,16 @@ class e_admin_log
 	}
 
 	/**--------------------------------------
-	 *		USER AUDIT ENTRY
+	 *        USER AUDIT ENTRY
 	 *--------------------------------------
-	 *	Log user-related events
-	 *@param string $event_type
-	 * @param int $event_code is a defined constant (see above) which specifies the event
-	 *	@param array|string $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
-	 *	@param int $id
-	 *	@param string $u_name
-	 *	both $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
+	 *    Log user-related events
+	 * @param string $event_type
+	 * @param array|string $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
+	 * @param string $id
+	 * @param string $u_name
+	 *    both $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
 	 *
-	 *	@return bool
+	 * @return bool
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{

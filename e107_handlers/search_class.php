@@ -16,7 +16,11 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class e_search 
+
+/**
+ *
+ */
+class e_search
 {
 	
 	var $query;
@@ -29,6 +33,9 @@ class e_search
 	var $params;
 	public $stop_keys = array();
 
+	/**
+	 * @param $query
+	 */
 	function __construct($query = '')
 	{
 		$tp = e107::getParser();
@@ -83,17 +90,35 @@ class e_search
 	}
 
 
+	/**
+	 * @param $get
+	 * @return void
+	 */
 	function setParams($get = array())
 	{
 		$this->params = $get;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function getParams()
 	{
 		return $this->params;
 	}
 
 
+	/**
+	 * @param $table
+	 * @param $return_fields
+	 * @param $search_fields
+	 * @param $weights
+	 * @param $handler
+	 * @param $no_results
+	 * @param $where
+	 * @param $order
+	 * @return array
+	 */
 	public function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order)
 	{
 		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
@@ -426,10 +451,12 @@ class e_search
 		}
 		return $ps;
 	}
-	
-	
-	
-	function parsesearch_crop() 
+
+
+	/**
+	 * @return void
+	 */
+	function parsesearch_crop()
 	{
 		global $search_chars;
 		$tp = e107::getParser();
@@ -447,8 +474,11 @@ class e_search
 	}
 
 
-	
-	function stopword($key) 
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	function stopword($key)
 	{
 		global $search_prefs;
 		$tp = e107::getParser();

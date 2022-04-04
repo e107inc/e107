@@ -234,6 +234,10 @@
 
 
 		// Return error number for last operation
+
+		/**
+		 * @return mixed
+		 */
 		function getLastErrorNumber();
 
 

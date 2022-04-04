@@ -12,7 +12,9 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-
+/**
+ *
+ */
 class e107_event
 {
 	var $functions = array();
@@ -42,6 +44,9 @@ class e107_event
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function init()
 	{
 
@@ -68,8 +73,11 @@ class e107_event
 
 
 	}
-	
 
+
+	/**
+	 * @return array[]
+	 */
 	function coreList()
 	{
 
@@ -123,7 +131,10 @@ class e107_event
 
 		return $this->coreEvents; 	
 	}
-	
+
+	/**
+	 * @return string[]
+	 */
 	function oldCoreList()
 	{
 		return $this->oldCoreEvents; 	
@@ -154,7 +165,9 @@ class e107_event
 	}
 
 
-
+	/**
+	 * @return string
+	 */
 	function debug()
 	{
 		$text = "<h3>Event Functions</h3>";
@@ -300,6 +313,10 @@ class e107_event
 	* @param string $function identifier for the calling function
 	* @return string $text string of rendered html, or message from db handler
 	*/
+	/**
+	 * @param $data
+	 * @return array|string
+	 */
 	function triggerHook($data=array())
 	{
 		$text = null;

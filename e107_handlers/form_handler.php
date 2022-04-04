@@ -84,6 +84,9 @@ class e_form
 	 */
 	protected $tp;
 
+	/**
+	 * @param $enable_tabindex
+	 */
 	public function __construct($enable_tabindex = false)
 	{
 		e107::loadAdminIcons(); // required below.
@@ -129,6 +132,10 @@ class e_form
 	}
 
 
+	/**
+	 * @param $field
+	 * @return void
+	 */
 	public function addWarning($field)
 	{
 		$this->_field_warnings[] = $field;
@@ -1003,7 +1010,13 @@ class e_form
 	}
 
 
-	
+	/**
+	 * @param string $name
+	 * @param string $value
+	 * @param int $maxlength
+	 * @param array $options
+	 * @return string
+	 */
 	public function email($name, $value, $maxlength = 200, $options = array())
 	{
 		$options['type'] = 'email';
@@ -1011,7 +1024,13 @@ class e_form
 	}
 
 
-
+	/**
+	 * @param $id
+	 * @param $default
+	 * @param $width
+	 * @param $height
+	 * @return string
+	 */
 	public function iconpreview($id, $default, $width='', $height='') // FIXME
 	{
 		unset($width,$height); // quick fix
@@ -2056,7 +2075,13 @@ class e_form
 		
 		return e107::getRate()->render($table, $id, $options);	
 	}
-		
+
+	/**
+	 * @param $table
+	 * @param $id
+	 * @param $options
+	 * @return string
+	 */
 	public function like($table, $id, $options=null)
 	{
 		$table 	= preg_replace('/\W/', '', $table);
@@ -2561,6 +2586,13 @@ class e_form
 
 	}
 
+	/**
+	 * @param string $snippet
+	 * @param array $options
+	 * @param string $name
+	 * @param int|string $value
+	 * @return string
+	 */
 	private function renderSnippet($snippet, $options, $name, $value)
 	{
 		$snip  = (array) $options;
@@ -2733,18 +2765,40 @@ class e_form
 		return $text;
 		
 	}
-	
 
+
+	/**
+	 * @param string $label_title
+	 * @param string $name
+	 * @param $value
+	 * @param mixed $checked
+	 * @param array $options
+	 * @return string
+	 */
 	public function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
 	{
 		return $this->checkbox($name, $value, $checked, $options).$this->label($label_title, $name, $value);
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $checked
+	 * @param $label
+	 * @return string
+	 */
 	public function checkbox_switch($name, $value, $checked = false, $label = '')
 	{
 		return $this->checkbox($name, $value, $checked).$this->label($label ?: LAN_ENABLED, $name, $value);
 	}
 
+	/**
+	 * @param $name
+	 * @param $selector
+	 * @param $id
+	 * @param $label
+	 * @return string
+	 */
 	public function checkbox_toggle($name, $selector = 'multitoggle', $id = false, $label='') //TODO Fixme - labels will break this. Don't use checkbox, use html.
 	{
 		$selector = 'jstarget:'.$selector;
@@ -2756,6 +2810,13 @@ class e_form
 		return $this->checkbox($name, $selector, false, array('id' => $id,'class' => 'checkbox checkbox-inline toggle-all','label'=>$label));
 	}
 
+	/**
+	 * @param $name
+	 * @param $current_value
+	 * @param $uc_options
+	 * @param $field_options
+	 * @return string
+	 */
 	public function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
 	{
 		if(!is_array($field_options))
@@ -2806,6 +2867,14 @@ class e_form
 	}
 
 
+	/**
+	 * @param string $classnum Class Number
+	 * @return string
+	 */
+	/**
+	 * @param $classnum
+	 * @return string
+	 */
 	public function uc_label($classnum)
 	{
 		return $this->_uc->getName($classnum);
@@ -2817,7 +2886,7 @@ class e_form
 	 * @param $value
 	 * @param $checked boolean
 	 * @param null $options
-	 * @return array|string|string[]
+	 * @return string
 	 */
 	public function radio($name, $value, $checked = false, $options = null)
 	{
@@ -3115,7 +3184,12 @@ class e_form
 		$for_id = $this->_format_id('', $name, $value, 'for');
 		return "<label$for_id class='e-tip legacy'>{$text}</label>";
 	}
-	
+
+
+	/**
+	 * @param $text
+	 * @return string|null
+	 */
 	public function help($text)
 	{
 		if(empty($text) || $this->_helptip === 0)
@@ -3130,6 +3204,11 @@ class e_form
 		return $ret;
 	}
 
+	/**
+	 * @param $name
+	 * @param $options
+	 * @return string
+	 */
 	public function select_open($name, $options = array())
 	{
 
@@ -3182,9 +3261,10 @@ class e_form
 	 * @param string        $name
 	 * @param array|string  $option_array
 	 * @param boolean       $selected [optional]
-	 * @param string|array  $options [optional]
-	 * @param bool          $options['useValues']   when true uses array values as the key.
-	 * @param array         $options['disabled'] list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
+	 * @param string|array  $options = [
+	 *      'useValues'		=> (bool)   when true uses array values as the key.
+	 *      'disabled'		=> (array)  list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
+	 * ]
 	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
 	 * @return string       HTML text for display
 	 */
@@ -3250,9 +3330,9 @@ class e_form
 	 * @param string $name - form element name
 	 * @param int $curval - current userclass value(s) as array or comma separated.
 	 * @param string $type - checkbox|dropdown  default is dropdown.
-	 * @param string|array $options - classlist or query string or key=value pair.
-	 * @param string $options['options'] comma-separated list of display options. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc.
-	 *
+	 * @param string|array $options = [ classlist or query string or key=value pair.
+	 *      'options'   => (string) comma-separated list of display options. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc.
+	 *  ]
 	 * @example $frm->userclass('name', 0, 'dropdown', 'classes'); // display all userclasses
 	 * @example $frm->userclass('name', 0, 'dropdown', 'classes,matchclass'); // display only classes to which the user belongs.
 	 * @return string form element(s)
@@ -3408,6 +3488,14 @@ var_dump($select_options);*/
 	}
 
 	// Callback for vetted_tree - Creates the option list for a selection box
+
+	/**
+	 * @param $treename
+	 * @param $classnum
+	 * @param $current_value
+	 * @param $nest_level
+	 * @return string
+	 */
 	public function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
@@ -3439,6 +3527,12 @@ var_dump($select_options);*/
 	}
 
 
+	/**
+	 * @param $label
+	 * @param $disabled
+	 * @param $options
+	 * @return string
+	 */
 	public function optgroup_open($label, $disabled = false, $options = null)
 	{
 		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
@@ -3579,19 +3673,28 @@ var_dump($select_options);*/
 	}
 
 
-
-
-
+	/**
+	 * @return string
+	 */
 	public function optgroup_close()
 	{
 		return "</optgroup>\n";
 	}
 
+	/**
+	 * @return string
+	 */
 	public function select_close()
 	{
 		return '</select>';
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $options
+	 * @return string
+	 */
 	public function hidden($name, $value, $options = array())
 	{
 		$options = $this->format_options('hidden', $name, $options);
@@ -3616,6 +3719,12 @@ var_dump($select_options);*/
 			]) . " />";
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $options
+	 * @return string
+	 */
 	public function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
@@ -3627,6 +3736,14 @@ var_dump($select_options);*/
 			]) . $this->get_attributes($options, $name, $value) . ' />';
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $image
+	 * @param $title
+	 * @param $options
+	 * @return string
+	 */
 	public function submit_image($name, $value, $image, $title='', $options = array())
 	{
 		$tp = $this->tp;
@@ -3735,9 +3852,10 @@ var_dump($select_options);*/
 
 	/**
 	 * Render a Breadcrumb in Bootstrap format. 
-	 * @param array $array
-	 * @param $array[url]
-	 * @param $array[text]
+	 * @param array $array =[
+	 *      'url'		=> (string)		
+	 *      'text'		=> (string)	
+	 * ]	
 	 * @param bool $force - used internally to prevent duplicate {--BREADCUMB---} and template breadcrumbs from both displaying at once.
 	 */
 	public function breadcrumb($array, $force = false)
@@ -4009,6 +4127,9 @@ var_dump($select_options);*/
 		return $class;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getNext()
 	{
 		if(!$this->_tabindex_enabled)
@@ -4019,6 +4140,9 @@ var_dump($select_options);*/
 		return $this->_tabindex_counter;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getCurrent()
 	{
 		if(!$this->_tabindex_enabled)
@@ -4028,6 +4152,10 @@ var_dump($select_options);*/
 		return $this->_tabindex_counter;
 	}
 
+	/**
+	 * @param $reset
+	 * @return void
+	 */
 	public function resetTabindex($reset = 0)
 	{
 		$this->_tabindex_counter = $reset;
@@ -4046,6 +4174,12 @@ var_dump($select_options);*/
 		return $this->tp->toAttributes($attributes, true);
 	}
 
+	/**
+	 * @param $options
+	 * @param $name
+	 * @param $value
+	 * @return string
+	 */
 	public function get_attributes($options, $name = '', $value = '')
 	{
 		$ret = '';
@@ -4196,6 +4330,10 @@ var_dump($select_options);*/
 		return " $return_attribute='" . htmlentities($ret, ENT_QUOTES) . "'";
 	}
 
+	/**
+	 * @param $name
+	 * @return string
+	 */
 	public function name2id($name)
 	{
 		$name = strtolower($name);
@@ -4344,6 +4482,12 @@ var_dump($select_options);*/
 		return $def_options;
 	}
 
+	/**
+	 * @param $columnsArray
+	 * @param $columnsDefault
+	 * @param $id
+	 * @return string
+	 */
 	public function columnSelector($columnsArray, $columnsDefault = array(), $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
@@ -4409,17 +4553,13 @@ var_dump($select_options);*/
 	*/	
 		return $text;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
+
+	/**
+	 * @param $fieldarray
+	 * @param $columnPref
+	 * @return string
+	 */
 	public function colGroup($fieldarray, $columnPref = '')
 	{
         $text = '';
@@ -4443,6 +4583,13 @@ var_dump($select_options);*/
 		';
 	}
 
+	/**
+	 * @param $fieldarray
+	 * @param $columnPref
+	 * @param $querypattern
+	 * @param $requeststr
+	 * @return string
+	 */
 	public function thead($fieldarray, $columnPref = array(), $querypattern = '', $requeststr = '')
 	{
         $text = '';
@@ -4581,9 +4728,10 @@ var_dump($select_options);*/
 			
 	/**
 	 * Render Related Items for the current page/news-item etc. 
-	 * @param string $type : comma separated list. ie. plugin folder names. 
+	 * @param array $parm : comma separated list. ie. plugin folder names.
 	 * @param string $tags : comma separated list of keywords to return related items of.
-	 * @param array $curVal. eg. array('page'=> current-page-id-value); 
+	 * @param array $curVal. eg. array('page'=> current-page-id-value);
+	 * @param string $template
 	 */
 	public function renderRelated($parm, $tags, $curVal, $template=null) //XXX TODO Cache!
 	{
@@ -4982,6 +5130,12 @@ var_dump($select_options);*/
 
 	}
 
+	/**
+	 * @param $parms
+	 * @param $id
+	 * @param $attributes
+	 * @return string
+	 */
 	private function renderOptions($parms, $id, $attributes)
 	{
 		$tp = $this->tp;
@@ -6252,11 +6406,12 @@ var_dump($select_options);*/
 	 * Auto-render Form Element
 	 * @param string $key
 	 * @param mixed $value
-	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
-	 * #param array (under construction) $required_data required array as defined in e_model/validator
-	 * @param mixed $attributes['writeParms']['default'] default value when empty (or default option when type='dropdown')
-	 * @param mixed $attributes['writeParms']['defaultValue'] default option value when type='dropdown'
-	 * @param mixed $attributes['writeParms']['empty'] default value when value is empty (dropdown and hidden only right now)
+	 * @param array $attributes = [ field attributes including render parameters, element options - see e_admin_ui::$fields for required format
+	 *      #param array (under construction) $required_data required array as defined in e_model/validator
+	 *  'default'		=> (mixed)		 default value when empty (or default option when type='dropdown')
+	 *  'defaultValue'  => (mixed)		 default option value when type='dropdown'
+	 *  'empty'         => (mixed)		 default value when value is empty (dropdown and hidden only right now)
+	 * ]
 	 * @return string
 	 */
 	public function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
@@ -7043,7 +7198,13 @@ var_dump($select_options);*/
 		return $text;
 	}
 
-	private function imageradio($name,$value,$parms)
+	/**
+	 * @param $name
+	 * @param $value
+	 * @param $parms
+	 * @return string
+	 */
+	private function imageradio($name, $value, $parms)
 	{
 
 		if(!empty($parms['path']))
@@ -7117,7 +7278,7 @@ var_dump($select_options);*/
 	 * TODO - move fieldset & table generation in separate methods, needed for ajax calls
 	 * @todo {@see htmlspecialchars()} at the template, not in the client code
 	 * @param array $form_options
-	 * @param e_admin_tree_model $tree_model
+	 * @param e_admin_tree_model $tree_models
 	 * @param boolean $nocontainer don't enclose form in div container
 	 * @return string
 	 */
@@ -8066,6 +8227,16 @@ var_dump($select_options);*/
  */
 class form 
 {
+
+	/**
+	 * @param $form_method
+	 * @param $form_action
+	 * @param $form_name
+	 * @param $form_target
+	 * @param $form_enctype
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_open($form_method, $form_action, $form_name = '', $form_target = '', $form_enctype = '', $form_js = '')
 	{
 		$method = ($form_method ? "method='".$form_method."'" : '');
@@ -8074,6 +8245,17 @@ class form
 		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js. '><div>' .e107::getForm()->token(). '</div>';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_size
+	 * @param $form_value
+	 * @param $form_maxlength
+	 * @param $form_class
+	 * @param $form_readonly
+	 * @param $form_tooltip
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = 'tbox form-control', $form_readonly = '', $form_tooltip = '', $form_js = '') {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : '');
 		$value = (isset($form_value) ? " value='".$form_value."'" : '');
@@ -8084,6 +8266,17 @@ class form
 		return "\n<input class='".$form_class."' type='text' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js. ' />';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_size
+	 * @param $form_value
+	 * @param $form_maxlength
+	 * @param $form_class
+	 * @param $form_readonly
+	 * @param $form_tooltip
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_password($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = 'tbox form-control', $form_readonly = '', $form_tooltip = '', $form_js = '') {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : '');
 		$value = (isset($form_value) ? " value='".$form_value."'" : '');
@@ -8094,6 +8287,15 @@ class form
 		return "\n<input class='".$form_class."' type='password' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js. ' />';
 	}
 
+	/**
+	 * @param $form_type
+	 * @param $form_name
+	 * @param $form_value
+	 * @param $form_js
+	 * @param $form_image
+	 * @param $form_tooltip
+	 * @return string
+	 */
 	public function form_button($form_type, $form_name, $form_value, $form_js = '', $form_image = '', $form_tooltip = '') {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : '');
 		$image = ($form_image ? " src='".$form_image."' " : '');
@@ -8101,6 +8303,18 @@ class form
 		return "\n<input class='btn btn-default btn-secondary button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip. ' />';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_columns
+	 * @param $form_rows
+	 * @param $form_value
+	 * @param $form_js
+	 * @param $form_style
+	 * @param $form_wrap
+	 * @param $form_readonly
+	 * @param $form_tooltip
+	 * @return string
+	 */
 	public function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = '', $form_style = '', $form_wrap = '', $form_readonly = '', $form_tooltip = '') {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : '');
 		$readonly = ($form_readonly ? " readonly='readonly'" : '');
@@ -8110,6 +8324,14 @@ class form
 		return "\n<textarea class='tbox form-control' cols='".$form_columns."' rows='".$form_rows."' ".$name.$form_js.$style.$wrap.$readonly.$tooltip. '>' .$form_value. '</textarea>';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_value
+	 * @param $form_checked
+	 * @param $form_tooltip
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = '', $form_js = '') {
 		$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : '');
 		$checked = ($form_checked ? " checked='checked'" : '');
@@ -8118,6 +8340,14 @@ class form
 
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_value
+	 * @param $form_checked
+	 * @param $form_tooltip
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = '', $form_js = '') {
 		$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : '');
 		$checked = ($form_checked ? " checked='checked'" : '');
@@ -8126,30 +8356,60 @@ class form
 
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_size
+	 * @param $form_tooltip
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_file($form_name, $form_size, $form_tooltip = '', $form_js = '') {
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : '');
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : '');
 		return "<input type='file' class='tbox' size='".$form_size."'".$name.$tooltip.$form_js. ' />';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_select_open($form_name, $form_js = '') {
 		return "\n<select id='".$form_name."' name='".$form_name."' class='tbox form-control' ".$form_js. ' >';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function form_select_close() {
 		return "\n</select>";
 	}
 
+	/**
+	 * @param $form_option
+	 * @param $form_selected
+	 * @param $form_value
+	 * @param $form_js
+	 * @return string
+	 */
 	public function form_option($form_option, $form_selected = '', $form_value = '', $form_js = '') {
 		$value = ($form_value !== FALSE ? " value='".$form_value."'" : '');
 		$selected = ($form_selected ? " selected='selected'" : '');
 		return "\n<option".$value.$selected. ' ' .$form_js. '>' .$form_option. '</option>';
 	}
 
+	/**
+	 * @param $form_name
+	 * @param $form_value
+	 * @return string
+	 */
 	public function form_hidden($form_name, $form_value) {
 		return "\n<input type='hidden' id='".$form_name."' name='".$form_name."' value='".$form_value."' />";
 	}
 
+	/**
+	 * @return string
+	 */
 	public function form_close() {
 		return "\n</form>";
 	}

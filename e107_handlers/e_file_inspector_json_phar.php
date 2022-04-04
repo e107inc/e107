@@ -9,6 +9,10 @@
 
 require_once("e_file_inspector_json.php");
 
+
+/**
+ *
+ */
 class e_file_inspector_json_phar extends e_file_inspector_json
 {
     /**

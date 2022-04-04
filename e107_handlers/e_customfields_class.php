@@ -36,17 +36,26 @@
 
 		}
 
+		/**
+		 * @return string[]
+		 */
 		public function getFieldTypes()
 		{
 
 			return $this->_fieldTypes;
 		}
 
+		/**
+		 * @return string
+		 */
 		public function getTabId()
 		{
 			return $this->_tab_default;
 		}
 
+		/**
+		 * @return mixed|string
+		 */
 		public function getTabLabel()
 		{
 			return $this->_tab[$this->_tab_default];
@@ -115,18 +124,29 @@
 		}
 
 
+		/**
+		 * @return array
+		 */
 		public function getConfig()
 		{
 			return $this->_config;
 		}
 
 
+		/**
+		 * @return array
+		 */
 		public function getData()
 		{
 			return $this->_data;
 		}
 
 
+		/**
+		 * @param $key
+		 * @param $label
+		 * @return $this
+		 */
 		public function setTab($key, $label)
 		{
 			$this->_tab = array((string) $key => (string) $label);
@@ -135,6 +155,11 @@
 		}
 
 
+		/**
+		 * @param $key
+		 * @param $parm
+		 * @return array|bool|mixed|string|null
+		 */
 		public function getFieldValue($key, $parm=array())
 		{
 			$tp = e107::getParser();
@@ -271,6 +296,9 @@
 		}
 
 
+		/**
+		 * @return string
+		 */
 		public function renderTest()
 		{
 
@@ -292,7 +320,10 @@
 		}
 
 
-
+		/**
+		 * @param $key
+		 * @return mixed|null
+		 */
 		public function getFieldTitle($key)
 		{
 
@@ -305,8 +336,10 @@
 		}
 
 
-
-
+		/**
+		 * @param $name
+		 * @return string
+		 */
 		public function renderConfigForm($name)
 		{
 

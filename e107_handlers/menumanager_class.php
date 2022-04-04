@@ -13,6 +13,10 @@ if (!defined('e107_INIT')) { exit; }
 $frm = e107::getForm();
 e107::coreLan('menus', true);
 
+
+/**
+ *
+ */
 class e_menuManager
 {
 
@@ -30,7 +34,10 @@ class e_menuManager
 		public $dbLayout = '';
 		private $menuData = array();
 
-		function __construct($dragdrop=FALSE)
+	/**
+	 * @param $dragdrop
+	 */
+	function __construct($dragdrop=FALSE)
 		{
         		global $HEADER,$FOOTER, $NEWSHEADER;
         		$pref = e107::getPref();
@@ -197,6 +204,10 @@ class e_menuManager
 
 // -------------------------------------------------------------------------
 
+	/**
+	 * @param $url
+	 * @return string
+	 */
 	function menuRenderIframe($url='')
 	{ 
 		$ns = e107::getRender();
@@ -216,6 +227,9 @@ class e_menuManager
 	}
 
 
+	/**
+	 * @return array|string
+	 */
 	function menuRenderMessage()
 	{
 	  //	return $this->menuMessage;
@@ -225,6 +239,12 @@ class e_menuManager
 	}
 
 
+	/**
+	 * @param $message
+	 * @param $type
+	 * @param $session
+	 * @return void
+	 */
 	function menuAddMessage($message, $type = E_MESSAGE_INFO, $session = false)
 	{
  		e107::getMessage()->add(array($message, 'menuUi'), $type, $session);
@@ -232,7 +252,10 @@ class e_menuManager
 
     // -------------------------------------------------------------------------
 
-    function menuGrabLayout()
+	/**
+	 * @return void
+	 */
+	function menuGrabLayout()
 	{
 		global $HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$LAYOUT;
 
@@ -300,7 +323,10 @@ class e_menuManager
 
 	}
 
-    function menuGoConfig()
+	/**
+	 * @return void
+	 */
+	function menuGoConfig()
 	{
 		if(!$_GET['path'] || ($_GET['mode'] != "conf"))
 		{
@@ -325,7 +351,10 @@ class e_menuManager
 
 	// -----------------------------------------------------------------------------
 
-	    function menuModify()
+	/**
+	 * @return void
+	 */
+	function menuModify()
 		{
 			$sql = e107::getDb();
 			$tp = e107::getParser();
@@ -393,6 +422,9 @@ class e_menuManager
 
 	// ----------------------------------------------------------------------------
 
+	/**
+	 * @return false|mixed
+	 */
 	function menuSetPreset()
 	{
 		global $location;
@@ -440,6 +472,9 @@ class e_menuManager
 
 	// ----------------------------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	function menuScanMenus()
 	{
 		global $sql2;
@@ -593,7 +628,11 @@ class e_menuManager
 	// ---------------------------------------------------------------------------
 
 
-    function menuPresetPerms($val)
+	/**
+	 * @param $val
+	 * @return int|mixed
+	 */
+	function menuPresetPerms($val)
 	{
 		$link_class = strtolower(trim((string) $val));
    		$menu_perm['everyone'] = e_UC_PUBLIC;
@@ -607,7 +646,15 @@ class e_menuManager
 		return $link_class;
 	}
 
-	private function menuParamForm($id, $fields,$tabs, e_form $ui, $values=array())
+	/**
+	 * @param $id
+	 * @param $fields
+	 * @param $tabs
+	 * @param e_form $ui
+	 * @param $values
+	 * @return string
+	 */
+	private function menuParamForm($id, $fields, $tabs, e_form $ui, $values=array())
 	{
 		$fields['menu_id'] = array('type'=>'hidden', 'writeParms'=>array('value'=>$id));
 		$fields['mode']  = array('type'=>'hidden', 'writeParms'=>array('value'=>'parms'));
@@ -787,6 +834,9 @@ class e_menuManager
 	}
 
 
+	/**
+	 * @return string|void
+	 */
 	function menuVisibilityOptions()
 	{
 		if(!vartrue($_GET['vis'])) return;
@@ -875,6 +925,9 @@ class e_menuManager
 	// -----------------------------------------------------------------------------
 
 
+	/**
+	 * @return void
+	 */
 	function menuActivate()    // Activate Multiple Menus.
 	{
 		$sql = e107::getDb();
@@ -921,6 +974,10 @@ class e_menuManager
 	// -----------------------------------------------------------------------------
 
 
+	/**
+	 * @param $array
+	 * @return void
+	 */
 	function menuSetCustomPages($array)
 	{
 		$pref = e107::getPref();
@@ -932,6 +989,9 @@ class e_menuManager
 
 	// ------------------------------------------------------------------------------
 
+	/**
+	 * @return false|mixed
+	 */
 	function getMenuPreset()
 	{
 		$pref = e107::getPref();
@@ -971,7 +1031,12 @@ class e_menuManager
 
 	// ------------------------------------------------------------------------------
 
-	function checkMenuPreset($array,$name)
+	/**
+	 * @param $array
+	 * @param $name
+	 * @return false|mixed|void
+	 */
+	function checkMenuPreset($array, $name)
 	{
 		if(!is_array($array))
 		{
@@ -989,7 +1054,10 @@ class e_menuManager
 	}
 	
 	// --------------------------------------------------------------------------
-	
+
+	/**
+	 * @return array
+	 */
 	function menuSaveParameters()
 	{
 		$sql = e107::getDb();
@@ -1051,6 +1119,9 @@ class e_menuManager
 
 	// --------------------------------------------------------------------------
 
+	/**
+	 * @return array
+	 */
 	function menuSaveVisibility() // Used by Ajax
 	{
 		$tp = e107::getParser();
@@ -1085,6 +1156,10 @@ class e_menuManager
 
 	}
 
+	/**
+	 * @param $id
+	 * @return void
+	 */
 	function setMenuId($id)
 	{
 		$this->menuId = intval($id);	
@@ -1092,6 +1167,9 @@ class e_menuManager
 
 	// -----------------------------------------------------------------------
 
+	/**
+	 * @return array
+	 */
 	function menuDeactivate()
 	{
 
@@ -1171,7 +1249,11 @@ class e_menuManager
 
 	// =-----------------------------------------------------------------------------
 
-	
+
+	/**
+	 * @param $row
+	 * @return string
+	 */
 	function renderOptionRow($row)
 	{
 		$frm 	= e107::getForm();
@@ -1221,12 +1303,11 @@ class e_menuManager
 		
 		return $text;
 	}
-	
-	
-	
-	
-	
 
+
+	/**
+	 * @return void
+	 */
 	function menuRenderPage()
 	{
 		global $HEADER, $FOOTER, $rs;
@@ -1413,6 +1494,11 @@ class e_menuManager
 	}
 */
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+	/**
+	 * @param $LAYOUT
+	 * @param $check
+	 * @return array|void
+	 */
 	function parseheader($LAYOUT, $check = FALSE)
 	{
 
@@ -1461,7 +1547,12 @@ class e_menuManager
 			return $str;
 		}
 	}
-	
+
+	/**
+	 * @param $matches
+	 * @param $ret
+	 * @return void
+	 */
 	function menuSetCode($matches, &$ret)
 	{
 		if(!$matches || !vartrue($matches[1]))
@@ -1474,8 +1565,13 @@ class e_menuManager
 			$ret[] = $match;
 		}
 	}
-	
-	function renderPanel($caption,$text)
+
+	/**
+	 * @param $caption
+	 * @param $text
+	 * @return string
+	 */
+	function renderPanel($caption, $text)
 	{
 		$plugtext = "<div class='menu-panel'>";
 		$plugtext .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".$caption."</div>";
@@ -1484,6 +1580,10 @@ class e_menuManager
 		return $plugtext;
 	}
 
+	/**
+	 * @param $str
+	 * @return void
+	 */
 	function checklayout($str)
 	{ // Displays a basic representation of the theme
 		global $PLUGINS_DIRECTORY, $rs, $sc_style, $menu_order, $style; // global $style required. 
@@ -1727,7 +1827,13 @@ class e_menuManager
 	}
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-	function menuRenderMenu($row,$menu_count,$rep = FALSE)
+	/**
+	 * @param $row
+	 * @param $menu_count
+	 * @param $rep
+	 * @return string|void
+	 */
+	function menuRenderMenu($row, $menu_count, $rep = FALSE)
 	{
 	
 		global $rs,$menu,$menu_info,$menu_act, $style;
@@ -1868,6 +1974,10 @@ class e_menuManager
 
 	}
 
+	/**
+	 * @param $mode
+	 * @return false|string|void|null
+	 */
 	function menuSaveAjax($mode = null)
 	{
 		
@@ -1966,7 +2076,10 @@ class e_menuManager
 
 	}
 
-    function menuSetConfigList()
+	/**
+	 * @return void
+	 */
+	function menuSetConfigList()
 	{
 		e107::getDebug()->log("Scanning for Menu config files");
 
@@ -2262,6 +2375,9 @@ class e_mm_layout
 
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function menuSelector()
 	{
 
@@ -2377,6 +2493,10 @@ class e_mm_layout
 
 	}
 
+	/**
+	 * @param $theme
+	 * @return array|false
+	 */
 	public static function getLayouts($theme = null)
 	{
 
@@ -2594,6 +2714,11 @@ class e_mm_layout
 
 	}
 
+	/**
+	 * @param $template
+	 * @param $name
+	 * @return array|mixed
+	 */
 	private static function countMenus($template, $name)
 	{
 
@@ -2649,8 +2774,12 @@ class e_mm_layout
 	}
 
 
-
-
+	/**
+	 * @param $row
+	 * @param $layout
+	 * @param $area
+	 * @return string
+	 */
 	private function renderMenu($row, $layout, $area)
 	{
 	//	return print_a($row,true);
@@ -2813,6 +2942,9 @@ class e_mm_layout
 
 	}
 
+	/**
+	 * @return string|void
+	 */
 	private function renderVisibilityOptions()
 	{
 		if(!vartrue($_GET['vis'])) return;
@@ -3023,10 +3155,9 @@ class e_mm_layout
 	}
 
 
-
-
-
-
+	/**
+	 * @return array
+	 */
 	private function getHeadFoot()
 	{
 

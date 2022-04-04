@@ -35,7 +35,9 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-
+/**
+ *
+ */
 class e107_debug {
 
 	private static $debug_level = 0;
@@ -69,6 +71,9 @@ class e107_debug {
 
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public static function getAliases()
 	{
 		return array(
@@ -120,7 +125,10 @@ class e107_debug {
 		return isset($keys[$level]) ? $keys[$level] : null;
 	}
 
-    public static function activated()
+	/**
+	 * @return bool
+	 */
+	public static function activated()
     {
         if (isset($_COOKIE['e107_debug_level']) || deftrue('e_DEBUG') || (strpos(e_MENU, "debug") === 0)) // ADMIN and getperms('0') are not available at this point.
         {
@@ -131,7 +139,9 @@ class e107_debug {
     }
 
 
-
+	/**
+	 * @return bool
+	 */
 	public static function init()
     {
         if(!self::activated())
@@ -242,18 +252,28 @@ class e107_debug {
 
     }
 
-    public static function getLevel()
+	/**
+	 * @return int
+	 */
+	public static function getLevel()
     {
         return self::$debug_level;
     }
 
-    public static function setLevel($level = 0)
+	/**
+	 * @param $level
+	 * @return void
+	 */
+	public static function setLevel($level = 0)
     {
        self::$debug_level = $level;
     }
 
 
-	function set_error_reporting() 
+	/**
+	 * @return void
+	 */
+	function set_error_reporting()
 	{
 	}
 }

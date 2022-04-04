@@ -182,8 +182,12 @@ class e_chart
 		
 	
 		// e107::css('inline','canvas.e-graph {  width: 100% !important;  max-width: 800px;  height: auto !important; 	}');	
-	}		
-	
+	}
+
+	/**
+	 * @param $type
+	 * @return $this
+	 */
 	public function setProvider($type = null)
 	{
 		if(!empty($type))
@@ -193,23 +197,36 @@ class e_chart
 
 		return $this;
 	}
-	
+
+	/**
+	 * @return null
+	 */
 	public function getProvider()
 	{
 		return $this->provider;	
 	}
-	
-	
+
+
+	/**
+	 * @return false|string
+	 */
 	private function getData()
 	{
 		return json_encode($this->data);
 	}
-	
+
+	/**
+	 * @return false|string
+	 */
 	private function getOptions()
 	{
 		return json_encode($this->options);	
 	}
 
+	/**
+	 * @param $flag
+	 * @return $this
+	 */
 	public function debug($flag=false)
 	{
 		if($flag === true)
@@ -220,6 +237,9 @@ class e_chart
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function renderTable()
 	{
 
@@ -298,7 +318,6 @@ class e_chart
 	/**
 	 * Set the data values
 	 * @param array $data
-	 * @param string $id of canvas element
 	 * @return $this
 	 */
 	public function setData($data)
@@ -315,7 +334,10 @@ class e_chart
 		
 		return $this;		
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	private function getDemoData()
 	{
 			$data = array();
@@ -363,6 +385,10 @@ class e_chart
 	}
 
 
+	/**
+	 * @param $data
+	 * @return $this
+	 */
 	public function setOptions($data)
 	{
 		

@@ -23,7 +23,10 @@
 	}
 
 
-	class e107_db_debug
+/**
+ *
+ */
+class e107_db_debug
 	{
         private $active       = false;      // true when debug is active.
 		var $aSQLdetails      = array();     // DB query analysis (in pieces for further analysis)
@@ -77,7 +80,10 @@
 		}
 
 
-		function e107_db_debug()
+	/**
+	 * @return void
+	 */
+	function e107_db_debug()
 		{
 
 			global $eTimingStart;
@@ -100,7 +106,10 @@
 //
 // Add your new Show function here so it will display in debug output!
 //
-		function Show_All()
+	/**
+	 * @return void
+	 */
+	function Show_All()
 		{
 
 			$this->ShowIf('Debug Log', $this->Show_Log());
@@ -119,7 +128,12 @@
 			$this->ShowIf('Included Files: ' . count($this->aIncList), $this->Show_Includes());
 		}
 
-		function ShowIf($title, $str)
+	/**
+	 * @param $title
+	 * @param $str
+	 * @return void
+	 */
+	function ShowIf($title, $str)
 		{
 
 			if(!empty($str))
@@ -131,7 +145,11 @@
 			}
 		}
 
-		function Mark_Time($sMarker)
+	/**
+	 * @param $sMarker
+	 * @return void
+	 */
+	function Mark_Time($sMarker)
         {
             $this->logTime($sMarker);
         }
@@ -282,7 +300,11 @@
 		}
 
 
-		function Show_SQL_Details($force = false)
+	/**
+	 * @param $force
+	 * @return false|string
+	 */
+	function Show_SQL_Details($force = false)
 		{
 
 			global $sql;
@@ -412,7 +434,11 @@
 			return $text;
 		}
 
-		function countLabel($amount)
+	/**
+	 * @param $amount
+	 * @return string
+	 */
+	function countLabel($amount)
 		{
 			$inc = '';
 
@@ -433,7 +459,11 @@
 		}
 
 
-		function save($log)
+	/**
+	 * @param $log
+	 * @return void
+	 */
+	function save($log)
 		{
 
 			e107::getMessage()->addDebug("Saving a log");
@@ -453,7 +483,13 @@
 		}
 
 
-		private function highlight($label, $value = 0, $thresholdHigh = 0)
+	/**
+	 * @param $label
+	 * @param $value
+	 * @param $thresholdHigh
+	 * @return mixed|string
+	 */
+	private function highlight($label, $value = 0, $thresholdHigh = 0)
 		{
 
 			if($value > $thresholdHigh)
@@ -471,7 +507,10 @@
 		}
 
 
-		function Show_Performance()
+	/**
+	 * @return string
+	 */
+	function Show_Performance()
 		{
 
 			//
@@ -730,7 +769,13 @@
 			return $text;
 		}
 
-		function logDeprecated($message=null, $file=null, $line=null)
+	/**
+	 * @param $message
+	 * @param $file
+	 * @param $line
+	 * @return void|null
+	 */
+	function logDeprecated($message=null, $file=null, $line=null)
 		{
 			if(!empty($message) || !empty($file))
 			{
@@ -757,7 +802,14 @@
 
 		}
 
-		function logCode($type, $code, $parm, $details)
+	/**
+	 * @param $type
+	 * @param $code
+	 * @param $parm
+	 * @param $details
+	 * @return false|null
+	 */
+	function logCode($type, $code, $parm, $details)
 		{
 
 			if(!E107_DBG_BBSC || !$this->active)
@@ -774,7 +826,11 @@
 			return null;
 		}
 
-		function Show_SC_BB($force = false)
+	/**
+	 * @param $force
+	 * @return false|string
+	 */
+	function Show_SC_BB($force = false)
 		{
 
 			if(!E107_DBG_BBSC && ($force === false))
@@ -814,7 +870,11 @@
 			return $text;
 		}
 
-		private function includeVar($value)
+	/**
+	 * @param $value
+	 * @return bool
+	 */
+	private function includeVar($value)
 		{
 			$prefix = array('ADMIN', 'E_', 'e_', 'E107', 'SITE', 'USER', 'CORE');
 
@@ -829,7 +889,11 @@
 			return false;
 		}
 
-		function Show_PATH($force = false)
+	/**
+	 * @param $force
+	 * @return false|string
+	 */
+	function Show_PATH($force = false)
 		{
 
 			if(!E107_DBG_PATH && ($force === false))
@@ -964,7 +1028,11 @@
 		}
 
 
-		function Show_DEPRECATED($force = false)
+	/**
+	 * @param $force
+	 * @return false|string
+	 */
+	function Show_DEPRECATED($force = false)
 		{
 			if(!E107_DBG_DEPRECATED && ($force === false))
 			{
@@ -1119,7 +1187,11 @@
 			return $text;
 		}
 
-		function Show_Includes($force = false)
+	/**
+	 * @param $force
+	 * @return false|string
+	 */
+	function Show_Includes($force = false)
 		{
 
 			if(!E107_DBG_INCLUDES && ($force === false))
@@ -1142,7 +1214,10 @@
 //
 // Helper functions (not part of the class)
 //
-	function e107_debug_shutdown()
+/**
+ * @return void
+ */
+function e107_debug_shutdown()
 	{
 
 		if(e_AJAX_REQUEST) // extra output will break json ajax returns ie. comments

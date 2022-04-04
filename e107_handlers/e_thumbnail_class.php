@@ -12,6 +12,9 @@
 
 use Intervention\Image\ImageManagerStatic as Image;
 
+/**
+ *
+ */
 class e_thumbnail
 {
 	private $_debug = false;
@@ -122,6 +125,9 @@ class e_thumbnail
 		$this->_cache = (bool) $val;
 	}
 
+	/**
+	 * @return $this
+	 */
 	private function parseRequest()
 	{
 
@@ -155,6 +161,9 @@ class e_thumbnail
 		$this->_request = (array) $array;
 	}
 
+	/**
+	 * @return array|string|string[]
+	 */
 	private function getImageInfo()
 	{
 		$thumbnfo = pathinfo($this->_src_path);
@@ -217,6 +226,9 @@ class e_thumbnail
 
 	}
 
+	/**
+	 * @return $this|false|string|void
+	 */
 	public function sendImage()
 	{
 		if($this->_placeholder == true)
@@ -478,6 +490,9 @@ class e_thumbnail
 
 	}
 
+	/**
+	 * @return array
+	 */
 	private function getRequestOptions()
 	{
 		$ret = array();
@@ -505,6 +520,10 @@ class e_thumbnail
 		return $ret;
 	}
 
+	/**
+	 * @param $thumbnfo
+	 * @return void
+	 */
 	private function sendHeaders($thumbnfo)
 	{
 
@@ -551,7 +570,10 @@ class e_thumbnail
 	}
 
 
-
+	/**
+	 * @param $ftype
+	 * @return mixed|string|null
+	 */
 	private function ctype($ftype)
 	{
 		static $known_types = array(
@@ -573,6 +595,11 @@ class e_thumbnail
 
 
 	// Display a placeholder image.
+
+	/**
+	 * @param $parm
+	 * @return void|null
+	 */
 	private function placeholder($parm)
 	{
 		if($this->_debug === true)

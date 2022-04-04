@@ -35,6 +35,10 @@ It is the responsibility of each class to manager permission restrictions where 
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
 	$mailerExcludeDefault = TRUE;				// Mandatory - if TRUE, when this plugin's mailout is active, the default (core) isn't loaded
 
+
+/**
+ *
+ */
 class core_mailout
 {
 	protected $mailCount = 0;

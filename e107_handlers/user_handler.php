@@ -48,6 +48,10 @@ define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_MD5);
 // Required language file - if not loaded elsewhere, uncomment next line
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
+
+/**
+ *
+ */
 class UserHandler
 {
 	var $userVettingInfo = array();
@@ -441,7 +445,7 @@ class UserHandler
 	 *	@param string $login_name - user's login name
 	 *	@param string $stored_hash - password hash as stored in DB
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID
+	 *	@return bool|string
 	 */
 	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
@@ -495,6 +499,10 @@ class UserHandler
 		return false;
 	}
 
+	/**
+	 * @param $userjoined
+	 * @return bool
+	 */
 	public function newUserExpired($userjoined)
 	{
 		$new_user_period = (int) e107::getPref('user_new_period', 0);
@@ -1040,7 +1048,7 @@ Following fields auto-filled in code as required:
 	/**
 	 * Updates user status, primarily the user_ban field, to reflect outside events
 	 *
-	 * @param string $start - 'ban', 'bounce'
+	 * @param string $action - 'ban', 'bounce'
 	 * @param integer $uid - internal user ID, zero if not known
 	 * @param string $emailAddress - email address (optional)
 	 *
@@ -1200,11 +1208,20 @@ class e_user_provider
 		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
 	}
 
+	/**
+	 * @param $provider
+	 * @return void
+	 */
 	public function setProvider($provider)
 	{
 		$this->_provider = $provider;
 	}
 
+	/**
+	 * @param $url
+	 * @return void
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 */
 	public function setBackUrl($url)
 	{
 		# system/xup/login by default
@@ -1212,17 +1229,26 @@ class e_user_provider
 		$this->respawnHybridauth();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getProvider()
 	{
 		// $this->log(__CLASS__, __METHOD__, __LINE__);
 		return $this->_provider;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getConfig()
 	{
 		return $this->_config;
 	}
 
+	/**
+	 * @return \Hybridauth\User\Profile|null
+	 */
 	public function getUserProfile()
 	{
 		if ($this->adapter)
@@ -1239,6 +1265,9 @@ class e_user_provider
 		return null;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function userId()
 	{
 		if ($profile = $this->getUserProfile())
@@ -1435,6 +1464,12 @@ class e_user_provider
 		return $supplementalFields;
 	}
 
+	/**
+	 * @param $adapterTokens
+	 * @param $index
+	 * @param $carry
+	 * @return mixed
+	 */
 	private static function adapterTokenParseConfig($adapterTokens, &$index, $carry)
 	{
 		if (!isset($adapterTokens[$index][1]))
@@ -1475,6 +1510,11 @@ class e_user_provider
 		return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
 	}
 
+	/**
+	 * @param $array1
+	 * @param $array2
+	 * @return mixed
+	 */
 	private static function array_merge_recursive_distinct(&$array1, &$array2)
 	{
 		$merged = $array1;
@@ -1691,6 +1731,11 @@ class e_user_provider
 		return false;
 	}
 
+	/**
+	 * @return bool|string
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 * @throws \Hybridauth\Exception\UnexpectedValueException
+	 */
 	public function logout()
 	{
 		if (
@@ -1843,6 +1888,10 @@ class e_user_provider
 
 e107::coreLan('administrator', true);
 
+
+/**
+ *
+ */
 class e_userperms
 {
 
@@ -2005,12 +2054,20 @@ class e_userperms
 
 	}
 
+	/**
+	 * @param $key
+	 * @return mixed
+	 */
 	function renderSectionDiz($key)
 	{
 		return $this->permSectionDiz[$key];
 	}
 
 
+	/**
+	 * @param $type
+	 * @return array|array[]
+	 */
 	function getPermList($type='all')
 	{
 		if($type == 'core')
@@ -2053,6 +2110,12 @@ class e_userperms
 		return $this->full_perms;
 	}
 
+	/**
+	 * @param $arg
+	 * @param $perms
+	 * @param $info
+	 * @return string
+	 */
 	function checkb($arg, $perms, $info='')
 	{
 		$frm = e107::getForm();
@@ -2081,7 +2144,12 @@ class e_userperms
 		return $par;
 	}
 
-	function renderPerms($perms,$uniqueID='')
+	/**
+	 * @param $perms
+	 * @param $uniqueID
+	 * @return string
+	 */
+	function renderPerms($perms, $uniqueID='')
 	{
 		$tmp = explode(".",$perms);
 		$tmp = array_filter($tmp);
@@ -2219,6 +2287,9 @@ class e_userperms
 		$ns->tablerender(ADMSLAN_52.SEP.$ad_name, $text);
 	}
 
+	/**
+	 * @return string
+	 */
 	function renderCheckAllButtons()
 	{
 		$frm = e107::getForm();
@@ -2230,6 +2301,9 @@ class e_userperms
 		";
 	}
 
+	/**
+	 * @return string
+	 */
 	function renderSubmitButtons()
 	{
 		$frm = e107::getForm();
@@ -2241,7 +2315,12 @@ class e_userperms
 		";
 	}
 
-	function renderPermTable($type,$a_perms='')
+	/**
+	 * @param $type
+	 * @param $a_perms
+	 * @return string
+	 */
+	function renderPermTable($type, $a_perms='')
 	{
 
 

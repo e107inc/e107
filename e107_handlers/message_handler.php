@@ -1010,6 +1010,14 @@ class eMessage
 
 }
 
+
+/**
+ * @param $mode
+ * @param $message
+ * @param $line
+ * @param $file
+ * @return void
+ */
 function show_emessage($mode, $message, $line = 0, $file = "") {
 	global $tp;
 

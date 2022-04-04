@@ -672,14 +672,14 @@ EXPECTED;
 	public function testToNumber()
 	{
 		$result = $this->tp->toNumber('v2a');
-		$this->assertEquals('2', $result);
+		$this->assertSame(2, $result);
 
 		$result = $this->tp->toNumber('v1.5');
-		$this->assertEquals('1.5', $result);
+		$this->assertSame(1.5, $result);
 
 
 		$result = $this->tp->toNumber('v3.5');
-		$this->assertEquals('3.5', $result);
+		$this->assertSame(3.5, $result);
 	}
 	/*
 			public function testthumbUrlSEF()

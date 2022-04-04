@@ -1116,6 +1116,9 @@ class e_library_manager
 	{
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getCallbackLog()
 	{
 		return $this->callbacks;

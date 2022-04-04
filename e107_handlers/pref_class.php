@@ -338,8 +338,8 @@ class e_pref extends e_front_model
 	 * Disallow preference override
 	 *
 	 * @param string|array $key (pref name or array)
-	 * @param mixed value
-	 * @param boolean $strict
+	 * @param null $value
+	 * @param bool $override
 	 * @return $this|\e_model
 	 */
 	final public function addData($key, $value = null, $override = true)
@@ -1122,6 +1122,11 @@ class prefs
 	// If $use_default is TRUE, $RowList entries are added to the default array. Otherwise only $RowList is used.
 	// Returns TRUE on success (measured as getting at least one row of data); false on error.
 	// Any data read is buffered (in serialised form) here - retrieve using get()
+	/**
+	 * @param $RowList
+	 * @param $use_default
+	 * @return bool
+	 */
 	function ExtractPrefs($RowList = "", $use_default = FALSE)
 	{
 		global $sql;
@@ -1150,13 +1155,12 @@ class prefs
 
 
 	/**
-	* Return current pref string $name from $table (only core for now)
-	*
-	* @param  string $name -- name of pref row
-	* @param  string $table -- "core"
-	* @return  string pref value, slashes already stripped. FALSE on error
-	* @access  public
-	*/
+	 * Return current pref string $name from $table (only core for now)
+	 *
+	 * @param string $Name
+	 * @return  string pref value, slashes already stripped. FALSE on error
+	 * @access  public
+	 */
 	function get($Name)
 	{
 		if(isset($this->prefVals['core'][$Name]))
@@ -1187,13 +1191,12 @@ class prefs
 	}
 
 	/**
-	* Return current array from pref string $name in $table (core only for now)
-	*
-	* @param  string $name -- name of pref row
-	* @param  string $table -- "core" only now
-	* @return  array pref values
-	* @access     public
-	*/
+	 * Return current array from pref string $name in $table (core only for now)
+	 *
+	 * @param string $name -- name of pref row
+	 * @return  array pref values
+	 * @access     public
+	 */
 	// retrieve prefs as an array of values
 	function getArray($name)
 	{

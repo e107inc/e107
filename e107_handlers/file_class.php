@@ -76,7 +76,10 @@
 	define('FILE_MODIFY_PERMISSIONS', 2);
 
 
-	class e_file
+/**
+ *
+ */
+class e_file
 	{
 
 		/**
@@ -159,7 +162,11 @@
 		}
 
 
-		public function setFileFilter($filter)
+	/**
+	 * @param $filter
+	 * @return $this
+	 */
+	public function setFileFilter($filter)
 		{
 
 			$this->fileFilter = $filter;
@@ -195,21 +202,31 @@
 			return $f;
 		}
 
-		function setMode($mode)
+	/**
+	 * @param $mode
+	 * @return void
+	 */
+	function setMode($mode)
 		{
 
 			$this->mode = $mode;
 		}
 
 
-		public function getErrorMessage()
+	/**
+	 * @return null
+	 */
+	public function getErrorMessage()
 		{
 
 			return $this->error;
 		}
 
 
-		public function getErrorCode()
+	/**
+	 * @return null
+	 */
+	public function getErrorCode()
 		{
 
 			return $this->errornum;
@@ -1394,36 +1411,36 @@
 		 *
 		 * @param string $fileinfo  Determines any special handling of file name (combines previous $fileinfo and $avatar parameters):
 		 *                          FALSE - default option; no processing
-		 * @param string $fileinfo  = 'attachment+extra_text' Indicates an attachment (related to forum post or PM), and specifies some optional text which is
+		 *                           = 'attachment+extra_text' Indicates an attachment (related to forum post or PM), and specifies some optional text which is
 		 *                          incorporated into the final file name (the original $fileinfo parameter).
-		 * @param string $fileinfo  = 'prefix+extra_text' - indicates an attachment or file, and specifies some optional text which is prefixed to the file name
-		 * @param string $fileinfo  = 'unique'
+		 *                          = 'prefix+extra_text' - indicates an attachment or file, and specifies some optional text which is prefixed to the file name
+		 *                           = 'unique'
 		 *                          - if the proposed destination file doesn't exist, saved under given name
 		 *                          - if the proposed destination file does exist, prepends time() to the file name to make it unique
-		 * @param string $fileinfo  =  'avatar'
+		 *                          =  'avatar'
 		 *                          - indicates an avatar is being uploaded (not used - options must be set elsewhere)
 		 *
-		 * @param array  $options   An array of supplementary options, all of which will be given appropriate defaults if not defined:
-		 * @param        $options   ['filetypes'] Name of file containing list of valid file types
+		 * @param array  $options = [  An array of supplementary options, all of which will be given appropriate defaults if not defined:
+		 *      'filetypes'		    => (string)		 Name of file containing list of valid file types
 		 *                          - Always looks in the admin directory
 		 *                          - defaults to e_ADMIN.filetypes.xml, else e_ADMIN.admin_filetypes.php for admins (if file exists), otherwise e_ADMIN.filetypes.php for users.
 		 *                          - FALSE disables this option (which implies that 'extra_file_types' is used)
-		 * @param string $options   ['file_mask'] Comma-separated list of file types which if defined limits the allowed file types to those which are in both this list and the
+		 *      'file_mask'		    => (string)		 Comma-separated list of file types which if defined limits the allowed file types to those which are in both this list and the
 		 *                          file specified by the 'filetypes' option. Enables restriction to, for example, image files.
-		 * @param bool   $options   ['extra_file_types'] - if is FALSE or undefined, rejects totally unknown file extensions (even if in $options['filetypes'] file).
+		 *      'filetypes'		    => (bool)		 file).
 		 *                          if TRUE, accepts totally unknown file extensions which are in $options['filetypes'] file.
 		 *                          otherwise specifies a comma-separated list of additional permitted file extensions
-		 * @param int    $options   ['final_chmod'] - chmod() to be applied to uploaded files (0644 default)  (This routine expects an integer value, so watch formatting/decoding - its normally
+		 *      'final_chmod'		=> (int)		 - chmod() to be applied to uploaded files (0644 default)  (This routine expects an integer value, so watch formatting/decoding - its normally
 		 *                          specified in octal. Typically use intval($permissions,8) to convert)
-		 * @param int    $options   ['max_upload_size'] - maximum size of uploaded files in bytes, or as a string with a 'multiplier' letter (e.g. 16M) at the end.
+		 *      'max_upload_size'		=> (int)		 - maximum size of uploaded files in bytes, or as a string with a 'multiplier' letter (e.g. 16M) at the end.
 		 *                          - otherwise uses $pref['upload_maxfilesize'] if set
 		 *                          - overriding limit of the smaller of 'post_max_size' and 'upload_max_size' if set in php.ini
 		 *                          (Note: other parts of E107 don't understand strings with a multiplier letter yet)
-		 * @param string $options   ['file_array_name'] - the name of the 'input' array - defaults to file_userfile[] - otherwise as set.
-		 * @param int    $options   ['max_file_count'] - maximum number of files which can be uploaded - default is 'unlimited' if this is zero or not set.
-		 * @param bool   $options   ['overwrite'] - if TRUE, existing file of the same name is overwritten; otherwise returns 'duplicate file' error (default FALSE)
-		 * @param int    $options   ['save_to_db'] - [obsolete] storage type - if set and TRUE, uploaded files were saved in the database (rather than as flat files)
-		 *
+		 *      'file_array_name'	=> (string)		 - the name of the 'input' array - defaults to file_userfile[] - otherwise as set.
+		 *      'max_file_count'	=> (int)		 - maximum number of files which can be uploaded - default is 'unlimited' if this is zero or not set.
+		 *      'overwrite'		    => (bool)		 - if TRUE, existing file of the same name is overwritten; otherwise returns 'duplicate file' error (default FALSE)
+		 *      'save_to_db'		=> (int)		 - [obsolete] storage type - if set and TRUE, uploaded files were saved in the database (rather than as flat files)
+		 *  ]
 		 * @return boolean|array
 		 *        Returns FALSE if the upload directory doesn't exist, or various other errors occurred which restrict the amount of meaningful information.
 		 *        Returns an array, with one set of entries per uploaded file, regardless of whether saved or
@@ -1873,7 +1890,12 @@
 		}
 
 
-		private function matchFound($file, $array)
+	/**
+	 * @param $file
+	 * @param $array
+	 * @return bool
+	 */
+	private function matchFound($file, $array)
 		{
 
 			if(empty($array))
@@ -2227,7 +2249,10 @@
 
 		}
 
-		private function getMimeTypes()
+	/**
+	 * @return string[]
+	 */
+	private function getMimeTypes()
 		{
 			return array(
 				'asc'  => 'text/plain',

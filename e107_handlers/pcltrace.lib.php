@@ -66,7 +66,13 @@ if (!defined("PCLTRACE_LIB"))
   //                        TrDisplay() function. (default)
   //             'log'    : messages are writed in the file $p_filename
   // --------------------------------------------------------------------------------
-  function TrOn($p_level=1, $p_mode="memory", $p_filename="trace.txt")
+	/**
+	 * @param $p_level
+	 * @param $p_mode
+	 * @param $p_filename
+	 * @return void
+	 */
+	function TrOn($p_level=1, $p_mode="memory", $p_filename="trace.txt")
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -100,7 +106,10 @@ if (!defined("PCLTRACE_LIB"))
   // Return value :
   //   The trace level (0 for disable).
   // --------------------------------------------------------------------------------
-  function IsTrOn()
+	/**
+	 * @return mixed
+	 */
+	function IsTrOn()
   {
     global $g_pcl_trace_level;
 
@@ -113,7 +122,10 @@ if (!defined("PCLTRACE_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function TrOff()
+	/**
+	 * @return void
+	 */
+	function TrOff()
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -141,7 +153,15 @@ if (!defined("PCLTRACE_LIB"))
   // Parameters :
   //   $p_level : Level of trace required.
   // --------------------------------------------------------------------------------
-  function TrFctStart($p_file, $p_line, $p_name, $p_param="", $p_message="")
+	/**
+	 * @param $p_file
+	 * @param $p_line
+	 * @param $p_name
+	 * @param $p_param
+	 * @param $p_message
+	 * @return void
+	 */
+	function TrFctStart($p_file, $p_line, $p_name, $p_param="", $p_message="")
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -199,7 +219,14 @@ if (!defined("PCLTRACE_LIB"))
   // Parameters :
   //   $p_level : Level of trace required.
   // --------------------------------------------------------------------------------
-  function TrFctEnd($p_file, $p_line, $p_return=1, $p_message="")
+	/**
+	 * @param $p_file
+	 * @param $p_line
+	 * @param $p_return
+	 * @param $p_message
+	 * @return void
+	 */
+	function TrFctEnd($p_file, $p_line, $p_return=1, $p_message="")
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -261,7 +288,14 @@ if (!defined("PCLTRACE_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function TrFctMessage($p_file, $p_line, $p_level, $p_message="")
+	/**
+	 * @param $p_file
+	 * @param $p_line
+	 * @param $p_level
+	 * @param $p_message
+	 * @return void
+	 */
+	function TrFctMessage($p_file, $p_line, $p_level, $p_message="")
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -294,7 +328,14 @@ if (!defined("PCLTRACE_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function TrMessage($p_file, $p_line, $p_level, $p_message="")
+	/**
+	 * @param $p_file
+	 * @param $p_line
+	 * @param $p_level
+	 * @param $p_message
+	 * @return void
+	 */
+	function TrMessage($p_file, $p_line, $p_level, $p_message="")
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -328,7 +369,10 @@ if (!defined("PCLTRACE_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function TrDisplay()
+	/**
+	 * @return void
+	 */
+	function TrDisplay()
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;
@@ -428,7 +472,11 @@ if (!defined("PCLTRACE_LIB"))
   // Description :
   // Parameters :
   // --------------------------------------------------------------------------------
-  function PclTraceAction($p_entry)
+	/**
+	 * @param $p_entry
+	 * @return void
+	 */
+	function PclTraceAction($p_entry)
   {
     global $g_pcl_trace_level;
     global $g_pcl_trace_mode;

@@ -10,6 +10,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class secure_image
 {
 	public $random_number;
@@ -187,7 +191,7 @@ class secure_image
 
 	/**
 	 * Return the rendered code/image.
-	 * @return mixed|string
+	 * @return string
 	 */
 	public function renderImage() // Alias of r_image
 	{
@@ -195,6 +199,10 @@ class secure_image
 	}
 
 
+	/**
+	 * @param $hex
+	 * @return string
+	 */
 	private function hex2rgb($hex)
 	{
 		$hex = str_replace("#", "", $hex);
@@ -468,6 +476,11 @@ class secure_image
 	}
 
 
+	/**
+	 * @param $x
+	 * @param $y
+	 * @return false|GdImage|resource
+	 */
 	private function imageCreateTransparent($x, $y)
 	{
     	$imageOut = imagecreatetruecolor($x, $y);

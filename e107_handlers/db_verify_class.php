@@ -19,6 +19,10 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
+
+/**
+ *
+ */
 class db_verify
 {
 	var $backUrl       = "";
@@ -81,6 +85,9 @@ class db_verify
 		
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function clearCache()
 	{
 
@@ -88,6 +95,9 @@ class db_verify
 
 	}
 
+	/**
+	 * @return array
+	 */
 	private function load()
 	{
 		$mes = e107::getMessage();
@@ -194,8 +204,12 @@ class db_verify
 		}	
 
 	}
-		
-		
+
+
+	/**
+	 * @param $fileArray
+	 * @return void
+	 */
 	function runComparison($fileArray)
 	{
 		$mes = e107::getMessage();
@@ -276,13 +290,14 @@ class db_verify
 		}
 
 	}
-	
-	
 
-	
-	
-	
-	public function compare($selection,$language='')
+
+	/**
+	 * @param $selection
+	 * @param $language
+	 * @return false|void
+	 */
+	public function compare($selection, $language='')
 	{
 
 		$this->currentTable = $selection;
@@ -508,8 +523,11 @@ class db_verify
 		return count($this->errors);	
 	}
 
-	
 
+	/**
+	 * @param $fileArray
+	 * @return void
+	 */
 	function renderResults($fileArray=array())
 	{
 		
@@ -649,6 +667,10 @@ class db_verify
 		
 	}
 
+	/**
+	 * @param $tabs
+	 * @return mixed|string
+	 */
 	function renderTableName($tabs)
 	{
 		
@@ -661,16 +683,30 @@ class db_verify
 	}
 
 
-	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
+	/**
+	 * @param $file
+	 * @param $table
+	 * @param $field
+	 * @param $newvalue
+	 * @param $mode
+	 * @param $after
+	 * @return string
+	 */
+	function fixForm($file, $table, $field, $newvalue, $mode, $after ='')
 	{
 		$frm = e107::getForm();
 		$text = $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}
-	
-	
-	function renderNotes($data,$mode='field')
+
+
+	/**
+	 * @param $data
+	 * @param $mode
+	 * @return string
+	 */
+	function renderNotes($data, $mode='field')
 	{
 		// return "<pre>".print_r($data,TRUE)."</pre>";
 		
@@ -692,10 +728,14 @@ class db_verify
 			
 		return $text;
 	}
-	
-	
-	
-	public function toMysql($data,$mode = 'field')
+
+
+	/**
+	 * @param $data
+	 * @param $mode
+	 * @return string|void
+	 */
+	public function toMysql($data, $mode = 'field')
 	{
 		
 		if(!$data) return;
@@ -735,7 +775,13 @@ class db_verify
 	}
 	
 	// returns the previous Field
-	function getPrevious($array,$cur)
+
+	/**
+	 * @param $array
+	 * @param $cur
+	 * @return int|mixed|string
+	 */
+	function getPrevious($array, $cur)
 	{
 		$fkeys = array_keys($array);
 		$cur_key = array_search($cur, $fkeys);
@@ -884,11 +930,13 @@ class db_verify
 
 		$log->flushMessages("Database Table(s) Modified");
 				
-	}	
-	
-	
-	
-	
+	}
+
+
+	/**
+	 * @param $sql_data
+	 * @return array|false
+	 */
 	function getSqlFileTables($sql_data)
 	{
 		if(!$sql_data)
@@ -950,8 +998,11 @@ class db_verify
 	}
 
 
-
-
+	/**
+	 * @param $data
+	 * @param $print
+	 * @return array
+	 */
 	function getFields($data, $print = false)
 	{
 		
@@ -1005,8 +1056,13 @@ class db_verify
 		
 		return $ret;
 	}
-	
-	
+
+
+	/**
+	 * @param $data
+	 * @param $print
+	 * @return array
+	 */
 	function getIndex($data, $print = false)
 	{
 		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
@@ -1070,10 +1126,14 @@ class db_verify
 		return $ret;
 
 	}
-	
-	
-	
-	function getSqlData($tbl,$language='')
+
+
+	/**
+	 * @param $tbl
+	 * @param $language
+	 * @return false|string
+	 */
+	function getSqlData($tbl, $language='')
 	{
 		
 		$mes = e107::getMessage();
@@ -1125,7 +1185,10 @@ class db_verify
 		}
 	
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	function getSqlLanguages()
 	{
 		$sql = e107::getDb();
@@ -1142,8 +1205,11 @@ class db_verify
 		return $array;
 
 	}
-	
-	
+
+
+	/**
+	 * @return void
+	 */
 	function renderTableSelect()
 	{
 		$frm = e107::getForm();

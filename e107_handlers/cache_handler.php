@@ -58,6 +58,9 @@ class ecache {
 	}
 
 
+	/**
+	 * @return mixed
+	 */
 	public function getMD5()
 	{
 		return $this->CachePageMD5;
@@ -200,13 +203,13 @@ class ecache {
 	}
 
 	/**
-	* @return string 
-	* @param string $CacheTag
-	* @param int $MaximumAge the time in minutes before the cache file 'expires'
-	 * @param boolean $force
-	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
-	* @scope public
-	*/
+	 * @param string $CacheTag
+	 * @param bool $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param bool $ForcedCheck
+	 * @return string
+	 * @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	 * @scope public
+	 */
 	function retrieve_sys($CacheTag, $MaximumAge = false, $ForcedCheck = false)
 	{
 		if(isset($this) && $this instanceof ecache)

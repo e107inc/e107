@@ -346,7 +346,11 @@ abstract class e_file_inspector implements e_file_inspector_interface
         return $path;
     }
 
-    public function defaultPathToCustomPath($path)
+	/**
+	 * @param $path
+	 * @return mixed|string
+	 */
+	public function defaultPathToCustomPath($path)
     {
         if (!is_array($this->customDirsCache)) $this->populateDirsCache();
         foreach ($this->customDirsCache as $dirType => $customDir)
@@ -362,7 +366,10 @@ abstract class e_file_inspector implements e_file_inspector_interface
         return $path;
     }
 
-    private function getValidatedBitmask()
+	/**
+	 * @return int
+	 */
+	private function getValidatedBitmask()
     {
         if ($this->validatedBitmask !== null) return $this->validatedBitmask;
         $constants = (new ReflectionClass(self::class))->getConstants();
@@ -385,7 +392,10 @@ abstract class e_file_inspector implements e_file_inspector_interface
         return is_file($absolutePath) && is_readable($absolutePath) && !in_array($absolutePath, $this->undeterminable);
     }
 
-    protected function populateDirsCache()
+	/**
+	 * @return void
+	 */
+	protected function populateDirsCache()
     {
         $this->defaultDirsCache = e107::getInstance()->defaultDirs();
         $customDirs = e107::getInstance()->e107_dirs ? e107::getInstance()->e107_dirs : [];

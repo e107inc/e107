@@ -24,9 +24,12 @@
 /**
  * @todo core request handler (non-admin), core response
  */
-if (!defined('e107_INIT')){ exit; }  
- 
- 
+if (!defined('e107_INIT')){ exit; }
+
+
+/**
+ *
+ */
 class e_admin_request
 {
 	/**
@@ -92,7 +95,8 @@ class e_admin_request
 	/**
 	 * Constructor
 	 *
-	 * @param string|array $qry [optional]
+	 * @param string|null $request_string [optional]
+	 * @param bool $parse
 	 * @return void
 	 */
 	public function __construct($request_string = null, $parse = true)
@@ -1113,7 +1117,10 @@ class e_admin_dispatcher
 	public function init()
 	{
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function checkAccess()
 	{
 		$request = $this->getRequest();
@@ -1144,7 +1151,11 @@ class e_admin_dispatcher
 		
 		return true;
 	}
-	
+
+	/**
+	 * @param $mode
+	 * @return bool
+	 */
 	public function hasModeAccess($mode)
 	{
 		// mode userclass (former check_class())
@@ -1166,7 +1177,11 @@ class e_admin_dispatcher
 
 		return true;
 	}
-	
+
+	/**
+	 * @param $route
+	 * @return bool
+	 */
 	public function hasRouteAccess($route)
 	{
 		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
@@ -1353,7 +1368,7 @@ class e_admin_dispatcher
 	 * - ajax: force ajax output (and exit)
 	 *
 	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax[_text|_json|_xml]
-	 * @return mixed
+	 * @return array|e_admin_response|string|null
 	 */
 	public function runPage($return_type = 'render')
 	{
@@ -1726,6 +1741,10 @@ class e_admin_dispatcher
 
 }
 
+
+/**
+ *
+ */
 class e_admin_controller
 {
 	/**
@@ -2131,6 +2150,10 @@ class e_admin_controller
 		return $this->getResponse()->getJsHelper();
 	}
 
+	/**
+	 * @param $action
+	 * @return void
+	 */
 	protected function _preDispatch($action = '')
 	{
 		if(!$action)
@@ -2360,34 +2383,52 @@ class e_admin_controller
 		return $response;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function E404Observer()
 	{
 		$this->getResponse()->setTitle(LAN_UI_404_TITLE_ERROR);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function E404Page()
 	{
 		return '<div class="center">'.LAN_UI_404_BODY_ERROR.'</div>';
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function E404AjaxPage()
 	{
 		exit;
 	}
-	
 
+
+	/**
+	 * @return void
+	 */
 	public function E403Observer()
 	{
 		$this->getResponse()->setTitle(LAN_UI_403_TITLE_ERROR);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function E403Page()
 	{
 		return '<div class="center">'.LAN_UI_403_BODY_ERROR.'</div>';
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function E403AjaxPage()
 	{
 		exit;
@@ -2520,7 +2561,9 @@ class e_admin_controller
 	}
 
 
-
+	/**
+	 * @return string
+	 */
 	public function getDefaultTrigger()
 	{
 		return $this->_default_trigger;
@@ -2573,6 +2616,11 @@ class e_admin_controller
 }
 
 //FIXME - move everything from e_admin_ui except model auto-create related code
+
+
+/**
+ *
+ */
 class e_admin_controller_ui extends e_admin_controller
 {
 
@@ -2789,7 +2837,7 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $_tree_model;
 
 	/**
-	 * @var e_admin_tree_model
+	 * @var e_admin_form_ui
 	 */
 	protected $_ui;
 
@@ -2809,38 +2857,59 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $afterSubmitOptions = true;
 
+	/**
+	 * @return bool
+	 */
 	public function getAfterSubmitOptions()
 	{
 		return $this->afterSubmitOptions;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function getBatchCopy()
 	{
 		return $this->batchCopy;
 	}
-    
-    
-    public function getBatchLink()
+
+
+	/**
+	 * @return bool
+	 */
+	public function getBatchLink()
     {
         return $this->batchLink;
     }
 
 
-    public function getBatchFeaturebox()
+	/**
+	 * @return bool
+	 */
+	public function getBatchFeaturebox()
     {
         return $this->batchFeaturebox;
     }
 
+	/**
+	 * @return bool
+	 */
 	public function getBatchExport()
     {
         return $this->batchExport;
     }
 
+	/**
+	 * @return array
+	 */
 	public function getBatchOptions()
 	{
 		return $this->batchOptions;
@@ -2910,7 +2979,12 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->tabs;
 	}
 
-	public function addTab($key,$val)
+	/**
+	 * @param $key
+	 * @param $val
+	 * @return void
+	 */
+	public function addTab($key, $val)
 	{
 		$this->tabs[$key] = (string) $val;
 	}
@@ -3035,6 +3109,9 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->prefs;
 	}
 
+	/**
+	 * @return array|int|mixed
+	 */
 	public function getPerPage()
 	{
 
@@ -3052,6 +3129,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->perPage;
 	}
 
+	/**
+	 * @param $key
+	 * @return array|mixed
+	 */
 	public function getGrid($key=null)
 	{
 		if($key !== null)
@@ -3063,22 +3144,34 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 
+	/**
+	 * @return bool|e_admin_model
+	 */
 	public function getFormQuery()
 	{
 		return $this->formQuery;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPrimaryName()
 	{
 		return $this->getModel()->getFieldIdName();
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultOrderField()
 	{
 		return ($this->defaultOrder ? $this->defaultOrderField : $this->getPrimaryName());
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultOrder()
 	{
 		return ($this->defaultOrder ? $this->defaultOrder : 'asc');
@@ -3225,6 +3318,11 @@ class e_admin_controller_ui extends e_admin_controller
 		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
 	}
 
+	/**
+	 * @param $prefix
+	 * @param $quote
+	 * @return string
+	 */
 	public function getIfTableAlias($prefix = false, $quote = false) //XXX May no longer by useful. see joinAlias()
 	{
 		$alias = $this->getTableName(true);
@@ -3254,6 +3352,11 @@ class e_admin_controller_ui extends e_admin_controller
 		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
 	}
 
+	/**
+	 * @param $table
+	 * @param $data
+	 * @return $this
+	 */
 	public function setJoinData($table, $data) //XXX - DEPRECATE?
 	{
 		if($data === null)
@@ -3385,6 +3488,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return e107::getRegistry('core/adminUI/currentListModel');
 	}
 
+	/**
+	 * @param $model
+	 * @return $this
+	 */
 	public function setListModel($model)
 	{
 		e107::setRegistry('core/adminUI/currentListModel', $model);
@@ -3403,7 +3510,7 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Get extended (UI) Form instance
 	 *
-	 * @return e_admin_form_ui|mixed
+	 * @return e_admin_form_ui
 	 */
 	public function getUI()
 	{
@@ -3491,7 +3598,6 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Manage column visibility
-	 * @param string $batch_trigger
 	 * @return null
 	 */
 	public function manageColumns()
@@ -4105,6 +4211,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return vartrue($tmp[$alias]);			
 	}
 
+	/**
+	 * @param $field
+	 * @return array|false|mixed
+	 */
 	public function getJoinField($field=null)
 	{
 		if(empty($field))
@@ -4115,6 +4225,9 @@ class e_admin_controller_ui extends e_admin_controller
 		return isset($this->joinField[$field]) ? $this->joinField[$field] : false; // vartrue($this->joinField[$field],false);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getJoinAlias()
 	{
 		return $this->joinAlias;
@@ -4358,6 +4471,15 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	// TODO - abstract, array return type, move to parent?
+
+	/**
+	 * @param $raw
+	 * @param $isfilter
+	 * @param $forceFrom
+	 * @param $forceTo
+	 * @param $listQry
+	 * @return array|Custom|false|string|string[]
+	 */
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
 		$searchQry = array();
@@ -5038,6 +5160,10 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 }
 
+
+/**
+ *
+ */
 class e_admin_ui extends e_admin_controller_ui
 {
 
@@ -5147,6 +5273,9 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+	/**
+	 * @return void
+	 */
 	private function initAdminAddons()
 	{
 		$tmp = e107::getAddonConfig('e_admin', null, 'config', $this);
@@ -5506,7 +5635,11 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->redirect();
 		}
 	}
-	
+
+	/**
+	 * @param $selected
+	 * @return false|int
+	 */
 	protected function _add2nav($selected)
 	{
 		if(empty($selected))
@@ -5582,6 +5715,10 @@ class e_admin_ui extends e_admin_controller_ui
  
 	}
 
+	/**
+	 * @param $selected
+	 * @return false|int
+	 */
 	protected function _add2featurebox($selected)
 	{
 		// FIX - don't allow if plugin not installed
@@ -5720,6 +5857,13 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setMessages();
 	}
 
+	/**
+	 * @param $selected
+	 * @param $field
+	 * @param $value
+	 * @param $type
+	 * @return void
+	 */
 	public function handleCommaBatch($selected, $field, $value, $type)
 	{
 		$tree = $this->getTreeModel();
@@ -5955,7 +6099,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Catch delete submit
-	 * @param string $batch_trigger
+	 * @param $posted
 	 * @return null
 	 */
 	public function ListDeleteTrigger($posted)
@@ -6202,6 +6346,11 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	// Temporary - but useful. :-)
+
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	public function logajax($message)
 	{
 		if(e_DEBUG !== true)
@@ -6409,6 +6558,9 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function GridAjaxPage()
 	{
 		return $this->getUI()->getList(true,'grid');
@@ -6610,6 +6762,9 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->getUI()->getCreate();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function PrefsSaveTrigger()
 	{
 		$data = $this->getPosted();
@@ -6671,12 +6826,18 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getConfig()->setMessages();
 
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function PrefsObserver()
 	{
 		$this->addTitle();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PrefsPage()
 	{
 		return $this->getUI()->getSettings();
@@ -6703,6 +6864,9 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this;
 	}
 
+	/**
+	 * @return false
+	 */
 	public function getPrimaryName()
 	{
 		// Option for working with tables having no PID
@@ -6715,6 +6879,11 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->pid;
 	}
 
+	/**
+	 * @param $alias
+	 * @param $prefix
+	 * @return string
+	 */
 	public function getTableName($alias = false, $prefix = false)
 	{
 		if($alias)
@@ -6936,6 +7105,10 @@ class e_admin_ui extends e_admin_controller_ui
 
 }
 
+
+/**
+ *
+ */
 class e_admin_form_ui extends e_form
 {
 	/**
@@ -6962,6 +7135,9 @@ class e_admin_form_ui extends e_form
 		$this->init();
 	}
 
+	/**
+	 * @return void|null
+	 */
 	protected function preventConflict()
 	{
 		$err = false;
@@ -7368,10 +7544,11 @@ class e_admin_form_ui extends e_form
 	}
 
 
-
-
-
-
+	/**
+	 * @param $ids
+	 * @param $ajax
+	 * @return string
+	 */
 	public function getConfirmDelete($ids, $ajax = false)
 	{
 		$controller = $this->getController();
@@ -7460,6 +7637,12 @@ class e_admin_form_ui extends e_form
 
 	}
 
+	/**
+	 * @param $current_query
+	 * @param $location
+	 * @param $input_options
+	 * @return string
+	 */
 	public function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
 		if(!$input_options)
@@ -7691,6 +7874,9 @@ class e_admin_form_ui extends e_form
 	}
 
 
+	/**
+	 * @return string|null
+	 */
 	private function renderLanguageTableInfo()
 	{
 
@@ -8291,6 +8477,9 @@ class e_admin_form_ui extends e_form
 
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getElementId()
 	{
 		$controller = $this->getController();

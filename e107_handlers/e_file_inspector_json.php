@@ -9,6 +9,10 @@
 
 require_once("e_file_inspector.php");
 
+
+/**
+ *
+ */
 class e_file_inspector_json extends e_file_inspector
 {
     protected $coreImage;

@@ -55,6 +55,9 @@ class e_theme
 	const CACHETAG  = "Meta_theme";
 
 
+	/**
+	 * @param $options
+	 */
 	function __construct($options=array())
 	{
 		$options['force'] = isset($options['force']) ? $options['force'] : false;
@@ -79,6 +82,9 @@ class e_theme
 
 	}
 
+	/**
+	 * @return string[]
+	 */
 	function getCategoryList()
 	{
 		return self::$allowedCategories;
@@ -135,6 +141,9 @@ class e_theme
 		return $LAYOUT;
 	}
 
+	/**
+	 * @return void
+	 */
 	public static function showPreview()
 	{
 
@@ -397,6 +406,9 @@ class e_theme
 	}
 
 
+	/**
+	 * @return $this
+	 */
 	public function clearCache()
 	{
 		e107::getCache()->clear(self::CACHETAG, true);
@@ -404,6 +416,10 @@ class e_theme
 	}
 
 
+	/**
+	 * @param $text
+	 * @return array|string|string[]
+	 */
 	public function upgradeThemeCode($text)
 	{
 		$search = array();
@@ -802,7 +818,7 @@ class e_theme
 	/**
 	 * Internal Use. Heavy CPU usage.
 	 * Use e107::getTheme($themeDir,$force)->get() instead.
-	 * @param $file
+	 * @param string $file theme directory name.
 	 * @return mixed
 	 */
 	public static function getThemeInfo($file)
@@ -878,8 +894,11 @@ class e_theme
 	}
 
 
-
-
+	/**
+	 * Legacy Plugin theme.php meta data parser.
+	 * @param string $path theme folder name
+	 * @return array
+	 */
 	public static function parse_theme_php($path)
 	{
 		$CUSTOMPAGES = null;
@@ -1015,6 +1034,11 @@ class e_theme
 		return $themeArray;
 	}
 
+	/**
+	 * Reads theme.xml and returns an array of data from it.
+	 * @param string $path theme folder name
+	 * @return array
+	 */
 	public static function parse_theme_xml($path)
 	{
 		$tp = e107::getParser();
@@ -1275,6 +1299,11 @@ class e_theme
 
 	}
 
+	/**
+	 * @param $themeDir
+	 * @param $layout
+	 * @return void
+	 */
 	private static function initThemePreview($themeDir, $layout=null)
 	{
 		$themeDir = filter_var($themeDir);
@@ -1438,9 +1467,9 @@ class e_theme
 }
 
 
-
-
-
+/**
+ *
+ */
 class themeHandler
 {
 	
@@ -1507,6 +1536,9 @@ class themeHandler
 	
 	}
 
+	/**
+	 * @return void
+	 */
 	public function postObserver()
 	{
 
@@ -1671,9 +1703,9 @@ class themeHandler
 	}
 
 	/**
-	 * @deprecated Use e107::getTheme($file)->get(); instead.
 	 * @param string $file - theme folder name.
-	 * @return array|mixed
+	 * @return array|bool
+	 *@deprecated Use e107::getTheme($file)->get(); instead.
 	 */
 	function getThemeInfo($file)
 	{
@@ -1837,8 +1869,17 @@ class themeHandler
 	 * 
 	 */
 	}
-	
 
+
+	/**
+	 * @param $name
+	 * @param $searchVal
+	 * @param $submitName
+	 * @param $filterName
+	 * @param $filterArray
+	 * @param $filterVal
+	 * @return string
+	 */
 	private function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
 	{
 		$frm = e107::getForm();
@@ -2120,7 +2161,11 @@ class themeHandler
 		$ns->tablerender(TPVLAN_26.SEP.TPVLAN_38, $mes->render().$text);
 	}
 */
-	
+
+	/**
+	 * @param $theme
+	 * @return string|null
+	 */
 	function renderThemeInfo($theme)
 	{
 
@@ -2287,7 +2332,10 @@ class themeHandler
 	
 		return $text;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function loadThemeConfig()
 	{
 		$mes = e107::getMessage();
@@ -2345,6 +2393,10 @@ class themeHandler
 	}
 	
 	// TODO process custom theme configuration - .
+
+	/**
+	 * @return string|void
+	 */
 	function renderThemeConfig()
 	{
 		
@@ -2393,8 +2445,9 @@ class themeHandler
 	}
 
 
-
-	
+	/**
+	 * @return false|mixed|void
+	 */
 	function renderThemeHelp()
 	{
 		if($this->themeConfigObj)
@@ -2403,7 +2456,10 @@ class themeHandler
 		}
 	}
 
-	
+
+	/**
+	 * @return bool|mixed|void
+	 */
 	function setThemeConfig()
 	{
 		$this->loadThemeConfig();
@@ -2906,7 +2962,11 @@ class themeHandler
 	}
 
 
-
+	/**
+	 * @param $mode
+	 * @param $theme
+	 * @return array|false
+	 */
 	private function filterStylesheets($mode, $theme)
 	{
 
@@ -2948,6 +3008,10 @@ class themeHandler
 	}
 
 
+	/**
+	 * @param $key
+	 * @return string
+	 */
 	function renderPresets($key)
 	{
 		require_once (e_HANDLER."menumanager_class.php");
@@ -2981,13 +3045,10 @@ class themeHandler
 	}
 
 
-
-
-
-
-
-
-	
+	/**
+	 * @param $pluginOpts
+	 * @return string
+	 */
 	function renderPlugins($pluginOpts)
 	{
 
@@ -3026,13 +3087,20 @@ class themeHandler
 		
 		return $text;
 	}
-	
+
+	/**
+	 * @param $page
+	 * @return void
+	 */
 	function refreshPage($page = e_QUERY )
 	{
 		header("Location: ".e_SELF."?".$page);
 		exit;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function themePreview()
 	{
 		echo "<script>document.location.href='".e_BASE."index.php?themepreview.".$this->id."'</script>\n";
@@ -3198,6 +3266,10 @@ class themeHandler
 	}
 
 
+	/**
+	 * @param $name
+	 * @return void
+	 */
 	function installContent($name)
 	{
 		$mes = e107::getMessage();
@@ -3291,7 +3363,10 @@ class themeHandler
 
 
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function setAdminStyle()
 	{
 		//TODO adminlog
@@ -3313,7 +3388,11 @@ class themeHandler
 			|| e107::getConfig()->dataHasChangedFor('adminstyle')
 			|| e107::getConfig()->dataHasChangedFor('adminpref'));*/
 	}
-	
+
+	/**
+	 * @param $array
+	 * @return void
+	 */
 	function SetCustomPages($array)
 	{
 		if(!is_array($array))
@@ -3354,6 +3433,12 @@ class themeHandler
 
 	
 	// Log event to admin log
+
+	/**
+	 * @param $msg_num
+	 * @param $woffle
+	 * @return void
+	 */
 	function theme_adminlog($msg_num = '00', $woffle = '')
 	{
 		if($this->noLog)
@@ -3383,9 +3468,9 @@ class themeHandler
 }
 
 
-
-
-
+/**
+ *
+ */
 interface e_theme_config
 {
 	/**
@@ -3415,8 +3500,19 @@ interface e_theme_config
  */
 interface e_theme_render
 {
+
+	/**
+	 * @return mixed
+	 */
 	public function init();
 
+	/**
+	 * @param $caption
+	 * @param $text
+	 * @param $mode
+	 * @param $data
+	 * @return mixed
+	 */
 	public function tablestyle($caption, $text, $mode='', $data=array());
 
 }

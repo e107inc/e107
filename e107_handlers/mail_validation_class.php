@@ -10,6 +10,10 @@ if (!defined('e107_INIT')) { exit; }
  *
  */
 
+
+/**
+ *
+ */
 class email_validation_class
 {
 	var $email_regular_expression="^([-!#\$%&'*+./0-9=?A-Z^_`a-z{|}~])+@([-!#\$%&'*+/0-9=?A-Z^_`a-z{|}~]+\\.)+[a-zA-Z]{2,6}\$";
@@ -26,7 +30,12 @@ class email_validation_class
 	var $preg;
 	var $last_code="";
 
-	Function Tokenize($string,$separator="")
+	/**
+	 * @param $string
+	 * @param $separator
+	 * @return mixed|string
+	 */
+	Function Tokenize($string, $separator="")
 	{
 		if(!strcmp($separator,""))
 		{
@@ -50,6 +59,10 @@ class email_validation_class
 		}
 	}
 
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	Function OutputDebug($message)
 	{
 		$message.="\n";
@@ -59,6 +72,10 @@ class email_validation_class
 		flush();
 	}
 
+	/**
+	 * @param $connection
+	 * @return int|string
+	 */
 	Function GetLine($connection)
 	{
 		for($line="";;)
@@ -78,13 +95,22 @@ class email_validation_class
 		}
 	}
 
-	Function PutLine($connection,$line)
+	/**
+	 * @param $connection
+	 * @param $line
+	 * @return false|int
+	 */
+	Function PutLine($connection, $line)
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
 		return(fwrite($connection,"$line\r\n"));
 	}
 
+	/**
+	 * @param $email
+	 * @return false|int
+	 */
 	Function ValidateEmailAddress($email)
 	{
 		if(IsSet($this->preg))
@@ -100,7 +126,12 @@ class email_validation_class
 		return(preg_match("/".str_replace("/", "\\/", $this->email_regular_expression)."/i", $email)/*!=0*/);
 	}
 
-	Function ValidateEmailHost($email,&$hosts)
+	/**
+	 * @param $email
+	 * @param $hosts
+	 * @return bool|int
+	 */
+	Function ValidateEmailHost($email, &$hosts)
 	{
 		if(!$this->ValidateEmailAddress($email))
 			return(0);
@@ -128,7 +159,12 @@ class email_validation_class
 		return(count($hosts)!=0);
 	}
 
-	Function VerifyResultLines($connection,$code)
+	/**
+	 * @param $connection
+	 * @param $code
+	 * @return int
+	 */
+	Function VerifyResultLines($connection, $code)
 	{
 		while(($line=$this->GetLine($connection)))
 		{
@@ -141,6 +177,10 @@ class email_validation_class
 		return(-1);
 	}
 
+	/**
+	 * @param $email
+	 * @return bool|int
+	 */
 	Function ValidateEmailBox($email)
 	{
 		if(!$this->ValidateEmailHost($email,$hosts))

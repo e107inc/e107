@@ -28,6 +28,11 @@ if (!defined('e107_INIT'))
 
 if (!function_exists('strptime'))
 {
+	/**
+	 * @param $date
+	 * @param $format
+	 * @return array|bool
+	 */
 	function strptime($date, $format)
 	{
 		return eShims::strptime($date, $format);
@@ -47,7 +52,11 @@ if (!function_exists('strftime'))
 // Fix for exim missing.
 if(!function_exists('exif_imagetype'))
 {
-    function exif_imagetype($filename)
+	/**
+	 * @param $filename
+	 * @return false|mixed
+	 */
+	function exif_imagetype($filename)
     {
         if((list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false)
         {

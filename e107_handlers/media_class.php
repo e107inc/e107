@@ -16,6 +16,9 @@ if (!defined('e107_INIT')) { exit; }
 
 use Intervention\Image\ImageManagerStatic as Intervension;
 
+/**
+ *  Media class.
+ */
 class e_media
 {
 	protected $imagelist = array();
@@ -55,6 +58,10 @@ class e_media
 	}
 
 
+	/**
+	 * @param $val
+	 * @return void
+	 */
 	public function debug($val)
 	{
 
@@ -365,7 +372,11 @@ class e_media
 	{
 		// TODO
 	}*/
-	
+
+	/**
+	 * @param (string) $owner
+	 * @return bool|null
+	 */
 	public function deleteAllCategories($owner='')
 	{
 		if($owner == '')
@@ -663,6 +674,12 @@ class e_media
 	}
 
 
+	/**
+	 * @param $category
+	 * @param $tagid
+	 * @param $option
+	 * @return string
+	 */
 	private function mediaSelectNav($category, $tagid='', $option=null)
 	{
 		if(is_string($option))
@@ -1134,8 +1151,11 @@ class e_media
 	}
 
 
-
-
+	/**
+	 * @param (string) $mime
+	 * @param (string) $path (optional)
+	 * @return false|string
+	 */
 	public function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
@@ -1262,8 +1282,10 @@ class e_media
 	}
 
 
-
-
+	/**
+	 * @param (string) $sc_path
+	 * @return array|false
+	 */
 	public function mediaData($sc_path)
 	{
 		if(!$sc_path) return array();
@@ -1293,17 +1315,12 @@ class e_media
 			'media_dimensions'	=> (isset($info['img-width']) && isset($info['img-height'])) ? $info['img-width']." x ".$info['img-height'] : ''
 		);
 	}
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	public function log($message)
 	{
 		if($this->logging == false) return; 
@@ -1474,6 +1491,14 @@ class e_media
 	}
 
 
+	/**
+	 * @param (array) $data = [
+	 *  'close' => (int)
+	 *  'style' => (string)
+	 *  'class' => (string)
+	 * ]
+	 * @return string
+	 */
 	private function browserCarouselItemSelector($data)
 	{
 	//	$close  = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
@@ -1497,7 +1522,11 @@ class e_media
 
 	}
 
-	
+
+	/**
+	 * @param array $row
+	 * @return string
+	 */
 	function browserCarouselItem($row = array())
 	{
 		$tp = e107::getParser();
@@ -2368,7 +2397,15 @@ class e_media
 	
 	}
 
-	private function ajaxUploadLog($filePath,$fileName,$fileSize,$result, $msg='')
+	/**
+	 * @param string $filePath
+	 * @param string $fileName
+	 * @param int $fileSize
+	 * @param bool $result
+	 * @param string $msg
+	 * @return void
+	 */
+	private function ajaxUploadLog($filePath, $fileName, $fileSize, $result, $msg='')
 	{
 		$log = e107::getParser()->filter($_GET);
 

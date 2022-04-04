@@ -14,6 +14,11 @@ if (!defined('e107_INIT')) { exit; }
 Modified by CaMer0n (www.e107coders.org) and steved
 
  */
+
+
+/**
+ *
+ */
 class receiveMail
 {
 	var $server='';
@@ -24,7 +29,15 @@ class receiveMail
 
 	var $email='';
 
-	function __construct($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop3',$port='110') //Constructor
+	/**
+	 * @param $username
+	 * @param $password
+	 * @param $EmailAddress
+	 * @param $mailserver
+	 * @param $servertype
+	 * @param $port
+	 */
+	function __construct($username, $password, $EmailAddress, $mailserver='localhost', $servertype='pop3', $port='110') //Constructor
 	{
 		if($servertype=='imap')
 		{
@@ -42,12 +55,20 @@ class receiveMail
 		$this->password			=	$password;
 		$this->email			=	$EmailAddress;
 	}
+
+	/**
+	 * @return void
+	 */
 	function connect() //Connect To the Mail Box
 	{
 		$this->marubox=imap_open($this->server,$this->username,$this->password);
 	}
 
 
+	/**
+	 * @param $mid
+	 * @return array
+	 */
 	function getHeaders($mid) // Get Header info
 	{
 		$mail_header=imap_header($this->marubox,$mid);
@@ -72,6 +93,10 @@ class receiveMail
 	}
 
 
+	/**
+	 * @param $structure
+	 * @return string
+	 */
 	function get_mime_type(&$structure) //Get Mime type Internal Private Use
 	{
 		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
@@ -83,6 +108,14 @@ class receiveMail
 	}
 
 
+	/**
+	 * @param $stream
+	 * @param $msg_number
+	 * @param $mime_type
+	 * @param $structure
+	 * @param $part_number
+	 * @return false|string
+	 */
 	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) //Get Part Of Message Internal Private Use
 	{
 		if(!$structure) {
@@ -129,6 +162,9 @@ class receiveMail
 	}
 
 
+	/**
+	 * @return int
+	 */
 	function getTotalMails() //Get Total Number off Unread Email In Mailbox
 	{
 		$headers=imap_headers($this->marubox);
@@ -136,7 +172,12 @@ class receiveMail
 	}
 
 
-	function GetAttach($mid,$path) // Get Atteced File from Mail
+	/**
+	 * @param $mid
+	 * @param $path
+	 * @return string
+	 */
+	function GetAttach($mid, $path) // Get Atteced File from Mail
 	{
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
@@ -170,7 +211,12 @@ class receiveMail
 	}
 
 
-	function getBody($mid,$mode="") // Get Message Body
+	/**
+	 * @param $mid
+	 * @param $mode
+	 * @return string
+	 */
+	function getBody($mid, $mode="") // Get Message Body
 	{
 		if($mode != "plain")
 		{
@@ -185,12 +231,19 @@ class receiveMail
 	}
 
 
+	/**
+	 * @param $mid
+	 * @return void
+	 */
 	function deleteMails($mid) // Delete That Mail
 	{
 		imap_delete($this->marubox,$mid);
 	}
 
 
+	/**
+	 * @return void
+	 */
 	function close_mailbox() //Close Mail Box
 	{
 		imap_close($this->marubox,CL_EXPUNGE);

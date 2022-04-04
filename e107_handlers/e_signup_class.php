@@ -37,6 +37,10 @@ class e_signup
 	}
 
 
+	/**
+	 * @param $query
+	 * @return void|null
+	 */
 	public function run($query='')
 	{
 		$ns = e107::getRender();
@@ -116,6 +120,9 @@ class e_signup
 	}
 */
 
+	/**
+	 * @return bool|int|string
+	 */
 	private function resendEmail()
 	{
 		global $userMethods;
@@ -235,8 +242,9 @@ class e_signup
 	}
 
 
-
-
+	/**
+	 * @return void
+	 */
 	private function renderResendForm()
 	{
 		$ns = e107::getRender();
@@ -282,8 +290,9 @@ class e_signup
 	}
 
 
-
-
+	/**
+	 * @return void
+	 */
 	private function sendEmailPreview()
 	{
 		$temp = array();
@@ -302,6 +311,9 @@ class e_signup
 	}
 
 
+	/**
+	 * @return void
+	 */
 	function renderEmailPreview()
 	{
 		$ns = e107::getRender();
@@ -314,6 +326,9 @@ class e_signup
 	}
 
 
+	/**
+	 * @return void
+	 */
 	private function renderAfterSignupPreview()
 	{
 		global $allData;
@@ -460,7 +475,10 @@ class e_signup
 	}
 
 
-
+	/**
+	 * @param $error_message
+	 * @return array
+	 */
 	static function renderAfterSignup($error_message='')
 	{
 

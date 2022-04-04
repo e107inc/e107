@@ -57,7 +57,11 @@ $ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'sea
 $text .= $ps['text'];
 $results = $ps['results'];
 
-function search_comment($row) {	
+	/**
+	 * @param $row
+	 * @return false|mixed|void
+	 */
+	function search_comment($row) {
 	if (is_callable('com_search_'.$row['comment_type'])) {
 		return call_user_func('com_search_'.$row['comment_type'], $row);
 	}

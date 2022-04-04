@@ -28,6 +28,10 @@ class sitelinks
 	const LINK_DISPLAY_SLIDER   = 4;
 
 
+	/**
+	 * @param $cat
+	 * @return void
+	 */
 	function getlinks($cat=1)
 	{
 
@@ -80,11 +84,20 @@ class sitelinks
 
 	}
 
+	/**
+	 * @return array
+	 */
 	function getLinkArray()
 	{
 		return $this->eLinkList;
 	}
 
+	/**
+	 * @param $cat
+	 * @param $style
+	 * @param $css_class
+	 * @return string|null
+	 */
 	function get($cat = 1, $style = null, $css_class = false)
 	{
 		global $pref, $ns, $e107cache, $linkstyle;
@@ -241,14 +254,14 @@ class sitelinks
 
 		return $text;
 	}
-	
+
 	/**
 	 * Manage Sublink Rendering
 	 * @param string $main_linkid
 	 * @param array $aSubStyle
 	 * @param string $css_class
-	 * @param object $level [optional]
-	 * @return 
+	 * @param int $level [optional]
+	 * @return string|null
 	 */
 	function subLink($main_linkid,$aSubStyle=array(),$css_class='',$level=0)
 	{
@@ -291,9 +304,15 @@ class sitelinks
 		$text .= "\n</div>\n\n";
 		return $text;	
 	}
-	
-	
 
+
+	/**
+	 * @param $linkInfo
+	 * @param $submenu
+	 * @param $style
+	 * @param $css_class
+	 * @return string
+	 */
 	function makeLink($linkInfo=array(), $submenu = FALSE, $style=array(), $css_class = false)
 	{
 		global $pref,$tp;
@@ -714,14 +733,18 @@ class e_navigation
 	}
 
 
+	/**
+	 * @return array
+	 */
 	function getIconArray()
 	{
 		return $this->iconArray;	
 	}
-	
-	
-	
-	
+
+
+	/**
+	 * @return void
+	 */
 	function setIconArray()
 	{
 		if(!defined('E_32_MAIN'))
@@ -784,6 +807,10 @@ class e_navigation
 	protected $_md5cache = array();
 	
 	//FIXME array structure - see $this->admin();
+
+	/**
+	 * @return array
+	 */
 	function adminCats()
 	{
 		$tp = e107::getParser();
@@ -869,6 +896,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	}
 	
 	// Previously $array_functions variable. 
+
+	/**
+	 * @param $mode
+	 * @return array|array[]|string
+	 */
 	function adminLinks($mode=false)
 	{
 	
@@ -984,8 +1016,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	}
 
 
-
-    private function restoreKeys($newarray)  // Put core button array in the same format as plugin button array.
+	/**
+	 * @param $newarray
+	 * @return array
+	 */
+	private function restoreKeys($newarray)  // Put core button array in the same format as plugin button array.
     {       
         $array_functions_assoc = array();
         
@@ -1048,8 +1083,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	}
 
 
-
-
+	/**
+	 * @param $newarray
+	 * @return array
+	 */
 	private function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
 	{
 	 
@@ -1475,6 +1512,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 
 	// Previously admin.php -> render_links();
+
+	/**
+	 * @param $link
+	 * @param $title
+	 * @param $description
+	 * @param $perms
+	 * @param $icon
+	 * @param $mode
+	 * @return string
+	 */
 	function renderAdminButton($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
 	{
 		global $td;
@@ -1556,6 +1603,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	}
 
 
+	/**
+	 * @param $category
+	 * @param $type
+	 * @return mixed|string|void
+	 */
 	public function cacheString($category, $type = 'sys')
 	{
 		if(!isset($this->_md5cache[$category]))
@@ -1576,6 +1628,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function cacheBase()
 	{
 		return 'nomd5_sitelinks_';

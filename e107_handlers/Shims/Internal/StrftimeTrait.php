@@ -13,6 +13,9 @@ namespace e107\Shims\Internal;
 use DateTimeInterface;
 use DateTimeZone;
 
+/**
+ *
+ */
 trait StrftimeTrait
 {
 	/**
@@ -125,6 +128,9 @@ trait StrftimeTrait
 		return self::getFormatMapForDateTime();
 	}
 
+	/**
+	 * @return array
+	 */
 	protected static function getFormatMapForIntlDateFormatter()
 	{
 		return [
@@ -207,6 +213,9 @@ trait StrftimeTrait
 		];
 	}
 
+	/**
+	 * @return array
+	 */
 	protected static function getFormatMapForDateTime()
 	{
 		return [

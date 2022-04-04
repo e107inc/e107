@@ -14,6 +14,10 @@
 */
 global $pref, $eplug_admin;
 
+
+/**
+ *
+ */
 class e_jslib
 {
     

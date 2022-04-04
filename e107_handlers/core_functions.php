@@ -113,6 +113,10 @@ function deftrue($str, $default='')
 	return $default;
 }
 
+/**
+ * @param $fname
+ * @return mixed
+ */
 function e107_include($fname)
 {
 	global $_E107;
@@ -120,6 +124,10 @@ function e107_include($fname)
 	return $ret;
 }
 
+/**
+ * @param $fname
+ * @return mixed|string
+ */
 function e107_include_once($fname)
 {
 	global $_E107;
@@ -130,6 +138,10 @@ function e107_include_once($fname)
 	return (isset($ret)) ? $ret : '';
 }
 
+/**
+ * @param $fname
+ * @return mixed
+ */
 function e107_require_once($fname)
 {
 	global $_E107;
@@ -139,6 +151,10 @@ function e107_require_once($fname)
 	return $ret;
 }
 
+/**
+ * @param $fname
+ * @return mixed
+ */
 function e107_require($fname)
 {
 	global $_E107;
@@ -147,6 +163,11 @@ function e107_require($fname)
 }
 
 
+/**
+ * @param $var
+ * @param $return
+ * @return bool|string
+ */
 function print_a($var, $return = FALSE)
 {
 	if( ! $return)
@@ -159,6 +180,10 @@ function print_a($var, $return = FALSE)
 
 }
 
+/**
+ * @param $expr
+ * @return void
+ */
 function e_print($expr = null)
 {
 	$args = func_get_args();
@@ -169,6 +194,10 @@ function e_print($expr = null)
 	}
 }
 
+/**
+ * @param $expr
+ * @return void
+ */
 function e_dump($expr = null)
 {
 	$args = func_get_args();
@@ -231,18 +260,13 @@ function array_diff_recursive($array1, $array2)
 	}
 	
   return $ret;
-} 
-
-
-
-
-
+}
 
 
 /**
  * Strips slashes from a string or an array
  *
- * @param mixed $value
+ * @param $data
  * @return array|string
  */
 function array_stripslashes($data)
@@ -250,6 +274,9 @@ function array_stripslashes($data)
 	return is_array($data) ? array_map('array_stripslashes', $data) : stripslashes($data);
 }
 
+/**
+ * @return void
+ */
 function echo_gzipped_page()
 {
 
@@ -393,7 +420,12 @@ function table_exists($check)
 // Better Array-sort by key function by acecream (22-Apr-2003 11:02) http://php.net/manual/en/function.asort.php
 if (!function_exists('asortbyindex')) 
 {
-    function asortbyindex($array, $key)
+	/**
+	 * @param $array
+	 * @param $key
+	 * @return array
+	 */
+	function asortbyindex($array, $key)
     {
        foreach ($array as $i => $k)
        {
@@ -721,7 +753,12 @@ class e_array {
         return  $this->serialize($ArrayData, $AddSlashes);   
 
     }
-	
+
+	/**
+	 * @param $ArrayData
+	 * @param $AddSlashes
+	 * @return string|null
+	 */
 	function write($ArrayData, $AddSlashes = true)
 	{
         return  $this->serialize($ArrayData, $AddSlashes);
@@ -739,8 +776,12 @@ class e_array {
         trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::unserialize() instead.', E_USER_DEPRECATED); // NO LAN
         return $this->unserialize($ArrayData);
     }
-	
-	 function read($ArrayData) 
+
+	/**
+	 * @param $ArrayData
+	 * @return array|bool|string|null
+	 */
+	function read($ArrayData)
     {
         return $this->unserialize($ArrayData);
     }

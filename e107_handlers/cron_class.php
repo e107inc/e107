@@ -20,7 +20,11 @@ if (!defined('e107_INIT')) { exit; }
 define ('CRON_MAIL_DEBUG', false);
 define ('CRON_RETRIGGER_DEBUG', false);
 
-class _system_cron 
+
+/**
+ *
+ */
+class _system_cron
 {
 	function __construct()
 	{
@@ -29,9 +33,12 @@ class _system_cron
 
 	}
 	// See admin/cron.php to configure more core cron function to be added below.  
-	
-	
-	function myfunction() 
+
+
+	/**
+	 * @return void
+	 */
+	function myfunction()
 	{
 	    // Whatever code you wish.
 	}
@@ -142,9 +149,12 @@ class _system_cron
 
 		return null;
 	}
-	
-		
-	function sendEmail() // Test Email. 
+
+
+	/**
+	 * @return void
+	 */
+	function sendEmail() // Test Email.
 	{
 		global $pref, $_E107;
 		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
@@ -200,6 +210,10 @@ class _system_cron
 	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
 	}
 
+	/**
+	 * @param $array
+	 * @return string
+	 */
 	private function renderTable($array)
 	{
 		$text = "<table class='table table-striped table-bordered' style='width:600px'>";
@@ -252,7 +266,10 @@ class _system_cron
 			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function procEmailBounce()
 	{
 		//global $pref;
@@ -269,7 +286,10 @@ class _system_cron
 			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	function procBanRetrigger()
 	{
 		//global $pref;
@@ -389,21 +409,34 @@ class CronParser
 	var $hours_arr = array();	//hours array based on cron string
 	var $months_arr = array();	//months array based on cron string
 
+	/**
+	 * @return string[]
+	 */
 	function getLastRan()
 	{
 		return explode(",", eShims::strftime("%M,%H,%d,%m,%w,%Y", $this->lastRan)); //Get the values for now in a format we can use
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function getLastRanUnix()
 	{
 		return $this->lastRan;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function getDebug()
 	{
  		return $this->debug;
 	}
 
+	/**
+	 * @param $str
+	 * @return void
+	 */
 	function debug($str)
 	{
 		if (is_array($str))
@@ -464,6 +497,11 @@ class CronParser
 		return $ret;
 	}
 
+	/**
+	 * @param $month
+	 * @param $year
+	 * @return string
+	 */
 	function daysinmonth($month, $year)
 	{
 		return date('t', mktime(0, 0, 0, $month, 1, $year));
@@ -624,6 +662,11 @@ class CronParser
 	}
 
 	//get the due time before current month
+
+	/**
+	 * @param $arMonths
+	 * @return void
+	 */
 	function _prevMonth($arMonths)
 	{
 		$this->month = array_pop($arMonths);
@@ -661,6 +704,12 @@ class CronParser
 	}
 
 	//get the due time before current day
+
+	/**
+	 * @param $arDays
+	 * @param $arMonths
+	 * @return void
+	 */
 	function _prevDay($arDays, $arMonths)
 	{
 		$this->debug("Go for the previous day");
@@ -678,6 +727,13 @@ class CronParser
 	}
 
 	//get the due time before current hour
+
+	/**
+	 * @param $arHours
+	 * @param $arDays
+	 * @param $arMonths
+	 * @return void
+	 */
 	function _prevHour($arHours, $arDays, $arMonths)
 	{
 		$this->debug("Going for previous hour");
@@ -694,6 +750,10 @@ class CronParser
 	}
 
 	//not used at the moment
+
+	/**
+	 * @return mixed|null
+	 */
 	function _getLastMonth()
 	{
 		$months = $this->_getMonthsArray();
@@ -701,6 +761,11 @@ class CronParser
 		return array_pop($months);
 	}
 
+	/**
+	 * @param $month
+	 * @param $year
+	 * @return mixed|null
+	 */
 	function _getLastDay($month, $year)
 	{
 		//put the available days for that month into an array
@@ -709,6 +774,9 @@ class CronParser
 		return array_pop($days);
 	}
 
+	/**
+	 * @return mixed|null
+	 */
 	function _getLastHour()
 	{
 		$hours = $this->_getHoursArray();
@@ -716,6 +784,9 @@ class CronParser
 		return array_pop($hours);
 	}
 
+	/**
+	 * @return mixed|null
+	 */
 	function _getLastMinute()
 	{
 		$minutes = $this->_getMinutesArray();
@@ -724,6 +795,13 @@ class CronParser
 	}
 
 	//remove the out of range array elements. $arr should be sorted already and does not contain duplicates
+
+	/**
+	 * @param $arr
+	 * @param $low
+	 * @param $high
+	 * @return mixed
+	 */
 	function _sanitize ($arr, $low, $high)
 	{
 		$count = count($arr);
@@ -759,6 +837,12 @@ class CronParser
 	}
 
 	//given a month/year, list all the days within that month fell into the week days list.
+
+	/**
+	 * @param $month
+	 * @param $year
+	 * @return array
+	 */
 	function _getDaysArray($month, $year = 0)
 	{
 		if ($year == 0)
@@ -834,6 +918,12 @@ class CronParser
 	}
 
 	//given a month/year, return an array containing all the days in that month
+
+	/**
+	 * @param $month
+	 * @param $year
+	 * @return array
+	 */
 	function getDays($month, $year)
 	{
 		$daysinmonth = $this->daysinmonth($month, $year);
@@ -846,6 +936,9 @@ class CronParser
 		return $days;
 	}
 
+	/**
+	 * @return array|mixed
+	 */
 	function _getHoursArray()
 	{
 		if (empty($this->hours_arr))
@@ -872,6 +965,9 @@ class CronParser
 		return $this->hours_arr;
 	}
 
+	/**
+	 * @return array|mixed
+	 */
 	function _getMinutesArray()
 	{
 		if (empty($this->minutes_arr))
@@ -897,6 +993,9 @@ class CronParser
 		return $this->minutes_arr;
 	}
 
+	/**
+	 * @return array|mixed
+	 */
 	function _getMonthsArray()
 	{
 		if (empty($this->months_arr))

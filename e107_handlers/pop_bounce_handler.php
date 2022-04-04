@@ -27,7 +27,9 @@ Notes:
 */
 
 
-
+/**
+ *
+ */
 class pop3BounceHandler
 {
 	protected	$e107;
@@ -44,7 +46,9 @@ class pop3BounceHandler
 	protected $mailManager = FALSE;
 
 
-
+	/**
+	 * @param $override
+	 */
 	public function __construct($override = FALSE)
 	{
 		global $pref;
@@ -78,13 +82,18 @@ class pop3BounceHandler
 	}
 
 
+	/**
+	 * @return void
+	 */
 	function connect() //Connect To the Mail Box
 	{
 		$this->mailResource=imap_open($this->server,$this->username,$this->password);
 	}
 
 
-
+	/**
+	 * @return int
+	 */
 	function getTotalMails() //Get Total Number off Unread Email In Mailbox
 	{
 		$headers=imap_headers($this->mailResource);
@@ -92,7 +101,10 @@ class pop3BounceHandler
 	}
 
 
-
+	/**
+	 * @param $mid
+	 * @return array
+	 */
 	function getHeaders($mid) // Get Header info
 	{
 		$mail_header=imap_header($this->mailResource,$mid);
@@ -117,6 +129,10 @@ class pop3BounceHandler
 	}
 
 
+	/**
+	 * @param $structure
+	 * @return string
+	 */
 	protected function get_mime_type(&$structure) //Get Mime type Internal Private Use
 	{
 		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
@@ -129,6 +145,14 @@ class pop3BounceHandler
 	}
 
 
+	/**
+	 * @param $stream
+	 * @param $msg_number
+	 * @param $mime_type
+	 * @param $structure
+	 * @param $part_number
+	 * @return false|string
+	 */
 	protected function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) //Get Part Of Message Internal Private Use
 	{
 		if(!$structure) 
@@ -177,7 +201,12 @@ class pop3BounceHandler
 	}
 
 
-	function getBody($mid,$mode='') // Get Message Body
+	/**
+	 * @param $mid
+	 * @param $mode
+	 * @return false|string
+	 */
+	function getBody($mid, $mode='') // Get Message Body
 	{
 		if($mode != 'plain')
 		{
@@ -195,12 +224,19 @@ class pop3BounceHandler
 	}
 
 
+	/**
+	 * @param $mid
+	 * @return void
+	 */
 	function deleteMails($mid) // Delete That Mail
 	{
 		imap_delete($this->mailResource,$mid);
 	}
 
 
+	/**
+	 * @return void
+	 */
 	function close_mailbox() //Close Mail Box
 	{
 		imap_close($this->mailResource,CL_EXPUNGE);

@@ -189,6 +189,11 @@ define( 'PCLZIP_CB_POST_DELETE', 78008 );
 //   extract() : Extract the content of the archive
 //   properties() : List the properties of the archive
 // --------------------------------------------------------------------------------
+
+
+/**
+ *
+ */
 class PclZip
 {
     // ----- Filename of the zip file
@@ -214,7 +219,10 @@ class PclZip
     //   Note that no real action is taken, if the archive does not exist it is not
     //   created. Use create() for that.
     // --------------------------------------------------------------------------------
-    public function __construct($p_zipname)
+	/**
+	 * @param $p_zipname
+	 */
+	public function __construct($p_zipname)
     {
 
         // ----- Tests the zlib
@@ -269,7 +277,11 @@ class PclZip
     //   The list of the added files, with a status of the add action.
     //   (see PclZip::listContent() for list entry format)
     // --------------------------------------------------------------------------------
-    public function create($p_filelist)
+	/**
+	 * @param $p_filelist
+	 * @return array|int
+	 */
+	public function create($p_filelist)
     {
         $v_result = 1;
 
@@ -444,7 +456,11 @@ class PclZip
     //   The list of the added files, with a status of the add action.
     //   (see PclZip::listContent() for list entry format)
     // --------------------------------------------------------------------------------
-    public function add($p_filelist)
+	/**
+	 * @param $p_filelist
+	 * @return array|int
+	 */
+	public function add($p_filelist)
     {
         $v_result = 1;
 
@@ -626,7 +642,10 @@ class PclZip
     //   0 on an unrecoverable failure,
     //   The list of the files in the archive.
     // --------------------------------------------------------------------------------
-    public function listContent()
+	/**
+	 * @return array|int
+	 */
+	public function listContent()
     {
         $v_result = 1;
 
@@ -683,7 +702,10 @@ class PclZip
     //   The list of the extracted files, with a status of the action.
     //   (see PclZip::listContent() for list entry format)
     // --------------------------------------------------------------------------------
-    public function extract()
+	/**
+	 * @return array|int
+	 */
+	public function extract()
     {
         $v_result = 1;
 
@@ -838,7 +860,11 @@ class PclZip
     //   (see PclZip::listContent() for list entry format)
     // --------------------------------------------------------------------------------
     //function extractByIndex($p_index, options...)
-    public function extractByIndex($p_index)
+	/**
+	 * @param $p_index
+	 * @return int|mixed
+	 */
+	public function extractByIndex($p_index)
     {
         $v_result = 1;
 
@@ -988,7 +1014,10 @@ class PclZip
     //   The list of the files which are still present in the archive.
     //   (see PclZip::listContent() for list entry format)
     // --------------------------------------------------------------------------------
-    public function delete()
+	/**
+	 * @return array|int
+	 */
+	public function delete()
     {
         $v_result = 1;
 
@@ -1049,7 +1078,11 @@ class PclZip
     //   ***** Deprecated *****
     //   delete(PCLZIP_OPT_BY_INDEX, $p_index) should be prefered.
     // --------------------------------------------------------------------------------
-    public function deleteByIndex($p_index)
+	/**
+	 * @param $p_index
+	 * @return array|int
+	 */
+	public function deleteByIndex($p_index)
     {
 
         $p_list = $this->delete(PCLZIP_OPT_BY_INDEX, $p_index);
@@ -1073,7 +1106,10 @@ class PclZip
     //   0 on failure,
     //   An array with the archive properties.
     // --------------------------------------------------------------------------------
-    public function properties()
+	/**
+	 * @return array|int
+	 */
+	public function properties()
     {
 
         // ----- Reset the error handler
@@ -1145,7 +1181,11 @@ class PclZip
     //   1 on success.
     //   0 or a negative value on error (error code).
     // --------------------------------------------------------------------------------
-    public function duplicate($p_archive)
+	/**
+	 * @param $p_archive
+	 * @return int|mixed
+	 */
+	public function duplicate($p_archive)
     {
         $v_result = 1;
 
@@ -1198,7 +1238,11 @@ class PclZip
     //   1 on success,
     //   0 or negative values on error (see below).
     // --------------------------------------------------------------------------------
-    public function merge($p_archive_to_add)
+	/**
+	 * @param $p_archive_to_add
+	 * @return int|mixed
+	 */
+	public function merge($p_archive_to_add)
     {
         $v_result = 1;
 
@@ -1242,7 +1286,10 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function errorCode()
+	/**
+	 * @return int|mixed
+	 */
+	public function errorCode()
     {
         if (PCLZIP_ERROR_EXTERNAL == 1) {
             return (PclErrorCode());
@@ -1257,7 +1304,11 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function errorName($p_with_code = false)
+	/**
+	 * @param $p_with_code
+	 * @return mixed|string
+	 */
+	public function errorName($p_with_code = false)
     {
         $v_name = array(
             PCLZIP_ERR_NO_ERROR => 'PCLZIP_ERR_NO_ERROR',
@@ -1302,7 +1353,11 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function errorInfo($p_full = false)
+	/**
+	 * @param $p_full
+	 * @return string
+	 */
+	public function errorInfo($p_full = false)
     {
         if (PCLZIP_ERROR_EXTERNAL == 1) {
             return (PclErrorString());
@@ -1336,7 +1391,11 @@ class PclZip
     //   true on success,
     //   false on error, the error code is set.
     // --------------------------------------------------------------------------------
-    public function privCheckFormat($p_level = 0)
+	/**
+	 * @param $p_level
+	 * @return bool
+	 */
+	public function privCheckFormat($p_level = 0)
     {
         $v_result = true;
 
@@ -1391,7 +1450,14 @@ class PclZip
     //   1 on success.
     //   0 on failure.
     // --------------------------------------------------------------------------------
-    public function privParseOptions(&$p_options_list, $p_size, &$v_result_list, $v_requested_options = false)
+	/**
+	 * @param $p_options_list
+	 * @param $p_size
+	 * @param $v_result_list
+	 * @param $v_requested_options
+	 * @return int|mixed
+	 */
+	public function privParseOptions(&$p_options_list, $p_size, &$v_result_list, $v_requested_options = false)
     {
         $v_result = 1;
 
@@ -1777,7 +1843,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privOptionDefaultThreshold(&$p_options)
+	/**
+	 * @param $p_options
+	 * @return int
+	 */
+	public function privOptionDefaultThreshold(&$p_options)
     {
         $v_result = 1;
 
@@ -1823,7 +1893,14 @@ class PclZip
     //   1 on success.
     //   0 on failure.
     // --------------------------------------------------------------------------------
-    public function privFileDescrParseAtt(&$p_file_list, &$p_filedescr, $v_options, $v_requested_options = false)
+	/**
+	 * @param $p_file_list
+	 * @param $p_filedescr
+	 * @param $v_options
+	 * @param $v_requested_options
+	 * @return int|mixed
+	 */
+	public function privFileDescrParseAtt(&$p_file_list, &$p_filedescr, $v_options, $v_requested_options = false)
     {
         $v_result = 1;
 
@@ -1960,7 +2037,12 @@ class PclZip
     //   1 on success.
     //   0 on failure.
     // --------------------------------------------------------------------------------
-    public function privFileDescrExpand(&$p_filedescr_list, &$p_options)
+	/**
+	 * @param $p_filedescr_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privFileDescrExpand(&$p_filedescr_list, &$p_options)
     {
         $v_result = 1;
 
@@ -2076,7 +2158,13 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privCreate($p_filedescr_list, &$p_result_list, &$p_options)
+	/**
+	 * @param $p_filedescr_list
+	 * @param $p_result_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privCreate($p_filedescr_list, &$p_result_list, &$p_options)
     {
         $v_result      = 1;
         $v_list_detail = array();
@@ -2110,7 +2198,13 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privAdd($p_filedescr_list, &$p_result_list, &$p_options)
+	/**
+	 * @param $p_filedescr_list
+	 * @param $p_result_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privAdd($p_filedescr_list, &$p_result_list, &$p_options)
     {
         $v_result      = 1;
         $v_list_detail = array();
@@ -2281,7 +2375,11 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function privOpenFd($p_mode)
+	/**
+	 * @param $p_mode
+	 * @return int|mixed
+	 */
+	public function privOpenFd($p_mode)
     {
         $v_result = 1;
 
@@ -2313,7 +2411,10 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function privCloseFd()
+	/**
+	 * @return int
+	 */
+	public function privCloseFd()
     {
         $v_result = 1;
 
@@ -2341,7 +2442,13 @@ class PclZip
     // Return Values :
     // --------------------------------------------------------------------------------
     //  function privAddList($p_list, &$p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_options)
-    public function privAddList($p_filedescr_list, &$p_result_list, &$p_options)
+	/**
+	 * @param $p_filedescr_list
+	 * @param $p_result_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privAddList($p_filedescr_list, &$p_result_list, &$p_options)
     {
         $v_result = 1;
 
@@ -2402,7 +2509,13 @@ class PclZip
     //   $p_result_list : list of added files with their properties (specially the status field)
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privAddFileList($p_filedescr_list, &$p_result_list, &$p_options)
+	/**
+	 * @param $p_filedescr_list
+	 * @param $p_result_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privAddFileList($p_filedescr_list, &$p_result_list, &$p_options)
     {
         $v_result = 1;
         $v_header = array();
@@ -2456,7 +2569,13 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privAddFile($p_filedescr, &$p_header, &$p_options)
+	/**
+	 * @param $p_filedescr
+	 * @param $p_header
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privAddFile($p_filedescr, &$p_header, &$p_options)
     {
         $v_result = 1;
 
@@ -2715,7 +2834,13 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privAddFileUsingTempFile($p_filedescr, &$p_header, &$p_options)
+	/**
+	 * @param $p_filedescr
+	 * @param $p_header
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privAddFileUsingTempFile($p_filedescr, &$p_header, &$p_options)
     {
         $v_result = PCLZIP_ERR_NO_ERROR;
 
@@ -2829,7 +2954,12 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privCalculateStoredFilename(&$p_filedescr, &$p_options)
+	/**
+	 * @param $p_filedescr
+	 * @param $p_options
+	 * @return int
+	 */
+	public function privCalculateStoredFilename(&$p_filedescr, &$p_options)
     {
         $v_result = 1;
 
@@ -2931,7 +3061,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privWriteFileHeader(&$p_header)
+	/**
+	 * @param $p_header
+	 * @return int
+	 */
+	public function privWriteFileHeader(&$p_header)
     {
         $v_result = 1;
 
@@ -2968,7 +3102,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privWriteCentralFileHeader(&$p_header)
+	/**
+	 * @param $p_header
+	 * @return int
+	 */
+	public function privWriteCentralFileHeader(&$p_header)
     {
         $v_result = 1;
 
@@ -3009,7 +3147,14 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privWriteCentralHeader($p_nb_entries, $p_size, $p_offset, $p_comment)
+	/**
+	 * @param $p_nb_entries
+	 * @param $p_size
+	 * @param $p_offset
+	 * @param $p_comment
+	 * @return int
+	 */
+	public function privWriteCentralHeader($p_nb_entries, $p_size, $p_offset, $p_comment)
     {
         $v_result = 1;
 
@@ -3035,7 +3180,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privList(&$p_list)
+	/**
+	 * @param $p_list
+	 * @return int|mixed
+	 */
+	public function privList(&$p_list)
     {
         $v_result = 1;
 
@@ -3119,7 +3268,12 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privConvertHeader2FileInfo($p_header, &$p_info)
+	/**
+	 * @param $p_header
+	 * @param $p_info
+	 * @return int
+	 */
+	public function privConvertHeader2FileInfo($p_header, &$p_info)
     {
         $v_result = 1;
 
@@ -3158,7 +3312,15 @@ class PclZip
     // Return Values :
     //   1 on success,0 or less on error (see error code list)
     // --------------------------------------------------------------------------------
-    public function privExtractByRule(&$p_file_list, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
+	/**
+	 * @param $p_file_list
+	 * @param $p_path
+	 * @param $p_remove_path
+	 * @param $p_remove_all_path
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privExtractByRule(&$p_file_list, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
     {
         $v_result = 1;
 
@@ -3467,7 +3629,15 @@ class PclZip
     // 1 : ... ?
     // PCLZIP_ERR_USER_ABORTED(2) : User ask for extraction stop in callback
     // --------------------------------------------------------------------------------
-    public function privExtractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
+	/**
+	 * @param $p_entry
+	 * @param $p_path
+	 * @param $p_remove_path
+	 * @param $p_remove_all_path
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privExtractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
     {
         $v_result = 1;
 
@@ -3778,7 +3948,12 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privExtractFileUsingTempFile(&$p_entry, &$p_options)
+	/**
+	 * @param $p_entry
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privExtractFileUsingTempFile(&$p_entry, &$p_options)
     {
         $v_result = 1;
 
@@ -3854,7 +4029,12 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privExtractFileInOutput(&$p_entry, &$p_options)
+	/**
+	 * @param $p_entry
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privExtractFileInOutput(&$p_entry, &$p_options)
     {
         $v_result = 1;
 
@@ -3963,7 +4143,13 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privExtractFileAsString(&$p_entry, &$p_string, &$p_options)
+	/**
+	 * @param $p_entry
+	 * @param $p_string
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privExtractFileAsString(&$p_entry, &$p_string, &$p_options)
     {
         $v_result = 1;
 
@@ -4080,7 +4266,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privReadFileHeader(&$p_header)
+	/**
+	 * @param $p_header
+	 * @return int|mixed
+	 */
+	public function privReadFileHeader(&$p_header)
     {
         $v_result = 1;
 
@@ -4177,7 +4367,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privReadCentralFileHeader(&$p_header)
+	/**
+	 * @param $p_header
+	 * @return int|mixed
+	 */
+	public function privReadCentralFileHeader(&$p_header)
     {
         $v_result = 1;
 
@@ -4282,7 +4476,12 @@ class PclZip
     //   1 on success,
     //   0 on error;
     // --------------------------------------------------------------------------------
-    public function privCheckFileHeaders(&$p_local_header, &$p_central_header)
+	/**
+	 * @param $p_local_header
+	 * @param $p_central_header
+	 * @return int
+	 */
+	public function privCheckFileHeaders(&$p_local_header, &$p_central_header)
     {
         $v_result = 1;
 
@@ -4319,7 +4518,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privReadEndCentralDir(&$p_central_dir)
+	/**
+	 * @param $p_central_dir
+	 * @return int|mixed
+	 */
+	public function privReadEndCentralDir(&$p_central_dir)
     {
         $v_result = 1;
 
@@ -4468,7 +4671,12 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privDeleteByRule(&$p_result_list, &$p_options)
+	/**
+	 * @param $p_result_list
+	 * @param $p_options
+	 * @return int|mixed
+	 */
+	public function privDeleteByRule(&$p_result_list, &$p_options)
     {
         $v_result      = 1;
         $v_list_detail = array();
@@ -4758,7 +4966,12 @@ class PclZip
     //    1 : OK
     //   -1 : Unable to create directory
     // --------------------------------------------------------------------------------
-    public function privDirCheck($p_dir, $p_is_dir = false)
+	/**
+	 * @param $p_dir
+	 * @param $p_is_dir
+	 * @return int|mixed
+	 */
+	public function privDirCheck($p_dir, $p_is_dir = false)
     {
         $v_result = 1;
 
@@ -4806,7 +5019,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privMerge(&$p_archive_to_add)
+	/**
+	 * @param $p_archive_to_add
+	 * @return int|mixed
+	 */
+	public function privMerge(&$p_archive_to_add)
     {
         $v_result = 1;
 
@@ -4980,7 +5197,11 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privDuplicate($p_archive_filename)
+	/**
+	 * @param $p_archive_filename
+	 * @return int|mixed
+	 */
+	public function privDuplicate($p_archive_filename)
     {
         $v_result = 1;
 
@@ -5036,7 +5257,12 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function privErrorLog($p_error_code = 0, $p_error_string = '')
+	/**
+	 * @param $p_error_code
+	 * @param $p_error_string
+	 * @return void
+	 */
+	public function privErrorLog($p_error_code = 0, $p_error_string = '')
     {
         if (PCLZIP_ERROR_EXTERNAL == 1) {
             PclError($p_error_code, $p_error_string);
@@ -5052,7 +5278,10 @@ class PclZip
     // Description :
     // Parameters :
     // --------------------------------------------------------------------------------
-    public function privErrorReset()
+	/**
+	 * @return void
+	 */
+	public function privErrorReset()
     {
         if (PCLZIP_ERROR_EXTERNAL == 1) {
             PclErrorReset();
@@ -5069,7 +5298,10 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privDisableMagicQuotes()
+	/**
+	 * @return int
+	 */
+	public function privDisableMagicQuotes()
     {
         $v_result = 1;
 
@@ -5102,7 +5334,10 @@ class PclZip
     // Parameters :
     // Return Values :
     // --------------------------------------------------------------------------------
-    public function privSwapBackMagicQuotes()
+	/**
+	 * @return int
+	 */
+	public function privSwapBackMagicQuotes()
     {
         $v_result = 1;
 
@@ -5136,6 +5371,10 @@ class PclZip
 // Parameters :
 // Return Values :
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_dir
+ * @return mixed|string
+ */
 function PclZipUtilPathReduction($p_dir)
 {
     $v_result = "";
@@ -5213,6 +5452,11 @@ function PclZipUtilPathReduction($p_dir)
 //   1 if $p_path is inside directory $p_dir
 //   2 if $p_path is exactly the same as $p_dir
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_dir
+ * @param $p_path
+ * @return int
+ */
 function PclZipUtilPathInclusion($p_dir, $p_path)
 {
     $v_result = 1;
@@ -5291,6 +5535,13 @@ function PclZipUtilPathInclusion($p_dir, $p_path)
 //             3 : src & dest gzip
 // Return Values :
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_src
+ * @param $p_dest
+ * @param $p_size
+ * @param $p_mode
+ * @return int
+ */
 function PclZipUtilCopyBlock($p_src, $p_dest, $p_size, $p_mode = 0)
 {
     $v_result = 1;
@@ -5342,6 +5593,11 @@ function PclZipUtilCopyBlock($p_src, $p_dest, $p_size, $p_mode = 0)
 // Return Values :
 //   1 on success, 0 on failure.
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_src
+ * @param $p_dest
+ * @return int
+ */
 function PclZipUtilRename($p_src, $p_dest)
 {
     $v_result = 1;
@@ -5371,6 +5627,10 @@ function PclZipUtilRename($p_src, $p_dest)
 // Return Values :
 //   The option text value.
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_option
+ * @return int|string
+ */
 function PclZipUtilOptionText($p_option)
 {
 
@@ -5399,6 +5659,11 @@ function PclZipUtilOptionText($p_option)
 // Return Values :
 //   The path translated.
 // --------------------------------------------------------------------------------
+/**
+ * @param $p_path
+ * @param $p_remove_disk_letter
+ * @return mixed|string
+ */
 function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter = true)
 {
     if (stripos(php_uname(), 'windows') !== false) {

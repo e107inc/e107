@@ -72,14 +72,13 @@ class e_object
         return $this;
     }
 
-    /**
-     * Retrieve name of object's field id
-     *
-     * @see getId()
-     *
-     * @param   string $name
-     * @return  string
-     */
+	/**
+	 * Retrieve name of object's field id
+	 *
+	 * @return  string
+	 * @see getId()
+	 *
+	 */
     public function getFieldIdName()
     {
         return $this->_field_id;
@@ -265,7 +264,7 @@ class e_object
 	 *
 	 * @param string $key
 	 * @param mixed $value
-	 * @return mixed|e_tree_model
+	 * @return e_object
 	 */
 	public function setParam($key, $value)
 	{
@@ -291,7 +290,7 @@ class e_object
 
 	/**
 	 * Convert object data to simple shortcodes (e_vars object)
-	 * @return string
+	 * @return e_vars
 	 */
 	public function toSc()
 	{
@@ -442,7 +441,7 @@ class e_vars extends e_object
 	 * Add array data to the object (merge with existing)
 	 *
 	 * @param array $array
-	 * @return e_vars
+	 * @return void
 	 */
 	public function addVars(array $array)
 	{
@@ -589,7 +588,6 @@ class e_model extends e_object
 
 	/**
 	 * Optional DB table - used for auto-load data from the DB
-	 * @param string $table
 	 * @return string
 	 */
 	public function getModelTable()
@@ -611,7 +609,7 @@ class e_model extends e_object
 
     /**
      * Set model Url Profile
-     * @param string $table
+     * @param string $url
      * @return e_model
      */
     public function setUrl($url)
@@ -632,7 +630,7 @@ class e_model extends e_object
 
     /**
      * Set model Featurebox  Profile
-     * @param string $table
+     * @param string $fb
      * @return e_model
      */
     public function setFeaturebox($fb)
@@ -707,7 +705,7 @@ class e_model extends e_object
 
      /**
      * Generic Featurebox assembling method
-     * @return mixed URL string or extended array data
+     * @return void URL string or extended array data
      */
     public function featurebox($options = array(), $extended = false)
     {
@@ -927,29 +925,29 @@ class e_model extends e_object
     	return $this->data_has_changed;
     }
 
-    /**
-     * Retrieves data from the object
-     *
-     * If $key is empty will return all the data as an array
-     * Otherwise it will return value of the attribute specified by $key
-     * '/' inside the key will be treated as array path (x/y/z equals to [x][y][z]
-     *
-     * If $index is specified it will assume that attribute data is an array
-     * and retrieve corresponding member.
-     *
-     * NEW: '/' supported in keys now, just use double slashes '//' as key separator
-     * Examples:
-     * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
-     * - '//some/key' -> [some/key] - starting with // means - don't parse!
-     * - '///some/key/' -> [/some/key/]
-     * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
-     *
-     * @param string $key
-     * @param mixed $default
-     * @param integer $index
-     * @param boolean $posted data source
-     * @return mixed
-     */
+	/**
+	 * Retrieves data from the object
+	 *
+	 * If $key is empty will return all the data as an array
+	 * Otherwise it will return value of the attribute specified by $key
+	 * '/' inside the key will be treated as array path (x/y/z equals to [x][y][z]
+	 *
+	 * If $index is specified it will assume that attribute data is an array
+	 * and retrieve corresponding member.
+	 *
+	 * NEW: '/' supported in keys now, just use double slashes '//' as key separator
+	 * Examples:
+	 * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
+	 * - '//some/key' -> [some/key] - starting with // means - don't parse!
+	 * - '///some/key/' -> [/some/key/]
+	 * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @param null $index
+	 * @param string $data_src
+	 * @return mixed
+	 */
     protected function _getData($key = '', $default = null, $index = null, $data_src = '_data')
     {
         if ('' === $key)
@@ -1036,14 +1034,14 @@ class e_model extends e_object
         return $default;
     }
 
-    /**
-     * Get value from _data array without parsing the key
-     *
-     * @param string $key
-     * @param mixed $default
-     * @param string $posted data source
-     * @return mixed
-     */
+	/**
+	 * Get value from _data array without parsing the key
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @param string $data_src
+	 * @return mixed
+	 */
     protected function _getDataSimple($key, $default = null, $data_src = '_data')
     {
         return isset($this->{$data_src}[$key]) ? $this->{$data_src}[$key] : $default;
@@ -1744,7 +1742,7 @@ class e_model extends e_object
 	 * - clearModelCache: e_tree_model class/subclasses - clear cache per node after successful DB operation
 	 * - noCacheStringModify: e_tree_model class/subclasses - do not add additional md5 sum to tree cache string
 	 * @param array $params
-	 * @return e_model|e_tree_model
+	 * @return e_model
 	 */
 	public function setParams(array $params)
 	{
@@ -1836,6 +1834,9 @@ class e_model extends e_object
 		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		$this->_data = array();
@@ -2680,6 +2681,10 @@ class e_front_model extends e_model
 		return $qry;
 	}
 
+	/**
+	 * @param $key
+	 * @return false|mixed
+	 */
 	public function isValidFieldKey($key)
 	{
 		if(isset($this->_data_fields[$key]))
@@ -2763,6 +2768,9 @@ class e_front_model extends e_model
 		return $data;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		parent::destroy();
@@ -2896,12 +2904,12 @@ class e_front_model extends e_model
 		return $this->dbUpdate($force, $session_messages);
     }*/
 
-    /**
-     * Exactly what it says - your debug helper
-     * @param boolean $retrun
-     * @param boolean $undo
-     * @return void
-     */
+	/**
+	 * Exactly what it says - your debug helper
+	 * @param bool $return
+	 * @param boolean $undo
+	 * @return void
+	 */
 	public function saveDebug($return = false, $undo = true)
 	{
 		$ret = array();
@@ -3052,6 +3060,12 @@ class e_admin_model extends e_front_model
 		return $this->dbInsert($session_messages);
     }
 
+	/**
+	 * @param $ids
+	 * @param $destroy
+	 * @param $session_messages
+	 * @return false|int
+	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
@@ -3151,12 +3165,12 @@ class e_admin_model extends e_front_model
 		return $res;
     }
 
-    /**
-     * Delete DB data
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
+	/**
+	 * Delete DB data
+	 *
+	 * @param boolean $session_messages to use or not session to store system messages
+	 * @return false|int
+	 */
     protected function dbDelete($session_messages = false)
     {
     	$this->_db_errno = 0;
@@ -3242,11 +3256,18 @@ class e_tree_model extends e_front_model
 		}
 	}
 
+	/**
+	 * @return bool|string
+	 */
 	public function getTotal()
 	{
 		return $this->_total;
 	}
 
+	/**
+	 * @param $num
+	 * @return $this
+	 */
 	public function setTotal($num)
 	{
 		$this->_total = $num;
@@ -3306,16 +3327,28 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * @param $checkId
+	 * @return bool
+	 */
 	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString());
 	}
 
+	/**
+	 * @param $replace
+	 * @return string|null
+	 */
 	public function getCacheString($replace = false)
 	{
 		return $this->_cache_string;
 	}
 
+	/**
+	 * @param $str
+	 * @return e_tree_model
+	 */
 	public function setCacheString($str = null)
 	{
 		if(isset($str))
@@ -3339,6 +3372,9 @@ class e_tree_model extends e_front_model
 		return parent::setCacheString($str);
 	}
 
+	/**
+	 * @return $this|e_tree_model
+	 */
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -3355,6 +3391,10 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * @param $array
+	 * @return void
+	 */
 	protected function _loadFromArray($array)
 	{
 		if(isset($array['total']))
@@ -3472,6 +3512,10 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * @param $sql
+	 * @return array|false
+	 */
 	protected function getRows($sql)
 	{
 		// Tree (Parent-Child Relationship)
@@ -3483,6 +3527,10 @@ class e_tree_model extends e_front_model
 		return $this->getRowsList($sql);
 	}
 
+	/**
+	 * @param $sql
+	 * @return false
+	 */
 	protected function getRowsList($sql)
 	{
 		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
@@ -3491,6 +3539,10 @@ class e_tree_model extends e_front_model
 		return $sql->rows();
 	}
 
+	/**
+	 * @param $sql
+	 * @return array|false
+	 */
 	protected function getRowsTree($sql)
 	{
 		// Workaround: Parse and modify db_query param for simulated pagination
@@ -3826,6 +3878,9 @@ class e_tree_model extends e_front_model
 		return $ret;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function toXML()
 	{
 		return '';
@@ -3866,15 +3921,31 @@ class e_tree_model extends e_front_model
 		return (string) e107::getArrayStorage()->serialize($this->toArray($total), $AddSlashes);
 	}
 
+	/**
+	 * @param $from_post
+	 * @param $force
+	 * @param $session_messages
+	 * @return void
+	 */
 	public function update($from_post = true, $force = false, $session_messages = false)
 	{
 	}
 
+	/**
+	 * @param $ids
+	 * @param $destroy
+	 * @param $session_messages
+	 * @return void
+	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 	}
 }
 
+
+/**
+ *
+ */
 class e_front_tree_model extends e_tree_model
 {
 	/**
@@ -4020,6 +4091,10 @@ class e_front_tree_model extends e_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_admin_tree_model extends e_front_tree_model
 {
 

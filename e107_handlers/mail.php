@@ -146,6 +146,10 @@ require_once(e_HANDLER.'vendor/autoload.php');
 // Directory for log (if enabled)
 define('MAIL_LOG_PATH',e_LOG);
 
+
+/**
+ *
+ */
 class e107Email extends PHPMailer
 {
 	private $general_opts 		= array();
@@ -806,6 +810,10 @@ class e107Email extends PHPMailer
 	}
 
 
+	/**
+	 * @param $eml
+	 * @return mixed
+	 */
 	function processShortcodes($eml)
 	{
 		$tp = e107::getParser();
@@ -1191,6 +1199,10 @@ class e107Email extends PHPMailer
 	}
 
 
+	/**
+	 * @param $val
+	 * @return void
+	 */
 	function setDebug($val)
 	{
 		$this->debug = $val;
@@ -1396,9 +1408,19 @@ function handlePHPMailerDebug($str)
 //		Generic e107 Exception handler
 //--------------------------------------
 // Overrides the default handler - start of a more general handler
-class e107Exception extends Exception 
+
+
+/**
+ *
+ */
+class e107Exception extends Exception
 {
-    public function __construct($message = '', $code = 0) 
+
+	/**
+	 * @param $message
+	 * @param $code
+	 */
+	public function __construct($message = '', $code = 0)
 	{
         parent::__construct($message, $code);
 

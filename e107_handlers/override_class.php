@@ -30,6 +30,11 @@ if (!defined('e107_INIT')) { exit; }
  *
  */
 //XXX IMPORTANT: // do not use e107 specific functions in this file - it may break secure_img_handler. 
+
+
+/**
+ *
+ */
 class override {
 	
 	protected $functions = array();
@@ -77,10 +82,15 @@ class override {
 		}
 		return $this->override_check($override);	
 	}
-	
 
-	 
-	function override_function($override, $function, $include) 
+
+	/**
+	 * @param $override
+	 * @param $function
+	 * @param $include
+	 * @return void
+	 */
+	function override_function($override, $function, $include)
 	{
 		if ($include)
 		{
@@ -93,8 +103,12 @@ class override {
 		
 		$this->functions[$override] = $function;
 	}
-	 
-	 
+
+
+	/**
+	 * @param $override
+	 * @return false|mixed|string
+	 */
 	function override_check($override)
 	{		
 		if (isset($this->includes[$override])) 

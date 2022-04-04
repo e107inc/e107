@@ -674,13 +674,11 @@ class language{
 	}
 
 
-	
 	/**
 	 * Set Language-specific Constants
 	 * FIXME - language detection is a mess - db handler, mysql handler, session handler and language handler + constants invlolved,
 	 * SIMPLIFY, test, get feedback
-	 * @param string $language
-	 * @return 
+	 * @return void
 	 */
 	function setDefs()
 	{
@@ -715,7 +713,11 @@ class language{
 			define("e_LANQRY", false);
 		} 	
 	}
-	
+
+	/**
+	 * @param $force
+	 * @return array
+	 */
 	public function getLanSelectArray($force = false)
 	{
 		if($force ||null === $this->_select_array)
