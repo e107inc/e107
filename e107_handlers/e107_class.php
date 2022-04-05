@@ -4505,6 +4505,8 @@ class e107
 		static $availEditors;
 		$fallbackEditor = 'bbcode';
 
+		global $_E107;
+
 		if (self::getPref('wysiwyg',false) != true)
 		{
 			// wysiwyg disabled by global pref
@@ -4512,12 +4514,11 @@ class e107
 		}
 		else
 		{
-			if(!isset($availEditors))
+			if(!isset($availEditors) || !empty($_E107['phpunit']))
 			{
 				// init list of installed wysiwyg editors
 				$default = self::isInstalled('tinymce4') ? array('tinymce4'=>'TinyMce4') : array();  // if missing pref fallback.
 				$availEditors = self::getPref('wysiwyg_list', $default);
-
 			//	$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors()); // very slow.
 			}
 
@@ -4531,13 +4532,14 @@ class e107
 			// check if choosen editor is installed,
 			// if not, but a different editor is available use that one (e.g. tinymce4 choosen, but only simplemde available available, use simplemde)
 			// if no wysiwyg editor available, use fallback editor (bbcode)
-			if(is_bool($editor) || ($editor !== $fallbackEditor && !in_array($editor, $availEditors)))
+			if(is_bool($editor) || ($editor !== $fallbackEditor && empty($availEditors[$editor])))
 			{
 				$names = array_keys($availEditors);
 			//	$editor = count($availEditors) > 0 ? $availEditors[0] : $fallbackEditor;
 				$editor = count($availEditors) > 0 ? reset($names) : $fallbackEditor;
 			}
 		}
+
 
 		// $returnEditor => false:
 		// false => fallback editor (bbcode)
