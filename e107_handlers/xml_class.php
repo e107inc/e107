@@ -1271,7 +1271,7 @@ class xmlClass
 				{
 					e107::getPlugConfig($type)->setPref($pArray);
 				}
-				else // 'add' only new prefs
+				elseif($mode === 'add') // 'add' only new prefs
 				{
 					foreach ($pArray as $pname => $pval)
 					{
@@ -1301,7 +1301,7 @@ class xmlClass
 				{
 					e107::getThemeConfig($type)->setPref($pArray);
 				}
-				else // 'add' only new prefs
+				elseif($mode === 'add') // 'add' only new prefs
 				{
 					foreach ($pArray as $pname => $pval)
 					{
@@ -1322,11 +1322,17 @@ class xmlClass
 
 		if(!empty($xmlArray['database']))
 		{
+
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
 				$table = $val['@attributes']['name'];
-				
+
 				if(!isset($val['item']))
+				{
+					continue;
+				}
+
+				if($mode === 'install' && !$sql->isEmpty($table)) // install mode - ignore import when table contains data.
 				{
 					continue;
 				}
@@ -1342,11 +1348,11 @@ class xmlClass
 						$insert_array[$fieldkey] = $fieldval;
 
 					}
-					if(($mode === "replace") && $sql->replace($table, $insert_array)!==FALSE)
+					if(($mode === "replace") && $sql->replace($table, $insert_array)!==false)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif(($mode == "add") && $sql->insert($table, $insert_array)!==FALSE)
+					elseif($sql->insert($table, $insert_array)!==false)
 					{
 						$ret['success'][] = $table;
 					}

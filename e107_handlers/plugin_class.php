@@ -3115,6 +3115,18 @@ class e107plugin
 		 }
 		 }*/
 
+
+		 $xmlInstallStatus = $this->XmlInstallXml($function, $plug_vars['folder']);
+
+		 if($xmlInstallStatus)
+		 {
+		    e107::getMessage()->addDebug("Default content added to table(s).");
+		 }
+		 elseif($xmlInstallStatus === false)
+		 {
+			 e107::getMessage()->addDebug("Failed to add content to table(s).");
+		 }
+
 		// Run custom {plugin}_setup install/upgrade etc. for INSERT, ALTER etc. etc. etc. 
 		// Call any custom post functions defined in <plugin>_setup.php or the deprecated <management> section
 		if (!$this->execute_function($plug['plugin_path'], $function, 'post')) 
@@ -3137,6 +3149,41 @@ class e107plugin
 
 
 		return null;
+
+	}
+
+	/**
+	 * Check for /xml/install.xml file and import database content only.
+	 * @param string $function
+	 * @param string $folder
+	 * @return bool|null
+	 */
+	function XmlInstallXml($function, $folder)
+	{
+
+		if($function !== 'install')
+		{
+			return null;
+		}
+
+		$this->log("Running ".__FUNCTION__);
+
+		$path = e_PLUGIN.$folder.'/xml/install.xml';
+
+		if(!file_exists($path))
+		{
+			$this->log("No xml/install.xml file found.");
+			return null;
+		}
+
+		$ret = e107::getXml()->e107Import($path, 'install');
+
+		if(!empty($ret['success']))
+		{
+			return true;
+		}
+
+		return false;
 
 	}
 
