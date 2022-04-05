@@ -239,18 +239,9 @@ class e_jsmanager
 		}
 		else // Front-End.
 		{
-			if(defset('e_DEBUG_JQUERY') === 2)
-			{
-				e107::library('load', 'jquery');
-				// jQuery Once is used in e107.behaviors.
-				e107::library('load', 'jquery.once');
-			}
-			else
-			{
-				e107::library('load', 'jquery3');
-			}
-
-
+			$jqueryLib = (defset('e_DEBUG_JQUERY') === 2) ? 'jquery' : 'jquery3';
+			e107::library('load',$jqueryLib);
+			e107::library('load', 'jquery.once'); // jQuery Once is used in e107.behaviors.
 		}
 
 		// TODO

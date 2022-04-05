@@ -1808,15 +1808,28 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testWysiwyg()
 	{
+		// Simulate editors being installed.
+		$editors = array (
+		  'tinymce4' => 'TinyMce4',
+		  'simplemde' => 'SimpleMDE',
+		);
 
-		e107::getConfig()->setPref('wysiwyg', true)->save();
-		$tinyMceInstalled = e107::isInstalled('tinymce4');
+		e107::getConfig()
+			->setPref('wysiwyg', true)
+			->setPref('wysiwyg_list', $editors)
+			->save();
+
+		global $_E107;
+		$_E107['phpunit'] = true; // make sure pref is re-loaded.
+	//	$tinyMceInstalled = e107::isInstalled('tinymce4');
 
 		$tests = array(
 			//input     => expected
-			'default'  => ($tinyMceInstalled) ? 'tinymce4' : 'bbcode',
-			'bbcode'   => 'bbcode',
-			'tinymce4' => ($tinyMceInstalled) ? 'tinymce4' : 'bbcode',
+			'default'   => 'tinymce4',
+			'bbcode'    => 'bbcode',
+			'tinymce4'  => 'tinymce4',
+			'simplemde' => 'simplemde',
+			'nonexist'  => 'tinymce4',
 		);
 
 		foreach($tests as $input => $expected)
@@ -1835,6 +1848,7 @@ class e107Test extends \Codeception\Test\Unit
 		$this->assertSame($expected, $result);
 
 
+		e107::getConfig()->setPref('wysiwyg', false)->save();  // wysiwyg is disabled.
 	}
 
 	/*
