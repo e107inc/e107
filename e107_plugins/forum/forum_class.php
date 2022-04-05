@@ -191,9 +191,7 @@ class e107forum
 
 
 			$qry = "SELECT user_id, user_name, user_class FROM `#user` WHERE FIND_IN_SET(".$class.", user_class) OR user_class = ".$class." ORDER by user_name LIMIT 50"; // FIND_IN_SET(user_class, ".$class.")
-			$users = e107::getDb()->retrieve($qry, true);
-
-			return $users;
+			return e107::getDb()->retrieve($qry, true);
 		}
 
 		return false;
@@ -204,7 +202,7 @@ class e107forum
 	/**
 	 * @param $user integer userid (if empty "anon" will be used)
 	 * @param $create boolean creates the attachment folder if set to true
-	 * @return forum attachment path for specific user
+	 * @return string forum attachment path for specific user
 	 */
 	function getAttachmentPath($user, $create = FALSE)
 	{
@@ -363,7 +361,7 @@ class e107forum
 			exit;
 		}
 
-		$trackByEmail = ($this->prefs->get('trackemail',true)) ? true : false;
+		$trackByEmail = (bool) $this->prefs->get('trackemail', true);
 
 		$sql = e107::getDb();
 
@@ -433,13 +431,13 @@ class e107forum
 		{
 			if ($this->postDelete($postId))
 			{
-				$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
+				$ret['msg'] 	= LAN_FORUM_8021.' #'.$postId;
 				$ret['hide'] 	= true;
 				$ret['status'] 	= 'ok';
 			}
 			else
 			{
-				$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
+				$ret['msg'] 	= LAN_FORUM_8022." #".$postId;
 				$ret['status'] 	= 'error';
 			}
 		}
@@ -451,7 +449,7 @@ class e107forum
 	/**
 	 * get user ids with moderator permissions for the given $postId
 	 * @param $postId id of a forum post
-	 * @return an array with user ids how have moderator permissions for the $postId
+	 * @return array an array with user ids how have moderator permissions for the $postId
 	 */
 	public function getModeratorUserIdsByPostId($postId)
 	{
@@ -473,7 +471,7 @@ class e107forum
 	/**
 	 * get user ids with moderator permissions for the given $threadId
 	 * @param $threadId id of a forum thread
-	 * @return an array with user ids how have moderator permissions for the $threadId
+	 * @return array an array with user ids how have moderator permissions for the $threadId
 	 */
 	public function getModeratorUserIdsByThreadId($threadId)
 	{
@@ -515,7 +513,7 @@ class e107forum
 
 	public function ajaxModerate()
 	{
-		$ret = array('hide' => false, 'msg' => 'unkown', 'status' => 'error');
+		$ret = array('hide' => false, 'msg' => 'unknown', 'status' => 'error');
 		$moderatorUserIds = array();
 
 		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
@@ -537,7 +535,7 @@ class e107forum
 		// Check if user has moderator permissions for this thread
 		if(!in_array(USERID, $moderatorUserIds) && !getperms('0'))
 		{
-			$ret['msg'] 	= ''.LAN_FORUM_8030.'';
+			$ret['msg'] 	= LAN_FORUM_8030;
 			$ret['hide'] 	= false;
 			$ret['status'] 	= 'error';
 		}
@@ -548,7 +546,7 @@ class e107forum
 				case 'delete':
 					if($this->threadDelete($threadId))
 					{
-						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$threadId;
+						$ret['msg'] 	= LAN_FORUM_8020.' #'.$threadId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
@@ -570,13 +568,13 @@ class e107forum
 					
 					if($this->postDelete($postId))
 					{
-						$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
+						$ret['msg'] 	= LAN_FORUM_8021.' #'.$postId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "".LAN_FORUM_8022." #".$postId;
+						$ret['msg'] 	= LAN_FORUM_8022." #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -1121,7 +1119,7 @@ class e107forum
 
 
 
-		function postUpdate($postId, $postInfo)
+	function postUpdate($postId, $postInfo)
 	{
 		$info = array();
 		$info['data'] = $postInfo;
@@ -1182,7 +1180,7 @@ class e107forum
 
 				$tmp['thread_sef'] = eHelper::title2sef($tmp['thread_name'],'dashl');
 
-				if(empty($tmp['forum_sef']))
+				if($joinForum && empty($tmp['forum_sef']))
 				{
 					e107::getDebug()->log("Forum ".$tmp['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
 				}
@@ -1603,7 +1601,9 @@ class e107forum
 	{
 		if (e107::getDb()->select('forum', '*', 'forum_parent=0 ORDER BY forum_order ASC'))
 		{
-			while ($row = e107::getDb()->fetch()) {
+			$ret = [];
+			while ($row = e107::getDb()->fetch())
+			{
 				$ret[] = $row;
 			}
 			return $ret;
@@ -1698,6 +1698,8 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
+			$ret = [];
+
 			while ($row = $sql->fetch())
 			{
 				if($type == 'all')
@@ -1709,6 +1711,7 @@ class e107forum
 					$ret[] = $row;
 				}
 			}
+
 			return $ret;
 		}
 		return FALSE;
@@ -1727,6 +1730,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
+			$ret = [];
 			while ($row = $sql->fetch())
 			{
 				if($forum_id == '')
@@ -2001,6 +2005,8 @@ class e107forum
 		SELECT forum_id, forum_name, forum_sef FROM `#forum`
 		WHERE forum_id IN ({$forumList}) AND forum_parent != 0
 		";
+
+		$ret = [];
 		if ($sql->gen($qry))
 		{
 			while($row = $sql->fetch())
@@ -2221,7 +2227,7 @@ class e107forum
 				$reply_count = 0;
 				foreach($threadList as $thread)
 				{
-					$reply_count += (int)$sql->count('forum_post', '(*)', 'WHERE post_thread = '.$thread['thread_id']);
+					$reply_count += $sql->count('forum_post', '(*)', 'WHERE post_thread = '.$thread['thread_id']);
 					$this->threadDelete($thread['thread_id'], false);
 				}
 				foreach($forumArray as $fid)
@@ -2655,7 +2661,7 @@ function img_path($filename)
 {
 
 	$multilang = array('reply.png','newthread.png','moderator.png','main_admin.png','admin.png');
-	$ML = (in_array($filename,$multilang)) ? TRUE : FALSE;
+	$ML = in_array($filename,$multilang);
 
 		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename))
 		{
