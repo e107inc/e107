@@ -127,9 +127,11 @@
 		{
 			$actual = $this->dateObj->buildDateLocale();
 
+			$september  = (stripos(PHP_OS, 'WIN') === 0) ?  'Sept' : 'Sep';
+
 			$this->assertStringContainsString('$.fn.datetimepicker.dates["en"]', $actual);
 			$this->assertStringContainsString('days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],', $actual);
-			$this->assertStringContainsString('monthsShort: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],', $actual);
+			$this->assertStringContainsString('monthsShort: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","'.$september.'","Oct","Nov","Dec"],', $actual);
 		}
 
 		public function testToTime()
