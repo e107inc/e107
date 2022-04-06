@@ -490,12 +490,9 @@ class e_themeTest extends \Codeception\Test\Unit
 	{
 		$themeObj = $this->tm;
 		$data = $themeObj::getThemeInfo('bootstrap3');
-		$result= !empty($data['stylesheetThumbnails']['admin']);
+		$result= !empty($data['multipleStylesheets']);
 		$this->assertTrue($result);
 
-		$data = $themeObj::getThemeInfo('bootstrap5');
-		$result= !empty($data['stylesheetThumbnails']['front']);
-		$this->assertTrue($result);
 	}
 
 	public function testGetThemeLayout()
