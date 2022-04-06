@@ -1198,6 +1198,7 @@ class e_theme
 					"name"          => $val['@attributes']['file'],
 					"info"          => $val['@attributes']['name'],
 					"nonadmin"      => $notadmin,
+					'default'       => vartrue($val['@attributes']['default'], false),
 					'scope'         => vartrue($val['@attributes']['scope'], 'front'),
 					'exclude'       => vartrue($val['@attributes']['exclude']),
 					'description'   => vartrue($val['@attributes']['description']),
@@ -3102,15 +3103,16 @@ class themeHandler
 		
 		$themeArray = e107::getTheme()->getList("id");
 		
-		$name = ($name) ? $name : vartrue($themeArray[$this->id]);
-		$layout = $pref['sitetheme_layouts'] = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();
-		$deflayout = $this->findDefault($name);
+		$name        = ($name) ? $name : vartrue($themeArray[$this->id]);
+		$layout      = $pref['sitetheme_layouts'] = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();
+		$deflayout   = $this->findDefault($name);
 		$customPages = $this->themeArray[$name]['custompages'];
-		$version = $this->themeArray[$name]['version'];
-		$glyphs = $this->themeArray[$name]['glyphs'];
-		
+		$version     = $this->themeArray[$name]['version'];
+		$glyphs      = $this->themeArray[$name]['glyphs'];
+		$style       = $this->findDefaultCSS($name);
+
 		$core->set('sitetheme', $name);
-		$core->set('themecss', 'style.css');
+		$core->set('themecss', $style);
 		$core->set('sitetheme_layouts', $layout);
 		$core->set('sitetheme_deflayout', $deflayout);
 		$core->set('sitetheme_custompages', $customPages);
@@ -3167,6 +3169,7 @@ class themeHandler
 		e107::getCache()->clearAll('js');
 		e107::getCache()->clearAll('css');
 		e107::getCache()->clearAll('library');
+		e107::getCache()->clearAll('browser');
 		
 		if($core->save())
 		{
@@ -3260,6 +3263,7 @@ class themeHandler
 
 
 	/**
+	 * Find the default layout as marked in theme.xml
 	 * @param $theme
 	 * @return int|string
 	 */
@@ -3269,16 +3273,16 @@ class themeHandler
 		{
 			return e107::getParser()->filter($_POST['layout_default'], 'w');
 		}
-		
+
 	//	$l = $this->themeArray[$theme];
-		
+
 	//	if(!$l)
 		{
 			$l = e107::getTheme($theme)->get(); // $this->getThemeInfo($theme);
 		}
 
-		
-		if($l['layouts'])
+
+		if(!empty($l['layouts']))
 		{
 			foreach ($l['layouts'] as $key=>$val)
 			{
@@ -3292,6 +3296,32 @@ class themeHandler
 		{
 			return "";
 		}
+	}
+
+	/**
+	 * Find the default css style as defined in theme.xml.  When not found, use 'style.css'.
+	 * @param string $theme theme-folder name.
+	 * @return string
+	 */
+	function findDefaultCSS($theme)
+	{
+		$l = e107::getTheme($theme)->get();
+
+		if(empty($l['css']))
+		{
+			return 'style.css';
+		}
+
+		foreach($l['css'] as $item)
+		{
+			if(!empty($item['default']) && $item['default'] === 'true')
+			{
+				return $item['name'];
+			}
+
+		}
+
+		return 'style.css';
 	}
 	/*
 	function setAdminTheme()
