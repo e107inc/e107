@@ -73,13 +73,14 @@ $ONLINE_MENU_TEMPLATE['extended']['enabled']                        = "
 																		{ONLINE_MEMBERS_REGISTERED}
 																		<li class='list-group-item d-flex justify-content-between online-menu-extended-label'>
 																		{ONLINE_MOST}
-																		<div id='online-menu-extended-most' class='text-muted text-right' style='display:none'>
+																		
+																		</li>
+																		<li id='online-menu-extended-most' class='list-group-item justify-content-between online-menu-extended-label text-muted text-right text-end' style='display:none'>
 																			<small>
 																			{ONLINE_MOST_GUESTS}<br />
 																			{ONLINE_MOST_MEMBERS}<br />
 																			{ONLINE_MOST_DATESTAMP=long}
 																			</small>
-																		</div>
 																		</li>
 																		</ul>
 																	";
@@ -89,16 +90,16 @@ $ONLINE_MENU_TEMPLATE['extended']['online_member_newest']           = "{SETIMAGE
 
 
 // Shortcode wrappers
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_GUESTS']                   = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>".LAN_ONLINE_1."<span class='badge bg-primary rounded-pill label label-primary pull-right float-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS']                  = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>".LAN_ONLINE_2."<span class='badge bg-primary rounded-pill label label-primary pull-right float-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_GUESTS']                   = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>{LAN=ONLINE}<span class='badge bg-primary rounded-pill label label-primary pull-right float-right float-end'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS']                  = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>{LAN=ONLINE_2}<span class='badge bg-primary rounded-pill label label-primary pull-right float-right float-end'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST']             = "<ul>{---}</ul>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST_EXTENDED']    = "<li class='list-group-item'><ul class='unstyled list-unstyled py-0'>{---}</ul></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_ONPAGE']                   = "<li class='list-group-item d-flex justify-content-between align-items-center'>".LAN_ONLINE_3."<span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_TOTAL']             = "<li class='list-group-item d-flex justify-content-between align-items-center'>".LAN_ONLINE_11."<span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_NEWEST']            = "<li class='list-group-item online-menu-extended-label'>".LAN_ONLINE_6."</li><li class='list-group-item'><ul class='unstyled list-unstyled py-0'>{---}</ul></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class='e-expandit' href='#online-menu-extended-most'>".LAN_ONLINE_8."</a><span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span><br />";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_MEMBERS']             = LAN_ONLINE_2."{---}";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_GUESTS']              = LAN_ONLINE_1."{---}";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_ONPAGE']                   = "<li class='list-group-item d-flex justify-content-between align-items-center'>{LAN=ONLINE_3}<span class='badge bg-primary rounded-pill label label-default pull-right float-right float-end'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_TOTAL']             = "<li class='list-group-item d-flex justify-content-between align-items-center'>{LAN=ONLINE_11}<span class='badge bg-primary rounded-pill label label-default pull-right float-right float-end'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_NEWEST']            = "<li class='list-group-item online-menu-extended-label'>{LAN=ONLINE_6}</li><li class='list-group-item'><ul class='unstyled list-unstyled py-0'>{---}</ul></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class='e-expandit' href='#online-menu-extended-most'>{LAN=ONLINE_8}</a><span class='badge bg-primary rounded-pill label label-default pull-right float-right float-end'>{---}</span>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_MEMBERS']             = "{LAN=ONLINE_2}{---}";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_GUESTS']              = "{LAN=ONLINE_1}{---}";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_DATESTAMP']           = "{---}";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>".LAN_ONLINE_11."<span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_PAGE']              = LAN_ONLINE_7." {---}";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>{LAN=ONLINE_11}<span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_PAGE']              = "{LAN=ONLINE_7} {---}";

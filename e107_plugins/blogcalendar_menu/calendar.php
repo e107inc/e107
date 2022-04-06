@@ -105,7 +105,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active " : "forumheader3 blogcalendar-day";
 		}
 		
-		$label_style = isset($links[$day_of_month]) ? 'label label-info' : ''; //TODO A pref in admin to choose between info, danger, etc. 
+		$label_style = isset($links[$day_of_month]) ? 'label label-info badge bg-info' : '';
 		
 		$calendar .= "<td class='$day_style' >";
 	
