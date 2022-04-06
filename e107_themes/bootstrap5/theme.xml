@@ -27,6 +27,8 @@
 	</libraries>
 	<stylesheets>
 		<css file="style.css" name="Basic" thumbnail='preview_frontend.png' scope='front' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css" name="Journal" thumbnail='images/journal.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/lumen/bootstrap.min.css" name="Lumen" thumbnail='images/lumen.png' scope='front' exclude='bootstrap' />
 		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/lux/bootstrap.min.css" name="Lux" thumbnail='images/lux.png' scope='front' exclude='bootstrap' />
 		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/sketchy/bootstrap.min.css" name="Sketchy" thumbnail='images/sketchy.png' scope='front' exclude='bootstrap' />
         <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/quartz/bootstrap.min.css" default="true" name="Quartz" thumbnail='images/quartz.png' scope='front' exclude='bootstrap' />

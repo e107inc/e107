@@ -36,8 +36,8 @@ $HERO_TEMPLATE['default']['start'] 	    = '<div class="carousel-item item {HERO_
 						                  <div class="carousel-caption">
 						                    <div class="hero-text-container">
 						                      <header class="hero-title animated slideInLeft animation-delay-5">
-						                        <h1 class="animated fadeInLeft animation-delay-10 font-smoothing">{HERO_TITLE: enwrap=strong}</h1>
-						                        <h2 class="animated fadeInLeft animation-delay-12">{HERO_DESCRIPTION: enwrap=span&class=text-bold}</h2>
+						                        <h1 class="text-light animated fadeInLeft animation-delay-10 font-smoothing">{HERO_TITLE: enwrap=strong}</h1>
+						                        <h2 class="text-light animated fadeInLeft animation-delay-12">{HERO_DESCRIPTION: enwrap=span&class=text-bold}</h2>
 						                      </header>
 						          				<div class="row">
 							                      <div class="col-md-6">
