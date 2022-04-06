@@ -433,12 +433,15 @@ class theme_admin_ui extends e_admin_ui
 				{
 					$mes->addError($message);
 				}
+
+				$this->redirectAction('main');
 			}
 
 			if(!empty($_POST['selectadmin']))
 			{
 				$id = key($_POST['selectadmin']);
 				$this->setAdminTheme($id);
+				$this->redirectAction('admin');
 			}
 
 

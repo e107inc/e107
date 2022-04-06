@@ -21,7 +21,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load themeHandler object");
+				$this->fail("Couldn't load themeHandler object");
 			}
 
 		}
@@ -67,12 +67,24 @@
 		{
 
 		}
-
+*/
 		public function testFindDefault()
 		{
+			$result = $this->th->findDefault('bootstrap3');
+			$this->assertSame('jumbotron_sidebar_right', $result);
 
 		}
 
+		public function testFindDefaultCSS()
+		{
+			$result = $this->th->findDefaultCSS('voux');
+			$this->assertSame('style.css', $result);
+
+			$result = $this->th->findDefaultCSS('bootstrap5');
+			$this->assertSame('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/quartz/bootstrap.min.css', $result);
+
+		}
+/*
 		public function testGetThemes()
 		{
 

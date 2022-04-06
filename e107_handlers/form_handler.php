@@ -7171,11 +7171,11 @@ var_dump($select_options);*/
 		{
 
 			$thumbnail = $this->tp->toImage($val['thumbnail'], $parms);
-			$active = ($key === $value) ? ' active' : '';
+		//	$active = ($key === $value) ? ' active' : '';
 
 			$text .= "<div class='e-image-radio " . $class . "' >
 							<label" . $this->attributes([
-					'class' => "theme-selection$active",
+					'class' => "theme-selection",
 					'title' => varset($val['title']),
 				]) . "><input" . $this->attributes([
 					'type'     => 'radio',
