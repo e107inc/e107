@@ -4564,7 +4564,7 @@ class e_parse
 		{
 			$path = $tp->replaceConstants($file, 'abs');
 		}
-		elseif (!empty($parm['legacy'])) // Search legacy path for image in a specific folder. No path, only file name provided.
+		elseif(!empty($parm['legacy']) && !empty($file)) // Search legacy path for image in a specific folder. No path, only file name provided.
 		{
 
 			$legacyPath = rtrim($parm['legacy'], '/') . '/' . $file;
