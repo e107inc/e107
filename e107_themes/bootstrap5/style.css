@@ -63,6 +63,7 @@ ul.social-buttons li a {
     }
 }
 
+/*
 
 .list-group-item.active a {
     z-index: 2;
@@ -70,6 +71,7 @@ ul.social-buttons li a {
     background-color: #007bff;
     border-color: #007bff;
 }
+*/
 
 /* fix for caret bootstrap user nav */
 .profile-photo-small {
@@ -89,7 +91,7 @@ ul.social-buttons li a {
 
 @media (min-width: 768px) { 
   #login-template {
-      max-width: 500px;
+      max-width: 800px;
       margin-right: auto;
       margin-left: auto;
   }
@@ -100,14 +102,7 @@ ul.social-buttons li a {
     margin-bottom: initial;  
 }
 
-/* */
-.jumbotron {
- /* margin-top: 60px;*/
-  padding: 2rem 1rem;
- /* margin-bottom: 2rem;*/
- /* background-color: #e9ecef;*/
- /* border-radius: .3rem;*/
-}
+
 
 #carousel-hero.carousel {
   position: relative;

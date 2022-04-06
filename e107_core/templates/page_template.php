@@ -46,7 +46,7 @@ $PAGE_TEMPLATE['default']['body'] = '
 		
 		<div class="clear"><!-- --></div>
 		{CPAGERATING}
-		{CPAGEEDIT}
+		<span class="m-3">{CPAGEEDIT}</span>
 
 
 	';

@@ -24,7 +24,7 @@ $SIGNIN_TEMPLATE['signin'] = '
 					{SIGNIN_IMAGECODE_NUMBER}
 					{SIGNIN_IMAGECODE_BOX}
 					
-					<div class="checkbox">		
+					<div class="checkbox my-2">		
 					<label class="string optional" for="bs3-autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="bs3-autologin" value="1">
 					{LAN=LAN_LOGINMENU_6}</label>
 					</div>

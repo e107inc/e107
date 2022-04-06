@@ -39,7 +39,7 @@ if(!defined('e107_INIT'))
 		{
 			e107::css('theme', THEME_STYLE);
 			e107::css('theme', 'style.css'); // always load style.css last.
-			e107::css('inline', '#carousel-hero.carousel {  top: 30px;   margin-bottom: 60px; }');
+			e107::css('inline', '#carousel-hero.carousel {   margin-bottom: 80px; }');
 
 		}
 		/**
@@ -114,7 +114,7 @@ if(!defined('e107_INIT'))
 			{
 
 				case 'wmessage':
-				    echo '<div class="jumbotron"><div class="container text-center">';
+				    echo '<div class="p-5"><div class="container text-center">';
 				        if(!empty($caption))
 				        {
 				          echo '<h1 class="display-4">'.$caption.'</h1>';
@@ -180,7 +180,7 @@ if(!defined('e107_INIT'))
           
             case 'splash':
 	            echo '<div class="container  justify-content-center text-center my-5" id="'.$mode.'">
-	                 <div class="row  align-items-center">
+	                 <div class="row align-items-center">
 	                 <div class="card card-signin col-md-6 offset-md-3 " id="login-template"><div class="card-body">';
 
                 if(!empty($caption))

@@ -85,7 +85,7 @@
                                 <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
                                     <div class="d-flex align-items-end justify-content-between">
                                         <div class="d-flex align-items-center">
-                                        	{NEWS_AUTHOR_AVATAR: class=rounded-circle me-3&w=40&h=40&crop=1}
+                                        	{NEWS_AUTHOR_AVATAR: class=rounded-circle me-3&w=40&h=40&crop=1&placeholder=1}
                                             <div class="small">
                                                 <div class="fw-bold">{NEWS_AUTHOR}</div>
                                                 <div class="text-muted">{NEWS_DATE=short}</div>

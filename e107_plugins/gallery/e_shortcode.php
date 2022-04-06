@@ -193,13 +193,13 @@ class gallery_shortcodes extends e_shortcode
 		return e107::getUrl()->create('gallery');
 	}
 
-	function sc_gallery_cat_thumb($parm = '')
+	function sc_gallery_cat_thumb($parm = null)
 	{
 		$parms = eHelper::scParams($parm);
-
-		$w = vartrue($parms['w']) ? $parms['w'] : 300; // 260;
-		$h = vartrue($parms['h']) ? $parms['h'] : 200; // 180;
+		$w = !empty($parms['w']) ? $parms['w'] : 300; // 260;
+		$h = !empty($parms['h']) ? $parms['h'] : 200; // 180;
 		$att = 'aw=' . $w . '&ah=' . $h . '&x=1'; // 'aw=190&ah=150';
+		$class = isset($parms['class']) ? $parms['class'] : 'img-responsive img-fluid';
 
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 
@@ -209,7 +209,7 @@ class gallery_shortcodes extends e_shortcode
 		}
 
 		$text = "<a class='thumbnail' href='" . $url . "'>";
-		$text .= "<img class='img-responsive img-fluid' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
+		$text .= "<img class='".$class."' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
 		$text .= "</a>";
 		return $text;
 	}
