@@ -12,24 +12,26 @@
 $GALLERY_TEMPLATE['list']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
 $GALLERY_TEMPLATE['list']['start'] = '{GALLERY_BREADCRUMB}
-<div class="row gallery">
+<div class="row gallery gx-3">
 ';
 
 $GALLERY_TEMPLATE['list']['item'] = '
-	<div class="span2 col-xs-6 col-md-3">
-		<div class="thumbnail">
-			{GALLERY_THUMB=w=300&h=200}
+	<div class="span2 col-xs-6 col-md-4">
+		<div class="card h-100 thumbnail">
+			{GALLERY_THUMB: w=300&h=200&class=card-img-top img-fluid img-responsive}
+			<div class="card-footer">
 			<h5>{GALLERY_CAPTION}</h5>
+			</div>
 		</div>
 	</div>
 ';
 
 $GALLERY_TEMPLATE['list']['end'] = '
 </div>
-<div class="center">
+<div class="center mt-3">
 	<div class="gallery-list-nextprev">{GALLERY_NEXTPREV}</div>
 	<div class="gallery-list-back">
-		<a class="btn btn-default btn-secondary" href="{GALLERY_BASEURL}">' . LAN_BACK . '</a>
+		<a class="btn btn-default btn-secondary" href="{GALLERY_BASEURL}">{LAN=BACK}</a>
 	</div>
 </div>
 ';
@@ -38,14 +40,16 @@ $GALLERY_TEMPLATE['list']['end'] = '
 $GALLERY_TEMPLATE['cat']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
 $GALLERY_TEMPLATE['cat']['start'] = '{GALLERY_BREADCRUMB}
-<div class="row gallery-cat">
+<div class="row gallery-cat gx-3">
 ';
 
 $GALLERY_TEMPLATE['cat']['item'] = '
-	<div class="span3 col-xs-6 col-md-3">
-		<div>
-			{GALLERY_CAT_THUMB}
-			<h3>{GALLERY_CAT_TITLE}</h3>
+	<div class="span3 col-xs-6 col-md-4">
+		<div class="card h-100">
+			{GALLERY_CAT_THUMB: w=300&h=200&class=card-img-top img-fluid img-responsive}
+			<div class="card-footer">
+			<h5>{GALLERY_CAT_TITLE}</h5>
+			</div>
 		</div>
 	</div>
 ';
