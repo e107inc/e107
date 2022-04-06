@@ -39,9 +39,9 @@ if(!defined('e107_INIT'))
 		{
 			e107::css('theme', THEME_STYLE);
 			e107::css('theme', 'style.css'); // always load style.css last.
+			e107::css('inline', '#carousel-hero.carousel {  top: 30px;   margin-bottom: 60px; }');
+
 		}
-
-
 		/**
 		 * @param string $text
 		 * @return string without p tags added always with bbcodes

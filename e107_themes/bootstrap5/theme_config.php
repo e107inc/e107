@@ -20,7 +20,7 @@ class theme_config implements e_theme_config
 	{
 
 		return array(
-			'cardmenu_look' => array('title' => LAN_THEMEPREF_02, 'type'=>'boolean', 'writeParms'=>array(),'help'=>''),
+		//	'cardmenu_look' => array('title' => LAN_THEMEPREF_02, 'type'=>'boolean', 'writeParms'=>array(),'help'=>''),
 			'login_iframe' => array('title' => LAN_THEMEPREF_03, 'type'=>'boolean', 'writeParms'=>array(),'help'=>''),
 		);
 
