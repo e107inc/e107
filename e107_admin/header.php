@@ -163,9 +163,15 @@ if(isset($eplug_css) && $eplug_css)
 
 if(deftrue('e_MENUMANAGER_ACTIVE')) // load frontend style.css
 {
-	$css_file = $pref['themecss'];
-	$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap.
-
+	if(method_exists('theme', 'css')) // new v2.3.2  theme styles load override.
+	{
+		e107::callMethod('theme', 'css');
+	}
+	else
+	{
+		$css_file = $pref['themecss'];
+		$e_js->themeCSS($css_file); // Test with superhero.css for frontend bootstrap and 'dark' for backend bootstrap.
+	}
 }
 else // backend css.
 {
