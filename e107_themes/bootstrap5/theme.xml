@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Theme name="Bootstrap 5" version="1.0" date="2021-03-22" compatibility="2.3.1">
+<e107Theme name="Bootstrap 5" version="1.1" date="2022-04-05" compatibility="2.3.2">
 	<author name ="e107 Inc" email="e107inc@something.com" url="https://e107.org" />
 	<summary>Bootstrap 5 basic theme</summary>
 	<description>A starter template for bootstrap5 themes.</description>
@@ -10,12 +10,14 @@
         <plugin name='rss_menu' url='core' />
         <plugin name='social' url='core' />
         <plugin name='tinymce4' url='core' />
+        <plugin name='gsitemap' url='core' />
 	</plugins>
 	<keywords>
 		<word>bootstrap</word>
 		<word>bootstrap5</word>
 		<word>clean</word>
         <word>wireframe</word>
+        <word>bootswatch</word>
 	</keywords>
 	<libraries>
 		<library name="bootstrap" version="5" scope="front"/>
@@ -24,7 +26,12 @@
         <library name="animate.css" scope="front" />
 	</libraries>
 	<stylesheets>
-		<css file="style.css" name="Default" />
+		<css file="style.css" name="Default" thumbnail='preview_frontend.png' scope='front' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/lux/bootstrap.min.css" name="Lux" thumbnail='images/lux.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/sketchy/bootstrap.min.css" name="Sketchy" thumbnail='images/sketchy.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/quartz/bootstrap.min.css" name="Quartz" thumbnail='images/quartz.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/slate/bootstrap.min.css" name="Slate" thumbnail='images/slate.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/superhero.png' scope='front' exclude='bootstrap' />
 	</stylesheets>
 	<screenshots>
 		<image>preview_frontend.png</image>
@@ -47,7 +54,6 @@
 	</layouts>
 	<themePrefs>
 		<pref name='cardmenu_look'>1</pref>
-		<pref name='inlinecss'></pref>
 		<pref name='login_iframe'></pref>
 	</themePrefs>
 </e107Theme>
