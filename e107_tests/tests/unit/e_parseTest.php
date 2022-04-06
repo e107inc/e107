@@ -2446,6 +2446,21 @@ EXPECTED;
 		}
 
 
+		// news image scenario with empty value.
+		$srcPath = '';
+		$imgParms = array(
+			'class'         => 'news-image',
+			'alt'           => 'placeholder image',
+			'style'         => 'display:block',
+			'placeholder'   => 1,
+			'legacy'        => '{e_IMAGE}newspost_images',
+			'w'             => 400,
+			'h'             => 325
+		);
+
+		$result = $this->tp->toImage($srcPath, $imgParms);
+		$expected = '<img class="news-image" src="/thumb.php?src=&amp;w=400&amp;h=325" alt="placeholder image" width="400" height="325" style="display:block"  />';
+		$this->assertSame($expected, $result);
 	}
 
 	public function testThumbSrcSet()

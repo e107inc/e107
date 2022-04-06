@@ -9,7 +9,7 @@
 	 */
 
 
-	$NEWS_GRID_TEMPLATE['col-md-6']['start'] = '<div class="row news-grid-default news-menu-grid">';
+	$NEWS_GRID_TEMPLATE['col-md-6']['start'] = '<div class="row news-grid-default news-menu-grid gx-3">';
 
 	$NEWS_GRID_TEMPLATE['col-md-6']['featured'] = '<div class="row featured">
 													<div class="col-sm-12">
@@ -67,7 +67,35 @@
 	$NEWS_GRID_TEMPLATE['col-md-3']['end']      = $NEWS_GRID_TEMPLATE['col-md-6']['end'];
 
 
+//  ---------------- col-lg-4 Bootstrap 5 only ---------------
 
+	$NEWS_GRID_TEMPLATE['col-lg-4']['start']    = $NEWS_GRID_TEMPLATE['col-md-6']['start'];
+	$NEWS_GRID_TEMPLATE['col-lg-4']['featured'] = $NEWS_GRID_TEMPLATE['col-md-6']['featured'];
+	$NEWS_GRID_TEMPLATE['col-lg-4']['end']      = $NEWS_GRID_TEMPLATE['col-md-6']['end'];
+	$NEWS_GRID_TEMPLATE['col-lg-4']['item']     = '{SETIMAGE: w=412&h=250&crop=1}
+						<div class="item col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                 {NEWS_IMAGE: type=tag&class=card-img-top&placeholder=1}
+                                <div class="card-body p-4">
+                                    <div class="badge bg-primary bg-gradient rounded-pill mb-2">{NEWS_CATEGORY_NAME}</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="{NEWS_URL}">
+                                    <h5 class="card-title mb-3">{NEWS_TITLE}</h5></a>
+                                    <p class="card-text mb-0">{NEWS_SUMMARY}</p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                        	{NEWS_AUTHOR_AVATAR: class=rounded-circle me-3&w=40&h=40&crop=1}
+                                            <div class="small">
+                                                <div class="fw-bold">{NEWS_AUTHOR}</div>
+                                                <div class="text-muted">{NEWS_DATE=short}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+	';
 
 // ------------------ media-list -----------------
 
@@ -106,9 +134,6 @@
 
 
 	$NEWS_GRID_TEMPLATE['media-list']['end'] = '</div>';
-
-
-
 
 
 

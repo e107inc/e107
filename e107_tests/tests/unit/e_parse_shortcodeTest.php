@@ -1839,6 +1839,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 			try
 			{
+				/** @var e_shortcode $sc */
 				$sc = $this->make($plug.'_shortcodes');
 			}
 			catch (Exception $e)
