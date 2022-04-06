@@ -1083,7 +1083,7 @@ class e_jsmanager
 			break;
 
 			case 'theme_css':
-				$file_path = $runtime_location.$this->_sep.'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $runtime_location.$this->_sep.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ?'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
@@ -1291,8 +1291,8 @@ class e_jsmanager
 			case 'core_css': //e_jslib
 				if($this->_theme_css_processor)
 				{
-					$this->_e_css['core'] = e107::callMethod('theme', 'css', $this->_e_css['core'], 'core');
-					e107::getMessage()->addDebug('Theme css() method is experimental and is subject to removal at any time. Use at own risk');
+					$this->_e_css['core'] = e107::callMethod('theme', 'cssFilter', $this->_e_css['core'], 'core');
+					e107::getMessage()->addDebug('Theme cssFilter() method is experimental and is subject to removal at any time. Use at own risk');
 				}
 				$this->renderFile(varset($this->_e_css['core'], array()), $external, 'Core CSS', $mod, false);
 				unset($this->_e_css['core']);
@@ -1301,7 +1301,7 @@ class e_jsmanager
 			case 'plugin_css': //e_jslib
 				if($this->_theme_css_processor)
 				{
-					$this->_e_css['plugin'] = e107::callMethod('theme', 'css', $this->_e_css['plugin'], 'plugin');
+					$this->_e_css['plugin'] = e107::callMethod('theme', 'cssFilter', $this->_e_css['plugin'], 'plugin');
 				}
 				$this->renderFile(varset($this->_e_css['plugin'], array()), $external, 'Plugin CSS', $mod, false);
 				unset($this->_e_css['plugin']);
@@ -1315,7 +1315,7 @@ class e_jsmanager
 			case 'other_css':
 				if($this->_theme_css_processor)
 				{
-					$this->_e_css['other'] = e107::callMethod('theme', 'css', $this->_e_css['other'], 'other');
+					$this->_e_css['other'] = e107::callMethod('theme', 'cssFilter', $this->_e_css['other'], 'other');
 				}
 				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', $mod, false);
 				unset($this->_e_css['other']);

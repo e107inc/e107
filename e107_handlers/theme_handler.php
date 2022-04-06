@@ -166,7 +166,7 @@ class e_theme
 	/**
 	 * Return an array of theme library or stylesheet values (as defined in theme.xml) that match the desired scope.
 	 * @note New in v2.3.1+
-	 * @param string $type library | stylesheet
+	 * @param string $type library | css
 	 * @param string $scope  front | admin | all | auto (as defined in theme.xml)
 	 * @return array
 	 */
@@ -287,8 +287,7 @@ class e_theme
 	/**
 	 * Load library dependencies.
 	 *
-	 * @param string $scope
-	 *  front | admin | all | auto
+	 * @param string $scope  front | admin | all | auto
 	 */
 	public function loadLibrary($scope = 'auto')
 	{
@@ -302,12 +301,19 @@ class e_theme
 
 		$loaded = [];
 
+		$excludeCSS = (string) $this->cssAttribute('auto', 'exclude'); // current theme style
+
 		foreach($libraries as $name => $library)
 		{
 
 			if(empty($name))
 			{
 				continue;
+			}
+
+			if($name === $excludeCSS)
+			{
+				$library['files'] = 'js'; // load only JS, but not CSS since the style excluded it.
 			}
 
 			if($name === 'bootstrap' && !empty($library['version']))
@@ -884,7 +890,7 @@ class e_theme
 		if(!empty($themeArray[$file]['css']) && count($themeArray[$file]['css']) > 1)
 		{
 			$themeArray[$file]['multipleStylesheets'] = true;
-		}
+				}
 
 
 
@@ -1348,7 +1354,7 @@ class e_theme
 			define('THEME_STYLE', $pref['admincss']);
 			self::initThemeLayout();  // the equivalent for frontend is in header_default.php
 		}
-		elseif(!empty($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+		elseif(!empty($pref['themecss']) && (file_exists(THEME.$pref['themecss']) || strpos($pref['themecss'],'https') === 0))
 		{
 			define('THEME_STYLE', $pref['themecss']);
 		}
@@ -2831,38 +2837,12 @@ class themeHandler
 		
 					$text .= varset($itext);
 
-
-
 					// Render skin previews.
-					if(self::RENDER_ADMINPREFS === $mode)
+					if($skinText = self::renderSkin($theme, $mode, $pref))
 					{
-						$parms = [];
-						$parms['path'] = e_THEME.$theme['path'].'/';
-						$parms['block-class'] = 'admin-css-selector col-md-3';
-
-						foreach($theme['css'] as $val)
-						{
-							$kid = $val['name'];
-						 // $val['description'];
-							$parms['optArray'][$kid] = array(
-								'thumbnail' => $val['thumbnail'],
-								'label'     => $val['info']."<br /><small>".$val['description']."</small>",
-							);
-						}
-
-						$text .= "<tr><td style='vertical-align:top;'><b>".TPVLAN_95.":</b></td>
-								<td colspan='2' style='vertical-align:top'>
-								";
-						$text .= e107::getForm()->radioImage('admincss', vartrue($pref['admincss']), $parms);
-						$text .= "</td></tr>";
-
-
+						$text .= $skinText;
 					}
-
-
-
-
-					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']) && self::RENDER_SITEPREFS === $mode)
+					elseif(!empty($theme['multipleStylesheets']) && $mode && !empty($theme['css']) && self::RENDER_SITEPREFS === $mode)
 					{
 						$pLabel =  TPVLAN_22;
 
@@ -3461,8 +3441,48 @@ class themeHandler
 
 	}
 */
+	/**
+	 * @param array $theme
+	 * @param string $mode
+	 * @param mixed $value
+	 * @return array
+	 */
+	private static function renderSkin($theme, $mode, $pref)
+	{
 
+		$parms = [];
+		$parms['path'] = e_THEME . $theme['path'] . '/';
+		$parms['block-class'] = 'admin-css-selector col-md-3';
 
+		foreach($theme['css'] as $val)
+		{
+			if(empty($val['thumbnail']))
+			{
+				continue;
+			}
+
+			$kid = $val['name'];
+			// $val['description'];
+			$parms['optArray'][$kid] = array(
+				'thumbnail' => $val['thumbnail'],
+				'label'     => $val['info'] . "<br /><small>" . $val['description'] . "</small>",
+			);
+		}
+
+		if(empty($parms['optArray']))
+		{
+			return '';
+		}
+
+		$text = "<tr><td style='vertical-align:top;'><b>" . TPVLAN_95 . ":</b></td>
+								<td colspan='2' style='vertical-align:top'>
+								";
+		$css = ($mode === self::RENDER_ADMINPREFS) ? 'admincss' : 'themecss';
+		$text .= e107::getForm()->radioImage($css, vartrue($pref[$css]), $parms);
+		$text .= "</td></tr>";
+
+		return $text;
+	}
 
 
 }

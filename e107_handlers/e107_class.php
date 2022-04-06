@@ -2652,7 +2652,7 @@ class e107
 		$jshandler = self::getJs();
 		$jshandler->setDependency($dep);
 
-		if(strpos($data,'http')===0)
+		if(strpos($data,'http')===0 && ($type !== 'theme'))
 		{
 			$type = 'url';
 		}
@@ -2670,7 +2670,7 @@ class e107
 			break;
 
 			case 'theme':
-				// data is path relative to current theme
+				// data is path relative to current theme or URL to load in the 'theme' zone.
 				$jshandler->themeCSS($data, $media, $preComment, $postComment);
 			break;
 

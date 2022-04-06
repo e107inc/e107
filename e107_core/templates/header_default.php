@@ -301,9 +301,13 @@ if(defined("PREVIEWTHEME"))
 } 
 else 
 {
-	$css_default = "all"; // TODO - default should be defined by the theme
-	// theme-css.php auto-detection TODO - convert it to constant or anything different from GLOBAL
-	if (isset($theme_css_php) && $theme_css_php) 
+	$css_default = "all";
+
+	if(method_exists('theme', 'css')) // new v2.3.2  theme styles load override.
+	{
+		e107::callMethod('theme', 'css');
+	}
+	elseif (isset($theme_css_php) && $theme_css_php)
 	{
 		//echo "<link rel='stylesheet' href='".THEME_ABS."theme-css.php' type='text/css' />\n";
 		$e_js->themeCSS('theme-css.php', $css_default);
@@ -352,16 +356,10 @@ $e_js->renderLinks();
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility; NOTE - could be removed in the future!!!
 
-//TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php 
-
-
-
-
-
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library', 'other','core','plugin','theme','inline');
 
 /** Experimental - Subject to removal at any time. Use at own risk  */
-if(method_exists('theme', 'css'))
+if(method_exists('theme', 'cssFilter'))
 {
 	$e_js->set('_theme_css_processor', true);
 }

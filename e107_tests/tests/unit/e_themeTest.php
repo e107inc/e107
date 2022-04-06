@@ -23,7 +23,7 @@ class e_themeTest extends \Codeception\Test\Unit
 		}
 		catch(Exception $e)
 		{
-			$this->assertTrue(false, "Couldn't load e_theme object");
+			$this->fail("Couldn't load e_theme object");
 		}
 
 		$this->tm->clearCache();
@@ -31,12 +31,13 @@ class e_themeTest extends \Codeception\Test\Unit
 	}
 
 
-	/*
-			public function testCssAttribute()
-			{
 
-			}
-
+	public function testCssAttribute()
+	{
+		$result = e107::getTheme('bootstrap5')->cssAttribute('front','name');
+		$this->assertSame('style.css', $result);
+	}
+/*
 			public function testUpgradeThemeCode()
 			{
 
@@ -484,11 +485,18 @@ class e_themeTest extends \Codeception\Test\Unit
 			{
 
 			}
+*/
+	public function testGetThemeInfo()
+	{
+		$themeObj = $this->tm;
+		$data = $themeObj::getThemeInfo('bootstrap3');
+		$result= !empty($data['stylesheetThumbnails']['admin']);
+		$this->assertTrue($result);
 
-			public function testGetThemeInfo()
-			{
-
-			}*/
+		$data = $themeObj::getThemeInfo('bootstrap5');
+		$result= !empty($data['stylesheetThumbnails']['front']);
+		$this->assertTrue($result);
+	}
 
 	public function testGetThemeLayout()
 	{

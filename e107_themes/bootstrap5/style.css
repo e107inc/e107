@@ -105,8 +105,18 @@ ul.social-buttons li a {
  /* margin-top: 60px;*/
   padding: 2rem 1rem;
  /* margin-bottom: 2rem;*/
-  background-color: #e9ecef;
+ /* background-color: #e9ecef;*/
  /* border-radius: .3rem;*/
+}
+
+#carousel-hero.carousel {
+  position: relative;
+  left: 0;
+  top: 70px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin-bottom: 60px;
 }
 
 /* CUSTOM Responsive Styles */

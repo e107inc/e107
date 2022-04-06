@@ -30,7 +30,7 @@ $HERO_TEMPLATE['default']['footer'] 	= '</div><div class="carousel-controls">
 						              </div>';
 
 
-$HERO_TEMPLATE['default']['start'] 	    = '<div class="carousel-item item {HERO_SLIDE_ACTIVE}" style="background-image:{HERO_BGIMAGE}">
+$HERO_TEMPLATE['default']['start'] 	    = '<div class="carousel-item item {HERO_SLIDE_ACTIVE} bg-dark" style="background-image:{HERO_BGIMAGE}">
 						                  <div class="container">
 						                  
 						                  <div class="carousel-caption">
