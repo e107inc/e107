@@ -1781,10 +1781,11 @@ if($this->pdo == true)
 		// Install Theme-required plugins
 		if(vartrue($this->previous_steps['install_plugins']) && ($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme'])) && isset($themeInfo['plugins']['plugin']))
 		{
+			$themeName = $this->previous_steps['prefs']['sitetheme'];
 			foreach($themeInfo['plugins']['plugin'] as $k=>$plug)
 			{
 				$this->install_plugin($plug['@attributes']['name']);
-				installLog::add('Theme-related plugin installed: '.$plug['@attributes']['name']);
+				installLog::add('Theme-related ('.$themeName.') plugin installed: '.$plug['@attributes']['name']);
 			}
 		}
 

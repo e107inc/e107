@@ -176,6 +176,7 @@
   'social' => 'social',
   'rss_menu' => 'rss_menu',
   'user' => 'user',
+  'gallery'=>'gallery',
 )]]></core>
 		<core name="link_replace">0</core>
 		<core name="link_text"></core>
