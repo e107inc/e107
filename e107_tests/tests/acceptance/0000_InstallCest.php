@@ -184,7 +184,7 @@ class InstallCest
 	private function checkBootstrap5Navigation(AcceptanceTester $I)
 	{
 		$I->amOnPage('/article-1');
-		$I->see('Chapter 1','a');
+		$I->see('Chapter 1');
 
 		$I->amOnPage('/gallery/gallery-1');
 		$I->see('horse');
