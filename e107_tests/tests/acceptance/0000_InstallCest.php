@@ -28,7 +28,7 @@ class InstallCest
 		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
-		$this->checkBootstrap5Navigation($I);
+	//	$this->checkBootstrap5Navigation($I);
 
 	}
 /*
@@ -180,7 +180,7 @@ class InstallCest
 		$I->amOnPage('/e107_plugins/tinymce4/admin_config.php');
 		$I->see("Paste as text by default");
 	}
-
+/*
 	private function checkBootstrap5Navigation(AcceptanceTester $I)
 	{
 		$I->amOnPage('/article-1');
@@ -191,7 +191,7 @@ class InstallCest
 
 		$I->amOnPage('/terms-of-use');
 		$I->see('Terms of Use','.breadcrumb-item');
-	}
+	}*/
 
 
 	private function checkAdminButtonWelcomeMessage(AcceptanceTester $I)

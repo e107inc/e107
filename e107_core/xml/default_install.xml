@@ -36,7 +36,7 @@
 		<core name="contact_info"><![CDATA[array (
 )]]></core>
 		<core name="contact_emailcopy">0</core>
-        <core name="contact_visibility">0</core>
+        <core name="contact_visibility">253</core>
         <core name="contact_filter"></core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
@@ -220,9 +220,13 @@
 		<core name="multilanguage">0</core>
 		<core name="nbr_cols">1</core>
 		<core name="nested_comments">1</core>
-		<core name="news_cats"></core>
-		<core name="news_default_template">default</core>
+		<core name="news_cats">0</core>
+		<core name="news_default_template">list</core>
+		<core name="news_editauthor">254</core>
 		<core name="news_list_limit">10</core>
+		<core name="news_list_templates"><![CDATA[array (
+  0 => '0',
+)]]></core>
 		<core name="news_newdateheader">0</core>
         <core name="news_pagination">record</core>
 		<core name="newsposts">10</core>
@@ -288,7 +292,7 @@
 		<core name="siteadmin">admin</core>
 		<core name="siteadminemail">user@yoursite.com</core>
 		<core name="sitebutton">{e_IMAGE}button.png</core>
-		<core name="sitecontacts">255</core>
+		<core name="sitecontacts">250</core>
 		<core name="sitedescription"></core>
 		<core name="sitedisclaimer"></core>
 		<core name="sitelang_init">English</core>
