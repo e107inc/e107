@@ -68,7 +68,7 @@ USA',
 			<field name="link_name">Submit News</field>
 			<field name="link_url">submitnews.php</field>
 			<field name="link_description"></field>
-			<field name="link_button">icon-upload.glyph</field>
+			<field name="link_button"></field>
 			<field name="link_category">2</field>
 			<field name="link_order">10</field>
 			<field name="link_parent">0</field>
@@ -158,6 +158,54 @@ USA',
 			<field name="link_function"></field>
 			<field name="link_sefurl">index</field>
 			<field name="link_owner">contact</field>
+		</item>
+		<item>
+			<field name="link_id">9</field>
+			<field name="link_name">Other</field>
+			<field name="link_url">#</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">3</field>
+			<field name="link_order">14</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_rel"></field>
+			<field name="link_class">255</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">10</field>
+			<field name="link_name">Other</field>
+			<field name="link_url">#</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">3</field>
+			<field name="link_order">14</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_rel"></field>
+			<field name="link_class">255</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
+		</item>
+		<item>
+			<field name="link_id">11</field>
+			<field name="link_name">Other</field>
+			<field name="link_url">#</field>
+			<field name="link_description"></field>
+			<field name="link_button"></field>
+			<field name="link_category">3</field>
+			<field name="link_order">15</field>
+			<field name="link_parent">0</field>
+			<field name="link_open">0</field>
+			<field name="link_rel"></field>
+			<field name="link_class">255</field>
+			<field name="link_function"></field>
+			<field name="link_sefurl"></field>
+			<field name="link_owner"></field>
 		</item>
 	</dbTable>
 	<dbTable name="menus">
