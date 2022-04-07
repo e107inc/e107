@@ -262,35 +262,34 @@ class e_formTest extends \Codeception\Test\Unit
 
 			}
 */
-			public function testGetCountry()
-			{
+	public function testGetCountry()
+	{
 
-				$tests = array(
-					array('value'=>'', 'expected'=>''),
-					array('value'=>'au', 'expected'=>'Australia')
-				);
+		$tests = array(
+			array('value'=>'', 'expected'=>''),
+			array('value'=>'au', 'expected'=>'Australia')
+		);
 
-				foreach($tests as $t)
-				{
-					$actual = $this->_frm->getCountry($t['value']);
-					$this->assertEquals($t['expected'], $actual);
-				}
+		foreach($tests as $t)
+		{
+			$actual = $this->_frm->getCountry($t['value']);
+			$this->assertEquals($t['expected'], $actual);
+		}
 
-				// return array.
-				$actual = $this->_frm->getCountry();
-				$this->assertArrayHasKey('au',$actual);
-
-
-
-			}
+		// return array.
+		$actual = $this->_frm->getCountry();
+		$this->assertArrayHasKey('au',$actual);
 
 
-			public function testHelp()
-			{
-				$result = $this->_frm->help('my tip');
-				$this->assertSame('<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i><div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
 
-			}
+	}
+
+
+	public function testHelp()
+	{
+		$result = $this->_frm->help('my tip');
+		$this->assertSame('<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i><div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
+	}
 /*
 			public function testGetRequiredString()
 			{
@@ -306,32 +305,62 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
-			public function testTabs()
-			{
-
-			}
 */
-			public function testCarousel()
-			{
-				$slides = [
-					1 => ['caption'=>'Slide 1', 'text'=>'slide 1'],
-					2 => ['caption'=>'Slide 2', 'text' => 'slide 2'],
-					3 => ['caption' => 'Slide 3', 'text'=> 'slide 3']
-				];
 
-				$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>true, 'interval'=>false, 'data'=>false];
-				$result = $this->_frm->carousel('test-carousel', $slides, $parms);
-				$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='1' data-interval='0'>";
-				$this->assertStringContainsString($expected, $result);
+	public function testTabs()
+	{
+		$array = [
+				0 => ['caption'=> 'Cap 0', 'text'=>'Text 0'],
+				1 => ['caption'=> 'Cap 1', 'text'=>'Text 1'],
+		];
+
+		// Test 1
+		$opt = ['active'=>'1', 'fade'=>true];
+		$result = $this->_frm->tabs($array,$opt);
+		$this->assertStringContainsString('<a class="nav-link active" href="#tab-1"',$result, 'Test 1 Nav Failed'); // Nav
+		$this->assertStringContainsString('<div class="tab-pane fade in active" id="tab-1"', $result, 'Test 1 Pane Failed'); // Pane
+
+		// Test 2.
+		$opt = array();
+		$result = $this->_frm->tabs($array,$opt);
+		$this->assertStringContainsString('<a class="nav-link active" href="#tab-0"',$result, 'Test 2 Nav Failed'); // Nav
+		$this->assertStringContainsString('<div class="tab-pane active" id="tab-0"', $result, 'Test 2 Pane Failed'); // Pane
+
+		// Test 3.
+		$opt = ['active'=>'slide2'];
+		$array = [
+			'slide1' => ['caption'=> 'Cap 0', 'text'=>'Text 0'],
+			'slide2' => ['caption'=> 'Cap 1', 'text'=>'Text 1'],
+		];
+
+		$result = $this->_frm->tabs($array,$opt);
+		$this->assertStringContainsString('<li class="nav-item active"><a class="nav-link active" href="#slide2"',$result, 'Test 3 Nav Failed'); // Nav
+		$this->assertStringContainsString('<div class="tab-pane active" id="slide2"', $result, 'Test 3 Pane Failed'); // Pane
+
+	}
 
 
-				$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>false, 'interval'=>false, 'data'=>false];
-				$result = $this->_frm->carousel('test-carousel', $slides, $parms);
-				$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='' data-interval='0'>";
-				$this->assertStringContainsString($expected, $result);
+	public function testCarousel()
+	{
+		$slides = [
+			1 => ['caption'=>'Slide 1', 'text'=>'slide 1'],
+			2 => ['caption'=>'Slide 2', 'text' => 'slide 2'],
+			3 => ['caption' => 'Slide 3', 'text'=> 'slide 3']
+		];
 
-			}
+		$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>true, 'interval'=>false, 'data'=>false];
+		$result = $this->_frm->carousel('test-carousel', $slides, $parms);
+		$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='1' data-interval='0'>";
+		$this->assertStringContainsString($expected, $result);
+
+
+		$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>false, 'interval'=>false, 'data'=>false];
+		$result = $this->_frm->carousel('test-carousel', $slides, $parms);
+		$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='' data-interval='0'>";
+		$this->assertStringContainsString($expected, $result);
+
+	}
+
 /*
 			public function testUrl()
 			{

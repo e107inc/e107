@@ -3245,7 +3245,7 @@ class themeHandler
 			}
 			$text .= "</ul>";
 		}
-		
+
 		$text .= "
 
 		<p>".$tp->toHTML(TPVLAN_61, true)."</p>
