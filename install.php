@@ -1838,11 +1838,19 @@ if($this->pdo == true)
 		$url_modules = eRouter::adminReadModules();
 		$url_locations = eRouter::adminBuildLocations($url_modules);
 		$url_config = eRouter::adminBuildConfig(array(), $url_modules);
-		
+
 		$this->previous_steps['prefs']['url_aliases']		= array();
-		$this->previous_steps['prefs']['url_config']		= $url_config;
+
+		if(empty($pref['url_config']))
+		{
+			$this->previous_steps['prefs']['url_config']	= $url_config;
+		}
+
 		$this->previous_steps['prefs']['url_modules']		= $url_modules;
+
 		$this->previous_steps['prefs']['url_locations']		= $url_locations;
+
+
 		eRouter::clearCache();
 		installLog::add('Core URL config set to default state');
 
@@ -2004,6 +2012,8 @@ if($this->pdo == true)
 	 */
 	function get_themes()
 	{
+		return ['bootstrap5', 'voux'];
+
 		$handle = opendir($this->e107->e107_dirs['THEMES_DIRECTORY']);
 		$themelist = array();
 		while ($file = readdir($handle))
