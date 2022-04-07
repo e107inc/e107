@@ -36,7 +36,7 @@
 	    <css file="style.css" name="Legacy" thumbnail='preview_frontend.png' scope='front' />
 	</stylesheets>
 	<screenshots>
-		<image>preview_frontend.png</image>
+		<image>images/quartz.png</image>
 	</screenshots>
 	<layouts>
 		<layout name='home' title='Home Page' >
