@@ -28,9 +28,10 @@ class InstallCest
 		$this->checkAdminButtonWelcomeMessage($I);
 		$this->testNoUpdatesRequired($I);
 		$this->checkTinyMceIsInstalled($I);
+		$this->checkBootstrap5Navigation($I);
 
 	}
-
+/*
 	public function installBootstrap3(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 with bootstrap3");
@@ -45,7 +46,7 @@ class InstallCest
 		$I->see("United States");
 		$I->see("Blue");
 
-	}
+	}*/
 
 	public function installVoux(AcceptanceTester $I)
 	{
@@ -178,6 +179,18 @@ class InstallCest
 		$I->seeInSource('TinyMce4');
 		$I->amOnPage('/e107_plugins/tinymce4/admin_config.php');
 		$I->see("Paste as text by default");
+	}
+
+	private function checkBootstrap5Navigation(AcceptanceTester $I)
+	{
+		$I->amOnPage('/article-1');
+		$I->see('Chapter 1','a');
+
+		$I->amOnPage('/gallery/gallery-1');
+		$I->see('horse');
+
+		$I->amOnPage('/terms-of-use');
+		$I->see('Terms of Use','.breadcrumb-item');
 	}
 
 

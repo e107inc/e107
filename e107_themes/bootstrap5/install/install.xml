@@ -16,7 +16,7 @@ USA',
   'hours' => '',
   'message' => '',
 )]]></core>
-		<core name="contact_visibility">253</core>
+    <core name="contact_visibility">253</core>
 		<core name="news_cats">0</core>
 		<core name="news_default_template">list</core>
 		<core name="news_editauthor">255</core>
