@@ -16,69 +16,7 @@ USA',
   'hours' => '',
   'message' => '',
 )]]></core>
-    <core name="contact_visibility">253</core>
-		<core name="news_cats">0</core>
-		<core name="news_default_template">list</core>
-		<core name="news_editauthor">255</core>
-		<core name="news_list_templates"><![CDATA[array (
-  0 => '0',
-)]]></core>
-		<core name="passwordEncoding">3</core>
-		<core name="sitecontacts">250</core>
-		<core name="subnews_resize">0</core>
-		<core name="upload_maxfilesize">2G</core>
-		<core name="url_config"><![CDATA[array (
-  'gallery' => 'plugin/rewrite',
-  'index' => 'core',
-  'news' => 'core/sef_noid',
-  'page' => 'core/sef_noid',
-  'search' => 'core/rewrite',
-  'system' => 'core/rewrite',
-  'user' => 'core/rewrite',
-)]]></core>
-		<core name="url_locations"><![CDATA[array (
-  'index' =>
-  array (
-    0 => 'core',
-  ),
-  'news' =>
-  array (
-    0 => 'core',
-    1 => 'core/sef_full',
-    2 => 'core/sef_noidpage',
-    3 => 'core/sef_noid',
-    4 => 'core/sef',
-  ),
-  'page' =>
-  array (
-    0 => 'core',
-    1 => 'core/sef_chapteronly',
-    2 => 'core/sef_chapters',
-    3 => 'core/sef_noid',
-    4 => 'core/sef',
-  ),
-  'search' =>
-  array (
-    0 => 'core',
-    1 => 'core/rewrite',
-  ),
-  'system' =>
-  array (
-    0 => 'core',
-    1 => 'core/rewrite',
-  ),
-  'user' =>
-  array (
-    0 => 'core',
-    1 => 'core/rewrite',
-  ),
-  'gallery' =>
-  array (
-    0 => 'plugin',
-    1 => 'plugin/rewrite',
-  ),
-)]]></core>
-		<core name="url_main_module">page</core>
+    <core name="url_main_module">page</core>
 	</prefs>
 	<database>
 	<dbTable name="generic">
@@ -112,7 +50,7 @@ USA',
 		<item>
 			<field name="link_id">2</field>
 			<field name="link_name">Terms</field>
-			<field name="link_url">terms-of-use</field>
+			<field name="link_url">#terms-of-use</field>
 			<field name="link_description"></field>
 			<field name="link_button"></field>
 			<field name="link_category">3</field>
@@ -143,7 +81,7 @@ USA',
 		</item>
 		<item>
 			<field name="link_id">4</field>
-			<field name="link_name">Contact Us</field>
+			<field name="link_name">Contact</field>
 			<field name="link_url">contact.php</field>
 			<field name="link_description"></field>
 			<field name="link_button"></field>
@@ -185,78 +123,14 @@ USA',
 			<field name="link_open">0</field>
 			<field name="link_rel"></field>
 			<field name="link_class">0</field>
-			<field name="link_function"></field>
+			<field name="link_function">page::pagesFromChapter(2)</field>
 			<field name="link_sefurl"></field>
 			<field name="link_owner"></field>
 		</item>
 		<item>
 			<field name="link_id">7</field>
-			<field name="link_name">Article 1</field>
-			<field name="link_url">article-1</field>
-			<field name="link_description"></field>
-			<field name="link_button"></field>
-			<field name="link_category">1</field>
-			<field name="link_order">4</field>
-			<field name="link_parent">6</field>
-			<field name="link_open">0</field>
-			<field name="link_rel"></field>
-			<field name="link_class">0</field>
-			<field name="link_function"></field>
-			<field name="link_sefurl"></field>
-			<field name="link_owner"></field>
-		</item>
-		<item>
-			<field name="link_id">8</field>
-			<field name="link_name">Article 2</field>
-			<field name="link_url">article-2</field>
-			<field name="link_description"></field>
-			<field name="link_button"></field>
-			<field name="link_category">1</field>
-			<field name="link_order">5</field>
-			<field name="link_parent">6</field>
-			<field name="link_open">0</field>
-			<field name="link_rel"></field>
-			<field name="link_class">0</field>
-			<field name="link_function"></field>
-			<field name="link_sefurl"></field>
-			<field name="link_owner"></field>
-		</item>
-		<item>
-			<field name="link_id">9</field>
-			<field name="link_name">Article 3</field>
-			<field name="link_url">article-3</field>
-			<field name="link_description"></field>
-			<field name="link_button"></field>
-			<field name="link_category">1</field>
-			<field name="link_order">6</field>
-			<field name="link_parent">6</field>
-			<field name="link_open">0</field>
-			<field name="link_rel"></field>
-			<field name="link_class">0</field>
-			<field name="link_function"></field>
-			<field name="link_sefurl"></field>
-			<field name="link_owner"></field>
-		</item>
-		<item>
-			<field name="link_id">10</field>
-			<field name="link_name">Gallery</field>
-			<field name="link_url">{e_PLUGIN}gallery/gallery.php</field>
-			<field name="link_description"></field>
-			<field name="link_button"></field>
-			<field name="link_category">1</field>
-			<field name="link_order">8</field>
-			<field name="link_parent">0</field>
-			<field name="link_open">0</field>
-			<field name="link_rel"></field>
-			<field name="link_class">0</field>
-			<field name="link_function"></field>
-			<field name="link_sefurl">index</field>
-			<field name="link_owner">gallery</field>
-		</item>
-		<item>
-			<field name="link_id">11</field>
 			<field name="link_name">Privacy</field>
-			<field name="link_url">privacy-policy</field>
+			<field name="link_url">#privacy-policy</field>
 			<field name="link_description"></field>
 			<field name="link_button"></field>
 			<field name="link_category">3</field>
@@ -270,7 +144,7 @@ USA',
 			<field name="link_owner"></field>
 		</item>
 		<item>
-			<field name="link_id">12</field>
+			<field name="link_id">8</field>
 			<field name="link_name">Contact</field>
 			<field name="link_url">contact.php</field>
 			<field name="link_description"></field>

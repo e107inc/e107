@@ -26,6 +26,7 @@ header('Content-type: text/html; charset=utf-8');
 
 define("e107_INIT", TRUE);
 define("DEFAULT_INSTALL_THEME", 'bootstrap5');
+define('HELPICON', "<span class='e-tip glyphicon glyphicon-question-sign' style='float:right;padding-top:3px'></span>"); // <i class="glyphicon glyphicon-question-sign"></i>
 
 $e107info = array();
 require_once("e107_admin/ver.php");
@@ -586,43 +587,42 @@ class e_install
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table class='table table-striped table-bordered' >
 				<tr>
-					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
+					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label>".HELPICON."
+					<span class='field-help'>".LANINS_030."</span></td>
 					<td style='border-top: 1px solid #999;'>
 						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='".varset($this->previous_steps['mysql']['server'],'localhost')."' maxlength='100' required='required' />
-						<span class='field-help'>".LANINS_030."</span>
+						
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='name'>".LANINS_025."</label></td>
+					<td><label for='name'>".LANINS_025."</label>".HELPICON."<span class='field-help'>".LANINS_031."</span></td>
 					<td>
 						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40'  maxlength='100' required='required' />
-						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='password'>".LANINS_026."</label></td>
+					<td><label for='password'>".LANINS_026."</label>".HELPICON."<span class='field-help'>".LANINS_032."</span></td>
 					<td>
 						<input class='form-control input-large' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired}  pattern='[^\x22]+' />
-						<span class='field-help'>".LANINS_032."</span>
+
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='db'>".LANINS_027."</label></td>
+					<td><label for='db'>".LANINS_027."</label>".HELPICON."<span class='field-help'>".LANINS_033."</span></td>
 					<td class='form-inline'>
 						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9][a-zA-Z0-9_-]*' />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
-						<span class='field-help'>".LANINS_033."</span>
+						
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='prefix'>".LANINS_029."</label></td>
+					<td><label for='prefix'>".LANINS_029."</label>".HELPICON."<span class='field-help'>".LANINS_034."</span></td>
 					<td>
 						<input class='form-control input-large' type='text' name='prefix' size='20' id='prefix' value='e107_'  pattern='[a-z0-9]*_$' maxlength='100' required='required' />
-						<span class='field-help'>".LANINS_034."</span>
 					</td>
 				</tr>
 			</table>
@@ -1091,42 +1091,42 @@ class e_install
 					<col  />
 				</colgroup>
 				<tr>
-					<td><label for='u_name'>".LANINS_072."</label></td>
+					<td><label for='u_name'>".LANINS_072."</label>".HELPICON."<span class='field-help'>".LANINS_073."</span></td>
 					<td>
 						<input class='form-control' type='text' autofocus name='u_name' id='u_name' placeholder='admin' size='30' required='required' value='".(isset($this->previous_steps['admin']['user']) ? $this->previous_steps['admin']['user'] : "")."' maxlength='60' />
-						<span class='field-help'>".LANINS_073."</span>
+						
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='d_name'>".LANINS_074."</label></td>
+					<td><label for='d_name'>".LANINS_074."</label>".HELPICON."<span class='field-help'>".LANINS_123."</span></td>
 					<td>
 						<input class='form-control' type='text' name='d_name' id='d_name' size='30' placeholder='Administrator'  value='".(isset($this->previous_steps['admin']['display']) ? $this->previous_steps['admin']['display'] : "")."' maxlength='60' />
-						<span class='field-help'>".LANINS_123."</span>
+	
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='pass1'>".LANINS_076."</label></td>
+					<td><label for='pass1'>".LANINS_076."</label>".HELPICON."<span class='field-help'>".LANINS_124."</span></td>
 					<td>
 						<input class='form-control' type='password' name='pass1' size='30' id='pass1' value='' maxlength='60' required='required' />
-						<span class='field-help'>".LANINS_124."</span>
+						
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='pass2'>".LANINS_078."</label></td>
+					<td><label for='pass2'>".LANINS_078."</label>".HELPICON."<span class='field-help'>".LANINS_079."</span></td>
 					<td>
 						<input class='form-control' type='password' name='pass2' size='30' id='pass2' value='' maxlength='60' required='required' />
-						<span class='field-help'>".LANINS_079."</span>
+						
 					</td>
 				</tr>
 				
 				<tr>
-					<td><label for='email'>".LANINS_080."</label></td>
+					<td><label for='email'>".LANINS_080."</label>".HELPICON."<span class='field-help'>".LANINS_081."</span></td>
 					<td>
 						<input class='form-control' type='text' name='email' size='30' id='email' required='required' placeholder='admin@mysite.com' value='".(isset($this->previous_steps['admin']['email']) ? $this->previous_steps['admin']['email'] : '')."' maxlength='100' />
-					<span class='field-help'>".LANINS_081."</span>
+					
 					</td>
 				</tr>
 				</table>
@@ -1841,14 +1841,8 @@ if($this->pdo == true)
 		$url_config = eRouter::adminBuildConfig(array(), $url_modules);
 
 		$this->previous_steps['prefs']['url_aliases']		= array();
-
-		if(empty($pref['url_config']))
-		{
-			$this->previous_steps['prefs']['url_config']	= $url_config;
-		}
-
+		$this->previous_steps['prefs']['url_config']	= $url_config;
 		$this->previous_steps['prefs']['url_modules']		= $url_modules;
-
 		$this->previous_steps['prefs']['url_locations']		= $url_locations;
 
 
@@ -2494,7 +2488,7 @@ function template_data()
 		$(document).ready(function()
 		{
 		
-			$("input,textarea,select,label,.e-tip").each(function(c) {
+			$(".e-tip,input,textarea,select,label").each(function(c) {
 						
 				var t = $(this).nextAll(".field-help");
 				t.hide();
