@@ -5,7 +5,7 @@
 		<core name="frontpage"><![CDATA[array (
   0 => 'news.php',
 )]]></core>
-
+		<core name="news_default_template">default</core>
 		<core name="newsposts">3</core>
 		<core name="shortdate">%d %b %Y</core>
 		<core name="sitelogo">{e_THEME}voux/install/logo2B252832529.png</core>

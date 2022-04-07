@@ -16,6 +16,8 @@ USA',
   'hours' => '',
   'message' => '',
 )]]></core>
+    <core name="news_default_template">list</core>
+    <core name="shortdate">%d %b %Y</core>
     <core name="url_main_module">page</core>
 	</prefs>
 	<database>
