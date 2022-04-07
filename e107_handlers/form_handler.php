@@ -570,9 +570,13 @@ class e_form
 	/**
 	 * Render Bootstrap Tabs
 	 *
-	 * @param $array
-	 * @param $options
-	 * @return string
+	 * @param array $array
+	 * @param array $options = [
+	 *      'active'    => (string|int) - array key of the active tab.
+	 *      'fade'      => (bool) - use fade effect or not.
+	 *      'class'     => (string) - custom css class of the tab content container
+	 * ]
+	 * @return string html
 	 * @example
 	 *        $array = array(
 	 *        'home' => array('caption' => 'Home', 'text' => 'some tab content' ),
@@ -581,14 +585,23 @@ class e_form
 	 */
 	public function tabs($array, $options = array())
 	{
-		$initTab = varset($options['active'],false);
-		$id = !empty($options['id']) ? 'id="'.$options['id'].'"' : '';
+		$initTab = varset($options['active'], false);
+
+		if(is_numeric($initTab))
+		{
+			$initTab = 'tab-'.$initTab;
+		}
+
+		$id = !empty($options['id']) ? 'id="'.$options['id'].'" ' : '';
+		$toggle = ($this->_bootstrap > 3) ? 'data-bs-toggle="tab"' : 'data-toggle="tab"';
+
 		$text  ='
 		<!-- Nav tabs -->
-			<ul '.$id.' class="nav nav-tabs">';
+			<ul '.$id.'class="nav nav-tabs">';
 
 		$c = 0;
 
+		$act = $initTab;
 		foreach($array as $key=>$tab)
 		{
 
@@ -597,44 +610,43 @@ class e_form
 				$key = 'tab-'.$key;
 			}
 
-			if($c == 0 & $initTab == false)
+			if($c === 0 && ($act === false))
 			{
-				$initTab = $key;
+				$act = $key;
 			}
 
-
-			
-			$active = ($key ==$initTab) ? 'active"' : '';
-			$text .= '<li class="nav-item '.$active.'"><a class="nav-link '.$active.'" href="#'.$key.'" data-toggle="tab" data-bs-toggle="tab">'.$tab['caption'].'</a></li>';
+			$active = ($key == $act) ? ' active' : '';
+			$text .= '<li class="nav-item'.$active.'"><a class="nav-link'.$active.'" href="#'.$key.'" '.$toggle.'>'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
 		$text .= '</ul>';
 
-		$initTab = varset($options['active'],false);
 		$tabClass = varset($options['class'],null);
+		$fade = !empty($options['fade']) ? ' fade' : '';
+		$show = !empty($options['fade']) ? ($this->_bootstrap > 3 ?  ' show' : ' in') : '';
 
 		$text .= '
 		<!-- Tab panes -->
 		<div class="tab-content '.$tabClass.'">';
 		
 		$c=0;
+		$act = $initTab;
 		foreach($array as $key=>$tab)
 		{
-
 
 			if(is_numeric($key))
 			{
 				$key = 'tab-'.$key;
 			}
 
-			if($c == 0 & $initTab == false)
+			if($c == 0 && ($act === false))
 			{
-				$initTab = $key;
+				$act = $key;
 			}
-			
-			$active = ($key == $initTab) ? ' active' : '';
-			$text .= '<div class="tab-pane'.$active.'" id="'.$key.'">'.$tab['text'].'</div>';
+
+			$active = ($key == $act) ? $show.' active' : '';
+			$text .= '<div class="tab-pane'.$fade.$active.'" id="'.$key.'" role="tabpanel">'.$tab['text'].'</div>';
 			$c++;
 		}
 		
@@ -7679,7 +7691,7 @@ var_dump($select_options);*/
 
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? $this->tp->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
-			$curTab = (string) varset($_GET['tab'], '0');
+			$curTab = varset($_GET['tab'], false);
 
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
@@ -7702,7 +7714,7 @@ var_dump($select_options);*/
 					}
 
 
-					$text .= $this->tabs($tabs);
+					$text .= $this->tabs($tabs, ['active'=>$curTab]);
 				}
 				else   // No Tabs Present 
 				{
