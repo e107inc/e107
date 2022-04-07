@@ -28,13 +28,9 @@
 		<div class="content">
 				<div class="row">
 					<div class="col-md-3">
-					    <h4>Navigation</h4>
-					    {NAVIGATION: type=main&layout=alt}
 						{MENUAREA=10}
 					</div>
 					<div class="col-md-3">
-					    <h4>Follow Us</h4>
-					    {XURL_ICONS: template=footer}
 						{MENUAREA=11}
 					</div>
 					<div class="col-md-3">
@@ -46,7 +42,12 @@
 				</div>
 		</div>
 		<hr>
-		<div class="container">{NAVIGATION: type=footer&layout=footer}</div>
+		<div class="container">
+		<div class="row">
+		<div class="col-6 text-start">{XURL_ICONS: size=2x&template=footer}</div>
+		<div class="col-6 text-end">{NAVIGATION: type=footer&layout=footer&class=justify-content-end}</div>
+		</div>
+		</div>
 		<div class="container">
 			<p class="mt-5 mb-0 text-center text-white">{SITEDISCLAIMER}</p>
 		</div>
