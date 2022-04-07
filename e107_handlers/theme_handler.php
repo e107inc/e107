@@ -3163,15 +3163,17 @@ class themeHandler
 		if($contentCheck === true)
 		{
 			$sql->delete("menus", "menu_layout !='' ");
+			$this->installContentCheck($name);
 		}
-		
+
+
 		e107::getCache()->clear();
 		e107::getCache()->clearAll('js');
 		e107::getCache()->clearAll('css');
 		e107::getCache()->clearAll('library');
 		e107::getCache()->clearAll('browser');
 		
-		if($core->save())
+		if($core->save(true,false,false))
 		{
 			$mes->addDebug("Default Layout: ".$deflayout);
 			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
@@ -3180,10 +3182,7 @@ class themeHandler
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
 			$med->import('_common_image', e_THEME.$name, '', 'min-size=20000');
 			
-			if($contentCheck === true)
-			{
-				$this->installContentCheck($name);
-			}
+
 
 			$this->theme_adminlog('01', $name.', style.css');
 
@@ -3235,7 +3234,19 @@ class themeHandler
 			$text .= "<li>".$tp->lanVars(TPVLAN_60, $data)."</li>";
 		}
 
-		$text .= "</ul>
+		$text .= "</ul>";
+
+		if(!empty($xmlArray['prefs']['core']))
+		{
+			$text .= "<p>".LAN_PREFS.":</p><ul>";
+			foreach($xmlArray['prefs']['core'] as $key=>$val)
+			{
+				$text .= "<li>".$val['@attributes']['name']."</li>";
+			}
+			$text .= "</ul>";
+		}
+		
+		$text .= "
 
 		<p>".$tp->toHTML(TPVLAN_61, true)."</p>
 

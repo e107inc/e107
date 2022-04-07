@@ -293,6 +293,7 @@
 		<core name="siteadminemail">user@yoursite.com</core>
 		<core name="sitebutton">{e_IMAGE}button.png</core>
 		<core name="sitecontacts">250</core>
+		<core name="sitecontacts">sitecontactinfo</core>
 		<core name="sitedescription"></core>
 		<core name="sitedisclaimer"></core>
 		<core name="sitelang_init">English</core>
