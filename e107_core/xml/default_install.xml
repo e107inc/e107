@@ -483,14 +483,6 @@
 		<menu name="comment_display">10</menu>
 		<menu name="comment_postfix">[more ...]</menu>
 		<menu name="comment_title">0</menu>
-		<menu name="forum_no_characters">20</menu>
-		<menu name="forum_postfix">[more ...]</menu>
-		<menu name="forum_show_topics">1</menu>
-		<menu name="newforumposts_caption">Latest Forum Posts</menu>
-		<menu name="newforumposts_characters">50</menu>
-		<menu name="newforumposts_display">10</menu>
-		<menu name="newforumposts_postfix">[more ...]</menu>
-		<menu name="newforumposts_title">0</menu>
 		<menu name="update_menu">Update menu Settings</menu>
 		<search name="comments_handlers"><![CDATA[array (
   'news' => 
