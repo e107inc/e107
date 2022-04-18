@@ -2138,19 +2138,36 @@ class e_user extends e_user_model
 		{
 			$sql = e107::getDb();
 			$this->set('last_ip', $this->get('user_ip'));
-			$current_ip = e107::getIPHandler()->getIP(FALSE);
-			$update_ip = $this->get('user_ip' != $current_ip ? ", user_ip = '".$current_ip."'" : "");
+			$current_ip = e107::getIPHandler()->getIP();
+			$update_ip = '';
+
+			if($this->get('user_ip') != $current_ip)
+			{
+				$update_ip = ", user_ip = '".$current_ip."'";
+				$edata = [
+					'old_ip'    => $this->get('user_ip'),
+					'new_ip'    => $current_ip,
+					'time'      => date('c'),
+					'user_id'   => $this->getId(),
+					'user_name' => $this->get('user_name'),
+				];
+
+				e107::getEvent()->trigger('user_ip_changed', $edata); // new v2.3.3
+			}
+
+
+			$update_ip = ($this->get('user_ip') != $current_ip) ? ", user_ip = '".$current_ip."'" : '';
 			$this->set('user_ip', $current_ip);
 			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))
 			{
 				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
-				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
 			}
 			else
 			{
 				$this->set('user_currentvisit', time());
-				$sql->update('user', "user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
 			}
 		}
 	}

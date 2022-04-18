@@ -27,6 +27,7 @@ define("NU_LAN_7", "User social signup");
 define("NU_LAN_8", "User views profile");
 define("NU_LAN_9", "User edits profile");
 
+
 define("NS_LAN_1", "Security Events");
 define("NS_LAN_2", "IP banned for flooding site");
 define("NS_LAN_3", "IP banned for multiple failed login attempts");
@@ -47,4 +48,5 @@ define("NF_LAN_2", "File uploaded by user");
 
 define("LAN_NOTIFY_01", "Events");
 
+define("NU_LAN_10", "User IP changed");
 
