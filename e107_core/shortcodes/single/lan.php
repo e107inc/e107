@@ -9,13 +9,14 @@ function lan_shortcode($parm = '')
 	}
 
 	$lan = trim($parm);
-	if(defined($lan))
-	{
-		return constant($lan);
-	}
-	elseif(defined('LAN_'.$lan))
+
+	if(defined('LAN_'.$lan))
 	{
 		return constant('LAN_'.$lan);
+	}
+	elseif(defined($lan))
+	{
+		return constant($lan);
 	}
 	elseif(ADMIN)
 	{
