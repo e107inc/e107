@@ -7116,7 +7116,7 @@ var_dump($select_options);*/
 					$value = e107::serialize($value, 'json');
 				}
 
-				$ret .=  $this->hidden($key, $value);
+				$ret .=  $this->hidden($key, $value, $parms);
 			break;
 
 			case 'lanlist': // installed languages
