@@ -866,12 +866,13 @@ class e_formTest extends \Codeception\Test\Unit
 			{
 
 			}
-
+*/
 			public function testHidden()
 			{
-
+				$result = $this->_frm->hidden('name','on',['id'=>'my-field']);
+				$this->assertSame("<input type='hidden' name='name' value='on' id='my-field' />", $result);
 			}
-
+/*
 			public function testToken()
 			{
 
