@@ -18,6 +18,26 @@ if (!getperms('O'))
 
 e107::coreLan('notify', true);
 
+$js = "
+
+	
+	    function mail_field(val,id)
+		{
+	        if(val == 'email')
+			{
+	            document.getElementById(id).style.display ='';
+			}
+	        else
+			{
+	            document.getElementById(id).style.display ='none';
+			}
+		}
+	
+";
+
+
+e107::js('inline', $js);
+
 class plugin_notify_admin extends e_admin_dispatcher
 {
 
@@ -151,6 +171,8 @@ class plugin_notify_admin_ui extends e_admin_ui
 								else
 								{
 									$legacy = 1;	// Legacy Mode.
+								//	$config_category = 'Other';
+								//	$config_events = array();
 								}
 
 						//		foreach ($config_events as $event_id => $event_text)
@@ -271,7 +293,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 			        		<col class='col-label' />
 			        		<col class='col-control' />
 			        	</colgroup>";
-					;
+
 
 					if(!empty($this->pluginConfig[$plugin_id]['events']))
 					{
@@ -326,7 +348,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 		$text = "
 			<tr>
-				<td title='".$id."'><span{$highlight}>".$description.":</span></td>";
+				<td title='".$id."'><span".$highlight.">".$description.":</span></td>";
 
 
 
@@ -350,7 +372,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 				$value= "";
 			}
 
-			$text .= "<input class='form-control' type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+			$text .= "<input class='form-control' type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" placeholder='eg. your@email.com' />\n";
 
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method
@@ -464,29 +486,3 @@ e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
 
-// todo use e107::js('inline')
-if(!function_exists('headerjs'))
-{
-	function headerjs()
-	{
-
-		$js = "
-		<script>
-	
-	    function mail_field(val,id)
-		{
-	        if(val == 'email')
-			{
-	            document.getElementById(id).style.display ='';
-			}
-	        else
-			{
-	            document.getElementById(id).style.display ='none';
-			}
-		}
-	
-		</script>";
-
-		return $js;
-	}
-}
