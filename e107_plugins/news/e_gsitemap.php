@@ -101,15 +101,25 @@ class news_gsitemap
 	{
 		$data = $this->getNewsPosts();
 
+		/** @var news_shortcodes $sc */
+		$sc = e107::getScBatch('news');
+
+		e107::getParser()->thumbWidth(1000);
+
 		$ret = [];
 
 		foreach($data as $row)
 		{
+			$sc->setScVar('news_item', $row);
+
+			$imgUrl = $sc->sc_news_image(['item'=>1, 'type'=>'src']);
+
 			$ret[] = [
 				'url'       => $this->url('news', $row),
 				'lastmod'   => !empty($row['news_modified']) ? $row['news_modified'] : (int) $row['news_datestamp'],
 				'freq'      => 'hourly',
-				'priority'  => 0.5
+				'priority'  => 0.5,
+				'image'     => (strpos($imgUrl, 'http') === 0) ? $imgUrl : SITEURLBASE.$sc->sc_news_image(['item'=>1, 'type'=>'src']),
 			];
 		}
 
