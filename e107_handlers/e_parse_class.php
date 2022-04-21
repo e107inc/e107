@@ -3045,7 +3045,7 @@ class e_parse
 					$e107::getFolder('web'),
 					$e107->site_theme ? $e107::getFolder('themes') . $e107->site_theme . '/' : '',
 					defset('THEME_ABS'),
-					(ADMIN ? $e107::getFolder('admin') : ''),
+					(deftrue('ADMIN') ? $e107::getFolder('admin') : ''),
 					'',
 					$e107::getFolder('core'),
 					$e107::getFolder('system'),
@@ -3109,7 +3109,7 @@ class e_parse
 						SITEURLBASE . e_WEB_ABS,
 						defset('THEME_ABS') ? SITEURLBASE . THEME_ABS : '',
 						defset('THEME_ABS') ? SITEURLBASE . THEME_ABS : '',
-						(ADMIN ? SITEURLBASE . e_ADMIN_ABS : ''),
+						(deftrue('ADMIN') ? SITEURLBASE . e_ADMIN_ABS : ''),
 						SITEURL,
 						'', // no e_CORE absolute path
 						'', // no e_SYSTEM absolute path
@@ -5261,7 +5261,7 @@ class e_parse
 		{
 			$this->grantScriptAccess();
 		}
-		elseif(ADMIN && (strpos($html, '</script>') !== false))
+		elseif(deftrue('ADMIN') && (strpos($html, '</script>') !== false))
 		{
 			$lan1 = defset('LAN_NO_SCRIPT_ACCESS', "You don't have permission to use [script] tags.");
 			$lan2 = defset('', "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]");
