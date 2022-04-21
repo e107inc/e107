@@ -656,6 +656,12 @@ if(!isset($_E107['no_event']))
 	$dbg->logTime('Register Core Events');
 	e107::getNotify()->registerEvents();
 }
+
+if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
+{
+	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+}
+
 //
 // O: Start user session
 //
@@ -680,10 +686,7 @@ $developerMode = (vartrue($pref['developer'],false) || E107_DEBUG_LEVEL > 0);
 
 
 	// for multi-language these definitions needs to come after the language loaded.
-if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
-{
-	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
-}
+
 if(!defined('SITEDESCRIPTION')) // Allow override by English_custom.php or English_global.php plugin files.
 {
 	define('SITEDESCRIPTION', $tp->toHTML($pref['sitedescription'], '', 'emotes_off,defs'));

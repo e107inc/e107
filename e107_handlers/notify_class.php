@@ -231,7 +231,7 @@ class notify
 
 		$devMode =  e107::getPref('developer', false);
 
-		if((ADMIN || $devMode) && E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
+		if((deftrue('ADMIN') || $devMode) && E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
 

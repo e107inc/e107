@@ -3363,7 +3363,7 @@ class e107
 
 		$path = self::templatePath($plug_name, $id, $override);
 
-		if(ADMIN && E107_DBG_INCLUDES)
+		if(deftrue('ADMIN') && E107_DBG_INCLUDES)
 		{
 			self::getMessage()->addDebug( "Attempting to load Template File: ".$path );
 		}
