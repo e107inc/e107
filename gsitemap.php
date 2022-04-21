@@ -63,7 +63,7 @@ class gsitemap_xml
 	{
 		header('Content-type: application/xml', TRUE);
 		$xml = "<?xml version='1.0' encoding='UTF-8'?>
-		<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>";
+		<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:image='https://www.google.com/schemas/sitemap-image/1.1'>";
 
 		if(empty($items))
 		{
@@ -105,10 +105,29 @@ class gsitemap_xml
 			$loc = (strpos($url, 'http') === 0) ? $url : SITEURL.$tp->replaceConstants($url,true);
 			$xml .= "
 			<url>
-				<loc>".$loc."</loc>
+				<loc>".$loc."</loc>";
+
+			if(!empty($sm[$prefix.'image']))
+			{
+				$imgUrl = $sm[$prefix.'image'];
+
+				if($imgUrl[0] === '/')
+				{
+					 $imgUrl = ltrim($imgUrl, '/');
+				}
+
+				$imgUrl = (strpos($imgUrl, 'http') === 0) ? $imgUrl : SITEURL.$tp->replaceConstants($imgUrl,true);
+
+				$xml .= "
+				<image:image>
+                    <image:loc>".$imgUrl."</image:loc>
+                </image:image>";
+			}
+
+			$xml .= "	
 				<lastmod>".date('c', (int) $sm[$prefix.'lastmod'])."</lastmod>
-		            <changefreq>".$sm[$prefix.'freq']."</changefreq>
-		            <priority>".$sm[$prefix.'priority']."</priority>
+		      	<changefreq>".$sm[$prefix.'freq']."</changefreq>
+		      	<priority>".$sm[$prefix.'priority']."</priority>
 			</url>";
 		}
 
