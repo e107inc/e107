@@ -4812,7 +4812,7 @@ var_dump($select_options);*/
 						'RELATED_URL'       => $tp->replaceConstants($val['url'],'full'),
 						'RELATED_TITLE'     => $val['title'],
 						'RELATED_IMAGE'     => $tp->toImage($val['image']),
-						'RELATED_SUMMARY'   => $tp->toHTML($val['summary'],true,'BODY'),
+						'RELATED_SUMMARY'   => $tp->toHTML($val['summary'],true,'SUMMARY'),
 						'RELATED_DATE'		=> $val['date'],	
 					);
 
