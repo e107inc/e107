@@ -2136,24 +2136,25 @@ class e_user extends e_user_model
 		// Don't update if main admin is logged in as current (non main admin) user
 		if(!$this->getParentId())
 		{
+			$iph = e107::getIPHandler();
 			$sql = e107::getDb();
 			$this->set('last_ip', $this->get('user_ip'));
-			$current_ip = e107::getIPHandler()->getIP();
+			$current_ip = $iph->getIP();
 			$update_ip = '';
 			$edata = [];
 
 			if($this->get('user_ip') != $current_ip)
 			{
+				$old_ip = (string) $this->get('user_ip');
 				$update_ip = ", user_ip = '".$current_ip."'";
 				$edata = [
-					'old_ip'    => $this->get('user_ip'),
-					'new_ip'    => $current_ip,
+					'old_ip'    => $iph->ipDecode($old_ip),
+					'new_ip'    => $iph->ipDecode($current_ip),
 					'time'      => date('c'),
 					'user_id'   => $this->getId(),
 					'user_name' => $this->get('user_name'),
 				];
-
-
+				
 			}
 
 			$this->set('user_ip', $current_ip);
