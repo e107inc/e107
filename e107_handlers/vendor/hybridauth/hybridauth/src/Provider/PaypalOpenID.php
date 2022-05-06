@@ -7,13 +7,13 @@
 
 namespace Hybridauth\Provider;
 
-use Hybridauth\Adapter\OpenID as OpenIDAdapter;
+use Hybridauth\Adapter\OpenID;
 use Hybridauth\HttpClient;
 
 /**
  * PayPal OpenID provider adapter.
  */
-class PaypalOpenID extends OpenIDAdapter
+class PaypalOpenID extends OpenID
 {
     /**
      * {@inheritdoc}
