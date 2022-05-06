@@ -5,9 +5,9 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
-        'reference' => '632e4347113022b465bb280b46f2c1afbd16becc',
+        'reference' => 'dec2941882bd8f5d3eacd2c80ed673441821716d',
         'name' => 'e107inc/e107',
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         'e107inc/e107' => array(
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),
-            'reference' => '632e4347113022b465bb280b46f2c1afbd16becc',
+            'reference' => 'dec2941882bd8f5d3eacd2c80ed673441821716d',
             'dev_requirement' => false,
         ),
         'guzzlehttp/psr7' => array(
@@ -29,12 +29,12 @@
             'dev_requirement' => false,
         ),
         'hybridauth/hybridauth' => array(
-            'pretty_version' => '3.7.1',
-            'version' => '3.7.1.0',
+            'pretty_version' => 'v3.8.0',
+            'version' => '3.8.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../hybridauth/hybridauth',
             'aliases' => array(),
-            'reference' => '0ec1b8cb8b230aae739422c5e42bc5733b3a7316',
+            'reference' => 'c76bea6638376394c74a52791dd637fef4deaf08',
             'dev_requirement' => false,
         ),
         'ifsnop/mysqldump-php' => array(
@@ -56,12 +56,12 @@
             'dev_requirement' => false,
         ),
         'matthiasmullie/minify' => array(
-            'pretty_version' => '1.3.66',
-            'version' => '1.3.66.0',
+            'pretty_version' => '1.3.68',
+            'version' => '1.3.68.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../matthiasmullie/minify',
             'aliases' => array(),
-            'reference' => '45fd3b0f1dfa2c965857c6d4a470bea52adc31a6',
+            'reference' => 'c00fb02f71b2ef0a5f53fe18c5a8b9aa30f48297',
             'dev_requirement' => false,
         ),
         'matthiasmullie/path-converter' => array(
