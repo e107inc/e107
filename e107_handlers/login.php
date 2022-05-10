@@ -740,7 +740,7 @@ class userlogin
 		$userAuditPref = e107::getPref('user_audit_class', e_UC_NOBODY);
 		if (check_class($userAuditPref, $class_list))
 		{
-			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $edata_li);
+			e107::getLog()->user_audit(USER_AUDIT_LOGIN,  $edata_li, $userData['user_id'], $userData['user_name']);
 		}
 
 		e107::getEvent()->trigger("login", $edata_li);
