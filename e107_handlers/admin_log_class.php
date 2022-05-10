@@ -449,13 +449,13 @@ class e_admin_log
 	 *    Log user-related events
 	 * @param string $event_type
 	 * @param array|string $event_data is an array of data fields whose keys and values are logged (usually user data, but doesn't have to be - can add messages here)
-	 * @param string $id
-	 * @param string $u_name
+	 * @param int $id user-id
+	 * @param string $u_name user-name
 	 *    both $id and $u_name are left blank except for admin edits and user login, where they specify the id and login name of the 'target' user
 	 *
 	 * @return bool
 	 */
-	function user_audit($event_type, $event_data, $id = '', $u_name = '')
+	function user_audit($event_type, $event_data, $id = null, $u_name = '')
 	{
 		list($time_usec, $time_sec) = explode(' ', microtime()); // Log event time immediately to minimise uncertainty
 
