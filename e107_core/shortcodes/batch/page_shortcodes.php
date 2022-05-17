@@ -759,6 +759,17 @@ class cpage_shortcodes extends e_shortcode
 
 		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']), $template['related']);
 	}
+
+	function sc_cpagekeywords($parm=null)
+	{
+		if(empty($this->var['page_metakeys']))
+		{
+			return null;
+		}
+
+		$text = e107::getParser()->toHTML($this->var['page_metakeys'], false, 'SUMMARY');
+		return str_replace(',', ', ', $text);
+	}
 	
 	
 	function sc_cpageedit($parm=array())
