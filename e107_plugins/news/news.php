@@ -80,10 +80,15 @@ class news_front
 
 	private function setBreadcrumb()
 	{
-
+		$this->addDebug('setBreadcrumb', 'complete');
 		$breadcrumb = array();
 
 		$breadcrumb[] = array('text'=> LAN_PLUGIN_NEWS_NAME, 'url'=>e107::url('news', 'index'));
+
+		if(empty($this->currentRow['category_name']))
+		{
+			$this->addDebug("Possible Issue", "missing category_name on this->currentRow");
+		}
 
 		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
 
@@ -94,7 +99,7 @@ class news_front
 				$breadcrumb[0]['url'] = null;
 				break;
 
-			case "news/view":
+			case "news/view/item":
 
 				$itemName = e107::getParser()->toHTML($this->currentRow['news_title'],true, 'TITLE');
 
@@ -128,7 +133,7 @@ class news_front
 			default:
 				if(ADMIN)
 				{
-					$breadcumb[] = array('text'=> "Missing News breadcrumb for route: ".$this->route);
+					$breadcrumb[] = array('text'=> "Missing News breadcrumb for route: ".$this->route);
 				}
 			break;
 		}
@@ -367,7 +372,6 @@ class news_front
 		{
 			$newsRoute = 'list/items';
 		}
-
 
 
 		$this->route = 'news/'.$newsRoute;
@@ -777,6 +781,8 @@ class news_front
 
 		$e107cache->set($cache_tag, $cache_data);
 		$e107cache->set($cache_tag."_caption", $this->caption);
+
+		$this->addDebug('Cache Caption', $this->caption);
 		$e107cache->set($cache_tag."_title", e107::getSingleton('eResponse')->getMetaTitle());
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
@@ -796,10 +802,15 @@ class news_front
 		{
 			$cachetag .= "_".$type;
 		}
-		$this->addDebug('CaheString lookup', $cachetag);
+		$this->addDebug('CacheString lookup', $cachetag);
 		e107::getDebug()->log('Retrieving cache string:' . $cachetag);
 
 		$ret =  e107::getCache()->setMD5(null)->retrieve($cachetag);
+
+		if(empty($ret))
+		{
+			$this->addDebug('Possible Issue', $cachetag." is empty");
+		}
 
 		if($type == 'rows')
 		{
@@ -1181,6 +1192,7 @@ class news_front
 		{
 			$this->addDebug("Cache",'active');
 			$rows = $this->getNewsCache($this->cacheString,'rows');
+			$this->currentRow = $rows;
 			$caption = $this->getNewsCache($this->cacheString,'caption');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
@@ -1294,7 +1306,7 @@ class news_front
 				if(defset('THEME_VERSION') === 2.3 || (isset($tmp['caption']) && $tmp['caption'] !== null)) // to initiate tablerender() usage.
 				{
 					$this->addDebug('Internal Route', $this->route);
-					$this->route = 'news/view'; // used for tablerender id.
+
 					$this->templateKey = $newsViewTemplate; // used for tablerender id.
 
 					$nsc = e107::getScBatch('news')->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
@@ -1308,6 +1320,9 @@ class news_front
 
 
 			$this->currentRow = $news;
+
+			$this->caption = $caption;
+
 
 			$cache_data =	$this->ix->render_newsitem($news, 'extend', '', $template, $param);
 
@@ -1327,9 +1342,8 @@ class news_front
 				$ns->setUniqueId(null); // prevent other tablerenders from using this content.
 
 				// TODO add 'image' and 'icon'?
-				$this->caption = $caption;
-				$text = $cache_data;
 
+				$text = $cache_data;
 			}
 			else
 			{
