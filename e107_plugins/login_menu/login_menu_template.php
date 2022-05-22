@@ -76,7 +76,7 @@ if ( ! isset($LOGIN_MENU_FORM))
 	else
 	{
 	  $LOGIN_MENU_FORM .= "
-    	<div style='text-align: center'>";
+    	<div id='login-menu' style='text-align: center'>";
 	}
 
 	$LOGIN_MENU_FORM .= "
