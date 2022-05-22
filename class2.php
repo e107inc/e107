@@ -883,7 +883,10 @@ if (($_SERVER['QUERY_STRING'] === 'logout')/* || (($pref['user_tracking'] == 'se
 	
 	// earlier event trigger with user data still available 
 	e107::getEvent()->trigger('logout');
-	
+
+	$go = e107::getRedirect();
+	$prev = $go->getPreviousUrl();
+
 	// first model logout and session destroy..
 	e107::getUser()->logout();
 	
@@ -895,9 +898,16 @@ if (($_SERVER['QUERY_STRING'] === 'logout')/* || (($pref['user_tracking'] == 'se
 		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
 	}
 	cookie(e_COOKIE, '', (time() - 2592000));
-	
-	e107::getRedirect()->redirect(SITEURL);
-	// header('location:'.e_BASE.'index.php');
+
+	if($prev) // allow scripts to set the logged out URL via setPreviousUrl()
+	{
+		$go->redirect($prev);
+	}
+	else
+	{
+		$go->redirect(SITEURL);
+	}
+
 	exit();
 }
 
