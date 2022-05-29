@@ -101,6 +101,24 @@
 			}
 
 		}
+
+		function testToHTMLWordLimit()
+		{
+			$text1 = "<p>here is text link</p>";
+			$text2 = "<p>and another link text</p>";
+			$text3 = "<p>and another paragraph of text with a link</p>";
+			$text4 = "<p>and yet another link to do</p>";
+
+			$this->lw->toHTML($text1, 'BODY');
+			$this->lw->toHTML($text2, 'BODY');
+			$result1 = $this->lw->toHTML($text3, 'BODY');
+			$result2 = $this->lw->toHTML($text4, 'BODY');
+
+			$this->assertSame('<p>and another paragraph of text with a <a class="lw-link  lw-3"  href="/page-link" >link</a></p>', $result1);
+			$this->assertSame('<p>and yet another link to do</p>', $result2);
+
+
+		}
 /*
 		public function testLinksproc()
 		{
