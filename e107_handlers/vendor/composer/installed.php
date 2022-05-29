@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
-        'reference' => 'dec2941882bd8f5d3eacd2c80ed673441821716d',
+        'reference' => '8ec6e3a0dd960847abbcec86c6efcaa288f47099',
         'name' => 'e107inc/e107',
         'dev' => false,
     ),
@@ -16,7 +16,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),
-            'reference' => 'dec2941882bd8f5d3eacd2c80ed673441821716d',
+            'reference' => '8ec6e3a0dd960847abbcec86c6efcaa288f47099',
             'dev_requirement' => false,
         ),
         'guzzlehttp/psr7' => array(
@@ -47,12 +47,12 @@
             'dev_requirement' => false,
         ),
         'intervention/image' => array(
-            'pretty_version' => '2.7.1',
-            'version' => '2.7.1.0',
+            'pretty_version' => '2.7.2',
+            'version' => '2.7.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../intervention/image',
             'aliases' => array(),
-            'reference' => '744ebba495319501b873a4e48787759c72e3fb8c',
+            'reference' => '04be355f8d6734c826045d02a1079ad658322dad',
             'dev_requirement' => false,
         ),
         'matthiasmullie/minify' => array(
