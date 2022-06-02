@@ -1421,7 +1421,7 @@ class news_form_ui extends e_admin_form_ui
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
 			$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
-			$text .= "<a href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$curVal)."'>".$row['user_name']."</a>";
+			$text .= "<a target='_blank' href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$auth)."'>".$row['user_name']."</a>";
 		}
 		else // allow master admin to
 		{
