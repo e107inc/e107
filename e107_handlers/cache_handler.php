@@ -284,6 +284,7 @@ class ecache {
 
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
+		e107::getEvent()->trigger('cache_clear', ['tag'=>$CacheTag, 'file'=>$file, 'system'=>$syscache]);
 		$ret = self::delete(e_CACHE_CONTENT, $file, $syscache);
 
 		if($CacheTag && $related) //TODO - too dirty - add it to the $file pattern above
