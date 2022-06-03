@@ -674,29 +674,19 @@ class news_front
 			}
 
 			// include news-thumbnail/image in meta. - always put this one first.
-			$twitterImage = false;
 			if(!empty($news['news_thumbnail']))
 			{
 				$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
 				$tmp = explode(",", $iurl);
-				foreach($tmp as $mimg)
+
+				if(!empty($tmp[0]) && substr($tmp[0],-8) !== '.youtube')
 				{
-					if(substr($mimg,-8) == '.youtube' || empty($mimg))
-					{
-						continue;
-					}
-					
+					$mimg = $tmp[0];
 					$metaImg = $tp->thumbUrl($mimg,'w=1200',false,true) ;
 					e107::meta('og:image',$metaImg);
 					e107::meta('og:image:width', 1200);
-					if(!$twitterImage)
-					{
-						e107::meta('twitter:image', $metaImg);
-						$twitterImage = true;
-					}
-
+					e107::meta('twitter:image', $metaImg);
 					e107::meta('twitter:card', 'summary_large_image');
-
 				}
 
 			}

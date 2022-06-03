@@ -114,8 +114,6 @@ function render_title()
 	if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
 	{
 		define('e_PAGETITLE', $_PAGE_TITLE);
-		e107::meta('og:title', $_PAGE_TITLE); // will only populate if not already defined.
-		e107::meta('twitter:title', $_PAGE_TITLE);
 	}
 
 	$arr = [];
@@ -130,12 +128,6 @@ function render_title()
 		{
 			$arr[] = PAGE_NAME;
 		}
-	}
-	else // Frontpage
-	{
-		e107::meta('og:type', 'website');
-		e107::meta('og:title', SITENAME);
-		e107::meta('twitter:title', SITENAME);
 	}
 
 	$arr[] = SITENAME;
@@ -167,18 +159,7 @@ echo "<head>
 <meta charset='utf-8' />\n";
 if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-if(!empty($pref['sitebutton']))
-{
-	$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitebutton'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitebutton'],'full');
-	e107::meta('og:image',$siteButton);
-	unset($siteButton);
-}
-elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
-{
-	$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitelogo'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitelogo'],'full');
-	e107::meta('og:image',$siteLogo);
-	unset($siteLogo);
-}
+
 
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
 
