@@ -7,7 +7,17 @@
  */
 if (!defined('e107_INIT')) { exit; }
 
-$cacheString = 'nq_news_latest_menu_'.md5(serialize($parm).USERCLASS_LIST.e_LANGUAGE);
+
+if($current = e107::getRegistry('current_news_item'))
+{
+	$currentID = (int) $current['news_id'];
+}
+else
+{
+	$currentID = 0;
+}
+
+$cacheString = 'nq_news_latest_menu_'.md5(serialize($parm).USERCLASS_LIST.e_LANGUAGE.$currentID);
 $cached = e107::getCache()->retrieve($cacheString);
 if(false === $cached)
 {
@@ -47,9 +57,9 @@ if(false === $cached)
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
 
-	if($current = e107::getRegistry('current_news_item'))
+	if(!empty($currentID))
 	{
-		$treeparm['db_where'] = 'news_id != '.(int) $current['news_id'];
+		$treeparm['db_where'] = 'news_id != '.$currentID;
 	}
 
 	/* Prevent data-overwrite if menu is called within news template and more news shortcodes are called after */
