@@ -73,20 +73,26 @@ class social_event
 		{
 			$description = e107::getSingleton('eResponse')->getMetaDescription();
 
-			if(empty($description) && deftrue('META_DESCRIPTION'))
+			if(empty($description))
 			{
-				$description = META_DESCRIPTION;
-			}
-			else
-			{
-				$description = e107::pref('core', 'meta_description');
+				if(deftrue('META_DESCRIPTION'))
+				{
+					$description = META_DESCRIPTION;
+				}
+				else
+				{
+					$tmp = e107::pref('core', 'meta_description');
+					if(!empty($tmp[e_LANGUAGE]))
+					{
+						$description = $tmp[e_LANGUAGE];
+					}
+				}
 			}
 
 			if(!empty($description))
 			{
 				e107::meta('og:description', $description);
 				e107::meta('twitter:description', $description);
-
 			}
 		}
 
