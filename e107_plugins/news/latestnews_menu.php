@@ -47,6 +47,11 @@ if(false === $cached)
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
 
+	if($current = e107::getRegistry('current_news_item'))
+	{
+		$treeparm['db_where'] = 'news_id != '.(int) $current['news_id'];
+	}
+
 	/* Prevent data-overwrite if menu is called within news template and more news shortcodes are called after */
 	$origParam = e107::getScBatch('news')->getScVar('param');
 	$origData = e107::getScBatch('news')->getScVar('news_item');
