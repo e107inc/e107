@@ -3913,6 +3913,7 @@ class e_parse
 		$path .= $dirs[$cat] . '/';
 		$path .= str_replace('fa-', '', $id) . ".svg";
 
+
 		if ($ret = file_get_contents($path))
 		{
 			$class = 'svg-inline--fa ';
@@ -3920,7 +3921,7 @@ class e_parse
 			$class .= ' fa-w-16';
 			$class .= !empty($parm['fw']) ? ' fa-fw' : '';
 
-			return str_replace('<svg', '<svg class="' . $class . '" role="img" ', $ret);
+			return str_replace('<svg', '<svg class="' . $class . '" role="img" aria-hidden="true" ', $ret);
 		}
 
 		return false;

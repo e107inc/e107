@@ -174,7 +174,7 @@ class social_shortcodes extends e_shortcode
 		if($ret = file_get_contents($path))
 		{
 			$class = 'fa-'.$this->var['id'];
-			return str_replace('<svg', '<svg class="'.$class.'" role="img" ', $ret);
+			return str_replace('<svg', '<svg class="'.$class.'" role="img" aria-hidden="true" ', $ret);
 		}
 
 	}
