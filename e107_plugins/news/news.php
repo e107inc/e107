@@ -662,7 +662,7 @@ class news_front
 
 			if(!empty($news['news_meta_title'])) // override title with meta title.
 			{
-				e107::title($news['news_meta_title']);
+				e107::title($news['news_meta_title'], true);
 			}
 
 			if($news['news_meta_description'] && !defined('META_DESCRIPTION'))

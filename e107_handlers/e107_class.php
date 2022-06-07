@@ -2825,14 +2825,15 @@ class e107
 	}
 
 	/**
-	 * Set the Page Title ie. <title>Whatever</title>
+	 * Set the Page Title ie. <title>Whatever | SITENAME</title> or <title>Whatever</title>
 	 * @param string $title
+	 * @param string $override will remove any additional data from the <title> tag. eg.  | SITENAME etc.
 	 */
-	public static function title($title)
+	public static function title($title, $override=false)
 	{
 		/** @var eResponse $response */
 		$response = self::getSingleton('eResponse');
-		$response->addMetaTitle($title, true);
+		$response->addMetaTitle($title, true, $override);
 	}
 
 	/**

@@ -109,21 +109,28 @@ function render_title()
 		define('e_PAGETITLE', $_PAGE_TITLE);
 	}
 
-	$arr = [];
-
-	if(!deftrue('e_FRONTPAGE'))
+	if($_FULL_TITLE = e107::getSingleton('eResponse')->getMetaTitle(true)) // override entire title. @see news_meta_title
 	{
-		if(deftrue('e_PAGETITLE'))
-		{
-			$arr[] = e_PAGETITLE;
-		}
-		elseif(defined('PAGE_NAME'))
-		{
-			$arr[] = PAGE_NAME;
-		}
+		$arr = array($_FULL_TITLE);
 	}
+	else
+	{
+		$arr = [];
 
-	$arr[] = SITENAME;
+		if(!deftrue('e_FRONTPAGE'))
+		{
+			if(deftrue('e_PAGETITLE'))
+			{
+				$arr[] = e_PAGETITLE;
+			}
+			elseif(defined('PAGE_NAME'))
+			{
+				$arr[] = PAGE_NAME;
+			}
+		}
+
+		$arr[] = SITENAME;
+	}
 
 	if($custom = e107::callMethod('theme', 'title', $arr))
 	{
