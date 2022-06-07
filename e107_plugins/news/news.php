@@ -653,11 +653,16 @@ class news_front
 				e107::meta('robots', $news['news_meta_robots']);
 			}
 
-			if($news['news_title'])
+			if(!empty($news['news_title']))
 			{
 				e107::title($news['news_title']);
 				e107::meta('og:type','article');
 				e107::meta('twitter:card', 'summary');
+			}
+
+			if(!empty($news['news_meta_title'])) // override title with meta title.
+			{
+				e107::title($news['news_meta_title']);
 			}
 
 			if($news['news_meta_description'] && !defined('META_DESCRIPTION'))

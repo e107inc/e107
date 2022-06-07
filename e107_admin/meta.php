@@ -39,7 +39,8 @@ class meta_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/meta' => array('caption' => LAN_MANAGE, 'perm' => '0', 'icon'=>'fas-cogs'),
+		'main/meta' => array('caption' => LAN_MANAGE, 'perm' => '0', 'icon'=>'fas-list'),
+		'main/prefs'=> array('caption' => "SEO", 'perm'=>'0', 'icon'=>'fas-cogs'),
 	);
 
 	protected $adminMenuAliases = array(//	'main/edit'	=> 'main/list'
@@ -57,6 +58,12 @@ class meta_admin_ui extends e_admin_ui
 
 	protected $pluginTitle = METLAN_00;
 	protected $pluginName = 'core';
+
+	protected $prefs = array(
+		'seo_title_limit' => array('title'=>METLAN_8, 'type'=>'number', 'data'=>'int', 'help'=>'', 'writeParms'=>['size'=>'large']),
+		'seo_description_limit' => array('title'=>METLAN_9, 'type'=>'number', 'data'=>'int', 'help'=>'', 'writeParms'=>['size'=>'large']),
+		'meta_news_summary' => array('title'=>METLAN_3, 'type'=>'boolean', 'data'=>'int'),
+	);
 
 	function init()
 	{
@@ -91,7 +98,6 @@ class meta_admin_ui extends e_admin_ui
 			}
 		}
 
-		$cfg->set('meta_news_summary', varset($_POST['meta_news_summary']));
 		$cfg->save(true, true, true);
 	}
 
@@ -181,14 +187,7 @@ class meta_admin_ui extends e_admin_ui
 
 		$text .= "</td>
 					</tr>
-					<tr>
-						<td>" . METLAN_3 . "</td>
-						<td>
-							<div class='auto-toggle-area autocheck'>" .
-			$frm->checkbox('meta_news_summary', 1, varset($pref['meta_news_summary'])) . "
-								</div>
-							</td>
-						</tr>
+				
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>" .

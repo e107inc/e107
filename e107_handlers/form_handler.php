@@ -6621,12 +6621,33 @@ var_dump($select_options);*/
 							'data-sef-generate-confirm' => LAN_WILL_OVERWRITE_SEF . ' ' . LAN_JSCONFIRM,
 						]) . '>' . LAN_GENERATE . '</a></span>';
 				}
+				elseif(!empty($parms['counter']) && empty($parms['post']))
+				{
+					$parms['class'] = 'tbox e-count';
+					$parms['data-char-count'] = $parms['counter'];
+
+					if(!empty($parms['placeholder']) && (strlen($parms['placeholder']) > (int) $parms['counter']))
+					{
+						$parms['class'] .= " has-error";
+					}
+
+					if(!isset($parms['pattern']))
+					{
+						$parms['pattern'] = '.{0,'.$parms['counter'].'}';
+					}
+					$charMsg = $tp->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'), "<span>" . $parms['counter'] . "</span>");
+					$parms['post'] = "<small" . $this->attributes([
+							'id'    => $this->name2id($key) . "-char-count",
+							'class' => 'text-muted e-count-display',
+							'style' => 'display:none',
+						]) . ">" . $charMsg . "</small>";
+				}
+
 
 				if(!empty($parms['password'])) // password mechanism without the md5 storage. 
 				{
 					$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']);
 				}
-
 				else
 				{
 					$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
@@ -6664,12 +6685,26 @@ var_dump($select_options);*/
 					$parms['size'] = 'xxlarge';
 				}
 
-				if(!empty($parms['maxlength']) && empty($parms['post']))
+				if(!empty($parms['counter']) && empty($parms['post']))
 				{
-					$charMsg = $tp->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'), "<span>" . $parms['maxlength'] . "</span>");
+					$parms['class'] = 'tbox e-count';
+
+					if(!empty($parms['placeholder']) && (strlen($parms['placeholder']) > (int) $parms['counter']))
+					{
+						$parms['class'] .= " has-error";
+					}
+
+					if(!isset($parms['pattern']))
+					{
+						$parms['pattern'] = '.{0,'.$parms['counter'].'}';
+					}
+
+
+					$parms['data-char-count'] = $parms['counter'];
+					$charMsg = $tp->lanVars(defset('LAN_X_CHARS_REMAINING', '[x] chars remaining'), "<span>" . $parms['counter'] . "</span>");
 					$parms['post'] = "<small" . $this->attributes([
 							'id'    => $this->name2id($key) . "-char-count",
-							'class' => 'text-muted',
+							'class' => 'text-muted e-count-display',
 							'style' => 'display:none',
 						]) . ">" . $charMsg . "</small>";
 				}

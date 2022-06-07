@@ -1510,7 +1510,7 @@ thead tr{background-color:#363636;background-image:linear-gradient(to bottom,#44
 .btn-primary>[class^=icon-],.dropdown-menu>.active>a>[class*=" icon-"],.dropdown-menu>.active>a>[class^=icon-],.dropdown-menu>li>a:hover>[class*=" icon-"],.dropdown-menu>li>a:hover>[class^=icon-],.dropdown-submenu:hover>a>[class*=" icon-"],.dropdown-submenu:hover>a>[class^=icon-],.icon-white,.nav-list>.active>a>[class*=" icon-"],.nav-list>.active>a>[class^=icon-],.nav-pills>.active>a>[class*=" icon-"],.nav-pills>.active>a>[class^=icon-],.nav-tabs>li>a>[class^=icon-],.navbar-inverse .nav>.active>a>[class*=" icon-"],.navbar-inverse .nav>.active>a>[class^=icon-],h1>[class^=icon-],h2>[class^=icon-],h3>[class^=icon-],h4>[class^=icon-],h5>[class^=icon-]{background-image:none}
 #admin-ui-nav-menu a.link-active{color:#fff}
 .tab-content{background-color:#373737}
-input:invalid:focus,select:invalid:focus,textarea:invalid:focus{border-color:red;box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset}
+.form-control.has-error,input:invalid,input:invalid:focus,select:invalid:focus,textarea:invalid:focus{border-color:red;box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset}
 td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
 .admin-left-panel-collapsed .admin-left-panel { width: 70px }
 .admin-left-panel-collapsed .admin-right-panel { width: calc(100% - 70px) }
