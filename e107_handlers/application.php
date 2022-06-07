@@ -4093,7 +4093,8 @@ class eResponse
 {
 	protected $_body = array('default' => '');
 	protected $_title = array('default' => array());
-	protected $_e_PAGETITLE = array();
+	protected $_e_PAGETITLE = array(); // partial <title> tag.
+	protected $_e_PAGETITLE_OVERRIDE = array(); // Full <title> tag
 	protected $_META_DESCRIPTION = array();
 	protected $_META_KEYWORDS = array();
 	protected $_render_mod = array('default' => 'default');
@@ -4600,7 +4601,7 @@ class eResponse
 		{
 			$content = str_replace('&amp;', '&', $content);
 
-			if($meta !== '_e_PAGETITLE')
+			if($meta !== '_e_PAGETITLE' && $meta !== '_e_PAGETITLE_OVERRIDE')
 			{
 				$content = htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8');
 			}
@@ -4642,14 +4643,26 @@ class eResponse
 	 * @param string $title
 	 * @return eResponse
 	 */
-	public function addMetaTitle($title, $reset=false)
+	public function addMetaTitle($title, $reset=false, $override=false)
 	{
 		if($reset)
 		{
-			$this->_e_PAGETITLE = array();
+			if($override)
+			{
+				$this->_e_PAGETITLE_OVERRIDE = array();
+			}
+			else
+			{
+				$this->_e_PAGETITLE = array();
+			}
 		}
 
 		$title = str_replace(['&#39;','&#039;'], "'", $title);
+
+		if($override)
+		{
+			return $this->addMetaData('e_PAGETITLE_OVERRIDE', $title);
+		}
 
 		return $this->addMetaData('e_PAGETITLE', $title);
 	}
@@ -4657,8 +4670,13 @@ class eResponse
 	/**
 	 * @return string
 	 */
-	public function getMetaTitle()
+	public function getMetaTitle($override = false)
 	{
+		if($override)
+		{
+			return $this->getMetaData('e_PAGETITLE_OVERRIDE', $this->_meta_title_separator);
+		}
+
 		return $this->getMetaData('e_PAGETITLE', $this->_meta_title_separator);
 	}
 
