@@ -94,7 +94,7 @@ class social_admin
 				
 					<div class="well social-plugin" style="width:450px">
 						<div class="media">
-							<div class="media-left">'.$tp->toImage($data['news_thumbnail'][0], array('w'=>100, 'h'=>100, 'crop'=>1, 'class'=>'media-object')).'</div>
+							<div class="media-left"><a target="_blank" href="'.$shareData['url'].'" title="'.LAN_EFORM_010.'">'.$tp->toImage($data['news_thumbnail'][0], array('w'=>100, 'h'=>100, 'crop'=>1, 'class'=>'media-object')).'</a></div>
 							<div class="media-body">
 								<h4 class="media-header">'.$tp->post_toHTML($data['news_title']).'</h4>
 								<p><small>'.$tp->post_toHTML($data['news_meta_description'])."</small></p>".$this->share($shareData).'

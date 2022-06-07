@@ -16,3 +16,6 @@ define("METLAN_4", "Custom tags (inside [x] tags)");
 define("METLAN_5", "Custom tags (after [x])");
 define("METLAN_6", "Custom tags (before [x])");
 define("METLAN_7", "Any meta data or custom HTML tags entered here (such as <script> tags or Google analytics code) will be included on every page of the website in their designated areas.");
+
+define("METLAN_8", "SEO Title Character Limit");
+define("METLAN_9", "SEO Description Character Limit");

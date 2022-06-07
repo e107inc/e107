@@ -11,15 +11,8 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-if(!defined('USER_AREA'))
-{
-	//overload is now possible, prevent warnings
-	define('USER_AREA',TRUE);
-}
-if(!defined('ADMIN_AREA'))
-{
-	define('ADMIN_AREA', false);
-}
+if(!defined('USER_AREA')) { define('USER_AREA',TRUE); }
+if(!defined('ADMIN_AREA')) { define('ADMIN_AREA', false); }
 
 e107::getDebug()->logTime('(Header Top)');
 
