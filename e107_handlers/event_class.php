@@ -21,6 +21,7 @@ class e107_event
 	var $includes = array();
 
 	protected $coreEvents;
+	private $triggered = array();
 
 	protected $oldCoreEvents = array(
 
@@ -181,13 +182,13 @@ class e107_event
 
 
 	/**
-	 * Trigger event
+	 * Triggers an event
 	 *
 	 * @param string $eventname
 	 * @param mixed $data
 	 * @return mixed
 	 */
-	function trigger($eventname, $data='')
+	function trigger($eventname, $data=null)
 	{
 		/*if (isset($this->includes[$eventname]))
 		{
@@ -201,10 +202,12 @@ class e107_event
 		}*/
 
 	//	echo ($this->debug());
-
+		$this->triggered[$eventname] = true;
 
 		if (isset($this->functions[$eventname]))
 		{
+
+
 			foreach($this->functions[$eventname] as $i => $evt_func)
 			{
 				$location = '';
@@ -257,7 +260,15 @@ class e107_event
 		return (isset($ret) ? $ret : false);
 	}
 
-
+	/**
+	 * Returns true if an event has been triggered.
+	 * @param $eventname
+	 * @return bool
+	 */
+	public function triggered($eventname)
+	{
+		return !empty($this->triggered[$eventname]);
+	}
 
 
 	/**

@@ -55,6 +55,7 @@ if (isset($_POST['submit_cache']))
 if (isset($_POST['trigger_empty_cache']))
 {
 	e107::getLog()->addSuccess(CACLAN_6);
+	$triggerName = $_POST['option_clear_cache'];
 	switch ($_POST['option_clear_cache'])
 	{
 		case 'empty_contentcache':
@@ -101,8 +102,11 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('css');
 			e107::getSession()->clear('addons-update-status');
 			e107::getLog()->flushMessages(CACLAN_26);
+			$triggerName = 'default';
 		break;
 	}
+
+	e107::getEvent()->trigger('admin_after_clear_cache', $triggerName);
 }
 
 $syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
