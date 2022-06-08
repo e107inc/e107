@@ -64,5 +64,5 @@ define("GSLAN_39", "No links in sitemap - import sitelinks?");
 define("GSLAN_50", "Publicly visible");
 define("GSLAN_51", "Auto-generated from [x]");
 define("GSLAN_52", "Once you have some entries, go to [URL] and enter one of the following URLs in the Sitemaps section.[SITEMAP_URLS]  (If any of these urls look incorrect to you, please make sure your site url is correct in [preferences].)");
-
+define("GSLAN_53", "Instructions");
 
