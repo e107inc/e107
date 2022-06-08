@@ -964,8 +964,8 @@ class news_admin_ui extends e_admin_ui
 
 	private function setSEOLimits()
 	{
-		$seoTitleLimit = (int) e107::pref('core', 'seo_title_limit', 50);
-		$seoDescriptionLimit = (int) e107::pref('core', 'seo_description_limit', 155);
+		$seoTitleLimit = (int) e107::pref('core', 'seo_title_limit', 100);
+		$seoDescriptionLimit = (int) e107::pref('core', 'seo_description_limit', 180);
 
 		$this->fields['news_meta_title']['writeParms']['counter'] = $seoTitleLimit;
 		$this->fields['news_meta_title']['help'] = e107::getParser()->lanVars(LAN_SEARCH_ENGINES_X_LIMIT, $seoTitleLimit);
