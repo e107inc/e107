@@ -44,7 +44,7 @@ class gsitemap_adminArea extends e_admin_dispatcher
 		'main/create'		=> array('caption'=> GSLAN_22, 'perm' => 'P'),
 
 		 'main/div0'        => array('divider'=> true),
-		 'main/import'		=> array('caption'=> GSLAN_23, 'perm' => 'P'),
+		 'main/import'		=> array('caption'=> LAN_IMPORT, 'perm' => 'P'),
 		 'main/instructions' => array('caption'=> GSLAN_53, 'perm' => 'P'),
 		
 	);
