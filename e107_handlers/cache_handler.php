@@ -355,7 +355,9 @@ class ecache {
 	function clearAll($type,$mask = null)
 	{		
 		$path = null;
-		
+
+		e107::getEvent()->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
+
 		if($type =='content')
 		{
 			$this->clear();	
