@@ -5286,4 +5286,62 @@ class eHelper
 	}
 
 
+	/**
+	 * Duplicates the value from a title form field into the meta-title form field.
+	 * @param str $titleID  eg. news-title
+	 * @param str $metaTitleID eg. news-meta-title
+	 * @return void
+	 */
+	public static function syncSEOTitle($titleID, $metaTitleID)
+	{
+
+		e107::js('footer-inline', '
+
+			$(window).on("load", function () {
+			
+				if(!$("#'.$metaTitleID.'").val()) 
+			    {
+			        var title = $("#'.$titleID.'").val() + " | " + "'.SITENAME.'";
+			        var charlimit = $("#'.$metaTitleID.'").attr("data-char-count");
+			        
+			        $("#'.$metaTitleID.'").attr("placeholder",title);
+
+			        if(title.length > charlimit)
+			        {
+			           $("#'.$metaTitleID.'").addClass("has-error");
+			        }
+			    }
+			    
+			});
+
+
+			$("#'.$metaTitleID.'").on("ready focus", function() {
+			    
+				var title = $("#'.$titleID.'").val() + " | " + "'.SITENAME.'";
+			  
+			    if(!$(this).val()) 
+			    {
+			        $(this).val(title);
+			    }
+			    else
+			    {
+			        $(this).attr("placeholder",title);
+			    }
+			  
+			});
+			
+		
+			$("#'.$titleID.'").on("input change focus", function() 
+			{
+				var title = $("#'.$titleID.'").val() + " | " + "'.SITENAME.'";
+				$("#'.$metaTitleID.'").attr("placeholder",title);
+			
+			});
+			
+		');
+
+
+	}
+
+
 }

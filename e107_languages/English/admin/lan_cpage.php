@@ -13,7 +13,7 @@ define("CUSLAN_4", "Custom Fields");
 define("CUSLAN_5", "(New Book)");
 
 define("CUSLAN_9", 	"Text");
-define("CUSLAN_11", "Meta description");
+// define("CUSLAN_11", "Meta description"); @see LAN_META_DESCRIPTION
 define("CUSLAN_12", "Create Page/Menu");
 define("CUSLAN_29", "List pages if no page selected");
 define("CUSLAN_30", "Expiry time for cookie (in seconds)");

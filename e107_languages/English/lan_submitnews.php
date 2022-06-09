@@ -33,7 +33,7 @@ define("SUBNEWSLAN_7", "You must give your name and email address");
 define("SUBNEWSLAN_8", "Error uploading image");
 define("SUBNEWSLAN_9", "Keywords");
 //define("SUBNEWSLAN_10", "Summary");//LAN_SUMMARY
-define("SUBNEWSLAN_11", "Meta Description");
+// define("SUBNEWSLAN_11", "Meta Description"); LAN_META_DESCRIPTION
 define("SUBNEWSLAN_12", "Used by Facebook etc.");
 define("SUBNEWSLAN_13", "Media URLs");
 

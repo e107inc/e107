@@ -310,7 +310,7 @@ class submitNews
 			$fields = array();
 			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
 			$fields['submitnews_summary']       = array('title'=>LAN_SUMMARY, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
-			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
+			$fields['submitnews_description']   = array('title'=>LAN_META_DESCRIPTION, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
 			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
 
 

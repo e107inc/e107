@@ -14,7 +14,7 @@ define("LANA_FAQ_COMMENT", "Comment Class");
 define("LANA_FAQ_ULOGINNAME", "User login"); //FIXME Use generic
 define("LANA_FAQ_TAGS", "Tags");
 define("LANA_FAQ_TAGS_HELP", "Comma separated tag list");
-define("LANA_FAQ_METAD", "Meta Description");
+// define("LANA_FAQ_METAD", "Meta Description"); LAN_META_DESCRIPTION
 define("LANA_FAQ_METAK", "Meta Keywords");
 
 define("LANA_FAQ_PREF_1", "Allow submitting of FAQs by:");

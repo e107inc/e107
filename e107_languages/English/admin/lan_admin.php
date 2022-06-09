@@ -596,3 +596,5 @@ define("LAN_UI_FILTER_THIS_MONTH", "This Month");
 define("LAN_UI_FILTER_THIS_YEAR", "This Year");
 
 define("LAN_SEARCH_ENGINES_X_LIMIT", "Read by search engines. Maximum [x] characters.");
+define("LAN_META_TITLE", "Meta Title");
+define("LAN_META_DESCRIPTION", "Meta Description");

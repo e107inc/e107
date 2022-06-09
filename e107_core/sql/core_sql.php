@@ -384,6 +384,7 @@ CREATE TABLE page (
   page_subtitle varchar(250) NOT NULL default '',
   page_sef varchar (250) NOT NULL default '',
   page_chapter int(10) unsigned NOT NULL default '0',
+  page_metatitle varchar(255) NOT NULL default '',
   page_metakeys varchar (250) NOT NULL default '',
   page_metadscr mediumtext,
   page_metaimage varchar (250) NOT NULL default '',
