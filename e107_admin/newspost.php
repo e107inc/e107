@@ -27,31 +27,8 @@ e107::css('inline', "
 
 ");
 
-e107::js('footer-inline', '
 
-$("#news-meta-title").focus(function() {
-    
-     var title = $("#news-title").val() + " | " + "'.SITENAME.'";
-  
-    if(!$(this).val()) 
-    {
-        $(this).val(title);
-    }
-    else
-    {
-        $(this).attr("placeholder",title);
-    }
-  
-});
 
-$("#news-title").on("input change focus", function() 
-{
-	var title = $("#news-title").val() + " | " + "'.SITENAME.'";
-	$("#news-meta-title").attr("placeholder",title);
-
-});
-
-');
 
 class news_admin extends e_admin_dispatcher
 {
@@ -434,9 +411,6 @@ class news_sub_form_ui extends e_admin_form_ui
 		
 }
 
-
-define('NEWS_TITLE_META_LIMIT', 50);
-define('NEWS_DIZ_META_LIMIT',155);
 // Main News Area. 
 
 class news_admin_ui extends e_admin_ui
@@ -477,9 +451,9 @@ class news_admin_ui extends e_admin_ui
 		'news_body'			    => array('title' => "", 	        'type' => 'method', 'data'=>'str',    'tab'=>0,  'nolist'=>true, 'writeParms'=>'nolabel=1',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
 		'news_extended'			=> array('title' => "", 	        'type' => null,     'data'=>'str', 'tab'=>0,  'nolist'=>true, 'noedit'=>true, 'writeParms'=>'nolabel=1',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
 
-		'news_meta_title'	    => array('title' => LAN_TITLE, 	    'type' => 'text', 	  'data'=>'safestr', 'filter'=>true, 'tab'=>1,	'inline'=>true, 'width' => 'auto', 'help'=>'', 'writeParms'=>['size'=>'xxlarge', 'placeholder'=>'', 'counter'=>0,  'maxlength'=> 255], 	'nosort' => false),
+		'news_meta_title'	    => array('title' => LAN_META_TITLE, 	    'type' => 'text', 	  'data'=>'safestr', 'filter'=>true, 'tab'=>1,	'inline'=>true, 'width' => 'auto', 'help'=>'', 'writeParms'=>['size'=>'xxlarge', 'placeholder'=>'', 'counter'=>0,  'maxlength'=> 255], 	'nosort' => false),
 		'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'tags', 	  'data'=>'safestr', 'filter'=>true, 'tab'=>1,	'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 'data'=>'safestr','filter'=>true,	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 'help'=>'',		'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'counter'=>0, 'maxlength'=>255, 'rows'=>2)),
+		'news_meta_description'	=> array('title' => LAN_META_DESCRIPTION,'type' => 'textarea', 'data'=>'safestr','filter'=>true,	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 'help'=>'',		'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'counter'=>0, 'maxlength'=>255, 'rows'=>2)),
 		'news_meta_robots'		=> array('title' => LAN_ROBOTS, 	'type' => 'dropdown',  'data'=>'safestr',  'tab'=>1, 'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'writeParms'=>array('multiple'=>1), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
@@ -962,8 +936,10 @@ class news_admin_ui extends e_admin_ui
  
 	}
 
-	private function setSEOLimits()
+	private function initSEOFields()
 	{
+		eHelper::syncSEOTitle('news-title', 'news-meta-title');
+
 		$seoTitleLimit = (int) e107::pref('core', 'seo_title_limit', 100);
 		$seoDescriptionLimit = (int) e107::pref('core', 'seo_description_limit', 180);
 
@@ -977,27 +953,14 @@ class news_admin_ui extends e_admin_ui
 	function EditObserver()
 	{
 		parent::EditObserver();
-
-		$title = $this->getFieldVar('news_title'). ' | '.SITENAME;
-		$placeholder = $this->getFieldVar('news_meta_title');
-
-		if(empty($placeholder))
-		{
-			$this->fields['news_meta_title']['writeParms']['placeholder'] = html_entity_decode($title);
-		}
-		else
-		{
-			$this->fields['news_meta_title']['writeParms']['placeholder'] = html_entity_decode($placeholder);
-		}
-
-		$this->setSEOLimits();
+		$this->initSEOFields();
 
 	}
 
 	function CreateObserver()
 	{
 		parent::CreateObserver();
-		$this->setSEOLimits();
+		$this->initSEOFields();
 	}
 
 

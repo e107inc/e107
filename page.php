@@ -745,8 +745,10 @@ class pageClass
 		e107::title($metaTitle);
 		e107::meta('twitter:title', $metaTitle);
 
-
-
+		if(!empty($this->page['page_metatitle']))
+		{
+			e107::title(eHelper::formatMetaTitle($this->page['page_metatitle']),true);
+		}
 
 		if(!empty($this->page['page_metakeys']))
 		{

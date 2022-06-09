@@ -4503,6 +4503,17 @@ var_dump($select_options);*/
 	public function columnSelector($columnsArray, $columnsDefault = array(), $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
+
+		try
+		{
+			$tabs = e107::getAdminUI()->getController()->getTabs();
+		}
+		catch (Exception $e)
+		{
+		   // do something
+		}
+
+
 		
 	// navbar-header nav-header
 	// navbar-header nav-header
@@ -4527,10 +4538,21 @@ var_dump($select_options);*/
 			if (empty($fld['forced']) && empty($fld['nolist']) && $theType !== 'hidden' && $theType !== 'upload')
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+				$title = '';
+				if(isset($fld['tab']))
+				{
+					$tb = $fld['tab'];
+					if(!empty($tabs[$tb]))
+					{
+						$title = $tabs[$tb].": ";
+					}
+				}
+
 				$ttl = isset($fld['title']) ? defset($fld['title'], $fld['title']) : $key;
+				$title .= $ttl;
 
 				$text .= "
-					<li role='menuitem'><a href='#'>
+					<li role='menuitem'><a href='#' title=\"$title\">
 						".$this->checkbox('e-columns[]', $key, $checked,'label='.$ttl). '
 					</a>
 					</li>
@@ -6626,11 +6648,6 @@ var_dump($select_options);*/
 					$parms['class'] = 'tbox e-count';
 					$parms['data-char-count'] = $parms['counter'];
 
-					if(!empty($parms['placeholder']) && (strlen($parms['placeholder']) > (int) $parms['counter']))
-					{
-						$parms['class'] .= " has-error";
-					}
-
 					if(!isset($parms['pattern']))
 					{
 						$parms['pattern'] = '.{0,'.$parms['counter'].'}';
@@ -6689,7 +6706,7 @@ var_dump($select_options);*/
 				{
 					$parms['class'] = 'tbox e-count';
 
-					if(!empty($parms['placeholder']) && (strlen($parms['placeholder']) > (int) $parms['counter']))
+					if(!empty($value) && (strlen($value) > (int) $parms['counter']))
 					{
 						$parms['class'] .= " has-error";
 					}

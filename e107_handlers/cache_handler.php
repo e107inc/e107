@@ -356,23 +356,26 @@ class ecache {
 	{		
 		$path = null;
 
-		e107::getEvent()->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
+		$event = e107::getEvent();
 
 		if($type =='content')
 		{
-			$this->clear();	
+			$this->clear();
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;
 		}
 			
 		if($type === 'system')
 		{
 			$this->clear_sys();
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;	
 		}
 
 		if($type === 'browser')
 		{
 			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;	
 		}
 
@@ -422,6 +425,8 @@ class ecache {
 				unlink($path.$file);
 			}
 		}
+
+		$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 	}
 	
 }

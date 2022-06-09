@@ -95,7 +95,7 @@ class faq_cat_ui extends e_admin_ui
          	'faq_info_about' 			=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'dropdown',		'width' => '5%', 'writeParms'=>''),		
 			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'inline'=>true),
-			'faq_info_metad' 			=> array('title'=> LANA_FAQ_METAD,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 
+			'faq_info_metad' 			=> array('title'=> LAN_META_DESCRIPTION,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'),
 			'faq_info_metak' 			=> array('title'=> LANA_FAQ_METAK,	'type' => 'tags',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 				
 			'faq_info_sef' 				=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'inline'=>true, 'writeParms'=>'size=xxlarge'), 				
 	
