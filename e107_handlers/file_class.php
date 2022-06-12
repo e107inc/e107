@@ -1655,7 +1655,7 @@ class e_file
 					$zip->extractTo(e_TEMP);
 					chmod(e_TEMP . $dir, 0755);
 
-					if(empty($dir) && e_DEBUG)
+					if(empty($dir) && deftrue('e_DEBUG'))
 					{
 						print_a($fileinfo);
 					}
