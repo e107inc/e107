@@ -394,7 +394,7 @@ class eIPHandler
 
 		if(!is_readable($fileName)) // Note readable, but the IP is still banned, so half further script execution.
 		{
-			if($this->debug === true || e_DEBUG === true)
+			if($this->debug === true || defset('e_DEBUG') === true)
 			{
 				echo "Your IP is banned!";
 			}

@@ -773,7 +773,7 @@ class page_admin_ui extends e_admin_ui
 			}
 				
 
-			if($this->getAction() == 'create' && e_DEBUG === true)
+			if($this->getAction() == 'create' && deftrue('e_DEBUG'))
 			{
 
 				$tmp = e107::getCoreTemplate('page', 'default');
