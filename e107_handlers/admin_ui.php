@@ -4616,9 +4616,9 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
+			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
 			
-			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str' || $var['data'] === 'int'))
+			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str' || $var['data'] === 'safestr' || $var['data'] === 'int'))
 			{
 				$searchable_types[] = 'method';
 			}
@@ -8467,7 +8467,7 @@ class e_admin_form_ui extends e_form
 		}
 
 
-		if(!empty($searchFieldOpts))
+		if(!empty($searchFieldOpts) && $type !== 'batch')
 		{
 			$text .= "\t".$this->optgroup_open(defset('LAN_UI_FILTER_SEARCH_IN_FIELD', 'Search in Field'))."\n";
 
