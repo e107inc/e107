@@ -25,7 +25,7 @@ $NAVIGATION_TEMPLATE['main']['start'] = "<ul class='navbar-nav {NAV_CLASS}'>";
 $NAVIGATION_TEMPLATE['main']['item'] = "<li class='nav-item'><a class='nav-link' role='button' href='{NAV_LINK_URL}' {NAV_LINK_OPEN} title='{NAV_LINK_DESCRIPTION}'>{NAV_LINK_ICON}{NAV_LINK_NAME}</a></li>";
 
 // Main Link - active state
-$NAVIGATION_TEMPLATE['main']['item_active'] = "<li class='nav-item active'><a class='nav-link' role='button' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>{NAV_LINK_ICON}{NAV_LINK_NAME}</a></li>";
+$NAVIGATION_TEMPLATE['main']['item_active'] = "<li class='nav-item'><a class='nav-link active' aria-current='page' role='button' href='{NAV_LINK_URL}' title='{NAV_LINK_DESCRIPTION}'>{NAV_LINK_ICON}{NAV_LINK_NAME}</a></li>";
 
 $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';
 
