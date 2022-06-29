@@ -1940,12 +1940,12 @@ class e_media
 
 	/**
 	 * Resize an image.
-	 * @param $src
-	 * @param $dest
-	 * @param string $opts
+	 * @param string $src
+	 * @param string $dest
+	 * @param string|array $opts
 	 * @return bool
 	 */
-	function resizeImage($src='',$dest='',$opts=null)
+	public function resizeImage($src='',$dest='',$opts=null)
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
@@ -1978,7 +1978,7 @@ class e_media
 
 		$destFilePath = $destDir."/".varset($opts['prefix'],$maxWidth.'x'.$maxHeight).'_'.$destFile;
 
-		if(file_exists($destFilePath))
+		if(empty($opts['overwrite']) && file_exists($destFilePath))
 		{
 			return $destFilePath;
 		}
@@ -1986,11 +1986,21 @@ class e_media
 		try
 		{
 			$thumb = Intervension::make($src);
-			$thumb->resize(vartrue($maxWidth, null), vartrue($maxHeight, null), function ($constraint)
+			if(!empty($opts['crop']))
 			{
-		        $constraint->aspectRatio();
-	            $constraint->upsize();
-			});
+				$thumb->fit($maxWidth, $maxHeight, function ($constraint) {
+				    $constraint->upsize();
+				});
+			}
+			else
+			{
+				$thumb->resize(vartrue($maxWidth, null), vartrue($maxHeight, null), function ($constraint)
+				{
+
+			        $constraint->aspectRatio();
+		            $constraint->upsize();
+				});
+			}
 
 			$thumb->save($destFilePath, $quality);
 			return $destFilePath;
@@ -2007,6 +2017,7 @@ class e_media
 
 
 	}
+
 
 
 	/**

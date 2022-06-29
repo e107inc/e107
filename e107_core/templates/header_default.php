@@ -102,7 +102,7 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 //else
 
 
-function render_title()
+function renderTitle()
 {
 	if(!defined('e_PAGETITLE') && ($_PAGE_TITLE = e107::getSingleton('eResponse')->getMetaTitle())) // use e107::title() to set.
 	{
@@ -155,7 +155,7 @@ echo "<!doctype html>\n";
 $htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
 echo (defined('HTMLTAG') ? str_replace('THEME_LAYOUT', THEME_LAYOUT, HTMLTAG) :  $htmlTag)."\n";
 echo "<head>
-<title>".render_title()."</title>
+<title>".renderTitle()."</title>
 <meta charset='utf-8' />\n";
 if(!empty($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(!empty($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
@@ -245,13 +245,7 @@ if (is_array($pref['e_meta_list']))
 }
 
 // --------  Generate Apple Touch Icon ---------
-
-if(isset($pref['sitebutton']))
-{
-	$appleIcon = e107::getParser()->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
-	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
-	unset($appleIcon);
-}
+echo renderFavicon();
 
 
 
@@ -403,12 +397,12 @@ if (isset($eplug_js) && $eplug_js)
 	   	$eplug_js_unique = array_unique($eplug_js);
     	foreach($eplug_js_unique as $kjs)
 		{
-        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n"; // could be a .php file  so leave the 'type'.
+        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='$kjs'></script>\n"; // could be a .php file  so leave the 'type'.
 		}
 	}
 	else
 	{
-    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; // could be a .php file so leave the 'type'.
+    	echo "<script type='text/javascript' src='$eplug_js'></script>\n"; // could be a .php file so leave the 'type'.
 	}
 }
 
@@ -458,11 +452,17 @@ if(function_exists('theme_head'))
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
+
+
+
+
+
+
 /**
  * @param $type
  * @return string
  */
-function render_meta($type)
+function renderMeta($type)
 {
 	$tp = e107::getParser();
 	$pref = e107::getPref();
@@ -491,6 +491,30 @@ function render_meta($type)
 	return $ret;
 }
 
+function renderFavicon()
+{
+	// ---------- Favicon ---------
+	if (file_exists(THEME."favicon.ico"))
+	{
+		return "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
+	}
+	elseif(file_exists(e_MEDIA_ICON.'16x16_favicon.png'))
+	{
+		$iconSizes = [16 => 'icon',32 => 'icon',48 => 'icon',192 => 'icon',167 => 'apple-touch-icon',180 => 'apple-touch-icon'];
+		$text = '';
+		foreach($iconSizes as $size => $rel)
+		{
+			$sizes = $size.'x'.$size;
+			$text .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".e_MEDIA_ICON_ABS.$sizes."_favicon.png'>\n";
+		}
+		return $text;
+	}
+	elseif (file_exists(e_BASE."favicon.ico"))
+	{
+		return "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+	}
+
+}
 // legay meta-tag checks.
 /*
 $isKeywords = e107::getUrl()->response()->getMetaKeywords();
@@ -503,28 +527,22 @@ $isDescription = e107::getSingleton('eResponse')->getMetaDescription();
 
 if(empty($isKeywords))
 {
-	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : renderMeta('keywords');
 }
 if(empty($isDescription))
 {
-	echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
+	echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : renderMeta('description');
 }
 
 //echo render_meta('copyright');
 //echo render_meta('author');
-echo render_meta('tag');
+echo renderMeta('tag');
+
 
 unset($key_merge,$diz_merge,$isKeywords,$isDescription);
 
-// ---------- Favicon ---------
-if (file_exists(THEME."favicon.ico")) 
-{
-	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
-}
-elseif (file_exists(e_BASE."favicon.ico")) 
-{
-	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
-}
+
+
 
 // Theme JS
 /** const THEME_ONLOAD @deprecated */
@@ -645,8 +663,8 @@ echo "</head>\n";
     elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7/1.x themes
     {
         // echo " MODE 0.7";
-        $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
-        $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
+        $HEADER = isset($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
+        $FOOTER = isset($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
     elseif(!empty($def) && is_array($HEADER)) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
@@ -669,7 +687,10 @@ echo "</head>\n";
         $body_onload .= " class='e-iframe'";
     }
 
-	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE'),$HEADER);
+	if(!empty($HEADER))
+	{
+		$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE'),$HEADER);
+	}
 
 	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 

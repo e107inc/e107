@@ -200,10 +200,15 @@ if(isset($_POST['updateprefs']))
 		$core_pref->update($key, $newValue);
 	}
 
-	if($core_pref->dataHasChanged())
+
+	$hasChanged = $core_pref->dataHasChanged();
+
+	if($hasChanged)
 	{
 		// Need to clear cache in order to refresh library information.
 		e107::getCache()->clearAll('system');
+
+
 	}
 
 	$core_pref->save(false);
@@ -221,6 +226,22 @@ if(isset($_POST['updateprefs']))
 		$session = new e_core_session(array('name' => $core_pref->get('cookie_name')));
 		$_SESSION = $s;
 	}
+
+	// build favicon files.
+	if(!empty($pref['sitebutton']) && $hasChanged)
+	{
+		$iconSizes = [32,16,48,192,167,180];
+		$media = e107::getMedia();
+		foreach($iconSizes as $size)
+		{
+			if($result = $media->resizeImage($pref['sitebutton'],'{e_MEDIA_ICON}/favicon.png', ['w'=>$size, 'h'=>$size, 'crop'=>true, 'overwrite'=>true]))
+			{
+				e107::getMessage()->addDebug("Created ".$result); // NO LAN. 
+			}
+
+		}
+	}
+
 }
 
 if (e107::isInstalled('alt_auth'))
