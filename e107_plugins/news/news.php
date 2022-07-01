@@ -43,6 +43,7 @@ class news_front
 	private $dayMonth = null;
 	private $tagAuthor = null;
 	private $comments = array();
+	private $pagination;
 //	private $interval = 1;
 
 	function __construct()
@@ -56,6 +57,8 @@ class news_front
 		$this->pref = e107::getPref();
 
 		$this->cacheRefreshTime = vartrue($this->pref['news_cache_timeout'],false);
+
+		$this->pagination = varset($this->pref['news_pagination'], 'record');
 		// $this->interval = $this->pref['newsposts']-$this>pref['newsposts_archive'];
 
 		require_once(e_HANDLER."news_class.php");
@@ -1118,13 +1121,9 @@ class news_front
 
 		$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
+		$parms = $this->getPaginationParms($news_total, NEWSLIST_LIMIT);
 
-		$amount 	= NEWSLIST_LIMIT;
-		$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-		$url 		= rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-		$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
 
-		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
 		$paginationSC = false;
 		if(!empty($template['end']))
@@ -1724,24 +1723,9 @@ class news_front
 
 			$text = $tp->parseTemplate($NEWSCLAYOUT, false, $items);
 
-		//	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
-
-
-			// Deprecated
-			// $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
-
-		//	$sub_action = intval($sub_action);
-			//    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-
-			$amount = ITEMVIEW;
-			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
-
+			$parms = $this->getPaginationParms($news_total, ITEMVIEW);
 			$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			// This section is deprecated so no pagination shortcode support should be added.
-
-		//	echo $text;
 			$this->setNewsCache($this->cacheString, $text);
 			return $text;
 		}
@@ -1924,19 +1908,7 @@ class news_front
 			}
 
 
-
-
-			$amount = ITEMVIEW;
-			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-
-			$this->addDebug('News Pagination Parms', $this->newsUrlparms);
-
-			// Example of passing route data instead building the URL outside the shortcode - for a reference only
-			// $url = rawurlencode('url::'.$newsRoute.'::'.http_build_query($newsUrlparms, null, '&'));
-
-			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
-
+			$parms = $this->getPaginationParms($news_total, ITEMVIEW);
 			$paginationSC = false;
 
 			if(!empty($tmpl['end']))
@@ -1964,6 +1936,44 @@ class news_front
 			return $cache_data;
 		}
 
+	}
+
+	/**
+	 * @param int $total
+	 * @param int $amount
+	 * @return string
+	 */
+	private function getPaginationParms($total, $amount)
+	{
+
+		$opts = [
+			'tmpl_prefix' => deftrue('NEWS_NEXTPREV_TMPL', 'default'),
+			'total'       => (int) $total,
+			'amount'      => (int) $amount,
+			'current'     => $this->from,
+			'url'         => e107::getUrl()->create($this->route, $this->newsUrlparms),
+		];
+
+		if(defined('NEWS_NEXTPREV_NAVCOUNT'))
+		{
+			$opts['navcount'] = NEWS_NEXTPREV_NAVCOUNT;
+		}
+
+		if($this->pagination === 'page')
+		{
+			$opts['type'] = 'page';
+			$opts['total'] = ceil($opts['total'] / $opts['amount']);
+			$opts['current'] = ($opts['current'] / $opts['amount']) + 1;
+		}
+
+		$this->addDebug('newsUrlParms', $this->newsUrlparms);
+		$this->addDebug('paginationParms', $opts);
+
+		//	$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
+
+		$parms = http_build_query($opts);
+
+		return $parms;
 	}
 }
 
