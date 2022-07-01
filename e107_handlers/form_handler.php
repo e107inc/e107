@@ -5648,7 +5648,10 @@ var_dump($select_options);*/
 						'e_editable' => $field . '_' . $id,
 					);
 
-					$tpl = $this->text($field, $value, 80, $options);
+					$maxlength = vartrue($parms['maxlength'], 80);
+					unset($parms['maxlength']);
+
+					$tpl = $this->text($field, $value, $maxlength, $options);
 
 					$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode']));
 					$value = "<a" . $this->attributes([

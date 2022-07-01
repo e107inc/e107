@@ -302,7 +302,7 @@ CREATE TABLE menus (
 CREATE TABLE news (
   news_id int(10) unsigned NOT NULL auto_increment,
   news_title varchar(255) NOT NULL default '',
-  news_sef varchar(200) NOT NULL default '',
+  news_sef varchar(255) NOT NULL default '',
   news_body longtext NOT NULL,
   news_extended longtext NOT NULL,
   news_meta_title varchar(255) NOT NULL default '',
