@@ -52,8 +52,8 @@ $NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li class="page-item"><a class="pa
 $NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li class="page-item"><a class="page-link next" href="{url}" title="{url_label}">{label}</a></li>';
 
 $NEXTPREV_TEMPLATE['bootstrap_items_start'] 	= '';
-$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li class="page-item"><a class="page-link hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="page-item active disabled"><a class="page-link" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li class="page-item"><a class="page-link hidden-xs d-none d-sm-block" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="page-item active disabled" aria-current="page"><a class="page-link" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_items_end'] 		= '';
 
 $NEXTPREV_TEMPLATE['bootstrap_separator'] 		= '';
