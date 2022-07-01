@@ -1207,16 +1207,8 @@ class news_shortcodes extends e_shortcode
 	{
 		$params = (string) e107::getRegistry('core/news/pagination');
 
-		parse_str($params,$opts);
 
-		if($this->pagination === 'page')
-		{
-			$opts['type'] = 'page';
-			$opts['total'] = ceil($opts['total'] / $opts['amount']);
-			$opts['current'] = ($opts['current'] / $opts['amount']) + 1;
-		}
-
-		return e107::getParser()->parseTemplate("{NEXTPREV=".http_build_query($opts)."}");
+		return e107::getParser()->parseTemplate("{NEXTPREV=".$params."}");
 
 	}
 
