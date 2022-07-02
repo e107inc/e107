@@ -25,7 +25,9 @@ if ($qs[0] == "")
 
 $CSS = <<<CSS
 
-	body { background: #fff; color: #000 }
+	body { background: #fff !important; color: #000 !important }
+	a { color: #000 !important } 
+	.hidden-print { display: none !important } 
 
 @media print {
 
