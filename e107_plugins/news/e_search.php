@@ -53,7 +53,7 @@ class news_search extends e_search // include plugin-folder in the name.
 							),
 							
 			'return_fields'	=> array('n.news_id', 'n.news_title', 'n.news_sef', 'n.news_body', 'n.news_extended', 'n.news_allow_comments', 'n.news_datestamp', 'n.news_category', 'c.category_name'), 
-			'search_fields'	=> array('n.news_title' => '1.2', 'n.news_body' => '0.6', 'n.news_extended' => '0.6', 'n.news_summary' => '1.2'), // fields and their weights. 
+			'search_fields'	=> array('n.news_title' => '1.2', 'n.news_body' => '0.6', 'n.news_extended' => '0.6', 'n.news_summary' => '1.2', 'n.news_meta_keywords'=>'1.1', 'n.news_meta_description'=>'1.1'), // fields and their weights.
 	
 			'order'			=> array('news_datestamp' => 'DESC'),
 			'refpage'		=> 'news.php'
