@@ -2396,9 +2396,9 @@ class e107plugin
 					$linkData = array(
 						'link_name'			 => $link_name,
 						'link_url'			 => $path,
-						'link_description'	 => vartrue($options['link_desription'],''),
-						'link_button'		 => vartrue($options['link_icon'],''),
-						'link_category'		 => '1',
+						'link_description'	 => vartrue($options['link_desription']),
+						'link_button'		 => vartrue($options['link_icon']),
+						'link_category'		 => vartrue($options['link_category'],'1'),
 						'link_order'		 => $link_t + 1,
 						'link_parent'		 => '0',
 						'link_open'			 => '0',
@@ -3854,6 +3854,11 @@ class e107plugin
 				'link_icon'     => vartrue($attrib['icon']),
 				'link_description'  => vartrue($attrib['description'])
 			);
+
+			if(isset($attrib['category']))
+			{
+				$options['link_category'] = (int) $attrib['category'];
+			}
 
 			switch ($function)
 			{
