@@ -4022,8 +4022,9 @@ class e107
 	 * @param string $plugin if empty will return the last assigned canonical url._SITEURL_ will set canonical to the SITEURL.
 	 * @param string|array $key
 	 * @param array $row
+	 * @param array $options mode, query = [],
 	 */
-	public static function canonical($plugin = '', $key = 'index', $row = array())
+	public static function canonical($plugin = '', $key = 'index', $row = array(), $options=array('mode'=>'full'))
 	{
 		if($plugin === '_RESET_') // for testing only, may be removed in future.
 		{
@@ -4038,6 +4039,8 @@ class e107
 			return $alreadyDone;
 		}
 
+
+
 		if(empty($alreadyDone))
 		{
 			if($plugin === '_SITEURL_')
@@ -4046,7 +4049,7 @@ class e107
 			}
 			else
 			{
-				$url = self::url($plugin, $key, $row, array('mode' => 'full'));
+				$url = self::url($plugin, $key, $row, $options);
 			}
 
 			if(!empty($url))
