@@ -79,15 +79,16 @@ if(!class_exists('tagcloud_menu'))
 					foreach ($tmp as $word)
 					{
 
-						if($c >= $words)
+						$word = trim($word);
+
+						if(empty($word) || ($c >= $words))
 						{
 							continue;
 						}
 
 
-
 						//$newsUrlparms = array('id'=> $row['news_id'], 'name'=>'a name');
-						$url = e107::getUrl()->create('news/list/tag', array('tag' => $word)); // SITEURL."news.php?tag=".$word;
+						$url = e107::getUrl()->create('news/list/tag', array('tag' => str_replace(' ','-',$word))); // SITEURL."news.php?tag=".$word;
 						$cloud->addTag(array('tag' => $word, 'url' => $url));
 						$c++;
 						$wordCount++;
