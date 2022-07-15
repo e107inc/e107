@@ -44,8 +44,8 @@ class gsitemap_adminArea extends e_admin_dispatcher
 		'main/create'		=> array('caption'=> GSLAN_22, 'perm' => 'P'),
 
 		 'main/div0'        => array('divider'=> true),
-		 'main/import'		=> array('caption'=> 'Import', 'perm' => 'P'),
-		 'main/instructions' => array('caption'=> 'Instructions', 'perm' => 'P'),
+		 'main/import'		=> array('caption'=> LAN_IMPORT, 'perm' => 'P'),
+		 'main/instructions' => array('caption'=> GSLAN_53, 'perm' => 'P'),
 		
 	);
 
@@ -92,7 +92,7 @@ class gsitemap_ui extends e_admin_ui
 			'gsitemap_table_id'       => array (  'title' => LAN_ID,  'tab'=>1,'type' => 'number',  'data' => 'int',  'width' => '5%',  'readonly' => false,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_lastmod'        => array (  'title' => GSLAN_27, 'tab'=>1, 'type' => 'datestamp', 'readonly'=>2, 'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,  'batch' => true,),
 			'gsitemap_freq'           => array (  'title' => GSLAN_28,  'type' => 'dropdown',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => true,  'batch' => true,),
-			'gsitemap_priority'       => array (  'title' => 'Priority',  'type' => 'method',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => true,  'batch' => true,),
+			'gsitemap_priority'       => array (  'title' => GSLAN_9,  'type' => 'method',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => true,  'batch' => true,),
 			'gsitemap_cat'            => array (  'title' => LAN_CATEGORY, 'tab'=>1, 'type' => 'text',  'data' => 'safestr',  'width' => 'auto',  'batch' => true,  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_order'          => array (  'title' => LAN_ORDER,  'type' => 'number',  'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'gsitemap_img'            => array (  'title' => LAN_IMAGE,  'type' => 'image',  'data' => 'safestr',  'width' => 'auto',  'help' => '',  'readParms' => 'thumb=80x80',  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
