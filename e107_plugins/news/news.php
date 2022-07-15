@@ -665,6 +665,11 @@ class news_front
 					$options['query'] = ['page'=> $page];
 				}
 
+				if(!deftrue('e_FRONTPAGE')) // Use site title when on frontpage.
+				{
+					e107::title($this->caption);
+				}
+
 		//		e107::meta('robots', 'noindex, follow');
 				e107::route('news/list/items');
 
@@ -1074,7 +1079,7 @@ class news_front
 		}
 
 
-		$this->setNewsFrontMeta($newsList[1], $this->action);
+
 
 
 	//	elseif($category_name)
@@ -1201,9 +1206,11 @@ class news_front
 		}
 
 		$this->caption = $NEWSLISTTITLE;
+
 		$this->templateKey = 'list';
 		$cache_data = $text; // e107::getRender()->tablerender($NEWSLISTTITLE, $text, 'news', true);
 
+		$this->setNewsFrontMeta($newsList[1], $this->action);
 		$this->setNewsCache($this->cacheString, $cache_data);
 
 
