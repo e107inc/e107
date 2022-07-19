@@ -10,9 +10,18 @@
  *
 */
 
+
+
+
+
 if (!defined('e107_INIT')) { exit; }
 if(!defined('USER_AREA')) { define('USER_AREA',TRUE); }
 if(!defined('ADMIN_AREA')) { define('ADMIN_AREA', false); }
+
+if($redirect = e107::getRedirect()->redirectStaticDomain())
+{
+	e107::redirect($redirect);
+}
 
 e107::getDebug()->logTime('(Header Top)');
 
