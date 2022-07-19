@@ -42,7 +42,18 @@ class redirection
 	 * @var array
 	 */
 	protected $query_exceptions = array();
-	
+
+
+	public $staticDomains;
+
+	public $domain;
+
+	public $subdomain;
+
+	public $self;
+
+	public $siteurl;
+
 	/**
 	 * Manage Member-Only Mode.
 	 *
@@ -53,6 +64,10 @@ class redirection
 		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
 		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
+		$this->staticDomains    = defset('e_HTTP_STATIC');
+		$this->domain           = defset('e_DOMAIN');
+		$this->subdomain        = defset('e_SUBDOMAIN');
+		$this->self             = $this->getSelf(true);
 
 		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
 	}
@@ -242,10 +257,7 @@ class redirection
 				$this->redirect(SITEURL.'sitedown.php', TRUE, 307);
 			}
 		}
-		else
-		{
-			return;
-		}
+
 	}
 
 	
@@ -440,4 +452,27 @@ class redirection
 		
 		exit();
 	}
+
+
+	/**
+	 * If a static subdomain is detected, returns the equivalent non-static domain.
+	 * @return string|false
+	 */
+	public function redirectStaticDomain()
+	{
+		if(empty($this->staticDomains))
+		{
+			return false;
+		}
+
+		if(strpos($this->subdomain, 'static') !== false)
+		{
+			return str_replace($this->subdomain.'.'.$this->domain.'/', $this->domain.'/', $this->self);
+		}
+
+		return false;
+
+	}
+
+
 }

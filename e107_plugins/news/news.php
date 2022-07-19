@@ -665,7 +665,7 @@ class news_front
 					$options['query'] = ['page'=> $page];
 				}
 
-				if(!deftrue('e_FRONTPAGE')) // Use site title when on frontpage.
+				if(!deftrue('e_FRONTPAGE') && !empty($this->caption)) // Use site title when on frontpage.
 				{
 					e107::title($this->caption);
 				}
