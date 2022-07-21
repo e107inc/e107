@@ -1948,6 +1948,7 @@ class e_userperms
 		// Content
 		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
 		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
+		"J1" => array(ADLAN_42." (".LAN_DELETE.")",E_16_CUST, E_32_CUST),	// Delete Pages/Menus.
 
 		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
 		"H0" => array(ADLAN_0." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),					// Create News Items
