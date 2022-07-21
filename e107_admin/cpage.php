@@ -146,7 +146,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 
-			if($this->getController()->getMode() === 'overview')
+			if($this->getController()->getMode() === 'overview' && getperms('J1')) // Page/Menu Delete Perms.
 			{
 				$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 			}
@@ -389,26 +389,35 @@ class page_chapters_form_ui extends e_admin_form_ui
 	{
 		//$id = $this->getController()->getListModel()->get('page_id');
 		//	return "<a href='".e_BASE."page.php?".$id."' >".$curVal."</a>";
+
+		if($attributes['mode'] !== 'read')
+		{
+			return;
+		}
+
 		$parent = $this->getController()->getListModel()->get('chapter_parent');
 	//	$id = $this->getController()->getListModel()->get('chapter_id');
-		$att['readParms'] = 'sort=1';
+		$att = [];
+		$att['readParms']['sort'] = 1;
 
-		
-		if($attributes['mode'] == 'read')
+		if(!getperms('J1')) // Page/Menu Delete Perms.
 		{
-			$text = "<div class='btn-group'>";
-			$text .= $this->renderValue('options',$value,$att,$id);
-			
-			if($parent != 0)
-			{
-				$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
-				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".ADMIN_PAGES_ICON."</a>";  //
-			}
-
-
-			$text .= "</div>";
-			return $text;
+			$att['readParms']['deleteClass'] = e_UC_NOBODY;
 		}
+
+		$text = "<div class='btn-group'>";
+
+		$text .= $this->renderValue('options',$value,$att,$id);
+			
+		if($parent != 0)
+		{
+			$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";
+			$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".ADMIN_PAGES_ICON."</a>";  //
+		}
+
+		$text .= "</div>";
+		return $text;
+
 	}
 }
 
