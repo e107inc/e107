@@ -87,8 +87,7 @@
 			$result = $this->rd->redirectStaticDomain();
 			$this->assertEmpty($result);
 
-			$this->rd->domain = 'e107.org';
-			$this->rd->subdomain = 'static1';
+			$this->rd->domain = 'static1.e107.org';
 			$this->rd->staticDomains = ['https://static1.e107.org', 'https://static2.e107.org'];
 
 			$this->rd->self = 'https://static1.e107.org/blogs';
