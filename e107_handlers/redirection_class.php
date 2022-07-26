@@ -465,9 +465,12 @@ class redirection
 			return false;
 		}
 
-		if(strpos($this->subdomain, 'static') !== false)
+		$tmp = explode('.',$this->domain);
+
+		if(!empty($tmp[0]) && strpos($tmp[0], 'static') !== false)
 		{
-			return str_replace($this->subdomain.'.'.$this->domain.'/', $this->domain.'/', $this->self);
+			unset($tmp[0]);
+			return str_replace($this->domain.'/', implode('.',$tmp).'/', $this->self);
 		}
 
 		return false;
