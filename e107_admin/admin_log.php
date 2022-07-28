@@ -403,7 +403,13 @@ class admin_log_ui extends e_admin_ui
 				}
 				else
 				{
-					$mes->addWarning(RL_LAN_054." : ".$sql->mySQLresult);
+					$message = RL_LAN_054;
+					$lastErrorText = $sql->getLastErrorText();
+					if ($lastErrorText)
+					{
+						$message .= "<br />$lastErrorText";
+					}
+					$mes->addWarning($message);
 				}
 
 			}
