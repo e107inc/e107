@@ -34,13 +34,13 @@ class _blank_event // plugin-folder + '_event'
 
 		// Example 1: core event ("login")
 		$event[] = array(
-			'name'		=> "login", // when this event is triggered... (fore core events, see http://e107.org/developer-manual/classes-and-methods#events)
+			'name'		=> "login", // when this event is triggered... (for core events, see http://e107.org/developer-manual/classes-and-methods#events)
 			'function'	=> "myfunction", // ..run this function (see below). 
 		);
 
 		// Example 2: core plugin event ("user_forum_post_created")
 		$event[] = array(
-			'name'		=> "user_forum_post_created", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
+			'name'		=> "user_forum_post_created", // event triggered in the forum plugin when a user submits a new forum post 
 			'function'	=> "myfunction", // ..run this function (see below). You can run the same function on different events. 
 		);
 
@@ -51,7 +51,7 @@ class _blank_event // plugin-folder + '_event'
 		);
 
 		// Example 4: custom event of the _blank plugin. 
-		// Listen to _blank's own plugin event
+		// Listen to _blank's own plugin event, this usually does not occur but is here for illustration purposes. 
 		$event[] = array(
 			'name'		=> "_blank_customevent", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
 			'function'	=> "anotherfunction", // ..run this function (see below).
