@@ -601,7 +601,11 @@ class file_inspector {
         $absoluteBase = realpath($baseDir);
         if (!is_dir($absoluteBase)) return;
 
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir));
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $baseDir, FilesystemIterator::SKIP_DOTS
+            )
+        );
         foreach ($iterator as $file)
         {
             $this->sendProgress(1);
