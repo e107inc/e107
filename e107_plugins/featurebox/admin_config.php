@@ -87,7 +87,7 @@ class fb_category_ui extends e_admin_ui
 			// FIXME lan
 			if($this->getModel()->get('fb_category_template') === 'unassigned')
 			{
-				e107::getMessage()->addError("<strong>".FBLAN_INSTALL_03."</strong> is system category and can't be modified.", 'default', true);
+				e107::getMessage()->addError("<strong>".FBLAN_34."</strong> is system category and can't be modified.", 'default', true);
 				$this->redirect('list');
 			}
 		}
@@ -98,7 +98,7 @@ class fb_category_ui extends e_admin_ui
 			{
 				$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 				header($protocol.': 403 Forbidden', true, 403);
-				echo "'".FBLAN_INSTALL_03."' is system category and can't be modified.";
+				echo "'".FBLAN_34."' is system category and can't be modified.";
 				exit;
 			}
 		}
@@ -117,7 +117,7 @@ class fb_category_ui extends e_admin_ui
 		if($data['fb_category_template'] === 'unassigned')
 		{
 			// FIXME lan
-			$this->getTreeModel()->addMessageError("<strong>".FBLAN_INSTALL_03."</strong> is system category and can't be deleted.");
+			$this->getTreeModel()->addMessageError("<strong>".FBLAN_34."</strong> is system category and can't be deleted.");
 			return false;
 		}
 

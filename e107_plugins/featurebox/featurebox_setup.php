@@ -122,7 +122,7 @@ class featurebox_setup
 		{
 			$query = array();
 			$query['fb_category_id'] = 0;
-			$query['fb_category_title'] = FBLAN_INSTALL_03;
+			$query['fb_category_title'] = FBLAN_34;
 			$query['fb_category_template'] = 'unassigned';
 			$query['fb_category_random'] = 0;
 			$query['fb_category_class'] = e_UC_NOBODY;
