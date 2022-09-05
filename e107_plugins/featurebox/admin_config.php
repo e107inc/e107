@@ -58,6 +58,7 @@ class fb_category_ui extends e_admin_ui
 { 	 	 
 	protected $pluginTitle	= 'Feature Box';
 	protected $pluginName	= 'featurebox';
+	protected $eventName 	= "featurebox";
 	protected $table 		= "featurebox_category";
 	protected $pid			= "fb_category_id";
 	protected $perPage 		= 0; //no limit
@@ -215,6 +216,7 @@ class fb_main_ui extends e_admin_ui
 {
 	protected $pluginTitle		= 'Feature Box';
 	protected $pluginName		= 'featurebox';
+	protected $eventName 	= "featurebox";
 	protected $table			= "featurebox";	
 	protected $pid 				= "fb_id";
 	protected $perPage 			= 10;
