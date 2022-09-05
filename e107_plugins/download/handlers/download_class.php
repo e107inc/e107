@@ -379,13 +379,17 @@ class download
 		$tp = e107::getParser();
 
 		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
-		$metaDescription                = $tp->toHTML($row['download_description'],true);
-		$metaDescription 				= preg_replace('/\v(?:[\v\h]+)/', '', $metaDescription); // remove all line-breaks and excess whitespace
-		$metaDescription 				= $tp->text_truncate($metaDescription, 290); // + '...'
 
-		e107::meta('description',       $tp->toText($metaDescription));
+		// $metaDescription                = $tp->toHTML($row['download_description'],true);
+		// $metaDescription 				= preg_replace('/\v(?:[\v\h]+)/', '', $metaDescription); // remove all line-breaks and excess whitespace
+		// $metaDescription 				= $tp->text_truncate($metaDescription, 290); // + '...'
+
+		$metaDescription = e107::getParser()->toText($row['download_description']); 
+		$metaDescription = e107::getParser()->truncate($metaDescription, 150);
+
+		e107::meta('description',       $metaDescription);
 		e107::meta('keywords',          $row['download_keywords']);
-		e107::meta('og:description',    $tp->toText($metaDescription));
+		e107::meta('og:description',    $metaDescription);
 		e107::meta('og:image',          $metaImage);
 		e107::meta('twitter:image:src', $metaImage);
 
