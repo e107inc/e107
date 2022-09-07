@@ -117,9 +117,9 @@ class userlogin
 			$authMethod[0] = varset($pref['auth_method'], 'e107');		// Primary authentication method
 			$authMethod[1] = varset($pref['auth_method2'], 'none');		// Secondary authentication method (if defined)
 			$result = false;
-			foreach ($authMethod as $method)
+			foreach ($authMethod as $key => $method)
 			{
-				if ($method == 'e107' OR $method == 'e107db')
+				if ($method == 'e107')
 				{
 					if ($this->lookupUser($username, $forceLogin))
 					{
@@ -161,6 +161,9 @@ class userlogin
 									$authorized = true;
 								break;
 								case LOGIN_TRY_OTHER:
+									if ($key === array_key_last($authMethod)) { 
+                                        return $this->invalidLogin($username,LOGIN_ABORT);
+                                    }
 									continue 2;
 								break;
 							}
