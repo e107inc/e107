@@ -11,7 +11,19 @@ class AdminLoginCest
 	{
 	}
 
-	// tests
+	/**
+	 * @see https://github.com/e107inc/e107/issues/4779
+	 */
+	public function testAdminFailedLogin(AcceptanceTester $I)
+	{
+		$I->wantTo("See a login failure message in the admin area if I put in the wrong credentials");
+		$I->amOnPage("/e107_admin/admin.php");
+		$I->fillField('authname', 'e107');
+		$I->fillField('authpass', 'wrong password');
+		$I->click('authsubmit');
+		$I->see("Your login details don't match any registered user");
+	}
+
 	public function testAdminLogin(AcceptanceTester $I)
 	{
 
@@ -26,7 +38,6 @@ class AdminLoginCest
 		$I->see("Status");
 
 	}
-
 
 	private function e107Login(AcceptanceTester $I)
 	{

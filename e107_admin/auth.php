@@ -134,12 +134,7 @@ else
 		{
 			e107::coreLan('log_messages', true);
 			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".e107::getParser()->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
-
-			e107::getRedirect()->redirect('admin.php?failed');
 		}
-
-		exit;
-
 	}
 
 
@@ -274,28 +269,20 @@ class auth
 	// Start Clean 
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	
-		$class = (e_QUERY === 'failed') ? "class='e-shake'" : "";
-
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
 		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
 		<div>";
 
-		if(e_QUERY === 'failed')
-		{
-			e107::lan('core', 'login');
-			$text .= e107::getMessage()->render(); // see e107_handlers/login.php L622
-			$text .= "<script>
-				window.setTimeout(function() {
-			    $('.alert').fadeTo(500, 0).slideUp(500, function(){
-			        $(this).remove();
-			    });
-			}, 7000);
-			</script>";
-
-		}
-
-
+		e107::lan('core', 'login');
+		$text .= e107::getMessage()->render(); // see e107_handlers/login.php L622
+		$text .= "<script>
+			window.setTimeout(function() {
+		    $('.alert').fadeTo(500, 0).slideUp(500, function(){
+		        $(this).remove();
+		    });
+		}, 7000);
+		</script>";
 
 		$text .= "
 		<div class='panel well panel-primary'>
