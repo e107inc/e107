@@ -97,7 +97,17 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['author']          = $value['user_name'];
 			$rss[$i]['author_email']    = $value['user_email'];
 			$rss[$i]['category_name']   = $tp->toHTML($value['category_name'],TRUE,'defs');
-			$rss[$i]['category_link']   = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
+			//category sef
+			if (empty($value['category_sef']))
+			{
+				$url = SITEURL . "news.php?cat." . $value['news_category']; 
+			}
+			else
+			{
+				$category = array('id' => $value['news_category'], 'name' => $value['category_sef']);
+				$opts = array('full' => 1);
+				$url = e107::getUrl()->create('news/list/category', $category, $opts);
+			}
 			$rss[$i]['datestamp']         = $value['news_datestamp'];
 			$rss[$i]['description']     = $this->getDescription($value);
 
