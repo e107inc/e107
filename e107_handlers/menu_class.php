@@ -650,7 +650,7 @@ class e_menu
 			{
 				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
-				$page_shortcodes->setVars($page);
+				$page_shortcodes->setVars($page)->wrapper('menu/'.$page['menu_template'] );
 				  
 				$head = $tp->parseTemplate($template['start'], true, $page_shortcodes);
 				$foot = $tp->parseTemplate($template['end'], true, $page_shortcodes);
