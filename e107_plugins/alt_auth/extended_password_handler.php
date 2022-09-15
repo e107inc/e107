@@ -388,7 +388,7 @@ class ExtendedPasswordHandler extends UserHandler
 				return PASSWORD_INVALID;
 		}
        
-		if(ADMIN_AREA)
+		if(deftrue('ADMIN_AREA'))
 		{
 			e107::getMessage()->addDebug("Stored Hash: ".$stored_hash);
 
