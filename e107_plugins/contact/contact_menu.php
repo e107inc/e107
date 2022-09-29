@@ -29,7 +29,8 @@ $range = range(00,24);
 
 
 $template = e107::getCoreTemplate('contact','menu');
-$contact_shortcodes = e107::getScBatch('contact');                
+$contact_shortcodes = e107::getScBatch('contact');         
+$contact_shortcodes->wrapper('contact/menu');  
 $text = e107::getParser()->parseTemplate($head. $template . $foot, true, $contact_shortcodes);
 
 
