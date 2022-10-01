@@ -95,7 +95,13 @@ If you like e107 and wish to help it to improve, please consider making a small 
 
 
 ## Support
-* https://e107help.org
+Having trouble getting e107 up and running? Something not working the way you think it should? Unfortunately we don't have time to maintain a full e107 support community ourselves, but there are a few ways to get help.
+
+* If you think you have found a bug, then please see the section below on Reporting Bugs.
+* If you need help with how to use e107 or a development question (such as how to create a theme or plugin) - please see our [docs](https://e107.org/developer-manual).
+* You can also seek assistance in the [Github Discussions](https://github.com/e107inc/e107/discussions) area where you can get friendly community support from other users.
+* For real-time technical chat, and community support, please visit us on [Gitter](https://gitter.im/e107inc/e107). 
+* For other comments, please use our official community presences on Facebook, and Twitter as well as unofficial community presences on Google+ and Reddit. 
 
 
 
