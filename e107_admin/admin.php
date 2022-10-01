@@ -462,13 +462,13 @@ TMPO;
 		if($numDays < 3) // installed in the past 3 days.
 		{
 			$srch = array('[',']');
-			$repl = array("<a href='http://e107help.org' target='_blank' rel='external'>","</a>");
+			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".str_replace($srch,$repl,ADLAN_192)."</p>")->render();
 		}
 		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
 			$srch = array('[',']');
-			$repl = array("<a href='http://e107help.org' target='_blank' rel='external'>","</a>");
+			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			$message = str_replace($srch,$repl,ADLAN_191);
 			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
