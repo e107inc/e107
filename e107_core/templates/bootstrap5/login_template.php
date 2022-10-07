@@ -26,17 +26,30 @@ $LOGIN_TEMPLATE['page']['body'] = '
 	  $LOGIN_TEMPLATE['page']['body'] .= "<span>";
 	}
 
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_USERNAME'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_PASSWORD'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_SECIMG'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_REMEMBERME'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = '<div class="row my-3 align-items-center">{---}</div>';
-$LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = '<div class="row my-3 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_USERNAME'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_PASSWORD'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_SECIMG'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_REMEMBERME'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = '<div class="row my-2 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = '<div class="row my-2 align-items-center">{---}</div>';
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_LOGINMESSAGE'] = "<div class='alert alert-danger'>{---}</div>";
 
 
-// $LOGIN_WRAPPER['page']['LOGIN_TABLE_FPW_LINK'] = '<div class="row my-3 align-items-center">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SIGNUP_LINK'] = '<div class="login-page-signup-link">{---}</div>';
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_FPW_LINK'] = '<div class="login-page-fpw-link">{---}</div>';
+
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_SECIMG']  =
+"<div class='row align-items-center my-2'>
+	<label class='col-md-4'>&nbsp;</label>
+	<div class='col-md-8'>{---}</div>
+</div>";
+
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC']  =
+"<div class='row align-items-center my-2'>
+	<label class='col-md-4 col-form-label' for='code-verify'>" . e107::getSecureImg()->renderLabel() . "</label>
+	<div class='col-md-8'>{---}</div>
+</div>";
 
 $LOGIN_TEMPLATE['page']['body'] .= '
         {LOGIN_TABLE_USERNAME}
@@ -44,14 +57,12 @@ $LOGIN_TEMPLATE['page']['body'] .= '
         {SOCIAL_LOGIN: size=3x}
 		{LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
         {LOGIN_TABLE_REMEMBERME}
-        {LOGIN_TABLE_SUBMIT}
-
- ';
+        {LOGIN_TABLE_SUBMIT}';
 
 $LOGIN_TEMPLATE['page']['footer'] =  "
 			<div class='login-page-footer'>
-				<div class='login-page-signup-link'><p>{LOGIN_TABLE_SIGNUP_LINK}</p></div>
-				<div class='login-page-fpw-link'><p>{LOGIN_TABLE_FPW_LINK}</p></div>
+				{LOGIN_TABLE_SIGNUP_LINK} 
+				{LOGIN_TABLE_FPW_LINK}
 			</div>
 	</div>";
 	
