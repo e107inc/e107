@@ -175,32 +175,15 @@ if(!defined('e107_INIT'))
 			        }
 
 
-					echo '</div>';
 					break;
           
-            case 'splash':
-	            echo '<div class="container  justify-content-center text-center my-5" id="'.$mode.'">
-	                 <div class="row align-items-center">
-	                 <div class="card card-signin col-md-6 offset-md-3 " id="login-template"><div class="card-body">';
-
-                if(!empty($caption))
-                {
-  					echo '<h5 class="card-title text-center">' . $caption . '</h5>';
-  				}
-
-  				echo $text;
-
-  				if(!empty($options['footer'])) // XXX @see news-months menu.
-  			    {
-  			        echo '<div class="card-footer">
-  		                   '.$options['footer'].'
-  		                   </div>';
-  			    }
-
-  				echo '</div></div>
-						</div></div>';
-
-  					break;                
+			case "splash":	
+				if (!empty($caption))
+				{
+					echo '<h1 class="header-title">' . $caption . '</h1>';
+				}
+				echo '<p class="text-lg ' . $mode . '">' . $text . '</p>';
+				break;               
 
 
 			   default:

@@ -84,18 +84,7 @@ ul.social-buttons li a {
 }
 
 /* fix for too small core login box width */
-
-#login-template {
-    max-width: 95%;
-}
-
-@media (min-width: 768px) { 
-  #login-template {
-      max-width: 800px;
-      margin-right: auto;
-      margin-left: auto;
-  }
-}
+ 
 
 /* fix for too big margin */
 #login-template .login-page-footer {
