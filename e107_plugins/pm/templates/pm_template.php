@@ -293,7 +293,7 @@ $PM_TEMPLATE['show'] =
 //$PM_NOTIFY =
 $PM_TEMPLATE['notify'] =
 "<div>
-<h4>".LAN_PM_101."{SITENAME}</h4>
+<h4>".LAN_PM_101." {SITENAME}</h4>
 <table class='table table-striped'>
 <tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
 <tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>

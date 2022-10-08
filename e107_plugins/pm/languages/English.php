@@ -74,15 +74,15 @@ define("LAN_PM_70", "Deleting block on user");
 define("LAN_PM_71", "[x] attachment(s) deleted. [y] failure(s)");
 
 
-define("LAN_PM_100", "New PM from ");
-define("LAN_PM_101", "You have received a new Private Message from ");
-define("LAN_PM_102", "Message sent from: ");
-define("LAN_PM_103", "Message subject: ");
-define("LAN_PM_104", "Number of attachments: ");
-define("LAN_PM_105", "You can view the PM at: ");
-define("LAN_PM_106", "PM read by ");
-define("LAN_PM_107", "The Private Message you sent to {UNAME} was read on ");
-define("LAN_PM_108", "Message sent on: ");
+define("LAN_PM_100", "New PM from");
+define("LAN_PM_101", "You have received a new Private Message from");
+define("LAN_PM_102", "Message sent from:");
+define("LAN_PM_103", "Message subject:");
+define("LAN_PM_104", "Number of attachments:");
+define("LAN_PM_105", "You can view the PM at:");
+define("LAN_PM_106", "PM read by");
+define("LAN_PM_107", "The Private Message you sent to {UNAME} was read on");
+define("LAN_PM_108", "Message sent on:");
 define("LAN_PM_109", "New Message(s)");
 define("LAN_PM_111", "Read");
 define("LAN_PM_112", "User(s)");
