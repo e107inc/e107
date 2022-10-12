@@ -344,6 +344,7 @@ elseif(!$FPW_TABLE)
 }
 
 $sc = e107::getScBatch('fpw'); // fpw_shortcodes;
+$sc->wrapper('fpw/form');  
 
 // New Shortcode names in v2. BC Fix. 
 $bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
