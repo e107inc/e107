@@ -99,7 +99,7 @@ class news_front
 		switch($this->route)
 		{
 			case "news/list/all":
-			case "news/list/item":
+			case "news/list/items":
 				$breadcrumb[0]['url'] = null;
 				break;
 
