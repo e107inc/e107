@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+// TODO Rework all of this to v2 standards while maintaining BC.
+
 // advanced 
 $advanced_where = "";
 if (isset($_GET['type']) && $_GET['type'] != 'all') {
@@ -33,16 +35,32 @@ if (isset($_GET['author']) && $_GET['author'] != '') {
 //basic
 $return_fields = 'c.comment_item_id, c.comment_author_id, comment_author_name, c.comment_datestamp, c.comment_comment, c.comment_type';
 
-foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
-	if (check_class($value['class'])) {
-		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$h_key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
-		if (is_readable($path)) {
-			require_once($path);
-			$in[] = "'".$value['id']."'";
-			$join[] = $comments_table[$h_key];
-			$return_fields .= ', '.$comments_return[$h_key];
+foreach($search_prefs['comments_handlers'] as $h_key => $value)
+{
+	if(check_class($value['class']))
+	{
+		if($value['dir'] == 'core')
+		{
+			$path = e_HANDLER . 'search/comments_' . $h_key . '.php';
 		}
-		
+		else
+		{
+			if(!e107::isInstalled($value['dir']))
+			{
+				continue;
+			}
+
+			$path = e_PLUGIN . $value['dir'] . '/search/search_comments.php';
+		}
+		$path = ($value['dir'] == 'core') ? e_HANDLER . 'search/comments_' . $h_key . '.php' : e_PLUGIN . $value['dir'] . '/search/search_comments.php';
+		if(is_readable($path)) // TODO Rework this to use e_search.php
+		{
+			require_once($path);
+			$in[] = "'" . $value['id'] . "'";
+			$join[] = $comments_table[$h_key];
+			$return_fields .= ', ' . $comments_return[$h_key];
+		}
+
 	}
 }
 
