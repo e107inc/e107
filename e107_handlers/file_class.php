@@ -612,7 +612,7 @@ class e_file
 			curl_setopt($cu, CURLOPT_REFERER, $referer);
 			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0");
 			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM . 'cookies.txt');
 			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM . 'cookies.txt');
 
