@@ -1190,6 +1190,10 @@ function js_location($qry)
 
 function check_email($email)
 {
+	if ($user_func = e107::getOverride()->check('check_email'))
+	{
+		return call_user_func($user_func);
+	}
 
 	if(empty($email))
 	{
