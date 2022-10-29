@@ -86,7 +86,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 
 		$tp = e107::getParser();
 		$size = !empty($parm['size']) ? $parm['size'] : 40;
-		$options = array('h' => $size, 'w' => $size, 'crop' => 'C', 'shape' => varset($parm['shape']));
+		$options = array('h' => $size, 'w' => $size, 'crop' => 'C', 'shape' => varset($parm['shape']), 'class'=> varset($parm['class']));
 
 		if(!isset($this->var['user_image']))
 		{
