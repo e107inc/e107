@@ -1192,7 +1192,7 @@ function check_email($email)
 {
 	if ($user_func = e107::getOverride()->check('check_email'))
 	{
-		return call_user_func($user_func);
+		return call_user_func($user_func, $email);
 	}
 
 	if(empty($email))
