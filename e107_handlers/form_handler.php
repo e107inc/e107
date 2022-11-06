@@ -7835,13 +7835,13 @@ var_dump($select_options);*/
 			{
 				continue;
 			}
-			
+
 			// convert aliases - not supported in edit mod
 			if(vartrue($att['alias']) && !$model->hasData($key))
 			{
 				$key = $att['field'];
 			}
-			
+
 			if($key === 'checkboxes' || $key === 'options' || (varset($att['type']) === null) || (varset($att['type']) === false))
 			{
 				continue;
@@ -7903,7 +7903,7 @@ var_dump($select_options);*/
 			}
 
 			// type null - system (special) fields
-			if(vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
+			if(!empty($att['writeParms']['visible']) || ( vartrue($att['type']) !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName()))
 			{
 				$required = '';
 				$required_class = '';
