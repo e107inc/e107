@@ -7741,12 +7741,16 @@ class e_admin_form_ui extends e_form
 								<i class='fa fa-spin fa-spinner fa-fw'></i>
 							</span>
 						</div>
-						<div id='admin-ui-list-db-language' class='span4 col-md-4 text-right' >";
-
+						<div class='span4 col-md-4 text-right' >";
 
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
-						$text .= $this->renderLanguageTableInfo();
-						
+						if($languageInfo = $this->renderLanguageTableInfo())
+						{
+							$text .= "<div id='admin-ui-list-db-language' >".$languageInfo.'</div>';
+						}
+
+						$text .= $this->renderCustomListButton(); // Optional
+
 						$text .= '
 						</div>
 					</div>
@@ -7875,6 +7879,15 @@ class e_admin_form_ui extends e_form
 		", 'jquery');
 
 		return $text;
+	}
+
+	/**
+	 * Optional
+	 * @return null|string
+	 */
+	public function renderCustomListButton()
+	{
+		return null; // "<a class='btn btn-primary' href=''>Add New</a>";
 	}
 
 
