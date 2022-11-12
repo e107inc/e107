@@ -210,7 +210,7 @@ class system_tools
 		{
 			e107::css('inline', "
 				td.darker { background-color: rgba(0,0,0,0.5) } 
-			
+				label.form-check { cursor: pointer }
 			");
 			e107::js('footer-inline', "
 			
