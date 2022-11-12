@@ -663,7 +663,7 @@ class db_verify
 		";
 	
 		
-		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.SEP.DBVLAN_16, $mes->render().$text);
 		
 	}
 
@@ -1221,26 +1221,70 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table table-striped adminlist'>
+				<table class='table table-striped table-hover' >
 					<colgroup>
-						<col style='width: 100%'></col>
+						<col style='width: 33%'></col>
+						<col style='width: 33%'></col>
+						<col style='width: 33%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first form-inline'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
+							<th class='first form-inline' colspan='3'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
 		";
-	
+
+		$c = 0;
+		$plg = e107::getPlug();
+
 		foreach(array_keys($this->sqlFileTables) as $t=>$x)
 		{
-			$text .= "
-				<tr>
-					<td>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$x))."</td>
-				</tr>
-			";
+			if($x !== 'core')
+			{
+				$plg->load($x);
+				if(!$plg->getId()) // no data.
+				{
+					$plg->load($x.'_menu');// try menu folder.
+				}
+
+				$icon = $plg->getIcon();
+				$name = $plg->getName();
+
+			}
+			else
+			{
+				$icon = E_16_E107;
+				$name = LAN_CORE;
+			}
+			$text .= ($c === 0) ? "<tr>\n" : '';
+			$text .= "<td title='".$x."'>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$icon.' '.$name))."</td>";
+			$text .= ($c === 2) ? "</tr>\n" : '';
+
+			$c++;
+
+			if($c > 2)
+			{
+				$c = 0;
+			}
+
 		}
+
+		while (($c % 3) !== 0)
+		{
+			$text .= "<td>&nbsp;</td>\n";
+			$text .= (($c+1) % 3 == 0) ? "</tr>" : "";
+			$c++;
+		}
+
+	/*	if($c !== 2)
+		{
+			$add = (3 - $c) + 1;
+
+			$text .= "<td>".$c."</td>";
+
+			$text .= "</tr>";
+		}*/
 		
 		$text .= "
 					</tbody>
@@ -1253,7 +1297,7 @@ class db_verify
 				</form>
 		";
 	
-		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.SEP.DBVLAN_16, $mes->render().$text);
 	}
 	
 	

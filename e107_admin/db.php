@@ -208,6 +208,29 @@ class system_tools
 		
 		if(isset($_POST['verify_sql']) || !empty($_POST['verify_table']) || varset($_GET['mode']) =='verify_sql')
 		{
+			e107::css('inline', "
+				td.darker { background-color: rgba(0,0,0,0.5) } 
+			
+			");
+			e107::js('footer-inline', "
+			
+				$('#core-db-verify-sql-tables input[type=\"checkbox\"]').click(function(evt){
+					
+				if(this.checked)
+				{
+					$(this).closest('td').addClass('darker',  50 );	
+	            }
+				else
+				{
+					$(this).closest('td').removeClass('darker', 300 );	
+				}	
+			
+		});
+			
+			
+			");
+
+
 			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
