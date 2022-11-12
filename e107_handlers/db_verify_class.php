@@ -1221,7 +1221,7 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table table-striped table-hover' >
+				<table class='table table-striped' >
 					<colgroup>
 						<col style='width: 33%'></col>
 						<col style='width: 33%'></col>
