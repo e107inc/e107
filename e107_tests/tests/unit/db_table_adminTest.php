@@ -346,10 +346,14 @@
 
 			$result = $this->dta->get_current_table('core');
 
-			// MySQL 8.0+: Alias CHARSET=utf8mb3 to CHARSET=utf8
 			array_walk_recursive($result, function(&$element)
 			{
+				// MySQL 8.0+
+				//   Alias CHARSET=utf8mb3 to CHARSET=utf8
 				$element = str_replace("CHARSET=utf8mb3", "CHARSET=utf8", $element);
+				// MariaDB 10.3.37, 10.4.27, 10.5.18, 10.6.11, 10.7.7, 10.8.6, 10.9.4, 10.10.2, 10.11.0
+				//   Ignore COLLATE clause (https://jira.mariadb.org/browse/MDEV-29446)
+				$element = preg_replace("/ COLLATE=[^\s;]+/", "", $element);
 			});
 
 			$this->assertSame($expected, $result);
