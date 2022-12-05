@@ -1961,6 +1961,9 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 .admin-nav-home .nav-home-main { display:inline-block; margin-right:0; padding-right:0}
 .admin-nav-home .nav-home-caret { display:inline-block;border-left:0; margin-left:0; padding-left:2px; }
 
+#uiAlert { z-index: 9999 !important; }
+
+
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
