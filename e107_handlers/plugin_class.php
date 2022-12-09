@@ -3105,7 +3105,9 @@ class e107plugin
 
 	//	e107::getPlug()->clearCache()->setInstalled($plug_vars['folder'],$plug_vars['@attributes']['version'])->buildAddonPrefLists();
 
-		$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly.
+	//	$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly.
+		e107::getPlug()->clearCache()->buildAddonPrefLists();
+
 
 		/*	if($function == 'install')
 		 {
@@ -4541,7 +4543,8 @@ class e107plugin
 		
 		e107::getConfig('core')->save();
 
-		$this->save_addon_prefs('update');
+	//	$this->save_addon_prefs('update');
+		e107::getPlug()->clearCache()->buildAddonPrefLists();
 
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 
@@ -4611,7 +4614,8 @@ class e107plugin
 
 		e107::getMessage()->addDebug("Running Refresh of ".$_path);
 
-		$this->save_addon_prefs();
+	//	$this->save_addon_prefs();
+		e107::getPlug()->clearCache()->buildAddonPrefLists();
 
 		e107::getPlug()->clearCache();
 
@@ -4866,7 +4870,7 @@ class e107plugin
 
 	/**
 	 *	scan the plugin table and create path-array-prefs for each addon.
-	 *  @deprecated Replaced by eplug::refreshAddonPrefList()
+	 *  @deprecated Replaced by e107::getPlug()->clearCache()->buildAddonPrefLists()
 	 *	@param string $mode = install|upgrade|refresh|uninstall - defines the intent of the call
 	 *
 	 *	'upgrade' and 'refresh' are very similar in intent, and often take the same actions:
@@ -4877,9 +4881,7 @@ class e107plugin
 	{
 		$this->log('Running save_addon_prefs('.$mode.')');
 
-	//	e107::getPlug()->buildAddonPrefLists(); // XXX TODO Breaks plugin installation in most cases.
 
-	//	return;
 		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
