@@ -788,6 +788,7 @@ class news_admin_ui extends e_admin_ui
 		'news_sticky',
 
 		'news_comment_total' ,
+		'news_modified',
 		'submitted_id',
 		'options' );
 
