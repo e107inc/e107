@@ -35,6 +35,8 @@ jobs:
           - image: mariadb:10.3
           - image: mariadb:10.4
           - image: mariadb:10.5
+          - image: mariadb:10.6
+          - image: mariadb:10.10
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
