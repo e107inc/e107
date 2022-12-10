@@ -83,7 +83,7 @@ if (isset($_POST['faq_submit']))
 		
 		$sql->insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".e107::getParser()->filter($_POST['faq_comment'], 'str')."', '".time()."', '".USERID."', '".$count."' ");
 		
-		$message = FAQ_ADLAN_32;
+		$message = LAN_FAQS_004; // FAQ_ADLAN_32;
 		
 		unset($faq_question, $data);
 	}
@@ -130,13 +130,13 @@ if (isset($_POST['commentsubmit']))
 		if(vartrue($faqpref['classic_look']))
 		{
 			$ftmp = $faq->show_existing_parents($action, $sub_action, $id, $from, $amount);
-			$caption = FAQLAN_41;
+			$caption = defset('LAN_PLUGIN_FAQS_FUNCTIONNAME',"FAQ Categories");
 		}
 		else
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = LAN_FAQS_011;
+			$caption = defset('LAN_FAQS_011', 'FAQ');
 
 		}
 
