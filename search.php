@@ -457,7 +457,7 @@ class search_front extends e_shortcode
 						
 						<div class='form-inline row row-cols-lg-auto g-3'>
 						<div class='col col-sm-3'>
-							<select id='on' name='on' class='tbox form-control col'>
+							<select id='on' name='on' class='tbox form-control'>
 							<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
 							<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
 							</select>&nbsp;
