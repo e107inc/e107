@@ -91,9 +91,12 @@ jobs:
 
     - name: PECL install xdebug
       run: |
-        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-3.1.6
         elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.1.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug-2.9.8
