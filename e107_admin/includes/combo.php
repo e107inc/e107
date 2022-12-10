@@ -40,7 +40,7 @@ $text = "<div style='text-align:center'>
 	<table class='table'>";
 
 
-$text .= e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "classis");
+$text .= e107::getNav()->pluginLinks(defset('E_32_PLUGMANAGER'), "classis");
 
 
 $text .= render_clean();

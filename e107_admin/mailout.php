@@ -1713,8 +1713,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".defset('E_32_MAIL')."</a>";
+			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 
 			$text .= $this->renderValue('options',$value,$attributes,$id);
 
@@ -1728,8 +1728,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
 			$text = "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default btn-secondary e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default btn-secondary e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".defset('E_32_USER')."</a>";
+			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 
 			$attributes['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$attributes,$id);
@@ -1900,7 +1900,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
 
 		$text = "<span class='btn-group'>";
-		$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+		$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 		
 
 

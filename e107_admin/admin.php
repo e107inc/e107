@@ -516,7 +516,7 @@ TMPO;
 		$mes = e107::getMessage();
 		if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 		{
-			$mes->addWarning(e_HANDLER_ABS."htmlarea/<br />".e_ADMIN_ABS."htmlarea/");
+			$mes->addWarning(e_HANDLER."htmlarea/<br />".e_ADMIN_ABS."htmlarea/");
 		}	
 	}		
 	

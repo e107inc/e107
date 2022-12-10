@@ -390,7 +390,7 @@ class news_sub_form_ui extends e_admin_form_ui
 	//	$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
 
 
-			$text   = "<a class='btn btn-default btn-secondary  btn-large' data-toggle='modal' data-bs-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."'  title='".LAN_PREVIEW."'>".ADMIN_VIEW_ICON."</a>";
+			$text   = "<a class='btn btn-default btn-secondary  btn-large' data-toggle='modal' data-bs-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."'  title='".LAN_PREVIEW."'>".defset('ADMIN_VIEW_ICON')."</a>";
 
 
 
@@ -398,7 +398,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text .= "<a class='btn btn-default btn-secondary btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
+				$text .= "<a class='btn btn-default btn-secondary btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".defset('ADMIN_EXECUTE_ICON')."</a>";
 				// NWSLAN_103;	
 			} 
 

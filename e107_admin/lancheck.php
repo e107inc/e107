@@ -1303,7 +1303,7 @@ class lancheck
 					$style = ($er) ? "forumheader2" : "forumheader3";
 					$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 					$text .= $bom_error . $utf_error;
-					$text .= (!$er && !$bom_error && !$utf_error) ? ADMIN_TRUE_ICON : $er."<br />";
+					$text .= (!$er && !$bom_error && !$utf_error) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
 					$text .= "</div></td>";
 				}
 				else
@@ -1685,7 +1685,7 @@ class lancheck
 				$style = ($er) ? "forumheader2" : "forumheader3";
 				$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 				$text .= $bom_error . $utf_error;
-				$text .= (!$er && !$bom_error && !$utf_error) ? ADMIN_TRUE_ICON : $er."<br />";
+				$text .= (!$er && !$bom_error && !$utf_error) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
 				$text .= "</div></td>";
 			}
 			else

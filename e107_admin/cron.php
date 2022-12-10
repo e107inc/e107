@@ -547,7 +547,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 			$text .= ($weekday != '*') ? LAN_CRON_54 ." ". eShims::strftime("%A", mktime(00, 00, 00, 5, (int) $weekday, 2000)) : LAN_CRON_42; // Weekday(s)
 			
 			
-			return "<a class='e-tip' href=''>".ADMIN_INFO_ICON."</a>
+			return "<a class='e-tip' href=''>".defset('ADMIN_INFO_ICON')."</a>
 			<div class='field-help'>".$text."</div>";
 
 		}

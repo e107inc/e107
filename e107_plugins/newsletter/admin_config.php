@@ -450,7 +450,7 @@ class newsletter
 		$mailData = array(
 			'mail_content_status' => MAIL_STATUS_TEMP,
 			'mail_create_app' => 'newsletter',
-			'mail_title' => NLLAN_01.' '.$issue,
+			'mail_title' => LAN_PLUGIN_NEWSLETTER_NAME.' '.$issue,
 			'mail_subject' => $newsletterParentInfo['newsletter_title'] .': '.$newsletterInfo['newsletter_title'],
 			'mail_sender_email' => $pref['siteadminemail'],
 			'mail_sender_name'	=> $pref['siteadmin'],

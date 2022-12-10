@@ -144,7 +144,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$query = http_build_query($query, '', '&amp;');
 				
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
-						".ADMIN_EDIT_ICON."</a>";
+						".defset('ADMIN_EDIT_ICON')."</a>";
 
 			if($this->getController()->getMode() === 'overview' && getperms('J1')) // Page/Menu Delete Perms.
 			{
@@ -412,7 +412,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 		if($parent != 0)
 		{
 			$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";
-			$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".ADMIN_PAGES_ICON."</a>";  //
+			$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".defset('ADMIN_PAGES_ICON')."</a>";  //
 		}
 
 		$text .= "</div>";

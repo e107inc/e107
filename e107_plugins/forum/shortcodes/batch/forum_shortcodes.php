@@ -248,7 +248,7 @@ class forum_shortcodes extends e_shortcode
 			$total_new_threads = defined('USERLV') ? e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'" . USERLV . "' ") : 0;
 			$total_read_threads = 0;
 
-			if(defset('USERVIEWED') != "")
+			if(defined('USERVIEWED') && defset('USERVIEWED') != "")
 			{
 				$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
 				$total_read_threads = count($tmp);

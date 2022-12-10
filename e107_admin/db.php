@@ -769,7 +769,7 @@ class system_tools
 					<td>".$row['Name']."</td>
 					<td>".$row['Engine']."</td>
 					<td>".$row['Collation']."</td>
-					<td>".(($row['Collation'] == 'utf8_general_ci') ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON)."</td>
+					<td>".(($row['Collation'] == 'utf8_general_ci') ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
 					</tr>";
 			//	 print_a($row);
 				
@@ -1612,7 +1612,7 @@ class system_tools
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,ADMIN_WARNING_ICON,"<i style='display:inline-block;width:17px;height:16px;'> </i>");
+		$error_glyph = array(ADMIN_TRUE_ICON, ADMIN_FALSE_ICON, ADMIN_WARNING_ICON,"<i style='display:inline-block;width:17px;height:16px;'> </i>");
 		$error_type = array('warning'=>2, 'error'=>1);
 
 

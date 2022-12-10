@@ -1669,7 +1669,7 @@ class e_menuManager
 		}
 		elseif(strpos($str, "LANGUAGELINKS") !== false)
 		{
-			echo "<div class=text style='padding: 2px; text-align: center'>[".LAN_LANGUAGE."]</div>";
+			echo "<div class=text style='padding: 2px; text-align: center'>[".defset('ADLAN_132', "Language")."]</div>";
 		}
 		elseif(strpos($str, "CUSTOM") !== false)
 		{

@@ -301,12 +301,12 @@ class gsitemap_ui extends e_admin_ui
 				$id = 'gs-'.$k;
 
 				$class = '';
-				$classLabel = ADMIN_FALSE_ICON;
+				$classLabel = defset('ADMIN_FALSE_ICON');
 
 				if(isset($ia['class']) && ((int) $ia['class'] === e_UC_PUBLIC))
 				{
 					$class = 'label-success';
-					$classLabel = ADMIN_TRUE_ICON;
+					$classLabel = defset('ADMIN_TRUE_ICON');
 				}
 
 
@@ -747,10 +747,6 @@ class gsitemap
 		{
 		//	$this->importSme();
 		}
-		else if(e_QUERY == "instructions")
-		{
-			$this->instructions();
-		}
 		else if(!vartrue($_POST['edit']))
 		{
 			$this->showList();
@@ -828,8 +824,8 @@ class gsitemap
 
 				<td class='center' style='white-space:nowrap'>
 				<div>
-				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' >".ADMIN_EDIT_ICON."</button>
-				<button class='btn btn-default btn-secondary action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toAttribute(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
+				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' >".defset('ADMIN_EDIT_ICON')."</button>
+				<button class='btn btn-default btn-secondary action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toAttribute(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".defset('ADMIN_DELETE_ICON')."</button>
 				</div>
 				</td>
 				</tr>
@@ -1026,39 +1022,6 @@ class gsitemap
 	}
 
 
-	function instructions()
-	{
-		$mes = e107::getMessage();
-		$ns = e107::getRender();
-		
-		
-		$LINK_1 = "https://search.google.com/search-console/";
-		$LINK_2 = "http://www.google.com/support/webmasters/?hl=en";
-		
-		$srch[0] = "[URL]";
-		$repl[0] = "<a href='".$LINK_1."'>".$LINK_1."</a>";
-		
-		$srch[1] = "[URL2]";
-		$repl[1] = "<blockquote><b>".SITEURL."sitemap.xml</b></blockquote>";
-		
-		$srch[2] = "[";
-		$repl[2] = "<a href='".e_ADMIN."prefs.php'>";
-		
-		$srch[3] = "]";
-		$repl[3] = "</a>";		
-		
-		$text = "<b>".GSLAN_33."</b><br /><br />
-		<ul>
-			<li>".GSLAN_34."</li>
-			<li>".GSLAN_35."</li>
-			<li>".GSLAN_36."</li>
-			<li>".str_replace($srch,$repl,GSLAN_37)."</li>
-			<li>".str_replace("[URL]","<a href='".$LINK_2."'>".$LINK_2."</a>",GSLAN_38)."</li>
-		<ul>
-		";
-
-		$ns->tablerender(GSLAN_32, $mes->render(). $text);
-	}
 
 }
 

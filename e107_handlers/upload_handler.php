@@ -532,7 +532,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 		$admin_log->
 			addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy return with ".count($ret)." files", FALSE, FALSE);
 	$messages = handle_upload_messages($ret, FALSE, TRUE); // Show all the error and acknowledgment messages
-	define(F_MESSAGE, $messages);
+	define('F_MESSAGE', $messages);
 
 	if (count($ret) == 1)
 	{

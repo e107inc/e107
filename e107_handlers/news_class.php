@@ -201,8 +201,8 @@ class news {
 				if($sql->getLastErrorNumber())
 				{
 					$error = true;
-					$emessage->add(LAN_NEWS_5, E_MESSAGE_ERROR, $smessages);
-					$message = "<strong>".LAN_NEWS_5."</strong>";
+					$emessage->add(defset('LAN_UPDATED_FAILED', "Update Failed"), E_MESSAGE_ERROR, $smessages);
+					$message = "<strong>".defset('LAN_UPDATED_FAILED', "Update Failed")."</strong>";
 				}
 				else
 				{
@@ -228,7 +228,7 @@ class news {
 			if ($data['data']['news_id'])
 			{
 				$data['news_id'] = $news['news_id'];
-				$message = LAN_NEWS_6;
+				$message = defset('LAN_SAVED', "Saved");
 				$emessage->add(LAN_CREATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
 
@@ -244,7 +244,7 @@ class news {
 			else
 			{
 				$error = true;
-				$message = "<strong>".LAN_NEWS_7."</strong>";
+				$message = "<strong>".defset('LAN_CREATED_FAILED')."</strong>";
 				$emessage->add(LAN_UPDATED, E_MESSAGE_ERROR, $smessages);
 			}
 		}

@@ -45,7 +45,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	}
 	else
 	{
-		$text_rend = e107::getNav()->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
+		$text_rend = e107::getNav()->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", defset('E_16_PLUGMANAGER'), 'default');
 
 		if ($text_rend)
 		{

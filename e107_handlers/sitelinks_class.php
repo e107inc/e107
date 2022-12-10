@@ -634,7 +634,7 @@ class sitelinks
 			return TRUE;
 		}
 
-		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && empty($link) == FALSE && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) )
+		if(($link_slf == e_SELF && !$link_qry) || (e_QUERY && empty($link) == FALSE && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) )
 		{
           	return TRUE;
 		}

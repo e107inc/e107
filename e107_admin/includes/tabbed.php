@@ -141,7 +141,7 @@ class tabbed
         	}
         	else // Plugin category.
         	{
-        		$text_rend  = e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "div");
+        		$text_rend  = e107::getNav()->pluginLinks(defset('E_32_PLUGMANAGER'), "div");
         
         		if ($text_rend)
         		{
