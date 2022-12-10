@@ -912,13 +912,25 @@ class e107Email extends PHPMailer
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
 		{
 			require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
-			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
+
+			if(is_array($eml['template']) && !empty($eml['template']['plugin']) && !empty($eml['template']['name']) && !empty($eml['template']['key']))
+			{
+				$tmpl = e107::getTemplate($eml['template']['plugin'],$eml['template']['name'], $eml['template']['key']);
+			}
+			else
+			{
+				$tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true);
+			}
+
+			if(!empty($tmpl))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
 				$eml['templateHTML'] = $tmpl;
 				$eml['shortcodes'] = $this->processShortcodes($eml);
-				$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
-
-				$emailBody = $tmpl['header']. str_replace('{BODY}', $eml['body'], $tmpl['body']) . $tmpl['footer'];
+				if(is_string($eml['template']))
+				{
+					$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
+				}
+				$emailBody = varset($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']) . varset($tmpl['footer']);
 				
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				
@@ -935,7 +947,7 @@ class e107Email extends PHPMailer
 				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
 				
-				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null));
+				$this->Subject = $tp->parseTemplate(varset($tmpl['subject'],'{SUBJECT}'), true, varset($eml['shortcodes'],null));
 
 				if($this->debug)
 				{
@@ -946,7 +958,7 @@ class e107Email extends PHPMailer
 			{
 				if($this->debug)
 				{
-					echo "<h4>Couldn't find email template: ".$eml['template']."</h4>";	
+					echo "<h4>Couldn't find email template: ".print_r($eml['template'],true)."</h4>";
 				}
 			//	$emailBody = $eml['body'];
 				
