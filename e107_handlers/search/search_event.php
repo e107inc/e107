@@ -69,4 +69,3 @@ while (list($event_id, $event_stake, $event_ward, $event_organisation, $event_st
 	$text .= $bullet." <a href=\"event.php?".$event_start."\">{$event_title}</a>{$event_details}<br />";
 }
 $qtype = LAN_911;
-?>

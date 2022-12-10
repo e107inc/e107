@@ -1248,7 +1248,7 @@ class users_admin_ui extends e_admin_ui
 			$vars = array('x'=> $sysuser->getId(), 'y'=>$sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 			$message = e107::getParser()->lanVars(USRLAN_167,$vars);
 			e107::getLog()->add('USET_11', $message, E_LOG_INFORMATIVE);
-			$mes->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
+			$mes->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_60."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
 		}
 		else
 		{

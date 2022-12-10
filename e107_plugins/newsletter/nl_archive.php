@@ -119,7 +119,7 @@ else
 				// Display parent footer
 				$text .= "$parent_newsletter_footer<br />";
 				// Display back to newsletter overview button
-				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default btn-secondary button' type='submit' value='".NLLAN_71."'</a>";
+				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default btn-secondary button' type='submit' value='".defset('LAN_BACK', 'Back')."'</a>";
 			}
 			else
 			{

@@ -1974,7 +1974,7 @@ $columnInfo = array(
 		  
 	      if ($delete == "mirror")
 	      {
-	         $mes->addAuto($sql ->delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
+	         $mes->addAuto($sql ->delete("download_mirror", "mirror_id=".$del_id), 'delete', DOWLAN_135);
 	         e107::getLog()->add('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 	      }
 	

@@ -49,7 +49,7 @@ $text = "<div style='text-align:center'>
 	<table class='table'>";
 
 
-$text .= e107::getNav()->pluginLinks( E_16_PLUGMANAGER, 'default');
+$text .= e107::getNav()->pluginLinks( defset('E_16_PLUGMANAGER'), 'default');
 
 
 $text .= "</tr>

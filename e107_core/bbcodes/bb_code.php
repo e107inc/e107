@@ -70,8 +70,8 @@ class bb_code extends e_bb_base
 				
 				$geshi->line_style1 = "font-family: 'Courier New', Courier, monospace; font-weight: normal; font-style: normal;";
 				$geshi->set_encoding('utf-8');
-				$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
-				$geshi->set_header_type(GESHI_HEADER_DIV);
+				$geshi->enable_line_numbers(defset('GESHI_NORMAL_LINE_NUMBERS'));
+				$geshi->set_header_type(defset('GESHI_HEADER_DIV'));
 				$CodeCache = $geshi->parse_code();
 				$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 			}

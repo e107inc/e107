@@ -304,7 +304,7 @@ class import_main_ui extends e_admin_ui
 					 foreach($this->importTables as $key=>$val)
 					 {
 					 	if(vartrue($val['nolist'])){ continue; }
-		 			 	$text .= "<td class='center'>".(in_array($key,$info['supported']) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>\n";
+		 			 	$text .= "<td class='center'>".(in_array($key,$info['supported']) ? defset('ADMIN_TRUE_ICON') : "&nbsp;")."</td>\n";
 					 }
 		
 		             $text .= "

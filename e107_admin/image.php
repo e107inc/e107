@@ -602,7 +602,7 @@ class media_form_ui extends e_admin_form_ui
 		{
 			foreach($pref['e_imageresize'] as $k=>$val)
 			{
-				$options[$k]		= ucfirst($k). ' ' .LAN_IMA_O_006;
+				$options[$k]		= ucfirst($k). ' ' .defset('LAN_IMA_O_006');
 			}
 		}
 

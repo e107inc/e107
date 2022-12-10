@@ -47,7 +47,7 @@ class admin_shortcodes extends e_shortcode
 				return '<ul class="nav navbar pill navbar-nav">
 						<li class="dropdown">
 						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
-						'.E_16_E107.' <b class="caret"></b>
+						'.defset('E_16_E107').' <b class="caret"></b>
 						</a> 
 						<ul class="dropdown-menu" role="menu">
 						<li class="nav-header dropdown-header navbar-header">'.LAN_UPDATE_AVAILABLE.'</li>
@@ -315,7 +315,7 @@ class admin_shortcodes extends e_shortcode
 					return $icon;
 				}
 				
-				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_folder.$eplug_icon)) ? "<img src='".e_PLUGIN_ABS.$eplug_folder.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
+				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_folder.$eplug_icon)) ? "<img src='".e_PLUGIN_ABS.$eplug_folder.$eplug_icon."' alt='' class='icon S32' />" : defset('E_32_CAT_PLUG');
 			}
 			else
 			{
@@ -324,7 +324,7 @@ class admin_shortcodes extends e_shortcode
 			return $icon;
 		}
 
-		return E_32_LOGOUT;
+		return defset('E_32_LOGOUT');
 	}
 
 	public function sc_admin_lang($parm=null)
@@ -619,7 +619,7 @@ class admin_shortcodes extends e_shortcode
 
 					$sql = e107::getDb();
 					$ns = e107::getRender();
-					$text = "<ul class='list-group'><li class='list-group-item'>".E_16_ADMINLOG." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
+					$text = "<ul class='list-group'><li class='list-group-item'>".defset('E_16_ADMINLOG')." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
 					if (e_QUERY === 'logall')
 					{
 						$text .= "<div id='adminlog'>";
@@ -1376,25 +1376,25 @@ class admin_shortcodes extends e_shortcode
 					// for BC only. 	
 	
 					
-					$oldconfigs['e-user'][0] 		= array('icon' =>E_16_USER, 'title' =>ADLAN_110, 'url' => e_ADMIN_ABS. 'users.php?searchquery=&amp;filter_options=user_ban__0', 'total' =>$members, 'invert' =>1);
-					$oldconfigs['e-user'][1] 		= array('icon' =>E_16_USER, 'title' =>ADLAN_111, 'url' => e_ADMIN. 'users.php?searchquery=&amp;filter_options=user_ban__2', 'total' =>$unverified);
-					$oldconfigs['e-user'][2] 		= array('icon' =>E_16_BANLIST, 'title' =>ADLAN_112, 'url' => e_ADMIN. 'users.php?searchquery=&filter_options=user_ban__1', 'total' =>$banned);
+					$oldconfigs['e-user'][0] 		= array('icon' =>defset('E_16_USER'), 'title' =>ADLAN_110, 'url' => e_ADMIN_ABS. 'users.php?searchquery=&amp;filter_options=user_ban__0', 'total' =>$members, 'invert' =>1);
+					$oldconfigs['e-user'][1] 		= array('icon' =>defset('E_16_USER'), 'title' =>ADLAN_111, 'url' => e_ADMIN. 'users.php?searchquery=&amp;filter_options=user_ban__2', 'total' =>$unverified);
+					$oldconfigs['e-user'][2] 		= array('icon' =>defset('E_16_BANLIST'), 'title' =>ADLAN_112, 'url' => e_ADMIN. 'users.php?searchquery=&filter_options=user_ban__1', 'total' =>$banned);
 
 
 					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
 					{
-						$oldconfigs['e-comments'][0] 	= array('icon' =>E_16_COMMENT, 'title' =>LAN_COMMENTS, 'url' => e_ADMIN_ABS. 'comment.php', 'total' =>$comments);
+						$oldconfigs['e-comments'][0] 	= array('icon' => defset('E_16_COMMENT'), 'title' =>LAN_COMMENTS, 'url' => e_ADMIN_ABS. 'comment.php', 'total' =>$comments);
 					}
 					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
-						$oldconfigs['e-failed'][0]	= array('icon' =>E_16_FAILEDLOGIN, 'title' =>ADLAN_146, 'url' =>e_ADMIN_ABS. 'banlist.php?mode=failed&action=list', 'total' =>$flo);
+						$oldconfigs['e-failed'][0]	= array('icon' => defset('E_16_FAILEDLOGIN'), 'title' =>ADLAN_146, 'url' =>e_ADMIN_ABS. 'banlist.php?mode=failed&action=list', 'total' =>$flo);
 					}
 
 					if($emls = $sql->count('mail_recipients', '(*)', 'WHERE mail_status = 13'))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-						$oldconfigs['e-mailout'][0]	= array('icon' =>E_16_MAIL, 'title' =>ADLAN_167, 'url' =>e_ADMIN_ABS. 'mailout.php?mode=pending&action=list', 'total' =>$emls);
+						$oldconfigs['e-mailout'][0]	= array('icon' => defset('E_16_MAIL'), 'title' =>ADLAN_167, 'url' =>e_ADMIN_ABS. 'mailout.php?mode=pending&action=list', 'total' =>$emls);
 					}
 					
 					
@@ -2374,7 +2374,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[5]['text'] 			= 'e107 Website';
 			$tmp[5]['description'] 		= '';
 			$tmp[5]['link'] 			= 'https://e107.org';
-			$tmp[5]['image'] 			= E_16_E107;
+			$tmp[5]['image'] 			= defset('E_16_E107');
 			$tmp[5]['image_large'] 		= '';
 			$tmp[5]['image_src'] 		= '';
 			$tmp[5]['image_large_src'] 	= '';
@@ -2384,7 +2384,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[6]['text'] 			= 'e107 on Twitter';
 			$tmp[6]['description'] 		= '';
 			$tmp[6]['link'] 			= 'https://twitter.com/e107';
-			$tmp[6]['image'] 			= E_16_TWITTER; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[6]['image'] 			= defset('E_16_TWITTER'); // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[6]['image_large'] 		= '';
 			$tmp[6]['image_src'] 		= '';
 			$tmp[6]['image_large_src'] 	= '';
@@ -2394,7 +2394,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[7]['text'] 			= 'e107 on Facebook';
 			$tmp[7]['description'] 		= '';
 			$tmp[7]['link'] 			= 'https://www.facebook.com/e107CMS';
-			$tmp[7]['image'] 			= E_16_FACEBOOK; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[7]['image'] 			= defset('E_16_FACEBOOK'); // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[7]['image_large'] 		= '';
 			$tmp[7]['image_src'] 		= '';
 			$tmp[7]['image_large_src'] 	= '';
@@ -2404,7 +2404,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['text'] 			= 'e107 on Github';
 			$tmp[8]['description'] 		= '';
 			$tmp[8]['link'] 			= 'https://github.com/e107inc';
-			$tmp[8]['image'] 			= E_16_GITHUB; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$tmp[8]['image'] 			= defset('E_16_GITHUB'); // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[8]['image_large'] 		= '';
 			$tmp[8]['image_src'] 		= '';
 			$tmp[8]['image_large_src'] 	= '';
@@ -2547,7 +2547,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 				$diz = MENLAN_58;
 
-		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .ADMIN_INFO_ICON. '</a></span>';
+		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .defset('ADMIN_INFO_ICON'). '</a></span>';
 
 	   return e107::getNav()->admin($caption,$action, $var);
 
