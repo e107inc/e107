@@ -35,6 +35,8 @@ jobs:
           - image: mariadb:10.3
           - image: mariadb:10.4
           - image: mariadb:10.5
+          - image: mariadb:10.6
+          - image: mariadb:10.10
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
@@ -91,9 +93,12 @@ jobs:
 
     - name: PECL install xdebug
       run: |
-        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-3.1.6
         elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.1.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug-2.9.8
