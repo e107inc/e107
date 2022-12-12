@@ -1967,7 +1967,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 
 			$vars['mode']       = $tp->filter($vars['mode']);
 			$vars['pluginName'] = $tp->filter($vars['pluginName']);
-			$vars['table']      = $tp->filter($vars['table']);
+			$vars['table']      = !empty($var['table']) ? $tp->filter($vars['table']) : '';
 			$vars['pid']        = $tp->filter($vars['pid']);
 
 			$FIELDS             = $this->buildAdminUIFields($vars);
@@ -2029,7 +2029,7 @@ class " . $table . " extends e_admin_ui
 						$type = vartrue($val['type'], 'text');
 						$help = str_replace("'", '', vartrue($val['help']));
 
-						$text .= "\t\t\t'" . $index . "'\t\t=> array('title'=> '" . ucfirst($index) . "', 'tab'=>0, 'type'=>'" . $tp->filter($type) . "', 'data' => 'str', 'help'=>'" . $tp->filter($help) . "', 'writeParms' => array()),\n";
+						$text .= "\t\t\t'" . $index . "'\t\t=> array('title'=> '" . ucfirst($index) . "', 'tab'=>0, 'type'=>'" . $tp->filter($type) . "', 'data' => 'str', 'help'=>'" . $tp->filter($help) . "', 'writeParms' => []),\n";
 					}
 
 				}
