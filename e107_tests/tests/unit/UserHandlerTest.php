@@ -24,7 +24,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load UserHandler object");
+				$this->fail("Couldn't load UserHandler object");
 			}
 
 		}
