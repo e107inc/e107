@@ -64,8 +64,6 @@ class notifyTest extends \Codeception\Test\Unit
 				    'legacy' => '0',
 				  ),
 		);
-
-
 	}
 
 	public function testSend()

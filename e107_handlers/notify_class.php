@@ -496,7 +496,7 @@ class notify
 
 		$this->send('admin_news_notify', $data['news_title'], $message, $img);
 
-	//	print_a($message);
+
 	}
 
 
