@@ -42,17 +42,34 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						target = '#uiModal';
 					}
 
+                    if($this.attr('data-modal-close') === 'false')
+					{
+                         $(target+' .modal-footer button[data-dismiss="modal"]').hide();
+                    }
+
 					$(target+' .modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
 					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
 					$(target+'.modal').modal('show');
+
+
 
 					$("#e-modal-iframe").on("load", function ()
 					{
 						$('#e-modal-loading').hide();
 
+
+
 						if($this.attr('data-modal-submit'))
 						{
-							var buttonCaption = $('#e-modal-iframe').contents().find('#etrigger-submit').text(); // copy submit button caption from iframe form.
+						    var buttonObj = $('#e-modal-iframe').contents().find('#etrigger-submit');
+							var buttonCaption = buttonObj.text(); // copy submit button caption from iframe form.
+
+                            if(buttonObj.val())
+                            {
+                                buttonCaption = buttonObj.val(); // copy when it's an <input type='submit'..
+                            }
+
+
 
 							var buttonClass = $('#e-modal-iframe').contents().find('#etrigger-submit').attr('data-modal-submit-class'); // co
 							if(buttonCaption)
