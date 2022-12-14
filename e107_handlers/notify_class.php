@@ -31,7 +31,7 @@ class notify
 
 		if(empty($this->notify_prefs))
 		{
-			$this->notify_prefs = e107::getConfig('notify')->getPref();
+			$this->notify_prefs = (array) e107::getConfig('notify')->getPref();
 		}
 
 	}
@@ -58,7 +58,7 @@ class notify
 			{
 				$include = null;
 
-				if ($status['class'] != e_UC_NOBODY) // 255;
+				if (varset($status['class']) != e_UC_NOBODY) // 255;
 				{
 					if(varset($status['include'])) // Plugin
 					{
@@ -150,7 +150,25 @@ class notify
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
-		if ($notifyTarget == 'email') // Single email address - that can always go immediately
+		if(strpos($notifyTarget, '::') !== false) // custom router @see e107_plugins/_blank/e_notify.php
+		{
+			list($class,$method) = explode('::', $notifyTarget);
+
+			if($cls = e107::getAddon($class,'e_notify'))
+			{
+				$evData = [
+					'id'            => $id,
+					'subject'       => $subject,
+					'message'       => $message,
+					'recipient'     => varset($this->notify_prefs['event'][$id]['recipient'])
+				];
+
+				return e107::callMethod($cls, $method, $evData);
+			}
+
+			return false;
+		}
+		elseif ($notifyTarget == 'email') // Single email address - that can always go immediately
 		{
 			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
 			{

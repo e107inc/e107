@@ -456,7 +456,7 @@ class user_class
 
 	 *	@param string $extra_js - can add JS handlers (e.g. 'onclick', 'onchange') if required
 	*/
-	public function uc_dropdown($fieldname, $curval = 0, $optlist = '', $extra_js = '')
+	public function uc_dropdown($fieldname, $curval = 0, $optlist = '', $extra_js = null)
 	{
 		$optlist = (string) $optlist;
 		$show_classes = self::uc_required_class_list($optlist);		// Get list of classes which meet criteria
@@ -479,14 +479,19 @@ class user_class
 		{
 			$options = $extra_js;
 			$extra_js = '';
-
 		}
 
+		$id = $fieldname;
 		$class = "tbox form-control";
 
 		if(!empty($options['class']))
 		{
 			$class .= " ".$options['class'];
+		}
+
+		if(!empty($options['id']))
+		{
+			$id = $options['id'];
 		}
 
 
@@ -515,7 +520,8 @@ class user_class
 		}
 
 		// Only return the select box if we've ended up with some options
-		if ($text) $text = "\n<select class='".$class."' name='{$fieldname}' id='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+
+		if ($text) $text = "\n<select class='".$class."' name='$fieldname' id='$id' {$extra_js}>\n".$text."</select>\n";
 		return $text;
 	}
 
@@ -1142,7 +1148,6 @@ class user_class
 		if ($asArray) { return $tmp; }
 		return implode(',',$tmp);
 	}
-
 
 
 	/**

@@ -17,26 +17,24 @@ if (!getperms('O'))
 }
 
 e107::coreLan('notify', true);
+e107::library("load", "animate.css");
+e107::js('footer-inline',"
 
-$js = "
+	$('select').on('change', function()
+	{
+        var valueSelected = this.value;
+        valueSelected = valueSelected.replace('::','_');
+        var id = $(this).attr('id');
+        var targetid = '#' + id + '-' + valueSelected;
+        var disp = '.' + id + '-disp';
+         $(disp).hide();
+        $(targetid).show();
+ 
+
+	});	
 
 	
-	    function mail_field(val,id)
-		{
-	        if(val == 'email')
-			{
-	            document.getElementById(id).style.display ='';
-			}
-	        else
-			{
-	            document.getElementById(id).style.display ='none';
-			}
-		}
-	
-";
-
-
-e107::js('inline', $js);
+");
 
 class plugin_notify_admin extends e_admin_dispatcher
 {
@@ -48,7 +46,7 @@ class plugin_notify_admin extends e_admin_dispatcher
 	);
 
 	protected $adminMenu = array(
-		'main/config' 		=> array('caption'=> "Email", 'perm' => '0'),
+		'main/config' 		=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 //		'main/push'		=> array('caption'=> "Push (experimental)", 'perm' => '0')
 	);
 
@@ -113,22 +111,12 @@ class plugin_notify_admin_ui extends e_admin_ui
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')*/
 		);
 
-		var $notify_prefs;
+		private $notify_prefs = [];
 		var $changeList = array();
 		var $pluginConfig = array();
 
 		function init()
 		{
-
-
-			if(!empty($_POST['update']))
-			{
-				if(!$this-> update())
-				{
-			        e107::getMessage()->addError(LAN_UPDATED_FAILED);
-				}
-			}
-
 
 			$pref 	= e107::getPref();
 			$this->notify_prefs = e107::getConfig('notify')->getPref();
@@ -136,13 +124,26 @@ class plugin_notify_admin_ui extends e_admin_ui
 			$this->prefCleanup();
 			$this->test();
 
+			if(!empty($_POST['update']))
+			{
+				if($this-> update() === null)
+				{
+			        e107::getMessage()->addInfo(LAN_NO_CHANGE);
+				}
+			}
+
+
+
 			$recalibrate = FALSE;
 
 			// load every e_notify.php file.
 			if(!empty($pref['e_notify_list']))
 			{
+				$config_events = array();
+
 		        foreach($pref['e_notify_list'] as $val) // List of available e_notify.php files.
 				{
+						$config_category = '';
 					//	if (!isset($this->notify_prefs['plugins'][$val]))
 						{
 
@@ -154,23 +155,29 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 								if(class_exists($val."_notify")) // new v2.x
 								{
-									$legacy = 0; // Newe.
+									$legacy = 0; // New.
 									$config_events = array();
 
-									$data = e107::callMethod($val."_notify", 'config');
-
-									$config_category = str_replace("_menu","",ucfirst($val))." ".LAN_NOTIFY_01;
-
-									foreach($data as $v)
+									if($data = e107::callMethod($val."_notify", 'config'))
 									{
-										$func = $v['function'];
-										$config_events[$func] = $v['name'];
+
+										$config_category = str_replace("_menu","",ucfirst($val))." ".LAN_NOTIFY_01;
+
+										foreach($data as $v)
+										{
+											$func = $v['function'];
+											$config_events[$func] = $v['name'];
+										}
 									}
+
+									$routers = e107::callMethod($val."_notify", 'router');
+
 
 								}
 								else
 								{
 									$legacy = 1;	// Legacy Mode.
+									$routers = [];
 								//	$config_category = 'Other';
 								//	$config_events = array();
 								}
@@ -180,11 +187,13 @@ class plugin_notify_admin_ui extends e_admin_ui
 								//	$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '', 'plugin'=> $val);
 
 						//		}
-								$this->pluginConfig[$val] = array('category' => $config_category, 'events' => $config_events, 'legacy'=> $legacy);
+								$this->pluginConfig[$val] = array('category' => $config_category, 'events' => $config_events, 'legacy'=> $legacy, 'routers'=>$routers);
 								$recalibrate = true;
 							}
 						}
 				}
+
+
 			}
 
 		//	print_a($this->pluginConfig);
@@ -221,18 +230,6 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 
 
-
-		function pushPage()
-		{
-
-			e107::getMessage()->addInfo("Under Construction");
-
-
-
-
-		}
-
-
 	function test()
 	{
 		if(!empty($_POST['test']))
@@ -263,8 +260,9 @@ class plugin_notify_admin_ui extends e_admin_ui
 		{
 			$text = " <table class='table adminform'>
         	<colgroup>
-        		<col class='col-label' />
-        		<col class='col-control' />
+        		<col class='col-label' />";
+			$text .= deftrue('e_DEBUG') ? "<col class='col-control' />" : '';
+        	$text .= "<col style='width:50%' />
         	</colgroup>";
 
 			foreach($cat as $c=>$ev)
@@ -305,7 +303,10 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 					$text .= "</table>\n";
 
-					$tab[] = array('caption'=> $config_category, 'text'=> $text);
+					if(!empty($config_category))
+					{
+						$tab[] = array('caption'=> $config_category, 'text'=> $text);
+					}
 				}
 			}
 		}
@@ -328,13 +329,37 @@ class plugin_notify_admin_ui extends e_admin_ui
 	}
 
 
-	function render_event($id, $description, $include='', $legacy = 0)
+	private function render_event($id, $description, $include='', $legacy = 0)
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$uc = e107::getUserClass();
-		$uc->fixed_classes['email'] = NM_LAN_3;
+		$uc->fixed_classes['email'] = LAN_EMAIL.' &raquo;';
 		$uc->text_class_link['email'] = 'email';
+		$ucDropList = ['nobody','main','admin','member','classes','email'];
+
+		$inputs = '';
+
+		foreach($this->pluginConfig as $plg => $cfg)
+		{
+			if(!empty($cfg['routers']))
+			{
+				foreach($cfg['routers'] as $key => $route)
+				{
+					$k = $plg.'::'.$key;
+					$containerId = 'event-'.$id.'-'.$plg.'_'.$key;
+					$disp = (varset($this->notify_prefs['event'][$id]['class']) == $k) ? 'display:visible' : 'display:none';
+					$inputs .= "<span id='$containerId' class='animated fadeIn event-".$id."-disp' style='$disp'>";
+					$inputs .= e107::callMethod($plg.'_notify',$route['field'],"event[".$id."][".$k."]",varset($this->notify_prefs['event'][$id]['recipient']));
+					$inputs .= "</span> ";
+					$uc->fixed_classes[$k] = $route['label'].' &raquo;';
+					$uc->text_class_link[$k] = $k;
+					$ucDropList[] = $k;
+				}
+
+			}
+		}
+
 
 
 		if(defined($description))
@@ -352,14 +377,14 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 
 
-		if(e_DEBUG)
+		if(deftrue('e_DEBUG'))
 		{
 			$text .= "<td>".$id."</td>";
 		}
 
 				$text .= "
 				<td  class='form-inline nowrap'>
-				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
+				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), implode(',',$ucDropList),['id'=>'event-'.$id] /*"onchange=\"mail_field(this.value,'event_".$id."');\" "*/);
 
 			if(varset($this->notify_prefs['event'][$id]['class']) == 'email')
 			{
@@ -372,7 +397,10 @@ class plugin_notify_admin_ui extends e_admin_ui
 				$value= "";
 			}
 
-			$text .= "<input class='form-control' type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" placeholder='eg. your@email.com' />\n";
+			$text .= "<input class='form-control animated fadeIn input-large event-".$id."-disp' type='text' style='$disp' class='tbox' id='event-".$id."-email' name='event[".$id."][email]' value=\"".$value."\" placeholder='eg. your@email.com' />\n";
+
+			$text .= $inputs;
+
 
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method
@@ -383,89 +411,75 @@ class plugin_notify_admin_ui extends e_admin_ui
 		}
 
 
-		$text .= "</td>";
-
-
-
-
-		$text .= "
+		$text .= "</td>
 		</tr>";
+
 		return $text;
 	}
 
 
-	function update()
+	private function update()
 	{
 		$this->changeList = array();
 
-		$active = false;
+		$modified = [];
 
 		foreach ($_POST['event'] as $key => $value)
 		{
-			if ($this -> update_event($key))
+			unset($this->notify_prefs['event'][$key]['plugin']); // BC Cleanup
+			unset($this->notify_prefs['event'][$key]['type']); // BC Cleanup
+
+			if ($res = $this->update_event($key))
 			{
-				$active = true;
+				$this->notify_prefs['event'][$key] = $res;
+				e107::getMessage()->addDebug("Modified:".print_a($res,true));
+				$modified[] = $res;
 			}
 		}
 
-	//	print_a($this->notify_prefs);
-		/*
-		$s_prefs = $tp -> toDB($this -> notify_prefs);
-		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
-		*/
-
-		e107::getConfig()->set('notify',$active)->save(true,true,false);
-		e107::getConfig('notify')->updatePref($this->notify_prefs);
-		if (e107::getConfig('notify')->save(FALSE))
+		if(empty($modified))
 		{
-			// e107::getAdminLog()->logArrayAll('NOTIFY_01',$this->changeList);
-			return true;
-		}
-		else
-		{
-        	return false;
+			return null;
 		}
 
+		return e107::getConfig('notify')->updatePref($this->notify_prefs)->save(true,true,true);
 	}
 
 
 
 
 
-	function update_event($id)
+	private function update_event($id)
 	{
-		$changed = FALSE;
+		$ret = [];
 
-		if ($this -> notify_prefs['event'][$id]['class'] != $_POST['event'][$id]['class'])
+		$classVal = null;
+
+		if(isset($_POST['event'][$id]['class']))
 		{
-			$this -> notify_prefs['event'][$id]['class'] = $_POST['event'][$id]['class'];
-			$changed = TRUE;
-		}
-		if ($this -> notify_prefs['event'][$id]['email'] != $_POST['event'][$id]['email'])
-		{
-			$this -> notify_prefs['event'][$id]['email'] = $_POST['event'][$id]['email'];
-			$changed = TRUE;
+			$classVal = $_POST['event'][$id]['class'];
+			$ret['class'] = $_POST['event'][$id]['class'];
 		}
 
-		$this -> notify_prefs['event'][$id]['include'] 	= $_POST['event'][$id]['include'];
-		$this -> notify_prefs['event'][$id]['legacy'] 	= $_POST['event'][$id]['legacy'];
+		if(!empty($_POST['event'][$id]['email']) && $classVal === 'email')
+		{
+			$ret['email'] = $_POST['event'][$id]['email'];
+		}
+		elseif($classVal !== null && !empty($_POST['event'][$id][$classVal]))
+		{
+			$ret['recipient'] = $_POST['event'][$id][$classVal];
+		}
 
-		unset($this -> notify_prefs['event'][$id]['plugin']);
-		unset($this -> notify_prefs['event'][$id]['type']);
+		$ret['include'] 	= $_POST['event'][$id]['include'];
+		$ret['legacy'] 	    = $_POST['event'][$id]['legacy'];
 
-		if ($changed)
+		if($this->notify_prefs['event'][$id] !== $ret)
 		{
-			$this->changeList[$id] = $this->notify_prefs['event'][$id]['class'].', '.$this->notify_prefs['event'][$id]['email'];
+			return $ret;
 		}
-		if ($this -> notify_prefs['event'][$id]['class'] != 255)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
+
+		return false;
+
 	}
 }
 
