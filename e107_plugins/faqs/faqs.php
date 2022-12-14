@@ -89,7 +89,7 @@ if (isset($_POST['faq_submit']))
 	}
 	else
 	{
-		$message = FAQ_ADLAN_30;
+		$message = LAN_REQUIRED_BLANK;
 	}
 	$id = $_POST['faq_parent'];
 }
@@ -103,13 +103,13 @@ if (isset($_POST['faq_edit_submit']))
 
 		$sql->update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
 		
-		$message = FAQ_ADLAN_29;
+		$message = LAN_UPDATED;
 		
 		unset($faq_question, $data);
 	}
 	else
 	{
-		$message = FAQ_ADLAN_30;
+		$message = LAN_REQUIRED_BLANK;
 	}
 }
 
@@ -697,7 +697,7 @@ class faq
 
                   <td style='width:70%' class='forumheader3'>".($rw['faq_question'] ? $tp->toHTML($rw['faq_question']) : "[".NWSLAN_42."]")."</td>
                   <td style='width:30%; text-align:center' class='forumheader3'>
-                  ".$rs->form_button("submit", "entry_edit_{$rw['faq_id']}", FAQ_ADLAN_45, "onclick=\"document.location='".e_SELF."?edit.".$id.".".$rw['faq_id'].".'\"");
+                  ".$rs->form_button("submit", "entry_edit_{$rw['faq_id']}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.".$id.".".$rw['faq_id'].".'\"");
 			//     $text .= $rs -> form_button("submit", "entry_delete", FAQ_ADLAN_50, "onclick=\"document.location='".e_SELF."?delentry.$id.$pfaq_id'\"")."
 			$text .= "</td>
                   </tr>";
@@ -725,7 +725,7 @@ class faq
 
 		$text .= "
         <tr>
-        <td class='forumheader3' style=\"width:20%\">".FAQ_ADLAN_78."</td>
+        <td class='forumheader3' style=\"width:20%\">".LAN_CATEGORY."</td>
         <td class='forumheader3' style=\"width:80%\">";
 
 		$text .= "<select style='width:150px' class='tbox' id='faq_parent' name='faq_parent' >";
