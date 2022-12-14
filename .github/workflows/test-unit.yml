@@ -119,6 +119,9 @@ jobs:
       run: composer update --prefer-dist --no-progress
       working-directory: ./e107_tests/
 
+    - name: Opt out of CVE-2022-24765 mitigation
+      run: git config --global safe.directory '*'
+
     - name: Download Git submodule dependencies
       run: git submodule update --init --recursive --remote
 
