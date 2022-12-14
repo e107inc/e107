@@ -318,13 +318,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 		$text2 .= "<div class='buttons-bar center'>". $frm->admin_button('update', LAN_UPDATE,'update') . "</div>";
 		$text2 .= $frm->close();
 
-
-	//	$ns -> tablerender(NT_LAN_1, $mes->render() . $text2);
-
 		return $text2;
-//	return;
-
-
 
 	}
 

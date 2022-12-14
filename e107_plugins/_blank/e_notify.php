@@ -78,7 +78,7 @@ class _blank_notify extends notify
 	 * Custom Method to handle notification.
 	 * REMOVE THIS METHOD WHEN NOT IN USE
 	 * @param array $data
-	 * @return string
+	 * @return array
 	 */
 	function other_type($data)
 	{
