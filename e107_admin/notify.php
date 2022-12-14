@@ -235,7 +235,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 		if(!empty($_POST['test']))
 		{
 			$id = key( $_POST['test']);
-			$exampleData = array('id'=>'Test for '.$id, 'data'=>'example data'	);
+			$exampleData = array('message'=>'Test for '.$id, 'data'=>'example data'	);
 			e107::getMessage()->addSuccess('Triggering: '.$id);
 			e107::getEvent()->trigger($id, $exampleData);
 		}
