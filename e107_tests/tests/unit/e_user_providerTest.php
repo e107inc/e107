@@ -35,7 +35,7 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$this->assertIsArray($result);
 		$this->assertContains("Facebook", $result);
 		$this->assertContains("Twitter", $result);
-		$this->assertCount(52, $result,
+		$this->assertCount(48, $result,
 			"The number of Hybridauth providers has changed! If this is intentional, note the change " .
 			"in Hybridauth providers in the release changelog and update the count in this test."
 		);
@@ -89,11 +89,11 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$result = e_user_provider::getSupplementalFieldsOf("Google");
 		$this->assertTrue(array_key_exists('photo_size', $result));
 
-		$result = e_user_provider::getSupplementalFieldsOf("Odnoklassniki");
+	/*	$result = e_user_provider::getSupplementalFieldsOf("Odnoklassniki");
 		$this->assertTrue(array_key_exists('key', $result['keys']));
 		$this->assertTrue(array_key_exists('secret', $result['keys']));
 		$this->assertIsNotArray($result['keys']['key']);
-		$this->assertIsNotArray($result['keys']['secret']);
+		$this->assertIsNotArray($result['keys']['secret']);*/
 
 		$result = e_user_provider::getSupplementalFieldsOf("StackExchange");
 		$this->assertTrue(array_key_exists('api_key', $result));
@@ -112,8 +112,8 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$this->assertTrue(array_key_exists('photo_size', $result));
 		$this->assertIsNotArray($result['photo_size']);
 
-		$result = e_user_provider::getSupplementalFieldsOf("Vkontakte");
-		$this->assertTrue(array_key_exists('photo_size', $result));
+	/*	$result = e_user_provider::getSupplementalFieldsOf("Vkontakte");
+		$this->assertTrue(array_key_exists('photo_size', $result));*/
 	}
 
 	public function testNewSuppressExceptions()
