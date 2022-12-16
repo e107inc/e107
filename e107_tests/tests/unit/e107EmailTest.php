@@ -132,10 +132,6 @@
 
 		}
 
-		public function testPreview()
-		{
-
-		}
 
 		public function testAddInlineImages()
 		{
@@ -164,7 +160,7 @@ Admin<br />
 			$this->eml->MsgHTML($html);
 
 			$result = json_encode($this->eml->AltBody);
-			$expected = '"Hi Joe\\nCheck out https:\\/\\/e107.org\\n\\nThanks,\\nAdmin\\n\\nWebsite:\\thttps:\\/\\/e107.org\\t\\nGithub:\\thttps:\\/\\/github.com\\/e107inc\\/"';
+			$expected = '"Hi Joe\r\nCheck out https:\/\/e107.org\r\n\r\nThanks,\r\nAdmin\r\n\r\nWebsite:\thttps:\/\/e107.org\t\r\nGithub:\thttps:\/\/github.com\/e107inc\/"';
 			$this->assertSame($expected, $result);
 
 		}
@@ -211,5 +207,36 @@ Admin<br />
 
 */
 
+		function testSentMimeMessage()
+		{
+			$eml = array(
+					'subject' 		=> "[PREVIEW]",
+					'sender_email'	=> "noreply@test.com",
+					'sender_name'	=> "Test Person",
+					'replyto'		=> "someone@else.com",
+					'html'			=> true,
+					'priority'      => 1,
+			//		'template'		=> 'default',
+					'body'			=> "Hi,<br />This is the <b>body</b> text",
+					'cc'            => '',
+					'shortcodes'    => [
+						'NAME'  => "TestName",
+						'DATE'  => 'Jan 1st, 2020'
+					],
+				);
+
+			$this->eml->arraySet($eml);
+			$this->eml->AddAddressList('to','recipient@example.com',"Example Recipient");
+			$this->eml->preSend();
+
+			$result = $this->eml->getSentMIMEMessage();
+
+			$this->assertStringContainsString('Content-Type: text/plain;', $result);
+			$this->assertStringContainsString('This is the body text', $result);
+
+			$this->assertStringContainsString('Content-Type: text/html;', $result);
+			$this->assertStringContainsString('Hi,<br />This is the <b>body</b> text', $result);
+
+		}
 
 	}
