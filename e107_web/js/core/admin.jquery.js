@@ -62,9 +62,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						if($this.attr('data-modal-submit'))
 						{
 						    var buttonObj = $('#e-modal-iframe').contents().find('#etrigger-submit');
-							var buttonCaption = buttonObj.text(); // copy submit button caption from iframe form.
+							var buttonCaption = buttonObj.html(); // copy submit button caption from iframe form.
 
-                            if(buttonObj.val())
+                            if(!buttonCaption && buttonObj.val())
                             {
                                 buttonCaption = buttonObj.val(); // copy when it's an <input type='submit'..
                             }
@@ -74,7 +74,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							var buttonClass = $('#e-modal-iframe').contents().find('#etrigger-submit').attr('data-modal-submit-class'); // co
 							if(buttonCaption)
 							{
-								$('#e-modal-submit').text(buttonCaption).fadeIn(); // display the button in the modal footer.
+								$('#e-modal-submit').html(buttonCaption).fadeIn(); // display the button in the modal footer.
 							}
 
 							if(buttonClass)
