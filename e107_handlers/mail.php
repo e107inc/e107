@@ -988,8 +988,17 @@ class e107Email extends PHPMailer
 		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');	
 
 		if (isset($eml['SMTPDebug']))		{ $this->SMTPDebug = $eml['SMTPDebug'];	}		// 'false' is a valid value!
-		if (!empty($eml['sender_email']))	{ $this->From = $eml['sender_email']; }
-		if (!empty($eml['sender_name']))	{ $this->FromName = $eml['sender_name']; }
+		if (!empty($eml['sender_email']) && !empty($eml['sender_email']))
+		{
+			$this->setFrom($eml['sender_email'], $eml['sender_name']);
+		}
+		else
+		{
+			if (!empty($eml['sender_email']))	{ $this->From = $eml['sender_email']; }
+			if (!empty($eml['sender_name']))	{ $this->FromName = $eml['sender_name']; }
+		}
+
+
 		if (!empty($eml['replyto']))		{ $this->AddAddressList('replyto',$eml['replyto'],vartrue($eml['replytonames'],'')); }
 		if (isset($eml['html']))			{ $this->allow_html = $eml['html'];	}				// 'false' is a valid value!
 		if (isset($eml['html_header']))		{ $this->add_HTML_header = $eml['html_header'];	}	// 'false' is a valid value!
@@ -1354,7 +1363,8 @@ class e107Email extends PHPMailer
 
 
 		$this->isHTML(true);
-		$this->Body = $message;
+	//	$this->Body = $message;
+		$this->Body = static::normalizeBreaks($message);
 		//print_a($message);
 		$textMsg = str_replace("\n", "", $message);
 		$textMsg = str_replace('</td>', "\t", $textMsg);
@@ -1362,7 +1372,7 @@ class e107Email extends PHPMailer
 		$textMsg = str_replace(array('<br />', '<br>'), "\n", $textMsg);		// Modified to make sure newlines carried through
 		$textMsg = preg_replace('#^.*?<body.*?>#', '', $textMsg);		// Knock off everything up to and including the body statement (if present)
 		$textMsg = preg_replace('#</body.*?>.*$#', '', $textMsg);		// Knock off everything after and including the </body> (if present)
-		$textMsg = trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s','',$textMsg)));
+	//	$textMsg = trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s','',$textMsg)));
 
 		if($this->debug)
 		{
@@ -1372,8 +1382,7 @@ class e107Email extends PHPMailer
 
 		if(!empty($textMsg)) // Always set it, even if AltBody is empty.
 		{
-			$this->AltBody = html_entity_decode($textMsg);
-
+			 $this->AltBody = static::normalizeBreaks($this->html2text($textMsg, $advanced));
 		}
 
 		if(empty($this->AltBody))
