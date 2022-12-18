@@ -1876,7 +1876,7 @@ class e_parse
 			'ā' => 'a', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
 			'ū' => 'u',
 
-			'ľ' => 'l', 'ŕ' => 'r',
+			'ľ' => 'l', 'ŕ' => 'r', 'Ľ' => 'l',
 		);
 
 		return str_replace(array_keys($char_map), $char_map, $text);
