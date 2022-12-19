@@ -2456,6 +2456,16 @@ class e_form
 			break;
 		}
 
+		if(!empty($options['rows']))
+		{
+			$rows = $options['rows'];
+		}
+
+		if(!empty($options['style']))
+		{
+			$height = "style='".$options['style']."'";
+		}
+
 		// auto-height support
 /*
 		$bbbar 				= '';
