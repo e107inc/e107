@@ -174,6 +174,22 @@ class e107forum
 
 	}
 
+	/**
+	 * Get an array of the first alphabetical 50 usernames, user IDs, and the users' serialized user classes that match
+	 * the forum's allowed viewers or a user class ID if the allowed viewers is a special user class except if the
+	 * special user class is {@see e_UC_MAINADMIN} or {@see false} if the previous two possibilities are not encountered
+	 *
+	 * @deprecated v2.3.3 Due to the confusing usage, consider writing another method to get the list of members that
+	 *                    can see the forum identified by its forum ID.
+	 * @param $forumId int The ID from `e107_forum`.`forum_id`
+	 * @param $type string Can only be "view"
+	 * @return array|int|false When an array, the first 50 users, sorted alphabetically by username, that can view this
+	 *                         forum, along with their user ID, username, and serialized user classes.
+	 *                         When an int, the special user class ID as defined in {@see e107::set_constants()} except
+	 *                         {@see e_UC_MAINADMIN}.
+	 *                         When boolean false, this is an unhandled case probably due to the
+	 *                         `e107_forum`.`forum_class` column missing from the table.
+	 */
 	function getForumClassMembers($forumId, $type='view')
 	{
 

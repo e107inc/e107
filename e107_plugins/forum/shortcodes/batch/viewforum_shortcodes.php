@@ -239,29 +239,26 @@
 		{
 			global $forum, $forumId;
 
-			if($users = $forum->getForumClassMembers($forumId))
+			if($usersOrUserClassId = $forum->getForumClassMembers($forumId))
 			{
 				$userList = array();
-				$viewable = e107::getUserClass()->getFixedClassDescription($users);
-				if(is_array($users))
+				if(is_array($usersOrUserClassId))
 				{
-					foreach($users as $user)
+					foreach($usersOrUserClassId as $user)
 					{
 						$userList[] = "<a href='" . e107::getUrl()->create('user/profile/view', $user) . "'>" . $user['user_name'] . "</a>";
 					}
 
 					$viewable = implode(', ', $userList);;
 				}
-				elseif($users == 0)
+				elseif($usersOrUserClassId == 0)
 				{
 					$viewable = '';
 				}
-				/*--
-					else
-					{
-						$viewable =  e107::getUserClass()->getFixedClassDescription($users);
-					}
-				--*/
+				else
+				{
+					$viewable = e107::getUserClass()->getFixedClassDescription($usersOrUserClassId);
+				}
 			}
 
 			/*--
