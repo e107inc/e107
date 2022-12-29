@@ -39,7 +39,7 @@ trait StrftimeTrait
 
 		foreach (self::getFormatMap() as $strftime_key => $date_format_key)
 		{
-			if (is_callable($date_format_key))
+			if (!is_string($date_format_key) && is_callable($date_format_key))
 			{
 				$replacement = self::escapeDateTimePattern($date_format_key($datetime));
 			}
