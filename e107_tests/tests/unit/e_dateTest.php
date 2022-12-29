@@ -127,7 +127,7 @@
 		{
 			$actual = $this->dateObj->buildDateLocale();
 
-			$september  = (stripos(PHP_OS, 'WIN') === 0) ?  'Sept' : 'Sep';
+			$september = eShims::strftime('%h', mktime(1, 1, 1, 9, 2, 2013));
 
 			$this->assertStringContainsString('$.fn.datetimepicker.dates["en"]', $actual);
 			$this->assertStringContainsString('days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],', $actual);
