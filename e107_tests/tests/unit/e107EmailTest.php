@@ -29,7 +29,7 @@
 
 
 			$this->eml->__construct();
-
+			$this->eml->Mailer = "smtp";
 		}
 
 /*
