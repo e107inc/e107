@@ -1190,7 +1190,8 @@ class cronScheduler
 		try
 		{
 			$status = $obj->$method();
-		} catch(Exception $e)
+		}
+		catch(Exception $e)
 		{
 			$msg = $e->getFile() . ' ' . $e->getLine();
 			$msg .= "\n\n" . $e->getCode() . '' . $e->getMessage();
@@ -1230,6 +1231,13 @@ class cronScheduler
 
 			$this->sendMail($mail);
 		}
+
+		$update = [
+			'cron_lastrun'  => time(),
+			'WHERE'         => 'cron_id = '.$job['id']
+		];
+
+		e107::getDb()->update('cron',$update);
 
 		return $status;
 	}
@@ -1312,7 +1320,7 @@ class cronScheduler
 			$where = 'cron_active = 1';
 		}
 
-		if($sql->select("cron", 'cron_function,cron_tab,cron_active', $where))
+		if($sql->select("cron", 'cron_id,cron_function,cron_tab,cron_active', $where))
 		{
 			while($row = $sql->fetch())
 			{
@@ -1325,6 +1333,7 @@ class cronScheduler
 					'tab'      => $row['cron_tab'],
 					'function' => $function,
 					'class'    => $class,
+					'id'       => (int) $row['cron_id']
 				);
 			}
 		}
