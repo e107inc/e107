@@ -549,7 +549,7 @@ class xmlClass
 		
 		$ret = array();
 	
-		$tags = get_object_vars($xml);
+		$tags = (array) $xml;
 	
 		
 		//remove comments
