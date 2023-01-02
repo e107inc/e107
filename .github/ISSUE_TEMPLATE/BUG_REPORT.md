@@ -57,7 +57,7 @@ PHP Version 7.3.13
 5. Paste everything into the "STDIN:" box
 6. In the "Command line (--help):" box, write:
 
-       -rn 's|<h2><a id="module_[^"]+">([^<]+)</a></h2>|\1|p'
+       -rn 's|<h2><a id="module_[^"]+"[^>]+>([^<]+)</a></h2>|\1|p'
 
 7. Copy everything from the "STDOUT | STDERR:" box.
 8. Paste what you copied here, replacing this whole "PHP Modules" section.
