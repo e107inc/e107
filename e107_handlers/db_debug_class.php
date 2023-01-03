@@ -936,7 +936,7 @@ class e107_db_debug
 					$text .= "
 				<tr>
 					<td>" . $k . "</td>
-					<td>" . htmlspecialchars($v) . "</td>
+					<td>" . (is_string($v) ? htmlspecialchars($v) : $v). "</td>
 				</tr>";
 					$c++;
 				}
