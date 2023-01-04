@@ -637,7 +637,7 @@ i.s-message-empty   { background:none; }
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
 .s-message-item .btn { margin-top: 15px; }
-
+.s-message-item pre { max-height: 300px; }
 
 .e-footer-info 		{ text-align: center }
 
