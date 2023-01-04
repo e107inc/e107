@@ -586,9 +586,10 @@ class e_file
 		/**
 		 * @param string     $address
 		 * @param array|null $options
+		 *
 		 * @return CurlHandle|false
 		 */
-		function initCurl($address, $options = null)
+		public function initCurl($address, $options = null)
 		{
 
 			$cu = curl_init();
@@ -638,6 +639,16 @@ class e_file
 				curl_setopt($cu, CURLOPT_POSTFIELDS, $options['post']);
 			}
 
+			if(!empty($options['postfields']))
+			{
+				curl_setopt($cu, CURLOPT_POSTFIELDS, $options['postfields']);
+			}
+
+			if(!empty($options['customrequest'])) // ie. GET, PUT, POST
+			{
+				curl_setopt($cu, CURLOPT_CUSTOMREQUEST, $options['customrequest']);
+			}
+
 			if(isset($options['header']) && is_array($options['header']))
 			{
 				curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
@@ -665,7 +676,7 @@ class e_file
 		 * @param array  $options [optional]
 		 * @return string
 		 */
-		function getRemoteContent($address, $options = array())
+		public function getRemoteContent($address, $options = array())
 		{
 
 			// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
