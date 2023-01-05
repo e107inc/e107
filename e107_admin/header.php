@@ -497,7 +497,7 @@ function getModal()
 		return '';
 	}
 
-	if(e_PAGE == 'menus.php' && vartrue($_GET['configure'])) // Menu Manager iFrame disable
+	if(e_PAGE == 'menus.php' && !empty($_GET['configure'])) // Menu Manager iFrame disable
 	{
 		return null;
 	}
@@ -594,7 +594,7 @@ if($e107_popup != 1)
 
 		e107::renderLayout($ADMIN_MODAL . $ADMIN_HEADER, ['sc'=>'admin']);
 	}
-	elseif(!vartrue($_GET['configure']))
+	elseif(empty($_GET['configure']))
 	{
 		e107::css("inline", "body { padding:0px; margin:0; } "); // default padding for iFrame-only.
 	}
