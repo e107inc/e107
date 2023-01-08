@@ -49,7 +49,7 @@ abstract class Base extends \Codeception\Module
 	{
 		foreach ($this->deployer_components as $component)
 		{
-			$method = "reconfigure_${component}";
+			$method = "reconfigure_{$component}";
 			if (method_exists($this->deployer, $method))
 			{
 				$this->deployer->$method($this);
