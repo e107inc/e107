@@ -856,7 +856,8 @@ class e_form
 		if(!empty($options['selectize']))
 		{
 			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
-			e107::css('core', 'selectize/css/selectize.css', 'jquery');
+			$css = !empty($this->_bootstrap) ? 'selectize/css/selectize.bootstrap'.$this->_bootstrap.'.css' : 'selectize/css/selectize.css';
+			e107::css('core', $css, 'jquery');
 
 			// Load selectize behavior.
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
@@ -2031,6 +2032,7 @@ class e_form
 			}
 		}
 
+		// defaults.
 		$parms = array(
 			'selectize' => array(
 				'loadPath' => e_HTTP.'user.php',
@@ -2040,6 +2042,19 @@ class e_form
 				'options'  => $defaultItems
 			)
 		);
+
+		if(!empty($options['loadPath']))
+		{
+			$parms['selectize']['loadPath'] = $options['loadPath'];
+			unset($options['loadPath']);
+		}
+
+		if(!empty($options['plugins'])) // eg. array('remove_button')
+		{
+			$parms['selectize']['plugins'] = $options['plugins']; // 'plugins'  => array('remove_button')
+			unset($options['plugins']);
+		}
+
 
 		if(!empty($options['limit']))
 		{
