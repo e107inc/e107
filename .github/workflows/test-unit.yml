@@ -126,7 +126,7 @@ jobs:
       run: git submodule update --init --recursive --remote
 
     - name: Install the CI test configuration file
-      run: cp ./e107_tests/lib/ci/config.ci.yml ./e107_tests/config.yml
+      run: cp ./e107_tests/lib/ci/config.unit.ci.yml ./e107_tests/config.yml
 
     - name: Download Code Climate test reporter
       run: |
