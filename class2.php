@@ -1318,7 +1318,7 @@ function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)
 {
 	// $ap = "4"; // Just for testing.
 
-	if(!ADMIN || trim($ap) === '')
+	if(!deftrue('ADMIN') || trim($ap) === '')
 	{
 		return false;
 	}
