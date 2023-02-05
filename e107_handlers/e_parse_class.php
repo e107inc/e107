@@ -4027,7 +4027,7 @@ class e_parse
 
 			case "fa":
 			default:
-				if ($this->fontawesome === 5)
+				if ($this->fontawesome === 5 || $this->fontawesome === 6)
 				{
 					$fab = e107::getMedia()->getGlyphs('fab');
 					$fas = e107::getMedia()->getGlyphs('fas');
