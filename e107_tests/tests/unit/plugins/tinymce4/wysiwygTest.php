@@ -45,8 +45,8 @@ class wysiwygTest extends \Codeception\Test\Unit
 		$tests = array(
 			'bootstrap3' => array(
 				0 => '/e107_web/lib/bootstrap/3/css/bootstrap.min.css',
-				1 => '/e107_web/lib/font-awesome/5/css/all.min.css',
-				2 => '/e107_web/lib/font-awesome/5/css/v4-shims.min.css',
+				1 => '/e107_web/lib/font-awesome/6/css/all.min.css',
+				2 => '/e107_web/lib/font-awesome/6/css/v4-shims.min.css',
 				3 => '/e107_web/lib/animate.css/animate.min.css',
 				4 => '/e107_plugins/tinymce4/editor.css',
 			),

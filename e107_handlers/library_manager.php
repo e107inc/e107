@@ -1003,6 +1003,85 @@ class core_library
 		);
 
 
+		// Font-Awesome 6 (local).
+		$libraries['fontawesome6'] = array(
+			'name'              => 'Font-Awesome 6 (local)',
+			'vendor_url'        => 'https://fontawesome.com/',
+			'version_arguments' => array(
+				'file'    => 'css/all.css',
+				'pattern' => '/(\d\.\d*\.\d+)/',
+				'lines'   => 3,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/all.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+						'defer' => true,
+					),
+					'js/v4-shims.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+						'defer' => true,
+					),
+				),
+				'css' => array(
+					'css/all.min.css' => array(
+						'zone' => 2,
+					),
+					'css/v4-shims.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+
+			'variants'          => array(),
+			'library_path'      => '{e_WEB}lib/font-awesome',
+			'path'              => '6',
+			'version'           => '6.2.1',
+
+		);
+
+
+	// Font-Awesome 6 (CDN).
+		$libraries['cdn.fontawesome6'] = array(
+			'name'              => 'Font-Awesome 6 (CDN)',
+			'vendor_url'        => 'https://fontawesome.com/',
+			'version_arguments' => array(
+				'file'    => 'css/all.css',
+				'pattern' => '/(\d\.\d*\.\d+)/',
+				'lines'   => 2,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/all.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+						'defer' => true,
+					),
+					'js/v4-shims.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+						'defer' => true,
+					),
+				),
+				'css' => array(
+					'css/all.min.css' => array(
+						'zone' => 2,
+					),
+					'css/v4-shims.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1',
+			'path'              => '',
+			'version'           => '6.2.1',
+		);
+
+
 
 		// Animate (local).
 		$libraries['animate.css'] = array(

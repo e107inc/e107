@@ -65,7 +65,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					'fontawesome' =>
 						array(
 							'name'    => 'fontawesome',
-							'version' => '5',
+							'version' => '6',
 						),
 				)
 			),
@@ -82,7 +82,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					'fontawesome'        =>
 						array(
 							'name'    => 'fontawesome',
-							'version' => '5',
+							'version' => '6',
 						),
 					'bootstrap.editable' =>
 						array(
@@ -104,7 +104,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					'fontawesome'        =>
 						array(
 							'name'    => 'fontawesome',
-							'version' => '5',
+							'version' => '6',
 						),
 					'bootstrap.editable' =>
 						array(
@@ -281,8 +281,8 @@ class e_themeTest extends \Codeception\Test\Unit
 				array(
 					'css' =>
 						array(
-							0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
-							1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+							0 => '{e_WEB}lib/font-awesome/6/css/all.min.css',
+							1 => '{e_WEB}lib/font-awesome/6/css/v4-shims.min.css',
 						),
 
 				),
@@ -310,8 +310,8 @@ class e_themeTest extends \Codeception\Test\Unit
 				array(
 					'css' =>
 						array(
-							0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
-							1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+							0 => '{e_WEB}lib/font-awesome/6/css/all.min.css',
+							1 => '{e_WEB}lib/font-awesome/6/css/v4-shims.min.css',
 						),
 
 				),
@@ -376,12 +376,12 @@ class e_themeTest extends \Codeception\Test\Unit
 			0 => array(
 				'theme'    => 'front',
 				'scope'    => 'front',
-				'expected' => ['bootstrap', 'fontawesome5']
+				'expected' => ['bootstrap', 'fontawesome6']
 			),
 			1 => array(
 				'theme'    => 'front',
 				'scope'    => 'admin',
-				'expected' => ['bootstrap', 'fontawesome5', 'bootstrap.editable']
+				'expected' => ['bootstrap', 'fontawesome6', 'bootstrap.editable']
 			),
 			2 => array(
 				'theme'    => '_blank',
@@ -424,7 +424,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					1 =>
 						array(
 							'name'    => 'fontawesome',
-							'version' => '5',
+							'version' => '6',
 							'scope'   => 'front,admin,wysiwyg',
 						),
 					2 =>
@@ -448,7 +448,7 @@ class e_themeTest extends \Codeception\Test\Unit
 					1 =>
 						array(
 							'name'    => 'fontawesome',
-							'version' => '5',
+							'version' => '6',
 							'scope'   => 'front,admin,wysiwyg',
 						),
 					2 =>
@@ -633,7 +633,7 @@ class e_themeTest extends \Codeception\Test\Unit
 				    1 =>
 				    array (
 				      'name' => 'fontawesome',
-				      'version' => '5',
+				      'version' => '6',
 				      'scope' => 'front,admin,wysiwyg',
 				    ),
 				    2 =>
