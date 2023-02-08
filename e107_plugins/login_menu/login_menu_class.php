@@ -117,7 +117,7 @@ class login_menu_class
     function parse_external_list($active=false, $order=true)
 	{
         //prevent more than 1 call
-        if(($tmp = e107::getRegistry('loginbox_elist', false)) !== FALSE) return $tmp;
+        if(($tmp = e107::getRegistry('loginbox_elist', false)) !== null) return $tmp;
         
         $ret = array();
         //$lbox_admin = varsettrue($eplug_admin, false);
@@ -349,7 +349,7 @@ class login_menu_class
 	 */
     function get_plugin_data($plugid) 
 	{
-        if(($tmp = e107::getRegistry('loginbox_eplug_data_'.$plugid)) !== FALSE) return $tmp;
+        if(($tmp = e107::getRegistry('loginbox_eplug_data_'.$plugid)) !== null) return $tmp;
 
         $ret = array();
 		if (is_readable(e_PLUGIN.$plugid.'/plugin.xml'))
