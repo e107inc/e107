@@ -117,7 +117,7 @@ class login_menu_class
     function parse_external_list($active=false, $order=true)
 	{
         //prevent more than 1 call
-        if(($tmp = e107::getRegistry('loginbox_elist', false)) !== null) return $tmp;
+        if(($tmp = e107::getRegistry('loginbox_elist')) !== null) return $tmp;
         
         $ret = array();
         //$lbox_admin = varsettrue($eplug_admin, false);
