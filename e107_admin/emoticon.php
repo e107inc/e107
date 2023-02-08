@@ -327,6 +327,7 @@ class emotec
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 				<input type='hidden' name='packID' value='{$packID}' />";
 
 
@@ -424,7 +425,7 @@ class emotec
 		unset($_POST['sub_conf'], $_POST['packID']);
 		$encoded_emotes = $tp->toDB($_POST);
 		//	$tmp = addslashes(serialize($encoded_emotes));
-		$tmp = e107::serialize($encoded_emotes);
+		$tmp = e107::serialize($encoded_emotes, true);
 
 		if ($sql->select("core", "*", "e107_name='emote_" . $packID . "'"))
 		{
