@@ -549,6 +549,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'news_meta_description' => 'Description for Facebook and search engines.',
 			'news_meta_robots'      => '',
 			'news_datestamp'        => '1454367600',
+			'news_modified'         => '1654101979',
 			'news_author'           => '1',
 			'news_category'         => '1',
 			'news_allow_comments'   => '0',

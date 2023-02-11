@@ -593,36 +593,54 @@ class news_shortcodes extends e_shortcode
 		return "<a ".$style." href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
-	function sc_news_date($parm=null)
+	private function formatDate($date, $parm)
 	{
-	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
+
 		$con = e107::getDate();
-		$tp = e107::getParser();
+		$tp  = e107::getParser();
 
 		if(empty($parm))
 		{
-			return  $tp->toDate($date, 'long');
+			$ret = $tp->toDate($date, 'long');
 		}
-
-
-		switch($parm)
+		else
 		{
-			case 'long':
-			return  $tp->toDate($date, 'long');
-			break;
-			case 'short':
-			return  $tp->toDate($date, 'short');
-			break;
-			case 'forum':
-			return  $con->convert_date($date, 'forum');
-			break;
-			default :
-			return $tp->toDate($date,$parm);
-		//	return date($parm, $date);
-			break;
+			$ret = '';
+
+			switch($parm)
+			{
+				case 'long':
+					$ret = $tp->toDate($date, 'long');
+				break;
+
+				case 'short':
+					$ret = $tp->toDate($date, 'short');
+				break;
+
+				case 'forum':
+					$ret = $con->convert_date($date, 'forum');
+				break;
+
+				default :
+					$ret = $tp->toDate($date, $parm);
+				break;
+			}
 		}
+
+		return $ret;
+
 	}
 
+	function sc_news_date($parm=null)
+	{
+		$date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
+		return $this->formatDate($date, $parm);
+	}
+
+	function sc_news_modified($parm=null)
+	{
+		return $this->formatDate($this->news_item['news_modified'], $parm);
+	}
 
 	function sc_news_author_avatar($parm=null)
 	{
