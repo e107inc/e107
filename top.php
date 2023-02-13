@@ -316,4 +316,3 @@ if ($action == 'top')
 	}
 }
 require_once(FOOTERF);
-?>
