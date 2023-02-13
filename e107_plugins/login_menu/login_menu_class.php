@@ -174,6 +174,9 @@ class login_menu_class
     function get_forum_stats($get_stats=true) 
 	{
 		$sql = e107::getDb();
+		$user = e107::getUser();
+		$user_last_visit = $user->get("user_lastvisit", time());
+		$userclass_list = $user->getClassList(true) ?: "0";
         
         if(!e107::isInstalled('forum'))
             return array();
@@ -190,7 +193,7 @@ class login_menu_class
         	SELECT  count(*) as count FROM #forum_thread  as t
         	LEFT JOIN #forum as f
         	ON t.thread_forum_id = f.forum_id
-        	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
+        	WHERE t.thread_datestamp > ".$user_last_visit." and f.forum_class IN (".$userclass_list.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
         	";
         	
         	if($sql->gen($qry))
