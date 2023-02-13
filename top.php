@@ -284,7 +284,7 @@ if ($action == 'top')
 			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (chat), LANs
-				$ldata = $rank->getRanks(['user_id']);
+				$ldata = $rank->getRanks($row['user_id']);
 				if(vartrue($ldata['special']))
 				{
 					$r = $ldata['special'];
