@@ -179,7 +179,7 @@ if ($action == 'top')
 			while ($row = $sql2->fetch())
 			{
 				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
-				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
+				$ldata = $rank->getRanks($row['user_id'], (USER && $forum->isModerator(USERID)));
 
 				if(vartrue($ldata['special']))
 				{
@@ -236,7 +236,7 @@ if ($action == 'top')
 			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (comments), LANs
-				$ldata = $rank->getRanks($row);
+				$ldata = $rank->getRanks($row['user_id']);
 				if(vartrue($ldata['special']))
 				{
 					$r = $ldata['special'];
@@ -284,7 +284,7 @@ if ($action == 'top')
 			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (chat), LANs
-				$ldata = $rank->getRanks($row);
+				$ldata = $rank->getRanks(['user_id']);
 				if(vartrue($ldata['special']))
 				{
 					$r = $ldata['special'];
@@ -316,4 +316,3 @@ if ($action == 'top')
 	}
 }
 require_once(FOOTERF);
-?>
