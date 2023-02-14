@@ -352,22 +352,33 @@ class login_menu_class
 	 */
     function get_plugin_data($plugid) 
 	{
-		$tmp = e107::getRegistry('loginbox_eplug_data_' . $plugid, false); 
-        if($tmp  !== FALSE) return $tmp;
- 
-		$plg = e107::getPlug();
-		
-		$ret = array();
+        if(($tmp = e107::getRegistry('loginbox_eplug_data_'.$plugid)) !== null) return $tmp;
 
-		if ($tmp = $plg->load($plugid)->getFields())
+        $ret = array();
+		if (is_readable(e_PLUGIN.$plugid.'/plugin.xml'))
 		{
-            $ret['eplug_name'] =   $plg->getName();
-			$ret['eplug_version'] =  $plg->getVersion();
+			require_once(e_HANDLER.'xml_class.php');
+			$xml = new xmlClass;
+			$xml->filter = array('name' => FALSE,'version'=>FALSE);			// Just want a couple of variables
+			$readFile = $xml->loadXMLfile(e_PLUGIN.$plugid.'/plugin.xml', true, true);
+            $ret['eplug_name'] = defined($readFile['name']) ? constant($readFile['name']) : $readFile['name'];
+            $ret['eplug_version'] = $readFile['version'];
 		}
+		elseif (is_readable(e_PLUGIN.$plugid.'/plugin.php')) 
+		{
+            
+            include(e_PLUGIN.$plugid.'/plugin.php');
+            $ret['eplug_name'] = defined($eplug_name) ? constant($eplug_name) : $eplug_name;
+            $ret['eplug_version'] = $eplug_version;
+        }
+		else
+		{
+			return array();
+		}
+		// Valid data here
+		e107::setRegistry('loginbox_eplug_data_'.$plugid, $ret);
 
-		e107::setRegistry('loginbox_eplug_data_' . $plugid, $ret);
-		return $ret;
-		
+        return $ret;
     }
     
     
