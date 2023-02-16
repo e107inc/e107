@@ -107,7 +107,7 @@ class news_front
 
 				$itemName = e107::getParser()->toHTML($this->currentRow['news_title'],true, 'TITLE');
 
-				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', $this->currentRow));
+				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', array('id'=>$this->currentRow['news_category'])));
 				$breadcrumb[] = array('text'=> $itemName, 'url'=> null);
 				break;
 
