@@ -129,7 +129,7 @@ class core_news_url extends eUrlConfig
 				break;
 				
 				case 'category':
-					if(!vartrue($params['id']))
+					if(!vartrue($params['category_id']))
 					{
 						 $url .= 'default.0.'.$page;
 					}

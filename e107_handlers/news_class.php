@@ -999,7 +999,7 @@ class e_news_category_item extends e_front_model
 	public function sc_news_category_url($parm = '')
 	{
 
-		$url = e107::getUrl()->create('news/list/category', array('id' => $this->getId(), 'name' => $this->cat('sef')));
+		$url = e107::getUrl()->create('news/list/category', array($this->getFieldIdName() => $this->getId(), 'name' => $this->cat('sef')));
 		switch($parm)
 		{
 			case 'link':
