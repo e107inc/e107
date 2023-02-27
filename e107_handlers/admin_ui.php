@@ -4535,15 +4535,38 @@ class e_admin_controller_ui extends e_admin_controller
 					case 'integer':
 						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
 						{
+							$tmp =  explode('__',$filterOptions);
+							$dateSearchType = $tmp[2];
+
 							if($filterValue > time())
 							{
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between now and ".date(DATE_RFC822, $filterValue));
+								}
+
 								$searchQry[] = $this->fields[$filterField]['__tableField']. ' > ' .time();
 								$searchQry[] = $this->fields[$filterField]['__tableField']. ' < ' . (int) $filterValue;
 							}
-							else
+							else // THIS X, FUTURE
 							{
+
+								$endOpts = [
+									'today'     => strtotime('+24 hours', $filterValue),
+									'thisweek'  => strtotime('+1 week', $filterValue),
+									'thismonth' => strtotime('+1 month', $filterValue),
+									'thisyear' => strtotime('+1 year', $filterValue),
+								];
+
+								$end = isset($endOpts[$dateSearchType]) ? $endOpts[$dateSearchType] : time();
+
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between ".date(DATE_RFC822, $filterValue)." and ".date(DATE_RFC822, $end));
+								}
+
 								$searchQry[] = $this->fields[$filterField]['__tableField']. ' > ' . (int) $filterValue;
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' < ' .time();
+								$searchQry[] = $this->fields[$filterField]['__tableField']. ' < ' .$end;
 							}
 
 						}
