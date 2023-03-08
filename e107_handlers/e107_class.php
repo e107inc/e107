@@ -4642,23 +4642,23 @@ class e107
 	{
 
 		// Block common bad agents / queries / php issues.
-		array_walk($_SERVER,  array('self', 'filter_request'), '_SERVER');
+		array_walk($_SERVER,  [self::class, "filter_request"] , '_SERVER');
 		if (isset($_GET))
 		{
-			array_walk($_GET, array('self', 'filter_request'), '_GET');
+			array_walk($_GET, [self::class, "filter_request"], '_GET');
 		}
 		if (isset($_POST))
 		{
-			array_walk($_POST,    array('self', 'filter_request'), '_POST');
+			array_walk($_POST,   [self::class, "filter_request"], '_POST');
 			reset($_POST);		// Change of behaviour in PHP 5.3.17?
 		}
 		if (isset($_COOKIE))
 		{
-			array_walk($_COOKIE, array('self', 'filter_request'), '_COOKIE');
+			array_walk($_COOKIE, [self::class, "filter_request"], '_COOKIE');
 		}
 		if (isset($_REQUEST))
 		{
-			array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
+			array_walk($_REQUEST, [self::class, "filter_request"], '_REQUEST');
 		}
 
 		// A better way to detect an AJAX request. No need for "ajax_used=1";
