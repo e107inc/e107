@@ -493,10 +493,11 @@ class news_shortcodes extends e_shortcode
 		}
 
 		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+		$alt   = !empty($parm['alt']) ? $parm['alt'] : basename($srcPath);
 
 		$imgParms = array(
 			'class'         => $class,
-			'alt'           => basename($srcPath),
+			'alt'           => $alt,
 			'style'         => $style,
 			'placeholder'   => varset($parm['placeholder']),
 			'legacy'        => '{e_IMAGE}newspost_images'
