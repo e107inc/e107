@@ -275,6 +275,7 @@ class e_menu
 		$model->setFieldIdName("menu_id");
 		$model->setDataFields(array('menu_parms'=>'json'));
 
+
 		$model->load($id, true);
 
 		$d = $model->get('menu_parms');
@@ -289,11 +290,14 @@ class e_menu
 			}
 			else
 			{
-				$lang = key($value);
-				$val = $value[$lang];
-				$model->setPostedData('menu_parms/'.$key.'/'.$lang, $val);
+				foreach($value as $lang => $val)
+				{
+					$model->setPostedData('menu_parms/'.$key.'/'.$lang, $val);
+				}
 			}
 		}
+
+	//	file_put_contents(e_LOG."menuParmsAjax.log", print_r($parms,true));
 
 
 		return $model->save();

@@ -109,7 +109,7 @@ class banner_ui extends e_admin_ui
 		protected $fields 		= array (
 		  'checkboxes'				=>   array ( 'title' => '', 		'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'type' => null, 'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banner_campaign' 		=>   array ( 'title' => BNRLAN_11, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array( 'tdClassRight'=>'form-inline'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_campaign' 		=>   array ( 'title' => BNRLAN_11, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'inline'=>false, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array( 'tdClassRight'=>'form-inline'), 'class' => 'left', 'thclass' => 'left',  ),
 
 		  'banner_clientname'		=>   array ( 'title' => BANNERLAN_22, 'type' => 'method', 'tab'=>1, 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clientlogin' 		=>   array ( 'title' => BNRLAN_12, 'type' => 'method',  'tab'=>1, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -190,21 +190,21 @@ class banner_ui extends e_admin_ui
 			// do something
 			exit;
 		}		
-		
+
 		
 		// ------- Customize Update --------
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			//	e107::getMessage()->addDebug(print_a($new_data,true)); 
+			//	e107::getMessage()->addDebug(print_a($new_data,true));
 				
 			if(!empty($new_data['banner_clientname_sel']))
 			{
 				$new_data['banner_clientname'] = $new_data['banner_clientname_sel'];
 					
 			}
-			
-			if(!empty($new_data['banner_campaign_sel']))
+
+			if(!empty($new_data['banner_campaign_sel']) && empty($new_data['banner_campaign']))
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
 			}
@@ -213,6 +213,8 @@ class banner_ui extends e_admin_ui
 			{
 				$new_data['banner_image'] = $new_data['banner_image_remote'];
 			}
+
+			// e107::getMessage()->addDebug(print_a($new_data,true));
 				
 			return $new_data;
 		}
@@ -225,47 +227,61 @@ class banner_ui extends e_admin_ui
 		public function onUpdateError($new_data, $old_data, $id)
 		{
 			// do something		
-		}		
-		
-		/*
-		private function menuPageSave()
+		}
+
+		public function ListObserver()
 		{
-			$temp = array(); 
-			$tp = e107::getParser();
-			$log = e107::getAdminLog();
-			$menu_pref = e107::getConfig('menu')->getPref('');
-			
-			$temp['banner_caption']		= $tp->toDB($_POST['banner_caption']);
-			$temp['banner_amount']		= intval($_POST['banner_amount']);
-			$temp['banner_rendertype']	= intval($_POST['banner_rendertype']);
-		
-			if (isset($_POST['multiaction_cat_active']))
+			$this->fields['banner_campaign']['type'] = 'text';
+			$this->fields['banner_campaign']['inline'] = true;
+			parent::ListObserver();
+		}
+
+		public function InlineAjaxPage()
+		{
+			$this->fields['banner_campaign']['type'] = 'text';
+			$this->fields['banner_campaign']['inline'] = true;
+			return parent::InlineAjaxPage();
+		}
+
+	/*
+	private function menuPageSave()
+	{
+		$temp = array();
+		$tp = e107::getParser();
+		$log = e107::getAdminLog();
+		$menu_pref = e107::getConfig('menu')->getPref('');
+
+		$temp['banner_caption']		= $tp->toDB($_POST['banner_caption']);
+		$temp['banner_amount']		= intval($_POST['banner_amount']);
+		$temp['banner_rendertype']	= intval($_POST['banner_rendertype']);
+
+		if (isset($_POST['multiaction_cat_active']))
+		{
+			$cat = implode('|', $tp->toDB($_POST['multiaction_cat_active']));
+			$temp['banner_campaign'] = $cat;
+		}
+
+
+		if ($log->logArrayDiffs($temp,$menu_pref,'BANNER_01'))
+		{
+			$menuPref = e107::getConfig('menu');
+			//e107::getConfig('menu')->setPref('', $menu_pref);
+			//e107::getConfig('menu')->save(false, true, false);
+			foreach ($temp as $k => $v)
 			{
-				$cat = implode('|', $tp->toDB($_POST['multiaction_cat_active']));
-				$temp['banner_campaign'] = $cat;
+				$menuPref->setPref($k, $v);
 			}
-			
-			
-			if ($log->logArrayDiffs($temp,$menu_pref,'BANNER_01'))
-			{
-				$menuPref = e107::getConfig('menu');
-				//e107::getConfig('menu')->setPref('', $menu_pref);
-				//e107::getConfig('menu')->save(false, true, false);
-				foreach ($temp as $k => $v)
-				{
-					$menuPref->setPref($k, $v);
-				}
-				
-				$menuPref->save(false, true, false);
-				e107::getMessage()->addSuccess(LAN_SAVED);
-				
-				$menu_pref = e107::getConfig('menu')->getPref('');
-				//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
-			}	
-		
-			
-			
-		}*/
+
+			$menuPref->save(false, true, false);
+			e107::getMessage()->addSuccess(LAN_SAVED);
+
+			$menu_pref = e107::getConfig('menu')->getPref('');
+			//banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
+		}
+
+
+
+	}*/
 			
 	
 		public function menuPage()
