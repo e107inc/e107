@@ -1,35 +1,46 @@
- 
-  .size9 {
-  	font-size: 130%;
-  	opacity: 1;
-  }
-  
-  .size8 {
-  	font-size: 125%;
-  	opacity: 0.9
-  }
-  .size7 {
-  	font-size: 120%;
-  	opacity: 0.8
-  }
-  .size6 {
-  	font-size: 110%;
-  }
-  .size5 {
-  	font-size: 100%;
-  }
-  .size4 {
-  	font-size: 90%;
-  }
-  .size3 {
-  	font-size: 80%;
-  }
-  .size2 {
-  	font-size: 70%;
-  }
-  .size1 {
-   	font-size: 60%;
-  }
+
+.size9 {
+    font-size: 130%;
+    opacity: 1;
+}
+
+.size8 {
+    font-size: 120%;
+    opacity: 0.9
+}
+
+.size7 {
+    font-size: 110%;
+    opacity: 0.8
+}
+
+.size6 {
+    font-size: 100%;
+}
+
+.size5 {
+    font-size: 95%;
+}
+
+.size4 {
+    font-size: 90%;
+}
+
+.size3 {
+    font-size: 85%;
+}
+
+.size2 {
+    font-size: 80%;
+}
+
+.size1 {
+    font-size: 75%;
+}
+
+.size0 {
+    font-size: 70%;
+}
 
 .tagcloud-menu a { }
 
