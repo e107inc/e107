@@ -114,7 +114,7 @@ if (!$dont_check_update)
 //	$dbupdate['217_to_218'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.7','2.1.8')), 'message'=> null, 'hide_when_complete'=>true);
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
-	$dbupdate['20x_to_233'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x','2.3.3')), 'message'=> null, 'hide_when_complete'=>false);
+	$dbupdate['20x_to_latest'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x', $e107info['e107_version'])), 'message'=> null, 'hide_when_complete'=>false);
 	
 
 
@@ -628,7 +628,7 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_20x_to_233($type='')
+	 function update_20x_to_latest($type='')
 	{
 
 		$sql = e107::getDb();
