@@ -503,6 +503,8 @@ class forumStats
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 
+		if(!defined('IMODE')) define('IMODE', 'lite'); // BC
+
 
 		define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
 		define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));

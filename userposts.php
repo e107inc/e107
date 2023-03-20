@@ -27,6 +27,7 @@ $ns = e107::getRender();
 
 require_once(HEADERF);
 
+
 $action = 'exit';
 if (e_QUERY)
 {
@@ -234,6 +235,8 @@ elseif ($action == 'forums')
 			$postPage = ceil($postNum / $forum->prefs->get('postspage'));
 
 			$postUrl = e107::url('forum', 'topic', $row, array('query' => array('p' => $postPage), 'fragment' => 'post-' . $row['post_id']));
+
+			if(!defined('IMODE')) define('IMODE', 'lite'); // BC
 
 			$vars->USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".$postUrl."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
