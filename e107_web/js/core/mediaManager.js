@@ -900,7 +900,7 @@ console.log('Bbcode: '+bbcode);
 			filters: [
 				{title: "Image files", extensions: extImg || "jpg,gif,png,jpeg,svg,apng,webp"},
 				{title: "Zip files", extensions: extArchive || "zip,gz,rar"},
-				{title: "Document files", extensions: extDoc || "pdf,doc,docx,xls,xlsm,xml"},
+				{title: "Document files", extensions: extDoc || "pdf,doc,docx,xls,xlsm,xml,ppt,pptx"},
 				{title: "Media files", extensions: 'mp3,mp4,wav,ogg,webm,mid,midi'},
 				{title: "Other files", extensions: 'torrent,txt,dmg'}
 			],

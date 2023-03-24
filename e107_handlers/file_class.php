@@ -2182,6 +2182,8 @@ class e_file
 				case 'avi': //media
 				case 'xml':
 				case 'webm':
+				case 'ppt':
+				case 'pptx':
 
 					break; // Just accept these
 
