@@ -100,7 +100,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			}
 		});
 		
-		$.post(window.location.href, {'core-flexpanel-order': NewOrder});
+		$.post(window.location.href, {'core-flexpanel-order': NewOrder}).done(function( data ) {
+             console.log(data);
+        });
 	};
 
 	e107.callbacks.flexPanelEmptyPanels = function ()
