@@ -26,21 +26,25 @@ define('FLEXPANEL_ENABLED', $flepanelEnabled);
 // Save rearranged menus to user.
 if(e_AJAX_REQUEST)
 {
+
 	if(FLEXPANEL_ENABLED && varset($_POST['core-flexpanel-order'], false))
 	{
 		// If "Apply dashboard preferences to all administrators" is checked.
+//print_r($_POST);
 		if($adminPref == 1)
 		{
+
 			e107::getConfig()
 				->setPosted('core-flexpanel-order', $_POST['core-flexpanel-order'])
-				->save();
+				->save(true,true);
+
 		}
 		else
 		{
-			e107::getUser()
+			$result = e107::getUser()
 				->getConfig()
 				->set('core-flexpanel-order', $_POST['core-flexpanel-order'])
-				->save();
+				->save(true,true);
 		}
 		exit;
 	}
@@ -56,7 +60,7 @@ e107_require_once(e_ADMIN . 'includes/infopanel.php');
 class adminstyle_flexpanel extends adminstyle_infopanel
 {
 
-	private $iconlist = array();
+	private $iconlist;
 
 	/**
 	 * Constructor.
@@ -342,7 +346,9 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		if(!empty($user_pref['core-flexpanel-order'][$id]))
 		{
-			return $user_pref['core-flexpanel-order'][$id];
+			$arr = $user_pref['core-flexpanel-order'][$id];
+
+			return ['area' => $arr['area'], 'weight' => (int) $arr['weight']];
 		}
 
 		$default = array(
