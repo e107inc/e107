@@ -129,13 +129,13 @@ class core_news_url extends eUrlConfig
 				break;
 				
 				case 'category':
-					if(!vartrue($params['id']))
+					if(!vartrue($params['category_id']))
 					{
 						 $url .= 'default.0.'.$page;
 					}
 					else 
 					{
-						$url .= 'list.'.$params['id'].'.'.$page;	// 'category_id' would break news_categories_menu. 
+						$url .= 'list.'.$params['category_id'].'.'.$page;
 					}
 				break;
 					
