@@ -26,13 +26,13 @@
         <library name="animate.css" scope="front" />
 	</libraries>
 	<stylesheets>
-        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/journal/bootstrap.min.css" name="Journal" thumbnail='images/journal.png' scope='front' exclude='bootstrap' />
-        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/lumen/bootstrap.min.css" name="Lumen" thumbnail='images/lumen.png' scope='front' exclude='bootstrap' />
-		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/lux/bootstrap.min.css" name="Lux" thumbnail='images/lux.png' scope='front' exclude='bootstrap' />
-		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/sketchy/bootstrap.min.css" name="Sketchy" thumbnail='images/sketchy.png' scope='front' exclude='bootstrap' />
-        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/quartz/bootstrap.min.css" default="true" name="Quartz" thumbnail='images/quartz.png' scope='front' exclude='bootstrap' />
-		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/slate/bootstrap.min.css" name="Slate" thumbnail='images/slate.png' scope='front' exclude='bootstrap' />
-        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/superhero.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/journal/bootstrap.min.css" name="Journal" thumbnail='images/journal.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/lumen/bootstrap.min.css" name="Lumen" thumbnail='images/lumen.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/lux/bootstrap.min.css" name="Lux" thumbnail='images/lux.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/sketchy/bootstrap.min.css" name="Sketchy" thumbnail='images/sketchy.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/quartz/bootstrap.min.css" default="true" name="Quartz" thumbnail='images/quartz.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/slate/bootstrap.min.css" name="Slate" thumbnail='images/slate.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/superhero.png' scope='front' exclude='bootstrap' />
 	    <css file="style.css" name="Legacy" thumbnail='preview_frontend.png' scope='front' />
 	</stylesheets>
 	<screenshots>
