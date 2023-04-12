@@ -929,9 +929,9 @@ class core_library
 			),
 			'variants'          => array(),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4',
 			'path'              => '',
-			'version'           => '5.14.0',
+			'version'           => '5.15.4',
 		);
 
 		// Font-Awesome (local).
@@ -969,7 +969,7 @@ class core_library
 			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '5',
-			'version'           => '5.15.2',
+			'version'           => '5.15.4',
 		/*	'preload'           => array(
 				1   => array(
 					'as'            => 'font',

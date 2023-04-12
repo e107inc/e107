@@ -81,7 +81,7 @@
 			$this->assertSame('style.css', $result);
 
 			$result = $this->th->findDefaultCSS('bootstrap5');
-			$this->assertSame('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.3/quartz/bootstrap.min.css', $result);
+			$this->assertSame('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/quartz/bootstrap.min.css', $result);
 
 		}
 /*
