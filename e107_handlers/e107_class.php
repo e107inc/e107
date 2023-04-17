@@ -4052,8 +4052,16 @@ class e107
 				$url = self::url($plugin, $key, $row, $options);
 			}
 
+
 			if(!empty($url))
 			{
+				$siteurl = self::getPref('siteurl');
+
+				if(!empty($siteurl) && $siteurl !== '/') // ensure that duplicate parked domains always use the primary site URL. @see issue #4994
+				{
+					$url = str_replace(SITEURL, $siteurl, $url);
+				}
+
 				self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
 				self::meta('og:url', $url);
 				self::meta('twitter:url', $url);
