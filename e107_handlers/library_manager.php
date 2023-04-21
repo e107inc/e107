@@ -378,9 +378,9 @@ class core_library
 			'variants'          => array(),
 			// Override library path to CDN.
 		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3',
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3',
 			'path'              => '',
-			'version'           => '5.1.3',
+			'version'           => '5.2.3',
 		);
 
 
@@ -410,7 +410,7 @@ class core_library
 			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '5',
-			'version'           => '5.1.3',
+			'version'           => '5.2.3',
 		);
 
 
