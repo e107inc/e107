@@ -520,6 +520,7 @@ class signup_shortcodes extends e_shortcode
 			{
 				$opts = $parm;
 				$required = (int) $ext['user_extended_struct_required'];
+				$edit = isset($_POST['ue']['user_' . $ext['user_extended_struct_name']]) ? $_POST['ue']['user_' . $ext['user_extended_struct_name']] : '';
 
 				if($required === 0) // "No - Will not show on Signup page".
 				{
@@ -545,7 +546,7 @@ class signup_shortcodes extends e_shortcode
 				$replace = array(
 					$label,
 					($required === 1 ? $this->sc_signup_is_mandatory('true') : ''),
-					$ue->renderElement($ext, varset($_POST['ue']['user_' . $ext['user_extended_struct_name']]), $opts)
+					$ue->renderElement($ext, $edit, $opts)
 				);
 
 				$text .= str_replace($search, $replace, $this->template['extended-user-fields']);
