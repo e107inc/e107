@@ -1983,6 +1983,7 @@ class e107Test extends \Codeception\Test\Unit
 					'mode=main&action=create'                       => 'mode=main&amp;action=create',
 					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
 					'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main',
+					'mode=main&action=custom&other[key]=1'         => 'mode=main&amp;action=custom&amp;other[key]=1',
 				);
 
 				foreach($tests as $input => $expected)
