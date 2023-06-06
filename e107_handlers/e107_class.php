@@ -5522,7 +5522,8 @@ class e107
 		}
 
 		$eMENUQry = str_replace(array('%5B','%5D'),array('[',']'), $queryString); //FIX for urlencoded QUERY_STRING without breaking the '+' used by debug.
-		if (strpos($eMENUQry, ']') && preg_match('#\[(.*?)](.*)#', $eMENUQry, $matches))
+
+		if (strpos($eMENUQry, ']') && preg_match('#^\[(.*?)](.*)#', $eMENUQry, $matches))
 		{
 			if(!defined('e_MENU'))
 			{
