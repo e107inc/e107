@@ -120,6 +120,7 @@ class private_message
 		$ret = '';
 		$addOutbox = TRUE;
 		$timestamp = time();
+		$a_list = array();
 
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
 		if (isset($vars['pm_from']))
