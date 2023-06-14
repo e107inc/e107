@@ -56,9 +56,16 @@ jobs:
     steps:
     - name: Enable Debian backports
       run: |
-        apt-get update
+        if ! apt-get update; then
+          sed -i 's#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g' /etc/apt/sources.list
+          sed -r -i '/^[^\s#]*[^\s]+\s+[^\s]+\s+[^#]*-updates/d' /etc/apt/sources.list
+          echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99ignore-obsolete
+          echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+          echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+          apt-get update
+        fi
         apt-get install -y debian-archive-keyring
-        grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
+        grep -m1 -P '^deb http://(deb|archive).debian.org/debian [a-z]+ main' /etc/apt/sources.list |
         awk '$3 = $3"-backports"' >> /etc/apt/sources.list
 
     - name: Update operating system software repository
@@ -67,7 +74,7 @@ jobs:
     - name: Install operating system dependencies
       run: |
         DEBIAN_RELEASE=$(
-          grep -m1 -P '^deb http://deb.debian.org/debian [a-z]+ main' /etc/apt/sources.list |
+          grep -m1 -P '^deb http://(deb|archive).debian.org/debian [a-z]+ main' /etc/apt/sources.list |
           awk '{print $3}'
         )
         USE_GIT_BPO="$(. /etc/os-release && test $VERSION_ID -lt 10 && echo "-t ${DEBIAN_RELEASE}-backports" || echo)"
