@@ -73,13 +73,10 @@ jobs:
 
     - name: Install operating system dependencies
       run: |
-        DEBIAN_RELEASE=$(
-          grep -m1 -P '^deb http://(deb|archive).debian.org/debian [a-z]+ main' /etc/apt/sources.list |
-          awk '{print $3}'
-        )
-        USE_GIT_BPO="$(. /etc/os-release && test $VERSION_ID -lt 10 && echo "-t ${DEBIAN_RELEASE}-backports" || echo)"
-        apt-get $USE_GIT_BPO install -y git
-        apt-get -t "${DEBIAN_RELEASE}-backports" install -y zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev libicu-dev
+        . /etc/os-release
+        DEBIAN_RELEASE="$(echo "$VERSION" | grep -oP '^[^(]+\(\K[^)]+')"
+        USE_GIT_BPO="$(test $VERSION_ID -lt 10 && echo "-t ${DEBIAN_RELEASE}-backports" || echo)"
+        apt-get $USE_GIT_BPO install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev libicu-dev
 
     - name: Configure PHP gd extension with default bundle
       run: |
