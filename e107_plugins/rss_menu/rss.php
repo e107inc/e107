@@ -502,10 +502,12 @@ class rssCreate
 
 				if (trim(SITEBUTTON))
 				{
+					$path = e107::getConfig()->get('sitebutton');
+					$imgPath = e107::getParser()->thumbUrl($path, array(), false, true);					
 					echo "
 					<image>
 					<title>".$tp->toRss($rss_title)."</title>
-					<url>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "",SITEBUTTON))."</url>
+					<url>" . $imgPath . "</url>
 					<link>".$pref['siteurl']."</link>
 					<width>88</width>
 					<height>31</height>
