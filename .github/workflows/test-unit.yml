@@ -63,6 +63,7 @@ jobs:
           echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
           echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
           apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get -y full-upgrade
         fi
         apt-get install -y debian-archive-keyring
         grep -m1 -P '^deb http://(deb|archive).debian.org/debian [a-z]+ main' /etc/apt/sources.list |
