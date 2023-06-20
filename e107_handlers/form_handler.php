@@ -6543,7 +6543,14 @@ var_dump($select_options);*/
 				$attributes['readParms'] = $attributes['writeParms'];
 			}
 
-			return $this->renderValue($key, $value, $attributes).$this->hidden($key, $value); //
+			$ret = $this->renderValue($key, $value, $attributes);
+
+		//	if(!is_array($value)) // avoid value of 'Array'
+			{
+				$ret .= $this->hidden($key, $value);  // subject to removal - in most cases, there's no point posting fields that don't need to be saved.
+			}
+
+			return $ret;
 		}
 		
 		// FIXME standard - writeParams['__options'] is introduced for list elements, bundle adding to writeParms is non reliable way
