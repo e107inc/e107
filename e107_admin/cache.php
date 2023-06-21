@@ -82,13 +82,13 @@ if (isset($_POST['trigger_empty_cache']))
 		// used in standard page output and internal JS includes
 		case 'empty_browsercache':
 			e107::getCache()->clearAll('browser');
-			e107::getLog()->flushMessages(CACLAN_25);
+			e107::getLog()->flushMessages(CACLAN_27);
 		break;
 
 		case 'empty_jscss':
 			e107::getCache()->clearAll('js');
 			e107::getCache()->clearAll('css');
-		//	e107::getAdminLog()->flushMessages(CACLAN_5);
+			e107::getLog()->flushMessages(CACLAN_30);
 		break;
 
 		// all
