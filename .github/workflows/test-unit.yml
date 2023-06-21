@@ -115,7 +115,7 @@ jobs:
         fi
         docker-php-ext-enable xdebug
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
