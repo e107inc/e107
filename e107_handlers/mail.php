@@ -1330,6 +1330,11 @@ class e107Email extends PHPMailer
 					if ( strlen($directory) > 1 && substr($directory,-1) != '/' && substr($directory,-1) != '\\') { $directory .= '/'; }
 					//echo "Add image: {$basedir}|{$directory}|{$filename}<br />";
 
+					if(empty($basedir.$directory.$filename))
+					{
+						continue;
+					}
+
 					try
 					{
 						$this->addEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType);
@@ -1338,6 +1343,7 @@ class e107Email extends PHPMailer
 					catch (Exception $e)
 					{
 						$this->logLine($e->getMessage());
+
 						if ($this->debug)
 						{
 							 echo "Add embedded image {$url} failed<br />";
