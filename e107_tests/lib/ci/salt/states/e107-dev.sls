@@ -3,6 +3,7 @@ Install Python module build dependencies:
     - pkgs:
       - build-essential
       - libmariadb-dev
+      - pkg-config
 
 MySQLdb Python module for SaltStack:
   pip.installed:
