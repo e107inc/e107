@@ -2214,7 +2214,7 @@ class e107plugin
 		{
 			//var_dump($field_attrib, $field_name, $type);
 			$status = $this->module['ue']->user_extended_remove($field_name, $field_name);
-			if($status && $type == EUF_DB_FIELD)
+			if($status && $type == EUF_DB_FIELD && strpos($field_name, 'plugin_') != 0) 
 			{
 				$status = $this->manage_extended_field_sql('remove', $field_attrib['name']);
 			}
