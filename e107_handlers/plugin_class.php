@@ -2156,7 +2156,7 @@ class e107plugin
 			}
 			
 			// manage params
-			$field_attrib['parms'] = '';
+			$field_attrib['parms'] = varset($field_attrib['parms'], '');
 			
 			// validation and parms
 			$include = varset($field_attrib['include_text']);
