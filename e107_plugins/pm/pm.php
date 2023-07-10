@@ -615,14 +615,18 @@
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
-				foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
+				if(is_array($_FILES['file_userfile']))
 				{
-					if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
+					$file_userfile = $_FILES['file_userfile'];
+					foreach(array_keys($file_userfile['size']) as $fid)
 					{
-						$msg .= str_replace("{FILENAME}", $_FILES['file_userfile']['name'][$fid], LAN_PM_62) . "<br />";
-						$_FILES['file_userfile']['size'][$fid] = 0;
+						if($maxsize > 0 && $file_userfile['size'][$fid] > $maxsize)
+						{
+							$msg .= str_replace("{FILENAME}", $file_userfile['name'][$fid], LAN_PM_62) . "<br />";
+							$file_userfile['size'][$fid] = 0;
+						}
+						$totalsize += $file_userfile['size'][$fid];
 					}
-					$totalsize += $_FILES['file_userfile']['size'][$fid];
 				}
 
 				if(intval($this->pmPrefs['pm_limits']) > 0)
