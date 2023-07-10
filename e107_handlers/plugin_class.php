@@ -2130,7 +2130,7 @@ class e107plugin
 
 			// classes
 			$field_attrib['read'] = varset($field_attrib['read'], 'e_UC_MEMBER');
-			$field_attrib['write'] = varset($field_attrib['read'], 'e_UC_MEMBER');
+			$field_attrib['write'] = varset($field_attrib['write'], 'e_UC_MEMBER');
 			$field_attrib['applicable'] = varset($field_attrib['applicable'], 'e_UC_MEMBER');
 			
 			// manage parent
@@ -2183,9 +2183,9 @@ class e107plugin
 				varset($field_attrib['values'], ''), 
 				varset($field_attrib['default'], ''),
 				$field_attrib['required'],
-				defset($field_attrib['read'], e_UC_MEMBER),
-				defset($field_attrib['write'], e_UC_MEMBER),
-				defset($field_attrib['applicable'], e_UC_MEMBER),
+				varset($field_attrib['read'], e_UC_MEMBER),
+				varset($field_attrib['write'], e_UC_MEMBER),
+				varset($field_attrib['applicable'], e_UC_MEMBER),
 				varset($field_attrib['order'], ''),
 				$field_attrib['parent']
 			);
