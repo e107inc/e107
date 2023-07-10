@@ -766,6 +766,10 @@ class usersettings_front // Begin Usersettings rewrite.
 				if (!isset($triggerData['user_name'])) { $triggerData['user_name'] = $udata['user_name']; }
 			}
 
+			if(count($changedEUFData)) {
+				$triggerData['ue'] = $changedEUFData['data'];
+			}
+
 			// Now log changes if required
 			if (count($user_logging_opts))
 			{
