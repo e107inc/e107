@@ -264,6 +264,53 @@
 		}
 
 		/**
+		 * @see https://github.com/e107inc/e107/issues/5054
+		 */
+		public function testGetIndexOptionalLengthAndSortOrder()
+		{
+			$data = <<<EOF
+`field1` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`field2` varchar(100) NOT NULL DEFAULT '',
+`field3` varchar(100) NOT NULL DEFAULT '',
+`field4` varchar(100) NOT NULL DEFAULT '',
+KEY (`field1`),
+INDEX `field2` (`field2` DESC),
+KEY `field3` (`field3` (100) ASC),
+INDEX `field4` (`field4` (100)),
+EOF;
+
+			$expected = array(
+				'field1' =>
+					array(
+						'type'    => '',
+						'keyname' => 'field1',
+						'field'   => 'field1',
+					),
+				'field2' =>
+					array(
+						'type'    => '',
+						'keyname' => 'field2',
+						'field'   => 'field2',
+					),
+				'field3' =>
+					array(
+						'type'    => '',
+						'keyname' => 'field3',
+						'field'   => 'field3',
+					),
+				'field4' =>
+					array(
+						'type'    => '',
+						'keyname' => 'field4',
+						'field'   => 'field4',
+					),
+			);
+
+			$result = $this->dbv->getIndex($data);
+			$this->assertEquals($expected,$result);
+		}
+
+		/**
 		 * FIXME: This test has no assertions!
 		 */
 		/*
