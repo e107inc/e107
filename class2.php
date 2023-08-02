@@ -1965,7 +1965,7 @@ function include_lan($path, $force = false)
  */
 function force_userupdate($currentUser)
 {
-	if (e_PAGE == 'usersettings.php' || (defined('FORCE_USERUPDATE') && (FORCE_USERUPDATE == false)) || strpos(e_SELF, ADMINDIR) == true )
+	if (defined('e_PAGE') && e_PAGE == 'usersettings.php' || (defined('FORCE_USERUPDATE') && !FORCE_USERUPDATE) || strpos(e_SELF, ADMINDIR))
 	{
 		return false;
 	}
