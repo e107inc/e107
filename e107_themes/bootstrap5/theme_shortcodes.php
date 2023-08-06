@@ -158,7 +158,45 @@ class theme_shortcodes extends e_shortcode
 
 	}
 
+	function sc_bootstrap_branding()
+	{
+		$pref = e107::pref('theme', 'branding');
 
+		switch ($pref)
+		{
+			case 'logo':
+
+				return e107::getParser()->parseTemplate('{SITELOGO: h=30}', true);
+
+				break;
+
+			case 'sitenamelogo':
+				return "<span>" . e107::getParser()->parseTemplate('{SITELOGO: h=30}', true) . "</span>" . SITENAME;
+
+				break;
+
+			case 'sitename':
+			default:
+
+				return SITENAME;
+
+				break;
+		}
+	}
+
+	function sc_bootstrap_nav_align()
+	{
+		$pref = e107::pref('theme', 'nav_alignment');
+
+		if ($pref == 'right')
+		{
+			return 	e107::getParser()->parseTemplate('{NAVIGATION: type=main&class=ms-auto}');
+		}
+		else
+		{
+			return e107::getParser()->parseTemplate('{NAVIGATION: type=main&class=me-auto}');
+		}
+	}
 
 
 }
