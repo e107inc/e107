@@ -18,10 +18,11 @@ class theme_config implements e_theme_config
 
 	function config()
 	{
-
+		$brandingOpts = array('sitename' => LAN_THEMEPREF_04, 'logo' => LAN_THEMEPREF_05, 'sitenamelogo' => LAN_THEMEPREF_06);
 		return array(
-		//	'cardmenu_look' => array('title' => LAN_THEMEPREF_02, 'type'=>'boolean', 'writeParms'=>array(),'help'=>''),
-			'login_iframe' => array('title' => LAN_THEMEPREF_03, 'type'=>'boolean', 'writeParms'=>array(),'help'=>''),
+			'login_iframe' => array('title' => LAN_THEMEPREF_03, 'type' => 'boolean', 'writeParms' => array(), 'help' => ''),
+			'branding'          => array('title' => LAN_THEMEPREF_00, 'type' => 'dropdown', 'writeParms' => array('optArray' => $brandingOpts)),
+			'nav_alignment'     => array('title' => LAN_THEMEPREF_01, 'type' => 'radio', 'writeParms' => array('optArray' => array('left' => LAN_THEMEPREF_07, 'right' => LAN_THEMEPREF_08)))
 		);
 
 	}
