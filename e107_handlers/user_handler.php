@@ -1419,7 +1419,7 @@ class e_user_provider
 	public static function getSupplementalFieldsOf($providerName)
 	{
 		$supplementalFields = [];
-		$className = "Hybridauth\Provider\\${providerName}";
+		$className = "Hybridauth\Provider\\$providerName";
 		try
 		{
 			$reflector = new ReflectionClass($className);
