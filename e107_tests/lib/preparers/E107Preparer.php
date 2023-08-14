@@ -24,14 +24,14 @@ class E107Preparer implements Preparer
 
 		if(is_dir($system))
 		{
-			throw new Exception(get_class() . " couldn't delete ".$system);
+			throw new Exception(__CLASS__ . " couldn't delete ".$system);
 		}
 
 	}
 
 	private function deleteDir($dirPath)
 	{
-		codecept_debug(get_class() . ' is deleting '.escapeshellarg($dirPath).'…');
+		codecept_debug(__CLASS__ . ' is deleting '.escapeshellarg($dirPath).'…');
 
 		if(!is_dir($dirPath))
 		{
