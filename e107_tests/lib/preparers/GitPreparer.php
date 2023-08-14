@@ -134,6 +134,6 @@ class GitPreparer implements Preparer
 
 	protected function debug($message)
 	{
-		codecept_debug(get_class() . ': ' . $message);
+		codecept_debug(__CLASS__ . ': ' . $message);
 	}
 }
