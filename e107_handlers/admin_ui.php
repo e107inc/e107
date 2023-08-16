@@ -8211,6 +8211,15 @@ class e_admin_form_ui extends e_form
 					
 					case 'checkboxes':
 					case 'comma':
+
+						if (!empty($parms['optArray']))
+						{
+							$fopts = $parms;
+							$parms = $fopts['optArray'];
+							unset($fopts['optArray']);
+							$parms['__options'] = $fopts;
+						}
+				
 						// TODO lan
 						if(!isset($parms['__options']))
 						{
