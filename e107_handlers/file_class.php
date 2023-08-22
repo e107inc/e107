@@ -2233,6 +2233,10 @@ class e_file
 				$tmp = parse_url($targetFile);
 				$targetFile = $tmp['path'];
 				$remote = true;
+				if(!empty($tmp['host']) && ($tmp['host'] === 'localhost' || $tmp['host'] === '127.0.0.1'))
+				{
+					return false;
+				}
 			}
 
 			$ext = pathinfo($targetFile, PATHINFO_EXTENSION);
