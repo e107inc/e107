@@ -419,7 +419,12 @@ class users_admin_ui extends e_admin_ui
 		if(!getperms('4|U0')) // Quick Add User Access Only. 
 		{
 			unset($this->fields['checkboxes']);
-			unset($this->fields['options']);			
+			unset($this->fields['options']);
+			foreach($this->fields as $fld=>$val)
+			{
+				 $this->fields[$fld]['inline'] = false;
+			}
+
 		}	
 				
 		$this->fields['user_image']['writeParms'] = $this->getAvatarList();
@@ -1679,22 +1684,24 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		// Make Admin.
-		$text .= "
-		<tr>
-			<td>".USRLAN_35."</td>
-			<td>
-				<a href='#set_perms' class='btn btn-default btn-secondary e-expandit'>".USRLAN_243."</a>
-				<div class='e-hideme' id='set_perms'>
-		";
-			
-		$text .= $prm->renderPermTable('grouped');
+		if(getperms('4|U0')) // Quick Add User access should not be allowed to create new users with escalated perms. 
+		{
+			$text .= "
+			<tr>
+				<td>".USRLAN_35."</td>
+				<td>
+					<a href='#set_perms' class='btn btn-default btn-secondary e-expandit'>".USRLAN_243."</a>
+					<div class='e-hideme' id='set_perms'>
+			";
 
-		$text .= "
-				</div>
-			</td>
-		</tr>
-		";
+			$text .= $prm->renderPermTable('grouped');
 
+			$text .= "
+					</div>
+				</td>
+			</tr>
+			";
+		}
 
 		$text .= "
 
