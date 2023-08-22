@@ -157,9 +157,14 @@ class e_fileTest extends \Codeception\Test\Unit
 			array('path'=> e_SYSTEM."filetypes.xml",                 'expected' => true), // permitted
 			array('path'=> e_PLUGIN."gallery/images/butterfly.jpg",  'expected' => true), // permitted
 			array('path'=> 'http://127.0.0.1:8070/file.svg',        'expected'=>false), // not permitted
-			array('path'=> 'http://127.0.0.1:8070/butterfly.jpg',   'expected'=>true), // permitted
+			array('path'=> 'http://127.0.0.1:8070/butterfly.jpg',   'expected'=>false), // not permitted
+			array('path'=> 'http://localhost:8070/file.svg',        'expected'=>false), // not permitted
+			array('path'=> 'http://localhost:8070/butterfly.jpg',   'expected'=>false), // not permitted
+			array('path'=> 'http://domain.com:8070/file.svg',        'expected'=>false), // suspicious
+			array('path'=> 'http://domain.com:8070/butterfly.jpg',   'expected'=>true), // permitted
 			array('path'=> 'http://127.0.0.1/bla.php',              'expected'=>false), // suspicious
 			array('path'=> 'http://127.0.0.1/bla.php?butterfly.jpg',   'expected'=>false), // suspicious
+
 		);
 
 		foreach($isAllowedTest as $file)

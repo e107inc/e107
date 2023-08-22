@@ -1684,7 +1684,7 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		// Make Admin.
-		if(getperms('4|U0')) // Quick Add User access should not be allowed to create new users with escalated perms. 
+		if(getperms('4|U0')) // Quick Add User access should not be allowed to create new users with escalated perms.
 		{
 			$text .= "
 			<tr>
