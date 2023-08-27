@@ -112,7 +112,7 @@ class theme_shortcodes extends e_shortcode
 	function sc_theme_news_banner($parm=null)
 	{
 		/** @var news_shortcodes $news */
-		$sc = e107::getScBatch('news');
+		$sc = e107::getScBatch('news', TRUE);
 		$news = $sc->getScVar('news_item');
 
 		$ret = '';

@@ -1348,7 +1348,7 @@ class news_front
 
 					$this->templateKey = $newsViewTemplate; // used for tablerender id.
 
-					$nsc = e107::getScBatch('news')->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
+					$nsc = e107::getScBatch('news', TRUE)->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
 					$caption = e107::getParser()->parseTemplate($tmp['caption'], true, $nsc);
 
 					$render = true;
@@ -1869,14 +1869,14 @@ class news_front
 					$row['category_name'] = LAN_PLUGIN_NEWS_NAME;
 				}
 
-				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);
+				$nsc = e107::getScBatch('news', TRUE)->setScVar('news_item', $row)->setScVar('param', $param);
 				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
 
 			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
 			{
-				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				$nsc = e107::getScBatch('news', TRUE)->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['start'],true,$nsc);
 			}
 			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old v1.x stuff
@@ -1959,7 +1959,7 @@ class news_front
 			if(!empty($tmpl['end']))
 			{
 				e107::setRegistry('core/news/pagination', $parms);
-				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				$nsc = e107::getScBatch('news', TRUE)->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
 				if(strpos($tmpl['end'], '{NEWS_PAGINATION') !== false) // BC fix.
 				{

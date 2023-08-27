@@ -13,7 +13,7 @@ $e107 = e107::getInstance();
 $sql = e107::getDb();
 $pref = e107::getPref();
 $tp = e107::getParser();
-$scbatch = e107::getScBatch('news');
+$scbatch = e107::getScBatch('news', TRUE);
 
 
 

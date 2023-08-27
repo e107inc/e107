@@ -102,7 +102,7 @@ class news_gsitemap
 		$data = $this->getNewsPosts();
 
 		/** @var news_shortcodes $sc */
-		$sc = e107::getScBatch('news');
+		$sc = e107::getScBatch('news', TRUE);
 
 		e107::getParser()->thumbWidth(1000);
 

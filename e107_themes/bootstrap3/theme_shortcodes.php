@@ -71,7 +71,7 @@ class theme_shortcodes extends e_shortcode
 /*
 	function sc_news_summary()
 	{
-		$sc = e107::getScBatch('news');
+		$sc = e107::getScBatch('news', TRUE);
 		$data = $sc->getScVar('news_item');
 
 		return "<span class='label label-danger'>".e107::getParser()->toHTML($data['news_summary'],'BODY')."</span>";
@@ -286,7 +286,7 @@ class theme_shortcodes extends e_shortcode
 	function sc_bootstrap_news_example($parm=null)
 	{
 		$news   = e107::getObject('e_news_tree');  // get news class.
-		$sc     = e107::getScBatch('news'); // get news shortcodes.
+		$sc     = e107::getScBatch('news', TRUE); // get news shortcodes.
 		$tp     = e107::getParser(); // get parser.
 
 		$newsCategory = 1; // null, number or array(1,3,4);

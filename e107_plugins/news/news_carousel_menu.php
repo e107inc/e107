@@ -102,7 +102,7 @@
 
 // $tp->setThumbSize(800,0);
 
-	$sc = e107::getScBatch('news');
+	$sc = e107::getScBatch('news', TRUE);
 	$text = '';
 	$nav = array();
 

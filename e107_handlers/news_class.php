@@ -416,7 +416,7 @@ class news {
 
 
 
-		$sc = e107::getScBatch('news')
+		$sc = e107::getScBatch('news', TRUE)
 			->wrapper($wrapperKey)
 			->setScVar('news_item', $news)
 			->setScVar('param', $param)
@@ -889,7 +889,7 @@ class e_news_tree extends e_front_tree_model
 		));
 		
 		$parser = e107::getParser();
-		$batch = e107::getScBatch('news')
+		$batch = e107::getScBatch('news', TRUE)
 			->setScVar('param', $param);
 
 		$wrapperKey = ($parms['tmpl'].'/'.$parms['tmpl_key']);
