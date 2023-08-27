@@ -527,8 +527,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     public function testNewsShortcodes()
     {
-        require_once(e_CORE."shortcodes/batch/news_shortcodes.php");
-
+        //require_once(e_CORE."shortcodes/batch/news_shortcodes.php");
+		require_once(e_PLUGIN . "news/shortcodes/batch/news_shortcodes.php");
         try
 		{
 			/** @var news_shortcodes $sc */
