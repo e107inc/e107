@@ -164,15 +164,3 @@ $NEWS_TEMPLATE['2-column']['item']     = '<div class="item col-md-6">
 $NEWS_TEMPLATE['2-column']['end']      = '</div>';
 
 
-### Related 'start' - Options: Core 'single' shortcodes including {SETIMAGE}
-### Related 'item' - Options: {RELATED_URL} {RELATED_IMAGE} {RELATED_TITLE} {RELATED_SUMMARY}
-### Related 'end' - Options:  Options: Core 'single' shortcodes including {SETIMAGE}
-/*
-$NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>";
-$NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
-$NEWS_TEMPLATE['related']['end'] = "</ul>";*/
-
-$NEWS_TEMPLATE['related']['caption']    = '{LAN=RELATED}';
-$NEWS_TEMPLATE['related']['start']      = '{SETIMAGE: w=350&h=350&crop=1}<div class="row">';
-$NEWS_TEMPLATE['related']['item']       = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
-$NEWS_TEMPLATE['related']['end']        = '</div>';

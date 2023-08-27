@@ -1202,7 +1202,12 @@ class news_shortcodes extends e_shortcode
 			$array['types'] = 'news,page';
 		}
 
-		$template = e107::getTemplate('news', 'news', 'related');
+		$template = e107::getTemplate('news', 'news_view', 'related');
+		
+		/* just callback for older themes */
+		if(empty($template)) {
+			$template = e107::getTemplate('news', 'news', 'related');
+		}
 
 		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']),$template);
 	}
