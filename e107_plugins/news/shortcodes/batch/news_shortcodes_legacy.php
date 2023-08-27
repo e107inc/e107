@@ -49,7 +49,7 @@ trait news_shortcodes_legacy
 
 	public function sc_newsmetadiz($parm=null)
 	{
-		trigger_error('<b>{NEWSSUMMARY} is deprecated</b> Use {NEWS_DESCRIPTION} instead', E_USER_DEPRECATED); // NO LAN
+		trigger_error('<b>{NEWSMETADIZ} is deprecated</b> Use {NEWS_DESCRIPTION} instead', E_USER_DEPRECATED); // NO LAN
 		return $this->sc_news_description($parm);
 	}
 
