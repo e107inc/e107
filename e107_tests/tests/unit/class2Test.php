@@ -11,8 +11,22 @@
 
 	class class2Test extends \Codeception\Test\Unit
 	{
+		public $usr;
+		/*protected function _before()
+		{
 
+			try
+			{
+				$this->usr = $this->make('e_user_model');
+			}
+			catch(Exception $e)
+			{
+				$this->fail( "Couldn't load e_user_model object");
+			}
 
+			e107::getUser()->load(1); // load user_id  = 1.
+
+		}*/
 
 		function testLoadClass2()
 		{
@@ -23,6 +37,11 @@
 
 		function testGetPerms()
 		{
+		//	$this->markTestSkipped("Skipped - CLI mode changes behavior.");
+			// See class2.php Line 1643
+
+			$result = getperms('N', '5');
+			$this->assertFalse($result);
 
 			$result = getperms('N', '0');
 			$this->assertTrue($result);
@@ -45,6 +64,12 @@
 			$this->assertTrue($result);
 
 
+		}
+
+		function testUserModel()
+		{
+			$result = e107::getUser();
+			var_dump($result);
 		}
 
 

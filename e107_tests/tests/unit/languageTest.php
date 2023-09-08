@@ -17,7 +17,7 @@
 
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, $e->getMessage());
+				$this->fail( $e->getMessage());
 			}
 
 		}

@@ -646,13 +646,70 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * @param $perm_str
+	 * @param str   $arg
+	 * @param str   $ap
+	 * @param str   $path
 	 * @return bool
 	 */
-	final public function checkAdminPerms($perm_str)
+	final public function checkAdminPerms($arg, $ap = null, $path = null)
 	{
 		// FIXME - method to replace getperms()
-		return ($this->isAdmin() && getperms($perm_str, $this->getAdminPerms()));
+
+		if(!$this->isAdmin())
+		{
+			return false;
+		}
+
+		if($ap === null)
+		{
+			$ap = $this->getAdminPerms();
+		}
+
+		if($arg === 0) // Common-error avoidance with getperms(0)
+		{
+			$arg = '0';
+		}
+
+		if ($ap === '0' || $ap === '0.') // BC fix.
+		{
+			return true;
+		}
+
+		if ($arg === 'P' && !empty($path) && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
+		{
+			$sql = e107::getDb('psql');
+		/*	$id = e107::getPlug()->load($matches[2])->getId();
+			$arg = 'P'.$id;*/
+
+			if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
+			{
+				$row = $sql->fetch();
+				$arg = 'P'.$row['plugin_id'];
+			}
+		}
+
+		$ap_array = explode('.',$ap);
+
+		if (in_array($arg,$ap_array,false))
+		{
+			return true;
+		}
+
+		if(strpos($arg, "|"))
+		{
+	        $tmp = explode("|", $arg);
+			foreach($tmp as $val)
+			{
+			    if(in_array($val,$ap_array))
+				{
+					return true;
+				}
+			}
+		}
+
+
+		return false;
+		//return ($this->isAdmin() && getperms($perm_str, $this->getAdminPerms()));
 	}
 
 	/**

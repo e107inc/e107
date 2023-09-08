@@ -10,7 +10,7 @@
 
 if(!defined('e107_INIT')){ exit; }
 
-if (!getperms("2")) 
+if (!getperms("2") && !e107::isCli())
 {
 	e107::redirect();
 	exit;
