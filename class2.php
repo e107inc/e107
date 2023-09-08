@@ -1640,12 +1640,16 @@ function init_session()
 		define('e_CLASS_REGEXP', '(^|,)(253|254|250|251|0)(,|$)');
 		define('e_NOBODY_REGEXP', '(^|,)255(,|$)');
 
-		/* $user->set('user_id', 1);
-		$user->set('user_name','e107-cli');
-		$user->set('user_admin', 1);
-		$user->set('user_perms', '0');
-		$user->set('user_class', '');
-		$user->set('user_join', '');*/
+		if(deftrue('USE_NEW_GETPERMS')) // Add to e107_config.php.
+		{
+			$user->set('user_id', 1);
+			$user->set('user_name','e107-cli');
+			$user->set('user_admin', 1);
+			$user->set('user_perms', '0');
+			$user->set('user_class', '');
+			$user->set('user_join', '');
+		}
+
 		return;
 	}
 
