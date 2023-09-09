@@ -646,70 +646,37 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * @param str   $arg
-	 * @param str   $ap
-	 * @param str   $path
-	 * @return bool
+	 * Check if this user has the provided admin permissions.
+	 *
+	 * @param string $perm_str The serialized requested access code or codes which will match if any of the codes are in
+	 *                         the admin user's admin permissions.
+	 *                         This is a pipe-delimited (`|`) list of access codes.
+	 *                         Example: `C|4`
+	 * @return bool true if the user has the matching admin permissions, false otherwise.
 	 */
-	final public function checkAdminPerms($arg, $ap = null, $path = null)
+	final public function checkAdminPerms($perm_str)
 	{
-		// FIXME - method to replace getperms()
-
 		if(!$this->isAdmin())
 		{
 			return false;
 		}
 
-		if($ap === null)
-		{
-			$ap = $this->getAdminPerms();
-		}
+		$ap = $this->getAdminPerms();
 
-		if($arg === 0) // Common-error avoidance with getperms(0)
-		{
-			$arg = '0';
-		}
+		return e_userperms::simulateHasAdminPerms($perm_str, $ap);
+	}
 
-		if ($ap === '0' || $ap === '0.') // BC fix.
-		{
-			return true;
-		}
-
-		if ($arg === 'P' && !empty($path) && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
-		{
-			$sql = e107::getDb('psql');
-		/*	$id = e107::getPlug()->load($matches[2])->getId();
-			$arg = 'P'.$id;*/
-
-			if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
-			{
-				$row = $sql->fetch();
-				$arg = 'P'.$row['plugin_id'];
-			}
-		}
-
-		$ap_array = explode('.',$ap);
-
-		if (in_array($arg,$ap_array,false))
-		{
-			return true;
-		}
-
-		if(strpos($arg, "|"))
-		{
-	        $tmp = explode("|", $arg);
-			foreach($tmp as $val)
-			{
-			    if(in_array($val,$ap_array))
-				{
-					return true;
-				}
-			}
-		}
-
-
-		return false;
-		//return ($this->isAdmin() && getperms($perm_str, $this->getAdminPerms()));
+	/**
+	 * Check if this user has permissions to administer the given plugin.
+	 *
+	 * @param string $plugin_name The name of the plugin, not the path like in {@see getperms()}.
+	 * @return bool true if the user has admin permissions for the plugin, false otherwise.
+	 */
+	final public function checkPluginAdminPerms($plugin_name)
+	{
+		$sql = e107::getDb('psql');
+		$ap = $this->getAdminPerms();
+		return e_userperms::simulateHasPluginAdminPerms($sql, $plugin_name, $ap);
 	}
 
 	/**
