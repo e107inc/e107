@@ -1309,22 +1309,46 @@ function check_class($var, $userclass = null, $uid = 0)
 
 
 /**
- * @param                   $arg
- * @param bool|mixed|string $ap
- * @param mixed $path
- * @return bool
+ * Check a requested permission set against admin permissions or plugin admin permissions.
+ *
+ * The constant {@link ADMIN} must be truthy or this function will always return {@link false}.
+ *
+ * @param string          $arg  The serialized requested access code or codes which will match if any of the codes are
+ *                              in the admin user's admin permissions.
+ *                              This is a pipe-delimited (`|`) list of access codes.
+ *                              Example for admin permissions: `C|4`.
+ *                              Use this exact value to enter plugin admin permissions checking mode: `P`.
+ * @param string|int|null $ap   The serialized admin permissions or plugin admin permissions to check against.
+ *                              Exclude or use {@link null} to use the global {@link ADMINPERMS} constant.
+ *                              This is a dot-delimited (`.`) list of access codes.
+ *                              Accepts an integer that will be cast to a string for backwards compatibility.
+ *                              Example: `C.F.G.1.U0.U1.U2.P3.P4.English`.
+ * @param string|null     $path The path to the file requesting the permission check.
+ *                              This is only used when checking plugin admin permissions.
+ *                              Exclude or use {@link null} to use the current page, which auto-detects the plugin path.
+ *                              Example: `http://localhost/e107v2/e107_plugins/gallery/admin_config.php` along with the
+ *                              first argument set to `P` will check the plugin admin permissions for plugin `gallery`.
+ * @return bool true if the user has the requested admin permissions, false otherwise.
+ * @see class2Test::testGetPerms() for examples.
+ * @deprecated v2.3.3 Use one of the object-oriented alternatives:
+ *                              {@link e_user_model::checkAdminPerms()} to check a specific user's admin permissions.
+ *                              {@link e_user_model::checkPluginAdminPerms()} to check a specific user's plugin admin
+ *                              permissions.
+ *                              {@link e_userperms::simulateHasAdminPerms()} to simulate a user's admin permissions.
+ *                              {@link e_userperms::simulateHasPluginAdminPerms()} to simulate a user's plugin admin
+ *                              permissions.
+ *                              {@link e107::getUser()} can be used to get the current user.
  */
-function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)
+function getperms($arg, $ap = null, $path = null)
 {
-	// $ap = "4"; // Just for testing.
-	if(trim($ap) === '')
+	if(is_null($ap))
 	{
-		return false;
+		$ap = defset('ADMINPERMS', e107::getUser()->getAdminPerms());
 	}
 
-	if(deftrue('USE_NEW_GETPERMS')) // Add to e107_config.php.
+	if(is_null($path))
 	{
-		return e107::getUser()->checkAdminPerms($arg,$ap,$path);
+		$path = defset('e_SELF');
 	}
 
 	if(!deftrue('ADMIN'))
@@ -1332,10 +1356,7 @@ function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)
 		return false;
 	}
 
-	if($arg === 0) // Common-error avoidance with getperms(0)
-	{
-		$arg = '0';
-	}
+	$arg = trim((string) $arg); // Common-error avoidance with getperms(0) or getperms(' ').
 
 	if ($ap === '0' || $ap === '0.') // BC fix.
 	{
@@ -1345,38 +1366,11 @@ function getperms($arg, $ap = ADMINPERMS, $path = e_SELF)
 	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
 	{
 		$sql = e107::getDb('psql');
-	/*	$id = e107::getPlug()->load($matches[2])->getId();
-		$arg = 'P'.$id;*/
 
-		if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
-		{
-			$row = $sql->fetch();
-			$arg = 'P'.$row['plugin_id'];
-		}
+		return e_userperms::simulateHasPluginAdminPerms($sql, $matches[2], $ap);
 	}
 
-	$ap_array = explode('.',$ap);
-
-	if (in_array($arg,$ap_array,false))
-	{
-		return true;
-	}
-
-	if(strpos($arg, "|"))
-	{
-    	$tmp = explode("|", $arg);
-		foreach($tmp as $val)
-		{
-		   	if(in_array($val,$ap_array))
-			{
-				return true;
-			}
-		}
-	}
-
-
-	return false;
-
+	return e_userperms::simulateHasAdminPerms($arg, $ap);
 }
 
 /**
@@ -1639,17 +1633,6 @@ function init_session()
 		define('USERJOINED', '');
 		define('e_CLASS_REGEXP', '(^|,)(253|254|250|251|0)(,|$)');
 		define('e_NOBODY_REGEXP', '(^|,)255(,|$)');
-
-		if(deftrue('USE_NEW_GETPERMS')) // Add to e107_config.php.
-		{
-			$user->set('user_id', 1);
-			$user->set('user_name','e107-cli');
-			$user->set('user_admin', 1);
-			$user->set('user_perms', '0');
-			$user->set('user_class', '');
-			$user->set('user_join', '');
-		}
-
 		return;
 	}
 
