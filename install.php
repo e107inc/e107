@@ -48,7 +48,11 @@ class installLog
 	const logFile = "e107Install.log";
 
 
-	static function exceptionHandler(Exception $exception)
+	/**
+	 * @param Throwable $exception
+	 * @return void
+	 */
+	static function exceptionHandler($exception)
 	{
 		$message = $exception->getMessage();
 		self::add($message, "error");
