@@ -52,7 +52,11 @@
 			$result = getperms('U1|U2', '0.');
 			$this->assertTrue($result);
 
+			$result = getperms('0', ' ');
+			$this->assertFalse($result);
 
+			$result = getperms(0, '0');
+			$this->assertTrue($result);
 
 			$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'gallery'");
 

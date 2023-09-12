@@ -2460,4 +2460,80 @@ class e_userperms
 		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
 
+	/**
+	 * Simulate whether a user has admin permissions based on the requested access code(s) and admin's permissions.
+	 *
+	 * @param string $requestedAccess  The serialized requested access code or codes which will match if any of the
+	 *                                 codes are in the admin user's admin permissions.
+	 *                                 This is a pipe-delimited (`|`) list of access codes.
+	 *                                 Example: `C|4`
+	 * @param string $adminPermissions The serialized admin user's admin permissions.
+	 *                                 This is a dot-delimited (`.`) list of access codes.
+	 *                                 Example: `C.F.G.L.T.1.X.I.8.K.3.4.U0.U1.U2.U3.6.A.A1.A2.TMP.2.Z.P3.P4.English`
+	 * @return bool true if the user has matching permissions, false otherwise.
+	 */
+	public static function simulateHasAdminPerms($requestedAccess, $adminPermissions)
+	{
+		if(trim($adminPermissions) === '')
+		{
+			return false;
+		}
+
+		if($requestedAccess === 0)
+		{
+			$requestedAccess = '0';
+		}
+
+		if($adminPermissions === '0' || $adminPermissions === '0.')
+		{
+			return true;
+		}
+
+		$adminPermissionsArray = explode('.', $adminPermissions);
+
+		if(in_array($requestedAccess, $adminPermissionsArray, false))
+		{
+			return true;
+		}
+
+		if(strpos($requestedAccess, '|'))
+		{
+			$requestedAccessCodes = explode('|', $requestedAccess);
+			foreach($requestedAccessCodes as $requestedAccessCode)
+			{
+				if(in_array($requestedAccessCode, $adminPermissionsArray))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Simulate whether a user has admin permissions to a plugin.
+	 *
+	 * @param e_db $db The database handle to query installed plugins.
+	 * @param string $pluginName The plugin name, not the plugin path like in {@link getperms()}.
+	 * @param string $adminPermissions The serialized admin user's admin permissions.
+	 *                                 This is a dot-delimited (`.`) list of access codes.
+	 *                                 Example: `C.F.G.L.T.1.X.I.8.K.3.4.U0.U1.U2.U3.6.A.A1.A2.TMP.2.Z.P3.P4.English`
+	 * @return bool true if the user has matching permissions, false otherwise.
+	 */
+	public static function simulateHasPluginAdminPerms($db, $pluginName, $adminPermissions)
+	{
+		$arg = "0";
+		if($db->select(
+			'plugin',
+			'plugin_id',
+			"plugin_path = :plugin_path LIMIT 1",
+			["plugin_path" => $pluginName]
+		))
+		{
+			$row = $db->fetch();
+			$arg = 'P' . $row['plugin_id'];
+		}
+		return self::simulateHasAdminPerms($arg, $adminPermissions);
+	}
 }
