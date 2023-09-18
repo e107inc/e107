@@ -34,7 +34,15 @@ $_E107['no_menus'] = true;
 $_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 $_E107['no_maintenance'] = true;
 
+if (php_sapi_name() !== "cli" && $_E107['debug'] === false)
+{
+	header('HTTP/1.0 403 Forbidden');
+	echo "<h1>Access Denied</h1>";
+    exit;
+}
+
 require_once(realpath(__DIR__ . "/class2.php"));
+
 require_once(e_HANDLER . "cron_class.php");
 
 $cron = new cronScheduler();
