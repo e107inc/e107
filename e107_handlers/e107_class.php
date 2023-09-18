@@ -4769,7 +4769,7 @@ class e107
 
 		if (is_array($input))
 		{
-			return array_walk($input, array('self', 'filter_request'), $type);
+			return array_walk($input, array(self::class, 'filter_request'), $type);
 		}
 
 

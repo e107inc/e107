@@ -275,6 +275,8 @@ class e_parse
 	private $blockTags = array();
 
 	private $scriptAccess = false; // nobody.
+	private $replaceVars;
+	private $replaceUnset;
 
 	/**
 	 * Constructor - keep it public for backward compatibility
