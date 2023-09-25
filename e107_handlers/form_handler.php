@@ -3795,18 +3795,18 @@ var_dump($select_options);*/
 		switch ($image)
 		{
 			case 'edit':
-				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_EDIT_ICON : $tp->toIcon('e-edit-32');
+				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_EDIT_ICON') : $tp->toIcon('e-edit-32');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
 			break;
 
 			case 'delete':
-				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
+				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_DELETE_ICON') : $tp->toIcon('fa-trash.glyph');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
 				$options['data-confirm'] = LAN_JSCONFIRM;
 			break;
 
 			case 'execute':
-				$icon = deftrue('e_ADMIN_AREA') ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
+				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_EXECUTE_ICON') : $tp->toIcon('fa-power-off.glyph');
 				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action execute' : $options['class'];
 			break;
 
@@ -5050,11 +5050,11 @@ var_dump($select_options);*/
 		{
 			foreach($array as $k=>$v)
 			{
-				$jsonArray[$k] = str_replace("'", '`', (string) $v);
+				$jsonArray[] = ['value' => $k, 'text' => str_replace("'", '`', (string) $v)]; // required format to retain order of elements.
 			}
 		}
 
-		$source = $this->tp->toJSON($jsonArray, true);
+		$source = $this->tp->toJSON($jsonArray);
 		
 		$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode']));
 
@@ -5083,7 +5083,9 @@ var_dump($select_options);*/
 			'data-value'      => $curVal,
 			'href'            => '#',
 		];
+
 		$options['token'] = $this->inlineToken();
+
 		if (!empty($options))
 		{
 			foreach ($options as $k => $opt)
@@ -5238,7 +5240,7 @@ var_dump($select_options);*/
 					'style'       => 'cursor:move',
 					'data-target' => e_SELF . "?mode=$mode&action=sort&ajax_used=1&from=$from",
 					'title'       => LAN_RE_ORDER,
-				]) . ">" . ADMIN_SORT_ICON . '</a> ';
+				]) . ">" . defset('ADMIN_SORT_ICON') . '</a> ';
 		}
 
 
@@ -6057,24 +6059,8 @@ var_dump($select_options);*/
 					$uc_options = vartrue($parms['classlist'], 'public,guest, nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 					$array = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
 
-					//$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$mode = $tp->filter(vartrue($_GET['mode']), 'w');
-					$source = str_replace('"', "'", json_encode($array, JSON_FORCE_OBJECT));
-
 					//NOTE Leading ',' required on $value; so it picks up existing value.
-					$value = "<a" . $this->attributes([
-							'class'          => "e-tip e-editable editable-click",
-							'data-placement' => 'bottom',
-							'data-value'     => ",$value",
-							'data-name'      => $field,
-							'data-source'    => $source,
-							'title'          => LAN_EDIT . ' ' . $attributes['title'],
-							'data-type'      => 'checklist',
-							'data-pk'        => $id,
-							'data-token'     => $this->inlineToken(),
-							'data-url'       => e_SELF . "?mode=$mode&action=inline&id=$id&ajax_used=1",
-							'href'           => '#',
-						]) . ">" . $dispvalue . '</a>';
+					$value = $this->renderInline($field,$id,$attributes['title'],",$value",$dispvalue,'checklist',$array,['placement'=>'bottom']);
 				}
 				else 
 				{
@@ -6193,7 +6179,7 @@ var_dump($select_options);*/
 			 */
 			case 'bool':
 			case 'boolean':
-				$false = vartrue($parms['trueonly']) ? '' : ADMIN_FALSE_ICON;
+				$false = vartrue($parms['trueonly']) ? '' : defset('ADMIN_FALSE_ICON');
 
 				if(!empty($parms['enabled']))
 				{
@@ -6240,11 +6226,11 @@ var_dump($select_options);*/
 				
 				if(!empty($parms['reverse']))
 				{
-					$value = ($value) ? $false : ADMIN_TRUE_ICON;	
+					$value = ($value) ? $false : defset('ADMIN_TRUE_ICON');
 				}
 				else
 				{
-					$value = $value ? ADMIN_TRUE_ICON : $false;	
+					$value = $value ? defset('ADMIN_TRUE_ICON') : $false;
 				}	
 							
 			break;
