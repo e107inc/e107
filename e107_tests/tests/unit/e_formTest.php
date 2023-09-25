@@ -1306,6 +1306,41 @@ class e_formTest extends \Codeception\Test\Unit
 		
 			$this->assertSame($expected, $result);
 	}
+
+	public function testRenderValueUserclassesInline()
+	{
+
+			$field = array('title'=>'Userclasses',   'type'=>'userclasses', 'inline'=>true);
+			$result  = $this->_frm->renderValue('uc', 252, $field,999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			$this->assertNotEmpty($tags['a'][0]);
+
+			$expected = array (
+				'class'          => 'e-tip e-editable editable-click ',
+				'data-placement' => 'bottom',
+				'data-value'     => ',252',
+				'data-name'      => 'uc',
+				'data-source'    => '[{"value":0,"text":"Everyone (public)"},{"value":252,"text":"Guests"},{"value":255,"text":"No One (inactive)"},{"value":253,"text":"Members"},{"value":254,"text":"Admin"},{"value":250,"text":"Main Admin"},{"value":249,"text":"Admins and Mods"},{"value":2,"text":"CONTACT PEOPLE"},{"value":248,"text":"Forum Moderators"},{"value":1,"text":"PRIVATEMENU"},{"value":3,"text":"NEWSLETTER"}]',
+				'title'          => 'Edit Userclasses',
+				'data-type'      => 'checklist',
+				'data-pk'        => '999',
+				'href'           => '#',
+			);
+
+			foreach($expected as $k=>$value)
+			{
+				$this->assertSame($value, $tags['a'][0][$k], "Failed '$k' is not the same");
+			}
+
+			$this->assertNotEmpty($tags['a'][0]['data-token']);
+			$this->assertNotEmpty($tags['a'][0]['data-url']);
+
+
+	}
 	/*
 			public function testRenderListForm()
 			{
