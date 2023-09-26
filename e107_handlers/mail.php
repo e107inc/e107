@@ -448,7 +448,7 @@ class e107Email extends PHPMailer
 			fwrite($this->logHandle,"\n\n=====".date('H:i:s y.m.d')."----------------------------------------------------------------=====\r\n");
 			if ($logInfo)
 			{
-				fwrite($this->logHandle,'  Mailer opened by '.USERNAME." - ID: {$this->MessageID}. Subject: {$this->Subject}  Log action: {$this->logEnable}\r\n");
+				fwrite($this->logHandle,'  Mailer opened by '.defset('USERNAME')." - ID: {$this->MessageID}. Subject: {$this->Subject}  Log action: {$this->logEnable}\r\n");
 				if ($this->add_email)
 				{
 					fwrite($this->logHandle, 'From: '.$this->From.' ('.$this->FromName.")\r\n");

@@ -7229,7 +7229,7 @@ class e_admin_form_ui extends e_form
 				return $curVal;
 			}
 
-			$level_image = $parent ? str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON) : '';
+			$level_image = $parent ? str_replace('level-x','level-'.$level, defset('ADMIN_CHILD_ICON')) : '';
 
 			return ($parent) ?  $level_image.$curVal : $curVal;
 
@@ -7242,7 +7242,7 @@ class e_admin_form_ui extends e_form
 
 			if(!empty($parent))
 			{
-				$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON));
+				$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, defset('ADMIN_CHILD_ICON')));
 			}
 
 
@@ -7732,7 +7732,7 @@ class e_admin_form_ui extends e_form
 			$gridQuery = (array) $_GET;
 			$gridQuery['action'] = $gridAction;
 			$toggleUrl = e_REQUEST_SELF. '?' .http_build_query($gridQuery, '', '&amp;');
-			$gridIcon = ($gridAction === 'grid') ? ADMIN_GRID_ICON : ADMIN_LIST_ICON;
+			$gridIcon = ($gridAction === 'grid') ? defset('ADMIN_GRID_ICON') : defset('ADMIN_LIST_ICON');
 			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
 			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle. '">' .$gridIcon. '</a>';
 		}
