@@ -4374,6 +4374,7 @@ var_dump($select_options);*/
 	public function name2id($name)
 	{
 		$name = strtolower($name);
+		$name = e107::getParser()->toASCII($name);
 		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':', '?','=',"'"), array('-', '-', '', '-', '-', '-', '-','','','-','','-','-',''), $name), '-');
 	}
 
