@@ -1041,6 +1041,14 @@ class e_formTest extends \Codeception\Test\Unit
 				$result = $this->_frm->name2id($text);
 
 				$this->assertEquals($expected, $result);
+
+				// Test with diacritics
+				$text       = "Façade, Jalapeño, Frappé";
+				$expected   = 'facade-jalapeno-frappe';
+
+				$result = $this->_frm->name2id($text);
+				$this->assertEquals($expected, $result);
+
 			}
 /*
 			public function testFormat_options()
@@ -1100,7 +1108,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'number_001' => 555,
 			'number_002' => "<a class='e-tip e-editable editable-click' data-name='number_002' title=\"Edit Number 002\" data-type='text' data-pk='0' data-url='".e_SELF."?mode=&action=inline&id=0&ajax_used=1' href='#'>444</a>",
 
-			'bool_001' => ADMIN_TRUE_ICON,
+			'bool_001' => constant('ADMIN_TRUE_ICON'),
 			'bool_002' => "<a class='e-tip e-editable editable-click e-editable-boolean' data-name='bool_002' data-source='{\"0\":\"\u0026cross;\",\"1\":\"\u0026check;\"}'   title=\"Edit Bool 002\" data-type='select' data-inputclass='x-editable-bool-002 e-editable-boolean' data-value=\"1\"   href='#'  data-class='e-editable-boolean' data-url='".e_SELF."?mode=&amp;action=inline&amp;id=0&amp;ajax_used=1'>&check;</a>",
 
 			'dropdown_001' => 'Label 2',
