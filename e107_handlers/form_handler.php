@@ -4374,7 +4374,8 @@ var_dump($select_options);*/
 	public function name2id($name)
 	{
 		$name = strtolower($name);
-		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':', '?','=',"'"), array('-', '-', '', '-', '-', '-', '-','','','-','','-','-',''), $name), '-');
+		$name = $this->tp->toASCII($name);
+		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':', '?','=',"'",','), array('-', '-', '', '-', '-', '-', '-','','','-','','-','-','',''), $name), '-');
 	}
 
 	/**
