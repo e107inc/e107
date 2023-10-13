@@ -6192,6 +6192,8 @@ var_dump($select_options);*/
 					$parms['false'] = $parms['disabled'];
 				}
 
+				$true = isset($parms['true']) ? $parms['true'] : defset('ADMIN_TRUE_ICON');
+
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					if(isset($parms['false'])) // custom representation for 'false'. (supports font-awesome when set by css)
@@ -6227,11 +6229,11 @@ var_dump($select_options);*/
 				
 				if(!empty($parms['reverse']))
 				{
-					$value = ($value) ? $false : defset('ADMIN_TRUE_ICON');
+					$value = ($value) ? $false : $true;
 				}
 				else
 				{
-					$value = $value ? defset('ADMIN_TRUE_ICON') : $false;
+					$value = $value ? $true : $false;
 				}	
 							
 			break;
