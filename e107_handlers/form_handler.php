@@ -6519,7 +6519,7 @@ var_dump($select_options);*/
 			$key .= '[' . e_LANGUAGE . ']';
 		}
 
-		if(empty($value) && !empty($parms['default']) && $attributes['type'] !== 'dropdown') // Allow writeParms to set default value.
+		if(empty($value) && isset($parms['default']) && $attributes['type'] !== 'dropdown') // Allow writeParms to set default value.
 		{
 			$value = $parms['default'];
 		}
