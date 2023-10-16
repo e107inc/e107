@@ -24,6 +24,7 @@ jobs:
           - image: php:7.4
           - image: php:8.0
           - image: php:8.1
+          - image: php:8.2
         db:
           - image: mysql:5.5
           - image: mysql:5.6
