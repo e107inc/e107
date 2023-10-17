@@ -1075,7 +1075,7 @@ class e_jsmanager
 				$plugfile_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$pfile_path[0].'/'.trim($pfile_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
 
 				// allow for URLs to be attributed to plugins. (loads after theme css in admin area header)
-				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : 'all'.$this->_sep.$pfile_path[1].$this->_sep.$pre.$this->_sep.$post;;
+				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : 'all'.$this->_sep.$pfile_path[1].$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
@@ -1383,9 +1383,7 @@ class e_jsmanager
 
 		if($return)
 		{
-			$ret = ob_get_clean();
-
-			return $ret;
+			return ob_get_clean();
 		}
 	}
 
@@ -1475,9 +1473,9 @@ class e_jsmanager
 					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
 					
 					$path = explode($this->_sep, $path, 3);
-					$pre = varset($path[1], '');
+					$pre = varset($path[1]);
 					if($pre) $pre .= "\n";
-					$post = varset($path[2], '');
+					$post = varset($path[2]);
 					if($post) $post = "\n".$post;
 					$path = $path[0];
 					
@@ -2247,5 +2245,44 @@ class e_jsmanager
 		}
 		return $this;
 	}
+
+
+	/**
+	 * Render favicon HTML code - used in header.php and header_default.php
+	 * @return string
+	 */
+	public function renderFavicon()
+	{
+		$sitetheme = $this->getCurrentTheme();
+
+		$ret = '';
+
+		if(file_exists(e_THEME . $sitetheme . "/favicon.ico"))
+		{
+			$ret = "<link rel='icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/xicon' />\n";
+		}
+		elseif(file_exists(e_MEDIA_ICON.'16x16_favicon.png'))
+		{
+			$iconSizes = [16 => 'icon',32 => 'icon',48 => 'icon',192 => 'icon',167 => 'apple-touch-icon',180 => 'apple-touch-icon'];
+
+			foreach($iconSizes as $size => $rel)
+			{
+				$sizes = $size.'x'.$size;
+				$ret .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".e_MEDIA_ICON_ABS.$sizes."_favicon.png'>\n";
+			}
+
+		}
+		elseif (file_exists(e_BASE."favicon.ico"))
+		{
+			$ret = "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+		}
+
+
+		return $ret;
+
+	}
+
+
+
 
 }
