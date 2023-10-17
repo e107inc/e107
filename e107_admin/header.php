@@ -384,17 +384,8 @@ e107::getJs()->renderJs('header', 4);
 e107::getJs()->renderJs('header_inline', 4);
 
 // ---------- Favicon ---------
+echo e107::getJs()->renderFavicon();
 
-$sitetheme = e107::getPref('sitetheme');
-if(file_exists(e_THEME . $sitetheme . "/favicon.ico"))
-{
-	echo "<link rel='icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/xicon' />\n";
-}
-elseif(file_exists(e_BASE . "favicon.ico"))
-{
-	echo "<link rel='icon' href='" . SITEURL . "favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . SITEURL . "favicon.ico' type='image/xicon' />\n";
-}
-unset($sitetheme);
 //
 // G: Send Theme Headers
 //

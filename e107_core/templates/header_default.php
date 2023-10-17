@@ -253,9 +253,8 @@ if (is_array($pref['e_meta_list']))
 	unset($ret);
 }
 
-// --------  Generate Apple Touch Icon ---------
-echo renderFavicon();
 
+echo $e_js->renderFavicon();
 
 
 // Register Plugin specific CSS 
@@ -500,30 +499,7 @@ function renderMeta($type)
 	return $ret;
 }
 
-function renderFavicon()
-{
-	// ---------- Favicon ---------
-	if (file_exists(THEME."favicon.ico"))
-	{
-		return "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
-	}
-	elseif(file_exists(e_MEDIA_ICON.'16x16_favicon.png'))
-	{
-		$iconSizes = [16 => 'icon',32 => 'icon',48 => 'icon',192 => 'icon',167 => 'apple-touch-icon',180 => 'apple-touch-icon'];
-		$text = '';
-		foreach($iconSizes as $size => $rel)
-		{
-			$sizes = $size.'x'.$size;
-			$text .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".e_MEDIA_ICON_ABS.$sizes."_favicon.png'>\n";
-		}
-		return $text;
-	}
-	elseif (file_exists(e_BASE."favicon.ico"))
-	{
-		return "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
-	}
 
-}
 // legay meta-tag checks.
 /*
 $isKeywords = e107::getUrl()->response()->getMetaKeywords();
