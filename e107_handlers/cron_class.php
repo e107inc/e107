@@ -1080,10 +1080,18 @@ class cronScheduler
 
 		if(!$valid)
 		{
+			if($this->debug)
+			{
+				error_log('e107: Invalid token used for cron class');
+			}
 			return false;
 		}
 
-		@file_put_contents(e_CACHE . 'cronLastLoad.php', time());
+		if(!@file_put_contents(e_CACHE . 'cronLastLoad.php', time()))
+		{
+			error_log('e107: Unable to write to: '.e_CACHE . 'cronLastLoad.php. Permissions issue?');
+		}
+
 
 		// Get active cron jobs.
 		$cron_jobs = $this->getCronJobs(true);
@@ -1258,6 +1266,11 @@ class cronScheduler
 		else
 		{
 			$pwd = str_replace('token=', '', $pwd);
+		}
+
+		if($this->debug)
+		{
+			error_log("Cron Token: ".$pwd, E_NOTICE);
 		}
 
 		if(empty($this->pref['e_cron_pwd']) || (varset($this->pref['e_cron_pwd']) != $pwd))
