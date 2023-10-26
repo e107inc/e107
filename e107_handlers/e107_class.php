@@ -48,6 +48,11 @@ class e107
 	public $file_path;
 	public $site_path;
 	public $relative_base_path;
+
+	public $ecache;
+
+
+
 //	public $_ip_cache;
 //	public $_host_name_cache;
 

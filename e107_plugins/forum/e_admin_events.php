@@ -28,7 +28,6 @@ function plugin_forum_admin_events($type, $parms)
 //Called if classtree cache is cleared.  Meaning we'll need to rebuild moderator cache
 function plugin_forum_admin_events_clear_moderators()
 {
-	$e107 = e107::getInstance();
-	$e107->ecache->clear_sys('nomd5_forum_moderators');
+	e107::getCache()->clear_sys('nomd5_forum_moderators');
 }
 
