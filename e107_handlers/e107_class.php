@@ -5027,7 +5027,14 @@ class e107
 
 		$path = dirname(self::getRelativePath(getcwd(), $target_path)) . "/";
 
-		$http_path = dirname($_SERVER['SCRIPT_NAME']);
+		$SCRIPT_NAME = !empty($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+
+		if(empty($SCRIPT_NAME) && !empty($_SERVER['_']))
+		{
+			$SCRIPT_NAME = $_SERVER['_'];
+		}
+
+		$http_path = dirname($SCRIPT_NAME);
 		$http_path = explode("/", $http_path);
 		for ($i = 0; $i < substr_count($path, "../"); $i ++)
 		{
