@@ -151,14 +151,14 @@ class user_class
 	{
 		if (isset($this->class_tree) && count($this->class_tree) && !$force) return;
 
-		$e107 = e107::getInstance();
+		$ecache = e107::getCache();
 
 		$this->class_tree = array();
 		$this->class_parents = array();
 
       
         
-		if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
+		if ($temp = $ecache->retrieve_sys(UC_CACHE_TAG))
 		{
 			$this->class_tree = e107::unserialize($temp);
 			unset($temp);
@@ -202,7 +202,7 @@ class user_class
 			}
 
 			$userCache = e107::serialize($this->class_tree, FALSE);
-			$e107->ecache->set_sys(UC_CACHE_TAG,$userCache);
+			$ecache->set_sys(UC_CACHE_TAG,$userCache);
 			unset($userCache);
 		}
 

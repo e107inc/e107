@@ -30,10 +30,10 @@ class e_ranks
 		$this->imageFolder = is_dir(THEME.'images/ranks') ? THEME_ABS.'images/ranks/' : e_IMAGE_ABS.'ranks/';
 
 
-		$e107 = e107::getInstance();
+		$ecache = e107::getCache();
 		$sql = e107::getDb();
 		//Check to see if we can get it from cache
-		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
+		if($force == false && ($ranks = $ecache->retrieve_sys('nomd5_user_ranks')))
 		{
 			$this->ranks = e107::unserialize($ranks);
 		}
@@ -62,7 +62,7 @@ class e_ranks
 					}
 				}
 			}
-			$e107->ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
+			$ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
 		}
 
 		// defaults
