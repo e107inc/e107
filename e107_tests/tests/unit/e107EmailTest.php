@@ -69,6 +69,41 @@
 		}
 
 		/**
+		 * Test using a custom template passed directly.
+		 * @return void
+		 */
+		public function testArraySetInlineTemplate()
+		{
+			$eml = array(
+					'subject' 		=> "[CUSTOM TEMPLATE EXAMPLE]",
+					'sender_email'	=> "noreply@test.com",
+					'sender_name'	=> "Test Person",
+					'replyto'		=> "",
+					'html'			=> true,
+					'priority'      => 1,
+					'template'		=> ['subject'=>'{SUBJECT}', 'header'=>'<html lang="en"><body>', 'body'=>'<div><span>{NAME}</span> <small>{DATE}</small></div><div>{BODY}</div>', 'footer'=>'</body></html>'],
+					'body'			=> "This is the body text",
+					'cc'            => '',
+					'shortcodes'    => [
+						'NAME'  => "TestName",
+						'DATE'  => 'Jan 1st, 2020'
+					],
+				);
+
+			$this->eml->arraySet($eml);
+
+			$this->assertStringContainsString("noreply@test.com", $this->eml->From);
+			$this->assertStringContainsString("Test Person", $this->eml->FromName);
+			$this->assertStringContainsString("[CUSTOM TEMPLATE EXAMPLE]", $this->eml->Subject);
+
+			$this->assertStringContainsString('<html lang="en"><body>', $this->eml->Body);
+
+			$this->assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
+			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+		}
+
+
+		/**
 		 * Test using an email template from e107_plugins/_blank/templates/_blank_template.php
 		 * @return void
 		 */
@@ -101,6 +136,8 @@
 			$this->assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
 			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
+
+
 
 
 		public function testArraySetNotifyTemplate()
