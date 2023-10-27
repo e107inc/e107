@@ -913,9 +913,16 @@ class e107Email extends PHPMailer
 		{
 			require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
 
-			if(is_array($eml['template']) && !empty($eml['template']['plugin']) && !empty($eml['template']['name']) && !empty($eml['template']['key']))
+			if(is_array($eml['template']))
 			{
-				$tmpl = e107::getTemplate($eml['template']['plugin'],$eml['template']['name'], $eml['template']['key']);
+				if(!empty($eml['template']['plugin']) && !empty($eml['template']['name']) && !empty($eml['template']['key'])) // Plugin template
+				{
+					$tmpl = e107::getTemplate($eml['template']['plugin'],$eml['template']['name'], $eml['template']['key']);
+				}
+				elseif(isset($eml['template']['header']) && isset($eml['template']['body']) && isset($eml['template']['footer'])) // Custom Template
+				{
+					$tmpl = $eml['template'];
+				}
 			}
 			else
 			{
