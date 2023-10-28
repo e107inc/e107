@@ -18,25 +18,14 @@ jobs:
         interpreter:
           - image: php:5.6
           - image: php:7.0
-          - image: php:7.1
-          - image: php:7.2
-          - image: php:7.3
           - image: php:7.4
-          - image: php:8.0
           - image: php:8.1
         db:
           - image: mysql:5.5
-          - image: mysql:5.6
-          - image: mysql:5.7
           - image: bitnami/mysql:8.0
           - image: mariadb:10.0
-          - image: mariadb:10.1
-          - image: mariadb:10.2
-          - image: mariadb:10.3
-          - image: mariadb:10.4
-          - image: mariadb:10.5
           - image: mariadb:10.6
-          - image: mariadb:10.10
+          - image: mariadb:10.11
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
