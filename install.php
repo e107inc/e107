@@ -1631,9 +1631,10 @@ if($this->pdo == true)
 				}	
 				$this->add_button('submit', LAN_CONTINUE);
 			}
-		 
-		$this->finish_form();
+
 		$this->stats();
+		$this->finish_form();
+
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		installLog::add('Stage 8 completed');
 
@@ -1661,8 +1662,8 @@ if($this->pdo == true)
 	{
 		global $e_forms;
 
-		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER'],'version'=> defset('e_VERSION'));
-		$base = base64_encode(http_build_query($data, ''));
+		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['SCRIPT_URI'],'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
+		$base = base64_encode(http_build_query($data, '','&'));
 		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 
@@ -2443,7 +2444,7 @@ function template_data()
 		</style>
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
-		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
 		<![endif]-->
 	  </head>
 	  <body>
