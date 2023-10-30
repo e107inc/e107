@@ -1029,9 +1029,12 @@ class page_admin_ui extends e_admin_ui
 
 				if($chap = $model->get('page_chapter'))
 				{
-                    $model->set('chapter_sef', $this->chapters[$chap]['chapter_sef']);
-                    $parent = (int) $this->chapters[$chap]['chapter_parent'];
-                    $model->set('book_sef', $this->chapters[$parent]['chapter_sef']);
+					if(isset($this->chapters[$chap]))
+					{
+                        $model->set('chapter_sef', $this->chapters[$chap]['chapter_sef']);
+                        $parent = (int) $this->chapters[$chap]['chapter_parent'];
+                        $model->set('book_sef', $this->chapters[$parent]['chapter_sef']);
+					}
 				}
 				else
 				{
