@@ -1374,6 +1374,11 @@ EXPECTED;
 				'options'  => array('w' => 222, 'h' => 272, 'aw' => 0, 'ah' => 0, 'c' => 0, 'type' => 'webp'),
 				'expected' => array('prefix' => 'thumb_butterfly_', 'suffix' => '.webp.cache.bin'),
 			),
+			2 => array(
+				'file'     => 'e107_plugins/gallery/images/butterfly.jpg',
+				'options'  => array('w' => 222, 'h' => 272,  'c' => 0, 'type' => 'webp'),
+				'expected' => array('prefix' => 'thumb_butterfly_', 'suffix' => '.webp.cache.bin'),
+			),
 
 		);
 

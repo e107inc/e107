@@ -2316,10 +2316,10 @@ class e_parse
 
 		// cleanup.
 		$newOpts = array(
-			'w'  => (string) intval($options['w']),
-			'h'  => (string) intval($options['h']),
-			'aw' => (string) intval($options['aw']),
-			'ah' => (string) intval($options['ah']),
+			'w'  => isset($options['w']) ? (string) intval($options['w']) : '',
+			'h'  => isset($options['h']) ? (string) intval($options['h']) : '',
+			'aw' => isset($options['aw']) ? (string) intval($options['aw']) : '',
+			'ah' => isset($options['ah']) ? (string) intval($options['ah']) : '',
 			'c'  => strtoupper(vartrue($options['c'], '0')),
 		);
 
