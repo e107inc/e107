@@ -15,15 +15,10 @@ class e_pluginbuilder
 		var $tableList = array();
 		var $createFiles = false;
 		private $buildTable = false;
-		private $debug = false;
+
 
 		function __construct()
 		{
-
-			if(e_DEBUG == true)
-			{
-				$this->debug = true;
-			}
 
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);
@@ -717,7 +712,7 @@ $content .= '}';
 						$info = str_replace('[x]', $this->pluginName."_sql.php", EPL_ADLAN_132);
 						$mes->addInfo($info,'default',true);
 						$red = e107::getRedirect();
-						$red->redirect(e_REQUEST_URL,true);
+						$red->redirect(e_REQUEST_URL);
 					//	$red->redirect(e_SELF."?mode=create&newplugin=".$this->pluginName."&createFiles=1&step=2",true);
 					}
 					else
@@ -894,7 +889,7 @@ $content .= '}';
 				break;
 			}
 
-			$req = ($required == true) ? "&required=1" : "";
+			$req = $required ? "&required=1" : "";
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
 			$pat = !empty($pattern) ? "&pattern=".$pattern : "";
 			$sz = !empty($xsize) ? "&size=".$xsize : "";
@@ -1067,7 +1062,7 @@ TEMPLATE;
 			}
 
 
-			if($this->createFiles == true || !file_exists($path))
+			if($this->createFiles || !file_exists($path))
 			{
 				if(file_put_contents($path,$result) )
 				{
@@ -1103,7 +1098,7 @@ TEMPLATE;
 			);
 
 		//	echo "TABLE COUNT= ".$this->tableCount ;
-
+			$defaultMode = [];
 
 			$this->table = $table."_ui";
 
@@ -1321,6 +1316,9 @@ TEMPLATE;
 					"hidden"	=> EPL_ADLAN_215
 					);
 				break;
+
+				default:
+				 $array = [];
 			}
 
 		//	asort($array);
@@ -1334,6 +1332,7 @@ TEMPLATE;
 		function guess($data, $val=null,$mode = 'type')
 		{
 			$tmp = explode("_",$data);
+			$name = '';
 
 			if(count($tmp) == 3) // eg Link_page_title
 			{
@@ -2063,8 +2062,11 @@ class " . $table . " extends e_admin_ui
 
 			$text .= "	
 		}
+";
 
-		
+
+$text .= <<<UICODE
+
 		// ------- Customize Create --------
 		
 		public function beforeCreate(\$new_data,\$old_data)
@@ -2114,13 +2116,43 @@ class " . $table . " extends e_admin_ui
 		// optional - a custom page.  
 		public function customPage()
 		{
-			\$text = 'Hello World!';
-			\$otherField  = \$this->getController()->getFieldVar('other_field_name');
+			if(\$this->getPosted('custom-submit')) // after form is submitted. 
+			{
+				e107::getMessage()->addSuccess('Changes made: '. \$this->getPosted('example'));
+			}
+
+			\$this->addTitle('My Custom Title');
+
+
+			\$frm = \$this->getUI();
+			\$text = \$frm->open('my-form', 'post');
+
+				\$tab1 = "<table class='table table-bordered adminform'>
+					<colgroup>
+						<col class='col-label'>
+						<col class='col-control'>
+					</colgroup>
+					<tr>
+						<td>Label ".\$frm->help('A help tip')."</td>
+						<td>".\$frm->text('example', \$this->getPosted('example'), 80, ['size'=>'xlarge'])."</td>
+					</tr>
+					</table>";
+
+			// Display Tab
+			\$text .= \$frm->tabs([
+				'general'   => ['caption'=>LAN_GENERAL, 'text' => \$tab1],
+			]);
+
+			\$text .= "<div class='buttons-bar text-center'>".\$frm->button('custom-submit', 'submit', 'submit', LAN_CREATE)."</div>";
+			\$text .= \$frm->close();
+
 			return \$text;
 			
 		}
 		
-";
+UICODE;
+
+
 
 
 			$text .= $this->buildAdminUIBatchFilter($vars['fields'], $table, 'batch');
@@ -2151,7 +2183,7 @@ class " . str_replace("_ui", "_form_ui", $table) . " extends e_admin_form_ui
 	// Custom Method/Function 
 	function " . $fld . "(\$curVal,\$mode)
 	{
-
+		\$otherField  = \$this->getController()->getFieldVar('other_field_name');
 		 		
 		switch(\$mode)
 		{
@@ -2197,6 +2229,7 @@ class " . str_replace("_ui", "_form_ui", $table) . " extends e_admin_form_ui
 		switch(\$mode)
 		{			
 			case 'write': // Edit Page
+			
 				return \$this->text('" . $index . "',\$curVal, 255, 'size=large');
 			break;
 			

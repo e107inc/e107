@@ -347,7 +347,27 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 		$result = $this->pb->buildAdminUI($this->posted, 'pluginfolder', 'PluginTitle');
 		$expected = "'example_id'              => array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',)";
 		$this->assertStringContainsString($expected, $result);
+
+	//	file_put_contents(__DIR__."/testBuild.php", "<?php\n\n".$result);
+
 	}
+
+/*	public function isValidCode($code)
+	{
+		$temp_file = tempnam(sys_get_temp_dir(), 'PHP');
+		file_put_contents($temp_file, $code);
+		$output = shell_exec("php -l $temp_file");
+		unlink($temp_file);
+
+		if (strpos($output, 'No syntax errors detected') === false)
+		{
+			return $output;
+		   $this->fail("The code is not valid. Error message: $output");
+		}
+
+		return true;
+
+	}*/
 /*
 	public function testRun()
 	{
