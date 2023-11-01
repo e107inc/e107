@@ -3597,7 +3597,9 @@ var_dump($select_options);*/
 
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
-		$ltitle = strtolower($option_title);
+
+		$ltitle = is_string($option_title) ? strtolower($option_title) : $option_title;
+
 		$label = ($ltitle === 'true' || $ltitle === 'false') ? $option_title : defset($option_title, $option_title);
 
 		return "<option" . $this->attributes(['value' => $value]) . $this->get_attributes($options) . '>'
