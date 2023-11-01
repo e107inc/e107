@@ -779,6 +779,14 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$this->assertEquals($expected, $actual);
 
+		$tests = ['true'=>'True', 'false'=>'False', 'legacy'=>'Legacy'];
+
+		foreach($tests as $k=>$v)
+		{
+			$expected = "<option value='$k'>$v</option>";
+			$result = $this->_frm->option($v,$k);
+			$this->assertSame($expected, $result);
+		}
 	}
 
 	public function testOption_multi()
