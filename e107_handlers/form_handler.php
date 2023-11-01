@@ -2320,7 +2320,7 @@ class e_form
 
 		//	$multiplier = 100 / (int) $denom;
 
-			$value = ((int) $score / (int) $denom) * 100;
+			$value = !empty($denom) ? ((int) $score / (int) $denom) * 100 : 0;
 
 		//	$value = (int) $score * (int) $multiplier;
 			$percVal = round((float) $value).'%';
