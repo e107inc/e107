@@ -1067,7 +1067,8 @@ class xmlClass
 					$eQry = " 1 ORDER BY ".$primaryKey." ASC";
 				}
 
-				e107::getDb()->select($eTable, "*", $eQry);
+				$fields = !empty($options['fields']) ? $options['fields'] : '*';
+				e107::getDb()->select($eTable, $fields, $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 			//	$count = 1;
 				while($row = e107::getDb()->fetch())
