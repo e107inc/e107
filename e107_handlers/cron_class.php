@@ -273,17 +273,16 @@ class _system_cron
 	function procEmailBounce()
 	{
 		//global $pref;
-		if (CRON_MAIL_DEBUG)
+		if (defset('CRON_MAIL_DEBUG'))
 		{
-			$e107 = e107::getInstance();
-			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing started',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing started',FALSE,LOG_TO_ROLLING);
 		}
 		require_once(e_HANDLER.'pop_bounce_handler.php');
 		$mailBounce = new pop3BounceHandler();
 		$mailBounce->processBounces();
-		if (CRON_MAIL_DEBUG)
+		if (defset('CRON_MAIL_DEBUG'))
 		{
-			$e107->admin_log->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 
@@ -461,6 +460,8 @@ class CronParser
 	 */
 	function expand_ranges($str)
 	{
+		$ret = [];
+
 		if (strpos($str, ",") !== false)
 		{
 			$arParts = explode(',', $str);
@@ -809,7 +810,7 @@ class CronParser
 		{
 			if ($arr[$i] < $low)
 			{
-				$this->debug("Remove out of range element. {$arr[$i]} is outside $low - $high");
+				$this->debug("Remove out of range element. $arr[$i] is outside $low - $high");
 				unset($arr[$i]);
 			}
 			else
@@ -822,7 +823,7 @@ class CronParser
 		{
 			if ($arr[$i] > $high)
 			{
-				$this->debug("Remove out of range element. {$arr[$i]} is outside $low - $high");
+				$this->debug("Remove out of range element. $arr[$i] is outside $low - $high");
 				unset ($arr[$i]);
 			}
 			else
@@ -1130,7 +1131,7 @@ class cronScheduler
 
 		if(empty($job['active']))
 		{
-			return $status;
+			return false;
 		}
 
 		// Calculate the last due time before this moment.
@@ -1144,12 +1145,12 @@ class cronScheduler
 
 		if($due <= (time() - 45))
 		{
-			return $status;
+			return false;
 		}
 
 		if($job['path'] != '_system' && !is_readable(e_PLUGIN . $job['path'] . "/e_cron.php"))
 		{
-			return $status;
+			return false;
 		}
 
 		if($this->debug)
@@ -1202,7 +1203,7 @@ class cronScheduler
 		catch(Exception $e)
 		{
 			$msg = $e->getFile() . ' ' . $e->getLine();
-			$msg .= "\n\n" . $e->getCode() . '' . $e->getMessage();
+			$msg .= "\n\n" . $e->getCode() . ' ' . $e->getMessage();
 			$msg .= "\n\n" . implode("\n", $e->getTrace());
 
 			$mail = array(
@@ -1223,7 +1224,7 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				echo "<br />Method returned message: [{$class}::" . $job['function'] . '] ' . $status;
+				echo "<br />Method returned message: [$class::" . $job['function'] . '] ' . $status;
 			}
 
 			$msg = 'Method returned message: [{' . $class . '}::' . $job['function'] . '] ' . $status;
@@ -1257,7 +1258,16 @@ class cronScheduler
 	 */
 	public function validateToken()
 	{
-		$pwd = ($this->debug && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
+		$pwd = '';
+
+		if($this->debug && !empty($_SERVER['QUERY_STRING']))
+		{
+			$pwd = $_SERVER['QUERY_STRING'];
+		}
+		elseif(!empty($_SERVER['argv'][1]))
+		{
+			$pwd = trim($_SERVER['argv'][1]);
+		}
 
 		if(!empty($_GET['token']))
 		{
