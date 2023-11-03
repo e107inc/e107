@@ -44,6 +44,11 @@ if ((PHP_SAPI === "apache" || PHP_SAPI === "litespeed") && $_E107['debug'] === f
 
 require_once(realpath(__DIR__ . "/class2.php"));
 
+if(!empty($_E107['debug']))
+{
+	error_reporting(E_ALL);
+}
+
 require_once(e_HANDLER . "cron_class.php");
 
 $cron = new cronScheduler();

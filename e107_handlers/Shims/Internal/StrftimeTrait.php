@@ -69,7 +69,7 @@ trait StrftimeTrait
 			self::getSensibleLocale(),
 			\IntlDateFormatter::NONE,
 			\IntlDateFormatter::NONE,
-			null,
+			'GMT'.date('O'), // More accurate timezone. @see https://stackoverflow.com/questions/31707395/why-php-intldateformatter-returns-wrong-date-1-hour
 			null,
 			$format
 		);
