@@ -188,7 +188,7 @@
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
-		 * @return int number of affected rows, or false on error
+		 * @return int|false number of affected rows, or false on error
 		 * @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
 		 * <br />
 		 * Think to call it if you need to do an update while retrieving data.<br />
