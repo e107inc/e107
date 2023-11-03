@@ -46,7 +46,7 @@ $dbupdatep = array();			// Array of plugin upgrade actions (similar to $dbupdate
 $dbupdate = array();			// Array of core upgrade actions
 
 global $e107cache;
-
+$e107info = [];
 if(is_readable(e_ADMIN.'ver.php'))
 {
   include(e_ADMIN.'ver.php');
@@ -77,7 +77,7 @@ $dont_check_update = false;
 if (!$dont_check_update)
 {
 
-	if($dbupdateplugs = e107::getConfig('core')->get('plug_installed'))
+	if($dbupdateplugs = e107::getConfig()->get('plug_installed'))
 	{
 		// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
 		foreach ($dbupdateplugs as $path => $ver)
@@ -279,7 +279,7 @@ class e107Update
 					if(empty($data['hide_when_complete']))
 					{
 						$text2 .= "<td>".$data['title']."</td>";
-						$text2 .= "<td>".ADMIN_TRUE_ICON."</td>";
+						$text2 .= "<td>".defset('ADMIN_TRUE_ICON')."</td>";
 					}
 				}
 				else
@@ -293,9 +293,9 @@ class e107Update
 					
 					$this->updates ++;
 					
-					$text2 .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-{$func}&disabled=".$this->disabled)."</td>";
+					$text2 .= "<td>".$frm->admin_button('update_core['.$func.']', LAN_UPDATE, 'warning', '', "id=e-$func&disabled=".$this->disabled)."</td>";
 
-					if($data['master'] == true)
+					if($data['master'])
 					{
 						$this->disabled = 1;	
 					}
@@ -323,7 +323,7 @@ class e107Update
 		$text = "
 		<form method='post' action='".e_ADMIN."e107_update.php'>
 			<fieldset id='core-e107-update'>
-			<legend>{$caption}</legend>
+			<legend>$caption</legend>
 				<table class='table adminlist'>
 					<colgroup>
 						<col style='width: 60%' />
@@ -463,7 +463,7 @@ function update_core_prefs($type='')
 	$do_save = FALSE;
 	$should = get_default_prefs();
 
-	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
+	$just_check = !($type == 'do');		// TRUE if we're just seeing if an update is needed
    
 	foreach ($should as $k => $v)
 	{
@@ -479,9 +479,9 @@ function update_core_prefs($type='')
 	if ($do_save)
 	{
 		//save_prefs();
-		e107::getConfig('core')->save(false,true);
+		e107::getConfig()->save(false,true);
 		$admin_log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
-		$admin_log->flushMessages('UPDATE_03',E_LOG_INFORMATIVE);
+		$admin_log->flushMessages('UPDATE_03');
 		//e107::getLog()->add('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	}
 	return $just_check;
@@ -497,7 +497,7 @@ if (defined('TEST_UPDATE'))
 	function update_test_code($type='')
 	{
 		global $sql,$ns, $pref;
-		$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+		// TRUE if we're just seeing whether an update is needed
 		//--------------**************---------------
 		// Add your test code in here
 		//--------------**************---------------
@@ -505,14 +505,14 @@ if (defined('TEST_UPDATE'))
 		//--------------**************---------------
 		// End of test code
 		//--------------**************---------------
-		return $just_check;
+		return !($type == 'do');
 	}
 }  // End of test routine
 
 // generic database structure update.
 function update_core_database($type = '')
 {
-	$just_check = ($type == 'do') ? FALSE : TRUE;
+	$just_check = !($type == 'do');
 //	require_once(e_HANDLER."db_verify_class.php");
 //	$dbv = new db_verify;
 
@@ -633,7 +633,7 @@ function update_core_database($type = '')
 
 		$sql = e107::getDb();
 		$log = e107::getLog();
-		$just_check = ($type == 'do') ? false : true;
+		$just_check = !($type == 'do');
 		$pref = e107::getPref();
 
 
@@ -870,7 +870,7 @@ function update_706_to_800($type='')
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
 	$updateMessages = array();						// Used to log actions for the admin log - TODO: will go once all converted to new class
 
-	$just_check = ($type == 'do') ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+	$just_check = !(($type == 'do'));		// TRUE if we're just seeing whether an update is needed
 
 //	if (!$just_check)
 //	{
@@ -885,13 +885,6 @@ function update_706_to_800($type='')
 		$log->logMessage(LAN_UPDATE_14.$e107info['e107_version'], E_MESSAGE_NODISPLAY);
 	}
 
-
-
-
-
-
-
-	$statusTexts = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail', E_MESSAGE_INFO => 'Info');
 
 
 
@@ -1236,7 +1229,7 @@ function update_706_to_800($type='')
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			$status = $sql->gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$status = $sql->gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `$f` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 			$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, $status);				
 			// catch_error($sql);
 		  }
@@ -1406,7 +1399,7 @@ function update_706_to_800($type='')
 		e107::getConfig()->remove('forum_user_customtitle');
 
 		$log->logMessage(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);
-		$do_save = TRUE;
+		$do_save = true;
 	}
 	
 		
@@ -1921,7 +1914,7 @@ function update_70x_to_706($type='')
 
 	global $sql,$ns, $pref, $e107info, $admin_log, $emessage;
 
-	$just_check = $type == 'do' ? FALSE : TRUE;
+	$just_check = !($type == 'do');
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
 	{
 	  if ($just_check) return update_needed();
@@ -1997,7 +1990,7 @@ function update_70x_to_706($type='')
 
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
 	if ($just_check) return TRUE;
-	e107::getLog()->add('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version'],E_LOG_INFORMATIVE,'');	// Log result of actual update
+	e107::getLog()->add('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version']);	// Log result of actual update
 	return $just_check;		// TRUE if no updates needed, FALSE if updates needed and completed
 
 }
@@ -2102,12 +2095,12 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 
 /**	Check for database access errors
- *	@param object e_db $target - pointer to db object
+ *	@param object $target e_db $target - pointer to db object
  *	@return null
  */
-function catch_error(&$target)
+function catch_error($target)
 {
-	if (vartrue($target->getLastErrorText()) && E107_DEBUG_LEVEL != 0)
+	if (vartrue($target->getLastErrorText()) && defset('E107_DEBUG_LEVEL') != 0)
 	{
 		$tmp2 = debug_backtrace();
 		$tmp = $target->getLastErrorText();
@@ -2121,24 +2114,24 @@ function get_default_prefs()
 {
 	e107::getDebug()->log("Retrieving default prefs from xml file");
 	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
-	$pref = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
-	return $pref;
+
+	return e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
 }
 
 function convert_serialized($serializedData, $type='')
 {
 	$arrayData = unserialize($serializedData);
-	$data = e107::serialize($arrayData,FALSE);
-	return $data;
+
+	return e107::serialize($arrayData);
 }
 
 function theme_foot()
 {
 	global $pref;
 
-	if(!empty($_POST['update_core']['706_to_800']))
+	if(!empty($_POST['update_core']['706_to_800']) || !empty($_POST['update_core']['20x_to_latest']))
 	{
-		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade', 'version'=> defset('e_VERSION'));
+		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade', 'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
 		$base = base64_encode(http_build_query($data, null, '&'));
 		$url = "https://e107.org/e-install/".$base;
 		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
