@@ -66,7 +66,7 @@ trait StrftimeTrait
 		}
 
 
-		$timezone = 'GMT'.date('O');
+		$timezone = 'GMT'.date('P');
 		$formatter = new \IntlDateFormatter(
 			self::getSensibleLocale(),
 			\IntlDateFormatter::NONE,
@@ -75,6 +75,8 @@ trait StrftimeTrait
 			null,
 			$format
 		);
+
+	//	datefmt_set_timezone($formatter, $timezone);
 
 		return $formatter->format($datetime);
 	}
