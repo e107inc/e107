@@ -65,11 +65,13 @@ trait StrftimeTrait
 			return date_format($datetime, $format);
 		}
 
+
+		$timezone = 'GMT'.date('O');
 		$formatter = new \IntlDateFormatter(
 			self::getSensibleLocale(),
 			\IntlDateFormatter::NONE,
 			\IntlDateFormatter::NONE,
-			'GMT'.date('O'), // More accurate timezone. @see https://stackoverflow.com/questions/31707395/why-php-intldateformatter-returns-wrong-date-1-hour
+			$timezone, // More accurate timezone. @see https://stackoverflow.com/questions/31707395/why-php-intldateformatter-returns-wrong-date-1-hour
 			null,
 			$format
 		);

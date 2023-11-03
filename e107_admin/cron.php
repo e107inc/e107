@@ -68,7 +68,7 @@ class cron_admin_ui extends e_admin_ui
          	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'data'=>'str', 'width' => '35%',	'readonly' => 1),
          	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'data'=>'str', 'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1),
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
-		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
+		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2, 'readParms'=>['mask'=>'dd MM yyyy hh:ii:ss']),
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right')
 		);
