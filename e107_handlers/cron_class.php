@@ -1223,16 +1223,12 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				$this->cron->debug('e107: Cron could not find method: '.$job['function'], E_ERROR);
+				$this->cron->debug('Cron could not find method: '.$job['function'], E_ERROR);
 			}
 
 			return $status;
 		}
 
-		if($this->debug)
-		{
-			$this->cron->debug('e107: Cron could not find method: '.$class . "::" . $job['function'].'()', E_NOTICE);
-		}
 
 		// Exception handling.
 		$method = $job['function'];
