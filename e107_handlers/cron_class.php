@@ -157,7 +157,13 @@ class _system_cron
 	function sendEmail() // Test Email.
 	{
 		global $pref, $_E107;
-		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
+
+		if($_E107['debug'])
+		{
+			echo "sendEmail() executed";
+			error_log('e107: Cron running _system_cron::sendEmail(); ', E_USER_NOTICE);
+		}
+
 		
 	  //  require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
@@ -205,7 +211,10 @@ class _system_cron
 					'body'			=> $message
 				);
 
-		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+		if(!e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml))
+		{
+			error_log('e107: Cron _system_cron::sendEmail() failed to send email.', E_ERROR);
+		}
 
 	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
 	}
@@ -397,6 +406,7 @@ class CronParser
  	var $bits = Array(); //exploded String like 0 1 * * *
  	var $now = Array();	//Array of cron-style entries for time()
  	var $lastRan; 		//Timestamp of last ran time.
+ 	private $lastDue;
  	var $taken;
  	var $debug;
 	var $year;
@@ -416,6 +426,16 @@ class CronParser
 		return explode(",", eShims::strftime("%M,%H,%d,%m,%w,%Y", $this->lastRan)); //Get the values for now in a format we can use
 	}
 
+	public function getLastDue()
+	{
+		return $this->lastDue;
+	}
+
+	public function getNow()
+	{
+		return $this->now;
+	}
+
 	/**
 	 * @return mixed
 	 */
@@ -432,26 +452,25 @@ class CronParser
  		return $this->debug;
 	}
 
+	function setDebug($bool)
+	{
+		$this->debug = (bool) $bool;
+	}
+
 	/**
 	 * @param $str
 	 * @return void
 	 */
 	function debug($str)
 	{
-		if (is_array($str))
+		if(!$this->debug)
 		{
-			$this->debug .= "\nArray: ";
-			foreach($str as $k=>$v)
-			{
-				$this->debug .= "$k=>$v, ";
-			}
+			return;
+		}
 
-		}
-		else
-		{
-			$this->debug .= "\n$str";
-		}
-		//echo nl2br($this->debug);
+		$text = (is_array($str) ? print_r($str,true) : $str);
+		error_log('e107: Cron '.$text);
+		echo $text."\n";
 	}
 
 	/**
@@ -513,9 +532,10 @@ class CronParser
 	 */
 	function calcLastRan($string)
 	{
+		$this->debug(__METHOD__.' ('.__LINE__.'): '.date_default_timezone_get());
 
  		$tstart = microtime(true);
-		$this->debug = "";
+
 		$this->lastRan = 0;
 		$this->year = NULL;
 		$this->month = NULL;
@@ -526,20 +546,20 @@ class CronParser
 		$this->minutes_arr = array();
 		$this->months_arr = array();
 
-		$string = preg_replace('/[\s]{2,}/', ' ', $string);
+		$string = preg_replace('/\s{2,}/', ' ', $string);
 
 		if (preg_match('/[^-,* \\d]/', $string) !== 0)
 		{
-			$this->debug("Cron String contains invalid character");
+			$this->debug("e107: Cron string contains invalid character: ".$string);
 			return false;
 		}
 
-		$this->debug("<b>Working on cron schedule: $string</b>");
+		$this->debug("\n----- Working on cron schedule: $string ----");
  		$this->bits = @explode(" ", $string);
 
 		if (count($this->bits) != 5)
 		{
-			$this->debug("Cron string is invalid. Too many or too little sections after explode");
+			$this->debug("e107: Cron string is invalid. Too many or too little sections after explode.".print_r($this->bits,true));
 			return false;
 		}
 
@@ -656,8 +676,12 @@ class CronParser
 		}
 		else
 		{
-			$this->debug("LAST DUE: " . $this->hour . ":" . $this->minute . " on " . $this->day . "/" . $this->month . "/" . $this->year);
+			$lastDue = $this->year.'-'.(strlen($this->month) === 1 ? '0'.$this->month : $this->month).'-'.(strlen($this->day) === 1 ? '0'.$this->day : $this->day).'T'.(strlen($this->hour) === 1 ? '0'.$this->hour : $this->hour) . ":" . (strlen($this->minute) === 1 ? '0'.$this->minute : $this->minute);
+			$this->debug(__METHOD__.' ('.__LINE__.'): '.date_default_timezone_get());
+			$this->debug(__METHOD__.' ('.__LINE__.'): Setting lastDue to ' . $lastDue);
+			$this->lastDue = $lastDue;
 			$this->lastRan = mktime($this->hour, $this->minute, 0, $this->month, $this->day, $this->year);
+			$this->debug(__METHOD__.' ('.__LINE__.'): Setting lastRan to '.date('c', $this->lastRan));
 			return true;
 		}
 	}
@@ -914,7 +938,7 @@ class CronParser
 			}
 		}
 		$this->debug("Days array matching weekdays for $year-$month");
-		$this->debug($days);
+		//$this->debug($days);
 		return $days;
 	}
 
@@ -959,8 +983,8 @@ class CronParser
 				$hours = $this->_sanitize($hours, 0, 23);
 			}
 
-			$this->debug("Hour array");
-			$this->debug($hours);
+		//	$this->debug("Hour array");
+		//	$this->debug($hours);
 			$this->hours_arr = $hours;
 		}
 		return $this->hours_arr;
@@ -987,8 +1011,8 @@ class CronParser
 				$minutes = $this->expand_ranges($this->bits[0]);
 				$minutes = $this->_sanitize($minutes, 0, 59);
 			}
-			$this->debug("Minutes array");
-			$this->debug($minutes);
+		//	$this->debug("Minutes array");
+		//	$this->debug($minutes);
 			$this->minutes_arr = $minutes;
 		}
 		return $this->minutes_arr;
@@ -1014,8 +1038,8 @@ class CronParser
 				$months = $this->expand_ranges($this->bits[3]);
 				$months = $this->_sanitize($months, 1, 12);
 			}
-			$this->debug("Months array");
-			$this->debug($months);
+		//	$this->debug("Months array");
+		//	$this->debug($months);
 			$this->months_arr = $months;
 		}
 		return $this->months_arr;
@@ -1067,6 +1091,7 @@ class cronScheduler
 
 		$this->cron = new CronParser();
 		$this->debug = $_E107['debug'];
+		$this->cron->setDebug($_E107['debug']);
 		$this->pref = e107::getPref();
 	}
 
@@ -1083,24 +1108,23 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				error_log('e107: Invalid token used for cron class');
+				$this->cron->debug('e107: Invalid token used for cron class');
 			}
 			return false;
 		}
 
 		if(!@file_put_contents(e_CACHE . 'cronLastLoad.php', time()))
 		{
-			error_log('e107: Unable to write to: '.e_CACHE . 'cronLastLoad.php. Permissions issue?');
+			$this->cron->debug('e107: Unable to write to: '.e_CACHE . 'cronLastLoad.php. Permissions issue?');
 		}
 
 
 		// Get active cron jobs.
 		$cron_jobs = $this->getCronJobs(true);
 
-		if($this->debug && $_SERVER['QUERY_STRING'])
+		if($this->debug)
 		{
-			echo "<h1>Cron Lists</h1>";
-			print_a($cron_jobs);
+			$this->cron->debug('e107: Cron Jobs Found: '.print_r($cron_jobs,true));
 		}
 
 		foreach($cron_jobs as $job)
@@ -1129,8 +1153,16 @@ class cronScheduler
 	{
 		$status = false;
 
+		$this->cron->debug(__METHOD__.' ('.__LINE__.'): '.date_default_timezone_get());
+		$this->cron->debug(__METHOD__.' ('.__LINE__.'): Current time: '.date('c'));
+
 		if(empty($job['active']))
 		{
+			if($this->debug)
+			{
+				error_log('e107: Cron job not active: '.print_r($job,true), E_NOTICE);
+			}
+
 			return false;
 		}
 
@@ -1138,24 +1170,33 @@ class cronScheduler
 		$this->cron->calcLastRan($job['tab']);
 		$due = $this->cron->getLastRanUnix();
 
-		if($this->debug)
-		{
-			echo "<br />Cron: " . $job['function'];
-		}
+		$this->cron->debug(__METHOD__.' ('.__LINE__.'): '.date_default_timezone_get());
+		$triggerTime = (time() - 45);
 
-		if($due <= (time() - 45))
+
+		$this->cron->debug(__METHOD__.' ('.__LINE__.'): Current Time (-45): '.date('c',$triggerTime));
+
+		if($due <= $triggerTime)
 		{
+			if($this->debug)
+			{
+				$job['_lastRun'] = date('c',$due);
+				$job['_triggerTime'] = date('c',$triggerTime);
+				$this->cron->debug(__METHOD__.' ('.__LINE__.'): NOT running cron method because: _lastRun < _triggerTime ');
+				$this->cron->debug($job);
+			}
 			return false;
 		}
 
 		if($job['path'] != '_system' && !is_readable(e_PLUGIN . $job['path'] . "/e_cron.php"))
 		{
+			$this->cron->debug('e107: Cron file not readable: '.e_PLUGIN . $job['path'] . "/e_cron.php", E_ERROR);
 			return false;
 		}
 
 		if($this->debug)
 		{
-			echo "<br />Running Now...<br />path: " . $job['path'];
+			$this->cron->debug('e107: Cron is running: '.print_r($job,true), E_NOTICE);
 		}
 
 		// This is correct.
@@ -1170,7 +1211,7 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				echo "<br />Couldn't find class: " . $class;
+				$this->cron->debug('e107: Cron could not find class: '.$class, E_ERROR);
 			}
 
 			return $status;
@@ -1182,7 +1223,7 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				echo "<br />Couldn't find method: " . $job['function'];
+				$this->cron->debug('e107: Cron could not find method: '.$job['function'], E_ERROR);
 			}
 
 			return $status;
@@ -1190,7 +1231,7 @@ class cronScheduler
 
 		if($this->debug)
 		{
-			echo "<br />Method Found: " . $class . "::" . $job['function'] . "()";
+			$this->cron->debug('e107: Cron could not find method: '.$class . "::" . $job['function'].'()', E_NOTICE);
 		}
 
 		// Exception handling.
@@ -1215,6 +1256,8 @@ class cronScheduler
 				'subject'   => 'e107 - Cron Schedule Exception',
 			);
 
+			error_log('e107: Cron Exception occurred: '.$msg, E_ERROR);
+
 			$this->sendMail($mail);
 		}
 
@@ -1222,12 +1265,10 @@ class cronScheduler
 		// message (send email, logs).
 		if($status && true !== $status)
 		{
-			if($this->debug)
-			{
-				echo "<br />Method returned message: [$class::" . $job['function'] . '] ' . $status;
-			}
 
 			$msg = 'Method returned message: [{' . $class . '}::' . $job['function'] . '] ' . $status;
+
+			error_log('e107: Cron Method returned message: '.$msg, E_NOTICE);
 
 			$mail = array(
 				'to_mail'   => $this->pref['siteadminemail'],

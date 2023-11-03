@@ -167,7 +167,7 @@ class e_formTest extends \Codeception\Test\Unit
         "id": ""
     }
 ]',
-		'datestamp_001'     => 1454367600,
+		'datestamp_001'     => 1699048024,
 		'date_001'          => '2018-08-23',
 		'userclass_001'     => 0,
 		'userclasses_001'   => '0,1',
@@ -426,20 +426,21 @@ class e_formTest extends \Codeception\Test\Unit
 
 	public function testDatepicker()
 	{
-
+		$prevTimeZone = date_default_timezone_get();
 		date_default_timezone_set('UTC');
-		$time = strtotime('January 1st, 2018 1am');
+		$time = strtotime('January 1st, 2023 1am');
 		$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
-		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='January, 01, 2018 01:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1514768400' />";
+		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='January, 01, 2023 01:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
 
 		$this->assertEquals($expected, $actual);
 
 		// test timezone change...
 		date_default_timezone_set('America/Los_Angeles');
 		$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
-		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2017 17:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1514768400' />";
+		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2022 18:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
 
 		$this->assertEquals($expected, $actual);
+		date_default_timezone_set($prevTimeZone);
 	}
 
 			public function testUserlist()
@@ -1143,7 +1144,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			'file_001'          => '<a href="'.SITEURL.'e107_media/000000test/files/test.zip" title="Direct link to {e_MEDIA_FILE}test.zip" rel="external">{e_MEDIA_FILE}test.zip</a>',
 			'files_001'         => '<ol><li>{e_MEDIA_FILE}test.zip</li></ol>',
-			'datestamp_001'     => '01 Feb 2016 : 15:00',
+			'datestamp_001'     => '03 Nov 2023 : 14:47',
 			'date_001'          => '2018-08-23',
 			'userclass_001'     => 'Everyone (public)',
 			'userclasses_001'   => 'Everyone (public)<br />PRIVATEMENU',
@@ -1261,7 +1262,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			'file_001'          => "<input type='hidden' name='file_001' id='file-001' value='{e_MEDIA_FILE}test.zip' style='width:400px' /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=file-001&amp;iframe=1'><span id='file-001_prev' class='btn btn-default btn-secondary btn-small'>{e_MEDIA_FILE}test.zip</span></a>",
 			'files_001'         => "<ol><li><input type='hidden' name='files_001[0][path]' id='files-001-0-path' value='{e_MEDIA_FILE}test.zip'  /><input type='hidden' name='files_001[0][name]' id='files-001-0-name' value='test.zip'  /><input type='hidden' name='files_001[0][id]' id='files-001-0-id' value='171'  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-0&amp;iframe=1'><span id='files-001-0_prev' class='btn btn-default btn-secondary btn-small'>{e_MEDIA_FILE}test.zip</span></a></li><li><input type='hidden' name='files_001[1][path]' id='files-001-1-path' value=''  /><input type='hidden' name='files_001[1][name]' id='files-001-1-name' value=''  /><input type='hidden' name='files_001[1][id]' id='files-001-1-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-1&amp;iframe=1'><span id='files-001-1_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[2][path]' id='files-001-2-path' value=''  /><input type='hidden' name='files_001[2][name]' id='files-001-2-name' value=''  /><input type='hidden' name='files_001[2][id]' id='files-001-2-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-2&amp;iframe=1'><span id='files-001-2_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[3][path]' id='files-001-3-path' value=''  /><input type='hidden' name='files_001[3][name]' id='files-001-3-name' value=''  /><input type='hidden' name='files_001[3][id]' id='files-001-3-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-3&amp;iframe=1'><span id='files-001-3_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li><li><input type='hidden' name='files_001[4][path]' id='files-001-4-path' value=''  /><input type='hidden' name='files_001[4][name]' id='files-001-4-name' value=''  /><input type='hidden' name='files_001[4][id]' id='files-001-4-id' value=''  /><a title='Media Manager : _common_file' class='e-modal' data-modal-submit='true' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='/e107_admin/image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=files-001-4&amp;iframe=1'><span id='files-001-4_prev' class='btn btn-default btn-secondary btn-small'>Choose a file</span></a></li></ol>",
-			'datestamp_001'     => "<input class='tbox e-date input-xlarge form-control' type='text' size='40' id='e-datepicker-datestamp-001' value='Monday, 01 Feb, 2016' data-date-unix ='true' data-date-format='DD, dd M, yyyy' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='datestamp_001' id='datestamp-001' value='1454367600' />",
+			'datestamp_001'     => "<input class='tbox e-date input-xlarge form-control' type='text' size='40' id='e-datepicker-datestamp-001' value='Friday, 03 Nov, 2023' data-date-unix ='true' data-date-format='DD, dd M, yyyy' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='datestamp_001' id='datestamp-001' value='1699048024' />",
 			'date_001'          => "<input class='tbox e-date input-xlarge form-control' type='text' size='40' id='e-datepicker-date-001' value='Thursday, 23 Aug, 2018' data-date-unix ='true' data-date-format='DD, dd M, yyyy' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_001' id='date-001' value='1535007600' />",
 			'userclass_001'     => "<select name='userclass_001' id='userclass-001' class='tbox select form-control' tabindex='18'><option value='0' selected='selected'>Everyone (public)</option><option value='254'>&nbsp;&nbsp;Admin</option><option value='249'>&nbsp;&nbsp;Admins and Mods</option><option value='2'>&nbsp;&nbsp;CONTACT PEOPLE</option><option value='248'>&nbsp;&nbsp;Forum Moderators</option><option value='252'>&nbsp;&nbsp;Guests</option><option value='250'>&nbsp;&nbsp;Main Admin</option><option value='253'>&nbsp;&nbsp;Members</option><option value='1'>&nbsp;&nbsp;PRIVATEMENU</option><option value='255'>No One (inactive)</option><option value='3'>&nbsp;&nbsp;NEWSLETTER</option><optgroup label='Everyone but..'><option value='-254'>&nbsp;&nbsp;Not Admin</option><option value='-249'>&nbsp;&nbsp;Not Admins and Mods</option><option value='-2'>&nbsp;&nbsp;Not CONTACT PEOPLE</option><option value='-248'>&nbsp;&nbsp;Not Forum Moderators</option><option value='-252'>&nbsp;&nbsp;Not Guests</option><option value='-250'>&nbsp;&nbsp;Not Main Admin</option><option value='-253'>&nbsp;&nbsp;Not Members</option><option value='-1'>&nbsp;&nbsp;Not PRIVATEMENU</option><option value='-3'>&nbsp;&nbsp;Not NEWSLETTER</option></optgroup></select>",
 			'userclasses_001'   => "<select name='userclasses_001[]' id='userclasses-001' class='tbox select form-control' tabindex='19' multiple='multiple'><option value='0'>Everyone (public)</option><option value='254'>&nbsp;&nbsp;Admin</option><option value='249'>&nbsp;&nbsp;Admins and Mods</option><option value='2'>&nbsp;&nbsp;CONTACT PEOPLE</option><option value='248'>&nbsp;&nbsp;Forum Moderators</option><option value='252'>&nbsp;&nbsp;Guests</option><option value='250'>&nbsp;&nbsp;Main Admin</option><option value='253'>&nbsp;&nbsp;Members</option><option value='1' selected='selected'>&nbsp;&nbsp;PRIVATEMENU</option><option value='255'>No One (inactive)</option><option value='3'>&nbsp;&nbsp;NEWSLETTER</option><optgroup label='Everyone but..'><option value='-254'>&nbsp;&nbsp;Not Admin</option><option value='-249'>&nbsp;&nbsp;Not Admins and Mods</option><option value='-2'>&nbsp;&nbsp;Not CONTACT PEOPLE</option><option value='-248'>&nbsp;&nbsp;Not Forum Moderators</option><option value='-252'>&nbsp;&nbsp;Not Guests</option><option value='-250'>&nbsp;&nbsp;Not Main Admin</option><option value='-253'>&nbsp;&nbsp;Not Members</option><option value='-1'>&nbsp;&nbsp;Not PRIVATEMENU</option><option value='-3'>&nbsp;&nbsp;Not NEWSLETTER</option></optgroup></select>",
