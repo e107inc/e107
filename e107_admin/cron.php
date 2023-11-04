@@ -68,7 +68,7 @@ class cron_admin_ui extends e_admin_ui
          	'cron_description'	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text',			'data'=>'str', 'width' => '35%',	'readonly' => 1),
          	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'data'=>'str', 'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1),
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
-		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2, 'readParms'=>['mask'=>'dd MM yyyy hh:ii:ss']),
+		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2, 'readParms'=>['mask'=>'dd M yyyy hh:ii:ss']),
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right')
 		);
@@ -371,7 +371,7 @@ class cron_admin_ui extends e_admin_ui
 			$ago = (time() - $lastload);
 	
 			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
-			$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
+			$status = ($active) ? "<span class='label label-success'>".LAN_ENABLED."</span>" : "<span class='label label-danger'>".LAN_DISABLED."</span>"; // "Enabled" : "Offline";
 	
 			$mins = floor($ago / 60);
 			$secs = $ago % 60;
@@ -381,12 +381,12 @@ class cron_admin_ui extends e_admin_ui
 	
 			$lastRun = ($mins) ? str_replace($srch,$repl,LAN_CRON_9) : str_replace($srch,$repl,LAN_CRON_10); // FIX: check syntax
 
-			$lastRefresh = ($ago < 10000) ? $lastRun : LAN_NEVER;
+			$lastRefresh = ($ago < 10000) ? "<p><span class='pull-right;'><b>$lastRun</b><small>(".date('g:i A',$lastload).")</small></span>" : "<span class='pull-right'><b>".LAN_NEVER."</b></span>";
 	
-			$mes->addInfo(LAN_STATUS.": <b>".$status."</b>");
-			$mes->addInfo(LAN_CRON_11.": <b>".$this->activeCrons."</b>");
-			$mes->addInfo(LAN_CRON_12.": ".$lastRefresh."<br /><br />");
-			
+			$mes->addInfo('<p>'.LAN_STATUS.":<span class='pull-right'><b>".$status."</b></span></p>");
+			$mes->addInfo('<p>'.LAN_CRON_11.":<span class='pull-right'><spab class='badge'>".$this->activeCrons."</span></span></p><br />");
+			$mes->addInfo(LAN_CRON_12.":".$lastRefresh."<br /><br />");
+
 
 			// extensions of exe, com, bat and cmd.
 			
@@ -403,10 +403,10 @@ class cron_admin_ui extends e_admin_ui
 			}
 			elseif (!$active) // show instructions
 			{
-				$setpwd_message = $frm->open("generate")."<small>"
-				.LAN_CRON_15.":</small><br /><pre>".e_ROOT."cron.php token=".$pref['e_cron_pwd'].' >/dev/null 2>&1';
+				$setpwd_message = $frm->open("generate").LAN_CRON_15.":
+				<br /><pre style='user-select:all; cursor:pointer; padding-top:20px; padding-bottom:25px; max-width:326px; overflow-x:scroll'>".e_ROOT."cron.php token=".$pref['e_cron_pwd'].' >/dev/null 2>&1';
 				
-				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
+				$setpwd_message .= "</pre>". LAN_CRON_16;
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
 					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>".LAN_CRON_60."</a></div>";

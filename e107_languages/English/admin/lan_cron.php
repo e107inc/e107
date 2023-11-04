@@ -92,7 +92,7 @@ define("LAN_CRON_55", "Database Backup Failed");
 define("LAN_CRON_56", "Database Backup Complete");
 
 define("LAN_CRON_60", "Go to cPanel");
-define("LAN_CRON_61", "Generate new cron password");
+define("LAN_CRON_61", "Generate new cron token");
 define("LAN_CRON_62", "Executing config function [b][x][/b]");
 define("LAN_CRON_63", "Config function [b][x][/b] NOT found.");
 define("LAN_CRON_64", "An administrator can automate tasks using e107 Schedule Tasks. [br]
