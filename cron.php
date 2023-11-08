@@ -34,10 +34,12 @@ $_E107['no_menus'] = true;
 $_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 $_E107['no_maintenance'] = true;
 
-if ((PHP_SAPI === "apache" || PHP_SAPI === "litespeed") && $_E107['debug'] === false)
+if ((PHP_SAPI === "apache" || PHP_SAPI === "litespeed"))
 {
-	error_log("e107: cron.php was blocked from executing with PHP_SAPI: ".php_sapi_name(), E_USER_NOTICE);
-	header('HTTP/1.0 403 Forbidden');
+	if($_E107['debug'])
+	{
+		error_log("e107: cron.php was blocked from executing with PHP_SAPI: ".php_sapi_name());
+	}
 	echo "<h1>Access Denied</h1>";
     exit;
 }
