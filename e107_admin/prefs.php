@@ -823,12 +823,14 @@ $text .= "
 					</tr>";
 
 $timeZones = systemTimeZones();
+$timez = new DateTimeZone($pref['timezone']);
+$datetime = new DateTime('now', $timez); // Get the current date and time
 
 $text .= "
 					<tr>
 						<td><label for='timezone'>".PRFLAN_56."</label></td>
-						<td>
-							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'], 'UTC'),'size=xlarge')."
+						<td class='form-inline'>
+							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'], 'UTC'),'size=xlarge')." <span style='padding-left:10px'>".$datetime->format('Y-m-d H:i:s')."</span>
 						</td>
 					</tr>
 				</tbody>
