@@ -69,7 +69,7 @@ class cron_admin_ui extends e_admin_ui
          	'cron_function'		=> array('title'=> LAN_CRON_2,		'type' => 'text',			'data'=>'str', 'width' => 'auto', 	'thclass' => 'left first', 'readonly' => 1),
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2, 'readParms'=>['mask'=>'dd M yyyy hh:ii:ss']),
-     		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+     		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'inline'=>true, 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right')
 		);
 		
@@ -412,7 +412,7 @@ class cron_admin_ui extends e_admin_ui
 					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>".LAN_CRON_60."</a></div>";
 					
 				}
-				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61 ,array('class'=>'btn btn-small'));
+				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61 ,array('class'=>'btn btn-sm'));
 				$setpwd_message .= $frm->close();	
 				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
