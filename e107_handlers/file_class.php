@@ -543,44 +543,51 @@ class e_file
 		 *     Grab a remote file and save it in the /temp directory. requires CURL
 		 *
 		 * @param string $remote_url
-		 * @param        $local_file string filename to save as
+		 * @param string $local_file string filename to save as
 		 * @param string $type       media, temp, or import
 		 * @return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 		 */
-		function getRemoteFile($remote_url, $local_file, $type = 'temp')
+		function getRemoteFile($remote_url, $local_file, $type = 'temp', $timeout = 40)
 		{
 
 			// check for cURL
 			if(!function_exists('curl_init'))
 			{
+				$msg = 'e_file::getRemoteFile() requires cURL to be installed.';
 				if(E107_DEBUG_LEVEL > 0)
 				{
-					e107::getLog()->addDebug('getRemoteFile() requires cURL to be installed in file_class.php');
+					e107::getLog()->addDebug($msg);
 				}
 
+				error_log($msg);
 				return false;            // May not be installed
 			}
 
-			$path = ($type == 'media') ? e_MEDIA : e_TEMP;
+			$path = ($type === 'media') ? e_MEDIA : e_TEMP;
 
-			if($type == 'import')
+			if($type === 'import')
 			{
 				$path = e_IMPORT;
 			}
 
-			$fp = fopen($path . $local_file, 'w'); // media-directory is the root.
+			$fp = fopen($path . $local_file, 'w'); // media-directory or temp directory is the root.
 
 			$cp = $this->initCurl($remote_url);
 			curl_setopt($cp, CURLOPT_FILE, $fp);
-			curl_setopt($cp, CURLOPT_TIMEOUT, 40);//FIXME Make Pref - avoids get file timeout on slow connections
+			curl_setopt($cp, CURLOPT_TIMEOUT, $timeout);
+			set_time_limit($timeout);
 
 			$buffer = curl_exec($cp);
-			//FIXME addDebug curl_error output - here see #1936
+
+			if(curl_errno($cp)) // Fixes curl_error output - here see #1936
+			{
+			    error_log('cURL error: '.curl_error($cp));
+			}
 
 			curl_close($cp);
 			fclose($fp);
 
-			return ($buffer) ? true : false;
+			return (bool) $buffer;
 		}
 
 		/**
