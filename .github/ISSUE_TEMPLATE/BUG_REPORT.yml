@@ -1,0 +1,60 @@
+name: Bug Report
+description: Create a report for a problem that shouldn't be happening
+title: "[Bug]: "
+labels: ["type: bug"]
+body:
+  - type: dropdown
+    id: e107version
+    attributes:
+      label: What e107 version are you using?
+      multiple: true
+      options:
+        - v2.3.2
+        - Latest Github version (just updated)
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what you see. Feel free to include screenshots!  
+    validations:
+      required: true
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: How to reproduce
+      description: Steps to reproduce the behavior. 
+      placeholder: "1. Go to '...', 2. Click on '....', 3. Scroll down to '....', 4. See error"
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead? 
+      placeholder: I expected to ...
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browser(s) are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome / Brave
+        - Safari
+        - Microsoft Edge
+        - Other (please specify in bug description)
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP Version
+      description: Which PHP version do you use? Can be found in Admin Area > About > PHP Info (/e107_admin/phpinfo.php)
+      placeholder: eg. PHP 8.1
+    validations:
+      required: true
