@@ -20,6 +20,7 @@ jobs:
           - image: php:7.0
           - image: php:7.4
           - image: php:8.1
+          - image: php:8.2
         db:
           - image: mysql:5.5
           - image: bitnami/mysql:8.0
@@ -133,6 +134,11 @@ jobs:
     - name: Code Climate report before build
       run: ./e107_tests/vendor/bin/cc-test-reporter before-build
       continue-on-error: true
+
+    - name: Build Codeception
+      run: php ./vendor/bin/codecept build
+      working-directory: ./e107_tests/
+      continue-on-error: false
 
     - name: Run unit tests
       run: |
