@@ -12,6 +12,7 @@
     <testsuites>
         <testsuite name="e107 v2.x Test Suite">
             <directory>tests</directory>
+             <directory>../e107_plugins</directory>
         </testsuite>
     </testsuites>
     <php>
