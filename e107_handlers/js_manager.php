@@ -1863,7 +1863,7 @@ class e_jsmanager
 	            $parts = array_values($parts);
 	            $i -= 2;
 	        }
-	        elseif ($parts[$i] === ".")   // resolve .
+	        elseif (isset($parts[$i]) && ($parts[$i] === "."))   // resolve .
 	        {
 	            unset($parts[$i]);
 	            $parts = array_values($parts);
