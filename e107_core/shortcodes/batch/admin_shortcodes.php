@@ -1782,9 +1782,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 		$data = e107::unserialize($cached);
-		$message = e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']);
 
-		eHelper::addSystemNotification('sc_admin_update', "<a class='text-info' href='".$data['url']."' target='_blank'>$message</a>");
+		if(!empty($data['version']) && !empty($data['url']))
+		{
+			$message = e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']);
+			eHelper::addSystemNotification('sc_admin_update', "<a class='text-info' href='".$data['url']."' target='_blank'>$message</a>");
+		}
 
 		if($data === false || isset($data['status']))
 		{
