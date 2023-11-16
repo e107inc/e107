@@ -1699,7 +1699,55 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		return $text;
 	}
 
+	public function sc_admin_notifications()
+	{
+	//	$content = @file_get_contents(e_SYSTEM."adminNotifications.json");
+		if(!$array = eHelper::getSystemNotification())
+		{
+			return '';
+		}
 
+
+		/*return '<ul class="admin-notifications nav navbar-nav navbar-right">
+        <li class="dropdown">
+             <a class="dropdown-toggle " title="" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
+             <i class="fas fa-bell fa-fw"></i></a>
+            </li>
+            </ul>';*/
+
+		$count = count($array);
+		$lanNotify = defset('LAN_SYSTEM_NOTIFICATIONS_X', '[x] System Notifications');
+		$lan = e107::getParser()->lanVars($lanNotify, $count);
+
+
+		$text = '<ul id="admin-notifications" class=" nav navbar-nav navbar-right">
+        <li class="dropdown">
+            <a class="dropdown-toggle " title="'.$lan.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
+                <i class="fas fa-beat fa-bell fa-fw text-warning"></i>';
+
+		$text .= ($count > 1) ? '<sup class="text-warning">'.$count.'</sup>' : '';
+		$text .= '</a>
+            <ul class="dropdown-menu" role="menu">';
+
+            foreach($array as $row)
+            {
+				$text .= '<li class="dropdown-item-text">'.$row['message'].'</li>';
+            }
+
+             $text .= '  
+                </ul>
+        </li>
+        </ul>';
+
+		return $text;
+
+	}
+
+
+	/**
+	 * Checks for a new version of e107 that could be available for download.
+	 * @return string|null
+	 */
 	public function sc_admin_update()
 	{
 		if (!ADMIN) { return null; }
@@ -1708,6 +1756,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if(empty($pref['check_updates']))
 		{
+			eHelper::clearSystemNotification('sc_admin_update');
 			return null;
 		}
 
@@ -1733,11 +1782,16 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 		$data = e107::unserialize($cached);
+		$message = e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']);
+
+		eHelper::addSystemNotification('sc_admin_update', "<a class='text-info' href='".$data['url']."' target='_blank'>$message</a>");
 
 		if($data === false || isset($data['status']))
 		{
+			eHelper::clearSystemNotification('sc_admin_update');
 			return null;
 		}
+
 
 
 		// Don't check for updates if running locally (comment out the next line to allow check - but
@@ -1748,13 +1802,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 
+
+
 		return '<ul class="core-update-available nav navbar-nav navbar-left">
         <li class="dropdown open">
             <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
                 <i class="fa fa-cloud-download  text-success"></i>
             </a>
             <ul class="dropdown-menu" role="menu">
-                <li class="nav-header navbar-header dropdown-header">'.e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']).'</li>
+                <li class="nav-header navbar-header dropdown-header">'.$message.'</li>
                     <li><a href="'.$data['url'].'" rel="external"><i class="fa fa-download" ></i> '.LAN_DOWNLOAD.'</a></li>
                     <li><a href="'.$data['infourl'].'" rel="external"><i class="fa fa-file-text-o "></i> Release Notes</a></li>
                 </ul>
@@ -2085,11 +2141,24 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			}
 
 		//	$template = $$tmpl;
+			if(e107::getSession()->get('core-update-status')===true)
+			{
+				$lan = defset('LAN_DATABASE_UPDATE', "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
+				$srch = array('[',']');
+				$repl = [
+					"<a class='text-info' href='".e_ADMIN_ABS."e107_update.php'>",
+					"</a>"
+				];
+				eHelper::addSystemNotification('core_update', str_replace($srch, $repl, $lan));
+			}
+			else
+			{
+				eHelper::clearSystemNotification('core_update');
+			}
+		//	$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
 
-
-			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
-
-			return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-bs-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
+			return;
+		//	return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-bs-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 

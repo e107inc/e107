@@ -1475,7 +1475,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .text-success,.text-success:hover{color:#51a351}
 .text-danger,.text-danger:hover{color:#F86965}
 .text-warning,.text-warning:hover{color:#f89406}
-.text-info,.text-info:hover{color:#5bc0de}
+.text-info,.text-info:hover{color:#8BC0ED !important}
 .table a{text-decoration:underline}
 .table .danger,.table .info,.table .success,.table .warning{color:#fff}
 .table-bordered tbody tr.danger td,.table-bordered tbody tr.danger:hover td,.table-bordered tbody tr.success td,.table-bordered tbody tr.success:hover td,.table-bordered tbody tr.warning td,.table-bordered tbody tr.warning:hover td{border-color:#0a0a0a}

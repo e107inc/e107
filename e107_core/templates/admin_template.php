@@ -206,6 +206,7 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
+				{ADMIN_NOTIFICATIONS}
 				{ADMIN_UPDATE}
 			</div>
 		</div>

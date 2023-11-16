@@ -383,7 +383,7 @@ define("LAN_NOPERMISSION", "no permissions");
 define("LAN_NO_ADMIN_PERMISSION", "You do not have administrator permissions for [x]");
 
 define("LAN_CREDITS","Credits");
-define("LAN_NEWVERSION","e107 v[x] Available");
+define("LAN_NEWVERSION","e107 v[x] is available for download.");
 
 define("LAN_CHECKALL", "Check All");
 define("LAN_UNCHECKALL", "Uncheck All");
@@ -598,3 +598,7 @@ define("LAN_UI_FILTER_THIS_YEAR", "This Year");
 define("LAN_SEARCH_ENGINES_X_LIMIT", "Read by search engines. Maximum [x] characters.");
 define("LAN_META_TITLE", "Meta Title");
 define("LAN_META_DESCRIPTION", "Meta Description");
+
+define("LAN_SYSTEM_NOTIFICATIONS_X", "[x] System Notification(s)");
+define("LAN_PHP_OUTDATED", "Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.");
+define("LAN_DATABASE_UPDATE", "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");

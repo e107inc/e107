@@ -470,6 +470,14 @@ img.image-selector							{ margin-bottom:0; }
 .dropdown-menu i,
 .dropdown-menu img 							{ padding: 0 0; margin-right: 10px; }
 
+.dropdown-menu li.dropdown-item-text { padding:15px}
+.dropdown-menu li.dropdown-item-text:hover { background: rgba(255,255,255,0.05) }
+.dropdown-menu li.dropdown-item-text { border-bottom:1px solid  rgba(255,255,255,0.3)}
+.dropdown-menu > li.dropdown-item-text > a { display: inline !important; padding:0; white-space:normal }
+.dropdown-menu > li.dropdown-item-text > a:focus,
+.dropdown-menu > li.dropdown-item-text > a:hover { background: none; color: white !important }
+#admin-notifications ul.dropdown-menu { width:400px; max-height:calc(100vh - 300px); overflow-y:scroll }
+
 ul.navbar-nav li ul.dropdown-menu > li a img,
 ul.navbar-nav li ul.dropdown-menu > li a i,
 ul#e-latest img,
