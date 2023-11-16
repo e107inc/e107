@@ -4864,6 +4864,8 @@ class eHelper
 	protected static $_idRegEx = '#[^\w\-]#';
 	protected static $_styleRegEx = '#[^\w\s\-\.;:!]#';
 
+	protected static $_systemNotify = 'systemNotifications';
+
 	/**
 	 * @param $string
 	 * @return array|string|string[]|null
@@ -4872,6 +4874,39 @@ class eHelper
 	{
 		return preg_replace(self::$_classRegEx, '', $string);
 	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getSystemNotification()
+	{
+		return (array) e107::getSession()->get(self::$_systemNotify);
+	}
+
+
+	/**
+	 * @param string $id
+	 * @param string $message
+	 * @return array|e_core_session|null
+	 */
+	public static function addSystemNotification($id, $message)
+	{
+		return e107::getSession()->set(self::$_systemNotify.'/'.$id.'/message', $message);
+	}
+
+
+	/**
+	 * @param $id
+	 * @return array|e_core_session|null
+	 */
+	public static function clearSystemNotification($id = '')
+	{
+		$key = !empty($id) ? self::$_systemNotify.'/'.$id : self::$_systemNotify;
+
+		return e107::getSession()->clear($key);
+	}
+
 
 	/**
 	 * @param $string

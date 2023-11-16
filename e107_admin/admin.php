@@ -135,16 +135,20 @@ class admin_start
 			return null;
 		}
 
+
 		if(!e107::getDb()->isTable('admin_log')) // Upgrade from v1.x to v2.x required.
 		{
 		    $this->upgradeRequiredFirst = true;
         }
+
+     //   eHelper::clearSystemNotification(); // clear the notifications.
 
 		// Files that can cause comflicts and problems.
         $fileInspector = e107::getFileInspector();
 		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
 
 		$this->checkCoreVersion();
+		$this->checkDependencies();
 
 		if(!empty($_POST['delete-deprecated']))
 		{
@@ -205,7 +209,8 @@ class admin_start
 		$this->checkDeveloperMode(); 
 
 
-		if($this->refresh == true)
+
+		if($this->refresh)
 		{
 			e107::getRedirect()->go(e_REQUEST_SELF);
 		}
@@ -213,7 +218,9 @@ class admin_start
 		// delete half-completed user accounts. (previously called in header.php )
 		e107::getUserSession()->deleteExpired();
 
-	}	
+	}
+
+
 
 	private function checkPaths()
 	{
@@ -232,8 +239,12 @@ class admin_start
 				else
 				{
 					$message = e107::getParser()->lanVars(ADLAN_187,$dr,true);
-					$mes->addWarning($message);
+					eHelper::addSystemNotification('check_paths_'.sha1($dr), $message);
 				}
+			}
+			else
+			{
+				eHelper::clearSystemNotification('check_paths_'.sha1($dr));
 			}
 		}
 
@@ -284,7 +295,7 @@ class admin_start
 		// auto db update
 		if ('0' != ADMINPERMS)
 		{
-			return null;
+			return;
 		}
 
         if($this->upgradeRequiredFirst)
@@ -488,13 +499,13 @@ TMPO;
 		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
 			$message = str_replace("[x]", e_MEDIA, ADLAN_193);
-			$mes->addWarning($message);			
+			$mes->addWarning($message);
 		}	
 		
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
 			$message = str_replace("[x]", e_SYSTEM, ADLAN_193);
-			$mes->addWarning($message);			
+			$mes->addWarning($message);
 		}
 
 		$files = e107::getFile()->scandir(e_IMAGE."avatars",'jpg,gif,png,jpeg');
@@ -526,7 +537,8 @@ TMPO;
 	{
 	    if($this->upgradeRequiredFirst)
 	    {
-	        return null;
+	        eHelper::clearSystemNotification('checkIncompatiblePlugins');
+	        return;
         }
 
 		$mes = e107::getMessage();
@@ -543,15 +555,21 @@ TMPO;
 
 			if(!empty($installedPlugs[$folder]) && ($version == $installedPlugs[$folder] || $version === '*'))
 			{
-				$inCompatText .= "<li><a title='".LAN_UNINSTALL."' href='".e_ADMIN."plugin.php?mode=installed&action=uninstall&path=".$folder."'>".$folder." v".$installedPlugs[$folder]."</a></li>";
+				$url = e_ADMIN."plugin.php?searchquery=$folder&filter_options=&mode=installed&action=list&etrigger_filter=etrigger_filter";
+				$inCompatText .= "<li><a title='".LAN_VIEW."' href='".$url."'>".$folder." v".$installedPlugs[$folder]."</a></li>";
 			}	
 		}
 		
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning(ADLAN_189."&nbsp;<br /><br />".$text);
-		}	
+			eHelper::addSystemNotification('checkIncompatiblePlugins', ADLAN_189."&nbsp;<br /><br />".$text);
+		//	$mes->addWarning(ADLAN_189."&nbsp;<br /><br />".$text);
+		}
+		else
+		{
+			 eHelper::clearSystemNotification('checkIncompatiblePlugins');
+		}
 		
 	}
 
@@ -560,7 +578,7 @@ TMPO;
 	{
 	    if($this->upgradeRequiredFirst)
 	    {
-	        return null;
+	        return;
         }
 
 		$us = e107::getUserSession();
@@ -570,8 +588,12 @@ TMPO;
 		{
 			$message = LAN_PASSWORD_WARNING;
 			$srch = array('[',']');
-			$repl = array("<a class='alert-link' href='".e_ADMIN."prefs.php#nav-core-prefs-security'>","</a>");
-			$mes->addWarning(str_replace($srch,$repl,$message));
+			$repl = array("<a class='text-info' href='".e_ADMIN."prefs.php#nav-core-prefs-security'>","</a>");
+			eHelper::addSystemNotification('checkPasswordEncryption', str_replace($srch,$repl,$message));
+		}
+		else
+		{
+			eHelper::clearSystemNotification('checkPasswordEncryption');
 		}
 
 	}
@@ -583,7 +605,11 @@ TMPO;
 
 		if($pref['developer'] && (strpos(e_SELF,'localhost') === false) && (strpos(e_SELF,'127.0.0.1') === false))
 		{
-			e107::getMessage()->addWarning($tp->toHTML(LAN_DEVELOPERMODE_CHECK, true));
+			eHelper::addSystemNotification('checkDeveloperMode', $tp->toHTML(LAN_DEVELOPERMODE_CHECK, true));
+		}
+		else
+		{
+			eHelper::clearSystemNotification('checkDeveloperMode');
 		}
 	}
 
@@ -591,7 +617,27 @@ TMPO;
 
 	private function checkDependencies()
 	{
+		if(PHP_MAJOR_VERSION < 8)
+		{
+			$lanFallback = 'Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.';
+			$lan = defset('LAN_PHP_OUTDATED', $lanFallback);
+			$url = e_ADMIN.'phpinfo.php';
 
+			$lan = e107::getParser()->lanVars($lan, 'PHP 8.2');
+
+			$srch = array('[',']');
+			$repl = [
+				"<a class='text-info' href='$url'>",
+				"</a>"
+			];
+
+			$lan = str_replace($srch, $repl, $lan);
+			eHelper::addSystemNotification('checkDependencies', $lan);
+		}
+		else
+		{
+			eHelper::clearSystemNotification('checkDependencies');
+		}
 
 	}
 
@@ -674,8 +720,12 @@ TMPO;
 		{
 			if(rename(e_BASE."e107.htaccess", e_BASE.".htaccess")===false)
 			{
-				e107::getMessage()->addWarning("Please rename your <b>e107.htaccess</b> file to <b>.htaccess</b>");
+				eHelper::addSystemNotification('checkHtaccess', "Please rename your <b>e107.htaccess</b> file to <b>.htaccess</b>");
 			}
+		}
+		else
+		{
+			eHelper::clearSystemNotification('checkDependencies');
 		}
 	}
 
