@@ -23,7 +23,11 @@ if (!defined('e107_INIT'))
 {
 	if(!empty($_GET) || !empty($argv))
 	{
-		$_E107['minimal'] = true;
+		$_E107['no_online'] = true;
+		$_E107['no_forceuserupdate'] = true;
+		$_E107['no_menus'] = true;
+		$_E107['allow_guest'] = true; // run while in members-only mode.
+		$_E107['no_maintenance'] = true;
 	}
 
 	require_once(__DIR__.'/../../class2.php');
@@ -153,7 +157,7 @@ if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$
 		
 		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
 		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
-		$ns->tablerender('', $message);
+		e107::getRender()->tablerender('', $message);
 		
 		require_once(FOOTERF);
 		exit;
@@ -618,7 +622,7 @@ class rssCreate
 				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
-				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
+				<dc:language>".defset('CORE_LC').(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time). "</dc:date>
 				<dc:creator>".$this->nospam($pref['siteadminemail'])."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"https://e107.org\" />
