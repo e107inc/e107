@@ -102,7 +102,7 @@ if (empty($rss_type))
 			}
 		}
 
-		$text = $tp->parseTemplate($RSS_LIST_HEADER, true);
+		$text = $tp->parseTemplate($RSS_LIST_HEADER);
 
 		while($row = $sql->fetch())
 		{
@@ -110,7 +110,7 @@ if (empty($rss_type))
 			$text .= $tp->parseTemplate($RSS_LIST_TABLE, false, $sc);
 		}
 
-		$text .= $tp->parseTemplate($RSS_LIST_FOOTER, true);
+		$text .= $tp->parseTemplate($RSS_LIST_FOOTER);
 
 		$ns->tablerender(RSS_MENU_L2, $text);
 	}
@@ -175,7 +175,7 @@ if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
 {
 	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst($content_type));
 
-	if(E107_DEBUG_LEVEL > 0)
+	if(defset('E107_DEBUG_LEVEL') > 0)
 	{
 		define('e_IFRAME',true);
 		require_once(HEADERF);
@@ -210,6 +210,8 @@ class rssCreate
 	var $offset;
 	var $rssNamespace;
 	var $rssCustomChannel;
+
+	private $limit;
 
 	public function __construct($content_type, $rss_type, $topic_id, $row)
 	{	// Constructor
@@ -264,6 +266,9 @@ class rssCreate
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
+
+				$HTTP = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
+
 				foreach($tmp as $value)
 				{
 					$this -> rssItems[$loop]['title'] = $value['comment_subject'];
@@ -273,15 +278,15 @@ class rssCreate
 					{
 						case 0 :
 						case 'news' :
-							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['comment_item_id'];
+							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['comment_item_id'];
 							break;
 						case 2 :
 						case 'download' :
-							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.download.".$value['comment_item_id'];
+							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.download.".$value['comment_item_id'];
 							break;
 						case 4:
 						case 'poll' :
-							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.poll.".$value['comment_item_id'];
+							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.poll.".$value['comment_item_id'];
 							break;
 					}
 
@@ -421,7 +426,7 @@ class rssCreate
 
 		$tp = e107::getParser();
 
-		header('Content-type: application/xml', TRUE);
+		header('Content-type: application/xml');
 
 		$rss_title = $tp->toRss($tp->toHTML($pref['sitename'],'','defs')." : ".$tp->toHTML($rss_title,'','defs'));
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : '';
@@ -443,7 +448,7 @@ class rssCreate
 
 					foreach($this -> rssItems as $value)
 					{	// Multi-language rss links.
-						$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+						$link 		= deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
 
 						echo "
 							<item>
@@ -470,7 +475,7 @@ class rssCreate
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this->contentType."\" -->
-				<rss {$rss_namespace} version=\"2.0\"
+				<rss $rss_namespace version=\"2.0\"
 					xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
 					xmlns:atom=\"http://www.w3.org/2005/Atom\"
 					xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
@@ -482,10 +487,10 @@ class rssCreate
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>\n";
 
-				echo $tp->toHTML($rss_custom_channel,FALSE)."\n"; // must not convert to CDATA.
+				echo $tp->toHTML($rss_custom_channel)."\n"; // must not convert to CDATA.
 
 				echo "
-				<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
+				<language>".defset('CORE_LC').(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".$tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
@@ -528,8 +533,8 @@ class rssCreate
 
 				foreach($this -> rssItems as $value)
 				{   // Multi-language rss links.
-					$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
-                    $catlink	= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
+					$link 		= deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+                    $catlink	= deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
 
 					echo "<item>\n";
 					echo "<title>".$tp->toRss($value['title'])."</title>\n";
@@ -626,7 +631,7 @@ class rssCreate
 
 				foreach($this -> rssItems as $value)
 				{   // Multi-language rss links.
-					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+					$link = deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
 
 					echo "
 						<rdf:li rdf:resource=\"".$link."\" />";
@@ -641,7 +646,7 @@ class rssCreate
 				unset($link);
 				foreach($this -> rssItems as $value)
 				{
-					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link']; // Multi-language rss links.
+					$link = deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link']; // Multi-language rss links.
 
 					echo "
 						<item rdf:about=\"".$link."\">
@@ -660,7 +665,7 @@ class rssCreate
 			// Atom
 			case 4:
 				echo "<?xml version='1.0' encoding='utf-8'?".">\n
-				<feed xmlns='http://www.w3.org/2005/Atom'>\n";
+				<feed xmlns='https://www.w3.org/2005/Atom'>\n";
 				/*
 				<feed version='0.3'
 				xmlns='http://purl.org/atom/ns#'
