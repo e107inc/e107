@@ -3973,6 +3973,7 @@ class e_parse
 		$cat = '';
 		$name = '';
 		list($id) = explode('.glyph', $text, 2); // trim .glyph from the end.
+		$origID = $id;
 		if (strpos($id, '-') !== false)
 		{
 			list($cat, $name) = explode('-', $id, 2);
@@ -4031,10 +4032,11 @@ class e_parse
 			default:
 				if ($this->fontawesome === 5 || $this->fontawesome === 6)
 				{
-					$fab = e107::getMedia()->getGlyphs('fab');
-					$fas = e107::getMedia()->getGlyphs('fas');
-					$far = e107::getMedia()->getGlyphs('far');
-					$shims = e107::getMedia()->getGlyphs('fa5-shims');
+					$vr = 'fa'.$this->fontawesome.'-';
+					$fab = e107::getMedia()->getGlyphs($vr.'fab');
+					$fas = e107::getMedia()->getGlyphs($vr.'fas');
+					$far = e107::getMedia()->getGlyphs($vr.'far');
+					$shims = e107::getMedia()->getGlyphs($vr.'shims');
 					$fa4 = e107::getMedia()->getGlyphs('fa4');
 
 					list($tmp) = explode('-', $id);
@@ -4051,7 +4053,7 @@ class e_parse
 					}
 					elseif (isset($fas[$code]))
 					{
-						$prefix = 'fas ';
+						$prefix = 'fas '; // 'fa-solid' for fa6?
 						$id = 'fa-' . $code;
 					}
 					elseif (in_array($code, $far))
@@ -4125,6 +4127,7 @@ class e_parse
 				{
 					$prefix = $glyphConfig['class'] . ' ';
 					$tag = $glyphConfig['tag'];
+					$id = $origID;
 					continue;
 				}
 			}

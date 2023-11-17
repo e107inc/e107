@@ -2140,6 +2140,13 @@ EXPECTED;
 		$expected = "<i class='fab fa-mailchimp' ></i> ";
 		$this->assertEquals($expected, $result);
 
+		$this->tp->setFontAwesome(6);
+		$result = $this->tp->toGlyph('fa-wine-glass-empty');
+		$expected = "<i class='fas fa-wine-glass-empty' ></i> ";
+		$this->assertSame($expected, $result);
+
+		$result = $this->tp->toGlyph('fa-virus-covid');
+		$this->assertSame("<i class='fas fa-virus-covid' ></i> ", $result);
 
 		$this->tp->setFontAwesome(4);
 
@@ -2249,6 +2256,19 @@ EXPECTED;
 		$this->tp->setFontAwesome(5);
 		$result = $this->tp->toGlyph('fa-paypal.glyph');
 		$this->assertSame("<i class='fab fa-paypal' ></i> ", $result);
+
+		$this->tp->setFontAwesome(6);
+		$result = $this->tp->toGlyph('fa-paypal.glyph');
+		$this->assertSame("<i class='fab fa-paypal' ></i> ", $result);
+
+		$result = $this->tp->toGlyph('fa-clock.glyph');
+		$this->assertSame("<i class='fas fa-clock' ></i> ", $result);
+
+		$result = $this->tp->toGlyph('clock.glyph');
+		$this->assertSame("<i class='fas fa-clock' ></i> ", $result);
+
+
+		$this->tp->setFontAwesome(5);
 	}
 
 	/*
