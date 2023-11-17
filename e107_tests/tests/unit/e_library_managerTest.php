@@ -24,7 +24,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, $e->getMessage());
+				$this->fail($e->getMessage());
 			}
 
 
@@ -34,7 +34,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, $e->getMessage());
+				$this->fail($e->getMessage());
 			}
 
 			$coreLibraries = $this->corelib->config();
@@ -60,7 +60,7 @@
 
 			foreach($lookups as $name)
 			{
-				$this->assertFalse(true, "'version' key is missing in core_library:config() -- ".$name);
+				$this->fail("'version' key is missing in core_library:config() -- " . $name);
 			}
 
 
@@ -71,17 +71,18 @@
 
 			foreach($this->libraries as $name)
 			{
+				echo $name."\n";
 				$coded = $this->lib->detect($name);
 				$detected = $this->lib->detect($name, true);
 
 				if(empty($coded['version']))
 				{
-					$this->assertTrue(false, "No coded version returned in core_library:config() -- ".$name);
+					$this->fail("No coded version returned in core_library:config() -- " . $name);
 				}
 
 				if(empty($detected['version']))
 				{
-					$this->assertTrue(false, "No looked-up version in core_library:config() -- ".$name);
+					$this->fail("No looked-up version in core_library:config() -- " . $name);
 				}
 
 				$this->assertSame($coded['version'],$detected['version'], 'Version mismatch in core_library:config() -- '.$name);
@@ -90,6 +91,81 @@
 
 
 		}
+
+		public function testCoreLibraryPresence()
+		{
+			$coreLibraries = $this->corelib->config();
+
+			foreach($coreLibraries as $id => $item)
+			{
+				$path = $this->lib->getPath($id);
+
+				if(strpos($path, 'http') === 0) // Remote
+				{
+					if(!empty($item['files']))
+					{
+						foreach($item['files'] as $k=>$v)
+						{
+							foreach($v as $file => $info)
+							{
+								$url = $path.$file;
+								$valid = $this->isValidURL($url);
+								$this->assertTrue($valid, $url.' is not valid. (404)');
+							}
+						}
+					}
+				}
+				else // Local
+				{
+
+					if(!empty($item['files']))
+					{
+						foreach($item['files'] as $k=>$v)
+						{
+							foreach($v as $file => $info)
+							{
+								$this->assertStringNotContainsString('//',$path);
+								$this->assertFileExists($path.$file);
+							}
+
+
+						}
+
+
+
+
+					}
+
+				}
+
+			}
+
+
+
+		}
+
+		private function isValidURL($url)
+		{
+			if(empty($url))
+			{
+				return false;
+			}
+
+			if(!$headers = get_headers($url))
+			{
+				return false;
+			}
+
+			if(!empty($headers[0]) && strpos($headers[0], 'OK') !== false)
+			{
+				return true;
+			}
+
+			return false;
+
+
+		}
+
 /*
 		public function testInfo()
 		{

@@ -2211,10 +2211,10 @@ class media_admin_ui extends e_admin_ui
 		$md = e107::getMedia();
 
 
-		if($this->fontawesome === 5)
+		if($this->fontawesome > 4) // Fontawesome 5 and 6
 		{
-		//	e107::getParser()->setFontAwesome(5);
-			$fab = e107::getMedia()->getGlyphs('fab');
+
+			$fab = e107::getMedia()->getGlyphs('fa'.$this->fontawesome.'-fab');
 
 			foreach($fab as $val)
 			{
@@ -2224,13 +2224,13 @@ class media_admin_ui extends e_admin_ui
 						'saveValue'		=> 'fab-'.$val.'.glyph',
 						'thumbUrl'		=> 'fab-'.$val,
 						'title'			=> 'FA5 fa-'.$val,
-						'slideCaption'	=> 'Font-Awesome 5 (brand)',
+						'slideCaption'	=> "Font-Awesome $this->fontawesome (brand)",
 						'slideCategory'	=> 'font-awesome'
 				);
 
 			}
 
-			$fas = e107::getMedia()->getGlyphs('fas');
+			$fas = e107::getMedia()->getGlyphs('fa'.$this->fontawesome.'-fas');
 
 			foreach($fas as $val)
 			{
@@ -2240,13 +2240,13 @@ class media_admin_ui extends e_admin_ui
 						'saveValue'		=> 'fas-'.$val.'.glyph',
 						'thumbUrl'		=> 'fas-'.$val,
 						'title'			=> 'FA5 fa-'.$val,
-						'slideCaption'	=> 'Font-Awesome 5 (solid)',
+						'slideCaption'	=> "Font-Awesome $this->fontawesome (solid)",
 						'slideCategory'	=> 'font-awesome'
 				);
 
 			}
 
-			$far = e107::getMedia()->getGlyphs('far');
+			$far = e107::getMedia()->getGlyphs('fa'.$this->fontawesome.'-far');
 
 			foreach($far as $val)
 			{
@@ -2256,7 +2256,7 @@ class media_admin_ui extends e_admin_ui
 						'saveValue'		=> 'far-'.$val.'.glyph',
 						'thumbUrl'		=> 'far-'.$val,
 						'title'			=> 'FA5 far-'.$val,
-						'slideCaption'	=> 'Font-Awesome 5 (regular)',
+						'slideCaption'	=> "Font-Awesome $this->fontawesome (regular)",
 						'slideCategory'	=> 'font-awesome'
 				);
 

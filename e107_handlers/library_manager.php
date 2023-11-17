@@ -192,6 +192,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-once',
 			'version'   => '2.2.3',
+			'path' => '',
 		);
 
 		// jQuery UI (CDN).
@@ -713,6 +714,7 @@ class core_library
 			// Override library path.
 			'library_path'      => '{e_WEB}js/bootstrap3-editable',
 			'version'           => '1.5.1',
+			'path'              => '',
 		);
 
 		// Bootstrap Switch (CDN).
@@ -934,7 +936,7 @@ class core_library
 			'version'           => '5.15.4',
 		);
 
-		// Font-Awesome (local).
+		// Font-Awesome 5 (local).
 		$libraries['fontawesome5'] = array(
 			'name'              => 'Font-Awesome 5 (local)',
 			'vendor_url'        => 'https://fontawesome.com/',
@@ -1038,7 +1040,7 @@ class core_library
 			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '6',
-			'version'           => '6.2.1',
+			'version'           => '6.4.2',
 
 		);
 
@@ -1076,9 +1078,9 @@ class core_library
 			),
 			'variants'          => array(),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2',
 			'path'              => '',
-			'version'           => '6.2.1',
+			'version'           => '6.4.2',
 		);
 
 
@@ -1655,7 +1657,7 @@ class e_library_manager
 	public function getPath($library, $mode=null)
 	{
 		$path = self::getProperty($library, 'library_path').'/'. self::getProperty($library, 'path');
-		return e107::getParser()->replaceConstants($path,$mode).'/';
+		return trim(e107::getParser()->replaceConstants($path,$mode),'/')  .'/';
 	}
 
 

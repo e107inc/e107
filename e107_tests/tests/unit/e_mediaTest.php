@@ -241,9 +241,9 @@
 		}
 */
 
-		private function compileFontAwesome5Meta()
+		private function compileFontAwesomeMeta($version)
 		{
-			$raw = file_get_contents(e_WEB."lib/font-awesome/5/metadata/icons.json");
+			$raw = file_get_contents(e_WEB."lib/font-awesome/$version/metadata/icons.json");
 			$icons = e107::unserialize($raw);
 
 			$ret = [];
@@ -261,15 +261,19 @@
 
 			}
 
-			$ret['fa5-shims'] = $this->compileFontAwesome5Shims();
+			$ret['fa'.$version.'-shims'] = $this->compileFontAwesomeShims($version);
 
 			return $ret;
 
 		}
 
-		private function compileFontAwesome5Shims()
+		/**
+		 * @param string $version (major version number. eg. 5 or 6)
+		 * @return array
+		 */
+		private function compileFontAwesomeShims($version)
 		{
-			$raw = file_get_contents(e_WEB."lib/font-awesome/5/metadata/shims.json");
+			$raw = file_get_contents(e_WEB."lib/font-awesome/$version/metadata/shims.json");
 			$icons = e107::unserialize($raw);
 
 			$ret = [];
@@ -289,7 +293,7 @@
 		{
 
 			// @todo uncomment to rebuild  getGlyphs() arrays for fontawesome. (requires 'metadata' folder)
-		//	$meta = $this->compileFontAwesome5Meta();
+		//	$meta = $this->compileFontAwesomeMeta(6);
 		//	var_export($meta);
 		//	$far = $this->md->getGlyphs('far');
 		//	$this->assertSame($meta['far'], $far);
@@ -299,19 +303,25 @@
 		//	$this->assertSame($meta['fab'], $fab);
 			// Check that FontAwesome 5 meta arrays are up-to-date.
 
+			// FontAwesome 6
+			$fa6_fas = $this->md->getGlyphs('fa6-fas');
+			$this->assertContains('wine-glass-empty', $fa6_fas);
+
+			$fa6Shims = $this->md->getGlyphs('fa6-shims');
+			$this->assertArrayHasKey('glass', $fa6Shims);
 
 			// FontAwesome 5
-			$fab = $this->md->getGlyphs('fab');
+			$fab = $this->md->getGlyphs('fa5-fab');
 			$this->assertContains('500px', $fab);
 
-			$fas = $this->md->getGlyphs('fas');
+			$fas = $this->md->getGlyphs('fa5-fas');
 			$this->assertContains('address-book', $fas);
 
-			$far = $this->md->getGlyphs('far');
+			$far = $this->md->getGlyphs('fa5-far');
 			$this->assertContains('arrow-alt-circle-down', $far);
 
 			// Check FontAwesome 4
-			$fa4 = $this->md->getGlyphs('fas');
+			$fa4 = $this->md->getGlyphs('fa5-fas');
 			$this->assertContains('heart', $fa4);
 
 			// Check Bootstrap 3
@@ -319,11 +329,11 @@
 			$this->assertNotEmpty($result['adjust']);
 			$this->assertNotEmpty($result['zoom-out']);
 
-			// Check FontAweomse 5 Shims
+			// Check FontAwesome 5 Shims
 			$fa5Shims = $this->md->getGlyphs('fa5-shims');
 			$this->assertArrayHasKey('glass', $fa5Shims);
 
-			$prefixTest = $this->md->getGlyphs('fab', 'myprefix-');
+			$prefixTest = $this->md->getGlyphs('fa5-fab', 'myprefix-');
 			 $this->assertContains('myprefix-500px', $prefixTest);
 
 		}
