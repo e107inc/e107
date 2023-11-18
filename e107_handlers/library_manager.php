@@ -212,7 +212,7 @@ class core_library
 					),
 				),
 				'css' => array(
-					'jquery-ui.min.css' => array(
+					'themes/base/jquery-ui.min.css' => array(
 						'zone' => 2,
 					),
 				),
@@ -238,9 +238,9 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui',
-			'path'              => '1.11.4',
-			'version'           => '1.11.4',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui',
+			'path'              => '1.13.2',
+			'version'           => '1.13.2',
 		);
 
 		// jQuery UI (local).
@@ -285,7 +285,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/jquery-ui',
-			'version'           => '1.12.1'
+			'version'           => '1.13.2'
 		);
 
 
@@ -314,7 +314,7 @@ class core_library
 			),
 			'library_path'      => '{e_WEB}lib/jquery',
 			'path'              => '3',
-			'version'           => '3.6.0',
+			'version'           => '3.7.1',
 		);
 
 
@@ -342,8 +342,8 @@ class core_library
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/jquery',
-			'path'              => '3.6.0',
-			'version'           => '3.6.0',
+			'path'              => '3.7.1',
+			'version'           => '3.7.1',
 		);
 
 

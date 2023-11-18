@@ -71,7 +71,6 @@
 
 			foreach($this->libraries as $name)
 			{
-				echo $name."\n";
 				$coded = $this->lib->detect($name);
 				$detected = $this->lib->detect($name, true);
 
