@@ -475,7 +475,7 @@ class e_menuManager
 	/**
 	 * @return void
 	 */
-	function menuScanMenus()
+	public function menuScanMenus()
 	{
 		global $sql2;
 		$sql = e107::getDb();
@@ -484,7 +484,7 @@ class e_menuManager
 		$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
 		$efile->fileFilter[] = '^e_menu\.php$';
 
-		$fileList = $efile->get_files(e_PLUGIN, "_menu\.php$", 'standard', 2);
+		$fileList = $efile->get_files(e_PLUGIN, "_menu\.php$", 'standard', 1);
 
 		//	$this->menuAddMessage('Scanning for new menus', E_MESSAGE_DEBUG);
 
@@ -2901,7 +2901,7 @@ class e_mm_layout
 	{
 		$fl 			= e107::getFile();
 		$fl->dirFilter 	= array('/', 'CVS', '.svn', 'languages');
-		$files 			= $fl->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+		$files 			= $fl->get_files(e_PLUGIN,"_menu\.php$",'standard',1);
 
 		$data = array();
 

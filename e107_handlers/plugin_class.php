@@ -3258,12 +3258,12 @@ class e107plugin
 
 			unset($attrib['read'], $attrib['write'], $attrib['applicable'], $attrib['required'], $attrib['fieldType']);
 
-			$name = $this->ue_field_name($plug, EUF_ADDON, $field);
+			$name = $this->ue_field_name($plug, defset('EUF_ADDON'), $field);
 
 			$insert = array(
 					'name'      => $name,
 					'text'      => varset($attrib['title'], "None Specified"),
-					'type'      => EUF_ADDON,
+					'type'      => defset('EUF_ADDON'),
 					'parms'     => $plug,
 					'values'    => e107::serialize($attrib, 'json'),
 					'default'   => null,
