@@ -1725,6 +1725,7 @@ class e107plugin
 		}
 		e107::getDebug()->logTime('Start Scanning Plugin Files');
 		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
+		$pluginList = [];
 
 		foreach ($plugList as $num => $val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.
 		{
@@ -1979,6 +1980,7 @@ class e107plugin
 		{
 			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,3);
 			unset($dbgArr[0]);
+			trigger_error("Deprecated call to getPluginRecord() using integer.".print_r($dbgArr,true), E_USER_DEPRECATED);
 			e107::getLog()->addDebug("Deprecated call to getPluginRecord() using integer.".print_a($dbgArr,true));
 
 		}
@@ -2018,7 +2020,7 @@ class e107plugin
 	 */
 	private function ue_field_name($folder, $type, $name)
 	{
-		if($type == EUF_PREFIELD || $type == EUF_CATEGORY)
+		if($type == defset('EUF_PREFIELD') || $type == defset('EUF_CATEGORY'))
 		{
 			return $name; // no plugin_plugname_ prefix
 		}
@@ -2092,7 +2094,7 @@ class e107plugin
 		$mes->addDebug("Extended Field: ".$action.": ".$field_name." : ".$type_name);
 
 		// predefined
-		if($type == EUF_PREFIELD)
+		if($type == defset('EUF_PREFIELD'))
 		{
 			
 			$preList = $this->module['ue']->parse_extended_xml(''); // passed value currently not used at all, could be file path in the near future
@@ -2113,7 +2115,7 @@ class e107plugin
 			
 		}
 		// not allowed for categories
-		elseif($type == EUF_CATEGORY) 
+		elseif($type == defset('EUF_CATEGORY'))
 		{
 			$field_attrib['parent'] = 0;
 		}
@@ -2191,14 +2193,14 @@ class e107plugin
 			);
 			
 			// db fields handling
-			if($status && $type == EUF_DB_FIELD)
+			if($status && $type == defset('EUF_DB_FIELD'))
 			{
 				// handle DB, use original non-modified name value
 				$status = !$this->manage_extended_field_sql('add', $field_attrib['name']); // reverse logic - sql method do a error check
 			}
 			
 			// refresh categories - sadly the best way so far... need improvement (inside ue class)
-			if($status && $type == EUF_CATEGORY)
+			if($status && $type == defset('EUF_CATEGORY'))
 			{
 				$cats = $this->module['ue']->user_extended_get_categories(false);
 				foreach ($cats as $cat) 
@@ -2214,7 +2216,7 @@ class e107plugin
 		{
 			//var_dump($field_attrib, $field_name, $type);
 			$status = $this->module['ue']->user_extended_remove($field_name, $field_name);
-			if($status && $type == EUF_DB_FIELD && strpos($field_name, 'plugin_') != 0) 
+			if($status && $type == defset('EUF_DB_FIELD') && strpos($field_name, 'plugin_') != 0)
 			{
 				$status = $this->manage_extended_field_sql('remove', $field_attrib['name']);
 			}
@@ -2654,6 +2656,8 @@ class e107plugin
 		 {
 		 */
 		$pref = e107::getPref();
+
+		$newvals = [];
 
 		$prefvals[] = $varArray;
 		//			$prefvals[] = $plugin_folder;
@@ -3309,6 +3313,7 @@ class e107plugin
 	}
 
 
+
 	/**
 	 * Manage xxxxx_menu files.
 	 * @param string $plug
@@ -3427,6 +3432,8 @@ class e107plugin
 			$tableData = $dbv->getSqlFileTables($contents);
 
 			$query = '';
+			$status = E_MESSAGE_INFO;
+
 			foreach($tableData['tables'] as $k=>$v)
 			{
 				switch($function)
@@ -5258,7 +5265,7 @@ class e107plugin
 
 			
 		$sizeArray = array(32=>'icon', 16=>'iconSmall');
-		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
+		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".defset('E_16_CAT_PLUG')."' alt='' />";
 		$sz = $sizeArray[$size];
 		
 		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];

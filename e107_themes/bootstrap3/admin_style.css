@@ -691,7 +691,7 @@ i.s-message-empty   { background:none; }
   display: inline-block;
   *display: inline;
 
-  *zoom: 1;
+  transform: scale(1);transform-origin: 0 0;
   padding: 4px 12px;
   margin-bottom: 0;
   font-size: 14px;
