@@ -342,6 +342,8 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	 */
 	function getMenuPosition($id)
 	{
+		$id = str_replace('_', '-', $id); // fix for core news etc.
+
 		$user_pref = $this->getUserPref();
 
 		if(!empty($user_pref['core-flexpanel-order'][$id]))

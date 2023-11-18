@@ -1,5 +1,7 @@
 var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
+
+
 (function ($)
 {
 	'use strict';
@@ -24,8 +26,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 			$(context).find(selector).once(onceKey).each(function ()
 			{
-				var $panel = $(this);
+				var $panel = $(this)
 
+                try {
 				$panel.sortable({
 					connectWith: selector,
 					items: e107.settings.flexPanel.items,
@@ -63,9 +66,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$draggablePanels.css('background-color', 'transparent');
 
 						e107.callbacks.flexPanelSavePanelOrder();
-                                                e107.callbacks.flexPanelEmptyPanels();
+                        e107.callbacks.flexPanelEmptyPanels();
 					}
 				});
+                }
+                catch (error) {
+                    console.error(error);
+                }
 			});
 
                         e107.callbacks.flexPanelEmptyPanels();
@@ -99,9 +106,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				});
 			}
 		});
-		
-		$.post(window.location.href, {'core-flexpanel-order': NewOrder}).done(function( data ) {
-             console.log(data);
+
+		$.post(window.location.href, {'core-flexpanel-order': NewOrder})
+        .done(function(data) {
+
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('An error occurred: ' + errorThrown);
         });
 	};
 
