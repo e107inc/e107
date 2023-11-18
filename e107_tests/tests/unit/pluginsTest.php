@@ -126,8 +126,9 @@
 		{
 		//	$this->_debugPlugin = '_blank';
 
-			$this->pluginInstall('_blank');
+			$result = $this->pluginInstall('_blank');
 
+		//	print_r($result);
 		//	$this->pluginUninstall('_blank');
 
 
@@ -578,6 +579,8 @@
 			{
 				$this->assertTrue($val, $key." list pref is missing for ".$pluginDir);
 			}
+
+			return $install;
 		}
 
 		private function pluginUninstall($pluginDir, $opts=array())
