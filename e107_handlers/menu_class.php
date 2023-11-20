@@ -264,8 +264,9 @@ class e_menu
 
 
 	/**
+	 * Saving of parms from e_menu.php configuration.
 	 * @param int $id menu_id
-	 * @param array $parms
+	 * @param array $parms posted values. 
 	 * @return mixed
 	 */
 	public function updateParms($id, $parms)
@@ -275,34 +276,61 @@ class e_menu
 		$model->setFieldIdName("menu_id");
 		$model->setDataFields(array('menu_parms'=>'json'));
 
-
 		$model->load($id, true);
 
-		$d = $model->get('menu_parms');
+		$menu_path = $model->get('menu_path');
+		$menu_path = rtrim($menu_path, '/');
 
-		$model->setPostedData('menu_parms', e107::unserialize($d));
+		$menu_name = $model->get('menu_name');
+		$menu_name = substr($menu_name,0,-5);
 
-		foreach($parms as $key=>$value)
+		if(!$obj = e107::getAddon($menu_path,'e_menu'))
 		{
-			if(!is_array($value))
+			return false;
+		}
+
+		if(!$fields = e107::callMethod($obj,'config',$menu_name))
+		{
+			return false;
+		}
+
+		if($d = $model->get('menu_parms'))
+		{
+			$prev = e107::unserialize($d);
+		}
+		else
+		{
+			$prev = [];
+		}
+
+		foreach($fields as $fld => $var)
+		{
+			if(isset($parms[$fld]))
 			{
-				$model->setPostedData('menu_parms/'.$key, $value);
-			}
-			else
-			{
-				foreach($value as $lang => $val)
+				if(!empty($var['multilan']))
 				{
-					$model->setPostedData('menu_parms/'.$key.'/'.$lang, $val);
+					if(!empty($prev[$fld])) // load previous language values.
+					{
+						$model->setPostedData('menu_parms/'.$fld, $prev[$fld]);
+					}
+
+					foreach($parms[$fld] as $lang => $val) // add posted language values.
+					{
+						$model->setPostedData('menu_parms/'.$fld.'/'.$lang, $val);
+					}
 				}
+				else
+				{
+					$model->setPostedData('menu_parms/'.$fld, $parms[$fld]);
+				}
+
 			}
+
 		}
 
 	//	file_put_contents(e_LOG."menuParmsAjax.log", print_r($parms,true));
 
-
 		return $model->save();
-
-		// return $model;
 
 	}
 
