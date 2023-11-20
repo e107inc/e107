@@ -1071,28 +1071,11 @@ class e_menuManager
 			$parms = $sql->escape(strip_tags($parms));
 			$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
 		}
-		else // e_menu.php
+		else // Save e_menu.php parameters.
 		{
 			unset($_POST['menu_id'], $_POST['mode'], $_POST['menuActivate'], $_POST['menuSetCustomPages'], $_POST['e-token']);
-
-		/*	$tmp = $sql->retrieve("menus", "menu_parms", " menu_id=".$id);
-			$parms = !empty($tmp) ? e107::unserialize($tmp) : array();
-
-			foreach($_POST as $k=>$v)
-			{
-				$parms[$k] = $tp->filter($v);
-			}
-
-			$parms = e107::serialize($parms, 'json');*/
-
-		//	if(e_DEBUG == true)
-			{
-			//	return array('msg'=>print_r($parms,true),'error'=>true);
-			}
-
 			$parms = $_POST;
-
-			$check = e107::getMenu()->updateParms($id,$parms); //
+			$check = e107::getMenu()->updateParms($id,$parms);
 		}
 
 
