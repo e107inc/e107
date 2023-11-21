@@ -391,7 +391,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
@@ -403,15 +403,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-04',
 					'weight' => 2,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-02',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-03',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-03',
 					'weight' => 1,
 				),
@@ -421,7 +421,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
@@ -433,15 +433,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-05',
 					'weight' => 0,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-02',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-03',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-12',
 					'weight' => 1,
 				),
@@ -451,7 +451,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-02',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-02',
 					'weight' => 0,
 				),
@@ -463,15 +463,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-04',
 					'weight' => 0,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-09',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-13',
 					'weight' => 0,
 				),
@@ -481,7 +481,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-03',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-03',
 					'weight' => 0,
 				),
@@ -493,15 +493,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-05',
 					'weight' => 0,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-02',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-12',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-13',
 					'weight' => 0,
 				),
@@ -511,7 +511,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
@@ -523,15 +523,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-03',
 					'weight' => 0,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-04',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-05',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-06',
 					'weight' => 0,
 				),
@@ -541,7 +541,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
@@ -553,15 +553,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => 2,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-07',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-08',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-08',
 					'weight' => 1,
 				),
@@ -571,7 +571,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => -1,
 				),
-				'core-infopanel_help'           => array(
+				'core-infopanel-help'           => array(
 					'area'   => 'menu-area-01',
 					'weight' => 0,
 				),
@@ -583,15 +583,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					'area'   => 'menu-area-01',
 					'weight' => 2,
 				),
-				'core-infopanel_mye107'         => array(
+				'core-infopanel-mye107'         => array(
 					'area'   => 'menu-area-07',
 					'weight' => 0,
 				),
-				'core-infopanel_news'           => array(
+				'core-infopanel-news'           => array(
 					'area'   => 'menu-area-08',
 					'weight' => 0,
 				),
-				'core-infopanel_website_status' => array(
+				'core-infopanel-website-status' => array(
 					'area'   => 'menu-area-08',
 					'weight' => 1,
 				),
