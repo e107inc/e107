@@ -768,6 +768,19 @@ class e_admin_response
 	}
 
 	/**
+	 * Set the Meta-title (overrides existing)
+	 * @param string $title
+	 * @return e_admin_response
+	 */
+	public function setMetaTitle($title)
+	{
+		$meta = '_e_PAGETITLE';
+		$this->{$meta} = array(strip_tags($title));
+
+		return $this;
+	}
+
+	/**
 	 * Add meta description segment
 	 *
 	 * @param string $description
@@ -1788,6 +1801,8 @@ class e_admin_controller
 	 * @var array
 	 */
 	protected $disallow = array();
+
+
 
 	/**
 	 * Constructor
@@ -3560,7 +3575,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function setConfig($config)
 	{
-		$this->_prefs = $config;
+		$this->_prefs = $config; // XXX Discuss.
 		return $this;
 	}
 
@@ -7756,7 +7771,7 @@ class e_admin_form_ui extends e_form
 							' .$this->select_close()."
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var). '
-							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false, 'title' =>LAN_FILTER, 'loading' => false)). '
+							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', defset('ADMIN_FILTER_ICON'), array('id' => false, 'title' =>LAN_FILTER, 'loading' => false)). '
 							
 							' .$this->renderPagination()."	
 							".$gridToggle."

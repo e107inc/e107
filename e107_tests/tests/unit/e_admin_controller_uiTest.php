@@ -24,7 +24,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_admin_controller_ui object");
+				$this->fail("Couldn't load e_admin_controller_ui object");
 			}
 
 		}
@@ -220,12 +220,13 @@
 		{
 
 		}
-
-		public function testGetConfig()
+*/
+/*		public function testGetConfig()
 		{
+			$result = $this->ui->getConfig();
 
-		}
-
+		}*/
+/*
 		public function testGetBatchExport()
 		{
 
@@ -380,13 +381,22 @@
 		{
 
 		}
-
+	*/
+	/*
 		public function testSetConfig()
 		{
+			$cfg = e107::getConfig();
+			$before = $cfg->get('sitename');
+			$this->ui->setConfig($cfg);
+
+			$pref = $this->ui->getConfig();
+			$after = $pref->get('sitename');
+
+			$this->assertSame($after, $before);
 
 		}
-
 	*/
+
 
 
 	}
