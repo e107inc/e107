@@ -694,7 +694,8 @@ class comment
 		}
 		else
 		{
-			$author_name = $data; //BC Fix. 	
+			$author_name = $data; //BC Fix.
+			$comment_share = 0; //BC Fix.
 		}
 
 
