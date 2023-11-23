@@ -95,6 +95,7 @@ class alt_auth_admin extends alt_auth_base
 	{
 		$optList = explode(',', $options);
 		$authList = array_merge($optList, self::alt_auth_get_authlist());
+		$authList = array_unique($authList);
 		$ret = "<select class='tbox' name='{$name}'>\n";
 		foreach ($authList as $v)
 		{
