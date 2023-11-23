@@ -1,8 +1,8 @@
 name: Build Release
 
 on:
-  push:
-  pull_request:
+  release:
+    types: [created]
 
 
 jobs:
