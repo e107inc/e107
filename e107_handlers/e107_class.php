@@ -15,6 +15,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
+
 /**
  *
  * @package     e107
@@ -153,6 +154,8 @@ class e107
 
 	protected static $_breadcrumb = array();
 
+
+
 	/**
 	 * Core handlers array
 	 * For new/missing handler add
@@ -250,7 +253,7 @@ class e107
 		'language'                       => '{e_HANDLER}language_class.php',
 		'news'                           => '{e_HANDLER}news_class.php',
 		'notify'                         => '{e_HANDLER}notify_class.php',
-		'override'                       => '{e_HANDLER}override_class.php',
+		'e107\override'                  => '{e_HANDLER}override_class.php',
 		'rater'                          => '{e_HANDLER}rate_class.php',
 		'redirection'                    => '{e_HANDLER}redirection_class.php',
 		'secure_image'                   => '{e_HANDLER}secure_img_handler.php',
@@ -268,6 +271,7 @@ class e107
 		// Core plugin auto-loaders.
 		'pageHelper'                     => '{e_PLUGIN}page/includes/pageHelper.php'
 	);
+
 
 	/**
 	 * Overload core handlers array
@@ -1034,6 +1038,11 @@ class e107
 		return isset(self::$_known_handlers[$class_name]);
 	}
 
+	public static function isHandlerNamespaced($className)
+	{
+		return isset(self::$_known_handlers['e107\\'.$className]) ? '\\e107\\'.$className : false;
+	}
+
 	/**
 	 * Get overlod class and path (if any)
 	 *
@@ -1148,9 +1157,26 @@ class e107
 			// remove the need for external function.
 			//e107_require_once() is available without class2.php. - see core_functions.php
 		}
+
+
 		if(class_exists($class_name, false))
 		{
-			self::setRegistry($id, new $class_name($vars));
+			if($named = self::isHandlerNamespaced($class_name))
+			{
+				$class_name = $named;
+			}
+
+			try
+			{
+				$cls = is_null($vars) ? new $class_name() : new $class_name($vars);
+			}
+			catch (Exception $e)
+			{
+			   trigger_error($e->getMessage());
+			   return false;
+			}
+
+			self::setRegistry($id, $cls);
 		}
 
 		return self::getRegistry($id);
@@ -5932,11 +5958,17 @@ class e107
 			return;
 		}
 
+
+
 		$levels[0] = e_HANDLER;
 		$classPath = implode('/', $levels).'.php';
 		if (is_file($classPath) && is_readable($classPath))
 		{
 			include($classPath);
+		}
+		elseif($filename = self::getHandlerPath($className))
+		{
+			include($filename);
 		}
 	}
 

@@ -14,6 +14,8 @@
  * $Author$
  */
 
+namespace e107;
+
 if (!defined('e107_INIT')) { exit; }
 
 /*
@@ -40,7 +42,7 @@ class override {
 	protected $functions = array();
 	protected $includes = array();
 	
-	
+
 	
 	/**
 	 * Replace an existing function or class method
