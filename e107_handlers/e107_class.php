@@ -253,7 +253,7 @@ class e107
 		'language'                       => '{e_HANDLER}language_class.php',
 		'news'                           => '{e_HANDLER}news_class.php',
 		'notify'                         => '{e_HANDLER}notify_class.php',
-		'e107\override'                  => '{e_HANDLER}override_class.php',
+		'override'                       => '{e_HANDLER}override_class.php',
 		'rater'                          => '{e_HANDLER}rate_class.php',
 		'redirection'                    => '{e_HANDLER}redirection_class.php',
 		'secure_image'                   => '{e_HANDLER}secure_img_handler.php',
@@ -271,6 +271,15 @@ class e107
 		// Core plugin auto-loaders.
 		'pageHelper'                     => '{e_PLUGIN}page/includes/pageHelper.php'
 	);
+
+	/**
+	 * List of core classes using the 'e107' namespace.
+	 */
+	protected static $_named_handlers = [
+		'override' => true,
+
+	];
+
 
 
 	/**
@@ -994,7 +1003,9 @@ class e107
 	 */
 	public static function getHandlerPath($class_name, $parse_path = true)
 	{
+
 		$ret = isset(self::$_known_handlers[$class_name]) ? self::$_known_handlers[$class_name] : null;
+
 		if($parse_path && $ret)
 		{
 			$ret = self::getParser()->replaceConstants($ret);
@@ -1040,7 +1051,7 @@ class e107
 
 	public static function isHandlerNamespaced($className)
 	{
-		return isset(self::$_known_handlers['e107\\'.$className]) ? '\\e107\\'.$className : false;
+		return isset(self::$_named_handlers[$className]) ? '\\e107\\'.$className : false;
 	}
 
 	/**
@@ -1141,6 +1152,11 @@ class e107
 			}
 		}
 
+		if($named = self::isHandlerNamespaced($class_name))
+		{
+			$class_name = $named;
+		}
+
 		if($path && is_string($path) && !class_exists($class_name, false))
 		{
 			global $_E107;
@@ -1158,13 +1174,8 @@ class e107
 			//e107_require_once() is available without class2.php. - see core_functions.php
 		}
 
-
 		if(class_exists($class_name, false))
 		{
-			if($named = self::isHandlerNamespaced($class_name))
-			{
-				$class_name = $named;
-			}
 
 			try
 			{
@@ -1965,7 +1976,7 @@ class e107
 	/**
 	 * Retrieve override handler singleton object
 	 *
-	 * @return override
+	 * @return e107\override
 	 */
 	public static function getOverride()
 	{
