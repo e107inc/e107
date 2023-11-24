@@ -294,11 +294,20 @@ class e107Test extends \Codeception\Test\Unit
 			{
 				$e107 = $this->e107;
 
+				// test with path.
 				$result = $e107::getSingleton('override',  e_HANDLER . 'override_class.php');
+
+				$this->assertNotEmpty($result, 'Override class not loaded');
 
 				$exists = method_exists($result, 'override_check');
 
 				$this->assertTrue($exists, 'Failed to load override class singleton');
+
+				// Test without path.
+				$result2 = $e107::getOverride();
+				$exists2 = method_exists($result2, 'override_check');
+				$this->assertTrue($exists2, 'Failed to load override class singleton');
+
 			}
 
 /*
