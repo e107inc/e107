@@ -289,13 +289,19 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this->assertTrue($res);
 			}
-
+*/
 			public function testGetSingleton()
 			{
-				$res = null;
-				$this->assertTrue($res);
+				$e107 = $this->e107;
+
+				$result = $e107::getSingleton('override',  e_HANDLER . 'override_class.php');
+
+				$exists = method_exists($result, 'override_check');
+
+				$this->assertTrue($exists, 'Failed to load override class singleton');
 			}
 
+/*
 			public function testGetObject()
 			{
 				$res = null;
