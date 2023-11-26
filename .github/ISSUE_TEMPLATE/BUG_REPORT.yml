@@ -9,7 +9,7 @@ body:
       label: What e107 version are you using?
       multiple: true
       options:
-        - v2.3.2
+        - v2.3.3
         - Latest Github version (just updated)
     validations:
       required: true
