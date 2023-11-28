@@ -11,7 +11,7 @@
 */
 
 // minimal software version
-define('MIN_PHP_VERSION',   '5.6');
+define('MIN_PHP_VERSION',   '7.4');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', true);
 
