@@ -833,13 +833,13 @@ class e_install
 				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_044;
-				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8mb4` ';
 					
 				}
 				else
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_137;
-				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8mb4` ';
 				}
 
 				if (!$this->dbqry($query))
@@ -854,7 +854,7 @@ class e_install
 				}
 				else
 				{
-                    $this->dbqry('SET NAMES `utf8`');
+                    $this->dbqry('SET NAMES `utf8mb4`');
 
 					$page_content .= $notification; // "
 				}
@@ -1496,7 +1496,7 @@ class e_install
 \$mySQLpassword  = '{$this->previous_steps['mysql']['password']}';
 \$mySQLdefaultdb = '{$this->previous_steps['mysql']['db']}';
 \$mySQLprefix    = '{$this->previous_steps['mysql']['prefix']}';
-\$mySQLcharset   = 'utf8';
+\$mySQLcharset   = 'utf8mb4';
 
 \$ADMIN_DIRECTORY     = '{$this->e107->e107_dirs['ADMIN_DIRECTORY']}';
 \$FILES_DIRECTORY     = '{$this->e107->e107_dirs['FILES_DIRECTORY']}';
@@ -1903,9 +1903,10 @@ if($this->pdo == true)
 	 */
 	public function install_plugin($plugpath)
 	{
-		e107::getPlugin()->install_plugin($plugpath);
-	//	e107::getPlugin()->install_plugin($row['plugin_id']);
-		
+		$plugin_handler = e107::getPlugin();
+		$plugin_handler->XmlTables('uninstall', ['plugin_path' => $plugpath], ['delete_tables' => true]);
+		$plugin_handler->install($plugpath);
+
 		e107::getMessage()->reset(false, false, true);
 		
 		return null;
@@ -2165,7 +2166,7 @@ if($this->pdo == true)
 		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
 
 		// Force UTF-8 again
-		$this->dbqry('SET NAMES `utf8`');
+		$this->dbqry('SET NAMES `utf8mb4`');
 
 		$srch = array("CREATE TABLE","(");
 		$repl = array("DROP TABLE IF EXISTS","");

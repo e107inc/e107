@@ -22,6 +22,8 @@ define("DBVLAN_13", "Table missing!");
 define("DBVLAN_14", "Choose table(s) to validate");
 define("DBVLAN_15", "Start Verify");
 define("DBVLAN_16", "SQL Verification");
+define("DBVLAN_17", "Storage engine should be [x] but is [y]");
+define("DBVLAN_18", "Character set should be [x] but is [y]");
 
 define("DBVLAN_19", "Attempt to Fix");
 
@@ -32,5 +34,8 @@ define("DBVLAN_24", "Please select action.");
 define("DBVLAN_25", "Index missing!");
 define("DBVLAN_26", "[x] table(s) have problems.");
 
-// IMPORTANT NOTE: DBLAN has been replaced by DBBLAN in this file since 0.7 due to conflicts with db.php
+define("DBVLAN_27", "Table inconsistency");
+define("DBVLAN_28", "Not applicable");
+
+// IMPORTANT NOTE: DBLAN has been replaced by DBVLAN in this file since 0.7 due to conflicts with db.php
 

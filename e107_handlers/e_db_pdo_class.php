@@ -2610,11 +2610,11 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * Set Database charset to utf8
+	 * Set Database charset to utf8mb4
 	 *
 	 * @access private
 	 */
-	public function setCharset($charset = 'utf8')
+	public function setCharset($charset = 'utf8mb4')
 	{
 		$this->db_Query("SET NAMES `$charset`");
 
@@ -2627,7 +2627,8 @@ class e_db_pdo implements e_db
 	 */
 	public function getCharset()
 	{
-		return $this->mySQLcharset;
+		require_once(e_HANDLER."db_verify_class.php");
+		return (new db_verify())->getIntendedCharset($this->mySQLcharset);
 	}
 
 
