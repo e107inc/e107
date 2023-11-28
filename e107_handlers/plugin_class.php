@@ -378,7 +378,7 @@ class e_plugin
 
 		if($opt === 'path')
 		{
-			return e107::getParser()->createConstants(e_PLUGIN_ABS.$this->_plugdir.'/'.$link[$key]);
+			return e107::getParser()->createConstants(e_PLUGIN_ABS.$this->_plugdir.'/'.$link[$key], 2);
 		}
 
 		return "<img src='".e_PLUGIN.$this->_plugdir.'/'.$link[$key] ."' alt=\"".$caption."\"  class='icon S".$size."'  />";

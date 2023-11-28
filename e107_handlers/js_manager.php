@@ -187,6 +187,8 @@ class e_jsmanager
 
 	protected $_theme_css_processor = false;
 
+	private $_favicon = null;
+
 	/**
 	 * Constructor
 	 *
@@ -2246,6 +2248,16 @@ class e_jsmanager
 		return $this;
 	}
 
+	/**
+	 * Set a custom favicon (must be a .png file)
+	 * @param string $path to a png file. eg. {e_PLUGIN}gallery/images/icon_32.png
+	 * @return e_jsmanager
+	 */
+	public function setFavicon($path)
+	{
+		$this->_favicon = $path;
+		return $this;
+	}
 
 	/**
 	 * Render favicon HTML code - used in header.php and header_default.php
@@ -2256,6 +2268,20 @@ class e_jsmanager
 		$sitetheme = $this->getCurrentTheme();
 
 		$ret = '';
+
+		if(!empty($this->_favicon))
+		{
+			$iconSizes = [16 => 'icon',32 => 'icon',48 => 'icon',192 => 'icon',167 => 'apple-touch-icon',180 => 'apple-touch-icon'];
+
+			foreach($iconSizes as $size => $rel)
+			{
+				$sizes = $size.'x'.$size;
+				$url = e107::getParser()->thumbUrl($this->_favicon, ['w'=>$size, 'h'=>$size, 'crop'=>1]);
+				$ret .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".$url."'>\n";
+			}
+
+			return $ret;
+		}
 
 		if(file_exists(e_THEME . $sitetheme . "/favicon.ico"))
 		{
