@@ -341,7 +341,7 @@ echo "</body></html>";
 //
 $tmp = array();
 
-$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
+$magicSC = (array) e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
 $tmp['search'] = (array) array_keys($magicSC);
 $tmp['replace'] = array_values($magicSC);

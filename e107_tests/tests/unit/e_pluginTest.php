@@ -26,7 +26,7 @@
 			}
 			catch (Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_plugin object: $e");
+				static::fail("Couldn't load e_plugin object: $e");
 			}
 		}
 
@@ -221,12 +221,18 @@
 		{
 
 		}
-
+*/
 		public function testGetIcon()
 		{
+			$result = $this->ep->clearCache()->load('gallery')->getIcon(32);
+			$expected = "<img src='./e107_plugins/gallery/images/gallery_32.png' alt=\"Gallery\"  class='icon S32'  />";
+			self::assertSame($expected, $result);
 
+			$result = $this->ep->clearCache()->load('gallery')->getIcon(32, 'path');
+			$expected = '{e_PLUGIN}gallery/images/gallery_32.png';
+			self::assertSame($expected, $result);
 		}
-*/
+
 		public function testGetInstalled()
 		{
 			$result = $this->ep->clearCache()->getInstalled();

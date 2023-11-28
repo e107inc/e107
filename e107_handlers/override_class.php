@@ -64,17 +64,19 @@ class override {
 		
 		$this->override_function($arr, $function, $include);
 	}
+
 	/**
 	 * check if an override exists
-	 * @param $override : function name or class object
-	 * @param $method : method name when 'class' is used for $override
-	 * @return mixed
+	 * @param object|string $override : function name or class object
+	 * @param string $method : method name when 'class' is used for $override
 	 * @example if ($user_func = e107::getOverride()->check($this,'secure_image'))
 				{
 	 				return call_user_func($user_func);
-				}  
+				}
+	 * @return mixed
+
 	 */
-	public function check($override,$method='') // alias with check for class object
+	public function check($override,$method='')
 	{
 		
 		if($method != '')

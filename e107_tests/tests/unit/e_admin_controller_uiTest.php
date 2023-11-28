@@ -382,10 +382,13 @@
 
 		}
 	*/
-	/*
-		public function testSetConfig()
+
+	/*	public function testSetConfig()
 		{
-			$cfg = e107::getConfig();
+			$cfg = e107::getConfig('core',true, true);
+
+			$this->assertIsObject($cfg);
+
 			$before = $cfg->get('sitename');
 			$this->ui->setConfig($cfg);
 
@@ -394,8 +397,8 @@
 
 			$this->assertSame($after, $before);
 
-		}
-	*/
+		}*/
+
 
 
 
