@@ -1074,7 +1074,7 @@ $text .= "
 </table>
 						</td></tr>";
 
-					$useCoppaHelp = PRFLAN_46." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a>";
+					$useCoppaHelp = PRFLAN_46." <a target='_blank' href='https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions' rel='external'>".PRFLAN_94."</a>";
 
 						$text .= "
 
