@@ -2400,7 +2400,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 			$tmp[1]['text']            = LAN_SETTINGS;
 			$tmp[1]['description']     = ADLAN_151;
-			$tmp[1]['link']            = e_BASE.'usersettings.php';
+			$tmp[1]['link']            = e107::getUrl()->create('user/myprofile/edit',array('id'=>USERID)); //e_BASE.'usersettings.php';
 			$tmp[1]['image']           = "<i class='S16 e-settings-16'></i>"; // "<img src='".E_16_CAT_SETT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[1]['image_large']     = '';
 			$tmp[1]['image_src']       = '';
