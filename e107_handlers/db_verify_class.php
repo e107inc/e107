@@ -793,6 +793,11 @@ class db_verify
 	*/ 
 	function getId($tabl,$cur)
 	{
+		if(empty($tabl))
+		{
+			return null;
+		}
+
 		$key = array_flip($tabl);
 		
 		if(strpos($cur,"lan_") === 0) // language table adjustment.
