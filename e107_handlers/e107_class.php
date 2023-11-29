@@ -530,8 +530,17 @@ class e107
 	 * @param array $e107_config_override
 	 * @return e107
 	 */
-	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
+	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info=array(), $e107_config_override = array())
 	{
+		if(!empty($e107_paths['admin'])) //v2.4
+		{
+			foreach($e107_paths as $dir => $path)
+			{
+				$newKey = strtoupper($dir).'_DIRECTORY';
+				$e107_paths[$newKey] = $path;
+				unset($e107_paths[$dir]);
+			}
+		}
 
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
 	}
@@ -599,7 +608,7 @@ class e107
 		$this->prepare_request();
 
 		// mysql connection info
-		$this->e107_config_mysql_info = $e107_config_mysql_info;
+		$this->setMySQLConfig($e107_config_mysql_info);
 
 		// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
 	/*	if (!empty($e107_config_override['site_path']))
@@ -836,7 +845,7 @@ class e107
 	public function initInstallSql($e107_config_mysql_info)
 	{
 		// mysql connection info
-		$this->e107_config_mysql_info = $e107_config_mysql_info;
+		$this->setMySQLConfig($e107_config_mysql_info);
 
 		// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
 		$this->set_constants();
@@ -6170,6 +6179,25 @@ class e107
 
 	}
 
+	/**
+	 * @param array $sqlinfo
+	 * @return void
+	 */
+	private function setMySQLConfig($sqlinfo): void
+	{
+		if(!empty($sqlinfo['server']))
+		{
+			foreach($sqlinfo as $key=>$val)
+			{
+				$newKey = 'mySQL'.$key;
+				$sqlinfo[$newKey] = $val;
+				unset($sqlinfo[$key]);
+			}
+		}
+
+
+		$this->e107_config_mysql_info = $sqlinfo;
+	}
 
 
 }

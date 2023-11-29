@@ -159,7 +159,7 @@ else
 	unset($retrieve_prefs);
 }
 
-@include(e_ROOT.'e107_config.php');
+$config = include(e_ROOT.'e107_config.php');
 
 if(!defined('e_POWEREDBY_DISABLE'))
 {
@@ -183,7 +183,7 @@ if(empty($PLUGINS_DIRECTORY))
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(empty($mySQLdefaultdb))
+if(empty($mySQLdefaultdb) && empty($config))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
   header('Location: install.php');
@@ -201,8 +201,6 @@ unset($tmpPlugDir);
 // clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
 
-
-
 $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 
 //Core functions - now API independent
@@ -210,24 +208,32 @@ $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-/** @note compact() causes issues with PHP7.3 */
-$dirPaths = array('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
-$e107_paths = array();
-foreach($dirPaths as $v)
+if(empty($config['directories'])) // old e107_config.php format.
 {
-	if(isset($$v))
+	$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
+	$legacy_sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+	if(isset($mySQLport))
 	{
-		$e107_paths[$v] = $$v;
+		$legacy_sql_info['mySQLport'] = $mySQLport;
 	}
+
+	$sql_info = array_combine(array_map(function($k) {
+		return str_replace('mySQL', '', $k);
+		}, array_keys($legacy_sql_info)),
+        $legacy_sql_info
+	);
+}
+else // New e107_config.php format. v2.4+
+{
+	$e107_paths = $config['directories'];
+	$sql_info = $config['mySQL'];
+	$E107_CONFIG = $config['other'] ?? [];
+	unset($config);
 }
 
-// $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
-$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
-if(isset($mySQLport))
-{
-	$sql_info['mySQLport'] = $mySQLport;
-}
+
 $e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
+
 e107::getSingleton('eIPHandler');			// This auto-handles bans etc
 unset($dirPaths,$e107_paths);
 
@@ -304,7 +310,7 @@ $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(false);
 
 $dbg->logTime('SQL Connect');
-$merror=$sql->db_Connect($sql_info['mySQLserver'], $sql_info['mySQLuser'], $sql_info['mySQLpassword'], $mySQLdefaultdb);
+$merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], $sql_info['defaultdb']);
 unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
