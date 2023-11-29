@@ -582,6 +582,8 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_delete($parm = '')
 		{
+			$tp = e107::getParser();
+
 			if($this->pmMode !== 'inbox' && $this->pmMode !== 'outbox' && empty($parm))
 			{
 				 return '';
@@ -599,7 +601,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 
 			$action = $extra === '.outbox' ? 'delete-out' : 'delete-in';
-			return "<a class='btn btn-default btn-secondary' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
+			return "<a class='btn btn-default btn-secondary' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_JSCONFIRM)).") \">".PM_DELETE_ICON."</a>";
 		}
 
 
