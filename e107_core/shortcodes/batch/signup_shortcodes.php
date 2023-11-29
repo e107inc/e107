@@ -25,7 +25,7 @@ class signup_shortcodes extends e_shortcode
 
 	function sc_signup_coppa_text($parm=null)
 	{
-		$text = LAN_SIGNUP_77. " <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>". LAN_SIGNUP_14."</a>. ".
+		$text = LAN_SIGNUP_77. " <a target='_blank' href='https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions'>". LAN_SIGNUP_14."</a>. ".
 		LAN_SIGNUP_15 . " " . e107::getParser()->emailObfuscate(SITEADMINEMAIL, LAN_SIGNUP_14) . " " . LAN_SIGNUP_16;
 
 		return $text;
