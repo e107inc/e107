@@ -127,7 +127,7 @@ class error_page
 		$this->template = 403;
 		$this->title = LAN_ERROR_4;
 		$this->caption = LAN_ERROR_45;
-		$this->content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_6 . '<br/><br/>' . LAN_ERROR_2;
+		$this->content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_3 . '<br/><br/>' . LAN_ERROR_2;
 	}
 
 	/**
@@ -140,7 +140,7 @@ class error_page
 		$this->template = 404;
 		$this->title = LAN_ERROR_7;
 		$this->caption = LAN_ERROR_45;
-		$this->content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_9;
+		$this->content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_3;
 	}
 
 	/**
@@ -153,7 +153,7 @@ class error_page
 		$this->template = 500;
 		$this->title = LAN_ERROR_10;
 		$this->caption = LAN_ERROR_14;
-		$this->content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_12;
+		$this->content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_3;
 	}
 
 	/**
@@ -168,7 +168,7 @@ class error_page
 		$this->template = 'DEFAULT';
 		$this->title = LAN_ERROR_13 . ' (' . $errorQuery . ')';
 		$this->caption = LAN_ERROR_14;
-		$this->content = LAN_ERROR_15;
+		$this->content = LAN_ERROR_3;
 	}
 
 	/**
