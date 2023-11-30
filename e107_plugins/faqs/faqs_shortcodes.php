@@ -337,7 +337,7 @@ class faqs_shortcodes extends e_shortcode
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
-				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('required' => true, 'maxlength' => $this->questionCharLimit, 'minlength' => $this->questionCharMinLimit, 'size' =>'xxlarge', 'placeholder' =>LAN_FAQS_012, 'wrap' =>'soft'))."
+				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('required' => true, 'maxlength' => $this->questionCharLimit, 'minlength' => $this->questionCharMin, 'size' =>'xxlarge', 'placeholder' =>LAN_FAQS_012, 'wrap' =>'soft'))."
 				<div class='faq-char-limit'><small>".$this->questionCharLimit." ".LAN_FAQS_013."</small></div>".$frm->submit('submit_a_question',LAN_SUBMIT)."</div>";
 
 				$text .= $frm->close();
