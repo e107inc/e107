@@ -143,7 +143,7 @@ $error_handler = new error_handler();
 //
 // E: Setup other essential PHP parameters
 //
-define('e107_INIT', true);
+const e107_INIT = true;
 
 
 // DEPRECATED, use e107::getConfig() and e107::getPlugConfig()
@@ -208,7 +208,7 @@ $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-if(empty($config['directories'])) // old e107_config.php format.
+if(!class_exists('e107_config')) // old e107_config.php format.
 {
 	$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 	$legacy_sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
@@ -225,10 +225,10 @@ if(empty($config['directories'])) // old e107_config.php format.
 }
 else // New e107_config.php format. v2.4+
 {
-	$e107_paths = $config['directories'];
-	$sql_info = $config['mySQL'];
-	$E107_CONFIG = $config['other'] ?? [];
-	unset($config);
+	$e107_paths = $config->paths();
+	$sql_info = $config->database();
+	$E107_CONFIG = $config->other() ?? [];
+	//unset($config);
 }
 
 
@@ -1369,7 +1369,7 @@ function getperms($arg, $ap = null, $path = null)
 		return true;
 	}
 
-	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getInstance()->getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
+	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
 	{
 		$sql = e107::getDb('psql');
 

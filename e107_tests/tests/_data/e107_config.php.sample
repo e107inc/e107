@@ -36,30 +36,44 @@ $SYSTEM_DIRECTORY    = 'e107_system/';
 
 $E107_CONFIG = array('site_path' => '000000test');
 */
-define('e_MOD_REWRITE',true);
+const e_MOD_REWRITE = true;
 
-return [
-    'mySQL' => [
-        'server'   => '{{ mySQLserver }}',
-        'user'     => '{{ mySQLuser }}',
-        'password' => '{{ mySQLpassword }}',
-        'defaultdb'=> '{{ mySQLdefaultdb }}',
-        'prefix'   => '{{ mySQLprefix }}',
-        'charset'  => 'utf8',
-    ],
-    'directories' => [ // leave empty to use default
-        'admin'      => 'e107_admin/',
-        'files'      => 'e107_files/',
-        'images'     => 'e107_images/',
-        'themes'     => 'e107_themes/',
-        'plugins'    => 'e107_plugins/',
-        'handlers'   => 'e107_handlers/',
-        'languages'  => 'e107_languages/',
-        'help'       => 'e107_docs/help/',
-        'system'     => 'e107_system/',
-        'media'      => 'e107_media/',
-    ],
-    'other' =>  [
-        'site_path' => '000000test'
-    ]
-];
+class e107_config
+{
+    public function database()
+    {
+        return [
+            'server'   => '{{ mySQLserver }}',
+            'user'     => '{{ mySQLuser }}',
+            'password' => '{{ mySQLpassword }}',
+            'defaultdb'=> '{{ mySQLdefaultdb }}',
+            'prefix'   => '{{ mySQLprefix }}',
+            'charset'  => 'utf8',
+        ];
+    }
+
+    public function paths()
+    {
+        return [
+            'admin'      => 'e107_admin/',
+            'files'      => 'e107_files/',
+            'images'     => 'e107_images/',
+            'themes'     => 'e107_themes/',
+            'plugins'    => 'e107_plugins/',
+            'handlers'   => 'e107_handlers/',
+            'languages'  => 'e107_languages/',
+            'help'       => 'e107_docs/help/',
+            'system'     => 'e107_system/',
+            'media'      => 'e107_media/',
+        ];
+    }
+
+    public function other()
+    {
+        return [
+            'site_path' => '000000test'
+        ];
+    }
+}
+
+return new e107_config;
