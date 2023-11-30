@@ -238,6 +238,7 @@ class faq_main_ui extends e_admin_ui
 			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>1, 'type'=>'userclass' ),
 			'submit_question_limit'		=> array('title'=> LANA_FAQ_PREF_4, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1),
 			'submit_question_char_limit'=> array('title'=> LANA_FAQ_PREF_5, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=>array('max'=>255, 'default'=>255)),
+			'submit_question_char_min'=> array('title'=> LANA_FAQ_PREF_24, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=> array('default'=> 20)),
 			'submit_question_language'	=> array('title'=> LANA_FAQ_PREF_6, 'tab'=>1, 'type'=>'dropdown' ),
 			'submit_question_acknowledgement'=> array('title'=> LANA_FAQ_PREF_7, 'tab'=>1, 'type'=>'textarea', 'help'=>LANA_FAQ_PREF_HELP_2),
 //new display tab

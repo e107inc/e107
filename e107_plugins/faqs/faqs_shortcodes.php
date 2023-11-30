@@ -30,6 +30,7 @@ class faqs_shortcodes extends e_shortcode
 	private $share = false;
 	private $datestamp = false;
 	private $questionCharLimit = 255;
+	private $questionCharMin = 20;
 	public $pref;
 	public $tag;
 	public $category;
@@ -53,6 +54,11 @@ class faqs_shortcodes extends e_shortcode
 		if(!empty($pref['submit_question_char_limit']))
 		{
 			$this->questionCharLimit = intval($pref['submit_question_char_limit']);
+		}
+
+		if(!empty($pref['submit_question_char_min']))
+		{
+			$this->questionCharMin = intval($pref['submit_question_char_min']);
 		}
 
 	}
@@ -331,7 +337,7 @@ class faqs_shortcodes extends e_shortcode
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
-				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength' =>$this->questionCharLimit, 'size' =>'xxlarge', 'placeholder' =>LAN_FAQS_012, 'wrap' =>'soft'))."
+				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('required' => true, 'maxlength' => $this->questionCharLimit, 'minlength' => $this->questionCharMinLimit, 'size' =>'xxlarge', 'placeholder' =>LAN_FAQS_012, 'wrap' =>'soft'))."
 				<div class='faq-char-limit'><small>".$this->questionCharLimit." ".LAN_FAQS_013."</small></div>".$frm->submit('submit_a_question',LAN_SUBMIT)."</div>";
 
 				$text .= $frm->close();

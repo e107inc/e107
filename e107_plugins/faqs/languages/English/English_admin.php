@@ -40,6 +40,7 @@ define("LANA_FAQ_PREF_20", "Ascending by Date");
 define("LANA_FAQ_PREF_21", "Descending by Date");
 define("LANA_FAQ_PREF_22", "Manage Questions");
 define("LANA_FAQ_PREF_23", "Manage Categories");
+define("LANA_FAQ_PREF_24", "Ask a Question: character min length");
 
 define("LANA_FAQ_PREF_HELP_1", "0 = no limit");
 define("LANA_FAQ_PREF_HELP_2", "Leave blank to use default");
