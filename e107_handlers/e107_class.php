@@ -619,7 +619,7 @@ class e107
 
 		if(empty($e107_config_override['site_path']))
 		{
-			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
+			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['defaultdb'], $e107_config_mysql_info['prefix']);
 		}
 
 		// Set default folder (and override paths) if missing from e107_config.php
