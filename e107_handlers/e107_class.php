@@ -5569,7 +5569,7 @@ class e107
 			$queryString = $_SERVER['QUERY_STRING'] ;
 		}
 
-		$inArray = array("'", '/**/', '/UNION/', '/SELECT/', 'AS ');
+		$inArray = array(/*"'",*/ '/**/', '/UNION/', '/SELECT/', 'AS ');
 
 		foreach($inArray as $res)
 		{
@@ -5604,7 +5604,14 @@ class e107
 			$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
 		}
 
+		$replacements = array(
+		    '\'' => '%27',
+		    '"'  => '%22'
+		);
+
+		$e_QUERY = str_replace(array_keys($replacements), $replacements, $e_QUERY); // don't encode quotes.
 		$e_QUERY = htmlspecialchars(self::getParser()->post_toForm($e_QUERY));
+
 
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))

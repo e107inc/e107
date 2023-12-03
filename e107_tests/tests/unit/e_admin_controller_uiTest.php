@@ -24,8 +24,10 @@
 			}
 			catch(Exception $e)
 			{
-				$this->fail("Couldn't load e_admin_controller_ui object");
+				$this::fail("Couldn't load e_admin_controller_ui object");
 			}
+
+
 
 		}
 
@@ -99,7 +101,58 @@
 
 		}
 
+		public function test_ModifyListQrySearch()
+		{
 
+			$listQry = 'SELECT u.* FROM `#user`  WHERE 1 ';
+			$filterOptions = '';
+			$tablePath = '`#user`.';
+			$tableFrom = '`#user`';
+			$primaryName = 'user_id';
+			$raw = false;
+			$orderField = null;
+			$qryAsc = null;
+			$forceFrom = false;
+			$qryFrom = 0;
+			$forceTo = false;
+			$perPage = 10;
+			$qryField = null;
+			$isfilter = false;
+			$handleAction = 'list';
+
+			$this->ui->setFields([
+					'user_id'           => array('title'=>'User ID', '__tableField' => 'u.user_id', 'type'=>'int', 'data'=>'int'),
+					'user_name' 		=> array('title' => 'Name',	'__tableField' => 'u.user_name', 'type' => 'text',	 'data'=>'safestr'), // Display name
+ 		            'user_login' 		=> array('title' => 'Login','__tableField' => 'u.user_login', 'type' => 'text',	 'data'=>'safestr'), // Real name (no real vetting)
+ 			]);
+
+			// Test single word search term.
+			$result = $this->ui->_modifyListQrySearch($listQry, 'admin', $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$expected = "SELECT u.* FROM `#user`  WHERE 1  AND  ( u.user_name LIKE '%admin%' OR u.user_login LIKE '%admin%' )  LIMIT 0, 10";
+			$this::assertSame($expected, $result);
+
+			// Test multiple word search term.
+			$result = $this->ui->_modifyListQrySearch($listQry, 'firstname lastname', $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$expected = "SELECT u.* FROM `#user`  WHERE 1  AND (u.user_name LIKE '%firstname%' OR u.user_login LIKE '%firstname%') AND (u.user_name LIKE '%lastname%' OR u.user_login LIKE '%lastname%') LIMIT 0, 10";
+			$this::assertSame($expected, $result);
+
+			// Search term in quotes.
+			$expected = "SELECT u.* FROM `#user`  WHERE 1  AND  ( u.user_name LIKE '%firstname lastname%' OR u.user_login LIKE '%firstname lastname%' )  LIMIT 0, 10";
+
+			// Double-quotes.
+			$result = $this->ui->_modifyListQrySearch($listQry, '"firstname lastname"', $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$this::assertSame($expected, $result);
+
+			// Single-quotes.
+			$result = $this->ui->_modifyListQrySearch($listQry, "'firstname lastname'", $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$this::assertSame($expected, $result);
+
+			// Single quote as apostophie.
+			$result = $this->ui->_modifyListQrySearch($listQry, "burt's", $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$expected = "SELECT u.* FROM `#user`  WHERE 1  AND  ( u.user_name LIKE '%burt&#039;s%' OR u.user_login LIKE '%burt&#039;s%' )  LIMIT 0, 10";
+			$this::assertSame($expected, $result);
+
+		}
 /*
 		public function testGetSortParent()
 		{

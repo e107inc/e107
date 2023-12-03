@@ -1995,16 +1995,20 @@ class e107Test extends \Codeception\Test\Unit
 			public function testSet_request()
 			{
 				$tests = array(
+
 					'mode=main&action=create'                       => 'mode=main&amp;action=create',
 					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
 					'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main',
-					'mode=main&action=custom&other[key]=1'         => 'mode=main&amp;action=custom&amp;other[key]=1',
+					'mode=main&action=custom&other[key]=1'          => 'mode=main&amp;action=custom&amp;other[key]=1',
+					'searchquery="two words"&mode=main'             => 'searchquery=%22two words%22&amp;mode=main',
+					"searchquery='two words'&mode=main"             => "searchquery=%27two words%27&amp;mode=main",
+				//
 				);
 
 				foreach($tests as $input => $expected)
 				{
 					$result = $this->e107->set_request(true, $input);
-					$this->assertSame($expected, $result);
+					$this::assertSame($expected, $result);
 				}
 
 

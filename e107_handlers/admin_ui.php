@@ -3042,6 +3042,11 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->fields;
 	}
 
+	public function setFields($fields)
+	{
+		$this->fields = $fields;
+	}
+
 	/**
 	 *
 	 * @param string $field
@@ -4484,6 +4489,16 @@ class e_admin_controller_ui extends e_admin_controller
 			$search = substr($search, 0, -1);
 		}
 
+		if(strpos($search,'&quot')===0 || strpos($search,'&#039;')===0)
+		{
+			$search = str_replace(['&quot;','&#039;'],'',$search);
+		}
+		else
+		{
+			$search = str_replace(' ','|',$search);
+		}
+
+
 		// replace "*" wildcard with mysql wildcard "%"
 		return str_replace(array('*', '?'), array('%', '_'), $search);
 	}
@@ -4501,458 +4516,24 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
-		$searchQry = array();
-		$filterFrom = array();
-		$request  = $this->getRequest();
-		$tp = e107::getParser();
-		$tablePath = $this->getIfTableAlias(true, true).'.';
-		$tableFrom = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
-		$tableSFieldsArr = array(); // FROM for main table
-		$tableSJoinArr = array(); // FROM for join tables
-		$filter = array();
+		
+		$request    = $this->getRequest();
 
-		$this->listQry = $listQry;
-
+		
+		$tablePath  = $this->getIfTableAlias(true, true).'.';
+		$tableFrom  = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
+		$primaryName = $this->getPrimaryName();
+		$perPage    = (int) $this->getPerPage();
+				
+		$qryField   = $request->getQuery('field');
+		$qryAsc     = $request->getQuery('asc');
+		$qryFrom    = (int) $request->getQuery('from', 0);
+		$orderField = $request->getQuery('field', $this->getDefaultOrderField());
 		$filterOptions = $request->getQuery('filter_options', '');
+		$searchTerm     =$request->getQuery('searchquery', '');
+		$handleAction = $this->getRequest()->getActionName();
 
-		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
-		$searchFilter = $this->_parseFilterRequest($filterOptions);
-
-		$listQry = $this->listQry; // check for modification during parseFilterRequest();
-
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-			e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
-		}
-
-		if($searchFilter && is_array($searchFilter))
-		{
-
-			list($filterField, $filterValue) = $searchFilter;
-			
-			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
-			{
-				$_dataType = $this->fields[$filterField]['data'];
-				$_fieldType = $this->fields[$filterField]['type'];
-
-				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($this->fields[$filterField]['writeParms']['multiple'])))
-				{
-					 $_dataType = 'set';
-				}
-
-				switch ($_dataType)
-				{
-					case 'set':
-						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."', ".$this->fields[$filterField]['__tableField']. ')';
-					break;
-					
-					case 'int':
-					case 'integer':
-						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
-						{
-							$tmp =  explode('__',$filterOptions);
-							$dateSearchType = $tmp[2];
-
-							if($filterValue > time())
-							{
-								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-								{
-									e107::getMessage()->addDebug("[$dateSearchType] Between now and ".date(DATE_RFC822, $filterValue));
-								}
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' > ' .time();
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' < ' . (int) $filterValue;
-							}
-							else // THIS X, FUTURE
-							{
-
-								$endOpts = [
-									'today'     => strtotime('+24 hours', $filterValue),
-									'thisweek'  => strtotime('+1 week', $filterValue),
-									'thismonth' => strtotime('+1 month', $filterValue),
-									'thisyear' => strtotime('+1 year', $filterValue),
-								];
-
-								$end = isset($endOpts[$dateSearchType]) ? $endOpts[$dateSearchType] : time();
-
-								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-								{
-									e107::getMessage()->addDebug("[$dateSearchType] Between ".date(DATE_RFC822, $filterValue)." and ".date(DATE_RFC822, $end));
-								}
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' > ' . (int) $filterValue;
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' < ' .$end;
-							}
-
-						}
-						else 
-						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']. ' = ' . (int) $filterValue;
-						}		
-					break;
-					
-					
-					
-					default: // string usually. 
-
-						if($filterValue === '_ISEMPTY_')
-						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
-						}
-
-						else
-						{
-
-							if($_fieldType === 'method') // More flexible filtering.
-							{
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']. ' LIKE "%' .$tp->toDB($filterValue). '%"';
-							}
-							else
-							{
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
-							}
-						}
-						
-						//exit;
-					break;
-				}
-				
-			}
-				//echo 'type= '. $this->fields[$filterField]['data'];
-					//	print_a($this->fields[$filterField]);
-		}
-		elseif($searchFilter && is_string($searchFilter))
-		{
-			
-			// filter callbacks could add to WHERE clause
-			$searchQry[] = $searchFilter;
-		}
-
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-			e107::getMessage()->addDebug(print_a($searchQry,true));
-		}
-
-		$className = get_class($this);
-
-		// main table should select everything
-		$tableSFieldsArr[] = $tablePath.'*';
-		foreach($this->getFields() as $key => $var)
-		{
-			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
-			{
-				continue;
-			}
-
-			// select FROM... for main table
-			if(!empty($var['alias']) && !empty($var['__tableField']))
-			{
-				$tableSFieldsArr[] = $var['__tableField'];
-			}
-
-			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
-			
-			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str' || $var['data'] === 'safestr' || $var['data'] === 'int'))
-			{
-				$searchable_types[] = 'method';
-			}
-			
-			if(!empty($var['__tableField']) && trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) )
-			{
-				// Search for customer filter handler.
-				$cutomerSearchMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Search';
-				$args = array($tp->toDB($request->getQuery('searchquery', '')));
-
-				e107::getMessage()->addDebug('Searching for custom search method: ' .$className.'::'.$cutomerSearchMethod. '(' .implode(', ', $args). ')');
-
-				if(method_exists($this, $cutomerSearchMethod)) // callback handling
-				{
-					e107::getMessage()->addDebug('Executing custom search callback <strong>'.$className.'::'.$cutomerSearchMethod.'('.implode(', ', $args).')</strong>');
-
-					$filter[] = call_user_func_array(array($this, $cutomerSearchMethod), $args);
-					continue;
-				}
-
-
-				if($var['data'] === 'int' || $var['data'] === 'integer' ||  $var['type'] === 'int' || $var['type'] === 'integer')
-				{
-					if(is_numeric($searchQuery))
-					{
-						$filter[] = $var['__tableField']. ' = ' .$searchQuery;
-					}
-					continue;
-				}
-
-				if($var['type'] === 'ip')
-				{
-					$ipSearch = e107::getIPHandler()->ipEncode($searchQuery);
-					if(!empty($ipSearch))
-					{
-						$filter[] = $var['__tableField']." LIKE '%".$ipSearch."%'";
-					}
-					// Continue below for BC check also.
-				}
-
-
-				if(strpos($searchQuery, ' ') !==false) // search multiple words across fields.
-				{
-					$tmp = explode(' ', $searchQuery);
-
-					if(count($tmp) < 4) // avoid excessively long query.
-					{
-						foreach($tmp as $splitSearchQuery)
-						{
-							if(!empty($splitSearchQuery))
-							{
-								$filter[] = $var['__tableField']." LIKE '%".$splitSearchQuery."%'";
-							}
-						}
-					}
-					else
-					{
-						$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
-					}
-
-				}
-				else
-				{
-					$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
-				}
-
-
-				if($isfilter)
-				{
-					$filterFrom[] = $var['__tableField'];
-
-				}
-			}
-		}
-
-
-		if(strpos($filterOptions,'searchfield__') === 0) // search in specific field, so remove the above filters.
-		{
-			$filter = array(); // reset filter.
-		}
-
-
-	//	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-		//	e107::getDebug()->log(print_a($filter,true));
-			// e107::getMessage()->addInfo(print_a($filter,true));
-		}
-
-		if($isfilter)
-		{
-			if(!$filterFrom)
-			{
-				return false;
-			}
-			$tableSFields = implode(', ', $filterFrom);
-		}
-		else
-		{
-			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath.'*';
-		}
-
-
-		$jwhere = array();
-		$joins = array();
-		//file_put_contents(e_LOG.'uiAjaxResponseSFields.log', $tableSFields."\n\n", FILE_APPEND);
-		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
-		if($this->getJoinData())
-		{
-			$qry = 'SELECT SQL_CALC_FOUND_ROWS ' .$tableSFields;
-			foreach ($this->getJoinData() as $jtable => $tparams)
-			{
-				// Select fields
-				if(!$isfilter)
-				{
-					$fields = vartrue($tparams['fields']);
-					if($fields === '*')
-					{
-						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
-					}
-					elseif($fields)
-					{
-						$tableSJoinArr[] = $fields;
-						/*$fields = explode(',', $fields);
-						foreach ($fields as $field)
-						{
-							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
-						}*/
-					}
-				}
-
-				// Prepare Joins
-				$joins[] = '
-					' .vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath). '`' .vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField']). '`' .(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
-
-				// Prepare Where
-				if(!empty($tparams['where']))
-				{
-					$jwhere[] = $tparams['where'];
-				}
-			}
-
-				
-			//From
-			$qry .= $tableSJoinArr ? ', '.implode(', ', $tableSJoinArr). ' FROM ' .$tableFrom : ' FROM ' .$tableFrom;
-
-			// Joins
-			if(count($joins) > 0)
-			{
-				$qry .=  "\n".implode("\n", $joins);
-			}
-		}
-		else    // default listQry
-		{
-			if(!empty($listQry))
-			{
-				$qry = $this->parseCustomListQry($listQry);
-			}
-			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
-			{
-			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQry(true);
-				//$this->listOrder	= '_treesort '; // .$this->sortField;
-			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
-			}
-			else
-			{
-				$qry = 'SELECT SQL_CALC_FOUND_ROWS ' .$tableSFields. ' FROM ' .$tableFrom;
-			}
-
-		}
-
-		// group field - currently auto-added only if there are joins
-		$groupField = '';
-		if($joins && $this->getPrimaryName())
-		{
-			$groupField = $tablePath.$this->getPrimaryName();
-		}
-
-		// appended to GROUP BY when true.
-		if(!empty($this->listGroup))
-		{
-			$groupField = $this->listGroup;
-		}
-
-		if($raw)
-		{
-			$rawData = array(
-				'joinWhere' => $jwhere,
-				'filter' => $filter,
-				'listQrySql' => $this->listQrySql,
-				'filterFrom' => $filterFrom,
-				'search' => $searchQry,
-				'tableFromName' => $tableFrom,
-			);
-
-			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
-
-			$rawData['tableFrom'] = $tableSFieldsArr;
-			$rawData['joinsFrom'] = $tableSJoinArr;
-			$rawData['joins'] = $joins;
-			$rawData['groupField'] = $groupField;
-			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
-			$rawData['orderType'] = $request->getQuery('asc') === 'desc' ? 'DESC' : 'ASC';
-			$rawData['limitFrom'] = $forceFrom === false ? (int) $request->getQuery('from', 0) : (int) $forceFrom;
-			$rawData['limitTo'] = $forceTo === false ? (int) $this->getPerPage() : (int) $forceTo;
-			return $rawData;
-		}
-
-
-		// join where
-		if(count($jwhere) > 0)
-		{
-			$searchQry[] = ' (' .implode(' AND ',$jwhere). ' )';
-		}
-		// filter where
-		if(count($filter) > 0)
-		{
-			$searchQry[] = ' ( ' .implode(' OR ',$filter). ' ) ';
-		}
-
-		// more user added sql
-		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
-		{
-			if(is_array($this->listQrySql['db_where']))
-			{
-				$searchQry[] = implode(' AND ', $this->listQrySql['db_where']);
-			}
-			else
-			{
-				$searchQry[] = $this->listQrySql['db_where'];
-			}
-		}
-		
-	
-
-		// where query
-		if(count($searchQry) > 0)
-		{
-			// add more where details on the fly via $this->listQrySql['db_where'];
-			$qry .= (strripos($qry, 'where')==FALSE) ? ' WHERE ' : ' AND '; // Allow 'where' in custom listqry
-			$qry .= implode(' AND ', $searchQry);
-
-			// Disable tree (use flat list instead) when filters are applied
-			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
-			// Horrible hack, but only needs this one line of additional code
-			$this->getTreeModel()->setParam('sort_parent', null);
-		}
-
-		// GROUP BY if needed
-		if($groupField)
-		{
-			$qry .= ' GROUP BY '.$groupField;
-		}
-
-		// only when no custom order is required
-		if($this->listOrder && !$request->getQuery('field') && !$request->getQuery('asc'))
-		{
-			$qry .= ' ORDER BY '.$this->listOrder;
-		}
-		elseif($this->listOrder !== false)
-		{
-			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
-			$orderDef = ($request->getQuery('asc') === null ? $this->getDefaultOrder() : $request->getQuery('asc'));
-			if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
-			{
-				// no need of sanitize - it's found in field array
-				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
-			}
-		}
-		
-		if(isset($this->filterQry)) // custom query on filter. (see downloads plugin)
-		{
-			$qry = $this->filterQry;
-		}
-		
-		if($forceTo !== false || $this->getPerPage())
-		{
-			$from = $forceFrom === false ? (int) $request->getQuery('from', 0) : (int) $forceFrom;
-			if($forceTo === false)
-			{
-				$forceTo = $this->getPerPage();
-			}
-			$qry .= ' LIMIT '.$from.', '. (int) $forceTo;
-		}
-
-		// Debug Filter Query.
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-			e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
-		}
-	//	 echo $qry.'<br />';	
-	// print_a($this->fields);	
-	
-		$this->_log('listQry: '.str_replace('#', MPREFIX, $qry));
-
-		return $qry;
+		return $this->_modifyListQrySearch($listQry, $searchTerm, $filterOptions, $tablePath, $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
 	}
 
 
@@ -5198,6 +4779,503 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		
 		return 'admin_'.strtolower($name).'_'.strtolower($type);
+
+	}
+
+	/**
+	 * @param        $listQry
+	 * @param        $searchTerm
+	 * @param        $filterOptions
+	 * @param string $tablePath
+	 * @param        $isfilter
+	 * @param string $tableFrom
+	 * @param string $primaryName
+	 * @param        $raw
+	 * @param        $orderField
+	 * @param        $qryAsc
+	 * @param        $forceFrom
+	 * @param int    $qryFrom
+	 * @param        $forceTo
+	 * @param int    $perPage
+	 * @param        $qryField
+	 * @return array|Custom|false|string|string[]
+	 */
+	public function _modifyListQrySearch($listQry, $searchTerm, $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
+	{
+		$tp       = e107::getParser();
+		$fields   = $this->getFields();
+		$joinData = $this->getJoinData();
+
+		$this->listQry = $listQry;
+
+		$tableSFieldsArr = array(); // FROM for main table
+		$tableSJoinArr   = array(); // FROM for join tables
+		$filter          = array();
+		$searchQry       = array();
+		$filterFrom      = array();
+
+		$searchTerm   = $tp->toDB($searchTerm);
+		$searchQuery  = $this->fixSearchWildcards($searchTerm);
+		$searchFilter = $this->_parseFilterRequest($filterOptions);
+
+		$listQry = $this->listQry; // check for modification during parseFilterRequest();
+
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('searchQuery: <b>' . $searchQuery . '</b>');
+		}
+
+		if($searchFilter && is_array($searchFilter))
+		{
+
+			list($filterField, $filterValue) = $searchFilter;
+
+			if($filterField && $filterValue !== '' && isset($fields[$filterField]))
+			{
+				$_dataType  = $fields[$filterField]['data'];
+				$_fieldType = $fields[$filterField]['type'];
+
+				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($fields[$filterField]['writeParms']['multiple'])))
+				{
+					$_dataType = 'set';
+				}
+
+				switch($_dataType)
+				{
+					case 'set':
+						$searchQry[] = "FIND_IN_SET('" . $tp->toDB($filterValue) . "', " . $fields[$filterField]['__tableField'] . ')';
+					break;
+
+					case 'int':
+					case 'integer':
+						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
+						{
+							$tmp            = explode('__', $filterOptions);
+							$dateSearchType = $tmp[2];
+
+							if($filterValue > time())
+							{
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between now and " . date(DATE_RFC822, $filterValue));
+								}
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' > ' . time();
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' < ' . (int) $filterValue;
+							}
+							else // THIS X, FUTURE
+							{
+
+								$endOpts = [
+									'today'     => strtotime('+24 hours', $filterValue),
+									'thisweek'  => strtotime('+1 week', $filterValue),
+									'thismonth' => strtotime('+1 month', $filterValue),
+									'thisyear'  => strtotime('+1 year', $filterValue),
+								];
+
+								$end = isset($endOpts[$dateSearchType]) ? $endOpts[$dateSearchType] : time();
+
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between " . date(DATE_RFC822, $filterValue) . " and " . date(DATE_RFC822, $end));
+								}
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' > ' . (int) $filterValue;
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' < ' . $end;
+							}
+
+						}
+						else
+						{
+							$searchQry[] = $fields[$filterField]['__tableField'] . ' = ' . (int) $filterValue;
+						}
+					break;
+
+
+					default: // string usually.
+
+						if($filterValue === '_ISEMPTY_')
+						{
+							$searchQry[] = $fields[$filterField]['__tableField'] . " = '' ";
+						}
+
+						else
+						{
+
+							if($_fieldType === 'method') // More flexible filtering.
+							{
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' LIKE "%' . $tp->toDB($filterValue) . '%"';
+							}
+							else
+							{
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . " = '" . $tp->toDB($filterValue) . "'";
+							}
+						}
+
+						//exit;
+					break;
+				}
+
+			}
+			//echo 'type= '. $fields[$filterField]['data'];
+			//	print_a($fields[$filterField]);
+		}
+		elseif($searchFilter && is_string($searchFilter))
+		{
+
+			// filter callbacks could add to WHERE clause
+			$searchQry[] = $searchFilter;
+		}
+
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug(print_a($searchQry, true));
+		}
+
+		$className = get_class($this);
+
+		// main table should select everything
+		$tableSFieldsArr[] = $tablePath . '*';
+		foreach($fields as $key => $var)
+		{
+			// disabled or system
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
+			{
+				continue;
+			}
+
+			// select FROM... for main table
+			if(!empty($var['alias']) && !empty($var['__tableField']))
+			{
+				$tableSFieldsArr[] = $var['__tableField'];
+			}
+
+
+			if($this->_isSearchField($var, $searchQuery))
+			{
+				// Search for customer filter handler.
+				$cutomerSearchMethod = 'handle' . $handleAction . eHelper::camelize($key) . 'Search';
+				$args                = array($searchTerm);
+
+				e107::getMessage()->addDebug('Searching for custom search method: ' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')');
+
+				if(method_exists($this, $cutomerSearchMethod)) // callback handling
+				{
+					e107::getMessage()->addDebug('Executing custom search callback <strong>' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')</strong>');
+
+					$filter[] = call_user_func_array(array($this, $cutomerSearchMethod), $args);
+					continue;
+				}
+
+
+				if($var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
+				{
+					if(is_numeric($searchQuery))
+					{
+						$filter[] = $var['__tableField'] . ' = ' . $searchQuery;
+					}
+					continue;
+				}
+
+				if($var['type'] === 'ip')
+				{
+					$ipSearch = e107::getIPHandler()->ipEncode($searchQuery);
+					if(!empty($ipSearch))
+					{
+						$filter[] = $var['__tableField'] . " LIKE '%" . $ipSearch . "%'";
+					}
+					// Continue below for BC check also.
+				}
+
+
+				if(strpos($searchQuery, '|') === false  ) // search multiple words across fields.
+				{
+					$filter[] = $var['__tableField'] . " LIKE '%" . $searchQuery . "%'";
+				}
+
+
+				if($isfilter)
+				{
+					$filterFrom[] = $var['__tableField'];
+
+				}
+			}
+		}
+
+		if(strpos($searchQuery, '|') !== false) // search multiple words across fields.
+		{
+			$tmp = explode('|', $searchQuery);
+
+			if(count($tmp) < 4) // avoid excessively long query.
+			{
+
+					foreach($tmp as $splitSearchQuery)
+					{
+						if(!empty($splitSearchQuery))
+						{
+							$multiWordSearch = [];
+							foreach($fields as $key => $var)
+							{
+								if(!$this->_isSearchField($var, $splitSearchQuery) || $var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
+								{
+									continue;
+								}
+
+								$multiWordSearch[] = $var['__tableField'] . " LIKE '%" . $splitSearchQuery . "%'";
+							}
+							$searchQry[] = '('.implode(' OR ', $multiWordSearch).')';
+						}
+					}
+
+			}
+
+		}
+
+
+
+		if(strpos($filterOptions, 'searchfield__') === 0) // search in specific field, so remove the above filters.
+		{
+			$filter = array(); // reset filter.
+		}
+
+
+		//	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			//	e107::getDebug()->log(print_a($filter,true));
+			// e107::getMessage()->addInfo(print_a($filter,true));
+		}
+
+		if($isfilter)
+		{
+			if(!$filterFrom)
+			{
+				return false;
+			}
+			$tableSFields = implode(', ', $filterFrom);
+		}
+		else
+		{
+			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath . '*';
+		}
+
+
+		$jwhere = array();
+		$joins  = array();
+		//file_put_contents(e_LOG.'uiAjaxResponseSFields.log', $tableSFields."\n\n", FILE_APPEND);
+		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
+		if($joinData)
+		{
+			$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields;
+			foreach($joinData as $jtable => $tparams)
+			{
+				// Select fields
+				if(!$isfilter)
+				{
+					$fields = vartrue($tparams['fields']);
+					if($fields === '*')
+					{
+						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
+					}
+					elseif($fields)
+					{
+						$tableSJoinArr[] = $fields;
+						/*$fields = explode(',', $fields);
+						foreach ($fields as $field)
+						{
+							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
+						}*/
+					}
+				}
+
+				// Prepare Joins
+				$joins[] = '
+					' . vartrue($tparams['joinType'], 'LEFT JOIN') . " {$tparams['__tableFrom']} ON " . (vartrue($tparams['leftTable']) ? $tparams['leftTable'] . '.' : $tablePath) . '`' . vartrue($tparams['leftField']) . "` = {$tparams['__tablePath']}`" . vartrue($tparams['rightField']) . '`' . (vartrue($tparams['whereJoin']) ? ' ' . $tparams['whereJoin'] : '');
+
+				// Prepare Where
+				if(!empty($tparams['where']))
+				{
+					$jwhere[] = $tparams['where'];
+				}
+			}
+
+
+			//From
+			$qry .= $tableSJoinArr ? ', ' . implode(', ', $tableSJoinArr) . ' FROM ' . $tableFrom : ' FROM ' . $tableFrom;
+
+			// Joins
+			if(count($joins) > 0)
+			{
+				$qry .= "\n" . implode("\n", $joins);
+			}
+		}
+		else    // default listQry
+		{
+			if(!empty($listQry))
+			{
+				$qry = $this->parseCustomListQry($listQry);
+			}
+			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
+			{
+				//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
+				$qry = $this->getParentChildQry(true);
+				//$this->listOrder	= '_treesort '; // .$this->sortField;
+				//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
+			}
+			else
+			{
+				$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields . ' FROM ' . $tableFrom;
+			}
+
+		}
+
+		// group field - currently auto-added only if there are joins
+		$groupField = '';
+		if($joins && $primaryName)
+		{
+			$groupField = $tablePath . $primaryName;
+		}
+
+		// appended to GROUP BY when true.
+		if(!empty($this->listGroup))
+		{
+			$groupField = $this->listGroup;
+		}
+
+		if($raw)
+		{
+			$rawData = array(
+				'joinWhere'     => $jwhere,
+				'filter'        => $filter,
+				'listQrySql'    => $this->listQrySql,
+				'filterFrom'    => $filterFrom,
+				'search'        => $searchQry,
+				'tableFromName' => $tableFrom,
+			);
+
+
+			$rawData['tableFrom']  = $tableSFieldsArr;
+			$rawData['joinsFrom']  = $tableSJoinArr;
+			$rawData['joins']      = $joins;
+			$rawData['groupField'] = $groupField;
+			$rawData['orderField'] = isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
+			$rawData['orderType']  = $qryAsc === 'desc' ? 'DESC' : 'ASC';
+			$rawData['limitFrom']  = $forceFrom === false ? $qryFrom : (int) $forceFrom;
+			$rawData['limitTo']    = $forceTo === false ? $perPage : (int) $forceTo;
+
+			return $rawData;
+		}
+
+
+		// join where
+		if(count($jwhere) > 0)
+		{
+			$searchQry[] = ' (' . implode(' AND ', $jwhere) . ' )';
+		}
+		// filter where
+		if(count($filter) > 0)
+		{
+			$searchQry[] = ' ( ' . implode(' OR ', $filter) . ' ) ';
+		}
+
+		// more user added sql
+		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
+		{
+			if(is_array($this->listQrySql['db_where']))
+			{
+				$searchQry[] = implode(' AND ', $this->listQrySql['db_where']);
+			}
+			else
+			{
+				$searchQry[] = $this->listQrySql['db_where'];
+			}
+		}
+
+
+		// where query
+		if(count($searchQry) > 0)
+		{
+			// add more where details on the fly via $this->listQrySql['db_where'];
+			$qry .= (strripos($qry, 'where') === false) ? ' WHERE ' : ' AND '; // Allow 'where' in custom listqry
+			$qry .= implode(' AND ', $searchQry);
+
+			// Disable tree (use flat list instead) when filters are applied
+			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
+			// Horrible hack, but only needs this one line of additional code
+			if($treemodel = $this->getTreeModel())
+			{
+				$treemodel->setParam('sort_parent', null);
+			}
+
+		}
+
+		// GROUP BY if needed
+		if($groupField)
+		{
+			$qry .= ' GROUP BY ' . $groupField;
+		}
+
+		// only when no custom order is required
+		if($this->listOrder && !$qryField && !$qryAsc)
+		{
+			$qry .= ' ORDER BY ' . $this->listOrder;
+		}
+		elseif($this->listOrder !== false)
+		{
+			$orderField = !empty($qryField) ? $qryField : $this->getDefaultOrderField();
+			$orderDef   = ($qryAsc === null ? $this->getDefaultOrder() : $qryAsc);
+			if(isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
+			{
+				// no need of sanitize - it's found in field array
+				$qry .= ' ORDER BY ' . $fields[$orderField]['__tableField'] . ' ' . (strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
+			}
+		}
+
+		if(isset($this->filterQry)) // custom query on filter. (see downloads plugin)
+		{
+			$qry = $this->filterQry;
+		}
+
+		if($forceTo !== false || $perPage)
+		{
+			$from = $forceFrom === false ? $qryFrom : (int) $forceFrom;
+			if($forceTo === false)
+			{
+				$forceTo = $perPage;
+			}
+			$qry .= ' LIMIT ' . $from . ', ' . (int) $forceTo;
+		}
+
+		// Debug Filter Query.
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('QRY=' . str_replace('#', MPREFIX, $qry));
+		}
+		//	 echo $qry.'<br />';
+		// print_a($this->fields);
+
+		$this->_log('listQry: ' . str_replace('#', MPREFIX, $qry));
+
+		return $qry;
+	}
+
+	/**
+	 * Checks whether the field array should be searched oor not.
+	 * @param array $var
+	 * @param string $searchQuery
+	 * @return bool
+	 */
+	private function _isSearchField($field, $searchQuery): bool
+	{
+		$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
+
+		if($field['type'] === 'method' && !empty($field['data']) && ($field['data'] === 'string' || $field['data'] === 'str' || $field['data'] === 'safestr' || $field['data'] === 'int'))
+		{
+			$searchable_types[] = 'method';
+		}
+
+		return !empty($field['__tableField']) && trim($searchQuery) !== '' && in_array($field['type'], $searchable_types);
 
 	}
 }
@@ -7558,7 +7636,7 @@ class e_admin_form_ui extends e_form
 			'head_query'    => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query'      => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend'        => $controller->getPluginTitle(), // hidden by default
-			'form_pre'      => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
+			'form_pre'      => !$ajax ? $this->renderFilter(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
 			'form_post'     => '', // markup to be added after closing form element
 			'fields'        => $fields, // see e_admin_ui::$fields
 			'fieldpref'     => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
@@ -7687,6 +7765,7 @@ class e_admin_form_ui extends e_form
 	 */
 	public function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
+
 		if(!$input_options)
 		{
 			$input_options = array('size' => 20);
