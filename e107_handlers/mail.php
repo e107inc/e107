@@ -130,14 +130,10 @@ if (!defined('e107_INIT')) { exit; }
 //define('MAIL_DEBUG',true);
 //define('LOG_CALLER', true);
 
-//require_once(e_HANDLER.'phpmailer/class.phpmailer.php');
-//require_once(e_HANDLER.'phpmailer/class.smtp.php');
-//require_once(e_HANDLER.'phpmailer/PHPMailerAutoload.php');
-
-use PHPMailer\PHPMailer\PHPMailer;
-// use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\POP3;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\POP3;
+
 require_once(e_HANDLER.'vendor/autoload.php');
 
 
@@ -438,7 +434,7 @@ class e107Email extends PHPMailer
 	 */
 	protected function openLog($logInfo = true)
 	{
-		if ($this->logEnable && ($this->logHandle === false))
+		if ($this->logEnable && !is_resource($this->logHandle))
 		{
 			$logFileName = MAIL_LOG_PATH.'mailoutlog.log';
 			$this->logHandle = fopen($logFileName, 'a');      // Always append to file
@@ -487,7 +483,7 @@ class e107Email extends PHPMailer
 	 */
 	protected function logLine($text)
 	{
-		if ($this->logEnable && ($this->logHandle > 0))
+		if ($this->logEnable && is_resource($this->logHandle))
 		{
 			fwrite($this->logHandle,date('H:i:s y.m.d').' - '.$text."\r\n");
 		}
@@ -496,11 +492,12 @@ class e107Email extends PHPMailer
 	}
 
 	/**
-	 *	Close log
+	 * Close log
+	 * @return void
 	 */
 	protected function closeLog()
 	{
-		if ($this->logEnable && ($this->logHandle > 0))
+		if ($this->logEnable && is_resource($this->logHandle))
 		{
 			fclose($this->logHandle);
 		}
