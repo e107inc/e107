@@ -276,4 +276,50 @@ Admin<br />
 
 		}
 
+		/**
+		 * @see https://github.com/e107inc/e107/issues/5131
+		 * @throws Exception if the {@link e107Email} object cannot be created.
+		 */
+		function testLogFileHandle()
+		{
+			$logFilePath = e_ROOT . MAIL_LOG_PATH . 'mailoutlog.log';
+
+			$randomString1 = uniqid();
+			$randomString2 = uniqid();
+
+			$this->assertFalse($this->fileContainsString($logFilePath, $randomString1));
+			$this->assertFalse($this->fileContainsString($logFilePath, $randomString2));
+
+			$eml = $this->make('e107Email', ['send' => function() { return true; }]);
+			$eml->logEnable(2);
+			$eml->sendEmail(
+				'nobody@example.com',
+				"$randomString1 Example",
+				['body' => 'Message body'],
+			);
+			$this->assertTrue($this->fileContainsString($logFilePath, $randomString1));
+			$eml->sendEmail(
+				'nobody2@example.com',
+				"$randomString2 Example",
+				['body' => 'Message body'],
+			);
+			$this->assertTrue($this->fileContainsString($logFilePath, $randomString2));
+		}
+
+		/**
+		 * @param $filePath
+		 * @param $string
+		 * @return bool
+		 */
+		private function fileContainsString($filePath, $string)
+		{
+			if (!file_exists($filePath)) return false;
+			$handle = fopen($filePath, 'r');
+			while (($buffer = fgets($handle)) !== false) {
+				if (strpos($buffer, $string) !== false) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
