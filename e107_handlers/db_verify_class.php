@@ -1029,12 +1029,12 @@ class db_verify
 						 
 						if(e107::getDb()->gen($query) !== false)
 						{
-							$log->addDebug(LAN_UPDATED.'  ['.$query.']');
+							$log->addDebug(defset('LAN_UPDATED', 'Updated').'  ['.$query.']');
 							$toFix--;
 						} 
 						else 
 						{
-							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
+							$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed').'  ['.$query.']');
 							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
 							/*if(mysql_errno())
 							{

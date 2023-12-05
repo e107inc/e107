@@ -2851,6 +2851,10 @@ Your browser does not support the audio tag.
 				'expected' => '<td name="G" bgcolor="#660000">colored</td>',
 			),
 
+			18 => array(
+				'html'     => 'Τη γλώσσα μου έδωσαν ελληνική 您好，世界 こんにちは、世界',
+				'expected' => 'Τη γλώσσα μου έδωσαν ελληνική 您好，世界 こんにちは、世界',
+			),
 
 		);
 
