@@ -210,7 +210,17 @@ unset($tmp);
 
 if(!class_exists('e107_config')) // old e107_config.php format.
 {
-	$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
+	$dirNames = ['ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY'];
+
+	$e107_paths = [];
+	foreach ($dirNames as $name)
+	{
+	    if (isset($$name))
+	    {
+	        $e107_paths[$name] = $$name;
+	    }
+	}
+
 	$legacy_sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 	if(isset($mySQLport))
 	{
@@ -228,7 +238,6 @@ else // New e107_config.php format. v2.4+
 	$e107_paths = $config->paths();
 	$sql_info = $config->database();
 	$E107_CONFIG = $config->other() ?? [];
-	//unset($config);
 }
 
 
