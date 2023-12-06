@@ -1096,8 +1096,8 @@ EOF;
 	public function testRunFix()
 	{
 		$sql = e107::getDb();
-		
-		if(!e107::isInstalled('rss'))
+
+		if(!e107::isInstalled('rss_menu'))
 		{
 			e107::getPlugin()->install('rss_menu');
 		}
