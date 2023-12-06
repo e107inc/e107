@@ -1096,7 +1096,11 @@ EOF;
 	public function testRunFix()
 	{
 		$sql = e107::getDb();
-
+		
+		if(!e107::isInstalled('rss'))
+		{
+			e107::getPlugin()->install('rss_menu');
+		}
 		// Prepare table.
 		$sql->gen('ALTER TABLE `#rss` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;');
 		$sql->gen('SHOW CREATE TABLE `#rss`');
