@@ -382,7 +382,7 @@ class db_verify
 
 			$maybeCharset = isset($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'INTERNAL_ERROR:CHARSET';
 			$fileData['charset'] = $this->getIntendedCharset($this->sqlFileTables[$selection]['charset'][$key]);
-			$sqlData['charset'] = $this->getCanonicalCharset($maybeCharset);
+			$sqlData['charset'] = $sqlDataArr['charset'][0]; // check the actual charset. $this->getCanonicalCharset($maybeCharset);
 
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
@@ -399,10 +399,15 @@ class db_verify
 			
 			if(isset($debugA) && (e_PAGE === 'db.php'))
 			{
-									
+				$engineA = !empty($this->sqlFileTables[$selection]['engine'][0]) ? $this->sqlFileTables[$selection]['engine'][0] : 'unknown';
+				$engineB = !empty($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'unknown';
+
+				$charsetA = !empty($this->sqlFileTables[$selection]['charset'][0]) ? $this->sqlFileTables[$selection]['charset'][0] : 'not specified';
+				$charsetB = !empty($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'unknown';
+
 				$debug = "<table class='table table-bordered table-condensed'>
-				<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl." (key=".$key.")</td>
-				<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
+				<tr><td style='padding:5px;font-weight:bold'>FILE: $tbl (key=$key) <span class='badge'>$engineA</span> $charsetA</td>
+				<td style='padding:5px;font-weight:bold'>SQL: $tbl <span class='badge'>$engineB</span> $charsetB</td>
 				</tr>
 				<tr><td style='width:50%'><pre>".$debugA."</pre></td>
 				  <td style='width:50%'><pre>".$debugB."</pre></td></tr></table>";
@@ -489,13 +494,13 @@ class db_verify
 
 			}
 
-			if ($fileData['engine'] != $sqlData['engine'])
+			if ($fileData['engine'] !== $sqlData['engine'])
 			{
 				$this->errors[$tbl]['_status'] |= self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE;
 				$this->errors[$tbl]['_valid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $fileData['engine'];
 				$this->errors[$tbl]['_invalid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $sqlData['engine'];
 			}
-			if ($fileData['charset'] != $sqlData['charset'])
+			if ($fileData['charset'] !== $sqlData['charset'])
 			{
 				$this->errors[$tbl]['_status'] |= self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET;
 				$this->errors[$tbl]['_valid_' . self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET] = $fileData['charset'];
@@ -520,7 +525,7 @@ class db_verify
 	{
 		foreach($this->results as $tabs => $field)
 		{
-			$file = varset($this->results[$tabs]['_file']);
+			$file = varset($this->results[$tabs]['_file'],$tabs);
 			$errorStatus = is_int($this->errors[$tabs]['_status']) ?
 				$this->errors[$tabs]['_status'] : self::STATUS_TABLE_OK;
 
@@ -599,6 +604,10 @@ class db_verify
 		return $badTableCount;
 	}
 
+	public function getErrors()
+	{
+		return $this->errors;
+	}
 
 	/**
 	 * @param $fileArray
@@ -642,7 +651,7 @@ class db_verify
 			self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET => DBVLAN_18,
 			'mismatch'                                  => DBVLAN_8,
 			'missing_field'                             => DBVLAN_11,
-			'ok'                                        => ADMIN_TRUE_ICON,
+			'ok'                                        => defset('ADMIN_TRUE_ICON','true'),
 			'missing_index'                             => DBVLAN_25,
 		);
 		
@@ -931,7 +940,7 @@ class db_verify
 			$fdata = $this->getIndex($sqlFileData);
 			$newval = $this->toMysql($fdata[$field],'index');
 		}
-		else
+		elseif($mode == 'alter' || $mode === 'insert' || $mode === 'index')
 		{
 			$fdata = $this->getFields($sqlFileData);
 			$newval = $this->toMysql($fdata[$field]);
@@ -971,10 +980,14 @@ class db_verify
 			case 'convert':
 				$showCreateTable = $this->getSqlData($table);
 				$currentSchema = $this->getSqlFileTables($showCreateTable);
-				if ($engine != $currentSchema['engine'][0])
-					$query .= "ALTER TABLE `".MPREFIX.$table."` ENGINE=".$engine.";";
-				if ($charset != $currentSchema['charset'][0])
-					$query .= "ALTER TABLE `".MPREFIX.$table."` CONVERT TO CHARACTER SET ".$charset.";";
+				if($engine != $currentSchema['engine'][0])
+				{
+					$query .= "ALTER TABLE `" . MPREFIX . $table . "` ENGINE=" . $engine . ";";
+				}
+				if($charset != $currentSchema['charset'][0])
+				{
+					$query .= "ALTER TABLE `" . MPREFIX . $table . "` CONVERT TO CHARACTER SET " . $charset . ";";
+				}
 				break;
 		}
 
@@ -998,10 +1011,10 @@ class db_verify
 			$fixArray = $this->fixList;	// Fix All	
 		}
 				
-			
+
 		foreach($fixArray as $j=>$file)
 		{
-						
+
 			foreach($file as $table=>$val)
 			{
 				
@@ -1074,7 +1087,9 @@ class db_verify
 
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
 
-	 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^\s]+)+\s*)*;/i";
+	 //	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^\s]+)+\s*)*;/i";
+	// 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=\S+)+\s*)*;/i";
+		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^;]+)+\s*)*;/i";
 
 		preg_match_all($regex,$sql_data,$match);
 
@@ -1116,7 +1131,8 @@ class db_verify
 			$engine = null;
 			$charset = null;
 
-			$tableOptionsRegex = "/([\w\s]+=[\w]+)+?\s*/";
+		//	$tableOptionsRegex = "/([\w\s]+=[\w]+)+?\s*/";
+			$tableOptionsRegex = "/([\w\s]+=\s?\w+)+?\s*/";
 			preg_match_all($tableOptionsRegex, $rawTableOptions, $tableOptionsSplit);
 			$tableOptionsSplit = current($tableOptionsSplit);
 			foreach ($tableOptionsSplit as $rawTableOption)
@@ -1139,7 +1155,7 @@ class db_verify
 				}
 			}
 
-			$ret['engine'][] = $engine;
+			$ret['engine'][] = str_replace('MYISAM', 'MyISAM', $engine);
 			$ret['charset'][] = $charset;
 		}
 
@@ -1383,7 +1399,7 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first form-inline' colspan='3'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
+							<th class='first form-inline' colspan='3'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table' )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1408,7 +1424,7 @@ class db_verify
 			}
 			else
 			{
-				$icon = E_16_E107;
+				$icon = defset('E_16_E107');
 				$name = LAN_CORE;
 			}
 			$text .= ($c === 0) ? "<tr>\n" : '';
@@ -1461,7 +1477,7 @@ class db_verify
 	 *
 	 * @return string[] An unordered list of the storage engines supported by the current MySQL server
 	 */
-	private static function getAvailableStorageEngines()
+	private function getAvailableStorageEngines()
 	{
 		$db = e107::getDb();
 		$db->gen("SHOW ENGINES;");
@@ -1481,8 +1497,20 @@ class db_verify
 	 */
 	public function getIntendedStorageEngine($maybeStorageEngine = null)
 	{
-		if ($maybeStorageEngine === null)
+
+		if($maybeStorageEngine === null)
+		{
 			return $this->getIntendedStorageEngine(self::MOST_PREFERRED_STORAGE_ENGINE);
+		}
+
+		if(strtoupper($maybeStorageEngine) === 'MYISAM')
+		{
+			$maybeStorageEngine = 'MyISAM';
+		}
+		elseif(strtoupper($maybeStorageEngine) === 'INNODB')
+		{
+			$maybeStorageEngine = 'InnoDB';
+		}
 
 		if (!array_key_exists($maybeStorageEngine, $this->storageEnginePreferenceMap))
 		{

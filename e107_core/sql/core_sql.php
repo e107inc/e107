@@ -166,7 +166,7 @@ CREATE TABLE cron (
  cron_active INT(1) UNSIGNED NOT NULL,
  PRIMARY KEY (cron_id),
  UNIQUE KEY cron_function (cron_function)
-) ENGINE = MYISAM;
+) ENGINE=InnoDB;
 
 
 # Table structure for table `dblog` - db/debug/rolling
