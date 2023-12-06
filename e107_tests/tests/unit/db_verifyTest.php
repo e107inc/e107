@@ -1101,22 +1101,24 @@ EOF;
 		{
 			e107::getPlugin()->install('rss_menu');
 		}
+
 		// Prepare table.
 		$sql->gen('ALTER TABLE `#rss` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;');
-		$sql->gen('SHOW CREATE TABLE `#rss`');
-		$row = $sql->rows();
-		self::assertStringNotContainsString('CHARSET=utf8mb4', $row[1]['Create Table']);
+		$sql->gen('SHOW TABLE STATUS WHERE Name = "'.MPREFIX.'rss"');
+		$row = $sql->fetch('assoc');
+		self::assertStringNotContainsString('CHARSET=utf8mb4', $row['Collation']);
 
 		// Fix table.
 		$this->dbv->compare('rss');
 		$this->dbv->compileResults();
 		$this->dbv->runFix();
 
-		// validate table.
-		$sql->gen('SHOW CREATE TABLE `#rss`');
-		$row = $sql->rows();
 
-		self::assertStringContainsString('CHARSET=utf8mb4', $row[1]['Create Table']);
+		// validate table.
+		$sql->gen('SHOW TABLE STATUS WHERE Name = "'.MPREFIX.'rss"');
+		$row = $sql->fetch('assoc');
+
+		self::assertStringContainsString('utf8mb4_general_ci', $row['Collation']);
 
 	}
 
