@@ -1107,9 +1107,9 @@ EOF;
 		$sql->gen('SHOW TABLE STATUS WHERE Name = "'.MPREFIX.'rss"');
 		$row = $sql->fetch('assoc');
 
-		if(isset($row['Collation'])) // TODO Get Working on all. 
+		if(isset($row['Collation'])) // TODO Get Working on all.
 		{
-			self::assertStringNotContainsString('CHARSET=utf8mb4', $row['Collation']);
+			self::assertStringNotContainsString('utf8mb4', $row['Collation']);
 		}
 
 		// Fix table.
