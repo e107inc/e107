@@ -336,7 +336,12 @@
 		public function testRss_menu()
 		{
 			$this->pluginInstall('rss_menu');
+			$installed = e107::isInstalled('rss_menu');
+			self::assertTrue($installed);
+
 			$this->pluginUninstall('rss_menu');
+			$installed = e107::isInstalled('rss_menu');
+			self::assertFalse($installed);
 		}
 
 		public function testSocial()

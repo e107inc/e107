@@ -77,33 +77,12 @@ class db_verify
 	function __construct()
 	{
 				
-		$sql = e107::getDb();
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+
 
 		$this->backUrl = e_SELF;
 
-		if(!deftrue('e_DEBUG') && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
-		{
-			$cacheData = e107::unserialize($tmp);
-			$this->sqlFileTables = isset($cacheData['sqlFileTables']) ? $cacheData['sqlFileTables'] : $this->load();
-			$this->availableStorageEngines = isset($cacheData['availableStorageEngines']) ?
-				$cacheData['availableStorageEngines'] : $this->getAvailableStorageEngines();
-		}
-		else
-		{
-			$this->sqlFileTables = $this->load();
-			$this->availableStorageEngines = $this->getAvailableStorageEngines();
-			$cacheData = e107::serialize([
-				'sqlFileTables' => $this->sqlFileTables,
-				'availableStorageEngines' => $this->availableStorageEngines,
-			], 'json');
-			e107::getCache()->set(self::cachetag, $cacheData, true, true, true);
-		}
+		$this->init();
 
-
-		$this->sqlLanguageTables = $this->getSqlLanguages();
-
-	//	$this->loadCreateTableData();
 
 		return $this;
 		
@@ -1565,8 +1544,39 @@ class db_verify
 
 		return $maybeCharset;
 	}
-	
-	
+
+	/**
+	 * Inititalize the class parameters.
+	 * @return void
+	 */
+	public function init($clearCache=false): void
+	{
+		$sql = e107::getDb();
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+
+		if(!deftrue('e_DEBUG') && ($clearCache === false) && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
+		{
+			$cacheData                     = e107::unserialize($tmp);
+			$this->sqlFileTables           = isset($cacheData['sqlFileTables']) ? $cacheData['sqlFileTables'] : $this->load();
+			$this->availableStorageEngines = isset($cacheData['availableStorageEngines']) ?
+				$cacheData['availableStorageEngines'] : $this->getAvailableStorageEngines();
+		}
+		else
+		{
+			$this->sqlFileTables           = $this->load();
+			$this->availableStorageEngines = $this->getAvailableStorageEngines();
+			$cacheData                     = e107::serialize([
+				'sqlFileTables'           => $this->sqlFileTables,
+				'availableStorageEngines' => $this->availableStorageEngines,
+			], 'json');
+			e107::getCache()->set(self::cachetag, $cacheData, true, true, true);
+		}
+
+
+		$this->sqlLanguageTables = $this->getSqlLanguages();
+	}
+
+
 }
 
 

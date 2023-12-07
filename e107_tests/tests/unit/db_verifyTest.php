@@ -1113,6 +1113,7 @@ EOF;
 		}
 
 		// Fix table.
+		$this->dbv->init(true);
 		$this->dbv->compare('rss');
 		$this->dbv->compileResults();
 		$this->dbv->runFix();
