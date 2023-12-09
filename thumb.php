@@ -21,10 +21,10 @@
  * On-the-fly thumbnail generator
  */
 
-define('e107_INIT', true);
+const e107_INIT = true;
 
 
-function thumbExceptionHandler(Exception $exception)
+function thumbExceptionHandler(Throwable $exception)
 {
 	http_response_code(500);
 	echo "Fatal Thumbnail Error\n";
@@ -93,7 +93,7 @@ class e_thumbpage
 		include($self.DIRECTORY_SEPARATOR.'e107_config.php');
 
 		// support early include feature
-		if(isset($CLASS2_INCLUDE) && !empty($CLASS2_INCLUDE))
+		if(!empty($CLASS2_INCLUDE))
 		{
 			 require_once(realpath(__DIR__ .'/'.$CLASS2_INCLUDE));
 		}
@@ -131,8 +131,7 @@ class e_thumbpage
 			'SYSTEM_DIRECTORY',
 			'CORE_DIRECTORY'
 		);
-	//	$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
-		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
+
 		$e107 = e107::getInstance();
 
 		$e107->site_path = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);
@@ -148,7 +147,7 @@ class e_thumbpage
 		unset($tmp, $self);
 		$e107->set_urls(false);
 		// basic Admin area detection - required for proper path parsing
-		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
+		define('ADMIN', strpos(e_SELF, (e107::getFolder('admin')) != false || strpos(e_PAGE, 'admin') !== false));
 
 		// Next function call maintains behavior identical to before; might not be needed
 		//  See https://github.com/e107inc/e107/issues/3033
