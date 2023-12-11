@@ -285,9 +285,9 @@ class users_admin_ui extends e_admin_ui
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
 	protected $fields = array(
-		'checkboxes'		=> array('title'=> '',				'type' => null, 'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+		'checkboxes'		=> array('title'=> '',				'type' => null, 'width' =>'50px', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 	
-		'user_id' 			=> array('title' => LAN_ID,			'tab'=>0, 'type' =>'text',	'data'=>'int',	'width' => '5%','forced' => true, 'readParms'=>'link=sef&target=blank'),
+		'user_id' 			=> array('title' => LAN_ID,			'tab'=>0, 'type' =>'text',	'data'=>'int',	'width' => '3%','forced' => true,'thclass'=>'center', 'class'=>'center', 'readParms'=>'link=sef&target=blank'),
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
 		'user_ban' 			=> array('title' => LAN_STATUS,		'tab'=>0, 'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
@@ -297,7 +297,7 @@ class users_admin_ui extends e_admin_ui
  		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'safestr', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => LAN_SESSION,	'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
- 		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
+ 		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'method',	'data'=>'str', 'width' => 'auto','thclass'=>'center','class'=>'center'), // Avatar
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'safestr',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
@@ -343,6 +343,24 @@ class users_admin_ui extends e_admin_ui
 	function getExtended()
 	{
 		return $this->extendedData;
+	}
+	
+	function ListObserver()
+	{
+		parent::ListObserver(); 
+
+		$this->fields['user_image']['width'] = '80px';
+
+		if (isset($this->fields['user_image']))  // Move avatar to 2nd column
+		{
+	        $item = $this->fields['user_image'];
+	        unset($this->fields['user_image']);
+
+	        $firstPart = array_slice($this->fields, 0, 2, true);
+	        $secondPart = array_slice($this->fields, 2, null, true);
+
+	        $this->fields = $firstPart + ['user_image' => $item] + $secondPart;
+        } 
 	}
 
 	function init()
@@ -426,9 +444,7 @@ class users_admin_ui extends e_admin_ui
 			}
 
 		}	
-				
-		$this->fields['user_image']['writeParms'] = $this->getAvatarList();
-
+		
 		if(!empty($_GET['readonly']))
 		{
 			foreach($this->fields as $key=>$v)
@@ -454,7 +470,7 @@ class users_admin_ui extends e_admin_ui
 
 
 
-	protected function getAvatarList()
+	public function getAvatarList()
 	{
 		$avs = array(''=>LAN_NONE);
 		$upload = array();
@@ -2408,7 +2424,23 @@ class users_admin_ui extends e_admin_ui
 
 class users_admin_form_ui extends e_admin_form_ui
 {
+	function user_image($curval,$mode, $att)
+	{
+		if($mode === 'read')
+		{
+			return empty($curval) ? '' : e107::getParser()->toAvatar(['user_image'=>$curval],['w'=>40, 'h'=>40,'crop'=>1, 'shape'=>'circle']);
 
+		}
+		elseif($mode === 'write')
+		{
+			$list = $this->getController()->getAvatarList();
+
+			return $this->select('user_image', $list, $curval);
+
+		}
+
+
+	}
 
 	function user_admin($curval,$mode, $att)
 	{
