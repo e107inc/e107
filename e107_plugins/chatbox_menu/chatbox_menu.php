@@ -218,7 +218,7 @@ else
 	if(!empty($pref['cb_emote']) && !empty($pref['smiley_activate']))
 	{
 		$texta .= "
-		<input class='btn btn-default btn-secondary button' type='button' style='cursor:pointer' size='30' value='" . CHATBOX_L14 . "' onclick=\"expandit('emote')\" />
+		<input class='btn btn-sm btn-default btn-secondary button' type='button' style='cursor:pointer' size='30' value='" . CHATBOX_L14 . "' onclick=\"expandit('emote')\" />
 		<div class='well' style='display:none' id='emote'>" . r_emote() . "</div>\n";
 	}
 
