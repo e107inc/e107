@@ -2266,7 +2266,7 @@ class e_jsmanager
 	public function renderFavicon()
 	{
 		$sitetheme = $this->getCurrentTheme();
-
+		$tp = e107::getParser();
 		$ret = '';
 
 		if(!empty($this->_favicon))
@@ -2276,7 +2276,7 @@ class e_jsmanager
 			foreach($iconSizes as $size => $rel)
 			{
 				$sizes = $size.'x'.$size;
-				$url = e107::getParser()->thumbUrl($this->_favicon, ['w'=>$size, 'h'=>$size, 'crop'=>1]);
+				$url = $tp->thumbUrl($this->_favicon, ['w'=>$size, 'h'=>$size, 'crop'=>1]);
 				$ret .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".$url."'>\n";
 			}
 
@@ -2285,7 +2285,7 @@ class e_jsmanager
 
 		if(file_exists(e_THEME . $sitetheme . "/favicon.ico"))
 		{
-			$ret = "<link rel='icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/xicon' />\n";
+			$ret = "<link rel='icon' href='" . $tp->staticUrl(e_THEME_ABS . $sitetheme . "/favicon.ico")."' type='image/x-icon' />\n<link rel='shortcut icon' href='" . e_THEME_ABS . $sitetheme . "/favicon.ico' type='image/xicon' />\n";
 		}
 		elseif(file_exists(e_MEDIA_ICON.'16x16_favicon.png'))
 		{
@@ -2294,13 +2294,14 @@ class e_jsmanager
 			foreach($iconSizes as $size => $rel)
 			{
 				$sizes = $size.'x'.$size;
-				$ret .= "<link rel='$rel' type='image/png' sizes='$sizes' href='".e_MEDIA_ICON_ABS.$sizes."_favicon.png'>\n";
+				$href = $tp->staticUrl(e_MEDIA_ICON_ABS.$sizes."_favicon.png");
+				$ret .= "<link rel='$rel' type='image/png' sizes='$sizes' href='$href'>\n";
 			}
 
 		}
 		elseif (file_exists(e_BASE."favicon.ico"))
 		{
-			$ret = "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+			$ret = "<link rel='icon' href='".$tp->staticUrl(SITEURL."favicon.ico")."' type='image/x-icon' />\n<link rel='shortcut icon' href='".$tp->staticUrl(SITEURL."favicon.ico")."' type='image/xicon' />\n";
 		}
 
 

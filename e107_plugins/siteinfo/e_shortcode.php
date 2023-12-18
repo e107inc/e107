@@ -105,7 +105,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		// Paths to image file, link are relative to site base
 		$tp = e107::getParser();
 
-		$logopref = e107::getConfig('core')->get('sitelogo');
+		$logopref = e107::getConfig()->get('sitelogo');
 		$logop = $tp->replaceConstants($logopref);
 
 		if(isset($parm['login'])) // Login Page. BC fix.
@@ -138,9 +138,9 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		else 
 		{
 			
-			if(vartrue($logopref) && is_readable($logop))
+			if(!empty($logopref) && is_readable($logop))
 			{
-				$logo = $tp->replaceConstants($logopref,'abs');
+				$logo = $logopref; 
 				$path = $tp->replaceConstants($logopref);
 			}
 			elseif (isset($file) && $file && is_readable($file))
@@ -169,8 +169,8 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		
 		if((isset($parm['w']) || isset($parm['h'])))
 		{
-			//
-			$dimensions[0] = isset($parm['w']) ? $parm['w'] : 0;
+
+			$dimensions[0] = $parm['w'] ?? 0;
 			$dimensions[1] = !empty($parm['h']) ? $parm['h'] : 0;
 
 			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.
