@@ -40,7 +40,7 @@ const e_MOD_REWRITE = true;
 
 class e107_config
 {
-    public function database()
+    public static function database()
     {
         return [
             'server'   => '{{ mySQLserver }}',
@@ -52,7 +52,7 @@ class e107_config
         ];
     }
 
-    public function paths()
+    public static function paths()
     {
         return [
             'admin'      => 'e107_admin/',
@@ -68,7 +68,7 @@ class e107_config
         ];
     }
 
-    public function other()
+    public static function other()
     {
         return [
             'site_path' => '000000test'
@@ -76,4 +76,3 @@ class e107_config
     }
 }
 
-return new e107_config;

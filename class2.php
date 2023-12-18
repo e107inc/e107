@@ -93,30 +93,6 @@ if(!empty($_E107['minimal']))
 
 //
 // C: Find out if register globals is enabled and destroy them if so
-// (DO NOT use the value of any variables before this point! They could have been set by the user)
-//
-
-// Can't be moved to e107, required here for e107_config vars security
-/*$register_globals = true;
-if(function_exists('ini_get'))
-{
-	$register_globals = ini_get('register_globals');
-}*/
-
-// Destroy! (if we need to)
-/*
-if($register_globals === true)
-{
-	if(isset($_REQUEST['_E107'])) { unset($_E107); }
-	foreach($GLOBALS as $global=>$var)
-	{
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|_SESSION|GLOBALS|HTTP.*|_REQUEST|_E107|retrieve_prefs|eplug_admin|eTimingStart.*|oblev_.*)$/', $global))
-		{
-			unset($$global);
-		}
-	}
-	unset($global);
-}*/
 
 
 // Set Absolute file-path of directory containing class2.php
@@ -159,7 +135,7 @@ else
 	unset($retrieve_prefs);
 }
 
-$config = include(e_ROOT.'e107_config.php');
+include(e_ROOT.'e107_config.php');
 
 if(!defined('e_POWEREDBY_DISABLE'))
 {
@@ -183,7 +159,7 @@ if(empty($PLUGINS_DIRECTORY))
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(empty($mySQLdefaultdb) && empty($config))
+if(empty($mySQLdefaultdb) && !class_exists('e107_config'))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
   header('Location: install.php');
@@ -235,9 +211,9 @@ if(!class_exists('e107_config')) // old e107_config.php format.
 }
 else // New e107_config.php format. v2.4+
 {
-	$e107_paths = $config->paths();
-	$sql_info = $config->database();
-	$E107_CONFIG = $config->other() ?? [];
+	$e107_paths = e107_config::paths();
+	$sql_info = e107_config::database();
+	$E107_CONFIG = e107_config::other() ?? [];
 }
 
 
@@ -297,15 +273,6 @@ if(E107_DEBUG_LEVEL)
 	$dbg->logTime('Init ErrHandler');
 }
 
-//
-// I: Sanity check on e107_config.php
-//     e107_config.php upgrade check
-// obsolete check, rewrite it
-// if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
-// {
-	// message_handler('CRITICAL_ERROR', 8, ': generic, ', 'e107_config.php');
-// 	exit;
-// }
 
 //
 // J: MYSQL INITIALIZATION
@@ -433,9 +400,6 @@ $pref = e107::getPref(); // include pref class.
 $sysprefs = new prefs;
 //DEPRECATED, BC, call e107::getPref/findPref() instead
 
-//this could be part of e107->init() method now, prefs will be auto-initialized
-//when proper called (e107::getPref())
-// $e107->set_base_path(); moved to init().
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
 if(!isset($_E107['no_menus']))
