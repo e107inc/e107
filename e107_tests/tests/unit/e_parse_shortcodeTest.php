@@ -773,7 +773,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->fail($e->getMessage());
+			self::fail($e->getMessage());
 		}
 
 		$sc->__construct();
@@ -782,8 +782,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$result = $sc->sc_xurl_icons($parm);
 
-		$this->assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);
-		$this->assertStringContainsString('<span class="e-social-youtube fa-3x"></span>', $result);
+		self::assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);
+		self::assertStringContainsString('<span class="e-social-youtube fa-3x"></span>', $result);
 
     }
 
@@ -960,7 +960,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	        'comment_comment'      => 'Nested Comment here',
 	        'comment_blocked'      => '0',
 	        'comment_ip'           => '0000:0000:0000:0000:0000:ffff:7f00:0001',
-	        'comment_type'         => '0',
+	   //     'comment_type'         => '0',
 	        'comment_lock'         => '0',
 	        'comment_share'        => '0',
 	        'table'                 => 'news',
@@ -1349,7 +1349,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'post_user_anon' => NULL,
 			'post_attachments' => NULL,
 			'post_options' => NULL,
-			'user_join'     => time(),
+		//	'user_join'     => time(),
 			'user_id'       => 1,
 			'user_name'     => USERNAME,
 			'user_hideemail'    => 1,

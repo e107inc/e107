@@ -3,7 +3,7 @@
 if(e_ADMIN_AREA !==true)
 {
 
-	e107::css('social', 'css/fontello.css');
+	e107::css('social', 'style.css');
 //	e107::link(array('rel'=>'preload', 'href'=> "{e_PLUGIN}social/font/fontello.woff2?21917124", 'as' => "font", 'type'=>"font/woff2", 'crossorigin'   => 'anonymous'));
 	e107::css('social' ,'css/social.css');
 
