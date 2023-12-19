@@ -24,11 +24,19 @@
 const e107_INIT = true;
 
 
-function thumbExceptionHandler(Throwable $exception)
+function thumbExceptionHandler(Throwable $e)
 {
 	http_response_code(500);
 	echo "Fatal Thumbnail Error\n";
-	error_log($exception->getMessage());
+
+	 $message = sprintf(
+        "Exception: %s, File: %s, Line: %d, Trace: %s",
+        $e->getMessage(),
+        $e->getFile(),
+        $e->getLine(),
+        $e->getTraceAsString()
+    );
+	error_log($message);
 }
 
 function thumbErrorHandler($errno, $errstr, $errfile, $errline)
@@ -125,6 +133,7 @@ class e_thumbpage
 			    }
 			}
 
+			$legacy_sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 			$sql_info = array_combine(array_map(function($k) {
 				return str_replace('mySQL', '', $k);
 				}, array_keys($legacy_sql_info)),
