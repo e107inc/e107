@@ -204,7 +204,7 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 
 
-		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, LAN_SOCIAL_ADMIN_37);
+		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, LAN_SOCIAL_ADMIN_37, 'pages'=>LAN_SOCIAL_ADMIN_01);
 
 		protected $prefs = array(
 
@@ -234,6 +234,7 @@ class social_ui extends e_admin_ui
 
 			'og_image'	                => array('title'=> LAN_SOCIAL_ADMIN_42, 'type'=>'image', 'tab'=>5, 'data' => 'str','help'=>'og:image'),
 
+			'xurl_rss'	                => array('title'=> 'RSS', 'type'=>'bool', 'tab'=>'pages', 'data' => 'str','help'=>'Enable to include RSS with Social page icons (XURL)'),
 
 			);
 

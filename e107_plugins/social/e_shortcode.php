@@ -82,9 +82,7 @@ class social_shortcodes extends e_shortcode
 		//	return (ADMIN) ? "Unable to load social template [".$tmpl."]" : ''; // NO LAN
 		}
 
-		$social = array(
-			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
-		);
+		$social = empty(e107::pref('social','xurl_rss')) ? [] : array('rss'=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed')	);
 
 		$json = file_get_contents(__DIR__."/xurls.json");
 		$xurls = e107::unserialize($json);
