@@ -37,35 +37,35 @@
 
 		function testGetPerms()
 		{
-		//	$this->markTestSkipped("Skipped - CLI mode changes behavior.");
+		//	self::markTestSkipped("Skipped - CLI mode changes behavior.");
 			// See class2.php Line 1643
 
 			$result = getperms('N', '5');
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = getperms('N', '0');
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = getperms('N', '0.');
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = getperms('U1|U2', '0.');
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = getperms('0', ' ');
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = getperms(0, '0');
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'gallery'");
 
 			$result = getperms('P', 'P'.$pid);
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 
 			$result = getperms('P', 'P'.$pid, 'http://localhost/e107v2/e107_plugins/gallery/admin_config.php');
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 
 		}
@@ -73,7 +73,8 @@
 		function testUserModel()
 		{
 			$result = e107::getUser();
-			var_dump($result);
+			self::assertIsObject($result);
+
 		}
 
 
@@ -85,46 +86,46 @@
 			$_E107['phpunit'] = true;
 
 			$result = check_class(0, "253,254,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class('NEWSLETTER', "253,254,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_class('NEWSLETTER', "253,254,250,251,3,0"); // NEWSLETTER = 3
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class('-NEWSLETTER', "253,254,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class(254, "253,254,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class('0', "253,254,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class(null, "253,254,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_class('-254', "253,254,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_class('-254', "253,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class(-254, "253,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class(-254, "254,253,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_class(e_UC_NOBODY, "253,254,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_class(e_UC_NEWUSER, "247,253,254,250,251,0");
-			$this->assertTrue($result);
+			self::assertTrue($result);
 
 			$result = check_class(e_UC_NEWUSER, "253,254,250,251,0");
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			unset($_E107['phpunit']);
 		}
@@ -134,13 +135,13 @@
 		function testCheckEmail()
 		{
 			$result = check_email("test@somewhere.com"); // good email.
-			$this->assertEquals('test@somewhere.com', $result);
+			self::assertEquals('test@somewhere.com', $result);
 
 			$result = check_email("test@somewherecom"); // Missing .
-			$this->assertFalse($result);
+			self::assertFalse($result);
 
 			$result = check_email("test@somewhere.technology"); // New TLDs
-			$this->assertEquals('test@somewhere.technology',$result);
+			self::assertEquals('test@somewhere.technology',$result);
 
 		}
 
@@ -158,7 +159,7 @@
 			foreach($tests as $zone=>$expected)
 			{
 				$result = systemTimeZoneIsValid($zone);
-				$this->assertSame($expected, $result);
+				self::assertSame($expected, $result);
 
 
 			}
@@ -605,18 +606,18 @@
 		 */
 		/*function testSystemTimeZones()
 		{
-			$expected = $this->getExpectedZones();
+			$expected = self::getExpectedZones();
 
-		//	$this->echoMem();
+		//	self::echoMem();
 			$zones = systemTimeZones();
 
-		//	$this->echoMem();
+		//	self::echoMem();
 
 			$zoneKeys = array_keys($zones);
 			$expectedKeys = array_keys($expected);
 
 
-			$this->assertSame($expectedKeys, $zoneKeys);
+			self::assertSame($expectedKeys, $zoneKeys);
 		}*/
 
 
