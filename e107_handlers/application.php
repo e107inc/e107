@@ -5306,7 +5306,7 @@ class eHelper
 	 */
 	public static function removeTrackers($get = array())
 	{
-		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign','elan', 'msclkid', 'gclid');
+		$trackers = array('fbclid','utm_source','utm_medium','utm_content','utm_campaign','elan', 'msclkid', 'gclid', 'gad', 'gad_source');
 
 		foreach($trackers as $val)
 		{
