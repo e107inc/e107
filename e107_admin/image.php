@@ -973,7 +973,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		$this->fontawesome = (int) e107::getTheme()->getFontAwesome(); 
 
-		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE. '</a>';
+		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://console.cloud.google.com/marketplace/product/google/youtube.googleapis.com'>".LAN_MORE. '</a>';
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
