@@ -360,7 +360,7 @@ class e107
 			$parseMagic = true;
 		}
 
-		if(isset($opts['bodyStart']) && !empty($opts['bodyStart']))
+		if(!empty($opts['bodyStart']))
 		{
 			$bodyStart = true;
 		}
@@ -1249,7 +1249,7 @@ class e107
 			return new $class_name();
 		}
 
-		trigger_error("Class {$class_name} not found!", E_USER_ERROR);
+		trigger_error("Class $class_name not found!", E_USER_ERROR);
 		return null;
 	}
 
@@ -1338,7 +1338,7 @@ class e107
 		if(!isset(self::$_plug_config_arr[$plug_name.$multi_row]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
-			$override_id = $plug_name.($multi_row ? "_{$multi_row}" : '');
+			$override_id = $plug_name.($multi_row ? "_$multi_row" : '');
 
 			//check (once) for custom plugin pref handler
 			if(is_readable(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php'))
@@ -4765,26 +4765,25 @@ class e107
 			str_replace(
 				array('ajax_used=1', '&&'),
 				array('', '&'),
-				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
+				($_SERVER['QUERY_STRING'] ?? '')
 			), '&');
 
-		/* PathInfo doesn't break anything, URLs should be always absolute. Disabling the below forever.
-		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
-		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
-		{
-			$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
-			$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url.'?'.$_SERVER['QUERY_STRING'] : $new_url;
-			header('Location: '.$new_loc);
-			exit();
-		}
-		*/
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
+		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
+		$_SERVER['HTTP_HOST'] = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+
+		if(empty($_SERVER['HTTP_HOST']) && !self::isCli())
+		{
+			error_log("SERVER['HTTP_HOST'] value is empty. Please correct before proceeding.");
+			exit;
+		}
 
 		// setup some php options
-		self::ini_set('magic_quotes_runtime',     0);
-		self::ini_set('magic_quotes_sybase',      0);
+	//	self::ini_set('magic_quotes_runtime',     0);
+	//	self::ini_set('magic_quotes_sybase',      0);
 	//	self::ini_set('arg_separator.output',     '&amp;'); // non-standard and bad for third-party script compatibility. @see https://github.com/e107inc/e107/issues/3116
 		self::ini_set('session.use_only_cookies', 1);
 		self::ini_set('session.use_trans_sid',    0);
@@ -4900,7 +4899,7 @@ class e107
 			self::die_http_400();
 		}
 
-		if($base64 != true)
+		if(!$base64)
 		{
 			self::filter_request(base64_decode($input, true),$key,$type,true);
 		}
@@ -4966,12 +4965,11 @@ class e107
 		)))
 		{
 			$domain = false;
-			$subdomain = false;
 		}
 		else
 		{
-			$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
-			$host = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+
+			$host = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
 			$domain = preg_replace('/^www\.|:\d*$/', '', $host); // remove www. and port numbers.
 
 			$dtemp = explode(".", $domain);
