@@ -6615,7 +6615,7 @@ var_dump($select_options);*/
 			break;
 
 			case 'ip':
-				$ret = vartrue($parms['pre']).$this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms).vartrue($parms['post']);
+				$ret = vartrue($parms['pre']).$this->text($key, e107::getIPHandler()->ipDecode($value), 45, $parms).vartrue($parms['post']);
 			break;
 
 			case 'email':
