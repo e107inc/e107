@@ -6217,6 +6217,12 @@ class e_admin_ui extends e_admin_controller_ui
 		return $cnt;
 	}
 
+	public function GridDeleteTrigger($posted)
+	{
+		$this->ListDeleteTrigger($posted);
+	}
+
+
 	/**
 	 * Catch delete submit
 	 * @param $posted
