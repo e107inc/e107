@@ -183,7 +183,7 @@ class system_tools
 		
 		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' , 'icon'=>'fas-clone.glyph');
+		//	$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' , 'icon'=>'fas-clone.glyph');
 			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112, 'icon'=>'fab-github.glyph' );
 		}
 
@@ -576,12 +576,16 @@ class system_tools
 		
 		return true;
 	}
-	
-	
+
+
+	/**
+	 * @deprecated
+	 * @return false
+	 */
 	private function multiSite()
 	{
 
-		if(!deftrue('e_DEVELOPER'))
+	//	if(!deftrue('e_DEVELOPER'))
 		{
 			return false;
 		}
