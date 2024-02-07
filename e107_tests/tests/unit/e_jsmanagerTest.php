@@ -381,6 +381,60 @@ class e_jsmanagerTest extends \Codeception\Test\Unit
 			$this->assertTrue($result, $var['expected'] . " was not found in the rendered links. Render links result:" . $actual . "\n\n");
 		}
 
+		// -----------------
+		$static = [
+			'https://static.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		];
+
+		$tp->setStaticUrl(null);
+		e107::getParser()->setStaticUrl($static);
+
+		$staticTests = [
+			0 => array(
+				'expected' => '<link rel="preload" href="https://static.mydomain.com/e107_web/script.js?0" as="script" />',
+				'input'    => array('rel' => 'preload', 'href' => '{e_WEB}script.js', 'as' => 'script'),
+				'cacheid'  => true,
+				'static'   => true,
+			),
+			1 => array(
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
+				'cacheid'  => false,
+				'static'   => true,
+			),
+			2 => array(
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
+				'cacheid'  => false,
+				'static'   => true,
+			),
+			3 => array(
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
+				'cacheid'  => false,
+				'static'   => true,
+			),
+
+		];
+
+
+
+		foreach($staticTests as $var)
+		{
+			$this->js->addLink($var['input'], $var['cacheid']);
+		}
+
+		$actual = $this->js->renderLinks(true);
+
+
+		foreach($staticTests as $var)
+		{
+			$result = (strpos($actual, $var['expected']) !== false);
+			self::assertTrue($result, $var['expected'] . " was not found in the rendered links. Render links result:" . $actual . "\n\n");
+		}
+
 		$tp->setStaticUrl(null);
 
 

@@ -2424,26 +2424,36 @@ class e_parse
 		}
 
 		$staticArray = $this->staticUrl; // e_HTTP_STATIC;
+		$path = $this->replaceConstants($path, 'abs'); // replace any {THEME} etc.
+		$key = ltrim(eHelper::dasherize($path), '/');
 
 		if (is_array($staticArray))
 		{
-			$cnt = count($staticArray);
-			$staticCount = $this->staticCount();
-			if ($staticCount > ($cnt - 1))
+			if(!empty($this->staticUrlMap[$key]))
 			{
-				$staticCount = 0;
-				$this->staticCount(0);
+				$http = $this->staticUrlMap[$key];
 			}
+			else
+			{
+				$cnt = count($staticArray);
+				$staticCount = $this->staticCount();
+				if ($staticCount > ($cnt - 1))
+				{
+					$staticCount = 0;
+					$this->staticCount(0);
+				}
 
-			$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
-
+				$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
+				$this->staticCount(1);
+			}
 		}
 		else
 		{
 			$http = $this->staticUrl;
 		}
 
-		$this->staticCount(1);
+		$this->staticUrlMap[$key] = $http;
+
 
 		if (empty($path))
 		{
@@ -2452,7 +2462,7 @@ class e_parse
 
 		$base = '';
 
-		$path = $this->replaceConstants($path, 'abs'); // replace any {THEME} etc.
+
 
 		$srch = array(
 			e_PLUGIN_ABS,
@@ -2480,8 +2490,7 @@ class e_parse
 			$ret = str_replace(e_MEDIA_ABS, $http . $base . e107::getFolder('media'), $ret);
 		}
 
-		$key = ltrim(eHelper::dasherize($path), '/');
-		$this->staticUrlMap[$key] = $ret;
+
 
 		return $ret;
 

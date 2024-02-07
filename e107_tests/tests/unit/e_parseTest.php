@@ -1798,7 +1798,7 @@ EXPECTED;
 		// Test with Static Array
 
 		$static = [
-			'https://static.mydomain.com/',
+			'https://static1.mydomain.com/',
 			'https://static2.mydomain.com/',
 			'https://static3.mydomain.com/',
 		];
@@ -1806,7 +1806,7 @@ EXPECTED;
 		$this->tp->setStaticUrl($static);
 		$tests = [
 			1 => array(
-				'expected' => 'https://static.mydomain.com/e107_themes/bootstrap3/images/myimage1.jpg',
+				'expected' => 'https://static1.mydomain.com/e107_themes/bootstrap3/images/myimage1.jpg',
 				'input'    => '{THEME}images/myimage1.jpg',
 				'static'   => true,
 			),
@@ -1820,9 +1820,14 @@ EXPECTED;
 				'input'    => '{THEME}images/myimage3.jpg',
 				'static'   => true,
 			),
-			4 => array(
-				'expected' => 'https://static.mydomain.com/e107_themes/bootstrap3/images/myimage4.jpg',
-				'input'    => '{THEME}images/myimage4.jpg',
+			4 => array( // test that previously generated static URL retains the same static domain when called again.
+				'expected' => 'https://static3.mydomain.com/e107_themes/bootstrap3/images/myimage3.jpg',
+				'input'    => '{THEME}images/myimage3.jpg',
+				'static'   => true,
+			),
+			5 => array( // test that previously generated static URL retains the same static domain when called again.
+				'expected' => 'https://static2.mydomain.com/e107_themes/bootstrap3/images/myimage2.jpg',
+				'input'    => '{THEME}images/myimage2.jpg',
 				'static'   => true,
 			),
 
@@ -1835,7 +1840,7 @@ EXPECTED;
 		}
 
 		$map = $this->tp->getStaticUrlMap();
-		self::assertStringContainsString('myimage2.jpg', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
+		self::assertStringContainsString('https://static2.mydomain.com', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
 
 		$this->tp->setStaticUrl(null);
 	}
