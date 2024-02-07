@@ -63,8 +63,10 @@ class e_parse
 
 	protected $staticUrl;
 
+	protected $staticUrlMap = [];
+
 	/** @var array Stored relative paths - used by replaceConstants() */
-	private $relativePaths = array();
+	private $relativePaths = [];
 
 
 	// BBcode that contain preformatted code.
@@ -2478,6 +2480,9 @@ class e_parse
 			$ret = str_replace(e_MEDIA_ABS, $http . $base . e107::getFolder('media'), $ret);
 		}
 
+		$key = ltrim(eHelper::dasherize($path), '/');
+		$this->staticUrlMap[$key] = $ret;
+
 		return $ret;
 
 	}
@@ -2490,6 +2495,11 @@ class e_parse
 	public function setStaticUrl($url)
 	{
 		$this->staticUrl = $url;
+	}
+
+	public function getStaticUrlMap()
+	{
+		return $this->staticUrlMap;
 	}
 
 	/**

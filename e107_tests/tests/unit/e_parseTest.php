@@ -1790,12 +1790,54 @@ EXPECTED;
 			$static = !empty($val['static']) ? 'https://static.mydomain.com/' : null;
 			$this->tp->setStaticUrl($static);
 			$actual = $this->tp->staticUrl($val['input']);
-			$this->assertSame($val['expected'], $actual);
+			self::assertSame($val['expected'], $actual);
 		}
 
 		$this->tp->setStaticUrl(null);
 
+		// Test with Static Array
 
+		$static = [
+			'https://static.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		];
+
+		$this->tp->setStaticUrl($static);
+		$tests = [
+			1 => array(
+				'expected' => 'https://static.mydomain.com/e107_themes/bootstrap3/images/myimage1.jpg',
+				'input'    => '{THEME}images/myimage1.jpg',
+				'static'   => true,
+			),
+			2 => array(
+				'expected' => 'https://static2.mydomain.com/e107_themes/bootstrap3/images/myimage2.jpg',
+				'input'    => '{THEME}images/myimage2.jpg',
+				'static'   => true,
+			),
+			3 => array(
+				'expected' => 'https://static3.mydomain.com/e107_themes/bootstrap3/images/myimage3.jpg',
+				'input'    => '{THEME}images/myimage3.jpg',
+				'static'   => true,
+			),
+			4 => array(
+				'expected' => 'https://static.mydomain.com/e107_themes/bootstrap3/images/myimage4.jpg',
+				'input'    => '{THEME}images/myimage4.jpg',
+				'static'   => true,
+			),
+
+		];
+
+		foreach($tests as $val)
+		{
+			$actual = $this->tp->staticUrl($val['input']);
+			self::assertSame($val['expected'], $actual);
+		}
+
+		$map = $this->tp->getStaticUrlMap();
+		self::assertStringContainsString('myimage2.jpg', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
+
+		$this->tp->setStaticUrl(null);
 	}
 
 	/*
