@@ -2529,6 +2529,8 @@ class e107
 			return null;
 		}
 
+
+
 		$jshandler = self::getJs();
 		if(is_string($parm))
 		{
@@ -2546,11 +2548,11 @@ class e107
 				// data is e.g. 'core/tabs.js'
 				if($zone !== null)
 				{
-					$jshandler->requireCoreLib($data, $zone);
+					$jshandler->requireCoreLib($data, $zone, $parm);
 				}
 				else
 				{
-					$jshandler->requireCoreLib($data);
+					$jshandler->requireCoreLib($data, 2, $parm);
 				}
 
 			break;
@@ -2636,11 +2638,11 @@ class e107
 				}
 				if($zone !== null)
 				{
-					$jshandler->requirePluginLib($type, $data, $zone);
+					$jshandler->requirePluginLib($type, $data, $zone, $parm);
 				}
 				else
 				{
-					$jshandler->requirePluginLib($type, $data);
+					$jshandler->requirePluginLib($type, $data, 5, $parm);
 				}
 			break;
 		}

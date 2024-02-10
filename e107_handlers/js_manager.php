@@ -31,7 +31,7 @@ class e_jsmanager
 	 */
 	protected $_cache_list = array();
 
-
+	protected $_js_defer = false;
 
 	protected $_core_prefs = array();
 
@@ -197,6 +197,7 @@ class e_jsmanager
 	 */
 	protected function __construct()
 	{
+		$this->_js_defer = (bool) deftrue('e_JS_DEFER'); // Experimental 2.4
 	}
 
 	/**
@@ -483,17 +484,17 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function requireCoreLib($file_path, $zone = 2)
+	public function requireCoreLib($file_path, $zone = 2, $opts=[])
 	{
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fpath => $z)
 			{
-				$this->tryHeaderFile('{e_WEB_JS}'.trim($fpath, '/'), $z);
+				$this->tryHeaderFile('{e_WEB_JS}'.trim($fpath, '/'), $z, $opts);
 			}
 			return $this;
 		}
-		$this->tryHeaderFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
+		$this->tryHeaderFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $opts);
 		return $this;
 	}
 
@@ -506,17 +507,17 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function requirePluginLib($plugname, $file_path, $zone = 5)
+	public function requirePluginLib($plugname, $file_path, $zone = 5, $opts=[])
 	{
 		if(is_array($file_path))
 		{
 			foreach ($file_path as $fpath => $z)
 			{
-				$this->tryHeaderFile('{e_PLUGIN}'.$plugname.'/'.trim($fpath, '/'), $z);
+				$this->tryHeaderFile('{e_PLUGIN}'.$plugname.'/'.trim($fpath, '/'), $z, $opts);
 			}
 			return $this;
 		}
-		$this->tryHeaderFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), $zone);
+		$this->tryHeaderFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), $zone, $opts);
 		return $this;
 	}
 
@@ -550,9 +551,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerCore($file_path, $zone = 2, $pre = '', $post = '')
+	public function headerCore($file_path, $zone = 2, $pre = '', $post = '', $opts=[])
 	{
-		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $pre, $post);
+		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $pre, $post, $opts);
 		return $this;
 	}
 
@@ -563,9 +564,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '')
+	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '', $opts=[])
 	{
-		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
+		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post, $opts);
 		return $this;
 	}
 
@@ -592,9 +593,9 @@ class e_jsmanager
 	 * @param string $post
 	 * @return e_jsmanager
 	 */
-	public function headerPlugin($plugname, $file_path, $pre, $post)
+	public function headerPlugin($plugname, $file_path, $pre, $post, $opts=[])
 	{
-		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2, $pre, $post);	// Zone 2 - after libraries
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2, $pre, $post, $opts);	// Zone 2 - after libraries
 		return $this;
 	}
 
@@ -606,11 +607,11 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php and footer.php)
 	 * @return e_jsmanager
 	 */
-	public function tryHeaderFile($file_path, $zone = 5)
+	public function tryHeaderFile($file_path, $zone = 5, $opts=[])
 	{
 		if(!defined('HEADER_INIT'))
 		{
-			$this->headerFile($file_path, $zone);
+			$this->headerFile($file_path, $zone, null, null, $opts);
 			return $this;
 		}
 
@@ -1241,12 +1242,23 @@ class e_jsmanager
 		switch($mod)
 		{
 			case 'settings':
-				$tp = e107::getParser();
-				$json = $tp->toJSON($this->_e_js_settings);
-				echo "<script>\n";
-				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
-				echo "jQuery.extend(e107.settings, " . $json . ");\n";
-				echo "</script>\n";
+
+
+				if($this->_js_defer)
+				{
+					echo "<script src='".e_WEB_ABS."js/core/settings.jquery.php' defer></script>\n";
+				}
+				else
+				{
+					$tp = e107::getParser();
+					$json = $tp->toJSON($this->_e_js_settings);
+					echo "<script>\n";
+					echo '$(document).ready(function() {';
+					echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
+					echo "jQuery.extend(e107.settings, " . $json . ");\n";
+					echo '});';
+					echo "</script>\n";
+				}
 			break;
 
 			case 'framework': // CDN frameworks - rendered before consolidation script (if enabled)
@@ -1483,8 +1495,8 @@ class e_jsmanager
 					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 					$path = $this->url($path);
-
-					echo $pre.'<script src="'.$path.'"></script>'.$post;
+					$defer = ($this->_js_defer) ? ' defer' : '';
+					echo $pre.'<script src="'.$path.'"'.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1583,8 +1595,8 @@ class e_jsmanager
 					{
 						continue;
 					}
-
-					echo $pre.'<script src="'.$path.'"'.$inline.'></script>'.$post;
+					$defer = ($this->_js_defer && strpos($inline,'defer')===false) ? ' defer' : '';
+					echo $pre.'<script src="'.$path.'"'.$inline.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1759,7 +1771,8 @@ class e_jsmanager
 
 			if($type == 'js')
 			{
-				echo "<script src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."'></script>\n\n";
+				$deferCache = ($this->_js_defer) ? 'defer' : '';
+				echo "<script src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."' $deferCache></script>\n\n";
 			}
 			else
 			{
@@ -1979,7 +1992,9 @@ class e_jsmanager
 				}
 				echo '<script>';
 				echo "\n//<![CDATA[\n";
+				echo ($this->_js_defer) ? "window.onload = function(){\n" : '';
 				echo implode("\n\n", $content_array);
+				echo ($this->_js_defer) ? "};\n" : '';
 				echo "\n//]]>\n";
 				echo '</script>';
 				echo "\n";
@@ -2053,6 +2068,12 @@ class e_jsmanager
 	{
 		return ($this->isInAdmin() ? 'admin' : 'front');
 	}
+
+	public function getSettings()
+	{
+		return $this->_e_js_settings;
+	}
+
 
 	/**
 	 * Get current theme name

@@ -1491,8 +1491,7 @@ $(document).ready(function()
 // Legacy Stuff to be converted. 
 // BC Expandit() function 
 
-	var nowLocal = new Date();		/* time at very beginning of js execution */
-	var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
+
 
 	
 	function expandit(e) {
@@ -1547,26 +1546,7 @@ $(document).ready(function()
 		
 		
 		
-function SyncWithServerTime(serverTime, path, domain)
-{
-	if (serverTime) 
-	{
-	  	/* update time difference cookie */
-		var serverDelta=Math.floor(localTime-serverTime);
-		if(!path) path = '/';
-		if(!domain) domain = '';
-		else domain = '; domain=' + domain;
-	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain+'; samesite=strict'; /* server time when set */
-	}
 
-	var tzCookie = 'e107_tzOffset=';
-//	if (document.cookie.indexOf(tzCookie) < 0) {
-		/* set if not already set */
-		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain+'; samesite=strict';
-//	}
-}
 	
 	
 	function urljump(url){
