@@ -1244,7 +1244,7 @@ class e_jsmanager
 			case 'settings':
 
 
-				if($this->_js_defer)
+				if($this->_js_defer && !$this->isInAdmin())
 				{
 					echo "<script src='".e_WEB_ABS."js/core/settings.jquery.php' defer></script>\n";
 				}
@@ -1495,7 +1495,7 @@ class e_jsmanager
 					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 					$path = $this->url($path);
-					$defer = ($this->_js_defer) ? ' defer' : '';
+					$defer = ($this->_js_defer && !$this->isInAdmin()) ? ' defer' : '';
 					echo $pre.'<script src="'.$path.'"'.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
@@ -1595,7 +1595,7 @@ class e_jsmanager
 					{
 						continue;
 					}
-					$defer = ($this->_js_defer && strpos($inline,'defer')===false) ? ' defer' : '';
+					$defer = ($this->_js_defer && !$this->isInAdmin() && strpos($inline,'defer')===false) ? ' defer' : '';
 					echo $pre.'<script src="'.$path.'"'.$inline.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
@@ -1771,7 +1771,7 @@ class e_jsmanager
 
 			if($type == 'js')
 			{
-				$deferCache = ($this->_js_defer) ? 'defer' : '';
+				$deferCache = ($this->_js_defer && !$this->isInAdmin()) ? 'defer' : '';
 				echo "<script src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."' $deferCache></script>\n\n";
 			}
 			else
@@ -1992,9 +1992,9 @@ class e_jsmanager
 				}
 				echo '<script>';
 				echo "\n//<![CDATA[\n";
-				echo ($this->_js_defer) ? "window.onload = function(){\n" : '';
+				echo ($this->_js_defer && !$this->isInAdmin()) ? "window.onload = function(){\n" : '';
 				echo implode("\n\n", $content_array);
-				echo ($this->_js_defer) ? "};\n" : '';
+				echo ($this->_js_defer && !$this->isInAdmin()) ? "};\n" : '';
 				echo "\n//]]>\n";
 				echo '</script>';
 				echo "\n";
