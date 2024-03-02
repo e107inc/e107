@@ -112,7 +112,7 @@ CREATE TABLE comments (
 #
 CREATE TABLE core (
   e107_name varchar(100) NOT NULL default '',
-  e107_value text NOT NULL,
+  e107_value mediumtext NOT NULL,
   PRIMARY KEY  (e107_name)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
