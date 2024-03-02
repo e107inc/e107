@@ -425,8 +425,9 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
          * http://tools.ietf.org/html/rfc6749#section-4.1.1
          */
         if ($this->supportRequestState
-            && $this->getStoredData('authorization_state') != $state
+            && (!$state || $this->getStoredData('authorization_state') != $state)
         ) {
+            $this->deleteStoredData('authorization_state');
             throw new InvalidAuthorizationStateException(
                 'The authorization state [state=' . substr(htmlentities($state), 0, 100) . '] '
                 . 'of this page is either invalid or has already been consumed.'
