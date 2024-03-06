@@ -117,7 +117,7 @@ class e_url
 			e107::canonical('_SITEURL_');
 		}
 
-		if(empty($this->_config) || empty($this->_request) || $this->_request === 'index.php' || $this->isLegacy() === true)
+		if(empty($this->_config) /*|| empty($this->_request) || $this->_request === 'index.php'*/ || $this->isLegacy() === true)
 		{
 			return false;
 		}
@@ -141,6 +141,10 @@ class e_url
 					continue;
 				}
 
+				if((empty($v['domain']) && (empty($this->_request) || $this->_request === 'index.php')) || (isset($v['domain']) && ($v['domain'] !== $_SERVER['HTTP_HOST'])))
+				{
+					continue;
+				}
 
 				if(!empty($v['alias']))
 				{
