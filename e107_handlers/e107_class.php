@@ -4348,7 +4348,8 @@ class e107
 
 			if ($options['mode'] === 'full')
 			{
-				$sefUrl = SITEURL . $rawUrl;
+				$siteURL = !empty($tmp[$plugin][$key]['domain']) ? 'https://'.rtrim($tmp[$plugin][$key]['domain'],'/').'/' : SITEURL;
+				$sefUrl = $siteURL . $rawUrl;
 			}
 			elseif ($options['mode'] === 'raw')
 			{

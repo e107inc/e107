@@ -1566,6 +1566,12 @@ class e107Test extends \Codeception\Test\Unit
 			//	$this->assertEquals("https://localhost/e107/news", $result);
 		}
 
+		// e107 v2.4 -  test for custom domain
+		e107::getPlugin()->install('_blank');
+		$result = $obj::url('_blank', 'parked',null,['mode'=>'full']);
+		self::assertSame('https://parked-domain.com/custom', $result);
+		e107::getPlugin()->uninstall('_blank');
+
 
 	}
 

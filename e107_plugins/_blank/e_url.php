@@ -41,6 +41,14 @@ class _blank_url // plugin-folder + '_url'
 
 		);
 
+		$config['parked'] = array(
+			'domain'        => 'parked-domain.com',
+			'regex'			=> '^custom/?$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'sef'			=> 'custom', 							// used by e107::url(); to create a url from the db table.
+			'redirect'		=> '{e_PLUGIN}_blank/blank.php?custom=1', 		// file-path of what to load when the regex returns true.
+
+		);
+
 		return $config;
 	}
 	
