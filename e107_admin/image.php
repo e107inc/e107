@@ -40,6 +40,12 @@ if(varset($_GET['action']) === 'youtube' )
 e107::js('core', 'plupload/plupload.full.min.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.min.js', 'jquery', 2);
+	$plUpload = 'plupload/i18n/' . e_LAN . '.js';
+
+	if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
+	{
+		e107::js('footer', e_WEB_JS . $plUpload, 'jquery', 5);
+	}
 e107::js('core', 'core/mediaManager.js', 'jquery',5);
 // issue #3051 Preview url is wrong when target page is a plugin
 // Using this variable to check for the plugins directory and replace with empty space in case of...
