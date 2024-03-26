@@ -1210,7 +1210,7 @@ function check_class($var, $userclass = null, $uid = 0)
 		$userclass = defset('USERCLASS_LIST', '0');
 	}
 	$e107 = e107::getInstance();
-	if ($var === e_LANGUAGE)
+	if ($var === defset('e_LANGUAGE'))
 	{
 		return true;
 	}
