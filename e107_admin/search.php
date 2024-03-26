@@ -201,8 +201,10 @@ if (isset($_POST['update_prefs']))
 
 }
 
-
-
+if(empty($search_prefs['core_handlers']))
+{
+	$search_prefs['core_handlers'] = [];
+}
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
@@ -264,7 +266,7 @@ if ($query[0] == 'settings')
 					<tr>
 						<td>".SEALAN_3."</td>
 						<td class='form-inline'>
-							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', SEALAN_31)."&nbsp;
+							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', 'PHP')."&nbsp;
 							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=mini')."&nbsp;".SEALAN_32."
 							<span class='field-help'>".SEALAN_49."</span>
 						</td>
