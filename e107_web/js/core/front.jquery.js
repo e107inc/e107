@@ -454,8 +454,15 @@ $(document).ready(function()
 				
 			$('#'+ id).find(':invalid').each(function (index, node) {
 
-			var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-			// console.log(node.id);
+			// Attempt to find a parent '.tab-pane' for the invalid input.
+			var tabPane = $(node).closest('.tab-pane');
+			var tab = null;
+
+			// Check if '.tab-pane' was found.
+			if(tabPane.length > 0) {
+				// If found, get the id of the '.tab-pane'.
+				tab = tabPane.attr('id');
+			}
 			
 			if(tab && (found === false))
 			{
