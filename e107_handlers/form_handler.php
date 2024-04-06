@@ -3235,7 +3235,10 @@ class e_form
 		}
 
 		$ret = '';
-		$ret .= '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>';
+	//	$ret .= '<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i>';
+
+		$ret .= $this->tp->toGlyph('far-question-circle', ['class'=>'admin-ui-help-tip', 'placeholder'=>'<!-- -->']);
+
 		$ret .= '<div class="field-help" data-placement="left" style="display:none">'.defset($text,$text).'</div>'; // display:none to prevent visibility during page load. 
 
 		return $ret;

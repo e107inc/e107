@@ -1562,7 +1562,7 @@ class e107Test extends \Codeception\Test\Unit
 				echo $result . "\n";
 				continue;
 			}
-			$this->assertEquals($var['_expected_'], $result);
+			self::assertEquals($var['_expected_'], $result, 'Failed on test #'.$index);
 			//	$this->assertEquals("https://localhost/e107/news", $result);
 		}
 
