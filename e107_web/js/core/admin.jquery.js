@@ -309,14 +309,14 @@ $(document).ready(function()
 	
 		/* Switch to Tab containing invalid form field. */
 		$('input[type=submit],button[type=submit]').on('click', function() {
-			
+
 			var id 		= $(this).closest('form').attr('id');
 			var found 	= false;
-		       
-			 $('#'+id).find('input:invalid,select:invalid,textarea:invalid').each(function(index, node) {
+		    
+			 $('#'+id).find('input:invalid, input.has-error,select:invalid,select.has-error, textarea:invalid, textarea.has-error').each(function(index, node) {
 			
-				var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-			
+				var tab = $(this).closest('.tab-pane').attr('id');;
+				
 				if(tab && (found === false))
 				{
 					$('a[href="#'+tab+'"]').tab('show');
