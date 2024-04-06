@@ -288,7 +288,7 @@ class e_formTest extends \Codeception\Test\Unit
 	public function testHelp()
 	{
 		$result = $this->_frm->help('my tip');
-		$this->assertSame('<i class="admin-ui-help-tip far fa-question-circle"><!-- --></i><div class="field-help" data-placement="left" style="display:none">my tip</div>', $result);
+		self::assertSame("<i class='admin-ui-help-tip far fa-question-circle' ><!-- --></i><div class=\"field-help\" data-placement=\"left\" style=\"display:none\">my tip</div>", $result);
 	}
 /*
 			public function testGetRequiredString()
@@ -435,9 +435,9 @@ class e_formTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected, $actual);
 
 		// test timezone change...
-		date_default_timezone_set('America/Los_Angeles');
+		date_default_timezone_set('America/Phoenix');
 		$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
-		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2022 17:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
+		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2022 18:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
 
 		$this->assertEquals($expected, $actual);
 		date_default_timezone_set($prevTimeZone);
@@ -1108,7 +1108,7 @@ class e_formTest extends \Codeception\Test\Unit
 	*/
 	public function testRenderValue()
 	{
-		date_default_timezone_set('America/Los_Angeles');
+		date_default_timezone_set('America/Phoenix');
 
 		$frm = $this->_frm;
 
@@ -1144,7 +1144,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			'file_001'          => '<a href="'.SITEURL.'e107_media/000000test/files/test.zip" title="Direct link to {e_MEDIA_FILE}test.zip" rel="external">{e_MEDIA_FILE}test.zip</a>',
 			'files_001'         => '<ol><li>{e_MEDIA_FILE}test.zip</li></ol>',
-			'datestamp_001'     => '03 Nov 2023 : 13:47',
+			'datestamp_001'     => '03 Nov 2023 : 14:47',
 			'date_001'          => '2018-08-23',
 			'userclass_001'     => 'Everyone (public)',
 			'userclasses_001'   => 'Everyone (public)<br />PRIVATEMENU',
