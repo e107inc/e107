@@ -608,9 +608,9 @@ class e_thumbnail
 			return null;
 		}
 
-		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
+		$getsize = $parm['size'] ?? '100x100';
 
-		header('location: https://via.placeholder.com/'.$getsize);
+		header('location: https://placehold.co/'.$getsize);
 		header('Content-Length: 0');
 		exit();
 	}

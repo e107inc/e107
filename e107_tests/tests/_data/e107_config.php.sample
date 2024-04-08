@@ -38,23 +38,16 @@ $E107_CONFIG = array('site_path' => '000000test');
 */
 const e_MOD_REWRITE = true;
 
-class e107_config
-{
-    public static function database()
-    {
-        return [
+return [
+    'database' => [
             'server'   => '{{ mySQLserver }}',
             'user'     => '{{ mySQLuser }}',
             'password' => '{{ mySQLpassword }}',
             'defaultdb'=> '{{ mySQLdefaultdb }}',
             'prefix'   => '{{ mySQLprefix }}',
             'charset'  => 'utf8',
-        ];
-    }
-
-    public static function paths()
-    {
-        return [
+    ],
+    'paths' => [ // leave empty to use default
             'admin'      => 'e107_admin/',
             'files'      => 'e107_files/',
             'images'     => 'e107_images/',
@@ -65,14 +58,8 @@ class e107_config
             'help'       => 'e107_docs/help/',
             'system'     => 'e107_system/',
             'media'      => 'e107_media/',
-        ];
-    }
-
-    public static function other()
-    {
-        return [
+    ],
+    'other' =>  [
             'site_path' => '000000test'
+    ]
         ];
-    }
-}
-

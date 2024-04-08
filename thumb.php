@@ -36,6 +36,7 @@ function thumbExceptionHandler(Throwable $e)
         $e->getLine(),
         $e->getTraceAsString()
     );
+    var_dump($message);
 	error_log($message);
 }
 
@@ -97,7 +98,7 @@ class e_thumbpage
 
 		// Config
 
-		include($self.DIRECTORY_SEPARATOR.'e107_config.php');
+		$config = include($self.DIRECTORY_SEPARATOR.'e107_config.php');
 
 		// support early include feature
 		if(!empty($CLASS2_INCLUDE))
@@ -120,7 +121,7 @@ class e_thumbpage
 		//e107 class
 		require($tmp.DIRECTORY_SEPARATOR.'e107_class.php');
 
-		if(!class_exists('e107_config')) // old e107_config.php format.
+		if(empty($config['paths'])) // old e107_config.php format.
 		{
 			$dirNames = ['ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY'];
 
@@ -142,9 +143,9 @@ class e_thumbpage
 		}
 		else // New e107_config.php format. v2.4+
 		{
-			$e107_paths = e107_config::paths();
-			$sql_info = e107_config::database();
-			$E107_CONFIG = e107_config::other() ?? [];
+			$e107_paths = $config['paths'];
+			$sql_info = $config['database'];
+			$E107_CONFIG = $config['other'] ?? [];
 		}
 
 		$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));

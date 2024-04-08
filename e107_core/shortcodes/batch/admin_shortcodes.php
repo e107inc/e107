@@ -1228,7 +1228,9 @@ class admin_shortcodes extends e_shortcode
 		{
 			return null;
 		}
-			global $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
+			global $themename, $themeversion, $themeauthor, $themedate, $themeinfo;
+
+			$mySQLdefaultdb = e107::getMySQLConfig('defaultdb');
 
 			$pref = e107::getPref();
 			$ns = e107::getRender();

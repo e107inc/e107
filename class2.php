@@ -135,7 +135,7 @@ else
 	unset($retrieve_prefs);
 }
 
-include(e_ROOT.'e107_config.php');
+$config = include(e_ROOT.'e107_config.php');
 
 if(!defined('e_POWEREDBY_DISABLE'))
 {
@@ -159,7 +159,7 @@ if(empty($PLUGINS_DIRECTORY))
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(empty($mySQLdefaultdb) && !class_exists('e107_config'))
+if(empty($mySQLdefaultdb) && empty($config))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
   header('Location: install.php');
@@ -184,7 +184,7 @@ $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-if(!class_exists('e107_config')) // old e107_config.php format.
+if(empty($config['paths'])) // old e107_config.php format.
 {
 	$dirNames = ['ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY'];
 
@@ -211,9 +211,10 @@ if(!class_exists('e107_config')) // old e107_config.php format.
 }
 else // New e107_config.php format. v2.4+
 {
-	$e107_paths = e107_config::paths();
-	$sql_info = e107_config::database();
-	$E107_CONFIG = e107_config::other() ?? [];
+	$e107_paths = $config['paths'];
+	$sql_info = $config['database'];
+	$E107_CONFIG = $config['other'] ?? [];
+	unset($config);
 }
 
 
