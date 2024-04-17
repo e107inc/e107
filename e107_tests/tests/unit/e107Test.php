@@ -24,7 +24,7 @@ class e107Test extends \Codeception\Test\Unit
 		}
 		catch(Exception $e)
 		{
-			$this->fail("Couldn't load e107 object");
+			self::fail("Couldn't load e107 object");
 		}
 
 	}
@@ -1068,7 +1068,6 @@ class e107Test extends \Codeception\Test\Unit
 		  'ADMIN_DELETE_ICON_PATH'     => '/e107_images/admin_images/delete_32.png',
 		  'ADMIN_WARNING_ICON_PATH'    => '/e107_images/admin_images/warning_32.png',
 		  'E_24_PLUGIN'                => "<i class='S24 e-plugins-24'></i> ",
-		  'ADMIN_FALSE_ICON'           => "<span class='text-danger admin-false-icon'>&#10799;</span>"
 
 		);
 
@@ -1517,7 +1516,7 @@ class e107Test extends \Codeception\Test\Unit
 		foreach($tests as $v)
 		{
 			$result = $obj::url($v['plugin'], $v['key'], $v['row'], $v['options']);
-			$this->assertStringContainsString('http', $result);
+			self::assertStringContainsString('http', $result);
 		}
 
 
@@ -1527,7 +1526,7 @@ class e107Test extends \Codeception\Test\Unit
 		$all = e107::getAddonConfig('e_url');
 		foreach($all as $plugin => $var)
 		{
-			if($plugin === 'gallery' || $plugin === 'rss_menu' || $plugin === 'vstore') // fixme - sef may be enabled or disabled each time tests are run
+			if($plugin === 'gallery' || $plugin === 'rss_menu' || $plugin === 'vstore' || $plugin === '_blank') // fixme - sef may be enabled or disabled each time tests are run
 			{
 				continue;
 			}
@@ -1566,12 +1565,21 @@ class e107Test extends \Codeception\Test\Unit
 			//	$this->assertEquals("https://localhost/e107/news", $result);
 		}
 
+
+
+
+	}
+
+	public function testUrlDomain()
+	{
 		// e107 v2.4 -  test for custom domain
+
+		$obj = $this->e107;
+
 		e107::getPlugin()->install('_blank');
-		$result = $obj::url('_blank', 'parked',null,['mode'=>'full']);
+		$result = $obj::url('_blank', 'parked', null, ['mode'=>'full']);
 		self::assertSame('https://parked-domain.com/custom', $result);
 		e107::getPlugin()->uninstall('_blank');
-
 
 	}
 

@@ -25,7 +25,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->fail($e->getMessage());
+			self::fail($e->getMessage());
 		}
 
 		$this->exploitFile = e_TEMP."test_exploit_file.jpg";
@@ -66,7 +66,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		foreach($isCleanTest as $file)
 		{
 			$actual = $this->fl->isClean($file['path'], $file['path']);
-			$this->assertEquals($file['expected'],$actual, "isClean() failed on {$file['path']} with error code: ".$this->fl->getErrorCode());
+			self::assertEquals($file['expected'],$actual, "isClean() failed on {$file['path']} with error code: ".$this->fl->getErrorCode());
 		}
 
 	}
@@ -120,8 +120,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				continue;
 			}
 
-
-			$this->assertSame($expected,$actual);
+			self::assertSame($expected,$actual);
 		}
 
 
@@ -143,7 +142,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		{
 			$actual = $this->fl->getMime($var['path']);
 
-			$this->assertSame($var['expected'], $actual);
+			self::assertSame($var['expected'], $actual);
 		}
 	}
 
@@ -170,7 +169,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		foreach($isAllowedTest as $file)
 		{
 			$actual = $this->fl->isAllowedType($file['path']);
-			$this->assertEquals($file['expected'],$actual, "isAllowedType() failed on: ".$file['path']);
+			self::assertEquals($file['expected'],$actual, "isAllowedType() failed on: ".$file['path']);
 		}
 
 	}
@@ -193,7 +192,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				foreach($arr as $expected => $bytes)
 				{
 					$result = $this->fl->file_size_encode($bytes);
-					$this->assertSame($expected, $result);
+					self::assertSame($expected, $result);
 
 				}
 
@@ -233,7 +232,7 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 				$actual = $this->fl->get_dirs(e_LANGUAGEDIR);
 				$expected = array (  0 => 'English' );
-				$this->assertSame($expected, $actual);
+				self::assertSame($expected, $actual);
 			}
 /*
 			public function testGetErrorMessage()
@@ -276,10 +275,36 @@ class e_fileTest extends \Codeception\Test\Unit
 		foreach($arr as $key => $expected)
 		{
 			$actual = $this->fl->file_size_decode($key);
-			$this->assertEquals($expected,$actual, $key." does not equal ".$expected." bytes");
+			self::assertEquals($expected,$actual, $key." does not equal ".$expected." bytes");
 		}
 
 	}
+
+	public function testZip()
+	{
+	    // Arrange
+	    $sourcePath = [
+	        e_IMAGE.'logo.png',
+	         e_IMAGE.'logoHD.png',
+	    ];
+
+	    $destinationPath = e_TEMP."testZip.zip";
+
+	    $result = $this->fl->zip($sourcePath, $destinationPath, ['remove_path'=>e_IMAGE]);
+
+	    self::assertNotEmpty($result);
+	    self::assertFileExists($destinationPath);
+
+		$expected = [
+		  0 => 'logo.png',
+		  1 => 'logoHD.png',
+		];
+
+	    $contents = self::readZipFile($destinationPath);
+		self::assertSame($expected, $contents);
+
+	}
+
 	/*
 			public function testZip()
 			{
@@ -357,12 +382,12 @@ class e_fileTest extends \Codeception\Test\Unit
 			}
 
 
-			$this->assertEquals($item['expected']['mime'], $ret['mime']);
+			self::assertEquals($item['expected']['mime'], $ret['mime']);
 
 			if($item['imgchk'])
 			{
-				$this->assertEquals($item['expected']['img-width'], $ret['img-width']);
-				$this->assertEquals($item['expected']['img-height'], $ret['img-height']);
+				self::assertEquals($item['expected']['img-width'], $ret['img-width']);
+				self::assertEquals($item['expected']['img-height'], $ret['img-height']);
 			}
 		}
 
@@ -446,7 +471,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				{
 					$actual = $this->fl->getFileExtension($mime);
 		
-					$this->assertSame($ext, $actual);
+					self::assertSame($ext, $actual);
 				}	
 			}
 /*
@@ -466,10 +491,10 @@ class e_fileTest extends \Codeception\Test\Unit
 					$files[] = $f['fname'];
 				}
 
-	     		$this->assertContains('install.xml', $files); // 1 level deep.
-	     		$this->assertContains('theme.php', $files);
-	     		$this->assertContains('theme.xml', $files);
-				$this->assertNotContains('style.css', $files);
+	     		self::assertContains('install.xml', $files); // 1 level deep.
+	     		self::assertContains('theme.php', $files);
+	     		self::assertContains('theme.xml', $files);
+				self::assertNotContains('style.css', $files);
 
 
 				// test folder with ony a folder inside. (no files)
@@ -477,9 +502,34 @@ class e_fileTest extends \Codeception\Test\Unit
 				$result = $this->fl->get_files(e_DOCS,'',$publicFilter);
 				$expected = array();
 
-				$this->assertSame($expected, $result);
+				self::assertSame($expected, $result);
 
 			}
+
+			private static function readZipFile($filePath)
+			{
+			    $zip = new ZipArchive;
+				$ret = [];
+
+			    if ($zip->open($filePath) === true)
+			    {
+			        for($i = 0; $i < $zip->numFiles; $i++)
+			        {
+			            $ret[] = $zip->getNameIndex($i);
+
+			        }
+
+			        $zip->close();
+			    }
+			    else
+			    {
+			        return false;
+			    }
+
+			    return $ret;
+			}
+
+
 /*
 			public function testGetUserDir()
 			{
@@ -562,12 +612,12 @@ class e_fileTest extends \Codeception\Test\Unit
 		$e_file->mkDir($destination);
 		$results = $e_file->unzipGithubArchive('core', $destination);
 
-		$this->assertEmpty($results['error'], "Errors not expected from Git remote update");
+		self::assertEmpty($results['error'], "Errors not expected from Git remote update");
 		$results['success'] = array_map(function($path)
 		{
 			$realpath = realpath($path);
-			$this->assertNotFalse($realpath,
-				"File {$path} reported as successfully extracted but does not exist");
+			self::assertNotFalse($realpath,
+				"File $path reported as successfully extracted but does not exist");
 			return $realpath;
 		}, $results['success']);
 		foreach($fake_e107_files['desired'] as $desired_filename)
@@ -576,13 +626,13 @@ class e_fileTest extends \Codeception\Test\Unit
 			{
 				$desired_filename = preg_replace("/^".preg_quote($src, '/')."/", $dest, $desired_filename);
 			}
-			$this->assertContains(realpath($destination.$desired_filename), $results['success'],
-				"Desired file {$desired_filename} did not appear in file system");
+			self::assertContains(realpath($destination.$desired_filename), $results['success'],
+				"Desired file $desired_filename did not appear in file system");
 		}
 		foreach($fake_e107_files['undesired'] as $undesired_filename)
 		{
-			$this->assertContains($prefix.$undesired_filename, $results['skipped'],
-				"{$undesired_filename} was not skipped but should have been");
+			self::assertContains($prefix.$undesired_filename, $results['skipped'],
+				"$undesired_filename was not skipped but should have been");
 		}
 	}
 
