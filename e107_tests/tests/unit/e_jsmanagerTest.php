@@ -436,7 +436,7 @@ class e_jsmanagerTest extends \Codeception\Test\Unit
 		}
 
 		$tp->setStaticUrl(null);
-
+		e107::getParser()->setStaticUrl(null);
 
 	}
 	/*
