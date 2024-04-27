@@ -63,8 +63,10 @@ class e_parse
 
 	protected $staticUrl;
 
+	protected $staticUrlMap = [];
+
 	/** @var array Stored relative paths - used by replaceConstants() */
-	private $relativePaths = array();
+	private $relativePaths = [];
 
 
 	// BBcode that contain preformatted code.
@@ -253,6 +255,8 @@ class e_parse
 
 	private $bootstrap;
 	private $fontawesome;
+
+	private $modRewriteMedia;
 
 	private $removedList      = array();
 	private $nodesToDelete    = array();
@@ -2420,26 +2424,36 @@ class e_parse
 		}
 
 		$staticArray = $this->staticUrl; // e_HTTP_STATIC;
+		$path = $this->replaceConstants($path, 'abs'); // replace any {THEME} etc.
+		$key = ltrim(eHelper::dasherize($path), '/');
 
 		if (is_array($staticArray))
 		{
-			$cnt = count($staticArray);
-			$staticCount = $this->staticCount();
-			if ($staticCount > ($cnt - 1))
+			if(!empty($this->staticUrlMap[$key]))
 			{
-				$staticCount = 0;
-				$this->staticCount(0);
+				$http = $this->staticUrlMap[$key];
 			}
+			else
+			{
+				$cnt = count($staticArray);
+				$staticCount = $this->staticCount();
+				if ($staticCount > ($cnt - 1))
+				{
+					$staticCount = 0;
+					$this->staticCount(0);
+				}
 
-			$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
-
+				$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
+				$this->staticCount(1);
+			}
 		}
 		else
 		{
 			$http = $this->staticUrl;
 		}
 
-		$this->staticCount(1);
+		$this->staticUrlMap[$key] = $http;
+
 
 		if (empty($path))
 		{
@@ -2448,7 +2462,7 @@ class e_parse
 
 		$base = '';
 
-		$path = $this->replaceConstants($path, 'abs'); // replace any {THEME} etc.
+
 
 		$srch = array(
 			e_PLUGIN_ABS,
@@ -2476,6 +2490,8 @@ class e_parse
 			$ret = str_replace(e_MEDIA_ABS, $http . $base . e107::getFolder('media'), $ret);
 		}
 
+
+
 		return $ret;
 
 	}
@@ -2487,8 +2503,12 @@ class e_parse
 	 */
 	public function setStaticUrl($url)
 	{
-
 		$this->staticUrl = $url;
+	}
+
+	public function getStaticUrlMap()
+	{
+		return $this->staticUrlMap;
 	}
 
 	/**
@@ -2636,10 +2656,10 @@ class e_parse
 		}
 
 
-		if (e_MOD_REWRITE_MEDIA == true && empty($options['nosef']))// Experimental SEF URL support.
+		if ($this->modRewriteMedia && empty($options['nosef']))//  SEF URL support.
 		{
 			$options['full'] = $full;
-			$options['ext'] = substr($url, -3);
+			$options['ext'] = pathinfo($url, PATHINFO_EXTENSION);
 			$options['thurl'] = $thurl;
 			//	$options['x'] = $this->thumbEncode();
 
@@ -3606,8 +3626,9 @@ class e_parse
 		if (defined('BOOTSTRAP'))
 		{
 			$this->bootstrap = (int) BOOTSTRAP;
-
 		}
+
+		$this->modRewriteMedia = deftrue('e_MOD_REWRITE_MEDIA');
 
 		if (defined('e_HTTP_STATIC'))
 		{
@@ -3781,7 +3802,6 @@ class e_parse
 	 */
 	public function setFontAwesome($version)
 	{
-
 		$this->fontawesome = (int) $version;
 	}
 
@@ -3790,10 +3810,13 @@ class e_parse
 	 */
 	public function setBootstrap($version)
 	{
-
 		$this->bootstrap = (int) $version;
 	}
 
+	public function setmodRewriteMedia($bool)
+	{
+		$this->modRewriteMedia = (bool) $bool;
+	}
 
 	/**
 	 * Add leading zeros to a number. eg. 3 might become 000003
