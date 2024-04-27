@@ -4292,7 +4292,15 @@ class e_parse
 
 			if (strpos($image, '://') !== false) // Remote Image
 			{
-				$url = $image;
+			    if (file_exists($image))
+				{
+                    $url = $image;
+                }
+                else
+                {
+					$file = $genericFile;
+					$url = $genericImg;
+                }
 			}
 			elseif (strpos($image, '-upload-') === 0)
 			{
