@@ -53,7 +53,7 @@ define("CUSLAN_79", "You must enter either a page title or a menu name.");
 define("CUSLAN_80", "Sub Title");
 define("CUSLAN_81", "Meta image");
 define("CUSLAN_82", "Optional. Used by social media when sharing this page.");
-
-
-
-
+define("CUSLAN_83", "Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only and be all lowercase.");
+define("CUSLAN_84", "Caption displayed on the menu item.");
+define("CUSLAN_85", "Leave blank to use the default");
+define("CUSLAN_86", "Leave blank to use the corresponding page");
