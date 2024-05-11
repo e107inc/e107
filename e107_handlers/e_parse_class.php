@@ -4292,7 +4292,7 @@ class e_parse
 
 			if (strpos($image, '://') !== false) // Remote Image
 			{
-			    if (file_exists($image))
+			    if (@fopen($image, 'r'))
 				{
                     $url = $image;
                 }
