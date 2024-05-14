@@ -1253,10 +1253,8 @@ class e_jsmanager
 					$tp = e107::getParser();
 					$json = $tp->toJSON($this->_e_js_settings);
 					echo "<script>\n";
-					echo '$(document).ready(function() {';
 					echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
 					echo "jQuery.extend(e107.settings, " . $json . ");\n";
-					echo '});';
 					echo "</script>\n";
 				}
 			break;
