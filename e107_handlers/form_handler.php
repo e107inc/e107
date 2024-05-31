@@ -3575,7 +3575,8 @@ var_dump($select_options);*/
 	 */
 	public function optgroup_open($label, $disabled = false, $options = null)
 	{
-		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
+		$unique = 'optgroup-'.$this->name2id($label);
+		return "<optgroup class='optgroup $unique ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
 	}
 
 	/**

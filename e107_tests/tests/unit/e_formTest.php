@@ -203,7 +203,7 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->assertTrue(false, "Couldn't load e_form object");
+			self::fail("Couldn't load e_form object");
 		}
 
 
@@ -230,7 +230,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		if(!file_exists($legacyFile))
 		{
-			$this->assertTrue(false,"Couldn't copy legacy image 'butterfly.jpg' to e107_files folder");
+			self::fail("Couldn't copy legacy image 'butterfly.jpg' to e107_files folder");
 		}
 
 	}
@@ -273,12 +273,12 @@ class e_formTest extends \Codeception\Test\Unit
 		foreach($tests as $t)
 		{
 			$actual = $this->_frm->getCountry($t['value']);
-			$this->assertEquals($t['expected'], $actual);
+			self::assertEquals($t['expected'], $actual);
 		}
 
 		// return array.
 		$actual = $this->_frm->getCountry();
-		$this->assertArrayHasKey('au',$actual);
+		self::assertArrayHasKey('au',$actual);
 
 
 
@@ -317,14 +317,14 @@ class e_formTest extends \Codeception\Test\Unit
 		// Test 1
 		$opt = ['active'=>'1', 'fade'=>true];
 		$result = $this->_frm->tabs($array,$opt);
-		$this->assertStringContainsString('<a class="nav-link active" href="#tab-1"',$result, 'Test 1 Nav Failed'); // Nav
-		$this->assertStringContainsString('<div class="tab-pane fade in active" id="tab-1"', $result, 'Test 1 Pane Failed'); // Pane
+		self::assertStringContainsString('<a class="nav-link active" href="#tab-1"',$result, 'Test 1 Nav Failed'); // Nav
+		self::assertStringContainsString('<div class="tab-pane fade in active" id="tab-1"', $result, 'Test 1 Pane Failed'); // Pane
 
 		// Test 2.
 		$opt = array();
 		$result = $this->_frm->tabs($array,$opt);
-		$this->assertStringContainsString('<a class="nav-link active" href="#tab-0"',$result, 'Test 2 Nav Failed'); // Nav
-		$this->assertStringContainsString('<div class="tab-pane active" id="tab-0"', $result, 'Test 2 Pane Failed'); // Pane
+		self::assertStringContainsString('<a class="nav-link active" href="#tab-0"',$result, 'Test 2 Nav Failed'); // Nav
+		self::assertStringContainsString('<div class="tab-pane active" id="tab-0"', $result, 'Test 2 Pane Failed'); // Pane
 
 		// Test 3.
 		$opt = ['active'=>'slide2'];
@@ -334,8 +334,8 @@ class e_formTest extends \Codeception\Test\Unit
 		];
 
 		$result = $this->_frm->tabs($array,$opt);
-		$this->assertStringContainsString('<li class="nav-item active"><a class="nav-link active" href="#slide2"',$result, 'Test 3 Nav Failed'); // Nav
-		$this->assertStringContainsString('<div class="tab-pane active" id="slide2"', $result, 'Test 3 Pane Failed'); // Pane
+		self::assertStringContainsString('<li class="nav-item active"><a class="nav-link active" href="#slide2"',$result, 'Test 3 Nav Failed'); // Nav
+		self::assertStringContainsString('<div class="tab-pane active" id="slide2"', $result, 'Test 3 Pane Failed'); // Pane
 
 	}
 
@@ -351,13 +351,13 @@ class e_formTest extends \Codeception\Test\Unit
 		$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>true, 'interval'=>false, 'data'=>false];
 		$result = $this->_frm->carousel('test-carousel', $slides, $parms);
 		$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='1' data-interval='0'>";
-		$this->assertStringContainsString($expected, $result);
+		self::assertStringContainsString($expected, $result);
 
 
 		$parms = ['default'=>12, 'indicators'=>false, 'navigation'=>false, 'wrap'=>false, 'interval'=>false, 'data'=>false];
 		$result = $this->_frm->carousel('test-carousel', $slides, $parms);
 		$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='' data-interval='0'>";
-		$this->assertStringContainsString($expected, $result);
+		self::assertStringContainsString($expected, $result);
 
 	}
 
@@ -371,7 +371,7 @@ class e_formTest extends \Codeception\Test\Unit
 	public function testText()
 	{
 		$result = $this->_frm->renderElement('crazy"key', "crazy'value", ['type' => 'text']);
-		$this->assertEquals(
+		self::assertEquals(
 			"<input type='text' name='crazy&quot;key' value='crazy&#039;value' maxlength='255' "
 			. " id='crazy&quot;key' class='tbox form-control' />",
 			$result
@@ -381,7 +381,7 @@ class e_formTest extends \Codeception\Test\Unit
 	public function testTextBadNormalizationSource()
 	{
 		$result = $this->_frm->renderElement('crazy&quot;key', "crazy&#039;value", ['type' => 'text']);
-		$this->assertEquals(
+		self::assertEquals(
 			"<input type='text' name='crazy&quot;key' value='crazy&#039;value' maxlength='255' "
 			. " id='crazy&quot;key' class='tbox form-control' />",
 			$result
@@ -432,21 +432,21 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
 		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='January, 01, 2023 01:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 
 		// test timezone change...
 		date_default_timezone_set('America/Phoenix');
 		$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
 		$expected = "<input class='tbox e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2022 18:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'     /><input type='hidden' name='date_field' id='date-field' value='1672534800' />";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 		date_default_timezone_set($prevTimeZone);
 	}
 
 			public function testUserlist()
 			{
-				$list = $this->_frm->userlist('name',null);
-				$this->assertStringContainsString("<option value='1'>e107</option>",$list);
+				$list = $this->_frm->userlist('name');
+				self::assertStringContainsString("<option value='1'>e107</option>",$list);
 
 			}
 /*
@@ -500,7 +500,7 @@ class e_formTest extends \Codeception\Test\Unit
 				foreach($tests as $var)
 				{
 					$result = $this->_frm->progressBar('progress', $var['value']);
-					$this->assertStringContainsString($var['expected'],$result);
+					self::assertStringContainsString($var['expected'],$result);
 				}
 
 			}
@@ -520,7 +520,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 				$result = $this->_frm->checkbox('name', 2, 2);
 				$expected = "<input type='checkbox' name='name' value='2' id='name-2' class='form-check-input' checked='checked' />";
-				$this->assertEquals($expected,$result);
+				self::assertEquals($expected,$result);
 
 			}
 
@@ -535,15 +535,15 @@ class e_formTest extends \Codeception\Test\Unit
 
 				$result = $this->_frm->checkboxes('name', $opts, array(2=>'two'));
 				$expected = "<div id='name-container' class='checkboxes checkbox' style='display:inline-block'><label class='checkbox form-check'><input type='checkbox' name='name[1]' value='1' id='name-1-1' class='form-check-input' /><span>one</span></label><label class='checkbox form-check'><input type='checkbox' name='name[2]' value='1' id='name-2-1' class='form-check-input' checked='checked' /><span>two</span></label><label class='checkbox form-check'><input type='checkbox' name='name[3]' value='1' id='name-3-1' class='form-check-input' /><span>three</span></label></div>";
-				$this->assertEquals($expected,$result);
+				self::assertEquals($expected,$result);
 
 				$result = $this->_frm->checkboxes('name', $opts, 2, array('useKeyValues'=> 1));
 				$expected = "<div id='name-container' class='checkboxes checkbox' style='display:inline-block'><label class='checkbox form-check'><input type='checkbox' name='name[]' value='1' id='name-1' class='form-check-input' /><span>one</span></label><label class='checkbox form-check active'><input type='checkbox' name='name[]' value='2' id='name-2' class='form-check-input' checked='checked' /><span>two</span></label><label class='checkbox form-check'><input type='checkbox' name='name[]' value='3' id='name-3' class='form-check-input' /><span>three</span></label></div>";
-				$this->assertEquals($expected,$result);
+				self::assertEquals($expected,$result);
 
 				$result = $this->_frm->checkboxes('name', $opts, 'two', array('useLabelValues'=> 1));
 				$expected= "<div id='name-container' class='checkboxes checkbox' style='display:inline-block'><label class='checkbox form-check'><input type='checkbox' name='name[]' value='one' id='name-one' class='form-check-input' /><span>one</span></label><label class='checkbox form-check active'><input type='checkbox' name='name[]' value='two' id='name-two' class='form-check-input' checked='checked' /><span>two</span></label><label class='checkbox form-check'><input type='checkbox' name='name[]' value='three' id='name-three' class='form-check-input' /><span>three</span></label></div>";
-				$this->assertEquals($expected,$result);
+				self::assertEquals($expected,$result);
 
 			}
 /*
@@ -624,7 +624,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='1'><option value='opt_1'>Option 1</option><option value='opt_2' disabled='disabled'>Option 2</option><option value='opt_3' selected='selected'>Option 3</option></select>";
 
-		$this->assertEquals($expected,$actual);
+		self::assertEquals($expected,$actual);
 
 
 		// test group opt-array.
@@ -636,12 +636,12 @@ class e_formTest extends \Codeception\Test\Unit
 
 		$actual = $this->_frm->select('name', $opt_array, $selected, $options);
 		$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='2'>
-<optgroup class='optgroup level-1' label='GROUP 1'>
+<optgroup class='optgroup optgroup-group-1 level-1' label='GROUP 1'>
 <option value='opt_1'>Option 1</option>
 <option value='opt_2' disabled='disabled'>Option 2</option>
 <option value='opt_3' selected='selected'>Option 3</option>
 </optgroup>
-<optgroup class='optgroup level-1' label='GROUP 2'>
+<optgroup class='optgroup optgroup-group-2 level-1' label='GROUP 2'>
 <option value='opt_4'>Option 4</option>
 <option value='opt_5'>Option 5</option>
 <option value='opt_6'>Option 6</option>
@@ -652,19 +652,19 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = str_replace(array("\n", "\r"), "", $actual);
 		$expected = str_replace(array("\n", "\r"), "", $expected);
 
-		$this->assertEquals($expected,$actual);
+		self::assertSame($expected,$actual);
 
 
 		// Important - Test backward compatibility with selected value as string/integer combination, plus null default option.
 
-		$selected =  (string) '3';
+		$selected =  '3';
 		$opt_array = array(1=>"Option 1", 2=>"Option 2", 3=>"Option 3");
 		$actual = $this->_frm->select('name', $opt_array, $selected,null,true);
 
 		$actual = str_replace("\n", "", $actual);
 		$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='3'><option value=''>&nbsp;</option><option value='1'>Option 1</option><option value='2'>Option 2</option><option value='3' selected='selected'>Option 3</option></select>";
 
-		$this->assertSame($expected,$actual);
+		self::assertSame($expected,$actual);
 
 
 	}
@@ -697,7 +697,7 @@ class e_formTest extends \Codeception\Test\Unit
 		foreach($tests as $var)
 		{
 			$result = $this->_frm->uc_select('uc', $var['value'], $var['options'], array('default'=>$var['default']));
-			$this->assertStringContainsString($var['expected'],$result);
+			self::assertStringContainsString($var['expected'],$result);
 		}
 
 
@@ -715,7 +715,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->uc_select('uc', 254, $uc_options, $select_options, $opt_options);
 		$expected = "<select name='uc' id='uc' class='tbox select form-control'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n\n<optgroup label='Everyone but..'>\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n</optgroup>\n\n</select>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testUc_select_single_string()
@@ -726,7 +726,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->uc_select('uc', 'Admin', $uc_options, $select_options, $opt_options);
 		$expected = "<select name='uc' id='uc' class='tbox select form-control'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n\n<optgroup label='Everyone but..'>\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n</optgroup>\n\n</select>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testUc_select_multi_numeric()
@@ -737,7 +737,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->uc_select('uc', '254,253', $uc_options, $select_options, $opt_options);
 		$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label='Everyone but..'>\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testUc_select_multi_string()
@@ -748,7 +748,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->uc_select('uc', 'Admin,Members', $uc_options, $select_options, $opt_options);
 		$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label='Everyone but..'>\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testUc_select_multi_mixed()
@@ -759,7 +759,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->uc_select('uc', 'Admin,253', $uc_options, $select_options, $opt_options);
 		$expected = "<select name='uc[]' id='uc' class='tbox select form-control' multiple='multiple'>\n<option value='254' selected='selected'>&nbsp;&nbsp;Admin</option>\n<option value='253' selected='selected'>&nbsp;&nbsp;Members</option>\n\n<optgroup label='Everyone but..'>\n<option value='-254'>&nbsp;&nbsp;Not Admin</option>\n<option value='-253'>&nbsp;&nbsp;Not Members</option>\n</optgroup>\n\n</select>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	/*
@@ -779,7 +779,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$actual = $this->_frm->option('name','value', '', $options);
 		$expected = "<option value='value' disabled='disabled'>name</option>";
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 
 		$tests = ['true'=>'True', 'false'=>'False', 'legacy'=>'Legacy'];
 
@@ -787,7 +787,7 @@ class e_formTest extends \Codeception\Test\Unit
 		{
 			$expected = "<option value='$k'>$v</option>";
 			$result = $this->_frm->option($v,$k);
-			$this->assertSame($expected, $result);
+			self::assertSame($expected, $result);
 		}
 	}
 
@@ -862,7 +862,7 @@ class e_formTest extends \Codeception\Test\Unit
 		{
 			$actual = $this->_frm->option_multi($row['optArray'],$row['value'], varset($row['options'], []));
 			$actual = str_replace("\n", '', $actual);
-			$this->assertSame($row['expected'], $actual, 'Test #'.$index.' failed');
+			self::assertSame($row['expected'], $actual, 'Test #'.$index.' failed');
 		}
 
 	}
@@ -880,7 +880,7 @@ class e_formTest extends \Codeception\Test\Unit
 			public function testHidden()
 			{
 				$result = $this->_frm->hidden('name','on',['id'=>'my-field']);
-				$this->assertSame("<input type='hidden' name='name' value='on' id='my-field' />", $result);
+				self::assertSame("<input type='hidden' name='name' value='on' id='my-field' />", $result);
 			}
 /*
 			public function testToken()
@@ -957,7 +957,7 @@ class e_formTest extends \Codeception\Test\Unit
 				foreach($tests as $index => $var)
 				{
 					$result = $this->_frm->button($var['name'], $var['value'], $var['action'], $var['label'], $var['options']);
-					$this->assertSame($expected[$index],$result, "Mismatch on #".$index);
+					self::assertSame($expected[$index],$result, "Mismatch on #".$index);
 				//	$ret[] = $result;
 				}
 
@@ -979,7 +979,7 @@ class e_formTest extends \Codeception\Test\Unit
 				$result = $this->_frm->admin_button('update_id', "Update", 'update');
 				$expected = "<button data-loading-icon='fa-spinner' type='submit' name='update_id' value='Update' id='update-id' class='btn update btn-success'><span>Update</span></button>";
 
-				$this->assertSame($expected, $result);
+				self::assertSame($expected, $result);
 			}
 /*
 			public function testDefaultButtonClassExists()
@@ -1019,7 +1019,7 @@ class e_formTest extends \Codeception\Test\Unit
 				$actual = $this->_frm->get_attributes($options);
 				$expected = " class='myclass' id='custom-id' readonly='readonly' data-something='custom-att'";
 
-				$this->assertSame($expected, $actual);
+				self::assertSame($expected, $actual);
 			}
 
 			/**
@@ -1035,7 +1035,7 @@ class e_formTest extends \Codeception\Test\Unit
 				$actual = $this->_frm->get_attributes($options);
 				$expected = ' size=\'300px\' v-bind:class="{ active: isActive }"';
 
-				$this->assertSame($expected, $actual);
+				self::assertSame($expected, $actual);
 			}
 /*
 			public function test_format_id()
@@ -1050,14 +1050,14 @@ class e_formTest extends \Codeception\Test\Unit
 
 				$result = $this->_frm->name2id($text);
 
-				$this->assertEquals($expected, $result);
+				self::assertEquals($expected, $result);
 
 				// Test with diacritics
 				$text       = "Façade, Jalapeño, Frappé";
 				$expected   = 'facade-jalapeno-frappe';
 
 				$result = $this->_frm->name2id($text);
-				$this->assertEquals($expected, $result);
+				self::assertEquals($expected, $result);
 
 			}
 /*
@@ -1180,7 +1180,7 @@ class e_formTest extends \Codeception\Test\Unit
 				$this->expectExceptionMessage($result);
 			}
 
-			$this->assertEquals($expected[$field], $result, 'Mismatch on '.$field);
+			self::assertEquals($expected[$field], $result, 'Mismatch on '.$field);
 		}
 
 
@@ -1214,7 +1214,7 @@ class e_formTest extends \Codeception\Test\Unit
 				//	$this->expectExceptionMessage($result);
 			}
 
-			$this->assertStringContainsString('data-token',$result,$field." doesn't contain 'data-token'");
+			self::assertStringContainsString('data-token',$result,$field." doesn't contain 'data-token'");
 		}
 
 	}
@@ -1306,7 +1306,7 @@ class e_formTest extends \Codeception\Test\Unit
 			$result = preg_replace("/tabindex='[0-9]*'/", '', $result);
 			$expect = preg_replace("/tabindex='[0-9]*'/", '', $expected[$field]);
 
-			$this->assertEquals($expect, $result, 'Field: '.$field);
+			self::assertEquals($expect, $result, 'Field: '.$field);
 		}
 
 
@@ -1322,7 +1322,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			$expected = "<select name='dropdown_004[]' id='dropdown-004' class='tbox select form-control' multiple='multiple'><option value='noindex' data-title='Prevent search engines from indexing this item.'>NoIndex</option><option value='nofollow' data-title='Prevent search engines from following links in this item.'>NoFollow</option><option value='noarchive' data-title='Prevent cached copies of this item from appearing in search results.'>NoArchive</option><option value='noimageindex' data-title='Prevent search engines from indexing images of this item.'>NoImageIndex</option></select>";
 		
-			$this->assertSame($expected, $result);
+			self::assertSame($expected, $result);
 	}
 
 	public function testRenderValueUserclassesInline()
@@ -1335,7 +1335,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 			$tags = e107::getParser()->getTags($result,'a');
 
-			$this->assertNotEmpty($tags['a'][0]);
+			self::assertNotEmpty($tags['a'][0]);
 
 			$expected = array (
 				'class'          => 'e-tip e-editable editable-click ',
@@ -1351,11 +1351,11 @@ class e_formTest extends \Codeception\Test\Unit
 
 			foreach($expected as $k=>$value)
 			{
-				$this->assertSame($value, $tags['a'][0][$k], "Failed '$k' is not the same");
+				self::assertSame($value, $tags['a'][0][$k], "Failed '$k' is not the same");
 			}
 
-			$this->assertNotEmpty($tags['a'][0]['data-token']);
-			$this->assertNotEmpty($tags['a'][0]['data-url']);
+			self::assertNotEmpty($tags['a'][0]['data-token']);
+			self::assertNotEmpty($tags['a'][0]['data-url']);
 
 
 	}
@@ -1416,7 +1416,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$results[] = $method->invoke($this->_frm);
 		$results[] = $method->invoke($this->_frm);
 
-		$this->assertEquals($results[0], $results[1],
+		self::assertEquals($results[0], $results[1],
 			"Generated tokens differ. Watch out for performance penalty!");
 	}
 
@@ -1462,7 +1462,7 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->assertTrue(false, "Couldn't load e_admin_model object");
+			self::fail("Couldn't load e_admin_model object");
 		}
 
 		$model->setData($this->_values);
@@ -1478,7 +1478,7 @@ class e_formTest extends \Codeception\Test\Unit
 		foreach($tests as $t)
 		{
 			$result = $this->_frm->renderLink($t['value'], $t['parms'], 3);
-			$this->assertEquals($t['expected'],$result);
+			self::assertEquals($t['expected'],$result);
 		}
 
 
@@ -1498,7 +1498,7 @@ class e_formTest extends \Codeception\Test\Unit
 <span></span>
 </label>";
 
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 
 		$this->_frm->_snippets = false;
 
