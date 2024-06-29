@@ -1784,6 +1784,11 @@ class e_form
 			$extras .= " data-start-date='". $options['startDate']."'";
 		}
 
+		if(!empty($options['showMeridian']))
+		{
+			$extras .= " data-show-meridian='". $options['showMeridian']."'";
+		}
+
 		$text = '';
 
 		if(!empty($options['inline']))
