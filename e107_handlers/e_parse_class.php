@@ -4308,7 +4308,7 @@ class e_parse
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
 		$genericFile = e_IMAGE . 'generic/blank_avatar.jpg';
-		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, true, $full);
+		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, false, $full);
 
 		if (!empty($image))
 		{
