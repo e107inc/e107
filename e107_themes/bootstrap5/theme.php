@@ -57,10 +57,10 @@ if(!defined('e107_INIT'))
 		}
 
 
-		function tablestyle($caption, $text, $mode='', $options = array())
+		function tablestyle($caption, $text, $mode='', $data = array())
 		{
 
-			$style = varset($options['setStyle'], 'default');
+			$style = varset($data['setStyle'], 'default');
 
 			// Override style based on mode.
 			switch($mode)
@@ -82,15 +82,15 @@ if(!defined('e107_INIT'))
 				break;
 			}
 
-			echo "\n<!-- tablestyle initial:  style=" . $style . "  mode=" . $mode . "  UniqueId=" . varset($options['uniqueId']) . " -->\n\n";
+			echo "\n<!-- tablestyle initial:  style=" . $style . "  mode=" . $mode . "  UniqueId=" . varset($data['uniqueId']) . " -->\n\n";
 
 			
-			if($style === 'listgroup' && empty($options['list']))
+			if($style === 'listgroup' && empty($data['list']))
 			{
 				$style = 'cardmenu';
 			}
 
-			if($style === 'cardmenu' && !empty($options['list']))
+			if($style === 'cardmenu' && !empty($data['list']))
 			{
 				$style = 'listgroup';
 			}
@@ -106,7 +106,7 @@ if(!defined('e107_INIT'))
 			if(deftrue('e_DEBUG'))
 			{
 				echo "\n<!-- \n";
-				echo json_encode($options, JSON_PRETTY_PRINT);
+				echo json_encode($data, JSON_PRETTY_PRINT);
 				echo "\n-->\n\n";
 			}
 
@@ -167,10 +167,10 @@ if(!defined('e107_INIT'))
 					}
 					echo $text;
 
-					if(!empty($options['footer'])) // XXX @see news-months menu.
+					if(!empty($data['footer'])) // XXX @see news-months menu.
 			        {
 			            echo '<div class="card-footer">
-		                      '.$options['footer'].'
+		                      '.$data['footer'].'
 		                    </div>';
 			        }
 
@@ -190,10 +190,10 @@ if(!defined('e107_INIT'))
 
   				echo $text;
 
-  				if(!empty($options['footer'])) // XXX @see news-months menu.
+  				if(!empty($data['footer'])) // XXX @see news-months menu.
   			    {
   			        echo '<div class="card-footer">
-  		                   '.$options['footer'].'
+  		                   '.$data['footer'].'
   		                   </div>';
   			    }
 

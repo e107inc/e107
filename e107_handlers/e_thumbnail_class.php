@@ -138,6 +138,8 @@ class e_thumbnail
 			$e_QUERY = base64_decode($_GET['id']);
 		}
 
+		$e_QUERY= str_replace('e_AVATAR', 'e_AVATAR/', $e_QUERY); // FIXME  Quick and dirty fix.
+
 		parse_str(str_replace('&amp;', '&', $e_QUERY), $this->_request);
 
 		if(isset($this->_request['w']))

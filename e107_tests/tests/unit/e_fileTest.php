@@ -303,13 +303,19 @@ class e_fileTest extends \Codeception\Test\Unit
 	    $contents = self::readZipFile($destinationPath);
 		self::assertSame($expected, $contents);
 
+
+		// Test directory path.
+		 $destinationPath = e_TEMP."testZip2.zip";
+
+		 $data = array();
+		 $data[] = e_TEMP;
+		 $result = $this->fl->zip($data , $destinationPath, ['remove_path'=>e_IMAGE]);
+		 $contents = self::readZipFile($destinationPath);
+		 self::assertNotEmpty($contents);
+
 	}
 
 	/*
-			public function testZip()
-			{
-
-			}
 
 			public function testSetDefaults()
 			{

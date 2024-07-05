@@ -1763,8 +1763,7 @@ class e_form
 		$xsize		= (!empty($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= !empty($options['disabled']) ? 'disabled' : '';
 		$placeholder = !empty($options['placeholder']) ? 'placeholder="'.$options['placeholder'].'"' : '';
-		$timezone    = '';
-
+		$extras    = '';
 
 
 		if(!empty($options['timezone'])) // since datetimepicker does not support timezones and assumes the browser timezone is the intended timezone.
@@ -1772,7 +1771,22 @@ class e_form
 			date_default_timezone_set($options['timezone']);
 			$targetOffset = date('Z');
 			date_default_timezone_set(USERTIMEZONE);
-			$timezone = "data-date-timezone-offset='".$targetOffset."'";
+			$extras .= " data-date-timezone-offset='".$targetOffset."'";
+		}
+
+		if(!empty($options['minuteStep']))
+		{
+			$extras .= " data-minute-step='".(int) $options['minuteStep']."'";
+		}
+
+		if(!empty($options['startDate']))
+		{
+			$extras .= " data-start-date='". $options['startDate']."'";
+		}
+
+		if(!empty($options['showMeridian']))
+		{
+			$extras .= " data-show-meridian='". $options['showMeridian']."'";
 		}
 
 		$text = '';
@@ -1784,7 +1798,7 @@ class e_form
 		}
 		else
 		{
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$placeholder} {$timezone} />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$placeholder} {$extras} />";
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
@@ -3575,7 +3589,8 @@ var_dump($select_options);*/
 	 */
 	public function optgroup_open($label, $disabled = false, $options = null)
 	{
-		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
+		$unique = 'optgroup-'.$this->name2id($label);
+		return "<optgroup class='optgroup $unique ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
 	}
 
 	/**
