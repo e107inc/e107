@@ -238,3 +238,8 @@ define("LAN_NEWS_109", "Trigger an email notification when you submit this form.
 define("LAN_NEWS_110", "News Cache Timeout");
 define("LAN_NEWS_111", "Time in minutes. Applies only when system cache is enabled.");
 define("LAN_NEWS_112", "Select the URL format. Either record count (eg. page=20, page=40, page=60 etc.) or page number (eg. page=1, page=2, page=3 etc.). Warning: If modified some news URLs will need to be re-indexed by search engines.");
+
+ // v2.4
+
+define("LAN_NEWS_113", "Limt to self-authored news posts only");
+define("LAN_NEWS_114", "Enable this preference to restrict group members from viewing and editing news posts authored by other administrators.");

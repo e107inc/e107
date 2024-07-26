@@ -181,7 +181,7 @@ class news_cat_ui extends e_admin_ui
 
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
 			
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}'"))
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='$sef'"))
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
@@ -210,7 +210,7 @@ class news_cat_ui extends e_admin_ui
 			$message .= print_r($new_data,true);
 			file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);*/
 
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id !=".intval($id)))
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='$sef' AND category_id !=".intval($id)))
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
@@ -398,7 +398,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text .= "<a class='btn btn-default btn-secondary btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".defset('ADMIN_EXECUTE_ICON')."</a>";
+				$text .= "<a class='btn btn-default btn-secondary btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub=$id'>".defset('ADMIN_EXECUTE_ICON')."</a>";
 				// NWSLAN_103;	
 			} 
 
@@ -484,7 +484,7 @@ class news_admin_ui extends e_admin_ui
 	
 	protected $fieldpref = array('checkboxes','news_id', 'news_thumbnail', 'news_title', 'news_datestamp', 'news_category', 'news_class', 'options');
 
-	protected $preftabs = ['general'=>LAN_GENERAL,'subnews'=>LAN_NEWS_101];
+	protected $preftabs = ['general'=>LAN_GENERAL,'admin'=>LAN_HEADER_04, 'subnews'=>LAN_NEWS_101];
 
 	protected $prefs = [
 		'news_default_template'   => ['title' => NWSLAN_127, 'type'     => 'dropdown', 'data'=>'safestr', 'help'   => LAN_NEWS_88, 'tab'  => 'general'],
@@ -497,9 +497,12 @@ class news_admin_ui extends e_admin_ui
 		'nbr_cols'                => ['title' => NWSLAN_87, 'type'      => 'dropdown', 'data'=>'int', 'tab'    => 'general'],
 		'newsposts_archive'       => ['title' => NWSLAN_115, 'type'     => 'dropdown', 'data'=>'int', 'help'   => NWSLAN_116, 'tab'   => 'general'],
 		'newsposts_archive_title' => ['title' => NWSLAN_117, 'type'     => 'text', 'data'=>'safestr', 'tab'        => 'general'],
-		'news_editauthor'         => ['title' => LAN_NEWS_51, 'type'    => 'userclass', 'data'=>'int', 'tab'   => 'general', 'writeParms'=>['classlist'=>'nobody,main,admin,classes']],
 		'news_newdateheader'      => ['title' => NWSLAN_111, 'type'     => 'boolean', 'data'=>'int', 'help'    => NWSLAN_112, 'tab'   => 'general'],
 		'news_unstemplate'        => ['title' => NWSLAN_113, 'type'     => 'boolean', 'data'=>'int', 'help'    => NWSLAN_114, 'tab'   =>'general'],
+
+		'news_editauthor'         => ['title' => LAN_NEWS_51, 'type'    => 'userclass', 'data'=>'int', 'tab'   => 'admin', 'writeParms'=>['classlist'=>'nobody,main,admin,classes']],
+		'news_limit_to_self'      => ['title' => LAN_NEWS_113, 'type'   => 'userclass', 'data'=>'int', 'help'=>LAN_NEWS_114, 'tab'   => 'admin', 'writeParms'=>['classlist'=>'nobody,classes,no-excludes']],
+
 		'subnews_class'           => ['title' => NWSLAN_106, 'type'     => 'userclass','data'=>'int', 'tab'   => 'subnews', 'writeParms'=>['classlist'=>'nobody,public,guest,member,admin,classes'] ],
 		'subnews_htmlarea'        => ['title' => NWSLAN_107, 'type'     => 'boolean', 'data'=>'int', 'tab'     => 'subnews'],
 		'subnews_attach'          => ['title' => NWSLAN_100, 'type'     => 'boolean', 'data'=>'int', 'tab'     => 'subnews'],
@@ -632,7 +635,7 @@ class news_admin_ui extends e_admin_ui
 	{
 		if(e_LANGUAGE === "Japanese" || e_LANGUAGE === "Korean")
 		{
-			return null;
+			return;
 		}
 
 
@@ -871,12 +874,23 @@ class news_admin_ui extends e_admin_ui
 	}
 
 
+	/**
+	 * Returns true when limit news post view/edit to self-authored content is active for the currently logged in administrator.
+	 * @return bool
+	 */
+	private function limitToSelfEnabled()
+	{
+		if((int) $limit = e107::getPref('news_limit_to_self', false))
+		{
+			return (check_class($limit) && !getperms('0'));
+		}
 
+		return false;
+	}
 
 
 	function init()
 	{
-
 		$this->addons = e107::getAddonConfig('e_admin',null, 'config', $this);
 /*
 		if(!empty($_POST['save_prefs']))
@@ -969,10 +983,41 @@ class news_admin_ui extends e_admin_ui
 
 	function EditObserver()
 	{
+
 		parent::EditObserver();
+
+		$author = (int) $this->getModel()->get('news_author');
+
+		if($this->limitToSelfEnabled() && $author !== USERID)
+		{
+			$this->getRequest()->setAction('e403');
+			return false;
+		}
+
 		$this->initSEOFields();
 
 	}
+
+	function ListObserver()
+	{
+		if($this->limitToSelfEnabled())
+		{
+			$this->listQry .= " WHERE n.news_author = ".USERID;
+		}
+
+		parent::ListObserver();
+	}
+
+	function ListAjaxObserver()
+	{
+		if($this->limitToSelfEnabled())
+		{
+			$this->listQry .= " WHERE n.news_author = ".USERID;
+		}
+
+		parent::ListAjaxObserver();
+	}
+
 
 	function CreateObserver()
 	{
@@ -1086,10 +1131,6 @@ class news_admin_ui extends e_admin_ui
 		$this->newspost->show_submitted_news();	
 	}
 	
-	function maintPage()
-	{
-		
-	}
 
 	private function _optrange($num, $zero = true)
 	{
@@ -1329,19 +1370,6 @@ class news_admin_ui extends e_admin_ui
 	}*/
 
 
-	function noPermissions($qry = '')
-	{
-		$url = e_SELF.($qry ? '?'.$qry : '');
-		if($qry !== e_QUERY)
-		{
-			$mes = e107::getMessage();
-			$mes->add('Insufficient permissions!', E_MESSAGE_ERROR, true);
-			session_write_close();
-			header('Location: '.$url);
-		}
-		exit;
-	}
-	
 
 	private function processSubmittedMedia($data)
 	{
@@ -1501,7 +1529,7 @@ class news_form_ui extends e_admin_form_ui
 
 
 
-		$pref = e107::pref('core');
+		$pref = e107::pref();
 		$sql = e107::getDb();
 
 
@@ -1521,7 +1549,7 @@ class news_form_ui extends e_admin_form_ui
 		{
 
 			$auth = ($curVal) ? intval($curVal) : USERID;
-			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
+			$sql->select("user", "user_name", "user_id=$auth LIMIT 1");
 			$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a target='_blank' href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$auth)."'>".$row['user_name']."</a>";
@@ -1617,12 +1645,12 @@ class news_form_ui extends e_admin_form_ui
 
 		$val = strpos($curVal, "[img]http") !== false ? $curVal : str_replace("[img]../", "[img]", $curVal);
 		$text .= "<div id='news-body-container' class='tab-pane active'>";
-		$text .= $frm->bbarea('news_body', $val, 'news', 'news', 'large');
+		$text .= $frm->bbarea('news_body', $val, 'news', 'news');
 		$text .= "</div>";
 		$text .= "<div id='news-extended-container' class='tab-pane'>";
 
 		$val = (strpos($curValExt, "[img]http") !== false ? $curValExt : str_replace("[img]../", "[img]",$curValExt));
-		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news','large');
+		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news');
 
 		$text .= "</div>
 			</div>";
@@ -1666,7 +1694,7 @@ class news_form_ui extends e_admin_form_ui
 			$url = e107::getParser()->thumbUrl($curval,'aw=80');
 			$link = e107::getParser()->replaceConstants($curval);
 
-			return "<a class='e-modal' href='{$link}'><img src='{$url}' alt='".basename($curval)."' /></a>";
+			return "<a class='e-modal' href='$link'><img src='$url' alt='".basename($curval)."' /></a>";
 		}
 
 
@@ -1680,7 +1708,7 @@ class news_form_ui extends e_admin_form_ui
 				foreach($thumbTmp as $key=>$path)
 				{
 					$url = ($path[0] == '{') ? $path : e_TEMP.$path;
-					$paths[] = e107::getParser()->thumbUrl($url,'aw=800'); ;
+					$paths[] = e107::getParser()->thumbUrl($url,'aw=800');
 				}
 
 			}
@@ -1717,7 +1745,7 @@ class news_form_ui extends e_admin_form_ui
 		{
 			$news_item = $this->getController()->getListModel()->toArray();
 			$url = e107::getUrl()->create('news/view/item', $news_item);
-			return "<a class='e-tip' href='{$url}' title='".LAN_NEWS_102."' rel='external'>".$value."</a>";
+			return "<a class='e-tip' href='$url' title='".LAN_NEWS_102."' rel='external'>".$value."</a>";
 		}
 		return $value;
 	}
