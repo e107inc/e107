@@ -893,8 +893,8 @@
 	{
 		case 'send' :
 //--			$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW) . $mes->render() . $pm->show_send($pm_proc_id));
- 			$sc->bc_type = LAN_PM_55;
-   		$sc->bc_other = NULL;
+ 			$sc->bc_type = LAN_PLUGIN_PM_NEW;
+   			$sc->bc_other = NULL;
 			$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_proc_id));
 			break;
 
