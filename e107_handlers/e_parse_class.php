@@ -1275,7 +1275,7 @@ class e_parse
 
 	/**
 	 * @param string  $text string to process
-	 * @param integer $len  length of characters to be truncated
+	 * @param integer $len  length of characters to be truncated, if it has 'w' at the end, it truncates on word instead of chars (example: limit=50w)
 	 * @param string  $more string which will be added if truncation
 	 * @return string Always returns text.
 	 * @deprecated for public use. Will be made private. Use $tp->truncate() instead.
@@ -1283,8 +1283,10 @@ class e_parse
 	 *                      Uses current CHARSET  for utf-8, returns $len characters rather than $len bytes
 	 *
 	 */
-	public function text_truncate($text, $len = 200, $more = ' ... ')
+	public function text_truncate($text, $lenght = 200, $more = ' ... ')
 	{
+		
+		$len = intval($lenght);
 
 		if ($this->ustrlen($text) <= $len)
 		{
@@ -1296,15 +1298,16 @@ class e_parse
 			$text = $this->toText($text);
 		}
 
-
 		$text = html_entity_decode($text, ENT_QUOTES, 'utf-8');
 
-		if (function_exists('mb_strimwidth'))
+		if (stristr($lenght, "w") && false !== ($p = strpos(wordwrap($text, $len, $more), $more)))
+		{$ret = sprintf('%.'. $p . 's', $text);}
+		elseif (function_exists('mb_strimwidth'))
 		{
 			return mb_strimwidth($text, 0, $len, $more);
 		}
-
-		$ret = $this->usubstr($text, 0, $len);
+		else
+		{$ret = $this->usubstr($text, 0, $len);}
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
@@ -4308,22 +4311,14 @@ class e_parse
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
 		$genericFile = e_IMAGE . 'generic/blank_avatar.jpg';
-		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, false, $full);
+		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, true, $full);
 
 		if (!empty($image))
 		{
 
 			if (strpos($image, '://') !== false) // Remote Image
 			{
-			    if (@fopen($image, 'r'))
-				{
-                    $url = $image;
-                }
-                else
-                {
-					$file = $genericFile;
-					$url = $genericImg;
-                }
+				$url = $image;
 			}
 			elseif (strpos($image, '-upload-') === 0)
 			{
