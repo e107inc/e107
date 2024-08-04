@@ -62,12 +62,7 @@ function loadJSAddons()
 	e107::js('footer', '{e_WEB}js/core/admin.jquery.js', 'jquery', 5); // Load all default functions.
 	e107::js('footer', '{e_WEB}js/core/all.jquery.js', 'jquery', 5); // Load all default functions.
 
-	$plUpload = 'plupload/i18n/' . e_LAN . '.js';
 
-	if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
-	{
-		e107::js('footer', e_WEB_JS . $plUpload, 'jquery', 5);
-	}
 }
 
 

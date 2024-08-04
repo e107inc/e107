@@ -4550,16 +4550,19 @@ var_dump($select_options);*/
 	public function columnSelector($columnsArray, $columnsDefault = array(), $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
+		$tabs = []; 
 
-		try
+		if($adminUI = e107::getAdminUI())
 		{
-			$tabs = e107::getAdminUI()->getController()->getTabs();
+			try
+			{
+				$tabs = $adminUI->getController()->getTabs();
+			}
+			catch (Exception $e)
+			{
+			   // do something
+			}
 		}
-		catch (Exception $e)
-		{
-		   // do something
-		}
-
 
 		
 	// navbar-header nav-header
