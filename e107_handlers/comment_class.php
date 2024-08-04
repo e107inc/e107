@@ -1174,9 +1174,9 @@ class comment
 
 		$TEMPL = $this->parseLayout($text,$comment,$modcomment);
 
-		if ($this->template['form_start']) {
+		if ($this->template['start']) {
 			$data['TOTAL_COMMENTS']= $this->totalComments;
-			$COMM_HEAD_TEMPL = ($tp->parseTemplate($this->template['form_start'], true, $data));
+			$COMM_HEAD_TEMPL = ($tp->parseTemplate($this->template['start'], true, $data));
 		} else {
 			$COMM_HEAD_TEMPL = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 		}
