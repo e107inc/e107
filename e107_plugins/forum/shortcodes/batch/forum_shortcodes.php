@@ -84,6 +84,9 @@ class forum_shortcodes extends e_shortcode
 			return null;
 		}
 
+		global $FORUM_TEMPLATE;
+		if($FORUM_TEMPLATE['iconkey']){return $FORUM_TEMPLATE['iconkey'];}
+
 		 return "
 		<table class='table table-bordered' style='width:100%'>\n<tr>
 		<td style='width:2%'>".defset('IMAGE_new_small')."</td>
