@@ -32,41 +32,41 @@ class forum_shortcodes extends e_shortcode
 	}
 
 // LEGACY shortcodes, to be deprecated & directly handled in template file???
-	function sc_threadtitle()
+/*	function sc_threadtitle()
 	{
 		return LAN_FORUM_0002;	
 	}
-
-	function sc_replytitle()
+*/
+/*	function sc_replytitle()
 	{
 		return LAN_FORUM_0003;	
 	}
-
-	function sc_lastpostitle()
+*/
+/*	function sc_lastpostitle()
 	{
 		return LAN_FORUM_0004;	
 	}
-
-	function sc_infotitle()
+*/
+/*	function sc_infotitle()
 	{
 		return LAN_FORUM_0009;	
 	}
-
-	function sc_newthreadtitle()
+*/
+/*	function sc_newthreadtitle()
 	{
 		return LAN_FORUM_0075;	
 	}
-
-	function sc_postedtitle()
+*/
+/*	function sc_postedtitle()
 	{
 		return LAN_FORUM_0074;	
 	}
-
-	function sc_tracktitle()
+*/
+/*	function sc_tracktitle()
 	{
 		return LAN_FORUM_0073;	
 	}
-
+*/
 	function sc_statlink()
 	{
 		return "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_0017."</a>\n";
@@ -84,7 +84,11 @@ class forum_shortcodes extends e_shortcode
 			return null;
 		}
 
-		 return "
+//		global $FORUM_TEMPLATE;
+//		if($FORUM_TEMPLATE['iconkey']){return $FORUM_TEMPLATE['iconkey'];}
+		$FORUM_TEMPLATE = varset($GLOBALS['FORUM_TEMPLATE']);
+		return (defset('BOOTSTRAP') && !empty($FORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_TEMPLATE['iconkey'], true, $this) : 
+		"
 		<table class='table table-bordered' style='width:100%'>\n<tr>
 		<td style='width:2%'>".defset('IMAGE_new_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
@@ -510,7 +514,9 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_lastpostdate()
 	{
-        return $this->sc_lastpost(array('type'=>'datelink'));
+		echo "<hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>";
+
+		return $this->sc_lastpost(array('type'=>'datelink'));
 	}
 
 
