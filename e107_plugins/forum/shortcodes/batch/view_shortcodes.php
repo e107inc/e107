@@ -1059,7 +1059,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_track()
 	{
 
-		global $forum;
+		//global $forum; //$forum is not used inside function, so why global here?
 		if(!empty($this->pref['track']) && USER)
 		{
 			// BC Fix for old template.
