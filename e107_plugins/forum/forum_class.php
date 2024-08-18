@@ -809,7 +809,7 @@ class e107forum
 	
 	function getTrackedThreadList($id, $retType = 'array')
 	{
-		$e107 = e107::getInstance();
+//		$e107 = e107::getInstance(); // $e107 variable is not used anywhere in fuction, why declare it?
 		$sql = e107::getDb();
 
 		$id = (int)$id;
@@ -831,12 +831,12 @@ class e107forum
 	function isDuplicatePost($postInfo)
 	{
 
-		$sql = e107::getDb();
-		$tp = e107::getParser();
+//		$sql = e107::getDb(); // Only used once, why declare a variable? Better would be declare a class scope variable, something like $this->sql = e107::getDb()
+//		$tp = e107::getParser(); // Only used once, why declare a variable? Better would be declare a class scope variable, something like $this->tp = e107::getParser()
 
-		$post = $tp->toDB($postInfo['post_entry']);
+		$post = e107::getParser()->toDB($postInfo['post_entry']);
 
-		if($sql->select('forum_post', 'post_id', "post_forum = ".intval($postInfo['post_forum'])." AND post_entry='".$post."' AND post_user = ".USERID." LIMIT 1"))
+		if(e107::getDb()->select('forum_post', 'post_id', "post_forum = ".intval($postInfo['post_forum'])." AND post_entry='".$post."' AND post_user = ".USERID." LIMIT 1"))
 		{
 			return true;
 		}
