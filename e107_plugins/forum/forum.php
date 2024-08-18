@@ -403,8 +403,9 @@ class forum_front
 
 		$trackDiz = ($trackEmailPref) ? LAN_FORUM_3040 : LAN_FORUM_3041;
 
+//		if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list')) //$trackedThreadList is not used anywhere in function, so why declare it?
+		if($forum->getTrackedThreadList(USERID, 'list'))
 
-		if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
 		{
 
 			$viewed = $forum->threadGetUserViewed();
