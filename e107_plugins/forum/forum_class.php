@@ -98,7 +98,7 @@ class e107forum
 		}
 
 		$this->e107 = e107::getInstance();
-		$tp = e107::getParser();
+//		$tp = e107::getParser();  // $tp not used here, so why declare it? Better would be declare it as class scope var, ie $this->tp
 		$this->userViewed = array();
 		$this->modArray = array();
 		
