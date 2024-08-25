@@ -84,7 +84,9 @@ class forum_shortcodes extends e_shortcode
 			return null;
 		}
 
-		 return "
+		$FORUM_TEMPLATE = varset($GLOBALS['FORUM_TEMPLATE']);
+		return (defset('BOOTSTRAP') && !empty($FORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_TEMPLATE['iconkey'], true, $this) : 
+		"
 		<table class='table table-bordered' style='width:100%'>\n<tr>
 		<td style='width:2%'>".defset('IMAGE_new_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
