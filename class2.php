@@ -494,7 +494,8 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 			// -- ports do not match (http <==> https)
 			// -- base domain does not match (case-insensitive)
 			// -- NOT admin area
-			if (($urlport !== $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false) && strpos(e_REQUEST_SELF, ADMINDIR) === false)
+			//if (($urlport !== $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false) && strpos(e_REQUEST_SELF, ADMINDIR) === false)
+			if (($urlport !== $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false || stripos($PrefSiteBase, $urlbase) === 4 ) && strpos(e_REQUEST_SELF, ADMINDIR) === false)
 			{
 				$aeSELF = explode('/', e_REQUEST_SELF, 4);
 				$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
