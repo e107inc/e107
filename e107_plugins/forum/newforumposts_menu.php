@@ -31,8 +31,14 @@ if(!class_exists('forum_newforumposts_menu'))
 		function __construct()
 		{
 			$this->plugPref = e107::pref('forum'); // general forum preferences.
-			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
-            $this->forumObj = new e107forum;
+//			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+			$menuPrefs = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+			$this->forumObj = new e107forum;
+
+			parse_str($menuPrefs, $this->menuPref);
+
+//			echo "<hr><hr><hr>";
+//			var_dump($this->menuPref);
 
 			// Set some defaults ...
 			if (!isset($this->menuPref['title'])) $this->menuPref['title'] = "";
@@ -42,6 +48,9 @@ if(!class_exists('forum_newforumposts_menu'))
 			if (empty($this->menuPref['postfix'])) $this->menuPref['postfix'] = '...';
 			if (!isset($this->menuPref['scroll'])) $this->menuPref['scroll'] = "";
 			if (empty($this->menuPref['layout'])) $this->menuPref['layout'] = 'default';
+
+//			echo "<hr><hr><hr>";
+//			var_dump($this->menuPref);
 
             $this->cacheTag .= "_".$this->menuPref['layout'];
 
