@@ -473,7 +473,6 @@ class forum_shortcodes extends e_shortcode
 		return $this->sc_repliesx($parm);
 	}
 
-
 	function sc_threadsx($parm = null) // EQUAL TO SC_THREADS.......................
 	{
 		$val = ($this->var['forum_threads']) ? $this->var['forum_threads'] : '0';
@@ -485,7 +484,6 @@ class forum_shortcodes extends e_shortcode
 
 		return e107::getParser()->toBadge($val);
 	}
-
 
 	function sc_repliesx($parm = null) // EQUAL TO SC_REPLIES.......................
 	{
@@ -500,7 +498,6 @@ class forum_shortcodes extends e_shortcode
 		return e107::getParser()->toBadge($val);
 	}
 
-
 	function sc_forumsubforums()
 	{
   		return (!empty($this->var['text'])) ? "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->var['text']}</div>":"";
@@ -511,14 +508,10 @@ class forum_shortcodes extends e_shortcode
         return $this->sc_lastpost(array('type'=>'username'));
 	}
 
-
 	function sc_lastpostdate()
 	{
-		echo "<hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>";
-
 		return $this->sc_lastpost(array('type'=>'datelink'));
 	}
-
 
 	function sc_lastpost($parm = null)
 	{
