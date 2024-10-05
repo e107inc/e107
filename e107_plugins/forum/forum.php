@@ -402,7 +402,7 @@ class forum_front
 		$tp = e107::getParser();
 
 		$trackDiz = ($trackEmailPref) ? LAN_FORUM_3040 : LAN_FORUM_3041;
-
+		$text = '';
 //		if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list')) //$trackedThreadList is not used anywhere in function, so why declare it?
 		if($forum->getTrackedThreadList(USERID, 'list'))
 
@@ -477,15 +477,19 @@ class forum_front
 			}
 			//	else
 			{
-				$tracktext = $forum_track_start . $forum_trackstring . $forum_track_end;
+				$text = $forum_track_start . $forum_trackstring . $forum_track_end;
 			}
 		}
 
 
-		$text = '';
+//		$text = '';
+		if(!$text)
+		{
+			e107::redirect();
+			exit;
+		}
 
-
-		$text .= $tracktext;
+//		$text .= $tracktext;
 		$text .= "<div class='center'>" . e107::getForm()->pagination(e107::url('forum', 'index'), LAN_BACK) . "</div>";
 
 
