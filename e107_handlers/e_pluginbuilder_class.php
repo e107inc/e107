@@ -669,7 +669,7 @@ $content .= '}';
 				'keywords' 		=> array('one','two','three'),
 				'category'		=> array('category'),
 				'copyright'		=> array('copyright'),
-		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
+				'adminLinks'	=> array('url', 'description', 'icon', 'iconSmall', 'icon128'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
 			);
 
@@ -729,21 +729,27 @@ $content .= '}';
 			$existingXml = e_PLUGIN.$this->pluginName."/plugin.xml";
 			if(file_exists($existingXml))
 			{
-				$p = e107::getXml()->loadXMLfile($existingXml,true);
+				$p = e107::getXml()->loadXMLfile($existingXml, 'advanced');
 
-		//		print_a($p);
+			//		print_a($p);
 				$defaults = array(
 					"main-name"					=> varset($p['@attributes']['name']),
 					"main-lang"					=> varset($p['@attributes']['lan']),
 					"author-name"				=> varset($p['author']['@attributes']['name']),
 					"author-url"				=> varset($p['author']['@attributes']['url']),
-					"description-description"	=> varset($p['description']),
-					"summary-summary"			=> varset($p['summary'], $p['description']),
+					"description-description"	=> varset($p['description']['@value']),
+					"summary-summary"			=> varset($p['summary'], $p['summary']['@value']),
 					"category-category"			=> varset($p['category']),
 					"copyright-copyright"			=> varset($p['copyright']),
 					"keywords-one"				=> varset($p['keywords']['word'][0]),
 					"keywords-two"				=> varset($p['keywords']['word'][1]),
 					"keywords-three"			=> varset($p['keywords']['word'][2]),
+					"adminLinks-url"			=> varset($p['adminLinks']['link'][0]['@attributes']['url']),
+					"adminLinks-description"	=> varset($p['adminLinks']['link'][0]['@attributes']['description']),
+					"adminLinks-icon"			=> varset($p['adminLinks']['link'][0]['@attributes']['icon']),
+					"adminLinks-iconSmall"		=> varset($p['adminLinks']['link'][0]['@attributes']['iconSmall']),
+					"adminLinks-icon128"		=> varset($p['adminLinks']['link'][0]['@attributes']['icon128']),
+
 				);
 
 				unset($p);
@@ -1023,7 +1029,7 @@ $template = <<<TEMPLATE
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<adminLinks>
-		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="images/icon_32.png" iconSmall="images/icon_16.png" icon128="images/icon_128.png" primary="true" >LAN_CONFIGURE</link>
+		<link url="{ADMINLINKS_URL}" description="{ADMINLINKS_DESCRIPTION}" icon="{ADMINLINKS_ICON}" iconSmall="{ADMINLINKS_ICONSMALL}" icon128="{ADMINLINKS_ICON128}" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
 	{PLUGINPREFS}
 </e107Plugin>
