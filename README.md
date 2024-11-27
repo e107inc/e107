@@ -122,6 +122,6 @@ Having trouble getting e107 up and running? Something not working the way you th
 
 ## License
 
-e107 is released under the terms and conditions of the GNU General Public License (http://www.gnu.org/licenses/gpl.txt) 
+e107 is released under the terms and conditions of the GNU [General Public License](http://www.gnu.org/licenses/gpl.txt)
 
   [1]: https://e107.org
