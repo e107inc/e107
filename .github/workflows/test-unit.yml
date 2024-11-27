@@ -164,7 +164,6 @@ jobs:
       continue-on-error: true
 
     - name: Upload test output
-    - name: Upload test output
       uses: actions/upload-artifact@v4
       with:
         name: tests_output_${{ github.run_id }}_${{ matrix.interpreter_image.replace(':', '_') }}_${{ matrix.database_image.replace(':', '_') }}
