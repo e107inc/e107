@@ -8,5 +8,18 @@
     "codeception/module-asserts": "^1.1",
     "codeception/module-db": "^1.0",
     "codeception/module-phpbrowser": "^1.0"
-  }
+  },
+    "autoload": {
+        "psr-4": {
+            "e107_plugins\\": "../e107_plugins/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "e107_tests\\": "../e107_tests/"
+        },
+        "classmap": [
+            "../e107_plugins/*/tests"
+        ]
+    }
 }
