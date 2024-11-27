@@ -166,5 +166,5 @@ jobs:
     - name: Upload test output
       uses: actions/upload-artifact@v4
       with:
-        name: tests_output
+        name: tests_output_${{ github.run_id }}
         path: ./e107_tests/tests/_output/
