@@ -163,8 +163,17 @@ jobs:
           --input ./e107_tests/tests/_output/coverage/codeclimate.json
       continue-on-error: true
 
+    - name: Set artifact name
+      id: set_artifact_name
+      run: |
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        INTERPRETER_IMAGE=$(echo "${{ matrix.interpreter.image }}" | sed 's/:/_/g')
+        DB_IMAGE=$(echo "${{ matrix.db.image }}" | sed 's/:/_/g')
+        ARTIFACT_NAME="tests_output_${{ github.run_id }}_${INTERPRETER_IMAGE}_${DB_IMAGE}_${TIMESTAMP}"
+        echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+
     - name: Upload test output
       uses: actions/upload-artifact@v4
       with:
-        name: tests_output_${{ github.run_id }}_${{ matrix.interpreter_image.replace(':', '_') }}_${{ matrix.database_image.replace(':', '_') }}
+        name: ${{ env.ARTIFACT_NAME }}
         path: ./e107_tests/tests/_output/
