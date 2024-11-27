@@ -167,8 +167,8 @@ jobs:
       id: set_artifact_name
       run: |
         TIMESTAMP=$(date +%Y%m%d%H%M%S)
-        INTERPRETER_IMAGE=$(echo "${{ matrix.interpreter.image }}" | sed 's/:/_/g')
-        DB_IMAGE=$(echo "${{ matrix.db.image }}" | sed 's/:/_/g')
+        INTERPRETER_IMAGE=$(echo "${{ matrix.interpreter.image }}" | sed 's/[:/]/_/g')
+        DB_IMAGE=$(echo "${{ matrix.db.image }}" | sed 's/[:/]/_/g')
         ARTIFACT_NAME="tests_output_${{ github.run_id }}_${INTERPRETER_IMAGE}_${DB_IMAGE}_${TIMESTAMP}"
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
