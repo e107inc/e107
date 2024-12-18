@@ -11,12 +11,9 @@ jobs:
           - image: docker.io/jrei/systemd-ubuntu:22.04
     runs-on: ubuntu-latest
     steps:
-      - name: Replace Docker with Podman Rootless
-        run: |
-          sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman
-          echo -e "export XDG_RUNTIME_DIR=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
-          echo -e "export XDG_DATA_HOME=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
-          echo -e "export CONTAINERS_STORAGE_CONF=/tmp/${RUNNER_TEMP}/storage.conf" >> $GITHUB_ENV
+      - name: Replace Docker with Podman
+        run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker
+
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.19"
@@ -25,7 +22,8 @@ jobs:
         run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
         working-directory: ./e107_tests/lib/ci/salt/
       - name: Launch test container
-        run: docker run -d -it --name target -v .:/app/ ${{ matrix.operating_system.image }}
+        run: docker run -d -it --rm --name target -v .:/app/ ${{ matrix.operating_system.image }}
+
       - name: Install SaltStack
         run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
       - name: Apply Salt state
