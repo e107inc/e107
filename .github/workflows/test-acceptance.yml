@@ -28,7 +28,7 @@ jobs:
       - name: Launch test container
         run: |
           docker run -d --rm --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
-          docker exec target apt-get update && docker exec target apt-get install -y iputils-ping curl
+          docker exec target apt-get update && docker exec target apt-get install -y iputils-ping curl dnsutils
           sleep 5
           if ! docker ps | grep -q target; then
             docker logs target
@@ -39,7 +39,7 @@ jobs:
           echo "Testing DNS resolution..."
           nslookup google.com || echo "DNS resolution failed"
           echo "Testing HTTP connectivity..."
-          curl -Is https://google.com | head -n 1 || echo "HTTP connectivity failed"
+          curl -IL https://google.com || echo "HTTP connectivity failed"
       - name: Install SaltStack
         run: |
           echo "Validating host network connectivity..."
@@ -57,15 +57,17 @@ jobs:
           docker exec target cat /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "SaltStack bootstrap script missing"
           echo "Checking ELF binary architecture..."
           docker exec target file /app/e107_tests/lib/ci/salt/salt-bootstrap
+          docker exec target file /app/e107_tests/lib/ci/salt/salt-bootstrap
           docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Failed to set execute permissions for SaltStack script"
           if ! docker exec target test -x /app/e107_tests/lib/ci/salt/salt-bootstrap; then
             echo "SaltStack script is not executable, trying to fix permissions..."
             docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Error: Failed to set permissions for SaltStack script"
           fi
           echo "Testing SaltStack bootstrap binary execution..."
-          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir > salt-bootstrap-execution.log 2>&1 || echo "SaltStack bootstrap binary execution failed. Logs captured in salt-bootstrap-execution.log"
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir > salt-bootstrap.log 2>&1 || echo "Error executing SaltStack bootstrap"
 
-          echo "Running SaltStack bootstrap binary help command..."
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap --help || echo "Binary failed to execute"
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap --version || echo "Failed to obtain version info"
           docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap --help || echo "Binary execution failed"
           echo "Fetching container logs after script execution..."
           docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir || echo "Error: SaltStack bootstrap script failed"
