@@ -25,7 +25,7 @@ jobs:
         run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
         working-directory: ./e107_tests/lib/ci/salt/
       - name: Launch test container
-        run: docker run -d -it --rm --name target -v .:/app/ ${{ matrix.operating_system.image }}
+        run: docker run -d -it --name target -v .:/app/ ${{ matrix.operating_system.image }}
       - name: Install SaltStack
         run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
       - name: Apply Salt state
