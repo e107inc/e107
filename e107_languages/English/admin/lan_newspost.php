@@ -241,5 +241,5 @@ define("LAN_NEWS_112", "Select the URL format. Either record count (eg. page=20,
 
  // v2.4
 
-define("LAN_NEWS_113", "Limt to self-authored news posts only");
+define("LAN_NEWS_113", "Limit to self-authored news posts only");
 define("LAN_NEWS_114", "Enable this preference to restrict group members from viewing and editing news posts authored by other administrators.");
