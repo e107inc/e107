@@ -27,13 +27,17 @@ jobs:
         working-directory: ./e107_tests/lib/ci/salt/
       - name: Launch test container
         run: |
-          docker run -d --rm --network host --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
+          docker run -d --rm --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
           docker exec target apt-get update && docker exec target apt-get install -y iputils-ping curl
           sleep 5
           if ! docker ps | grep -q target; then
             docker logs target
             exit 1
           fi
+      - name: Debug Network Connectivity
+        run: |
+          docker exec target nslookup google.com || echo "DNS resolution failed"
+          docker exec target curl -I https://google.com || echo "HTTP connectivity failed"
       - name: Install SaltStack
         run: |
           echo "Validating host network connectivity..."
@@ -43,7 +47,9 @@ jobs:
           echo "Validating internet access inside the container..."
           docker exec target ping -c 4 google.com || echo "Error: Network connectivity issue inside container"
           echo "Debugging SaltStack script path..."
-          docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_script_path.log
+          docker exec target ls -l /app/e107_tests/lib/ci/salt/ || echo "SaltStack script path missing"
+          docker exec target cat /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "SaltStack bootstrap script missing"
+          docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Failed to set execute permissions for SaltStack script"
           if ! docker exec target test -x /app/e107_tests/lib/ci/salt/salt-bootstrap; then
             echo "SaltStack script is not executable, trying to fix permissions..."
             docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Error: Failed to set permissions for SaltStack script"
