@@ -34,7 +34,16 @@ jobs:
             exit 1
           fi
       - name: Install SaltStack
-        run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
+        run: |
+          echo "Checking file permissions..."
+          docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_file_permissions.log || echo "Error: Failed to list file permissions"
+          echo "Checking network connectivity..."
+          docker exec target ping -c 4 google.com > salt_network_check.log || echo "Error: Network connectivity issue"
+          echo "Fetching container logs before script execution..."
+          docker logs target > salt_container_logs_before.log
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
+          echo "Fetching container logs after script execution..."
+          docker logs target > salt_container_logs_after.log
       - name: Apply Salt state
         run: |
           ln -v -s master minion
