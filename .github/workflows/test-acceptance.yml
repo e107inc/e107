@@ -27,7 +27,7 @@ jobs:
         working-directory: ./e107_tests/lib/ci/salt/
       - name: Launch test container
         run: |
-          docker run -d --rm --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
+          docker run -d --rm --network host --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
           sleep 5
           if ! docker ps | grep -q target; then
             docker logs target
@@ -35,13 +35,16 @@ jobs:
           fi
       - name: Install SaltStack
         run: |
+          echo "Validating host network connectivity..."
+          ping -c 4 google.com || echo "Error: Host network connectivity issue"
           echo "Checking file permissions..."
           docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_file_permissions.log || echo "Error: Failed to list file permissions"
-          echo "Checking network connectivity..."
-          docker exec target ping -c 4 google.com > salt_network_check.log || echo "Error: Network connectivity issue"
+          echo "Validating internet access inside the container..."
+          docker exec target ping -c 4 google.com || echo "Error: Network connectivity issue inside container"
           echo "Fetching container logs before script execution..."
           docker logs target > salt_container_logs_before.log
-          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
+          echo "Executing SaltStack bootstrap script..."
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir || echo "Error: SaltStack bootstrap script failed"
           echo "Fetching container logs after script execution..."
           docker logs target > salt_container_logs_after.log
       - name: Apply Salt state
