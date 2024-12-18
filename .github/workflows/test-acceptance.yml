@@ -11,8 +11,9 @@ jobs:
           - image: docker.io/jrei/systemd-ubuntu:22.04
     runs-on: ubuntu-latest
     steps:
-      - name: Replace Docker with Podman Rootless
+      - name: Install host-level tools
         run: |
+          sudo apt-get update && sudo apt-get install -y iputils-ping curl
           sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman
           echo -e "export XDG_RUNTIME_DIR=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
           echo -e "export XDG_DATA_HOME=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
@@ -27,6 +28,7 @@ jobs:
       - name: Launch test container
         run: |
           docker run -d --rm --network host --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
+          docker exec target apt-get update && docker exec target apt-get install -y iputils-ping curl
           sleep 5
           if ! docker ps | grep -q target; then
             docker logs target
@@ -40,6 +42,12 @@ jobs:
           docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_file_permissions.log || echo "Error: Failed to list file permissions"
           echo "Validating internet access inside the container..."
           docker exec target ping -c 4 google.com || echo "Error: Network connectivity issue inside container"
+          echo "Debugging SaltStack script path..."
+          docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_script_path.log
+          if ! docker exec target test -x /app/e107_tests/lib/ci/salt/salt-bootstrap; then
+            echo "SaltStack script is not executable, trying to fix permissions..."
+            docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Error: Failed to set permissions for SaltStack script"
+          fi
           echo "Fetching container logs before script execution..."
           docker logs target > salt_container_logs_before.log
           echo "Executing SaltStack bootstrap script..."
@@ -48,11 +56,15 @@ jobs:
           docker logs target > salt_container_logs_after.log
       - name: Apply Salt state
         run: |
+          echo "Debugging file structure and permissions inside container..."
+          docker exec target ls -l /app/e107_tests/lib/ci/salt/ > debug_permissions.log
           ln -v -s master minion
           rm -fv pillars/config.sls
           touch pillars/config.sls
           rm -fv pillars/config-sample.sls
           touch pillars/config-sample.sls
+          echo "Ensuring pillar files have correct permissions..."
+          docker exec target chmod 644 /app/e107_tests/lib/ci/salt/pillars/* || echo "Error: Could not set permissions for pillar files"
           ln -v -s -f ../../config.acceptance.ci.yml pillars/config-local.sls
           docker exec -w /app/e107_tests/lib/ci/salt/ target /bin/sh -c "
             salt-call -c ./ --id=e107-dev --local state.apply e107-dev ||
