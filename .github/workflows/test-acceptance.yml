@@ -36,27 +36,38 @@ jobs:
           fi
       - name: Debug Network Connectivity
         run: |
-          docker exec target nslookup google.com || echo "DNS resolution failed"
-          docker exec target curl -I https://google.com || echo "HTTP connectivity failed"
+          echo "Testing DNS resolution..."
+          nslookup google.com || echo "DNS resolution failed"
+          echo "Testing HTTP connectivity..."
+          curl -Is https://google.com | head -n 1 || echo "HTTP connectivity failed"
       - name: Install SaltStack
         run: |
           echo "Validating host network connectivity..."
-          ping -c 4 google.com || echo "Error: Host network connectivity issue"
+          echo "Testing HTTP connectivity..."
+          curl -Is https://google.com | head -n 1 || echo "HTTP connectivity failed"
           echo "Checking file permissions..."
           docker exec target ls -l /app/e107_tests/lib/ci/salt/ > salt_file_permissions.log || echo "Error: Failed to list file permissions"
           echo "Validating internet access inside the container..."
-          docker exec target ping -c 4 google.com || echo "Error: Network connectivity issue inside container"
+          echo "Testing DNS resolution inside container..."
+          docker exec target nslookup google.com || echo "DNS resolution failed inside container"
+          echo "Testing HTTP connectivity inside container..."
+          docker exec target curl -Is https://google.com | head -n 1 || echo "HTTP connectivity failed inside container"
           echo "Debugging SaltStack script path..."
           docker exec target ls -l /app/e107_tests/lib/ci/salt/ || echo "SaltStack script path missing"
           docker exec target cat /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "SaltStack bootstrap script missing"
+          echo "Checking ELF binary architecture..."
+          docker exec target file /app/e107_tests/lib/ci/salt/salt-bootstrap
           docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Failed to set execute permissions for SaltStack script"
           if ! docker exec target test -x /app/e107_tests/lib/ci/salt/salt-bootstrap; then
             echo "SaltStack script is not executable, trying to fix permissions..."
             docker exec target chmod +x /app/e107_tests/lib/ci/salt/salt-bootstrap || echo "Error: Failed to set permissions for SaltStack script"
           fi
-          echo "Fetching container logs before script execution..."
-          docker logs target > salt_container_logs_before.log
-          echo "Executing SaltStack bootstrap script..."
+          echo "Testing SaltStack bootstrap binary execution..."
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir > salt-bootstrap-execution.log 2>&1 || echo "SaltStack bootstrap binary execution failed. Logs captured in salt-bootstrap-execution.log"
+
+          echo "Running SaltStack bootstrap binary help command..."
+          docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap --help || echo "Binary execution failed"
+          echo "Fetching container logs after script execution..."
           docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir || echo "Error: SaltStack bootstrap script failed"
           echo "Fetching container logs after script execution..."
           docker logs target > salt_container_logs_after.log
