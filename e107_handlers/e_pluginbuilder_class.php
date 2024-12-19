@@ -2010,7 +2010,11 @@ class " . $table . " extends e_admin_ui
 		protected \$fields 		= " . $FIELDS . ";		
 		
 		protected \$fieldpref = array(" . implode(", ", $FIELDPREF) . ");
-		
+	
+	//	protected \$filterSort = ['field_key_5', 'field_key_7']; // Display these fields first in the filter drop-down. 
+	
+	//	protected \$batchSort = ['field_key_5', 'field_key_7'];; // Display these fields first in the batch drop-down.
+	
 ";
 
 
