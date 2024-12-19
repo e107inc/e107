@@ -376,6 +376,53 @@ class redirection
 		exit; 	
 	}
 
+	 /**
+     * Determines the correct host and generates the redirection URL if needed.
+     *
+     * @param array $server  The $_SERVER superglobal containing request data.
+     * @param string $prefUrl The preferred site URL from preferences.
+     * @return string|bool   The redirection URL if a redirection is required, or false if no redirection is needed.
+     */
+	public function host(array $server, string $prefUrl, string $adminDir='')
+	{
+
+		// Extract the current domain and port
+		list($urlbase, $urlport) = explode(':', $server['HTTP_HOST'] . ':');
+		$urlport = $urlport ?: (int) ($server['SERVER_PORT'] ?: 80);
+
+		// Parse the preferred site URL
+		$aPrefURL = parse_url($prefUrl);
+
+		if(empty($aPrefURL['host']))
+		{
+			return false; // Invalid URL structure
+		}
+
+		$PrefRoot = $aPrefURL['host'];
+		list($PrefSiteBase, $PrefSitePort) = explode(':', $PrefRoot . ':');
+		$PrefSitePort = $PrefSitePort ?: (($aPrefURL['scheme'] === 'https') ? 443 : 80);
+
+		$hostMismatch = (strcasecmp($urlbase, $PrefSiteBase) !==0); // -- base domain does not match (case-insensitive)
+		$portMismatch = ($urlport !== $PrefSitePort); 	 // -- ports do not match (http <==> https)
+
+		if(($portMismatch || $hostMismatch) && strpos($server['PHP_SELF'], $adminDir) === false)
+		{
+			// Reconstruct the redirect URL
+			$aeSELF = explode('/', $server['PHP_SELF'], 4);
+			$aeSELF[0] = $aPrefURL['scheme'] . ':'; // Correct scheme (http/https)
+			$aeSELF[1] = ''; // Defensive code: ensure http:// not http:/<garbage>/
+			$aeSELF[2] = $PrefRoot; // Correct domain and port if needed
+
+			$location = implode('/', $aeSELF) . ($server['QUERY_STRING'] ? '?' . $server['QUERY_STRING'] : '');
+
+			return filter_var($location, FILTER_SANITIZE_URL);
+		}
+
+
+		return false; // No redirection needed
+	}
+
+
 	
 	/**
 	 * Redirect to the given URI
