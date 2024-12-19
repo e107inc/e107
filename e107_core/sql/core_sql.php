@@ -136,6 +136,9 @@ CREATE TABLE core_media (
   media_userclass varchar(255) NOT NULL default '',
   media_usedby text NOT NULL,
   media_tags text NOT NULL,
+  media_alt varchar(255) NOT NULL default '',
+  media_credits varchar(255) NOT NULL default '',
+  media_expires int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (media_id),
   UNIQUE KEY media_url (media_url)
 ) ENGINE=InnoDB;
