@@ -1966,7 +1966,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 
 			$vars['mode']       = $tp->filter($vars['mode']);
 			$vars['pluginName'] = $tp->filter($vars['pluginName']);
-			$vars['table']      = !empty($var['table']) ? $tp->filter($vars['table']) : '';
+			$vars['table']      = !empty($vars['table']) ? $tp->filter($vars['table']) : '';
 			$vars['pid']        = $tp->filter($vars['pid']);
 
 			$FIELDS             = $this->buildAdminUIFields($vars);
