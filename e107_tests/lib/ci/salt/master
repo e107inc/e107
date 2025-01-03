@@ -3,6 +3,7 @@ root_dir: ./
 file_roots:
   base:
     - states/
+    - /app/e107_tests/lib/ci/salt/states/
 
 pillar_roots:
   base:
