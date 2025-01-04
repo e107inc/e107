@@ -58,6 +58,6 @@ CREATE TABLE blank (
   `blank_media` json DEFAULT NULL,
   `blank_class` int(10) NOT NULL,
   PRIMARY KEY (`blank_id`),
-  FULLTEXT (`blank_nick`),
-  FULLTEXT (`blank_message`)
+  FULLTEXT (`blank_name`),
+  FULLTEXT (`blank_folder`)
 ) ENGINE=MyISAM;
