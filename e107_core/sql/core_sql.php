@@ -103,7 +103,9 @@ CREATE TABLE comments (
   comment_share tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id),
   KEY comment_blocked (comment_blocked),
-  KEY comment_author_id (comment_author_id) 
+  KEY comment_author_id (comment_author_id),
+  FULLTEXT (comment_comment),
+  FULLTEXT (comment_author_name)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
