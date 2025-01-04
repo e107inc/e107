@@ -793,7 +793,7 @@ class db_verify
 		// return "<pre>".print_r($data,TRUE)."</pre>";
 		
 		$v = $data['_valid'];
-		$i = $data['_invalid'];
+		$i = !empty($data['_invalid']) ? $data['_invalid'] : array();
 		
 		$valid = $this->toMysql($v,$mode);
         $invalid = $this->toMysql($i,$mode);
@@ -1163,6 +1163,13 @@ class db_verify
 		foreach($tmp as $line)
 		{
 			$line = trim($line);
+
+			if(strpos($line,"PRIMARY") === 0 || strpos($line,"KEY") === 0 || strpos($line,"INDEX") === 0 || strpos($line,"FULLTEXT") === 0 || strpos($line,"FOREIGN") === 0)
+			{
+				$newline[] = '';  // Add a placeholder to preserve the structure
+				continue;
+			}
+
 			$newline[] = preg_replace('/^([^`\s][0-9a-zA-Z\$_]*)/',"`$1`", $line);
 		}
 
@@ -1172,26 +1179,13 @@ class db_verify
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY|FULLTEXT)?[\s]*?,?\s*?\n/im";
 
-
-	//	echo $regex."<br /><br />";
-	
-		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
-		
-	//	$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
-	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|tinyblob|blob|mediumblob|longblob|tinytext|mediumtext|longtext|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
-	//	$mes->addDebug($regex);
-	
-	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/i";
-		
-	//	echo "reg=".$regex;
-		
 		preg_match_all($regex,$data,$m);	
 		
 		$ret = array();
-		
-	 if($print) var_dump($regex, $m);
+
+		 if($print) var_dump($regex, $m);
 			
 		foreach($m[1] as $k=>$val)
 		{
@@ -1215,10 +1209,47 @@ class db_verify
 	 */
 	function getIndex($data, $print = false)
 	{
-		$regex = "/(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)?[\s]*?(INDEX|KEY)[\s]*(?:`?([\w]*)`?)?[\s]*?\(`?([\w]+)`?(?:\s*\(\d+\))?(?:\s*(ASC|DESC))?\)[\s]*,?/i";
+	//	$regex = "/(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)?[\s]*?(INDEX|KEY)[\s]*(?:`?([\w]*)`?)?[\s]*?\(`?([\w]+)`?(?:\s*\(\d+\))?(?:\s*(ASC|DESC))?\)[\s]*,?/i";
+	//	$regex = "/(?P<type>PRIMARY|PRIMARY|UNIQUE|FULLTEXT|FOREIGN|KEY)[\s]*?(?P<key_type>INDEX|KEY)?[\s]*(?:`?(?P<field>[\w]*)`?)?[\s]*?\(`?(?P<keyname>[\w]+)`?(?:\s*\(\d+\))?(?:\s*(?P<order>ASC|DESC))?\)[\s]*,?/i";
 
+		$regex = "/(?P<type>PRIMARY|UNIQUE|FULLTEXT|FOREIGN|KEY|INDEX)[\s]*?(?P<key_type>INDEX|KEY)?[\s]*(?:`?(?P<field>[\w]*)`?)?[\s]*?\(`?(?P<keyname>[\w]+)`?(?:\s*\((?P<length>\d+)\))?(?:\s*(?P<order>ASC|DESC))?\)[\s]*,?/i";
 		preg_match_all($regex,$data,$m);
 
+		$ret = [];
+
+		foreach($m['type'] as $k=>$val)
+		{
+			$i          = $m['field'][$k];
+			$type       = trim(strtoupper($m['type'][$k]));
+			$keyname    = trim($m['keyname'][$k]);
+			$field      = trim($m['field'][$k]);
+
+			if(empty($field) || $field === 'KEY')
+			{
+				$field = $keyname;
+				$i = $keyname;
+			}
+
+			if($type === 'KEY' || $type === 'INDEX')
+			{
+				$type = '';
+			}
+
+			if(empty($keyname) || $keyname === 'KEY')
+			{
+				$keyname = $field;
+			}
+
+			$ret[$i] = array(
+				'type'			=> $type,
+				'keyname'		=> $keyname,
+				'field'			=> $field,
+
+			);
+		}
+
+		return $ret;
+/*
 		if (count($m) > 0)
 		{
 			unset($m[2]);
@@ -1273,7 +1304,7 @@ class db_verify
 		}
 
 		return $ret;
-
+*/
 	}
 
 

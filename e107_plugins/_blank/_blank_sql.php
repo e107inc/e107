@@ -57,5 +57,7 @@ CREATE TABLE blank (
   `blank_url` varchar(255) NOT NULL,
   `blank_media` json DEFAULT NULL,
   `blank_class` int(10) NOT NULL,
-  PRIMARY KEY (`blank_id`)
+  PRIMARY KEY (`blank_id`),
+  FULLTEXT (`blank_nick`),
+  FULLTEXT (`blank_message`)
 ) ENGINE=MyISAM;
