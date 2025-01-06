@@ -3079,7 +3079,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "</div>
 
 			<div class='col-md-12 spacer clearfix'>
-				<div class='row buttons-bar'>
+				<div class='buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
 					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action'). '
 					' .$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action'). '
