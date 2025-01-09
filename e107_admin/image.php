@@ -3135,11 +3135,12 @@ class media_admin_ui extends e_admin_ui
 
 	public function afterUpdate($new_data, $old_data, $id)
 	{
-		file_put_contents(__DIR__.'/test.txt', print_r($new_data, true));
-
 		if(isset($new_data['media_alt']) && !empty($new_data['media_url']))
 		{
-			e107::getParser()->setImageAltCacheFile($new_data['media_url'], $new_data['media_alt']);
+			if($cacheFile = e107::getParser()->setImageAltCacheFile($new_data['media_url'], $new_data['media_alt']))
+			{
+				e107::getMessage()->addDebug("Created Alt Tag cache file: $cacheFile");
+			}
 		}
 
 
