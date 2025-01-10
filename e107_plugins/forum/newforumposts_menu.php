@@ -33,7 +33,14 @@ if(!class_exists('forum_newforumposts_menu'))
 			$menuPrefs = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
 			$this->forumObj = new e107forum;
 
-			parse_str($menuPrefs, $this->menuPref);
+			if(is_string($menuPrefs))
+			{
+				parse_str($menuPrefs, $this->menuPref);
+			}
+			else
+			{
+				$this->menuPref = $menuPrefs;
+			}
 
 //			echo "<hr><hr><hr>";
 //			var_dump($this->menuPref);
