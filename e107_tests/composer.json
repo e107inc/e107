@@ -8,5 +8,5 @@
     "codeception/module-asserts": "^1.1",
     "codeception/module-db": "^1.0",
     "codeception/module-phpbrowser": "^1.0"
-  }
-}
+        }
+    }
