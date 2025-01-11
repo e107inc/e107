@@ -1,6 +1,6 @@
 [![e107 Content Management System](https://e107.org/e107_images/logoHD.png)](https://e107.org)
 =================
-[![Supported PHP Versions](https://img.shields.io/badge/PHP-7.4,%208.0,%208.1,%208.2-blue)](https://github.com/e107inc/e107/)
+[![Supported PHP Versions](https://img.shields.io/badge/PHP-7.4,%208.0,%208.1,%208.2,%208.3-blue)](https://github.com/e107inc/e107/)
 [![GitHub release](https://img.shields.io/github/v/release/e107inc/e107?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfjDBwRCAhY3Q3XAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAA8hJREFUWMOtlltMVFcUhhcDGC+YalXSpI1Kqtg0jMVLTS9p0tcahkTb+GRi65MvfRWN+tL60kuqsU+mxtLYpIQOIBYhNJZYQY2RFrVoNWICioYWOpFhBqQw8/kwnH32Ppe5Mftp5uy1/3+t/19n7SOS5eIFDtNHhAh3OUaFFHaxkX709Q/bCwlfxRDONcXOwmXvhgeYZEch4IM+8ADP5l0FVTwyIPvoIVmwKlziHKJEhI+IG17sKJQ4dWqn1kGxM7/sH3rDi4gQYnJeQhFk0B9+ropY3lVQlS57H6Gyr8JlbZ1vZCgPu/2tzaKKzEIRdIhzIGNCtTnY7cp+f1aShhLxrN7u7Kz1rmI4s92ZreV9vqaDVo6w0V3F9Xgsnd2ugewQh5do0XanOU6JGTESOh8b87M7k7WUc801Sc9QbEb11jZORbyEcmXvEIe1XPcc1s2UmZGXa8PxUd3u7SJCGX+mhV/HPbV3m085wBP1v91N0RT/V79YVwufZIC/q/Z6KBcRoVq7IzpYYp64GDIovhQaNfjPHfCvavDdrPTsuPMsNU9d2hWeVh11Q7isQqO8nCb7FcZepfaV0e6s4vf+H629/4QuzZQtBvzfXtmr/QqDQvPi5tKuR03WzrBwQpPoakplR/Ye8CIi3Wu4rQk1R0HgwpkGG/FX4W3D5KuUu+BfVFm/wYfs4k2KUv9b12pVdLBEJFn6W/1POt5uEeG4QXGRzdxxZ882OpkGIMEl3k09barQqmhjVeP37TpWE6UiQjGn1KNZOrnvtpYaJow0YtR4VNGZaBu2Y1pYbJUe4DuAqUTvOS28W4Of9Piu86LoSDYr+IV6TxRxkjB1mjg9Spwadb2P8RVfMKKq2K0o7HOdyYP0adkbjXnTM3tr1j9OtTEbVAPP8rGi+EudbWU5pd4XzojL2pAGX6294RZFUqPo9xsfzrH9iwZviTPMZscQsShmLIoLq+kBznqIox3cwj7127b2CZtckTZFwqIYWMRe52RKc5Wr7B8S9Iyw3+QEe3L9dNym+n6IrSzwiapUbTHNe7kRtCn4Kk7Sa80oLaLk5waaWc+NuchjuRFsZRAYIhj/FoArJgWB0R/CAA1UcgtoYVmuIlXTxWvs08agfeGUUG91NEd5hW/Sdk4akhVE3cOcAPXa01nWSL6LMk4b8+cPPuAdwsazc/Y4z4eiSJu0XsscaXlRzE1aH/jFMv/lS3F23tnbQj07NU6UKBEiTDDOU6ZaWCSFWwT+PzoQf8Ad7jHA4Ez0dEHhU2vm9dhBGmgc+4y3sj/1HPOcQpNXqqPqAAAAAElFTkSuQmCC)](https://github.com/e107inc/e107/releases)
 [![GitHub Workflow "Unit Tests" Status](https://img.shields.io/github/actions/workflow/status/e107inc/e107/test-unit.yml?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAOCAQAAABnEe8CAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAAA3cAAAN3Aa+SYCgAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABG0lEQVQoFW3By0pUARgA4H8O05AQZWjkImjprr0LL7guJ3VcidAmkFZBi0AHDyNCtu4FeoF6hbQLw5CiKIX2BLWa0+jshj6P13Tq++KUfjWbDrTtWnUvrnAzjpmU2Vc14aGXdhwaizP6VNyKCFM6qirWNR2qe2ROT+Qk5qWKEeGO36peaxiWKBnx3u3IGVL3NE5Ztqei4breuOCut34ajnO2LfpoJMIDqWKEoucy2+7HX1rKMknkvPHZjF28cyMu01KWSSKn1y/8UVOIq2ypWjcaJzzRNhP/UrNn2lc9kVMwqKQU3fTLLHnlu3GJgiGfPFOIbh7rSE1b09T0xawXPrgW3ZQ1/ZAqm7Dgm5bZ+B99UhtaDmxZMRBdjgBnPOGTaoNcdgAAAABJRU5ErkJggg==)](https://github.com/e107inc/e107/actions)
 [![Code coverage](https://img.shields.io/codeclimate/coverage/e107inc/e107?logo=code-climate)](https://codeclimate.com/github/e107inc/e107/test_coverage)
@@ -122,7 +122,6 @@ Having trouble getting e107 up and running? Something not working the way you th
 
 ## License
 
-e107 is released under the terms and conditions of the GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
-This changed. 
+e107 is released under the terms and conditions of the GNU [General Public License](http://www.gnu.org/licenses/gpl.txt)
 
   [1]: https://e107.org

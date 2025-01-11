@@ -2289,6 +2289,50 @@ class e_parse
 	}
 
 	/**
+	 * Sets a cache file for storing alternate text data for an image.
+	 *
+	 * @param string $path  The file path of the image whose alternate text is being cached.
+	 * @param string $value The alternate text value to cache.
+	 * @return string or false on failure
+	 */
+	public function setImageAltCacheFile($path, $value)
+	{
+		$cache_str = sha1($path);
+
+		$pre = 'alt_';
+		$post = '.cache.txt';
+
+		$file = e_CACHE_IMAGE .'alt_' . sha1($path) . '.cache.txt';
+
+		if (file_put_contents($file, $value) !== false)
+		{
+            return $file;
+        }
+
+        return false;
+
+	}
+
+	/**
+	 * Retrieves the content of the alternative cache file for the specified path if it exists.
+	 *
+	 * @param string $path The file path to generate the cache filename for.
+	 * @return string|null The content of the cache file if it exists, or null if the file does not exist.
+	 */
+	public function getImageAltCacheFile($path)
+	{
+	    $file = e_CACHE_IMAGE .'alt_' . sha1($path) . '.cache.txt';
+
+	    if (file_exists($file))
+	    {
+	        return file_get_contents($file);
+	    }
+
+	    return null;
+	}
+
+
+	/**
 	 * Generated a Thumb Cache File Name from path and options.
 	 *
 	 * @param string $path
@@ -4553,6 +4597,11 @@ class e_parse
 
 		$tp = $this;
 
+		if(($alt = $this->getImageAltCacheFile($file)) && empty($parm['alt']))
+		{
+			$parm['alt'] = $alt;
+		}
+
 		//		e107::getDebug()->log($file);
 		//	e107::getDebug()->log($parm);
 
@@ -4628,6 +4677,8 @@ class e_parse
 		{
 			$path = $tp->thumbUrl($file, $parm);
 		}
+
+
 
 		$id = (!empty($parm['id'])) ? 'id="' . $parm['id'] . '" ' : '';
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'img-responsive img-fluid';

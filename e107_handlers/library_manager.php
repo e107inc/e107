@@ -379,9 +379,9 @@ class core_library
 			'variants'          => array(),
 			// Override library path to CDN.
 		//https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3',
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3',
 			'path'              => '',
-			'version'           => '5.2.3',
+			'version'           => '5.3.3',
 		);
 
 
@@ -411,7 +411,7 @@ class core_library
 			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '5',
-			'version'           => '5.2.3',
+			'version'           => '5.3.3',
 		);
 
 
@@ -1040,7 +1040,7 @@ class core_library
 			'variants'          => array(),
 			'library_path'      => '{e_WEB}lib/font-awesome',
 			'path'              => '6',
-			'version'           => '6.4.2',
+			'version'           => '6.7.2',
 
 		);
 
@@ -1078,9 +1078,9 @@ class core_library
 			),
 			'variants'          => array(),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2',
+			'library_path'      => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2',
 			'path'              => '',
-			'version'           => '6.4.2',
+			'version'           => '6.7.2',
 		);
 
 

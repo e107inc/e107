@@ -470,54 +470,24 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 	}
     elseif(deftrue('e_DOMAIN'))
 	{
-		// Find domain and port from user and from pref
-		list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
-		if(!$urlport)
-		{
-			$urlport = (int) $_SERVER['SERVER_PORT'];
-		}
-		if(!$urlport)
-		{
-			$urlport = 80;
-		}
-		$aPrefURL = explode('/',$pref['siteurl'],4);
-		if (count($aPrefURL) > 2) // we can do this -- there's at least http[s]://dom.ain/whatever
-		{
-			$PrefRoot = $aPrefURL[2];
-			list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
-			if (!$PrefSitePort)
-			{
-				$PrefSitePort = ( $aPrefURL[0] === 'https:' ) ? 443 : 80;	// no port so set port based on 'scheme'
-			}
+		$location = e107::getRedirect()->host($_SERVER, $pref['siteurl'], ADMINDIR);
 
-			// Redirect only if
-			// -- ports do not match (http <==> https)
-			// -- base domain does not match (case-insensitive)
-			// -- NOT admin area
-			if (($urlport !== $PrefSitePort || stripos($PrefSiteBase, $urlbase) === false) && strpos(e_REQUEST_SELF, ADMINDIR) === false)
-			{
-				$aeSELF = explode('/', e_REQUEST_SELF, 4);
-				$aeSELF[0] = $aPrefURL[0];	// Swap in correct type of query (http, https)
-				$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
-				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
-				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
-				$location = filter_var($location, FILTER_SANITIZE_URL);
-			//
-		//	header("Location: {$location}", true, 301); // send 301 header, not 302
+		if($location)
+		{
 			if(defined('e_DEBUG') && e_DEBUG === true)
 			{
-				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a hre='".$location."'>".$location. '</a>';
-                echo '<br />e_DOMAIN: ' .e_DOMAIN;
-				echo '<br />e_SUBDOMAIN: ' .e_SUBDOMAIN;
+				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a href='" . $location . "'>" . $location . "</a>";
+				echo '<br />e_DOMAIN: ' . e_DOMAIN;
+				echo '<br />e_SUBDOMAIN: ' . e_SUBDOMAIN;
 			}
 			else
 			{
-				e107::getRedirect()->go($location,true,301);
+				e107::getRedirect()->go($location, true, 301); // Issue 301 redirect
 			}
 
-				exit();
-			}
+			exit();
 		}
+
 	}
 }
 
