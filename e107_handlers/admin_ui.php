@@ -2787,6 +2787,19 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $filterQry;
 
 	/**
+	 * Custom sorting of the filter list.
+	 * @var array
+	 */
+	protected $filterSort = array();
+
+
+	/**
+	 * Custom sorting of the batch list.
+	 * @var array
+	 */
+	protected $batchSort = array();
+
+	/**
 	 * @var boolean
 	 */
 	protected $batchDelete = true;
@@ -2939,6 +2952,21 @@ class e_admin_controller_ui extends e_admin_controller
 		return  $this->eventName;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getFilterSort()
+	{
+		return  $this->filterSort;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getBatchSort()
+	{
+		return  $this->batchSort;
+	}
 	
 	/**
 	 * @return string
@@ -6152,6 +6180,16 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setMessages();
 	}
 
+	protected function handleGridSearchfieldFilter($selected)
+	{
+		return $this->handleListSearchfieldFilter($selected);
+	}
+
+	protected function handleGridDeleteBatch($selected)
+	{
+		return $this->handleListDeleteBatch($selected);
+	}
+
 
 	/**
 	 * Method to generate "Search in Field" query.
@@ -8182,6 +8220,25 @@ class e_admin_form_ui extends e_form
 		return $text;
 	}
 
+	private function sortFieldsByPriority(array $fields, array $priorityKeys)
+	{
+	    // Separate fields into priority and non-priority arrays
+	    $priorityFields = [];
+	    $remainingFields = $fields;
+
+	    foreach ($priorityKeys as $key)
+	    {
+	        // If the key exists in the fields array, move it to the priorityFields array
+	        if (isset($fields[$key]))
+	        {
+	            $priorityFields[$key] = $fields[$key];
+	            unset($remainingFields[$key]); // Remove from remaining fields
+	        }
+	    }
+
+	    // Merge priorityFields at the top with remainingFields retaining their original order
+	    return $priorityFields + $remainingFields;
+	}
 
 	/**
 	 * Render Batch and Filter Dropdown options.
@@ -8192,16 +8249,22 @@ class e_admin_form_ui extends e_form
 	public function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
 	{
 		$optdiz = array('batch' => LAN_BATCH_LABEL_PREFIX.'&nbsp;', 'filter'=> LAN_FILTER_LABEL_PREFIX.'&nbsp;');
-		$table = $this->getController()->getTableName();
+		$obj = $this->getController();
+		$table = $obj->getTableName();
 		$text = '';
 		$textsingle = '';
 				
 
 		$searchFieldOpts = array();
 
-		$fieldList = $this->getController()->getFields();
+		$fieldList = $obj->getFields();
+		$fieldSort = ($type ==='batch') ? $obj->getBatchSort() : $obj->getFilterSort();
 
-
+		if(!empty($fieldSort))
+		{
+			e107::getMessage()->addDebug("Filtering by custom sort field: ".print_r($fieldSort,true));
+			$fieldList = $this->sortFieldsByPriority($fieldList, $fieldSort);
+		}
 
 		foreach($fieldList as $key=>$val)
 		{
@@ -8603,6 +8666,7 @@ class e_admin_form_ui extends e_form
 			if(!empty($option))
 			{
 				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), varset($disabled))."\n";
+
 				foreach($option as $okey=>$oval)
 				{
 					$text .= $this->option($oval, $okey, $selected == $okey)."\n";
@@ -8611,22 +8675,23 @@ class e_admin_form_ui extends e_form
 			}
 		}
 
+		$text2 = '';
 
 		if(!empty($searchFieldOpts) && $type !== 'batch')
 		{
-			$text .= "\t".$this->optgroup_open(defset('LAN_UI_FILTER_SEARCH_IN_FIELD', 'Search in Field'))."\n";
+			$text2 .= "\t".$this->optgroup_open(defset('LAN_UI_FILTER_SEARCH_IN_FIELD', 'Search in Field'))."\n";
 
 			foreach($searchFieldOpts as $key=>$val)
 			{
-				$text .= $this->option($val, $key, $selected == $key)."\n";
+				$text2 .= $this->option($val, $key, $selected == $key)."\n";
 			}
 
-			$text .= "\t".$this->optgroup_close()."\n";
+			$text2 .= "\t".$this->optgroup_close()."\n";
 		}
 
 
 
-		return $textsingle.$text;
+		return $textsingle.$text2.$text;
 
 	}
 
