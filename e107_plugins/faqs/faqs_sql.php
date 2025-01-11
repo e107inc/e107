@@ -9,7 +9,10 @@ CREATE TABLE faqs (
   faq_author_ip varchar(45) NOT NULL default '',
   faq_tags varchar(255)  NOT NULL default '',
   faq_order int(6) unsigned NOT NULL default '0',
-  PRIMARY KEY  (faq_id)
+  PRIMARY KEY  (faq_id),
+  FULLTEXT (faq_question),
+  FULLTEXT (faq_answer),
+  FULLTEXT (faq_tags)
 ) ENGINE=MyISAM;
 
 CREATE TABLE faqs_info (
@@ -23,6 +26,7 @@ CREATE TABLE faqs_info (
   faq_info_metad varchar(255) NOT NULL default '',
   faq_info_metak varchar(255) NOT NULL default '',
   faq_info_sef varchar(255) NOT NULL default '',
-  PRIMARY KEY  (faq_info_id)
+  PRIMARY KEY  (faq_info_id),
+  FULLTEXT (faq_info_title)
 ) ENGINE=MyISAM;
 

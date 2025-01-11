@@ -25,7 +25,11 @@ CREATE TABLE download (
   download_visible varchar(255) NOT NULL default '0',
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name),
-  KEY download_category (download_category)
+  KEY download_category (download_category),
+  FULLTEXT (download_url),
+  FULLTEXT (download_description),
+  FULLTEXT (download_author),
+  FULLTEXT (download_author_website)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
